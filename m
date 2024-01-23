@@ -1,569 +1,324 @@
-Return-Path: <bpf+bounces-20104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 294E88396F4
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 18:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3768A839762
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 19:13:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D561C21C61
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 17:52:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B9461C23B1D
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 18:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2072823A7;
-	Tue, 23 Jan 2024 17:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94868121D;
+	Tue, 23 Jan 2024 18:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WAH/Cz7G"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oSD8tztH";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="UotUB8Wv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF33823AA;
-	Tue, 23 Jan 2024 17:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706032321; cv=none; b=Waz9VEpP+h+urM+6o48A/wkpt0yy6U89tdE8fzoKwwAvppRanFIi0PneiobFcbP+YDr4iplPUA3XCdo/D2AuFodX3iu1aKSoEAN1gz5/zA8Bwp/s8b6vDBlveX0ouHX47pZNNsaV3Bxt1F4yUUx/28/lNaNmjL2cCGnAnw1pMVQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706032321; c=relaxed/simple;
-	bh=3zjHNOYLC/6fmzFypZFK/4BnYr9RT//BI7/7nOzXlp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=geohUG81p1TJdVvFIXJkwDtHGQjR1DQhXN/MaYQO3JqhTJK72iQoKWBcoTD4hODOLGx1os67iFzVLvxcS6TXrvI+us/9pQfu0+Q32sBI1Mr/3kvKLxlM04EFz+OkQwQd51JYnakbKwQb13sMiHsJy7klsYY2aHXlZs8XTgig2jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WAH/Cz7G; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <52e5df2c-1faf-479f-8b64-a5d0c86c82e5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706032316;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EG05XbCGVi/VgSuokgwysAzGefKOBptA4UFb78fkRiw=;
-	b=WAH/Cz7G8cZxjMuyWJIcdjHVrcVrTCOWVCoZZ9Y4+NA0btA0VdsDRfjch7zTRRzWWNsFFw
-	KFQwWbtf4blkm0XwvlXvSqEy3pDSgocyMk3gWzpjuNtnilO2a2xye4vX9pZc9OlAqf3hXC
-	Hbha5fY0nV/d4jsv81X66F9RbZvm5G4=
-Date: Tue, 23 Jan 2024 17:51:50 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC490811FB
+	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 18:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706033623; cv=fail; b=GSfeI6qAKi2Kk8RoDhZ+jq3X/PdieM5xWKqtUtsw+xEiY3B4ggW4wlJJpdsLBQ1Dyhe6Kck/b6eRjHeT9A6mhR+DmWjSDOKsubpN3sIBPDwusSQxXNZFEdVtg2SNgo3Q1Sj0OEg9yV8bS0aH9gE+M9ZslCM1/vV0ZRjQ6a5OTAE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706033623; c=relaxed/simple;
+	bh=uBK4408gdaQOOK8L98rFPafUP+ApQWlk/8eUPU8ZGJM=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=CevWHc8/EFF+u+i0KB3xDYfm15Pok62d7XryMkobL6ufDmX2hBMStOQ7HbCinBd3lwM32B/93p0aBOTxgemJEj6W7vMXZWAWXpRY28/Y9jki0SOG1OeBYcVCBN1USHnmVgP1vkSZYDdKxWCD/nhIT1zVDqQdbg2gVCyPGceoajk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oSD8tztH; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=UotUB8Wv; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40NGRTuG011663;
+	Tue, 23 Jan 2024 18:13:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=corp-2023-11-20;
+ bh=bAXL0+k4mzNQBPvNKEH90gGQ5OSruDtO89ZyqOW4d2I=;
+ b=oSD8tztHKlsI3PtoCmVhiaH+goTnujynzR6zmWdQOOte18rziUdDhni6tPQcEdk/nEsS
+ Fm3F5ckBiSsNjGbT430mUe5U8LDMt+ALHqrNMwtpDnL2a5y0Bpv9vHZCLjSE4OSLBuFd
+ sdwhe+EE86LTCubFatdYcpcBuf795jLcf1BrBeqd0O1PvW+/100BbuQcX/q51qvFCP3s
+ w/YUOwKAVKHJ60Dp3s34RM2k5Zv9p/yMzh+X/k7RC+ijtupt3wNHL2JHea/zrxEDEVnD
+ 4SeOArfgS8iuDloaSLyHrVVTo3w+Jiq2NFu6YB5SaWh7IK+GH3vZZHVsGl1/ZYN3bntf Aw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cuq2fe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 23 Jan 2024 18:13:37 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40NHYETb014963;
+	Tue, 23 Jan 2024 18:13:36 GMT
+Received: from outbound.mail.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vs33tcfkt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 23 Jan 2024 18:13:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NmmnU8zQLL/ZtzInakgrRe433jwWnrVE7TPB6A84tPNYhn4NWq53Oy1Yq2J/2QYg3UNnaJSbChPLNPC0eiQYwktrdmV1IkJeO5MrM0Nudd4L3RE7qMelDQDrP66bSvFX29SmGsdGSHybDJ3KA4uW/7rF1ghJ8lmqLRp63ExSF4IhJS+1U87ppRsyGryOsX0Obzw+/gUqZTL/R6RTrwdqg4DQ3Jdk9GA2Q48PRz4BDOKdjYM7VX440/VQIm3gGIKTB8U812H3gXHCITniU+K4lBQrVuZzV8Qb+0APWswkpWkj/aYBCGoR+U99/vfHMtuTYr3AwT01bvBa6cB1w4w3KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bAXL0+k4mzNQBPvNKEH90gGQ5OSruDtO89ZyqOW4d2I=;
+ b=AjYC99H4NT/dcO87tfxZROSUaRbaETbJNqO6u8JiqFFVYImQnMx0sEEmWqaG9jSRdKFIsmN08vWQ5UHgiZ4wdKp4FXsY8myzcH+2j2I6op7rLBXN64H2ZG38G4x3gB9LfGdXeIKKk6k2Jrac57ft133Y4SDqte9JDKauiZXlSMBJXoIBdVtLUreKVOHSL/+Km8q605e+p+TyeqHsHElVdCBEWaz7L8rzzaSG5QWUu9GQnIUZxLv/Oahcc4AH1HJfqFXDaSzYNn4YBqep/gjPRzdJmz3tQK7af7kTVKVhG1rMil8icdqTwsDj00sQclZgUdUNY+Ff2/Wufb3mOBWA/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bAXL0+k4mzNQBPvNKEH90gGQ5OSruDtO89ZyqOW4d2I=;
+ b=UotUB8Wv89A6zNjdec+oacnfYyNH8xXG6t+8PNwwPIk+l8HOjPyHM8eVywTW6WLV8P1uytuBq9/iDvqMxxMNkYuBx0N8DMzOw/r3JYplrLIsLF9BPQ80VAPONEe5+sP6bYtg/NR1/Nqo5oxw0w7AV86zaGYFVDumJ6a+lw55QJo=
+Received: from DM6PR10MB3113.namprd10.prod.outlook.com (2603:10b6:5:1a7::12)
+ by CO6PR10MB5636.namprd10.prod.outlook.com (2603:10b6:303:14b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Tue, 23 Jan
+ 2024 18:13:33 +0000
+Received: from DM6PR10MB3113.namprd10.prod.outlook.com
+ ([fe80::cafd:c8d6:e2c3:3a1]) by DM6PR10MB3113.namprd10.prod.outlook.com
+ ([fe80::cafd:c8d6:e2c3:3a1%4]) with mapi id 15.20.7228.022; Tue, 23 Jan 2024
+ 18:13:33 +0000
+From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To: bpf@vger.kernel.org
+Cc: "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH] bpf: use r constraint instead of p constraint in selftests
+Date: Tue, 23 Jan 2024 19:13:09 +0100
+Message-Id: <20240123181309.19853-1-jose.marchesi@oracle.com>
+X-Mailer: git-send-email 2.30.2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO2P123CA0105.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:139::20) To DM6PR10MB3113.namprd10.prod.outlook.com
+ (2603:10b6:5:1a7::12)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v8 1/3] bpf: make common crypto API for TC/XDP
- programs
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>
-Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
- bpf@vger.kernel.org, Victor Stewart <v@nametag.social>
-References: <20240115220803.1973440-1-vadfed@meta.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20240115220803.1973440-1-vadfed@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB3113:EE_|CO6PR10MB5636:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9cf6d304-524b-4e54-1d32-08dc1c3f0298
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	MWgoAsrKZJA8QxeGP2grqFy7ZqJvyIV+GIoz9gpz7c7mijQaltmGFnCmZyg40kR8yxp4MnZyLU7Xy6iDBUH/Wd+MYr3+IrsOUvnK2UVi7Q752XdI3Nh843kwVj23CM/+ekg3mMpqO4Gm9IpgqlrHcwnKX0KHSasFhWMc5twMoI9cuBuLZrHAGrp/3NKjnjgZAqUznFpSG2Ioyt7ZA4nAd3Zk6uY/rv/hwPA05QdeevOipOij9/N6prU+dlBqvqsf5KgtV6PY/AIGUFQnqRkGKOPxOj1OXnb4D1cNIE5LgV/Ii9r+Vp69wd7jNLgGYtYeKCp+SQpivljl6T4L1HnkWzFr8/mryycqv90xvMU9CWbT3ZFsoGXFs6HnDWHpvnvpEmoWmsSE+aZd7y4W0pT8P4b52FPElbjajMe6FiuPvXtblZFVNk/k83eGF6yU58IBHomrgEjD3rI96jnQt66wq3c6sBpkH7y5h7Hg2tu+3YvbRD2iuz6HI6n7hl/UHTAZ6Yq4EBuDmHqft3VN4ieSU5BVvT2yTw7IUErw1g83Wvg=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(366004)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(4326008)(8936002)(8676002)(2906002)(26005)(6916009)(66476007)(5660300002)(83380400001)(2616005)(1076003)(66556008)(66946007)(36756003)(86362001)(316002)(54906003)(478600001)(6486002)(966005)(6506007)(6666004)(6512007)(41300700001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?YUdtT2dndC9vT3M4TEc4YXJiaFg2bGNUYWg4dEU4WHJuL3h0YmJsbS9NRytD?=
+ =?utf-8?B?cEVYcERwS2ZxamtkWlNidFRLN1NHM3lESjJyTEZxMEl1MmJvKzhGMzNWYy91?=
+ =?utf-8?B?Z254Yy9Hb3JHTGJZSlRDSkZ2SUtIbno5VGdIcmlESzZPQlpROVgwRmdxY0RP?=
+ =?utf-8?B?bWU3akdoNWRKbkRvYTllQmRBaEdBZU5lbG40cVFueHFnaS83czFCbUkyR28z?=
+ =?utf-8?B?R29pMndmb2FUK2hXdXlqWHIvLy9XMUppSE5VT25kRDZ3U0FwcVhJVmhSejIr?=
+ =?utf-8?B?MGQvSytiMDJhaG5MQm5Zc2dtWkpHTlJFMzRkTGlNR1NPZW5lZ1JPaDNXWUdy?=
+ =?utf-8?B?WkZWZVFsMjFoVkFzZTJtajErME14NGg5N3RRYlM1akQ5RFBUR3ZERU0vUlZS?=
+ =?utf-8?B?a2MxZ0x1TFZxME9PVWZzb21tcDlQNXpWYW1CS0RwSkF3ajBkdGUzdjMzMG5H?=
+ =?utf-8?B?aTNHeW5abzAwdk82KzJuVmhyMzNoOUtlQnFXOUNlUHUvNEFwREsrZ0hqV0Fm?=
+ =?utf-8?B?NVEvSFl1Vk1HRGliMnFnM0J6RmlJelhIQkw3TUZIUDBiOHpiajJtL294UGxa?=
+ =?utf-8?B?VEtjQjA3UXdWRFdhOHdHZ2xESjdxQWp3TURneGNSOGtiRTVkR095T0ZkVmg3?=
+ =?utf-8?B?YWRYdW1LaHNlZ2pVS1ZkWS9YUHZuUkR2K1hqUytlcUh0Yk9TK2FrcGNhYUxQ?=
+ =?utf-8?B?eDVOY0VsVk5GUzA4cDQxeFVXSS9td1BmYU9PS2ltMTNyN3QrNmR3SVBjaEJa?=
+ =?utf-8?B?TDlUb2hQbng3aVM4emtYTUhoaWxJOWRzN01ZVVViUE8yWVpQS2NiRm5aKy95?=
+ =?utf-8?B?Y2ZXUUpueThQQmYzOGpBWEhvaEVHWFFYcHp1ZVdMblVpZll5RE9nT21leFVx?=
+ =?utf-8?B?L3RoSVFYQ3FodXFRcjdJbFlpMXVmUVplTlJwckNCeERBc2ovT3J4dk9TSWNs?=
+ =?utf-8?B?OHBkSXlZb3FTbkZoVkQ3d2YvMzNINTZGU1c0NVlhdGlHMElyN3ZNeXNMWWdW?=
+ =?utf-8?B?K3c4VHhycDJRdzM3TVQ2ZWlTYTNTRHV6S1Q0bUY3K1Y3M2Vud21HS1dZMVFH?=
+ =?utf-8?B?SFNiNEZLV2lmcTg2VXVLa0JESmJsaUdFSHhGRkFSTUlKbWZaUDU2NkVBQTk1?=
+ =?utf-8?B?SWJFanIxSjAvSHpXaThqd1IvWVpOR2FPNVJXeGhLZ1hpWVJTU1FiRlFKUFF4?=
+ =?utf-8?B?T2paNklNNXZveHJ0OE94ZGxmbXI2MHcvTTI3WktUd1UyTlJzb3VzRU5kTnFJ?=
+ =?utf-8?B?UzM3eUsxNGtqSVFRekpyNG9lSUYzRlNXdFdXaWhhMHA3aDlwUFVYcDlGSlN2?=
+ =?utf-8?B?VUp4aFBDK1RETkx3Sm1sM01jMllBNzh6VCs4TmhnUUxOZWk5M3RhVWNON2k2?=
+ =?utf-8?B?Q3ZGRU1QNEp2WHV2KzNxSTlFVlYrQ01aL2drZDN3OUE2NEhGWUtGcFJUckN6?=
+ =?utf-8?B?ZDhCdXZRZVZtL09oSmFQc0Nrc2pXOHE1NVFNYUtiMVJCL2JLalpFTGtlcDho?=
+ =?utf-8?B?RUdlcVM5OTh1ZndzMUlHKzRYM3FjQnVpU2wraVllQXJrRStDWmhPRlRzam1M?=
+ =?utf-8?B?em5yZXd6NE8wTG9QMWZFY1N1VjVqVE1va0hxUFB5ZXZNQU40RTNxaTgwRWtQ?=
+ =?utf-8?B?eGtVLzZESEJzS1Z5SmFXdjZVcHdMOXhycXBBTHJJQmVCQ3VPUEJGMVZBcGdV?=
+ =?utf-8?B?QmZkVTVLSTdRM0E4UFFUUUt2bVZhNi82djZQMFkxTy8xcnA5ZXJwS0JpaHZR?=
+ =?utf-8?B?R3lyTHZYMGFTZUF4QjdQQWlMbDVQYnVEc05vMlEzVXNBRjR2M1pRVlc0TGp1?=
+ =?utf-8?B?cjRkdDBPYVRpaXVRYWZQZVhUZWRuZUI4OTZMc1hjVk90Nko2dzlWVU5QYjhh?=
+ =?utf-8?B?QWo4UFJ5L1l1L1JhWThtNFgwV3BnbytqZVdxSDdwVk9kbVJJM0ZiM0RKR2Fv?=
+ =?utf-8?B?NHowOHN0NHRjSVNuNnFYK0ZYb1Q4bXJlK2FiRXhncUxaMFRNV1JVZDFSdWpu?=
+ =?utf-8?B?VjNMWWxDOXREalpBUk1WRUtYNm16MkNWbGxsall3b3Z3MDRvTVp0NFNaMHpz?=
+ =?utf-8?B?Y3kxTkRrMVJnVnpFd3FsdHFnK09yRlJhTUYxeHhOZGNqYUlRZW5pR3NNbmRw?=
+ =?utf-8?B?OEsxL0pTc2dIUmUwK0VzZnU3c2lYMHdydFI1bVpYRW9jYXEvcEJaZkhHeW9q?=
+ =?utf-8?B?dkE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	ZotxCwGyd9OpXuUAQsHSR7SPHaj8xOsc23yBJLpO0+VA7wVB6ZVNZ7k2pN4bXc2Ix3HuWeqbaBktsFU7aXWv07WuzWievqHrXBfupoKvueOEnhO4YMur9grS6+rxBh22BQ4nQUlmHeYjjJ45kwJ9DgpkOOdCKTyWujw4SObOZqVGoiKF3HXHrrbdRkupys9JNFhPQsTos2pHaLsfMuSawtinR5NxC/k1MFhq2ic9yt+I++EipbPW6kaRV6rY3KqMetKWGXwO4CyizQwoO3U6ITz1ghO3BiMsMtN3smVaefzvJxCVfzVhQyPu+dWn1z+8//365M1auQzoHcJ9239RkzCLP0/uIOF5NlCvO8C0GKSo745cpiZvhyVNM1uMm8zUy2cKKzdDNwwrUuYq7eeqHl5o5NIEc4C+Oz4k7xQckeP82dz4KBWWO/G+swiSnVlIvpsI2ZGXtUuitQlDC0fl5JaOnBE31gZndQ0bcUqXrk8K0lkd+OpGtauEs0getWlY5PVQrMr2ubPXNu0yXTCB4IW4IruNfQf+tTGzie+Y3iCwwbJHrktKcs52VspiA4IhIVlmkYZF9WJ2TXKn6PX/VsWNXIVFsyyYdp9uGr0VOc4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9cf6d304-524b-4e54-1d32-08dc1c3f0298
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3113.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 18:13:33.3506
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 86NZavGD8LxA0rKUO5sdyBSqjX8BNy9X0zuOOjI3kxSBMYYJVVwjjof0Oicz4TcoZlyGdft2WQNf3qZXkvKrD2ByfdTVGd5hSozeyh8lTnk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5636
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-23_11,2024-01-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401230134
+X-Proofpoint-ORIG-GUID: KbJ5J0b9KsgfOqSscbb2tw2EoEFiE6LF
+X-Proofpoint-GUID: KbJ5J0b9KsgfOqSscbb2tw2EoEFiE6LF
 
-gentle ping here? it's more than a week with no feedback...
+Some of the BPF selftests use the "p" constraint in inline assembly
+snippets, for input operands for MOV (rN = rM) instructions.
 
-thanks
+This is mainly done via the __imm_ptr macro defined in
+tools/testing/selftests/bpf/progs/bpf_misc.h:
 
-On 15/01/2024 22:08, Vadim Fedorenko wrote:
-> Add crypto API support to BPF to be able to decrypt or encrypt packets
-> in TC/XDP BPF programs. Special care should be taken for initialization
-> part of crypto algo because crypto alloc) doesn't work with preemtion
-> disabled, it can be run only in sleepable BPF program. Also async crypto
-> is not supported because of the very same issue - TC/XDP BPF programs
-> are not sleepable.
-> 
-> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
-> ---
-> v7 -> v8:
-> - add statesize ops to bpf crypto type as some ciphers are now stateful
-> - improve error path in bpf_crypto_create
-> v6 -> v7:
-> - style fixes
-> v5 -> v6:
-> - replace lskcipher with infrastructure to provide pluggable cipher
->    types
-> - add BPF skcipher as plug-in module in a separate patch
-> v4 -> v5:
-> - replace crypto API to use lskcipher (suggested by Herbert Xu)
-> - remove SG list usage and provide raw buffers
-> v3 -> v4:
-> - reuse __bpf_dynptr_data and remove own implementation
-> - use const __str to provide algorithm name
-> - use kfunc macroses to avoid compilator warnings
-> v2 -> v3:
-> - fix kdoc issues
-> v1 -> v2:
-> - use kmalloc in sleepable func, suggested by Alexei
-> - use __bpf_dynptr_is_rdonly() to check destination, suggested by Jakub
-> - use __bpf_dynptr_data_ptr() for all dynptr accesses
-> ---
->   include/linux/bpf.h        |   1 +
->   include/linux/bpf_crypto.h |  24 +++
->   kernel/bpf/Makefile        |   3 +
->   kernel/bpf/crypto.c        | 366 +++++++++++++++++++++++++++++++++++++
->   kernel/bpf/helpers.c       |   2 +-
->   kernel/bpf/verifier.c      |   1 +
->   6 files changed, 396 insertions(+), 1 deletion(-)
->   create mode 100644 include/linux/bpf_crypto.h
->   create mode 100644 kernel/bpf/crypto.c
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 377857b232c6..54fc30c64d19 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1263,6 +1263,7 @@ int bpf_dynptr_check_size(u32 size);
->   u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
->   const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len);
->   void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
-> +bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
->   
->   #ifdef CONFIG_BPF_JIT
->   int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
-> diff --git a/include/linux/bpf_crypto.h b/include/linux/bpf_crypto.h
-> new file mode 100644
-> index 000000000000..8456b7477e1d
-> --- /dev/null
-> +++ b/include/linux/bpf_crypto.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +#ifndef _BPF_CRYPTO_H
-> +#define _BPF_CRYPTO_H
-> +
-> +struct bpf_crypto_type {
-> +	void *(*alloc_tfm)(const char *algo);
-> +	void (*free_tfm)(void *tfm);
-> +	int (*has_algo)(const char *algo);
-> +	int (*setkey)(void *tfm, const u8 *key, unsigned int keylen);
-> +	int (*setauthsize)(void *tfm, unsigned int authsize);
-> +	int (*encrypt)(void *tfm, const u8 *src, u8 *dst, unsigned int len, u8 *iv);
-> +	int (*decrypt)(void *tfm, const u8 *src, u8 *dst, unsigned int len, u8 *iv);
-> +	unsigned int (*ivsize)(void *tfm);
-> +	unsigned int (*statesize)(void *tfm);
-> +	u32 (*get_flags)(void *tfm);
-> +	struct module *owner;
-> +	char name[14];
-> +};
-> +
-> +int bpf_crypto_register_type(const struct bpf_crypto_type *type);
-> +int bpf_crypto_unregister_type(const struct bpf_crypto_type *type);
-> +
-> +#endif /* _BPF_CRYPTO_H */
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index f526b7573e97..bcde762bb2c2 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -41,6 +41,9 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
->   obj-$(CONFIG_BPF_SYSCALL) += cpumask.o
->   obj-${CONFIG_BPF_LSM} += bpf_lsm.o
->   endif
-> +ifeq ($(CONFIG_CRYPTO),y)
-> +obj-$(CONFIG_BPF_SYSCALL) += crypto.o
-> +endif
->   obj-$(CONFIG_BPF_PRELOAD) += preload/
->   
->   obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
-> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-> new file mode 100644
-> index 000000000000..74b06e7122d2
-> --- /dev/null
-> +++ b/kernel/bpf/crypto.c
-> @@ -0,0 +1,366 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2023 Meta, Inc */
-> +#include <linux/bpf.h>
-> +#include <linux/bpf_crypto.h>
-> +#include <linux/bpf_mem_alloc.h>
-> +#include <linux/btf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/filter.h>
-> +#include <linux/scatterlist.h>
-> +#include <linux/skbuff.h>
-> +#include <crypto/skcipher.h>
-> +
-> +struct bpf_crypto_type_list {
-> +	const struct bpf_crypto_type *type;
-> +	struct list_head list;
-> +};
-> +
-> +static LIST_HEAD(bpf_crypto_types);
-> +static DECLARE_RWSEM(bpf_crypto_types_sem);
-> +
-> +/**
-> + * struct bpf_crypto_ctx - refcounted BPF crypto context structure
-> + * @type:	The pointer to bpf crypto type
-> + * @tfm:	The pointer to instance of crypto API struct.
-> + * @rcu:	The RCU head used to free the crypto context with RCU safety.
-> + * @usage:	Object reference counter. When the refcount goes to 0, the
-> + *		memory is released back to the BPF allocator, which provides
-> + *		RCU safety.
-> + */
-> +struct bpf_crypto_ctx {
-> +	const struct bpf_crypto_type *type;
-> +	void *tfm;
-> +	struct rcu_head rcu;
-> +	refcount_t usage;
-> +};
-> +
-> +int bpf_crypto_register_type(const struct bpf_crypto_type *type)
-> +{
-> +	struct bpf_crypto_type_list *node;
-> +	int err = -EEXIST;
-> +
-> +	down_write(&bpf_crypto_types_sem);
-> +	list_for_each_entry(node, &bpf_crypto_types, list) {
-> +		if (!strcmp(node->type->name, type->name))
-> +			goto unlock;
-> +	}
-> +
-> +	node = kmalloc(sizeof(*node), GFP_KERNEL);
-> +	err = -ENOMEM;
-> +	if (!node)
-> +		goto unlock;
-> +
-> +	node->type = type;
-> +	list_add(&node->list, &bpf_crypto_types);
-> +	err = 0;
-> +
-> +unlock:
-> +	up_write(&bpf_crypto_types_sem);
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(bpf_crypto_register_type);
-> +
-> +int bpf_crypto_unregister_type(const struct bpf_crypto_type *type)
-> +{
-> +	struct bpf_crypto_type_list *node;
-> +	int err = -ENOENT;
-> +
-> +	down_write(&bpf_crypto_types_sem);
-> +	list_for_each_entry(node, &bpf_crypto_types, list) {
-> +		if (strcmp(node->type->name, type->name))
-> +			continue;
-> +
-> +		list_del(&node->list);
-> +		kfree(node);
-> +		err = 0;
-> +		break;
-> +	}
-> +	up_write(&bpf_crypto_types_sem);
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(bpf_crypto_unregister_type);
-> +
-> +static const struct bpf_crypto_type *bpf_crypto_get_type(const char *name)
-> +{
-> +	const struct bpf_crypto_type *type = ERR_PTR(-ENOENT);
-> +	struct bpf_crypto_type_list *node;
-> +
-> +	down_read(&bpf_crypto_types_sem);
-> +	list_for_each_entry(node, &bpf_crypto_types, list) {
-> +		if (strcmp(node->type->name, name))
-> +			continue;
-> +
-> +		if (try_module_get(node->type->owner))
-> +			type = node->type;
-> +		break;
-> +	}
-> +	up_read(&bpf_crypto_types_sem);
-> +
-> +	return type;
-> +}
-> +
-> +__bpf_kfunc_start_defs();
-> +
-> +/**
-> + * bpf_crypto_ctx_create() - Create a mutable BPF crypto context.
-> + *
-> + * Allocates a crypto context that can be used, acquired, and released by
-> + * a BPF program. The crypto context returned by this function must either
-> + * be embedded in a map as a kptr, or freed with bpf_crypto_ctx_release().
-> + * As crypto API functions use GFP_KERNEL allocations, this function can
-> + * only be used in sleepable BPF programs.
-> + *
-> + * bpf_crypto_ctx_create() allocates memory for crypto context.
-> + * It may return NULL if no memory is available.
-> + * @type__str: pointer to string representation of crypto type.
-> + * @algo__str: pointer to string representation of algorithm.
-> + * @pkey:      bpf_dynptr which holds cipher key to do crypto.
-> + * @authsize:  the size of authentication data in case of AEAD transformation
-> + * @err:       integer to store error code when NULL is returned
-> + */
-> +__bpf_kfunc struct bpf_crypto_ctx *
-> +bpf_crypto_ctx_create(const char *type__str, const char *algo__str,
-> +		      const struct bpf_dynptr_kern *pkey,
-> +		      unsigned int authsize, int *err)
-> +{
-> +	const struct bpf_crypto_type *type = bpf_crypto_get_type(type__str);
-> +	struct bpf_crypto_ctx *ctx;
-> +	const u8 *key;
-> +	u32 key_len;
-> +
-> +	type = bpf_crypto_get_type(type__str);
-> +	if (IS_ERR(type)) {
-> +		*err = PTR_ERR(type);
-> +		return NULL;
-> +	}
-> +
-> +	if (!type->has_algo(algo__str)) {
-> +		*err = -EOPNOTSUPP;
-> +		goto err_module_put;
-> +	}
-> +
-> +	if (!authsize && type->setauthsize) {
-> +		*err = -EOPNOTSUPP;
-> +		goto err_module_put;
-> +	}
-> +
-> +	if (authsize && !type->setauthsize) {
-> +		*err = -EOPNOTSUPP;
-> +		goto err_module_put;
-> +	}
-> +
-> +	key_len = __bpf_dynptr_size(pkey);
-> +	if (!key_len) {
-> +		*err = -EINVAL;
-> +		goto err_module_put;
-> +	}
-> +	key = __bpf_dynptr_data(pkey, key_len);
-> +	if (!key) {
-> +		*err = -EINVAL;
-> +		goto err_module_put;
-> +	}
-> +
-> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx) {
-> +		*err = -ENOMEM;
-> +		goto err_module_put;
-> +	}
-> +
-> +	ctx->type = type;
-> +	ctx->tfm = type->alloc_tfm(algo__str);
-> +	if (IS_ERR(ctx->tfm)) {
-> +		*err = PTR_ERR(ctx->tfm);
-> +		goto err_free_ctx;
-> +	}
-> +
-> +	if (authsize) {
-> +		*err = type->setauthsize(ctx->tfm, authsize);
-> +		if (*err)
-> +			goto err_free_tfm;
-> +	}
-> +
-> +	*err = type->setkey(ctx->tfm, key, key_len);
-> +	if (*err)
-> +		goto err_free_tfm;
-> +
-> +	refcount_set(&ctx->usage, 1);
-> +
-> +	return ctx;
-> +
-> +err_free_tfm:
-> +	type->free_tfm(ctx->tfm);
-> +err_free_ctx:
-> +	kfree(ctx);
-> +err_module_put:
-> +	module_put(type->owner);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void crypto_free_cb(struct rcu_head *head)
-> +{
-> +	struct bpf_crypto_ctx *ctx;
-> +
-> +	ctx = container_of(head, struct bpf_crypto_ctx, rcu);
-> +	ctx->type->free_tfm(ctx->tfm);
-> +	module_put(ctx->type->owner);
-> +	kfree(ctx);
-> +}
-> +
-> +/**
-> + * bpf_crypto_ctx_acquire() - Acquire a reference to a BPF crypto context.
-> + * @ctx: The BPF crypto context being acquired. The ctx must be a trusted
-> + *	     pointer.
-> + *
-> + * Acquires a reference to a BPF crypto context. The context returned by this function
-> + * must either be embedded in a map as a kptr, or freed with
-> + * bpf_crypto_skcipher_ctx_release().
-> + */
-> +__bpf_kfunc struct bpf_crypto_ctx *
-> +bpf_crypto_ctx_acquire(struct bpf_crypto_ctx *ctx)
-> +{
-> +	refcount_inc(&ctx->usage);
-> +	return ctx;
-> +}
-> +
-> +/**
-> + * bpf_crypto_ctx_release() - Release a previously acquired BPF crypto context.
-> + * @ctx: The crypto context being released.
-> + *
-> + * Releases a previously acquired reference to a BPF crypto context. When the final
-> + * reference of the BPF crypto context has been released, it is subsequently freed in
-> + * an RCU callback in the BPF memory allocator.
-> + */
-> +__bpf_kfunc void bpf_crypto_ctx_release(struct bpf_crypto_ctx *ctx)
-> +{
-> +	if (refcount_dec_and_test(&ctx->usage))
-> +		call_rcu(&ctx->rcu, crypto_free_cb);
-> +}
-> +
-> +static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
-> +			    const struct bpf_dynptr_kern *src,
-> +			    struct bpf_dynptr_kern *dst,
-> +			    const struct bpf_dynptr_kern *siv,
-> +			    bool decrypt)
-> +{
-> +	u32 src_len, dst_len, siv_len;
-> +	const u8 *psrc;
-> +	u8 *pdst, *piv;
-> +	int err;
-> +
-> +	if (ctx->type->get_flags(ctx->tfm) & CRYPTO_TFM_NEED_KEY)
-> +		return -EINVAL;
-> +
-> +	if (__bpf_dynptr_is_rdonly(dst))
-> +		return -EINVAL;
-> +
-> +	siv_len = __bpf_dynptr_size(siv);
-> +	src_len = __bpf_dynptr_size(src);
-> +	dst_len = __bpf_dynptr_size(dst);
-> +	if (!src_len || !dst_len)
-> +		return -EINVAL;
-> +
-> +	if (siv_len != (ctx->type->ivsize(ctx->tfm) + ctx->type->statesize(ctx->tfm)))
-> +		return -EINVAL;
-> +
-> +	psrc = __bpf_dynptr_data(src, src_len);
-> +	if (!psrc)
-> +		return -EINVAL;
-> +	pdst = __bpf_dynptr_data_rw(dst, dst_len);
-> +	if (!pdst)
-> +		return -EINVAL;
-> +
-> +	piv = siv_len ? __bpf_dynptr_data_rw(siv, siv_len) : NULL;
-> +	if (siv_len && !piv)
-> +		return -EINVAL;
-> +
-> +	err = decrypt ? ctx->type->decrypt(ctx->tfm, psrc, pdst, src_len, piv)
-> +		      : ctx->type->encrypt(ctx->tfm, psrc, pdst, src_len, piv);
-> +
-> +	return err;
-> +}
-> +
-> +/**
-> + * bpf_crypto_decrypt() - Decrypt buffer using configured context and IV provided.
-> + * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-> + * @src:	bpf_dynptr to the encrypted data. Must be a trusted pointer.
-> + * @dst:	bpf_dynptr to the buffer where to store the result. Must be a trusted pointer.
-> + * @siv:	bpf_dynptr to IV data and state data to be used by decryptor.
-> + *
-> + * Decrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
-> + */
-> +__bpf_kfunc int bpf_crypto_decrypt(struct bpf_crypto_ctx *ctx,
-> +				   const struct bpf_dynptr_kern *src,
-> +				   struct bpf_dynptr_kern *dst,
-> +				   struct bpf_dynptr_kern *siv)
-> +{
-> +	return bpf_crypto_crypt(ctx, src, dst, siv, true);
-> +}
-> +
-> +/**
-> + * bpf_crypto_encrypt() - Encrypt buffer using configured context and IV provided.
-> + * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-> + * @src:	bpf_dynptr to the plain data. Must be a trusted pointer.
-> + * @dst:	bpf_dynptr to buffer where to store the result. Must be a trusted pointer.
-> + * @siv:		bpf_dynptr to IV data and state data to be used by decryptor.
-> + *
-> + * Encrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
-> + */
-> +__bpf_kfunc int bpf_crypto_encrypt(struct bpf_crypto_ctx *ctx,
-> +				   const struct bpf_dynptr_kern *src,
-> +				   struct bpf_dynptr_kern *dst,
-> +				   struct bpf_dynptr_kern *siv)
-> +{
-> +	return bpf_crypto_crypt(ctx, src, dst, siv, false);
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> +
-> +BTF_SET8_START(crypt_init_kfunc_btf_ids)
-> +BTF_ID_FLAGS(func, bpf_crypto_ctx_create, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_crypto_ctx_release, KF_RELEASE)
-> +BTF_ID_FLAGS(func, bpf_crypto_ctx_acquire, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
-> +BTF_SET8_END(crypt_init_kfunc_btf_ids)
-> +
-> +static const struct btf_kfunc_id_set crypt_init_kfunc_set = {
-> +	.owner = THIS_MODULE,
-> +	.set   = &crypt_init_kfunc_btf_ids,
-> +};
-> +
-> +BTF_SET8_START(crypt_kfunc_btf_ids)
-> +BTF_ID_FLAGS(func, bpf_crypto_decrypt, KF_RCU)
-> +BTF_ID_FLAGS(func, bpf_crypto_encrypt, KF_RCU)
-> +BTF_SET8_END(crypt_kfunc_btf_ids)
-> +
-> +static const struct btf_kfunc_id_set crypt_kfunc_set = {
-> +	.owner = THIS_MODULE,
-> +	.set   = &crypt_kfunc_btf_ids,
-> +};
-> +
-> +BTF_ID_LIST(bpf_crypto_dtor_ids)
-> +BTF_ID(struct, bpf_crypto_ctx)
-> +BTF_ID(func, bpf_crypto_ctx_release)
-> +
-> +static int __init crypto_kfunc_init(void)
-> +{
-> +	int ret;
-> +	const struct btf_id_dtor_kfunc bpf_crypto_dtors[] = {
-> +		{
-> +			.btf_id	      = bpf_crypto_dtor_ids[0],
-> +			.kfunc_btf_id = bpf_crypto_dtor_ids[1]
-> +		},
-> +	};
-> +
-> +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &crypt_kfunc_set);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT, &crypt_kfunc_set);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &crypt_kfunc_set);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC,
-> +					       &crypt_init_kfunc_set);
-> +	return  ret ?: register_btf_id_dtor_kfuncs(bpf_crypto_dtors,
-> +						   ARRAY_SIZE(bpf_crypto_dtors),
-> +						   THIS_MODULE);
-> +}
-> +
-> +late_initcall(crypto_kfunc_init);
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index e04ca1af8927..593adf036ec0 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1440,7 +1440,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_proto = {
->   #define DYNPTR_SIZE_MASK	0xFFFFFF
->   #define DYNPTR_RDONLY_BIT	BIT(31)
->   
-> -static bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
-> +bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
->   {
->   	return ptr->size & DYNPTR_RDONLY_BIT;
->   }
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9507800026cf..74b24df05a3c 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5265,6 +5265,7 @@ BTF_ID(struct, cgroup)
->   #endif
->   BTF_ID(struct, bpf_cpumask)
->   BTF_ID(struct, task_struct)
-> +BTF_ID(struct, bpf_crypto_ctx)
->   BTF_SET_END(rcu_protected_types)
->   
->   static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
+  #define __imm_ptr(name) [name]"p"(&name)
+
+Example:
+
+  int consume_first_item_only(void *ctx)
+  {
+        struct bpf_iter_num iter;
+        asm volatile (
+                /* create iterator */
+                "r1 = %[iter];"
+                [...]
+                :
+                : __imm_ptr(iter)
+                : CLOBBERS);
+        [...]
+  }
+
+The "p" constraint is a tricky one.  It is documented in the GCC manual
+section "Simple Constraints":
+
+  An operand that is a valid memory address is allowed.  This is for
+  ``load address'' and ``push address'' instructions.
+
+  p in the constraint must be accompanied by address_operand as the
+  predicate in the match_operand.  This predicate interprets the mode
+  specified in the match_operand as the mode of the memory reference for
+  which the address would be valid.
+
+There are two problems:
+
+1. It is questionable whether that constraint was ever intended to be
+   used in inline assembly templates, because its behavior really
+   depends on compiler internals.  A "memory address" is not the same
+   than a "memory operand" or a "memory reference" (constraint "m"), and
+   in fact its usage in the template above results in an error in both
+   x86_64-linux-gnu and bpf-unkonwn-none:
+
+     foo.c: In function ‘bar’:
+     foo.c:6:3: error: invalid 'asm': invalid expression as operand
+        6 |   asm volatile ("r1 = %[jorl]" : : [jorl]"p"(&jorl));
+          |   ^~~
+
+   I would assume the same happens with aarch64, riscv, and most/all
+   other targets in GCC, that do not accept operands of the form A + B
+   that are not wrapped either in a const or in a memory reference.
+
+   To avoid that error, the usage of the "p" constraint in internal GCC
+   instruction templates is supposed to be complemented by the 'a'
+   modifier, like in:
+
+     asm volatile ("r1 = %a[jorl]" : : [jorl]"p"(&jorl));
+
+   Internally documented (in GCC's final.cc) as:
+
+     %aN means expect operand N to be a memory address
+        (not a memory reference!) and print a reference
+        to that address.
+
+   That works because when the modifier 'a' is found, GCC prints an
+   "operand address", which is not the same than an "operand".
+
+   But...
+
+2. Even if we used the internal 'a' modifier (we shouldn't) the 'rN =
+   rM' instruction really requires a register argument.  In cases
+   involving automatics, like in the examples above, we easily end with:
+
+     bar:
+        #APP
+            r1 = r10-4
+        #NO_APP
+
+   In other cases we could conceibly also end with a 64-bit label that
+   may overflow the 32-bit immediate operand of `rN = imm32'
+   instructions:
+
+        r1 = foo
+
+   All of which is clearly wrong.
+
+clang happens to do "the right thing" in the current usage of __imm_ptr
+in the BPF tests, because even with -O2 it seems to "reload" the
+fp-relative address of the automatic to a register like in:
+
+  bar:
+	r1 = r10
+	r1 += -4
+	#APP
+	r1 = r1
+	#NO_APP
+
+Which is what GCC would generate with -O0.  Whether this is by chance
+or by design, the compiler shouln't be expected to do that reload
+driven by the "p" constraint.
+
+This patch changes the usage of the "p" constraint in the BPF
+selftests macros to use the "r" constraint instead.  If a register is
+what is required, we should let the compiler know.
+
+Previous discussion in bpf@vger:
+https://lore.kernel.org/bpf/87h6p5ebpb.fsf@oracle.com/T/#ef0df83d6975c34dff20bf0dd52e078f5b8ca2767
+
+Tested in bpf-next master.
+No regressions.
+
+Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/bpf_misc.h | 2 +-
+ tools/testing/selftests/bpf/progs/iters.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index 2fd59970c43a..fb2f5513e29e 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -80,7 +80,7 @@
+ #define __imm(name) [name]"i"(name)
+ #define __imm_const(name, expr) [name]"i"(expr)
+ #define __imm_addr(name) [name]"i"(&name)
+-#define __imm_ptr(name) [name]"p"(&name)
++#define __imm_ptr(name) [name]"r"(&name)
+ #define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
+ 
+ /* Magic constants used with __retval() */
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index fe971992e635..225f02dd66d0 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -78,8 +78,8 @@ int iter_err_unsafe_asm_loop(const void *ctx)
+ 		"*(u32 *)(r1 + 0) = r6;" /* invalid */
+ 		:
+ 		: [it]"r"(&it),
+-		  [small_arr]"p"(small_arr),
+-		  [zero]"p"(zero),
++		  [small_arr]"r"(small_arr),
++		  [zero]"r"(zero),
+ 		  __imm(bpf_iter_num_new),
+ 		  __imm(bpf_iter_num_next),
+ 		  __imm(bpf_iter_num_destroy)
+-- 
+2.30.2
 
 
