@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-20147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AFE4839D4E
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 00:41:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5512F839D51
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 00:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C86A1C256B6
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 23:41:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C06FB1F279EC
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 23:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A735576F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F895577F;
 	Tue, 23 Jan 2024 23:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tLI6XEc7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bdTHCn4Y"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9929854654
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992CB54669
 	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 23:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706053250; cv=none; b=sUE/s9w7IGM+JZP534eDgjP4BXVA+vA2ZEdOba9u6X/sQe0bEZfLPbK1VlZEHtZmpAvNptnlbyFCL189XBa3otT9EhGk1ib81IBVl2Fb62A5jIYhBoxtrEnXc6PPiQP/EkXvB67WwqFoURnm5scpBPGzQ9OkfapRFJRp4bvwG/U=
+	t=1706053250; cv=none; b=NQP763uIlR0+6EDh+DfC+8bty2P346zYDKuGVZukO5IbquzelX8kwxR6V7HrJIqZq1sydcYmoADE3LlOuqyIRYPkfa5kZprmwQUOdHdSBCet6QZBx3VPQUcNBagGyG27EMw0V1jw6JgVKcQyrtLFmN+CZ3JFLZuyq7yGB1NKZto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706053250; c=relaxed/simple;
-	bh=oCMK/9W0nsG6SviQ+lZQATvdoOdRfQOrDNfzcxL+/NM=;
+	bh=rdMqa/0yFHxAMs5v0DUfzBc/muh3lU6/I8NwBum3p8E=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=CU2jISnUREBjobey1SshTV6fsccUk8Tr4iCHl6tIhCc5w/MXJ2fDLxivh+cGQd2YosOmFFdhEEaUcSFtFYzwdH+M2y+0W/fHH+TVE3rzhLSBRivBxELiPNYOsdIxYDgasbD6Mz1+tP7F8ar3g1DQz959WEMUrnTf9rVLykQQ+ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tLI6XEc7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 49EB8C43601;
+	 In-Reply-To:To:Cc; b=r/TEjBH4Te259A37YPDmxGsXUd2eDr799dyanNv9TRlU1CN6JyvQ2Nee7U9VXxyK6kLuoiHi7wdDyDKcaVAF+9ZdJiVYQLVBvGyLtpPT5SsC4gwnvo9RpDGMzKS4+Lnk1pWUD/yDAE0fOXk6QSzT/Pa/OdtMMTZkjDD8ChtkWw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bdTHCn4Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3985DC433B1;
 	Tue, 23 Jan 2024 23:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706053250;
-	bh=oCMK/9W0nsG6SviQ+lZQATvdoOdRfQOrDNfzcxL+/NM=;
+	bh=rdMqa/0yFHxAMs5v0DUfzBc/muh3lU6/I8NwBum3p8E=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tLI6XEc7ltE56VmEHzIF+mNyjRv7/nyTc0ABGcn1g4EVL5Q7atKWrd/jSj/koOQ8H
-	 ECW83VUeO8zi3Lp16wd85J96DsRmiu5rHro4VxlintIrib+Zt+7Bw7Lf2Is11W4BzE
-	 Eg/zGarr8vj19oFDEen/2jlEXTB8qVWHyJ+J59qOlSEr6MvieU00GNbRyDjllVU7U/
-	 L6HAl9oQihqTZ24HxLWGMIAXmTXeQAcfDKDbvOZrxTi+3J2ZtlsbwbfsddkxPLWLiu
-	 iT++5ddq5CtFtQE5US9cC7Kp34yjkdMDOR0P4ocACVdiPqKajDuXK3a4jkYVR8T+/l
-	 GSEHuaOXvpuyQ==
+	b=bdTHCn4YDG6jOEhRaQUdJRQn6cTdmVmZ6rZmvXDqZD7ke/0o9s2ahS/so3SgSyq9+
+	 U+c0FbnftG79LV881hwnqayfPd5lrVCJKnyYvGBgEYmsm5PKn8MoJApslZEJgTNOOf
+	 Tv/yIqyaOFhD9PziqzCy4/S3Ybz434ti/MQEsn7hJcvUlP46inwwMlNCVXS7Vl34vM
+	 jfYMeEE7lV+TPGX8sqsTX0C0D+Ydy8HGeQVsNsd4cT1Jk8Sb1Q7QnTd3cGKVE3rGJy
+	 9XeioC2+J2tUGdJtv6uIcD8cUXFLvaQxn3fupcyevP/fqJAFqLytoDuGdbv0k+1aCw
+	 k0yrQUmJ4IGAA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2FA01DFF761;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 22418DFF76A;
 	Tue, 23 Jan 2024 23:40:50 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,38 +52,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: call dup2() syscall directly
+Subject: Re: [PATCH bpf-next 0/2] Enable the inline of kptr_xchg for arm64
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170605325018.25186.12613038676566222239.git-patchwork-notify@kernel.org>
+ <170605325013.25186.512342230131527223.git-patchwork-notify@kernel.org>
 Date: Tue, 23 Jan 2024 23:40:50 +0000
-References: <20240119210201.1295511-1-andrii@kernel.org>
-In-Reply-To: <20240119210201.1295511-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+References: <20240119102529.99581-1-houtao@huaweicloud.com>
+In-Reply-To: <20240119102529.99581-1-houtao@huaweicloud.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, alexei.starovoitov@gmail.com,
+ andrii@kernel.org, song@kernel.org, haoluo@google.com,
+ yonghong.song@linux.dev, daniel@iogearbox.net, kpsingh@kernel.org,
+ sdf@google.com, jolsa@kernel.org, john.fastabend@gmail.com,
+ zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+ houtao1@huawei.com
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri, 19 Jan 2024 13:02:01 -0800 you wrote:
-> We've ran into issues with using dup2() API in production setting, where
-> libbpf is linked into large production environment and ends up calling
-> uninteded custom implementations of dup2(). These custom implementations
-> don't provide atomic FD replacement guarantees of dup2() syscall,
-> leading to subtle and hard to debug issues.
+On Fri, 19 Jan 2024 18:25:27 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> To prevent this in the future and guarantee that no libc implementation
-> will do their own custom non-atomic dup2() implementation, call dup2()
-> syscall directly with syscall(SYS_dup2).
+> Hi,
+> 
+> The patch set is just a follow-up for "bpf: inline bpf_kptr_xchg()". It
+> enables the inline of bpf_kptr_xchg() and kptr_xchg_inline test for
+> arm64.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] libbpf: call dup2() syscall directly
-    https://git.kernel.org/bpf/bpf-next/c/bc308d011ab8
+  - [bpf-next,1/2] bpf, arm64: Enable the inline of bpf_kptr_xchg()
+    https://git.kernel.org/bpf/bpf-next/c/18a45f12d746
+  - [bpf-next,2/2] selftests/bpf: Enable kptr_xchg_inline test for arm64
+    https://git.kernel.org/bpf/bpf-next/c/29f868887a7d
 
 You are awesome, thank you!
 -- 
