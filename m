@@ -1,346 +1,209 @@
-Return-Path: <bpf+bounces-20232-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB95883AB59
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 15:06:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B36683AB6D
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 15:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65FF11F22F29
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 14:06:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0FD61C220AF
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 14:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884AC7A70B;
-	Wed, 24 Jan 2024 14:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C429A7A713;
+	Wed, 24 Jan 2024 14:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vzo6QdYv"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="P4jugm+s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA57A63103;
-	Wed, 24 Jan 2024 14:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706105166; cv=fail; b=Zrg2vluMkfdWYV0d1nwdG8955VoRkprdtfgQObxDRkhRZ0Htpg+byx+q+oBvQfsBaAVwwlnKUj5kqjlVNO9aJyou7n1TCEACKMO+zzs0iWe/AAvo5yNSpomyeDAYV8FRpATuawNyit27W3MKr/Hb1n2auwF1c6MrsDczC6Gblns=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706105166; c=relaxed/simple;
-	bh=zSBTx8P+VHdOHDPcbRzliAUgR/fZp2uapCVYhp1iiMs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TfZ9hnUjQ0vm3/DvsETJH0OPhHibbfULndc1nRuqH4dt0pW1+HRwN5CGH+KSmtTORovyiI87I6UeFYbSFr9nC5vMRZ1ggurBhf2Yr9EHLj/po+ITUmtBpC021Jp2Ecfx8sxRwQSYVpm6HNV7vTmuDFE0vFTfsqHS0bU+sJ42kVM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vzo6QdYv; arc=fail smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706105164; x=1737641164;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=zSBTx8P+VHdOHDPcbRzliAUgR/fZp2uapCVYhp1iiMs=;
-  b=Vzo6QdYvwvjSqKPgi2ovkH/3s7T4mtCMwstAgmL7fQyOrLpxeCiIN4gc
-   PISrn4VJpkMXPrAHpVFEMaVZxFZH70YXNAfrqrMkEL3OhWCrBv9SLX1MO
-   RAj4sPVZnAFvzN77InsoRxKnW9YIaSmXTP6U23Gjc7qbKdV9ML7xfVNNJ
-   jHPHfNhrVFuQxyjsCBfyKmbnCI9OYOXzqgkckQfz4P5KMUzfI4tirnnAT
-   OaHh631HPoiCtzRqzpXiwVQM5Z4gX260npLdztmrmMNL3yP6F9VFUbhfo
-   ODctmY0LXuSN+9l3AVcp++UdJki4eaiKjiTp5oqKhcTbQ63i611xb5/VH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15198486"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="15198486"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 06:06:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="929691112"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="929691112"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 06:06:02 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 06:06:01 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 06:06:00 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 06:06:00 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Jan 2024 06:06:00 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eRVFkXiCd22z66Rk1y81+/burK6RI7kPXSvkyCoE4ME0rrjSzKieA33ZLmcBdk4o68sbXFJJ6NmJZuI/Np9HcV0ahz9NG+9NTwZek/ca5Z9xYHfL8NnKNh+UDJAcxsjsbTSvPIAqnlKPemfmP6d/kbWKSWjJqwxGlrqQiJliN3VzneTdlEf0e2qomNwdIht9f3F3PWeMZwzTcROiHW9R//nkGdQGg/I3KDYxitLl05hOT4j7D3gTd3m9sc87WTiwzCpi9sj2ucZljswZOHHb5NRZUD/zNWJxyQtRTdVEc1FWgMblaceKNWcoKNyWQptdD/nHwEfP8NHpDUGsl0IVIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xXIRTHcs1vkFhl+7cbkvJxKQnYCfHdX/IimRPKkVgM0=;
- b=giEZ3hcLr81IjitkCqLEmjC/zvd48YvnqbkVSvQhSXEWkPAybBJtUqPMSkR25JgNSmqEUB8eYjzk6nYMF4SyiFJLNtNOdA4tAS8JYiCIbW3HEa01WNUH0f4hJCJQEbpDjevGSy6nmPUa1CQU6ya83icH1WQuwR1XWbF/PSxpFf9XgY60VQJ7Y4v+nrxcK9uurFNqfhBZaw7EUkMEkzJpxJw85cF6wz3XPAxDZ7y0ma2D87MONJ/Jl8zYMh/nbolm8+HD92PDzi8XxnSQzRzhQlStI28V8kyIEIuhcsHn7IoI1pPtAgazKovDftqP4XlRA9l0gYU9NaMqIX2Ge5hHAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- CYYPR11MB8305.namprd11.prod.outlook.com (2603:10b6:930:c1::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.22; Wed, 24 Jan 2024 14:05:52 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::ccab:b5f4:e200:ee47]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::ccab:b5f4:e200:ee47%6]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
- 14:05:52 +0000
-Date: Wed, 24 Jan 2024 15:05:45 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
-	<bjorn@kernel.org>, <echaudro@redhat.com>, <lorenzo@kernel.org>,
-	<martin.lau@linux.dev>, <tirthendu.sarkar@intel.com>,
-	<john.fastabend@gmail.com>, <horms@kernel.org>
-Subject: Re: [PATCH v5 bpf 04/11] ice: work on pre-XDP prog frag count
-Message-ID: <ZbEZOS1PK3ia/8dR@boxer>
-References: <20240122221610.556746-1-maciej.fijalkowski@intel.com>
- <20240122221610.556746-5-maciej.fijalkowski@intel.com>
- <CAJ8uoz2w3A7+aOAKWKjdATUgwQ8u10GHAtjodc_Nhp9FALE9KQ@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz2w3A7+aOAKWKjdATUgwQ8u10GHAtjodc_Nhp9FALE9KQ@mail.gmail.com>
-X-ClientProxiedBy: VI1PR07CA0257.eurprd07.prod.outlook.com
- (2603:10a6:803:b4::24) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA6677F2E
+	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 14:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706105513; cv=none; b=fPI5VY6b7/oDG6GkDJ1Nb9f229aHAdS0sZWxlZyBzb69UaEKSKzyn0R1FTnuBFPy4iEQ3om6HFHbWYBljxbs0M4Fm6qqBMOoYKUW4Kbjgtf/LNsOFODFhaAyO9EVoKKMU1f4m2oNtRkhPfCeXAoLH1fPHG0sIxN8EBku+cvyA3g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706105513; c=relaxed/simple;
+	bh=0DXa0y7UvNlWJGnHMekwfLNo0u9YMQwkajG5ISseosc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WqcNtC8ZmA2UWL6cBhtI+hiahpfPh7qIpLuJgN/XrrvTiNYpO7UzBrTYeUzEb653yr6jfKFIPnLmK/bJrf75Cas2deAlW8xTdDlZ3oNw7dKTs2gA1oZkxkUtktUKtI0dMEVjEXPLjkivvZiwCR6vXnBLKLxJSCymkq4UEcdLESQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=P4jugm+s; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc35fd0df02so2622984276.0
+        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 06:11:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1706105510; x=1706710310; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a7qH7dmDsBONbCoBI04aoU4qjunlCSm/BRIhuee3tO8=;
+        b=P4jugm+slKUXduqs6ESxoP5BIcaBXvsCyFeyz1XmgB5pi11mjxWB5k+uWYai9Kx5Cs
+         GUbZyjPwVssFC5vJ+GIJdHAQuyUpxanKbbDMKfVU7eEYamVz+3NgHVRW5AgpQNfRRiet
+         ryeTQGQqSat/gEaRSpgl2xJY7nG6peiHKuAc9e91hmcL0v+7nQgkj23r/VVcrZtJDgzG
+         IJ4iIXBhUqsCs5k2Q2X+4JZkwk5J+lfpbrm2Y9Udie0OA8+jLGs3Tdp6i1YPcWuxy6Bf
+         q3mU4+c+pvJ6HBaWnt8Vd64zmQDBk+WFdczup2joqYP1mgBgYbePB7dg0pMCYgUR2dLe
+         bROQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706105510; x=1706710310;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a7qH7dmDsBONbCoBI04aoU4qjunlCSm/BRIhuee3tO8=;
+        b=DWLGPK/Up0B1g0GrD/DsgDG829R+h9pEq/o/KqWXmokWW4tIaBsQhd/rBV94PbOFlm
+         v3zGdTjU2LB7rYVsCZ71kNdZp9me6uEb+Th1t1VLB93i1ZCu4RnqG9TQnASpJtkP+H0T
+         fmk5gVBIMRv1/maluxv4tUcrIAGmYTIE67Q/7Iu1Jp6+iIz9VOxesbJHiFA38uQEoNhy
+         HVR4WTQeDcykCH8Ba7l/jLy4623iz6WoD8Zj1smSeGu9WZ+1qiKU8adybe4NHAg6/mxX
+         4U8wrk6bKFtNIWXDGcdUJuwErSWKhNV/c3fUo9Qfsy2adRSCeRpJtBrKEseD1SONtfkH
+         6Saw==
+X-Gm-Message-State: AOJu0YzCNWDA+8EJsPQQryEY3tsrHojimt19eiz6X3is52bkw+QpSXPd
+	n1GRk9XrBAQM1mPY+owOqmBKCv/o9TsDVB7uS+weXABefrFHeFW4UI/HY2iXUFghYj3R2a/Wzo2
+	Neeqf4vgLLMBM+awCzYb6dJunjeIHiJOoFrj7
+X-Google-Smtp-Source: AGHT+IFb5+8C1djSmdn0cCc9NL7b3nVmUw3QW/oRdoYSyXX4AVErWN55X4uI6kMdIe7h+GG52BT9vLJOlkMxWfJ3kuA=
+X-Received: by 2002:a25:ab23:0:b0:dc2:4cf5:abfe with SMTP id
+ u32-20020a25ab23000000b00dc24cf5abfemr671085ybi.98.1706105510430; Wed, 24 Jan
+ 2024 06:11:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CYYPR11MB8305:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6bf6ec74-7a74-40c6-19e2-08dc1ce59351
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZV5rW/fJ1N6XlV+VrvmZwmgW01P99HysrtQV9I76iWHdGh4WsPGQY/o4bA52ApvITdt+OULsTOBrkOHmkzVReDUVzov2K2FbqqzSaVCbV82gCvkyrBcAv4J7uls3Upz7i9zWzWAVhEQpC+AjZKcHYKb6uitZVopaGWAZm/QQ2fVeBj73lTdsQ/EGkRQyGqYAbhBRMzUNz5fb7b3/vSm9Qwiq3fWxCA4s08uHLjme0RTDeOlrCG2aD8Js3sw8BzSZa7mgwxa7+95VsvQf4l+ymic4K66MmdotzV6saUlEo/qRYajlLur9CWCodoDluV2KS2dJoBbSWmVdubUTJ+lRP5Ubq/zWbHffyO+bxkDHWPn027NK5I54DY+bKaaNXU/36dnkHvSkjcZVQhrm7BrumMkf45OCFbSWJtPOWKgX+da2XCK0Hr/lqhip7w5aaIz97CalFcyIwkgG62RsrZ0ypOy4c+rZLMUSpg0maw34C/gwYgescI7SZqfZvbxKSWuqsFLuS4sbBumGC2w+hkX0RGzxV54eeu8HYdxuGFAhGIddkZWy58rW35LRaTz3LDvH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(136003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(6666004)(6512007)(6506007)(9686003)(6916009)(316002)(66946007)(38100700002)(4326008)(6486002)(478600001)(44832011)(8936002)(8676002)(26005)(2906002)(7416002)(5660300002)(66556008)(66476007)(83380400001)(33716001)(86362001)(41300700001)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k8dA2yxmhZSrS1nttVrU0U90W4s1+0lUCfNYT+HURp19NHvxQZqkfPv043o9?=
- =?us-ascii?Q?58mV4+Lum2Aq4n66NVesfhL30cRyn7W4bQl577leI3NM9unlwicWCFbm/z7P?=
- =?us-ascii?Q?4akV68GHvsBTkleNlJySDQTk9UQpHbzJcKhsZx33DQFwGJ54EsLywbAE6lnL?=
- =?us-ascii?Q?hU0dwCzqNamkhjcoOVah+6rbbaKj6+osxb5zqOSNOYsAlHtAiZutrEya5QEV?=
- =?us-ascii?Q?xANOBqBHwpFwFkD21oeUiVVcdd0Nnxsyu0CHXe6KLJkqsi/BUXj7ObI4qJiV?=
- =?us-ascii?Q?F6EiairV4qvG+f2XPFauONrJi8F+dgENLfHLdgS1n6+3l9uBQSxqmG+4aGkA?=
- =?us-ascii?Q?IUSo7SKLv/J2JCvzRnD0FEjvzXC4CtJiDggvMaIgovdEcXrC6/7uUSBdBbZ3?=
- =?us-ascii?Q?uRP09lQrxrVp5AOmGqCcopgSFiGPSN79C+l83GHYypLhuPZLtf9aT/cF77ph?=
- =?us-ascii?Q?EcFSAReK+EPv6svSz1ZyCMaLr2LrOJzOo3qYWPvPttIgCgzCW7oK+w+baTe5?=
- =?us-ascii?Q?pLaQfwq6ctjmsKNmKShKZH2mUVxO6oCEXiilVGlmfeCR2U6mG1O6Ykt2HEYZ?=
- =?us-ascii?Q?lTKIhJieEuLvfUDB4Ae3ib2SMW6Urrd7XoKNnzNbjk+TtgnJXF2nITiclYou?=
- =?us-ascii?Q?s87CBNRtgx8JFtWkxhQzPdEKh6yidDh6J1518tEkOuwMr+23Cu9PhN16rvZw?=
- =?us-ascii?Q?+GeNJFlSHTEb7v996S7zdVimKHo2B8+VPv3/8pVAlStLbHfF+MtLLf6tJKcM?=
- =?us-ascii?Q?qV0MotHT64rjw7S9+wL8G+fBoLNwGk26AlzXMEAclAdhXxSTdjIP8uXxHwr1?=
- =?us-ascii?Q?u+EuTHDZ2H/sfLqObLQDi9Islxu60DHdBQXTQs0jCnHbAZYQi9PTT9hiDk9Z?=
- =?us-ascii?Q?QeqFfogZpVOCd9jgw+VqgkX9xzBzWZRF6f50BsJXrAAVJ/fHlWyYHdluox8w?=
- =?us-ascii?Q?o4uwi0ezVLWPBiHLq5b6NzTt9IxCCix2v/yLOFWEUhhlLcv+B2fFEEl5ezHt?=
- =?us-ascii?Q?KRGlB8/9QEzl6wF2P88ec89HlxLwK1YUQHDGOfmudXrTO3+Gu3a5HvbsJ4ZO?=
- =?us-ascii?Q?SPniOm1BKZrshPU7OxyTSgAGp3Q5RlwAHzLmLAls/2Yqnsj6Rsr5P8Npj4Nc?=
- =?us-ascii?Q?EztITD6j9OxVcFKNseSfnML28NSa47OyvbNyXRbwlF2PWPMXwZjhAnq/aS+F?=
- =?us-ascii?Q?5TDthNLhA5JwEi4I4sHynaL/Kausts0RFKugABJhVOiHRdpR46ef3FpSNOiz?=
- =?us-ascii?Q?Vt2sI4Zu9ygBd+4rezwJUauQkEPlIGrh6l/nh/+XqLTA9QVUXMTSYad5FzL8?=
- =?us-ascii?Q?MPGew4JgHriZFAMpBAPLTzEchRILSTbRy/+RMmiSndNz+QOL0oRjd66TBkOb?=
- =?us-ascii?Q?OpHv7As+twtsnCxeyLtS8jJgQvKlxEbroE5Liof9Yzj1x0m+95cas1hXvVWy?=
- =?us-ascii?Q?OvuzGgUwJQOa4OovHQQl12KcqXVpCIpOSMYYLXLgis+/g9znQE9hLaH91r9K?=
- =?us-ascii?Q?i7o7xMxbBmzp9rKDR8RxJavObc1aXfl9RotCLKypR9zTLnYfoPcbdp5YJZK5?=
- =?us-ascii?Q?FBG+kgwoACWSwZP7WBgUNhBX/2NlzH8jxcusihBXoOQWd/w/M3NSO/gf6XQ9?=
- =?us-ascii?Q?bw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bf6ec74-7a74-40c6-19e2-08dc1ce59351
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 14:05:52.5367
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7Zy7aDHP10/e8dFiWKigQ8uuvy+OeGcAGVtL486hVFhzvZ1cvGxMqv9kcBkTv4NVW0dtHAypvQ2uFcBcIwn57X2J0+KlkMaj6VfYTbYl19w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR11MB8305
-X-OriginatorOrg: intel.com
+References: <cover.1705432850.git.amery.hung@bytedance.com>
+ <ZbAr_dWoRnjbvv04@google.com> <CAM0EoMkHZO9Mpz7JugN7+o95gqX8HBgAVK6R_jhRRYQ-D=QDFQ@mail.gmail.com>
+ <44a35467-53cb-1031-df9d-0891d585db65@iogearbox.net>
+In-Reply-To: <44a35467-53cb-1031-df9d-0891d585db65@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 24 Jan 2024 09:11:39 -0500
+Message-ID: <CAM0EoMm45HX=zd1qMThugYRGA9bugM-OT9NPx++VWj_zYowDmQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 0/8] net_sched: Introduce eBPF based Qdisc
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Stanislav Fomichev <sdf@google.com>, Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, toke@redhat.com, 
+	jiri@resnulli.us, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 09:37:13AM +0100, Magnus Karlsson wrote:
-> On Mon, 22 Jan 2024 at 23:16, Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
+On Wed, Jan 24, 2024 at 8:08=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> On 1/24/24 1:09 PM, Jamal Hadi Salim wrote:
+> > On Tue, Jan 23, 2024 at 4:13=E2=80=AFPM Stanislav Fomichev <sdf@google.=
+com> wrote:
+> >> On 01/17, Amery Hung wrote:
+> >>> Hi,
+> >>>
+> >>> I am continuing the work of ebpf-based Qdisc based on Cong=E2=80=99s =
+previous
+> >>> RFC. The followings are some use cases of eBPF Qdisc:
+> >>>
+> >>> 1. Allow customizing Qdiscs in an easier way. So that people don't
+> >>>     have to write a complete Qdisc kernel module just to experiment
+> >>>     some new queuing theory.
+> >>>
+> >>> 2. Solve EDT's problem. EDT calcuates the "tokens" in clsact which
+> >>>     is before enqueue, it is impossible to adjust those "tokens" afte=
+r
+> >>>     packets get dropped in enqueue. With eBPF Qdisc, it is easy to
+> >>>     be solved with a shared map between clsact and sch_bpf.
+> >>>
+> >>> 3. Replace qevents, as now the user gains much more control over the
+> >>>     skb and queues.
+> >>>
+> >>> 4. Provide a new way to reuse TC filters. Currently TC relies on filt=
+er
+> >>>     chain and block to reuse the TC filters, but they are too complic=
+ated
+> >>>     to understand. With eBPF helper bpf_skb_tc_classify(), we can inv=
+oke
+> >>>     TC filters on _any_ Qdisc (even on a different netdev) to do the
+> >>>     classification.
+> >>>
+> >>> 5. Potentially pave a way for ingress to queue packets, although
+> >>>     current implementation is still only for egress.
+> >>>
+> >>> I=E2=80=99ve combed through previous comments and appreciated the fee=
+dbacks.
+> >>> Some major changes in this RFC is the use of kptr to skb to maintain
+> >>> the validility of skb during its lifetime in the Qdisc, dropping rbtr=
+ee
+> >>> maps, and the inclusion of two examples.
+> >>>
+> >>> Some questions for discussion:
+> >>>
+> >>> 1. We now pass a trusted kptr of sk_buff to the program instead of
+> >>>     __sk_buff. This makes most helpers using __sk_buff incompatible
+> >>>     with eBPF qdisc. An alternative is to still use __sk_buff in the
+> >>>     context and use bpf_cast_to_kern_ctx() to acquire the kptr. Howev=
+er,
+> >>>     this can only be applied to enqueue program, since in dequeue pro=
+gram
+> >>>     skbs do not come from ctx but kptrs exchanged out of maps (i.e., =
+there
+> >>>     is no __sk_buff). Any suggestion for making skb kptr and helper
+> >>>     functions compatible?
+> >>>
+> >>> 2. The current patchset uses netlink. Do we also want to use bpf_link
+> >>>     for attachment?
+> >>
+> >> [..]
+> >>
+> >>> 3. People have suggested struct_ops. We chose not to use struct_ops s=
+ince
+> >>>     users might want to create multiple bpf qdiscs with different
+> >>>     implementations. Current struct_ops attachment model does not see=
+m
+> >>>     to support replacing only functions of a specific instance of a m=
+odule,
+> >>>     but I might be wrong.
+> >>
+> >> I still feel like it deserves at leasta try. Maybe we can find some po=
+tential
+> >> path where struct_ops can allow different implementations (Martin prob=
+ably
+> >> has some ideas about that). I looked at the bpf qdisc itself and it do=
+esn't
+> >> really have anything complicated (besides trying to play nicely with o=
+ther
+> >> tc classes/actions, but I'm not sure how relevant that is).
 > >
-> > Fix an OOM panic in XDP_DRV mode when a XDP program shrinks a
-> > multi-buffer packet by 4k bytes and then redirects it to an AF_XDP
-> > socket.
-> >
-> > Since support for handling multi-buffer frames was added to XDP, usage
-> > of bpf_xdp_adjust_tail() helper within XDP program can free the page
-> > that given fragment occupies and in turn decrease the fragment count
-> > within skb_shared_info that is embedded in xdp_buff struct. In current
-> > ice driver codebase, it can become problematic when page recycling logic
-> > decides not to reuse the page. In such case, __page_frag_cache_drain()
-> > is used with ice_rx_buf::pagecnt_bias that was not adjusted after
-> > refcount of page was changed by XDP prog which in turn does not drain
-> > the refcount to 0 and page is never freed.
-> >
-> > To address this, let us store the count of frags before the XDP program
-> > was executed on Rx ring struct. This will be used to compare with
-> > current frag count from skb_shared_info embedded in xdp_buff. A smaller
-> > value in the latter indicates that XDP prog freed frag(s). Then, for
-> > given delta decrement pagecnt_bias for XDP_DROP verdict.
-> >
-> > While at it, let us also handle the EOP frag within
-> > ice_set_rx_bufs_act() to make our life easier, so all of the adjustments
-> > needed to be applied against freed frags are performed in the single
-> > place.
-> >
-> > Fixes: 2fba7dc5157b ("ice: Add support for XDP multi-buffer on Rx side")
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice_txrx.c     | 14 ++++++---
-> >  drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
-> >  drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 31 +++++++++++++------
-> >  3 files changed, 32 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > index 59617f055e35..1760e81379cc 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > @@ -603,9 +603,7 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
-> >                 ret = ICE_XDP_CONSUMED;
-> >         }
-> >  exit:
-> > -       rx_buf->act = ret;
-> > -       if (unlikely(xdp_buff_has_frags(xdp)))
-> > -               ice_set_rx_bufs_act(xdp, rx_ring, ret);
-> > +       ice_set_rx_bufs_act(xdp, rx_ring, ret);
-> >  }
-> >
-> >  /**
-> > @@ -893,14 +891,17 @@ ice_add_xdp_frag(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
-> >         }
-> >
-> >         if (unlikely(sinfo->nr_frags == MAX_SKB_FRAGS)) {
-> > -               if (unlikely(xdp_buff_has_frags(xdp)))
-> > -                       ice_set_rx_bufs_act(xdp, rx_ring, ICE_XDP_CONSUMED);
-> > +               ice_set_rx_bufs_act(xdp, rx_ring, ICE_XDP_CONSUMED);
-> >                 return -ENOMEM;
-> >         }
-> >
-> >         __skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++, rx_buf->page,
-> >                                    rx_buf->page_offset, size);
-> >         sinfo->xdp_frags_size += size;
-> > +       /* remember frag count before XDP prog execution; bpf_xdp_adjust_tail()
-> > +        * can pop off frags but driver has to handle it on its own
-> > +        */
-> > +       rx_ring->nr_frags = sinfo->nr_frags;
-> >
-> >         if (page_is_pfmemalloc(rx_buf->page))
-> >                 xdp_buff_set_frag_pfmemalloc(xdp);
-> > @@ -1251,6 +1252,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
-> >
-> >                 xdp->data = NULL;
-> >                 rx_ring->first_desc = ntc;
-> > +               rx_ring->nr_frags = 0;
-> >                 continue;
-> >  construct_skb:
-> >                 if (likely(ice_ring_uses_build_skb(rx_ring)))
-> > @@ -1266,10 +1268,12 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
-> >                                                     ICE_XDP_CONSUMED);
-> >                         xdp->data = NULL;
-> >                         rx_ring->first_desc = ntc;
-> > +                       rx_ring->nr_frags = 0;
-> >                         break;
-> >                 }
-> >                 xdp->data = NULL;
-> >                 rx_ring->first_desc = ntc;
-> > +               rx_ring->nr_frags = 0;
-> 
-> Are these needed? Or asked in another way, is there some way in which
-> ice_set_rx_bufs_act() can be executed before ice_add_xdp_frag()? If
-> not, we could remove them.
+> > Are you suggesting that it is a nuisance to integrate with the
+> > existing infra? I would consider it being a lot more than "trying to
+> > play nicely". Besides, it's a kfunc and people will not be forced to
+> > use it.
+>
+> What's the use case?
 
-I am afraid that if you would have fragged packet followed by non-fragged
-one then ice_set_rx_bufs_act() would incorrectly go over more buffers
-than it was supposed to. I think we should keep those, unless I am missing
-something?
+What's the use case for enabling existing infra to work? Sure, let's
+rewrite everything from scratch in ebpf. And then introduce new
+tooling which well funded companies are capable of owning the right
+resources to build and manage. Open source is about choices and
+sharing and this is about choices and sharing.
 
-> 
-> Looks good otherwise.
-> 
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> >
-> >                 stat_err_bits = BIT(ICE_RX_FLEX_DESC_STATUS0_RXE_S);
-> >                 if (unlikely(ice_test_staterr(rx_desc->wb.status_error0,
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> > index b3379ff73674..af955b0e5dc5 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> > @@ -358,6 +358,7 @@ struct ice_rx_ring {
-> >         struct ice_tx_ring *xdp_ring;
-> >         struct ice_rx_ring *next;       /* pointer to next ring in q_vector */
-> >         struct xsk_buff_pool *xsk_pool;
-> > +       u32 nr_frags;
-> >         dma_addr_t dma;                 /* physical address of ring */
-> >         u16 rx_buf_len;
-> >         u8 dcb_tc;                      /* Traffic class of ring */
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> > index 762047508619..afcead4baef4 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> > @@ -12,26 +12,39 @@
-> >   * act: action to store onto Rx buffers related to XDP buffer parts
-> >   *
-> >   * Set action that should be taken before putting Rx buffer from first frag
-> > - * to one before last. Last one is handled by caller of this function as it
-> > - * is the EOP frag that is currently being processed. This function is
-> > - * supposed to be called only when XDP buffer contains frags.
-> > + * to the last.
-> >   */
-> >  static inline void
-> >  ice_set_rx_bufs_act(struct xdp_buff *xdp, const struct ice_rx_ring *rx_ring,
-> >                     const unsigned int act)
-> >  {
-> > -       const struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> > -       u32 first = rx_ring->first_desc;
-> > -       u32 nr_frags = sinfo->nr_frags;
-> > +       u32 sinfo_frags = xdp_get_shared_info_from_buff(xdp)->nr_frags;
-> > +       u32 nr_frags = rx_ring->nr_frags + 1;
-> > +       u32 idx = rx_ring->first_desc;
-> >         u32 cnt = rx_ring->count;
-> >         struct ice_rx_buf *buf;
-> >
-> >         for (int i = 0; i < nr_frags; i++) {
-> > -               buf = &rx_ring->rx_buf[first];
-> > +               buf = &rx_ring->rx_buf[idx];
-> >                 buf->act = act;
-> >
-> > -               if (++first == cnt)
-> > -                       first = 0;
-> > +               if (++idx == cnt)
-> > +                       idx = 0;
-> > +       }
-> > +
-> > +       /* adjust pagecnt_bias on frags freed by XDP prog */
-> > +       if (sinfo_frags < rx_ring->nr_frags && act == ICE_XDP_CONSUMED) {
-> > +               u32 delta = rx_ring->nr_frags - sinfo_frags;
-> > +
-> > +               while (delta) {
-> > +                       if (idx == 0)
-> > +                               idx = cnt - 1;
-> > +                       else
-> > +                               idx--;
-> > +                       buf = &rx_ring->rx_buf[idx];
-> > +                       buf->pagecnt_bias--;
-> > +                       delta--;
-> > +               }
-> >         }
-> >  }
-> >
-> > --
-> > 2.34.1
-> >
-> >
+> If you already go that route to implement your own
+> qdisc, why is there a need to take the performane hit and go all the
+> way into old style cls/act infra when it can be done in a more straight
+> forward way natively?
+
+Who is forcing you to use the kfunc? This is about choice.
+What is ebpf these days anyways? Is it a) a programming environment or
+b) is it the only way to do things? I see it as available infra i.e #a
+not as the answer looking for a question.  IOW, as something we can
+use to build the infra we need and use kfuncs when it makes sense. Not
+everybody has infinite resources to keep hacking things into ebpf.
+
+> For the vast majority of cases this will be some
+> very lightweight classification anyway (if not outsourced to tc egress
+> given the lock). If there is a concrete production need, it could be
+> added, otherwise if there is no immediate use case which cannot be solved
+> otherwise I would not add unnecessary kfuncs.
+
+"Unnecessary" is really your view.
+
+cheers,
+jamal
+
+> Cheers,
+> Daniel
 
