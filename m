@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-20264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAD4383B22A
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 20:20:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E784783B20F
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 20:17:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE9A6B2F199
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 19:17:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96FC028B1EF
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 19:17:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4789A133993;
-	Wed, 24 Jan 2024 19:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795FF132C24;
+	Wed, 24 Jan 2024 19:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mCeLJnOI"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IYRWJKzw"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2987613398A;
-	Wed, 24 Jan 2024 19:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8AAD132C28;
+	Wed, 24 Jan 2024 19:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706123783; cv=none; b=sZP8edFk9I1ACQrUqou2R5PcCBeGay48ShtonWXcm/ylqGFTwFT+XgsgewSpjw4ITBKdMHf3Q03r6aMKO6Wms71Yuma6BtfUKlV9RFG9vhUzW0ywvhPLQqzIgocrjZDYBhBDDnAUHqPO4tey7Bzp23OSSN1jrVmyM/RXwshFUIc=
+	t=1706123800; cv=none; b=kGU+MUUj104xkQi454YKFzboN9qZaZfUPI5luLDsgHevPm1/CzUKiA3LZdIYpsBdYjOPbpQvUfB1ef3ofYaeJj6sWiI+vbOyYiRJ1WPD4bp51H7Gr8CEHebqkiFujmpEVPjA6njnt2LkdMKCEj+CiHf43vkGj35JUxOkEd3uHQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706123783; c=relaxed/simple;
-	bh=SukYc/Bhhc9DcS0bZW1GfofTr4IOXK71TjXvaKD9Sl0=;
+	s=arc-20240116; t=1706123800; c=relaxed/simple;
+	bh=MyPDGlxIQIPS8WOum/Wt6CVIBmBVxNK3vHdP8BjDdRI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZnCrTPBZyTp1sctprphmUgJjwca0x6fG9gA0thEY/8bSKNGTTdpRyGqiFd8k+JvOJDZEQMAfJlF2dbdn1e44PLJpN/viDk9UBuorRf15v2MaW5BuYPxFY8YibheWi79KfB6uJ1XPOqLSjseAINa4ZqicVAp4oy8HwqBWOcUPmwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mCeLJnOI; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=dnS+W6gUey5lX7r+SifQjFk3gpeqOTdJzFG/+FwloQBktka/IjEFo8/asEjJw29qa22reY2+ybYPPxMLtmsO2YkYXG22X+lXP8X911/qHJ1+jgXNQJjF9kOFFEMOWdZBd+IzJE1V923481Qqv7NJX2zSecJEIWI+iAcJ8DMCRJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IYRWJKzw; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706123782; x=1737659782;
+  t=1706123798; x=1737659798;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=SukYc/Bhhc9DcS0bZW1GfofTr4IOXK71TjXvaKD9Sl0=;
-  b=mCeLJnOI8070ewFL4EAHmeqptleC9DimryaVcMnX/VMKjEfzWrUWdj7u
-   EwP05P8s1QRAJvVviEg+L+//EqBi34VyJGKBGYKNhl3cSz6FseU8HhJY3
-   LUD5wfHHI21XgmNnwrVCifo7vMUqR7wxFteythRcPqQWrVbyqwTpp7l9I
-   EUBouYOv8R/IyZ1jrPI7CfDvShqhgl6QsZn2rZzOjpGZYnP/JmCOdG97V
-   V4LC3ihk0x8pmEw5t7OszlbDCfwbVWfiXi+Up+fAiQQdzsermYF6FVPDK
-   uJBUGY9iTPLa2x8LfijZuy+KtGsm2+Km55G4saXQLW38MfYqFEfqFi4OM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1822980"
+  bh=MyPDGlxIQIPS8WOum/Wt6CVIBmBVxNK3vHdP8BjDdRI=;
+  b=IYRWJKzwH6d34ajjCB6KvECGO+FbIvu/uiejwJRWPC+8oHndiCjW2EvR
+   Uv+uv1MvVDIanWzju1Guqw31ntEm7h/jIOemzs/xZzrY4Oo4VUDq3DHWY
+   hqez1ljWX0w5IgEoHkYRHxTXkmsYIcoJVnQlJTjYQtxOdFIVGVX6LlUKO
+   mKIHM+dvbWn+joi8BYnbLbjdo2faeVabaIeAQFJYygoL3FrtE0R4gA6qD
+   k/ILlI5zj9MHPQzSlaiElIS6SWvDwOkROh0ezJbO7Wj2lw9cgqf+wGrww
+   CMkGfBCscQPvdO5CSF4sAjxcGDY1wKsOZTQqnDKy6k2TBRsLtk0+2s1ov
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1823028"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="1822980"
+   d="scan'208";a="1823028"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 11:16:22 -0800
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 11:16:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="820553452"
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="820553460"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="820553452"
+   d="scan'208";a="820553460"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga001.jf.intel.com with ESMTP; 24 Jan 2024 11:16:18 -0800
+  by orsmga001.jf.intel.com with ESMTP; 24 Jan 2024 11:16:22 -0800
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -71,9 +71,9 @@ Cc: netdev@vger.kernel.org,
 	john.fastabend@gmail.com,
 	horms@kernel.org,
 	kuba@kernel.org
-Subject: [PATCH v6 bpf 03/11] xsk: fix usage of multi-buffer BPF helpers for ZC XDP
-Date: Wed, 24 Jan 2024 20:15:54 +0100
-Message-Id: <20240124191602.566724-4-maciej.fijalkowski@intel.com>
+Subject: [PATCH v6 bpf 04/11] ice: work on pre-XDP prog frag count
+Date: Wed, 24 Jan 2024 20:15:55 +0100
+Message-Id: <20240124191602.566724-5-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240124191602.566724-1-maciej.fijalkowski@intel.com>
 References: <20240124191602.566724-1-maciej.fijalkowski@intel.com>
@@ -85,186 +85,161 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently when packet is shrunk via bpf_xdp_adjust_tail() and memory
-type is set to MEM_TYPE_XSK_BUFF_POOL, null ptr dereference happens:
+Fix an OOM panic in XDP_DRV mode when a XDP program shrinks a
+multi-buffer packet by 4k bytes and then redirects it to an AF_XDP
+socket.
 
-[1136314.192256] BUG: kernel NULL pointer dereference, address:
-0000000000000034
-[1136314.203943] #PF: supervisor read access in kernel mode
-[1136314.213768] #PF: error_code(0x0000) - not-present page
-[1136314.223550] PGD 0 P4D 0
-[1136314.230684] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[1136314.239621] CPU: 8 PID: 54203 Comm: xdpsock Not tainted 6.6.0+ #257
-[1136314.250469] Hardware name: Intel Corporation S2600WFT/S2600WFT,
-BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-[1136314.265615] RIP: 0010:__xdp_return+0x6c/0x210
-[1136314.274653] Code: ad 00 48 8b 47 08 49 89 f8 a8 01 0f 85 9b 01 00 00 0f 1f 44 00 00 f0 41 ff 48 34 75 32 4c 89 c7 e9 79 cd 80 ff 83 fe 03 75 17 <f6> 41 34 01 0f 85 02 01 00 00 48 89 cf e9 22 cc 1e 00 e9 3d d2 86
-[1136314.302907] RSP: 0018:ffffc900089f8db0 EFLAGS: 00010246
-[1136314.312967] RAX: ffffc9003168aed0 RBX: ffff8881c3300000 RCX:
-0000000000000000
-[1136314.324953] RDX: 0000000000000000 RSI: 0000000000000003 RDI:
-ffffc9003168c000
-[1136314.336929] RBP: 0000000000000ae0 R08: 0000000000000002 R09:
-0000000000010000
-[1136314.348844] R10: ffffc9000e495000 R11: 0000000000000040 R12:
-0000000000000001
-[1136314.360706] R13: 0000000000000524 R14: ffffc9003168aec0 R15:
-0000000000000001
-[1136314.373298] FS:  00007f8df8bbcb80(0000) GS:ffff8897e0e00000(0000)
-knlGS:0000000000000000
-[1136314.386105] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[1136314.396532] CR2: 0000000000000034 CR3: 00000001aa912002 CR4:
-00000000007706f0
-[1136314.408377] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[1136314.420173] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[1136314.431890] PKRU: 55555554
-[1136314.439143] Call Trace:
-[1136314.446058]  <IRQ>
-[1136314.452465]  ? __die+0x20/0x70
-[1136314.459881]  ? page_fault_oops+0x15b/0x440
-[1136314.468305]  ? exc_page_fault+0x6a/0x150
-[1136314.476491]  ? asm_exc_page_fault+0x22/0x30
-[1136314.484927]  ? __xdp_return+0x6c/0x210
-[1136314.492863]  bpf_xdp_adjust_tail+0x155/0x1d0
-[1136314.501269]  bpf_prog_ccc47ae29d3b6570_xdp_sock_prog+0x15/0x60
-[1136314.511263]  ice_clean_rx_irq_zc+0x206/0xc60 [ice]
-[1136314.520222]  ? ice_xmit_zc+0x6e/0x150 [ice]
-[1136314.528506]  ice_napi_poll+0x467/0x670 [ice]
-[1136314.536858]  ? ttwu_do_activate.constprop.0+0x8f/0x1a0
-[1136314.546010]  __napi_poll+0x29/0x1b0
-[1136314.553462]  net_rx_action+0x133/0x270
-[1136314.561619]  __do_softirq+0xbe/0x28e
-[1136314.569303]  do_softirq+0x3f/0x60
+Since support for handling multi-buffer frames was added to XDP, usage
+of bpf_xdp_adjust_tail() helper within XDP program can free the page
+that given fragment occupies and in turn decrease the fragment count
+within skb_shared_info that is embedded in xdp_buff struct. In current
+ice driver codebase, it can become problematic when page recycling logic
+decides not to reuse the page. In such case, __page_frag_cache_drain()
+is used with ice_rx_buf::pagecnt_bias that was not adjusted after
+refcount of page was changed by XDP prog which in turn does not drain
+the refcount to 0 and page is never freed.
 
-This comes from __xdp_return() call with xdp_buff argument passed as
-NULL which is supposed to be consumed by xsk_buff_free() call.
+To address this, let us store the count of frags before the XDP program
+was executed on Rx ring struct. This will be used to compare with
+current frag count from skb_shared_info embedded in xdp_buff. A smaller
+value in the latter indicates that XDP prog freed frag(s). Then, for
+given delta decrement pagecnt_bias for XDP_DROP verdict.
 
-To address this properly, in ZC case, a node that represents the frag
-being removed has to be pulled out of xskb_list. Introduce
-appropriate xsk helpers to do such node operation and use them
-accordingly within bpf_xdp_adjust_tail().
+While at it, let us also handle the EOP frag within
+ice_set_rx_bufs_act() to make our life easier, so all of the adjustments
+needed to be applied against freed frags are performed in the single
+place.
 
-Fixes: 24ea50127ecf ("xsk: support mbuf on ZC RX")
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com> # For the xsk header part
+Fixes: 2fba7dc5157b ("ice: Add support for XDP multi-buffer on Rx side")
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- include/net/xdp_sock_drv.h | 26 +++++++++++++++++++++++
- net/core/filter.c          | 42 ++++++++++++++++++++++++++++++++------
- 2 files changed, 62 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 14 ++++++---
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 31 +++++++++++++------
+ 3 files changed, 32 insertions(+), 14 deletions(-)
 
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 9819e2af0378..c9aec9ab6191 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -159,6 +159,23 @@ static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
- 	return ret;
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 74d13cc5a3a7..0c9b4aa8a049 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -603,9 +603,7 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
+ 		ret = ICE_XDP_CONSUMED;
+ 	}
+ exit:
+-	rx_buf->act = ret;
+-	if (unlikely(xdp_buff_has_frags(xdp)))
+-		ice_set_rx_bufs_act(xdp, rx_ring, ret);
++	ice_set_rx_bufs_act(xdp, rx_ring, ret);
  }
  
-+static inline void xsk_buff_del_tail(struct xdp_buff *tail)
-+{
-+	struct xdp_buff_xsk *xskb = container_of(tail, struct xdp_buff_xsk, xdp);
-+
-+	list_del(&xskb->xskb_list_node);
-+}
-+
-+static inline struct xdp_buff *xsk_buff_get_tail(struct xdp_buff *first)
-+{
-+	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
-+	struct xdp_buff_xsk *frag;
-+
-+	frag = list_last_entry(&xskb->pool->xskb_list, struct xdp_buff_xsk,
-+			       xskb_list_node);
-+	return &frag->xdp;
-+}
-+
- static inline void xsk_buff_set_size(struct xdp_buff *xdp, u32 size)
+ /**
+@@ -893,14 +891,17 @@ ice_add_xdp_frag(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
+ 	}
+ 
+ 	if (unlikely(sinfo->nr_frags == MAX_SKB_FRAGS)) {
+-		if (unlikely(xdp_buff_has_frags(xdp)))
+-			ice_set_rx_bufs_act(xdp, rx_ring, ICE_XDP_CONSUMED);
++		ice_set_rx_bufs_act(xdp, rx_ring, ICE_XDP_CONSUMED);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	__skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++, rx_buf->page,
+ 				   rx_buf->page_offset, size);
+ 	sinfo->xdp_frags_size += size;
++	/* remember frag count before XDP prog execution; bpf_xdp_adjust_tail()
++	 * can pop off frags but driver has to handle it on its own
++	 */
++	rx_ring->nr_frags = sinfo->nr_frags;
+ 
+ 	if (page_is_pfmemalloc(rx_buf->page))
+ 		xdp_buff_set_frag_pfmemalloc(xdp);
+@@ -1251,6 +1252,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 
+ 		xdp->data = NULL;
+ 		rx_ring->first_desc = ntc;
++		rx_ring->nr_frags = 0;
+ 		continue;
+ construct_skb:
+ 		if (likely(ice_ring_uses_build_skb(rx_ring)))
+@@ -1266,10 +1268,12 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 						    ICE_XDP_CONSUMED);
+ 			xdp->data = NULL;
+ 			rx_ring->first_desc = ntc;
++			rx_ring->nr_frags = 0;
+ 			break;
+ 		}
+ 		xdp->data = NULL;
+ 		rx_ring->first_desc = ntc;
++		rx_ring->nr_frags = 0;
+ 
+ 		stat_err_bits = BIT(ICE_RX_FLEX_DESC_STATUS0_RXE_S);
+ 		if (unlikely(ice_test_staterr(rx_desc->wb.status_error0,
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
+index b3379ff73674..af955b0e5dc5 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.h
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+@@ -358,6 +358,7 @@ struct ice_rx_ring {
+ 	struct ice_tx_ring *xdp_ring;
+ 	struct ice_rx_ring *next;	/* pointer to next ring in q_vector */
+ 	struct xsk_buff_pool *xsk_pool;
++	u32 nr_frags;
+ 	dma_addr_t dma;			/* physical address of ring */
+ 	u16 rx_buf_len;
+ 	u8 dcb_tc;			/* Traffic class of ring */
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+index 762047508619..afcead4baef4 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
++++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+@@ -12,26 +12,39 @@
+  * act: action to store onto Rx buffers related to XDP buffer parts
+  *
+  * Set action that should be taken before putting Rx buffer from first frag
+- * to one before last. Last one is handled by caller of this function as it
+- * is the EOP frag that is currently being processed. This function is
+- * supposed to be called only when XDP buffer contains frags.
++ * to the last.
+  */
+ static inline void
+ ice_set_rx_bufs_act(struct xdp_buff *xdp, const struct ice_rx_ring *rx_ring,
+ 		    const unsigned int act)
  {
- 	xdp->data = xdp->data_hard_start + XDP_PACKET_HEADROOM;
-@@ -351,6 +368,15 @@ static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
- 	return NULL;
- }
+-	const struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+-	u32 first = rx_ring->first_desc;
+-	u32 nr_frags = sinfo->nr_frags;
++	u32 sinfo_frags = xdp_get_shared_info_from_buff(xdp)->nr_frags;
++	u32 nr_frags = rx_ring->nr_frags + 1;
++	u32 idx = rx_ring->first_desc;
+ 	u32 cnt = rx_ring->count;
+ 	struct ice_rx_buf *buf;
  
-+static inline void xsk_buff_del_tail(struct xdp_buff *tail)
-+{
-+}
-+
-+static inline struct xdp_buff *xsk_buff_get_tail(struct xdp_buff *first)
-+{
-+	return NULL;
-+}
-+
- static inline void xsk_buff_set_size(struct xdp_buff *xdp, u32 size)
- {
- }
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6a7abbaa50b8..99d5cc3aea46 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -83,6 +83,7 @@
- #include <net/netfilter/nf_conntrack_bpf.h>
- #include <net/netkit.h>
- #include <linux/un.h>
-+#include <net/xdp_sock_drv.h>
+ 	for (int i = 0; i < nr_frags; i++) {
+-		buf = &rx_ring->rx_buf[first];
++		buf = &rx_ring->rx_buf[idx];
+ 		buf->act = act;
  
- #include "dev.h"
- 
-@@ -4096,6 +4097,40 @@ static int bpf_xdp_frags_increase_tail(struct xdp_buff *xdp, int offset)
- 	return 0;
- }
- 
-+static void bpf_xdp_shrink_data_zc(struct xdp_buff *xdp, int shrink,
-+				   struct xdp_mem_info *mem_info, bool release)
-+{
-+	struct xdp_buff *zc_frag = xsk_buff_get_tail(xdp);
-+
-+	if (release) {
-+		xsk_buff_del_tail(zc_frag);
-+		__xdp_return(NULL, mem_info, false, zc_frag);
-+	} else {
-+		zc_frag->data_end -= shrink;
-+	}
-+}
-+
-+static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
-+				int shrink)
-+{
-+	struct xdp_mem_info *mem_info = &xdp->rxq->mem;
-+	bool release = skb_frag_size(frag) == shrink;
-+
-+	if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
-+		bpf_xdp_shrink_data_zc(xdp, shrink, mem_info, release);
-+		goto out;
+-		if (++first == cnt)
+-			first = 0;
++		if (++idx == cnt)
++			idx = 0;
 +	}
 +
-+	if (release) {
-+		struct page *page = skb_frag_page(frag);
++	/* adjust pagecnt_bias on frags freed by XDP prog */
++	if (sinfo_frags < rx_ring->nr_frags && act == ICE_XDP_CONSUMED) {
++		u32 delta = rx_ring->nr_frags - sinfo_frags;
 +
-+		__xdp_return(page_address(page), mem_info, false, NULL);
-+	}
-+
-+out:
-+	return release;
-+}
-+
- static int bpf_xdp_frags_shrink_tail(struct xdp_buff *xdp, int offset)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -4110,12 +4145,7 @@ static int bpf_xdp_frags_shrink_tail(struct xdp_buff *xdp, int offset)
++		while (delta) {
++			if (idx == 0)
++				idx = cnt - 1;
++			else
++				idx--;
++			buf = &rx_ring->rx_buf[idx];
++			buf->pagecnt_bias--;
++			delta--;
++		}
+ 	}
+ }
  
- 		len_free += shrink;
- 		offset -= shrink;
--
--		if (skb_frag_size(frag) == shrink) {
--			struct page *page = skb_frag_page(frag);
--
--			__xdp_return(page_address(page), &xdp->rxq->mem,
--				     false, NULL);
-+		if (bpf_xdp_shrink_data(xdp, frag, shrink)) {
- 			n_frags_free++;
- 		} else {
- 			skb_frag_size_sub(frag, shrink);
 -- 
 2.34.1
 
