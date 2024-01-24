@@ -1,154 +1,144 @@
-Return-Path: <bpf+bounces-20217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331A383A71E
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 11:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C01883A7BC
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 12:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 659AC1C22BB0
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 10:45:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42EE51C20DB6
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 11:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8EA19475;
-	Wed, 24 Jan 2024 10:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053F21B274;
+	Wed, 24 Jan 2024 11:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ca35CYqz";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ca35CYqz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y9CyT7/z"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30F217C65;
-	Wed, 24 Jan 2024 10:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE792C684;
+	Wed, 24 Jan 2024 11:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706093138; cv=none; b=V7hW7NPL9ICeJz5DvEZ03NbqbEReYf0YWAdeHv8fPC6bJjgTgLgtACsh5L7Bytk6/S57cqSk3ry9KhggPgmqgHgs3B7VSTvdlnGtlC7sIJFV9663kYA6o4UQW7KS1lfA8drbZB3fMOZ4HTjg9in7UxKXq0W6KJ+VFgtYsFeJgTI=
+	t=1706095630; cv=none; b=JZJ2CiStkme3egp0naAN+aBSeLf9FIdYstvb7D95YzDgqsrfoMymdVVeWZKYPKdJF8F85hNKxjXJHi7GTsOdVOEEAMlGUas/Ce3RreMg60slGSU6D/ybvaWo/9xi8nPj/9A6a94Q9lTNX2l+BVhReeG1f+oLnsE4eGQb4jF5P8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706093138; c=relaxed/simple;
-	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qrWcPnyH0+Gg19+pzHvk93jJFeZIcTwwOlqp8NXpNjmD9u1OoH6XuRcS+nRsaoZMvgoTj7raTWFLqqTUkZajeCaMEPEmfSqUuKP5M8n9LFP49Cs/2XOSutim85Arm5thiF+FFtXNJPJc/yiU4B0Ue9PkMFgrJ+8Yi2hDkddFt8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ca35CYqz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ca35CYqz; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A56F421FE0;
-	Wed, 24 Jan 2024 10:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706093134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
-	b=ca35CYqzpEv1O6x7kDOtHFG7O6T3WcBTmabdm4u4ubV0Ls4nZg0s4glAWzIiT08w8wZgZh
-	vXt5WR4QWWZ0H8F1wG+GlawIAfygv94xJsvFqVdTNy6nJzf9CXDdsV6D+TIMKSyqnSTKxm
-	TLlxbMo3/dvYCyD8H10KcjSC2brNu7E=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706093134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
-	b=ca35CYqzpEv1O6x7kDOtHFG7O6T3WcBTmabdm4u4ubV0Ls4nZg0s4glAWzIiT08w8wZgZh
-	vXt5WR4QWWZ0H8F1wG+GlawIAfygv94xJsvFqVdTNy6nJzf9CXDdsV6D+TIMKSyqnSTKxm
-	TLlxbMo3/dvYCyD8H10KcjSC2brNu7E=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CCF413786;
-	Wed, 24 Jan 2024 10:45:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UDguHk7qsGVAEQAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Wed, 24 Jan 2024 10:45:34 +0000
-Date: Wed, 24 Jan 2024 11:45:33 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
-	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
-	Martin Wilck <mwilck@suse.com>, Pedro Tammela <pctammela@mojatatu.com>
-Subject: Re: [PATCH v4 3/4] net/sched: Load modules via their alias
-Message-ID: <7u63ta73ldxnf5ucoywzu4irl6mer66ur4letgpavghkcnvlke@6ajcojmjk5nv>
-References: <20240123135242.11430-1-mkoutny@suse.com>
- <20240123135242.11430-4-mkoutny@suse.com>
- <20240123174002.GN254773@kernel.org>
+	s=arc-20240116; t=1706095630; c=relaxed/simple;
+	bh=alQWMBFXA1hw7IIWXSpJ6i4inmySS5LtlbuTmaNyvl4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CiR4wt/Uch6WAgfDwe4Yhw66szMwDjBmP2OzxvZZGNnlw8V4XQMV7r11eBSKvIU5uWAPId00EnXrmdW/zUsIZjbF6QFKQA7ga1fsfuiepNDGVsGe8vZGQggG8eDYHJI6JgJaZlApmQSE05MyFH7Nfpr3XQPOT8mK7rLmda86BQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y9CyT7/z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59A84C433C7;
+	Wed, 24 Jan 2024 11:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706095630;
+	bh=alQWMBFXA1hw7IIWXSpJ6i4inmySS5LtlbuTmaNyvl4=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Y9CyT7/zJOgHijuFWNtRE5BK0H0gmMJs7J47B3RhKobd0Cdg95Ffr0gwjegsbTJo9
+	 l5jFT2D0k8Wyf1dZoIrlgwJABziL/uMh7EqvOQiCy+6H9e0FbnL78Ek/1NQrXTTBFz
+	 Yi+KDg63/QF6strX05Jg1NdW6DyP8VWGmY+t6rcCnEPltwieHTEDnB/ORgwltAMHQt
+	 4rw7g0q9i+7z20mO68w9Ez+/gi8Fu2qEXqr+W8u7p4E6jUeBuUZJ0xAn0Zlv0I2WPD
+	 x52l2BtjQTejwsCFKqIkqM15PYksEtxlrVS+kzYNrgUpw05Xu/ypl++kRvycDZC1ph
+	 dnwJ8F4Z5hbfA==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH v2 0/3] HID: bpf: couple of upstream fixes
+Date: Wed, 24 Jan 2024 12:26:56 +0100
+Message-Id: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m7zrpn5dfxhi46pl"
-Content-Disposition: inline
-In-Reply-To: <20240123174002.GN254773@kernel.org>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.77 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-1.57)[92.18%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RL63s8thh5w8zyxj4waeg9pq8e)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[30];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.77
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAD0sGUC/32NQQ6CMBBFr0Jm7Zh22lB1xT0MiwJTOtEAaQ3RE
+ O5u5QAu3/95/2+QOQlnuFUbJF4lyzwVoFMFffTTyChDYSBFVmky2FmMMmC3BAzy5ox1TVd1CUx
+ kLBRtSXwUxbq3haPk15w+x8Oqf+mfsVWjQu918L0z1jjXPDhN/DzPaYR23/cvIfSokbEAAAA=
+To: Jiri Kosina <jikos@kernel.org>, 
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ Dan Carpenter <dan.carpenter@linaro.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706095628; l=2390;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=alQWMBFXA1hw7IIWXSpJ6i4inmySS5LtlbuTmaNyvl4=;
+ b=j5lHHgQgLoXVZiipVjKowReOGI8kG/sxaAYoHUCxIixkXKDGr6uZidECS+6mEjacbAFlkw3y8
+ 0leuu0JRJH5Bdo74vBNHfnY00B3a2snuwqLxHwVesgj3F0kFQKh3wI/
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
+Hi,
 
---m7zrpn5dfxhi46pl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is the v2 of this series of HID-BPF fixes.
+I have forgotten to include a Fixes tag in the first patch
+and got a review from Andrii on patch 2.
 
-On Tue, Jan 23, 2024 at 05:40:02PM +0000, Simon Horman <horms@kernel.org> wrote:
-> name doesn't exist in this context, perhaps the line above should be:
+And this first patch made me realize that something was fishy
+in the refcount of the hid devices. I was not crashing the system
+even if I accessed the struct hid_device after hid_destroy_device()
+was called, which was suspicious to say the least. So after some
+debugging I found the culprit and realized that I had a pretty
+nice memleak as soon as one HID-BPF program was attached to a HID
+device.
 
-Well spotted (and shame on me for unchecked last-moment edits).
+The good thing though is that this ref count prevents a crash in
+case a HID-BPF program attempts to access a removed HID device when
+hid_bpf_allocate_context() has been called but not yet released.
 
-I will resend after some more feedback or time.
+Anyway, for reference, the cover letter of v1:
 
-Thanks,
-Michal
+---
 
---m7zrpn5dfxhi46pl
-Content-Type: application/pgp-signature; name="signature.asc"
+Hi,
 
------BEGIN PGP SIGNATURE-----
+these are a couple of fixes for hid-bpf. The first one should
+probably go in ASAP, after the reviews, and the second one is nice
+to have and doesn't hurt much.
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbDqSwAKCRAGvrMr/1gc
-jmDPAP4kh0vASWmR2BIYzLZ9ltAfmTpMmdRiYjUTl0+b1KWtYwD+NflnVdzmVBHe
-rylTGmjlroohIQGBpbUFvMZZAXcJ6AQ=
-=ko42
------END PGP SIGNATURE-----
+Thanks Dan for finding out the issue with bpf_prog_get()
 
---m7zrpn5dfxhi46pl--
+Cheers,
+Benjamin
+
+To: Jiri Kosina <jikos@kernel.org>
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:  <linux-input@vger.kernel.org>
+Cc:  <linux-kernel@vger.kernel.org>
+Cc:  <bpf@vger.kernel.org>
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+
+---
+Changes in v2:
+- add Fixes tags
+- handled Andrii review (use of __bpf_kfunc_start/end_defs())
+- new patch to fetch ref counting of struct hid_device
+- Link to v1: https://lore.kernel.org/r/20240123-b4-hid-bpf-fixes-v1-0-aa1fac734377@kernel.org
+
+---
+Benjamin Tissoires (3):
+      HID: bpf: remove double fdget()
+      HID: bpf: actually free hdev memory after attaching a HID-BPF program
+      HID: bpf: use __bpf_kfunc instead of noinline
+
+ drivers/hid/bpf/hid_bpf_dispatch.c  | 101 ++++++++++++++++++++++++++----------
+ drivers/hid/bpf/hid_bpf_dispatch.h  |   4 +-
+ drivers/hid/bpf/hid_bpf_jmp_table.c |  39 +++++++-------
+ include/linux/hid_bpf.h             |  11 ----
+ 4 files changed, 95 insertions(+), 60 deletions(-)
+---
+base-commit: fef018d8199661962b5fc0f0d1501caa54b2b533
+change-id: 20240123-b4-hid-bpf-fixes-662908fe2234
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
+
 
