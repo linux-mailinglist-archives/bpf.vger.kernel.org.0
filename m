@@ -1,99 +1,91 @@
-Return-Path: <bpf+bounces-20273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8935C83B251
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 20:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D7C83B299
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 20:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F26F1F245B7
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 19:33:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FA9C1F2594B
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 19:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E96D132C27;
-	Wed, 24 Jan 2024 19:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E75C133411;
+	Wed, 24 Jan 2024 19:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rDkKSdo5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nqt3/mL+"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A756132C25
-	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 19:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D07133409
+	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 19:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706124803; cv=none; b=q1o4T9H6aTiA76O1RQA3GeuHc5oF2LOxYErojIDhpmfzHK9VGFZ+q7dUDOTtySWqPVg9PC0DzNMQXGFP8aGm4iM9cGo+QH79M+XVDxD7i8DTMxS/UTWzVz/OS9h4fUgUoIZ16TDkN0L/bPUSbCbZqZF4w6XHHrpACYdPrK5cNqI=
+	t=1706126151; cv=none; b=S/JLQa8LNiZCjq3ggMhCXX7AuEtif/bd9IlGwE8vaXedrvwUOdCYWDHBwyF9c+MLsQZACnSOSS3HkL/kPRBNlHksF8IJwN7TRrI6fRQ9qkjZpYA2YDxvPi2dMKtSZ5r5gw1ypJ6MexO4PJMx3ohDNBjj1mvm2H6RZmhAR68L5E0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706124803; c=relaxed/simple;
-	bh=Mgu+ztchMazVbSFqcGdBjKj0oSl3oMxjyqaGYn2D9kc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bl2IxYiV3O354LXdqVoujQc1YoXEy8Mj+2eDb7c/yJDemsErxGEvaeYVlID5WOt99bVxnYtzwsHmdoqWfUOillbPdOZ8oAdpAWjxcgjQYz0AEyU2uVJTTZqHoZY6lkR3eRDbv4bWpJpCeYHtMHtUIGCZiy9bPHbTwVm6X1kxmaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rDkKSdo5; arc=none smtp.client-ip=95.215.58.187
+	s=arc-20240116; t=1706126151; c=relaxed/simple;
+	bh=WVVyJI13Shfo/IZt29wogaveEudc8xdywF1s/vdWIs0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gtZW3u5kcZ2wXqxosoGMQ5w3WhxpastcQ3l3O0Bpi+wkKJffLVaBpjsQZvoOXmaNGWE/gfrCUcv4ugvfHUo9HUbsvhx2NH8GQ/KmNGKMB+dTbJP/6IflVU3eGnd5eh//sGj/mopUiMLJPKDGD/8tuJVkJnkDHJJNjdqREqXHVq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nqt3/mL+; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9d077ed4-6a30-49db-8160-83d8c525ff3e@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706124798;
+	t=1706126147;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eWaAntcZrwvuFlRFCKqmmfca/9/tgp7D5aNFEZn3xzs=;
-	b=rDkKSdo5IaNUa3Ypk12AjyEPSGnM9fFIqUgXkA+nkvGVqiMSBrWUQHfvKuakDaDoTAUEMV
-	FsHYPlbWjhYGB6YYhF++qCsV/1f9+00xZG5sWrsz/x8i2fgXfZn+f0IKG9p4tgBJ9HVfKd
-	Hz6syDmfcNpbUzPBAZIlmQ5PDjdF6Rw=
-Date: Wed, 24 Jan 2024 11:33:12 -0800
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SFlrxb82Xv2DmdaqtksaJbPBgkMBD/XHXiZ133Rc6u4=;
+	b=nqt3/mL+ytoySafxL7vKkGPIh41QSeqVdf05e9aKOSGfmP2cdfPLqHBPGKfOdxFvYYPB1h
+	81IpUIT3oy0OXBYRGlwWwhp95yl0Kik1HsihhbyPDojrg3l6HLniqxRWBm3LtC34Y1KIsO
+	BE8cvY+KEgL1swYODlUa6WYSlw6PDa0=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Stop setting -1 to value_type_btf_obj_fd which breaks backward compatibility
+Date: Wed, 24 Jan 2024 11:55:19 -0800
+Message-Id: <20240124195519.2136101-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Jump instructions clarification
-Content-Language: en-GB
-To: dthaler1968@googlemail.com
-Cc: bpf@ietf.org, bpf@vger.kernel.org
-References: <085f01da48bb$fe0c3cb0$fa24b610$@gmail.com>
- <08ab01da48be$603541a0$209fc4e0$@gmail.com>
- <829aa552-b04e-4f08-9874-b3f929741852@linux.dev>
- <095f01da48e8$611687d0$23439770$@gmail.com>
- <4dfb0d6a-aa48-4d96-82f0-09a960b1012f@linux.dev>
- <1fc001da4e6a$2848cad0$78da6070$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <1fc001da4e6a$2848cad0$78da6070$@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-On 1/23/24 6:07 PM, dthaler1968@googlemail.com wrote:
-> Hi Yonghong,
->
-> The MOVSX clarification is now merged, but I just found another similar question for you
-> regarding jump instructions.
->
-> For BPF_CALL (same question for src=0, src=1, and src=2),
-> are both BPF_JMP and BPF_JMP32 legal?  If so, is there a semantic difference?
-> If not, then again I think the doc needs clarification.
+Passing -1 in value_type_btf_obj_fd to the kernel will break backward
+compatibility. This patch fixes it by using 0 as the default.
 
-BPF_CALL with BPF_JMP32 is illegal. This is true for src=0/1/2.
+Cc: Kui-Feng Lee <thinker.li@gmail.com>
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: 9e926acda0c2 ("libbpf: Find correct module BTFs for struct_ops maps and progs.")
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ tools/lib/bpf/bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> BPF_JA's use of imm already has a note that it's BPF_JMP32 class only,
-> but what about BPF_CALL's use of imm?
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 3a35472a17c5..b133acfe08fb 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -192,7 +192,7 @@ int bpf_map_create(enum bpf_map_type map_type,
+ 	attr.btf_key_type_id = OPTS_GET(opts, btf_key_type_id, 0);
+ 	attr.btf_value_type_id = OPTS_GET(opts, btf_value_type_id, 0);
+ 	attr.btf_vmlinux_value_type_id = OPTS_GET(opts, btf_vmlinux_value_type_id, 0);
+-	attr.value_type_btf_obj_fd = OPTS_GET(opts, value_type_btf_obj_fd, -1);
++	attr.value_type_btf_obj_fd = OPTS_GET(opts, value_type_btf_obj_fd, 0);
+ 
+ 	attr.inner_map_fd = OPTS_GET(opts, inner_map_fd, 0);
+ 	attr.map_flags = OPTS_GET(opts, map_flags, 0);
+-- 
+2.34.1
 
-The imm field of BPF_CALL insn is used for call target.
-
->
-> Similarly about comparisons like BPF_JEQ etc when BPF_K is set.
-> E.g., is BPF_JEQ | BPF_K | BPF_JMP permitted?  The document currently
-> has no restriction against it, but if it's permitted, the meaning is not explained.
-
-Yes, it is permetted. It represents a 64bit reg compared to an imm.
-
->
-> Dave
->
->
 
