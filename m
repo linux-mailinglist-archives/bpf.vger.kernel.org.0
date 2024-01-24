@@ -1,50 +1,79 @@
-Return-Path: <bpf+bounces-20253-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20254-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B90C783B0F2
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 19:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A59AF83B188
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 19:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 733BE2849D5
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 18:21:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F8A7285633
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 18:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA05212AAF0;
-	Wed, 24 Jan 2024 18:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753A4131752;
+	Wed, 24 Jan 2024 18:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzB4zaVR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fXd73lT6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470BE12AACA
-	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 18:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17C8131732;
+	Wed, 24 Jan 2024 18:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706120427; cv=none; b=KNJ4D8BWRTw0XU/MpYdMi72fFwbve94ez/8ZUwrExQWlDpubt4iSBNaHRg3eMI30QOkldnYrQxNczBrMbdkoXmErtbz0iuGWQmnG/YDuqdTciDnX+yGnSWNqo89U3dPuxGMtQQqjMTXHuwEgYsFHTS4CuilTZvWBqdmHzgcSMDI=
+	t=1706122448; cv=none; b=pE0Cd8aLT9vj0L3PTlK4shIy7nJ6bTgh7Y68Lsgav/9hmP/7vg2caPlNkR+VWLlUlzNob2/CMGbKgFyGOCm7y5HQvceHyMwzMvXLuhGMzb8U1PYDUmZYh3COIVFLJPa+StWiy30rTV8wJXMVUj7NRBJ5nVL63jg5QzMkE9uCsP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706120427; c=relaxed/simple;
-	bh=XGeKIkR2hMJikd4UaTEWNbAvMIyZHDPjxWpVUwPn8LI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=oBNg1XBdJ18FU7Gt+Oig8lYcMza3YscK46v47G8PpXaLVSqvAhNzWMBsWeCIYOpltpUXzndxs6u7D9KCcHboVp1vAr2O/b/PWKdA5voXb46/OAMDXrtxM6lgmxq/rNHr0pa6cEEa+obZC+FdPZzH0ksZolu5DKOsWJUZbghpuUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzB4zaVR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 10508C43394;
-	Wed, 24 Jan 2024 18:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706120427;
-	bh=XGeKIkR2hMJikd4UaTEWNbAvMIyZHDPjxWpVUwPn8LI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=kzB4zaVRP/EedeTk2e/UjHwm3fULWR/V0/TX1kxq6qW6OFepn/OdSJ7i6lMDY1pZx
-	 hxjvLzGbMxs9C1l+3Vfdsyg5xi0aKlxU/qYVpT0+rXUSx+Kr8yFo05wDs7ut5ZhDXa
-	 2qPM304BlWZ+z8K3o4utZApu72ZFcSxAtQaFWlZqpOBdJQjsLA4QffCBq8Q/kgJ2Mx
-	 NEEppoVRRwfC2Eq569ttLaBUR3WL4nHeoWzK8F5ci4U+GV5s/hVmDlod/OYQzCqGyb
-	 C3Plw92eOr7fs9/+LMEiqt6Oryh14j3HgAqkiAzxtooYM7iiXtcCmuKLGwtkcFlq+J
-	 XZiT7vVTgtN8A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EE140D8C962;
-	Wed, 24 Jan 2024 18:20:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706122448; c=relaxed/simple;
+	bh=WpazG4364e+jTKgfgLtEtwyRbP+pcLjKofLLXoVBZ54=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fWbpp4q9z0p4UK5vbg+83qUni23M8EsMcKk8yJWZ0LPr7/bzj1SRe58o3sNu+tqVVotH5obaXcxLWzQqzTKhIXQ1G6gjVCyedak4IR4fq291djNcAtmEMPr2clbYb+8QChMw0s4xIdmWKvuWehzL37CrsUEHiLfqwRvhIV2f4hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fXd73lT6; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ddc0c02593so451562b3a.3;
+        Wed, 24 Jan 2024 10:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706122446; x=1706727246; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9rua/Gk+3fzaeLN+cM8MAOyc0Oae6U7xq33t4VnURAA=;
+        b=fXd73lT6K2zGs8NCnODmCeTTHsjya77fVNNpLapqovhyRXpvfOjcuw4wZm/eVyBgaN
+         n3Xf4SsHasw3ZSE6TKRrJ1lnY7gIYL6mNUw6v4zGXtqzWSwaj93YidzhDNYLlrQGS976
+         fD57K6a1znbCu8pD7u/2n/w+SYwrnAXo3DkFMcZv5HogRoBj7FxL33HOTvPy6VwO6uLJ
+         7DA01MLSPOmx80gf+GAyAi0s8YiMp6MfBrzgPZCZlIZXu/HhJLsZa5Q/SX9HeHdmSwTO
+         +YZVW3jzcd5WRUL5fTAKXQ1Wt1ichwWPFQz2Xpe7dMXVc8mWeYAjWOfjdpLYKHzaNUTj
+         TgQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706122446; x=1706727246;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9rua/Gk+3fzaeLN+cM8MAOyc0Oae6U7xq33t4VnURAA=;
+        b=ImFFRwOHXlVQ5YM0qX0r+1Bv81l8xsOA3h7ovXIpY6i851bf3EUGL3pERXfla/yfYA
+         vKTINQIs/jAcgt9yIDyinWPnxFytRywFEuz1y/M/xxEP9gfTrDzfsq+poB9UkwJ2GlM7
+         FzCZq3C2bGYG2PDxFNS7BSjbTM86kiKBthDIjaLQcTazS/gJbY/WUDXjY1nWTLRXD32/
+         MKTzqNvcmx0BFCeiSCGqa3D8Cs0nl6716XW103tb2w59UWO7KWZ6bUaRtL1KjUSQYGcA
+         ad4i49fPSzLTzZUUXX/peCXxfXEkpefFeK2KllZTlPbLCzsZMxJeQMlxkXNLgtxUaMQ9
+         cWOA==
+X-Gm-Message-State: AOJu0YxMaRyGOX4VfBwOFYbQbCREV+ZVjflhPtBBETJoaZTDVboSQWBi
+	kX5SaIYul+8/HDtb8WjJcnaN7NuLzMEOYxgK/u58y9FovnKCZCu9
+X-Google-Smtp-Source: AGHT+IFH/S6L5FDZMRiotOrNd94kPpUz08mvLPDn3EchVnAFK/SgKv7a/DYYr+T1bUz6h5Ot9/biMw==
+X-Received: by 2002:a05:6a20:7009:b0:19b:1eda:ab61 with SMTP id h9-20020a056a20700900b0019b1edaab61mr933722pza.54.1706122445958;
+        Wed, 24 Jan 2024 10:54:05 -0800 (PST)
+Received: from john.. ([98.97.116.78])
+        by smtp.gmail.com with ESMTPSA id ko18-20020a056a00461200b006dab0d72cd0sm14113696pfb.214.2024.01.24.10.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 10:54:05 -0800 (PST)
+From: John Fastabend <john.fastabend@gmail.com>
+To: jakub@cloudflare.com,
+	bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	john.fastabend@gmail.com,
+	andrii@kernel.org
+Subject: [PATCH bpf-next v2 0/4] transition sockmap testing to test_progs
+Date: Wed, 24 Jan 2024 10:53:59 -0800
+Message-Id: <20240124185403.1104141-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,47 +81,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 1/2] selftests/bpf: Fix the flaky
- tc_redirect_dtime test
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170612042697.22864.4085418184966669443.git-patchwork-notify@kernel.org>
-Date: Wed, 24 Jan 2024 18:20:26 +0000
-References: <20240120060518.3604920-1-martin.lau@linux.dev>
-In-Reply-To: <20240120060518.3604920-1-martin.lau@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@meta.com
 
-Hello:
+Its much easier to write and read tests than it was when sockmap was
+originally created. At that time we created a test_sockmap prog that
+did sockmap tests. But, its showing its age now. For example it reads
+user vars out of maps, is hard to run targetted tests, has a different
+format from the familiar test_progs and so on.
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I recently thought there was an issue with pop helpers so I created
+some tests to try and track it down. It turns out it was a bug in the
+BPF program we had not the kernel. But, I think it makes sense to
+start deprecating test_sockmap and converting these to the nicer
+test_progs.
 
-On Fri, 19 Jan 2024 22:05:17 -0800 you wrote:
-> From: Martin KaFai Lau <martin.lau@kernel.org>
-> 
-> BPF CI has been reporting the tc_redirect_dtime test failing
-> from time to time:
-> 
-> test_inet_dtime:PASS:setns src 0 nsec
-> (network_helpers.c:253: errno: No route to host) Failed to connect to server
-> close_netns:PASS:setns 0 nsec
-> test_inet_dtime:FAIL:connect_to_fd unexpected connect_to_fd: actual -1 < expected 0
-> test_tcp_clear_dtime:PASS:tcp ip6 clear dtime ingress_fwdns_p100 0 nsec
-> 
-> [...]
+So this is a first round of test_prog tests for sockmap cork and
+pop helpers. I'll add push and pull tests shortly. I think its fine,
+maybe preferred to review smaller patchsets, to send these
+incrementally as I get them created.
 
-Here is the summary with links:
-  - [v2,bpf-next,1/2] selftests/bpf: Fix the flaky tc_redirect_dtime test
-    https://git.kernel.org/bpf/bpf-next/c/177f1d083a19
-  - [v2,bpf-next,2/2] selftests/bpf: Wait for the netstamp_needed_key static key to be turned on
-    https://git.kernel.org/bpf/bpf-next/c/ce6f6cffaeaa
+Thanks!
 
-You are awesome, thank you!
+v2: fix unint vars in some branches from `make RELEASE=1`
+
+
+John Fastabend (4):
+  bpf: sockmap, add test for sk_msg prog pop msg helper
+  bpf: sockmap, add a sendmsg test so we can check that path
+  bpf: sockmap, add a cork to force buffering of the scatterlist
+  bpf: sockmap test cork and pop combined
+
+ .../bpf/prog_tests/sockmap_helpers.h          |  18 +
+ .../bpf/prog_tests/sockmap_msg_helpers.c      | 353 ++++++++++++++++++
+ .../bpf/progs/test_sockmap_msg_helpers.c      |  67 ++++
+ 3 files changed, 438 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_msg_helpers.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.33.0
 
 
