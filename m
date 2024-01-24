@@ -1,111 +1,102 @@
-Return-Path: <bpf+bounces-20156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BF11839E27
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 02:19:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF3B839E6E
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 02:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C225FB28F8A
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 01:19:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970841F2A2F4
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 01:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B16C15BE;
-	Wed, 24 Jan 2024 01:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F140C17CD;
+	Wed, 24 Jan 2024 01:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NrX5U5jF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5uHJrNT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200361854;
-	Wed, 24 Jan 2024 01:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7599E15A8;
+	Wed, 24 Jan 2024 01:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706059150; cv=none; b=DHiJCG5tL44ROcA16DLaGT6GhkAdoJuFA3R4d+LCWFBDAKnw4ZY4y+XcpPcYk9dMfh9YWQgDXy4n35UvMk5kR7EoI4+QbZu4QmMyA9il0K9dG5/xpJnDSeIrvxQXW99gcbiGyrzCw1qeLOMXu5j1S+n1YyvMvHI8pBVGzwfE7go=
+	t=1706061199; cv=none; b=lv59mDnjFSVZsk7K6LuyanhV2a91/ojA+KkYDl4sD5E49RMhxRWFR4FTWdOaAzQfibxzbm72ESMUuMSqbYeCYJV3BNhtfLbCXnFcuS31hGjG3VGT2wjq2jUNhPM63ViYrJTWP0xVeMuYJZ5wU2GRQL2erPTB1Nq8o+0no4dgeXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706059150; c=relaxed/simple;
-	bh=Rpc6VlcDnbMQpnlT7dJ8ZpIzB0df2U5hyEPssDpp8mg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X0BgTsogGLgS6/4umELRvocURBQqdso1Ae1mUiKJO5NB71XLntYajD4dXVgYY0VwDtlNdad0lCRPpWAN5dxNmpsgC1LvEEvYgsmLp0lWe+ZjA1wzlJA6XGJitlk9pYYn0S7VmyI7ZYeViS1v3t6KuvWOv4gX6HLxmB7wmoqOUQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NrX5U5jF; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337d32cd9c1so4338977f8f.2;
-        Tue, 23 Jan 2024 17:19:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706059147; x=1706663947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=23BMZPjmseE+NnJTiX5FEz+NfeKzQZWgWoSkE38xO34=;
-        b=NrX5U5jF0H424NTgPrVBbHA5AmxqZ1G/nk+r6Ml9vql4O1MQfb5OrKdf0ecd7ErkP1
-         Gae+1NjQLiRL4uyr0d7C9F2+IerLY4U/GbmT3QE4SG8wtFG40/BQiKRC07dNASznxAR+
-         e4zGvUSczYrEl++Rd5mzR03BmWG4bscrAWEViMsHwB7WnSV/5pVXX/VZQiTeZ8NXxInE
-         PPP2OVQ07KvpvJPzIo9l2zzcI1QuD8yEr6PspeNgjeC4ciXE5KNRcF/NXA8+e7k7za4K
-         bCxIMOH/0xRTuC3U+oVEGRLpn9eMATZVih6xh+MIsllWZPTGaOfTTdcdUIsoPm83xMAv
-         u03A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706059147; x=1706663947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=23BMZPjmseE+NnJTiX5FEz+NfeKzQZWgWoSkE38xO34=;
-        b=VWCudeZgchJWvjAgFUKJAHKzVWbXRPoAOkhFBp1sLlAxoai0W0J/B4oKjAMh7vVLj9
-         HiTJgrFPbF+DelusXKsuJskb5T8p9GSOA4JmpHHaY+8i1ejrZMy9Xp+qdilJKtiES758
-         blvb7sE5J2ZJftCVSxXHj00Yx9nzIqNr+EzPXmt2rNn3ig1ErNORSUroNvXBY2uf9ZKz
-         29j2x7TUYnljEe7on4jYsEp7+FLBcCMZXFzCLpGIiYi+SfIQek70ci4jtYylFcys6FTA
-         XtQMxo0+0pDiEXqI8V1mOoDE/JW0vVmasvMCdOM+LYNov/vNVXZyARpXZAdWcxz8oFtY
-         jUzQ==
-X-Gm-Message-State: AOJu0YwRdkXP1qIEyx5C0Z4Fq/9U1tY4zkGwJ0Q19ZFf0QUnhaosCZqh
-	yXZgzQs4U+8ZKeWBbBrk4csy/1XOjE1kiUoOHUPFuBwCYmJPFxc+V59k79LZEp3c9y4ZGcaCMst
-	gihHcQ8p/Sodlr0aIm9slxx7jJPf8LBMp
-X-Google-Smtp-Source: AGHT+IFkQ3AUOOGgAw7byHYXU4wQvww+xPLx5fYGaP+kl3qDZhA7tHFM2gAlqvC3Xf+bEcEgD1bJ/300g3D++n4w1gY=
-X-Received: by 2002:adf:f348:0:b0:339:30fd:cbb5 with SMTP id
- e8-20020adff348000000b0033930fdcbb5mr34670wrp.109.1706059146980; Tue, 23 Jan
- 2024 17:19:06 -0800 (PST)
+	s=arc-20240116; t=1706061199; c=relaxed/simple;
+	bh=j7t27oDh4HaoBk4FY5/kZ5s13IHwgzwGRrYuqruPWvU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=W63Y8tJKDa1nZjDTEl1kd2KERPA8lT0/gA1RjgdbvEx6HrLjNg3jAIsGok4HaDP5cYgbFihxJLtGpZGIbGKWxN2qqUM071PPp4mpbA3Bcl8Kcl3cWxKN8Jh8R3oAjEUHGHqwdg+NEaYs3CGRcnTAvqEhuq0S86lxDyhfYNRfW24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5uHJrNT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6449BC433F1;
+	Wed, 24 Jan 2024 01:53:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706061199;
+	bh=j7t27oDh4HaoBk4FY5/kZ5s13IHwgzwGRrYuqruPWvU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=B5uHJrNTvjF5HvVIugTHGBxI9nLqYC/rqpC9F5gZFUgGvPgGbEgEYUAOPS7gAxvcN
+	 3BymLIhn7JRSGm7BOgxMcMvbZUHSvJojMvPxTRXZIUutj/OhY84/e2W7TVAkZaWDLK
+	 4vtGnEPk9ItHuXdYMcgpU3nmFzJBfUxEdZrma5EzV3x3fKekUegd8YNh3QDnCyxgvJ
+	 hn/iv9uNYsO6byDoho3gUCrqiIUbx/jAFlD/sdAUGrlYrBsal2Ft9TjvAJYuPAZuVk
+	 UiL8HJ5ga0q+eNk5SbaMhveZrcGjRiCGhlnkZpFxPJ7uWm99uUxeB+OhZEXhH4yJrd
+	 xrj7N9OMhsFAg==
+Date: Tue, 23 Jan 2024 17:53:17 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com,
+ bjorn@kernel.org, echaudro@redhat.com, lorenzo@kernel.org,
+ martin.lau@linux.dev, tirthendu.sarkar@intel.com, john.fastabend@gmail.com,
+ horms@kernel.org
+Subject: Re: [PATCH v5 bpf 03/11] xsk: fix usage of multi-buffer BPF helpers
+ for ZC XDP
+Message-ID: <20240123175317.730c2e21@kernel.org>
+In-Reply-To: <20240122221610.556746-4-maciej.fijalkowski@intel.com>
+References: <20240122221610.556746-1-maciej.fijalkowski@intel.com>
+	<20240122221610.556746-4-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124121605.1c4cc5bc@canb.auug.org.au>
-In-Reply-To: <20240124121605.1c4cc5bc@canb.auug.org.au>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 23 Jan 2024 17:18:55 -0800
-Message-ID: <CAADnVQKBCpkwx1HVaNy1wmHqVrekgkd4LEZm9UzqOkOBniTOyw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the mm tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
-	Networking <netdev@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 5:16=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the bpf-next tree got a conflict in:
->
->   tools/testing/selftests/bpf/README.rst
->
-> between commit:
->
->   0d57063bef1b ("selftests/bpf: update LLVM Phabricator links")
->
-> from the mm-nonmm-unstable branch of the mm tree and commit:
->
->   f067074bafd5 ("selftests/bpf: Update LLVM Phabricator links")
->
-> from the bpf-next tree.
+On Mon, 22 Jan 2024 23:16:02 +0100 Maciej Fijalkowski wrote:
+>  
+> +static void __shrink_data(struct xdp_buff *xdp, struct xdp_mem_info *mem_info,
+> +			  skb_frag_t *frag, int shrink)
+> +{
+> +	if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL)
+> +		xsk_buff_get_tail(xdp)->data_end -= shrink;
+> +	skb_frag_size_sub(frag, shrink);
 
-Andrew,
-please drop the bpf related commit from your tree.
+nit: this has just one caller, why not inline these 3 lines?
 
-Thanks
+> +}
+> +
+> +static bool shrink_data(struct xdp_buff *xdp, skb_frag_t *frag, int shrink)
+
+nit: prefix the function name, please
+
+> +{
+> +	struct xdp_mem_info *mem_info = &xdp->rxq->mem;
+> +
+> +	if (skb_frag_size(frag) == shrink) {
+> +		struct page *page = skb_frag_page(frag);
+> +		struct xdp_buff *zc_frag = NULL;
+> +
+> +		if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
+> +			zc_frag = xsk_buff_get_tail(xdp);
+> +
+> +			xsk_buff_del_tail(zc_frag);
+> +		}
+> +
+> +		__xdp_return(page_address(page), mem_info, false, zc_frag);
+> +		return true;
+> +	}
+> +	__shrink_data(xdp, mem_info, frag, shrink);
+> +	return false;
 
