@@ -1,149 +1,112 @@
-Return-Path: <bpf+bounces-20209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D549283A585
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 10:33:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DDEF83A5EC
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 10:51:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 142231C21E68
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 09:33:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8EF5B2B2E1
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 09:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6A217C64;
-	Wed, 24 Jan 2024 09:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87906182A0;
+	Wed, 24 Jan 2024 09:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HlPFbVgR"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="VFBWV2IP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831A917BDA
-	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 09:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF533182AB;
+	Wed, 24 Jan 2024 09:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706088802; cv=none; b=BYdM/ECBKo27p9LpKf5kbNlnvC32xIazft9dvrBetZclygufMvTKpR+6T++81UcjihhYPi8ock73xH9Emh90A+5dgGrM9znYeJIIU4Ox3dHrM2sUQjS2iBnZQHE+eSqvFicWj6WOCths2kcV+D9yRFB+6BFzxqrz9gwsvUU80pI=
+	t=1706089607; cv=none; b=myhuFTHiXkfJCSlXheWFrLGERxm/Rcz57WKflTecmfukR3yVKvYs82c8AxEU7BbXAs40PXcEa9t3i62FoTRLG/Exzun9BuD/xSDZf4ET6pwMFp7Rfd0fuN3j1W7i9gVbL6vjbDUXgqDy7qJAvPLIzCco3iStFzDuEq3XYGeY0W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706088802; c=relaxed/simple;
-	bh=j5zxh0luW+yhO3QhJC02NjfgjGAdowcFM8kQUUmMPS8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V0cIRwFh1rvyyUa9VXV+ffSkujmfGBkkdWVJZ8D2uZOYHXM5L649F9OxajYef23Dva452fEH2/bRSR2QPvT8Cyt2Op0eHv8UYRewmNpl5xWdGRu0lAn63WjTKt3O/DeIX98SyiJ3uFS1deKKsiykb3br9t9UsVFCky39wqHwfBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HlPFbVgR; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2148b28ccafso737328fac.3
-        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 01:33:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706088800; x=1706693600; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zsz7nIgCortlYgFwuxGYcUnh3ptjlzk3Lf+JU53xenY=;
-        b=HlPFbVgRAYU3VRDo1VPIZmHlG8b7y3Qz9hTpo6pXfKzXK+huX2laWhonisjLOXLfE+
-         rKQoYUIlZbC4DYIrLM+5W61V7z/ikL90MLf2oxx7hDTp+Qgjk/Ld0RRuWUsnSvn90JN9
-         W6PD41PGu9OD/A1NMnUiqY5d+5Ia9cnAOxb+P7N6uS7diiBNtEXJy4sRoTx1hlfBztjz
-         Wntqtr0NpukMzDeDNKdUYSM9jHR8/q6PtnXHY2Dy2/4cjJcJnQjZjHaHWdT6xhXg9fMC
-         AusEDxNchcs0u8rhRYLyONuC/YN5t630dgA7pcDvnN96wpvYZZzgifSwKyOdVjswcBg6
-         30XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706088800; x=1706693600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zsz7nIgCortlYgFwuxGYcUnh3ptjlzk3Lf+JU53xenY=;
-        b=eP2qwW5+iMuhAHsEUQ46eckXtVEnPWEiFtXUUUDfVPh+dXnPiBU7EoG81hAx9eOuuP
-         sv3UB1y9Yjl9wwXKx/YlFTYUExrO6n6l8C9zet/4raj024tUndZ8QxI+jjXa4qX+Ujqc
-         ABvi9swQjv+222cHpGHIZOpp/JkE9PGEv5P2aegpaucNaU+MspE/UA7SR87uHq4jFoxb
-         MVcVc9ZSOCUm8c3QDZhzlNeYrtqgYjIZ0HJ50l2bw96qvHjwF9HqfxUJXzX/o9qyPQoX
-         4qAdvN8gS1kG9E5B7Cd4GSsLxLDWlIKKkPbpdUuKKXowbzEriAx6ApyIXlmIXHfcGzZt
-         1/Gw==
-X-Gm-Message-State: AOJu0Yy/9bAp8oo1pzCJzTIBihMnQkYVkTZzLtkP9xIgsu4SA0QZ04eY
-	auo4zw4ZMuHbG1217OaxtfQZxRCUaMlxkDg4XJlKU9jRcZFQQQgcQt9+78T+EevtGaHi+WIjkmY
-	j7sE0nHjbfTBOHN4pUYGsY+sicpk=
-X-Google-Smtp-Source: AGHT+IFOYuyXhNr5pteTTVV5gSfNpc7ZNmd7ohJ0qTjwNQpcqLd3tOKlyOMfZnpjL++xFHAK2X9OWE2UNXEKET2kqBQ=
-X-Received: by 2002:a05:6870:468f:b0:205:c2c1:bdba with SMTP id
- a15-20020a056870468f00b00205c2c1bdbamr2545729oap.92.1706088800440; Wed, 24
- Jan 2024 01:33:20 -0800 (PST)
+	s=arc-20240116; t=1706089607; c=relaxed/simple;
+	bh=g88xxGggv15/xdqsSHg5R7sXTHhEp+krTJy1ll1lV4U=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=MKEuZaS2q7zQYUn0W/1o+tbOcOpC6UeaTQBEdG0xlAxzyMiibaBMHncqJ6bQzk9FNU4ZXz2TH9H4eWQNO9lPxqQ9HSSsnegUBSYcRR40cMXEeCI8n6KWvs5sxHgqj9Tp6dEUZb/hrFb9QxjKVrf0fCXHcfLUzNdL0VPfrnK0LRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=VFBWV2IP; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=bA7AsA7CeLFm30KGGEVuSKCxjLezcEyRJ3yCntSdgy0=; b=VFBWV2IPxHc2UVAaJtQ1i0QTwo
+	8EMjQINaWYOQBlG9wxWmCqAISdREh9sfQNAaCKABeW5zAHOAtviEVOnOrTou6vyHdWhL7RjDtAoWm
+	wMdNiWj6Yp8i4W7EU/3KpzE5Nln/wljg96lY9xzrUUr3+MSRziMUKAs36jwEqjoZ557c0tOE/zL2u
+	LA5FDakV3oasErJ2ZDivV1tqRLM9RHig8vM9mTfupxuJ5Q/vXyIy3ryYLitYvP53QtFdIatksExrE
+	2I2IdUGUK0MOTbcdfS9vOUHT7U6qoDLEeff3hQ6E4bsONYlAkBvyj7Gf15V2sgq6KQEmI+cZRH+M/
+	uD92dAKw==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rSZq7-000K6v-HJ; Wed, 24 Jan 2024 10:46:35 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rSZq6-0007cZ-2v;
+	Wed, 24 Jan 2024 10:46:34 +0100
+Subject: Re: linux-next: manual merge of the bpf-next tree with the mm tree
+To: Andrew Morton <akpm@linux-foundation.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>
+References: <20240124121605.1c4cc5bc@canb.auug.org.au>
+ <CAADnVQKBCpkwx1HVaNy1wmHqVrekgkd4LEZm9UzqOkOBniTOyw@mail.gmail.com>
+ <20240124001808.bfff657f089afe10e5b0824c@linux-foundation.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8cd3a7f4-db72-dc8f-581c-40d115562c55@iogearbox.net>
+Date: Wed, 24 Jan 2024 10:46:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123152716.5975-1-laoar.shao@gmail.com> <20240123152716.5975-3-laoar.shao@gmail.com>
- <20240123202807.GB30071@maniforge>
-In-Reply-To: <20240123202807.GB30071@maniforge>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 24 Jan 2024 17:32:44 +0800
-Message-ID: <CALOAHbAN0egVDqn7UQXK4hhe9G3P2NyvhJVi75PpNTqGdHh5EQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/3] bpf, doc: Add document for cpumask iter
-To: David Vernet <void@manifault.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240124001808.bfff657f089afe10e5b0824c@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27163/Tue Jan 23 10:42:11 2024)
 
-On Wed, Jan 24, 2024 at 4:28=E2=80=AFAM David Vernet <void@manifault.com> w=
-rote:
->
-> On Tue, Jan 23, 2024 at 11:27:15PM +0800, Yafang Shao wrote:
-> > This patch adds the document for the newly added cpumask iterator
-> > kfuncs.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  Documentation/bpf/cpumasks.rst | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> >
-> > diff --git a/Documentation/bpf/cpumasks.rst b/Documentation/bpf/cpumask=
-s.rst
-> > index b5d47a04da5d..523f377afc6e 100644
-> > --- a/Documentation/bpf/cpumasks.rst
-> > +++ b/Documentation/bpf/cpumasks.rst
-> > @@ -372,6 +372,23 @@ used.
-> >  .. _tools/testing/selftests/bpf/progs/cpumask_success.c:
-> >     https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tr=
-ee/tools/testing/selftests/bpf/progs/cpumask_success.c
-> >
-> > +3.3 cpumask iterator
-> > +--------------------
-> > +
-> > +The cpumask iterator enables the iteration of percpu data, such as run=
-queues,
-> > +system_group_pcpu, and more.
-> > +
-> > +.. kernel-doc:: kernel/bpf/cpumask.c
-> > +   :identifiers: bpf_iter_cpumask_new bpf_iter_cpumask_next
-> > +                 bpf_iter_cpumask_destroy
->
-> Practically speaking I don't think documenting these kfuncs is going to
-> be super useful to most users. I expect we'd wrap this in a macro, just
-> like we do for bpf_for(), and I think it would be much more useful to a
-> reader to show how they can use such a macro with a full, self-contained
-> example rather than just embedding the doxygen comment here.
+On 1/24/24 9:18 AM, Andrew Morton wrote:
+> On Tue, 23 Jan 2024 17:18:55 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+>>> Today's linux-next merge of the bpf-next tree got a conflict in:
+>>>
+>>>    tools/testing/selftests/bpf/README.rst
+>>>
+>>> between commit:
+>>>
+>>>    0d57063bef1b ("selftests/bpf: update LLVM Phabricator links")
+>>>
+>>> from the mm-nonmm-unstable branch of the mm tree and commit:
+>>>
+>>>    f067074bafd5 ("selftests/bpf: Update LLVM Phabricator links")
+>>>
+>>> from the bpf-next tree.
+>>
+>> Andrew,
+>> please drop the bpf related commit from your tree.
+> 
+> um, please don't cherry-pick a single patch from a multi-patch series
+> which I have already applied.
 
-Agree.
+The BPF one was actually a stand-alone patch targetted at bpf-next:
 
->
-> > +
-> > +----
-> > +
-> > +Some example usages of the cpumask iterator can be found in
-> > +`tools/testing/selftests/bpf/progs/test_cpumask_iter.c`_.
-> > +
-> > +.. _tools/testing/selftests/bpf/progs/test_cpumask_iter.c:
-> > +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tr=
-ee/tools/testing/selftests/bpf/progs/test_cpumask_iter.c
->
-> I know it's typical for BPF to link to selftests like this, but I
-> personally strongly prefer actual examples in the documentation. We have
-> examples elsewhere in this file, so can we please do the same here?
-
-will do it.
-
---=20
-Regards
-Yafang
+https://lore.kernel.org/bpf/20240111-bpf-update-llvm-phabricator-links-v2-1-9a7ae976bd64@kernel.org/
 
