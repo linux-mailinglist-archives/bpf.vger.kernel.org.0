@@ -1,169 +1,231 @@
-Return-Path: <bpf+bounces-20225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F52883A941
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 13:13:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118BE83A975
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 13:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B23171F21A0D
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 12:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7D91282CF3
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 12:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47226313E;
-	Wed, 24 Jan 2024 12:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DA763110;
+	Wed, 24 Jan 2024 12:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="G1KOJ8Ea"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="EeyuUl53"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E104D60DCB
-	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 12:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4C4FC09
+	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 12:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098209; cv=none; b=Zp1FP3Sb92dzxX2MBnhN9QFJqKj7cv4E3r2c6Re05SOR6TgNJZamHs+uuG84Hc35PDa4ys+7ApyNz78x+fRlvgeEUWENlFCA1tFT2Whywzr7jCrO+1heCvbh8XGV5lVs3HtnqPX32//r/wKFLnt4nHHYWUOKinmi3MoJ8eNGl48=
+	t=1706098661; cv=none; b=FgkVlZaudsfBkwBwU6Xh1mp06DAl0qisXBIOSQtDwpMpnIdgJXxUhQOMWL3r3IchYUqkz1oiooJ8CE3aevcmOww5In0e2LC6VuZD1UaHoZ8NoFTayFkFyjI/Mc2NwaFhCZLBkRr1YYxxTQNND2BpX6v1YrEUUQqjPvZnqvvGi9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098209; c=relaxed/simple;
-	bh=zl9VzZezR3O5GUVP0MRYZ600XsfdMgKtjgE2vefKqg0=;
+	s=arc-20240116; t=1706098661; c=relaxed/simple;
+	bh=4wAsqiXtqLWKVqj2fG/asHpB71yeF4SIWaebwZLRE/0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=csQ3RDmG2RDMvUhPn5+1A9kaUE3Y6gF7/pygiV6GN/4JwJ2yLpBjLUFj5rSpFDPbF9hCpgkpCWQwFbCJCVNpBDj7XsC4vkNl8QzRJztkzos57vfaxrR77WurudemhhwP6PQeUruD866JlM2emkqyBzvcwl7yBViMGsFhjsgwRko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=G1KOJ8Ea; arc=none smtp.client-ip=209.85.219.169
+	 To:Cc:Content-Type; b=NKeTF5HwWKuiWL0b3tdhnp3dju/BcYGm6+6rKpk32cVnVGKklI/+OIIka6ypLGfyRex3nqwwkXAHN6tzoQF1m0GscwLzv7gvchP/rK8zwNXGorBtpu76QgkqcKpPztNCVVBC30fAwA1WQ2amgIH/HCrHhclZ1WQvLtxtPQAAle0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=EeyuUl53; arc=none smtp.client-ip=209.85.219.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc22597dbfeso5744881276.3
-        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 04:10:07 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc2308fe275so4575754276.1
+        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 04:17:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1706098207; x=1706703007; darn=vger.kernel.org;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1706098658; x=1706703458; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KxsDva+3z7gecuc15h26DDSxAVZxkuNdlTUgHNx+MUU=;
-        b=G1KOJ8EazYXxQqPITvclUIZ9Ln8RLiONp+jMjPs3BZWZ/AN4PHT0OdX1BaA6d+bQcW
-         Bac8JysRMRY5Jwl0rCO5csK86E4uP26zXfnI7fferviViYiCAbOv1NYbu0Ohwx7bbaLI
-         I8yDAJV6xCPMQqDexdpokYCxupyPl1kL+vGwPBwU4c6xGsDm0OsIxLjJBSio7Sb2E1W5
-         h2D2LEGox2P35wXCq83W3rItzg9j1Lq9rU9BCxcE1fw2yo22aVkhqGxdEWuWqmngPZC8
-         wA8pIZ9t2WPBUMuOchoUjIPpkJOYTtqt+/o9OZRlvNaxcETCUqVD2dZgO9bHjeeaUJ/w
-         8V+g==
+        bh=N40ZEELDdKAG+PltYHXUqIJnRZg2htUPF9zZfWdekds=;
+        b=EeyuUl531izO/zR9hh1JZTFuEh+b7ysIzkXISnSp9/9oRhAF+ZafJOz9793fqgbXMN
+         IiulBQ64otHMwQhkfmDvZd6oJgBt3K09MAFj69vt6AxOdqKobEDllPkjNfUKt9YRKOuW
+         68vBKK1XQnAH5foPJL+dP0c0DpMIZOWT7Gi5p6QDa6+0ooa94oXT3XhxFTRYbFfim5vT
+         esTsBYXYOzaMmhoa0aqcknJtYtIvc47ufL1C9uAt8GNFYyuIYuP2YqRaDOBsk5iMPltY
+         ciR0v9TLJzleIFQttlrJf8qn/lVII7i4Zg5WmYK0MZG2RV0jCLqRn5bq17sqcMnsmv0z
+         jbng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706098207; x=1706703007;
+        d=1e100.net; s=20230601; t=1706098658; x=1706703458;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KxsDva+3z7gecuc15h26DDSxAVZxkuNdlTUgHNx+MUU=;
-        b=JEgWmiYOJ96lRYaVNFeunStVgOP+ZGHdjxzY3KIsFT2vEAwn94+LkyZY4yay6e9Koa
-         VuHhOsmoqmsk+DnLuT88YDKlg7ivS9MlPYYyKzIrLR6USk6Frh1EMjmiH8fNfFtF9Vr0
-         kZ1nnWYIhVRUvwlZfHAwTIUZug8FQh3E09xKBln7YotgV4ErJhW8VIubAKL82H3o4Bti
-         9Nwx7yPipcQZMsORxBkXMgntITBusMfrLoWWdGzDkovHpoywU6egHM8tfWCc8Zi+UTDE
-         x7oW37mFRBeBCJ1qJ6nua0rblgJPT0kEWZ0hZ4m24jcYqJkj7npqzuadj86LVavChYZd
-         kHhw==
-X-Gm-Message-State: AOJu0YzQz/Zq18Jia9ytYea5ukZ3Vj8R29NMGiOWyiFuuefg9NGg9HFC
-	FUvga5567wm59vTDXuDvTwNHKVcflsDX94K5P23eDlk5a5V+d16i37aIoTLSP6mZaDMYObTJBTe
-	OBY9FANUzRxMzikNIgEevLoD0FIFreairsDzM
-X-Google-Smtp-Source: AGHT+IGbF9p+7BMCoFk4YAYyD9UUnddh9A31toesB8/u6BODEL060j8TKy3YXmd5jZBkDVBxVHHttZnG4WKKpJztZ9k=
-X-Received: by 2002:a05:6902:1ac9:b0:dbe:3ddf:57e8 with SMTP id
- db9-20020a0569021ac900b00dbe3ddf57e8mr630817ybb.55.1706098206688; Wed, 24 Jan
- 2024 04:10:06 -0800 (PST)
+        bh=N40ZEELDdKAG+PltYHXUqIJnRZg2htUPF9zZfWdekds=;
+        b=rcOwak4QXAMok6ryMLxY0FYSJM3apOLSSWF1egYZ4rWyQbRB6sHO0zOOOWo8FgPxS4
+         CSw74q+8KLVw9mnU3JLt0rpTv9Rlpy3ECSEy3uCf8bMoUDmxYhTrdr5dpSad5YDZz+G9
+         46S/TQpCH8hiP+l3AkrivWISqg1eLeit9OxbE1cq2hsV23SN4n2Jv6GDnZNTVdJ5vJR9
+         WtG19ax3TeDqwxint64bY7zufFnPSKGSCXzaW3swL85L78l+X9sI3dOzHqsZEPVFdk56
+         mCh2o65vdGoXUqv7HLhH174k6/COehTHN5zAMXBsnaYM5LGg4DlGZ2Djzm1pMd3gzu26
+         u2ug==
+X-Gm-Message-State: AOJu0YyE0ovbrBx1a+spqBIjB56Yn89rgYxFv6phgMKNh5Cnail+/6sY
+	oW4IZ2tkzal7N2CKDW7nFm4pBGQBSwoNtf/w4EIi0Oj1tAoTpxIvFxOemAiZafiLBx5VCawT6zf
+	wnFU63O9vXYWwAqPoYXn2f7uwCOVcuSU1H/qy
+X-Google-Smtp-Source: AGHT+IFwzXVb4RY9kn5qPmYvPGQUlYLETaeLn/PuqSP06R4dtdLY3ViYyP66gP8R/osYf0FPE0DXk7hFGVI9sCWzIaI=
+X-Received: by 2002:a25:81d0:0:b0:dc2:8282:a590 with SMTP id
+ n16-20020a2581d0000000b00dc28282a590mr448139ybm.125.1706098658502; Wed, 24
+ Jan 2024 04:17:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705432850.git.amery.hung@bytedance.com> <ZbAr_dWoRnjbvv04@google.com>
-In-Reply-To: <ZbAr_dWoRnjbvv04@google.com>
+References: <20240123135242.11430-1-mkoutny@suse.com>
+In-Reply-To: <20240123135242.11430-1-mkoutny@suse.com>
 From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Wed, 24 Jan 2024 07:09:54 -0500
-Message-ID: <CAM0EoMkHZO9Mpz7JugN7+o95gqX8HBgAVK6R_jhRRYQ-D=QDFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v7 0/8] net_sched: Introduce eBPF based Qdisc
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	yangpeihao@sjtu.edu.cn, toke@redhat.com, jiri@resnulli.us, 
-	xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+Date: Wed, 24 Jan 2024 07:17:27 -0500
+Message-ID: <CAM0EoMkA1Hp61mp2n06P8aMdnteJZD5tvJPDOuAKi_PNrb+T9A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] net/sched: Load modules via alias
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	cake@lists.bufferbloat.net, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>, 
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
+	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, Martin Wilck <mwilck@suse.com>, 
+	Pedro Tammela <pctammela@mojatatu.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 4:13=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
- wrote:
->
-> On 01/17, Amery Hung wrote:
-> > Hi,
-> >
-> > I am continuing the work of ebpf-based Qdisc based on Cong=E2=80=99s pr=
-evious
-> > RFC. The followings are some use cases of eBPF Qdisc:
-> >
-> > 1. Allow customizing Qdiscs in an easier way. So that people don't
-> >    have to write a complete Qdisc kernel module just to experiment
-> >    some new queuing theory.
-> >
-> > 2. Solve EDT's problem. EDT calcuates the "tokens" in clsact which
-> >    is before enqueue, it is impossible to adjust those "tokens" after
-> >    packets get dropped in enqueue. With eBPF Qdisc, it is easy to
-> >    be solved with a shared map between clsact and sch_bpf.
-> >
-> > 3. Replace qevents, as now the user gains much more control over the
-> >    skb and queues.
-> >
-> > 4. Provide a new way to reuse TC filters. Currently TC relies on filter
-> >    chain and block to reuse the TC filters, but they are too complicate=
-d
-> >    to understand. With eBPF helper bpf_skb_tc_classify(), we can invoke
-> >    TC filters on _any_ Qdisc (even on a different netdev) to do the
-> >    classification.
-> >
-> > 5. Potentially pave a way for ingress to queue packets, although
-> >    current implementation is still only for egress.
-> >
-> > I=E2=80=99ve combed through previous comments and appreciated the feedb=
-acks.
-> > Some major changes in this RFC is the use of kptr to skb to maintain
-> > the validility of skb during its lifetime in the Qdisc, dropping rbtree
-> > maps, and the inclusion of two examples.
-> >
-> > Some questions for discussion:
-> >
-> > 1. We now pass a trusted kptr of sk_buff to the program instead of
-> >    __sk_buff. This makes most helpers using __sk_buff incompatible
-> >    with eBPF qdisc. An alternative is to still use __sk_buff in the
-> >    context and use bpf_cast_to_kern_ctx() to acquire the kptr. However,
-> >    this can only be applied to enqueue program, since in dequeue progra=
-m
-> >    skbs do not come from ctx but kptrs exchanged out of maps (i.e., the=
-re
-> >    is no __sk_buff). Any suggestion for making skb kptr and helper
-> >    functions compatible?
-> >
-> > 2. The current patchset uses netlink. Do we also want to use bpf_link
-> >    for attachment?
->
-> [..]
->
-> > 3. People have suggested struct_ops. We chose not to use struct_ops sin=
-ce
-> >    users might want to create multiple bpf qdiscs with different
-> >    implementations. Current struct_ops attachment model does not seem
-> >    to support replacing only functions of a specific instance of a modu=
-le,
-> >    but I might be wrong.
->
-> I still feel like it deserves at leasta try. Maybe we can find some poten=
-tial
-> path where struct_ops can allow different implementations (Martin probabl=
-y
-> has some ideas about that). I looked at the bpf qdisc itself and it doesn=
-'t
-> really have anything complicated (besides trying to play nicely with othe=
-r
-> tc classes/actions, but I'm not sure how relevant that is).
+Hi Michal,
 
-Are you suggesting that it is a nuisance to integrate with the
-existing infra? I would consider it being a lot more than "trying to
-play nicely". Besides, it's a kfunc and people will not be forced to
-use it.
+On Tue, Jan 23, 2024 at 8:52=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> These modules may be loaded lazily without user's awareness and
+> control. Add respective aliases to modules and request them under these
+> aliases so that modprobe's blacklisting mechanism (through aliases)
+> works for them. (The same pattern exists e.g. for filesystem
+> modules.)
+>
+> For example (before the change):
+>   $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex .=
+..
+>   # cls_tcindex module is loaded despite a `blacklist cls_tcindex` entry
+>   # in /etc/modprobe.d/*.conf
+>
+> After the change:
+>   $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex .=
+..
+>   Unknown filter "tcindex", hence option "..." is unparsable
+>   # explicit/acknowledged (privileged) action is needed
+>   $ modprobe cls_tcindex
+>   # blacklist entry won't apply to this direct modprobe, module is
+>   # loaded with awareness
+>
+
+A small nit seeing Simon's comment which will have you respin.
+cls_tcindex is no longer in the kernel. Can you use another example?
+Also Stephen had some comments last time, not sure if you addressed
+those (nothing on the logs says you did and i didnt see him say
+anything).
 
 cheers,
 jamal
 
-> With struct_ops you can also get your (2) addressed.
+> A considered alternative was invoking `modprobe -b` always from
+> request_module(), however, dismissed as too intrusive and slightly
+> confusing in favor of the precedented aliases (the commit 7f78e0351394
+> ("fs: Limit sys_mount to only request filesystem modules.").
+>
+> User experience suffers in both alternatives. It's improvement is
+> orthogonal to blacklist honoring.
+>
+> Changes from v1 (https://lore.kernel.org/r/20231121175640.9981-1-mkoutny@=
+suse.com)
+> - Treat sch_ and act_ modules analogously to cls_
+>
+> Changes from v2 (https://lore.kernel.org/r/20231206192752.18989-1-mkoutny=
+@suse.com)
+> - reorganized commits (one generated commit + manual pre-/post- work)
+> - used alias names more fitting the existing net- aliases
+> - more info in commit messages and cover letter
+> - rebased on current master
+>
+> Changes from v3 (https://lore.kernel.org/r/20240112180646.13232-1-mkoutny=
+@suse.com)
+> - rebase on netdev/net-next/main
+> - correct aliases in cls_* modules (wrong sed)
+> - replace repeated prefix strings with a macro
+> - patch also request_module call in qdisc_set_default()
+>
+> Michal Koutn=C3=BD (4):
+>   net/sched: Add helper macros with module names
+>   net/sched: Add module aliases for cls_,sch_,act_ modules
+>   net/sched: Load modules via their alias
+>   net/sched: Remove alias of sch_clsact
+>
+>  include/net/act_api.h      | 2 ++
+>  include/net/pkt_cls.h      | 2 ++
+>  include/net/pkt_sched.h    | 2 ++
+>  net/sched/act_api.c        | 2 +-
+>  net/sched/act_bpf.c        | 1 +
+>  net/sched/act_connmark.c   | 1 +
+>  net/sched/act_csum.c       | 1 +
+>  net/sched/act_ct.c         | 1 +
+>  net/sched/act_ctinfo.c     | 1 +
+>  net/sched/act_gact.c       | 1 +
+>  net/sched/act_gate.c       | 1 +
+>  net/sched/act_ife.c        | 1 +
+>  net/sched/act_mirred.c     | 1 +
+>  net/sched/act_mpls.c       | 1 +
+>  net/sched/act_nat.c        | 1 +
+>  net/sched/act_pedit.c      | 1 +
+>  net/sched/act_police.c     | 1 +
+>  net/sched/act_sample.c     | 1 +
+>  net/sched/act_simple.c     | 1 +
+>  net/sched/act_skbedit.c    | 1 +
+>  net/sched/act_skbmod.c     | 1 +
+>  net/sched/act_tunnel_key.c | 1 +
+>  net/sched/act_vlan.c       | 1 +
+>  net/sched/cls_api.c        | 2 +-
+>  net/sched/cls_basic.c      | 1 +
+>  net/sched/cls_bpf.c        | 1 +
+>  net/sched/cls_cgroup.c     | 1 +
+>  net/sched/cls_flow.c       | 1 +
+>  net/sched/cls_flower.c     | 1 +
+>  net/sched/cls_fw.c         | 1 +
+>  net/sched/cls_matchall.c   | 1 +
+>  net/sched/cls_route.c      | 1 +
+>  net/sched/cls_u32.c        | 1 +
+>  net/sched/sch_api.c        | 4 ++--
+>  net/sched/sch_cake.c       | 1 +
+>  net/sched/sch_cbs.c        | 1 +
+>  net/sched/sch_choke.c      | 1 +
+>  net/sched/sch_codel.c      | 1 +
+>  net/sched/sch_drr.c        | 1 +
+>  net/sched/sch_etf.c        | 1 +
+>  net/sched/sch_ets.c        | 1 +
+>  net/sched/sch_fq.c         | 1 +
+>  net/sched/sch_fq_codel.c   | 1 +
+>  net/sched/sch_gred.c       | 1 +
+>  net/sched/sch_hfsc.c       | 1 +
+>  net/sched/sch_hhf.c        | 1 +
+>  net/sched/sch_htb.c        | 1 +
+>  net/sched/sch_ingress.c    | 3 ++-
+>  net/sched/sch_mqprio.c     | 1 +
+>  net/sched/sch_multiq.c     | 1 +
+>  net/sched/sch_netem.c      | 1 +
+>  net/sched/sch_pie.c        | 1 +
+>  net/sched/sch_plug.c       | 1 +
+>  net/sched/sch_prio.c       | 1 +
+>  net/sched/sch_qfq.c        | 1 +
+>  net/sched/sch_red.c        | 1 +
+>  net/sched/sch_sfb.c        | 1 +
+>  net/sched/sch_sfq.c        | 1 +
+>  net/sched/sch_skbprio.c    | 1 +
+>  net/sched/sch_taprio.c     | 1 +
+>  net/sched/sch_tbf.c        | 1 +
+>  61 files changed, 66 insertions(+), 5 deletions(-)
+>
+>
+> base-commit: 736b5545d39ca59d4332a60e56cc8a1a5e264a8e
+> --
+> 2.43.0
+>
 
