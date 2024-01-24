@@ -1,212 +1,212 @@
-Return-Path: <bpf+bounces-20223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB41B83A886
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 12:50:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75FC083A936
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 13:11:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 145DAB23A6E
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 11:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EB3B2848B3
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 12:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0BD1B598;
-	Wed, 24 Jan 2024 11:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0BC760DD8;
+	Wed, 24 Jan 2024 12:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J7Oumsdk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fb6S7QD6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064401B592;
-	Wed, 24 Jan 2024 11:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706096975; cv=none; b=rpw1pnJ17Wi68S3/oiAY8MhxV1rLohHL2I+Cq9gl44BILUg5NhTLD8igYvud6JXkvT/3Q0APcue1ByKprj8WEBFxgkuqscPEOX2FVNQOXnNPPHE2C5CSXVrtRf6BxYQyKMIEcwVymCpILbnHNCTp7NqnbXRC5mzBqxJAHHIkvdU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706096975; c=relaxed/simple;
-	bh=dN7fWukx7t3tARlksk2bOu2iLjec41T1JFUWNyeQ8aA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Oybci32oBbzeoy+AiFtxUhSyqGGrvLAir9ju0614KxjizIT3DdxBP6BZ641HF8+EDTwj4SGzW/0e4yYU3Y+oTcgKwswQLh161rnLPdHQDQuMxHAbcm4R8KAOlkjoOBFWKkAhaR043fO2wiBSPlDKUvD9pyfC5uUtZHb1Rlr44N8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J7Oumsdk; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-783b3539c16so14921185a.1;
-        Wed, 24 Jan 2024 03:49:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706096973; x=1706701773; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ivFNd2hsNPk+T4DFS8JAs+VdfdwaU3+0b1wxcqRPWyM=;
-        b=J7OumsdkhtP+pYO19paRRiJa8iHS+SmO4QQvT9HZzdgubv3gcOojsBxk7jQ1p9db6F
-         /Hp938Vb5x+/16wqT4U4kXxEWtNofABxoxyYSlG3jRzmQYsqPQEC8G5RAbwaXZforqMS
-         aDS+957eABtSzm9w6WrbDPx50tNB7Fof50KziFDrdvIwbTgaCDxXtDAXtWq8OqunkTBw
-         zpgwAk7TWc+04jFZvdQOdHaRMnyOji30g+02HbfrAFhyK+nHN+7q16QCJay6Q8BS7qR+
-         Md6CbWW2Fm+np9hHwJL3fL8Ry3S9Fo4jx0ZiQQWSivX+ln8lj07/yXu/RuJAfR8ox4BZ
-         P91A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706096973; x=1706701773;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ivFNd2hsNPk+T4DFS8JAs+VdfdwaU3+0b1wxcqRPWyM=;
-        b=YiDPSPNupe10qUFPeeu4YYG425YhQaoraKaQDVnGgF3lqSC5n4BOcmmoFKBn+6efu3
-         xQAsemLN7ArVsrUAP9SlRV2gB9pS+8WmH8oilUB411IGgkFY71PlxZyWlNJ8ejdoZ1AA
-         oK6U41sv6EYG8MfROUILhXBZuWrqpkVtqen3ArLRt2F2xhKdRX5l6B6NsIBamEW57q7t
-         /aNeCt9WsPIpYky1YrtiaFNTFjGnIYJxAFVjx1ZCdXuWmK1iQlzILiQcxXSUQh9kjBhw
-         cs8PAQPyDKPbcWUULA5XlIA1l/AwOH+H1lvlsBh3byD1F8mp+t1mEWFEYkqnFlUmq+BD
-         2l2g==
-X-Gm-Message-State: AOJu0YybCyH9D4jQiMP1MNiuy/lx9+l2acl/4BZP3kAFDTvXCUW1RVie
-	42skxOwiBcg5P9pi+CQZDjqE01XHwc6uNeLuqBq8vKps1tPEFp04gbQDugs20hl3LPzjftEJWl/
-	OS8Zg9yyN956n943hgE9jsBY20Dw=
-X-Google-Smtp-Source: AGHT+IHL9M8THo/LhK0sDEGjYeQ8FVX0PkcBKvSu53c/y2HeaezgQyPLFRcuzFgaqKontAqcoQ+H2m50zNchVRD3l/c=
-X-Received: by 2002:a05:6214:4012:b0:685:7cfd:34eb with SMTP id
- kd18-20020a056214401200b006857cfd34ebmr1989766qvb.4.1706096972775; Wed, 24
- Jan 2024 03:49:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AA118622;
+	Wed, 24 Jan 2024 12:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706097762; cv=fail; b=lD8UidNbzohJsHwKjUvY2t3ZLTt1mqk4vJ56Z2jj/97kzQ8dx235Kr/Lgu9o+XenepDRsybA/t1r6JhLeyPfW6oWx4+HEvGwdpqZ9twRDFuP5oBbUHSWvO9YqX7UT2u3btLjgoGdtsLxEskQWt+lga+uxozmtwKmKqT/i7et8ZM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706097762; c=relaxed/simple;
+	bh=xpqAaiY8Jz90BdxWLamZY5xQCfcxYesr8G7Qwv+Dnwk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=CV3gRIBDWVTfvUccD6K4jIs02e1RXRg/Geww5HFDP/uaaqrlsiqdI+TRHYlnVOrPorbCxGXswrvYonYZ4ofcWWF9mrOnt9LATe2CIPewCJ/71tuihiHfmFLJycg+MGTy9he3kyp2bOPJ1Cmc+7qEwnYngkjGz5++CUPLGm2VjO8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fb6S7QD6; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706097761; x=1737633761;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=xpqAaiY8Jz90BdxWLamZY5xQCfcxYesr8G7Qwv+Dnwk=;
+  b=Fb6S7QD6zlVRJSf6dJZ5eSDGt2VjOHFw1v5NWrUGz13km2mcQOtqQmnf
+   7doEiJR01SpYZ3tNt0BUhNJ3qOjdbp0QVAM0VWuW4s7xXMODtdkIOsaYy
+   qt6YjdhN69qBgSRDd4Kq4yoZK+dE6jNh6aAoYU373lT7eLrKRlGB6wfSe
+   khBSdMD5haAamTNFaYkp9TY9hfLWTMafrlSmfGPdjCLrEIN4870dzB6Z6
+   Gqqmh5y157fl1qic9+E4hg/EHDmPKuyEdqV/gBUW7TaiPNOb2SHBVWhJA
+   A42Q/GlW6j+naH3T5+Y7Te5ethHeXxVuCnQka5X7HJG5aX8E2BUptpS9y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15173831"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="15173831"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 04:02:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1860298"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 04:02:39 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 04:02:38 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 04:02:37 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 04:02:37 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Jan 2024 04:02:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DapEL1WMEd4in9EgYqsHp5vgXZIsTczmx1fEI0DA3dTMm3ZcLsXjMlcRecb6Mr1glx9dAlfce+M9YF3eBQba1sxB5oqkM07lkNhCN6duG25hhu7ax48jWs2gqcAqTWlqGa64XIZb5f5TntnMDwp6crCmNowPLqoKPLalEIUTKWDIwe/WsoDnTVMFJiGijZ/aAQ5xqJAyhH0RUegqLkW/TXzZHQvk49p6N77Ki3GT8lZDqqocA3tylcZamCK/zLAOeT4rA1l/wxHOF2tw82sfkaB+bnXYQMQhaSdzZ/fVPr2VATHWdSfmOyT5ELYlDQNZJAWoZcz2/9MRHvWR+8wUFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vxiRfh7wGV0+OB2ss7eh9q/66a854CsVx0td/5iapR0=;
+ b=P2zguRO48ytwlM8foOKMzYfGQFYA1ZzFO74ybj/Wz2Cb3gENKlfl79I8x00bWj6yJEZtl1lWOAp+bLSMPU6nX/8GEzw3rHdlFoJIKlGJjCboIuIKS5jdnYXMYJkPO0UrltP0yxBjwXj+LgW/AZmQFTu4rVVGPuVxvHIMOwImAbjyURrtSi+3dQL1W/kSzBG+ji8xjEdT/QTFQOwf9TFabElpBnYh5JJrLlUklQ+vqv+zo0YZrrgobuXHTMoDn7tO3ib1ucyUA+v8BnigKyCc/Nz3SzUzYfTrt9+MrOzMlpxc+HtW08eoIKcptgp9WksnuyIJNgz+PWWTYWzROTUrQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ CY8PR11MB7730.namprd11.prod.outlook.com (2603:10b6:930:74::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.34; Wed, 24 Jan 2024 12:02:34 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ccab:b5f4:e200:ee47]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ccab:b5f4:e200:ee47%6]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
+ 12:02:34 +0000
+Date: Wed, 24 Jan 2024 13:02:21 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
+	<bjorn@kernel.org>, <echaudro@redhat.com>, <lorenzo@kernel.org>,
+	<martin.lau@linux.dev>, <tirthendu.sarkar@intel.com>,
+	<john.fastabend@gmail.com>, <horms@kernel.org>
+Subject: Re: [PATCH v5 bpf 03/11] xsk: fix usage of multi-buffer BPF helpers
+ for ZC XDP
+Message-ID: <ZbD8TWLihi4SZTwR@boxer>
+References: <20240122221610.556746-1-maciej.fijalkowski@intel.com>
+ <20240122221610.556746-4-maciej.fijalkowski@intel.com>
+ <20240123175317.730c2e21@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240123175317.730c2e21@kernel.org>
+X-ClientProxiedBy: VI1PR09CA0170.eurprd09.prod.outlook.com
+ (2603:10a6:800:120::24) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122221610.556746-1-maciej.fijalkowski@intel.com>
- <20240122221610.556746-3-maciej.fijalkowski@intel.com> <CAJ8uoz2W6nqJ=vk6+RR7zEohkv7CTBO+2KsAQAfgp=gf_5-ycA@mail.gmail.com>
- <ZbD3tbiM/xD+aEJB@boxer>
-In-Reply-To: <ZbD3tbiM/xD+aEJB@boxer>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Wed, 24 Jan 2024 12:49:21 +0100
-Message-ID: <CAJ8uoz1L_EHtU27p=sLuduQ7aZVL9WPL6fDtJ-m3Bix=K39yxQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf 02/11] xsk: make xsk_buff_pool responsible for
- clearing xdp_buff::flags
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
-	bjorn@kernel.org, echaudro@redhat.com, lorenzo@kernel.org, 
-	martin.lau@linux.dev, tirthendu.sarkar@intel.com, john.fastabend@gmail.com, 
-	horms@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CY8PR11MB7730:EE_
+X-MS-Office365-Filtering-Correlation-Id: dc07f836-6434-4726-e724-08dc1cd459ba
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PF6nlKHSStuSp1Tr4HDuDkd1jU+PocvkeK0KcQS6/l9KokShrmIqB9JviTbllzbxuEcFsh3Cy4heRwgivfNXVcqdJBAiJuJHeQB0PU3nJZGhF/ceGPRoHOdD/7dF35RkfECW0mR/6J5O5o4IsyRNGv46LlJBF7XMg8VEocY2NNgZTyUF6EMiHvnP3XNWrWKluCO0vmgmB1EB+mSz3uk8Woi0q0MFV/7sF0G2pK1zkOCEGA0ZcicaTA/nMEypnbyGsesDVb6eApKMrfuY54PxBzFZRfS24dX0KOeoOIHCvwlonr9Rquw6m9lcnC/8+GwbAuIBWivH8U5Rioy6p9ZrN+FgIT2Ei6JI5om+O4a44acN2rDPdLU82p99IUmGPWmjYX/w3OYXK4FR5Gn2lopVId3sag1s7jqs5SGDbCOKPxSXQMyRYLDL3LFohlTkTzmjWnY9a2wsFf4hThFD2q2kLJfU2PVOLLfYNfVZc52vxa5YjyMWCVHPtYg2tIIPCx0jEemJXp+SjuTygERAuKvWaF3jZLSDC5OZLEt3+0j9LoFChtXFgXh8dRi/DrYXWKFu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(366004)(376002)(136003)(346002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(5660300002)(66946007)(44832011)(4326008)(8676002)(86362001)(66476007)(316002)(6486002)(66556008)(6916009)(8936002)(2906002)(26005)(6666004)(478600001)(6512007)(7416002)(9686003)(6506007)(33716001)(41300700001)(82960400001)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N/jQPDIhjJbhsc1bgNvXmvW30ujruDc6ilLoFmnDNpTso+LDWUXKyruvIQi5?=
+ =?us-ascii?Q?Nwoe8SgsOYH+Je3//XzmQYf5DmsQHchdLlVCQKfH84g46flroV2BlCbzTaSJ?=
+ =?us-ascii?Q?7zCvbWhHDgtelszmQOZ6beIYXaCTyihqfInjeNYZn4+3fuowfU047inbbnAh?=
+ =?us-ascii?Q?P9tbgXSp/Gq2cIEFzYIQx6kWJ6rq6EOOWFaG98dtuPHQviHPsPLcX9FEzCDo?=
+ =?us-ascii?Q?udcKaVWSCQdpvWRRTd2+03lkjr8pMVOxsFB0Dr0+oY0IkVj5ueJDV2JZljiz?=
+ =?us-ascii?Q?tMK1un2Yh2gFwNZ05JygF+fs8gU4qc5hyyYYAE+RD8NaWQtaFwRllAD+6xM9?=
+ =?us-ascii?Q?yz8w4WuPUIMCc4pWqeEOVN2/ImpVlWHPcuOq1zDuZX5Pus48nnnUBaMr2+y9?=
+ =?us-ascii?Q?YbtUa496NQdTgAGsc8B3rbjENECZKA1TTw1wsRLww/PxLPwcTEDp7xYul+YD?=
+ =?us-ascii?Q?tLrsS8L5Y9SiSs3cWmHU6dAZmmuy/oo6tDehqwU9EQemuLgNp630+LvrBEPW?=
+ =?us-ascii?Q?/aZudyhLgu4KsuycA64i0+4tvFGkcT9WorTIQkZWqOHNQLX/lIepFNQqPbF2?=
+ =?us-ascii?Q?HAMgw0+uthySEJaIj5iB+pMX0N9oBxaNPNx4kY+jIkiICkLgvGRCofQmlCLO?=
+ =?us-ascii?Q?SgkEAn7H9iuCLH/J+Zy3kRqaUe35qSSESN4EaqFRpeNtAJK2FkRlQ7u/Idzo?=
+ =?us-ascii?Q?JG6IXw92Lb8YJECpyJpuOzau3UnEVHdMEpWPcN/3zXWYLJayTRMa2vfFRpjd?=
+ =?us-ascii?Q?A7ZHZyTtqtrzfn8HnOOonwzfbLTS36mLFRb8eIPRo+YmVBv8b0juaeVIYFZQ?=
+ =?us-ascii?Q?TyD89E48pONwVdKaoT6Ye+NAM2K2UoWb1ZRNJWC6sB8heR77QiAt/K2WhfpH?=
+ =?us-ascii?Q?kj7qxF3PIqZI1a4YwSPSitQDv+PHievO+BjV7FUn/iZjBrV7/RBsOh8KZWRR?=
+ =?us-ascii?Q?LXfauXmPxXmPZZvsf2nis6TvOHSAySio4MeQzQEf2U8VIaZqVJJai10O12E/?=
+ =?us-ascii?Q?Z5JF3wXcUeMB9iewus3V4Wb9yLPumEs+pCkuWR5rrfIbHrW7C3PC6ZheuG6+?=
+ =?us-ascii?Q?wFMoGa7ZcpV1kQiAkGpvoEkx07Owqm4SnCqukhj1dJS3NK+b+P5rQ5Oa42uz?=
+ =?us-ascii?Q?3iAhj2bBVwOtpQrr6DcnOnxEpu7j2+Ehf0IYNPYoXQwCBecYnPY4g5kog45V?=
+ =?us-ascii?Q?C5zCwRq6yehb0j04iTI5JGb6hHqS92r9gP4In8WciTuik6foMQI2z1pLANG1?=
+ =?us-ascii?Q?h/LKgAas2PTj5gsunTZ8tGtEg5e2yJv9wxY/wl4FVLNVUMlkB6idz1zl8ifi?=
+ =?us-ascii?Q?rutv+4qtvBOchGG5SvazrQsRhxbIXGH9aHjBM1Ojvrhd6VhTtZFM9qc6uQ2F?=
+ =?us-ascii?Q?2/HBbptAlCP68Y4WD1zyzTs0iBiBKRFg4IYPtJ0FFQ/4/YxqiBkIMD8xiaIC?=
+ =?us-ascii?Q?8q6cFkQ4qNwwpPAyGUnPbizGR1MJnMr+TvanSsK0RfHZlQJFWAZnrpt/Ui4m?=
+ =?us-ascii?Q?cYDlKu+5FCCDGwulfZdFUU+4+O7G3V4Vw3KJsmoVQlAj4pjrqmilyU6Uw7yM?=
+ =?us-ascii?Q?kn6CwY6WT0NOw49WeY5sEdqE0aGMwiAeClY8yCBK8AtiI2eVUTdL3nBJG+Fi?=
+ =?us-ascii?Q?Eg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc07f836-6434-4726-e724-08dc1cd459ba
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 12:02:34.4870
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jvvfbxdfJr+JUb0xPrjkcdIq209adkm8rkhsQl+V94B9czY+hhxN7U2O+NM3mvpAeCt7YvCOnAwgwxBf4Vn1tS4FcGNMOgZTV4tnyE5LgVQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7730
+X-OriginatorOrg: intel.com
 
-On Wed, 24 Jan 2024 at 12:42, Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Wed, Jan 24, 2024 at 09:20:26AM +0100, Magnus Karlsson wrote:
-> > On Mon, 22 Jan 2024 at 23:16, Maciej Fijalkowski
-> > <maciej.fijalkowski@intel.com> wrote:
-> > >
-> > > XDP multi-buffer support introduced XDP_FLAGS_HAS_FRAGS flag that is
-> > > used by drivers to notify data path whether xdp_buff contains fragments
-> > > or not. Data path looks up mentioned flag on first buffer that occupies
-> > > the linear part of xdp_buff, so drivers only modify it there. This is
-> > > sufficient for SKB and XDP_DRV modes as usually xdp_buff is allocated on
-> > > stack or it resides within struct representing driver's queue and
-> > > fragments are carried via skb_frag_t structs. IOW, we are dealing with
-> > > only one xdp_buff.
-> > >
-> > > ZC mode though relies on list of xdp_buff structs that is carried via
-> > > xsk_buff_pool::xskb_list, so ZC data path has to make sure that
-> > > fragments do *not* have XDP_FLAGS_HAS_FRAGS set. Otherwise,
-> > > xsk_buff_free() could misbehave if it would be executed against xdp_buff
-> > > that carries a frag with XDP_FLAGS_HAS_FRAGS flag set. Such scenario can
-> > > take place when within supplied XDP program bpf_xdp_adjust_tail() is
-> > > used with negative offset that would in turn release the tail fragment
-> > > from multi-buffer frame.
-> > >
-> > > Calling xsk_buff_free() on tail fragment with XDP_FLAGS_HAS_FRAGS would
-> > > result in releasing all the nodes from xskb_list that were produced by
-> > > driver before XDP program execution, which is not what is intended -
-> > > only tail fragment should be deleted from xskb_list and then it should
-> > > be put onto xsk_buff_pool::free_list. Such multi-buffer frame will never
-> > > make it up to user space, so from AF_XDP application POV there would be
-> > > no traffic running, however due to free_list getting constantly new
-> > > nodes, driver will be able to feed HW Rx queue with recycled buffers.
-> > > Bottom line is that instead of traffic being redirected to user space,
-> > > it would be continuously dropped.
-> > >
-> > > To fix this, let us clear the mentioned flag on xsk_buff_pool side at
-> > > allocation time, which is what should have been done right from the
-> > > start of XSK multi-buffer support.
-> > >
-> > > Fixes: 1bbc04de607b ("ice: xsk: add RX multi-buffer support")
-> > > Fixes: 1c9ba9c14658 ("i40e: xsk: add RX multi-buffer support")
-> > > Fixes: 24ea50127ecf ("xsk: support mbuf on ZC RX")
-> > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > ---
-> > >  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 1 -
-> > >  drivers/net/ethernet/intel/ice/ice_xsk.c   | 1 -
-> > >  net/xdp/xsk_buff_pool.c                    | 3 +++
-> > >  3 files changed, 3 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > > index e99fa854d17f..fede0bb3e047 100644
-> > > --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > > +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > > @@ -499,7 +499,6 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
-> > >                 xdp_res = i40e_run_xdp_zc(rx_ring, first, xdp_prog);
-> > >                 i40e_handle_xdp_result_zc(rx_ring, first, rx_desc, &rx_packets,
-> > >                                           &rx_bytes, xdp_res, &failure);
-> > > -               first->flags = 0;
-> > >                 next_to_clean = next_to_process;
-> > >                 if (failure)
-> > >                         break;
-> > > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > index 5d1ae8e4058a..d9073a618ad6 100644
-> > > --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > @@ -895,7 +895,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
-> > >
-> > >                 if (!first) {
-> > >                         first = xdp;
-> > > -                       xdp_buff_clear_frags_flag(first);
-> > >                 } else if (ice_add_xsk_frag(rx_ring, first, xdp, size)) {
-> > >                         break;
-> > >                 }
-> > > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> > > index 28711cc44ced..dc5659da6728 100644
-> > > --- a/net/xdp/xsk_buff_pool.c
-> > > +++ b/net/xdp/xsk_buff_pool.c
-> > > @@ -555,6 +555,7 @@ struct xdp_buff *xp_alloc(struct xsk_buff_pool *pool)
-> > >
-> > >         xskb->xdp.data = xskb->xdp.data_hard_start + XDP_PACKET_HEADROOM;
-> > >         xskb->xdp.data_meta = xskb->xdp.data;
-> > > +       xskb->xdp.flags = 0;
-> > >
-> > >         if (pool->dma_need_sync) {
-> > >                 dma_sync_single_range_for_device(pool->dev, xskb->dma, 0,
-> > > @@ -601,6 +602,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
-> > >                 }
-> > >
-> > >                 *xdp = &xskb->xdp;
-> > > +               xskb->xdp.flags = 0;
-> >
-> > Thanks for catching this. I am thinking we should have an if-statement
-> > here and only do this when multi-buffer is enabled. The reason that we
-> > have two different paths for aligned mode and unaligned mode here is
-> > that we do not have to touch the xdp_buff at all at allocation time in
-> > aligned mode, which provides a nice speed-up. So let us only do this
-> > when necessary. What do you think? Same goes for the line in
-> > xp_alloc_reused().
-> >
->
-> Good point. How about keeping flags = 0 in xp_alloc() and adding it to
-> xsk_buff_set_size() ? We do touch xdp_buff there and these two paths cover
-> batched and non-batched APIs. I do agree that doing it in
-> xp_alloc_new_from_fq() and in xp_alloc_reused() is not really handy.
+On Tue, Jan 23, 2024 at 05:53:17PM -0800, Jakub Kicinski wrote:
+> On Mon, 22 Jan 2024 23:16:02 +0100 Maciej Fijalkowski wrote:
+> >  
+> > +static void __shrink_data(struct xdp_buff *xdp, struct xdp_mem_info *mem_info,
+> > +			  skb_frag_t *frag, int shrink)
+> > +{
+> > +	if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL)
+> > +		xsk_buff_get_tail(xdp)->data_end -= shrink;
+> > +	skb_frag_size_sub(frag, shrink);
+> 
+> nit: this has just one caller, why not inline these 3 lines?
 
-That is an even better idea. Go for it.
+we usually rely on compiler to do that, we have the rule "no inlines in
+source files", no?
 
-> > >                 xdp++;
-> > >         }
-> > >
-> > > @@ -621,6 +623,7 @@ static u32 xp_alloc_reused(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u3
-> > >                 list_del_init(&xskb->free_list_node);
-> > >
-> > >                 *xdp = &xskb->xdp;
-> > > +               xskb->xdp.flags = 0;
-> > >                 xdp++;
-> > >         }
-> > >         pool->free_list_cnt -= nb_entries;
-> > > --
-> > > 2.34.1
-> > >
-> > >
+> 
+> > +}
+> > +
+> > +static bool shrink_data(struct xdp_buff *xdp, skb_frag_t *frag, int shrink)
+> 
+> nit: prefix the function name, please
+
+will rename to bpf_xdp_shrink_data(). Thanks for taking a look!
+
+> 
+> > +{
+> > +	struct xdp_mem_info *mem_info = &xdp->rxq->mem;
+> > +
+> > +	if (skb_frag_size(frag) == shrink) {
+> > +		struct page *page = skb_frag_page(frag);
+> > +		struct xdp_buff *zc_frag = NULL;
+> > +
+> > +		if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
+> > +			zc_frag = xsk_buff_get_tail(xdp);
+> > +
+> > +			xsk_buff_del_tail(zc_frag);
+> > +		}
+> > +
+> > +		__xdp_return(page_address(page), mem_info, false, zc_frag);
+> > +		return true;
+> > +	}
+> > +	__shrink_data(xdp, mem_info, frag, shrink);
+> > +	return false;
 
