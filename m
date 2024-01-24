@@ -1,128 +1,104 @@
-Return-Path: <bpf+bounces-20191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C730839F3E
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 03:35:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE44839FBE
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 04:00:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A7E1C275F2
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 02:35:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D09EF1F2203A
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 03:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329AD469D;
-	Wed, 24 Jan 2024 02:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1209846B4;
+	Wed, 24 Jan 2024 03:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqTnO7Qh"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uxJp/mVX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBE04402;
-	Wed, 24 Jan 2024 02:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4EA5C85
+	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 02:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706063727; cv=none; b=iNoV+1aUvjALk8NFMTjt6kU+zVYyP2o5bAGEmhADmzrZmBxtMCYTpRnuhL7dD2WQk93gPVigcg6r2kROpnC03FZ9GZb5E56l2yfs9Uu9WNSTfL9ycxRItbrpuUbNsWLhEMo9BCYGzrXIuyM7VAHESYhj4xfd62JVszIXeFgJ1LY=
+	t=1706065199; cv=none; b=G59nKG6sq5WrPV/9c0KnnKz0DkZ7PapufrcRSRvvyTMB9ZpmLfkfn6sXGoV4ZUuunZnTY0pw1/3wqSTuB0xj/2N7iA06iwlQ7c/Re2bSMt0t//bCzqpHSFRcQ9LNcDV7RqDgbm/NHCvhfoUvJt6ehrOd4jXWu5lzOsm4GTUNoX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706063727; c=relaxed/simple;
-	bh=Liv6pTk/vLWxnDQTFyTrR9erFdF7zl9NHX3rNUXQWPg=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=G86q5Q632Vk5BxG8KkexfEXhf1fMlsW2uNcUkxfAx64tmVEfFq9YOOx/p8vKXpCNBz5RpfCCxSrJ7KHvLG9QwRNQQWmJU+v+pW4MntGzhTbTlk2ew4YAHwBq3P2TwjT3cfsDT/3zJxNCAkOzz2DGVL4iYNrMILWQsP8nSEA6ArY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EqTnO7Qh; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d74dce86f7so23400605ad.2;
-        Tue, 23 Jan 2024 18:35:26 -0800 (PST)
+	s=arc-20240116; t=1706065199; c=relaxed/simple;
+	bh=fPXQ85z2dk4ZElnoHE7IKEGnCx5Zs8ywjvfrYfs+rnc=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=mWSOH/gV2zI0oRVT739J28TMvy971fjSbneazdh/GEk1WKJT1eJWYassuWU7jgbCJPZy60XiG2xk53OSU49wsPIpyRTBl0MbT5u85tIqNfi+A0BUJFUOz0RL8E7SIsSIfJu5vWel43W2bz7+96UMmDU54ce+Q/p4PjMl0T8KciM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=uxJp/mVX; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6860ff3951aso19887336d6.1
+        for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 18:59:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706063726; x=1706668526; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1706065195; x=1706669995; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YFUl7YI02/JBMotNLWPeCF79OYWFyYFYl1cfdcZaUcc=;
-        b=EqTnO7Qh68jHiDPrLboFCMDPdAKi55lx4wjm4YR5NUm5UfhjcPPt8pTLsDedgxK4cE
-         1L8mW5AKYxEAfOrGY/RHuqNiDdYFQNoQDbcxhqiIdRBnz7bE2wn3pxbKd7shlk9SqeXD
-         b1riFETtkmChgj4YjXphmgzw4VfDR97epp1uyG0XMB5Ng1MCs2OGKsgqMqrCtOLO6cEv
-         mhleHq6C6CYHylvb4TfZTIzMf61Pk/WhFuzeZ979DL0q6p6AC2mw5XPQWKP/1flmP0yU
-         Yxw8FA0Gz0yIsbFT/M7pZ3NLLpsfmBaPQb4uUShF2ToKFsl4CAp/ANyr4s6gmrY6Gq13
-         c62g==
+        bh=fPXQ85z2dk4ZElnoHE7IKEGnCx5Zs8ywjvfrYfs+rnc=;
+        b=uxJp/mVXJYZvYcyZpHLegAgJr4hnfl3p5iCCF0HIeEWHV0RxLJXZsrU8SDHMibym+1
+         0efFBxpK2QZqQCEgUhX6WnKaOjiIgbysWrOE3pgw5jyVA3vE0C64T/DYrHnRWylKtHqw
+         RWXTy5heNCT4ddFhbGBVrhPNlYYQtd33dLGNQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706063726; x=1706668526;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+        d=1e100.net; s=20230601; t=1706065195; x=1706669995;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=YFUl7YI02/JBMotNLWPeCF79OYWFyYFYl1cfdcZaUcc=;
-        b=eu0PNDv1or0jihIoG1mkDShqNJ3XYMbDQTNYl+uCv1R8pzMENfC9FlE/fxRLudEpAx
-         jRhzEIy05D8Jeo722DjREgPC2ZmhpFNXUfIevNoIGT4B30J5LHx+djDWn4rurIEBDh0s
-         YVEAqQ12fnwhCmY3v6KZETjs1AlRvm4y8v7WdQCdBnZ0KFS/oX6ua7qyEnb+SaykXo9h
-         fvzLZ7hv6PvpH769QKxOIqTyUr47TAKJN6hfxIt9483MwO2z96JaqmLX33kMmo6H/K/a
-         jR01WLwUhQlu8K+V30/lvefX9oYk+wnHjW7+UA8F0qeoJKXPYjDG0ZLWPHThvd43CeEK
-         g1lg==
-X-Gm-Message-State: AOJu0Yw2cYCfSPSXxj7aTSyTACy8M5LL9i+L6wuP8fHuK0a7DFJTfIFd
-	9ZXNid2vLluz5avjQbzYY18FrlPqZ4jRIein4xAL4ZkTlP+79HC2XRhLM0oh
-X-Google-Smtp-Source: AGHT+IFrwEjRPN7Ep5FWH9R92zz8vqQtdT3xnPMy4LfJFSvzix90vrZto7iDuiuCPKegpuN1KFRV9g==
-X-Received: by 2002:a17:902:ced1:b0:1d5:8aa5:d782 with SMTP id d17-20020a170902ced100b001d58aa5d782mr244950plg.6.1706063725601;
-        Tue, 23 Jan 2024 18:35:25 -0800 (PST)
-Received: from localhost ([98.97.113.214])
-        by smtp.gmail.com with ESMTPSA id bf11-20020a170902b90b00b001d6ed14e309sm9413202plb.179.2024.01.23.18.35.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 18:35:25 -0800 (PST)
-Date: Tue, 23 Jan 2024 18:35:23 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: John Fastabend <john.fastabend@gmail.com>, 
- netdev@vger.kernel.org, 
- jakub@cloudflare.com
-Cc: john.fastabend@gmail.com, 
- bpf@vger.kernel.org
-Message-ID: <65b0776bd8ee2_fbe42208b8@john.notmuch>
-In-Reply-To: <20240123223612.1015788-1-john.fastabend@gmail.com>
-References: <20240123223612.1015788-1-john.fastabend@gmail.com>
-Subject: RE: [PATCH bpf-next 0/4] transition sockmap testing to test_progs
+        bh=fPXQ85z2dk4ZElnoHE7IKEGnCx5Zs8ywjvfrYfs+rnc=;
+        b=tNh9auYSd1UO5bXnYjZKP+hxzOqfOJqEFXinS1Bcrj79/V3w0H3LMAKiffAAuA8hb9
+         KnMemjyn7UdLb3XHiheGcsrgo9RzVZeXG62nsy50T4v1RLh03KE8Hgv2wlyp8y5/NnHu
+         XugyAwmwUwwgGA4Ji4E/WmngYYcMOni0oa4wcVEBjfzN1rI5Ck7/fd5ftN0cw45rC7Au
+         xKALfbHVzLMqO2PzxkX+eG3KdrowYwKtHcPD9NSvHPGc344uF2LjKhQ887hALFSNhJPk
+         xzYCebXT0YMT5m5Pwpzk+Oe6nsMvu9JkJyYD6X42FyHbpH8NO/EMl7+zP7LW49ibWNwn
+         rgFA==
+X-Gm-Message-State: AOJu0Yy8d6V8OblJ8gVq4gbhBamn8ZRvaoEG123tfsP79s5L5a+GLAYT
+	TQpr/q+G+gz1cWYaH6ADat3s0RlIyJVNYCsIo/Agwr8oRVrDvUTfFcKGn5gQEknWozH7a7NL1GP
+	3
+X-Google-Smtp-Source: AGHT+IG44QU/LDIhbmsiTW8NxQHUaWnDU30Dem3QjQRhFIOldFE7nmnnI4Pc+Ds9bCz6CkE8RcX4Lw==
+X-Received: by 2002:a05:6214:2a48:b0:686:261a:76a0 with SMTP id jf8-20020a0562142a4800b00686261a76a0mr2165811qvb.52.1706065195477;
+        Tue, 23 Jan 2024 18:59:55 -0800 (PST)
+Received: from [10.5.0.2] ([45.88.220.198])
+        by smtp.gmail.com with ESMTPSA id qp19-20020a056214599300b0068688a2962fsm3018537qvb.29.2024.01.23.18.59.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 18:59:54 -0800 (PST)
+Message-ID: <653c2448-614e-48d6-af31-c5920d688f3e@joelfernandes.org>
+Date: Tue, 23 Jan 2024 21:59:50 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: bpf@vger.kernel.org, lsf-pc@lists.linux-foundation.org,
+ David Vernet <void@manifault.com>, Sean Christopherson <seanjc@google.com>,
+ Vineeth Pillai <vineethrp@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Suleiman Souhlal <suleiman@google.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+Subject: [LSF/MM/BPF TOPIC] Implementing KVM vCPU Priority boosting via BPF
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-John Fastabend wrote:
-> Its much easier to write and read tests than it was when sockmap was
-> originally created. At that time we created a test_sockmap prog that
-> did sockmap tests. But, its showing its age now. For example it reads
-> user vars out of maps, is hard to run targetted tests, has a different
-> format from the familiar test_progs and so on.
-> 
-> I recently thought there was an issue with pop helpers so I created
-> some tests to try and track it down. It turns out it was a bug in the
-> BPF program we had not the kernel. But, I think it makes sense to
-> start deprecating test_sockmap and converting these to the nicer
-> test_progs.
-> 
-> So this is a first round of test_prog tests for sockmap cork and
-> pop helpers. I'll add push and pull tests shortly. I think its fine,
-> maybe preferred to review smaller patchsets, to send these
-> incrementally as I get them created.
-> 
-> Thanks!
-> 
-> John Fastabend (4):
->   bpf: Add modern test for sk_msg prog pop msg header
->   bpf: sockmap, add a sendmsg test so we can check that path
->   bpf: sockmap, add a cork to force buffering of the scatterlist
->   bpf: sockmap test cork and pop combined
-> 
->  .../bpf/prog_tests/sockmap_helpers.h          |  18 +
->  .../bpf/prog_tests/sockmap_msg_helpers.c      | 351 ++++++++++++++++++
->  .../bpf/progs/test_sockmap_msg_helpers.c      |  67 ++++
->  3 files changed, 436 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_msg_helpers.c
-> 
-> -- 
-> 2.33.0
-> 
+We should discuss a new approach for increasing KVM virtual CPU (vCPU) priority
+when guests need low latency. The last RFC posting [1] on this is thought to be
+too rigid and baking too much policy into the kernel. Incorporating complex
+policy logic directly into KVM seems problematic long-term for maintenance. Lets
+discuss leveraging BPF programs to offload more scheduling policy decisions to
+BPF / userspace.
 
-Will need a v2 to fixup a couple things here. Thanks.
+Specific issues to discuss:
+
+* Add support for enabling BPF programs to share memory and interface with guest.
+
+* Create a kernel function allowing BPF programs to call sched_setscheduler(),
+facilitating priority boosting.
+
+* UAPI concerns.
+
+* Challenges with loading BPF programs in guest userspace we don't control.
+
+[1] https://lore.kernel.org/all/20231214024727.3503870-1-vineeth@bitbyteword.org/
 
