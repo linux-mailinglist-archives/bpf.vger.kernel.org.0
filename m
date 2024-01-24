@@ -1,80 +1,81 @@
-Return-Path: <bpf+bounces-20203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C7883A449
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 09:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9AFC83A46C
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 09:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C62581F285EC
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 08:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B2EF1F214B0
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 08:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B67817981;
-	Wed, 24 Jan 2024 08:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A471798E;
+	Wed, 24 Jan 2024 08:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B29uDAhA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GwOQnVlK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBDF179AE;
-	Wed, 24 Jan 2024 08:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE5417BA0;
+	Wed, 24 Jan 2024 08:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706085563; cv=none; b=d3VnS+zh2SgNXzasmIwBIVuceABlg+HZj5vKLBWhi03NIltP8LJUbVc84WkH45O5Irq6teUgXnFW8Sa8e6QLu00/1on0QQydTYoqWvujo7LEYn4GPlzL8yFhVh+KLkPtUiS8lTDcQ4NcPz1RorZAnXz8ExKRsSkLY8hayxEH/Og=
+	t=1706085857; cv=none; b=by8ZVKnhsMXTyc4TQLCff67ij6ZG+MbCmgXZj9RuoxvHO2dV+imiNSFFidTBj9/obVBjfKaxWo4ScjAqLwktMS/vntM9TGWStwLRJykGxY7FyvQyK1x2L85rlfS33L/A/H5Rncu2ohWYMEdNCsAZmC4PsHuwv1/8lCOldc/jSDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706085563; c=relaxed/simple;
-	bh=TheIARDPadS0e85KWthgYObgOqesHRSvFYgSVSnZgrI=;
+	s=arc-20240116; t=1706085857; c=relaxed/simple;
+	bh=zH/AGCd11EfZpyAouNbCSueLtkDNfOdj/1He100tYg0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=apzK0hpu+yyuvq1goK5Iz8dP1pcNtCVJIOf3qhNvU49xRTfzJeiI876Kf+yRnax8nkQ4VofQsKQqLsWJzquyReyaSXAcUfa137C3Xp6ynyA8l0i827BRGE+xnywBOOrrNtxS2rWeXxy3LdJqBIaruzw4ld118WAL/balD3oaMQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B29uDAhA; arc=none smtp.client-ip=209.85.222.47
+	 To:Cc:Content-Type; b=E5I6Rt5ISZ9vFKda42arrocg0w+CicEC2KXyWkRh7MdCxXsofGwNdZM6GRxmx5CW1q0S4KF5CGto6T/DLvPOhDpNXltgVQcJqkNE5IdzqMpixqBR7BFydnJOOUqb1aDL+OnubvJ1qIqT1fF3OhTcL7E7YzHfwezUxbA46NC6vBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GwOQnVlK; arc=none smtp.client-ip=209.85.222.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7cc2ffdda1cso645318241.1;
-        Wed, 24 Jan 2024 00:39:22 -0800 (PST)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-783a83eea1fso23911185a.0;
+        Wed, 24 Jan 2024 00:44:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706085561; x=1706690361; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706085855; x=1706690655; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FM/6+HnOh9Ox+KFrd26pJiFhqooyZe0HWDgKtNXA88M=;
-        b=B29uDAhAQGwGhGRPIReLPMw+5sQvILsronFEk+vx7Fvolnf8dz8VKIw44b4zvUtGjb
-         8PYRugMXHcNKGFGBcuT88fKh9b7RxbiQyvwDLcFtOqjd0ZPmo8YTt/4xLQzcgZCJtNmq
-         /gfTXzvuBylVYeur653mhtZLHhHvoue9JdDQqGOP4Obhy9lsuBerDaxkoLOhroXAh+sU
-         zwbRBDfEwsvNU25NnZ7j4kbSJx5KYu8AM7OKoelnBBRr8SogScjGNnMwtURKufKkZdur
-         JBGEavU1feG3PrIZlcf5i5T88W8o9LgbkSzzvDU4wkBbiSjf/Hp2QpZy6ZvlyUcIIfgF
-         Zeuw==
+        bh=U7LcsGgcDNSXoHjkA7fsQw9C0HTeJSG/rQEJKB5bdTI=;
+        b=GwOQnVlKdFES+fZhbhXh5pEqRRcg7AOXu2hONEjTzdabu718JI+nEtkI/b8GmWaCtO
+         plZRaXcXR/xosR+IXfhG7m6nHMcQdculPTKs0VcXYRxO4n9sAi3G+UgO/wQlgUvG7xwf
+         5Nvol/S6FuZYVw0hr/1WFHqe+4sqncdxmqHuc3/sl1DLyqq9rk84rs+p+oHCVMhnBu58
+         VWyID5lSR8zKincm9rHZVo0fpIxi2L7ceUDFavkCdsagVU3DCgNcWHx1BD6WJWh/DF0m
+         mzhpHkEOqfoIYrFhvK3xhqz3Wk6hcLjGP1masDGOFunNf4SXkj0e0LWzsoL+BB2o0Tiw
+         T35A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706085561; x=1706690361;
+        d=1e100.net; s=20230601; t=1706085855; x=1706690655;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FM/6+HnOh9Ox+KFrd26pJiFhqooyZe0HWDgKtNXA88M=;
-        b=YnBpo3NHp8uAljZioDHYrpaWBI8rHK1nY9EG7W/uFAKtri4BneqtLUqSNgTWQGjZxr
-         oKMGSmpEJ2p6OxokCVOlRkzIF8ZLKTz3IS/HTG7x3odOSskUAlbpBfBFMZhasM/UdaYv
-         4d+FclQmkbqDqlhXrET00WG8JAnjXegT+o4LVfeV+aMr6qhzDF6N1iVbtgLMy8XEjQkJ
-         9A5Nv+gSGtyZyvOQK1XsdOw5oKE1MVyGhekzzFKwnnt/6LH0gvd2rDxkAATSHm42r4l6
-         1Qz5s79eYklVQ+3iD9FScmptcMCzpvtFlUJtOJ0sgFmrV2fcyTdDut0EWuE+u2vwHpWJ
-         t5Dg==
-X-Gm-Message-State: AOJu0Ywonzf/48k7mfuF0gMknLJJFodAJqFyfBWKnK0KuwU15wYHMLI6
-	foHZy40LCmvsDLwnFnytIhDeqGP2GRNm79y+wvm5QsLwvcYCCXj6Q1JBf4+obw8hUkAs4Kl1I5/
-	aIwdQoSwhacLNh1VJDdBhRrU0oy0=
-X-Google-Smtp-Source: AGHT+IHl23JgLlwsxANNSm7qAYBVvFsYIvuyQGK/m0Nalp8QFIuSGYSK3QkLt9Bcic/3z212ZO3n8C4flD22j1EGL5s=
-X-Received: by 2002:a05:6102:21ca:b0:469:be7b:b000 with SMTP id
- r10-20020a05610221ca00b00469be7bb000mr1343657vsg.2.1706085561284; Wed, 24 Jan
- 2024 00:39:21 -0800 (PST)
+        bh=U7LcsGgcDNSXoHjkA7fsQw9C0HTeJSG/rQEJKB5bdTI=;
+        b=kANUZWpDidVLrmi94XjavxiuXsC1gxOs9GeQS3ZzbSC+flKhlehBREYOTR3iuQrInO
+         EQCoTWEJmWgi/ck8FJM7/r2gkaoRtbx85qJPUlsJU3rUHXl74xQW14KHVhmHNDVI7A5L
+         BpK5G13r6G3ZucXvF7nMlB29j9OcVoyCKh2pjUeiYxlt4MarQ9XBj1qydVvNngoPo2yQ
+         9urc+aVq1BN5fe/mCCKyImOuR762iO6qcQvofTEireLOtIRnOiU4nyxapNJro+yg257B
+         iVsZgAD5Lyv8bo3CV2PgOFUKEm+KmzSwgb5GY/RO+Mw1tRVlQbBUrz62MXEFgXKFo1lK
+         FGZw==
+X-Gm-Message-State: AOJu0Yzdyb4BlAecck6nO6W+1wdoHgAHUdmdmDoK9VQHcfex0OL2PTt3
+	npsdy9Yg9doaC926KOi29fvhBoliSeAenng7edGGPrkSLcHd0FBqqjsbbxS8mDzZP1N5qY8PSN1
+	TQO3vsQZ4j5DesR16nD3I03p4acc=
+X-Google-Smtp-Source: AGHT+IF95YiJYnqfMj0XtNWJo/z7IFh8AzM05tDP4k4NM93+GcFgNre+eLYUj4FA6UYSVeO8ElxEI/EbUzd6BvmMp3Y=
+X-Received: by 2002:ad4:5b8f:0:b0:686:abed:73f7 with SMTP id
+ 15-20020ad45b8f000000b00686abed73f7mr2078017qvp.4.1706085854861; Wed, 24 Jan
+ 2024 00:44:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122221610.556746-1-maciej.fijalkowski@intel.com> <20240122221610.556746-7-maciej.fijalkowski@intel.com>
-In-Reply-To: <20240122221610.556746-7-maciej.fijalkowski@intel.com>
+References: <20240122221610.556746-1-maciej.fijalkowski@intel.com> <20240122221610.556746-8-maciej.fijalkowski@intel.com>
+In-Reply-To: <20240122221610.556746-8-maciej.fijalkowski@intel.com>
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Wed, 24 Jan 2024 09:39:10 +0100
-Message-ID: <CAJ8uoz3EQfvxqQNTmq2txz9SFv97b=8drbEB=TqmbMFqSe6y8g@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf 06/11] ice: remove redundant xdp_rxq_info registration
+Date: Wed, 24 Jan 2024 09:44:03 +0100
+Message-ID: <CAJ8uoz2d-ybdO5P54jmjVgfzH-qODuSAPcToFGqJ+fQo4Sc5JQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf 07/11] intel: xsk: initialize skb_frag_t::bv_offset
+ in ZC drivers
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
@@ -86,50 +87,55 @@ Content-Type: text/plain; charset="UTF-8"
 On Mon, 22 Jan 2024 at 23:17, Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> xdp_rxq_info struct can be registered by drivers via two functions -
-> xdp_rxq_info_reg() and __xdp_rxq_info_reg(). The latter one allows
-> drivers that support XDP multi-buffer to set up xdp_rxq_info::frag_size
-> which in turn will make it possible to grow the packet via
-> bpf_xdp_adjust_tail() BPF helper.
->
-> Currently, ice registers xdp_rxq_info in two spots:
-> 1) ice_setup_rx_ring() // via xdp_rxq_info_reg(), BUG
-> 2) ice_vsi_cfg_rxq()   // via __xdp_rxq_info_reg(), OK
->
-> Cited commit under fixes tag took care of setting up frag_size and
-> updated registration scheme in 2) but it did not help as
-> 1) is called before 2) and as shown above it uses old registration
-> function. This means that 2) sees that xdp_rxq_info is already
-> registered and never calls __xdp_rxq_info_reg() which leaves us with
-> xdp_rxq_info::frag_size being set to 0.
->
-> To fix this misbehavior, simply remove xdp_rxq_info_reg() call from
-> ice_setup_rx_ring().
+> Ice and i40e ZC drivers currently set offset of a frag within
+> skb_shared_info to 0, wchih is incorrect. xdp_buffs that come from
+
+Is "wchih" Polish? Just kidding with you ;-)!
+
+> xsk_buff_pool always have 256 bytes of a headroom, so they need to be
+> taken into account to retrieve xdp_buff::data via skb_frag_address().
+> Otherwise, bpf_xdp_frags_increase_tail() would be starting its job from
+> xdp_buff::data_hard_start which would result in overwriting existing
+> payload.
 
 Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-> Fixes: 2fba7dc5157b ("ice: Add support for XDP multi-buffer on Rx side")
+> Fixes: 1c9ba9c14658 ("i40e: xsk: add RX multi-buffer support")
+> Fixes: 1bbc04de607b ("ice: xsk: add RX multi-buffer support")
 > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > ---
->  drivers/net/ethernet/intel/ice/ice_txrx.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 3 ++-
+>  drivers/net/ethernet/intel/ice/ice_xsk.c   | 3 ++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> index 1760e81379cc..765aea630a1f 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> @@ -513,11 +513,6 @@ int ice_setup_rx_ring(struct ice_rx_ring *rx_ring)
->         if (ice_is_xdp_ena_vsi(rx_ring->vsi))
->                 WRITE_ONCE(rx_ring->xdp_prog, rx_ring->vsi->xdp_prog);
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> index fede0bb3e047..65f38a57b3df 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> @@ -414,7 +414,8 @@ i40e_add_xsk_frag(struct i40e_ring *rx_ring, struct xdp_buff *first,
+>         }
 >
-> -       if (rx_ring->vsi->type == ICE_VSI_PF &&
-> -           !xdp_rxq_info_is_reg(&rx_ring->xdp_rxq))
-> -               if (xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
-> -                                    rx_ring->q_index, rx_ring->q_vector->napi.napi_id))
-> -                       goto err;
->         return 0;
+>         __skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++,
+> -                                  virt_to_page(xdp->data_hard_start), 0, size);
+> +                                  virt_to_page(xdp->data_hard_start),
+> +                                  XDP_PACKET_HEADROOM, size);
+>         sinfo->xdp_frags_size += size;
+>         xsk_buff_add_frag(xdp);
 >
->  err:
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index d9073a618ad6..8b81a1677045 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -825,7 +825,8 @@ ice_add_xsk_frag(struct ice_rx_ring *rx_ring, struct xdp_buff *first,
+>         }
+>
+>         __skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++,
+> -                                  virt_to_page(xdp->data_hard_start), 0, size);
+> +                                  virt_to_page(xdp->data_hard_start),
+> +                                  XDP_PACKET_HEADROOM, size);
+>         sinfo->xdp_frags_size += size;
+>         xsk_buff_add_frag(xdp);
+>
 > --
 > 2.34.1
 >
