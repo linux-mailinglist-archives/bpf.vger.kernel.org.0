@@ -1,119 +1,128 @@
-Return-Path: <bpf+bounces-20236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D9D83AD75
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 16:35:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD01783AD9D
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 16:43:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD6D21C25655
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 15:35:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EED41F28CCA
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 15:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D277C7CF13;
-	Wed, 24 Jan 2024 15:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA677C09D;
+	Wed, 24 Jan 2024 15:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/H438GI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j38NdcDQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32147C09A;
-	Wed, 24 Jan 2024 15:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0037C099
+	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 15:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706110509; cv=none; b=KLQhZgW8ufy9ZpGJpmMNNoFVJ6YzaCz9f6IBsu9LTQB4pazjYRQEgum9gcCNmCR7T6xe1wMwQHmnrV2Ud4nwVwaoNMemETfyspDZNdabNNvhIJLf/LBx0O25Kz/JQqTwA+mtj6eMrAFZR2AsnT2BzNUv0euOAs4ry1v2k0cvB1c=
+	t=1706111025; cv=none; b=ftMvHObbmTk0nQL1GX+W3FH5DLYDjodtMdO+soYI5223SrK5foP2ujqOqBFDkdAxMtmjIW5qmDXhzurBVAkiaDTNuw4LmXXOfzEbEuo20hOPuO79PyQfCNL6Frd8bQBpe0PBfxt2DZw2ikcln+cgZn8opowvwIPPCwVqEWJoCFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706110509; c=relaxed/simple;
-	bh=+8JTMV1B+xUws5Fqq/KkkTH19dYQj6SUFIZ+eCArfoc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=twHvT73C0rVGgnNhnr+3V+kqjRWfRotonVw1FWI62E0VWDNPWvzkxfOiRqbOYSODhsRVB5XbL9pZk3PyBHhg6E8ZEnkhmrVxA7UZjsbzuYxRhJtXUGW5MjgmZS2QMj/pTdrb2Dw1HgRuoGV1eBVVA4PLMRfQCfKJlqMQ0qWUQu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/H438GI; arc=none smtp.client-ip=209.85.221.53
+	s=arc-20240116; t=1706111025; c=relaxed/simple;
+	bh=hGQqiKBHvzb3o2ms9is45LVkn1my/EJQ8YhiHXiMpRU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=UsVbZ2Bd/bt2KZXStXDwBHyO0BAelQNyWioYURqoF6PH4wcipJz3gehtKT+otoZFmR0xcSrcLD1jcqQMaYDhusUn+NZfP80VvA9tl3j/KW4vzf1o8CUViISTPTG6t0p9QJu1dsQfdWuMBFGchvyPyHULyVyyrrnh4z2Nz6lcark=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j38NdcDQ; arc=none smtp.client-ip=209.85.217.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-339208f5105so4827070f8f.1;
-        Wed, 24 Jan 2024 07:35:07 -0800 (PST)
+Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-46af87380c7so520366137.3
+        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 07:43:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706110506; x=1706715306; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tq3rHmajHdoRuvin6AmYJUUivHaABBxlRIi8R3NRBWo=;
-        b=I/H438GIZXCk+bjRuq3B/KY8pe4xm0Jn3YdiZrTZl0k4xTwnTUHEdZ4oTzTY8nqnFc
-         Vu0yN9ymk4lUYiKImo5RBeZwhZaBnO7rggTtjWoTwIVhdUn9dKECw8Ab4oIV1/6A5RdO
-         p/1k7QT8xUIyFiIp9LMz32RNQHbDkUjWF1zBcwSUdH+Wz13doWFKuUQen1rOgIGHL4x7
-         2N8nx0zsvfad1lxzfOg0WAbEzuzgEES+I9KE93SGYdFerFTUT7YKV/WhvwBwcPIg0wUg
-         TedBwlcIGM/UJrkG/D2TNyjSVuDZwiY7l+xLVr4NBz8z1M+nNSbXMG/sO2QelU9EyTwe
-         ehQw==
+        d=gmail.com; s=20230601; t=1706111023; x=1706715823; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dieMocq8dOdDtcyP+j8s7bY5QEd7/F9sYxiZCAejqkA=;
+        b=j38NdcDQ17K/g+CFGvBf3dBtG2ZqS9t+QrVOv1eHrbcsF601HJmJgVwdD8+ozW6+07
+         QBim+HiDaQ07VbtHZHXOaGB2oUbQQgLZBtGAcjc2f7HtdAyJCTzVffO9FCIzfIfUbtTK
+         CNWZlOBHOPckwmDb7m2xpd80tKJJ5Q3gNUuTSXO2Vpon6cvb/M2sbbYPh84j6SfcxK3z
+         csugJjA4EP+n4Lv60hol+oiRLUxeXF+LY+xn9UPAjmLvCXAakZLGLWpXFc3hDnESVJGr
+         NyyVBl2pEm/tWu7oJJcoiEDiELTGwU8IyUcTiUi+1/iWqa/i3F9qIXcxY2XD5Jfmvz6p
+         9AWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706110506; x=1706715306;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tq3rHmajHdoRuvin6AmYJUUivHaABBxlRIi8R3NRBWo=;
-        b=UF+Vs+6SsHotRK/FHuE3g1PD3OtwIS5SuyiW1lJM4wk34Acahe+y7aDyXrvRFmOvlP
-         mIZIqhxJHZu0fIQlE3klIZsbVe53vvHM4FTg6eWPLpnLz+2ZOTwcjL83hijEn/EzDYwB
-         dnhtsFaM63Y0UW/iyWWS/8C83SQaimBjmLucyzzcyCNT3zubfKD/WZRCcjVAyQkV1+4w
-         XUnGwZ3mAeGvubuPWLWvS2CCLlJCZI0nn3poByx6/bx4pxfzR54hCF0AlSoYD3Ta5LVt
-         W+u6YklMExZJl06qtFpUdLi8/eq46wq+89fw+k0mV3h7cvWxeHwLqeRh+zIorjTqmYay
-         5j6w==
-X-Gm-Message-State: AOJu0YxqcptXV8YRnQYR2JlAbI/U5AaJT1XFY/ah7bLhzvzq8UeLgM96
-	U6DUOK+W0LB/YZYJr16vUp4aS7d71gLulZkqsuSQlLGguvMhPMBZyUlmFGDdw6ctKBcKZwh66zI
-	f1G/0RqDo16cm04GRk/ESamwOGBk=
-X-Google-Smtp-Source: AGHT+IFyW3CbLgXs+fHEYb4Mq62sD30ZjNWsYFvjEe0YQggvEANXkHJWwyuCvTOMp+X3qpF5stjBqdV62fWDzTndjpE=
-X-Received: by 2002:a5d:4211:0:b0:337:aa5c:a8c6 with SMTP id
- n17-20020a5d4211000000b00337aa5ca8c6mr491519wrq.128.1706110505854; Wed, 24
- Jan 2024 07:35:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706111023; x=1706715823;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dieMocq8dOdDtcyP+j8s7bY5QEd7/F9sYxiZCAejqkA=;
+        b=ex5806YzspjgjRtTosUFT9gRNPJtR3EC34Wnn1sjIR3C8IrUifRAVkrgTsLHDLaDyk
+         RN4sFYlDqHtUJEvF/0ekjGY41B9uO8YhIV7LbIXk/Pm3nhAzHGAhAuPoV2DrRUTIepjk
+         jr9ahhzBHxwqfR9Sff5Pc8U9LH57LsRy3joBVYYUuW9jRi0ARh3K7ubwvhK3qrhrmH2J
+         z6bedbZGVbLgHvSbbZ9uoIRXi5YbHdw7Qf66bI04y5mrzBGXpQBvmSHuqfOusIq6jjA7
+         Rgy0VufejqjazZD2dc/M74xkmAmWDcUpqn3XceoOWd8h4DH2QFXQnpcot1eoCyQhTyuW
+         aNeA==
+X-Gm-Message-State: AOJu0YzmsM1JHxQ6KBpFaRmPI9DojLhYY008nVhuiY3UrCrQHckWo87N
+	sMZiR594r7j/06t6L+VqcczNXktb56/9ExclaQpMECVRSWPK69hrdyL4DdKVWu6AT0C2IkcCNX7
+	T3wd0XqF7xwbDL9RlyolN8w3ynbork8rDQUzB+w==
+X-Google-Smtp-Source: AGHT+IFJNkCeCdjV/I3qIoV+3b1ziUOqk/J0g5qOVmv3QFmM9fMP4ZZflxgLMTv6VJtje91jOBQBspAEkbCU/wMgJaQ=
+X-Received: by 2002:a05:6102:2921:b0:468:db1e:21b5 with SMTP id
+ cz33-20020a056102292100b00468db1e21b5mr5899474vsb.12.1706111022971; Wed, 24
+ Jan 2024 07:43:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124121605.1c4cc5bc@canb.auug.org.au> <CAADnVQKBCpkwx1HVaNy1wmHqVrekgkd4LEZm9UzqOkOBniTOyw@mail.gmail.com>
- <20240124001808.bfff657f089afe10e5b0824c@linux-foundation.org>
-In-Reply-To: <20240124001808.bfff657f089afe10e5b0824c@linux-foundation.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 24 Jan 2024 07:34:54 -0800
-Message-ID: <CAADnVQJe-BxbKYsMUXXrsh4wEUPacDT6RtF_qrO1ewns_8T1_w@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the mm tree
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Networking <netdev@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>
+From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Date: Wed, 24 Jan 2024 10:43:32 -0500
+Message-ID: <CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com>
+Subject: [RFC PATCH] bpf: Prevent recursive deadlocks in BPF programs attached
+ to spin lock helpers using fentry/ fexit
+To: bpf@vger.kernel.org
+Cc: "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "olsajiri@gmail.com" <olsajiri@gmail.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "Williams, Dan" <djwillia@vt.edu>, 
+	"Somaraju, Sai Roop" <sairoop@vt.edu>, "Sahu, Raj" <rjsu26@vt.edu>, "Craun, Milo" <miloc@vt.edu>, 
+	"sidchintamaneni@vt.edu" <sidchintamaneni@vt.edu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 12:18=E2=80=AFAM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Tue, 23 Jan 2024 17:18:55 -0800 Alexei Starovoitov <alexei.starovoitov=
-@gmail.com> wrote:
->
-> > > Today's linux-next merge of the bpf-next tree got a conflict in:
-> > >
-> > >   tools/testing/selftests/bpf/README.rst
-> > >
-> > > between commit:
-> > >
-> > >   0d57063bef1b ("selftests/bpf: update LLVM Phabricator links")
-> > >
-> > > from the mm-nonmm-unstable branch of the mm tree and commit:
-> > >
-> > >   f067074bafd5 ("selftests/bpf: Update LLVM Phabricator links")
-> > >
-> > > from the bpf-next tree.
-> >
-> > Andrew,
-> > please drop the bpf related commit from your tree.
->
-> um, please don't cherry-pick a single patch from a multi-patch series
-> which I have already applied.
+While we were working on some experiments with BPF trampoline, we came
+across a deadlock scenario that could happen.
 
-hmm. There was a clear feedback on the v1 of the series not to mix bpf
-and non-bpf patches and a standalone patch was sent as v2.
+A deadlock happens when two nested BPF programs tries to acquire the
+same lock i.e, If a BPF program is attached using fexit to
+bpf_spin_lock or using a fentry to bpf_spin_unlock, and it then
+attempts to acquire the same lock as the previous BPF program, a
+deadlock situation arises.
 
-Thanks.
+Here is an example:
+
+SEC(fentry/bpf_spin_unlock)
+int fentry_2{
+  bpf_spin_lock(&x->lock);
+  bpf_spin_unlock(&x->lock);
+}
+
+SEC(fentry/xxx)
+int fentry_1{
+  bpf_spin_lock(&x->lock);
+  bpf_spin_unlock(&x->lock);
+}
+
+To prevent these cases, a simple fix could be adding these helpers to
+denylist in the verifier. This fix will prevent the BPF programs from
+being loaded by the verifier.
+
+previously, a similar solution was proposed to prevent recursion.
+https://lore.kernel.org/lkml/20230417154737.12740-2-laoar.shao@gmail.com/
+
+Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
+---
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 65f598694d55..8f1834f27f81 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20617,6 +20617,10 @@ BTF_ID(func, preempt_count_sub)
+ BTF_ID(func, __rcu_read_lock)
+ BTF_ID(func, __rcu_read_unlock)
+ #endif
++#if defined(CONFIG_DYNAMIC_FTRACE)
++BTF_ID(func, bpf_spin_lock)
++BTF_ID(func, bpf_spin_unlock)
++#endif
+ BTF_SET_END(btf_id_deny)
 
