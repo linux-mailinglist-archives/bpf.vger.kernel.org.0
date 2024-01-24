@@ -1,176 +1,154 @@
-Return-Path: <bpf+bounces-20216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158BD83A6D3
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 11:30:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331A383A71E
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 11:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8FE8288033
-	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 10:30:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 659AC1C22BB0
+	for <lists+bpf@lfdr.de>; Wed, 24 Jan 2024 10:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9344A6AA6;
-	Wed, 24 Jan 2024 10:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8EA19475;
+	Wed, 24 Jan 2024 10:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+TFDmzc"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ca35CYqz";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ca35CYqz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4C263B2;
-	Wed, 24 Jan 2024 10:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30F217C65;
+	Wed, 24 Jan 2024 10:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706092232; cv=none; b=I6QaUT4LpywFIQRH9sbnv8miNdyHdHjP7ZuCmp2gWSBEHHLj9lHfZlhaBy/p9fmNGSLh5mOGb0BpMdqW0CvC+a+FUpbSlvkrUMKr90rrlRcXGCA0jIix2wTBkWzTowM73VoTSKDcXJ4o3Wv/oMytzNAtiCg/9YWu6pZ7OAFatQY=
+	t=1706093138; cv=none; b=V7hW7NPL9ICeJz5DvEZ03NbqbEReYf0YWAdeHv8fPC6bJjgTgLgtACsh5L7Bytk6/S57cqSk3ry9KhggPgmqgHgs3B7VSTvdlnGtlC7sIJFV9663kYA6o4UQW7KS1lfA8drbZB3fMOZ4HTjg9in7UxKXq0W6KJ+VFgtYsFeJgTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706092232; c=relaxed/simple;
-	bh=aW5AtCa7HXNpyKb0feXdplztHH1jKaVe0wBRnb/XW3g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pUTxiMe09/4sYNpcKGSwNsJFgo+OuR8lvgQsaVyJXbwkvdy0eV826A3X+69wd6bVdXLsTDOv5bkeWI7IDV+3YDfS047O/VsRfjXVUKC0M+Vrxyg6gWcyzQZA8PJY6MGQcw1GNRjxG6YatfLUyQCn9L8trE0h4hTLtbVcBoTolRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+TFDmzc; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cdeb954640so62891261fa.3;
-        Wed, 24 Jan 2024 02:30:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706092228; x=1706697028; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+xaXvOg9nATJzG/O82cscnFir4ApsJXrCX0AxrjMsg4=;
-        b=c+TFDmzckA4BkrrIwz1rcC5HUctkgUXnPOrzy0n1xTa9nnV/WfyTDiT8MEq81GB8Cv
-         D+iNcXLdPxSyEnsf+CJaiuiNRbeh3qHjKGnNft8tILA/CA7OozMqg6trpg4Xk+WZ1pFn
-         9vpvDDH4eA8Qv2f+rWazQDkWsYXqwrXpSWoPrAznetIU97GCoBHHa377QcoIOxbxdqXs
-         C1hd6A85S6BKLAvHUgNa4uJQ04/Fh2BdZOKEb1KroD8mCFchrv82DVZTIp4IJbn5dktx
-         nSmqjlGQnLYeWT2BgDcYSzBOrVKVZe5NBXlDRIi2OXh0Wys58Vwn/Gf4wBodLaiug70Y
-         6Lxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706092228; x=1706697028;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+xaXvOg9nATJzG/O82cscnFir4ApsJXrCX0AxrjMsg4=;
-        b=hkrxYrU3v2TeGTrhgOJlYQia+1KXsyw85GMWgtDNn8zn4gK9Z0pgY4FaXiwYvmbRLF
-         PUo2me096IGYlGewDrsUd1gV/UgpvfqoJD/mvb4Sbn41FfV+Glq+lLTaZ0eZGRGYLHQC
-         jR7H2vo3ezi73S9abhDb1JTy2hZKS6pnXPcqjkBmRoR2oAAeVGZGU9yXhP+2ioONIV8u
-         Ec8CnglwgAsWeAb8M/m9O4Y7wcePulRocOgy1HbOAjUkEHgw4ZyPKa2b2lSv9PseHbuj
-         +Ogd9FHsX8VDUvQIsHju4sF+9iFHgEHtM+HHpxOKyDWUw81EwfAeKxNgu9fJiG2ox2hz
-         Uijw==
-X-Gm-Message-State: AOJu0YyMxF/hWGCMlV1Vt7Mx6ZexZ/6Gz7bA8q6k9uNtL7Bx4TrIEc/I
-	raHE53+aQF1iDd6t0O/Dr/7RlV17izETgcojR2WzHxEIM06U1JPwnlBkRBA=
-X-Google-Smtp-Source: AGHT+IHyS3VYWvxHH3M05S/tQiqHeMbNJgFsbZIQNds+0uK5rr2mFixcG4uzwhx4IMlohOg6WNvSnQ==
-X-Received: by 2002:a2e:b0f1:0:b0:2cd:a311:6ae9 with SMTP id h17-20020a2eb0f1000000b002cda3116ae9mr608981ljl.5.1706092227677;
-        Wed, 24 Jan 2024 02:30:27 -0800 (PST)
-Received: from staff-net-cx-3510.intern.ethz.ch (2001-67c-10ec-5784-8000--16b.net6.ethz.ch. [2001:67c:10ec:5784:8000::16b])
-        by smtp.gmail.com with ESMTPSA id i18-20020adffdd2000000b003393249d5dbsm8313945wrs.4.2024.01.24.02.30.26
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 24 Jan 2024 02:30:27 -0800 (PST)
-From: Hao Sun <sunhao.th@gmail.com>
-To: bpf@vger.kernel.org
-Cc: andreimatei1@gmail.com,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH bpf] bpf: Reject pointer spill with var offset
-Date: Wed, 24 Jan 2024 11:30:10 +0100
-Message-ID: <20240124103010.51408-1-sunhao.th@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706093138; c=relaxed/simple;
+	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qrWcPnyH0+Gg19+pzHvk93jJFeZIcTwwOlqp8NXpNjmD9u1OoH6XuRcS+nRsaoZMvgoTj7raTWFLqqTUkZajeCaMEPEmfSqUuKP5M8n9LFP49Cs/2XOSutim85Arm5thiF+FFtXNJPJc/yiU4B0Ue9PkMFgrJ+8Yi2hDkddFt8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ca35CYqz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ca35CYqz; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A56F421FE0;
+	Wed, 24 Jan 2024 10:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706093134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
+	b=ca35CYqzpEv1O6x7kDOtHFG7O6T3WcBTmabdm4u4ubV0Ls4nZg0s4glAWzIiT08w8wZgZh
+	vXt5WR4QWWZ0H8F1wG+GlawIAfygv94xJsvFqVdTNy6nJzf9CXDdsV6D+TIMKSyqnSTKxm
+	TLlxbMo3/dvYCyD8H10KcjSC2brNu7E=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706093134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
+	b=ca35CYqzpEv1O6x7kDOtHFG7O6T3WcBTmabdm4u4ubV0Ls4nZg0s4glAWzIiT08w8wZgZh
+	vXt5WR4QWWZ0H8F1wG+GlawIAfygv94xJsvFqVdTNy6nJzf9CXDdsV6D+TIMKSyqnSTKxm
+	TLlxbMo3/dvYCyD8H10KcjSC2brNu7E=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CCF413786;
+	Wed, 24 Jan 2024 10:45:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UDguHk7qsGVAEQAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Wed, 24 Jan 2024 10:45:34 +0000
+Date: Wed, 24 Jan 2024 11:45:33 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
+	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
+	Martin Wilck <mwilck@suse.com>, Pedro Tammela <pctammela@mojatatu.com>
+Subject: Re: [PATCH v4 3/4] net/sched: Load modules via their alias
+Message-ID: <7u63ta73ldxnf5ucoywzu4irl6mer66ur4letgpavghkcnvlke@6ajcojmjk5nv>
+References: <20240123135242.11430-1-mkoutny@suse.com>
+ <20240123135242.11430-4-mkoutny@suse.com>
+ <20240123174002.GN254773@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="m7zrpn5dfxhi46pl"
+Content-Disposition: inline
+In-Reply-To: <20240123174002.GN254773@kernel.org>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.77 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-1.57)[92.18%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RL63s8thh5w8zyxj4waeg9pq8e)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[30];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.77
 
-check_stack_write_var_off() does not reject pointer reg, this can lead
-to pointer leak. When cpu_mitigation_off(), unprivileged users can add
-var off to stack pointer, and loading the following prog enable them
-leak kernel address:
 
-func#0 @0
-0: R1=ctx() R10=fp0
-0: (7a) *(u64 *)(r10 -8) = 0          ; R10=fp0 fp-8_w=00000000
-1: (7a) *(u64 *)(r10 -16) = 0         ; R10=fp0 fp-16_w=00000000
-2: (7a) *(u64 *)(r10 -24) = 0         ; R10=fp0 fp-24_w=00000000
-3: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
-4: (b7) r1 = 8                        ; R1_w=P8
-5: (37) r1 /= 1                       ; R1_w=Pscalar()
-6: (57) r1 &= 8                       ; R1_w=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
-7: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
-8: (07) r2 += -16                     ; R2_w=fp-16
-9: (0f) r2 += r1                      ; R1_w=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8)) R2_w=fp(off=-16,smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
-10: (7b) *(u64 *)(r2 +0) = r6         ; R2_w=fp(off=-16,smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8)) R6_w=ctx() fp-8_w=mmmmmmmm fp-16_w=mmmmmmmm
-11: (18) r1 = 0x0                     ; R1_w=map_ptr(ks=4,vs=8)
-13: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
-14: (07) r2 += -16                    ; R2_w=fp-16
-15: (bf) r3 = r10                     ; R3_w=fp0 R10=fp0
-16: (07) r3 += -8                     ; R3_w=fp-8
-17: (b7) r4 = 0                       ; R4_w=P0
-18: (85) call bpf_map_update_elem#2   ; R0_w=Pscalar()
-19: (79) r0 = *(u64 *)(r10 -8)        ; R0_w=Pscalar() R10=fp0 fp-8_w=mmmmmmmm
-20: (95) exit
-processed 20 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+--m7zrpn5dfxhi46pl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The prog first inits several slots, so it later can access, and then
-adds var-off to fp, where it knows the off is -8. Finally, the prog
-spills the ctx ptr and leaks it to a map, and unprivileged users can
-read the pointer through a map lookup:
+On Tue, Jan 23, 2024 at 05:40:02PM +0000, Simon Horman <horms@kernel.org> wrote:
+> name doesn't exist in this context, perhaps the line above should be:
 
-	Leaked Map Address: 0xffff98d3828f5700
+Well spotted (and shame on me for unchecked last-moment edits).
 
-Fix this by rejecting pointer reg in check_stack_write_var_off().
-Applying the patch makes the prog rejected with "spilling pointer
-with var-offset is disallowed".
+I will resend after some more feedback or time.
 
-Also add missed newline to error messages in this check.
+Thanks,
+Michal
 
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
----
+--m7zrpn5dfxhi46pl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Note that it's hard to add this test to test_progs or test_verifier, as
-this requires cpu_mitigation_off() setup, currently tested on my local.
+-----BEGIN PGP SIGNATURE-----
 
- kernel/bpf/verifier.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbDqSwAKCRAGvrMr/1gc
+jmDPAP4kh0vASWmR2BIYzLZ9ltAfmTpMmdRiYjUTl0+b1KWtYwD+NflnVdzmVBHe
+rylTGmjlroohIQGBpbUFvMZZAXcJ6AQ=
+=ko42
+-----END PGP SIGNATURE-----
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f31868ba0c2d..c34b938fa06f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4627,6 +4627,11 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
- 	    (!value_reg && is_bpf_st_mem(insn) && insn->imm == 0))
- 		writing_zero = true;
- 
-+	if (value_reg && __is_pointer_value(env->allow_ptr_leaks, value_reg)) {
-+		verbose(env, "spilling pointer with var-offset is disallowed\n");
-+		return -EINVAL;
-+	}
-+
- 	for (i = min_off; i < max_off; i++) {
- 		int spi;
- 
-@@ -4658,7 +4663,7 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
- 			 * later for CAP_PERFMON, as the write may not happen to
- 			 * that slot.
- 			 */
--			verbose(env, "spilled ptr in range of var-offset stack write; insn %d, ptr off: %d",
-+			verbose(env, "spilled ptr in range of var-offset stack write; insn %d, ptr off: %d\n",
- 				insn_idx, i);
- 			return -EINVAL;
- 		}
-@@ -4694,7 +4699,7 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
- 		 * them, the error would be too confusing.
- 		 */
- 		if (*stype == STACK_INVALID && !env->allow_uninit_stack) {
--			verbose(env, "uninit stack in range of var-offset write prohibited for !root; insn %d, off: %d",
-+			verbose(env, "uninit stack in range of var-offset write prohibited for !root; insn %d, off: %d\n",
- 					insn_idx, i);
- 			return -EINVAL;
- 		}
--- 
-2.34.1
-
+--m7zrpn5dfxhi46pl--
 
