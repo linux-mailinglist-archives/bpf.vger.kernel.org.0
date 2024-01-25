@@ -1,111 +1,150 @@
-Return-Path: <bpf+bounces-20294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16B383B7A4
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 04:13:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4367383B7AB
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 04:14:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 736D71F25796
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 03:13:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7767E1C24838
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 03:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945C067C6D;
-	Thu, 25 Jan 2024 03:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0EE29AB;
+	Thu, 25 Jan 2024 03:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CGYvof5G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7CC6FAE
-	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 03:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C553479E2
+	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 03:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706152382; cv=none; b=Mj5QmGFWBFY+mq5lJRNysgJiyLWOzGB4Nci94Rs3I01dBRuYDG/AdqtDVWujoPGKdGRbwNx7FmbZ8nqnwPbJIH8au47Kkn22eV382x2SPfDLy7dqfu/xG6yU0LrlEWaMTmPckRnVyjyMJEXZji9aWeUIVyUHgVb0YjD2MHsWuMY=
+	t=1706152443; cv=none; b=WlCQnX/aeprZcRVOuRdWwYHE40r9bq+zXqfMAazhNghnapDdgDs1vVfEMD9fOtEmTjutU71CkfxM2ReBk+2JGF2aCri+Qq4LsIezLnMhELMJZHa8ZZA8o7DByArAKLBvq9Ok70Run9lz4mnuYmB3trUMOtnsyZ7csOZ1Wz7iZUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706152382; c=relaxed/simple;
-	bh=z10/XO5ud5A6KIRzXZE/627Eu8QSrHAkuuGTOk2UPLY=;
-	h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=S9AiDyyAZkbcLsx/yTfXsYHYo3BE9zj5x/mH4qMAxfdX6KnYRCnqf8YSW11oudDZDFwdkV3V9ctOJ/AjGOHNbF1MDzpT6nJESXdg837lb3OGlOJdiev/3KrFaKwXCfFvMnsFI7gmvqaj71P+ZerjcnR6WQnGqG/s/8T8fvvSUTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxaOi60bFlEkkFAA--.737S3;
-	Thu, 25 Jan 2024 11:12:58 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX8+z0bFlu1oYAA--.41057S3;
-	Thu, 25 Jan 2024 11:12:52 +0800 (CST)
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Add missing line break in test_verifier
-Message-ID: <c318466f-ffd7-6bdf-9d95-93a952106bd5@loongson.cn>
-Date: Thu, 25 Jan 2024 11:12:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+	s=arc-20240116; t=1706152443; c=relaxed/simple;
+	bh=Jre4uhIsjR1k0q+UCyu0iETOWXWha9Si2UCFcl+ZD+k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sNN7+bhyu5uQxqfoj+/M0CmGhzHQqChlI5hY62cvj6W2j5lYFACPlP1h8ENKhaOlLGwYUmGt56nFP3UurtX/SWfqPcT7NN4fuHtHC/lUcgpNG9pJUAb73rv0cq9Apwytd55xvnKljy3Zz8uoZFRejjAzdXyMPupmwgdg13q8A2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CGYvof5G; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3392291b21bso5273176f8f.1
+        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 19:14:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706152440; x=1706757240; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ur8a1M1Lx57Kx2hOFLmI+GGhr/ervjcbPnLVkkXV/m8=;
+        b=CGYvof5Gv/rDLcDGaPS4/H37qpFXR7S12qWdRj1aj0EYbj4yqtmIofaI2OLH2TELRA
+         vRF1djOAuqxCBxfAT5b3Mzy4bsjvTW6sqJzYxfvg/UrddjPzpzf20CiHTg3LwDPI/kJB
+         HEn0J5U2uq1xc5m0I5BnjDQOf36k1NmTb2qMmZSh7M5UN/gyl33ephFMpjjOu3NRN9dH
+         DA+Qlb8EBNyTDbJ/r7BZPsnaJ28PDq9t5PUdYadNTL064CyBr7eXtYQ4nTiFDvsV4NaX
+         DTgrvmtu+VRrb7mr43Fsdv04VCDTxqmtsGs2Q1CYXvUqjUdNVRF6bFYrc79fCfTaPjKH
+         +MGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706152440; x=1706757240;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ur8a1M1Lx57Kx2hOFLmI+GGhr/ervjcbPnLVkkXV/m8=;
+        b=ZTc6JNAaAgg3yOnDB7g8/nkzSuTAmK2iM9K9dXMl6cYl9IzCDvxNfevptFbr+1m8jw
+         /6NHywCzBaKo9+2tADeTLlDHjr/oGEJwSftzZxusGTvF1CF/Xm9jwCkRLHZTncxRp4iY
+         F9uECr39Z2azp9duRJHXNifwlythTsl/kTPB7XYUu5gRZxSz2Xnig1VElpN6wB0khtFA
+         gHTKZGK1CHVzHx+Rg1Gho9ZbQq+gvKdoEcktYr3KUYMqIOvc2LoZ/kTFC0a7Cj1BZgi4
+         NZixiJOWZ/Zwt8kw6OU8cqgusfKBkCI8VSQ/StfPmS80kaMI/vo3o5IeCKZLTGJ9CKCM
+         NAJQ==
+X-Gm-Message-State: AOJu0Yxibv3JGYY164ypwmutq/oIOiquEgf+Rj4A/1RBskp6ylLSObud
+	az3RqBSyoJDg4IEN0i6VZHqtmAArB7PayXaNOZOL4MxF5nyl49vhtEPi/RBs8VeoGczDeFBfspv
+	uPZEBrDJxbE9XWEzNZ3OALd4ZSjk=
+X-Google-Smtp-Source: AGHT+IFdeH+hshm0prdv1DcuTNzyNgJFMEn7bWZrZqnOrTi6Ux6z7TLQ2aYkkhyTZIujvcJ/FPE2bMKVn+C2Z2ztWsg=
+X-Received: by 2002:a05:6000:1cf:b0:337:3b9e:d01c with SMTP id
+ t15-20020a05600001cf00b003373b9ed01cmr105068wrx.143.1706152439695; Wed, 24
+ Jan 2024 19:13:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:AQAAf8AxX8+z0bFlu1oYAA--.41057S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7ZF1ktw1kGrWruF43Kr43XFc_yoW8XFykpF
-	4kXF1qyFn8XF1jkFn2yr4j9F4FvFWv9w43Ka4rG3sFvFn8X3sFqr1fAFW3Xas5WrWqvw1f
-	A3ZrKr1jgw1UWFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9mb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r1j6r4UMcIj6xIIjxv2
-	0xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4
-	x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E
-	4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-	WUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-	Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-	WUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4U
-	YxBIdaVFxhVjvjDU0xZFpf9x07UMbytUUUUU=
+References: <1b5d01da4e1b$95506b50$bff141f0$@gmail.com>
+In-Reply-To: <1b5d01da4e1b$95506b50$bff141f0$@gmail.com>
+From: Watson Ladd <watsonbladd@gmail.com>
+Date: Wed, 24 Jan 2024 19:13:48 -0800
+Message-ID: <CACsn0cmG5yui1Xt_HPDK+uTUk-4eML+Aw_wm5f9GKHUS+shycw@mail.gmail.com>
+Subject: Re: [Bpf] Standardizing BPF assembly language?
+To: dthaler1968=40googlemail.com@dmarc.ietf.org
+Cc: bpf@ietf.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andrii,
+On Tue, Jan 23, 2024 at 8:46=E2=80=AFAM
+<dthaler1968=3D40googlemail.com@dmarc.ietf.org> wrote:
+>
+> At LSF/MM/BPF 2023, Jose gave a presentation about BPF assembly
+> language (http://vger.kernel.org/bpfconf2023_material/compiled_bpf.txt).
+>
+> Jose wrote in that link:
+> > There are two dialects of BPF assembler in use today:
+> >
+> > - A "pseudo-c" dialect (originally "BPF verifier format")
+> >  : r1 =3D *(u64 *)(r2 + 0x00f0)
+> >  : if r1 > 2 goto label
+> >  : lock *(u32 *)(r2 + 10) +=3D r3
+> >
+> > - An "assembler-like" dialect
+> >  : ldxdw %r1, [%r2 + 0x00f0]
+> >  : jgt %r1, 2, label
+> >  : xaddw [%r2 + 2], r3
+>
+> During Jose's talk, I discovered that uBPF didn't quote match the second
+> dialect
+> and submitted a bug report.  By the time the conference was over, uBPF ha=
+d
+> been updated to match GCC, so that discussion worked to reduce the number=
+ of
+> variants.
+>
+> As more instructions get added and supported by more tools and compilers
+> there's the risk of even more variants unless it's standardized.
+>
+> Hence I'd recommend that BPF assembly language get documented in some WG
+> draft.  If folks agree with that premise, the first question is then: whi=
+ch
+> document?
+> One possible answer would be the ISA document that specifies the
+> instructions,
+> since that would the IANA registry could list the assembly for each
+> instruction,
+> and any future documents that add instructions would necessarily need to
+> specify
+> the assembly for them, preventing variants from springing up for new
+> instructions.
+>
+> A second question would be, which dialect(s) to standardize.  Jose's link
+> above
+> argues that the second dialect should be the one standardized (tools are
+> free to
+> support multiple dialects for backwards compat if they want).  See the li=
+nk
+> for
+> rationale.
+>
+> Thoughts?
 
-There was a line break at the end of printf() in the original patch [1],
-but it is missing with small change in the git tree. Would you be able
-to squash below trivial change into the current commit [2]?
+Someone from Bell will go off and invent their own variation no matter
+what we do. Snark aside I think it's useful for documents to be able
+to contain excepts of code without needing to expect readers to decode
+BPF from hex in their heads, and we should write down that format
+somewhere.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c 
-b/tools/testing/selftests/bpf/test_verifier.c
-index e1a1dfe8d7fa..df04bda1c927 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -1527,7 +1527,7 @@ static void do_test_single(struct bpf_test *test, 
-bool unpriv,
-         int i, err;
+Sincerely,
+Watson
 
-         if ((test->flags & F_NEEDS_JIT_ENABLED) && jit_disabled) {
--               printf("SKIP (requires BPF JIT)");
-+               printf("SKIP (requires BPF JIT)\n");
-                 skips++;
-                 sched_yield();
-                 return;
 
-Otherwise, there are no break lines in the test log, like this:
-
-#106/p inline simple bpf_loop call SKIP (requires BPF JIT)#107/p don't 
-inline bpf_loop call, flags non-zero SKIP (requires BPF JIT)#108/p don't 
-inline bpf_loop call, callback non-constant SKIP (requires BPF 
-JIT)#109/p bpf_loop_inline and a dead func SKIP (requires BPF JIT)#110/p 
-bpf_loop_inline stack locations for loop vars SKIP (requires BPF 
-JIT)#111/p inline bpf_loop call in a big program SKIP (requires BPF 
-JIT)#112/p BPF_ST_MEM stack imm non-zero OK
-
-[1] 
-https://lore.kernel.org/bpf/20240123090351.2207-3-yangtiezhu@loongson.cn/
-[2] 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=0b50478fd877
-
-Thanks,
-Tiezhu
-
+--
+Astra mortemque praestare gradatim
 
