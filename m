@@ -1,200 +1,225 @@
-Return-Path: <bpf+bounces-20336-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20337-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2955283CA54
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 18:53:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55F8883CA63
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 18:59:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB9601F22964
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 17:53:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC81C29976A
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 17:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A377133434;
-	Thu, 25 Jan 2024 17:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913D7133414;
+	Thu, 25 Jan 2024 17:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="aoXEkDZo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674AE130E4C
-	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 17:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D85B13173D
+	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 17:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706205208; cv=none; b=B2Cd5x4s5gQt/9QP0msIT7Hv5sTyUB8PPy1KwzRtaqMnnscZ5aiEddYEgZ9GUI/dCqqL63iy0GyCGoFJ9vwkQ73pSmMtfm4duLobf5I2WnEuCg5TERY94KJLUaI6JqLVxVIvwFk+cZAd+DnK9mLNdqkCx4N6OYYu8VvwitBgM6g=
+	t=1706205560; cv=none; b=F0f2xfd2VYySiPg/iPdbzMLG70R+5h9FRUcsIPrjzHFu/S+dENhJGWOF7rd/QHrIB3AYN52pLIH3gPTHlVqcoZKRDtWVDEzVovbOxcnT9PukV+/mZ35LvKNV2Gk2fQpA7/TOf8mG4cJhtFrVwksZM9rx7iGC3bpg15Yx/1LDMEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706205208; c=relaxed/simple;
-	bh=9NXpVVXWncb/IUWv9CvZzmHyl6/N0VnRCmv41L6VDX4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mQ2v4IU0IICnUsnvSdHZawxurKWVSNqtz4BcBacEWYn88Arcb9h8axdSP/FXV/+Kz/A8vf6DzNQVjcEwNbITqM+WoleJseqm7mX+3QaCc3/YDcRP+lTcTKtiw8KOlqHVfAmtgubIDgWjr8f1LSnF0u1MvvOIPTHzT5t+/Ey7KXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bef5e512b6so690752039f.2
-        for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 09:53:27 -0800 (PST)
+	s=arc-20240116; t=1706205560; c=relaxed/simple;
+	bh=HokMkpatYTT/5LYDKqsKvPpXb82sP0M5dZRdwLr8phI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WtulhjNZsSCL0P/hTkQPU81uvN6fsJy3UZM06nC83io/X5nPTL8DqnmQ4MoLSeSuCHNEomjxTlgdpR2a5wfHwzPo6vJt0oC+wfG0Qd7xef89z3GLauwIezPh+whI27cnG+FkgttQY5usav2pu9Brdal+2c0VFRcCslLftdUYOsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=aoXEkDZo; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5ebca94cf74so69202587b3.0
+        for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 09:59:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1706205557; x=1706810357; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=opjATsJuWVgGXtTi8L7n0XRJuMOSvz9YdFs6O7o9uKM=;
+        b=aoXEkDZoZogjvJ1jQq6d6gxpWTkgys4xZ5P5/dX6T3/d5VTwsCFfVdtsEzGOWFK2Yx
+         MT8ktVcMRl3lEhs4hwRNhp59yiIfLATxtpv72VxSo2uxG7tNeZn/yJB+GZzFr471sS+h
+         6mkXfrrR1wQg5Xm+/mQ7JSZ2YrYEG/39fChzuNjyLJ88jGge22ZTld5UeSf6SSO36G6c
+         pD1bry4BiQhmoZhuen5XHjapInOjc/qcCzz4wZRl0ME28u2iszDTzsD0+JKx6XLIsAv5
+         0hr0l8nBfgte59x6NZbNKjo9cV/QXjDOAtBx1DSwxxN2kipl3pEBTNh0m+SDshNHg2FM
+         M87w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706205206; x=1706810006;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/GIo5UEfmmEJrGtw4TbN8J6mKXeZ+fxztdMS3KxE1Jo=;
-        b=wXqC0qlrJPN/h9vZBREMJusCJYuHlyXGfXULcospPYvEjhvH9l5hCSQk1ojNf3loSG
-         ivgmHlmVx+vy2f6UiO5IwgN96E5mWg71StWefFBcP93xPkTbPw3j8z9pP1I6KETJbsAv
-         /vhHqL3PoK2TMySFhWK8mZM8eNxpqDgbpGMSKhN4ePtHw9XqMRyWDGtNKkTe1HxO2mWf
-         KJUtdRgNdiHG2B5mtd1B7Kk1/9eTqcf+uY1Kg8Sak5q4YqK7QD2PdWpQilDuBrigirHi
-         YAGH1C+QhVMvU7yBUgflEXv4Hl2qETYxHITLearW0QaRIVMupDWpKiOSNmqQX91LuokK
-         Thmg==
-X-Gm-Message-State: AOJu0YypPMvY5nSSRWTSc1KxpsHhtlScrxw3tAFd6PEUvMDfE5p02wsb
-	8g3yVqyktbc6xb9h/h4c7cKceap2iRvu2uVtqlR+ocaKHoBj2A+4MpbVJN03Pdk1MKZwKpdXDjj
-	WMBjsaf1ixsSAEx4XU6SUzGvMUdNxIE/i8MKJcPx/AOKNaY4+Ll7HwAw=
-X-Google-Smtp-Source: AGHT+IHPr1gnQYMVgd3XU9mcspBuYbfX2pkIsEBdOgnyKMH9eiOQl0et+oLtEMipLiPun8lunlLDZOT2MtrMNngYVW7e4gCG96QK
+        d=1e100.net; s=20230601; t=1706205557; x=1706810357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=opjATsJuWVgGXtTi8L7n0XRJuMOSvz9YdFs6O7o9uKM=;
+        b=Vjc07jK9BV/Zh3EZaoG88lf+mwTnxDip56f7Bk1R5GccOSQQoo5Ku87CHrzcp0gS5E
+         WVGz4EBRRaNT10PS7CDL2nxrJ8UUpJv8ngZ8XTeJZ7xUjKD9P8WIFbc2szcNv6ZZS+Se
+         DZbpOjJoo2o/RVb6L9JBmhY9/hSWau1AAHAHXSw4BFpCgguu0BToUhVNvUVmnAJ8/DH7
+         3PiCwP44wUIuMzyUqDwrH9oFh4NYQn3T3BlGm3vrFN574ZDYuTe4qWorr/mKcPMt3I6O
+         e2I2i1KkXqkp+jLH8T06a+Rdm0ha1KMrX+b6hR6Nr5BWYQhmscXL3OnHCZdUgWcyYQvN
+         D+/g==
+X-Gm-Message-State: AOJu0Yx573zYrB+rk6ulYiQrouQqiOrU7Utv7RY9VMNx16An/TO5Zx6/
+	zfQ5g1Kj7vAIaPuAcIztlKqt9lq599L9XTKUIqZ0b1UhL/QKOvjyOtIsNI7wsTVc/SBQDzxoc3c
+	bVyyzgNzjSZZD8c84nqngvQ/4h7xkNDbqZbZQtXGncfGAj/o4Eg==
+X-Google-Smtp-Source: AGHT+IGowX0N08oawtn0KVs5HNCBLreoSrbxiEirCSRM/mLryIU4XmEt0t4iRjISyBGuukOKp9GGcXndPPoCtPmx7kg=
+X-Received: by 2002:a25:8246:0:b0:dc3:6b67:4998 with SMTP id
+ d6-20020a258246000000b00dc36b674998mr167283ybn.114.1706205557120; Thu, 25 Jan
+ 2024 09:59:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:6282:b0:46e:dbd6:691b with SMTP id
- fh2-20020a056638628200b0046edbd6691bmr92115jab.1.1706205206596; Thu, 25 Jan
- 2024 09:53:26 -0800 (PST)
-Date: Thu, 25 Jan 2024 09:53:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000040d68a060fc8db8c@google.com>
-Subject: [syzbot] [bpf?] general protection fault in bpf_struct_ops_find_value
-From: syzbot <syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	thinker.li@gmail.com, yonghong.song@linux.dev
+References: <20240122194801.152658-1-jhs@mojatatu.com> <20240122194801.152658-16-jhs@mojatatu.com>
+ <6841ee07-40c6-9a67-a1a7-c04cbff84757@iogearbox.net> <CAM0EoMnjEpZrajgfKLQhsJjDANsdsZf3z2W8CT9FTMQDw2hGMw@mail.gmail.com>
+ <a567ac93-2564-2235-b65f-d0940da076a5@iogearbox.net>
+In-Reply-To: <a567ac93-2564-2235-b65f-d0940da076a5@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Thu, 25 Jan 2024 12:59:04 -0500
+Message-ID: <CAM0EoM=XPJ96s3Y=ivrjH-crGb6hRu4hi90WB-O_SkxvLZNYpQ@mail.gmail.com>
+Subject: Re: [PATCH v10 net-next 15/15] p4tc: add P4 classifier
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
+	Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, jiri@resnulli.us, 
+	xiyou.wangcong@gmail.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org, 
+	khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Jan 25, 2024 at 10:47=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
+>
+> On 1/24/24 3:40 PM, Jamal Hadi Salim wrote:
+> > On Wed, Jan 24, 2024 at 8:59=E2=80=AFAM Daniel Borkmann <daniel@iogearb=
+ox.net> wrote:
+> >> On 1/22/24 8:48 PM, Jamal Hadi Salim wrote:
+> [...]
+> >>>
+> >>> It should also be noted that it is feasible to split some of the ingr=
+ess
+> >>> datapath into XDP first and more into TC later (as was shown above fo=
+r
+> >>> example where the parser runs at XDP level). YMMV.
+> >>> Regardless of choice of which scheme to use, none of these will affec=
+t
+> >>> UAPI. It will all depend on whether you generate code to load on XDP =
+vs
+> >>> tc, etc.
+> >>>
+> >>> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> >>> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> >>> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> >>> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> >>> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> >>
+> >> My objections from last iterations still stand, and I also added a nak=
+,
+> >> so please do not just drop it with new revisions.. from the v10 as you
+> >> wrote you added further code but despite the various community feedbac=
+k
+> >> the design still stands as before, therefore:
+> >>
+> >> Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
+> >
+> > We didnt make code changes - but did you read the cover letter and the
+> > extended commentary in this patch's commit log? We should have
+> > mentioned it in the changes log. It did respond to your comments.
+> > There's text that says "the filter manages the lifetime of the
+> > pipeline" - which in the future could include not only tc but XDP but
+> > also the hardware path (in the form of a file that gets loaded). I am
+> > not sure if that message is clear. Your angle being this is layer
+> > violation. In the last discussion i asked you for suggestions and we
+> > went the tcx route, which didnt make sense, and  then you didnt
+> > respond.
+> [...]
+>
+> >> Also as mentioned earlier I don't think tc should hold references on
+> >> XDP programs in here. It doesn't make any sense aside from the fact
+> >> that the cls_p4 is also not doing anything with it. This is something
+> >> that a user space control plane should be doing i.e. managing a XDP
+> >> link on the target device.
+> >
+> > This is the same argument about layer violation that you made earlier.
+> > The filter manages the p4 pipeline - i.e it's not just about the ebpf
+> > blob(s) but for example in the future (discussions are still ongoing
+> > with vendors who have P4 NICs) a filter could be loaded to also
+> > specify the location of the hardware blob.
+>
+> Ah, so there is a plan to eventually add HW offload support for cls_p4?
+> Or is this only specifiying a location of a blob through some opaque
+> cookie value from user space?
 
-syzbot found the following issue on:
+Current thought process is it will be something along these lines (the
+commit provides more details):
 
-HEAD commit:    d47b9f68d289 libbpf: Correct bpf_core_read.h comment wrt b..
-git tree:       bpf-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11479fe7e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=719e6acaf392d56b
-dashboard link: https://syzkaller.appspot.com/bug?extid=88f0aafe5f950d7489d7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ea6be3e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc199be80000
+tc filter add block 22 ingress protocol all prio 1 p4 pname simple_l3 \
+   prog type hw filename "mypnameprog.o" ... \
+   prog type xdp obj $PARSER.o section parser/xdp pinned_link
+/sys/fs/bpf/mylink \
+   action bpf obj $PROGNAME.o section prog/tc-ingress
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1a9b4a5622fb/disk-d47b9f68.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dd68baeac4fd/vmlinux-d47b9f68.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/811ba9dc9ddf/bzImage-d47b9f68.xz
+These discussions are still ongoing - but that is the current
+consensus. Note: we are not pushing any code for that, but hope it
+paints the bigger picture....
+The idea is the cls p4 owns the lifetime of the pipeline. Installing
+the filter instantiates the p4 pipeline "simple_l3" and triggers a lot
+of the refcounts to make sure the pipeline and its components stays
+alive.
+There could be multiple such filters - when someone deletes the last
+filter, then it is safe to delete the pipeline.
+Essentially the filter manages the lifetime of the pipeline.
 
-The issue was bisected to:
+> > I would be happy with a suggestion that gets us moving forward with
+> > that context in mind.
+>
+> My question on the above is mainly what does it bring you to hold a
+> reference on the XDP program? There is no guarantee that something else
+> will get loaded onto XDP, and then eventually the cls_p4 is the only
+> entity holding the reference but w/o 'purpose'. We do have BPF links
+> and the user space component orchestrating all this needs to create
+> and pin the BPF link in BPF fs, for example. An artificial reference
+> on XDP prog feels similar as if you'd hold a reference on an inode
+> out of tc.. Again, that should be delegated to the control plane you
+> have running interacting with the compiler which then manages and
+> loads its artifacts. What if you would also need to set up some
+> netfilter rules for the SW pipeline, would you then embed this too?
 
-commit fcc2c1fb0651477c8ed78a3a293c175ccd70697a
-Author: Kui-Feng Lee <thinker.li@gmail.com>
-Date:   Fri Jan 19 22:49:59 2024 +0000
+Sorry, a slight tangent first:
+P4 is self-contained, there are a handful of objects that are defined
+by the spec (externs, actions, tables, etc) and we model them in the
+patchset, so that part is self-contained. For the extra richness such
+as the netfilter example you quoted - based on my many years of
+experience deploying SDN - using daemons(sorry if i am reading too
+much in what I think you are implying) for control is not the best
+option i.e you need all kinds of coordination - for example where do
+you store state, what happens when the daemon dies, how do you
+graceful restarts etc. Based on that, if i can put things in the
+kernel (which is essentially a "perpetual daemon", unless the kernel
+crashes) it's a lot simpler to manage as a source of truth especially
+when there is not that much info. There is a limit when there are
+multiple pieces (to use your netfilter example) because you need
+another layer to coordinate things.
 
-    bpf: pass attached BTF to the bpf_struct_ops subsystem
+Re: the XDP part - our key reason is mostly managerial, in that the
+filter is the lifetime manager of the pipeline; and that if i dump
+that filter i can see all the details in regards to the pipeline(tc,
+XDP and in future hw, etc) in one spot. You are right, the link
+pinning is our protection from someone replacing the XDP prog (this
+was a tip from Toke in the early days) and the comparison of tc
+holding inode is apropos.
+There's some history: in the early days we were also using metadata
+which comes from the XDP program at the tc layer if more processing
+was to be done (and there was extra metadata which told us which XDP
+prog produced it which we would vet before trusting the metadata).
+Given all the above, we should still be able to hold this info without
+necessarily holding the extra refcount and be able to see this detail.
+So we can remove the refcounting.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106a04c3e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=126a04c3e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=146a04c3e80000
+cheers,
+jamal
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com
-Fixes: fcc2c1fb0651 ("bpf: pass attached BTF to the bpf_struct_ops subsystem")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
-CPU: 0 PID: 5058 Comm: syz-executor257 Not tainted 6.7.0-syzkaller-12348-gd47b9f68d289 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
-Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
-RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
-RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
-RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
-R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
-FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_struct_ops_map_alloc+0x12f/0x5d0 kernel/bpf/bpf_struct_ops.c:674
- map_create+0x548/0x1b90 kernel/bpf/syscall.c:1237
- __sys_bpf+0xa32/0x4a00 kernel/bpf/syscall.c:5445
- __do_sys_bpf kernel/bpf/syscall.c:5567 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5565 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5565
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f9f205ef2e9
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffa4ce4088 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007fffa4ce4268 RCX: 00007f9f205ef2e9
-RDX: 0000000000000048 RSI: 00000000200004c0 RDI: 0000000000000000
-RBP: 00007f9f20662610 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
-R13: 00007fffa4ce4258 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
-Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
-RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
-RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
-RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
-R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
-FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 4 bytes skipped:
-   0:	45 85 e4             	test   %r12d,%r12d
-   3:	0f 84 d7 00 00 00    	je     0xe0
-   9:	e8 ff ee dd ff       	call   0xffddef0d
-   e:	48 8d bb 88 00 00 00 	lea    0x88(%rbx),%rdi
-  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1c:	fc ff df
-  1f:	48 89 fa             	mov    %rdi,%rdx
-  22:	48 c1 ea 03          	shr    $0x3,%rdx
-* 26:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2a:	0f 85 dc 00 00 00    	jne    0x10c
-  30:	48 8b 9b 88 00 00 00 	mov    0x88(%rbx),%rbx
-  37:	48 85 db             	test   %rbx,%rbx
-  3a:	0f                   	.byte 0xf
-  3b:	84                   	.byte 0x84
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> Thanks,
+> Daniel
 
