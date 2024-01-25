@@ -1,65 +1,111 @@
-Return-Path: <bpf+bounces-20292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49A0083B769
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 03:56:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCDF83B76A
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 03:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4AE51F21441
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 02:56:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2F4D1C23B59
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 02:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B8E2CA2;
-	Thu, 25 Jan 2024 02:56:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A748C63AE;
+	Thu, 25 Jan 2024 02:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zip/Oy7/"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="n5bTqUTQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="n5bTqUTQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCRrMvFJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC91C63AE
-	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 02:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA475566A
+	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 02:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706151360; cv=none; b=lSDbwXeQ0+rIuz7AQThZCq89p84uQyKLp0ptPxnz328QptMDAgtLLqRwtYddGfxT115fV7wOWywiwIE9LmyqlO5YXRkdh1PPY/p2wLlfAccaSnaQdHeXnn1oadVONacjoSXCE6X93LigT+ZDKlHQkSWvYb0n3445yuOKcQUkgUA=
+	t=1706151364; cv=none; b=sRteDIoHpF6+3U46X7gIua5Mp5eTOoKgEzyEriwtdukk4bHUtNS0/nrfKMLXe8E7vIBymcUuHkH8gWDBw8SFvk4sAvs+rkitfW0UCE1/MjJkEaeCYwOaS4y+C2na1DvvywlZa/pST78MA+ZvAP8Ib+UuXvrh2yOx5HQW52axZMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706151360; c=relaxed/simple;
-	bh=UB7G7rvSLCpfXURXuM5kdtPDyQmUTJLkXh3foCz5nQ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=froNzRTFzTGKJfMaqoEc1Jy/3O+lFPO7titkpWq3rCWYzO80Yj92f4EkyAr8rWh/5uUq0DelqBTGd+KhwURzYDax6bVgPFSsW6coNFATMrbILrdjZv9mS2YoIG3aS874lungQ5jd57jrdmA6U2nhwxmlpB+DHWyapAmqdRPFSS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zip/Oy7/; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33931b38b65so3976595f8f.3
-        for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 18:55:58 -0800 (PST)
+	s=arc-20240116; t=1706151364; c=relaxed/simple;
+	bh=tYCVbaj0N+9IKDa7pWIaEPs8rWRzsSbinnr4d2NgWMw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:To:Cc:
+	 Subject:Content-Type; b=eD0eikueXkCHJXqnoMXifrg+9KmhjenVghKjv/tZwDIw04kwUL/VfZT0TBWfU1v7NtrVs44gAtiF9bUa6KOpYnUiUDXvpFn7nksYPvVfG8MreKdgKHNay836wIYxTodMq8xJOt1X/2VUutvYlmFhVzw5BXGXgCh9WCs1VPWg7dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=n5bTqUTQ; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=n5bTqUTQ; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kCRrMvFJ reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 5B484C151989
+	for <bpf@vger.kernel.org>; Wed, 24 Jan 2024 18:56:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1706151362; bh=tYCVbaj0N+9IKDa7pWIaEPs8rWRzsSbinnr4d2NgWMw=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=n5bTqUTQaWn3sjFSSYIkiAui5nXPFSpEfmuEDz5kO0FGk/2sk9MUCejwUad5rjVJF
+	 abhhLXC0yz0J3UbYQritrhIhprDM4fu8NcKdTiFXmHO38e1u1WmGJCTICmeF6wjbGW
+	 F7NGH3ZYbrG04ZskDDyXm1wRwARIwf7s8eBzhkek=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Wed Jan 24 18:56:02 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 29BAEC14F71B;
+	Wed, 24 Jan 2024 18:56:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1706151362; bh=tYCVbaj0N+9IKDa7pWIaEPs8rWRzsSbinnr4d2NgWMw=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=n5bTqUTQaWn3sjFSSYIkiAui5nXPFSpEfmuEDz5kO0FGk/2sk9MUCejwUad5rjVJF
+	 abhhLXC0yz0J3UbYQritrhIhprDM4fu8NcKdTiFXmHO38e1u1WmGJCTICmeF6wjbGW
+	 F7NGH3ZYbrG04ZskDDyXm1wRwARIwf7s8eBzhkek=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id B27EDC14F71B
+ for <bpf@ietfa.amsl.com>; Wed, 24 Jan 2024 18:56:00 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.107
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id kqaMjchOiewD for <bpf@ietfa.amsl.com>;
+ Wed, 24 Jan 2024 18:55:58 -0800 (PST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 97731C14F6F3
+ for <bpf@ietf.org>; Wed, 24 Jan 2024 18:55:58 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-33931b38b65so3976596f8f.3
+ for <bpf@ietf.org>; Wed, 24 Jan 2024 18:55:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706151357; x=1706756157; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YbhGA0gDhCjRLVpsKiToXzQlCxMvHT4hJbqH0aQDeuI=;
-        b=Zip/Oy7/K714mfzhTtIzrjMu6iWYRPl93TrvbdCgbYtYvCfHnRfmmwf6vwRtxyApd3
-         ujZiNX9+NRRlhwXs7qL5zdiUVfo7b/sqAu9snjczV8vMAAF9HSHMqeycWbv4NTFaOREF
-         bd50eoGlI8bP3IBPrNyEgfkZ0bLyE1la/2qpfWhAtBXcn6mvuCaCKl7S7XE2C9qvAsk9
-         p5AP0W1GHfHu3RTAMG5M2OvxwbWqSr/+JziR9AaTPoBSH1laofkw62TJtqFfw3hMF+7T
-         3Wu3tKB8L3UHMGlPyYi/STzXj1m4TF4OMru29oxrQmHRjRRZofX5GtZrc9zMJ5LG1B2o
-         m+6w==
+ d=gmail.com; s=20230601; t=1706151357; x=1706756157; darn=ietf.org;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=YbhGA0gDhCjRLVpsKiToXzQlCxMvHT4hJbqH0aQDeuI=;
+ b=kCRrMvFJyTzYtvoTqLh5CH5hCu5pfOUPDcZTmh2PvDPd3Q1PDW2a/H9x5ay7/Iapuq
+ 9mRYGjp3EKqFkvbcaXtIurBPDLYbZBz7G+hey3RetHmd24q4ch1KgyHKnSEOUfGLtHJd
+ t+IMznLJIwU20jwnibat20Ye7yGgQgEWmq2bLqKkPL3V7Q2WUVd4BGIszGAkZyrCC6il
+ R39C8teSASFVOr+pKyH1S/fqaYmNsTw5bRlzI2bh+7Le+ogh3Z1eP1IwvMTCu1EvD2er
+ WYTOw3Q6+j3tZpAPRXQCQJNfRVNnolbb9IhIdw6jf2zqkEN710mn2QkXOKcqIFvprtA0
+ /ydw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706151357; x=1706756157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YbhGA0gDhCjRLVpsKiToXzQlCxMvHT4hJbqH0aQDeuI=;
-        b=bkoDBzUhHIpO9eCehnzw5EIvsLzySEcZZJWi6SyC3/LK9amqEFBJnR2O/Mrrm6i7FY
-         GCE+5EnW+kOeQQAVjRXpj1BjAzNnvJp7HE1PbJx5Y7OxBiXqid8j4m//Oh8ybai/9sca
-         asj3inZ1Tm34RgWTkh4JMTZv7uS6D6rKGusAEAm/fPRKsd+yWtGsyLO4+17APBn4QoCz
-         VUppMUVFxrj708aqoTy02tlqzS6abmuJ/YCrWUJtVZ5kQJma4i1mIy5xdVjAXJkoN1mC
-         wOQd/dLugmDAMTSbApc7WkVsgC/37B2catGh7NpM2xU4ga7fAXxXhgUnbSE0tTfokFfR
-         X8qA==
-X-Gm-Message-State: AOJu0YxEpPfbBTYbEu9rFZ6e3RAdeiXd5Hf6U7R8d1bEetBEkx/F3lFg
-	g7/2S9K0xUqIjgjk6Qw56aq3AY4ad+M03GJiwWgD+KCSrJeyJMLIpnwPEFsxtkREMOew3fDD4IZ
-	e0aMdMPM+JKLb8ZSAdCmHC8hIKDM=
+ d=1e100.net; s=20230601; t=1706151357; x=1706756157;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=YbhGA0gDhCjRLVpsKiToXzQlCxMvHT4hJbqH0aQDeuI=;
+ b=umjETZdop0lZ0zRrQsaENBS7bycNP9yJaw/miFHkyRV9HwnvEZKyTmHC1GLHpYb7D+
+ 0B3bkeDo5p9fjoyg+K69yxoKmOpPJbV6HoaJcfdIEVWRoZNc9YBfOmljHBOovd4AiI4u
+ YOz/vklH+p/FzJRPGVyU9nRJKFyZ2ea9H/y6tkOxivv8bf5z+wawxeaNFCmIQvwAwQJW
+ 5CfZRqGtjouqmS2Jv1YnNpXvWvJhINm+k0xNDgbqX88BSAdXKW/gEE3eQ1RFkECvYdUz
+ kbCmP4NEvBtIUmBYKk/IsoNiZv/WKI6SORaJ0jO8CFeWILP4xA4Cmygg0/RFpLa0Rmnp
+ sOJQ==
+X-Gm-Message-State: AOJu0YyS6KonLmxKc/lfQckUlFSIXqxfoNFO0+k6kequro5GlwUNfU+u
+ cJLNluRiSLS+5fr5Vo+vHScCtCz7fIb4UX06wht1+LqMJSTmQ1nKNorX3mSdQz7Kt/vUSYKaHe6
+ kEaFuHwgw0F4hdu0PlyiIG42Bcunv5QTO
 X-Google-Smtp-Source: AGHT+IE47PVU+SyIT0Gq5bH3DbX3L55aEhmnlU1Vd0psSXCvryuQERT+5x72Yf6bfGfxjYf8p7qoYgXao8sw8+iorwA=
 X-Received: by 2002:a05:6000:510:b0:337:8db0:597d with SMTP id
  a16-20020a056000051000b003378db0597dmr86065wrf.116.1706151356977; Wed, 24 Jan
@@ -72,98 +118,91 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231214174437.GA2853@maniforge> <ZXvkS4qmRMZqlWhA@infradead.org>
  <CAADnVQ+ExRC_RavN_sbuOmuwyP6+HKnV9bFjJOseORBaVw0Jcg@mail.gmail.com>
- <09dc01da32a6$99c97e50$cd5c7af0$@gmail.com> <CAADnVQ+Kb20aUZdcqSh5eF-_dzpHWcpjAtYpLgg5Fqog=g7hpA@mail.gmail.com>
+ <09dc01da32a6$99c97e50$cd5c7af0$@gmail.com>
+ <CAADnVQ+Kb20aUZdcqSh5eF-_dzpHWcpjAtYpLgg5Fqog=g7hpA@mail.gmail.com>
  <ZYPiq6ijLaMl/QD8@infradead.org> <20240105220711.GA1001999@maniforge>
- <ZZwcC7nZiZ+OV1ST@infradead.org> <CAADnVQLMo0M675T89gu9v_wSR+GbQmu4ajWjwgWK9aCNkJPsaQ@mail.gmail.com>
- <874jfm68ok.fsf@oracle.com> <20240123213948.GA221862@maniforge> <1f8301da4e54$0b0ad690$212083b0$@gmail.com>
+ <ZZwcC7nZiZ+OV1ST@infradead.org>
+ <CAADnVQLMo0M675T89gu9v_wSR+GbQmu4ajWjwgWK9aCNkJPsaQ@mail.gmail.com>
+ <874jfm68ok.fsf@oracle.com> <20240123213948.GA221862@maniforge>
+ <1f8301da4e54$0b0ad690$212083b0$@gmail.com>
 In-Reply-To: <1f8301da4e54$0b0ad690$212083b0$@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Date: Wed, 24 Jan 2024 18:55:45 -0800
 Message-ID: <CAADnVQ+iN=HMdZD3jVhQxPzCWKi07DZo_wxq28nuC4JuXk2ZGw@mail.gmail.com>
-Subject: Re: [Bpf] BPF ISA conformance groups
 To: Dave Thaler <dthaler1968@googlemail.com>
-Cc: David Vernet <void@manifault.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>, 
-	Christoph Hellwig <hch@infradead.org>, bpf@ietf.org, bpf <bpf@vger.kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, David Faust <david.faust@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: David Vernet <void@manifault.com>,
+ "Jose E. Marchesi" <jose.marchesi@oracle.com>, 
+ Christoph Hellwig <hch@infradead.org>, bpf@ietf.org, bpf <bpf@vger.kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, David Faust <david.faust@oracle.com>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/A--3VwJB82EMoEf2p4Uin8gNabk>
+Subject: Re: [Bpf] BPF ISA conformance groups
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
-On Tue, Jan 23, 2024 at 3:29=E2=80=AFPM <dthaler1968@googlemail.com> wrote:
->
-> > -----Original Message-----
-> > From: David Vernet <void@manifault.com>
-> > Sent: Tuesday, January 23, 2024 1:40 PM
-> > To: Jose E. Marchesi <jose.marchesi@oracle.com>
-> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>; Christoph Hellwi=
-g
-> > <hch@infradead.org>; Dave Thaler <dthaler1968@googlemail.com>;
-> > bpf@ietf.org; bpf <bpf@vger.kernel.org>; Jakub Kicinski <kuba@kernel.or=
-g>;
-> > david.faust@oracle.com
-> > Subject: Re: [Bpf] BPF ISA conformance groups
-> >
-> > On Tue, Jan 09, 2024 at 12:35:39PM +0100, Jose E. Marchesi wrote:
-> > >
-> > > > On Mon, Jan 8, 2024 at 8:00=E2=80=AFAM Christoph Hellwig <hch@infra=
-dead.org>
-> > wrote:
-> > > >>
-> > > >> On Fri, Jan 05, 2024 at 04:07:11PM -0600, David Vernet wrote:
-> > > >> >
-> > > >> > So how do we want to move forward here? It sounds like we're
-> > > >> > leaning toward's Alexei's proposal of having:
-> > > >> >
-> > > >> > - Base Integer Instruction Set, 32-bit
-> > > >> > - Base Integer Instruction Set, 64-bit
-> > > >> > - Integer Multiplication and Division
-> > > >> > - Atomic Instructions
-> > > >>
-> > > >> As in the 64-bit integer set would be an add-on to the first one
-> > > >> which is the core set?  In that case that's fine with me, but the
-> > > >> above wording is a bit suboptimal.
-> > > >
-> > > > yes.
-> > > > Here is how I was thinking about the grouping:
-> > > > 32-bit set: all 32-bit instructions those with BPF_ALU and BPF_JMP3=
-2
-> > > > and load/store.
-> > > >
-> > > > 64-bit set: above plus BPF_ALU64 and BPF_JMP.
-> > > >
-> > > > The idea is to allow for clean 32-bit HW offloads.
-> > > > We can introduce a compiler flag that will only use such
-> > > > instructions and will error when 64-bit math is needed.
-> > > > Details need to be thought through, of course.
-> > > > Right now I'm not sure whether we need to reduce sizeof(void*) to 4
-> > > > in such a case or normal 8 will still work, but from ISA perspectiv=
-e
-> > > > everything is ready. 32-bit subregisters fit well.
-> > > > The compiler work plus additional verifier smartness is needed, but
-> > > > the end result should be very nice.
-> > > > Offload of bpf programs into 32-bit embedded devices will be possib=
-le.
-> > >
-> > > This is very interesting.
-> > this is necessarily something we need to figure out now. Hopefully this=
- is all
-> > stuff we can iron out once we start to really sink our teeth into the A=
-BI doc.
->
-> "Integer Multiplication and Division" in this thread doesn't seem to sepa=
-rate
-> between 32-bit vs 64-bit.  Is the proposal that multiplication/division i=
-s ok
-> to require 64-bit operations?  I had expected one rationale for the 32bit
-> multiplication/division instructions is to accommodate 32-bit-only
-> implementations.   So should we have separate groups for 32-bit vs
-> 64-bit for the multiplication/division instructions?
->
-> Similar question goes for the atomic instructions, i.e., should we
-> have separate conformance groups for 32-bit vs 64-bit atomics?
-
-risc-v defines only one group "M" for div/mul and another group "A"
-for atomics.
-
-What it means that groups "base32 + M" means that only 32-bit mul
-is available while "base64 + M" means that both 32 and 64-bit alu is there.
+T24gVHVlLCBKYW4gMjMsIDIwMjQgYXQgMzoyOeKAr1BNIDxkdGhhbGVyMTk2OEBnb29nbGVtYWls
+LmNvbT4gd3JvdGU6Cj4KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiBGcm9tOiBE
+YXZpZCBWZXJuZXQgPHZvaWRAbWFuaWZhdWx0LmNvbT4KPiA+IFNlbnQ6IFR1ZXNkYXksIEphbnVh
+cnkgMjMsIDIwMjQgMTo0MCBQTQo+ID4gVG86IEpvc2UgRS4gTWFyY2hlc2kgPGpvc2UubWFyY2hl
+c2lAb3JhY2xlLmNvbT4KPiA+IENjOiBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFsZXhlaS5zdGFyb3Zv
+aXRvdkBnbWFpbC5jb20+OyBDaHJpc3RvcGggSGVsbHdpZwo+ID4gPGhjaEBpbmZyYWRlYWQub3Jn
+PjsgRGF2ZSBUaGFsZXIgPGR0aGFsZXIxOTY4QGdvb2dsZW1haWwuY29tPjsKPiA+IGJwZkBpZXRm
+Lm9yZzsgYnBmIDxicGZAdmdlci5rZXJuZWwub3JnPjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2Vy
+bmVsLm9yZz47Cj4gPiBkYXZpZC5mYXVzdEBvcmFjbGUuY29tCj4gPiBTdWJqZWN0OiBSZTogW0Jw
+Zl0gQlBGIElTQSBjb25mb3JtYW5jZSBncm91cHMKPiA+Cj4gPiBPbiBUdWUsIEphbiAwOSwgMjAy
+NCBhdCAxMjozNTozOVBNICswMTAwLCBKb3NlIEUuIE1hcmNoZXNpIHdyb3RlOgo+ID4gPgo+ID4g
+PiA+IE9uIE1vbiwgSmFuIDgsIDIwMjQgYXQgODowMOKAr0FNIENocmlzdG9waCBIZWxsd2lnIDxo
+Y2hAaW5mcmFkZWFkLm9yZz4KPiA+IHdyb3RlOgo+ID4gPiA+Pgo+ID4gPiA+PiBPbiBGcmksIEph
+biAwNSwgMjAyNCBhdCAwNDowNzoxMVBNIC0wNjAwLCBEYXZpZCBWZXJuZXQgd3JvdGU6Cj4gPiA+
+ID4+ID4KPiA+ID4gPj4gPiBTbyBob3cgZG8gd2Ugd2FudCB0byBtb3ZlIGZvcndhcmQgaGVyZT8g
+SXQgc291bmRzIGxpa2Ugd2UncmUKPiA+ID4gPj4gPiBsZWFuaW5nIHRvd2FyZCdzIEFsZXhlaSdz
+IHByb3Bvc2FsIG9mIGhhdmluZzoKPiA+ID4gPj4gPgo+ID4gPiA+PiA+IC0gQmFzZSBJbnRlZ2Vy
+IEluc3RydWN0aW9uIFNldCwgMzItYml0Cj4gPiA+ID4+ID4gLSBCYXNlIEludGVnZXIgSW5zdHJ1
+Y3Rpb24gU2V0LCA2NC1iaXQKPiA+ID4gPj4gPiAtIEludGVnZXIgTXVsdGlwbGljYXRpb24gYW5k
+IERpdmlzaW9uCj4gPiA+ID4+ID4gLSBBdG9taWMgSW5zdHJ1Y3Rpb25zCj4gPiA+ID4+Cj4gPiA+
+ID4+IEFzIGluIHRoZSA2NC1iaXQgaW50ZWdlciBzZXQgd291bGQgYmUgYW4gYWRkLW9uIHRvIHRo
+ZSBmaXJzdCBvbmUKPiA+ID4gPj4gd2hpY2ggaXMgdGhlIGNvcmUgc2V0PyAgSW4gdGhhdCBjYXNl
+IHRoYXQncyBmaW5lIHdpdGggbWUsIGJ1dCB0aGUKPiA+ID4gPj4gYWJvdmUgd29yZGluZyBpcyBh
+IGJpdCBzdWJvcHRpbWFsLgo+ID4gPiA+Cj4gPiA+ID4geWVzLgo+ID4gPiA+IEhlcmUgaXMgaG93
+IEkgd2FzIHRoaW5raW5nIGFib3V0IHRoZSBncm91cGluZzoKPiA+ID4gPiAzMi1iaXQgc2V0OiBh
+bGwgMzItYml0IGluc3RydWN0aW9ucyB0aG9zZSB3aXRoIEJQRl9BTFUgYW5kIEJQRl9KTVAzMgo+
+ID4gPiA+IGFuZCBsb2FkL3N0b3JlLgo+ID4gPiA+Cj4gPiA+ID4gNjQtYml0IHNldDogYWJvdmUg
+cGx1cyBCUEZfQUxVNjQgYW5kIEJQRl9KTVAuCj4gPiA+ID4KPiA+ID4gPiBUaGUgaWRlYSBpcyB0
+byBhbGxvdyBmb3IgY2xlYW4gMzItYml0IEhXIG9mZmxvYWRzLgo+ID4gPiA+IFdlIGNhbiBpbnRy
+b2R1Y2UgYSBjb21waWxlciBmbGFnIHRoYXQgd2lsbCBvbmx5IHVzZSBzdWNoCj4gPiA+ID4gaW5z
+dHJ1Y3Rpb25zIGFuZCB3aWxsIGVycm9yIHdoZW4gNjQtYml0IG1hdGggaXMgbmVlZGVkLgo+ID4g
+PiA+IERldGFpbHMgbmVlZCB0byBiZSB0aG91Z2h0IHRocm91Z2gsIG9mIGNvdXJzZS4KPiA+ID4g
+PiBSaWdodCBub3cgSSdtIG5vdCBzdXJlIHdoZXRoZXIgd2UgbmVlZCB0byByZWR1Y2Ugc2l6ZW9m
+KHZvaWQqKSB0byA0Cj4gPiA+ID4gaW4gc3VjaCBhIGNhc2Ugb3Igbm9ybWFsIDggd2lsbCBzdGls
+bCB3b3JrLCBidXQgZnJvbSBJU0EgcGVyc3BlY3RpdmUKPiA+ID4gPiBldmVyeXRoaW5nIGlzIHJl
+YWR5LiAzMi1iaXQgc3VicmVnaXN0ZXJzIGZpdCB3ZWxsLgo+ID4gPiA+IFRoZSBjb21waWxlciB3
+b3JrIHBsdXMgYWRkaXRpb25hbCB2ZXJpZmllciBzbWFydG5lc3MgaXMgbmVlZGVkLCBidXQKPiA+
+ID4gPiB0aGUgZW5kIHJlc3VsdCBzaG91bGQgYmUgdmVyeSBuaWNlLgo+ID4gPiA+IE9mZmxvYWQg
+b2YgYnBmIHByb2dyYW1zIGludG8gMzItYml0IGVtYmVkZGVkIGRldmljZXMgd2lsbCBiZSBwb3Nz
+aWJsZS4KPiA+ID4KPiA+ID4gVGhpcyBpcyB2ZXJ5IGludGVyZXN0aW5nLgo+ID4gdGhpcyBpcyBu
+ZWNlc3NhcmlseSBzb21ldGhpbmcgd2UgbmVlZCB0byBmaWd1cmUgb3V0IG5vdy4gSG9wZWZ1bGx5
+IHRoaXMgaXMgYWxsCj4gPiBzdHVmZiB3ZSBjYW4gaXJvbiBvdXQgb25jZSB3ZSBzdGFydCB0byBy
+ZWFsbHkgc2luayBvdXIgdGVldGggaW50byB0aGUgQUJJIGRvYy4KPgo+ICJJbnRlZ2VyIE11bHRp
+cGxpY2F0aW9uIGFuZCBEaXZpc2lvbiIgaW4gdGhpcyB0aHJlYWQgZG9lc24ndCBzZWVtIHRvIHNl
+cGFyYXRlCj4gYmV0d2VlbiAzMi1iaXQgdnMgNjQtYml0LiAgSXMgdGhlIHByb3Bvc2FsIHRoYXQg
+bXVsdGlwbGljYXRpb24vZGl2aXNpb24gaXMgb2sKPiB0byByZXF1aXJlIDY0LWJpdCBvcGVyYXRp
+b25zPyAgSSBoYWQgZXhwZWN0ZWQgb25lIHJhdGlvbmFsZSBmb3IgdGhlIDMyYml0Cj4gbXVsdGlw
+bGljYXRpb24vZGl2aXNpb24gaW5zdHJ1Y3Rpb25zIGlzIHRvIGFjY29tbW9kYXRlIDMyLWJpdC1v
+bmx5Cj4gaW1wbGVtZW50YXRpb25zLiAgIFNvIHNob3VsZCB3ZSBoYXZlIHNlcGFyYXRlIGdyb3Vw
+cyBmb3IgMzItYml0IHZzCj4gNjQtYml0IGZvciB0aGUgbXVsdGlwbGljYXRpb24vZGl2aXNpb24g
+aW5zdHJ1Y3Rpb25zPwo+Cj4gU2ltaWxhciBxdWVzdGlvbiBnb2VzIGZvciB0aGUgYXRvbWljIGlu
+c3RydWN0aW9ucywgaS5lLiwgc2hvdWxkIHdlCj4gaGF2ZSBzZXBhcmF0ZSBjb25mb3JtYW5jZSBn
+cm91cHMgZm9yIDMyLWJpdCB2cyA2NC1iaXQgYXRvbWljcz8KCnJpc2MtdiBkZWZpbmVzIG9ubHkg
+b25lIGdyb3VwICJNIiBmb3IgZGl2L211bCBhbmQgYW5vdGhlciBncm91cCAiQSIKZm9yIGF0b21p
+Y3MuCgpXaGF0IGl0IG1lYW5zIHRoYXQgZ3JvdXBzICJiYXNlMzIgKyBNIiBtZWFucyB0aGF0IG9u
+bHkgMzItYml0IG11bAppcyBhdmFpbGFibGUgd2hpbGUgImJhc2U2NCArIE0iIG1lYW5zIHRoYXQg
+Ym90aCAzMiBhbmQgNjQtYml0IGFsdSBpcyB0aGVyZS4KCi0tIApCcGYgbWFpbGluZyBsaXN0CkJw
+ZkBpZXRmLm9yZwpodHRwczovL3d3dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2JwZgo=
 
