@@ -1,154 +1,156 @@
-Return-Path: <bpf+bounces-20332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A854C83C629
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 16:12:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFF483C734
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 16:48:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EEAD1F21CDA
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 15:12:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4302B1C232D2
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 15:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD7573160;
-	Thu, 25 Jan 2024 15:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D12745E9;
+	Thu, 25 Jan 2024 15:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VX3axazP"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mMA1VRo8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B976E2C9;
-	Thu, 25 Jan 2024 15:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439837CF31;
+	Thu, 25 Jan 2024 15:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706195517; cv=none; b=HBhaIxKFvaZGLigIF8sb/wyBa6zwECbSDMGhCzWHMVKqDnqg9Vj+IgcZ6FbbiHf4wcqaa/oHDed3kMX9z+N7Zd1Gz7cflQMUvbaOBHouTaeoD3SHEAyAYxNOH51E42dr+nH9TfNpiLBqxb0W1VP4E1S9aMcnqoUBb5xAlnv5a2E=
+	t=1706197656; cv=none; b=Rhgn1Tig+GpZXupcHdngMuZr/m3GLAvsxoKOl/7v7fze+g02jFUUvdwYieKHLOFYSDLeCSldhRYDWl+JwydtNp5/9cAWCAgxFbXvkiUnO5k6i7QC7equNCgbpKGB8Z5BbJPHvxgRGGfg40/tcVTk9RoNo5BiCYlQJ9opyjk0us4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706195517; c=relaxed/simple;
-	bh=mzMOuqXTq4zCUMMK/K2C/+HNWBvw8RALwJlnW72830A=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ShZal1LwVHp5r67a0WRZRLd2b3Milmq6YDlNAAOUViAN35H6n24oNSDZGPmtw6pzoUH+ahsmHmWU2Wi2t6G2jFiIIfj3D6uouPFDPqYb4IfIWawEf/roUq9p2QooFuxF3A4OFVKFH5acOLh4nRiDlVwgFVIf7agdO2c1lrfzuEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VX3axazP; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e7065b692so73641005e9.3;
-        Thu, 25 Jan 2024 07:11:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706195514; x=1706800314; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GUvl1REbEUd6BLP3pDMwPlzTx9j7ZW9jZ3MWQ9/tcz0=;
-        b=VX3axazPlyFUmYuDEEkw+xtrxFIkiqdSPAYHeVXGUhBz48ECULgjDf40aSif9EIixL
-         ISgJ3kl3JCnH2jgZ8oOpfBSWpkujV2VTF0TwecOtgX++3rS901YnV/FACx60xRgnu23T
-         7F3RL1/j3lwDrY5mTx+UbvtK3RJeO3eN6+23uhgWyc1HIUG7+hKv7Vcip7+0ySVhdRQH
-         qHhPM8lboD8wzdTLY8+WGwkbJoZE77sqyDTCu5suXezPTX44ZaZ2XapcxbNXMa1oz1l4
-         ShMawQQZWeQmyJGIakegnftMWHK/zlMiLIcnHfpQciSIypHgToMNPP/neXkWVg5jq6cx
-         VHtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706195514; x=1706800314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GUvl1REbEUd6BLP3pDMwPlzTx9j7ZW9jZ3MWQ9/tcz0=;
-        b=d7J4jq+1aj3N8gO8h8ZXvyCYE9EsB1YBQ1UkmeKTLCx29ZclSamsfA3/fwHAkUBZs+
-         cv9Hwz4I0fa/7aSD8wLlb6T4GoHOIjDKfnyfXSA5Ea7k60E6i4f5Mdk883yRSyJ0ta9a
-         u/cNpsvM+G4D/1Vh7DTre1jLytEjaWFH7PQHfDNb6NVfIDEPMHxLWinXvNh6HC4fN9V9
-         zzH3FcoDZwp9btetdlPNKUxu7aS/svetbLgkrpIhKHtj+7G4/Ug3FCMJgeos8YYjaAhZ
-         4oi1A1OIaZpwOFiVVWNJubV/tumkTQIc4IHPTzkPge7gWRgq4cT++ivWYYtzOm/W/edV
-         xRqQ==
-X-Gm-Message-State: AOJu0YwUhNsXf+Wxa364hiUDMYgSW7JsLk9FA3q6xI8Fl9nrKvEs0dMh
-	7dDXJlqtPHXM9LuRdVQtxqO3MTCdRNdgYzWInoezEnVYbE6YRmlE
-X-Google-Smtp-Source: AGHT+IGLT7Hf2eaNt5e2aNLHGjHeIelPf8TJtASTb4bi2ksEIb1W7zTEDnc6u5Ree+0Xvs/4dFCvew==
-X-Received: by 2002:a05:600c:1396:b0:40e:7e28:e5c8 with SMTP id u22-20020a05600c139600b0040e7e28e5c8mr605036wmf.6.1706195514252;
-        Thu, 25 Jan 2024 07:11:54 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a17-20020a5d5091000000b003392d3dcf6dsm12011392wrt.0.2024.01.25.07.11.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 07:11:53 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 25 Jan 2024 16:11:51 +0100
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>,
-	linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v6 32/36] fprobe: Rewrite fprobe on function-graph tracer
-Message-ID: <ZbJ6NxkjWEP5adru@krava>
-References: <170505424954.459169.10630626365737237288.stgit@devnote2>
- <170505462606.459169.1375700979988728260.stgit@devnote2>
+	s=arc-20240116; t=1706197656; c=relaxed/simple;
+	bh=VahnD2WF97Gr+wP0g4hnDQOrIUwn3rdLtkIc/F/a1o0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=nS+4EjQRMZa4AslaHvkju0vDl87nNDqjVU1aOEhqn8vldAVkQP1Bynj1MTzO5Q+0o7k26yLObKgjDkhVR6lWCCtlTPBjsbcC07wajoo7zecbXLaxWU8oMl9dv08gWExHb6Ml8xxQqIX14ws7y33aTASQYjAKtDnI5V9EFa8FsaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mMA1VRo8; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=s6agdKzmNrctWvv3P+nld9yIlLBZSPLgtdmmZf/JoK0=; b=mMA1VRo8e1/yLM1e0j8sz3lYvj
+	8jBks6SbY+5CeZtAjxjXfDa0VcML9jh0NdgE5uKUN9JQP+ksisAqsC8IpxULWK9aw/6NbosDxPYtT
+	g71ffx4+ienI0Wo/65Xs+9UYXrjjcvqgHLHu6F3VZvFJ4+jZWo4AbUV1L03g+bGmnKFwQ8VKk1d3x
+	wH83cDKflKbbXkQvvX6o/Cd8ceesRiKG3/nqPGeqP1EGM8l4IY9YCAZ1n6vjs/UFukl61FJwkWQ5L
+	Qael6uJZs3mToEtuJ1x0n6BOSshtc0UKITCiVlFF79H9X57MDmzzbjcn4jPapA8EghMDxhaRKjFRj
+	+e1UNNkg==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rT1wo-000Gtb-Ml; Thu, 25 Jan 2024 16:47:22 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rT1wn-000JWP-Ez; Thu, 25 Jan 2024 16:47:21 +0100
+Subject: Re: [PATCH v10 net-next 15/15] p4tc: add P4 classifier
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com,
+ anjali.singhai@intel.com, namrata.limaye@intel.com, tom@sipanda.io,
+ mleitner@redhat.com, Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com,
+ jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com,
+ horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com,
+ bpf@vger.kernel.org
+References: <20240122194801.152658-1-jhs@mojatatu.com>
+ <20240122194801.152658-16-jhs@mojatatu.com>
+ <6841ee07-40c6-9a67-a1a7-c04cbff84757@iogearbox.net>
+ <CAM0EoMnjEpZrajgfKLQhsJjDANsdsZf3z2W8CT9FTMQDw2hGMw@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a567ac93-2564-2235-b65f-d0940da076a5@iogearbox.net>
+Date: Thu, 25 Jan 2024 16:47:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170505462606.459169.1375700979988728260.stgit@devnote2>
+In-Reply-To: <CAM0EoMnjEpZrajgfKLQhsJjDANsdsZf3z2W8CT9FTMQDw2hGMw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
 
-On Fri, Jan 12, 2024 at 07:17:06PM +0900, Masami Hiramatsu (Google) wrote:
+On 1/24/24 3:40 PM, Jamal Hadi Salim wrote:
+> On Wed, Jan 24, 2024 at 8:59 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 1/22/24 8:48 PM, Jamal Hadi Salim wrote:
+[...]
+>>>
+>>> It should also be noted that it is feasible to split some of the ingress
+>>> datapath into XDP first and more into TC later (as was shown above for
+>>> example where the parser runs at XDP level). YMMV.
+>>> Regardless of choice of which scheme to use, none of these will affect
+>>> UAPI. It will all depend on whether you generate code to load on XDP vs
+>>> tc, etc.
+>>>
+>>> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+>>> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+>>> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+>>> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+>>> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+>>
+>> My objections from last iterations still stand, and I also added a nak,
+>> so please do not just drop it with new revisions.. from the v10 as you
+>> wrote you added further code but despite the various community feedback
+>> the design still stands as before, therefore:
+>>
+>> Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
+> 
+> We didnt make code changes - but did you read the cover letter and the
+> extended commentary in this patch's commit log? We should have
+> mentioned it in the changes log. It did respond to your comments.
+> There's text that says "the filter manages the lifetime of the
+> pipeline" - which in the future could include not only tc but XDP but
+> also the hardware path (in the form of a file that gets loaded). I am
+> not sure if that message is clear. Your angle being this is layer
+> violation. In the last discussion i asked you for suggestions and we
+> went the tcx route, which didnt make sense, and  then you didnt
+> respond.
+[...]
 
-SNIP
+>> Also as mentioned earlier I don't think tc should hold references on
+>> XDP programs in here. It doesn't make any sense aside from the fact
+>> that the cls_p4 is also not doing anything with it. This is something
+>> that a user space control plane should be doing i.e. managing a XDP
+>> link on the target device.
+> 
+> This is the same argument about layer violation that you made earlier.
+> The filter manages the p4 pipeline - i.e it's not just about the ebpf
+> blob(s) but for example in the future (discussions are still ongoing
+> with vendors who have P4 NICs) a filter could be loaded to also
+> specify the location of the hardware blob.
 
->   * Register @fp to ftrace for enabling the probe on the address given by @addrs.
-> @@ -298,23 +547,27 @@ EXPORT_SYMBOL_GPL(register_fprobe);
->   */
->  int register_fprobe_ips(struct fprobe *fp, unsigned long *addrs, int num)
->  {
-> -	int ret;
-> -
-> -	if (!fp || !addrs || num <= 0)
-> -		return -EINVAL;
-> -
-> -	fprobe_init(fp);
-> +	struct fprobe_hlist *hlist_array;
-> +	int ret, i;
->  
-> -	ret = ftrace_set_filter_ips(&fp->ops, addrs, num, 0, 0);
-> +	ret = fprobe_init(fp, addrs, num);
->  	if (ret)
->  		return ret;
->  
-> -	ret = fprobe_init_rethook(fp, num);
-> -	if (!ret)
-> -		ret = register_ftrace_function(&fp->ops);
-> +	mutex_lock(&fprobe_mutex);
-> +
-> +	hlist_array = fp->hlist_array;
-> +	ret = fprobe_graph_add_ips(addrs, num);
+Ah, so there is a plan to eventually add HW offload support for cls_p4?
+Or is this only specifiying a location of a blob through some opaque
+cookie value from user space?
 
-so fprobe_graph_add_ips registers the ftrace_ops and actually starts
-the tracing.. and in the code below we prepare fprobe data that is
-checked in the ftrace_ops callback.. should we do this this earlier
-before calling fprobe_graph_add_ips/register_ftrace_graph?
+> I would be happy with a suggestion that gets us moving forward with
+> that context in mind.
 
-jirka
+My question on the above is mainly what does it bring you to hold a
+reference on the XDP program? There is no guarantee that something else
+will get loaded onto XDP, and then eventually the cls_p4 is the only
+entity holding the reference but w/o 'purpose'. We do have BPF links
+and the user space component orchestrating all this needs to create
+and pin the BPF link in BPF fs, for example. An artificial reference
+on XDP prog feels similar as if you'd hold a reference on an inode
+out of tc.. Again, that should be delegated to the control plane you
+have running interacting with the compiler which then manages and
+loads its artifacts. What if you would also need to set up some
+netfilter rules for the SW pipeline, would you then embed this too?
 
-> +	if (!ret) {
-> +		add_fprobe_hash(fp);
-> +		for (i = 0; i < hlist_array->size; i++)
-> +			insert_fprobe_node(&hlist_array->array[i]);
-> +	}
-> +	mutex_unlock(&fprobe_mutex);
->  
->  	if (ret)
->  		fprobe_fail_cleanup(fp);
-> +
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(register_fprobe_ips);
-> @@ -352,14 +605,13 @@ EXPORT_SYMBOL_GPL(register_fprobe_syms);
-
-SNIP
+Thanks,
+Daniel
 
