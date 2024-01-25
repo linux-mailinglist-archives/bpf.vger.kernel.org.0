@@ -1,143 +1,154 @@
-Return-Path: <bpf+bounces-20312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8EC183BC14
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 09:35:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8909F83BC37
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 09:44:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ABF528519A
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 08:35:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399E31F28DFA
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 08:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4BB18E2E;
-	Thu, 25 Jan 2024 08:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43011B951;
+	Thu, 25 Jan 2024 08:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BySedhPL"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="JbQaa1Qv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280DA17731;
-	Thu, 25 Jan 2024 08:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88E01BC20;
+	Thu, 25 Jan 2024 08:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171698; cv=none; b=I8PrZNhH55TV1uQx4zQ1xWpEF2mB3ZfxKLYcWWJ2UO/2U3zl8M3QrGZwb7OgLf2X610IN660RwsbU7WbgLdsLo+5EmSMPZHvgJbknrWXHTNgROil843LutsK27DvcA591VaDW3StEmDXA7do3iWREIV4SO4nbe8C8QxVVhlv710=
+	t=1706172264; cv=none; b=ehDLzaXFHBBkbUOks2dQoDHuRrl6AVP8wyvE0YUaOtRzU3odBdJsnpexn60EeFTvRthhHYChJvi5z6oBFovNlXKM8UPlPls9LctUzD3KngYA4Ou1bdA/e4uBomYKBfQUfBM0kjqUBbOyYgC3cCOG04vmo0YS7VBtyspOsDdSlEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171698; c=relaxed/simple;
-	bh=xQ3ELqXF3nkIUmMUdjf/42MCdn5UjLE2cnrQvuBnX2k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=siLiNR98ubOPx2jcL5dvBBlWh/3qSsDlBof7Lb6TZvWXJMwJmM7LvxOs4tAv0XpibuqkM8OfyKEYgZQFnJB5vjq2Mk5rjxtXmsMZMYzoqAn5ogyBH0AILbxLyDawVxnAXrPfKry7peFoqa4f+nWfItWrIP9Tp8Qk69H6GwAUd2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BySedhPL; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc372245aefso2677961276.2;
-        Thu, 25 Jan 2024 00:34:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706171696; x=1706776496; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
-        b=BySedhPLJF5ZWQpu+QrPP35CqU3k006s1dUWWy1zf7VAhKaVIf+x0GA6oe1WxKrb/m
-         eJxXWPwptcf1jZCOcPKkDdwatfEe093dH7+ZxgrZwVD28hQYCexk1wl0KHbmtCgA16wc
-         85eZiZ77fXS8N+RqlsJvuDeOwK271jKRZW3WmZf996F0jYhsQ2QNzEMbeDrJ2zmuBh2/
-         0nXta/piOQR4q0A0z55fAZ1qivSgL1/NO6DF66e34WOB2M4cDJpTOth4Si6aDOOL7uaQ
-         q4uKX5wucIYAUGT9Q8ij8CR21rKc9lEn8gCED+oSB3RSfEuEzLWF+o+kmSsOVbZqPyMs
-         6aAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706171696; x=1706776496;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
-        b=YpqLa0dIO3rv2ru8BIezSzaWld++7evnnFHzOfL5lwZppxNhGcqkXUzT+ultEWtKS4
-         k2ic4wQgtFmpZVzPKDF1SR5F5JUVz60VC/aRQaSAVl8oQwLZfitbuE9WGTbNbcirI9D5
-         5rRlptZu39pGyG9xsFMgteszAAqDNDPGN9sJ3Py0N2tpkiwCYOexrvy2TpGXSpTiihEG
-         QyWCUjNdc5iWi9fLE1KEnMfScTlXhscGxv7IJqU9DiglxBB07yYVmvBK+Epm+HiooQa3
-         u2mAduCu9imSpuyUrP3uDX+wz+d2wXasaQpQggN4r8y9R9plQ0qAOAzCYxeNli47eQwC
-         tICg==
-X-Gm-Message-State: AOJu0Yw6EwF65TWD11NCMjUdQg6mowHAVop8OSGnG5QqNLGn3AaqZNWr
-	VR9liHb/2+x3+Lhv7A9Dd19jjXnu1hSEGjcBORmFlVyRnWNGN3WAKAK4Klwd/D19Jh1E2dgLbFI
-	xteEvwhcm9+X0FaKgybLmn+8CPKz8UygzSw==
-X-Google-Smtp-Source: AGHT+IE/4ow0NdqbVoY+ay5s1tDiOWK1PsDj9qa5dZ+9geKzcPOli/gpF6TyXHCqnfgNB5DZXhk5dxAJ3zEjIEKykFM=
-X-Received: by 2002:a05:6902:2808:b0:dc2:5674:b408 with SMTP id
- ed8-20020a056902280800b00dc25674b408mr489570ybb.57.1706171695943; Thu, 25 Jan
- 2024 00:34:55 -0800 (PST)
+	s=arc-20240116; t=1706172264; c=relaxed/simple;
+	bh=bIAqh3O/SJZ40uz8p+xJYJ/m9ym/SnLIQi9cPGspif8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=UVz/e8PdIdGIXSKExB3yjJrf7XfJ9DxllWVgdyD7opYLcqJe7MZMuaGlb0iHLZGdVkRC5ov9PBSVeMfBVES+qTNQ77z/FDweBR8YX7HK1Z3ChLgsBjgjYbq+yajn2H+Vu4jc+06qxGdmOtm0B2xX8vZiK4vORlIfGCU1aIsa+Bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=JbQaa1Qv; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=veQ/CK0jTuc04jePgKpivFqI1zg8kgnliwMvdizlimM=; b=JbQaa1QvOSVbjuLMVFRPsKUfrJ
+	DunKlGHuS5VWr05VsNaBKVNT9GozhlS1oZLBmeM/tgl66ZMAvOwaIq/pMe2iCHhZtLHdhLphbIDZL
+	Hyog0yQy0Dh0EXn/QPdsPLDsRZBH8hcEteCzFubiRGlxxvpSUHeLzzXP3ztKbI2LCJSYDQxWE/nYB
+	IzQxH/Hy+RwrVQRvv4OYTzV8HkPS9lEEj63PTqQbAkeDpExVv3TxmEiLZu24Uz/jwpBjIT13t5POu
+	pvRQd1KbNog0qGjGYWtYivDU5zabhuXdWq0ZfmUUy7pi71gANsuoE9R1D3HgF0jd85BdzNqKgKUVw
+	sqmHPqlg==;
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rSvLN-000Iaj-PL; Thu, 25 Jan 2024 09:44:17 +0100
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf 2024-01-25
+Date: Thu, 25 Jan 2024 09:44:16 +0100
+Message-Id: <20240125084416.10876-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124103010.51408-1-sunhao.th@gmail.com> <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
-In-Reply-To: <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Thu, 25 Jan 2024 09:34:44 +0100
-Message-ID: <CACkBjsZjYewSh4ZHFbj-D_Z7kGOeaVLfROcEDE1beNEDn-aU-A@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Reject pointer spill with var offset
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, andreimatei1@gmail.com, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27164/Wed Jan 24 10:45:32 2024)
 
->
-> I tried this example as a part of selftest
-> (If put to tools/testing/selftests/bpf/progs/verifier_map_ptr.c
->  could be executed using command:
->  ./test_progs -vvv -a 'verifier_map_ptr/ctx_addr_leak @unpriv'):
->
-> SEC("socket")
-> __failure_unpriv
-> __msg_unpriv("spilling pointer with var-offset is disallowed")
-> __naked void ctx_addr_leak(void)
-> {
->         asm volatile (
->                 "r0 = 0;"
->                 "*(u64 *)(r10 -8) = r0;"
->                 "*(u64 *)(r10 -16) = r0;"
->                 "*(u64 *)(r10 -24) = r0;"
->                 "r6 = r1;"
->                 "r1 = 8;"
->                 "r1 /= 1;"
->                 "r1 &= 8;"
->                 "r2 = r10;"
->                 "r2 += -16;"
->                 "r2 += r1;"
->                 "*(u64 *)(r2 +0) = r6;"
->                 "r1 = %[map_hash_16b] ll;"
->                 "r2 = r10;"
->                 "r2 += -16;"
->                 "r3 = r10;"
->                 "r3 += -8;"
->                 "r4 = 0;"
->                 "call %[bpf_map_update_elem];"
->                 "r0 = *(u64 *)(r10 -8);"
->                 "exit;"
->         :
->         : __imm(bpf_map_update_elem),
->           __imm_addr(map_hash_16b)
->         : __clobber_all);
-> }
->
-> And see the following error message:
->
-> ...
-> r1 &= 8                       ; R1_w=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
-> r2 = r10                      ; R2_w=fp0 R10=fp0
-> r2 += -16                     ; R2_w=fp-16
-> r2 += r1
-> R2 variable stack access prohibited for !root, var_off=(0x0; 0x8) off=-16
->
-> Could you please craft a selftest that checks for expected message?
-> Overall the change makes sense to me.
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-Testing this case with test_progs/test_verifier is hard because it happens
-when cpu_mitigations_off() is true, but we do not have this setup yet.
-So the mentioned prog is rejected by sanitize_check_bounds() due to ptr
-alu with var_off when adding it to test_progs, and loading as unpriv.
+The following pull-request contains BPF updates for your *net* tree.
 
-My local test was conducted: (1) booting the kernel with "mitigations=off"
-so that bypass_spec_v1 is true and sanitize_check_bounds() is skipped;
-(2) running the prog without the patch leaks the pointer; (3) loading the
-prog with the patch applied resulting in the expected message.
+We've added 12 non-merge commits during the last 2 day(s) which contain
+a total of 13 files changed, 190 insertions(+), 91 deletions(-).
+
+The main changes are:
+
+1) Fix bpf_xdp_adjust_tail() in context of XSK zero-copy drivers which
+   support XDP multi-buffer. The former triggered a NULL pointer
+   dereference upon shrinking, from Maciej Fijalkowski & Tirthendu Sarkar.
+
+2) Fix a bug in riscv64 BPF JIT which emitted a wrong prologue and
+   epilogue for struct_ops programs, from Pu Lehui.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Björn Töpel, Maciej Fijalkowski, Magnus Karlsson
+
+----------------------------------------------------------------
+
+The following changes since commit 1347775dea7f62798b4d5ef60771cdd7cfff25d8:
+
+  Merge tag 'wireless-2024-01-22' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless (2024-01-23 08:38:13 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to 9d71bc833f57a6549c753e37ce47136d35b67fc4:
+
+  Merge branch 'net-bpf_xdp_adjust_tail-and-intel-mbuf-fixes' (2024-01-24 16:24:07 -0800)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'net-bpf_xdp_adjust_tail-and-intel-mbuf-fixes'
+
+Maciej Fijalkowski (10):
+      xsk: recycle buffer in case Rx queue was full
+      xsk: make xsk_buff_pool responsible for clearing xdp_buff::flags
+      xsk: fix usage of multi-buffer BPF helpers for ZC XDP
+      ice: work on pre-XDP prog frag count
+      ice: remove redundant xdp_rxq_info registration
+      intel: xsk: initialize skb_frag_t::bv_offset in ZC drivers
+      ice: update xdp_rxq_info::frag_size for ZC enabled Rx queue
+      xdp: reflect tail increase for MEM_TYPE_XSK_BUFF_POOL
+      i40e: set xdp_rxq_info::frag_size
+      i40e: update xdp_rxq_info::frag_size for ZC enabled Rx queue
+
+Pu Lehui (1):
+      riscv, bpf: Fix unpredictable kernel crash about RV64 struct_ops
+
+Tirthendu Sarkar (1):
+      i40e: handle multi-buffer packets that are shrunk by xdp prog
+
+ arch/riscv/net/bpf_jit_comp64.c               |  5 +--
+ drivers/net/ethernet/intel/i40e/i40e_main.c   | 47 ++++++++++++++++---------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 49 +++++++++++++--------------
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |  4 +--
+ drivers/net/ethernet/intel/ice/ice_base.c     | 37 ++++++++++++--------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 19 +++++------
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 31 ++++++++++++-----
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  4 +--
+ include/net/xdp_sock_drv.h                    | 27 +++++++++++++++
+ net/core/filter.c                             | 44 ++++++++++++++++++++----
+ net/xdp/xsk.c                                 | 12 ++++---
+ net/xdp/xsk_buff_pool.c                       |  1 +
+ 13 files changed, 190 insertions(+), 91 deletions(-)
 
