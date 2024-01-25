@@ -1,210 +1,143 @@
-Return-Path: <bpf+bounces-20311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9663283BB46
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 09:04:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8EC183BC14
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 09:35:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45C6928D3AC
-	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 08:04:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ABF528519A
+	for <lists+bpf@lfdr.de>; Thu, 25 Jan 2024 08:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E7317580;
-	Thu, 25 Jan 2024 08:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4BB18E2E;
+	Thu, 25 Jan 2024 08:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lPU8zeWE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BySedhPL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FED314F86;
-	Thu, 25 Jan 2024 08:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280DA17731;
+	Thu, 25 Jan 2024 08:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169849; cv=none; b=CrcuNGkgshm52uyV1CAy4vUQV0x73cT8F/3yeIBC5NNpGg+Swo+YxOdXLFshVr9QGafk9I2oj5z61SrLn1j/lgpPa+mRfXg0SDhaO9X2IWm0HS2GV+NSlip6sLocNUMDdn3n7Smi73bMIrHgyHXKaOZthCTVSV1OP2T3/Xw64LU=
+	t=1706171698; cv=none; b=I8PrZNhH55TV1uQx4zQ1xWpEF2mB3ZfxKLYcWWJ2UO/2U3zl8M3QrGZwb7OgLf2X610IN660RwsbU7WbgLdsLo+5EmSMPZHvgJbknrWXHTNgROil843LutsK27DvcA591VaDW3StEmDXA7do3iWREIV4SO4nbe8C8QxVVhlv710=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169849; c=relaxed/simple;
-	bh=hDxamplBsotWbvMDQTn7mEvPUtyfVp6Jc+qhdCx6Xbo=;
+	s=arc-20240116; t=1706171698; c=relaxed/simple;
+	bh=xQ3ELqXF3nkIUmMUdjf/42MCdn5UjLE2cnrQvuBnX2k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jIZHSukcrAeTpZzPQ8R/tcR/equ1X5AiQX4jMoomKAE3eXWC6BGMj7cv7iL22/BUJo97haPhhlREgMpXajJEASvBUXZm4O0eE6SYbAzFa7ciCi/jXDBwoQMSPLkC19e15rZC9RknPoLQqCCDuhTQpGQ1I2Ee25dSF5Sd5c0VLtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lPU8zeWE; arc=none smtp.client-ip=209.85.222.51
+	 To:Cc:Content-Type; b=siLiNR98ubOPx2jcL5dvBBlWh/3qSsDlBof7Lb6TZvWXJMwJmM7LvxOs4tAv0XpibuqkM8OfyKEYgZQFnJB5vjq2Mk5rjxtXmsMZMYzoqAn5ogyBH0AILbxLyDawVxnAXrPfKry7peFoqa4f+nWfItWrIP9Tp8Qk69H6GwAUd2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BySedhPL; arc=none smtp.client-ip=209.85.219.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d53ea8024dso53685241.1;
-        Thu, 25 Jan 2024 00:04:07 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc372245aefso2677961276.2;
+        Thu, 25 Jan 2024 00:34:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706169846; x=1706774646; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706171696; x=1706776496; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sZT8/9PgZuTeh83+/QruKBnCl5NoqTcp1uIUCJ9u5aU=;
-        b=lPU8zeWEiwfnZEn66qirYRtCF0OW3I0ZqM+PfLzsTCy/u2nA+HiQNK+6fak/2RlXt6
-         5iM0PKjHCwTFnBq8cUWjXZbsH8hPSIW3wenwu24vAqY/EF93YSRlTRgc7JJrD0ISRXFI
-         HERaONjLOgl+5mg9w0OGFHaIW6ErXTeTgsw5/2meCl22Fca5lnJI1h7nrumOso1JyOZd
-         JPJYSXmA5azKF/D35a5WmtZ1G7oX376eFO9UQ+AB+U01/Uq64HQl/o4zL59Wdrrn0rXl
-         zH0qvXzHaOaCyc5nGxHR8BFvIWXDBP4Uv4/FSlxU/uH7MYUMkplZpNb5tSfVVXowiYLl
-         UY+g==
+        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
+        b=BySedhPLJF5ZWQpu+QrPP35CqU3k006s1dUWWy1zf7VAhKaVIf+x0GA6oe1WxKrb/m
+         eJxXWPwptcf1jZCOcPKkDdwatfEe093dH7+ZxgrZwVD28hQYCexk1wl0KHbmtCgA16wc
+         85eZiZ77fXS8N+RqlsJvuDeOwK271jKRZW3WmZf996F0jYhsQ2QNzEMbeDrJ2zmuBh2/
+         0nXta/piOQR4q0A0z55fAZ1qivSgL1/NO6DF66e34WOB2M4cDJpTOth4Si6aDOOL7uaQ
+         q4uKX5wucIYAUGT9Q8ij8CR21rKc9lEn8gCED+oSB3RSfEuEzLWF+o+kmSsOVbZqPyMs
+         6aAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706169846; x=1706774646;
+        d=1e100.net; s=20230601; t=1706171696; x=1706776496;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sZT8/9PgZuTeh83+/QruKBnCl5NoqTcp1uIUCJ9u5aU=;
-        b=J9ug/wBYtaKbDZ9sbzwxuJtcxz/QwKOg8QxgjZDYzAzk3xKPL2kmdzJo2VcAsxTXfU
-         bRrLGBOY5BnX9vgHKJ5JHklMLUZKkNAeUWTXhfuWyKzNz+S1qXYZoBis+qrcReoQtGS6
-         qFHPcOCAQiJh2UJH2gl1sh14NE51V2C/AiWybaj9UnSENmsUb21iet0LqdPqyTOwZyFF
-         +O99v1XDQdcAZTDcsnTYCWRGwVGnvGZSLq7BcxPMcyL4thPMf2WYRifXFLx6PxlwVcNn
-         Qxpv0gZdU7kvfhCGUyAO65lBMOf06oLkmtBHYRruKmVYWKJ4/O8dLeRYxIMAHUN1j5qQ
-         +aIw==
-X-Gm-Message-State: AOJu0YxuRPD2PpKFvhmS5XgfSgPcI4lxnDHMAYP1vrYSzkzFzwq2XtgR
-	MvxQrdXImHS49Te3Vb/PwduWTZEx8+r4Cg3Sdxjq+9AI9yp/GPaW4UBNo9/NKv7ndw65pcOJ5o9
-	vXrwErXn1lrnrk/IVKcYsfwnX+cU=
-X-Google-Smtp-Source: AGHT+IHDMdzd0L+gZ6HYMBNFVKRpe73Gf29LizjNJ6zEfGPhn2td090G9Il+wVVyBONa71BlB2aknf1MEFBlTnUpvpY=
-X-Received: by 2002:a67:f90e:0:b0:469:ac04:5553 with SMTP id
- t14-20020a67f90e000000b00469ac045553mr922677vsq.3.1706169846143; Thu, 25 Jan
- 2024 00:04:06 -0800 (PST)
+        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
+        b=YpqLa0dIO3rv2ru8BIezSzaWld++7evnnFHzOfL5lwZppxNhGcqkXUzT+ultEWtKS4
+         k2ic4wQgtFmpZVzPKDF1SR5F5JUVz60VC/aRQaSAVl8oQwLZfitbuE9WGTbNbcirI9D5
+         5rRlptZu39pGyG9xsFMgteszAAqDNDPGN9sJ3Py0N2tpkiwCYOexrvy2TpGXSpTiihEG
+         QyWCUjNdc5iWi9fLE1KEnMfScTlXhscGxv7IJqU9DiglxBB07yYVmvBK+Epm+HiooQa3
+         u2mAduCu9imSpuyUrP3uDX+wz+d2wXasaQpQggN4r8y9R9plQ0qAOAzCYxeNli47eQwC
+         tICg==
+X-Gm-Message-State: AOJu0Yw6EwF65TWD11NCMjUdQg6mowHAVop8OSGnG5QqNLGn3AaqZNWr
+	VR9liHb/2+x3+Lhv7A9Dd19jjXnu1hSEGjcBORmFlVyRnWNGN3WAKAK4Klwd/D19Jh1E2dgLbFI
+	xteEvwhcm9+X0FaKgybLmn+8CPKz8UygzSw==
+X-Google-Smtp-Source: AGHT+IE/4ow0NdqbVoY+ay5s1tDiOWK1PsDj9qa5dZ+9geKzcPOli/gpF6TyXHCqnfgNB5DZXhk5dxAJ3zEjIEKykFM=
+X-Received: by 2002:a05:6902:2808:b0:dc2:5674:b408 with SMTP id
+ ed8-20020a056902280800b00dc25674b408mr489570ybb.57.1706171695943; Thu, 25 Jan
+ 2024 00:34:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124191602.566724-1-maciej.fijalkowski@intel.com> <20240124191602.566724-11-maciej.fijalkowski@intel.com>
-In-Reply-To: <20240124191602.566724-11-maciej.fijalkowski@intel.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Thu, 25 Jan 2024 09:03:54 +0100
-Message-ID: <CAJ8uoz0ATqhepbBQLv0u-NVrEJeL1EZ-w+xTkW5cUeZGxCT6NA@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf 10/11] i40e: set xdp_rxq_info::frag_size
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
-	bjorn@kernel.org, echaudro@redhat.com, lorenzo@kernel.org, 
-	martin.lau@linux.dev, tirthendu.sarkar@intel.com, john.fastabend@gmail.com, 
-	horms@kernel.org, kuba@kernel.org
+References: <20240124103010.51408-1-sunhao.th@gmail.com> <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
+In-Reply-To: <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Thu, 25 Jan 2024 09:34:44 +0100
+Message-ID: <CACkBjsZjYewSh4ZHFbj-D_Z7kGOeaVLfROcEDE1beNEDn-aU-A@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Reject pointer spill with var offset
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, andreimatei1@gmail.com, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 24 Jan 2024 at 20:29, Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
 >
-> i40e support XDP multi-buffer so it is supposed to use
-> __xdp_rxq_info_reg() instead of xdp_rxq_info_reg() and set the
-> frag_size. It can not be simply converted at existing callsite because
-> rx_buf_len could be un-initialized, so let us register xdp_rxq_info
-> within i40e_configure_rx_ring(), which happen to be called with already
-> initialized rx_buf_len value.
+> I tried this example as a part of selftest
+> (If put to tools/testing/selftests/bpf/progs/verifier_map_ptr.c
+>  could be executed using command:
+>  ./test_progs -vvv -a 'verifier_map_ptr/ctx_addr_leak @unpriv'):
 >
-> Commit 5180ff1364bc ("i40e: use int for i40e_status") converted 'err' to
-> int, so two variables to deal with return codes are not needed within
-> i40e_configure_rx_ring(). Remove 'ret' and use 'err' to handle status
-> from xdp_rxq_info registration.
+> SEC("socket")
+> __failure_unpriv
+> __msg_unpriv("spilling pointer with var-offset is disallowed")
+> __naked void ctx_addr_leak(void)
+> {
+>         asm volatile (
+>                 "r0 = 0;"
+>                 "*(u64 *)(r10 -8) = r0;"
+>                 "*(u64 *)(r10 -16) = r0;"
+>                 "*(u64 *)(r10 -24) = r0;"
+>                 "r6 = r1;"
+>                 "r1 = 8;"
+>                 "r1 /= 1;"
+>                 "r1 &= 8;"
+>                 "r2 = r10;"
+>                 "r2 += -16;"
+>                 "r2 += r1;"
+>                 "*(u64 *)(r2 +0) = r6;"
+>                 "r1 = %[map_hash_16b] ll;"
+>                 "r2 = r10;"
+>                 "r2 += -16;"
+>                 "r3 = r10;"
+>                 "r3 += -8;"
+>                 "r4 = 0;"
+>                 "call %[bpf_map_update_elem];"
+>                 "r0 = *(u64 *)(r10 -8);"
+>                 "exit;"
+>         :
+>         : __imm(bpf_map_update_elem),
+>           __imm_addr(map_hash_16b)
+>         : __clobber_all);
+> }
+>
+> And see the following error message:
+>
+> ...
+> r1 &= 8                       ; R1_w=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
+> r2 = r10                      ; R2_w=fp0 R10=fp0
+> r2 += -16                     ; R2_w=fp-16
+> r2 += r1
+> R2 variable stack access prohibited for !root, var_off=(0x0; 0x8) off=-16
+>
+> Could you please craft a selftest that checks for expected message?
+> Overall the change makes sense to me.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Testing this case with test_progs/test_verifier is hard because it happens
+when cpu_mitigations_off() is true, but we do not have this setup yet.
+So the mentioned prog is rejected by sanitize_check_bounds() due to ptr
+alu with var_off when adding it to test_progs, and loading as unpriv.
 
-> Fixes: e213ced19bef ("i40e: add support for XDP multi-buffer Rx")
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 40 ++++++++++++---------
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c |  9 -----
->  2 files changed, 24 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> index ae8f9f135725..d3b00d8ed39a 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> @@ -3588,40 +3588,48 @@ static int i40e_configure_rx_ring(struct i40e_ring *ring)
->         struct i40e_hmc_obj_rxq rx_ctx;
->         int err = 0;
->         bool ok;
-> -       int ret;
->
->         bitmap_zero(ring->state, __I40E_RING_STATE_NBITS);
->
->         /* clear the context structure first */
->         memset(&rx_ctx, 0, sizeof(rx_ctx));
->
-> -       if (ring->vsi->type == I40E_VSI_MAIN)
-> -               xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
-> +       ring->rx_buf_len = vsi->rx_buf_len;
-> +
-> +       /* XDP RX-queue info only needed for RX rings exposed to XDP */
-> +       if (ring->vsi->type != I40E_VSI_MAIN)
-> +               goto skip;
-> +
-> +       if (!xdp_rxq_info_is_reg(&ring->xdp_rxq)) {
-> +               err = __xdp_rxq_info_reg(&ring->xdp_rxq, ring->netdev,
-> +                                        ring->queue_index,
-> +                                        ring->q_vector->napi.napi_id,
-> +                                        ring->rx_buf_len);
-> +               if (err)
-> +                       return err;
-> +       }
->
->         ring->xsk_pool = i40e_xsk_pool(ring);
->         if (ring->xsk_pool) {
-> -               ring->rx_buf_len =
-> -                 xsk_pool_get_rx_frame_size(ring->xsk_pool);
-> -               ret = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-> +               ring->rx_buf_len = xsk_pool_get_rx_frame_size(ring->xsk_pool);
-> +               err = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
->                                                  MEM_TYPE_XSK_BUFF_POOL,
->                                                  NULL);
-> -               if (ret)
-> -                       return ret;
-> +               if (err)
-> +                       return err;
->                 dev_info(&vsi->back->pdev->dev,
->                          "Registered XDP mem model MEM_TYPE_XSK_BUFF_POOL on Rx ring %d\n",
->                          ring->queue_index);
->
->         } else {
-> -               ring->rx_buf_len = vsi->rx_buf_len;
-> -               if (ring->vsi->type == I40E_VSI_MAIN) {
-> -                       ret = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-> -                                                        MEM_TYPE_PAGE_SHARED,
-> -                                                        NULL);
-> -                       if (ret)
-> -                               return ret;
-> -               }
-> +               err = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-> +                                                MEM_TYPE_PAGE_SHARED,
-> +                                                NULL);
-> +               if (err)
-> +                       return err;
->         }
->
-> +skip:
->         xdp_init_buff(&ring->xdp, i40e_rx_pg_size(ring) / 2, &ring->xdp_rxq);
->
->         rx_ctx.dbuff = DIV_ROUND_UP(ring->rx_buf_len,
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> index 1f0a0f13a334..0d7177083708 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> @@ -1548,7 +1548,6 @@ void i40e_free_rx_resources(struct i40e_ring *rx_ring)
->  int i40e_setup_rx_descriptors(struct i40e_ring *rx_ring)
->  {
->         struct device *dev = rx_ring->dev;
-> -       int err;
->
->         u64_stats_init(&rx_ring->syncp);
->
-> @@ -1569,14 +1568,6 @@ int i40e_setup_rx_descriptors(struct i40e_ring *rx_ring)
->         rx_ring->next_to_process = 0;
->         rx_ring->next_to_use = 0;
->
-> -       /* XDP RX-queue info only needed for RX rings exposed to XDP */
-> -       if (rx_ring->vsi->type == I40E_VSI_MAIN) {
-> -               err = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
-> -                                      rx_ring->queue_index, rx_ring->q_vector->napi.napi_id);
-> -               if (err < 0)
-> -                       return err;
-> -       }
-> -
->         rx_ring->xdp_prog = rx_ring->vsi->xdp_prog;
->
->         rx_ring->rx_bi =
-> --
-> 2.34.1
->
->
+My local test was conducted: (1) booting the kernel with "mitigations=off"
+so that bypass_spec_v1 is true and sanitize_check_bounds() is skipped;
+(2) running the prog without the patch leaks the pointer; (3) loading the
+prog with the patch applied resulting in the expected message.
 
