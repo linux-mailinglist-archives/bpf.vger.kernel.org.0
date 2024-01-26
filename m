@@ -1,82 +1,80 @@
-Return-Path: <bpf+bounces-20398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B508C83DBD9
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 15:28:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10DBE83DC9F
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 15:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63AD11F24FE9
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 14:28:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43EC21C21F38
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 14:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7611C29C;
-	Fri, 26 Jan 2024 14:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889E01CD3B;
+	Fri, 26 Jan 2024 14:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="IPN3Vmgg"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="N62qw+Hk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7811DA53
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 14:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA011D52D
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 14:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706279217; cv=none; b=f+QRDU/W4lid8D5GDLVyCDaCD4ccvBPsvoqOUi0q53SoEFURBC6vMPeB7Jn/4hHJ+T+MxtS5uQXrHhPkkQUh+3RRvvjQYXmsZuZFzIIQv59OdxHfCDTroM5YpErqqGK+sxaiEsnUgw8s9l2GF3jTOR3gSc30e2NgogMOIVyDoBE=
+	t=1706280171; cv=none; b=kt/sYQ44beB23Aonw1RP31SuMqDQyYt5vM7J/2yMN6x92BSNuXD7cbde1l/rfyf/VTP3tr2McK+5/GTeSFd4bJ3oAUWGWlbKOjXUZ3pUcM556bd8mkvVmXempAMf735e7GPxlLMWuc52mhvSvIF2RM0AxE6hvkq/Yc0xIbCWVhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706279217; c=relaxed/simple;
-	bh=YCc6ONVSeSNQSZLatwUTnBnC6jIB6ACKH4ri1JOaoKw=;
+	s=arc-20240116; t=1706280171; c=relaxed/simple;
+	bh=2PTsjLOYiy8Fg2jPcb25iyXKCO+TTKEkQw4KCd2T1eQ=;
 	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=ldkxQClgLSAMH//eSrRhy+sYQQdSW4V8mQkdtHZ91n/ENQVM/R5zofW3DurOPayhZAVoSOGdecng12bfNcYKI3mkSKQBYNQigmcsqFtf4TkYzAOBR8zRa1hKBuiBvma512wsH+aVP7muA//uMKdVK8xHOdrWs/zLfkcQXEYpAqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=IPN3Vmgg; arc=none smtp.client-ip=209.85.218.52
+	 MIME-Version:Content-Type; b=dXJX/rPt4ofUSdsRFGxWhfHE+FW+kCD8+ZOLXqmEFW0tp7670rQ469kSh0a68mKD7KplYo0vYNxgHjWQRiIOJ5DSc8D/LwupVsN5y+ljXa6bNxnhC4itEmM3aW67wuqrKiH/Gtlc+9gsxSJyzxKJr+oyDuhbekb+LYvwEYpFwNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=N62qw+Hk; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a33c91ca179so44380666b.3
-        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 06:26:54 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf2a381b86so9538771fa.0
+        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 06:42:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1706279213; x=1706884013; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1706280167; x=1706884967; darn=vger.kernel.org;
         h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
          :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=LvS7W28TvHz2+piZFZajPw6ZIOOV30KfvoRicEtswVc=;
-        b=IPN3VmggAqm+DMZr5+uc0c9aXcnh+BaBu87EeygkFvu2zpg8oT6TkxE+MeRihMWmHu
-         I7dOb9iw/giI01yuoGT1kjjs4JRrn/e5e2gCHDykWi+yiY1wZZ5CpAaW1r6+w1pc/f7K
-         IOjWDBc7/ltIa/S0dBOB2QZC6jRpksC+mj8U1BJaP1RbSQpCfSWZ5stqFm3OpFpLeT0y
-         noXtzs7LFLA3tm/JCAw9fEbK7KsYLm0LCNS5DdwjTLrenLtMMjIundvF+fqOWRn8jyoq
-         E4eiNGOe0n7YA5dxCt0CbrXVCSWIZKUcdyrJJZwL4MFzsUIBhZSTz5RUXym9s3Vc5Zmv
-         vvEA==
+        bh=2PTsjLOYiy8Fg2jPcb25iyXKCO+TTKEkQw4KCd2T1eQ=;
+        b=N62qw+HkITd5DspMmnTOaWt8qd7SAr+9AUUBbfXc+a2jWSUuvxVYhsZNk7IsuUgOGp
+         kTLeCU0ag1c+vtyrJUW/jt29c3HKtu18dOXUbqHY0EnXPR6CpQcJp+GMyKr1YyJ/5vnS
+         iHBJjPYJ2Xr4/Wis49Y4e+nM9k4Huu3uCuVTboD7Au/BrjSsJUnabYbPU+NWYSgjznlO
+         g3SVM3xU+OOl2AURrK6mlTym8oW/+aFC4f2KnT2oP22t0u4+QZhXVJ12ogGb9UeiKxgi
+         yqycUY+dhDd222UX0ArGOTKx0DTfRTIle4OgFhw65vInPaaZglrBeqj85NjplvsAvX+d
+         pS7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706279213; x=1706884013;
+        d=1e100.net; s=20230601; t=1706280167; x=1706884967;
         h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
          :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LvS7W28TvHz2+piZFZajPw6ZIOOV30KfvoRicEtswVc=;
-        b=hZOpSc1tpSc97pMpdEzGKJCeOiA1ZNMXw5jztEzR1vO99QIsNSPsPA2/hWdOAAlF+J
-         +SZ3LTAFn/GfjD1ZQIIOxnEeWYG8x2cd3fIb1xQviYw1BJV0HT5sf9Y/bGq7HsJPTuSN
-         QZVd7BMlZ47lr6iR6tpBSigCrf3yucTGvqcY/Ni66T7wafZL/GrmqJwkVhfamvkTgdsB
-         eORyzhamU2Z5WOpzlj5tIBFrlWIEL+h4kUYE3GYep6/lZ71PdVGZb46ZOzsha3ZCVRF1
-         pErEoYI8onZ6hLv7PSmi0iGNxsH2W3Fpp0TUlVFpf9KtPkcH8khcWxkgoaI4mUkxJD48
-         SKiQ==
-X-Gm-Message-State: AOJu0YxmEdacMUFwvHlETBvQ6aA6BmAdzsHG+pr6+3Qe7LTRKMQ81Sob
-	D3Ez81l4yK0ICGh4PXn9OCnKFv8L12uGMzVo2fb+aAqbeLBqzrYo/mdvUcEEdHE=
-X-Google-Smtp-Source: AGHT+IEFkwdt2yXICfh0THGT1uyxnLDrK352Z2SmVQe7FXcxsH5j1WlvyLmMhabzqEKFLKcDJsA4Sw==
-X-Received: by 2002:a17:906:e2cd:b0:a30:d361:406e with SMTP id gr13-20020a170906e2cd00b00a30d361406emr880148ejb.76.1706279213139;
-        Fri, 26 Jan 2024 06:26:53 -0800 (PST)
+        bh=2PTsjLOYiy8Fg2jPcb25iyXKCO+TTKEkQw4KCd2T1eQ=;
+        b=oZNGKJEkjgIk3t9cOgwbcwKcqkjr7jLfif90eOvLcHrmyWi8oJ/jjrSxBbje7iHFPb
+         yr5Nr7hjNfz5DUPyJXv89s5kQ2JJ/9Uwy1oOocVf20NcTxFgjvJPrUvA15uopqV+ER4E
+         O31sbFTrtLAa/a52J1qeizFM/XLc9xSLY3weDLBP3oWhF5tYC0kaIJZLmCRLYX4+Y0/f
+         jg+h7ObvfvfiTLmBO2lFNk3EHSVp3YtAUvNuwXBTge/hVhO6QzLi0VV2coWRx9C7KwSe
+         asRZEorhmpg3Aqs9hPG5EW9to8JaP5ee7eE/0tV1rvJb9nwdfYcsxyjsh2F8MdjMBIbl
+         xEiQ==
+X-Gm-Message-State: AOJu0YyX9iNbn9uPw1hrI/TeFP9EyzkHy457m5+j/2fspAqv/thpoTK8
+	KEwCCQivAFmgy2SlbatV98K2L+oOWhg4vspLHXZZ3JglESwYhdLGwzlVh5/jEZVjpC6k7vlOtkq
+	E
+X-Google-Smtp-Source: AGHT+IHOKxVaOju8ZRZEkBzJgFfm3NYZdfwUC2N7dpQ93S0k8kNZd8J7mAPW09QIV1xNgVPwWvppfw==
+X-Received: by 2002:a2e:a70e:0:b0:2cf:37f1:3b1 with SMTP id s14-20020a2ea70e000000b002cf37f103b1mr753545lje.10.1706280167205;
+        Fri, 26 Jan 2024 06:42:47 -0800 (PST)
 Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1a2])
-        by smtp.gmail.com with ESMTPSA id cw6-20020a170907160600b00a2d5e914392sm682812ejd.110.2024.01.26.06.26.51
+        by smtp.gmail.com with ESMTPSA id d26-20020aa7c1da000000b00554d6b46a3dsm659070edp.46.2024.01.26.06.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 06:26:52 -0800 (PST)
+        Fri, 26 Jan 2024 06:42:46 -0800 (PST)
 References: <20240124185403.1104141-1-john.fastabend@gmail.com>
- <20240124185403.1104141-3-john.fastabend@gmail.com>
- <87zfwse0ln.fsf@cloudflare.com>
 User-agent: mu4e 1.6.10; emacs 28.3
 From: Jakub Sitnicki <jakub@cloudflare.com>
 To: John Fastabend <john.fastabend@gmail.com>
 Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: sockmap, add a sendmsg test so we
- can check that path
-Date: Fri, 26 Jan 2024 15:24:53 +0100
-In-reply-to: <87zfwse0ln.fsf@cloudflare.com>
-Message-ID: <87sf2kdvbo.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 0/4] transition sockmap testing to test_progs
+Date: Fri, 26 Jan 2024 15:39:52 +0100
+In-reply-to: <20240124185403.1104141-1-john.fastabend@gmail.com>
+Message-ID: <87jznwdul7.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,25 +83,23 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On Fri, Jan 26, 2024 at 01:17 PM +01, Jakub Sitnicki wrote:
-> On Wed, Jan 24, 2024 at 10:54 AM -08, John Fastabend wrote:
-
-[...]
-
->> @@ -92,6 +136,15 @@ static void test_sockmap_pop(void)
->>  	/* Pop from end */
->>  	pop_simple_send(&opts, POP_END, 5);
->>  
->> +	/* Empty pop from start of sendmsg */
->> +	pop_complex_send(&opts, 0, 0);
->> +	/* Pop from start of sendmsg */
->> +	pop_complex_send(&opts, 0, 10);
->> +	/* Pop from middle of sendmsg */
->> +	pop_complex_send(&opts, 100, 10);
->> +	/* Pop from end of sendmsg */
->> +	pop_complex_send(&opts, 394, 10);
+On Wed, Jan 24, 2024 at 10:53 AM -08, John Fastabend wrote:
+> Its much easier to write and read tests than it was when sockmap was
+> originally created. At that time we created a test_sockmap prog that
+> did sockmap tests. But, its showing its age now. For example it reads
+> user vars out of maps, is hard to run targetted tests, has a different
+> format from the familiar test_progs and so on.
 >
-> Isn't the start offset here past the end? 15*26=390?
+> I recently thought there was an issue with pop helpers so I created
+> some tests to try and track it down. It turns out it was a bug in the
+> BPF program we had not the kernel. But, I think it makes sense to
+> start deprecating test_sockmap and converting these to the nicer
+> test_progs.
+>
+> So this is a first round of test_prog tests for sockmap cork and
+> pop helpers. I'll add push and pull tests shortly. I think its fine,
+> maybe preferred to review smaller patchsets, to send these
+> incrementally as I get them created.
 
-Plus terminating null bytes. Nevermind. I can't count.
+Cool to see this transition starting.
 
