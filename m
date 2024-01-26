@@ -1,105 +1,148 @@
-Return-Path: <bpf+bounces-20432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39A2F83E4D3
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 23:11:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0331B83E53B
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 23:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A9DAB2272D
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 22:11:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35FD91C23358
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 22:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAC6286B8;
-	Fri, 26 Jan 2024 22:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02325250F1;
+	Fri, 26 Jan 2024 22:21:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="obruB+jY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jBGNnOZe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2C42869B
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 22:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319441869
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 22:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306990; cv=none; b=pWak/AOJlaGamsi5UXNuQZH1WNbhtozc4H0QCbW9XMezpgKh6XlitcuSnQiCTBMaQ+H4jtbsXtuoZXA9ZAsEnGHm+KQK8ex/dyEsTvvmyQ6nyrSO4r1gq6H+SuNITNi5ee0yVOjFb+m0uG8IkjJ2fcN7V02LYw6ouK/QJtrjyoo=
+	t=1706307711; cv=none; b=CTUPhUbZ7usAytHGuTiC8URJeXw+UjavWESTx5kDxF2oBqIGeesoC//pkA86Vdkj9tvA3xbqLuvVnnjzEQ+KZLzcy+PFTJliufdK4vqcE9lxsvN084Ln1Ss9r96MhCbwiTihqabWj97EkGuTNzl2Hm6gGXdtRovKA2vkn3IGZn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306990; c=relaxed/simple;
-	bh=xmbf1cMm5d+OMY5BSs9mse8466umokP5V6R+klGbJxE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=trFFZRiEeGHEzNUBB6vNzduvPMeadtPA6gC+v2ruepsru3v9RpBC6xYm1ajYTLOjem5jHqrZMjiwmMvpPhAf3ViGLIVApV9+q6rEOXsbiK/oP+niMpBf0/jf45T220jjMxlLEmr51aBWM6KiByT6Tj8S1i91ZZ/GhpPSHow7nmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=obruB+jY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF099C433C7;
-	Fri, 26 Jan 2024 22:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706306989;
-	bh=xmbf1cMm5d+OMY5BSs9mse8466umokP5V6R+klGbJxE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=obruB+jYPlqvaWbqZUbEZGhAlTc6TttNdxDw2k6Wv+S+hiGh9K7v8P96u8SRD9aQz
-	 ynp1T4iAqsh/4PfD+ThjJ86WcGwnPHBhKmb22G5o5iYtyuTfWSXW4Ym1xg9g3pHtkP
-	 p9TXUqe8pBkZfgwuQhBssBATJsN7BlqxkYAb/UUb+vdd1wtPA0MenwBHFqGuoQ6FMf
-	 iFy4EPv12E1QQMR/fK9J9rdcF9qDupz5TjkWaRm5JwTv2uOlTDfDB62aFT5KPaWmTY
-	 kxQolcMDDIhLcTAbXAe2vTq9SgaXzrwl8hWLpogwWEIgdR1Lf+bK5X7lp/8aPWG8YX
-	 lLcU/CdVHVAfQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next] libbpf: fix faccessat() usage on Android
-Date: Fri, 26 Jan 2024 14:09:44 -0800
-Message-Id: <20240126220944.2497665-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706307711; c=relaxed/simple;
+	bh=l+j/aWY1Lh7TJ56SHyZ+9pdNloVm58ZUN6mU5iEVVJM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QsGTAzHDSMd7ylXlsrL7AwrFM96SsQo2t9K63a9JsKhuh5bEPKEQwVqg/Gh9FAaYfwiTjnOMwNHcBadwiSQkwwseQgi3Gu15dwgth7dFWpYE3xQQQK0VHsaXMc98/7xtosa9KHioZNDuNH5jSvknuOWOxdKdri4AGSq3R+IWMt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jBGNnOZe; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ddd19552e6so562983b3a.1
+        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 14:21:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706307709; x=1706912509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=psiNLHwz3C6n7nD33U3XoxwynNuZMXeBi7Sm6Pw1I/s=;
+        b=jBGNnOZe0AwfpjE8I2UETJEnip2GMEc0QCvyeBclHEAMmxOeLwhiGrPJJ153NqSF0T
+         mIVTt0alVesLlgDik0qHbtxAIe2KKrqWluQ+AGhYX2A6GxzsRNm3gPgZmjwnjWTWPDPF
+         XZtjnmFEvTXPUmG3RWheeyESI6IGoqSibMKu21yZlAv53FvHbkD5tFEA+2qWJatRP0Eu
+         SqF9J0y5N5saQ3n23AAJy7zSpjoklloV/rMeM7dYW5wqyCiIg3WlHtALS6E2fRGMrOMy
+         gzzftrqeqzFIqm9wEilc1MF0XsgSmUJfH9VWO2BLpmUh/8qJ1bPiGVq1nHkijn4G6yBe
+         S9nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706307709; x=1706912509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=psiNLHwz3C6n7nD33U3XoxwynNuZMXeBi7Sm6Pw1I/s=;
+        b=BOUNy/pyD+c08J24ov+L0FYLe8/rH0JdFB1f6Z3hrlwFuQDXCJg2IU38tiViSUoh5t
+         qy92e48Lf1aLrYn5yeN5wbHMkVEArxPICvZ1CbwcuM7/t4QPxHoe9Zwj4KBOy4xFaiUB
+         5xLwSkGyBw3O9WI/nKx4IxnbuZxkyjbUsEWhe0DfdcJJL5t2THexTLuLgG0BLY4axbaq
+         enid5LKnMrlyY5pSxet7c/MW+jKX8iQnidrgjZ4n/y6NaIFCcwu2xXx4m3OHfU2RwPRI
+         bWJ9bnoR4J9fLw7UvwsgZ2EOBFxNWmjReEo+gReUdmcFEPx/WrEH1h2Ew1ml5bMTYAYy
+         EwWQ==
+X-Gm-Message-State: AOJu0YxLRiop5200UGkvWBk3vGvfMqs2fj7ywKEXJrJA1GnytAjGWN0b
+	Lvi1CLHaD7yjUCJg2HRfWZN4NmvjDcBW+K9mvg71v5tj1G5NNhZak3kun9ysZK5sYDwtFB3uyfa
+	fADCY9XFMpkdiScRAYmowMl0BSRM=
+X-Google-Smtp-Source: AGHT+IGgGGKWulkm32z48chygTGaHge8RuVyB6peaOH19HHQyFzqRc761IwVYsd3inKtK2Voq4RX9G5G/xTiOvpCzzs=
+X-Received: by 2002:a05:6a00:6807:b0:6dd:c1f2:8ae4 with SMTP id
+ hq7-20020a056a00680700b006ddc1f28ae4mr695147pfb.14.1706307709406; Fri, 26 Jan
+ 2024 14:21:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240125205510.3642094-1-andrii@kernel.org> <20240125205510.3642094-3-andrii@kernel.org>
+ <3223cf369859b119914403664f549d1fb20bc644.camel@gmail.com>
+ <CAEf4BzY8XoPmHCTzp=THQr+kYpXGo5G9hLwzJWGSquFt-DZHnw@mail.gmail.com> <63c28870a70aceed3385b2c018880399f32357df.camel@gmail.com>
+In-Reply-To: <63c28870a70aceed3385b2c018880399f32357df.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Jan 2024 14:21:37 -0800
+Message-ID: <CAEf4BzaLjinKfxuOa0SHtK3Vx10WeVxdit2qYxaZ7hOwHLa5NQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/7] libbpf: fix __arg_ctx type enforcement
+ for perf_event programs
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Android implementation of libc errors out with -EINVAL in faccessat() if
-passed AT_EACCESS ([0]), this leads to ridiculous issue with libbpf
-refusing to load /sys/kernel/btf/vmlinux on Androids ([1]). Fix by
-detecting Android and redefining AT_EACCESS to 0, it's equivalent on
-Android.
+On Fri, Jan 26, 2024 at 1:32=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Fri, 2024-01-26 at 11:06 -0800, Andrii Nakryiko wrote:
+> > On Fri, Jan 26, 2024 at 5:24=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > On Thu, 2024-01-25 at 12:55 -0800, Andrii Nakryiko wrote:
+> > > [...]
+> > >
+> > > > @@ -6379,11 +6388,21 @@ static bool need_func_arg_type_fixup(const =
+struct btf *btf, const struct bpf_pro
+> > > >       /* special cases */
+> > > >       switch (prog->type) {
+> > > >       case BPF_PROG_TYPE_KPROBE:
+> > > > -     case BPF_PROG_TYPE_PERF_EVENT:
+> > > >               /* `struct pt_regs *` is expected, but we need to fix=
+ up */
+> > > >               if (btf_is_struct(t) && strcmp(tname, "pt_regs") =3D=
+=3D 0)
+> > > >                       return true;
+> > > >               break;
+> > >
+> > > Sorry, this was probably discussed, but I got lost a bit.
+> > > Kernel side does not change pt_regs for BPF_PROG_TYPE_KPROBE
+> > > (in ./kernel/bpf/btf.c:btf_validate_prog_ctx_type)
+> > > but here we do, why do it differently?
+> > >
+> >
+> > Hm... We do the same. After this patch w end up with this logic on
+> > libbpf side (which matches kernel-side one, I believe):
+> >
+> > for KPROBE =3D> allow pt_regs (unconditionally)
+> > for PERF_EVENT =3D> allow user_regs_struct|user_pt_regs|pt_regs,
+> > depending on bpf_user_pt_regs_t definition on host platform
+> >
+> > That should match what the kernel is doing.
+>
+> Oh..., I see:
+> After (and before) this patch on libbpf side for KPROBE/pt_regs
+> need_func_arg_type_fixup() would return true,
+> thus bpf_program_fixup_func_info() would apply type transformation
+> (convert it to bpf_user_pt_regs_t).
+> And kernel before the arg:ctx series expected bpf_user_pt_regs_t
+> for global subprograms called from KPROBE programs,
+> hence old kernel would accept program with KPROBE/pt_regs
+> thanks to libbpf manipulations.
 
-  [0] https://android.googlesource.com/platform/bionic/+/refs/heads/android13-release/libc/bionic/faccessat.cpp#50
-  [1] https://github.com/libbpf/libbpf-bootstrap/issues/250#issuecomment-1911324250
+Yep, with libbpf it's always a "time travel" kind of thinking, taking
+into account old kernels.
 
-Fixes: 6a4ab8869d0b ("libbpf: Fix the case of running as non-root with capabilities")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf_internal.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+>
+> I was put off by need_func_arg_type_fixup() returning true,
+> thus requiring change, and btf_validate_prog_ctx_type()
+> just accepting pt_regs =3D> not doing anything.
+>
+> Thank you for explaining.
 
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 930cc9616527..5b30f3b67a02 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -19,6 +19,20 @@
- #include <libelf.h>
- #include "relo_core.h"
- 
-+/* Android's libc doesn't support AT_EACCESS in faccessat() implementation
-+ * ([0]), and just returns -EINVAL even if file exists and is accessible.
-+ * See [1] for issues caused by this.
-+ *
-+ * So just redefine it to 0 on Android.
-+ *
-+ * [0] https://android.googlesource.com/platform/bionic/+/refs/heads/android13-release/libc/bionic/faccessat.cpp#50
-+ * [1] https://github.com/libbpf/libbpf-bootstrap/issues/250#issuecomment-1911324250
-+ */
-+#ifdef __ANDROID__
-+#undef AT_EACCESS
-+#define AT_EACCESS 0
-+#endif
-+
- /* make sure libbpf doesn't use kernel-only integer typedefs */
- #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
- 
--- 
-2.34.1
-
+Well... I didn't explain all the above, you pieced it all together yourself=
+ ;)
 
