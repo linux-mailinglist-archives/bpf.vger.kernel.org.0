@@ -1,118 +1,107 @@
-Return-Path: <bpf+bounces-20412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5751383DFE5
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 18:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3E283DFF4
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 18:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C4E3B21244
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 17:21:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FABAB213F4
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 17:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A531F5FD;
-	Fri, 26 Jan 2024 17:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4CA1EB57;
+	Fri, 26 Jan 2024 17:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="caxHhe+S"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5B01EB45;
-	Fri, 26 Jan 2024 17:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16D91D6A6
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 17:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706289692; cv=none; b=rulr+klGCW4qaPVvs964eg5szPpZERXf945MWfwktgDcXTyd/GIo50EUKvIh1zfh2nTOWCbJv4ik6Mgb+SEDx1vpXydavRyteRI6qwfN1zM26NeCDpobshoo4GvZXNr8f6YDoTlBoJt9+daACm6uqjsIQxECBK1UPvtcp0Ul6Zc=
+	t=1706289892; cv=none; b=nh5L0wbr4BAo4XX+dGillx1Y6BwgdBTfWigdSUexTl/r+bYWKs1ymcQpjovA4rGvvvIlIsR2cFWfHGX4SUu5wg5AgL4NS1Q/hHy3LXwBXGsMz85mTursGcSl/DgMfvbGZ3gLcQ8r3emIJsY6jUq9V7cy5Ry5zKSRgphbaoPPz/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706289692; c=relaxed/simple;
-	bh=f+GiwjdOekcSqEi3/DLPCaEvvf4ah7db8RL/lfaPNZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cGjwVIv5FUTX2ruMfmUEc1j2hDEk83iCy36YFJpY1qf8nAw4cMRmUBjnTk84v0akjjaO76/q5aCUkABFU/OLWPnu7sunTGAhL6acMvCnVSg6XW4v3Lk8qDki2RM4PKlLUOqYUn2GMF2qglQPyxsdHify1nFWesHuxogPqT7CAK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1111D1FB;
-	Fri, 26 Jan 2024 09:22:14 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 782C13F762;
-	Fri, 26 Jan 2024 09:21:26 -0800 (PST)
-Message-ID: <0cf72c00-21d9-4f1a-be14-80336da5dff4@arm.com>
-Date: Fri, 26 Jan 2024 17:21:24 +0000
+	s=arc-20240116; t=1706289892; c=relaxed/simple;
+	bh=qfWsSJXWz0OtOxjaaNh+xtkBvH2o2QO5rQtSozW8wmA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pvmKrZH/02i+2W1CnYuvzUwTMiosDOKPD+fzq9QDEvZwA5GR2TcCiyFmHAKkNPrmrRiHrp+TRotutdz8V98Cn2b6VMltiqL73kf8mH808WvJkSxnr7I+B9RoGA3LKaQ331/ktl7TQI0VEeD+I8U/eO7ukd+YrdSL0AZBHACwfS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=caxHhe+S; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-290da27f597so403746a91.2
+        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 09:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706289890; x=1706894690; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B4WDXCVIK/w/QlHaGnp8hubBwtc97mYt6nbkhWYrKMY=;
+        b=caxHhe+SyYWbYAtPP6+a4wXux/OXViD9kOQAHZtPF8VPRD4QP1eArroFQaBnIZbc8q
+         zpBCE6zxv8SLeas6ZXOyaYVYtmMCjVXMQYgf6YQh9CHgc4RlwijOdw+RN35OFhre6CJx
+         MmBQvHg42yunjzEDlgtWzpFhxdi1OZLO36tGfMeaZjsCAUCPpgCEaBd80ZkiSVA2a8IY
+         eg1ZhEpoBGsaNkmi4C/9zIgcZNQcCAhG1YZ5KSe0rLvagqRHq6pjGlVrStBDn9tyTJMs
+         g9Wu+CbXzeAnUuQi0ep2w7SlynVdaEFvuz/RIM3+zGOy9ndgc8ZgtB4Kzl5xItCrY7MJ
+         mskA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706289890; x=1706894690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B4WDXCVIK/w/QlHaGnp8hubBwtc97mYt6nbkhWYrKMY=;
+        b=XowbGT0bPHGrANxm5YZz8yVV5PdwSde3MRCruTujPA3eNhFR9gPz6BcHwBIZ8tjowx
+         2/n5UugM8xvFMCxK74SsTGjh86plAVlyQhYDfs1mRANojVRROhOn0nca5i7tFI7hoYV0
+         /2JVhU9q+pb5lG3zkY1aEHOVRf2XzYO3qzej+GVR8j3JMZ9O8OgCs8cOKuM31ZnIzjYu
+         PIcgB66ifPpcVC5vrB5B7o2/UwYpoUo+0+38OcbNtwL7zacwj82nG6tkz27vEV6iMK+3
+         HWjxJUI6ZpLoNZoDUpDT1efVjmMdlb4rzHErZVU4g0E3N6gLDDeecK8VJrkt4A60fRf8
+         2qzA==
+X-Gm-Message-State: AOJu0Yxa0xF/MR2dcXDzFKpIZl7XMo8nSqFbS3e/6MSPZaDuyOYyWWZF
+	aGaM7FaWJvlRzJV541fpkc7SyLEhLNGfNIMmJp9IRmnAAJsJrBYyWegESGFN0KQw5Qe6UmvTky/
+	haCC+J6KNI9eSnLXGnBAQu2etEhM=
+X-Google-Smtp-Source: AGHT+IHoG5JWXwWnYsASrEQY41wvAttmErrjtl1jebfG+/h34CGNZA7EXHDjFRkHHY3YGt4WJd+/zPUR1TOXWO8IQo0=
+X-Received: by 2002:a17:90a:1fcc:b0:290:1464:e994 with SMTP id
+ z12-20020a17090a1fcc00b002901464e994mr172571pjz.46.1706289889282; Fri, 26 Jan
+ 2024 09:24:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
- sync operations
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
- <20240126135456.704351-3-aleksander.lobakin@intel.com>
- <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
- <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240126032554.9697-1-eddyz87@gmail.com> <CAADnVQKxOeXAQDjtwNJuSPXnXqFZzx6vaEfdM_u317X-V3n08A@mail.gmail.com>
+In-Reply-To: <CAADnVQKxOeXAQDjtwNJuSPXnXqFZzx6vaEfdM_u317X-V3n08A@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Jan 2024 09:24:37 -0800
+Message-ID: <CAEf4BzZWtJvNyrjoaFFVoDRTQ-srG6pr1nyZJWuowdT9rqVzsw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: One more maintainer for libbpf and BPF selftests
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/01/2024 4:45 pm, Alexander Lobakin wrote:
-> From: Robin Murphy <robin.murphy@arm.com>
-> Date: Fri, 26 Jan 2024 15:48:54 +0000
-> 
->> On 26/01/2024 1:54 pm, Alexander Lobakin wrote:
->>> From: Eric Dumazet <edumazet@google.com>
->>>
->>> Quite often, NIC devices do not need dma_sync operations on x86_64
->>> at least.
->>> Indeed, when dev_is_dma_coherent(dev) is true and
->>> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
->>> and friends do nothing.
->>>
->>> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
->>> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
->>> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
->>>
->>> Add dev->skip_dma_sync boolean which is set during the device
->>> initialization depending on the setup: dev_is_dma_coherent() for direct
->>> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive result
->>> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA ops.
->>> Then later, if/when swiotlb is used for the first time, the flag
->>> is turned off, from swiotlb_tbl_map_single().
->>
->> I think you could probably just promote the dma_uses_io_tlb flag from
->> SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.
-> 
-> Nice catch!
-> 
->>
->> Similarly I don't think a new op is necessary now that we have
->> dma_map_ops.flags. A simple static flag to indicate that sync may be> skipped under the same conditions as implied for dma-direct - i.e.
->> dev_is_dma_coherent(dev) && !dev->dma_use_io_tlb - seems like it ought
->> to suffice.
-> 
-> In my initial implementation, I used a new dma_map_ops flag, but then I
-> realized different DMA ops may require or not require syncing under
-> different conditions, not only dev_is_dma_coherent().
-> Or am I wrong and they would always be the same?
+On Thu, Jan 25, 2024 at 8:03=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Jan 25, 2024 at 7:26=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >
+> > I've been working on BPF verifier, BPF selftests and, to some extent,
+> > libbpf, for some time. As suggested by Andrii and Alexei,
+> > I humbly ask to add me to maintainers list:
+> > - As reviewer   for BPF [GENERAL]
+> > - As maintainer for BPF [LIBRARY]
+> > - As maintainer for BPF [SELFTESTS]
+> >
+> > This patch adds dedicated entries to MAINTAINERS.
+> >
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> Yes! Welcome to the club. Well deserved.
 
-I think it's safe to assume that, as with P2P support, this will only 
-matter for dma-direct and iommu-dma for the foreseeable future, and 
-those do currently share the same conditions as above. Thus we may as 
-well keep things simple for now, and if anything ever does have cause to 
-change, it can be the future's problem to keep this mechanism working as 
-intended.
-
-Thanks,
-Robin.
+Yep, long overdue, welcome!
 
