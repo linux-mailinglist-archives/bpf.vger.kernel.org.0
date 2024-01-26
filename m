@@ -1,113 +1,159 @@
-Return-Path: <bpf+bounces-20389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12F8E83DAB1
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 14:24:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E2D183DB39
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 14:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3739B1C22424
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 13:24:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA599291154
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 13:56:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D8E1B80E;
-	Fri, 26 Jan 2024 13:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6341B96F;
+	Fri, 26 Jan 2024 13:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kBozBFtB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GgwJmQ2g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B551B809
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 13:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE99D1B955;
+	Fri, 26 Jan 2024 13:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706275461; cv=none; b=fb9uiFXrAXXr74Z7bB+LMg4Gc4USIkaVyVngI/CZe9n3Gh/HSMBJNhD8AlBa1V/QJYP+r0cABk0VWK0+7qhL6T8HZtYgRzbCxMDjlM5kOylqViAIhdiLVV/KHBAV/KNXFLkdQrzOMvjhOk/HPJ47RDX56CfRp0jDnBRp0k4EGyg=
+	t=1706277355; cv=none; b=nrFgEUXjSmc5gCSbJGzllf2ylhd6yECDLuP4SapIYJhon+JZ+/EOnPjU7aF5uHQHewB8r/F60lRFBlYgPbedJNFpFAHZxAmQ4asvRAnGt0AMBeUOPoWgRpzS5w9UcTOytQATcCZMC7h4b1so3VoLCiSYNX3pOiTRmIOULMRGZqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706275461; c=relaxed/simple;
-	bh=PvVizu5WwFzpFkIvvTPP0V38Gm5eElcwocFEqIuJdDs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CTICS1XWJpSsUcj8l3tZxvI9sXkkzpnnBiOQsL0aKoJe9ZfCgBxEBjuSMEtoQ6MAbsWEhGOnXZdY6/YZtIytfx/zJh5I0l3RGGfUakI4k3m1M2VRUVPv3qLLTAMcKHYd0ezO8XrbJ/iqixfRhrg8y9DchQSV6pJnlLCwp2L6sD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kBozBFtB; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a31914e7493so38471766b.3
-        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 05:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706275458; x=1706880258; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VeEoDv4H6+pGRIzf5Ee4ZVvXhIKnTwWOKQLee9lBPLs=;
-        b=kBozBFtBh4EyWA+AUJQtjsmD4Sf5NMJDTc8hUYcp7IornZwaL+FIB6ulm9J+5UHqHH
-         FOQ3VwVfqdHskpHh6t718pcFORLs/11W4JX5g/id5DIdLaMG6HKbyWyw0hpGKT/MlznO
-         JPt7QDUGIhpj6kPx/Bxg22hIEOcsdag4UvulVPAxj+VWm0FvQHDFYb8NfREh+Suc+58n
-         2XMZ0nNRTWdZV173m9JBsC0NtOBPy1+SiUXGXv+hjUCZUTBWa54mnQ5/CJCpwCS35LE/
-         Qz/CJrUCKnB74dRMXt0aTkHAZxcw7tNrwcQltGU6VSYQbMYtkc1dkex8aZy8OvNOgQQX
-         5u+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706275458; x=1706880258;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VeEoDv4H6+pGRIzf5Ee4ZVvXhIKnTwWOKQLee9lBPLs=;
-        b=r7cQAQ43NNLzjAeTMSriSdlXrDWdST+/u9SPSTo+RhmF9aiU2rDFCAMJJdE2afzj9o
-         HkIAQ4xE8pHAMY/hgRIWqZuPLWSgI9DOwYfcy3w5X8AH1B1PZpS2QFATS4gme57GQi9W
-         HHYLKpinV/w0Yt1GkkdjDXYya82aWSh7reVxxC/bo7ln8v2mGHjl5zzeWSG16oncBLW1
-         wAZGtilw1mipwDsqfmf0LgOb109x5hLFsM1LAVvwaz4P0apUlQxn3jWzDmt13kn0A6le
-         I5hNNkqP/f9NJRSQHA/XVgiRsGuBOqznnKYKOQ8Jq672X/Ny+eGthfF8wXXB00Yhy5VA
-         LXIA==
-X-Gm-Message-State: AOJu0YxBnktxd4lm4m1IQnr2JrDlrywZfwQJ4N5IsTPJSgDYAdZH5CAq
-	A4ybYDT39FD+TpCccjvIZUxvr2p4g26LVJ8D7FxkIandsJs95Fm5
-X-Google-Smtp-Source: AGHT+IFcPcCaPE4/Rj6xyXrGNI8/MipxwBzYaLseAbtt4qat6DGtcWUMDYy3Zi15LNNpeSwmj7W8OA==
-X-Received: by 2002:a17:906:33d8:b0:a2e:96df:28ce with SMTP id w24-20020a17090633d800b00a2e96df28cemr782818eja.62.1706275457879;
-        Fri, 26 Jan 2024 05:24:17 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id hw18-20020a170907a0d200b00a2d7f63dd71sm627161ejc.29.2024.01.26.05.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 05:24:17 -0800 (PST)
-Message-ID: <3223cf369859b119914403664f549d1fb20bc644.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/7] libbpf: fix __arg_ctx type enforcement
- for perf_event programs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
-Cc: kernel-team@meta.com
-Date: Fri, 26 Jan 2024 15:24:16 +0200
-In-Reply-To: <20240125205510.3642094-3-andrii@kernel.org>
-References: <20240125205510.3642094-1-andrii@kernel.org>
-	 <20240125205510.3642094-3-andrii@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706277355; c=relaxed/simple;
+	bh=imVjlmmk3YaSrnGHNgfVdxJTZcpjli9usBMpCEom9t8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AHFPjEO0nujdGmjuy76JkD85ZjKjMu479ahW+kODmePv4hcXJcEuX/bu9Etoq4IKV0rUrKoQhYM4EegqO4yhwdiIIeRlWY6NNKsa+DS1jQEfDBtsDu/t6oAapmAbn0D6edgPqI5ualuTeQEsvXI/XOUDnhvfoFiKjgrM1IOy8lA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GgwJmQ2g; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706277354; x=1737813354;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=imVjlmmk3YaSrnGHNgfVdxJTZcpjli9usBMpCEom9t8=;
+  b=GgwJmQ2ge/TptGQGtLvgssofIs7/MImcTQj7eqOaaiGMmYPRUeyYSOGY
+   7vtpIjTWsFxzRwAcvmrRm2sMKARTio1iRt6Ut/53hwSl5HanlGkpmSiJJ
+   Q+s6suqqk2XJkLjIOWBSvwy9kjqR3MZ2qpjQ5p6Hy/uWLPltHSkesWiWE
+   efojdEUvt8KZJ736OGRXl8A1PvH2ftuZ8B94dBosk5/6gKvwEK4apvebf
+   l0QOaJE2vBXIar/HpG8Zi64FcagKGVfoIcKTb1uYmuLTe8J5kSeyW5tC4
+   ZJ7rUYX8ZgH4GcVOJbNoRBuFm6XG81+LtEMz6aiiPpgFZDsykUksXd7RN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="15998390"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="15998390"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 05:55:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="821142817"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="821142817"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orsmga001.jf.intel.com with ESMTP; 26 Jan 2024 05:55:47 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/7] dma: skip calling no-op sync ops when possible
+Date: Fri, 26 Jan 2024 14:54:49 +0100
+Message-ID: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2024-01-25 at 12:55 -0800, Andrii Nakryiko wrote:
-[...]
+The series grew from Eric's idea and patch at [0]. The idea of using the
+shortcut for direct DMA as well belongs to Chris.
 
-> @@ -6379,11 +6388,21 @@ static bool need_func_arg_type_fixup(const struct=
- btf *btf, const struct bpf_pro
->  	/* special cases */
->  	switch (prog->type) {
->  	case BPF_PROG_TYPE_KPROBE:
-> -	case BPF_PROG_TYPE_PERF_EVENT:
->  		/* `struct pt_regs *` is expected, but we need to fix up */
->  		if (btf_is_struct(t) && strcmp(tname, "pt_regs") =3D=3D 0)
->  			return true;
->  		break;
+When an architecture doesn't need DMA synchronization and the buffer is
+not an SWIOTLB buffer, most of times the kernel and the drivers end up
+calling DMA sync operations for nothing.
+Even when DMA is direct, this involves a good non-inline call ladder and
+eats a bunch of CPU time. With IOMMU, this results in calling indirect
+calls on hotpath just to check what is already known and return.
+XSk is been using a custom shortcut for that for quite some time.
+I recently wanted to introduce a similar one for Page Pool. Let's combine
+all this into one generic shortcut, which would cover all DMA sync ops
+and all types of DMA (direct, IOMMU, ...).
 
-Sorry, this was probably discussed, but I got lost a bit.
-Kernel side does not change pt_regs for BPF_PROG_TYPE_KPROBE
-(in ./kernel/bpf/btf.c:btf_validate_prog_ctx_type)
-but here we do, why do it differently?
+* #1 adds stub inlines to be able to skip DMA sync ops or even compile
+     them out when not needed.
+* #2 adds the generic shortcut and enables it for direct DMA.
+* #3 adds ability to skip DMA syncs behind an IOMMU.
+* #4-5 are just cleanups for Page Pool to avoid merge conflicts in future.
+* #6 checks for the shortcut as early as possible in the Page Pool code to
+     make sure no cycles wasted.
+* #7 replaces XSk's shortcut with the generic one.
 
-[...]
+On 100G NIC, the result is +3-5% for direct DMA and +10-11% for IOMMU.
+As a bonus, XSk core now allows batched buffer allocations for IOMMU
+setups.
+If the shortcut is not available on some system, there should be no
+visible performance regressions.
+
+[0] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
+
+Alexander Lobakin (5):
+  dma: compile-out DMA sync op calls when not used
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  page_pool: check for DMA sync shortcut earlier
+  xsk: use generic DMA sync shortcut instead of a custom one
+
+Eric Dumazet (2):
+  dma: avoid expensive redundant calls for sync operations
+  iommu/dma: avoid expensive indirect calls for sync operations
+
+ kernel/dma/Kconfig                            |   4 +
+ include/net/page_pool/types.h                 |  21 +++-
+ include/linux/device.h                        |   5 +
+ include/linux/dma-map-ops.h                   |  17 +++
+ include/linux/dma-mapping.h                   | 100 +++++++++++++-----
+ include/net/xdp_sock_drv.h                    |   7 +-
+ include/net/xsk_buff_pool.h                   |  13 +--
+ drivers/base/dd.c                             |   2 +
+ drivers/iommu/dma-iommu.c                     |   1 +
+ drivers/net/ethernet/engleder/tsnep_main.c    |   2 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  |   2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   2 +-
+ drivers/net/ethernet/netronome/nfp/nfd3/xsk.c |   2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ kernel/dma/mapping.c                          |  60 ++++++++---
+ kernel/dma/swiotlb.c                          |  14 +++
+ net/core/page_pool.c                          |  67 +++++++-----
+ net/xdp/xsk_buff_pool.c                       |  29 +----
+ 23 files changed, 237 insertions(+), 125 deletions(-)
+
+-- 
+2.43.0
+
 
