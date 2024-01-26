@@ -1,299 +1,157 @@
-Return-Path: <bpf+bounces-20407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C5083DDF1
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 16:49:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD22A83DE0D
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 16:54:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBC591F22E3F
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 15:49:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894AE288C4B
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 15:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287F81D55C;
-	Fri, 26 Jan 2024 15:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24981D530;
+	Fri, 26 Jan 2024 15:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScQlk6k/"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD661CFBF;
-	Fri, 26 Jan 2024 15:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7621CD3F
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 15:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706284141; cv=none; b=o2V6gjh3DJcWF/ICx2zaQD0W8CHCHTPEVuX6+JlpoR4V3jOAXE2uyQwRiP7auEXX+e/+furxR7fb9W3I4kYVYalcP9no5TyjqQgjd+ZSLk/Dmfj7+TzHxxSn98AVgY1OJH1uIkl07wKFcMuFT5Fu5hMJgc5hIWk3T8XOKUHkyks=
+	t=1706284435; cv=none; b=enuVe+YM6XTRXU6mdV4kzXytQU0W7pi8YgQxTAN+Q8FQSmDo2+X8Z/dn5zKLzYX9NK6DGX+/JPJ2IyE/eP2fu2p3ExEE4x4km5SThTRo2VA44lGkvQ1Fqef3mg+Ep9+RIS9fzUnovMQMcHaeG+MaTNSTkkK4ZZdVsdbhY/zNv3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706284141; c=relaxed/simple;
-	bh=DCS4rQ+kulPVQ/3V51ushJzhNjwdNlj6BNIzixfez8A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TpkxIg9qRbYiyAwyZmzeswNkETahHat5uNKKjy1VciBAyPYsX4YbaQpncKd3YkCH1vtVrQf7UEWqaOF8gm3tObbLEyhe0r4cwDUf4b5gR342CHMpgsxOXLVYaE5UMz7Z809ZHEdfI8nL0k/b5YGDQDIG/2E1ge4cQiLn+YkRXFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DDBA1FB;
-	Fri, 26 Jan 2024 07:49:42 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0636A3F762;
-	Fri, 26 Jan 2024 07:48:55 -0800 (PST)
-Message-ID: <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
-Date: Fri, 26 Jan 2024 15:48:54 +0000
+	s=arc-20240116; t=1706284435; c=relaxed/simple;
+	bh=k1MhHYqm58SwzlfoLrmOreE2A8izutRBK6OKlIYAStA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RsiBfgQuz84wGNo8idoPEKKZBtkWS/8ozYroYj5GJRqYgA5DbyaRBwZlMAUqZkC/PY59CH/M6Zfhc+fsRsk+x+KHpwQ3tDX2Oks86azCQGhxjwbA9EXf+tBynO8cOCz1iQpLFnCWVOSQYd37WQLmROa2LeDIUiOSqumkNzMLUgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScQlk6k/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5DAEC433C7;
+	Fri, 26 Jan 2024 15:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706284434;
+	bh=k1MhHYqm58SwzlfoLrmOreE2A8izutRBK6OKlIYAStA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ScQlk6k/8pKC/tfZdoDvlk9urCzQpTl1Z5I5HfqlrWmRYfTzowdUHQRyGoqzLjIT/
+	 kL5CPhPAlwHnn8blg3cK1XWOcPC40sv4aRTCrthNTQSFFgpn0vNJ99yKM6k2clgFb9
+	 /OU/ON5b5cbYPYThVb3TVJzoSBt+cDInOz0ohVQFLnP0/gzc8FHTzFESIxIBs2szVb
+	 IEKZuMzR2k3x0lbzXknhHTb65BYzkmmMPAxq5kM03JOWtogt2UbNQDxmy6NEp/UCrz
+	 cxHGshP9uZfZRavgUf+2X8h9SVOxvaZJYrjs4UhV0Cs3PiuaT6EPmE81cqNXUL0+XH
+	 tpbVkU9xDK1fA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 561F740441; Fri, 26 Jan 2024 12:53:22 -0300 (-03)
+Date: Fri, 26 Jan 2024 12:53:22 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
+Message-ID: <ZbPVcsAwjE1Mtv7C@kernel.org>
+References: <ZZYgMYmb_qE94PUB@kernel.org>
+ <ZZZ7hgqlYjNJOynA@krava>
+ <ZZakH8LluKodXql-@kernel.org>
+ <ZZasL_pO09Zt3R4e@kernel.org>
+ <ZZfCX7tcM0RnuHJT@krava>
+ <ZZgZ0cxEa7HvSUF6@krava>
+ <ZZhsPs00TI75RdAr@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
- sync operations
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
- <20240126135456.704351-3-aleksander.lobakin@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240126135456.704351-3-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZhsPs00TI75RdAr@kernel.org>
+X-Url: http://acmel.wordpress.com
 
-On 26/01/2024 1:54 pm, Alexander Lobakin wrote:
-> From: Eric Dumazet <edumazet@google.com>
+Em Fri, Jan 05, 2024 at 05:53:18PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Jan 05, 2024 at 04:01:37PM +0100, Jiri Olsa escreveu:
+> > On Fri, Jan 05, 2024 at 09:48:31AM +0100, Jiri Olsa wrote:
+> > > On Thu, Jan 04, 2024 at 10:01:35AM -0300, Arnaldo Carvalho de Melo wrote:
+> > > 
+> > > SNIP
+> > > 
+> > > >    9    51.66 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-17) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
+> > > >   10    60.77 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
+> > > >   11    61.29 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
+> > > >   12    74.72 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 16.0.6 flex 2.6.4
+> > > > 
+> > > > / $ grep -B8 -A2 -w basename /usr/include/string.h
+> > > > #ifdef _GNU_SOURCE
+> > > > #define	strdupa(x)	strcpy(alloca(strlen(x)+1),x)
+> > > > int strverscmp (const char *, const char *);
+> > > > char *strchrnul(const char *, int);
+> > > > char *strcasestr(const char *, const char *);
+> > > > void *memrchr(const void *, int, size_t);
+> > > > void *mempcpy(void *, const void *, size_t);
+> > > > #ifndef __cplusplus
+> > > > char *basename();
+> > > > #endif
+> > > > #endif
+> > > > / $ cat /etc/os-release
+> > > > NAME="Alpine Linux"
+> > > > ID=alpine
+> > > > VERSION_ID=3.19.0
+> > > > PRETTY_NAME="Alpine Linux v3.19"
+> > > > HOME_URL="https://alpinelinux.org/"
+> > > > BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
+> > > > / $
+> > > > 
+> > > > Weird, they had it and now removed the _GNU_SOURCE bits (edge is their
+> > > > devel distro, like rawhide is for fedora, tumbleweed for opensuse, etc).
+> > > 
+> > > let's see, I asked them in here: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15643
+> > 
+> > it got removed in musl libc recently:
+> >   https://git.musl-libc.org/cgit/musl/commit/?id=725e17ed6dff4d0cd22487bb64470881e86a92e7
+> > 
+> > so perhaps switching to POSIX version of basename is the easiest way out?
 > 
-> Quite often, NIC devices do not need dma_sync operations on x86_64
-> at least.
-> Indeed, when dev_is_dma_coherent(dev) is true and
-> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
-> and friends do nothing.
+> I think so, in all of perf we use the POSIX one, strdup'ing the arg,
+> etc.
 > 
-> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
-> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
-> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
-> 
-> Add dev->skip_dma_sync boolean which is set during the device
-> initialization depending on the setup: dev_is_dma_coherent() for direct
-> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive result
-> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA ops.
-> Then later, if/when swiotlb is used for the first time, the flag
-> is turned off, from swiotlb_tbl_map_single().
+> Something like the patch below?
 
-I think you could probably just promote the dma_uses_io_tlb flag from 
-SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.
+Quentin, are you ok with this? Then I can send a formal patch.
 
-Similarly I don't think a new op is necessary now that we have 
-dma_map_ops.flags. A simple static flag to indicate that sync may be 
-skipped under the same conditions as implied for dma-direct - i.e. 
-dev_is_dma_coherent(dev) && !dev->dma_use_io_tlb - seems like it ought 
-to suffice.
+Jiri, can I have your Acked-by?
 
-Thanks,
-Robin.
+- Arnaldo
+ 
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index ee3ce2b8000d75d2..a5cc5938c3d7951e 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -7,6 +7,7 @@
+>  #include <ctype.h>
+>  #include <errno.h>
+>  #include <fcntl.h>
+> +#include <libgen.h>
+>  #include <linux/err.h>
+>  #include <stdbool.h>
+>  #include <stdio.h>
+> @@ -56,9 +57,10 @@ static bool str_has_suffix(const char *str, const char *suffix)
+>  
+>  static void get_obj_name(char *name, const char *file)
+>  {
+> -	/* Using basename() GNU version which doesn't modify arg. */
+> -	strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
+> -	name[MAX_OBJ_NAME_LEN - 1] = '\0';
+> +	char file_copy[PATH_MAX];
+> +	/* Using basename() POSIX version to be more portable. */
+> +	strncpy(file_copy, file, PATH_MAX - 1)[PATH_MAX - 1] = '\0';
+> +	strncpy(name, basename(file_copy), MAX_OBJ_NAME_LEN - 1)[MAX_OBJ_NAME_LEN - 1] = '\0';
+>  	if (str_has_suffix(name, ".o"))
+>  		name[strlen(name) - 2] = '\0';
+>  	sanitize_identifier(name);
 
-> On iavf, the UDP trafficgen with XDP_DROP in skb mode test shows
-> +3-5% increase for direct DMA.
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Co-developed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->   include/linux/device.h      |  5 +++++
->   include/linux/dma-map-ops.h | 17 +++++++++++++++++
->   include/linux/dma-mapping.h | 12 ++++++++++--
->   drivers/base/dd.c           |  2 ++
->   kernel/dma/mapping.c        | 34 +++++++++++++++++++++++++++++++---
->   kernel/dma/swiotlb.c        | 14 ++++++++++++++
->   6 files changed, 79 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 97c4b046c09d..f23e6a32bea0 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -686,6 +686,8 @@ struct device_physical_location {
->    *		other devices probe successfully.
->    * @dma_coherent: this particular device is dma coherent, even if the
->    *		architecture supports non-coherent devices.
-> + * @dma_skip_sync: DMA sync operations can be skipped for coherent non-SWIOTLB
-> + *		buffers.
->    * @dma_ops_bypass: If set to %true then the dma_ops are bypassed for the
->    *		streaming DMA operations (->map_* / ->unmap_* / ->sync_*),
->    *		and optionall (if the coherent mask is large enough) also
-> @@ -800,6 +802,9 @@ struct device {
->       defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
->   	bool			dma_coherent:1;
->   #endif
-> +#ifdef CONFIG_DMA_NEED_SYNC
-> +	bool			dma_skip_sync:1;
-> +#endif
->   #ifdef CONFIG_DMA_OPS_BYPASS
->   	bool			dma_ops_bypass : 1;
->   #endif
-> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> index 4abc60f04209..937c295e9da8 100644
-> --- a/include/linux/dma-map-ops.h
-> +++ b/include/linux/dma-map-ops.h
-> @@ -78,6 +78,7 @@ struct dma_map_ops {
->   			int nents, enum dma_data_direction dir);
->   	void (*cache_sync)(struct device *dev, void *vaddr, size_t size,
->   			enum dma_data_direction direction);
-> +	bool (*can_skip_sync)(struct device *dev);
->   	int (*dma_supported)(struct device *dev, u64 mask);
->   	u64 (*get_required_mask)(struct device *dev);
->   	size_t (*max_mapping_size)(struct device *dev);
-> @@ -111,6 +112,22 @@ static inline void set_dma_ops(struct device *dev,
->   }
->   #endif /* CONFIG_DMA_OPS */
->   
-> +#ifdef CONFIG_DMA_NEED_SYNC
-> +
-> +static inline void dma_set_skip_sync(struct device *dev, bool skip)
-> +{
-> +	dev->dma_skip_sync = skip;
-> +}
-> +
-> +void dma_setup_skip_sync(struct device *dev);
-> +
-> +#else /* !CONFIG_DMA_NEED_SYNC */
-> +
-> +#define dma_set_skip_sync(dev, skip)		do { } while (0)
-> +#define dma_setup_skip_sync(dev)		do { } while (0)
-> +
-> +#endif /* !CONFIG_DMA_NEED_SYNC */
-> +
->   #ifdef CONFIG_DMA_CMA
->   extern struct cma *dma_contiguous_default_area;
->   
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 9dd7e1578bf6..bc9f67e0c139 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -365,9 +365,17 @@ __dma_sync_single_range_for_device(struct device *dev, dma_addr_t addr,
->   
->   #ifdef CONFIG_DMA_NEED_SYNC
->   
-> -#define dma_skip_sync(dev)			false
-> +static inline bool dma_skip_sync(const struct device *dev)
-> +{
-> +	return dev->dma_skip_sync;
-> +}
-> +
-> +bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr);
->   
-> -bool dma_need_sync(struct device *dev, dma_addr_t dma_addr);
-> +static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-> +{
-> +	return dma_skip_sync(dev) ? false : __dma_need_sync(dev, dma_addr);
-> +}
->   
->   #else /* !CONFIG_DMA_NEED_SYNC */
->   
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 85152537dbf1..67ad3e1d51f6 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -642,6 +642,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->   			goto pinctrl_bind_failed;
->   	}
->   
-> +	dma_setup_skip_sync(dev);
-> +
->   	ret = driver_sysfs_add(dev);
->   	if (ret) {
->   		pr_err("%s: driver_sysfs_add(%s) failed\n",
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index a30f37f9d4db..8fa464b3954e 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -842,15 +842,43 @@ size_t dma_opt_mapping_size(struct device *dev)
->   EXPORT_SYMBOL_GPL(dma_opt_mapping_size);
->   
->   #ifdef CONFIG_DMA_NEED_SYNC
-> -bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-> +bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr)
->   {
->   	const struct dma_map_ops *ops = get_dma_ops(dev);
->   
->   	if (dma_map_direct(dev, ops))
-> +		/*
-> +		 * dma_skip_sync could've been set to false on first SWIOTLB
-> +		 * buffer mapping, but @dma_addr is not necessary an SWIOTLB
-> +		 * buffer. In this case, fall back to more granular check.
-> +		 */
->   		return dma_direct_need_sync(dev, dma_addr);
-> -	return ops->sync_single_for_cpu || ops->sync_single_for_device;
-> +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(__dma_need_sync);
-> +
-> +void dma_setup_skip_sync(struct device *dev)
-> +{
-> +	const struct dma_map_ops *ops = get_dma_ops(dev);
-> +	bool skip;
-> +
-> +	if (dma_map_direct(dev, ops))
-> +		/*
-> +		 * dma_skip_sync will be set to false on first SWIOTLB buffer
-> +		 * mapping, if any. During the device initialization, it's
-> +		 * enough to check only for DMA coherence.
-> +		 */
-> +		skip = dev_is_dma_coherent(dev);
-> +	else if (!ops->sync_single_for_device && !ops->sync_single_for_cpu)
-> +		skip = true;
-> +	else if (ops->can_skip_sync)
-> +		skip = ops->can_skip_sync(dev);
-> +	else
-> +		skip = false;
-> +
-> +	dma_set_skip_sync(dev, skip);
->   }
-> -EXPORT_SYMBOL_GPL(dma_need_sync);
->   #endif /* CONFIG_DMA_NEED_SYNC */
->   
->   unsigned long dma_get_merge_boundary(struct device *dev)
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index b079a9a8e087..b62ea0a4f106 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -1286,6 +1286,16 @@ static unsigned long mem_used(struct io_tlb_mem *mem)
->   
->   #endif /* CONFIG_DEBUG_FS */
->   
-> +static inline void swiotlb_disable_dma_skip_sync(struct device *dev)
-> +{
-> +	/*
-> +	 * If dma_skip_sync was set, reset it to false on first SWIOTLB buffer
-> +	 * mapping/allocation to always sync SWIOTLB buffers.
-> +	 */
-> +	if (unlikely(dma_skip_sync(dev)))
-> +		dma_set_skip_sync(dev, false);
-> +}
-> +
->   phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
->   		size_t mapping_size, size_t alloc_size,
->   		unsigned int alloc_align_mask, enum dma_data_direction dir,
-> @@ -1323,6 +1333,8 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
->   		return (phys_addr_t)DMA_MAPPING_ERROR;
->   	}
->   
-> +	swiotlb_disable_dma_skip_sync(dev);
-> +
->   	/*
->   	 * Save away the mapping from the original address to the DMA address.
->   	 * This is needed when we sync the memory.  Then we sync the buffer if
-> @@ -1640,6 +1652,8 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
->   	if (index == -1)
->   		return NULL;
->   
-> +	swiotlb_disable_dma_skip_sync(dev);
-> +
->   	tlb_addr = slot_addr(pool->start, index);
->   
->   	return pfn_to_page(PFN_DOWN(tlb_addr));
+-- 
+
+- Arnaldo
 
