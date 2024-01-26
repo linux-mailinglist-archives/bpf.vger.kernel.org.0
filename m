@@ -1,85 +1,83 @@
-Return-Path: <bpf+bounces-20405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DB483DDA7
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 16:38:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A05683DDB5
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 16:40:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933E31C215AA
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 15:38:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 296DE1F23820
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 15:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF4D1CFBC;
-	Fri, 26 Jan 2024 15:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A491D52C;
+	Fri, 26 Jan 2024 15:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VfkmBrIs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V5dMx6yC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8C71CD26;
-	Fri, 26 Jan 2024 15:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E6F1CFBC;
+	Fri, 26 Jan 2024 15:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706283530; cv=none; b=nvDF0M7VjAViw0Gpo6JtK4Eko8cq9YQBlA5QwDcaaap0vWPaqs1dax8TgNn6V8JPgVAPscJxeq7qyabUGemsOs9vBYAtW17QDVCH27D/uD0F/RnnwAtzfRcVxTWm5v52TqjBAM2GO2BFGiryFBBb0+rtgdygGpMApOSHODLbWKg=
+	t=1706283648; cv=none; b=Du1YF1hPrshAoHbcNSOp6XihxUXmrkka7BSkulV7N+4FtoZ5p8Ys6Jmy3nel4twiB5MotcTGyHv33NpCK2DS2sSUKVDMLyPwEmt137s/uMelHLCqgydLOu4a/T7q8WgNr5PtOwMUvNP9Aq3VtCc5+WavdWTGwsKml7lDwOIxQ8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706283530; c=relaxed/simple;
-	bh=4Xs8MulNUzdjgUxipKwZtjYtjrBKfmZjV12VqDliCbI=;
+	s=arc-20240116; t=1706283648; c=relaxed/simple;
+	bh=JGaCVuo9SLY43neEoDM3vFibpzcPR2KYm27CYG0feqg=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=UiJqqW2FVKiWpRItSqPg6B3D0HKsW6cbqrkUcftuHgRdb5Y45t2hwuZMsdw2v+Tm60/LU1gwYxhUSx2rHzpzy57VkP3tXSR/WNUpBJ6mk03ajI3USu0USNRPXwXCXLajRYhm2B1KeHvYkQXWuNAVXqSOgywETgkNq5r6uC7mYf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VfkmBrIs; arc=none smtp.client-ip=209.85.210.178
+	 Mime-Version:Content-Type; b=p3t9bFMXh2cbM3fJ9ktyv7n7LLPLGPU7wqhqBQYxbcxEWHyEJpYkSuEp9O3sbCPy07unXSU2V44L9Y6t+HqMqT6v9tlrTzUdtXy7oQWgIuA/X0ZB+DXt4yWLbUaHQE5xyPtaJsIpiHi4cddYX59YCOPx59Zfktw0buP7w52hgbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V5dMx6yC; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ddce722576so422465b3a.1;
-        Fri, 26 Jan 2024 07:38:48 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d73066880eso4721325ad.3;
+        Fri, 26 Jan 2024 07:40:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706283528; x=1706888328; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706283646; x=1706888446; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=70HA05hhM8c3qZT1O/FpkvyawRIYoLxxv+63aHCCcaA=;
-        b=VfkmBrIs8+47Wcpu8jS3/zLJp67srq2O3xfqABVqpKz55NpxvM2CxQgznkR8mW366m
-         ZnPi5fQYR5rJHkiBdgmrgpEiswQbuIpzilJ0e6AN+YUOJA1H4zWB60S+hL8AumB2AULu
-         Aq7QfRLlWwuctwGarlYgeeP4X4MfU3rA16WeeWkOpfkRIRaVyZavITQRCwD45sQP1bGs
-         igyo+SLAHdQnoJD8pkwpgJWZkw/MX8QGmNHiFf4lK8UFe+S8KVeaok6KH9E5igVtXLpU
-         JkBXjWADsDBL0bBgqz2rFF649ifjjs42YnOg0WQ77by+Zwrg45/hrLK8zgRnHeiZvjBr
-         limA==
+        bh=7QGY8OPqxdoi1UYLg5JubJbRifmZMmeSmnYhe9kCBBc=;
+        b=V5dMx6yC1vcTS2vteYjeMpoWhBJ6oAYtxffxHqVJd5QSf/a7aXCn2zY25OvpwXS8NZ
+         g865Xw84Wgw6j/no0Gb3KlC85nNVja7RTDD+aSDd8+kcD4nOuVYGRwBpV4H9FnX/Ci2e
+         qd6p9sS2A5kSnlypZmVLvHog69eDZiOtcdJnNbK0dnev84lgd174LYCYxJR243tB+I9A
+         zfKvrZ+uQHQZvKOPq+u5HDtsL7Dm3+x1zUho6xutWbuWL9WRr5Q1yiyt/IPjzgztDIpS
+         9qlUv1P26RJz/MRejtcZgWGem7stq/aasuscVw+XIlxxCUhyP3BDCaa8A2mFkxHMPflb
+         vmoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706283528; x=1706888328;
+        d=1e100.net; s=20230601; t=1706283646; x=1706888446;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=70HA05hhM8c3qZT1O/FpkvyawRIYoLxxv+63aHCCcaA=;
-        b=XQIFwv87yeEDKxJWZV7ThOxhhZtAyAOM8LUFoAPQKv7AaRlygqY22VfMulqz1qE4Ys
-         X56YfPvz99Rp52d7D5Vn69OLsSOAz0GnDxju988BkZX9LbEV5RGlH0c6qa91zm+UAJ+P
-         akjWi6ofueOCEsMUs55GfTKM+0jPVwNvH7bnkYtSvKMIB78BoHRCL3gZldVR0pwrvKQ7
-         knWsLSXTvUpcVEIWjh9dNxabm93UjhNpn/AsOZ5w8U5dBub1GRpIdUBxjnHF1nfpu9ld
-         m9eIHY+nfSH6vXMczJvxBm442cIfXOtTH4WCjJatAnZKzeKZL2sn5A8VxJwTzRSCP97o
-         7PrA==
-X-Gm-Message-State: AOJu0YxWI6w6nqUwXENFdLAwLYzuegWliGlVmPxT/waPw27uA+t9XZoU
-	vo3pTzfQMS7cUftycwiZmdLPV3Rzn0Prfh4SDN4ba2OfRZbDazNFV1OclgYh
-X-Google-Smtp-Source: AGHT+IFhE5mYKMCMYw6zMajProaW13U/zNP7et6FJ4UZaWK2Y5VfOpq+3mhUqZCwZNr/mashuNlIeg==
-X-Received: by 2002:aa7:9f51:0:b0:6db:cace:5f60 with SMTP id h17-20020aa79f51000000b006dbcace5f60mr1080772pfr.8.1706283528429;
-        Fri, 26 Jan 2024 07:38:48 -0800 (PST)
+        bh=7QGY8OPqxdoi1UYLg5JubJbRifmZMmeSmnYhe9kCBBc=;
+        b=NFK6RrXVxPSKvJK/+AEqWtwkc4zrfSLVHYmF5q55MN7z67VWPbVqi9A5Rtlb7x8ctz
+         E3dkyT5TkxJ2uwaLM8RYqqlccfJUpvf4ymCjZXDT0Hpd0FK2nv1jNYx4LbhSRhxm2iyT
+         cWu3jWfTsKnwV4hw5QSWNw4DhfOGQgm1bpsSl0CX1MAQALKKy9IM1PasJF/zi2ghwjI2
+         V5DQxSwe6RAfTOnJCLEHZicPhRPfArcLBjf17xMGySTr3B5KTyT1iM/RZHMr7NUgB2rg
+         ufg6n6dGaM2bKK6a1MdOU5tgvVr7oaUhS5G8sJr2nxsYePHgaRYiTayc9DKV5xOVsgNg
+         X3gQ==
+X-Gm-Message-State: AOJu0YyLipNYMk8Y4U6FArFZjxhsc8sxP3Z/mL2PbIN5QmthjTXjFkIK
+	fE+PT2vEn2ziTXaWAW9+1ikF25Pw+51cfWGerks1E/gtUMqMjdNK
+X-Google-Smtp-Source: AGHT+IHmQraxlMcJHf6pPcGAOMlF9pePJ+DQYAsVOCyfRReFwShOeQtatLCKOCBmQ/R57vaGsLRy9w==
+X-Received: by 2002:a17:902:dad1:b0:1d8:a827:c338 with SMTP id q17-20020a170902dad100b001d8a827c338mr493528plx.120.1706283644609;
+        Fri, 26 Jan 2024 07:40:44 -0800 (PST)
 Received: from localhost ([98.97.32.4])
-        by smtp.gmail.com with ESMTPSA id r18-20020aa79892000000b006ddb83e5e47sm1270646pfl.90.2024.01.26.07.38.47
+        by smtp.gmail.com with ESMTPSA id z2-20020a170902708200b001d89ed2d651sm1083543plk.102.2024.01.26.07.40.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 07:38:47 -0800 (PST)
-Date: Fri, 26 Jan 2024 07:38:46 -0800
+        Fri, 26 Jan 2024 07:40:43 -0800 (PST)
+Date: Fri, 26 Jan 2024 07:40:42 -0800
 From: John Fastabend <john.fastabend@gmail.com>
 To: Jakub Sitnicki <jakub@cloudflare.com>, 
  John Fastabend <john.fastabend@gmail.com>
 Cc: bpf@vger.kernel.org, 
  netdev@vger.kernel.org, 
  andrii@kernel.org
-Message-ID: <65b3d2066fa3a_154997208af@john.notmuch>
-In-Reply-To: <87o7d8dv2f.fsf@cloudflare.com>
+Message-ID: <65b3d27a993db_15499720887@john.notmuch>
+In-Reply-To: <87jznwdul7.fsf@cloudflare.com>
 References: <20240124185403.1104141-1-john.fastabend@gmail.com>
- <20240124185403.1104141-4-john.fastabend@gmail.com>
- <87o7d8dv2f.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: sockmap, add a cork to force
- buffering of the scatterlist
+ <87jznwdul7.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 0/4] transition sockmap testing to test_progs
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,65 +89,25 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 
 Jakub Sitnicki wrote:
-> On Wed, Jan 24, 2024 at 10:54 AM -08, John Fastabend wrote:
-> > By using cork we can force multiple sends into a single scatterlist
-> > and test that first the cork gives us the correct number of bytes,
-> > but then also test the pop over the corked data.
+> On Wed, Jan 24, 2024 at 10:53 AM -08, John Fastabend wrote:
+> > Its much easier to write and read tests than it was when sockmap was
+> > originally created. At that time we created a test_sockmap prog that
+> > did sockmap tests. But, its showing its age now. For example it reads
+> > user vars out of maps, is hard to run targetted tests, has a different
+> > format from the familiar test_progs and so on.
 > >
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >  .../bpf/prog_tests/sockmap_msg_helpers.c      | 81 +++++++++++++++++++
-> >  .../bpf/progs/test_sockmap_msg_helpers.c      |  3 +
-> >  2 files changed, 84 insertions(+)
+> > I recently thought there was an issue with pop helpers so I created
+> > some tests to try and track it down. It turns out it was a bug in the
+> > BPF program we had not the kernel. But, I think it makes sense to
+> > start deprecating test_sockmap and converting these to the nicer
+> > test_progs.
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c b/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
-> > index e5e618e84950..8ced54fe1a0b 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
-> > @@ -21,6 +21,85 @@ struct msg_test_opts {
-> >  
-> >  #define POP_END -1
-> >  
-> > +static void cork_send(struct msg_test_opts *opts, int cork)
-> > +{
-> > +	struct test_sockmap_msg_helpers *skel = opts->skel;
-> > +	char buf[] = "abcdefghijklmnopqrstuvwxyz";
-> > +	size_t sent, total = 0, recv;
-> > +	char *recvbuf;
-> > +	int i;
-> > +
-> > +	skel->bss->pop = false;
+> > So this is a first round of test_prog tests for sockmap cork and
+> > pop helpers. I'll add push and pull tests shortly. I think its fine,
+> > maybe preferred to review smaller patchsets, to send these
+> > incrementally as I get them created.
 > 
-> Why reset it? Every subtest loads new program & creates new maps.
+> Cool to see this transition starting.
 
-Agree I'lld elete it.
-
-> 
-> > +	skel->bss->cork = cork;
-> > +
-> > +	/* Send N bytes in 27B chunks */
-> > +	for (i = 0; i < cork / sizeof(buf); i++) {
-> > +		sent = xsend(opts->client, buf, sizeof(buf), 0);
-> > +		if (sent < sizeof(buf))
-> > +			FAIL("xsend failed");
-> > +		total += sent;
-> > +	}
-> > +
-> > +	recvbuf = malloc(total);
-> > +	if (!recvbuf)
-> > +		FAIL("cork send malloc failure\n");
-> > +
-> > +	ASSERT_OK(skel->bss->err, "cork error");
-> > +	ASSERT_EQ(skel->bss->size, cork, "cork did not receive all bytes");
-> > +
-> > +	recv = xrecv_nonblock(opts->server, recvbuf, total, 0);
-> > +	if (recv != total)
-> > +		FAIL("Received incorrect number of bytes");
-> > +
-> > +	free(recvbuf);
-> > +}
-> 
-> [...]
-
-
+Thanks for the review.
 
