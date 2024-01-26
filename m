@@ -1,163 +1,260 @@
-Return-Path: <bpf+bounces-20378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E28A83D3F7
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 06:34:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FF1F83D7CE
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 11:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 985361F236C7
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 05:34:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE1F128464B
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 10:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0060BA57;
-	Fri, 26 Jan 2024 05:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D24445C0F;
+	Fri, 26 Jan 2024 09:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="FmHDacoy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="iBpVrQfy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wgMuTF18"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MEoO9Glb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YuZ0vCY2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W9rBeTum";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SX4rZHVl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A529BA33
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 05:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F5C12B74;
+	Fri, 26 Jan 2024 09:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706247272; cv=none; b=gnvvBzjZWkpmXA6Yyyyfowvbo33jAjezteGvqlNLhnb0ZM6dqZwqhlj3+96BbsxNM0rbAw7bNnOC+Q+gEPH1xxdQDSqklHZpk0j8oP4AAUGJTaBrajkVR5f4u5P4DZjBOGzr/mTRjc4mEGcIWZOW17ZCoNN5G6AhKNa0C6XgPQ4=
+	t=1706262649; cv=none; b=GzVVSpUJxS1hAq+jXNCRFskJhXTD/funUZQc0taJw3N9eSh2kUbWtyc3TvdtwzCgLzKG7qG4jJjPfrKWQ2YX0/QduqufYcQgiqI5SVQisQW1SwIN9YH46JcVu7ULY7dCo2Np2W5u9c+HiNkZrURmki70dkZYXIspPcyDp3oL5P4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706247272; c=relaxed/simple;
-	bh=HsruK93yxnVLp/qpTKktGNMID2pd0sid9uhjWXpSHwY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
-	 Subject:Content-Type; b=aTk9g+HYZ6KgGuGUNWN8bh29f/P4Y8l9U0npsYP33zwmC+VPMl3kQZL5pOAFxLLDpqOtuLUurURspr5KmYP1JQQ/39Rpb3Yh94tHYXVJjVBELaA1K4weijq5ipd7W9lGYR+jVZ27ORpZlqwUgt/kIC1TMjqRiC2LLyzdq1Z4yeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=FmHDacoy; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=iBpVrQfy; dkim=fail (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wgMuTF18 reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 0D44FC14F74E
-	for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 21:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706247270; bh=HsruK93yxnVLp/qpTKktGNMID2pd0sid9uhjWXpSHwY=;
-	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=FmHDacoyvKfTXxNYjDZ6C2eG0RYdrEwvFFvBMiMx2iHP2bks3++A5cuktwF2eGebn
-	 J8QFKNTvpVDFUvCjup544Kdda257yiqM2N5d1miewAMae+LCfXTsPbP4srM+gspFs3
-	 f+XkIHpvhkP5ZdM6lSFkerkfKs/3V1/POeKeI+Ps=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Thu Jan 25 21:34:30 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id D320CC14F5FE;
-	Thu, 25 Jan 2024 21:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706247269; bh=HsruK93yxnVLp/qpTKktGNMID2pd0sid9uhjWXpSHwY=;
-	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=iBpVrQfydnP8iIxXREnwXSCwZyUfrmR73M5jVKxXTZFc5Oz/3eiE2I82Sm+da5VLo
-	 UfNUAilCtd6SA+qa32JsU2T+elfT4bAizbKWMDKN4b9FEDgk6cUt8tqeCaCM8qLIc7
-	 0iOvnqd3Xr2xQXE4XvP4/LI6HDmJ24/IwXFqGORI=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 6C84DC14F5FE
- for <bpf@ietfa.amsl.com>; Thu, 25 Jan 2024 21:34:28 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -7.107
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=linux.dev
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id QPAT-d6JX9Ua for <bpf@ietfa.amsl.com>;
- Thu, 25 Jan 2024 21:34:24 -0800 (PST)
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::af])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id EFDA0C14F5E4
- for <bpf@ietf.org>; Thu, 25 Jan 2024 21:34:23 -0800 (PST)
-Message-ID: <dc839efe-2382-440d-bcf6-b9ddc252f35e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1706247260;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CA59L9GtSGgO1jYtOLfxOapEWrvCPTs90D+n++NKfLk=;
- b=wgMuTF183vWKZtGQvgEYciYidqlptXcFMMUoYDuEUMe8wXDwhSvl0XPSaLnL1ugA398BJx
- aRyvnMyeAB7NJe4RCSb7uYha0CMd7sx3QJOPj/Kg/bJJXUnonwR9afgxNOdhAk/SNS45zo
- JJgVmJjDB9VGowTC2Sgt3fPxzrjHC1w=
-Date: Thu, 25 Jan 2024 21:34:16 -0800
+	s=arc-20240116; t=1706262649; c=relaxed/simple;
+	bh=Ia6yD19K6LEzCtieN+qCdaD3X0tlGXT6OuBrNKG+Me8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mz3EQ1vHY2DUj/PiEe4oTM3gHQInggVQ2bWVvifJaYhbqnYmlwYsrGM4ec+A32Bv3rYgmjzu1qP+w30RJ4HFqWlup+YrRdCuEEd0BsE68mOAMD/ZVydqlk8IvoXNbxYgs2b15SGXf6xG3ycj5R0Mte0vKaxn2OrJ/eeSBoODRAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MEoO9Glb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YuZ0vCY2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W9rBeTum; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SX4rZHVl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C9AF71FB7A;
+	Fri, 26 Jan 2024 09:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706262645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
+	b=MEoO9GlbedZvXve6QHsK1QdoWZIQv4eRNChypkr/YXRrnx4HOQxqPvTlHcaKEPFRFC7qHR
+	s4oP5Msj1TGaT4e5dp5PlzAArIk6kZBlg4kibvo0/zsQgwnzaa1OYQu87pgB+qMB0RbY73
+	fBgb74SyYet6SbnYouZ9145T1giU2zE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706262645;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
+	b=YuZ0vCY2RUr47eeXxpscatHm+HaSj2sx6VCP3xTcqP3womfttreIVAZBkoqYd8wzK2+1Hx
+	QJerbUgzAYlXRZCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706262644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
+	b=W9rBeTum0wpjO2D7yah0YPyiRATruBHH9CIgYimw/WyDwk+4vSqAk08aVsx7Ydh+YNdnRl
+	UoA/WOIunC18uxcHrWXZxjTVJqAOMTs8ZqW9Yv5ZjJoYUf7Tz+/kqfFzq/Jz3lwRXkTjZM
+	CSnkiMJkmxSv/Ts6WIe2IpTJl1yicOo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706262644;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
+	b=SX4rZHVlVlkurAoXw0N++Ro+65TznaDVpGBEoiQhsTHdGmWv+jsaGSg9rotzyZ8PIXzd6e
+	pWMQearG3LL9nKCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FCAF134C3;
+	Fri, 26 Jan 2024 09:50:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ooKsJnSAs2WFFAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 26 Jan 2024 09:50:44 +0000
+Message-ID: <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
+Date: Fri, 26 Jan 2024 10:50:44 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Language: en-GB
-To: dthaler1968@googlemail.com
-Cc: bpf@ietf.org, bpf@vger.kernel.org
-References: <085f01da48bb$fe0c3cb0$fa24b610$@gmail.com>
- <08ab01da48be$603541a0$209fc4e0$@gmail.com>
- <829aa552-b04e-4f08-9874-b3f929741852@linux.dev>
- <095f01da48e8$611687d0$23439770$@gmail.com>
- <4dfb0d6a-aa48-4d96-82f0-09a960b1012f@linux.dev>
- <1fc001da4e6a$2848cad0$78da6070$@gmail.com>
- <9d077ed4-6a30-49db-8160-83d8c525ff3e@linux.dev>
- <259a01da4ff4$adfe9c50$09fbd4f0$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <259a01da4ff4$adfe9c50$09fbd4f0$@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/pwc5s9Exl-GIzgQzbDbiELjmRX8>
-Subject: Re: [Bpf] 64-bit immediate instructions clarification
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Shakeel Butt <shakeelb@google.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+ Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
+ Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
+ Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Howard McLauchlan <hmclauchlan@fb.com>, bpf <bpf@vger.kernel.org>,
+ Jens Axboe <axboe@kernel.dk>
+References: <cover.1705507931.git.jpoimboe@kernel.org>
+ <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
+ <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
+ <20240117193915.urwueineol7p4hg7@treble>
+ <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
+ <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
+ <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
+ <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
+ <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=W9rBeTum;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SX4rZHVl
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[21];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -4.50
+X-Rspamd-Queue-Id: C9AF71FB7A
+X-Spam-Flag: NO
+
+On 1/22/24 06:10, Linus Torvalds wrote:
+> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
+>> >
+>> > So I don't see how we can make it really cheap (say, less than 5% overhead)
+>> > without caching pre-accounted objects.
+>>
+>> Maybe this is what we want. Now we are down to just SLUB, maybe such
+>> caching of pre-accounted objects can be in SLUB layer and we can
+>> decide to keep this caching per-kmem-cache opt-in or always on.
+> 
+> So it turns out that we have another case of SLAB_ACCOUNT being quite
+> a big expense, and it's actually the normal - but failed - open() or
+> execve() case.
+> 
+> See the thread at
+> 
+>     https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
+> 
+> and to see the effect in profiles, you can use this EXTREMELY stupid
+> test program:
+> 
+>     #include <fcntl.h>
+> 
+>     int main(int argc, char **argv)
+>     {
+>         for (int i = 0; i < 10000000; i++)
+>                 open("nonexistent", O_RDONLY);
+>     }
+
+This reminded me I can see should_failslab() in the profiles (1.43% plus the
+overhead in its caller) even if it does nothing at all, and it's completely
+unconditional since commit 4f6923fbb352 ("mm: make should_failslab always
+available for fault injection").
+
+We discussed it briefly when Jens tried to change it in [1] to depend on
+CONFIG_FAILSLAB again. But now I think it should be even possible to leave
+it always available, but behind a static key. BPF or whoever else uses these
+error injection hooks would have to track how many users of them are active
+and manage the static key accordingly. Then it could be always available,
+but have no overhead when there's no active user? Other similars hooks could
+benefit from such an approach too?
+
+[1]
+https://lore.kernel.org/all/e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk/#t
 
 
-On 1/25/24 5:12 PM, dthaler1968@googlemail.com wrote:
-> The spec defines:
->> As discussed below in `64-bit immediate instructions`_, a 64-bit immediate
->> instruction uses a 64-bit immediate value that is constructed as follows.
->> The 64 bits following the basic instruction contain a pseudo instruction
->> using the same format but with opcode, dst_reg, src_reg, and offset all set to zero,
->> and imm containing the high 32 bits of the immediate value.
-> [...]
->> imm64 = (next_imm << 32) | imm
-> The 64-bit immediate instructions section then says:
->> Instructions with the ``BPF_IMM`` 'mode' modifier use the wide instruction
->> encoding defined in `Instruction encoding`_, and use the 'src' field of the
->> basic instruction to hold an opcode subtype.
-> Some instructions then nicely state how to use the full 64 bit immediate value, such as
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x0  dst = imm64                                integer      integer
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x2  dst = map_val(map_by_fd(imm)) + next_imm   map fd       data pointer
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x6  dst = map_val(map_by_idx(imm)) + next_imm  map index    data pointer
-> Others don't:
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x1  dst = map_by_fd(imm)                       map fd       map
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = var_addr(imm)                        variable id  data pointer
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x4  dst = code_addr(imm)                       integer      code pointer
->> BPF_IMM | BPF_DW | BPF_LD  0x18    0x5  dst = map_by_idx(imm)                      map index    map
-> How is next_imm used in those four?  Must it be 0?  Or can it be anything and it's ignored?
-> Or is it used for something?
+> where the point of course is that the "nonexistent" pathname doesn't
+> actually exist (so don't create a file called that for the test).
+> 
+> What happens is that open() allocates a 'struct file *' early from the
+> filp kmem_cache, which has SLAB_ACCOUNT set. So we'll do accounting
+> for it, failt the pathname open, and free it again, which uncharges
+> the accounting.
+> 
+> Now, in this case, I actually have a suggestion: could we please just
+> make SLAB_ACCOUNT be something that we do *after* the allocation, kind
+> of the same way the zeroing works?
+> 
+> IOW, I'd love to get rid of slab_pre_alloc_hook() entirely, and make
+> slab_post_alloc_hook() do all the "charge the memcg if required".
+> 
+> Obviously that means that now a failure to charge the memcg would have
+> to then de-allocate things, but that's an uncommon path and would be
+> marked unlikely and not be in the hot path at all.
+> 
+> Now, the reason I would prefer that is that the *second* step would be to
+> 
+>  (a) expose a "kmem_cache_charge()" function that takes a
+> *non*-accounted slab allocation, and turns it into an accounted one
+> (and obviously this is why you want to do everything in the post-alloc
+> hook: just try to share this code)
+> 
+>  (b) remote the SLAB_ACCOUNT from the filp_cachep, making all file
+> allocations start out unaccounted.
+> 
+>  (c) when we have *actually* looked up the pathname and open the file
+> successfully, at *that* point we'd do a
+> 
+>         error = kmem_cache_charge(filp_cachep, file);
+> 
+>     in do_dentry_open() to turn the unaccounted file pointer into an
+> accounted one (and if that fails, we do the cleanup and free it, of
+> course, exactly like we do when file_get_write_access() fails)
+> 
+> which means that now the failure case doesn't unnecessarily charge the
+> allocation that never ends up being finalized.
+> 
+> NOTE! I think this would clean up mm/slub.c too, simply because it
+> would get rid of that memcg_slab_pre_alloc_hook() entirely, and get
+> rid of the need to carry the "struct obj_cgroup **objcgp" pointer
+> along until the post-alloc hook: everything would be done post-alloc.
+> 
+> The actual kmem_cache_free() code already deals with "this slab hasn't
+> been accounted" because it obviously has to deal with allocations that
+> were done without __GFP_ACCOUNT anyway. So there's no change needed on
+> the freeing path, it already has to handle this all gracefully.
+> 
+> I may be missing something, but it would seem to have very little
+> downside, and fix a case that actually is visible right now.
+> 
+>               Linus
 
-The other four must have next_imm to be 0. No use of next_imm in thee four insns kindly implies this.
-See uapi bpf.h for details (search BPF_PSEUDO_MAP_FD).
-
->
-> Dave
->
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
