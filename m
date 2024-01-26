@@ -1,172 +1,150 @@
-Return-Path: <bpf+bounces-20365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20366-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2569F83D25A
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 03:08:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A72183D283
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 03:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AACF1C24C32
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 02:08:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD5AA1C24586
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 02:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06651C13;
-	Fri, 26 Jan 2024 02:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE74B8C02;
+	Fri, 26 Jan 2024 02:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kr4ZgS50"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FwzYdiRU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F422210FF
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 02:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5589EB66F
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 02:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706234899; cv=none; b=KYIR4JwTYxxwdUf4L+EpluWmqRL7hkABiuNItGlZKqGjGX3sUmfXg9P236OUCIZoGU9pWcHvgJela1I7iXitNyK+OZafsrgNnraZ5Oiht5PjB8nVo4VHMPmV7d58/GchKCdbbb9fbA/FmZggQD2wCohb19fwkPhboIi2ZlBTYo4=
+	t=1706235760; cv=none; b=u+OaxlzEwNsno3dm48/+B8fXrN1MmDSkfiqXFYSISGTCAxg9Bl+bh/tY9J5Woo/6fSYl6vZsYY4SpP5izNxZ7AvztXxSqTM//2rO+9uW+Jql1JCoxEL2Ru7Gxw6zoiNVtp98S8Wo/QtXneQM4BTO5kFBENZj7zivno0QYxyFLRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706234899; c=relaxed/simple;
-	bh=BBvqoUtOmn+cBGmHbv2lINrG6mNqlqxki1regy6nDT0=;
+	s=arc-20240116; t=1706235760; c=relaxed/simple;
+	bh=OSYvZZpa+i3aP3yhhJ+vWAyL9KyBP8AFdARoqG6lphE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r9Iu1J9Sb7AXqYnC+MUZ4GpCWx/QgPFVIHnk7hUkAAMuPtCszbYUdS/lS+dO7nhapJBzd1z932TF+8pEihS6RntgBWN8ddUbepnU84vz9ywu69B87KNzXaKP8WNICq/bQUJlbkQiiGlP9n/xnsgs3pCgKMx/PrGJJJ+EgDa8zsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kr4ZgS50; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso76426507b3.1
-        for <bpf@vger.kernel.org>; Thu, 25 Jan 2024 18:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706234897; x=1706839697; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fKxz3Fdec9Mrk8tTdy73TTVi++/d/gHw+zuMWUqUZYA=;
-        b=Kr4ZgS50o1eneQc3t0IOD9NrqfexqpNTmXDrDYRTcKb78ckzMakGwbk3Ojqn5cptJs
-         xdPPbzPfsYs9KPP+cpuOwjLDFMMlF4lWSd6YaiNL5aP82jLBLxhpk5TXH7Fegvxuv/fe
-         d43MM6nOhoWv7hwW1y8p93m2ReEVLfJJyjsL0NhOtN6UxxAbBUC5wSHdFJbv+zlcpz0/
-         7CdhNO8Ik+eeHNi3VnmUe90RTFrHs716JrE2UQPo2OuBKHZ3y0W08Gq2CWPiH3MF00q1
-         oQT1hUsE/xsT8/V1VaOaKHpPz88OcTxyTehRAr8KoAL7+jLnd6jJsx6FpDdmapVgfkhf
-         FjFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706234897; x=1706839697;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fKxz3Fdec9Mrk8tTdy73TTVi++/d/gHw+zuMWUqUZYA=;
-        b=suIsfSTSI8+R2WyC7beZ+Zby8FQOlyjuGL11v+9QxjlO89UgYGXX4axBetYA+Ulk35
-         cgREn8TIp1RN4B9+FvGuf8zrc5FIhxWUTWZAXRIe5N5VsIi+V8ButAjw7blc3NmRgjYJ
-         XdXLJ3dRwEupkpDe8wIJ6i5b7jYSqY9bkRvpZW+VLnJNKlSGJ2PDTxiWVHLk61HSnNkT
-         t9+y+KSlY8j2R1TvqE151HUyJUZfRovPh+rMOyDUWX5xm92e2Nd4uozs84FQt/esANuD
-         Dv5N++2oU8qlrLI/0y4fTyh33+xsiKAlpxFWg9SBGNvijUIb8mu8+DQ7dWNVoRQcRWbp
-         b7nw==
-X-Gm-Message-State: AOJu0YyK/diFv4yLuKQdwJhGgZ6kdAY1lNlkKgedpmyNsn88hrqBmKk0
-	62bDnzHcXm44CZOFb5ITWaktjVcjNL3xZZrqD6kDM6nNk6c81Lup
-X-Google-Smtp-Source: AGHT+IHqY4X25dgAQ5Vnz4mgaxsm7qMYKEopX/aTv+GmVnXWLyEA+wCFNwPW3ZDyJrXAo2NDMXZz2w==
-X-Received: by 2002:a81:4148:0:b0:5ff:6aac:42f7 with SMTP id f8-20020a814148000000b005ff6aac42f7mr778978ywk.99.1706234896794;
-        Thu, 25 Jan 2024 18:08:16 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:1be3:4284:4c5f:f4fd? ([2600:1700:6cf8:1240:1be3:4284:4c5f:f4fd])
-        by smtp.gmail.com with ESMTPSA id ez10-20020a05690c308a00b005ff955581casm58709ywb.113.2024.01.25.18.08.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 18:08:16 -0800 (PST)
-Message-ID: <943eb8f6-ec61-4461-bc36-1601c4d1ebf0@gmail.com>
-Date: Thu, 25 Jan 2024 18:08:14 -0800
+	 In-Reply-To:Content-Type; b=XMomAYakeUXesgMMeKXz8PggzpEIxKsSVYNOWiksHNJAYvwVfslKSa/IQlGWWyfjmbICgzYncl64/O/D+Z0KGKkBgem5KoUwpdcAVBaGiNjRECUCVW/t00PlBV+i2KlTUCWHxEcbBLg9ZHO4VvnUgA4zrblL2ZUryAhE3yMvqFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FwzYdiRU; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <01fdb720-c0dc-495d-a42d-756aa2bf4455@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706235756;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w5phVj9ffB9yqD140riS9TxGoMxQ06uZ9IH/spt6YXY=;
+	b=FwzYdiRUvF9YtYtKY01Iuc+anl9MEJ0VpucsoC2yofBYE79RvgK088GyCa9lgvA2Ulv2If
+	Fcep7tmyOY/s/VKNwtaBaUhA35M/iohQy7547eGxYyBcBWLOA/Y/Gy3PBekwOZHVnpAY9y
+	ofbP2WeOt19dBxBLrmR7DseyaApSIqY=
+Date: Thu, 25 Jan 2024 18:22:31 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: Fix error checks against
- bpf_get_btf_vmlinux().
+Subject: Re: [RFC PATCH v7 1/8] net_sched: Introduce eBPF based Qdisc
 Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com,
- bpf@vger.kernel.org, ast@kernel.org, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-References: <20240125233105.1096036-1-thinker.li@gmail.com>
- <ea787f03-7dea-42f0-b467-a4d25943d6e7@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <ea787f03-7dea-42f0-b467-a4d25943d6e7@linux.dev>
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, toke@redhat.com,
+ jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com,
+ xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com, netdev@vger.kernel.org
+References: <cover.1705432850.git.amery.hung@bytedance.com>
+ <232881645a5c4c05a35df4ff1f08a19ef9a02662.1705432850.git.amery.hung@bytedance.com>
+ <0484f7f7-715f-4084-b42d-6d43ebb5180f@linux.dev>
+ <CAMB2axM1TVw05jZsFe7TsKKRN8jw=YOwu-+rA9bOAkOiCPyFqQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMB2axM1TVw05jZsFe7TsKKRN8jw=YOwu-+rA9bOAkOiCPyFqQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 1/25/24 16:54, Martin KaFai Lau wrote:
-> On 1/25/24 3:31 PM, thinker.li@gmail.com wrote:
->> From: Kui-Feng Lee <thinker.li@gmail.com>
+On 1/23/24 9:22 PM, Amery Hung wrote:
+>> I looked at the high level of the patchset. The major ops that it wants to be
+>> programmable in bpf is the ".enqueue" and ".dequeue" (+ ".init" and ".reset" in
+>> patch 4 and patch 5).
 >>
->> Check whether the returned pointer is NULL. Previously, it was assumed 
->> that
->> an error code would be returned if BTF is not available or fails to
->> parse. However, it actually returns NULL if BTF is disabled.
+>> This patch adds a new prog type BPF_PROG_TYPE_QDISC, four attach types (each for
+>> ".enqueue", ".dequeue", ".init", and ".reset"), and a new "bpf_qdisc_ctx" in the
+>> uapi. It is no long an acceptable way to add new bpf extension.
 >>
->> In the function check_struct_ops_btf_id(), we have stopped using
->> btf_vmlinux as a backup because attach_btf is never null when 
->> attach_btf_id
->> is set. However, the function test_libbpf_probe_prog_types() in
->> libbpf_probes.c does not set both attach_btf_obj_fd and attach_btf_id,
->> resulting in attach_btf being null, and it expects ENOTSUPP as a
->> result. So, if attach_btf_id is not set, it will return ENOTSUPP.
+>> Can the ".enqueue", ".dequeue", ".init", and ".reset" be completely implemented
+>> in bpf (with the help of new kfuncs if needed)? Then a struct_ops for Qdisc_ops
+>> can be created. The bpf Qdisc_ops can be loaded through the existing struct_ops api.
 >>
->> Reported-by: syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com
->> Closes: 
->> https://lore.kernel.org/bpf/00000000000040d68a060fc8db8c@google.com/
+> Partially. If using struct_ops, I think we'll need another structure
+> like the following in bpf qdisc to be implemented with struct_ops bpf:
 > 
-> There were two different syzbot report. Both should be tagged here as 
-> Reported-by.
+> struct bpf_qdisc_ops {
+>      int (*enqueue) (struct sk_buff *skb)
+>      void (*dequeue) (void)
+>      void (*init) (void)
+>      void (*reset) (void)
+> };
+> 
+> Then, Qdisc_ops will wrap around them to handle things that cannot be
+> implemented with bpf (e.g., sch_tree_lock, returning a skb ptr).
 
-Sure!
+We can see how those limitations (calling sch_tree_lock() and returning a ptr) 
+can be addressed in bpf. This will also help other similar use cases.
+
+Other than sch_tree_lock and returning a ptr from a bpf prog. What else do you 
+see that blocks directly implementing the enqueue/dequeue/init/reset in the 
+struct Qdisc_ops?
+
+Have you thought above ".priv_size"? It is now fixed to sizeof(struct 
+bpf_sched_data). It should be useful to allow the bpf prog to store its own data 
+there?
 
 > 
->> Fixes: fcc2c1fb0651 ("bpf: pass attached BTF to the bpf_struct_ops 
->> subsystem")
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
->>   kernel/bpf/bpf_struct_ops.c | 2 ++
->>   kernel/bpf/verifier.c       | 8 +++++++-
->>   2 files changed, 9 insertions(+), 1 deletion(-)
+>> If other ops (like ".dump", ".dump_stats"...) do not have good use case to be
+>> programmable in bpf, it can stay with the kernel implementation for now and only
+>> allows the userspace to load the a bpf Qdisc_ops with .equeue/dequeue/init/reset
+>> implemented.
 >>
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index defc052e4622..0decd862dfe0 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -669,6 +669,8 @@ static struct bpf_map 
->> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->>           btf = bpf_get_btf_vmlinux();
->>           if (IS_ERR(btf))
->>               return ERR_CAST(btf);
->> +        if (!btf)
->> +            return ERR_PTR(-ENOTSUPP);
->>       }
->>       st_ops_desc = bpf_struct_ops_find_value(btf, 
->> attr->btf_vmlinux_value_type_id);
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index fe833e831cb6..64a927784c54 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20298,7 +20298,13 @@ static int check_struct_ops_btf_id(struct 
->> bpf_verifier_env *env)
->>           return -EINVAL;
->>       }
->> -    btf = prog->aux->attach_btf ?: bpf_get_btf_vmlinux();
->> +    if (!prog->aux->attach_btf_id)
->> +        return -ENOTSUPP;
->> +
->> +    btf = prog->aux->attach_btf;
->> +    if (!btf)
-> 
-> The commit message mentioned "attach_btf is never null when 
-> attach_btf_id is set". Then why this test is still needed when the above 
-> has just tested the attach_btf_id. attach_btf must be valid here as long 
-> as attach_btf_id is set. This should have been guaranteed by syscall.c, no?
+>> You mentioned in the cover letter that:
+>> "Current struct_ops attachment model does not seem to support replacing only
+>> functions of a specific instance of a module, but I might be wrong."
+>>
+>> I assumed you meant allow bpf to replace only "some" ops of the Qdisc_ops? Yes,
+>> it can be done through the struct_ops's ".init_member". Take a look at
+>> bpf_tcp_ca_init_member. The kernel can assign the kernel implementation for
+>> ".dump" (for example) when loading the bpf Qdisc_ops.
+>>
+> I have no problem with partially replacing a struct, which like you
+> mentioned has been demonstrated by congestion control or sched_ext.
+> What I am not sure about is the ability to create multiple bpf qdiscs,
+> where each has different ".enqueue", ".dequeue", and so on. I like the
+> struct_ops approach and would love to try it if struct_ops support
+> this.
 
-Yes, you are right.
+The need for allowing different ".enqueue/.dequeue/..." bpf 
+(BPF_PROG_TYPE_QDISC) programs loaded into different qdisc instances is because 
+there is only one ".id == bpf" Qdisc_ops native kernel implementation which is 
+then because of the limitation you mentioned above?
 
-> 
->> +        return -ENOTSUPP;
->> +
->>       if (btf_is_module(btf)) {
->>           /* Make sure st_ops is valid through the lifetime of env */
->>           env->attach_btf_mod = btf_try_get_module(btf);
-> 
+Am I understanding your reason correctly on why it requires to load different 
+bpf prog for different qdisc instances?
+
+If the ".enqueue/.dequeue/..." in the "struct Qdisc_ops" can be directly 
+implemented in bpf prog itself, it can just load another bpf struct_ops which 
+has a different ".enqueue/.dequeue/..." implementation:
+
+#> bpftool struct_ops register bpf_simple_fq_v1.bpf.o
+#> bpftool struct_ops register bpf_simple_fq_v2.bpf.o
+#> bpftool struct_ops register bpf_simple_fq_xyz.bpf.o
+
+ From reading the test bpf prog, I think the set is on a good footing. Instead 
+of working around the limitation by wrapping the bpf prog in a predefined 
+"struct Qdisc_ops sch_bpf_qdisc_ops", lets first understand what is missing in 
+bpf and see how we could address them.
+
+
 
