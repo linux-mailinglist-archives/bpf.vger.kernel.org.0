@@ -1,166 +1,266 @@
-Return-Path: <bpf+bounces-20381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F6D83D84C
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 11:34:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC7B83D96F
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 12:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0022D1F230D6
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 10:34:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0D46B2A263
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 11:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C140C17993;
-	Fri, 26 Jan 2024 10:31:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3481F1428E;
+	Fri, 26 Jan 2024 11:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wX446PTZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I3KoTJ6J"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B86175A1
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 10:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D7514013
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 11:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706265060; cv=none; b=dqg7gT1MCBisc4q4YdXlWYvH1C+zuKgCZXK5rVrOKIB2DMc4NJ+M8Pu1t4+t48GEFXR9fbtJIctEzp7XuO80PdvTDPl/PX8qfeJo6s75xSn8hrsZE7yYA38IdeUzConcIFMx5ZRFplFLiAKmIy7sHuez77GL1AGRPgjdtccXK/U=
+	t=1706268040; cv=none; b=WpReOT5ehJZeAh7+gL4cT+VhgeoJD8s11v8oRadjSBbWeek6LEUAqq0xDdAdNpNRPO6sCNOCPtBadDFzyVG2sOaaID6cCL9b1Y4bOEmCWEOkqV/z+vn5vpehSwq969EtWQkxIMOtUfxAzJtmdjHqd5BNQGzOPkT9aY2ARxPdZvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706265060; c=relaxed/simple;
-	bh=8lg/b7eX807+j1J3wZYy8O4FO7Zd4a5U1Nff7rJUlWM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yp3jm6Zt+v5HCLiCcgdEpIKkTd8qF8fN1GKb0MNDTxTEm5fnpMPIlJCGH/fhSorLeFPA+F+b+DqLGSR2wLo2wOWzofUpm5FGz6kd79mZPJaG7y48tPsK9bExVRJ5hkEQpUGmm7ND3thixccigOqVlvcG//Npt+F11WQQojw5gFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wX446PTZ; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f70e2d1e-b17d-44c2-9077-51afa9f4f05e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706265056;
+	s=arc-20240116; t=1706268040; c=relaxed/simple;
+	bh=rUDCyjkqCSegFTrxzDZFLtSC0X1851BiYh6zk6ILQUo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r+WZVC7qTMudB3sXXIvY4DWkyAOzueOHNOOCqjI+/FOuHV8lT7KMTaXrYbBxdBdf+8w4/ZqE5JHOJf/EhYno5aZVQjLVBExZCYR3tPHQ5OAbR16X4mOShOzY3HNk6iFZjbR/ANIuJfQ/g0TjfP+i/neWy6bFFjTzLE0RbpB37Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I3KoTJ6J; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706268038;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GQ5cQQbN07W3Mr8WJy7OQCLh5hYQXPQPQN6G40syBwQ=;
-	b=wX446PTZNwlaRGbnarns756kx9vXUVcwAQ0IMJWhtOzdLSXSNzC5yv3VXQY/VD63MpQsF0
-	MKtrioPpboc/H4N6vRPsJK8ORZO8CnpZ5Q+/D5/9D4CP1vcl9Kb09wsj0R5dJK44gDM0PY
-	0yeMrn/aLlSjNM68CEv2zt1y1Htxt4Y=
-Date: Fri, 26 Jan 2024 10:30:50 +0000
+	bh=adKrKcsVsy8nxrIIG/cxmKvYrilkzcpLV+j2FAcibZc=;
+	b=I3KoTJ6J0l9oaJKG7d1aAeTwTuSqI3blcDg4KYFISmbHsscv2C0Vz7DtRTDH5sWK/GQMgx
+	xVBYmK4eqr8EjM47Pgoy1mQmCNBIJzjSNWBamYXryEAVUe3HXNuJgXShBdRspEZPHMwKhg
+	T6MsYCW1Xu6n+2DKz09EXTI7+0dLfs0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-313-wt0vvWCwPiS3qAUe9zlJ1A-1; Fri, 26 Jan 2024 06:20:36 -0500
+X-MC-Unique: wt0vvWCwPiS3qAUe9zlJ1A-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a350f83730eso6901766b.2
+        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 03:20:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706268035; x=1706872835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=adKrKcsVsy8nxrIIG/cxmKvYrilkzcpLV+j2FAcibZc=;
+        b=ef3F3d4pNyju7wnsa02/G+J6hHzuGvAhZK+fYyxzoquJm0oJ0vrUS3X1qkWmcUaA+G
+         nilTHKy8jX2kVCHlvTCegl6Wz1DDOWOPWrT3rMpfkx2wkhfVg/f5alaZw0f52YbcXA7W
+         O5d0Gb6UB94Lll9n6F4i7/89uwMmYszx5AGO13Lr2t2i1XT0bL2+MKvXXEeF1iDQUeY+
+         fpE8BKA2jSdPuoO+fFelM7kGZck8DwGQpJD/wdK5uawk3fpxLt75z+/2/8DRL/WBCIT5
+         Q6iGleAqWMjpsyeMrQEySq68oLPXk6FrDV9T3kffFFuOXf/qof/mSzaSg+12+ge74y3q
+         a6cA==
+X-Gm-Message-State: AOJu0YyEQib98oKZWG/ZNqCnEBZef4AFUf29uF6GL9ycocfZftzevwlW
+	8SJqvt4OZKyFXfURXvcASZLWLsF2zwBmjoTwoveRObKeShFVGRZDJzzvXQu7MBKJ7HySWf/FZF1
+	hoOKo5akPxKA3E3EA7XwQqkSH9Vf0EjAd72EfavKQxj0BD8J/JP+co9tN0cds9SEZsusnaPFax0
+	O/i3vZKq7sUC9qz1tcaozQPCt4
+X-Received: by 2002:a17:906:1b57:b0:a33:2ea8:6c45 with SMTP id p23-20020a1709061b5700b00a332ea86c45mr1153418ejg.19.1706268035436;
+        Fri, 26 Jan 2024 03:20:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHFXUuQde2ZQSJlUg0Q4EcQL0ZwIpzUDUFkwVkwVyFgYDxpfpgyPr4TsY9axdE6ilwDji2IFnSyFKy2lexowRo=
+X-Received: by 2002:a17:906:1b57:b0:a33:2ea8:6c45 with SMTP id
+ p23-20020a1709061b5700b00a332ea86c45mr1153407ejg.19.1706268035096; Fri, 26
+ Jan 2024 03:20:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v8 1/3] bpf: make common crypto API for TC/XDP
- programs
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, Vadim Fedorenko <vadfed@meta.com>
-Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
- bpf@vger.kernel.org, Victor Stewart <v@nametag.social>,
- Jakub Kicinski <kuba@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Herbert Xu <herbert@gondor.apana.org.au>
-References: <20240115220803.1973440-1-vadfed@meta.com>
- <3d2d5f4e-c554-4648-bcec-839d83585123@linux.dev>
- <a682b902-37a2-4d43-8f39-56ca213f6663@linux.dev>
- <cec469f4-2fd0-479a-8919-0d5578687fb2@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <cec469f4-2fd0-479a-8919-0d5578687fb2@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org> <20240124-b4-hid-bpf-fixes-v2-2-052520b1e5e6@kernel.org>
+In-Reply-To: <20240124-b4-hid-bpf-fixes-v2-2-052520b1e5e6@kernel.org>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Fri, 26 Jan 2024 12:20:23 +0100
+Message-ID: <CAO-hwJ+xOF=GH115_KcWKjXLqeKU-BzXmNY0bvOzhZQb0WkEDg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] HID: bpf: actually free hdev memory after
+ attaching a HID-BPF program
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 25/01/2024 22:34, Martin KaFai Lau wrote:
-> On 1/25/24 3:19 AM, Vadim Fedorenko wrote:
->> On 25/01/2024 01:10, Martin KaFai Lau wrote:
->>> On 1/15/24 2:08 PM, Vadim Fedorenko wrote:
->>>> +static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
->>>> +                const struct bpf_dynptr_kern *src,
->>>> +                struct bpf_dynptr_kern *dst,
->>>> +                const struct bpf_dynptr_kern *siv,
->>>> +                bool decrypt)
->>>> +{
->>>> +    u32 src_len, dst_len, siv_len;
->>>> +    const u8 *psrc;
->>>> +    u8 *pdst, *piv;
->>>> +    int err;
->>>> +
->>>> +    if (ctx->type->get_flags(ctx->tfm) & CRYPTO_TFM_NEED_KEY)
->>>
->>> nit. Does the indirect call get_flags() return different values?
->>> Should it be rejected earlier, e.g. in bpf_crypto_ctx_create()?
->>
->> Well, that is the common pattern in crypto subsys to check flags.
->> But after looking at it second time, I think I have to refactor this
->> part. CRYPTO_TFM_NEED_KEY is set during tfm creation if algo requires
->> the key. And it's freed when the key setup is successful. As there is no
->> way bpf programs can modify tfm directly we can move this check to
->> bpf_crypto_ctx_create() to key setup part and avoid indirect call in 
->> this place.
->>>
->>>> +        return -EINVAL;
->>>> +
->>>> +    if (__bpf_dynptr_is_rdonly(dst))
->>>> +        return -EINVAL;
->>>> +
->>>> +    siv_len = __bpf_dynptr_size(siv);
->>>> +    src_len = __bpf_dynptr_size(src);
->>>> +    dst_len = __bpf_dynptr_size(dst);
->>>> +    if (!src_len || !dst_len)
->>>> +        return -EINVAL;
->>>> +
->>>> +    if (siv_len != (ctx->type->ivsize(ctx->tfm) + 
->>>> ctx->type->statesize(ctx->tfm)))
->>>
->>> Same here, two indirect calls per en/decrypt kfunc call. Does the 
->>> return value change?
->>
->> I have to check the size of IV provided by the caller, and then to avoid
->> indirect calls I have to store these values somewhere in ctx. It gives a
->> direct access to these values to bpf programs, which can potentially
->> abuse them. Not sure if it's good to open such opportunity.
-> 
-> I don't think it makes any difference considering tfm has already been 
-> accessible in ctx->tfm.
+On Wed, Jan 24, 2024 at 12:27=E2=80=AFPM Benjamin Tissoires <bentiss@kernel=
+.org> wrote:
+>
+> Turns out that I got my reference counts wrong and each successful
+> bus_find_device() actually calls get_device(), and we need to manually
+> call put_device().
+>
+> Ensure each bus_find_device() gets a matching put_device() when releasing
+> the bpf programs and fix all the error paths.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: f5c27da4e3c8 ("HID: initial BPF implementation")
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+>
+> ---
+>
+> new in v2
+> ---
+>  drivers/hid/bpf/hid_bpf_dispatch.c  | 29 +++++++++++++++++++++++------
+>  drivers/hid/bpf/hid_bpf_jmp_table.c | 19 ++++++++++++++++---
+>  2 files changed, 39 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf=
+_dispatch.c
+> index 5111d1fef0d3..7903c8638e81 100644
+> --- a/drivers/hid/bpf/hid_bpf_dispatch.c
+> +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+> @@ -292,7 +292,7 @@ hid_bpf_attach_prog(unsigned int hid_id, int prog_fd,=
+ __u32 flags)
+>         struct hid_device *hdev;
+>         struct bpf_prog *prog;
+>         struct device *dev;
+> -       int fd;
+> +       int err, fd;
+>
+>         if (!hid_bpf_ops)
+>                 return -EINVAL;
+> @@ -311,14 +311,24 @@ hid_bpf_attach_prog(unsigned int hid_id, int prog_f=
+d, __u32 flags)
+>          * on errors or when it'll be detached
+>          */
+>         prog =3D bpf_prog_get(prog_fd);
+> -       if (IS_ERR(prog))
+> -               return PTR_ERR(prog);
+> +       if (IS_ERR(prog)) {
+> +               err =3D PTR_ERR(prog);
+> +               goto out_dev_put;
+> +       }
+>
+>         fd =3D do_hid_bpf_attach_prog(hdev, prog_fd, prog, flags);
+> -       if (fd < 0)
+> -               bpf_prog_put(prog);
+> +       if (fd < 0) {
+> +               err =3D fd;
+> +               goto out_prog_put;
+> +       }
+>
+>         return fd;
+> +
+> + out_prog_put:
+> +       bpf_prog_put(prog);
+> + out_dev_put:
+> +       put_device(dev);
+> +       return err;
+>  }
+>
+>  /**
+> @@ -345,8 +355,10 @@ hid_bpf_allocate_context(unsigned int hid_id)
+>         hdev =3D to_hid_device(dev);
+>
+>         ctx_kern =3D kzalloc(sizeof(*ctx_kern), GFP_KERNEL);
+> -       if (!ctx_kern)
+> +       if (!ctx_kern) {
+> +               put_device(dev);
+>                 return NULL;
+> +       }
+>
+>         ctx_kern->ctx.hid =3D hdev;
+>
+> @@ -363,10 +375,15 @@ noinline void
+>  hid_bpf_release_context(struct hid_bpf_ctx *ctx)
+>  {
+>         struct hid_bpf_ctx_kern *ctx_kern;
+> +       struct hid_device *hid;
+>
+>         ctx_kern =3D container_of(ctx, struct hid_bpf_ctx_kern, ctx);
+> +       hid =3D (struct hid_device *)ctx_kern->ctx.hid; /* ignore const *=
+/
+>
+>         kfree(ctx_kern);
+> +
+> +       /* get_device() is called by bus_find_device() */
+> +       put_device(&hid->dev);
+>  }
+>
+>  /**
+> diff --git a/drivers/hid/bpf/hid_bpf_jmp_table.c b/drivers/hid/bpf/hid_bp=
+f_jmp_table.c
+> index 12f7cebddd73..85a24bc0ea25 100644
+> --- a/drivers/hid/bpf/hid_bpf_jmp_table.c
+> +++ b/drivers/hid/bpf/hid_bpf_jmp_table.c
+> @@ -196,6 +196,7 @@ static void __hid_bpf_do_release_prog(int map_fd, uns=
+igned int idx)
+>  static void hid_bpf_release_progs(struct work_struct *work)
+>  {
+>         int i, j, n, map_fd =3D -1;
+> +       bool hdev_destroyed;
+>
+>         if (!jmp_table.map)
+>                 return;
+> @@ -220,6 +221,12 @@ static void hid_bpf_release_progs(struct work_struct=
+ *work)
+>                 if (entry->hdev) {
+>                         hdev =3D entry->hdev;
+>                         type =3D entry->type;
+> +                       /*
+> +                        * hdev is still valid, even if we are called aft=
+er hid_destroy_device():
+> +                        * when hid_bpf_attach() gets called, it takes a =
+ref on the dev through
+> +                        * bus_find_device()
+> +                        */
+> +                       hdev_destroyed =3D hdev->bpf.destroyed;
+>
+>                         hid_bpf_populate_hdev(hdev, type);
+>
+> @@ -232,12 +239,18 @@ static void hid_bpf_release_progs(struct work_struc=
+t *work)
+>                                 if (test_bit(next->idx, jmp_table.enabled=
+))
+>                                         continue;
+>
+> -                               if (next->hdev =3D=3D hdev && next->type =
+=3D=3D type)
+> +                               if (next->hdev =3D=3D hdev && next->type =
+=3D=3D type) {
+> +                                       /*
+> +                                        * clear the hdev reference and d=
+ecrement the device ref
+> +                                        * that was taken during bus_find=
+_device() while calling
+> +                                        * hid_bpf_attach()
+> +                                        */
+>                                         next->hdev =3D NULL;
+> +                                       put_device(&hdev->dev);
 
-Fair. I'll do it then.
+sigh... I can't make a correct patch these days... Missing a '}' here
+to match the open bracket added above :(
 
-> A noob question, what secret is in the siv len?
+I had some debug information put there to check if the device was
+actually freed, and the closing bracket got lost while cleaning this
+up.
 
-No secrets in the values themself. The problem I see is that user (bpf
-program) can adjust them to avoid proper validation and then pass
-smaller buffer and trigger read/write out-of-bounds.
+Cheers,
+Benjamin
 
-> btw, unrelated, based on the selftest in patch 3, is it supporting any 
-> siv_len > 0 for now?
-
-Well, it should. I see no reasons not to support it. But to test it
-properly another cipher should be used. I'll think about extending tests
-
-> 
->>
->>>
->>>> +        return -EINVAL;
->>>> +
->>>> +    psrc = __bpf_dynptr_data(src, src_len);
->>>> +    if (!psrc)
->>>> +        return -EINVAL;
->>>> +    pdst = __bpf_dynptr_data_rw(dst, dst_len);
->>>> +    if (!pdst)
->>>> +        return -EINVAL;
->>>> +
->>>> +    piv = siv_len ? __bpf_dynptr_data_rw(siv, siv_len) : NULL;
->>>> +    if (siv_len && !piv)
->>>> +        return -EINVAL;
->>>> +
->>>> +    err = decrypt ? ctx->type->decrypt(ctx->tfm, psrc, pdst, 
->>>> src_len, piv)
->>>> +              : ctx->type->encrypt(ctx->tfm, psrc, pdst, src_len, 
->>>> piv);
->>>> +
->>>> +    return err;
->>>> +}
->>>
->>
-> 
+>                         }
+>
+> -                       /* if type was rdesc fixup, reconnect device */
+> -                       if (type =3D=3D HID_BPF_PROG_TYPE_RDESC_FIXUP)
+> +                       /* if type was rdesc fixup and the device is not =
+gone, reconnect device */
+> +                       if (type =3D=3D HID_BPF_PROG_TYPE_RDESC_FIXUP && =
+!hdev_destroyed)
+>                                 hid_bpf_reconnect(hdev);
+>                 }
+>         }
+>
+> --
+> 2.43.0
+>
 
 
