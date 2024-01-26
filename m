@@ -1,221 +1,264 @@
-Return-Path: <bpf+bounces-20440-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20441-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5732883E72A
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 00:42:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD6383E746
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 00:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11639287C82
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 23:42:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF0141C26495
+	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 23:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4015D8F7;
-	Fri, 26 Jan 2024 23:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C39150A83;
+	Fri, 26 Jan 2024 23:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lGsZrNyn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8Q2iKTI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43865916D
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 23:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F1525578
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 23:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706312425; cv=none; b=Kf0o/x97IEyN1OEtGIEKuVk8kDj56JAy5/zQKanksUrxJ3JR9pQy1ScCIhepkXImY2m0tokgotm4xc4EFNjlnLHhawIRYPl7uKXxdk6Z2vrNxlAkfbO9RzL/8DyFMWz3BD8sazODGZYe1ybJluwQjM71Jso4xCKvXaCoVrWmayA=
+	t=1706313119; cv=none; b=YSwwtKF66xqDAh2J4dz2HnLGMDsO5XJdgh41ZY1BW5SF7VFwfqUXOxuhASSQaZaUdp8N8Z+FeZSv5BpYuc9PCHntJ/PkD4D1wnOxIFzpscF70FyTPUcsAQMSeophFISGAlJ5bhg0RSmSmYEFpab0ZJLWl+Gc52FcFktCaWjhYKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706312425; c=relaxed/simple;
-	bh=SgdsPWnAAe+SESuCDcNrYmQj4eqFqqXwm+31ig7tSdY=;
+	s=arc-20240116; t=1706313119; c=relaxed/simple;
+	bh=cFgQyrYfYsGQB+ZDLgYjgAUL2FCkZUj8gbL6Majnbtw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BPWF0SB4lXyIR2isGJiIIG2dV3jYyf3f8heXbeu71yNW40BhOP3lIety1N8vFqZ5mYme0bgwrdA9OXCksjCBSYgc0BhztLb7PAGFm5qBBGYFS1S0FX0ZwNc8q4SSjE1zz1QGBs5ERWwTcuzEirGoyPbJma2LzDSEXI4ZbJyYlkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lGsZrNyn; arc=none smtp.client-ip=209.85.215.179
+	 To:Cc:Content-Type; b=VZ6+3UjSOzVExcGUJV9j/u6aAVRfc8+6UPp8Ht/ygdJ0DtQZFmiXEMW5OLCX3gjafjQRtAO5QnEDlw75Xl/Lfdi0IxoyfH6mKUIYQ1Vmc3gshKzRAhTNmFE98bzMhrJX8gR3cB7qEIIaKYreqpuFvxgcJBOYM3PWhrpWaHuB4U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O8Q2iKTI; arc=none smtp.client-ip=209.85.161.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so629305a12.1
-        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 15:40:23 -0800 (PST)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5999f3f6ce9so861333eaf.0
+        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 15:51:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706312423; x=1706917223; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706313116; x=1706917916; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BVoVET4VuEJVHUXi3gvo5kz3ocK9Li7p6n4q0YGjboc=;
-        b=lGsZrNynmaRCFzaHJLkJN1fwSyHPVAHJ4uYOgIQQt/crmvHRmbaDZ60YIUAvAQTAN8
-         2tdQWtJ+458Gn7lk4DqcpCPDYtok3QO3pTWMxhvMfmEIxcxI1camvsZRC/kEzgHhGrpw
-         E2B9FOw3E0xlEG3brDDq3a22lq420J/CpLUPFdtrkrcgX5WIIxsdq65nyty9yBrSSrK8
-         q4cnyMYC9Orp7f8OGrm5V3GUklMu2v2ucKDFaAD+F6+M4SXqwovKR9cECKM3NKVCr3tS
-         PyF7VxCfhc3E2yWvHgndPRU1tdddcRtQPN/J0i9qb5f5glYrLXYer9A8N+xVQ6wQetan
-         +Gpw==
+        bh=9mPuXZlWPKJqRAlhckcqKYpJeAKh2GPSuFQiOgXV8mk=;
+        b=O8Q2iKTIAEB1Z/dTYprf3fbyhjlOPGBcSPp1ygeEZjtYTw0jJb8sdShh5gxYdiVc3a
+         DWSl39jfaMmeHabs08tjNdF+wIMazWvdI/lkIjYR1YXZr2Ap4pHI0uL/cfA8wdgY9dDy
+         YcehwV8i1F5me8uX0CoMLRWr7n+g6g0P1ssSaQU6qQUnL1iD87cs3ZVZvWjI+X6oSMDK
+         03ZmJasxnTX35VDk/7rFKVehNQ2HPXKc7IUjYbM50yeabcfVdkfnTzRtZzuTSyoQvxFo
+         4GP+zjr7zRhNs/81PazBRhsfgTFjHs92VhlOE1UmC8xtzVnOelL0hGT7ZVRpDi5AJzAf
+         yyuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706312423; x=1706917223;
+        d=1e100.net; s=20230601; t=1706313116; x=1706917916;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BVoVET4VuEJVHUXi3gvo5kz3ocK9Li7p6n4q0YGjboc=;
-        b=mFK2LLRnANEbxeSbybp7xt9qm95hwjZr1CwElK/shkpMt3zWtzt0Q6NFXqWrfpvVfW
-         PZpgEFzA1dhm2byV/5u3SxNjsRC4WqcAtMC5VzhSXe2RXC+rofeI33NL9hmjuMpJ5cZp
-         LOI3rNT0PLMTGYdwr1EikbK4JPTL82px4zVTaVYNEuSvE2Bvrv/x0eoRUUj2FU7NY5iR
-         ewI/emN1zRn3bqLWU8tzM+ganwFQG1AXA2wkQrIg6C6EsqMxr0BaA5+yrfadF2SeTsRx
-         Nj98cUPC5f5ncge+W4JSnihYv9oZg8K5x8yTf0G/eMCrukpPNuhDwWh4vN8p8ODRtokv
-         i9FQ==
-X-Gm-Message-State: AOJu0Ywpe3ooq+7W6Zlt9v9PQAc9i6+u2DaE1mdwLfEP809eURSaUhdo
-	DT1f4JYCKYRE8d5/v/1ZHrHisMfTPAHPTnI7nUNPO0eLLaVGsHiP6lUJuOaxPB/G4UypS5ruRId
-	mD1WkctRKzEyE9+67fNBg9qu3Q3Q=
-X-Google-Smtp-Source: AGHT+IHmwNWdqkyQDE4KhqdphWsn0re/L0bB+mcQ0v7uNjTn5LbEwMMqTLWkj5ZEObArMXVSwMTiRyNtEruvI8g4sxI=
-X-Received: by 2002:a05:6a21:398e:b0:19c:8e2b:b5a3 with SMTP id
- ad14-20020a056a21398e00b0019c8e2bb5a3mr817758pzc.56.1706312422935; Fri, 26
- Jan 2024 15:40:22 -0800 (PST)
+        bh=9mPuXZlWPKJqRAlhckcqKYpJeAKh2GPSuFQiOgXV8mk=;
+        b=kPFv6sotQl0dSP0hsw7Krq5bQP8zfuanx/+BFkrvz9nlqulAst8wWZlt0tuiiZsTgh
+         mmNx2WqGOLFjimlaJ1w0YRYEX7kj+bAYmx1bCjt5U6QK564L3Uvh7qQ1DJVrnvT+z3eH
+         QekM87PJDhGZjtYW7FnGmmWm8eToiF8t0JVcH/QHFcxyrNP31ji4qcsbqAcFGi8sUyp7
+         pIRQGEWvJxLvpnvTGox8tR1YlKzbH7CecnpJnDOp7hiDU/Pt2xpW8DF2Qap9K77y4Ws1
+         3IBAMfrkinRA7YK4hlslP0ScRGpXi1LgL4LFOVcoaT3salY8g/dxfFkQQ7yw6tLCS4/E
+         LakA==
+X-Gm-Message-State: AOJu0YzGCsnqGZSWHzREWCC2ddprbOeNqCUVVg7rAA0QnVSsk8xS+aSb
+	nteQzHXXPzAurAtgVWashegsoaJEzo7HuyuWc197QWiT4pLLHPb8OXpCa3LwEk5MIEJy8Oc0Io6
+	HijDdD3FbrAxoTfB2VfLE0vamCto=
+X-Google-Smtp-Source: AGHT+IEF+W11PtP74KfbSmFcPDS3EYQ1KU6WOyhiuJmd/bSzrVzihbeWkhrpfBr8V7igQaflRBpud1QCaXh2wsJlTkk=
+X-Received: by 2002:a05:6358:2611:b0:176:c47b:7ef5 with SMTP id
+ l17-20020a056358261100b00176c47b7ef5mr859465rwc.4.1706313116339; Fri, 26 Jan
+ 2024 15:51:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123120759.1865189-1-vmalik@redhat.com>
-In-Reply-To: <20240123120759.1865189-1-vmalik@redhat.com>
+References: <20240126220407.2424-1-git@brycekahle.com>
+In-Reply-To: <20240126220407.2424-1-git@brycekahle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Jan 2024 15:40:11 -0800
-Message-ID: <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix cross-compilation to
- non-host endianness
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 26 Jan 2024 15:51:44 -0800
+Message-ID: <CAEf4BzbnsD-80+yg7-mN+vhf5M0TwwBmGQYuovssvqd1sXeu=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpftool: add support for split BTF to gen min_core_btf
+To: Bryce Kahle <git@brycekahle.com>
+Cc: bpf@vger.kernel.org, quentin@isovalent.com, ast@kernel.org, 
+	daniel@iogearbox.net, Bryce Kahle <bryce.kahle@datadoghq.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 4:08=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wr=
+On Fri, Jan 26, 2024 at 2:04=E2=80=AFPM Bryce Kahle <git@brycekahle.com> wr=
 ote:
 >
-> The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
-> build and afterwards patched by resolve_btfids with correct values.
-> Since resolve_btfids always writes in host-native endianness, it relies
-> on libelf to do the translation when the target ELF is cross-compiled to
-> a different endianness (this was introduced in commit 61e8aeda9398
-> ("bpf: Fix libelf endian handling in resolv_btfids")).
+> From: Bryce Kahle <bryce.kahle@datadoghq.com>
 >
-> Unfortunately, the translation will corrupt the flags fields of SET8
-> entries because these were written during vmlinux compilation and are in
-> the correct endianness already. This will lead to numerous selftests
-> failures such as:
+> Enables a user to generate minimized kernel module BTF.
 >
->     $ sudo ./test_verifier 502 502
->     #502/p sleepable fentry accept FAIL
->     Failed to load prog 'Invalid argument'!
->     bpf_fentry_test1 is not sleepable
->     verification time 34 usec
->     stack depth 0
->     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states =
-0 peak_states 0 mark_read 0
->     Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
+> If an eBPF program probes a function within a kernel module or uses
+> types that come from a kernel module, split BTF is required. The split
+> module BTF contains only the BTF types that are unique to the module.
+> It will reference the base/vmlinux BTF types and always starts its type
+> IDs at X+1 where X is the largest type ID in the base BTF.
 >
-> Since it's not possible to instruct libelf to translate just certain
-> values, let's manually bswap the flags in resolve_btfids when needed, so
-> that libelf then translates everything correctly.
+> Minimization allows a user to ship only the types necessary to do
+> relocations for the program(s) in the provided eBPF object file(s). A
+> minimized module BTF will still not contain vmlinux BTF types, so you
+> should always minimize the vmlinux file first, and then minimize the
+> kernel module file.
 >
-> Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF se=
-ts")
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> Example:
+>
+> bpftool gen min_core_btf vmlinux.btf vm-min.btf prog.bpf.o
+> bpftool -B vm-min.btf gen min_core_btf mod.btf mod-min.btf prog.bpf.o
+>
+> Signed-off-by: Bryce Kahle <bryce.kahle@datadoghq.com>
 > ---
->  tools/bpf/resolve_btfids/main.c | 35 +++++++++++++++++++++++++++++++--
->  1 file changed, 33 insertions(+), 2 deletions(-)
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst  | 18 +++++++++++++++++-
+>  tools/bpf/bpftool/gen.c                        | 17 ++++++++++++-----
+>  2 files changed, 29 insertions(+), 6 deletions(-)
 >
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/m=
-ain.c
-> index 27a23196d58e..440d3d066ce4 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -646,18 +646,31 @@ static int cmp_id(const void *pa, const void *pb)
->         return *a - *b;
->  }
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/=
+bpftool/Documentation/bpftool-gen.rst
+> index 5006e724d..e067d3b05 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> @@ -16,7 +16,7 @@ SYNOPSIS
 >
-> +static int need_bswap(int elf_byte_order)
-> +{
-> +       return __BYTE_ORDER =3D=3D __LITTLE_ENDIAN && elf_byte_order !=3D=
- ELFDATA2LSB ||
-> +              __BYTE_ORDER =3D=3D __BIG_ENDIAN && elf_byte_order !=3D EL=
-FDATA2MSB;
-
-return (__BYTE_ORDER =3D=3D __LITTLE_ENDIAN) !=3D (elf_byte_order =3D=3D EL=
-FDATA2LSB);
-
-?
-
-> +}
+>         **bpftool** [*OPTIONS*] **gen** *COMMAND*
+>
+> -       *OPTIONS* :=3D { |COMMON_OPTIONS| | { **-L** | **--use-loader** }=
+ }
+> +       *OPTIONS* :=3D { |COMMON_OPTIONS| | { **-B** | **--base-btf** } |=
+ { **-L** | **--use-loader** } }
+>
+>         *COMMAND* :=3D { **object** | **skeleton** | **help** }
+>
+> @@ -202,6 +202,14 @@ OPTIONS
+>  =3D=3D=3D=3D=3D=3D=3D
+>         .. include:: common_options.rst
+>
+> +       -B, --base-btf *FILE*
+> +                 Pass a base BTF object. Base BTF objects are typically =
+used
+> +                 with BTF objects for kernel modules. To avoid duplicati=
+ng
+> +                 all kernel symbols required by modules, BTF objects for
+> +                 modules are "split", they are built incrementally on to=
+p of
+> +                 the kernel (vmlinux) BTF object. So the base BTF refere=
+nce
+> +                 should usually point to the kernel BTF.
 > +
->  static int sets_patch(struct object *obj)
->  {
->         Elf_Data *data =3D obj->efile.idlist;
->         int *ptr =3D data->d_buf;
->         struct rb_node *next;
-> +       GElf_Ehdr ehdr;
+>         -L, --use-loader
+>                   For skeletons, generate a "light" skeleton (also known =
+as "loader"
+>                   skeleton). A light skeleton contains a loader eBPF prog=
+ram. It does
+> @@ -444,3 +452,11 @@ ones given to min_core_btf.
+>    obj =3D bpf_object__open_file("one.bpf.o", &opts);
+>
+>    ...
 > +
-> +       if (gelf_getehdr(obj->efile.elf, &ehdr) =3D=3D NULL) {
-> +               pr_err("FAILED cannot get ELF header: %s\n",
-> +                       elf_errmsg(-1));
-> +               return -1;
-> +       }
-
-calculate needs_bswap() once here?
-
->
->         next =3D rb_first(&obj->sets);
->         while (next) {
-> -               unsigned long addr, idx;
-> +               unsigned long addr, idx, flags;
->                 struct btf_id *id;
->                 int *base;
-> -               int cnt;
-> +               int cnt, i;
->
->                 id   =3D rb_entry(next, struct btf_id, rb_node);
->                 addr =3D id->addr[0];
-> @@ -679,6 +692,24 @@ static int sets_patch(struct object *obj)
->
->                 qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(=
-int), cmp_id);
->
-> +               /*
-> +                * When ELF endianness does not match endianness of the h=
-ost,
-> +                * libelf will do the translation when updating the ELF. =
-This,
-> +                * however, corrupts SET8 flags which are already in the =
-target
-> +                * endianness. So, let's bswap them to the host endiannes=
-s and
-> +                * libelf will then correctly translate everything.
-> +                */
-> +               if (id->is_set8 && need_bswap(ehdr.e_ident[EI_DATA])) {
-> +                       for (i =3D 0; i < cnt; i++) {
-> +                               /*
-> +                                * header and entries are 8-byte, flags i=
-s the
-> +                                * second half of an entry
-> +                                */
-> +                               flags =3D idx + (i + 1) * 2 + 1;
-> +                               ptr[flags] =3D bswap_32(ptr[flags]);
-
-we are dealing with struct btf_id_set8, right? Can't we #include
-include/linux/btf_ids.h and use that type for all these offset
-calculations?..
-
-I have the same question for existing code, tbh, so maybe there was
-some good reason, not sure...
-
-> +                       }
-> +               }
+> +Kernel module BTF may also be minimized by using the -B option:
 > +
->                 next =3D rb_next(next);
+> +**$ bpftool -B 5.4.0-smaller.btf gen min_core_btf 5.4.0-module.btf 5.4.0=
+-module-smaller.btf one.bpf.o**
+> +
+> +A minimized module BTF will still not contain vmlinux BTF types, so you
+> +should always minimize the vmlinux file first, and then minimize the
+> +kernel module file.
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index ee3ce2b80..634c809a5 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -1630,6 +1630,7 @@ static int do_help(int argc, char **argv)
+>                 "       %1$s %2$s help\n"
+>                 "\n"
+>                 "       " HELP_SPEC_OPTIONS " |\n"
+> +               "                    {-B|--base-btf} |\n"
+>                 "                    {-L|--use-loader} }\n"
+>                 "",
+>                 bin_name, "gen");
+> @@ -1695,14 +1696,14 @@ btfgen_new_info(const char *targ_btf_path)
+>         if (!info)
+>                 return NULL;
+>
+> -       info->src_btf =3D btf__parse(targ_btf_path, NULL);
+> +       info->src_btf =3D btf__parse_split(targ_btf_path, base_btf);
+>         if (!info->src_btf) {
+>                 err =3D -errno;
+>                 p_err("failed parsing '%s' BTF file: %s", targ_btf_path, =
+strerror(errno));
+>                 goto err_out;
 >         }
->         return 0;
+>
+> -       info->marked_btf =3D btf__parse(targ_btf_path, NULL);
+> +       info->marked_btf =3D btf__parse_split(targ_btf_path, base_btf);
+>         if (!info->marked_btf) {
+>                 err =3D -errno;
+>                 p_err("failed parsing '%s' BTF file: %s", targ_btf_path, =
+strerror(errno));
+> @@ -2141,10 +2142,16 @@ static struct btf *btfgen_get_btf(struct btfgen_i=
+nfo *info)
+>  {
+>         struct btf *btf_new =3D NULL;
+>         unsigned int *ids =3D NULL;
+> +       const struct btf *base;
+>         unsigned int i, n =3D btf__type_cnt(info->marked_btf);
+> +       int start_id =3D 1;
+>         int err =3D 0;
+>
+> -       btf_new =3D btf__new_empty();
+> +       base =3D btf__base_btf(info->src_btf);
+> +       if (base)
+> +               start_id =3D btf__type_cnt(base);
+
+stylistic nit, I'd do:
+
+int start_id, err =3D 0;
+
+and then here
+
+start_id =3D base ? btf__type_cnt(base) : 1;
+
+I'd also name base as base_btf to make it clearer that it's a btf object
+
+> +
+> +       btf_new =3D btf__new_empty_split((struct btf *)base);
+
+um... and this cast didn't trigger any warnings for you? It might work
+ok currently, but clearly the code expects that base_btf might be
+modified, so sharing the same base_btf between two split BTF instances
+is just a recipe for a hard-to-debug issues, long term.
+
+Let's create a copy of base BTF instead? You can use btf__raw_data() +
+btf__new() to make a simple clone
+
+pw-bot: cr
+
+>         if (!btf_new) {
+>                 err =3D -errno;
+>                 goto err_out;
+> @@ -2157,7 +2164,7 @@ static struct btf *btfgen_get_btf(struct btfgen_inf=
+o *info)
+>         }
+>
+>         /* first pass: add all marked types to btf_new and add their new =
+ids to the ids map */
+> -       for (i =3D 1; i < n; i++) {
+> +       for (i =3D start_id; i < n; i++) {
+>                 const struct btf_type *cloned_type, *type;
+>                 const char *name;
+>                 int new_id;
+> @@ -2213,7 +2220,7 @@ static struct btf *btfgen_get_btf(struct btfgen_inf=
+o *info)
+>         }
+>
+>         /* second pass: fix up type ids */
+> -       for (i =3D 1; i < btf__type_cnt(btf_new); i++) {
+> +       for (i =3D start_id; i < btf__type_cnt(btf_new); i++) {
+>                 struct btf_type *btf_type =3D (struct btf_type *) btf__ty=
+pe_by_id(btf_new, i);
+>
+>                 err =3D btf_type_visit_type_ids(btf_type, btfgen_remap_id=
+, ids);
 > --
-> 2.43.0
+> 2.25.1
 >
 >
 
