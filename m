@@ -1,47 +1,92 @@
-Return-Path: <bpf+bounces-20450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A9983EAA2
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 04:41:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6759183EAA3
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 04:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2277B22B64
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 03:41:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EF702878C2
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 03:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E521170A;
-	Sat, 27 Jan 2024 03:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E051170F;
+	Sat, 27 Jan 2024 03:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h87+TiSp"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="XRmEeL3C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="XRmEeL3C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h87+TiSp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77AAD51B
-	for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 03:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CECAD51B
+	for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 03:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706326885; cv=none; b=rbS1n07BdXthnTDxTi9DFotFr9qSjL8ZORUiR+P53LWJHSmM/NKK78TZICmGfBYNA2uqPDuXLJ3vDD1YnCSdr1HjPOXomHqM02rwGGXL6S4l1mVxOil5aPSddEEDMKktVINGT6MBkvUpD5VBseJeKS9fJkLKy1Ar8Plu56lt9N4=
+	t=1706326896; cv=none; b=Q3etihIdoUmUk9VBe9ppgcQL6p241Vc72+9nwuXyAHLWvPmG4DPTQ6H5wEMGt4lzPMuh/HGlA6cVfJlcUXoGKCkCoItz3dHYl9PVsnGnX0bH+3tpIZUBYtMrLLnQYd4lEmD5VnCTc/etHP5ap56xSqLauZK5BYBSj88Sr02cc0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706326885; c=relaxed/simple;
-	bh=Ebwvp2y+FiJG5SVEAW4LK2rPsVfkKBMZiHE/vNRcwiU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dCvcdfT4I5sO4RDNc1x75Ku/cnBkAkUUgaMHfA/U2iYDjorev7ZrB5NHh//rcXnglKHthYdvnx91YBdmcLSYOUq/BjsLhQimO3GiX6PAPfb32sOlHqb8M4zAyOS0joFo7oIYvm4zEPec1pjxaHV0DQeJ50iNoj6PrDaJx7VCmv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h87+TiSp; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1706326896; c=relaxed/simple;
+	bh=p5EWnvDGlUaCczMX0khFMadlQ70B1XfCWVBh7DBgWEc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
+	 Subject:Content-Type; b=ExdH7b+UDzQ52aYLEh8oyYaWScqfS5+FGEcdxzCH+zmMxXXthjwU9LDJlg5kpArtQQIdT+2verZmXJ626/9fEOIa6i5yGYP3vJtydvRkGM1NccgOq2M9JYDeQrvDZ2u5ANqBQ3Rm+xs3wZLx/cCkiXvBwLkOT8/QlKseOJ7Nq00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=XRmEeL3C; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=XRmEeL3C; dkim=fail (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h87+TiSp reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id E5660C18DB98
+	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 19:41:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1706326887; bh=p5EWnvDGlUaCczMX0khFMadlQ70B1XfCWVBh7DBgWEc=;
+	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=XRmEeL3CVxUQNXtNd1IFgBXGE8iacsO0r9AJkC20uDEHhuRpxx3EdG0Y0sdjg1o9l
+	 RmAvJ0pzDraQzDUanS95rFXQaQX42uh/f+Sz02fC2bPEXGj0mxsm+WMYitQGzxw5AJ
+	 rIF9+LWhRohxlygHBkI9spyPEi6u+AVoJxYQ8ARQ=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Jan 26 19:41:27 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id BA726C18DB86;
+	Fri, 26 Jan 2024 19:41:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1706326887; bh=p5EWnvDGlUaCczMX0khFMadlQ70B1XfCWVBh7DBgWEc=;
+	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=XRmEeL3CVxUQNXtNd1IFgBXGE8iacsO0r9AJkC20uDEHhuRpxx3EdG0Y0sdjg1o9l
+	 RmAvJ0pzDraQzDUanS95rFXQaQX42uh/f+Sz02fC2bPEXGj0mxsm+WMYitQGzxw5AJ
+	 rIF9+LWhRohxlygHBkI9spyPEi6u+AVoJxYQ8ARQ=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0773AC18DB86
+ for <bpf@ietfa.amsl.com>; Fri, 26 Jan 2024 19:41:26 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -7.106
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=linux.dev
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id BxY3CLPwmn1L for <bpf@ietfa.amsl.com>;
+ Fri, 26 Jan 2024 19:41:21 -0800 (PST)
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::aa])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C737EC14CE39
+ for <bpf@ietf.org>; Fri, 26 Jan 2024 19:41:21 -0800 (PST)
 Message-ID: <79b0ad25-47a8-4e72-adaf-318d73481c86@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706326879;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e7yIJrWPa8fV+oXvtJyJ/tHuTm0P+aqiTg5OYucnfmo=;
-	b=h87+TiSpwnOcHDHMfCXE9dIiwOossMezDaDQoqgH7VmoJbc9upRWZrJsQI8ignYkBewQRF
-	CkX26L0jWfYiBQmY//ZvCa+syq367L/fJCqFQdJTHJD9WNMnnRrOX9Fk/s9/xq/agN6KC0
-	by6V6hkFevo4DUEYDQGPAwkFBnxf6kQ=
+ t=1706326879;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=e7yIJrWPa8fV+oXvtJyJ/tHuTm0P+aqiTg5OYucnfmo=;
+ b=h87+TiSpwnOcHDHMfCXE9dIiwOossMezDaDQoqgH7VmoJbc9upRWZrJsQI8ignYkBewQRF
+ CkX26L0jWfYiBQmY//ZvCa+syq367L/fJCqFQdJTHJD9WNMnnRrOX9Fk/s9/xq/agN6KC0
+ by6V6hkFevo4DUEYDQGPAwkFBnxf6kQ=
 Date: Fri, 26 Jan 2024 19:41:11 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -49,7 +94,6 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: 64-bit immediate instructions clarification
 Content-Language: en-GB
 To: dthaler1968@googlemail.com
 Cc: bpf@ietf.org, bpf@vger.kernel.org
@@ -63,12 +107,23 @@ References: <085f01da48bb$fe0c3cb0$fa24b610$@gmail.com>
  <259a01da4ff4$adfe9c50$09fbd4f0$@gmail.com>
  <dc839efe-2382-440d-bcf6-b9ddc252f35e@linux.dev>
  <294f01da50a6$ce3d0670$6ab71350$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
 In-Reply-To: <294f01da50a6$ce3d0670$6ab71350$@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/JixGnHEotgo1Arql9FLXruIlqiY>
+Subject: Re: [Bpf] 64-bit immediate instructions clarification
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
 
 On 1/26/24 2:27 PM, dthaler1968@googlemail.com wrote:
@@ -176,4 +231,9 @@ index af43227b6ee4..fceacca46299 100644
 >
 > Dave
 >
+
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
