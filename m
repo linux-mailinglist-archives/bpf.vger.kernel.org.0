@@ -1,84 +1,60 @@
-Return-Path: <bpf+bounces-20475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB85C83ED91
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 15:41:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C0783EE4D
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 17:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A684E28425F
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 14:41:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29E2AB21ADA
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 16:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343462577E;
-	Sat, 27 Jan 2024 14:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A312C1A2;
+	Sat, 27 Jan 2024 16:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OL0Tx62r"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gdFaxO8t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E43825760;
-	Sat, 27 Jan 2024 14:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2462E28E23;
+	Sat, 27 Jan 2024 16:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706366504; cv=none; b=VUd6qxkWTAh5GKSoGuucHIFy/Es4zWXT8KBM3paFCcapa2PfJoFDlBcZK9G2e6oKqjtC/iPyIq28QZejTXphR2d1Emf3+fS4Qf35jRsh7q8FQ+qzcMVwvba+6GF8BOmjRh8SRqA0btEa8dtWSz3Vo7iW9eo/0TUxo7ZFtNv3nn8=
+	t=1706372289; cv=none; b=rqvAT6oJ4FB3p/tXWIZ4IaaPB6etQD4T4AZHnKeAd2ELsHpO2G2Q7GdMQBaRILrKHdCuxQIu5inwtz0v/K8aa177qOp8uIQ81ebx0mb+1InJK+8Zhbxoosu7KY3KMRWl+4GR0RgBe84wAzPn0SsxDY3oMpMtS2vcjdwj01fPQvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706366504; c=relaxed/simple;
-	bh=JLvxqrMBX6tjvXHwrqM36OgiuASGwsrVr+907KqTZfs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EbM0ATvbCNN7YAoa5tthgi2Sk9pHve4S3vVSeIcPK8egclArhYWMBxk2TqIzPDrcbe6p2gjp792dsD9GwnwWsIW+Hdb6WwSy7B+YtcdBzXya4PEP3vOSzqo0xGtkYElpoZ2V1Q+EvIC2DflMYaRhkhXZbyhubSxMz9mJ+QefH0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OL0Tx62r; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-339231c062bso1318662f8f.0;
-        Sat, 27 Jan 2024 06:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706366501; x=1706971301; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=h1vspUfzTTmU9eLBmpKfeYgGuaJfhX5gH3XiIuQ2AWs=;
-        b=OL0Tx62r2XrNjK4hARgGAG0354V1N5MKDAVoP34R2aakJgVSgkPuGS/xEyJMZzBl44
-         hCeVbHglutrg7pNkAxaJSNWxVslOo9lma5KEY++b22c6wObU0qURsXByew9YZkA1KWXS
-         Dxpfrvszlu3dv33mRX5SC8ho7mIRtTjP6yrXhtjBMreibzLAp71mYuHdDVScDiFE7KU7
-         62+8c/I5zGwC0ueu1P3T2hIGybywBsvP9cSb91hcJgDbrgkxzR2fMQfL46r3hkJWZXgV
-         WfrSfxWFLrA34nAU3hHv0jS2ZPhntyVPxaiVk/TPoEtq+fULW9Ym1bO5CizDsF5FhRuh
-         uBaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706366501; x=1706971301;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h1vspUfzTTmU9eLBmpKfeYgGuaJfhX5gH3XiIuQ2AWs=;
-        b=rG4vkTIlFXrlnf41rNG7SsYGKrb1I08MFh4CQu3/kf2G38kyEfzoplCAx7yi7y5ibg
-         XUtFmfJqHZYRtYDCAirxdRAb/BxAm35axXS1P2Tq3jKtJ+pm8zfaEQJ/XJCxllAxtgP3
-         6e7oDQXyRXelIxmq46goSl6Vvu69wBVyp/FpKO1jG247M+zhPxAd6jxZrsaauI/+HUex
-         duEPbDtWMkL++/u1f3dSzqBblgnstXkzhyNb739fS8i/SPeqfjSfFCpHDcO5PfVJO7a8
-         pgqG8ZqLQVnJxQeK4DG9ban7bEFqNbjm1bm+0bdtiUyVWmcFmbFYXJb4p8/yTbOsfsg1
-         Yk6w==
-X-Gm-Message-State: AOJu0Yym/sjDDV+T72ArovHNpRIf0vJD7CxKAUvbOkptQPyiLZPdJDoV
-	eSOFA5YuyWxlQ5cVtmubw4pl5aBzHXkVZdhWMPjJ5VqPKp61VMZuIRzgIFLF
-X-Google-Smtp-Source: AGHT+IF2Ap6iw2uLYZo/gy6MokNggNdqUshjdmS+gDzVEvkpNDG+HP3RBT8ROvOm+Vz/UZ2CPior8A==
-X-Received: by 2002:a5d:6901:0:b0:339:5935:4b56 with SMTP id t1-20020a5d6901000000b0033959354b56mr1017037wru.41.1706366500971;
-        Sat, 27 Jan 2024 06:41:40 -0800 (PST)
-Received: from krava ([83.240.60.213])
-        by smtp.gmail.com with ESMTPSA id f3-20020a056000128300b0033936c34713sm3621438wrx.78.2024.01.27.06.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 06:41:40 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 27 Jan 2024 15:41:38 +0100
-To: Geliang Tang <geliang@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [bpf-next] selftests/bpf: Drop return in bpf_testmod_exit
-Message-ID: <ZbUWIioaQ-WDKTxE@krava>
-References: <fb088aab7eee941cc6018249a47f60b0871141ea.1706349508.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1706372289; c=relaxed/simple;
+	bh=aHPBBvTe1Yv5eAiaidgAePZFK/VRhuggBoBZrMj6VwQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gTNQZeoWvVqbHHGMbDUcAVJmhz8YjqclZ2lEOq4ZzmXG6XMadQC7RbJkWYiybVZudUP4bBjq45SY5mgpA1R09yPp9GqnELIfWJ7GU/3c7bIRFPTSPcrcYeDlTBgUsp53xlac4YHdXVJun/CBP9gS1ax1X19EnDMfmUc/KbguGY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gdFaxO8t; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KhHNxgF3fX8abmBvoOAyuYkGMYHZsCw8fbKtovSaG/I=; b=gdFaxO8t6tnCSKV8WTnvzfHz2e
+	vL3goFmREafb6BeoodiQOqw7C6OocFzhyq/eIYwdJAhsYIdpoCUXYDONbVTFM9Wc/aGWtxQ6yl021
+	APdqJgfTxUUXMDYm7Re0cYNuq4tL18oadwnRPa7Hum6f6R2lvDwbqc9TVET+KbAHR+C5N+KuDNf6S
+	EeVNaMcEFmgUYrmxhgcrjFDhDXK+jLn9UsH4bE+3ON6iblEXxOR8UGQMyj8M0emHEm5KI5oT38/y8
+	WMH9ok4+pBbJkgSTOd4sC+FOfd8sq1abWCj78o1W14txC4lKOh33kzs4Mo/W/uhNb7OKnJxMm8ndZ
+	cpI2T1MQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTlNa-0000000HLiT-3PXm;
+	Sat, 27 Jan 2024 16:18:02 +0000
+Date: Sat, 27 Jan 2024 16:18:02 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-block@vger.kernel.org,
+	linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-nvme@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] State Of The Page
+Message-ID: <ZbUsuquUXXq4D6fw@casper.infradead.org>
+References: <ZaqiPSj1wMrTMdHa@casper.infradead.org>
+ <CAOQ4uxh1BCmBA3ow130p1FBUrLLRVO2i_DDtAGQWhAzrabmP8Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,42 +63,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fb088aab7eee941cc6018249a47f60b0871141ea.1706349508.git.tanggeliang@kylinos.cn>
+In-Reply-To: <CAOQ4uxh1BCmBA3ow130p1FBUrLLRVO2i_DDtAGQWhAzrabmP8Q@mail.gmail.com>
 
-On Sat, Jan 27, 2024 at 06:02:29PM +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+On Sat, Jan 27, 2024 at 12:10:32PM +0200, Amir Goldstein wrote:
+> Matthew,
 > 
-> bpf_testmod_exit() should not have a return value, so this patch drops this
-> useless 'return' in it.
+> And everyone else who suggests LSF/MM/BPF topic.
 > 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> Please do not forget to also fill out the Google form:
+> 
+>           https://forms.gle/TGCgBDH1x5pXiWFo7
+> 
+> So we have your attendance request with suggested topics in our spreadsheet.
 
-please rebase on top of latest bpf-next/master,
-there's conflict now with latest change
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-> ---
->  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 91907b321f91..e75e651f1337 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -544,7 +544,7 @@ static int bpf_testmod_init(void)
->  
->  static void bpf_testmod_exit(void)
->  {
-> -	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
-> +	sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
->  }
->  
->  module_init(bpf_testmod_init);
-> -- 
-> 2.40.1
-> 
-> 
+I'm pretty sure I already filled that out months ago within a day of the
+initial announcement, and I thought I included SOTP as one of the topics.
+But honestly, I'm not sure which topics I filled in there.  Is there a
+way for me to know what I wrote in and edit my initial response?
 
