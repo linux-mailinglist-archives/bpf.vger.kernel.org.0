@@ -1,205 +1,154 @@
-Return-Path: <bpf+bounces-20455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE65C83EAE7
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 05:06:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB71B83EB1F
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 05:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F280B1C22A0F
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 04:06:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B70A4B25219
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 04:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC661D521;
-	Sat, 27 Jan 2024 04:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03BE12E41;
+	Sat, 27 Jan 2024 04:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UweUYZW4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xa00wmoO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954DD1D694;
-	Sat, 27 Jan 2024 04:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A84D14A87
+	for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 04:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706328315; cv=none; b=PL765w5WOaB2i2uuX7Vtn6nK7yEFvR8/AnRJ6ZQ1fFafwW87XVqAjWrsozbqRL425LvlkGdANYQ/z6S+dBhIEr4KHiNEAGDU6nEw3Fzw6zPbEJHcIrkyUgURKpk8lvvwWGNqcFe26Pf/OAUv11H0EeKgZooXzzjTe6vAQwPmVOU=
+	t=1706331389; cv=none; b=u3hIq8ZEoJAeOPmOhvytV3ibR4k7Y5C4hIxoOqJ7V7b83a1DcrNl3r8OofCjZ288zhQJrPtr8jb7ASS4LuC/kzi3m8YfCiTRSCzQIa1IV6jCgszPcl46NT/EgpTWniPLFGCP4zDbPqCjw61bzrVIf170+jhPi9GfjhVj44ZdJMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706328315; c=relaxed/simple;
-	bh=arnNZFPeOWnn8Q5oQ59hKd7A7dEFpKto5u5vQcBQRZw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hk5SZv0Ymm3uQAdh/t3pi54ED2oIdNeVWXkmhxXPW3XUzV2jZWq7/v5EfWSlOINUjounN10QZ0LsqqFF3WBgqVqCKjg8Q9O30avTSBQ5m5oGSSCZATnPQXYSvlDbeZG0w7OmWsynJ/KoAuBcUCEq4XqrWY8G5bEG/kNJmuQW6jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UweUYZW4; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706328313; x=1737864313;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=arnNZFPeOWnn8Q5oQ59hKd7A7dEFpKto5u5vQcBQRZw=;
-  b=UweUYZW4a8vix7R4ZpV8BwbBeByhmxWa6KOFQbUAlluEy+7WbFCx9zwO
-   Fg4n6ggUR7d+wCxCJ39bBXiHRAhNb7ShnkLLNz1fFo08eveZ39n5NXYmd
-   oWKCFvD72eYTMp13u+n9ATdEn78D5I5ntzbOMimNqHrQZvaEx7X2RxqY9
-   0mOu5VdkXEtd20UagexzeWafbst0aPRFJfwtFDJcu5z/9NZ8RK7yOJAK0
-   U9XJTupWcoq60+/xkAj90pXbMdqdQiB0Ca9drzwoAZ0JsszBx634Uq2Kk
-   icWSPRz1V6h6P5NRx7QMRvlcEjmwEsScX15j6pIPSUMmqIYAysjE4iOa4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="402289698"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="402289698"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 20:05:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="787309871"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="787309871"
-Received: from ppglcf2090.png.intel.com ([10.126.160.96])
-  by orsmga002.jf.intel.com with ESMTP; 26 Jan 2024 20:05:07 -0800
-From: Rohan G Thomas <rohan.g.thomas@intel.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Serge Semin <fancer.lancer@gmail.com>
-Cc: netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Rohan G Thomas <rohan.g.thomas@intel.com>
-Subject: [PATCH net-next 3/3] net: stmmac: Report taprio offload status
-Date: Sat, 27 Jan 2024 12:04:43 +0800
-Message-Id: <20240127040443.24835-4-rohan.g.thomas@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20240127040443.24835-1-rohan.g.thomas@intel.com>
-References: <20240127040443.24835-1-rohan.g.thomas@intel.com>
+	s=arc-20240116; t=1706331389; c=relaxed/simple;
+	bh=gjgfao9fcaJByFSjCYE6sqHrQv9wFAYfl9fNXTRp+to=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V+/GZsOlvxfmb5K5b+FIWPZFwsMim3C9QPo8NGmwDABcQ87EDMj9TbIM9SgDgBK28e7yUdvn8Gn7ZuBlztm9yRIcWZNDerz16iASsj/QA525Vo7cYJBGTgY858LZgU6pglaof+zsFxyQ/w0tCy3RL0P6Wkr9rTR94R7t3i5ZrKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xa00wmoO; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <879d5e4f-f20d-460b-9fb3-e362c0324ca2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706331384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pxAZEPdPvlM+hyM6eBlvhOMyJwIqsSlhB3yebo3Xtck=;
+	b=Xa00wmoOgTZYy/v/K0AdeAAT6EcgC+LFxhGmPB6TzVkYX7xeYM7kiZf0/rC0KXmELa5oLB
+	fp99HNDfBadfRAdc9fGr0Z4D6HbJX0MOMNxaYpyfVyX1sGm02bbb+fnAleZqgJFDG9heuj
+	u0dUJSF+oyxGAe61GG5q3HfGyyqrw/U=
+Date: Fri, 26 Jan 2024 20:56:18 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Remove "&>" usage in the
+ selftests
+Content-Language: en-GB
+To: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
+References: <20240127025017.950825-1-martin.lau@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240127025017.950825-1-martin.lau@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Report taprio offload status. This includes per txq and global
-counters of window_drops and tx_overruns.
 
-Window_drops count include count of frames dropped because of
-queueMaxSDU setting and HLBF error. Transmission overrun counter
-inform the user application whether any packets are currently being
-transmitted on a particular queue during a gate-close event.DWMAC IPs
-takes care Transmission overrun won't happen hence this is always 0.
+On 1/26/24 6:50 PM, Martin KaFai Lau wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+>
+> In s390, CI reported that the sock_iter_batch selftest
+> hits this error very often:
+>
+> 2024-01-26T16:56:49.3091804Z Bind /proc/self/ns/net -> /run/netns/sock_iter_batch_netns failed: No such file or directory
+> 2024-01-26T16:56:49.3149524Z Cannot remove namespace file "/run/netns/sock_iter_batch_netns": No such file or directory
+> 2024-01-26T16:56:49.3772213Z test_sock_iter_batch:FAIL:ip netns add sock_iter_batch_netns unexpected error: 256 (errno 0)
+>
+> It happens very often in s390 but Manu also noticed it happens very
+> sparsely in other arch also.
+>
+> It turns out the default dash shell does not recognize "&>"
 
-Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 62 +++++++++++++++++--
- 1 file changed, 58 insertions(+), 4 deletions(-)
+Not sure whether it is feasible or not. But is it possible
+for all our test VMs we run '/bin/bash' before everyting else
+so we have a uniform bash environment so we do not need to
+worry about other shells?
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-index 07aa3a3089dc..cce00719937d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-@@ -937,8 +937,8 @@ static void tc_taprio_map_maxsdu_txq(struct stmmac_priv *priv,
- 	}
- }
- 
--static int tc_setup_taprio(struct stmmac_priv *priv,
--			   struct tc_taprio_qopt_offload *qopt)
-+static int tc_taprio_configure(struct stmmac_priv *priv,
-+			       struct tc_taprio_qopt_offload *qopt)
- {
- 	u32 size, wid = priv->dma_cap.estwid, dep = priv->dma_cap.estdep;
- 	struct plat_stmmacenet_data *plat = priv->plat;
-@@ -990,8 +990,6 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 
- 	if (qopt->cmd == TAPRIO_CMD_DESTROY)
- 		goto disable;
--	else if (qopt->cmd != TAPRIO_CMD_REPLACE)
--		return -EOPNOTSUPP;
- 
- 	if (qopt->num_entries >= dep)
- 		return -EINVAL;
-@@ -1102,6 +1100,11 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 		priv->plat->est->enable = false;
- 		stmmac_est_configure(priv, priv, priv->plat->est,
- 				     priv->plat->clk_ptp_rate);
-+		/* Reset taprio status */
-+		for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
-+			priv->xstats.max_sdu_txq_drop[i] = 0;
-+			priv->xstats.mtl_est_txq_hlbf[i] = 0;
-+		}
- 		mutex_unlock(&priv->plat->est->lock);
- 	}
- 
-@@ -1119,6 +1122,57 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 	return ret;
- }
- 
-+static void tc_taprio_stats(struct stmmac_priv *priv,
-+			    struct tc_taprio_qopt_offload *qopt)
-+{
-+	u64 window_drops = 0;
-+	int i = 0;
-+
-+	for (i = 0; i < priv->plat->tx_queues_to_use; i++)
-+		window_drops += priv->xstats.max_sdu_txq_drop[i] +
-+				priv->xstats.mtl_est_txq_hlbf[i];
-+	qopt->stats.window_drops = window_drops;
-+
-+	/* Transmission overrun doesn't happen for stmmac, hence always 0 */
-+	qopt->stats.tx_overruns = 0;
-+}
-+
-+static void tc_taprio_queue_stats(struct stmmac_priv *priv,
-+				  struct tc_taprio_qopt_offload *qopt)
-+{
-+	struct tc_taprio_qopt_queue_stats *q_stats = &qopt->queue_stats;
-+	int queue = qopt->queue_stats.queue;
-+
-+	q_stats->stats.window_drops = priv->xstats.max_sdu_txq_drop[queue] +
-+				      priv->xstats.mtl_est_txq_hlbf[queue];
-+
-+	/* Transmission overrun doesn't happen for stmmac, hence always 0 */
-+	q_stats->stats.tx_overruns = 0;
-+}
-+
-+static int tc_setup_taprio(struct stmmac_priv *priv,
-+			   struct tc_taprio_qopt_offload *qopt)
-+{
-+	int err = 0;
-+
-+	switch (qopt->cmd) {
-+	case TAPRIO_CMD_REPLACE:
-+	case TAPRIO_CMD_DESTROY:
-+		err = tc_taprio_configure(priv, qopt);
-+		break;
-+	case TAPRIO_CMD_STATS:
-+		tc_taprio_stats(priv, qopt);
-+		break;
-+	case TAPRIO_CMD_QUEUE_STATS:
-+		tc_taprio_queue_stats(priv, qopt);
-+		break;
-+	default:
-+		err = -EOPNOTSUPP;
-+	}
-+
-+	return err;
-+}
-+
- static int tc_setup_etf(struct stmmac_priv *priv,
- 			struct tc_etf_qopt_offload *qopt)
- {
--- 
-2.26.2
+> as a redirection operator, so the command went to the background.
+> In the sock_iter_batch selftest, the "ip netns delete" went
+> into background and then race with the following "ip netns add"
+> command.
+>
+> This patch replaces the "&> /dev/null" usage with ">/dev/null 2>&1"
+> and does this redirection in the SYS_NOFAIL macro instead of doing
+> it individually by its caller. The SYS_NOFAIL callers do not care
+> about failure, so it is no harm to do this redirection even if
+> some of the existing callers do not redirect to /dev/null now.
+>
+> It touches different test files, so I skipped the Fixes tags
+> in this patch. Some of the changed tests do not use "&>"
+> but they use the SYS_NOFAIL, so these tests are also
+> changed to avoid doing its own redirection because
+> SYS_NOFAIL does it internally now.
+>
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> ---
+>   .../selftests/bpf/prog_tests/decap_sanity.c    |  2 +-
+>   .../selftests/bpf/prog_tests/fib_lookup.c      |  2 +-
+>   .../selftests/bpf/prog_tests/ip_check_defrag.c |  4 ++--
+>   .../selftests/bpf/prog_tests/lwt_redirect.c    |  2 +-
+>   .../selftests/bpf/prog_tests/lwt_reroute.c     |  2 +-
+>   tools/testing/selftests/bpf/prog_tests/mptcp.c |  2 +-
+>   .../selftests/bpf/prog_tests/sock_destroy.c    |  2 +-
+>   .../selftests/bpf/prog_tests/sock_iter_batch.c |  4 ++--
+>   .../selftests/bpf/prog_tests/test_tunnel.c     | 18 +++++++++---------
+>   tools/testing/selftests/bpf/test_progs.h       |  7 ++++++-
+>   10 files changed, 25 insertions(+), 20 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/decap_sanity.c b/tools/testing/selftests/bpf/prog_tests/decap_sanity.c
+> index 5c0ebe6ba866..dcb9e5070cc3 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/decap_sanity.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/decap_sanity.c
+> @@ -72,6 +72,6 @@ void test_decap_sanity(void)
+>   		bpf_tc_hook_destroy(&qdisc_hook);
+>   		close_netns(nstoken);
+>   	}
+> -	SYS_NOFAIL("ip netns del " NS_TEST " &> /dev/null");
+> +	SYS_NOFAIL("ip netns del " NS_TEST);
+>   	decap_sanity__destroy(skel);
+>   }
 
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> index 2f9f6f250f17..80df51244886 100644
+> --- a/tools/testing/selftests/bpf/test_progs.h
+> +++ b/tools/testing/selftests/bpf/test_progs.h
+> @@ -385,10 +385,15 @@ int test__join_cgroup(const char *path);
+>   			goto goto_label;				\
+>   	})
+>   
+> +#define ALL_TO_DEV_NULL " >/dev/null 2>&1"
+> +
+>   #define SYS_NOFAIL(fmt, ...)						\
+>   	({								\
+>   		char cmd[1024];						\
+> -		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);		\
+> +		int n;							\
+> +		n = snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
+> +		if (n < sizeof(cmd) && sizeof(cmd) - n >= sizeof(ALL_TO_DEV_NULL)) \
+> +			strcat(cmd, ALL_TO_DEV_NULL);			\
+>   		system(cmd);						\
+>   	})
+>   
 
