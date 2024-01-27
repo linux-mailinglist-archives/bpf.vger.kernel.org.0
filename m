@@ -1,59 +1,68 @@
-Return-Path: <bpf+bounces-20466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327C783EC92
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 11:03:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3606C83EC95
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 11:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E414028460E
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 10:03:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636E31C20CF3
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 10:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607851E889;
-	Sat, 27 Jan 2024 10:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB2C200BF;
+	Sat, 27 Jan 2024 10:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="En8x5KzE"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Fa5RXOh2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45187F;
-	Sat, 27 Jan 2024 10:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174CC7F
+	for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 10:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706349809; cv=none; b=bMdg1QL7yVFO2Y6fYv0vPPbbwhTNOzpk6G91CCUzT2SxZ/jS0whiNm03HAPqAst2Cpmkayb02e0vE6EgHjUhWOC2kCPqz9ZgkzFH2Ej3tE5c1H/xBIoUCrFwTDV3IdPFLOK6QoYmK+Ro5JeNVXe3os/ApXu6/6XKkWtH+eryKPA=
+	t=1706349846; cv=none; b=IzS9j4jheWGgNigYuyxNJbqkI/ME3w/odzTVmm5YU0GcZueb7gVnaeAyeaGkGGdopQrfVT9tOsZ+ETiHWSZxUe4chZnfMNOP0zLwAGifF/IMar2XDCNLP+DkZC18fWkj9HeduisDwj+kQ8hG8pTo0O1KtSleIYk6Vgt1rPUKgr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706349809; c=relaxed/simple;
-	bh=JD/FK08isb12TQ57IyIfcPGvJ0V0uXlxGNjHA8K6p3A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TrbVqiW8PcEzu6+i6reLlyv9pIqwpJj+QaiDjr8w/ZnVXlVGH9ndQwqyfiFe/QysqIzRRXtlijNWAEgtyyG6rlbpMuLJkyBNrQl/dkS7Jss7DfCzXSaYOvOPlg2kMdtAPbgG0EDKrzEAjOP+WzVf0QJKaEaG/N18U6lnMprRado=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=En8x5KzE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 282BBC433F1;
-	Sat, 27 Jan 2024 10:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706349809;
-	bh=JD/FK08isb12TQ57IyIfcPGvJ0V0uXlxGNjHA8K6p3A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=En8x5KzE9PKN0LD3yevfu7DY7FvyRRDW+WGc43qoxUDL2/vWxn3uTNH4qkTj8EltY
-	 sTk2UNFIZcNuRQuL4l7I26wYvK2E1XOpwI1M8JtDxXqkzWh7RggAYDUIZT5RW0h0Yk
-	 Cy0s6RF1DkWoPbSPByFETy3tcK8xPFM2bdVH1D0MOMsogVWEqnHL6qckjE+7H07tYJ
-	 6ZU8BUmRh+BmbF/DvEYw7xPLt4LplmpPdM8f2c5HwzdkF0WCO/sI1GrXRWyC0Y4FUj
-	 q6SBDqpD7JTZFYmpoKAZoZOIjbtkrtzy6KAf76VmmxefJctD2gwU4ChORmYY1LHQYd
-	 BP4KeGk1U31cA==
-From: Geliang Tang <geliang@kernel.org>
+	s=arc-20240116; t=1706349846; c=relaxed/simple;
+	bh=+yprMf7ZacjV/R+JRF0iro8VM8GuQtAb0EnB2wFcPN8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RWEu3tza+BYBpEVf3KzyTpt1A3ro8cbs/DUDOdrXhhUlDaKqh7L62nt0T5WmtmzKRgC3hp7SmL348PN8y6ECnEkQlSdM/3WwN45wk5TRcRoWSl9LKntLGtVaNcKlS4NylZSPXf+BX+HkBCH88WrJzTyKTEbRNapLbd1ey+6uKZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Fa5RXOh2; arc=none smtp.client-ip=80.12.242.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id TfWXr9E3GNw7gTfWXrfreX; Sat, 27 Jan 2024 11:02:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1706349775;
+	bh=W5ZdRbqiQEr7tMSGQwE5u2qB6Co/AJekgwmWqF5S0MI=;
+	h=From:To:Cc:Subject:Date;
+	b=Fa5RXOh2QciGQtywPwuFyt9wFfk52+M++2wuFbQ2TBBK2A/v/jLPTNsbmntNgmeHL
+	 hPFN/EBZ4bFr4E5lOdK+7L+WetV9TSDSIQSoFho/WILCRjKG0h+naG1GfU+QbGvGJF
+	 RUWe8eBxHAq8xCt5H7l6iBEVw12ilgdSonD0QRVVs110lXAWyzDHrDl+WnDcc515Hd
+	 19/PHhp7yTWl3rgQ29sWVir+T4SjvG29n+SuujBFCUpq0Rf9izxNzSERDf8a7enTax
+	 qAEu8mdg8jOsWXXWJYjenPae+gITxXcNyt3o8bOGWrXgJvZSKf+7ch8EabUetRJqjq
+	 hqnFH+D10s84A==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 27 Jan 2024 11:02:55 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [bpf-next] selftests/bpf: Drop return in bpf_testmod_exit
-Date: Sat, 27 Jan 2024 18:02:29 +0800
-Message-Id: <fb088aab7eee941cc6018249a47f60b0871141ea.1706349508.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.40.1
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next RESEND] xdp: Remove usage of the deprecated ida_simple_xx() API
+Date: Sat, 27 Jan 2024 11:02:48 +0100
+Message-ID: <8e889d18a6c881b09db4650d4b30a62d76f4fe77.1705734073.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,30 +71,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-bpf_testmod_exit() should not have a return value, so this patch drops this
-useless 'return' in it.
+Note that the upper limit of ida_simple_get() is exclusive, but the one of
+ida_alloc_range() is inclusive. So a -1 has been added when needed.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Resent because of 'net-next-closed' message on previous try.
+See [1].
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 91907b321f91..e75e651f1337 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -544,7 +544,7 @@ static int bpf_testmod_init(void)
+[1]: https://lore.kernel.org/all/20240120115342.GD110624@kernel.org/
+---
+ net/core/xdp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 4869c1c2d8f3..27b585f3fa81 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -75,7 +75,7 @@ static void __xdp_mem_allocator_rcu_free(struct rcu_head *rcu)
+ 	xa = container_of(rcu, struct xdp_mem_allocator, rcu);
  
- static void bpf_testmod_exit(void)
- {
--	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
-+	sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+ 	/* Allow this ID to be reused */
+-	ida_simple_remove(&mem_id_pool, xa->mem.id);
++	ida_free(&mem_id_pool, xa->mem.id);
+ 
+ 	kfree(xa);
  }
+@@ -242,7 +242,7 @@ static int __mem_id_cyclic_get(gfp_t gfp)
+ 	int id;
  
- module_init(bpf_testmod_init);
+ again:
+-	id = ida_simple_get(&mem_id_pool, mem_id_next, MEM_ID_MAX, gfp);
++	id = ida_alloc_range(&mem_id_pool, mem_id_next, MEM_ID_MAX - 1, gfp);
+ 	if (id < 0) {
+ 		if (id == -ENOSPC) {
+ 			/* Cyclic allocator, reset next id */
+@@ -317,7 +317,7 @@ static struct xdp_mem_allocator *__xdp_reg_mem_model(struct xdp_mem_info *mem,
+ 	/* Insert allocator into ID lookup table */
+ 	ptr = rhashtable_insert_slow(mem_id_ht, &id, &xdp_alloc->node);
+ 	if (IS_ERR(ptr)) {
+-		ida_simple_remove(&mem_id_pool, mem->id);
++		ida_free(&mem_id_pool, mem->id);
+ 		mem->id = 0;
+ 		errno = PTR_ERR(ptr);
+ 		goto err;
 -- 
-2.40.1
+2.43.0
 
 
