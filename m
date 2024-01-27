@@ -1,264 +1,165 @@
-Return-Path: <bpf+bounces-20441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFD6383E746
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 00:52:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D809783E7E0
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 01:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF0141C26495
-	for <lists+bpf@lfdr.de>; Fri, 26 Jan 2024 23:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E18E28EB8B
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 00:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C39150A83;
-	Fri, 26 Jan 2024 23:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73421FAF;
+	Sat, 27 Jan 2024 00:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8Q2iKTI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C+1XxkzR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F1525578
-	for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 23:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B701D17D3
+	for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 00:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706313119; cv=none; b=YSwwtKF66xqDAh2J4dz2HnLGMDsO5XJdgh41ZY1BW5SF7VFwfqUXOxuhASSQaZaUdp8N8Z+FeZSv5BpYuc9PCHntJ/PkD4D1wnOxIFzpscF70FyTPUcsAQMSeophFISGAlJ5bhg0RSmSmYEFpab0ZJLWl+Gc52FcFktCaWjhYKw=
+	t=1706313698; cv=none; b=hqNOrAW6dMUG2UxtdcLNbly4Yo7LsL6inGjsm20L4ClIi0NQJblnjaO8gMsYUf7N+3DG7Q11xqVpQmyfC/p4+5Pekm3OAgnXrFYbqo/U40SVafLlvXyWOFxRd+gN8+ld2qNEiDws1ybFg6brbMEqVIe2x57hD4f72QZHXe8TVQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706313119; c=relaxed/simple;
-	bh=cFgQyrYfYsGQB+ZDLgYjgAUL2FCkZUj8gbL6Majnbtw=;
+	s=arc-20240116; t=1706313698; c=relaxed/simple;
+	bh=LBb5h70aAaA00by5ONCpxbvVM4+X7G1ZCo5xXQjZfjU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VZ6+3UjSOzVExcGUJV9j/u6aAVRfc8+6UPp8Ht/ygdJ0DtQZFmiXEMW5OLCX3gjafjQRtAO5QnEDlw75Xl/Lfdi0IxoyfH6mKUIYQ1Vmc3gshKzRAhTNmFE98bzMhrJX8gR3cB7qEIIaKYreqpuFvxgcJBOYM3PWhrpWaHuB4U8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O8Q2iKTI; arc=none smtp.client-ip=209.85.161.42
+	 To:Cc:Content-Type; b=acaqeILQYKRw/2UQuM/siguXA0KR54TqAsYRGCBH5CJjRwIhTbgFY/il/Z14fBXScdcJ22bfTnd/2rwHY3NHQlNsQOsRyBuH6JNXsdAD+KdANUyY7LttIM7AOvTbW68/WGDnEemy2zPu0DMd+isI8ArWioqH65c5RkDE4+Go0jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C+1XxkzR; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5999f3f6ce9so861333eaf.0
-        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 15:51:57 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3367a304091so1397026f8f.3
+        for <bpf@vger.kernel.org>; Fri, 26 Jan 2024 16:01:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706313116; x=1706917916; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706313695; x=1706918495; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9mPuXZlWPKJqRAlhckcqKYpJeAKh2GPSuFQiOgXV8mk=;
-        b=O8Q2iKTIAEB1Z/dTYprf3fbyhjlOPGBcSPp1ygeEZjtYTw0jJb8sdShh5gxYdiVc3a
-         DWSl39jfaMmeHabs08tjNdF+wIMazWvdI/lkIjYR1YXZr2Ap4pHI0uL/cfA8wdgY9dDy
-         YcehwV8i1F5me8uX0CoMLRWr7n+g6g0P1ssSaQU6qQUnL1iD87cs3ZVZvWjI+X6oSMDK
-         03ZmJasxnTX35VDk/7rFKVehNQ2HPXKc7IUjYbM50yeabcfVdkfnTzRtZzuTSyoQvxFo
-         4GP+zjr7zRhNs/81PazBRhsfgTFjHs92VhlOE1UmC8xtzVnOelL0hGT7ZVRpDi5AJzAf
-         yyuQ==
+        bh=TfrvDj/C5h/4XpSSwgZdUUWpyrSw0Fvr6/VMRmoVgYs=;
+        b=C+1XxkzRjXqRNf8/wPZHx9arO4nk/pVwboE/bb8+hTF/C2gUAJnCVO8MLqDX/N1NcC
+         tdsIOAjM2nz6W/2AZlzzR3By0EJCR2ZQiu6bFlPbAV1K7nox1rpHmq4v1p55eQg8GTF5
+         tc60MErXX1IuoCSgsPr3aSuZAZ/tGtQghW+IMn1zPyqLd2HmdiYWRfv3VFgqESHaBS7p
+         DjaEBPW0vM4OMMvBmga9pi8SYm3sUhZIvmXUNbKCpqpNR0UUDHecQpwfDiVPFygKHgl9
+         0Tf5aJus+JvEIlDA5LW0K80G7bya2tKaV42z8GqWk86hhEkVK2H0y69qnEBAeqNFGtLf
+         x6SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706313116; x=1706917916;
+        d=1e100.net; s=20230601; t=1706313695; x=1706918495;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9mPuXZlWPKJqRAlhckcqKYpJeAKh2GPSuFQiOgXV8mk=;
-        b=kPFv6sotQl0dSP0hsw7Krq5bQP8zfuanx/+BFkrvz9nlqulAst8wWZlt0tuiiZsTgh
-         mmNx2WqGOLFjimlaJ1w0YRYEX7kj+bAYmx1bCjt5U6QK564L3Uvh7qQ1DJVrnvT+z3eH
-         QekM87PJDhGZjtYW7FnGmmWm8eToiF8t0JVcH/QHFcxyrNP31ji4qcsbqAcFGi8sUyp7
-         pIRQGEWvJxLvpnvTGox8tR1YlKzbH7CecnpJnDOp7hiDU/Pt2xpW8DF2Qap9K77y4Ws1
-         3IBAMfrkinRA7YK4hlslP0ScRGpXi1LgL4LFOVcoaT3salY8g/dxfFkQQ7yw6tLCS4/E
-         LakA==
-X-Gm-Message-State: AOJu0YzGCsnqGZSWHzREWCC2ddprbOeNqCUVVg7rAA0QnVSsk8xS+aSb
-	nteQzHXXPzAurAtgVWashegsoaJEzo7HuyuWc197QWiT4pLLHPb8OXpCa3LwEk5MIEJy8Oc0Io6
-	HijDdD3FbrAxoTfB2VfLE0vamCto=
-X-Google-Smtp-Source: AGHT+IEF+W11PtP74KfbSmFcPDS3EYQ1KU6WOyhiuJmd/bSzrVzihbeWkhrpfBr8V7igQaflRBpud1QCaXh2wsJlTkk=
-X-Received: by 2002:a05:6358:2611:b0:176:c47b:7ef5 with SMTP id
- l17-20020a056358261100b00176c47b7ef5mr859465rwc.4.1706313116339; Fri, 26 Jan
- 2024 15:51:56 -0800 (PST)
+        bh=TfrvDj/C5h/4XpSSwgZdUUWpyrSw0Fvr6/VMRmoVgYs=;
+        b=HB1HHQX+5XdlH9CZJHecRElDVssOxY9solWn1QGId3Ds8L/e//HN+dwhSD02DriGn+
+         bi8mZ1wWR2Oc/JZ7LMR5w7Bi0Fdv0Zc3W9W8m3p6+L4VjywlWAO6ma6j3IwPNAJksccS
+         6C7S1C+Bbavf+8owbE8i3ss1iDQky4+WrRwk5rw1GSIwvfAQoQgUwtTMNexc9qZ+E9Yz
+         hItvrS/vcGak32pQ81ucgcAJz1GFYd5QDRAymAJtpPqoYbQ9qBK4Zwf8J8G7Ny/qT6nv
+         aHILl77b917fHMLfA47Xv2aVU0dhgMmQ3SpHA7fugzILR8tzxJqhbp3kHqK2canKHvmR
+         kYNg==
+X-Gm-Message-State: AOJu0Yz28pm+1YkzO66IiA19UDKb5Lmw1kLQp0soBatiNohWxBWGTyNV
+	gjloDCAfa1wwN6MOiidDjoYnE+5StqdurphrcnqJpjFiORLm0cwYzLT30q3IgZN0TypzpQ0KkO3
+	lYb+tMu2DEWM4SsZWDwn67tY1OmQ=
+X-Google-Smtp-Source: AGHT+IHddAcLedUGWvLmJZqGGTNaHZGHq9BYlb/PfDmJideuadpyOFA5FxA7JO+o65m+Sj0d3FMzru6A+XKhEMUyreU=
+X-Received: by 2002:a5d:5264:0:b0:337:bf81:e07f with SMTP id
+ l4-20020a5d5264000000b00337bf81e07fmr229302wrc.52.1706313694574; Fri, 26 Jan
+ 2024 16:01:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126220407.2424-1-git@brycekahle.com>
-In-Reply-To: <20240126220407.2424-1-git@brycekahle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Jan 2024 15:51:44 -0800
-Message-ID: <CAEf4BzbnsD-80+yg7-mN+vhf5M0TwwBmGQYuovssvqd1sXeu=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpftool: add support for split BTF to gen min_core_btf
-To: Bryce Kahle <git@brycekahle.com>
-Cc: bpf@vger.kernel.org, quentin@isovalent.com, ast@kernel.org, 
-	daniel@iogearbox.net, Bryce Kahle <bryce.kahle@datadoghq.com>
+References: <20240122212217.1391878-1-thinker.li@gmail.com> <CAEf4BzbQJXGw3w0RnjuUg=RRMDE9jGgOYxVcA9q9hbYnvFBHhg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbQJXGw3w0RnjuUg=RRMDE9jGgOYxVcA9q9hbYnvFBHhg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 26 Jan 2024 16:01:22 -0800
+Message-ID: <CAADnVQKx3RK8pK4xpNEPQKYGUemO0VjdRePdr34fJwHZs6Urag@mail.gmail.com>
+Subject: Re: [RFC bpf-next v3] bpf, selftests/bpf: Support PTR_MAYBE_NULL for
+ struct_ops arguments.
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Dave Marchevsky <davemarchevsky@meta.com>, David Vernet <dvernet@meta.com>, 
+	Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 2:04=E2=80=AFPM Bryce Kahle <git@brycekahle.com> wr=
-ote:
+On Fri, Jan 26, 2024 at 3:21=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> From: Bryce Kahle <bryce.kahle@datadoghq.com>
+> On Mon, Jan 22, 2024 at 1:22=E2=80=AFPM <thinker.li@gmail.com> wrote:
+> >
+> > From: Kui-Feng Lee <thinker.li@gmail.com>
+> >
+> > Allow passing a null pointer to the operators provided by a struct_ops
+> > object. This is an RFC to collect feedbacks/opinions.
+> >
+> > The previous discussions against v1 came to the conclusion that the
+> > developer should did it in ".is_valid_access". However, recently, kCFI =
+for
+> > struct_ops has been landed. We found it is possible to provide a generi=
+c
+> > way to annotate arguments by adding a suffix after argument names of st=
+ub
+> > functions. So, this RFC is resent to present the new idea.
+> >
+> > The function pointers that are passed to struct_ops operators (the func=
+tion
+> > pointers) are always considered reliable until now. They cannot be
+> > null. However, in certain scenarios, it should be possible to pass null
+> > pointers to these operators. For instance, sched_ext may pass a null
+> > pointer in the struct task type to an operator that is provided by its
+> > struct_ops objects.
+> >
+> > The proposed solution here is to add PTR_MAYBE_NULL annotations to
+> > arguments and create instances of struct bpf_ctx_arg_aux (arg_info) for
+> > these arguments. These arg_infos will be installed at
+> > prog->aux->ctx_arg_info and will be checked by the BPF verifier when
+> > loading the programs. When a struct_ops program accesses arguments in t=
+he
+> > ctx, the verifier will call btf_ctx_access() (through
+> > bpf_verifier_ops->is_valid_access) to verify the access. btf_ctx_access=
+()
+> > will check arg_info and use the information of the matched arg_info to
+> > properly set reg_type.
+> >
+> > For nullable arguments, this patch sets an arg_info to label them with
+> > PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL. This enforces the verifie=
+r to
+> > check programs and ensure that they properly check the pointer. The
+> > programs should check if the pointer is null before reading/writing the
+> > pointed memory.
+> >
+> > The implementer of a struct_ops should annotate the arguments that can =
+be
+> > null. The implementer should define a stub function (empty) as a
+> > placeholder for each defined operator. The name of a stub function shou=
+ld
+> > be in the pattern "<st_op_type>_stub_<operator name>". For example, for
+> > test_maybe_null of struct bpf_testmod_ops, it's stub function name shou=
+ld
+> > be "bpf_testmod_ops_stub_test_maybe_null". You mark an argument nullabl=
+e by
+> > suffixing the argument name with "__nullable" at the stub function.  He=
+re
+> > is the example in bpf_testmod.c.
+> >
+> >   static int bpf_testmod_ops_stub_test_maybe_null(int dummy, struct
+> >                 task_struct *task__nullable)
 >
-> Enables a user to generate minimized kernel module BTF.
->
-> If an eBPF program probes a function within a kernel module or uses
-> types that come from a kernel module, split BTF is required. The split
-> module BTF contains only the BTF types that are unique to the module.
-> It will reference the base/vmlinux BTF types and always starts its type
-> IDs at X+1 where X is the largest type ID in the base BTF.
->
-> Minimization allows a user to ship only the types necessary to do
-> relocations for the program(s) in the provided eBPF object file(s). A
-> minimized module BTF will still not contain vmlinux BTF types, so you
-> should always minimize the vmlinux file first, and then minimize the
-> kernel module file.
->
-> Example:
->
-> bpftool gen min_core_btf vmlinux.btf vm-min.btf prog.bpf.o
-> bpftool -B vm-min.btf gen min_core_btf mod.btf mod-min.btf prog.bpf.o
->
-> Signed-off-by: Bryce Kahle <bryce.kahle@datadoghq.com>
-> ---
->  .../bpf/bpftool/Documentation/bpftool-gen.rst  | 18 +++++++++++++++++-
->  tools/bpf/bpftool/gen.c                        | 17 ++++++++++++-----
->  2 files changed, 29 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/=
-bpftool/Documentation/bpftool-gen.rst
-> index 5006e724d..e067d3b05 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> @@ -16,7 +16,7 @@ SYNOPSIS
->
->         **bpftool** [*OPTIONS*] **gen** *COMMAND*
->
-> -       *OPTIONS* :=3D { |COMMON_OPTIONS| | { **-L** | **--use-loader** }=
- }
-> +       *OPTIONS* :=3D { |COMMON_OPTIONS| | { **-B** | **--base-btf** } |=
- { **-L** | **--use-loader** } }
->
->         *COMMAND* :=3D { **object** | **skeleton** | **help** }
->
-> @@ -202,6 +202,14 @@ OPTIONS
->  =3D=3D=3D=3D=3D=3D=3D
->         .. include:: common_options.rst
->
-> +       -B, --base-btf *FILE*
-> +                 Pass a base BTF object. Base BTF objects are typically =
-used
-> +                 with BTF objects for kernel modules. To avoid duplicati=
-ng
-> +                 all kernel symbols required by modules, BTF objects for
-> +                 modules are "split", they are built incrementally on to=
-p of
-> +                 the kernel (vmlinux) BTF object. So the base BTF refere=
-nce
-> +                 should usually point to the kernel BTF.
-> +
->         -L, --use-loader
->                   For skeletons, generate a "light" skeleton (also known =
-as "loader"
->                   skeleton). A light skeleton contains a loader eBPF prog=
-ram. It does
-> @@ -444,3 +452,11 @@ ones given to min_core_btf.
->    obj =3D bpf_object__open_file("one.bpf.o", &opts);
->
->    ...
-> +
-> +Kernel module BTF may also be minimized by using the -B option:
-> +
-> +**$ bpftool -B 5.4.0-smaller.btf gen min_core_btf 5.4.0-module.btf 5.4.0=
--module-smaller.btf one.bpf.o**
-> +
-> +A minimized module BTF will still not contain vmlinux BTF types, so you
-> +should always minimize the vmlinux file first, and then minimize the
-> +kernel module file.
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index ee3ce2b80..634c809a5 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1630,6 +1630,7 @@ static int do_help(int argc, char **argv)
->                 "       %1$s %2$s help\n"
->                 "\n"
->                 "       " HELP_SPEC_OPTIONS " |\n"
-> +               "                    {-B|--base-btf} |\n"
->                 "                    {-L|--use-loader} }\n"
->                 "",
->                 bin_name, "gen");
-> @@ -1695,14 +1696,14 @@ btfgen_new_info(const char *targ_btf_path)
->         if (!info)
->                 return NULL;
->
-> -       info->src_btf =3D btf__parse(targ_btf_path, NULL);
-> +       info->src_btf =3D btf__parse_split(targ_btf_path, base_btf);
->         if (!info->src_btf) {
->                 err =3D -errno;
->                 p_err("failed parsing '%s' BTF file: %s", targ_btf_path, =
-strerror(errno));
->                 goto err_out;
->         }
->
-> -       info->marked_btf =3D btf__parse(targ_btf_path, NULL);
-> +       info->marked_btf =3D btf__parse_split(targ_btf_path, base_btf);
->         if (!info->marked_btf) {
->                 err =3D -errno;
->                 p_err("failed parsing '%s' BTF file: %s", targ_btf_path, =
-strerror(errno));
-> @@ -2141,10 +2142,16 @@ static struct btf *btfgen_get_btf(struct btfgen_i=
-nfo *info)
->  {
->         struct btf *btf_new =3D NULL;
->         unsigned int *ids =3D NULL;
-> +       const struct btf *base;
->         unsigned int i, n =3D btf__type_cnt(info->marked_btf);
-> +       int start_id =3D 1;
->         int err =3D 0;
->
-> -       btf_new =3D btf__new_empty();
-> +       base =3D btf__base_btf(info->src_btf);
-> +       if (base)
-> +               start_id =3D btf__type_cnt(base);
+> let's keep this consistent with __arg_nullable/__arg_maybe_null? ([0])
+> I'd very much prefer __arg_nullable and __nullable vs
+> __arg_maybe_null/__maybe_null, but Alexei didn't like the naming when
+> I posted v1.
 
-stylistic nit, I'd do:
-
-int start_id, err =3D 0;
-
-and then here
-
-start_id =3D base ? btf__type_cnt(base) : 1;
-
-I'd also name base as base_btf to make it clearer that it's a btf object
-
-> +
-> +       btf_new =3D btf__new_empty_split((struct btf *)base);
-
-um... and this cast didn't trigger any warnings for you? It might work
-ok currently, but clearly the code expects that base_btf might be
-modified, so sharing the same base_btf between two split BTF instances
-is just a recipe for a hard-to-debug issues, long term.
-
-Let's create a copy of base BTF instead? You can use btf__raw_data() +
-btf__new() to make a simple clone
-
-pw-bot: cr
-
->         if (!btf_new) {
->                 err =3D -errno;
->                 goto err_out;
-> @@ -2157,7 +2164,7 @@ static struct btf *btfgen_get_btf(struct btfgen_inf=
-o *info)
->         }
->
->         /* first pass: add all marked types to btf_new and add their new =
-ids to the ids map */
-> -       for (i =3D 1; i < n; i++) {
-> +       for (i =3D start_id; i < n; i++) {
->                 const struct btf_type *cloned_type, *type;
->                 const char *name;
->                 int new_id;
-> @@ -2213,7 +2220,7 @@ static struct btf *btfgen_get_btf(struct btfgen_inf=
-o *info)
->         }
->
->         /* second pass: fix up type ids */
-> -       for (i =3D 1; i < btf__type_cnt(btf_new); i++) {
-> +       for (i =3D start_id; i < btf__type_cnt(btf_new); i++) {
->                 struct btf_type *btf_type =3D (struct btf_type *) btf__ty=
-pe_by_id(btf_new, i);
->
->                 err =3D btf_type_visit_type_ids(btf_type, btfgen_remap_id=
-, ids);
-> --
-> 2.25.1
->
->
+fwiw I'm aware that _Nullable is a standard and it's supported by clang,etc=
+.
+If folks insist on such suffix, I can live with that.
+But I absolutely don't want that to be a reason to rename
+PTR_MAYBE_NULL in the verifier.
+My preference is for consistency in the verifier and suffixes.
+Hence __maybe_null.
+But I'm ok if we do __nullable and keep PTR_MAYBE_NULL.
 
