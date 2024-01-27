@@ -1,150 +1,159 @@
-Return-Path: <bpf+bounces-20473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF74783ED68
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 14:47:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9393783ED6A
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 14:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FC62846CA
-	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 13:47:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51BAF282601
+	for <lists+bpf@lfdr.de>; Sat, 27 Jan 2024 13:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BACA2576B;
-	Sat, 27 Jan 2024 13:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CCF25765;
+	Sat, 27 Jan 2024 13:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lkd/UVY7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="enKQqQey"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52DD28DA0;
-	Sat, 27 Jan 2024 13:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44DF25615;
+	Sat, 27 Jan 2024 13:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706363229; cv=none; b=LiNfRm3Yhq0Gimf1BcmdrhTj0w8k8k+W6g8ZhwQdkAUlb435TFPvnlFij0ns2tasAbdnvbtxFN8PCnQh7qsOtr0mU4ivagexrx5V6Ij/qs2v3v+kty+AkEpFgKGj3S2+4rMNLJI8zRn4P/LNc8qw/36SlXuQ/RCp1QiqA1I3CSE=
+	t=1706363267; cv=none; b=pl+C9a8XfIJXfzx3VhcOJ6k/mem9jb6JVDG5ZxzxE08l1XElxfiAFzCV87J1hdqje5RKQptIw3fPHD6LN37ZHuN7sdfz06t2CAnVOYE0p2ypsYIbOEcRzYwYXvSgpWbGT/T4cAM56Z0M3w+GqsqnIOl2Or0Dj+pq4RcFGVEjZXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706363229; c=relaxed/simple;
-	bh=tqr/MJPFM3xP9xKf9IifJQCHwrhiOME8NrbdPmROiNg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QnvGKhSZuBRmlghdT+tILWjt5OE0rafBXkhSe4lfG1BJfi44UcY44e2D1Z/XAuFILq2Rh5FX5jjo4Y+QOLsWGEVb8QzF2ERWilhQ1YtbTrhqd37E9Ak/8Qc18N8Zel7C/lTy0E/y+/T4HJU0Dwj/NvH92QN2BD6LXk0Lsr6WcEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lkd/UVY7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96F86C43394;
-	Sat, 27 Jan 2024 13:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706363228;
-	bh=tqr/MJPFM3xP9xKf9IifJQCHwrhiOME8NrbdPmROiNg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=lkd/UVY7RIef143IcP6Yf+1Q6+eFRyvQbSm6L0qgM5D0ieJRX05BnTUHjHLcfcwZF
-	 EvFsv7riEgNvpI96sDGnWDS3HDoGY7V6gTcxq+lAVxMBfadH+FrReTKlig1CUmetri
-	 VrcRzSTHtXZZeVBp3FbK+FhbblbxxIEggJRsiYdTT4Teux/UvC6kT+tpCTOJgf/xMv
-	 Y0kGgA7QLvtfRvrBubSwLeKD9BKi5NyRNfSwNceU8kP4ENFTaz0cKIBxaXtU/60ggA
-	 tVwVy6rsL5v0Jx0mpx1mlV4g8lp0wYLksIIGuHf65kgVM5tXIUFO0xT9YkTJxLcsla
-	 Hcj25pGjkQfzA==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Mykola
- Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
- linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Make install target copy
- test_progs extra files
-In-Reply-To: <20240127133327.1594026-2-bjorn@kernel.org>
-References: <20240127133327.1594026-1-bjorn@kernel.org>
- <20240127133327.1594026-2-bjorn@kernel.org>
-Date: Sat, 27 Jan 2024 14:47:05 +0100
-Message-ID: <875xzex50m.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1706363267; c=relaxed/simple;
+	bh=aRVHGBE+E6YdaQtcIX4FAyk7BsARAU5+7Mp+IKkOdkY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DBywnDiALXl7EwOCpI2MeWpiQmleBpv72Ux2vzps6bgR/EIk5gjjCFwBcY7awSNjJ3Z8JOdsHWXz179FVileNYBpzF24Eh+KgCOlCVU8o1EhIxbhJ5dtzBkDeVXcSVovqgaihl0rO56/Xg8dDUUzu9mYAaxwn+vD5jJNIC1PtBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=enKQqQey; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706363265; x=1737899265;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aRVHGBE+E6YdaQtcIX4FAyk7BsARAU5+7Mp+IKkOdkY=;
+  b=enKQqQeys8X4sbDyC5kjWlpT2YT6Es9hxHESuxjOl8ShGegezQNYMdE7
+   3Uq7MXkHHlczHmUZO+01M6tzAH8aBp7kgDIh5MvZ5JL4Y4J2YJz2PvmXA
+   VtRUCZnBeJARxa5B/4zOVLT2BqEMCT9NKNByDK6WTaaUpCqEbi4E2jJjt
+   Y+rw3izC/T28pvUaR3kEH8a4DY69FZBfx+KeWI/Cgl6Msmj0dX84BV3Zo
+   XHjAtSz3qul7k5XLtU/7YmHQjCTvMaoMHKHz0lemYdW7rB2H9ez9qvgdl
+   aGGRadS9g8nhUaXdIQIkic+DyuV3t6ux/KOCznirrdUb+VHuKd6MQ4JrA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401543230"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="401543230"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 05:47:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="910611848"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="910611848"
+Received: from dcai-bmc-sherry-1.sh.intel.com ([10.239.138.57])
+  by orsmga004.jf.intel.com with ESMTP; 27 Jan 2024 05:47:38 -0800
+From: Haiyue Wang <haiyue.wang@intel.com>
+To: bpf@vger.kernel.org
+Cc: Haiyue Wang <haiyue.wang@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next v1] bpf,token: use BIT_ULL() to convert the bit mask
+Date: Sat, 27 Jan 2024 21:48:56 +0800
+Message-ID: <20240127134901.3698613-1-haiyue.wang@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+Replace the '(1ULL << *)' with the macro BIT_ULL(nr).
 
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->
-> Currently, "make install" does not install the required test_progs
-> "extra files" (e.g. kernel modules, helper shell scripts, etc.) for
-> the BPF machine flavors (e.g. cpuv4).
->
-> Add the missing "extra files" dependencies to rsync, called from the
-> install target.
->
-> Unfortunately, kselftest does not use bash as the default shell, so
-> the globbering is limited. Blindly enabling "SHELL:=3D/bin/bash" for the
-> Makefile breaks in other places. Workaround by explicitly call
-> "/bin/bash" to expand the file globbing.
->
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> ---
-> v3: Do not use hardcoded file names (Andrii)
-> v2: Added btf_dump_test_case files
-> ---
->  tools/testing/selftests/bpf/Makefile | 29 +++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 830a34f0aa37..d66c689f0f3c 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -605,14 +605,15 @@ TRUNNER_EXTRA_SOURCES :=3D test_progs.c		\
->  			 json_writer.c 		\
->  			 flow_dissector_load.h	\
->  			 ip_check_defrag_frags.h
-> -TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko=
-	\
-> -		       $(OUTPUT)/liburandom_read.so			\
-> -		       $(OUTPUT)/xdp_synproxy				\
-> -		       $(OUTPUT)/sign-file				\
-> -		       $(OUTPUT)/uprobe_multi				\
-> -		       ima_setup.sh 					\
-> -		       verify_sig_setup.sh				\
-> -		       $(wildcard progs/btf_dump_test_case_*.c)
-> +TRUNNER_PROGS_EXTRA_FILES:=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testm=
-od.ko	\
-> +			    $(OUTPUT)/liburandom_read.so			\
-> +			    $(OUTPUT)/xdp_synproxy				\
-> +			    $(OUTPUT)/sign-file					\
-> +			    $(OUTPUT)/uprobe_multi				\
-> +			    ima_setup.sh					\
-> +			    verify_sig_setup.sh					\
-> +			    $(wildcard progs/btf_dump_test_case_*.c)
-> +TRUNNER_EXTRA_FILES :=3D $(TRUNNER_PROGS_EXTRA_FILES)
->  TRUNNER_BPF_BUILD_RULE :=3D CLANG_BPF_BUILD_RULE
->  TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_T=
-ESTS
->  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
-> @@ -740,11 +741,17 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR=
-) $(HOST_SCRATCH_DIR)	\
->  # Delete partially updated (corrupted) files on error
->  .DELETE_ON_ERROR:
->=20=20
-> +space :=3D $(subst ,, )
-> +comma :=3D ,
-> +EXTRA_FILES_GLOB :=3D {$(subst $(space),$(comma),$(notdir $(TRUNNER_PROG=
-S_EXTRA_FILES)))}
->  DEFAULT_INSTALL_RULE :=3D $(INSTALL_RULE)
->  override define INSTALL_RULE
->  	$(DEFAULT_INSTALL_RULE)
-> -	@for DIR in $(TEST_INST_SUBDIRS); do		  \
-> -		mkdir -p $(INSTALL_PATH)/$$DIR;   \
-> -		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
-> +	@for DIR in $(TEST_INST_SUBDIRS); do						\
-> +		mkdir -p $(INSTALL_PATH)/$$DIR;						\
-> +		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;			\
-> +		rsync -a --copy-unsafe-links						\
-> +			$$(/bin/bash -c "echo $(OUTPUT)/$$DIR/$(EXTRA_FILE_GLOB)")	\
+Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
+---
+ kernel/bpf/token.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Argh! Bad commit. EXTRA_FILE_GLOB should be EXTRA_FILES_GLOB. :-(
+diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
+index 0bca93b60c43..d6ccf8d00eab 100644
+--- a/kernel/bpf/token.c
++++ b/kernel/bpf/token.c
+@@ -72,28 +72,28 @@ static void bpf_token_show_fdinfo(struct seq_file *m, struct file *filp)
+ 	u64 mask;
+ 
+ 	BUILD_BUG_ON(__MAX_BPF_CMD >= 64);
+-	mask = (1ULL << __MAX_BPF_CMD) - 1;
++	mask = BIT_ULL(__MAX_BPF_CMD) - 1;
+ 	if ((token->allowed_cmds & mask) == mask)
+ 		seq_printf(m, "allowed_cmds:\tany\n");
+ 	else
+ 		seq_printf(m, "allowed_cmds:\t0x%llx\n", token->allowed_cmds);
+ 
+ 	BUILD_BUG_ON(__MAX_BPF_MAP_TYPE >= 64);
+-	mask = (1ULL << __MAX_BPF_MAP_TYPE) - 1;
++	mask = BIT_ULL(__MAX_BPF_MAP_TYPE) - 1;
+ 	if ((token->allowed_maps & mask) == mask)
+ 		seq_printf(m, "allowed_maps:\tany\n");
+ 	else
+ 		seq_printf(m, "allowed_maps:\t0x%llx\n", token->allowed_maps);
+ 
+ 	BUILD_BUG_ON(__MAX_BPF_PROG_TYPE >= 64);
+-	mask = (1ULL << __MAX_BPF_PROG_TYPE) - 1;
++	mask = BIT_ULL(__MAX_BPF_PROG_TYPE) - 1;
+ 	if ((token->allowed_progs & mask) == mask)
+ 		seq_printf(m, "allowed_progs:\tany\n");
+ 	else
+ 		seq_printf(m, "allowed_progs:\t0x%llx\n", token->allowed_progs);
+ 
+ 	BUILD_BUG_ON(__MAX_BPF_ATTACH_TYPE >= 64);
+-	mask = (1ULL << __MAX_BPF_ATTACH_TYPE) - 1;
++	mask = BIT_ULL(__MAX_BPF_ATTACH_TYPE) - 1;
+ 	if ((token->allowed_attachs & mask) == mask)
+ 		seq_printf(m, "allowed_attachs:\tany\n");
+ 	else
+@@ -253,7 +253,7 @@ bool bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
+ {
+ 	if (!token)
+ 		return false;
+-	if (!(token->allowed_cmds & (1ULL << cmd)))
++	if (!(token->allowed_cmds & BIT_ULL(cmd)))
+ 		return false;
+ 	return security_bpf_token_cmd(token, cmd) == 0;
+ }
+@@ -263,7 +263,7 @@ bool bpf_token_allow_map_type(const struct bpf_token *token, enum bpf_map_type t
+ 	if (!token || type >= __MAX_BPF_MAP_TYPE)
+ 		return false;
+ 
+-	return token->allowed_maps & (1ULL << type);
++	return token->allowed_maps & BIT_ULL(type);
+ }
+ 
+ bool bpf_token_allow_prog_type(const struct bpf_token *token,
+@@ -273,6 +273,6 @@ bool bpf_token_allow_prog_type(const struct bpf_token *token,
+ 	if (!token || prog_type >= __MAX_BPF_PROG_TYPE || attach_type >= __MAX_BPF_ATTACH_TYPE)
+ 		return false;
+ 
+-	return (token->allowed_progs & (1ULL << prog_type)) &&
+-	       (token->allowed_attachs & (1ULL << attach_type));
++	return (token->allowed_progs & BIT_ULL(prog_type)) &&
++	       (token->allowed_attachs & BIT_ULL(attach_type));
+ }
+-- 
+2.43.0
 
-LMK if you can fix it up, or if you want me to resubmit.
-
-
-Bj=C3=B6rn
 
