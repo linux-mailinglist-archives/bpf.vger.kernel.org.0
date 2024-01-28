@@ -1,154 +1,119 @@
-Return-Path: <bpf+bounces-20508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0007D83F2CE
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 03:05:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9A5183F442
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 06:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE811C2125C
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 02:05:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6428728420E
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 05:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF2C17F0;
-	Sun, 28 Jan 2024 02:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0894279F2;
+	Sun, 28 Jan 2024 05:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f000nPpY"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="iS7lodvy"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDB515A7
-	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 02:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE512D51A
+	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 05:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706407540; cv=none; b=Ms137MBYI9/72Xsh5CtvAv9Xce+mUOcKr0wbKgeFWKUndoy+18/DpIJAV0picdBCTql9n4oaTBcpE0W32cS4j9KxAJ4yHbAdD86J36WAyRwH+sKnjyRH+sEXMPK1PxspnBWG+zskz+A2sKARYM2+aqLfHN6LU3W3ZmBhslEeQgQ=
+	t=1706421270; cv=none; b=bDB/hK3aB50k05FdRfb8gaDkLaaug312ko9KDjsZ1Wd3yZQm95blY2T2/CuKmKghzUQiOA/X5xeYfOo6LscjA3i7Tt2U1YRSdqYQtJ9NnlUtklTcQa2WbcT48uZcQaeu5lIP+o1NENrABW7aahB9vtCxPb50S11rLhvSYj9EcIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706407540; c=relaxed/simple;
-	bh=KjSXljMu7HdemF4os90r/aeSzY/Pl2R+s8bw4cHXAPU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iIoaq+VbuENnte3LuZrQx8mdu0ge7m4Kmp+U7CqOIYfVqEdyb4bNsrJJDwSHJsbcC7H7/T34VNopcF45I2brR27ZDkIzLxODaGvPfS//N9XgdxGCvbHJvYH1WJN/zUCzKlcKGBi99vSRhrNRDIs+f48BHNzY6MNwHO1uBchccbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f000nPpY; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b1906297-d784-479b-b2f3-07ab84ae99c1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706407534;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t9TFVA9BiBMXnP+3StRo23gDSg13S04PXg03Gywosps=;
-	b=f000nPpYHeiXwpOVhjF0B6LMbZbFRJiUCrN5obalhQ5kbHRaUnjU7KpTdx4xwzkdePiEge
-	bu1uTOf9Fs5qfukrm8dl8Yy72s5DUwO597Q2c7aacBwyFZpV1+PaswVG54ttwzmn9va23f
-	HneXs5r2fwmAnTynwbVUVnj1NQiXZpA=
-Date: Sat, 27 Jan 2024 18:05:15 -0800
+	s=arc-20240116; t=1706421270; c=relaxed/simple;
+	bh=T4a0KkJe3ySw24IAuPysHE97+mezCU60c6pezH3/Qas=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=haYRzt1WVQsgYIjRDFT4hDvxttP79HsI9uQ/2y8ZqMCe1jlWjS8V7UHtkdQQHhbicT+OBbsWp+gIC6Hk1lNlfSqGGqmZn/we7F0uVjKoDgSA4gXfh2QdAppS/8dbtG1lAE8qtyXWSMN6sLZM62hhDQJQQxHgAYj5sx2DAVqR8Ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=iS7lodvy; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a31c14100so253207eaf.0
+        for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 21:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706421267; x=1707026067; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WoMzznv9gs9CVHyNB3sDyYu8pYaEpVdO9qAfTUaEKLQ=;
+        b=iS7lodvy3t5Qh83KiRk2C+o90nyiiD0XPE5FagdFsePnYmypF8cHdcz+A7XGNhY9pm
+         sDgYBhHQWahhjYmFeqEbEP4QlxQHt9ybJLUg9SDViqmr8i04OW4bHQdi6Svq9EmWpDlt
+         396GCnd+fXSIvgzJxAf4pAwwaqYgR8LgBtE9YDV6GyscBD/qbBhJlLKSG1VW6wM8tT4w
+         qhbUOfixZs1o1DsfW2vKsbv8FOQqbqimFBEhDIuZNnuAoqnbstoElakQM4RbfTXTiG71
+         n4P2xsDZJTVQswtj/gs44tYoO8wIY9zSGX9KJOHInPUJIgHjqAyUaFWtC8MpY4EW65EK
+         Of7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706421267; x=1707026067;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WoMzznv9gs9CVHyNB3sDyYu8pYaEpVdO9qAfTUaEKLQ=;
+        b=dB7oLftHii6rfDu3L7hYnfXzvrLr35uWBuEYmH4LXSjB9MV0/F+t/ayK2z79Ase3Yd
+         b118UfyAHJOKPpcdCRxVsZZmHO5WRGQ4dhrqKI+y/XEmN0RQa2vdK/gbtNvs2AilhpDX
+         epvWtiz8p/jmvKnYDW68ZgZAqswnAs4T5UQ04LDOcA1t7j/lcYdKHTW30Tc6Nqn7wbnr
+         a6iyQsGDeXzl69SL0ICPC2J83RlhP8T+RmVweB/sS65InaYa5zZFDibjh4MjjlAnxsKu
+         B7GiTinenHofBMLFIeBH/UYduyIxxIsRWkyPzy8JFUT0fQQgyPGj6N14Qo77t95TVpfV
+         cnQQ==
+X-Gm-Message-State: AOJu0YxkOzfbwImLwJiwawy8Wd+8BfRNna8AM5r1nYfsgednT8ybGCTN
+	bTlpWFHblMPPNAmuSnYXjUJQ76o1KFW0KT/54IsXJXbZzJNMo2GSlXR3dzWagTo=
+X-Google-Smtp-Source: AGHT+IF3BhZQ0kd9MaydOR06jsyngD/uQTkBOXKbnxIlTgDR5uNidOeNUBMOv+APKTb+c7/0nhvxaw==
+X-Received: by 2002:a05:6358:2489:b0:176:a102:568e with SMTP id m9-20020a056358248900b00176a102568emr3049490rwc.5.1706421266793;
+        Sat, 27 Jan 2024 21:54:26 -0800 (PST)
+Received: from localhost.localdomain ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id u12-20020a17090ac88c00b0029272682390sm3757020pjt.27.2024.01.27.21.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 21:54:26 -0800 (PST)
+From: Menglong Dong <dongmenglong.8@bytedance.com>
+To: andrii@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Menglong Dong <dongmenglong.8@bytedance.com>
+Subject: [PATCH bpf-next] bpf: remove unused field "mod" in struct bpf_trampoline
+Date: Sun, 28 Jan 2024 13:54:43 +0800
+Message-Id: <20240128055443.413291-1-dongmenglong.8@bytedance.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: BPF selftests and strict aliasing
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-Cc: Eduard Zingerman <eddyz87@gmail.com>, david.faust@oracle.com,
- cupertino.miranda@oracle.com, Yonghong Song <yhs@meta.com>
-References: <87plxmsg37.fsf@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <87plxmsg37.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+It seems that the field "mod" in struct bpf_trampoline is not used
+anywhere after the commit 31bf1dbccfb0 ("bpf: Fix attaching
+fentry/fexit/fmod_ret/lsm to modules"). So we can just remove it now.
 
-On 1/27/24 11:59 AM, Jose E. Marchesi wrote:
-> Hello.
-> The following BPF selftests perform type-punning:
->
->    progs/bind4_prog.c
->    136 |         user_ip4 |= ((volatile __u16 *)&ctx->user_ip4)[0] << 0;
->
->    progs/bind6_prog.c
->    149 |                 user_ip6 |= ((volatile __u16 *)&ctx->user_ip6[i])[0] << 0;
->
->    progs/dynptr_fail.c
->    549 |         val = *(int *)&ptr;
->
->    progs/linked_list_fail.c
->    318 |         return *(int *)&f->head;
->    329 |         *(int *)&f->head = 0;
->    338 |         f = bpf_obj_new(typeof(*f));
->    341 |         return *(int *)&f->node2;
->    349 |         f = bpf_obj_new(typeof(*f));
->    352 |         *(int *)&f->node2 = 0;
->
->    progs/map_kptr_fail.c
->     34 |         *(u32 *)&v->unref_ptr = 0;
->
->    progs/syscall.c
->    172 |         attr->map_id = ((struct bpf_map *)&outer_array_map)->id;
->
->    progs/test_pkt_md_access.c
->     13 |                 TYPE tmp = *(volatile TYPE *)&skb->FIELD;               \
->
->    progs/test_sk_lookup.c
->     31 |         (((__u16 *)&(value))[LSE_INDEX((index), sizeof(value) / 2)])
->    427 |         val_u32 = *(__u32 *)&ctx->remote_port;
->
->    progs/timer_crash.c
->     38 |         *(void **)&value = (void *)0xdeadcaf3;
->
-> This results in GCC warnings with -Wall but violating strict aliasing
-> may also result in the compiler incorrectly optimizing something.
->
-> There are some alternatives to deal with this:
->
-> a) To rewrite the tests to conform to strict aliasing rules.
->
-> b) To build these tests using -fno-strict-aliasing to make sure the
->     compiler will not rely on strict aliasing while optimizing.
->
-> c) To add pragmas to these test files to avoid the warning:
->     _Pragma("GCC diagnostic ignored \"-Wstrict-aliasing\"")
->
-> I think b) is probably the best way to go, because it will avoid the
-> warnings, will void potential problems with optimizations triggered by
-> strict aliasing, and will not require to rewrite the tests.
+Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+---
+ include/linux/bpf.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-I tried with latest clang with -fstrict-aliasing:
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b86bd15a051d..1ebbee1d648e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1189,7 +1189,6 @@ struct bpf_trampoline {
+ 	int progs_cnt[BPF_TRAMP_MAX];
+ 	/* Executable image of trampoline */
+ 	struct bpf_tramp_image *cur_image;
+-	struct module *mod;
+ };
+ 
+ struct bpf_attach_target_info {
+-- 
+2.39.2
 
-[~/work/bpf-next/tools/testing/selftests/bpf (master)]$ cat run.sh
-clang  -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include \
-   -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
-   -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include
-   -idirafter /home/yhs/work/llvm-project/llvm/build.19/install/lib/clang/19/include
-   -idirafter /usr/local/include -idirafter /usr/include   -Wno-compare-distinct-pointer-types
-   -DENABLE_ATOMICS_TESTS -O2 -fstrict-aliasing --target=bpf -c progs/bind4_prog.c -mcpu=v3
-   -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bind4_prog.bpf.o
-[~/work/bpf-next/tools/testing/selftests/bpf (master)]$ ./run.sh
-[~/work/bpf-next/tools/testing/selftests/bpf (master)]$
-
-I does not have compilation failure. I am wondering why -fstrict-aliasing won't have warning in clang side
-but have warning in gcc side.
-Your suggestion 'b' seems okay or we could even add -fno-strict-aliasing into common compilation flags,
-but I would like to understand more about -fstrict-aliasing difference between gcc and clang.
-
->
-> Provided [1] gets applied, I can prepare a patch that adds the following
-> to selftests/bpf/Makefile:
->
->    progs/bin4_prog.c-CFLAGS := -fno-strict-aliasing
->    progs/bind6_prog.c-CFLAGS := -fno-strict-aliasing
->    progs/dynptr_fail.cw-CFLAGS := -fno-strict-aliasing
->    progs/linked_list_fail.c-CFLAGS := -fno-strict-aliasing
->    progs/map_kptr_fail.c-CFLAGS := -fno-strict-aliasing
->    progs/syscall.c-CFLAGS := -fno-strict-aliasing
->    progs/test_pkt_md_access.c-CFLAGS := -fno-strict-aliasing
->    progs/test_sk_lookup.c-CFLAGS := -fno-strict-aliasing
->    progs/timer_crash.c-CFLAGS := -fno-strict-aliasing
->
-> [1] https://lore.kernel.org/bpf/20240127100702.21549-1-jose.marchesi@oracle.com/T/#u
->
 
