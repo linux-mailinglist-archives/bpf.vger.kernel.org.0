@@ -1,234 +1,187 @@
-Return-Path: <bpf+bounces-20526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20528-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D2F83F9DA
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 21:17:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0151283FB20
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 01:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A23C1F21B39
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 20:17:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2280F1C222FC
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 00:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE983BB5F;
-	Sun, 28 Jan 2024 20:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7244596F;
+	Mon, 29 Jan 2024 00:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDBFv+ra"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="U8LS/rVl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="U8LS/rVl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODDwb832"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074133BB5E
-	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 20:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50553446C7
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 00:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706473044; cv=none; b=Pz/0oL2qPjz+yxX4L0W6iDGoOV92JcxIAwVNeT7x4hHPMKc1lmKBmGaIjSxPjevmKhsGtkRuI74FJzHl34aGDmgKbVIZ2m7uFKNtwIIyvAhBPZCYTIE2hjC8PPbbECqaOCr4gwHT7FV+HWKhlG5MRPOSCk8kCMXtLKsCTGve/KA=
+	t=1706486409; cv=none; b=Ag+oFJikwF0zcYe7eEI29CjIR5CJFaAsweW8YBGEumoE5hS0Hz6RlKpIO3gb9AokbQDPQLeyC6pVIi1axIDx4ue+zeoXdVa2DG6el9CCKxHjbxk48c8inLZpOu4l+VNvWV8N6OXz4BZkShJbWUwTvQm05zbKpszMdt1Do3hDSes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706473044; c=relaxed/simple;
-	bh=M9ylQrBldw8arol/NBZ2uAgsNSeVJkhhNiXH1vMD2zw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ElXdyYThtsPkr3t1yyW1XtArap6IskADJf0XcXxhOSlqsgyMoA5pNDkId3FtjZps8kq1NJCwWUtG2pYw/bzqVumA1yS2hcrTTHT8/LNRnIaLzq8WqSdzD+wRspqS/pdbPJ/yX6WjIb/UvNO2E/090YuFXz0T3nj65W0oZcidkCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDBFv+ra; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33aea66a31cso265449f8f.1
-        for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 12:17:22 -0800 (PST)
+	s=arc-20240116; t=1706486409; c=relaxed/simple;
+	bh=41Jhn8l7pzCTMkZGosw3DCmTRqBTg4XjavH8wslAEQY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:To:Cc:
+	 Subject:Content-Type; b=nDpPToNeu7Zn12SQ3Pla1OocVoZJOvIHJlpQ4Z/gRNF3qdJWcQ7XPMwukXvn7BzBmk80LxPv4ZGYWQG+CB4dmKOSVTl68Eah5w8E5QYmhU7OqXIgo+VwrpFVfM15X/Q364lJclpd+/uEabx7tX2aoMgXMjnXIpSNodYSJhub9XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=U8LS/rVl; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=U8LS/rVl; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ODDwb832 reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 7FC50C14F6B0
+	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 16:00:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1706486405; bh=41Jhn8l7pzCTMkZGosw3DCmTRqBTg4XjavH8wslAEQY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=U8LS/rVlGlZ5tRM81pLFck5X/6Y/44sUgV5LxiawKmKxWFoksfsZlmfpYRwARMwKR
+	 BTJd0eYypeXQRxnHW0zmiXKAYq/omVTU2ZWoCgIvS04rFmthRTOjRym5Mdbe3wMIbw
+	 M7+pQsOKUjeUVnHcau5HvfpCnnzH4olPtJ23vRA0=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Sun Jan 28 16:00:05 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 2B8EFC14F602;
+	Sun, 28 Jan 2024 16:00:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1706486405; bh=41Jhn8l7pzCTMkZGosw3DCmTRqBTg4XjavH8wslAEQY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=U8LS/rVlGlZ5tRM81pLFck5X/6Y/44sUgV5LxiawKmKxWFoksfsZlmfpYRwARMwKR
+	 BTJd0eYypeXQRxnHW0zmiXKAYq/omVTU2ZWoCgIvS04rFmthRTOjRym5Mdbe3wMIbw
+	 M7+pQsOKUjeUVnHcau5HvfpCnnzH4olPtJ23vRA0=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C30FAC14F602
+ for <bpf@ietfa.amsl.com>; Sun, 28 Jan 2024 16:00:04 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.107
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id qjX5y1NtApIL for <bpf@ietfa.amsl.com>;
+ Sun, 28 Jan 2024 16:00:02 -0800 (PST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 24DE1C14F5FF
+ for <bpf@ietf.org>; Sun, 28 Jan 2024 16:00:02 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-40ee705e9bfso26149415e9.0
+ for <bpf@ietf.org>; Sun, 28 Jan 2024 16:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706473041; x=1707077841; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8U1QLDn4tiaa8LAT8cFZD8yRKsZK5WZFA4kzMXskr7s=;
-        b=DDBFv+rai+Lf+232gD1VLoPWr4nkzsOh3fitj09fGqBETR3+vxprljtvbhi64thX7H
-         cxvegD033N541ZtTJcgsE+nrATADY08oeBZ8ETWliaKPljQX0l+nDFDT/xFpVFRCRtZ2
-         dF21VXPSpiJ/7/7l15hKUfQDyQpgqB5ANu/uVb1SjyPmc7TZEJGcW+ztsucdZi1vqBWd
-         fETfuVBFZKGAySEkAyPozzZ0f3dLNfmDch1776UICO75m7wac8dgxhnyuAYcKF78sT/v
-         PZTCKZdZDEU61TuzPEoQ15oxJTnfawS/SWJ4b1oz+d2gR3HzmhNy39VZxsbngkaJGJf6
-         FcnA==
+ d=gmail.com; s=20230601; t=1706486400; x=1707091200; darn=ietf.org;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=a7x21MVZ3T5kHI10+76D9TW9jSjeUQJEv9vhm3J4OBM=;
+ b=ODDwb832xDmxr5tXVfkA5QrAQ0EyR8i6RwiNoiI1y11B46tbqD8Op0XsFhJWaADy+N
+ Icv5Vqzg1wDHP35uJj8wHPs16wbfZb5fVBqpL6V9FhvIxN+wFpK6TihLffq5KJxBpE7I
+ rB69alIq+Esve5L+oeM1Nr07q4gy628ISgRVHIMDXnu+8cWN0+umdrpr/lQPjWq+j7p8
+ x9kGZ4IyIXZq09EPOGTaavIl5rqpaAaRJbPFZqXZZrKy83iqMRb8cHiixuTCi16Avk7j
+ lFGLXV+1Bkcq9KaZKe2PtH8/ztgC6p3if+a6YDwHwdEs0TR7FEAbZtflKYA+rLSZ2gAd
+ 2MNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706473041; x=1707077841;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8U1QLDn4tiaa8LAT8cFZD8yRKsZK5WZFA4kzMXskr7s=;
-        b=r0LNzk7cVMw7rP51h8dEzLb4oId4pnX6LsGTg4+Zg66pbF6U/RCtCAH5BnfNNiXtiG
-         TijRGWzlRX6K4fsfLxoPdMDFpkTcoNp1Xl1Jtiw76gbrM1CbkiBF3PxnWEM9WESffMRO
-         QkGe6pIva1wD+0VzZYYd7fvQKLhQethONd5zwYIHOzIm5FZlVylGRSgWRC6pD3pnqfAi
-         zOthdAD8lc3ksoYzUwWBbcoTrKq+ynbAJUa6dqxsJFOqNR5+9D8EmN38IdDgbJE/EhR8
-         xijT2S6ZZhAs6yzp4yvWSYQJ9DEkaP2RYjV7w5xSUVbVfr5L/bg8J2uhe2Pq5fpJ6uNJ
-         G74g==
-X-Gm-Message-State: AOJu0Yxw/yirJR4KFpgvdD/zmznlgA9w/hjccM/Puv74hncwIytJzepB
-	QEfy1myH1B1d4+nCy3h/bPFIPCpj5Ac7sNl1IvAM8ljoiRNK2Wdn
-X-Google-Smtp-Source: AGHT+IGXnuQ8jVq6p5Bo0zN5mMREhPlhozVk+148GuYwKQB6WMJvRovOmaSiOsr//L2L9uqICc7SBQ==
-X-Received: by 2002:a5d:4fc6:0:b0:333:c81:8f9d with SMTP id h6-20020a5d4fc6000000b003330c818f9dmr3651343wrw.2.1706473040884;
-        Sun, 28 Jan 2024 12:17:20 -0800 (PST)
-Received: from krava ([83.240.60.213])
-        by smtp.gmail.com with ESMTPSA id u11-20020a056000038b00b0033aed5feea4sm1043426wrf.54.2024.01.28.12.17.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 12:17:20 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 28 Jan 2024 21:17:18 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix cross-compilation to
- non-host endianness
-Message-ID: <Zba2TrYs6jRcNhH8@krava>
-References: <20240123120759.1865189-1-vmalik@redhat.com>
- <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
+ d=1e100.net; s=20230601; t=1706486400; x=1707091200;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=a7x21MVZ3T5kHI10+76D9TW9jSjeUQJEv9vhm3J4OBM=;
+ b=CG9SQIm5Wevs41xaL2KocnbdfUlk43wsDQ5TodEoSwCdTgO+oMvJVu3GirqzgA06v2
+ 5XRtGL9RCqi+dWPQ4pceGQodYJ8BgvmFKH1LmDG31VuwT9O/LXTfn/G6vl4pEX0Kpgk+
+ Y43Qg5JaprY0KJK5HwS+2+Qu+aAW4yE7XRYTsgVMQrxjsKxHSHfuG20qCcro0Y47BstZ
+ aX68r6WqCto86d+5ERW9vCX0WXKkHTR29JfwAkz75PcRlH/BXd8/7g5nxxSYubRZRzpX
+ H4kWBTqyhMgX2Q1qxeX0M0mbuIl4RsWBUUUFPZL2G1+NPDEdWkd0frfnpw2Dach3k+AC
+ Sydw==
+X-Gm-Message-State: AOJu0YzmS+LKWtV/AfGXs7yMUyZO0jIICYtug6S/+rVW2puY3YuSa+Sm
+ QNxYuwLnI6lvc34G7/MKVO0rmve8OKpwVICZEEfmVdU/lOr1/Hx3P6c/vxIPILUHNHQMz493p06
+ NHySg+ogZ63sToaMXa8oLpq7sFc8=
+X-Google-Smtp-Source: AGHT+IFNtPAKt8KhgVradSii0nSxKnv8/biZEE3dhq9G0z33hQn3nO3baMhjK5bh6oK7tZl//2Bhs8HvpUbpX7a9IBY=
+X-Received: by 2002:a5d:51ca:0:b0:33a:ee39:5b4a with SMTP id
+ n10-20020a5d51ca000000b0033aee395b4amr719969wrv.36.1706486400236; Sun, 28 Jan
+ 2024 16:00:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
+References: <006601da5151$a22b2bb0$e6818310$@gmail.com>
+ <877cjutxe9.fsf@oracle.com>
+ <8734uitx3m.fsf@oracle.com> <01e601da51b7$92c4ffa0$b84efee0$@gmail.com>
+In-Reply-To: <01e601da51b7$92c4ffa0$b84efee0$@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 28 Jan 2024 15:59:48 -0800
+Message-ID: <CAADnVQK8JegsSxgbQbO=DR71cRgkvN-y9LH_ZQYxmj1a-hCz5g@mail.gmail.com>
+To: Dave Thaler <dthaler1968@googlemail.com>
+Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf@ietf.org, 
+ bpf <bpf@vger.kernel.org>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/ogmS9qFhdBCxC4VrOWL7nzjSiXU>
+Subject: Re: [Bpf] ISA: BPF_MSH and deprecated packet access instructions
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
-On Fri, Jan 26, 2024 at 03:40:11PM -0800, Andrii Nakryiko wrote:
-> On Tue, Jan 23, 2024 at 4:08 AM Viktor Malik <vmalik@redhat.com> wrote:
-> >
-> > The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
-> > build and afterwards patched by resolve_btfids with correct values.
-> > Since resolve_btfids always writes in host-native endianness, it relies
-> > on libelf to do the translation when the target ELF is cross-compiled to
-> > a different endianness (this was introduced in commit 61e8aeda9398
-> > ("bpf: Fix libelf endian handling in resolv_btfids")).
-> >
-> > Unfortunately, the translation will corrupt the flags fields of SET8
-> > entries because these were written during vmlinux compilation and are in
-> > the correct endianness already. This will lead to numerous selftests
-> > failures such as:
-> >
-> >     $ sudo ./test_verifier 502 502
-> >     #502/p sleepable fentry accept FAIL
-> >     Failed to load prog 'Invalid argument'!
-> >     bpf_fentry_test1 is not sleepable
-> >     verification time 34 usec
-> >     stack depth 0
-> >     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-> >     Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
-
-hum, I'd think we should have hit such bug long time ago.. set8 is
-there for some time already.. nice ;-)
-
-> >
-> > Since it's not possible to instruct libelf to translate just certain
-> > values, let's manually bswap the flags in resolve_btfids when needed, so
-> > that libelf then translates everything correctly.
-> >
-> > Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
-> > Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> > ---
-> >  tools/bpf/resolve_btfids/main.c | 35 +++++++++++++++++++++++++++++++--
-> >  1 file changed, 33 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> > index 27a23196d58e..440d3d066ce4 100644
-> > --- a/tools/bpf/resolve_btfids/main.c
-> > +++ b/tools/bpf/resolve_btfids/main.c
-> > @@ -646,18 +646,31 @@ static int cmp_id(const void *pa, const void *pb)
-> >         return *a - *b;
-> >  }
-> >
-> > +static int need_bswap(int elf_byte_order)
-> > +{
-> > +       return __BYTE_ORDER == __LITTLE_ENDIAN && elf_byte_order != ELFDATA2LSB ||
-> > +              __BYTE_ORDER == __BIG_ENDIAN && elf_byte_order != ELFDATA2MSB;
-> 
-> return (__BYTE_ORDER == __LITTLE_ENDIAN) != (elf_byte_order == ELFDATA2LSB);
-> 
-> ?
-> 
-> > +}
-> > +
-> >  static int sets_patch(struct object *obj)
-> >  {
-> >         Elf_Data *data = obj->efile.idlist;
-> >         int *ptr = data->d_buf;
-> >         struct rb_node *next;
-> > +       GElf_Ehdr ehdr;
-> > +
-> > +       if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
-> > +               pr_err("FAILED cannot get ELF header: %s\n",
-> > +                       elf_errmsg(-1));
-> > +               return -1;
-> > +       }
-> 
-> calculate needs_bswap() once here?
-> 
-> >
-> >         next = rb_first(&obj->sets);
-> >         while (next) {
-> > -               unsigned long addr, idx;
-> > +               unsigned long addr, idx, flags;
-> >                 struct btf_id *id;
-> >                 int *base;
-> > -               int cnt;
-> > +               int cnt, i;
-> >
-> >                 id   = rb_entry(next, struct btf_id, rb_node);
-> >                 addr = id->addr[0];
-> > @@ -679,6 +692,24 @@ static int sets_patch(struct object *obj)
-> >
-> >                 qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
-> >
-> > +               /*
-> > +                * When ELF endianness does not match endianness of the host,
-> > +                * libelf will do the translation when updating the ELF. This,
-> > +                * however, corrupts SET8 flags which are already in the target
-> > +                * endianness. So, let's bswap them to the host endianness and
-> > +                * libelf will then correctly translate everything.
-> > +                */
-> > +               if (id->is_set8 && need_bswap(ehdr.e_ident[EI_DATA])) {
-> > +                       for (i = 0; i < cnt; i++) {
-> > +                               /*
-> > +                                * header and entries are 8-byte, flags is the
-> > +                                * second half of an entry
-> > +                                */
-> > +                               flags = idx + (i + 1) * 2 + 1;
-> > +                               ptr[flags] = bswap_32(ptr[flags]);
-> 
-> we are dealing with struct btf_id_set8, right? Can't we #include
-> include/linux/btf_ids.h and use that type for all these offset
-> calculations?..
-
-we could, there's tools/include/linux/btf_ids.h, which we could include
-in here, we do that in selftests.. but it needs to be updated with latest
-kernel updates (at least with set8 struct)
-
-> 
-> I have the same question for existing code, tbh, so maybe there was
-> some good reason, not sure...
-
-I think the test came later and I did not think of it for the resolve_btfids
-itself, I guess it might make the code more readable
-
-thanks,
-jirka
-
-> 
-> > +                       }
-> > +               }
-> > +
-> >                 next = rb_next(next);
-> >         }
-> >         return 0;
-> > --
-> > 2.43.0
-> >
-> >
+T24gU2F0LCBKYW4gMjcsIDIwMjQgYXQgMTA6NTnigK9QTSA8ZHRoYWxlcjE5NjhAZ29vZ2xlbWFp
+bC5jb20+IHdyb3RlOgo+Cj4gSSBhc2tlZDoKPiA+ID4+IFdoYXQgYWJvdXQgRFcgYW5kIExEWCB2
+YXJpYW50cyBvZiBCUEZfSU5EIGFuZCBCUEZfQUJTPwo+Cj4gSm9zZSBFLiBNYXJjaGVzaSA8am9z
+ZS5tYXJjaGVzaUBvcmFjbGUuY29tPiB3cm90ZToKPiA+IFRoZXNlIHdlIHN1cHBvcnQ6Cj4gPgo+
+ID4gICAvKiBBYnNvbHV0ZSBsb2FkIGluc3RydWN0aW9ucywgZGVzaWduZWQgdG8gYmUgdXNlZCBp
+biBzb2NrZXQgZmlsdGVycy4KPiAqLwo+ID4gICB7QlBGX0lOU05fTERBQlNCLCAibGRhYnNiJVcl
+aTMyIiwgInIwID0gKiAoIHU4ICogKSBza2IgWyAlaTMyIF0iLAo+ID4gICAgQlBGX1YxLCBCUEZf
+Q09ERSwgQlBGX0NMQVNTX0xEfEJQRl9TSVpFX0J8QlBGX01PREVfQUJTfSwKPiA+ICAge0JQRl9J
+TlNOX0xEQUJTSCwgImxkYWJzaCVXJWkzMiIsICJyMCA9ICogKCB1MTYgKiApIHNrYiBbICVpMzIg
+XSIsCj4gPiAgICBCUEZfVjEsIEJQRl9DT0RFLCBCUEZfQ0xBU1NfTER8QlBGX1NJWkVfSHxCUEZf
+TU9ERV9BQlN9LAo+ID4gICB7QlBGX0lOU05fTERBQlNXLCAibGRhYnN3JVclaTMyIiwgInIwID0g
+KiAoIHUzMiAqICkgc2tiIFsgJWkzMiBdIiwKPiA+ICAgIEJQRl9WMSwgQlBGX0NPREUsIEJQRl9D
+TEFTU19MRHxCUEZfU0laRV9XfEJQRl9NT0RFX0FCU30sCj4gPiAgIHtCUEZfSU5TTl9MREFCU0RX
+LCAibGRhYnNkdyVXJWkzMiIsICJyMCA9ICogKCB1NjQgKiApIHNrYiBbICVpMzIgXSIsCj4gPiAg
+ICBCUEZfVjEsIEJQRl9DT0RFLCBCUEZfQ0xBU1NfTER8QlBGX1NJWkVfRFd8QlBGX01PREVfQUJT
+fSwKPiA+Cj4gPiAgIC8qIEdlbmVyaWMgbG9hZCBpbnN0cnVjdGlvbnMgKHRvIHJlZ2lzdGVyLikg
+ICovCj4gPiAgIHtCUEZfSU5TTl9MRFhCLCAibGR4YiVXJWRyICwgWyAlc3IgJW8xNiBdIiwgIiVk
+ciA9ICogKCB1OCAqICkgKCAlc3IgJW8xNgo+ICkiLAo+ID4gICAgQlBGX1YxLCBCUEZfQ09ERSwg
+QlBGX0NMQVNTX0xEWHxCUEZfU0laRV9CfEJQRl9NT0RFX01FTX0sCj4gPiAgIHtCUEZfSU5TTl9M
+RFhILCAibGR4aCVXJWRyICwgWyAlc3IgJW8xNiBdIiwgIiVkciA9ICogKCB1MTYgKiApICggJXNy
+Cj4gJW8xNgo+ID4gKSIsCj4gPiAgICBCUEZfVjEsIEJQRl9DT0RFLCBCUEZfQ0xBU1NfTERYfEJQ
+Rl9TSVpFX0h8QlBGX01PREVfTUVNfSwKPiA+ICAge0JQRl9JTlNOX0xEWFcsICJsZHh3JVclZHIg
+LCBbICVzciAlbzE2IF0iLCAiJWRyID0gKiAoIHUzMiAqICkgKCAlc3IKPiAlbzE2Cj4gPiApIiwK
+PiA+ICAgIEJQRl9WMSwgQlBGX0NPREUsIEJQRl9DTEFTU19MRFh8QlBGX1NJWkVfV3xCUEZfTU9E
+RV9NRU19LAo+ID4gICB7QlBGX0lOU05fTERYRFcsICJsZHhkdyVXJWRyICwgWyAlc3IgJW8xNiBd
+IiwiJWRyID0gKiAoIHU2NCAqICkgKCAlc3IKPiA+ICVvMTYgKSIsCj4gPiAgICBCUEZfVjEsIEJQ
+Rl9DT0RFLCBCUEZfQ0xBU1NfTERYfEJQRl9TSVpFX0RXfEJQRl9NT0RFX01FTX0sCj4KPiBZb25n
+aG9uZyBTb25nIDx5b25naG9uZy5zb25nQGxpbnV4LmRldj4gd3JvdGU6Cj4gPiBJIGRvbid0IGtu
+b3cgaG93IHRvIGRvIHByb3BlciB3b3JkaW5nIGluIHRoZSBzdGFuZGFyZC4gQnV0IERXIGFuZCBM
+RFgKPiA+IHZhcmlhbnRzIG9mIEJQRl9JTkQvQlBGX0FCUyBhcmUgbm90IHN1cHBvcnRlZCBieSB2
+ZXJpZmllciBmb3Igbm93IGFuZCB0aGV5Cj4gPiBhcmUgY29uc2lkZXJlZCBpbGxlZ2FsIGluc25z
+Lgo+Cj4gQWx0aG91Z2ggdGhlIExpbnV4IHZlcmlmaWVyIGRvZXNuJ3Qgc3VwcG9ydCB0aGVtLCB0
+aGUgZmFjdCB0aGF0IGdjYyBkb2VzCj4gc3VwcG9ydAo+IHRoZW0gdGVsbHMgbWUgdGhhdCBpdCdz
+IHByb2JhYmx5IHNhZmVzdCB0byBsaXN0IHRoZSBEVyBhbmQgTERYIHZhcmlhbnRzIGFzCj4gZGVw
+cmVjYXRlZCBhcyB3ZWxsLCB3aGljaCBpcyB3aGF0IHRoZSBkcmFmdCBhbHJlYWR5IGRpZCBpbiB0
+aGUgYXBwZW5kaXggc28KPiB0aGF0J3MgZ29vZCAobm90aGluZyB0byBjaGFuZ2UgdGhlcmUsIEkg
+dGhpbmspLgoKRFcgbmV2ZXIgZXhpc3RlZCBpbiBjbGFzc2ljIGJwZiwgc28gYWJzL2luZCBuZXZl
+ciBoYWQgRFcgZmxhdm9yLgpJZiBzb21lIGFzc2VtYmxlci9jb21waWxlciBkZWNpZGVkIHRvICJz
+dXBwb3J0IiB0aGVtIGl0J3Mgb24gdGhlbS4KVGhlIHN0YW5kYXJkIG11c3Qgbm90IGxpc3Qgc3Vj
+aCB0aGluZ3MgYXMgZGVwcmVjYXRlZC4gVGhleSBuZXZlcgpleGlzdGVkLiBTbyBub3RoaW5nIGlz
+IGRlcHJlY2F0ZWQuClNhbWUgd2l0aCBNU0guIEJQRl9MRFggfCBCUEZfTVNIIHwgQlBGX0IgaXMg
+dGhlIG9ubHkgaW5zbiBldmVyIGV4aXN0ZWQuCkl0J3MgYSBsZWdhY3kgaW5zbi4gSnVzdCBsaWtl
+IGFicy9pbmQuCgotLSAKQnBmIG1haWxpbmcgbGlzdApCcGZAaWV0Zi5vcmcKaHR0cHM6Ly93d3cu
+aWV0Zi5vcmcvbWFpbG1hbi9saXN0aW5mby9icGYK
 
