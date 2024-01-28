@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-20519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD3D83F5CF
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 15:22:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D035983F5D1
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 15:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F3C428219A
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 14:22:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F0201C2275B
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 14:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416C92561A;
-	Sun, 28 Jan 2024 14:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7C3241E7;
+	Sun, 28 Jan 2024 14:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnRDxpCl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IDxF+UOI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3B524B2C;
-	Sun, 28 Jan 2024 14:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B37288DD;
+	Sun, 28 Jan 2024 14:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706451729; cv=none; b=O3qEophc9gWbmmBDojc6Rg9k+YAuWh30+eRdcQeUrWvsM+Ks9ef8iPCYN+nIfXq9JA4CeXlqpKMgXqFtpOWOS6/pw7oAXY4HnlQSRVaZ9jJETcKrDhS5vKsuNs6j5aEB1jORDNprY2jwuz3Rmu+jB60ofnZ68S+cxWpAy2bsGHw=
+	t=1706451733; cv=none; b=qnNveL+zqSzKYhq4kIUjMtjyvvPYOEpGtclVYOuuFG4xRDZtcCxkSdNgbUEA225Nf9VyffdB+yExAlW6C7K2x5pA9whb3VCcNAGGcws0Xi97JDxIJQ5iyunws1YSD36Du5NxbtOkBELPHgQSh3pZJcBM2XiocdBlbo8O/zYg7Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706451729; c=relaxed/simple;
-	bh=smRcOPt7Bh+Cyjqvn72Zg9vAozaKKpftgkhBlmG9Qtw=;
+	s=arc-20240116; t=1706451733; c=relaxed/simple;
+	bh=1OOLH7js8NjWz3tp7HldxyWc6SbFLgrAhGUX0VKyIR8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=njpGvyoUnOYAEThZ6tONMgr0IhcvXN5ABuMBGsQg8mV9JZUStQBkvz68Q+WgNTz0ZwpQQgwCCraxuOqgKdvdUijty2+9b7Ror3g/YWOyLEWXWeuObhHpBqF7/5PgbNYpXzK649cdMP/gCMwNtt87BkCEgPL+8XPulgCQQjeJtEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnRDxpCl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE33DC433C7;
-	Sun, 28 Jan 2024 14:22:08 +0000 (UTC)
+	 MIME-Version; b=G5+Lu/9tpcN3EzNawlT6kZuYctre0nXsq/SFI7Pg+gyEh1UzLpmCOyC2WG5kqJP9JdcL3FBdMqQKnCKfSc9VmY4QKmzlzJTuVwJPzTIO2NU8QgGdJG/d6EhpNP6QS6nns4e8fds7TqXgJ9ZyevYixQRwh0lDCxVRkAFWFWylpb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IDxF+UOI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D8CC433F1;
+	Sun, 28 Jan 2024 14:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706451729;
-	bh=smRcOPt7Bh+Cyjqvn72Zg9vAozaKKpftgkhBlmG9Qtw=;
+	s=k20201202; t=1706451732;
+	bh=1OOLH7js8NjWz3tp7HldxyWc6SbFLgrAhGUX0VKyIR8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GnRDxpClOihheRgjjlT3ToEml/MdvAgHKSl2f/dl+82u36HqB4Ckrq4ToRHj8tt/J
-	 WTW+UQdOVN+D7tmKI4BD72w7CcaXtSiAjywd61FYSDs7O1aIRA0+atsDoztU6yqEIW
-	 /8t0+sf+cke9bLRJ5RFHA8o7D4TOyEJAToOTU1iyRoHb18kTBvLly0ppiWSBbpKDve
-	 FlZ6dv0Dao5Is5RHDAY5jo4O1ZcvWnNDL4yCFN0qYyBVOCFpy0Xt1kHp8DsNyhh0SO
-	 3mMh/W3UsokFAeImo8qt8uPknlpft68rN3QJGN6JbgeIcMjr6/OF+7c5DIu1sEdo1v
-	 LiDQHNexj2sPA==
+	b=IDxF+UOIdot/9RrXtq7eDDZAkdeGXztpVGZEhG6PrNJM/8LCr92A+PSy/7xeH08qR
+	 dVrc0A3mO0vcP3rdxwiQWMv1IGkP5YbWqxyP/8B30GxfQqJJqaX1FCaALIQDpEs7ty
+	 9bhoI5dNzbTYaWFD09FIQCMWdQ1TICz/l8YJOzEgNMKJqTU1JdgnNQs3eBbs6mXZzx
+	 uGpm9UqxEp6QOXRT0qOvzEYcKAz8hqrG4WsvvhD16Uii6Ot5SRn2M/nOvdtTq88ufs
+	 Tfr83uDb6UybMVsns4Bib8hK3i4oENtpCFPpSmHg2PMjeZbE35Eb5hn1lXhK6BcbEY
+	 nwLqrOfD+f7dA==
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 To: netdev@vger.kernel.org
 Cc: lorenzo.bianconi@redhat.com,
@@ -55,9 +55,9 @@ Cc: lorenzo.bianconi@redhat.com,
 	sdf@google.com,
 	hawk@kernel.org,
 	ilias.apalodimas@linaro.org
-Subject: [PATCH v6 net-next 1/5] net: add generic per-cpu page_pool allocator
-Date: Sun, 28 Jan 2024 15:20:37 +0100
-Message-ID: <5b0222d3df382c22fe0fa96154ae7b27189f7ecd.1706451150.git.lorenzo@kernel.org>
+Subject: [PATCH v6 net-next 2/5] xdp: rely on skb pointer reference in do_xdp_generic and netif_receive_generic_xdp
+Date: Sun, 28 Jan 2024 15:20:38 +0100
+Message-ID: <7fd76e88e2aadc03f14b040ffc762e88d05afc8c.1706451150.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706451150.git.lorenzo@kernel.org>
 References: <cover.1706451150.git.lorenzo@kernel.org>
@@ -69,201 +69,118 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce generic percpu page_pools allocator.
-Moreover add page_pool_create_percpu() and cpuid filed in page_pool struct
-in order to recycle the page in the page_pool "hot" cache if
-napi_pp_put_page() is running on the same cpu.
-This is a preliminary patch to add xdp multi-buff support for xdp running
-in generic mode.
+Rely on skb pointer reference instead of the skb pointer in do_xdp_generic and
+netif_receive_generic_xdp routine signatures. This is a preliminary patch to add
+multi-buff support for xdp running in generic mode.
 
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- include/net/page_pool/types.h |  3 +++
- net/core/dev.c                | 40 +++++++++++++++++++++++++++++++++++
- net/core/page_pool.c          | 23 ++++++++++++++++----
- net/core/skbuff.c             |  5 +++--
- 4 files changed, 65 insertions(+), 6 deletions(-)
+ drivers/net/tun.c         |  4 ++--
+ include/linux/netdevice.h |  2 +-
+ net/core/dev.c            | 16 +++++++++-------
+ 3 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index 76481c465375..3828396ae60c 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -128,6 +128,7 @@ struct page_pool_stats {
- struct page_pool {
- 	struct page_pool_params_fast p;
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 4a4f8c8e79fa..5bd98bdaddf2 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1927,7 +1927,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+ 		rcu_read_lock();
+ 		xdp_prog = rcu_dereference(tun->xdp_prog);
+ 		if (xdp_prog) {
+-			ret = do_xdp_generic(xdp_prog, skb);
++			ret = do_xdp_generic(xdp_prog, &skb);
+ 			if (ret != XDP_PASS) {
+ 				rcu_read_unlock();
+ 				local_bh_enable();
+@@ -2517,7 +2517,7 @@ static int tun_xdp_one(struct tun_struct *tun,
+ 	skb_record_rx_queue(skb, tfile->queue_index);
  
-+	int cpuid;
- 	bool has_init_callback;
- 
- 	long frag_users;
-@@ -203,6 +204,8 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
- struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
- 				  unsigned int size, gfp_t gfp);
- struct page_pool *page_pool_create(const struct page_pool_params *params);
-+struct page_pool *page_pool_create_percpu(const struct page_pool_params *params,
-+					  int cpuid);
- 
- struct xdp_mem_info;
+ 	if (skb_xdp) {
+-		ret = do_xdp_generic(xdp_prog, skb);
++		ret = do_xdp_generic(xdp_prog, &skb);
+ 		if (ret != XDP_PASS) {
+ 			ret = 0;
+ 			goto out;
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 118c40258d07..7eee99a58200 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3958,7 +3958,7 @@ static inline void dev_consume_skb_any(struct sk_buff *skb)
+ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
+ 			     struct bpf_prog *xdp_prog);
+ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog);
+-int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb);
++int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb);
+ int netif_rx(struct sk_buff *skb);
+ int __netif_rx(struct sk_buff *skb);
  
 diff --git a/net/core/dev.c b/net/core/dev.c
-index cb2dab0feee0..bf9ec740b09a 100644
+index bf9ec740b09a..960f39ac5e33 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -153,6 +153,8 @@
- #include <linux/prandom.h>
- #include <linux/once_lite.h>
- #include <net/netdev_rx_queue.h>
-+#include <net/page_pool/types.h>
-+#include <net/page_pool/helpers.h>
- 
- #include "dev.h"
- #include "net-sysfs.h"
-@@ -442,6 +444,8 @@ static RAW_NOTIFIER_HEAD(netdev_chain);
- DEFINE_PER_CPU_ALIGNED(struct softnet_data, softnet_data);
- EXPORT_PER_CPU_SYMBOL(softnet_data);
- 
-+DEFINE_PER_CPU_ALIGNED(struct page_pool *, page_pool);
-+
- #ifdef CONFIG_LOCKDEP
- /*
-  * register_netdevice() inits txq->_xmit_lock and sets lockdep class
-@@ -11686,6 +11690,27 @@ static void __init net_dev_struct_check(void)
-  *
-  */
- 
-+#define SD_PAGE_POOL_RING_SIZE	256
-+static int net_page_pool_alloc(int cpuid)
-+{
-+#if IS_ENABLED(CONFIG_PAGE_POOL)
-+	struct page_pool_params page_pool_params = {
-+		.pool_size = SD_PAGE_POOL_RING_SIZE,
-+		.nid = NUMA_NO_NODE,
-+	};
-+	struct page_pool *pp_ptr;
-+
-+	pp_ptr = page_pool_create_percpu(&page_pool_params, cpuid);
-+	if (IS_ERR(pp_ptr)) {
-+		pp_ptr = NULL;
-+		return -ENOMEM;
-+	}
-+
-+	per_cpu(page_pool, cpuid) = pp_ptr;
-+#endif
-+	return 0;
-+}
-+
- /*
-  *       This is called single threaded during boot, so no need
-  *       to take the rtnl semaphore.
-@@ -11738,6 +11763,9 @@ static int __init net_dev_init(void)
- 		init_gro_hash(&sd->backlog);
- 		sd->backlog.poll = process_backlog;
- 		sd->backlog.weight = weight_p;
-+
-+		if (net_page_pool_alloc(i))
-+			goto out;
- 	}
- 
- 	dev_boot_phase = 0;
-@@ -11765,6 +11793,18 @@ static int __init net_dev_init(void)
- 	WARN_ON(rc < 0);
- 	rc = 0;
- out:
-+	if (rc < 0) {
-+		for_each_possible_cpu(i) {
-+			struct page_pool *pp_ptr = this_cpu_read(page_pool);
-+
-+			if (!pp_ptr)
-+				continue;
-+
-+			page_pool_destroy(pp_ptr);
-+			per_cpu(page_pool, i) = NULL;
-+		}
-+	}
-+
- 	return rc;
+@@ -4924,10 +4924,11 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
+ 	return act;
  }
  
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 4933762e5a6b..89c835fcf094 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -171,13 +171,16 @@ static void page_pool_producer_unlock(struct page_pool *pool,
- }
- 
- static int page_pool_init(struct page_pool *pool,
--			  const struct page_pool_params *params)
-+			  const struct page_pool_params *params,
-+			  int cpuid)
+-static u32 netif_receive_generic_xdp(struct sk_buff *skb,
++static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
+ 				     struct xdp_buff *xdp,
+ 				     struct bpf_prog *xdp_prog)
  {
- 	unsigned int ring_qsize = 1024; /* Default */
++	struct sk_buff *skb = *pskb;
+ 	u32 act = XDP_DROP;
  
- 	memcpy(&pool->p, &params->fast, sizeof(pool->p));
- 	memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
+ 	/* Reinjected packets coming from act_mirred or similar should
+@@ -5008,24 +5009,24 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
  
-+	pool->cpuid = cpuid;
-+
- 	/* Validate only known flags were used */
- 	if (pool->p.flags & ~(PP_FLAG_ALL))
- 		return -EINVAL;
-@@ -253,10 +256,12 @@ static void page_pool_uninit(struct page_pool *pool)
- }
+ static DEFINE_STATIC_KEY_FALSE(generic_xdp_needed_key);
  
- /**
-- * page_pool_create() - create a page pool.
-+ * page_pool_create_percpu() - create a page pool for a given cpu.
-  * @params: parameters, see struct page_pool_params
-+ * @cpuid: cpu identifier
-  */
--struct page_pool *page_pool_create(const struct page_pool_params *params)
-+struct page_pool *
-+page_pool_create_percpu(const struct page_pool_params *params, int cpuid)
+-int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb)
++int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb)
  {
- 	struct page_pool *pool;
- 	int err;
-@@ -265,7 +270,7 @@ struct page_pool *page_pool_create(const struct page_pool_params *params)
- 	if (!pool)
- 		return ERR_PTR(-ENOMEM);
+ 	if (xdp_prog) {
+ 		struct xdp_buff xdp;
+ 		u32 act;
+ 		int err;
  
--	err = page_pool_init(pool, params);
-+	err = page_pool_init(pool, params, cpuid);
- 	if (err < 0)
- 		goto err_free;
- 
-@@ -282,6 +287,16 @@ struct page_pool *page_pool_create(const struct page_pool_params *params)
- 	kfree(pool);
- 	return ERR_PTR(err);
- }
-+EXPORT_SYMBOL(page_pool_create_percpu);
-+
-+/**
-+ * page_pool_create() - create a page pool
-+ * @params: parameters, see struct page_pool_params
-+ */
-+struct page_pool *page_pool_create(const struct page_pool_params *params)
-+{
-+	return page_pool_create_percpu(params, -1);
-+}
- EXPORT_SYMBOL(page_pool_create);
- 
- static void page_pool_return_page(struct page_pool *pool, struct page *page);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index edbbef563d4d..9e5eb47b4025 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -923,9 +923,10 @@ bool napi_pp_put_page(struct page *page, bool napi_safe)
- 	 */
- 	if (napi_safe || in_softirq()) {
- 		const struct napi_struct *napi = READ_ONCE(pp->p.napi);
-+		unsigned int cpuid = smp_processor_id();
- 
--		allow_direct = napi &&
--			READ_ONCE(napi->list_owner) == smp_processor_id();
-+		allow_direct = napi && READ_ONCE(napi->list_owner) == cpuid;
-+		allow_direct |= (pp->cpuid == cpuid);
+-		act = netif_receive_generic_xdp(skb, &xdp, xdp_prog);
++		act = netif_receive_generic_xdp(pskb, &xdp, xdp_prog);
+ 		if (act != XDP_PASS) {
+ 			switch (act) {
+ 			case XDP_REDIRECT:
+-				err = xdp_do_generic_redirect(skb->dev, skb,
++				err = xdp_do_generic_redirect((*pskb)->dev, *pskb,
+ 							      &xdp, xdp_prog);
+ 				if (err)
+ 					goto out_redir;
+ 				break;
+ 			case XDP_TX:
+-				generic_xdp_tx(skb, xdp_prog);
++				generic_xdp_tx(*pskb, xdp_prog);
+ 				break;
+ 			}
+ 			return XDP_DROP;
+@@ -5033,7 +5034,7 @@ int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb)
  	}
+ 	return XDP_PASS;
+ out_redir:
+-	kfree_skb_reason(skb, SKB_DROP_REASON_XDP);
++	kfree_skb_reason(*pskb, SKB_DROP_REASON_XDP);
+ 	return XDP_DROP;
+ }
+ EXPORT_SYMBOL_GPL(do_xdp_generic);
+@@ -5356,7 +5357,8 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ 		int ret2;
  
- 	/* Driver set this to memory recycling info. Reset it on recycle.
+ 		migrate_disable();
+-		ret2 = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
++		ret2 = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog),
++				      &skb);
+ 		migrate_enable();
+ 
+ 		if (ret2 != XDP_PASS) {
 -- 
 2.43.0
 
