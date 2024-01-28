@@ -1,137 +1,234 @@
-Return-Path: <bpf+bounces-20525-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20526-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 571F083F940
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 19:56:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D2F83F9DA
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 21:17:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A4161C212F2
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 18:56:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A23C1F21B39
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 20:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7FB321B0;
-	Sun, 28 Jan 2024 18:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE983BB5F;
+	Sun, 28 Jan 2024 20:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ayLC4kT/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDBFv+ra"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3192E851
-	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 18:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074133BB5E
+	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 20:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706468189; cv=none; b=jGQhQ0avKYhoiYOyErrIkWUhyZl/H7qtebUmnXUx1HCX6yNIbAl14bZkT1quNm4mM+no4Y3Otg/DZTDDjO7KtXtPPinoY8QNj+WFCKvRDTG+XDWj395mCEWOvva4Gi5ljMvBuBsxGBjqbVoXL3Sl0rGqAMfCFeEXsBNVenZ7hYw=
+	t=1706473044; cv=none; b=Pz/0oL2qPjz+yxX4L0W6iDGoOV92JcxIAwVNeT7x4hHPMKc1lmKBmGaIjSxPjevmKhsGtkRuI74FJzHl34aGDmgKbVIZ2m7uFKNtwIIyvAhBPZCYTIE2hjC8PPbbECqaOCr4gwHT7FV+HWKhlG5MRPOSCk8kCMXtLKsCTGve/KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706468189; c=relaxed/simple;
-	bh=WRJdnBGnsSCo7aRUSpfpeRR2g2XI5KL78sa7XlBIh8c=;
+	s=arc-20240116; t=1706473044; c=relaxed/simple;
+	bh=M9ylQrBldw8arol/NBZ2uAgsNSeVJkhhNiXH1vMD2zw=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ppppkAA//5vlLgHQNDkARbJ7V0P18Cl/K/R0HfA66QVFZa9MLfCOgtsbioOCVeBP9HQ7cIsYVJ/9yF1nBsDOUIVt9gih8BqqSyr816WJ3W+zrnr6qbRE3ql6xuIiN7NKXDgI1+30uGtfBhXfmGOijTyZy0+b2xcF/VDWq2ZMEtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ayLC4kT/; arc=none smtp.client-ip=209.85.128.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=ElXdyYThtsPkr3t1yyW1XtArap6IskADJf0XcXxhOSlqsgyMoA5pNDkId3FtjZps8kq1NJCwWUtG2pYw/bzqVumA1yS2hcrTTHT8/LNRnIaLzq8WqSdzD+wRspqS/pdbPJ/yX6WjIb/UvNO2E/090YuFXz0T3nj65W0oZcidkCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDBFv+ra; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ef6bbb61fso2154565e9.1
-        for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 10:56:27 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33aea66a31cso265449f8f.1
+        for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 12:17:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706468186; x=1707072986; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RTwZ5EK3ge5EHhomTUclPPP6lME/7K/eAkzgltqyHjo=;
-        b=ayLC4kT/P2JQMKUUtPrECyMvJ/5d1Pf3S8EIKEj0NDX/M8OvzwzVZDM3mlykhBmjiv
-         k6+CyYjDmSvcQ5RQWuM8ocmNzsO8pJh4aKQ2GeVFHcwy7oZ6aZ07r3dJaGpDbZXwqwNa
-         2a+ghbRWDCCS0Q+Mj0HFczKUaqbCtcVZi6rppxQ5cfm3Z4vrsKbNJs3wIMdNDeArGi4I
-         uLZhaIKW3fF5zYuIwgz7e+hBa0IVnK4ywxy9o2b7yXBeWxDiy6JgqzbWD8jDvwJIEq/y
-         cYb0j2GUEhQiYDRQMNXelG6ye1SeOml2JSSK5EzzjgQdSe9nAdD7GipR3e+zlDWhhtei
-         Kyqg==
+        d=gmail.com; s=20230601; t=1706473041; x=1707077841; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8U1QLDn4tiaa8LAT8cFZD8yRKsZK5WZFA4kzMXskr7s=;
+        b=DDBFv+rai+Lf+232gD1VLoPWr4nkzsOh3fitj09fGqBETR3+vxprljtvbhi64thX7H
+         cxvegD033N541ZtTJcgsE+nrATADY08oeBZ8ETWliaKPljQX0l+nDFDT/xFpVFRCRtZ2
+         dF21VXPSpiJ/7/7l15hKUfQDyQpgqB5ANu/uVb1SjyPmc7TZEJGcW+ztsucdZi1vqBWd
+         fETfuVBFZKGAySEkAyPozzZ0f3dLNfmDch1776UICO75m7wac8dgxhnyuAYcKF78sT/v
+         PZTCKZdZDEU61TuzPEoQ15oxJTnfawS/SWJ4b1oz+d2gR3HzmhNy39VZxsbngkaJGJf6
+         FcnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706468186; x=1707072986;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RTwZ5EK3ge5EHhomTUclPPP6lME/7K/eAkzgltqyHjo=;
-        b=YOYCIDiCCQNGhXn6Xjrqxg6uoC/I/1YTz1HPDPS2RDt0ter6LX2eQST9QoLu3KV2Ti
-         Tpl1aJHUaY9fECyhziwwguc1v7TlpEb6KO3GPuZ85QL+heIMmUVEuPUBu+1yQKUku2Gu
-         en3rpuflwp6V2M4yEthLcNaP7OTwuicRrWQLBBlO7YWXS6F9wI5WquCkRswtlt0r7sGF
-         G19eC+g1VXX2WASy4O7NSMNyyAWVa0Nv2nwGaz2L0c9Hnodp2u3aGdZP4DdaEskuaoln
-         rkVDxGVveehnl/cxDtCjspXuWKHBdnT49PKm12WXolXEt1tqYaquJCTQNUqOkhsL2nmK
-         6umw==
-X-Gm-Message-State: AOJu0YxDxjj3RjiykZbyxO5o2SNN+RJdeXxy5j6fyaQTDvA0mLTFkRzL
-	iFIGWikbNsWg5tGCeS99aZCzE8UKVcd8uLqBIEg7xioOwldWyAtL
-X-Google-Smtp-Source: AGHT+IGHDWlj4JQ3HEYvZamG4Mlupkm4pAT0ySnChCogWIqXwBNDaq7sJFpZNSPkwtIkrwCsEAjzeQ==
-X-Received: by 2002:a05:600c:219a:b0:40e:d2da:fc7f with SMTP id e26-20020a05600c219a00b0040ed2dafc7fmr3873411wme.1.1706468185581;
-        Sun, 28 Jan 2024 10:56:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706473041; x=1707077841;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8U1QLDn4tiaa8LAT8cFZD8yRKsZK5WZFA4kzMXskr7s=;
+        b=r0LNzk7cVMw7rP51h8dEzLb4oId4pnX6LsGTg4+Zg66pbF6U/RCtCAH5BnfNNiXtiG
+         TijRGWzlRX6K4fsfLxoPdMDFpkTcoNp1Xl1Jtiw76gbrM1CbkiBF3PxnWEM9WESffMRO
+         QkGe6pIva1wD+0VzZYYd7fvQKLhQethONd5zwYIHOzIm5FZlVylGRSgWRC6pD3pnqfAi
+         zOthdAD8lc3ksoYzUwWBbcoTrKq+ynbAJUa6dqxsJFOqNR5+9D8EmN38IdDgbJE/EhR8
+         xijT2S6ZZhAs6yzp4yvWSYQJ9DEkaP2RYjV7w5xSUVbVfr5L/bg8J2uhe2Pq5fpJ6uNJ
+         G74g==
+X-Gm-Message-State: AOJu0Yxw/yirJR4KFpgvdD/zmznlgA9w/hjccM/Puv74hncwIytJzepB
+	QEfy1myH1B1d4+nCy3h/bPFIPCpj5Ac7sNl1IvAM8ljoiRNK2Wdn
+X-Google-Smtp-Source: AGHT+IGXnuQ8jVq6p5Bo0zN5mMREhPlhozVk+148GuYwKQB6WMJvRovOmaSiOsr//L2L9uqICc7SBQ==
+X-Received: by 2002:a5d:4fc6:0:b0:333:c81:8f9d with SMTP id h6-20020a5d4fc6000000b003330c818f9dmr3651343wrw.2.1706473040884;
+        Sun, 28 Jan 2024 12:17:20 -0800 (PST)
 Received: from krava ([83.240.60.213])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05600c35cc00b0040eac0721edsm8029688wmq.3.2024.01.28.10.56.24
+        by smtp.gmail.com with ESMTPSA id u11-20020a056000038b00b0033aed5feea4sm1043426wrf.54.2024.01.28.12.17.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 10:56:25 -0800 (PST)
+        Sun, 28 Jan 2024 12:17:20 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 28 Jan 2024 19:56:23 +0100
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] libbpf: fix faccessat() usage on Android
-Message-ID: <ZbajVxpkL7Vh_DW7@krava>
-References: <20240126220944.2497665-1-andrii@kernel.org>
+Date: Sun, 28 Jan 2024 21:17:18 +0100
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix cross-compilation to
+ non-host endianness
+Message-ID: <Zba2TrYs6jRcNhH8@krava>
+References: <20240123120759.1865189-1-vmalik@redhat.com>
+ <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240126220944.2497665-1-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
 
-On Fri, Jan 26, 2024 at 02:09:44PM -0800, Andrii Nakryiko wrote:
-> Android implementation of libc errors out with -EINVAL in faccessat() if
-> passed AT_EACCESS ([0]), this leads to ridiculous issue with libbpf
-> refusing to load /sys/kernel/btf/vmlinux on Androids ([1]). Fix by
-> detecting Android and redefining AT_EACCESS to 0, it's equivalent on
-> Android.
+On Fri, Jan 26, 2024 at 03:40:11PM -0800, Andrii Nakryiko wrote:
+> On Tue, Jan 23, 2024 at 4:08 AM Viktor Malik <vmalik@redhat.com> wrote:
+> >
+> > The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
+> > build and afterwards patched by resolve_btfids with correct values.
+> > Since resolve_btfids always writes in host-native endianness, it relies
+> > on libelf to do the translation when the target ELF is cross-compiled to
+> > a different endianness (this was introduced in commit 61e8aeda9398
+> > ("bpf: Fix libelf endian handling in resolv_btfids")).
+> >
+> > Unfortunately, the translation will corrupt the flags fields of SET8
+> > entries because these were written during vmlinux compilation and are in
+> > the correct endianness already. This will lead to numerous selftests
+> > failures such as:
+> >
+> >     $ sudo ./test_verifier 502 502
+> >     #502/p sleepable fentry accept FAIL
+> >     Failed to load prog 'Invalid argument'!
+> >     bpf_fentry_test1 is not sleepable
+> >     verification time 34 usec
+> >     stack depth 0
+> >     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+> >     Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
+
+hum, I'd think we should have hit such bug long time ago.. set8 is
+there for some time already.. nice ;-)
+
+> >
+> > Since it's not possible to instruct libelf to translate just certain
+> > values, let's manually bswap the flags in resolve_btfids when needed, so
+> > that libelf then translates everything correctly.
+> >
+> > Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
+> > Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> > ---
+> >  tools/bpf/resolve_btfids/main.c | 35 +++++++++++++++++++++++++++++++--
+> >  1 file changed, 33 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> > index 27a23196d58e..440d3d066ce4 100644
+> > --- a/tools/bpf/resolve_btfids/main.c
+> > +++ b/tools/bpf/resolve_btfids/main.c
+> > @@ -646,18 +646,31 @@ static int cmp_id(const void *pa, const void *pb)
+> >         return *a - *b;
+> >  }
+> >
+> > +static int need_bswap(int elf_byte_order)
+> > +{
+> > +       return __BYTE_ORDER == __LITTLE_ENDIAN && elf_byte_order != ELFDATA2LSB ||
+> > +              __BYTE_ORDER == __BIG_ENDIAN && elf_byte_order != ELFDATA2MSB;
 > 
->   [0] https://android.googlesource.com/platform/bionic/+/refs/heads/android13-release/libc/bionic/faccessat.cpp#50
->   [1] https://github.com/libbpf/libbpf-bootstrap/issues/250#issuecomment-1911324250
+> return (__BYTE_ORDER == __LITTLE_ENDIAN) != (elf_byte_order == ELFDATA2LSB);
 > 
-> Fixes: 6a4ab8869d0b ("libbpf: Fix the case of running as non-root with capabilities")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ?
+> 
+> > +}
+> > +
+> >  static int sets_patch(struct object *obj)
+> >  {
+> >         Elf_Data *data = obj->efile.idlist;
+> >         int *ptr = data->d_buf;
+> >         struct rb_node *next;
+> > +       GElf_Ehdr ehdr;
+> > +
+> > +       if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
+> > +               pr_err("FAILED cannot get ELF header: %s\n",
+> > +                       elf_errmsg(-1));
+> > +               return -1;
+> > +       }
+> 
+> calculate needs_bswap() once here?
+> 
+> >
+> >         next = rb_first(&obj->sets);
+> >         while (next) {
+> > -               unsigned long addr, idx;
+> > +               unsigned long addr, idx, flags;
+> >                 struct btf_id *id;
+> >                 int *base;
+> > -               int cnt;
+> > +               int cnt, i;
+> >
+> >                 id   = rb_entry(next, struct btf_id, rb_node);
+> >                 addr = id->addr[0];
+> > @@ -679,6 +692,24 @@ static int sets_patch(struct object *obj)
+> >
+> >                 qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
+> >
+> > +               /*
+> > +                * When ELF endianness does not match endianness of the host,
+> > +                * libelf will do the translation when updating the ELF. This,
+> > +                * however, corrupts SET8 flags which are already in the target
+> > +                * endianness. So, let's bswap them to the host endianness and
+> > +                * libelf will then correctly translate everything.
+> > +                */
+> > +               if (id->is_set8 && need_bswap(ehdr.e_ident[EI_DATA])) {
+> > +                       for (i = 0; i < cnt; i++) {
+> > +                               /*
+> > +                                * header and entries are 8-byte, flags is the
+> > +                                * second half of an entry
+> > +                                */
+> > +                               flags = idx + (i + 1) * 2 + 1;
+> > +                               ptr[flags] = bswap_32(ptr[flags]);
+> 
+> we are dealing with struct btf_id_set8, right? Can't we #include
+> include/linux/btf_ids.h and use that type for all these offset
+> calculations?..
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+we could, there's tools/include/linux/btf_ids.h, which we could include
+in here, we do that in selftests.. but it needs to be updated with latest
+kernel updates (at least with set8 struct)
 
+> 
+> I have the same question for existing code, tbh, so maybe there was
+> some good reason, not sure...
+
+I think the test came later and I did not think of it for the resolve_btfids
+itself, I guess it might make the code more readable
+
+thanks,
 jirka
 
-> ---
->  tools/lib/bpf/libbpf_internal.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
 > 
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 930cc9616527..5b30f3b67a02 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -19,6 +19,20 @@
->  #include <libelf.h>
->  #include "relo_core.h"
->  
-> +/* Android's libc doesn't support AT_EACCESS in faccessat() implementation
-> + * ([0]), and just returns -EINVAL even if file exists and is accessible.
-> + * See [1] for issues caused by this.
-> + *
-> + * So just redefine it to 0 on Android.
-> + *
-> + * [0] https://android.googlesource.com/platform/bionic/+/refs/heads/android13-release/libc/bionic/faccessat.cpp#50
-> + * [1] https://github.com/libbpf/libbpf-bootstrap/issues/250#issuecomment-1911324250
-> + */
-> +#ifdef __ANDROID__
-> +#undef AT_EACCESS
-> +#define AT_EACCESS 0
-> +#endif
-> +
->  /* make sure libbpf doesn't use kernel-only integer typedefs */
->  #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
->  
-> -- 
-> 2.34.1
-> 
-> 
+> > +                       }
+> > +               }
+> > +
+> >                 next = rb_next(next);
+> >         }
+> >         return 0;
+> > --
+> > 2.43.0
+> >
+> >
 
