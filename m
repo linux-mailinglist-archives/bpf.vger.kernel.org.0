@@ -1,195 +1,154 @@
-Return-Path: <bpf+bounces-20507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B2383F2B5
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 02:24:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0007D83F2CE
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 03:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC4811C21682
-	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 01:24:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE811C2125C
+	for <lists+bpf@lfdr.de>; Sun, 28 Jan 2024 02:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631C91362;
-	Sun, 28 Jan 2024 01:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF2C17F0;
+	Sun, 28 Jan 2024 02:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Ar3WDO/3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Ar3WDO/3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ErY4LIXs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f000nPpY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E088D10E4
-	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 01:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDB515A7
+	for <bpf@vger.kernel.org>; Sun, 28 Jan 2024 02:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706405078; cv=none; b=XUvG/hc91M+wyD8mmQ45DVIGNFggF1S/b3GUQe1l/T62BelT44lm/G94Tn7DZUwQIdXtRUxQF8AB3yCTUEk2PMn9ZoI00BIAVao/ai5kDSyZhaaA8h41d2cA4IAxLx27yZgzH+2jfAz/pEz4lYzt8sHeqXpZrYqvCHjRu2gNHB4=
+	t=1706407540; cv=none; b=Ms137MBYI9/72Xsh5CtvAv9Xce+mUOcKr0wbKgeFWKUndoy+18/DpIJAV0picdBCTql9n4oaTBcpE0W32cS4j9KxAJ4yHbAdD86J36WAyRwH+sKnjyRH+sEXMPK1PxspnBWG+zskz+A2sKARYM2+aqLfHN6LU3W3ZmBhslEeQgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706405078; c=relaxed/simple;
-	bh=k8cr07LRHKW/GPuQ8M9In8dFCG2P4Cj4mznv3bnauUo=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
-	 Subject:Content-Type; b=IHQl2D60gfQW/h6xpiOcmjO4xuWkIAj7E62jl3NHt8ia6qm7gauXPFlsAjzM1Isc4hNNnc0TZRMoxzTNNVLEAWMIjGULsaQ10Ad3SkM7QoPFi0vo5OVD9qVij8hH57qr9eZUPR7sxlSs/vNvVEAwqngkR+mNmff9sX+lp613wVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Ar3WDO/3; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Ar3WDO/3; dkim=fail (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ErY4LIXs reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 95F12C151522
-	for <bpf@vger.kernel.org>; Sat, 27 Jan 2024 17:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706405072; bh=k8cr07LRHKW/GPuQ8M9In8dFCG2P4Cj4mznv3bnauUo=;
-	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=Ar3WDO/3S2Gfz+hzSEKFRL8PoiC7wBPjiR7zMtAy5QSSOIiynSPimdxcvmxsnLojt
-	 KgRjQhuSeRJ+Xxdta2qipv69FloClsfB2yjCrwBTD9Oie6YozyOyyOVwOGit9lE8mb
-	 YwMWLbTOyqbR443K7gbEPTjUqi2kEl5BgISfokUQ=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Sat Jan 27 17:24:32 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 0669CC14F609;
-	Sat, 27 Jan 2024 17:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706405072; bh=k8cr07LRHKW/GPuQ8M9In8dFCG2P4Cj4mznv3bnauUo=;
-	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=Ar3WDO/3S2Gfz+hzSEKFRL8PoiC7wBPjiR7zMtAy5QSSOIiynSPimdxcvmxsnLojt
-	 KgRjQhuSeRJ+Xxdta2qipv69FloClsfB2yjCrwBTD9Oie6YozyOyyOVwOGit9lE8mb
-	 YwMWLbTOyqbR443K7gbEPTjUqi2kEl5BgISfokUQ=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 3D696C14F609
- for <bpf@ietfa.amsl.com>; Sat, 27 Jan 2024 17:24:30 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.106
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=linux.dev
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id RdT_8ujoIphu for <bpf@ietfa.amsl.com>;
- Sat, 27 Jan 2024 17:24:25 -0800 (PST)
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com
- [95.215.58.174])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 58800C14F5E2
- for <bpf@ietf.org>; Sat, 27 Jan 2024 17:24:25 -0800 (PST)
-Message-ID: <110aad7a-f8a3-46ed-9fda-2f8ee54dcb89@linux.dev>
+	s=arc-20240116; t=1706407540; c=relaxed/simple;
+	bh=KjSXljMu7HdemF4os90r/aeSzY/Pl2R+s8bw4cHXAPU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iIoaq+VbuENnte3LuZrQx8mdu0ge7m4Kmp+U7CqOIYfVqEdyb4bNsrJJDwSHJsbcC7H7/T34VNopcF45I2brR27ZDkIzLxODaGvPfS//N9XgdxGCvbHJvYH1WJN/zUCzKlcKGBi99vSRhrNRDIs+f48BHNzY6MNwHO1uBchccbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f000nPpY; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b1906297-d784-479b-b2f3-07ab84ae99c1@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1706405061;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=p9J3kTWvHHncMOdCyOLopfKnXhbq3FkxdWQvaHOgyT8=;
- b=ErY4LIXs2cz/f//FYik2ir3k1qHEf+GvtzNp+IvXwadbbtgcXOD/u6W4f6v1FadlNchok8
- 55F/BqFabAwBj4K/oxsDAJ1pFE5uyvZ0keQ6PJFhCwnPj1C06435P4K+vBRbDQRSuf5eU8
- 2lbROIG7Biyj+xh3jz9kfuoS4Ya/xd4=
-Date: Sat, 27 Jan 2024 17:24:17 -0800
+	t=1706407534;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t9TFVA9BiBMXnP+3StRo23gDSg13S04PXg03Gywosps=;
+	b=f000nPpYHeiXwpOVhjF0B6LMbZbFRJiUCrN5obalhQ5kbHRaUnjU7KpTdx4xwzkdePiEge
+	bu1uTOf9Fs5qfukrm8dl8Yy72s5DUwO597Q2c7aacBwyFZpV1+PaswVG54ttwzmn9va23f
+	HneXs5r2fwmAnTynwbVUVnj1NQiXZpA=
+Date: Sat, 27 Jan 2024 18:05:15 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: BPF selftests and strict aliasing
 Content-Language: en-GB
-To: dthaler1968@googlemail.com
-Cc: bpf@ietf.org, bpf@vger.kernel.org
-References: <006601da5151$a22b2bb0$e6818310$@gmail.com>
- <0c3d023f-0f19-47c3-8615-6c1ec006e2d8@linux.dev>
- <018901da5184$647f7ae0$2d7e70a0$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
+Cc: Eduard Zingerman <eddyz87@gmail.com>, david.faust@oracle.com,
+ cupertino.miranda@oracle.com, Yonghong Song <yhs@meta.com>
+References: <87plxmsg37.fsf@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <018901da5184$647f7ae0$2d7e70a0$@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/L0zY4QFbojNt5_pDEYXG4zpmOYI>
-Subject: Re: [Bpf] ISA: BPF_MSH and deprecated packet access instructions
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
+In-Reply-To: <87plxmsg37.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Migadu-Flow: FLOW_OUT
 
 
-On 1/27/24 4:53 PM, dthaler1968@googlemail.com wrote:
->> -----Original Message-----
->> From: Yonghong Song <yonghong.song@linux.dev>
->> Sent: Saturday, January 27, 2024 4:27 PM
->> To: dthaler1968@googlemail.com
->> Cc: bpf@ietf.org; bpf@vger.kernel.org
->> Subject: Re: ISA: BPF_MSH and deprecated packet access instructions
->>
->>
->> On 1/27/24 10:50 AM, dthaler1968@googlemail.com wrote:
->>> Under "Load and store instructions", various mode modifiers are
->> documented.
->>> I notice that BPF_MSH (0xa0) is not documented, but appears to be in
->>> use in various projects, including Linux, BSD, seccomp, etc. and is
->>> even documented in various books such as
->>>
->> https://www.google.com/books/edition/Programming_Linux_Hacker_Tools_Un
->>> covere
->>>
->> d/yqHVAwAAQBAJ?hl=en&gbpv=1&dq=%22BPF_MSH%22&pg=PA129&printsec
->> =frontco
->>> ver
->>>
->>> Should we document it as deprecated and add it to the set of
->>> deprecated instructions (the legacy conformance group) like BPF_ABS
->>> and BPF_IND already are?
->>>
->>> Also, for purposes of the IANA registry of instructions where we list
->>> which opcodes are "(deprecated, implementation-specific)", I currently
->>> list all possible BPF_ABS and BPF_IND opcodes regardless of whether
->>> they were ever used (I didn't check which were used and which might
->>> not have been), so I could just list all possible BPF_MSH opcodes
->>> similarly.  But if we know that some were never used then I don't need
->>> to do so, so I guess I should
->>> ask:
->>> do we have a list of which combinations were actually used or should
->>> we continue to just deprecate all combinations?
->>>
->>> As an example,
->>> https://github.com/seccomp/libseccomp/blob/main/tools/scmp_bpf_disasm.
->>> c#L68 lists 6 variants of BPF_MSH: LD and LDX, for B, H, and W (but
->>> not DW).
->>> Other sources like the book page referenced above, and the BSD man
->>> page, list only BPF_LDX | BPF_B | BPF_MSH, which is in Linux sources
->>> such as
->>> https://elixir.bootlin.com/linux/v6.8-rc1/source/lib/test_bpf.c#L368
->>   From kernel source code (net/core/filter.c), the only supported format is
->>      BPF_LDX | BPF_MSH | BPF_B
->>
->> The insn (BPF_LDX | BPF_MSH | BPF_B) is only used when cBPF (classic BPF) is
->> converted to BPF insn set. If the current BPF program has this insn, verifier will
->> reject it and bpf kernel interpreter does not support this insn either. So
->> technically, (BPF_LDX | BPF_MSH | BPF_B) is not supported by BPF program.
->>
->>> So, should we list the DW variants as deprecated, or never assigned?
->>> Should we list the H, W, and LD variants as deprecated, or never assigned?
-> Thanks for confirming.  I think the doc is ok as is for this part.
+On 1/27/24 11:59 AM, Jose E. Marchesi wrote:
+> Hello.
+> The following BPF selftests perform type-punning:
 >
->>> What about DW and LDX variants of BPF_IND and BPF_ABS?
-> What about this question?
+>    progs/bind4_prog.c
+>    136 |         user_ip4 |= ((volatile __u16 *)&ctx->user_ip4)[0] << 0;
+>
+>    progs/bind6_prog.c
+>    149 |                 user_ip6 |= ((volatile __u16 *)&ctx->user_ip6[i])[0] << 0;
+>
+>    progs/dynptr_fail.c
+>    549 |         val = *(int *)&ptr;
+>
+>    progs/linked_list_fail.c
+>    318 |         return *(int *)&f->head;
+>    329 |         *(int *)&f->head = 0;
+>    338 |         f = bpf_obj_new(typeof(*f));
+>    341 |         return *(int *)&f->node2;
+>    349 |         f = bpf_obj_new(typeof(*f));
+>    352 |         *(int *)&f->node2 = 0;
+>
+>    progs/map_kptr_fail.c
+>     34 |         *(u32 *)&v->unref_ptr = 0;
+>
+>    progs/syscall.c
+>    172 |         attr->map_id = ((struct bpf_map *)&outer_array_map)->id;
+>
+>    progs/test_pkt_md_access.c
+>     13 |                 TYPE tmp = *(volatile TYPE *)&skb->FIELD;               \
+>
+>    progs/test_sk_lookup.c
+>     31 |         (((__u16 *)&(value))[LSE_INDEX((index), sizeof(value) / 2)])
+>    427 |         val_u32 = *(__u32 *)&ctx->remote_port;
+>
+>    progs/timer_crash.c
+>     38 |         *(void **)&value = (void *)0xdeadcaf3;
+>
+> This results in GCC warnings with -Wall but violating strict aliasing
+> may also result in the compiler incorrectly optimizing something.
+>
+> There are some alternatives to deal with this:
+>
+> a) To rewrite the tests to conform to strict aliasing rules.
+>
+> b) To build these tests using -fno-strict-aliasing to make sure the
+>     compiler will not rely on strict aliasing while optimizing.
+>
+> c) To add pragmas to these test files to avoid the warning:
+>     _Pragma("GCC diagnostic ignored \"-Wstrict-aliasing\"")
+>
+> I think b) is probably the best way to go, because it will avoid the
+> warnings, will void potential problems with optimizations triggered by
+> strict aliasing, and will not require to rewrite the tests.
 
-I don't know how to do proper wording in the standard. But
-DW and LDX variants of BPF_IND/BPF_ABS are not supported
-by verifier for now and they are considered illegal insns.
+I tried with latest clang with -fstrict-aliasing:
+
+[~/work/bpf-next/tools/testing/selftests/bpf (master)]$ cat run.sh
+clang  -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include \
+   -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
+   -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include
+   -idirafter /home/yhs/work/llvm-project/llvm/build.19/install/lib/clang/19/include
+   -idirafter /usr/local/include -idirafter /usr/include   -Wno-compare-distinct-pointer-types
+   -DENABLE_ATOMICS_TESTS -O2 -fstrict-aliasing --target=bpf -c progs/bind4_prog.c -mcpu=v3
+   -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bind4_prog.bpf.o
+[~/work/bpf-next/tools/testing/selftests/bpf (master)]$ ./run.sh
+[~/work/bpf-next/tools/testing/selftests/bpf (master)]$
+
+I does not have compilation failure. I am wondering why -fstrict-aliasing won't have warning in clang side
+but have warning in gcc side.
+Your suggestion 'b' seems okay or we could even add -fno-strict-aliasing into common compilation flags,
+but I would like to understand more about -fstrict-aliasing difference between gcc and clang.
 
 >
-> Dave
+> Provided [1] gets applied, I can prepare a patch that adds the following
+> to selftests/bpf/Makefile:
 >
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+>    progs/bin4_prog.c-CFLAGS := -fno-strict-aliasing
+>    progs/bind6_prog.c-CFLAGS := -fno-strict-aliasing
+>    progs/dynptr_fail.cw-CFLAGS := -fno-strict-aliasing
+>    progs/linked_list_fail.c-CFLAGS := -fno-strict-aliasing
+>    progs/map_kptr_fail.c-CFLAGS := -fno-strict-aliasing
+>    progs/syscall.c-CFLAGS := -fno-strict-aliasing
+>    progs/test_pkt_md_access.c-CFLAGS := -fno-strict-aliasing
+>    progs/test_sk_lookup.c-CFLAGS := -fno-strict-aliasing
+>    progs/timer_crash.c-CFLAGS := -fno-strict-aliasing
+>
+> [1] https://lore.kernel.org/bpf/20240127100702.21549-1-jose.marchesi@oracle.com/T/#u
+>
 
