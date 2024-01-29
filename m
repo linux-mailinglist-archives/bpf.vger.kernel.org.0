@@ -1,105 +1,110 @@
-Return-Path: <bpf+bounces-20530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C0C83FBBD
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 02:24:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0134983FBC1
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 02:25:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DC6B1C21B44
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 01:24:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3EFB22F41
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 01:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06ECDDC7;
-	Mon, 29 Jan 2024 01:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D12F9D6;
+	Mon, 29 Jan 2024 01:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Sp/P9ZFJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="toSTS5fI"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="sgd/t7OW";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PA/2+nPi"
 X-Original-To: bpf@vger.kernel.org
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056A0D515;
-	Mon, 29 Jan 2024 01:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76262E55F;
+	Mon, 29 Jan 2024 01:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706491464; cv=none; b=k7nF5f0u5nzgQc4LyZsEGJ0r62sZaaPT6e04HS1OQEP0xoCS1OCgJhCCM43IkXVmWHNt+qDt5z0g4URljhVjn8dwM0kxgBEqzU1Yg8O4Lg1fqHBO7Nrk9FWwB865n09YrOaBZiYVvZyGZtowuwj/U/n/Bj1TnorL4M8UEAiVLg8=
+	t=1706491468; cv=none; b=S05uTPTofPeOWgn+rsh3EGfborZpRNRrhpUsR7YkjVgLqQdPUSVjaDAtrz6joDIjqyjQsbUj+MLBPy96FKEOEgNi8Wl+iwIB0SVznWZkYwc5Rnoqj4X/AotMLl2OoGL5ETvUQaiGpj8QfWt2PoK/iPCpBHF4+QcV0ajTur0iAew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706491464; c=relaxed/simple;
-	bh=kQEe3sxHRS25R01Huae1wLO1VdyUa7hma2vI+TmJQuw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=exqo8w9XMcTruA7bYtaIu9paCGKyTt8AILpdfuy4KCx/c1TKaqn/3151u44By+F2Jc5rM+IQbQ7gU+HZHVDhAVhfaMep8Rq6YmN9KM0qi4BQ+fUHTKxBEOckf7uD7NoqtuA1KiEN6+STIyWhCBKebAsmhLArA8IUCA61Qv/uYKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Sp/P9ZFJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=toSTS5fI; arc=none smtp.client-ip=64.147.123.24
+	s=arc-20240116; t=1706491468; c=relaxed/simple;
+	bh=xu08oOgu2AJms3zybGKx7jyoSa03WTp6V9NSRZ9nLoM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iRVmH+QLgOYJNkLgWmQn2bg5x9h7H1ddJr4m12m2RVkaPlhEVC+1oBtf8Kv8E4wEbNcsLktoAQ4eYwlfEgMz0C6Rq1peQaxmDlHrRPG/vYrobgUvQCKuCeh5DX23l36yE1fXyXallA7p9WdcfwP/t7N4NIbpQOdDWgt80UQmMzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=sgd/t7OW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PA/2+nPi; arc=none smtp.client-ip=64.147.123.24
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.west.internal (Postfix) with ESMTP id 9954E3200ABB;
-	Sun, 28 Jan 2024 20:24:19 -0500 (EST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id DEC9F3200A9C;
+	Sun, 28 Jan 2024 20:24:23 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sun, 28 Jan 2024 20:24:21 -0500
+  by compute7.internal (MEProxy); Sun, 28 Jan 2024 20:24:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1706491459; x=1706577859; bh=UASoXhX4PTY3QDklhg97M
-	HiJ1GxNYruI0l1hSTsM1IQ=; b=Sp/P9ZFJkQIEHfcvNH4pxlWQcJTVOu3NARJrb
-	QU0vlJmpM4nohk3iDeQEo/Uuk1NtXdRe9TzUPuLVLZwihZ2nMpR1SaHdOFYdPeJr
-	zyyOLJHWmQv7wFfiklp11U0lm+k97FGE2W734EFNtr2HA1l0VDW6mjxCvSRt+cv2
-	Jz2l6Sncb1dytEyLi2GEvXGQ8aodcH4vddVYUfcqlyPdggq74hiSUGoZkM9NARAL
-	grjLqJgJe/RfIVPH+Fxq0yr0PsDuKjMfahjqvFerrDmJPT3klD1YJQ4f8hx5H2my
-	hiIvvxRm3KeWyQfKVuh8g6GeiEUxoxvfTxyklE1gB/WGbzKRA==
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1706491463; x=
+	1706577863; bh=YykKmLIXmxhMLgQ+f77GEqZqd2U6B5FrHdnh5gln6Jo=; b=s
+	gd/t7OWXBIGfT7HqLSeAH4847bD0qPwzvScZ6CDBqoIz2WVQjx1ArU6nyPmrtGLC
+	IFw0TT5in/BIpRBiNUXP95KuXl/5bTpfQyvwOSDnDb2nlb81zXV6VIe5z//rryJh
+	puikUYmtEpBsR96MHMcgm75E255n4bloOXEejPaRqusqP2XdANPw2esLU5dkVBAn
+	nhmuqsAPRb5Rci1hKPAG5kqX3Aw6HxG4s+RqhFzCa1lk2mQ2mI/UydbC02HKnRUZ
+	iEDm1ua/hNFwDgPFR9gaEc9C1YnCjExeGnXKgq78bSbMMLi6xFFJBO7De7ZYztjO
+	e4JSUV+lD/fXDPK3JHliA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706491459; x=1706577859; bh=UASoXhX4PTY3QDklhg97MHiJ1GxN
-	YruI0l1hSTsM1IQ=; b=toSTS5fIeqME+j6fCgQl7sXWi2TbaNbgcEYAv/FUpQCi
-	ojINcUtIFRCemYQFFUCw9KMt6lbUje5JxS9ppMq3UONrtbV910ynaSb71OoD+HR9
-	MskHaANtEDpX/5ZHaX0tU+6v3twRjwEl6fh9aWg3iJaQzjt41KBNs7OnsV5nkZUf
-	9Gf8uMy5g2kYfJaAOtwMMELWFbjTIAF79KrHS0lZ5rR+jWV+YW/iswh8WhA3oYi3
-	iEncy2kWOFdpaGrtvFoMJ0nG9xynxVzhhwcsP7Sl9yD5qe/JLLH1f5gG1Q8jBSZK
-	VLY7S7aDF71kp6q6/qfmcapQgHbU65dYB5oHy/DKQw==
-X-ME-Sender: <xms:Qv62ZdjsQSYWbTlKTLSEqMzzeUVWsCelA_UpwRQPxO1pbHXMb9VtDw>
-    <xme:Qv62ZSAE8nNVyjnQSVjZrXsWge5dcgOFoP5891x2RYn4LJanvbYpqiM9jdLBQJ1P_
-    62DAc7xuFK7DVJxvA>
-X-ME-Received: <xmr:Qv62ZdHZoFIBgCnLzmLD3S7ZxEXX2DyqstxMiOMW2vy6EYK23Jj0mlqAdYVy07CZeSgvbkqi47Kp8joEaorqp0d-f4OR9TxCKAtWAHu_Fqg1hA>
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706491463; x=
+	1706577863; bh=YykKmLIXmxhMLgQ+f77GEqZqd2U6B5FrHdnh5gln6Jo=; b=P
+	A/2+nPiHDlQVmSm7V1kSuYaAu9EBsXiJHF/XJN+sAzlr7d+9IHiTjYDMDf1Lzqp2
+	zgVh6RPFPgfD/j57WJY0ofW4Y2UbcSNbujsePfg6YjGN9+ZRYX+duxwHGUnWFoHR
+	IBBtlOs+o83Sxa353AjHU+A4HzcNXF/6zAJryGQAHEOxSux0XyI/z5hkLD8I/8qF
+	1R8R/BR8j/Yi7AXeDQQDOfk11K1ZwIsAX7IvIY+bZWGiqny+m5JamJdb//7NnWst
+	ednsOVZ8nrvqY0ZyxHbjb5lOMqAZiA0X5nW5wdqkZZ4bAS51MYtUDeVue/zHIJTQ
+	SXrZ9SKqKD09NZAbxhUUA==
+X-ME-Sender: <xms:Rv62ZeBMrto5TL-UStJ3b2T1orrFQaonJCh27zF6oH5rotdK3uPfYg>
+    <xme:Rv62ZYgXvhvJBmexyRX6uWa5KoIW-728YgjMfjufw3dR9CJ2v2Qh3KIqtpBQh0hRH
+    SBhsbvS_TGwq7ec5g>
+X-ME-Received: <xmr:Rv62ZRmN1DGqeaX0LXEToD1RVXgF7eWFj72KIXAkviPDdHPst1L0YqSJUQu7QEajQEVSSk4qVd3pRbZNKlOs8-k_8HZVrgDbNUVXs2YGyWjoZQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtfedgfeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
-    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeffffegjeduheelgfdtudekie
-    ejgfegheehjefgieejveevteeiveeukefgheekjeenucffohhmrghinhepghhithhhuhgs
-    rdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:Qv62ZSTwvQHw03v-B2f1Bae6pN4fJB-3Qs8pCTG6pZi9wB0IlqrCtg>
-    <xmx:Qv62ZaxbEzm0olNmw8XT6u5Hgp2K4DFcOrRD_Mo1YqOS2_wuDmHRhA>
-    <xmx:Qv62ZY4sEd0MomoUDEp5-KW2l923PFpKcPYCM2P57eJmietEO2dsGA>
-    <xmx:Q_62Zfhc89QQ1-UiKEW_sidKxkm0BIiyi8TNBF-Dz_bCocdzYVhFcg>
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
+    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:R_62Zcz1MzQtfdwSBtln-LlC34lP8qc_D9Ko5CH1fDczxURjLOWBoQ>
+    <xmx:R_62ZTS0SKVBM3VIq1igWUj3sWVS2Gs-poRDv2fHtWTPPrqEzAK1Ug>
+    <xmx:R_62ZXYOsmpZOyMC93OEXeAcVhMmsmNwX_SkZypDB_j_KUn4UNYyJA>
+    <xmx:R_62ZRGAe_TCZLoQXPzAC5q_HmsNW2hifudYTZJIXLJTPO8H8pftwg>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 28 Jan 2024 20:24:17 -0500 (EST)
+ 28 Jan 2024 20:24:21 -0500 (EST)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: linux-trace-kernel@vger.kernel.org,
-	coreteam@netfilter.org,
-	bpf@vger.kernel.org,
-	linux-input@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-kselftest@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	fsverity@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	netfilter-devel@vger.kernel.org,
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	andrii@kernel.org,
 	alexei.starovoitov@gmail.com,
 	olsajiri@gmail.com,
 	quentin@isovalent.com,
 	alan.maguire@oracle.com,
 	memxor@gmail.com
-Subject: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
-Date: Sun, 28 Jan 2024 18:24:05 -0700
-Message-ID: <cover.1706491398.git.dxu@dxuuu.xyz>
+Cc: eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v4 1/3] bpf: btf: Support flags for BTF_SET8 sets
+Date: Sun, 28 Jan 2024 18:24:06 -0700
+Message-ID: <7bb152ec76d6c2c930daec88e995bf18484a5ebb.1706491398.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.42.1
+In-Reply-To: <cover.1706491398.git.dxu@dxuuu.xyz>
+References: <cover.1706491398.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -108,68 +113,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-=== Description ===
+This commit adds support for flags on BTF_SET8s. struct btf_id_set8
+already supported 32 bits worth of flags, but was only used for
+alignment purposes before.
 
-This is a bpf-treewide change that annotates all kfuncs as such inside
-.BTF_ids. This annotation eventually allows us to automatically generate
-kfunc prototypes from bpftool.
+We now use these bits to encode flags. The first use case is tagging
+kfunc sets with a flag so that pahole can recognize which
+BTF_ID_FLAGS(func, ..) are actual kfuncs.
 
-We store this metadata inside a yet-unused flags field inside struct
-btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ include/linux/btf_ids.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-More details about the full chain of events are available in commit 3's
-description.
-
-The accompanying pahole and bpftool changes can be viewed
-here on these "frozen" branches [0][1].
-
-[0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
-[1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
-
-=== Changelog ===
-
-Changes from v3:
-* Rebase to bpf-next and add missing annotation on new kfunc
-
-Changes from v2:
-* Only WARN() for vmlinux kfuncs
-
-Changes from v1:
-* Move WARN_ON() up a call level
-* Also return error when kfunc set is not properly tagged
-* Use BTF_KFUNCS_START/END instead of flags
-* Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
-
-Daniel Xu (3):
-  bpf: btf: Support flags for BTF_SET8 sets
-  bpf: btf: Add BTF_KFUNCS_START/END macro pair
-  bpf: treewide: Annotate BPF kfuncs in BTF
-
- Documentation/bpf/kfuncs.rst                  |  8 +++----
- drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
- fs/verity/measure.c                           |  4 ++--
- include/linux/btf_ids.h                       | 21 +++++++++++++++----
- kernel/bpf/btf.c                              |  8 +++++++
- kernel/bpf/cpumask.c                          |  4 ++--
- kernel/bpf/helpers.c                          |  8 +++----
- kernel/bpf/map_iter.c                         |  4 ++--
- kernel/cgroup/rstat.c                         |  4 ++--
- kernel/trace/bpf_trace.c                      |  8 +++----
- net/bpf/test_run.c                            |  8 +++----
- net/core/filter.c                             | 20 +++++++++---------
- net/core/xdp.c                                |  4 ++--
- net/ipv4/bpf_tcp_ca.c                         |  4 ++--
- net/ipv4/fou_bpf.c                            |  4 ++--
- net/ipv4/tcp_bbr.c                            |  4 ++--
- net/ipv4/tcp_cubic.c                          |  4 ++--
- net/ipv4/tcp_dctcp.c                          |  4 ++--
- net/netfilter/nf_conntrack_bpf.c              |  4 ++--
- net/netfilter/nf_nat_bpf.c                    |  4 ++--
- net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
- net/xfrm/xfrm_state_bpf.c                     |  4 ++--
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
- 23 files changed, 87 insertions(+), 66 deletions(-)
-
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index a9cb10b0e2e9..dca09b7f21dc 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -21,6 +21,7 @@ struct btf_id_set8 {
+ 
+ #include <linux/compiler.h> /* for __PASTE */
+ #include <linux/compiler_attributes.h> /* for __maybe_unused */
++#include <linux/stringify.h>
+ 
+ /*
+  * Following macros help to define lists of BTF IDs placed
+@@ -183,17 +184,18 @@ extern struct btf_id_set name;
+  * .word (1 << 3) | (1 << 1) | (1 << 2)
+  *
+  */
+-#define __BTF_SET8_START(name, scope)			\
++#define __BTF_SET8_START(name, scope, flags)		\
++__BTF_ID_LIST(name, local)				\
+ asm(							\
+ ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
+ "." #scope " __BTF_ID__set8__" #name ";        \n"	\
+ "__BTF_ID__set8__" #name ":;                   \n"	\
+-".zero 8                                       \n"	\
++".zero 4                                       \n"	\
++".long " __stringify(flags)                   "\n"	\
+ ".popsection;                                  \n");
+ 
+ #define BTF_SET8_START(name)				\
+-__BTF_ID_LIST(name, local)				\
+-__BTF_SET8_START(name, local)
++__BTF_SET8_START(name, local, 0)
+ 
+ #define BTF_SET8_END(name)				\
+ asm(							\
 -- 
 2.42.1
 
