@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-20575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20577-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C158840608
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:05:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B79840613
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:06:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D2FC1F244C3
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:05:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B0AA1C232A8
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B1B62A04;
-	Mon, 29 Jan 2024 13:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B8F634E7;
+	Mon, 29 Jan 2024 13:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U3gq8D+w"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hLHzItpV"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3AEA61673;
-	Mon, 29 Jan 2024 13:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703A96280A;
+	Mon, 29 Jan 2024 13:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533518; cv=none; b=idu00dDRKRmJfF7HxQZu1Vd5z/tuYxYXCYxc6JU+DVf6EVZCz5uCAuyhE6IxkUQ496DI5WnghfxcQkgHWFYb8Lrbxve6vopUMFjTmjC3dEQu9FinD+oe8z+/v5IKNX6egQq7freYWf/zvZBpyveDEhzK2SC6IV+I+7CMVryIfto=
+	t=1706533526; cv=none; b=TEn+6e3ppKYhSuWORN0ebf4161CP0/Q2q3SOT/+qcRNvGmfkLyxWYcRZf3492B/LM9l5hkWILGy2kLGl1LmdCE6XMSX6R+TDTADYZSoeR66Zg8EEV6/jzDkJM8Cc1/T/r/47GA9frK12DtLB/XtV9x+4j6hdE//++CKVA2DP/+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533518; c=relaxed/simple;
-	bh=hWDEomf8s1NSZ88LHI2h/eMgx2/+Wu9+L2VlrPLQc6g=;
+	s=arc-20240116; t=1706533526; c=relaxed/simple;
+	bh=6NUJxzq+XVvVj6pNMncMX5L9x6cZh5iXbnFwIH3E42c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QanZExPnY38aZRqKZE03o63/XesxzfrPB69SkTpuqQNbHEyYZcSYyJiKh/TCJY+cdz/P39ABVVLOGZgRMujj6uwVVNQq+diGE6DDRbwV8qm6R467ga0pBZ4T5IUrye9SQat86Bqwfc8TZgnt5aqdzfRXDoqWlbU+Ad96kM9zptQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U3gq8D+w; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=QguaieeaeoFXFTCcajY2txKXvsD7QTKgKIBvNWRwM8OgfYXkOC60M616y8WrifKHvtKQaV6AO7sm/1KuxB+aQ2XDdBXbdUl2xkW/bpKmYOuV6xL26XiMj3X4dJ7XRrpLQHBv4wyVMYzlr7wcPpev2P1kM28+cW+3lH5K72Zxlaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hLHzItpV; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706533517; x=1738069517;
+  t=1706533526; x=1738069526;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hWDEomf8s1NSZ88LHI2h/eMgx2/+Wu9+L2VlrPLQc6g=;
-  b=U3gq8D+w5UUddwBeltLUyJk3yRe4ES3MaAjXn/h1n2dzw0sM0kJvPNYe
-   MHFv7Dx5Y+HWICz6BJl6jPNnB+R7a02rWhWMDwTlvxdHuLlNPg5wTTPMp
-   ZaCrg848mCmNk2VeVSJJXIJnAT/8qbWFxc4aLnR1DVZ68UeQC7XGSqPAl
-   4bkkIyZGkTZyCFKrZHA3rUensNrMiTQlkpCoGwYQ04DXM78Sg6kdbAmke
-   GQUrJe0SC1WmbJTJmUwvPXJpnBdkGpTNX0aqBRP/HG1+79QswqElqKgV1
-   k7ODhgKSC5hZY3F1FEb+iupsjcq8wE7Biyexp1PRyyCvMAbvSPSdIBIjz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473237"
+  bh=6NUJxzq+XVvVj6pNMncMX5L9x6cZh5iXbnFwIH3E42c=;
+  b=hLHzItpVaeDBrdZ+DaFZZyKzvVUR4rZ4EmkzGyr1e8hf9pQyCi2fFAkM
+   vul8k9YZCzGb5piEm7FbiJWee2Z9sHBfJKlOVuOadKbdXnx6Hama52UJg
+   7oLDH43fNk5h3GUTSrkrXbSv4j7UwtT0WiimUOQmyFN9HvqyBLIZOgxxy
+   4gswoiSZ+nvTZ24YnCBtCIFMSP9VB6nfofY4Vw01O5vLUY/xValLxfjqW
+   XN/vpilkKLXFNflR6ZO7T0mPyiyuUtWwbMJ8piqwrGN7S+XYemnT3WCIT
+   YIyKGX+ioGSkSauuJ+cC76G0RqvPxON8kdWPNQuk1Q++sPUyWTNaMMquB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473347"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="21473237"
+   d="scan'208";a="21473347"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:05:16 -0800
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:05:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106707"
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106724"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="907106707"
+   d="scan'208";a="907106724"
 Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:05:08 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:05:17 -0800
 From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	David E Box <david.e.box@linux.intel.com>,
@@ -90,9 +90,9 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
 	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
 	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: [PATCH net-next v4 01/11] net: phylink: publish ethtool link modes that supported and advertised
-Date: Mon, 29 Jan 2024 21:02:43 +0800
-Message-Id: <20240129130253.1400707-2-yong.liang.choong@linux.intel.com>
+Subject: [PATCH net-next v4 02/11] net: stmmac: provide allow_switch_interface flag
+Date: Mon, 29 Jan 2024 21:02:44 +0800
+Message-Id: <20240129130253.1400707-3-yong.liang.choong@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
 References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
@@ -104,50 +104,45 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding the allow_switch_interface flag to publish all the ethtool
-link modes that can be supported and advertised.
-
-This will allow the interface switching based on different ethtool
-link modes.
+Provide the allow_switch_interface flag to indicate the platform supports
+interface mode switching.
 
 Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 ---
- drivers/net/phy/phylink.c | 9 +++++----
- include/linux/phylink.h   | 1 +
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 5 ++++-
+ include/linux/stmmac.h                            | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index ed0b4ccaa6a6..38ee2624169c 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -1839,10 +1839,11 @@ static int phylink_validate_phy(struct phylink *pl, struct phy_device *phy,
- 	 * against all interface modes, which may lead to more ethtool link
- 	 * modes being advertised than are actually supported.
- 	 */
--	if (phy->is_c45 && state->rate_matching == RATE_MATCH_NONE &&
--	    state->interface != PHY_INTERFACE_MODE_RXAUI &&
--	    state->interface != PHY_INTERFACE_MODE_XAUI &&
--	    state->interface != PHY_INTERFACE_MODE_USXGMII)
-+	if ((phy->is_c45 && state->rate_matching == RATE_MATCH_NONE &&
-+	     state->interface != PHY_INTERFACE_MODE_RXAUI &&
-+	     state->interface != PHY_INTERFACE_MODE_XAUI &&
-+	     state->interface != PHY_INTERFACE_MODE_USXGMII) ||
-+	     pl->config->allow_switch_interface)
- 		state->interface = PHY_INTERFACE_MODE_NA;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index a0e46369ae15..d1ec075ae10a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1222,9 +1222,12 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+ 	priv->phylink_config.mac_managed_pm = true;
  
- 	return phylink_validate(pl, supported, state);
-diff --git a/include/linux/phylink.h b/include/linux/phylink.h
-index d589f89c612c..b362d3231aa4 100644
---- a/include/linux/phylink.h
-+++ b/include/linux/phylink.h
-@@ -151,6 +151,7 @@ struct phylink_config {
- 	bool poll_fixed_state;
- 	bool mac_managed_pm;
- 	bool ovr_an_inband;
+ 	mdio_bus_data = priv->plat->mdio_bus_data;
+-	if (mdio_bus_data)
++	if (mdio_bus_data) {
+ 		priv->phylink_config.ovr_an_inband =
+ 			mdio_bus_data->xpcs_an_inband;
++		priv->phylink_config.allow_switch_interface =
++			mdio_bus_data->allow_switch_interface;
++	}
+ 
+ 	/* Set the platform/firmware specified interface mode. Note, phylink
+ 	 * deals with the PHY interface mode, not the MAC interface mode.
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index dee5ad6e48c5..b99d11f4ff26 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -87,6 +87,7 @@ struct stmmac_mdio_bus_data {
+ 	int *irqs;
+ 	int probed_phy_irq;
+ 	bool needs_reset;
 +	bool allow_switch_interface;
- 	void (*get_fixed_state)(struct phylink_config *config,
- 				struct phylink_link_state *state);
- 	DECLARE_PHY_INTERFACE_MASK(supported_interfaces);
+ };
+ 
+ struct stmmac_dma_cfg {
 -- 
 2.34.1
 
