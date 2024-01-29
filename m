@@ -1,254 +1,207 @@
-Return-Path: <bpf+bounces-20559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA728840281
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:10:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DBB3840380
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A322A1C20852
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:10:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 623141C21EE3
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070D55E68;
-	Mon, 29 Jan 2024 10:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8906F5B5C9;
+	Mon, 29 Jan 2024 11:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TBBtYqv4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FIIthtML"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AAFD5C8E8
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 10:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706522955; cv=none; b=PVUmB5PE9sgtPnvJIY2ddbAufrwByKeRA2rqAKhwVjLS0Zd37hIFQm8KO+LlS8cWGl80gfqi4xLjLsRuWE5IPc5lbEyih7K3eeGAgjjukw9W0CbEsQxM7XqsHsc7+cbuTDvcRnuYb5CJxoYlOVTbC+UhnLL6LsnpGpjs5o0N4bU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706522955; c=relaxed/simple;
-	bh=AovuKEfLyCYwuNkt/RkXEceoH5Wx/UbmM6ln7vuqEaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y5aNJo+xaD/TvnQDbyQJsrCq/iHSI4TRIGgWz4M6A6iXvbaKZhfejfsKBb+DcKnhdsVZoHPQSvlWWJ7PtX6GDmdZm4lyv7TOGpYa3d2XhJ44GoebwfLef15V11T7yTokqPWPfQ/KNXyScIi0zAasbljHu5CZO53/yg9jtSPwweU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TBBtYqv4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706522952;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QYHen2oi+BFbFain7oay0ac3PoX7CtGlQvTKIJWDOMY=;
-	b=TBBtYqv4J6wGl6oRJ6bMMBDQxolZlqalXHOGlZFWxavS6Eg3SR20dEqnYH4YEi4fI1uCay
-	0ShH1uVxde2JIvZi8pYF3YsfUtnzLuU9XmAYSEiUP8yRVFEt46hRu9C1cZmnaAp4vT/yOr
-	EofU3/8au3ICwEaT86Juaqsx/NCWPSo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-519-qLpq9wh5OgyaaAtaETdsJw-1; Mon, 29 Jan 2024 05:09:11 -0500
-X-MC-Unique: qLpq9wh5OgyaaAtaETdsJw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e86ddcee5so16688315e9.2
-        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 02:09:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706522950; x=1707127750;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QYHen2oi+BFbFain7oay0ac3PoX7CtGlQvTKIJWDOMY=;
-        b=Yu6tLNpY23iJHH0Vo2r96AbVh77Hdn/v4/ru3RYCeipxFVCXC0WmKaY+mwuJlv6BHx
-         OPYlb07MSIbGKHZDaPUAglbZ16gzH5qDMdRURfH9eaZjYdDPFpDBHdZb3zJzGI6E0KVZ
-         h1A4QG17y+PmSEwuFFV3f1z2d2uLN1MT8QZBZi/nXPdFWBFoP11/ZeSF5xDqLXhC1XDn
-         RxhbpgSUWXeXSe17y7qaDoSu9WX+2ydCPztmdsxZm4bbHXBM0A89h2IszTeyKC5pDF5d
-         iCC/SGsMEE6MruraQlIEtUAc2OKloKzVPfJWBMY2XqcDk4+We196kIO3PD1bkkCXPDMo
-         WAXg==
-X-Gm-Message-State: AOJu0Yzd/EFl2AnXJ7umpru4Vp0xwPORZUJrcSrz5Rftfc6Tus1R7hdL
-	tl1ZF6UfMH8cKXq5Kzz/+IZSIJu2uqcgEpGOyjKSpplkfxY7OeBjzl1adjW7SYLBdx46Mu9+cuS
-	pxN1jU6u+YywBdZ568XqjX6tlVC9CdtuAFsUBiEoVr5h50QcG
-X-Received: by 2002:a05:600c:3b82:b0:40e:6eef:9d46 with SMTP id n2-20020a05600c3b8200b0040e6eef9d46mr5808876wms.20.1706522950233;
-        Mon, 29 Jan 2024 02:09:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHvxewqxVjJRiRcwyXAxcOPDsiEoVfqC3bN3Y/nws8d/R3mQUBXRmg4dzmEcoNBZDnSlkp+Ow==
-X-Received: by 2002:a05:600c:3b82:b0:40e:6eef:9d46 with SMTP id n2-20020a05600c3b8200b0040e6eef9d46mr5808842wms.20.1706522949876;
-        Mon, 29 Jan 2024 02:09:09 -0800 (PST)
-Received: from [192.168.0.159] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id az29-20020a05600c601d00b0040ee6ff86f6sm8450624wmb.0.2024.01.29.02.09.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 02:09:09 -0800 (PST)
-Message-ID: <246afef2-9f78-479d-90f1-3c5e2cf4085e@redhat.com>
-Date: Mon, 29 Jan 2024 11:09:08 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355DE605AC;
+	Mon, 29 Jan 2024 11:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706526486; cv=fail; b=rWe3Bl9nObrM6GEXOT2oH6rrF3kTbjUcXNIz7vDrFTNNclk2/gstCGPs14QaSfX5F2t13gvIr9GqLOGq0Vb4Y6hYzpiVuVPbfDy7lBOZ+bzDBULS5mPta48PfNJu96oEFnA6wmmG3BJrV4dfl2FUuqpQQm9Dwh/nQjhIBglda/g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706526486; c=relaxed/simple;
+	bh=U2R8uWD23yFuueWH/FM/DkUIfPqP6Kqlwp3krifQ9Gw=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ixdk2WY1RcqKZPhdDn8USYZHRWI6YFK3MWKlFtfVFzvU4+0dGChwFVtio0pnu+kaz2WxNOY/RW7GH3LdFkYXWp51brQwR+LV/uHhk/mPJpRB1C0byWLhIMIgV0DmoBQNdnpvF2SOZvdEDao3un5UxDsbzfhanighodCEhi7L64c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FIIthtML; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706526484; x=1738062484;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=U2R8uWD23yFuueWH/FM/DkUIfPqP6Kqlwp3krifQ9Gw=;
+  b=FIIthtMLiPcm7wNfYHWsZTZdzqrEKQHAjlgY8U//cPS5ffT/240LkA8/
+   vT8IlPVnbTxWRNmggPTJWWpCzJB+NtGWy2tSMvLVFCaRL0Fdf+LfZCg2n
+   CXuF2SD+6vCRG8wEK5sqO+8qJAK+PHhkFDUxxJkQPFsVXIMSoFiucMUm5
+   2oA7hZFwp8JVOodiGGHU904D3dMsdwQVLVKh2gYuWwrea5yyR2AQMgdvU
+   i+hqkxayvlrP7HuV611LYz+gQeR8SvafPvDVTKEfm2SFbeo49W6BhO+qV
+   gK8umwVTsvc8Hpau0gYaEPHqalRtz+Ev9IxaGlW5pbJ65uwKTwlZ4ZqXu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9666326"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="9666326"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 03:08:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="29747839"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 03:08:02 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 03:08:02 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 03:08:02 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Jan 2024 03:08:01 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JSX4qQuVyC4LvOc2RUFWsx/WRkXPtke4ibeCiF7nttFpNzqJPxNmxVTDNKsTdsTwpO5PFJT3uahO83Cbt+XRv9BjVxIJQlzCZVlmWoEkI0e7dti7HuPyoO6zHlCb0A2lhGRj9f5clFw2Gb4NBk3r4QKe01Nll9FgauVGvhBKvjjeUKnSKkjhqGbmTR9mfgsGRLAhVhXJCiHSZzhLacNetrC1GgsrleOuntz/mRdGR8T7BkJCcT4YjbWPQhm4zynD5jlMkBXucEoXPqd+ayJInlDlasNarNS8W2TQCOJvUdXOT0l9xYU06cCPWxytse1JhHF1vo9bQvpA51rUhWMSTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WPLQRTAtjRnjMGCVNNmBL4lezZVpGOUnEzA5uJH77cc=;
+ b=hNfbbG0GyP0jbe9Aq+ksenIZV8VOK0KeLP4zA9RHquqpp1nTthKiL752I1Fyh2hqyhC1ZiGs6q6SoWGLBivCYSykPa+CLP+AkyYofyUcmpXYkT8HwUXbaty5X5VssPEdRiteWdgds1pSxhbpNX4Qr1FP+PLazucBKxnpUXffgEG6t1gGvOEpRFH+2TXv7CIYmVFbg3nCkc87N9cd7xPHGYITwtLs1Z/1MkHv2Mst9bGjaOM7cL+/wUGKXYVviYx3h3UcZvlLUABCsuweBvNSIm7ihFUgrKGlK/iZM54/EA8B0laV651511nDFgywefefMVzIt/oNT4JCYjbG7fhejQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by CY5PR11MB6414.namprd11.prod.outlook.com (2603:10b6:930:36::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Mon, 29 Jan
+ 2024 11:08:00 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::8760:b5ec:92af:7769]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::8760:b5ec:92af:7769%6]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 11:08:00 +0000
+Message-ID: <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
+Date: Mon, 29 Jan 2024 12:07:30 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/7] dma: compile-out DMA sync op calls when not
+ used
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>
+CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Marek Szyprowski <m.szyprowski@samsung.com>, "Robin
+ Murphy" <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
+	<will@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael
+ J. Wysocki" <rafael@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Alexander Duyck
+	<alexanderduyck@fb.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+ <20240126135456.704351-2-aleksander.lobakin@intel.com>
+ <20240129061136.GD19258@lst.de>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20240129061136.GD19258@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0192.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ca::10) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix cross-compilation to
- non-host endianness
-Content-Language: en-US
-To: Jiri Olsa <olsajiri@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Ian Rogers <irogers@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Alexey Dobriyan <adobriyan@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <20240123120759.1865189-1-vmalik@redhat.com>
- <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
- <Zba2TrYs6jRcNhH8@krava>
-From: Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <Zba2TrYs6jRcNhH8@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|CY5PR11MB6414:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a7ab5a1-07e0-4c7b-7898-08dc20ba8e5e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hpMyeuM2ANyOKU9dlqcfHx0MjWHMwZTrlgzfcedRc0qhr9MKBaiyHU+adBH9w7bmKt84yzgy1JpDhQ3ETrHIAkqz5Fa4hLdEJGSBOcO0jRVOyEu5Avwt/6hlEJip+dyOP1Vdiv4SSQf73UAEDxog31gRx3NT82jhugDho3fukHA0ykySzvkaKO329SmZ9pa1xwN92H9hQnLyNJkD5r5NqSXqB4IJJxAD0poH2goSa1+Gf8UvGHXxORn0B+EAeivTijS63JuESPQlETAPekfMH1Z3XcVF3gJxj+5YqiQEM9AGNqGBkiYgObv6sCPya5OMf7Zi7rVE67C/z201a8jj+uVrwDUw4n1QwBNVYJR2QpUS09BNm0s3G8i59v572v6kpC/ap3SRBtm5S4KfQA5tutz1QDbsxtbkEQyMIxsfodg92RZP7R391x8fRK7TQ/D2YtWGsJpNgD16vxsSCnzZs16/FgTL40lLoh4/vkUqzq4PlIW+juzwf/Vau40ffOaxtal/XasTu/R2Jx5YKJjJvcmL7R9ATspMt1gxS3a8oBGWDdufVcu4xijC58ZhFYdmq+Ob5ZF3lXDe0RIkK7cMLwRt4ioCFOa+y+9C7PUR8UNslWxDlbjLWZtZ1swmYJjlJiTqni0BbIfriZpaa+ArqibworX1nwy9Qoqfa4rAwlGTeg/HC//UWDrw6odu7z0G
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(366004)(376002)(230173577357003)(230273577357003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(2616005)(6506007)(6512007)(8676002)(26005)(41300700001)(4326008)(6916009)(7416002)(5660300002)(8936002)(36756003)(2906002)(316002)(54906003)(66476007)(66556008)(66946007)(86362001)(31696002)(6666004)(478600001)(6486002)(82960400001)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cllLSXdSTkFuMlljYS9NbVJMQ0lPTEltSDJPZThnTXI0SmJFTGFmNzlZT0FE?=
+ =?utf-8?B?Y3dUblV1MVd1Tkh2dThONFd1UGJCeU80eFFzcEx0bEJiNnNJczBKQXdrY21q?=
+ =?utf-8?B?MG9OUTRKZTVPeC9FNVhwclFSVDcrL2ZMdTI3ZEcwcVJlb2RsNXBJQnpaWWZD?=
+ =?utf-8?B?VUpOb0RVSzQrVExKRHRUemJWak1sQTA2TStNMnY0ZzdmdWVlWVJZVUh0S0c3?=
+ =?utf-8?B?WWxkWmZGWlRFWmFXZ0hhanQxdEZKTWJqMDVqcTZPQ2ZFMGtMajRFcExzUi9L?=
+ =?utf-8?B?WDZuVERlQ2hvWDRaUW1RakZ6ZHNJNk4zM0NoaXZFQVpONkJBOHFZUTFxRTZx?=
+ =?utf-8?B?Znl6ZHdFTUQ2RktuVEx3TjFWcHNCUGtmRDJmZzl5QUJuOHdKZTRNc0ZJU1hz?=
+ =?utf-8?B?bXNuQnZ5cnYzS2kvNlV2Qk5tZjlkSE0ydGhrbTNWUkFUZSthN0ZqdnU4bG5C?=
+ =?utf-8?B?UVgwTmQ1dmhGZld5RFhWUVhMNHNsYnZDcGpwMjRNdkhqZzFGVUd5TitBVlBW?=
+ =?utf-8?B?WlNzNEx4dGRGekhaVlJiejZyejEzMXpSdHl0NEpIYmhJd3piM3d3ZzNCRHFH?=
+ =?utf-8?B?eDhzSUNIVnVpeWZDS2pnOFVXZVRpZUtHQ1lEMVpQNEd2NVVPci9JMjBWMDJI?=
+ =?utf-8?B?UUE3bStPRFlTSFFORXZJUUdDNVFxSDB5Nmw1a0ZBUXBEdnNONWIyUTU5MkI5?=
+ =?utf-8?B?NGZXcGo1aHpGRTlQNmxHU3FsVVRkMmJpOWFWZXk3MmpXRWF6MW5IODgwNG1H?=
+ =?utf-8?B?MlhJQjFFQWdnWE9TUjlaN09UTXNKdllnQVRHU2NzOGl6eHRDWG83OEdDdWh4?=
+ =?utf-8?B?eXIvYTNQSmRZVFNUblVncTlEeEs3d2xjcFRHVkxxM0FMYmdGSWVDVHdlNWF3?=
+ =?utf-8?B?dlRUblJSWU5jSnBUQ1NjOHUraTAyWXNjQVpldjVZUWs3cHpMdXVXc1VXWnRL?=
+ =?utf-8?B?UEJYT003Y2ZmM1FseXpzaExqVTZTY1RIYjJOazU2WFBYWFA1ZjdMUUh0MVZQ?=
+ =?utf-8?B?dk5MSVFqUm1SYVFIbzBkM2pPWGJhSk0zbGk3WU5WTndLYnd1alIvSlNlZzZD?=
+ =?utf-8?B?a2hiSDN1aFVxUTQ0bmxPbmtVS0xSRnBsbUpGaFBvTktEQ0s1YlVyWElNRE52?=
+ =?utf-8?B?Mk1Sa0VJZHM3Y01yZnFZcHYzdGhqWkE2S0ZRMlVLY2FDem1TQys5U013L3dw?=
+ =?utf-8?B?Z2Z2ZWtydk5BWEh0ekFrTDNhY2VoQU10ZEVHdkdUWGcxaWQ2dmhTdGViTTEz?=
+ =?utf-8?B?R0kvNjh0NWhLeVgyVnFEOGY2T21Od2prbUIvR0E2UXVVcGcrZ3R2bll2N2tk?=
+ =?utf-8?B?YUpKWTBHNkpuQzRKRWNYSzJPQWlVVU5Na1AwcnR1eVB5Um9DdTcwc0o3VjQ1?=
+ =?utf-8?B?YmxiRFdWUU90RzVDWktQeEFZWTEyWUsxaFJHYU9uejZRTC9lSlNXOS9udTF4?=
+ =?utf-8?B?YUlBMGFtZDJBSGJ5Sy8vUDRWMWxRbE9vR3ZjMVVSdERBclBjR3ZXWGthUzkv?=
+ =?utf-8?B?bUEvbmljTXlia3FKSVlmeTBXVG9VQ3k0Y3lUZm10NEJISnZhY1A1UyswYzN6?=
+ =?utf-8?B?ejVSaGJmRmpjVjRwdUN0bGUxRitKNEM4L0VGay84d2s3MnRqSFp2endGKzRM?=
+ =?utf-8?B?NEFqdjJrWGVVSnBqSVV2K1JjTXRWMTMwZWpTaFNUYUpEcU8zRFRJRWlDOG0x?=
+ =?utf-8?B?bmFIdTNVZVFwN3UyRDRNY3ZIUW85VHJrU2RyTkUvNWRLSkZmQklKdXNwM2Nw?=
+ =?utf-8?B?b0tKSk9BSzBleEZJYU1TU24zMFViWHZRNm42SVY0U2N2bGRHL1JBUkFPMlpP?=
+ =?utf-8?B?ZzhrUC9aL0lsTGQrU2ZwdW9ZQVpBc0JaSHM4U21Qb1VORVhOYmVIcEg4RU5u?=
+ =?utf-8?B?eU1ZV29IY0FlZkRSL21EaXA3cXlGUUltNjRpSXl0SzdNY1NqVzJoWVVZWDBy?=
+ =?utf-8?B?RFkrMFhwaU5kSkJRYVVSMDN6UkQwcHJlN1BqQ3dDUHFReG5kN3RzT0NjeWZk?=
+ =?utf-8?B?K0NRQ2J2SzdscjJHblZhK3ZwK3UySStqKzFHc0p4OUM2R1VTdVk1NEsyTUZO?=
+ =?utf-8?B?ZktxNTlRYlZldmZOQ1c0djdFWGtZa3BXN00vUTREa1U4UTRmdjVzR0k4WWhx?=
+ =?utf-8?B?VWc0Y0E5TDJjVUxUL3dETEVBZ3BpR3Vwc0UzeEE5Z1l1cHZZTUdsRkZ6RFI1?=
+ =?utf-8?B?QkE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a7ab5a1-07e0-4c7b-7898-08dc20ba8e5e
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 11:08:00.6540
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BhKlG2hOLtb7r4toNNyFvhp3Fog0AMEgYbc0wX7DgUfMB8A5afeJnmAgMIc0k6ty5dFam8O6uuk/mlxeWyE0e0Kw2cBsG90NSGqAkvZXiOY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6414
+X-OriginatorOrg: intel.com
 
-On 1/28/24 21:17, Jiri Olsa wrote:
-> On Fri, Jan 26, 2024 at 03:40:11PM -0800, Andrii Nakryiko wrote:
->> On Tue, Jan 23, 2024 at 4:08 AM Viktor Malik <vmalik@redhat.com> wrote:
->>>
->>> The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
->>> build and afterwards patched by resolve_btfids with correct values.
->>> Since resolve_btfids always writes in host-native endianness, it relies
->>> on libelf to do the translation when the target ELF is cross-compiled to
->>> a different endianness (this was introduced in commit 61e8aeda9398
->>> ("bpf: Fix libelf endian handling in resolv_btfids")).
->>>
->>> Unfortunately, the translation will corrupt the flags fields of SET8
->>> entries because these were written during vmlinux compilation and are in
->>> the correct endianness already. This will lead to numerous selftests
->>> failures such as:
->>>
->>>     $ sudo ./test_verifier 502 502
->>>     #502/p sleepable fentry accept FAIL
->>>     Failed to load prog 'Invalid argument'!
->>>     bpf_fentry_test1 is not sleepable
->>>     verification time 34 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>     Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
+From: Christoph Hellwig <hch@lst.de>
+Date: Mon, 29 Jan 2024 07:11:36 +0100
+
+> On Fri, Jan 26, 2024 at 02:54:50PM +0100, Alexander Lobakin wrote:
+>> Some platforms do have DMA, but DMA there is always direct and coherent.
+>> Currently, even on such platforms DMA sync operations are compiled and
+>> called.
+>> Add a new hidden Kconfig symbol, DMA_NEED_SYNC, and set it only when
+>> either sync operations are needed or there is DMA ops or swiotlb
+>> enabled. Set dma_need_sync() and dma_skip_sync() (stub for now)
+>> depending on this symbol state and don't call sync ops when
+>> dma_skip_sync() is true.
+>> The change allows for future optimizations of DMA sync calls depending
+>> on compile-time or runtime conditions.
 > 
-> hum, I'd think we should have hit such bug long time ago.. set8 is
-> there for some time already.. nice ;-)
-> 
->>>
->>> Since it's not possible to instruct libelf to translate just certain
->>> values, let's manually bswap the flags in resolve_btfids when needed, so
->>> that libelf then translates everything correctly.
->>>
->>> Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
->>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->>> ---
->>>  tools/bpf/resolve_btfids/main.c | 35 +++++++++++++++++++++++++++++++--
->>>  1 file changed, 33 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
->>> index 27a23196d58e..440d3d066ce4 100644
->>> --- a/tools/bpf/resolve_btfids/main.c
->>> +++ b/tools/bpf/resolve_btfids/main.c
->>> @@ -646,18 +646,31 @@ static int cmp_id(const void *pa, const void *pb)
->>>         return *a - *b;
->>>  }
->>>
->>> +static int need_bswap(int elf_byte_order)
->>> +{
->>> +       return __BYTE_ORDER == __LITTLE_ENDIAN && elf_byte_order != ELFDATA2LSB ||
->>> +              __BYTE_ORDER == __BIG_ENDIAN && elf_byte_order != ELFDATA2MSB;
->>
->> return (__BYTE_ORDER == __LITTLE_ENDIAN) != (elf_byte_order == ELFDATA2LSB);
->>
->> ?
->>
+> So the idea of compiling out the calls sounds fine to me.  But what
+> is the point of the extra indirection through the __-prefixed calls?
 
-It seemed to me a bit less readable this way, but sure, no problem with
-this form either.
-
->>> +}
->>> +
->>>  static int sets_patch(struct object *obj)
->>>  {
->>>         Elf_Data *data = obj->efile.idlist;
->>>         int *ptr = data->d_buf;
->>>         struct rb_node *next;
->>> +       GElf_Ehdr ehdr;
->>> +
->>> +       if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
->>> +               pr_err("FAILED cannot get ELF header: %s\n",
->>> +                       elf_errmsg(-1));
->>> +               return -1;
->>> +       }
->>
->> calculate needs_bswap() once here?
-
-Good idea, will do.
-
->>>
->>>         next = rb_first(&obj->sets);
->>>         while (next) {
->>> -               unsigned long addr, idx;
->>> +               unsigned long addr, idx, flags;
->>>                 struct btf_id *id;
->>>                 int *base;
->>> -               int cnt;
->>> +               int cnt, i;
->>>
->>>                 id   = rb_entry(next, struct btf_id, rb_node);
->>>                 addr = id->addr[0];
->>> @@ -679,6 +692,24 @@ static int sets_patch(struct object *obj)
->>>
->>>                 qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
->>>
->>> +               /*
->>> +                * When ELF endianness does not match endianness of the host,
->>> +                * libelf will do the translation when updating the ELF. This,
->>> +                * however, corrupts SET8 flags which are already in the target
->>> +                * endianness. So, let's bswap them to the host endianness and
->>> +                * libelf will then correctly translate everything.
->>> +                */
->>> +               if (id->is_set8 && need_bswap(ehdr.e_ident[EI_DATA])) {
->>> +                       for (i = 0; i < cnt; i++) {
->>> +                               /*
->>> +                                * header and entries are 8-byte, flags is the
->>> +                                * second half of an entry
->>> +                                */
->>> +                               flags = idx + (i + 1) * 2 + 1;
->>> +                               ptr[flags] = bswap_32(ptr[flags]);
->>
->> we are dealing with struct btf_id_set8, right? Can't we #include
->> include/linux/btf_ids.h and use that type for all these offset
->> calculations?..
-> 
-> we could, there's tools/include/linux/btf_ids.h, which we could include
-> in here, we do that in selftests.. but it needs to be updated with latest
-> kernel updates (at least with set8 struct)
-> 
->>
->> I have the same question for existing code, tbh, so maybe there was
->> some good reason, not sure...
-> 
-> I think the test came later and I did not think of it for the resolve_btfids
-> itself, I guess it might make the code more readable
-
-Agreed, let's use that. I'll also refactor the existing code using types
-from btf_ids.h for v2 of this patchset.
-
-Viktor
+Because dma_sync_* ops are external functions, not inlines, and in the
+next patch I'm adding a check there.
 
 > 
-> thanks,
-> jirka
-> 
->>
->>> +                       }
->>> +               }
->>> +
->>>                 next = rb_next(next);
->>>         }
->>>         return 0;
->>> --
->>> 2.43.0
->>>
->>>
-> 
+> And if we need that (please document it in the commit log), please
+> make the wrappers proper inline functions and not macros.
 
+Thanks,
+Olek
 
