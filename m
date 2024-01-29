@@ -1,137 +1,136 @@
-Return-Path: <bpf+bounces-20612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 820A7840B1B
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 17:16:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5586E840B19
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 17:16:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B52981C21EC9
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 16:16:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2828B2565A
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 16:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4243155A5F;
-	Mon, 29 Jan 2024 16:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B33155A48;
+	Mon, 29 Jan 2024 16:15:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KcHkh/eF"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="kRXCDl+f";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KRlVmv8M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD188155A3C
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 16:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED719155A2D
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 16:15:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544955; cv=none; b=dX4gxxIt6d8n5cKXzXCUhhIjKvCwWR7uiMQuJVAlm2w/EN1KLY0X4GPTVaulBCuyB9gvchAwDFuyndjaTyHI0sBN4KkFD8wk/0zQCK1IC+PmUPt4xjJh/Jsxd/Q/P2e5pnlETUgDsfBC0hivoQIHcDwjH9Ytq7ihJuzlY9Pm7SY=
+	t=1706544953; cv=none; b=H73kI5M+g4PYFgJjot/7oDpbqyuAlR/CVap7WkgdnDmYEH/vbrOhAgPKoUvh5IYDN4qzP/5RUiYj7N+RNS3Z4TcKK7530j6VpJ1yxBvG5xRq1SItSd8nM1j98IfC0oWAGjygWARiz7OWwo8IPI2v5Rxu5Z/a07+85DGy2unPhsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544955; c=relaxed/simple;
-	bh=NN3dQsWewzCrrHPgmOKPSoJluDpOa36SljbnyQPtTbg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tv1EYzL5hsE+TGt+kKxZ2UwL6u+yBDLUPKSrOOhs91S3+Uw9IGQbzlEzio3lpUXYJEcxbd3Qn6G/0rfn+hkrWO/UhBa8UCyGE8+SAukCTj7CKPkHJdNiGjEfWNfJLZcVUqcJN3neXf40HuS8PzWUorPog8Ay67ZrsIcA6G4+D6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KcHkh/eF; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5110f515deaso1967438e87.2
-        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 08:15:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706544952; x=1707149752; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CGOsxXMO+WExRs9EJmAadSGoHaZ/BDne/lN3MbU2Jy0=;
-        b=KcHkh/eF5SEBjnROFSGWbyUcOE2kArzIXEC0nqOKTOkxK0PbECiSKVE/s4cjbzJfYF
-         Nu/ychOHcKZ0xA9uVWMmQZKGP5NfLMmTR1GDf3TxpeXOi9gfzn9QuS+02wnFj4ulISUW
-         gw7yqOBuhQtL8MjphUCibh7nVMwc2HIO5+SCYVJgN3zOz7jHJLbZk7e+ea8gECuMOwfz
-         cFJM7jJrU5NsnC46gmhEnIQSV7iL+KarH3un0x2RZzobEMGkF5y46y+oYGic43Y5t0f1
-         SMaWHme6SaDwxoGqoxtHvYhzK2so7CZ8ExzPt5+Dgh9ADcfmWPvMQW174xoxwD4BvDAD
-         5eGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706544952; x=1707149752;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGOsxXMO+WExRs9EJmAadSGoHaZ/BDne/lN3MbU2Jy0=;
-        b=Gp6i4BEeZWlORMNARLWEaZCnpWlrOLynvappYzdmlDnuPXKbB2U3zpQeotHAQPgCCC
-         ELp3P+Xx88Uk70oDIKLvMxKQQqDZcPvH4x00ACGWLa6QVUeARwiYYr83Kt/+esfa5IIN
-         wf9JsjXlOS1F0ek6F4n3U59DAT/DNIazLWqXGQcTHcqpla+uxkNJXFPx7OIFuz1OG6Lw
-         Iof9tM/kZsKNm7tGyBC38F5A+4BZZtwaC5QPE9okJfNo+0JZyzrv3Cl4t0TlzQJkt5Gj
-         YiuwI7DSjK7mKStzR2FyjFZkdkAdwTwtg9kNa2Y9EYvFKA+aKEFNn6sgpOgtgK3IGSFU
-         fXSw==
-X-Gm-Message-State: AOJu0Yys2/Y0c2sVrUgyvthuaQxcQVKvmvDvlzQvn45DPBFjW8fqc+uo
-	0+Invhw17pQ0JBtrk5Cv8gKEPqnEv6ejL27PnE9zXyIj5C6WDsEI7YBxXo2X
-X-Google-Smtp-Source: AGHT+IE+Zr15g16+n0/ioqKtf4LMeAonbzZuzmQ+Teo5ATt8jJi9E2tH5PVmT1qEFnkNJRlu8GB1Iw==
-X-Received: by 2002:ac2:52b5:0:b0:510:2365:2e0f with SMTP id r21-20020ac252b5000000b0051023652e0fmr3872790lfm.36.1706544951562;
-        Mon, 29 Jan 2024 08:15:51 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id qt9-20020a170906ece900b00a35c5acc51bsm1020611ejb.160.2024.01.29.08.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 08:15:51 -0800 (PST)
-Message-ID: <6819204566bfae73c140938920eeb389d27abad8.camel@gmail.com>
-Subject: Re: BPF selftests and strict aliasing
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi"
-	 <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org, david.faust@oracle.com,
- cupertino.miranda@oracle.com,  Yonghong Song <yhs@meta.com>
-Date: Mon, 29 Jan 2024 18:15:39 +0200
-In-Reply-To: <04efa2a3-ca81-42c3-883f-5b91917f2bde@linux.dev>
-References: <87plxmsg37.fsf@oracle.com>
-	 <b1906297-d784-479b-b2f3-07ab84ae99c1@linux.dev>
-	 <87a5opskz0.fsf@oracle.com>
-	 <04efa2a3-ca81-42c3-883f-5b91917f2bde@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706544953; c=relaxed/simple;
+	bh=96Rzyfvad8NVNoN4YxNwRlg9KwplkkCMh3mRc5NLO1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HoZYqijHvbCSbqbnXFXt+SkBtloR0+N4LFMruP9iXMLSWiuuPoDQGB59cQMUvDwLNLBqkvqFoROuM+3QGJ5pQNUjNUA4o6aEWh2EzkRbyALL4U34HA001NSxD/mNw6y8emmwo0kJOfYfa/GzmKsAdEbpyIKrqayP10rQ2BD6RkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=kRXCDl+f; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KRlVmv8M; arc=none smtp.client-ip=66.111.4.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id E6FB85C016A;
+	Mon, 29 Jan 2024 11:15:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 29 Jan 2024 11:15:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706544950; x=1706631350; bh=+WDgkjTf/d
+	wZjp76TFG5vzjXoAXti/T9+y55u6gfJ+M=; b=kRXCDl+fR7nF/E7nRHT4wYWY0J
+	b1AxguysSyV9M81elDqZbT7PQjj+OCyUJGAi1/Sqb/4yu9Rf27nIeKeqJPkyVIVZ
+	oZEydrijSehLCrH1RsgAGQQM3lFnbdnLT+CIgFtTL2aqBtpe3x9yO5N6vfvEZyE2
+	C1Z0RZ/HkeQCxrAwUjuJ+bn+oP5eMlfVvYAKUNjR986PotXFy5bUwiweEYTv5jPX
+	altBBVoLEWDm0cP2q9twn0gsZlR7jvaUEO12kTN/7CCtdWJoywPERfrUK4E2c0hi
+	+voHtrAac/YNV5lPfK1EosEVa/oWT+gQnZi3PMQF9X9ZDyTFpXfb/jY8kKtw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706544950; x=1706631350; bh=+WDgkjTf/dwZjp76TFG5vzjXoAXt
+	i/T9+y55u6gfJ+M=; b=KRlVmv8MANIKRpkvz/7c2auzssRMv8EdIul7koTlERPS
+	5+j4uBp7g+cQd4H1AF+W90SVr5SwrV2KPv8hCMGURub33Kp8fWJoamvNsMR5FfI0
+	Xq36r2jgZ6DIPs6qbi9a0qJAuXp6e6/lWDmptCyuUY9vGYL1TZO81qGcAwu9GN+y
+	aD/XhSlfTyxESimGEiqGBaCrdkUsuA6GrgwRCU9N7iHXd5DU0MQpA17ZhYccWemG
+	Zz0IhSv1UYtac8rTmcOpqpkAuxc1HvrLTOGpVrgyVg5kkt18alvYAUvMN3Ej1pDV
+	no/cdzyfjE08xD3tVthpmkUPxFqdJDYMyPhjt4KbOg==
+X-ME-Sender: <xms:Ns-3ZSDou-NVJe-XccYtdrRlyytF_lp6H_s5yqDB3c_Sqdyj54lenw>
+    <xme:Ns-3ZcixBM9qJhWcTRT37w9fyPdkwH_Ki8BVzkUqHGAQVSfue_dFJL8_aNQtDli12
+    vaElqQcXz6IjnDrlQ>
+X-ME-Received: <xmr:Ns-3ZVm6eaiaNSkOgq67V7PyvMRyRulmiEelQ4jG-mBII8WTgYrX0quBaMc57aOhChwSk8fchjE1Dil8TQQz1_tCSByZN1aYXAHSJes>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Ns-3ZQy6L1YH6qvfjbZcARxHY2AACqR_8i9Ge1k4eqgUrdGSZARIqA>
+    <xmx:Ns-3ZXTDzLrOBfkDmR1_KUrZhv8cGwd_SOhCfL-FuLxq8saiyq3CJQ>
+    <xmx:Ns-3ZbYMoMg72JuWY45v9K8xn_DD8rpNhRx6b3CCx49BSrMDPNbcYw>
+    <xmx:Ns-3ZWGVcySqGG-1aJzRp2sCjfk89_eQqNH9xcKw4cKvwXz1DiNGTw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Jan 2024 11:15:49 -0500 (EST)
+Date: Mon, 29 Jan 2024 09:15:48 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Alan Maguire <alan.maguire@oracle.com>, jolsa@kernel.org, 
+	quentin@isovalent.com, andrii.nakryiko@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v3] pahole: Inject kfunc decl tags into BTF
+Message-ID: <6wjvzdisn364fpoxruc5aefes5ujvgqcys4axp3sglk5mas4ot@vb6d5sqtsj2t>
+References: <0f25134ec999e368478c4ca993b3b729c2a03383.1706491733.git.dxu@dxuuu.xyz>
+ <49da8aff-1ec7-b908-2167-ee499e7a857a@oracle.com>
+ <Zbe1DfHjhZHwIKha@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zbe1DfHjhZHwIKha@kernel.org>
 
-On Sun, 2024-01-28 at 21:33 -0800, Yonghong Song wrote:
-[...]
-> I tried below example with the above prog/dynptr_fail.c case with gcc 11.=
-4
-> for native x86 target and didn't trigger the warning. Maybe this requires
-> latest gcc? Or test C file is not sufficient enough to trigger the warnin=
-g?
->=20
-> [~/tmp1]$ cat t.c
-> struct t {
->  =C2=A0 char a;
->  =C2=A0 short b;
->  =C2=A0 int c;
-> };
-> void init(struct t *);
-> long foo() {
->  =C2=A0 struct t dummy;
->  =C2=A0 init(&dummy);
->  =C2=A0 return *(int *)&dummy;
-> }
-> [~/tmp1]$ gcc -Wall -Werror -O2 -g -Wno-compare-distinct-pointer-types -c=
- t.c
-> [~/tmp1]$ gcc --version
-> gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2)
+Hi Alan, Arnaldo,
 
-I managed to trigger this warning for gcc 13.2.1:
+On Mon, Jan 29, 2024 at 11:24:13AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jan 29, 2024 at 01:05:05PM +0000, Alan Maguire escreveu:
+> > This should probably be a BTF feature supported by --btf_features; that
+> > way we'd have a mechanism to switch it off if needed. Can you look at
+> > adding a "tag_kfunc" or whatever name suits into the btf_features[]
+> > array in pahole.c?  Something like:
+>  
+> > 	BTF_FEATURE(tag_kfunc, btf_tag_kfunc, false),
+>  
+> > You'll also then need to add a btf_tag_kfunc boolean field to
+> > struct conf_load, and generation of kfunc tags should then be guarded by
+>  
+> > if (conf_load->btf_tag_kfunc)
+>  
+> > ...so that the tags are added conditionally depending on whether
+> > the user wants them.
+>  
+> > Then if a user specifies --btf_features=all or some subset of BTF
+> > features including "tag_kfunc" they will get kfunc tags.
+> 
+> Agreed.
 
-    $ gcc -fstrict-aliasing -Wstrict-aliasing=3D1 -c test-punning.c -o /dev=
-/null
-    test-punning.c: In function =E2=80=98foo=E2=80=99:
-    test-punning.c:10:19: warning: dereferencing type-punned pointer might =
-break strict-aliasing rules [-Wstrict-aliasing]
-       10 |    return *(int *)&dummy;
-          |                   ^~~~~~
-   =20
-Note the -Wstrict-aliasing=3D1 option, w/o =3D1 suffix it does not trigger.
+Ack. Will add for next rev.
 
-Grepping words "strict-aliasing", "strictaliasing", "strict_aliasing"
-through clang code-base does not show any diagnostic related tests or
-detection logic. It appears to me clang does not warn about strict
-aliasing violations at all and -Wstrict-aliasing=3D* are just stubs at
-the moment.
+>  
+> > We probably should also move to using --btf_features instead of the
+> > current combination of "--" parameters when pahole is bumped to v1.26.
+> 
+> Alan, talking about that, I guess we better tag v1.26 before merging
+> this new kfunc work, wdyt?
+> 
+> - Arnaldo
 
