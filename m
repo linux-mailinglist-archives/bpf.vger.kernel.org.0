@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-20578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB9FB84061A
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:06:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D97840622
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:07:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFFE61C223CA
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:06:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F19A1F24D3D
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108456350A;
-	Mon, 29 Jan 2024 13:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36FA64CEB;
+	Mon, 29 Jan 2024 13:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cmNgZKxE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g5J1gdwt"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2203164CC0;
-	Mon, 29 Jan 2024 13:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E57612C1;
+	Mon, 29 Jan 2024 13:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533535; cv=none; b=ivfU/YSWlZ/3rULWQuzO4NRV4XRmpFfqWYadKNUwtWuMIMesHFRFdGHnPfYFAFsampDDG08mYGJZJWYpQr2832QCtpujmHa6SeAwHWUjOd3MdAi8JcjhIHE3PPlHYnKQWi3j8shtc6WSZHt9s5Q7psMiYSE4pmWMGQmhzEJqblg=
+	t=1706533544; cv=none; b=uDNOZAiN3/T/587aRaJZfx4q+wlosVepjXjrD3UcbmbxBP6HjHW4p1/ql1ffD45k6Akm70VmTGEY7KOxXA/sW3NmoUrWkj9TYnCp90Wew+vsGkeAtQ/jy8pILSFlS2qhMIL8Sn/OqZU8xUWzDTHOClPeCN6h3azDgVWXQxLSAi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533535; c=relaxed/simple;
-	bh=4DcfKjEUE4Q7uAyGpqdaKfRx/METmTskcQvMbEFG2So=;
+	s=arc-20240116; t=1706533544; c=relaxed/simple;
+	bh=3g/FhS8Tz9Uv+C3aF9YuSbYH1gtm3NTUoRt3ttrDE2I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FAw+4n0QgjHZaoKwhU/e7HDH2cYhOl2c7300Kk69rBZmjJEoHtSoQJWmjPmTArwq3GvqFUWgLP+cIku4CIH6aTveN/0IpybbmJnt8nt9qVU7kP3Te1YUJJ0GD4oqz8YmdfkWE3UzUaiwTQAZ+9RZMshYe41ziS9fpqPptho/LOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cmNgZKxE; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=bCRTCisjxu0P25sM5Qvj9MG9ZQUEOgmvyBobBlnhnoKbOkRMEWAn4nlBOJHk7LVLBtz6uSblq7ZaS3XgTGmJiqS46xOPLwViqmyG/0lIkyazJ0fTWWD8+WXwRWCzVSjoPt7TrknTqlEMU1gnatbnJDdDoYyGaqRBLTtIKJtAf4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g5J1gdwt; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706533535; x=1738069535;
+  t=1706533543; x=1738069543;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4DcfKjEUE4Q7uAyGpqdaKfRx/METmTskcQvMbEFG2So=;
-  b=cmNgZKxErDCd4hL6OvkHcAFnMbFgKmE+wSHQG4WPKrlQS5wbzxNhGhGH
-   9Wi8XEsxLh9q5J2sFn5XUmGcTjD7b6OMtg3VsqvoyfbKUC3x81kqDkjRk
-   s8sZh5hlnuywQ6B1mZKs7MVesjOcvBIpiYijs4AugPoW+UsiDKTO+n2yG
-   mZu3R+oeAJ2dfXvzXkfNRXpFZFqwfnkuQlGHyX/35+qGKCqzRLomeA+sw
-   79JSvPo/x1xs2NYXCbgfWaLjEcj32xpt/p5XlYt02+VSD5amoCUlj9g0V
-   /uVkWVqqSu29e5Axl5lH5H2QXpKpExpb853Ak3CIHevO4jVEldi7enQiy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473394"
+  bh=3g/FhS8Tz9Uv+C3aF9YuSbYH1gtm3NTUoRt3ttrDE2I=;
+  b=g5J1gdwtJqe7L9qmHJA8MJH3rj7J5vGu0+faF+bYMExhCWVaZaXjqjS2
+   xkmCubexjlOtpoN6vNgG07OHAJBL1KXLTKYksCNnMprfH/+HfgUe5cXdn
+   TmLpaRz1Qnc8hTY2OHixDLvnlqKUiTHF5JNFRniuac6oNJr0Ed2iD6gkd
+   O95MIVGEWUoQTJmG5Yp091OqouQPPWCufhEWalGjh5qysMa6OwXy3DZmn
+   BB9U4H1yimweNIt1fu5ROpQFTqswOT372+zkl7oSup03lIYY6s5pri5MH
+   APhvENrxz9apDQ7ktGohZijJjHWZXgFBCorJr5+j9oiYutlKREK9ZE7K+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473441"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="21473394"
+   d="scan'208";a="21473441"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:05:34 -0800
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:05:42 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106751"
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106777"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="907106751"
+   d="scan'208";a="907106777"
 Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:05:25 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:05:34 -0800
 From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	David E Box <david.e.box@linux.intel.com>,
@@ -90,9 +90,9 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
 	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
 	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: [PATCH net-next v4 03/11] net: phylink: provide mac_get_pcs_neg_mode() function
-Date: Mon, 29 Jan 2024 21:02:45 +0800
-Message-Id: <20240129130253.1400707-4-yong.liang.choong@linux.intel.com>
+Subject: [PATCH net-next v4 04/11] net: phylink: add phylink_pcs_neg_mode() declaration into phylink.h
+Date: Mon, 29 Jan 2024 21:02:46 +0800
+Message-Id: <20240129130253.1400707-5-yong.liang.choong@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
 References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
@@ -104,76 +104,56 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Phylink invokes the 'mac_get_pcs_neg_mode' function during interface mode
-switching and initial startup.
+From: Choong Yong Liang <yong.liang.choong@intel.com>
 
-This function is optional; if 'phylink_pcs_neg_mode' fails to accurately
-reflect the current PCS negotiation mode, the MAC driver can determine the
-mode based on the interface mode, current link negotiation mode, and
-advertising link mode.
+Add phylink_pcs_neg_mode() declaration to the header file for other modules
+to call the function.
 
-For instance, if the interface switches from 2500baseX to SGMII mode,
-and the current link mode is MLO_AN_PHY, calling 'phylink_pcs_neg_mode'
-would yield PHYLINK_PCS_NEG_OUTBAND. Since the MAC and PCS driver require
-PHYLINK_PCS_NEG_INBAND_ENABLED, the 'mac_get_pcs_neg_mode' function
-will calculate the mode based on the interface, current link negotiation
-mode, and advertising link mode, returning PHYLINK_PCS_NEG_OUTBAND to
-enable the PCS to configure the correct settings.
-
-Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Signed-off-by: Choong Yong Liang <yong.liang.choong@intel.com>
 ---
- drivers/net/phy/phylink.c | 14 +++++++++++---
- include/linux/phylink.h   |  5 +++++
- 2 files changed, 16 insertions(+), 3 deletions(-)
+ drivers/net/phy/phylink.c | 7 ++++---
+ include/linux/phylink.h   | 3 +++
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 38ee2624169c..27aa5d0a9fc6 100644
+index 27aa5d0a9fc6..f8bbc808be61 100644
 --- a/drivers/net/phy/phylink.c
 +++ b/drivers/net/phy/phylink.c
-@@ -1151,9 +1151,17 @@ static void phylink_major_config(struct phylink *pl, bool restart,
+@@ -1093,9 +1093,9 @@ static void phylink_pcs_an_restart(struct phylink *pl)
+  * Note: this is for cases where the PCS itself is involved in negotiation
+  * (e.g. Clause 37, SGMII and similar) not Clause 73.
+  */
+-static unsigned int phylink_pcs_neg_mode(unsigned int mode,
+-					 phy_interface_t interface,
+-					 const unsigned long *advertising)
++unsigned int phylink_pcs_neg_mode(unsigned int mode,
++				  phy_interface_t interface,
++				  const unsigned long *advertising)
+ {
+ 	unsigned int neg_mode;
  
- 	phylink_dbg(pl, "major config %s\n", phy_modes(state->interface));
+@@ -1139,6 +1139,7 @@ static unsigned int phylink_pcs_neg_mode(unsigned int mode,
  
--	pl->pcs_neg_mode = phylink_pcs_neg_mode(pl->cur_link_an_mode,
--						state->interface,
--						state->advertising);
-+	if (pl->mac_ops->mac_get_pcs_neg_mode) {
-+		pl->pcs_neg_mode = pl->mac_ops->mac_get_pcs_neg_mode
-+						(pl->config,
-+						 pl->cur_link_an_mode,
-+						 state->interface,
-+						 state->advertising);
-+	} else {
-+		pl->pcs_neg_mode = phylink_pcs_neg_mode(pl->cur_link_an_mode,
-+							state->interface,
-+							state->advertising);
-+	}
+ 	return neg_mode;
+ }
++EXPORT_SYMBOL_GPL(phylink_pcs_neg_mode);
  
- 	if (pl->using_mac_select_pcs) {
- 		pcs = pl->mac_ops->mac_select_pcs(pl->config, state->interface);
+ static void phylink_major_config(struct phylink *pl, bool restart,
+ 				  const struct phylink_link_state *state)
 diff --git a/include/linux/phylink.h b/include/linux/phylink.h
-index b362d3231aa4..adb47d1aa67b 100644
+index adb47d1aa67b..fb021275a095 100644
 --- a/include/linux/phylink.h
 +++ b/include/linux/phylink.h
-@@ -169,6 +169,7 @@ void phylink_limit_mac_speed(struct phylink_config *config, u32 max_speed);
-  * @mac_finish: finish a major reconfiguration of the interface.
-  * @mac_link_down: take the link down.
-  * @mac_link_up: allow the link to come up.
-+ * @mac_get_pcs_neg_mode: Get PCS negotiation mode for interface mode.
-  *
-  * The individual methods are described more fully below.
-  */
-@@ -189,6 +190,10 @@ struct phylink_mac_ops {
- 			    struct phy_device *phy, unsigned int mode,
- 			    phy_interface_t interface, int speed, int duplex,
- 			    bool tx_pause, bool rx_pause);
-+	unsigned int (*mac_get_pcs_neg_mode)(struct phylink_config *config,
-+				    unsigned int mode,
-+				    phy_interface_t interface,
-+				    const unsigned long *advertising);
- };
+@@ -595,6 +595,9 @@ int phylink_ethtool_set_eee(struct phylink *, struct ethtool_eee *);
+ int phylink_mii_ioctl(struct phylink *, struct ifreq *, int);
+ int phylink_speed_down(struct phylink *pl, bool sync);
+ int phylink_speed_up(struct phylink *pl);
++unsigned int phylink_pcs_neg_mode(unsigned int mode,
++				  phy_interface_t interface,
++				  const unsigned long *advertising);
  
- #if 0 /* For kernel-doc purposes only. */
+ #define phylink_zero(bm) \
+ 	bitmap_zero(bm, __ETHTOOL_LINK_MODE_MASK_NBITS)
 -- 
 2.34.1
 
