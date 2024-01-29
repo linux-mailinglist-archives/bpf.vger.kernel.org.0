@@ -1,232 +1,150 @@
-Return-Path: <bpf+bounces-20557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30232840252
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:58:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74ABC840265
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 554C41C2115E
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 09:58:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 039811F2256A
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2354455E67;
-	Mon, 29 Jan 2024 09:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA3B55E50;
+	Mon, 29 Jan 2024 10:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gA+U7ENh"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="B4GzHVfH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E39055774;
-	Mon, 29 Jan 2024 09:58:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D119958AAB
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 10:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706522291; cv=none; b=OgDL3dnPZlB96FL5OiSsBe1bD4S/DGxpEVHAno3LKMNcDAs20lN83P1hFrUtJzaGPUTk4Nn9YCKKmjIm8IQwA8UyCSiLy+xIhc1X+qHtoMwslBhKxaQStRV8apXp3DVn3NG9ZJTn0VuWELqR0JHITPDPi1lqDBEkNbPzj9TlBts=
+	t=1706522877; cv=none; b=p74CBDgpPdftIfSIRslVgaLbwmjjXNu6zqHJHdJhzfk6Vqy22PfQJJf1uh4Tx6MuJpdy2PIKukkKPWNeBLxzggPY00OSrfoy+NIfC4TOJnqV+FfhxUVTHxAAg532HTmrCQgnxXNLgDa4RZTpbQD06Kw8bXGC4XuVgrwnikkO28c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706522291; c=relaxed/simple;
-	bh=yBmF8atRzE/jKjGYvhm71cL0rw5MHTlNp0e8Kl6OdBk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n6Ysreb0FL6s99i+rUDs4fkRiVyLf7pJiSS5Ac4DWlex6yTrM6Fbur4CEgTGLIMGtP0CfGMQkx7yGt/h2SaeCT/P5y/w6OEkIdA4keZJl0Y+nv7bFIEuiHhKBlywqr5/btLIe9+Oxwn/hlT3wAr7rQjyfWDyDIj0IRRu4Csk6zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gA+U7ENh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BDDBC433F1;
-	Mon, 29 Jan 2024 09:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706522291;
-	bh=yBmF8atRzE/jKjGYvhm71cL0rw5MHTlNp0e8Kl6OdBk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gA+U7ENhiiFgN0DaPbq96cWnQZZ98kgesGEs/f2zqHBhXs6zTQZZOLNr3lhCNFnBd
-	 nWFxeI9nbR832RT/7Q6aWR/J1wsphnTuEUX8wBOo3sYn4xF1sB104qTDlqss55QfyL
-	 vmXWUlz4ITr6BtUDMdWMh+kMsrwEflPe6cpyRDzRWTio4DVUIKHtT/exXbaaG8jzbL
-	 jRQ0OntOGYScm7/9cusVELTD2Z9Gp9VmCEjDpqaRJjjv79xx6qovzNb3eWnrmKd4ca
-	 B/eNEW9dk9yaVRz1cxfYXpmZVtYWHC6jgrZzMqwvAzfRKT2nXZjeEJ42s2oggjojI5
-	 v61vbVE5sKP5Q==
-Date: Mon, 29 Jan 2024 10:58:07 +0100
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
-	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-	pabeni@redhat.com, bpf@vger.kernel.org, toke@redhat.com,
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
-	sdf@google.com, hawk@kernel.org
-Subject: Re: [PATCH v6 net-next 2/5] xdp: rely on skb pointer reference in
- do_xdp_generic and netif_receive_generic_xdp
-Message-ID: <Zbd2r_F0ob4_dh2j@lore-desk>
-References: <cover.1706451150.git.lorenzo@kernel.org>
- <7fd76e88e2aadc03f14b040ffc762e88d05afc8c.1706451150.git.lorenzo@kernel.org>
- <CAC_iWj+qTUmzD6Du-FRf7yhQj-euG3cFHcT5hZccdeP6tB=jGg@mail.gmail.com>
+	s=arc-20240116; t=1706522877; c=relaxed/simple;
+	bh=St64qBr8OBhyw+m034wse3G1EzsPqc2y3W+iz4Af1+Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ilphTr4AV0JvMVStBuGVjdhsmX0ud07d9LKjpXzWmRPfM6eOuixL/z8FtPlrzw41dQAS07VsaluM1Q/LTS9BCvwwj3hsHq5PcbQ2tmu2kPXClexwKL87AoUVtsqoVIeE6DvEtNi2P5Y5ZfAGr7bfKgwBqMvd2t+519rcsBPuEeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=B4GzHVfH; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d04fb2f36bso4614071fa.2
+        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 02:07:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1706522874; x=1707127674; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2rXZlsOe+udqax+UUntPGmEiCf2D1YJDQpM06ysrWNA=;
+        b=B4GzHVfHDpvzKSUJXgMNADATcLebsIbIgkaHOd1vdvgtDfqzgTwcQ30f/lrUwEp7p+
+         trNbgmN+orICzuw4N3IDFcANvbfsei7UGZrJfQK1/b5AtNDyOs0KZ4X3OqYo2CbtZzDM
+         2g0nUkUSmAtbsras1I9cqEpaNA8aTidCsOX9Qr+BqTcINYti8M5N3SdlzGoF9y/5Rf4l
+         YK3TGzoZUFHLEwolEj/yU5ToyCAZo3X0hpZXcAn0Plhb+cmyf+gSFHqBPSEwmyDqFosB
+         BaDA4aqoHQ5GpozKes38j42vpB/W6/Shoh/kruq1FMBCgQ4TYtSXfxYLJ5xQVHbkRtZO
+         D8iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706522874; x=1707127674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2rXZlsOe+udqax+UUntPGmEiCf2D1YJDQpM06ysrWNA=;
+        b=AZG5189QZ4rtLXAe7HzDep6FsjrZr8N7bBDWC6uqy//0L9/nUL81eiWhVePXeLHIZF
+         pf97ZbSGX0xHemI4uTwn37Acd+hzpyz9JofI+QLyZXnXICS8BTuXSQFseESQD3H9Zv04
+         Pq0HhCsA1np4a/+RUCpmGoyzH9kLnbvOYZcxE2F4sOCJjAyNk691ETGKMm1r7Sf+cOpP
+         0VyaKi6B1wbR8tkMbd1v5lrS2hGXGXG+E30Uhw4pLrCSkknncrcu9qIO8RjzX5BM4Lvh
+         BtESlJIXxE7cEmAJWMk/oiXfRpO1lE6qS7ZGNGiQj+AO/PJXsrIkJbYq5caEIKi6Mqgj
+         qH1A==
+X-Gm-Message-State: AOJu0YwroRQAGX06nFwo//ltNPz6YscH7FRwe7r9ntcCE/YhjMHz8rpW
+	mofCPlcRqzyKTMOOBVyGYPPDNwDVWP26wIuEr2FxPfYohj1TfDgoyOCWZuB8yDc=
+X-Google-Smtp-Source: AGHT+IGBxUl/8W28Q82ya88NcAFs25+wvPG8Zv4KJcJbTtmgOPM3/pwUB0tRhWVOHzjraxhJOV9COQ==
+X-Received: by 2002:a05:651c:c86:b0:2d0:4c65:f09a with SMTP id bz6-20020a05651c0c8600b002d04c65f09amr1663176ljb.0.1706522873640;
+        Mon, 29 Jan 2024 02:07:53 -0800 (PST)
+Received: from ?IPV6:2a02:8011:e80c:0:e71:7b68:d136:1898? ([2a02:8011:e80c:0:e71:7b68:d136:1898])
+        by smtp.gmail.com with ESMTPSA id ch19-20020a5d5d13000000b00337b47ae539sm7713523wrb.42.2024.01.29.02.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 02:07:53 -0800 (PST)
+Message-ID: <baaedcf3-1446-412c-b614-e417d691f2d2@isovalent.com>
+Date: Mon, 29 Jan 2024 10:07:52 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vs4wSioN5QIjyM7p"
-Content-Disposition: inline
-In-Reply-To: <CAC_iWj+qTUmzD6Du-FRf7yhQj-euG3cFHcT5hZccdeP6tB=jGg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
+Content-Language: en-GB
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
+References: <ZZYgMYmb_qE94PUB@kernel.org> <ZZZ7hgqlYjNJOynA@krava>
+ <ZZakH8LluKodXql-@kernel.org> <ZZasL_pO09Zt3R4e@kernel.org>
+ <ZZfCX7tcM0RnuHJT@krava> <ZZgZ0cxEa7HvSUF6@krava>
+ <ZZhsPs00TI75RdAr@kernel.org> <ZbPVcsAwjE1Mtv7C@kernel.org>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZbPVcsAwjE1Mtv7C@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+2024-01-26 15:53 UTC+0000 ~ Arnaldo Carvalho de Melo <acme@kernel.org>
+> Em Fri, Jan 05, 2024 at 05:53:18PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Fri, Jan 05, 2024 at 04:01:37PM +0100, Jiri Olsa escreveu:
+>>> On Fri, Jan 05, 2024 at 09:48:31AM +0100, Jiri Olsa wrote:
+>>>> On Thu, Jan 04, 2024 at 10:01:35AM -0300, Arnaldo Carvalho de Melo wrote:
+>>>>
+>>>> SNIP
+>>>>
+>>>>>    9    51.66 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-17) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
+>>>>>   10    60.77 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
+>>>>>   11    61.29 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
+>>>>>   12    74.72 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 16.0.6 flex 2.6.4
+>>>>>
+>>>>> / $ grep -B8 -A2 -w basename /usr/include/string.h
+>>>>> #ifdef _GNU_SOURCE
+>>>>> #define	strdupa(x)	strcpy(alloca(strlen(x)+1),x)
+>>>>> int strverscmp (const char *, const char *);
+>>>>> char *strchrnul(const char *, int);
+>>>>> char *strcasestr(const char *, const char *);
+>>>>> void *memrchr(const void *, int, size_t);
+>>>>> void *mempcpy(void *, const void *, size_t);
+>>>>> #ifndef __cplusplus
+>>>>> char *basename();
+>>>>> #endif
+>>>>> #endif
+>>>>> / $ cat /etc/os-release
+>>>>> NAME="Alpine Linux"
+>>>>> ID=alpine
+>>>>> VERSION_ID=3.19.0
+>>>>> PRETTY_NAME="Alpine Linux v3.19"
+>>>>> HOME_URL="https://alpinelinux.org/"
+>>>>> BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
+>>>>> / $
+>>>>>
+>>>>> Weird, they had it and now removed the _GNU_SOURCE bits (edge is their
+>>>>> devel distro, like rawhide is for fedora, tumbleweed for opensuse, etc).
+>>>>
+>>>> let's see, I asked them in here: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15643
+>>>
+>>> it got removed in musl libc recently:
+>>>   https://git.musl-libc.org/cgit/musl/commit/?id=725e17ed6dff4d0cd22487bb64470881e86a92e7
+>>>
+>>> so perhaps switching to POSIX version of basename is the easiest way out?
+>>
+>> I think so, in all of perf we use the POSIX one, strdup'ing the arg,
+>> etc.
+>>
+>> Something like the patch below?
+> 
+> Quentin, are you ok with this? Then I can send a formal patch.
 
---vs4wSioN5QIjyM7p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not aware of any particular drawback about using the POSIX version
+(Is there?), so the patch looks good as far as I'm concerned. Thanks
+Arnaldo!
 
-> Hi Lorenzo,
->=20
-> On Sun, 28 Jan 2024 at 16:22, Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> >
-> > Rely on skb pointer reference instead of the skb pointer in do_xdp_gene=
-ric and
-> > netif_receive_generic_xdp routine signatures. This is a preliminary pat=
-ch to add
-> > multi-buff support for xdp running in generic mode.
->=20
-> The patch looks fine, but can we tweak the commit message explaining
-> in more detail  why this is needed?
+Quentin
 
-ack, I will update commit log in the next iteration.
-
-Regards,
-Lorenzo
-
->=20
-> Thanks
-> /Ilias
-> >
-> > Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  drivers/net/tun.c         |  4 ++--
-> >  include/linux/netdevice.h |  2 +-
-> >  net/core/dev.c            | 16 +++++++++-------
-> >  3 files changed, 12 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > index 4a4f8c8e79fa..5bd98bdaddf2 100644
-> > --- a/drivers/net/tun.c
-> > +++ b/drivers/net/tun.c
-> > @@ -1927,7 +1927,7 @@ static ssize_t tun_get_user(struct tun_struct *tu=
-n, struct tun_file *tfile,
-> >                 rcu_read_lock();
-> >                 xdp_prog =3D rcu_dereference(tun->xdp_prog);
-> >                 if (xdp_prog) {
-> > -                       ret =3D do_xdp_generic(xdp_prog, skb);
-> > +                       ret =3D do_xdp_generic(xdp_prog, &skb);
-> >                         if (ret !=3D XDP_PASS) {
-> >                                 rcu_read_unlock();
-> >                                 local_bh_enable();
-> > @@ -2517,7 +2517,7 @@ static int tun_xdp_one(struct tun_struct *tun,
-> >         skb_record_rx_queue(skb, tfile->queue_index);
-> >
-> >         if (skb_xdp) {
-> > -               ret =3D do_xdp_generic(xdp_prog, skb);
-> > +               ret =3D do_xdp_generic(xdp_prog, &skb);
-> >                 if (ret !=3D XDP_PASS) {
-> >                         ret =3D 0;
-> >                         goto out;
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index 118c40258d07..7eee99a58200 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -3958,7 +3958,7 @@ static inline void dev_consume_skb_any(struct sk_=
-buff *skb)
-> >  u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
-> >                              struct bpf_prog *xdp_prog);
-> >  void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog);
-> > -int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb);
-> > +int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb);
-> >  int netif_rx(struct sk_buff *skb);
-> >  int __netif_rx(struct sk_buff *skb);
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index bf9ec740b09a..960f39ac5e33 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -4924,10 +4924,11 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *sk=
-b, struct xdp_buff *xdp,
-> >         return act;
-> >  }
-> >
-> > -static u32 netif_receive_generic_xdp(struct sk_buff *skb,
-> > +static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
-> >                                      struct xdp_buff *xdp,
-> >                                      struct bpf_prog *xdp_prog)
-> >  {
-> > +       struct sk_buff *skb =3D *pskb;
-> >         u32 act =3D XDP_DROP;
-> >
-> >         /* Reinjected packets coming from act_mirred or similar should
-> > @@ -5008,24 +5009,24 @@ void generic_xdp_tx(struct sk_buff *skb, struct=
- bpf_prog *xdp_prog)
-> >
-> >  static DEFINE_STATIC_KEY_FALSE(generic_xdp_needed_key);
-> >
-> > -int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb)
-> > +int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb)
-> >  {
-> >         if (xdp_prog) {
-> >                 struct xdp_buff xdp;
-> >                 u32 act;
-> >                 int err;
-> >
-> > -               act =3D netif_receive_generic_xdp(skb, &xdp, xdp_prog);
-> > +               act =3D netif_receive_generic_xdp(pskb, &xdp, xdp_prog);
-> >                 if (act !=3D XDP_PASS) {
-> >                         switch (act) {
-> >                         case XDP_REDIRECT:
-> > -                               err =3D xdp_do_generic_redirect(skb->de=
-v, skb,
-> > +                               err =3D xdp_do_generic_redirect((*pskb)=
-->dev, *pskb,
-> >                                                               &xdp, xdp=
-_prog);
-> >                                 if (err)
-> >                                         goto out_redir;
-> >                                 break;
-> >                         case XDP_TX:
-> > -                               generic_xdp_tx(skb, xdp_prog);
-> > +                               generic_xdp_tx(*pskb, xdp_prog);
-> >                                 break;
-> >                         }
-> >                         return XDP_DROP;
-> > @@ -5033,7 +5034,7 @@ int do_xdp_generic(struct bpf_prog *xdp_prog, str=
-uct sk_buff *skb)
-> >         }
-> >         return XDP_PASS;
-> >  out_redir:
-> > -       kfree_skb_reason(skb, SKB_DROP_REASON_XDP);
-> > +       kfree_skb_reason(*pskb, SKB_DROP_REASON_XDP);
-> >         return XDP_DROP;
-> >  }
-> >  EXPORT_SYMBOL_GPL(do_xdp_generic);
-> > @@ -5356,7 +5357,8 @@ static int __netif_receive_skb_core(struct sk_buf=
-f **pskb, bool pfmemalloc,
-> >                 int ret2;
-> >
-> >                 migrate_disable();
-> > -               ret2 =3D do_xdp_generic(rcu_dereference(skb->dev->xdp_p=
-rog), skb);
-> > +               ret2 =3D do_xdp_generic(rcu_dereference(skb->dev->xdp_p=
-rog),
-> > +                                     &skb);
-> >                 migrate_enable();
-> >
-> >                 if (ret2 !=3D XDP_PASS) {
-> > --
-> > 2.43.0
-> >
-
---vs4wSioN5QIjyM7p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZbd2rwAKCRA6cBh0uS2t
-rAgcAP9/aGP8AS8uS4F+3kWSheURWTvv0X06ScOvUty7MYTUvwD/VWCBNuOVqVQl
-Ae/RKb64sUJbDw9QpVCfwzBfKKvSiAc=
-=SOBX
------END PGP SIGNATURE-----
-
---vs4wSioN5QIjyM7p--
 
