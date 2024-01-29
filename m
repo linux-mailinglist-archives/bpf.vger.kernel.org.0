@@ -1,88 +1,41 @@
-Return-Path: <bpf+bounces-20566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7696784049C
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:08:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE2884049B
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:08:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA483B21FA2
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:08:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B83172851E8
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2F360259;
-	Mon, 29 Jan 2024 12:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E615FEF9;
+	Mon, 29 Jan 2024 12:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="g0fQxhHk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="g0fQxhHk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Rnaa/Gz2";
-	dkim=neutral (0-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="roDgYrUK"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Rnaa/Gz2";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="roDgYrUK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9CA5FF0A
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 12:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF87D605AF
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 12:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706530092; cv=fail; b=f1GBpVDy7renJ2yWR27Q8OPRY9V44Qc2Ei6BbeMBrLJCETRDsz6WG/BSTIDWb0k/pDajZi1agmmVJPIDz7TjVesJl4yEzHJ6tP3f9hUYFr6R5ggxHAnQXEledIERdQNtTtIxjDVg6hh28O6yxoLPTFKQXoWnZUTrB78s3X3Xpvs=
+	t=1706530089; cv=fail; b=V8KkI//TuA/H+yMbvKefoYsS0tFTYMKyecpTXyULaH9dMYSqb4drXWV/TV2f5+aBeTQ6e3HyCBtVDvc+zKfAEToWyb+iAwlk4r/D06QTP+HUqBaT9SjlKcwNbPMqsddCMYPRAIt6Cn7y5DjmWFXjIDjVmB4nymylUVBIbe0N+mc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706530092; c=relaxed/simple;
-	bh=SPGpfiVV+pZR763ZyEDc5efOB+aJlPVAa0B+ZomtuBE=;
-	h=From:To:Cc:In-Reply-To:References:Date:Message-ID:MIME-Version:
-	 Subject:Content-Type; b=XBHIPDNFIPkRBBz8cYQrI1oyOf1qZFWIHiJbQyWPCkngb4gorcwbCmV5iVGHYksQk73JhNcjHN1K9vuxfLgJncIs5v5dp9MR2uFnvLQ/xfrImZFYEZmkECRbZ5kYuNf2taHAVgHSdHCvRF4MEpQ1MDHxRvilSnwOrbAgZQ5rVe8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=g0fQxhHk; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=g0fQxhHk; dkim=fail (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Rnaa/Gz2 reason="signature verification failed"; dkim=neutral (0-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=roDgYrUK; arc=fail smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 5ADFFC14CF0C
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 04:08:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706530084; bh=SPGpfiVV+pZR763ZyEDc5efOB+aJlPVAa0B+ZomtuBE=;
-	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=g0fQxhHkOyfFZc03zgTzzeCMC114xTq71QIpy/VBtZCi9zCc717Yu65RvX04VesyQ
-	 LhGDbK8ZbXd3eR0d/Lg32y/GZc+1Vpc90vWx0mANuAi9gW2pddfmhVVXc7VAwUzrb/
-	 u1PZOxpDgRgtcUZj/ZPH8oBqoGNdZRGoN91thvgc=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Jan 29 04:08:04 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 187BEC14F690;
-	Mon, 29 Jan 2024 04:08:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706530084; bh=SPGpfiVV+pZR763ZyEDc5efOB+aJlPVAa0B+ZomtuBE=;
-	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=g0fQxhHkOyfFZc03zgTzzeCMC114xTq71QIpy/VBtZCi9zCc717Yu65RvX04VesyQ
-	 LhGDbK8ZbXd3eR0d/Lg32y/GZc+1Vpc90vWx0mANuAi9gW2pddfmhVVXc7VAwUzrb/
-	 u1PZOxpDgRgtcUZj/ZPH8oBqoGNdZRGoN91thvgc=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 41E8BC14F690
- for <bpf@ietfa.amsl.com>; Mon, 29 Jan 2024 04:08:03 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -7.105
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=oracle.com header.b="Rnaa/Gz2";
- dkim=pass (1024-bit key)
- header.d=oracle.onmicrosoft.com header.b="roDgYrUK"
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id BSM-CSdsNJ5V for <bpf@ietfa.amsl.com>;
- Mon, 29 Jan 2024 04:07:59 -0800 (PST)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 3E17DC14F682
- for <bpf@ietf.org>; Mon, 29 Jan 2024 04:07:59 -0800 (PST)
+	s=arc-20240116; t=1706530089; c=relaxed/simple;
+	bh=lmxBCBq+Jhw5aMc+owIZOdU37CN+EMzclbeB+h7h6fI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 Content-Type:MIME-Version; b=DdkF3j9ARIRJpig8j8KR74iGQ/hwHB34kNoCuyam4vcy8iyynZcHbXqaXIKC7IG9iZPixbwkfpGUNx4rvLAh0Mm1DT3PhkzQBEl6od+eg9HFVaGbu0KrSLE9IgrGBLY7gOZIQgSbkmcTMpiX6l7eULwVcYPLooUQ7/10seZFJmM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Rnaa/Gz2; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=roDgYrUK; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 40T9i6NC003240; Mon, 29 Jan 2024 12:07:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=from : to : cc :
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40T9i6NC003240;
+	Mon, 29 Jan 2024 12:07:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : in-reply-to : references : date : message-id : content-type :
  content-transfer-encoding : mime-version; s=corp-2023-11-20;
  bh=hZRGNtLOhgblH1+t8eCMo1C+kMeKiaU8Dgm5B+HrzYc=;
@@ -91,24 +44,20 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
  Vdn9Hk14E5gsKgVQ9lWf2xDpmhMyQsCnG7clLJGWlRv5tLOqaRoKj/+9I2svie5x3/LA
  9qoitbgfC2EjvHhj1Vyky/RRbubvLlzowsnrvl5nQ+DCPu3cjDRYveDPXR4QoUqkntzR
  dOiC82vtfpKgDx+itNYCLdgo9L/0WID0Xvu6n+iRmpkRvpSwB5QIqS3STRE8i7HpIJaz gw== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
- (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
- by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvre2bqp2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 29 Jan 2024 12:07:55 +0000
-Received: from pps.filterd
- (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 40TB2sJ3031469; Mon, 29 Jan 2024 12:07:54 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com
- (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
- 3vvr95sh7f-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 29 Jan 2024 12:07:54 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvre2bqp2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 12:07:55 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40TB2sJ3031469;
+	Mon, 29 Jan 2024 12:07:54 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr95sh7f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jan 2024 12:07:54 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
  b=mWAQmNW2/6NwFsKpp2fL71uWBDwCCpZ5iXp27KVND6j86AMdJnzm8pBVOJ3QOHaFLH2F8AppWyQG4dAEx5aLp6NagPr2hcTlaCRObZPUXUh0Ror0FD2gfIPtasXTXrTaRmNLfii7/S3+l4lWusDus1xDUfr27yqIDUBafd7aTfNNXW5ozcxCNWEJLxCDS7fwygJXcazmvNaUiHOUX9DD5BCawaviGtUM7z6SdVUpQZZbc3TaPxniIrN3aZBXDmLBWUxS6AhHky/Ts+CFeV78cm10UzYDH8cD8d/295VcmwlErXji6ki/8qBaa91Rid9EGuU16wNvK4UGOMjiLZC9kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
  bh=hZRGNtLOhgblH1+t8eCMo1C+kMeKiaU8Dgm5B+HrzYc=;
@@ -132,17 +81,22 @@ Received: from DM6PR10MB3113.namprd10.prod.outlook.com
  12:07:52 +0000
 From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Dave Thaler <dthaler1968@googlemail.com>, Yonghong Song
- <yonghong.song@linux.dev>, bpf@ietf.org, bpf <bpf@vger.kernel.org>
+Cc: Dave Thaler <dthaler1968@googlemail.com>,
+        Yonghong Song
+ <yonghong.song@linux.dev>, bpf@ietf.org,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [Bpf] ISA: BPF_MSH and deprecated packet access instructions
 In-Reply-To: <CAADnVQK8JegsSxgbQbO=DR71cRgkvN-y9LH_ZQYxmj1a-hCz5g@mail.gmail.com>
- (Alexei Starovoitov's message of "Sun, 28 Jan 2024 15:59:48 -0800")
+	(Alexei Starovoitov's message of "Sun, 28 Jan 2024 15:59:48 -0800")
 References: <006601da5151$a22b2bb0$e6818310$@gmail.com>
- <877cjutxe9.fsf@oracle.com> <8734uitx3m.fsf@oracle.com>
- <01e601da51b7$92c4ffa0$b84efee0$@gmail.com>
- <CAADnVQK8JegsSxgbQbO=DR71cRgkvN-y9LH_ZQYxmj1a-hCz5g@mail.gmail.com>
+	<877cjutxe9.fsf@oracle.com> <8734uitx3m.fsf@oracle.com>
+	<01e601da51b7$92c4ffa0$b84efee0$@gmail.com>
+	<CAADnVQK8JegsSxgbQbO=DR71cRgkvN-y9LH_ZQYxmj1a-hCz5g@mail.gmail.com>
 Date: Mon, 29 Jan 2024 13:07:49 +0100
 Message-ID: <87plxkqr56.fsf@oracle.com>
 User-Agent: Gnus/5.13 (Gnus v5.13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-ClientProxiedBy: FR0P281CA0175.DEUP281.PROD.OUTLOOK.COM
  (2603:10a6:d10:b4::9) To DM6PR10MB3113.namprd10.prod.outlook.com
  (2603:10b6:5:1a7::12)
@@ -158,13 +112,13 @@ X-MS-Office365-Filtering-Correlation-Id: 9bfdaffe-bb40-4ff4-29ee-08dc20c2eb80
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JvcvcFfXPxZVG/xggVRaUsL0LubSsP7jl8TxrV+wDklaoX8UEvlac/k/hCMrtp44igedGM0v3UKZEWjG33h8AHagFl2WKMRRcMmXLN0IDouFgWhXScnOkWSpxO9YJvVV0L6ijL0MAN9164QLCmS/jeKs62UEcg6x6VSJFsxvrHouHx86Dy8TyN8Fwj/fJ+dhKjxY/bqQGqf+PJhleGqZf5viyn2/9qk5lCfUKkf6Q6w0KHvzLAg9sQptoWWDjxOA/DlRqwU6tldxsj/KQZ7Kz16I87m441YEsyLdaIu208ZVm8L6o77zuKkPFfkvKnlyL4fmPG+1vkLPTfzY9zf6R8MLqjRLWG2VIc01z14CBzf7Af9Z1EKzbApPHX2DC42Q4BJsDEmQFp3wjb5Q8S4zF4D4sJYEpUZioIMbG6bHhsPVWLbNWNFO/a13KaRzDUCs/XD3cW1wAeyRRzc7+6OjJMh4SXSu2YmnLN4uH2QCcNSfFu5l55/lmwu6d3RLTGQfY1BY/rYEkcz01lXzVYoVFfl3HnAvGC6fc1UNUCpDsb1znenoGqqMItcPzgWb8vTo
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM6PR10MB3113.namprd10.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(366004)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(86362001)(316002)(2616005)(6512007)(6506007)(66476007)(66946007)(66556008)(54906003)(6916009)(8936002)(8676002)(38100700002)(4326008)(6486002)(26005)(53546011)(478600001)(6666004)(2906002)(5660300002)(41300700001)(36756003);
- DIR:OUT; SFP:1101; 
+X-Microsoft-Antispam-Message-Info: 
+	JvcvcFfXPxZVG/xggVRaUsL0LubSsP7jl8TxrV+wDklaoX8UEvlac/k/hCMrtp44igedGM0v3UKZEWjG33h8AHagFl2WKMRRcMmXLN0IDouFgWhXScnOkWSpxO9YJvVV0L6ijL0MAN9164QLCmS/jeKs62UEcg6x6VSJFsxvrHouHx86Dy8TyN8Fwj/fJ+dhKjxY/bqQGqf+PJhleGqZf5viyn2/9qk5lCfUKkf6Q6w0KHvzLAg9sQptoWWDjxOA/DlRqwU6tldxsj/KQZ7Kz16I87m441YEsyLdaIu208ZVm8L6o77zuKkPFfkvKnlyL4fmPG+1vkLPTfzY9zf6R8MLqjRLWG2VIc01z14CBzf7Af9Z1EKzbApPHX2DC42Q4BJsDEmQFp3wjb5Q8S4zF4D4sJYEpUZioIMbG6bHhsPVWLbNWNFO/a13KaRzDUCs/XD3cW1wAeyRRzc7+6OjJMh4SXSu2YmnLN4uH2QCcNSfFu5l55/lmwu6d3RLTGQfY1BY/rYEkcz01lXzVYoVFfl3HnAvGC6fc1UNUCpDsb1znenoGqqMItcPzgWb8vTo
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(86362001)(316002)(2616005)(6512007)(6506007)(66476007)(66946007)(66556008)(54906003)(6916009)(8936002)(8676002)(38100700002)(4326008)(6486002)(26005)(53546011)(478600001)(6666004)(2906002)(5660300002)(41300700001)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MFB0eGg5MndLdC90Y3EvbGl4ckRYN09CVGpNOS9yOThDZzVZY21MR0ViUmN3?=
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MFB0eGg5MndLdC90Y3EvbGl4ckRYN09CVGpNOS9yOThDZzVZY21MR0ViUmN3?=
  =?utf-8?B?VEZOWE9FL204cHc3bXExb0h5Y3dWWGJuaEdXem5nQ0lPeTM3UFFkQVpwMTNv?=
  =?utf-8?B?VUIzeUNyVnJnMUNhSzhRVkFSekNBNUhsVlRYMTU4NDZybENNSDQ4VTM1TS9P?=
  =?utf-8?B?eS9GQzBidjVPaFZITDR2OFdCV1RYaEJwR3RIZVBPUENLQVNYdkZFVmRXclQ0?=
@@ -202,12 +156,14 @@ X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MFB0eGg5MndLdC90Y3EvbGl4ckRYN09C
  =?utf-8?B?bkczYzZHbkFOckpiSjh1TUJXc0EvejJsNnJkOVgrRThNcXNnbUpNOUN5T2Zm?=
  =?utf-8?B?TEE9PQ==?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: CAbZ6uJDvoKbxP878wdiPYqFMEmsXWOQLVpH6vfFqjZd9zIjOnvXNTgPIFQl1DBx9sjLtslL8lcTEGxiCUx4IMnOkkUAGHdVM0RL0S7FT5s0bYEMVGOZj4y5WtxnT462Fq8hNQAS3OR8dcmT3W8HBb+IPNLDFLyTm3U5f2vBj48PMCnArROtOG9zRqh2KvjtCahoKuw8RAu/ZCS4ScWY7+HXRmNOWbnBVRZOdArPdkGx1l2Ps79XbHM+Zs6o/ls5hXMrGO3HqSbT7I0QMPR5/4AFtZGBWlkHDNfRlARdeMhMbr05PfI2KK89xf0V/TIlO0VQCX/Iqv7zmmh1KzTxCE4PRhWLTAuWzwJDUb5d5KRQ86xh2Gzey3zzgktx/2wAPq+4wyfvn2qNT1TFDiF2m/L48wtNy9ZAH4AWJ4U4XZ9HxuLe8bri3/2mRWWnn+gExqktZoCt6L3RnYC1WpZuXUJwuc44F4uk4oXSUuedC4toHK2M2+m1r+P7qZzkG1Vv/Mdzb3s8XeE6NpPWLx8Leb+Hajbn5YBRBbiWdx9aYXexz93kpRmlk4Y+zAJl4Zgr+ohb127rvGLTsKi8KqZXNyPpGHaQS2La8YRde/mvWHM=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	CAbZ6uJDvoKbxP878wdiPYqFMEmsXWOQLVpH6vfFqjZd9zIjOnvXNTgPIFQl1DBx9sjLtslL8lcTEGxiCUx4IMnOkkUAGHdVM0RL0S7FT5s0bYEMVGOZj4y5WtxnT462Fq8hNQAS3OR8dcmT3W8HBb+IPNLDFLyTm3U5f2vBj48PMCnArROtOG9zRqh2KvjtCahoKuw8RAu/ZCS4ScWY7+HXRmNOWbnBVRZOdArPdkGx1l2Ps79XbHM+Zs6o/ls5hXMrGO3HqSbT7I0QMPR5/4AFtZGBWlkHDNfRlARdeMhMbr05PfI2KK89xf0V/TIlO0VQCX/Iqv7zmmh1KzTxCE4PRhWLTAuWzwJDUb5d5KRQ86xh2Gzey3zzgktx/2wAPq+4wyfvn2qNT1TFDiF2m/L48wtNy9ZAH4AWJ4U4XZ9HxuLe8bri3/2mRWWnn+gExqktZoCt6L3RnYC1WpZuXUJwuc44F4uk4oXSUuedC4toHK2M2+m1r+P7qZzkG1Vv/Mdzb3s8XeE6NpPWLx8Leb+Hajbn5YBRBbiWdx9aYXexz93kpRmlk4Y+zAJl4Zgr+ohb127rvGLTsKi8KqZXNyPpGHaQS2La8YRde/mvWHM=
 X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 9bfdaffe-bb40-4ff4-29ee-08dc20c2eb80
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3113.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 12:07:52.8125 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 12:07:52.8125
+ (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
@@ -216,72 +172,79 @@ X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5654
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-29_06,2024-01-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
- bulkscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
  mlxscore=0 mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
  definitions=main-2401290088
 X-Proofpoint-GUID: k6Z_J_XzCtOglK1ALYlIBTpHRSPhkoWY
 X-Proofpoint-ORIG-GUID: k6Z_J_XzCtOglK1ALYlIBTpHRSPhkoWY
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/8SXhqBu9h5hS1dPZESJVMgXfEco>
-Subject: Re: [Bpf] ISA: BPF_MSH and deprecated packet access instructions
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
 
-Cj4gT24gU2F0LCBKYW4gMjcsIDIwMjQgYXQgMTA6NTnigK9QTSA8ZHRoYWxlcjE5NjhAZ29vZ2xl
-bWFpbC5jb20+IHdyb3RlOgo+Pgo+PiBJIGFza2VkOgo+PiA+ID4+IFdoYXQgYWJvdXQgRFcgYW5k
-IExEWCB2YXJpYW50cyBvZiBCUEZfSU5EIGFuZCBCUEZfQUJTPwo+Pgo+PiBKb3NlIEUuIE1hcmNo
-ZXNpIDxqb3NlLm1hcmNoZXNpQG9yYWNsZS5jb20+IHdyb3RlOgo+PiA+IFRoZXNlIHdlIHN1cHBv
-cnQ6Cj4+ID4KPj4gPiAgIC8qIEFic29sdXRlIGxvYWQgaW5zdHJ1Y3Rpb25zLCBkZXNpZ25lZCB0
-byBiZSB1c2VkIGluIHNvY2tldCBmaWx0ZXJzLgo+PiAqLwo+PiA+ICAge0JQRl9JTlNOX0xEQUJT
-QiwgImxkYWJzYiVXJWkzMiIsICJyMCA9ICogKCB1OCAqICkgc2tiIFsgJWkzMiBdIiwKPj4gPiAg
-ICBCUEZfVjEsIEJQRl9DT0RFLCBCUEZfQ0xBU1NfTER8QlBGX1NJWkVfQnxCUEZfTU9ERV9BQlN9
-LAo+PiA+ICAge0JQRl9JTlNOX0xEQUJTSCwgImxkYWJzaCVXJWkzMiIsICJyMCA9ICogKCB1MTYg
-KiApIHNrYiBbICVpMzIgXSIsCj4+ID4gICAgQlBGX1YxLCBCUEZfQ09ERSwgQlBGX0NMQVNTX0xE
-fEJQRl9TSVpFX0h8QlBGX01PREVfQUJTfSwKPj4gPiAgIHtCUEZfSU5TTl9MREFCU1csICJsZGFi
-c3clVyVpMzIiLCAicjAgPSAqICggdTMyICogKSBza2IgWyAlaTMyIF0iLAo+PiA+ICAgIEJQRl9W
-MSwgQlBGX0NPREUsIEJQRl9DTEFTU19MRHxCUEZfU0laRV9XfEJQRl9NT0RFX0FCU30sCj4+ID4g
-ICB7QlBGX0lOU05fTERBQlNEVywgImxkYWJzZHclVyVpMzIiLCAicjAgPSAqICggdTY0ICogKSBz
-a2IgWyAlaTMyIF0iLAo+PiA+ICAgIEJQRl9WMSwgQlBGX0NPREUsIEJQRl9DTEFTU19MRHxCUEZf
-U0laRV9EV3xCUEZfTU9ERV9BQlN9LAo+PiA+Cj4+ID4gICAvKiBHZW5lcmljIGxvYWQgaW5zdHJ1
-Y3Rpb25zICh0byByZWdpc3Rlci4pICAqLwo+PiA+ICAge0JQRl9JTlNOX0xEWEIsICJsZHhiJVcl
-ZHIgLCBbICVzciAlbzE2IF0iLCAiJWRyID0gKiAoIHU4ICogKSAoICVzciAlbzE2Cj4+ICkiLAo+
-PiA+ICAgIEJQRl9WMSwgQlBGX0NPREUsIEJQRl9DTEFTU19MRFh8QlBGX1NJWkVfQnxCUEZfTU9E
-RV9NRU19LAo+PiA+ICAge0JQRl9JTlNOX0xEWEgsICJsZHhoJVclZHIgLCBbICVzciAlbzE2IF0i
-LCAiJWRyID0gKiAoIHUxNiAqICkgKCAlc3IKPj4gJW8xNgo+PiA+ICkiLAo+PiA+ICAgIEJQRl9W
-MSwgQlBGX0NPREUsIEJQRl9DTEFTU19MRFh8QlBGX1NJWkVfSHxCUEZfTU9ERV9NRU19LAo+PiA+
-ICAge0JQRl9JTlNOX0xEWFcsICJsZHh3JVclZHIgLCBbICVzciAlbzE2IF0iLCAiJWRyID0gKiAo
-IHUzMiAqICkgKCAlc3IKPj4gJW8xNgo+PiA+ICkiLAo+PiA+ICAgIEJQRl9WMSwgQlBGX0NPREUs
-IEJQRl9DTEFTU19MRFh8QlBGX1NJWkVfV3xCUEZfTU9ERV9NRU19LAo+PiA+ICAge0JQRl9JTlNO
-X0xEWERXLCAibGR4ZHclVyVkciAsIFsgJXNyICVvMTYgXSIsIiVkciA9ICogKCB1NjQgKiApICgg
-JXNyCj4+ID4gJW8xNiApIiwKPj4gPiAgICBCUEZfVjEsIEJQRl9DT0RFLCBCUEZfQ0xBU1NfTERY
-fEJQRl9TSVpFX0RXfEJQRl9NT0RFX01FTX0sCj4+Cj4+IFlvbmdob25nIFNvbmcgPHlvbmdob25n
-LnNvbmdAbGludXguZGV2PiB3cm90ZToKPj4gPiBJIGRvbid0IGtub3cgaG93IHRvIGRvIHByb3Bl
-ciB3b3JkaW5nIGluIHRoZSBzdGFuZGFyZC4gQnV0IERXIGFuZCBMRFgKPj4gPiB2YXJpYW50cyBv
-ZiBCUEZfSU5EL0JQRl9BQlMgYXJlIG5vdCBzdXBwb3J0ZWQgYnkgdmVyaWZpZXIgZm9yIG5vdyBh
-bmQgdGhleQo+PiA+IGFyZSBjb25zaWRlcmVkIGlsbGVnYWwgaW5zbnMuCj4+Cj4+IEFsdGhvdWdo
-IHRoZSBMaW51eCB2ZXJpZmllciBkb2Vzbid0IHN1cHBvcnQgdGhlbSwgdGhlIGZhY3QgdGhhdCBn
-Y2MgZG9lcwo+PiBzdXBwb3J0Cj4+IHRoZW0gdGVsbHMgbWUgdGhhdCBpdCdzIHByb2JhYmx5IHNh
-ZmVzdCB0byBsaXN0IHRoZSBEVyBhbmQgTERYIHZhcmlhbnRzIGFzCj4+IGRlcHJlY2F0ZWQgYXMg
-d2VsbCwgd2hpY2ggaXMgd2hhdCB0aGUgZHJhZnQgYWxyZWFkeSBkaWQgaW4gdGhlIGFwcGVuZGl4
-IHNvCj4+IHRoYXQncyBnb29kIChub3RoaW5nIHRvIGNoYW5nZSB0aGVyZSwgSSB0aGluaykuCj4K
-PiBEVyBuZXZlciBleGlzdGVkIGluIGNsYXNzaWMgYnBmLCBzbyBhYnMvaW5kIG5ldmVyIGhhZCBE
-VyBmbGF2b3IuCj4gSWYgc29tZSBhc3NlbWJsZXIvY29tcGlsZXIgZGVjaWRlZCB0byAic3VwcG9y
-dCIgdGhlbSBpdCdzIG9uIHRoZW0uCj4gVGhlIHN0YW5kYXJkIG11c3Qgbm90IGxpc3Qgc3VjaCB0
-aGluZ3MgYXMgZGVwcmVjYXRlZC4gVGhleSBuZXZlcgo+IGV4aXN0ZWQuIFNvIG5vdGhpbmcgaXMg
-ZGVwcmVjYXRlZC4KCldlIGhhdmUgbm8gcmVhc29uIHRvIHN1cHBvcnQgdGhlc2UgaW5zdHJ1Y3Rp
-b25zIGluIHRoZSBhc3NlbWJsZXIsIGFuZApHQ0MgY2VydGFpbmx5IG5ldmVyIGdlbmVyYXRlcyB0
-aGVzZS4gIFNvIEkgd2lsbCByZW1vdmUgdGhlIEFCUy9JTkQgRFcKaW5zdHJ1Y3Rpb25zIGZyb20g
-dGhlIGFzc2VtYmxlciB0b2RheS4KCj4gU2FtZSB3aXRoIE1TSC4gQlBGX0xEWCB8IEJQRl9NU0gg
-fCBCUEZfQiBpcyB0aGUgb25seSBpbnNuIGV2ZXIgZXhpc3RlZC4KPiBJdCdzIGEgbGVnYWN5IGlu
-c24uIEp1c3QgbGlrZSBhYnMvaW5kLgoKLS0gCkJwZiBtYWlsaW5nIGxpc3QKQnBmQGlldGYub3Jn
-Cmh0dHBzOi8vd3d3LmlldGYub3JnL21haWxtYW4vbGlzdGluZm8vYnBmCg==
+
+> On Sat, Jan 27, 2024 at 10:59=E2=80=AFPM <dthaler1968@googlemail.com> wro=
+te:
+>>
+>> I asked:
+>> > >> What about DW and LDX variants of BPF_IND and BPF_ABS?
+>>
+>> Jose E. Marchesi <jose.marchesi@oracle.com> wrote:
+>> > These we support:
+>> >
+>> >   /* Absolute load instructions, designed to be used in socket filters=
+.
+>> */
+>> >   {BPF_INSN_LDABSB, "ldabsb%W%i32", "r0 =3D * ( u8 * ) skb [ %i32 ]",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LD|BPF_SIZE_B|BPF_MODE_ABS},
+>> >   {BPF_INSN_LDABSH, "ldabsh%W%i32", "r0 =3D * ( u16 * ) skb [ %i32 ]",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LD|BPF_SIZE_H|BPF_MODE_ABS},
+>> >   {BPF_INSN_LDABSW, "ldabsw%W%i32", "r0 =3D * ( u32 * ) skb [ %i32 ]",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LD|BPF_SIZE_W|BPF_MODE_ABS},
+>> >   {BPF_INSN_LDABSDW, "ldabsdw%W%i32", "r0 =3D * ( u64 * ) skb [ %i32 ]=
+",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LD|BPF_SIZE_DW|BPF_MODE_ABS},
+>> >
+>> >   /* Generic load instructions (to register.)  */
+>> >   {BPF_INSN_LDXB, "ldxb%W%dr , [ %sr %o16 ]", "%dr =3D * ( u8 * ) ( %s=
+r %o16
+>> )",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LDX|BPF_SIZE_B|BPF_MODE_MEM},
+>> >   {BPF_INSN_LDXH, "ldxh%W%dr , [ %sr %o16 ]", "%dr =3D * ( u16 * ) ( %=
+sr
+>> %o16
+>> > )",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LDX|BPF_SIZE_H|BPF_MODE_MEM},
+>> >   {BPF_INSN_LDXW, "ldxw%W%dr , [ %sr %o16 ]", "%dr =3D * ( u32 * ) ( %=
+sr
+>> %o16
+>> > )",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LDX|BPF_SIZE_W|BPF_MODE_MEM},
+>> >   {BPF_INSN_LDXDW, "ldxdw%W%dr , [ %sr %o16 ]","%dr =3D * ( u64 * ) ( =
+%sr
+>> > %o16 )",
+>> >    BPF_V1, BPF_CODE, BPF_CLASS_LDX|BPF_SIZE_DW|BPF_MODE_MEM},
+>>
+>> Yonghong Song <yonghong.song@linux.dev> wrote:
+>> > I don't know how to do proper wording in the standard. But DW and LDX
+>> > variants of BPF_IND/BPF_ABS are not supported by verifier for now and =
+they
+>> > are considered illegal insns.
+>>
+>> Although the Linux verifier doesn't support them, the fact that gcc does
+>> support
+>> them tells me that it's probably safest to list the DW and LDX variants =
+as
+>> deprecated as well, which is what the draft already did in the appendix =
+so
+>> that's good (nothing to change there, I think).
+>
+> DW never existed in classic bpf, so abs/ind never had DW flavor.
+> If some assembler/compiler decided to "support" them it's on them.
+> The standard must not list such things as deprecated. They never
+> existed. So nothing is deprecated.
+
+We have no reason to support these instructions in the assembler, and
+GCC certainly never generates these.  So I will remove the ABS/IND DW
+instructions from the assembler today.
+
+> Same with MSH. BPF_LDX | BPF_MSH | BPF_B is the only insn ever existed.
+> It's a legacy insn. Just like abs/ind.
 
