@@ -1,248 +1,195 @@
-Return-Path: <bpf+bounces-20554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80455840138
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:18:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6501F84024A
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25CD1C2283F
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 09:18:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8957D1C227A9
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 09:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A509954FBA;
-	Mon, 29 Jan 2024 09:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFE256B96;
+	Mon, 29 Jan 2024 09:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jtlwp4+R"
 X-Original-To: bpf@vger.kernel.org
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22E654F93;
-	Mon, 29 Jan 2024 09:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEF857871;
+	Mon, 29 Jan 2024 09:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519901; cv=none; b=aSyXcbnywSM/V4ib/q2hyyBgBcFqI1dq0G6rcKQmAkhP4WwYHr/2L3O1m4M7Nw8+396qCUQWcFb9XrRea6bx4zkbVF82QbWKtb2npLgkm9Dr7bNp8taHKBzu84cSJl8uE2xv23SYlJJOIXH+FNrxQfz8z+G8eHxApZjtzpamnAE=
+	t=1706522065; cv=none; b=foatTqY8r4t9xFu1k2NXK8ThejAau19U0nCbEsIq1O5c9fZxHN3fWinbxH8WX84BrEDec/TiPyyfPkQcUizzwKHnsjL35HLB6GRh4ZkbmPPd7bDvJNiNSq4iomAvE1r61kCZ4qhHg8DNpTdnEHGL4DtVb5TTl/6fk8eb7Hd34r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519901; c=relaxed/simple;
-	bh=P8ynzDwz5GrtNYNcuVcBHM0772BqNg+2Sc8rLmRjSCk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gWjyWwhX+9QkaivuR2r6isQrcsrI5oJRtfdDq8+ZlVUmH2RUgq5MZMwYHckVJrB+uHSENCLHHeNh+r0h9ZXyU1Wmr7CnpTfxhz+Bj+Yh6HtgvD6NEv30VTCISfw7Q5IboaIeb451doAYboaLDvjXGzqFvwAbmH+Pzp6qp9Nhjvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id F19F92F20226; Mon, 29 Jan 2024 09:18:15 +0000 (UTC)
-X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id 771F12F2024A;
-	Mon, 29 Jan 2024 09:18:13 +0000 (UTC)
-From: kovalev@altlinux.org
-To: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yhs@fb.com,
-	songliubraving@fb.com,
-	kafai@fb.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	kovalev@altlinux.org,
-	nickel@altlinux.org,
-	oficerovas@altlinux.org,
-	dutyrok@altlinux.org
-Subject: [PATCH 5.10.y 1/1] bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
-Date: Mon, 29 Jan 2024 12:17:46 +0300
-Message-Id: <20240129091746.260538-2-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
-In-Reply-To: <20240129091746.260538-1-kovalev@altlinux.org>
-References: <20240129091746.260538-1-kovalev@altlinux.org>
+	s=arc-20240116; t=1706522065; c=relaxed/simple;
+	bh=Xxht6U4VSYKYvcFm5QKEYFp05/uW5TH2MJnFmQ9fcjU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ChqvlA7In0wnXhGHcFQz53ny9gj8rQdKUN2pv6m9yaSpC/QTp8vKC2rVLvynzeOMAHwwDYfcj5+WnIT1QYquGhSVM+5u/FZ6q9mioUXCSyMyg+yNKqqu2STgeMpa7EIQNWopBCCnvLAcpNxmekWzKoXzuFlTsvM+6DR6Lo/PwQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jtlwp4+R; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so3003696a12.2;
+        Mon, 29 Jan 2024 01:54:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706522062; x=1707126862; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hsyq9RDJnyx/vwAlCABE4IQoDmtfQ9ujfI3zrm1Np8k=;
+        b=Jtlwp4+RKlWQKnTE+Yie3uw+WgTL0uGzcvC6TyYpq7RiXcXgfNGhkWR7lHzlhp3eyy
+         N9N9uTtZOZibSZZ8HTe/KXYRGNqFp0XBxrCrr74PoJmqkK/dwGh6OpVpZceyhjqbsZaa
+         JmKsTS0UVzDoa5faqHzEgR+FgWio7FU0QUqCa4bTO4hPIRFSAlD0dmiRP2c2gwhyk+zB
+         itfppoq1p6ewVSTCIyH0JfWYjDOV3kknoEv06JLdt3Dn18Y5EIS0aARirg3C1M6BId3z
+         jyQYLqupc4JpBXrg5zFsBaRyOckUu94e+XUE7z17bCh/2AGQUIxym/6JCQajAr83pqwg
+         tFFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706522062; x=1707126862;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hsyq9RDJnyx/vwAlCABE4IQoDmtfQ9ujfI3zrm1Np8k=;
+        b=gdGDZT1jNHmqpGdi/YetGvVlNpbdSeOn7A/vvgDrCtMdn2Vy811s4GTCnGN5W6cCpj
+         geVZDOTwVT9qWbffdIx5ai0PNUoxEsgeSlBLqTR0Y936+JoYsMEdYN34sogBMjyKJXqQ
+         nH3o5cNWdij6omPMd7Mnb86iHE1k8hWrHcYe3GpdGvQCAQEEoXkhWCkVrH2lxrhixKB9
+         L7fBBUPgui3jQAW9zijYrXYf/FVFzfgAwFE4meci2YrRIN9evgUz516WlneI6y+J08hE
+         idmn16uktixaH+r6GuVTT8uedE6n85NF/8Exx8BM9JCa8JO73vE4c8sxbfJ3S5Q+a1FG
+         fpxQ==
+X-Gm-Message-State: AOJu0YxRoahafwb364j5rzlLfLDmmF10qabuShKccNyuibcIUw/uR2Rg
+	PTHY4rXu6ZQej27oRaVbtejSFfCLieL/6I/JpQEWwrQFZDAyi/uU
+X-Google-Smtp-Source: AGHT+IEZfWmmqffnPjC9XgPKd+2w+8UYFBSDMfNDkeKUhfXXXBALKwEvO4NuuDo6hstyrnAd4354HA==
+X-Received: by 2002:a17:906:acb:b0:a31:1907:2fe8 with SMTP id z11-20020a1709060acb00b00a3119072fe8mr3987816ejf.48.1706522061544;
+        Mon, 29 Jan 2024 01:54:21 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id s15-20020a170906354f00b00a3186c2c254sm3714270eja.213.2024.01.29.01.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 01:54:21 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 29 Jan 2024 10:54:18 +0100
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v6 00/36] tracing: fprobe: function_graph: Multi-function
+ graph and fprobe on fgraph
+Message-ID: <Zbd1ypWJEVMW0uFv@krava>
+References: <170505424954.459169.10630626365737237288.stgit@devnote2>
+ <ZbJ2PfSt3RM3pm43@krava>
+ <20240127001405.c031ad1d7ab37089b563371b@kernel.org>
+ <ZbVO9oKa7Ti-EvAa@krava>
+ <20240128165153.5e6d71be8ad9c3dd69bd02bf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240128165153.5e6d71be8ad9c3dd69bd02bf@kernel.org>
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Sun, Jan 28, 2024 at 04:51:53PM +0900, Masami Hiramatsu wrote:
+> On Sat, 27 Jan 2024 19:44:06 +0100
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > On Sat, Jan 27, 2024 at 12:14:05AM +0900, Masami Hiramatsu wrote:
+> > > On Thu, 25 Jan 2024 15:54:53 +0100
+> > > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > 
+> > > > On Fri, Jan 12, 2024 at 07:10:50PM +0900, Masami Hiramatsu (Google) wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > Here is the 6th version of the series to re-implement the fprobe on
+> > > > > function-graph tracer. The previous version is;
+> > > > > 
+> > > > > https://lore.kernel.org/all/170290509018.220107.1347127510564358608.stgit@devnote2/
+> > > > > 
+> > > > > This version fixes use-after-unregister bug and arm64 stack unwinding
+> > > > > bug [13/36], add an improvement for multiple interrupts during push
+> > > > > operation[20/36], keep SAVE_REGS until BPF and fprobe_event using
+> > > > > ftrace_regs[26/36], also reorder the patches[30/36][31/36] so that new
+> > > > > fprobe can switch to SAVE_ARGS[32/36] safely.
+> > > > > This series also temporarily adds a DIRECT_CALLS bugfix[1/36], which
+> > > > > should be pushed separatedly as a stable bugfix.
+> > > > > 
+> > > > > There are some TODOs:
+> > > > >  - Add s390x and loongarch support to fprobe (multiple fgraph).
+> > > > >  - Fix to get the symbol address from ftrace entry address on arm64.
+> > > > >    (This should be done in BPF trace event)
+> > > > >  - Cleanup code, rename some terms(offset/index) and FGRAPH_TYPE_BITMAP
+> > > > >    part should be merged to FGRAPH_TYPE_ARRAY patch.
+> > > > 
+> > > > hi,
+> > > > I'm getting kasan bugs below when running bpf selftests on top of this
+> > > > patchset.. I think it's probably the reason I see failures in some bpf
+> > > > kprobe_multi/fprobe tests
+> > > > 
+> > > > so far I couldn't find the reason.. still checking ;-)
+> > > 
+> > > Thanks for reporting! Have you built the kernel with debuginfo? In that
+> > > case, can you decode the line from the address?
+> > > 
+> > > $ eu-addr2line -fi -e vmlinux ftrace_push_return_trace.isra.0+0x346
+> > > 
+> > > This helps me a lot.
+> > 
+> > I had to recompile/regenerate the fault, it points in here:
+> > 
+> >         ffffffff8149b390 <ftrace_push_return_trace.isra.0>:    
+> >         ...
+> > 
+> >                         current->ret_stack[rindex - 1] = val;  
+> >         ffffffff8149b6b1:       48 8d bd 78 28 00 00    lea    0x2878(%rbp),%rdi
+> >         ffffffff8149b6b8:       e8 63 e4 28 00          call   ffffffff81729b20 <__asan_load8>
+> >         ffffffff8149b6bd:       48 8b 95 78 28 00 00    mov    0x2878(%rbp),%rdx
+> >         ffffffff8149b6c4:       41 8d 47 ff             lea    -0x1(%r15),%eax
+> >         ffffffff8149b6c8:       48 98                   cltq
+> >         ffffffff8149b6ca:       4c 8d 24 c2             lea    (%rdx,%rax,8),%r12
+> >         ffffffff8149b6ce:       4c 89 e7                mov    %r12,%rdi
+> >         ffffffff8149b6d1:       e8 ea e4 28 00          call   ffffffff81729bc0 <__asan_store8>
+> > --->    ffffffff8149b6d6:       49 89 1c 24             mov    %rbx,(%r12)
+> >                         current->curr_ret_stack = index = rindex;
+> >         ffffffff8149b6da:       48 8d bd 6c 28 00 00    lea    0x286c(%rbp),%rdi
+> >         ffffffff8149b6e1:       e8 9a e3 28 00          call   ffffffff81729a80 <__asan_store4>
+> >         ffffffff8149b6e6:       44 89 bd 6c 28 00 00    mov    %r15d,0x286c(%rbp)
+> >         ffffffff8149b6ed:       e9 8d fd ff ff          jmp    ffffffff8149b47f <ftrace_push_return_trace.isra.0+0xef>
+> >                 if (WARN_ON_ONCE(idx <= 0))      
+> > 
+> 
+> Thanks! So this shows that this bug is failed to check the boundary of
+> shadow stack while pushing the return trace.
+> 
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 0f11f80bdd6c..8e1fcc3f4bda 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -550,7 +550,7 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+>  	smp_rmb();
+>  
+>  	/* The return trace stack is full */
+> -	if (current->curr_ret_stack + FGRAPH_RET_INDEX >= SHADOW_STACK_MAX_INDEX) {
+> +	if (current->curr_ret_stack + FGRAPH_RET_INDEX + 1 >= SHADOW_STACK_MAX_INDEX) {
+>  		atomic_inc(&current->trace_overrun);
+>  		return -EBUSY;
+>  	} 
+> 
+> Sorry, I forgot to increment the space for reserved entry...
 
-[ Upstream commit c86df29d11dfba27c0a1f5039cd6fe387fbf4239 ]
+hum, I'm getting same error even with the change above, same backtrace/line
 
-The dispatcher function is currently abusing the ftrace __fentry__
-call location for its own purposes -- this obviously gives trouble
-when the dispatcher and ftrace are both in use.
-
-A previous solution tried using __attribute__((patchable_function_entry()))
-which works, except it is GCC-8+ only, breaking the build on the
-earlier still supported compilers. Instead use static_call() -- which
-has its own annotations and does not conflict with ftrace -- to
-rewrite the dispatch function.
-
-By using: return static_call()(ctx, insni, bpf_func) you get a perfect
-forwarding tail call as function body (iow a single jmp instruction).
-By having the default static_call() target be bpf_dispatcher_nop_func()
-it retains the default behaviour (an indirect call to the argument
-function). Only once a dispatcher program is attached is the target
-rewritten to directly call the JIT'ed image.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Björn Töpel <bjorn@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lkml.kernel.org/r/Y1/oBlK0yFk5c/Im@hirez.programming.kicks-ass.net
-Link: https://lore.kernel.org/bpf/20221103120647.796772565@infradead.org
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
- include/linux/bpf.h     | 39 ++++++++++++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c | 22 ++++++++--------------
- 2 files changed, 46 insertions(+), 15 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8f4379e93ad49b..2c8c7515609a07 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -21,6 +21,7 @@
- #include <linux/kallsyms.h>
- #include <linux/capability.h>
- #include <linux/percpu-refcount.h>
-+#include <linux/static_call.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -650,6 +651,10 @@ struct bpf_dispatcher {
- 	void *image;
- 	u32 image_off;
- 	struct bpf_ksym ksym;
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+	struct static_call_key *sc_key;
-+	void *sc_tramp;
-+#endif
- };
- 
- static __always_inline unsigned int bpf_dispatcher_nop_func(
-@@ -667,6 +672,34 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
- int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
-+
-+/*
-+ * When the architecture supports STATIC_CALL replace the bpf_dispatcher_fn
-+ * indirection with a direct call to the bpf program. If the architecture does
-+ * not have STATIC_CALL, avoid a double-indirection.
-+ */
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+#define __BPF_DISPATCHER_SC_INIT(_name)				\
-+	.sc_key = &STATIC_CALL_KEY(_name),			\
-+	.sc_tramp = STATIC_CALL_TRAMP_ADDR(_name),
-+
-+#define __BPF_DISPATCHER_SC(name)				\
-+	DEFINE_STATIC_CALL(bpf_dispatcher_##name##_call, bpf_dispatcher_nop_func)
-+
-+#define __BPF_DISPATCHER_CALL(name)				\
-+	static_call(bpf_dispatcher_##name##_call)(ctx, insnsi, bpf_func)
-+
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)			\
-+	__static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
-+
-+#else
-+#define __BPF_DISPATCHER_SC_INIT(name)
-+#define __BPF_DISPATCHER_SC(name)
-+#define __BPF_DISPATCHER_CALL(name)		bpf_func(ctx, insnsi)
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)
-+#endif
-+
- #define BPF_DISPATCHER_INIT(_name) {				\
- 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
- 	.func = &_name##_func,					\
-@@ -678,20 +711,23 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		.name  = #_name,				\
- 		.lnode = LIST_HEAD_INIT(_name.ksym.lnode),	\
- 	},							\
-+	__BPF_DISPATCHER_SC_INIT(_name##_call)			\
- }
- 
- #define DEFINE_BPF_DISPATCHER(name)					\
-+	__BPF_DISPATCHER_SC(name);					\
- 	noinline unsigned int bpf_dispatcher_##name##_func(		\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *))	\
- 	{								\
--		return bpf_func(ctx, insnsi);				\
-+		return __BPF_DISPATCHER_CALL(name);			\
- 	}								\
- 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
- 	struct bpf_dispatcher bpf_dispatcher_##name =			\
- 		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
-+
- #define DECLARE_BPF_DISPATCHER(name)					\
- 	unsigned int bpf_dispatcher_##name##_func(			\
- 		const void *ctx,					\
-@@ -699,6 +735,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *));	\
- 	extern struct bpf_dispatcher bpf_dispatcher_##name;
-+
- #define BPF_DISPATCHER_FUNC(name) bpf_dispatcher_##name##_func
- #define BPF_DISPATCHER_PTR(name) (&bpf_dispatcher_##name)
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 2444bd15cc2d03..4c6c2e3ac56459 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -4,6 +4,7 @@
- #include <linux/hash.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
-+#include <linux/static_call.h>
- 
- /* The BPF dispatcher is a multiway branch code generator. The
-  * dispatcher is a mechanism to avoid the performance penalty of an
-@@ -104,17 +105,11 @@ static int bpf_dispatcher_prepare(struct bpf_dispatcher *d, void *image)
- 
- static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- {
--	void *old, *new;
--	u32 noff;
--	int err;
--
--	if (!prev_num_progs) {
--		old = NULL;
--		noff = 0;
--	} else {
--		old = d->image + d->image_off;
-+	void *new, *tmp;
-+	u32 noff = 0;
-+
-+	if (prev_num_progs)
- 		noff = d->image_off ^ (PAGE_SIZE / 2);
--	}
- 
- 	new = d->num_progs ? d->image + noff : NULL;
- 	if (new) {
-@@ -122,11 +117,10 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 			return;
- 	}
- 
--	err = bpf_arch_text_poke(d->func, BPF_MOD_JUMP, old, new);
--	if (err || !new)
--		return;
-+	__BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
- 
--	d->image_off = noff;
-+	if (new)
-+		d->image_off = noff;
- }
- 
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
--- 
-2.33.8
-
+jirka
 
