@@ -1,184 +1,139 @@
-Return-Path: <bpf+bounces-20561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0BE8403B9
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:23:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD7D840402
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1A461C22955
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:23:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5881F21657
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAB55B5D5;
-	Mon, 29 Jan 2024 11:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219645C8FD;
+	Mon, 29 Jan 2024 11:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SScxkPha"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="G8atFPLb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1825EE60
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 11:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69B05C5E0
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 11:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706527432; cv=none; b=Tpc7utmp3sXIBu/G8vSkcefMGQQtVWipsj6+VFo7kB0eewZBWU21veSH8waTXOzf4a+mIl8Svw21vmmwFxo2Ti7BiU9da+pnoQa5tdVSXalZR0Zyuo1tzhj9F15fTcAG/XdhgXNG28kqRirvB2jPvG/ciDi863Lug3zvR/HEUJk=
+	t=1706528589; cv=none; b=B6KTC2JyFBHl0bdTBlcm3PZLk2Nui1yBE2k/3q7GNFA4gxXBgNTBN1Isx7AFobcWycVy+X8oS87qL/xoNhv/tQqsFUtYTYUhj19BXuY45M+2yOaDlPSe5400dS4Fwi2ItuDCouwmzOfI22p0BYxRoKxOxXwLyFpkefav2qnrRQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706527432; c=relaxed/simple;
-	bh=bxPAtvG38TF9bmEpQeFJ3+AfORMwL9mswufwdw3z45o=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k5svzE7JTONDDoe+6NHnHeFl+og7oWjEvzmPrFoqYLo8bCSvr8PakkbvseUo3iKL0zLJFTGzVRpCJp7MPjO5xuejx1LfjFkVfVn0VSk3Ja2WlWXcLpZAXEEeLYHRLMOxYcKESfBommyl8oSuEIhIMZA+zZwH9A4FnZHysFOpWD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SScxkPha; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33af2823edbso258607f8f.0
-        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 03:23:50 -0800 (PST)
+	s=arc-20240116; t=1706528589; c=relaxed/simple;
+	bh=gPA17xZLo9IDKsqW7ioface1iKvRFE0TAGGexIcqAdw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dYEJ6YF4tzzysJNUPBvvh8oD//Kz5Rto+S9H+Bo+L24/ms4SzkH82Ca8rZlkSIJZ93Uh1lPfRifVzORnKSbFYN3+vMjC/QlSd6fVdh/1FpA195pkGw0xB+A4A3/HDCnjizALuHKHl+Q/QIRfrO1FxXkRwhx8liPkPM2jYvyMDbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=G8atFPLb; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55f0367b15fso931967a12.0
+        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 03:43:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706527428; x=1707132228; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVhpfpZki7DBjvU1Wlxa3Rsj9oHZSUXQybVdngGu/fA=;
-        b=SScxkPhaYC+fGpl1nR+X+laC5cqt8a/XadIIgmuCNVbNhB2EzBCsI3sOFGb+LaSWEE
-         ykwSy8DZNWXAyvm0ZNverA2KTpFfRLpUAGCAfD6PYLbUdNQBP1IwT8k+Y4oly2D3+S+U
-         7WYBeOPFoQA0XU1CLyqcWTHsYoOL9ggot4PTTcq6BW13BHYfKbkZ+ejfKqd7J6dfQato
-         rfErO8JHJ7BZQdcShNhtL2B7duHS/mzTOr0ibrj74WCRCvcbwsETsA6Vql52sPGxbcEG
-         7hghK/lK91xpjGNDt6kwEjpaEQ2EhgMfXXU6ddBaUCXZt0JI//u0NDukxmPFNpDfCRKH
-         mUZw==
+        d=ventanamicro.com; s=google; t=1706528586; x=1707133386; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jll+xDGWtNinZyXQQxr9XYKpco16f8UDTOTc59xvHik=;
+        b=G8atFPLbKCtf2BdCTGBCMauIu2zsYTWk5S92gU/fpQ8ENB0UfZc9zW7+3j/6QX2spx
+         PK7YBGqp6sLyAGTK7wx9t9W7NZv8f177pm+OtrzzViqaAXrrw3eqCKwpP1RstEFz5O23
+         nSjwtK1xBGONtEQjBITyXveINMEC/CuRh59SBTb5z2p5xUzYM8mr1Hs9CexoEpHNVanx
+         GjZ6nLY4Ot88exWFu6b/WNYtT6yvQvmV0oJZp7+kPnMg0nlrl2Srvl5Q3zRmyB/iZk1J
+         M2H2+IQQiSGlQwFg7APCkgvnC+YRvt2q+pQ2EdjNIwnBc+fbnQkC8xSr55T/lGB2JMPO
+         +/qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706527428; x=1707132228;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cVhpfpZki7DBjvU1Wlxa3Rsj9oHZSUXQybVdngGu/fA=;
-        b=QOlPr3kA3KFbBhKT6V0LLgqFVmyUHiOBNF4c9jk3jtQI1tqh6Hm2CVs+fG9A24fZjm
-         Gxgo+Q4N407zJQbCP68LHhAAvxUyo0fFUGtw2zLrj7B3A63GnoL0ipcnj83T+GKX3L8e
-         tyy7SSnXv5GIOJnKuQ0gCw5vd1n1LQE3AUTRQloiU+UL88VPe9mLDJ8EZZF4ih2vKl/y
-         dStj6JKkcpe+1B87Dwr9WYFGf1KmyRU66GIfXZ3AYRfshC73aWaweocll5VJ8yJ6DsJF
-         ideEYOfKh6oAXw+JC9ccYhuxSd4/h0WBbvwQhS6R42sluzs/SL2d4nFVum+NZFqRJXaD
-         TV1Q==
-X-Gm-Message-State: AOJu0YwK8K57ovIBQM26I5rl5jGNthODRhTUMMenu9km8QUGDBD7ZYSx
-	VOGr1D4VSFgGt2g903HTJVMBpiQPYlY0D5YfYktqBshAHTSW6mHf
-X-Google-Smtp-Source: AGHT+IFmDQCfC1huSICmCXj2r5sZpACRIXWEm0NhO9VJ/8zYjleMdOlwad0/gCOmi/9/dWZPu/C3yw==
-X-Received: by 2002:a5d:5225:0:b0:336:6d62:7647 with SMTP id i5-20020a5d5225000000b003366d627647mr2661094wra.5.1706527428425;
-        Mon, 29 Jan 2024 03:23:48 -0800 (PST)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id cl10-20020a5d5f0a000000b0033aeb20f5b8sm3454313wrb.13.2024.01.29.03.23.47
+        d=1e100.net; s=20230601; t=1706528586; x=1707133386;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jll+xDGWtNinZyXQQxr9XYKpco16f8UDTOTc59xvHik=;
+        b=tY2H2kQUR9E7cUR4cqeSL5h34LuRdMl26OJ8ZfoRKAjtHc9jVgvUKzfqyPnIjXpF4a
+         7HxXfjf7+usFSbVGfF1xnO1U/PwfIp4uGKgIRjdHfPChlteLA3zd0/uLxf68Lx5NpYJE
+         w3NB+l+tEwXp5NHKLJyGW+tHlqH8Rjj53SpVWY551RjpmO4ELH5SUrl/ctFHW8ooUwfk
+         Ec4VM2qUEIg2j0oA10iUC0MVow2Ye+7t89hgk3t8SgzxCDG0ERByS1QxDTmalKXL16qR
+         DKFSL9JTS9lnWHjtbG68Ht12mbW8Bfj7SnLF6z0zT047h+hYtftxclR1Ioh4Mvssymlg
+         lcug==
+X-Gm-Message-State: AOJu0Yy862MNcNk3ZTqvdae6+K7upBKPoo2zLn4aPziLX40P3hqeFI1q
+	WzjYYwJl5NsxO9dhvI8QH/H8WFlj9+wsPUvJp86Diq2a9h9IveepvcLmD66mZoM=
+X-Google-Smtp-Source: AGHT+IEH86+9YzoszcB0Vw77R/3cAt0Y76DqSvHQ0Vzf0hiKE1eyYrhFeBRHNrBofYY00RvjvRoY9g==
+X-Received: by 2002:a05:6402:22ea:b0:55e:ed35:ffce with SMTP id dn10-20020a05640222ea00b0055eed35ffcemr2148019edb.37.1706528586113;
+        Mon, 29 Jan 2024 03:43:06 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id fk1-20020a056402398100b0055d19c9daf2sm3657333edb.15.2024.01.29.03.43.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 03:23:48 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 29 Jan 2024 12:23:44 +0100
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Quentin Monnet <quentin@isovalent.com>, Jiri Olsa <olsajiri@gmail.com>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
-Message-ID: <ZbeKwGG2kLqxIHRt@krava>
-References: <ZZYgMYmb_qE94PUB@kernel.org>
- <ZZZ7hgqlYjNJOynA@krava>
- <ZZakH8LluKodXql-@kernel.org>
- <ZZasL_pO09Zt3R4e@kernel.org>
- <ZZfCX7tcM0RnuHJT@krava>
- <ZZgZ0cxEa7HvSUF6@krava>
- <ZZhsPs00TI75RdAr@kernel.org>
- <ZbPVcsAwjE1Mtv7C@kernel.org>
+        Mon, 29 Jan 2024 03:43:05 -0800 (PST)
+Date: Mon, 29 Jan 2024 12:43:04 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
+	Luke Nelson <luke.r.nels@gmail.com>, Pu Lehui <pulehui@huawei.com>
+Subject: Re: Re: [PATCH RESEND bpf-next v3 4/6] riscv, bpf: Add necessary Zbb
+ instructions
+Message-ID: <20240129-d06c79a17a5091b3403fc5b6@orel>
+References: <20240115131235.2914289-1-pulehui@huaweicloud.com>
+ <20240115131235.2914289-5-pulehui@huaweicloud.com>
+ <871qa2zog6.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZbPVcsAwjE1Mtv7C@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <871qa2zog6.fsf@all.your.base.are.belong.to.us>
 
-On Fri, Jan 26, 2024 at 12:53:22PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Jan 05, 2024 at 05:53:18PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Jan 05, 2024 at 04:01:37PM +0100, Jiri Olsa escreveu:
-> > > On Fri, Jan 05, 2024 at 09:48:31AM +0100, Jiri Olsa wrote:
-> > > > On Thu, Jan 04, 2024 at 10:01:35AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > 
-> > > > SNIP
-> > > > 
-> > > > >    9    51.66 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-17) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
-> > > > >   10    60.77 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
-> > > > >   11    61.29 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
-> > > > >   12    74.72 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 16.0.6 flex 2.6.4
-> > > > > 
-> > > > > / $ grep -B8 -A2 -w basename /usr/include/string.h
-> > > > > #ifdef _GNU_SOURCE
-> > > > > #define	strdupa(x)	strcpy(alloca(strlen(x)+1),x)
-> > > > > int strverscmp (const char *, const char *);
-> > > > > char *strchrnul(const char *, int);
-> > > > > char *strcasestr(const char *, const char *);
-> > > > > void *memrchr(const void *, int, size_t);
-> > > > > void *mempcpy(void *, const void *, size_t);
-> > > > > #ifndef __cplusplus
-> > > > > char *basename();
-> > > > > #endif
-> > > > > #endif
-> > > > > / $ cat /etc/os-release
-> > > > > NAME="Alpine Linux"
-> > > > > ID=alpine
-> > > > > VERSION_ID=3.19.0
-> > > > > PRETTY_NAME="Alpine Linux v3.19"
-> > > > > HOME_URL="https://alpinelinux.org/"
-> > > > > BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
-> > > > > / $
-> > > > > 
-> > > > > Weird, they had it and now removed the _GNU_SOURCE bits (edge is their
-> > > > > devel distro, like rawhide is for fedora, tumbleweed for opensuse, etc).
-> > > > 
-> > > > let's see, I asked them in here: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15643
-> > > 
-> > > it got removed in musl libc recently:
-> > >   https://git.musl-libc.org/cgit/musl/commit/?id=725e17ed6dff4d0cd22487bb64470881e86a92e7
-> > > 
-> > > so perhaps switching to POSIX version of basename is the easiest way out?
-> > 
-> > I think so, in all of perf we use the POSIX one, strdup'ing the arg,
-> > etc.
-> > 
-> > Something like the patch below?
+On Sat, Jan 27, 2024 at 06:16:41PM +0100, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
 > 
-> Quentin, are you ok with this? Then I can send a formal patch.
-> 
-> Jiri, can I have your Acked-by?
-
-yes, jirka
-
-> 
-> - Arnaldo
->  
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index ee3ce2b8000d75d2..a5cc5938c3d7951e 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -7,6 +7,7 @@
-> >  #include <ctype.h>
-> >  #include <errno.h>
-> >  #include <fcntl.h>
-> > +#include <libgen.h>
-> >  #include <linux/err.h>
-> >  #include <stdbool.h>
-> >  #include <stdio.h>
-> > @@ -56,9 +57,10 @@ static bool str_has_suffix(const char *str, const char *suffix)
+> > From: Pu Lehui <pulehui@huawei.com>
+> >
+> > Add necessary Zbb instructions introduced by [0] to reduce code size and
+> > improve performance of RV64 JIT. Meanwhile, a runtime deteted helper is
+> > added to check whether the CPU supports Zbb instructions.
+> >
+> > Link: https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf [0]
+> > Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> > ---
+> >  arch/riscv/net/bpf_jit.h | 32 ++++++++++++++++++++++++++++++++
+> >  1 file changed, 32 insertions(+)
+> >
+> > diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> > index e30501b46f8f..51f6d214086f 100644
+> > --- a/arch/riscv/net/bpf_jit.h
+> > +++ b/arch/riscv/net/bpf_jit.h
+> > @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
+> >  	return IS_ENABLED(CONFIG_RISCV_ISA_C);
+> >  }
 > >  
-> >  static void get_obj_name(char *name, const char *file)
-> >  {
-> > -	/* Using basename() GNU version which doesn't modify arg. */
-> > -	strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
-> > -	name[MAX_OBJ_NAME_LEN - 1] = '\0';
-> > +	char file_copy[PATH_MAX];
-> > +	/* Using basename() POSIX version to be more portable. */
-> > +	strncpy(file_copy, file, PATH_MAX - 1)[PATH_MAX - 1] = '\0';
-> > +	strncpy(name, basename(file_copy), MAX_OBJ_NAME_LEN - 1)[MAX_OBJ_NAME_LEN - 1] = '\0';
-> >  	if (str_has_suffix(name, ".o"))
-> >  		name[strlen(name) - 2] = '\0';
-> >  	sanitize_identifier(name);
+> > +static inline bool rvzbb_enabled(void)
+> > +{
+> > +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && riscv_has_extension_likely(RISCV_ISA_EXT_ZBB);
 > 
-> -- 
+> Hmm, I'm thinking about the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) semantics
+> for a kernel JIT compiler.
 > 
-> - Arnaldo
+> IS_ENABLED(CONFIG_RISCV_ISA_ZBB) affects the kernel compiler flags.
+> Should it be enough to just have the run-time check? Should a kernel
+> built w/o Zbb be able to emit Zbb from the JIT?
+>
+
+My two cents (which might be worth less than two cents due to my lack of
+BPF knowledge) is yes, the JIT should be allowed to emit Zbb instructions
+even when the kernel is not built with a compiler which has done so. In
+fact, we have insn-def.h for situations similar to this.
+
+Thanks,
+drew
 
