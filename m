@@ -1,132 +1,169 @@
-Return-Path: <bpf+bounces-20604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20605-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA655840A1C
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 16:33:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D137B840A5F
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 16:45:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B29B1F28E37
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 15:33:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 014B61C20400
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 15:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F1B15443C;
-	Mon, 29 Jan 2024 15:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD24154441;
+	Mon, 29 Jan 2024 15:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="jB4DDqb1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NM1PbGMW"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7A0153BD0;
-	Mon, 29 Jan 2024 15:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE3415442B
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 15:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542394; cv=none; b=U5L95C4oXkwnFS6pG9aW7VVqWlC3TbONtK9CMTU+JIgheHHl3K7CA9b7JiqzUuCqOiV/TiIEbNH0946j4Zbd3TTgC7Vdw7l9Zyj5o7JOEOPX5tF+zTgBxlp4ACZLuCj1TUh1OVlWAPrnThs9H58tCtNe7wG2aAOAKy9zKavsZfo=
+	t=1706543088; cv=none; b=SQiWmr4+II22TH/GcE6TS1Odxt10Htjbp34sBNUSTwajlvML4HvsubTYhe/JcRMGDJPd6TRlJ4fdB2TKzdbopTEVDj6eJ3hnWFey2amKCAL7yijcHNMgMsb9FeVZJaH56SOp38GLxVkkpcOxERe7fLaVhMKMZ0r2WNzuas7v1aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542394; c=relaxed/simple;
-	bh=KK1fR8EQlrJ6EUBT39fCtHr57DrrXCl3EaeExEW7aE4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=rmUDPJ+9oVTlniZHqYR+PLOF2wJ3cP6cXVUvjQbLAdfsSTTmVUrVPANYWctleZWUNQ75DpZIg6TuyrfhP6aO5QOBvnM6mvcSSBvg8Cuk1u5ffa7yImPVBEJhAtw4Hk1ORvbPHeJCy9OnQr5U/XnGJ22orzk+Z351BpxN2ruIYH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=jB4DDqb1; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=ekJI84jz9Cz4AFQVBZBV9I87QpFYwV1HOZxh1PFt9/U=; b=jB4DDqb1cCAWQswNqcJfN7MjqC
-	xaPle6dW5aS9NhxvIKcaBFRrDZUY1cQOzojKgUFRFnrGK4G5d/60OAGNloPPXCZZo+DF0OaA/8HgF
-	JAt35RV4WNtk4XCCmM8mb+IkdHKTGQSbGX5XZGNc66bLlf31Wp8A1MLHtofuG2D9ZE/mr0h2fwTPs
-	YA201eg9HpAW5vRtztivcKi27HIiZ9OBDSCGzP7aMOWKuExxmpdaU/JZhKcr9yZTOTGuEVJ64z47n
-	fZQzOPdtWtbOKHYwgLlZ6veoXCVSkGGVRMvTWcQst431WbyLDIQ1UMzMIIvRYcdA2caVsPNcSC32s
-	oWEy/eNg==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rUTd0-000Dvz-HP; Mon, 29 Jan 2024 16:32:54 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rUTcz-000N5e-Ey; Mon, 29 Jan 2024 16:32:53 +0100
-Subject: Re: [PATCH RESEND bpf-next v3 4/6] riscv, bpf: Add necessary Zbb
- instructions
-To: Pu Lehui <pulehui@huawei.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>,
- Luke Nelson <luke.r.nels@gmail.com>
-References: <20240115131235.2914289-1-pulehui@huaweicloud.com>
- <20240115131235.2914289-5-pulehui@huaweicloud.com>
- <871qa2zog6.fsf@all.your.base.are.belong.to.us>
- <03ebc63f-7b96-4a70-ad10-a4ffc1d5b1cc@huawei.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0b2bb6aa-e114-157b-94d1-4acb091b48b8@iogearbox.net>
-Date: Mon, 29 Jan 2024 16:32:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1706543088; c=relaxed/simple;
+	bh=hc9w6fHB6GNc2uSOz6ErX7jduiBxLNfZzksxtRecrAw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=IhPQo4Pqb/0ForNLhKFpMTUu6VOO+q3LlWsem+NiKlXH7G5XCFEB7gdr8Q7oCQrHwbSXffOeGJEFABDIiO85QCPXRypW9q1fav2yHKAAtzK+fy4DJcCCnI37Ww2Rl2YrClQsudP/SkFxm2NAFC84h70Nqq9m9uwvyFInPRJaKtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NM1PbGMW; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706543085;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EDC7vuXA9lRBLGT1HPb1LtCn5oK4rQZH3750GlIB9Gs=;
+	b=NM1PbGMWyDJ2LBNaReZ0CfnxTUrhYqJ6n8BMiV7NJcuAlo2tecuckm8DF+k8hhe7zJa1Wq
+	yo2dBEim86Mav9K+eNcbXeyETcPQZxCmNWltKwQu8gl4gHYbG6/I8HDIxqjtIljHOIZsK6
+	R0D72lQK/5X4p6U4a5Hw0b87bZuBVTc=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-516-yuE0X_-NPeO-7Ue3uWGNYA-1; Mon, 29 Jan 2024 10:44:44 -0500
+X-MC-Unique: yuE0X_-NPeO-7Ue3uWGNYA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5101e82696bso2109995e87.0
+        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 07:44:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706543082; x=1707147882;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EDC7vuXA9lRBLGT1HPb1LtCn5oK4rQZH3750GlIB9Gs=;
+        b=pxh1UFGw1ULGOgGjanTuI6M/rEL32gIoJAQOLMCswI1kCe6MalJiPzGfV9eilcbdcF
+         UQtR7fdx3Xp4eKX0npUXMpnZ4NYJ+YQptSozjO9wJ+CVnRfrtAm9y0di2tWScO1DA4AV
+         3yObMMVSQkgcwIXJ2hTTn1/9Wyb2zA/BLMpxI0XxAs9DgXPyFk8XKN1gsZqb6Nm7gmup
+         HGC7UfdVKMLtb5rzrSWmKnb3EqyicYrc77fIWNrVKU9OK7xPjTd5pYOrNJ28ShXkD4qx
+         8oAjddYWfFHLB7Z1RgslzRfkofUrjzxuo5/aIzRfTsYWDAbyebk5ra+HJoXHREC/btJ4
+         rR6w==
+X-Gm-Message-State: AOJu0YzmbHxCT1cQCu8X+H/SFL+aKWwO+y4qymyytCFMzhnD3JIUfUEk
+	YnEbccPbqhSbBLB3lwOTfZ8DwP4Xdb/rD0dSZJA2vTgE+JykXGeKO1GbaezN4Nklm6sKOgY/Os9
+	G0IpZk5BorSI7/Kz7V0IvC7pIkUWUlOWdP2wXKExQ1UsW2Wd6Xg==
+X-Received: by 2002:ac2:5dd5:0:b0:50e:4fcb:dc28 with SMTP id x21-20020ac25dd5000000b0050e4fcbdc28mr3663347lfq.35.1706543082455;
+        Mon, 29 Jan 2024 07:44:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHXOf5GKJqQt9EEoWWWjHDzHTLeOkDX165FBk5E6e9jH/XuSgJ8s/voFvPCMEEQIIbYcaVbpw==
+X-Received: by 2002:ac2:5dd5:0:b0:50e:4fcb:dc28 with SMTP id x21-20020ac25dd5000000b0050e4fcbdc28mr3663322lfq.35.1706543082105;
+        Mon, 29 Jan 2024 07:44:42 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id gy14-20020a170906f24e00b00a28f51adc39sm4048229ejb.61.2024.01.29.07.44.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 07:44:41 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 389A8108A04D; Mon, 29 Jan 2024 16:44:41 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+ davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+ pabeni@redhat.com, bpf@vger.kernel.org, willemdebruijn.kernel@gmail.com,
+ jasowang@redhat.com, sdf@google.com, hawk@kernel.org,
+ ilias.apalodimas@linaro.org
+Subject: Re: [PATCH v6 net-next 1/5] net: add generic per-cpu page_pool
+ allocator
+In-Reply-To: <ZbefjZvKUMtaCbm1@lore-desk>
+References: <cover.1706451150.git.lorenzo@kernel.org>
+ <5b0222d3df382c22fe0fa96154ae7b27189f7ecd.1706451150.git.lorenzo@kernel.org>
+ <87jzns1f71.fsf@toke.dk> <ZbefjZvKUMtaCbm1@lore-desk>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 29 Jan 2024 16:44:41 +0100
+Message-ID: <87bk9416vq.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <03ebc63f-7b96-4a70-ad10-a4ffc1d5b1cc@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27169/Mon Jan 29 10:39:53 2024)
+Content-Type: text/plain
 
-On 1/29/24 10:13 AM, Pu Lehui wrote:
-> On 2024/1/28 1:16, Björn Töpel wrote:
->> Pu Lehui <pulehui@huaweicloud.com> writes:
->>
->>> From: Pu Lehui <pulehui@huawei.com>
->>>
->>> Add necessary Zbb instructions introduced by [0] to reduce code size and
->>> improve performance of RV64 JIT. Meanwhile, a runtime deteted helper is
->>> added to check whether the CPU supports Zbb instructions.
->>>
->>> Link: https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf [0]
->>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>> ---
->>>   arch/riscv/net/bpf_jit.h | 32 ++++++++++++++++++++++++++++++++
->>>   1 file changed, 32 insertions(+)
->>>
->>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->>> index e30501b46f8f..51f6d214086f 100644
->>> --- a/arch/riscv/net/bpf_jit.h
->>> +++ b/arch/riscv/net/bpf_jit.h
->>> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
->>>       return IS_ENABLED(CONFIG_RISCV_ISA_C);
->>>   }
->>> +static inline bool rvzbb_enabled(void)
->>> +{
->>> +    return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && riscv_has_extension_likely(RISCV_ISA_EXT_ZBB);
->>
->> Hmm, I'm thinking about the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) semantics
->> for a kernel JIT compiler.
->>
->> IS_ENABLED(CONFIG_RISCV_ISA_ZBB) affects the kernel compiler flags.
->> Should it be enough to just have the run-time check? Should a kernel
->> built w/o Zbb be able to emit Zbb from the JIT?
-> 
-> Not enough, because riscv_has_extension_likely(RISCV_ISA_EXT_ZBB) is a platform capability check, and the other one is a kernel image capability check. We can pass the check riscv_has_extension_likely(RISCV_ISA_EXT_ZBB) when CONFIG_RISCV_ISA_ZBB=n. And my local test prove it.
+Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
 
-So if I understand you correctly, only relying on the riscv_has_extension_likely(RISCV_ISA_EXT_ZBB)
-part would not work - iow, the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) is mandatory here?
+>> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>> 
+>> > Introduce generic percpu page_pools allocator.
+>> > Moreover add page_pool_create_percpu() and cpuid filed in page_pool struct
+>> > in order to recycle the page in the page_pool "hot" cache if
+>> > napi_pp_put_page() is running on the same cpu.
+>> > This is a preliminary patch to add xdp multi-buff support for xdp running
+>> > in generic mode.
+>> >
+>> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>> > ---
+>> >  include/net/page_pool/types.h |  3 +++
+>> >  net/core/dev.c                | 40 +++++++++++++++++++++++++++++++++++
+>> >  net/core/page_pool.c          | 23 ++++++++++++++++----
+>> >  net/core/skbuff.c             |  5 +++--
+>> >  4 files changed, 65 insertions(+), 6 deletions(-)
+>> >
+>> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
+>> > index 76481c465375..3828396ae60c 100644
+>> > --- a/include/net/page_pool/types.h
+>> > +++ b/include/net/page_pool/types.h
+>> > @@ -128,6 +128,7 @@ struct page_pool_stats {
+>> >  struct page_pool {
+>> >  	struct page_pool_params_fast p;
+>> >  
+>> > +	int cpuid;
+>> >  	bool has_init_callback;
+>> >  
+>> >  	long frag_users;
+>> > @@ -203,6 +204,8 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
+>> >  struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
+>> >  				  unsigned int size, gfp_t gfp);
+>> >  struct page_pool *page_pool_create(const struct page_pool_params *params);
+>> > +struct page_pool *page_pool_create_percpu(const struct page_pool_params *params,
+>> > +					  int cpuid);
+>> >  
+>> >  struct xdp_mem_info;
+>> >  
+>> > diff --git a/net/core/dev.c b/net/core/dev.c
+>> > index cb2dab0feee0..bf9ec740b09a 100644
+>> > --- a/net/core/dev.c
+>> > +++ b/net/core/dev.c
+>> > @@ -153,6 +153,8 @@
+>> >  #include <linux/prandom.h>
+>> >  #include <linux/once_lite.h>
+>> >  #include <net/netdev_rx_queue.h>
+>> > +#include <net/page_pool/types.h>
+>> > +#include <net/page_pool/helpers.h>
+>> >  
+>> >  #include "dev.h"
+>> >  #include "net-sysfs.h"
+>> > @@ -442,6 +444,8 @@ static RAW_NOTIFIER_HEAD(netdev_chain);
+>> >  DEFINE_PER_CPU_ALIGNED(struct softnet_data, softnet_data);
+>> >  EXPORT_PER_CPU_SYMBOL(softnet_data);
+>> >  
+>> > +DEFINE_PER_CPU_ALIGNED(struct page_pool *, page_pool);
+>> 
+>> I think we should come up with a better name than just "page_pool" for
+>> this global var. In the code below it looks like it's a local variable
+>> that's being referenced. Maybe "global_page_pool" or "system_page_pool"
+>> or something along those lines?
+>
+> ack, I will fix it. system_page_pool seems better, agree?
 
-Thanks,
-Daniel
+Yeah, agreed :)
 
-P.s.: Given Bjorn's review and tests I took the series into bpf-next now. Thanks everyone!
+-Toke
+
 
