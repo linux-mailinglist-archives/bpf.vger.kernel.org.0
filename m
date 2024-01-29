@@ -1,95 +1,122 @@
-Return-Path: <bpf+bounces-20596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3EA3840832
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 15:24:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2849E840854
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 15:30:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63B4328719A
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:24:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F3B7B25EC5
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5FD165BB5;
-	Mon, 29 Jan 2024 14:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqOAtHYW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9EB12F5A2;
+	Mon, 29 Jan 2024 14:29:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3201E657C3
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 14:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDEE679E0;
+	Mon, 29 Jan 2024 14:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538257; cv=none; b=qJVKcl0zQRWTuS1kz2a9S1vjFNNCpX1lGVcIDC9RRBTUuBUfL+K2o1P/V1rzlY4ZyV0/CCoSvtwn7Jj0eEM4Hh2CxSEAsdVHV9cie7njpYm9HbrOzrpG9NZgX3V/zDxnO1Q6pG0rlY5/GHxXb+7ZtQZ+X02XmkWaPnweTLEf7xw=
+	t=1706538591; cv=none; b=VLnvgPiKlJg05rcuGK1YgvllKDHnRIfJeDGY4JkJb9/tey8aDhJ4N9fqMILutmloa14bDTjgR+KsUNVmOv3QRYXpbcgY84TqJzU4NB7yNxws34UETRy4biGu47lM6+Vkd+1RxwC+OM+fmuo1B+H0fjXs4MQL49qunFndMCxrZq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538257; c=relaxed/simple;
-	bh=8RHekHuYUuO6oSvsiR5g60IAgj/SY3aZhugXuLwr3ss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S0NIVZ0CScIdaXX4+bbChr/IXcZiIG+xaR+Cydc0X36T1SvrPEnuyI+BfkRA00apbaEUwzEJV+A9pycjU3wNYftdOdoI5U+iY3M6xDFKAqN8tA6O1B0h8PTMRHhuj4kyZCezQdqAv4oVzXuHf1UHRosVgmdE8PJ+Yj/055IhNBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqOAtHYW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79FA6C433F1;
-	Mon, 29 Jan 2024 14:24:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706538256;
-	bh=8RHekHuYUuO6oSvsiR5g60IAgj/SY3aZhugXuLwr3ss=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kqOAtHYWAXXzI4v+EOxLkIk9xf8byh/aZ/WDrIJXh9wsnTXUP2DNmM/kAhK2msxWi
-	 0FAXhWnpa1RW8jzB77t76UZgzinHjE/8FlSbc47LXG9BO+M12a3nQ2tHIaIC5WLN4R
-	 kNuhSfN3uO3HpoZcthXBqiXJLFGTQlTplhTiNxg1O3K76RZ0DJNenJCJyi3GHV38qF
-	 wMMLIbMFEQ1RMEjIgHRFhm9QNTdpaTaqB8HBJMFrj+cdxD2rl5N7ax4xrJc92RzQXa
-	 vwkaJ4F0XOJZ4GDGQaQXO8nHWva9efC2R81hxN7uoEADrNHCuA+DB63xLE0o/hNr8D
-	 mmV+ri76f4HiA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id B8EC440441; Mon, 29 Jan 2024 11:24:13 -0300 (-03)
-Date: Mon, 29 Jan 2024 11:24:13 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, jolsa@kernel.org, quentin@isovalent.com,
-	andrii.nakryiko@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v3] pahole: Inject kfunc decl tags into BTF
-Message-ID: <Zbe1DfHjhZHwIKha@kernel.org>
-References: <0f25134ec999e368478c4ca993b3b729c2a03383.1706491733.git.dxu@dxuuu.xyz>
- <49da8aff-1ec7-b908-2167-ee499e7a857a@oracle.com>
+	s=arc-20240116; t=1706538591; c=relaxed/simple;
+	bh=sUOl21AQ9QP1KxLqMgEvOcJJpRIJ5FdSCV60Ux3RHr8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fYSwsE8rBGVmu5VVlg5EKwAgg1gBc286hEu2upppUNXse+5NxBZ7y9UU+J4UBPi8AQW9w4gEqq1wUgLY7xv/C2luhDJO/+OhNaSN5VRP+D7POXPB9KKx7iyx826a+9v3O3Upu6qzKyr/pluIPEQKzyCzzuXPFlq5XiZxYtvT6EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13FF4DA7;
+	Mon, 29 Jan 2024 06:30:32 -0800 (PST)
+Received: from [10.57.77.253] (unknown [10.57.77.253])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C1D33F5A1;
+	Mon, 29 Jan 2024 06:29:45 -0800 (PST)
+Message-ID: <9ab3aa81-294c-4b16-a4e3-97b4fe358be8@arm.com>
+Date: Mon, 29 Jan 2024 14:29:43 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49da8aff-1ec7-b908-2167-ee499e7a857a@oracle.com>
-X-Url: http://acmel.wordpress.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
+ sync operations
+Content-Language: en-GB
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+ <20240126135456.704351-3-aleksander.lobakin@intel.com>
+ <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
+ <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
+ <3d9f7f89-9d62-4916-8f3f-a4aaad85a8e2@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <3d9f7f89-9d62-4916-8f3f-a4aaad85a8e2@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Em Mon, Jan 29, 2024 at 01:05:05PM +0000, Alan Maguire escreveu:
-> This should probably be a BTF feature supported by --btf_features; that
-> way we'd have a mechanism to switch it off if needed. Can you look at
-> adding a "tag_kfunc" or whatever name suits into the btf_features[]
-> array in pahole.c?  Something like:
- 
-> 	BTF_FEATURE(tag_kfunc, btf_tag_kfunc, false),
- 
-> You'll also then need to add a btf_tag_kfunc boolean field to
-> struct conf_load, and generation of kfunc tags should then be guarded by
- 
-> if (conf_load->btf_tag_kfunc)
- 
-> ...so that the tags are added conditionally depending on whether
-> the user wants them.
- 
-> Then if a user specifies --btf_features=all or some subset of BTF
-> features including "tag_kfunc" they will get kfunc tags.
+On 2024-01-29 2:07 pm, Alexander Lobakin wrote:
+> From: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Date: Fri, 26 Jan 2024 17:45:11 +0100
+> 
+>> From: Robin Murphy <robin.murphy@arm.com>
+>> Date: Fri, 26 Jan 2024 15:48:54 +0000
+>>
+>>> On 26/01/2024 1:54 pm, Alexander Lobakin wrote:
+>>>> From: Eric Dumazet <edumazet@google.com>
+>>>>
+>>>> Quite often, NIC devices do not need dma_sync operations on x86_64
+>>>> at least.
+>>>> Indeed, when dev_is_dma_coherent(dev) is true and
+>>>> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
+>>>> and friends do nothing.
+>>>>
+>>>> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
+>>>> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
+>>>> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
+>>>>
+>>>> Add dev->skip_dma_sync boolean which is set during the device
+>>>> initialization depending on the setup: dev_is_dma_coherent() for direct
+>>>> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive result
+>>>> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA ops.
+>>>> Then later, if/when swiotlb is used for the first time, the flag
+>>>> is turned off, from swiotlb_tbl_map_single().
+>>>
+>>> I think you could probably just promote the dma_uses_io_tlb flag from
+>>> SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.
+>>
+>> Nice catch!
+> 
+> BTW, this implies such hotpath check:
+> 
+> 	if (dev->dma_skip_sync && !READ_ONCE(dev->dma_uses_io_tlb))
+> 		// ...
+> 
+> This seems less effective than just resetting dma_skip_sync on first
+> allocation.
 
-Agreed.
- 
-> We probably should also move to using --btf_features instead of the
-> current combination of "--" parameters when pahole is bumped to v1.26.
+Well, my point is not to have a dma_skip_sync at all; I'm suggesting the 
+check would be:
 
-Alan, talking about that, I guess we better tag v1.26 before merging
-this new kfunc work, wdyt?
+	if (dev_is_dma_coherent(dev) && dev_uses_io_tlb(dev))
+		...
 
-- Arnaldo
+where on the platform which cares about this most, that first condition 
+is a compile-time constant (and as implied, the second would want to be 
+similarly wrapped for !SWIOTLB configs).
+
+Thanks,
+Robin.
 
