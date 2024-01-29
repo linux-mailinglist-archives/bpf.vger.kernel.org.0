@@ -1,73 +1,79 @@
-Return-Path: <bpf+bounces-20558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74ABC840265
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:08:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA728840281
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 11:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 039811F2256A
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A322A1C20852
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 10:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA3B55E50;
-	Mon, 29 Jan 2024 10:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070D55E68;
+	Mon, 29 Jan 2024 10:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="B4GzHVfH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TBBtYqv4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D119958AAB
-	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 10:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AAFD5C8E8
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 10:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706522877; cv=none; b=p74CBDgpPdftIfSIRslVgaLbwmjjXNu6zqHJHdJhzfk6Vqy22PfQJJf1uh4Tx6MuJpdy2PIKukkKPWNeBLxzggPY00OSrfoy+NIfC4TOJnqV+FfhxUVTHxAAg532HTmrCQgnxXNLgDa4RZTpbQD06Kw8bXGC4XuVgrwnikkO28c=
+	t=1706522955; cv=none; b=PVUmB5PE9sgtPnvJIY2ddbAufrwByKeRA2rqAKhwVjLS0Zd37hIFQm8KO+LlS8cWGl80gfqi4xLjLsRuWE5IPc5lbEyih7K3eeGAgjjukw9W0CbEsQxM7XqsHsc7+cbuTDvcRnuYb5CJxoYlOVTbC+UhnLL6LsnpGpjs5o0N4bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706522877; c=relaxed/simple;
-	bh=St64qBr8OBhyw+m034wse3G1EzsPqc2y3W+iz4Af1+Y=;
+	s=arc-20240116; t=1706522955; c=relaxed/simple;
+	bh=AovuKEfLyCYwuNkt/RkXEceoH5Wx/UbmM6ln7vuqEaY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ilphTr4AV0JvMVStBuGVjdhsmX0ud07d9LKjpXzWmRPfM6eOuixL/z8FtPlrzw41dQAS07VsaluM1Q/LTS9BCvwwj3hsHq5PcbQ2tmu2kPXClexwKL87AoUVtsqoVIeE6DvEtNi2P5Y5ZfAGr7bfKgwBqMvd2t+519rcsBPuEeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=B4GzHVfH; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d04fb2f36bso4614071fa.2
-        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 02:07:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1706522874; x=1707127674; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2rXZlsOe+udqax+UUntPGmEiCf2D1YJDQpM06ysrWNA=;
-        b=B4GzHVfHDpvzKSUJXgMNADATcLebsIbIgkaHOd1vdvgtDfqzgTwcQ30f/lrUwEp7p+
-         trNbgmN+orICzuw4N3IDFcANvbfsei7UGZrJfQK1/b5AtNDyOs0KZ4X3OqYo2CbtZzDM
-         2g0nUkUSmAtbsras1I9cqEpaNA8aTidCsOX9Qr+BqTcINYti8M5N3SdlzGoF9y/5Rf4l
-         YK3TGzoZUFHLEwolEj/yU5ToyCAZo3X0hpZXcAn0Plhb+cmyf+gSFHqBPSEwmyDqFosB
-         BaDA4aqoHQ5GpozKes38j42vpB/W6/Shoh/kruq1FMBCgQ4TYtSXfxYLJ5xQVHbkRtZO
-         D8iw==
+	 In-Reply-To:Content-Type; b=Y5aNJo+xaD/TvnQDbyQJsrCq/iHSI4TRIGgWz4M6A6iXvbaKZhfejfsKBb+DcKnhdsVZoHPQSvlWWJ7PtX6GDmdZm4lyv7TOGpYa3d2XhJ44GoebwfLef15V11T7yTokqPWPfQ/KNXyScIi0zAasbljHu5CZO53/yg9jtSPwweU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TBBtYqv4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706522952;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QYHen2oi+BFbFain7oay0ac3PoX7CtGlQvTKIJWDOMY=;
+	b=TBBtYqv4J6wGl6oRJ6bMMBDQxolZlqalXHOGlZFWxavS6Eg3SR20dEqnYH4YEi4fI1uCay
+	0ShH1uVxde2JIvZi8pYF3YsfUtnzLuU9XmAYSEiUP8yRVFEt46hRu9C1cZmnaAp4vT/yOr
+	EofU3/8au3ICwEaT86Juaqsx/NCWPSo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-519-qLpq9wh5OgyaaAtaETdsJw-1; Mon, 29 Jan 2024 05:09:11 -0500
+X-MC-Unique: qLpq9wh5OgyaaAtaETdsJw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e86ddcee5so16688315e9.2
+        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 02:09:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706522874; x=1707127674;
+        d=1e100.net; s=20230601; t=1706522950; x=1707127750;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2rXZlsOe+udqax+UUntPGmEiCf2D1YJDQpM06ysrWNA=;
-        b=AZG5189QZ4rtLXAe7HzDep6FsjrZr8N7bBDWC6uqy//0L9/nUL81eiWhVePXeLHIZF
-         pf97ZbSGX0xHemI4uTwn37Acd+hzpyz9JofI+QLyZXnXICS8BTuXSQFseESQD3H9Zv04
-         Pq0HhCsA1np4a/+RUCpmGoyzH9kLnbvOYZcxE2F4sOCJjAyNk691ETGKMm1r7Sf+cOpP
-         0VyaKi6B1wbR8tkMbd1v5lrS2hGXGXG+E30Uhw4pLrCSkknncrcu9qIO8RjzX5BM4Lvh
-         BtESlJIXxE7cEmAJWMk/oiXfRpO1lE6qS7ZGNGiQj+AO/PJXsrIkJbYq5caEIKi6Mqgj
-         qH1A==
-X-Gm-Message-State: AOJu0YwroRQAGX06nFwo//ltNPz6YscH7FRwe7r9ntcCE/YhjMHz8rpW
-	mofCPlcRqzyKTMOOBVyGYPPDNwDVWP26wIuEr2FxPfYohj1TfDgoyOCWZuB8yDc=
-X-Google-Smtp-Source: AGHT+IGBxUl/8W28Q82ya88NcAFs25+wvPG8Zv4KJcJbTtmgOPM3/pwUB0tRhWVOHzjraxhJOV9COQ==
-X-Received: by 2002:a05:651c:c86:b0:2d0:4c65:f09a with SMTP id bz6-20020a05651c0c8600b002d04c65f09amr1663176ljb.0.1706522873640;
-        Mon, 29 Jan 2024 02:07:53 -0800 (PST)
-Received: from ?IPV6:2a02:8011:e80c:0:e71:7b68:d136:1898? ([2a02:8011:e80c:0:e71:7b68:d136:1898])
-        by smtp.gmail.com with ESMTPSA id ch19-20020a5d5d13000000b00337b47ae539sm7713523wrb.42.2024.01.29.02.07.53
+        bh=QYHen2oi+BFbFain7oay0ac3PoX7CtGlQvTKIJWDOMY=;
+        b=Yu6tLNpY23iJHH0Vo2r96AbVh77Hdn/v4/ru3RYCeipxFVCXC0WmKaY+mwuJlv6BHx
+         OPYlb07MSIbGKHZDaPUAglbZ16gzH5qDMdRURfH9eaZjYdDPFpDBHdZb3zJzGI6E0KVZ
+         h1A4QG17y+PmSEwuFFV3f1z2d2uLN1MT8QZBZi/nXPdFWBFoP11/ZeSF5xDqLXhC1XDn
+         RxhbpgSUWXeXSe17y7qaDoSu9WX+2ydCPztmdsxZm4bbHXBM0A89h2IszTeyKC5pDF5d
+         iCC/SGsMEE6MruraQlIEtUAc2OKloKzVPfJWBMY2XqcDk4+We196kIO3PD1bkkCXPDMo
+         WAXg==
+X-Gm-Message-State: AOJu0Yzd/EFl2AnXJ7umpru4Vp0xwPORZUJrcSrz5Rftfc6Tus1R7hdL
+	tl1ZF6UfMH8cKXq5Kzz/+IZSIJu2uqcgEpGOyjKSpplkfxY7OeBjzl1adjW7SYLBdx46Mu9+cuS
+	pxN1jU6u+YywBdZ568XqjX6tlVC9CdtuAFsUBiEoVr5h50QcG
+X-Received: by 2002:a05:600c:3b82:b0:40e:6eef:9d46 with SMTP id n2-20020a05600c3b8200b0040e6eef9d46mr5808876wms.20.1706522950233;
+        Mon, 29 Jan 2024 02:09:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHvxewqxVjJRiRcwyXAxcOPDsiEoVfqC3bN3Y/nws8d/R3mQUBXRmg4dzmEcoNBZDnSlkp+Ow==
+X-Received: by 2002:a05:600c:3b82:b0:40e:6eef:9d46 with SMTP id n2-20020a05600c3b8200b0040e6eef9d46mr5808842wms.20.1706522949876;
+        Mon, 29 Jan 2024 02:09:09 -0800 (PST)
+Received: from [192.168.0.159] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id az29-20020a05600c601d00b0040ee6ff86f6sm8450624wmb.0.2024.01.29.02.09.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 02:07:53 -0800 (PST)
-Message-ID: <baaedcf3-1446-412c-b614-e417d691f2d2@isovalent.com>
-Date: Mon, 29 Jan 2024 10:07:52 +0000
+        Mon, 29 Jan 2024 02:09:09 -0800 (PST)
+Message-ID: <246afef2-9f78-479d-90f1-3c5e2cf4085e@redhat.com>
+Date: Mon, 29 Jan 2024 11:09:08 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,76 +81,174 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
-Content-Language: en-GB
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
-References: <ZZYgMYmb_qE94PUB@kernel.org> <ZZZ7hgqlYjNJOynA@krava>
- <ZZakH8LluKodXql-@kernel.org> <ZZasL_pO09Zt3R4e@kernel.org>
- <ZZfCX7tcM0RnuHJT@krava> <ZZgZ0cxEa7HvSUF6@krava>
- <ZZhsPs00TI75RdAr@kernel.org> <ZbPVcsAwjE1Mtv7C@kernel.org>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <ZbPVcsAwjE1Mtv7C@kernel.org>
+Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix cross-compilation to
+ non-host endianness
+Content-Language: en-US
+To: Jiri Olsa <olsajiri@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Ian Rogers <irogers@google.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Alexey Dobriyan <adobriyan@gmail.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20240123120759.1865189-1-vmalik@redhat.com>
+ <CAEf4Bzb=eSCO=h4q1fqqGfEoo9Nf4BZL51_dYm2MHvEFzD_csw@mail.gmail.com>
+ <Zba2TrYs6jRcNhH8@krava>
+From: Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <Zba2TrYs6jRcNhH8@krava>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-2024-01-26 15:53 UTC+0000 ~ Arnaldo Carvalho de Melo <acme@kernel.org>
-> Em Fri, Jan 05, 2024 at 05:53:18PM -0300, Arnaldo Carvalho de Melo escreveu:
->> Em Fri, Jan 05, 2024 at 04:01:37PM +0100, Jiri Olsa escreveu:
->>> On Fri, Jan 05, 2024 at 09:48:31AM +0100, Jiri Olsa wrote:
->>>> On Thu, Jan 04, 2024 at 10:01:35AM -0300, Arnaldo Carvalho de Melo wrote:
->>>>
->>>> SNIP
->>>>
->>>>>    9    51.66 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-17) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
->>>>>   10    60.77 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
->>>>>   11    61.29 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
->>>>>   12    74.72 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 16.0.6 flex 2.6.4
->>>>>
->>>>> / $ grep -B8 -A2 -w basename /usr/include/string.h
->>>>> #ifdef _GNU_SOURCE
->>>>> #define	strdupa(x)	strcpy(alloca(strlen(x)+1),x)
->>>>> int strverscmp (const char *, const char *);
->>>>> char *strchrnul(const char *, int);
->>>>> char *strcasestr(const char *, const char *);
->>>>> void *memrchr(const void *, int, size_t);
->>>>> void *mempcpy(void *, const void *, size_t);
->>>>> #ifndef __cplusplus
->>>>> char *basename();
->>>>> #endif
->>>>> #endif
->>>>> / $ cat /etc/os-release
->>>>> NAME="Alpine Linux"
->>>>> ID=alpine
->>>>> VERSION_ID=3.19.0
->>>>> PRETTY_NAME="Alpine Linux v3.19"
->>>>> HOME_URL="https://alpinelinux.org/"
->>>>> BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
->>>>> / $
->>>>>
->>>>> Weird, they had it and now removed the _GNU_SOURCE bits (edge is their
->>>>> devel distro, like rawhide is for fedora, tumbleweed for opensuse, etc).
->>>>
->>>> let's see, I asked them in here: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15643
+On 1/28/24 21:17, Jiri Olsa wrote:
+> On Fri, Jan 26, 2024 at 03:40:11PM -0800, Andrii Nakryiko wrote:
+>> On Tue, Jan 23, 2024 at 4:08 AM Viktor Malik <vmalik@redhat.com> wrote:
 >>>
->>> it got removed in musl libc recently:
->>>   https://git.musl-libc.org/cgit/musl/commit/?id=725e17ed6dff4d0cd22487bb64470881e86a92e7
+>>> The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
+>>> build and afterwards patched by resolve_btfids with correct values.
+>>> Since resolve_btfids always writes in host-native endianness, it relies
+>>> on libelf to do the translation when the target ELF is cross-compiled to
+>>> a different endianness (this was introduced in commit 61e8aeda9398
+>>> ("bpf: Fix libelf endian handling in resolv_btfids")).
 >>>
->>> so perhaps switching to POSIX version of basename is the easiest way out?
->>
->> I think so, in all of perf we use the POSIX one, strdup'ing the arg,
->> etc.
->>
->> Something like the patch below?
+>>> Unfortunately, the translation will corrupt the flags fields of SET8
+>>> entries because these were written during vmlinux compilation and are in
+>>> the correct endianness already. This will lead to numerous selftests
+>>> failures such as:
+>>>
+>>>     $ sudo ./test_verifier 502 502
+>>>     #502/p sleepable fentry accept FAIL
+>>>     Failed to load prog 'Invalid argument'!
+>>>     bpf_fentry_test1 is not sleepable
+>>>     verification time 34 usec
+>>>     stack depth 0
+>>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+>>>     Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
 > 
-> Quentin, are you ok with this? Then I can send a formal patch.
+> hum, I'd think we should have hit such bug long time ago.. set8 is
+> there for some time already.. nice ;-)
+> 
+>>>
+>>> Since it's not possible to instruct libelf to translate just certain
+>>> values, let's manually bswap the flags in resolve_btfids when needed, so
+>>> that libelf then translates everything correctly.
+>>>
+>>> Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
+>>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>>> ---
+>>>  tools/bpf/resolve_btfids/main.c | 35 +++++++++++++++++++++++++++++++--
+>>>  1 file changed, 33 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+>>> index 27a23196d58e..440d3d066ce4 100644
+>>> --- a/tools/bpf/resolve_btfids/main.c
+>>> +++ b/tools/bpf/resolve_btfids/main.c
+>>> @@ -646,18 +646,31 @@ static int cmp_id(const void *pa, const void *pb)
+>>>         return *a - *b;
+>>>  }
+>>>
+>>> +static int need_bswap(int elf_byte_order)
+>>> +{
+>>> +       return __BYTE_ORDER == __LITTLE_ENDIAN && elf_byte_order != ELFDATA2LSB ||
+>>> +              __BYTE_ORDER == __BIG_ENDIAN && elf_byte_order != ELFDATA2MSB;
+>>
+>> return (__BYTE_ORDER == __LITTLE_ENDIAN) != (elf_byte_order == ELFDATA2LSB);
+>>
+>> ?
+>>
 
-I'm not aware of any particular drawback about using the POSIX version
-(Is there?), so the patch looks good as far as I'm concerned. Thanks
-Arnaldo!
+It seemed to me a bit less readable this way, but sure, no problem with
+this form either.
 
-Quentin
+>>> +}
+>>> +
+>>>  static int sets_patch(struct object *obj)
+>>>  {
+>>>         Elf_Data *data = obj->efile.idlist;
+>>>         int *ptr = data->d_buf;
+>>>         struct rb_node *next;
+>>> +       GElf_Ehdr ehdr;
+>>> +
+>>> +       if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
+>>> +               pr_err("FAILED cannot get ELF header: %s\n",
+>>> +                       elf_errmsg(-1));
+>>> +               return -1;
+>>> +       }
+>>
+>> calculate needs_bswap() once here?
+
+Good idea, will do.
+
+>>>
+>>>         next = rb_first(&obj->sets);
+>>>         while (next) {
+>>> -               unsigned long addr, idx;
+>>> +               unsigned long addr, idx, flags;
+>>>                 struct btf_id *id;
+>>>                 int *base;
+>>> -               int cnt;
+>>> +               int cnt, i;
+>>>
+>>>                 id   = rb_entry(next, struct btf_id, rb_node);
+>>>                 addr = id->addr[0];
+>>> @@ -679,6 +692,24 @@ static int sets_patch(struct object *obj)
+>>>
+>>>                 qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
+>>>
+>>> +               /*
+>>> +                * When ELF endianness does not match endianness of the host,
+>>> +                * libelf will do the translation when updating the ELF. This,
+>>> +                * however, corrupts SET8 flags which are already in the target
+>>> +                * endianness. So, let's bswap them to the host endianness and
+>>> +                * libelf will then correctly translate everything.
+>>> +                */
+>>> +               if (id->is_set8 && need_bswap(ehdr.e_ident[EI_DATA])) {
+>>> +                       for (i = 0; i < cnt; i++) {
+>>> +                               /*
+>>> +                                * header and entries are 8-byte, flags is the
+>>> +                                * second half of an entry
+>>> +                                */
+>>> +                               flags = idx + (i + 1) * 2 + 1;
+>>> +                               ptr[flags] = bswap_32(ptr[flags]);
+>>
+>> we are dealing with struct btf_id_set8, right? Can't we #include
+>> include/linux/btf_ids.h and use that type for all these offset
+>> calculations?..
+> 
+> we could, there's tools/include/linux/btf_ids.h, which we could include
+> in here, we do that in selftests.. but it needs to be updated with latest
+> kernel updates (at least with set8 struct)
+> 
+>>
+>> I have the same question for existing code, tbh, so maybe there was
+>> some good reason, not sure...
+> 
+> I think the test came later and I did not think of it for the resolve_btfids
+> itself, I guess it might make the code more readable
+
+Agreed, let's use that. I'll also refactor the existing code using types
+from btf_ids.h for v2 of this patchset.
+
+Viktor
+
+> 
+> thanks,
+> jirka
+> 
+>>
+>>> +                       }
+>>> +               }
+>>> +
+>>>                 next = rb_next(next);
+>>>         }
+>>>         return 0;
+>>> --
+>>> 2.43.0
+>>>
+>>>
+> 
 
 
