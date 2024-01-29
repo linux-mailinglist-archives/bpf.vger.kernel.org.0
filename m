@@ -1,210 +1,107 @@
-Return-Path: <bpf+bounces-20567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A1B8404A4
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCD78404C4
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA8591F22802
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:11:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7442E1F2387B
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 12:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352F55FEFC;
-	Mon, 29 Jan 2024 12:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A6wKXxjv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C95604D3;
+	Mon, 29 Jan 2024 12:15:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0544D5FEEF;
-	Mon, 29 Jan 2024 12:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D4F604AA;
+	Mon, 29 Jan 2024 12:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706530283; cv=none; b=pOaP2vs50dJfrcl1muTO0HkdWBihthQNn4M7g1iacoYcWo6/p1HyH+JXc5cipxNg6GSu39Lta4kab5+4XEi6YR+adS43M7NB5+aHqqFiyjcxgUdbfZEJ+/igpzo0okPOOIZYefs31FOTlSw7Xs5uwxa76pEz+LDIDGj8aCDpLSA=
+	t=1706530514; cv=none; b=J3+TrflixdwayOLQQV81P2iEqIXTIZVQAFoeFv0URYieRtUEfrSIq5vH/5ino5GuM91/S+2yc6eltviaxj1yilstCd4x1QET1bRl8nykYFKrXlW74tgGQBhjuMQLngcKSOPINrYFSIYzGKYengoBP5zm+1EfnvwemRNBk13r0Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706530283; c=relaxed/simple;
-	bh=3HXv7ujLDgrTBiqeBH1Zh1gasFpPnJjS8mOzaSRaOxg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i2J3rniMYKC1vpxR0TO3mO5Beo+ZFcxZ+dRMSfZDH78tj1ahOvgrLJV/uoaty3ZCpMcQpCdYdRvA6maW9b07EGrA0Bd1db77KdiVfXMZ52/HRUddE5TzMZPihrUUd3vu4Qq1bMQU75933DTa8RxWZNmj2Jtuskfea8tdx4TKOa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A6wKXxjv; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33926ccbc80so1669669f8f.0;
-        Mon, 29 Jan 2024 04:11:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706530280; x=1707135080; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TzIZ9R/V0HNVE/S36s2KAS/ZU9CXXNU9hBqNDTs4zEI=;
-        b=A6wKXxjvHoL0G1x3Td7ND1DVPEaB8/JS9emYMJBavFaY8J9XtNsOOk/y/90SdAmnl1
-         2jSCTFDjcRHFEPiE3YrtgJlydlAaH4P2DTTJtbFXMTLPnY5HZ5eP2Y5+NGR0T/unUKqZ
-         gTQpvKqszTI7/WHzByOHCOoxNvBcUSEFN/ntGwX5tq0N4NcwAojTRHj2ZIIM7sIPEb/C
-         nGatU2ACWVGv0sNu6tfaDkR9qCTpB/KdBYsYdKCFdHYTKtAYFNyou8sRShuGh8fECnqq
-         XtwSqZVgXvs58FclwF2lBCb45aLv+njK9EYIvypHP1aUHY38XGP3MvkgNORfybYRvm7d
-         Tu/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706530280; x=1707135080;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TzIZ9R/V0HNVE/S36s2KAS/ZU9CXXNU9hBqNDTs4zEI=;
-        b=SYgkQ9YkRLShaB0a+jGyjtRSpWPblxIdfJxKYoAdZi20noaRL65vZ8bWn7hTanmtdp
-         0s/+azuq0a29itAJGtPujQjZLeKhCLrkfpFMmDWdjqRhGALd/C3iQa3WfRWPYLcz4YKT
-         PMQ8Y9Ddylo8ek42+W+CL5LNa0ABhMV//EZptX6mrGhadtj8QF4y5zG59ZTV8etddTc0
-         xaDD/17cv3j9J4cvtBc/fEayfq8QVsE4nqX+W5U3BFM6VhzBmHKpaZm9u2sCxunEovon
-         ZnZFZanO22QKbsAVnCtC7wyGtsmMuyXPaJFZwTCNMHZXgrHkI5rP+0KYvCZiNnepTtKg
-         1nrw==
-X-Gm-Message-State: AOJu0YwByIebIV9XRML/f7K/4Qkt42tQuAbZEORt2rPtKot/9/j9oUrV
-	oCpslUvE3ua5HL+oJxTRSueY16t2pDQ+suoinZouEFdgSZ4ZQ16z
-X-Google-Smtp-Source: AGHT+IGyJji2iVSlxAaFnqBZylft2bnUaCP2g4DWYidkR/TVWQ2kHDuCjk9xkApnUcbYHLZnjkYitQ==
-X-Received: by 2002:a5d:6646:0:b0:33a:d2d4:959 with SMTP id f6-20020a5d6646000000b0033ad2d40959mr4560673wrw.11.1706530279891;
-        Mon, 29 Jan 2024 04:11:19 -0800 (PST)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id k14-20020adff28e000000b003392172fd60sm7902441wro.51.2024.01.29.04.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 04:11:19 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 29 Jan 2024 13:11:17 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: quentin@isovalent.com, daniel@iogearbox.net, ast@kernel.org,
-	andrii@kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com,
-	alan.maguire@oracle.com, memxor@gmail.com, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpftool: Support dumping kfunc prototypes from
- BTF
-Message-ID: <ZbeV5adWhiNZu5xj@krava>
-References: <373d86f4c26c0ebf5046b6627c8988fa75ea7a1d.1706492080.git.dxu@dxuuu.xyz>
+	s=arc-20240116; t=1706530514; c=relaxed/simple;
+	bh=CI2SITbEyDMK/SnfUcFawfQgI/5HdPELOd7hdQeM9Fw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uRD69cEOQSMzB7OMSXmKXP/6aOB+tyGHxs/g+1kBa7qPWsLBScS+Gm7mCz7NoJ/Cpz957Zalcmq/vwKBQ+pB+1w5BPsSA6VW+pRrAfOmv+TiPRRk67AMYsQsOuv9UOg47vGFxwB9gG1Bt2H5s3LpaqHvoeqOi7Iuv14vHI+PBOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 296821FB;
+	Mon, 29 Jan 2024 04:15:56 -0800 (PST)
+Received: from [10.57.77.253] (unknown [10.57.77.253])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8F643F5A1;
+	Mon, 29 Jan 2024 04:15:09 -0800 (PST)
+Message-ID: <df8f1bf4-819a-4b2a-927d-e97fe196cdf6@arm.com>
+Date: Mon, 29 Jan 2024 12:15:07 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <373d86f4c26c0ebf5046b6627c8988fa75ea7a1d.1706492080.git.dxu@dxuuu.xyz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/7] dma: compile-out DMA sync op calls when not
+ used
+Content-Language: en-GB
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+ <20240126135456.704351-2-aleksander.lobakin@intel.com>
+ <20240129061136.GD19258@lst.de>
+ <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 28, 2024 at 06:35:33PM -0700, Daniel Xu wrote:
-> This patch enables dumping kfunc prototypes from bpftool. This is useful
-> b/c with this patch, end users will no longer have to manually define
-> kfunc prototypes. For the kernel tree, this also means we can drop
-> kfunc prototypes from:
+On 2024-01-29 11:07 am, Alexander Lobakin wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Mon, 29 Jan 2024 07:11:36 +0100
 > 
->         tools/testing/selftests/bpf/bpf_kfuncs.h
->         tools/testing/selftests/bpf/bpf_experimental.h
+>> On Fri, Jan 26, 2024 at 02:54:50PM +0100, Alexander Lobakin wrote:
+>>> Some platforms do have DMA, but DMA there is always direct and coherent.
+>>> Currently, even on such platforms DMA sync operations are compiled and
+>>> called.
+>>> Add a new hidden Kconfig symbol, DMA_NEED_SYNC, and set it only when
+>>> either sync operations are needed or there is DMA ops or swiotlb
+>>> enabled. Set dma_need_sync() and dma_skip_sync() (stub for now)
+>>> depending on this symbol state and don't call sync ops when
+>>> dma_skip_sync() is true.
+>>> The change allows for future optimizations of DMA sync calls depending
+>>> on compile-time or runtime conditions.
+>>
+>> So the idea of compiling out the calls sounds fine to me.  But what
+>> is the point of the extra indirection through the __-prefixed calls?
 > 
-> Example usage:
+> Because dma_sync_* ops are external functions, not inlines, and in the
+> next patch I'm adding a check there.
 > 
->         $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
-> 
->         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
->         extern void cgroup_rstat_updated(struct cgroup * cgrp, int cpu) __ksym;
->         extern void cgroup_rstat_flush(struct cgroup * cgrp) __ksym;
->         extern struct bpf_key * bpf_lookup_user_key(u32 serial, u64 flags) __ksym;
+>>
+>> And if we need that (please document it in the commit log), please
+>> make the wrappers proper inline functions and not macros.
 
-hi,
-I'm getting following declaration for bpf_rbtree_add_impl:
+In fact those wrappers could perhaps subsume the existing stub 
+definitions, by starting with a refactor along these lines:
 
-	extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym; 
+static inline dma_sync_x(...)
+{
+	if (IS_ENABLED(CONFIG_NEED_DMA_SYNC))
+		__dma_sync_x(...);
+}
 
-and it fails to compile with:
-
-	In file included from skeleton/pid_iter.bpf.c:3:
-	./vmlinux.h:164511:141: error: expected ')'
-	 164511 | extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym;
-		|                                                                                                                                             ^
-	./vmlinux.h:164511:31: note: to match this '('
-	 164511 | extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym;
-
-looks like the btf_dumper_type_only won't dump function pointer argument
-properly.. I guess we should fix that, but looking at the other stuff in
-vmlinux.h like *_ops struct we can print function pointers properly, so
-perhaps another way around is to use btf_dumper interface instead
-
-jirka
-
-> 
-> Note that this patch is only effective after enabling pahole [0]
-> and kernel [1] changes are merged.
-> 
-> [0]: https://lore.kernel.org/bpf/0f25134ec999e368478c4ca993b3b729c2a03383.1706491733.git.dxu@dxuuu.xyz/
-> [1]: https://lore.kernel.org/bpf/cover.1706491398.git.dxu@dxuuu.xyz/
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  tools/bpf/bpftool/btf.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index 91fcb75babe3..9ab26ed12733 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -20,6 +20,8 @@
->  #include "json_writer.h"
->  #include "main.h"
->  
-> +#define KFUNC_DECL_TAG		"bpf_kfunc"
-> +
->  static const char * const btf_kind_str[NR_BTF_KINDS] = {
->  	[BTF_KIND_UNKN]		= "UNKNOWN",
->  	[BTF_KIND_INT]		= "INT",
-> @@ -454,6 +456,28 @@ static int dump_btf_raw(const struct btf *btf,
->  	return 0;
->  }
->  
-> +static void dump_btf_kfuncs(const struct btf *btf)
-> +{
-> +	int cnt = btf__type_cnt(btf);
-> +	int i;
-> +
-> +	for (i = 1; i < cnt; i++) {
-> +		const struct btf_type *t = btf__type_by_id(btf, i);
-> +		char kfunc_sig[1024];
-> +		const char *name;
-> +
-> +		if (!btf_is_decl_tag(t))
-> +			continue;
-> +
-> +		name = btf__name_by_offset(btf, t->name_off);
-> +		if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG)))
-> +			continue;
-> +
-> +		btf_dumper_type_only(btf, t->type, kfunc_sig, sizeof(kfunc_sig));
-> +		printf("extern %s __ksym;\n\n", kfunc_sig);
-
-
-> +	}
-> +}
-> +
->  static void __printf(2, 0) btf_dump_printf(void *ctx,
->  					   const char *fmt, va_list args)
->  {
-> @@ -476,6 +500,9 @@ static int dump_btf_c(const struct btf *btf,
->  	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
->  	printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
->  	printf("#endif\n\n");
-> +	printf("#ifndef __ksym\n");
-> +	printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
-> +	printf("#endif\n\n");
->  
->  	if (root_type_cnt) {
->  		for (i = 0; i < root_type_cnt; i++) {
-> @@ -491,6 +518,8 @@ static int dump_btf_c(const struct btf *btf,
->  			if (err)
->  				goto done;
->  		}
-> +
-> +		dump_btf_kfuncs(btf);
->  	}
->  
->  	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
-> -- 
-> 2.42.1
-> 
+Cheers,
+Robin.
 
