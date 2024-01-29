@@ -1,85 +1,207 @@
-Return-Path: <bpf+bounces-20542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A53783FD3D
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 05:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3423B83FDC1
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 06:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D83A2853FA
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 04:32:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D59BD283CC7
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 05:33:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA9E3C689;
-	Mon, 29 Jan 2024 04:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971BF446C4;
+	Mon, 29 Jan 2024 05:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WLe6nUl3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hqoIOg4p"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB7E3C47A;
-	Mon, 29 Jan 2024 04:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38FA446A3
+	for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 05:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706502733; cv=none; b=SZr5c9EyMtrq7X3NcWzWK3p8fhwy+lAhf1Vm4c2mwGvs/ePYzRTxMJYJ1wbYkyISwj7rwnlFLn9DP1F/pckqhcvnq2J6/7Cti8bpQZRfP1E/tR4wJdrwCHC14O+Mxd+t6KuxzAFtZsI52R+Hsoadx81qoyHE3aYCbQpZUYmHVzg=
+	t=1706506422; cv=none; b=qn16vN6Mqhl1EXHwUgfqILGQgl0GZdl4lhMcfpH3v5S20SYfYHUX7Rpfi/zRZaKEyIf4PAe6bQnDg0mm8rY3cpoNxAL25UoevkyTJZfdXwU6W1ALfTsODHZnR6io5V5mdDgx3hL0puaFDbmR+m37cxiK+yEakiryJxuLs+npoqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706502733; c=relaxed/simple;
-	bh=vnBCw+VEsZoMU7uXPkz67lpbjtbkGDarP0i7dAApyj4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NhBXoMBjM73xUg9IjM1tpSs8RzrpyvaUCLwDLFyesSA0HAaN+Pn5Cit6qzT5mUS2MspY0Q6biT7v1/FNtCtNAYrY749gtQOAD1dbAngqjqlKEU0zcv9d47T/7AoqiuqcQAgltrLjYBt/9qW9obQPDfZkXgBXyXYVETVMtEjzzNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WLe6nUl3; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=H8WTJ8NBmRpbZtf94nTTt/tZUYzTLnihYXaoQXGtdRA=; b=WLe6nUl3NiNOhbZzoHeryOF0bU
-	P5+xpXLngxxGVebSFsePFiFuI/Tje4zs+Zsk0N8ZJB99kB7M5AanK0s0NzdnlE8eRw+vuYTO7UKYw
-	GuYzR0j2zpvVPfRPNwSJ1JNVPTbd4KlXaXcLyUpbS/AMy938NTCRo8+GPJ0oE76c4XVH6RPNdXt+I
-	FaQFBumBWxrEMciRiP6PwVK8WLIHygrOro+u9TQHSSK0waUD4WD+doKz2NHNFX8a9pmVRw7vlEcW3
-	CE1Deh9g/lgotxHlH9x9TsKC402E2Ze1tzLTttiJTWI+L055MOwTe4bpnXfM80IRGtNESiLNW5uVB
-	t24sKqEQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUJJT-00000005VPu-4AB6;
-	Mon, 29 Jan 2024 04:32:04 +0000
-Date: Mon, 29 Jan 2024 04:32:03 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: lsf-pc@lists.linux-foundation.org
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-	bpf@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
-Message-ID: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
+	s=arc-20240116; t=1706506422; c=relaxed/simple;
+	bh=CnaOGwQTfPc2sm02KmO/bl3Cn4hTT0O2pUJp/EQwwrM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NkSWPFUDqkmjbNnBlWlwOdpQ9mR2gbS9Ebcxstbm/Ont/XQh/1rv540vXhtw8ZSdjzvKwtoqYYkKzUgHLa9LdoYGd7IUG035tlNWEEG8X0vFc9UJ8vp+Nh0e7yZ1gKBLXEHTApMkVTDKVJFPtHtSScXri4R3/A0XxUfVuQOwEaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hqoIOg4p; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <04efa2a3-ca81-42c3-883f-5b91917f2bde@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706506416;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6aYxlxwbwkWDNGPf5iQeUyMuXxHM7/7mk1aJ2GFzbxs=;
+	b=hqoIOg4ptBecYGkMkpwNMvg6NydSswS8iTAVtVFcBLaknrBR9yKkT2IE839LpPp2bzuKLg
+	teCYUNVQZ+fPlDgW49D+qq08nFy01szQJDTHnE2RXO7QIXZf9G3ZEciQc/C9rR4kbrRSDL
+	FU33NBZoT49vkzs3dxP4hJfVawjs7dU=
+Date: Sun, 28 Jan 2024 21:33:29 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Subject: Re: BPF selftests and strict aliasing
+Content-Language: en-GB
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>,
+ david.faust@oracle.com, cupertino.miranda@oracle.com,
+ Yonghong Song <yhs@meta.com>
+References: <87plxmsg37.fsf@oracle.com>
+ <b1906297-d784-479b-b2f3-07ab84ae99c1@linux.dev> <87a5opskz0.fsf@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <87a5opskz0.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Our documentation of the current page flags is ... not great.  I think
-I can improve it for the page cache side of things; I understand the
-meanings of locked, writeback, uptodate, dirty, head, waiters, slab,
-mlocked, mappedtodisk, error, hwpoison, readahead, anon_exclusive,
-has_hwpoisoned, hugetlb and large_remappable.
 
-Where I'm a lot more shaky is the meaning of the more "real MM" flags,
-like active, referenced, lru, workingset, reserved, reclaim, swapbacked,
-unevictable, young, idle, swapcache, isolated, and reported.
+On 1/28/24 4:25 AM, Jose E. Marchesi wrote:
+>> On 1/27/24 11:59 AM, Jose E. Marchesi wrote:
+>>> Hello.
+>>> The following BPF selftests perform type-punning:
+>>>
+>>>     progs/bind4_prog.c
+>>>     136 |         user_ip4 |= ((volatile __u16 *)&ctx->user_ip4)[0] << 0;
+>>>
+>>>     progs/bind6_prog.c
+>>>     149 |                 user_ip6 |= ((volatile __u16 *)&ctx->user_ip6[i])[0] << 0;
+>>>
+>>>     progs/dynptr_fail.c
+>>>     549 |         val = *(int *)&ptr;
+>>>
+>>>     progs/linked_list_fail.c
+>>>     318 |         return *(int *)&f->head;
+>>>     329 |         *(int *)&f->head = 0;
+>>>     338 |         f = bpf_obj_new(typeof(*f));
+>>>     341 |         return *(int *)&f->node2;
+>>>     349 |         f = bpf_obj_new(typeof(*f));
+>>>     352 |         *(int *)&f->node2 = 0;
+>>>
+>>>     progs/map_kptr_fail.c
+>>>      34 |         *(u32 *)&v->unref_ptr = 0;
+>>>
+>>>     progs/syscall.c
+>>>     172 |         attr->map_id = ((struct bpf_map *)&outer_array_map)->id;
+>>>
+>>>     progs/test_pkt_md_access.c
+>>>      13 |                 TYPE tmp = *(volatile TYPE *)&skb->FIELD;               \
+>>>
+>>>     progs/test_sk_lookup.c
+>>>      31 |         (((__u16 *)&(value))[LSE_INDEX((index), sizeof(value) / 2)])
+>>>     427 |         val_u32 = *(__u32 *)&ctx->remote_port;
+>>>
+>>>     progs/timer_crash.c
+>>>      38 |         *(void **)&value = (void *)0xdeadcaf3;
+>>>
+>>> This results in GCC warnings with -Wall but violating strict aliasing
+>>> may also result in the compiler incorrectly optimizing something.
+>>>
+>>> There are some alternatives to deal with this:
+>>>
+>>> a) To rewrite the tests to conform to strict aliasing rules.
+>>>
+>>> b) To build these tests using -fno-strict-aliasing to make sure the
+>>>      compiler will not rely on strict aliasing while optimizing.
+>>>
+>>> c) To add pragmas to these test files to avoid the warning:
+>>>      _Pragma("GCC diagnostic ignored \"-Wstrict-aliasing\"")
+>>>
+>>> I think b) is probably the best way to go, because it will avoid the
+>>> warnings, will void potential problems with optimizations triggered by
+>>> strict aliasing, and will not require to rewrite the tests.
+>> I tried with latest clang with -fstrict-aliasing:
+>>
+>> [~/work/bpf-next/tools/testing/selftests/bpf (master)]$ cat run.sh
+>> clang -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian
+>> -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include \
+>>    -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
+>>    -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include
+>>    -idirafter /home/yhs/work/llvm-project/llvm/build.19/install/lib/clang/19/include
+>>    -idirafter /usr/local/include -idirafter /usr/include   -Wno-compare-distinct-pointer-types
+>>    -DENABLE_ATOMICS_TESTS -O2 -fstrict-aliasing --target=bpf -c progs/bind4_prog.c -mcpu=v3
+>>    -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bind4_prog.bpf.o
+>> [~/work/bpf-next/tools/testing/selftests/bpf (master)]$ ./run.sh
+>> [~/work/bpf-next/tools/testing/selftests/bpf (master)]$
+>>
+>> I does not have compilation failure. I am wondering why -fstrict-aliasing won't have warning in clang side
+>> but have warning in gcc side.
+>> Your suggestion 'b' seems okay or we could even add -fno-strict-aliasing into common compilation flags,
+>> but I would like to understand more about -fstrict-aliasing difference between gcc and clang.
+> It may be that GCC is just better than clang detecting and reporting
+> strict aliasing rules violations.  Or it may be that clang doesn't
+> assume strict aliasing when optimizing with the specified level.
+>
+> In any case:
+>
+>    progs/bind4_progs.c
+>      type punning from __u32 to __u16.  These are not compatible types.
+>
+>    progs/bind6
+>      type punning from __u32 to __u16.  These are not compatible types.
+>
+>    progs/dynptr_fail.c
+>      type punning from struct bpf_dynptr to int.  These are not
+>      compatible types.
 
-Perhaps we could have an MM session where we try to explain slowly and
-carefully to each other what all these flags actually mean, talk about
-what combinations of them make sense, how we might eliminate some of
-them to make more space in the flags word, and what all this looks like
-in a memdesc world.
+I tried below example with the above prog/dynptr_fail.c case with gcc 11.4
+for native x86 target and didn't trigger the warning. Maybe this requires
+latest gcc? Or test C file is not sufficient enough to trigger the warning?
 
-And maybe we can get some documentation written about it!  Not trying
-to nerd snipe Jon into attending this session, but if he did ...
+[~/tmp1]$ cat t.c
+struct t {
+   char a;
+   short b;
+   int c;
+};
+void init(struct t *);
+long foo() {
+   struct t dummy;
+   init(&dummy);
+   return *(int *)&dummy;
+}
+[~/tmp1]$ gcc -Wall -Werror -O2 -g -Wno-compare-distinct-pointer-types -c t.c
+[~/tmp1]$ gcc --version
+gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2)
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-[thanks to Amir for reminding me that I meant to propose this topic]
+>
+>    progs/linked_list_fail.c
+>      type punning from struct bpf_list_head to int.  These are not
+>      compatible types.
+>
+>    progs/map_kptr_fail.c
+>      type punning from struct prog_test_ref_kfunc to __u32.  These are
+>      not compatible types.
+>
+>    ...
+>
+> And so on.
+>
+>>> Provided [1] gets applied, I can prepare a patch that adds the following
+>>> to selftests/bpf/Makefile:
+>>>
+>>>     progs/bin4_prog.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/bind6_prog.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/dynptr_fail.cw-CFLAGS := -fno-strict-aliasing
+>>>     progs/linked_list_fail.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/map_kptr_fail.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/syscall.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/test_pkt_md_access.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/test_sk_lookup.c-CFLAGS := -fno-strict-aliasing
+>>>     progs/timer_crash.c-CFLAGS := -fno-strict-aliasing
+>>>
+>>> [1] https://lore.kernel.org/bpf/20240127100702.21549-1-jose.marchesi@oracle.com/T/#u
+>>>
 
