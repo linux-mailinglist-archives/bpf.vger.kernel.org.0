@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-20582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F399984062E
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 506D5840633
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 14:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6F411F251CD
-	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:07:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D40EF1F253EF
+	for <lists+bpf@lfdr.de>; Mon, 29 Jan 2024 13:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCDF657AF;
-	Mon, 29 Jan 2024 13:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654C9657D0;
+	Mon, 29 Jan 2024 13:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hkgP2yj3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JYIbhasS"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E6A657A1;
-	Mon, 29 Jan 2024 13:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5369D63127;
+	Mon, 29 Jan 2024 13:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533561; cv=none; b=uhARc6BWv9z7d8g6PxtLdzUbJaNianUq77MSox9eDqUbbLI9lVh2AXkDn9QxHjIpt+nF1XYUYW5msqMdoqJ03OcioUahiF0b55pAO/eFXnpbwX1zPVok6IXicYt/h2LLzR2koa3jh4r4urXW90iaGaaW/NGJqHpsBHONCww4ZEE=
+	t=1706533572; cv=none; b=H81hfNO/Zb7IjE14iUYZwhW87vKUnWufqSJ9+YLhRObUKOkiAdi8Q2+yll1TOlM/Cf8iCtZORZBgUdG60mvsgAfUziN42PGRF2i7vY4ShL8fV/rhUu0k7+btIiPslkiRok/qpQ9evK0d81WMd9MJtNu1mUOo8nyje9deRHXTykA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533561; c=relaxed/simple;
-	bh=ILh5Z5Vi57AO1xeYu8g/LMT4tyMxPDgYH1LL/1ZQ0hA=;
+	s=arc-20240116; t=1706533572; c=relaxed/simple;
+	bh=wLWm4TBVgPwrs8GjAfExV9MAkwQSGO1+6EaiYzqhFK8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=laVLJnqfrPgn6nlmVq+CdI3aRd2Nz5Vdkcp6lwGznXEms3SLNvfT0COK1Gyr+mMqqiHLce/ucINfFP/kAZYBMLGahn9ReHx8O/WA9luJbI3/HTcR47FIu4PxYdYKeP01WZAxtioPC6ZzKIQ03a5i4t6P1ZYgsUpgPprpd5DlXUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hkgP2yj3; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=n6nACc+w71FwZBKuzFzXNvvuM6T+Xb1jmC47qyQjcob3Jr+Kf80jmaf3uNY83n1MjVGkLnjhwtuDiD7CjYirBOARylye6iKLNHcFR+67mLxmYJPcr9MFbqY/3+/tIORD7nPdZHJGpCRRlySRoI7OARtANzrdPxTWoGpXSyeN2pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JYIbhasS; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706533561; x=1738069561;
+  t=1706533571; x=1738069571;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ILh5Z5Vi57AO1xeYu8g/LMT4tyMxPDgYH1LL/1ZQ0hA=;
-  b=hkgP2yj33KbU+cBx1PUiA9R5oRrCgYYorRm6Su3tlCMn/U7la2yKFlU2
-   455QT7cUpJYF0JzDwl9gi1KS4FA7KFAv9vHD0JffO/1LQk6i7gDS5PDwq
-   MbXS47u0J7s8HcAA8yuVhxbSbj5mUCdhhLOCbPyC7923dFwUzWKPS0fSe
-   2DhiVAGQXnSX5j2F+j0DJD7yEh1mI7dopp+kHN+JK804m93TGxYtAxGIQ
-   3Y0KtJ+0ayBaswNrQ8hIO8hdwgcnoWMp503Vw3lvKU45hy0DiBxuNgIcy
-   Zp/YqvWfPr/ZMvU33Th19Q0vsqZIg2rQxU2/F5XC5U0MqmP5kLu0EFDAv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473502"
+  bh=wLWm4TBVgPwrs8GjAfExV9MAkwQSGO1+6EaiYzqhFK8=;
+  b=JYIbhasSSCdP0mBbuu3/pHeOe4wUr9x0hg8/8aGUVspMHlJ/ZF3K81HX
+   m3FhhOk+jjMR4qiVfeHqZC65SWw7HpWvyCBRwsmeWPcahjHNs5hxn2mfN
+   EKrwG+ai6DoQQiD+ZiamTMHDakHTd46adjTxGShHTNs5+ANvjTttq1AJZ
+   yHxzFxDv9HabSNu2gsisEd4XepupOSeT7mTOVqxwKRSzizgmb6aOWj5If
+   eR7kRjKJfNZ6EyrTr0GPugiHzz0jNk98ems4gLnpU7sxI/m24Wxok2VZN
+   aXgpWZL2XrXdEJwENqs2Mx6zsOqaKiP2+TfSmqq2CShrvPgF8bTi37Tmc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473550"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="21473502"
+   d="scan'208";a="21473550"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:06:00 -0800
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:06:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106826"
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106844"
 X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="907106826"
+   d="scan'208";a="907106844"
 Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:05:52 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:06:00 -0800
 From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	David E Box <david.e.box@linux.intel.com>,
@@ -90,9 +90,9 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
 	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
 	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: [PATCH net-next v4 06/11] net: stmmac: resetup XPCS according to the new interface mode
-Date: Mon, 29 Jan 2024 21:02:48 +0800
-Message-Id: <20240129130253.1400707-7-yong.liang.choong@linux.intel.com>
+Subject: [PATCH net-next v4 07/11] arch: x86: Add IPC mailbox accessor function and add SoC register access
+Date: Mon, 29 Jan 2024 21:02:49 +0800
+Message-Id: <20240129130253.1400707-8-yong.liang.choong@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
 References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
@@ -104,92 +104,191 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-XPCS creation will map the configuration for the provided interface mode.
-Then XPCS will operate according to the interface mode.
+From: "David E. Box" <david.e.box@linux.intel.com>
 
-When the interface mode changes, XPCS is required to map the configuration
-to the new interface mode and destroy the old interface mode where it
-is not in use.
+- Exports intel_pmc_ipc() for host access to the PMC IPC mailbox
+- Add support to use IPC command allows host to access SoC registers
+through PMC firmware that are otherwise inaccessible to the host due to
+security policies.
 
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Signed-off-by: Chao Qin <chao.qin@intel.com>
 Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 +++++++++++--
- drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c |  7 +++----
- 3 files changed, 15 insertions(+), 7 deletions(-)
+ MAINTAINERS                                   |  2 +
+ arch/x86/Kconfig                              |  9 +++
+ arch/x86/platform/intel/Makefile              |  1 +
+ arch/x86/platform/intel/pmc_ipc.c             | 75 +++++++++++++++++++
+ .../linux/platform_data/x86/intel_pmc_ipc.h   | 34 +++++++++
+ 5 files changed, 121 insertions(+)
+ create mode 100644 arch/x86/platform/intel/pmc_ipc.c
+ create mode 100644 include/linux/platform_data/x86/intel_pmc_ipc.h
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index f155e4841c62..886efd26991e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -357,7 +357,7 @@ enum stmmac_state {
- int stmmac_mdio_unregister(struct net_device *ndev);
- int stmmac_mdio_register(struct net_device *ndev);
- int stmmac_mdio_reset(struct mii_bus *mii);
--int stmmac_xpcs_setup(struct mii_bus *mii);
-+int stmmac_xpcs_setup(struct mii_bus *mii, phy_interface_t interface);
- void stmmac_set_ethtool_ops(struct net_device *netdev);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8709c7cd3656..441eb921edef 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10973,8 +10973,10 @@ M:	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+ M:	David E Box <david.e.box@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
++F:	arch/x86/platform/intel/pmc_ipc.c
+ F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+ F:	drivers/platform/x86/intel/pmc/
++F:	linux/platform_data/x86/intel_pmc_ipc.h
  
- int stmmac_init_tstamp_counter(struct stmmac_priv *priv, u32 systime_flags);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 00af5a4195fd..50429c985441 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -941,8 +941,17 @@ static struct phylink_pcs *stmmac_mac_select_pcs(struct phylink_config *config,
- {
- 	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
+ INTEL PMIC GPIO DRIVERS
+ M:	Andy Shevchenko <andy@kernel.org>
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5edec175b9bf..bceae28b9381 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -666,6 +666,15 @@ config X86_AMD_PLATFORM_DEVICE
+ 	  I2C and UART depend on COMMON_CLK to set clock. GPIO driver is
+ 	  implemented under PINCTRL subsystem.
  
--	if (priv->hw->xpcs)
-+	if (priv->hw->xpcs) {
-+		if (interface != PHY_INTERFACE_MODE_NA &&
-+		    interface != priv->plat->phy_interface) {
-+			/* When there are major changes, we reconfigure
-+			 * the setup for xpcs according to the interface.
-+			 */
-+			xpcs_destroy(priv->hw->xpcs);
-+			stmmac_xpcs_setup(priv->mii, interface);
-+		}
- 		return &priv->hw->xpcs->pcs;
++config INTEL_PMC_IPC
++	tristate "Intel Core SoC Power Management Controller IPC mailbox"
++	depends on ACPI
++	help
++	  This option enables sideband register access support for Intel SoC
++	  power management controller IPC mailbox.
++
++	  If you don't require the option or are in doubt, say N.
++
+ config IOSF_MBI
+ 	tristate "Intel SoC IOSF Sideband support for SoC platforms"
+ 	depends on PCI
+diff --git a/arch/x86/platform/intel/Makefile b/arch/x86/platform/intel/Makefile
+index dbee3b00f9d0..470fc68de6ba 100644
+--- a/arch/x86/platform/intel/Makefile
++++ b/arch/x86/platform/intel/Makefile
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_IOSF_MBI)			+= iosf_mbi.o
++obj-$(CONFIG_INTEL_PMC_IPC)		+= pmc_ipc.o
+\ No newline at end of file
+diff --git a/arch/x86/platform/intel/pmc_ipc.c b/arch/x86/platform/intel/pmc_ipc.c
+new file mode 100644
+index 000000000000..a96234982710
+--- /dev/null
++++ b/arch/x86/platform/intel/pmc_ipc.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Core SoC Power Management Controller IPC mailbox
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ * All Rights Reserved.
++ *
++ * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
++ *          David E. Box <david.e.box@linux.intel.com>
++ */
++#include <linux/module.h>
++#include <linux/acpi.h>
++#include <linux/platform_data/x86/intel_pmc_ipc.h>
++
++#define PMC_IPCS_PARAM_COUNT           7
++
++int intel_pmc_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
++{
++	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
++	union acpi_object params[PMC_IPCS_PARAM_COUNT] = {
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++		{.type = ACPI_TYPE_INTEGER,},
++	};
++	struct acpi_object_list arg_list = { PMC_IPCS_PARAM_COUNT, params };
++	union acpi_object *obj;
++	int status;
++
++	if (!ipc_cmd || !rbuf)
++		return -EINVAL;
++
++	/*
++	 * 0: IPC Command
++	 * 1: IPC Sub Command
++	 * 2: Size
++	 * 3-6: Write Buffer for offset
++	 */
++	params[0].integer.value = ipc_cmd->cmd;
++	params[1].integer.value = ipc_cmd->sub_cmd;
++	params[2].integer.value = ipc_cmd->size;
++	params[3].integer.value = ipc_cmd->wbuf[0];
++	params[4].integer.value = ipc_cmd->wbuf[1];
++	params[5].integer.value = ipc_cmd->wbuf[2];
++	params[6].integer.value = ipc_cmd->wbuf[3];
++
++	status = acpi_evaluate_object(NULL, "\\IPCS", &arg_list, &buffer);
++	if (ACPI_FAILURE(status))
++		return -ENODEV;
++
++	obj = buffer.pointer;
++	/* Check if the number of elements in package is 5 */
++	if (obj && obj->type == ACPI_TYPE_PACKAGE && obj->package.count == 5) {
++		const union acpi_object *objs = obj->package.elements;
++
++		if ((u8)objs[0].integer.value != 0)
++			return -EINVAL;
++
++		rbuf[0] = objs[1].integer.value;
++		rbuf[1] = objs[2].integer.value;
++		rbuf[2] = objs[3].integer.value;
++		rbuf[3] = objs[4].integer.value;
++	} else {
++		return -EINVAL;
 +	}
- 
- 	if (priv->hw->lynx_pcs)
- 		return priv->hw->lynx_pcs;
-@@ -7737,7 +7746,7 @@ int stmmac_dvr_probe(struct device *device,
- 		priv->plat->speed_mode_2500(ndev, priv->plat->bsp_priv);
- 
- 	if (priv->plat->mdio_bus_data && priv->plat->mdio_bus_data->has_xpcs) {
--		ret = stmmac_xpcs_setup(priv->mii);
-+		ret = stmmac_xpcs_setup(priv->mii, priv->plat->phy_interface);
- 		if (ret)
- 			goto error_xpcs_setup;
- 	}
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-index 0542cfd1817e..1be144f3dee9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -495,19 +495,18 @@ int stmmac_mdio_reset(struct mii_bus *bus)
- 	return 0;
- }
- 
--int stmmac_xpcs_setup(struct mii_bus *bus)
-+int stmmac_xpcs_setup(struct mii_bus *bus, phy_interface_t interface)
- {
- 	struct net_device *ndev = bus->priv;
- 	struct stmmac_priv *priv;
- 	struct dw_xpcs *xpcs;
--	int mode, addr;
-+	int addr;
- 
- 	priv = netdev_priv(ndev);
--	mode = priv->plat->phy_interface;
- 
- 	/* Try to probe the XPCS by scanning all addresses. */
- 	for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
--		xpcs = xpcs_create_mdiodev(bus, addr, mode);
-+		xpcs = xpcs_create_mdiodev(bus, addr, interface);
- 		if (IS_ERR(xpcs))
- 			continue;
- 
++
++	return 0;
++}
++EXPORT_SYMBOL(intel_pmc_ipc);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Intel PMC IPC Mailbox accessor");
+diff --git a/include/linux/platform_data/x86/intel_pmc_ipc.h b/include/linux/platform_data/x86/intel_pmc_ipc.h
+new file mode 100644
+index 000000000000..d47b89f873fc
+--- /dev/null
++++ b/include/linux/platform_data/x86/intel_pmc_ipc.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Intel Core SoC Power Management Controller Header File
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ * All Rights Reserved.
++ *
++ * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
++ *          David E. Box <david.e.box@linux.intel.com>
++ */
++#ifndef INTEL_PMC_IPC_H
++#define INTEL_PMC_IPC_H
++
++#define IPC_SOC_REGISTER_ACCESS			0xAA
++#define IPC_SOC_SUB_CMD_READ			0x00
++#define IPC_SOC_SUB_CMD_WRITE			0x01
++
++struct pmc_ipc_cmd {
++	u32 cmd;
++	u32 sub_cmd;
++	u32 size;
++	u32 wbuf[4];
++};
++
++/**
++ * intel_pmc_ipc() - PMC IPC Mailbox accessor
++ * @ipc_cmd:  struct pmc_ipc_cmd prepared with input to send
++ * @rbuf:     Allocated u32[4] array for returned IPC data
++ *
++ * Return: 0 on success. Non-zero on mailbox error
++ */
++int intel_pmc_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
++
++#endif /* INTEL_PMC_IPC_H */
 -- 
 2.34.1
 
