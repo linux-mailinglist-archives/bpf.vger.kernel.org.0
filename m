@@ -1,129 +1,95 @@
-Return-Path: <bpf+bounces-20649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92CC8418AE
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 02:51:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E49E8418BA
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 03:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17FE31C226C7
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 01:51:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368791F22F2F
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 02:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89905364A4;
-	Tue, 30 Jan 2024 01:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9FC364A5;
+	Tue, 30 Jan 2024 02:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b8Z1Pf0J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iy3vxZ56"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEEAE3611F
-	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 01:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4914F33CD0
+	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 02:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706579456; cv=none; b=WzIHNB/zKe/AvtWj0yV0JU/RzE6h/WKgTmhmoGxfV546DyE3GqSJ/J0ZdryPR8vvkfh+HHCWtm45duQsgUcHipQBYhsikYj+0fEgK0DUJOfaDquJNw1IZr0QL+wD1794B0VHiEZm54OrArjEhf1ICVYqPY7QKXvlw8GhiIs+DtQ=
+	t=1706580025; cv=none; b=DAGsuew1ziwtS/08XZ/YtAusfCynMbcp+vS8V9KYMtFZZGHygHs9iTWJSSu8ScpkWPHJTA0bSzlF8ElEMYOnAXsAh28sKmmPIbkAb9rOlZBdoBEsiaFNE67upcj4WiLJTZX5vymFA15iauKRXYWc1kMWwHWYHoDy9cQoRUDJ17c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706579456; c=relaxed/simple;
-	bh=UXeeJGQF71NxlETutk+l/LIy474ts5fok/PMQ0FZkUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JBiQGrpsQ5oIPfTsxVbDnlBtITHsKrgVkcTRnHmhJROxPzb6bCJoOGOOynfjE09Txv3usBOuF+eiKZnzHFCIOBzV7Dc/IFAdKFAivwvASBpWHct+kx67lk882JOE6RAoEXvRgGTgrWx9lNwtA8Rphn/NLNU2nusBeRnasAIa+6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b8Z1Pf0J; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2909978624eso1849788a91.1
-        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 17:50:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706579454; x=1707184254; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wrgz6tZOiYpLEFoYzGvfcOnrH4dVKsSLP5m7v4meYYk=;
-        b=b8Z1Pf0JZcCO+dl9gVFsfteYO/qqwR4U11Ty07tjFtlfekuxcQW6UmV8Smpmiu0ca/
-         Yx33OWK6zBrpfI5DD+OP3y81ueF6G6vk876hvyRSva4k/OVsEGqqBOHG7gUYFzdZeVwK
-         K8n56cz/DyZPjvZdM52vBXFJ27qqh48vWec6W9A3DysgFsU6VI4TJxNcZAGq0mQZRvbb
-         o1rbVLSHL/z3b9SSzrdoyvrtD5oBXZKAbTp6Hc7rgcfpK1dFDP0KyLqJJxb65DOpif+X
-         59ARJMXrVa/IFY9zfWh3d+eM0g44LSJdgTjIhfL6/8AaYN7cAjeXH6QfUFjsi7MnEk7G
-         fAVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706579454; x=1707184254;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wrgz6tZOiYpLEFoYzGvfcOnrH4dVKsSLP5m7v4meYYk=;
-        b=BaUBVddpNdMSUs2yhjjpuoS7gfXMZHSwYoSfIqHbw7KOdrRhJsp30/ah46M0VUBhJy
-         iAQvuDeiQ0JiGzwsy4oAA+impiS6UnvABnyzdg5WQSjW/ByTxG/yXgXD/+xvrtDFzw0r
-         MSwz9886AuzrycSLTuG9Iw3OcZEjHLET+cgqSzZJls+/AG+9traef6W0RQPmjmpew5Ap
-         xBlraaNQTjy3rHcEPd/IBxWD9bdzEgkFUcDSQJI6rDqsaxOv9QXOXjNb2OZSkXDSH9yL
-         a3hAzVHbnpWvsEQ6uiPLggSv84ZpAr1NTojP5TOs9mnq5koYmlzhHABDa9LdfybGhlUe
-         zU8g==
-X-Gm-Message-State: AOJu0YxMG4KYmk2YvuTyp53Ef1VCDRZof0uz2ocRzNeSIR6unFWgU0IZ
-	d6gsNOv5U5ZLRzW0qbjP8JA/Nlp1tINlNJJhssLoW8EsRGY8k+EW
-X-Google-Smtp-Source: AGHT+IH+JIUcf8WBD2YFYBWcO9SkUFk800hvRoQu8/xI0XeULQNXNg0xAHB/s8zhSHsAy8NHNB/+yQ==
-X-Received: by 2002:a17:90a:c8d:b0:294:abcb:13cc with SMTP id v13-20020a17090a0c8d00b00294abcb13ccmr4249194pja.29.1706579453731;
-        Mon, 29 Jan 2024 17:50:53 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id ns1-20020a17090b250100b0028e821155efsm9222838pjb.46.2024.01.29.17.50.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 17:50:53 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 29 Jan 2024 15:50:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: David Vernet <void@manifault.com>, lsf-pc@lists.linux-foundation.org,
-	bpf@vger.kernel.org, schatzberg.dan@gmail.com,
-	andrea.righi@canonical.com, davemarchevsky@meta.com,
-	changwoo@igalia.com, julia.lawall@inria.fr,
-	himadrispandya@gmail.com
-Subject: Re: [LSF/MM/BPF TOPIC] Discuss more features + use cases for
- sched_ext
-Message-ID: <ZbhV_NSMUaAknOMW@slm.duckdns.org>
-References: <20240126215908.GA28575@maniforge>
- <7f389bbb-fdb2-4478-83c4-7df27f26e091@joelfernandes.org>
- <47d47cd3-f49c-401e-9f45-b3de5a084b67@joelfernandes.org>
+	s=arc-20240116; t=1706580025; c=relaxed/simple;
+	bh=l5cCnJcCPT/wcfjGnZ6Qyb3ayGyqxSOeKk+Bwlzc8pE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=f7HlOOluBmrU530aPNVq/EOCtXp0XCAIjkSQu+syaMxg5CSz1uM6BuXpHr4ygYrC3lxVYpz0/PxXoknmkGTYLTQ5AqfiiP4aKeJ+BX6WzcAPwHt1L4kt9PsDhWuwEM5r/kTQNRFe4tojRaVVt9HNCUH/JtYB4uzIVFDK/f37KG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iy3vxZ56; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C6B69C43390;
+	Tue, 30 Jan 2024 02:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706580024;
+	bh=l5cCnJcCPT/wcfjGnZ6Qyb3ayGyqxSOeKk+Bwlzc8pE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Iy3vxZ56EfBXkjn+qNBfxq8J8FKl54dkVjNZMugTDUUN4sK4J6WGC5XXmZdZVzQ9u
+	 +UpIH6Jg4YqwvnaMG8w6PZAk7qV9ieh1GX8necUiyQNoTukjVv+EDZuC7Ygi+wASl9
+	 IzlsNXD5/NPxGTpF/q9EChZPRGKfzK+I+pZB87mN3IJQpb9aELg5yyaXd4AafrGnmj
+	 gJJio/7I0ET15yyxAyqvaMIBhegR8+nOzUmdPCexaSOW4O8BJBCAnHOWenYscqB+h8
+	 mjGSjgBNJUYvn6WIiDxZLmqeh67j/U5hhkyZCEZcM5yJi9NoBN7Y4LJG3urnSbiMa3
+	 l0SxVrQM37BnA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AF85BC43153;
+	Tue, 30 Jan 2024 02:00:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47d47cd3-f49c-401e-9f45-b3de5a084b67@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: generate const static pointers for kernel helpers
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170658002471.10245.3725937330436462463.git-patchwork-notify@kernel.org>
+Date: Tue, 30 Jan 2024 02:00:24 +0000
+References: <20240127185031.29854-1-jose.marchesi@oracle.com>
+In-Reply-To: <20240127185031.29854-1-jose.marchesi@oracle.com>
+To: Jose E. Marchesi <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com,
+ yonghong.song@linux.dev, eddyz87@gmail.com, cupertino.miranda@oracle.com,
+ david.faust@oracle.com
 
-Hello, Joel.
+Hello:
 
-On Mon, Jan 29, 2024 at 05:42:54PM -0500, Joel Fernandes wrote:
-> > This is a great topic. I think integrating/merging such mechanism with the NEST
-> > scheduler could be useful too? You mentioned there is sched_ext implementation
-> > of NEST already? One reason that's interesting to me is the task-packing and
-> > less-spreading may have power benefits, this is exactly what EAS on ARM does,
-> > but it also uses an energy model to know when packing is a bad idea. Since we
-> > don't have fine grained control of frequency on Intel, I wonder what else can we
-> > do to know when the scheduler should pack and when to spread. Maybe something
-> > simple which does not need an energy model but packs based on some other
-> > signal/heuristic would be great in the short term.
-> > 
-> > Maybe a signal can be the "Quality of service (QoS)" approach where tasks with
-> > lower QoS are packed more aggressively and higher QoS are spread more (?).
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-This was done for a different purpose (improving tail latencies on latency
-critical workload) but it uses soft-affinity based packing which maybe can
-translate to power-aware scheduling:
+On Sat, 27 Jan 2024 19:50:31 +0100 you wrote:
+> The generated bpf_helper_defs.h file currently contains definitions
+> like this for the kernel helpers, which are static objects:
+> 
+>   static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+> 
+> These work well in both clang and GCC because both compilers do
+> constant propagation with -O1 and higher optimization, resulting in
+> `call 1' BPF instructions being generated, which are calls to kernel
+> helpers.
+> 
+> [...]
 
-  https://github.com/sched-ext/scx/blob/case-studies/case-studies/scx_layered.md
+Here is the summary with links:
+  - bpf: generate const static pointers for kernel helpers
+    https://git.kernel.org/bpf/bpf-next/c/ff2071a7b7fd
 
-I have a raptor lake-H laptop which has E and P cores and by default the
-threads are being spread across all CPUs which probably isn't best for power
-consumption. I was thinking about writing a scheduler which uses a similar
-strategy as scx_layered - pack the cores one by one overflowing to the next
-core from E to P when the average utilization crosses a set threshold. Most
-of the logic is already in scx_layered, so maybe it can just be a part of
-that. I'm curious whether whether and how much power can be saved with a
-generic approach like that.
-
-Thanks.
-
+You are awesome, thank you!
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
