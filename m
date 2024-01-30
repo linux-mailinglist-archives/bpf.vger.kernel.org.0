@@ -1,138 +1,129 @@
-Return-Path: <bpf+bounces-20648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F26484180B
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 02:00:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92CC8418AE
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 02:51:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 912151C21B00
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 01:00:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17FE31C226C7
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 01:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DD436AE4;
-	Tue, 30 Jan 2024 01:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89905364A4;
+	Tue, 30 Jan 2024 01:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b8Z1Pf0J"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28659364A3;
-	Tue, 30 Jan 2024 01:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEEAE3611F
+	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 01:50:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706576409; cv=none; b=hkGF8RiKbrcrpZhx1Pwyxe2tddraIPkoODUz+/aJtcUAwwQo/VwlUBVAgbpUBKzzfjNEmu2p+eVY84qrS3fZi+pkrjwyM8+VS+wjBx8wOLYN0XjrXhoRA9o7xnm6gDe1Wdh85LiHhb3ZCLFQRF2zRW2oMC7wbGvh3DV9vOmZ6V4=
+	t=1706579456; cv=none; b=WzIHNB/zKe/AvtWj0yV0JU/RzE6h/WKgTmhmoGxfV546DyE3GqSJ/J0ZdryPR8vvkfh+HHCWtm45duQsgUcHipQBYhsikYj+0fEgK0DUJOfaDquJNw1IZr0QL+wD1794B0VHiEZm54OrArjEhf1ICVYqPY7QKXvlw8GhiIs+DtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706576409; c=relaxed/simple;
-	bh=1Ad103jRN5IjsXGM1uCFmiC/X3JAoF+LzCSHFTKx/1A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=hqSaMPppYp0P+1adMl375jDOV6OjfSOONTUKXQ2gE2qVQMmctVe+J+0Aq6SXxbPrZldjKLQcWUSl94d18TLnKbL8wA5hRTsP+3yzHsfaUvRi1kRhGRSChYEcugQzu3TNjmd6ygYIKK3p5Tf53os8hh7zrb/gUnLakPziwBRJ6Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TP6Hd3Cbzz1Q8Zl;
-	Tue, 30 Jan 2024 08:58:53 +0800 (CST)
-Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
-	by mail.maildlp.com (Postfix) with ESMTPS id 714101402CD;
-	Tue, 30 Jan 2024 09:00:03 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 30 Jan 2024 09:00:02 +0800
-Message-ID: <9680b0fe-9f83-4bc3-b9ba-729778b0a802@huawei.com>
-Date: Tue, 30 Jan 2024 09:00:01 +0800
+	s=arc-20240116; t=1706579456; c=relaxed/simple;
+	bh=UXeeJGQF71NxlETutk+l/LIy474ts5fok/PMQ0FZkUM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JBiQGrpsQ5oIPfTsxVbDnlBtITHsKrgVkcTRnHmhJROxPzb6bCJoOGOOynfjE09Txv3usBOuF+eiKZnzHFCIOBzV7Dc/IFAdKFAivwvASBpWHct+kx67lk882JOE6RAoEXvRgGTgrWx9lNwtA8Rphn/NLNU2nusBeRnasAIa+6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b8Z1Pf0J; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2909978624eso1849788a91.1
+        for <bpf@vger.kernel.org>; Mon, 29 Jan 2024 17:50:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706579454; x=1707184254; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wrgz6tZOiYpLEFoYzGvfcOnrH4dVKsSLP5m7v4meYYk=;
+        b=b8Z1Pf0JZcCO+dl9gVFsfteYO/qqwR4U11Ty07tjFtlfekuxcQW6UmV8Smpmiu0ca/
+         Yx33OWK6zBrpfI5DD+OP3y81ueF6G6vk876hvyRSva4k/OVsEGqqBOHG7gUYFzdZeVwK
+         K8n56cz/DyZPjvZdM52vBXFJ27qqh48vWec6W9A3DysgFsU6VI4TJxNcZAGq0mQZRvbb
+         o1rbVLSHL/z3b9SSzrdoyvrtD5oBXZKAbTp6Hc7rgcfpK1dFDP0KyLqJJxb65DOpif+X
+         59ARJMXrVa/IFY9zfWh3d+eM0g44LSJdgTjIhfL6/8AaYN7cAjeXH6QfUFjsi7MnEk7G
+         fAVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706579454; x=1707184254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wrgz6tZOiYpLEFoYzGvfcOnrH4dVKsSLP5m7v4meYYk=;
+        b=BaUBVddpNdMSUs2yhjjpuoS7gfXMZHSwYoSfIqHbw7KOdrRhJsp30/ah46M0VUBhJy
+         iAQvuDeiQ0JiGzwsy4oAA+impiS6UnvABnyzdg5WQSjW/ByTxG/yXgXD/+xvrtDFzw0r
+         MSwz9886AuzrycSLTuG9Iw3OcZEjHLET+cgqSzZJls+/AG+9traef6W0RQPmjmpew5Ap
+         xBlraaNQTjy3rHcEPd/IBxWD9bdzEgkFUcDSQJI6rDqsaxOv9QXOXjNb2OZSkXDSH9yL
+         a3hAzVHbnpWvsEQ6uiPLggSv84ZpAr1NTojP5TOs9mnq5koYmlzhHABDa9LdfybGhlUe
+         zU8g==
+X-Gm-Message-State: AOJu0YxMG4KYmk2YvuTyp53Ef1VCDRZof0uz2ocRzNeSIR6unFWgU0IZ
+	d6gsNOv5U5ZLRzW0qbjP8JA/Nlp1tINlNJJhssLoW8EsRGY8k+EW
+X-Google-Smtp-Source: AGHT+IH+JIUcf8WBD2YFYBWcO9SkUFk800hvRoQu8/xI0XeULQNXNg0xAHB/s8zhSHsAy8NHNB/+yQ==
+X-Received: by 2002:a17:90a:c8d:b0:294:abcb:13cc with SMTP id v13-20020a17090a0c8d00b00294abcb13ccmr4249194pja.29.1706579453731;
+        Mon, 29 Jan 2024 17:50:53 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id ns1-20020a17090b250100b0028e821155efsm9222838pjb.46.2024.01.29.17.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 17:50:53 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 29 Jan 2024 15:50:52 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: David Vernet <void@manifault.com>, lsf-pc@lists.linux-foundation.org,
+	bpf@vger.kernel.org, schatzberg.dan@gmail.com,
+	andrea.righi@canonical.com, davemarchevsky@meta.com,
+	changwoo@igalia.com, julia.lawall@inria.fr,
+	himadrispandya@gmail.com
+Subject: Re: [LSF/MM/BPF TOPIC] Discuss more features + use cases for
+ sched_ext
+Message-ID: <ZbhV_NSMUaAknOMW@slm.duckdns.org>
+References: <20240126215908.GA28575@maniforge>
+ <7f389bbb-fdb2-4478-83c4-7df27f26e091@joelfernandes.org>
+ <47d47cd3-f49c-401e-9f45-b3de5a084b67@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND bpf-next v3 4/6] riscv, bpf: Add necessary Zbb
- instructions
-To: Daniel Borkmann <daniel@iogearbox.net>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
-	<bjorn@kernel.org>, <bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<netdev@vger.kernel.org>
-CC: Pu Lehui <pulehui@huaweicloud.com>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke
- Nelson <luke.r.nels@gmail.com>
-References: <20240115131235.2914289-1-pulehui@huaweicloud.com>
- <20240115131235.2914289-5-pulehui@huaweicloud.com>
- <871qa2zog6.fsf@all.your.base.are.belong.to.us>
- <03ebc63f-7b96-4a70-ad10-a4ffc1d5b1cc@huawei.com>
- <0b2bb6aa-e114-157b-94d1-4acb091b48b8@iogearbox.net>
-Content-Language: en-US
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <0b2bb6aa-e114-157b-94d1-4acb091b48b8@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd100009.china.huawei.com (7.221.188.135)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <47d47cd3-f49c-401e-9f45-b3de5a084b67@joelfernandes.org>
 
+Hello, Joel.
 
+On Mon, Jan 29, 2024 at 05:42:54PM -0500, Joel Fernandes wrote:
+> > This is a great topic. I think integrating/merging such mechanism with the NEST
+> > scheduler could be useful too? You mentioned there is sched_ext implementation
+> > of NEST already? One reason that's interesting to me is the task-packing and
+> > less-spreading may have power benefits, this is exactly what EAS on ARM does,
+> > but it also uses an energy model to know when packing is a bad idea. Since we
+> > don't have fine grained control of frequency on Intel, I wonder what else can we
+> > do to know when the scheduler should pack and when to spread. Maybe something
+> > simple which does not need an energy model but packs based on some other
+> > signal/heuristic would be great in the short term.
+> > 
+> > Maybe a signal can be the "Quality of service (QoS)" approach where tasks with
+> > lower QoS are packed more aggressively and higher QoS are spread more (?).
 
-On 2024/1/29 23:32, Daniel Borkmann wrote:
-> On 1/29/24 10:13 AM, Pu Lehui wrote:
->> On 2024/1/28 1:16, Björn Töpel wrote:
->>> Pu Lehui <pulehui@huaweicloud.com> writes:
->>>
->>>> From: Pu Lehui <pulehui@huawei.com>
->>>>
->>>> Add necessary Zbb instructions introduced by [0] to reduce code size 
->>>> and
->>>> improve performance of RV64 JIT. Meanwhile, a runtime deteted helper is
->>>> added to check whether the CPU supports Zbb instructions.
->>>>
->>>> Link: 
->>>> https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf [0]
->>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>>> ---
->>>>   arch/riscv/net/bpf_jit.h | 32 ++++++++++++++++++++++++++++++++
->>>>   1 file changed, 32 insertions(+)
->>>>
->>>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->>>> index e30501b46f8f..51f6d214086f 100644
->>>> --- a/arch/riscv/net/bpf_jit.h
->>>> +++ b/arch/riscv/net/bpf_jit.h
->>>> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
->>>>       return IS_ENABLED(CONFIG_RISCV_ISA_C);
->>>>   }
->>>> +static inline bool rvzbb_enabled(void)
->>>> +{
->>>> +    return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && 
->>>> riscv_has_extension_likely(RISCV_ISA_EXT_ZBB);
->>>
->>> Hmm, I'm thinking about the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) semantics
->>> for a kernel JIT compiler.
->>>
->>> IS_ENABLED(CONFIG_RISCV_ISA_ZBB) affects the kernel compiler flags.
->>> Should it be enough to just have the run-time check? Should a kernel
->>> built w/o Zbb be able to emit Zbb from the JIT?
->>
->> Not enough, because riscv_has_extension_likely(RISCV_ISA_EXT_ZBB) is a 
->> platform capability check, and the other one is a kernel image 
->> capability check. We can pass the check 
->> riscv_has_extension_likely(RISCV_ISA_EXT_ZBB) when 
->> CONFIG_RISCV_ISA_ZBB=n. And my local test prove it.
-> 
-> So if I understand you correctly, only relying on the 
-> riscv_has_extension_likely(RISCV_ISA_EXT_ZBB)
-> part would not work - iow, the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) is 
-> mandatory here?
-> 
+This was done for a different purpose (improving tail latencies on latency
+critical workload) but it uses soft-affinity based packing which maybe can
+translate to power-aware scheduling:
 
-Yes, it should be IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && 
-riscv_has_extension_likely(RISCV_ISA_EXT_ZBB).
+  https://github.com/sched-ext/scx/blob/case-studies/case-studies/scx_layered.md
 
-> Thanks,
-> Daniel
-> 
-> P.s.: Given Bjorn's review and tests I took the series into bpf-next 
-> now. Thanks everyone!
+I have a raptor lake-H laptop which has E and P cores and by default the
+threads are being spread across all CPUs which probably isn't best for power
+consumption. I was thinking about writing a scheduler which uses a similar
+strategy as scx_layered - pack the cores one by one overflowing to the next
+core from E to P when the average utilization crosses a set threshold. Most
+of the logic is already in scx_layered, so maybe it can just be a part of
+that. I'm curious whether whether and how much power can be saved with a
+generic approach like that.
 
-Thanks Daniel and Björn
+Thanks.
+
+-- 
+tejun
 
