@@ -1,219 +1,229 @@
-Return-Path: <bpf+bounces-20698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3739384224D
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 12:10:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00841842233
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 12:05:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0066BB2E7CC
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 11:04:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0511F2E4B5
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 11:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D1365BD0;
-	Tue, 30 Jan 2024 11:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB3E67724;
+	Tue, 30 Jan 2024 11:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VaIFJLjc";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="pJCqHerx"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFAE5B5D0
-	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 11:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612650; cv=fail; b=VLWg2qEd4IF0jJJkUPMWcX9LRqLHP+Zgu560RQ5yDiYsetiLEJE5Z+XlYKPbb9Q/etz6KG1xHdCKVrlmTwj8sXnGpK6cI+BeaDk3XE8OsDrtYU7YkThL3nXdpFMZOhAf/h/gy/iqr7D38uiAgUiqIRxMzXzWuNH6XbZlSXbs8yI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612650; c=relaxed/simple;
-	bh=1AEv6K+4rUoKQ/rZGRKwZ2uc0HexdMYV1bXcLsax/HU=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=PFWZKz4V2p+nQWtdi5LxHWSBwBp6DqCcz504cuFQtKGGPy8E6Kugb1k32SOUSZM0snH2wqEYSFC65E2KssMbXiqR6ytbx6lf3IRsh6rE1wC3aQMNPHkhVWI7h3AmKhL22X6MZZcffwr0s7KvDnoTCJyPJ3E9sxVOtflrrsPZZV0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VaIFJLjc; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=pJCqHerx; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40U93xad013142;
-	Tue, 30 Jan 2024 11:04:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=eHxbVhGduwo4y1yKs0oapSNb5fW1a73WEEg0NSU/78A=;
- b=VaIFJLjcTLOiUxqLtJGt9eK7Mc96RQpHrcu9U/GnaH8AN01+B3AgN3oRfnH4knOZj5MP
- 8LH0P3OUR1vpIqI7VpeJwRj8AQmsZ+cEME5j3NclkCvddExtAEMM1lfPNSkOGnI401GB
- E8j4nR86O9I0cbJ5K/nf6XrnPGBy/56j0CC7uy4QAQ0kjrINsA08OeqjaHv2mL6ARplA
- LFkvOsiROFLSD8taHvYq0t78R9gYCQKr2uCPSyQLIOnRlWdK10BkYdlBpQB30HQ8nbuK
- VJnD6REdz/yUh1P4bNsLETUw+eLN/IIE9DN9XHGq4BzspDHFarf1WQqkHPdUEb3yW5PW yA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvsvdpef7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Jan 2024 11:04:00 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40UAcQVs031413;
-	Tue, 30 Jan 2024 11:03:56 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr97776r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Jan 2024 11:03:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g3Ieuyz25oXkWR7db4TYRybBQC4vRpTrqnt8iD/GWZrbi246OYZsB03YIfFdvMRIEwbRhxeblQT7PLFYNecReSUJsVc5WhmyTsLADCCGKqXpJv5YtImQ6k6xDqFO7dpU0f8Vpg0U/jFkiDiJQndPuaJWsiB6L0cRY1Z8dzHunMyPcKrdl9rmgKSrCXhHS66TA1q3q3inPEDBX/6R7mCKL38OKgJ6IrvHKhm6thu1cYoJFB24oQW4hYzObeCuz7Qld/S3ujgI+RrYZprsaR98BJrIzYIPUriTcUiSbaoIXZTbNQ7iPmoNRqQ3mXntH+kF04dXwKEXaSuysj1Qy5p13Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eHxbVhGduwo4y1yKs0oapSNb5fW1a73WEEg0NSU/78A=;
- b=Zr8X8J0XhtJzYUzcBTg8DtFyFNGydd2JzKhNG5IMCgFMgjCzbvTyPJst/Ml+zLRYq8mGOuVueFywzZVA4zcEyLlDkiumOBNfQQE/ogfwoOA6phs6TsvfBJylWq5cq64WoMvl56DK7a1DN19kO4djJXFqrcUGLlPJ65g4Nlp2fPXl64KrIxiC8TKNbRKKkEyyNAq6X4AXCKc447lF8WNz3fBDWXw7BBSMlWKAkxcXLp/I0YSYrV6LJJ3uowDGi+kj2tnyRYElMNGdqLeiYs3sjoaDhKe2zwgt/lh15A8wZNAodmN3MD+QEZfAbDn/wuL5/6ToxCCoGEE+KDMI+dL8mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eHxbVhGduwo4y1yKs0oapSNb5fW1a73WEEg0NSU/78A=;
- b=pJCqHerxxV9yMCTLsxzkql4tk0XBlrdOzzkiJxkZbx/bbabNx0rnRgIzryphmafpN25zLZWbzad757je3+LHmt9KqGehkQC+mJy365drM1NLnZ2YijqTwcW0dGKMuBLy+NYFIgNeuEFVqN0YbOK64MRnaI1yH6TJlQ7lPr4ogsA=
-Received: from DM6PR10MB3113.namprd10.prod.outlook.com (2603:10b6:5:1a7::12)
- by CH3PR10MB6692.namprd10.prod.outlook.com (2603:10b6:610:148::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Tue, 30 Jan
- 2024 11:03:53 +0000
-Received: from DM6PR10MB3113.namprd10.prod.outlook.com
- ([fe80::cafd:c8d6:e2c3:3a1]) by DM6PR10MB3113.namprd10.prod.outlook.com
- ([fe80::cafd:c8d6:e2c3:3a1%4]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
- 11:03:53 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: bpf@vger.kernel.org
-Cc: "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        Yonghong Song <yhs@meta.com>, Eduard Zingerman <eddyz87@gmail.com>,
-        david.faust@oracle.com, cupertino.miranda@oracle.com
-Subject: [PATCH bpf-next] bpf: build type-punning BPF selftests with -fno-strict-aliasing
-Date: Tue, 30 Jan 2024 12:03:43 +0100
-Message-Id: <20240130110343.11217-1-jose.marchesi@oracle.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM9P250CA0005.EURP250.PROD.OUTLOOK.COM
- (2603:10a6:20b:21c::10) To DM6PR10MB3113.namprd10.prod.outlook.com
- (2603:10b6:5:1a7::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E07066B4C;
+	Tue, 30 Jan 2024 11:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706612701; cv=none; b=ZXcb+SM8NsXLvJe0WRkLHKlsQ6YcEFryNUR28JmOjo0tFoPozgCMUrxJ52A0SYekPZ9nBrl93zljvUsm2IadbNjCu6Ghfi40bf9DOQ0eGhVMeodBW+MNisa6SYm/f4q6bz1dIzN45OUj+anRpRdAt34WqGK6Sp/24Sl2SJl/Lzc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706612701; c=relaxed/simple;
+	bh=PdeoMiYgUER3iysKvji/sSX8mFKzGpxS1nsIZk+d188=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=dfHVzTKq/eFwrO3w/58It+v/I+2bEf016Va8qwYDg6J94/NI/UR3sAwhONucvjilSFhsIc55KTL75/9BYI/i2IcFkoYyiV6I8cGvCorheWniy0bdFRXuO1gN+iJPHIy72ES8iE4T49TC1yRHUlINSMMhpHwiDMyD5sH+bng677E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 98AFC1F842;
+	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
+	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
+	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706612697;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
+	bOS/gUc8alVD1JCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
+	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
+	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706612697;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
+	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
+	bOS/gUc8alVD1JCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F88012FF7;
+	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pETmGtnXuGVMPQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 30 Jan 2024 11:04:57 +0000
+Message-ID: <8fc59462-2940-4e60-95f1-2955a8c24ea0@suse.cz>
+Date: Tue, 30 Jan 2024 12:04:57 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3113:EE_|CH3PR10MB6692:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8a98f7c-34f7-45e2-ad23-08dc21832559
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	IXoaaCqfUeNkClIMr5FUprjA6u3q90CD0FFD31F8B4kfpQYxrfPCeCicJsGzDN9RCg1Ow0DmZidL0FoEPO1D6PrEnMllDKDrezh5v8DVEnDhdqgjukg+oKeBGai48waT2opcZ8l59xJxi4e1RxwMeTJ8jIMCmv3VbsTA+fkgSVFyknIv80ScW1m3gU5XzDgH5/WXj6VIFus5CgCKbVYKrJ85qRQlIJ4OISOBwlW6oF3AAyGgQBEsTY/Aa01TSGmkxSwSTYzNjZZfvvY7JydRLDXRNlludLEHggiFXVk3w0jQcLrmq114r5dHRAEJ9pqomEOy4ivFb9f102YwRIp78GM1WlVtfvUGa8IFtnrap9aV7ea4vL4kwyJirO7tOu4fx0Hf6s+VsXc2O2DzRhQlXQAtYlvEcySC12NFz1tYtJKOcROIgbX7iwVkPSl6brOgEfvngOyxDSO2UaLvvvGGXuloSz0blQ8Syv2OOSEmEK7kp/k/uV5WbAR/H+mx2MmkquxpZysDY2a47bEqH1YhwEPoCKVJsa2BOlxmgwePqt5wzBTiatPEc2OWb3YFS8uzgKq8AyeufsC3mjOnr5u8HqWPNjptzXR8uPWgA75OuBAuTRUBP0TBP+8qYLAG/HVq
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(396003)(39860400002)(136003)(230922051799003)(230273577357003)(230173577357003)(186009)(451199024)(64100799003)(1800799012)(6512007)(6506007)(1076003)(2616005)(107886003)(26005)(478600001)(6486002)(83380400001)(8676002)(6916009)(8936002)(4326008)(2906002)(86362001)(66476007)(66556008)(54906003)(316002)(5660300002)(66946007)(38100700002)(6666004)(41300700001)(966005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?4KcNRkTwxGRhqcVPliyI/8Kw6S1w6OTQtIppje8zvtAH9skWnobCmiSRX8p5?=
- =?us-ascii?Q?mZcaMXVntG7GbK9qkFRKgxqr7FFV0zkFG2EvoKHRn2NJKkgeyr3oN8Dyn+sU?=
- =?us-ascii?Q?lXQd6NAtZ1m1WshjskqpBef95lhRNqmDUXVi65HAlh6JciMSUEjY/0sdYgya?=
- =?us-ascii?Q?JOGzh2AJ2I8XBVyQhKtgQo79NimRdne9fez1YsdQEaz62qnKOzSsr4pO87cM?=
- =?us-ascii?Q?oxfzZySzffOcAsreg01RcqO42j4Ykjeg7raunzkRyhcmYmhpvKAdCwbMpwN+?=
- =?us-ascii?Q?STYS5eSxBt2xcsu5cQpA426MmUdNU8mH8qRfwDbpHXZnyz94XidiR6GP6uQx?=
- =?us-ascii?Q?qwU1LvB6HD5VbCrRtI7sRL3yVh40TASiB63b1ktlR1FGzlKd0a22JfETQVpo?=
- =?us-ascii?Q?kjtvEyA9X2iN7ZSvrrFziBtx0767krtjoaZRUh2PDHOC5EMzblkryhuDpCd5?=
- =?us-ascii?Q?7e98/fOpbAghiWq1lB8bPqJh9tYtILB6ATpudzaOiJewXmlkF99siojPXR1F?=
- =?us-ascii?Q?B18Y7Cr/EutwHcMs8pMg0qML8OhejBKVRvES6T4TeNPT+7ArxrVZLsSar41B?=
- =?us-ascii?Q?yuhFTMAA2u226tyM8JEZDm+O9HhfaA7MxPPkHZzmVPFLOHRFtnU5TcWhja0F?=
- =?us-ascii?Q?YsWmFbMXeuU+aec83ebEoL6Jy7M8WL7kYwLPnZeEIeZtMs/N3kckAbl6jdaF?=
- =?us-ascii?Q?DbN/2bh22QPmvMRMRO9dAnk3Su+uJOWRMnX4JVm7+uKXqv8Y+t3uX9CcqIYC?=
- =?us-ascii?Q?964Nnd7Zi93U3TU28nF2BC98t736jLGSaCBk2qK6dh3mbnmhy7JXVEtp3a1+?=
- =?us-ascii?Q?ge1f0IvOrG0k9zGhPfI8cpNumNZ6l59HHPSXt1EkdIjPpToQHtQ+goIK8ZWl?=
- =?us-ascii?Q?DyS+rnOU21hOFeHpyDt+plPfu8LhS295FRZYbdfEBfT0anuiZExU8PjLUOUA?=
- =?us-ascii?Q?mvUvP+Xo5qyt2z2dtZpxHWU9zC6kYJ+n3kdFbTelRQ6xginF8I3HXV/XX1hy?=
- =?us-ascii?Q?VmbMAqTk2kF8e1k49+7Y9BKsUzGN+2BkTR4q0qWLwiYfD+kSXoa5ur7vrVCt?=
- =?us-ascii?Q?w1G4inAxsbzL+wCC48iWOHvt0241/2cPohqXzkCBOf2rz5XhD1h7ihbK61X9?=
- =?us-ascii?Q?P8XTafM0rrof84SKS0N8w54tKlyqozZp/DfeBLBa2ealRnAbfIWNrvkQBcBY?=
- =?us-ascii?Q?/4SYgnGKXzziwozXGIaak4q0GFbDf0moCsVmgU3IagZ1GQibj6Vzy6jkGeZ1?=
- =?us-ascii?Q?GtCu7sEo325Asxy977vQhXmy0WOrc6kCJKjhe7zz0lxpqiIKLii4RD8kaIMu?=
- =?us-ascii?Q?AaVSDEYjZiIZoG62ASov8h1pwYQfLdk0NrcYEnAW2mNhZD7l0gkUm3sOWp1A?=
- =?us-ascii?Q?eW3A8qALwnLzyMEFeJQdSCdn6VAnxL6V8G6W8B6vv8H5WQ0qRp+WEJbXGbvQ?=
- =?us-ascii?Q?lPLoL7ubZiZGJWN/5X/f3XhHAQOmtrZqPJpOOQuKLObTsfGGxISTrRoCRhpx?=
- =?us-ascii?Q?BQo6eV0Qzl0FlXPQ7Jw4ZUYE91qcHa8HURF1pF+x3F18R7Vfge3CsSPqCJBa?=
- =?us-ascii?Q?Grdxf6RrEyBsObfqSym5Bkh3W3qw9W5r2zeombAVH3tJ30/pUxLsPhpk/STs?=
- =?us-ascii?Q?ig=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	gmL6/7yYN/fHX2uV0dlKgc9TEP959wes6RUclsWvX+aj+2w+qCBwWuSv5+Nm8ws16g26KoARv5jd827RwoRYFSVszPLLz6HdzldNZuX2tPAODLaM9h106dNwrsJsjnnIqpHcWozx0LVRMwEqCpmA2z3pYNwp27ZFLg1I7dUz/LiyCvS2kD0q0hIUixtxHf4Ar3b6nzWtS1pUUOtD5ZkFJEevqtYFOFTJYTHOnvlm+FrK0CaVee+FaPmy06h0nb1600ZFrFXhHxLrNpvs1QdWnX4iyS3FVKTRcHGj2mxaCoNl1xSTzesLI4qkaWNqWoct8cixg6PFpal4B0jwsciCUKb8yJQgO5QoUQXw6GqhWypoobGSQuF1nghkSpB5hpk0TV7GuORBqNwsOmRc5syegV4joQNWTXswlPCCN0NhTNtDr5akimD+/vOMY8+MjOn7h9WQBQUwh9CC6RD7AehHhRyKLbQMblQ48q2gvruUsWjTDCecfEx0QaCFcpJnBvJmA4r3JLZf1noR78kFywKaKh9XXW32TXuY4HdslOH85zl1gAkW72v8rFFeJC15TqTLjNYkC9zr9NJQjaK7Lr2L0c9BMszwS+w3GH18ZAmyuCU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8a98f7c-34f7-45e2-ad23-08dc21832559
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3113.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2024 11:03:53.2742
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U9LTFnX6UAByW6c63oX+VaQEk2wbTWyOEyzdr9Pzc38gSwcqydhx6s2LAFgDwGKwywqv75HHf9km4YqC3JECRvseSrjpAANN98GJIeedj0c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB6692
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-30_05,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=929 spamscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401300081
-X-Proofpoint-ORIG-GUID: t6pONGNWYsbz-lYVXE8lvyBL2Xw9uQFc
-X-Proofpoint-GUID: t6pONGNWYsbz-lYVXE8lvyBL2Xw9uQFc
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
+From: Vlastimil Babka <vbabka@suse.cz>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Shakeel Butt <shakeelb@google.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+ Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
+ Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
+ Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Howard McLauchlan <hmclauchlan@fb.com>, bpf <bpf@vger.kernel.org>
+References: <cover.1705507931.git.jpoimboe@kernel.org>
+ <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
+ <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
+ <20240117193915.urwueineol7p4hg7@treble>
+ <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
+ <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
+ <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
+ <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
+ <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+ <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
+Content-Language: en-US
+In-Reply-To: <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[20];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.09
 
-A few BPF selftests perform type punning and they may break strict
-aliasing rules, which are exploited by both GCC and clang by default
-while optimizing.  This can lead to broken compiled programs.
+On 1/26/24 10:50, Vlastimil Babka wrote:
+> On 1/22/24 06:10, Linus Torvalds wrote:
+>> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
+>>> >
+>>> > So I don't see how we can make it really cheap (say, less than 5% overhead)
+>>> > without caching pre-accounted objects.
+>>>
+>>> Maybe this is what we want. Now we are down to just SLUB, maybe such
+>>> caching of pre-accounted objects can be in SLUB layer and we can
+>>> decide to keep this caching per-kmem-cache opt-in or always on.
+>> 
+>> So it turns out that we have another case of SLAB_ACCOUNT being quite
+>> a big expense, and it's actually the normal - but failed - open() or
+>> execve() case.
+>> 
+>> See the thread at
+>> 
+>>     https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
+>> 
+>> and to see the effect in profiles, you can use this EXTREMELY stupid
+>> test program:
+>> 
+>>     #include <fcntl.h>
+>> 
+>>     int main(int argc, char **argv)
+>>     {
+>>         for (int i = 0; i < 10000000; i++)
+>>                 open("nonexistent", O_RDONLY);
+>>     }
+> 
+> This reminded me I can see should_failslab() in the profiles (1.43% plus the
+> overhead in its caller) even if it does nothing at all, and it's completely
+> unconditional since commit 4f6923fbb352 ("mm: make should_failslab always
+> available for fault injection").
+> 
+> We discussed it briefly when Jens tried to change it in [1] to depend on
+> CONFIG_FAILSLAB again. But now I think it should be even possible to leave
+> it always available, but behind a static key. BPF or whoever else uses these
+> error injection hooks would have to track how many users of them are active
+> and manage the static key accordingly. Then it could be always available,
+> but have no overhead when there's no active user? Other similars hooks could
+> benefit from such an approach too?
+> 
+> [1]
+> https://lore.kernel.org/all/e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk/#t
 
-This patch disables strict aliasing for these particular tests, by
-mean of the -fno-strict-aliasing command line option.  This will make
-sure these tests are optimized properly even if some strict aliasing
-rule gets violated.
+Just for completeness, with the hunk below I've seen some 2% improvement on
+the test program from Linus.
+Of course something needs to operate the static key and I'm not familiar
+enough with bpf and related machinery whether it's tracking users of the
+injection points already where the static key toggling could be hooked.
 
-After this patch, GCC is able to build all the selftests without
-warning about potential strict aliasing issue.
-
-bpf@vger discussion on strict aliasing and BPF selftests:
-https://lore.kernel.org/bpf/bae1205a-b6e5-4e46-8e20-520d7c327f7a@linux.dev/T/#t
-
-Tested in bpf-next master.
-No regressions.
-
-Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: Yonghong Song <yhs@meta.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: david.faust@oracle.com
-Cc: cupertino.miranda@oracle.com
----
- tools/testing/selftests/bpf/Makefile | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 1a3654bcb5dd..79253a376fc8 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -41,6 +41,19 @@ CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
- LDFLAGS += $(SAN_LDFLAGS)
- LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread
+diff --git a/mm/slub.c b/mm/slub.c
+index 2ef88bbf56a3..da07b358d092 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3750,6 +3750,8 @@ noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ }
+ ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
  
-+# The following tests perform type punning and they may break strict
-+# aliasing rules, which are exploited by both GCC and clang by default
-+# while optimizing.  This can lead to broken programs.
-+progs/bind4_prog.c-CFLAGS := -fno-strict-aliasing
-+progs/bind6_prog.c-CFLAGS := -fno-strict-aliasing
-+progs/dynptr_fail.c-CFLAGS := -fno-strict-aliasing
-+progs/linked_list_fail.c-CFLAGS := -fno-strict-aliasing
-+progs/map_kptr_fail.c-CFLAGS := -fno-strict-aliasing
-+progs/syscall.c-CFLAGS := -fno-strict-aliasing
-+progs/test_pkt_md_access.c-CFLAGS := -fno-strict-aliasing
-+progs/test_sk_lookup.c-CFLAGS := -fno-strict-aliasing
-+progs/timer_crash.c-CFLAGS := -fno-strict-aliasing
++static DEFINE_STATIC_KEY_FALSE(failslab_enabled);
 +
- ifneq ($(LLVM),)
- # Silence some warnings when compiled with clang
- CFLAGS += -Wno-unused-command-line-argument
--- 
-2.30.2
+ static __fastpath_inline
+ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+                                       struct list_lru *lru,
+@@ -3760,8 +3762,10 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+ 
+        might_alloc(flags);
+ 
+-       if (unlikely(should_failslab(s, flags)))
+-               return NULL;
++       if (static_branch_unlikely(&failslab_enabled)) {
++               if (unlikely(should_failslab(s, flags)))
++                       return NULL;
++       }
+ 
+        if (unlikely(!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags)))
+                return NULL;
+
+
 
 
