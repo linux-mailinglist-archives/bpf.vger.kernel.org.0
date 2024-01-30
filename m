@@ -1,230 +1,159 @@
-Return-Path: <bpf+bounces-20732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A719842654
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 14:42:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E73842678
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 14:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8227B2F85C
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 13:42:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001F91F27D28
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 13:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F996D1B3;
-	Tue, 30 Jan 2024 13:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4A46D1C7;
+	Tue, 30 Jan 2024 13:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K1ohGfaW"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dcr8aeqX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A44E59165
-	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 13:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F886D1A6
+	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 13:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706622121; cv=none; b=TFcyPP/X80n50dwdoOtasEX0ItAPejUqM9UoGU4pXYuqvyfcQPXyjL0STdKuUlRSm7XV0+bbq4z926HotK5WD7KJ4hJ3/4pDjpcOgpRMKkVXYZjdKfrUAyqxCnM+hvF78g92Y/zfU8NHJUA0wajV+MlYWPhBDmLDDMM93zVKCG0=
+	t=1706622738; cv=none; b=qp1gfzAEuhoaE4zLhnbVs5sZEtKOX0ukh/tNZybqUThT6GJKu3DeponCuwHzOgDsG7RGwBPTFL18z409A9AR4auTuajrenf9Hq1C1MCyrrmX0o/6WPvLHX/sQq8ij5Ypve7i3myKiAEHuFeck/Gs09Rbvhhk8xAaibjs9hztMNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706622121; c=relaxed/simple;
-	bh=0BeGZI2lfjCwg/wzly1hzEkL+SQ37NX3sQSXaRiSC/Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VX1ISi+t4X0EAMQ+kKVL3/WK+9m7BZr7geW38wM5sxdMTnGdI7UV1mt3o5XfE0AuJ8fh1770216wuoMKxec3XyuQXY6vCy3IjraDYjTDRztrRZ/XFxkFt7XvKBvDLM6uof1z6WxuOlBXuI/PBfQ53KEIwi/K92Fn30MToMid2qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K1ohGfaW; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-361b23b9328so132445ab.1
-        for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 05:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706622118; x=1707226918; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
-        b=K1ohGfaWtW9fnSR1o1Y5YWNOvXogVL9sK7bZ2uPuNMJ2JOkOXqzMWCLe0C0hpRvm5J
-         859OqDhlBmX+o8uy367x6oamtJdIo+X6bhzfT/ahZF60Xv3QoteS409g/NCMLYp+BGYR
-         nlg6tEG62Pe6KJ8Cil+K6otY8x4cNFD7w5M3GC7j/eYsv3sOqYjaAxKzOUivcMJtYq9i
-         YtjZAxB6QO2Tqd+X0eN+pCW36TfyM8vaHTZqYzVjnOkI7NUbFczxLQSt9qFsqHZ65tMX
-         yUgxNelp6/AksrW1N4OubufGQkgAArwsg6/jUw7fWJhyg2Cm9sd1Ctk8m8oEXUtnSa44
-         eZpQ==
+	s=arc-20240116; t=1706622738; c=relaxed/simple;
+	bh=tO3IZxsShfuPHoL/+i6gsppH2PKVgcSAHbpdC+yZsP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rlV36EdUA6CSJ1Iqpv3DX6SltHPnDuarX5il7SlXhVd06WT13v4vIWuGJNxA1mRtx5X6AV/c59xFJlW3Z39I62RAWJLqrGyPFEycjJNZ42Y3IgArmpbZEatAQwwg+fgVLLzn5Ix9O1xpxoAPiTnx7InG4svnM/+scxVWI2H4Npc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dcr8aeqX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706622735;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tO3IZxsShfuPHoL/+i6gsppH2PKVgcSAHbpdC+yZsP8=;
+	b=dcr8aeqXH+EE92y3F0cImTAdcdKCIRcvKAgQ6A0nfFRuR+O26IQpEDZW6YtN6EScFXk695
+	29vOUYNNo6I5CNOu8vicBqFk6zt1qWtPY2hZ1OK0I84hr5YCYvHR+3UlOc9nV46d2Ucwfh
+	QyAUH6iOGNOMRxIoSeXoVGSMDkVW6PI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-zYN2VsC1OPmeCoaX6Alwnw-1; Tue, 30 Jan 2024 08:52:13 -0500
+X-MC-Unique: zYN2VsC1OPmeCoaX6Alwnw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40eb06001c2so34255075e9.0
+        for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 05:52:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706622118; x=1707226918;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
-        b=AVBHG/AqPQF8cDKevUS+Yy3QaWRGyIs8OdbND4IGYO05rRW1r+zPR+NVWcALxpyfA+
-         4TozLLl350POgQewY7xCCwiwvPri235N/7a3HOUSFNhdTEO34CVCNIwy55chxL9nGI/o
-         TAYbqOUQ3xlOfOzwcqhf24e7MEXI9U/4mR33aFsgCHswEfM57OEankFRkwvKK6IqSPxj
-         CV3bbdoBF8ln6GyD9JJ9qJYmDAg4M9U+IrX7GX6GpD1dVPYjPiLmvM1wMhKDywn3DJ9A
-         34ePHvC1DwWHZN2el5CKKK3wTGxmj8qrFzD5+Q8eqG5gEDGrdWbvbfVmRVCwNB6PHZ3U
-         md+w==
-X-Gm-Message-State: AOJu0YyIKsjkI6Vk3izx/HtM8J0YbQKFmjcmXAsU9HVC38DYRxVEuxCt
-	27miH0MWGgfMfiE21WmP6u0S2WWQbL00S8fwciUQ5zksuaPhSo/vVnt1uumjEw1Aya8Og/H/uGg
-	7w9HlVUyb2qc+L6QqUgVCyi1RTsZ6Ts7RrgWi
-X-Google-Smtp-Source: AGHT+IFTttrH0F0yFcNDAhaFz/OUEZdWofrsyIOjQ2cUIUV60IsTbFRJFPYibEwh47w8FBbLvqod5S8rXW+N2rbJZEA=
-X-Received: by 2002:a92:d483:0:b0:363:7b27:283b with SMTP id
- p3-20020a92d483000000b003637b27283bmr183068ilg.11.1706622118267; Tue, 30 Jan
- 2024 05:41:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706622732; x=1707227532;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tO3IZxsShfuPHoL/+i6gsppH2PKVgcSAHbpdC+yZsP8=;
+        b=rOI9PlpuXHhcgQBx6P32KbbJoxT+YW1ZbIql6fp5aC/uGl6QEFURD0mGPwE16Lz9Ta
+         epWb5o/zFy7lmpAnRqDpWbFjw2RxT/3uTEAIGVkoZqdkH1ZOjmXy297RpilkCwgZxnWs
+         6LmpzTb3KvNGlKHZCnWciU5GfH1sYBOpBhfuXP3WU4zxFCYKdi243ihiGzPkxa62oZYM
+         cKqokZNf8qgZgCDG6Xp3sjj70mE2M7mcBXukDhDgPQ0/8iyfzqlfOqQIUrblx9ccxOyd
+         2XRhMMqScPlQrauEc1o8i7UKGy65SGeTrA6ygAWOZej6RYcXje8RZFmPptWZOUhknbX+
+         M69g==
+X-Gm-Message-State: AOJu0YzzqovUkI5IPHxNzm8xteS37T6Kqra+ABZPnq/qLmwmMrmoMWVu
+	o5XdpxETeomVnN7LvB6kYslSjep8RysKLU0RlpNFcGnq1olXJBIj6wiu7Qo226FsHgne7/qQZq4
+	gybMq8lC6zDiz5JRCeJGip5TNGIK6L0ceu8/CXzEmgFTC8ZFW+A==
+X-Received: by 2002:a05:6000:10d:b0:33a:f77a:36a5 with SMTP id o13-20020a056000010d00b0033af77a36a5mr1662928wrx.9.1706622732290;
+        Tue, 30 Jan 2024 05:52:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEhfR2EaxJ2Dl23vZ6o9sxuk0eSIx8yX9QSEzNYOnL5u+peBEi/VZ9hMDvNIZEzcwctanP9OA==
+X-Received: by 2002:a05:6000:10d:b0:33a:f77a:36a5 with SMTP id o13-20020a056000010d00b0033af77a36a5mr1662914wrx.9.1706622731928;
+        Tue, 30 Jan 2024 05:52:11 -0800 (PST)
+Received: from localhost (net-93-71-3-198.cust.vodafonedsl.it. [93.71.3.198])
+        by smtp.gmail.com with ESMTPSA id v1-20020a5d59c1000000b0033aeab6f75fsm6580820wry.79.2024.01.30.05.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 05:52:11 -0800 (PST)
+Date: Tue, 30 Jan 2024 14:52:09 +0100
+From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+	pabeni@redhat.com, bpf@vger.kernel.org, toke@redhat.com,
+	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+	sdf@google.com, hawk@kernel.org, ilias.apalodimas@linaro.org
+Subject: Re: [PATCH v6 net-next 4/5] net: page_pool: make stats available
+ just for global pools
+Message-ID: <Zbj_Cb9oHRseTa3u@lore-desk>
+References: <cover.1706451150.git.lorenzo@kernel.org>
+ <9f0a571c1f322ff6c4e6facfd7d6d508e73a8f2f.1706451150.git.lorenzo@kernel.org>
+ <bc5dc202-de63-4dee-5eb4-efd63dcb162b@huawei.com>
+ <ZbejGhc8K4J4dLbL@lore-desk>
+ <ef59f9ac-b622-315a-4892-6c7723a2986a@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125231840.1647951-1-irogers@google.com> <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
-In-Reply-To: <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 30 Jan 2024 05:41:47 -0800
-Message-ID: <CAP-5=fWd3U4VTU7Quj+EjdU8F_o3VwprUz18PeAGfphgUS7vPg@mail.gmail.com>
-Subject: Re: [PATCH v3] libbpf: Add some details for BTF parsing failures
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="T3DgLZPov/35UEPU"
+Content-Disposition: inline
+In-Reply-To: <ef59f9ac-b622-315a-4892-6c7723a2986a@huawei.com>
+
+
+--T3DgLZPov/35UEPU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 4:43=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jan 25, 2024 at 3:18=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
-> > valid kernel BTF" message makes diagnosing the kernel build issue some
-> > what cryptic. Add a little more detail with the hope of helping users.
-> >
-> > Before:
-> > ```
-> > libbpf: failed to find valid kernel BTF
-> > libbpf: Error loading vmlinux BTF: -3
-> > ```
-> >
-> > After not accessible:
-> > ```
-> > libbpf: access to canonical vmlinux (/sys/kernel/btf/vmlinux) to load B=
-TF failed: No such file or directory
-> > libbpf: was CONFIG_DEBUG_INFO_BTF enabled?
-> > libbpf: failed to find valid kernel BTF
-> > libbpf: Error loading vmlinux BTF: -3
-> > ```
-> >
-> > After not readable:
-> > ```
-> > libbpf: unable to read canonical vmlinux (/sys/kernel/btf/vmlinux): Per=
-mission denied
-> > libbpf: failed to find valid kernel BTF
-> > libbpf: Error loading vmlinux BTF: -3
-> > ```
-> >
-> > Closes: https://lore.kernel.org/bpf/CAP-5=3DfU+DN_+Y=3DY4gtELUsJxKNDDCO=
-vJzPHvjUVaUoeFAzNnig@mail.gmail.com/
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> >
-> > ---
-> > v3. Try to address review comments from Andrii Nakryiko.
->
-> I did some further simplifications and clean ups while applying.
->
-> I dropped an extra faccessat(R_OK) check for /sys/kernel/btf/vmlinux
-> and instead if F_OK passes, just go ahead and try to parse
-> /sys/kernel/btf/vmlinux. If we have no access, we should get -EPERM or
-> -EACCESS (I didn't check which), otherwise we'll either parse or won't
-> find any BTF, both are errors. If /sys/kernel/btf/vmlinux exists,
-> there seems to be little point nowadays to try fallback locations,
-> kernel clearly is modern enough to generate /sys/kernel/btf/vmlinux,
-> so we just bail out with error.
->
-> Please check the landed commit in bpf-next and let me know if it
-> doesn't cover your use case properly.
+> On 2024/1/29 21:07, Lorenzo Bianconi wrote:
+> >> On 2024/1/28 22:20, Lorenzo Bianconi wrote:
+> >>> Move page_pool stats allocation in page_pool_create routine and get r=
+id
+> >>> of it for percpu page_pools.
+> >>
+> >> Is there any reason why we do not need those kind stats for per cpu
+> >> page_pool?
+> >>
+> >=20
+> > IIRC discussing with Jakub, we decided to not support them since the po=
+ol is not
+> > associated to any net_device in this case.
+>=20
+> It seems what jakub suggested is to 'extend netlink to dump unbound page =
+pools'?
 
-It does, thanks Andrii!
+I do not have a strong opinion about it (since we do not have any use-case =
+for
+it at the moment).
+In the case we want to support stats for per-cpu page_pools, I think we sho=
+uld
+not create a per-cpu recycle_stats pointer and add a page_pool_recycle_stat=
+s field
+in page_pool struct since otherwise we will endup with ncpu^2 copies, right?
+Do we want to support it now?
 
-Ian
+@Jakub, Jesper: what do you guys think?
 
-> > ---
-> >  tools/lib/bpf/btf.c | 35 +++++++++++++++++++++++++++--------
-> >  1 file changed, 27 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index ec92b87cae01..45983f42aba9 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -4932,10 +4932,9 @@ static int btf_dedup_remap_types(struct btf_dedu=
-p *d)
-> >   */
-> >  struct btf *btf__load_vmlinux_btf(void)
-> >  {
-> > +       const char *canonical_vmlinux =3D "/sys/kernel/btf/vmlinux";
-> > +       /* fall back locations, trying to find vmlinux on disk */
-> >         const char *locations[] =3D {
-> > -               /* try canonical vmlinux BTF through sysfs first */
-> > -               "/sys/kernel/btf/vmlinux",
-> > -               /* fall back to trying to find vmlinux on disk otherwis=
-e */
-> >                 "/boot/vmlinux-%1$s",
-> >                 "/lib/modules/%1$s/vmlinux-%1$s",
-> >                 "/lib/modules/%1$s/build/vmlinux",
-> > @@ -4946,14 +4945,34 @@ struct btf *btf__load_vmlinux_btf(void)
-> >         };
-> >         char path[PATH_MAX + 1];
-> >         struct utsname buf;
-> > -       struct btf *btf;
-> > +       struct btf *btf =3D NULL;
-> >         int i, err;
-> >
-> > -       uname(&buf);
-> > +       /* is canonical sysfs location accessible? */
-> > +       err =3D faccessat(AT_FDCWD, canonical_vmlinux, F_OK, AT_EACCESS=
-);
-> > +       if (err) {
-> > +               pr_warn("access to canonical vmlinux (%s) to load BTF f=
-ailed: %s\n",
-> > +                       canonical_vmlinux, strerror(errno));
-> > +               pr_warn("was CONFIG_DEBUG_INFO_BTF enabled?\n");
-> > +       } else {
-> > +               err =3D faccessat(AT_FDCWD, canonical_vmlinux, R_OK, AT=
-_EACCESS);
-> > +               if (err) {
-> > +                       pr_warn("unable to read canonical vmlinux (%s):=
- %s\n",
-> > +                               canonical_vmlinux, strerror(errno));
-> > +               }
-> > +       }
-> > +       if (!err) {
-> > +               /* load canonical and return any parsing failures */
-> > +               btf =3D btf__parse(canonical_vmlinux, NULL);
-> > +               err =3D libbpf_get_error(btf);
-> > +               pr_debug("loading kernel BTF '%s': %d\n", canonical_vml=
-inux, err);
-> > +               return btf;
-> > +       }
-> >
-> > +       /* try fallback locations */
-> > +       uname(&buf);
-> >         for (i =3D 0; i < ARRAY_SIZE(locations); i++) {
-> >                 snprintf(path, PATH_MAX, locations[i], buf.release);
-> > -
-> >                 if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
-> >                         continue;
-> >
-> > @@ -4965,9 +4984,9 @@ struct btf *btf__load_vmlinux_btf(void)
-> >
-> >                 return btf;
-> >         }
-> > -
-> >         pr_warn("failed to find valid kernel BTF\n");
-> > -       return libbpf_err_ptr(-ESRCH);
-> > +       /* return the last error or ESRCH if no fallback locations were=
- found */
-> > +       return btf ?: libbpf_err_ptr(-ESRCH);
-> >  }
-> >
-> >  struct btf *libbpf_find_kernel_btf(void) __attribute__((alias("btf__lo=
-ad_vmlinux_btf")));
-> > --
-> > 2.43.0.429.g432eaa2c6b-goog
-> >
+Regards,
+Lorenzo
+
+>=20
+> >=20
+> > Regards,
+> > Lorenzo
+> >=20
+>=20
+
+--T3DgLZPov/35UEPU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZbj/CQAKCRA6cBh0uS2t
+rB+LAQCh7IOX4mFd+LYQIs9UkgOASEmBg2jPX2KsFjT9ojP9rwD+PXPYJw+buABP
+oRTnk4AJtOPrll6FFdld6TuTL1a8nAI=
+=isOu
+-----END PGP SIGNATURE-----
+
+--T3DgLZPov/35UEPU--
+
 
