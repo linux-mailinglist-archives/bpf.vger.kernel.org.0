@@ -1,191 +1,138 @@
-Return-Path: <bpf+bounces-20647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0288C8417F7
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 01:59:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F26484180B
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 02:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB6E22844CE
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 00:59:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 912151C21B00
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 01:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFE02E620;
-	Tue, 30 Jan 2024 00:59:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c3jNGCLw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DD436AE4;
+	Tue, 30 Jan 2024 01:00:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4840A22075;
-	Tue, 30 Jan 2024 00:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28659364A3;
+	Tue, 30 Jan 2024 01:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706576371; cv=none; b=DrHnsoFxJt2b9n4nY3moxclqo5gV39YaCscN8bW6o+CCd9YPKQHEFr+ATqJVhegzTuDerEG6G52BtIr2g3XmAQilS4gknbNSGtw3I3k0O1d/dBD+qNcysFlv82a7GMWH17CLlZvOHpYlV61BWNbiscbbsqe63cXsuUMeEQ0jB0g=
+	t=1706576409; cv=none; b=hkGF8RiKbrcrpZhx1Pwyxe2tddraIPkoODUz+/aJtcUAwwQo/VwlUBVAgbpUBKzzfjNEmu2p+eVY84qrS3fZi+pkrjwyM8+VS+wjBx8wOLYN0XjrXhoRA9o7xnm6gDe1Wdh85LiHhb3ZCLFQRF2zRW2oMC7wbGvh3DV9vOmZ6V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706576371; c=relaxed/simple;
-	bh=MDG4Wdys0yj3AcD7z7ZjSveb79AyvT+W4mrPfehQvV8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZpI9EPp56dmV3m2uVJ90mbrsAiRatsG1KernVVA0ukpp6zizU6D7UJ+nVDqpArkcc7Lxoz1OZiSCPR53SjILZNjgQNMlYG8FBK/MZY7lh9tknaKo6rUzx/+Rjz6NYKuotyvm3E76IGAZ9+gT4AyWroKcEdYX9AbSRhUCVC2nCo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c3jNGCLw; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59612e4a21eso1276157eaf.3;
-        Mon, 29 Jan 2024 16:59:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706576369; x=1707181169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E52GG0uHYg/rR2g8o6ITgMu78S4JP8FRXI0A7N7JZ+s=;
-        b=c3jNGCLw/PQnmzTPUdgTa/B0h0m0JV20QziDSVbX6NJvsr7tcuEGLjShggKDImZFmB
-         0HKY8ryOb+9/AQj5fHTEYKiJ+0PTC8XDEdMAp0wwlb7dCXFMzhCzXJXsqs09aCmA6ssS
-         5FqhtwgVk/mEAkkHuh0TxIghbCK9zWlYpMAwVdRbn2zJd/+nWi9nEZxWdO2Xpg0gMmv5
-         ctrsfw8EYjjqEcg6BQGfqFuKxWJ+Wm8i5EPtIy1i4F73Ag7ZeMR3HCfrdHUmvuQLmGBY
-         6Q7vthoyHJJBYHIA9Q1VWMlOdR0sO2IgWXqPV7nncpiLL4LESvss1+ERA6satO3BpC7M
-         PDKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706576369; x=1707181169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E52GG0uHYg/rR2g8o6ITgMu78S4JP8FRXI0A7N7JZ+s=;
-        b=SCIa/q/gqefpYJgNA6fLDzmTnK7GRa4lba/BfYVZxLkhTrKCyIG+6JZOb+wCKi+Pp3
-         gPXHRXqQxYDfGAg9EgkIDJCdAu+Md70gVp3ITegysfmnHjErishXV3/WlkqMEyLvULS7
-         ZkXN1n05Y8tp5Hh6O915e6MjYlqlOAgs2vv0piVw12GHy8KFsT2mVKLjw2o5iLyYXtoO
-         gQbwhBelGQS6ScqFgHL43JsXIt8QkL5KehIRG3i0Ez3nn1E+/qKrylR4g1OFWpaQR2fO
-         D5ucRf9x7YyBDm45dXqMY/xg1MwOXQnRQGYTIlmx3CDl4frGGTx99Ns21mi1MkW+eGvn
-         Nciw==
-X-Gm-Message-State: AOJu0Yy9O8dqyOEuHHPDGkyq1AHMYX9JF9gjz9GYb1nCQuwgYDC9kO4G
-	f2+PEeLd4VBg7vmimz319Y06FtvmnozsnOXb8gyX9r5LplSVd2yiB+S8K294xO5S9WKciWnkAcI
-	cYqds26OGmqUNuBUSq4Je5O22aYs=
-X-Google-Smtp-Source: AGHT+IHZL4mEJB0WKIkpNFe2LHln2n8RS4Jlpugo6fA5db/zwfSuiMAzWN/n7+cyzeQigVk+RJ9o8QYPX8G7vv3NwVE=
-X-Received: by 2002:a05:6358:e4a0:b0:178:7033:2d7a with SMTP id
- by32-20020a056358e4a000b0017870332d7amr2609611rwb.6.1706576369131; Mon, 29
- Jan 2024 16:59:29 -0800 (PST)
+	s=arc-20240116; t=1706576409; c=relaxed/simple;
+	bh=1Ad103jRN5IjsXGM1uCFmiC/X3JAoF+LzCSHFTKx/1A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=hqSaMPppYp0P+1adMl375jDOV6OjfSOONTUKXQ2gE2qVQMmctVe+J+0Aq6SXxbPrZldjKLQcWUSl94d18TLnKbL8wA5hRTsP+3yzHsfaUvRi1kRhGRSChYEcugQzu3TNjmd6ygYIKK3p5Tf53os8hh7zrb/gUnLakPziwBRJ6Jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TP6Hd3Cbzz1Q8Zl;
+	Tue, 30 Jan 2024 08:58:53 +0800 (CST)
+Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
+	by mail.maildlp.com (Postfix) with ESMTPS id 714101402CD;
+	Tue, 30 Jan 2024 09:00:03 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Tue, 30 Jan 2024 09:00:02 +0800
+Message-ID: <9680b0fe-9f83-4bc3-b9ba-729778b0a802@huawei.com>
+Date: Tue, 30 Jan 2024 09:00:01 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129070916.1639008-1-bjorn@kernel.org> <20240129070916.1639008-3-bjorn@kernel.org>
-In-Reply-To: <20240129070916.1639008-3-bjorn@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Jan 2024 16:59:17 -0800
-Message-ID: <CAEf4BzZwbfqY15=f6uGLgJ3aaPCDqjFk_DTbpzRnWJfr+jckGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: Make install target copy
- test_progs extra files
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Jan 28, 2024 at 11:09=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kerne=
-l.org> wrote:
->
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->
-> Currently, "make install" does not install the required test_progs
-> "extra files" (e.g. kernel modules, helper shell scripts, etc.) for
-> the BPF machine flavors (e.g. cpuv4).
->
-> Add the missing "extra files" dependencies to rsync, called from the
-> install target.
->
-> Unfortunately, kselftest does not use bash as the default shell, so
-> the globbering is limited. Blindly enabling "SHELL:=3D/bin/bash" for the
-> Makefile breaks in other places. Workaround by explicitly call
-> "/bin/bash" to expand the file globbing.
->
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> ---
->  tools/testing/selftests/bpf/Makefile | 29 +++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 830a34f0aa37..c3c5b85f7dae 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -605,14 +605,15 @@ TRUNNER_EXTRA_SOURCES :=3D test_progs.c            =
- \
->                          json_writer.c          \
->                          flow_dissector_load.h  \
->                          ip_check_defrag_frags.h
-> -TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko=
- \
-> -                      $(OUTPUT)/liburandom_read.so                     \
-> -                      $(OUTPUT)/xdp_synproxy                           \
-> -                      $(OUTPUT)/sign-file                              \
-> -                      $(OUTPUT)/uprobe_multi                           \
-> -                      ima_setup.sh                                     \
-> -                      verify_sig_setup.sh                              \
-> -                      $(wildcard progs/btf_dump_test_case_*.c)
-> +TRUNNER_PROGS_EXTRA_FILES:=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testm=
-od.ko    \
-> +                           $(OUTPUT)/liburandom_read.so                 =
-       \
-> +                           $(OUTPUT)/xdp_synproxy                       =
-       \
-> +                           $(OUTPUT)/sign-file                          =
-       \
-> +                           $(OUTPUT)/uprobe_multi                       =
-       \
-> +                           ima_setup.sh                                 =
-       \
-> +                           verify_sig_setup.sh                          =
-       \
-> +                           $(wildcard progs/btf_dump_test_case_*.c)
-> +TRUNNER_EXTRA_FILES :=3D $(TRUNNER_PROGS_EXTRA_FILES)
->  TRUNNER_BPF_BUILD_RULE :=3D CLANG_BPF_BUILD_RULE
->  TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_T=
-ESTS
->  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
-> @@ -740,11 +741,17 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR=
-) $(HOST_SCRATCH_DIR)    \
->  # Delete partially updated (corrupted) files on error
->  .DELETE_ON_ERROR:
->
-> +space :=3D $(subst ,, )
-> +comma :=3D ,
-> +EXTRA_FILES_GLOB :=3D {$(subst $(space),$(comma),$(notdir $(TRUNNER_PROG=
-S_EXTRA_FILES)))}
->  DEFAULT_INSTALL_RULE :=3D $(INSTALL_RULE)
->  override define INSTALL_RULE
->         $(DEFAULT_INSTALL_RULE)
-> -       @for DIR in $(TEST_INST_SUBDIRS); do              \
-> -               mkdir -p $(INSTALL_PATH)/$$DIR;   \
-> -               rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
-> +       @for DIR in $(TEST_INST_SUBDIRS); do                             =
-               \
-> +               mkdir -p $(INSTALL_PATH)/$$DIR;                          =
-               \
-> +               rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;  =
-               \
-> +               rsync -a --copy-unsafe-links                             =
-               \
-> +                       $$(/bin/bash -c "echo $(OUTPUT)/$$DIR/$(EXTRA_FIL=
-ES_GLOB)")     \
-
-this feels quite hacky... have you tried using $(foreach) to go over
-each element of TRUNNER_PROGS_EXTRA_FILES and append $(OUTPUT)/$$DIR/
-to each one? Hopefully that will allow us to get rid of space and
-comma hacks?
-
-I'm also wondering if it would be ok to just combine two rsync calls
-into one, so that $(INSTALL_PATH)/$$DIR is specified once?
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND bpf-next v3 4/6] riscv, bpf: Add necessary Zbb
+ instructions
+To: Daniel Borkmann <daniel@iogearbox.net>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+	<bjorn@kernel.org>, <bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<netdev@vger.kernel.org>
+CC: Pu Lehui <pulehui@huaweicloud.com>, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
+	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke
+ Nelson <luke.r.nels@gmail.com>
+References: <20240115131235.2914289-1-pulehui@huaweicloud.com>
+ <20240115131235.2914289-5-pulehui@huaweicloud.com>
+ <871qa2zog6.fsf@all.your.base.are.belong.to.us>
+ <03ebc63f-7b96-4a70-ad10-a4ffc1d5b1cc@huawei.com>
+ <0b2bb6aa-e114-157b-94d1-4acb091b48b8@iogearbox.net>
+Content-Language: en-US
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <0b2bb6aa-e114-157b-94d1-4acb091b48b8@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd100009.china.huawei.com (7.221.188.135)
 
 
-> +                       $(INSTALL_PATH)/$$DIR;                           =
-               \
->         done
->  endef
-> --
-> 2.40.1
->
+
+On 2024/1/29 23:32, Daniel Borkmann wrote:
+> On 1/29/24 10:13 AM, Pu Lehui wrote:
+>> On 2024/1/28 1:16, Björn Töpel wrote:
+>>> Pu Lehui <pulehui@huaweicloud.com> writes:
+>>>
+>>>> From: Pu Lehui <pulehui@huawei.com>
+>>>>
+>>>> Add necessary Zbb instructions introduced by [0] to reduce code size 
+>>>> and
+>>>> improve performance of RV64 JIT. Meanwhile, a runtime deteted helper is
+>>>> added to check whether the CPU supports Zbb instructions.
+>>>>
+>>>> Link: 
+>>>> https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf [0]
+>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>>> ---
+>>>>   arch/riscv/net/bpf_jit.h | 32 ++++++++++++++++++++++++++++++++
+>>>>   1 file changed, 32 insertions(+)
+>>>>
+>>>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+>>>> index e30501b46f8f..51f6d214086f 100644
+>>>> --- a/arch/riscv/net/bpf_jit.h
+>>>> +++ b/arch/riscv/net/bpf_jit.h
+>>>> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
+>>>>       return IS_ENABLED(CONFIG_RISCV_ISA_C);
+>>>>   }
+>>>> +static inline bool rvzbb_enabled(void)
+>>>> +{
+>>>> +    return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && 
+>>>> riscv_has_extension_likely(RISCV_ISA_EXT_ZBB);
+>>>
+>>> Hmm, I'm thinking about the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) semantics
+>>> for a kernel JIT compiler.
+>>>
+>>> IS_ENABLED(CONFIG_RISCV_ISA_ZBB) affects the kernel compiler flags.
+>>> Should it be enough to just have the run-time check? Should a kernel
+>>> built w/o Zbb be able to emit Zbb from the JIT?
+>>
+>> Not enough, because riscv_has_extension_likely(RISCV_ISA_EXT_ZBB) is a 
+>> platform capability check, and the other one is a kernel image 
+>> capability check. We can pass the check 
+>> riscv_has_extension_likely(RISCV_ISA_EXT_ZBB) when 
+>> CONFIG_RISCV_ISA_ZBB=n. And my local test prove it.
+> 
+> So if I understand you correctly, only relying on the 
+> riscv_has_extension_likely(RISCV_ISA_EXT_ZBB)
+> part would not work - iow, the IS_ENABLED(CONFIG_RISCV_ISA_ZBB) is 
+> mandatory here?
+> 
+
+Yes, it should be IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && 
+riscv_has_extension_likely(RISCV_ISA_EXT_ZBB).
+
+> Thanks,
+> Daniel
+> 
+> P.s.: Given Bjorn's review and tests I took the series into bpf-next 
+> now. Thanks everyone!
+
+Thanks Daniel and Björn
 
