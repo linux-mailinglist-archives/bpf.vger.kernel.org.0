@@ -1,229 +1,145 @@
-Return-Path: <bpf+bounces-20699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00841842233
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 12:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC2C8422D4
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 12:22:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0511F2E4B5
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 11:05:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DFD61F22955
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 11:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB3E67724;
-	Tue, 30 Jan 2024 11:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246D266B58;
+	Tue, 30 Jan 2024 11:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewDz92vX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E07066B4C;
-	Tue, 30 Jan 2024 11:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A8C6772C
+	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 11:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612701; cv=none; b=ZXcb+SM8NsXLvJe0WRkLHKlsQ6YcEFryNUR28JmOjo0tFoPozgCMUrxJ52A0SYekPZ9nBrl93zljvUsm2IadbNjCu6Ghfi40bf9DOQ0eGhVMeodBW+MNisa6SYm/f4q6bz1dIzN45OUj+anRpRdAt34WqGK6Sp/24Sl2SJl/Lzc=
+	t=1706613612; cv=none; b=hGZ8y2qwh4YwRirbKYuDUmEOr/GrEn0J5XZlipwAdZLpvy9obANykryBaBE2pd5+cxXDcMiROn3AIgi2eCS5tkkXP4UQzYO4LwXtJ4OS4b9zpiDhnlasNVMvRyLC7FD6FCW6VIMjkXfDxs02OIrL4p3ZZfvsLMyp8NE9qzyLh0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612701; c=relaxed/simple;
-	bh=PdeoMiYgUER3iysKvji/sSX8mFKzGpxS1nsIZk+d188=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=dfHVzTKq/eFwrO3w/58It+v/I+2bEf016Va8qwYDg6J94/NI/UR3sAwhONucvjilSFhsIc55KTL75/9BYI/i2IcFkoYyiV6I8cGvCorheWniy0bdFRXuO1gN+iJPHIy72ES8iE4T49TC1yRHUlINSMMhpHwiDMyD5sH+bng677E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 98AFC1F842;
-	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
-	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
-	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706612697;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
-	bOS/gUc8alVD1JCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
-	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
-	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706612697;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
-	bOS/gUc8alVD1JCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F88012FF7;
-	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pETmGtnXuGVMPQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 30 Jan 2024 11:04:57 +0000
-Message-ID: <8fc59462-2940-4e60-95f1-2955a8c24ea0@suse.cz>
-Date: Tue, 30 Jan 2024 12:04:57 +0100
+	s=arc-20240116; t=1706613612; c=relaxed/simple;
+	bh=FPZGheY36pbF0To5+syTVH3mVtOc/AQ3hyGLWTy3hNE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EaFg7tvxTQZrUN1BI4ygUeZNWYufPfexfcSNnbCllQa/Oyay71u7oO+Jv3dct37BBFeyBIbN4GrkfWvFUPmVAKhvETerxWZHaG4Mo1oXWfVQEkwRvRMA4rLdbt1iSfnu6W6zIruvDfrT16B4xZqlcPwIYe+BVSqYBLeBVYPYsek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ewDz92vX; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso472895266b.2
+        for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 03:20:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706613609; x=1707218409; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y+/R2/5P1Fn0iWjz4KSoFQjDgDOHLlpXi94KdJ2UdzI=;
+        b=ewDz92vXiThLs4axhGf/uu8svxJARzNEZS9gjK91yzaSij05Dv4yYUtIVEsw88K3zu
+         uJrNucGppN0ivoTBMmtFxsSa7rC1K4d08pskCyO/tjccSBSg6ceQPRXYI56BWdOYkeND
+         3iJabGYx6rhQIovue4eoT4LmVew7ox13g0dIoA8WydxT9dKbkYWc08RIUDxCPblQzb7h
+         ALytuuCF0s/l5GTpeWBVTxrWgvVK0T2q2mCB84oa7/MpFw33hW0/tKrssSC3qucxR6nd
+         rs7v7LgUVt8xRAUC5dgWBEJ0+5bszaf09sPVnTA1l1EhRx+JHlKnrpvRGgXwZJC3LIMh
+         Y2zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706613609; x=1707218409;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y+/R2/5P1Fn0iWjz4KSoFQjDgDOHLlpXi94KdJ2UdzI=;
+        b=DEBthHTrs6dJtuEb7KvdLE+18TU4RfNHv/e1Mf8fmx6Tne/nQ3Wi/q2taJwH6Rdgfh
+         cdcNotqJ0TZeZVJg1AdAIB0frfqekjSkLuWrAsMOM0YdM0aC6wocf71IPhSu5mGxGQ5M
+         35fQxvjT2CoX7FJUynz2dI9mSdFE5j2IxaDqvzm4Oyujehm9mR2grQuJxMJrsoHHluHk
+         NnSm3UL0kNzmyEOyAimbJiSfiCU96OIAoPrpR9qYKU3Z68+oZvap+6cGFoVwDjjRu3H2
+         tAz3XAw3UGc+VpkKNNQY/YFBqS1eJLh2r6qJmPcWXe56tgPkSiJBQiUkNtmCkasNQmnv
+         HZ6A==
+X-Gm-Message-State: AOJu0Yx9T5ewxsQYxBIhLjoSgejZeTPl0mk48vMlyT+dD0wVXFbpJAux
+	Hf6iNiiXCpbwSBidy9k5MCJ1DWv8EIEEriThUOf0wBKow/2hAiaU
+X-Google-Smtp-Source: AGHT+IEgxQD9vrlBcdrxMnfA26D1QFSy/m9JL6maPMRrSxOxTGdZKalRhw2HyGxdbahDi877coD+FA==
+X-Received: by 2002:a17:906:1792:b0:a35:7192:1f with SMTP id t18-20020a170906179200b00a357192001fmr5832884eje.49.1706613609167;
+        Tue, 30 Jan 2024 03:20:09 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id pw18-20020a17090720b200b00a35c1d11621sm1985179ejb.131.2024.01.30.03.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 03:20:08 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 30 Jan 2024 12:20:06 +0100
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Stanislav Fomichev <sdf@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/5] bpf: fix potential error return
+Message-ID: <ZbjbZjS2IWuj09VK@krava>
+References: <20240122164936.810117-1-aspsk@isovalent.com>
+ <20240122164936.810117-2-aspsk@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-From: Vlastimil Babka <vbabka@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Shakeel Butt <shakeelb@google.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
- Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
- Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
- Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
- Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- Howard McLauchlan <hmclauchlan@fb.com>, bpf <bpf@vger.kernel.org>
-References: <cover.1705507931.git.jpoimboe@kernel.org>
- <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble>
- <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
- <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
- <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
- <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
- <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
-Content-Language: en-US
-In-Reply-To: <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[20];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.09
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122164936.810117-2-aspsk@isovalent.com>
 
-On 1/26/24 10:50, Vlastimil Babka wrote:
-> On 1/22/24 06:10, Linus Torvalds wrote:
->> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
->>> >
->>> > So I don't see how we can make it really cheap (say, less than 5% overhead)
->>> > without caching pre-accounted objects.
->>>
->>> Maybe this is what we want. Now we are down to just SLUB, maybe such
->>> caching of pre-accounted objects can be in SLUB layer and we can
->>> decide to keep this caching per-kmem-cache opt-in or always on.
->> 
->> So it turns out that we have another case of SLAB_ACCOUNT being quite
->> a big expense, and it's actually the normal - but failed - open() or
->> execve() case.
->> 
->> See the thread at
->> 
->>     https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
->> 
->> and to see the effect in profiles, you can use this EXTREMELY stupid
->> test program:
->> 
->>     #include <fcntl.h>
->> 
->>     int main(int argc, char **argv)
->>     {
->>         for (int i = 0; i < 10000000; i++)
->>                 open("nonexistent", O_RDONLY);
->>     }
+On Mon, Jan 22, 2024 at 04:49:32PM +0000, Anton Protopopov wrote:
+> The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
+> error is a result of bpf_adj_branches(), and thus should be always 0
+> However, if for any reason it is not 0, then it will be converted to
+> boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
+> error value. Fix this by returning the original err after the WARN check.
 > 
-> This reminded me I can see should_failslab() in the profiles (1.43% plus the
-> overhead in its caller) even if it does nothing at all, and it's completely
-> unconditional since commit 4f6923fbb352 ("mm: make should_failslab always
-> available for fault injection").
+> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+
+nice catch
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+> ---
+>  kernel/bpf/core.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> We discussed it briefly when Jens tried to change it in [1] to depend on
-> CONFIG_FAILSLAB again. But now I think it should be even possible to leave
-> it always available, but behind a static key. BPF or whoever else uses these
-> error injection hooks would have to track how many users of them are active
-> and manage the static key accordingly. Then it could be always available,
-> but have no overhead when there's no active user? Other similars hooks could
-> benefit from such an approach too?
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index fbb1d95a9b44..9ba9e0ea9c45 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -532,6 +532,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+>  
+>  int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+>  {
+> +	int err;
+> +
+>  	/* Branch offsets can't overflow when program is shrinking, no need
+>  	 * to call bpf_adj_branches(..., true) here
+>  	 */
+> @@ -539,7 +541,12 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+>  		sizeof(struct bpf_insn) * (prog->len - off - cnt));
+>  	prog->len -= cnt;
+>  
+> -	return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
+> +	err = bpf_adj_branches(prog, off, off + cnt, off, false);
+> +	WARN_ON_ONCE(err);
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+
+could be just 'return err'
+
+jirka
+
+>  }
+>  
+>  static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
+> -- 
+> 2.34.1
 > 
-> [1]
-> https://lore.kernel.org/all/e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk/#t
-
-Just for completeness, with the hunk below I've seen some 2% improvement on
-the test program from Linus.
-Of course something needs to operate the static key and I'm not familiar
-enough with bpf and related machinery whether it's tracking users of the
-injection points already where the static key toggling could be hooked.
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 2ef88bbf56a3..da07b358d092 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3750,6 +3750,8 @@ noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
- }
- ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
- 
-+static DEFINE_STATIC_KEY_FALSE(failslab_enabled);
-+
- static __fastpath_inline
- struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-                                       struct list_lru *lru,
-@@ -3760,8 +3762,10 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
- 
-        might_alloc(flags);
- 
--       if (unlikely(should_failslab(s, flags)))
--               return NULL;
-+       if (static_branch_unlikely(&failslab_enabled)) {
-+               if (unlikely(should_failslab(s, flags)))
-+                       return NULL;
-+       }
- 
-        if (unlikely(!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags)))
-                return NULL;
-
-
-
 
