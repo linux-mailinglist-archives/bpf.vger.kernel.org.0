@@ -1,182 +1,230 @@
-Return-Path: <bpf+bounces-20731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0232B84262F
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 14:28:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A719842654
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 14:42:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC48D285ACB
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 13:28:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8227B2F85C
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 13:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A66D6BB54;
-	Tue, 30 Jan 2024 13:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F996D1B3;
+	Tue, 30 Jan 2024 13:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U9YdX0Am"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K1ohGfaW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7656BB3D;
-	Tue, 30 Jan 2024 13:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A44E59165
+	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 13:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706621319; cv=none; b=bJ8RAallZI8u+Ge5uGRLyw28P2Ds2X3JvttlXbahYe6OHU9SM+NHihpxREcHGBYsK0R0PF/YMR+9WRal4RUl9X2rQ+ixHwo75Ah5Cd0FAQoRh5RApxBl6vhZrb2W9/pGvadTUw/kKvNYKx3hg1Io6mvs1te4d9zjhdCXa29ZDoI=
+	t=1706622121; cv=none; b=TFcyPP/X80n50dwdoOtasEX0ItAPejUqM9UoGU4pXYuqvyfcQPXyjL0STdKuUlRSm7XV0+bbq4z926HotK5WD7KJ4hJ3/4pDjpcOgpRMKkVXYZjdKfrUAyqxCnM+hvF78g92Y/zfU8NHJUA0wajV+MlYWPhBDmLDDMM93zVKCG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706621319; c=relaxed/simple;
-	bh=P4Ed6bty5NrlB1PskKxS7173sQNawPnBy3pGH9uH4KI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UALbTQu7xD+AmvUz25yy9CYdpIBaXl49p7IFpvUyUzsPPTMtApxQ5pDc/9HCE5qZTMbRVtWnJsZVSYxFcdl5EUuwugGXtPsRPD9vLYE9BDCFbMjrcUqaWlp06qwsjv9lK96RrYSX1CBUkefgxWVHKGDa25eUbYFc8zz5/VGNF0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U9YdX0Am; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06C23C433F1;
-	Tue, 30 Jan 2024 13:28:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706621318;
-	bh=P4Ed6bty5NrlB1PskKxS7173sQNawPnBy3pGH9uH4KI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=U9YdX0AmBvQjbRCYBpRWPZQk8hXkRG2jvIgTquEFRwrJ0rsxgMk5QeRn01hHnY1zc
-	 MYimbZyLY5TwEqgIPOrExIPMljS1+qiF7y9o/HUXD4YHk7WK7qKaxMY5EsuTk8jicK
-	 VG0beVWkm0sP9uRgo5pcCwt2+TxwFoU/w/cc308x0MoBDB8AzOG6I2JO6vG54AOI9H
-	 oc/dlWwQgc9+cM9vBVZQIsiVuYZ6BTHW/+5GezF+CAKMibhEfB3k7wZzG3lWtc5j+F
-	 TT3+j2zXNPHrGgWH/gfkP6vvj05GSr7Or9XGfQPY3lw7xUo/oTT8KsRztwMzBi+4Fk
-	 cFfn9t8MbZoIA==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Pu Lehui <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke Nelson
- <luke.r.nels@gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] riscv, bpf: Mixing bpf2bpf and tailcalls
-In-Reply-To: <5d776261-338b-4ebb-bb9b-1dbc91cd06c3@huawei.com>
-References: <20230919035711.3297256-1-pulehui@huaweicloud.com>
- <20230919035711.3297256-5-pulehui@huaweicloud.com>
- <87lecqobyb.fsf@all.your.base.are.belong.to.us>
- <4e73b095-0c08-4a6f-b2ee-8f7a071b14ee@huaweicloud.com>
- <87cytjusud.fsf@all.your.base.are.belong.to.us>
- <5d776261-338b-4ebb-bb9b-1dbc91cd06c3@huawei.com>
-Date: Tue, 30 Jan 2024 14:28:35 +0100
-Message-ID: <87zfwnympo.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1706622121; c=relaxed/simple;
+	bh=0BeGZI2lfjCwg/wzly1hzEkL+SQ37NX3sQSXaRiSC/Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VX1ISi+t4X0EAMQ+kKVL3/WK+9m7BZr7geW38wM5sxdMTnGdI7UV1mt3o5XfE0AuJ8fh1770216wuoMKxec3XyuQXY6vCy3IjraDYjTDRztrRZ/XFxkFt7XvKBvDLM6uof1z6WxuOlBXuI/PBfQ53KEIwi/K92Fn30MToMid2qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K1ohGfaW; arc=none smtp.client-ip=209.85.166.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-361b23b9328so132445ab.1
+        for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 05:41:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706622118; x=1707226918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
+        b=K1ohGfaWtW9fnSR1o1Y5YWNOvXogVL9sK7bZ2uPuNMJ2JOkOXqzMWCLe0C0hpRvm5J
+         859OqDhlBmX+o8uy367x6oamtJdIo+X6bhzfT/ahZF60Xv3QoteS409g/NCMLYp+BGYR
+         nlg6tEG62Pe6KJ8Cil+K6otY8x4cNFD7w5M3GC7j/eYsv3sOqYjaAxKzOUivcMJtYq9i
+         YtjZAxB6QO2Tqd+X0eN+pCW36TfyM8vaHTZqYzVjnOkI7NUbFczxLQSt9qFsqHZ65tMX
+         yUgxNelp6/AksrW1N4OubufGQkgAArwsg6/jUw7fWJhyg2Cm9sd1Ctk8m8oEXUtnSa44
+         eZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706622118; x=1707226918;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EbgyJimBDL2xlM1FoVUE3T9sFVvozDsEdx2g1TNsrH8=;
+        b=AVBHG/AqPQF8cDKevUS+Yy3QaWRGyIs8OdbND4IGYO05rRW1r+zPR+NVWcALxpyfA+
+         4TozLLl350POgQewY7xCCwiwvPri235N/7a3HOUSFNhdTEO34CVCNIwy55chxL9nGI/o
+         TAYbqOUQ3xlOfOzwcqhf24e7MEXI9U/4mR33aFsgCHswEfM57OEankFRkwvKK6IqSPxj
+         CV3bbdoBF8ln6GyD9JJ9qJYmDAg4M9U+IrX7GX6GpD1dVPYjPiLmvM1wMhKDywn3DJ9A
+         34ePHvC1DwWHZN2el5CKKK3wTGxmj8qrFzD5+Q8eqG5gEDGrdWbvbfVmRVCwNB6PHZ3U
+         md+w==
+X-Gm-Message-State: AOJu0YyIKsjkI6Vk3izx/HtM8J0YbQKFmjcmXAsU9HVC38DYRxVEuxCt
+	27miH0MWGgfMfiE21WmP6u0S2WWQbL00S8fwciUQ5zksuaPhSo/vVnt1uumjEw1Aya8Og/H/uGg
+	7w9HlVUyb2qc+L6QqUgVCyi1RTsZ6Ts7RrgWi
+X-Google-Smtp-Source: AGHT+IFTttrH0F0yFcNDAhaFz/OUEZdWofrsyIOjQ2cUIUV60IsTbFRJFPYibEwh47w8FBbLvqod5S8rXW+N2rbJZEA=
+X-Received: by 2002:a92:d483:0:b0:363:7b27:283b with SMTP id
+ p3-20020a92d483000000b003637b27283bmr183068ilg.11.1706622118267; Tue, 30 Jan
+ 2024 05:41:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240125231840.1647951-1-irogers@google.com> <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
+In-Reply-To: <CAEf4BzamUW+O35hfj-SctPo0Z-oZk5u-96fvD0cFPDZTwFyiMg@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 30 Jan 2024 05:41:47 -0800
+Message-ID: <CAP-5=fWd3U4VTU7Quj+EjdU8F_o3VwprUz18PeAGfphgUS7vPg@mail.gmail.com>
+Subject: Re: [PATCH v3] libbpf: Add some details for BTF parsing failures
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Pu Lehui <pulehui@huawei.com> writes:
-
-> On 2024/1/30 16:29, Bj=C3=B6rn T=C3=B6pel wrote:
->> Pu Lehui <pulehui@huaweicloud.com> writes:
->>=20
->>> On 2023/9/28 17:59, Bj=C3=B6rn T=C3=B6pel wrote:
->>>> Pu Lehui <pulehui@huaweicloud.com> writes:
->>>>
->>>>> From: Pu Lehui <pulehui@huawei.com>
->>>>>
->>>>> In the current RV64 JIT, if we just don't initialize the TCC in subpr=
-og,
->>>>> the TCC can be propagated from the parent process to the subprocess, =
-but
->>>>> the TCC of the parent process cannot be restored when the subprocess
->>>>> exits. Since the RV64 TCC is initialized before saving the callee sav=
-ed
->>>>> registers into the stack, we cannot use the callee saved register to
->>>>> pass the TCC, otherwise the original value of the callee saved regist=
-er
->>>>> will be destroyed. So we implemented mixing bpf2bpf and tailcalls
->>>>> similar to x86_64, i.e. using a non-callee saved register to transfer
->>>>> the TCC between functions, and saving that register to the stack to
->>>>> protect the TCC value. At the same time, we also consider the scenario
->>>>> of mixing trampoline.
->>>>
->>>> Hi!
->>>>
->>>> The RISC-V JIT tries to minimize the stack usage, e.g. it doesn't have=
- a
->>>> fixed pro/epilogue like some of the other JITs. I think we can do bett=
-er
->>>> here, so that the pass-TCC-via-register can be used, and the additional
->>>> stack access can be avoided.
->>>>
->>>> Today, the TCC is passed via a register (a6) and can be viewed as a
->>>> "state" variable/transparent argument/return value. As you point out, =
-we
->>>> loose this when we do a call. On (any) calls we move the TCC to a
->>>> callee-saved register.
->>>>
->>>> WDYT about the following scheme:
->>>>
->>>> 1 Pickup the arm64 bpf2bpf/tailmix mechanism of just clearing the TCC
->>>>     for the main program.
->>>> 2 For BPF helper calls, move TCC to s6, perform the call, and restore
->>>>     a6. Dito for kfunc calls (BPF_PSEUDO_KFUNC_CALL).
->>>> 3 For all other calls, a6 is passed transparently.
->>>>
->>>> For 2 bpf_jit_get_func_addr() can be used to determine if the callee is
->>>> a BPF helper or not.
->>>>
->>>> In summary; Determine in the JIT if we're leaving BPF-land, and need to
->>>> move the TCC to a callee-saved reg, or not, and save us a bunch of sta=
-ck
->>>> store/loads.
->>>>
->>>
->>> Valuable scheme. But we need to consider TCC back propagation. Let me
->>> show an example of calling subprog with TCC stored in A6:
->>>
->>> prog1(TCC=3D=3D1){
->>>       subprog1(TCC=3D=3D1)
->>>           -> tailcall1(TCC=3D=3D0)
->>>               -> subprog2(TCC=3D=3D0)
->>>       subprog3(TCC=3D=3D0) <--- should be TCC=3D=3D1
->>>           -\-> tailcall2 <--- can't be called
->>> }
+On Mon, Jan 29, 2024 at 4:43=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Let's back with this example again. Imagine that the tailcall chain is a=
-=20
-> list limited to 33 elements. When the list has 32 elements, we call=20
-> subprog1 and then tailcall1. At this time, the list elements count=20
-> becomes 33. Then we call subprog2 and return prog1. At this time, the=20
-> list removes 1 element and becomes 32 elements. At this time, there=20
-> still can perform 1 tailcall.
+> On Thu, Jan 25, 2024 at 3:18=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
+> > valid kernel BTF" message makes diagnosing the kernel build issue some
+> > what cryptic. Add a little more detail with the hope of helping users.
+> >
+> > Before:
+> > ```
+> > libbpf: failed to find valid kernel BTF
+> > libbpf: Error loading vmlinux BTF: -3
+> > ```
+> >
+> > After not accessible:
+> > ```
+> > libbpf: access to canonical vmlinux (/sys/kernel/btf/vmlinux) to load B=
+TF failed: No such file or directory
+> > libbpf: was CONFIG_DEBUG_INFO_BTF enabled?
+> > libbpf: failed to find valid kernel BTF
+> > libbpf: Error loading vmlinux BTF: -3
+> > ```
+> >
+> > After not readable:
+> > ```
+> > libbpf: unable to read canonical vmlinux (/sys/kernel/btf/vmlinux): Per=
+mission denied
+> > libbpf: failed to find valid kernel BTF
+> > libbpf: Error loading vmlinux BTF: -3
+> > ```
+> >
+> > Closes: https://lore.kernel.org/bpf/CAP-5=3DfU+DN_+Y=3DY4gtELUsJxKNDDCO=
+vJzPHvjUVaUoeFAzNnig@mail.gmail.com/
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> >
+> > ---
+> > v3. Try to address review comments from Andrii Nakryiko.
 >
-> I've attached a diagram that shows mixing tailcall and subprogs is=20
-> nearly a "call". It can return to caller function.
+> I did some further simplifications and clean ups while applying.
+>
+> I dropped an extra faccessat(R_OK) check for /sys/kernel/btf/vmlinux
+> and instead if F_OK passes, just go ahead and try to parse
+> /sys/kernel/btf/vmlinux. If we have no access, we should get -EPERM or
+> -EACCESS (I didn't check which), otherwise we'll either parse or won't
+> find any BTF, both are errors. If /sys/kernel/btf/vmlinux exists,
+> there seems to be little point nowadays to try fallback locations,
+> kernel clearly is modern enough to generate /sys/kernel/btf/vmlinux,
+> so we just bail out with error.
+>
+> Please check the landed commit in bpf-next and let me know if it
+> doesn't cover your use case properly.
 
-Hmm. Let me put my Q in another way.
+It does, thanks Andrii!
 
-The kernel calls into BPF_PROG_RUN() (~a BPF context). Would it ever be
-OK to do more than 33 tail calls, regardless of subprogs or not?
+Ian
 
-In your example, TCC is 1. You are allowed to perform one tail call. In
-your example prog1 performs two.
-
-My view of TCC has always been ~a counter of the number of tailcalls~.
-
-With your example expanded:
-prog1(TCC=3D=3D33){
-      subprog1(TCC=3D=3D33)
-          -> tailcall1(TCC=3D=3D33) -> tailcall1(TCC=3D=3D32) -> tailcall1(=
-TCC=3D=3D31) -> ... // 33 times
-      // Lehui says TCC should be 33 again.
-      // Bj=C3=B6rn says "it's the number of tailcalls", and subprog3 canno=
-t perform a tail call
-      subprog3(TCC=3D=3D?)
-=20=20=20=20=20=20=20=20=20=20
-My view has, again, been than TCC is a run-time count of the number
-tailcalls (fentry/fexit patch bpf-programs included).
-
-What does x86 and arm64 do?
-
-
-Bj=C3=B6rn
+> > ---
+> >  tools/lib/bpf/btf.c | 35 +++++++++++++++++++++++++++--------
+> >  1 file changed, 27 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index ec92b87cae01..45983f42aba9 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -4932,10 +4932,9 @@ static int btf_dedup_remap_types(struct btf_dedu=
+p *d)
+> >   */
+> >  struct btf *btf__load_vmlinux_btf(void)
+> >  {
+> > +       const char *canonical_vmlinux =3D "/sys/kernel/btf/vmlinux";
+> > +       /* fall back locations, trying to find vmlinux on disk */
+> >         const char *locations[] =3D {
+> > -               /* try canonical vmlinux BTF through sysfs first */
+> > -               "/sys/kernel/btf/vmlinux",
+> > -               /* fall back to trying to find vmlinux on disk otherwis=
+e */
+> >                 "/boot/vmlinux-%1$s",
+> >                 "/lib/modules/%1$s/vmlinux-%1$s",
+> >                 "/lib/modules/%1$s/build/vmlinux",
+> > @@ -4946,14 +4945,34 @@ struct btf *btf__load_vmlinux_btf(void)
+> >         };
+> >         char path[PATH_MAX + 1];
+> >         struct utsname buf;
+> > -       struct btf *btf;
+> > +       struct btf *btf =3D NULL;
+> >         int i, err;
+> >
+> > -       uname(&buf);
+> > +       /* is canonical sysfs location accessible? */
+> > +       err =3D faccessat(AT_FDCWD, canonical_vmlinux, F_OK, AT_EACCESS=
+);
+> > +       if (err) {
+> > +               pr_warn("access to canonical vmlinux (%s) to load BTF f=
+ailed: %s\n",
+> > +                       canonical_vmlinux, strerror(errno));
+> > +               pr_warn("was CONFIG_DEBUG_INFO_BTF enabled?\n");
+> > +       } else {
+> > +               err =3D faccessat(AT_FDCWD, canonical_vmlinux, R_OK, AT=
+_EACCESS);
+> > +               if (err) {
+> > +                       pr_warn("unable to read canonical vmlinux (%s):=
+ %s\n",
+> > +                               canonical_vmlinux, strerror(errno));
+> > +               }
+> > +       }
+> > +       if (!err) {
+> > +               /* load canonical and return any parsing failures */
+> > +               btf =3D btf__parse(canonical_vmlinux, NULL);
+> > +               err =3D libbpf_get_error(btf);
+> > +               pr_debug("loading kernel BTF '%s': %d\n", canonical_vml=
+inux, err);
+> > +               return btf;
+> > +       }
+> >
+> > +       /* try fallback locations */
+> > +       uname(&buf);
+> >         for (i =3D 0; i < ARRAY_SIZE(locations); i++) {
+> >                 snprintf(path, PATH_MAX, locations[i], buf.release);
+> > -
+> >                 if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
+> >                         continue;
+> >
+> > @@ -4965,9 +4984,9 @@ struct btf *btf__load_vmlinux_btf(void)
+> >
+> >                 return btf;
+> >         }
+> > -
+> >         pr_warn("failed to find valid kernel BTF\n");
+> > -       return libbpf_err_ptr(-ESRCH);
+> > +       /* return the last error or ESRCH if no fallback locations were=
+ found */
+> > +       return btf ?: libbpf_err_ptr(-ESRCH);
+> >  }
+> >
+> >  struct btf *libbpf_find_kernel_btf(void) __attribute__((alias("btf__lo=
+ad_vmlinux_btf")));
+> > --
+> > 2.43.0.429.g432eaa2c6b-goog
+> >
 
