@@ -1,182 +1,217 @@
-Return-Path: <bpf+bounces-20742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93C438428A7
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 17:02:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A218428AF
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 17:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B7941F2964C
-	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 16:02:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3B651F2193A
+	for <lists+bpf@lfdr.de>; Tue, 30 Jan 2024 16:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F161272C1;
-	Tue, 30 Jan 2024 16:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0059A86151;
+	Tue, 30 Jan 2024 16:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IateNKPQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JrbbTJ07"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687FE86AE7
-	for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 16:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FCE54656;
+	Tue, 30 Jan 2024 16:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706630531; cv=none; b=bdKNdCzLy2oWSxN0TEGrD3ogUs1rR1zSA+fy6A/LloZKwrHbrQHeCeA/h7r3jseIqxt7TeUcZrxma08/6aXf4acQ23ATgxnuabOXKIDErUHrv1Em/OBNKvpnqXOcooWbNRXtXGfZETgXPbZ+bVmPHllYlV8I14tkbwvj7z9xNeE=
+	t=1706630633; cv=none; b=uLC5floItpenvX6nJQtf25smvGN2qMg18VV1ridOA9HAg/RD52f/2KvD3QA9oIhfNBZa7I9Bgrt5HTtZsBCEZZDqXjWudPEM4YnpTIpzzzyVvXj24UOOQt/AOTYGunF4kSkc+Pt+29uCg9sQauE6BMd4jFByHuqvjwCbTB+I9BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706630531; c=relaxed/simple;
-	bh=R/+PGrqlIQzRx/YC8Yw0Yia2E8Fz6ExLuynaZh2F/aQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O7RNEf31lM4G0iEJQZqBTt5JyUfXccUnUaVq+laxskCam1o8LrsDh9GYY4dWj6aDlj9c/JIraz0QBIDFHQjvHBYHz10Gt53/2/ncqcZ8xuojDqON3wFcSg6UOX9NSkuaNaUx0jRyzDOWtU807qNMvMYTiatrAM+myaGxXBJ/Lps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IateNKPQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706630526;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nsPhw/UFv6rmTQuuvbVRDjJ+6ofGxDXqAnyB7KVB/58=;
-	b=IateNKPQazNnNpv1NPB9IbAfTehn0An3HmBW/YMzlKQ7oE4WxoVXlZgF1ItDtGVQZm9VpH
-	c+Xil3NAIpPgfxzCFCAj1RXhMbAjxeRYtNzj5MS6KFvk1Iq1O1/ghj8SeIsfINZAoQ/ID6
-	QLAbDi2JIINwRUaUBbaxZbkob9GAsyY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-189-lSG35M5tMVyqkOGvq8wm-g-1; Tue, 30 Jan 2024 11:01:55 -0500
-X-MC-Unique: lSG35M5tMVyqkOGvq8wm-g-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40fa6610ddfso3202455e9.3
-        for <bpf@vger.kernel.org>; Tue, 30 Jan 2024 08:01:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706630513; x=1707235313;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nsPhw/UFv6rmTQuuvbVRDjJ+6ofGxDXqAnyB7KVB/58=;
-        b=YSSQfBCX9fi7PVRP70nO8twePH9JthEJkE8HUsg1kGiVKK8r+9cKRILrVit4a2Tc8S
-         DF9BTVQatTeoIfPQwOO5Y760UzWxqE6Wex2cGnNZCyjoenhXs4WYQpEvUzPY+P7Zd5bi
-         Lc5gCwAOldjJ73Xj7WlfGPbYKyiohZNsM3y7vgGvXpAiNdI7QwydKRgGOjW6N3iHFJ/o
-         78lQ9s/Ys4orWasKrCNQcCcYX3NRxkakA35txoPE60MMSGL0WxI9NM2K/pre1JfOPSB/
-         3A8PZMV9d97H+Go2mslc2BiXvWEm+wj8DHMDbqGTJYbpUpB5oOkUnVnQBmNYAO/3/JKQ
-         ZoZw==
-X-Gm-Message-State: AOJu0YwAKzA5fY2RW8KkDdvxItYmP53oV1XN2j/ZMNaP36XNxXGHa2fA
-	eTAmhz2q6jIhQO6YCS7Vts7C/aTLlBuCnhbZ+9FL9M/W1zSKOEnrmnKIAOWvPx99/eiPi9bWWRu
-	sFNHUA8BxYfzp+kFUOe0JBotuOqXVAWABkQTNI/wizWaZHFcPfQ==
-X-Received: by 2002:a05:600c:1e0a:b0:40f:30b:ee96 with SMTP id ay10-20020a05600c1e0a00b0040f030bee96mr1465912wmb.37.1706630512862;
-        Tue, 30 Jan 2024 08:01:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEKCIESEWm8fMGWFUaJ+FFroIeLj4O+hrnJRknoMG+eYSSv9IFnneCyG5F85fWBjknHDEP85Q==
-X-Received: by 2002:a05:600c:1e0a:b0:40f:30b:ee96 with SMTP id ay10-20020a05600c1e0a00b0040f030bee96mr1465887wmb.37.1706630512517;
-        Tue, 30 Jan 2024 08:01:52 -0800 (PST)
-Received: from localhost (net-93-71-3-198.cust.vodafonedsl.it. [93.71.3.198])
-        by smtp.gmail.com with ESMTPSA id b3-20020a05600003c300b0033afe6968bfsm631053wrg.64.2024.01.30.08.01.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 08:01:51 -0800 (PST)
-Date: Tue, 30 Jan 2024 17:01:50 +0100
-From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-	pabeni@redhat.com, bpf@vger.kernel.org, toke@redhat.com,
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
-	sdf@google.com, ilias.apalodimas@linaro.org
-Subject: Re: [PATCH v6 net-next 4/5] net: page_pool: make stats available
- just for global pools
-Message-ID: <ZbkdblTwF19lBYbf@lore-desk>
-References: <cover.1706451150.git.lorenzo@kernel.org>
- <9f0a571c1f322ff6c4e6facfd7d6d508e73a8f2f.1706451150.git.lorenzo@kernel.org>
- <bc5dc202-de63-4dee-5eb4-efd63dcb162b@huawei.com>
- <ZbejGhc8K4J4dLbL@lore-desk>
- <ef59f9ac-b622-315a-4892-6c7723a2986a@huawei.com>
- <Zbj_Cb9oHRseTa3u@lore-desk>
- <fcf8678b-b373-49a8-8268-0a8b1a49f739@kernel.org>
+	s=arc-20240116; t=1706630633; c=relaxed/simple;
+	bh=0OAd4/SGcsXtRJucrF8w9F4Yv4qA0oFmytL+aja1oCI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YlZjjL5ASKMZI+If/vsvAlVSICc805FMlzk3wnYVTZ0ubn0OBkqP44bsIq7EaKLiZ560UX57K3uk4As1FfYWlxhHZ8YDbVTGsQM2GDsQA/LtA97pBRmV9ajGte8pS4KscIOzAjSF/F3o8Lx3ZAE850j4BQU30/zeBVcPuPWxkF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JrbbTJ07; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88E90C433C7;
+	Tue, 30 Jan 2024 16:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706630632;
+	bh=0OAd4/SGcsXtRJucrF8w9F4Yv4qA0oFmytL+aja1oCI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=JrbbTJ07iy3fISOtBKNwGJMdtKzfHoUc5ee0NEJiI65vu4fevP7DeP4XHwHHtCvsa
+	 ai6lAYJFiHrwcl3IY5X5hgMNE0UxWYROdjWIsKjahokMNHsUYbdT7fORM15vBn99oN
+	 lQpOmJaZ4ayJvzGih2hPvKv4FHr5X0pCxF2WHKGbkS4hZPNoLNiYkMNrNVi9WKscLv
+	 8vgJY6+d2gWzui5REpKfUy+L+G7u1GyPdCu6wTt1OTrSgLYqRb/v4jDdCzTFZGsN/M
+	 UN7Ba/Ow8Q4EdAlctsfH4OSLbvru1kj/DXIILcBpHJXpSP9h/r4QfjF8PihfiQzJGz
+	 AS6NQxJWoZJew==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Pu Lehui <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>,
+ bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+ netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke Nelson
+ <luke.r.nels@gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] riscv, bpf: Mixing bpf2bpf and tailcalls
+In-Reply-To: <5a30caa3-3351-41e7-a77f-91e5959b2da6@huawei.com>
+References: <20230919035711.3297256-1-pulehui@huaweicloud.com>
+ <20230919035711.3297256-5-pulehui@huaweicloud.com>
+ <87lecqobyb.fsf@all.your.base.are.belong.to.us>
+ <4e73b095-0c08-4a6f-b2ee-8f7a071b14ee@huaweicloud.com>
+ <87cytjusud.fsf@all.your.base.are.belong.to.us>
+ <5d776261-338b-4ebb-bb9b-1dbc91cd06c3@huawei.com>
+ <87zfwnympo.fsf@all.your.base.are.belong.to.us>
+ <5a30caa3-3351-41e7-a77f-91e5959b2da6@huawei.com>
+Date: Tue, 30 Jan 2024 17:03:49 +0100
+Message-ID: <87le86q04a.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XGsBPEjow8ZYXOm2"
-Content-Disposition: inline
-In-Reply-To: <fcf8678b-b373-49a8-8268-0a8b1a49f739@kernel.org>
-
-
---XGsBPEjow8ZYXOm2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
->=20
->=20
-> On 30/01/2024 14.52, Lorenzo Bianconi wrote:
-> > > On 2024/1/29 21:07, Lorenzo Bianconi wrote:
-> > > > > On 2024/1/28 22:20, Lorenzo Bianconi wrote:
-> > > > > > Move page_pool stats allocation in page_pool_create routine and=
- get rid
-> > > > > > of it for percpu page_pools.
-> > > > >=20
-> > > > > Is there any reason why we do not need those kind stats for per c=
-pu
-> > > > > page_pool?
-> > > > >=20
-> > > >=20
-> > > > IIRC discussing with Jakub, we decided to not support them since th=
-e pool is not
-> > > > associated to any net_device in this case.
-> > >=20
-> > > It seems what jakub suggested is to 'extend netlink to dump unbound p=
-age pools'?
-> >=20
-> > I do not have a strong opinion about it (since we do not have any use-c=
-ase for
-> > it at the moment).
-> > In the case we want to support stats for per-cpu page_pools, I think we=
- should
-> > not create a per-cpu recycle_stats pointer and add a page_pool_recycle_=
-stats field
-> > in page_pool struct since otherwise we will endup with ncpu^2 copies, r=
-ight?
-> > Do we want to support it now?
-> >=20
-> > @Jakub, Jesper: what do you guys think?
-> >=20
->=20
->=20
-> I do see an need for being able to access page_pool stats for all
-> page_pool's in the system.
-> And I do like Jakub's netlink based stats.
+Pu Lehui <pulehui@huawei.com> writes:
 
-ack from my side if you have some use-cases in mind.
-Some questions below:
-- can we assume ethtool will be used to report stats just for 'global'
-  page_pool (not per-cpu page_pool)?
-- can we assume netlink/yaml will be used to report per-cpu page_pool stats?
+> On 2024/1/30 21:28, Bj=C3=B6rn T=C3=B6pel wrote:
+>> Pu Lehui <pulehui@huawei.com> writes:
+>>=20
+>>> On 2024/1/30 16:29, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>> Pu Lehui <pulehui@huaweicloud.com> writes:
+>>>>
+>>>>> On 2023/9/28 17:59, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>>>> Pu Lehui <pulehui@huaweicloud.com> writes:
+>>>>>>
+>>>>>>> From: Pu Lehui <pulehui@huawei.com>
+>>>>>>>
+>>>>>>> In the current RV64 JIT, if we just don't initialize the TCC in sub=
+prog,
+>>>>>>> the TCC can be propagated from the parent process to the subprocess=
+, but
+>>>>>>> the TCC of the parent process cannot be restored when the subprocess
+>>>>>>> exits. Since the RV64 TCC is initialized before saving the callee s=
+aved
+>>>>>>> registers into the stack, we cannot use the callee saved register to
+>>>>>>> pass the TCC, otherwise the original value of the callee saved regi=
+ster
+>>>>>>> will be destroyed. So we implemented mixing bpf2bpf and tailcalls
+>>>>>>> similar to x86_64, i.e. using a non-callee saved register to transf=
+er
+>>>>>>> the TCC between functions, and saving that register to the stack to
+>>>>>>> protect the TCC value. At the same time, we also consider the scena=
+rio
+>>>>>>> of mixing trampoline.
+>>>>>>
+>>>>>> Hi!
+>>>>>>
+>>>>>> The RISC-V JIT tries to minimize the stack usage, e.g. it doesn't ha=
+ve a
+>>>>>> fixed pro/epilogue like some of the other JITs. I think we can do be=
+tter
+>>>>>> here, so that the pass-TCC-via-register can be used, and the additio=
+nal
+>>>>>> stack access can be avoided.
+>>>>>>
+>>>>>> Today, the TCC is passed via a register (a6) and can be viewed as a
+>>>>>> "state" variable/transparent argument/return value. As you point out=
+, we
+>>>>>> loose this when we do a call. On (any) calls we move the TCC to a
+>>>>>> callee-saved register.
+>>>>>>
+>>>>>> WDYT about the following scheme:
+>>>>>>
+>>>>>> 1 Pickup the arm64 bpf2bpf/tailmix mechanism of just clearing the TCC
+>>>>>>      for the main program.
+>>>>>> 2 For BPF helper calls, move TCC to s6, perform the call, and restore
+>>>>>>      a6. Dito for kfunc calls (BPF_PSEUDO_KFUNC_CALL).
+>>>>>> 3 For all other calls, a6 is passed transparently.
+>>>>>>
+>>>>>> For 2 bpf_jit_get_func_addr() can be used to determine if the callee=
+ is
+>>>>>> a BPF helper or not.
+>>>>>>
+>>>>>> In summary; Determine in the JIT if we're leaving BPF-land, and need=
+ to
+>>>>>> move the TCC to a callee-saved reg, or not, and save us a bunch of s=
+tack
+>>>>>> store/loads.
+>>>>>>
+>>>>>
+>>>>> Valuable scheme. But we need to consider TCC back propagation. Let me
+>>>>> show an example of calling subprog with TCC stored in A6:
+>>>>>
+>>>>> prog1(TCC=3D=3D1){
+>>>>>        subprog1(TCC=3D=3D1)
+>>>>>            -> tailcall1(TCC=3D=3D0)
+>>>>>                -> subprog2(TCC=3D=3D0)
+>>>>>        subprog3(TCC=3D=3D0) <--- should be TCC=3D=3D1
+>>>>>            -\-> tailcall2 <--- can't be called
+>>>>> }
+>>>
+>>> Let's back with this example again. Imagine that the tailcall chain is a
+>>> list limited to 33 elements. When the list has 32 elements, we call
+>>> subprog1 and then tailcall1. At this time, the list elements count
+>>> becomes 33. Then we call subprog2 and return prog1. At this time, the
+>>> list removes 1 element and becomes 32 elements. At this time, there
+>>> still can perform 1 tailcall.
+>>>
+>>> I've attached a diagram that shows mixing tailcall and subprogs is
+>>> nearly a "call". It can return to caller function.
+>>=20
+>> Hmm. Let me put my Q in another way.
+>>=20
+>> The kernel calls into BPF_PROG_RUN() (~a BPF context). Would it ever be
+>> OK to do more than 33 tail calls, regardless of subprogs or not?
+>>=20
+>> In your example, TCC is 1. You are allowed to perform one tail call. In
+>> your example prog1 performs two.
+>>=20
+>> My view of TCC has always been ~a counter of the number of tailcalls~.
+>>=20
+>> With your example expanded:
+>> prog1(TCC=3D=3D33){
+>>        subprog1(TCC=3D=3D33)
+>>            -> tailcall1(TCC=3D=3D33) -> tailcall1(TCC=3D=3D32) -> tailca=
+ll1(TCC=3D=3D31) -> ... // 33 times
+>>        // Lehui says TCC should be 33 again.
+>>        // Bj=C3=B6rn says "it's the number of tailcalls", and subprog3 c=
+annot perform a tail call
+>>        subprog3(TCC=3D=3D?)
+>
+> Yes, my view is take this something like a stack=EF=BC=8Cwhile you take t=
+his as=20
+> a fixed global value.
+>
+> prog1(TCC=3D=3D33){
+>      subprog1(TCC=3D=3D33)
+>          -> tailcall1(TCC=3D=3D33) -> tailcall1(TCC=3D=3D32) ->=20
+> tailcall1(TCC=3D=3D31) -> ... // 33 times -> subprog2(TCC=3D=3D0)
+>      subprog3(TCC=3D=3D33)
+> 	-> tailcall1(TCC=3D=3D33) -> tailcall1(TCC=3D=3D32) -> tailcall1(TCC=3D=
+=3D31) ->=20
+> ... // 33 times
+>
+>>=20=20=20=20=20=20=20=20=20=20=20=20
+>> My view has, again, been than TCC is a run-time count of the number
+>> tailcalls (fentry/fexit patch bpf-programs included).
+>>=20
+>> What does x86 and arm64 do?
+>
+> When subprog return back to caller bpf program, they both restore TCC to=
+=20
+> the value when enter into subprog. The ARM64 uses the callee saved=20
+> register to store the TCC. When the ARM64 exits, the TCC is restored to=20
+> the value when it enter. The while x86 uses the stack to do the same thin=
+g.
 
-I think in the current series we can fix the accounting part (in particular
-avoiding memory wasting) and then we will figure out how to report percpu
-page_pool stats through netlink/yaml. Agree?
+Ok! Thanks for clarifying. I'll continue reviewing the v2 of your
+series!
 
-Regards,
-Lorenzo
+BTW, I wonder if we can trigger this [1] on RV64 -- i.e. calling the
+main prog, will reset the tcc count.
 
->=20
-> --Jesper
-> (p.s. I'm debugging some production issues with page_pool and broadcom
-> bnxt_en driver).
->=20
-
---XGsBPEjow8ZYXOm2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZbkdbgAKCRA6cBh0uS2t
-rPJHAP9rXcNf2AVzWKoU8ZHGcju4f1EgGLYov0X+uPMRZ8n/vwEAor0WqOqXpmKB
-KD0CZsS0eaVlAe5RMs1AIUlDXHLU3g8=
-=UQ1L
------END PGP SIGNATURE-----
-
---XGsBPEjow8ZYXOm2--
-
+[1] https://lore.kernel.org/bpf/20240104142226.87869-1-hffilwlqm@gmail.com/
 
