@@ -1,340 +1,259 @@
-Return-Path: <bpf+bounces-20813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBF8843C0C
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 11:18:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BCDD843CA8
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 11:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4C71F2E1DA
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 10:18:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0DC41C29DB9
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 10:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F060669D3A;
-	Wed, 31 Jan 2024 10:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C475D69D28;
+	Wed, 31 Jan 2024 10:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mP47x4tn"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="r1w+SIgG";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="prxagr4L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921A169DE7
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 10:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8BE679E1;
+	Wed, 31 Jan 2024 10:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706696249; cv=none; b=sbis+gFdfwz/Vf2X5oD6cRaRQqeE/8e2pOpmaalmmobR27PBYqU+cqCfGWhQYTwITl3SttItdWenWgM5pTamblnB2whrv0bnsJmdXDRKGOW4glxR75WH3UG0WXh25CnaIdMU8vD7CkRYCewi5e4fgsbvR8nVC4ZK5fymVuXIw6g=
+	t=1706696963; cv=none; b=dk3hHH+GlH8o99PbocNQafNofQh1ibF+bPQETRAgeK2lgfefbWwmn8tHeWNEz+8D4bTRr20YyEOTAmuSRt6F47OIJw/y/Vcu0rzlOPNnTUd3hgfZi5BfEW10GZJ4bKHJ/dR6XEuNSSkKmuKHJkiLwX8SlwEThU1xTlRdcfVQtNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706696249; c=relaxed/simple;
-	bh=yUuz6hebVSeXiFkSKnqASjz3I83BWvGCzggabipw4cs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2PctjXOIkT6qpnUG2RJS2OYsXgJXsNcekZFlMCDM+OBCdFwlQ5JSWFoPZ/UEldTZ49ViOY7Dehtdd12UpYdWfhXJfWXiD0BHFGjb6kML+5pXKCyRigUmWbyUIl1VoJJINRUkPBCbNhJ2fsty9GBz3UK0kQyAsZ1T+/UcyuSWD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mP47x4tn; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a318ccfe412so460651866b.1
-        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 02:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706696246; x=1707301046; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0em8U0+0sl6De9HDgjEakS243y8mn+HEizRX4jBipog=;
-        b=mP47x4tnvnnRnLSIJK9yuicMY9LN8SxTr55B2WY7lyvfkTzdryhgYN6RtCuj313buf
-         qz82Rt7rW5sn1Hh4V0RYnj1D8DReIU+abhgDAoIizYcQr08Cw/8rStsTKoWnq2dNUE9h
-         ft4/TCWiHbTZzl9454weZUB/0EvQLbLYbU4uKMJGrcPN2Qa8lM8zD7rqgNYUNgMTxpPF
-         QB2bSLHno7La6Xw6/crpGh1qN6Crwn6HhKQqQvEhCHRA15JydqS/2Cj53HcS3l2IcYnL
-         A5QrwA/lTX0Y8e1XUjR5oKEoVpj6m8Ru6hAH1Ph+hOrNPfoBUMe/SZ5bZkCBHCjiu+F1
-         Gz3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706696246; x=1707301046;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0em8U0+0sl6De9HDgjEakS243y8mn+HEizRX4jBipog=;
-        b=hWV3xKmhY0I33jSVFpbiMaRVzcIWdRnSKrDg1K5mstWdn6TgbxlCqVLcRz0cPkmqlL
-         dj76FpPP0xWKP4lwarGACRZ/ye//919XjMjgAgWrpYtX3Ar24HD1OZWSeYrOmBQhfH5a
-         nzWoOFVuekkEoDey3WjE33Svd99UpAkqxUSV0TwK7yp+lnyiX15uI8XKgjkB/9hrrlZJ
-         R70yxLdc42Rhx148vSYMu3UprhDHcI+Us2t+g8iQ4FCjkrgRyUybTzFDAzqD5//u9HoL
-         nLfLGHuH9bxFj966uIWucS++u1c5ukTAj0eaml5JM6TLPBcrEP8fbabSqjwmYOi6gPj7
-         o0pg==
-X-Gm-Message-State: AOJu0YwrNUYawl7fwqnz85uAUC6n2OlRUkihJ3WUJz677ap3//ZXU3pu
-	i83qI8gOAUwRBP2pi5ggBBbGBO/hNCLJY/RE2JcoX9w/q6ooLWMW
-X-Google-Smtp-Source: AGHT+IHt+xwJs1YtbjDk1NtAjOtpmDY1ZLfyc8gV2zOeOomn+NRfZT6NLkpbmGTFf2K2i+VJpUABOQ==
-X-Received: by 2002:a17:906:1b16:b0:a2d:9c52:bc2 with SMTP id o22-20020a1709061b1600b00a2d9c520bc2mr815938ejg.18.1706696245516;
-        Wed, 31 Jan 2024 02:17:25 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVSKrL4HlEJO1owEmRxHf5jGrz1aCM9LrTj7Jhidomw0wzNaD7HjLAaViiZdsq8kgNLRssQfhVBBYCyR9DlNLhuXDbUuoK2vCbKxYYZUSE7/SD3vZ2aetFceT2opGYhbvuJuGAuZfmshVz6BtCeVESx8n8i1OqJYG843oy6LaK+KH2JOVy95vaCaBZHhymtMc5hSzH8p814dsYhDQ==
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id r26-20020a170906c29a00b00a35cb514aaesm2904715ejz.82.2024.01.31.02.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 02:17:25 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 31 Jan 2024 11:17:23 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: acme@kernel.org, quentin@isovalent.com, andrii.nakryiko@gmail.com,
-	ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v3] pahole: Inject kfunc decl tags into BTF
-Message-ID: <ZboeMyIvGChjaBLY@krava>
-References: <0f25134ec999e368478c4ca993b3b729c2a03383.1706491733.git.dxu@dxuuu.xyz>
+	s=arc-20240116; t=1706696963; c=relaxed/simple;
+	bh=FmRhJrNN5tdkYj1oEn1WGlN9crcXpNJmsF89y7Q5CxM=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=UX/nDSKraDQnzX4DfkiJmamYy6ac8pdhCvUfEm+3Ik9dDReOUBXvGK2kS5g2MqDE3xP1TWPv9I0Bqg+lPl0Wrn3SclVfd9tctB6DlSRaVATa4VRTsQZFKDap5N+Zsk1M/XGivNyADib9/NA7skAIa29IuwrIhXinS/U4GeKguT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=r1w+SIgG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=prxagr4L; arc=none smtp.client-ip=66.111.4.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 677D15C00BF;
+	Wed, 31 Jan 2024 05:29:20 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 31 Jan 2024 05:29:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1706696960;
+	 x=1706783360; bh=iKsNv795W6E/GbLdxQpU+VkSSklR3RfYg2NP17KrEuU=; b=
+	r1w+SIgGWw7dJyt3GzIZOgqo2n/eeg1SXNYzBJKIHR6M+ZtY9LOh/WzC8xl5ZyiX
+	KGiDo4w+ZuwSEQ1vuvGYQvBLaMADawKJeAQY6vMvLojc2nTufc2dwLrdoan28w8L
+	NX4TquETi11QgoauczLec/BpoD1TxBXJ0E5lzJwPQP1Z6V2oWv+o+FEyeeyPYpVn
+	gT8ibuoLeRJlzl96Gs9TKtcIl7CcSgc/LXeZUQCWW8n7s5lOftNa2Mert2BDm2GP
+	YaaVIomhQwxG6eFGNlsVVWMLtp8Y5UtRyG+22deQB/OrbIIMR0mNY97d5YsDwNXi
+	l/a/oPZxoUjFG27YrK7sgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706696960; x=
+	1706783360; bh=iKsNv795W6E/GbLdxQpU+VkSSklR3RfYg2NP17KrEuU=; b=p
+	rxagr4LAAt5LDBTk5TLUgiJy31iihbvdHZuht6v/ZdhedjYllhFfqCe81x2f95Zo
+	7c6qF6Vqn0Ct+PWPC0LPmC2q3oxm8PJ+97vM2ReNQS4BnfuikN8+tFzLSVwAiLnB
+	XCwpMLMC/apTM5pOXQjPBmynVDClv9VC0FVmqluRrpBax54ys6yQVKOB8+JxDgx7
+	CeJBEi5CJKu+A2PM+6A9QnmPb1gRmwAS45hIUBOcJLxv4NTuzCD+RmnYS8OKNWo/
+	J/L2JLLQS3iQN6M066Waa64UWuCrsmuVL2LkuV7ucDjl3KDA2RKS79l+cG3uXD9h
+	80+Nmub29smTdXwFwugbg==
+X-ME-Sender: <xms:_iC6ZWx41lQGmTgxNQPv033inelQFUqqgqhGoRB1Yy_Suw3I8Xelgg>
+    <xme:_iC6ZSRqCMMRGR4dsf2AkWDbTf6DTYgj0B5L_el4qpBjc-H_WY24kzGjuScisGao2
+    yzSLAe8OaA_rRy8Tlo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtledgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:_iC6ZYXhgaK38oMGNaGPwVUfqTjpiERjPnsH4firn_SwhCPxrErYHA>
+    <xmx:_iC6ZcjvaWNtDsNaKMs_RAFWnK9ju6FdUo2vEcbE8gjZqfayeaG8bg>
+    <xmx:_iC6ZYCMLDoeolGZs_ufJ7ezycNWlbfwu69_HSZoxwUOXAZXBSQ_Mw>
+    <xmx:ACG6ZY2U-kSIMTC4srsLhXKXwUwJquPF-ApdBE0B8lL06BOUgQl9CQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 44453B6008D; Wed, 31 Jan 2024 05:29:18 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f25134ec999e368478c4ca993b3b729c2a03383.1706491733.git.dxu@dxuuu.xyz>
+Message-Id: <1036060c-25dd-439b-b081-893d0cb000f6@app.fastmail.com>
+In-Reply-To: <269edff0-d989-4ac8-b0c3-bce31283806b@kalrayinc.com>
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-32-ysionneau@kalray.eu>
+ <995eb624-3efe-10fc-a6ed-883d52d591bb@linaro.org>
+ <269edff0-d989-4ac8-b0c3-bce31283806b@kalrayinc.com>
+Date: Wed, 31 Jan 2024 11:28:57 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Yann Sionneau" <ysionneau@kalrayinc.com>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+ "Yann Sionneau" <ysionneau@kalray.eu>,
+ "Jonathan Corbet" <corbet@lwn.net>,
+ "Thomas Gleixner" <tglx@linutronix.de>, "Marc Zyngier" <maz@kernel.org>,
+ "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+ "Will Deacon" <will@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Boqun Feng" <boqun.feng@gmail.com>,
+ "Mark Rutland" <mark.rutland@arm.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ "Kees Cook" <keescook@chromium.org>, "Oleg Nesterov" <oleg@redhat.com>,
+ "Ingo Molnar" <mingo@redhat.com>, "Waiman Long" <longman@redhat.com>,
+ "Aneesh Kumar" <aneesh.kumar@linux.ibm.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Paul Moore" <paul@paul-moore.com>, "Eric Paris" <eparis@redhat.com>,
+ "Christian Brauner" <brauner@kernel.org>,
+ "Paul Walmsley" <paul.walmsley@sifive.com>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Albert Ou" <aou@eecs.berkeley.edu>,
+ "Jules Maselbas" <jmaselbas@kalray.eu>,
+ "Guillaume Thouvenin" <gthouvenin@kalray.eu>,
+ "Clement Leger" <clement@clement-leger.fr>,
+ "Vincent Chardon" <vincent.chardon@elsys-design.com>,
+ =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
+ "Julian Vetter" <jvetter@kalray.eu>, "Samuel Jones" <sjones@kalray.eu>,
+ "Ashley Lesdalons" <alesdalons@kalray.eu>,
+ "Thomas Costis" <tcostis@kalray.eu>, "Marius Gligor" <mgligor@kalray.eu>,
+ "Jonathan Borne" <jborne@kalray.eu>,
+ "Julien Villette" <jvillette@kalray.eu>,
+ "Luc Michel" <lmichel@kalray.eu>, "Louis Morhet" <lmorhet@kalray.eu>,
+ "Julien Hascoet" <jhascoet@kalray.eu>,
+ "Jean-Christophe Pince" <jcpince@gmail.com>,
+ "Guillaume Missonnier" <gmissonnier@kalray.eu>,
+ "Alex Michon" <amichon@kalray.eu>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "WANG Xuerui" <git@xen0n.name>,
+ "Shaokun Zhang" <zhangshaokun@hisilicon.com>,
+ "John Garry" <john.garry@huawei.com>,
+ "Guangbin Huang" <huangguangbin2@huawei.com>,
+ "Bharat Bhushan" <bbhushan2@marvell.com>,
+ "Bibo Mao" <maobibo@loongson.cn>, "Atish Patra" <atishp@atishpatra.org>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>, "Qi Liu" <liuqi115@huawei.com>,
+ "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Mark Brown" <broonie@kernel.org>,
+ "Janosch Frank" <frankja@linux.ibm.com>,
+ "Alexey Dobriyan" <adobriyan@gmail.com>,
+ "Julian Vetter" <jvetter@kalrayinc.com>, jmaselbas@zdiv.net
+Cc: "Benjamin Mugnier" <mugnier.benjamin@gmail.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mm@kvack.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-audit@redhat.com,
+ linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v2 31/31] kvx: Add IPI driver
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 28, 2024 at 06:30:19PM -0700, Daniel Xu wrote:
-> This commit teaches pahole to parse symbols in .BTF_ids section in
-> vmlinux and discover exported kfuncs. Pahole then takes the list of
-> kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
-> 
-> Example of encoding:
-> 
->         $ bpftool btf dump file .tmp_vmlinux.btf | rg "DECL_TAG 'bpf_kfunc'" | wc -l
->         121
-> 
->         $ bpftool btf dump file .tmp_vmlinux.btf | rg 56337
->         [56337] FUNC 'bpf_ct_change_timeout' type_id=56336 linkage=static
->         [127861] DECL_TAG 'bpf_kfunc' type_id=56337 component_idx=-1
-> 
-> This enables downstream users and tools to dynamically discover which
-> kfuncs are available on a system by parsing vmlinux or module BTF, both
-> available in /sys/kernel/btf.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> 
-> ---
-> Changes from v2:
-> * More reliably detect kfunc membership in set8 by tracking set addr ranges
-> * Rename some variables/functions to be more clear about kfunc vs func
-> 
-> Changes from v1:
-> * Fix resource leaks
-> * Fix callee -> caller typo
-> * Rename btf_decl_tag from kfunc -> bpf_kfunc
-> * Only grab btf_id_set funcs tagged kfunc
-> * Presort btf func list
-> 
->  btf_encoder.c | 347 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 347 insertions(+)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index fd04008..4f742b1 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -34,6 +34,11 @@
->  #include <pthread.h>
->  
->  #define BTF_ENCODER_MAX_PROTO	512
-> +#define BTF_IDS_SECTION		".BTF_ids"
-> +#define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
-> +#define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
-> +#define BTF_SET8_KFUNCS		(1 << 0)
-> +#define BTF_KFUNC_TYPE_TAG	"bpf_kfunc"
->  
->  /* state used to do later encoding of saved functions */
->  struct btf_encoder_state {
-> @@ -79,6 +84,7 @@ struct btf_encoder {
->  			  gen_floats,
->  			  is_rel;
->  	uint32_t	  array_index_id;
-> +	struct gobuffer   btf_funcs;
+On Wed, Jan 31, 2024, at 10:52, Yann Sionneau wrote:
+> On 22/01/2023 12:54, Krzysztof Kozlowski wrote:
+>> On 20/01/2023 15:10, Yann Sionneau wrote:
+>>> +
+>>> +int __init kvx_ipi_ctrl_probe(irqreturn_t (*ipi_irq_handler)(int, v=
+oid *))
+>>> +{
+>>> +	struct device_node *np;
+>>> +	int ret;
+>>> +	unsigned int ipi_irq;
+>>> +	void __iomem *ipi_base;
+>>> +
+>>> +	np =3D of_find_compatible_node(NULL, NULL, "kalray,kvx-ipi-ctrl");
+>> Nope, big no.
+>>
+>> Drivers go to drivers, not to arch code. Use proper driver infrastruc=
+ture.
+> Thank you for your review.
+>
+> It raises questions on our side about how to handle this change.
+>
+> First let me describe the hardware:
+>
+> The coolidge ipi controller device handles IPI communication between c=
+pus
+> inside a cluster.
+>
+> Each cpu has 8 of its dedicated irq lines (24 to 31) hard-wired to the=
+ ipi.
+> The ipi controller has 8 sets of 2 registers:
+> - a 17-bit "interrupt" register
+> - a 17-bit "mask" register
+>
+> Each couple of register is dedicated to 1 of the 8 irqlines.
+> Each of the 17 bits of interrupt/mask register
+> identifies a cpu (cores 0 to 15 + secure_core).
+> Writing bit i in interrupt register sends an irq to cpu i, according t=
+o the mask
+> in mask register.
+> Writing in interrupt/mask register couple N targets irq line N of the =
+core.
+>
+> - Ipi generates an interrupt to the cpu when message is ready.
+> - Messages are delivered via Axi.
+> - Ipi does not have any interrupt input lines.
+>
+>
+> =C2=A0 +---------------+=C2=A0=C2=A0 irq=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 axi_w
+> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 i=C2=A0=
+ |<--/--- ipi <------
+> =C2=A0 | CPU=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 n=C2=A0 |=C2=A0 x8
+> =C2=A0 |=C2=A0 core0=C2=A0 |=C2=A0 t=C2=A0 |
+> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 c=C2=A0=
+ |=C2=A0 irq=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 irq=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 msi
+> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 t=C2=A0=
+ |<--/--- apic <----- mbox <-------
+> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 l=C2=A0=
+ |=C2=A0 x4
+> =C2=A0 +---------------+
+> =C2=A0 with intctl =3D core-irq controller
+>=C2=A0=C2=A0 =C2=A0
+>
+> We analyzed how other Linux ports are handling this situation (IPI) an=
+d=20
+> here are several possible solutions:
+>
+> 1/ put everything in smp.c like what longarch is doing.
+> =C2=A0 * Except that IPI in longarch seems to involve writing to a spe=
+cial=20
+> purpose CPU register and not doing a memory mapped write like kvx.
+>
+> 2/ write a device driver in drivers/xxx/ with the content from ipi.c
+> =C2=A0 * the probe would just ioremap the reg from DT and register the=
+ irq=20
+> using request_percpu_irq()
+> =C2=A0 * it would export a function "kvx_ipi_send()" that would direct=
+ly be=20
+> called by smp.c
+> =C2=A0 * Question : where would this driver be placed in drivers/ ?=20
+> drivers/irqchip/ ? Even if this is not per-se an interrupt-controller=20
+> driver?
 
-why does this need to be stored in encoder?
+This looks like it's close enough to the irqchip driver
+that you can just have it in the same file as the 'intctl'
+portion.
 
->  	struct {
->  		struct var_info vars[MAX_PERCPU_VAR_CNT];
->  		int		var_cnt;
-> @@ -94,6 +100,17 @@ struct btf_encoder {
->  	} functions;
->  };
->  
+Top-level irqchip implementations tend to be rather architecture
+specific, as does the IPI mechanism. Depending on the register
+layout, I think you can have a single devicetree node for
+the combination of the core-irq (for managing your
+own interrupts) and the ipi (for receiving interrupts from
+others), and then have a driver in drivers/irqchip to
+deal with both. For the ipi mechanism, trying to abstract
+it too much generally makes it too slow, so I would not
+go through a nested irqchip or a mailbox driver etc.
 
-SNIP
+I don't know what the 'apic' in your diagram is, so that
+would be either a nested irqchip or could be part of
+the same driver as well.
 
-> +/* Returns if `sym` points to a kfunc set */
-> +static int is_sym_kfunc_set(GElf_Sym *sym, const char *name, Elf_Data *idlist, size_t idlist_addr)
-> +{
-> +	int *ptr = idlist->d_buf;
-> +	int idx, flags;
-> +	bool is_set8;
-> +
-> +	/* kfuncs are only found in BTF_SET8's */
-> +	is_set8 = !strncmp(name, BTF_ID_SET8_PFX, sizeof(BTF_ID_SET8_PFX) - 1);
-> +	if (!is_set8)
-> +		return false;
-> +
-> +	idx = sym->st_value - idlist_addr;
-> +	if (idx >= idlist->d_size) {
-> +		fprintf(stderr, "%s: symbol '%s' out of bounds\n", __func__, name);
-> +		return false;
-> +	}
-> +
-> +	/* Check the set8 flags to see if it was marked as kfunc */
-> +	idx = idx / sizeof(int);
-> +	flags = ptr[idx + 1];
-> +	return flags & BTF_SET8_KFUNCS;
-
-I wonder it'd be easier to read/follow if we bring struct btf_id_set8
-declaration in here and use it to get the flags field
-
-> +}
-> +
-> +/*
-> + * Parse BTF_ID symbol and return the func name.
-> + *
-> + * Returns:
-> + *	Caller-owned string containing func name if successful.
-> + *	NULL if !func or on error.
-> + */
-> +
-
-SNIP
-
-> +	/* Cannot resolve symbol or .BTF_ids sections. Nothing to do. */
-> +	if (symbols_shndx == -1 || idlist_shndx == -1) {
-> +		err = 0;
-> +		goto out;
-> +	}
-> +
-> +	if (!gelf_getshdr(symscn, &shdr)) {
-> +		elf_error("Failed to get ELF symbol table header");
-> +		goto out;
-> +	}
-> +	nr_syms = shdr.sh_size / shdr.sh_entsize;
-> +
-> +	err = btf_encoder__collect_btf_funcs(encoder);
-> +	if (err) {
-> +		fprintf(stderr, "%s: failed to collect BTF funcs\n", __func__);
-> +		goto out;
-> +	}
-> +
-> +	/* First collect all kfunc set ranges.
-> +	 *
-> +	 * Note we choose not to sort these ranges and accept a linear
-> +	 * search when doing lookups. Reasoning is that the number of
-> +	 * sets is ~O(100) and not worth the additional code to optimize.
-> +	 */
-
-I think we could event add gobuffer interface/support to sort and search
-quickly the data (we use it in other place), but that can be done as follow
-up when it will become a problem as you pointed out
-
-> +	for (i = 0; i < nr_syms; i++) {
-> +		struct btf_kfunc_set_range range = {};
-> +		const char *name;
-> +		GElf_Sym sym;
-> +
-> +		if (!gelf_getsym(symbols, i, &sym)) {
-> +			elf_error("Failed to get ELF symbol(%d)", i);
-> +			goto out;
-> +		}
-> +
-> +		if (sym.st_shndx != idlist_shndx)
-> +			continue;
-> +
-> +		name = elf_strptr(elf, strtabidx, sym.st_name);
-> +		if (!is_sym_kfunc_set(&sym, name, idlist, idlist_addr))
-> +			continue;
-> +
-> +		range.start = sym.st_value;
-> +		range.end = sym.st_value + sym.st_size;
-> +		gobuffer__add(&btf_kfunc_ranges, &range, sizeof(range));
-> +	}
-> +
-> +	/* Now inject BTF with kfunc decl tag for detected kfuncs */
-> +	for (i = 0; i < nr_syms; i++) {
-> +		const struct btf_kfunc_set_range *ranges;
-> +		unsigned int ranges_cnt;
-> +		char *func, *name;
-> +		GElf_Sym sym;
-> +		bool found;
-> +		int err;
-> +		int j;
-> +
-> +		if (!gelf_getsym(symbols, i, &sym)) {
-> +			elf_error("Failed to get ELF symbol(%d)", i);
-> +			goto out;
-> +		}
-> +
-> +		if (sym.st_shndx != idlist_shndx)
-> +			continue;
-> +
-> +		name = elf_strptr(elf, strtabidx, sym.st_name);
-> +		func = get_func_name(name);
-> +		if (!func)
-> +			continue;
-> +
-> +		/* Check if function belongs to a kfunc set */
-> +		ranges = gobuffer__entries(&btf_kfunc_ranges);
-> +		ranges_cnt = gobuffer__nr_entries(&btf_kfunc_ranges);
-> +		found = false;
-> +		for (j = 0; j < ranges_cnt; j++) {
-> +			size_t addr = sym.st_value;
-
-missing newline after declaration
-
-> +			if (ranges[j].start <= addr && addr < ranges[j].end) {
-> +				found = true;
-> +				break;
-> +			}
-> +		}
-> +		if (!found)
-
-leaking func
-
-jirka
-
-> +			continue;
-> +
-> +		err = btf_encoder__tag_kfunc(encoder, func);
-> +		if (err) {
-> +			fprintf(stderr, "%s: failed to tag kfunc '%s'\n", __func__, func);
-> +			free(func);
-> +			goto out;
-> +		}
-> +		free(func);
-> +	}
-> +
-> +	err = 0;
-> +out:
-> +	__gobuffer__delete(&btf_kfunc_ranges);
-> +	if (elf)
-> +		elf_end(elf);
-> +	if (fd != -1)
-> +		close(fd);
-> +	return err;
-> +}
-> +
->  int btf_encoder__encode(struct btf_encoder *encoder)
->  {
->  	int err;
-> @@ -1366,6 +1704,14 @@ int btf_encoder__encode(struct btf_encoder *encoder)
->  	if (btf__type_cnt(encoder->btf) == 1)
->  		return 0;
->  
-> +	/* Note vmlinux may already contain btf_decl_tag's for kfuncs. So
-> +	 * take care to call this before btf_dedup().
-> +	 */
-> +	if (btf_encoder__tag_kfuncs(encoder)) {
-> +		fprintf(stderr, "%s: failed to tag kfuncs!\n", __func__);
-> +		return -1;
-> +	}
-> +
->  	if (btf__dedup(encoder->btf, NULL)) {
->  		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
->  		return -1;
-> @@ -1712,6 +2058,7 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->  
->  	btf_encoders__delete(encoder);
->  	__gobuffer__delete(&encoder->percpu_secinfo);
-> +	__gobuffer__delete(&encoder->btf_funcs);
->  	zfree(&encoder->filename);
->  	btf__free(encoder->btf);
->  	encoder->btf = NULL;
-> -- 
-> 2.42.1
-> 
+     Arnd
 
