@@ -1,156 +1,162 @@
-Return-Path: <bpf+bounces-20848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892548445DD
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 18:18:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF428445F1
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 18:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 286A21F29B29
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 17:18:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2F172936C9
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 17:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4172D12CD95;
-	Wed, 31 Jan 2024 17:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2917812DD8F;
+	Wed, 31 Jan 2024 17:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l/zI9xlH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OgdjG5P8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D522374D4
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 17:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF2F12DD88
+	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 17:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706721457; cv=none; b=c8cTwdYcJN9H53ezfy2H87ZGDZxBNMHelgy7BoVQjfUdXdlLV0cxUdZIjCdp5yMueZ5CRyLmZdSrTKbdQipXVcsga3yAkWTqAmaXdpq1gRuqNt8Bhr+uyqrYJyHM2A7pwNGBxVbRHSUQuLsYxd+91GvJTEFuSwdYZsMf5ekBdn4=
+	t=1706721620; cv=none; b=aWnaOwp/vZ0BfPGoKIuUdkAs78rFqFnQWHvae0VfTX4ZK7tMPSEPd0cCWDWt785ExRY16VMIoioEoMN1PcsKQQ6vbhASNWIUszna2JWerJP9ERG//O0PC2yGCGbk6JR8tozFI+ewZ7jnIM4URwMb0S30WpswxkAxlxWCVCEzxDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706721457; c=relaxed/simple;
-	bh=/xSK3slDLqoog/D9NUpi6uNSRTi+DFQWsec+4dlU2bg=;
+	s=arc-20240116; t=1706721620; c=relaxed/simple;
+	bh=0CFn8BuWrpJOLYKHyaPdWB7mQCHdNSB4rcIW5NbAo4o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mDFA477qi0hu7mjltmvLQ2t5GRybCr+e6rSITdZNbELWNk4eF0N/EDLn4fY7gSp7qtAfZAFVrM4Tdl9fbr4vet8MBwD0y08x/JCl9F8klDOaymEa2xq4KqfHZDhut8JZehiG7fitgHHbBhLnEZRVehp6lygXA1WYNgK62gt6xr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l/zI9xlH; arc=none smtp.client-ip=209.85.210.174
+	 To:Cc:Content-Type; b=oTtEMDVXy61mBF5LD4Yi/Jin0/yRmtjbZPrmw7SU14zqnKGNAAoxiWMApWdES8MQEJwkhP/cDf7Ek4ydzSxaLWAWU20cXziaMbqvjx96K7B+1bwmnu8aVY8jBPd9Dfsu8Q/oKjhKYiEdYz6dGWKXKEb4vuNqkcKwxdUF91MIr2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OgdjG5P8; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ddcfda697cso4048284b3a.2
-        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 09:17:36 -0800 (PST)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so15172a12.3
+        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 09:20:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706721455; x=1707326255; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706721618; x=1707326418; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OqmrikcEBlv98Prhlo9GrrnV9aeU6tJgvtSDi/yX/+M=;
-        b=l/zI9xlHvDYMY1HtjNyPp5g0Vsm4QLH//vgip2jI6yCwcGlKocnJPx4e+aFpzFaSCf
-         Tt8/YGkKyj7ODSjZo4wO6SwMOGP3H4LcVp1oeyCJXsh8VqSLmcFRDzrssG80b8BvKm31
-         yg1C+/t2ZgTpFD8V314hzTKPC5jkf+M84BWsDvnUWomTsWg4X2vBEyywfmkvqhknIbES
-         lysRumrgxh7tIDbGQGqlP5niLEB1JnTjyogrC4WpL2A/Id15ymjWDSHImlSwiAnnk5v9
-         A177YedeTekshrz4Exn2WOpxXJ3+EH2FyzTLzMr4JI+ny3RGWdnzBp7KKYARSOLQcDjK
-         aVPg==
+        bh=gVSVVcLMjn0NR2gfnomjJDyreqVcVAFjkPr1GV2cTCg=;
+        b=OgdjG5P8x51ysd5M0ABIh1peBHA2zq1SQt00PaAJERfzjvPNCV5JU4CFRlxdcChkoT
+         HcwPqylN+rNvJv/6mf2KP+kmO7IuDdXwzVa86xqUMzo3qu6Imz+48hhpTInQlUWrMZYO
+         cgYipAKmsv1sl/mUFbd1Nia2UmnIjWuGi2B4VT1S70UzL4OBFPxwCM4EaYPf0oK2tg2a
+         S9Ic52b1KY5Yb6PD73Gc+cn3h6yv7PcE99HZJDTpMXzhAaaR5MtrRpVVEkdAplR9z2KV
+         W5Fjii31oGMWsCW7D+xWvxXsNC6cxSG/owe+7fDWxHMxgOpnjqTrLCrFaIgzePQ+wASW
+         /hjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706721455; x=1707326255;
+        d=1e100.net; s=20230601; t=1706721618; x=1707326418;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OqmrikcEBlv98Prhlo9GrrnV9aeU6tJgvtSDi/yX/+M=;
-        b=AEqeFIb6hDpSWtOA77Bf2r9PGpP0btgzyqzxdJg7S2MoyEFzU5OHzlOQNymbbPCp/c
-         oTJRUwzNIvuxBXRc/0B2KZSzqV1q+E8CdBb5BW0Js/t/u0Mk0daieOuFYDDKOKByci2Z
-         y5z7uvyekqVWytcI53ag/Q3kALTGlal96HM0WDw4RqnvyjNmseP4/IzQuCwvw4otYsri
-         UlJvUCYVgPGv1WPzGYZ/4qCumfdpjYgiDSbifH04emIohimJMLYlC01j2+HpEbx4lpB5
-         o1t1pDx5ZF0O8VG4GsoCteEN1jJg4dMybVsq7RFZZwtWeDbhpsvDpdPnj4BdHUTl1m8o
-         Vp2g==
-X-Gm-Message-State: AOJu0YyZqpHwXP0GGxISLlUq7gN8sHML/ycOAvvbSNprvxpc0Bk0gBai
-	JElUHsqFcyc1Rq13NxcnNqxTLl6I2xkZMs+flz/KSPXoCf2Jt7oaGo1grvezPhIONXAdoop9/kC
-	wjH6eyRVQLvW8g+myKwzls/Xbnkc//uaT
-X-Google-Smtp-Source: AGHT+IH9TLcMzYs8xFRD1hhA30BEuFF3PtoxIyGy9szqIhGaRjtwVU/Cw36hSXA/ZVD75qZyRHCNPeFN686IK+wCgSg=
-X-Received: by 2002:a05:6a00:23cb:b0:6db:d978:9047 with SMTP id
- g11-20020a056a0023cb00b006dbd9789047mr2731743pfc.1.1706721455459; Wed, 31 Jan
- 2024 09:17:35 -0800 (PST)
+        bh=gVSVVcLMjn0NR2gfnomjJDyreqVcVAFjkPr1GV2cTCg=;
+        b=WahJnSgTvRqVPFFttkBdKXKqPCGJzJLQCIyGRRuTw9yN5IQ1jxuRV6Lv8RvR8r8O3v
+         5XT6o4zGbe+lBm2lvnizwthZH414UFHXmTENhJhn6+FHVxqvLqxib0SgqtGXpoPEPCT0
+         qtLPQbJPYU9YSJfNxoDWgs6tiDEO+ILPJlmUHnapm/+NxuDBlyECrX6HGqj3TsYqAGO6
+         cZAyNUOR99aOgNUZiRo6WFMMjDWV7712gUuPI4NplgZf2AYNbuwSDtzqX7OMZp5gH1LU
+         OOatVhQsbOFc1Ors0M+/6AkgAh2/mz7ZU4rilp8vp8HEf4liLAa2RwWfUv6DBr2duGNr
+         ExAw==
+X-Gm-Message-State: AOJu0Yx0TBx+n0vCUcZp75L1+erI2fTUscGlri5fGhet9jUl600l4lg9
+	NB7yMySoypIJWMt6cRA36tVk1OEZRKcd1lnlthO0r2VFl8Gb19UWJJdnBvm9xoPPQ3A8WyM/yDN
+	bT9Mtz2p/LIics7Nd+zE6LuZDkJU=
+X-Google-Smtp-Source: AGHT+IGLdUUlTK2VWsRhdw6hTcKMff9s8ZxCKzvY2UV4lcxR/hx0FjD/plR+f1OTImIhdUxSWDaxNm6fCAbdw4h1+ms=
+X-Received: by 2002:a05:6a20:6a9f:b0:19a:4e56:d81b with SMTP id
+ bi31-20020a056a206a9f00b0019a4e56d81bmr2038525pzb.27.1706721618599; Wed, 31
+ Jan 2024 09:20:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130193649.3753476-1-andrii@kernel.org> <20240130193649.3753476-6-andrii@kernel.org>
- <dad95ccc-1e24-4994-ab37-44288d6ff26b@linux.dev>
-In-Reply-To: <dad95ccc-1e24-4994-ab37-44288d6ff26b@linux.dev>
+References: <20240130193649.3753476-1-andrii@kernel.org> <20240130193649.3753476-4-andrii@kernel.org>
+ <3b4b98dd-64a6-4fbd-bc8f-45006cc0e089@linux.dev>
+In-Reply-To: <3b4b98dd-64a6-4fbd-bc8f-45006cc0e089@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 31 Jan 2024 09:17:23 -0800
-Message-ID: <CAEf4BzbdNxWBijaJgmEEjEYjv4aSdH_Sw7AHOm3FiTNDRdnUEg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: fix bench runner SIGSEGV
+Date: Wed, 31 Jan 2024 09:20:06 -0800
+Message-ID: <CAEf4BzZbZOg=OYuSmNZEj1guMxg-Jvxn1k_OeZM6UtDk8w20OQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add btf__new_split() API that was
+ declared but not implemented
 To: Yonghong Song <yonghong.song@linux.dev>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 11:41=E2=80=AFPM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
+On Tue, Jan 30, 2024 at 9:30=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
 >
 > On 1/30/24 11:36 AM, Andrii Nakryiko wrote:
-> > Some benchmarks don't anticipate "consumer" and/or "producer" sides. Ad=
-d
->
-> For this, you mean some future potential benchmarks, right?
-
-No, existing ones as well. Like trig-tp and other "trigger"
-benchmarks. I ran into this when I was trying to set consumers to 0
-explicitly, which wasn't allowed due to <=3D check. Then I fixed the
-check, and I ran into SIGSEGV. So I decided to fix that up.
-
->
-> > NULL checks in corresponding places and warn about inappropriate
-> > consumer/producer count argument values.
+> > Seems like original commit adding split BTF support intended to add
+> > btf__new_split() API, and even declared it in libbpf.map, but never
+> > added (trivial) implementation. Fix this.
 > >
+> > Fixes: ba451366bf44 ("libbpf: Implement basic split BTF support")
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> The patch LGTM. We did some cross checking between libbpf.map
+> and the implementation. What things are missing here to
+> capture missed implementation or LIBBPF_API marking?
+
+Yes, we still have it, and it does detect issues when API wasn't added
+into libbpf.map.
+
+I haven't investigated exactly why it didn't catch the issue when API
+is in libbpf.map, but is not marked with LIBBPF_API, but I suspect
+it's because existing check doesn't take into account visibility of
+the symbol, so there is some room for improvement.
+
+Similarly, not sure why it didn't detect that btf_ext__new_split()
+wasn't even implemented, probably because we don't distinguish UNDEF
+and FUNC symbols? So something to follow up on for sure.
+
 >
 > Acked-by: Yonghong Song <yonghong.song@linux.dev>
 >
 > > ---
-> >   tools/testing/selftests/bpf/bench.c | 10 +++++++++-
-> >   1 file changed, 9 insertions(+), 1 deletion(-)
+> >   tools/lib/bpf/btf.c      | 5 +++++
+> >   tools/lib/bpf/libbpf.map | 3 ++-
+> >   2 files changed, 7 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selfte=
-sts/bpf/bench.c
-> > index 73ce11b0547d..36962fc305eb 100644
-> > --- a/tools/testing/selftests/bpf/bench.c
-> > +++ b/tools/testing/selftests/bpf/bench.c
-> > @@ -330,7 +330,7 @@ static error_t parse_arg(int key, char *arg, struct=
- argp_state *state)
-> >               break;
-> >       case 'c':
-> >               env.consumer_cnt =3D strtol(arg, NULL, 10);
-> > -             if (env.consumer_cnt <=3D 0) {
-> > +             if (env.consumer_cnt < 0) {
-> >                       fprintf(stderr, "Invalid consumer count: %s\n", a=
-rg);
-> >                       argp_usage(state);
-> >               }
-> > @@ -607,6 +607,10 @@ static void setup_benchmark(void)
-> >               bench->setup();
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 95db88b36cf3..845034d15420 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -1079,6 +1079,11 @@ struct btf *btf__new(const void *data, __u32 siz=
+e)
+> >       return libbpf_ptr(btf_new(data, size, NULL));
+> >   }
 > >
-> >       for (i =3D 0; i < env.consumer_cnt; i++) {
-> > +             if (!bench->consumer_thread) {
-> > +                     fprintf(stderr, "benchmark doesn't have consumers=
-!\n");
-> > +                     exit(1);
-> > +             }
-> >               err =3D pthread_create(&state.consumers[i], NULL,
-> >                                    bench->consumer_thread, (void *)(lon=
-g)i);
-> >               if (err) {
-> > @@ -626,6 +630,10 @@ static void setup_benchmark(void)
-> >               env.prod_cpus.next_cpu =3D env.cons_cpus.next_cpu;
+> > +struct btf *btf__new_split(const void *data, __u32 size, struct btf *b=
+ase_btf)
+> > +{
+> > +     return libbpf_ptr(btf_new(data, size, base_btf));
+> > +}
+> > +
+> >   static struct btf *btf_parse_elf(const char *path, struct btf *base_b=
+tf,
+> >                                struct btf_ext **btf_ext)
+> >   {
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index d9e1f57534fa..386964f572a8 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -245,7 +245,6 @@ LIBBPF_0.3.0 {
+> >               btf__parse_raw_split;
+> >               btf__parse_split;
+> >               btf__new_empty_split;
+> > -             btf__new_split;
+> >               ring_buffer__epoll_fd;
+> >   } LIBBPF_0.2.0;
 > >
-> >       for (i =3D 0; i < env.producer_cnt; i++) {
-> > +             if (!bench->producer_thread) {
-> > +                     fprintf(stderr, "benchmark doesn't have producers=
-!\n");
-> > +                     exit(1);
-> > +             }
-> >               err =3D pthread_create(&state.producers[i], NULL,
-> >                                    bench->producer_thread, (void *)(lon=
-g)i);
-> >               if (err) {
->
+> > @@ -411,5 +410,7 @@ LIBBPF_1.3.0 {
+> >   } LIBBPF_1.2.0;
+> >
+> >   LIBBPF_1.4.0 {
+> > +     global:
+> >               bpf_token_create;
+> > +             btf__new_split;
+> >   } LIBBPF_1.3.0;
 
