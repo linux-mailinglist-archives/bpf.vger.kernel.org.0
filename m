@@ -1,188 +1,131 @@
-Return-Path: <bpf+bounces-20845-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20846-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D8148445A9
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 18:09:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B32B58445B6
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 18:12:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8ED529537D
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 17:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 682D71F21A3E
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 17:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D66212DD80;
-	Wed, 31 Jan 2024 17:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C7612BF31;
+	Wed, 31 Jan 2024 17:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="T5iPnbAR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="srIFDtbB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKUtBu03"
 X-Original-To: bpf@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058CD12CDB9
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 17:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A062E851
+	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 17:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720795; cv=none; b=QyCy0HgcGnGhl6Q5ZJebew13jZnbczn4NFLJOs4r7Z4ti/FWzS+7y76ZfCeBOQW41W75SYpWdGmIw05B6M4w8QBzLPSTV1l8wpXgn5i+5jAHCeE1AieaKHExDG8m6OeYWIEQJ5o5ip8bxskruYg3kQy2bj192C5OLqne9lJB86o=
+	t=1706721009; cv=none; b=ZhXrw+LTW/7DLRWd4NjdFzSXxjnW4Xu8Zga7RpiXJZ9nntdY8gpUdfeBVib5aqh+XeBPB8n8IxHW0HL5XTa4M47mWjcM+tRjeAlKzjRxc0HuoIvMXa0D/DN84VSMaZu6Ek7tSHF3pk1Ea89HGFXnVQn9RRSo0T7a801nkOmHwKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720795; c=relaxed/simple;
-	bh=nu8+6yKAAcTm+mnEIpJhlHyVysTNlVxyBylabbZd/MU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XuJMGYleBHP7PteIvFgXwE8VVLkT/RZlt1/5QOBLY9lEANA00YrH7dAOjt+s5wqmMdngC6UOoa3EGxJIpb6XNxv0fvX9iPFuw8T4hK/4M10yCOGU07AFclu59KlOKFByUJ1ZSOdONdYPv+FASMg1YrGCj8UmXZmYhTI+3iiDXpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=T5iPnbAR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=srIFDtbB; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id D7C2B5C0065;
-	Wed, 31 Jan 2024 12:06:31 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 31 Jan 2024 12:06:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706720791; x=1706807191; bh=KBpbO/KFac
-	zOvR4B7CvXFZygAZSzPgh7ANV5YxEBUJQ=; b=T5iPnbARRYcAgeD1CCsLbIYFby
-	u/F/bkI0CwH+7viFCKWdJEtTrICaORZxJLge6XF9lpZKL+lxSrTEELYY4AXjylC5
-	SKKo35Nh3fUEnHdFRFN/GTDJAXVidhH5Q7JvcZY8L4XCn+ASkAWPuVYe3dekqCxx
-	bCrT4Sj+t2ozu4vQlyM4SCmrKcTZEWwTrWnQ8LRHxc//UU6oz2boP6wV70v0aPKV
-	YpPAqSGuqkZgL/fUm6osSVE+fXhaAuRAnxGbzlcyvGX/gtJ08WP+blYT/6kn6yhp
-	qYlMydkBTBdqL/L7ysw8usRO+b9foLNJRqI6ZWjYPxRGkAorzJjrAY5Ta7jA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706720791; x=1706807191; bh=KBpbO/KFaczOvR4B7CvXFZygAZSz
-	Pgh7ANV5YxEBUJQ=; b=srIFDtbBKgYwQIAGgt59xhk8si2rAYBzbI5dewnXbcX5
-	O9D8DnfuGB7JZJX6y7nzqPXNyL2mZ1zDR+aGDE2CwRGk3ewL6JpWLpHtbMSyRjz9
-	bIa/SVqAZ+Vyr1fU6LqtyVZ+zmMd6+ReEhKOl9ylBXG3jevkorKts8Z+0TX7T2W6
-	mWQB8i/bS1MqYmHJh/wXzNNbSyXge4TSi8TTb7+zN3Tk0UBfif4jVQ48HC/xFdRb
-	tGn0WDMmExm6wmZEjODKFGVjiAMPQnXuiS0tUk1Zly02x8b7N4z1CCpiO26y5XZC
-	iiVcuUtdA5d6XcGw3ISV0EvCFnCke3xlXRHXjxOAvQ==
-X-ME-Sender: <xms:F366ZRqGvVqFpLci2uFKo9av-toebyAeJTQJhjHbp56DOvni8tMudQ>
-    <xme:F366ZTqRG13LKzpzYb0yZI8Lpj5SgdQ6s6KxomFcghp6naPDoekULzoCVRWBkEnnR
-    icWMBhqetvBe-fAzQ>
-X-ME-Received: <xmr:F366ZeNJD46jF3hkmNS5XtpryOVBlJr2xULAgFf5fmOA4kQldiMvf56igL_wrSOyNA_3UTbKDblhe8EfJMMsTHFdY4POiGE1ynIVQqo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtledgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:F366Zc7TC3VWx9c9S-UKP0H-s0spIGOoPfIE6tPHBRw-qwPrHe7FLg>
-    <xmx:F366ZQ4HgJgEqfy8FTkdMaRM6R-FH6_4nCuarN6qGqgTcURUDJSeSw>
-    <xmx:F366ZUgxqBpO6B5nE27lYOuiXW_lHf2zfQlROixtkUFVdqFEzMbxXA>
-    <xmx:F366ZQzlLuFlI5j1h75Sk10iBJ5XlPjl4qEa3Xram1-ZQgF30LTjfQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Jan 2024 12:06:30 -0500 (EST)
-Date: Wed, 31 Jan 2024 10:06:29 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC bpf-next 0/2] libbpf Userspace Runtime-Defined Tracing
- (URDT)
-Message-ID: <vtkysqjcvf7yi6cwa4l5w44nuk6hvpe47f6ikchob3djzxfi7q@udajgkhv2rdq>
-References: <20240131162003.962665-1-alan.maguire@oracle.com>
+	s=arc-20240116; t=1706721009; c=relaxed/simple;
+	bh=xbcr4P3D0nqx90KjjdnL288VemTyylOVPfuafJ7rc28=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F9xkcb4+rJocj4Z735pFBCFwkn9iwY5EbdBPJd1kN32NP0r7QONGBMGYhqWmfChoSg70bXHvCFtEkaynxTChom5NlhdPHC0rkfyPPgKmiOgPEtZhrwCw2ZRGmUJ9AuntWA7gk8lZCj9WtKwYOe9Yrw9GlNi7uFWW867vR01Pa+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKUtBu03; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6de0f53f8e8so922545b3a.0
+        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 09:10:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706721007; x=1707325807; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GOsg5X5uTICORYjOKaWHM1/qGZIfdD2P9FoNc132nfs=;
+        b=TKUtBu03AD5QZiQwJye3ByoNGhCa1fMe1VSYqmcNOWozU8y0WN+C9AiqoNniS7sYUP
+         U2zVxDMWzWrcLCaqMSEkkgBdln7faxfqheQnieMIHVpR8o40Fs+wLu2KJBb3DveT1pOj
+         m1yY+GtnbwpRREzsYYMBYD5Fn9/j9Nf8Qe5O7Q3BZH9PJU2M+vz07+TCBIyMBJJzn94M
+         jMy6+AL2I8Anxgirg20pfUP3JSnipye3DXHPkqThGVSF3wfS7KujJYz3xT+1wPlsZn1N
+         Xnt5vFN5mmA2UivNUV0L1cDTVNsJNg1mz5oW5s4ftmBWtTltu+rmWBcI6JOWKshq6srU
+         Y98A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706721007; x=1707325807;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GOsg5X5uTICORYjOKaWHM1/qGZIfdD2P9FoNc132nfs=;
+        b=P8amg/XDBe2axOBh/5sWQ4uGoil9ElPiB9euKtkZsIUQ6jTd11vt+ZXuB+sX3pLEFu
+         MAQUTBeR7zYciPkhOyazCw1euHDzWDRDJVVnlQmOd6WJoXeK0okklFgRfAj0nCLQN1FM
+         d9jWx7KBglfF8cBZvHHXzbtkrPbz7S2uhKgmhep2ATmFDWVR7zqOdXdThSHuKnxQqx6P
+         MX9m2F183Bmt4wXMPSI7neGLIHtIYy48J7MVW0/OAcRO4lx6dLTAz03RXcfs1bFW3rOi
+         qCPObfUEah1pZLZ3trit/M0j4sGkDdSfpJjCZC1rbiXuwjBsMcyBaQl1s3djmYhMlr+W
+         eukw==
+X-Gm-Message-State: AOJu0YwDXZc69PzBxwCqYkwZ8mm290PWSpDKoVfKb7pQtTkbln4DKpC/
+	LoNLVMxaX9v8oMsLbjN9twS26MyroVHEBUpjTb2BMSKrCwf/nkQQvMEiVy+kcoDE1akebCfEEW6
+	CvqAhBVvtmH0uddm67xFLJ3yfvuqc5DrYpEU=
+X-Google-Smtp-Source: AGHT+IG5N/0vLI4JPvaJxhi3NpV6P5A6OfEpZCCE6419O8EyOPJUe4cz00oWv6Zet0EVKMLO3oxYkxY/NRyvXAHTNIs=
+X-Received: by 2002:a05:6a20:2449:b0:199:29c4:b4b2 with SMTP id
+ t9-20020a056a20244900b0019929c4b4b2mr6085296pzc.29.1706721007653; Wed, 31 Jan
+ 2024 09:10:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131162003.962665-1-alan.maguire@oracle.com>
+References: <20240130193649.3753476-1-andrii@kernel.org> <20240130193649.3753476-3-andrii@kernel.org>
+ <aa043e86-586d-45dd-83c0-f47b271c2634@linux.dev>
+In-Reply-To: <aa043e86-586d-45dd-83c0-f47b271c2634@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 31 Jan 2024 09:09:55 -0800
+Message-ID: <CAEf4Bza1eKtnRmaUfCo_-zkKTz-ZzcoTSLg6dhOQK9N-G97X_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] libbpf: add missing LIBBPF_API annotation to
+ libbpf_set_memlock_rlim API
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alan,
+On Tue, Jan 30, 2024 at 9:16=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+>
+> On 1/30/24 11:36 AM, Andrii Nakryiko wrote:
+> > LIBBPF_API annotation seems missing on libbpf_set_memlock_rlim API, so
+> > add it to make this API callable from libbpf's shared library version.
+> >
+> > Fixes: e542f2c4cd16 ("libbpf: Auto-bump RLIMIT_MEMLOCK if kernel needs =
+it for BPF")
+>
+> Maybe we should the following commit as Fixes?
+>
+>    ab9a5a05dc48 libbpf: fix up few libbpf.map problems
+>
 
-On Wed, Jan 31, 2024 at 04:20:01PM +0000, Alan Maguire wrote:
-> Adding userspace tracepoints in other languages like python and
-> go is a very useful for observability.  libstapsdt [1]
-> and language bindings like python-stapsdt [2] that rely on it
-> use a clever scheme of emulating static (USDT) userspace tracepoints
-> at runtime.  This involves (as I understand it):
-> 
-> - fabricating a shared library
-> - annotating it with ELF notes that describe its tracepoints
-> - dlopen()ing it and calling the appropriate probe fire function
->   to trigger probe firing.
-> 
-> bcc already supports this mechanism (the examples in [2] use
-> bcc to list/trigger the tracepoints), so it seems like it
-> would be a good candidate for adding support to libbpf.
-> 
-> However, before doing that, it's worth considering if there
-> are simpler ways to support runtime probe firing.  This
-> small series demonstrates a simple method based on USDT
-> probes added to libbpf itself.
-> 
-> The suggested solution comprises 3 parts
-> 
-> 1. functions to fire dynamic probes are added to libbpf itself
->    bpf_urdt__probeN(), where N is the number of probe arguemnts.
->    A sample usage would be
-> 	bpf_urdt__probe3("myprovider", "myprobe", 1, 2, 3);
-> 
->    Under the hood these correspond to USDT probes with an
->    additional argument for uniquely identifying the probe
->    (a hash of provider/probe name).
-> 
-> 2. we attach to the appropriate USDT probe for the specified
->    number of arguments urdt/probe0 for none, urdt/probe1 for
->    1, etc.  We utilize the high-order 32 bits of the attach
->    cookie to store the hash of the provider/probe name.
-> 
-> 3. when urdt/probeN fires, the BPF_URDT() macro (which
->    is similar to BPF_USDT()) checks if the hash passed
->    in (identifying provider/probe) matches the attach
->    cookie high-order 32 bits; if not it must be a firing
->    for a different dynamic probe and we exit early.
-> 
-> Auto-attach support is also added, for example the following
-> would add a dynamic probe for provider:myprobe:
-> 
-> SEC("udrt/libbpf.so:2:myprovider:myprobe")
-> int BPF_URDT(myprobe, int arg1, char *arg2)
-> {
->  ...
-> }
-> 
-> (Note the "2" above specifies the number of arguments to
-> the probe, otherwise it is identical to USDT).
-> 
-> The above program can then be triggered by a call to
-> 
->  BPF_URDT_PROBE2("myprovider", "myprobe", 1, "hi");
-> 
-> The useful thing about this is that by attaching to
-> libbpf.so (and firing probes using that library) we
-> can get system-wide dynamic probe firing.  It is also
-> easy to fire a dynamic probe - no setup is required.
-> 
-> More examples of auto and manual attach can be found in
-> the selftests (patch 2).
-> 
-> If this approach appears to be worth pursing, we could
-> also look at adding support to libstapsdt for it.
+The one I referenced introduced the problem, the ab9a5a05dc48 one
+fixed some problems, but not all of them (for
+libbpf_set_memlock_rlim). So it feels like pointing to the originating
+commit is better?
 
-This is quite interesting, thanks for the RFC. I hope to take a closer
-look at it this week.
-
-At a high level, it looks like you're basically defining a scheme for
-well-known USDT probes, right? Since, not all languages enjoy linking
-against C (looking at you golang...), perhaps it would make sense to
-codify the scheme in a "spec". Probably just located in Documentation/
-or something. That way there can be independent implementations.
-
-This is something that would be nice to support in bpftrace as well. I'm
-sure other tracers would probably find use as well.
-
-Thanks,
-Daniel
+> Other than the above, LGTM.
+>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >   tools/lib/bpf/bpf.h | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> > index 1441f642c563..f866e98b2436 100644
+> > --- a/tools/lib/bpf/bpf.h
+> > +++ b/tools/lib/bpf/bpf.h
+> > @@ -35,7 +35,7 @@
+> >   extern "C" {
+> >   #endif
+> >
+> > -int libbpf_set_memlock_rlim(size_t memlock_bytes);
+> > +LIBBPF_API int libbpf_set_memlock_rlim(size_t memlock_bytes);
+> >
+> >   struct bpf_map_create_opts {
+> >       size_t sz; /* size of this struct for forward/backward compatibil=
+ity */
 
