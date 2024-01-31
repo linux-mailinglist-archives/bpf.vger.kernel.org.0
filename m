@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-20783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED19484328F
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 02:10:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95978843315
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 03:00:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9D0928255A
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 01:10:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C82BA1C22496
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 02:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C564B139E;
-	Wed, 31 Jan 2024 01:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B8C5663;
+	Wed, 31 Jan 2024 02:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mk8Yaef2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p355Xkdy"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDA01368
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 01:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3E55224;
+	Wed, 31 Jan 2024 02:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706663426; cv=none; b=I74fgmup5PkCbiAo37dPdUNBsv4ZeEWSk7bLK+o2/h5dtZc5wwoc8qxwhvw339bOZBEC0UOKQ6DZH3sGN+ZrJvqx9Yonya0eFLT3rGuvNEpzjHQzXpHv3ng6oZhNIXzslFzxGddyHYiJaSNOiBzbs3VkztLeFUf8LieaFrVuIyE=
+	t=1706666426; cv=none; b=XDLdgv53hiuxhVlZYV1r/tqXypFkW/SLSmZa2LJJ3DmT6+IlzWUYhGlVNZqlXHSE45rTfqiorlNiOYN8HBOHR/NhNx1xdcGWoRvcEukSCSlQf9xi5pv3VdDWp2AgUi+p0wtxpUZ+kV7dw40NXNWVaR16S+MSNA2O50xoOCmZfvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706663426; c=relaxed/simple;
-	bh=Vonc65X/uNvTH3UmonYZvL4o8i62OMU5G9VEfFWTsLo=;
+	s=arc-20240116; t=1706666426; c=relaxed/simple;
+	bh=6rTbYy6Vuzy/IF/kaJV31Z4upqRE4wLblupoPCdP6j4=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NIOzJxThZKVZ1u196nN1E5MdPVxVQuPfixBMdn74ypPfjdO8D+yByDQk12HFEtc7J7np//zYH2mODmRRg2Xa2u48q9EX6U8IRmwRixUzrl/iAvgrEgDcoEWsKoP+TISI7itRhhvtm2si34wCnvu9g9bamZGGqx3nOkfxYVv+Sy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mk8Yaef2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B8664C433F1;
-	Wed, 31 Jan 2024 01:10:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=rx2xUkzs8ZfK+orHQ4B18RMdJ4G/62LOF7DZU3R2dtgjgL57P5RO/9xSIYpphmQ4spTGK5Czk5eyY6OfZf/YMXJul4r3U8LEGXQeiMHsJqKE0kJuRiYO9ld2EGLZpnfc2iCvkBVlDXZQa8pxiNfjYXZoyv7uQhxhUnFs6czQ6OU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p355Xkdy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3643BC43390;
+	Wed, 31 Jan 2024 02:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706663425;
-	bh=Vonc65X/uNvTH3UmonYZvL4o8i62OMU5G9VEfFWTsLo=;
+	s=k20201202; t=1706666426;
+	bh=6rTbYy6Vuzy/IF/kaJV31Z4upqRE4wLblupoPCdP6j4=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Mk8Yaef2zizArsUAF33kIGDeSweJr1eWY9Mhx9R90M3WD1ktkTn2tbU0eWzMf19pN
-	 6Wz1U3xzt78DnNmhBXlfjsA5txxns3y7seKxpBsPUasnOxcnjby6ZuHl39QVwIG24A
-	 jbklSAayvf6be/ZdJ5kkEVQZ5fPsGnly0EHNW/dXniAv+NCEfCYaux7R8pfgR5D+/o
-	 MQap6Ed+1lo3QqMFmGUcf2vSMoibKZSWHHGZQcLfh1488Xa7mJLPMq7I+HSUEXsSPu
-	 vMh9EOOSm1LRZsdCUQtdoQrrLWqvz2iFinjiwXa8RcCAvNMSNBAI7qEfNMR97o0z8S
-	 iZoUTwfK9LQog==
+	b=p355XkdyMJfPBBBVayinoMlZayPV+Y/dSx1f+9exbH2S47S/65N2Y2novMyPmtSSa
+	 cjOKjPYlDZvR2C+EYbRO47nQipDHs83PCvkW34s1ZUyU5yvA+dJgo58AOqRLfspv9m
+	 0fs4X8+4FndustpQp8LlPGnwnix02ltpuembZjbfnHjMnWXz5klqmOoZo5Vg9cmxwj
+	 3xGGp9NIEyPxHfq3izY0bFU0s8bakdc6mrR7knAVSx6rkCJKwAFDaaPJFdXKsw5H3X
+	 Q/wA48eGaVU43hba6VvhL+LNZLfZf29FWKyqJ60cJRfuO+jG/W2BwDUjZ/1vVw9RPN
+	 spLdzaZ5exJ/A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9E970C395FE;
-	Wed, 31 Jan 2024 01:10:25 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1AB98E3237E;
+	Wed, 31 Jan 2024 02:00:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,38 +52,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] libbpf: add bpf_core_cast() helper
+Subject: Re: [PATCH net-next] xdp: Remove usage of the deprecated ida_simple_xx()
+ API
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170666342564.7191.14337606154910020823.git-patchwork-notify@kernel.org>
-Date: Wed, 31 Jan 2024 01:10:25 +0000
-References: <20240130212023.183765-1-andrii@kernel.org>
-In-Reply-To: <20240130212023.183765-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+ <170666642610.31142.2671848763624675681.git-patchwork-notify@kernel.org>
+Date: Wed, 31 Jan 2024 02:00:26 +0000
+References: <8e889d18a6c881b09db4650d4b30a62d76f4fe77.1705734073.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <8e889d18a6c881b09db4650d4b30a62d76f4fe77.1705734073.git.christophe.jaillet@wanadoo.fr>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+ edumazet@google.com, pabeni@redhat.com, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 30 Jan 2024 13:20:21 -0800 you wrote:
-> Add bpf_core_cast(<ptr>, <type>) macro wrapper around bpf_rdonly_cast() kfunc
-> to make it easier to use this functionality in BPF code. See patch #2 for
-> BPF selftests conversions demonstrating improvements in code succinctness.
+On Sat, 20 Jan 2024 08:02:20 +0100 you wrote:
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
 > 
-> Andrii Nakryiko (2):
->   libbpf: add bpf_core_cast() macro
->   selftests/bpf: convert bpf_rdonly_cast() uses to bpf_core_cast() macro
+> Note that the upper limit of ida_simple_get() is exclusive, but the one of
+> ida_alloc_range() is inclusive. So a -1 has been added when needed.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,1/2] libbpf: add bpf_core_cast() macro
-    https://git.kernel.org/bpf/bpf-next/c/20d59ee55172
-  - [bpf-next,2/2] selftests/bpf: convert bpf_rdonly_cast() uses to bpf_core_cast() macro
-    https://git.kernel.org/bpf/bpf-next/c/ea9d561686fb
+  - [net-next] xdp: Remove usage of the deprecated ida_simple_xx() API
+    https://git.kernel.org/netdev/net-next/c/6a571895116e
 
 You are awesome, thank you!
 -- 
