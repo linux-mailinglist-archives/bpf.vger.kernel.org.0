@@ -1,175 +1,149 @@
-Return-Path: <bpf+bounces-20840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 207F884440C
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 17:25:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88D7D84453A
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 17:56:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D179CB22868
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 16:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36940B2A4A1
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 16:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5132712AAF2;
-	Wed, 31 Jan 2024 16:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C20D12CDA4;
+	Wed, 31 Jan 2024 16:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MhrK+9xi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9g0bSg7"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A70B12AAFB
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 16:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEB312C54F;
+	Wed, 31 Jan 2024 16:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706718335; cv=none; b=ONTpB7MGWxpkFcwE+RNnkkiz0QtvXxTE25qfAu7hmIczZGG+mMhiZ65AjG2Z2M6uMj2DBaWV9nEwtis5+/NCiAPPNY5nfIv3OnOs0PNDuRmFHb1V9uzACqacSjhTFio+AEMVsiqhVpG0eiWUsd9ILawTrXqlqXFVsturx/FXCqk=
+	t=1706719800; cv=none; b=bIJkLqAAG0/6uX32DL0V0n8CBDNA2CsPmPmrNS7zSaz4ScmvPMIG9EtNPSshPmH5j4PEFC6MwfLwtTZQS1sl5S78taS8VC/Gfsq8IA38ZWcA6pvo2quoEbsFRjfgFgQ84ENdwgxTR7kJ0AFKS0KWZ3fUQOB/HaOCfDWTmFiKRBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706718335; c=relaxed/simple;
-	bh=B7HyS2Em0NNadiq6DHrVhWuNI8e/zBSXRvIoIkBLsks=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FEdMdFpRc60bQh61f9/4Ugt5eapyTFLqGpUzMdZ3ixiRJpxz3BcOTQyaZdyj8lyFAOMlWMvTE/2DFTNOUUm/lPZpLAi4319jG6EEDHIvhsrYi3amErIqnhwF+PYEC711pq9RMBDT4lbTaGDT6y9+zbLHpdqXr94W7NHKEmOqndg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MhrK+9xi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706718332;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OCkrrMHuTO/0Bw87QGp264wUdlQvK5SH6gvLfeWxNh4=;
-	b=MhrK+9xiDnTgbkUr45Eq09a/U+aGvvXYE3/xJagj6HdsoPl37NvsyY+fO8uqLIEUsY0iLS
-	SY28IWZLDKMJE5Q3rNXeYKoTsLbkypYK9cLezbeZTMp75eVCyGLGSMT6hAsfZQmC9HXYO4
-	W8O4fEsJM/7AAt14X6NkNDuKGCLRr+0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-441-0uPl6jBNN5iI1sfXikmkLw-1; Wed, 31 Jan 2024 11:24:50 -0500
-X-MC-Unique: 0uPl6jBNN5iI1sfXikmkLw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3EEC8185A786;
-	Wed, 31 Jan 2024 16:24:23 +0000 (UTC)
-Received: from dhcpf210.fit.vutbr.com (unknown [10.45.224.19])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id A57D81C060AF;
-	Wed, 31 Jan 2024 16:24:20 +0000 (UTC)
-From: Viktor Malik <vmalik@redhat.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Viktor Malik <vmalik@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf-next v2 2/2] tools/resolve_btfids: fix cross-compilation to non-host endianness
-Date: Wed, 31 Jan 2024 17:24:09 +0100
-Message-ID: <64f6372c75a44d5c8d00db5c5b7ca21aa3b8bd77.1706717857.git.vmalik@redhat.com>
-In-Reply-To: <cover.1706717857.git.vmalik@redhat.com>
-References: <cover.1706717857.git.vmalik@redhat.com>
+	s=arc-20240116; t=1706719800; c=relaxed/simple;
+	bh=dumD7ttqScm0LdjY/IpVhA9bCYlBepysRq4/xs786t0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oAqVHJMSufRT+1csBjLyhM9+4RIHSLusAZxDZA0hZOQVtiRF/WFXj5ma+Nkd1RWdBYIabOdJy1gyoMQ8DJBRlGQ6OSoYO7q2lwef8sjST/Qetn/2yJixOr5P+zORr/0CEtVllR8F9EBpeFt6ZX3cBYnZqOf4y+UHoxMUbhFo1Ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9g0bSg7; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60417488f07so2323517b3.1;
+        Wed, 31 Jan 2024 08:49:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706719797; x=1707324597; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YHVjd0RGAsEmzSEWHVEvEMaoTUsMfmi+W8XrmMVYA7U=;
+        b=C9g0bSg7/dzvVl9gfAmoR1XsDonHGb7zqfRjdaJnj8HIwfzOEABMctQn5OC8vREsaH
+         XSb5uYkcxvjlKHfFKJf6XbHn3MhCXSNh93eGoBIYTGS7NWNLpVgc1EuyLzJjZ1Sut+yH
+         vab2cP+rpCUOEKoMz+mnan2h8I2T7tnBol+TA6MBqNIDYVMggc2DYPd/xLdd4AjUujKe
+         wohwhkt+IDuqD3EOqEXKYbiyXHm9NlKJpbmqAK1UG6q//o5dy1Du6XPjNOqTx8hP2UFC
+         upiYvVkx5Rlm/vgpcmW7wFEkDr9JrFDw9fJhgqzZnH3hTjsQO2LJ4ORTaT3py2oY3WiA
+         ZrLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706719797; x=1707324597;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YHVjd0RGAsEmzSEWHVEvEMaoTUsMfmi+W8XrmMVYA7U=;
+        b=gk8TYr5bH+Z4sbDdCeQPxswCMB/qeDsFA+WSQtNY8fHCOUNzzvlIayj3ZHTiYAZZPU
+         T7sVAYgQbGXHGsAmWWce2csE3RGUpmLD77WU8EqXwuPIDMUa0ujyaDQNTGbalY+6Obve
+         7opeoZF/miremVWz2/EQtoBGIDydwDVKQqhL+u/IS58BOLyboXAAdii22fILh71T29bq
+         Ohz/6x89CFyhiLK61hsg1dCLmwYn0cLvjflBsGKt+v1nCBSCU/hwFtcx8HMsfdeMID60
+         WcHW8+KC49hv9gXSUnbO8G9KbwMTgsQfxVEcBNz2XxHHUrthzYcTqMYt8N21t7VViHFt
+         I7DA==
+X-Gm-Message-State: AOJu0Yy2WjMYCWk0k7lal96cWZvUlCTPd4u0WfiDDqjFXNtrXFCysWB/
+	M5+aLkdOIUbIdi1R36aQodyOCsTldDi+tkL6uElCro3zoTqv1pAi
+X-Google-Smtp-Source: AGHT+IFFKxRUj/PV9hsITMpNTloEegZejZHcf3Gw2OynG5rLJM5gigQ+Fxn9DCpf7kjsfQ5KNCI12A==
+X-Received: by 2002:a81:ae42:0:b0:604:1013:5b46 with SMTP id g2-20020a81ae42000000b0060410135b46mr1721357ywk.32.1706719796030;
+        Wed, 31 Jan 2024 08:49:56 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:d270:81b6:1108:542b? ([2600:1700:6cf8:1240:d270:81b6:1108:542b])
+        by smtp.gmail.com with ESMTPSA id z138-20020a0dd790000000b00603cd139668sm2489517ywd.139.2024.01.31.08.49.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 08:49:55 -0800 (PST)
+Message-ID: <33e72531-b525-4c9f-a9cc-73175b7cd721@gmail.com>
+Date: Wed, 31 Jan 2024 08:49:54 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v7 1/8] net_sched: Introduce eBPF based Qdisc
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org,
+ yangpeihao@sjtu.edu.cn, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us,
+ sdf@google.com, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com,
+ netdev@vger.kernel.org, Kui-Feng Lee <thinker.li@gmail.com>
+References: <cover.1705432850.git.amery.hung@bytedance.com>
+ <232881645a5c4c05a35df4ff1f08a19ef9a02662.1705432850.git.amery.hung@bytedance.com>
+ <0484f7f7-715f-4084-b42d-6d43ebb5180f@linux.dev>
+ <CAMB2axM1TVw05jZsFe7TsKKRN8jw=YOwu-+rA9bOAkOiCPyFqQ@mail.gmail.com>
+ <01fdb720-c0dc-495d-a42d-756aa2bf4455@linux.dev>
+ <CAMB2axOZqwgksukO5d4OiXeEgo2jFrgnzO5PQwABi_WxYFycGg@mail.gmail.com>
+ <8c00bd63-2d00-401e-af6d-1b6aebac4701@linux.dev>
+ <845df264-adb3-4e00-bb8e-2a0ac1d331ae@gmail.com>
+ <b36c40fb-d274-41ea-abbe-231bebfabdc9@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <b36c40fb-d274-41ea-abbe-231bebfabdc9@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
-build and afterwards patched by resolve_btfids with correct values.
-Since resolve_btfids always writes in host-native endianness, it relies
-on libelf to do the translation when the target ELF is cross-compiled to
-a different endianness (this was introduced in commit 61e8aeda9398
-("bpf: Fix libelf endian handling in resolv_btfids")).
 
-Unfortunately, the translation will corrupt the flags fields of SET8
-entries because these were written during vmlinux compilation and are in
-the correct endianness already. This will lead to numerous selftests
-failures such as:
 
-    $ sudo ./test_verifier 502 502
-    #502/p sleepable fentry accept FAIL
-    Failed to load prog 'Invalid argument'!
-    bpf_fentry_test1 is not sleepable
-    verification time 34 usec
-    stack depth 0
-    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-    Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
+On 1/30/24 17:01, Martin KaFai Lau wrote:
+> On 1/30/24 9:49 AM, Kui-Feng Lee wrote:
+>>>> 2. Returning a kptr from a program and treating it as releasing the 
+>>>> reference.
+>>>
+>>> e.g. for dequeue:
+>>>
+>>> struct Qdisc_ops {
+>>>      /* ... */
+>>>      struct sk_buff *        (*dequeue)(struct Qdisc *);
+>>> };
+>>>
+>>>
+>>> Right now the verifier should complain on check_reference_leak() if 
+>>> the struct_ops bpf prog is returning a referenced kptr.
+>>>
+>>> Unlike an argument, the return type of a function does not have a 
+>>> name to tag. It is the first case that a struct_ops bpf_prog returning a 
+>>
+>> We may tag the stub functions instead, right?
+> 
+> What is the suggestion on how to tag the return type?
+> 
+> I was suggesting it doesn't need to tag and it should by default require 
+> a trusted ptr for the pointer returned by struct_ops. The pointer 
+> argument and the return pointer of a struct_ops should be a trusted ptr.
 
-Since it's not possible to instruct libelf to translate just certain
-values, let's manually bswap the flags in resolve_btfids when needed, so
-that libelf then translates everything correctly.
 
-Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
----
- tools/bpf/resolve_btfids/main.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+That make sense to me. Should we also allow operators to return a null
+pointer?
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index 7badf1557e5c..d01603ef6283 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -652,13 +652,23 @@ static int sets_patch(struct object *obj)
- 	Elf_Data *data = obj->efile.idlist;
- 	int *ptr = data->d_buf;
- 	struct rb_node *next;
-+	GElf_Ehdr ehdr;
-+	int need_bswap;
-+
-+	if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
-+		pr_err("FAILED cannot get ELF header: %s\n",
-+			elf_errmsg(-1));
-+		return -1;
-+	}
-+	need_bswap = (__BYTE_ORDER == __LITTLE_ENDIAN) !=
-+		     (ehdr.e_ident[EI_DATA] == ELFDATA2LSB);
- 
- 	next = rb_first(&obj->sets);
- 	while (next) {
- 		unsigned long addr, idx;
- 		struct btf_id *id;
- 		void *base;
--		int cnt, size;
-+		int cnt, size, i;
- 
- 		id   = rb_entry(next, struct btf_id, rb_node);
- 		addr = id->addr[0];
-@@ -686,6 +696,21 @@ static int sets_patch(struct object *obj)
- 			base = set8->pairs;
- 			cnt = set8->cnt;
- 			size = sizeof(set8->pairs[0]);
-+
-+			/*
-+			 * When ELF endianness does not match endianness of the
-+			 * host, libelf will do the translation when updating
-+			 * the ELF. This, however, corrupts SET8 flags which are
-+			 * already in the target endianness. So, let's bswap
-+			 * them to the host endianness and libelf will then
-+			 * correctly translate everything.
-+			 */
-+			if (need_bswap) {
-+				for (i = 0; i < cnt; i++) {
-+					set8->pairs[i].flags =
-+						bswap_32(set8->pairs[i].flags);
-+				}
-+			}
- 		}
- 
- 		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
--- 
-2.43.0
-
+> 
+>> Is the purpose here to return a referenced pointer from a struct_ops
+>> operator without verifier complaining?
+> 
+> Yes, basically need to teach the verifier the kernel will do the 
+> reference release.
+> 
+>>
+>>> pointer. One idea is to assume it must be a trusted pointer 
+>>> (PTR_TRUSTED) and the verifier should check it is indeed with 
+>>> PTR_TRUSTED flag.
+>>>
+>>> May be release_reference_state() can be called to assume the kernel 
+>>> will release it as long as the return pointer type is PTR_TRUSTED and 
+>>> the type matches the return type of the ops. Take a look at 
+>>> check_return_code(). 
+> 
 
