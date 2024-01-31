@@ -1,156 +1,115 @@
-Return-Path: <bpf+bounces-20829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EFC4844314
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 16:32:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586D184437C
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 16:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 346691C21DF3
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 15:32:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B62284A51
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 15:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4A9128382;
-	Wed, 31 Jan 2024 15:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69133129A8D;
+	Wed, 31 Jan 2024 15:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gx1gY7cj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NmM6/UsR"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F731272BA
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 15:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98079128369
+	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 15:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715127; cv=none; b=AUKwqff2zF9+fwAIxL7QGnSe4ckxU6awdyKydE/Qb26RfyAsl0dqFbnt58xv7m1VYYVckaTFus5LdNg4Qm0DThY2TBF2U7I+A8llVl7ZqKHxsAYYNQqHP1Qc3Jz58e28BHl/uHwRmbiyFN9UnSuzvpAQOGpaXDKWG6zHGHf4Ah4=
+	t=1706716580; cv=none; b=Ozh0oU+bAHm79kA7JO2nE3nFmyy5uv9Mtjf9y34HD0iQVWmgynTWZmLHGMm1gn55Fu8ZUdsajVBMGQiJ/eXgsXq3L0tWag/DmjNgB0ylKf1yjPOLwXWPwTIXyvb0Bi+Y3AjE2S6f0aB75HutYf5BdFspITyH/FbM8NO0ULTD9sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715127; c=relaxed/simple;
-	bh=7XG9+ZkiD/dg6Vc2IcOCrel6XfLZQXkSscP5YlJTJfQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Es1K3jw6yIYR/Th6VDKX5pkK8Ijep+JqbA+TdNomMyPuBoRA30dCpI3+FTzHexi+FTfg9UGDWMXQTOVd5OBCB6hL4pkc+wAskdYhSfOamVzinEedOa3aL4nTiqAT6ZGpj/JtHaf/VDGkKRUO8FQDBuJPdbt948gXj/fs7DEGiFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gx1gY7cj; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706715125;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/3OkKTKiI71jMccUTxGs7zx4mOX1sEJG3zIuh/sFpVs=;
-	b=Gx1gY7cjwyuzbT1Zgptu/aEvWI1xd9xgBte1e/I7B7Br6gE+XWptGdfpGF60CkD766n0aC
-	ken4gG7mJAjcbJrzi+JpKVKqtuudG/FH8IVNZ6A8T/SWfTSUTrmRUhqeLLBbsAyuIAwzL+
-	t1VY2BpvfnOvEwhSdTW2QJgkJOh9CTc=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-y9hrhdqrPkGcC1Sqm6owVA-1; Wed, 31 Jan 2024 10:32:03 -0500
-X-MC-Unique: y9hrhdqrPkGcC1Sqm6owVA-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50e9e5c8f49so6011302e87.3
-        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 07:32:03 -0800 (PST)
+	s=arc-20240116; t=1706716580; c=relaxed/simple;
+	bh=pImADInx/+VN237+FUhfbZiAwf7H5rgapiDueUNrNJE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QzVBR5xJQOV83cK7QRBxLLMzR59F34Ak8CgDweG08SuJbCrbFg1TaClfCbkVi4PSydW2NU/PvPKfKEPUMUORmNpH5oFneBGzo4MEGdN3jxVLHh7VYOeVDABvDMa55Uo4aZ0P6Ht3ukkqxArGQJZUmXyoIugFFtXNaJVRwwIuCys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NmM6/UsR; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ddc5faeb7fso4039048b3a.3
+        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 07:56:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706716577; x=1707321377; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AfdB9iuAQyvE9o/e+hGpFDwr5pL2ipLZOeJ86lP0lo0=;
+        b=NmM6/UsRZXvjGLDuKr2eYFPM9k7MC5RvwOy5dCh2Q39IGWByvw/a67o9k3TRMgxOqS
+         8LHIrHl1tadAcRnz58VI1r4SCcilmMzv93oQ7WNPpxqb01ytN1ate0sYx5PyBNPIFFzb
+         6T9/jssJvm6EhkBkzmHLlwpjkZhgtTre0XHC98chD1qRCj2qY1AXD01mgEMkHtAW2zYi
+         Qzaz3rFxGQxY+m5xgFIpiNfuOTRueKl8TcwLiO2YUY1hSaJ4IPJDrS7gaSDghFGaQQng
+         ebyn8R24aIBPKLvsBl9OjlEUXwSvN87iHEPHn6x5tQ9ShVaHPpWfl6K8s91RjU4NaHN/
+         f+gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706715122; x=1707319922;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/3OkKTKiI71jMccUTxGs7zx4mOX1sEJG3zIuh/sFpVs=;
-        b=VKSugdXYGxIDU1Xoe5Q3vunLbys5McFz/6ztiDbAyRGG1O6jimFRuVF7rCGBFLI5Co
-         1+hHF/U1ywqJgebfyO613oGTZ31HCgORnUFLe2COZD5vbb7GU2CYRXSsQ8jz+MTumQa6
-         zAZLy3J2SxR4LGUCHzFHqhY6kLsihwfXFg71Q5TFBg9ZyAlb6kwnAHy1Lkln7scaNsFU
-         A0NXHAmaGBlteXl+505VvHOjH11fDGiivHcyg5PXTYbaYZ1+FRSPia2DknvxKXE65xGG
-         paBX+yhFvk8zUCpU7Mly5glym9gnQUpvgXFlWdjlR3VaJXHpVQfm7pOveETha9hlA6Pb
-         kFiQ==
-X-Gm-Message-State: AOJu0YwcemWPOgakzdl9TEWTS0Kvv67IeVAiwzW4k8e097at7AVqZ1FV
-	fYGntkHASMKm5ZpnCHHmIkIH5bNVxQrCZMmEXY1kSZCqF9OgiD4J129tubfpX/hYm2PDD9HXVmf
-	bNhfeP3gZVJC0BMfFfd8GIAbBrWvXhMRLiDTFEfKxecjidQBdQQ==
-X-Received: by 2002:a19:ae07:0:b0:511:1775:5a1b with SMTP id f7-20020a19ae07000000b0051117755a1bmr1255702lfc.38.1706715121911;
-        Wed, 31 Jan 2024 07:32:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEEoECeHFUgDCVTi1EZbLxF3rcSnI5tI4RBiG/CN6lr6IBT71vYl6qATLy0AYB3nRjCTTojGg==
-X-Received: by 2002:a19:ae07:0:b0:511:1775:5a1b with SMTP id f7-20020a19ae07000000b0051117755a1bmr1255688lfc.38.1706715121524;
-        Wed, 31 Jan 2024 07:32:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVSqw7KlB7u9EwhopF17qFeIsKqIfqqxmHRmuy5U1YTmyE09a1/IhP2Em06LF27Wb7m17/jhnBK3GS+ACzzu0pnI4Xd7BT6juzstQ3ySMRtwYTcBS35yaz8zZRNaIOF6ZEJeU7M+pBqKMvHf6pDOw1EzJ39bIbiIjdrkecKpm3raMWKDjghYSPU3qZATIhNUvKIqTzmHEjV3c9YR0kMPU8cMJOE9S933OPp79FFnyCc6J+Cht1qbR+tEw2qqpbjjYxatZ7Uw9v3pwdSLEMbpTBUMUOw2aGnDGZwcdDrZO8vHa6FBUVXvYIAEPPvCPAdiHyPYWfjpWwb+25QTb7qf4+crSAQwKjzyTraGq5RQumAmKVK/Udo7kQa+jMmHhdnhey/bFtNDxmbrEpq10VXcDBPzg==
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id vh12-20020a170907d38c00b00a3687cde34asm476328ejc.5.2024.01.31.07.32.01
+        d=1e100.net; s=20230601; t=1706716577; x=1707321377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AfdB9iuAQyvE9o/e+hGpFDwr5pL2ipLZOeJ86lP0lo0=;
+        b=YJpkIkherenZFm2Bze8VASEFrSae95C4DPe4Da9xofe47hCzS044iGRl/TOFO5LZKI
+         wTAj3g17dHkv9c7Z0Y+7tsl4mh/aUWUpliK2FxODUppgMi8SSQxE/DLmzWIeuV9w0yFm
+         rDfHhGcji27kW7ldAowHHhy3SAUprGQjrmXj725P+8Tm+zzaK+6Xw8uCAnccJquymEv9
+         Yr69FcyvY4VxfVJH639XiIHr9Zq99sjSwzCKUUQacGmE2jUESXR4uZAU3zCSvjbaRyp0
+         pB+33IsPbFpqnov6H5T8skL2Rb/3z8OPVebHYax+PoNO6DTkr/3kaOWC0WoF6IbiMSWB
+         nuig==
+X-Gm-Message-State: AOJu0Yz8qotFBGdoARVOb1SCX56BVuqyez/sJa/hXFrXGw/AYGzEHpO8
+	siiCZPnud3nuuVUqD4kk5nLRdlBb5OC6LSVBdZ/UMUVwHAEvGhWxZ1XpS63p
+X-Google-Smtp-Source: AGHT+IHFMb5wiU1Mj6wLWOsaqwBjHvF058Mo1hUmPkyvwx5BnohN3Zalk1Jo4+VDzaslRHLWvdPH+A==
+X-Received: by 2002:a05:6a00:2d91:b0:6de:10a1:35c1 with SMTP id fb17-20020a056a002d9100b006de10a135c1mr2370973pfb.5.1706716577281;
+        Wed, 31 Jan 2024 07:56:17 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVf6znpl2zYIH4/6Ls0PytXF/UmHl4PHpw9T9t+FaAI+ump94iHsfpreGweZ8BkgZbIGmhseiKQZhJIa+CHKWlnUjH2nNjSDI4GJEK9ACRiRa7GCYOhEfzQyW34C28hQG5zJL8C5ci64b0BI78=
+Received: from localhost.localdomain (bb219-74-10-34.singnet.com.sg. [219.74.10.34])
+        by smtp.gmail.com with ESMTPSA id v11-20020a056a00148b00b006ddc2cf3662sm10073450pfu.184.2024.01.31.07.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 07:32:01 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id C466D108A4B2; Wed, 31 Jan 2024 16:32:00 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>, Lorenzo Bianconi
- <lorenzo@kernel.org>, netdev@vger.kernel.org, davem@davemloft.net,
- kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
- bpf@vger.kernel.org, willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
- sdf@google.com, ilias.apalodimas@linaro.org
-Subject: Re: [PATCH v6 net-next 4/5] net: page_pool: make stats available
- just for global pools
-In-Reply-To: <ZbkdblTwF19lBYbf@lore-desk>
-References: <cover.1706451150.git.lorenzo@kernel.org>
- <9f0a571c1f322ff6c4e6facfd7d6d508e73a8f2f.1706451150.git.lorenzo@kernel.org>
- <bc5dc202-de63-4dee-5eb4-efd63dcb162b@huawei.com>
- <ZbejGhc8K4J4dLbL@lore-desk>
- <ef59f9ac-b622-315a-4892-6c7723a2986a@huawei.com>
- <Zbj_Cb9oHRseTa3u@lore-desk>
- <fcf8678b-b373-49a8-8268-0a8b1a49f739@kernel.org>
- <ZbkdblTwF19lBYbf@lore-desk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 31 Jan 2024 16:32:00 +0100
-Message-ID: <877cjpzfgv.fsf@toke.dk>
+        Wed, 31 Jan 2024 07:56:16 -0800 (PST)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	Leon Hwang <hffilwlqm@gmail.com>
+Subject: [RFC PATCH bpf-next 0/2] bpf: Add generic kfunc bpf_ffs64()
+Date: Wed, 31 Jan 2024 23:56:05 +0800
+Message-ID: <20240131155607.51157-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
+This patchset introduces a new generic kfunc bpf_ffs64(). This kfunc
+allows bpf to reuse kernel's __ffs64() function to improve ffs
+performance in bpf.
 
->> 
->> 
->> On 30/01/2024 14.52, Lorenzo Bianconi wrote:
->> > > On 2024/1/29 21:07, Lorenzo Bianconi wrote:
->> > > > > On 2024/1/28 22:20, Lorenzo Bianconi wrote:
->> > > > > > Move page_pool stats allocation in page_pool_create routine and get rid
->> > > > > > of it for percpu page_pools.
->> > > > > 
->> > > > > Is there any reason why we do not need those kind stats for per cpu
->> > > > > page_pool?
->> > > > > 
->> > > > 
->> > > > IIRC discussing with Jakub, we decided to not support them since the pool is not
->> > > > associated to any net_device in this case.
->> > > 
->> > > It seems what jakub suggested is to 'extend netlink to dump unbound page pools'?
->> > 
->> > I do not have a strong opinion about it (since we do not have any use-case for
->> > it at the moment).
->> > In the case we want to support stats for per-cpu page_pools, I think we should
->> > not create a per-cpu recycle_stats pointer and add a page_pool_recycle_stats field
->> > in page_pool struct since otherwise we will endup with ncpu^2 copies, right?
->> > Do we want to support it now?
->> > 
->> > @Jakub, Jesper: what do you guys think?
->> > 
->> 
->> 
->> I do see an need for being able to access page_pool stats for all
->> page_pool's in the system.
->> And I do like Jakub's netlink based stats.
->
-> ack from my side if you have some use-cases in mind.
-> Some questions below:
-> - can we assume ethtool will be used to report stats just for 'global'
->   page_pool (not per-cpu page_pool)?
-> - can we assume netlink/yaml will be used to report per-cpu page_pool stats?
->
-> I think in the current series we can fix the accounting part (in particular
-> avoiding memory wasting) and then we will figure out how to report percpu
-> page_pool stats through netlink/yaml. Agree?
+In patch "bpf: Add generic kfunc bpf_ffs64()", there is some data to
+confirm that this kfunc is able to save around 10ns for every time on
+"Intel(R) Xeon(R) Silver 4116 CPU @ 2.10GHz" CPU server, by comparing
+with bpf-implemented __ffs64().
 
-Deferring the export API to a separate series after this is merged is
-fine with me. In which case the *gathering* of statistics could also be
-deferred (it's not really useful if it can't be exported).
+However, it will be better when convert this kfunc to "rep bsf" in
+JIT on x86, which is able to avoid a call. But, I haven't figure out the
+way.
 
--Toke
+Leon Hwang (2):
+  bpf: Add generic kfunc bpf_ffs64()
+  selftests/bpf: Add testcases for generic kfunc bpf_ffs64()
+
+ kernel/bpf/helpers.c                          |  7 +++
+ .../testing/selftests/bpf/prog_tests/bitops.c | 54 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bitops.c    | 21 ++++++++
+ 3 files changed, 82 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bitops.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bitops.c
+
+
+base-commit: c5809f0c308111adbcdbf95462a72fa79eb267d1
+-- 
+2.42.1
 
 
