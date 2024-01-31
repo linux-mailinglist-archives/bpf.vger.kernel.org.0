@@ -1,290 +1,222 @@
-Return-Path: <bpf+bounces-20800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 357A5843ABF
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 10:16:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECB91843AE9
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 10:20:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90AAF1F2579E
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 09:16:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAB811C20CB9
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 09:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE44F69D29;
-	Wed, 31 Jan 2024 09:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EyY4sPHw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC1A67750;
+	Wed, 31 Jan 2024 09:19:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAFC060B9A
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 09:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04AE5657BE;
+	Wed, 31 Jan 2024 09:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706692390; cv=none; b=nK98h7OOtDv6b/0AJlkGuSVjnGxlRQ6rVZYe1AYB4mGyLKcGdIYoPLbBWJUmx/BGfu5X51oBbU4UvJtFY0RgM4n81SN8fUoXYcmsSKGCqmtfFDIT1WmIA5AVE4UWBaclvlQ0bWWR74hWrX7itWR0b1s08szRx2slIirAqZx37WU=
+	t=1706692743; cv=none; b=SeYlhR2HLeSbcERKae6HsXYTQ/QVbU5/4yDcDMpd/kXUn+tB0REvqx1rLfPu/G3Ijl7x/Gw2gpqLZ6ciMtzm/yEvPocQcqzrvUwKFQ9dajysEOagrwfUYB3aqpogepueDSUc/hu4n4I/cwboTr7XMqorJ9Z6q3cE/rv/GxegM2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706692390; c=relaxed/simple;
-	bh=kgV9w/3r2N+l2XD1xKQ4N3OKQGrm1FtckgzvTrOPwHY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bol98tJIUCQXitUL5Bow5w0CpW61TPlZ7kIe/oBIjix2EIk1Xd8ifC+g+eJT1Nff/6+xhzlb4+xIl6DtfNf7tt+QbC7obg6Cp/XxWdM2LqDXdt3MN4fTaI1V9frfPwn7MytkDoDWVO15rJnGqal0lo2edZ+bESpKQyZJQhUemLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EyY4sPHw; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706692388;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=60OE93oZxMpAy5PTfrRWb+NgmfRgxzqKxIV3hKWBwnk=;
-	b=EyY4sPHwwwjfdZAhqkccdaKTnHYjCP8wnUPJQtLia/5qcHRciZCBifprTgA10XerC7J+ts
-	B0GEAXwHpAAlLU38izQx5vW003vzR7FwaAFRjv1O48yHhhFayJf4z53ImVvPp8MX2QIcfx
-	GR5zD7arPADipFDZDhClsQRgc+jvdzc=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-2-RB6823hbPgy-LtSzxf0g4A-1; Wed, 31 Jan 2024 04:13:05 -0500
-X-MC-Unique: RB6823hbPgy-LtSzxf0g4A-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7d326aa3f86so2002743241.2
-        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 01:13:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706692385; x=1707297185;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=60OE93oZxMpAy5PTfrRWb+NgmfRgxzqKxIV3hKWBwnk=;
-        b=MZEneZ/hebIsHkUO4pAxBvceqiOo8dJxQEJVMhtYyy6E8w4rqZWhR10ubcVcvto07v
-         IOr+O7xY5AI7BHo3jlhFmB17JWSIGbct1PU2YB+v6RsxLb5P3Uszk77L6eu9Suce13Ig
-         uH7mYKp6Wj4snChxn5PYLUh/RY3Y9xaQWSlCeaBOywiPMPwC+arfF6J2BtNpu4/hN00i
-         /21TBzMgbpbcKYrrMihl1a3+4juObTT2EIBBE0Quf8enCBrZ5YFqpd9hyA8cm3CzEv96
-         O7ZHydHN/enzvQ/xohSvH526wINiGFK5jWIXva+SegU9DDJymtzGEbZDEQQBUtyonOtY
-         WVxQ==
-X-Gm-Message-State: AOJu0YztLCpHJZLIMvfaXhBEzrkkYjSOplLZkBYOqZWWC01rXnwEliWa
-	C+CkKLOAm+EwlAmRCoKJIaO6GSj+MwxZ8REOdJwJnCj7NNQARdtz3hLa0kcYrfAwn7KBOnoK0W2
-	y0leCTg/9ijW0n1jJdbE6tTS7Wkcrg4hRneiXFIZt3oTCTZp00zZCmEPcnNMY/u2FL1Wf+xi4Fx
-	QprpXPJ7xAZwfc8JXmOnP6iS+U
-X-Received: by 2002:a05:6102:3a72:b0:46b:3515:e946 with SMTP id bf18-20020a0561023a7200b0046b3515e946mr689881vsb.26.1706692384883;
-        Wed, 31 Jan 2024 01:13:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEgfhT0+kNvJvRq3b0MROwRjSrfE5RBznl53uEMT/GjL79yJlQ2dVHq4B1TZ1jfZQ3KLNrl4yziYblN9FfKH0U=
-X-Received: by 2002:a05:6102:3a72:b0:46b:3515:e946 with SMTP id
- bf18-20020a0561023a7200b0046b3515e946mr689871vsb.26.1706692384618; Wed, 31
- Jan 2024 01:13:04 -0800 (PST)
+	s=arc-20240116; t=1706692743; c=relaxed/simple;
+	bh=ldDSBYbQsuawzE+q6s6utdmeV61rLn8VfZ8DgI5fbmw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gU3UozGMCDxlee1vmetwY7Rup5EwkEQ8e+gAHp0k4xz3yVikZF3MEJzZ/L1niRQpVbjDhUfkbXNdN/ClXJ6V4UrjeIdsZ+7Ix8aq/tsM5VBcPBpvsbCPo97G//a4HSf97DhCepyasXUEqvpfjIn78uA8k65Glih9qdEnkoEM2V0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TPxL6357Rz4f3kK4;
+	Wed, 31 Jan 2024 17:18:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id F29C91A0171;
+	Wed, 31 Jan 2024 17:18:56 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+	by APP1 (Coremail) with SMTP id cCh0CgB3RxB_ELpldj8jCg--.58078S2;
+	Wed, 31 Jan 2024 17:18:55 +0800 (CST)
+Message-ID: <694648e8-09ce-4a1f-8c2c-db0c6c37da5d@huaweicloud.com>
+Date: Wed, 31 Jan 2024 17:18:55 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com> <20240130114224.86536-18-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20240130114224.86536-18-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 31 Jan 2024 17:12:47 +0800
-Message-ID: <CACGkMEv2cyuesaTx899hwZt7uDdqwmAwXJ8fZDv00W9FbVbTpw@mail.gmail.com>
-Subject: Re: [PATCH vhost 17/17] virtio_net: sq support premapped mode
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
-	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Benjamin Berg <benjamin.berg@intel.com>, 
-	Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org, 
-	netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
-	kvm@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 4/4] riscv, bpf: Mixing bpf2bpf and tailcalls
+Content-Language: en-US
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Pu Lehui <pulehui@huawei.com>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>,
+ Luke Nelson <luke.r.nels@gmail.com>
+References: <20230919035711.3297256-1-pulehui@huaweicloud.com>
+ <20230919035711.3297256-5-pulehui@huaweicloud.com>
+ <87lecqobyb.fsf@all.your.base.are.belong.to.us>
+ <4e73b095-0c08-4a6f-b2ee-8f7a071b14ee@huaweicloud.com>
+ <87cytjusud.fsf@all.your.base.are.belong.to.us>
+ <5d776261-338b-4ebb-bb9b-1dbc91cd06c3@huawei.com>
+ <87zfwnympo.fsf@all.your.base.are.belong.to.us>
+ <5a30caa3-3351-41e7-a77f-91e5959b2da6@huawei.com>
+ <87le86q04a.fsf@all.your.base.are.belong.to.us>
+From: Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <87le86q04a.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgB3RxB_ELpldj8jCg--.58078S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKrWrtF4DCF4fur18JFWkJFb_yoW7AF1DpF
+	W3X3W7Kr4kXr1Iyr12yF18Xay0kr47JryUZr1rtr1rAr1q9r1qgF4xGF4j9FyxAr18Kr1U
+	Zr4jqrW3Zw18JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+	aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbG2NtUUUUU==
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-On Tue, Jan 30, 2024 at 7:43=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> If the xsk is enabling, the xsk tx will share the send queue.
-> But the xsk requires that the send queue use the premapped mode.
-> So the send queue must support premapped mode.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 167 ++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 163 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 226ab830870e..cf0c67380b07 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -46,6 +46,7 @@ module_param(napi_tx, bool, 0644);
->  #define VIRTIO_XDP_REDIR       BIT(1)
->
->  #define VIRTIO_XDP_FLAG        BIT(0)
-> +#define VIRTIO_DMA_FLAG        BIT(1)
->
->  /* RX packet size EWMA. The average packet size is used to determine the=
- packet
->   * buffer size when refilling RX rings. As the entire RX ring may be ref=
-illed
-> @@ -140,6 +141,21 @@ struct virtnet_rq_dma {
->         u16 need_sync;
->  };
->
-> +struct virtnet_sq_dma {
-> +       union {
-> +               struct virtnet_sq_dma *next;
-> +               void *data;
-> +       };
-> +       dma_addr_t addr;
-> +       u32 len;
-> +       bool is_tail;
-> +};
-> +
-> +struct virtnet_sq_dma_head {
-> +       struct virtnet_sq_dma *free;
-> +       struct virtnet_sq_dma *head;
 
-Any reason the head must be a pointer instead of a simple index?
 
-> +};
-> +
->  /* Internal representation of a send virtqueue */
->  struct send_queue {
->         /* Virtqueue associated with this send _queue */
-> @@ -159,6 +175,8 @@ struct send_queue {
->
->         /* Record whether sq is in reset state. */
->         bool reset;
-> +
-> +       struct virtnet_sq_dma_head dmainfo;
->  };
->
->  /* Internal representation of a receive virtqueue */
-> @@ -348,6 +366,131 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
->         return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG=
-);
->  }
->
-> +static inline void *virtnet_sq_unmap(struct send_queue *sq, void *data)
-> +{
-> +       struct virtnet_sq_dma *head, *tail;
-> +
-> +       if (!((unsigned long)data & VIRTIO_DMA_FLAG))
-> +               return data;
-> +
-> +       head =3D (void *)((unsigned long)data & ~VIRTIO_DMA_FLAG);
-> +
-> +       tail =3D head;
-> +
-> +       while (true) {
-> +               virtqueue_dma_unmap_page_attrs(sq->vq, tail->addr, tail->=
-len,
-> +                                              DMA_TO_DEVICE, 0);
-> +
-> +               if (tail->is_tail)
-> +                       break;
-> +
-> +               tail =3D tail->next;
-> +       }
-> +
-> +       data =3D tail->data;
-> +       tail->is_tail =3D false;
-> +
-> +       tail->next =3D sq->dmainfo.free;
-> +       sq->dmainfo.free =3D head;
-> +
-> +       return data;
-> +}
-> +
-> +static void *virtnet_sq_dma_splice(struct send_queue *sq,
-> +                                  struct virtnet_sq_dma *head,
-> +                                  struct virtnet_sq_dma *tail,
-> +                                  void *data)
-> +{
-> +       sq->dmainfo.free =3D tail->next;
-> +
-> +       tail->is_tail =3D true;
-> +       tail->data =3D data;
-> +
-> +       head =3D (void *)((unsigned long)head | VIRTIO_DMA_FLAG);
-> +
-> +       return head;
-> +}
-> +
-> +static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq, i=
-nt nents, void *data)
-> +{
-> +       struct virtnet_sq_dma *head, *tail, *p;
-> +       struct scatterlist *sg;
-> +       dma_addr_t addr;
-> +       int i;
-> +
-> +       head =3D sq->dmainfo.free;
-> +       p =3D head;
-> +
-> +       tail =3D NULL;
-> +
-> +       for_each_sg(sq->sg, sg, nents, i) {
-> +               addr =3D virtqueue_dma_map_page_attrs(sq->vq, sg_page(sg)=
-,
-> +                                                   sg->offset, sg->lengt=
-h,
-> +                                                   DMA_TO_DEVICE, 0);
-> +               if (virtqueue_dma_mapping_error(sq->vq, addr))
-> +                       goto err;
-> +
-> +               sg->dma_address =3D addr;
-> +
-> +               tail =3D p;
-> +               tail->addr =3D sg->dma_address;
-> +               tail->len =3D sg->length;
-> +
-> +               p =3D p->next;
-> +       }
-> +
-> +       return virtnet_sq_dma_splice(sq, head, tail, data);
-> +
-> +err:
-> +       if (tail)
-> +               virtnet_sq_unmap(sq, virtnet_sq_dma_splice(sq, head, tail=
-, data));
-> +
-> +       return NULL;
-> +}
-> +
-> +static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data=
-)
-> +{
-> +       int ret;
-> +
-> +       if (sq->vq->premapped) {
-> +               data =3D virtnet_sq_map_sg(sq, num, data);
-> +               if (!data)
-> +                       return -ENOMEM;
-> +       }
-> +
-> +       ret =3D virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMI=
-C);
-> +       if (ret && sq->vq->premapped)
-> +               virtnet_sq_unmap(sq, data);
-> +
-> +       return ret;
-> +}
-> +
-> +static int virtnet_sq_init_dma_mate(struct send_queue *sq)
-> +{
-> +       struct virtnet_sq_dma *d;
-> +       int size, i;
-> +
-> +       size =3D virtqueue_get_vring_size(sq->vq);
-> +
-> +       size +=3D MAX_SKB_FRAGS + 2;
+On 2024/1/31 0:03, Björn Töpel wrote:
+> Pu Lehui <pulehui@huawei.com> writes:
+> 
+>> On 2024/1/30 21:28, Björn Töpel wrote:
+>>> Pu Lehui <pulehui@huawei.com> writes:
+>>>
+>>>> On 2024/1/30 16:29, Björn Töpel wrote:
+>>>>> Pu Lehui <pulehui@huaweicloud.com> writes:
+>>>>>
+>>>>>> On 2023/9/28 17:59, Björn Töpel wrote:
+>>>>>>> Pu Lehui <pulehui@huaweicloud.com> writes:
+>>>>>>>
+>>>>>>>> From: Pu Lehui <pulehui@huawei.com>
+>>>>>>>>
+>>>>>>>> In the current RV64 JIT, if we just don't initialize the TCC in subprog,
+>>>>>>>> the TCC can be propagated from the parent process to the subprocess, but
+>>>>>>>> the TCC of the parent process cannot be restored when the subprocess
+>>>>>>>> exits. Since the RV64 TCC is initialized before saving the callee saved
+>>>>>>>> registers into the stack, we cannot use the callee saved register to
+>>>>>>>> pass the TCC, otherwise the original value of the callee saved register
+>>>>>>>> will be destroyed. So we implemented mixing bpf2bpf and tailcalls
+>>>>>>>> similar to x86_64, i.e. using a non-callee saved register to transfer
+>>>>>>>> the TCC between functions, and saving that register to the stack to
+>>>>>>>> protect the TCC value. At the same time, we also consider the scenario
+>>>>>>>> of mixing trampoline.
+>>>>>>>
+>>>>>>> Hi!
+>>>>>>>
+>>>>>>> The RISC-V JIT tries to minimize the stack usage, e.g. it doesn't have a
+>>>>>>> fixed pro/epilogue like some of the other JITs. I think we can do better
+>>>>>>> here, so that the pass-TCC-via-register can be used, and the additional
+>>>>>>> stack access can be avoided.
+>>>>>>>
+>>>>>>> Today, the TCC is passed via a register (a6) and can be viewed as a
+>>>>>>> "state" variable/transparent argument/return value. As you point out, we
+>>>>>>> loose this when we do a call. On (any) calls we move the TCC to a
+>>>>>>> callee-saved register.
+>>>>>>>
+>>>>>>> WDYT about the following scheme:
+>>>>>>>
+>>>>>>> 1 Pickup the arm64 bpf2bpf/tailmix mechanism of just clearing the TCC
+>>>>>>>       for the main program.
+>>>>>>> 2 For BPF helper calls, move TCC to s6, perform the call, and restore
+>>>>>>>       a6. Dito for kfunc calls (BPF_PSEUDO_KFUNC_CALL).
+>>>>>>> 3 For all other calls, a6 is passed transparently.
+>>>>>>>
+>>>>>>> For 2 bpf_jit_get_func_addr() can be used to determine if the callee is
+>>>>>>> a BPF helper or not.
+>>>>>>>
+>>>>>>> In summary; Determine in the JIT if we're leaving BPF-land, and need to
+>>>>>>> move the TCC to a callee-saved reg, or not, and save us a bunch of stack
+>>>>>>> store/loads.
+>>>>>>>
+>>>>>>
+>>>>>> Valuable scheme. But we need to consider TCC back propagation. Let me
+>>>>>> show an example of calling subprog with TCC stored in A6:
+>>>>>>
+>>>>>> prog1(TCC==1){
+>>>>>>         subprog1(TCC==1)
+>>>>>>             -> tailcall1(TCC==0)
+>>>>>>                 -> subprog2(TCC==0)
+>>>>>>         subprog3(TCC==0) <--- should be TCC==1
+>>>>>>             -\-> tailcall2 <--- can't be called
+>>>>>> }
+>>>>
+>>>> Let's back with this example again. Imagine that the tailcall chain is a
+>>>> list limited to 33 elements. When the list has 32 elements, we call
+>>>> subprog1 and then tailcall1. At this time, the list elements count
+>>>> becomes 33. Then we call subprog2 and return prog1. At this time, the
+>>>> list removes 1 element and becomes 32 elements. At this time, there
+>>>> still can perform 1 tailcall.
+>>>>
+>>>> I've attached a diagram that shows mixing tailcall and subprogs is
+>>>> nearly a "call". It can return to caller function.
+>>>
+>>> Hmm. Let me put my Q in another way.
+>>>
+>>> The kernel calls into BPF_PROG_RUN() (~a BPF context). Would it ever be
+>>> OK to do more than 33 tail calls, regardless of subprogs or not?
+>>>
+>>> In your example, TCC is 1. You are allowed to perform one tail call. In
+>>> your example prog1 performs two.
+>>>
+>>> My view of TCC has always been ~a counter of the number of tailcalls~.
+>>>
+>>> With your example expanded:
+>>> prog1(TCC==33){
+>>>         subprog1(TCC==33)
+>>>             -> tailcall1(TCC==33) -> tailcall1(TCC==32) -> tailcall1(TCC==31) -> ... // 33 times
+>>>         // Lehui says TCC should be 33 again.
+>>>         // Björn says "it's the number of tailcalls", and subprog3 cannot perform a tail call
+>>>         subprog3(TCC==?)
+>>
+>> Yes, my view is take this something like a stack，while you take this as
+>> a fixed global value.
+>>
+>> prog1(TCC==33){
+>>       subprog1(TCC==33)
+>>           -> tailcall1(TCC==33) -> tailcall1(TCC==32) ->
+>> tailcall1(TCC==31) -> ... // 33 times -> subprog2(TCC==0)
+>>       subprog3(TCC==33)
+>> 	-> tailcall1(TCC==33) -> tailcall1(TCC==32) -> tailcall1(TCC==31) ->
+>> ... // 33 times
+>>
+>>>             
+>>> My view has, again, been than TCC is a run-time count of the number
+>>> tailcalls (fentry/fexit patch bpf-programs included).
+>>>
+>>> What does x86 and arm64 do?
+>>
+>> When subprog return back to caller bpf program, they both restore TCC to
+>> the value when enter into subprog. The ARM64 uses the callee saved
+>> register to store the TCC. When the ARM64 exits, the TCC is restored to
+>> the value when it enter. The while x86 uses the stack to do the same thing.
+> 
+> Ok! Thanks for clarifying. I'll continue reviewing the v2 of your
+> series!
+> 
+> BTW, I wonder if we can trigger this [1] on RV64 -- i.e. calling the
+> main prog, will reset the tcc count.
+> 
+> [1] https://lore.kernel.org/bpf/20240104142226.87869-1-hffilwlqm@gmail.com/
 
-Is this enough for the case where an indirect descriptor is used?
-
-Thanks
+Yes, I have been paying attention to this matter recently and will 
+allocate time to analyze it.
 
 
