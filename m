@@ -1,259 +1,333 @@
-Return-Path: <bpf+bounces-20809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84171843B80
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 10:55:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86016843B98
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 11:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D82531F2B0EE
-	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 09:55:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1D371F27A01
+	for <lists+bpf@lfdr.de>; Wed, 31 Jan 2024 10:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D11567E97;
-	Wed, 31 Jan 2024 09:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F4969D3D;
+	Wed, 31 Jan 2024 10:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="C72om1JJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="fFUl5Gz6"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Kvqz6s9K"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout37.security-mail.net (smtpout37.security-mail.net [85.31.212.37])
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7498469946
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 09:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.37
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706694906; cv=fail; b=uuDVqqce42lp+2iPXxYttYdcB0Fox3sRPUETwkkezEj76S/nH7VZ40o14e/VqERqy/4m+JqcIQKzTGJXSLCD8VneScIi6i1bEIYUOydRw5XeqjkvLUPAbofRKcZhSVm+2XSX1n5XKWiIq8Lui1UZtWehgXrIuaqgOAf1rEZhqrQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706694906; c=relaxed/simple;
-	bh=n3uXrrzzWaWWDlrViIwRreUQvbzXibng4An8pHcosoE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=gDhtbaFiU5bT7YolnOyAITzWeHQeuBLcNn0WIYrQ6DgZhW5/J3Vo+H/Q/5Ckd0I6fbCMnhAxE8M6xWl1mrZNiAbZqIdp2UFxK7Vd7I/aQxX82ol+9LBIwM3OhtvE+Vtk+tosWiNEaJEc7c5eE81enyN7Rzun3HL/wLVunJ/zHOA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=C72om1JJ; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=fFUl5Gz6 reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (localhost [127.0.0.1])
-	by fx301.security-mail.net (Postfix) with ESMTP id 04D349EC3E4
-	for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 10:53:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1706694785;
-	bh=n3uXrrzzWaWWDlrViIwRreUQvbzXibng4An8pHcosoE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=C72om1JJ0NN5DvK7v0pUWOsunocLJmcc7UM8seT9u4GIoQWSzxO+MR8pjYsCwCROV
-	 u97CVsfXLB7OECKEA8IxwAnidmViN7S/4XM7DbFN+rsAIYZavvwssqscQNYoo95U1/
-	 C2RVy2fWYt/kCSjZMRQ4uTj5AtUjTcqWEDJqvf4k=
-Received: from fx301 (localhost [127.0.0.1]) by fx301.security-mail.net
- (Postfix) with ESMTP id AA63C9ECF32; Wed, 31 Jan 2024 10:53:04 +0100 (CET)
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com
- (mail-mr2fra01on0100.outbound.protection.outlook.com [104.47.25.100]) by
- fx301.security-mail.net (Postfix) with ESMTPS id F29C99ECD8E; Wed, 31 Jan
- 2024 10:53:03 +0100 (CET)
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
- by MR1P264MB1908.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:12::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Wed, 31 Jan
- 2024 09:53:02 +0000
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1300:32a9:2172:a2a]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1300:32a9:2172:a2a%7]) with mapi id 15.20.7249.024; Wed, 31 Jan 2024
- 09:53:02 +0000
-X-Virus-Scanned: E-securemail
-Secumail-id: <13599.65ba187f.f1ba6.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U79dQDTEBjwqiCFZ78Vyc7MfRTY4cumqMgNo+TfllVxy4Tn9JENnZ6a17EWfHHIaaVQfQ1f22nQ+ORyf2i8yiD+Z8G8ES7O4zSt6tAP0yahA98PAnsRvS1isWRdBDnb2c/aiZtJBntuEhW4c2dM2miWZxr3uEzSzP0ci2wDj3dfxjConL6/dvy35vUG5ADDG+yy8OImcO3TQ9JmbtaCRpXodT2ylofnGbkaeaufWDL0CXjXLJR4OPLiOpWvLoJ4XfqvDJ/5f7H/dys/FNNEaA7DbFJUbJb+swJMpIjg6ZYQdsnWUEs2iAuiUPZ1uDx3Jt8eIo/4lRptpXqNLDv63JQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+qYdWYzfUcnoQWYfh/DWYXPiPJlj2xh/vdvzaU9qDf4=;
- b=GmYxeP44j6y7MnL9fxcFfU/o2Z3xHhB/013FQOrvTsbjPobzqWsbpZmsK3ijnnQxf0eI5qTO8HqBj5HljJQacmdVFaUDY41wbXC0yRxJQqd1AfGeI6jehNFmZ210A+m1S/GwypUV/FhVJyY1b8yYSWuZMWb+6N0HXZMOVeHFMiBjV4t5wOOcuyc4kBzuUzH8EShddyNZZ/0tAUl1SwwNlN7pPSu1O+r3I/XtdYwl8O7IFW4tMrn/lqE8p8aahFKpdK1keBrwZfCOltj/AdkizVu2d0vZ6q1T86kiIZdrgKcKxtRJWx6Rn2sm3Qrv1aw6zB/X8NErwYrnq63UbcCUmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+qYdWYzfUcnoQWYfh/DWYXPiPJlj2xh/vdvzaU9qDf4=;
- b=fFUl5Gz6NCqbTByjbL0OUFRPg8nxlADMd+5CjiILMQqJQNvWf57nZfkaW9YOUAuauigTpI6/XiXlPf3VFxQ3KoYuxl+ZA83EJxKCUcURiRE4+i140WWofOsZDqfus4AtNAtnZ8XustfnVaGEjgL0DBzCDZ/4qTpdjw8PnAvvl8luztV3XUQeCZMQYHHDsYrjMVwdzVy8i9GpmjXIoq8BffQy8zpns1HxfbN5VD9gycb5rTSeKa06jCOPXe+6SIFOAigzD2TQi8X2kYS3K3QwSbj82NGnh3t354g08ZwRMlKuIpcalyAAcX0PxqWNkiqe2fOtUOeOZXnDcsvelYVBMQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-Message-ID: <269edff0-d989-4ac8-b0c3-bce31283806b@kalrayinc.com>
-Date: Wed, 31 Jan 2024 10:52:57 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 31/31] kvx: Add IPI driver
-Content-Language: en-us, fr
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Yann Sionneau
- <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier
- <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, Mark
- Rutland <mark.rutland@arm.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, Ingo Molnar
- <mingo@redhat.com>, Waiman Long <longman@redhat.com>, "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>,
- Nick Piggin <npiggin@gmail.com>, Paul Moore <paul@paul-moore.com>, Eric
- Paris <eparis@redhat.com>, Christian Brauner <brauner@kernel.org>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Jules Maselbas <jmaselbas@kalray.eu>,
- Guillaume Thouvenin <gthouvenin@kalray.eu>, Clement Leger
- <clement@clement-leger.fr>, Vincent Chardon
- <vincent.chardon@elsys-design.com>, Marc =?utf-8?b?UG91bGhpw6hz?=
- <dkm@kataplop.net>, Julian Vetter <jvetter@kalray.eu>, Samuel Jones
- <sjones@kalray.eu>, Ashley Lesdalons <alesdalons@kalray.eu>, Thomas Costis
- <tcostis@kalray.eu>, Marius Gligor <mgligor@kalray.eu>, Jonathan Borne
- <jborne@kalray.eu>, Julien Villette <jvillette@kalray.eu>, Luc Michel
- <lmichel@kalray.eu>, Louis Morhet <lmorhet@kalray.eu>, Julien Hascoet
- <jhascoet@kalray.eu>, Jean-Christophe Pince <jcpince@gmail.com>, Guillaume
- Missonnier <gmissonnier@kalray.eu>, Alex Michon <amichon@kalray.eu>, Huacai
- Chen <chenhuacai@kernel.org>, WANG Xuerui <git@xen0n.name>, Shaokun Zhang
- <zhangshaokun@hisilicon.com>, John Garry <john.garry@huawei.com>, Guangbin
- Huang <huangguangbin2@huawei.com>, Bharat Bhushan <bbhushan2@marvell.com>,
- Bibo Mao <maobibo@loongson.cn>, Atish Patra <atishp@atishpatra.org>, "Jason
- A. Donenfeld" <Jason@zx2c4.com>, Qi Liu <liuqi115@huawei.com>, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, Catalin Marinas <catalin.marinas@arm.com>, Mark
- Brown <broonie@kernel.org>, Janosch Frank <frankja@linux.ibm.com>, Alexey
- Dobriyan <adobriyan@gmail.com>, Julian Vetter <jvetter@kalrayinc.com>,
- jmaselbas@zdiv.net
-Cc: Benjamin Mugnier <mugnier.benjamin@gmail.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
- linux-audit@redhat.com, linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-32-ysionneau@kalray.eu>
- <995eb624-3efe-10fc-a6ed-883d52d591bb@linaro.org>
-From: Yann Sionneau <ysionneau@kalrayinc.com>
-In-Reply-To: <995eb624-3efe-10fc-a6ed-883d52d591bb@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PA7P264CA0309.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:395::10) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:13::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC8769D02;
+	Wed, 31 Jan 2024 10:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706695212; cv=none; b=k3jlRdBqI2T0+JbT1SrSn+9SIh3JDb7ZxpTwCmj1Qy1KM4Udi9OwEybUaqQ/JBVBpFI9reN1DOHbfLd5TB9+/hrXqS6wUhqY/wm0a/HXgTlHKvWY5IuA311Mdo9J+x0o8wXlaRAIbJre0PqRpfVH/Uh0BGrtPnNO6gli1vBb/SY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706695212; c=relaxed/simple;
+	bh=3YYnMFWaHlPJ60dfD6efY57fsxADccjN5zhuuAuHkMY=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
+	 Content-Type; b=T4udq8sQWJhFjHwlAQNKgorkfLCrn64sw3YmqM6qjz8UyRuwdqZKhowFEJCvVGa9EAkYxxYphuoEcqJuCocmm5/zethPXiritSv8+ZcJtrEQ8bWp8qIEuZTGAbHan1r79ZDRL2kMuxOdqABUqZNMEe1fe5eVx5GXzdNW3XW3EEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Kvqz6s9K; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706695205; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=S+Pxc9YcDST59bqyXfYiPF01ckRIlykMvVP5/58u+kg=;
+	b=Kvqz6s9K9t2X2u2Ok9+bppkcPILNGun3TxFOeQwJEVuCFaz6iZ/KJKPzI7PpeLSuBhzv00ryi2cX7e8FMDpfEGQOjwhx8cwT0ztO6igE4kMGBJWwv41XiN33spoG3g0WipdxrZ5M1KC3ln9vFv9mU8V+j1vzdgzfSxkp9aPnd1c=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.jFUFC_1706695202;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.jFUFC_1706695202)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 18:00:03 +0800
+Message-ID: <1706695107.9558825-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost 02/17] virtio_ring: packed: remove double check of the unmap ops
+Date: Wed, 31 Jan 2024 17:58:27 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux.dev,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Benjamin Berg <benjamin.berg@intel.com>,
+ Yang Li <yang.lee@linux.alibaba.com>,
+ linux-um@lists.infradead.org,
+ netdev@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
+ <20240130114224.86536-3-xuanzhuo@linux.alibaba.com>
+ <CACGkMEvmqVpcXCaF6f24N6gTN2yHJOeu0bL4JBYL4Zmyg8C2sQ@mail.gmail.com>
+In-Reply-To: <CACGkMEvmqVpcXCaF6f24N6gTN2yHJOeu0bL4JBYL4Zmyg8C2sQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|MR1P264MB1908:EE_
-X-MS-Office365-Filtering-Correlation-Id: e310339f-977f-4e5d-50dd-08dc22426a1c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zY3OBspCqhZ7BPk4QYArZqQWGq1NNy94C0x7+KA8xUJotEwy8iPZFmmTgy+K44yfZnfUhZJoImM0Vw6dMkKKZqYnxhF1QoSD7Ar819xSS7+6nOZPrBsmcbRha+o6bzxYeNYTHrmS4NP9/TEr/nL+pRGdd6zQbT1no8poVJMm/2TjuA5P0FQUt7/GopTuXvpjrrEzMHVe2MUd7fP+0WuQllXQo40mkBelxX4TCxPizSErnzf1vp3WSTdbt1nrE7oDPVecCeedB3YiW52tp/tgv9Q3XXRxdA6qFsc09nWi8iAMh6ILBum15fJGbjZgkMFozEtNvW3BqvNfwi5QwjIkRvHwUV3fT4LHkliBF8sbq+UA7j81JCxLt8+MeV+nlPPQdxcxx5ag18ihurvjD+9gUYx0TxW/HFXzPtimg74CYstI/GjO4NWASeyz3p7QF0TPdosIAZYTppirMoMJAZh7op96+nSvfHVpDyZArr9UcgEudEDGpirTtNggeDEpOT159S7IghNg0qjouSIp4VkND1aFsOagoLspd4bai9vljLgC+BsBuiDbEhm5W0fhmsPEYPJzJQ1vjrG+ECgD4rRdJfaKQLQo7fdAM6ivXKaBNgXNoCaQ3Fs5tgsXTG6b6uU0OYfUqUlgzo7WuB7eDhk5PJ6d0ATJ4njtD1TpxWGj7Kmy2CdaJwXUDymGbpZ3uj79
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39850400004)(366004)(396003)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(921011)(31686004)(2616005)(41300700001)(1191002)(966005)(316002)(66476007)(66556008)(36756003)(6512007)(478600001)(53546011)(6506007)(83380400001)(6486002)(6666004)(38100700002)(66946007)(31696002)(8936002)(5660300002)(7366002)(7406005)(7416002)(2906002)(110136005)(86362001)(4326008)(8676002)(21314003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: aPFlMx0h7/7NT0uP9FPvxJkJqKZTWGf2n8FZTBmMWdvmHPxy5lQwIYMLwNIa59JNDZabgLkcLIJ0EEOhocDk4nyF2NUCpqnlaCO/4sOXxyZRUpacuL0PL8xW5tbpXM9MSWHgbeQLe+ktpaL1mJAH9cmzrALd5bPBucagM2MXjSD9mbzXsMzRvCoSjqwDQAXWqydUCeUUhzOymSjMueo5aNqXZTvfDJiLqImF5ckxDTwQ9xrMznQ2XTTNgmQ/PhK+q6R8pT/+9ZtmHLqy5ffIVF1d6zvIAAaqKiSPWk834ihFHcLti+gmYY8VhXYlHOzsnfYeVivsjFRd8usmZ81jueL6Tm5fihc7whq8BdP+XtkUh7Xqk3QDvhgZlJUh/Yf2jiY34xyePrUnej/qTKYriz2hNLEiiYvxLcB3gBUj+EgHujcvBlK2HZF0g351pcEH2h/Pbe4mkb6ZTxlaGrrY+NgDu/F0h1jKoxCxGLt/ToCuF9QE0MXx4H/gRZReDqG6KobpTafoy6Kf37fumohI0KkLgqXc8RU7Sf5+FBxBoPuWRBHjy6cD0923dkpkv7TsTFw1gfFWek/WKI0OG+2j3LXvDMwSWEHa9wTIq5ZAaO14gF4DqqslgbAkDXSSDAp5avdZ8pOL4TBwr/9IOFG+pqxRpmjpviILylFY8jiOjIcUSVlEd664qBKmC1wRW4YD/TsTxlVJcY4Fqlozg9yJe0d+dUDXfWFgZle0OZSZAYC9gXJlmHXKL3B5nDx3CNFQHuflXd4hoDZvVNpJNCnBYxg2vAGXpE88cNEV2NhxBIUQl+dtakEYUjym7+eXSbTMl364AXnMUcy1jUFSHRz6JtDq+9wJ8gDyb0xMsai0ICXB0JoitDjBE7+RNw/ifKqmiIle6lw7YriVAM9a33wS4eNZHBDohPVy8FT1oOgIXLA6lG5LP1g57COeRmvvcopF
- c9DrDlSRGLr8B0/SbWvXyCj06yXj2KSucyXo7/ty+8AwREbNb1kQwF1n9Mxkin5BN9v7nWeqV78yQD5k6IL8y5AGMeQRzjDyXd1RlkBFcMwxl988h0dxWIl7iQbWdm7i+GnZ/44cacozvPD6yRt6D/o76k5dcpKefJYIWTkSq5/aSDR/MN4bS/TyVzuItYXjRmeotIiIQZuaZwXTDc97WojT869ftUCYfrJ7IT9R0xdYIemw5pAE4RN6eRA9GYaGU677L5F9RuDAn4kOIToq+gVzAUB11eaEMn2BOjHCmV3g9Le9UwfQiwVn1B4IyK7SvUwZUx7GOvVy+B5DBsAV00PPjUOssnoXD4dgTNpJlqzvbBXjNaPb82WIpGgOEpCFzGvOIhTHqumH+S2dvV9zbX1R/IJ7+7ns0h8JYOWOg+gNBwczmx6aIw9KvHNjTo37oWqMhSMETtL0hdJdZFlb5/he5rpa+UuqSmq59tPzqha/5iHKtwkUGNFG0AhB0gOpgx1BgQO5GMvcGUleS6jtpC/WOUF2S1NmLyf5j8G54l3uT1MPFsv7bUn/NzqPeHNppMvi6yuAGVtajuVZ2gXR4YzS6ZwDfXgkEIu2fdYUHklTwrY32dKetWwMjQ61zvGRkMeM2N7hzrHhR1KLhddCXyAm3A80T0gEmGGUwwMnTAJlkZNdGKSByVi3iX5SyZqa
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e310339f-977f-4e5d-50dd-08dc22426a1c
-X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 09:53:02.5194
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bqkoUnkmcthhkHleNpTEnFGg/mK1DRUeyozhbzc6IDZz5aj47WtMkzx4Cn9cge6BEaQDBueQDfVJJJLXoyaiGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB1908
-X-ALTERMIMEV2_out: done
 
-Hello Krzysztof,
-
-On 22/01/2023 12:54, Krzysztof Kozlowski wrote:
-> On 20/01/2023 15:10, Yann Sionneau wrote:
->> +
->> +int __init kvx_ipi_ctrl_probe(irqreturn_t (*ipi_irq_handler)(int, void *))
->> +{
->> +	struct device_node *np;
->> +	int ret;
->> +	unsigned int ipi_irq;
->> +	void __iomem *ipi_base;
->> +
->> +	np = of_find_compatible_node(NULL, NULL, "kalray,kvx-ipi-ctrl");
-> Nope, big no.
+On Wed, 31 Jan 2024 17:12:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Tue, Jan 30, 2024 at 7:42=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
+> >
+> > In the functions vring_unmap_extra_packed and vring_unmap_desc_packed,
+> > multiple checks are made whether unmap is performed and whether it is
+> > INDIRECT.
+> >
+> > These two functions are usually called in a loop, and we should put the
+> > check outside the loop.
+> >
+> > And we unmap the descs with VRING_DESC_F_INDIRECT on the same path with
+> > other descs, that make the thing more complex. If we distinguish the
+> > descs with VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+> >
+> > 1. only one desc of the desc table is used, we do not need the loop
+> > 2. the called unmap api is difference from the other desc
+> > 3. the vq->premapped is not needed to check
+> > 4. the vq->indirect is not needed to check
+> > 5. the state->indir_desc must not be null
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/virtio/virtio_ring.c | 76 ++++++++++++++++++------------------
+> >  1 file changed, 39 insertions(+), 37 deletions(-)
+> >
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 4677831e6c26..7280a1706cca 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -1220,6 +1220,7 @@ static u16 packed_last_used(u16 last_used_idx)
+> >         return last_used_idx & ~(-(1 << VRING_PACKED_EVENT_F_WRAP_CTR));
+> >  }
+> >
+> > +/* caller must check vring_need_unmap_buffer() */
+> >  static void vring_unmap_extra_packed(const struct vring_virtqueue *vq,
+> >                                      const struct vring_desc_extra *ext=
+ra)
+> >  {
+> > @@ -1227,33 +1228,18 @@ static void vring_unmap_extra_packed(const stru=
+ct vring_virtqueue *vq,
+> >
+> >         flags =3D extra->flags;
+> >
+> > -       if (flags & VRING_DESC_F_INDIRECT) {
+> > -               if (!vq->use_dma_api)
+> > -                       return;
+> > -
+> > -               dma_unmap_single(vring_dma_dev(vq),
+> > -                                extra->addr, extra->len,
+> > -                                (flags & VRING_DESC_F_WRITE) ?
+> > -                                DMA_FROM_DEVICE : DMA_TO_DEVICE);
+> > -       } else {
+> > -               if (!vring_need_unmap_buffer(vq))
+> > -                       return;
+> > -
+> > -               dma_unmap_page(vring_dma_dev(vq),
+> > -                              extra->addr, extra->len,
+> > -                              (flags & VRING_DESC_F_WRITE) ?
+> > -                              DMA_FROM_DEVICE : DMA_TO_DEVICE);
+> > -       }
+> > +       dma_unmap_page(vring_dma_dev(vq),
+> > +                      extra->addr, extra->len,
+> > +                      (flags & VRING_DESC_F_WRITE) ?
+> > +                      DMA_FROM_DEVICE : DMA_TO_DEVICE);
+> >  }
+> >
+> > +/* caller must check vring_need_unmap_buffer() */
+> >  static void vring_unmap_desc_packed(const struct vring_virtqueue *vq,
+> >                                     const struct vring_packed_desc *des=
+c)
+> >  {
+> >         u16 flags;
+> >
+> > -       if (!vring_need_unmap_buffer(vq))
+> > -               return;
+> > -
+> >         flags =3D le16_to_cpu(desc->flags);
+> >
+> >         dma_unmap_page(vring_dma_dev(vq),
+> > @@ -1329,7 +1315,7 @@ static int virtqueue_add_indirect_packed(struct v=
+ring_virtqueue *vq,
+> >                         total_sg * sizeof(struct vring_packed_desc),
+> >                         DMA_TO_DEVICE);
+> >         if (vring_mapping_error(vq, addr)) {
+> > -               if (vq->premapped)
+> > +               if (!vring_need_unmap_buffer(vq))
+> >                         goto free_desc;
+> >
+> >                 goto unmap_release;
+> > @@ -1344,10 +1330,11 @@ static int virtqueue_add_indirect_packed(struct=
+ vring_virtqueue *vq,
+> >                 vq->packed.desc_extra[id].addr =3D addr;
+> >                 vq->packed.desc_extra[id].len =3D total_sg *
+> >                                 sizeof(struct vring_packed_desc);
+> > -               vq->packed.desc_extra[id].flags =3D VRING_DESC_F_INDIRE=
+CT |
+> > -                                                 vq->packed.avail_used=
+_flags;
+> >         }
+> >
+> > +       vq->packed.desc_extra[id].flags =3D VRING_DESC_F_INDIRECT |
+> > +               vq->packed.avail_used_flags;
 >
-> Drivers go to drivers, not to arch code. Use proper driver infrastructure.
-Thank you for your review.
+> Is this a bug fix? Or if we only need to check _F_INDIRECT, we can
+> simply avoid doing this by checking vq->indirect && state->indir_desc?
+>
+> > +
+> >         /*
+> >          * A driver MUST NOT make the first descriptor in the list
+> >          * available before all subsequent descriptors comprising
+> > @@ -1388,6 +1375,8 @@ static int virtqueue_add_indirect_packed(struct v=
+ring_virtqueue *vq,
+> >  unmap_release:
+> >         err_idx =3D i;
+> >
+> > +       WARN_ON(!vring_need_unmap_buffer(vq));
+>
+> Nitpick, using BUG_ON might be better as it may lead to unexpected
+> results which we can't recover from.
 
-It raises questions on our side about how to handle this change.
-
-First let me describe the hardware:
-
-The coolidge ipi controller device handles IPI communication between cpus
-inside a cluster.
-
-Each cpu has 8 of its dedicated irq lines (24 to 31) hard-wired to the ipi.
-The ipi controller has 8 sets of 2 registers:
-- a 17-bit "interrupt" register
-- a 17-bit "mask" register
-
-Each couple of register is dedicated to 1 of the 8 irqlines.
-Each of the 17 bits of interrupt/mask register
-identifies a cpu (cores 0 to 15 + secure_core).
-Writing bit i in interrupt register sends an irq to cpu i, according to the mask
-in mask register.
-Writing in interrupt/mask register couple N targets irq line N of the core.
-
-- Ipi generates an interrupt to the cpu when message is ready.
-- Messages are delivered via Axi.
-- Ipi does not have any interrupt input lines.
+the checkpatch.pl does not like BUG_ON.
+I have not preference.
 
 
-  +---------------+   irq       axi_w
-  |         |  i  |<--/--- ipi <------
-  | CPU     |  n  |  x8
-  |  core0  |  t  |
-  |         |  c  |  irq          irq         msi
-  |         |  t  |<--/--- apic <----- mbox <-------
-  |         |  l  |  x4
-  +---------------+
-  with intctl = core-irq controller
-    
+>
+> > +
+> >         for (i =3D 0; i < err_idx; i++)
+> >                 vring_unmap_desc_packed(vq, &desc[i]);
+> >
+> > @@ -1484,9 +1473,10 @@ static inline int virtqueue_add_packed(struct vi=
+rtqueue *_vq,
+> >                         if (unlikely(vring_need_unmap_buffer(vq))) {
+> >                                 vq->packed.desc_extra[curr].addr =3D ad=
+dr;
+> >                                 vq->packed.desc_extra[curr].len =3D sg-=
+>length;
+> > -                               vq->packed.desc_extra[curr].flags =3D
+> > -                                       le16_to_cpu(flags);
+> >                         }
+> > +
+> > +                       vq->packed.desc_extra[curr].flags =3D le16_to_c=
+pu(flags);
+> > +
+> >                         prev =3D curr;
+> >                         curr =3D vq->packed.desc_extra[curr].next;
+> >
+> > @@ -1536,6 +1526,8 @@ static inline int virtqueue_add_packed(struct vir=
+tqueue *_vq,
+> >
+> >         vq->packed.avail_used_flags =3D avail_used_flags;
+> >
+> > +       WARN_ON(!vring_need_unmap_buffer(vq));
+> > +
+> >         for (n =3D 0; n < total_sg; n++) {
+> >                 if (i =3D=3D err_idx)
+> >                         break;
+> > @@ -1605,7 +1597,9 @@ static void detach_buf_packed(struct vring_virtqu=
+eue *vq,
+> >         struct vring_desc_state_packed *state =3D NULL;
+> >         struct vring_packed_desc *desc;
+> >         unsigned int i, curr;
+> > +       u16 flags;
+> >
+> > +       flags =3D vq->packed.desc_extra[id].flags;
+> >         state =3D &vq->packed.desc_state[id];
+> >
+> >         /* Clear data ptr. */
+> > @@ -1615,22 +1609,32 @@ static void detach_buf_packed(struct vring_virt=
+queue *vq,
+> >         vq->free_head =3D id;
+> >         vq->vq.num_free +=3D state->num;
+> >
+> > -       if (unlikely(vring_need_unmap_buffer(vq))) {
+> > -               curr =3D id;
+> > -               for (i =3D 0; i < state->num; i++) {
+> > -                       vring_unmap_extra_packed(vq,
+> > -                                                &vq->packed.desc_extra=
+[curr]);
+> > -                       curr =3D vq->packed.desc_extra[curr].next;
+> > +       if (!(flags & VRING_DESC_F_INDIRECT)) {
+> > +               if (vring_need_unmap_buffer(vq)) {
+> > +                       curr =3D id;
+> > +                       for (i =3D 0; i < state->num; i++) {
+> > +                               vring_unmap_extra_packed(vq,
+> > +                                                        &vq->packed.de=
+sc_extra[curr]);
+> > +                               curr =3D vq->packed.desc_extra[curr].ne=
+xt;
+> > +                       }
+>
+> So before the change, we had:
+>
+>         if (unlikely(vq->do_unmap)) {
+>                 curr =3D id;
+>                 for (i =3D 0; i < state->num; i++) {
+>                         vring_unmap_extra_packed(vq,
+>                                                  &vq->packed.desc_extra[c=
+urr]);
+>                         curr =3D vq->packed.desc_extra[curr].next;
+>                 }
+>         }
+>
+> This looks like a bug as we should unmap the indirect descriptor
+> regradless of whether do_unmap is true or false.
+>
+> If yes, we need a independent fix instead of squashing it in this patch?
 
-We analyzed how other Linux ports are handling this situation (IPI) and here are several possible solutions:
 
-1/ put everything in smp.c like what longarch is doing.
-  * Except that IPI in longarch seems to involve writing to a special purpose CPU register and not doing a memory mapped write like kvx.
+YES. I noticed this.
+I will post a fix to the stable branch.
 
-2/ write a device driver in drivers/xxx/ with the content from ipi.c
-  * the probe would just ioremap the reg from DT and register the irq using request_percpu_irq()
-  * it would export a function "kvx_ipi_send()" that would directly be called by smp.c
-  * Question : where would this driver be placed in drivers/ ? drivers/irqchip/ ? Even if this is not per-se an interrupt-controller driver?
-
-3/ write a "dummy" interrupt-controller driver in drivers/irqchip/:
-  * it would create a dummy irq_domain, ioremap the reg, request per_cpu irq
-  * declare a struct irq_chip with only ipi_send_mask() callback declared so that generic IPI code in kernel/irq/ipi.c (__ipi_send_single()) would work.
-  * This would make use of the generic IPI code like what mips and risc-v are doing.
-
-4/ consider our "ipi device" as a mailbox and write a mailbox driver in drivers/mailbox/
-
-5/ consider it as an msi-controller since it transforms an AXI write into IRQ. The solution would look a bit like 3/
-
-6/ consider the ipi as "part of the core_intc" and add the content of ipi.c in drivers/irqchip/irq-kvx-core-intc.c
-
-7/ Do like OpenRISC and CSKY:
-  * declare a function pointer in smp.c (see smp_cross_call() from OpenRISC https://elixir.bootlin.com/linux/latest/source/arch/openrisc/kernel/smp.c#L28)
-  * declare a "setter" function in smp.c (see set_send_ipi() from OpenRISC https://elixir.bootlin.com/linux/latest/source/arch/openrisc/kernel/smp.c#L202)
-  * write a driver in drivers/irqchip/ which ends up calling the setter function (see irq-ompic.c: https://elixir.bootlin.com/linux/latest/source/drivers/irqchip/irq-ompic.c#L191)
+Thanks.
 
 
-I would tend to exclude solution 1/ because it does not fit exactly our arch (core reg vs AXI write), or we would have to do an ioremap() from inside smp.c, is this acceptable?
-I would exclude 3/ because it feels a bit dirty to hack a dummy interrupt-controller... our IPI is not an interrupt-controller, there are no input irqs. It's more like a device generating an IRQ.
-4/ and 5/ feel a bit over-engineered.
-6/ I guess this would work since irqchips are initialized early from init_IRQ(), but it does not reflect very much our hardware since each CPU has one core_intc but the IPI is global to each cluster and is accessed over AXI.
-
-Having considered all of this, I would tend to end up with solution 7/ but it honestly does not feel much cleaner than our current proposition. The function pointer dance feels a bit hackish.
-
-What would you prefer?
-
-Regards,
-
--- 
-Yann
-
-
-
-
-
+>
+> >                 }
+> > -       }
+> >
+> > -       if (vq->indirect) {
+> > +               if (ctx)
+> > +                       *ctx =3D state->indir_desc;
+> > +       } else {
+> > +               const struct vring_desc_extra *extra;
+> >                 u32 len;
+> >
+> > +               if (vq->use_dma_api) {
+> > +                       extra =3D &vq->packed.desc_extra[id];
+> > +                       dma_unmap_single(vring_dma_dev(vq),
+> > +                                        extra->addr, extra->len,
+> > +                                        (flags & VRING_DESC_F_WRITE) ?
+> > +                                        DMA_FROM_DEVICE : DMA_TO_DEVIC=
+E);
+> > +               }
+> > +
+>
+> Thanks
+>
 
