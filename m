@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-20883-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D782B844F80
-	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 04:19:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07D55844FB6
+	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 04:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9456C28B810
-	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 03:19:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D2FBB2B12B
+	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 03:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8853A8F0;
-	Thu,  1 Feb 2024 03:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3663B182;
+	Thu,  1 Feb 2024 03:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bO+msRE7"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WU+IEHii"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398EF3A1B4;
-	Thu,  1 Feb 2024 03:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A21E3A8C2;
+	Thu,  1 Feb 2024 03:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706757591; cv=none; b=BIz3WqkG0jMvGGAzCTtFjvzfz6+TxdSWRUCTE67ZVN1oqJbdJv6f0XIAHR5fOesLtkit3c8iUwRIAAr3RRPPl2eXaXS/LECuzYROjWnniiEr49yBTw0pmT9ZFH8/i1cJLWqv9hUCCYjp6t5fDi83j/yET2JQn3j5ELvZwj5JP9g=
+	t=1706758109; cv=none; b=nICSBk9SOze5I5+VCpqb9mHT1CuF9YBGGH9ZALACxvVnF9K9qryDr8fJ/sTun0VM89MpJlv2WLfs0qDzjQu6bdpgczxZ1dHkyvm4x1oVAFJfoFioV8yznZ+XJ0OKideHWDyDSROgzDZbvuU27vx4HX36eow7HmfEbdbrGhSfZKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706757591; c=relaxed/simple;
-	bh=PLhFLSirN3zIM/Dl1SY9Z1UcGt6Zg3JBMDy6mgyyODA=;
+	s=arc-20240116; t=1706758109; c=relaxed/simple;
+	bh=19F4hBJvqDWepo7c7foZ8C/PBfer0yZOd17lJx6Vgmo=;
 	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
-	 Content-Type; b=FyRM9deB/mxF9s/UD/nK9FthlkXGJKSSapx/As5dRbOlq/yX2NL2tgqkSfycm9NRs7aqu/9fc9QuhxlSSi1UM2vyOQRHUGssFp0+56a/7xGqfEfp9XsWBTn/JfquPNd5qbpWKSuWa6viGx6wPnH/pKl1XA3IL6PA8XY8ZqwjsQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bO+msRE7; arc=none smtp.client-ip=115.124.30.97
+	 Content-Type; b=FAVsSyVb26sP4Wh6uX4UZFPEgwzvh4HdSIGRtxDEef43ijFSwpKM+2aJrvBP1sze8wLO7oY2wqvB2RLH8JGOO4JcC+/H1tXp9SYYKhAKLgtAgUNgRsRIXkR0mjlSt0gmL8XH6RLFrzQU1I2mmd74I/vTCuB/XoODjgd9rFihl78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WU+IEHii; arc=none smtp.client-ip=115.124.30.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1706757585; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=PLhFLSirN3zIM/Dl1SY9Z1UcGt6Zg3JBMDy6mgyyODA=;
-	b=bO+msRE7cnGpsoweN6yZmJdWuWiosg+E1bUhQFlSV4rCF9PnuhHdr6w+pkZ1qpx2SVhqWcPuuzEFpQWbHr8jyvstZR9JZB8P8IzyRcHVpc+wrD7hg/x8Df1e+gR05YMvSC2WEg9wS9ZvAm0uQN5omuCN4Os2xEJ9GXIDvJ4fi+Q=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.mW7Yb_1706757582;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.mW7Yb_1706757582)
+	t=1706758103; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=Rizqv7gNwAJ86f3D7E8G85LNpNZ3ICAQbtSLpFYlUOE=;
+	b=WU+IEHiiAFUCLsBebmcrJSCOGQ6IajD+c5xEXBLEp9ImB67PkBLDWYJVazDBqc3yFJYWUslxPznItrjr6J9oZJqRHSrKBgzNONMsM27DIi5RUhScaFp+W480Vd2PzdGmm0wJC2XTTuYq/Kut3UOOwbYnId6QW0D2iidbujOpBxE=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.lzK49_1706758100;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.lzK49_1706758100)
           by smtp.aliyun-inc.com;
-          Thu, 01 Feb 2024 11:19:43 +0800
-Message-ID: <1706757435.040749-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost 11/17] virtio_ring: export premapped to driver by struct virtqueue
-Date: Thu, 1 Feb 2024 11:17:15 +0800
+          Thu, 01 Feb 2024 11:28:21 +0800
+Message-ID: <1706757660.3554723-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost 17/17] virtio_net: sq support premapped mode
+Date: Thu, 1 Feb 2024 11:21:00 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: Jason Wang <jasowang@redhat.com>
 Cc: virtualization@lists.linux.dev,
@@ -81,9 +81,9 @@ Cc: virtualization@lists.linux.dev,
  kvm@vger.kernel.org,
  bpf@vger.kernel.org
 References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
- <20240130114224.86536-12-xuanzhuo@linux.alibaba.com>
- <CACGkMEtWt1ROwJCeEa5FbQfxV2eqo0xRqHQZMsq-Q2TcQBur9g@mail.gmail.com>
-In-Reply-To: <CACGkMEtWt1ROwJCeEa5FbQfxV2eqo0xRqHQZMsq-Q2TcQBur9g@mail.gmail.com>
+ <20240130114224.86536-18-xuanzhuo@linux.alibaba.com>
+ <CACGkMEv2cyuesaTx899hwZt7uDdqwmAwXJ8fZDv00W9FbVbTpw@mail.gmail.com>
+In-Reply-To: <CACGkMEv2cyuesaTx899hwZt7uDdqwmAwXJ8fZDv00W9FbVbTpw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -92,20 +92,104 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-On Wed, 31 Jan 2024 17:12:43 +0800, Jason Wang <jasowang@redhat.com> wrote:
+On Wed, 31 Jan 2024 17:12:47 +0800, Jason Wang <jasowang@redhat.com> wrote:
 > On Tue, Jan 30, 2024 at 7:43=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
 .com> wrote:
 > >
-> > Export the premapped to drivers, then drivers can check
-> > the vq premapped mode after the find_vqs().
+> > If the xsk is enabling, the xsk tx will share the send queue.
+> > But the xsk requires that the send queue use the premapped mode.
+> > So the send queue must support premapped mode.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/net/virtio_net.c | 167 ++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 163 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 226ab830870e..cf0c67380b07 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -46,6 +46,7 @@ module_param(napi_tx, bool, 0644);
+> >  #define VIRTIO_XDP_REDIR       BIT(1)
+> >
+> >  #define VIRTIO_XDP_FLAG        BIT(0)
+> > +#define VIRTIO_DMA_FLAG        BIT(1)
+> >
+> >  /* RX packet size EWMA. The average packet size is used to determine t=
+he packet
+> >   * buffer size when refilling RX rings. As the entire RX ring may be r=
+efilled
+> > @@ -140,6 +141,21 @@ struct virtnet_rq_dma {
+> >         u16 need_sync;
+> >  };
+> >
+> > +struct virtnet_sq_dma {
+> > +       union {
+> > +               struct virtnet_sq_dma *next;
+> > +               void *data;
+> > +       };
+> > +       dma_addr_t addr;
+> > +       u32 len;
+> > +       bool is_tail;
+> > +};
+> > +
+> > +struct virtnet_sq_dma_head {
+> > +       struct virtnet_sq_dma *free;
+> > +       struct virtnet_sq_dma *head;
 >=20
-> This looks odd, it's the charge of the driver to set premapped, so it
-> should know it?
+> Any reason the head must be a pointer instead of a simple index?
 
-If the use_dma_api is false, we can not enable the premapped mode.
-Though we wrapped dma apis, but the AF_XDP use the default dma api directly.
-As we discussed, we just work in premapped mode when the use_dma_api is tru=
-e.
+
+The head is used for kfree.
+Maybe I need to rename it.
+
+About the index(next) of the virtnet_sq_dma.
+If we use the index, the struct will be:
+
+struct virtnet_sq_dma {
+       dma_addr_t addr;
+       u32 len;
+
+       u32 next;
+       void *data
+};
+
+The size of virtnet_sq_dma is same.=20
+
+
+>=20
+> > +};
+> > +
+> >  /* Internal representation of a send virtqueue */
+> >  struct send_queue {
+> >         /* Virtqueue associated with this send _queue */
+> > @@ -159,6 +175,8 @@ struct send_queue {
+> >
+> >         /* Record whether sq is in reset state. */
+> >         bool reset;
+> > +
+> > +       struct virtnet_sq_dma_head dmainfo;
+> >  };
+> >
+
+....
+
+> > +
+> > +static int virtnet_sq_init_dma_mate(struct send_queue *sq)
+> > +{
+> > +       struct virtnet_sq_dma *d;
+> > +       int size, i;
+> > +
+> > +       size =3D virtqueue_get_vring_size(sq->vq);
+> > +
+> > +       size +=3D MAX_SKB_FRAGS + 2;
+>=20
+> Is this enough for the case where an indirect descriptor is used?
+
+
+This is for the case, when the ring is full, the xmit_skb is called.
+
+I will add comment.
 
 Thanks.
 
