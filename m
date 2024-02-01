@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-20906-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20907-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27588845036
-	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 05:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA313845037
+	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 05:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A9421C2304A
-	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 04:23:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8311C2328B
+	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 04:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296583BB2D;
-	Thu,  1 Feb 2024 04:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455CB3CF6C;
+	Thu,  1 Feb 2024 04:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QJ5BXYP0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ziVY/e2+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B185D3C6BC
-	for <bpf@vger.kernel.org>; Thu,  1 Feb 2024 04:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220CF3CF45
+	for <bpf@vger.kernel.org>; Thu,  1 Feb 2024 04:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706761377; cv=none; b=J7PObXqa0fGOYzyELOPWKy53W24ilb72hqk3Bt1tjGPJ7+S1ziuGoU4IAJickiNVyr0plI08QR+uUZPcUhcc7ZTIcEQGAhTxVmsNREu0aChMAk5DSj2zoidaLDX8MF4iaFpebRDlw4Gq7SFRu7IbwDrJPvlGv6nzqUFhFRFV7Yw=
+	t=1706761378; cv=none; b=edU4InStsby6WXhhJknXqNkYBvLzvgWRD03bq6Z1t1U9bWNFscCOexpbEafDH1XdAvJ5mnOiGIl19mrE6PFfDqAMqPJD8M16+gi99Sz5ZCYqUvgv6QLDE6z6BdtGcjC6NaKpeEzQkeiMBSl8yvvyY+QNZWSsAR9Yr02GzEZO5LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706761377; c=relaxed/simple;
-	bh=sM6e4GJOdVtgwSVAwsLzIbgUpUVCVxBjp1/mDPrXzxA=;
+	s=arc-20240116; t=1706761378; c=relaxed/simple;
+	bh=kOaO6z2IMzg1r/MyGUpkXjIYsEpcI0zfWB2ic7bf2Xs=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=eG77weuhPBso9DE21DdaFzad7WlO2kqCnP7SO0/8W7qp972zSz3U0iSz0q5kNU+jeCMHFPixvZYS9mUpMVeHR0MR5kYzaQUU9FDfY3l/m3zLog2xM/Pmr4NXH27FsEDxNx/rzpPox3DSwQDJ0U+of6eN/I1otCyw6H78eAOQk8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QJ5BXYP0; arc=none smtp.client-ip=209.85.128.201
+	 To:Content-Type; b=b8aERM3QXGSjvKL484tQ+h38RoPThyZ6N1Wr0c8Cn4onpcbNIZMW8STWBqpkQy3duAayhmziSJerjY0x8dt2CudKOWZt1RGCg0dA9XHaq5F83dWT/wHp+kafVeIt95eehbqDo9oApvXgTZDm633lUdtZkkg2vyoMTnSqi8L3DSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ziVY/e2+; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-604127be0a0so10704977b3.1
-        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 20:22:54 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6c2643a07so901878276.3
+        for <bpf@vger.kernel.org>; Wed, 31 Jan 2024 20:22:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706761374; x=1707366174; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706761376; x=1707366176; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1JXSUMX5bbfgnckmTRSZnaB9bhkcugUHtNJBG9b4Oo4=;
-        b=QJ5BXYP0VM7KLbvbyyPr8hcLsap4dW0LPX3aPVHFjUg1pnNcniUzXW75tV7XzDssKH
-         kpP31oxRoTfg7N8lYODWE3A5gE2tp1euUyAKTryMN0c030H87na9wA4cuaQGHsZrcon9
-         USKhntQtmATztQsPhLsfFmQi7FEFVeOerKTFcnPgvAHkehtvZn2cbGdLVbpAHjFqMcSw
-         wUI7YIrIxOJl/E+qcFFIBxGHVlH8bAm2wfM2/EkgC/uDcd1hjtw1FuYHN97ocH65I9va
-         B9f4J48EKYWlK4NoYf3swTX8FGFWNe8eHHIXgtCa9pnwl1qG9OB3pz+YPITGrq0IcLu8
-         TRuA==
+        bh=IpPU/P9Rw6DdLv5FLhNPDNExyhurg221RAp9ZKk92ek=;
+        b=ziVY/e2+cJiy9QxzXqS/oYiCR2TU3lt13bOhdazyiGC8Sj5NiU1FHpKgGbleB3KWP7
+         rIAxlFv1GGlAOdImfqefbhLuX951KWFy0HN84o1A0rQUKcIwPyR5IWWu28tOH84cWXuP
+         9Nh4qLBtzzksNd+i3rxKfdxVVJL6sRRXRGPBMTEy98MgJMP9twIJvlEGBxDIiX+Tcu/V
+         jt1eG835NoyNIhMfb3u6Cj2eDEQECpag8W/dqEUu/6MW/Mxh59OyADnfDtbLKt3OibbE
+         uUQeCkGsuyfflmkQhS5ci3vqjCdZqzP9kikn41+55Wrpp+aLTQ9qt0O0e7PCa0//nIHS
+         ahiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706761374; x=1707366174;
+        d=1e100.net; s=20230601; t=1706761376; x=1707366176;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1JXSUMX5bbfgnckmTRSZnaB9bhkcugUHtNJBG9b4Oo4=;
-        b=RQFDeHRCg1ci/zj2w93pzurPVuCVwfzo/VHZrw7sKR64TsZ47LvCcdn1dTSl3Lt/04
-         +N1s2ne+fr8XYOcC4GHE2+KpQDYtV3xOeAfguIyjUf0OORSQvebieYiX3tUx/o5Fq6zV
-         aav2WRTKQqcXzwKN+czyHnGOGnWHYSqw2R/H7y7mUSN1+S6uBfAPOq8pPP+Z3Vpb7oD7
-         hoRZRqrVnTIcNJ41l2Dhpn9QLkpcu5zsF2hIr6BeXB6Mayn3V8fWEr4BicVQuprA9ZZj
-         lOIUfYHbkZ7YGbIsAKtAtwATj+YxCfOfFMrE1ynQCnrkYAzV3SVEPUDac4I2WRevarDX
-         TwDQ==
-X-Gm-Message-State: AOJu0YyxHLShg3/IlcPs/uuao8ayN6Q19mWYJKYVziRuejwxyQkZmJpc
-	lcMxB+2DZ4QA+Pwv1/lccrFBBq7WEAv913WS/pDeIIRPaJWPCpVQbrzQwwhN2g32yzNz3I6KPqp
-	8AiJqoA==
-X-Google-Smtp-Source: AGHT+IFTJVPGgTJjz0vfAK3znBckhM+C3f96ATL1D3c1AModrSqCIkbFIqSfHTHrXRFHdRJrEfI2dhkZAVZt
+        bh=IpPU/P9Rw6DdLv5FLhNPDNExyhurg221RAp9ZKk92ek=;
+        b=GvJhq96BQDpB9TCnGRoD7qHeNBSyi8b4TWBnrdp0BfjEKVtlFAcmnAkxOQa6TQjP3q
+         gcCABz4c7tmJURMHKLlBW54mABizbNfcyC2awsxSXA84JrVI/dXGUVX6L3l77/hreQxF
+         ttkPghltYg80djroAw9nyDBjLJEzdU7hojlmHV2Rh0QOn4U1N3tffLlfOKuCq48UUC72
+         s3k/x7g1I4IjEHcXHxwlc/ynQ/YvUMY7UaeUfbx6Br/CSzSsZgsjQciuyHISXIvn2BOv
+         /3CvD5KOS02b6yQBn4h7iL/IvKswgiO3+nnyHRkzKCWrqheIr3YwByxwLIPKTGG5JaJq
+         jKBg==
+X-Gm-Message-State: AOJu0YymQpLq9hOPEZvFFOcLAG6ylQITZ//HwpxAYrdiw9ofzQbl118U
+	MQ8nvolGyuHfJBy+Fj4uP+2hdNP7S9amLEcDiIhIHuqaMRAbZBM79yhLUYwGr5yKaRyoGBgxHST
+	DrGDVmA==
+X-Google-Smtp-Source: AGHT+IE8wymZahqqeemlY1iaO6CqbNktaK+r6W2Pm1C/Yfoy9QDR7o8EnoDQ7a0APQKk/WVTZRZ/UDTr08z0
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:16c5:1feb:bf99:a5d1])
- (user=irogers job=sendgmr) by 2002:a81:9a92:0:b0:5ff:a41c:1d19 with SMTP id
- r140-20020a819a92000000b005ffa41c1d19mr780347ywg.9.1706761373658; Wed, 31 Jan
- 2024 20:22:53 -0800 (PST)
-Date: Wed, 31 Jan 2024 20:22:30 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:e0c:b0:dc2:1f3b:abdd with SMTP id
+ df12-20020a0569020e0c00b00dc21f3babddmr954876ybb.5.1706761376013; Wed, 31 Jan
+ 2024 20:22:56 -0800 (PST)
+Date: Wed, 31 Jan 2024 20:22:31 -0800
 In-Reply-To: <20240201042236.1538928-1-irogers@google.com>
-Message-Id: <20240201042236.1538928-3-irogers@google.com>
+Message-Id: <20240201042236.1538928-4-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240201042236.1538928-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Subject: [PATCH v2 2/8] libperf cpumap: Ensure empty cpumap is NULL from alloc
+Subject: [PATCH v2 3/8] perf arm-spe/cs-etm: Directly iterate CPU maps
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -100,36 +100,185 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Potential corner cases could cause a cpumap to be allocated with size
-0, but an empty cpumap should be represented as NULL. Add a path in
-perf_cpu_map__alloc to ensure this.
+Rather than iterate all CPUs and see if they are in CPU maps, directly
+iterate the CPU map. Similarly make use of the intersect
+function. Switch perf_cpu_map__has_any_cpu_or_is_empty to more
+appropriate alternatives.
 
-Suggested-by: James Clark <james.clark@arm.com>
-Closes: https://lore.kernel.org/lkml/2cd09e7c-eb88-6726-6169-647dcd0a8101@arm.com/
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/perf/cpumap.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/perf/arch/arm/util/cs-etm.c    | 77 ++++++++++++----------------
+ tools/perf/arch/arm64/util/arm-spe.c |  4 +-
+ 2 files changed, 34 insertions(+), 47 deletions(-)
 
-diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-index ba49552952c5..cae799ad44e1 100644
---- a/tools/lib/perf/cpumap.c
-+++ b/tools/lib/perf/cpumap.c
-@@ -18,9 +18,13 @@ void perf_cpu_map__set_nr(struct perf_cpu_map *map, int nr_cpus)
- 
- struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+index 77e6663c1703..f4378ba0b8d6 100644
+--- a/tools/perf/arch/arm/util/cs-etm.c
++++ b/tools/perf/arch/arm/util/cs-etm.c
+@@ -197,38 +197,32 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
+ static int cs_etm_validate_config(struct auxtrace_record *itr,
+ 				  struct evsel *evsel)
  {
--	RC_STRUCT(perf_cpu_map) *cpus = malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cpus);
-+	RC_STRUCT(perf_cpu_map) *cpus;
- 	struct perf_cpu_map *result;
+-	int i, err = -EINVAL;
++	int idx, err = -EINVAL;
+ 	struct perf_cpu_map *event_cpus = evsel->evlist->core.user_requested_cpus;
+ 	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
++	struct perf_cpu_map *intersect_cpus = perf_cpu_map__intersect(event_cpus, online_cpus);
++	struct perf_cpu cpu;
  
-+	if (nr_cpus == 0)
-+		return NULL;
-+
-+	cpus = malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cpus);
- 	if (ADD_RC_CHK(result, cpus)) {
- 		cpus->nr = nr_cpus;
- 		refcount_set(&cpus->refcnt, 1);
+-	/* Set option of each CPU we have */
+-	for (i = 0; i < cpu__max_cpu().cpu; i++) {
+-		struct perf_cpu cpu = { .cpu = i, };
+-
+-		/*
+-		 * In per-cpu case, do the validation for CPUs to work with.
+-		 * In per-thread case, the CPU map is empty.  Since the traced
+-		 * program can run on any CPUs in this case, thus don't skip
+-		 * validation.
+-		 */
+-		if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) &&
+-		    !perf_cpu_map__has(event_cpus, cpu))
+-			continue;
+-
+-		if (!perf_cpu_map__has(online_cpus, cpu))
+-			continue;
++	perf_cpu_map__put(online_cpus);
+ 
+-		err = cs_etm_validate_context_id(itr, evsel, i);
++	/*
++	 * Set option of each CPU we have. In per-cpu case, do the validation
++	 * for CPUs to work with.  In per-thread case, the CPU map is empty.
++	 * Since the traced program can run on any CPUs in this case, thus don't
++	 * skip validation.
++	 */
++	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
++		err = cs_etm_validate_context_id(itr, evsel, cpu.cpu);
+ 		if (err)
+ 			goto out;
+-		err = cs_etm_validate_timestamp(itr, evsel, i);
++		err = cs_etm_validate_timestamp(itr, evsel, cpu.cpu);
+ 		if (err)
+ 			goto out;
+ 	}
+ 
+ 	err = 0;
+ out:
+-	perf_cpu_map__put(online_cpus);
++	perf_cpu_map__put(intersect_cpus);
+ 	return err;
+ }
+ 
+@@ -435,7 +429,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+ 	 * Also the case of per-cpu mmaps, need the contextID in order to be notified
+ 	 * when a context switch happened.
+ 	 */
+-	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
++	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
+ 		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+ 					   "timestamp", 1);
+ 		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+@@ -461,7 +455,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+ 	evsel->core.attr.sample_period = 1;
+ 
+ 	/* In per-cpu case, always need the time of mmap events etc */
+-	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
++	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus))
+ 		evsel__set_sample_bit(evsel, TIME);
+ 
+ 	err = cs_etm_validate_config(itr, cs_etm_evsel);
+@@ -533,38 +527,32 @@ static size_t
+ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+ 		      struct evlist *evlist __maybe_unused)
+ {
+-	int i;
++	int idx;
+ 	int etmv3 = 0, etmv4 = 0, ete = 0;
+ 	struct perf_cpu_map *event_cpus = evlist->core.user_requested_cpus;
+ 	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
++	struct perf_cpu cpu;
+ 
+ 	/* cpu map is not empty, we have specific CPUs to work with */
+-	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
+-		for (i = 0; i < cpu__max_cpu().cpu; i++) {
+-			struct perf_cpu cpu = { .cpu = i, };
+-
+-			if (!perf_cpu_map__has(event_cpus, cpu) ||
+-			    !perf_cpu_map__has(online_cpus, cpu))
+-				continue;
++	if (!perf_cpu_map__is_empty(event_cpus)) {
++		struct perf_cpu_map *intersect_cpus =
++			perf_cpu_map__intersect(event_cpus, online_cpus);
+ 
+-			if (cs_etm_is_ete(itr, i))
++		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
++			if (cs_etm_is_ete(itr, cpu.cpu))
+ 				ete++;
+-			else if (cs_etm_is_etmv4(itr, i))
++			else if (cs_etm_is_etmv4(itr, cpu.cpu))
+ 				etmv4++;
+ 			else
+ 				etmv3++;
+ 		}
++		perf_cpu_map__put(intersect_cpus);
+ 	} else {
+ 		/* get configuration for all CPUs in the system */
+-		for (i = 0; i < cpu__max_cpu().cpu; i++) {
+-			struct perf_cpu cpu = { .cpu = i, };
+-
+-			if (!perf_cpu_map__has(online_cpus, cpu))
+-				continue;
+-
+-			if (cs_etm_is_ete(itr, i))
++		perf_cpu_map__for_each_cpu(cpu, idx, online_cpus) {
++			if (cs_etm_is_ete(itr, cpu.cpu))
+ 				ete++;
+-			else if (cs_etm_is_etmv4(itr, i))
++			else if (cs_etm_is_etmv4(itr, cpu.cpu))
+ 				etmv4++;
+ 			else
+ 				etmv3++;
+@@ -814,15 +802,14 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
+ 		return -EINVAL;
+ 
+ 	/* If the cpu_map is empty all online CPUs are involved */
+-	if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
++	if (perf_cpu_map__is_empty(event_cpus)) {
+ 		cpu_map = online_cpus;
+ 	} else {
+ 		/* Make sure all specified CPUs are online */
+-		for (i = 0; i < perf_cpu_map__nr(event_cpus); i++) {
+-			struct perf_cpu cpu = { .cpu = i, };
++		struct perf_cpu cpu;
+ 
+-			if (perf_cpu_map__has(event_cpus, cpu) &&
+-			    !perf_cpu_map__has(online_cpus, cpu))
++		perf_cpu_map__for_each_cpu(cpu, i, event_cpus) {
++			if (!perf_cpu_map__has(online_cpus, cpu))
+ 				return -EINVAL;
+ 		}
+ 
+diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+index 51ccbfd3d246..0b52e67edb3b 100644
+--- a/tools/perf/arch/arm64/util/arm-spe.c
++++ b/tools/perf/arch/arm64/util/arm-spe.c
+@@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+ 	 * In the case of per-cpu mmaps, sample CPU for AUX event;
+ 	 * also enable the timestamp tracing for samples correlation.
+ 	 */
+-	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
++	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
+ 		evsel__set_sample_bit(arm_spe_evsel, CPU);
+ 		evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
+ 					   "ts_enable", 1);
+@@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+ 	tracking_evsel->core.attr.sample_period = 1;
+ 
+ 	/* In per-cpu case, always need the time of mmap events etc */
+-	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
++	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
+ 		evsel__set_sample_bit(tracking_evsel, TIME);
+ 		evsel__set_sample_bit(tracking_evsel, CPU);
+ 
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
