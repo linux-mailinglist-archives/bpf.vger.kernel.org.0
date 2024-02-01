@@ -1,166 +1,368 @@
-Return-Path: <bpf+bounces-20923-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20924-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A08845232
-	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 08:44:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D0DF84524F
+	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 09:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB133B20B1A
-	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 07:44:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C77F1F2377B
+	for <lists+bpf@lfdr.de>; Thu,  1 Feb 2024 08:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA8C158D8B;
-	Thu,  1 Feb 2024 07:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BTi5Srt3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABE7158D7C;
+	Thu,  1 Feb 2024 08:03:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5884F1586F2
-	for <bpf@vger.kernel.org>; Thu,  1 Feb 2024 07:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6611F14C5A2;
+	Thu,  1 Feb 2024 08:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706773455; cv=none; b=nk+Fis/884iGFH2G4V0I4VYs4wYhAi3rUmPcsJ4QWFMx2D0Cr0YOVosvyCBqa8bVK1nuxAWMbEaTnzd265jTkC8qTyXCGIqHttgMP2UCFuIgymfocsiq4ZQ2b22NMx/UT1MCTBMvOKw79d4CYzPLZemSg472zKv3US8JRRxssv0=
+	t=1706774634; cv=none; b=oSwDCV3WiJyR1qwBrHPKqXVAdDY5dySdoFFOYhpEIOGvEiIAj1IqItKY/oxC88WSBv9a0mabebT8EJeYN1uVorF3n46hfJQMqqXjyjP428Q9XWr8BEGUGDJO6qBAdrQGzAKQjZt0+H4hGsxfxQD6n2BfwMgnVHiM4Z/ve4spUhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706773455; c=relaxed/simple;
-	bh=VUxkMaWDzVG8ks5grBa6GIO8EpjRdlccwEaXcMtktI4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hnDaQsMt5Pw1WvRjWemN2CYLc/azteMjYHgyymEW6W71SmzdmdcV2BXPxXnEzfTlmmida2Z/hdJQCfYTxGdpEQsO6pDwU+XO8rsTHxvtVH7wydfpZ6Jviy2nKKfAIVRHeaYLNd40yrth6HqkDf4ksoAwETxCNiO2Le9VXQW3FB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BTi5Srt3; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fdc2da16-5680-44cf-bc18-b3e8c0f565fa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706773449;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W+Ldjee8H+rdTycXwv7iNM7fs8dOnUOKfLYDOYFBKVs=;
-	b=BTi5Srt3XKJ6GI3RHRfeEo1l/LIcvsed3vksfXGfzoNkv2bVp9RgtmgnorM1PflB601mio
-	ZFYZWsWXuDV9CHI2hA0a6mHsCy0fjvtfbHXRWJUGYQG/TN+xsopEpfQy0//LmahUgBBaBR
-	ctnB69aOTsyBQtqsU/VGoDWvQfeYCms=
-Date: Thu, 1 Feb 2024 15:43:51 +0800
+	s=arc-20240116; t=1706774634; c=relaxed/simple;
+	bh=tKcwMRDgvBFJP+WtgVhk6nVNrLK6Rc4EnYPBvWe7TCA=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XFrY4CBqJjd+GyOZzYfKlLUQWuy9TZgi/RRN6dBhXsIsLWG95Mu9TV2f3SqPGQrBIGMz2+nAzCBxVWuqT6DRDSYr6JXZhEGfHMcbc2Gg5FEwjIKTfKX+xvIAJOhI1VdmFrnuN8GEO5G8HnPM5RW/tcmYu1R6b2RVhFj9IRqt8lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TQWZk4bnLz1Q83V;
+	Thu,  1 Feb 2024 16:01:50 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2D0C714040D;
+	Thu,  1 Feb 2024 16:03:42 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 16:03:39 +0800
+Subject: Re: [PATCH v2 8/8] perf cpumap: Use perf_cpu_map__for_each_cpu when
+ possible
+To: Ian Rogers <irogers@google.com>
+References: <20240201042236.1538928-1-irogers@google.com>
+ <20240201042236.1538928-9-irogers@google.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, Suzuki K
+ Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, James
+ Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, John Garry
+	<john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, Davidlohr Bueso
+	<dave@stgolabs.net>, =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak
+	<kprateek.nayak@amd.com>, Sean Christopherson <seanjc@google.com>, Paolo
+ Bonzini <pbonzini@redhat.com>, Kajol Jain <kjain@linux.ibm.com>, Athira
+ Rajeev <atrajeev@linux.vnet.ibm.com>, Andrew Jones <ajones@ventanamicro.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@rivosinc.com>,
+	"Steinar H. Gunderson" <sesse@google.com>, Yang Li
+	<yang.lee@linux.alibaba.com>, Changbin Du <changbin.du@huawei.com>, Sandipan
+ Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee
+	<p4ranlee@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen
+	<chenhuacai@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+	<bpf@vger.kernel.org>
+From: Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <aa719d3b-5b96-a341-b776-a67cc6fad64a@huawei.com>
+Date: Thu, 1 Feb 2024 16:03:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH vhost 00/17] virtio: drivers maintain dma info for
- premapped vq
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev
-Cc: Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Benjamin Berg <benjamin.berg@intel.com>, Yang Li
- <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org,
- netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
- kvm@vger.kernel.org, bpf@vger.kernel.org
-References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240201042236.1538928-9-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-在 2024/1/30 19:42, Xuan Zhuo 写道:
-> As discussed:
-> http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
-> 
-> If the virtio is premapped mode, the driver should manage the dma info by self.
-> So the virtio core should not store the dma info.
-> So we can release the memory used to store the dma info.
-> 
-> But if the desc_extra has not dma info, we face a new question,
-> it is hard to get the dma info of the desc with indirect flag.
-> For split mode, that is easy from desc, but for the packed mode,
-> it is hard to get the dma info from the desc. And for hardening
-> the dma unmap is saft, we should store the dma info of indirect
-> descs.
-> 
-> So I introduce the "structure the indirect desc table" to
-> allocate space to store dma info with the desc table.
-> 
-> On the other side, we mix the descs with indirect flag
-> with other descs together to share the unmap api. That
-> is complex. I found if we we distinguish the descs with
-> VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
-> 
-> Because of the dma array is allocated in the find_vqs(),
-> so I introduce a new parameter to find_vqs().
-> 
-> Please review.
-> 
-> Thanks
-> 
-> Xuan Zhuo (17):
->    virtio_ring: introduce vring_need_unmap_buffer
->    virtio_ring: packed: remove double check of the unmap ops
->    virtio_ring: packed: structure the indirect desc table
->    virtio_ring: split: remove double check of the unmap ops
->    virtio_ring: split: structure the indirect desc table
->    virtio_ring: no store dma info when unmap is not needed
->    virtio: find_vqs: pass struct instead of multi parameters
->    virtio: vring_new_virtqueue(): pass struct instead of multi parameters
->    virtio_ring: reuse the parameter struct of find_vqs()
->    virtio: find_vqs: add new parameter premapped
->    virtio_ring: export premapped to driver by struct virtqueue
->    virtio_net: set premapped mode by find_vqs()
->    virtio_ring: remove api of setting vq premapped
->    virtio_ring: introduce dma map api for page
->    virtio_net: unify the code for recycling the xmit ptr
->    virtio_net: rename free_old_xmit_skbs to free_old_xmit
->    virtio_net: sq support premapped mode
+Hello,
 
-The above can not be cleanly merged into kernel 6.8-rc2.
-
-Perhaps a base-commit is needed. About base-commit, please see the link
-https://people.kernel.org/monsieuricon/all-patches-must-include-base-commit-info
-
-Zhu Yanjun
-
+On 2024/2/1 12:22, Ian Rogers wrote:
+> Rather than manually iterating the CPU map, use
+> perf_cpu_map__for_each_cpu. When possible tidy local variables.
 > 
->   arch/um/drivers/virtio_uml.c             |  29 +-
->   drivers/net/virtio_net.c                 | 298 +++++++---
->   drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
->   drivers/remoteproc/remoteproc_virtio.c   |  31 +-
->   drivers/s390/virtio/virtio_ccw.c         |  33 +-
->   drivers/virtio/virtio_mmio.c             |  30 +-
->   drivers/virtio/virtio_pci_common.c       |  59 +-
->   drivers/virtio/virtio_pci_common.h       |   9 +-
->   drivers/virtio/virtio_pci_legacy.c       |  16 +-
->   drivers/virtio/virtio_pci_modern.c       |  24 +-
->   drivers/virtio/virtio_ring.c             | 660 ++++++++++++-----------
->   drivers/virtio/virtio_vdpa.c             |  33 +-
->   include/linux/virtio.h                   |  10 +-
->   include/linux/virtio_config.h            |  48 +-
->   include/linux/virtio_ring.h              |  82 +--
->   tools/virtio/virtio_test.c               |   4 +-
->   tools/virtio/vringh_test.c               |  32 +-
->   17 files changed, 812 insertions(+), 610 deletions(-)
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Reviewed-by: James Clark <james.clark@arm.com>
+> ---
+>   tools/perf/arch/arm64/util/header.c           | 10 ++--
+>   tools/perf/tests/bitmap.c                     | 13 +++---
+>   tools/perf/tests/topology.c                   | 46 +++++++++----------
+>   tools/perf/util/bpf_kwork.c                   | 16 ++++---
+>   tools/perf/util/bpf_kwork_top.c               | 12 ++---
+>   tools/perf/util/cpumap.c                      | 12 ++---
+>   .../scripting-engines/trace-event-python.c    | 12 +++--
+>   tools/perf/util/session.c                     |  5 +-
+>   tools/perf/util/svghelper.c                   | 20 ++++----
+>   9 files changed, 72 insertions(+), 74 deletions(-)
 > 
-> --
-> 2.32.0.3.g01195cf9f
-> 
+> diff --git a/tools/perf/arch/arm64/util/header.c b/tools/perf/arch/arm64/util/header.c
+> index a9de0b5187dd..741df3614a09 100644
+> --- a/tools/perf/arch/arm64/util/header.c
+> +++ b/tools/perf/arch/arm64/util/header.c
+> @@ -4,8 +4,6 @@
+>   #include <stdio.h>
+>   #include <stdlib.h>
+>   #include <perf/cpumap.h>
+> -#include <util/cpumap.h>
+> -#include <internal/cpumap.h>
+>   #include <api/fs/fs.h>
+>   #include <errno.h>
+>   #include "debug.h"
+> @@ -19,18 +17,18 @@
+>   static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
+>   {
+>   	const char *sysfs = sysfs__mountpoint();
+> -	int cpu;
+> -	int ret = EINVAL;
+> +	struct perf_cpu cpu;
+> +	int idx, ret = EINVAL;
+>   
+>   	if (!sysfs || sz < MIDR_SIZE)
+>   		return EINVAL;
+>   
+> -	for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
+> +	perf_cpu_map__for_each_cpu(cpu, idx, cpus) {
+>   		char path[PATH_MAX];
+>   		FILE *file;
+>   
+>   		scnprintf(path, PATH_MAX, "%s/devices/system/cpu/cpu%d" MIDR,
+> -			  sysfs, RC_CHK_ACCESS(cpus)->map[cpu].cpu);
+> +			  sysfs, cpu.cpu);
+>   
+>   		file = fopen(path, "r");
+>   		if (!file) {
+> diff --git a/tools/perf/tests/bitmap.c b/tools/perf/tests/bitmap.c
+> index 0173f5402a35..98956e0e0765 100644
+> --- a/tools/perf/tests/bitmap.c
+> +++ b/tools/perf/tests/bitmap.c
+> @@ -11,18 +11,19 @@
+>   static unsigned long *get_bitmap(const char *str, int nbits)
+>   {
+>   	struct perf_cpu_map *map = perf_cpu_map__new(str);
+> -	unsigned long *bm = NULL;
+> -	int i;
+> +	unsigned long *bm;
+>   
+>   	bm = bitmap_zalloc(nbits);
+>   
+>   	if (map && bm) {
+> -		for (i = 0; i < perf_cpu_map__nr(map); i++)
+> -			__set_bit(perf_cpu_map__cpu(map, i).cpu, bm);
+> +		int i;
+> +		struct perf_cpu cpu;
+> +
+> +		perf_cpu_map__for_each_cpu(cpu, i, map)
+> +			__set_bit(cpu.cpu, bm);
+>   	}
+>   
+> -	if (map)
+> -		perf_cpu_map__put(map);
+> +	perf_cpu_map__put(map);
+>   	return bm;
+>   }
+>   
+> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+> index 2a842f53fbb5..a8cb5ba898ab 100644
+> --- a/tools/perf/tests/topology.c
+> +++ b/tools/perf/tests/topology.c
+> @@ -68,6 +68,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	};
+>   	int i;
+>   	struct aggr_cpu_id id;
+> +	struct perf_cpu cpu;
+>   
+>   	session = perf_session__new(&data, NULL);
+>   	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+> @@ -113,8 +114,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	TEST_ASSERT_VAL("Session header CPU map not set", session->header.env.cpu);
+>   
+>   	for (i = 0; i < session->header.env.nr_cpus_avail; i++) {
+> -		struct perf_cpu cpu = { .cpu = i };
+> -
+> +		cpu.cpu = i;
+>   		if (!perf_cpu_map__has(map, cpu))
+>   			continue;
+>   		pr_debug("CPU %d, core %d, socket %d\n", i,
+> @@ -123,48 +123,48 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	}
+>   
+>   	// Test that CPU ID contains socket, die, core and CPU
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__cpu(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__cpu(cpu, NULL);
+>   		TEST_ASSERT_VAL("Cpu map - CPU ID doesn't match",
+> -				perf_cpu_map__cpu(map, i).cpu == id.cpu.cpu);
+> +				cpu.cpu == id.cpu.cpu);
+>   
+>   		TEST_ASSERT_VAL("Cpu map - Core ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].core_id == id.core);
+> +			session->header.env.cpu[cpu.cpu].core_id == id.core);
+>   		TEST_ASSERT_VAL("Cpu map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Cpu map - Die ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
+> +			session->header.env.cpu[cpu.cpu].die_id == id.die);
+>   		TEST_ASSERT_VAL("Cpu map - Node ID is set", id.node == -1);
+>   		TEST_ASSERT_VAL("Cpu map - Thread IDX is set", id.thread_idx == -1);
+>   	}
+>   
+>   	// Test that core ID contains socket, die and core
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__core(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__core(cpu, NULL);
+>   		TEST_ASSERT_VAL("Core map - Core ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].core_id == id.core);
+> +			session->header.env.cpu[cpu.cpu].core_id == id.core);
+>   
+>   		TEST_ASSERT_VAL("Core map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Core map - Die ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
+> +			session->header.env.cpu[cpu.cpu].die_id == id.die);
+>   		TEST_ASSERT_VAL("Core map - Node ID is set", id.node == -1);
+>   		TEST_ASSERT_VAL("Core map - Thread IDX is set", id.thread_idx == -1);
+>   	}
+>   
+>   	// Test that die ID contains socket and die
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__die(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__die(cpu, NULL);
+>   		TEST_ASSERT_VAL("Die map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Die map - Die ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
+> +			session->header.env.cpu[cpu.cpu].die_id == id.die);
+>   
+>   		TEST_ASSERT_VAL("Die map - Node ID is set", id.node == -1);
+>   		TEST_ASSERT_VAL("Die map - Core is set", id.core == -1);
+> @@ -173,10 +173,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	}
+>   
+>   	// Test that socket ID contains only socket
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__socket(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__socket(cpu, NULL);
+>   		TEST_ASSERT_VAL("Socket map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Socket map - Node ID is set", id.node == -1);
+> @@ -187,10 +187,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	}
+>   
+>   	// Test that node ID contains only node
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__node(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__node(cpu, NULL);
+>   		TEST_ASSERT_VAL("Node map - Node ID doesn't match",
+> -				cpu__get_node(perf_cpu_map__cpu(map, i)) == id.node);
+> +				cpu__get_node(cpu) == id.node);
+>   		TEST_ASSERT_VAL("Node map - Socket is set", id.socket == -1);
+>   		TEST_ASSERT_VAL("Node map - Die ID is set", id.die == -1);
+>   		TEST_ASSERT_VAL("Node map - Core is set", id.core == -1);
+> diff --git a/tools/perf/util/bpf_kwork.c b/tools/perf/util/bpf_kwork.c
+> index 6eb2c78fd7f4..44f0f708a15d 100644
+> --- a/tools/perf/util/bpf_kwork.c
+> +++ b/tools/perf/util/bpf_kwork.c
+> @@ -147,12 +147,12 @@ static bool valid_kwork_class_type(enum kwork_class_type type)
+>   
+>   static int setup_filters(struct perf_kwork *kwork)
+>   {
+> -	u8 val = 1;
+> -	int i, nr_cpus, key, fd;
+> -	struct perf_cpu_map *map;
+> -
+>   	if (kwork->cpu_list != NULL) {
+> -		fd = bpf_map__fd(skel->maps.perf_kwork_cpu_filter);
+> +		int idx, nr_cpus;
+> +		struct perf_cpu_map *map;
+> +		struct perf_cpu cpu;
+> +		int fd = bpf_map__fd(skel->maps.perf_kwork_cpu_filter);
+> +
+>   		if (fd < 0) {
+>   			pr_debug("Invalid cpu filter fd\n");
+>   			return -1;
+> @@ -165,8 +165,8 @@ static int setup_filters(struct perf_kwork *kwork)
+>   		}
+>   
+>   		nr_cpus = libbpf_num_possible_cpus();
+> -		for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -			struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
+> +		perf_cpu_map__for_each_cpu(cpu, idx, map) {
+> +			u8 val = 1;
+>   
+>   			if (cpu.cpu >= nr_cpus) {
+>   				perf_cpu_map__put(map);
+> @@ -181,6 +181,8 @@ static int setup_filters(struct perf_kwork *kwork)
+>   	}
+>   
+>   	if (kwork->profile_name != NULL) {
+> +		int key, fd;
+> +
+>   		if (strlen(kwork->profile_name) >= MAX_KWORKNAME) {
+>   			pr_err("Requested name filter %s too large, limit to %d\n",
+>   			       kwork->profile_name, MAX_KWORKNAME - 1);
+> diff --git a/tools/perf/util/bpf_kwork_top.c b/tools/perf/util/bpf_kwork_top.c
+> index 035e02272790..22a3b00a1e23 100644
+> --- a/tools/perf/util/bpf_kwork_top.c
+> +++ b/tools/perf/util/bpf_kwork_top.c
+> @@ -122,11 +122,11 @@ static bool valid_kwork_class_type(enum kwork_class_type type)
+>   
+>   static int setup_filters(struct perf_kwork *kwork)
+>   {
+> -	u8 val = 1;
+> -	int i, nr_cpus, fd;
+> -	struct perf_cpu_map *map;
+> -
+>   	if (kwork->cpu_list) {
+> +		int idx, nr_cpus, fd;
+> +		struct perf_cpu_map *map;
+> +		struct perf_cpu cpu;
+> +
+>   		fd = bpf_map__fd(skel->maps.kwork_top_cpu_filter);
+>   		if (fd < 0) {
+>   			pr_debug("Invalid cpu filter fd\n");
+> @@ -140,8 +140,8 @@ static int setup_filters(struct perf_kwork *kwork)
+>   		}
+>   
+>   		nr_cpus = libbpf_num_possible_cpus();
+> -		for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -			struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
+> +		perf_cpu_map__for_each_cpu(cpu, idx, map) {
+> +			u8 val = 1;
+>   
+>   			if (cpu.cpu >= nr_cpus) {
+>   				perf_cpu_map__put(map);
 
+For part of perf-kwork utility:
+Reviewed-and-tested-by: Yang Jihong <yangjihong1@huawei.com>
+
+
+Thanks,
+Yang
 
