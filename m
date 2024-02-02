@@ -1,142 +1,141 @@
-Return-Path: <bpf+bounces-21054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E6858470FC
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 14:18:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5C8847169
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 14:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE99828D13B
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 13:18:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F7751C21313
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 13:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34E332C88;
-	Fri,  2 Feb 2024 13:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49304779F;
+	Fri,  2 Feb 2024 13:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RhCzBU1P"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ThlNwD6e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BF73D63
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 13:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FF646452
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 13:50:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706879923; cv=none; b=ZLSUr8DVTNuFGJGw0cVKbwBYHf8S4mF4dvnBfw3ZfBgv9PJcjb1NXhYLO+py4otF2mrUHoQu7a0o6+airmN5jccrMhrf2liaiPy9SJn6DSKAmNQfJJsHLWaLJ2sHiT4jjP8HKF+KUtpbTDMs3jgADO3pxrKJtr2KAv31m1qQykg=
+	t=1706881856; cv=none; b=kfi/EyGIKnhCfHzLdo95ejvKWlho7YLO5hdaw3ku0OcSxk36vRU/iU/RiMYiR1XGtsB7aYkTKxPr6BiAxD0OlG53Ivfz46g+8RsLIHDwNLUwaLNLDeXxIgcTpVaSLCq8l2gz/XqQs3/C+fEC/ulHpKbT4kTW+R0syZcBBO0A3iU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706879923; c=relaxed/simple;
-	bh=W7OZx4RTxoom4Ogz5ug3JSSYtqzQnfFyLwBWZ6PN524=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qONlcuYg+zthjl9GAfq9PyBNOms0wYa9Nz0eZ66S2vnm4PQRopr1L1bbiNFY7j+fE2nhRi8aY3aADgomhcvw7xmznuj90yx/2fYRdBoBKCvt5/ILq7Xqcio77MBt76HGkxLrpXbwBAtkvHLf8bo1C3VB3XFi/RQI34bzM1v7Buc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RhCzBU1P; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so25046821fa.1
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 05:18:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706879919; x=1707484719; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wbtOpRngfWUWXoOKqm74anyaAHkCqDPmB9AzS1PPbu0=;
-        b=RhCzBU1PW0My1mfJhRjkIYh3GpscjbjjHl/vhvzMxzUGvhk6lQvIhqYiTd+WA/t+P5
-         0LmXo818EnE++6ygqhxSG4ix+57wII3FZToPjdk4jz+yOEqo4SPkKsv5SUDVJoica/q4
-         qQZM/ftjmqxA11UUft0UcJJCE6R1ljQvwzC9b+qgiGn1uZPRCjXoM1DtbxaR+sA86EOO
-         5oLjQpXuiwJutqCovVJoOpYhu0bBCmfrKAo5QuB6W4qFSme32mDINa0pNEJHpM7q0e9b
-         /xiSPLBL/xPAtTP4P6TcG41Hr8g5u1iWoZD1xFmtLiV3IWEtPRDZElZUdWbKrFytzjET
-         vSWg==
+	s=arc-20240116; t=1706881856; c=relaxed/simple;
+	bh=pzkrCDXIOhY9KT5HvRvV8+hIvjPQd2izpaosmJfcVbw=;
+	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CWz+uIxtw80ldWQbLXMC4Q6Zcj4YzutOn1axpQ/QsTBI1HLhB92N0HW+HUdqytBYxnNPECapYAicV+zm1vQkJTU+02FzqejbO564mOOhxIJsr08AGCHIjS14dSiqvtrD7S/+vxS6z4nA39wtqAfVoZ5QOeLcnEBYt57dgr7Ju78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ThlNwD6e; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706881853;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BFOPx9Ws2+oZ6oWmPtHYc49NwLYW2wbXPD+2M9R0NqQ=;
+	b=ThlNwD6e8qIBwTjT556HMyteT2KtAxa+GuNjtY4MYGqSfrENWYKkODgOSuNkETbGmAh9hc
+	j2O5VUOoN98QVudfVpyHF+wi2T24sKuEWliz86NC3PN6HB7lySUDLMlVaMdJIkoJfYreJk
+	vZZMOejy/RgTuPn7ve9Pah7by6Ql9Sk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-679-Uvh32SkBPgKvWw2qGlTDOg-1; Fri, 02 Feb 2024 08:50:51 -0500
+X-MC-Unique: Uvh32SkBPgKvWw2qGlTDOg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-55fee28d93dso366681a12.2
+        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 05:50:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706879919; x=1707484719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wbtOpRngfWUWXoOKqm74anyaAHkCqDPmB9AzS1PPbu0=;
-        b=IgkOJfdv3yzSf+YrII5t6eIiIIGVT9L2pQI8heTL3xONZEx/FpuqT717Ui7vsDCTFk
-         S0cGK6Ug88/tJICZBJZPvxv/4noPNtUFp4MSQfh2FBvtwwD319iXCxEunyUA+dbU+ksO
-         FyFLaDpyYPIs4f0LJn1Yb88/SaW08S03p/Iq23C6P/ooidyLPRRhb75dP9EKVhkdGImt
-         tiStDfoFQUfKl7W4kXFOXiIYqvyzAxGUvrJDTAY2TjuNb43NNOdW5bW35001erqJt0kY
-         OdCPT1I8vVXI6dTU7ZbLQ8O+JQTyQYl3W4EhaVCRJQxxbmEFKhX/rfIi2Jf37DUygKQA
-         rIxA==
-X-Gm-Message-State: AOJu0YzZ9z1a7PLi722/uNZzNbjRsCf0vd7EGThml3PsmBDwr7zwoNCi
-	Y/XhmCWnp00IeK/d0HEx/vgm14y4WX07mPe1GyqMzRgDbTGDBUti
-X-Google-Smtp-Source: AGHT+IEFT61vTE6wXKdnjmftyazW/VRST/KOvz1w7wGU+674/5ID46MJZEfaRVd3XS0TUGWzGZe+ew==
-X-Received: by 2002:a2e:9e10:0:b0:2cd:4883:6e25 with SMTP id e16-20020a2e9e10000000b002cd48836e25mr5334207ljk.50.1706879919077;
-        Fri, 02 Feb 2024 05:18:39 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX2yMAzPZsQAmDyPtgf+hIn01WzxrIlR6jm4E6suHayqpb+dXrnmA0o6TgW99buOMG3rqW4sPNFywC0vaOFbx7v4z4qlp3aeF+tkcGXUUbWEAdjhRO8OOdu9NNyCP1/Hv6rD29lUPzMEqhWnwYNw2HTZ2XcrEre628HGcBYC3FuCDLmiPHn5FdUTl1TNTGrsFMtOPHApdHHAJo/9o5ZaYGqZCiTOCTWsFooY67xM14P49ayC3EPTai91aLNtMDa8G/0O4piPhzBEe5G2PRNgYktpz/DBkb3zxeGuHqFMq9u7RfF6z367024lcWRTbpQFY4/F2qWdzbpXgRVnvU895xYVOqoI0sKOnduJ/U5/kMSXQ0gYUlC2SbawDS4sHPXz0rvZTVNW09vCIgL5JpG
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ij7-20020a056402158700b0055fe55441cbsm793199edb.40.2024.02.02.05.18.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 05:18:38 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 2 Feb 2024 14:18:36 +0100
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-	Rong Tao <rongtao@cestc.cn>
-Subject: Re: [PATCH bpf] selftests/bpf: trace_helpers.c: do not use poisoned
- type
-Message-ID: <ZbzrrBKaJyRJLEz8@krava>
-References: <20240202095559.12900-1-shung-hsi.yu@suse.com>
+        d=1e100.net; s=20230601; t=1706881850; x=1707486650;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BFOPx9Ws2+oZ6oWmPtHYc49NwLYW2wbXPD+2M9R0NqQ=;
+        b=wurj/GPwu0kIrMit8J5iOYhkigBynSUgiqnOjTid/kvgqKclY7/sFZn1CrogEZ2ZJe
+         gt6TbtbKsTqHHfoEhSN3oOcIGxPtd+6BpazUuJEBlE85SCJYvHh789t7nDp6/Tm0jtYM
+         8KKZx48bjJlocGw8OuqNyh9BzHvjCTzM2Gl8wC42ZD0LwTZaScKgF+oCeAsAZYIyJsw3
+         2+Cc6iGcGmtaN+1KKnqYRbe+2xcIfApr6UfPznwenOHszj/sl+NBErBNOst2IWIg+t4b
+         DxcXOHW/5w3hyPiJ4Qt0reKVnhEdYZc0X3gqiNmuvJdGixkY9Kj9CN3sExEaE3Tl0zOD
+         3yWw==
+X-Gm-Message-State: AOJu0Yy31nP0OTuKT9ZSkbL4ABIUyvkwtrZXTmXdGw2y0Vdz4Vrxenlo
+	vRkPDE5boaO+U5F5HuEh8w+TlqkkeKJFE8Llk7mlHouBqdS8U6ob+56RBn1Br00ya4REemDAtiu
+	a8lLamMYzlfzL8CCbvmmVB8/hLPoXY5orQs3XcLHqKeEEBa4Zia9Z4c5nFN3+MEGt7/b/F0nwSj
+	3b4/Lg2GZWFxihiJizW5eM/iSm
+X-Received: by 2002:aa7:c687:0:b0:55f:d892:7470 with SMTP id n7-20020aa7c687000000b0055fd8927470mr2139111edq.32.1706881850715;
+        Fri, 02 Feb 2024 05:50:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFKdZQnLlZsuPHA/5dLa0X1nmnP/K8o5jq6kF2PxePQlahZbAQlEK4fz4SzKq9tA/FdVxyVJ13exLJ6fyRneWg=
+X-Received: by 2002:aa7:c687:0:b0:55f:d892:7470 with SMTP id
+ n7-20020aa7c687000000b0055fd8927470mr2139100edq.32.1706881850369; Fri, 02 Feb
+ 2024 05:50:50 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 2 Feb 2024 05:50:49 -0800
+From: Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20240122194801.152658-1-jhs@mojatatu.com> <20240122194801.152658-7-jhs@mojatatu.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202095559.12900-1-shung-hsi.yu@suse.com>
+In-Reply-To: <20240122194801.152658-7-jhs@mojatatu.com>
+Date: Fri, 2 Feb 2024 05:50:48 -0800
+Message-ID: <CALnP8Za-uSB3grrk9cay8=6BNty9GcTKdStqzUnCv-spXRhe4A@mail.gmail.com>
+Subject: Re: [PATCH v10 net-next 06/15] p4tc: add P4 data types
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, Mahesh.Shirshyad@amd.com, 
+	tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, 
+	mattyk@nvidia.com, daniel@iogearbox.net, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 02, 2024 at 05:55:58PM +0800, Shung-Hsi Yu wrote:
-> After commit c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize
-> kallsyms cache") trace_helpers.c now includes libbpf_internal.h, and
-> thus can no longer use the u32 type (among others) since they are poison
-> in libbpf_internal.h. Replace u32 with __u32 to fix the following error
-> when building trace_helpers.c on powerpc:
-> 
->   error: attempt to use poisoned "u32"
-> 
-> Fixes: c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize kallsyms cache")
-> Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> ---
-> Somehow this error only shows up when I'm building on ppc64le, but not
-> x86_64 and aarch64. But I didn't investigate further.
+On Mon, Jan 22, 2024 at 02:47:52PM -0500, Jamal Hadi Salim wrote:
+> Introduce abstraction that represents P4 data types.
+> This also introduces the Kconfig and Makefile which later patches use.
+> Numeric types could be little, host or big endian definitions. The abstraction
+> also supports defining:
+>
+> a) bitstrings using P4 annotations that look like "bit<X>" where X
+>    is the number of bits defined in a type
+>
+> b) bitslices such that one can define in P4 as bit<8>[0-3] and
+>    bit<16>[4-9]. A 4-bit slice from bits 0-3 and a 6-bit slice from bits
+>    4-9 respectively.
+>
+> c) speacialized types like dev (which stands for a netdev), key, etc
+>
+> Each type has a bitsize, a name (for debugging purposes), an ID and
+> methods/ops. The P4 types will be used by externs, dynamic actions, packet
+> headers and other parts of P4TC.
+>
+> Each type has four ops:
+>
+> - validate_p4t: Which validates if a given value of a specific type
+>   meets valid boundary conditions.
+>
+> - create_bitops: Which, given a bitsize, bitstart and bitend allocates and
+>   returns a mask and a shift value. For example, if we have type
+>   bit<8>[3-3] meaning bitstart = 3 and bitend = 3, we'll create a mask
+>   which would only give us the fourth bit of a bit8 value, that is, 0x08.
+>   Since we are interested in the fourth bit, the bit shift value will be 3.
+>   This is also useful if an "irregular" bitsize is used, for example,
+>   bit24. In that case bitstart = 0 and bitend = 23. Shift will be 0 and
+>   the mask will be 0xFFFFFF00 if the machine is big endian.
+>
+> - host_read : Which reads the value of a given type and transforms it to
+>   host order (if needed)
+>
+> - host_write : Which writes a provided host order value and transforms it
+>   to the type's native order (if needed)
+>
+> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
 
-it's within powerpc ifdef:
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-  #if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-> ---
->  tools/testing/selftests/bpf/trace_helpers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index 4faa898ff7fc..27fd7ed3e4b0 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -271,7 +271,7 @@ ssize_t get_uprobe_offset(const void *addr)
->  	 * addi  r2,r2,XXXX
->  	 */
->  	{
-> -		const u32 *insn = (const u32 *)(uintptr_t)addr;
-> +		const __u32 *insn = (const __u32 *)(uintptr_t)addr;
->  
->  		if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
->  		     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
-> 
-> base-commit: 943b043aeecce9accb6d367af47791c633e95e4d
-> -- 
-> 2.43.0
-> 
 
