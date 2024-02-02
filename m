@@ -1,132 +1,110 @@
-Return-Path: <bpf+bounces-20999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F614846661
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 04:08:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7171846695
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 04:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AD921F278AD
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 03:08:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFC301C24B61
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 03:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850CDDF5D;
-	Fri,  2 Feb 2024 03:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68417D285;
+	Fri,  2 Feb 2024 03:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BYE8S6Lj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQQZtt4i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1F0D289;
-	Fri,  2 Feb 2024 03:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8253DDF4C
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 03:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706843274; cv=none; b=P3iA9J1B5XlKWwW4BvPsbcDxe+7jtLfYLlkUyYhwyW+pvL4P+CSkc7WrVrXMGhtMabdktq6d8S5Gea9S3LJqTCAEz1csERHSE5JmIoKXW0hKDV0w9n+8tGvaxw9ItFAZciLTwywIEbP7jw9Eh//7gQ3f+6D/jWnSPpe0dZRp6uQ=
+	t=1706845252; cv=none; b=KJOw6DaSTQOmlRwnIeEAW/hmTvmtNdXYh2eFnKdyOPugBeR/sV7CfOv7Xh+See9mI/f0roxOTrhOMvtejHMzChyv8ytvGm33geSzGWBFh9sRO7LTF7mQoRXC26JHb6UvaMlS32sSolNWDSUg8vy3HSPSCNCwW/64Mw1LvzZ5/yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706843274; c=relaxed/simple;
-	bh=obWK63Zy5XJ19imquZEyMwnqRVC/TkO3K+PmbgWqdY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TW6DWRBdIabzMYSI3bNPy1E1esgij+m/vyZuMi054omi05GxbYLx0EK9FPxP4o9Jyo26Buuo0lBmM61+X7b1P0vjRqtJhZ18IC4TrzpjjYJpKFJed0DtssA4vR9skB/qZbVbe8+Xhqpruqdm0kRb0QQUfbk3c40hw28+7c6EM0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BYE8S6Lj; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706843272; x=1738379272;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=obWK63Zy5XJ19imquZEyMwnqRVC/TkO3K+PmbgWqdY0=;
-  b=BYE8S6LjLkHyCNhk2dGBKMYvEP879uDHxCSlYWrNWH3umFf2yXbSj5oB
-   7PW3ug5fIZmpGuRNnWPYkfIcg6AkYAbPErFSUNuch1QDE6QsUsgZs7jiW
-   o8WKRxXX2OV3w8CJ6pkmf8oPzvXv6c90VXSuHgTvUE1raIJqVJzH/vQXC
-   R8R2FdLqA/G613qqfh2woRidkwDXF3Oi85pkVVQuFXevMZC+ZdOEqisXe
-   Kw3dJI6xnMIYcLuDdOMFb8jKbtqgZx+v1civhhvVkVKQSiH2VbRkhwmrl
-   aKnkb+e9yT3YG2jjgnAAqPQwPOqZuDlwac28lxtzmysOpHEtJmGCwJrVH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="468284161"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="468284161"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:07:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="859304289"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="859304289"
-Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.22.55]) ([10.247.22.55])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:07:40 -0800
-Message-ID: <46d14e3e-a334-447f-a25c-17ed58170741@linux.intel.com>
-Date: Fri, 2 Feb 2024 11:07:40 +0800
+	s=arc-20240116; t=1706845252; c=relaxed/simple;
+	bh=AUtyO0u9qswX6DW+W4kYsTqNpg9r1ZVnVxLex3qQynM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=joMLeJsRouebFbA1oCo7nqZ1uAX9O65uSemCyXrDSrujrBOLNhmUGZfh/kadebIgGZ1pyX7k7rT9v06OJRJwKXDwxlgJHsmTIIKsM5b6XvK3CqtE9hiErt0hdrH7h6g1nPrhX8/r83yrGFOi7sHDSR+WftnAm6W5c5iQ7UnEBDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQQZtt4i; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3be90c51299so1009614b6e.0
+        for <bpf@vger.kernel.org>; Thu, 01 Feb 2024 19:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706845249; x=1707450049; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aaFNAD3s7CZLeGJAkgIP2i9Uq/f9SHOfbY60E3JDrm8=;
+        b=OQQZtt4iM7BorZ6iiawf+2X5FhGh/2M3fgYpxcvbg2D3AuBkkASCrRa9IqRyEur6hx
+         51RbxQoPZuCFrZCueMdKeqNwcRZp+UI1RqNrKfvRj3g5iM4fqYESTBod3azRD/VQldqD
+         OSDdvFP52XgRS0OYntF17tV3/12dC1CI8RU+GGVdzgOYHu7cDogONbfdI3M8fkeoC/wZ
+         ruaqA2lEZo++pNz8AxVj2RTwFGBJMocqKUHic30PvgUL312+v6KntkPfCfHoJ8G4h7p7
+         wcJYWWwfVGHgjvNEUOj5xU2HTnHQaJ+JUaZuIxy/M8SuY0Xd7/Uvr7AP4YQqrsW5Okgb
+         AERA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706845249; x=1707450049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aaFNAD3s7CZLeGJAkgIP2i9Uq/f9SHOfbY60E3JDrm8=;
+        b=P9zZnrVA2jzIiRnlrxXrINydcmDtZEQ4bIjYbvFU9MQTYgnzJGIUm6iz9dZTp2UrSk
+         ZQvSm6x33+g3/n0/iR3Ubn6y/YhxNJ0WA5EQU5SaHmCk47ZJsERIgzDYxS4xo2u9SWs7
+         FJ4W/9/+EH6xsgAo+rXdxXPkje1XkZqqPM/g9PUWTx9TY8m+aaVoXFzStcQmwYw3BN9e
+         gbFw3wq9TXv3CwJmgSb+57AOYnq4YFdYRPg443X8h61LHkxoYvblyFLJg2oPDi+4VUXM
+         FB5AiHf0C5GxTZbilgXCNNVVhXurxEM54waZqdrHwxPLdv9ErEBgmwTDGSuDxaMJ0cti
+         qklw==
+X-Gm-Message-State: AOJu0YwmB0xCtmkHcVu2pwyFMKCA+1NyYQrdo6r5LI2lDk2dxOLWfnMV
+	Bj+sC5V5ZhCTxybUREWlqe9TeCpO0BOte3OyYIDMEHVNBw5iY9JzhJztfP6A+tHx5cn2Z/a/Lsy
+	EEZm3IIUvqY1k4FQIoJyQmGr6LPFOKpDw1vAklUEV
+X-Google-Smtp-Source: AGHT+IGhDW64I5P+rADU9coWNBUXZcrlWPIuISkooPExF2pKEJ3J3ySoB+gbOjFFSRs3/N7qbJ7y/n6UFBGtE36YSYQ=
+X-Received: by 2002:a05:6808:218e:b0:3be:260:6278 with SMTP id
+ be14-20020a056808218e00b003be02606278mr7666041oib.42.1706845249389; Thu, 01
+ Feb 2024 19:40:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 4/5] net: stmmac: enable Intel mGbE 1G/2.5G
- auto-negotiation support
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Serge Semin <fancer.lancer@gmail.com>,
- Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
- David E Box <david.e.box@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
- Jose Abreu <Jose.Abreu@synopsys.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, =?UTF-8?Q?Marek_Beh=C3=BAn?=
- <kabel@kernel.org>, Jean Delvare <jdelvare@suse.com>,
- Guenter Roeck <linux@roeck-us.net>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Wong Vee Khee
- <veekhee@apple.com>, Jon Hunter <jonathanh@nvidia.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Revanth Kumar Uppala <ruppala@nvidia.com>,
- Shenwei Wang <shenwei.wang@nxp.com>,
- Andrey Konovalov <andrey.konovalov@linaro.org>,
- Jochen Henneberg <jh@henneberg-systemdesign.com>,
- David E Box <david.e.box@intel.com>, Andrew Halaney <ahalaney@redhat.com>,
- Simon Horman <simon.horman@corigine.com>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
- linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
- Voon Wei Feng <weifeng.voon@intel.com>,
- Tan Tee Min <tee.min.tan@linux.intel.com>,
- Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
- Lai Peter Jun Ann <jun.ann.lai@intel.com>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
- <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
- <jmq54bskx4zd75ay4kf5pcdo6wnz72pxzfo5ivevleef4scucr@uw4fkfs64f3c>
- <26568944-563d-4911-8f6f-14c0162db6e9@linux.intel.com>
- <07a4aa8e-800c-4564-81c8-7cfcdddf1379@lunn.ch>
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-In-Reply-To: <07a4aa8e-800c-4564-81c8-7cfcdddf1379@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Lucien Wang <lcnwed@gmail.com>
+Date: Fri, 2 Feb 2024 11:40:38 +0800
+Message-ID: <CAHViUT2y81_JHsuSDfH9Vu_KRbanvmGY_1Bs4jfrGyZPGHCbdg@mail.gmail.com>
+Subject: There has a backport bug between v5.10.79 and v5.10.80 when run bpf
+ selftest "test_sockmap" on 5.10 lts kernel
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Kernel version=EF=BC=9A16ad71c250c1 (HEAD -> linux-5.10.y, tag: v5.10.209,
+origin/linux-5.10.y) Linux 5.10.209
 
+Bug reproduced steps=EF=BC=9A
+1.  cd (kernel source tree root)/tools/testing/selftests/bpf
+2.  make test_sockmap ; make test_progs
+3.  ./test_sockmap
+# 1/ 6  sockmap::txmsg test passthrough:OK
+# 2/ 6  sockmap::txmsg test redirect:OK
+# 3/ 6  sockmap::txmsg test drop:OK
+# 4/ 6  sockmap::txmsg test ingress redirect:OK
 
-On 29/1/2024 9:41 pm, Andrew Lunn wrote:
-> Hi Choong
-> 
-> Please trim the text when replying. It can be hard to find actually
-> replies when having to do lots and lots of page downs. Just give the
-> context needed to understand your reply.
-> 
-> 	Andrew
-Hi Andrew,
+After "# 4/ 6  sockmap::txmsg test ingress redirect:OK" display from
+terminal, the main process stucks and sends nothing.
+4. In other terminal run " ps fax |grep sockmap " ,below is output
+  13076 pts/0    S+     0:00  |           \_ ./test_sockmap
+  13129 pts/0    S+     0:00  |               \_ ./test_sockmap
+  13130 pts/0    Z+     0:00  |               \_ [test_sockmap] <defunct>
+  13237 pts/1    S+     0:00              \_ grep --color=3Dauto sockmap
+Obversely, because of child process 13129 sleep, so the main process is stu=
+ck.
 
-Thank you for the feedback.
-I will trim the message next time.
+My research:
+I use Bisection method to find the bug patch " c842a4c4ae7f bpf:
+sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
+"(on linux-5.10.y branch), it backport from v5.16-rc1 ,
+It must due to merge high patches incompletely, Please take a few
+moment for this.
 
