@@ -1,68 +1,66 @@
-Return-Path: <bpf+bounces-21010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 517B0846B89
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 10:07:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB28846BB2
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 10:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D88E8B25F29
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 09:07:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 463061C26302
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 09:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37976167D;
-	Fri,  2 Feb 2024 09:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B5B77637;
+	Fri,  2 Feb 2024 09:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Me6pgBMe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gA6SShlS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49E960DF4;
-	Fri,  2 Feb 2024 09:07:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1238C604B4;
+	Fri,  2 Feb 2024 09:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706864838; cv=none; b=qeShg8sQb9b+L4utho8yUxYaKOrGMYb9yf325dOTTzU8CoPJlZoGxCtBB7PpJrdsOxpV+sFuXXjuAZa+DncerY4SirfQtjA26iSx74DEbqUmmPgry35aAVtaV+8d2U4mHa29zN4NZeBZpH3jlZ/ECG5kiqXCaOx4m5jUXnmCED8=
+	t=1706865542; cv=none; b=o77HobuWggLwVkAKsZ/NnglvxEIS1mtKFP+V19A5N32mAV3wxsaHZg0vrC4cMSaW/ZIEUZ9OWAC+/EAUOEtnJZRBQpuOuIuVDFsLPYIqj5xh8m0PjgHwwBhHXXiW1Z2HE689AvyPJiYhKBavGaBeYT6gRQPEhXIIJJ8uyjmfmWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706864838; c=relaxed/simple;
-	bh=9n+bxoffzFzRxugdTlBIiUi8qOo9YOUTTBTv4D1ra04=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CObEs5SV/Xej/qjd+lqJcTiBsWGgSQYfjh0XpXRRloNgjr31j6le0xh82z8NZgziiFSVErkKRxdNk7Azq51zYRLzxfnXClUMUefjOci0O4Fp+ak9URX9SCD33g9YZMwWRKZWXfH1WVby5I7IdVxKjujVz9t/J9tN/lFlMn6F2h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Me6pgBMe; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706864828; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=UXNrR1zI5WqRxkxoq440HbXJgM3mez+A/tGzovy1VjU=;
-	b=Me6pgBMePPLBtznQZiZyfnZPzdbd0uJ8EaI/cuaK8bqjEIsfVFqyRtj76AglIUwzN1k070PYeqddPMqm0rrX5pVU7qYEbslh4nczRXxuc/D3FEj1MjMIaqtIHrYHZDwjwoYToQbzwH/8bG/XryiBTHYKup8pD1TzIf/SRloLVEI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W.waoAc_1706864813;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W.waoAc_1706864813)
-          by smtp.aliyun-inc.com;
-          Fri, 02 Feb 2024 17:07:07 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: andrii@kernel.org
-Cc: eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
+	s=arc-20240116; t=1706865542; c=relaxed/simple;
+	bh=BvAjd6AT54EdyR0+F+bQ+kRYMX8aE1q5sRg4e+BP+yY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P2oX35R9tqW9xysl80IxxuBNH0QXXmWWGdxU5taX2B2NuSRSNmmlahXKooaFl2hmIU9jRkCqExOPJBhwnB+Og597mbOtGsRkc+E8kv5/z69owGl4Wb5hqQBrEVpnGJl8P7s13/omiIiLZiEvm153dE5dQ1EK4Pw/37r4mL9m3LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gA6SShlS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D3CC433F1;
+	Fri,  2 Feb 2024 09:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706865541;
+	bh=BvAjd6AT54EdyR0+F+bQ+kRYMX8aE1q5sRg4e+BP+yY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gA6SShlS13yh/3wPUolB8UJ3AjcOxt8PEGrWwQ7gWRqc+yOLHvL6hoDMw5y2ghUgH
+	 MoufyQ37JkzqJMwEi099zpPx6lJCMkcaL+Qz8BUTgB0aRhWlW7ivuAEI1wfo4VpwrI
+	 RjFqVA4KyCZ4uJQR6PrQlk9ew9SfdlZGgdF+tzezeLprypK+2O+YcNHvF5kU7/y7oo
+	 fQCgoFwDk9jadzp1zY4xbVW2EZ/QTdvhJtqGRGMwqvNpCXdavxLiHA7KE8mwSe7Ho2
+	 7F953vyuon+OPuXIlFm4+Ob9RmNTRNGbqJ737tJe4a6M/umZcwG0JrsziLMDjLdaTS
+	 gJ7zHQ+V2c/Mg==
+From: Geliang Tang <geliang@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
 	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: Use ARRAY_SIZE for array length
-Date: Fri,  2 Feb 2024 17:06:52 +0800
-Message-Id: <20240202090652.11294-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	mptcp@lists.linux.dev
+Subject: [PATCH] bpf, btf: Add DEBUG_INFO_BTF checks for __register_bpf_struct_ops
+Date: Fri,  2 Feb 2024 17:18:48 +0800
+Message-Id: <beca71007a184b2d199f404a471f020fd4359823.1706863036.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,32 +69,41 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use of macro ARRAY_SIZE to calculate array size minimizes
-the redundant code and improves code reusability.
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-./tools/testing/selftests/bpf/progs/syscall.c:122:26-27: WARNING: Use ARRAY_SIZE.
+Similar to the handling in the functions __register_btf_kfunc_id_set() and
+register_btf_id_dtor_kfuncs(), this patch adds CONFIG_DEBUG_INFO_BTF and
+CONFIG_DEBUG_INFO_BTF_MODULES checks for __register_bpf_struct_ops() on
+error path too when btf_get_module_btf() returns NULL.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8170
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
 ---
- tools/testing/selftests/bpf/progs/syscall.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/btf.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/syscall.c b/tools/testing/selftests/bpf/progs/syscall.c
-index 3d3cafdebe72..297a34f224c3 100644
---- a/tools/testing/selftests/bpf/progs/syscall.c
-+++ b/tools/testing/selftests/bpf/progs/syscall.c
-@@ -119,7 +119,7 @@ int load_prog(struct args *ctx)
- 	static __u64 value = 34;
- 	static union bpf_attr prog_load_attr = {
- 		.prog_type = BPF_PROG_TYPE_XDP,
--		.insn_cnt = sizeof(insns) / sizeof(insns[0]),
-+		.insn_cnt = ARRAY_SIZE(insns)
- 	};
- 	int ret;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index ef380e546952..381676add335 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -8880,8 +8880,15 @@ int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+ 	int err = 0;
  
+ 	btf = btf_get_module_btf(st_ops->owner);
+-	if (!btf)
+-		return -EINVAL;
++	if (!btf) {
++		if (!st_ops->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
++			pr_err("missing vmlinux BTF, cannot register structs\n");
++			return -EINVAL;
++		}
++		if (st_ops->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
++			pr_warn("missing module BTF, cannot register structs\n");
++		return 0;
++	}
+ 
+ 	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+ 	if (!log) {
 -- 
-2.20.1.7.g153144c
+2.40.1
 
 
