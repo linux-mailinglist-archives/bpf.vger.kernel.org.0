@@ -1,142 +1,123 @@
-Return-Path: <bpf+bounces-21046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB8C846F50
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 12:45:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B219A846FA5
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 13:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E110E1C22856
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:45:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E406C1C24906
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 12:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8601213BEB5;
-	Fri,  2 Feb 2024 11:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6AA13DBA8;
+	Fri,  2 Feb 2024 12:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HyVASkPG"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="hwDVqkhD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63565608FD
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 11:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BF113E202
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 12:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706874331; cv=none; b=NgrI2D7e6RmD2BKi9hG2OR0eq2YiJbw3FAzR61mDk02fCjvecI0I6FCDMJfd3DUbDZiohjvuX1B23YN83QxYrAkVjsYotVa0OSOGPiLwqsz+FCXsj81eLEx3sriTHOLAIZan40HBj/FStnT1EoF/WpcItWpul9LnyeXOxpGl6dg=
+	t=1706875229; cv=none; b=StteH11CpgIT8awLrOkzP+rYNEFNLEoj+JlwrtNNt49uiqbvpTJjZfG3751634OA6lF38PB9Lfxz8ezx2eq9sdoZVgdQHyTx6zb8XxGvh6k81PwlE+XSf//7VkDoSe3O/qcpTac1Ax0m8WIm5nZBKrEWtJnBagKSgffuXXnkZNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706874331; c=relaxed/simple;
-	bh=T5mIuZ/SwLWFsPXnrPEOC9EciPyGVDTkvjKJOX+GZKk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=As6/8vhNMIKD1vTSw3GDT4CAoqXs5AAhkS3eF8qZ4pn9v1R7Bsu0KtBeenHXbGPDnNBnYQQe6ijCZTRrggWzCAyLGjMWcBftOLh3Rarjev0kAXlxZMa9LQ4XjPPZdl+d95/Utv5qJi2OKqLmhSqrRdx+SjsX01D9iZzBVXXik+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HyVASkPG; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so2848425a12.2
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 03:45:29 -0800 (PST)
+	s=arc-20240116; t=1706875229; c=relaxed/simple;
+	bh=Xr1DXbAvTDaR865LAL/0PwG1Pwk9T4vlzO6plLsxOsI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ffTRsf8n/x7D+qZcEKq6QCHbhGEemVgb2pR/pAiMSFX5xamZEXV2Rn18W0Ph0OTUpkTL6TuJbcAHw83Jm6Z+ul3lKfO4t8dDTYe9ae+y7k2X6gyhnxTZifeVS6yBSyHZxbNkbsFza0ADLybI/PuW6OfIiBL9JIwlTSJl+/ML3kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=hwDVqkhD; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6dd9bf348so1569480276.0
+        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 04:00:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706874327; x=1707479127; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DUag2bNXnLgT6vtKfx9vedz4gfBKi/qeU1UpbpH5qu8=;
-        b=HyVASkPG6KE80MPsk4CnZ3w9Vv6rqyNXTxa7m8tKiXq/gyYD184LHRFehp1CWuHItD
-         UWY2mVo/SvDZVm+T5jDWeKc3digxss182wG+Z2YbCjwZXcj+JEs7ng7o1duy/Y1tvVtK
-         I3idW97pJk+g82JFqRerTPj+d+fal0A5nU84n8iVCgmnXNU+bwMc+hOgKSjS9ti3NJMY
-         dWT5Gt0vs4I/Z7gTwkhQrqWDF3uOA7u6RRL5VB8rdvJO4fk6hr3ljMtsRnX/tzWpmKD7
-         1qlqgzexHCWbhmiq4fJrHR7A5TgHptjs0r35c+KM3olxOwNOdgaHRO3R0j1WP8ip4Zs0
-         UoMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706874327; x=1707479127;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1706875227; x=1707480027; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DUag2bNXnLgT6vtKfx9vedz4gfBKi/qeU1UpbpH5qu8=;
-        b=WBCaNmVBnDPClOTSi56HJTBvgRq/RRaWD3ndrUNkK/5nKjA2rQLcLHwfkIfNuIozLD
-         d+EiTflz0Hcs3mTX5k6juoWNX5PgrcfdzB6cfxiNcCuvo/dUr6fFfzuDP6W8APgWP4pu
-         7IocUkUkpEm/tFFmBFzpZbmsutGXC27ivvBLeUdQTSySD9mCuRZ/XJm/a1W+gsdvPFwZ
-         6ZZnvZVdTXhifKl2OfPqR8S932KsR3VMvb8d3x8hGY+b+rRy6hD3NXHAXnTFPL2im/yg
-         urSiRW9PZ0U61xsspYTiILyy8cKmTPttaeR0fs+1ldlmEoRChfymlr63Li2zt9I1auuM
-         6gNQ==
-X-Gm-Message-State: AOJu0YxT1Xt22MVpo52U1datnxcaSqcdaPZRve0SQM5tcljTnRFXdI0F
-	u0qdfuuy12LCWSwlDHVVH0/krv9bMfcRKQHBwI9jg0R3Yiaf5vkU
-X-Google-Smtp-Source: AGHT+IFybhEnoxSivgmOIjFSz1hCUudk8LD/uI8/sgKCW2DQDg2MdYB8g9+uOwE7Pi9yWxyupVXFeg==
-X-Received: by 2002:a05:6402:2211:b0:55f:1728:3b33 with SMTP id cq17-20020a056402221100b0055f17283b33mr4344044edb.40.1706874327217;
-        Fri, 02 Feb 2024 03:45:27 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV2s+ZaEqdPKzHhUG5cKZL/nH/mrHTeNCMMQ1qpt6H48mlQzA83++19JoPozRdq37xuj2t2ulF2xywyh2r/UqPrRypbliILZQmWv7YbXStM0BtciiU89DRkfKS0U+mbxSKEbjTsQtxZUFK90HJ+8qN0h+WQjGln/K4uqnnnjY8OnR17YUCsFF+3Sm6MkZLscWMkHVVLF1+wlCStJDkBZjtJ/m6bXKo6vK8znrtS7lg26/qBCFZkS+9CpA4K9ARWS36xerKtK5B8B4z+EV5v90/vqmmz4aN57YVFzxjulQ/a8uXaz9AhRKec91owcEcdK6pJE8qny/E8Bt4MFICMsSMRAna9IkeRjA4M6hPGW3az/miWZ2yqtbKZX6UHhQd+11uPr14JZB7YLGjqsU5/+pG5QOFwrTpNDLqmBXuTevR4kqORt7RzjwTS+CsPNQIV2FhfqRw=
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05640205d000b0055ff1749b15sm477006edx.66.2024.02.02.03.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 03:45:26 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 2 Feb 2024 12:45:24 +0100
-To: Geliang Tang <geliang@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org, mptcp@lists.linux.dev
-Subject: Re: [PATCH] bpf, btf: Add DEBUG_INFO_BTF checks for
- __register_bpf_struct_ops
-Message-ID: <ZbzV1OVvSzQkNRqb@krava>
-References: <beca71007a184b2d199f404a471f020fd4359823.1706863036.git.tanggeliang@kylinos.cn>
+        bh=EzLbrSJJ3HMQY02UX2KoRZJkzmC3g7dnGPcxrBeDXSI=;
+        b=hwDVqkhDkcKt0ksOQ2MzNGjj8oKqKtGcTEqadeVU3vru9E74WoyVaaKQPqXrBfz4eY
+         pbxN7M4oVD1oXc+DwsbbTaX22aQ96b1isN1ntGVKXQlVDVd8pqvpzf4+yG9V8qdMMYiG
+         hLqC42AD4wqQdtVGddvF1J2Rnx8YgeZrTqZoVSfcs+s/0uIDTjdb7BBRJyl4QD98hl7H
+         ejMNvsNb4/0O4icpqjVW2E1b+/GeBAbwRKpLPAZew8SzMOV8rRYv04A8sxzNsn1AEORj
+         jAtExYslHiPP1ke86FsUAfcaYxQgVGB0WPttWLcxY1X58qMwPPIj1Fi09Qs0fvaowMQp
+         afqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706875227; x=1707480027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EzLbrSJJ3HMQY02UX2KoRZJkzmC3g7dnGPcxrBeDXSI=;
+        b=Q3hDjdVBHAEKrxw9UEblLnk/oVEJ66TP3v6faobnbMBnp95gnb2/7vxXWMJD+BB9E5
+         M89gp3NFSH5jNjKCwNP6ZRH64DZ/ICaTTMwiVq6Nw0UfeK+PWFm2t5keUCW1UnbcnBbX
+         WQ65YE2YNE+xnQ+1vpWfP9d4kHfN9RPcfACEPiU5sUVyAMhHhQ4m5Eb/F2+OGXenJccd
+         Od/JtVLkYsCUPPxIEu0JlhTR6SS3QIlCUFM6jd8ANMV6TTdVEieiuNKsJnl+w0etF0Qe
+         khJnlQ1g4Iz/67hCAnftzRrw8x9ysQiLOwB0nkzj/zFv5SqjV3RX+YauhI855eExogBY
+         zzgA==
+X-Gm-Message-State: AOJu0YxivKJaSXkyZKGVmINzJrQsfl1/oym9TV1dMtnK9qJiANZot6UO
+	ijQjgCjo1G587ouaL1UQsNkel4q0ifGpyBBRBxufTq2WRlJ+00n3TP99anMBG9s2dMTmDdidChS
+	VjcT14mItI4xdIlFbtQI+dzHuXULueHaizmGT
+X-Google-Smtp-Source: AGHT+IHQ6wzlg9F8HWhoQrUEoJLbXNbanj7A3PlVRUx0Gcct6/Z9FQkJVgMpw7no9GZg5v1QMrcLNSuo1+vtdtEx7A0=
+X-Received: by 2002:a25:698b:0:b0:dc6:b974:68cb with SMTP id
+ e133-20020a25698b000000b00dc6b97468cbmr5340100ybc.31.1706875226922; Fri, 02
+ Feb 2024 04:00:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <beca71007a184b2d199f404a471f020fd4359823.1706863036.git.tanggeliang@kylinos.cn>
+References: <20240122194801.152658-1-jhs@mojatatu.com> <20240122194801.152658-3-jhs@mojatatu.com>
+ <CALnP8ZaPsOLK-Xc8vkXMO13NT4t52u6PH9v0PcKWX8Yy8gLCXw@mail.gmail.com>
+In-Reply-To: <CALnP8ZaPsOLK-Xc8vkXMO13NT4t52u6PH9v0PcKWX8Yy8gLCXw@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Fri, 2 Feb 2024 07:00:15 -0500
+Message-ID: <CAM0EoMkkQ2tVq7a2ECjkyfWjxLVqvmA2wuN+Su8QUW7TM5tGGQ@mail.gmail.com>
+Subject: Re: [PATCH v10 net-next 02/15] net/sched: act_api: increase action
+ kind string length
+To: Marcelo Ricardo Leitner <mleitner@redhat.com>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, Mahesh.Shirshyad@amd.com, 
+	tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, 
+	mattyk@nvidia.com, daniel@iogearbox.net, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 05:18:48PM +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
-> 
-> Similar to the handling in the functions __register_btf_kfunc_id_set() and
-> register_btf_id_dtor_kfuncs(), this patch adds CONFIG_DEBUG_INFO_BTF and
-> CONFIG_DEBUG_INFO_BTF_MODULES checks for __register_bpf_struct_ops() on
-> error path too when btf_get_module_btf() returns NULL.
-> 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->  kernel/bpf/btf.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index ef380e546952..381676add335 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -8880,8 +8880,15 @@ int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
->  	int err = 0;
->  
->  	btf = btf_get_module_btf(st_ops->owner);
-> -	if (!btf)
-> -		return -EINVAL;
-> +	if (!btf) {
-> +		if (!st_ops->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-> +			pr_err("missing vmlinux BTF, cannot register structs\n");
-> +			return -EINVAL;
-> +		}
-> +		if (st_ops->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
-> +			pr_warn("missing module BTF, cannot register structs\n");
-> +		return 0;
+On Thu, Feb 1, 2024 at 8:16=E2=80=AFAM Marcelo Ricardo Leitner
+<mleitner@redhat.com> wrote:
+>
+> On Mon, Jan 22, 2024 at 02:47:48PM -0500, Jamal Hadi Salim wrote:
+> > @@ -1439,7 +1439,7 @@ tc_action_load_ops(struct net *net, struct nlattr=
+ *nla,
+> >                       NL_SET_ERR_MSG(extack, "TC action kind must be sp=
+ecified");
+> >                       return ERR_PTR(err);
+> >               }
+> > -             if (nla_strscpy(act_name, kind, IFNAMSIZ) < 0) {
+> > +             if (nla_strscpy(act_name, kind, ACTNAMSIZ) < 0) {
+> >                       NL_SET_ERR_MSG(extack, "TC action name too long")=
+;
+> >                       return ERR_PTR(err);
+> >               }
+>
+> Subsquent lines here are:
+>         } else {
+>                 if (strscpy(act_name, "police", IFNAMSIZ) < 0) {
+>                                                 ^^^^^^^^
+>                         NL_SET_ERR_MSG(extack, "TC action name too long")=
+;
+>
+> I know it won't make a difference in the end but it would be nice to
+> keep it consistent.
 
-given that we have the same code in 2 other functions
-would it make sense to add function for that?
+Agreed. It was an oversight. Will fix it in the next version.
+Thanks for the rest of your reviews Marcelo!
 
-jirka
-
-> +	}
->  
->  	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
->  	if (!log) {
-> -- 
-> 2.40.1
-> 
+cheers,
+jamal
 
