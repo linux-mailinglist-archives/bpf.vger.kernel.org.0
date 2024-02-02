@@ -1,290 +1,143 @@
-Return-Path: <bpf+bounces-21036-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21037-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC12A846D32
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:01:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E83AE846E15
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:38:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3076AB2D5E8
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 10:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AC801F2B2B0
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 10:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2657177F3E;
-	Fri,  2 Feb 2024 10:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nmq+yQKg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9EF913BEAE;
+	Fri,  2 Feb 2024 10:38:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC79F60BBD
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 10:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B8F83CCF;
+	Fri,  2 Feb 2024 10:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706868009; cv=none; b=c/WwptG7I/R9j5JmsqCdAZlVPJkdEvjdT4cOLHwVZAglv6HnzBUgB3NDYbOHzQCkhEV/BzwwzXS1QNJEbZtLfhOWw9u6rFJwhUnah4PejYgZ4bScz7Wvm/MwKZAQMCZegiPvPfqjlrpTeHHHWU9Ije+gPSwHivV/oTnem4aY/Qs=
+	t=1706870329; cv=none; b=tb9PXzon8I0cNe+m2Eh50jqhyLkeGG0e8zKHLxpRcSIViPHK51Ol60R0rNHeinLCHJwny4G/HY9lbLFIjEF/OVd+v1ptVwfWPhmkJ3gN8JwZpD4nM3ry/P5zPg4EVMYK/KLm7qiBItE9/6sM2gt2lqwr1bcOKXjCdtC4BU7So8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706868009; c=relaxed/simple;
-	bh=b7X+G7W08e4Qe0pfnxiD3W1bfrtrJWHYHZzwZT2qGOM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y2FB9jvkNmTRY8X8cr4AWHNaWHgc80xCSEcLNhmoCPE3fDyLrVgFi3nbDhnQZAYd9gdWl5juQmRknWEZQsw1JqpxWVgjsRx/4H9qBD7zopR/MqiOy9qTYmmLVzopbVVZy5mayzuEVQzk93u9ZDE5T9OUILrD9wJq7OPNqmG1VK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nmq+yQKg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706867998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6fKw7nt6H502DDjjzIIGwifNst1RfeOcGHiqbg8k39U=;
-	b=Nmq+yQKgdeMqg5scKs7MeUnKfKcaM1rK14bng92fey06f+R0YqUFBGC/iRWFgAbOkOnAyr
-	UXAbkL1hT1cpuKNPeF9NITU381tP0zriqIFPk58pTP43YbFFMyfag5m/qAGB6BlW9EboC/
-	4wEgQpuBBG8bWkLr+iymsPLLaCdI1pw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-pu6gdxkrOTO8cmx8F90YDA-1; Fri, 02 Feb 2024 04:59:57 -0500
-X-MC-Unique: pu6gdxkrOTO8cmx8F90YDA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a3120029877so319301766b.1
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 01:59:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706867995; x=1707472795;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6fKw7nt6H502DDjjzIIGwifNst1RfeOcGHiqbg8k39U=;
-        b=YaEFH1PFek65Rg+8B5WTbju9REhx3itZY6OYPplKK7X40I/Al5ZEdDo1DLXNZ6An6x
-         bn5Wmok5i+MeL0RSdcV40JK+VtDC99vw3tWU7QSNsu72UT0VP4XRnschDgxQd6xwY+sp
-         1h58BgG2ulKssXXPYNzar5x9iUo5JaRT5klJDb49nwp+DMJyA1SRDiMKKjrYTOwSHJai
-         K+TeeOw7jBuUuULAYDNbWxF+4SD7AF190o8wSjeuU/xRryoCXqRGEQpKJt++zK7k9Krr
-         +CdNyH9Yy+/TqBHXDyK+/8LpzOoDWPqiIadRfBL2LjJVQ9ccRJ2qLmGu1KrsSF2fu/aT
-         MobA==
-X-Gm-Message-State: AOJu0Yy9zRlWuZaeUDwAwpA4JtylWzCKKqy8I/tgGrG2ZFu3qiMo3e/f
-	RklehksTyZY85x9TgkBLNkGv/xYwpy1AU8PRQMTvZYym8IWLPDAZGQVBIgyobHYhDVjiAIVViLH
-	ffcaAS7epA9SfhkFaeoVoPPkR2ZHZNXOKCoV/GvG9Pmxuc3aBmrS8oqVYRbnwmw==
-X-Received: by 2002:a17:906:6d8:b0:a36:a8bb:28fd with SMTP id v24-20020a17090606d800b00a36a8bb28fdmr1405747ejb.1.1706867995704;
-        Fri, 02 Feb 2024 01:59:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHLFE2l+X9+oh8ubAlmnT6a3ENGZgOi0Z6NW2zJX6qx8QCG/6JdqPzA0MgGGHyBLXbLiZMgew==
-X-Received: by 2002:a17:906:6d8:b0:a36:a8bb:28fd with SMTP id v24-20020a17090606d800b00a36a8bb28fdmr1405715ejb.1.1706867995326;
-        Fri, 02 Feb 2024 01:59:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV7r3NSuhQ8I3rG/Bm0VhimJWQWooTVW72fMeuIzcFo2T6dUZoQ5AH8SK+x76fT9I0rG9s4lHWU7XThGr72k8K0t+nZxsak8bB35ZEO9G314heHrlnPcmcfGVm1HKVsSWypTOce9PZZ66Z7ZFJIHP2l3wRJc/V78p4ULJ7xNg1/OJLNFf+P6ybjiWqF4FvJEVaGI5rKlUDBnZOh/PGR2ak7GOhhAS8Ee43OdywGFuP2JP0h0uOkVZfMQR0oFjBbCMLDlMJdBNLXZmkY7CRtc58faOzNrm3kS+rbxprIss+89YzteMMI5UzNT54z/kB5i9yCJ6t2HNvCtIZgcU+u2+IgFcy4eeKbp1WbdWIGxlg1su2XyjgNu3vNnAencVfVYWt8ttMoWf6rIQQ9/1UYRd/VP7c+G9+byq7havSv3ugdwZTMxzSwD6njeMwzYlkO
-Received: from ?IPV6:2a02:ab04:333f:7c00:568:cf09:e97e:e96? (2a02-ab04-333f-7c00-0568-cf09-e97e-0e96.dynamic.v6.chello.sk. [2a02:ab04:333f:7c00:568:cf09:e97e:e96])
-        by smtp.gmail.com with ESMTPSA id fe9-20020a056402390900b0055d312732dbsm658743edb.5.2024.02.02.01.59.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 01:59:54 -0800 (PST)
-Message-ID: <694fc7f5-fdd9-48f2-abce-4a346488ace8@redhat.com>
-Date: Fri, 2 Feb 2024 10:59:53 +0100
+	s=arc-20240116; t=1706870329; c=relaxed/simple;
+	bh=cnDf1jgcpDPZn8ij0QoMY0mj0HYfc1ekDOk+ej5HHbs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QcH56qq04lgWUI+Mzr5jJp9su8Z4dnmvWz+J4vSlUGJpXZk7brtWCVGtAvwdO4baoErXxG9DTkJBQIImXID+fvnaDLtkzNy0RaJfrHWKH9BWmYA9OP5nyKZJgbd1vsPVemfCAXTf5tNhAZ9AXNeUJN7r9Ct88vZvJZTfFuUtJpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TRC1C3mpGz4f3kFj;
+	Fri,  2 Feb 2024 18:38:39 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id C07F41A027B;
+	Fri,  2 Feb 2024 18:38:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgAn+REwxrxl46r1Cg--.15879S4;
+	Fri, 02 Feb 2024 18:38:42 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: x86@kernel.org,
+	bpf@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org,
+	xingwei lee <xrivendell7@gmail.com>,
+	Jann Horn <jannh@google.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	houtao1@huawei.com
+Subject: [PATCH bpf v3 0/3] Fix the read of vsyscall page through bpf
+Date: Fri,  2 Feb 2024 18:39:32 +0800
+Message-Id: <20240202103935.3154011-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 2/2] tools/resolve_btfids: fix
- cross-compilation to non-host endianness
-Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Alexey Dobriyan <adobriyan@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <cover.1706717857.git.vmalik@redhat.com>
- <64f6372c75a44d5c8d00db5c5b7ca21aa3b8bd77.1706717857.git.vmalik@redhat.com>
- <a9b408bf-4b4b-b0ce-1f2f-193c0fcfd3ff@iogearbox.net>
-From: Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <a9b408bf-4b4b-b0ce-1f2f-193c0fcfd3ff@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn+REwxrxl46r1Cg--.15879S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF4xZrykXrW8KrWfGry3Arb_yoW5Gr4kpa
+	1kA343Gr4fKFyayr43G34DZayrJwn5tF17Wrn3Wr1rua17XFyFyrW0ga1Yqr9xAF9xK34Y
+	vr1ftFykC3Wjq3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 2/1/24 17:36, Daniel Borkmann wrote:
-> On 1/31/24 5:24 PM, Viktor Malik wrote:
->> The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
->> build and afterwards patched by resolve_btfids with correct values.
->> Since resolve_btfids always writes in host-native endianness, it relies
->> on libelf to do the translation when the target ELF is cross-compiled to
->> a different endianness (this was introduced in commit 61e8aeda9398
->> ("bpf: Fix libelf endian handling in resolv_btfids")).
->>
->> Unfortunately, the translation will corrupt the flags fields of SET8
->> entries because these were written during vmlinux compilation and are in
->> the correct endianness already. This will lead to numerous selftests
->> failures such as:
->>
->>      $ sudo ./test_verifier 502 502
->>      #502/p sleepable fentry accept FAIL
->>      Failed to load prog 'Invalid argument'!
->>      bpf_fentry_test1 is not sleepable
->>      verification time 34 usec
->>      stack depth 0
->>      processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>      Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
->>
->> Since it's not possible to instruct libelf to translate just certain
->> values, let's manually bswap the flags in resolve_btfids when needed, so
->> that libelf then translates everything correctly.
->>
->> Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
->> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->> ---
->>   tools/bpf/resolve_btfids/main.c | 27 ++++++++++++++++++++++++++-
->>   1 file changed, 26 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
->> index 7badf1557e5c..d01603ef6283 100644
->> --- a/tools/bpf/resolve_btfids/main.c
->> +++ b/tools/bpf/resolve_btfids/main.c
->> @@ -652,13 +652,23 @@ static int sets_patch(struct object *obj)
->>   	Elf_Data *data = obj->efile.idlist;
->>   	int *ptr = data->d_buf;
->>   	struct rb_node *next;
->> +	GElf_Ehdr ehdr;
->> +	int need_bswap;
->> +
->> +	if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
->> +		pr_err("FAILED cannot get ELF header: %s\n",
->> +			elf_errmsg(-1));
->> +		return -1;
->> +	}
->> +	need_bswap = (__BYTE_ORDER == __LITTLE_ENDIAN) !=
->> +		     (ehdr.e_ident[EI_DATA] == ELFDATA2LSB);
->>   
->>   	next = rb_first(&obj->sets);
->>   	while (next) {
->>   		unsigned long addr, idx;
->>   		struct btf_id *id;
->>   		void *base;
->> -		int cnt, size;
->> +		int cnt, size, i;
->>   
->>   		id   = rb_entry(next, struct btf_id, rb_node);
->>   		addr = id->addr[0];
->> @@ -686,6 +696,21 @@ static int sets_patch(struct object *obj)
->>   			base = set8->pairs;
->>   			cnt = set8->cnt;
->>   			size = sizeof(set8->pairs[0]);
->> +
->> +			/*
->> +			 * When ELF endianness does not match endianness of the
->> +			 * host, libelf will do the translation when updating
->> +			 * the ELF. This, however, corrupts SET8 flags which are
->> +			 * already in the target endianness. So, let's bswap
->> +			 * them to the host endianness and libelf will then
->> +			 * correctly translate everything.
->> +			 */
->> +			if (need_bswap) {
->> +				for (i = 0; i < cnt; i++) {
->> +					set8->pairs[i].flags =
->> +						bswap_32(set8->pairs[i].flags);
->> +				}
->> +			}
->>   		}
->>   
-> 
-> Could we improve that somewhat, e.g. gathering endianness could be moved into
-> elf_collect() and the test could also be simplified (if I'm not missing sth) ?
-> 
-> Like the below (not even compile-tested ...) :
+From: Hou Tao <houtao1@huawei.com>
 
-Thanks for the suggestion, that looks nicer than my version. I'll use
-the below, it should work pretty much out of the box.
+Hi,
 
-Viktor
+As reported by syzboot [1] and [2], when trying to read vsyscall page
+by using bpf_probe_read_kernel() or bpf_probe_read(), oops may happen.
 
-> 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 7badf1557e5c..7b5f592fe79c 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -90,6 +90,14 @@
-> 
->   #define ADDR_CNT	100
-> 
-> +#if __BYTE_ORDER == __LITTLE_ENDIAN
-> +# define ELFDATANATIVE	ELFDATA2LSB
-> +#elif __BYTE_ORDER == __BIG_ENDIAN
-> +# define ELFDATANATIVE	ELFDATA2MSB
-> +#else
-> +# error "Unknown machine endianness!"
-> +#endif
-> +
->   struct btf_id {
->   	struct rb_node	 rb_node;
->   	char		*name;
-> @@ -117,6 +125,7 @@ struct object {
->   		int		 idlist_shndx;
->   		size_t		 strtabidx;
->   		unsigned long	 idlist_addr;
-> +		int		 encoding;
->   	} efile;
-> 
->   	struct rb_root	sets;
-> @@ -320,6 +329,7 @@ static int elf_collect(struct object *obj)
->   {
->   	Elf_Scn *scn = NULL;
->   	size_t shdrstrndx;
-> +	GElf_Ehdr ehdr;
->   	int idx = 0;
->   	Elf *elf;
->   	int fd;
-> @@ -351,6 +361,13 @@ static int elf_collect(struct object *obj)
->   		return -1;
->   	}
-> 
-> +	if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
-> +		pr_err("FAILED cannot get ELF header: %s\n", elf_errmsg(-1));
-> +		return -1;
-> +	}
-> +
-> +	obj->efile.encoding = ehdr.e_ident[EI_DATA];
-> +
->   	/*
->   	 * Scan all the elf sections and look for save data
->   	 * from .BTF_ids section and symbols.
-> @@ -649,6 +666,7 @@ static int cmp_id(const void *pa, const void *pb)
-> 
->   static int sets_patch(struct object *obj)
->   {
-> +	bool need_bswap = obj->efile.encoding != ELFDATANATIVE;
->   	Elf_Data *data = obj->efile.idlist;
->   	int *ptr = data->d_buf;
->   	struct rb_node *next;
-> @@ -658,7 +676,7 @@ static int sets_patch(struct object *obj)
->   		unsigned long addr, idx;
->   		struct btf_id *id;
->   		void *base;
-> -		int cnt, size;
-> +		int cnt, size, i;
-> 
->   		id   = rb_entry(next, struct btf_id, rb_node);
->   		addr = id->addr[0];
-> @@ -686,6 +704,21 @@ static int sets_patch(struct object *obj)
->   			base = set8->pairs;
->   			cnt = set8->cnt;
->   			size = sizeof(set8->pairs[0]);
-> +
-> +			/*
-> +			 * When ELF endianness does not match endianness of the
-> +			 * host, libelf will do the translation when updating
-> +			 * the ELF. This, however, corrupts SET8 flags which are
-> +			 * already in the target endianness. So, let's bswap
-> +			 * them to the host endianness and libelf will then
-> +			 * correctly translate everything.
-> +			 */
-> +			if (need_bswap) {
-> +				for (i = 0; i < cnt; i++) {
-> +					set8->pairs[i].flags =
-> +						bswap_32(set8->pairs[i].flags);
-> +				}
-> +			}
->   		}
-> 
->   		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
+Thomas Gleixner had proposed a test patch [3], but it seems that no
+formal patch is posted after about one month [4], so I post it instead
+and add an Originally-by tag in patch #2.
+
+Patch #1 makes is_vsyscall_vaddr() being a common helper. Patch #2 fixes
+the problem by disallowing vsyscall page read for
+copy_from_kernel_nofault(). Patch #3 adds one test case to ensure the
+read of vsyscall page through bpf is rejected. Please see individual
+patches for more details.
+
+Comments are always welcome.
+
+[1]: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com/
+[2]: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com/
+[3]: https://lore.kernel.org/bpf/87r0jwquhv.ffs@tglx/
+[4]: https://lore.kernel.org/bpf/e24b125c-8ff4-9031-6c53-67ff2e01f316@huaweicloud.com/
+
+Change Log:
+v3:
+ * rephrase commit message for patch #1 & #2 (Sohil)
+ * reword comments in copy_from_kernel_nofault_allowed() (Sohil)
+ * add Rvb tag for patch #1 and Acked-by tag for patch #3 (Sohil, Yonghong)
+
+v2: https://lore.kernel.org/bpf/20240126115423.3943360-1-houtao@huaweicloud.com/
+  * move is_vsyscall_vaddr to asm/vsyscall.h instead (Sohil)
+  * elaborate on the reason for disallowing of vsyscall page read in
+    copy_from_kernel_nofault_allowed() (Sohil)
+  * update the commit message of patch #2 to more clearly explain how
+    the oops occurs. (Sohil)
+  * update the commit message of patch #3 to explain the expected return
+    values of various bpf helpers (Yonghong)
+
+v1: https://lore.kernel.org/bpf/20240119073019.1528573-1-houtao@huaweicloud.com/
+
+Hou Tao (3):
+  x86/mm: Move is_vsyscall_vaddr() into asm/vsyscall.h
+  x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+  selftest/bpf: Test the read of vsyscall page under x86-64
+
+ arch/x86/include/asm/vsyscall.h               | 10 ++++
+ arch/x86/mm/fault.c                           |  9 ---
+ arch/x86/mm/maccess.c                         | 10 ++++
+ .../selftests/bpf/prog_tests/read_vsyscall.c  | 57 +++++++++++++++++++
+ .../selftests/bpf/progs/read_vsyscall.c       | 45 +++++++++++++++
+ 5 files changed, 122 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+
+-- 
+2.29.2
 
 
