@@ -1,178 +1,119 @@
-Return-Path: <bpf+bounces-21104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45884847C64
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 23:39:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29349847C84
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 23:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55404B219D4
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 22:39:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 462821C23C25
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 22:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32A012C7E6;
-	Fri,  2 Feb 2024 22:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YwtaYN+p"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A2E85958;
+	Fri,  2 Feb 2024 22:47:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE515FF01
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 22:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20F933D2
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 22:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706913580; cv=none; b=UgReHjV6I6nw1uFSJEcQbRQtQvXjuD57Y30yF+zfs5MXGY8+gQBYcO+C87ywC4hdxQLtpbepMmxCRYoxklA4tS15UPnhyT5NY5W4vWMiYk6F1s2G/8pQuFrf7X/8Zn9/VOuq/lFxRcrMRjh3rq9fwRZWaqtnXatetdru55RkZ/s=
+	t=1706914032; cv=none; b=XVgkNZkXEE2QWYqopBqKLNzlNRge0hTHPcmMfFA+0//Aa4iZvue/gnQ/aZ7NyHKFpDlJI1999wuCGyLeAARqw/AEm4mIlmM55evehNWQrDVexFfLsV8PyqDhqDcv6fGkY28hBuTB6pB7MHcY0q5bibsQgFGgIdpe6Z/Vkw6aVWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706913580; c=relaxed/simple;
-	bh=EwaTG8ymKBypNkcTbelCYfrc9covtsVfN2J9HBMqda8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TwptY1b0JuQFy/hOMyWF1tyhjJdY469DRC4DweZSIGqWspEbuvbITJTs4eN7T0Gd+BBnz8JufuIWLbM8xfPZAxVMZhXviqImQETrK3E341ZfjIf/Mbfe4pM+4kEvSdhwc1XregCPWsKCWMbw0WdIEOFZtmTwcKO8CW5faiIhon4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YwtaYN+p; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1706914032; c=relaxed/simple;
+	bh=pLZqAQZAmSACjZ0lsbSgV4+MZdp4zXv3rWbCR6D7SII=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K1xce/DLh7iRpxS15BdibSc2Yrq+RWdjXMThvdVi963x15U3kLFmn9tw9nJGcfFxKHm33uNg2Y9Z4EBvI9xlNrXW76KC4GZgfn7RZuWTQ5sUubI541YsfXEwO4dJJmN8hnvJwQn2JDKdM9jinqjtAkRZgcEzh/Qe17zYHujCnpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e02597a0afso277205b3a.1
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 14:39:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706913577; x=1707518377; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=upBhrwD4lklSX7g2evNAVAAZGtKV5cYLKmQ91TBjS14=;
-        b=YwtaYN+pptHnMmuD7/6CZUZdd1kpGLBhULZ1d62JsNn+Tzsj7AM0GNZsmeZOTtxuYS
-         dHLVQzIVB283ZIBZgzyXcB2IiHOBUubIr0Q9Si4mOfcfY1ZvvSaIvcBKyRCIgwk9IcUZ
-         zmnJL2IfYT+KeNXBkl3SJXGItMBzU0WmNSaj/qJi0ydiS+DeyRN/rupSXvHfge2oPDyR
-         /qBW7ebL5+NJXSdl74xaTloC/sXNCCUq9gEIHFo0x7Kq96/SaLZOPD29NS2xM5Ta8AHG
-         0r9vJnMeolifYlCiiT7POtgbDMLEMhJ6wCDiGxiSb6U6s8MO6BCBOg7YimXseTwR+MEz
-         4Edg==
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-68c4fb9e7ccso10885866d6.3
+        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 14:47:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706913577; x=1707518377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706914029; x=1707518829;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=upBhrwD4lklSX7g2evNAVAAZGtKV5cYLKmQ91TBjS14=;
-        b=wLDjznkjhQn/9M1oegGjeJn/4tG9PixiQD+BaI+oi9BYWold7424NaTwVAtEM8nxcZ
-         zDKXczSwX0NW+UYAF4/4A2Aqi4iXCA3L0/0csbFb64l+T/zQvD68i+sqx75lOBkxoAXF
-         dO2c2g4SXomBt5PnRhLDD95Z+KjLuuLaSilUjsJtNHe0AHoNhnze4Zww6uMgYHr1KGBU
-         U1lA8hDzgm6TObEVTPJjh/oCerCc2bqu+UiYdYKijXJR+sszUpYvx0wFcWQmQpfniIVf
-         JuJvy7sLrZwjYyy3A30YDtsh5eQdSBA6AdBYxhAoqvqwuOq9VTuPw7wXwhMdGRIXhWRD
-         W9nw==
-X-Gm-Message-State: AOJu0YzS5U/cyRUxNJWnO+LzXrtDrwFN045w+YG2ugwTOmQ/sip8sob1
-	+y/n4zuzYKEH7ticFKsQh7YqUCFfAHYmCeSMSQL2E2fkxfxYf3gnL5KQ9dqU8GqCQplR6QUoyGB
-	YJ5Z/7wr1tKKZQ/bNvrAcucR8Kro=
-X-Google-Smtp-Source: AGHT+IH4MlQYF8L5m5aOn/UiWT8uZooLMX5imwe6+TrUrm8qzgrcxkTRwS/Bq9YwWtILKYx5NMqtozqAgBXmUnQYGpg=
-X-Received: by 2002:a05:6a00:1ca2:b0:6de:3a3c:4d0d with SMTP id
- y34-20020a056a001ca200b006de3a3c4d0dmr4460602pfw.2.1706913576860; Fri, 02 Feb
- 2024 14:39:36 -0800 (PST)
+        bh=hrIqKBXYRJ2iii7fOSRikAKu8sNmRspAkC6/qmp0zQo=;
+        b=NjMkMfoDKFOkS4+uTQY1Eb4NqpndMOx+SzoPjHJFs9P2MVuGRTyJkrvGsKOwPUKOzp
+         j98JoVVGwI8w5UCOKG8gzXvDYijWXCaj6QK6hZskLlgunFmiNy8b0V9HRpSrwiNF9JNY
+         DCAiaRxSt1sxAvM+2wLg7Uvhk1CfMUTkN5BX99RP4MG5g7D3qp3SThC8mV/BmxEbDACB
+         5gaBYXNUalM/x76/CaSVgRDt+Q4eV9SdjFPFIZVauzKAIqkDDymmta3ZSnbswvPMi3dP
+         ha8gusNA/0uQq4lRr0NVYO/ZZI4dZgXPQD+SJI1oy9GDCjPQ7eR5gqm6z8XZD50/SU6u
+         EEqA==
+X-Gm-Message-State: AOJu0Yw4KDC9rZ6XF99cD3ZSvVp2qHwcrTnm/Yd55LUi4dgIQ7ZXj/gr
+	w6T/VJQsvI9W8D9h4RIqWx1c03uZXIxdpH/CRGd9V8dZoQZtMWin
+X-Google-Smtp-Source: AGHT+IHjF4zDjT4o+jA3HvGBg1KWYLjcY0RjXcXALz0lW7xnTbCnauUA66XiSY1P6VZaZr/818TrMg==
+X-Received: by 2002:a0c:e3c9:0:b0:68c:61fc:680a with SMTP id e9-20020a0ce3c9000000b0068c61fc680amr3293035qvl.25.1706914029609;
+        Fri, 02 Feb 2024 14:47:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV6d6du1kh3wM4g1hCsPSg/Os6OcZa7Kk0BXGPAfe6SZczQ9g8Lxd3rlXLMDnqihMuXHZTLxGn+TAmyF2RbQYlkqFtZzIB15A3kON9++3VPvn998Q==
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id od17-20020a0562142f1100b0068c89d8eb53sm674898qvb.81.2024.02.02.14.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 14:47:09 -0800 (PST)
+Date: Fri, 2 Feb 2024 16:47:06 -0600
+From: David Vernet <void@manifault.com>
+To: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+Cc: bpf@vger.kernel.org, bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+Subject: Re: [Bpf] [PATCH bpf-next v3] bpf, docs: Expand set of initial
+ conformance groups
+Message-ID: <20240202224706.GA2244152@maniforge>
+References: <20240202221110.3872-1-dthaler1968@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202162813.4184616-1-aspsk@isovalent.com>
-In-Reply-To: <20240202162813.4184616-1-aspsk@isovalent.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 2 Feb 2024 14:39:24 -0800
-Message-ID: <CAEf4Bzam9-bthtGM7BO2ELu_RJwcnkJZEoyV8zFyPV4oa05JPA@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 0/9] BPF static branches
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Ili3dk1y5KBFrdpt"
+Content-Disposition: inline
+In-Reply-To: <20240202221110.3872-1-dthaler1968@gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+
+
+--Ili3dk1y5KBFrdpt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 8:34=E2=80=AFAM Anton Protopopov <aspsk@isovalent.co=
-m> wrote:
->
-> This series adds support for mapping between xlated and original
-> instructions offsets, mapping between xlated and jitted instructions
-> offsets (x86), support for two new BPF instruction JA[SRC=3D1]
-> (goto[l]_or_nop) and JA[SRC=3D3] (nop_or_goto[l]), and a new syscall to
-> configure the jitted values of such instructions.
->
-> This a follow up to the previous attempt to add static keys support
-> (see [1], [2]) which implements lower-level functionality than what
-> was proposed before.
->
-> The first patch .
-> The second patch adds xlated -> original mapping.
-> The third patch adds .
->
-> The fourth patch adds support for new instructions.
-> And the fifth patch adds support for new syscall.
->
-> The following patches are included:
->   Patch 1 is a formal bug fix
->   Patch 2 adds the xlated -> original mapping
->   Patch 3 adds the xlated -> jitted mapping
->   Patch 4 adds tests for instructions mappings
->   Patch 5 adds bpftool support for printing new instructions
->   Patch 6 add support for an extended JA instruction
->   Patch 7 add support for kernel/bpftool to display new instructions
->   Patch 8 adds a new BPF_STATIC_BRANCH_UPDATE syscall
->   Patch 9 adds tests for the new ja* instructions and the new syscall
->
-> Altogether this provides enough functionality to dynamically patch
-> programs and support simple static keys.
->
-> rfc -> v1:
-> - converted to v1 based on the feedback (there was none)
-> - bpftool support was added to dump new instructions
-> - self-tests were added
-> - minor fixes & checkpatch warnings
->
->   [1] https://lpc.events/event/17/contributions/1608/attachments/1278/257=
-8/bpf-static-keys.pdf
->   [2] https://lore.kernel.org/bpf/20231206141030.1478753-1-aspsk@isovalen=
-t.com/
->   [3] https://github.com/llvm/llvm-project/pull/75110
->
-> Anton Protopopov (9):
->   bpf: fix potential error return
->   bpf: keep track of and expose xlated insn offsets
->   bpf: expose how xlated insns map to jitted insns
->   selftests/bpf: Add tests for instructions mappings
->   bpftool: dump new fields of bpf prog info
->   bpf: add support for an extended JA instruction
->   bpf: Add kernel/bpftool asm support for new instructions
->   bpf: add BPF_STATIC_BRANCH_UPDATE syscall
->   selftests/bpf: Add tests for new ja* instructions
->
->  arch/x86/net/bpf_jit_comp.c                   |  73 ++++-
->  include/linux/bpf.h                           |  11 +
->  include/linux/bpf_verifier.h                  |   1 -
->  include/linux/filter.h                        |   1 +
->  include/uapi/linux/bpf.h                      |  26 ++
->  kernel/bpf/core.c                             |  67 ++++-
->  kernel/bpf/disasm.c                           |  33 ++-
->  kernel/bpf/syscall.c                          | 115 ++++++++
->  kernel/bpf/verifier.c                         |  58 +++-
->  tools/bpf/bpftool/prog.c                      |  14 +
->  tools/bpf/bpftool/xlated_dumper.c             |  18 ++
->  tools/bpf/bpftool/xlated_dumper.h             |   2 +
->  tools/include/uapi/linux/bpf.h                |  26 ++
->  .../bpf/prog_tests/bpf_insns_mappings.c       | 156 ++++++++++
->  .../bpf/prog_tests/bpf_static_branches.c      | 269 ++++++++++++++++++
->  .../selftests/bpf/progs/bpf_insns_mappings.c  | 155 ++++++++++
->  16 files changed, 1002 insertions(+), 23 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insns_mapp=
-ings.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_bra=
-nches.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_insns_mappings.=
-c
->
-> --
-> 2.34.1
->
+On Fri, Feb 02, 2024 at 02:11:10PM -0800, Dave Thaler wrote:
+> This patch attempts to update the ISA specification according
+> to the latest mailing list discussion about conformance groups,
+> in a way that is intended to be consistent with IANA registry
+> processes and IETF 118 WG meeting discussion.
+>=20
+> It does the following:
+> * Split basic into base32 and base64 for 32-bit vs 64-bit base
+>   instructions
+> * Split division/multiplication/modulo instructions out of base groups
+> * Split atomic instructions out of base groups
+>=20
+> There may be additional changes as discussion continues,
+> but there seems to be consensus on the principles above.
+>=20
+> v1->v2: fixed typo pointed out by David Vernet
+>=20
+> v2->v3: Moved multiplication to same groups as division/modulo
+>=20
+> Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
 
-This fails to build in CI ([0]). I'll take a look at the patches next
-week, sorry for the delay.
+Acked-by: David Vernet <void@manifault.com>
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/7762232524/job/211=
-72303431?pr=3D6380#step:11:77
+Thanks!
+
+--Ili3dk1y5KBFrdpt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZb1w6gAKCRBZ5LhpZcTz
+ZGZvAQCC3wAzgaIuCEelr2aHX1bGY6YEKeTuuy75tRwNRbMT3QEAl2VdjeACdKCY
+uictak+1vbD3uH7X9TbYwBsFwJ001AM=
+=lXeP
+-----END PGP SIGNATURE-----
+
+--Ili3dk1y5KBFrdpt--
 
