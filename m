@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-21038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCBA846E17
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:39:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33EC6846E18
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE4F7290B6F
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 10:39:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 678BB1C23EF9
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 10:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB86713D508;
-	Fri,  2 Feb 2024 10:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DB713D512;
+	Fri,  2 Feb 2024 10:38:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8825183CDF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA46112B159;
 	Fri,  2 Feb 2024 10:38:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706870330; cv=none; b=o5iiXTtApUl1hPIVN9+D41WT24BqcpWNpYSoE/mvHFxXoeXbaf14KY5K4oAaNGMQBsYv8GLhKzmdMdT/FbSR29gZKHIwnW8dzG9IUaJ8G2t3p02Zl6tcKTv/hJ0EWGuAxtTVmdAQoQCxqPHT8/9PJ35+03bqCStXhT+0VTAhAX8=
+	t=1706870330; cv=none; b=J5lDeBRqt9TK2F48J/BNogIwnw74ns4doyP0/AKg3/joZtJEn1U6KHY05b3rWtNLiVz7GPsFdsqA8Wpfs3zsenBu6fjKCQGtP5RcA189DuLiHmr1/m1fbtSwcliZjvVUyYG1Yy9htbqiIvd3cxJ0t6HeL99Q2mA4hA7fzBs/ulY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706870330; c=relaxed/simple;
-	bh=20m1Y/wCslG96LNpA7pTV6a7oWvp2QJOcY87YCTge+Y=;
+	bh=WbBu3/T/kZRzPSrOvtk9vfTthyAtax8KVPQchPHbkPo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IRzPtzBrDeq+dR/OhQQTmjoiRrYEJ6EIUtIW5lTC2GoXfJxU4OUoa/7c2Wz8TCRd1jb9SSrIf7hq+zh6O4r52AESKBbHGiIV9gycBG0HUiKzELFS7xV3i31WAu4nqzmTnjS4/qmglozq2oLNYDXHaXMywAHI5SVx0RhaTbxZQH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=oTh/R16k+nbBdLcS6+DNnOCfB9PsirQDpYfxzFv7CgqxXnvG85Eo4WShoGP1keoM0EQnX/gcQHrKH9S5Eoy9IcItZLAM3Sop6n1DRz/D+rxEhUcDSU25n9+GIGtZW39h2tFNiSnnhAPw7o3xJUrvjhwtCNNFmD1SDQGzi3G+xGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TRC1F5895z4f3jqK;
-	Fri,  2 Feb 2024 18:38:41 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TRC1D4wtfz4f3l2N;
+	Fri,  2 Feb 2024 18:38:40 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 58D0F1A017A;
+	by mail.maildlp.com (Postfix) with ESMTP id E87501A0175;
 	Fri,  2 Feb 2024 18:38:44 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+REwxrxl46r1Cg--.15879S5;
+	by APP1 (Coremail) with SMTP id cCh0CgAn+REwxrxl46r1Cg--.15879S6;
 	Fri, 02 Feb 2024 18:38:44 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: x86@kernel.org,
@@ -54,9 +54,9 @@ Cc: Dave Hansen <dave.hansen@linux.intel.com>,
 	Sohil Mehta <sohil.mehta@intel.com>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	houtao1@huawei.com
-Subject: [PATCH bpf v3 1/3] x86/mm: Move is_vsyscall_vaddr() into asm/vsyscall.h
-Date: Fri,  2 Feb 2024 18:39:33 +0800
-Message-Id: <20240202103935.3154011-2-houtao@huaweicloud.com>
+Subject: [PATCH bpf v3 2/3] x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+Date: Fri,  2 Feb 2024 18:39:34 +0800
+Message-Id: <20240202103935.3154011-3-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20240202103935.3154011-1-houtao@huaweicloud.com>
 References: <20240202103935.3154011-1-houtao@huaweicloud.com>
@@ -67,83 +67,110 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+REwxrxl46r1Cg--.15879S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF13Xr47Wr15uw1xuw47CFg_yoW8Zr1fpF
-	9xA3Z7WFWFg34aka9rXryUZ34fA3Z7Gr40qrW2grWYvF17Z34Ygr1I93WkGry7Ja97KFWr
-	XF4Svry8Jr1qy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID:cCh0CgAn+REwxrxl46r1Cg--.15879S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryUKF1fGF45GF1fCFWDtwb_yoW5Zw18p3
+	y5Cw43Kr4FkF18AFsFq340vay8J3WvvF45Gryvvry5Zay7WFn0yrWkWa4vqrZrAFnrKrWf
+	Wr4DArWDtw15X3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jn9N3UUUUU=
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Move is_vsyscall_vaddr() into asm/vsyscall.h to make it available for
-copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
+When trying to use copy_from_kernel_nofault() to read vsyscall page
+through a bpf program, the following oops was reported:
 
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+  BUG: unable to handle page fault for address: ffffffffff600000
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
+  Oops: 0000 [#1] PREEMPT SMP PTI
+  CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+  RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
+  ......
+  Call Trace:
+   <TASK>
+   ? copy_from_kernel_nofault+0x6f/0x110
+   bpf_probe_read_kernel+0x1d/0x50
+   bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
+   trace_call_bpf+0xc5/0x1c0
+   perf_call_bpf_enter.isra.0+0x69/0xb0
+   perf_syscall_enter+0x13e/0x200
+   syscall_trace_enter+0x188/0x1c0
+   do_syscall_64+0xb5/0xe0
+   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+   </TASK>
+  ......
+  ---[ end trace 0000000000000000 ]---
+
+The oops is triggered when:
+
+1) A bpf program uses bpf_probe_read_kernel() to read from the vsyscall
+page and invokes copy_from_kernel_nofault() which in turn calls
+__get_user_asm().
+
+2) Because the vsyscall page address is not readable from kernel space,
+a page fault exception is triggered accordingly.
+
+3) handle_page_fault() considers the vsyscall page address as a user
+space address instead of a kernel space address. This results in the
+fix-up setup by bpf not being applied and a page_fault_oops() is invoked
+due to SMAP.
+
+Considering handle_page_fault() has already considered the vsyscall page
+address as a userspace address, fix the problem by disallowing vsyscall
+page read for copy_from_kernel_nofault().
+
+Originally-by: Thomas Gleixner <tglx@linutronix.de>
+Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+Closes: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- arch/x86/include/asm/vsyscall.h | 10 ++++++++++
- arch/x86/mm/fault.c             |  9 ---------
- 2 files changed, 10 insertions(+), 9 deletions(-)
+ arch/x86/mm/maccess.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/x86/include/asm/vsyscall.h b/arch/x86/include/asm/vsyscall.h
-index ab60a71a8dcb9..472f0263dbc61 100644
---- a/arch/x86/include/asm/vsyscall.h
-+++ b/arch/x86/include/asm/vsyscall.h
-@@ -4,6 +4,7 @@
+diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+index 6993f026adec9..42115ac079cfe 100644
+--- a/arch/x86/mm/maccess.c
++++ b/arch/x86/mm/maccess.c
+@@ -3,6 +3,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/kernel.h>
  
- #include <linux/seqlock.h>
- #include <uapi/asm/vsyscall.h>
-+#include <asm/page_types.h>
- 
- #ifdef CONFIG_X86_VSYSCALL_EMULATION
- extern void map_vsyscall(void);
-@@ -24,4 +25,13 @@ static inline bool emulate_vsyscall(unsigned long error_code,
- }
- #endif
- 
-+/*
-+ * The (legacy) vsyscall page is the long page in the kernel portion
-+ * of the address space that has user-accessible permissions.
-+ */
-+static inline bool is_vsyscall_vaddr(unsigned long vaddr)
-+{
-+	return unlikely((vaddr & PAGE_MASK) == VSYSCALL_ADDR);
-+}
++#include <asm/vsyscall.h>
 +
- #endif /* _ASM_X86_VSYSCALL_H */
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 679b09cfe241c..d6375b3c633bc 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -798,15 +798,6 @@ show_signal_msg(struct pt_regs *regs, unsigned long error_code,
- 	show_opcodes(regs, loglvl);
- }
+ #ifdef CONFIG_X86_64
+ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+ {
+@@ -15,6 +17,14 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+ 	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+ 		return false;
  
--/*
-- * The (legacy) vsyscall page is the long page in the kernel portion
-- * of the address space that has user-accessible permissions.
-- */
--static bool is_vsyscall_vaddr(unsigned long vaddr)
--{
--	return unlikely((vaddr & PAGE_MASK) == VSYSCALL_ADDR);
--}
--
- static void
- __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- 		       unsigned long address, u32 pkey, int si_code)
++	/*
++	 * Reading from the vsyscall page may cause an unhandled fault in
++	 * certain cases.  Though it is at an address above TASK_SIZE_MAX, it is
++	 * usually considered as a user space address.
++	 */
++	if (is_vsyscall_vaddr(vaddr))
++		return false;
++
+ 	/*
+ 	 * Allow everything during early boot before 'x86_virt_bits'
+ 	 * is initialized.  Needed for instruction decoding in early
 -- 
 2.29.2
 
