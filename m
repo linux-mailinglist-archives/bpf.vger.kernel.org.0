@@ -1,151 +1,114 @@
-Return-Path: <bpf+bounces-21041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDC4846E84
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 12:01:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA12D846F1F
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 12:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10B71282218
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:01:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 789941F286F9
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 11:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017D113D4E4;
-	Fri,  2 Feb 2024 11:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D10313E202;
+	Fri,  2 Feb 2024 11:38:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KPIMzNqs";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KPIMzNqs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qk8b9DsR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABABF7D3FD;
-	Fri,  2 Feb 2024 11:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422F113E20C
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 11:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871608; cv=none; b=uovaAo9BFsgPPSEPBXUZtO6MRIxU1aC1zuVXCF1DFRpzA+0K4I5onK4djj+SnGkhF7rdAJYlYTofgxYC5zFvY00il6EILBbh6cK/S4reRgaXCyzCPt1Jo+sSswYE3e1CwLtLjPIerFe453g1gA/FgU5qYSKkFr68eVBZLuHIvsQ=
+	t=1706873936; cv=none; b=ZALkGigFsVEbIiXB7ttmvE8OOZR8rYCdzR8gkUyIiMU7gYDVNlZGJqochDNEb8Cc9hwjaN8688xv5YrYyGeG/Etc3zyOAPe3oK2XwQ3FPs62jnK56SiyEa7L+Qt9VOOXhYjRtWaMF0I+zy3ZLC4wGucC2ZxgaiZgKDbH+lOm7iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871608; c=relaxed/simple;
-	bh=1J23AqGmkaUeA46ekT+PNdzzWKimIUQMttmnToQg6Jo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bs1cmgdtzFzI72DKCjS+nIEFpflyPS4/c1A+2+A/oy6x5AhhQseJ4ahLP5GFAL5r1W1uXy9y5bn/kVM9Ncau5/OsJ7QB8r+QogKFKXPvLM1U6X4ETQY/JUEu5KGKS9uJMfgpSyfVionnxn/4be6FMmTMIHB2gOUJpT8jOocHWR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KPIMzNqs; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KPIMzNqs; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9308E1F745;
-	Fri,  2 Feb 2024 11:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706871604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1706873936; c=relaxed/simple;
+	bh=4hlLoxgVRubmdsXA/JOtymfDpB123MgdtvEfROpDl+0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Y3XII/ojoQQNTJSl0VuHh5C++TC94/SQ6H4XR2D4e4onYjKiKae+U5aubCgcvmGP0Ch/DTBGcwYq6G6yMGhUtBSFk5qzwPmEQZRCPE3p7Q6lbqDFdjK5CvFyTOkbPsOo1CR4aq8X+fIRnplG+36m5LqID7n9xtNtr3rJXZ4lQqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Qk8b9DsR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706873933;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1J23AqGmkaUeA46ekT+PNdzzWKimIUQMttmnToQg6Jo=;
-	b=KPIMzNqsrtTVT9Akj7NVZ7qdQWv3GIWzc0C7h17MLej9JI6OveIunt6kuE/Z+t5TTE8012
-	XaEaRrkS2G0QjquGrMig7I3/2uZqkBQrVqmyEZiSS+1dv49pgxNs/dOHoXLOqLGMgd+XWG
-	p00czaocOFmgGms+GGjTzP1X/R0evSo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706871604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1J23AqGmkaUeA46ekT+PNdzzWKimIUQMttmnToQg6Jo=;
-	b=KPIMzNqsrtTVT9Akj7NVZ7qdQWv3GIWzc0C7h17MLej9JI6OveIunt6kuE/Z+t5TTE8012
-	XaEaRrkS2G0QjquGrMig7I3/2uZqkBQrVqmyEZiSS+1dv49pgxNs/dOHoXLOqLGMgd+XWG
-	p00czaocOFmgGms+GGjTzP1X/R0evSo=
-Date: Fri, 2 Feb 2024 12:00:03 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, Vinicius Costa Gomes <vinicius.gomes@intel.com>, 
-	Stephen Hemminger <stephen@networkplumber.org>, Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
-	Martin Wilck <mwilck@suse.com>, Pedro Tammela <pctammela@mojatatu.com>
-Subject: Re: Re: [PATCH v4 0/4] net/sched: Load modules via alias
-Message-ID: <buiepqadcof3cz6c7dporffaffe4ueqjqg3utapvglxukho36x@oxnkxq4afdtk>
-References: <20240123135242.11430-1-mkoutny@suse.com>
- <CAM0EoMkA1Hp61mp2n06P8aMdnteJZD5tvJPDOuAKi_PNrb+T9A@mail.gmail.com>
- <mdosj4utmgvuaezdceoyde2d2q44amozbpdvzo3clljqaxh5ap@x5i22jkftljg>
+	bh=4hlLoxgVRubmdsXA/JOtymfDpB123MgdtvEfROpDl+0=;
+	b=Qk8b9DsRjIowGg31z9Q7pjkGn6fnq1Se8c3tLC5UcF+SOFkrit5twj+pdU2XW+6Lb2UKbM
+	eFP4/Kr3PjpIASIMAqqm2JUoBLU+x0pPoicLImrCKOnFdugsm15B3M35u12564sl76ChFD
+	9yZTwiVvskGCBhNY44dIJJpS3eLcRxE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-452-o85PIx2QPW2o487spzqNlw-1; Fri, 02 Feb 2024 06:38:51 -0500
+X-MC-Unique: o85PIx2QPW2o487spzqNlw-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-55fc940aa45so957991a12.1
+        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 03:38:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706873930; x=1707478730;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4hlLoxgVRubmdsXA/JOtymfDpB123MgdtvEfROpDl+0=;
+        b=qX23gz1uX5V0zX9XMdi5V7s3M+4ztqSt93iaAZx1y3c2TWWgKXunTm6ShBguiPSr9g
+         /ZPLHtMbOnACIYPubEDRHpfY5b04r5ocop9lsSLm0yBr/IC7+8/RacjTj9zZfEsvb3gJ
+         d7XtDtGgD9pdZSbrwnFctchSAUd27+I8fgd3IQuiTqfXsV8a376bAZZSl3VLhJzSV0Kk
+         2HfDJS/O92TwQeWcMqNV2pauYWBQHOKsf1LShzYS/4DfBaKr9m1kERwM/Npm5F3k0+PU
+         JoKMq4bJAZ4tKGU6kxJQBhKUqYRUoWJRvQ40BL178hpqsyRO3cmLUTXOreiOHrT6sCRB
+         /XGw==
+X-Gm-Message-State: AOJu0YzzcMhqNr3qaBNX/mkPR3AqwL7lpq43+9gEySiKdH2sYfOfc3oB
+	nE7UHTrsnay0z5mvFSEmmDok+NpVZPKGGm9hQ5Kz3V50rJy37EWRHw7wupBxyfDuG8rlpwlhShn
+	eWCvE1rMKeVl4mLgghQdhRvTy3reZEGp1eZd+/qiTAS7d6Gxp1w==
+X-Received: by 2002:a17:906:15d8:b0:a31:f7e:8a53 with SMTP id l24-20020a17090615d800b00a310f7e8a53mr1343354ejd.26.1706873930320;
+        Fri, 02 Feb 2024 03:38:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGxEAJunAEUW/L3MFJKR31vN1MxxW5woPZmhc5v2fwcaBQ9f38xfilE5aVLH0gmvNqQ5Q13ng==
+X-Received: by 2002:a17:906:15d8:b0:a31:f7e:8a53 with SMTP id l24-20020a17090615d800b00a310f7e8a53mr1343337ejd.26.1706873929992;
+        Fri, 02 Feb 2024 03:38:49 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX4/KG5Hy4D3W6/JBc0krwsLJY4D1i5j/cUA45VUdQFA8tENeMlpGHHU4/BGh8Doavma3fd6YuLy5krCvfSam1MQ6ieOolQu31kz+w9bOzMqgjjnOlS0WV98FTdIi7yI8uWyKkMfjmvKvhQcHI/ZvK86lCXe8ysA3qsQ+lJzdfh2CqUqUMaEdsKpEohirM+xL1Jru5nbR6kqL74hPuFynzdwyWuG8ySqcZbd14/2hfZUQRv71G34cZYhzRn2AQbUKx+2/Fld43qEetm7suF6p19LacOzQIMf+TsvrxrAGb3K513ShimALlA1LNZW/P3WYRqW+FbmC3Zi1gijZ5O6l/8BlI1GzBr5kUZMyzPxX6x1ZjB6fOdMscxhRRksaZ+fU/p1hgRxa12b802vyYGGkg8unF7ahM=
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id p4-20020a17090628c400b00a360239f006sm792261ejd.37.2024.02.02.03.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 03:38:49 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id CD464108A835; Fri,  2 Feb 2024 12:38:48 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
+Cc: lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+ edumazet@google.com, pabeni@redhat.com, bpf@vger.kernel.org,
+ willemdebruijn.kernel@gmail.com, jasowang@redhat.com, sdf@google.com,
+ hawk@kernel.org, ilias.apalodimas@linaro.org, linyunsheng@huawei.com
+Subject: Re: [PATCH v7 net-next 1/4] net: add generic percpu page_pool
+ allocator
+In-Reply-To: <1d34b717f8f842b9c3e9f70f0e8ffd245a5d2460.1706861261.git.lorenzo@kernel.org>
+References: <cover.1706861261.git.lorenzo@kernel.org>
+ <1d34b717f8f842b9c3e9f70f0e8ffd245a5d2460.1706861261.git.lorenzo@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 02 Feb 2024 12:38:48 +0100
+Message-ID: <87v877xfhz.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ufj6mtxpebjbl2n4"
-Content-Disposition: inline
-In-Reply-To: <mdosj4utmgvuaezdceoyde2d2q44amozbpdvzo3clljqaxh5ap@x5i22jkftljg>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.84
-X-Spamd-Result: default: False [-2.84 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-0.999];
-	 R_RATELIMIT(0.00)[to_ip_from(RLpoxqx1j9hfwga7qi6hxbzrpn)];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[29];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com,mojatatu.com];
-	 BAYES_HAM(-1.44)[91.22%];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
-
-
---ufj6mtxpebjbl2n4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 02:19:11PM +0100, Michal Koutn=FD <mkoutny@suse.com=
-> wrote:
-> On Wed, Jan 24, 2024 at 07:17:27AM -0500, Jamal Hadi Salim <jhs@mojatatu.=
-com> wrote:
->...
-> > and i didnt see him say anything).
->=20
-> Me neither. I may amend the patches more if I missed anything.
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-FTR, v5 is at [1], changes are summed in cover letter's end.
+> Introduce generic percpu page_pools allocator.
+> Moreover add page_pool_create_percpu() and cpuid filed in page_pool struct
+> in order to recycle the page in the page_pool "hot" cache if
+> napi_pp_put_page() is running on the same cpu.
+> This is a preliminary patch to add xdp multi-buff support for xdp running
+> in generic mode.
+>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Thanks,
-Michal
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-[1] https://lore.kernel.org/r/20240201130943.19536-1-mkoutny@suse.com/
-
---ufj6mtxpebjbl2n4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbzLMQAKCRAGvrMr/1gc
-jt2QAQC7isul4PJyDsArmi2U77OYvcXSrHPrhZJ2uQY2LdTp8wEA+h/xTN5uDbYP
-R7MLvmOLa/RI4r3yv83cTkz8ylK+bA8=
-=RjAk
------END PGP SIGNATURE-----
-
---ufj6mtxpebjbl2n4--
 
