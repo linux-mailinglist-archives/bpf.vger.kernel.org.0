@@ -1,91 +1,110 @@
-Return-Path: <bpf+bounces-21061-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21062-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B1448474B0
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 17:29:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C738474CD
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 17:32:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0350D28880F
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 16:29:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 742491C2243E
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 16:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0491482F4;
-	Fri,  2 Feb 2024 16:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A17985276;
+	Fri,  2 Feb 2024 16:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LupnOBpP"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3tVt0peE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kj6EpPeC"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD561474CD;
-	Fri,  2 Feb 2024 16:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEAB117748
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 16:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891345; cv=none; b=KR25YcmyX34HSbuxdi4Eoh9NM69tE+RdwA0QJxHkSFOzRm5fdEwaMIuaTFQqQxZdPfncTwrIbqk3I5qN5RrfUPJNFy/uY4m0hnog0QqOoj/Vnr0u3MOruFmXC5xzFxw7Wp3CfJ504TY5yvVZJ6weA2S16C9TLEdh7jDFrdvLEXE=
+	t=1706891551; cv=none; b=PT4oSZqFbNoNHnU+1zdL1iI6v+I/wJ+8e4JgxtLRhkWmzuEzkX+qaTwFboJsrR31tUp/7OaWukCUbQqmC6/p8mQz+2w217T8+0D07UczWi/7cKC/Rl/MGO/d1/oG/tFJ056w3HCS5Foc/sIC/Ikx29d/qj6bJcXVyUObQFR7A5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891345; c=relaxed/simple;
-	bh=yTf2N5hieH76/snamkyDPuaivV84pXMLNyFSjKDEC/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Ffa6dC7eRSC/sIINOvnt0T6mVt3bjPxFJqe3r5sNvejGaFH11zmn7Z9dGrpu41XLrS834LSAyNX7W20k9m7jjmZ9R+1N+rbMYFKIk+8PifiB70FSX3RrJ+H7T0EhiKIkMytc5tBR6wNQ7omqGU4KVoXI244TBhkGQLxHs5ujI84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LupnOBpP; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=Yv89qsijhL8lE7JeRJ9pRE/QquGa9JQWLz2IsajqlBs=; b=LupnOBpPM7vOxUoL0szt/IoMn2
-	F66A8AOYNKkWiA5U7g6aqHrhkZQpS5bHjROLG3EPb6L3eMYFzEveKlh3osmMmSpsWTYzDrJWsscSU
-	WRoqUj0aaThljAVKz6Zodjnx4h6FV0bN7zCia1RxICB3IglElc/83cb5NtDG4SSksdqu+1N/ryFIa
-	9NC5aoxlMipUHLI2BH7grBhfY88f/CH0js/1SDCgucWZo0gcD2A1jQXLtsD2yZgARPWzuR+wkqsY7
-	D4qsG1S9OYcqW4slm3kn5GW/RJ8z1any9KcewnC7RTupQkpkhHRwA/Tikl6BoYJ6TjXuZJGI+2QtT
-	hWeDhWzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVwPS-00000001Wnv-2KCT;
-	Fri, 02 Feb 2024 16:28:58 +0000
-Date: Fri, 2 Feb 2024 16:28:58 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: lsf-pc@lists.linux-foundation.org
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-	bpf@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
-Message-ID: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
+	s=arc-20240116; t=1706891551; c=relaxed/simple;
+	bh=/9upudc6Mn1B1zL826zknkwAfB47PeYpOGWapLRuVQc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xplopx6fBaBF99LhHCwqS/N7+hlq24ifIiilZPYAM1BCRwB/XgomU2dQLieSx2WaOT2kJyFRF1//57rP06EbzS6goQEsiXCRdgof75D5g0aQ+ankBsclJ7Z02WpyxIurGXh/mVQjNsTS15Vq6ehwEP9SgKRDivCEJP9GBHC5gTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3tVt0peE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kj6EpPeC; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706891547;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+kvAdUJa3uqeeqw0BrOc4nljVIOzEkmRbld6yu6uNOo=;
+	b=3tVt0peE0ny0qkBiSU8rBZmxOm6+IVOD7Go8OKSYysEU26EvKWXxqKtBk/0EyT4dfzPV6H
+	OpOZwy21D8QTugVCG2IPntD9LgpCa4UPG9gCRq3AYqGJ/d2qTnvuHNs+6BneI/lsv3M2Rx
+	tr/+vnUwPWGQrQ5Mo8YOJ5mvCblFAYDTHBxowPhbmbo7RRDllzJ98P3hbfEGpdPwbweJF8
+	i1G8B4tNciNFSbZP0GbXqMOPqaUpB2BdkXoG20fC6rcgrs9NuQdwEGS75vv7LvVjSdZNrj
+	i4i0MFCGEhhvhR0kPIxi3xthp8eOXJ1RcNGYGo83dcrtSMVgPK4qyBQepFeuSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706891547;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+kvAdUJa3uqeeqw0BrOc4nljVIOzEkmRbld6yu6uNOo=;
+	b=kj6EpPeCSlmoigF6W9kXqCREd0iDgIp7OVHmL/TRQNgmArW1oL2sj1MGHQZYFya9g79zoO
+	uWbwoIIn1aOBtWBA==
+To: bpf@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH bpf] xsk: Add truesize to skb_add_rx_frag().
+Date: Fri,  2 Feb 2024 17:32:20 +0100
+Message-ID: <20240202163221.2488589-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-LFrom willy@infradead.org Fri Feb  2 16:28:25 2024
-Date: Fri, 2 Feb 2024 16:28:25 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [resend, PATCH v1 1/1] logic_pio: Use RESOURCE_SIZE_MAX
- definition
-References: <20231016132611.1201402-1-andriy.shevchenko@linux.intel.com>
- <Zb0LzpBkE71wWyqO@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zb0LzpBkE71wWyqO@smile.fi.intel.com>
-X-Mutt-References: <Zb0LzpBkE71wWyqO@smile.fi.intel.com>
-X-Mutt-Fcc: ~/sent
-Status: RO
-Content-Length: 237
-Lines: 7
+xsk_build_skb() allocates a page and adds it to the skb via
+skb_add_rx_frag() and specifies 0 for truesize. This leads to a warning
+in skb_add_rx_frag() with CONFIG_DEBUG_NET enabled because size is
+larger than truesize.
 
-On Fri, Feb 02, 2024 at 05:35:42PM +0200, Andy Shevchenko wrote:
-> On Mon, Oct 16, 2023 at 04:26:11PM +0300, Andy Shevchenko wrote:
-> > Use a predefined limit instead of hardcoding it.
-> 
-> Can we apply this one?
+Increasing truesize requires to add the same amount to socket's
+sk_wmem_alloc counter in order not to underflow the counter during
+release in the destructor (sock_wfree()).
 
-Why are you asking me?
+Pass the size of the allocated page as truesize to skb_add_rx_frag().
+Add this mount to socket's sk_wmem_alloc counter.
+
+Fixes: cf24f5a5feea ("xsk: add support for AF_XDP multi-buffer on Tx path")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+Noticed by running test_xsk.sh
+
+ net/xdp/xsk.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 0348e4bde23b2..3050739cfe1e0 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -744,7 +744,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *x=
+s,
+ 			memcpy(vaddr, buffer, len);
+ 			kunmap_local(vaddr);
+=20
+-			skb_add_rx_frag(skb, nr_frags, page, 0, len, 0);
++			skb_add_rx_frag(skb, nr_frags, page, 0, len, PAGE_SIZE);
++			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+ 		}
+=20
+ 		if (first_frag && desc->options & XDP_TX_METADATA) {
+--=20
+2.43.0
+
 
