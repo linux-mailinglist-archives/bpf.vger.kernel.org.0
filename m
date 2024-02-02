@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-21053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4B6E8470D6
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 14:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E6858470FC
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 14:18:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59B3A2905DE
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 13:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE99828D13B
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 13:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85C25235;
-	Fri,  2 Feb 2024 13:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34E332C88;
+	Fri,  2 Feb 2024 13:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IKsg/W6K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RhCzBU1P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3D61874
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 13:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BF73D63
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 13:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706879207; cv=none; b=Psq0ID7Mc1dwIx0+kUPbucyUS2fWHcgYERenYxTNN5/U3hX//GqvUFXZdY4sg1EXLEe0BkqZ+/s6HyMzuI77zL74zH0IFkib+iodZ1461TZmc7d+1JOihjVFEooJsnuq0R0Cw+W57YOCyb1tMyXyxhhJzeRMXHJ0sf0BvUtdkI4=
+	t=1706879923; cv=none; b=ZLSUr8DVTNuFGJGw0cVKbwBYHf8S4mF4dvnBfw3ZfBgv9PJcjb1NXhYLO+py4otF2mrUHoQu7a0o6+airmN5jccrMhrf2liaiPy9SJn6DSKAmNQfJJsHLWaLJ2sHiT4jjP8HKF+KUtpbTDMs3jgADO3pxrKJtr2KAv31m1qQykg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706879207; c=relaxed/simple;
-	bh=M2dVabOscfCZzwJa42t/nHgY8bie+Vgj9Y5OptXX42k=;
+	s=arc-20240116; t=1706879923; c=relaxed/simple;
+	bh=W7OZx4RTxoom4Ogz5ug3JSSYtqzQnfFyLwBWZ6PN524=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UO/mZYJve4pW84MrR5vh/W0xtQvZSJQ5D+CVoMCWgPEh0UJYDMkizBHfPGhWJ65G8ePyVssURXE3hv3b8pMvvXM3VmzvzosiaaV+PLFcC1z6AlL5ctmmT75Qo310HUgFYkYBAX/af+r4vtc13TnowAzHO7pzwtWgUwqAyy8wNYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IKsg/W6K; arc=none smtp.client-ip=209.85.128.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=qONlcuYg+zthjl9GAfq9PyBNOms0wYa9Nz0eZ66S2vnm4PQRopr1L1bbiNFY7j+fE2nhRi8aY3aADgomhcvw7xmznuj90yx/2fYRdBoBKCvt5/ILq7Xqcio77MBt76HGkxLrpXbwBAtkvHLf8bo1C3VB3XFi/RQI34bzM1v7Buc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RhCzBU1P; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so18676315e9.1
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 05:06:45 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so25046821fa.1
+        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 05:18:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706879204; x=1707484004; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706879919; x=1707484719; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FxgjSIhK6TY3tURR0sYONrz51FDIuUpqG9htpTN/d7I=;
-        b=IKsg/W6KcaRWZ0t/DK4dgssR7VBQa9Ja5AFRHBrTVcX2f3Pbt/FCM4fs7U/BrN6sO9
-         TCX3NAL1xkHcy1tiP0+A/78l1DmMlJUUsuUPuscWhotEONo0jjUyytKvX405am45JdzY
-         yNeZDAQ4qm0saSwlHKYlhtY6d6qiXe0Tu4rxmCMEkRz1++JJEQSXGGTC1q0+Z4QxNO8m
-         EREq/KfpZz79HQHGKpjPETImkXj8vNqx9q7at1CKw5od6XrdkrRxVqFAT5eKlBTZA6N9
-         P+l45viZrED9norZlIoxy/7+faWVU1YZABGu08qdJNOtXm7dCiV2WuKgqGud6uJJW7t6
-         M/lQ==
+        bh=wbtOpRngfWUWXoOKqm74anyaAHkCqDPmB9AzS1PPbu0=;
+        b=RhCzBU1PW0My1mfJhRjkIYh3GpscjbjjHl/vhvzMxzUGvhk6lQvIhqYiTd+WA/t+P5
+         0LmXo818EnE++6ygqhxSG4ix+57wII3FZToPjdk4jz+yOEqo4SPkKsv5SUDVJoica/q4
+         qQZM/ftjmqxA11UUft0UcJJCE6R1ljQvwzC9b+qgiGn1uZPRCjXoM1DtbxaR+sA86EOO
+         5oLjQpXuiwJutqCovVJoOpYhu0bBCmfrKAo5QuB6W4qFSme32mDINa0pNEJHpM7q0e9b
+         /xiSPLBL/xPAtTP4P6TcG41Hr8g5u1iWoZD1xFmtLiV3IWEtPRDZElZUdWbKrFytzjET
+         vSWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706879204; x=1707484004;
+        d=1e100.net; s=20230601; t=1706879919; x=1707484719;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FxgjSIhK6TY3tURR0sYONrz51FDIuUpqG9htpTN/d7I=;
-        b=M7ol6mHjOB6mpZMfVOmHx+5QyLWQ/o8CblbkWrVbrgGYADfI9sVp+tXRNTe2wsae+q
-         KdFIWG9r8R5IUiqc2KkFqAMJjH/IQDuitmzUg7MYcsgx7EHoIUj9h5u1prbrd7sE2pCZ
-         xcZFcL7Ovx25vgieaot0UKm9Cwl5CBiaMpPQE2oxX9Jch3m7kijQvOUugBsWz/kQqyhR
-         ZL3YpwjX/iTirKcM7QSfv1vC6TOMOUCAe77tPR5tZMjQ0jN1bLeOkYN7N7wz9Tl9ZS0q
-         oiwDOAXj+bEusEbPkOFoXHJIsWqROySMlUjeBOuoX1RqE7MSHFvjXJyVKPZkX6DCQSnI
-         RVrQ==
-X-Gm-Message-State: AOJu0YycuWvQeFsvsNTJne9RyD4ot91Wi+eE6UNLYUi5lyBr7v8wz9oK
-	rSJrr3wTbR277BVnx+uYgkaLNuCzLj32N3Lrr4VN9awvmVyLwOjl
-X-Google-Smtp-Source: AGHT+IEAFnzBbpw0A9sxiIQi/2ay0JUMHIivPlLbGtHyeJJq/6jKBPnyL0vJYxCNtP6XFhG8Tv2ENw==
-X-Received: by 2002:a05:600c:198f:b0:40e:c06a:3ed5 with SMTP id t15-20020a05600c198f00b0040ec06a3ed5mr6717530wmq.2.1706879203563;
-        Fri, 02 Feb 2024 05:06:43 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXFgWROC6VCJ8AmaOITPbkio3u0KuVVLApfig95nYPVK71+mne9u+WLuzraQEp75jt75f0+n9wRQlJ3LXA2JGLZebJ46KwHcsp1ae6CXRinIhj/U3km7mgEhaAwe0LmLOK3+fBitH1RUxxyXPFoUbmpsQA7kL8Lz9XPTeghc/z0Q7lFF1OdMJJaNYtEVJJo3H+L/Cb3mhMJA8B1+kfXEyVVzJxUnX+ZEdFzTrWfGA3g0/dgRRib8RFOYnUJVJabcyDTsuCteYZiNhuD3aXTqeUtfV8EEOGZOG9FFH2VSTZQkyePXxd4vhU0iFHZsWZB+dTYxnQ/m36nMCQfBsAIKblXCYllGpJ0VfwtR3sv2A+JZ9PZ2k527IjFQiwftyYQgAdAXHetN81egR+wOAMIVLFhbxH8DBjxhykiYLcECbJ1Zd0Kra1kBnkjZ2P3NhA=
+        bh=wbtOpRngfWUWXoOKqm74anyaAHkCqDPmB9AzS1PPbu0=;
+        b=IgkOJfdv3yzSf+YrII5t6eIiIIGVT9L2pQI8heTL3xONZEx/FpuqT717Ui7vsDCTFk
+         S0cGK6Ug88/tJICZBJZPvxv/4noPNtUFp4MSQfh2FBvtwwD319iXCxEunyUA+dbU+ksO
+         FyFLaDpyYPIs4f0LJn1Yb88/SaW08S03p/Iq23C6P/ooidyLPRRhb75dP9EKVhkdGImt
+         tiStDfoFQUfKl7W4kXFOXiIYqvyzAxGUvrJDTAY2TjuNb43NNOdW5bW35001erqJt0kY
+         OdCPT1I8vVXI6dTU7ZbLQ8O+JQTyQYl3W4EhaVCRJQxxbmEFKhX/rfIi2Jf37DUygKQA
+         rIxA==
+X-Gm-Message-State: AOJu0YzZ9z1a7PLi722/uNZzNbjRsCf0vd7EGThml3PsmBDwr7zwoNCi
+	Y/XhmCWnp00IeK/d0HEx/vgm14y4WX07mPe1GyqMzRgDbTGDBUti
+X-Google-Smtp-Source: AGHT+IEFT61vTE6wXKdnjmftyazW/VRST/KOvz1w7wGU+674/5ID46MJZEfaRVd3XS0TUGWzGZe+ew==
+X-Received: by 2002:a2e:9e10:0:b0:2cd:4883:6e25 with SMTP id e16-20020a2e9e10000000b002cd48836e25mr5334207ljk.50.1706879919077;
+        Fri, 02 Feb 2024 05:18:39 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX2yMAzPZsQAmDyPtgf+hIn01WzxrIlR6jm4E6suHayqpb+dXrnmA0o6TgW99buOMG3rqW4sPNFywC0vaOFbx7v4z4qlp3aeF+tkcGXUUbWEAdjhRO8OOdu9NNyCP1/Hv6rD29lUPzMEqhWnwYNw2HTZ2XcrEre628HGcBYC3FuCDLmiPHn5FdUTl1TNTGrsFMtOPHApdHHAJo/9o5ZaYGqZCiTOCTWsFooY67xM14P49ayC3EPTai91aLNtMDa8G/0O4piPhzBEe5G2PRNgYktpz/DBkb3zxeGuHqFMq9u7RfF6z367024lcWRTbpQFY4/F2qWdzbpXgRVnvU895xYVOqoI0sKOnduJ/U5/kMSXQ0gYUlC2SbawDS4sHPXz0rvZTVNW09vCIgL5JpG
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id dn7-20020a05600c654700b0040eef7ec053sm197440wmb.0.2024.02.02.05.06.42
+        by smtp.gmail.com with ESMTPSA id ij7-20020a056402158700b0055fe55441cbsm793199edb.40.2024.02.02.05.18.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 05:06:43 -0800 (PST)
+        Fri, 02 Feb 2024 05:18:38 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 2 Feb 2024 14:06:40 +0100
-To: Viktor Malik <vmalik@redhat.com>
+Date: Fri, 2 Feb 2024 14:18:36 +0100
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -78,15 +78,12 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] tools/resolve_btfids: Refactor set
- sorting with types from btf_ids.h
-Message-ID: <Zbzo4HBVmmkikbhO@krava>
-References: <cover.1706717857.git.vmalik@redhat.com>
- <eafd46de2ff1bfc6103ec466d4fba0861ce416a6.1706717857.git.vmalik@redhat.com>
+	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+	Rong Tao <rongtao@cestc.cn>
+Subject: Re: [PATCH bpf] selftests/bpf: trace_helpers.c: do not use poisoned
+ type
+Message-ID: <ZbzrrBKaJyRJLEz8@krava>
+References: <20240202095559.12900-1-shung-hsi.yu@suse.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,142 +92,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eafd46de2ff1bfc6103ec466d4fba0861ce416a6.1706717857.git.vmalik@redhat.com>
+In-Reply-To: <20240202095559.12900-1-shung-hsi.yu@suse.com>
 
-On Wed, Jan 31, 2024 at 05:24:08PM +0100, Viktor Malik wrote:
-> Instead of using magic offsets to access BTF ID set data, leverage types
-> from btf_ids.h (btf_id_set and btf_id_set8) which define the actual
-> layout of the data. Thanks to this change, set sorting should also
-> continue working if the layout changes.
+On Fri, Feb 02, 2024 at 05:55:58PM +0800, Shung-Hsi Yu wrote:
+> After commit c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize
+> kallsyms cache") trace_helpers.c now includes libbpf_internal.h, and
+> thus can no longer use the u32 type (among others) since they are poison
+> in libbpf_internal.h. Replace u32 with __u32 to fix the following error
+> when building trace_helpers.c on powerpc:
 > 
-> This requires to sync the definition of 'struct btf_id_set8' from
-> include/linux/btf_ids.h to tools/include/linux/btf_ids.h. We don't sync
-> the rest of the file at the moment, b/c that would require to also sync
-> multiple dependent headers and we don't need any other defs from
-> btf_ids.h.
+>   error: attempt to use poisoned "u32"
 > 
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> Fixes: c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize kallsyms cache")
+> Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 > ---
->  tools/bpf/resolve_btfids/main.c | 30 ++++++++++++++++++++++--------
->  tools/include/linux/btf_ids.h   |  9 +++++++++
->  2 files changed, 31 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 27a23196d58e..7badf1557e5c 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -70,6 +70,7 @@
->  #include <sys/stat.h>
->  #include <fcntl.h>
->  #include <errno.h>
-> +#include <linux/btf_ids.h>
->  #include <linux/rbtree.h>
->  #include <linux/zalloc.h>
->  #include <linux/err.h>
-> @@ -78,7 +79,7 @@
->  #include <subcmd/parse-options.h>
->  
->  #define BTF_IDS_SECTION	".BTF_ids"
-> -#define BTF_ID		"__BTF_ID__"
-> +#define BTF_ID_PREFIX	"__BTF_ID__"
+> Somehow this error only shows up when I'm building on ppc64le, but not
+> x86_64 and aarch64. But I didn't investigate further.
 
-nit does not look necessary to me
+it's within powerpc ifdef:
 
->  
->  #define BTF_STRUCT	"struct"
->  #define BTF_UNION	"union"
-> @@ -161,7 +162,7 @@ static int eprintf(int level, int var, const char *fmt, ...)
->  
->  static bool is_btf_id(const char *name)
->  {
-> -	return name && !strncmp(name, BTF_ID, sizeof(BTF_ID) - 1);
-> +	return name && !strncmp(name, BTF_ID_PREFIX, sizeof(BTF_ID_PREFIX) - 1);
->  }
->  
->  static struct btf_id *btf_id__find(struct rb_root *root, const char *name)
-> @@ -441,7 +442,7 @@ static int symbols_collect(struct object *obj)
->  		 * __BTF_ID__TYPE__vfs_truncate__0
->  		 * prefix =  ^
->  		 */
-> -		prefix = name + sizeof(BTF_ID) - 1;
-> +		prefix = name + sizeof(BTF_ID_PREFIX) - 1;
->  
->  		/* struct */
->  		if (!strncmp(prefix, BTF_STRUCT, sizeof(BTF_STRUCT) - 1)) {
-> @@ -656,8 +657,8 @@ static int sets_patch(struct object *obj)
->  	while (next) {
->  		unsigned long addr, idx;
->  		struct btf_id *id;
-> -		int *base;
-> -		int cnt;
-> +		void *base;
-> +		int cnt, size;
->  
->  		id   = rb_entry(next, struct btf_id, rb_node);
->  		addr = id->addr[0];
-> @@ -671,13 +672,26 @@ static int sets_patch(struct object *obj)
->  		}
->  
->  		idx = idx / sizeof(int);
-> -		base = &ptr[idx] + (id->is_set8 ? 2 : 1);
-> -		cnt = ptr[idx];
-> +		if (id->is_set) {
-> +			struct btf_id_set *set;
-> +
-> +			set = (struct btf_id_set *)&ptr[idx];
-> +			base = set->ids;
-> +			cnt = set->cnt;
-> +			size = sizeof(set->ids[0]);
-> +		} else {
-> +			struct btf_id_set8 *set8;
-> +
-> +			set8 = (struct btf_id_set8 *)&ptr[idx];
-> +			base = set8->pairs;
-> +			cnt = set8->cnt;
-> +			size = sizeof(set8->pairs[0]);
-> +		}
->  
->  		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
->  			 (idx + 1) * sizeof(int), cnt, id->name);
->  
-> -		qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
-> +		qsort(base, cnt, size, cmp_id);
+  #if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
 
-maybe we could call qsort on top of each set type, seems simpler:
-
- 	while (next) {
-+		struct btf_id_set8 *set8;
-+		struct btf_id_set *set;
- 		unsigned long addr, idx;
- 		struct btf_id *id;
--		int *base;
--		int cnt;
- 
- 		id   = rb_entry(next, struct btf_id, rb_node);
- 		addr = id->addr[0];
-@@ -671,13 +672,16 @@ static int sets_patch(struct object *obj)
- 		}
- 
- 		idx = idx / sizeof(int);
--		base = &ptr[idx] + (id->is_set8 ? 2 : 1);
--		cnt = ptr[idx];
-+		if (id->is_set) {
-+			set = (struct btf_id_set *)&ptr[idx];
-+			qsort(set->ids, set->cnt, sizeof(set->ids[0]), cmp_id);
-+		} else {
-+			set8 = (struct btf_id_set8 *)&ptr[idx];
-+			qsort(set8->pairs, set8->cnt, sizeof(set8->pairs[0]), cmp_id);
-+		}
- 
- 		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
--			 (idx + 1) * sizeof(int), cnt, id->name);
--
--		qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
-+			 (idx + 1) * sizeof(int), id->is_set ? set->cnt : set8->cnt, id->name);
- 
- 		next = rb_next(next);
- 	}
-
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
 jirka
+
+> ---
+>  tools/testing/selftests/bpf/trace_helpers.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index 4faa898ff7fc..27fd7ed3e4b0 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -271,7 +271,7 @@ ssize_t get_uprobe_offset(const void *addr)
+>  	 * addi  r2,r2,XXXX
+>  	 */
+>  	{
+> -		const u32 *insn = (const u32 *)(uintptr_t)addr;
+> +		const __u32 *insn = (const __u32 *)(uintptr_t)addr;
+>  
+>  		if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
+>  		     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
+> 
+> base-commit: 943b043aeecce9accb6d367af47791c633e95e4d
+> -- 
+> 2.43.0
+> 
 
