@@ -1,195 +1,296 @@
-Return-Path: <bpf+bounces-21106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82F9847C85
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 23:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2423A847CEE
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 00:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8282E282721
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 22:47:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFDEE289DE9
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 23:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04F3126F1F;
-	Fri,  2 Feb 2024 22:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27D512C80B;
+	Fri,  2 Feb 2024 23:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="XND1OWS7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="hyBl3OVN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oti5Grmb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E5D5FF01
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 22:47:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1D1126F2E;
+	Fri,  2 Feb 2024 23:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706914036; cv=none; b=ZAp3QTdlO0m3KE0E44GZawFfKAYJuVcPnYGbm38YZq2VjBOnVBgWty3BmXg4PfyXKQggwxJM7WHK7iDwc6NmsNeWRDQM9IK/v74eKM6b859jvsiniYXlWPxk+9TwAHBBu0UNLGtmUkxSfLD/Tn/B2OY9MZLsVnSpgSXLbRVymp0=
+	t=1706915351; cv=none; b=RY/cVo60Sf2Y2iHg0xmQHW/6f4QxcvXdC7JlWs2htcRikVL4Y1mU2j3jP95bnPBjDi3P2Ru1yW6nIvpzX0/mpsXJ8KFUfc3bVHdPtxOrppLSCDYtUjtzQ1RfSb8qBfOiciJ/+BJdrCC38pI2PmyEYkt3W4LNQ88WZj2ZYaVKKpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706914036; c=relaxed/simple;
-	bh=FYNTIWrdPWG6eyM+GRSLwf8xzJin5fv7v4cAo/arIiE=;
-	h=Date:From:To:Cc:Message-ID:References:MIME-Version:In-Reply-To:
-	 Subject:Content-Type; b=rWHeKLfezvefsGDafdBjK8Tpxaa0z0AH7vfjVKOaivgTtbK1HIMDIIkVEbmTvKgudE6rSNXH3Fv/0t2i598ObG5Ov0GHRmNLuxN+uViYQRCVNqNNkR6iTrXUijYkLOiA4zmu7tyzsaZQNEhklmE7bIikt+osP+4GONF2eIxxc+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=XND1OWS7; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=hyBl3OVN; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 0329BC14CE30
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 14:47:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706914034; bh=FYNTIWrdPWG6eyM+GRSLwf8xzJin5fv7v4cAo/arIiE=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=XND1OWS74PxCa1OkfrPf2K9XAkcExmWOqgo0F1VTqJz6obYcueTUvQ7SkOgv8w1yw
-	 nfnqTCYY3EsU4mkcwG+ctA1S6WL+12pGkq0Dz6kU41hyoOy4DNLAvlMShy8J8HTA7l
-	 FciYbrKiAkt85sMg5Cx+d7Ls8hYYtAhZQZWFGGAU=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Feb  2 14:47:13 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 9D0B7C14F6B4;
-	Fri,  2 Feb 2024 14:47:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1706914033; bh=FYNTIWrdPWG6eyM+GRSLwf8xzJin5fv7v4cAo/arIiE=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=hyBl3OVNM2OpR2Fmzpqfq379lzPhDfb5h7KF69HapktJivpTkg5J6Emd5FKAZb7Pj
-	 EJxOIE8qb9odN/SjIRdsnMI9Jh0B4yh4ZJ158jZj+xXsXS1acshDzBsgsrG0tLMhkT
-	 DiwzpV5fePo4hUV1MzyZs8zAAtjxvl6bGZ4bYfFo=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id B86AAC14F6B4
- for <bpf@ietfa.amsl.com>; Fri,  2 Feb 2024 14:47:12 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.41
-X-Spam-Level: 
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id Ww8g11SDFmu5 for <bpf@ietfa.amsl.com>;
- Fri,  2 Feb 2024 14:47:10 -0800 (PST)
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com
- [209.85.219.46])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id A6ADFC14F68A
- for <bpf@ietf.org>; Fri,  2 Feb 2024 14:47:10 -0800 (PST)
-Received: by mail-qv1-f46.google.com with SMTP id
- 6a1803df08f44-68c8d3c445fso2040196d6.1
- for <bpf@ietf.org>; Fri, 02 Feb 2024 14:47:10 -0800 (PST)
+	s=arc-20240116; t=1706915351; c=relaxed/simple;
+	bh=Wo7+jDfk5sZHf8MlrGXUXrmEpHHugcRqmAit0yROqao=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SAk5EXHev6d39bB0XVN6DpaLApfwzIgpZk4fKpGuQhiAWLmGQqgNCUlr0MlKDKv9/AZaZPwvIo8/S1/2u3aq+QKykL91aZAiWKe3X7EeRvJj3KX8PLzJSIUOHKwzt6EfJwZdRPyulMbiLx8WqUN9gvXgWwAmxnx7w4VhAq6YOtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oti5Grmb; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d73066880eso22707665ad.3;
+        Fri, 02 Feb 2024 15:09:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706915349; x=1707520149; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ns/bvPkKWqK4cT5hwWAJS7KQis8SRbW6Visd6BLTiUI=;
+        b=Oti5Grmb+FX3pffdtZQhqx/Tdi7NzpBBggod79wgb9rLNDFh/ZhoWUKAX6bKD/InbI
+         VtrsuECkASUfC7nwkKwB6DTR5f2CKqYw3iN44mSfTjY8UYOX3lXqtRY/ZQw2yoSC4CzH
+         znsNzQC+unksr8nEFMtHPGAbOAcU/ogQ3eE8OupkZn3f8VIU1HlX5UjsM1akkKVyUCF9
+         M2HpPPq0LYRwRXQ/7MrX812nQkLH6moptx+83fn8OGnaSuM4eSprJsKhXkFvWKyVdkU8
+         xG14TBQah2G/jpSTx2whi0E/qrWb9hChs09fE8RxEdtm1UxtoPa144Ur9RnGqe0RJpa3
+         UdzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1706914029; x=1707518829;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=hrIqKBXYRJ2iii7fOSRikAKu8sNmRspAkC6/qmp0zQo=;
- b=qDrkWXfohOLZoEBPWCSBVESDIOJ4kpfPPLeLVLr002Ui+GDMELoPYVdjKjLb4EWNwK
- 5jOhA2cRM04eUrVi7EmiOzX7f6xAwSlX+ASaUw4pS5A1tPXpdSqjvDp0+DxBz7x4D2TP
- yjFEsv5HBXM/Xr0L3vpv2ISguEJWBZpYHyxo1SI+l3iqN0c5kMKfPsh10GIecMZx42Ie
- K/WjzfzJ7f9dwHs5C8mrnBX0THMb75BN60OODo/IYvDxVC+NzS20quMwYTrz8k3sxlsO
- KfaUkSLT0Zl3R99CgZnQWcFknum7izx2yibZhXCTdwlo9bVJZSXRD8pzx7HV6LvLQ6CU
- gI0Q==
-X-Gm-Message-State: AOJu0YwiOOReHj5AkdgVKp/4UCxTgI7HNR4FhFJD6ef3JCc4GvWsh3zX
- vS/Ij2FSVrxDyviTzHLt7K+15qg7748rJsZ6tpO1lN0OC8ckXNkD
-X-Google-Smtp-Source: AGHT+IHjF4zDjT4o+jA3HvGBg1KWYLjcY0RjXcXALz0lW7xnTbCnauUA66XiSY1P6VZaZr/818TrMg==
-X-Received: by 2002:a0c:e3c9:0:b0:68c:61fc:680a with SMTP id
- e9-20020a0ce3c9000000b0068c61fc680amr3293035qvl.25.1706914029609; 
- Fri, 02 Feb 2024 14:47:09 -0800 (PST)
-X-Forwarded-Encrypted: i=0;
- AJvYcCV6d6du1kh3wM4g1hCsPSg/Os6OcZa7Kk0BXGPAfe6SZczQ9g8Lxd3rlXLMDnqihMuXHZTLxGn+TAmyF2RbQYlkqFtZzIB15A3kON9++3VPvn998Q==
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
- by smtp.gmail.com with ESMTPSA id
- od17-20020a0562142f1100b0068c89d8eb53sm674898qvb.81.2024.02.02.14.47.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 02 Feb 2024 14:47:09 -0800 (PST)
-Date: Fri, 2 Feb 2024 16:47:06 -0600
-From: David Vernet <void@manifault.com>
-To: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
-Cc: bpf@vger.kernel.org, bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
-Message-ID: <20240202224706.GA2244152@maniforge>
-References: <20240202221110.3872-1-dthaler1968@gmail.com>
+        d=1e100.net; s=20230601; t=1706915349; x=1707520149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ns/bvPkKWqK4cT5hwWAJS7KQis8SRbW6Visd6BLTiUI=;
+        b=IIyZAwUD6hrnLwWowj7TCQj3ka+HjAeIK1BCcIjbDWYspeqktsVDEAFXmDtKa5uFJC
+         BfCMMUNp9HdM4McEsB5CkNelkz/C89/ev3psbiNZmjBmVON8cgKZvxT4Gg0GPoLkXpu4
+         q3fdlkZ33B9IXd/joT4SWZ42hihXJfwmgpODzps5KIKgy4JkCeHxtcZrGbmdm716A5G3
+         4/T13wrMQOdlnV7BkQmiaegKNCZysGdtw+OQCa5PozphDv1jivUj4LibfsV5I7A5BLDG
+         lCx9KmjTT0Zr5MdSNYA2FTWE2cfb9FgLMDZTw/tcpt+0IFmhosbklTJfIlV0edZ7ra6L
+         c71g==
+X-Gm-Message-State: AOJu0YyzvhhN1H8eWGv1JoHVz9PSFJXNLlGu0t8lOJJgLWVS1nIwJi+E
+	3QncgSz2tyI8x2uCv2P+Wah4qxyUHacPmBwCxwTFws+SznUIcKbC
+X-Google-Smtp-Source: AGHT+IFxxTOrsdYhKRWr9e6jHbv8TCklGcEQIE8BSnW/BV4FuD23/hWYjE901pv5pKGyJLGFlLZjBQ==
+X-Received: by 2002:a17:902:b194:b0:1d5:c08e:52eb with SMTP id s20-20020a170902b19400b001d5c08e52ebmr8168069plr.65.1706915348583;
+        Fri, 02 Feb 2024 15:09:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXh8AopKfi/YqWmfKiAwlQ/PCijITod0oFhPh7EZgbe4IqqVCTYplEzVZLk725jsEN7/jjrF3+q6jwqjZIAWgtFJwhn9qmdKmzSh1WTQWyzKIR3Vu1RR9VOQ/mVdMEOrdQtYnhjryw1mdCQexA9JgKi6G6x/jm8n0qLhDny1Uyh9vw8IV8OyRb46UVpGGduitQ9ram54QIx/Q4+QDflTEF+IDMbGP6LDutZoBqdGyGeIDaHWDuGJjeQGgpi3kWxY6Mxokz3ztlOAqOGqeQDd+PFxUQapdW8eUtWM9krlaYdDID3UIGv6Ao+xrLQWDCxkdxkdWrDdbxlfq5IiqlrLk7HA0UnJpJ4jkFfgWd75iHDEi8ZdxAD0XE06DRBlvejpEon3X1Owg03SqEYrAL6rJdyOqiuNnhveN6rok4raRhfJSFqktdoCqF5aru6yMErGbiCNxd0+0aDnqt1T1XYbEGqcirlu5DKCtQ6o6ulW7Vylya1gXBRqZMMo8UuNV9ealWnc8Uf9Vfw1XOhHZ4j41gYSibJO6X/qQ9m3wUuH/DVujlBkGxKAkVqWMc+Wc4KsIxm/EtloqOHI0LTPMMffFTsW5xMa5t9igm/5IU1NvJ0UaL1KXIbvnzxQdLod4WO3cP7eM+SLAzmpsRCYZ37BA3OS0HH2DSw/vYCAqccICCfyklhIqIq0wBZrEXbqubqWvBOtecAaQ==
+Received: from surya ([70.134.61.176])
+        by smtp.gmail.com with ESMTPSA id c9-20020a170902d48900b001d9557f6c04sm2086428plg.267.2024.02.02.15.09.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 15:09:08 -0800 (PST)
+Date: Fri, 2 Feb 2024 15:09:05 -0800
+From: Manu Bretelle <chantr4@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: linux-trace-kernel@vger.kernel.org, coreteam@netfilter.org,
+	bpf@vger.kernel.org, linux-input@vger.kernel.org,
+	cgroups@vger.kernel.org, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+	fsverity@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	netfilter-devel@vger.kernel.org, alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com,
+	memxor@gmail.com, vmalik@redhat.com
+Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
+Message-ID: <Zb12EZt0BAKOPBk/@surya>
+References: <cover.1706491398.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240202221110.3872-1-dthaler1968@gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/NzwkB044XPXJEge8cwJgzo9loZ8>
-Subject: Re: [Bpf] [PATCH bpf-next v3] bpf,
- docs: Expand set of initial conformance groups
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: multipart/mixed; boundary="===============1322443478744215392=="
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-
-
---===============1322443478744215392==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ili3dk1y5KBFrdpt"
-Content-Disposition: inline
-
-
---Ili3dk1y5KBFrdpt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <cover.1706491398.git.dxu@dxuuu.xyz>
 
-On Fri, Feb 02, 2024 at 02:11:10PM -0800, Dave Thaler wrote:
-> This patch attempts to update the ISA specification according
-> to the latest mailing list discussion about conformance groups,
-> in a way that is intended to be consistent with IANA registry
-> processes and IETF 118 WG meeting discussion.
->=20
-> It does the following:
-> * Split basic into base32 and base64 for 32-bit vs 64-bit base
->   instructions
-> * Split division/multiplication/modulo instructions out of base groups
-> * Split atomic instructions out of base groups
->=20
-> There may be additional changes as discussion continues,
-> but there seems to be consensus on the principles above.
->=20
-> v1->v2: fixed typo pointed out by David Vernet
->=20
-> v2->v3: Moved multiplication to same groups as division/modulo
->=20
-> Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
-
-Acked-by: David Vernet <void@manifault.com>
-
-Thanks!
-
---Ili3dk1y5KBFrdpt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZb1w6gAKCRBZ5LhpZcTz
-ZGZvAQCC3wAzgaIuCEelr2aHX1bGY6YEKeTuuy75tRwNRbMT3QEAl2VdjeACdKCY
-uictak+1vbD3uH7X9TbYwBsFwJ001AM=
-=lXeP
------END PGP SIGNATURE-----
-
---Ili3dk1y5KBFrdpt--
+On Sun, Jan 28, 2024 at 06:24:05PM -0700, Daniel Xu wrote:
+> === Description ===
+> 
+> This is a bpf-treewide change that annotates all kfuncs as such inside
+> .BTF_ids. This annotation eventually allows us to automatically generate
+> kfunc prototypes from bpftool.
+> 
+> We store this metadata inside a yet-unused flags field inside struct
+> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+> 
+> More details about the full chain of events are available in commit 3's
+> description.
+> 
+> The accompanying pahole and bpftool changes can be viewed
+> here on these "frozen" branches [0][1].
+> 
+> [0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
+> [1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
 
 
---===============1322443478744215392==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I hit a similar issue to [0] on master
+943b043aeecc ("selftests/bpf: Fix bench runner SIGSEGV")
+ when cross-compiling on x86_64 (LE) to s390x (BE).
+I do have CONFIG_DEBUG_INFO_BTF enable and the issue would not trigger if
+I disabled CONFIG_DEBUG_INFO_BTF (and with the fix mentioned in [0]).
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+What seems to happen is that `tools/resolve_btfids` is ran in the context of the
+host endianess and if I printk before the WARN_ON:
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index ef380e546952..a9ed7a1a4936 100644
+  --- a/kernel/bpf/btf.c
+  +++ b/kernel/bpf/btf.c
+  @@ -8128,6 +8128,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+           * WARN() for initcall registrations that do not check errors.
+           */
+          if (!(kset->set->flags & BTF_SET8_KFUNCS)) {
+  +        printk("Flag 0x%08X, expected 0x%08X\n", kset->set->flags, BTF_SET8_KFUNCS);
+                  WARN_ON(!kset->owner);
+                  return -EINVAL;
+          }
 
---===============1322443478744215392==--
+the boot logs would show:
+  Flag 0x01000000, expected 0x00000001
 
+The issue did not happen prior to
+6f3189f38a3e ("bpf: treewide: Annotate BPF kfuncs in BTF")
+has only 0 was written before.
+
+It seems [1] will be addressing cross-compilation, but it did not fix it as is
+by just applying on top of master, so probably some of the changes will also need
+to be ported to `tools/include/linux/btf_ids.h`?
+
+A hacky workaround to cross-compilation I have is to apply:
+
+  diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+  index 4b8079f294f6..b706e7ab066f 100644
+  --- a/tools/bpf/resolve_btfids/Makefile
+  +++ b/tools/bpf/resolve_btfids/Makefile
+  @@ -22,10 +22,10 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
+                    CROSS_COMPILE="" EXTRA_CFLAGS="$(HOSTCFLAGS)"
+   RM      ?= rm
+  -HOSTCC  ?= gcc
+  -HOSTLD  ?= ld
+  -HOSTAR  ?= ar
+  -CROSS_COMPILE =
+  +HOSTCC  = $(CC)
+  +HOSTLD  = $(LD)
+  +HOSTAR  = $(AR)
+  +#CROSS_COMPILE =
+   OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+  @@ -56,16 +56,16 @@ $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
+   $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
+          $(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
+  -                   DESTDIR=$(SUBCMD_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
+  +                   DESTDIR=$(SUBCMD_DESTDIR) prefix= subdir= \
+                      $(abspath $@) install_headers
+   $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
+          $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
+  -                   DESTDIR=$(LIBBPF_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
+  +                   DESTDIR=$(LIBBPF_DESTDIR) prefix= subdir= \
+                      $(abspath $@) install_headers
+  -LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
+  -LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
+  +LIBELF_FLAGS := $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
+  +LIBELF_LIBS  := $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
+   HOSTCFLAGS_resolve_btfids += -g \
+             -I$(srctree)/tools/include \
+  @@ -84,7 +84,7 @@ $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+   $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+          $(call msg,LINK,$@)
+  -       $(Q)$(HOSTCC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
+  +       $(Q)$(CC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
+   clean_objects := $(wildcard $(OUTPUT)/*.o                \
+                               $(OUTPUT)/.*.o.cmd           \
+  diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+  index a38a3001527c..5cd193c04448 100644
+  --- a/tools/testing/selftests/bpf/Makefile
+  +++ b/tools/testing/selftests/bpf/Makefile
+  @@ -171,7 +171,7 @@ INCLUDE_DIR := $(SCRATCH_DIR)/include
+   BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
+   ifneq ($(CROSS_COMPILE),)
+   HOST_BUILD_DIR         := $(BUILD_DIR)/host
+  -HOST_SCRATCH_DIR       := $(OUTPUT)/host-tools
+  +HOST_SCRATCH_DIR       := $(SCRATCH_DIR)
+   HOST_INCLUDE_DIR       := $(HOST_SCRATCH_DIR)/include
+   else
+   HOST_BUILD_DIR         := $(BUILD_DIR)
+
+This causes `resolve_btfids` to be compiled in the target endianess and gets
+magically run provided that the hosts has `qemu-s390x-static` and a functional
+binfmt_misc [2] on the host, but having this using host architecture per [1]
+is likely better.
+
+Here are steps to reproduce the issue on Ubuntu 23.10 and assuming
+danobi/vmtest [3] is installed:
+
+  XPLATFORM="s390x"
+  XARCH="s390"
+  # Set up repo for s390x
+  cat <<EOF >> /etc/apt/sources.list.d/s390x.list
+  deb [arch=s390x] http://ports.ubuntu.com/ubuntu-ports  mantic main restricted
+  deb [arch=s390x] http://ports.ubuntu.com/ubuntu-ports  mantic-updates main restricted
+  EOF
+  sudo dpkg --add-architecture s390x
+  
+  apt install qemu-system-s390x qemu-user-static g{cc,++}-"${XARCH}-linux-gnu" {libelf-dev,libssl-dev,pkgconf}:s390x
+  
+  KBUILD_OUTPUT_DIR="/tmp/kbuild-${XPLATFORM}"
+  mkdir "${KBUILD_OUTPUT_DIR}"
+  cat tools/testing/selftests/bpf/config{,.vm,.${XPLATFORM}} > ${KBUILD_OUTPUT_DIR}/.config
+  
+  make ARCH="${XARCH}" CROSS_COMPILE="${XPLATFORM}-linux-gnu-" O="${KBUILD_OUTPUT_DIR}"  -j$((4 * $(nproc))) olddefconfig
+  make ARCH="${XARCH}" CROSS_COMPILE="${XPLATFORM}-linux-gnu-" O="${KBUILD_OUTPUT_DIR}"  -j$((4 * $(nproc))) all
+  
+  # No need for a s390x ubuntu 23.10 rootfs, we only care about booting the kernel
+  vmtest -k "${KBUILD_OUTPUT_DIR}/arch/s390/boot/bzImage" -a s390x "uname -m" | cat
+
+
+For the chroot route, see [4].
+
+[0] https://lore.kernel.org/linux-kernel/20240201155339.2b5936be@canb.auug.org.au/T/
+[1] https://lore.kernel.org/bpf/cover.1706717857.git.vmalik@redhat.com/
+[2] https://en.wikipedia.org/wiki/Binfmt_misc
+[3] https://github.com/danobi/vmtest
+[4] https://chantra.github.io/bpfcitools/bpf-cross-compile.html
+
+Manu
+
+> 
+> === Changelog ===
+> 
+> Changes from v3:
+> * Rebase to bpf-next and add missing annotation on new kfunc
+> 
+> Changes from v2:
+> * Only WARN() for vmlinux kfuncs
+> 
+> Changes from v1:
+> * Move WARN_ON() up a call level
+> * Also return error when kfunc set is not properly tagged
+> * Use BTF_KFUNCS_START/END instead of flags
+> * Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
+> 
+> Daniel Xu (3):
+>   bpf: btf: Support flags for BTF_SET8 sets
+>   bpf: btf: Add BTF_KFUNCS_START/END macro pair
+>   bpf: treewide: Annotate BPF kfuncs in BTF
+> 
+>  Documentation/bpf/kfuncs.rst                  |  8 +++----
+>  drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
+>  fs/verity/measure.c                           |  4 ++--
+>  include/linux/btf_ids.h                       | 21 +++++++++++++++----
+>  kernel/bpf/btf.c                              |  8 +++++++
+>  kernel/bpf/cpumask.c                          |  4 ++--
+>  kernel/bpf/helpers.c                          |  8 +++----
+>  kernel/bpf/map_iter.c                         |  4 ++--
+>  kernel/cgroup/rstat.c                         |  4 ++--
+>  kernel/trace/bpf_trace.c                      |  8 +++----
+>  net/bpf/test_run.c                            |  8 +++----
+>  net/core/filter.c                             | 20 +++++++++---------
+>  net/core/xdp.c                                |  4 ++--
+>  net/ipv4/bpf_tcp_ca.c                         |  4 ++--
+>  net/ipv4/fou_bpf.c                            |  4 ++--
+>  net/ipv4/tcp_bbr.c                            |  4 ++--
+>  net/ipv4/tcp_cubic.c                          |  4 ++--
+>  net/ipv4/tcp_dctcp.c                          |  4 ++--
+>  net/netfilter/nf_conntrack_bpf.c              |  4 ++--
+>  net/netfilter/nf_nat_bpf.c                    |  4 ++--
+>  net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
+>  net/xfrm/xfrm_state_bpf.c                     |  4 ++--
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
+>  23 files changed, 87 insertions(+), 66 deletions(-)
+> 
+> -- 
+> 2.42.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
