@@ -1,110 +1,115 @@
-Return-Path: <bpf+bounces-21000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7171846695
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 04:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 830A9846883
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 07:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFC301C24B61
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 03:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B598B1C2538A
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 06:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68417D285;
-	Fri,  2 Feb 2024 03:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F0417981;
+	Fri,  2 Feb 2024 06:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQQZtt4i"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="t9BJDGgW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8253DDF4C
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 03:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB81F4EA;
+	Fri,  2 Feb 2024 06:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706845252; cv=none; b=KJOw6DaSTQOmlRwnIeEAW/hmTvmtNdXYh2eFnKdyOPugBeR/sV7CfOv7Xh+See9mI/f0roxOTrhOMvtejHMzChyv8ytvGm33geSzGWBFh9sRO7LTF7mQoRXC26JHb6UvaMlS32sSolNWDSUg8vy3HSPSCNCwW/64Mw1LvzZ5/yc=
+	t=1706856569; cv=none; b=tIrQG2U7xAZg0OqfFXBz/O3/xVWZ+Hv/b4snhuoUys64tG4ca79BJoTeTJWXpCxAZ8B82lNCDYZA49z841LJRRmlkiBmg8O8oxW1W2IEY1qXQlcyNu0HchrWs8ZfET/KL1wYNomRrzYv3wGFNoAPwxyk9A7RdmDXlQNHuHoi39c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706845252; c=relaxed/simple;
-	bh=AUtyO0u9qswX6DW+W4kYsTqNpg9r1ZVnVxLex3qQynM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=joMLeJsRouebFbA1oCo7nqZ1uAX9O65uSemCyXrDSrujrBOLNhmUGZfh/kadebIgGZ1pyX7k7rT9v06OJRJwKXDwxlgJHsmTIIKsM5b6XvK3CqtE9hiErt0hdrH7h6g1nPrhX8/r83yrGFOi7sHDSR+WftnAm6W5c5iQ7UnEBDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQQZtt4i; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3be90c51299so1009614b6e.0
-        for <bpf@vger.kernel.org>; Thu, 01 Feb 2024 19:40:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706845249; x=1707450049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aaFNAD3s7CZLeGJAkgIP2i9Uq/f9SHOfbY60E3JDrm8=;
-        b=OQQZtt4iM7BorZ6iiawf+2X5FhGh/2M3fgYpxcvbg2D3AuBkkASCrRa9IqRyEur6hx
-         51RbxQoPZuCFrZCueMdKeqNwcRZp+UI1RqNrKfvRj3g5iM4fqYESTBod3azRD/VQldqD
-         OSDdvFP52XgRS0OYntF17tV3/12dC1CI8RU+GGVdzgOYHu7cDogONbfdI3M8fkeoC/wZ
-         ruaqA2lEZo++pNz8AxVj2RTwFGBJMocqKUHic30PvgUL312+v6KntkPfCfHoJ8G4h7p7
-         wcJYWWwfVGHgjvNEUOj5xU2HTnHQaJ+JUaZuIxy/M8SuY0Xd7/Uvr7AP4YQqrsW5Okgb
-         AERA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706845249; x=1707450049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aaFNAD3s7CZLeGJAkgIP2i9Uq/f9SHOfbY60E3JDrm8=;
-        b=P9zZnrVA2jzIiRnlrxXrINydcmDtZEQ4bIjYbvFU9MQTYgnzJGIUm6iz9dZTp2UrSk
-         ZQvSm6x33+g3/n0/iR3Ubn6y/YhxNJ0WA5EQU5SaHmCk47ZJsERIgzDYxS4xo2u9SWs7
-         FJ4W/9/+EH6xsgAo+rXdxXPkje1XkZqqPM/g9PUWTx9TY8m+aaVoXFzStcQmwYw3BN9e
-         gbFw3wq9TXv3CwJmgSb+57AOYnq4YFdYRPg443X8h61LHkxoYvblyFLJg2oPDi+4VUXM
-         FB5AiHf0C5GxTZbilgXCNNVVhXurxEM54waZqdrHwxPLdv9ErEBgmwTDGSuDxaMJ0cti
-         qklw==
-X-Gm-Message-State: AOJu0YwmB0xCtmkHcVu2pwyFMKCA+1NyYQrdo6r5LI2lDk2dxOLWfnMV
-	Bj+sC5V5ZhCTxybUREWlqe9TeCpO0BOte3OyYIDMEHVNBw5iY9JzhJztfP6A+tHx5cn2Z/a/Lsy
-	EEZm3IIUvqY1k4FQIoJyQmGr6LPFOKpDw1vAklUEV
-X-Google-Smtp-Source: AGHT+IGhDW64I5P+rADU9coWNBUXZcrlWPIuISkooPExF2pKEJ3J3ySoB+gbOjFFSRs3/N7qbJ7y/n6UFBGtE36YSYQ=
-X-Received: by 2002:a05:6808:218e:b0:3be:260:6278 with SMTP id
- be14-20020a056808218e00b003be02606278mr7666041oib.42.1706845249389; Thu, 01
- Feb 2024 19:40:49 -0800 (PST)
+	s=arc-20240116; t=1706856569; c=relaxed/simple;
+	bh=psDefbg/kF79ASsUkMz1eS3sAKLVErIE1EEhmYhufuA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZYdWNvzqdL6za9U7CpSqhBrRw+famd8de4iPEyu0MUjVaPRRdx2s39eTwaTs1vt7M69vwbAIkrwTRCOyCAyqvvL+7PchYMy8G9h+7MnfI1wSN/lQmLPAVMhIXQRf2MmXlehbzoeZc31wqrjtnB/CKnK5ecKBmlRzw+2tG8yAoFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=t9BJDGgW; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706856523; x=1707461323; i=markus.elfring@web.de;
+	bh=psDefbg/kF79ASsUkMz1eS3sAKLVErIE1EEhmYhufuA=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=t9BJDGgWqQZpeFoMDHQfgB/19gTb7Ka7GBGci1F4B4+NY0oCAUhbFu02S9quGB5N
+	 VU56dTABaPIQQfnCpIPZ2xsAkuqmbvmbHSTnLTpTNXWSgVpHmhp/QnnS0BlfchARv
+	 UEmsAwZy8R4tZV4nx9y2NcVxPou+Idt+UdDQx9I/6VnXFYpr+5Mxacst8hQjNZlhC
+	 xOYkBeOHfPkCKtBELx5vHDtPz0dZBS4sgoLMT6l340L/rT4xByQwgRhUb8f1ytgoS
+	 LB/q9otFpW/Y5UeYEjtg23XWUnMuzlsJKseh7QNZ2Rq/FGhdDKb1Azk2VgRAogEiC
+	 3bmO5CqVGOqpNgkldg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MhFhe-1qsazJ31Zi-00ea4g; Fri, 02
+ Feb 2024 07:48:43 +0100
+Message-ID: <daf2172a-8d54-4097-acf3-cc539fe281e5@web.de>
+Date: Fri, 2 Feb 2024 07:48:12 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Lucien Wang <lcnwed@gmail.com>
-Date: Fri, 2 Feb 2024 11:40:38 +0800
-Message-ID: <CAHViUT2y81_JHsuSDfH9Vu_KRbanvmGY_1Bs4jfrGyZPGHCbdg@mail.gmail.com>
-Subject: There has a backport bug between v5.10.79 and v5.10.80 when run bpf
- selftest "test_sockmap" on 5.10 lts kernel
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] perf: Reconsider an error code selection in
+ bpf_map__fprintf()
+From: Markus Elfring <Markus.Elfring@web.de>
+To: linux-perf-users@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Christy Lee <christylee@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, Ian Rogers <irogers@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Martin KaFai Lau <kafai@fb.com>,
+ Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ YueHaibing <yuehaibing@huawei.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <f15f0df1-92be-4bc9-82a2-1d8fa3275dd7@web.de>
+Content-Language: en-GB
+In-Reply-To: <f15f0df1-92be-4bc9-82a2-1d8fa3275dd7@web.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:guMMD0U0owRRTK/o4x0F68hE8U9JJPElbEE4i3GuJqzHWW1R2HT
+ sH0Z4EGWRndq02j10zfeOmlFsuMWcTocY01WQzj55IfTx2GEaofd0UiNkmU5Hp8wE3DRUxA
+ 66EGuYd+WeO0W1n9MgablveKN3xDoAC58LZZzpDfV0+2DysblxvSm6H00vhzfZDimtVJV/z
+ CwSuyAopcmm7tc3oD4wnQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:tyHFUlgJYw0=;dgrK/DspkpssIY/mInw6RaOj8L8
+ zzTf2dKbygFIyNv1oeJDdblOrP8EvVmHFVb/iQ+pEefr1xabU/7uEb27OtwF4VSNs0vLi2jk8
+ obLgtu7m3UCnrc9+Pluirh/Qin4j2TrTt/FlgXhWLcI0M2dmQaryGHZDcJJ59zolxXk3XTQuc
+ bo1oBNAXbwcsXCjQ/RUburT/XB972gvl5v/EnKYR/mNlRc9OrQibc3bMp/CgbHKTtCx23hrs0
+ E41dZKGXOjSL+RRFEVYGGe5HrWQzlzEtolFjP+aNR+1B/Zfi4kqdPENTbdJ3XHTqnSOvwpva3
+ vZGUOCLhRj5wE80z2Jxhhzf6LRzDB7apmxyv+D6NphmrNUYLjPGcivWh1IlVPH1dYMsBsoBQ2
+ SSO2KXlKVqKk1UEQP4wX6sU/cyKVHdapsY7Ljl71uyV4puxHx7l0nVSRJJilMkXs2iPvW89vX
+ xg/r6zE2uX72n2+jmgHyrlaG2vgHfbwY8v5cytJQ2Df7TvHNgB94TRFDfp54mpkapKdEhg2ZA
+ fhJ0JRzs4maXDk2sHPSNVx4by61OKVSGIRBPXA5aHTLxBCllAa2GGw5BQjEbYs6tmb4xVkGJK
+ ISu3URZrlraZX+kFLKoSiovCKbEeYsSXkJNbLMkYrrFr+srhnT3IvD5ZW06zzXNQjmwctMc0t
+ LoZdb9BY6Kw0C3nygGghSdp56duAB/QATwqfnxIVW9Nx7eYebs2h8pKTJnTMT+uMH8h7k11Eh
+ a6Xx2JU42qVyh8Ornsp2Q13xHM0+huJJE98UY0cruVDOT/VG6RBjXVm0+IsMRSRorXAK7Wci7
+ lQ7yquTHQffUVxsPE8zuRXAwbLnwE8zF0Xd44K6SiYsYg=
 
-Kernel version=EF=BC=9A16ad71c250c1 (HEAD -> linux-5.10.y, tag: v5.10.209,
-origin/linux-5.10.y) Linux 5.10.209
+> A null pointer check is performed for the input parameter =E2=80=9Cmap=
+=E2=80=9D.
+> It looks suspicious that the function =E2=80=9CPTR_ERR=E2=80=9D is appli=
+ed then for
+> a corresponding return statement.
 
-Bug reproduced steps=EF=BC=9A
-1.  cd (kernel source tree root)/tools/testing/selftests/bpf
-2.  make test_sockmap ; make test_progs
-3.  ./test_sockmap
-# 1/ 6  sockmap::txmsg test passthrough:OK
-# 2/ 6  sockmap::txmsg test redirect:OK
-# 3/ 6  sockmap::txmsg test drop:OK
-# 4/ 6  sockmap::txmsg test ingress redirect:OK
+Are contributions also by YueHaibing still waiting on further development =
+considerations?
 
-After "# 4/ 6  sockmap::txmsg test ingress redirect:OK" display from
-terminal, the main process stucks and sends nothing.
-4. In other terminal run " ps fax |grep sockmap " ,below is output
-  13076 pts/0    S+     0:00  |           \_ ./test_sockmap
-  13129 pts/0    S+     0:00  |               \_ ./test_sockmap
-  13130 pts/0    Z+     0:00  |               \_ [test_sockmap] <defunct>
-  13237 pts/1    S+     0:00              \_ grep --color=3Dauto sockmap
-Obversely, because of child process 13129 sleep, so the main process is stu=
-ck.
+[PATCH -next] perf: Fix pass 0 to PTR_ERR
+https://lore.kernel.org/lkml/20220611040719.8160-1-yuehaibing@huawei.com/
+https://lkml.org/lkml/2022/6/11/3
 
-My research:
-I use Bisection method to find the bug patch " c842a4c4ae7f bpf:
-sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
-"(on linux-5.10.y branch), it backport from v5.16-rc1 ,
-It must due to merge high patches incompletely, Please take a few
-moment for this.
+
+Regards,
+Markus
 
