@@ -1,141 +1,109 @@
-Return-Path: <bpf+bounces-21055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5C8847169
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 14:51:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939738471F5
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 15:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F7751C21313
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 13:51:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3484CB24A5D
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 14:32:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49304779F;
-	Fri,  2 Feb 2024 13:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B60145359;
+	Fri,  2 Feb 2024 14:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ThlNwD6e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tQL0iDpE"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FF646452
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 13:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705FE145334;
+	Fri,  2 Feb 2024 14:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706881856; cv=none; b=kfi/EyGIKnhCfHzLdo95ejvKWlho7YLO5hdaw3ku0OcSxk36vRU/iU/RiMYiR1XGtsB7aYkTKxPr6BiAxD0OlG53Ivfz46g+8RsLIHDwNLUwaLNLDeXxIgcTpVaSLCq8l2gz/XqQs3/C+fEC/ulHpKbT4kTW+R0syZcBBO0A3iU=
+	t=1706884346; cv=none; b=B0izVzBsRyh7WK6vd/b1YYyf3f7UbmaV/IiO+U7q7LIInZvA7QzdfE/bmZ7vCdtt2SDNP54bCn5M8N621ZPQDvjzM7QCi7MZeelHkkPtcSdRlSpw6xHsqF616tscp9oQ2BTD47WVgE5HFt2/OG2apiGrJhCm1DeYTUNGx7F+7e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706881856; c=relaxed/simple;
-	bh=pzkrCDXIOhY9KT5HvRvV8+hIvjPQd2izpaosmJfcVbw=;
-	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CWz+uIxtw80ldWQbLXMC4Q6Zcj4YzutOn1axpQ/QsTBI1HLhB92N0HW+HUdqytBYxnNPECapYAicV+zm1vQkJTU+02FzqejbO564mOOhxIJsr08AGCHIjS14dSiqvtrD7S/+vxS6z4nA39wtqAfVoZ5QOeLcnEBYt57dgr7Ju78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ThlNwD6e; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706881853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BFOPx9Ws2+oZ6oWmPtHYc49NwLYW2wbXPD+2M9R0NqQ=;
-	b=ThlNwD6e8qIBwTjT556HMyteT2KtAxa+GuNjtY4MYGqSfrENWYKkODgOSuNkETbGmAh9hc
-	j2O5VUOoN98QVudfVpyHF+wi2T24sKuEWliz86NC3PN6HB7lySUDLMlVaMdJIkoJfYreJk
-	vZZMOejy/RgTuPn7ve9Pah7by6Ql9Sk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-Uvh32SkBPgKvWw2qGlTDOg-1; Fri, 02 Feb 2024 08:50:51 -0500
-X-MC-Unique: Uvh32SkBPgKvWw2qGlTDOg-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-55fee28d93dso366681a12.2
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 05:50:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706881850; x=1707486650;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BFOPx9Ws2+oZ6oWmPtHYc49NwLYW2wbXPD+2M9R0NqQ=;
-        b=wurj/GPwu0kIrMit8J5iOYhkigBynSUgiqnOjTid/kvgqKclY7/sFZn1CrogEZ2ZJe
-         gt6TbtbKsTqHHfoEhSN3oOcIGxPtd+6BpazUuJEBlE85SCJYvHh789t7nDp6/Tm0jtYM
-         8KKZx48bjJlocGw8OuqNyh9BzHvjCTzM2Gl8wC42ZD0LwTZaScKgF+oCeAsAZYIyJsw3
-         2+Cc6iGcGmtaN+1KKnqYRbe+2xcIfApr6UfPznwenOHszj/sl+NBErBNOst2IWIg+t4b
-         DxcXOHW/5w3hyPiJ4Qt0reKVnhEdYZc0X3gqiNmuvJdGixkY9Kj9CN3sExEaE3Tl0zOD
-         3yWw==
-X-Gm-Message-State: AOJu0Yy31nP0OTuKT9ZSkbL4ABIUyvkwtrZXTmXdGw2y0Vdz4Vrxenlo
-	vRkPDE5boaO+U5F5HuEh8w+TlqkkeKJFE8Llk7mlHouBqdS8U6ob+56RBn1Br00ya4REemDAtiu
-	a8lLamMYzlfzL8CCbvmmVB8/hLPoXY5orQs3XcLHqKeEEBa4Zia9Z4c5nFN3+MEGt7/b/F0nwSj
-	3b4/Lg2GZWFxihiJizW5eM/iSm
-X-Received: by 2002:aa7:c687:0:b0:55f:d892:7470 with SMTP id n7-20020aa7c687000000b0055fd8927470mr2139111edq.32.1706881850715;
-        Fri, 02 Feb 2024 05:50:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFKdZQnLlZsuPHA/5dLa0X1nmnP/K8o5jq6kF2PxePQlahZbAQlEK4fz4SzKq9tA/FdVxyVJ13exLJ6fyRneWg=
-X-Received: by 2002:aa7:c687:0:b0:55f:d892:7470 with SMTP id
- n7-20020aa7c687000000b0055fd8927470mr2139100edq.32.1706881850369; Fri, 02 Feb
- 2024 05:50:50 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 2 Feb 2024 05:50:49 -0800
-From: Marcelo Ricardo Leitner <mleitner@redhat.com>
-References: <20240122194801.152658-1-jhs@mojatatu.com> <20240122194801.152658-7-jhs@mojatatu.com>
+	s=arc-20240116; t=1706884346; c=relaxed/simple;
+	bh=Lmfieud73BcgseATjFSGPCLch3+jpSxrJB6K0BO3xmI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=JjWunds9Z/+Ywbs1ETb6k5elCC6RLT1Qtnnjsu7zzvYw1EFfGN2+CBzVxBXr1oQq9syDVnB9T9qb36ny6WAofE6nHI2GVdftNY8dO69HhjiQz2qpn2e+4UUTNF/DLOwYpGSLtm33Toa0+agt5wpCSRsBbCAHcIeN1YeP95LOTMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tQL0iDpE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F7BC433F1;
+	Fri,  2 Feb 2024 14:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706884343;
+	bh=Lmfieud73BcgseATjFSGPCLch3+jpSxrJB6K0BO3xmI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=tQL0iDpEH8IIJNf858ZIKK20QpdNal19Z1ayr5RRTbxI4DDGdJ8+bstfkgab5JgE4
+	 ERNPM6+Gfi3xJinj2D1lvnGd+gzSz3lcUXh8NMjrmTwhu9GpguN6RIADgDMtDoCedt
+	 q2tBbwwIxKJy2W0TkEJ2kKGT/NhNEBnqN2aLUXRgGlKpa2bj71jPXo1wGeh52EYG1X
+	 R5RYSZhEI4J3yBmYPNx4TJGYU0dHnIGUeXR77fYmNEuptgqgkHJXXU6QiCt3AEjpld
+	 gdFYte/Uyho3ZfuGzKsnpgmM5vwQdoEb1HxEUYAKXp4Fj/z/I2MTiMpfN9hhdTgCUD
+	 3nq1Tf2wb7FnA==
+Date: Fri, 2 Feb 2024 11:32:20 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Ingo Molnar <mingo@redhat.com>, James Clark <james.clark@arm.com>,
+	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH 1/1] perf bpf: Clean up the generated/copied vmlinux.h
+Message-ID: <Zbz89KK5wHfZ82jv@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240122194801.152658-7-jhs@mojatatu.com>
-Date: Fri, 2 Feb 2024 05:50:48 -0800
-Message-ID: <CALnP8Za-uSB3grrk9cay8=6BNty9GcTKdStqzUnCv-spXRhe4A@mail.gmail.com>
-Subject: Re: [PATCH v10 net-next 06/15] p4tc: add P4 data types
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	namrata.limaye@intel.com, tom@sipanda.io, Mahesh.Shirshyad@amd.com, 
-	tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, 
-	mattyk@nvidia.com, daniel@iogearbox.net, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, Jan 22, 2024 at 02:47:52PM -0500, Jamal Hadi Salim wrote:
-> Introduce abstraction that represents P4 data types.
-> This also introduces the Kconfig and Makefile which later patches use.
-> Numeric types could be little, host or big endian definitions. The abstraction
-> also supports defining:
->
-> a) bitstrings using P4 annotations that look like "bit<X>" where X
->    is the number of bits defined in a type
->
-> b) bitslices such that one can define in P4 as bit<8>[0-3] and
->    bit<16>[4-9]. A 4-bit slice from bits 0-3 and a 6-bit slice from bits
->    4-9 respectively.
->
-> c) speacialized types like dev (which stands for a netdev), key, etc
->
-> Each type has a bitsize, a name (for debugging purposes), an ID and
-> methods/ops. The P4 types will be used by externs, dynamic actions, packet
-> headers and other parts of P4TC.
->
-> Each type has four ops:
->
-> - validate_p4t: Which validates if a given value of a specific type
->   meets valid boundary conditions.
->
-> - create_bitops: Which, given a bitsize, bitstart and bitend allocates and
->   returns a mask and a shift value. For example, if we have type
->   bit<8>[3-3] meaning bitstart = 3 and bitend = 3, we'll create a mask
->   which would only give us the fourth bit of a bit8 value, that is, 0x08.
->   Since we are interested in the fourth bit, the bit shift value will be 3.
->   This is also useful if an "irregular" bitsize is used, for example,
->   bit24. In that case bitstart = 0 and bitend = 23. Shift will be 0 and
->   the mask will be 0xFFFFFF00 if the machine is big endian.
->
-> - host_read : Which reads the value of a given type and transforms it to
->   host order (if needed)
->
-> - host_write : Which writes a provided host order value and transforms it
->   to the type's native order (if needed)
->
-> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
-> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
-> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
-> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+When building perf with BPF skels we either copy the minimalistic
+tools/perf/util/bpf_skel/vmlinux/vmlinux.h or use bpftool to generate a
+vmlinux from BTF, storing the result in $(SKEL_OUT)/vmlinux.h.
 
-Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+We need to remove that when doing a 'make -C tools/perf clean', fix it.
+
+Fixes: b7a2d774c9c5a9a3 ("perf build: Add ability to build with a generated vmlinux.h")
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Ian Rogers <irogers@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Yang Jihong <yangjihong1@huawei.com>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/Makefile.perf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 27e7c478880fdecd..51ac396ed9f641af 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -1157,7 +1157,7 @@ bpf-skel:
+ endif # CONFIG_PERF_BPF_SKEL
+ 
+ bpf-skel-clean:
+-	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
++	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS) $(SKEL_OUT)/vmlinux.h
+ 
+ clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(LIBPERF)-clean arm64-sysreg-defs-clean fixdep-clean python-clean bpf-skel-clean tests-coresight-targets-clean
+ 	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archive $(OUTPUT)perf-iostat $(LANG_BINDINGS)
+-- 
+2.43.0
 
 
