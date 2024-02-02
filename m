@@ -1,115 +1,74 @@
-Return-Path: <bpf+bounces-21001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 830A9846883
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 07:50:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2AE846902
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 08:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B598B1C2538A
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 06:50:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 698F71C25CA9
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 07:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F0417981;
-	Fri,  2 Feb 2024 06:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03CE1758D;
+	Fri,  2 Feb 2024 07:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="t9BJDGgW"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jT74cUU/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB81F4EA;
-	Fri,  2 Feb 2024 06:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9FE17C62
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 07:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856569; cv=none; b=tIrQG2U7xAZg0OqfFXBz/O3/xVWZ+Hv/b4snhuoUys64tG4ca79BJoTeTJWXpCxAZ8B82lNCDYZA49z841LJRRmlkiBmg8O8oxW1W2IEY1qXQlcyNu0HchrWs8ZfET/KL1wYNomRrzYv3wGFNoAPwxyk9A7RdmDXlQNHuHoi39c=
+	t=1706857633; cv=none; b=Tyo70FLtQexMcBA0CGryVe717sp+5GoMX2WxqN1ym4NwE8yG423cac7Qdy4Gps+eHTX02ckh/Pt5QNAjR4EaZYQrAiFNmyjEoQArHfzb2c9rt2lMCMvBShfmA3Rn4Jis+ESiE6QMdb3Taraa7m78Q1J67ZuUWhyPm0071C3DhOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856569; c=relaxed/simple;
-	bh=psDefbg/kF79ASsUkMz1eS3sAKLVErIE1EEhmYhufuA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZYdWNvzqdL6za9U7CpSqhBrRw+famd8de4iPEyu0MUjVaPRRdx2s39eTwaTs1vt7M69vwbAIkrwTRCOyCAyqvvL+7PchYMy8G9h+7MnfI1wSN/lQmLPAVMhIXQRf2MmXlehbzoeZc31wqrjtnB/CKnK5ecKBmlRzw+2tG8yAoFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=t9BJDGgW; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706856523; x=1707461323; i=markus.elfring@web.de;
-	bh=psDefbg/kF79ASsUkMz1eS3sAKLVErIE1EEhmYhufuA=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=t9BJDGgWqQZpeFoMDHQfgB/19gTb7Ka7GBGci1F4B4+NY0oCAUhbFu02S9quGB5N
-	 VU56dTABaPIQQfnCpIPZ2xsAkuqmbvmbHSTnLTpTNXWSgVpHmhp/QnnS0BlfchARv
-	 UEmsAwZy8R4tZV4nx9y2NcVxPou+Idt+UdDQx9I/6VnXFYpr+5Mxacst8hQjNZlhC
-	 xOYkBeOHfPkCKtBELx5vHDtPz0dZBS4sgoLMT6l340L/rT4xByQwgRhUb8f1ytgoS
-	 LB/q9otFpW/Y5UeYEjtg23XWUnMuzlsJKseh7QNZ2Rq/FGhdDKb1Azk2VgRAogEiC
-	 3bmO5CqVGOqpNgkldg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MhFhe-1qsazJ31Zi-00ea4g; Fri, 02
- Feb 2024 07:48:43 +0100
-Message-ID: <daf2172a-8d54-4097-acf3-cc539fe281e5@web.de>
-Date: Fri, 2 Feb 2024 07:48:12 +0100
+	s=arc-20240116; t=1706857633; c=relaxed/simple;
+	bh=wLkj6AYwXHorWcbm+P6UYrPxaEJ2md7KS3DZW0uDzHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uN5bGhldi4Di6MLTqxicOpzc5TbmyQ3+51VbtLIZwrgoXBYeKCRyTpsX1c/IsgC2EZT1D8WjuY7OG96KJ7YlPovETPn8Am19pqSj2rU8f6Z2mkFXdHlt7B6p7P6k/Ihoju0VVdlvOZmK8uUZBthNeET1Qc2Jlt6CXXQTxJZTkOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=jT74cUU/; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wLkj6AYwXHorWcbm+P6UYrPxaEJ2md7KS3DZW0uDzHw=; b=jT74cUU/9nQHvN4i8O+UpS7zWI
+	YmOxYSsojrrEzsPFT9uqePtLiOcz2P+kiwYcAOFBlN6CPCsOlBCK2b4HDFaxZnRr6Ec2omPyg9NvN
+	E+AlcvkvOXRUazApoLrKVb3XjL0MAKskAotRf1bN9vkA8nukMSjnu5fJyy4x560ZFDCk9EYCHGGdL
+	m4Fi80cjNVda5XgLdBFupdSG0ih4HphPIOrinP8Y1VDmztwxmK4Qy4h9AJ0699tKsAsFXkPevDIjW
+	dz68iYtARXujorVo7+a95vy1xdlxqE/7GHHkM7VY60hQK/z+48WFtvi7PC9ZRvBImYQ4rQL8bdvkF
+	4XGXvenw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVndm-0000000AXo4-2qI4;
+	Fri, 02 Feb 2024 07:07:10 +0000
+Date: Thu, 1 Feb 2024 23:07:10 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: dthaler1968@googlemail.com
+Cc: 'David Vernet' <void@manifault.com>,
+	'Dave Thaler' <dthaler1968=40googlemail.com@dmarc.ietf.org>,
+	bpf@vger.kernel.org, bpf@ietf.org, kuba@kernel.org,
+	jose.marchesi@oracle.com, hch@infradead.org, ast@kernel.org
+Subject: Re: [Bpf] [PATCH bpf-next] bpf, docs: Expand set of initial
+ conformance groups
+Message-ID: <ZbyUnlAI4PoeE7mr@infradead.org>
+References: <20240127170314.15881-1-dthaler1968@gmail.com>
+ <20240129210423.GB753614@maniforge>
+ <20240131192646.GB1051028@maniforge>
+ <0ce001da5489$8216dc80$86449580$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] perf: Reconsider an error code selection in
- bpf_map__fprintf()
-From: Markus Elfring <Markus.Elfring@web.de>
-To: linux-perf-users@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Christy Lee <christylee@fb.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Ian Rogers <irogers@google.com>,
- Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Martin KaFai Lau <kafai@fb.com>,
- Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- YueHaibing <yuehaibing@huawei.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <f15f0df1-92be-4bc9-82a2-1d8fa3275dd7@web.de>
-Content-Language: en-GB
-In-Reply-To: <f15f0df1-92be-4bc9-82a2-1d8fa3275dd7@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:guMMD0U0owRRTK/o4x0F68hE8U9JJPElbEE4i3GuJqzHWW1R2HT
- sH0Z4EGWRndq02j10zfeOmlFsuMWcTocY01WQzj55IfTx2GEaofd0UiNkmU5Hp8wE3DRUxA
- 66EGuYd+WeO0W1n9MgablveKN3xDoAC58LZZzpDfV0+2DysblxvSm6H00vhzfZDimtVJV/z
- CwSuyAopcmm7tc3oD4wnQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:tyHFUlgJYw0=;dgrK/DspkpssIY/mInw6RaOj8L8
- zzTf2dKbygFIyNv1oeJDdblOrP8EvVmHFVb/iQ+pEefr1xabU/7uEb27OtwF4VSNs0vLi2jk8
- obLgtu7m3UCnrc9+Pluirh/Qin4j2TrTt/FlgXhWLcI0M2dmQaryGHZDcJJ59zolxXk3XTQuc
- bo1oBNAXbwcsXCjQ/RUburT/XB972gvl5v/EnKYR/mNlRc9OrQibc3bMp/CgbHKTtCx23hrs0
- E41dZKGXOjSL+RRFEVYGGe5HrWQzlzEtolFjP+aNR+1B/Zfi4kqdPENTbdJ3XHTqnSOvwpva3
- vZGUOCLhRj5wE80z2Jxhhzf6LRzDB7apmxyv+D6NphmrNUYLjPGcivWh1IlVPH1dYMsBsoBQ2
- SSO2KXlKVqKk1UEQP4wX6sU/cyKVHdapsY7Ljl71uyV4puxHx7l0nVSRJJilMkXs2iPvW89vX
- xg/r6zE2uX72n2+jmgHyrlaG2vgHfbwY8v5cytJQ2Df7TvHNgB94TRFDfp54mpkapKdEhg2ZA
- fhJ0JRzs4maXDk2sHPSNVx4by61OKVSGIRBPXA5aHTLxBCllAa2GGw5BQjEbYs6tmb4xVkGJK
- ISu3URZrlraZX+kFLKoSiovCKbEeYsSXkJNbLMkYrrFr+srhnT3IvD5ZW06zzXNQjmwctMc0t
- LoZdb9BY6Kw0C3nygGghSdp56duAB/QATwqfnxIVW9Nx7eYebs2h8pKTJnTMT+uMH8h7k11Eh
- a6Xx2JU42qVyh8Ornsp2Q13xHM0+huJJE98UY0cruVDOT/VG6RBjXVm0+IsMRSRorXAK7Wci7
- lQ7yquTHQffUVxsPE8zuRXAwbLnwE8zF0Xd44K6SiYsYg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ce001da5489$8216dc80$86449580$@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-> A null pointer check is performed for the input parameter =E2=80=9Cmap=
-=E2=80=9D.
-> It looks suspicious that the function =E2=80=9CPTR_ERR=E2=80=9D is appli=
-ed then for
-> a corresponding return statement.
+Fine with me as well.
 
-Are contributions also by YueHaibing still waiting on further development =
-considerations?
-
-[PATCH -next] perf: Fix pass 0 to PTR_ERR
-https://lore.kernel.org/lkml/20220611040719.8160-1-yuehaibing@huawei.com/
-https://lkml.org/lkml/2022/6/11/3
-
-
-Regards,
-Markus
 
