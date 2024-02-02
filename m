@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-21088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A931847BF2
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 23:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D73847BF3
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 23:03:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF1921F22B11
-	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 22:03:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9401A1F21AAC
+	for <lists+bpf@lfdr.de>; Fri,  2 Feb 2024 22:03:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E53583A0C;
-	Fri,  2 Feb 2024 22:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D308283A18;
+	Fri,  2 Feb 2024 22:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BinMnyuP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAGuexhp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB4D83A07
-	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 22:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDCE12943C
+	for <bpf@vger.kernel.org>; Fri,  2 Feb 2024 22:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706911390; cv=none; b=GxhFZbPem+ma/ugawyYRp/a1KyaVPBcL7SWq80GcEwU5R1a+XVn7ePu35BWVEljZ6xVzDcP5lGgXt0p36e5leuaiG/I7HPbS6kHUhAaBky/fvGSELdaWGkn9eqN2SeS8nM6PkQSbrpEvfYOkm3MwCmIMqIHz3DvFvQ+vs0yD9vo=
+	t=1706911394; cv=none; b=bWD51zgkAYU+YJskCc5a0CWl23HfAXRVZ/pXWV23cN2KHv0UxAAvBJX4cBxVnkTyk1SU0eQe4cgnKBiJ3HbCNoDSLywH77X7B9K8Mygx7vXsy2JmzqK/vosF7aw56AcgTR/UBZeIC3Ujo/GMdt8l4OG8SEO6U/SWZpwzhNlJWfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706911390; c=relaxed/simple;
-	bh=0Ryb2SgCHflLiT2wOrsqsHGecyquoTRbaml3oexUA2E=;
+	s=arc-20240116; t=1706911394; c=relaxed/simple;
+	bh=Q3rAO8m3jpybskd9OmuFSwvr8SsAmSZjqARlIPSXgLc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HE24qLsHO/43k/Y8eLkwCJDTBIqoDj8nm6/1RB1/sgcgZagjv3mX4Pmdi3IQmddpfUDHwKiiEaPKSl9Kcgo7Rp1y794aJk8dbiUwsWUvz+MzNBQAFdl2jGpYpKWG+yqOFiEVH0K7dkxiWMxufPs7lQKn+4br4HnOIspNgGMT8K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BinMnyuP; arc=none smtp.client-ip=209.85.210.178
+	 To:Cc:Content-Type; b=kmyLpRmKN7xd5uQLPCDowVpY19afEHY1GKm4nk84OqIdUW5gYcstvQR5ZzifOG2zDXnbHBlcYTdwC5a34tH0VEhcmouuBQV+xW1QmkMJVcCUJHalsvXmxO72qHUdmy6Ifn+62kK748BCycVLNbg8uehDwP8gFE1EwV42c9Zq95o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dAGuexhp; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e02597a0afso256285b3a.1
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 14:03:08 -0800 (PST)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6de2f8d6fb9so1916224b3a.1
+        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 14:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706911388; x=1707516188; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706911392; x=1707516192; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5TCwSoharfFq6B8R/QE6CJNA8pH5fv624pRPqdb8mvw=;
-        b=BinMnyuPE3RbK7jI10qRe8ICEw5bEntkS9eEDPEp6C732Jz6S5dwvyuo5FYiIodCXL
-         3VwRXPw9XGVSfDW910V/b3VoMXgOW49MA9MdSGngv1smYJg7R5w3d4/mxUU1DFVfZkpD
-         V/CzcyiP8ewjeeyV0tzbEEsrHrk0/2lOuuwKko1LvobOVxRUQ5/fS27D2wtg9EcwX9Bt
-         MtLxTKK+Vc2Xz3t0HtjhjZCazmzYDSLvoaKEKim8/mnE4aUZhnSC30E0Msl7K77DRRFO
-         M6EYXVbybUvFyRPDhhbUYVyhvepbbh0f58ANF9FafGP6KFiyD8AAnGkgZvxUZSSdsFTH
-         K2Xg==
+        bh=vrEr8SzBcIbbhO2jPACEG0wW3x6SaIBE1ZE+NF8xMOI=;
+        b=dAGuexhpyT0awuGu6Yw74FMgDMYnfo4D4Egw0vBhdPOglqm5zfPotoPVVW/WUss1/e
+         mcmt5GrhkbeGLCVE1IjAATb0YXTnjd1RfyW9+54fiYHINpPEMwKIlLnq9KrRTkVKODxv
+         V1Xk/4lLMB4TJUEZWww07u0ye3gVGyiB+zkz1866HKppNzqAcUyxl/z5B9JuaznZKnJL
+         r2BZUtMU8Si31BdKVS6yUtmFP+T5UZHJ37dKOffoBx7k4hweAeQK4v8Wle8qEMVJd4hD
+         9Qz0ELsd69nimK2O3ynSztkqkv3PjdzV05cFPFCkn7XrFpKfYII4ua0REqYka2hTff0Y
+         UOfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706911388; x=1707516188;
+        d=1e100.net; s=20230601; t=1706911392; x=1707516192;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5TCwSoharfFq6B8R/QE6CJNA8pH5fv624pRPqdb8mvw=;
-        b=NTvfTnlA2FuAK67mH/ZnKcxmWo/W6/UdT2sXaYElw7B4CVL6e4aSXXk5fMga1ZA9M+
-         ueP7hFYFsm79GoObDQgtuPW8kgKNADcPK0UcnwWAfksfmcVl9H2Cjs0ZVjPIYFzCerNq
-         y14BVlghTn8ToNq95ypeMV/E0WSRjA3aKyCJHYiV0TqbNFmba6HpzL+ImFlvWVYOWv4w
-         9yOsTvHUtdSD0z8wcD9c6PBdGhjhnZdooEgbmZuth8Ev9sJheGRBNmkYUdHa/7612CgS
-         QfPqgghcUDkV2N1GEnh6A6tVi2EB1VLpXPVEqADtdB98wH5+RnF35ieqkyggUwVZGMsY
-         VK7g==
-X-Gm-Message-State: AOJu0YxosETRad41vSyaQKxrksnXfIcba2rs/E776un7wHnTW2s3e/cO
-	/Fo/cRVU2eg55tQNU8xc+CwiMVTujrvZdlkQttnz+nlL48TqsK9xZbaZP7FnOLJAob1cy00otIt
-	AArFfT1eSxE9crtke5n3MuA82IKf0TceZ
-X-Google-Smtp-Source: AGHT+IHApi3paLMrfbF+yVwnUDonfJyr6foGp/xtnhJTXrP+HR2wGhM82+XsWMiRXPA8B4ggiM2lZeDCvVD5ZgDEvVo=
-X-Received: by 2002:aa7:8059:0:b0:6de:1e25:48e8 with SMTP id
- y25-20020aa78059000000b006de1e2548e8mr3373114pfm.14.1706911388197; Fri, 02
- Feb 2024 14:03:08 -0800 (PST)
+        bh=vrEr8SzBcIbbhO2jPACEG0wW3x6SaIBE1ZE+NF8xMOI=;
+        b=TayHre1VPLbcmgQQqWfVUmHw97O5eNFPRK8ICXq6MEti7jiacTSvTPRRz6MOjyKwNu
+         tN8WBzynxNoOQtUDWxzB6lah89NeNhrducA7AGnXcV1Az1Du6kdjb0ipjqSyO2mhhH6j
+         5AjVKbPJ0sgfBXKIlppDKgcDuxs3NZNmnr4M+e6yzks/IN+s+sQNLsKENKfXcT0ke4QV
+         CKvX9ALmLLsLM1x45Dfboqf/YLKRCDpaso9D4kXVMjvCle30a1e6z92RcoUuHdU62l1r
+         rUSCNBcFNsNDl+nQSAvEm8di/5aBCP6+os3OZmY3XDYhPEUVBfwF+jl9LxhSpxNzzoXu
+         laYg==
+X-Gm-Message-State: AOJu0YyswiPnSoSGx9p7EdPU0DoI62KsRRkYDRurg+1KrOmKVZ3GGv3Y
+	loVNyr4osGQT+1YEY7XHN9pXOU6pOG2yfacFLExJyuytPsp2+JjAg9/XVAQjYxaJhqlinddhGGl
+	KkdhXbF8UbFZyEPPdw0pzaNusPelsx1Ol
+X-Google-Smtp-Source: AGHT+IEJbEpmSAOuvy+maDbJJTBn7QBjIt8eE6x6ryZKbZlcVVqhKRYeis/Yx4v00+eOdcT2pMlvCGZnWZfuN8wl7Tc=
+X-Received: by 2002:a62:fb14:0:b0:6db:b355:892d with SMTP id
+ x20-20020a62fb14000000b006dbb355892dmr6923425pfm.2.1706911391479; Fri, 02 Feb
+ 2024 14:03:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131145454.86990-1-laoar.shao@gmail.com> <20240131145454.86990-2-laoar.shao@gmail.com>
-In-Reply-To: <20240131145454.86990-2-laoar.shao@gmail.com>
+References: <20240131145454.86990-1-laoar.shao@gmail.com> <20240131145454.86990-3-laoar.shao@gmail.com>
+In-Reply-To: <20240131145454.86990-3-laoar.shao@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 2 Feb 2024 14:02:54 -0800
-Message-ID: <CAEf4BzYwyFyydjNie4OfEUF0epV=ejcUCtuR6bZBJgk=8BX0wQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 1/4] bpf: Add bpf_iter_cpumask kfuncs
+Date: Fri, 2 Feb 2024 14:02:58 -0800
+Message-ID: <CAEf4BzZ6LGYSQocavFoLLDNnEHzeENfX1HYF=DU7rcpbT+moSw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/4] bpf, docs: Add document for cpumask iter
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
@@ -88,158 +88,105 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Jan 31, 2024 at 6:55=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
 wrote:
 >
-> Add three new kfuncs for bpf_iter_cpumask.
-> - bpf_iter_cpumask_new
->   KF_RCU is defined because the cpumask must be a RCU trusted pointer
->   such as task->cpus_ptr.
-> - bpf_iter_cpumask_next
-> - bpf_iter_cpumask_destroy
->
-> These new kfuncs facilitate the iteration of percpu data, such as
-> runqueues, psi_cgroup_cpu, and more.
+> This patch adds the document for the newly added cpumask iterator
+> kfuncs.
 >
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > ---
->  kernel/bpf/cpumask.c | 82 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 82 insertions(+)
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+>  Documentation/bpf/cpumasks.rst | 60 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
 >
-> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-> index 2e73533a3811..c6019368d6b1 100644
-> --- a/kernel/bpf/cpumask.c
-> +++ b/kernel/bpf/cpumask.c
-> @@ -422,6 +422,85 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cpum=
-ask *cpumask)
->         return cpumask_weight(cpumask);
->  }
+> diff --git a/Documentation/bpf/cpumasks.rst b/Documentation/bpf/cpumasks.=
+rst
+> index b5d47a04da5d..5cedd719874c 100644
+> --- a/Documentation/bpf/cpumasks.rst
+> +++ b/Documentation/bpf/cpumasks.rst
+> @@ -372,6 +372,66 @@ used.
+>  .. _tools/testing/selftests/bpf/progs/cpumask_success.c:
+>     https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree=
+/tools/testing/selftests/bpf/progs/cpumask_success.c
 >
-> +struct bpf_iter_cpumask {
-> +       __u64 __opaque[2];
-> +} __aligned(8);
+> +3.3 cpumask iterator
+> +--------------------
 > +
-> +struct bpf_iter_cpumask_kern {
-> +       struct cpumask *mask;
-> +       int cpu;
-> +} __aligned(8);
+> +The cpumask iterator facilitates the iteration of per-CPU data, includin=
+g
+> +runqueues, system_group_pcpu, and other such structures. To leverage the=
+ cpumask
+> +iterator, one can employ the bpf_for_each() macro.
 > +
-> +/**
-> + * bpf_iter_cpumask_new() - Create a new bpf_iter_cpumask for a specifie=
-d cpumask
-
-I'd say "Initialize a new CPU mask iterator for a given CPU mask"?
-"new bpf_iter_cpumask" is both confusing and misleading (we don't
-create it, we fill provided struct)
-
-> + * @it: The new bpf_iter_cpumask to be created.
-> + * @mask: The cpumask to be iterated over.
-> + *
-> + * This function initializes a new bpf_iter_cpumask structure for iterat=
-ing over
-> + * the specified CPU mask. It assigns the provided cpumask to the newly =
-created
-> + * bpf_iter_cpumask @it for subsequent iteration operations.
-
-The description lgtm.
-
-> + *
-> + * On success, 0 is returen. On failure, ERR is returned.
-
-typo: returned
-
-> + */
-> +__bpf_kfunc int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, const =
-struct cpumask *mask)
-> +{
-> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> +Here's an example illustrating how to determine the number of running ta=
+sks on
+> +each CPU.
 > +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_cpumask_kern) > sizeof(struct=
- bpf_iter_cpumask));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_cpumask_kern) !=3D
-> +                    __alignof__(struct bpf_iter_cpumask));
+> +.. code-block:: c
 > +
-> +       kit->mask =3D bpf_mem_alloc(&bpf_global_ma, cpumask_size());
-> +       if (!kit->mask)
-> +               return -ENOMEM;
+> +        /**
+> +         * Here's an example demonstrating the functionality of the cpum=
+ask iterator.
+> +         * We retrieve the cpumask associated with the specified pid, it=
+erate through
+> +         * its elements, and ultimately expose per-CPU data to userspace=
+ through a
+> +         * seq file.
+> +         */
+> +        const struct rq runqueues __ksym __weak;
+> +        u32 target_pid;
 > +
-> +       cpumask_copy(kit->mask, mask);
-> +       kit->cpu =3D -1;
-> +       return 0;
-> +}
+> +        SEC("iter/cgroup")
+> +        int BPF_PROG(cpu_cgroup, struct bpf_iter_meta *meta, struct cgro=
+up *cgrp)
+> +        {
+> +                u32 nr_running =3D 0, nr_cpus =3D 0, nr_null_rq =3D 0;
+> +                struct task_struct *p;
+> +                struct rq *rq;
+> +                int *cpu;
 > +
-> +/**
-> + * bpf_iter_cpumask_next() - Get the next CPU in a bpf_iter_cpumask
-> + * @it: The bpf_iter_cpumask
-> + *
-> + * This function retrieves a pointer to the number of the next CPU withi=
-n the
-
-"function returns a pointer to a number representing the ID of the
-next CPU in CPU mask" ?
-
-> + * specified bpf_iter_cpumask. It allows sequential access to CPUs withi=
-n the
-> + * cpumask. If there are no further CPUs available, it returns NULL.
-> + *
-> + * Returns a pointer to the number of the next CPU in the cpumask or NUL=
-L if no
-> + * further CPUs.
-
-this and last sentence before this basically repeat the same twice,
-let's keep just one?
-
-
-> + */
-> +__bpf_kfunc int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it)
-> +{
-> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
-> +       const struct cpumask *mask =3D kit->mask;
-> +       int cpu;
+> +                /* epilogue */
+> +                if (cgrp =3D=3D NULL)
+> +                        return 0;
 > +
-> +       if (!mask)
-> +               return NULL;
-> +       cpu =3D cpumask_next(kit->cpu, mask);
-> +       if (cpu >=3D nr_cpu_ids)
-> +               return NULL;
+> +                p =3D bpf_task_from_pid(target_pid);
+> +                if (!p)
+> +                        return 1;
 > +
-> +       kit->cpu =3D cpu;
-> +       return &kit->cpu;
-> +}
+> +                BPF_SEQ_PRINTF(meta->seq, "%4s %s\n", "CPU", "nr_running=
+");
+> +                bpf_for_each(cpumask, cpu, p->cpus_ptr) {
+> +                        rq =3D (struct rq *)bpf_per_cpu_ptr(&runqueues, =
+*cpu);
+> +                        if (!rq) {
+> +                                nr_null_rq +=3D 1;
+> +                                continue;
+> +                        }
+> +                        nr_cpus +=3D 1;
 > +
-> +/**
-> + * bpf_iter_cpumask_destroy() - Destroy a bpf_iter_cpumask
-> + * @it: The bpf_iter_cpumask to be destroyed.
-> + *
-> + * Destroy the resource assiciated with the bpf_iter_cpumask.
-
-typo: associated
-
-> + */
-> +__bpf_kfunc void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it)
-> +{
-> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> +                        if (!rq->nr_running)
+> +                                continue;
 > +
-> +       if (!kit->mask)
-> +               return;
-> +       bpf_mem_free(&bpf_global_ma, kit->mask);
-> +}
+> +                        nr_running +=3D rq->nr_running;
+> +                        BPF_SEQ_PRINTF(meta->seq, "%4u %u\n", *cpu, rq->=
+nr_running);
+> +                }
+> +                BPF_SEQ_PRINTF(meta->seq, "Summary: nr_cpus %u, nr_runni=
+ng %u, nr_null_rq %u\n",
+> +                               nr_cpus, nr_running, nr_null_rq);
 > +
->  __bpf_kfunc_end_defs();
+> +                bpf_task_release(p);
+> +                return 0;
+> +        }
+> +
+> +----
 >
->  BTF_SET8_START(cpumask_kfunc_btf_ids)
-> @@ -450,6 +529,9 @@ BTF_ID_FLAGS(func, bpf_cpumask_copy, KF_RCU)
->  BTF_ID_FLAGS(func, bpf_cpumask_any_distribute, KF_RCU)
->  BTF_ID_FLAGS(func, bpf_cpumask_any_and_distribute, KF_RCU)
->  BTF_ID_FLAGS(func, bpf_cpumask_weight, KF_RCU)
-> +BTF_ID_FLAGS(func, bpf_iter_cpumask_new, KF_ITER_NEW | KF_RCU)
-> +BTF_ID_FLAGS(func, bpf_iter_cpumask_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_cpumask_destroy, KF_ITER_DESTROY)
->  BTF_SET8_END(cpumask_kfunc_btf_ids)
-
-Seems like you'll have to rebase, there is a merge conflict with
-recently landed changes.
-
-
->
->  static const struct btf_kfunc_id_set cpumask_kfunc_set =3D {
+>  4. Adding BPF cpumask kfuncs
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
 > --
 > 2.39.1
 >
