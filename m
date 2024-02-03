@@ -1,305 +1,461 @@
-Return-Path: <bpf+bounces-21117-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21118-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 399BE847DB4
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 01:22:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB772847DF2
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 01:41:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD4B52835FE
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 00:22:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72E3D28E0DE
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 00:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B79643;
-	Sat,  3 Feb 2024 00:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6B91FB2;
+	Sat,  3 Feb 2024 00:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V7ke0U8J"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kuaee5ng"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9D1625
-	for <bpf@vger.kernel.org>; Sat,  3 Feb 2024 00:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFAD64B
+	for <bpf@vger.kernel.org>; Sat,  3 Feb 2024 00:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919727; cv=none; b=WSGLaYt2nEiQ49qVHD6egDG287ZKBO6/HZQS0DM+ZMSbUOPwnNOrwgFHGxCWViTqQODhxZXrmWFEbHppLLtJsuzMn6u5+4QcM4EbFGh5kQZe5kk4taPuEMc4GShx75/RjKt9rgc9qvQZwZNLszLfohj1fJoiz9M52uTFbiN2xGg=
+	t=1706920879; cv=none; b=tqw79FHwAhVK5V3XZYkmrmGl5/ytD5VlKOIk3tAkySF6g71lBhXRH0Ec/IJ1VpGnidFhNgD57sWyUqO/SQ4RDL90eYOvNX4TKup73Sn2oRH9aWmn8M8KvPFzoLkuBXAdWdnQqvotbAeEPyqRnYTsOx/MCXoxZJLvuyKin0WpnRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919727; c=relaxed/simple;
-	bh=ka6J180fZTCuKeVMW/9Lbes9FAwuvrieXc1rcE/q/LA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h+E0Lfx8gjRG+hF/VZOp1EKNt6mtUl50UmoYaK6n6JiXqubkt+NKcdf4P9SsF/fD21nivjsB6ys4ANvxZ3n1hoM5fEvY1hJgJvk8RFgbpKIqi9x2b/3uC0L+dmYllpSj4JmObIuiULIXIcjHNhbDDxYOT92VqahAeKzxZ5gRUuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V7ke0U8J; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so2553040276.0
-        for <bpf@vger.kernel.org>; Fri, 02 Feb 2024 16:22:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706919724; x=1707524524; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7dJk4z2Z5q7wX3PPd0H8+PQcX8ae1Pm/5cSfdvjye7Y=;
-        b=V7ke0U8JjUN/f1obOO36qBMtDkSFV6rVYJcrZSFT7xcq8Z+Xhfef8v0gmRGG9pmyU9
-         RIXqGA4YIVeLTMyE+yhCm/sA0jwK7Pe9ZbrDs4XIUS1RWiGAF2u4gfcw83ADikSM8qXK
-         95u5y+huFKJM6FvIxlGmQeQdpGEnCv92NSJC7EF2RflSlNSKVlYuYIVWHATK9QLjVKP2
-         jm3Q/tTDrFNktolcN/S54BqXwc/EH/6cVZhX+O2dih11jBCUJRpFqQRZ/jKtnyBr1rgp
-         wwtsA3QHAuFRDjxeDIb7db/zk+BaVYOwRH3kmZBmMeQjeUwZ+lJwLSCE+3scDIozDwWW
-         TYTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919724; x=1707524524;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7dJk4z2Z5q7wX3PPd0H8+PQcX8ae1Pm/5cSfdvjye7Y=;
-        b=JX1fEnUX/LdlQkQJ8KU4SMmZAGTAR9v1LM3SuAeI4a9eWTuISJVwfcBtp0s2Z9Toey
-         ugrTFlsWonI1VERbZVkPBgoRw60JYysaOwhPvsd59Gtg3j5q5uMdeYEivbuiC0m/OR0U
-         XmKKD7v6hpisBKJYG+hRAhQOZhNqu8ovVcDFdCKKse/8C7zB5eATU4xlSiHCOHv3mrg8
-         BhlPuDqeRD80WI3lHYYrW58/RzuFE+WDDuVSPfHSgRYIA1gR2FND91npvlS9Kd1C1Odq
-         33G8IVu//85VZd33S2H2cgAKEMpVfDdeLmm48zAFVrRwpbak1ra2XY+4OrRv1qz9urjc
-         LUDg==
-X-Gm-Message-State: AOJu0YxfGuH5H2dja0jGbXJLdUJj3kUkICZ87e2+k51WVA3YpeDs+IeD
-	+jkOSP+iZAr9hm5k6PNb9Mjj/QtNJt+L6Y9k5dfPtb6y1LvWPieZgvv4K61VxyJpH9Pkb0zx8AP
-	k9PZfM/h971+wPAtU9++FOWqDqOk=
-X-Google-Smtp-Source: AGHT+IH+vL3ThT8Jhri/kHq4SditG6yMO1Y8ScSvshCcl4WDfyhhVj9cVojsAaxtRFi7kw3Z2hqm9LdMfCqHFrem3F8=
-X-Received: by 2002:a5b:941:0:b0:dc6:2e29:4262 with SMTP id
- x1-20020a5b0941000000b00dc62e294262mr9472053ybq.58.1706919724220; Fri, 02 Feb
- 2024 16:22:04 -0800 (PST)
+	s=arc-20240116; t=1706920879; c=relaxed/simple;
+	bh=B/YmYTQZUjbdfeMJnAq2r/kcezT7zxzCWyZ6xh8pOxY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r20NTWym86D6GgUpCxgPp3UlCzIM5dUtW/Hwv21R4qZVT/VM3twTP9I7MKXfzqiRzpbG9610iIB6SqE6VQXFs+fOkREVd9zVOh72THACsvOFBx7QOY3kHSZB3MTsSFYAd5BRmUYm7PdIxr9bamhkjw1Naxq0WzLF4dvuFLQOyNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kuaee5ng; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6b1d0822-73c4-472a-a170-947b53f2c66f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706920873;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mVkXUyxslbpwHv9NbegAVCEEjAFISt8a/K/OyMS/ITc=;
+	b=Kuaee5ng/39Ap48c6rOl/UpDiubE6nK1AmQk9feGqcljw0TapyZMVQLKx7470L7J/V73B6
+	aqc6j0B9hovQ0Vb3tABu2I8T0FENDkyIvdetA8k2lDOqKjAsRorDbkQJ4a2a5L6EuuxrGD
+	CCdrzQr5u1KZkVFRp4ZvTlBXzmOm5fk=
+Date: Fri, 2 Feb 2024 16:40:20 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com>
- <ZbjAod-tqcjQJrTo@krava>
-In-Reply-To: <ZbjAod-tqcjQJrTo@krava>
-From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Date: Fri, 2 Feb 2024 19:21:53 -0500
-Message-ID: <CAE5sdEg6yUc_Jz50AnUXEEUh6O73yQ1Z6NV2srJnef0ZrQkZew@mail.gmail.com>
-Subject: Re: [RFC PATCH] bpf: Prevent recursive deadlocks in BPF programs
- attached to spin lock helpers using fentry/ fexit
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	"alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"Williams, Dan" <djwillia@vt.edu>, "Somaraju, Sai Roop" <sairoop@vt.edu>, "Sahu, Raj" <rjsu26@vt.edu>, 
-	"Craun, Milo" <miloc@vt.edu>, "sidchintamaneni@vt.edu" <sidchintamaneni@vt.edu>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [RFC bpf-next v4 5/6] bpf: Create argument information for
+ nullable arguments.
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ davemarchevsky@meta.com, dvernet@meta.com
+References: <20240202220516.1165466-1-thinker.li@gmail.com>
+ <20240202220516.1165466-6-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240202220516.1165466-6-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 30 Jan 2024 at 04:25, Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Wed, Jan 24, 2024 at 10:43:32AM -0500, Siddharth Chintamaneni wrote:
-> > While we were working on some experiments with BPF trampoline, we came
-> > across a deadlock scenario that could happen.
-> >
-> > A deadlock happens when two nested BPF programs tries to acquire the
-> > same lock i.e, If a BPF program is attached using fexit to
-> > bpf_spin_lock or using a fentry to bpf_spin_unlock, and it then
-> > attempts to acquire the same lock as the previous BPF program, a
-> > deadlock situation arises.
-> >
-> > Here is an example:
-> >
-> > SEC(fentry/bpf_spin_unlock)
-> > int fentry_2{
-> >   bpf_spin_lock(&x->lock);
-> >   bpf_spin_unlock(&x->lock);
-> > }
-> >
-> > SEC(fentry/xxx)
-> > int fentry_1{
-> >   bpf_spin_lock(&x->lock);
-> >   bpf_spin_unlock(&x->lock);
-> > }
->
-> hi,
-> looks like valid issue, could you add selftest for that?
+On 2/2/24 2:05 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Collect argument information from the type information of stub functions to
+> mark arguments of BPF struct_ops programs with PTR_MAYBE_NULL if they are
+> nullable.  A nullable argument is annotated by suffixing "__nullable" at
+> the argument name of stub function.
+> 
+> For nullable arguments, this patch sets an arg_info to label their reg_type
+> with PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL. This makes the verifier
+> to check programs and ensure that they properly check the pointer. The
+> programs should check if the pointer is null before accessing the pointed
+> memory.
+> 
+> The implementer of a struct_ops type should annotate the arguments that can
+> be null. The implementer should define a stub function (empty) as a
+> placeholder for each defined operator. The name of a stub function should
+> be in the pattern "<st_op_type>__<operator name>". For example, for
+> test_maybe_null of struct bpf_testmod_ops, it's stub function name should
+> be "bpf_testmod_ops__test_maybe_null". You mark an argument nullable by
+> suffixing the argument name with "__nullable" at the stub function.
+> 
+> Since we already has stub functions for kCFI, we just reuse these stub
+> functions with the naming convention mentioned earlier. These stub
+> functions with the naming convention is only required if there are nullable
+> arguments to annotate. For functions having not nullable arguments, stub
+> functions are not necessary for the purpose of this patch.
+> 
+> This patch will prepare a list of struct bpf_ctx_arg_aux, aka arg_info, for
+> each member field of a struct_ops type.  "arg_info" will be assigned to
+> "prog->aux->ctx_arg_info" of BPF struct_ops programs in
+> check_struct_ops_btf_id() so that it can be used by btf_ctx_access() later
+> to set reg_type properly for the verifier.
 
-Hello,
-I have added selftest for the deadlock scenario.
+I looked at the high level. Some comments below.
 
->
-> I wonder we could restrict just programs that use bpf_spin_lock/bpf_spin_unlock
-> helpers? I'm not sure there's any useful use case for tracing spin lock helpers,
-> but I think we should at least try this before we deny it completely
->
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/linux/bpf.h         |  17 ++++
+>   kernel/bpf/bpf_struct_ops.c | 166 ++++++++++++++++++++++++++++++++++--
+>   kernel/bpf/btf.c            |  14 +++
+>   kernel/bpf/verifier.c       |   6 ++
+>   4 files changed, 198 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9a2ee9456989..63ef5cbfd213 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1709,6 +1709,19 @@ struct bpf_struct_ops {
+>   	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
+>   };
+>   
+> +/* Every member of a struct_ops type has an instance even the member is not
+> + * an operator (function pointer). The "arg_info" field will be assigned to
+> + * prog->aux->arg_info of BPF struct_ops programs to provide the argument
+> + * information required by the verifier to verify the program.
+> + *
+> + * btf_ctx_access() will lookup prog->aux->arg_info to find the
+> + * corresponding entry for an given argument.
+> + */
+> +struct bpf_struct_ops_member_arg_info {
+> +	struct bpf_ctx_arg_aux *arg_info;
+> +	u32 arg_info_cnt;
+> +};
+> +
+>   struct bpf_struct_ops_desc {
+>   	struct bpf_struct_ops *st_ops;
+>   
+> @@ -1716,6 +1729,10 @@ struct bpf_struct_ops_desc {
+>   	const struct btf_type *value_type;
+>   	u32 type_id;
+>   	u32 value_id;
+> +
+> +	/* Collection of argument information for each member */
+> +	struct bpf_struct_ops_member_arg_info *member_arg_info;
+> +	u32 member_arg_info_cnt;
+>   };
+>   
+>   enum bpf_struct_ops_state {
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index f98f580de77a..313f6ceabcf4 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -116,17 +116,148 @@ static bool is_valid_value_type(struct btf *btf, s32 value_id,
+>   	return true;
+>   }
+>   
+> +#define MAYBE_NULL_SUFFIX "__nullable"
+> +#define MAX_STUB_NAME 128
+> +
+> +static int match_nullable_suffix(const char *name)
+> +{
+> +	int suffix_len, len;
+> +
+> +	if (!name)
+> +		return 0;
+> +
+> +	suffix_len = sizeof(MAYBE_NULL_SUFFIX) - 1;
+> +	len = strlen(name);
+> +	if (len < suffix_len)
+> +		return 0;
+> +
+> +	return !strcmp(name + len - suffix_len, MAYBE_NULL_SUFFIX);
+> +}
+> +
+> +/* Return the type info of a stub function, if it exists.
+> + *
+> + * The name of the stub function is made up of the name of the struct_ops
+> + * and the name of the function pointer member, separated by "__". For
+> + * example, if the struct_ops is named "foo_ops" and the function pointer
+> + * member is named "bar", the stub function name would be "foo_ops__bar".
+> + */
+> +static const  struct btf_type *
+> +find_stub_func_proto(struct btf *btf, const char *st_op_name,
+> +		     const char *member_name)
+> +{
+> +	char stub_func_name[MAX_STUB_NAME];
+> +	const struct btf_type *t, *func_proto;
+> +	s32 btf_id;
+> +
+> +	snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
+> +		 st_op_name, member_name);
+> +	btf_id = btf_find_by_name_kind(btf, stub_func_name, BTF_KIND_FUNC);
+> +	if (btf_id < 0)
+> +		return NULL;
+> +	t = btf_type_by_id(btf, btf_id);
+> +	if (!t)
+> +		return NULL;
+> +	func_proto = btf_type_by_id(btf, t->type);
+> +
+> +	return func_proto;
+> +}
+> +
+> +/* Prepare argument info for every nullable argument of a member of a
+> + * struct_ops type.
+> + *
+> + * Create and initialize a list of struct bpf_struct_ops_member_arg_info
+> + * according to type info of the arguments of the stub functions. (Check
+> + * kCFI for more information about stub functions.)
+> + *
+> + * Each member in the struct_ops type has a struct
+> + * bpf_struct_ops_member_arg_info to provide an array of struct
+> + * bpf_ctx_arg_aux, which in turn provides the information that used by the
+> + * verifier to check the arguments of the BPF struct_ops program assigned
+> + * to the member. Here, we only care about the arguments that are marked as
+> + * __nullable.
+> + *
+> + * The array of struct bpf_ctx_arg_aux is eventually assigned to
+> + * prog->aux->ctx_arg_info of BPF struct_ops programs and passed to the
+> + * verifier. (See check_struct_ops_btf_id())
+> + */
+> +static int prepare_arg_info(struct btf *btf,
+> +			    const char *st_ops_name,
+> +			    const char *member_name,
+> +			    struct bpf_struct_ops_member_arg_info *member_arg_info)
+> +{
+> +	const struct btf_type *stub_func_proto, *ptr_type;
+> +	struct bpf_ctx_arg_aux *arg_info, *ai_buf = NULL;
+> +	const struct btf_param *args;
+> +	u32 nargs, arg_no = 0;
+> +	const char *arg_name;
+> +	s32 arg_btf_id;
+> +
+> +	stub_func_proto = find_stub_func_proto(btf, st_ops_name, member_name);
+> +	if (!stub_func_proto)
+> +		return 0;
+> +
+> +	nargs = btf_type_vlen(stub_func_proto);
+> +	if (nargs > MAX_BPF_FUNC_REG_ARGS) {
 
-If we restrict programs (attached to spinlock helpers) that use
-bpf_spin_lock/unlock helpers, there could be a scenario where a helper
-function called within the program has a BPF program attached that
-tries to acquire the same lock.
+Checking MAX_BPF_FUNC_REG_ARGS on the stub_func_proto may not be the right 
+check. It should have been done on the origin func_proto (i.e. non-stub) when 
+preparing the func_model in btf_distill_func_proto(). Please double check.
 
-> >
-> > To prevent these cases, a simple fix could be adding these helpers to
-> > denylist in the verifier. This fix will prevent the BPF programs from
-> > being loaded by the verifier.
-> >
-> > previously, a similar solution was proposed to prevent recursion.
-> > https://lore.kernel.org/lkml/20230417154737.12740-2-laoar.shao@gmail.com/
->
-> the difference is that __rcu_read_lock/__rcu_read_unlock are called unconditionally
-> (always) when executing bpf tracing probe, the problem you described above is only
-> for programs calling spin lock helpers (on same spin lock)
->
-> >
-> > Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
-> > ---
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 65f598694d55..8f1834f27f81 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -20617,6 +20617,10 @@ BTF_ID(func, preempt_count_sub)
-> >  BTF_ID(func, __rcu_read_lock)
-> >  BTF_ID(func, __rcu_read_unlock)
-> >  #endif
-> > +#if defined(CONFIG_DYNAMIC_FTRACE)
->
-> why the CONFIG_DYNAMIC_FTRACE dependency?
-As we described in the self-tests, nesting of multiple BPF programs
-could only happen with fentry/fexit programs when DYNAMIC_FTRACE is
-enabled. In other scenarios, when DYNAMIC_FTRACE is disabled, a BPF
-program cannot be attached to any helper functions.
->
-> jirka
->
-> > +BTF_ID(func, bpf_spin_lock)
-> > +BTF_ID(func, bpf_spin_unlock)
-> > +#endif
-> >  BTF_SET_END(btf_id_deny)
-Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
----
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 65f598694d55..ffc2515195f1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20617,6 +20617,10 @@ BTF_ID(func, preempt_count_sub)
- BTF_ID(func, __rcu_read_lock)
- BTF_ID(func, __rcu_read_unlock)
- #endif
-+#ifdef CONFIG_DYNAMIC_FTRACE
-+BTF_ID(func, bpf_spin_lock)
-+BTF_ID(func, bpf_spin_unlock)
-+#endif
- BTF_SET_END(btf_id_deny)
+If it needs to do sanity check on nargs of stub_func_proto, a better check is to 
+ensure the narg of the stub_func_proto is the same as the orig_func_proto 
+instead. This discrepancy probably should have been complained by the compiler 
+already but does not harm to check (==) here in case the argument type is 
+changed and a force cast is used (more below).
 
- static bool can_be_sleepable(struct bpf_prog *prog)
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_dead_lock.c
-b/tools/testing/selftests/bpf/prog_tests/test_dead_lock.c
-new file mode 100644
-index 000000000000..8e2db654e963
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_dead_lock.c
-@@ -0,0 +1,26 @@
-+#include <test_progs.h>
-+#include "test_dead_lock.skel.h"
-+
-+void test_dead_lock_fail(void){
-+ struct test_dead_lock *skel;
-+ int prog_fd;
-+ int err;
-+
-+ LIBBPF_OPTS(bpf_test_run_opts, topts);
-+ skel = test_dead_lock__open_and_load();
-+ if(!ASSERT_OK_PTR(skel, "test_dead_lock__open_and_load"))
-+ goto end;
-+
-+ err = test_dead_lock__attach(skel);
-+ if (!ASSERT_OK(err, "test_dead_lock_attach"))
-+ goto end;
-+
-+ prog_fd = bpf_program__fd(skel->progs.dead_lock_test_main);
-+ err = bpf_prog_test_run_opts(prog_fd, &topts);
-+ ASSERT_OK(err, "test_run");
-+ ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+end:
-+ test_dead_lock__destroy(skel);
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/test_dead_lock.c
-b/tools/testing/selftests/bpf/progs/test_dead_lock.c
-new file mode 100644
-index 000000000000..72c6a0b033c9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_dead_lock.c
-@@ -0,0 +1,80 @@
-+#include <linux/bpf.h>
-+#include <linux/version.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct hmap_elem {
-+ int cnt;
-+ struct bpf_spin_lock lock;
-+};
-+
-+struct {
-+ __uint(type, BPF_MAP_TYPE_HASH);
-+ __uint(max_entries, 1);
-+ __type(key, int);
-+ __type(value, struct hmap_elem);
-+} hmap SEC(".maps");
-+
-+SEC("fexit/bpf_spin_lock")
-+int dead_lock_test_inner1(void *ctx){
-+
-+ struct hmap_elem *val;
-+ int key = 1;
-+ int err = 0;
-+
-+ val = bpf_map_lookup_elem(&hmap, &key);
-+ if (!val) {
-+ goto err;
-+ }
-+
-+ bpf_spin_lock(&val->lock);
-+ val->cnt++;
-+ bpf_spin_unlock(&val->lock);
-+
-+err:
-+ return err;
-+}
-+
-+SEC("fentry/bpf_spin_unlock")
-+int dead_lock_test_inner2(void *ctx){
-+
-+ struct hmap_elem *val;
-+ int key = 1;
-+ int err = 0;
-+
-+ val = bpf_map_lookup_elem(&hmap, &key);
-+ if (!val) {
-+ goto err;
-+ }
-+
-+ bpf_spin_lock(&val->lock);
-+ val->cnt++;
-+ bpf_spin_unlock(&val->lock);
-+
-+err:
-+ return err;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int dead_lock_test_main(void *ctx){
-+
-+ struct hmap_elem nval = {} ,*val;
-+ int key = 1;
-+ int err = 0;
-+
-+ val = bpf_map_lookup_elem(&hmap, &key);
-+ if (!val) {
-+ bpf_map_update_elem(&hmap, &key, &nval, 0);
-+ val = bpf_map_lookup_elem(&hmap, &key);
-+ if (!val) {
-+ goto err;
-+ }
-+ }
-+
-+ bpf_spin_lock(&val->lock);
-+ val->cnt++;
-+ bpf_spin_unlock(&val->lock);
-+err:
-+ return err;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+> +		pr_warn("Cannot support #%u args in stub func %s_stub_%s\n",
+> +			nargs, st_ops_name, member_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ai_buf = kcalloc(nargs, sizeof(*ai_buf), GFP_KERNEL);
+> +	if (!ai_buf)
+> +		return -ENOMEM;
+> +
+> +	args = btf_params(stub_func_proto);
+> +	for (arg_no = 0; arg_no < nargs; arg_no++) {
+> +		/* Skip arguments that is not suffixed with
+> +		 * "__nullable".
+> +		 */
+> +		arg_name = btf_name_by_offset(btf,
+> +					      args[arg_no].name_off);
+> +		if (!match_nullable_suffix(arg_name))
+
+I have a question/request.
+
+On top of tagging nullable, can we extend the ctx_arg_info idea here to allow 
+changing the pointer type?
+
+In particular, take a stub function in bpf_tcp_ca.c:
+
+static u32 bpf_tcp_ca_ssthresh(struct tcp_sock *tp)
+{
+         return 0;
+}
+
+Instead of the "struct sock *sk" argument as defined in the tcp_congestion_ops, 
+the stub function uses "struct tcp_sock *tp'. If we can reuse the ctx_arg_info 
+idea here, then it can remove the existing way of changing the pointer type from 
+bpf_tcp_ca_is_valid_access.
+
+> +			continue;
+> +
+> +		/* Should be a pointer to struct, array, scalar, or enum */
+> +		ptr_type = btf_type_resolve_ptr(btf, args[arg_no].type,
+> +						&arg_btf_id);
+> +		if (!ptr_type ||
+> +		    (!btf_type_is_struct(ptr_type) &&
+> +		     !btf_type_is_array(ptr_type) &&
+> +		     !btf_type_is_scalar(ptr_type) &&
+> +		     !btf_is_any_enum(ptr_type))) {
+> +			kfree(ai_buf);
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* Fill the information of the new argument */
+> +		arg_info = ai_buf + member_arg_info->arg_info_cnt++;
+> +		arg_info->reg_type =
+> +			PTR_TRUSTED | PTR_MAYBE_NULL | PTR_TO_BTF_ID;
+> +		arg_info->btf_id = arg_btf_id;
+> +		arg_info->btf = btf;
+> +		arg_info->offset = arg_no * sizeof(u64);
+
+I think for the current struct_ops users should be fine to assume sizeof(u64). 
+The current struct_ops users should only have pointer/scalar argument (meaning 
+there is no struct passed-by-value argument).
+
+I still think it is better to get it correct for all trampoline supported 
+argument here. Take a look at 720e6a435194 ("bpf: Allow struct argument in 
+trampoline based programs") and get_ctx_arg_idx(). It may be easier (not sure if 
+it is cleaner) to directly store the arg_no into arg_info here but arg_info only 
+has offset now. Please think about what could be a cleaner way to do it.
+
+> +	}
+> +
+> +	if (!member_arg_info->arg_info_cnt)
+> +		kfree(ai_buf);
+> +	else
+> +		member_arg_info->arg_info = ai_buf;
+> +
+> +	return 0;
+> +}
+> +
+>   int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   			     struct btf *btf,
+>   			     struct bpf_verifier_log *log)
+>   {
+> +	struct bpf_struct_ops_member_arg_info *member_arg_info;
+>   	struct bpf_struct_ops *st_ops = st_ops_desc->st_ops;
+>   	const struct btf_member *member;
+>   	const struct btf_type *t;
+>   	s32 type_id, value_id;
+>   	char value_name[128];
+>   	const char *mname;
+> -	int i;
+> +	int i, err;
+>   
+>   	if (strlen(st_ops->name) + VALUE_PREFIX_LEN >=
+>   	    sizeof(value_name)) {
+> @@ -160,6 +291,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   	if (!is_valid_value_type(btf, value_id, t, value_name))
+>   		return -EINVAL;
+>   
+> +	member_arg_info = kcalloc(btf_type_vlen(t), sizeof(*member_arg_info),
+> +				  GFP_KERNEL);
+> +	if (!member_arg_info)
+> +		return -ENOMEM;
+> +
+>   	for_each_member(i, t, member) {
+>   		const struct btf_type *func_proto;
+>   
+> @@ -167,13 +303,15 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   		if (!*mname) {
+>   			pr_warn("anon member in struct %s is not supported\n",
+>   				st_ops->name);
+> -			return -EOPNOTSUPP;
+> +			err = -EOPNOTSUPP;
+> +			goto errout;
+>   		}
+>   
+>   		if (__btf_member_bitfield_size(t, member)) {
+>   			pr_warn("bit field member %s in struct %s is not supported\n",
+>   				mname, st_ops->name);
+> -			return -EOPNOTSUPP;
+> +			err = -EOPNOTSUPP;
+> +			goto errout;
+>   		}
+>   
+>   		func_proto = btf_type_resolve_func_ptr(btf,
+> @@ -185,14 +323,24 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   					   &st_ops->func_models[i])) {
+>   			pr_warn("Error in parsing func ptr %s in struct %s\n",
+>   				mname, st_ops->name);
+> -			return -EINVAL;
+> +			err = -EINVAL;
+> +			goto errout;
+>   		}
+> +
+> +		err = prepare_arg_info(btf, st_ops->name, mname,
+> +				       member_arg_info + i);
+> +		if (err)
+> +			goto errout;
+>   	}
+>   
+> +	st_ops_desc->member_arg_info = member_arg_info;
+> +	st_ops_desc->member_arg_info_cnt = btf_type_vlen(t);
+
+It should be the same as btf_type_vlen(st_ops_desc->type). I would avoid this 
+duplicated info within the same st_ops_desc.
+
+> +
+>   	if (st_ops->init(btf)) {
+>   		pr_warn("Error in init bpf_struct_ops %s\n",
+>   			st_ops->name);
+> -		return -EINVAL;
+> +		err = -EINVAL;
+> +		goto errout;
+>   	}
+>   
+>   	st_ops_desc->type_id = type_id;
+> @@ -201,6 +349,14 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   	st_ops_desc->value_type = btf_type_by_id(btf, value_id);
+>   
+>   	return 0;
+> +
+> +errout:
+> +	while (i > 0)
+> +		kfree(member_arg_info[--i].arg_info);
+> +	kfree(member_arg_info);
+> +	st_ops_desc->member_arg_info = NULL;
+> +
+> +	return err;
+>   }
+>   
+>   static int bpf_struct_ops_map_get_next_key(struct bpf_map *map, void *key,
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 20d2160b3db5..fd192f69eb78 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -1699,6 +1699,20 @@ static void btf_free_struct_meta_tab(struct btf *btf)
+>   static void btf_free_struct_ops_tab(struct btf *btf)
+>   {
+>   	struct btf_struct_ops_tab *tab = btf->struct_ops_tab;
+> +	struct bpf_struct_ops_member_arg_info *ma_info;
+> +	int i, j;
+> +	u32 cnt;
+> +
+> +	if (tab)
+> +		for (i = 0; i < tab->cnt; i++) {
+> +			ma_info = tab->ops[i].member_arg_info;
+> +			if (ma_info) {
+> +				cnt = tab->ops[i].member_arg_info_cnt;
+> +				for (j = 0; j < cnt; j++)
+> +					kfree(ma_info[j].arg_info);
+> +			}
+> +			kfree(ma_info);
+> +		}
+>   
+>   	kfree(tab);
+>   	btf->struct_ops_tab = NULL;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index cd4d780e5400..d1d1c2836bc2 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20373,6 +20373,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   		}
+>   	}
+>   
+> +	/* btf_ctx_access() used this to provide argument type info */
+> +	prog->aux->ctx_arg_info =
+> +		st_ops_desc->member_arg_info[member_idx].arg_info;
+> +	prog->aux->ctx_arg_info_size =
+> +		st_ops_desc->member_arg_info[member_idx].arg_info_cnt;
+> +
+>   	prog->aux->attach_func_proto = func_proto;
+>   	prog->aux->attach_func_name = mname;
+>   	env->ops = st_ops->verifier_ops;
+
 
