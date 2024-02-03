@@ -1,175 +1,117 @@
-Return-Path: <bpf+bounces-21120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFDF847DFC
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 01:52:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40658847E00
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 01:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E330D28357F
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 00:52:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18A571C22476
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 00:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D22EA3D;
-	Sat,  3 Feb 2024 00:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDD3A3D;
+	Sat,  3 Feb 2024 00:58:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rmBPyLRB"
+	dkim=pass (2048-bit key) header.d=brycekahle.com header.i=@brycekahle.com header.b="bsCX27+6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ri2mQSbJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA52655
-	for <bpf@vger.kernel.org>; Sat,  3 Feb 2024 00:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E700010F9
+	for <bpf@vger.kernel.org>; Sat,  3 Feb 2024 00:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706921557; cv=none; b=dovvLGpIJjDAXJ6HzTjd6gv3oZtFJfxMzZ1L8roxWRu6N6XXa1Jv/KLlgXy8tlR2nHlWnFDB/8Jg/MkPMbqXlDsF4oKtMeQJo0E2vBPSNMH7Mkbk6vz9B67nOnCzYTS0scJs3AIKGvRR2TJans7qiWtlr/9mCHt6bcobJwTQQaY=
+	t=1706921935; cv=none; b=SBYS1GJ7hHQ1CgX2V2qdoQ5/wXpeV/XBCgBWcxKAKjwLzPIyKxzFRVbGVPbOK4Nui8uDWE2Gxhkho/LwCUSKifzX0KJvm0lVwls/eEscM8WBKqvx9IwzH05m/2pNL8V9JRlBVuszt/iqi7/OTnXu1V5Z4/kSv2hA8P+Nne1oct8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706921557; c=relaxed/simple;
-	bh=Hu+RENWbMKSgannqDCUQeIF+uU82xOsEak5VDAVq044=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T7L6g5IHCiSRFrn+4YI30qLSNXBkjW2Wjw5OXn/4IFBLvAoSmXxhLXIMgiGFdXtkgb5Lj4Cmepbl/OWsJ41ZM5YyKEPVH3ODnPWc32h+RLw49VQMjkfs3KayPFOXV3RQ2Grba+klEI38EMPDAQJi9Ml5lvVTQwU0pxj5QZihniQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rmBPyLRB; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <190cf3fc-5c5e-4044-9cdc-4804ee49a03f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706921553;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z9PTI1OW6Bse2qc3RLWDsJjefEsEAOUQQLyhdJ97qQc=;
-	b=rmBPyLRBw6+Uq48ynHCjseDItZIGuViboxN4zAkF/00vuQOlDblKqcmDqiGHbR4um+T31t
-	OSEfRH6xubKXk538DQz8lzwJbUJ35N1efNiywDrCVxZqFyIodnaIToYlQ1IwaffyrozONU
-	CaL6MAqW5dOf2YSR3+pYdIsN75cNIxk=
-Date: Fri, 2 Feb 2024 16:52:04 -0800
+	s=arc-20240116; t=1706921935; c=relaxed/simple;
+	bh=eNuq+d3+EK7uJokXS1qOV8jdv1lft7GaM67R6KkJ3U0=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=nEUxgCgXvikx4ZXVoeXiCvsOWnYv3xYp+xZeHqXqK7PAy1K4ECTqdUf6SqhvxGX9kJ8x5u3bo8OtUN0dWlwGIIxAxyPdTrOa35qzCZzgoVVeU5qiaXksdQL7bEIFpkJj1yX7/x5u2yU45EVPuz7uOjxpKtzBqZ2qaxpW07TKoHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brycekahle.com; spf=pass smtp.mailfrom=brycekahle.com; dkim=pass (2048-bit key) header.d=brycekahle.com header.i=@brycekahle.com header.b=bsCX27+6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Ri2mQSbJ; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brycekahle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brycekahle.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id 7AD8B3200A24;
+	Fri,  2 Feb 2024 19:58:51 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute7.internal (MEProxy); Fri, 02 Feb 2024 19:58:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=brycekahle.com;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1706921930; x=
+	1707008330; bh=TbsBCCZiVNiuZDpEnuIMx7WHulEBSIcFS/kQ/xnCFN4=; b=b
+	sCX27+6rbPKM7979iAFEuIDEwQn+4XMcv2W7R9o4bmdcGVU9XsxbSwEAwn2AY9dE
+	OMdMdcQtDNvXstwulB/5atwUrH0BnFkhWqBCWjWvFxJetdwrjhZ728w4yemWBvE9
+	k8hJeufyoQSq9f5PEp/rTO5BiAcHUJWwuMZLSV7QbstR38bJY7auo59leO6nUuHk
+	/ZSlk2hKUOly2sVbeA1nCh9+59EaNgjelEh7HU9eoHRZgLBH6+wntOq7AFZzW23u
+	UJ+wVtRZvJoTWs21PuJ0lRicwCgZPbIQ8UbaEWokIozBdVaNHOr5Zsw+BuYR0aVA
+	V+QBSUXqVQsVOtYh3RCgg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706921930; x=1707008330; bh=TbsBCCZiVNiuZDpEnuIMx7WHulEB
+	SIcFS/kQ/xnCFN4=; b=Ri2mQSbJ8UeoCVed5Ltn2if145qC/GOgE1yxW/HeP6wu
+	euCgKtIMx2VaTVgUb80SekjZv1XDXJSo9OVnvsc2BTFSIO9Um8ofqJut87ef4FLU
+	uuktvaGBA9Tn1xrwys1bgYgxMY8/EAYOEoTgVAN+PueCcfBVKL/efzqXcDBsndlb
+	j/fbe3Xzwmj0GPVNmDLtsa4cLHQAIZOXYs4+jXOPRjHHmQ4f+XyWOzaildqUXyHE
+	W3reoWSNYgo2cjwOs4E9WsDqamNItbtGi7WwBLKyc21Gh4ZOJKkb3XTT6qPSGwlR
+	JLgmFFwIfbPggNAURPh8cm+oMqzehF8bUeLFJjre9A==
+X-ME-Sender: <xms:yo-9ZTGGuZI0aAOLxbiQ4Q-OTLlOrZukiMzxrsLzphoT9tZeBPqGFw>
+    <xme:yo-9ZQVFsKJwNJhzWLOkgpbQjoEzFPBywtUHrthcKerPrRtQcbhDKzscCMyrhNLCw
+    xltyT3-K2CsfyC6cnc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduhedgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfuehr
+    higtvgcumfgrhhhlvgdfuceoghhithessghrhigtvghkrghhlhgvrdgtohhmqeenucggtf
+    frrghtthgvrhhnpeetkeekteetteffhfehffeukeeijeegveffgfekhfehvdefffekjeeg
+    fedtfefhgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehgihhtsegsrhihtggvkhgrhhhlvgdrtghomh
+X-ME-Proxy: <xmx:yo-9ZVI5DJH6jrvQu_wfR158zZ29TatQcqcc0X0BuMZy9CE7Z-EFwg>
+    <xmx:yo-9ZRGAL_aOCakDOXItbbWn5yyXqVgWJ6hAEdakDL1iYinq6tibWg>
+    <xmx:yo-9ZZWROInXz0iK59D5WsRZn5a0qudKxai9p6YMFqVh0exeK1ZvgQ>
+    <xmx:yo-9ZcTRTYNuMk4AvJNo0fa1Pcz2c-_0RnRlaS5hOtCSd-VcjQkHuw>
+Feedback-ID: ib4b944d5:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 76E3E36A0076; Fri,  2 Feb 2024 19:58:50 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC bpf-next v4 2/6] bpf: Extend PTR_TO_BTF_ID to handle
- pointers to scalar and array types.
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- davemarchevsky@meta.com, dvernet@meta.com
-References: <20240202220516.1165466-1-thinker.li@gmail.com>
- <20240202220516.1165466-3-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240202220516.1165466-3-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Message-Id: <dfcd6c3b-dbaa-4e72-acc5-89aed8a836f9@app.fastmail.com>
+In-Reply-To: 
+ <CAEf4Bza=mroJ6+zhK-fCKLutuH_1z9ESeJs+BHbNbCrATrwRdA@mail.gmail.com>
+References: <20240130230510.791-1-git@brycekahle.com>
+ <9b054832-3469-4659-9484-00bcfef87563@isovalent.com>
+ <CALvGib8u_owyjKCWcD3ZrFTkUw6dwE2Aev6nG2AD+D++b+R77A@mail.gmail.com>
+ <CAEf4Bza=mroJ6+zhK-fCKLutuH_1z9ESeJs+BHbNbCrATrwRdA@mail.gmail.com>
+Date: Fri, 02 Feb 2024 16:58:29 -0800
+From: "Bryce Kahle" <git@brycekahle.com>
+To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
+ "Bryce Kahle" <bryce.kahle@datadoghq.com>
+Cc: "Quentin Monnet" <quentin@isovalent.com>, bpf@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH bpf-next v4] bpftool: add support for split BTF to gen min_core_btf
+Content-Type: text/plain
 
-On 2/2/24 2:05 PM, thinker.li@gmail.com wrote:
-> From: Kui-Feng Lee <thinker.li@gmail.com>
+On Fri, Feb 2, 2024, at 2:10 PM, Andrii Nakryiko wrote:
 > 
-> The verifier calls btf_struct_access() to check the access for
-> PTR_TO_BTF_ID. btf_struct_access() supported only pointer to struct types
-> (including union). We add the support of scalar types and array types.
+> Maybe the right solution is to concat vmlinux and all the relevant
+> module BTFs first, dedup it again, then minimize against that "super
+> BTF". But yes, you'd have to specify both vmlinux and all the module
+> BTFs at the same time (which bpftool allows you to do easily with its
+> CLI interface, so not really a problem)
 > 
-> btf_reloc_array_access() is responsible for relocating the access from the
-> whole array to an element in the array. That means to adjust the offset
-> relatively to the start of an element and change the type to the type of
-> the element. With this relocation, we can check the access against the
-> element type instead of the array type itself.
-> 
-> After relocation, the struct types, including union types, will continue
-> the loop of btf_struct_walk(). Other types are treated as scalar types,
-> including pointers, and return from btf_struct_access().
 
-Unless there is an immediate use case to support PTR_MAYBE_NULL on a non-struct 
-pointer, I would suggest to separate the other pointer type support from the 
-current PTR_MAYBE_NULL feature patchset. afaik, they are orthogonal.
+How would you handle the Type ID conflicts between the modules, since they all start at vmlinux+1? Is there a danger of conflicting type names, where there are two types with the same name but different layouts?
 
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   kernel/bpf/btf.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 61 insertions(+)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 0847035bba99..d3f94d04c69d 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6590,6 +6590,61 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
->   	return -EINVAL;
->   }
->   
-> +/* Relocate the access relatively to the beginning of an element in an
-> + * array.
-> + *
-> + * The offset is adjusted relatively to the beginning of the element and the
-> + * type is adjusted to the type of the element.
-> + *
-> + * Return NULL for scalar, enum, and pointer type.
-> + * Return a btf_type pointer for struct and union.
-> + */
-> +static const struct btf_type *
-> +btf_reloc_array_access(struct bpf_verifier_log *log, const struct btf *btf,
-> +		       const struct btf_type *t, int *off, int size)
-> +{
-> +	const struct btf_type *rt, *elem_type;
-> +	u32 rt_size, elem_id, total_nelems, rt_id, elem_size;
-> +	u32 elem_idx;
-> +
-> +	rt = __btf_resolve_size(btf, t, &rt_size, &elem_type, &elem_id,
-> +				&total_nelems, &rt_id);
-> +	if (IS_ERR(rt))
-> +		return rt;
-> +	if (btf_type_is_array(rt)) {
-> +		if (*off >= rt_size) {
-> +			bpf_log(log, "access out of range of type %s with offset %d and size %u\n",
-> +				__btf_name_by_offset(btf, t->name_off), *off, rt_size);
-> +			return ERR_PTR(-EACCES);
-> +		}
-> +
-> +		/* Multi-dimensional arrays are flattened by
-> +		 * __btf_resolve_size(). Check the comment in
-> +		 * btf_struct_walk().
-> +		 */
-> +		elem_size = rt_size / total_nelems;
-> +		elem_idx = *off / elem_size;
-> +		/* Relocate the offset relatively to the start of the
-> +		 * element at elem_idx.
-> +		 */
-> +		*off -= elem_idx * elem_size;
-> +		rt = elem_type;
-> +		rt_size = elem_size;
-> +	}
-> +
-> +	if (btf_type_is_struct(rt))
-> +		return rt;
-> +
-> +	if (*off + size > rt_size) {
-> +		bpf_log(log, "access beyond the range of type %s with offset %d and size %d\n",
-> +			__btf_name_by_offset(btf, rt->name_off), *off, size);
-> +		return ERR_PTR(-EACCES);
-> +	}
-> +
-> +	/* The access is accepted as a scalar. */
-> +	return NULL;
-> +}
-> +
->   int btf_struct_access(struct bpf_verifier_log *log,
->   		      const struct bpf_reg_state *reg,
->   		      int off, int size, enum bpf_access_type atype __maybe_unused,
-> @@ -6625,6 +6680,12 @@ int btf_struct_access(struct bpf_verifier_log *log,
->   	}
->   
->   	t = btf_type_by_id(btf, id);
-> +	t = btf_reloc_array_access(log, btf, t, &off, size);
-> +	if (IS_ERR(t))
-> +		return PTR_ERR(t);
-> +	if (!t)
-> +		return SCALAR_VALUE;
-> +
->   	do {
->   		err = btf_struct_walk(log, btf, t, off, size, &id, &tmp_flag, field_name);
->   
-
+I was trying to mirror the sysfs file layout, so a loader didn't have different behavior between user-supplied BTF and kernel-provided BTF.
 
