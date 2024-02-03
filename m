@@ -1,76 +1,89 @@
-Return-Path: <bpf+bounces-21136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D038486D7
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 15:53:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68FDC848841
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 19:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3667D1C216AD
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 14:53:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A579E1F21930
+	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 18:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884605EE96;
-	Sat,  3 Feb 2024 14:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DC25FEEC;
+	Sat,  3 Feb 2024 18:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SmRd9iaX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XINpu29U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B370C4C7E;
-	Sat,  3 Feb 2024 14:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1A85F561;
+	Sat,  3 Feb 2024 18:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706972021; cv=none; b=mNywSITzIqJpiTXkyOhzw68IMHiA6URn7gWcVQsVOqoqdnmteWo7GH4Lx+vxCRWV5CZJtLHnOcRrTqo0i8I5IdARyN7bQnyxjeWF4Q8Uj/B6cR7UI/npHAnlX2CzlRxwK0HZaI33ZStJ8LLJ2gHafIIVHmqlIAr9VIrzgQDWSsc=
+	t=1706985949; cv=none; b=W+vl9/d2F0dIN8HYxHPJNts8lWTa5fnHufwGQ3XcGq9JNi92MJFHLWzbAa0QbtGCk4JDYRapa2a8HaETYotcX+56RIX7hKQWtOwUmUtoKIku3XIUpzEpZ5yCA6AnnJl288zytfldr4OESndx66KoXqQWRXQFEKL88s3ZYKIwd1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706972021; c=relaxed/simple;
-	bh=8T/nZ7mIhCzPXna+zFF7zHAoFcD+3KJb/lVkzv1Pst8=;
+	s=arc-20240116; t=1706985949; c=relaxed/simple;
+	bh=QLmB+a7rMrDFXLv1SPoxkXPhzSnXnhs+odqRkVdXqM8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IuxajBXPnGcPl4N4UjBdmZgOQkTXqEhBHSt5rC0OCUuvWhMcaZ6dyM6cT09km5ndYxUXNsewIqlsSEmWeQUTjijw1713Nw4jSOL9vkOtvG4HporNv0zgK+0hPOKH8MVWZOC7ZPDlrXpsz3sgyLSfkXI5edvsjTooAaB+x6fXN1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SmRd9iaX; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706972019; x=1738508019;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8T/nZ7mIhCzPXna+zFF7zHAoFcD+3KJb/lVkzv1Pst8=;
-  b=SmRd9iaXKHNDdIlFU35ZFsBbTTlwprTgpPKSYQOA+Kml+aBpJnHSCjVC
-   +J1GIVJIa6IgxddqRxwJJgKbyYJ6zWcaJfgE9gadom+mfjK/hi8CN91VX
-   /2/Bz8UF5QRdVngyoENQKJ5ezmUDHlbmQP147BCcP9wIg9IfOooRgFIWN
-   xxNJ24VGAvOK/wu0LGRMvOsCVeFNI0xt3nDeq0+g3TN1LOESBiNlLZI9X
-   796yHGovUNg9xqd854QwCf+K19UPOTU/7QEXJkNrierJW/u5ySB386OpP
-   K9IIq5xV3XVXh6RinbiE2wGIFYjiBCHF/b/WjIiJXn5Zu4Y9wheN7dj6X
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="22796032"
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="22796032"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 06:53:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="646853"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 03 Feb 2024 06:53:34 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWHOd-0005CM-0f;
-	Sat, 03 Feb 2024 14:53:31 +0000
-Date: Sat, 3 Feb 2024 22:52:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, lorenzo.bianconi@redhat.com,
-	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-	pabeni@redhat.com, bpf@vger.kernel.org, toke@redhat.com,
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
-	sdf@google.com, hawk@kernel.org, ilias.apalodimas@linaro.org,
-	linyunsheng@huawei.com
-Subject: Re: [PATCH v7 net-next 1/4] net: add generic percpu page_pool
- allocator
-Message-ID: <202402032223.Imbb9JgJ-lkp@intel.com>
-References: <1d34b717f8f842b9c3e9f70f0e8ffd245a5d2460.1706861261.git.lorenzo@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=s46g8JixVOhMePYuN/Uu3+YkMV6ID/jgUZouXv/In3lkhpg7B5a6zrDNpKgt4Tj2geCD509fCIDRjBjoZlWs3yR4YjV/L8BU9LFuTyRtv19w8D3q5wVqLdZs9HIy/4u6BWde58asVNsf4BAbqSDUjVzdyuutLWnD8z8y4JzX4cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XINpu29U; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-204f50f305cso2033081fac.3;
+        Sat, 03 Feb 2024 10:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706985938; x=1707590738; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y0N/TxnXN2qBHJ/dkfZVj0nsBZc+7pjCqkkafHOcTPY=;
+        b=XINpu29UxWjy09y+rCAxh2r+t2LPxjy3x9XN2MqmGFc0RIug/fXsdQ8pezTPDuUVHb
+         lgwfPBQeaedIOx7oK7u75/ytyxkKxALmiLFGDIhN8OhHJ4bhNE0tIWskvTqxQgGCQg4K
+         lOaTJYwQvfxxt9fmWTQuoqErvjng9hthjUEcvQZxnDKUy0V6STp4+KnMhwlgLgA5BpaL
+         yzxm2KOG93M07WrWV5P2894+57wOJZ/bhnTeGIudVr65at1wWqDiy4bFRPIO+q/2FETa
+         Hll3q6V2j4LD1mI1Qnpt9bS2tYS5fdiK4UHOqQfx8aupdESlJ5wW+2yDrQgWPtjsQNSR
+         LpXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706985938; x=1707590738;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y0N/TxnXN2qBHJ/dkfZVj0nsBZc+7pjCqkkafHOcTPY=;
+        b=opJN4U2rdtocW5uzA3YWe5dxlcW+fzOtrUb/gvknJPr0sQ8OvzGtMZ8mTSmK1eXpg6
+         fYMD2dBiapkH3QQBoiELwNSMV2hLg7q9EZlTWQLP96/bsKDWXOKk+Cm57QNNafnjdW4+
+         +qra3Y17p12x7Egr2XHIrBGKD9+3bEKmBSzh7oTcKY7JeupOm2+lcFSGiVK1mFxgKbZz
+         BZzUi9mjc73/Ch7MWe3uX9eD2GCXe2qDjM+kAZZTWeE+rufJ2deup3/pSDIBajbGOmcX
+         z+i/chuuAjGmAQMz193SlDRlC/aP78MJL+Ck08Dbj4ucfPo+C0n9M7w+4zr9XWaY84oZ
+         Mdsw==
+X-Gm-Message-State: AOJu0YxxAy0vA+sx5dAqDWmnZ/b/AiR+AGSaOT6wEabeEGepESR0LQkd
+	VPrGgacbeTVOJ9YP3X0I1r6F6treRD4v69yW75bgGZtMl/gsqShc
+X-Google-Smtp-Source: AGHT+IE6cTsFsYxec6Cc2Nv8r8Wv7UwdJ2OkD0GT9fp4iaKTaMhjHiWk6mQDIasAcDiqRAsVsbikAg==
+X-Received: by 2002:a05:6870:4149:b0:214:ff12:3dda with SMTP id r9-20020a056870414900b00214ff123ddamr3816197oad.2.1706985938425;
+        Sat, 03 Feb 2024 10:45:38 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUQOTzlsO8lgt6pTwZLPw4119LfUrIfiaPa1wTTfdoxvsVTK1OcV2Dhbg5b2iobZcoC99Y+nA1mfBlqm8ccNuDEZ9ovSOSxF3dHJJoFa8pVW2wvNSbjP7RHN1nQlbwYiR+ZGUGPHsYbVIKUu/kExr3+mBS2LyoL7EMCy0RKTBCwZmgSJAnm8YjNjZATBXumi5rZ1guYYVe6tbB3apJ1FiMecZeZOLFGPHLSIm9lMMnedLrSL5LR+ITrAlKqzgfOzWbsLuUM4d0ufoM4ZdW8uS+lgajFrBnb5Unl8KMrPo5f7fVRDTzb+mpkXuSEfXp+VxBl9aBdT1X4Pu6RO2Vb+J9irkfLOt6ydfNho4jZIfhH5e7RejlM3xop2REcBU+7Ep2QxW6BfVclBjRvfADINXaS9e2RfWdRXu9F1/Yl7W4aoQMsEnydZd5izTj9tgYTVMJznLUUlABQlG1XUF+lALvWG6wGjF/JBqJwIeKsgiHWrSlTkPAQMEc11zIv9TBj/SgdR+1IGkyuC42IrbIYBRA6Lh1HyFcyKl9okR8mk02mHyKzcQcLfR3w3JL3Ur9d5SVkncclHqL1PxkDpGPOs3dE++/rIX2sEot24DS//9lxdPUpALKMpt4xa0iv27eylxppX5U6yH5xrfrThO7kAWWBey3QFiyYH1/6c0o0YhJJldRm9x6QOyyQUBjy8xYN3sw+NkNgjLDcwTs+DRby93OBGQ==
+Received: from surya ([70.134.61.176])
+        by smtp.gmail.com with ESMTPSA id g37-20020a635665000000b005d748902a01sm3945514pgm.43.2024.02.03.10.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 10:45:37 -0800 (PST)
+Date: Sat, 3 Feb 2024 10:45:11 -0800
+From: Manu Bretelle <chantr4@gmail.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: vmalik@redhat.com, Daniel Xu <dxu@dxuuu.xyz>,
+	linux-trace-kernel@vger.kernel.org, coreteam@netfilter.org,
+	bpf@vger.kernel.org, linux-input@vger.kernel.org,
+	cgroups@vger.kernel.org, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+	fsverity@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	netfilter-devel@vger.kernel.org, alexei.starovoitov@gmail.com,
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
+Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
+Message-ID: <Zb6Jt30bNcNhM6zR@surya>
+References: <cover.1706491398.git.dxu@dxuuu.xyz>
+ <Zb12EZt0BAKOPBk/@surya>
+ <Zb5QWCw3Tg26_MDa@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,168 +92,114 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d34b717f8f842b9c3e9f70f0e8ffd245a5d2460.1706861261.git.lorenzo@kernel.org>
+In-Reply-To: <Zb5QWCw3Tg26_MDa@krava>
 
-Hi Lorenzo,
+On Sat, Feb 03, 2024 at 03:40:24PM +0100, Jiri Olsa wrote:
+> On Fri, Feb 02, 2024 at 03:09:05PM -0800, Manu Bretelle wrote:
+> > On Sun, Jan 28, 2024 at 06:24:05PM -0700, Daniel Xu wrote:
+> > > === Description ===
+> > > 
+> > > This is a bpf-treewide change that annotates all kfuncs as such inside
+> > > .BTF_ids. This annotation eventually allows us to automatically generate
+> > > kfunc prototypes from bpftool.
+> > > 
+> > > We store this metadata inside a yet-unused flags field inside struct
+> > > btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+> > > 
+> > > More details about the full chain of events are available in commit 3's
+> > > description.
+> > > 
+> > > The accompanying pahole and bpftool changes can be viewed
+> > > here on these "frozen" branches [0][1].
+> > > 
+> > > [0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
+> > > [1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
+> > 
+> > 
+> > I hit a similar issue to [0] on master
+> > 943b043aeecc ("selftests/bpf: Fix bench runner SIGSEGV")
+> >  when cross-compiling on x86_64 (LE) to s390x (BE).
+> > I do have CONFIG_DEBUG_INFO_BTF enable and the issue would not trigger if
+> > I disabled CONFIG_DEBUG_INFO_BTF (and with the fix mentioned in [0]).
+> > 
+> > What seems to happen is that `tools/resolve_btfids` is ran in the context of the
+> > host endianess and if I printk before the WARN_ON:
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index ef380e546952..a9ed7a1a4936 100644
+> >   --- a/kernel/bpf/btf.c
+> >   +++ b/kernel/bpf/btf.c
+> >   @@ -8128,6 +8128,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+> >            * WARN() for initcall registrations that do not check errors.
+> >            */
+> >           if (!(kset->set->flags & BTF_SET8_KFUNCS)) {
+> >   +        printk("Flag 0x%08X, expected 0x%08X\n", kset->set->flags, BTF_SET8_KFUNCS);
+> >                   WARN_ON(!kset->owner);
+> >                   return -EINVAL;
+> >           }
+> > 
+> > the boot logs would show:
+> >   Flag 0x01000000, expected 0x00000001
+> > 
+> > The issue did not happen prior to
+> > 6f3189f38a3e ("bpf: treewide: Annotate BPF kfuncs in BTF")
+> > has only 0 was written before.
+> > 
+> > It seems [1] will be addressing cross-compilation, but it did not fix it as is
+> > by just applying on top of master, so probably some of the changes will also need
+> > to be ported to `tools/include/linux/btf_ids.h`?
+> 
+> the fix in [1] is fixing flags in set8's pairs, but not the global flags
+> 
+> it looks like Viktor's fix should now also swap that as well? like in the
+> change below on top of Viktor's changes (untested)
+> 
+> jirka
+> 
+> 
+> ---
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index d01603ef6283..c44d57fec390 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -706,6 +706,8 @@ static int sets_patch(struct object *obj)
+>  			 * correctly translate everything.
+>  			 */
+>  			if (need_bswap) {
+> +				set8->flags = bswap_32(set8->flags);
+> +
+>  				for (i = 0; i < cnt; i++) {
+>  					set8->pairs[i].flags =
+>  						bswap_32(set8->pairs[i].flags);
+> 
 
-kernel test robot noticed the following build warnings:
+That should work. Here are a few tests I ran:
 
-[auto build test WARNING on net-next/main]
+$ md5sum /tmp/kbuild-s390x/vmlinux.*
+eb658e51e089f3c5b2c8909a29dc9997  /tmp/kbuild-s390x/vmlinux.a
+# plain vmlinux before running resolv_btfids (all 0s)
+ea907cd46a1a73b8276b5f2a82af00ca  /tmp/kbuild-s390x/vmlinux.before_resolv
+# x86_64 resolv_btfids on master without Viktor's patch
+980a40c3a3ff563d1c2d1ebdd5071a23  /tmp/kbuild-s390x/vmlinux.resolv_native
+# x86_64 resolv_btfids on master with Viktor's patch
+b986d19e242719ebea41c578235da662  /tmp/kbuild-s390x/vmlinux.resolv_native_patch_viktor
+# x86_64 resolv_btfids on master with Viktor's patch and your suggested patch
+4edd8752ff01129945bd442689b1927b  /tmp/kbuild-s390x/vmlinux.resolv_native_patch_viktor_patched
+# s390x resolv_btfids run with qemu-s390x-static
+4edd8752ff01129945bd442689b1927b  /tmp/kbuild-s390x/vmlinux.resolv_s390x
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lorenzo-Bianconi/net-add-generic-percpu-page_pool-allocator/20240202-162516
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/1d34b717f8f842b9c3e9f70f0e8ffd245a5d2460.1706861261.git.lorenzo%40kernel.org
-patch subject: [PATCH v7 net-next 1/4] net: add generic percpu page_pool allocator
-config: x86_64-randconfig-121-20240203 (https://download.01.org/0day-ci/archive/20240203/202402032223.Imbb9JgJ-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402032223.Imbb9JgJ-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402032223.Imbb9JgJ-lkp@intel.com/
+and some hexdiff of those binaries:
 
-sparse warnings: (new ones prefixed by >>)
-   net/core/dev.c:3364:23: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __wsum [usertype] csum @@     got unsigned int @@
-   net/core/dev.c:3364:23: sparse:     expected restricted __wsum [usertype] csum
-   net/core/dev.c:3364:23: sparse:     got unsigned int
-   net/core/dev.c:3364:23: sparse: sparse: cast from restricted __wsum
->> net/core/dev.c:11809:34: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct page_pool * @@
-   net/core/dev.c:11809:34: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   net/core/dev.c:11809:34: sparse:     got struct page_pool *
-   net/core/dev.c: note: in included file (through include/linux/smp.h, include/linux/lockdep.h, include/linux/spinlock.h, ...):
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   net/core/dev.c:205:9: sparse: sparse: context imbalance in 'unlist_netdevice' - different lock contexts for basic block
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   net/core/dev.c:3804:17: sparse: sparse: context imbalance in '__dev_queue_xmit' - different lock contexts for basic block
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   net/core/dev.c:5184:17: sparse: sparse: context imbalance in 'net_tx_action' - different lock contexts for basic block
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
->> net/core/dev.c:11809:34: sparse: sparse: dereference of noderef expression
 
-vim +11809 net/core/dev.c
+# difference between master's native build and s390x build.... has byte swapping for set8 and others
+diff -ruN <(xxd /tmp/kbuild-s390x/vmlinux.resolv_s390x) <(xxd /tmp/kbuild-s390x/vmlinux.resolv_native) > diff_s390x_native.diff
+https://gist.github.com/chantra/c3d58637a08a6f7340953dc155bb18cc
 
- 11722	
- 11723	/*
- 11724	 *       This is called single threaded during boot, so no need
- 11725	 *       to take the rtnl semaphore.
- 11726	 */
- 11727	static int __init net_dev_init(void)
- 11728	{
- 11729		int i, rc = -ENOMEM;
- 11730	
- 11731		BUG_ON(!dev_boot_phase);
- 11732	
- 11733		net_dev_struct_check();
- 11734	
- 11735		if (dev_proc_init())
- 11736			goto out;
- 11737	
- 11738		if (netdev_kobject_init())
- 11739			goto out;
- 11740	
- 11741		INIT_LIST_HEAD(&ptype_all);
- 11742		for (i = 0; i < PTYPE_HASH_SIZE; i++)
- 11743			INIT_LIST_HEAD(&ptype_base[i]);
- 11744	
- 11745		if (register_pernet_subsys(&netdev_net_ops))
- 11746			goto out;
- 11747	
- 11748		/*
- 11749		 *	Initialise the packet receive queues.
- 11750		 */
- 11751	
- 11752		for_each_possible_cpu(i) {
- 11753			struct work_struct *flush = per_cpu_ptr(&flush_works, i);
- 11754			struct softnet_data *sd = &per_cpu(softnet_data, i);
- 11755	
- 11756			INIT_WORK(flush, flush_backlog);
- 11757	
- 11758			skb_queue_head_init(&sd->input_pkt_queue);
- 11759			skb_queue_head_init(&sd->process_queue);
- 11760	#ifdef CONFIG_XFRM_OFFLOAD
- 11761			skb_queue_head_init(&sd->xfrm_backlog);
- 11762	#endif
- 11763			INIT_LIST_HEAD(&sd->poll_list);
- 11764			sd->output_queue_tailp = &sd->output_queue;
- 11765	#ifdef CONFIG_RPS
- 11766			INIT_CSD(&sd->csd, rps_trigger_softirq, sd);
- 11767			sd->cpu = i;
- 11768	#endif
- 11769			INIT_CSD(&sd->defer_csd, trigger_rx_softirq, sd);
- 11770			spin_lock_init(&sd->defer_lock);
- 11771	
- 11772			init_gro_hash(&sd->backlog);
- 11773			sd->backlog.poll = process_backlog;
- 11774			sd->backlog.weight = weight_p;
- 11775	
- 11776			if (net_page_pool_create(i))
- 11777				goto out;
- 11778		}
- 11779	
- 11780		dev_boot_phase = 0;
- 11781	
- 11782		/* The loopback device is special if any other network devices
- 11783		 * is present in a network namespace the loopback device must
- 11784		 * be present. Since we now dynamically allocate and free the
- 11785		 * loopback device ensure this invariant is maintained by
- 11786		 * keeping the loopback device as the first device on the
- 11787		 * list of network devices.  Ensuring the loopback devices
- 11788		 * is the first device that appears and the last network device
- 11789		 * that disappears.
- 11790		 */
- 11791		if (register_pernet_device(&loopback_net_ops))
- 11792			goto out;
- 11793	
- 11794		if (register_pernet_device(&default_device_ops))
- 11795			goto out;
- 11796	
- 11797		open_softirq(NET_TX_SOFTIRQ, net_tx_action);
- 11798		open_softirq(NET_RX_SOFTIRQ, net_rx_action);
- 11799	
- 11800		rc = cpuhp_setup_state_nocalls(CPUHP_NET_DEV_DEAD, "net/dev:dead",
- 11801					       NULL, dev_cpu_dead);
- 11802		WARN_ON(rc < 0);
- 11803		rc = 0;
- 11804	out:
- 11805		if (rc < 0) {
- 11806			for_each_possible_cpu(i) {
- 11807				struct page_pool *pp_ptr;
- 11808	
- 11809				pp_ptr = per_cpu_ptr(system_page_pool, i);
- 11810				if (!pp_ptr)
- 11811					continue;
- 11812	
- 11813				page_pool_destroy(pp_ptr);
- 11814				per_cpu(system_page_pool, i) = NULL;
- 11815			}
- 11816		}
- 11817	
- 11818		return rc;
- 11819	}
- 11820	
+# difference betwee Viktor's version and  s390x build.... squinting my eyes I only see the global set8 is missing
+diff -ruN <(xxd /tmp/kbuild-s390x/vmlinux.resolv_s390x) <(xxd /tmp/kbuild-s390x/vmlinux.resolv_native_patch_viktor) > diff_s390x_native_viktor.diff
+https://gist.github.com/chantra/61cfff02b456ae72d3c0161ce1897097
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Have a good weekend all!
+
+Manu
 
