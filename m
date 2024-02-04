@@ -1,156 +1,159 @@
-Return-Path: <bpf+bounces-21184-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21185-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C008491BA
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 00:38:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA9148491F0
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 00:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5FBEB21244
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 23:38:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652E91F21BEC
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 23:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F006BE65;
-	Sun,  4 Feb 2024 23:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11916BE5D;
+	Sun,  4 Feb 2024 23:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrBALcvN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mvum6iXl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62BFBE5A;
-	Sun,  4 Feb 2024 23:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012EC10A13
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 23:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707089873; cv=none; b=mioRwusR6sgTL2SamgL4HwosnHqUfIFYA3aHfPss2+bMbEcu+f/iNX163xlbpi5iAJmneeSdqTXLwhjB9qMRkM470Xg0hWzhj28SDFpw9s/IypxzfycMHbKTgaBJblKKcweXQHJxXaTPiiYWvt8ged4257G2ePo9RnactQVGmEs=
+	t=1707090961; cv=none; b=h/eD12OEoNnD9d49vXKvFgkGxLmNs1E4VI0yGJnwxIqTfUn4kQA/Dh7xw8qbAFcZ/aBGJfyxgJrR48kBxKco7CvZDQ6gLVu+rph7WIdY1Y3ryiBUgFywlwV56+UVas9/6gDPBpQWaug4uhB0Krva9TKsJS7ujJDQrgoQ7tUZsqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707089873; c=relaxed/simple;
-	bh=xMuEX2HhSOWhMjSoGbp5fz3b2E6nd36eVhjFe8HoL38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kfn5pBl76gXRQdLKHx/vhH5LkLBKE9tD++lxluwoRzEsmoXINpTu+ewNS8iCdXCG6BZ73diT4kjo+z3FPx5jSFG+QKwuuYal6zwhiPNgTGYR0AAhOCvm5YUpQRIeFfIZ2AfSPC3dW9tA3pXE4DENbBE0QwgCRNLWP/O/B8edqTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrBALcvN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F6CC43394;
-	Sun,  4 Feb 2024 23:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707089873;
-	bh=xMuEX2HhSOWhMjSoGbp5fz3b2E6nd36eVhjFe8HoL38=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IrBALcvNbwMwYTt/GqUh4UnKd/8Xf54XeNhdJHVGGXCkEf6Tjuh8RjSs95BijMqsB
-	 9Yip2ZsFOXHb4dAMk2aD5FEhaQ6t1572WYq4dEsNguG+gpjY5tRKNwWQw6cG1Ln7Gj
-	 jhU3cyo6rtNvC9Dx5t/l1btd1NvRf5dTS5TxpgZTJo2VEb8+1iGU2kbVsUyiWii3kq
-	 zLZCAgWbORD+nIAeHnQ+AYH0m+9ePTldDSimTjmgLG96A2elONzv8IN1yYjrBvSq9M
-	 sfTq5t2/8dr7ZxbxOU2GZV7GjQ6uQiW/xjdaMDzAJTfE8U8pXEcV0DZAEcbDNaIBaL
-	 YVAj5wNN2x5rQ==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51032058f17so4337893e87.3;
-        Sun, 04 Feb 2024 15:37:53 -0800 (PST)
-X-Gm-Message-State: AOJu0YwqODpNtKVdwRH37esJvHL8qt809oNYQdEKeWzq7z+u7Y012FwR
-	djp6LjxtCgYTIpaWLy6opRwHyAHEbIPKaCILCwR0L8qoYTUxvuSidO5OZO71opv0MiELzclrJyC
-	ko+3UhD3eCJXwjgAOLw7IXBDfO6Y=
-X-Google-Smtp-Source: AGHT+IHtkWru/up13iHyvWFxO8oQEUipK4WnOY8CJZFPxIrVWaeLANbZx0U4CByTW3mJfdxicWs7Eevh8OSiGVnp6OA=
-X-Received: by 2002:a05:6512:2384:b0:511:3489:507b with SMTP id
- c4-20020a056512238400b005113489507bmr7300367lfv.19.1707089871527; Sun, 04 Feb
- 2024 15:37:51 -0800 (PST)
+	s=arc-20240116; t=1707090961; c=relaxed/simple;
+	bh=bx+yzkoiDRfkO1GSwdFBVxJH7+SX44JZV0tcPTU5r0I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oZl7iEduk8+ArK6hcuF4EnR8JPtef4lm2E+adNmcWx5nlzkB/tvjG8Mk1XwRvQcM/Iv1w0B87BYhK9o98tXl/dJ4d4MhWUOy/ueBFijUwf2QLl1FEuCxV4NlV4FtXjpL+nfUiuaQLZaXI0J8ncgAir/EP5z7Cq+I6ANJl2/ttCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mvum6iXl; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fd7f19f9-71b7-427d-8a5c-92b349dd9abb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707090956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PeaRFdSTi2buYi/NOWBm0kjI9D9PhKXSGbCvV8a81zs=;
+	b=Mvum6iXl7LZpllMMtcSBjkDZDDCumgcjAF55dPK6gLA7FTow9/aYX0e2nTAhPtZOuEeZI4
+	PBlFXiwRhUTeExfZ6bE/XpcgFD5rbHsSZ+XgrRxmiuf4H9bJuhnq38VNXqjIagvUuaFltU
+	gTCWNNeN7pLkZHVvEcrR2oc0bijTHP0=
+Date: Sun, 4 Feb 2024 15:55:45 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204075634.32969-1-masahiroy@kernel.org> <25615f41-a725-4276-bc0a-a3e7fe47b864@linux.dev>
-In-Reply-To: <25615f41-a725-4276-bc0a-a3e7fe47b864@linux.dev>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 5 Feb 2024 08:37:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQiz1uMxHZ9K9=g=4goQB0TTFrdOcjgN=ZemU6BfYWqnQ@mail.gmail.com>
-Message-ID: <CAK7LNAQiz1uMxHZ9K9=g=4goQB0TTFrdOcjgN=ZemU6BfYWqnQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: merge two CONFIG_BPF entries
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Allow calling static subprogs while
+ holding a bpf_spin_lock
+Content-Language: en-GB
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ David Vernet <void@manifault.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Barret Rhoden <brho@google.com>,
+ Tejun Heo <tj@kernel.org>
+References: <20240204120206.796412-1-memxor@gmail.com>
+ <20240204120206.796412-2-memxor@gmail.com>
+ <20240204213313.GB120243@maniforge>
+ <CAP01T75Qq8DN=A0uxF4F5hNm6igLRLnGWQFXst=DAO95Lrzsvg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAP01T75Qq8DN=A0uxF4F5hNm6igLRLnGWQFXst=DAO95Lrzsvg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 5, 2024 at 3:11=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
+
+On 2/4/24 2:10 PM, Kumar Kartikeya Dwivedi wrote:
+> On Sun, 4 Feb 2024 at 22:33, David Vernet <void@manifault.com> wrote:
+>> On Sun, Feb 04, 2024 at 12:02:05PM +0000, Kumar Kartikeya Dwivedi wrote:
+>>> Currently, calling any helpers, kfuncs, or subprogs except the graph
+>>> data structure (lists, rbtrees) API kfuncs while holding a bpf_spin_lock
+>>> is not allowed. One of the original motivations of this decision was to
+>>> force the BPF programmer's hand into keeping the bpf_spin_lock critical
+>>> section small, and to ensure the execution time of the program does not
+>>> increase due to lock waiting times. In addition to this, some of the
+>>> helpers and kfuncs may be unsafe to call while holding a bpf_spin_lock.
+>>>
+>>> However, when it comes to subprog calls, atleast for static subprogs,
+>>> the verifier is able to explore their instructions during verification.
+>>> Therefore, it is similar in effect to having the same code inlined into
+>>> the critical section. Hence, not allowing static subprog calls in the
+>>> bpf_spin_lock critical section is mostly an annoyance that needs to be
+>>> worked around, without providing any tangible benefit.
+>>>
+>>> Unlike static subprog calls, global subprog calls are not safe to permit
+>>> within the critical section, as the verifier does not explore them
+>>> during verification, therefore whether the same lock will be taken
+>>> again, or unlocked, cannot be ascertained.
+>>>
+>>> Therefore, allow calling static subprogs within a bpf_spin_lock critical
+>>> section, and only reject it in case the subprog linkage is global.
+>>>
+>>> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>> Looks good, thanks for this improvement. I had the same suggestion as
+>> Yonghong in [0], and also left a question below.
+>>
+>> [0]: https://lore.kernel.org/all/2e008ab1-44b8-4d1b-a86d-1f347d7630e6@linux.dev/
+>>
+>> Acked-by: David Vernet <void@manifault.com>
+>>
+>>> ---
+>>>   kernel/bpf/verifier.c                                  | 10 +++++++---
+>>>   tools/testing/selftests/bpf/progs/verifier_spin_lock.c |  2 +-
+>>>   2 files changed, 8 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 64fa188d00ad..f858c959753b 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -9493,6 +9493,12 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>>        if (subprog_is_global(env, subprog)) {
+>>>                const char *sub_name = subprog_name(env, subprog);
+>>>
+>>> +             /* Only global subprogs cannot be called with a lock held. */
+>>> +             if (env->cur_state->active_lock.ptr) {
+>>> +                     verbose(env, "function calls are not allowed while holding a lock\n");
+>>> +                     return -EINVAL;
+>>> +             }
+>>> +
+>>>                if (err) {
+>>>                        verbose(env, "Caller passes invalid args into func#%d ('%s')\n",
+>>>                                subprog, sub_name);
+>>> @@ -17644,7 +17650,6 @@ static int do_check(struct bpf_verifier_env *env)
+>>>
+>>>                                if (env->cur_state->active_lock.ptr) {
+>>>                                        if ((insn->src_reg == BPF_REG_0 && insn->imm != BPF_FUNC_spin_unlock) ||
+>>> -                                         (insn->src_reg == BPF_PSEUDO_CALL) ||
+>>>                                            (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+>>>                                             (insn->off != 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
+>>>                                                verbose(env, "function calls are not allowed while holding a lock\n");
+>>> @@ -17692,8 +17697,7 @@ static int do_check(struct bpf_verifier_env *env)
+>>>                                        return -EINVAL;
+>>>                                }
+>>>   process_bpf_exit_full:
+>>> -                             if (env->cur_state->active_lock.ptr &&
+>>> -                                 !in_rbtree_lock_required_cb(env)) {
+>>> +                             if (env->cur_state->active_lock.ptr && !env->cur_state->curframe) {
+>> Can we do the same thing here for the RCU check below? It seems like the
+>> exact same issue, as we're already allowed to call subprogs from within
+>> an RCU read region, but the verifier will get confused and think we
+>> haven't unlocked by the time we return to the caller.
+>>
+>> Assuming that's the case, we can take care of it in a separate patch
+>> set.
+> Makes sense, I'll send a separate patch for the RCU fix.
+> Thanks for the review.
+
+The following is what I recommended as well in another thread:
+
+https://lore.kernel.org/bpf/20240131145454.86990-1-laoar.shao@gmail.com/T/#mff17cd64eeb1e17bd0e3e046fb52efeef9c86c25
+
 >
->
-> On 2/3/24 11:56 PM, Masahiro Yamada wrote:
-> > 'config BPF' exists in both init/Kconfig and kernel/bpf/Kconfig.
-> >
-> > Commit b24abcff918a ("bpf, kconfig: Add consolidated menu entry for bpf
-> > with core options") added the second one to kernel/bpf/Kconfig instead
-> > of moving the existing one.
-> >
-> > Merge them together.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >   init/Kconfig       | 5 -----
-> >   kernel/bpf/Kconfig | 1 +
-> >   2 files changed, 1 insertion(+), 5 deletions(-)
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 8d4e836e1b6b..46ccad83a664 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -1457,11 +1457,6 @@ config SYSCTL_ARCH_UNALIGN_ALLOW
-> >   config HAVE_PCSPKR_PLATFORM
-> >       bool
-> >
-> > -# interpreter that classic socket filters depend on
-> > -config BPF
-> > -     bool
-> > -     select CRYPTO_LIB_SHA1
-> > -
-> >   menuconfig EXPERT
-> >       bool "Configure standard kernel features (expert users)"
-> >       # Unhide debug options, to make the on-by-default options visible
-> > diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> > index 6a906ff93006..bc25f5098a25 100644
-> > --- a/kernel/bpf/Kconfig
-> > +++ b/kernel/bpf/Kconfig
-> > @@ -3,6 +3,7 @@
-> >   # BPF interpreter that, for example, classic socket filters depend on=
-.
-> >   config BPF
-> >       bool
-> > +     select CRYPTO_LIB_SHA1
->
-> Currently, the kernel/bpf directory is guarded with CONFIG_BPF
->    obj-$(CONFIG_BPF) +=3D bpf/
-> in kernel/bpf/Makefile.
-
-
-Wrong.
-
-"in kernel/Makefile".
-
-
-Why is it related to this patch?
-
-
-
-> Your patch probably works since there are lots of some other BPF related
-> configurations which requires CONFIG_BPF. But maybe we sould
-> keep 'config BPF' in init/Kconfig and remove 'config BPF'
-> in kernel/bpf/Kconfig. This will be less confusing?
-
-
-Why?
-
-
-
-> >
-> >   # Used by archs to tell that they support BPF JIT compiler plus which
-> >   # flavour. Only one of the two can be selected for a specific arch si=
-nce
-
-
-
---=20
-Best Regards
-Masahiro Yamada
 
