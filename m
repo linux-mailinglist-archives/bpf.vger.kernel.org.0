@@ -1,223 +1,146 @@
-Return-Path: <bpf+bounces-21170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8AD1849090
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 22:07:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D718490A1
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 22:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506BA1F228B8
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 21:07:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B793B2146E
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 21:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59530339BD;
-	Sun,  4 Feb 2024 21:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0685D28E3E;
+	Sun,  4 Feb 2024 21:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="gtQxJm4k";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vJZe1EsH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pfr+cBKH"
 X-Original-To: bpf@vger.kernel.org
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27D532C9C;
-	Sun,  4 Feb 2024 21:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E51D288D9
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 21:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707080821; cv=none; b=R7crLjqtx/396ByLciCf9D0Iu3D4np3LlRTD7VRbXqWpU6mZB1wllRy6c2seQ6n2zyGsD7JpnLObHo4aY3jnAHgetW0tI7nAfFe4Rsp0G8nkRjtz1lZbhfc5N9lxJe6ZZY49lbHw74WSdlgbsOaMMmI7BIgDN3Nzh1WW68rE7OA=
+	t=1707081827; cv=none; b=Y4OTpWp8aVMKEtmQ641LBykB/7q1hjbMklSoQR+3HkbwzmxFrT6KnT982P0AQpxmqEZ2sUyZ/wZxj05vr4VAC9lxTUYuccqyzxjz7+g3d2ynXApdqlusiE+4PGQmd9qMhdCbobo2Jd0IKO29DsaSOYJaqk4f/scSU6C3gUQdEXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707080821; c=relaxed/simple;
-	bh=YAsD/PAFWTIjhY4PrFZj7zLRMfr6sUXw/riMUTifiN4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VFJ2vHGZgmtqYBfV8Bfaq6bZeFjNZsGowdHUWxh/JyixAnwfUTTFc9l8pDYK/CnVhxMb7wYJiG46YQN5QnoSsYBLuYRz/UOP31xIa6eMOe2SoC7Bh5UBS7t+q6MYNrHc9BBJIkOwjG83nVWe/73hPnbcuqVN8NamoV1tHSwEXxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=gtQxJm4k; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vJZe1EsH; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.west.internal (Postfix) with ESMTP id 3A5423200A0A;
-	Sun,  4 Feb 2024 16:06:56 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sun, 04 Feb 2024 16:06:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1707080815; x=
-	1707167215; bh=EFrOfStAu11VQIYVVSfiFO1xvDu+gV2R6+8jhfL5s5o=; b=g
-	tQxJm4k0Sj763PETXN1Uzl2sXs2LMt+C+Vr98PxiG8kb4V6crVeuT0VD2tJC4GBk
-	4aMdpZCArNVmFAHLOkoLMFCpexMdu7Z+5lCKhgfof1N9gLUNURVxXDerMxtMg4Tj
-	tDwQ6iF++PEu6fEq9BsgKhrGn2h5HE9AmonRp42Wvtcfw7kiagSGP3iA+uIabYzt
-	dKkEm3Ge7FA3IsHyhCvSwiJmaWasoFed3f9slCAy14GnONlolJxwz+wQjpEie0+J
-	RLq7e4OS6RUg+D7Pyqysrw39wGyeTKVEBx5IcbPPNL+6p7QtON++uqKuZ1HM5gZ/
-	aEj4CMFnoMa+F+uhjSGYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707080815; x=
-	1707167215; bh=EFrOfStAu11VQIYVVSfiFO1xvDu+gV2R6+8jhfL5s5o=; b=v
-	JZe1EsHKEPtaQ+cteY2V62aWGtSKOYBPH3vVtv93WFUt3z6RfxmkTz7Asv8pKy+3
-	LBVZA2uRhZnzSH0xrTLWeL4GlT+RgKj0TIDHQcaPxIntAeBBJYllBXUixL2IrbfT
-	Z2IJSf4sgyOf8CyJc3FM5Vb2GDJGpSoNgqQira/JSm4JL665ULVi4rVq8/bK23f+
-	/PjDNwl19q8uTn6adHjJj2jdG82xP/AsIZGBUJy8pgUhYgMv/iiNJdAFmnLcKZCa
-	4NH7RksWyE3NFs9Katt4gSmZxhp1AjzVfELJ28AlPO//NasIbfoeWhXPWYmHxu9p
-	sLXeJ0ZqKiopGr9MQIsUA==
-X-ME-Sender: <xms:b_y_ZQIArogJs48sibfel0f2VPWXnTUVEazCIuAP1HfBTuxh_mcFkA>
-    <xme:b_y_ZQLp5YudTFi_Xf21UB53O2PzOyfggUzNWxQ4N1k_LMW7oo4IqNKB4sO7fX5lz
-    KUG6zRC_ZOvhlw2_w>
-X-ME-Received: <xmr:b_y_ZQtadKFe3c0oIaRKxrfl7OWCruWZqixA3ZCi_7v7j3VVpjoXmTWT2KMvnkqBnQ9xgmD-ts7R_joREdBsFg2ypx9ng5wAOhstTOBDvXBwoQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedukedgudeggecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeelieduhefhteffie
-    dutdejgfdutdekudelueelveekjeeitdefueeutdelhedvfeenucffohhmrghinhepkhgv
-    rhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:b_y_ZdakdxiqjAt-sSjUi32LilLIgalL0XgNC5EzOU-b3Gt3-Kg74A>
-    <xmx:b_y_ZXY3la5q8ln4CPYcss_Tq4etDlNI-1y9cFprxRLTnlU3ZE7r9A>
-    <xmx:b_y_ZZA9C1vbAhdgHHtgyEvprHooJFvAZZjqE-ieWCMDghfN455AzQ>
-    <xmx:b_y_ZYK9bRDGWnj2O0yEUlKUzU_ygaX04SzgtYGI2fBpyK63KTxnpA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 4 Feb 2024 16:06:53 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: quentin@isovalent.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	olsajiri@gmail.com,
-	alan.maguire@oracle.com
-Cc: martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] bpftool: Support dumping kfunc prototypes from BTF
-Date: Sun,  4 Feb 2024 14:06:35 -0700
-Message-ID: <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1707080349.git.dxu@dxuuu.xyz>
-References: <cover.1707080349.git.dxu@dxuuu.xyz>
+	s=arc-20240116; t=1707081827; c=relaxed/simple;
+	bh=QEp08/RfQBlfOxoPiZe0keyH+hSYXyz06TTxAtVKJUA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n4PwwCH4av8LoXmAzq/BSlhQKGDGbs1223oVFaQ6hCbliQyEuwivvrGuCuLYGSyQxqnIs2vOKV8wmgSPhYAleZxz3rBmUcXuoKlqS3RaiTHWAL3lXC6j5VC7cDR3FZrIEIWmWAAxM3dJcndcjLyg81H6JAdujWLiDjYOm7k6oHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pfr+cBKH; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2e008ab1-44b8-4d1b-a86d-1f347d7630e6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707081823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gb4n3i9d9YrD1/hc+W/zDHVRkhOH4FHLZ91SX2y3OqY=;
+	b=pfr+cBKHq1F7Jncrb/ZfVXYouidEfyDuPnCxWKktrpk5fD/qJj0Bpdtdq3Aoy18QonT6hf
+	/mocdbcOzZ69VWXqvl4UlHMxbkWA7IKX/quT7ZUrBJsjYWZEkwnwAmC12KQL64kIEvJdT/
+	x9ObYzjktidXFYPv0ewMKcYVhmuiy6c=
+Date: Sun, 4 Feb 2024 13:23:33 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Allow calling static subprogs while
+ holding a bpf_spin_lock
+Content-Language: en-GB
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Barret Rhoden <brho@google.com>,
+ David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>
+References: <20240204120206.796412-1-memxor@gmail.com>
+ <20240204120206.796412-2-memxor@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240204120206.796412-2-memxor@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-This patch enables dumping kfunc prototypes from bpftool. This is useful
-b/c with this patch, end users will no longer have to manually define
-kfunc prototypes. For the kernel tree, this also means we can drop
-kfunc prototypes from:
 
-        tools/testing/selftests/bpf/bpf_kfuncs.h
-        tools/testing/selftests/bpf/bpf_experimental.h
+On 2/4/24 4:02 AM, Kumar Kartikeya Dwivedi wrote:
+> Currently, calling any helpers, kfuncs, or subprogs except the graph
+> data structure (lists, rbtrees) API kfuncs while holding a bpf_spin_lock
+> is not allowed. One of the original motivations of this decision was to
+> force the BPF programmer's hand into keeping the bpf_spin_lock critical
+> section small, and to ensure the execution time of the program does not
+> increase due to lock waiting times. In addition to this, some of the
+> helpers and kfuncs may be unsafe to call while holding a bpf_spin_lock.
+>
+> However, when it comes to subprog calls, atleast for static subprogs,
+> the verifier is able to explore their instructions during verification.
+> Therefore, it is similar in effect to having the same code inlined into
+> the critical section. Hence, not allowing static subprog calls in the
+> bpf_spin_lock critical section is mostly an annoyance that needs to be
+> worked around, without providing any tangible benefit.
+>
+> Unlike static subprog calls, global subprog calls are not safe to permit
+> within the critical section, as the verifier does not explore them
+> during verification, therefore whether the same lock will be taken
+> again, or unlocked, cannot be ascertained.
+>
+> Therefore, allow calling static subprogs within a bpf_spin_lock critical
+> section, and only reject it in case the subprog linkage is global.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Example usage:
+SGTM with a small nit below.
 
-        $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-        $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
-        extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __weak __ksym;
-        extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym;
-        extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags) __weak __ksym;
+> ---
+>   kernel/bpf/verifier.c                                  | 10 +++++++---
+>   tools/testing/selftests/bpf/progs/verifier_spin_lock.c |  2 +-
+>   2 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 64fa188d00ad..f858c959753b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9493,6 +9493,12 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>   	if (subprog_is_global(env, subprog)) {
+>   		const char *sub_name = subprog_name(env, subprog);
+>   
+> +		/* Only global subprogs cannot be called with a lock held. */
+> +		if (env->cur_state->active_lock.ptr) {
+> +			verbose(env, "function calls are not allowed while holding a lock\n");
 
-Note that this patch is only effective after the enabling pahole [0]
-change is merged and the resulting feature enabled with
---btf_features=decl_tag_kfuncs.
+Maybe explicit to mention "global function calls are not allowed ..."?
 
-[0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
+> +			return -EINVAL;
+> +		}
+> +
+>   		if (err) {
+>   			verbose(env, "Caller passes invalid args into func#%d ('%s')\n",
+>   				subprog, sub_name);
+> @@ -17644,7 +17650,6 @@ static int do_check(struct bpf_verifier_env *env)
+>   
+>   				if (env->cur_state->active_lock.ptr) {
+>   					if ((insn->src_reg == BPF_REG_0 && insn->imm != BPF_FUNC_spin_unlock) ||
+> -					    (insn->src_reg == BPF_PSEUDO_CALL) ||
+>   					    (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+>   					     (insn->off != 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
+>   						verbose(env, "function calls are not allowed while holding a lock\n");
+> @@ -17692,8 +17697,7 @@ static int do_check(struct bpf_verifier_env *env)
+>   					return -EINVAL;
+>   				}
+>   process_bpf_exit_full:
+> -				if (env->cur_state->active_lock.ptr &&
+> -				    !in_rbtree_lock_required_cb(env)) {
+> +				if (env->cur_state->active_lock.ptr && !env->cur_state->curframe) {
+>   					verbose(env, "bpf_spin_unlock is missing\n");
+>   					return -EINVAL;
+>   				}
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 91fcb75babe3..0fd78a476286 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -20,6 +20,8 @@
- #include "json_writer.h"
- #include "main.h"
- 
-+#define KFUNC_DECL_TAG		"bpf_kfunc"
-+
- static const char * const btf_kind_str[NR_BTF_KINDS] = {
- 	[BTF_KIND_UNKN]		= "UNKNOWN",
- 	[BTF_KIND_INT]		= "INT",
-@@ -454,6 +456,39 @@ static int dump_btf_raw(const struct btf *btf,
- 	return 0;
- }
- 
-+static int dump_btf_kfuncs(struct btf_dump *d, const struct btf *btf)
-+{
-+	DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts);
-+	int cnt = btf__type_cnt(btf);
-+	int i;
-+
-+	for (i = 1; i < cnt; i++) {
-+		const struct btf_type *t = btf__type_by_id(btf, i);
-+		const struct btf_type *kft;
-+		const char *name;
-+		int err;
-+
-+		if (!btf_is_decl_tag(t))
-+			continue;
-+
-+		name = btf__name_by_offset(btf, t->name_off);
-+		if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG)))
-+			continue;
-+
-+		printf("extern ");
-+
-+		kft = btf__type_by_id(btf, t->type);
-+		opts.field_name = btf__name_by_offset(btf, kft->name_off);
-+		err = btf_dump__emit_type_decl(d, kft->type, &opts);
-+		if (err)
-+			return err;
-+
-+		printf(" __weak __ksym;\n\n");
-+	}
-+
-+	return 0;
-+}
-+
- static void __printf(2, 0) btf_dump_printf(void *ctx,
- 					   const char *fmt, va_list args)
- {
-@@ -476,6 +511,12 @@ static int dump_btf_c(const struct btf *btf,
- 	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
- 	printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
- 	printf("#endif\n\n");
-+	printf("#ifndef __ksym\n");
-+	printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
-+	printf("#endif\n\n");
-+	printf("#ifndef __weak\n");
-+	printf("#define __weak __attribute__((weak))\n");
-+	printf("#endif\n\n");
- 
- 	if (root_type_cnt) {
- 		for (i = 0; i < root_type_cnt; i++) {
-@@ -491,6 +532,10 @@ static int dump_btf_c(const struct btf *btf,
- 			if (err)
- 				goto done;
- 		}
-+
-+		err = dump_btf_kfuncs(d, btf);
-+		if (err)
-+			goto done;
- 	}
- 
- 	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
--- 
-2.42.1
+[...]
 
 
