@@ -1,120 +1,103 @@
-Return-Path: <bpf+bounces-21166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCCA84900F
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 20:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43654849024
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 20:45:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D93B41F2384B
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 19:20:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD4BA1F23686
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 19:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6C6250EC;
-	Sun,  4 Feb 2024 19:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G7fehI6f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3895E250F8;
+	Sun,  4 Feb 2024 19:45:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4221A250EA
-	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 19:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C791D24A08
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 19:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707074405; cv=none; b=T3EdSwzhLX0V5Lhtzl1/obXhdcAXj8+1/DI+45K1xSGTjGRyCYBKXOn1u2YCscelIE1+WYlCAl7R/TsjbHTZwLJBlVAZA+G84WlbsUH1S2dS0BvY/ljJLYCnWxUBbE5tDpT1NByAJMS9BzPr6pkliTI6tidTvHun6Ii7A1kgGQk=
+	t=1707075911; cv=none; b=PBor6kZjhMwEAT7TfoU/y6h1gfYXNeO7kdXKUHbEg4Yk61nirqyS4amXm3yMh2PcMkT+47ReMsoCbDxVOT5AJuWll1OcbBadbEsqfOYp0GJ+iLpa7T4GYjCBdUd6cw4hMhYKARs2RA1oHm/1oe6eu4mYABhl37l75EAiW/eys1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707074405; c=relaxed/simple;
-	bh=jy3L3slsBvA+qD/r81vGled26nxAGGHFv+Jc7iCQ+rU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b8jnUsnoY1PSKjibJyqgSqsUBmEnbBxm3KL/nlPV5Yf/unDcejM4kWdLZi8f7IO9lcxlJEw21O1OB2qr8GzZqQoCZGbQXopbe8NKFCHKlb3kygobEKzo6cOUBEEnyLFQ9dK4DPRdQB8ICsa81QwSjrzBEOSxo7D6XPdw/JBplPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G7fehI6f; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a910fc94-47cd-419e-baf9-5c00140cbc60@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707074401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pD6uq8KSVTHx6BMduUbEumYY42Zow4xEpIeHUMlQWO4=;
-	b=G7fehI6fRJJQ2OJJ1+TfW+GkPbOpYvJXfi5c3DxZenJ8TldAGlOBZTJG0EJ/Z5VKDVz3aX
-	E0N2AMM1MvnbS5QMhTP/v/bqlW9YiXXCl5bIeCGNjFpAhazsw+yMz0sTWawe1p0b4qsiKM
-	J/M0V7MjJSbFc4BoFbOIJLVTrO+6yq8=
-Date: Sun, 4 Feb 2024 11:19:54 -0800
+	s=arc-20240116; t=1707075911; c=relaxed/simple;
+	bh=R2oxl2QQesQ1Lx54dSQ9jvXgTuEth0TqpIzoaXqDQtA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FXxS6wM35UUGzng3zaVS01kOzdIIMGcRilwQ5QC41zjtIWHAyAbAgreoFyHIrLHNJOq0+wDzvKsQ6ikj1mCoY2LyboZyzjRH/SIpCiEutIPYuBq+qKaSV71VCYxf1L/mhHdEXdVHj2RiNxolkVBrCR9szgUWkVG/FxxfaxJvlMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id BCB0E2D5A2C0A; Sun,  4 Feb 2024 11:44:52 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix flaky test ptr_untrusted
+Date: Sun,  4 Feb 2024 11:44:52 -0800
+Message-Id: <20240204194452.2785936-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Add generic kfunc bpf_ffs64()
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Leon Hwang <hffilwlqm@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org
-References: <20240131155607.51157-1-hffilwlqm@gmail.com>
- <CAEf4BzYsYHi1s_7PZ5QknUg+Oe9drN0OSXbxT06WDB57o0Ju9w@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzYsYHi1s_7PZ5QknUg+Oe9drN0OSXbxT06WDB57o0Ju9w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
+Somehow recently I frequently hit the following test failure
+with either ./test_progs or ./test_progs-cpuv4:
+  serial_test_ptr_untrusted:PASS:skel_open 0 nsec
+  serial_test_ptr_untrusted:PASS:lsm_attach 0 nsec
+  serial_test_ptr_untrusted:PASS:raw_tp_attach 0 nsec
+  serial_test_ptr_untrusted:FAIL:cmp_tp_name unexpected cmp_tp_name: actu=
+al -115 !=3D expected 0
+  #182     ptr_untrusted:FAIL
 
-On 2/2/24 2:18 PM, Andrii Nakryiko wrote:
-> On Wed, Jan 31, 2024 at 7:56 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
->> This patchset introduces a new generic kfunc bpf_ffs64(). This kfunc
->> allows bpf to reuse kernel's __ffs64() function to improve ffs
->> performance in bpf.
->>
-> The downside of using kfunc for this is that the compiler will assume
-> that R1-R5 have to be spilled/filled, because that's function call
-> convention in BPF.
->
-> If this was an instruction, though, it would be much more efficient
-> and would avoid this problem. But I see how something like ffs64 is
-> useful. I think it would be good to also have popcnt instruction and a
-> few other fast bit manipulation operations as well.
->
-> Perhaps we should think about another BPF ISA extension to add fast
-> bit manipulation instructions?
+Further investigation found the failure is due to
+  bpf_probe_read_user_str()
+where reading user-level string attr->raw_tracepoint.name
+is not successfully, most likely due to the
+string itself still in disk and not populated into memory yet.
 
-Sounds a good idea to start the conversion. Besides popcnt, lzcnt
-is also a candidate. From llvm perspective, it would be hard to
-generate ffs64/popcnt/lzcnt etc. from source generic implementation.
-So most likely, inline asm will be used. libbpf could define
-some macros to make adoption easier. Verifier and JIT will do
-proper thing, either using corresponding arch insns directly or
-verifier will rewrite so JIT won't be aware of these insns.
+One solution is do a printf() call of the string before doing bpf
+syscall which will force the raw_tracepoint.name into memory.
+But I think a more robust solution is to use bpf_copy_from_user()
+which is used in sleepable program and can tolerate page fault,
+and the fix here used the latter approach.
 
->
->> In patch "bpf: Add generic kfunc bpf_ffs64()", there is some data to
->> confirm that this kfunc is able to save around 10ns for every time on
->> "Intel(R) Xeon(R) Silver 4116 CPU @ 2.10GHz" CPU server, by comparing
->> with bpf-implemented __ffs64().
->>
->> However, it will be better when convert this kfunc to "rep bsf" in
->> JIT on x86, which is able to avoid a call. But, I haven't figure out the
->> way.
->>
->> Leon Hwang (2):
->>    bpf: Add generic kfunc bpf_ffs64()
->>    selftests/bpf: Add testcases for generic kfunc bpf_ffs64()
->>
->>   kernel/bpf/helpers.c                          |  7 +++
->>   .../testing/selftests/bpf/prog_tests/bitops.c | 54 +++++++++++++++++++
->>   tools/testing/selftests/bpf/progs/bitops.c    | 21 ++++++++
->>   3 files changed, 82 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/bitops.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/bitops.c
->>
->>
->> base-commit: c5809f0c308111adbcdbf95462a72fa79eb267d1
->> --
->> 2.42.1
->>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/progs/test_ptr_untrusted.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c b/too=
+ls/testing/selftests/bpf/progs/test_ptr_untrusted.c
+index 4bdd65b5aa2d..2fdc44e76624 100644
+--- a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
++++ b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
+@@ -6,13 +6,13 @@
+=20
+ char tp_name[128];
+=20
+-SEC("lsm/bpf")
++SEC("lsm.s/bpf")
+ int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
+ {
+ 	switch (cmd) {
+ 	case BPF_RAW_TRACEPOINT_OPEN:
+-		bpf_probe_read_user_str(tp_name, sizeof(tp_name) - 1,
+-					(void *)attr->raw_tracepoint.name);
++		bpf_copy_from_user(tp_name, sizeof(tp_name) - 1,
++				   (void *)attr->raw_tracepoint.name);
+ 		break;
+ 	default:
+ 		break;
+--=20
+2.34.1
+
 
