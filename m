@@ -1,251 +1,187 @@
-Return-Path: <bpf+bounces-21154-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FEC848D57
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 13:02:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7C10848F2A
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 17:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC46D1C20F79
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 12:02:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 988FF28326B
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 16:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C5C2232B;
-	Sun,  4 Feb 2024 12:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3AD22EE3;
+	Sun,  4 Feb 2024 16:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+Oy01f2"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="HFTATYX1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F31D2209A
-	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 12:02:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B722374B
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 16:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707048135; cv=none; b=gBRNtZCLY5cP6t3XofFsAamG8RFMiEdPU8mb8ycFUGnSzw6yMyXTNsvw55XIiBKLN6GlPvkdR3+BQHb9U4yjSKTGr4L1qo7g08T6ChLnA1ujUfJbiRqQMiGGYDsqL7z34j7V3gzkfZvq7zpzhia5+MH6iKBse6sS34oefrR8zSg=
+	t=1707063080; cv=none; b=qRlMJoNJfOk62yMTNrdYtwvn3AaVBvfz4b2IDDG0PBMAyBMcoTLywqGj773kMiyldyP4JV9GLA0KhgXrohvPed9FqwfULcTUfwSEbwAaJ/IfL8U/4xEM9RnqJ095fAoppBMDTwY43kJ1AoObpSuKDu/kWsVcKMBl8kxEXvkr5rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707048135; c=relaxed/simple;
-	bh=vOfXCj5nyvMeGpvQ8z5vf5+7WAKs747+6Ym2DgHJMOA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QPYEfYF+5H1Q1xZPyQM8tAF9oqIy+k27Wz9I/vG328E8yX/tVZcqWtnQysmi9mBH8sx6V/fv8pFJrH3I7AVh8c0OHblhLokQ6afeoQ4PMYcK55eC40Pu1L829ruxDsLZPbQDk8sEkVHBZfq65oUzeiA+1tv5SwpmxU1mUIObXzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+Oy01f2; arc=none smtp.client-ip=209.85.208.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-56061d07bffso72681a12.2
-        for <bpf@vger.kernel.org>; Sun, 04 Feb 2024 04:02:13 -0800 (PST)
+	s=arc-20240116; t=1707063080; c=relaxed/simple;
+	bh=e5tU7PwjEwvJlL497kXpwtw19jqAMKLMwL64dnUJkVg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZcEiQejw1Wl5pyzEwGJ0H5lL86EaDSN51RpeN44wIgb6T3RZPqb05tNTF8IWMzCu2Vs/shEix1sjCeC9GIVudk7P6hxtX6sLZY32ipZNArIL/0IHgH4GnWFHIza+KHklMnuuYPxUeviBjWdS6Eb42k0sg7ZighGK0QEiAd3bVrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=HFTATYX1; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fd72f721dso4553645e9.0
+        for <bpf@vger.kernel.org>; Sun, 04 Feb 2024 08:11:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707048131; x=1707652931; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q6sFwC4hgE+7mfq8JldFwhvZzWDaTZ82YvoKSQs6QMk=;
-        b=E+Oy01f2jA3lWdCPdZAt1kMvUMXNmsmihoHetx7x76FN42lmZv6b7dXac44ZhMrWwU
-         J3F/pflMwfEnsA5pzI/p2LPDeeg2skFmO0aLqn0QD7deh+KhP9G/lbVhc2ZfzMh1gdiN
-         ktNQuGmjnPJJ1wxvzvXRODbA8J+rUYu0uHay9YtMypDEhONkn+7UU6mnHXDX74fqrHV/
-         GG+llwDWX+vUxMvsfagX4pTXrT7W+TK8yQzMk8z6+vvZJdfXhA3nMvnzGT4R/ck4CpE7
-         2WgU2dk3Aaw7FLPK4brCzRAdwG3eJXb+MPSZQ/SWgNxF0980EYuPn8vzCsfGA7DVkVbs
-         L9zQ==
+        d=isovalent.com; s=google; t=1707063076; x=1707667876; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Rq1Zm8tTDwMXABK+2Xyio8qd9VgVr/quyXQBu9z2ULE=;
+        b=HFTATYX1zQICP1xpmV71fPPlUcJpZN/OozLstUgOrHs/iAJNea0cOnYGtxJnxJXC5b
+         ajE8hR/9Rjo8Nq/MRWl4qo3VrrKhyZWi0At8NcrlovQS18txL3jEyTb6R3W4NO1JL9O6
+         DpDdntqUBtVVrEzlkMo8ajyF/oy1tplXZ/6QvoLoTJydowIN/B1pjBqmYroLAfjPf0Ih
+         J4m0J7tiT7WQp96TV9d+htyBRGzP3xDkzQqNle6R9l5AmefAV6aPMLp8mwAKwqX6AQNx
+         s2fs+WBE31twSRd3rw4IOvLF2owfYUAlYZjae0R1Lep8EnAqfmPQN3ii19UoeiKdPCHC
+         iIjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707048131; x=1707652931;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q6sFwC4hgE+7mfq8JldFwhvZzWDaTZ82YvoKSQs6QMk=;
-        b=W59/yjT+kBeuok34EsLoTik+9JdZQBZRg3Nj+lDzDrZm7Dt5CVJvPob6E/ebKwmcol
-         Nf0St3dY9SIzuliM9v8t8bXguHjhV+37xv1Z3/DwQR6wdAKGmO4ny2fUwzZ0vY5G9OMH
-         BtCCD4n8MxvzH17UByw+Cwc2fZ09pPOuqFwmPkTm2gxSxy+OJVtm61s0rf8L7hBsaeJp
-         D3m/vEeiIb7Jl9jHbMu3HqH/hnuCzoUdHkWRsoV2sqDhox2+++/2aFUW9wCbLVOATZ3X
-         4306TWzUbyM4QWUxcR6o2Hhj68SouV7CunVyRTcFdPHbzLjPQs9VJF0pENnKIpSh6XLl
-         q8dA==
-X-Gm-Message-State: AOJu0YwB9eQPLnEFsQnVxN7IUnGZ6SM1s6dBHY4VB182sG5JVE7XPnCN
-	JkGC1r+eyMinVpdPtlxa+a0VPcFBLw85/ZLWzVeQ4EoXApx1EfhAnJChGaW6rKY=
-X-Google-Smtp-Source: AGHT+IFKJfcGtXYGHsMid5prPKFXhFSdDd/U5ebGrwNzHnsoNfG9YLimYzRkwlUMfUjW51ostwqTUg==
-X-Received: by 2002:a05:6402:b71:b0:560:4dbd:4f15 with SMTP id cb17-20020a0564020b7100b005604dbd4f15mr730771edb.5.1707048130912;
-        Sun, 04 Feb 2024 04:02:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUoC74OXNq49/l1Wh7EA1Omcg0/xarUUDyHRhU1+cCsoYecpLpbGT73HEPnQ+DAS2hMl+G4EF4NPWttpTcIdV9JFmUAvYtd8ebKPW5TUO/IO/CV6hKDqRqSJQNpIFb68H35WowDNZ1g/ktTjVbUJDqvkqsFQRa0/SDJZt5bdH/iTB4REqo2JhBiX1oFbGgUhw4cIudvsGIMMicCx9hGgeyB3Zs=
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id o4-20020aa7c504000000b0055efaddeafdsm2651044edq.86.2024.02.04.04.02.10
+        d=1e100.net; s=20230601; t=1707063076; x=1707667876;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rq1Zm8tTDwMXABK+2Xyio8qd9VgVr/quyXQBu9z2ULE=;
+        b=NhTkaM/qAee7oGpC3+ANGLM1SvYN6FdwoULEz1jb9iNs9vTxNSpebfVOoKljgAhTOb
+         eGyxa3HDZY+Ac9m10QycJlZc4e/d8ZCIDER7rSOG/963ssy97qfjLaKyTGcFZbXj1c+q
+         8RhrR8SLzAf6HHzeX4i4X7Oo4m6xYvoeNUSHIFrgRsbKBRxkQO/Im/MKcGfyRCBRAH+5
+         dKzmN+Yx/IUEVHS2OQjvy5nUchWGKJ4xVSZTYiKowiDVPp2rh4T4z9eVcMRYT5jUevyw
+         mM3RpGtmeUpj02rjlujXHvXrFUW+vkimMQWu0Jv79q5AOlL4Hmutg3WVszYxpcR8AqxJ
+         Pr7w==
+X-Gm-Message-State: AOJu0YxwBWnKt1OGewXVLh/9tnozsejXm5W2CHyMjA3QfvJvQ0Xp1Zue
+	OwobXT5+8YPiC3OFAgTNM1E5qjiNWbbM3rTqSOYw07bwP2SRDMyrLe/DAbSvo60=
+X-Google-Smtp-Source: AGHT+IEv5AddRQ+jbW+8d71FM6RKhIQbmlN07TGnqwBlm01DIknEtRrFIaMZ1rAXNoHMtyZCNdE27Q==
+X-Received: by 2002:a05:600c:a03:b0:40e:a255:8f53 with SMTP id z3-20020a05600c0a0300b0040ea2558f53mr3098368wmp.13.1707063076231;
+        Sun, 04 Feb 2024 08:11:16 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUI7mR6yyNOEMsl6FyF1sFzfkh+K8mjXfJis25uKUochigKvs754d9CUMgy/kw9qzVju+/kSi6abzT79f664RG2SWrs0HxP4LM2aS8ZQknLUlOUy/o5Dd5xHV+RVauRGE2GjWRiAlmoA7UC4bxslazKzFMa0OOlU1n4PMpCNi6POM8nAozJBRJl8FOoHOF3FTnBOSeOEO76XKRKq6/DTqldNERqg//vG/Tmcx02yVJgY2WDquYXbqfT1OVVz7KP3N2kZW9h/2uWn5W+GQX7RnLYaQLbDOHKnWIlurKpPPLQQYyGprKuto0=
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id fm24-20020a05600c0c1800b0040ee8765901sm6122780wmb.43.2024.02.04.08.11.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 04:02:10 -0800 (PST)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
+        Sun, 04 Feb 2024 08:11:15 -0800 (PST)
+Date: Sun, 4 Feb 2024 16:05:19 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Barret Rhoden <brho@google.com>,
-	David Vernet <void@manifault.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Add test for static subprog call in lock cs
-Date: Sun,  4 Feb 2024 12:02:06 +0000
-Message-Id: <20240204120206.796412-3-memxor@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240204120206.796412-1-memxor@gmail.com>
-References: <20240204120206.796412-1-memxor@gmail.com>
+	Jiri Olsa <jolsa@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Stanislav Fomichev <sdf@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH v1 bpf-next 0/9] BPF static branches
+Message-ID: <Zb+1v80I/xMZ0d9W@zh-lab-node-5>
+References: <20240202162813.4184616-1-aspsk@isovalent.com>
+ <CAEf4Bzam9-bthtGM7BO2ELu_RJwcnkJZEoyV8zFyPV4oa05JPA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4303; i=memxor@gmail.com; h=from:subject; bh=vOfXCj5nyvMeGpvQ8z5vf5+7WAKs747+6Ym2DgHJMOA=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBlv3qDsB58utGcUQxd/uuhT4CehfMCJ6IUmGh69 ctjoHxXJTeJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZb96gwAKCRBM4MiGSL8R yhD3D/94jEFeag7TuGHwiu/Lv5clwax//NeuBp54r7dd5d0B+p3FG6P2yyHWp+G5YjVOHpdQVjq 81RK+vFo8Iu6H6jbx+Ijh4FTduOqPcgcEmf0Kn137k3piyM5F3nYYaBAezqipqznGoqn/6lO5JA 0kdmmkzwW/+i3M1PQkOzzmgojxhgNrRyTZb8TLzljqIL9ZAYOWjyuk2F81JuEay/RbkfizfCqIX g++TjojLLl9anF3mpzyD1szheOgsBT0sPRugeYIV10SV57ctL/fYd52tnqCUisZsqffgfgNSI8b 87TmyySm9Gs+l13pwgOb4AJKWlA++vT6vKKXblUywQ9Fxn8nKVTTiR3Ibj8hhllutVke4MQh67f Nav5qe5qTsfCxYz416mVPdlSZdRPw1sNe4Fk79HoxAblJi3DXu48baXaxmnMcXUZCagdfst33Zo cLGsXRc4Ufmh92co4oi6qgo0X4LHl1qoGHfbwz1L6HodtjVOS5hXRYzyyx+7BeIKCiNBFYmVe1t lh4dvMl+rYK3s8wMvJZ8q3j2MCCKEFA5QtNUqPeOdJI9z6FnIv08XFwQqZoO/6oBswrT5C7teFQ wyIF7y6rbnFgwTOz7KhrYx57m3tjUgSq0MhWac0dDNZ6+BmXBrIVYhVO6swO83Zv6T0OLDera3n 48ZY+JZSRiJ9lwg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzam9-bthtGM7BO2ELu_RJwcnkJZEoyV8zFyPV4oa05JPA@mail.gmail.com>
 
-Add selftests for static subprog calls within bpf_spin_lock critical
-section, and ensure we still reject global subprog calls. Also test the
-case where a subprog call will unlock the caller's held lock, or the
-caller will unlock a lock taken by a subprog call, ensuring correct
-transfer of lock state across frames on exit.
+On Fri, Feb 02, 2024 at 02:39:24PM -0800, Andrii Nakryiko wrote:
+> On Fri, Feb 2, 2024 at 8:34 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > This series adds support for mapping between xlated and original
+> > instructions offsets, mapping between xlated and jitted instructions
+> > offsets (x86), support for two new BPF instruction JA[SRC=1]
+> > (goto[l]_or_nop) and JA[SRC=3] (nop_or_goto[l]), and a new syscall to
+> > configure the jitted values of such instructions.
+> >
+> > This a follow up to the previous attempt to add static keys support
+> > (see [1], [2]) which implements lower-level functionality than what
+> > was proposed before.
+> >
+> > The first patch .
+> > The second patch adds xlated -> original mapping.
+> > The third patch adds .
+> >
+> > The fourth patch adds support for new instructions.
+> > And the fifth patch adds support for new syscall.
+> >
+> > The following patches are included:
+> >   Patch 1 is a formal bug fix
+> >   Patch 2 adds the xlated -> original mapping
+> >   Patch 3 adds the xlated -> jitted mapping
+> >   Patch 4 adds tests for instructions mappings
+> >   Patch 5 adds bpftool support for printing new instructions
+> >   Patch 6 add support for an extended JA instruction
+> >   Patch 7 add support for kernel/bpftool to display new instructions
+> >   Patch 8 adds a new BPF_STATIC_BRANCH_UPDATE syscall
+> >   Patch 9 adds tests for the new ja* instructions and the new syscall
+> >
+> > Altogether this provides enough functionality to dynamically patch
+> > programs and support simple static keys.
+> >
+> > rfc -> v1:
+> > - converted to v1 based on the feedback (there was none)
+> > - bpftool support was added to dump new instructions
+> > - self-tests were added
+> > - minor fixes & checkpatch warnings
+> >
+> >   [1] https://lpc.events/event/17/contributions/1608/attachments/1278/2578/bpf-static-keys.pdf
+> >   [2] https://lore.kernel.org/bpf/20231206141030.1478753-1-aspsk@isovalent.com/
+> >   [3] https://github.com/llvm/llvm-project/pull/75110
+> >
+> > Anton Protopopov (9):
+> >   bpf: fix potential error return
+> >   bpf: keep track of and expose xlated insn offsets
+> >   bpf: expose how xlated insns map to jitted insns
+> >   selftests/bpf: Add tests for instructions mappings
+> >   bpftool: dump new fields of bpf prog info
+> >   bpf: add support for an extended JA instruction
+> >   bpf: Add kernel/bpftool asm support for new instructions
+> >   bpf: add BPF_STATIC_BRANCH_UPDATE syscall
+> >   selftests/bpf: Add tests for new ja* instructions
+> >
+> >  arch/x86/net/bpf_jit_comp.c                   |  73 ++++-
+> >  include/linux/bpf.h                           |  11 +
+> >  include/linux/bpf_verifier.h                  |   1 -
+> >  include/linux/filter.h                        |   1 +
+> >  include/uapi/linux/bpf.h                      |  26 ++
+> >  kernel/bpf/core.c                             |  67 ++++-
+> >  kernel/bpf/disasm.c                           |  33 ++-
+> >  kernel/bpf/syscall.c                          | 115 ++++++++
+> >  kernel/bpf/verifier.c                         |  58 +++-
+> >  tools/bpf/bpftool/prog.c                      |  14 +
+> >  tools/bpf/bpftool/xlated_dumper.c             |  18 ++
+> >  tools/bpf/bpftool/xlated_dumper.h             |   2 +
+> >  tools/include/uapi/linux/bpf.h                |  26 ++
+> >  .../bpf/prog_tests/bpf_insns_mappings.c       | 156 ++++++++++
+> >  .../bpf/prog_tests/bpf_static_branches.c      | 269 ++++++++++++++++++
+> >  .../selftests/bpf/progs/bpf_insns_mappings.c  | 155 ++++++++++
+> >  16 files changed, 1002 insertions(+), 23 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insns_mappings.c
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_branches.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_insns_mappings.c
+> >
+> > --
+> > 2.34.1
+> >
+> 
+> This fails to build in CI ([0]). I'll take a look at the patches next
+> week, sorry for the delay.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/spin_lock.c      |  2 +
- .../selftests/bpf/progs/test_spin_lock.c      | 65 +++++++++++++++++++
- .../selftests/bpf/progs/test_spin_lock_fail.c | 44 +++++++++++++
- 3 files changed, 111 insertions(+)
+Thanks Andrii!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-index 18d451be57c8..6a4962ca0e5e 100644
---- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-@@ -48,6 +48,8 @@ static struct {
- 	{ "lock_id_mismatch_innermapval_kptr", "bpf_spin_unlock of different lock" },
- 	{ "lock_id_mismatch_innermapval_global", "bpf_spin_unlock of different lock" },
- 	{ "lock_id_mismatch_innermapval_mapval", "bpf_spin_unlock of different lock" },
-+	{ "lock_global_subprog_call1", "function calls are not allowed while holding a lock" },
-+	{ "lock_global_subprog_call2", "function calls are not allowed while holding a lock" },
- };
- 
- static int match_regex(const char *pattern, const char *string)
-diff --git a/tools/testing/selftests/bpf/progs/test_spin_lock.c b/tools/testing/selftests/bpf/progs/test_spin_lock.c
-index b2440a0ff422..d8d77bdffd3d 100644
---- a/tools/testing/selftests/bpf/progs/test_spin_lock.c
-+++ b/tools/testing/selftests/bpf/progs/test_spin_lock.c
-@@ -101,4 +101,69 @@ int bpf_spin_lock_test(struct __sk_buff *skb)
- err:
- 	return err;
- }
-+
-+struct bpf_spin_lock lockA __hidden SEC(".data.A");
-+
-+__noinline
-+static int static_subprog(struct __sk_buff *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	if (ctx->protocol)
-+		return ret;
-+	return ret + ctx->len;
-+}
-+
-+__noinline
-+static int static_subprog_lock(struct __sk_buff *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	ret = static_subprog(ctx);
-+	bpf_spin_lock(&lockA);
-+	return ret + ctx->len;
-+}
-+
-+__noinline
-+static int static_subprog_unlock(struct __sk_buff *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	ret = static_subprog(ctx);
-+	bpf_spin_unlock(&lockA);
-+	return ret + ctx->len;
-+}
-+
-+SEC("tc")
-+int lock_static_subprog_call(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	if (ctx->mark == 42)
-+		ret = static_subprog(ctx);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
-+}
-+
-+SEC("tc")
-+int lock_static_subprog_lock(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	ret = static_subprog_lock(ctx);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
-+}
-+
-+SEC("tc")
-+int lock_static_subprog_unlock(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	ret = static_subprog_unlock(ctx);
-+	return ret;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
-index 86cd183ef6dc..43f40c4fe241 100644
---- a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
-+++ b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
-@@ -201,4 +201,48 @@ CHECK(innermapval_mapval, &iv->lock, &v->lock);
- 
- #undef CHECK
- 
-+__noinline
-+int global_subprog(struct __sk_buff *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	if (ctx->protocol)
-+		ret += ctx->protocol;
-+	return ret + ctx->mark;
-+}
-+
-+__noinline
-+static int static_subprog_call_global(struct __sk_buff *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	if (ctx->protocol)
-+		return ret;
-+	return ret + ctx->len + global_subprog(ctx);
-+}
-+
-+SEC("?tc")
-+int lock_global_subprog_call1(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	if (ctx->mark == 42)
-+		ret = global_subprog(ctx);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
-+}
-+
-+SEC("?tc")
-+int lock_global_subprog_call2(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	if (ctx->mark == 42)
-+		ret = static_subprog_call_global(ctx);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.40.1
+>   [0] https://github.com/kernel-patches/bpf/actions/runs/7762232524/job/21172303431?pr=6380#step:11:77
 
+Thanks, I will push a fix for this and some more fixes in v2 (besides
+this doc build failure there's a missing mutex for poking text and
+one NULL deref).
 
