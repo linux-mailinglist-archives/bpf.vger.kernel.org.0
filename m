@@ -1,358 +1,317 @@
-Return-Path: <bpf+bounces-21157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33EEE848F9A
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 18:09:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCB5848FD8
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 19:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AD1A283195
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 17:09:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24597B224AA
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 18:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4263F2377E;
-	Sun,  4 Feb 2024 17:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7682249F9;
+	Sun,  4 Feb 2024 18:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kyJrQPZe"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="3WKD+aXi";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bzjlJtz9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9A1249E8
-	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 17:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC46249E8
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 18:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707066584; cv=none; b=uY6g4ryU2lMYUYa5YbLhm+O/0SxtS3QkN9gNLd9gtDx6go0A5ugiQ8rkZFfEiMTDBddg49t0arReOha8Bf96eTdOLaOwfHFpqGRqqbg8Ffe/aauwG2PzfKlykqxuOZiwXTwtNreTQrLysNpnjqVY8QcFSUFWYs0/EvyBBco6qwA=
+	t=1707070133; cv=none; b=dMhkaIXXplDjO5RhVUT361hHeGrBiCkVMRK3X263RqxlxADpFJFIzYiAN1zAxD1JijfwERY5GV+76aFYGCxjARkvqcRgfRJUwKrGTfk+TKOjWmczZ1ruy0dAb9hF/pM2oZ6R0dN5THFnB8CNJOKG0rxCME3/AJs+deJ70ymaG4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707066584; c=relaxed/simple;
-	bh=rqP/2I11fbuwqycfXfubF5tj0so2hvTRW5CbVLJ3xHE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AJ3zrjdUZzRoGjhlyd6l55aqVA5YJKlnHtEASKC/iXEO8MU7/evgoyxaKhxdSxzOjkl3B98cCeavj/9hE5/Nc/++A/4jcZlJSFkBHlIX4yjVYkvN4wYAJAE2QB0lTm6eo0CZAzj9oAAYDoUlpqH7aql+FM71gIkK5KY21Cbjs98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kyJrQPZe; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5497a6a9-1b41-4605-8220-041e5dff46f0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707066579;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NUMo/p3gVGGo/CF7fNXWdrF7LnxEOlkoHqHMuzt+oVo=;
-	b=kyJrQPZeKU0+IGQDDUSEBmjYHJ50sZdyrS0T9wV2ZDvy9E1gvIWDuniaJqNKMa4fqJe0jW
-	FgJ8RpUstktuCT3X56sj4D3uZjUK+GHu2OZbPs2spaP1qTpsngixIXq/tVFg0NQMea/yFO
-	Zw2Jj55lTzldU424zHYDgedEIhHT22c=
-Date: Sun, 4 Feb 2024 09:09:30 -0800
+	s=arc-20240116; t=1707070133; c=relaxed/simple;
+	bh=Y7v2zLf+dZmRyl6KEaFHcCNlgI2qNyIo8/IVmlXX0Ek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o7tlbbCGS6iA4mwE8cPJpoOlMZvC908TDtX5y6JHUVX+loYC25SdDwl8PcSRfNEqqB53p6IixamfJ1rKRIUvoAz84pCluPAfPhwQEqH2rLFlniZCLrbXw0LsjDUgLgv2HigwI/AmgPFUcpDiNkTCfl99f3pq+fKNXYZ0J8DYtKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=3WKD+aXi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bzjlJtz9; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id EDB9C3200A78;
+	Sun,  4 Feb 2024 13:08:48 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Sun, 04 Feb 2024 13:08:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707070128; x=1707156528; bh=t/zNDZWSk9
+	4E2l73mHGdoLUsuhJgLik5ks5MZ4b+PNM=; b=3WKD+aXiAeeDYor07AtyZVd8ZU
+	472/4ijWt08/PyMFtK4SOay3ovjL5MN8fV84bQ29O5J3NBCLC24xxcoLq3P6hf1W
+	VaQoa4ngTq7zMfDlaDOUXJPszLefQrtMamgiSsRtrdB8WJP+weUAbdxueOoUq9WO
+	5+RYtuAJ/oVZf0idAtW2U5usDK5igpVfzX1AlhaRet+Op9eP2vwoOHTelVmB8q0b
+	Z3QIltfkl7HQxqqL84XCOHKvB24gaLayU9Mdu1KjwGvK7DDxEiGDbBz+7qGz5c0G
+	SSt+auhackYG/XqTYkzKV7MXEbBPYTDWeoWMUM2/UVsjYcsKwJEN83qNxAkg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707070128; x=1707156528; bh=t/zNDZWSk94E2l73mHGdoLUsuhJg
+	Lik5ks5MZ4b+PNM=; b=bzjlJtz92COiyeMu72/JY8nuOwmMPjS9anYvxMgcTIm/
+	SMQRD9XsZpwi4FdrwdZCNMF0Y76JuT5+UGhBV4FZRnTruOldmMky2w5FrwfWkhs6
+	U5uJxbOyu5XOugCkub3zfZ+qc4xQg/z1DWiZadUJe0ypRrBXlTWGhu3v54hTFLZx
+	fxkXzOz5a3gA6PG9Dy/RqP+y7FpfZnnCGtbzBbtTdWhcGxcicyjB//hhVjHqUqj+
+	FtaRVml7UrJFlFlDMMFSsMURLmEiat9ILg+Cf0cqQP0j/guy8Rrk/a5lwzpYa6ww
+	khOgwvODLA/2aHC+2EPhkB7o+fBXXdlA+H/i5m7RPA==
+X-ME-Sender: <xms:sNK_ZdQGVY9HiK75yLzHmB2YdwpgycVe9nm0wILPJ19y4mpWiHRBPQ>
+    <xme:sNK_ZWx8vNbSwp2pYUaCiUMh4diouYL3OAdpgbpNgHbhGaNmsWjzTaR6jdz4FpLxs
+    AdcXTa7x6LtzeTh3A>
+X-ME-Received: <xmr:sNK_ZS1a-hhbkZIKjIq7J5yn725jA_8mRVEtmRqcyBzDJ_P0eOsTbJZSrKko46LsJVCdSYMt6Fg0dGcJuIs3yXGMtBGT-K00sXr_epA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedukedguddtkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdt
+    tddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpedvfeekteduudefieegtdehfeffkeeuudekheduffduffff
+    gfegiedttefgvdfhvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:sNK_ZVA__Psfbd8HPPbG8Wb965o3PAnOWTDQ_pSNMpeHOi-DFMxs9w>
+    <xmx:sNK_ZWiZTOXpMewxXmrERLYsJFJWLw7lgK5v4EK9ny2ddLt-716SAA>
+    <xmx:sNK_ZZpdN5Azc54c1NPSmWZ7iPfnfR2H6rI28fifjRVgXE3aisDRSw>
+    <xmx:sNK_ZYaP0IGSSVDkeYi_vOTvT-zXkrJMElfFyu45WTUppl6SITVFSA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 4 Feb 2024 13:08:47 -0500 (EST)
+Date: Sun, 4 Feb 2024 11:08:45 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: acme@kernel.org, quentin@isovalent.com, andrii.nakryiko@gmail.com, 
+	ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v3] pahole: Inject kfunc decl tags into BTF
+Message-ID: <ifkoiqmxww5cwm2zfsf56rxiikichw53o6gwo4hyaxqmyij4tu@hvemdh2fqfhv>
+References: <0f25134ec999e368478c4ca993b3b729c2a03383.1706491733.git.dxu@dxuuu.xyz>
+ <ZboeMyIvGChjaBLY@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 bpf-next 4/4] selftests/bpf: Add selftests for cpumask
- iter
-Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- tj@kernel.org, void@manifault.com, bpf@vger.kernel.org
-References: <20240131145454.86990-1-laoar.shao@gmail.com>
- <20240131145454.86990-5-laoar.shao@gmail.com>
- <CAEf4Bzanfe3X3NMce=WKg7LMdVU=USzc+NZw+4gViU6HJ18Ptw@mail.gmail.com>
- <CALOAHbApjK3MO+Hn-TiW9jR1cJuNEP9uHxZ=4WBMYLMrOANKLA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CALOAHbApjK3MO+Hn-TiW9jR1cJuNEP9uHxZ=4WBMYLMrOANKLA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZboeMyIvGChjaBLY@krava>
 
+On Wed, Jan 31, 2024 at 11:17:23AM +0100, Jiri Olsa wrote:
+> On Sun, Jan 28, 2024 at 06:30:19PM -0700, Daniel Xu wrote:
+> > This commit teaches pahole to parse symbols in .BTF_ids section in
+> > vmlinux and discover exported kfuncs. Pahole then takes the list of
+> > kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
+> > 
+> > Example of encoding:
+> > 
+> >         $ bpftool btf dump file .tmp_vmlinux.btf | rg "DECL_TAG 'bpf_kfunc'" | wc -l
+> >         121
+> > 
+> >         $ bpftool btf dump file .tmp_vmlinux.btf | rg 56337
+> >         [56337] FUNC 'bpf_ct_change_timeout' type_id=56336 linkage=static
+> >         [127861] DECL_TAG 'bpf_kfunc' type_id=56337 component_idx=-1
+> > 
+> > This enables downstream users and tools to dynamically discover which
+> > kfuncs are available on a system by parsing vmlinux or module BTF, both
+> > available in /sys/kernel/btf.
+> > 
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > 
+> > ---
+> > Changes from v2:
+> > * More reliably detect kfunc membership in set8 by tracking set addr ranges
+> > * Rename some variables/functions to be more clear about kfunc vs func
+> > 
+> > Changes from v1:
+> > * Fix resource leaks
+> > * Fix callee -> caller typo
+> > * Rename btf_decl_tag from kfunc -> bpf_kfunc
+> > * Only grab btf_id_set funcs tagged kfunc
+> > * Presort btf func list
+> > 
+> >  btf_encoder.c | 347 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 347 insertions(+)
+> > 
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index fd04008..4f742b1 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -34,6 +34,11 @@
+> >  #include <pthread.h>
+> >  
+> >  #define BTF_ENCODER_MAX_PROTO	512
+> > +#define BTF_IDS_SECTION		".BTF_ids"
+> > +#define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
+> > +#define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
+> > +#define BTF_SET8_KFUNCS		(1 << 0)
+> > +#define BTF_KFUNC_TYPE_TAG	"bpf_kfunc"
+> >  
+> >  /* state used to do later encoding of saved functions */
+> >  struct btf_encoder_state {
+> > @@ -79,6 +84,7 @@ struct btf_encoder {
+> >  			  gen_floats,
+> >  			  is_rel;
+> >  	uint32_t	  array_index_id;
+> > +	struct gobuffer   btf_funcs;
+> 
+> why does this need to be stored in encoder?
 
-On 2/3/24 7:30 PM, Yafang Shao wrote:
-> On Sat, Feb 3, 2024 at 6:03 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Wed, Jan 31, 2024 at 6:55 AM Yafang Shao <laoar.shao@gmail.com> wrote:
->>> Add selftests for the newly added cpumask iter.
->>> - cpumask_iter_success
->>>    - The number of CPUs should be expected when iterating over the cpumask
->>>    - percpu data extracted from the percpu struct should be expected
->>>    - It can work in both non-sleepable and sleepable prog
->>>    - RCU lock is only required by bpf_iter_cpumask_new()
->>>    - It is fine without calling bpf_iter_cpumask_next()
->>>
->>> - cpumask_iter_failure
->>>    - RCU lock is required in sleepable prog
->>>    - The cpumask to be iterated over can't be NULL
->>>    - bpf_iter_cpumask_destroy() is required after calling
->>>      bpf_iter_cpumask_new()
->>>    - bpf_iter_cpumask_destroy() can only destroy an initilialized iter
->>>    - bpf_iter_cpumask_next() must use an initilialized iter
->> typos: initialized
-> will fix it.
->
->>> The result as follows,
->>>
->>>    #64/37   cpumask/test_cpumask_iter:OK
->>>    #64/38   cpumask/test_cpumask_iter_sleepable:OK
->>>    #64/39   cpumask/test_cpumask_iter_sleepable:OK
->>>    #64/40   cpumask/test_cpumask_iter_next_no_rcu:OK
->>>    #64/41   cpumask/test_cpumask_iter_no_next:OK
->>>    #64/42   cpumask/test_cpumask_iter:OK
->>>    #64/43   cpumask/test_cpumask_iter_no_rcu:OK
->>>    #64/44   cpumask/test_cpumask_iter_no_destroy:OK
->>>    #64/45   cpumask/test_cpumask_iter_null_pointer:OK
->>>    #64/46   cpumask/test_cpumask_iter_next_uninit:OK
->>>    #64/47   cpumask/test_cpumask_iter_destroy_uninit:OK
->>>    #64      cpumask:OK
->>>
->>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->>> ---
->>>   tools/testing/selftests/bpf/config            |   1 +
->>>   .../selftests/bpf/prog_tests/cpumask.c        | 152 ++++++++++++++++++
->>>   .../selftests/bpf/progs/cpumask_common.h      |   3 +
->>>   .../bpf/progs/cpumask_iter_failure.c          |  99 ++++++++++++
->>>   .../bpf/progs/cpumask_iter_success.c          | 126 +++++++++++++++
->>>   5 files changed, 381 insertions(+)
->>>   create mode 100644 tools/testing/selftests/bpf/progs/cpumask_iter_failure.c
->>>   create mode 100644 tools/testing/selftests/bpf/progs/cpumask_iter_success.c
->>>
->> LGTM overall, except for seemingly unnecessary use of a big macro
->>
->>> diff --git a/tools/testing/selftests/bpf/progs/cpumask_common.h b/tools/testing/selftests/bpf/progs/cpumask_common.h
->>> index 0cd4aebb97cf..cdb9dc95e9d9 100644
->>> --- a/tools/testing/selftests/bpf/progs/cpumask_common.h
->>> +++ b/tools/testing/selftests/bpf/progs/cpumask_common.h
->>> @@ -55,6 +55,9 @@ void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src) __ksym
->>>   u32 bpf_cpumask_any_distribute(const struct cpumask *src) __ksym;
->>>   u32 bpf_cpumask_any_and_distribute(const struct cpumask *src1, const struct cpumask *src2) __ksym;
->>>   u32 bpf_cpumask_weight(const struct cpumask *cpumask) __ksym;
->>> +int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, const struct cpumask *mask) __ksym;
->>> +int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it) __ksym;
->>> +void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it) __ksym;
->> let's mark them __weak so they don't conflict with definitions that
->> will eventually come from vmlinux.h (that applies to all the kfunc
->> definitions we currently have and we'll need to clean all that up, but
->> let's not add non-weak kfuncs going forward)
-> will change it.
->
->>>   void bpf_rcu_read_lock(void) __ksym;
->>>   void bpf_rcu_read_unlock(void) __ksym;
->> [...]
->>
->>> diff --git a/tools/testing/selftests/bpf/progs/cpumask_iter_success.c b/tools/testing/selftests/bpf/progs/cpumask_iter_success.c
->>> new file mode 100644
->>> index 000000000000..4ce14ef98451
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/bpf/progs/cpumask_iter_success.c
->>> @@ -0,0 +1,126 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
->>> +
->>> +#include "vmlinux.h"
->>> +#include <bpf/bpf_helpers.h>
->>> +#include <bpf/bpf_tracing.h>
->>> +
->>> +#include "task_kfunc_common.h"
->>> +#include "cpumask_common.h"
->>> +
->>> +char _license[] SEC("license") = "GPL";
->>> +
->>> +extern const struct psi_group_cpu system_group_pcpu __ksym __weak;
->>> +extern const struct rq runqueues __ksym __weak;
->>> +
->>> +int pid;
->>> +
->>> +#define READ_PERCPU_DATA(meta, cgrp, mask)                                                     \
->>> +{                                                                                              \
->>> +       u32 nr_running = 0, psi_nr_running = 0, nr_cpus = 0;                                    \
->>> +       struct psi_group_cpu *groupc;                                                           \
->>> +       struct rq *rq;                                                                          \
->>> +       int *cpu;                                                                               \
->>> +                                                                                               \
->>> +       bpf_for_each(cpumask, cpu, mask) {                                                      \
->>> +               rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);                            \
->>> +               if (!rq) {                                                                      \
->>> +                       err += 1;                                                               \
->>> +                       continue;                                                               \
->>> +               }                                                                               \
->>> +               nr_running += rq->nr_running;                                                   \
->>> +               nr_cpus += 1;                                                                   \
->>> +                                                                                               \
->>> +               groupc = (struct psi_group_cpu *)bpf_per_cpu_ptr(&system_group_pcpu, *cpu);     \
->>> +               if (!groupc) {                                                                  \
->>> +                       err += 1;                                                               \
->>> +                       continue;                                                               \
->>> +               }                                                                               \
->>> +               psi_nr_running += groupc->tasks[NR_RUNNING];                                    \
->>> +       }                                                                                       \
->>> +       BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n",                  \
->>> +                      nr_running, nr_cpus, psi_nr_running);                                    \
->>> +}
->>> +
->> Does this have to be a gigantic macro? Why can't it be just a function?
-> It seems that the verifier can't identify a function call between
-> bpf_rcu_read_lock() and bpf_rcu_read_unlock().
-> That said, if there's a function call between them, the verifier will fail.
-> Below is the full verifier log if I define it as :
-> static inline void read_percpu_data(struct bpf_iter_meta *meta, struct
-> cgroup *cgrp, const cpumask_t *mask)
->
-> VERIFIER LOG:
-> =============
-> 0: R1=ctx() R10=fp0
-> ; int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta
-> *meta, struct cgroup *cgrp)
-> 0: (b4) w7 = 0                        ; R7_w=0
-> ; int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta
-> *meta, struct cgroup *cgrp)
-> 1: (79) r2 = *(u64 *)(r1 +8)          ; R1=ctx()
-> R2_w=trusted_ptr_or_null_cgroup(id=1)
-> ; if (!cgrp)
-> 2: (15) if r2 == 0x0 goto pc+16       ; R2_w=trusted_ptr_cgroup()
-> ; int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta
-> *meta, struct cgroup *cgrp)
-> 3: (79) r6 = *(u64 *)(r1 +0)
-> func 'bpf_iter_cgroup' arg0 has btf_id 10966 type STRUCT 'bpf_iter_meta'
-> 4: R1=ctx() R6_w=trusted_ptr_bpf_iter_meta()
-> ; bpf_rcu_read_lock();
-> 4: (85) call bpf_rcu_read_lock#84184          ;
-> ; p = bpf_task_from_pid(pid);
-> 5: (18) r1 = 0xffffbc1ad3f72004       ;
-> R1_w=map_value(map=cpumask_.bss,ks=4,vs=8,off=4)
-> 7: (61) r1 = *(u32 *)(r1 +0)          ;
-> R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-> ; p = bpf_task_from_pid(pid);
-> 8: (85) call bpf_task_from_pid#84204          ;
-> R0=ptr_or_null_task_struct(id=3,ref_obj_id=3) refs=3
-> 9: (bf) r8 = r0                       ;
-> R0=ptr_or_null_task_struct(id=3,ref_obj_id=3)
-> R8_w=ptr_or_null_task_struct(id=3,ref_obj_id=3) refs=3
-> 10: (b4) w7 = 1                       ; R7_w=1 refs=3
-> ; if (!p) {
-> 11: (15) if r8 == 0x0 goto pc+6       ;
-> R8_w=ptr_task_struct(ref_obj_id=3) refs=3
-> ; read_percpu_data(meta, cgrp, p->cpus_ptr);
-> 12: (79) r2 = *(u64 *)(r8 +984)       ; R2_w=rcu_ptr_cpumask()
-> R8_w=ptr_task_struct(ref_obj_id=3) refs=3
-> ; read_percpu_data(meta, cgrp, p->cpus_ptr);
-> 13: (bf) r1 = r6                      ;
-> R1_w=trusted_ptr_bpf_iter_meta() R6=trusted_ptr_bpf_iter_meta() refs=3
-> 14: (85) call pc+6
-> caller:
->   R6=trusted_ptr_bpf_iter_meta() R7_w=1
-> R8_w=ptr_task_struct(ref_obj_id=3) R10=fp0 refs=3
-> callee:
->   frame1: R1_w=trusted_ptr_bpf_iter_meta() R2_w=rcu_ptr_cpumask() R10=fp0 refs=3
-> 21: frame1: R1_w=trusted_ptr_bpf_iter_meta() R2_w=rcu_ptr_cpumask()
-> R10=fp0 refs=3
-> ; static inline void read_percpu_data(struct bpf_iter_meta *meta,
-> struct cgroup *cgrp, const cpumask_t *mask)
-> 21: (bf) r8 = r1                      ; frame1:
-> R1_w=trusted_ptr_bpf_iter_meta() R8_w=trusted_ptr_bpf_iter_meta()
-> refs=3
-> 22: (bf) r7 = r10                     ; frame1: R7_w=fp0 R10=fp0 refs=3
-> ;
-> 23: (07) r7 += -24                    ; frame1: R7_w=fp-24 refs=3
-> ; bpf_for_each(cpumask, cpu, mask) {
-> 24: (bf) r1 = r7                      ; frame1: R1_w=fp-24 R7_w=fp-24 refs=3
-> 25: (85) call bpf_iter_cpumask_new#77163      ; frame1: R0=scalar()
-> fp-24=iter_cpumask(ref_id=4,state=active,depth=0) refs=3,4
-> ; bpf_for_each(cpumask, cpu, mask) {
-> 26: (bf) r1 = r7                      ; frame1: R1=fp-24 R7=fp-24 refs=3,4
-> 27: (85) call bpf_iter_cpumask_next#77165     ; frame1: R0_w=0
-> fp-24=iter_cpumask(ref_id=4,state=drained,depth=0) refs=3,4
-> 28: (bf) r7 = r0                      ; frame1: R0_w=0 R7_w=0 refs=3,4
-> 29: (b4) w1 = 0                       ; frame1: R1_w=0 refs=3,4
-> 30: (63) *(u32 *)(r10 -40) = r1       ; frame1: R1_w=0 R10=fp0
-> fp-40=????0 refs=3,4
-> 31: (b4) w1 = 0                       ; frame1: R1_w=0 refs=3,4
-> 32: (7b) *(u64 *)(r10 -32) = r1       ; frame1: R1_w=0 R10=fp0
-> fp-32_w=0 refs=3,4
-> 33: (b4) w9 = 0                       ; frame1: R9_w=0 refs=3,4
-> ; bpf_for_each(cpumask, cpu, mask) {
-> 34: (15) if r7 == 0x0 goto pc+57      ; frame1: R7_w=0 refs=3,4
-> ; bpf_for_each(cpumask, cpu, mask) {
-> 92: (bf) r1 = r10                     ; frame1: R1_w=fp0 R10=fp0 refs=3,4
-> ; bpf_for_each(cpumask, cpu, mask) {
-> 93: (07) r1 += -24                    ; frame1: R1_w=fp-24 refs=3,4
-> 94: (85) call bpf_iter_cpumask_destroy#77161          ; frame1: refs=3
-> ; BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n",
-> 95: (61) r1 = *(u32 *)(r10 -40)       ; frame1: R1_w=0 R10=fp0
-> fp-40=????0 refs=3
-> 96: (bc) w1 = w1                      ; frame1: R1_w=0 refs=3
-> 97: (7b) *(u64 *)(r10 -8) = r1        ; frame1: R1_w=0 R10=fp0 fp-8_w=0 refs=3
-> 98: (79) r1 = *(u64 *)(r10 -32)       ; frame1: R1_w=0 R10=fp0 fp-32=0 refs=3
-> 99: (7b) *(u64 *)(r10 -16) = r1       ; frame1: R1_w=0 R10=fp0 fp-16_w=0 refs=3
-> 100: (7b) *(u64 *)(r10 -24) = r9      ; frame1: R9=0 R10=fp0 fp-24_w=0 refs=3
-> 101: (79) r1 = *(u64 *)(r8 +0)        ; frame1:
-> R1_w=trusted_ptr_seq_file() R8=trusted_ptr_bpf_iter_meta() refs=3
-> 102: (bf) r4 = r10                    ; frame1: R4_w=fp0 R10=fp0 refs=3
-> ; bpf_for_each(cpumask, cpu, mask) {
-> 103: (07) r4 += -24                   ; frame1: R4_w=fp-24 refs=3
-> ; BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n",
-> 104: (18) r2 = 0xffff9bce47e0e210     ; frame1:
-> R2_w=map_value(map=cpumask_.rodata,ks=4,vs=41) refs=3
-> 106: (b4) w3 = 41                     ; frame1: R3_w=41 refs=3
-> 107: (b4) w5 = 24                     ; frame1: R5_w=24 refs=3
-> 108: (85) call bpf_seq_printf#126     ; frame1: R0=scalar() refs=3
-> ; }
-> 109: (95) exit
-> bpf_rcu_read_unlock is missing
-> processed 45 insns (limit 1000000) max_states_per_insn 0 total_states
-> 5 peak_states 5 mark_read 3
-> =============
+I suppose it doesn't. It's used in multiple functions so I figured it'd
+be less verbose than passing it around. Also since it's fairly generic.
 
-The error is due to the following in verifier:
+I can move it to explicit arg passing if you want.
 
-                         } else if (opcode == BPF_EXIT) {
-				...
-                                 if (env->cur_state->active_rcu_lock &&
-                                     !in_rbtree_lock_required_cb(env)) {
-                                         verbose(env, "bpf_rcu_read_unlock is missing\n");
-                                         return -EINVAL;
-                                 }
+> 
+> >  	struct {
+> >  		struct var_info vars[MAX_PERCPU_VAR_CNT];
+> >  		int		var_cnt;
+> > @@ -94,6 +100,17 @@ struct btf_encoder {
+> >  	} functions;
+> >  };
+> >  
+> 
+> SNIP
+> 
+> > +/* Returns if `sym` points to a kfunc set */
+> > +static int is_sym_kfunc_set(GElf_Sym *sym, const char *name, Elf_Data *idlist, size_t idlist_addr)
+> > +{
+> > +	int *ptr = idlist->d_buf;
+> > +	int idx, flags;
+> > +	bool is_set8;
+> > +
+> > +	/* kfuncs are only found in BTF_SET8's */
+> > +	is_set8 = !strncmp(name, BTF_ID_SET8_PFX, sizeof(BTF_ID_SET8_PFX) - 1);
+> > +	if (!is_set8)
+> > +		return false;
+> > +
+> > +	idx = sym->st_value - idlist_addr;
+> > +	if (idx >= idlist->d_size) {
+> > +		fprintf(stderr, "%s: symbol '%s' out of bounds\n", __func__, name);
+> > +		return false;
+> > +	}
+> > +
+> > +	/* Check the set8 flags to see if it was marked as kfunc */
+> > +	idx = idx / sizeof(int);
+> > +	flags = ptr[idx + 1];
+> > +	return flags & BTF_SET8_KFUNCS;
+> 
+> I wonder it'd be easier to read/follow if we bring struct btf_id_set8
+> declaration in here and use it to get the flags field
 
+Yeah, it probably would be. Since it looks like resolve_btfids is going
+that direction, might as well do it here as well.
 
-I guess, we could relax the condition not to return -EINVAL if
-it is a static function.
+> 
+> > +}
+> > +
+> > +/*
+> > + * Parse BTF_ID symbol and return the func name.
+> > + *
+> > + * Returns:
+> > + *	Caller-owned string containing func name if successful.
+> > + *	NULL if !func or on error.
+> > + */
+> > +
+> 
+> SNIP
+> 
+> > +	/* Cannot resolve symbol or .BTF_ids sections. Nothing to do. */
+> > +	if (symbols_shndx == -1 || idlist_shndx == -1) {
+> > +		err = 0;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (!gelf_getshdr(symscn, &shdr)) {
+> > +		elf_error("Failed to get ELF symbol table header");
+> > +		goto out;
+> > +	}
+> > +	nr_syms = shdr.sh_size / shdr.sh_entsize;
+> > +
+> > +	err = btf_encoder__collect_btf_funcs(encoder);
+> > +	if (err) {
+> > +		fprintf(stderr, "%s: failed to collect BTF funcs\n", __func__);
+> > +		goto out;
+> > +	}
+> > +
+> > +	/* First collect all kfunc set ranges.
+> > +	 *
+> > +	 * Note we choose not to sort these ranges and accept a linear
+> > +	 * search when doing lookups. Reasoning is that the number of
+> > +	 * sets is ~O(100) and not worth the additional code to optimize.
+> > +	 */
+> 
+> I think we could event add gobuffer interface/support to sort and search
+> quickly the data (we use it in other place), but that can be done as follow
+> up when it will become a problem as you pointed out
+> 
+> > +	for (i = 0; i < nr_syms; i++) {
+> > +		struct btf_kfunc_set_range range = {};
+> > +		const char *name;
+> > +		GElf_Sym sym;
+> > +
+> > +		if (!gelf_getsym(symbols, i, &sym)) {
+> > +			elf_error("Failed to get ELF symbol(%d)", i);
+> > +			goto out;
+> > +		}
+> > +
+> > +		if (sym.st_shndx != idlist_shndx)
+> > +			continue;
+> > +
+> > +		name = elf_strptr(elf, strtabidx, sym.st_name);
+> > +		if (!is_sym_kfunc_set(&sym, name, idlist, idlist_addr))
+> > +			continue;
+> > +
+> > +		range.start = sym.st_value;
+> > +		range.end = sym.st_value + sym.st_size;
+> > +		gobuffer__add(&btf_kfunc_ranges, &range, sizeof(range));
+> > +	}
+> > +
+> > +	/* Now inject BTF with kfunc decl tag for detected kfuncs */
+> > +	for (i = 0; i < nr_syms; i++) {
+> > +		const struct btf_kfunc_set_range *ranges;
+> > +		unsigned int ranges_cnt;
+> > +		char *func, *name;
+> > +		GElf_Sym sym;
+> > +		bool found;
+> > +		int err;
+> > +		int j;
+> > +
+> > +		if (!gelf_getsym(symbols, i, &sym)) {
+> > +			elf_error("Failed to get ELF symbol(%d)", i);
+> > +			goto out;
+> > +		}
+> > +
+> > +		if (sym.st_shndx != idlist_shndx)
+> > +			continue;
+> > +
+> > +		name = elf_strptr(elf, strtabidx, sym.st_name);
+> > +		func = get_func_name(name);
+> > +		if (!func)
+> > +			continue;
+> > +
+> > +		/* Check if function belongs to a kfunc set */
+> > +		ranges = gobuffer__entries(&btf_kfunc_ranges);
+> > +		ranges_cnt = gobuffer__nr_entries(&btf_kfunc_ranges);
+> > +		found = false;
+> > +		for (j = 0; j < ranges_cnt; j++) {
+> > +			size_t addr = sym.st_value;
+> 
+> missing newline after declaration
+> 
+> > +			if (ranges[j].start <= addr && addr < ranges[j].end) {
+> > +				found = true;
+> > +				break;
+> > +			}
+> > +		}
+> > +		if (!found)
+> 
+> leaking func
 
->
->
-> Another workaround is using the __always_inline :
-> static __always_inline void read_percpu_data(struct bpf_iter_meta
-> *meta, struct cgroup *cgrp, const cpumask_t *mask)
+Ack, nice catch.
 
-__always_inline is also work. But let us improve verifier so we
-can avoid such workarounds in the future. Note that Kumar just
-submitted a patch set to relax spin_lock for static functions:
-   https://lore.kernel.org/bpf/20240204120206.796412-1-memxor@gmail.com/
+[..]
 
->
->>> +SEC("iter.s/cgroup")
->>> +int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta *meta, struct cgroup *cgrp)
->>> +{
->>> +       struct task_struct *p;
->>> +
->>> +       /* epilogue */
->>> +       if (!cgrp)
->>> +               return 0;
->>> +
->>> +       bpf_rcu_read_lock();
->>> +       p = bpf_task_from_pid(pid);
->>> +       if (!p) {
->>> +               bpf_rcu_read_unlock();
->>> +               return 1;
->>> +       }
->>> +
->>> +       READ_PERCPU_DATA(meta, cgrp, p->cpus_ptr);
->>> +       bpf_task_release(p);
->>> +       bpf_rcu_read_unlock();
->>> +       return 0;
->>> +}
->>> +
->> [...]
->
->
+Thanks,
+Daniel
 
