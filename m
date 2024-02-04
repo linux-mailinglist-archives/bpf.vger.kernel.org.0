@@ -1,94 +1,81 @@
-Return-Path: <bpf+bounces-21139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8AE8488AC
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 21:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78DF18489D8
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 01:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEDCF281F29
-	for <lists+bpf@lfdr.de>; Sat,  3 Feb 2024 20:17:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15C0428523F
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 00:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1985FDC3;
-	Sat,  3 Feb 2024 20:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C52F17F7;
+	Sun,  4 Feb 2024 00:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eGm8yJpI"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SDIhNGCD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9378B5FB86
-	for <bpf@vger.kernel.org>; Sat,  3 Feb 2024 20:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DCD637
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 00:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706991441; cv=none; b=GqGW2EK/MhDegb631c4GLAaSaHYPB3n/LefFO6/JkggHSAjLMcileP+s/lz6VY73WJK2+KtThOyLrcl4WyXajGx2xD1yJPiWbujDms29Oqiyf0ZPafgiPdG1dPgt5U5L/5m9j2FBDsxqY7K3j5/889d+nagPHwO5BMziUTUNctA=
+	t=1707005720; cv=none; b=Cc5wze+NNleeSrTZEyDFsbddDJwb07hkJW/G/8+3c7OvLkpd8AETnsxcFoRtlmmA2NgUSdqNaT04P2jlAUO3wgdlqqasCjEgaf1pZsKvwoAZOIMSoqMh8gRncf+ouTfbam1MNd0I8GC/mpIWnuLNPTKBfBC0cvubLmjNJylM8fQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706991441; c=relaxed/simple;
-	bh=waItzEd/xVl0qbKub0DrHtT5NFFIjhRQtU/OZ59sAiw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TYaI14BXnwgsRPXlrgPW+MenbqsNO4fLjIgors0RkZGbwxdy2ODHIBHCCt4+JwOjCwSNAxKpgK/J1gNbkzgDRqMBOVifpaoblXCBxpWvpQ2T73r+5HRVAFtD59vyeJ8gTXaMvXMuBR971o7TQAT/cMZEzA5uJ9PrX69NINOKMwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eGm8yJpI; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33b35323341so156958f8f.3
-        for <bpf@vger.kernel.org>; Sat, 03 Feb 2024 12:17:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706991438; x=1707596238; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=clf4wHSZ0Qq/I4cmTuKARSAKizAZQi92DUGSx7wQfPo=;
-        b=eGm8yJpID9YddAvNSxUvPlkdZSdfYzbWQ9vmyMMriwA11g2qLizoOiM8yXbjJazDxH
-         vgKnLkjBpI1q/T1H3ReZy6IcyI3yfUUk0GgVzX/NG4N1+cm7GhlFPHiE8vuW/SVZw0CK
-         caPj88Oq1DuVSjTse6cp4hIBY4SRiCBpSYPn5BpxZd6lXGyC5DM7d2CSPYhz3eo8Sa3p
-         K3wSSRtZ83LV3v2FXb0R5ohJV7baYyFPtcZ3fd296gJ2GxS9AYuGB8RdBTnLxH7trpw3
-         JiV3n6m/wo5Me/Muz3nBCoHcOy73fz432GTqIp+dCPKsra/y5qkbOOWNYVxVl6ESmElt
-         1lsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706991438; x=1707596238;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=clf4wHSZ0Qq/I4cmTuKARSAKizAZQi92DUGSx7wQfPo=;
-        b=HkNk4wSZVVFvgXU1hBLv/+G+A3uliYSOpsU2lgxkG2cwbBY7ZwtZhQLZqjWtahSIor
-         dk7o+NJNGWQ8eiXp8X0O0oXYGMl4u9priESz4nXOw8sIxPe7ERUkMCIOpAEFSZYCFHVo
-         QrehPBIW2JZx40HhK9gh9G1j4oc+5Dg7bmnfxEXPwRPEvNawJZvG1ChWk59vWEbd/Ctn
-         nJmDajJRVIeQaB8rSMZfLDaBhonUsLG8IWGoyLkF8eUhSWKGpAXWrQ9FbmZzcRQSxHu2
-         uKGUhySOYyItblJ3rY70e5mwN1o9/wscrXN155n9rzVUUml3es8h1yRGi1MtlspJnaMs
-         GPSQ==
-X-Gm-Message-State: AOJu0YzyOsttVs5c8Rrt8j994i3oBYJA4de/6S5wltoRbjr1K+EMJFm/
-	2LsE5AniIr4YkSqQ6sizijEhHAoQX5yWRIBe+Iuf4iWRY3nHsiqe
-X-Google-Smtp-Source: AGHT+IGDkoVKPk3IifjU864hMvoYK3LQYy/DgjASO/RF2viqIKPPp5ghMN4VOQcJyT9+x/WAdOHnyA==
-X-Received: by 2002:a5d:4603:0:b0:33b:2516:727d with SMTP id t3-20020a5d4603000000b0033b2516727dmr2496278wrq.35.1706991437410;
-        Sat, 03 Feb 2024 12:17:17 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUlfUZFK91zotqnATsz3ZA2wqKaWFMGYKJQLw0g4kBoesj5zdMs5eqdgER8CjxB/vJVCv9feNwvNKrVYg7eOtddSM7R8nqfCiDmnYd65i9b5qEbvg4+qWN6js7SDXSU4xEReJoa5YddxzRwoJAvs+Tw+yeAA667p2Up2z6ZCk1OWgAUC9MIgPWvMYZiVp13d5ixFFnMnAmi0bds6UaT/l/g/6QHjlyqFo3w+D3mmgB/mGA8AkaIJBG9paW4gNedkgW09bs0ymkVqjsqCIALDhwG9KcHCcAEoMcrlN9QIQUgJFhOq+nSNPwsV5ZaT2hrTNe3Ly5XRDOUqQ6RR0Y/XBjx4SsdRvpEsloH4ME7RBESbeGmlHzeTKA08aX0gqeXVlzFye9HQPx94NGPl0tPu76YBCOUNgrhMWSmvQe/GE5KOUYyxwCCbq0WGIaVI0kSM3sVLY4D+EWqqCpSXbqAxzh48bw=
-Received: from krava ([83.240.62.96])
-        by smtp.gmail.com with ESMTPSA id o23-20020a056402039700b00560003cfd70sm1509991edv.82.2024.02.03.12.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 12:17:16 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 3 Feb 2024 21:17:14 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1707005720; c=relaxed/simple;
+	bh=Qmetxv98oqYTe4Vwuh5lGAp8R2QMprpLFMDJJirpkAc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UpmOe86cPB4W5dDPNUJTdjaqF+Fvq+12woRbpyHMW95JLy0EVtg7LbMHpCSmYuSbW12zKlAlBQTnQniCba0dBvFr98QhjeN1tNy04PVvmti/smgtWLgEZGAoL5pu6SxiFQro5ir9Tu0sHQr3Ok+HOmwbdUFajc0KWrPIL5npBtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SDIhNGCD; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707005719; x=1738541719;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qmetxv98oqYTe4Vwuh5lGAp8R2QMprpLFMDJJirpkAc=;
+  b=SDIhNGCDPneRdN7sbb1Nn/5ppaYHtvNFI4PvfNyo/jXfTEmQ17wscSZm
+   65d3HBg41euAlrxExSKUsG7ezMEvCn12+kjV/U7HL+iFNP9/YWwSjB0Ry
+   eVrC9bTvS9izHkHzAzj1HTWzvBTJ/kXF0AJcNZcPf8iLfhKZX4VcB9p7K
+   9S+Qhqr6Igq33Xgncvpz8khZu3U7WYI2A/vRilrDC7bS3AdKP0YTCP/1B
+   R5JcwDIsceHKuPuqQXnD/aRQqXHU+dmf+PDVK2+x2xxOgUmZATyxADu1X
+   NxRceVPV+ponhYyMKoVCvv0qFFly8BE4lhy4QJD7XZMJ4x2lzXNmLqMYX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="11708711"
+X-IronPort-AV: E=Sophos;i="6.05,241,1701158400"; 
+   d="scan'208";a="11708711"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 16:15:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,241,1701158400"; 
+   d="scan'208";a="710111"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa007.jf.intel.com with ESMTP; 03 Feb 2024 16:15:13 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rWQAA-0005mI-2P;
+	Sun, 04 Feb 2024 00:15:10 +0000
+Date: Sun, 4 Feb 2024 08:14:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geliang Tang <geliang@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] tools/resolve_btfids: fix
- cross-compilation to non-host endianness
-Message-ID: <Zb6fSielrjHy2nnt@krava>
-References: <cover.1706717857.git.vmalik@redhat.com>
- <64f6372c75a44d5c8d00db5c5b7ca21aa3b8bd77.1706717857.git.vmalik@redhat.com>
- <vjbvcxsbtz7mrwevvcb3i4sf7hv5ah6iyjyzg7awr4iuiimryv@wjkglqsk6wee>
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org, mptcp@lists.linux.dev
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, btf: Add register_check_missing_btf
+ helper
+Message-ID: <202402040740.WcfFYJQX-lkp@intel.com>
+References: <f4b147ddaa8fe8c07c7ba77a1d61780bffc49bb6.1706946547.git.tanggeliang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,95 +84,97 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <vjbvcxsbtz7mrwevvcb3i4sf7hv5ah6iyjyzg7awr4iuiimryv@wjkglqsk6wee>
+In-Reply-To: <f4b147ddaa8fe8c07c7ba77a1d61780bffc49bb6.1706946547.git.tanggeliang@kylinos.cn>
 
-On Fri, Feb 02, 2024 at 06:38:18PM -0700, Daniel Xu wrote:
-> Hi Viktor,
-> 
-> On Wed, Jan 31, 2024 at 05:24:09PM +0100, Viktor Malik wrote:
-> > The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
-> > build and afterwards patched by resolve_btfids with correct values.
-> > Since resolve_btfids always writes in host-native endianness, it relies
-> > on libelf to do the translation when the target ELF is cross-compiled to
-> > a different endianness (this was introduced in commit 61e8aeda9398
-> > ("bpf: Fix libelf endian handling in resolv_btfids")).
-> > 
-> > Unfortunately, the translation will corrupt the flags fields of SET8
-> > entries because these were written during vmlinux compilation and are in
-> > the correct endianness already. This will lead to numerous selftests
-> > failures such as:
-> > 
-> >     $ sudo ./test_verifier 502 502
-> >     #502/p sleepable fentry accept FAIL
-> >     Failed to load prog 'Invalid argument'!
-> >     bpf_fentry_test1 is not sleepable
-> >     verification time 34 usec
-> >     stack depth 0
-> >     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-> >     Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
-> > 
-> > Since it's not possible to instruct libelf to translate just certain
-> > values, let's manually bswap the flags in resolve_btfids when needed, so
-> > that libelf then translates everything correctly.
-> > 
-> > Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
-> > Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> > ---
-> >  tools/bpf/resolve_btfids/main.c | 27 ++++++++++++++++++++++++++-
-> >  1 file changed, 26 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> > index 7badf1557e5c..d01603ef6283 100644
-> > --- a/tools/bpf/resolve_btfids/main.c
-> > +++ b/tools/bpf/resolve_btfids/main.c
-> > @@ -652,13 +652,23 @@ static int sets_patch(struct object *obj)
-> >  	Elf_Data *data = obj->efile.idlist;
-> >  	int *ptr = data->d_buf;
-> >  	struct rb_node *next;
-> > +	GElf_Ehdr ehdr;
-> > +	int need_bswap;
-> > +
-> > +	if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
-> > +		pr_err("FAILED cannot get ELF header: %s\n",
-> > +			elf_errmsg(-1));
-> > +		return -1;
-> > +	}
-> > +	need_bswap = (__BYTE_ORDER == __LITTLE_ENDIAN) !=
-> > +		     (ehdr.e_ident[EI_DATA] == ELFDATA2LSB);
-> >  
-> >  	next = rb_first(&obj->sets);
-> >  	while (next) {
-> >  		unsigned long addr, idx;
-> >  		struct btf_id *id;
-> >  		void *base;
-> > -		int cnt, size;
-> > +		int cnt, size, i;
-> >  
-> >  		id   = rb_entry(next, struct btf_id, rb_node);
-> >  		addr = id->addr[0];
-> > @@ -686,6 +696,21 @@ static int sets_patch(struct object *obj)
-> >  			base = set8->pairs;
-> >  			cnt = set8->cnt;
-> >  			size = sizeof(set8->pairs[0]);
-> > +
-> > +			/*
-> > +			 * When ELF endianness does not match endianness of the
-> > +			 * host, libelf will do the translation when updating
-> > +			 * the ELF. This, however, corrupts SET8 flags which are
-> > +			 * already in the target endianness. So, let's bswap
-> > +			 * them to the host endianness and libelf will then
-> > +			 * correctly translate everything.
-> > +			 */
-> > +			if (need_bswap) {
-> > +				for (i = 0; i < cnt; i++) {
-> > +					set8->pairs[i].flags =
-> > +						bswap_32(set8->pairs[i].flags);
-> > +				}
-> 
-> Do we need this for btf_id_set8:flags as well? Didn't get a chance to
-> look too deeply yet.
+Hi Geliang,
 
-ah did not this, right, looks like we need that
+kernel test robot noticed the following build errors:
 
-jirka
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Geliang-Tang/bpf-btf-Add-register_check_missing_btf-helper/20240203-155524
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/f4b147ddaa8fe8c07c7ba77a1d61780bffc49bb6.1706946547.git.tanggeliang%40kylinos.cn
+patch subject: [PATCH bpf-next v2 1/2] bpf, btf: Add register_check_missing_btf helper
+config: arm-randconfig-001-20240204 (https://download.01.org/0day-ci/archive/20240204/202402040740.WcfFYJQX-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240204/202402040740.WcfFYJQX-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402040740.WcfFYJQX-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/bpf/btf.c: In function 'btf_seq_show':
+   kernel/bpf/btf.c:7286:29: warning: function 'btf_seq_show' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+    7286 |         seq_vprintf((struct seq_file *)show->target, fmt, args);
+         |                             ^~~~~~~~
+   kernel/bpf/btf.c: In function 'btf_snprintf_show':
+   kernel/bpf/btf.c:7323:9: warning: function 'btf_snprintf_show' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+    7323 |         len = vsnprintf(show->target, ssnprintf->len_left, fmt, args);
+         |         ^~~
+   In file included from include/asm-generic/bug.h:22,
+                    from arch/arm/include/asm/bug.h:60,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/linux/sched.h:14,
+                    from include/linux/ptrace.h:6,
+                    from include/uapi/asm-generic/bpf_perf_event.h:4,
+                    from ./arch/arm/include/generated/uapi/asm/bpf_perf_event.h:1,
+                    from include/uapi/linux/bpf_perf_event.h:11,
+                    from kernel/bpf/btf.c:6:
+   kernel/bpf/btf.c: In function 'register_check_missing_btf':
+>> kernel/bpf/btf.c:7750:39: error: invalid use of undefined type 'const struct module'
+    7750 |                                 module->name, msg);
+         |                                       ^~
+   include/linux/printk.h:427:33: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+   include/linux/printk.h:508:9: note: in expansion of macro 'printk'
+     508 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+         |         ^~~~~~
+   kernel/bpf/btf.c:7749:25: note: in expansion of macro 'pr_warn'
+    7749 |                         pr_warn("allow module %s BTF mismatch, skip register %s\n",
+         |                         ^~~~~~~
+   kernel/bpf/btf.c:7753:77: error: invalid use of undefined type 'const struct module'
+    7753 |                 pr_err("missing module %s BTF, cannot register %s\n", module->name, msg);
+         |                                                                             ^~
+   include/linux/printk.h:427:33: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+   include/linux/printk.h:498:9: note: in expansion of macro 'printk'
+     498 |         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+         |         ^~~~~~
+   kernel/bpf/btf.c:7753:17: note: in expansion of macro 'pr_err'
+    7753 |                 pr_err("missing module %s BTF, cannot register %s\n", module->name, msg);
+         |                 ^~~~~~
+
+
+vim +7750 kernel/bpf/btf.c
+
+  7740	
+  7741	static int register_check_missing_btf(const struct module *module, const char *msg)
+  7742	{
+  7743		if (!module && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
+  7744			pr_err("missing vmlinux BTF, cannot register %s\n", msg);
+  7745			return -ENOENT;
+  7746		}
+  7747		if (module && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)) {
+  7748			if (IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH)) {
+  7749				pr_warn("allow module %s BTF mismatch, skip register %s\n",
+> 7750					module->name, msg);
+  7751				return 0;
+  7752			}
+  7753			pr_err("missing module %s BTF, cannot register %s\n", module->name, msg);
+  7754			return -ENOENT;
+  7755		}
+  7756		return 0;
+  7757	}
+  7758	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
