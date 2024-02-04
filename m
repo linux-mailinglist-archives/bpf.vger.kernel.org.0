@@ -1,131 +1,178 @@
-Return-Path: <bpf+bounces-21178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392FD849117
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 23:24:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8593D849118
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 23:24:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A70FC1F21FC0
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 22:24:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE951C215C9
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 22:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B9B2C68E;
-	Sun,  4 Feb 2024 22:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B51C32C8E;
+	Sun,  4 Feb 2024 22:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jzMNR4FO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hMYCfISa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E201B2BD1C
-	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 22:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236D32C69E
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 22:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707085434; cv=none; b=HFORwQDuHk8guRxIn+wKZ7xR3wPAggDGJ2DkSLEgFGDeaTOCNRy9Wzw5JHF4S8ke5i1wT5IILnQ61LM9mr0y1ohYhYLsv2BgXQrFVZPe1ZHMcRZkGOECfwZMOCn9MNKRznNDqUidYfi4bz/yk2+v0FFtDq+lVYSqHiQYi+jS6EQ=
+	t=1707085435; cv=none; b=eRRdyItjnoCAGqNRUt3/BigvzfAlHjSMijMg7z5NkAIALXZxvfQ58Q2tT4lozRZFJjxswwkY1v2sBsWgVOxGk0pCOV+A+HJBZwhfxDD3CqAAvWiUnrR/mHM3I5vdqLNO698+8oSJPb+uQ7F5InGEQyuRmljvB2wqZ1S5YYO8mrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707085434; c=relaxed/simple;
-	bh=hZ0C+IU1ZS81U/hi1dLxeFFRHGKA9Db36LYKy0wa6Lc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lwzIVwLFhP+cTzmw2/FbTwZTPBScygzGpUqhor0D+NS3IZmqsMs2s4SzxyPQmFDCVCKbMO7WXeGvn+vrGLNvFB7hvNQK8mZp/i1fN27CLEGxcgZeLTuO3FlNUk4uhMaFHJCXAnocYeGd79Ez/gWaw6aOVJjz+MGkmjJX7FTH4ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jzMNR4FO; arc=none smtp.client-ip=209.85.208.68
+	s=arc-20240116; t=1707085435; c=relaxed/simple;
+	bh=f++ohieD8ClMSW1AetryGM/gVPfZDbl+hUxTIaM/wgo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=jwT3BKwmNjXTcntTLYBcJ4yxBtWAj+mRpnMxvYOW1vLmUsNW3CMdvN0nqzplFY45BdPMf4YhOVPl/1X7Z0+GhNwqd36fzwkfQVDJ2L5bSKJ14ezJw98DjaXmR7iggFrSQnS2TPKTs6uwafhNPhua7NyHARYqXgh5nzB8/qxzyZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hMYCfISa; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-55ff5f6a610so2491540a12.3
-        for <bpf@vger.kernel.org>; Sun, 04 Feb 2024 14:23:52 -0800 (PST)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a3604697d63so581670766b.3
+        for <bpf@vger.kernel.org>; Sun, 04 Feb 2024 14:23:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707085430; x=1707690230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I7iVVsYr7oJQ+5LhMCWpUqmsZ4sfaxSQKSRTnwggcKM=;
-        b=jzMNR4FO/GmcPTBvX//1JYqENFZBaaqu0N025r6B6yUvrjWDvaaLnbyUGwUY72cbOJ
-         kuKzCq6XcESVDl0pKrMNr/MB7fIK6Ogg3Ald4nBal8XwgG/2m+31C+F6LGxGBu63dexu
-         pxwAJ6KBA30to3jqLyMghCqo8I4fASR1QtQj6p6mIP/1t7MQn5QTFPpc65vRaMP63jSH
-         WXg54sxpahrg23IjOdttOGNiH4R1eptjd+0cLmW2LDVVnRELShpCDL/C5fOxgYpsTe4v
-         gjscKMjrshCtBQm0ponWp08H4EcpVktG1ac5z+RJmYAacnP22Rh2tnFrzJWysouWqoNI
-         bFag==
+        d=gmail.com; s=20230601; t=1707085432; x=1707690232; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ONe4W89vBZk35RcjhZ55nD6jdsU8ohKno5y3DhM6GMI=;
+        b=hMYCfISaXNtKlfP1LqzUO1WQDH/cYGQfrZv71TMhkfAD6wAqI3FZ1GD3FjZEyrziYJ
+         F2fWcir6BbxKTqLJbcUxqedz8Nk1aMXdHe4zR+CbkW8ozfPMncTr8Om3t4+sp0zE5hCw
+         CfnS3QYhB7f//D4tTJ7s4Bdl5fXlGzjx18y8rN8FqEuM8XjCDSNZpquP5w0UYu59gThw
+         XHOngPAw0lyRa/q8qrpniDkQp1WCSVlq0Bvf05R8kQmYFfFcLiRDHEiaTWlZAmay8CUI
+         Gc/F7Ec0/+pVTzQCoraVF6U4p5ERY6D32F1TgxiTKcTRfdsOdjbp+TOH0eYDcAxDQxxP
+         Du9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707085430; x=1707690230;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I7iVVsYr7oJQ+5LhMCWpUqmsZ4sfaxSQKSRTnwggcKM=;
-        b=Iu1ZCT5SEYO7qi3DL8wLDMXO2rz1d8xNpr2Dn3i+2bnnu4C8hjTPl/9vmkn8qVA1g2
-         58tTRFJcJksOp4/Xt7jp3/FmKusud76iH4jiRlDv8hqlA3qBvbN/LUA+MtZpoZ9eQ8gr
-         qwBk9AJxD0SrmayaDh1xje6pqxiXxaejrLIfvhjY96Rg5XZlMkFiD19iU/56IyF80AuV
-         2KWV6GXWKj0GXwR6EpBKDVCc9wddbR6c0y2EesUGcSHOxczUMcnuu32hPKeaaIXWavyz
-         ha5FFuVuIKt9wvf5jOl1jpjS0tW0mWpY/T6bfMdP2FzmCd/opMJ5umtgDq70pbhMBB7z
-         WNTA==
-X-Gm-Message-State: AOJu0YzAZPtJT7lNpwkK1tstLLO4tsjLaKk1pitLpN3Cbdly7L4wzEea
-	XigekVFqrUadF7Qf5pr2vzGFv4dCu270k0tNdBOzXdBOgQONh8STXWFqCFs1hn0=
-X-Google-Smtp-Source: AGHT+IFmmHiuHFPzZjHo1Ak79PaOrGy/STRoHWUTC8v2z25IypOFu8UmFJIVxMNNXQOQBq8R6DMDHQ==
-X-Received: by 2002:aa7:d804:0:b0:55d:3d64:3ba6 with SMTP id v4-20020aa7d804000000b0055d3d643ba6mr3785973edq.29.1707085430167;
-        Sun, 04 Feb 2024 14:23:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXPPl2wfPJzphZWaj4Yk5w/tHtZquF5pX7u247FYtmSNvGBUml840u0VvHoKj4Du9F1bZ4MCfuwGFoxMgjj4B4n9kDVqtyzHAxfueoM5iudfwXb1mrSO7xcP3URLQlJhsiN21C9lk9B0GnkeTdDhUwjIu16ffUOGtlAGz+NGt+Cz8BaI3jn/B6Hxq6Y0NVBtZL75t454kKH1g3/gQvsBA8xjf8=
+        d=1e100.net; s=20230601; t=1707085432; x=1707690232;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ONe4W89vBZk35RcjhZ55nD6jdsU8ohKno5y3DhM6GMI=;
+        b=pgjQt8i30MO9+LecMjOwYcTrmQDB00usGPZqGcLv5B39td9+k0D0UbasbEK+sXJ/O2
+         Q1+mhvBVDxdOCcdt6IKn+kwmIt5fKCpamM7vPNFLEr817GXpPgQ7cvE1XoOptgycpwmX
+         bfAO/9OiYAHRBiHyWgt1TyU7hCvdYxiwO+Rs53HAndEy+7Jby03yFm5GhYRXUbNBCJ8j
+         HAupT0yOtttvClCYOoM9jbXV9WLbzbD3dhXfZAXPg9/4yQv0dGpFDBrlCuSaZyI+QA94
+         AjoK4su3as4VkRMW7ufAxBM4aqyKrQnPAseFFO4WwRLb4oRpKnmkHhgPnwANWh1Ii1gC
+         ZGCw==
+X-Gm-Message-State: AOJu0YyDHS1+JahL1X//ggNkOkYTmDi2+UMVWHjBpoBudCFJdi0dinTp
+	n/+Rgd6D/Q0AYX+PPeN+KfzT1HaSsBRJmW3pGmIeJZWmbeayh2kH/oS9BTyxbQU=
+X-Google-Smtp-Source: AGHT+IG02B1vpJSvRuf/NX2DfQivVC90vdYrTRd46fmlSPdkgfJlpsgkTAvF+r7wevifobLTpkQhEg==
+X-Received: by 2002:a17:906:fb8d:b0:a36:7b8c:8a10 with SMTP id lr13-20020a170906fb8d00b00a367b8c8a10mr9585199ejb.74.1707085431961;
+        Sun, 04 Feb 2024 14:23:51 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUkS6OTRVmy8JwBB0V2giB4cvwipmHEEr1sCiKbAeDSEsr0Dlt3LJm9YYT/KYlsoYc7f6llckZ3XTcqwZeKhVGNbIFlvb3R3olmNT0V8oy5u0jR/HwHJfgIU2xYpQ/QWWyhND7N+NzyXSV7shVxiMxSH4kTWbNefjdAz6U69Vd94K8CFylb+ao+CbG2E/H03rrX9LRraGr14nFEXBNpKm7ePtgiT+WZepshGkXXc2LpTpuV
 Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id z4-20020aa7cf84000000b0055d19c9daf2sm3123195edx.15.2024.02.04.14.23.49
+        by smtp.gmail.com with ESMTPSA id ub14-20020a170907c80e00b00a28f6294233sm3553903ejc.76.2024.02.04.14.23.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 14:23:49 -0800 (PST)
+        Sun, 04 Feb 2024 14:23:50 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	David Vernet <void@manifault.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Barret Rhoden <brho@google.com>,
-	David Vernet <void@manifault.com>,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v2 0/2] Enable static subprog calls in spin lock critical sections
-Date: Sun,  4 Feb 2024 22:23:47 +0000
-Message-Id: <20240204222349.938118-1-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 1/2] bpf: Allow calling static subprogs while holding a bpf_spin_lock
+Date: Sun,  4 Feb 2024 22:23:48 +0000
+Message-Id: <20240204222349.938118-2-memxor@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240204222349.938118-1-memxor@gmail.com>
+References: <20240204222349.938118-1-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1684; i=memxor@gmail.com; h=from:subject; bh=hZ0C+IU1ZS81U/hi1dLxeFFRHGKA9Db36LYKy0wa6Lc=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBlwAwrpHaxhy9S7D+Sy9nqnQv3uR19Zksdp5LeL PpN9tR8816JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZcAMKwAKCRBM4MiGSL8R yv9PD/9BrpYF1LhelczMeGrJD/p3yJ4lVqFIybg1iADwShJIyi+442nztEjdpMa0SpdFzT1oNFC qoxYdUyFgonbNsza6BVR79pIghcN8of+a8KYIRkeG2pq9UE3CVTz/im+E+c9uTyzu7yHH6n8CoT oGinrNL0AZA4RZgG10v3j4lv/g3NQl0nmyePjVOpNDGL5oiljKnBXhCtCT0FjvoO9e0qvyg+TEn 9SV3mbW8/iu9eiFL6WwVqNSJf7D8FDbbKjAcfKIFidrxlUsBGCwXNHM/1rKj5T7B/0SNkP2KBX3 1vickhpVJ9K1FNdOM0GrXVp+gQ/J6WStTFGFdsmY/tO59G0FGM8MCRVtHpUvHtZLMh8invO05Kb qC+8vhX8tGYeXl+aoOYyzMGRXKE+YOTSCqZfPhHLU/cIps9MNYstT1FMZULugI0m6AuLKT8Ffhm Ofsyzf3gQZe95GWH473P2oyXpBw15qxwqjaIEzdulYDJD1PQ6HEKFm6mHB9GJTp8eFqNaK3EbrC 16OKu35pOvS93bpAWyiW14IFGen+3Z5jAdVGVPFO+1M+Tw7e2quxmZf89NwaeZ1pOXu1nPOz4eM 51LxKh7B/pHbPe5bF+kx3pSWmYCl2Z+9gM1geu5IIi/LwsxnhV2B2V/1oKqAQQJHP8fL9aGOF77 XLKtixQ/Gjf0A6Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3833; i=memxor@gmail.com; h=from:subject; bh=f++ohieD8ClMSW1AetryGM/gVPfZDbl+hUxTIaM/wgo=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBlwAwrzIJDbB3UIEEArgqQa6Pi28/ux1TWi2Trz J2XFVyPdwKJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZcAMKwAKCRBM4MiGSL8R yscpEACQi8MFStbOr67vz+3++Arv8v7U79ZO58tnXR3QRp0VECjk2p8jTNmqasXSiB5l3rv9/Z9 XZMcP7lJHZC7Nv692duxW/HjldDUY1PbrZ8dL332i1RBM0EJ4ZpDRVsnItrRwZuV2Nhsnr+zQR5 4UGY8h1z6zkE+ckKxeK3dERDW1A2X9E/HZys/L/s0uCwcjGtxriLxqSlJkOOt+r4lZExSVeRy6H dYchAB1WEs/XontsJ3y63Aa0fuOkElhMLV9N0UAhxmvU16HGojXkkMz5grs7W+wxSskv29ZvM0V iRp4yNw321IC/FmOjKGZxJ5OSZMAzCKf8mwOuGUCd0DErUFcCDeBQs2LJyz9RbklIw3u7ySVqqT cL4NpIagO+qJy4MtNDt+GmkLV/wL+OGgGUEbDMVBmDD7JWOGeVsmFW5MYW38m8jkoJkuAxA7/eQ B51abnuKB5LfjnIi/dgqy6SfjarILv0QG1Dou0fyo7TQkHM3LJALBiQWgYrxSlq2lBLOmTa2RG3 kTR9ofyHnuiwiKEbSD8nmvGOJcQwKI66YDFkqZLxB9+pjeEh6G+IHHVNLLd7EdUGtfZMu1QoIka APi4Mc0AyvllOp7gO2eL1S5SpBoUzcg0JtNq8DBqEx+i9r0Bi5qJ+2Z6+kYlvOAVIRGrkluRxcy fK18Jg9cAQLL2xg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-This set allows a BPF program to make a call to a static subprog within
-a bpf_spin_lock critical section. This problem has been hit in sched-ext
-and ghOSt [0] as well, and is mostly an annoyance which is worked around
-by inling the static subprog into the critical section.
+Currently, calling any helpers, kfuncs, or subprogs except the graph
+data structure (lists, rbtrees) API kfuncs while holding a bpf_spin_lock
+is not allowed. One of the original motivations of this decision was to
+force the BPF programmer's hand into keeping the bpf_spin_lock critical
+section small, and to ensure the execution time of the program does not
+increase due to lock waiting times. In addition to this, some of the
+helpers and kfuncs may be unsafe to call while holding a bpf_spin_lock.
 
-In case of sched-ext, there are a lot of other helper/kfunc calls that
-need to be allow listed for the support to be complete, but a separate
-follow up will deal with that.
+However, when it comes to subprog calls, atleast for static subprogs,
+the verifier is able to explore their instructions during verification.
+Therefore, it is similar in effect to having the same code inlined into
+the critical section. Hence, not allowing static subprog calls in the
+bpf_spin_lock critical section is mostly an annoyance that needs to be
+worked around, without providing any tangible benefit.
 
-Unlike static subprogs, global subprogs cannot be allowed yet as the
-verifier will not explore their body when encountering a call
-instruction for them. Therefore, we would need an alternative approach
-(some sort of function summarization to ensure a lock is never taken
-from a global subprog and all its callees).
+Unlike static subprog calls, global subprog calls are not safe to permit
+within the critical section, as the verifier does not explore them
+during verification, therefore whether the same lock will be taken
+again, or unlocked, cannot be ascertained.
 
- [0]: https://lore.kernel.org/bpf/bd173bf2-dea6-3e0e-4176-4a9256a9a056@google.com
+Therefore, allow calling static subprogs within a bpf_spin_lock critical
+section, and only reject it in case the subprog linkage is global.
 
-Changelog:
-----------
-v1 -> v2
-v1: https://lore.kernel.org/bpf/20240204120206.796412-1-memxor@gmail.com
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: David Vernet <void@manifault.com>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ kernel/bpf/verifier.c                                 | 11 ++++++++---
+ .../testing/selftests/bpf/progs/verifier_spin_lock.c  |  2 +-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
- * Indicate global function call in verifier error string (Yonghong, David)
- * Add Acks from Yonghong, David
-
-Kumar Kartikeya Dwivedi (2):
-  bpf: Allow calling static subprogs while holding a bpf_spin_lock
-  selftests/bpf: Add test for static subprog call in lock cs
-
- kernel/bpf/verifier.c                         | 11 +++-
- .../selftests/bpf/prog_tests/spin_lock.c      |  2 +
- .../selftests/bpf/progs/test_spin_lock.c      | 65 +++++++++++++++++++
- .../selftests/bpf/progs/test_spin_lock_fail.c | 44 +++++++++++++
- .../selftests/bpf/progs/verifier_spin_lock.c  |  2 +-
- 5 files changed, 120 insertions(+), 4 deletions(-)
-
-
-base-commit: 2a79690eae953daaac232f93e6c5ac47ac539f2d
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 64fa188d00ad..7d38b2343ad4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9493,6 +9493,13 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	if (subprog_is_global(env, subprog)) {
+ 		const char *sub_name = subprog_name(env, subprog);
+ 
++		/* Only global subprogs cannot be called with a lock held. */
++		if (env->cur_state->active_lock.ptr) {
++			verbose(env, "global function calls are not allowed while holding a lock,\n"
++				     "use static function instead\n");
++			return -EINVAL;
++		}
++
+ 		if (err) {
+ 			verbose(env, "Caller passes invalid args into func#%d ('%s')\n",
+ 				subprog, sub_name);
+@@ -17644,7 +17651,6 @@ static int do_check(struct bpf_verifier_env *env)
+ 
+ 				if (env->cur_state->active_lock.ptr) {
+ 					if ((insn->src_reg == BPF_REG_0 && insn->imm != BPF_FUNC_spin_unlock) ||
+-					    (insn->src_reg == BPF_PSEUDO_CALL) ||
+ 					    (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+ 					     (insn->off != 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
+ 						verbose(env, "function calls are not allowed while holding a lock\n");
+@@ -17692,8 +17698,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 					return -EINVAL;
+ 				}
+ process_bpf_exit_full:
+-				if (env->cur_state->active_lock.ptr &&
+-				    !in_rbtree_lock_required_cb(env)) {
++				if (env->cur_state->active_lock.ptr && !env->cur_state->curframe) {
+ 					verbose(env, "bpf_spin_unlock is missing\n");
+ 					return -EINVAL;
+ 				}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_spin_lock.c b/tools/testing/selftests/bpf/progs/verifier_spin_lock.c
+index 9c1aa69650f8..fb316c080c84 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_spin_lock.c
++++ b/tools/testing/selftests/bpf/progs/verifier_spin_lock.c
+@@ -330,7 +330,7 @@ l1_%=:	r7 = r0;					\
+ 
+ SEC("cgroup/skb")
+ __description("spin_lock: test10 lock in subprog without unlock")
+-__failure __msg("unlock is missing")
++__success
+ __failure_unpriv __msg_unpriv("")
+ __naked void lock_in_subprog_without_unlock(void)
+ {
 -- 
 2.40.1
 
