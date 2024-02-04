@@ -1,274 +1,164 @@
-Return-Path: <bpf+bounces-21145-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21146-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27288848AE5
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 04:32:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72CCE848B63
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 07:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D01CB284119
-	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 03:32:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1D21B23EE3
+	for <lists+bpf@lfdr.de>; Sun,  4 Feb 2024 06:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8349817F7;
-	Sun,  4 Feb 2024 03:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21756FB9;
+	Sun,  4 Feb 2024 06:12:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yw4VuokB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6oYuvCu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB9510F1
-	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 03:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21AA7465
+	for <bpf@vger.kernel.org>; Sun,  4 Feb 2024 06:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707017540; cv=none; b=u3I7E4llXRuxGJEmLRffPYBWGiFGjXmC/Vn9zTu1CZjeTGYsqKOYASGqhBqXUlNF9LCoaH9gSaS795g3V4hRgke0AqTl88KYYr2Y6HKBnOcip/deiZxFHtwDr8Do1EVDDh9xgO6nHajJ3t4mclYY91DbWc93XGEMv9EZDrAXfWI=
+	t=1707027131; cv=none; b=cUupfl5wloYWFeipyioSh+YzGczFHWfxpqW0Puw3uP6yunrxZaODKMdMRduOTLImbTutqRpL3cRZOqhFTgyBr9YTCyuCpqK1MBDCDUS8dJLl+GhFXtr16mmGLHNLOSglsqEbkCmpv7zbLMaiGkB1GN9m0mngz1gYY5dJxpMJkdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707017540; c=relaxed/simple;
-	bh=jz2+74PvlnGl/QtqpQAspkvc43wlCGei4+lNRv5aPRw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KKr2sf8CVtejZgiN4UHUlKqPV3SJ/T4sNPeBa+79p4xKfELWBNLQwTIsgn/2CYIzBiZgjKf23Bi15VqhA+OL5yefgOPlTEVgyxNFkPWaIPGGe6J4hC1VQQUIykb38k32CzZRDOLBCcu2beplwQG5yR3kRyFTul2r5Ky9leQICKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yw4VuokB; arc=none smtp.client-ip=209.85.219.44
+	s=arc-20240116; t=1707027131; c=relaxed/simple;
+	bh=F1mnk6rlPVvAnSi8LuSpuC83SDYYdYaTlE3E3xZHg6Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k9OgjWLTYvFZi/VbERB3M5pe6P7WZvlw2QuDtiswGOH/h6vJV/e8i6KXK45RsQ1LxyCf8QdzLXp6TkFyrt93DQvt+8CBIFoDOmAiOrDbDEPdl/1+TcnX19VycDSXXEsByxhLhSquwmANPTYO6te18nmXgPxT57sacDrkp4IV1o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6oYuvCu; arc=none smtp.client-ip=209.85.219.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6818a9fe380so19629756d6.2
-        for <bpf@vger.kernel.org>; Sat, 03 Feb 2024 19:32:18 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d8f31930so1620506276.0
+        for <bpf@vger.kernel.org>; Sat, 03 Feb 2024 22:12:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707017537; x=1707622337; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rkg277kaMPtb+eAjxXD/k90y0fvDMpv2xaZBU2lG57Y=;
-        b=Yw4VuokBciobo9uLaWM4qOkmis6SPrA84imRwf3NoLJ5AKF8rqsrt9ZVoiuzZ0v3IC
-         cWGbsJYoCJrsnOxH8wJTl9k3bjPegAvHaqhME4GUIS0bFS3PWCApjRmHQwjnB8yDgPko
-         zOU16uQlAZXiAxhMqZPqlh4yOzySRq2JqQd78PqO7tnbkHkpHRXL1NdMSy0A5OQ5BAGO
-         eku+NCOmQWaGGOhxzBMSrUaHHxivFLI4LCFd/KO+38MQ+YuI/mh5+86/l2ylsX/12SIZ
-         UO043QN25SEv1ZITU3wjOIR1XBGa0Cdj16BHbQtfDz4SjEPy4WT377It15WN/pqIfgTg
-         gbEg==
+        d=gmail.com; s=20230601; t=1707027128; x=1707631928; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OjOkl8TR5m7c991IP3OHFvLgHZM5L4pY8uVulxwWeD0=;
+        b=R6oYuvCuZyAtH0AFjxVq0E4qkAnOG4d30CDYx3HwnZ07S4ZdbrjNXspqrurlL6VBaL
+         h5Zguig1jLcvnhu6qFL90o97YlhzZwGinWXMXL3jg0bi3smw/Fskt4vXl8mZXq/mSJAt
+         B9UDvo7PQV4LCcdy/9KqP4DN1f4HEaHr7iAYrxJMbW3c9hd0FaQ2J/K2DadqcXf1Of37
+         XFJeJGQqUlB+ScjqzUre5N80/Cmne28GsU9gnMu9+AYwIUAKsjM1VkB3/zrEeMglksis
+         IMsahnBFB8Gi5cbod3Q0tbvy+6GwGwX7bg42LoQNple3DGggyO5Q+C+wieY2uNh8FGQH
+         gy0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707017537; x=1707622337;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rkg277kaMPtb+eAjxXD/k90y0fvDMpv2xaZBU2lG57Y=;
-        b=iXxBw7eugIYO0m/Y3PcUJKbyurVFshG7NL+V+7geUNdkXSSKC6YDth3j390q9XE037
-         QX72kPaHQk2xYAXK9XaSSplxu87dI1SnL7l7pN+VOnx6N+2NIgO1YUhhLx8EGkk8eMhy
-         hpykqFFMqKVAyiBB5MLrXpUdLrIFk1rUSYnAr4X94zyhJFYhgSvtaMni1feT6wcH2Ik3
-         /6c2UrCfqWIiNYe2d4AMhA3ohG6ePu1CgqtDEOTE4PeN4+AKHH631aPcMVSA8n+r/ALj
-         NRvuhguIgy1P80c5B+0BHz10esdJVd4O07TtLndy0CLMLy/PwkQpHG40RtEDiux4BS9G
-         j5cA==
-X-Gm-Message-State: AOJu0Yz5lyW8f4ESZ93HABzWPamElHUXOEsh75ZO7at5BHqIqCzwEPAY
-	dTBnUn6/5C1qLb2n9d8L9SA7mvx3f3AwO9dGJxZ9OzNLJ+0tX/IlZm+JtRDFDmVJxQHwA66O0RX
-	InA9hEr7em9ppfHmcFRYzecvyF6I=
-X-Google-Smtp-Source: AGHT+IEvGfLENE2YAAiUtMaC+kaLlt+uo3hmGvzbdUsw0jMsd9nDmmcXqvDl4ENw53mjQVRB7m3X0LijbN2coFgLqAo=
-X-Received: by 2002:a0c:e082:0:b0:686:9de1:7015 with SMTP id
- l2-20020a0ce082000000b006869de17015mr2602460qvk.61.1707017537135; Sat, 03 Feb
- 2024 19:32:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707027128; x=1707631928;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OjOkl8TR5m7c991IP3OHFvLgHZM5L4pY8uVulxwWeD0=;
+        b=H4Bm0mEFFWcFOj7aAXRtKjSBGpRbaVU0Md2fja/LdoE9nv+F6v0fIkYfCeSNfQPUHu
+         ZeXUVqySBfFkt67KWUDAlMaS9Pvhfls0RZOfv26hREecUNCD07h/zd5175WtZ98btgBT
+         iycb4CJzGH5POT01gaqT1wPWgbhDNiYThL2JxTqPEikNXPcByIxoOVHbeVLjn0litbW6
+         d/HVR1kXTmZhy4vaQK70cfazGDYGtmzKM/tK6hSMe9drNRhmvqle5sjSaQa0DSELrSh0
+         9nWl7ca6ndoH0JwPfuDq82juhe5/9y7DOKfPdqmkPosj55vVS9niw47VLAQcp8ULTEIK
+         IEzQ==
+X-Gm-Message-State: AOJu0YwAHm2Jf06SLvU+1y5po9f81VFsNUueIgv9mzKah8SOKprAlAH5
+	tRPbefWc4eKlWOj0N8ztNqtpnpQT0MeALImvRIoCyaQnImsdVmltzTtc4i8T
+X-Google-Smtp-Source: AGHT+IH+WQjISkB+VJblzBRIeKUoxj1KzzzdzEcuvR44xpV9NE58pPLlC/G7RBdmiXJI35U+5D/5nw==
+X-Received: by 2002:a05:6902:1b08:b0:dc2:1f6b:be4c with SMTP id eh8-20020a0569021b0800b00dc21f6bbe4cmr2083892ybb.22.1707027127976;
+        Sat, 03 Feb 2024 22:12:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXK5WvONyIdjwn9PfFegMcK7gRQZ/PelUubnOww3lvbCgEvkOTak0fHb0eGgxYkQBOjgeCb1o39iKrWzp+xKrczFHTGXWLWNrgHJEp95C2XUVJpnAVKN4VEQM3wJhw04mlMCxGmA5sDGO6lfjsZmnfn9fSB8I038xsYFEZCeXLYgvBOhDbD7TQn3UJySMJMD4jW+aLs1okpPFLk9jYew0NQ8Nj+H2MaNsg7P6BtoZ9EUXVxuR0J2XNEtOzVoVDOgCwWeXRR7w==
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:b976:d178:add:46ae])
+        by smtp.gmail.com with ESMTPSA id u16-20020a250950000000b00dc6bd47cc03sm1231958ybm.5.2024.02.03.22.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 22:12:07 -0800 (PST)
+From: thinker.li@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH bpf-next] selftests/bpf: Suppress warning message of an unused variable.
+Date: Sat,  3 Feb 2024 22:12:04 -0800
+Message-Id: <20240204061204.1864529-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131145454.86990-1-laoar.shao@gmail.com> <20240131145454.86990-2-laoar.shao@gmail.com>
- <CAEf4BzYwyFyydjNie4OfEUF0epV=ejcUCtuR6bZBJgk=8BX0wQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYwyFyydjNie4OfEUF0epV=ejcUCtuR6bZBJgk=8BX0wQ@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 4 Feb 2024 11:31:41 +0800
-Message-ID: <CALOAHbBBtX2Oy+O47pzORQqsH9mhSUca2z1j8_rcoX_9=u=HEw@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 1/4] bpf: Add bpf_iter_cpumask kfuncs
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, void@manifault.com, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 3, 2024 at 6:03=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Jan 31, 2024 at 6:55=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > Add three new kfuncs for bpf_iter_cpumask.
-> > - bpf_iter_cpumask_new
-> >   KF_RCU is defined because the cpumask must be a RCU trusted pointer
-> >   such as task->cpus_ptr.
-> > - bpf_iter_cpumask_next
-> > - bpf_iter_cpumask_destroy
-> >
-> > These new kfuncs facilitate the iteration of percpu data, such as
-> > runqueues, psi_cgroup_cpu, and more.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/bpf/cpumask.c | 82 ++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 82 insertions(+)
-> >
-> > diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-> > index 2e73533a3811..c6019368d6b1 100644
-> > --- a/kernel/bpf/cpumask.c
-> > +++ b/kernel/bpf/cpumask.c
-> > @@ -422,6 +422,85 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cp=
-umask *cpumask)
-> >         return cpumask_weight(cpumask);
-> >  }
-> >
-> > +struct bpf_iter_cpumask {
-> > +       __u64 __opaque[2];
-> > +} __aligned(8);
-> > +
-> > +struct bpf_iter_cpumask_kern {
-> > +       struct cpumask *mask;
-> > +       int cpu;
-> > +} __aligned(8);
-> > +
-> > +/**
-> > + * bpf_iter_cpumask_new() - Create a new bpf_iter_cpumask for a specif=
-ied cpumask
->
-> I'd say "Initialize a new CPU mask iterator for a given CPU mask"?
-> "new bpf_iter_cpumask" is both confusing and misleading (we don't
-> create it, we fill provided struct)
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
-will change it.
+"r" is used to receive the return value of test_1 in bpf_testmod.c, but it
+is not actually used. So, we remove "r" and change the return type to
+"void".
 
->
-> > + * @it: The new bpf_iter_cpumask to be created.
-> > + * @mask: The cpumask to be iterated over.
-> > + *
-> > + * This function initializes a new bpf_iter_cpumask structure for iter=
-ating over
-> > + * the specified CPU mask. It assigns the provided cpumask to the newl=
-y created
-> > + * bpf_iter_cpumask @it for subsequent iteration operations.
->
-> The description lgtm.
->
-> > + *
-> > + * On success, 0 is returen. On failure, ERR is returned.
->
-> typo: returned
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401300557.z5vzn8FM-lkp@intel.com/
+Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+---
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 6 ++----
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h | 2 +-
+ tools/testing/selftests/bpf/progs/struct_ops_module.c | 3 +--
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
-will fix it.
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 4754c662b39f..a06daebc75c9 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -554,9 +554,8 @@ static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
+ static int bpf_dummy_reg(void *kdata)
+ {
+ 	struct bpf_testmod_ops *ops = kdata;
+-	int r;
+ 
+-	r = ops->test_2(4, 3);
++	ops->test_2(4, 3);
+ 
+ 	return 0;
+ }
+@@ -570,9 +569,8 @@ static int bpf_testmod_test_1(void)
+ 	return 0;
+ }
+ 
+-static int bpf_testmod_test_2(int a, int b)
++static void bpf_testmod_test_2(int a, int b)
+ {
+-	return 0;
+ }
+ 
+ static struct bpf_testmod_ops __bpf_testmod_ops = {
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index ca5435751c79..537beca42896 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -30,7 +30,7 @@ struct bpf_iter_testmod_seq {
+ 
+ struct bpf_testmod_ops {
+ 	int (*test_1)(void);
+-	int (*test_2)(int a, int b);
++	void (*test_2)(int a, int b);
+ };
+ 
+ #endif /* _BPF_TESTMOD_H */
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
+index e44ac55195ca..b78746b3cef3 100644
+--- a/tools/testing/selftests/bpf/progs/struct_ops_module.c
++++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
+@@ -16,10 +16,9 @@ int BPF_PROG(test_1)
+ }
+ 
+ SEC("struct_ops/test_2")
+-int BPF_PROG(test_2, int a, int b)
++void BPF_PROG(test_2, int a, int b)
+ {
+ 	test_2_result = a + b;
+-	return a + b;
+ }
+ 
+ SEC(".struct_ops.link")
+-- 
+2.34.1
 
->
-> > + */
-> > +__bpf_kfunc int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, cons=
-t struct cpumask *mask)
-> > +{
-> > +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
-> > +
-> > +       BUILD_BUG_ON(sizeof(struct bpf_iter_cpumask_kern) > sizeof(stru=
-ct bpf_iter_cpumask));
-> > +       BUILD_BUG_ON(__alignof__(struct bpf_iter_cpumask_kern) !=3D
-> > +                    __alignof__(struct bpf_iter_cpumask));
-> > +
-> > +       kit->mask =3D bpf_mem_alloc(&bpf_global_ma, cpumask_size());
-> > +       if (!kit->mask)
-> > +               return -ENOMEM;
-> > +
-> > +       cpumask_copy(kit->mask, mask);
-> > +       kit->cpu =3D -1;
-> > +       return 0;
-> > +}
-> > +
-> > +/**
-> > + * bpf_iter_cpumask_next() - Get the next CPU in a bpf_iter_cpumask
-> > + * @it: The bpf_iter_cpumask
-> > + *
-> > + * This function retrieves a pointer to the number of the next CPU wit=
-hin the
->
-> "function returns a pointer to a number representing the ID of the
-> next CPU in CPU mask" ?
-
-will change it.
-
->
-> > + * specified bpf_iter_cpumask. It allows sequential access to CPUs wit=
-hin the
-> > + * cpumask. If there are no further CPUs available, it returns NULL.
-> > + *
-> > + * Returns a pointer to the number of the next CPU in the cpumask or N=
-ULL if no
-> > + * further CPUs.
->
-> this and last sentence before this basically repeat the same twice,
-> let's keep just one?
-
-will change it.
-
->
->
-> > + */
-> > +__bpf_kfunc int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it)
-> > +{
-> > +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
-> > +       const struct cpumask *mask =3D kit->mask;
-> > +       int cpu;
-> > +
-> > +       if (!mask)
-> > +               return NULL;
-> > +       cpu =3D cpumask_next(kit->cpu, mask);
-> > +       if (cpu >=3D nr_cpu_ids)
-> > +               return NULL;
-> > +
-> > +       kit->cpu =3D cpu;
-> > +       return &kit->cpu;
-> > +}
-> > +
-> > +/**
-> > + * bpf_iter_cpumask_destroy() - Destroy a bpf_iter_cpumask
-> > + * @it: The bpf_iter_cpumask to be destroyed.
-> > + *
-> > + * Destroy the resource assiciated with the bpf_iter_cpumask.
->
-> typo: associated
-
-will fix it.
-
->
-> > + */
-> > +__bpf_kfunc void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it)
-> > +{
-> > +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
-> > +
-> > +       if (!kit->mask)
-> > +               return;
-> > +       bpf_mem_free(&bpf_global_ma, kit->mask);
-> > +}
-> > +
-> >  __bpf_kfunc_end_defs();
-> >
-> >  BTF_SET8_START(cpumask_kfunc_btf_ids)
-> > @@ -450,6 +529,9 @@ BTF_ID_FLAGS(func, bpf_cpumask_copy, KF_RCU)
-> >  BTF_ID_FLAGS(func, bpf_cpumask_any_distribute, KF_RCU)
-> >  BTF_ID_FLAGS(func, bpf_cpumask_any_and_distribute, KF_RCU)
-> >  BTF_ID_FLAGS(func, bpf_cpumask_weight, KF_RCU)
-> > +BTF_ID_FLAGS(func, bpf_iter_cpumask_new, KF_ITER_NEW | KF_RCU)
-> > +BTF_ID_FLAGS(func, bpf_iter_cpumask_next, KF_ITER_NEXT | KF_RET_NULL)
-> > +BTF_ID_FLAGS(func, bpf_iter_cpumask_destroy, KF_ITER_DESTROY)
-> >  BTF_SET8_END(cpumask_kfunc_btf_ids)
->
-> Seems like you'll have to rebase, there is a merge conflict with
-> recently landed changes.
-
-will do it.
-
->
->
-> >
-> >  static const struct btf_kfunc_id_set cpumask_kfunc_set =3D {
-> > --
-> > 2.39.1
-> >
-
-
-
---=20
-Regards
-Yafang
 
