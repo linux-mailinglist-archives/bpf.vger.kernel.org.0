@@ -1,119 +1,129 @@
-Return-Path: <bpf+bounces-21250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A90E84A6EB
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 22:18:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3724684A6F3
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 22:18:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405A8291991
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 21:18:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7F81F29975
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 21:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E18AD5B5BD;
-	Mon,  5 Feb 2024 19:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1925C5E8;
+	Mon,  5 Feb 2024 19:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqFdhdF1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bq613mnL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A3A5B5BB
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 19:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7E048780
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 19:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707161163; cv=none; b=L69nMgXx5LJ0Aix9i5DVgk1AEbZXPIzbpaYrkMqZbJBWp0inYG217UnyTvJVRoiDcotR4TUIdLhHjP0IcBF9ksIoxhx+GN+zGlBGi+Iic65pI2deSA5MX2jFal0MkCJaG7INGKDB6B31AKejQWfawyxu3XY6W+iB6qm7UKM4Ylo=
+	t=1707161449; cv=none; b=cNHqHTZpGb83I0aSXWTpLIOZGYDcih0RqlYE+kHyvcwn2XLUO6yVmDrs940f3jr8S3iMKbIVhqmJyZWi+va/HTxabvGSVU7II/zhzSMMBio/R3WDFMAD6Wa7+Ti2QqH2IfiW5boY1hS9Q7sdt3N4CrobEdw/KF5xyiM/Hnuvyzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707161163; c=relaxed/simple;
-	bh=f2aRudQ/B8RzJQqWkCaA+d7OPXEXPCZLCgVAmkRdK7A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I0UKAAAqy0jhdgTl0+nDvwc03+qyvL6iGO+Rhlqwl9FxpSIgmhDN+gbdm1xWIoIvb9ByHrgdwE1OIUoVI7PRJMqxBUiS8BFeR5Gql4QQPrGi1hhMn8t+82omF3lHUXIm4Ja4URYbSBe45Y0qYxukChru2eCUU/PNWjgUYpFe1u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PqFdhdF1; arc=none smtp.client-ip=209.85.128.170
+	s=arc-20240116; t=1707161449; c=relaxed/simple;
+	bh=WUr4nLvpo8rOjlJgyAHH3YPE/xNEJfZJCsCqqG6mCLg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bKGqWlGTMlb2UEPkdSFB8sFG1ICVRlDT1s7nMWOmtHe+D3pSw3n34AO9hdVHUevyg0p13Is7SecoGKyLrZBTslnccyIPT1jLYSehs7zqH0qTWrstZzCGOnyQOKgO5WRkDDOWf37SbkdeSu/RnX32FXj33WZSX5Tqw1O8aWNcSxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bq613mnL; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60412f65124so44230977b3.3
-        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 11:26:01 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2907a17fa34so4070868a91.1
+        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 11:30:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707161161; x=1707765961; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NIg1YK6wsUmUELLzBLV0hX7nWmpSR8fVYvUDf0KeMu4=;
-        b=PqFdhdF1bFBy3ktu7LB1R0hL2M/GdQNWGpS/CVKNdQBBttUAkMyQsO7yqYdMejcujK
-         L0lOZNxlqR3WNgomTwoHgmTjp80j11GMRNBFN61tpBv8qP259bkq0socN0Ogj7u0avQ2
-         i4APgiPJ+oaiFL5wICsTa7lAxc8AOEUJrjwBN53QWBQBC1BOiXegzJxydhWOTuVe9p+Q
-         zQ2a/CLiXS6oTtaKrKom8jicsp1krhE99lul5ESJH+4zb/L+ZjpUPcs31KgRbB9fBHnL
-         gNnHDjjFOnqGLR02E2WgNtn9RlYanu1dtee2jjUcV0f1ytErJsCgKryUcaVSk/YJQETV
-         ycwQ==
+        d=gmail.com; s=20230601; t=1707161448; x=1707766248; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gqkqERVm4z5N5qHot5NtszYYzZ5Pjn8PqPHI1UdMBUI=;
+        b=bq613mnLR4N0gqe6aP2eEsNM95IhcgGYSWtboQlGOUp4WdOJyWgfgpWtfs7l54+/o2
+         dg5BoRJQRDpQrMOZq9xiz/NsYg1RLzFZ4jixBeH6Ej8t0WfJAXdlwSnSj8baCo5vZbEB
+         QtW2LDcxsYCkIpYYB8qKnIhlYjlLYOepmCro4b+Bdak1jCs3bScY1jkmEMZ7VyNrnZtz
+         p/kNG7bvYrcbMPoV98KD7AikxaUGz5nc2346Iq5nKmx+D1J7T11AAg4b4eXLS8NGIEXU
+         0i1BnN/XHIM+VQMWR5vm8RjkF0WDwTTi3PBJ9z7nqFozQYal7WTnMJXRz5fNDXTgkCHu
+         rB3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707161161; x=1707765961;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NIg1YK6wsUmUELLzBLV0hX7nWmpSR8fVYvUDf0KeMu4=;
-        b=Q1iUcaWSRwMfj377oerG89lM2pFH8SZGqKGiOeSgtTndp6cAGDrPrFt5mr2sOyudhw
-         ArZ7QgqucRCM3SbgNQNgnOvkbKlwz+auR3Yb47E0/B18ZeoxvB9j0dRmm5lSH69IXMk5
-         Saas15KctuchWn+XFZPVMhDBIRPJ8fCpNv70Ae9qC8P1buGpWqDlJ15ll+oan0GrHBbX
-         NjNPPdVazBc3cJF+RYhBWLgixHorzBM+XXZPgH9u1MfljXU0YcOz+gz7F1CD8sQ+4tbb
-         x7k3IdU95fHOUfcwSR7a1a3sb2vzxJMcRS5v8EnU3xkIN6OhUs3fYseI9oi0WrF9aTGs
-         m6SQ==
-X-Gm-Message-State: AOJu0YyVEz/YwE9Ntdz+7tuxQ4yvTva5tHixQB4MBgc9W0QWvM08Rt4Q
-	K/7RwxcdHmBGVbAiOzq6bSvhBaelM3tdrbskkUTOlSr0AzlYb1s/
-X-Google-Smtp-Source: AGHT+IFJrTbs7PrjtMyeQ1A1SniAgW4UAdI1ptFY8rfcmcWhV7L7gz4qy8iEh4hErDD9HqtvEapd+Q==
-X-Received: by 2002:a81:6c41:0:b0:5ff:81fa:16e6 with SMTP id h62-20020a816c41000000b005ff81fa16e6mr605531ywc.38.1707161160902;
-        Mon, 05 Feb 2024 11:26:00 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU/YCAvKqDfIvCaFG+ey/ZgXqH+IZ4ePiwW5oHQzO36KFAH27zTyNNQfWHHv/RClOPvnZjdeB4e3REi9jY96+ozmR7qlyAb452T9yQxbwyGIlq7Fr1CfH6EI7XO5Tzzceq0IrM5nDkAiu7TXgrll5/UJhS28cQb2nr6r9/dYqFQ
-Received: from ?IPV6:2600:1700:6cf8:1240:8b69:db05:cad3:f30f? ([2600:1700:6cf8:1240:8b69:db05:cad3:f30f])
-        by smtp.gmail.com with ESMTPSA id g140-20020a0ddd92000000b006029cdd22cbsm91680ywe.97.2024.02.05.11.26.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 11:26:00 -0800 (PST)
-Message-ID: <3230d5b6-dca3-4b41-bf04-479127628713@gmail.com>
-Date: Mon, 5 Feb 2024 11:25:59 -0800
+        d=1e100.net; s=20230601; t=1707161448; x=1707766248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gqkqERVm4z5N5qHot5NtszYYzZ5Pjn8PqPHI1UdMBUI=;
+        b=sxk8dApl+OnHgTadU57rPsBt5EDfrNbRC3JXx98eBrf6loAytssYscg30+uUvqxvns
+         1rNihxirV6XSK3Uphx2/CENUTWOLhfykYjvmvbaSLuwMp6Trh3otU772AxZzYpL4UyCm
+         ezOWPdJZHiw+1rtXRhdQSM9rp2o3t0YHNIPqocmWsKa69PyErl2GN/JDDZP/EZKlfWiC
+         qsvfhwiTvGYLIgO+FDAe+2Slo+Jr48Kfktzy4WEg8CF5agjLEtac7VZMbFRo1wE9pmop
+         FU2W0sBR3UGTvpWS8y+ytzDg0AvNRoKEf/lmgod0kxWHYtgyzQqfrWuwRkPE+SILKY9G
+         NyaA==
+X-Gm-Message-State: AOJu0YzIXW2Jq5FkeG2UrZ+hyuTFURNGoQGW5vlcI9fxNGkqToU1UoXH
+	nU6cxI/scZ7OBlz7vnSnz4bOwS9ZT4CDtTI9G0LJ1Eu5cIbVqGMudnoa9k7NvwZY41HYfptJqVD
+	bakgiUow3N9LWwwi0cXPYXNEa/Sk=
+X-Google-Smtp-Source: AGHT+IGbQuE96pID2wZTwuik4lTy2/ziKlrPm9lzk4r7/zLPPkcJJz6eiGNIKPi/BpA21PFjLyPSIoIGxV5fooP0QMI=
+X-Received: by 2002:a17:90b:211:b0:28d:2aa7:b684 with SMTP id
+ fy17-20020a17090b021100b0028d2aa7b684mr443826pjb.1.1707161447538; Mon, 05 Feb
+ 2024 11:30:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linux-next:master 1465/2825]
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c:557:13: warning:
- variable 'r' set but not used
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Kui-Feng Lee <thinker.li@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, Martin KaFai Lau <martin.lau@kernel.org>,
- kernel test robot <lkp@intel.com>, bpf <bpf@vger.kernel.org>
-References: <202401300557.z5vzn8FM-lkp@intel.com>
- <79df5a1a-3d7d-4a6a-8ebb-aaf4d9e89aaf@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <79df5a1a-3d7d-4a6a-8ebb-aaf4d9e89aaf@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <32bde0f0-1881-46c9-931a-673be566c61d@linux.dev>
+In-Reply-To: <32bde0f0-1881-46c9-931a-673be566c61d@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 5 Feb 2024 11:30:35 -0800
+Message-ID: <CAEf4BzZ9L9kUz--+K=D7CubSG8xWCxuw1R6tWxFC=93VbZ4ZUw@mail.gmail.com>
+Subject: Re: FYI: bpf selftest verif_scale_strobemeta_subprogs failed with
+ latest llvm19
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, Feb 4, 2024 at 10:58=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+> The selftest verif_scale_strobemeta_subprogs failed with latest llvm19 co=
+mpiler.
+> For example,
+>
+>    $ ./test_progs -n 498
+>    ...
+>    libbpf: prog 'on_event': BPF program load failed: Permission denied
+>    libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+>    combined stack size of 4 calls is 544. Too large
+>    verification time 1417195 usec
+>    stack depth 24+440+0+32
 
+Is it a `struct strobe_map_raw map` in read_map_var()? I think we
+should move it to a per-cpu array anyways (not saying we shouldn't fix
+Clang regression), in production we've done this already a while ago
+:)
 
-On 2/1/24 12:36, Martin KaFai Lau wrote:
->> vim +/r +557 tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->>
->>     553
->>     554    static int bpf_dummy_reg(void *kdata)
->>     555    {
->>     556        struct bpf_testmod_ops *ops = kdata;
->>   > 557        int r;
-> 
-> Kui-Feng, Please take a look. May be change the ".test_2" return type to 
-> "void" since it is not used.
-> 
->>     558
->>     559        r = ops->test_2(4, 3);
->>     560
->>     561        return 0;
->>     562    }
->>     563
->>
-> 
-
-The fix has been landed.  FYI!
-https://lore.kernel.org/all/20240204061204.1864529-1-thinker.li@gmail.com/
+>    processed 53561 insns (limit 1000000) max_states_per_insn 18 total_sta=
+tes 1457 peak_states 308 mark_read 146
+>    -- END PROG LOAD LOG --
+>    libbpf: prog 'on_event': failed to load: -13
+>    libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
+>    scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
+>    #498     verif_scale_strobemeta_subprogs:FAIL
+>    Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> The maximum stack size exceeded 512 bytes and caused verification failure=
+.
+>
+> The following llvm patch caused the above regression:
+>    https://github.com/llvm/llvm-project/pull/68882
+>
+> I will do some analysis and try to find a solution to resolve this failur=
+e.
+>
+> Thanks,
+>
+> Yonghong
+>
+>
 
