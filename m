@@ -1,142 +1,186 @@
-Return-Path: <bpf+bounces-21225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16DE2849B68
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 14:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC37849B8C
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 14:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD27D1F23FF1
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:09:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262871F2132E
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AA6208CF;
-	Mon,  5 Feb 2024 13:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A801F1CAA4;
+	Mon,  5 Feb 2024 13:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LAmJTaRb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V5O68L2e"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F691CD04
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 13:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0092F1CA86
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 13:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138521; cv=none; b=VBz1NY1Yo3P4wWvb8C2QFMaUXflv2HBYRU1esN0igOrcjr4MJJBTkq7iPfuSIWBWpghEjVXnPQIgIkUyaBNJNEZuzsSTgeByzIafhUAjSa5AshFzLJ289wZ20mvcSan2TS5nleMxpEqXIVAVcSziZDwUr7w30AyQw2fSo0ZUQI8=
+	t=1707138934; cv=none; b=IpjCbwUVT/FGBUk3cBwR3pew7ISsFNN8RgpWcevucR2X7rOHfOnGXxnqrCbpkBenofgKA46XcZweottknvmR85X3qnTgdluweF4nV5aOvdffPlxYe7fxBw+xNLQ9wSMh22jP6Q2XoisUv5v2ulbVWr1fiRkVOBXZ7pYO/P5N3CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138521; c=relaxed/simple;
-	bh=nkOe2A26aIi/aBtdqu6j/wWZO5uYLvItpsocnEEY3xY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=dryAV4Mvu9X4i581PUYZmiYfgI71gAsYzhasLZq9NCgJxIe1BcRpKsenwezzO2b4RxEbpNz/Fgka0SKnp+4a3dFpGyJ5g3T7FSwbHQszfKkYfCXcpb1g+BYxXsqgpMErKiJj+Tjk4WsB5HWq7qNgdJgpWcFpUUTE00yqNv/9c6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LAmJTaRb; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707138518;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Elk+v4Y+ED/4T2H+8uQLqgMyCrp4tt5/vHD0v7FV0YQ=;
-	b=LAmJTaRbfsmJB2wPc4z65jnUCb2LtOBqEEX4oF1LAg1Pn6WT/CyY/9S0OXT4+T9nQKK6KP
-	Mc6hf8Rh9mmW8DS1d4DvkWlCvShYFD1HUednMUO17z8sTUjR+IC4O5TtOsh2RSYYNZIMGp
-	nwqulpfVnfQXletnqpiqkJAkMIzA4ck=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-ZjAgj_gvPmWQGYkjdF9okA-1; Mon, 05 Feb 2024 08:08:37 -0500
-X-MC-Unique: ZjAgj_gvPmWQGYkjdF9okA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-511545632b8so585861e87.3
-        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 05:08:37 -0800 (PST)
+	s=arc-20240116; t=1707138934; c=relaxed/simple;
+	bh=rmNjQomfQpoCnRaBN1vTPIo7AOHkslo9q8arq5KNEfo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q3W5rBsqdIYVTvxU0Ooz3jEJaImh5/AjW8GbsMYpMbYF5WABRR+6KzaCOd4/oZFeBlmPemqzcgt/t2DX1XjAosBM/ewZAHiUePwya1w8DCOr3VtB8DrxL1vPb+XztQL1YKAoHwF4b9+HBBGJ2tlYRBKlJVrHkXIaALDQLP1Li34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V5O68L2e; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-21432e87455so2092346fac.1
+        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 05:15:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707138931; x=1707743731; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MYnrTyMuuQpsXk2cGIbD2TvHCAjk4pn8UcToxn41yoM=;
+        b=V5O68L2eCaXZ/3yldGxurk48JnKJde80N3XciCgPM7IKPVZrYQt2lZSCBywVN8r76S
+         SqksHbu10IWAKFVz06Wuc0pBaXO0Fv6F1q7WkPh0V9Y5Jx36lOUo/QxfFV54Z8UUOqpv
+         Q7fj8KaqvtN9XV7N6snfv2nAmy6A4iqS0Be2x/GGtRmj92EEjwA0DCK60MhEW1OvBjNi
+         fHTsg2zcQchcJiCp+F5dYyZh8f0jeIXfO4zsZ+372I0c9zpUYdRpjnbYSUUd0i0hYF2A
+         eEATK8DwXl5QbC11Skal1wPRX+PqIt8EySfK/2YzfAo3Yy7tYFVjN4yeRPPRUUb3+mDb
+         fArg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707138516; x=1707743316;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Elk+v4Y+ED/4T2H+8uQLqgMyCrp4tt5/vHD0v7FV0YQ=;
-        b=voE7hgICByf2MOjUAMOFpFdM2MP5ukLktG1N4rGFSLQoxZrkxoUg3JIArZi19P4d26
-         0V7dud+lTQFUhW8f3PWqSzQr2I9scel9K+y5pchiSMEkHr73iw2p9ONTiK2M5y/DRVaX
-         cueCJJptAEJqv/VCSMK/cCXf9EBD6BbKVXABxyJDU20K2DCyj4hrfCJEOyaWtuXqIEdn
-         unlZTcts7GnC2RGHDo3ek91zXnSnAYkOmRpT7QdGBsh+d6hRMTjjkGL3/OX+EPesg5DL
-         dyPx7+jUvA/bSLMKURDLCAqEssozbOlyDmqYA/dFPMMgnj9J7kgatYAsp6OIv7BczKtX
-         kzfw==
-X-Gm-Message-State: AOJu0YwP5pAU75EuJJSqvBZh5fpUrRv8/zqyInoEZ+XkQPaOAW+/tO7x
-	97pwsGDqYaItq6CpjCqaPHVanfr/lOiZsCmWV/L5ftnxbwUroOj2VWv1PDcfqWfg0764HoyvgUJ
-	Xwuq6EugVM6EpbqKxXngaM7987y52WqIhfxVdAAXcu+g9FFe5/g==
-X-Received: by 2002:a05:6512:3a85:b0:511:4c51:d18e with SMTP id q5-20020a0565123a8500b005114c51d18emr3336174lfu.4.1707138516014;
-        Mon, 05 Feb 2024 05:08:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHiAJDw5eN6qa8POs40iTfiHHEb/rI9ieOQTBR9KzJjFWWONNoyotynQql4+bMXXnwDod1BGQ==
-X-Received: by 2002:a05:6512:3a85:b0:511:4c51:d18e with SMTP id q5-20020a0565123a8500b005114c51d18emr3336161lfu.4.1707138515690;
-        Mon, 05 Feb 2024 05:08:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV41yZ8cfXLJxxZH9bT8jss4AsYLJ12FGx76gydrZPmFRyojfsDyeM9YhLPAWQGUy1IMPSMNXuSSN99FB1GAz8K06mkTcddlrieLKvSQgdlUbqWxwmx67d9NnJEkj9osyc8+NN7EJ9Xrzbgdd9Jyt+hNn56woD/A2rRtWpV0OyTrkG3N9AWSVj2cKknWYZmZMi94QSj4eC1RO6pfO1wkDrQ5txPRcZojwwb3IRGfL3lz5NKJo4L/qmyWz0vGRynH1Q8gfuWZFKvF+USWulSfrAp8vBkuT/bFBacRlX4eiVczFLFESw+Kgzwc9TnJoIhlyUrBoBgsvIuQKbwFB85nOSTfs/Z0YmG2IPFXxcYY9BtoWGiSy9HeLetJduZseFna5BeTeY09D3hmQZyLxL3XwsvCNIXXZmSsFHuCfxzdgzxGHAiFRRDxY23AwusX7slkcLiT9x5LlPW3883jdFuOmzvQC3ouweutpSAiRNgx9Uotl8/
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id lj7-20020a170907188700b00a366c9781b7sm4318288ejc.168.2024.02.05.05.08.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 05:08:35 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 03D63108AEB2; Mon,  5 Feb 2024 14:08:35 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>, magnus.karlsson@intel.com,
- bjorn@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- netdev@vger.kernel.org, maciej.fijalkowski@intel.com, kuba@kernel.org,
- pabeni@redhat.com, davem@davemloft.net, j.vosburgh@gmail.com,
- andy@greyhouse.net, hawk@kernel.org, john.fastabend@gmail.com,
- edumazet@google.com
-Cc: bpf@vger.kernel.org, Prashant Batra <prbatra.mail@gmail.com>
-Subject: Re: [PATCH net] bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY
-In-Reply-To: <20240205123011.22036-1-magnus.karlsson@gmail.com>
-References: <20240205123011.22036-1-magnus.karlsson@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 05 Feb 2024 14:08:35 +0100
-Message-ID: <87le7zvz1o.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1707138931; x=1707743731;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MYnrTyMuuQpsXk2cGIbD2TvHCAjk4pn8UcToxn41yoM=;
+        b=pdyYsHQnWSzF5F+oW4JwcM5NE9hIBRlAA/ZPLXpLwdAegJ8gkVK/dvHx29ynTAVsiZ
+         isKvHRYbHoKDOs+j1jrOr9A8E7Af7zIaIHXSHVXA98/KJLBubFBcSigCf7mpw/N3W5rm
+         h/UHQNVZOFcDbegoFbjC8X1h0j/XEvWXwoFi3pqSUm3WHTpiGj5yWj/gVNivsRhI7d57
+         7C84D77iJogE2QDZZKSx1q3D52gBYFb+bIIlqHajyUv3oHpgxH+h8NYpppjIO/nIyFgb
+         Gv7QydVFqelwWpAmeuAdT0I/IDXont10aEtbbt5md5G5IVI0DFLufutCxDXSMT0zt0pn
+         4woQ==
+X-Gm-Message-State: AOJu0Yzs5TyxsWeZaRs5oY3d5v4TSQQK074K5xuNlXD6TmIfyMAnFMab
+	qG/40XWB+0bvkyxRnqCA95FKMxckkCmKyXxbT54P/n0J3JxizfAP0X96D9RsE+EKqaPOVZ6sEa1
+	gQ5XiqMJmp3LvrPLsDnPSOqIkI2Q=
+X-Google-Smtp-Source: AGHT+IG5SEnnxJDcGqDuVFPAlJd22LuemSGISAYgm4cKDI9N3pS8CMMcQAuUhR5txWZtx5AelWcfQz76myw+ESMwJyM=
+X-Received: by 2002:a05:6870:d389:b0:204:a85:2580 with SMTP id
+ k9-20020a056870d38900b002040a852580mr8695329oag.34.1707138930993; Mon, 05 Feb
+ 2024 05:15:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240131145454.86990-5-laoar.shao@gmail.com> <202402051121.y4w06atm-lkp@intel.com>
+In-Reply-To: <202402051121.y4w06atm-lkp@intel.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 5 Feb 2024 21:14:54 +0800
+Message-ID: <CALOAHbDiOO+=0ZbVQBc9FJB3v0Ta7WGJV2aQ4y=J9KqBVMy=gQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 4/4] selftests/bpf: Add selftests for cpumask iter
+To: kernel test robot <lkp@intel.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, void@manifault.com, 
+	oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Magnus Karlsson <magnus.karlsson@gmail.com> writes:
-
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Mon, Feb 5, 2024 at 11:09=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
 >
-> Do not report the XDP capability NETDEV_XDP_ACT_XSK_ZEROCOPY as the
-> bonding driver does not support XDP and AF_XDP in zero-copy mode even
-> if the real NIC drivers do.
+> Hi Yafang,
 >
-> Fixes: cb9e6e584d58 ("bonding: add xdp_features support")
-> Reported-by: Prashant Batra <prbatra.mail@gmail.com>
-> Link: https://lore.kernel.org/all/CAJ8uoz2ieZCopgqTvQ9ZY6xQgTbujmC6XkMTamhp68O-h_-rLg@mail.gmail.com/T/
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  drivers/net/bonding/bond_main.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> kernel test robot noticed the following build errors:
 >
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 4e0600c7b050..79a37bed097b 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -1819,6 +1819,8 @@ void bond_xdp_set_features(struct net_device *bond_dev)
->  	bond_for_each_slave(bond, slave, iter)
->  		val &= slave->dev->xdp_features;
->  
-> +	val &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> +
->  	xdp_set_features_flag(bond_dev, val);
->  }
->  
-> @@ -5910,8 +5912,10 @@ void bond_setup(struct net_device *bond_dev)
->  		bond_dev->features |= BOND_XFRM_FEATURES;
->  #endif /* CONFIG_XFRM_OFFLOAD */
->  
-> -	if (bond_xdp_check(bond))
-> +	if (bond_xdp_check(bond)) {
->  		bond_dev->xdp_features = NETDEV_XDP_ACT_MASK;
-> +		bond_dev->xdp_features &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> +	}
+> [auto build test ERROR on bpf-next/master]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/bpf-Ad=
+d-bpf_iter_cpumask-kfuncs/20240131-232406
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
+master
+> patch link:    https://lore.kernel.org/r/20240131145454.86990-5-laoar.sha=
+o%40gmail.com
+> patch subject: [PATCH v5 bpf-next 4/4] selftests/bpf: Add selftests for c=
+pumask iter
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240205/202402051121.y4w06atm-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202402051121.y4w06atm-lkp=
+@intel.com/
 
-Shouldn't we rather drop this assignment completely? It makes no sense
-to default to all features, it should default to none...
+Thanks for your report.
+It seems that the issue is caused by missing CONFIG_PSI=3Dy.
+The kernel config should align with tools/testing/selftests/bpf/config.
 
--Toke
+>
+> All errors (new ones prefixed by >>):
+>
+> >> progs/cpumask_iter_success.c:61:2: error: incomplete definition of typ=
+e 'struct psi_group_cpu'
+>       61 |         READ_PERCPU_DATA(meta, cgrp, p->cpus_ptr);
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    progs/cpumask_iter_success.c:39:27: note: expanded from macro 'READ_PE=
+RCPU_DATA'
+>       39 |                 psi_nr_running +=3D groupc->tasks[NR_RUNNING];=
+                                    \
+>          |                                   ~~~~~~^
+>    progs/cpumask_iter_success.c:13:21: note: forward declaration of 'stru=
+ct psi_group_cpu'
+>       13 | extern const struct psi_group_cpu system_group_pcpu __ksym __w=
+eak;
+>          |                     ^
+> >> progs/cpumask_iter_success.c:61:2: error: use of undeclared identifier=
+ 'NR_RUNNING'; did you mean 'T_RUNNING'?
+>       61 |         READ_PERCPU_DATA(meta, cgrp, p->cpus_ptr);
+>          |         ^
+>    progs/cpumask_iter_success.c:39:35: note: expanded from macro 'READ_PE=
+RCPU_DATA'
+>       39 |                 psi_nr_running +=3D groupc->tasks[NR_RUNNING];=
+                                    \
+>          |                                                 ^
+>    /tools/include/vmlinux.h:28263:3: note: 'T_RUNNING' declared here
+>     28263 |                 T_RUNNING =3D 0,
+>           |                 ^
+>    progs/cpumask_iter_success.c:80:2: error: incomplete definition of typ=
+e 'struct psi_group_cpu'
+>       80 |         READ_PERCPU_DATA(meta, cgrp, p->cpus_ptr);
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    progs/cpumask_iter_success.c:39:27: note: expanded from macro 'READ_PE=
+RCPU_DATA'
+>       39 |                 psi_nr_running +=3D groupc->tasks[NR_RUNNING];=
+                                    \
+>          |                                   ~~~~~~^
+>    progs/cpumask_iter_success.c:13:21: note: forward declaration of 'stru=
+ct psi_group_cpu'
+>       13 | extern const struct psi_group_cpu system_group_pcpu __ksym __w=
+eak;
+>          |                     ^
+>    progs/cpumask_iter_success.c:80:2: error: use of undeclared identifier=
+ 'NR_RUNNING'; did you mean 'T_RUNNING'?
+>       80 |         READ_PERCPU_DATA(meta, cgrp, p->cpus_ptr);
+>          |         ^
+>    progs/cpumask_iter_success.c:39:35: note: expanded from macro 'READ_PE=
+RCPU_DATA'
+>       39 |                 psi_nr_running +=3D groupc->tasks[NR_RUNNING];=
+                                    \
+>          |                                                 ^
+>    /tools/include/vmlinux.h:28263:3: note: 'T_RUNNING' declared here
+>     28263 |                 T_RUNNING =3D 0,
+>           |                 ^
+>    4 errors generated.
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
+
+
+--=20
+Regards
+Yafang
 
