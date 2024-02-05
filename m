@@ -1,278 +1,142 @@
-Return-Path: <bpf+bounces-21224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55020849B35
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:59:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DE2849B68
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 14:09:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C088280E96
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 12:59:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD27D1F23FF1
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9812D047;
-	Mon,  5 Feb 2024 12:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AA6208CF;
+	Mon,  5 Feb 2024 13:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AVQ8JuAr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LAmJTaRb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8FD2D022
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 12:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F691CD04
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 13:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137775; cv=none; b=EU4CH9GnIbCH5TGUPeDjp1jPv3sipMkCxykFZfqJbUcJ1c78tJno2P3rVYMQejDntjCJlEiOGj++HtuylPrjgR5weJpAzEVf6/uPvzU2YB6ul1Dt9ELHqDI6NZ8j+rMeHNuBf4Wo+6ICcJKkFpjubHxbsnRaE5BLtckyp7iHxxU=
+	t=1707138521; cv=none; b=VBz1NY1Yo3P4wWvb8C2QFMaUXflv2HBYRU1esN0igOrcjr4MJJBTkq7iPfuSIWBWpghEjVXnPQIgIkUyaBNJNEZuzsSTgeByzIafhUAjSa5AshFzLJ289wZ20mvcSan2TS5nleMxpEqXIVAVcSziZDwUr7w30AyQw2fSo0ZUQI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137775; c=relaxed/simple;
-	bh=4mmDbUgjaqjmq99AwXxJh7E78+7WVAUkFHPAyBDAyjo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d8jqmNMeCcGKRRA9BxFuPRUaPxD1E/U+8pQQ4H5kGAg16fOh0kmqhX9A3b3h+xQUc/fs4sAJnHzprXpX/kHbJEQaP0ff7mhazH/C3vg5H9pALdSFSrjA6TpNiywS9pdP4f9q/6z/WcUu8jU/bXMspSrtGOTFF4Xj8+wPoqInO8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AVQ8JuAr; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42bf8f26673so18056871cf.2
-        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 04:56:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707137773; x=1707742573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mcu1+a9rod/cPAA0Nzzsv61IU496Jt/rUq/7x6B4wO4=;
-        b=AVQ8JuArFTEYNv62frs35r7Si8QZxdsszLS4I7OaTsn8JgNF63w7dHDVaFqinDA5dI
-         Jr6ubaGSXzlmYlGWI98MR5oRy0AqfON/sdkq8UTJFKrDGJ3Is9wOFcvcO3VXOz8st8JV
-         w2ltYwSaI4J2FWBHYkq2B2Hzx1BAePaaQFBh6zwnKkn4L3coJKzZ5q/O/EYvDsW+Cd0j
-         NXC62dZWdw2F+hMtWs4wRtZPtbozjjAUp/4Id6WjnxDAO4FYSAqQ94jsDhAOF7p+FSXn
-         3MzVckrY1cS680JJSrmtFB1t3VYbOgufCjN4s+QoO6frytg/gMS/v0EpH/xEPJ3n99JW
-         ivxA==
+	s=arc-20240116; t=1707138521; c=relaxed/simple;
+	bh=nkOe2A26aIi/aBtdqu6j/wWZO5uYLvItpsocnEEY3xY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dryAV4Mvu9X4i581PUYZmiYfgI71gAsYzhasLZq9NCgJxIe1BcRpKsenwezzO2b4RxEbpNz/Fgka0SKnp+4a3dFpGyJ5g3T7FSwbHQszfKkYfCXcpb1g+BYxXsqgpMErKiJj+Tjk4WsB5HWq7qNgdJgpWcFpUUTE00yqNv/9c6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LAmJTaRb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707138518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Elk+v4Y+ED/4T2H+8uQLqgMyCrp4tt5/vHD0v7FV0YQ=;
+	b=LAmJTaRbfsmJB2wPc4z65jnUCb2LtOBqEEX4oF1LAg1Pn6WT/CyY/9S0OXT4+T9nQKK6KP
+	Mc6hf8Rh9mmW8DS1d4DvkWlCvShYFD1HUednMUO17z8sTUjR+IC4O5TtOsh2RSYYNZIMGp
+	nwqulpfVnfQXletnqpiqkJAkMIzA4ck=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-616-ZjAgj_gvPmWQGYkjdF9okA-1; Mon, 05 Feb 2024 08:08:37 -0500
+X-MC-Unique: ZjAgj_gvPmWQGYkjdF9okA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-511545632b8so585861e87.3
+        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 05:08:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707137773; x=1707742573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mcu1+a9rod/cPAA0Nzzsv61IU496Jt/rUq/7x6B4wO4=;
-        b=Y6MV2JpfELQ2aFPDkikwuTcTpRUNZ1f0ASc3xvk+Xr3RLpyLs6wlNrQT7ty54wEtlY
-         MAw/8n+35KPmViNQczFt99N2GB6pl4goJiqAwlJ5GU4HqdjL+0aeziJwRUnoaFI5mhAh
-         G4bgYnjYKfsVxWCxSol+3B+qdogIRDlnREyJC7JpDUkmHxweMLJzx0FwcKO/qm3VZoM+
-         uBtw9E2keaZNs93qa4bjwogb7huIquwo5QrbQys4H9VNGNQ0L2p5rx2c/tPy5yV5RpAy
-         3Zs1Wj/TfVuFQa2J5dcczdAVE+esbztp6In2XpJ7OaUKiNcLzliSd/NtK9AfwpcwIBPj
-         sIbw==
-X-Gm-Message-State: AOJu0YzgWdPFhfYrITccy9yBAHp3KURViQ6qXH+29lhestIVrPgRvuLq
-	x90yKEFsBQmpVzp8zgl5TCz3o+r4+J+TCh4WCd2xgugf9QOLAbGHX28+F44A5vBaIWkmtF/Gw/k
-	8o6F6ibdkbj1K1Jq3Hqetvmv1V9E=
-X-Google-Smtp-Source: AGHT+IFYKhLe2Q3ieh0LZgp8EDSjFmbmf+8FRWRcOEkZtPvC2wnyUDSFOWwWCUwZsnYDvOQp1FJkoF6oQIPTVlc3YoQ=
-X-Received: by 2002:a0c:f294:0:b0:68c:8b5c:9d29 with SMTP id
- k20-20020a0cf294000000b0068c8b5c9d29mr5773955qvl.62.1707137772852; Mon, 05
- Feb 2024 04:56:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707138516; x=1707743316;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Elk+v4Y+ED/4T2H+8uQLqgMyCrp4tt5/vHD0v7FV0YQ=;
+        b=voE7hgICByf2MOjUAMOFpFdM2MP5ukLktG1N4rGFSLQoxZrkxoUg3JIArZi19P4d26
+         0V7dud+lTQFUhW8f3PWqSzQr2I9scel9K+y5pchiSMEkHr73iw2p9ONTiK2M5y/DRVaX
+         cueCJJptAEJqv/VCSMK/cCXf9EBD6BbKVXABxyJDU20K2DCyj4hrfCJEOyaWtuXqIEdn
+         unlZTcts7GnC2RGHDo3ek91zXnSnAYkOmRpT7QdGBsh+d6hRMTjjkGL3/OX+EPesg5DL
+         dyPx7+jUvA/bSLMKURDLCAqEssozbOlyDmqYA/dFPMMgnj9J7kgatYAsp6OIv7BczKtX
+         kzfw==
+X-Gm-Message-State: AOJu0YwP5pAU75EuJJSqvBZh5fpUrRv8/zqyInoEZ+XkQPaOAW+/tO7x
+	97pwsGDqYaItq6CpjCqaPHVanfr/lOiZsCmWV/L5ftnxbwUroOj2VWv1PDcfqWfg0764HoyvgUJ
+	Xwuq6EugVM6EpbqKxXngaM7987y52WqIhfxVdAAXcu+g9FFe5/g==
+X-Received: by 2002:a05:6512:3a85:b0:511:4c51:d18e with SMTP id q5-20020a0565123a8500b005114c51d18emr3336174lfu.4.1707138516014;
+        Mon, 05 Feb 2024 05:08:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHiAJDw5eN6qa8POs40iTfiHHEb/rI9ieOQTBR9KzJjFWWONNoyotynQql4+bMXXnwDod1BGQ==
+X-Received: by 2002:a05:6512:3a85:b0:511:4c51:d18e with SMTP id q5-20020a0565123a8500b005114c51d18emr3336161lfu.4.1707138515690;
+        Mon, 05 Feb 2024 05:08:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV41yZ8cfXLJxxZH9bT8jss4AsYLJ12FGx76gydrZPmFRyojfsDyeM9YhLPAWQGUy1IMPSMNXuSSN99FB1GAz8K06mkTcddlrieLKvSQgdlUbqWxwmx67d9NnJEkj9osyc8+NN7EJ9Xrzbgdd9Jyt+hNn56woD/A2rRtWpV0OyTrkG3N9AWSVj2cKknWYZmZMi94QSj4eC1RO6pfO1wkDrQ5txPRcZojwwb3IRGfL3lz5NKJo4L/qmyWz0vGRynH1Q8gfuWZFKvF+USWulSfrAp8vBkuT/bFBacRlX4eiVczFLFESw+Kgzwc9TnJoIhlyUrBoBgsvIuQKbwFB85nOSTfs/Z0YmG2IPFXxcYY9BtoWGiSy9HeLetJduZseFna5BeTeY09D3hmQZyLxL3XwsvCNIXXZmSsFHuCfxzdgzxGHAiFRRDxY23AwusX7slkcLiT9x5LlPW3883jdFuOmzvQC3ouweutpSAiRNgx9Uotl8/
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id lj7-20020a170907188700b00a366c9781b7sm4318288ejc.168.2024.02.05.05.08.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 05:08:35 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 03D63108AEB2; Mon,  5 Feb 2024 14:08:35 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>, magnus.karlsson@intel.com,
+ bjorn@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ netdev@vger.kernel.org, maciej.fijalkowski@intel.com, kuba@kernel.org,
+ pabeni@redhat.com, davem@davemloft.net, j.vosburgh@gmail.com,
+ andy@greyhouse.net, hawk@kernel.org, john.fastabend@gmail.com,
+ edumazet@google.com
+Cc: bpf@vger.kernel.org, Prashant Batra <prbatra.mail@gmail.com>
+Subject: Re: [PATCH net] bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY
+In-Reply-To: <20240205123011.22036-1-magnus.karlsson@gmail.com>
+References: <20240205123011.22036-1-magnus.karlsson@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 05 Feb 2024 14:08:35 +0100
+Message-ID: <87le7zvz1o.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205055646.1112186-1-memxor@gmail.com> <20240205055646.1112186-3-memxor@gmail.com>
-In-Reply-To: <20240205055646.1112186-3-memxor@gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 5 Feb 2024 20:55:36 +0800
-Message-ID: <CALOAHbBt4WDvLzQkevmsFwDDeMo8WGhLJF4wdvqtQog6JCnFag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for RCU lock
- transfer between subprogs
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Mon, Feb 5, 2024 at 1:56=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gmai=
-l.com> wrote:
->
-> Add selftests covering the following cases:
-> - A static or global subprog called from within a RCU read section works
-> - A static subprog taking an RCU read lock which is released in caller wo=
-rks
-> - A static subprog releasing the caller's RCU read lock works
->
-> Global subprogs that leave the lock in an imbalanced state will not
-> work, as they are verified separately, so ensure those cases fail as
-> well.
->
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Magnus Karlsson <magnus.karlsson@gmail.com> writes:
 
-Acked-and-Tested-by: Yafang Shao <laoar.shao@gmail.com>
-
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> Do not report the XDP capability NETDEV_XDP_ACT_XSK_ZEROCOPY as the
+> bonding driver does not support XDP and AF_XDP in zero-copy mode even
+> if the real NIC drivers do.
+>
+> Fixes: cb9e6e584d58 ("bonding: add xdp_features support")
+> Reported-by: Prashant Batra <prbatra.mail@gmail.com>
+> Link: https://lore.kernel.org/all/CAJ8uoz2ieZCopgqTvQ9ZY6xQgTbujmC6XkMTamhp68O-h_-rLg@mail.gmail.com/T/
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 > ---
->  .../selftests/bpf/prog_tests/rcu_read_lock.c  |   6 +
->  .../selftests/bpf/progs/rcu_read_lock.c       | 120 ++++++++++++++++++
->  2 files changed, 126 insertions(+)
+>  drivers/net/bonding/bond_main.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/too=
-ls/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-> index 3f1f58d3a729..a1f7e7378a64 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-> @@ -29,6 +29,10 @@ static void test_success(void)
->         bpf_program__set_autoload(skel->progs.non_sleepable_1, true);
->         bpf_program__set_autoload(skel->progs.non_sleepable_2, true);
->         bpf_program__set_autoload(skel->progs.task_trusted_non_rcuptr, tr=
-ue);
-> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_subprog, true=
-);
-> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_global_subpro=
-g, true);
-> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_subprog_lock,=
- true);
-> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_subprog_unloc=
-k, true);
->         err =3D rcu_read_lock__load(skel);
->         if (!ASSERT_OK(err, "skel_load"))
->                 goto out;
-> @@ -75,6 +79,8 @@ static const char * const inproper_region_tests[] =3D {
->         "inproper_sleepable_helper",
->         "inproper_sleepable_kfunc",
->         "nested_rcu_region",
-> +       "rcu_read_lock_global_subprog_lock",
-> +       "rcu_read_lock_global_subprog_unlock",
->  };
->
->  static void test_inproper_region(void)
-> diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/te=
-sting/selftests/bpf/progs/rcu_read_lock.c
-> index 14fb01437fb8..ab3a532b7dd6 100644
-> --- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-> +++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-> @@ -319,3 +319,123 @@ int cross_rcu_region(void *ctx)
->         bpf_rcu_read_unlock();
->         return 0;
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index 4e0600c7b050..79a37bed097b 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -1819,6 +1819,8 @@ void bond_xdp_set_features(struct net_device *bond_dev)
+>  	bond_for_each_slave(bond, slave, iter)
+>  		val &= slave->dev->xdp_features;
+>  
+> +	val &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
+> +
+>  	xdp_set_features_flag(bond_dev, val);
 >  }
-> +
-> +__noinline
-> +static int static_subprog(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       if (bpf_get_prandom_u32())
-> +               return ret + 42;
-> +       return ret + bpf_get_prandom_u32();
-> +}
-> +
-> +__noinline
-> +int global_subprog(u64 a)
-> +{
-> +       volatile int ret =3D a;
-> +
-> +       return ret + static_subprog(NULL);
-> +}
-> +
-> +__noinline
-> +static int static_subprog_lock(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       bpf_rcu_read_lock();
-> +       if (bpf_get_prandom_u32())
-> +               return ret + 42;
-> +       return ret + bpf_get_prandom_u32();
-> +}
-> +
-> +__noinline
-> +int global_subprog_lock(u64 a)
-> +{
-> +       volatile int ret =3D a;
-> +
-> +       return ret + static_subprog_lock(NULL);
-> +}
-> +
-> +__noinline
-> +static int static_subprog_unlock(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       bpf_rcu_read_unlock();
-> +       if (bpf_get_prandom_u32())
-> +               return ret + 42;
-> +       return ret + bpf_get_prandom_u32();
-> +}
-> +
-> +__noinline
-> +int global_subprog_unlock(u64 a)
-> +{
-> +       volatile int ret =3D a;
-> +
-> +       return ret + static_subprog_unlock(NULL);
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +int rcu_read_lock_subprog(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       bpf_rcu_read_lock();
-> +       if (bpf_get_prandom_u32())
-> +               ret +=3D static_subprog(ctx);
-> +       bpf_rcu_read_unlock();
-> +       return 0;
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +int rcu_read_lock_global_subprog(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       bpf_rcu_read_lock();
-> +       if (bpf_get_prandom_u32())
-> +               ret +=3D global_subprog(ret);
-> +       bpf_rcu_read_unlock();
-> +       return 0;
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +int rcu_read_lock_subprog_lock(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       ret +=3D static_subprog_lock(ctx);
-> +       bpf_rcu_read_unlock();
-> +       return 0;
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +int rcu_read_lock_global_subprog_lock(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       ret +=3D global_subprog_lock(ret);
-> +       bpf_rcu_read_unlock();
-> +       return 0;
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +int rcu_read_lock_subprog_unlock(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       bpf_rcu_read_lock();
-> +       ret +=3D static_subprog_unlock(ctx);
-> +       return 0;
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +int rcu_read_lock_global_subprog_unlock(void *ctx)
-> +{
-> +       volatile int ret =3D 0;
-> +
-> +       bpf_rcu_read_lock();
-> +       ret +=3D global_subprog_unlock(ret);
-> +       return 0;
-> +}
-> --
-> 2.40.1
->
+>  
+> @@ -5910,8 +5912,10 @@ void bond_setup(struct net_device *bond_dev)
+>  		bond_dev->features |= BOND_XFRM_FEATURES;
+>  #endif /* CONFIG_XFRM_OFFLOAD */
+>  
+> -	if (bond_xdp_check(bond))
+> +	if (bond_xdp_check(bond)) {
+>  		bond_dev->xdp_features = NETDEV_XDP_ACT_MASK;
+> +		bond_dev->xdp_features &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
+> +	}
 
+Shouldn't we rather drop this assignment completely? It makes no sense
+to default to all features, it should default to none...
 
---=20
-Regards
-Yafang
+-Toke
+
 
