@@ -1,90 +1,178 @@
-Return-Path: <bpf+bounces-21203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1C6849415
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 07:58:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE32A849857
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 12:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2B9D1F23D65
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 06:58:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C8C81C226FD
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 11:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4437CD26D;
-	Mon,  5 Feb 2024 06:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB4B18029;
+	Mon,  5 Feb 2024 11:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BV36VqZ4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AR+4G5fV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9520810A0F
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 06:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9219E17C98;
+	Mon,  5 Feb 2024 11:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707116283; cv=none; b=L2GJUORvrQpSH8oD2iSjPTZtYeHONgfqU7Y+p48IjFMq+UIl3XmrHC1+1WNs6PzzEmIu1qQtLuQBqs1Nofg3lxgz/zYFWu6ouJstnbK42ro7D1XtODHhWF+20QKU/byA1g8HbdG2UTkUimVEuTpelIL3e6oPBI1jiMXnBzJchZ4=
+	t=1707131113; cv=none; b=HJznqcOrQZFLreEFJNjMy5u3hKqxqJKkQ2mfYYL86OJBAipmC+wxBCX0GudDixQs1MQfull0Wf3DNTBGZTMg6I0PSMjspBkuCV8mIeWibwgjsOPKE0YLsOuTZXVMQSzOk80ZVGVCZo5KJ2iRPMXpd84pODjzbJWkn/7F1UeJETg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707116283; c=relaxed/simple;
-	bh=a2id2WyiM9zMsxzoO0XSIuDgw9Q3Is5nNopl7phwFxg=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=FkWwz0TdhKXa0PCq4DMjg1E8Fc41gUL+cKTUZ1JzpnIBrS5KcGjtiNvQMbmh/tc7tP4NHXb0xjt+voEPgVkFa6GEghqFZEnqkTd7gcw6G1Fr2kZrsw5FC/UyctKAQDpoDdgW8s3SoOZdFLgx4muhG5LdINun3F+mgYzlm/QUY+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BV36VqZ4; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <32bde0f0-1881-46c9-931a-673be566c61d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707116279;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uKpg5ZwxuYkdQBcsfSoX/GXGaC2E+symdv4wpTzu8F4=;
-	b=BV36VqZ4Rh5MldI1+/xbLaKH7PYXhdX3lE0NMxpH48W8jVhEHVAyIvRoUwF4vpnZc7+ZCE
-	wJ1BpZTSBkZgenUgPDBwP26Ae0AIxhQp9OeYC7jmT+HjD5Ad4XnpDR+wnl4Etukqo7DsC7
-	au8Ns/LarbBmDG8K/AYv8MUqy2FAU0w=
-Date: Sun, 4 Feb 2024 22:57:53 -0800
+	s=arc-20240116; t=1707131113; c=relaxed/simple;
+	bh=VJyxnHmRqLuTEtU8FAarFurtgv+O3sQGbnrzjvXqxLE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nBtprV6SuKLdHg36ihTqDB2IqfgX8vH7Lpxu8wu6qwrI7k3vXxnxQDLBv402h8bjgDDj3jgUjxJo1inhfTGc5hi8jhsaqFH649Anwlon7/S0iogyBIH1BLMGh/5G0JGcRxzAnJsI/F1eAVGkoeRfcSKnFV3bA/146dFMPe+VdoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AR+4G5fV; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707131107; x=1738667107;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=VJyxnHmRqLuTEtU8FAarFurtgv+O3sQGbnrzjvXqxLE=;
+  b=AR+4G5fVCeyOLUA9Z2hBvuTVJsj6m49pIoAjNnXPSNtzD8eWtO/QYDfd
+   /EDsJSK0e9IYECO8BFTGjg7deASi+AF4wSuziuNEqSR8WF43kpZ8Qa6c6
+   l8lrgW3ZJ7woGrahgNg6eaYHoGTtV/RAsa1X6XFTkEHx6U6ta7Rr6TQdl
+   ixSM9PYTByHTCd20ckOzD4imklNiX9e+x0buKXAgwsUzrLjwBTew8zsEg
+   f+RBofpKMc178NxEUG6JfbfbuNdR6Ho9R6mn3YoOe+YEyoM1LGvRDCyXE
+   Go7pLzAyGh6FOCY4Emb7XLVach3s6uVGUHFOPN1xK79DLZnO81K8YeLJA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="25945187"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="25945187"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:05:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="5327463"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa004.fm.intel.com with ESMTP; 05 Feb 2024 03:05:02 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/7] dma: skip calling no-op sync ops when possible
+Date: Mon,  5 Feb 2024 12:04:19 +0100
+Message-ID: <20240205110426.764393-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Language: en-GB
-To: bpf <bpf@vger.kernel.org>, Eddy Z <eddyz87@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-Subject: FYI: bpf selftest verif_scale_strobemeta_subprogs failed with latest
- llvm19
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-The selftest verif_scale_strobemeta_subprogs failed with latest llvm19 compiler.
-For example,
+The series grew from Eric's idea and patch at [0]. The idea of using the
+shortcut for direct DMA as well belongs to Chris.
 
-   $ ./test_progs -n 498
-   ...
-   libbpf: prog 'on_event': BPF program load failed: Permission denied
-   libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
-   combined stack size of 4 calls is 544. Too large
-   verification time 1417195 usec
-   stack depth 24+440+0+32
-   processed 53561 insns (limit 1000000) max_states_per_insn 18 total_states 1457 peak_states 308 mark_read 146
-   -- END PROG LOAD LOG --
-   libbpf: prog 'on_event': failed to load: -13
-   libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
-   scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
-   #498     verif_scale_strobemeta_subprogs:FAIL
-   Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+When an architecture doesn't need DMA synchronization and the buffer is
+not an SWIOTLB buffer, most of times the kernel and the drivers end up
+calling DMA sync operations for nothing.
+Even when DMA is direct, this involves a good non-inline call ladder and
+eats a bunch of CPU time. With IOMMU, this results in calling indirect
+calls on hotpath just to check what is already known and return.
+XSk is been using a custom shortcut for that for quite some time.
+I recently wanted to introduce a similar one for Page Pool. Let's combine
+all this into one generic shortcut, which would cover all DMA sync ops
+and all types of DMA (direct, IOMMU, ...).
 
-The maximum stack size exceeded 512 bytes and caused verification failure.
+* #1 adds stub inlines to be able to skip DMA sync ops or even compile
+     them out when not needed.
+* #2 adds the generic shortcut and enables it for direct DMA.
+* #3 adds ability to skip DMA syncs behind an IOMMU.
+* #4-5 are just cleanups for Page Pool to avoid merge conflicts in future.
+* #6 checks for the shortcut as early as possible in the Page Pool code to
+     make sure no cycles wasted.
+* #7 replaces XSk's shortcut with the generic one.
 
-The following llvm patch caused the above regression:
-   https://github.com/llvm/llvm-project/pull/68882
+On 100G NIC, the result is +3-5% for direct DMA and +10-11% for IOMMU.
+As a bonus, XSk core now allows batched buffer allocations for IOMMU
+setups.
+If the shortcut is not available on some system, there should be no
+visible performance regressions.
 
-I will do some analysis and try to find a solution to resolve this failure.
+[0] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
 
-Thanks,
+Alexander Lobakin (7):
+  dma: compile-out DMA sync op calls when not used
+  dma: avoid redundant calls for sync operations
+  iommu/dma: avoid expensive indirect calls for sync operations
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  page_pool: check for DMA sync shortcut earlier
+  xsk: use generic DMA sync shortcut instead of a custom one
 
-Yonghong
+ kernel/dma/Kconfig                            |   4 +
+ include/net/page_pool/types.h                 |  21 ++-
+ include/linux/device.h                        |   5 +
+ include/linux/dma-map-ops.h                   |  20 +++
+ include/linux/dma-mapping.h                   | 122 ++++++++++++++----
+ include/net/xdp_sock_drv.h                    |   7 +-
+ include/net/xsk_buff_pool.h                   |  13 +-
+ drivers/base/dd.c                             |   2 +
+ drivers/iommu/dma-iommu.c                     |   3 +-
+ drivers/net/ethernet/engleder/tsnep_main.c    |   2 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  |   2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   2 +-
+ drivers/net/ethernet/netronome/nfp/nfd3/xsk.c |   2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ kernel/dma/mapping.c                          |  70 +++++++---
+ kernel/dma/swiotlb.c                          |  14 ++
+ net/core/page_pool.c                          |  67 ++++++----
+ net/xdp/xsk_buff_pool.c                       |  29 +----
+ 23 files changed, 276 insertions(+), 123 deletions(-)
+
+---
+From v1[1]:
+* #1:
+  * use static inlines instead of macros (Chris);
+  * move CONFIG_DMA_NEED_SYNC check into dma_skip_sync() (Robin);
+* #2:
+  * use a new dma_map_ops flag instead of new callback, assume the same
+    conditions as for direct DMA are enough (Petr, Robin);
+  * add more code comments to make sure the whole idea and path are
+    clear (Petr, Robin, Chris);
+* #2, #3: correct the Git tags and the authorship a bit.
+
+Not addressed:
+* #1:
+  * dma_sync_*range_*() are still wrapped, as some subsystems may want
+    to call the underscored versions directly (e.g. Page Pool);
+* #2:
+  * the new dev->dma_skip_sync bit is still preferred over checking for
+    READ_ONCE(dev->dma_uses_io_tlb) + dev_is_dma_coherent() on hotpath
+    as a faster solution.
+
+[1] https://lore.kernel.org/netdev/20240126135456.704351-1-aleksander.lobakin@intel.com
+-- 
+2.43.0
 
 
