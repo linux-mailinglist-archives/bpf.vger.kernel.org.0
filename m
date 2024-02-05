@@ -1,93 +1,118 @@
-Return-Path: <bpf+bounces-21187-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4886884920C
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 01:33:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A19D8849241
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 02:54:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74C0B1C219D5
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 00:33:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D321F22129
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 01:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AE5A928;
-	Mon,  5 Feb 2024 00:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034368BE7;
+	Mon,  5 Feb 2024 01:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l6/p7ies"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjB4WkMQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E158F49
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 00:33:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B1679CD
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 01:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707093187; cv=none; b=phoYKpzeNhPWqd5lsFajM/z1cQNVfJ2tb9z583wbvCgHBS17cPIub4bPrePWeCtF/6MiEYcAY3it3WSoYpEu2YPDnsuxPNHua5wSkFrnwJifQp1aXdb+F0IsW5fXggMttStgAtKor+1SJ7OSz6cm1KreBsZ9YvCJa+8NPuljOFA=
+	t=1707098040; cv=none; b=adHPTwEJzgssPj6RrdX5MC2to4HlIrXXYSV0ssRrJiI0mIZzBYWF8F052IXdVD9MbRUZSk/Tf1LgYcq5n1vYB556AMAN3h5A6ykfAd1+jfJU/mZbaSOYUEi7GPA9VfvalO/i1z5yzN7p9s0NZeVNa7fQHWl+k7vzmm29pZY/z8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707093187; c=relaxed/simple;
-	bh=D++LDXE+yz9iRRvwYAcmxiBapY3kCCzcq7i6SOL+RyQ=;
+	s=arc-20240116; t=1707098040; c=relaxed/simple;
+	bh=g8HlNn4T/9lDtpXhb6oYCyziQncacRrUBOcuTh5+Kyk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nu5LPfryVG27BJ7CgNKRDTiB2U/g0H6DlhV7XQedXuAULjRhZb2UkZid3c8wfaah3UMioPiDtZL83IbHynrHc8sG+fi8R/UM3oTZdChwyQj3h5qXhDhrzHtRUtKUVCL3NVixcLUITCyjDaKv7Bl4hXtr1Zkpe83qzzBVmyf+4ck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=l6/p7ies; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e7900b65-0d2d-48ef-b8fd-cea42ea99810@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707093181;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GslBK7Id8SkfqZIeWf++d62uMBUVShGZNxuE1TE6buU=;
-	b=l6/p7iesYUtE+zfPINoF64XMtE1IDogXMq7XIKSUaFjN4fZ5wOoSXqJ+M1x07GVnE8oLma
-	Z93fM6Eb1ouZ68ilzas/kRuTzjqlqGXAySIOBoRZdGHPQ87xP+v28mv4JmgvoQ/0UbmFYZ
-	IDhhPw8FszgsWalQTP2n5ARMuJbHIzk=
-Date: Sun, 4 Feb 2024 16:32:42 -0800
+	 In-Reply-To:Content-Type; b=nOVh+RICYXddYtrBYw0E3HNbP3IssgQr26SOx5f3sZrifUE2XNCAec/FYCtn5Nz0Sb+67dHMHbFfJEZGaR8DJhJVdjvoe2xq9b1SkZmf5llfeOBeBXtoUzXFrk4rGn/2gxH+1kc6xV2m+ZT//txTKvV8YCtRmyu9Z5WbiTvoH+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjB4WkMQ; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6040d0c9cf1so37667907b3.0
+        for <bpf@vger.kernel.org>; Sun, 04 Feb 2024 17:53:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707098038; x=1707702838; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W17rV7uOgRcMtu+S+notZ7lvoIPK2azYuew+tX+kbPs=;
+        b=IjB4WkMQRL7OqdmXWYtmSA9wQ9k97Ae4LRYiodVqzEoFfq/jOGgUi5OIHnXxKbuMoI
+         icryg1AWz77ai5OZ3hwM0lB4jTfm1KFC/RLTRJXu7KABgaCgxtmGhs/BfWx+ZvEI5rM9
+         cgURHs5ly2BK3YL+KuyGXPOs8SqUEgcLCsTVCJ3/2/uaSHHPpxYWqmhGQMFpKvXJ78q6
+         j93gnHFjnAUjYE4CVSdZqgJxJv8jOriibcXB7a2BfYHJcux4ufQGX1y7hh2SCildc1aV
+         QdjqzVyYeS+OHmRE1qr1xFSNyKLAtYcug5LaDgsblMItPo+RAjhIeuHAnj76Q3sO7FNp
+         RoJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707098038; x=1707702838;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W17rV7uOgRcMtu+S+notZ7lvoIPK2azYuew+tX+kbPs=;
+        b=qdjMCjOp0ruflQvJQEN8Azah4vQ9CAXnktxaLWPmUtrYb28Q2oYJbe0tCwK5W4OSnI
+         ls/2/mLSKKf3veGUAKPd6jT+mJs/MdmnkHLBDAqc1HoldzxmIoljtnXUK0/Ns4vHeECn
+         M4wKRNpovXBo51sh0gwkZ8Q5fetZjYD7jPWwC4dzx58Yl9L2S4H6cT5JDkR4xYsGDd33
+         6Fc0qiGbhkUL3chH1T/4XlsTuysFqKoT6xha8cR/UCG3JBn0Q8J6WwTaSVa7T9iecwJO
+         +iWqWfqiK7nQtviA5NYqquGAqQqrWD4v45npsmIaVPvyiSzQGav1n/scDFx73dA+hsmO
+         1BXQ==
+X-Gm-Message-State: AOJu0YzX4tl0uB5dXL5dWdANcPaDd0zanEAwKBV+KeCQe4zc+xLRrxFt
+	fK0SMjbHtyXP4AouavKqsojBf1E/q3BWtHlbPs9VRGoTVfrsRCj6
+X-Google-Smtp-Source: AGHT+IEgDF13agQGO8MmSKT4frsFXafetNyPunN9w+06z2qxcV+j8j0ehXhR7OQR7rBJne4UOaey9g==
+X-Received: by 2002:a81:9ad6:0:b0:602:acba:ece1 with SMTP id r205-20020a819ad6000000b00602acbaece1mr14117758ywg.15.1707098037957;
+        Sun, 04 Feb 2024 17:53:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW2abqObbzV5+wKJmSgksvZAMSvzAmG+B11DPqxNBiCeAmwhN2wZGP2MIEtq3wdYDRD47RWxmdlUduiN0tqn9NPbzWzxD2Gk8utMpuXg5l6S/9icSM0dzH+/toJ/z9FVf2EYM3z8DG6HFKSpjrOjEuW1/4VW2PWNXj83+xkEpraJCXQ6GNCBVaS8VSkGL6wR3ggDeqo8QbjlgSypVuUBjDSzugL5v+Oxrxs5gW/EPEYRIcjwUbhOmZ951dp6IGo6ZGQgZuI5+7wQ20wEtZFVg==
+Received: from ?IPV6:2600:1700:6cf8:1240:47a:ee2a:970f:b6f7? ([2600:1700:6cf8:1240:47a:ee2a:970f:b6f7])
+        by smtp.gmail.com with ESMTPSA id z77-20020a0dd750000000b006040cbbe952sm1735372ywd.89.2024.02.04.17.53.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 17:53:57 -0800 (PST)
+Message-ID: <337bf811-9e20-4a75-95e1-e0e60b831cbc@gmail.com>
+Date: Sun, 4 Feb 2024 17:53:56 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Have bpf_rdonly_cast() take a const
- pointer
-Content-Language: en-GB
-To: Daniel Xu <dxu@dxuuu.xyz>, andrii@kernel.org, daniel@iogearbox.net,
- ast@kernel.org, olsajiri@gmail.com, quentin@isovalent.com,
- alan.maguire@oracle.com
-Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <cover.1707080349.git.dxu@dxuuu.xyz>
- <dfd3823f11ffd2d4c838e961d61ec9ae8a646773.1707080349.git.dxu@dxuuu.xyz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <dfd3823f11ffd2d4c838e961d61ec9ae8a646773.1707080349.git.dxu@dxuuu.xyz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next v4 5/6] bpf: Create argument information for
+ nullable arguments.
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, davemarchevsky@meta.com,
+ dvernet@meta.com
+References: <20240202220516.1165466-1-thinker.li@gmail.com>
+ <20240202220516.1165466-6-thinker.li@gmail.com>
+ <6b1d0822-73c4-472a-a170-947b53f2c66f@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <6b1d0822-73c4-472a-a170-947b53f2c66f@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
 
-On 2/4/24 1:06 PM, Daniel Xu wrote:
-> Since 20d59ee55172 ("libbpf: add bpf_core_cast() macro"), libbpf is now
-> exporting a const arg version of bpf_rdonly_cast(). This causes the
-> following conflicting type error when generating kfunc prototypes from
-> BTF:
->
-> In file included from skeleton/pid_iter.bpf.c:5:
-> /home/dxu/dev/linux/tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_core_read.h:297:14: error: conflicting types for 'bpf_rdonly_cast'
-> extern void *bpf_rdonly_cast(const void *obj__ign, __u32 btf_id__k) __ksym __weak;
->               ^
-> ./vmlinux.h:135625:14: note: previous declaration is here
-> extern void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k) __weak __ksym;
->
-> This is b/c the kernel defines bpf_rdonly_cast() with non-const arg.
-> Since const arg is more permissive and thus backwards compatible, we
-> change the kernel definition as well to avoid conflicting type errors.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+On 2/2/24 16:40, Martin KaFai Lau wrote:
+> 
+> I have a question/request.
+> 
+> On top of tagging nullable, can we extend the ctx_arg_info idea here to 
+> allow changing the pointer type?
+> 
+> In particular, take a stub function in bpf_tcp_ca.c:
+> 
+> static u32 bpf_tcp_ca_ssthresh(struct tcp_sock *tp)
+> {
+>          return 0;
+> }
+> 
+> Instead of the "struct sock *sk" argument as defined in the 
+> tcp_congestion_ops, the stub function uses "struct tcp_sock *tp'. If we 
+> can reuse the ctx_arg_info idea here, then it can remove the existing 
+> way of changing the pointer type from bpf_tcp_ca_is_valid_access.
+> 
 
+A question just come to me. Why doesn't just define the argument as a 
+pointer to struct tpc_sock in the definition of the function pointer?
 
