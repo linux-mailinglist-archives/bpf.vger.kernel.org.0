@@ -1,95 +1,132 @@
-Return-Path: <bpf+bounces-21255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A1D84A991
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 23:50:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375E984AA39
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 00:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B952C28F201
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 22:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 987EAB26FB7
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 23:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7C428E22;
-	Mon,  5 Feb 2024 22:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4587E495DC;
+	Mon,  5 Feb 2024 23:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/Xy5boo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9hsct+5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA81481AE
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 22:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A175B487BA;
+	Mon,  5 Feb 2024 23:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707173427; cv=none; b=GSFGeDtpwvSoTzzNQcq4FZj/kjziVRuRNT04p1H9N/MmSo1Hm5xhvvCphquzg9MiPYtCd4NPdCBCR3sSgyHXTU0Wq73yzYNZnGPhkPTmDzjZd56Abh8ujS7i+m67cjwzB6D1hifXJZpaHBo2y9OwNx7GNLJXi3aEkxVTRYjRAh4=
+	t=1707174166; cv=none; b=Dv6vJq/Mf4P7BRqpDphaKTMtcAbuSlAez3jKU4VLImLh9Ddg7X/gBRJ+0s8rsWZXMM0eXXgyvZs3UGMlZXXlj4OQ5nPi0oGG/4qhDNP5pvP6p+T1Lbky87Kdv4s1j3N19Y8O+sBytu7uK61dFKy1sMbWb8BjRkzuuiznXY+oRRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707173427; c=relaxed/simple;
-	bh=rAHOKP8KtPbTXvStvIJYx3dDZxTDJvu9UXUS4gjrPHE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=KskwXXYvT92nq4pp0CAJ17H3xe7LYlq6+q9xpOwn55ePbexNRmObgFbzUTGoT08D7L6+e+6orPltjolVxda3RMwrgLWLa7UcN19mwItGQlNyeCbsUVVBi/9CtUjivivhyDLQh4sC+tWJxEO6tZWp5QuL78HgyBAudnv1ctqvkOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/Xy5boo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E5409C43390;
-	Mon,  5 Feb 2024 22:50:26 +0000 (UTC)
+	s=arc-20240116; t=1707174166; c=relaxed/simple;
+	bh=CazoU0Y94GMXdJQgzEcuzvXREYZWTgYJo+w+v5GoSEs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JyDFSn7e9g2F9rHkM23nH3qlvTl9CniI0yOyBeMoXPzXOwyS39a5ac5ScsCNDKeb6HWp3LS5z4RweR6VXiCfEnd8aYiQlwzSLMT0gRFwmub1FXPe5W9swPbV3gTiVCd+c6vrSqB6niekEtFyqONu4cpUZb2Z4NJrpXfBEBlGMHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A9hsct+5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21DE7C43390;
+	Mon,  5 Feb 2024 23:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707173426;
-	bh=rAHOKP8KtPbTXvStvIJYx3dDZxTDJvu9UXUS4gjrPHE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=V/Xy5boob9A1cnxkQVIlKUYfQ5B6IwhPtlYape7CxKaBM9HlFiWebV/JFKxyLgmv0
-	 KN0r+a8ip35/cvwW24+dpudmwEPT/WmPij/cevEU4qj4GL2U2SJqMuL0FmR/RDez7g
-	 3Tkl2mMvyNxddpeeBvXUxKtQt+Itn/OYGrX0HwJZjub7LTMjcEkfJddNKDYmHsxrHH
-	 DoI+SPEj+MFuvfGWKyR3eEEvlg7L7qK7RYYoYDytruBisJcVf7NsIS88ZVmpKV99Y9
-	 G39mpfCGprxUCinMvpieuJeDy/VElO5WKYC78RdD76I9ZDWqiIkH0YxV3wad1O0yS5
-	 H6TPHu4BvHWEw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C9C5FE2F2ED;
-	Mon,  5 Feb 2024 22:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1707174166;
+	bh=CazoU0Y94GMXdJQgzEcuzvXREYZWTgYJo+w+v5GoSEs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=A9hsct+5itAZdixThoGYh0+I9MmAVsCAqkCF8tNNt5mZJdAXC0tHuDrrSShZAnzWY
+	 YU2IO3yJb0wceR7S6s9Brh2X/gCV0uarxvOLr6S/sIs1V59BNf37xrGQfnfATPPuPP
+	 fJ0VeMc6EDu5tNr0N9bDAke1DDagwI3gkQq8eTCv9xfHckJIJq9QImmjyayjZyN0Kq
+	 f949I4VWqayQzBOPHUyIjNzao1l8N6KowXI/WTidoKkcfK9OaE2ymnnrx+NDNVaCwO
+	 JcxMbUa5NLanO5NA5w6rqCFaCpQbWd3sONxkvr4xhCcsCUH0TBw8l1W800HvMfdya8
+	 1eKQFFQxSrB8Q==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-511206d1c89so6978280e87.1;
+        Mon, 05 Feb 2024 15:02:46 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz+NZF7r5MtEREMzzI8xn/bbXhZVitGsaU38zeKY3fBE/keOX9P
+	DKD9LoCK6XedOgfRiSfF+o+thOV5DUE82AUACZD8w5yrDGpDzwoit4G+g90a5wBWIq0DT/bZjgb
+	W4wINSTXSWrgivkKNPayaWIlob/0=
+X-Google-Smtp-Source: AGHT+IHlK9PuNbNlZvRWF9R9s+3Xbk5RNQ5lpUrYJAdADibXcV3pODWmrUzHaHVlgS4T2ljxevsGn9QIZeZ3dawemXE=
+X-Received: by 2002:a19:7502:0:b0:511:4a03:6b5c with SMTP id
+ y2-20020a197502000000b005114a036b5cmr691540lfe.14.1707174164139; Mon, 05 Feb
+ 2024 15:02:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3] bpf,
- docs: Expand set of initial conformance groups
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170717342682.31346.9551666326456032641.git-patchwork-notify@kernel.org>
-Date: Mon, 05 Feb 2024 22:50:26 +0000
-References: <20240202221110.3872-1-dthaler1968@gmail.com>
-In-Reply-To: <20240202221110.3872-1-dthaler1968@gmail.com>
-To: Dave Thaler <dthaler1968@googlemail.com>
-Cc: bpf@vger.kernel.org, bpf@ietf.org, dthaler1968@gmail.com
+References: <20240131141858.1149719-1-elver@google.com>
+In-Reply-To: <20240131141858.1149719-1-elver@google.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 5 Feb 2024 15:02:31 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7BKW40-NzJTPNPP90zz9ydP_9FSMa_qkGGwfQpp0thfg@mail.gmail.com>
+Message-ID: <CAPhsuW7BKW40-NzJTPNPP90zz9ydP_9FSMa_qkGGwfQpp0thfg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow paths
+To: Marco Elver <elver@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Wed, Jan 31, 2024 at 6:19=E2=80=AFAM Marco Elver <elver@google.com> wrot=
+e:
+>
+[...]
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  include/linux/bpf_local_storage.h               | 17 ++++++++++++++++-
+>  kernel/bpf/bpf_local_storage.c                  | 14 ++++----------
+>  .../selftests/bpf/progs/cgrp_ls_recursion.c     |  2 +-
+>  .../selftests/bpf/progs/task_ls_recursion.c     |  2 +-
+>  4 files changed, 22 insertions(+), 13 deletions(-)
+>
+> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_=
+storage.h
+> index 173ec7f43ed1..c8cecf7fff87 100644
+> --- a/include/linux/bpf_local_storage.h
+> +++ b/include/linux/bpf_local_storage.h
+> @@ -130,9 +130,24 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
+>                             bool bpf_ma);
+>
+>  struct bpf_local_storage_data *
+> +bpf_local_storage_lookup_slowpath(struct bpf_local_storage *local_storag=
+e,
+> +                                 struct bpf_local_storage_map *smap,
+> +                                 bool cacheit_lockit);
+> +static inline struct bpf_local_storage_data *
+>  bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
+>                          struct bpf_local_storage_map *smap,
+> -                        bool cacheit_lockit);
+> +                        bool cacheit_lockit)
+> +{
+> +       struct bpf_local_storage_data *sdata;
+> +
+> +       /* Fast path (cache hit) */
+> +       sdata =3D rcu_dereference_check(local_storage->cache[smap->cache_=
+idx],
+> +                                     bpf_rcu_lock_held());
+> +       if (likely(sdata && rcu_access_pointer(sdata->smap) =3D=3D smap))
+> +               return sdata;
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+We have two changes here: 1) inlining; 2) likely() annotation. Could you pl=
+ease
+include in the commit log how much do the two contribute to the performance
+improvement?
 
-On Fri,  2 Feb 2024 14:11:10 -0800 you wrote:
-> This patch attempts to update the ISA specification according
-> to the latest mailing list discussion about conformance groups,
-> in a way that is intended to be consistent with IANA registry
-> processes and IETF 118 WG meeting discussion.
-> 
-> It does the following:
-> * Split basic into base32 and base64 for 32-bit vs 64-bit base
->   instructions
-> * Split division/multiplication/modulo instructions out of base groups
-> * Split atomic instructions out of base groups
-> 
-> [...]
+Thanks,
+Song
 
-Here is the summary with links:
-  - [bpf-next,v3] bpf, docs: Expand set of initial conformance groups
-    https://git.kernel.org/bpf/bpf-next/c/2d9a925d0fbf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +
+> +       return bpf_local_storage_lookup_slowpath(local_storage, smap, cac=
+heit_lockit);
+> +}
+>
+[...]
 
