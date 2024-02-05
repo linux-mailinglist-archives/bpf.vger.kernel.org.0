@@ -1,74 +1,92 @@
-Return-Path: <bpf+bounces-21217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2E418499DF
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:17:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA1A849A4F
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B36B71C2227B
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 12:17:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED37BB26372
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 12:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FE21B94B;
-	Mon,  5 Feb 2024 12:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35CC20B3E;
+	Mon,  5 Feb 2024 12:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KUdQD6H3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JryIJRDC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530431B940
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 12:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EB91946B;
+	Mon,  5 Feb 2024 12:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707135046; cv=none; b=ed4qSLiwI0kv/CdhtHGYlsn8/9hk0wJtF/Vf5lVHIcKMFP2yiwaStcMV4G1aJsP8rPzJ5Udn0wX4p+WZRIK2q48uG7IT0x4UWmxZmvT/vIEWYYSR6/tqk8uKwkLwNHlby0pCURKk0fZQhi4pqcKlYb0b/cYNblwuLaUUADKcrPg=
+	t=1707136252; cv=none; b=rTp2kO0xAQp6ojWQ8sfjLMx1El/pzgxU28IIA2B3aDeMhzzTnZOT/Tyru1tNYlPz7Bscf33OoT1pHXmEDjowA7x+cfsjbjBluUmf1T04/4CriwfoygW+oSctE+X/g8T+Q+PMvyuXJ/pz5kFNnBRUppVui98jdn4fJzwvPKxLZRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707135046; c=relaxed/simple;
-	bh=bmWW9azefKWVXvvPaC6Rbgf6MIu3v6TE2z+L9wuD+ys=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cn0N/bFdHLCM1ys0U1YJ7W8UiLj0NQNR5YIC5NAwB7eq3ZvLrmEOEPOcyof90/q9LuWWJAlWtZKq29/98WQUimD3hOi+uqbOf2GmURCyRyVBpzaSFOy4E64r5KYTaPGuOhksVvr3Hv5GQYBb5BhgOoZ+xhltfOY/pd3io1nnO8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KUdQD6H3; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1707135041; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=436JHI4TNmxKB9kPzaqunFDwFm+p1yrlpEfFii5wkBw=;
-	b=KUdQD6H32PTvT4H4tuCckXt0xaMHD0wyf9/nnfb9JvnuvFsxu0DgxAo/9wL3oa3tEquRFpHQ/3KRljbBHXwdUZtGAg3ioaR9GFjIt8T3yTIXRQBPxcXLfFrgMv9KpmEc6dToDITO0tw8OTNV8+0F3ROvuceAEd3vatn7hAayd44=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0W0AO6D8_1707135038;
-Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W0AO6D8_1707135038)
-          by smtp.aliyun-inc.com;
-          Mon, 05 Feb 2024 20:10:39 +0800
-From: Philo Lu <lulie@linux.alibaba.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
+	s=arc-20240116; t=1707136252; c=relaxed/simple;
+	bh=V9+JP0licFL9nzTN/zTG2SC4wjoCTONLqvfkJZQyCU4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aezQoiRPJbDPq31VaGGl3i9b9BFbk/FqDBhGTbJfQRPfS8vVSU+In/SRuZmCkh7W6hmGn1RObqKHtnS/SxZvnlVKLF/Yo4sT3Kik3rXQaN+RfVLDjsTihWiM6W7qfhgfThe+FZ45+VEHDgF+bt3A68EyGKw8KULFNq1jqn7mvrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JryIJRDC; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fcc74a0a0so5039415e9.1;
+        Mon, 05 Feb 2024 04:30:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707136248; x=1707741048; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+JHEgaj3hU/Ynjh/YYf+I2MAvdE2p0r3dpPmOBXTatE=;
+        b=JryIJRDCVPa3t1/yCS4sDaapckRK73bHVj7k5x4xjOONV2x4XczJpQRzJ/fPzDvpP8
+         GDmk+YZTXZ5IdN8KwmkrYz8LPb5JOdF+1C5XE4C6g/a8aAwFPLjEhWeSEjSw3ncmGLEM
+         BitJ6Xe6FqgA8tlgtTQndW96PzMcyLW3bvDNNs2OaJWbhB655q98YRId57SuyxrEkUiC
+         klhIJcWxVz/L5XWkhAQiagTcY6KVdtTSnRQd4ma2zg5hPhkvX/ZOPNfa6osHiU5aFUvN
+         V7HaonqTgtTATDCa+1MNfLy4ulhw8egxNgl0eEHbyYmmPPTb2805qvm8+tZFnBrKrQaM
+         Tfqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707136248; x=1707741048;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+JHEgaj3hU/Ynjh/YYf+I2MAvdE2p0r3dpPmOBXTatE=;
+        b=RaJcqUVQYHbFVzpf1oEyoXLhlXkFWWCCoCsRtUQw5VKYghkjAYkzNs7SHHzTl//JPQ
+         WOdYQoo7XVsW5WTJ2Jb59qrUmIKwYAzcS8SuD6sDnFqa7/oD3u5cN7vadN8Z/Vma3j+o
+         Weil4BxSSTRZUTiDeJWRS4riWZdSPSgN/3WkgzP+R8croEb73CxfWvf952CwWskVwDVK
+         ijNfNZ0yz7VlEgGt625MTM5/xbwnd2j3Wl/gZSpD9pJks9sSPwGVJEuNhMIgb5xaxxLQ
+         EDJJPfcklUmOfHe1SvUeqikozE6y0urs2FxxsiZy1JP3uFjB/GodWiQTWyQqjUxomPwh
+         0SFw==
+X-Gm-Message-State: AOJu0Yw9aajnePJiaEVeQn4nUAO38cr7htlsSS32EykzXLaubuwUKgCF
+	zT2kgtq6Wn7qVC11zsdJqQlFB4J1e+WgM2ZattUamd3lrdjJhaM1
+X-Google-Smtp-Source: AGHT+IGyd6b2b55JgFuonGHUvNQF86Xov+P+gkyQLAVZbblgIgcHMCxrQQ1MWtVDccFM82NgbvZtdQ==
+X-Received: by 2002:a5d:400e:0:b0:33a:e4ff:57dc with SMTP id n14-20020a5d400e000000b0033ae4ff57dcmr8666430wrp.4.1707136248416;
+        Mon, 05 Feb 2024 04:30:48 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVSqh9k+UR7uY89kKun4wDXnZxWX5jHgyTT2fkrg1OXvu+rl9ViHf4oYH+wv/N6a/VQHCdP3N5BqLelRGY2k8IQkMkwmAUQye9I3dD5XzmZVTNTjHiNjXG7vCoXTDdbiobX8EVu7+t0r2f0RkMG8DiLeHcbaCj6FZHdME6U6YBdi87cbNQl0PkAKFkfI10MDg7jlU/kDhjyp6Jd54Rj8Nd0dplNofSXXUhlmH+mBepPbsQNQioADZHIcfZDr8mbUahUWvhLHv+/2qIue1fLmoFEVAD615KEWbG4m5bVX+GZr3OPVXSqlM6kir/VGc2UbA5MzGdS34aqb99zSc/nUu8ipHpAQzAuuySbgqK3m+sAhylqvFGivgGTPWCoNbxNuMJu3XnY/RqwM5IbHNnMkDlvhTlLTyd5WYas4LvJaBxHVemLCrN1Fys64dwns3NcTBEQS4o0iuwdRbwTfLT70LgVXalzHPhmStQ=
+Received: from localhost.localdomain (c188-149-162-200.bredband.tele2.se. [188.149.162.200])
+        by smtp.gmail.com with ESMTPSA id z12-20020adfe54c000000b0033ae54cdd97sm7951740wrm.100.2024.02.05.04.30.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Feb 2024 04:30:47 -0800 (PST)
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+To: magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	davem@davemloft.net,
-	edumazet@google.com,
+	netdev@vger.kernel.org,
+	maciej.fijalkowski@intel.com,
 	kuba@kernel.org,
+	toke@redhat.com,
 	pabeni@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	dust.li@linux.alibaba.com,
-	alibuda@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	hengqi@linux.alibaba.com
-Subject: [PATCH bpf-next] bpf: allow bpf_skb_load_bytes in tracing prog
-Date: Mon,  5 Feb 2024 20:10:38 +0800
-Message-Id: <20240205121038.41344-1-lulie@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+	davem@davemloft.net,
+	j.vosburgh@gmail.com,
+	andy@greyhouse.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	edumazet@google.com
+Cc: bpf@vger.kernel.org,
+	Prashant Batra <prbatra.mail@gmail.com>
+Subject: [PATCH net] bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY
+Date: Mon,  5 Feb 2024 13:30:08 +0100
+Message-ID: <20240205123011.22036-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,64 +95,48 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Allow using helper bpf_skb_load_bytes with BPF_PROG_TYPE_TRACING, which
-is useful for skb parsing in raw_tp/fentry/fexit, especially for
-non-linear paged skb data.
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Selftests will be added if this patch is acceptable.
+Do not report the XDP capability NETDEV_XDP_ACT_XSK_ZEROCOPY as the
+bonding driver does not support XDP and AF_XDP in zero-copy mode even
+if the real NIC drivers do.
 
-Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+Fixes: cb9e6e584d58 ("bonding: add xdp_features support")
+Reported-by: Prashant Batra <prbatra.mail@gmail.com>
+Link: https://lore.kernel.org/all/CAJ8uoz2ieZCopgqTvQ9ZY6xQgTbujmC6XkMTamhp68O-h_-rLg@mail.gmail.com/T/
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- kernel/trace/bpf_trace.c |  3 +++
- net/core/filter.c        | 13 +++++++++++++
- 2 files changed, 16 insertions(+)
+ drivers/net/bonding/bond_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 241ddf5e3895..4b928d929962 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1945,6 +1945,7 @@ static const struct bpf_func_proto bpf_perf_event_output_proto_raw_tp = {
- extern const struct bpf_func_proto bpf_skb_output_proto;
- extern const struct bpf_func_proto bpf_xdp_output_proto;
- extern const struct bpf_func_proto bpf_xdp_get_buff_len_trace_proto;
-+extern const struct bpf_func_proto bpf_skb_load_bytes_trace_proto;
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 4e0600c7b050..79a37bed097b 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -1819,6 +1819,8 @@ void bond_xdp_set_features(struct net_device *bond_dev)
+ 	bond_for_each_slave(bond, slave, iter)
+ 		val &= slave->dev->xdp_features;
  
- BPF_CALL_3(bpf_get_stackid_raw_tp, struct bpf_raw_tracepoint_args *, args,
- 	   struct bpf_map *, map, u64, flags)
-@@ -2048,6 +2049,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_socket_ptr_cookie_proto;
- 	case BPF_FUNC_xdp_get_buff_len:
- 		return &bpf_xdp_get_buff_len_trace_proto;
-+	case BPF_FUNC_skb_load_bytes:
-+		return &bpf_skb_load_bytes_trace_proto;
- #endif
- 	case BPF_FUNC_seq_printf:
- 		return prog->expected_attach_type == BPF_TRACE_ITER ?
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 9f806cfbc654..ec5622ae8770 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -1764,6 +1764,19 @@ static const struct bpf_func_proto bpf_skb_load_bytes_proto = {
- 	.arg4_type	= ARG_CONST_SIZE,
- };
++	val &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
++
+ 	xdp_set_features_flag(bond_dev, val);
+ }
  
-+BTF_ID_LIST_SINGLE(bpf_skb_load_bytes_btf_ids, struct, sk_buff)
-+
-+const struct bpf_func_proto bpf_skb_load_bytes_trace_proto = {
-+	.func		= bpf_skb_load_bytes,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_BTF_ID,
-+	.arg1_btf_id	= &bpf_skb_load_bytes_btf_ids[0],
-+	.arg2_type	= ARG_ANYTHING,
-+	.arg3_type	= ARG_PTR_TO_UNINIT_MEM,
-+	.arg4_type	= ARG_CONST_SIZE,
-+};
-+
- int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset, void *to, u32 len)
- {
- 	return ____bpf_skb_load_bytes(skb, offset, to, len);
+@@ -5910,8 +5912,10 @@ void bond_setup(struct net_device *bond_dev)
+ 		bond_dev->features |= BOND_XFRM_FEATURES;
+ #endif /* CONFIG_XFRM_OFFLOAD */
+ 
+-	if (bond_xdp_check(bond))
++	if (bond_xdp_check(bond)) {
+ 		bond_dev->xdp_features = NETDEV_XDP_ACT_MASK;
++		bond_dev->xdp_features &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
++	}
+ }
+ 
+ /* Destroy a bonding device.
+
+base-commit: fdeba0b57d61b40a708de361294fde3e1495588d
 -- 
-2.32.0.3.g01195cf9f
+2.42.0
 
 
