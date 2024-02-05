@@ -1,381 +1,447 @@
-Return-Path: <bpf+bounces-21189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB2084927D
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 03:42:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 338CD849284
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 03:50:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02F9DB22616
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 02:42:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECF83B2128D
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 02:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED356947A;
-	Mon,  5 Feb 2024 02:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9BD79CF;
+	Mon,  5 Feb 2024 02:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WpDvlG6g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8R0PQTS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4178F47;
-	Mon,  5 Feb 2024 02:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707100922; cv=fail; b=fzBoIx5DhGnMeDbCKY05bjNfqPFdLrmGKQGdHEJQtIwXSpiZ69d7bdksBezwIFYGVKns8XZPzg4DDuTGWWoEr5vdWw0is6GYG3amBBjLU6D7qDawMZ7kWyiI9ToAo20OvUFK2Le2RjagZ37FqzmGqKcRjXX6tyz0gkDwp/sNyuo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707100922; c=relaxed/simple;
-	bh=ycY4hKpYeIZO91CgqNGoNcOUuG0qrRtnbwisMn0Gric=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=mS2sv+Hg7ZxLFfHstgik3Er5rxUEzFnAzS6bRtOUxkkxiMRyc37QPn/HkmuLeoy26cias8V24BVKWzrUUQ1BYRYKfPA5VmRpOYHZzHX9bY5C4PW7LI1/KpMlITA+TaSExqSPdAjITTFSr9Wkeize5MiitRXP93PIcpelVRuVfbI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WpDvlG6g; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707100920; x=1738636920;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=ycY4hKpYeIZO91CgqNGoNcOUuG0qrRtnbwisMn0Gric=;
-  b=WpDvlG6gweLxv9bN2oM7zEs9zN3yPFlq36++zWz8GWJKDZEFkvIPByGt
-   xQFQKTe8GJdFgxL3xyPKKSgDdSEPxdHHPG7dQgFKBwexefOGe37UGixy9
-   wzfP3u9E9Panncqws38kxSbVq3/qPYcFUJXiE35H12lOH+DZ+/iETVH/Q
-   W46swLqRe5X6mchc/pL6nOlZ8yc9xhHP8PiRQsMjzpmLBwpf4CzAiL55Q
-   dERu3emVHjeqCjrBd+MlW4h/3i7jTtyOmB1t9ymOW52Z8Fc2u5RAHmcjj
-   dTOqQgQDhEUN1FZa8cTOPZH43P5Tc9vmLAbDmFeYXWD7yztG/fQB/Y7mC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11177031"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="11177031"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 18:41:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="889155"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Feb 2024 18:41:57 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 4 Feb 2024 18:41:57 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 4 Feb 2024 18:41:56 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 4 Feb 2024 18:41:56 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 4 Feb 2024 18:41:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GzPHhnR6JE5bB6IphjSn1E+7H1kcwsSsNCNBIVnJBHJk614oCsgYxfcuxo8/Tb6htEKBTp7Lp8IxkfL/FkFf0+H8VZP01/va6kNkrzJVeoV/TdtP8XaniYwj9lp4/54GlWgqV//aD3eWQZzoikqN3cHlivK7IXL1GgPsuumUIP0GZeaTMMYCQ5Hm/bt3GNUJdIsVP4beFWssop2iKHKCs/t085lrHeZI8bTwwlyeEj7L8toj1ZxLxzBRdgHHlt4+XU/4hmZm1LbxSCERxiCGeGNaDVnMuh3esbDl9YRZV4N8/Ifj7rCUpJxPVNwcWEuBDcwZT/YgIAkgcMFW2epP3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RYcUoBy50ypOiAy6g2auz49a2CAnZaCrr5sccIfAU+Q=;
- b=c/TlGMI+YBZZ5UB8KEdqt79RBgvwe5LVgVEYiW7ONXPVAjBm3+9yQUpDo+UX0EerDj6JpJkw3sGqlCGWNCQ1qESa4uXvHrsrYPbR9fKKQiVG3KM/DJyiaemMahdPAvEctzu2JTPN5ATl1aLbv4ebDo8/bh0hF0snoG/UzmrFvCxJbit9APv4GRFJP23xm6532d5XznGoJTOZtmV5xSzDjwd0kS1opLD+n/VbaCtHBqlcrXW+THQ1M4GcWLF3XbHj8UkImaqalaLCieAtYXgw4EoMzpjSiKWTt/wuw+qUtPr2BhltCaTzdgblMwtwuckBaGuMvVwe9rDVjmOvCTKOpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by DM8PR11MB5591.namprd11.prod.outlook.com (2603:10b6:8:38::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Mon, 5 Feb
- 2024 02:41:54 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::a026:574d:dab0:dc8e]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::a026:574d:dab0:dc8e%3]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
- 02:41:54 +0000
-Date: Mon, 5 Feb 2024 10:41:30 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Daniel Xu <dxu@dxuuu.xyz>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <bpf@vger.kernel.org>,
-	<linux-input@vger.kernel.org>, <fsverity@lists.linux.dev>,
-	<cgroups@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-	<mhiramat@kernel.org>, <daniel@iogearbox.net>, <edumazet@google.com>,
-	<fw@strlen.de>, <hannes@cmpxchg.org>, <tytso@mit.edu>, <ast@kernel.org>,
-	<eddyz87@gmail.com>, <kuba@kernel.org>, <tj@kernel.org>,
-	<steffen.klassert@secunet.com>, <yonghong.song@linux.dev>, <hawk@kernel.org>,
-	<rostedt@goodmis.org>, <john.fastabend@gmail.com>, <pablo@netfilter.org>,
-	<pabeni@redhat.com>, <jikos@kernel.org>, <davem@davemloft.net>,
-	<alexandre.torgue@foss.st.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-	<song@kernel.org>, <dsahern@kernel.org>, <mcoquelin.stm32@gmail.com>,
-	<corbet@lwn.net>, <lizefan.x@bytedance.com>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <benjamin.tissoires@redhat.com>,
-	<ebiggers@kernel.org>, <kadlec@netfilter.org>, <shuah@kernel.org>,
-	<alexei.starovoitov@gmail.com>, <olsajiri@gmail.com>,
-	<quentin@isovalent.com>, <alan.maguire@oracle.com>, <memxor@gmail.com>,
-	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-	<jolsa@kernel.org>, <mathieu.desnoyers@efficios.com>, <mykolal@fb.com>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	<linux-arm-kernel@lists.infradead.org>, <oliver.sang@intel.com>
-Subject: Re: [PATCH bpf-next v4 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
-Message-ID: <202402041610.775e7f75-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <e55150ceecbf0a5d961e608941165c0bee7bc943.1706491398.git.dxu@dxuuu.xyz>
-X-ClientProxiedBy: SI2P153CA0029.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::16) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FF579D8
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 02:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707101418; cv=none; b=NFW3nNqQTbI/If3IvqyzSOK0LqJXRCkilKGFvHuJ1MNF/FPS6tAYCL1GnlWRK4dr1h2eRxjdU1BWvwubIvXCghUoq3vhbGPiHAKDklPs+zjMmRHMXqodEvdLk21qHJE30x6nmvFqtsYtk6DPhgQ8nb5y3M3F/NV3p+QT2BjLnpA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707101418; c=relaxed/simple;
+	bh=dA9Afz6e/HbsI91r6rN+82zOpUubXNgNWzXOcgAlMHE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PPEGWQMdBbiR6X8rAS7F/dgYT2miO/1fYeD6v4DOdUOHJ5cdjrDdfSL3FPxnqN6zoPZdMuyWVvHetF0GR5QpH6tP2hq+1RhLPzlYQJ0U234LqWS7VwaBvVMNITvRcECSyHoYf5uXeCdxl5r9MWS/hs3Y8M2cVmwdCBuRgaohBXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m8R0PQTS; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78406c22dc7so265660285a.0
+        for <bpf@vger.kernel.org>; Sun, 04 Feb 2024 18:50:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707101416; x=1707706216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4N0qw+KNKH96mLQRIONkzYrH+EQKU5i/6O4YgkW3QDY=;
+        b=m8R0PQTSS8/emv/wYw26UAgkawOYUCVtvWl0o8Laina9g2Z5ZKOO9iN3oUL/aR5k4r
+         ugTHuj0hicjlEVe10gOxQlqt+NwBb2iBQRkh/XvahByNdkYrIRfU0yU0m+k8ZuxeNPyE
+         mggpVf+8W+2xjRORdK2JeNccBcKE89OFFR8ip3g1jmnYIX2fpfHFAoTWhxmFR9GhECtZ
+         RuNzo4K16V6LG1RBEfM5Ns0S2PkLSUx2sztplLHJP7UmVMD6AOkioGbBv12INVcP7qJy
+         HB8z3Xr3McKBM54NFNFhUHoretqSkRYs7ZKp8swUfn9F+cmHWY7/SCat/6vrrPt5DfCY
+         WcAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707101416; x=1707706216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4N0qw+KNKH96mLQRIONkzYrH+EQKU5i/6O4YgkW3QDY=;
+        b=A9U5AZBO48ex9dCwV+SmEPNXgW/putt389hoH6UOWOpC7WY45wEip/jc/qew6m0b8+
+         L8ayjfxkOt3mTmsB/j24/7lz/WZOJORi3+1GFuY5lsMU3PvHsaTka/VPpThJiGxLMU1A
+         RXkgw5SvBNiOmk8crBII8A3NC2UKxSC2l7+zxRjLZBKv9eaSvzNBMU8tNLNtRP2nLbnH
+         AICTIspbeEs9uH59hblO2/O7Qm6SUfe/mlgLjxzmlxiGs0HnGesLBCWC1O+OEWtCno3H
+         IeljQ93X2lGQ4O3B1QL8HAKq5XTZBIg7PBoGoJ1QdFzo5FBHNW/BjrGcpbLvnLJ2VmiU
+         7Tog==
+X-Gm-Message-State: AOJu0YwPOlMuNSM0a7f16SDKIu0ccXErKFnLeVDMMFD7Hnx9nFYogzZD
+	C/f3m/ujjMD6ATReYPvrG2R1SUK5OFlrTzRd/RglFznH1sPJ1Kff+6O0MI+9roSmWdCjZSOjD0u
+	BKGTGIawNbmgyCRtasWVgnlD6cKs=
+X-Google-Smtp-Source: AGHT+IH2ATJyQaWvcj2cJHtjUms/pJW7oGrQS/XBIPF1tZ8wZ0oKioubThpmeHEG2bZaCyLOhMuoVlm5Hs43kV6ywsg=
+X-Received: by 2002:a0c:f546:0:b0:68c:92ca:fec5 with SMTP id
+ p6-20020a0cf546000000b0068c92cafec5mr5367854qvm.51.1707101415686; Sun, 04 Feb
+ 2024 18:50:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DM8PR11MB5591:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5175dfda-ce58-40ad-aac6-08dc25f40388
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: njr9lqjXR/1kwT6DrvgfWhtUOv4jGh9g/cLQ32lEgEpi2+sRJn5/U90oF/Rrb/iAUZ7SLOhiS9BQ5m83rkfscp7zY/qicAkNm0KGl2C6hjzOTHrdmVuzPMxfRyIX/kkzV7ekEkxO1Ylma//kBZGvMBvv/a8fJPUTT/YGZI90699JeKBaAhEC4hRoNzrL+kNRr4Ciz5VEaDwE5zWU3WgR09EPNTA8XApi7RXeiKMqzYUoYK9PkWjVGsuE033zfPHiEdXzOo0zWHt5HS0l+urN2NmJwCnY5nI7ZSMjg0OAoqzjI522R4PZUY9n6oSPc9U0z7xV3JZJDDo0zHdLWc7Q4KatOn09XbpJL2WNwG1Y6yKFs9YqH6jRKFUzhUff8CT51x0IBd5n2YbseBphOPhwmQYowifBTXjzLBPN/gjX4hf7IosJWBbyYOOAqRJt2dbreuPrMyXlgDc45ePFXhdYDYPiW1D/kHE6/grPV3009LivkiJc1vGJK0vADD4/L5xkMTxt+C3AXgfSy50DRpd/TVJLiIchtt7rToMuVbQT62g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(366004)(346002)(230273577357003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(7366002)(7416002)(7406005)(5660300002)(2906002)(41300700001)(8936002)(8676002)(4326008)(66556008)(316002)(66476007)(6916009)(66946007)(36756003)(478600001)(82960400001)(86362001)(45080400002)(6512007)(2616005)(83380400001)(107886003)(6666004)(6506007)(1076003)(26005)(6486002)(966005)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?auJoDDvMgJS1SHHNAWfTwPTw5LwYfskwHc1K/dcymG+3hDWEQ7XWAqGoPES5?=
- =?us-ascii?Q?z3TQ40vi6qa8i86vxeEnjp6mqaBm+U/Nel+WYjTEat4mro5y2JuO7v/tDyma?=
- =?us-ascii?Q?3otA5W1ZAt4sJkFX3OycC7UVwk5NrzJbLQn19/OC06ztH+spt17cAvqNwIhS?=
- =?us-ascii?Q?gNIRVV28kwf8K9eqcPTRHNCIKq/qd99MuDDUpB//WUDb1Qbq+NBMSFBOnZZa?=
- =?us-ascii?Q?frUOdxgMtLp54w+RUmXcaQ75SHNcmHJGA8X4xaa3/gxH6Lor616RjgT0T58e?=
- =?us-ascii?Q?NXy499Y57ZsJXLb1a0gH6kXuXwtHXUk+G/a5KmHJ0QtSaCYLw8OrN8gdCPOJ?=
- =?us-ascii?Q?+ACSr2T7Hc2g69ugzY1NqXrmVY2WdOEuTqKedJB2sbTir89dQsH1G4iePqpC?=
- =?us-ascii?Q?lMlzMlEw6wy/ETGz9Tm88JYKmegciyFAJmra4W6BTh7KfCbRkPYuj3m2NaT7?=
- =?us-ascii?Q?Ov5tSf5wl2sliA5Xz5/iszb+nrAsl9bP0msIBdR0tiWOTXq/0iOAkQe4q5PF?=
- =?us-ascii?Q?nSu2YQfiP5dfHwlivLiY6xFXb4Bu2z/hiEhMXWkkVygL/dwRumLo4jDruCul?=
- =?us-ascii?Q?ZmGTII+6Jc5wTQb/a2eswyPTEUDG3UdjSApTTN78I8VlhSTMu5qgpcy/Ri2G?=
- =?us-ascii?Q?IpM+h4+JDVZY/4VDuVfI0jjgk44TVlEXdY5btGNw88wH/3l2lyU+ZALojTsb?=
- =?us-ascii?Q?Kx5BT9f9sO59NXOFy993afc41n0kVuZ5b5W0wySlUQNhkra5TeIfTVdmFTjb?=
- =?us-ascii?Q?i4xlHf/BbixpnfI5kWLIkCXt25fwDVrJMkIya0V60l3YuMih8qLTZFk9SEGd?=
- =?us-ascii?Q?vXw7jPalRtJWky5bw7+z7KSRechIRpsyFrgdq/lLP0Ce/CbPGZ4t3mjMNZF3?=
- =?us-ascii?Q?7ArAny5EoKkgOuQOlwj/EYKIlQu0FkZsa6MMLl/rhr+uJyuiH4evfT+dlDDi?=
- =?us-ascii?Q?VCCBzjkgZhXT5qOoB6kv0cmBidw0RZnMwce3OZjR2aR4BxAVWnm3jsVrx1vM?=
- =?us-ascii?Q?xp0pTVciwiykQaE54SNvz1gurEq7ghdCfzyFT0919tvtxqlnSZXmgvhlCILs?=
- =?us-ascii?Q?OjMm73Kxioa9HYl0+OIGGNjkgiBwwWJg9uX1Vo/l9GVO3igMM4SOVCiOtKTC?=
- =?us-ascii?Q?sGozuULs+pXoE9kMJfftEr9bkx4YOXGej9bromtG1RnEmUMT+mk6DtsJqepE?=
- =?us-ascii?Q?gv5cmkHufzt8GqbsCOaUEVHdDjykKjzBmZiyyPPBGe03acanNwp9+fMMnF1n?=
- =?us-ascii?Q?CjyNUR0+/qMwFku+67zv9jf4jwkrsWRONXcxsxpQHdFx+Bs+akP0wGOr0R5r?=
- =?us-ascii?Q?ETxY6CNAzCP2KAluMfscODK5ayBaGpF4OHcRm/gqsUQZNYryXJggPxt6iqcX?=
- =?us-ascii?Q?egRo1Dek8VrfW2TrvE+gdnkDcVCfTbY4u58X3kXNxQIub3CdqTIdQifSJ9GR?=
- =?us-ascii?Q?hjSXdNBjQjwsIEQ4p0BbuNDYpvNJF9YUsehKZi+EjMR/NPyeCastPY2/PF78?=
- =?us-ascii?Q?ZPCD24jycl1zF+FYnUoJn0+DY+tquk017pwG9a8oF/YHg9D08wPItgLknbVl?=
- =?us-ascii?Q?6r6Yn8poJGAyQ+ymCxrr5pooAAdubhLpLxRVVSkwDZLtXh+2nJEgQAtNQZ4P?=
- =?us-ascii?Q?Rw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5175dfda-ce58-40ad-aac6-08dc25f40388
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 02:41:54.4648
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WSjhYORdrMxziW80Rys8IUXvPbEXg5W2F3vnd4NC3CfsPymIsJcrOKTCvnXeZq0jPmOrM8ymkNWtvruKwaB/Jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR11MB5591
-X-OriginatorOrg: intel.com
+References: <20240131145454.86990-1-laoar.shao@gmail.com> <20240131145454.86990-5-laoar.shao@gmail.com>
+ <CAEf4Bzanfe3X3NMce=WKg7LMdVU=USzc+NZw+4gViU6HJ18Ptw@mail.gmail.com>
+ <CALOAHbApjK3MO+Hn-TiW9jR1cJuNEP9uHxZ=4WBMYLMrOANKLA@mail.gmail.com> <5497a6a9-1b41-4605-8220-041e5dff46f0@linux.dev>
+In-Reply-To: <5497a6a9-1b41-4605-8220-041e5dff46f0@linux.dev>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 5 Feb 2024 10:49:39 +0800
+Message-ID: <CALOAHbDvF2n=GtepRO2pNz-LG0aQF8ijF_A8e8D2KbGtxry-1A@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 4/4] selftests/bpf: Add selftests for cpumask iter
+To: Yonghong Song <yonghong.song@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
+	jolsa@kernel.org, tj@kernel.org, void@manifault.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Feb 5, 2024 at 1:09=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+>
+> On 2/3/24 7:30 PM, Yafang Shao wrote:
+> > On Sat, Feb 3, 2024 at 6:03=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >> On Wed, Jan 31, 2024 at 6:55=E2=80=AFAM Yafang Shao <laoar.shao@gmail.=
+com> wrote:
+> >>> Add selftests for the newly added cpumask iter.
+> >>> - cpumask_iter_success
+> >>>    - The number of CPUs should be expected when iterating over the cp=
+umask
+> >>>    - percpu data extracted from the percpu struct should be expected
+> >>>    - It can work in both non-sleepable and sleepable prog
+> >>>    - RCU lock is only required by bpf_iter_cpumask_new()
+> >>>    - It is fine without calling bpf_iter_cpumask_next()
+> >>>
+> >>> - cpumask_iter_failure
+> >>>    - RCU lock is required in sleepable prog
+> >>>    - The cpumask to be iterated over can't be NULL
+> >>>    - bpf_iter_cpumask_destroy() is required after calling
+> >>>      bpf_iter_cpumask_new()
+> >>>    - bpf_iter_cpumask_destroy() can only destroy an initilialized ite=
+r
+> >>>    - bpf_iter_cpumask_next() must use an initilialized iter
+> >> typos: initialized
+> > will fix it.
+> >
+> >>> The result as follows,
+> >>>
+> >>>    #64/37   cpumask/test_cpumask_iter:OK
+> >>>    #64/38   cpumask/test_cpumask_iter_sleepable:OK
+> >>>    #64/39   cpumask/test_cpumask_iter_sleepable:OK
+> >>>    #64/40   cpumask/test_cpumask_iter_next_no_rcu:OK
+> >>>    #64/41   cpumask/test_cpumask_iter_no_next:OK
+> >>>    #64/42   cpumask/test_cpumask_iter:OK
+> >>>    #64/43   cpumask/test_cpumask_iter_no_rcu:OK
+> >>>    #64/44   cpumask/test_cpumask_iter_no_destroy:OK
+> >>>    #64/45   cpumask/test_cpumask_iter_null_pointer:OK
+> >>>    #64/46   cpumask/test_cpumask_iter_next_uninit:OK
+> >>>    #64/47   cpumask/test_cpumask_iter_destroy_uninit:OK
+> >>>    #64      cpumask:OK
+> >>>
+> >>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> >>> ---
+> >>>   tools/testing/selftests/bpf/config            |   1 +
+> >>>   .../selftests/bpf/prog_tests/cpumask.c        | 152 +++++++++++++++=
++++
+> >>>   .../selftests/bpf/progs/cpumask_common.h      |   3 +
+> >>>   .../bpf/progs/cpumask_iter_failure.c          |  99 ++++++++++++
+> >>>   .../bpf/progs/cpumask_iter_success.c          | 126 +++++++++++++++
+> >>>   5 files changed, 381 insertions(+)
+> >>>   create mode 100644 tools/testing/selftests/bpf/progs/cpumask_iter_f=
+ailure.c
+> >>>   create mode 100644 tools/testing/selftests/bpf/progs/cpumask_iter_s=
+uccess.c
+> >>>
+> >> LGTM overall, except for seemingly unnecessary use of a big macro
+> >>
+> >>> diff --git a/tools/testing/selftests/bpf/progs/cpumask_common.h b/too=
+ls/testing/selftests/bpf/progs/cpumask_common.h
+> >>> index 0cd4aebb97cf..cdb9dc95e9d9 100644
+> >>> --- a/tools/testing/selftests/bpf/progs/cpumask_common.h
+> >>> +++ b/tools/testing/selftests/bpf/progs/cpumask_common.h
+> >>> @@ -55,6 +55,9 @@ void bpf_cpumask_copy(struct bpf_cpumask *dst, cons=
+t struct cpumask *src) __ksym
+> >>>   u32 bpf_cpumask_any_distribute(const struct cpumask *src) __ksym;
+> >>>   u32 bpf_cpumask_any_and_distribute(const struct cpumask *src1, cons=
+t struct cpumask *src2) __ksym;
+> >>>   u32 bpf_cpumask_weight(const struct cpumask *cpumask) __ksym;
+> >>> +int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, const struct c=
+pumask *mask) __ksym;
+> >>> +int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it) __ksym;
+> >>> +void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it) __ksym;
+> >> let's mark them __weak so they don't conflict with definitions that
+> >> will eventually come from vmlinux.h (that applies to all the kfunc
+> >> definitions we currently have and we'll need to clean all that up, but
+> >> let's not add non-weak kfuncs going forward)
+> > will change it.
+> >
+> >>>   void bpf_rcu_read_lock(void) __ksym;
+> >>>   void bpf_rcu_read_unlock(void) __ksym;
+> >> [...]
+> >>
+> >>> diff --git a/tools/testing/selftests/bpf/progs/cpumask_iter_success.c=
+ b/tools/testing/selftests/bpf/progs/cpumask_iter_success.c
+> >>> new file mode 100644
+> >>> index 000000000000..4ce14ef98451
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/progs/cpumask_iter_success.c
+> >>> @@ -0,0 +1,126 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0-only
+> >>> +/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
+> >>> +
+> >>> +#include "vmlinux.h"
+> >>> +#include <bpf/bpf_helpers.h>
+> >>> +#include <bpf/bpf_tracing.h>
+> >>> +
+> >>> +#include "task_kfunc_common.h"
+> >>> +#include "cpumask_common.h"
+> >>> +
+> >>> +char _license[] SEC("license") =3D "GPL";
+> >>> +
+> >>> +extern const struct psi_group_cpu system_group_pcpu __ksym __weak;
+> >>> +extern const struct rq runqueues __ksym __weak;
+> >>> +
+> >>> +int pid;
+> >>> +
+> >>> +#define READ_PERCPU_DATA(meta, cgrp, mask)                          =
+                           \
+> >>> +{                                                                   =
+                           \
+> >>> +       u32 nr_running =3D 0, psi_nr_running =3D 0, nr_cpus =3D 0;   =
+                                 \
+> >>> +       struct psi_group_cpu *groupc;                                =
+                           \
+> >>> +       struct rq *rq;                                               =
+                           \
+> >>> +       int *cpu;                                                    =
+                           \
+> >>> +                                                                    =
+                           \
+> >>> +       bpf_for_each(cpumask, cpu, mask) {                           =
+                           \
+> >>> +               rq =3D (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu)=
+;                            \
+> >>> +               if (!rq) {                                           =
+                           \
+> >>> +                       err +=3D 1;                                  =
+                             \
+> >>> +                       continue;                                    =
+                           \
+> >>> +               }                                                    =
+                           \
+> >>> +               nr_running +=3D rq->nr_running;                      =
+                             \
+> >>> +               nr_cpus +=3D 1;                                      =
+                             \
+> >>> +                                                                    =
+                           \
+> >>> +               groupc =3D (struct psi_group_cpu *)bpf_per_cpu_ptr(&s=
+ystem_group_pcpu, *cpu);     \
+> >>> +               if (!groupc) {                                       =
+                           \
+> >>> +                       err +=3D 1;                                  =
+                             \
+> >>> +                       continue;                                    =
+                           \
+> >>> +               }                                                    =
+                           \
+> >>> +               psi_nr_running +=3D groupc->tasks[NR_RUNNING];       =
+                             \
+> >>> +       }                                                            =
+                           \
+> >>> +       BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_runni=
+ng %u\n",                  \
+> >>> +                      nr_running, nr_cpus, psi_nr_running);         =
+                           \
+> >>> +}
+> >>> +
+> >> Does this have to be a gigantic macro? Why can't it be just a function=
+?
+> > It seems that the verifier can't identify a function call between
+> > bpf_rcu_read_lock() and bpf_rcu_read_unlock().
+> > That said, if there's a function call between them, the verifier will f=
+ail.
+> > Below is the full verifier log if I define it as :
+> > static inline void read_percpu_data(struct bpf_iter_meta *meta, struct
+> > cgroup *cgrp, const cpumask_t *mask)
+> >
+> > VERIFIER LOG:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > 0: R1=3Dctx() R10=3Dfp0
+> > ; int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta
+> > *meta, struct cgroup *cgrp)
+> > 0: (b4) w7 =3D 0                        ; R7_w=3D0
+> > ; int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta
+> > *meta, struct cgroup *cgrp)
+> > 1: (79) r2 =3D *(u64 *)(r1 +8)          ; R1=3Dctx()
+> > R2_w=3Dtrusted_ptr_or_null_cgroup(id=3D1)
+> > ; if (!cgrp)
+> > 2: (15) if r2 =3D=3D 0x0 goto pc+16       ; R2_w=3Dtrusted_ptr_cgroup()
+> > ; int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta
+> > *meta, struct cgroup *cgrp)
+> > 3: (79) r6 =3D *(u64 *)(r1 +0)
+> > func 'bpf_iter_cgroup' arg0 has btf_id 10966 type STRUCT 'bpf_iter_meta=
+'
+> > 4: R1=3Dctx() R6_w=3Dtrusted_ptr_bpf_iter_meta()
+> > ; bpf_rcu_read_lock();
+> > 4: (85) call bpf_rcu_read_lock#84184          ;
+> > ; p =3D bpf_task_from_pid(pid);
+> > 5: (18) r1 =3D 0xffffbc1ad3f72004       ;
+> > R1_w=3Dmap_value(map=3Dcpumask_.bss,ks=3D4,vs=3D8,off=3D4)
+> > 7: (61) r1 =3D *(u32 *)(r1 +0)          ;
+> > R1_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xfffff=
+fff))
+> > ; p =3D bpf_task_from_pid(pid);
+> > 8: (85) call bpf_task_from_pid#84204          ;
+> > R0=3Dptr_or_null_task_struct(id=3D3,ref_obj_id=3D3) refs=3D3
+> > 9: (bf) r8 =3D r0                       ;
+> > R0=3Dptr_or_null_task_struct(id=3D3,ref_obj_id=3D3)
+> > R8_w=3Dptr_or_null_task_struct(id=3D3,ref_obj_id=3D3) refs=3D3
+> > 10: (b4) w7 =3D 1                       ; R7_w=3D1 refs=3D3
+> > ; if (!p) {
+> > 11: (15) if r8 =3D=3D 0x0 goto pc+6       ;
+> > R8_w=3Dptr_task_struct(ref_obj_id=3D3) refs=3D3
+> > ; read_percpu_data(meta, cgrp, p->cpus_ptr);
+> > 12: (79) r2 =3D *(u64 *)(r8 +984)       ; R2_w=3Drcu_ptr_cpumask()
+> > R8_w=3Dptr_task_struct(ref_obj_id=3D3) refs=3D3
+> > ; read_percpu_data(meta, cgrp, p->cpus_ptr);
+> > 13: (bf) r1 =3D r6                      ;
+> > R1_w=3Dtrusted_ptr_bpf_iter_meta() R6=3Dtrusted_ptr_bpf_iter_meta() ref=
+s=3D3
+> > 14: (85) call pc+6
+> > caller:
+> >   R6=3Dtrusted_ptr_bpf_iter_meta() R7_w=3D1
+> > R8_w=3Dptr_task_struct(ref_obj_id=3D3) R10=3Dfp0 refs=3D3
+> > callee:
+> >   frame1: R1_w=3Dtrusted_ptr_bpf_iter_meta() R2_w=3Drcu_ptr_cpumask() R=
+10=3Dfp0 refs=3D3
+> > 21: frame1: R1_w=3Dtrusted_ptr_bpf_iter_meta() R2_w=3Drcu_ptr_cpumask()
+> > R10=3Dfp0 refs=3D3
+> > ; static inline void read_percpu_data(struct bpf_iter_meta *meta,
+> > struct cgroup *cgrp, const cpumask_t *mask)
+> > 21: (bf) r8 =3D r1                      ; frame1:
+> > R1_w=3Dtrusted_ptr_bpf_iter_meta() R8_w=3Dtrusted_ptr_bpf_iter_meta()
+> > refs=3D3
+> > 22: (bf) r7 =3D r10                     ; frame1: R7_w=3Dfp0 R10=3Dfp0 =
+refs=3D3
+> > ;
+> > 23: (07) r7 +=3D -24                    ; frame1: R7_w=3Dfp-24 refs=3D3
+> > ; bpf_for_each(cpumask, cpu, mask) {
+> > 24: (bf) r1 =3D r7                      ; frame1: R1_w=3Dfp-24 R7_w=3Df=
+p-24 refs=3D3
+> > 25: (85) call bpf_iter_cpumask_new#77163      ; frame1: R0=3Dscalar()
+> > fp-24=3Diter_cpumask(ref_id=3D4,state=3Dactive,depth=3D0) refs=3D3,4
+> > ; bpf_for_each(cpumask, cpu, mask) {
+> > 26: (bf) r1 =3D r7                      ; frame1: R1=3Dfp-24 R7=3Dfp-24=
+ refs=3D3,4
+> > 27: (85) call bpf_iter_cpumask_next#77165     ; frame1: R0_w=3D0
+> > fp-24=3Diter_cpumask(ref_id=3D4,state=3Ddrained,depth=3D0) refs=3D3,4
+> > 28: (bf) r7 =3D r0                      ; frame1: R0_w=3D0 R7_w=3D0 ref=
+s=3D3,4
+> > 29: (b4) w1 =3D 0                       ; frame1: R1_w=3D0 refs=3D3,4
+> > 30: (63) *(u32 *)(r10 -40) =3D r1       ; frame1: R1_w=3D0 R10=3Dfp0
+> > fp-40=3D????0 refs=3D3,4
+> > 31: (b4) w1 =3D 0                       ; frame1: R1_w=3D0 refs=3D3,4
+> > 32: (7b) *(u64 *)(r10 -32) =3D r1       ; frame1: R1_w=3D0 R10=3Dfp0
+> > fp-32_w=3D0 refs=3D3,4
+> > 33: (b4) w9 =3D 0                       ; frame1: R9_w=3D0 refs=3D3,4
+> > ; bpf_for_each(cpumask, cpu, mask) {
+> > 34: (15) if r7 =3D=3D 0x0 goto pc+57      ; frame1: R7_w=3D0 refs=3D3,4
+> > ; bpf_for_each(cpumask, cpu, mask) {
+> > 92: (bf) r1 =3D r10                     ; frame1: R1_w=3Dfp0 R10=3Dfp0 =
+refs=3D3,4
+> > ; bpf_for_each(cpumask, cpu, mask) {
+> > 93: (07) r1 +=3D -24                    ; frame1: R1_w=3Dfp-24 refs=3D3=
+,4
+> > 94: (85) call bpf_iter_cpumask_destroy#77161          ; frame1: refs=3D=
+3
+> > ; BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n"=
+,
+> > 95: (61) r1 =3D *(u32 *)(r10 -40)       ; frame1: R1_w=3D0 R10=3Dfp0
+> > fp-40=3D????0 refs=3D3
+> > 96: (bc) w1 =3D w1                      ; frame1: R1_w=3D0 refs=3D3
+> > 97: (7b) *(u64 *)(r10 -8) =3D r1        ; frame1: R1_w=3D0 R10=3Dfp0 fp=
+-8_w=3D0 refs=3D3
+> > 98: (79) r1 =3D *(u64 *)(r10 -32)       ; frame1: R1_w=3D0 R10=3Dfp0 fp=
+-32=3D0 refs=3D3
+> > 99: (7b) *(u64 *)(r10 -16) =3D r1       ; frame1: R1_w=3D0 R10=3Dfp0 fp=
+-16_w=3D0 refs=3D3
+> > 100: (7b) *(u64 *)(r10 -24) =3D r9      ; frame1: R9=3D0 R10=3Dfp0 fp-2=
+4_w=3D0 refs=3D3
+> > 101: (79) r1 =3D *(u64 *)(r8 +0)        ; frame1:
+> > R1_w=3Dtrusted_ptr_seq_file() R8=3Dtrusted_ptr_bpf_iter_meta() refs=3D3
+> > 102: (bf) r4 =3D r10                    ; frame1: R4_w=3Dfp0 R10=3Dfp0 =
+refs=3D3
+> > ; bpf_for_each(cpumask, cpu, mask) {
+> > 103: (07) r4 +=3D -24                   ; frame1: R4_w=3Dfp-24 refs=3D3
+> > ; BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n"=
+,
+> > 104: (18) r2 =3D 0xffff9bce47e0e210     ; frame1:
+> > R2_w=3Dmap_value(map=3Dcpumask_.rodata,ks=3D4,vs=3D41) refs=3D3
+> > 106: (b4) w3 =3D 41                     ; frame1: R3_w=3D41 refs=3D3
+> > 107: (b4) w5 =3D 24                     ; frame1: R5_w=3D24 refs=3D3
+> > 108: (85) call bpf_seq_printf#126     ; frame1: R0=3Dscalar() refs=3D3
+> > ; }
+> > 109: (95) exit
+> > bpf_rcu_read_unlock is missing
+> > processed 45 insns (limit 1000000) max_states_per_insn 0 total_states
+> > 5 peak_states 5 mark_read 3
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> The error is due to the following in verifier:
+>
+>                          } else if (opcode =3D=3D BPF_EXIT) {
+>                                 ...
+>                                  if (env->cur_state->active_rcu_lock &&
+>                                      !in_rbtree_lock_required_cb(env)) {
+>                                          verbose(env, "bpf_rcu_read_unloc=
+k is missing\n");
+>                                          return -EINVAL;
+>                                  }
+>
+>
+> I guess, we could relax the condition not to return -EINVAL if
+> it is a static function.
+
+Thanks for your suggestion.
+It seems Kumar has already submitted a fix for it:
+https://lore.kernel.org/bpf/20240204230231.1013964-1-memxor@gmail.com/
+
+>
+> >
+> >
+> > Another workaround is using the __always_inline :
+> > static __always_inline void read_percpu_data(struct bpf_iter_meta
+> > *meta, struct cgroup *cgrp, const cpumask_t *mask)
+>
+> __always_inline is also work. But let us improve verifier so we
+> can avoid such workarounds in the future. Note that Kumar just
+> submitted a patch set to relax spin_lock for static functions:
+>    https://lore.kernel.org/bpf/20240204120206.796412-1-memxor@gmail.com/
+>
+> >
+> >>> +SEC("iter.s/cgroup")
+> >>> +int BPF_PROG(test_cpumask_iter_sleepable, struct bpf_iter_meta *meta=
+, struct cgroup *cgrp)
+> >>> +{
+> >>> +       struct task_struct *p;
+> >>> +
+> >>> +       /* epilogue */
+> >>> +       if (!cgrp)
+> >>> +               return 0;
+> >>> +
+> >>> +       bpf_rcu_read_lock();
+> >>> +       p =3D bpf_task_from_pid(pid);
+> >>> +       if (!p) {
+> >>> +               bpf_rcu_read_unlock();
+> >>> +               return 1;
+> >>> +       }
+> >>> +
+> >>> +       READ_PERCPU_DATA(meta, cgrp, p->cpus_ptr);
+> >>> +       bpf_task_release(p);
+> >>> +       bpf_rcu_read_unlock();
+> >>> +       return 0;
+> >>> +}
+> >>> +
+> >> [...]
+> >
+> >
 
 
 
-Hello,
-
-kernel test robot noticed "WARNING:at_kernel/bpf/btf.c:#register_btf_kfunc_id_set" on:
-
-commit: 918c4c7dda155568c619b4082fa83ca90ab578a6 ("[PATCH bpf-next v4 3/3] bpf: treewide: Annotate BPF kfuncs in BTF")
-url: https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/bpf-btf-Support-flags-for-BTF_SET8-sets/20240129-092732
-base: https://git.kernel.org/cgit/linux/kernel/git/bpf/bpf-next.git master
-patch link: https://lore.kernel.org/all/e55150ceecbf0a5d961e608941165c0bee7bc943.1706491398.git.dxu@dxuuu.xyz/
-patch subject: [PATCH bpf-next v4 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
-
-in testcase: boot
-
-compiler: clang-17
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-+-----------------------------------------------------------------+------------+------------+
-|                                                                 | 05221438c4 | 918c4c7dda |
-+-----------------------------------------------------------------+------------+------------+
-| WARNING:at_kernel/bpf/btf.c:#register_btf_kfunc_id_set          | 0          | 7          |
-| EIP:register_btf_kfunc_id_set                                   | 0          | 7          |
-| calltrace:do_softirq_own_stack                                  | 0          | 7          |
-+-----------------------------------------------------------------+------------+------------+
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202402041610.775e7f75-lkp@intel.com
-
-
-[   49.044594][    T1] ------------[ cut here ]------------
-[ 49.045857][ T1] WARNING: CPU: 1 PID: 1 at kernel/bpf/btf.c:8048 register_btf_kfunc_id_set (??:?) 
-[   49.048024][    T1] Modules linked in:
-[   49.048925][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W          6.8.0-rc1-00457-g918c4c7dda15 #6
-[   49.051230][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[ 49.053616][ T1] EIP: register_btf_kfunc_id_set (??:?) 
-[ 49.054969][ T1] Code: 04 01 75 0b b8 ea ff ff ff 83 3a 00 74 1c c3 b9 0d 00 00 00 83 f8 20 77 07 8b 0c 85 28 a2 71 d7 55 89 e5 e8 13 00 00 00 5d c3 <0f> 0b c3 90 90 90 90 90 90 90 90 90 90 90 90 90 90 55 89 e5 53 57
-All code
-========
-   0:	04 01                	add    $0x1,%al
-   2:	75 0b                	jne    0xf
-   4:	b8 ea ff ff ff       	mov    $0xffffffea,%eax
-   9:	83 3a 00             	cmpl   $0x0,(%rdx)
-   c:	74 1c                	je     0x2a
-   e:	c3                   	retq   
-   f:	b9 0d 00 00 00       	mov    $0xd,%ecx
-  14:	83 f8 20             	cmp    $0x20,%eax
-  17:	77 07                	ja     0x20
-  19:	8b 0c 85 28 a2 71 d7 	mov    -0x288e5dd8(,%rax,4),%ecx
-  20:	55                   	push   %rbp
-  21:	89 e5                	mov    %esp,%ebp
-  23:	e8 13 00 00 00       	callq  0x3b
-  28:	5d                   	pop    %rbp
-  29:	c3                   	retq   
-  2a:*	0f 0b                	ud2    		<-- trapping instruction
-  2c:	c3                   	retq   
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	90                   	nop
-  31:	90                   	nop
-  32:	90                   	nop
-  33:	90                   	nop
-  34:	90                   	nop
-  35:	90                   	nop
-  36:	90                   	nop
-  37:	90                   	nop
-  38:	90                   	nop
-  39:	90                   	nop
-  3a:	90                   	nop
-  3b:	55                   	push   %rbp
-  3c:	89 e5                	mov    %esp,%ebp
-  3e:	53                   	push   %rbx
-  3f:	57                   	push   %rdi
-
-Code starting with the faulting instruction
-===========================================
-   0:	0f 0b                	ud2    
-   2:	c3                   	retq   
-   3:	90                   	nop
-   4:	90                   	nop
-   5:	90                   	nop
-   6:	90                   	nop
-   7:	90                   	nop
-   8:	90                   	nop
-   9:	90                   	nop
-   a:	90                   	nop
-   b:	90                   	nop
-   c:	90                   	nop
-   d:	90                   	nop
-   e:	90                   	nop
-   f:	90                   	nop
-  10:	90                   	nop
-  11:	55                   	push   %rbp
-  12:	89 e5                	mov    %esp,%ebp
-  14:	53                   	push   %rbx
-  15:	57                   	push   %rdi
-[   49.059550][    T1] EAX: ffffffea EBX: 00000000 ECX: d9356fb0 EDX: d7c2b154
-[   49.061229][    T1] ESI: 00000000 EDI: 0000019a EBP: c028dc48 ESP: c028dc38
-[   49.062886][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010246
-[   49.064685][    T1] CR0: 80050033 CR2: 00000000 CR3: 189ab000 CR4: 000406f0
-[   49.066358][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[   49.068020][    T1] DR6: fffe0ff0 DR7: 00000400
-[   49.069132][    T1] Call Trace:
-[ 49.069902][ T1] ? show_regs (??:?) 
-[ 49.070890][ T1] ? register_btf_kfunc_id_set (??:?) 
-[ 49.072187][ T1] ? __warn (??:?) 
-[ 49.073151][ T1] ? register_btf_kfunc_id_set (??:?) 
-[ 49.074480][ T1] ? register_btf_kfunc_id_set (??:?) 
-[ 49.075751][ T1] ? report_bug (??:?) 
-[ 49.076858][ T1] ? exc_overflow (??:?) 
-[ 49.077925][ T1] ? handle_bug (traps.c:?) 
-[ 49.078947][ T1] ? exc_invalid_op (??:?) 
-[ 49.080030][ T1] ? handle_exception (init_task.c:?) 
-[ 49.081174][ T1] ? get_seg_base_limit (insn-eval.c:?) 
-[ 49.082393][ T1] ? mutex_lock_killable_nested (??:?) 
-[ 49.083707][ T1] ? exc_overflow (??:?) 
-[ 49.084782][ T1] ? register_btf_kfunc_id_set (??:?) 
-[ 49.086126][ T1] ? mutex_lock_killable_nested (??:?) 
-[ 49.087468][ T1] ? exc_overflow (??:?) 
-[ 49.088520][ T1] ? register_btf_kfunc_id_set (??:?) 
-[ 49.089864][ T1] ? cubictcp_register (tcp_cubic.c:?) 
-[ 49.090991][ T1] do_one_initcall (??:?) 
-[ 49.092136][ T1] ? pvclock_clocksource_read_nowd (??:?) 
-[ 49.093607][ T1] ? __lock_acquire (lockdep.c:?) 
-[ 49.094756][ T1] ? kvm_sched_clock_read (kvmclock.c:?) 
-[ 49.095985][ T1] ? sched_clock_noinstr (??:?) 
-[ 49.097144][ T1] ? local_clock_noinstr (??:?) 
-[ 49.098393][ T1] ? __lock_acquire (lockdep.c:?) 
-[ 49.099575][ T1] ? sched_clock_noinstr (??:?) 
-[ 49.100746][ T1] ? local_clock_noinstr (??:?) 
-[ 49.101997][ T1] ? pvclock_clocksource_read_nowd (??:?) 
-[ 49.103439][ T1] ? kvm_sched_clock_read (kvmclock.c:?) 
-[ 49.104673][ T1] ? pvclock_clocksource_read_nowd (??:?) 
-[ 49.106095][ T1] ? kvm_sched_clock_read (kvmclock.c:?) 
-[ 49.107310][ T1] ? sched_clock_noinstr (??:?) 
-[ 49.109773][ T1] ? local_clock_noinstr (??:?) 
-[ 49.111018][ T1] ? __this_cpu_preempt_check (??:?) 
-[ 49.112289][ T1] ? irqtime_account_irq (??:?) 
-[ 49.113534][ T1] ? irqtime_account_delta (build_policy.c:?) 
-[ 49.114812][ T1] ? irqentry_exit (??:?) 
-[ 49.115860][ T1] ? __this_cpu_preempt_check (??:?) 
-[ 49.117126][ T1] ? lockdep_hardirqs_on (??:?) 
-[ 49.118370][ T1] ? sysvec_reboot (??:?) 
-[ 49.119450][ T1] ? trace_hardirqs_on (??:?) 
-[ 49.120623][ T1] ? irqentry_exit (??:?) 
-[ 49.121703][ T1] ? sysvec_reschedule_ipi (??:?) 
-[ 49.122962][ T1] ? handle_exception (init_task.c:?) 
-[ 49.124130][ T1] ? strlen (??:?) 
-[ 49.125054][ T1] ? next_arg (??:?) 
-[ 49.126086][ T1] ? parse_args (??:?) 
-[ 49.127134][ T1] ? tcp_diag_init (tcp_cubic.c:?) 
-[ 49.128257][ T1] do_initcall_level (main.c:?) 
-[ 49.129398][ T1] ? kernel_init (main.c:?) 
-[ 49.130474][ T1] do_initcalls (main.c:?) 
-[ 49.131494][ T1] do_basic_setup (main.c:?) 
-[ 49.132558][ T1] kernel_init_freeable (main.c:?) 
-[ 49.133781][ T1] ? rest_init (main.c:?) 
-[ 49.134848][ T1] ? rest_init (main.c:?) 
-[ 49.135885][ T1] kernel_init (main.c:?) 
-[ 49.136958][ T1] ret_from_fork (??:?) 
-[ 49.137979][ T1] ret_from_fork_asm (??:?) 
-[ 49.139078][ T1] entry_INT80_32 (init_task.c:?) 
-[   49.140171][    T1] irq event stamp: 16737757
-[ 49.141202][ T1] hardirqs last enabled at (16737765): console_unlock (??:?) 
-[ 49.143298][ T1] hardirqs last disabled at (16737774): console_unlock (??:?) 
-[ 49.145355][ T1] softirqs last enabled at (16737610): do_softirq_own_stack (??:?) 
-[ 49.147553][ T1] softirqs last disabled at (16737605): do_softirq_own_stack (??:?) 
-[   49.149757][    T1] ---[ end trace 0000000000000000 ]---
-[   49.151671][    T1] NET: Registered PF_INET6 protocol family
-[   49.156896][    T1] Segment Routing with IPv6
-[   49.158068][    T1] In-situ OAM (IOAM) with IPv6
-[   49.159300][    T1] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-[   49.162798][    T1] NET: Registered PF_PACKET protocol family
-[   49.164686][    T1] 9pnet: Installing 9P2000 support
-[   49.166257][    T1] start plist test
-[   49.168281][    T1] end plist test
-[   49.173855][    T1] IPI shorthand broadcast: enabled
-[   49.175165][    C0] ... APIC ID:      00000000 (0)
-[   49.176383][    C0] ... APIC VERSION: 00050014
-[   49.177486][    C0] 0000000000000000000000000000000000000000000000000000000000000000
-[   49.177486][    C0] 0000000000000000000000000000000000000000000000000000000008001000
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240204/202402041610.775e7f75-lkp@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+--=20
+Regards
+Yafang
 
