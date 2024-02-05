@@ -1,253 +1,278 @@
-Return-Path: <bpf+bounces-21223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A234849AE9
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:51:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55020849B35
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 13:59:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63161F21837
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 12:51:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C088280E96
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 12:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD504779F;
-	Mon,  5 Feb 2024 12:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9812D047;
+	Mon,  5 Feb 2024 12:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AVQ8JuAr"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6914595C;
-	Mon,  5 Feb 2024 12:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8FD2D022
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 12:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137168; cv=none; b=BYtBZqfZOeq7w/gAYRMIMGjVvBSPM5kDkLS7tuqhv2vZQ8rmfiIQwnDEr6oONsBga8wYvkqJAzAgbc/1LRavfo2UNsbahaH0OmBoQH28fKzscBWEadeydndrm6Gt6RFTUuY8GrGJDPgfTw/BaRRHgQARDNG5CC0jT3J0hAqxjic=
+	t=1707137775; cv=none; b=EU4CH9GnIbCH5TGUPeDjp1jPv3sipMkCxykFZfqJbUcJ1c78tJno2P3rVYMQejDntjCJlEiOGj++HtuylPrjgR5weJpAzEVf6/uPvzU2YB6ul1Dt9ELHqDI6NZ8j+rMeHNuBf4Wo+6ICcJKkFpjubHxbsnRaE5BLtckyp7iHxxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137168; c=relaxed/simple;
-	bh=EkOVPmyG8AwI1ztH4WPEnwo5N1dm4jflvATq8fvXt7Q=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZXqCWR0+LWanZHWwsrVfQGcjLhAS5kFQqcgrW7cTE2SNBCO2lxWG7hfgCqoelSsv/4uq72DTIguJbffXKY0mrLYFHdSDvt+tJoQ85cXH6gMg4+E2a9r0L4MnCtCyKnCQQd8ZPbCNCcleeu8nHr0K8UpIWSpxmxH1/oGEWbkKmb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT5hJ6QZGz1vt7q;
-	Mon,  5 Feb 2024 20:45:36 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 34B96140429;
-	Mon,  5 Feb 2024 20:46:04 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 20:46:03 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Jason Wang <jasowang@redhat.com>, "Michael S.
- Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux.dev>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next v5 4/5] vhost/net: remove vhost_net_page_frag_refill()
-Date: Mon, 5 Feb 2024 20:45:04 +0800
-Message-ID: <20240205124506.57670-5-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240205124506.57670-1-linyunsheng@huawei.com>
-References: <20240205124506.57670-1-linyunsheng@huawei.com>
+	s=arc-20240116; t=1707137775; c=relaxed/simple;
+	bh=4mmDbUgjaqjmq99AwXxJh7E78+7WVAUkFHPAyBDAyjo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d8jqmNMeCcGKRRA9BxFuPRUaPxD1E/U+8pQQ4H5kGAg16fOh0kmqhX9A3b3h+xQUc/fs4sAJnHzprXpX/kHbJEQaP0ff7mhazH/C3vg5H9pALdSFSrjA6TpNiywS9pdP4f9q/6z/WcUu8jU/bXMspSrtGOTFF4Xj8+wPoqInO8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AVQ8JuAr; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42bf8f26673so18056871cf.2
+        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 04:56:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707137773; x=1707742573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mcu1+a9rod/cPAA0Nzzsv61IU496Jt/rUq/7x6B4wO4=;
+        b=AVQ8JuArFTEYNv62frs35r7Si8QZxdsszLS4I7OaTsn8JgNF63w7dHDVaFqinDA5dI
+         Jr6ubaGSXzlmYlGWI98MR5oRy0AqfON/sdkq8UTJFKrDGJ3Is9wOFcvcO3VXOz8st8JV
+         w2ltYwSaI4J2FWBHYkq2B2Hzx1BAePaaQFBh6zwnKkn4L3coJKzZ5q/O/EYvDsW+Cd0j
+         NXC62dZWdw2F+hMtWs4wRtZPtbozjjAUp/4Id6WjnxDAO4FYSAqQ94jsDhAOF7p+FSXn
+         3MzVckrY1cS680JJSrmtFB1t3VYbOgufCjN4s+QoO6frytg/gMS/v0EpH/xEPJ3n99JW
+         ivxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707137773; x=1707742573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mcu1+a9rod/cPAA0Nzzsv61IU496Jt/rUq/7x6B4wO4=;
+        b=Y6MV2JpfELQ2aFPDkikwuTcTpRUNZ1f0ASc3xvk+Xr3RLpyLs6wlNrQT7ty54wEtlY
+         MAw/8n+35KPmViNQczFt99N2GB6pl4goJiqAwlJ5GU4HqdjL+0aeziJwRUnoaFI5mhAh
+         G4bgYnjYKfsVxWCxSol+3B+qdogIRDlnREyJC7JpDUkmHxweMLJzx0FwcKO/qm3VZoM+
+         uBtw9E2keaZNs93qa4bjwogb7huIquwo5QrbQys4H9VNGNQ0L2p5rx2c/tPy5yV5RpAy
+         3Zs1Wj/TfVuFQa2J5dcczdAVE+esbztp6In2XpJ7OaUKiNcLzliSd/NtK9AfwpcwIBPj
+         sIbw==
+X-Gm-Message-State: AOJu0YzgWdPFhfYrITccy9yBAHp3KURViQ6qXH+29lhestIVrPgRvuLq
+	x90yKEFsBQmpVzp8zgl5TCz3o+r4+J+TCh4WCd2xgugf9QOLAbGHX28+F44A5vBaIWkmtF/Gw/k
+	8o6F6ibdkbj1K1Jq3Hqetvmv1V9E=
+X-Google-Smtp-Source: AGHT+IFYKhLe2Q3ieh0LZgp8EDSjFmbmf+8FRWRcOEkZtPvC2wnyUDSFOWwWCUwZsnYDvOQp1FJkoF6oQIPTVlc3YoQ=
+X-Received: by 2002:a0c:f294:0:b0:68c:8b5c:9d29 with SMTP id
+ k20-20020a0cf294000000b0068c8b5c9d29mr5773955qvl.62.1707137772852; Mon, 05
+ Feb 2024 04:56:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+References: <20240205055646.1112186-1-memxor@gmail.com> <20240205055646.1112186-3-memxor@gmail.com>
+In-Reply-To: <20240205055646.1112186-3-memxor@gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 5 Feb 2024 20:55:36 +0800
+Message-ID: <CALOAHbBt4WDvLzQkevmsFwDDeMo8WGhLJF4wdvqtQog6JCnFag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for RCU lock
+ transfer between subprogs
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The page frag in vhost_net_page_frag_refill() uses the
-'struct page_frag' from skb_page_frag_refill(), but it's
-implementation is similar to page_frag_alloc_align() now.
+On Mon, Feb 5, 2024 at 1:56=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gmai=
+l.com> wrote:
+>
+> Add selftests covering the following cases:
+> - A static or global subprog called from within a RCU read section works
+> - A static subprog taking an RCU read lock which is released in caller wo=
+rks
+> - A static subprog releasing the caller's RCU read lock works
+>
+> Global subprogs that leave the lock in an imbalanced state will not
+> work, as they are verified separately, so ensure those cases fail as
+> well.
+>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-This patch removes vhost_net_page_frag_refill() by using
-'struct page_frag_cache' instead of 'struct page_frag',
-and allocating frag using page_frag_alloc_align().
+Acked-and-Tested-by: Yafang Shao <laoar.shao@gmail.com>
 
-The added benefit is that not only unifying the page frag
-implementation a little, but also having about 0.5% performance
-boost testing by using the vhost_net_test introduced in the
-last patch.
+> ---
+>  .../selftests/bpf/prog_tests/rcu_read_lock.c  |   6 +
+>  .../selftests/bpf/progs/rcu_read_lock.c       | 120 ++++++++++++++++++
+>  2 files changed, 126 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/too=
+ls/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+> index 3f1f58d3a729..a1f7e7378a64 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+> @@ -29,6 +29,10 @@ static void test_success(void)
+>         bpf_program__set_autoload(skel->progs.non_sleepable_1, true);
+>         bpf_program__set_autoload(skel->progs.non_sleepable_2, true);
+>         bpf_program__set_autoload(skel->progs.task_trusted_non_rcuptr, tr=
+ue);
+> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_subprog, true=
+);
+> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_global_subpro=
+g, true);
+> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_subprog_lock,=
+ true);
+> +       bpf_program__set_autoload(skel->progs.rcu_read_lock_subprog_unloc=
+k, true);
+>         err =3D rcu_read_lock__load(skel);
+>         if (!ASSERT_OK(err, "skel_load"))
+>                 goto out;
+> @@ -75,6 +79,8 @@ static const char * const inproper_region_tests[] =3D {
+>         "inproper_sleepable_helper",
+>         "inproper_sleepable_kfunc",
+>         "nested_rcu_region",
+> +       "rcu_read_lock_global_subprog_lock",
+> +       "rcu_read_lock_global_subprog_unlock",
+>  };
+>
+>  static void test_inproper_region(void)
+> diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/te=
+sting/selftests/bpf/progs/rcu_read_lock.c
+> index 14fb01437fb8..ab3a532b7dd6 100644
+> --- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
+> +++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
+> @@ -319,3 +319,123 @@ int cross_rcu_region(void *ctx)
+>         bpf_rcu_read_unlock();
+>         return 0;
+>  }
+> +
+> +__noinline
+> +static int static_subprog(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       if (bpf_get_prandom_u32())
+> +               return ret + 42;
+> +       return ret + bpf_get_prandom_u32();
+> +}
+> +
+> +__noinline
+> +int global_subprog(u64 a)
+> +{
+> +       volatile int ret =3D a;
+> +
+> +       return ret + static_subprog(NULL);
+> +}
+> +
+> +__noinline
+> +static int static_subprog_lock(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       bpf_rcu_read_lock();
+> +       if (bpf_get_prandom_u32())
+> +               return ret + 42;
+> +       return ret + bpf_get_prandom_u32();
+> +}
+> +
+> +__noinline
+> +int global_subprog_lock(u64 a)
+> +{
+> +       volatile int ret =3D a;
+> +
+> +       return ret + static_subprog_lock(NULL);
+> +}
+> +
+> +__noinline
+> +static int static_subprog_unlock(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       bpf_rcu_read_unlock();
+> +       if (bpf_get_prandom_u32())
+> +               return ret + 42;
+> +       return ret + bpf_get_prandom_u32();
+> +}
+> +
+> +__noinline
+> +int global_subprog_unlock(u64 a)
+> +{
+> +       volatile int ret =3D a;
+> +
+> +       return ret + static_subprog_unlock(NULL);
+> +}
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +int rcu_read_lock_subprog(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       bpf_rcu_read_lock();
+> +       if (bpf_get_prandom_u32())
+> +               ret +=3D static_subprog(ctx);
+> +       bpf_rcu_read_unlock();
+> +       return 0;
+> +}
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +int rcu_read_lock_global_subprog(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       bpf_rcu_read_lock();
+> +       if (bpf_get_prandom_u32())
+> +               ret +=3D global_subprog(ret);
+> +       bpf_rcu_read_unlock();
+> +       return 0;
+> +}
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +int rcu_read_lock_subprog_lock(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       ret +=3D static_subprog_lock(ctx);
+> +       bpf_rcu_read_unlock();
+> +       return 0;
+> +}
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +int rcu_read_lock_global_subprog_lock(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       ret +=3D global_subprog_lock(ret);
+> +       bpf_rcu_read_unlock();
+> +       return 0;
+> +}
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +int rcu_read_lock_subprog_unlock(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       bpf_rcu_read_lock();
+> +       ret +=3D static_subprog_unlock(ctx);
+> +       return 0;
+> +}
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +int rcu_read_lock_global_subprog_unlock(void *ctx)
+> +{
+> +       volatile int ret =3D 0;
+> +
+> +       bpf_rcu_read_lock();
+> +       ret +=3D global_subprog_unlock(ret);
+> +       return 0;
+> +}
+> --
+> 2.40.1
+>
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vhost/net.c | 91 ++++++++++++++-------------------------------
- 1 file changed, 27 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index e574e21cc0ca..4b2fcb228a0a 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -141,10 +141,8 @@ struct vhost_net {
- 	unsigned tx_zcopy_err;
- 	/* Flush in progress. Protected by tx vq lock. */
- 	bool tx_flush;
--	/* Private page frag */
--	struct page_frag page_frag;
--	/* Refcount bias of page frag */
--	int refcnt_bias;
-+	/* Private page frag cache */
-+	struct page_frag_cache pf_cache;
- };
- 
- static unsigned vhost_net_zcopy_mask __read_mostly;
-@@ -655,41 +653,6 @@ static bool tx_can_batch(struct vhost_virtqueue *vq, size_t total_len)
- 	       !vhost_vq_avail_empty(vq->dev, vq);
- }
- 
--static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
--				       struct page_frag *pfrag, gfp_t gfp)
--{
--	if (pfrag->page) {
--		if (pfrag->offset + sz <= pfrag->size)
--			return true;
--		__page_frag_cache_drain(pfrag->page, net->refcnt_bias);
--	}
--
--	pfrag->offset = 0;
--	net->refcnt_bias = 0;
--	if (SKB_FRAG_PAGE_ORDER) {
--		/* Avoid direct reclaim but allow kswapd to wake */
--		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
--					  __GFP_COMP | __GFP_NOWARN |
--					  __GFP_NORETRY | __GFP_NOMEMALLOC,
--					  SKB_FRAG_PAGE_ORDER);
--		if (likely(pfrag->page)) {
--			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
--			goto done;
--		}
--	}
--	pfrag->page = alloc_page(gfp);
--	if (likely(pfrag->page)) {
--		pfrag->size = PAGE_SIZE;
--		goto done;
--	}
--	return false;
--
--done:
--	net->refcnt_bias = USHRT_MAX;
--	page_ref_add(pfrag->page, USHRT_MAX - 1);
--	return true;
--}
--
- #define VHOST_NET_RX_PAD (NET_IP_ALIGN + NET_SKB_PAD)
- 
- static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
-@@ -699,7 +662,6 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 	struct vhost_net *net = container_of(vq->dev, struct vhost_net,
- 					     dev);
- 	struct socket *sock = vhost_vq_get_backend(vq);
--	struct page_frag *alloc_frag = &net->page_frag;
- 	struct virtio_net_hdr *gso;
- 	struct xdp_buff *xdp = &nvq->xdp[nvq->batched_xdp];
- 	struct tun_xdp_hdr *hdr;
-@@ -710,6 +672,7 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 	int sock_hlen = nvq->sock_hlen;
- 	void *buf;
- 	int copied;
-+	int ret;
- 
- 	if (unlikely(len < nvq->sock_hlen))
- 		return -EFAULT;
-@@ -719,18 +682,17 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 		return -ENOSPC;
- 
- 	buflen += SKB_DATA_ALIGN(len + pad);
--	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
--	if (unlikely(!vhost_net_page_frag_refill(net, buflen,
--						 alloc_frag, GFP_KERNEL)))
-+	buf = page_frag_alloc_align(&net->pf_cache, buflen, GFP_KERNEL,
-+				    SMP_CACHE_BYTES);
-+	if (unlikely(!buf))
- 		return -ENOMEM;
- 
--	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
--	copied = copy_page_from_iter(alloc_frag->page,
--				     alloc_frag->offset +
--				     offsetof(struct tun_xdp_hdr, gso),
--				     sock_hlen, from);
--	if (copied != sock_hlen)
--		return -EFAULT;
-+	copied = copy_from_iter(buf + offsetof(struct tun_xdp_hdr, gso),
-+				sock_hlen, from);
-+	if (copied != sock_hlen) {
-+		ret = -EFAULT;
-+		goto err;
-+	}
- 
- 	hdr = buf;
- 	gso = &hdr->gso;
-@@ -743,27 +705,30 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 			       vhost16_to_cpu(vq, gso->csum_start) +
- 			       vhost16_to_cpu(vq, gso->csum_offset) + 2);
- 
--		if (vhost16_to_cpu(vq, gso->hdr_len) > len)
--			return -EINVAL;
-+		if (vhost16_to_cpu(vq, gso->hdr_len) > len) {
-+			ret = -EINVAL;
-+			goto err;
-+		}
- 	}
- 
- 	len -= sock_hlen;
--	copied = copy_page_from_iter(alloc_frag->page,
--				     alloc_frag->offset + pad,
--				     len, from);
--	if (copied != len)
--		return -EFAULT;
-+	copied = copy_from_iter(buf + pad, len, from);
-+	if (copied != len) {
-+		ret = -EFAULT;
-+		goto err;
-+	}
- 
- 	xdp_init_buff(xdp, buflen, NULL);
- 	xdp_prepare_buff(xdp, buf, pad, len, true);
- 	hdr->buflen = buflen;
- 
--	--net->refcnt_bias;
--	alloc_frag->offset += buflen;
--
- 	++nvq->batched_xdp;
- 
- 	return 0;
-+
-+err:
-+	page_frag_free(buf);
-+	return ret;
- }
- 
- static void handle_tx_copy(struct vhost_net *net, struct socket *sock)
-@@ -1353,8 +1318,7 @@ static int vhost_net_open(struct inode *inode, struct file *f)
- 			vqs[VHOST_NET_VQ_RX]);
- 
- 	f->private_data = n;
--	n->page_frag.page = NULL;
--	n->refcnt_bias = 0;
-+	n->pf_cache.va = NULL;
- 
- 	return 0;
- }
-@@ -1422,8 +1386,7 @@ static int vhost_net_release(struct inode *inode, struct file *f)
- 	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
- 	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
- 	kfree(n->dev.vqs);
--	if (n->page_frag.page)
--		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
-+	page_frag_cache_drain(&n->pf_cache);
- 	kvfree(n);
- 	return 0;
- }
--- 
-2.33.0
-
+--=20
+Regards
+Yafang
 
