@@ -1,136 +1,121 @@
-Return-Path: <bpf+bounces-21228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C560F849DA4
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 16:01:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E30849DC4
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 16:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76ADD1F21567
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 15:01:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28E9B1F2333B
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 15:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC5B2DF73;
-	Mon,  5 Feb 2024 15:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CXv6nVK/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383562C6AC;
+	Mon,  5 Feb 2024 15:14:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69BE32C6C
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 15:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF302C68C
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 15:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707145257; cv=none; b=tw+WPt1ffyp7WmyrdKvwnWLPNx2PstTqKky1Qf8Tf5qtuLEAl0GXxRVkjWPTM1hlLyhfIzwsY/mpf6nYtMSYc8ve93zl+ftXRYyM9A5MFJpOJOevf0enyhdtc3tnb4imSt5TEIM5QvcqwCWJcchgQTm3THoVTsMQUK1swfKy030=
+	t=1707146045; cv=none; b=SfbmFfNbSig9bxtEMZh2SS4yOelQhaFeDkFtHVW8ENrwtuBeVXC50CF36RHr16B4gyxV1FGdsxvTtoFIL4GefVx+51GGlM8UBDEqm2RPL8CEAUdEMZnTiPwa07L/zKVYcWKAQd7CtBu+SLIkv8J6NvohD8RzU9NpMi1Gpww8hEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707145257; c=relaxed/simple;
-	bh=4x/pL/LexyK+4wqZZH/6gBXshFnDy2QZXDAbJnIwUqM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DQ4EZktVY64D3rn1qAGm8MB8qMh1I6ma8M1Dk0+8N14/ZO+jJBUn+i2kk4MgTqMyp8+RNrJjavDlhySaNlHactzuHgxuLLmbdJBXMz3E08puPqaOdVgobTkiwPglQ2RRag562t0sVyKx3UECwTxaHz5+BJjrNqLjLXCc2w8e3jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CXv6nVK/; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d317aafbd1so1994430241.2
-        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 07:00:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707145254; x=1707750054; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SdJNeue2Wv0xiehiEald+OUh21W9eFlv7KMsoDs8oU8=;
-        b=CXv6nVK/NtQ0TRotQaF8GyMgdPby6UPMK7Y0wkjW56Lx1IpFExmMB4zm2fmO6d2R6B
-         8rCbxnjOsCrQffUh3EZKZh3hHyFUbMV/AvyiuVyhY/JKhEhTQQopu5JgGds2ZPkULBLv
-         Kxfz8GKvQx2SwMTEfPPjuqDft9/toFNQCSy/sBWdX+2+saRIyCtAWEfCN6eWUeIiudwD
-         KIRge7BNSL+AScZd1gh5ZCr/vgCLw8M3H38i+tSfX4KIugGt0h/tGMnlcgJFwqKPzHHO
-         kxhhb3ZdokFnoSUoJ1hSrAoQEWC1L530eaDADN9U1U9opeZv01BJQIPE9wytblQgoGyv
-         PZHw==
+	s=arc-20240116; t=1707146045; c=relaxed/simple;
+	bh=rE4Y5qRebnxxnj3XcZWGjeL8GE7yUO654H44+vCDHZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KxtsDZFLdHPXzJNrtxYWDrk/L9GI7znwmpcqmPMVuxFrPwxUlZaE31awulxuUdX9U2pd1FLXpC/PQ8xuOuTyRv7WfZzI/OKaOLWIH736J9i3y3ovrW05MgWEO8vlFr7IHOleWHF8vJ3AWXnnkWrTRkxccJfJG+0AIakJ4ywL0S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2196dd318feso1096121fac.2
+        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 07:14:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707145254; x=1707750054;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707146043; x=1707750843;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SdJNeue2Wv0xiehiEald+OUh21W9eFlv7KMsoDs8oU8=;
-        b=mjUKDJnA/ccw271aDMV3mAqDFFgQpoo2AbUCIldKoKPogh3s98Bc23gBxhhVZKWfbx
-         TxhLzxOyfcg0tRks60myCLQAJmCfYj0MRQsBDOXEe9KEDC4z7j8iSnPiND0UrnVZ1OKz
-         nB2IV3ApCWd6iuUC74QCeNT6YavFxcOlFuCl5lxKzqd6weZ0OzhVFr1rC9yD2Ef1InQy
-         WjjE0JLu1EiO7QasS7FF1hvkhSVfMjm3NH4tRmZkNdcYw70yqQ/F+S5gWMmgDsRPGzEA
-         g4enAaASrwrav+wOFwLrMPZWNHlgA5LKsFu0eAOJzpdWuWVTiiXAwIcNmKPgUf0AtvAx
-         CupA==
-X-Gm-Message-State: AOJu0YzWGfv14X2hwTnCi3wJXu8mfcy+/jNg2KxA6ebdUIba8jWuQPX3
-	7MgAoOx8HJr4XVlHAvPAuDLaELyaUu1pjBIj/IctKu5GWz2rpkDyBAqgutDH7xv6RCSi1HuGczc
-	ik6M7qaCUUNoba2kQzlsiwbf1ySEsfggdq/D6
-X-Google-Smtp-Source: AGHT+IGyGdxgsP9UcWiEJx0V/pq8uMBpCddwlbwcThZVJXxE7PBJjn7CzGAgysVY689BVIMKpe8Rx7vH/upebwniUjA=
-X-Received: by 2002:a67:cf8c:0:b0:46d:27ba:526b with SMTP id
- g12-20020a67cf8c000000b0046d27ba526bmr22209vsm.34.1707145252109; Mon, 05 Feb
- 2024 07:00:52 -0800 (PST)
+        bh=rE4Y5qRebnxxnj3XcZWGjeL8GE7yUO654H44+vCDHZk=;
+        b=D5MCtqz+XPkoMWPC4LnDlTwmMBqi7S+l64fb4mAdaqoulo998e7NH2eLCKYdFLmkN/
+         t0ApaxMwPOqaZp+3koANfbzFJcgWrdnewgaeZE9gYtIRL7PmU7lYj2t0LtP40YyNb+bJ
+         Zm4CtDFFflkwvFV8dPnC/poLQZfY4mv8+43iJUa1ZdW2oHwcAJZrL3r/HkqETTnfTUnN
+         OkXGHYsKggrqUdMDKjj+cV24nOHfuW+/sqyLjIOnL3VfpkEAFwfM2QD7nK0qxI8vQKka
+         KvFUDXtkxb3CebdiVR5wmxzh/FQFPrKbq576GeDikTs+e5MWAO5DM5nr54OGXBRIiLkD
+         WQqw==
+X-Gm-Message-State: AOJu0YxqpOLaTQ3uXAtSsxkOVEOlA0jsfnCS+ZJ3aC/yOy2De0Pu3/OO
+	PX9UaQwKn3FcTCN52s1XvRv7OieCi27zQCwqIGuF1O3z6PhjmYAH
+X-Google-Smtp-Source: AGHT+IGmbKff2vVF9nHlXPPHnQKGWi9TvR8Jmme7watK5qROLTI/XZHwFl+tV6pQzKc6whKQGtcwxg==
+X-Received: by 2002:a05:6871:4311:b0:219:6cd9:3e26 with SMTP id lu17-20020a056871431100b002196cd93e26mr5440585oab.23.1707146043172;
+        Mon, 05 Feb 2024 07:14:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWQ1NpSBPG5lFlzk1fMi7wUPrZtSPA/qk9v+wWzbHzI4iNtpGIvDMzp33CS4pUdXOBbw5Yb2c9iz9VBSVT8aoSLIczr645VLi9tKcSng3Hyb/Kkx/AV8V9AP9Zjer3o4qpJSaQnUjjOGRs4zVUxJeim28KvqN8Ttiv+bNMnKJS1xmtbK0VAVj6IDyaa5AhTCiun6BbLeHuJczUUJ7DXeEv4XhVlJ84PRFOdIgwsu6LZx62ebS7AbSPbr0Ls4g==
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id c4-20020a0ce7c4000000b0068c55087a1asm53438qvo.74.2024.02.05.07.14.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 07:14:02 -0800 (PST)
+Date: Mon, 5 Feb 2024 09:14:00 -0600
+From: David Vernet <void@manifault.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Transfer RCU lock state between
+ subprog calls
+Message-ID: <20240205151400.GE120243@maniforge>
+References: <20240205055646.1112186-1-memxor@gmail.com>
+ <20240205055646.1112186-2-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131141858.1149719-1-elver@google.com> <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
-In-Reply-To: <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
-From: Marco Elver <elver@google.com>
-Date: Mon, 5 Feb 2024 16:00:15 +0100
-Message-ID: <CANpmjNPKACDwXMnZRw9=CAgWNaMWAyFZ2W7KY2s4ck0s_ue1ag@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow paths
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wKy4UBWIzWPNlPEn"
+Content-Disposition: inline
+In-Reply-To: <20240205055646.1112186-2-memxor@gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+
+
+--wKy4UBWIzWPNlPEn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 31 Jan 2024 at 20:52, Martin KaFai Lau <martin.lau@linux.dev> wrote=
-:
-[...]
-> > | num_maps: 1000
-> > |  local_storage cache sequential  get:
-> > |                              <before>                | <after>
-> > |   hits throughput:           0.357 =C2=B1 0.005 M ops/s   | 0.325 =C2=
-=B1 0.005 M ops/s        (-9.0%)
-> > |   hits latency:              2803.738 ns/op          | 3076.923 ns/op=
-               (+9.7%)
->
-> Is it understood why the slow down here? The same goes for the "num_maps:=
- 32"
-> case above but not as bad as here.
+On Mon, Feb 05, 2024 at 05:56:45AM +0000, Kumar Kartikeya Dwivedi wrote:
+> Allow transferring an imbalanced RCU lock state between subprog calls
+> during verification. This allows patterns where a subprog call returns
+> with an RCU lock held, or a subprog call releases an RCU lock held by
+> the caller. Currently, the verifier would end up complaining if the RCU
+> lock is not released when processing an exit from a subprog, which is
+> non-ideal if its execution is supposed to be enclosed in an RCU read
+> section of the caller.
+>=20
+> Instead, simply only check whether we are processing exit for frame#0
+> and do not complain on an active RCU lock otherwise. We only need to
+> update the check when processing BPF_EXIT insn, as copy_verifier_state
+> is already set up to do the right thing.
+>=20
+> Suggested-by: David Vernet <void@manifault.com>
+> Tested-by: Yafang Shao <laoar.shao@gmail.com>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-It turned out that there's a real slowdown due to the outlined
-slowpath. If I inline everything except for inserting the entry into
-the cache (cacheit_lockit codepath is still outlined), the results
-look much better even for the case where it always misses the cache.
+Acked-by: David Vernet <void@manifault.com>
 
-[...]
-> > diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/to=
-ols/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-> > index a043d8fefdac..9895087a9235 100644
-> > --- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-> > +++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-> > @@ -21,7 +21,7 @@ struct {
-> >       __type(value, long);
-> >   } map_b SEC(".maps");
-> >
-> > -SEC("fentry/bpf_local_storage_lookup")
-> > +SEC("fentry/bpf_local_storage_lookup_slowpath")
->
-> The selftest is trying to catch recursion. The change here cannot test th=
-e same
-> thing because the slowpath will never be hit in the test_progs.  I don't =
-have a
-> better idea for now also.
+--wKy4UBWIzWPNlPEn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Trying to prepare a v2, and for the test, the only option I see is to
-introduce a tracepoint ("bpf_local_storage_lookup"). If unused, should
-be a no-op due to static branch.
+-----BEGIN PGP SIGNATURE-----
 
-Or can you suggest different functions to hook to for the recursion test?
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZcD7OAAKCRBZ5LhpZcTz
+ZCmmAQC/AtgnwxJybYDYlZR5+BdSOWcBk9UrXEo0ChzQF46OrAD+MRMl6SJ/SWwM
+yKGS3uxZAezH25H65dvk9EGX4/zFUgg=
+=4SPl
+-----END PGP SIGNATURE-----
 
-Preferences?
+--wKy4UBWIzWPNlPEn--
 
