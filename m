@@ -1,105 +1,139 @@
-Return-Path: <bpf+bounces-21239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A5284A276
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 19:36:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C57184A28C
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 19:39:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A4E328A619
-	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 18:36:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BAB61F23AC3
+	for <lists+bpf@lfdr.de>; Mon,  5 Feb 2024 18:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE981481B1;
-	Mon,  5 Feb 2024 18:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FEF52E3FD;
+	Mon,  5 Feb 2024 18:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XujVAKI7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hXpIut8y"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548C14E1AD
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 18:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BCF481B3
+	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 18:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707158075; cv=none; b=G68feMmm3H4qD5+bHI8NXRefqM5XyyqDLQp10ebIEnMJgxn0QCY/qbbK5UXxxKt/94SDePWrQWO82kOVThScJwkVquo5jKIhFu+8ltCL4hVWUBmg4hp3Bt7Uov2etmEZiUkOELwS+jidzfZB1MOaqfooyyKL4HveFgEeqN61DIQ=
+	t=1707158377; cv=none; b=shhyoYNbxXMPgx4l9uLoRXQEPwsgRiI6XGFrBelP7Y/vtTwsUVmL7tgvRf0vhyEArvId9zV4pHfrjtp677Jmx8fMzAMMjCa4IhlcOSEnaF8JpOdNX0bPkLKd5niIx+wKZ0EduGue6DnQLAHOpxsiDoSqE0dgpAqJz4f6prVWiKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707158075; c=relaxed/simple;
-	bh=EJFQ6NyFZ44BEICeKRhVKm07VxQ1wRxrIiOwO1D2rwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PBStby9hOfK0Ig0JqnP4NeeUFXDTBM9buR3jRjmgqwEXbdwocGlMh7+Djf48DWv/QI0yhKA6JSGG+7i5iBVkhNw3zFX+61lWOuEh4+VK3XudvqQxsgHeUuMWErm4puxQLVwz0OEeVvnFvQwi+EbVz76yKjLRd3Hr+7u0YdB0gjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XujVAKI7; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <66f56100-0ef6-4d6a-8d98-26b87a7f10da@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707158071;
+	s=arc-20240116; t=1707158377; c=relaxed/simple;
+	bh=Pg6bhrmnyt1nmIdAOq7FpYuy9nSSAJ2pyJ6mifXYe2k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i57ptcalqNTEtzT0HWvlp7EM6EuuNKm4f8I8ONs6cCC/Co7mjKMnvsU/m0AL/yBPoAmevjB9NsBB/dYwhMyl183PvExzqf5IPTJVUJmGWr5POnW+mYU4kMEMGb6PqbHo+H1qkCxKPdN9D+VwSETn9Ah2KCkTMElox+0I7N/jLG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hXpIut8y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707158374;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EJFQ6NyFZ44BEICeKRhVKm07VxQ1wRxrIiOwO1D2rwY=;
-	b=XujVAKI77ybe2aicx4rQ1N/KNyZm/U1ty/Z1SMBI4qg+PhdNsp2cgOs+CP1NuxChnxVK8i
-	ed9z5Z8qGP/7RYUfR9o11yDfeFSzxpiBmWi53b4rOQfpA7hG5wmyAia9VIjweyPVgQiJif
-	onbUnjNV2uyYzaYovWWD5UDm9ZmrZWg=
-Date: Mon, 5 Feb 2024 10:34:24 -0800
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wNOqDMi3a7MzjJZlBXITaVgoIn5uuPHce6KfBEKVYgk=;
+	b=hXpIut8ygd838jkkhmrwQ/qfqTOu73TC1itblsFuWwPz+uJJA1PL1k8dd4IQvpRNDdJ9KX
+	BIbyD5rN7mYQWf8YXUTR6EY/8XuRL0SldCASCUhmPszbnwD4btNL84zNSdFNISRLlfkjtE
+	6cg0YGC4Pwn1N3ExxblxwVLBz91IDaI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-549-_ZYmyABeNPKlcCmQ7L2EwQ-1; Mon, 05 Feb 2024 13:39:31 -0500
+X-MC-Unique: _ZYmyABeNPKlcCmQ7L2EwQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 05D42845E64;
+	Mon,  5 Feb 2024 18:39:30 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.224.202])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 442EC2026F95;
+	Mon,  5 Feb 2024 18:39:26 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	Manu Bretelle <chantr4@gmail.com>
+Subject: [PATCH bpf-next v3 0/2] tools/resolve_btfids: fix cross-compilation to non-host endianness
+Date: Mon,  5 Feb 2024 19:39:21 +0100
+Message-ID: <cover.1707157553.git.vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Add generic kfunc bpf_ffs64()
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org
-References: <20240131155607.51157-1-hffilwlqm@gmail.com>
- <CAEf4BzYsYHi1s_7PZ5QknUg+Oe9drN0OSXbxT06WDB57o0Ju9w@mail.gmail.com>
- <a910fc94-47cd-419e-baf9-5c00140cbc60@linux.dev>
- <CAEf4BzaA+hhVdh=gGd2uz10ZLPeUKWN2H75MiF93L1AWPJ2O7g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzaA+hhVdh=gGd2uz10ZLPeUKWN2H75MiF93L1AWPJ2O7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
+The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
+build and afterwards patched by resolve_btfids with correct values.
+Since resolve_btfids always writes in host-native endianness, it relies
+on libelf to do the translation when the target ELF is cross-compiled to
+a different endianness (this was introduced in commit 61e8aeda9398
+("bpf: Fix libelf endian handling in resolv_btfids")).
 
-On 2/5/24 10:18 AM, Andrii Nakryiko wrote:
-> On Sun, Feb 4, 2024 at 11:20 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 2/2/24 2:18 PM, Andrii Nakryiko wrote:
->>> On Wed, Jan 31, 2024 at 7:56 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>>> This patchset introduces a new generic kfunc bpf_ffs64(). This kfunc
->>>> allows bpf to reuse kernel's __ffs64() function to improve ffs
->>>> performance in bpf.
->>>>
->>> The downside of using kfunc for this is that the compiler will assume
->>> that R1-R5 have to be spilled/filled, because that's function call
->>> convention in BPF.
->>>
->>> If this was an instruction, though, it would be much more efficient
->>> and would avoid this problem. But I see how something like ffs64 is
->>> useful. I think it would be good to also have popcnt instruction and a
->>> few other fast bit manipulation operations as well.
->>>
->>> Perhaps we should think about another BPF ISA extension to add fast
->>> bit manipulation instructions?
->> Sounds a good idea to start the conversion. Besides popcnt, lzcnt
->> is also a candidate. From llvm perspective, it would be hard to
->> generate ffs64/popcnt/lzcnt etc. from source generic implementation.
-> I'm curious why? I assumed that if a user used __builtin_popcount()
-> Clang could just generate BPF's popcnt instruction (assuming the right
-> BPF cpu version is enabled, of course).
+Unfortunately, the translation will corrupt the flags fields of SET8
+entries because these were written during vmlinux compilation and are in
+the correct endianness already. This will lead to numerous selftests
+failures such as:
 
-Not aware of __builtin_popcount(). Yes, BPF backend should be able easily
-converts __builtin_popcount() to a BPF insn.
+    $ sudo ./test_verifier 502 502
+    #502/p sleepable fentry accept FAIL
+    Failed to load prog 'Invalid argument'!
+    bpf_fentry_test1 is not sleepable
+    verification time 34 usec
+    stack depth 0
+    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+    Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
 
->
->> So most likely, inline asm will be used. libbpf could define
->> some macros to make adoption easier. Verifier and JIT will do
->> proper thing, either using corresponding arch insns directly or
->> verifier will rewrite so JIT won't be aware of these insns.
-[...]
+Since it's not possible to instruct libelf to translate just certain
+values, let's manually bswap the flags (both global and entry flags) in
+resolve_btfids when needed, so that libelf then translates everything
+correctly.
+
+The first patch of the series refactors resolve_btfids by using types
+from btf_ids.h instead of accessing the BTF ID data using magic offsets.
+
+---
+Changes in v3:
+- add byte swap of global 'flags' field in btf_id_set8 (suggested by
+  Jiri Olsa)
+- cleaner refactoring of sets_patch (suggested by Jiri Olsa)
+- add compile-time assertion that IDs are at the beginning of pairs
+  struct in btf_id_set8 (suggested by Daniel Borkmann)
+
+Changes in v2:
+- use type defs from btf_ids.h (suggested by Andrii Nakryiko)
+
+Viktor Malik (2):
+  tools/resolve_btfids: Refactor set sorting with types from btf_ids.h
+  tools/resolve_btfids: fix cross-compilation to non-host endianness
+
+ tools/bpf/resolve_btfids/main.c | 64 +++++++++++++++++++++++++++------
+ tools/include/linux/btf_ids.h   |  9 +++++
+ 2 files changed, 63 insertions(+), 10 deletions(-)
+
+-- 
+2.43.0
+
 
