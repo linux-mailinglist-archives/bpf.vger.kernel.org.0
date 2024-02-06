@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B724484BFC9
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AED284BFC8
 	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 23:06:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED90DB256C5
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 22:06:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DE0F1C24200
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 22:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2471C294;
-	Tue,  6 Feb 2024 22:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27601C2BC;
+	Tue,  6 Feb 2024 22:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CqUGOr/H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cf/DTIQD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E892F1C292
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 22:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0493F1C29B
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 22:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707257139; cv=none; b=MfHRXakU9sTRd5gWLxshHL1rxWCFAsFqf+qg0OP7LXJQdpcdyXN0YFA+zDFH3Ybi4R7p5hQeKHWJEQa1wUm312Zj3BDMgxbW0SADjZXnVHjNxgfHi1KYeM/wCS5m67+K9OfuE51VLNyKbeBbC0MS/NwwtvLE3x329AeHoFAT8mg=
+	t=1707257143; cv=none; b=OKJM3NOQoWHLb+SRU03KkadRwx3RAjgKBCKjD/Aghj3N5kw7H0fak86MvjQvvkwTbifWL1M2jE4t2FLPwoqve2VOZ7jnqt/y1gir9TSBifxaNeWetOYgjS7ZBshubsdhYFvKzhh8bbUean8pTeSowd+4S0/FQcDMHb+/yucq++M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707257139; c=relaxed/simple;
-	bh=D/TrAhQWAcIDdh/oQnU+KCkH9OnP8LFJRj8yUjQYKhc=;
+	s=arc-20240116; t=1707257143; c=relaxed/simple;
+	bh=DpM4HzfqjDOit5k3hAkHFBsY8yXYvaZc7MIRe8CSyMA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Z8uLwI+B+FyXwgVgJJBJYVEJQDdGocNojxd1TBYj3DNXL2BZczB/K7WDpOLv2YDECBuw4z4CCj3kpCq1uo0vYmUN2BOTToOWgtSpBS8P7LiZilk4m6RnZCbzHcZS3KKkH48PtN1coAl3z/Fdon2sodg7SDEiRNWqcOqT3R58J8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CqUGOr/H; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=n7N6ySFO96o9CPp0lJ3YTgr3TAkhQ74xABx4V/THDcJo+xv2AAJy3Zko+Z/Tuav5gVdd3jzsUkI35aZqK6LNsEJCFxnV8CizFyl8nI82aBtbECIbI2rtCK6uXcr5LmrBM/T8St3gT0+10H0W51pB75dUg7BNENJFWvJtu/8uFdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cf/DTIQD; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d731314e67so96645ad.1
-        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 14:05:37 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e05f6c7f50so5148b3a.3
+        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 14:05:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707257137; x=1707861937; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707257141; x=1707861941; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mCIDfn6Q/Sj02IoZMnsUeC+cwQq+R0K4Vy6avN3EcgA=;
-        b=CqUGOr/HZgmPRetvL5Npy7dbIWlfoLDqskgF9sAUC1g9LDeN1rJhtHSbXsHAv+FRfi
-         ipUrgXx0TRpOWH7amOsfZiqxjcCtvqJqm1+w7hYUs9r8LPCamJZI0T4ZL6nklVG7Nu/c
-         PwRWCoOiewRZv8zOcG2mQm7d2sQdeX3MFsgWmSnsSa+Iy3b3t4iyMiPyKi1bvgWFRQvY
-         HdtySf0aaz0G6x9BvpBDv0PMI3gyC+J6692m6Bak0N6t3BQTSxoYcBzLHl1E3JY1q585
-         b2qLRmS7Jf5BFsqJsVtyz70+OUYw7sTRV91oZtRNg0/rFzdNAPSLQ30w2re7OOIDtNJu
-         FLqw==
+        bh=MsJBrUUPtruHWtQsS6zgKVxqPHg8IzuE7qrpmwhQpng=;
+        b=Cf/DTIQDRmuUZOYoOHria+vEiVNJvjNMP7qKQ4Hal6KH+ltqZFKRzXcTQu85HAy1VZ
+         RtUH6l8teB8w+aPWTJYbnnMmUjbk0nKogDZ2xkYASNmzZvAGaBoG8DJqxhbiJLWuHvXK
+         JKltZmjflCWoQf0tHE4aUrrliG5vLJ/o1XvlLz+vyaXc8ITKLg9eat30RLZ2mjxxJs7/
+         HdYVhtyXBvsrkPtAbMWGQ6/6QwDMySoJT1t6fmixqAneUhJ7FnynnY/Nu8nbA5x/RUdq
+         359iLXL6ADW2CTHaqTPFIVobZCiFLjnqOrrbjSPPtPjMH/B8vcvg0Y6/Tdt/fWKY2X1h
+         MIbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707257137; x=1707861937;
+        d=1e100.net; s=20230601; t=1707257141; x=1707861941;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mCIDfn6Q/Sj02IoZMnsUeC+cwQq+R0K4Vy6avN3EcgA=;
-        b=fdNZ9fK62T1heibyf8TE98ULc/FTRk06+mAld7UJq76i5SFcOyP9d94Z563SfHbqDV
-         ejXTETAfYksqSP8J4bIIs8GCiaD0QtfjcH+MXE18+ipWmsfTwyubAXtxN3UPFz2EAN3t
-         DUnZ35YTCBXBDxew6BkO19C2ib1XiAlg9nFsbufghMgyEMscLI48Xq2x7B5aGIAmxk3C
-         +ZJ//r7U472+m+SOwoDGa8gokh0fvh1pFad1qjZvKZxfS2i9N7yWDl9DRk2PSk+nwBYe
-         paNAxIPZRufAVrLI7BK6lq92/t7PVOEZfCaa/6lCR/SzO100My6OpNfDRYcRjIR6DdOc
-         r9zg==
-X-Gm-Message-State: AOJu0YxYaNtcv5O0n/XF9vBA3izBuFyCzq0CU7fGTPoTYmzREK2Kcw6A
-	MzdAoiX0S9QAb24O0PguxYWuLdmIBHQ3Tb9QwJXhA17KEAsra3VO0qLGNub/
-X-Google-Smtp-Source: AGHT+IFC/8gaSn2ezfySvQY9fE+LjbzC6tGU3b69/lMAgjDuoKzugaxeFxuGwhXQP6FF6XydFy7cZQ==
-X-Received: by 2002:a17:902:d505:b0:1d9:1322:5b0d with SMTP id b5-20020a170902d50500b001d913225b0dmr3444099plg.65.1707257136843;
-        Tue, 06 Feb 2024 14:05:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV0x5GbXUCf5LB0OoOZH0U0NIvJ4KFVm6E2YVqM7e7OdGPW+05tZ5DAXSvvES4yBjccZ+t5IUAp2y3ibsYajhe4yp9SVObP53SFLmqQJAkx7FyJme2n9iRr5USNt4OJlJqM8O2xXtKU+496radnUUCnB5P/KQPT6zgteLeYt5oGrVMYnpbH4/Dh7vDvJGTDyB8HeVf+n7M4FLc534D7uDs7Skwll/6R5u6HMOZl0XgdXeTx12OGxEAN58tNuRpgmiZPbXSDoBOkb+iBJSRun85q1Mu9578UYxyZ
+        bh=MsJBrUUPtruHWtQsS6zgKVxqPHg8IzuE7qrpmwhQpng=;
+        b=SOx1bCxCKsvoBKO/56bA44IXkw1hksThAU2JXyMXXh6Aey8CI20Dt61QYJpXruqdKu
+         MVX9e5J+8Cuwbv2o0hULAkYY26yOBqv02w+4nmsY8nvPxJDBBjEZ7o9RomzOSfBAD4YY
+         t3j7Kyrxev7OjK13AzYeLgX537zQUp1bnkQa4uOrbfsjn8+HuaAzeVSoEXtkX62iMXhz
+         piFr1dd8ny9F5yxkSl4doExQlemWYahptvLp/TSji/hh1Szrs2TCOLrI1lx8Vjs0+q8g
+         SNX0RmYQv69/hOwR8TXlNrixBgV80uSBlnXDTA6HRsTwzfVI3lxolgaWY+1/eV4WFS0n
+         C0RA==
+X-Gm-Message-State: AOJu0YxfI+Tko4fAHSqKj9MFIjGNUKdhIE7iHlA2gb/bbLGZdK2WgzlF
+	/x16fAVy/UQBflKQni15dl2yWSl0UFi/6wajfHhJYcqdaWsntTkeoahURFFL
+X-Google-Smtp-Source: AGHT+IGdHBHn8MfZOBdjDr1wev3fr0slDMYt9TgRf3fpt6EWXX4IriOrk3M4U7i1fJwsabnbpdMnnw==
+X-Received: by 2002:a05:6a21:1798:b0:19e:a1a1:5360 with SMTP id nx24-20020a056a21179800b0019ea1a15360mr1112802pzb.23.1707257141056;
+        Tue, 06 Feb 2024 14:05:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXz5G5HRMjkZjOv6ZNWk6IaBtAGKiStm6/yVXkGspRuSxmD8HC/H4mL6JLFh1XIx4+3PUuzmNG1hY1hX1FugKNofjuX0OghF/O+bK3DIKUNmz9/KnpQdtT8//WXOCO2GXI8KGJN+EmACq9yWmsUXs7bFR9BI0sxDJuQnL9vbW+jHQa5a3qDh4DEh2y7YXrvFIQ58H5MaP8nMeLs3gE0dbpirRALVTKUDLfUP/yiW6/QSk3qNwqYmu3W8DUazqg05AWtkQyQJbdVkyiE0bsIoonUbE2V78dSYFLF
 Received: from localhost.localdomain ([2620:10d:c090:400::4:27bf])
-        by smtp.gmail.com with ESMTPSA id y11-20020a170902e18b00b001d6f29c12f7sm4613pla.135.2024.02.06.14.05.35
+        by smtp.gmail.com with ESMTPSA id sz14-20020a17090b2d4e00b00295b93bfb24sm7888pjb.22.2024.02.06.14.05.39
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 06 Feb 2024 14:05:36 -0800 (PST)
+        Tue, 06 Feb 2024 14:05:40 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -79,9 +79,9 @@ Cc: daniel@iogearbox.net,
 	hannes@cmpxchg.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next 13/16] bpf: Tell bpf programs kernel's PAGE_SIZE
-Date: Tue,  6 Feb 2024 14:04:38 -0800
-Message-Id: <20240206220441.38311-14-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 14/16] bpf: Add helper macro bpf_arena_cast()
+Date: Tue,  6 Feb 2024 14:04:39 -0800
+Message-Id: <20240206220441.38311-15-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
 References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
@@ -95,39 +95,70 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-vmlinux BTF includes all kernel enums.
-Add __PAGE_SIZE = PAGE_SIZE enum, so that bpf programs
-that include vmlinux.h can easily access it.
+Introduce helper macro bpf_arena_cast() that emits:
+rX = rX
+instruction with off = BPF_ARENA_CAST_KERN or off = BPF_ARENA_CAST_USER
+and encodes address_space into imm32.
+
+It's useful with older LLVM that doesn't emit this insn automatically.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../testing/selftests/bpf/bpf_experimental.h  | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 2829077f0461..3aa3f56a4310 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -88,13 +88,18 @@ void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, uns
- 	return NULL;
- }
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index 0d749006d107..e73b7d48439f 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -331,6 +331,47 @@ l_true:												\
+ 	asm volatile("%[reg]=%[reg]"::[reg]"r"((short)var))
+ #endif
  
-+/* tell bpf programs that include vmlinux.h kernel's PAGE_SIZE */
-+enum page_size_enum {
-+	__PAGE_SIZE = PAGE_SIZE
-+};
++/* emit instruction: rX=rX .off = mode .imm32 = address_space */
++#ifndef bpf_arena_cast
++#define bpf_arena_cast(var, mode, addr_space)	\
++	({					\
++	typeof(var) __var = var;		\
++	asm volatile(".byte 0xBF;		\
++		     .ifc %[reg], r0;		\
++		     .byte 0x00;		\
++		     .endif;			\
++		     .ifc %[reg], r1;		\
++		     .byte 0x11;		\
++		     .endif;			\
++		     .ifc %[reg], r2;		\
++		     .byte 0x22;		\
++		     .endif;			\
++		     .ifc %[reg], r3;		\
++		     .byte 0x33;		\
++		     .endif;			\
++		     .ifc %[reg], r4;		\
++		     .byte 0x44;		\
++		     .endif;			\
++		     .ifc %[reg], r5;		\
++		     .byte 0x55;		\
++		     .endif;			\
++		     .ifc %[reg], r6;		\
++		     .byte 0x66;		\
++		     .endif;			\
++		     .ifc %[reg], r7;		\
++		     .byte 0x77;		\
++		     .endif;			\
++		     .ifc %[reg], r8;		\
++		     .byte 0x88;		\
++		     .endif;			\
++		     .ifc %[reg], r9;		\
++		     .byte 0x99;		\
++		     .endif;			\
++		     .short %[off]; .long %[as]"	\
++		     :: [reg]"r"(__var), [off]"i"(mode), [as]"i"(addr_space)); __var; \
++	})
++#endif
 +
- struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flags)
- {
- 	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | gfp_extra_flags);
- 	struct bpf_prog_aux *aux;
- 	struct bpf_prog *fp;
- 
--	size = round_up(size, PAGE_SIZE);
-+	size = round_up(size, __PAGE_SIZE);
- 	fp = __vmalloc(size, gfp_flags);
- 	if (fp == NULL)
- 		return NULL;
+ /* Description
+  *	Assert that a conditional expression is true.
+  * Returns
 -- 
 2.34.1
 
