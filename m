@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E4584BFB8
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 23:05:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C653C84BFC2
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 23:06:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35321C24656
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 22:05:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76E5B281230
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 22:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CA11BDE0;
-	Tue,  6 Feb 2024 22:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6675A1CF8F;
+	Tue,  6 Feb 2024 22:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZFm2OWQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/thiNcO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3911BDE1
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 22:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C011C68A
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 22:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707257112; cv=none; b=MGwlpiA/EeyYwKnWFUJvds6Nuj1I18vOvYLItCS9V1jy2LOGMvJyriwMqBqh+heU5aDedKqOLZw80zAyE8o52eIIUq1p2MGw3ZiCvRRbByxda5v1dUMV5tQe2AuJzvfc3GvrXfVi3dFbVff3ciU9kaBEF3D/1Bn8b89l2Y/vbLc=
+	t=1707257116; cv=none; b=u2LlnPJQ3MEzii0hJObSHP3L1JeQ961zWF9J9DAoiwiUuKuVIHKPsPUsF8eRPs9BIKAw2bPWGy++G5NpVjZ62nNUDZxmOyKcB1+UIGtHkgNyhg5rQWl9GkbXESPo+D/FXHOri3et8/9WGmz4rR3EDSNfBhc1bJpgZnnvbOAW0UU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707257112; c=relaxed/simple;
-	bh=L7zX8SsqUigxmPRtqcJkNCYI2d9YxxxYxslLVW+XN0Q=;
+	s=arc-20240116; t=1707257116; c=relaxed/simple;
+	bh=J1UZVDn6uI5UtDGhH2/mRbk7fjIbvzhRqLYTqIkwRcE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dV/sQhKmeZTijqOwfD6BQtt2CL5Sp59KETuX3n4bEW4URQAXaoUN92XklngBavfIz+2lUtEVWFzCYL5XtLT68S7szX4aiMTFIBa0qoEDhqJvYPbOGf1I0ekNugHlJ/M/8UPAz8PArylprAccIKECniDrlVT53pLrosOqPW9LHrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZFm2OWQ; arc=none smtp.client-ip=209.85.210.174
+	 MIME-Version; b=vASa/WsDG5L8ziWDpxhlD0bdCo8eC2fPDNw55G+xQSJsxHtnBtBxgypIhWFish1p6OufPEFnl4UwYAeuCP2roVjKWQ9U903SKJRllJN4bw9FWszjytctrYjntMUsS5NI7taJ91b8X3L7z23Bi+AizoR61zMcmSQ406sWtVlygDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T/thiNcO; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e065abd351so3882b3a.3
-        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 14:05:10 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2909a632e40so4683520a91.0
+        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 14:05:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707257109; x=1707861909; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707257113; x=1707861913; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6enFVSH9RvXWbj69sDWzp9NqEgt7n2TNQMLPChkoghg=;
-        b=CZFm2OWQZWKls1Eskc725uaecVWlwEth36SARCJvOMiAK7UqaItbtCf5Sv4XKDrkMR
-         V7x0hQJUlKzLZCFd7NuO2ClYVNo7Xo3n4tXCVW22/Y+nlHxkFzZFwOHtZ/BivXf3agPD
-         bhZviTHn59fXnYVaPrpRAYkb9UulrCsq6esNHNld6QSJe7aqzzJgrGfwIKhyNkjFFNqs
-         C/o/u/XvehPhZ/onMljwBKfDrOcHcTFjtVf2tAVk8Yd93GYhU4fYSHWWtwSDsWyGMRIg
-         p8RISotiHHCaZ4RasCu+j3GLbz1cxXIFunl7dUMOa3oNvn0nprDMvWC2Gp4PkexiVrLN
-         YOug==
+        bh=GxmcZQXB6hILUuERStuFRZ0MPT4uFMATBLnu6rXBqLE=;
+        b=T/thiNcOXgEhyEUgcmaRUCDCLqMy+LSsGRa4ywXlH9SovKEdN0mC4gaT45jjhoYZJZ
+         ltGC/b3pzbjHTg8x70a46N5F0RaKDelxHeyhdT7RlhhZj6ia53rZ5ejqTc9gEma9uQd/
+         HULtAg72CK5fiQgitJCSQAsfWoO4qkdlwMOz8I2GZS+TtVWIq2wm3v31mAzRGpjBhSf+
+         WLrijyavBXcHGRW4Bp7Qg/aCHTBQnzRGD7yPa65oCJ4PmclXJm0vU6DtCicEgIFH33B2
+         HZxoQt7bWE3rV/WqzJn2sAQShZQfQ2ToUnmTxMXvY9wCuCXzrZZ/Hw9SMpxTKTGFeorp
+         AUjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707257109; x=1707861909;
+        d=1e100.net; s=20230601; t=1707257113; x=1707861913;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6enFVSH9RvXWbj69sDWzp9NqEgt7n2TNQMLPChkoghg=;
-        b=EuZiFkK7A7WZdW1pKercCX5bLl1DxbekV1r7tHVb8xID3tng3Cy1Xcq70t4EkwJ6Ak
-         qXw+dkp9lKKV2zIQTfsfoBgQInEyIcgp7MplxXlCkVM9j3dwZbtQc8BvQ9siozPhbQ9x
-         IgQj5HOTcZWSKKACQoGjEdyDtpfix2ZTqdvTbgD7TBDIFf6n7pg5gWbmuXZb1Y6h7vks
-         CBsY8b8FNUU3LAgXsUV3Aojmged3u8xeCRSKz2rz4hNostNVwr4SO9nYBDJ4pgVwnXBc
-         p7ZbWTzXAt9aJZESKIyE5TANQFsmyK37vl44S6GZLTjBM5CvxLlWiTpF08VlRwGU87HB
-         TVGQ==
-X-Gm-Message-State: AOJu0Yxj6wkQMDSUX9qVILt8Kr94nEXQ7tefvXfrjh0Yxtwh+Drnqu/9
-	InPPNwC0/XW+q9MVEV3q8ybqVyPW7m/QZQD3Ng6TAEY6xSHyvaH46yeorODf
-X-Google-Smtp-Source: AGHT+IFJTMJzd37fFoOyeiC8Vlz2bibOaLXp0NCvLZHx/AUz1x1BcqEdisFhlYf4KrANb3jkuOV5FQ==
-X-Received: by 2002:a17:90a:fc82:b0:296:a70f:e96b with SMTP id ci2-20020a17090afc8200b00296a70fe96bmr810904pjb.46.1707257109520;
-        Tue, 06 Feb 2024 14:05:09 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWTlE2SqXoxgbHIhq0G2pAApG/U2NZcA5v2musiC9iAqVjKj1tmWN0x2jXiNzl+bSHzBLchN9EcCVA65jMPupfxr+IPyW3uB1BbgGJucFcciAKDPSma9ckJXdxkGwr5dryD0TmNxrXOI2eGFoxgjmbe1V9Glj5vQ9bUH+pRBiCH+njQ0ko5+lmzLDx4II82tzdKWQNT8vvskJIIsUrU5j8iu7kXOy+/2GbiZmkj3OH58FJns8wJnBYFa+KhP1PyQYlDzNsXXw9Uq3cD256jC+iitZhaf55/mvjP
+        bh=GxmcZQXB6hILUuERStuFRZ0MPT4uFMATBLnu6rXBqLE=;
+        b=n8bHtUTdl3BiGMeQbJtekdjTEvdmJOOS+iAZX6ePi7WmB/80CQ7u1MWKxuzMvkjNpL
+         n9VFjjwShCXEKrhbuRYVFbzladGGoIVS2kkGMLWNCezslBDDTM6janofBVdA+NkG6ydu
+         1MGFQ0hk1hoh0EwAzRseREFLnl5qo/b6f0EEe78wcznv2VyFOY3A4MYB5S0isLTTVidb
+         IMj/vKgAUw4f7GCjIt/8bZa7N2rCyVyegu3raJgDULTvZ3T81RzFEW+/1aKRoBjxhWjx
+         d6RlvFAMPhdBshs15R8pAVwgcZJhgBDHnQCKQiPVeBqIz+bYwcWwPeD0LRvmjJLVRPa8
+         4SMg==
+X-Gm-Message-State: AOJu0YypOfjfEGw2Fh8MxHky6wwAU//JAwCKhQrV1gCcRgsZPR91E1GL
+	iUxDv0CPnIQClHxxLemzTgo7uiglqsS1pMQUrJt4ZFXjzWXp+6kS7m++PBXU
+X-Google-Smtp-Source: AGHT+IG8oAHzR3nsr++sOa64aFqWnOY2L1+MMxXsvlNE4aY5ZiS0oyor0jQVKD0uoMrje1RiSvSdsA==
+X-Received: by 2002:a17:90b:350c:b0:296:c1a:f651 with SMTP id ls12-20020a17090b350c00b002960c1af651mr884749pjb.36.1707257113308;
+        Tue, 06 Feb 2024 14:05:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXfwYB7FRrQvWfTk6tEr+uUBGbmaCq7+V+6esU7E5tJSAj1KK9tCNvR2xsEZBB081Xgy46YpR2sEOIbwIiK/1CsFdSNyQsZddCFwiLLxjRVFRaNhwuCFDq191OQ8uonJA+2UerpQK+JRy9zZAlFHa1wanOWMMIS+Hq7SpgXQH9IqaaVBQYUqYpa2d39hQfaUwO1B6BULxhIfZ+C2s4IrW++qdX5AoMMGyC9BAWf+AY6fWAWyCtugRHgQWZ74iaZkRKe4wMe8lkrZkmmvR1EPCVE9kBbPDe3DnDo
 Received: from localhost.localdomain ([2620:10d:c090:400::4:27bf])
-        by smtp.gmail.com with ESMTPSA id pd3-20020a17090b1dc300b00290f9e8b4f9sm2275950pjb.46.2024.02.06.14.05.07
+        by smtp.gmail.com with ESMTPSA id li4-20020a17090b48c400b00296b2f99946sm7168pjb.30.2024.02.06.14.05.11
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 06 Feb 2024 14:05:09 -0800 (PST)
+        Tue, 06 Feb 2024 14:05:12 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -79,9 +79,9 @@ Cc: daniel@iogearbox.net,
 	hannes@cmpxchg.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next 06/16] bpf: Add x86-64 JIT support for PROBE_MEM32 pseudo instructions.
-Date: Tue,  6 Feb 2024 14:04:31 -0800
-Message-Id: <20240206220441.38311-7-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 07/16] bpf: Add x86-64 JIT support for bpf_cast_user instruction.
+Date: Tue,  6 Feb 2024 14:04:32 -0800
+Message-Id: <20240206220441.38311-8-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
 References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
@@ -95,334 +95,140 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW] instructions.
-They are similar to PROBE_MEM instructions with the following differences:
-- PROBE_MEM has to check that the address is in the kernel range with
-  src_reg + insn->off >= TASK_SIZE_MAX + PAGE_SIZE check
-- PROBE_MEM doesn't support store
-- PROBE_MEM32 relies on the verifier to clear upper 32-bit in the register
-- PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in %r12 in the prologue)
-  Due to bpf_arena constructions such %r12 + %reg + off16 access is guaranteed
-  to be within arena virtual range, so no address check at run-time.
-- PROBE_MEM32 allows STX and ST. If they fault the store is a nop.
-  When LDX faults the destination register is zeroed.
+LLVM generates bpf_cast_kern and bpf_cast_user instructions while translating
+pointers with __attribute__((address_space(1))).
+
+rX = cast_kern(rY) is processed by the verifier and converted to
+normal 32-bit move: wX = wY
+
+bpf_cast_user has to be converted by JIT.
+
+rX = cast_user(rY) is
+
+aux_reg = upper_32_bits of arena->user_vm_start
+aux_reg <<= 32
+wX = wY // clear upper 32 bits of dst register
+if (wX) // if not zero add upper bits of user_vm_start
+  wX |= aux_reg
+
+JIT can do it more efficiently:
+
+mov dst_reg32, src_reg32  // 32-bit move
+shl dst_reg, 32
+or dst_reg, user_vm_start
+rol dst_reg, 32
+xor r11, r11
+test dst_reg32, dst_reg32 // check if lower 32-bit are zero
+cmove r11, dst_reg	  // if so, set dst_reg to zero
+			  // Intel swapped src/dst register encoding in CMOVcc
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 183 +++++++++++++++++++++++++++++++++++-
- include/linux/bpf.h         |   1 +
- include/linux/filter.h      |   3 +
- 3 files changed, 186 insertions(+), 1 deletion(-)
+ arch/x86/net/bpf_jit_comp.c | 41 ++++++++++++++++++++++++++++++++++++-
+ include/linux/filter.h      |  1 +
+ kernel/bpf/core.c           |  5 +++++
+ 3 files changed, 46 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index e1390d1e331b..883b7f604b9a 100644
+index 883b7f604b9a..a042ed57af7b 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -113,6 +113,7 @@ static int bpf_size_to_x86_bytes(int bpf_size)
- /* Pick a register outside of BPF range for JIT internal work */
- #define AUX_REG (MAX_BPF_JIT_REG + 1)
- #define X86_REG_R9 (MAX_BPF_JIT_REG + 2)
-+#define X86_REG_R12 (MAX_BPF_JIT_REG + 3)
- 
- /*
-  * The following table maps BPF registers to x86-64 registers.
-@@ -139,6 +140,7 @@ static const int reg2hex[] = {
- 	[BPF_REG_AX] = 2, /* R10 temp register */
- 	[AUX_REG] = 3,    /* R11 temp register */
- 	[X86_REG_R9] = 1, /* R9 register, 6th function argument */
-+	[X86_REG_R12] = 4, /* R12 callee saved */
- };
- 
- static const int reg2pt_regs[] = {
-@@ -167,6 +169,7 @@ static bool is_ereg(u32 reg)
- 			     BIT(BPF_REG_8) |
- 			     BIT(BPF_REG_9) |
- 			     BIT(X86_REG_R9) |
-+			     BIT(X86_REG_R12) |
- 			     BIT(BPF_REG_AX));
- }
- 
-@@ -205,6 +208,17 @@ static u8 add_2mod(u8 byte, u32 r1, u32 r2)
- 	return byte;
- }
- 
-+static u8 add_3mod(u8 byte, u32 r1, u32 r2, u32 index)
-+{
-+	if (is_ereg(r1))
-+		byte |= 1;
-+	if (is_ereg(index))
-+		byte |= 2;
-+	if (is_ereg(r2))
-+		byte |= 4;
-+	return byte;
-+}
-+
- /* Encode 'dst_reg' register into x86-64 opcode 'byte' */
- static u8 add_1reg(u8 byte, u32 dst_reg)
- {
-@@ -887,6 +901,18 @@ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
- 	*pprog = prog;
- }
- 
-+static void emit_insn_suffix_SIB(u8 **pprog, u32 ptr_reg, u32 val_reg, u32 index_reg, int off)
-+{
-+	u8 *prog = *pprog;
-+
-+	if (is_imm8(off)) {
-+		EMIT3(add_2reg(0x44, BPF_REG_0, val_reg), add_2reg(0, ptr_reg, index_reg) /* SIB */, off);
-+	} else {
-+		EMIT2_off32(add_2reg(0x84, BPF_REG_0, val_reg), add_2reg(0, ptr_reg, index_reg) /* SIB */, off);
-+	}
-+	*pprog = prog;
-+}
-+
- /*
-  * Emit a REX byte if it will be necessary to address these registers
-  */
-@@ -968,6 +994,37 @@ static void emit_ldsx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- 	*pprog = prog;
- }
- 
-+static void emit_ldx_index(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, u32 index_reg, int off)
-+{
-+	u8 *prog = *pprog;
-+
-+	switch (size) {
-+	case BPF_B:
-+		/* movzx rax, byte ptr [rax + r12 + off] */
-+		EMIT3(add_3mod(0x40, src_reg, dst_reg, index_reg), 0x0F, 0xB6);
-+		break;
-+	case BPF_H:
-+		/* movzx rax, word ptr [rax + r12 + off] */
-+		EMIT3(add_3mod(0x40, src_reg, dst_reg, index_reg), 0x0F, 0xB7);
-+		break;
-+	case BPF_W:
-+		/* mov eax, dword ptr [rax + r12 + off] */
-+		EMIT2(add_3mod(0x40, src_reg, dst_reg, index_reg), 0x8B);
-+		break;
-+	case BPF_DW:
-+		/* mov rax, qword ptr [rax + r12 + off] */
-+		EMIT2(add_3mod(0x48, src_reg, dst_reg, index_reg), 0x8B);
-+		break;
-+	}
-+	emit_insn_suffix_SIB(&prog, src_reg, dst_reg, index_reg, off);
-+	*pprog = prog;
-+}
-+
-+static void emit_ldx_r12(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
-+{
-+	emit_ldx_index(pprog, size, dst_reg, src_reg, X86_REG_R12, off);
-+}
-+
- /* STX: *(u8*)(dst_reg + off) = src_reg */
- static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- {
-@@ -1002,6 +1059,71 @@ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- 	*pprog = prog;
- }
- 
-+/* STX: *(u8*)(dst_reg + index_reg + off) = src_reg */
-+static void emit_stx_index(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, u32 index_reg, int off)
-+{
-+	u8 *prog = *pprog;
-+
-+	switch (size) {
-+	case BPF_B:
-+		/* mov byte ptr [rax + r12 + off], al */
-+		EMIT2(add_3mod(0x40, dst_reg, src_reg, index_reg), 0x88);
-+		break;
-+	case BPF_H:
-+		/* mov word ptr [rax + r12 + off], ax */
-+		EMIT3(0x66, add_3mod(0x40, dst_reg, src_reg, index_reg), 0x89);
-+		break;
-+	case BPF_W:
-+		/* mov dword ptr [rax + r12 + 1], eax */
-+		EMIT2(add_3mod(0x40, dst_reg, src_reg, index_reg), 0x89);
-+		break;
-+	case BPF_DW:
-+		/* mov qword ptr [rax + r12 + 1], rax */
-+		EMIT2(add_3mod(0x48, dst_reg, src_reg, index_reg), 0x89);
-+		break;
-+	}
-+	emit_insn_suffix_SIB(&prog, dst_reg, src_reg, index_reg, off);
-+	*pprog = prog;
-+}
-+
-+static void emit_stx_r12(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
-+{
-+	emit_stx_index(pprog, size, dst_reg, src_reg, X86_REG_R12, off);
-+}
-+
-+/* ST: *(u8*)(dst_reg + index_reg + off) = imm32 */
-+static void emit_st_index(u8 **pprog, u32 size, u32 dst_reg, u32 index_reg, int off, int imm)
-+{
-+	u8 *prog = *pprog;
-+
-+	switch (size) {
-+	case BPF_B:
-+		/* mov byte ptr [rax + r12 + off], imm8 */
-+		EMIT2(add_3mod(0x40, dst_reg, 0, index_reg), 0xC6);
-+		break;
-+	case BPF_H:
-+		/* mov word ptr [rax + r12 + off], imm16 */
-+		EMIT3(0x66, add_3mod(0x40, dst_reg, 0, index_reg), 0xC7);
-+		break;
-+	case BPF_W:
-+		/* mov dword ptr [rax + r12 + 1], imm32 */
-+		EMIT2(add_3mod(0x40, dst_reg, 0, index_reg), 0xC7);
-+		break;
-+	case BPF_DW:
-+		/* mov qword ptr [rax + r12 + 1], imm32 */
-+		EMIT2(add_3mod(0x48, dst_reg, 0, index_reg), 0xC7);
-+		break;
-+	}
-+	emit_insn_suffix_SIB(&prog, dst_reg, 0, index_reg, off);
-+	EMIT(imm, bpf_size_to_x86_bytes(size));
-+	*pprog = prog;
-+}
-+
-+static void emit_st_r12(u8 **pprog, u32 size, u32 dst_reg, int off, int imm)
-+{
-+	emit_st_index(pprog, size, dst_reg, X86_REG_R12, off, imm);
-+}
-+
- static int emit_atomic(u8 **pprog, u8 atomic_op,
- 		       u32 dst_reg, u32 src_reg, s16 off, u8 bpf_size)
- {
-@@ -1043,12 +1165,15 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
- 	return 0;
- }
- 
-+#define DONT_CLEAR 1
-+
- bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
- {
- 	u32 reg = x->fixup >> 8;
- 
- 	/* jump over faulting load and clear dest register */
--	*(unsigned long *)((void *)regs + reg) = 0;
-+	if (reg != DONT_CLEAR)
-+		*(unsigned long *)((void *)regs + reg) = 0;
- 	regs->ip += x->fixup & 0xff;
- 	return true;
- }
-@@ -1147,11 +1272,14 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+@@ -1272,13 +1272,14 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
  	bool tail_call_seen = false;
  	bool seen_exit = false;
  	u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
-+	u64 arena_vm_start;
+-	u64 arena_vm_start;
++	u64 arena_vm_start, user_vm_start;
  	int i, excnt = 0;
  	int ilen, proglen = 0;
  	u8 *prog = temp;
  	int err;
  
-+	arena_vm_start = bpf_arena_get_kern_vm_start(bpf_prog->aux->arena);
-+
+ 	arena_vm_start = bpf_arena_get_kern_vm_start(bpf_prog->aux->arena);
++	user_vm_start = bpf_arena_get_user_vm_start(bpf_prog->aux->arena);
+ 
  	detect_reg_usage(insn, insn_cnt, callee_regs_used,
  			 &tail_call_seen);
- 
-@@ -1172,8 +1300,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
- 		push_r12(&prog);
- 		push_callee_regs(&prog, all_callee_regs_used);
- 	} else {
-+		if (arena_vm_start)
-+			push_r12(&prog);
- 		push_callee_regs(&prog, callee_regs_used);
- 	}
-+	if (arena_vm_start)
-+		emit_mov_imm64(&prog, X86_REG_R12,
-+			       arena_vm_start >> 32, (u32) arena_vm_start);
- 
- 	ilen = prog - temp;
- 	if (rw_image)
-@@ -1564,6 +1697,52 @@ st:			if (is_imm8(insn->off))
- 			emit_stx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
+@@ -1346,6 +1347,39 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
  			break;
  
-+		case BPF_ST | BPF_PROBE_MEM32 | BPF_B:
-+		case BPF_ST | BPF_PROBE_MEM32 | BPF_H:
-+		case BPF_ST | BPF_PROBE_MEM32 | BPF_W:
-+		case BPF_ST | BPF_PROBE_MEM32 | BPF_DW:
-+			start_of_ldx = prog;
-+			emit_st_r12(&prog, BPF_SIZE(insn->code), dst_reg, insn->off, insn->imm);
-+			goto populate_extable;
+ 		case BPF_ALU64 | BPF_MOV | BPF_X:
++			if (insn->off == BPF_ARENA_CAST_USER) {
++				if (dst_reg != src_reg)
++					/* 32-bit mov */
++					emit_mov_reg(&prog, false, dst_reg, src_reg);
++				/* shl dst_reg, 32 */
++				maybe_emit_1mod(&prog, dst_reg, true);
++				EMIT3(0xC1, add_1reg(0xE0, dst_reg), 32);
 +
-+			/* LDX: dst_reg = *(u8*)(src_reg + r12 + off) */
-+		case BPF_LDX | BPF_PROBE_MEM32 | BPF_B:
-+		case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
-+		case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
-+		case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
-+		case BPF_STX | BPF_PROBE_MEM32 | BPF_B:
-+		case BPF_STX | BPF_PROBE_MEM32 | BPF_H:
-+		case BPF_STX | BPF_PROBE_MEM32 | BPF_W:
-+		case BPF_STX | BPF_PROBE_MEM32 | BPF_DW:
-+			start_of_ldx = prog;
-+			if (BPF_CLASS(insn->code) == BPF_LDX)
-+				emit_ldx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
-+			else
-+				emit_stx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
-+populate_extable:
-+			{
-+				struct exception_table_entry *ex;
-+				u8 *_insn = image + proglen + (start_of_ldx - temp);
-+				s64 delta;
++				/* or dst_reg, user_vm_start */
++				maybe_emit_1mod(&prog, dst_reg, true);
++				if (is_axreg(dst_reg))
++					EMIT1_off32(0x0D,  user_vm_start >> 32);
++				else
++					EMIT2_off32(0x81, add_1reg(0xC8, dst_reg),  user_vm_start >> 32);
 +
-+				if (!bpf_prog->aux->extable)
-+					break;
++				/* rol dst_reg, 32 */
++				maybe_emit_1mod(&prog, dst_reg, true);
++				EMIT3(0xC1, add_1reg(0xC0, dst_reg), 32);
 +
-+				ex = &bpf_prog->aux->extable[excnt++];
++				/* xor r11, r11 */
++				EMIT3(0x4D, 0x31, 0xDB);
 +
-+				delta = _insn - (u8 *)&ex->insn;
-+				/* switch ex to rw buffer for writes */
-+				ex = (void *)rw_image + ((void *)ex - (void *)image);
++				/* test dst_reg32, dst_reg32; check if lower 32-bit are zero */
++				maybe_emit_mod(&prog, dst_reg, dst_reg, false);
++				EMIT2(0x85, add_2reg(0xC0, dst_reg, dst_reg));
 +
-+				ex->insn = delta;
-+
-+				ex->data = EX_TYPE_BPF;
-+
-+				ex->fixup = (prog - start_of_ldx) |
-+					((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[dst_reg] : DONT_CLEAR) << 8);
++				/* cmove r11, dst_reg; if so, set dst_reg to zero */
++				/* WARNING: Intel swapped src/dst register encoding in CMOVcc !!! */
++				maybe_emit_mod(&prog, AUX_REG, dst_reg, true);
++				EMIT3(0x0F, 0x44, add_2reg(0xC0, AUX_REG, dst_reg));
++				break;
 +			}
-+			break;
++			fallthrough;
+ 		case BPF_ALU | BPF_MOV | BPF_X:
+ 			if (insn->off == 0)
+ 				emit_mov_reg(&prog,
+@@ -3424,6 +3458,11 @@ void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
+ 	}
+ }
+ 
++bool bpf_jit_supports_arena(void)
++{
++	return true;
++}
 +
- 			/* LDX: dst_reg = *(u8*)(src_reg + off) */
- 		case BPF_LDX | BPF_MEM | BPF_B:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-@@ -2036,6 +2215,8 @@ st:			if (is_imm8(insn->off))
- 				pop_r12(&prog);
- 			} else {
- 				pop_callee_regs(&prog, callee_regs_used);
-+				if (arena_vm_start)
-+					pop_r12(&prog);
- 			}
- 			EMIT1(0xC9);         /* leave */
- 			emit_return(&prog, image + addrs[i - 1] + (prog - temp));
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 42f22bc881f0..a0d737bb86d1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1460,6 +1460,7 @@ struct bpf_prog_aux {
- 	bool xdp_has_frags;
- 	bool exception_cb;
- 	bool exception_boundary;
-+	struct bpf_arena *arena;
- 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
- 	const struct btf_type *attach_func_proto;
- 	/* function name for valid attach_btf_id */
+ bool bpf_jit_supports_ptr_xchg(void)
+ {
+ 	return true;
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index fee070b9826e..cd76d43412d0 100644
+index cd76d43412d0..78ea63002531 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -72,6 +72,9 @@ struct ctl_table_header;
- /* unused opcode to mark special ldsx instruction. Same as BPF_IND */
- #define BPF_PROBE_MEMSX	0x40
+@@ -959,6 +959,7 @@ bool bpf_jit_supports_kfunc_call(void);
+ bool bpf_jit_supports_far_kfunc_call(void);
+ bool bpf_jit_supports_exceptions(void);
+ bool bpf_jit_supports_ptr_xchg(void);
++bool bpf_jit_supports_arena(void);
+ void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
+ bool bpf_helper_changes_pkt_data(void *func);
  
-+/* unused opcode to mark special load instruction. Same as BPF_MSH */
-+#define BPF_PROBE_MEM32	0xa0
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 2539d9bfe369..2829077f0461 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2926,6 +2926,11 @@ bool __weak bpf_jit_supports_far_kfunc_call(void)
+ 	return false;
+ }
+ 
++bool __weak bpf_jit_supports_arena(void)
++{
++	return false;
++}
 +
- /* unused opcode to mark call to interpreter with arguments */
- #define BPF_CALL_ARGS	0xe0
- 
+ /* Return TRUE if the JIT backend satisfies the following two conditions:
+  * 1) JIT backend supports atomic_xchg() on pointer-sized words.
+  * 2) Under the specific arch, the implementation of xchg() is the same
 -- 
 2.34.1
 
