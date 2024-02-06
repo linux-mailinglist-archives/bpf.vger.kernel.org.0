@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-21261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04F484AB14
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 01:22:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E0D84AB22
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 01:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BD522890C2
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 00:22:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77254B242C6
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 00:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFDC1109;
-	Tue,  6 Feb 2024 00:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217E5EC7;
+	Tue,  6 Feb 2024 00:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZBIhhHAG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UFVQjpBe"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC829ECE
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 00:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991CA1361
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 00:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707178965; cv=none; b=ch0gRulkFdh0bZxa50xy+0IxiTuscpm8g6VVvixu6MyVAf33kO/s6iZoXvVcAaIN01Im9OHXAvQ3ZtLtLOO6XuAFjr4X5NlUAocP1AmrSd+bVKwUwU51NSI4wH16/YFneYumq/Bj0SVNTCJ6RGwIIJDz0pguSQFazTTf4VkHST8=
+	t=1707180012; cv=none; b=V3zqB8fSWVMFAuQPo/ydbDG2CwnKscnckJLdf96TxGKC3YqnYqbSPFLkdyRCmDozSI9ZH+Q8l9UfJ6TmC4dWBXY/G/qqrZk4wFdpxlMVdADy6etCK/GY5jLWpEyndc3zoXi2fWl3gPXtloqfONzjlijLoij0ho1NtgzIe+jn9W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707178965; c=relaxed/simple;
-	bh=xXm1Ba6E4s/Yxbh83u7nS3rODDJlquPCKY1CkVqOjDM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PRcHYgoHsEvqZZZ0slPPTi7/5EITgSitq9dqIWQ2j44TeqcDPTMukMG/QS/sGg0l/9k8Nm7oaT8wwcGq7MmUsLPBZEmnuMzXxpdN9stjyHvRemRMc/ir6vlNdZy80n5NAkO4EIo7t3MMi7soMOE+K0/xUj7ryx3oM4VqxGwzXyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZBIhhHAG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42C07C433C7;
-	Tue,  6 Feb 2024 00:22:45 +0000 (UTC)
+	s=arc-20240116; t=1707180012; c=relaxed/simple;
+	bh=d+dAUvYjS9Cx1eJu59JGi3qtAxWmlx4VTWpA7QIt1sA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aHQhTgsq/3ovThF3EsYVM0COiI+w8eP01u2dFhWCRHBifyeziuueFxIRSj1QoWYR0iZXbooFyBiQA35kJbO1rp6tYxHHGzMJcvd9Bwp/TF7nmr8pxL+OTWqk7duiRCpRlToEG0l3nlDmY26CPT54L3NaHJCkA0idS0T8IJoMnUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UFVQjpBe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA6FC433F1;
+	Tue,  6 Feb 2024 00:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707178965;
-	bh=xXm1Ba6E4s/Yxbh83u7nS3rODDJlquPCKY1CkVqOjDM=;
+	s=k20201202; t=1707180012;
+	bh=d+dAUvYjS9Cx1eJu59JGi3qtAxWmlx4VTWpA7QIt1sA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=ZBIhhHAGwNhTdUix8t83OFr9Q3Dm7fC5jWIFbTBwko10rv7sFtdMqskxyjfhaPAhp
-	 Qu8FqMUhWPz3+0A39LUESKQJHUwLrvyBJupTbhP7qjcbrxu9yZx9PR8ebcIX/LUzZS
-	 d7pndHeS40KHqMTzNuGbwFUxuMSC6/a0N3JeH/kxWY374J3Vdktpd+MZiq/AGs3a+x
-	 SOjk+0fXyvkTo2q7ssVx+a58A6boQaSiNKKYuoWQNhAN7JM8fcKXPudtwUc8JCATFN
-	 GIwrt6AscODr/wOjagfEBbxmi59DTEXzd9eDBv9uczEfT8B0Givaweii2b/ixZRZef
-	 4+wWxuXU+jeWQ==
+	b=UFVQjpBeD/LJXppHkedUwoMy9SwPI4XbeQnXN38ZqrrhHXbkHnc/UWodG1uZoiA3t
+	 IxOPpkFLxDEKzCi2fTzZSbNnQKRkSyWLRx2KGmsSUYvPIg+x4VByGv7ufKYELW6Lwi
+	 xInw8zozI0VXb1E/GQwXy+/CwAeoGDftbedK5ZW3zlPjIJKD1wUJ0ZIr/aMipGUfRl
+	 0eTjBZk9VgkTFPV3DKNp2+iplLpr7zXhkz3nNxvMtkVgKzV7G1tBxDfMKixp7Hgs+a
+	 WZgb+Tg6vt515mIdFdzM0T/4CB1PKoNq/WiPszxMS1fvyE1SBYVRvAo0ceiiOXwf/+
+	 FM1EUO6kVXQdw==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -47,9 +47,9 @@ To: bpf@vger.kernel.org,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next] libbpf: fix return value for PERF_EVENT __arg_ctx type fix up check
-Date: Mon,  5 Feb 2024 16:22:43 -0800
-Message-Id: <20240206002243.1439450-1-andrii@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: mark dynptr kfuncs __weak to make them optional on old kernels
+Date: Mon,  5 Feb 2024 16:40:08 -0800
+Message-Id: <20240206004008.1541513-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -59,41 +59,79 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If PERF_EVENT program has __arg_ctx argument with matching
-architecture-specific pt_regs/user_pt_regs/user_regs_struct pointer
-type, libbpf should still perform type rewrite for old kernels, but not
-emit the warning. Fix copy/paste from kernel code where 0 is meant to
-signify "no error" condition. For libbpf we need to return "true" to
-proceed with type rewrite (which for PERF_EVENT program will be
-a canonical `struct bpf_perf_event_data *` type).
+Mark dynptr kfuncs as __weak to allow
+verifier_global_subprogs/arg_ctx_{perf,kprobe,raw_tp} subtests to be
+loadable on old kernels. Because bpf_dynptr_from_xdp() kfunc is used
+from arg_tag_dynptr BPF program in progs/verifier_global_subprogs.c
+*and* is not marked as __weak, loading any subtest from
+verifier_global_subprogs fails on old kernels that don't have
+bpf_dynptr_from_xdp() kfunc defined. Even if arg_tag_dynptr program
+itself is not loaded, libbpf bails out on non-weak reference to
+bpf_dynptr_from_xdp (that can't be resolved), which shared across all
+programs in progs/verifier_global_subprogs.c.
 
-Fixes: 9eea8fafe33e ("libbpf: fix __arg_ctx type enforcement for perf_event programs")
+So mark all dynptr-related kfuncs as __weak to unblock libbpf CI ([0]).
+In the upcoming "kfunc in vmlinux.h" work we should make sure that
+kfuncs are always declared __weak as well.
+
+  [0] https://github.com/libbpf/libbpf/actions/runs/7792673215/job/21251250831?pr=776#step:4:7961
+
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/bpf_kfuncs.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6932f2c4ddfd..01f407591a92 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6404,13 +6404,13 @@ static bool need_func_arg_type_fixup(const struct btf *btf, const struct bpf_pro
- 	case BPF_PROG_TYPE_PERF_EVENT:
- 		if (__builtin_types_compatible_p(bpf_user_pt_regs_t, struct pt_regs) &&
- 		    btf_is_struct(t) && strcmp(tname, "pt_regs") == 0)
--			return 0;
-+			return true;
- 		if (__builtin_types_compatible_p(bpf_user_pt_regs_t, struct user_pt_regs) &&
- 		    btf_is_struct(t) && strcmp(tname, "user_pt_regs") == 0)
--			return 0;
-+			return true;
- 		if (__builtin_types_compatible_p(bpf_user_pt_regs_t, struct user_regs_struct) &&
- 		    btf_is_struct(t) && strcmp(tname, "user_regs_struct") == 0)
--			return 0;
-+			return true;
- 		break;
- 	case BPF_PROG_TYPE_RAW_TRACEPOINT:
- 	case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
+diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
+index 0cd4111f954c..14ebe7d9e1a3 100644
+--- a/tools/testing/selftests/bpf/bpf_kfuncs.h
++++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+@@ -9,7 +9,7 @@ struct bpf_sock_addr_kern;
+  *  Error code
+  */
+ extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
+-    struct bpf_dynptr *ptr__uninit) __ksym;
++    struct bpf_dynptr *ptr__uninit) __ksym __weak;
+ 
+ /* Description
+  *  Initializes an xdp-type dynptr
+@@ -17,7 +17,7 @@ extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
+  *  Error code
+  */
+ extern int bpf_dynptr_from_xdp(struct xdp_md *xdp, __u64 flags,
+-			       struct bpf_dynptr *ptr__uninit) __ksym;
++			       struct bpf_dynptr *ptr__uninit) __ksym __weak;
+ 
+ /* Description
+  *  Obtain a read-only pointer to the dynptr's data
+@@ -26,7 +26,7 @@ extern int bpf_dynptr_from_xdp(struct xdp_md *xdp, __u64 flags,
+  *  buffer if unable to obtain a direct pointer
+  */
+ extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u32 offset,
+-			      void *buffer, __u32 buffer__szk) __ksym;
++			      void *buffer, __u32 buffer__szk) __ksym __weak;
+ 
+ /* Description
+  *  Obtain a read-write pointer to the dynptr's data
+@@ -35,13 +35,13 @@ extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u32 offset,
+  *  buffer if unable to obtain a direct pointer
+  */
+ extern void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *ptr, __u32 offset,
+-			      void *buffer, __u32 buffer__szk) __ksym;
++			      void *buffer, __u32 buffer__szk) __ksym __weak;
+ 
+-extern int bpf_dynptr_adjust(const struct bpf_dynptr *ptr, __u32 start, __u32 end) __ksym;
+-extern bool bpf_dynptr_is_null(const struct bpf_dynptr *ptr) __ksym;
+-extern bool bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym;
+-extern __u32 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym;
+-extern int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clone__init) __ksym;
++extern int bpf_dynptr_adjust(const struct bpf_dynptr *ptr, __u32 start, __u32 end) __ksym __weak;
++extern bool bpf_dynptr_is_null(const struct bpf_dynptr *ptr) __ksym __weak;
++extern bool bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym __weak;
++extern __u32 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym __weak;
++extern int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clone__init) __ksym __weak;
+ 
+ /* Description
+  *  Modify the address of a AF_UNIX sockaddr.
 -- 
 2.34.1
 
