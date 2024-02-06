@@ -1,108 +1,133 @@
-Return-Path: <bpf+bounces-21277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 844F584AD81
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 05:33:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B818A84ADB5
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 05:52:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17BC6B2431B
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 04:33:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAB0B1C23240
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 04:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA1477F31;
-	Tue,  6 Feb 2024 04:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A467577634;
+	Tue,  6 Feb 2024 04:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="LCd02Lyh"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="m5cmLE0I"
 X-Original-To: bpf@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA70F77F09;
-	Tue,  6 Feb 2024 04:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D335E1E492
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 04:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707193996; cv=none; b=pCT60ZqaoQjnVw18eAFLkxaraRiuBxGLRMDtoNEFhiTVBSM7SUxRp9x2Z8zwYN23oDUFVehJZo9a8e1gaU/G73qimyq17KgYQEJZTIIhMxqnyAJJQ6Ka/8z7s72HPq6I10kxBMe7Nn2dnOKUTIjVUxVMPdxNLZEr7DiM1ONs9Cs=
+	t=1707195113; cv=none; b=k02nOQqWo3Xxlztaq+35IWk3uLwdyJen/CE7sLDwYy1f7r5MFnFZcFDyG/+3CxAkW43fonUB7jF0Ff1hO53TX3MaVOnIBerVzusoiNqQJmB5crNZNeFWZ4/SvdLyV/bt+Vv4sXB1IxdcW1cndwvCWVsUnVNbJNNP5mNye0ZjoDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707193996; c=relaxed/simple;
-	bh=0uR3n4fttqT1p7FWfc0C3esoKe9BC2WmZ1XoiTJeJ28=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=R3IjwMFV82COSeqaIVV4aq92W/dwKeNfTPfjt8gHUJOOri7Q9MKhQm+Ph+4UV+e78klh4YfRLpQmjy8iwL3IIy3z3bZFS+ATl/cXnyAQ376fHGVAWzfube1rfe+UK+GKt3CWqq5J20eFJfEJsLL09EUfh7zfsj/038wNqysYDS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=LCd02Lyh; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707193983;
-	bh=f7gSZSLZ5vY/ihKDYbvdOhv83urdobxkXG0WjH3jFAo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=LCd02Lyh3kooDWmhYNfLt1CNF1Wf07AidYzWYIV8Zj2ui96QEykO3WLm1n68cgEp4
-	 qnelsOKpmffPpJzCw+Dl+VV9uK17vXxD1J4suy9Rzea7HfGhhC7QCZ8P8corERie9o
-	 NJFSNXfrT0lkdyqyT4p0c5F0OmPbpCNgg40f1YD8fwQsFl6Pz8HoDtpLCWs1KTRHmy
-	 d/YG1jzVbE96YF01eiWjH9esZ6J2Rwfh++eVPlufalHVW7ouuPYwgHolvH5DYOGuzM
-	 AYFCa9zoUOxc9gc3B4qDdQ1rhQKfU6vHhkt18j4YVT3t4XUQ1RDfUw45DWFQN/dSGV
-	 kGTh3YS5XW/Ag==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTVjV6Ctcz4wxx;
-	Tue,  6 Feb 2024 15:33:02 +1100 (AEDT)
-Date: Tue, 6 Feb 2024 15:33:01 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Cc: Dave Thaler <dthaler1968@gmail.com>, Dave Thaler
- <dthaler1968@googlemail.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the bpf-next tree
-Message-ID: <20240206153301.4ead0bad@canb.auug.org.au>
+	s=arc-20240116; t=1707195113; c=relaxed/simple;
+	bh=GgemygxAyUqgqORqzkyrbDeQUvo0EJdEvXWt7SZe05A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MGTDN7w+7TeSjgOPgept4RJzfNMPa8Kb6X9n/PhqBMNUK2u9aVRrWp55UoFW0m+hW/DSxbGovOYkJY4QhZe7eNtNKqGEFA1AijmhTG84mTz2M5D+MvCXyqJZbe/7P59kgQdtSX053w48BZ4tuecbimyP2NHjSfV1NGifU9jLxZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=m5cmLE0I; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d8ef977f1eso39308495ad.0
+        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 20:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1707195111; x=1707799911; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JhFREGZ5CoepqB+/CwW4U3bJPSdUrEAa1K7KoVJ2+o=;
+        b=m5cmLE0IfKepqSZF/U0OWk/G6rhhlFerlZvGvrk1+3ZYnJVUOjGOfQbbvkvMQDOJYA
+         xAm0ckY0HubEj3YUrv441QJiDcr8Kbp3x54Dh3Hbt1bpfWTx7plRiSGJbWuZddfHgyTw
+         MbGLhJXE4vgxYLQUuNc5TML2RNC2fHVfTFymcFzLeDaIHbSz6CSL8s1laT1/z79iS6i5
+         6AEKMNuiIBngEuD1LesVmmwcS6i9HQK83zSJ2XhVgyRbbTvdP7gudjMX8uPu2jWjqeJg
+         GyniACDim7ECaS9VmXab2STh+07Mj1RkgB/tDSl72NJnYxmxYFcPANJI5j15AUbrJcM+
+         nW5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707195111; x=1707799911;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9JhFREGZ5CoepqB+/CwW4U3bJPSdUrEAa1K7KoVJ2+o=;
+        b=anRbYmOKLrhO1pzFwlcHL8fj4nGr3/hX/rhtPitly15WqdwxYeLeC9gMcGrR6Svrj1
+         PXr+X5bEsqtwc/AO1Jnm0PnisCV2oWJx/dlbyAKeqd3m5ZmQMQ+RlJU6n4ZtdnaFkC2Z
+         Bnj0G34Aim8AGH0teGy/fZUYTtA5BMLuE8JmAqLXe6NdC2r4nID+h6rN0919DOR93+B1
+         4QTQECrR5u/oFFyEDql9JL7Chc5AzkOU3yCfATpNr6CpmM4o97AEiUBwNwRPeIz311y5
+         2yIDLJ0OrV4Ir+EqEg4TYJh553fKpDmjcLLfUJxgd1kV++/nXGIL46Wm4tDvDKaTfSvO
+         UEhA==
+X-Gm-Message-State: AOJu0YzSKBCxQNeNRDdFK51qgr3OVOsE1AS6B2NLrQWYWn2qR9br2Yaj
+	Yn0rm6ga0/uY/hIaseX5IK2Lc4oGKyscTGOLhiyFw5phdmn7TcC90+DVI81RRUI=
+X-Google-Smtp-Source: AGHT+IGRmGV2YTayw8tiNwViDSwnb7ENVvumW4Q0sZ8buS1BrLW3DyCvv0saNmMxAqGpr+FG6X5EVQ==
+X-Received: by 2002:a17:903:192:b0:1d9:9735:ed6c with SMTP id z18-20020a170903019200b001d99735ed6cmr617892plg.14.1707195110770;
+        Mon, 05 Feb 2024 20:51:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVGhy+jWQnRvlKs6iECCYvXm5EcplOULkxws/eS8yjzhG90Pk44O/C7u5mnCYQ5msW6peRVAygTbYZzwjh85DaFZb/GvVY=
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id jy3-20020a17090342c300b001d95b3c6259sm774613plb.263.2024.02.05.20.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 20:51:50 -0800 (PST)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Cc: bpf@ietf.org,
+	Dave Thaler <dthaler1968@gmail.com>
+Subject: [PATCH bpf-next] bpf, docs: Fix typos in instructions-set.rst
+Date: Mon,  5 Feb 2024 20:51:46 -0800
+Message-Id: <20240206045146.4965-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/H2w1hUZ5byQHubw2m6jhPLB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/H2w1hUZ5byQHubw2m6jhPLB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+* "imm32" should just be "imm"
+* Add blank line to fix formatting error reported by Stephen Rothwell [0]
 
-Hi all,
+[0]: https://lore.kernel.org/bpf/20240206153301.4ead0bad@canb.auug.org.au/T/#u
 
-After merging the bpf-next tree, today's linux-next build (htmldocs)
-produced this warning:
+Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+---
+ Documentation/bpf/standardization/instruction-set.rst | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Documentation/bpf/standardization/instruction-set.rst:121: ERROR: Unexpecte=
-d indentation.
-Documentation/bpf/standardization/instruction-set.rst:122: WARNING: Block q=
-uote ends without a blank line; unexpected unindent.
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index 1c4258f1c..bdfe0cd0e 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -117,6 +117,7 @@ corresponds to a set of instructions that are mandatory.  That is, each
+ instruction has one or more conformance groups of which it is a member.
+ 
+ This document defines the following conformance groups:
++
+ * base32: includes all instructions defined in this
+   specification unless otherwise noted.
+ * base64: includes base32, plus instructions explicitly noted
+@@ -289,11 +290,11 @@ where '(u32)' indicates that the upper 32 bits are zeroed.
+ 
+ ``BPF_XOR | BPF_K | BPF_ALU`` means::
+ 
+-  dst = (u32) dst ^ (u32) imm32
++  dst = (u32) dst ^ (u32) imm
+ 
+ ``BPF_XOR | BPF_K | BPF_ALU64`` means::
+ 
+-  dst = dst ^ imm32
++  dst = dst ^ imm
+ 
+ Note that most instructions have instruction offset of 0. Only three instructions
+ (``BPF_SDIV``, ``BPF_SMOD``, ``BPF_MOVSX``) have a non-zero offset.
+@@ -511,7 +512,7 @@ instructions that transfer data between a register and memory.
+ 
+ ``BPF_MEM | <size> | BPF_ST`` means::
+ 
+-  *(size *) (dst + offset) = imm32
++  *(size *) (dst + offset) = imm
+ 
+ ``BPF_MEM | <size> | BPF_LDX`` means::
+ 
+-- 
+2.40.1
 
-Introduced by commit
-
-  2d9a925d0fbf ("bpf, docs: Expand set of initial conformance groups")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/H2w1hUZ5byQHubw2m6jhPLB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXBtn0ACgkQAVBC80lX
-0Gy8jgf/TYBszW6L0UFX1TbQIkcJW5dItvNy8aOw14JiGonipbT5LHQGxu1KeRko
-ynfSZiQa8DKTzuHKF+0B/FebmcvxIieRnX8HIdwVQgs18BAIhEfqNzwRg0FRiS8H
-HYw8iqTqzjQn4FZzmsnpYp5j4n5RmKOsytiUrNM5LergAgVYbwtoIzEIUhXw+goB
-T7Gv4JX4syMyoFgzTlI4w5qcbezYOpjsrVZdpBgg9wtJjjSe7hq/T0NxWwdlfpFB
-uXZnKh/q9vUa1w3p5J3GLE/KbgkQnjgHnF7+5a4efeH6Z/iS5iewRFBskYnz3Jlh
-x7xWdyobiOUXCIDo2JuEnk8arLRakA==
-=VxuT
------END PGP SIGNATURE-----
-
---Sig_/H2w1hUZ5byQHubw2m6jhPLB--
 
