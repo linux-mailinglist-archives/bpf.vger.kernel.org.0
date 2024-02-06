@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F62184AFB5
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 09:15:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552BC84AFBD
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 09:15:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E96F21F21A85
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 08:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10439287C31
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 08:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E206E12B14C;
-	Tue,  6 Feb 2024 08:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C9D12BE8E;
+	Tue,  6 Feb 2024 08:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aan7Sb2f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WUspYL0O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B7C129A65
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 08:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41BAF12AACA
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 08:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707207308; cv=none; b=YFYsojANf246Vtm9HYm608F45RV89tb+6+BLvJ8I6iPMWMUtSpuNy4di+/u/3e5PDm44SEJ/bk3isS2PPwW//3Y0vXM1ZFkrl/wND91fRmh5Ql6helYQQdDIe7dd7jWbo/6A/TFVBeDoyVCwei29vprwQyFuR/uodje85HFSUgE=
+	t=1707207322; cv=none; b=s7yIfJ9kWDrUzD+TNwLncW1L7SB7nmHggNO+jKwx4FqT+J9YB9V7G3D78I8jgYjLPPWL/PmiMJzEV0QYtoAB7wfkxJgnejraUADBzLlMFeHCyhSrKPfclzzU3YXpMtfLksbUDZ0CpjaNnXsF8tcBJpFH0NpA/FBX2aFJ9RzPGDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707207308; c=relaxed/simple;
-	bh=N2+OfDASSUkYC4v52Y0rIqaWTwox1VG+qGu5cFGHnN0=;
+	s=arc-20240116; t=1707207322; c=relaxed/simple;
+	bh=yTw3iMbpiHkoMOAEjLkvxKwb0/tYyK2no14G78laVzE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DKE4r2vnAjrLCKkHXuq5vZ/NQa0Mw6hUr5JFNfowJp81/q88Kuhvf65sI5rNxU5stBI7+5RUNvRRyareTHwWK2MWW+orhYLd2J5MVHCLiOkCewbedSt27yhXRyQYzaOqNX32pl1h1pSpZXCvfhWOZqeXTYTu7F+GLE2kCftwCvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aan7Sb2f; arc=none smtp.client-ip=209.85.161.51
+	 MIME-Version; b=qHG3EsxHlou5fwo3n8FzyDWDRnuQYSvNWcjy71Ny6Z3X2NO4FdsAr6T3bhwxQ2fx7AX/ZXVANuq/Khq6Njvc4UVA033nBVy8fP3ij/evfPM8jOjpUm2ePNpa5utOUT+BmkPYEw7/YOI8KEXGgOJXL/ZtTKb7SFAFl1McaeXPwpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WUspYL0O; arc=none smtp.client-ip=209.85.161.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5961a2726aaso3105368eaf.0
-        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 00:15:06 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-595d24ad466so3304237eaf.0
+        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 00:15:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707207306; x=1707812106; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707207320; x=1707812120; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iE0q5tBiZvTz92JBreV2ZnEqPmGuVdzUjDYXOxGofSw=;
-        b=aan7Sb2feA3nLudhNGHtO9CurkuayYVAgquFxbqBAwzB9bBS28A2TSi8gtSPEvKf9n
-         yK+WZdLx6EqF4stRFTSPbL6g6XvFxoMdtTCSNRYiQDMrr3o8wsPD3IUE4kjw8I3j4ZmO
-         PeasGiFybrddH00ksXzeQ/7cGvZBfXtBAxk71IgHarKlDAIyo0BBo4YwcpKm0C/Fbuf4
-         6nR8v+cu5QNDcW9kY3x7nKqnfbbChl+BlepCPNQAhzZ6ISrqy7O3IGGQTBtckfAEMqIW
-         cDjDvLKw9ImtIbdzcXdEvaXNKYITW4j0jKxw/leJORKmK8EuDiJ+jhtqAUpgO5U1oyrc
-         gORw==
+        bh=+y3dhJcZNIfgObUe6ZQKYjQoS0Kyd1B/l8QOAn5+S30=;
+        b=WUspYL0OPkT39JaLCEXX0MMO6DEvv8d3VvO95fE1ZrgHLVbPg0oAouOM+Yp/Ug8pmY
+         pogNcV5VC9CmP5sFh0My/na5ErSZder8T7F4j4l+V/t/qr+5w7ogpTpP6Cx1AhFpf17Z
+         x4eyjKXdo5hYs7de8A0qDJUBAZrXSkELDIY35GBEdTumSETi2MJzknsIjqcZ/vxqmtTi
+         WCBHWMYFu/FFv8At/QNJLC4jmbLh+0POjJWBMh68K8Fj5ima7LpIbNBQHkL9dujlr/Li
+         u4H7xE+UK8q/dUza9VgNq2SE6oM92dE1C67xgn7vewct2YTffr5nQKwqzjrTXckZ9pot
+         6VaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707207306; x=1707812106;
+        d=1e100.net; s=20230601; t=1707207320; x=1707812120;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iE0q5tBiZvTz92JBreV2ZnEqPmGuVdzUjDYXOxGofSw=;
-        b=wy2h529QLQiF+Y23/ymnjQSPsH1nB4/qMg6PyilTEKmNxvzNxOKU+z2Kc+EQwTo0r3
-         yUH+5EMqhJ/9LOocxYPiuVstRAC5iq0rpskestWWRcurk2xr7hcZwI+/R6DheeUUAz7i
-         1htSYtbj8MiMu9HyGx3tEd7UaXpPATby6tPtUzJ6c/rgHs6kCwbOexw+vqRoEd6g5UCT
-         Bm/rjPaQEM3JhKUG3xI3bAFMp6neiWviTCFWSwOkLqNMVeerMMkPmSKrWRY5PS5Se80C
-         dedx8qp5o/KZuYWWmth5t9qna3t2F9XJ2YmkS2C6W6tGno1qfTCdAIvD3qtC1+pYe/zM
-         JlaQ==
-X-Gm-Message-State: AOJu0YwdOK6YDkLuAdUfELoT6JxnA5pVcqqJZV5zYDK/bfQOQbhMXRC6
-	bMDWiHMWZbH3ibl67FNN3RXNnnV7hk0ag0pdyM840Sjvu3WSqY6p
-X-Google-Smtp-Source: AGHT+IFDHS2TMqmI4fRgXhv1ncvNpqWR7f0pNyN5K76Rs8hqvczo2qJ7wJh6IW+Z4sqPtUy4uSVnCg==
-X-Received: by 2002:a05:6870:e30f:b0:219:4426:53ca with SMTP id z15-20020a056870e30f00b00219442653camr1763556oad.4.1707207306093;
-        Tue, 06 Feb 2024 00:15:06 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXixA90J/n5xdB7Ldmg8k/tzBeVu4WMKpsL6by2O/XGj1Z5Tain3D/Bjc+C2faslMtcNJim0ciNYCdCRE9kwyc6Vo5doCrepJUEPhh42zLWrn4l4z2Esgy9VjM3pTxXPb8SX8KCg202wMYqXC/hwEzBgYf1kFD/6QnjwqPHKB8cTlIp/vLC3Lyc2V34Vpz4wuCELG9p510Lb8iAfCkYGfXf5071SOj3HkVvkNwFCAZAFEszTSD6YU133+SyHGMX/yVXYIJNb72wq8zGLk6yvZVJ+TQxQESNHRh7UPjrowcUkoWfXKnaM9OOIdv2sSIJYkZZNfhDggFK9mTh8rN65D9PQ7wjoJKEC6baU2YR0vn9C5s+VmqYf4S31ryBVIuD5JlWbj2m2Ijoedr0rRnaBgMy82ow6DYbg2WoybXfa5PXRd51pkz05A==
+        bh=+y3dhJcZNIfgObUe6ZQKYjQoS0Kyd1B/l8QOAn5+S30=;
+        b=qdHl4NJBGMt+qdqJXuccA2bIyx+a2RDoszrvof9QucXGXcMrS0DYOKjciqwjHl0Xrj
+         uQKQ4aqcxoDlEj8SGEmE1S/s3t/+gw/Jqd+FdxuS9GQahBPhzJ1NXA7mcjLodHbbTvEa
+         F+YAdJS/jTCEzFtbEgtI2HG4SLviuLWHNiDdOCoMNRLYo1JtM+MNOTbhUDoGptRdURaM
+         7MPrwwZxFkh9VK2KcsAhRcbBUcn6YXiIkzn55tUjYGh32lzi89XUdYr5S8cKuWRYNQ9S
+         ytf/LmeB7BmpFYwlQyx2nSvrDCGvotoL3QjWuQ6mkC4xpS6MciKLgL+CJhywJfL0leoc
+         X3kA==
+X-Gm-Message-State: AOJu0Yyc82EKC+eLagw+whbxzRD3Xu3558qUa1KVLbsl6qk/oMN14UZL
+	+x4BGwYWayZsSzmKss6uClDnLSfpCW3HyYct7amkmg4BmU7H5tAD
+X-Google-Smtp-Source: AGHT+IHfXwI4Wyn2EETk/tpzhQdCv5JkPNi51ogk2cMn+LWheLgWxkCz1LKZNR4SCD9TS2HXaIgDrA==
+X-Received: by 2002:a05:6358:714:b0:178:b97c:f087 with SMTP id e20-20020a056358071400b00178b97cf087mr1669667rwj.15.1707207320200;
+        Tue, 06 Feb 2024 00:15:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWaDjS5pEFFxqp6vaxIA69gUTraJWP2/lZDjxZyru8ZpxMoa8bzAZAOgPMOkVNF7NA87JMoLjjqQhL2ETD4KWj1txn6vrhwG9ngUqn2ndrGSll6C/agWmztsISEe7fKQtOGKLgTPCNp/xuj+rvqI9NdXbYwnFUkPPmnAwX5BeHlKUTxMlnU6iLV/YWQjjLDRQ4tkfFi2TU5Ryl5Q1LOy5YaKUqTm102inX1JmpCU8Bua73ZNmHlB9pfbvO5wF3IBJOLClZ/o74vDt3/G/QMXGs14Ab4bQo0HHWiVsO1CPXfvEUxOWyqRh+m+REfsr+NNAZlhgWgNscy4291vxHeEsE5oNOVxghOb83NI5OpoP0th2Z1DfG6V5BzjyiSRJ8hZlUSXmjLQqBxsFGfjLe58VZ117xKfjT2ySsRn1SWs//hovKOnbC09Q==
 Received: from localhost.localdomain ([39.144.105.129])
-        by smtp.gmail.com with ESMTPSA id 3-20020a630c43000000b005d7c02994c4sm1381660pgm.60.2024.02.06.00.14.53
+        by smtp.gmail.com with ESMTPSA id 3-20020a630c43000000b005d7c02994c4sm1381660pgm.60.2024.02.06.00.15.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Feb 2024 00:15:05 -0800 (PST)
+        Tue, 06 Feb 2024 00:15:19 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -84,9 +84,9 @@ To: ast@kernel.org,
 	void@manifault.com
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v6 bpf-next 2/5] bpf, docs: Add document for cpumask iter
-Date: Tue,  6 Feb 2024 16:14:13 +0800
-Message-Id: <20240206081416.26242-3-laoar.shao@gmail.com>
+Subject: [PATCH v6 bpf-next 3/5] selftests/bpf: Fix error checking for cpumask_success__load()
+Date: Tue,  6 Feb 2024 16:14:14 +0800
+Message-Id: <20240206081416.26242-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <20240206081416.26242-1-laoar.shao@gmail.com>
 References: <20240206081416.26242-1-laoar.shao@gmail.com>
@@ -98,86 +98,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch adds the document for the newly added cpumask iterator
-kfuncs.
+We should verify the return value of cpumask_success__load().
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Cc: David Vernet <void@manifault.com>
 ---
- Documentation/bpf/cpumasks.rst | 60 ++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/cpumask.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/bpf/cpumasks.rst b/Documentation/bpf/cpumasks.rst
-index b5d47a04da5d..5cedd719874c 100644
---- a/Documentation/bpf/cpumasks.rst
-+++ b/Documentation/bpf/cpumasks.rst
-@@ -372,6 +372,66 @@ used.
- .. _tools/testing/selftests/bpf/progs/cpumask_success.c:
-    https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/progs/cpumask_success.c
+diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
+index c2e886399e3c..ecf89df78109 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
++++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
+@@ -27,7 +27,7 @@ static void verify_success(const char *prog_name)
+ 	struct bpf_program *prog;
+ 	struct bpf_link *link = NULL;
+ 	pid_t child_pid;
+-	int status;
++	int status, err;
  
-+3.3 cpumask iterator
-+--------------------
-+
-+The cpumask iterator facilitates the iteration of per-CPU data, including
-+runqueues, system_group_pcpu, and other such structures. To leverage the cpumask
-+iterator, one can employ the bpf_for_each() macro.
-+
-+Here's an example illustrating how to determine the number of running tasks on
-+each CPU.
-+
-+.. code-block:: c
-+
-+        /**
-+         * Here's an example demonstrating the functionality of the cpumask iterator.
-+         * We retrieve the cpumask associated with the specified pid, iterate through
-+         * its elements, and ultimately expose per-CPU data to userspace through a
-+         * seq file.
-+         */
-+        const struct rq runqueues __ksym __weak;
-+        u32 target_pid;
-+
-+        SEC("iter/cgroup")
-+        int BPF_PROG(cpu_cgroup, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+        {
-+                u32 nr_running = 0, nr_cpus = 0, nr_null_rq = 0;
-+                struct task_struct *p;
-+                struct rq *rq;
-+                int *cpu;
-+
-+                /* epilogue */
-+                if (cgrp == NULL)
-+                        return 0;
-+
-+                p = bpf_task_from_pid(target_pid);
-+                if (!p)
-+                        return 1;
-+
-+                BPF_SEQ_PRINTF(meta->seq, "%4s %s\n", "CPU", "nr_running");
-+                bpf_for_each(cpumask, cpu, p->cpus_ptr) {
-+                        rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);
-+                        if (!rq) {
-+                                nr_null_rq += 1;
-+                                continue;
-+                        }
-+                        nr_cpus += 1;
-+
-+                        if (!rq->nr_running)
-+                                continue;
-+
-+                        nr_running += rq->nr_running;
-+                        BPF_SEQ_PRINTF(meta->seq, "%4u %u\n", *cpu, rq->nr_running);
-+                }
-+                BPF_SEQ_PRINTF(meta->seq, "Summary: nr_cpus %u, nr_running %u, nr_null_rq %u\n",
-+                               nr_cpus, nr_running, nr_null_rq);
-+
-+                bpf_task_release(p);
-+                return 0;
-+        }
-+
-+----
+ 	skel = cpumask_success__open();
+ 	if (!ASSERT_OK_PTR(skel, "cpumask_success__open"))
+@@ -36,8 +36,8 @@ static void verify_success(const char *prog_name)
+ 	skel->bss->pid = getpid();
+ 	skel->bss->nr_cpus = libbpf_num_possible_cpus();
  
- 4. Adding BPF cpumask kfuncs
- ============================
+-	cpumask_success__load(skel);
+-	if (!ASSERT_OK_PTR(skel, "cpumask_success__load"))
++	err = cpumask_success__load(skel);
++	if (!ASSERT_OK(err, "cpumask_success__load"))
+ 		goto cleanup;
+ 
+ 	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
 -- 
 2.39.1
 
