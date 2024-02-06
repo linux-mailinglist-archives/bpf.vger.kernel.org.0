@@ -1,146 +1,136 @@
-Return-Path: <bpf+bounces-21297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967DC84B1A6
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 10:56:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7258984B1F6
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 11:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5218B285B16
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 09:56:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15F88B21694
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 10:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788DE12D75C;
-	Tue,  6 Feb 2024 09:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B6D12D765;
+	Tue,  6 Feb 2024 10:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lQUQ0wxW"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="DyKJp3ab"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE8212C7E1;
-	Tue,  6 Feb 2024 09:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1E612D157
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 10:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213354; cv=none; b=czriAPE3D0/w9dmokpvlUm21H3Dcoblv6ni/u+Dd6kgqFsrSV1KHGXEXehVQCTyjq2fTOc5cI9RJk5H29YQN8Nmf7pmiE5bfsJqvRf5N0aKwFl6N1G941akZORDKZfzGRaOYyILpu5bZj22T6vK7mBoTsEeMMN1kT1Qn5NiELno=
+	t=1707214102; cv=none; b=jjmMoWaRs6QX43hRh400CHVtL2r2u4kodFHl3yL2xufZw1+TSG6/5/ncm1H0pnpaisQfyQWpucPtSFDcZhrDdzg44NJAHWfJcdjWaH/KM/QnhXL10xTYlqcoc9Q1WD9appc/iNmeXiPwad91iS9d0n/NioxxKMUc1pZGKcJRCsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213354; c=relaxed/simple;
-	bh=9+W6XW1DT0/xcjV67vvB8Afk3ehs/LbVHwL1MPz6W1A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j83QtOoGIl/jKKvGzHLMcXxKKtSND3w+28h69ETRZZy5AuA7TFScyFTL8fzwtHWgJdYSomK08R3f6Lpml1JacD9lTdsEMt6mCyt1WvJI3cEUlPVwz7MqQQQqiNF788dS1Jq/atQsOZq5zCaU2QMsizUDh8vUsvTF1lgAuo036Kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lQUQ0wxW; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68155fca099so17541906d6.1;
-        Tue, 06 Feb 2024 01:55:52 -0800 (PST)
+	s=arc-20240116; t=1707214102; c=relaxed/simple;
+	bh=tGQ37uTY1Lgy3kGD13UiKdGI6UujpLH4vh3+Rklvt9s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dy1Fa/x0S+5Jr0EXgsjdyvwmiwVc7d7vfNOFmM0/7ZbnifKJx1XI/mYEr9bjcRY3nbu0c77CF8uteRuHUHJOIeI60907swNAdAeoj49EBSx9PspO1QjyDu7BBEv5Y0zAz0FRZtE6KjrTvCmJaD9srAmJniQAuCmjyVoWfyCR+oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=DyKJp3ab; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40fe3141e1cso3321615e9.0
+        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 02:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707213351; x=1707818151; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6paK/6xBJ4EAsIC2x+yrHqNaN5F8qhKNNYWgufdQ5lQ=;
-        b=lQUQ0wxWojDzle8Ff/SfP0m3S+kZRiWWX+2C9rc6miV+g+ybE2uz40XuMvzQy/3A7S
-         36dW2nzrC3f1Vp0N/A9WNT4V3IIvok9XvvU5gRtj5Hp//mOOLBRLpiJAwSVwe6cfoECp
-         N6YfJqR/wKYHVhD71YLa+oyhr+TWSUTpfw/YjSHdjJ14YifUkMiaOXm01YO8QGJCJmh1
-         3EAqCDV5SOsljD9Z2Tr5OCuYoTo1mSExr6MOk1aiigHIOTjl+09gUlHddE+MqvBG/Q6P
-         Rc9wSkuvt3fGVhO0SOKPAUHQDfJYMBdqAcp5UyWOiK+APBFeC7bSpqr0PGpM69r9VO+W
-         7aJA==
+        d=isovalent.com; s=google; t=1707214099; x=1707818899; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Xe5/cZ6Aod/98ds/+MrcL5uP7C5QI2K9vnunlSg6ll0=;
+        b=DyKJp3abY1vSBqoWB/gJrcfobgwnE+ykg6F7sya2FgCd4O6FFj9E58/eH0oVusCLjH
+         SZHQz+mnZNuH2pgOcnv9bf9O0j1i5PFAH3sLvUPBs7SpqnbBtzWqLWn6jDIVx1FL3CGB
+         8yrY1AitoUtiahwGCozWxrutnpzLYdZrvJfdmumEVAK+n3c8SzppNa2Mp22FsZB52os4
+         76IKFWvOFlFac0ueHdLMY/AMF2DUjeHi4PoJCCE5Lg2b3FBEXemZs7aMuIOajW/Ehowo
+         SHsE+c7p2C0DpRLPU3LlPX9s/A5ObCC6hJK0gvwj8Cj40J7c7UYuRGfjMipIcKbgB60n
+         XfWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707213351; x=1707818151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6paK/6xBJ4EAsIC2x+yrHqNaN5F8qhKNNYWgufdQ5lQ=;
-        b=X+aXZhwyUkUqxBZmWc/Kt2j7NX6W6GzboojMHikW7mxdDLliZmCOaaRiHPu9GE+0ii
-         NT81DL1z8i59cUC+UXD4q7AReI8YKOZGVDhf+JzQoPsYmMpDtQjC5bC+JsYO0wgPufld
-         Q+aIRhfOZglq5PHnEEqHpdgevpMCUWL7iG6hbOCTZ+3LJRlkxTOU/NaGZvvmIxX0xwCV
-         COmHV33PWg9erAFhxGt5zJDwOtBrNqJJdz4vaY6hS/LZAxBeIZ8pMigzxnlyK6ga8JxB
-         HTkJ3CIsct+sG5E3dR8QhTH9pSl5FUS/EiqvCaMlFS6PTJrOSN/94FqxwAv2Ua1yEu2K
-         mMsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzYYfoUOO1dufQgLaOFFo5GiH5fn43kEJWeKPFJKiEqw1M7PK2PxLMLd0ZQF6TE13dxNBjuUWfZzODi7oLj0VgKOJxcC7UdlhRFQy95ZgTa1ArIaIm0sqGMa7k
-X-Gm-Message-State: AOJu0Yy270t1HIiLiTv75Gsv2XEoIieNb2CBy67oHojVAPdf/7co4Lcc
-	rVpU7deltx46ckmfBaf51NH2RO4PMz4dwBgbUYPjCcPPFY9evH0eEPzPtLRjBLg9eImGBkRDHCh
-	NQYn/sE++B9E5Qca48yhmN1ofqTk=
-X-Google-Smtp-Source: AGHT+IF+oK5GAVDZ/icb/MBqJdtul50E1qWgJqqyPzsae5dVKtB8IgM2EPsrwVjw+GLN49FOGy8/8BAOJ1+Klr3uk44=
-X-Received: by 2002:a05:6214:5490:b0:68c:b761:39b0 with SMTP id
- lg16-20020a056214549000b0068cb76139b0mr281717qvb.5.1707213351275; Tue, 06 Feb
- 2024 01:55:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707214099; x=1707818899;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xe5/cZ6Aod/98ds/+MrcL5uP7C5QI2K9vnunlSg6ll0=;
+        b=dLnt2BkJZZeo63TiWTyehHxxP2b9cWnTkcJwU4OTTV9c9FRjm6PH+4H46M5aiJXAKS
+         07yaRG7eyJaa9MS4OvAOrR4UvNi7bABHDr53CIb3CpnQ7vTKMEzUy7/IBTsZdqNFQ/Q9
+         3F07qf6LH3vhIWGM5cO8WDZ56i/rPahOPULnQ1ZdnXz7WFY4BWIPHTPqEmXi/Y6jY8X7
+         vV2yPKsqfbkQpRszYUDbgGT3J5Cz8CQZYh28mZQd6asMmYlIGZrcHNAuea17nz6QYeay
+         ql7Dc1PF0YO3szj7GaumI7PzmXyNCmACuhwrUTvdHPqOdDelJVebxJvfFpDZ+O60cvxE
+         9b1w==
+X-Gm-Message-State: AOJu0YwedoZUZDTsrwMYPjr458jEupOkG3OasJVnIJ88VjNre/q2AIqA
+	psYyuxQlIyt/ZO5l3Gfyd8aJVuRPcbIf97phXU/pi2tonNm8420ZGcsPfI/ggHI=
+X-Google-Smtp-Source: AGHT+IGuXTyALI6Fe9Af4M+1Lkar0uek0WSyDAl9tSS+HPRw86QdA4/7H17D0Rl4eV/b0snwzjkSxQ==
+X-Received: by 2002:a05:600c:4688:b0:40f:d1e4:6074 with SMTP id p8-20020a05600c468800b0040fd1e46074mr1242518wmo.8.1707214099090;
+        Tue, 06 Feb 2024 02:08:19 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWm5HtxcFG6M/BJuCf/bBCN2b9ZReLoDkQNuR7UUdTjQfwIy4uZ4u/Tu619NUzg18bf2wc6tqajd1KQjfJUwtJ0KcTJsWNAFzK7ZYPiTfXYBtUl/ZzIpoGtSt4GIdxZ9uhJQfi7DuVoSkRaA+wSEmDxLci4NLGFY4Mz/x7BRT73pIjEe9WS47QJLwKRfGfQblDyGabDMRbF9VJv5MRbFendv3z4SWX78v5aT1oRf9EzBm1LmcxeQQMt6MSWF5ckT4ATY93MnXhX5a7azC6DpSV6ovCVZ350SGmCVGjInlZIt0O/FDJcdJw=
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id w9-20020a05600c474900b0040e9f7308f4sm1488599wmo.10.2024.02.06.02.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 02:08:18 -0800 (PST)
+Date: Tue, 6 Feb 2024 10:02:18 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Stanislav Fomichev <sdf@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf-next 3/9] bpf: expose how xlated insns map to
+ jitted insns
+Message-ID: <ZcIDqnXFjsWYyu1G@zh-lab-node-5>
+References: <20240202162813.4184616-1-aspsk@isovalent.com>
+ <20240202162813.4184616-4-aspsk@isovalent.com>
+ <CAADnVQLnk=UyKBkRAC1tNkiaF7C4+FG7V-b2xrR3oa_E4+QX7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205123011.22036-1-magnus.karlsson@gmail.com> <87le7zvz1o.fsf@toke.dk>
-In-Reply-To: <87le7zvz1o.fsf@toke.dk>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Tue, 6 Feb 2024 10:55:39 +0100
-Message-ID: <CAJ8uoz03-AcOwMj3-20ritbYQT9CSJMQ8oz6OuhyE-U=2F7+Gg@mail.gmail.com>
-Subject: Re: [PATCH net] bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, netdev@vger.kernel.org, maciej.fijalkowski@intel.com, 
-	kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net, j.vosburgh@gmail.com, 
-	andy@greyhouse.net, hawk@kernel.org, john.fastabend@gmail.com, 
-	edumazet@google.com, bpf@vger.kernel.org, 
-	Prashant Batra <prbatra.mail@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLnk=UyKBkRAC1tNkiaF7C4+FG7V-b2xrR3oa_E4+QX7Q@mail.gmail.com>
 
-On Mon, 5 Feb 2024 at 14:08, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
-com> wrote:
+On Mon, Feb 05, 2024 at 05:09:51PM -0800, Alexei Starovoitov wrote:
+> On Fri, Feb 2, 2024 at 8:34 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 4def3dde35f6..bdd6be718e82 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1524,6 +1524,13 @@ struct bpf_prog_aux {
+> >         };
+> >         /* an array of original indexes for all xlated instructions */
+> >         u32 *orig_idx;
+> > +       /* for every xlated instruction point to all generated jited
+> > +        * instructions, if allocated
+> > +        */
+> > +       struct {
+> > +               u32 off;        /* local offset in the jitted code */
+> > +               u32 len;        /* the total len of generated jit code */
+> > +       } *xlated_to_jit;
+> 
+> Simply put Nack to this approach.
+> 
+> Patches 2 and 3 add an extreme amount of memory overhead.
+> 
+> As we discussed during office hours we need a "pointer to insn" concept
+> aka "index on insn".
+> The verifier would need to track that such things exist and adjust
+> indices of insns when patching affects those indices.
+> 
+> For every static branch there will be one such "pointer to insn".
+> Different algorithms can be used to keep them correct.
+> The simplest 'lets iterate over all such pointers and update them'
+> during patch_insn() may even be ok to start.
 >
-> Magnus Karlsson <magnus.karlsson@gmail.com> writes:
->
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Do not report the XDP capability NETDEV_XDP_ACT_XSK_ZEROCOPY as the
-> > bonding driver does not support XDP and AF_XDP in zero-copy mode even
-> > if the real NIC drivers do.
-> >
-> > Fixes: cb9e6e584d58 ("bonding: add xdp_features support")
-> > Reported-by: Prashant Batra <prbatra.mail@gmail.com>
-> > Link: https://lore.kernel.org/all/CAJ8uoz2ieZCopgqTvQ9ZY6xQgTbujmC6XkMT=
-amhp68O-h_-rLg@mail.gmail.com/T/
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >  drivers/net/bonding/bond_main.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond=
-_main.c
-> > index 4e0600c7b050..79a37bed097b 100644
-> > --- a/drivers/net/bonding/bond_main.c
-> > +++ b/drivers/net/bonding/bond_main.c
-> > @@ -1819,6 +1819,8 @@ void bond_xdp_set_features(struct net_device *bon=
-d_dev)
-> >       bond_for_each_slave(bond, slave, iter)
-> >               val &=3D slave->dev->xdp_features;
-> >
-> > +     val &=3D ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> > +
-> >       xdp_set_features_flag(bond_dev, val);
-> >  }
-> >
-> > @@ -5910,8 +5912,10 @@ void bond_setup(struct net_device *bond_dev)
-> >               bond_dev->features |=3D BOND_XFRM_FEATURES;
-> >  #endif /* CONFIG_XFRM_OFFLOAD */
-> >
-> > -     if (bond_xdp_check(bond))
-> > +     if (bond_xdp_check(bond)) {
-> >               bond_dev->xdp_features =3D NETDEV_XDP_ACT_MASK;
-> > +             bond_dev->xdp_features &=3D ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> > +     }
->
-> Shouldn't we rather drop this assignment completely? It makes no sense
-> to default to all features, it should default to none...
+> Such "pointer to insn" won't add any memory overhead.
+> When patch+jit is done all such "pointer to insn" are fixed value.
 
-Good point. Seems the bond device defaults to supporting everything
-before a device is bonded to it, but I might have misunderstood
-something. Lorenzo, could you enlighten us please?
-
-Thanks: Magnus
-
-> -Toke
->
+Ok, thanks for looking, this makes sense.
 
