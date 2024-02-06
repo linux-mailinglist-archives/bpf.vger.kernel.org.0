@@ -1,153 +1,128 @@
-Return-Path: <bpf+bounces-21349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D981884B94F
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 16:24:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E334984B9C3
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 16:36:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95DEE287B63
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 15:24:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5920B313FC
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 15:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19625134CCB;
-	Tue,  6 Feb 2024 15:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DD5134751;
+	Tue,  6 Feb 2024 15:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="soXgTDT0"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="BVF3zjws";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GYYcr1so"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC691339B4;
-	Tue,  6 Feb 2024 15:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9DE133292
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 15:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232599; cv=none; b=qRSluzhVm1kx0pz1T8vzQC+1/7Q1SgPeueAyT9rfFwbZbX/dAhFOv8jmGGN//GDap5VxTWLEth2xUhO/0Qy05y3/yF8G1eTzVwY4qHNOgcSOYsQbZVLcRhXlH4chsXyeruDxiw+RpIzEUV+YrDkZDqXzHUtfSm1r2R6ykyNzDz4=
+	t=1707233300; cv=none; b=HgEGYEUkWMQ1S5z3tFADpcvfgr6wZA0zz8bD4Unvzamrxzg1O6hHTjYjJVy1dHIp+kMhBz3QMvpit0y6cWFUbfaPoX27QRujVXl6lnWrlhMl5jwHhDRRwiSIb03J4MkDIaqMxr10OIK7zNJa0OJkIcHQGsZWIcRl611XqegpG8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232599; c=relaxed/simple;
-	bh=XsdWdytMvZwMcahXMHmv2mp3rx181G3KH+mF9flZX3E=;
+	s=arc-20240116; t=1707233300; c=relaxed/simple;
+	bh=PG4Lt3Wq53GVaZcKohF4jr7zQUWxZL5lIavSo4jbtSQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JifCunmbB9e9yExZmMO7BfbXBTr/56ckHDnBoU9bUJM3cHWPr4IJMwfOvKTMJFb6MYAQsy84onlAAdD5la1GALiFsNY9ytOFQtDIl7vOrFZIUZ54awr/9yKVDk9E7G/E3eDXBF6EI0UqK93cQbydxNBFS/fRRO7S5/leKdpOyE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=soXgTDT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 867FFC433C7;
-	Tue,  6 Feb 2024 15:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232599;
-	bh=XsdWdytMvZwMcahXMHmv2mp3rx181G3KH+mF9flZX3E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=soXgTDT0fJoGfMxzBL/HEFMqwmY4B1PXFEANujlNcYYQR0E0WP8GGHpKcb3zQRVhm
-	 HaZuByk5hj7MffetrWFZnjrD0DyFs9oOUI4kH9l6tTNsaavu2b/Xp4Z3wB86Gr5nxz
-	 LQLk9BMkE1ts083FWnD+6J6FvSNyqLyxd2BpR0OaroSyqxIYlDRBrIIui0wNKE531A
-	 AEg5A/U+DyW3U/dTWwXGE7zWtYsSz9l2HndvAoIQ4ph+ZGxzNhR4LUDz7KlNSmzup5
-	 +aIrrpbQzBpiUdM5/H1iX+tx1/sC+Tcjbio16xpeQVyaCYIKipCDoy8mcyGJVCghSr
-	 72O95WKBFEVSg==
-Date: Tue, 6 Feb 2024 16:16:35 +0100
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, netdev@vger.kernel.org,
-	maciej.fijalkowski@intel.com, kuba@kernel.org, pabeni@redhat.com,
-	davem@davemloft.net, j.vosburgh@gmail.com, andy@greyhouse.net,
-	hawk@kernel.org, john.fastabend@gmail.com, edumazet@google.com,
-	bpf@vger.kernel.org, Prashant Batra <prbatra.mail@gmail.com>
-Subject: Re: [PATCH net] bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY
-Message-ID: <ZcJNUyUV_Z-GkFBV@lore-desk>
-References: <20240205123011.22036-1-magnus.karlsson@gmail.com>
- <87le7zvz1o.fsf@toke.dk>
- <CAJ8uoz03-AcOwMj3-20ritbYQT9CSJMQ8oz6OuhyE-U=2F7+Gg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=k2MVpVkLZFVNPoTj0Vc42RUBoVvalVEj/M91HcKVA6sahDK0IgYJA13cFUDbxipsIw1CAOkdb8qJMSLmfikTkEylIsN2lgxFE1hec3pVHpfVqGAG57p+DmRTKVqE8gCh5HK8VRx1GZpVr8LyQh3T8auC+83rGkLBPKBszykJeVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=BVF3zjws; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GYYcr1so; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id A25265C00F2;
+	Tue,  6 Feb 2024 10:28:16 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 06 Feb 2024 10:28:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707233296; x=1707319696; bh=uQPZdPs45w
+	XARw9FTkLra4YREfUFy4FHNAygl4/9wKI=; b=BVF3zjwsdbG9gBdcSSBMVbodFt
+	MywD1a7C2u5GvZtTInmBVvNUEvtO0PSgJ5UoF8nWY17VV7Kx7AYY+7IbPYQrzibG
+	bRABZ3gJBkWpbBTYGoPQ3Fk5IsSzjyEmMJxRpp0FGEdXauPtYrrsvM6TkUth+rNR
+	2yGm8j5joJsyWdihNCdGPirAWd8Tv3JMeQW14TVGw8hIe61ep53y3E3oDbCC9DUi
+	OWUVR7niaX7+zoBRvHmrOcaZreVJnN37IgcQTmIX9/R6T/GPu/htCX6KDMjj5tei
+	Bl5CdBlSq016cKJV6nxmkQGsLPhAQ4D1wGKcXYkPHyQr5mdKYma3gkE2Ex4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707233296; x=1707319696; bh=uQPZdPs45wXARw9FTkLra4YREfUF
+	y4FHNAygl4/9wKI=; b=GYYcr1so7IIf4I8JFvYOfhZFCVGgZIn5ykpa7xE2Bs4N
+	YAGUw3ADB+TxXp2cJTZ7PvdUTcfN5AGquZIspZU1gFXytEou7RcjbwDB+3DpRIFs
+	M12mJ9uwjmgDkbShc6Wa662uQGk7JQn3kz38qAmtprJ5LUZpD9Cs8hnI9ws7ecne
+	uY109e5qhYecXkmA4WdtIe/kdhHgznd0XUqiCcEptMHdlbVbr9VYkwpVRj5XdutM
+	GtVVglXcyLJ9K/on4orCGS9PGZwWlLMq9eMYY91DzAPBRYk733+QiXB7zTMFD+iS
+	NUvkwCUOGfKnnaDqZUVpCjw/JGxRSS7fspJCvMVeQw==
+X-ME-Sender: <xms:EFDCZbngSLNfpcpAZlVF2brABYf_Fkxar3sd2orEr1Jv827Dc23geg>
+    <xme:EFDCZe0AcLBoYmCSnzQkaFND14WKjICxOF0dmwL_awzfm_xoaOxeBhNT26317tp6Y
+    v95XFL-uK3aF75WHw>
+X-ME-Received: <xmr:EFDCZRqrYRjoxelsE93xR06rnGRh7F1UiS2YGiDzeo42NW5gBaGGQ1rj24e6UL7McYXFDWMNyuN_0ka8Cea2Iz9_DCcpTbR_taBQgp8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdegjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddt
+    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpedvfeekteduudefieegtdehfeffkeeuudekheduffduffffgfeg
+    iedttefgvdfhvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:EFDCZTmiKq7L6nJU8f-Tg59Onk7dpHuSoe5_oXPOeXKU6o9AFan9ag>
+    <xmx:EFDCZZ0MtqznsBF3TL3T2fINODTp5voDiHdFXdyYtfuKoFpgAk36qg>
+    <xmx:EFDCZSsJe2CVOXG6FnyLB-Sj4UR-4XfTD_vnT5tCiYtqA4xpdZENGw>
+    <xmx:EFDCZaHaolBAfE_2bgerz3tLOLdctsR46_w94nnAJ6hOn-O4xGhe0w>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Feb 2024 10:28:14 -0500 (EST)
+Date: Tue, 6 Feb 2024 08:28:13 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alexey Dobriyan <adobriyan@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Manu Bretelle <chantr4@gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] tools/resolve_btfids: Refactor set
+ sorting with types from btf_ids.h
+Message-ID: <b7vpc3rwbvpkf4vrbqbu5ayv2f37xnno2q4ul2fxifun6l5xi6@3fnzxjkzupwh>
+References: <cover.1707223196.git.vmalik@redhat.com>
+ <ff7f062ddf6a00815fda3087957c4ce667f50532.1707223196.git.vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zCzGVAeTNowh1sME"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJ8uoz03-AcOwMj3-20ritbYQT9CSJMQ8oz6OuhyE-U=2F7+Gg@mail.gmail.com>
+In-Reply-To: <ff7f062ddf6a00815fda3087957c4ce667f50532.1707223196.git.vmalik@redhat.com>
 
+On Tue, Feb 06, 2024 at 01:46:09PM +0100, Viktor Malik wrote:
+> Instead of using magic offsets to access BTF ID set data, leverage types
+> from btf_ids.h (btf_id_set and btf_id_set8) which define the actual
+> layout of the data. Thanks to this change, set sorting should also
+> continue working if the layout changes.
+> 
+> This requires to sync the definition of 'struct btf_id_set8' from
+> include/linux/btf_ids.h to tools/include/linux/btf_ids.h. We don't sync
+> the rest of the file at the moment, b/c that would require to also sync
+> multiple dependent headers and we don't need any other defs from
+> btf_ids.h.
+> 
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  tools/bpf/resolve_btfids/main.c | 35 ++++++++++++++++++++-------------
+>  tools/include/linux/btf_ids.h   |  9 +++++++++
+>  2 files changed, 30 insertions(+), 14 deletions(-)
 
---zCzGVAeTNowh1sME
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Daniel Xu <dxu@dxuuu.xyz>
 
-> On Mon, 5 Feb 2024 at 14:08, Toke H=F8iland-J=F8rgensen <toke@redhat.com>=
- wrote:
-> >
-> > Magnus Karlsson <magnus.karlsson@gmail.com> writes:
-> >
-> > > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> > >
-> > > Do not report the XDP capability NETDEV_XDP_ACT_XSK_ZEROCOPY as the
-> > > bonding driver does not support XDP and AF_XDP in zero-copy mode even
-> > > if the real NIC drivers do.
-> > >
-> > > Fixes: cb9e6e584d58 ("bonding: add xdp_features support")
-> > > Reported-by: Prashant Batra <prbatra.mail@gmail.com>
-> > > Link: https://lore.kernel.org/all/CAJ8uoz2ieZCopgqTvQ9ZY6xQgTbujmC6Xk=
-MTamhp68O-h_-rLg@mail.gmail.com/T/
-> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > ---
-> > >  drivers/net/bonding/bond_main.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bo=
-nd_main.c
-> > > index 4e0600c7b050..79a37bed097b 100644
-> > > --- a/drivers/net/bonding/bond_main.c
-> > > +++ b/drivers/net/bonding/bond_main.c
-> > > @@ -1819,6 +1819,8 @@ void bond_xdp_set_features(struct net_device *b=
-ond_dev)
-> > >       bond_for_each_slave(bond, slave, iter)
-> > >               val &=3D slave->dev->xdp_features;
-> > >
-> > > +     val &=3D ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> > > +
-> > >       xdp_set_features_flag(bond_dev, val);
-> > >  }
-> > >
-> > > @@ -5910,8 +5912,10 @@ void bond_setup(struct net_device *bond_dev)
-> > >               bond_dev->features |=3D BOND_XFRM_FEATURES;
-> > >  #endif /* CONFIG_XFRM_OFFLOAD */
-> > >
-> > > -     if (bond_xdp_check(bond))
-> > > +     if (bond_xdp_check(bond)) {
-> > >               bond_dev->xdp_features =3D NETDEV_XDP_ACT_MASK;
-> > > +             bond_dev->xdp_features &=3D ~NETDEV_XDP_ACT_XSK_ZEROCOP=
-Y;
-> > > +     }
-> >
-> > Shouldn't we rather drop this assignment completely? It makes no sense
-> > to default to all features, it should default to none...
->=20
-> Good point. Seems the bond device defaults to supporting everything
-> before a device is bonded to it, but I might have misunderstood
-> something. Lorenzo, could you enlighten us please?
-
-ack, I agree we can get rid of it since the xdp features will be calculated
-again as soon as a new device is added to the bond.
-
-Regards,
-Lorenzo
-
->=20
-> Thanks: Magnus
->=20
-> > -Toke
-> >
-
---zCzGVAeTNowh1sME
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZcJNUwAKCRA6cBh0uS2t
-rOwhAP4jhkFuBEZcqF9xSUby4YHotziOFQIxCywPqt14NCAi2wD+L6fT4PUkSWG2
-30f3jtqBO/mUEzEtfuHPBSioojO1qAw=
-=Z2iv
------END PGP SIGNATURE-----
-
---zCzGVAeTNowh1sME--
+[...]
 
