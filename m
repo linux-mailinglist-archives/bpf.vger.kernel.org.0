@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-21330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D5484B908
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 16:15:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E13484B90C
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 16:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F37B61C21111
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 15:15:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2BA31C24D00
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 15:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B52C13699E;
-	Tue,  6 Feb 2024 15:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599361350D5;
+	Tue,  6 Feb 2024 15:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/4N5YOC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AwYQ1uPI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19951134CFC;
-	Tue,  6 Feb 2024 15:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F7F1339B6;
+	Tue,  6 Feb 2024 15:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232256; cv=none; b=R/R9BpCVKrfSv+OzCTjsqCjweRSzldzyRpylR7oQCHExiqvthbwsQzUPT6hvJLhmcBbuWNV0CE8RSAJhqW4D3sgYDjCitBba241Sve1+yZeVGS9uL1Ml9m/cceEIdJnJ0mT1boeW7iUqFgHVdMmA18FP1R4i7sHdVMUJpghGvuo=
+	t=1707232266; cv=none; b=KUYOpfVzjqyIlS1iJfIb66XBpWq1ekpw8JX47VtGFDs1DKyKMZnLqmHp4KthmpOEY3ZaHNP+7j59BWsarEexmMJmpBbuaKInWgvaIk9fpHu0lwEzYgY95fZiyO5sPXNE6YguHzacWlebEjBaDAwrqO3wECa+C2FpVuFwhni5SE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232256; c=relaxed/simple;
-	bh=XT8mAO5U8kYBF5nHzre3NP4S7gGsaqfcEiXyQTVrS+w=;
+	s=arc-20240116; t=1707232266; c=relaxed/simple;
+	bh=mCsnjbx0olUYMnP8Idg8RaURtW9wE/3l9D3uy0XJrV8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZTxsAHiVgw/dEPExONl1Qxts0eVsK3ptKWTs9QObO20H6ftGZyHYO2/Wcwfrls9qS5PWg6esTg7za4nOvu33bw6N6GmVCgWH7IIWi2J80buEBbkaw4+FPMuZmvVX7MBSWvA5W8spfrUS7QZdvS3KiErABF9suRw+Yad5RnpDWtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/4N5YOC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABAC7C433C7;
-	Tue,  6 Feb 2024 15:10:52 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Fbrq1t378vFZvvDcHhGvisAIfkJf1LiYzjvJLfgw4V7pMkkUItG0UY6u9ioMlPCMHIFVA26BOBLlqRqmP1+i+wXZA5yZuiq+c9TreCLIF4r4TC7NrIKlzMgjPZz6CnKDF2fJBuDmU20ct2elgL7CFEjd9Tyz5cEG0rRTHYjNz34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AwYQ1uPI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1133C433C7;
+	Tue,  6 Feb 2024 15:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232255;
-	bh=XT8mAO5U8kYBF5nHzre3NP4S7gGsaqfcEiXyQTVrS+w=;
+	s=k20201202; t=1707232266;
+	bh=mCsnjbx0olUYMnP8Idg8RaURtW9wE/3l9D3uy0XJrV8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T/4N5YOCnRDcLX/JjZRuT1ZrzMUhmlwFugMIeQXUi+cmemubEX/Ty40c0JklpMR9O
-	 a9M3+BBrmqjP6scM2QbsIaxkeCHi1p1lQuTgROaAPgE+ld3TN/ZnV+AD7zngU+RegR
-	 dv//Y3DkIRvv7zIgigLFMI1YWuJs0WLOgQWw3Hr8U5LmxphN/Dlkne9z2Ae7UMPh4a
-	 FMKJQItEN5BEAAnu4cWsNyhgqQvXa64IEXypv0uQI7tAMnHQt8rjR7pRqJz8Rl2Eh7
-	 b1NnkwdKvwvZ+kMz+DbL/+42tOXXsXQMXAnSzL667XKN84o15Gw8AjjJ3PJp/mlyLK
-	 z5TeeA2Is6aqg==
+	b=AwYQ1uPItdeS+ImEPRutmA0TbW+BF1DYRSN3yVszthOAZlHg5RtXJSvHDZd8/v0I/
+	 eu0JqBULwdLt4KxyXQVwJF6AfKy0W5y1BRTMgEs+74xm7Eiwm6ZWjaG50JeDRpn38b
+	 EcZuDn9c8Yho7ScLB7ufh0oOhv+753MmAUF6n52BU9XmRMj4q2+M529L7Mm98SPRo1
+	 omfg1BDcFSKvogrl2lBhRwiE9zdnQv2D4ChbfyV/ZLUCFeX2v3Bh1dVVRpTnYksu5y
+	 uH1Y8CtC+vYFoIIiit0sbdcFMzD/R+7aktXNFtt8e4oQRWz6yYVNVWwvFGAyIN4No5
+	 YrtvGY2h9seBQ==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -59,9 +59,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v7 18/36] function_graph: Move graph notrace bit to shadow stack global var
-Date: Wed,  7 Feb 2024 00:10:50 +0900
-Message-Id: <170723225020.502590.2063430645806603064.stgit@devnote2>
+Subject: [PATCH v7 19/36] function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+Date: Wed,  7 Feb 2024 00:11:01 +0900
+Message-Id: <170723226123.502590.4924916690354403889.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
 References: <170723204881.502590.11906735097521170661.stgit@devnote2>
@@ -77,110 +77,327 @@ Content-Transfer-Encoding: 8bit
 
 From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-The use of the task->trace_recursion for the logic used for the function
-graph no-trace was a bit of an abuse of that variable. Now that there
-exists global vars that are per stack for registered graph traces, use
-that instead.
+Added functions that can be called by a fgraph_ops entryfunc and retfunc to
+store state between the entry of the function being traced to the exit of
+the same function. The fgraph_ops entryfunc() may call
+fgraph_reserve_data() to store up to 32 words onto the task's shadow
+ret_stack and this then can be retrieved by fgraph_retrieve_data() called
+by the corresponding retfunc().
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
+ Changes in v3:
+  - Store fgraph_array index to the data entry.
+  - Both function requires fgraph_array index to store/retrieve data.
+  - Reserve correct size of the data.
+  - Return correct data area.
  Changes in v2:
-  - Make description lines shorter than 76 chars.
+  - Retrieve the reserved size by fgraph_retrieve_data().
+  - Expand the maximum data size to 32 words.
+  - Update stack index with __get_index(val) if FGRAPH_TYPE_ARRAY entry.
+  - fix typos and make description lines shorter than 76 chars.
 ---
- include/linux/trace_recursion.h      |    7 -------
- kernel/trace/trace.h                 |    9 +++++++++
- kernel/trace/trace_functions_graph.c |   10 ++++++----
- 3 files changed, 15 insertions(+), 11 deletions(-)
+ include/linux/ftrace.h |    3 +
+ kernel/trace/fgraph.c  |  175 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 170 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index 00e792bf148d..cc11b0e9d220 100644
---- a/include/linux/trace_recursion.h
-+++ b/include/linux/trace_recursion.h
-@@ -44,13 +44,6 @@ enum {
-  */
- 	TRACE_IRQ_BIT,
- 
--	/*
--	 * To implement set_graph_notrace, if this bit is set, we ignore
--	 * function graph tracing of called functions, until the return
--	 * function is called to clear it.
--	 */
--	TRACE_GRAPH_NOTRACE_BIT,
--
- 	/* Used to prevent recursion recording from recursing. */
- 	TRACE_RECORD_RECURSION_BIT,
- };
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index d8cdcbb4e5a6..029a80a38c23 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -918,8 +918,17 @@ enum {
- 
- 	TRACE_GRAPH_DEPTH_START_BIT,
- 	TRACE_GRAPH_DEPTH_END_BIT,
-+
-+	/*
-+	 * To implement set_graph_notrace, if this bit is set, we ignore
-+	 * function graph tracing of called functions, until the return
-+	 * function is called to clear it.
-+	 */
-+	TRACE_GRAPH_NOTRACE_BIT,
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 737f84104577..815e865f46c9 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1075,6 +1075,9 @@ struct fgraph_ops {
+ 	int				idx;
  };
  
-+#define TRACE_GRAPH_NOTRACE		(1 << TRACE_GRAPH_NOTRACE_BIT)
++void *fgraph_reserve_data(int idx, int size_bytes);
++void *fgraph_retrieve_data(int idx, int *size_bytes);
 +
- static inline unsigned long ftrace_graph_depth(unsigned long *task_var)
+ /*
+  * Stack of return addresses for functions
+  * of a thread.
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index 4705681e65fd..5cc7f44037cd 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -41,17 +41,29 @@
+  * bits: 10 - 11	Type of storage
+  *			  0 - reserved
+  *			  1 - bitmap of fgraph_array index
++ *			  2 - reserved data
+  *
+  * For bitmap of fgraph_array index
+  *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
+  *
++ * For reserved data:
++ *  bits: 12 - 17	The size in words that is stored
++ *  bits: 18 - 23	The index of fgraph_array, which shows who is stored
++ *
+  * That is, at the end of function_graph_enter, if the first and forth
+  * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
+- * on the return of the function being traced, this is what will be on the
+- * task's shadow ret_stack: (the stack grows upward)
++ * on the return of the function being traced, and the forth fgraph_ops
++ * stored two words of data, this is what will be on the task's shadow
++ * ret_stack: (the stack grows upward)
+  *
+  * |                                            | <- task->curr_ret_stack
+  * +--------------------------------------------+
++ * | data_type(idx:3, size:2,                   |
++ * |           offset:FGRAPH_RET_INDEX+3)       | ( Data with size of 2 words)
++ * +--------------------------------------------+ ( It is 4 words from the ret_stack)
++ * |            STORED DATA WORD 2              |
++ * |            STORED DATA WORD 1              |
++ * +------i-------------------------------------+
+  * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
+  * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
+  * +--------------------------------------------+
+@@ -78,14 +90,23 @@
+ enum {
+ 	FGRAPH_TYPE_RESERVED	= 0,
+ 	FGRAPH_TYPE_BITMAP	= 1,
++	FGRAPH_TYPE_DATA	= 2,
+ };
+ 
+ #define FGRAPH_INDEX_SIZE	16
+ #define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
+ #define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
+ 
+-/* Currently the max stack index can't be more than register callers */
+-#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
++#define FGRAPH_DATA_SIZE	5
++#define FGRAPH_DATA_MASK	((1 << FGRAPH_DATA_SIZE) - 1)
++#define FGRAPH_DATA_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
++
++#define FGRAPH_DATA_INDEX_SIZE	4
++#define FGRAPH_DATA_INDEX_MASK	((1 << FGRAPH_DATA_INDEX_SIZE) - 1)
++#define FGRAPH_DATA_INDEX_SHIFT	(FGRAPH_DATA_SHIFT + FGRAPH_DATA_SIZE)
++
++#define FGRAPH_MAX_INDEX	\
++	((FGRAPH_INDEX_SIZE << FGRAPH_DATA_SIZE) + FGRAPH_RET_INDEX)
+ 
+ #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
+ 
+@@ -97,6 +118,8 @@ enum {
+ 
+ #define RET_STACK(t, index) ((struct ftrace_ret_stack *)(&(t)->ret_stack[index]))
+ 
++#define FGRAPH_MAX_DATA_SIZE (sizeof(long) * (1 << FGRAPH_DATA_SIZE))
++
+ /*
+  * Each fgraph_ops has a reservered unsigned long at the end (top) of the
+  * ret_stack to store task specific state.
+@@ -145,14 +168,39 @@ static int fgraph_lru_alloc_index(void)
+ 	return idx;
+ }
+ 
++static inline int __get_index(unsigned long val)
++{
++	return val & FGRAPH_RET_INDEX_MASK;
++}
++
++static inline int __get_type(unsigned long val)
++{
++	return (val >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
++}
++
++static inline int __get_data_index(unsigned long val)
++{
++	return (val >> FGRAPH_DATA_INDEX_SHIFT) & FGRAPH_DATA_INDEX_MASK;
++}
++
++static inline int __get_data_size(unsigned long val)
++{
++	return (val >> FGRAPH_DATA_SHIFT) & FGRAPH_DATA_MASK;
++}
++
++static inline unsigned long get_fgraph_entry(struct task_struct *t, int index)
++{
++	return t->ret_stack[index];
++}
++
+ static inline int get_ret_stack_index(struct task_struct *t, int offset)
  {
- 	return (*task_var >> TRACE_GRAPH_DEPTH_START_BIT) & 3;
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 66cce73e94f8..13d0387ac6a6 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -130,6 +130,7 @@ static inline int ftrace_graph_ignore_irqs(void)
- int trace_graph_entry(struct ftrace_graph_ent *trace,
- 		      struct fgraph_ops *gops)
+-	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
++	return __get_index(t->ret_stack[offset]);
+ }
+ 
+ static inline int get_fgraph_type(struct task_struct *t, int offset)
  {
-+	unsigned long *task_var = fgraph_get_task_var(gops);
- 	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
-@@ -138,7 +139,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace,
- 	int ret;
- 	int cpu;
+-	return (t->ret_stack[offset] >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
++	return __get_type(t->ret_stack[offset]);
+ }
  
--	if (trace_recursion_test(TRACE_GRAPH_NOTRACE_BIT))
-+	if (*task_var & TRACE_GRAPH_NOTRACE)
- 		return 0;
+ static inline unsigned long
+@@ -179,6 +227,22 @@ add_fgraph_index_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
+ 	t->ret_stack[offset] |= (bitmap << FGRAPH_INDEX_SHIFT);
+ }
  
- 	/*
-@@ -149,7 +150,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace,
- 	 * returning from the function.
- 	 */
- 	if (ftrace_graph_notrace_addr(trace->func)) {
--		trace_recursion_set(TRACE_GRAPH_NOTRACE_BIT);
-+		*task_var |= TRACE_GRAPH_NOTRACE_BIT;
- 		/*
- 		 * Need to return 1 to have the return called
- 		 * that will clear the NOTRACE bit.
-@@ -240,6 +241,7 @@ void __trace_graph_return(struct trace_array *tr,
- void trace_graph_return(struct ftrace_graph_ret *trace,
- 			struct fgraph_ops *gops)
++static inline void *get_fgraph_data(struct task_struct *t, int index)
++{
++	unsigned long val = t->ret_stack[index];
++
++	if (__get_type(val) != FGRAPH_TYPE_DATA)
++		return NULL;
++	index -= __get_data_size(val);
++	return (void *)&t->ret_stack[index];
++}
++
++static inline unsigned long make_fgraph_data(int idx, int size, int offset)
++{
++	return (idx << FGRAPH_DATA_INDEX_SHIFT) | (size << FGRAPH_DATA_SHIFT) |
++		(FGRAPH_TYPE_DATA << FGRAPH_TYPE_SHIFT) | offset;
++}
++
+ /* ftrace_graph_entry set to this to tell some archs to run function graph */
+ static int entry_run(struct ftrace_graph_ent *trace, struct fgraph_ops *ops)
  {
-+	unsigned long *task_var = fgraph_get_task_var(gops);
- 	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
-@@ -249,8 +251,8 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
+@@ -212,6 +276,92 @@ static void ret_stack_init_task_vars(unsigned long *ret_stack)
+ 	memset(gvals, 0, sizeof(*gvals) * FGRAPH_ARRAY_SIZE);
+ }
  
- 	ftrace_graph_addr_finish(gops, trace);
++/**
++ * fgraph_reserve_data - Reserve storage on the task's ret_stack
++ * @idx:	The index of fgraph_array
++ * @size_bytes: The size in bytes to reserve
++ *
++ * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
++ * task's ret_stack shadow stack, for a given fgraph_ops during
++ * the entryfunc() call. If entryfunc() returns zero, the storage
++ * is discarded. An entryfunc() can only call this once per iteration.
++ * The fgraph_ops retfunc() can retrieve this stored data with
++ * fgraph_retrieve_data().
++ *
++ * Returns: On success, a pointer to the data on the stack.
++ *   Otherwise, NULL if there's not enough space left on the
++ *   ret_stack for the data, or if fgraph_reserve_data() was called
++ *   more than once for a single entryfunc() call.
++ */
++void *fgraph_reserve_data(int idx, int size_bytes)
++{
++	unsigned long val;
++	void *data;
++	int curr_ret_stack = current->curr_ret_stack;
++	int data_size;
++
++	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
++		return NULL;
++
++	/* Convert to number of longs + data word */
++	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
++
++	val = get_fgraph_entry(current, curr_ret_stack - 1);
++	data = &current->ret_stack[curr_ret_stack];
++
++	curr_ret_stack += data_size + 1;
++	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
++		return NULL;
++
++	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
++
++	/* Set the last word to be reserved */
++	current->ret_stack[curr_ret_stack - 1] = val;
++
++	/* Make sure interrupts see this */
++	barrier();
++	current->curr_ret_stack = curr_ret_stack;
++	/* Again sync with interrupts, and reset reserve */
++	current->ret_stack[curr_ret_stack - 1] = val;
++
++	return data;
++}
++
++/**
++ * fgraph_retrieve_data - Retrieve stored data from fgraph_reserve_data()
++ * @idx:	the index of fgraph_array (fgraph_ops::idx)
++ * @size_bytes: pointer to retrieved data size.
++ *
++ * This is to be called by a fgraph_ops retfunc(), to retrieve data that
++ * was stored by the fgraph_ops entryfunc() on the function entry.
++ * That is, this will retrieve the data that was reserved on the
++ * entry of the function that corresponds to the exit of the function
++ * that the fgraph_ops retfunc() is called on.
++ *
++ * Returns: The stored data from fgraph_reserve_data() called by the
++ *    matching entryfunc() for the retfunc() this is called from.
++ *   Or NULL if there was nothing stored.
++ */
++void *fgraph_retrieve_data(int idx, int *size_bytes)
++{
++	int index = current->curr_ret_stack - 1;
++	unsigned long val;
++
++	val = get_fgraph_entry(current, index);
++	while (__get_type(val) == FGRAPH_TYPE_DATA) {
++		if (__get_data_index(val) == idx)
++			goto found;
++		index -= __get_data_size(val) + 1;
++		val = get_fgraph_entry(current, index);
++	}
++	return NULL;
++found:
++	if (size_bytes)
++		*size_bytes = __get_data_size(val) *
++			      sizeof(long);
++	return get_fgraph_data(current, index);
++}
++
+ /**
+  * fgraph_get_task_var - retrieve a task specific state variable
+  * @gops: The ftrace_ops that owns the task specific variable
+@@ -449,13 +599,18 @@ int function_graph_enter(unsigned long ret, unsigned long func,
  
--	if (trace_recursion_test(TRACE_GRAPH_NOTRACE_BIT)) {
--		trace_recursion_clear(TRACE_GRAPH_NOTRACE_BIT);
-+	if (*task_var & TRACE_GRAPH_NOTRACE) {
-+		*task_var &= ~TRACE_GRAPH_NOTRACE;
- 		return;
+ 	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+ 		struct fgraph_ops *gops = fgraph_array[i];
++		int save_curr_ret_stack;
+ 
+ 		if (gops == &fgraph_stub)
+ 			continue;
+ 
++		save_curr_ret_stack = current->curr_ret_stack;
+ 		if (ftrace_ops_test(&gops->ops, func, NULL) &&
+ 		    gops->entryfunc(&trace, gops))
+ 			bitmap |= BIT(i);
++		else
++			/* Clear out any saved storage */
++			current->curr_ret_stack = save_curr_ret_stack;
  	}
  
+ 	if (!bitmap)
+@@ -481,6 +636,7 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
+ 			     struct fgraph_ops *gops)
+ {
+ 	struct ftrace_graph_ent trace;
++	int save_curr_ret_stack;
+ 	int index;
+ 	int type;
+ 
+@@ -500,13 +656,15 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
+ 
+ 	trace.func = func;
+ 	trace.depth = current->curr_ret_depth;
++	save_curr_ret_stack = current->curr_ret_stack;
+ 	if (gops->entryfunc(&trace, gops)) {
+ 		if (type == FGRAPH_TYPE_RESERVED)
+ 			set_fgraph_index_bitmap(current, index, BIT(gops->idx));
+ 		else
+ 			add_fgraph_index_bitmap(current, index, BIT(gops->idx));
+ 		return 0;
+-	}
++	} else
++		current->curr_ret_stack = save_curr_ret_stack;
+ 
+ 	if (type == FGRAPH_TYPE_RESERVED) {
+ 		current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
+@@ -651,7 +809,8 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+ 	 * curr_ret_stack is after that.
+ 	 */
+ 	barrier();
+-	current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
++	current->curr_ret_stack = index - FGRAPH_RET_INDEX;
++
+ 	current->curr_ret_depth--;
+ 	return ret;
+ }
 
 
