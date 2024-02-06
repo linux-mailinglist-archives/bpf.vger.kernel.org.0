@@ -1,105 +1,127 @@
-Return-Path: <bpf+bounces-21281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2B5384AE69
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 07:33:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ED5684AE6E
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 07:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E222286E09
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 06:33:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3DC8B23830
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 06:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135FF127B73;
-	Tue,  6 Feb 2024 06:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C12E128803;
+	Tue,  6 Feb 2024 06:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QFizZ9ma"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09037127B54
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 06:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E5A127B6B
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 06:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707201197; cv=none; b=r1tY7lmI5kQ0QpKtqEqdZej7OFlmnehjEL1oDIne24sXmKJPHJ59U6nYbHMa17rB4lnwsKrcChQBvan7xvQObYyxvU65Bp55+1J8Lhj3hpnawcePZXbfDfXEZSzExWKreH0pKgA4hTxKarB5gGsJbMj7tZGlR6dLhtBIQsLTjYE=
+	t=1707201491; cv=none; b=VXWAjJyGROTUF69EbLBOaTNLXLJQCrFivvK+HkmlXCqckxSiKnSf6JFsLi9rsBmO1tzEvVwWXK8zXQpPg6Wku7LogOHBQDpvysC4BpgqZe9D61sAo6NVnpfK7BVyjczdbln/V55/XDloxtSzNFXtPVUnkij1TVHgV25cuLp66IQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707201197; c=relaxed/simple;
-	bh=4ET0fyLHVJEsDuQ9gH+PgSGGLVCtzDZ/Qwsv8HecTvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eDz67yPSvyPrWF/wVD2gNol/PszdHU22hRGe6159yl6Q/LIQNyc/KTBVfs75tCUU+qWe2SWAL2FbVMhyhiKrRACAXvvSyfrQ5uJWEUfJJDiUswA0nrGFlb9aR8/IXx7V4k2IPPcYM9rTHgpKljvHgACZ6aLSnLkM4EpmdFnPlro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-42aa241b91aso45394481cf.1
-        for <bpf@vger.kernel.org>; Mon, 05 Feb 2024 22:33:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707201195; x=1707805995;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4ET0fyLHVJEsDuQ9gH+PgSGGLVCtzDZ/Qwsv8HecTvM=;
-        b=bptsW5juoVSzRfjtqVgbmYLhd2015nFliSH8Q0XcFVS4/HZA/yb2lUEh1Otgb95kmj
-         TXU0glHyOv7LDgC5lAB6gYKNrxKVshyAkLoLUFPi3wx/SfdAfCN8oXkkDI66pNK0VYOd
-         fvsftmcKJ0Jw2+eea8idEJBLjgKtkgE433ngw4O0W/3S7PYaHF1KjyUgVf9erqrrUvwE
-         Y21Q4V2zvth+hmuZDO8oSdyCDsbSqCaA6K5h2hYvWvxYLX8olDrmP7hKocFJ1Q9XhOmF
-         rUN5vb+UDMz83ZKjrzuyLjHIN1SGRIQ+6xcpPi7ahEQ8rfNkc8VdgeND8TkYnDm+aunN
-         Hnxg==
-X-Gm-Message-State: AOJu0YxdzWHGYXvRPxKmoInfLhz+wOgshvBjUZRN6BgGoNvUjQyu3/1G
-	XUHogygYCQXtNw0hGmumTXgun3ftuQwiaqF1aig3usx8VFyAVhj82FY6suZ/hPOnTQ==
-X-Google-Smtp-Source: AGHT+IHIRpR2kv+KQ945cd5bHIRJBmHF8XN8dyszKd/8chzZkMG0Hj6hmihDCixwYond2AIV0Y6orQ==
-X-Received: by 2002:a05:6214:29e7:b0:68c:67aa:c071 with SMTP id jv7-20020a05621429e700b0068c67aac071mr1707656qvb.18.1707201194807;
-        Mon, 05 Feb 2024 22:33:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWPTUZ4n807PuML7vdqZPlmkUpyLyTSfKywlu6unlF/na/5RORbbXuuGOMZIo+GxzZlypnAlYydOX1JQSMNqSdMhW/kynkb0asocW0Ex24CfwjCVQ==
-Received: from maniforge.lan (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id k17-20020a0cf591000000b0068cabcec402sm752286qvm.134.2024.02.05.22.33.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 22:33:14 -0800 (PST)
-Date: Tue, 6 Feb 2024 00:33:12 -0600
-From: David Vernet <void@manifault.com>
-To: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
-Cc: bpf@vger.kernel.org, bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
-Subject: Re: [Bpf] [PATCH bpf-next] bpf, docs: Fix typos in
- instructions-set.rst
-Message-ID: <20240206063312.GA853677@maniforge.lan>
-References: <20240206045146.4965-1-dthaler1968@gmail.com>
+	s=arc-20240116; t=1707201491; c=relaxed/simple;
+	bh=gYSPPQkxGVxopRefB4oNvj3XotsXyzANMSieUfq5dMc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jZKIYXIxu3zSFnWWuPypIrDtD4CAlwYow1IVp0+1hHn/ORbaiLkMDUfW8NwTqudSopcgFERtnOnQxXsEk7QQ3UtlKPUMngThJSlpS/dMvb1vnYqM4BSFf5dVhPmE/lJoajWuYf0Y/aTYDbrg6ZupzbT7AObPZqUnbgzv6bCB7pU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QFizZ9ma; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d92b0371-6d36-4296-b920-28bea1f5fd07@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707201486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SlA3r8GlivXM9HR/+q/C6ySN28fs400IEwqhUtJRU8k=;
+	b=QFizZ9mahH9MFDecwMwtn4hckcrR9KCmQwqXBEMOu47G4n933dgeJ62n1S9fPQrH8sf5mR
+	xTGdfz09k/GAcCIiZnrhciJhDsfQBANw7eeBNVEznJl9mMZcjp+XXXmoRamEVRi2C+QqjO
+	AaSf+DjSqIVSQYAo0EtwJ0wuVPnXJmk=
+Date: Mon, 5 Feb 2024 22:37:56 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c5d2i3HwTslNSlo6"
-Content-Disposition: inline
-In-Reply-To: <20240206045146.4965-1-dthaler1968@gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix flaky test ptr_untrusted
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240204194452.2785936-1-yonghong.song@linux.dev>
+ <CAEf4BzZhg13E=-z1yUKwtiXOeNwaA8m5N_jaTW_DRGV7ZdFE9A@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzZhg13E=-z1yUKwtiXOeNwaA8m5N_jaTW_DRGV7ZdFE9A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
---c5d2i3HwTslNSlo6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2/5/24 10:56 AM, Andrii Nakryiko wrote:
+> On Sun, Feb 4, 2024 at 11:45 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Somehow recently I frequently hit the following test failure
+>> with either ./test_progs or ./test_progs-cpuv4:
+>>    serial_test_ptr_untrusted:PASS:skel_open 0 nsec
+>>    serial_test_ptr_untrusted:PASS:lsm_attach 0 nsec
+>>    serial_test_ptr_untrusted:PASS:raw_tp_attach 0 nsec
+>>    serial_test_ptr_untrusted:FAIL:cmp_tp_name unexpected cmp_tp_name: actual -115 != expected 0
+>>    #182     ptr_untrusted:FAIL
+>>
+>> Further investigation found the failure is due to
+>>    bpf_probe_read_user_str()
+>> where reading user-level string attr->raw_tracepoint.name
+>> is not successfully, most likely due to the
+>> string itself still in disk and not populated into memory yet.
+>>
+>> One solution is do a printf() call of the string before doing bpf
+>> syscall which will force the raw_tracepoint.name into memory.
+>> But I think a more robust solution is to use bpf_copy_from_user()
+>> which is used in sleepable program and can tolerate page fault,
+>> and the fix here used the latter approach.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   tools/testing/selftests/bpf/progs/test_ptr_untrusted.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
+>> index 4bdd65b5aa2d..2fdc44e76624 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
+>> @@ -6,13 +6,13 @@
+>>
+>>   char tp_name[128];
+>>
+>> -SEC("lsm/bpf")
+>> +SEC("lsm.s/bpf")
+>>   int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
+>>   {
+>>          switch (cmd) {
+>>          case BPF_RAW_TRACEPOINT_OPEN:
+>> -               bpf_probe_read_user_str(tp_name, sizeof(tp_name) - 1,
+>> -                                       (void *)attr->raw_tracepoint.name);
+>> +               bpf_copy_from_user(tp_name, sizeof(tp_name) - 1,
+>> +                                  (void *)attr->raw_tracepoint.name);
+> Should we also add bpf_copy_from_user_str (and
+> bpf_copy_from_user_str_task) kfuncs to complete bpf_copy_from_user?
+> This change is not strictly equivalent (though for tests it's fine,
+> but in real-world apps it would be problematic).
 
-On Mon, Feb 05, 2024 at 08:51:46PM -0800, Dave Thaler wrote:
-> * "imm32" should just be "imm"
-> * Add blank line to fix formatting error reported by Stephen Rothwell [0]
->=20
-> [0]: https://lore.kernel.org/bpf/20240206153301.4ead0bad@canb.auug.org.au=
-/T/#u
->=20
-> Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+Sounds a good idea. Let me do some investigations!
 
-Acked-by: David Vernet <void@manifault.com>
-
---c5d2i3HwTslNSlo6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZcHSpwAKCRBZ5LhpZcTz
-ZHxeAP455nv23Xpw/MAANLnxpIjuwgPetqhgZ6AIxG+k43yZYQD+IPt+WEGEK+Bj
-vgOFFNAgPBu0bC6jODdq1ytVizlX+Q4=
-=FRCI
------END PGP SIGNATURE-----
-
---c5d2i3HwTslNSlo6--
+>
+>>                  break;
+>>          default:
+>>                  break;
+>> --
+>> 2.34.1
+>>
 
