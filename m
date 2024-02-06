@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9452184BFB3
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 23:04:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF2284BFB4
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 23:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD94284915
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 22:04:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A02341F21D54
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 22:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E3C1BC27;
-	Tue,  6 Feb 2024 22:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BD11BDDB;
+	Tue,  6 Feb 2024 22:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KOl1EX/V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gybeiERi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D701BC41
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 22:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458101BC3C
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 22:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707257096; cv=none; b=p9Pf7ZCaSjM5sETUmwAtbr7jxiDNXj6MDmAcpcQKeC9z2cnLqpiKtChizivjtc5PJSEoS3BV1LMsBdjmQs3j4s2WIVddItpiWBKHfa9btamz6vOyd88hcAfgK6R+V1gJ4A5xDXrI+QmdsXdsSCYSHHUNW+Oz3j8DFQ06AFcj3Yg=
+	t=1707257099; cv=none; b=VF01dhFbFhcsGfzhNzheViM+UEknr9X7eL0s79BagY2bgVlSVbdacNoYf9QTQVLFxu/dNxoUNC/NAT4VYUKu6iUrNozRjprk57njdLpeC6ngncqMpT1v3aG1KvuEM+5uPVbq2Ubglce6JpeF0G7dJGlCrYmUPpI5Jet40pKgiAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707257096; c=relaxed/simple;
-	bh=y/WnPpS5v7h0NAuexgmi/BtX46N+W3zY7R6LeqdxZUM=;
+	s=arc-20240116; t=1707257099; c=relaxed/simple;
+	bh=1Fl8Vhx1TncSqczMymESz0vJAIjHEVQSOmCMMy7aPo8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bHw/GrVBw8JJ7S5J3Kq/iI1shSsDHbl6o9VXvZmaNFwvg5ZzeWbNj1xqr6qPvwwBHkgY4/oZyD4DI0STwdf1LlkWm5aQk7LAguOtvGzwej+5jeLpW9D9oY4MJGIKPm0NdDyirzmi+000UT023wU60QUn+6kQ2C5GsPTvSp3udjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KOl1EX/V; arc=none smtp.client-ip=209.85.210.178
+	 MIME-Version; b=WeVbdVwS17pCwYAtYE5+FFVwhpPjhXHxpq5PBzMgI8+HAS7w+lGuhur9xevDwgBrVwUmVTqS6Y5pouoOtB37RGbFQBd+b8+wSMN41Jjd+G7Gb6BjIIGseeq5aA7qDQUDH458A2UJdJ9qAeK7l7ytWl24SsqDsQjWuY1eGJupLPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gybeiERi; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e04fd5e05aso17840b3a.0
-        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 14:04:54 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e04eca492fso11817b3a.1
+        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 14:04:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707257093; x=1707861893; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707257097; x=1707861897; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RYMIDAZLgBUgMpP99zrxeTSMtNJZxQwPNyQYFWZYzso=;
-        b=KOl1EX/VkcCub6+reNZspY+xprSpgRLI5hQkB+ancywiNOlcj8JZzrwfQ1kMyHsdNZ
-         s6SE1YBL7ZLfYj3KbcHSCnH3YKioET2piBJeQkT6toegOfB3JXGE6YpxUqILkn23ORFf
-         wkgxl+jzmVmgNKYGfwNSFCuQ1OfqvQ6cdUOmgd/pzHh9a+ovISea3Ec4PElBDpITBjc3
-         W3QmdaXfcssqlcc6u2aS8X8/k7tVLa05Jl1vKLSn5PbdDnfhda43OimG9SlKlrzdYlIf
-         sUsGMkxcrnz9i21j8zbvoKwfWjehYU6f3pEnuU15I930FCqTDkGv3tIKVD1YVka0Kj/I
-         yMcQ==
+        bh=3Tj/XQbWXLMz6O6W1qhMmj7yBJ5q6YLDIAk/QCdta60=;
+        b=gybeiERix74gaWKVotahzjK4YNy6xeEN8BKvkLevYLRYOUtLw3PdUPtXUcTw8W+3v8
+         nFQB1/pJw+aHMmzbOQASPhuAoj5CeNymUyAh5bqSMR8maG3ODjOmy4HyIJwlB2jZeVS+
+         +mCKICuH8ZBPD86KqHXGoyzXTSbU6sPb+1QqqbIf5Ogc6uPurcN+3hSsOIMUufs91biD
+         9wrbLGWngSFuscBFZFRtAAW0g+RvT+PQpD+efFd/35vInhzPWI6MY83U+p44zZJaBjio
+         tnFoFpWG+Repgva1J2I8jH2zi5pQpkdG2O+sSdIfdFrVn0uRXUFyni1lZDGc8ls3a4e1
+         pmdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707257093; x=1707861893;
+        d=1e100.net; s=20230601; t=1707257097; x=1707861897;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RYMIDAZLgBUgMpP99zrxeTSMtNJZxQwPNyQYFWZYzso=;
-        b=ItMoZq7A2yRSEl1g7YYAbxqelhvSKCIGr2FKlPLO3S8SJ3t3qm99VmxNUk89Ujjw2p
-         +TNAuveSspvKVLOe6QX9UbIW47Cq9OkoZtWYR4U9JvURWdWBirBxqVL6XK4jnK754E6z
-         Rx9bh8JpDXWmJedbDxFhibc24QRW+J7yFnsXfkIRUyzkLaeGrtb1ZVtDIrf0fZ9FQuT6
-         WhSKGwCoym0MCntqOeOCRchZQWxeSjjW8RjgCS0LmxGhQWpPMzZtX3N+6ripMUupfXlb
-         oU4KkQmlN+Pj8Om0S0cSDVkBcbUVgvFa96EGSwXSb7y5oRKC1JkmEWzLJiE2cuyMlBaK
-         uShg==
-X-Gm-Message-State: AOJu0YxiRUv+RZcGeNnk0BGEf1tn98cio3SjcP0YNN2tCDWw/Os6KZP7
-	e5/IbWTjI/hJIAeLNkYBCdOvq2as9NLnorQ0wJYE+Ud/dteKlZ8p3IxEsT/B
-X-Google-Smtp-Source: AGHT+IGOIOdH45J5dyDgzanegb8JLdqXenulcK+qVHNvlZfYkUWkLxixF+6eKSWhF7qb3dfASt+aRw==
-X-Received: by 2002:a05:6a00:b93:b0:6e0:4f30:bcfc with SMTP id g19-20020a056a000b9300b006e04f30bcfcmr1405410pfj.9.1707257093567;
-        Tue, 06 Feb 2024 14:04:53 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWUQoVkIthQQOsy6U4eSoQ5WdjVc0nJCVsDbkA2v0JGF6Yabw2lW6vfJzu68baFahsluKlv1NXHpG3TR+PKOZ23wdIUvI68+73W6afFYOGp3111MbSF540b1PZ6MPixqg3IhHR0uNOvN8cle0tWOioXnGsAI2TDADOi5Fif9LN8YHbGgy0QINttwPB4URjcnMqY8BB11Ij1d6XI/7mcn2HIpchSHafTgbAynmFH5kUNenEDFjaaPYgtauQDqNmqat3SfznSOSAwQYvn61xLPdSXcFtvHj6P1zvY
+        bh=3Tj/XQbWXLMz6O6W1qhMmj7yBJ5q6YLDIAk/QCdta60=;
+        b=etoVG0d5v805A+umY3nXtuEnUb58VfFnn10xoDjwP+7wmaNNE9Cx21CGaiOgyR81k9
+         DS0rd8qDv7x1FIcwkmszags7ji5hYgnNTgrjZ+qpMAiNJPyaZQ9tGceOFOlo4EgdG9+0
+         6FXZ7wOTnOiGQ+Y+VdL6qOa7Zqh1vh4tLckCn2YgvyIDdqTjYRcVkbNofV64BU/9PqzQ
+         94JYLX2kgs1yEdb4b3RYJHU0jq7QRw+f8uLM+OO4hVaz/7Qq6l5UAdM0cANeYNLjl/8+
+         u9paa2DYD7To5kti/DwPz+5TGVqVfDP2LQ2r16W9Mb6hvAJaFIjE6t59U8pUXoSID+VU
+         NwRg==
+X-Gm-Message-State: AOJu0YzpxNOptx/gJ5bhZgZ84ZISMVBCzLwQ+ZYUUB1ipX9HqrTH/Oyi
+	IHIA7tDk272yf43fOO0LknpE+YQ1FqQxhGfW3cta1j58mlE+xfqUOMic+z2m
+X-Google-Smtp-Source: AGHT+IEjcAf6uXoS2ZepvZd4WPEhsb74cH/NcraOd61wF2bJGbGsztqlhDT3saZuKsz+GWEev5IaMA==
+X-Received: by 2002:a05:6a20:3598:b0:19c:2a8d:8b75 with SMTP id j24-20020a056a20359800b0019c2a8d8b75mr2472114pze.28.1707257097406;
+        Tue, 06 Feb 2024 14:04:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUog5B9mBd/4ypN4iPfsLncV0Q6zXF9MI3t+m9OSEmXJlkyaYwbJU3Z5CWn6TyAb2DiJtsdoKuHJLryjn1E+YF6B9ICtSLE8PV+NwaK7s/bobASa1TzhWkioQw/pNKVdOB/uuhkbiOyjjZJRLYOlpKWVmq5s3/lmII40TDt44WDD0EUbz7vv76WbdbJJBqhRa1G7/kQyL5mMT0bXWt/GXEdG4CTcUpNAwn3jDPEp8+fy2NVxuh9M65ywbwVm9XrCApUkiY64O7kR5q1Bkwzb8au/2GMwMcXdy3L
 Received: from localhost.localdomain ([2620:10d:c090:400::4:27bf])
-        by smtp.gmail.com with ESMTPSA id y20-20020aa78554000000b006e0322f072asm2488200pfn.35.2024.02.06.14.04.51
+        by smtp.gmail.com with ESMTPSA id c1-20020aa78c01000000b006e02e816f13sm2491180pfd.111.2024.02.06.14.04.55
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 06 Feb 2024 14:04:53 -0800 (PST)
+        Tue, 06 Feb 2024 14:04:57 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -79,9 +79,9 @@ Cc: daniel@iogearbox.net,
 	hannes@cmpxchg.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next 02/16] bpf: Recognize '__map' suffix in kfunc arguments
-Date: Tue,  6 Feb 2024 14:04:27 -0800
-Message-Id: <20240206220441.38311-3-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 03/16] mm: Expose vmap_pages_range() to the rest of the kernel.
+Date: Tue,  6 Feb 2024 14:04:28 -0800
+Message-Id: <20240206220441.38311-4-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
 References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
@@ -95,65 +95,47 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Recognize 'void *p__map' kfunc argument as 'struct bpf_map *p__map'.
-It allows kfunc to have 'void *' argument for maps, since bpf progs
-will call them as:
-struct {
-        __uint(type, BPF_MAP_TYPE_ARENA);
-	...
-} arena SEC(".maps");
-
-bpf_kfunc_with_map(... &arena ...);
-
-Underneath libbpf will load CONST_PTR_TO_MAP into the register via ld_imm64 insn.
-If kfunc was defined with 'struct bpf_map *' it would pass
-the verifier, but bpf prog would need to use '(void *)&arena'.
-Which is not clean.
+The next commit will introduce bpf_arena which is a sparsely populated shared
+memory region between bpf program and user space process.
+It will function similar to vmalloc()/vm_map_ram():
+- get_vm_area()
+- alloc_pages()
+- vmap_pages_range()
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/verifier.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ include/linux/vmalloc.h | 2 ++
+ mm/vmalloc.c            | 4 ++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d9c2dbb3939f..db569ce89fb1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10741,6 +10741,11 @@ static bool is_kfunc_arg_ignore(const struct btf *btf, const struct btf_param *a
- 	return __kfunc_param_match_suffix(btf, arg, "__ign");
- }
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index c720be70c8dd..bafb87c69e3d 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -233,6 +233,8 @@ static inline bool is_vm_area_hugepages(const void *addr)
  
-+static bool is_kfunc_arg_map(const struct btf *btf, const struct btf_param *arg)
-+{
-+	return __kfunc_param_match_suffix(btf, arg, "__map");
-+}
-+
- static bool is_kfunc_arg_alloc_obj(const struct btf *btf, const struct btf_param *arg)
+ #ifdef CONFIG_MMU
+ void vunmap_range(unsigned long addr, unsigned long end);
++int vmap_pages_range(unsigned long addr, unsigned long end,
++		     pgprot_t prot, struct page **pages, unsigned int page_shift);
+ static inline void set_vm_flush_reset_perms(void *addr)
  {
- 	return __kfunc_param_match_suffix(btf, arg, "__alloc");
-@@ -11064,7 +11069,7 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 		return KF_ARG_PTR_TO_CONST_STR;
+ 	struct vm_struct *vm = find_vm_area(addr);
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d12a17fc0c17..eae93d575d1b 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -625,8 +625,8 @@ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+  * RETURNS:
+  * 0 on success, -errno on failure.
+  */
+-static int vmap_pages_range(unsigned long addr, unsigned long end,
+-		pgprot_t prot, struct page **pages, unsigned int page_shift)
++int vmap_pages_range(unsigned long addr, unsigned long end,
++		     pgprot_t prot, struct page **pages, unsigned int page_shift)
+ {
+ 	int err;
  
- 	if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
--		if (!btf_type_is_struct(ref_t)) {
-+		if (!btf_type_is_struct(ref_t) && !btf_type_is_void(ref_t)) {
- 			verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
- 				meta->func_name, argno, btf_type_str(ref_t), ref_tname);
- 			return -EINVAL;
-@@ -11660,6 +11665,13 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		if (kf_arg_type < 0)
- 			return kf_arg_type;
- 
-+		if (is_kfunc_arg_map(btf, &args[i])) {
-+			/* If argument has '__map' suffix expect 'struct bpf_map *' */
-+			ref_id = *reg2btf_ids[CONST_PTR_TO_MAP];
-+			ref_t = btf_type_by_id(btf_vmlinux, ref_id);
-+			ref_tname = btf_name_by_offset(btf, ref_t->name_off);
-+		}
-+
- 		switch (kf_arg_type) {
- 		case KF_ARG_PTR_TO_NULL:
- 			continue;
 -- 
 2.34.1
 
