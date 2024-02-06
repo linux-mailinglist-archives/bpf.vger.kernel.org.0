@@ -1,196 +1,174 @@
-Return-Path: <bpf+bounces-21279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784D284ADB6
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 05:52:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55B3E84AE62
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 07:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC9F61F23DA1
-	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 04:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBFD62870B6
+	for <lists+bpf@lfdr.de>; Tue,  6 Feb 2024 06:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AA678695;
-	Tue,  6 Feb 2024 04:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="LgMid5j4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="UD3OkjIs";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Fef9RTgg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922898529A;
+	Tue,  6 Feb 2024 06:30:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D501E492
-	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 04:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7CB84FB3
+	for <bpf@vger.kernel.org>; Tue,  6 Feb 2024 06:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707195118; cv=none; b=geGpqNIKDaxITFer6lew4qXcNJSqUN85H3j9ISMOekGxtZ+foS3DJ+9GkigFix4o/ngCW+np3yagTmji+tqwQpNq/4OgbIiglcZr6CZaHUpeqAHL/aAeI4HD95y1Q3AlsslXu6OX5UBqqvxmiFyzAB8qkPGf7gzYW538YnAv3V0=
+	t=1707201028; cv=none; b=adG/jLnbSXhYJHrovmvvEZkBR00yVEGHtpfdwgYDMVgba/QHslMgAJmrY1yPtqa678CPST608831vrXRG2TGWt1u1c18T+GI8muh9mhZLcr+WJhVbMvDf6yF1NcZ3FW6xXy0ckK3NlW+/Sh6iRgnF7KexOR56smKbVyw6u7XZk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707195118; c=relaxed/simple;
-	bh=p/5q5OkKZTfQxwzwkR16Lhyfl8fAzmr+t7DoDushcWU=;
-	h=To:Cc:Date:Message-Id:MIME-Version:Subject:Content-Type:From; b=WoChgTmWqd2MtrZQIpcU6BqQpzQukfVd5eSxFXX2V2Qq0kRjewcd2Z+wJm/Lrrxjvmc2zRXWOCVWSdMmm07y/c2klpTOp2ukm4YCiTbvgS40Kpb3Z7t92LoA+8qEXEjXn1F5g+Dn397Q9eVuFHGoFx4+X/lwN2rA4XZJpCyrIec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=LgMid5j4; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=UD3OkjIs reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=Fef9RTgg reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 3308FC14CEFF
-	for <bpf@vger.kernel.org>; Mon,  5 Feb 2024 20:51:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1707195116; bh=p/5q5OkKZTfQxwzwkR16Lhyfl8fAzmr+t7DoDushcWU=;
-	h=To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LgMid5j4bzxJ6VbMumqf7W1gTmjjOFSto6z8EqLmg9Qafgz2Wf9OJOvl7ERIMHeIj
-	 Dh6cn5lZUzvVKN7bV/EzLdAX2lSqeVsW1bRA93WGFlov/Q8EgqmKHqWPXvI/AEJgO1
-	 fqeR2FYDXiXFY5s5s6LhchTapsewggl31nK6pZLs=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id E7166C14F6BA;
- Mon,  5 Feb 2024 20:51:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1707195116; bh=p/5q5OkKZTfQxwzwkR16Lhyfl8fAzmr+t7DoDushcWU=;
- h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
- List-Post:List-Help:List-Subscribe;
- b=UD3OkjIsM4Ee3sTDyY3is50lU/yAhtTByf/CXu1xA/299X8/YUzLm5O1AknJdx0MS
- BDup+OkGXr33pCUO7BAHkWesHHU+Iuo+DIzbkNsAv2aXcc5r0+QSu7wHTdL05c3uXZ
- gyxibnKjdBIhsjQnCfw8SzO1hi5i2hP+ypHONalY=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id A6C6CC14F6BA
- for <bpf@ietfa.amsl.com>; Mon,  5 Feb 2024 20:51:55 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -6.855
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=googlemail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id u3Mc0IX8IJdy for <bpf@ietfa.amsl.com>;
- Mon,  5 Feb 2024 20:51:51 -0800 (PST)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com
- [IPv6:2607:f8b0:4864:20::630])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id CA642C14F6B9
- for <bpf@ietf.org>; Mon,  5 Feb 2024 20:51:51 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id
- d9443c01a7336-1d918008b99so39244475ad.3
- for <bpf@ietf.org>; Mon, 05 Feb 2024 20:51:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20230601; t=1707195111; x=1707799911; darn=ietf.org;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=9JhFREGZ5CoepqB+/CwW4U3bJPSdUrEAa1K7KoVJ2+o=;
- b=Fef9RTggDU2yC8rV6gJWPTsho7UjI7oMXG2Z3FxGSqXhnLalSO01M6/qflvkhiO1Mj
- FPqiQIu9LYfqQRtNixgAQ3ic6uBlxcsNiqU2FpA5yQqcS3hXmh/gml1PguB/rL3R9zVn
- 1tN0Fa9tx3WMAO5yIMeOZnt66X4TIQ1HL32ZJGv4dT9lRZNjDyc/fk75pxKe/Awdl6Ug
- ztckvQ7U3DecVsQAaw6eEvFufg+AkJqgPtVdaK4Z4D7efvvhQYb6SLnNRDrafazzf4Cx
- DaKkktPJZqU+R29B11dfN/ovVYm7q3HIVHNgPlwc+zFKdVt+FlUiFVA/MV23zDXRmobj
- G3Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1707195111; x=1707799911;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=9JhFREGZ5CoepqB+/CwW4U3bJPSdUrEAa1K7KoVJ2+o=;
- b=Yq6AlsSbS5Vll93Z4e/6GO0nCR5qmLsWMjsN2aLVDVTxMgzMNcZBi95Bv2ahswWucd
- vSbmFPidj1opx7YJgy5qRd8fyGJ7uU5C+DL++/vuk7cJJkXcb0wPeB0quU3kFEQK9R1O
- YvI+IIwslrmAYhsv7Qo8HpSwFXf6QlClol7iZXwj5iJqtEKNN7dTJN3UNcZhrOTjIKRc
- hh/wNfUadq0OMOeDLeIwfx5IFsGJy6+nm9EkL+at3yhjpHD3GpmoQVR0xBOyZjBdp9IN
- jPN9MBV33NNCXvN2HSsOE5QgHSxwAMs/2WKp5UlyidUHq1enUiErh9CgNTP1ESvq6mMU
- LMyQ==
-X-Gm-Message-State: AOJu0YyOhDkjvjqfqo8ElNiFnVNZGMFh6eZ8hlue6ar5hil4UZ4DO2r5
- iR1sQ24TzwcJ3YwNF9M8fa3adWdzanEINHNi+Fou8s5zuxMsbSjW
-X-Google-Smtp-Source: AGHT+IGRmGV2YTayw8tiNwViDSwnb7ENVvumW4Q0sZ8buS1BrLW3DyCvv0saNmMxAqGpr+FG6X5EVQ==
-X-Received: by 2002:a17:903:192:b0:1d9:9735:ed6c with SMTP id
- z18-20020a170903019200b001d99735ed6cmr617892plg.14.1707195110770; 
- Mon, 05 Feb 2024 20:51:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0;
- AJvYcCVGhy+jWQnRvlKs6iECCYvXm5EcplOULkxws/eS8yjzhG90Pk44O/C7u5mnCYQ5msW6peRVAygTbYZzwjh85DaFZb/GvVY=
-Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net.
- [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
- jy3-20020a17090342c300b001d95b3c6259sm774613plb.263.2024.02.05.20.51.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Feb 2024 20:51:50 -0800 (PST)
-X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+	s=arc-20240116; t=1707201028; c=relaxed/simple;
+	bh=VXj++i7nyYto3t3v9LrjlKE0DoXN9X2yupMQklinfQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YuvZumwPjO4QQUuruta2DTo1Nxoh/T43RfiuIAH3thllp+RGZfDDVVrkNkJxb9TFvDvEKKJJeo2sdi8Qw7ccROfqvrPulYWxu2QTYbr7fQV2VWRToUKA4QOcDMqE/KlJNPZs22uq1uL/iu/U8P1qbsh41aIVMT77llyOZfAvOWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id EAD7F2D65FB95; Mon,  5 Feb 2024 22:30:10 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
-Cc: bpf@ietf.org,
-	Dave Thaler <dthaler1968@gmail.com>
-Date: Mon,  5 Feb 2024 20:51:46 -0800
-Message-Id: <20240206045146.4965-1-dthaler1968@gmail.com>
-X-Mailer: git-send-email 2.40.1
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix flaky test verif_scale_strobemeta_subprogs
+Date: Mon,  5 Feb 2024 22:30:10 -0800
+Message-Id: <20240206063010.1352503-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/afoxfDzBdjqB8HhB-uYa9ed9ERU>
-Subject: [Bpf] [PATCH bpf-next] bpf, docs: Fix typos in instructions-set.rst
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
-From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+Content-Transfer-Encoding: quoted-printable
 
-* "imm32" should just be "imm"
-* Add blank line to fix formatting error reported by Stephen Rothwell [0]
+With latest llvm19, I hit the following selftest failures with
 
-[0]: https://lore.kernel.org/bpf/20240206153301.4ead0bad@canb.auug.org.au/T/#u
+  $ ./test_progs -j
+  libbpf: prog 'on_event': BPF program load failed: Permission denied
+  libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+  combined stack size of 4 calls is 544. Too large
+  verification time 1344153 usec
+  stack depth 24+440+0+32
+  processed 51008 insns (limit 1000000) max_states_per_insn 19 total_stat=
+es 1467 peak_states 303 mark_read 146
+  -- END PROG LOAD LOG --
+  libbpf: prog 'on_event': failed to load: -13
+  libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
+  scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
+  #498     verif_scale_strobemeta_subprogs:FAIL
 
-Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+The verifier complains too big of the combined stack size (544 bytes) whi=
+ch
+exceeds the maximum stack limit 512. This is a regression from llvm19 ([1=
+]).
+
+In the above error log, the original stack depth is 24+440+0+32.
+To satisfy interpreter's need, in verifier the stack depth is adjusted to
+32+448+32+32=3D544 which exceeds 512, hence the error. The same adjusted
+stack size is also used for jit case.
+
+But the jitted codes could use smaller stack size.
+
+  $ egrep -r stack_depth | grep round_up
+  arm64/net/bpf_jit_comp.c:       ctx->stack_size =3D round_up(prog->aux-=
+>stack_depth, 16);
+  loongarch/net/bpf_jit.c:        bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+  powerpc/net/bpf_jit_comp.c:     cgctx.stack_size =3D round_up(fp->aux->=
+stack_depth, 16);
+  riscv/net/bpf_jit_comp32.c:             round_up(ctx->prog->aux->stack_=
+depth, STACK_ALIGN);
+  riscv/net/bpf_jit_comp64.c:     bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+  s390/net/bpf_jit_comp.c:        u32 stack_depth =3D round_up(fp->aux->s=
+tack_depth, 8);
+  sparc/net/bpf_jit_comp_64.c:            stack_needed +=3D round_up(stac=
+k_depth, 16);
+  x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xEC, round_up(=
+stack_depth, 8));
+  x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+  x86/net/bpf_jit_comp.c:                     round_up(stack_depth, 8));
+  x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+  x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xC4, round_up(=
+stack_depth, 8));
+
+In the above, STACK_ALIGN in riscv/net/bpf_jit_comp32.c is defined as 16.
+So stack is aligned in either 8 or 16, x86/s390 having 8-byte stack align=
+ment and
+the rest having 16-byte alignment.
+
+This patch calculates total stack depth based on 16-byte alignment if jit=
+ is requested.
+For the above failing case, the new stack size will be 32+448+0+32=3D512 =
+and no verification
+failure. llvm19 regression will be discussed separately in llvm upstream.
+
+  [1] https://lore.kernel.org/bpf/32bde0f0-1881-46c9-931a-673be566c61d@li=
+nux.dev/
+
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- Documentation/bpf/standardization/instruction-set.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/bpf/verifier.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index 1c4258f1c..bdfe0cd0e 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -117,6 +117,7 @@ corresponds to a set of instructions that are mandatory.  That is, each
- instruction has one or more conformance groups of which it is a member.
- 
- This document defines the following conformance groups:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ddaf09db1175..10e33d49ca21 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5812,6 +5812,17 @@ static int check_ptr_alignment(struct bpf_verifier=
+_env *env,
+ 					   strict);
+ }
+=20
++static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
+depth)
++{
++	if (env->prog->jit_requested)
++		return round_up(stack_depth, 16);
 +
- * base32: includes all instructions defined in this
-   specification unless otherwise noted.
- * base64: includes base32, plus instructions explicitly noted
-@@ -289,11 +290,11 @@ where '(u32)' indicates that the upper 32 bits are zeroed.
- 
- ``BPF_XOR | BPF_K | BPF_ALU`` means::
- 
--  dst = (u32) dst ^ (u32) imm32
-+  dst = (u32) dst ^ (u32) imm
- 
- ``BPF_XOR | BPF_K | BPF_ALU64`` means::
- 
--  dst = dst ^ imm32
-+  dst = dst ^ imm
- 
- Note that most instructions have instruction offset of 0. Only three instructions
- (``BPF_SDIV``, ``BPF_SMOD``, ``BPF_MOVSX``) have a non-zero offset.
-@@ -511,7 +512,7 @@ instructions that transfer data between a register and memory.
- 
- ``BPF_MEM | <size> | BPF_ST`` means::
- 
--  *(size *) (dst + offset) = imm32
-+  *(size *) (dst + offset) = imm
- 
- ``BPF_MEM | <size> | BPF_LDX`` means::
- 
--- 
-2.40.1
++	/* round up to 32-bytes, since this is granularity
++	 * of interpreter stack size
++	 */
++	return round_up(max_t(u32, stack_depth, 1), 32);
++}
++
+ /* starting from main bpf function walk all instructions of the function
+  * and recursively walk all callees that given function can call.
+  * Ignore jump and exit insns.
+@@ -5855,10 +5866,8 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx)
+ 			depth);
+ 		return -EACCES;
+ 	}
+-	/* round up to 32-bytes, since this is granularity
+-	 * of interpreter stack size
+-	 */
+-	depth +=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
++
++	depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+ 	if (depth > MAX_BPF_STACK) {
+ 		verbose(env, "combined stack size of %d calls is %d. Too large\n",
+ 			frame + 1, depth);
+@@ -5952,7 +5961,7 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx)
+ 	 */
+ 	if (frame =3D=3D 0)
+ 		return 0;
+-	depth -=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
++	depth -=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+ 	frame--;
+ 	i =3D ret_insn[frame];
+ 	idx =3D ret_prog[frame];
+--=20
+2.34.1
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
