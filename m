@@ -1,305 +1,149 @@
-Return-Path: <bpf+bounces-21449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC9C84D5E5
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:39:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4425D84D607
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E43BA1C23164
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:39:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0188285DC7
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A711D54C;
-	Wed,  7 Feb 2024 22:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE091CD22;
+	Wed,  7 Feb 2024 22:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jlfxs0kz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LmEfno17"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f196.google.com (mail-yb1-f196.google.com [209.85.219.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC061D54B
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 22:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4875A1D55E
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 22:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707345508; cv=none; b=cB85HxpwCCHf8QTt96wW2Qg++heZ2Id2W/mrOn5XGFZCHCCn8uUoSPplx2r5npm5CoL798DJUFwumI9GHULboCVHhDDv934bXMFfZJzu0/M3BpZWbOjwclyD2aUfaFtydOOSKH7aLqcZjGZnwkP0j1j69tL/F4+hyD+57tIp9xs=
+	t=1707346082; cv=none; b=VGEtHhFZkoa7NvyrzniUJ/yArz2meGk8AT41N0As8UMo1I+cXJfca3Diom6xvTwoDsflEc6ilRtRTA74R7LIKuJA83tKEFzcE0LMuPt3QRnmAIzGxIkFvrNJHyglRYj5dyU2IcPCU1zsdx9CdE9fBnIxW7qytNpAdNg5PotSG5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707345508; c=relaxed/simple;
-	bh=Sq1BgQMHhgNqabqTBlx5F2q9Vvbcx4XLuFe1GIi4YLI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DLZCpOGCEoAKaIz/NZv5WaTBu0VCBy2uwiMVRCynBC0DgC0cOAn3JEmyNPWxrQUfU2aQpRzhtwJMVGoISjDKjSCPTAipsjFbmzjx4PXa/HqDoSM/DEUOIzhb2+L3LCd9u2klhS6kF/8MPa7VCTjdjsaCu6lKH+04Kxf/w5Srv9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jlfxs0kz; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cec9564d-ea2d-4d18-9b79-e312d1af1a25@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707345503;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zzJc7CdWHSvwE8xRn2KXJMjgjQY6bTtiPKy96pSJZGQ=;
-	b=Jlfxs0kz0Mm+WyzioP5XPBYW0wsz0+IGtQW6xCw3B9ssslQthglrTNkFVWPGyLu7nwX6nU
-	93zIPGL7KJSLJ3924RJjPtnT7X0nqpvnS4+ApJDLdpWYqJyBId0JEb1Eud7n+lI1LCfIGt
-	W4SPEBLwC3y1SN4OqHh34yXx16DhRkM=
-Date: Wed, 7 Feb 2024 14:38:16 -0800
+	s=arc-20240116; t=1707346082; c=relaxed/simple;
+	bh=n/eojlZF24jcFsseVU7Kn2xfCiEwsfg4yaagy4rB99g=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=OedzXt25YFmwQYswI24AtzMdZHDgTVFuK4YDxH7kvXCdkm8B//iKuiopPJnqb5IaXjadlwMr1kjS88m8gvfJFY00wVc80bxQDKB0o3a/lc6QJMAjNGCIPoaKLVOfKTjff498ONuDG1wD5BfmEMMvbEimxrpymlWAH0hLhJMtXzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LmEfno17; arc=none smtp.client-ip=209.85.219.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f196.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so334941276.0
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 14:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707346080; x=1707950880; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TT0IoaPOQtUNmTubqv+zMuv9C0jmcPxoTV8uXZcZpeU=;
+        b=LmEfno17Ok08bwxnBNWQqEYpqHNb07wLSt1vTcaBl5H61aod2N+8Ie9FpA+e/+cmab
+         d/A5J2jioK8m9qO8EPwQSB1qdhZxv1NIf3A7FjOBxnsKUGtuMHWT8THcezFOBwOxkNbH
+         zHz+M8jiMUtbNMbnURtQ0ZUZ4ZmZYulxX7Mq5E9qdavQheeZhBRHMs0Qo6p/SXdvwgXh
+         oYPpvtBxx6vbbCZPdkXzJwd9pZ2SGmQaIxkMjKWAwyrRKhLTsc3tSKiTb6E2QQGoxkxP
+         ubBfUnw5OnWRdIACbpQz9ljREwVXJk+yNJSYGA1YdC27csxU+AV6U9oSIBGRuHd5Imwn
+         vGRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707346080; x=1707950880;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TT0IoaPOQtUNmTubqv+zMuv9C0jmcPxoTV8uXZcZpeU=;
+        b=niqxC1L7tzAOZjb8u8EqXbe/liXOwwvNmRYc8qlSqIrkAU6BIyA6KsyruYJJv0bLsF
+         NsebXhxZS5iIFRr2V+kF33Dk73+XaZguE3W1RBXHMY9Njxw/mI+MiOj8HxCboYS57BTg
+         URtzV+oMHgbhMc7rSSbkw92erag7bEGtqNStYpEJzSARpSqq/dUHeIu1/rQy7JZGMoIU
+         5K/WV+31nZ/0753EwsLRIYny/mkFfS66nMYHOfj7Q6tubPvaOM+Bdg7tOg5X5GcTr0KM
+         kCvRfkDdwXwV/ouoZsZ3PlSW3kmFCOV9yaDWGAaYD/BHOW05yq5k037OP4WztNOSs39B
+         g3iA==
+X-Gm-Message-State: AOJu0Yz0TpMrIKjtsPxdq2pJgkFhO+Lc/2kfoNjouCCPkhXLcOHa9bSt
+	uTPVg1N/Czfl+dxtFhlPOP4lVhxBDuwuwiRyT/K1+f5qO8e61Cod+WqPDGx4FXtEctq1ItdIMiU
+	ip0mDc8dBYb6azwAQwgkFylYcGJTcH+z+5ZlK6sdT6fI=
+X-Google-Smtp-Source: AGHT+IHVPU/xw75SXaBrnjA7n/gg9rS2JU2Bro2z586NFkAfv0p1XYXcWVLBZf/MjSZfDsSkBAVvS+gOYHI8UcVE4s8=
+X-Received: by 2002:a25:9747:0:b0:dc2:56e0:f5f with SMTP id
+ h7-20020a259747000000b00dc256e00f5fmr637590ybo.26.1707346080049; Wed, 07 Feb
+ 2024 14:48:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 3/3] selftests/bpf: Test PTR_MAYBE_NULL
- arguments of struct_ops operators.
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- davemarchevsky@meta.com, dvernet@meta.com
-References: <20240206063833.2520479-1-thinker.li@gmail.com>
- <20240206063833.2520479-4-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240206063833.2520479-4-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+From: Jason <jasonlkml@gmail.com>
+Date: Wed, 7 Feb 2024 14:47:49 -0800
+Message-ID: <CAKdkiR9HVkopmZ0JkLYMWtbG2bnzsAxXvYqHesRcoWp9Ly7zFg@mail.gmail.com>
+Subject: help: trying to gather process information, tx/rx byte count ,
+ ifindex for sends/receives
+To: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/5/24 10:38 PM, thinker.li@gmail.com wrote:
-> From: Kui-Feng Lee <thinker.li@gmail.com>
-> 
-> Test if the verifier verifies nullable pointer arguments correctly for BPF
-> struct_ops programs.
-> 
-> "test_maybe_null" in struct bpf_testmod_ops is the operator defined for the
-> test cases here. It has several pointer arguments to various types. These
-> pointers are majorly classified to 3 categories; pointers to struct types,
-> pointers to scalar types, and pointers to array types. They are handled
-> sightly differently.
+The problem I'm trying to solve is associating some process
+information (let's just say pid) with a socket in an fentry where it's
+safe to grab pid/tgid.
+It seems like inet_sendmsg is a pretty safe place to do this.
 
-The commit message needs an update. probably make sense to skip what pointer 
-type is supported because this patch set does not change that.
+Say I want to gather information about the process initiating a
+transmit as well as the interface the bit of data is going out of.
+I put a fentry hook on inet_sendmsg to grab pid_tgid and then I put
+another fentry hook onto ip_local_out to grab the interface.
+The problem I'm seeing is that the data accessible from
+fentry/ip_local_out seems unreliable. The `struct sock* sk` being
+passed in often can't be associated with a `struct sock* sk` seen on
+`inet_sendmsg`.
 
-> 
-> A BPF program should check a pointer for NULL beforehand to access the
-> value pointed by the nullable pointer arguments, or the verifier should
-> reject the programs. The test here includes two parts; the programs
-> checking pointers properly and the programs not checking pointers
-> beforehand. The test checks if the verifier accepts the programs checking
-> properly and rejects the programs not checking at all.
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 12 ++++-
->   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  7 +++
->   .../prog_tests/test_struct_ops_maybe_null.c   | 47 +++++++++++++++++++
->   .../bpf/progs/struct_ops_maybe_null.c         | 31 ++++++++++++
->   .../bpf/progs/struct_ops_maybe_null_fail.c    | 25 ++++++++++
->   5 files changed, 121 insertions(+), 1 deletion(-)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
->   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
->   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index a06daebc75c9..891a2b5f422c 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -555,7 +555,10 @@ static int bpf_dummy_reg(void *kdata)
->   {
->   	struct bpf_testmod_ops *ops = kdata;
->   
-> -	ops->test_2(4, 3);
-> +	if (ops->test_maybe_null)
-> +		ops->test_maybe_null(0, NULL);
+An example minimal toy program to help illustrate my dilemma.
 
-afaict, the "static void maybe_null(void)" test below does not exercise this 
-line of change.
 
-> +	else
-> +		ops->test_2(4, 3);
->   
->   	return 0;
->   }
-> @@ -573,9 +576,16 @@ static void bpf_testmod_test_2(int a, int b)
->   {
->   }
->   
-> +static int bpf_testmod_ops__test_maybe_null(int dummy,
-> +					    struct task_struct *task__nullable)
-> +{
-> +	return 0;
-> +}
-> +
->   static struct bpf_testmod_ops __bpf_testmod_ops = {
->   	.test_1 = bpf_testmod_test_1,
->   	.test_2 = bpf_testmod_test_2,
-> +	.test_maybe_null = bpf_testmod_ops__test_maybe_null,
->   };
->   
->   struct bpf_struct_ops bpf_bpf_testmod_ops = {
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-> index 537beca42896..c51580c9119d 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-> @@ -5,6 +5,8 @@
->   
->   #include <linux/types.h>
->   
-> +struct task_struct;
-> +
->   struct bpf_testmod_test_read_ctx {
->   	char *buf;
->   	loff_t off;
-> @@ -28,9 +30,14 @@ struct bpf_iter_testmod_seq {
->   	int cnt;
->   };
->   
-> +typedef u32 (*ar_t)[2];
-> +typedef u32 (*ar2_t)[];
+struct {
+  __uint(type, BPF_MAP_TYPE_LRU_HASH);
+  __uint(max_entries, 1024);
+  __type(key, struct socket*);
+  __type(value, uint64_t);
+} sock_to_tgid_pid SEC(".maps"); // pretty much a sk_storage, almost
+interchangeable
 
-They are not needed in v5.
 
-> +
->   struct bpf_testmod_ops {
->   	int (*test_1)(void);
->   	void (*test_2)(int a, int b);
-> +	/* Used to test nullable arguments. */
-> +	int (*test_maybe_null)(int dummy, struct task_struct *task);
->   };
->   
->   #endif /* _BPF_TESTMOD_H */
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
-> new file mode 100644
-> index 000000000000..1c057c62d893
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
-> @@ -0,0 +1,47 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +#include <test_progs.h>
-> +#include <time.h>
+SEC("fentry/inet_sendmsg")
+int BPF_PROG(do_inet_sendmsg_enter,
+             struct socket* sock,
+             struct msghdr* msg,
+             size_t size) {
+    uint64_t pid_tgid = 0;
+    pid_tgid = bpf_get_current_pid_tgid();
+    bpf_map_update_elem(&sock_to_tgid_pid, sock, &pid_tgid, BPF_NOEXIST);
+    return 0;
+}
 
-Why time.h?
+SEC("fentry/ip_local_out")
+int BPF_PROG(do_ip_local_out, struct net* net, struct sock* sk, struct
+sk_buff* skb) {
+  struct socket* sock = BPF_CORE_READ(skb, sk, sk_socket);
+ struct network_data* d = bpf_map_lookup_elem(&sock_to_tgid_pid,
+sock); <==== This will sometimes fail
+ if (d == NULL){
+bpf_printk("Failed socket lookup");
+}
+}
 
-> +
-> +#include "struct_ops_maybe_null.skel.h"
-> +#include "struct_ops_maybe_null_fail.skel.h"
-> +
-> +/* Test that the verifier accepts a program that access a nullable pointer
-> + * with a proper check.
-> + */
-> +static void maybe_null(void)
-> +{
-> +	struct struct_ops_maybe_null *skel;
-> +
-> +	skel = struct_ops_maybe_null__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open_and_load"))
-> +		return;
-> +
-> +	struct_ops_maybe_null__destroy(skel);
-> +}
-> +
-> +/* Test that the verifier rejects a program that access a nullable pointer
-> + * without a check beforehand.
-> + */
-> +static void maybe_null_fail(void)
-> +{
-> +	struct struct_ops_maybe_null_fail *skel;
-> +
-> +	skel = struct_ops_maybe_null_fail__open_and_load();
-> +	if (ASSERT_ERR_PTR(skel, "struct_ops_module_fail__open_and_load"))
-> +		return;
-> +
-> +	struct_ops_maybe_null_fail__destroy(skel);
-> +}
-> +
-> +void test_struct_ops_maybe_null(void)
-> +{
-> +	/* The verifier verifies the programs at load time, so testing both
-> +	 * programs in the same compile-unit is complicated. We run them in
-> +	 * separate objects to simplify the testing.
-> +	 */
-> +	if (test__start_subtest("maybe_null"))
-> +		maybe_null();
-> +	if (test__start_subtest("maybe_null_fail"))
-> +		maybe_null_fail();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
-> new file mode 100644
-> index 000000000000..c5769c742900
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
-> @@ -0,0 +1,31 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "../bpf_testmod/bpf_testmod.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +u64 tgid = 0;
+The test case would be that I run ping several times and in some
+situations the map lookup will be fine and other situations the map
+lookup will fail.
 
-u64 here.
 
-> +
-> +/* This is a test BPF program that uses struct_ops to access an argument
-> + * that may be NULL. This is a test for the verifier to ensure that it can
-> + * rip PTR_MAYBE_NULL correctly. There are tree pointers; task, scalar, and
-> + * ar. They are used to test the cases of PTR_TO_BTF_ID, PTR_TO_BUF, and array.
-> + */
-> +SEC("struct_ops/test_maybe_null")
-> +int BPF_PROG(test_maybe_null, int dummy,
-> +	     struct task_struct *task)
-> +{
-> +	if (task)
-> +		tgid = task->tgid;
-> +
-> +	return 0;
-> +}
-> +
-> +SEC(".struct_ops.link")
-> +struct bpf_testmod_ops testmod_1 = {
-> +	.test_maybe_null = (void *)test_maybe_null,
-> +};
-> +
-> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
-> new file mode 100644
-> index 000000000000..566be47fb40b
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "../bpf_testmod/bpf_testmod.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +int tgid = 0;
+My initial thought is that putting fentry/fexit hooks deep within the
+networking stack might not be the best idea.. Maybe there is a lot of
+nuance I'm not familiar with?
 
-but int here.
+I then started looking at tc hooks, thinking that this is a well lit
+path. Unfortunately for tc hooks a struct __sk_buff* is passed in and
+there doesn't seem to be a way to get at the socket that owns the
+data.
 
-understand that it does not matter and not the focus of this test but still 
-better be consistent and use the correct one.
+So my questions are:
 
-> +
-> +SEC("struct_ops/test_maybe_null_struct_ptr")
-> +int BPF_PROG(test_maybe_null_struct_ptr, int dummy,
-> +	     struct task_struct *task)
-> +{
-> +	tgid = task->tgid;
-> +
-> +	return 0;
-> +}
-> +
-> +SEC(".struct_ops.link")
-> +struct bpf_testmod_ops testmod_struct_ptr = {
-> +	.test_maybe_null = (void *)test_maybe_null_struct_ptr,
-> +};
-> +
+1.) Does anyone see anything obviously wrong with my fentry approach?
+2.) Is there a way to get at a socket cookie, sk_storage or a reliable
+struct socket* from within a tc-ebpf?
+3.) Am I asking on the wrong lkml and should instead cross-post this
+to a more network oriented lkml?
 
+Thanks in advance
 
