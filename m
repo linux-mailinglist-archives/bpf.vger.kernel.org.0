@@ -1,84 +1,94 @@
-Return-Path: <bpf+bounces-21395-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21396-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FA6084C758
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 10:29:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C22AF84C815
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 10:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26C31C23255
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 09:29:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79608282FF2
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 09:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8E2219E9;
-	Wed,  7 Feb 2024 09:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB3E2377B;
+	Wed,  7 Feb 2024 09:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L14RdYo0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SVrZzz/Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F0E23741
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 09:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E060822F1E
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 09:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298182; cv=none; b=TeTUOAfxDX0lG79S7RR8uZtfmJI4KQ/Ui//ElAYgRUlnae5qpb/2WOJwNddrYwi/4OcWBPkTIYSKeOCWNzgpMrTobyP0MoHSpIiIQd/M5ynkrehrXDhSZJ2PtBkn9zbtPY144n8cv4hl8fmEK1cg3qrGFlDeHqDobjMaoD55sWg=
+	t=1707299794; cv=none; b=WUZ32UhnrW0PmmRd2fFzDrf8dYYSEzxx/BVTxHFZ5jSjxwdVvkLt1RlogK5wx9jKcdDALPWUbOpM4Arsy/MAf6tNyoasp65XOVc7cFqpWuNBlw0ydEnLRRJtgLsiHvd8R3HHw0dkuPmyaU54kLtqtYf7OJd4QaD6Awydry+BHag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298182; c=relaxed/simple;
-	bh=2E6NM8NN/7ZLpODDmIG1m0B2ICRCHHzRYB//XRCEnrQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K3IaEwMtfr2y4ffT3w6B7rJwNWRFCk8aLTjodzQfnGwWD3Z9besCvW0picHfuJ9mzklrQwlXXu9vWgdc43bYCZCi0LDCD9wW2fKSJWSYGoLG0xqCHrQbEtaAb9lz6ixzVGPve1+HHu1OWtlqGZ9f8aW8GHpeS9jXtscf2jcjkuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L14RdYo0; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3832ef7726so47200866b.0
-        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 01:29:40 -0800 (PST)
+	s=arc-20240116; t=1707299794; c=relaxed/simple;
+	bh=Ffw/WkqVLoBbaHS/K/csRcmb3UzmOEbVg81Hra2QAAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M0mnPbBRjK31qnz0Lx2DA9hTXSxWQs6Qrkxn3xvnxTrOv3lY25mBntxyAk/KVNZVdKpg+hwhDqU68Zx9YRlsv9KUGPTYxC7x1sJdxv1ODsgeR2jcyNBzaDoBT1t2p/hXBO1XIYUZCrd9lJCYaIHpdm/aMRKjHQc6Ly673T14n2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SVrZzz/Z; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40fe3244bc6so3628895e9.1
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 01:56:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707298179; x=1707902979; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jwd1V/Fb3PIyVO4NJaaO/+/+xz1if385OnGeDhl/S/0=;
-        b=L14RdYo0TZbt3YYH3kSL2NHiray0OvyZ0LRFJu7POT9FYIhE+aJb5FAFDEs9BmG52N
-         EaAhYEIXqYDhgie3FlOFhavyZx3fePMjVdak6LqU2XNyLlMOXlv2lYbvfX6GSch+geMd
-         NXl+oBCudgdgi3C3DAX//zxqvsTk8iDzJFys8nSizQttzUhX0uEGBTZ658DNnnpS6hfX
-         cubMjm8mDX4/Jfp1hcoSthuMNx+GFNQgPT7LfJHwvYUX0Op5vdeHeeaFw+ekkbK2KpVV
-         x9rnzclkVRLJpXafiH2uQmntFAMZXpyyrpnG/mPBEhXgQqCED87I6QF3QetFocj0xG7b
-         Eojg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707298179; x=1707902979;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1707299790; x=1707904590; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jwd1V/Fb3PIyVO4NJaaO/+/+xz1if385OnGeDhl/S/0=;
-        b=HYKZiowOUxqbG5NCuFJcoCoiGoph63EsI1IQWcYH22bVTTrjnoIiRQnuVM7hiyJ09z
-         JNSV/DtWtNJlZlK9aVfD+RuRlrL8HzDDslDET/zDET+BpKxoagQBCobEIclrmBGwVnAR
-         GgzDA/zOzBcVUajLtDlf9v3zg4H7ndZls56MFpfPhPUbDxG+OOw4B8uaPRBjOfTjNlDn
-         2b9pwU+AEkx3aQheeDz1Yw8sy5uCdJuYMvgO6QUiiODDK4qeQOQiBdPeltEsJojhojSt
-         br9CFm9epYq6F8LG+zpAQS/q9IiWJrZ73FitGWRhOXwfGLosuZAm5z2ZghKWiEmPpTZD
-         35Rg==
-X-Gm-Message-State: AOJu0Yw2g2wcjwTvQpEFp6LLqhePNHWsA/dXBwCq4KcdtXwzJVwU3ZVn
-	870HedNO36HI0AkdpqnruOtvUNeSmWhJQW7sGaxk1xucUhexTbdooldafXCgNqE=
-X-Google-Smtp-Source: AGHT+IGZPoEBZnpcZHa8zAP/c0ZrkzOdvYt2hoZ53X0bQPqm9ZIY+1GE2b5gIPKNydhPgr+/d7CQZg==
-X-Received: by 2002:a17:906:3153:b0:a38:52f0:4c49 with SMTP id e19-20020a170906315300b00a3852f04c49mr1617555eje.64.1707298178577;
-        Wed, 07 Feb 2024 01:29:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUrampRKHAHRkXzwReD36382aJeHG999ESuKxBJuSSC4mG+PhFmwb1SparN9ms8BcNqWn7hs24oPoGt/hrjU0llSfFUaQIiZ8ewFYETF8Us5rlbZNc+HiAH9LIzNiNQOH14UYAG/s2NkZCikHqPU80l4MS90++5Hc0Sbqmc7Itl5hJdwVN06xc60xiG2HLA+FvIz8I66fwN94J4B65UyANsO9JJMVd9Jm5fhRoAoQ==
-Received: from krava ([144.178.231.99])
-        by smtp.gmail.com with ESMTPSA id x27-20020a170906135b00b00a359afad88dsm552354ejb.10.2024.02.07.01.29.38
+        bh=XBRINMVN7gGvuV2gPWLOj+4bMKi6LNNeT7KGZJCI6SQ=;
+        b=SVrZzz/ZDYryvQyahStA9U/4axrnfI94BjogIoOVHju99mpXjWjuBThvr9NTf6lwat
+         s8sEGhiojS/bSPEiXbvJUt3WIpHLHaKayiXp48jSfV3t7ZvkfGA+Pq8PDvgm6WrVTZf8
+         cxALDR5YhUwgeB8kH0rlB/NQlbTGjRs41R4iSevwD6d169Fm4vejivdRaopUYrWsM5MO
+         +V4xXiK6+6jgABEEghIru5JwY8+AjYskqm+HBxa/dLNt5UyEILA59PsZXsBH231nCO2/
+         Idf8+eIMhT3iYOGprn9J0JMrYEseMIRIKmKHDElT9ZQQCb5TMtoSrvqIULjt5wEbNPUF
+         xB4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707299790; x=1707904590;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XBRINMVN7gGvuV2gPWLOj+4bMKi6LNNeT7KGZJCI6SQ=;
+        b=g6X4g/N/Gk0YMn+AYZNK1YCyjQj9PFzkFrTtl7Uh1B/hWlhWjqt35E9R1A+OfE2mQT
+         8jiNuGjUY6T9ZESGZYh+SALibCRvbUzMdPG8PEGM75pfBdUUVIzbv074GiP7QDoLarQN
+         pJjbx7LiWFmBKMiVfiuPxk8MZszwO8bceYpHHhC5knOdFnXcxbiozwtlowT3QY4lMjjn
+         +c7qiO2kY+WUmizTIjezLjMycEhYTMRzuVlI0D7ItyA7f+pqMt5k4+lHHEFNDZNegGGm
+         pNz1FdUc43OMP2X0rY8Io4HLWOTIt+foODBcff7bF2U17Tdn/e/LgdVBFWP6ANiNdc3g
+         +FNg==
+X-Gm-Message-State: AOJu0YyPUwcxFuUTRfLH09Svw/g19acBFDGZEItomhK3gJ7T/3rErpji
+	xl3uzkV2Q4hQXvUsAByXwnyqOffN+pxIDY9Gi2dOgODBI2YCyZd4zKzFb9R9/A==
+X-Google-Smtp-Source: AGHT+IF8kR8B78x6TBqRljCAS0uaAxhIj59afAe+4cqPh3iM/YDKkZ4pQ2wA3orFeSk6VwV2oT/g1A==
+X-Received: by 2002:a05:600c:3d8e:b0:40f:e930:9eb8 with SMTP id bi14-20020a05600c3d8e00b0040fe9309eb8mr2810266wmb.0.1707299790036;
+        Wed, 07 Feb 2024 01:56:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVqjfLsSMmbCH6BsS59K6SJoox9aCWhi8IF36lRKAreLYEX5BcNuvF7bnmTfJ92oKEpCfNlZ6fvcvjcjdWqWeaU1tjs3n1xXTxIS3QJJIKp8k3yHT6GYOGa16iDWF7BG2i1loc56bHAYphnkGBqC8mnRW1+7ZCBmtRttWB/3AoagDq4XpR4v3PPlm3Lc9zRiLGuzbuhuOChPB0+BkvcLAWtlJcO4rk1EgNJNmoJhja3gHGT6FAS/6qhzUWalGA/02JHNUUw+EzDP5FogM/I78WOx1oPcmvhU15ccozNPNbXknvQfughjhW16tWbkqCSY5yAbFgdnoImLbwEsaZ0OgPUlSXmu4T+VRBD1tXkTse9SZNWG1UaexmiluYYzfis6UinmCXLTT1vTkrkPqYnLTGN5/i9wmb+tLaKII+Rm6HNJbup1DjMCanPjObkK20HXzo07uRDWNMXGM7A
+Received: from elver.google.com ([2a00:79e0:9c:201:4d69:c225:7956:ca4])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05600c470900b0040fe2d3aec4sm4704383wmo.19.2024.02.07.01.56.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:29:38 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 7 Feb 2024 10:29:37 +0100
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Mark bpf_spin_{lock,unlock}() helpers
- with notrace correctly
-Message-ID: <ZcNNgQo6HQl0uNQ3@krava>
-References: <20240207070102.335167-1-yonghong.song@linux.dev>
+        Wed, 07 Feb 2024 01:56:29 -0800 (PST)
+Date: Wed, 7 Feb 2024 10:56:23 +0100
+From: Marco Elver <elver@google.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow
+ paths
+Message-ID: <ZcNTx2X7Y7zA5nrC@elver.google.com>
+References: <20240131141858.1149719-1-elver@google.com>
+ <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
+ <CANpmjNPKACDwXMnZRw9=CAgWNaMWAyFZ2W7KY2s4ck0s_ue1ag@mail.gmail.com>
+ <5a08032b-ed4d-4429-b0a9-2736689d8c33@linux.dev>
+ <ZcJmok64Xqv6l4ZS@elver.google.com>
+ <9908bdfb-1030-4a9f-8405-3696c5d03981@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,134 +97,145 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240207070102.335167-1-yonghong.song@linux.dev>
+In-Reply-To: <9908bdfb-1030-4a9f-8405-3696c5d03981@linux.dev>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Tue, Feb 06, 2024 at 11:01:02PM -0800, Yonghong Song wrote:
-> Currently tracing is supposed not to allow for bpf_spin_{lock,unlock}()
-> helper calls. This is to prevent deadlock for the following cases:
->   - there is a prog (prog-A) calling bpf_spin_{lock,unlock}().
->   - there is a tracing program (prog-B), e.g., fentry, attached
->     to bpf_spin_lock() and/or bpf_spin_unlock().
->   - prog-B calls bpf_spin_{lock,unlock}().
-> For such a case, when prog-A calls bpf_spin_{lock,unlock}(),
-> a deadlock will happen.
+On Tue, Feb 06, 2024 at 05:22PM -0800, Martin KaFai Lau wrote:
+> On 2/6/24 9:04 AM, Marco Elver wrote:
+> > On Mon, Feb 05, 2024 at 03:24PM -0800, Martin KaFai Lau wrote:
+> > [...]
+> > > > Or can you suggest different functions to hook to for the recursion test?
+> > > 
+> > > I don't prefer to add another tracepoint for the selftest.
+> > 
+> > Ok - I also checked, even though it should be a no-op, it wasn't
+> > (compiler generated worse code).
 > 
-> The related source codes are below in kernel/bpf/helpers.c:
->   notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
->   notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
-> notrace is supposed to prevent fentry prog from attaching to
-> bpf_spin_{lock,unlock}().
-> 
-> But actually this is not the case and fentry prog can successfully
-> attached to bpf_spin_lock(). Siddharth Chintamaneni reported
-> the issue in [1]. The following is the macro definition for
-> above BPF_CALL_1:
->   #define BPF_CALL_x(x, name, ...)                                               \
->         static __always_inline                                                 \
->         u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
->         typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
->         u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));         \
->         u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))          \
->         {                                                                      \
->                 return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
->         }                                                                      \
->         static __always_inline                                                 \
->         u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
-> 
->   #define BPF_CALL_1(name, ...)   BPF_CALL_x(1, name, __VA_ARGS__)
-> 
-> The notrace attribute is actually applied to the static always_inline function
-> ____bpf_spin_{lock,unlock}(). The actual callback function
-> bpf_spin_{lock,unlock}() is not marked with notrace, hence
-> allowing fentry prog to attach to two helpers, and this
-> may cause the above mentioned deadlock. Siddharth Chintamaneni
-> actually has a reproducer in [2].
-> 
-> To fix the issue, a new macro NOTRACE_BPF_CALL_1 is introduced which
-> will add notrace attribute to the original function instead of
-> the hidden always_inline function and this fixed the problem.
-> 
->   [1] https://lore.kernel.org/bpf/CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com/
->   [2] https://lore.kernel.org/bpf/CAE5sdEg6yUc_Jz50AnUXEEUh6O73yQ1Z6NV2srJnef0ZrQkZew@mail.gmail.com/
-> 
-> Fixes: d83525ca62cf ("bpf: introduce bpf_spin_lock")
-> Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> I am interested to how the tracepoint generates worse code. Can you share
+> some details ?
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+My guess is that it produces enough code that some inlinable functions
+are no longer being inlined. Specifically __bpf_task_storage_get().
 
-jirka
+> > 
+> > > The test in "SEC("fentry/bpf_local_storage_lookup")" is testing that the
+> > > initial bpf_local_storage_lookup() should work and the immediate recurred
+> > > bpf_task_storage_delete() will fail.
+> > > 
+> > > Depends on how the new slow path function will look like in v2. The test can
+> > > probably be made to go through the slow path, e.g. by creating a lot of task
+> > > storage maps before triggering the lookup.
+[...]
+> > Could you suggest how we can fix up the tests? I'm a little stuck
+> > because there's not much we can hook to left.
+> 
+> I don't see a solution either if only the cache insertion code path is in a
+> traceable function.
+> 
+> The prog->active counter has already been covered in another test. This test
+> is mostly only covering the lookup => delete recur case and the code path is
+> contained within the bpf storage logic. The future code review should be
+> able to cover. I would make an exception here and remove this test case
+> considering anything (e.g. tracepoint) we do here is likely to make it
+> worse. (more on the test removal below).
+> 
+> > 
+> > Thanks,
+> > -- Marco
+> > 
+> > ------ >8 ------
+> > 
+> > From: Marco Elver <elver@google.com>
+> > Date: Tue, 30 Jan 2024 17:57:45 +0100
+> > Subject: [PATCH v2] bpf: Allow compiler to inline most of
+> >   bpf_local_storage_lookup()
+> > 
+> > In various performance profiles of kernels with BPF programs attached,
+> > bpf_local_storage_lookup() appears as a significant portion of CPU
+> > cycles spent. To enable the compiler generate more optimal code, turn
+> > bpf_local_storage_lookup() into a static inline function, where only the
+> > cache insertion code path is outlined (call instruction can be elided
+> > entirely if cacheit_lockit is a constant expression).
+> 
+> Can you share more why only putting the cache insertion code to a function
+> improves the larger number of maps case. In the benchmark, cacheit_lockit
+> should always be true and __bpf_local_storage_insert_cache() should always
+> be called.
 
-> ---
->  include/linux/filter.h | 21 ++++++++++++---------
->  kernel/bpf/helpers.c   |  4 ++--
->  2 files changed, 14 insertions(+), 11 deletions(-)
+Keeping bpf_local_storage_lookup() smaller (even if just outlining the
+cache insertion) makes a difference as it allows the compiler generate
+more optimal code, specifically we avoid duplicating setting up calls to
+_raw_spin_lock/unlock. E.g.  __bpf_task_storage_get is not being inlined
+anymore if bpf_local_storage_lookup() becomes too large (i.e. everything
+is up for inlining incl. cache insertion).
+
+Also, on x86 preempt builds, spin_lock/unlock aren't inlinable, so we
+have to pay the price of 2 calls regardless: previously for calls to
+_raw_spin_lock_irqsave and to _raw_spin_unlock_irqsave. However, with
+the version of __bpf_local_storage_insert_cache in my patch, the call to
+_raw_spin_unlock_irqsave is tail called, which allows the compiler to
+perform TCO, i.e. we still only pay the price of 2 calls: one to
+__bpf_local_storage_insert_cache and to _raw_spin_lock_irqsave (but no
+call to _raw_spin_unlock_irqsave, which can just be jumped to):
+
+<__bpf_local_storage_insert_cache>:
+  endbr64
+  nopl   0x0(%rax,%rax,1)
+  push   %r15
+  push   %r14
+  push   %r12
+  push   %rbx
+  mov    %rdx,%rbx
+  mov    %rsi,%r12
+  mov    %rdi,%r15
+  lea    0xa8(%rdi),%r14
+  mov    %r14,%rdi
+  call   ffffffff82323650 <_raw_spin_lock_irqsave>
+  cmpq   $0x0,0x18(%rbx)
+  je     ffffffff8127ea80 <__bpf_local_storage_insert_cache+0x40>
+  add    $0x40,%rbx
+  movzwl 0x10e(%r12),%ecx
+
+  mov    %rbx,(%r15,%rcx,8)
+  mov    %r14,%rdi
+  mov    %rax,%rsi
+  pop    %rbx
+  pop    %r12
+  pop    %r14
+  pop    %r15
+  jmp    ffffffff823237d0 <_raw_spin_unlock_irqrestore>        <--- TCO
+
+I also compared a version where _everything_ is inlined vs. the one with
+__bpf_local_storage_insert_cache outlined: the one where everything is
+inlined nullifies any performance improvements and is significantly
+worse than the one with __bpf_local_storage_insert_cache outlined.
+
+[...]
+> > -SEC("fentry/bpf_local_storage_lookup")
+> > +SEC("fentry/??????????????????????????") >   int BPF_PROG(on_lookup)
 > 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index fee070b9826e..36cc29a2934c 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -547,24 +547,27 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
->  	__BPF_MAP(n, __BPF_DECL_ARGS, __BPF_N, u64, __ur_1, u64, __ur_2,       \
->  		  u64, __ur_3, u64, __ur_4, u64, __ur_5)
->  
-> -#define BPF_CALL_x(x, name, ...)					       \
-> +#define BPF_CALL_x(x, attr, name, ...)					       \
->  	static __always_inline						       \
->  	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
->  	typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
-> -	u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));	       \
-> -	u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))	       \
-> +	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));    \
-> +	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))     \
->  	{								       \
->  		return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
->  	}								       \
->  	static __always_inline						       \
->  	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
->  
-> -#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, name, __VA_ARGS__)
-> -#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, name, __VA_ARGS__)
-> -#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, name, __VA_ARGS__)
-> -#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, name, __VA_ARGS__)
-> -#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, name, __VA_ARGS__)
-> -#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, name, __VA_ARGS__)
-> +#define __NOATTR
-> +#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, __NOATTR, name, __VA_ARGS__)
-> +#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, __NOATTR, name, __VA_ARGS__)
-> +#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, __NOATTR, name, __VA_ARGS__)
-> +#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, __NOATTR, name, __VA_ARGS__)
-> +#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, __NOATTR, name, __VA_ARGS__)
-> +#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, __NOATTR, name, __VA_ARGS__)
-> +
-> +#define NOTRACE_BPF_CALL_1(name, ...)	BPF_CALL_x(1, notrace, name, __VA_ARGS__)
->  
->  #define bpf_ctx_range(TYPE, MEMBER)						\
->  	offsetof(TYPE, MEMBER) ... offsetofend(TYPE, MEMBER) - 1
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 4db1c658254c..87136e27a99a 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -334,7 +334,7 @@ static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
->  	__this_cpu_write(irqsave_flags, flags);
->  }
->  
-> -notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
-> +NOTRACE_BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
->  {
->  	__bpf_spin_lock_irqsave(lock);
->  	return 0;
-> @@ -357,7 +357,7 @@ static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
->  	local_irq_restore(flags);
->  }
->  
-> -notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
-> +NOTRACE_BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
->  {
->  	__bpf_spin_unlock_irqrestore(lock);
->  	return 0;
-> -- 
-> 2.34.1
+> Remove this BPF_PROG.
 > 
+> >   {
+> >   	struct task_struct *task = bpf_get_current_task_btf();
+> > diff --git a/tools/testing/selftests/bpf/progs/task_ls_recursion.c b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> > index 4542dc683b44..d73b33a4c153 100644
+> > --- a/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> > +++ b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> > @@ -27,7 +27,7 @@ struct {
+> >   	__type(value, long);
+> >   } map_b SEC(".maps");
+> > -SEC("fentry/bpf_local_storage_lookup")
+> > +SEC("fentry/??????????????????????????")
 > 
+> Same here. The checks related to on_lookup in
+> prog_tests/task_local_storage.c need to be removed also.
+> 
+> >   int BPF_PROG(on_lookup)
+> >   {
+> >   	struct task_struct *task = bpf_get_current_task_btf();
+> 
+
+Thanks,
+-- Marco
 
