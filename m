@@ -1,146 +1,132 @@
-Return-Path: <bpf+bounces-21418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A86484CE69
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 16:52:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7B384CF4A
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 17:54:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 453801C225DB
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 15:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD06B286EC2
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 16:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8397A80602;
-	Wed,  7 Feb 2024 15:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4roDxo8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E710823B7;
+	Wed,  7 Feb 2024 16:54:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F369E7FBD9;
-	Wed,  7 Feb 2024 15:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE63081AD3;
+	Wed,  7 Feb 2024 16:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707321125; cv=none; b=rzwMcSxkdI+S6o7jSrlyGaRsuUGKS+LIRyTghzFY5ueqVs2BWzoiDv/OdiIiYonA7dFyyWo5dvsf2kESW3B5ZGfmM/iGZh84/wZS/lU1ajEedyWdWnzlxWppNXIUW3QO20I1C5EUJnSYvvbcWF0TKiKSnC/c1BzJbHXLeEszP2o=
+	t=1707324880; cv=none; b=H64GGn81xUaTqzpftBy0Nh/EbGptjZZmHBzl2rX9vSL315LEhbhRpTNVxJnJ7t8ezMg6cCgIYa/69pZC8iqdB0Q5zlxflSeoOvgSnHJMLyp/sQaj04Q+pL20DxKZSGH9bIni7otmgFPmA2mfGBjsbsWlG17YsHTJfWeEnG5r6mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707321125; c=relaxed/simple;
-	bh=/1x7h2DpHjWcd/k76A8g5THiTurxMbwv+SYlEW+93sc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q6hng+cGwy959ErJkpp6V5JzKjivlCDbLsPZ4feC9upV8jiSDOZlxwE8ClUV9Zj7zNhF14PwfG3SOHaDr/hg3vsuxuZgI5RKUDKlRN9/O3/VErZ1PpqJ8sboLE9DzqFKfRCRS7BB8MdDX8QLurUbfXGD1mPn87+HQH2sz3QxcA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4roDxo8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D9B4C43394;
-	Wed,  7 Feb 2024 15:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707321123;
-	bh=/1x7h2DpHjWcd/k76A8g5THiTurxMbwv+SYlEW+93sc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S4roDxo8tVqC2GezTlb3cfXFcp6weQcwLaiGZmdf1pdhhuOhtMsuGhDXsDCMV8GbO
-	 RLxAo3vtpqHJdWUBeO1ZdBUc+YJEiBqPKnzeW10gKgdzx5yAj262qNEjatFr2oewA5
-	 U96gkG8+cuJWYr/hLXC31VNHfddrz7/y70HWgLAxw3ppS44aI4YAdO6JffVBmwOlG8
-	 XU9HW6HuV+8zPXv4xQ3gBEg6Ps5noXk7cufMK2v4qV4yePWova47vaD8FNN7s7EdTb
-	 NB9oCYbsmwivsZGgDOIpD/iQoZTqpkGenaDhqgpVnREaQgX0b1oUD9pyX7pTlppedD
-	 uLYLbPbnYYeQg==
-Date: Wed, 7 Feb 2024 17:51:44 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-block@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-nvme@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
-Message-ID: <ZcOnEGyr6y3jei68@kernel.org>
-References: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
- <Zb9pZTmyb0lPMQs8@kernel.org>
- <ZcACya-MJr_fNRSH@casper.infradead.org>
+	s=arc-20240116; t=1707324880; c=relaxed/simple;
+	bh=8SMGcPX1EaAbOnwuaOxFDCVdYeYRvn5HrRLClVWFJnI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m1HoqeAQntlJMOw9WEwMyhCeCMYr08zdlfvVfYpgzlRqTlDULEZNLR+gNcs9MPQNkQx7e0VNaSSO5WLv+IpbCaROBNH45hQhvoS895q7Bn0pXHHVWBc7pKWpCxk3pCd6sBnQfL4mv5EmFg6FHNLJu3avFM3cjM7B+RYR4/UjF28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e0507eb60cso598482b3a.3;
+        Wed, 07 Feb 2024 08:54:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707324878; x=1707929678;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JFWCuFlBLzCUWV4jwVKyNSgCubC/35Kvhe3/yYpj56I=;
+        b=Wkp8fDRsEzUCheBcXcNxdwgCL23/TnqwpsA+8R0XWboWTIaUpKCDswF4kVK2OlHdH+
+         iWy04F3GALoKWI9YFnJ8FSVhHkQbRTIpumsunZW7RQIaNs7uhIfID17vtj+oj+eYqbOh
+         pAhOHaCK7qLyIIhkhZqf21Mtxdt3Rv55I0P9pEXk+8x3QotWslsxsSTTsLpXHQ+s1wke
+         XU/85+lohOQVxPZhJu/C0D/r/iLxWwIkW8k/hzQR7P9ZTbwEPb+Gf3Ye9hnAI1fagqT9
+         WEWzBzDoZPHl7sp9i2BX9HNQ7gkCXBzbNzEf0FYqaPHbjN4LHMXkiI17vfvz8MgDYHFz
+         8RMA==
+X-Gm-Message-State: AOJu0Yzz2ZBWTPNbz6N+UgoISyTXdYgJ4sybm09oo8+FzsQrWq87h04X
+	ARNh0HQ700jfKBs6LftCvxlrQeOQzNxhzJuFZg1ePt35rZeuEMaYujxT3HWhqdFYKfgrHADI5hB
+	yb5U11Ld3ZQBpN6RNrJ21/mdmxlU=
+X-Google-Smtp-Source: AGHT+IFvVYIu3Ss1QbwMuQSQ7A3OklEFUl+QL08+W1ad4I0SqbvyPguE+z/5iIaQaILDY4/Dpvadp9TJctdIlcLrEWE=
+X-Received: by 2002:a05:6a00:44c5:b0:6e0:6c89:e308 with SMTP id
+ cv5-20020a056a0044c500b006e06c89e308mr1808249pfb.3.1707324878028; Wed, 07 Feb
+ 2024 08:54:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcACya-MJr_fNRSH@casper.infradead.org>
+References: <20240206033320.2657716-1-irogers@google.com>
+In-Reply-To: <20240206033320.2657716-1-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 7 Feb 2024 08:54:25 -0800
+Message-ID: <CAM9d7cix-TuMov+hsqVvvkeSRA2snhuddcY0zypR1F9yY4G2Wg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] maps memory improvements and fixes
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
+	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	James Clark <james.clark@arm.com>, liuwenyu <liuwenyu7@huawei.com>, Leo Yan <leo.yan@linaro.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 04, 2024 at 09:34:01PM +0000, Matthew Wilcox wrote:
-> On Sun, Feb 04, 2024 at 11:39:33AM +0100, Mike Rapoport wrote:
-> > On Mon, Jan 29, 2024 at 04:32:03AM +0000, Matthew Wilcox wrote:
-> > > Our documentation of the current page flags is ... not great.  I think
-> > > I can improve it for the page cache side of things; I understand the
-> > > meanings of locked, writeback, uptodate, dirty, head, waiters, slab,
-> > > mlocked, mappedtodisk, error, hwpoison, readahead, anon_exclusive,
-> > > has_hwpoisoned, hugetlb and large_remappable.
-> > > 
-> > > Where I'm a lot more shaky is the meaning of the more "real MM" flags,
-> > > like active, referenced, lru, workingset, reserved, reclaim, swapbacked,
-> > > unevictable, young, idle, swapcache, isolated, and reported.
-> > > 
-> > > Perhaps we could have an MM session where we try to explain slowly and
-> > > carefully to each other what all these flags actually mean, talk about
-> > > what combinations of them make sense, how we might eliminate some of
-> > > them to make more space in the flags word, and what all this looks like
-> > > in a memdesc world.
-> > > 
-> > > And maybe we can get some documentation written about it!  Not trying
-> > > to nerd snipe Jon into attending this session, but if he did ...
-> > 
-> > I suspect Jon will be there anyway, but not sure he'd be willing to do the
-> > writing :)
-> > 
-> > I was going to propose the "mm docs" session again, but this one seems more
-> > useful than talking yet again about how hard it is to get MM documentation
-> > done.
-> 
-> I'm doing my best to write documentation as I go.  I think we're a bit
-> better off than we were last year.  Do we have scripts to tell us which
-> public functions (ie EXPORT_SYMBOL and static inline functions in header
-> files) have kernel-doc?  And could we run them against kernels from, say,
-> April 2023, 2022, 2021, 2020, 2019 (and in two months against April 2024)
-> and see how we're doing in terms of percentage undocumented functions?
+Hi Ian,
 
-We didn't have such script, but it was easy to compare "grep
-EXPORT_SYMBOL\|static inline" with ".. c:function" in kernel-doc.
-We do improve slowly, but we are still below 50% with kernel-doc for
-EXPORT_SYMBOL functions and slightly above 10% for static inlines.
+On Mon, Feb 5, 2024 at 7:33=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> First 6 patches from:
+> https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.com/
+>
+> Ian Rogers (6):
+>   perf maps: Switch from rbtree to lazily sorted array for addresses
+>   perf maps: Get map before returning in maps__find
+>   perf maps: Get map before returning in maps__find_by_name
+>   perf maps: Get map before returning in maps__find_next_entry
+>   perf maps: Hide maps internals
+>   perf maps: Locking tidy up of nr_maps
 
-Although with static inlines it's quite possible that the percentage of
-actual public API documentation is higher because some of the functions in
-inlcude/linux/ are only used inside mm.
+This fails to build with NO_LIBUNWIND=3D1
 
-There are also APIs that are not EXPORT_SYMBOL, but I didn't find an easy
-way to check how well there are documented.
+util/unwind-libdw.c: In function =E2=80=98unwind__get_entries=E2=80=99:
+util/unwind-libdw.c:266:70: error: invalid use of undefined type =E2=80=98s=
+truct maps=E2=80=99
+  266 |                 .machine        =3D
+RC_CHK_ACCESS(thread__maps(thread))->machine,
 
-EXPORT_SYMBOL
-version     	funcs	docs	percent
-v5.0        	514	177	34
-v5.6        	538	208	38
-v5.12       	550	209	38
-v5.17       	580	228	39
-v6.3        	580	235	40
-v6.8-rc1    	565	238	42
+Thanks,
+Namhyung
 
-static inline
-version     	funcs	docs	percent
-v5.0        	581	33	5
-v5.6        	596	41	6
-v5.12       	629	42	6
-v5.17       	746	74	9
-v6.3        	867	95	10
-v6.8-rc1    	944	116	12
 
- 
-> There's also the problem of getting long-form documentation done.
-> But I think that's a different problem from getting kernel-doc written.
-> Looking at the 55 commits in the last year to Documentation/mm, we seems
-> to be doing a pretty good job of keeping the documentation we have up
-> to date.  Just not a great job of adding new documentation.
-
-I agree that long-form documentation is a different problem from getting
-kernel-doc written and we are not doing a great job in writing new
-documentation.
-
--- 
-Sincerely yours,
-Mike.
+>
+>  tools/perf/arch/x86/tests/dwarf-unwind.c |    1 +
+>  tools/perf/tests/maps.c                  |    3 +
+>  tools/perf/tests/thread-maps-share.c     |    8 +-
+>  tools/perf/tests/vmlinux-kallsyms.c      |   10 +-
+>  tools/perf/util/bpf-event.c              |    1 +
+>  tools/perf/util/callchain.c              |    2 +-
+>  tools/perf/util/event.c                  |    4 +-
+>  tools/perf/util/machine.c                |   34 +-
+>  tools/perf/util/map.c                    |    1 +
+>  tools/perf/util/maps.c                   | 1296 ++++++++++++++--------
+>  tools/perf/util/maps.h                   |   65 +-
+>  tools/perf/util/probe-event.c            |    1 +
+>  tools/perf/util/symbol-elf.c             |    4 +-
+>  tools/perf/util/symbol.c                 |   31 +-
+>  tools/perf/util/thread.c                 |    2 +-
+>  tools/perf/util/unwind-libunwind-local.c |    2 +-
+>  tools/perf/util/unwind-libunwind.c       |    7 +-
+>  17 files changed, 899 insertions(+), 573 deletions(-)
+>
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
