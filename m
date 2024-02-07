@@ -1,492 +1,786 @@
-Return-Path: <bpf+bounces-21384-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21385-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4312084C1D8
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 02:23:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6058D84C1F0
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 02:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9F291F2547E
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 01:23:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10CC1287C8C
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 01:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208D5D535;
-	Wed,  7 Feb 2024 01:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A001DDC7;
+	Wed,  7 Feb 2024 01:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P+Occ8Ee"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="bR5Q7BKB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46665D271
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 01:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74E6DDA9
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 01:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707268982; cv=none; b=CNVWSvvSGvFQoOATAQS4qzeK8AghZIgNLXBcsobX6Oeemqb9OD3s38MrS0U3t32Z0mebvwb/xM9T16AZTJUd5Qw+HzyPb5qLCPh953CYF/hbkL401Oav/f3p0j5HaB5G6+Ku07KmyJkU5p4axECZInoR2WQpPkD8PQs4zbVbkt0=
+	t=1707269815; cv=none; b=BQ6J38GLfUxY2R+DGClsJA3HQyTh8YmCKAFnZT98tko4A5jVCqcsruMr/IWC+vK7ApSTtn/vH2WZIyFEwDR+xPgoZgg9/5E2JhPkhbnyLCfXGsZ/y7wLjNRiqJmbIPwtund4JIdTKO92Pk2qNO3DnqcCFIk8Nr0jADHko4H+L5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707268982; c=relaxed/simple;
-	bh=mXspb4roYWk2XrWglZU0jbBxJY+f98HttK8NYpqCOPw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dB8CTfTEDjfW0fqjFBI3y15j9NF/GPnjEK4KFD5PIxqDQW4HDp8JyxkSuQeRFXnCeZhkKGgntXAc7dPxGTfEUUhFp9GXaZEUAnSuOY+s7etXVn4CpCP4AytECVEAxx3vTAv93UPHzhqKRy3u4CUA7n4m/KOYvWdR7ToiB2BWu8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P+Occ8Ee; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9908bdfb-1030-4a9f-8405-3696c5d03981@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707268978;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s6y56WasfFJQsr8qLV5d2+sZ4nBMU+JuvCGN+RiCB1w=;
-	b=P+Occ8Ee386PcZcmFQTZj4f92V3YrDXBxVXpWF/ELnOh4fZWSpBuJQkqmhnP4njpT3T6rY
-	L68cQBrIXeurnlasEt/ZaH6rvS8NR5WNPyiyT1ub9lBA485YwOBgj2jfhfEf4pF+Nyc5za
-	+49YDOGl9puoM4xZZ7REq9n/hOd58eY=
-Date: Tue, 6 Feb 2024 17:22:45 -0800
+	s=arc-20240116; t=1707269815; c=relaxed/simple;
+	bh=8/IXU+3A+BigWLFJTjjnh7adLXY58gs2T4x67o9TK6g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JBqe1GZyl7OFsRi14qolaZPF7T9bgcKQzAOPQH79o2Im8py6ev06GkAlKwzzDuQkN+JrztOBX2a+X/WOizOXEHv0casXqfZMQnpUXkmNF8bJ7Un1O5lNH0hEbE3BgQx0V24sG0A2nQxgSbEucr7Fhh3ZSPJHrGEvj7jdmkqM8iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=bR5Q7BKB; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6e08fde11so91603276.1
+        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 17:36:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1707269811; x=1707874611; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x4UVXt0fxIgi47UM0Lcd+kHeDNX9b2q5xQI04Cos9NU=;
+        b=bR5Q7BKBzUPH9TRrhY0Ts+AanYwmXGPiB3n/Y87LU4ml8E9F60X3/Str2En+ZB7Cyx
+         uwhVJztNMpEcteWAQB55Ut6o4har2eHNKZblu5zlZX7JgrgDhjRF3MuVvIZdNNHYgj4E
+         ax5GNr3rOb+iHD0WYWQ/DmhN/1yKJUKGaUy7TyJRKT3Z9jEINj84X57cxiGHLuIyFN4o
+         bLbo0xNG3GVqgf4pxWpKsnEZiAk8BGof5EB6xdZgjs7J3aZh+iNHazVenvziLuzyEwcC
+         rCRrpt6B+IzsGRM5I7IbL2hUvOfCShOAt374uXrqJ4k51eDrh9Q49ZeeFGwm3dCG7S9a
+         xjXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707269811; x=1707874611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x4UVXt0fxIgi47UM0Lcd+kHeDNX9b2q5xQI04Cos9NU=;
+        b=ss4S5fl330q9YYAEZTgqziJVMcmIsvBrcRGIdqv1zQ0TqumRqoaFE3R3rYAV/3EH4o
+         Jo6u437i3ViPjBYzBM7z15Zhnrh8Z6umC9Ickr6F9UNNg3X7IS88xI/H6BVWpXNCHuUk
+         xDfITlDkxzkz5X/vCFcNOvQ+Wt5HyTjRKYcmvMYsMLUddBdr8uQ8g7CCsus628mkeDV3
+         TMkJUpshYT67k17YWJKTnLMCxDejBoThRlzo2pt4A1mJKAo8tViiiNfe8nCQ+sH9SPod
+         EAZ3FLIDTdPGygZgt/3HYiBOPHIcc81C7puvjCPzRDsjyUv9WYlvG5G1qbuuAr/eIf0t
+         qaYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBvMP/VOXyX+YGtI8I2mwCAWfN51EVIV1J3N9vK3g6eDYYw/ZJCRJO25HYT7XULqUf/FUxATXsblSAnkAqkozN3Aay
+X-Gm-Message-State: AOJu0Yy6R0/1J/T544caDJI92CfV4NNj6rb4WkIt6WcFgQljx2GrDHYk
+	ewG+xFnqZhfZCa4P/w5pfdZFFlrDiGkLnIMXLskKCkMLHbFaoTDyMYYEofIser2ghLimB1Eswlg
+	TO4OgkyS5rACU0WTz1jdKJY5D17rrqM2hf/In5XfIN40441I=
+X-Google-Smtp-Source: AGHT+IHbdMjBFE9gkcG2DKXZMOZiL36BSA5BN+4JT8Qstkewyemi4FKBoYvBYFum6TvDvPsoKico4ITsjLy2IelT1nE=
+X-Received: by 2002:a25:ac94:0:b0:dc6:4ad3:1671 with SMTP id
+ x20-20020a25ac94000000b00dc64ad31671mr3366444ybi.15.1707269811453; Tue, 06
+ Feb 2024 17:36:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow
- paths
-Content-Language: en-US
-To: Marco Elver <elver@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240131141858.1149719-1-elver@google.com>
- <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
- <CANpmjNPKACDwXMnZRw9=CAgWNaMWAyFZ2W7KY2s4ck0s_ue1ag@mail.gmail.com>
- <5a08032b-ed4d-4429-b0a9-2736689d8c33@linux.dev>
- <ZcJmok64Xqv6l4ZS@elver.google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ZcJmok64Xqv6l4ZS@elver.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240205185537.216873-1-stephen@networkplumber.org>
+In-Reply-To: <20240205185537.216873-1-stephen@networkplumber.org>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 6 Feb 2024 20:36:40 -0500
+Message-ID: <CAM0EoMnZ=WcSy7me3Tf=_znWqp_ep8UTpyHuX3iUNFtVvzUufQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net/sched: actions report errors with extack
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/6/24 9:04 AM, Marco Elver wrote:
-> On Mon, Feb 05, 2024 at 03:24PM -0800, Martin KaFai Lau wrote:
-> [...]
->>> Or can you suggest different functions to hook to for the recursion test?
->>
->> I don't prefer to add another tracepoint for the selftest.
-> 
-> Ok - I also checked, even though it should be a no-op, it wasn't
-> (compiler generated worse code).
+On Mon, Feb 5, 2024 at 1:55=E2=80=AFPM Stephen Hemminger
+<stephen@networkplumber.org> wrote:
+>
+> When an action detects invalid parameters, it should
+> be adding an external ack to netlink so that the user is
+> able to diagnose the issue.
+>
+> Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
 
-I am interested to how the tracepoint generates worse code. Can you share some 
-details ?
+Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
 
-> 
->> The test in "SEC("fentry/bpf_local_storage_lookup")" is testing that the
->> initial bpf_local_storage_lookup() should work and the immediate recurred
->> bpf_task_storage_delete() will fail.
->>
->> Depends on how the new slow path function will look like in v2. The test can
->> probably be made to go through the slow path, e.g. by creating a lot of task
->> storage maps before triggering the lookup.
-> 
-> Below is tentative v2, but I'm struggling with fixing up the test. In
-> particular, bpf_task_storage_delete() now only calls out to
-> migrate_disable/enable() and bpf_selem_unlink(), because the compiler
-> just ends up inlining everything it can:
-> 
-> <bpf_task_storage_delete>:
->     endbr64
->     nopl   0x0(%rax,%rax,1)
->     push   %r14
->     push   %rbx
->     test   %rsi,%rsi
->     je     ffffffff81280015 <bpf_task_storage_delete+0x75>
->     mov    %rsi,%rbx
->     mov    %rdi,%r14
->     call   ffffffff810f2e40 <migrate_disable>
->     incl   %gs:0x7eda9ba5(%rip)        # 29b68 <bpf_task_storage_busy>
->     mov    0xb38(%rbx),%rax
->     mov    $0xfffffffffffffffe,%rbx
->     test   %rax,%rax
->     je     ffffffff8128002f <bpf_task_storage_delete+0x8f>
->     movzwl 0x10e(%r14),%ecx
-> 
->     mov    (%rax,%rcx,8),%rdi
->     test   %rdi,%rdi
->     je     ffffffff8127ffef <bpf_task_storage_delete+0x4f>
->     mov    (%rdi),%rcx
->     cmp    %r14,%rcx
->     je     ffffffff81280022 <bpf_task_storage_delete+0x82>
->     mov    0x88(%rax),%rdi
->     test   %rdi,%rdi
->     je     ffffffff8128002f <bpf_task_storage_delete+0x8f>
->     add    $0xfffffffffffffff0,%rdi
->     je     ffffffff8128002f <bpf_task_storage_delete+0x8f>
->     mov    0x40(%rdi),%rax
->     cmp    %r14,%rax
->     je     ffffffff8128001e <bpf_task_storage_delete+0x7e>
->     mov    0x10(%rdi),%rdi
->     test   %rdi,%rdi
->     jne    ffffffff8127fffb <bpf_task_storage_delete+0x5b>
->     jmp    ffffffff8128002f <bpf_task_storage_delete+0x8f>
->     mov    $0xffffffffffffffea,%rbx
->     jmp    ffffffff8128003b <bpf_task_storage_delete+0x9b>
->     add    $0x40,%rdi
->     add    $0xffffffffffffffc0,%rdi
->     xor    %ebx,%ebx
->     xor    %esi,%esi
->     call   ffffffff8127e820 <bpf_selem_unlink>
->     decl   %gs:0x7eda9b32(%rip)        # 29b68 <bpf_task_storage_busy>
->     call   ffffffff810f2ed0 <migrate_enable>
->     mov    %rbx,%rax
->     pop    %rbx
->     pop    %r14
->     cs jmp ffffffff82324ea0 <__x86_return_thunk>
-> 
-> 
-> Could you suggest how we can fix up the tests? I'm a little stuck
-> because there's not much we can hook to left.
+cheers,
+jamal
 
-I don't see a solution either if only the cache insertion code path is in a 
-traceable function.
-
-The prog->active counter has already been covered in another test. This test is 
-mostly only covering the lookup => delete recur case and the code path is 
-contained within the bpf storage logic. The future code review should be able to 
-cover. I would make an exception here and remove this test case considering 
-anything (e.g. tracepoint) we do here is likely to make it worse. (more on the 
-test removal below).
-
-> 
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> From: Marco Elver <elver@google.com>
-> Date: Tue, 30 Jan 2024 17:57:45 +0100
-> Subject: [PATCH v2] bpf: Allow compiler to inline most of
->   bpf_local_storage_lookup()
-> 
-> In various performance profiles of kernels with BPF programs attached,
-> bpf_local_storage_lookup() appears as a significant portion of CPU
-> cycles spent. To enable the compiler generate more optimal code, turn
-> bpf_local_storage_lookup() into a static inline function, where only the
-> cache insertion code path is outlined (call instruction can be elided
-> entirely if cacheit_lockit is a constant expression).
-
-Can you share more why only putting the cache insertion code to a function 
-improves the larger number of maps case. In the benchmark, cacheit_lockit should 
-always be true and __bpf_local_storage_insert_cache() should always be called.
-
-> 
-> Based on results from './benchs/run_bench_local_storage.sh' (21 trials;
-> reboot between each trial) this produces improvements in throughput and
-> latency in the majority of cases, with an average (geomean) improvement
-> of 8%:
-> 
-> +---- Hashmap Control --------------------
-> |
-> | + num keys: 10
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 14.789 M ops/s       | 14.745 M ops/s (  ~  )
-> |   +- hits latency                       | 67.679 ns/op         | 67.879 ns/op   (  ~  )
-> |   +- important_hits throughput          | 14.789 M ops/s       | 14.745 M ops/s (  ~  )
-> |
-> | + num keys: 1000
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 12.233 M ops/s       | 12.170 M ops/s (  ~  )
-> |   +- hits latency                       | 81.754 ns/op         | 82.185 ns/op   (  ~  )
-> |   +- important_hits throughput          | 12.233 M ops/s       | 12.170 M ops/s (  ~  )
-> |
-> | + num keys: 10000
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 7.220 M ops/s        | 7.204 M ops/s  (  ~  )
-> |   +- hits latency                       | 138.522 ns/op        | 138.842 ns/op  (  ~  )
-> |   +- important_hits throughput          | 7.220 M ops/s        | 7.204 M ops/s  (  ~  )
-> |
-> | + num keys: 100000
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 5.061 M ops/s        | 5.165 M ops/s  (+2.1%)
-> |   +- hits latency                       | 198.483 ns/op        | 194.270 ns/op  (-2.1%)
-> |   +- important_hits throughput          | 5.061 M ops/s        | 5.165 M ops/s  (+2.1%)
-> |
-> | + num keys: 4194304
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 2.864 M ops/s        | 2.882 M ops/s  (  ~  )
-> |   +- hits latency                       | 365.220 ns/op        | 361.418 ns/op  (-1.0%)
-> |   +- important_hits throughput          | 2.864 M ops/s        | 2.882 M ops/s  (  ~  )
-> |
-> +---- Local Storage ----------------------
-> |
-> | + num_maps: 1
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 33.005 M ops/s       | 39.068 M ops/s (+18.4%)
-> |   +- hits latency                       | 30.300 ns/op         | 25.598 ns/op   (-15.5%)
-> |   +- important_hits throughput          | 33.005 M ops/s       | 39.068 M ops/s (+18.4%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 37.151 M ops/s       | 44.926 M ops/s (+20.9%)
-> |   +- hits latency                       | 26.919 ns/op         | 22.259 ns/op   (-17.3%)
-> |   +- important_hits throughput          | 37.151 M ops/s       | 44.926 M ops/s (+20.9%)
-> |
-> | + num_maps: 10
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 32.288 M ops/s       | 38.099 M ops/s (+18.0%)
-> |   +- hits latency                       | 30.972 ns/op         | 26.248 ns/op   (-15.3%)
-> |   +- important_hits throughput          | 3.229 M ops/s        | 3.810 M ops/s  (+18.0%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 34.473 M ops/s       | 41.145 M ops/s (+19.4%)
-> |   +- hits latency                       | 29.010 ns/op         | 24.307 ns/op   (-16.2%)
-> |   +- important_hits throughput          | 12.312 M ops/s       | 14.695 M ops/s (+19.4%)
-> |
-> | + num_maps: 16
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 32.524 M ops/s       | 38.341 M ops/s (+17.9%)
-> |   +- hits latency                       | 30.748 ns/op         | 26.083 ns/op   (-15.2%)
-> |   +- important_hits throughput          | 2.033 M ops/s        | 2.396 M ops/s  (+17.9%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 34.575 M ops/s       | 41.338 M ops/s (+19.6%)
-> |   +- hits latency                       | 28.925 ns/op         | 24.193 ns/op   (-16.4%)
-> |   +- important_hits throughput          | 11.001 M ops/s       | 13.153 M ops/s (+19.6%)
-> |
-> | + num_maps: 17
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 28.861 M ops/s       | 32.756 M ops/s (+13.5%)
-> |   +- hits latency                       | 34.649 ns/op         | 30.530 ns/op   (-11.9%)
-> |   +- important_hits throughput          | 1.700 M ops/s        | 1.929 M ops/s  (+13.5%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 31.529 M ops/s       | 36.110 M ops/s (+14.5%)
-> |   +- hits latency                       | 31.719 ns/op         | 27.697 ns/op   (-12.7%)
-> |   +- important_hits throughput          | 9.598 M ops/s        | 10.993 M ops/s (+14.5%)
-> |
-> | + num_maps: 24
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 18.602 M ops/s       | 19.937 M ops/s (+7.2%)
-> |   +- hits latency                       | 53.767 ns/op         | 50.166 ns/op   (-6.7%)
-> |   +- important_hits throughput          | 0.776 M ops/s        | 0.831 M ops/s  (+7.2%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 21.718 M ops/s       | 23.332 M ops/s (+7.4%)
-> |   +- hits latency                       | 46.047 ns/op         | 42.865 ns/op   (-6.9%)
-> |   +- important_hits throughput          | 6.110 M ops/s        | 6.564 M ops/s  (+7.4%)
-> |
-> | + num_maps: 32
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 14.118 M ops/s       | 14.626 M ops/s (+3.6%)
-> |   +- hits latency                       | 70.856 ns/op         | 68.381 ns/op   (-3.5%)
-> |   +- important_hits throughput          | 0.442 M ops/s        | 0.458 M ops/s  (+3.6%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 17.111 M ops/s       | 17.906 M ops/s (+4.6%)
-> |   +- hits latency                       | 58.451 ns/op         | 55.865 ns/op   (-4.4%)
-> |   +- important_hits throughput          | 4.776 M ops/s        | 4.998 M ops/s  (+4.6%)
-> |
-> | + num_maps: 100
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 5.281 M ops/s        | 5.528 M ops/s  (+4.7%)
-> |   +- hits latency                       | 192.398 ns/op        | 183.059 ns/op  (-4.9%)
-> |   +- important_hits throughput          | 0.053 M ops/s        | 0.055 M ops/s  (+4.9%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 6.265 M ops/s        | 6.498 M ops/s  (+3.7%)
-> |   +- hits latency                       | 161.436 ns/op        | 152.877 ns/op  (-5.3%)
-> |   +- important_hits throughput          | 1.636 M ops/s        | 1.697 M ops/s  (+3.7%)
-> |
-> | + num_maps: 1000
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 0.355 M ops/s        | 0.354 M ops/s  (  ~  )
-> |   +- hits latency                       | 2826.538 ns/op       | 2827.139 ns/op (  ~  )
-> |   +- important_hits throughput          | 0.000 M ops/s        | 0.000 M ops/s  (  ~  )
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 0.404 M ops/s        | 0.403 M ops/s  (  ~  )
-> |   +- hits latency                       | 2481.190 ns/op       | 2487.555 ns/op (  ~  )
-> |   +- important_hits throughput          | 0.102 M ops/s        | 0.101 M ops/s  (  ~  )
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
 > ---
-> v2:
-> * Inline most of bpf_local_storage_lookup(), which produces greater
->    speedup and avoids regressing the cases with large map arrays.
-> * Drop "unlikely()" hint, it didn't produce much benefit.
-> * Re-run benchmark and collect 21 trials of results.
-> ---
->   include/linux/bpf_local_storage.h             | 30 ++++++++++-
->   kernel/bpf/bpf_local_storage.c                | 52 +++++--------------
->   .../selftests/bpf/progs/cgrp_ls_recursion.c   |  2 +-
->   .../selftests/bpf/progs/task_ls_recursion.c   |  2 +-
->   4 files changed, 43 insertions(+), 43 deletions(-)
-> 
-> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> index 173ec7f43ed1..dcddb0aef7d8 100644
-> --- a/include/linux/bpf_local_storage.h
-> +++ b/include/linux/bpf_local_storage.h
-> @@ -129,10 +129,36 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
->   			    struct bpf_local_storage_cache *cache,
->   			    bool bpf_ma);
->   
-> -struct bpf_local_storage_data *
-> +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
-> +				      struct bpf_local_storage_map *smap,
-> +				      struct bpf_local_storage_elem *selem);
-> +/* If cacheit_lockit is false, this lookup function is lockless */
-> +static inline struct bpf_local_storage_data *
->   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
->   			 struct bpf_local_storage_map *smap,
-> -			 bool cacheit_lockit);
-> +			 bool cacheit_lockit)
-> +{
-> +	struct bpf_local_storage_data *sdata;
-> +	struct bpf_local_storage_elem *selem;
+> v2 - use NL_REQ_ATTR_CHECK()
+>
+>  net/sched/act_bpf.c      | 32 +++++++++++++++++++++++---------
+>  net/sched/act_connmark.c |  8 ++++++--
+>  net/sched/act_csum.c     |  9 +++++++--
+>  net/sched/act_ct.c       |  5 +++--
+>  net/sched/act_ctinfo.c   |  6 +++---
+>  net/sched/act_gact.c     | 14 +++++++++++---
+>  net/sched/act_gate.c     | 15 +++++++++++----
+>  net/sched/act_ife.c      |  8 ++++++--
+>  net/sched/act_mirred.c   |  6 ++++--
+>  net/sched/act_nat.c      |  9 +++++++--
+>  net/sched/act_police.c   | 13 ++++++++++---
+>  net/sched/act_sample.c   |  8 ++++++--
+>  net/sched/act_simple.c   | 11 ++++++++---
+>  net/sched/act_skbedit.c  | 17 ++++++++++++-----
+>  net/sched/act_skbmod.c   |  9 +++++++--
+>  net/sched/act_vlan.c     |  8 ++++++--
+>  16 files changed, 130 insertions(+), 48 deletions(-)
+>
+> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+> index 0e3cf11ae5fc..4dc6f27a4809 100644
+> --- a/net/sched/act_bpf.c
+> +++ b/net/sched/act_bpf.c
+> @@ -184,7 +184,8 @@ static const struct nla_policy act_bpf_policy[TCA_ACT=
+_BPF_MAX + 1] =3D {
+>                                     .len =3D sizeof(struct sock_filter) *=
+ BPF_MAXINSNS },
+>  };
+>
+> -static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg =
+*cfg)
+> +static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg =
+*cfg,
+> +                                struct netlink_ext_ack *extack)
+>  {
+>         struct sock_filter *bpf_ops;
+>         struct sock_fprog_kern fprog_tmp;
+> @@ -193,12 +194,17 @@ static int tcf_bpf_init_from_ops(struct nlattr **tb=
+, struct tcf_bpf_cfg *cfg)
+>         int ret;
+>
+>         bpf_num_ops =3D nla_get_u16(tb[TCA_ACT_BPF_OPS_LEN]);
+> -       if (bpf_num_ops > BPF_MAXINSNS || bpf_num_ops =3D=3D 0)
+> +       if (bpf_num_ops > BPF_MAXINSNS || bpf_num_ops =3D=3D 0) {
+> +               NL_SET_ERR_MSG_FMT_MOD(extack,
+> +                                      "Invalid number of BPF instruction=
+s %u", bpf_num_ops);
+>                 return -EINVAL;
+> +       }
+>
+>         bpf_size =3D bpf_num_ops * sizeof(*bpf_ops);
+> -       if (bpf_size !=3D nla_len(tb[TCA_ACT_BPF_OPS]))
+> +       if (bpf_size !=3D nla_len(tb[TCA_ACT_BPF_OPS])) {
+> +               NL_SET_ERR_MSG_FMT_MOD(extack, "BPF instruction size %u",=
+ bpf_size);
+>                 return -EINVAL;
+> +       }
+>
+>         bpf_ops =3D kmemdup(nla_data(tb[TCA_ACT_BPF_OPS]), bpf_size, GFP_=
+KERNEL);
+>         if (bpf_ops =3D=3D NULL)
+> @@ -221,7 +227,8 @@ static int tcf_bpf_init_from_ops(struct nlattr **tb, =
+struct tcf_bpf_cfg *cfg)
+>         return 0;
+>  }
+>
+> -static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg =
+*cfg)
+> +static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg =
+*cfg,
+> +                                struct netlink_ext_ack *extack)
+>  {
+>         struct bpf_prog *fp;
+>         char *name =3D NULL;
+> @@ -230,8 +237,10 @@ static int tcf_bpf_init_from_efd(struct nlattr **tb,=
+ struct tcf_bpf_cfg *cfg)
+>         bpf_fd =3D nla_get_u32(tb[TCA_ACT_BPF_FD]);
+>
+>         fp =3D bpf_prog_get_type(bpf_fd, BPF_PROG_TYPE_SCHED_ACT);
+> -       if (IS_ERR(fp))
+> +       if (IS_ERR(fp)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "BPF program type mismatch");
+>                 return PTR_ERR(fp);
+> +       }
+>
+>         if (tb[TCA_ACT_BPF_NAME]) {
+>                 name =3D nla_memdup(tb[TCA_ACT_BPF_NAME], GFP_KERNEL);
+> @@ -292,16 +301,20 @@ static int tcf_bpf_init(struct net *net, struct nla=
+ttr *nla,
+>         int ret, res =3D 0;
+>         u32 index;
+>
+> -       if (!nla)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Bpf requires attributes to be=
+ passed");
+>                 return -EINVAL;
+> +       }
+>
+>         ret =3D nla_parse_nested_deprecated(tb, TCA_ACT_BPF_MAX, nla,
+>                                           act_bpf_policy, NULL);
+>         if (ret < 0)
+>                 return ret;
+>
+> -       if (!tb[TCA_ACT_BPF_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+> +       }
+>
+>         parm =3D nla_data(tb[TCA_ACT_BPF_PARMS]);
+>         index =3D parm->index;
+> @@ -336,14 +349,15 @@ static int tcf_bpf_init(struct net *net, struct nla=
+ttr *nla,
+>         is_ebpf =3D tb[TCA_ACT_BPF_FD];
+>
+>         if (is_bpf =3D=3D is_ebpf) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Can not specify both BPF fd a=
+nd ops");
+>                 ret =3D -EINVAL;
+>                 goto put_chain;
+>         }
+>
+>         memset(&cfg, 0, sizeof(cfg));
+>
+> -       ret =3D is_bpf ? tcf_bpf_init_from_ops(tb, &cfg) :
+> -                      tcf_bpf_init_from_efd(tb, &cfg);
+> +       ret =3D is_bpf ? tcf_bpf_init_from_ops(tb, &cfg, extack) :
+> +                      tcf_bpf_init_from_efd(tb, &cfg, extack);
+>         if (ret < 0)
+>                 goto put_chain;
+>
+> diff --git a/net/sched/act_connmark.c b/net/sched/act_connmark.c
+> index 0fce631e7c91..00c7e52d91ca 100644
+> --- a/net/sched/act_connmark.c
+> +++ b/net/sched/act_connmark.c
+> @@ -110,16 +110,20 @@ static int tcf_connmark_init(struct net *net, struc=
+t nlattr *nla,
+>         int ret =3D 0, err;
+>         u32 index;
+>
+> -       if (!nla)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Connmark requires attributes =
+to be passed");
+>                 return -EINVAL;
+> +       }
+>
+>         ret =3D nla_parse_nested_deprecated(tb, TCA_CONNMARK_MAX, nla,
+>                                           connmark_policy, NULL);
+>         if (ret < 0)
+>                 return ret;
+>
+> -       if (!tb[TCA_CONNMARK_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CONNMARK_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+> +       }
+>
+>         nparms =3D kzalloc(sizeof(*nparms), GFP_KERNEL);
+>         if (!nparms)
+> diff --git a/net/sched/act_csum.c b/net/sched/act_csum.c
+> index 5cc8e407e791..b83e6d5f10ee 100644
+> --- a/net/sched/act_csum.c
+> +++ b/net/sched/act_csum.c
+> @@ -55,16 +55,21 @@ static int tcf_csum_init(struct net *net, struct nlat=
+tr *nla,
+>         int ret =3D 0, err;
+>         u32 index;
+>
+> -       if (nla =3D=3D NULL)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Checksum requires attributes =
+to be passed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_CSUM_MAX, nla, csum_p=
+olicy,
+>                                           NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (tb[TCA_CSUM_PARMS] =3D=3D NULL)
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CSUM_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+> +       }
 > +
-> +	/* Fast path (cache hit) */
-> +	sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
-> +				      bpf_rcu_lock_held());
-> +	if (sdata && rcu_access_pointer(sdata->smap) == smap)
-> +		return sdata;
+>         parm =3D nla_data(tb[TCA_CSUM_PARMS]);
+>         index =3D parm->index;
+>         err =3D tcf_idr_check_alloc(tn, &index, a, bind);
+> diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+> index baac083fd8f1..7984f9f6ea2c 100644
+> --- a/net/sched/act_ct.c
+> +++ b/net/sched/act_ct.c
+> @@ -1329,10 +1329,11 @@ static int tcf_ct_init(struct net *net, struct nl=
+attr *nla,
+>         if (err < 0)
+>                 return err;
+>
+> -       if (!tb[TCA_CT_PARMS]) {
+> -               NL_SET_ERR_MSG_MOD(extack, "Missing required ct parameter=
+s");
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CT_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+>         }
 > +
-> +	/* Slow path (cache miss) */
-> +	hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
-> +				  rcu_read_lock_trace_held())
-> +		if (rcu_access_pointer(SDATA(selem)->smap) == smap)
-> +			break;
+>         parm =3D nla_data(tb[TCA_CT_PARMS]);
+>         index =3D parm->index;
+>         err =3D tcf_idr_check_alloc(tn, &index, a, bind);
+> diff --git a/net/sched/act_ctinfo.c b/net/sched/act_ctinfo.c
+> index 5dd41a012110..dde047b6b839 100644
+> --- a/net/sched/act_ctinfo.c
+> +++ b/net/sched/act_ctinfo.c
+> @@ -178,11 +178,11 @@ static int tcf_ctinfo_init(struct net *net, struct =
+nlattr *nla,
+>         if (err < 0)
+>                 return err;
+>
+> -       if (!tb[TCA_CTINFO_ACT]) {
+> -               NL_SET_ERR_MSG_MOD(extack,
+> -                                  "Missing required TCA_CTINFO_ACT attri=
+bute");
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CTINFO_ACT)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+>         }
 > +
-> +	if (!selem)
-> +		return NULL;
-> +	if (cacheit_lockit)
-> +		__bpf_local_storage_insert_cache(local_storage, smap, selem);
-> +	return SDATA(selem);
-> +}
->   
->   void bpf_local_storage_destroy(struct bpf_local_storage *local_storage);
->   
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> index 146824cc9689..bdea1a459153 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -414,47 +414,21 @@ void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool reuse_now)
->   	bpf_selem_unlink_storage(selem, reuse_now);
->   }
->   
-> -/* If cacheit_lockit is false, this lookup function is lockless */
-> -struct bpf_local_storage_data *
-> -bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
-> -			 struct bpf_local_storage_map *smap,
-> -			 bool cacheit_lockit)
-> +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
-> +				      struct bpf_local_storage_map *smap,
-> +				      struct bpf_local_storage_elem *selem)
->   {
-> -	struct bpf_local_storage_data *sdata;
-> -	struct bpf_local_storage_elem *selem;
-> -
-> -	/* Fast path (cache hit) */
-> -	sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
-> -				      bpf_rcu_lock_held());
-> -	if (sdata && rcu_access_pointer(sdata->smap) == smap)
-> -		return sdata;
-> -
-> -	/* Slow path (cache miss) */
-> -	hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
-> -				  rcu_read_lock_trace_held())
-> -		if (rcu_access_pointer(SDATA(selem)->smap) == smap)
-> -			break;
-> -
-> -	if (!selem)
-> -		return NULL;
-> -
-> -	sdata = SDATA(selem);
-> -	if (cacheit_lockit) {
-> -		unsigned long flags;
-> -
-> -		/* spinlock is needed to avoid racing with the
-> -		 * parallel delete.  Otherwise, publishing an already
-> -		 * deleted sdata to the cache will become a use-after-free
-> -		 * problem in the next bpf_local_storage_lookup().
-> -		 */
-> -		raw_spin_lock_irqsave(&local_storage->lock, flags);
-> -		if (selem_linked_to_storage(selem))
-> -			rcu_assign_pointer(local_storage->cache[smap->cache_idx],
-> -					   sdata);
-> -		raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> -	}
-> +	unsigned long flags;
->   
-> -	return sdata;
-> +	/* spinlock is needed to avoid racing with the
-> +	 * parallel delete.  Otherwise, publishing an already
-> +	 * deleted sdata to the cache will become a use-after-free
-> +	 * problem in the next bpf_local_storage_lookup().
-> +	 */
-> +	raw_spin_lock_irqsave(&local_storage->lock, flags);
-> +	if (selem_linked_to_storage(selem))
-> +		rcu_assign_pointer(local_storage->cache[smap->cache_idx], SDATA(selem));
-> +	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
->   }
->   
->   static int check_flags(const struct bpf_local_storage_data *old_sdata,
-> diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-> index 610c2427fd93..6e93f3c8b318 100644
-> --- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-> +++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-> @@ -33,7 +33,7 @@ static void __on_lookup(struct cgroup *cgrp)
->   	bpf_cgrp_storage_delete(&map_b, cgrp);
->   }
->   
-> -SEC("fentry/bpf_local_storage_lookup")
-> +SEC("fentry/??????????????????????????") >   int BPF_PROG(on_lookup)
-
-Remove this BPF_PROG.
-
->   {
->   	struct task_struct *task = bpf_get_current_task_btf();
-> diff --git a/tools/testing/selftests/bpf/progs/task_ls_recursion.c b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
-> index 4542dc683b44..d73b33a4c153 100644
-> --- a/tools/testing/selftests/bpf/progs/task_ls_recursion.c
-> +++ b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
-> @@ -27,7 +27,7 @@ struct {
->   	__type(value, long);
->   } map_b SEC(".maps");
->   
-> -SEC("fentry/bpf_local_storage_lookup")
-> +SEC("fentry/??????????????????????????")
-
-Same here. The checks related to on_lookup in prog_tests/task_local_storage.c 
-need to be removed also.
-
->   int BPF_PROG(on_lookup)
->   {
->   	struct task_struct *task = bpf_get_current_task_btf();
-
+>         actparm =3D nla_data(tb[TCA_CTINFO_ACT]);
+>
+>         /* do some basic validation here before dynamically allocating th=
+ings */
+> diff --git a/net/sched/act_gact.c b/net/sched/act_gact.c
+> index e949280eb800..42c6b8d9002d 100644
+> --- a/net/sched/act_gact.c
+> +++ b/net/sched/act_gact.c
+> @@ -68,16 +68,21 @@ static int tcf_gact_init(struct net *net, struct nlat=
+tr *nla,
+>         struct tc_gact_p *p_parm =3D NULL;
+>  #endif
+>
+> -       if (nla =3D=3D NULL)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG(extack, "Gact requires attributes to be pa=
+ssed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_GACT_MAX, nla, gact_p=
+olicy,
+>                                           NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (tb[TCA_GACT_PARMS] =3D=3D NULL)
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_GACT_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+> +       }
+> +
+>         parm =3D nla_data(tb[TCA_GACT_PARMS]);
+>         index =3D parm->index;
+>
+> @@ -87,8 +92,11 @@ static int tcf_gact_init(struct net *net, struct nlatt=
+r *nla,
+>  #else
+>         if (tb[TCA_GACT_PROB]) {
+>                 p_parm =3D nla_data(tb[TCA_GACT_PROB]);
+> -               if (p_parm->ptype >=3D MAX_RAND)
+> +               if (p_parm->ptype >=3D MAX_RAND) {
+> +                       NL_SET_ERR_MSG(extack, "Invalid ptype in gact pro=
+b");
+>                         return -EINVAL;
+> +               }
+> +
+>                 if (TC_ACT_EXT_CMP(p_parm->paction, TC_ACT_GOTO_CHAIN)) {
+>                         NL_SET_ERR_MSG(extack,
+>                                        "goto chain not allowed on fallbac=
+k");
+> diff --git a/net/sched/act_gate.c b/net/sched/act_gate.c
+> index 1dd74125398a..3e8056a2c304 100644
+> --- a/net/sched/act_gate.c
+> +++ b/net/sched/act_gate.c
+> @@ -239,8 +239,10 @@ static int parse_gate_list(struct nlattr *list_attr,
+>         int err, rem;
+>         int i =3D 0;
+>
+> -       if (!list_attr)
+> +       if (!list_attr) {
+> +               NL_SET_ERR_MSG(extack, "Gate missing attributes");
+>                 return -EINVAL;
+> +       }
+>
+>         nla_for_each_nested(n, list_attr, rem) {
+>                 if (nla_type(n) !=3D TCA_GATE_ONE_ENTRY) {
+> @@ -317,15 +319,19 @@ static int tcf_gate_init(struct net *net, struct nl=
+attr *nla,
+>         ktime_t start;
+>         u32 index;
+>
+> -       if (!nla)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Gate requires attributes to b=
+e passed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested(tb, TCA_GATE_MAX, nla, gate_policy, exta=
+ck);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (!tb[TCA_GATE_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_GATE_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+> +       }
+>
+>         if (tb[TCA_GATE_CLOCKID]) {
+>                 clockid =3D nla_get_s32(tb[TCA_GATE_CLOCKID]);
+> @@ -343,7 +349,7 @@ static int tcf_gate_init(struct net *net, struct nlat=
+tr *nla,
+>                         tk_offset =3D TK_OFFS_TAI;
+>                         break;
+>                 default:
+> -                       NL_SET_ERR_MSG(extack, "Invalid 'clockid'");
+> +                       NL_SET_ERR_MSG_MOD(extack, "Invalid 'clockid'");
+>                         return -EINVAL;
+>                 }
+>         }
+> @@ -409,6 +415,7 @@ static int tcf_gate_init(struct net *net, struct nlat=
+tr *nla,
+>                         cycle =3D ktime_add_ns(cycle, entry->interval);
+>                 cycletime =3D cycle;
+>                 if (!cycletime) {
+> +                       NL_SET_ERR_MSG_MOD(extack, "cycle time is zero");
+>                         err =3D -EINVAL;
+>                         goto chain_put;
+>                 }
+> diff --git a/net/sched/act_ife.c b/net/sched/act_ife.c
+> index 107c6d83dc5c..b22881363029 100644
+> --- a/net/sched/act_ife.c
+> +++ b/net/sched/act_ife.c
+> @@ -508,8 +508,10 @@ static int tcf_ife_init(struct net *net, struct nlat=
+tr *nla,
+>         if (err < 0)
+>                 return err;
+>
+> -       if (!tb[TCA_IFE_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_IFE_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+> +       }
+>
+>         parm =3D nla_data(tb[TCA_IFE_PARMS]);
+>
+> @@ -517,8 +519,10 @@ static int tcf_ife_init(struct net *net, struct nlat=
+tr *nla,
+>          * they cannot run as the same time. Check on all other values wh=
+ich
+>          * are not supported right now.
+>          */
+> -       if (parm->flags & ~IFE_ENCODE)
+> +       if (parm->flags & ~IFE_ENCODE) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Invalid ife flag parameter");
+>                 return -EINVAL;
+> +       }
+>
+>         p =3D kzalloc(sizeof(*p), GFP_KERNEL);
+>         if (!p)
+> diff --git a/net/sched/act_mirred.c b/net/sched/act_mirred.c
+> index 93a96e9d8d90..f1bdd19e0bbb 100644
+> --- a/net/sched/act_mirred.c
+> +++ b/net/sched/act_mirred.c
+> @@ -124,10 +124,12 @@ static int tcf_mirred_init(struct net *net, struct =
+nlattr *nla,
+>                                           mirred_policy, extack);
+>         if (ret < 0)
+>                 return ret;
+> -       if (!tb[TCA_MIRRED_PARMS]) {
+> -               NL_SET_ERR_MSG_MOD(extack, "Missing required mirred param=
+eters");
+> +
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_MIRRED_PARMS)) {
+> +               NL_SET_ERR_MSG(extack, "Missing required attribute");
+>                 return -EINVAL;
+>         }
+> +
+>         parm =3D nla_data(tb[TCA_MIRRED_PARMS]);
+>         index =3D parm->index;
+>         err =3D tcf_idr_check_alloc(tn, &index, a, bind);
+> diff --git a/net/sched/act_nat.c b/net/sched/act_nat.c
+> index d541f553805f..42019977514e 100644
+> --- a/net/sched/act_nat.c
+> +++ b/net/sched/act_nat.c
+> @@ -46,16 +46,21 @@ static int tcf_nat_init(struct net *net, struct nlatt=
+r *nla, struct nlattr *est,
+>         struct tcf_nat *p;
+>         u32 index;
+>
+> -       if (nla =3D=3D NULL)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Nat action requires attribute=
+s");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_NAT_MAX, nla, nat_pol=
+icy,
+>                                           NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (tb[TCA_NAT_PARMS] =3D=3D NULL)
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_NAT_PARMS)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required NAT paramete=
+rs");
+>                 return -EINVAL;
+> +       }
+> +
+>         parm =3D nla_data(tb[TCA_NAT_PARMS]);
+>         index =3D parm->index;
+>         err =3D tcf_idr_check_alloc(tn, &index, a, bind);
+> diff --git a/net/sched/act_police.c b/net/sched/act_police.c
+> index 8555125ed34d..17708fe32ad1 100644
+> --- a/net/sched/act_police.c
+> +++ b/net/sched/act_police.c
+> @@ -56,19 +56,26 @@ static int tcf_police_init(struct net *net, struct nl=
+attr *nla,
+>         u64 rate64, prate64;
+>         u64 pps, ppsburst;
+>
+> -       if (nla =3D=3D NULL)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Police requires attributes");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_POLICE_MAX, nla,
+>                                           police_policy, NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (tb[TCA_POLICE_TBF] =3D=3D NULL)
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_POLICE_TBF)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required police actio=
+n parameters");
+>                 return -EINVAL;
+> +       }
+> +
+>         size =3D nla_len(tb[TCA_POLICE_TBF]);
+> -       if (size !=3D sizeof(*parm) && size !=3D sizeof(struct tc_police_=
+compat))
+> +       if (size !=3D sizeof(*parm) && size !=3D sizeof(struct tc_police_=
+compat)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Invalid size for police actio=
+n parameters");
+>                 return -EINVAL;
+> +       }
+>
+>         parm =3D nla_data(tb[TCA_POLICE_TBF]);
+>         index =3D parm->index;
+> diff --git a/net/sched/act_sample.c b/net/sched/act_sample.c
+> index a69b53d54039..0492df144b39 100644
+> --- a/net/sched/act_sample.c
+> +++ b/net/sched/act_sample.c
+> @@ -49,15 +49,19 @@ static int tcf_sample_init(struct net *net, struct nl=
+attr *nla,
+>         bool exists =3D false;
+>         int ret, err;
+>
+> -       if (!nla)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Sample requires attributes to=
+ be passed");
+>                 return -EINVAL;
+> +       }
+>         ret =3D nla_parse_nested_deprecated(tb, TCA_SAMPLE_MAX, nla,
+>                                           sample_policy, NULL);
+>         if (ret < 0)
+>                 return ret;
+>
+> -       if (!tb[TCA_SAMPLE_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_SAMPLE_PARMS)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required sample actio=
+n parameters");
+>                 return -EINVAL;
+> +       }
+>
+>         parm =3D nla_data(tb[TCA_SAMPLE_PARMS]);
+>         index =3D parm->index;
+> diff --git a/net/sched/act_simple.c b/net/sched/act_simple.c
+> index f3abe0545989..0c56c8c9ef44 100644
+> --- a/net/sched/act_simple.c
+> +++ b/net/sched/act_simple.c
+> @@ -100,16 +100,20 @@ static int tcf_simp_init(struct net *net, struct nl=
+attr *nla,
+>         int ret =3D 0, err;
+>         u32 index;
+>
+> -       if (nla =3D=3D NULL)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Sample requires attributes to=
+ be passed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_DEF_MAX, nla, simple_=
+policy,
+>                                           NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (tb[TCA_DEF_PARMS] =3D=3D NULL)
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_DEF_PARMS)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required sample actio=
+n parameters");
+>                 return -EINVAL;
+> +       }
+>
+>         parm =3D nla_data(tb[TCA_DEF_PARMS]);
+>         index =3D parm->index;
+> @@ -120,7 +124,8 @@ static int tcf_simp_init(struct net *net, struct nlat=
+tr *nla,
+>         if (exists && bind)
+>                 return ACT_P_BOUND;
+>
+> -       if (tb[TCA_DEF_DATA] =3D=3D NULL) {
+> +       if (NL_REQ_ATTR_CHECK(extack, NULL, tb, TCA_DEF_DATA)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing simple action default=
+ data");
+>                 if (exists)
+>                         tcf_idr_release(*a, bind);
+>                 else
+> diff --git a/net/sched/act_skbedit.c b/net/sched/act_skbedit.c
+> index 1f1d9ce3e968..e9c4f2befb8b 100644
+> --- a/net/sched/act_skbedit.c
+> +++ b/net/sched/act_skbedit.c
+> @@ -133,16 +133,20 @@ static int tcf_skbedit_init(struct net *net, struct=
+ nlattr *nla,
+>         int ret =3D 0, err;
+>         u32 index;
+>
+> -       if (nla =3D=3D NULL)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Skbedit requires attributes t=
+o be passed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_SKBEDIT_MAX, nla,
+>                                           skbedit_policy, NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (tb[TCA_SKBEDIT_PARMS] =3D=3D NULL)
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_SKBEDIT_PARMS)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required skbedit para=
+meters");
+>                 return -EINVAL;
+> +       }
+>
+>         if (tb[TCA_SKBEDIT_PRIORITY] !=3D NULL) {
+>                 flags |=3D SKBEDIT_F_PRIORITY;
+> @@ -161,8 +165,10 @@ static int tcf_skbedit_init(struct net *net, struct =
+nlattr *nla,
+>
+>         if (tb[TCA_SKBEDIT_PTYPE] !=3D NULL) {
+>                 ptype =3D nla_data(tb[TCA_SKBEDIT_PTYPE]);
+> -               if (!skb_pkt_type_ok(*ptype))
+> +               if (!skb_pkt_type_ok(*ptype)) {
+> +                       NL_SET_ERR_MSG_MOD(extack, "ptype is not a valid"=
+);
+>                         return -EINVAL;
+> +               }
+>                 flags |=3D SKBEDIT_F_PTYPE;
+>         }
+>
+> @@ -182,8 +188,8 @@ static int tcf_skbedit_init(struct net *net, struct n=
+lattr *nla,
+>                 if (*pure_flags & SKBEDIT_F_TXQ_SKBHASH) {
+>                         u16 *queue_mapping_max;
+>
+> -                       if (!tb[TCA_SKBEDIT_QUEUE_MAPPING] ||
+> -                           !tb[TCA_SKBEDIT_QUEUE_MAPPING_MAX]) {
+> +                       if (NL_REQ_ATTR_CHECK(extack, NULL, tb, TCA_SKBED=
+IT_QUEUE_MAPPING) ||
+> +                           NL_REQ_ATTR_CHECK(extack, NULL, tb, TCA_SKBED=
+IT_QUEUE_MAPPING_MAX)) {
+>                                 NL_SET_ERR_MSG_MOD(extack, "Missing requi=
+red range of queue_mapping.");
+>                                 return -EINVAL;
+>                         }
+> @@ -212,6 +218,7 @@ static int tcf_skbedit_init(struct net *net, struct n=
+lattr *nla,
+>                 return ACT_P_BOUND;
+>
+>         if (!flags) {
+> +               NL_SET_ERR_MSG_MOD(extack, "No skbedit action flag");
+>                 if (exists)
+>                         tcf_idr_release(*a, bind);
+>                 else
+> diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
+> index 39945b139c48..19b35666f357 100644
+> --- a/net/sched/act_skbmod.c
+> +++ b/net/sched/act_skbmod.c
+> @@ -119,16 +119,20 @@ static int tcf_skbmod_init(struct net *net, struct =
+nlattr *nla,
+>         u16 eth_type =3D 0;
+>         int ret =3D 0, err;
+>
+> -       if (!nla)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Skbmod requires attributes to=
+ be passed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_SKBMOD_MAX, nla,
+>                                           skbmod_policy, NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (!tb[TCA_SKBMOD_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_SKBMOD_PARMS)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required skbmod param=
+eters");
+>                 return -EINVAL;
+> +       }
+>
+>         if (tb[TCA_SKBMOD_DMAC]) {
+>                 daddr =3D nla_data(tb[TCA_SKBMOD_DMAC]);
+> @@ -160,6 +164,7 @@ static int tcf_skbmod_init(struct net *net, struct nl=
+attr *nla,
+>                 return ACT_P_BOUND;
+>
+>         if (!lflags) {
+> +               NL_SET_ERR_MSG_MOD(extack, "No skbmod action flag");
+>                 if (exists)
+>                         tcf_idr_release(*a, bind);
+>                 else
+> diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
+> index 22f4b1e8ade9..414129539c4a 100644
+> --- a/net/sched/act_vlan.c
+> +++ b/net/sched/act_vlan.c
+> @@ -134,16 +134,20 @@ static int tcf_vlan_init(struct net *net, struct nl=
+attr *nla,
+>         int ret =3D 0, err;
+>         u32 index;
+>
+> -       if (!nla)
+> +       if (!nla) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Vlan requires attributes to b=
+e passed");
+>                 return -EINVAL;
+> +       }
+>
+>         err =3D nla_parse_nested_deprecated(tb, TCA_VLAN_MAX, nla, vlan_p=
+olicy,
+>                                           NULL);
+>         if (err < 0)
+>                 return err;
+>
+> -       if (!tb[TCA_VLAN_PARMS])
+> +       if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_VLAN_PARMS)) {
+> +               NL_SET_ERR_MSG_MOD(extack, "Missing required vlan action =
+parameters");
+>                 return -EINVAL;
+> +       }
+>         parm =3D nla_data(tb[TCA_VLAN_PARMS]);
+>         index =3D parm->index;
+>         err =3D tcf_idr_check_alloc(tn, &index, a, bind);
+> --
+> 2.43.0
+>
 
