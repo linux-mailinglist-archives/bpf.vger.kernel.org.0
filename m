@@ -1,196 +1,238 @@
-Return-Path: <bpf+bounces-21390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99C0084C30E
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 04:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE12A84C38C
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 05:25:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1DB21C21A83
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 03:25:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEF2F1C248A2
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 04:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4016AFC02;
-	Wed,  7 Feb 2024 03:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D428111A5;
+	Wed,  7 Feb 2024 04:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CKhj6jUz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xgJa8o3Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D52FC08
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 03:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9646012E5D
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 04:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707276311; cv=none; b=DXE5SmjnCRlsx57nXfEA/ovoocrfv0l4SXt+geDuKrqJscG7nweeVLt1LNBH/Eoe0bfc9EbZ7F5z8cfe8AIiGzrWuz112N90VX2GjXsudXHmhLHtFPpP5FRgK/KZG0oOKdr8/DNHPzheowu+vU3Oft1mdvHI09bND7W/n0suBmQ=
+	t=1707279935; cv=none; b=jMl7MoL6KMnd1sQEB++t1H1cOjRlmleXGuT7QuEucvfWvvzAFQYD490RenN51A8oZoX8+m621LQWqBTC5+dEvo7+XW5ee7q3UJ9AZAvKgtMdO96zfZft2aeYLXwAhsYEFltn76ZTO0JAhOnTwuOTbVeOa2adXINMtesuGFrfTHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707276311; c=relaxed/simple;
-	bh=oIxrbyBnGSVLLu0sAVNrKBccxiIlOXPwO/aat9Ns2eY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e97JRODmD+rXiDY/o1HzPxnvvnY9+hnqdqgX7QRbl2ZWFwTiW0iOaPsx4q+fGcIVW40MpCcYF1SoDTvmnmXKDz9EbsTTXNqUIx8MSaeCk6LxNSEJqcT+WmjL3zWev4Bkhd/ZTX22LT6pviMi5rD8WJCcK00C+x5tTu4sTSXyegg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CKhj6jUz; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6818aa08a33so1745216d6.0
-        for <bpf@vger.kernel.org>; Tue, 06 Feb 2024 19:25:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707276309; x=1707881109; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pZb8QCT6YTDd90dpAQMginOsHOiWHQM2m1Gzjk81jcY=;
-        b=CKhj6jUzPuADcem92j5stf+CKlZ8EtkibcY67HhbGDXylJDH4E98vwo6k/H/YVVwwn
-         VJD+0+jqM8TX0yTDn9k7dblKeiszHSi67ofFkjodbnkGBL/Yn3aOyhzcIDNBsdDYrbYn
-         akA3dN2WW2/T/dSS711R4myh54vB1rcsrZZ6QvzhR306e8S7VpGYcxxzIbJwWiGGMDgU
-         wWXlp9Xsx5RKNzSYwBCIjjlqqLL7SaZyLNhHCS2BicVogc0Uy1Gqbug6GJkFdOnMA/qN
-         YjNIrWQAJnyNWWMwP4FnHiiZwsd0Dcwmz4HNSh3fIYVU1PzUFA7GAfQU7mZ2jcu+iten
-         IJ+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707276309; x=1707881109;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pZb8QCT6YTDd90dpAQMginOsHOiWHQM2m1Gzjk81jcY=;
-        b=sJ8JlEhOVbKQwfTA2WP6dzc7Sl1hjgvr/5eCelLhwO+C2H92EHPqVXDiqiTWo3sBgR
-         SLpdhHLWfCwptRjcr7JD/oQby57PQzg9/vznoY31PQqotOVsv11QWJdA/Qi6uDIz5ShF
-         2ige9Rp+OnFmYsgff+NEJvi8LmWZOb2f2MNZjU3+I799aCLNF/zvfQ8453hM8h5RL4zt
-         OYtSw/2coVG10FabM4U/tDaiXFVL+nOLKapqXfcc28bSsHWMvMMBZx+v86RMT2337AmI
-         oBYcvZELECYtd4edz47JXhqGMRwNpDeOGfBkj7R8gn6IeGi5dMqULS0F9haG4hNTmFFI
-         Qprg==
-X-Gm-Message-State: AOJu0YxiSLKFl7Tg/a11jQqxp7ZwXVXxXBBRRYge8LSQzC1Ed7TOTcD1
-	6u8d1tLMtAteF+EDVcwF+Iv/FHmmYpdZyTSxcbChTDA+x6ktoTg69pfZUfeFT9PRAZrm0L6YWtY
-	8KP7j0t9rbOoSl+D6aCN27NoWlS4=
-X-Google-Smtp-Source: AGHT+IGvjcQQfiHVadwFt3bHcsOsXNcbo3T2OxiWgOk76itjrEDonDQaGmxQHClsBRnMPMlcXIdh4SQeNHVWtsqXWbs=
-X-Received: by 2002:ad4:5ec6:0:b0:68c:b8d4:1fa2 with SMTP id
- jm6-20020ad45ec6000000b0068cb8d41fa2mr4483555qvb.10.1707276309123; Tue, 06
- Feb 2024 19:25:09 -0800 (PST)
+	s=arc-20240116; t=1707279935; c=relaxed/simple;
+	bh=LCLVbK/ekK0JdBFFtKKEwUOnChLOFf1Km/tVxnlyqxM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eLCOIPsQR5NKtcrQ6lEBY/dU8WLS2OEjscKhCP0KV7gEdV1UN3r2VKaCdrUG3V3hKSIDfojFiEIivHqQp42sYklZtVVzpDqeTf7uFViZr8l30Pb+nr3Qpka6VeOGoTnH1vMmKMWk0gLmK4TIZatFteloLDymQgYev6Ay4fgizNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xgJa8o3Y; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8f949c95-88f4-433d-9ccb-afbae6677145@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707279930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pazOlfevrVHEYoRpnZX6bJM6DnrxeR9ebevMs74LKOA=;
+	b=xgJa8o3YoZvywFLmk8Q0fEOKidl5+3DvzI02oDUeXl+yQ6ketz8IzBDcx3tokR1iPCjQg8
+	b2TTqToV7lGYk70cqTxXfhPlADRHRRIzfKFIz1BpLHt90SgrUqfYWJ0xiPLTq6IJRjbYZW
+	J9rgGkSLsgl5OATsu6/iKCW4YonFIjA=
+Date: Tue, 6 Feb 2024 20:25:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206081416.26242-1-laoar.shao@gmail.com> <20240206081416.26242-2-laoar.shao@gmail.com>
- <CAADnVQ+n0xDB5=+bpTiuAaHQ7UJAzQVQKkyuNSOxaPyOhHWYBw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+n0xDB5=+bpTiuAaHQ7UJAzQVQKkyuNSOxaPyOhHWYBw@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 7 Feb 2024 11:24:33 +0800
-Message-ID: <CALOAHbDJWHOB+viBz6SUqdeF+Nkxmh4gLZo5Ad_keQXjBWHAsQ@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 1/5] bpf: Add bpf_iter_cpumask kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH] bpf: Prevent recursive deadlocks in BPF programs
+ attached to spin lock helpers using fentry/ fexit
+Content-Language: en-GB
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>,
+ "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "andrii@kernel.org" <andrii@kernel.org>, "Williams, Dan" <djwillia@vt.edu>,
+ "Somaraju, Sai Roop" <sairoop@vt.edu>, "Sahu, Raj" <rjsu26@vt.edu>,
+ "Craun, Milo" <miloc@vt.edu>, "sidchintamaneni@vt.edu"
+ <sidchintamaneni@vt.edu>
+References: <CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com>
+ <ZbjAod-tqcjQJrTo@krava>
+ <CAE5sdEg6yUc_Jz50AnUXEEUh6O73yQ1Z6NV2srJnef0ZrQkZew@mail.gmail.com>
+ <d320eb5c-3276-49f9-879a-fb318164d4f1@linux.dev>
+ <CAE5sdEgWJHyRyS8jVJtZ8awPbyDZY+Pcc-27nYYXtZFbEfrreA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAE5sdEgWJHyRyS8jVJtZ8awPbyDZY+Pcc-27nYYXtZFbEfrreA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 7, 2024 at 9:06=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Feb 6, 2024 at 12:14=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > Add three new kfuncs for bpf_iter_cpumask.
-> > - bpf_iter_cpumask_new
-> >   KF_RCU is defined because the cpumask must be a RCU trusted pointer
-> >   such as task->cpus_ptr.
-> > - bpf_iter_cpumask_next
-> > - bpf_iter_cpumask_destroy
-> >
-> > These new kfuncs facilitate the iteration of percpu data, such as
-> > runqueues, psi_cgroup_cpu, and more.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/bpf/cpumask.c | 79 ++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 79 insertions(+)
-> >
-> > diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-> > index dad0fb1c8e87..ed6078cfa40e 100644
-> > --- a/kernel/bpf/cpumask.c
-> > +++ b/kernel/bpf/cpumask.c
-> > @@ -422,6 +422,82 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cp=
-umask *cpumask)
-> >         return cpumask_weight(cpumask);
-> >  }
-> >
-> > +struct bpf_iter_cpumask {
-> > +       __u64 __opaque[2];
-> > +} __aligned(8);
-> > +
-> > +struct bpf_iter_cpumask_kern {
-> > +       struct cpumask *mask;
-> > +       int cpu;
-> > +} __aligned(8);
-> > +
-> > +/**
-> > + * bpf_iter_cpumask_new() - Initialize a new CPU mask iterator for a g=
-iven CPU mask
-> > + * @it: The new bpf_iter_cpumask to be created.
-> > + * @mask: The cpumask to be iterated over.
-> > + *
-> > + * This function initializes a new bpf_iter_cpumask structure for iter=
-ating over
-> > + * the specified CPU mask. It assigns the provided cpumask to the newl=
-y created
-> > + * bpf_iter_cpumask @it for subsequent iteration operations.
-> > + *
-> > + * On success, 0 is returned. On failure, ERR is returned.
-> > + */
-> > +__bpf_kfunc int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, cons=
-t struct cpumask *mask)
-> > +{
-> > +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
-> > +
-> > +       BUILD_BUG_ON(sizeof(struct bpf_iter_cpumask_kern) > sizeof(stru=
-ct bpf_iter_cpumask));
-> > +       BUILD_BUG_ON(__alignof__(struct bpf_iter_cpumask_kern) !=3D
-> > +                    __alignof__(struct bpf_iter_cpumask));
-> > +
-> > +       kit->mask =3D bpf_mem_alloc(&bpf_global_ma, cpumask_size());
-> > +       if (!kit->mask)
-> > +               return -ENOMEM;
-> > +
-> > +       cpumask_copy(kit->mask, mask);
->
-> Since it's mem_alloc plus memcpy how about we make it more
-> generic ?
-> Instead of cpumask specific let's pass arbitrary
-> "void *unsafe_addr, u32 size"
->
-> allocate that much and probe_read_kernel into the buffer?
->
->
-> > +__bpf_kfunc int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it)
-> > +{
-> > +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
-> > +       const struct cpumask *mask =3D kit->mask;
-> > +       int cpu;
-> > +
-> > +       if (!mask)
-> > +               return NULL;
-> > +       cpu =3D cpumask_next(kit->cpu, mask);
->
-> Instead of cpumask_next() call find_next_bit()
->
-> > +       if (cpu >=3D nr_cpu_ids)
-> > +               return NULL;
->
-> instead of nr_cpu_ids we can check size in bits of copied bit array.
->
-> > BTF_ID_FLAGS(func, bpf_iter_cpumask_new, KF_ITER_NEW | KF_RCU)
->
-> KF_RCU is also not needed.
-> Such iterator will be callable from anywhere and on any address.
->
-> wdyt?
 
-Good suggestion. A more generic bitmap iter is better. I will analyze it.
+On 2/6/24 4:21 PM, Siddharth Chintamaneni wrote:
+> On Sun, 4 Feb 2024 at 14:09, Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> On 2/2/24 4:21 PM, Siddharth Chintamaneni wrote:
+>>> On Tue, 30 Jan 2024 at 04:25, Jiri Olsa <olsajiri@gmail.com> wrote:
+>>>> On Wed, Jan 24, 2024 at 10:43:32AM -0500, Siddharth Chintamaneni wrote:
+>>>>> While we were working on some experiments with BPF trampoline, we came
+>>>>> across a deadlock scenario that could happen.
+>>>>>
+>>>>> A deadlock happens when two nested BPF programs tries to acquire the
+>>>>> same lock i.e, If a BPF program is attached using fexit to
+>>>>> bpf_spin_lock or using a fentry to bpf_spin_unlock, and it then
+>>>>> attempts to acquire the same lock as the previous BPF program, a
+>>>>> deadlock situation arises.
+>>>>>
+>>>>> Here is an example:
+>>>>>
+>>>>> SEC(fentry/bpf_spin_unlock)
+>>>>> int fentry_2{
+>>>>>     bpf_spin_lock(&x->lock);
+>>>>>     bpf_spin_unlock(&x->lock);
+>>>>> }
+>>>>>
+>>>>> SEC(fentry/xxx)
+>>>>> int fentry_1{
+>>>>>     bpf_spin_lock(&x->lock);
+>>>>>     bpf_spin_unlock(&x->lock);
+>>>>> }
+>>>> hi,
+>>>> looks like valid issue, could you add selftest for that?
+>>> Hello,
+>>> I have added selftest for the deadlock scenario.
+>>>
+>>>> I wonder we could restrict just programs that use bpf_spin_lock/bpf_spin_unlock
+>>>> helpers? I'm not sure there's any useful use case for tracing spin lock helpers,
+>>>> but I think we should at least try this before we deny it completely
+>>>>
+>>> If we restrict programs (attached to spinlock helpers) that use
+>>> bpf_spin_lock/unlock helpers, there could be a scenario where a helper
+>>> function called within the program has a BPF program attached that
+>>> tries to acquire the same lock.
+>>>
+>>>>> To prevent these cases, a simple fix could be adding these helpers to
+>>>>> denylist in the verifier. This fix will prevent the BPF programs from
+>>>>> being loaded by the verifier.
+>>>>>
+>>>>> previously, a similar solution was proposed to prevent recursion.
+>>>>> https://lore.kernel.org/lkml/20230417154737.12740-2-laoar.shao@gmail.com/
+>>>> the difference is that __rcu_read_lock/__rcu_read_unlock are called unconditionally
+>>>> (always) when executing bpf tracing probe, the problem you described above is only
+>>>> for programs calling spin lock helpers (on same spin lock)
+>>>>
+>>>>> Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
+>>>>> ---
+>>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>>> index 65f598694d55..8f1834f27f81 100644
+>>>>> --- a/kernel/bpf/verifier.c
+>>>>> +++ b/kernel/bpf/verifier.c
+>>>>> @@ -20617,6 +20617,10 @@ BTF_ID(func, preempt_count_sub)
+>>>>>    BTF_ID(func, __rcu_read_lock)
+>>>>>    BTF_ID(func, __rcu_read_unlock)
+>>>>>    #endif
+>>>>> +#if defined(CONFIG_DYNAMIC_FTRACE)
+>>>> why the CONFIG_DYNAMIC_FTRACE dependency?
+>>> As we described in the self-tests, nesting of multiple BPF programs
+>>> could only happen with fentry/fexit programs when DYNAMIC_FTRACE is
+>>> enabled. In other scenarios, when DYNAMIC_FTRACE is disabled, a BPF
+>>> program cannot be attached to any helper functions.
+>>>> jirka
+>>>>
+>>>>> +BTF_ID(func, bpf_spin_lock)
+>>>>> +BTF_ID(func, bpf_spin_unlock)
+>>>>> +#endif
+>>>>>    BTF_SET_END(btf_id_deny)
+>> Currently, we already have 'notrace' marked to bpf_spin_lock
+>> and bpf_spin_unlock:
+>>
+>> notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
+>> {
+>>           __bpf_spin_lock_irqsave(lock);
+>>           return 0;
+>> }
+>> notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
+>> {
+>>           __bpf_spin_unlock_irqrestore(lock);
+>>           return 0;
+>> }
+>>
+>> But unfortunately, BPF_CALL_* macros put notrace to the static
+>> inline function ____bpf_spin_lock()/____bpf_spin_unlock(), and not
+>> to static function bpf_spin_lock()/bpf_spin_unlock().
+>>
+>> I think the following is a better fix and reflects original
+>> intention:
+> My bad, I somehow incorrectly tested the fix using the notrace macro
+> and didn't realize that it is because of inlining. You are right, and
+> I agree that the proposed solution fixes the unintended bug.
 
---=20
-Regards
-Yafang
+Thanks for confirmation, I will send a formal patch later.
+
+>
+>
+>
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index fee070b9826e..779f8ee71607 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -566,6 +566,25 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+>>    #define BPF_CALL_4(name, ...)  BPF_CALL_x(4, name, __VA_ARGS__)
+>>    #define BPF_CALL_5(name, ...)  BPF_CALL_x(5, name, __VA_ARGS__)
+>>
+>> +#define NOTRACE_BPF_CALL_x(x, name, ...)                                              \
+>> +       static __always_inline                                                 \
+>> +       u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
+>> +       typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
+>> +       notrace u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));         \
+>> +       notrace u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))          \
+>> +       {                                                                      \
+>> +               return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
+>> +       }                                                                      \
+>> +       static __always_inline                                                 \
+>> +       u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
+>> +
+>> +#define NOTRACE_BPF_CALL_0(name, ...)  NOTRACE_BPF_CALL_x(0, name, __VA_ARGS__)
+>> +#define NOTRACE_BPF_CALL_1(name, ...)  NOTRACE_BPF_CALL_x(1, name, __VA_ARGS__)
+>> +#define NOTRACE_BPF_CALL_2(name, ...)  NOTRACE_BPF_CALL_x(2, name, __VA_ARGS__)
+>> +#define NOTRACE_BPF_CALL_3(name, ...)  NOTRACE_BPF_CALL_x(3, name, __VA_ARGS__)
+>> +#define NOTRACE_BPF_CALL_4(name, ...)  NOTRACE_BPF_CALL_x(4, name, __VA_ARGS__)
+>> +#define NOTRACE_BPF_CALL_5(name, ...)  NOTRACE_BPF_CALL_x(5, name, __VA_ARGS__)
+>> +
+>>    #define bpf_ctx_range(TYPE, MEMBER)                                            \
+>>           offsetof(TYPE, MEMBER) ... offsetofend(TYPE, MEMBER) - 1
+>>    #define bpf_ctx_range_till(TYPE, MEMBER1, MEMBER2)                             \
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 4db1c658254c..87136e27a99a 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -334,7 +334,7 @@ static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
+>>           __this_cpu_write(irqsave_flags, flags);
+>>    }
+>>
+>> -notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
+>> +NOTRACE_BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
+>>    {
+>>           __bpf_spin_lock_irqsave(lock);
+>>           return 0;
+>> @@ -357,7 +357,7 @@ static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
+>>           local_irq_restore(flags);
+>>    }
+>>
+>> -notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
+>> +NOTRACE_BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
+>>    {
+>>           __bpf_spin_unlock_irqrestore(lock);
+>>           return 0;
+>>
+>>
+>> Macros NOTRACE_BPF_CALL_*() could be consolated with BPF_CALL_*() but I think
+>> a separate macro might be easier to understand.
+>>
+[...]
 
