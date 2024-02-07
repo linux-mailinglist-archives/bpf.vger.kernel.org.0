@@ -1,149 +1,137 @@
-Return-Path: <bpf+bounces-21450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4425D84D607
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:48:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C496C84D624
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0188285DC7
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:48:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FD7E289723
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE091CD22;
-	Wed,  7 Feb 2024 22:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6019535B1;
+	Wed,  7 Feb 2024 22:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LmEfno17"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T+DzCNz9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f196.google.com (mail-yb1-f196.google.com [209.85.219.196])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4875A1D55E
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 22:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A754D20321
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 22:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707346082; cv=none; b=VGEtHhFZkoa7NvyrzniUJ/yArz2meGk8AT41N0As8UMo1I+cXJfca3Diom6xvTwoDsflEc6ilRtRTA74R7LIKuJA83tKEFzcE0LMuPt3QRnmAIzGxIkFvrNJHyglRYj5dyU2IcPCU1zsdx9CdE9fBnIxW7qytNpAdNg5PotSG5M=
+	t=1707346609; cv=none; b=rW2Hqf/UYmrKWsTKt6/oSweYvneIXUUE3A6G4k+aYQndtksJttlqmRLVz+btmHm8CBssbQHTwmAF8qFd1fIZlIY3KAt5LEUG0y3RVdVsIuVO7eV6c5D4ASoSs4kjpZBGk+ch1j+J8UP1e+T230PNSbmBXLiOJCJRiG8Sp90mHuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707346082; c=relaxed/simple;
-	bh=n/eojlZF24jcFsseVU7Kn2xfCiEwsfg4yaagy4rB99g=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=OedzXt25YFmwQYswI24AtzMdZHDgTVFuK4YDxH7kvXCdkm8B//iKuiopPJnqb5IaXjadlwMr1kjS88m8gvfJFY00wVc80bxQDKB0o3a/lc6QJMAjNGCIPoaKLVOfKTjff498ONuDG1wD5BfmEMMvbEimxrpymlWAH0hLhJMtXzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LmEfno17; arc=none smtp.client-ip=209.85.219.196
+	s=arc-20240116; t=1707346609; c=relaxed/simple;
+	bh=OK+VTDZJJCtIWyFJN8CVHNQbxrZLtV28vR6V+z8TYBI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rcAurwsFiMX+rcI1uWy0xpjwzEbvzF83GvwgFyXiucF3A+ckRWhlT/HRMz2Vl9K9MJy1uioJs8Rl1xj9Cw2rjm7IcClr4z2Z1OzNWi9JLOr7SHQIM5OtZjFE57+c31ocOd204Ks0GATbG9RFpvLodeiDZxZJxpCTHFrkcn/n/MA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T+DzCNz9; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f196.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so334941276.0
-        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 14:48:01 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33b401fd72bso962881f8f.3
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 14:56:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707346080; x=1707950880; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TT0IoaPOQtUNmTubqv+zMuv9C0jmcPxoTV8uXZcZpeU=;
-        b=LmEfno17Ok08bwxnBNWQqEYpqHNb07wLSt1vTcaBl5H61aod2N+8Ie9FpA+e/+cmab
-         d/A5J2jioK8m9qO8EPwQSB1qdhZxv1NIf3A7FjOBxnsKUGtuMHWT8THcezFOBwOxkNbH
-         zHz+M8jiMUtbNMbnURtQ0ZUZ4ZmZYulxX7Mq5E9qdavQheeZhBRHMs0Qo6p/SXdvwgXh
-         oYPpvtBxx6vbbCZPdkXzJwd9pZ2SGmQaIxkMjKWAwyrRKhLTsc3tSKiTb6E2QQGoxkxP
-         ubBfUnw5OnWRdIACbpQz9ljREwVXJk+yNJSYGA1YdC27csxU+AV6U9oSIBGRuHd5Imwn
-         vGRQ==
+        d=gmail.com; s=20230601; t=1707346606; x=1707951406; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OK+VTDZJJCtIWyFJN8CVHNQbxrZLtV28vR6V+z8TYBI=;
+        b=T+DzCNz90ikWAce5v+sCzWZUc86lOGlHCCbQ9h5ntluGcGVDXQeJb2OJdaiiCFE634
+         TRht0yYrzTV8MIvwnCHKJXdT15eXIbdCE6HQcLrokK3yyeHybCCosfVgKpiImtsWdyXV
+         L1nUYoR2uOJ5XVq0ueM9wH8iZJji8t7VLC0IwozVOsE8/WVd0LFc4p9xo4yVgfSgWthf
+         K4uhdXsf4q4Vp5AJBuR+wSIMkFVJFbXCsjHcPDyjVoRNlFAVKj1dao4tcPOrh5p5OAIR
+         ls7V3piDanrx4vMwgiQLgUuM0bUe/bAaOxlkSl2dgCC8taB8tX9TKlFxtIxNXK28VzFY
+         BnNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707346080; x=1707950880;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TT0IoaPOQtUNmTubqv+zMuv9C0jmcPxoTV8uXZcZpeU=;
-        b=niqxC1L7tzAOZjb8u8EqXbe/liXOwwvNmRYc8qlSqIrkAU6BIyA6KsyruYJJv0bLsF
-         NsebXhxZS5iIFRr2V+kF33Dk73+XaZguE3W1RBXHMY9Njxw/mI+MiOj8HxCboYS57BTg
-         URtzV+oMHgbhMc7rSSbkw92erag7bEGtqNStYpEJzSARpSqq/dUHeIu1/rQy7JZGMoIU
-         5K/WV+31nZ/0753EwsLRIYny/mkFfS66nMYHOfj7Q6tubPvaOM+Bdg7tOg5X5GcTr0KM
-         kCvRfkDdwXwV/ouoZsZ3PlSW3kmFCOV9yaDWGAaYD/BHOW05yq5k037OP4WztNOSs39B
-         g3iA==
-X-Gm-Message-State: AOJu0Yz0TpMrIKjtsPxdq2pJgkFhO+Lc/2kfoNjouCCPkhXLcOHa9bSt
-	uTPVg1N/Czfl+dxtFhlPOP4lVhxBDuwuwiRyT/K1+f5qO8e61Cod+WqPDGx4FXtEctq1ItdIMiU
-	ip0mDc8dBYb6azwAQwgkFylYcGJTcH+z+5ZlK6sdT6fI=
-X-Google-Smtp-Source: AGHT+IHVPU/xw75SXaBrnjA7n/gg9rS2JU2Bro2z586NFkAfv0p1XYXcWVLBZf/MjSZfDsSkBAVvS+gOYHI8UcVE4s8=
-X-Received: by 2002:a25:9747:0:b0:dc2:56e0:f5f with SMTP id
- h7-20020a259747000000b00dc256e00f5fmr637590ybo.26.1707346080049; Wed, 07 Feb
- 2024 14:48:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707346606; x=1707951406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OK+VTDZJJCtIWyFJN8CVHNQbxrZLtV28vR6V+z8TYBI=;
+        b=CroYU6Dd/6jWeiICR3Ej4T7N3Mq+cIiaXKJ1wAS2R1she5SFiMITtuDhkDigAmVxhf
+         ZpJMk4kkgcN4TGc1Zeb1mq/TpyNepIFutXSyG7BNSF7hNjQ1axRaEgpWhDwWLkXXw5lb
+         EQvcx1+zfWxEzdxOhW5T2fu8d6+h1KRHaYgBxcxSA1mBsTPkEm0DdDPYbuTf0nLw8Sxv
+         +IdKwJrolEdqccqferWZRMcW0NE43x8GfqDMjj174LEMTa843dIt/hV4YcX1ev8XpjCD
+         pG6ouuHc0M3Uyr1RPQCe/nQiLT+ZLfvt6aiYtyzdiJFbqSDq3XEToEWfepETUFHbIVza
+         ldWw==
+X-Gm-Message-State: AOJu0YyWMtD2jIA4PLDB0bZAQKxuE+O487Sgx2NbNbaJezx2lVGtnoif
+	ZJSZvFcg2DKdqp5A2eae8Z13Oi/yZzKh+oldQUrHd4SplmwtURt8s97QlBlLddPNKODt9qPlXmR
+	jfBwsPHTnL5ywVOn2HMN4mHMboPc=
+X-Google-Smtp-Source: AGHT+IHCNtIWRNMZd8kUwATYtFPf0aFWsfLhxTpQwaWCml4oeBCSv5XTKuuJdHmIZ+hzHrmi14NWGbd0ViEfBgOsN90=
+X-Received: by 2002:a5d:4452:0:b0:33a:ff90:77ca with SMTP id
+ x18-20020a5d4452000000b0033aff9077camr4136333wrr.29.1707346605633; Wed, 07
+ Feb 2024 14:56:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Jason <jasonlkml@gmail.com>
-Date: Wed, 7 Feb 2024 14:47:49 -0800
-Message-ID: <CAKdkiR9HVkopmZ0JkLYMWtbG2bnzsAxXvYqHesRcoWp9Ly7zFg@mail.gmail.com>
-Subject: help: trying to gather process information, tx/rx byte count ,
- ifindex for sends/receives
-To: bpf@vger.kernel.org
+References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
+ <20240206220441.38311-4-alexei.starovoitov@gmail.com> <30a722f3-dbf5-4fa3-9079-6574aae4b81d@lucifer.local>
+In-Reply-To: <30a722f3-dbf5-4fa3-9079-6574aae4b81d@lucifer.local>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 7 Feb 2024 14:56:34 -0800
+Message-ID: <CAADnVQKqeaHyy010u0ZuXbApd3+8BEztnED37p0oC74+qGgd1w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 03/16] mm: Expose vmap_pages_range() to the rest
+ of the kernel.
+To: Lorenzo Stoakes <lstoakes@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, linux-mm <linux-mm@kvack.org>, 
+	Kernel Team <kernel-team@fb.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The problem I'm trying to solve is associating some process
-information (let's just say pid) with a socket in an fentry where it's
-safe to grab pid/tgid.
-It seems like inet_sendmsg is a pretty safe place to do this.
+On Wed, Feb 7, 2024 at 1:10=E2=80=AFPM Lorenzo Stoakes <lstoakes@gmail.com>=
+ wrote:
+>
+> I don't know what conventions you bpf guys follow, but it's common courte=
+sy
+> in the rest of the kernel to do a get_maintainers.pl check and figure out
+> who the maintainers/reviews of a part of the kernel you change are,
+> and include them in your mailing list.
 
-Say I want to gather information about the process initiating a
-transmit as well as the interface the bit of data is going out of.
-I put a fentry hook on inet_sendmsg to grab pid_tgid and then I put
-another fentry hook onto ip_local_out to grab the interface.
-The problem I'm seeing is that the data accessible from
-fentry/ip_local_out seems unreliable. The `struct sock* sk` being
-passed in often can't be associated with a `struct sock* sk` seen on
-`inet_sendmsg`.
+linux-mm and Johannes was cc-ed.
 
-An example minimal toy program to help illustrate my dilemma.
+> On Tue, Feb 06, 2024 at 02:04:28PM -0800, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > The next commit will introduce bpf_arena which is a sparsely populated =
+shared
+> > memory region between bpf program and user space process.
+> > It will function similar to vmalloc()/vm_map_ram():
+> > - get_vm_area()
+> > - alloc_pages()
+> > - vmap_pages_range()
+>
+> This tells me absolutely nothing about why it is justified to expose this
+> internal interface. You need to put more explanation here along the lines
+> of 'we had no other means of achieving what we needed from vmalloc becaus=
+e
+> X, Y, Z and are absolutely convinced it poses no risk of breaking anythin=
+g'.
 
+Full motivation and details are in the cover letter and in the next commit =
+as
+commit log of this patch says.
+Everyone subscribed to linux-mm has all patches in their mailboxes.
 
-struct {
-  __uint(type, BPF_MAP_TYPE_LRU_HASH);
-  __uint(max_entries, 1024);
-  __type(key, struct socket*);
-  __type(value, uint64_t);
-} sock_to_tgid_pid SEC(".maps"); // pretty much a sk_storage, almost
-interchangeable
+The commit log also mentioned that the next patch does pretty much
+what vm_map_ram() does.
+Any further details you're looking for?
 
+What 'risk of breaking' are you talking about?
 
-SEC("fentry/inet_sendmsg")
-int BPF_PROG(do_inet_sendmsg_enter,
-             struct socket* sock,
-             struct msghdr* msg,
-             size_t size) {
-    uint64_t pid_tgid = 0;
-    pid_tgid = bpf_get_current_pid_tgid();
-    bpf_map_update_elem(&sock_to_tgid_pid, sock, &pid_tgid, BPF_NOEXIST);
-    return 0;
-}
+> I mean I see a lot of checks in vmap() that aren't in vmap_pages_range()
+> for instance. We good to expose that, not only for you but for any other
+> core kernel users?
 
-SEC("fentry/ip_local_out")
-int BPF_PROG(do_ip_local_out, struct net* net, struct sock* sk, struct
-sk_buff* skb) {
-  struct socket* sock = BPF_CORE_READ(skb, sk, sk_socket);
- struct network_data* d = bpf_map_lookup_elem(&sock_to_tgid_pid,
-sock); <==== This will sometimes fail
- if (d == NULL){
-bpf_printk("Failed socket lookup");
-}
-}
-
-The test case would be that I run ping several times and in some
-situations the map lookup will be fine and other situations the map
-lookup will fail.
-
-
-My initial thought is that putting fentry/fexit hooks deep within the
-networking stack might not be the best idea.. Maybe there is a lot of
-nuance I'm not familiar with?
-
-I then started looking at tc hooks, thinking that this is a well lit
-path. Unfortunately for tc hooks a struct __sk_buff* is passed in and
-there doesn't seem to be a way to get at the socket that owns the
-data.
-
-So my questions are:
-
-1.) Does anyone see anything obviously wrong with my fentry approach?
-2.) Is there a way to get at a socket cookie, sk_storage or a reliable
-struct socket* from within a tc-ebpf?
-3.) Am I asking on the wrong lkml and should instead cross-post this
-to a more network oriented lkml?
-
-Thanks in advance
+I could have overlooked something. What specific checks do you have in mind=
+?
 
