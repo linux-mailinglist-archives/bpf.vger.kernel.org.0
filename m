@@ -1,142 +1,115 @@
-Return-Path: <bpf+bounces-21435-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21436-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8C584D382
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:12:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8224084D577
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B9C7B25F3E
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 21:12:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8EF8B27F49
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AEA127B4A;
-	Wed,  7 Feb 2024 21:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF96712C7E6;
+	Wed,  7 Feb 2024 21:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MKttW8u4"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="LMJSxs8u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A25127B74
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 21:12:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 050BE86AE3
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 21:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340323; cv=none; b=i3n7xtIv9jMrFpC1C3NdkAm0gfdOVj5c0v7BGKd6r9PcH9uYrG11vSNo9e17B187tbIRiRHqkGS8Cjk63Dv946Bx5e88Z1XhPmwU41Q2EyTpAS/coPC3O0S4MV+a1JEGtvhA8RHQOqjqF/CdnXSfBNV3S35GYktXJE+oOYTPbto=
+	t=1707341992; cv=none; b=cXOzG3HvIxtdIt8J2t1NMyy4Hdl8Xfje2SSXO04EU4eIIP8suoPIUFb9ZpAlJoJQd++XkZsFH0dsOGq3scbzEUPyClN4RiryzIRC5GEdPo2mtrMvlmitaWmpa3Nauop/aK5L0WkSFwrAkvufLWw1duL0mpxlDOjuAr3hBw7/+es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340323; c=relaxed/simple;
-	bh=MfEwyQBXnuCixH9qnNP15RPJb2WGz1jcwnfEFf+eDHY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PXn+slg+n8NZKKN189sAlMhlKUpjbTbSesDC7bKINOLvhwX20RlriBbYYuo14rmoHxkVUiJ6u/PhsBfROyTmHoRZJNRUjViOAkbrngnomydtYe7s1BiJkQ7cxZJO5D2Lw4w1Np7g243J986hG6CuS2QYR3LuvEbUbv5SBWAtIRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MKttW8u4; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60485382886so13150037b3.3
-        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 13:12:01 -0800 (PST)
+	s=arc-20240116; t=1707341992; c=relaxed/simple;
+	bh=37BFNXM6PL73qP2ag01+MxIT/GP6MKGQA5xnlP6lRcw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ryb9aUzx/m3QkUhMg4ueVHQDWlDC55t464Vk4u86yMlIJUD13yJYwKHJ3h2kOkSGpmkfz+A4bdUhZNFTv/vU++Uy97hmzBjVtL9BOqPrtuAuWunIYc5CKQ1H1xXbn+OxUQduZMFdLKTzX+3gE3apSsFnX8d88uLZ/jTHRUWD8H0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=LMJSxs8u; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bfd40ff56fso580753b6e.2
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 13:39:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707340321; x=1707945121; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mqMpxCMRy5Coq5eE/aEefJ3saG5Z7PDxj7OPSM7FPn4=;
-        b=MKttW8u41oTZBs0IoeP/GMXGviOtqg1Qrx40e9EqVZg9n6/WojC0ap7wAlu3bK8Zz6
-         jBSIymYGxNj2ywzxbkGgcyfjfReUJXd7zwqNI3Q0+d1AsAr5gkqq4pi0Em1JU1HlXFTu
-         tVfqgJvFPmchQG32yCHmlSic9GWbvchqPiFdd8Kaj6VAV7CIXEH1SaAc2tBvHWj9UCnJ
-         H2YI2jHLbo2tYa02LmDwfRviNLd4PzewQBMuYCFHgzhhfO9CgN6KJvjzYjAuygNX0y8s
-         7VOzD2VyXlC7BAZ9Di7m9kNiqoSh9DxF2zEOaDmsDYCMnTcVWRKRqB3b/eVrDhtKvkPD
-         ZAzg==
+        d=googlemail.com; s=20230601; t=1707341990; x=1707946790; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5Bo+rUlNDVzlryYbG3bVCAl8cdRpvlaWBhWYb2fuEds=;
+        b=LMJSxs8uZKIfezl4Bqj9qoCc++c38gET9Hy9APUCq6XMDIoVJvzoNpMCGPrtkyqjpP
+         ZfNLGrtVPf+zw05Qt9uOeuhGbqVmBSAyUYiB/m+SV1I5aYruU0iDZ/Ok5wJZyuYAy2re
+         dESCOfAsD2SDJt59a/wx8bP4634qwbq/gJ4z4ZDFEn2zao5c+1aGvnVaI13POHVqVX24
+         XpKL42w1oQ9zazdQGZA/Mvn/ElwbvoI64i6DZL7AZrlHm/uTMcujnDlhaLdvBhmvvvy1
+         N8l4+Qc6i/SmOKpAM3ieFKV27+x0aISaTm4gXAkUYZazd3yh7pvGEZfOSk1GeYVRvX5q
+         Lj6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707340321; x=1707945121;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mqMpxCMRy5Coq5eE/aEefJ3saG5Z7PDxj7OPSM7FPn4=;
-        b=Ac9ynRLXUX1b3NzlicbkwskVD6g+come84MbL9Atp83Dv2cnaWykiBoAE5DVEgxTU/
-         rEwzk1dqqfuZWHhxVMMzYFzWlfB79+HdpURYVpCvZXgR9KxyMEn6leYWCHBgauJ2QJeV
-         HwZUtfdTrXcZu7Xas5hd4gUWv+KolLBFuubT7mxETBNdalzINpYaRu9WOGN/Tj+XXiv5
-         HSo07jxjbs3ku9jGJkaQ1sBjQte1IBGUPg2bCd2uOx5p0Yco7C3NQDU/w1Fq927WloZ3
-         thrrBU6PCqC+wC2rmp2IVX3jwJZqR8p8o5zC93mxjG3X7JoNvzYwQwe2iqBxZYOMF0LP
-         324Q==
-X-Gm-Message-State: AOJu0YyUEXyblXs7MFvlg8X+uXDG8BuEdTMQ4Og/CA33UC4OcZAy8xhh
-	EXwWOzG800A28CmhriDCghiNQS5KKtNns/nfCf5t5F0BBskMStgKgxgmbEeV6g==
-X-Google-Smtp-Source: AGHT+IFHY/L7LajnQyl3FmFVsREkfgRxgvspXpqp/807bBbw3d3WtoWLRLwpwW/9yrU7FYXDdGymOw==
-X-Received: by 2002:a5b:4a:0:b0:dbe:eae4:286a with SMTP id e10-20020a5b004a000000b00dbeeae4286amr6099231ybp.51.1707340320837;
-        Wed, 07 Feb 2024 13:12:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVHgOEgFuAdxA/av1FTy2dtDGmfnGlLZyrNmxVqzcaseswC3SwSVHlHJFDEN2uCi6q2r8Z+9SMNBblEdc5oOJvPmkV60H9QHga0YC84/nUa4facl+BddF6oqldqvJdCCQhVTmXmzP7R6xXgFmTDWM/pF/o5QeDw98V5H/zwiSRPvhh+zRPMPil3PDMCk2f4WU4zXi3hL2NOn9i2g7PwHz6K4LDou6Hnxaxe2DqJxw6/lByqBF+Sd/OAv630gm0PPKi918noO69R9elHwf4CQKcWwiQYJZQWZJAI4bBTs6s=
-Received: from [192.168.1.8] (c-73-238-17-243.hsd1.ma.comcast.net. [73.238.17.243])
-        by smtp.gmail.com with ESMTPSA id u21-20020a05620a455500b00783e1590ebasm849136qkp.82.2024.02.07.13.11.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 13:12:00 -0800 (PST)
-Message-ID: <d4024acf-97c9-4a16-ac70-739d0bf81a45@google.com>
-Date: Wed, 7 Feb 2024 16:11:58 -0500
+        d=1e100.net; s=20230601; t=1707341990; x=1707946790;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5Bo+rUlNDVzlryYbG3bVCAl8cdRpvlaWBhWYb2fuEds=;
+        b=tWxUUt9gnLon+IywhEibqwsp41F/qoujaKLn+99d+OW3YYlhs0xuGeERkb4WfvbdpF
+         eiAoOqmyWJU1fr8ZKj1KrgY5/0ajn+z9U5yA2KWuSOzWBEEiRK61JIlLCGQGhy4nnXHm
+         EopRGpF6AEmhQhDtIF5iY8aQWK6B+NUx7hgrDRoF2ZrZoWLzAtB4q4/Bnt3kMGKWOKCL
+         UpfUa04zDKjCCRkdxKZIF/rQf5MV5SZiyqgzgp3rY5r1Mrx1n7opZVtl0fnepKi6D/To
+         8IPYfUTNPeJTGW83u6+Vp+KBa/Yf6CgGUgrdeCJdd4gx/RmfbcePDsK8gNY6vTC+AvTT
+         JEhw==
+X-Gm-Message-State: AOJu0YyHJbqYAny+6GEUthOQG3yBp3T2gwaeX3fHLU+RSMOElIberemH
+	5jtTJby42AogX8mU0TKE8uA+L5ogpE9D3VVfJf3WbT5TY2ED1+ybQul2qelw18w=
+X-Google-Smtp-Source: AGHT+IFJ2/65DlJHKzesOI873fE3l0W3hSRAytYkTEHkdWUFjrpER/eIh9GjviHOZtrYTRdPCfjL4Q==
+X-Received: by 2002:a05:6808:130f:b0:3bf:ce31:6019 with SMTP id y15-20020a056808130f00b003bfce316019mr8907514oiv.34.1707341989980;
+        Wed, 07 Feb 2024 13:39:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWYRP0J0EzV0FHIgF8bKHOUNzZiUTcaLdu6u4FX9XW657G1qcqpZ63sOiD12LUhuXJJy/XfS66YSQQUbzc=
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id d26-20020a05680808fa00b003bed4bba856sm343797oic.13.2024.02.07.13.39.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Feb 2024 13:39:49 -0800 (PST)
+From: dthaler1968@googlemail.com
+X-Google-Original-From: <dthaler1968@gmail.com>
+To: "'bpf'" <bpf@vger.kernel.org>,
+	<bpf@ietf.org>
+Subject: ISA document title question
+Date: Wed, 7 Feb 2024 13:39:47 -0800
+Message-ID: <134701da5a0e$2c80c710$85825530$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 04/16] bpf: Introduce bpf_arena.
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, linux-mm <linux-mm@kvack.org>,
- Kernel Team <kernel-team@fb.com>
-References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
- <20240206220441.38311-5-alexei.starovoitov@gmail.com>
- <c9001d70-a6ae-46b1-b20e-1aaf4a06ffd1@google.com>
- <CAADnVQJJ7M+OHnygbuN4qapCS8_r-mimM6CLw5oee8ixvmqg4Q@mail.gmail.com>
-From: Barret Rhoden <brho@google.com>
-In-Reply-To: <CAADnVQJJ7M+OHnygbuN4qapCS8_r-mimM6CLw5oee8ixvmqg4Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdpaDivXny4Y9ENcR/Cft79/6KPXPQ==
+Content-Language: en-us
 
-On 2/7/24 15:55, Alexei Starovoitov wrote:
->> instead of uaddr, can you change this to take an address relative to the
->> arena ("arena virtual address"?)?  the caller of this is in BPF, and
->> they don't easily know the user virtual address.  maybe even just pgoff
->> directly.
-> I thought about it, but it doesn't quite make sense.
-> bpf prog only sees user addresses.
-> All load/store returns them. If it bpf_printk-s an address it will be
-> user address.
-> bpf_arena_alloc_pages() also returns a user address.
+The Internet Draft filename is draft-ietf-bpf-isa-XX, and the charter has:
+> [PS] the BPF instruction set architecture (ISA) that defines the
+> instructions and low-level virtual machine for BPF programs,
 
-Yeah, makes sense to keep them all in the same address space.
+That is, "instruction set architecture (ISA)", but the document itself has:
+> =======================================
+> BPF Instruction Set Specification, v1.0
+> =======================================
+>
+> This document specifies version 1.0 of the BPF instruction set.
 
-> 
-> Kernel addresses are not seen by bpf prog at all.
-> kern_vm_base is completely hidden.
-> Only at JIT time, it's added to pointers.
-> So passing uaddr to arena_alloc_pages() matches mmap style.
-> 
-> uaddr = bpf_arena_alloc_pages(... uaddr ...)
-> uaddr = mmap(uaddr, ...MAP_FIXED)
-> 
-> Passing pgoff would be weird.
-> Also note that there is no extra flag for bpf_arena_alloc_pages().
-> uaddr == full 64-bit of zeros is not a valid addr to use.
+Notably, no "architecture (ISA)".   Also, we now have a mechanism
+to extend it with conformance groups over time, so "v1.0" seems
+less relevant and perhaps not important given there's only one
+version being standardized at present.
 
-The problem I had with uaddr was that when I'm writing a BPF program, I 
-don't know which address to use for a given page, e.g. the beginning of 
-the arena.  I needed some way to tell me the user address "base" of the 
-arena.  Though now that I can specify the user_vm_start through the 
-map_extra, I think I'm ok.
+What do folks think about changing the doc to say:
+> =======================================
+> BPF Instruction Set Architecture
+> =======================================
+>
+> This document specifies the BPF instruction set architecture (ISA).
+?
 
-Specifically, say I want to break up my arena into two, 2GB chunks, one 
-for each numa node, and I want to bump-allocate from each chunk.  When I 
-want to allocate the first page from either segment, I'll need to know 
-what user address is offset 0 or offset 2GB.
-
-Since I know the user_start_vm at compile time, I can just hardcode that 
-to convert from "arena address" (e.g. pgoff) to the user address space.
-
-thanks,
-
-barret
-
+Dave
 
 
