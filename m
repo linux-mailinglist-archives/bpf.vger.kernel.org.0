@@ -1,178 +1,214 @@
-Return-Path: <bpf+bounces-21437-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21438-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8841C84D579
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:10:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C7D384D589
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:12:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB66EB2436E
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:10:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2EB728D8D3
+	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 22:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D161384AE;
-	Wed,  7 Feb 2024 21:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A7B13A245;
+	Wed,  7 Feb 2024 21:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="HxV3jL0v";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="nDTaDaky";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Vms32Ua+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LfMxprkS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE11E12F5B0
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 21:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974C113A24C
+	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 21:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341998; cv=none; b=I+OGk5zYR5Lm6wkF8O5zgcajLnJ57+LrYFqUvPKDpcb2VZR7pWgqDDaz5T8kjW1fCtSx61aiKat6Ktv0Ltcat62PzyinSl79MrpeRmFC0uP2PTa0hOSsjCQqUKX+W2Musy50ny1U4GmYJHjVvlgREeAHh3mXHqxmTkPLi0yBpII=
+	t=1707342310; cv=none; b=kD6KHy/P/GdMqvr2pu/EWzWtOs9O2Nvx+HggpOo3AJyf7Axc9sYbYmeVAwLQqC308wDR2zEaOMNItQ9RDDmPei52NHzA2cck09T4AcWTDkZ9Cl5zT+EvZlxHL5ByAwWpehC+6aeLn8JU9Nss8a55in0opDmXLmOq7GCub0UEISM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341998; c=relaxed/simple;
-	bh=8mepsUtPkYOSTzxEdBWUq87crislJyuRYSTcVq6qbGk=;
-	h=To:Date:Message-ID:MIME-Version:Subject:Content-Type:From; b=PKo0llBjVW+Hem/WK8pMm23mDowTs5XWMGQOEAeNrJ2gC5LKTYYBIday8CgLVD23ZNv1AWMgqFMuT3ZVvXT+wGnnOe8HFA03IiEgnIM0DVy1ES1AQ+VmvWzA+5UKji4giScXcWC5VDsPpCjEVm1D2zanmvasWeKL9ApFGarTZPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=HxV3jL0v; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=nDTaDaky reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=Vms32Ua+ reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 1CC44C151086
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 13:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1707341996; bh=8mepsUtPkYOSTzxEdBWUq87crislJyuRYSTcVq6qbGk=;
-	h=To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:
-	 List-Help:List-Subscribe:From;
-	b=HxV3jL0vMayaf0YVzweXG2L1Z/K67GA+VhYQzrXiRn00gVUo1vTWaH1DVfhWwJlAO
-	 8R6gwktBeKd3IkXbaO6mKCsg528kK0Gj3S3hsLQnItiKcNygmmRP4kBS9ootDS7qua
-	 5r8rFezWxorfUz/wuh2YlZVmbZX8f8AlkXiadpCY=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id DD8A7C14F73F;
- Wed,  7 Feb 2024 13:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1707341995; bh=8mepsUtPkYOSTzxEdBWUq87crislJyuRYSTcVq6qbGk=;
- h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
- List-Post:List-Help:List-Subscribe;
- b=nDTaDaky9tuQ2K2Rs0EZxv81eZz2bBMYFPJkFSMhZIbUlJWQFCafbRtQ3wI4gcejK
- kooAcCoa30l7Cax2RYjjsrKFT8L4JRoWKiMmEL9RJSZDCSSGT2aTCw9MlkUqdTMoX+
- YgVcLk6i8A7FBOsZCRDeOgqPX/9GbaPeRAlH2eZw=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 4E703C14F73F
- for <bpf@ietfa.amsl.com>; Wed,  7 Feb 2024 13:39:55 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -6.855
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=googlemail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id TPmpHYBTAKdh for <bpf@ietfa.amsl.com>;
- Wed,  7 Feb 2024 13:39:51 -0800 (PST)
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com
- [IPv6:2607:f8b0:4864:20::22c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 81822C14F6F7
- for <bpf@ietf.org>; Wed,  7 Feb 2024 13:39:51 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id
- 5614622812f47-3be6df6bc9bso702394b6e.0
- for <bpf@ietf.org>; Wed, 07 Feb 2024 13:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20230601; t=1707341990; x=1707946790; darn=ietf.org;
- h=content-language:thread-index:content-transfer-encoding
- :mime-version:message-id:date:subject:to:from:from:to:cc:subject
- :date:message-id:reply-to;
- bh=5Bo+rUlNDVzlryYbG3bVCAl8cdRpvlaWBhWYb2fuEds=;
- b=Vms32Ua+bEgcCl6ipNcE8whUjzDGoJDz+S1M9aNf98lhpf9B4ETH/RyaVzooHDDrFo
- 9FRi9sjRXO85ZdlwmgKpCOov0IzbIj0K68zXcT8zQC1rS7Io87Njx1PQ4NzcKiv453Yb
- JXgoz/QUsGEywmava5VtoAuOhIXtN+8/bJscVitqj3ovvRjq0PmzR64yUBH2smmWk5+K
- liKHaANjbS8Oe49LcJHalvE3LVV0YkxRSOmHN+FqLJ651EAVDEpK38CDoNaN3X69317S
- 2gybKJyc7rcWJYpSUHroXERhTKvRDKKHrbDlIZucP6eHgv2rpw8uhyjibzzp9LVjodnH
- Fyqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1707341990; x=1707946790;
- h=content-language:thread-index:content-transfer-encoding
- :mime-version:message-id:date:subject:to:from:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=5Bo+rUlNDVzlryYbG3bVCAl8cdRpvlaWBhWYb2fuEds=;
- b=NXeN6QvZfVtokDaErpaCCz8o53ISlreBHLUezOWhv0hFhrKw1TRK/Z1RQ/m/swfNH3
- 35VFDyx8jZnYVrIzKa76j63zSRnU8OcrKXUdSsgtcXfJaK0fxrryCc87oUaOoQXmMmbH
- Rv/oqfFdlnw92vKsztyvM07xaGAqn48rmlTn2cG6t21Xc2h7JWGj4Ay8knUaeUHdzEvy
- sw4OVHbk+zt99Y71E5YJv7PF4ZcGRvbjKLXqAr2g/6d+HhB06Wd8aWVA62fhV+AHAzhv
- +d7mOWoXMhKV4WO6aW4i3OfsLQM8lFA9C9Cw8i4irel3MFh4+rXObI3n4SLTGRTyYfsq
- z1aA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUXyqHLgWyYnLky/wUgd0MVH+ZIcK0+20EAD+9e6pehjynfv/5dlZbaACcipR1lAbOXSU2d6F4awPcUIuw=
-X-Gm-Message-State: AOJu0YxKIXUb8Le+Fy8YfSF/TMdHFAnm7NRRsdlw5Iq4qnLpKly4ZWs+
- ov903N0MHKlqBkg/KlJq7lCpS70ZMvm7AZMkg0BHuFUzecCxf5DJkqCrZLxbmAA=
-X-Google-Smtp-Source: AGHT+IFJ2/65DlJHKzesOI873fE3l0W3hSRAytYkTEHkdWUFjrpER/eIh9GjviHOZtrYTRdPCfjL4Q==
-X-Received: by 2002:a05:6808:130f:b0:3bf:ce31:6019 with SMTP id
- y15-20020a056808130f00b003bfce316019mr8907514oiv.34.1707341989980; 
- Wed, 07 Feb 2024 13:39:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1;
- AJvYcCWYRP0J0EzV0FHIgF8bKHOUNzZiUTcaLdu6u4FX9XW657G1qcqpZ63sOiD12LUhuXJJy/XfS66YSQQUbzc=
-Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net.
- [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
- d26-20020a05680808fa00b003bed4bba856sm343797oic.13.2024.02.07.13.39.49
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 07 Feb 2024 13:39:49 -0800 (PST)
-X-Google-Original-From: <dthaler1968@gmail.com>
-To: "'bpf'" <bpf@vger.kernel.org>,
-	<bpf@ietf.org>
-Date: Wed, 7 Feb 2024 13:39:47 -0800
-Message-ID: <134701da5a0e$2c80c710$85825530$@gmail.com>
+	s=arc-20240116; t=1707342310; c=relaxed/simple;
+	bh=CvyJmK4JAWQsKB+2qLcuYCn46BxZq/XJ4RGBqcviFIA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D/17f7KoVV4uiPBpGcilJne34AnVaipr5AUBynfxO58Hl46GOKNQwGPSTFUMVdgX1uk+vy+dWU7mRvs6uzaE1QfIDIqPy9lmzr71s1X/IIUIRjx0u0r4x0PIr/mUW1sEf9+HO3gbyKcTii3+NZMo3YIel83Zx/2XlUbN0LBjn3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LfMxprkS; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c3d29d43-ffa3-47e5-9e44-9114f650bfc4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707342305;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H1QwaBrfjHSxe1UdCmYbyo+imh6aoD7PXD1l8mXJi0g=;
+	b=LfMxprkS96Ni3drEPTnD17TlBM8kbprAE9Ms1Ks8tCRUOct/NjmMAbucQpvfJ3jBByoptx
+	lVIkuOCZ1IyDrz2xTBYk94ULs3elo8I/yJul/R6b15Ype+kbIQyDDqcSGCdWDPcZge6Az7
+	9O2Cz6bUjsMPgiRruNtnC6/vLNTASus=
+Date: Wed, 7 Feb 2024 13:45:00 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdpaDivXny4Y9ENcR/Cft79/6KPXPQ==
-Content-Language: en-us
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/SEpn3OL9TabNRn-4rDX9A6XVbjM>
-Subject: [Bpf] ISA document title question
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: [PATCH bpf-next] bpf: abstract loop unrolling pragmas in BPF
+ selftests
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
+Cc: Yonghong Song <yhs@meta.com>, Eduard Zingerman <eddyz87@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>, david.faust@oracle.com,
+ cupertino.miranda@oracle.com
+References: <20240207101253.11420-1-jose.marchesi@oracle.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240207101253.11420-1-jose.marchesi@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: dthaler1968@googlemail.com
-From: dthaler1968=40googlemail.com@dmarc.ietf.org
+X-Migadu-Flow: FLOW_OUT
 
-The Internet Draft filename is draft-ietf-bpf-isa-XX, and the charter has:
-> [PS] the BPF instruction set architecture (ISA) that defines the
-> instructions and low-level virtual machine for BPF programs,
 
-That is, "instruction set architecture (ISA)", but the document itself has:
-> =======================================
-> BPF Instruction Set Specification, v1.0
-> =======================================
+On 2/7/24 2:12 AM, Jose E. Marchesi wrote:
+> Some BPF tests use loop unrolling compiler pragmas that are clang
+> specific and not supported by GCC.  These pragmas, along with their
+> GCC equivalences are:
 >
-> This document specifies version 1.0 of the BPF instruction set.
-
-Notably, no "architecture (ISA)".   Also, we now have a mechanism
-to extend it with conformance groups over time, so "v1.0" seems
-less relevant and perhaps not important given there's only one
-version being standardized at present.
-
-What do folks think about changing the doc to say:
-> =======================================
-> BPF Instruction Set Architecture
-> =======================================
+>    #pragma clang loop unroll_count(N)
+>    #pragma GCC unroll N
 >
-> This document specifies the BPF instruction set architecture (ISA).
-?
+>    #pragma clang loop unroll(full)
+>    #pragma GCC unroll 65534
+>
+>    #pragma clang loop unroll(disable)
+>    #pragma GCC unroll 1
+>
+>    #pragma unroll [aka #pragma clang loop unroll(enable)]
+>    There is no GCC equivalence, and it seems to me that this clang
+>    pragma may be only useful when building without -funroll-loops to
+>    enable the optimization in particular loops.  In GCC -funroll-loops
+>    is enabled with -O2 and higher.  If this is also true in clang,
+>    perhaps these pragmas in selftests are redundant?
 
-Dave
+You are right, at -O2 level, loop unrolling is enabled by default.
+So I think '#pragma unroll' can be removed since gcc also has
+loop unrolling enabled by default at -O2.
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Your patch has a conflict with latest bpf-next. Please rebase it
+on top of bpf-next, remove '#pragma unroll' support and resubmit.
+Thanks!
+
+>
+> This patch adds a new header progs/bpf_compiler.h that defines the
+> following macros, which correspond to each pair of compiler-specific
+> pragmas above:
+>
+>    __pragma_loop_unroll_count(N)
+>    __pragma_loop_unroll_full
+>    __pragma_loop_no_unroll
+>    __pragma_loop_unroll
+>
+> The selftests using loop unrolling pragmas are then changed to include
+> the header and use these macros in place of the explicit pragmas.
+>
+> Tested in bpf-next master.
+> No regressions.
+>
+> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+> Cc: Yonghong Song <yhs@meta.com>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: david.faust@oracle.com
+> Cc: cupertino.miranda@oracle.com
+> ---
+>   .../selftests/bpf/progs/bpf_compiler.h        | 33 +++++++++++++++++++
+>   tools/testing/selftests/bpf/progs/iters.c     |  5 +--
+>   tools/testing/selftests/bpf/progs/loop4.c     |  4 ++-
+>   .../selftests/bpf/progs/profiler.inc.h        | 17 +++++-----
+>   tools/testing/selftests/bpf/progs/pyperf.h    |  7 ++--
+>   .../testing/selftests/bpf/progs/strobemeta.h  | 18 +++++-----
+>   .../selftests/bpf/progs/test_cls_redirect.c   |  5 +--
+>   .../selftests/bpf/progs/test_lwt_seg6local.c  |  6 ++--
+>   .../selftests/bpf/progs/test_seg6_loop.c      |  4 ++-
+>   .../selftests/bpf/progs/test_skb_ctx.c        |  4 ++-
+>   .../selftests/bpf/progs/test_sysctl_loop1.c   |  6 ++--
+>   .../selftests/bpf/progs/test_sysctl_loop2.c   |  6 ++--
+>   .../selftests/bpf/progs/test_sysctl_prog.c    |  6 ++--
+>   .../selftests/bpf/progs/test_tc_tunnel.c      |  4 ++-
+>   tools/testing/selftests/bpf/progs/test_xdp.c  |  3 +-
+>   .../selftests/bpf/progs/test_xdp_loop.c       |  3 +-
+>   .../selftests/bpf/progs/test_xdp_noinline.c   |  5 +--
+>   .../selftests/bpf/progs/xdp_synproxy_kern.c   |  6 ++--
+>   .../testing/selftests/bpf/progs/xdping_kern.c |  3 +-
+>   19 files changed, 103 insertions(+), 42 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_compiler.h
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_compiler.h b/tools/testing/selftests/bpf/progs/bpf_compiler.h
+> new file mode 100644
+> index 000000000000..a7c343dc82e6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_compiler.h
+> @@ -0,0 +1,33 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __BPF_COMPILER_H__
+> +#define __BPF_COMPILER_H__
+> +
+> +#define DO_PRAGMA_(X) _Pragma(#X)
+> +
+> +#if __clang__
+> +#define __pragma_loop_unroll DO_PRAGMA_(clang loop unroll(enable))
+> +#else
+> +/* In GCC -funroll-loops, which is enabled with -O2, should have the
+> +   same impact than the loop-unroll-enable pragma above.  */
+> +#define __pragma_loop_unroll
+> +#endif
+> +
+> +#if __clang__
+> +#define __pragma_loop_unroll_count(N) DO_PRAGMA_(clang loop unroll_count(N))
+> +#else
+> +#define __pragma_loop_unroll_count(N) DO_PRAGMA_(GCC unroll N)
+> +#endif
+> +
+> +#if __clang__
+> +#define __pragma_loop_unroll_full DO_PRAGMA_(clang loop unroll(full))
+> +#else
+> +#define __pragma_loop_unroll_full DO_PRAGMA_(GCC unroll 65534)
+> +#endif
+> +
+> +#if __clang__
+> +#define __pragma_loop_no_unroll DO_PRAGMA_(clang loop unroll(disable))
+> +#else
+> +#define __pragma_loop_no_unroll DO_PRAGMA_(GCC unroll 1)
+> +#endif
+> +
+> +#endif
+> diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+> index 225f02dd66d0..3db416606f2f 100644
+> --- a/tools/testing/selftests/bpf/progs/iters.c
+> +++ b/tools/testing/selftests/bpf/progs/iters.c
+> @@ -5,6 +5,7 @@
+>   #include <linux/bpf.h>
+>   #include <bpf/bpf_helpers.h>
+>   #include "bpf_misc.h"
+> +#include "bpf_compiler.h"
+>   
+>   #define ARRAY_SIZE(x) (int)(sizeof(x) / sizeof((x)[0]))
+>   
+> @@ -183,7 +184,7 @@ int iter_pragma_unroll_loop(const void *ctx)
+>   	MY_PID_GUARD();
+>   
+>   	bpf_iter_num_new(&it, 0, 2);
+> -#pragma nounroll
+> +	__pragma_loop_no_unroll
+>   	for (i = 0; i < 3; i++) {
+>   		v = bpf_iter_num_next(&it);
+>   		bpf_printk("ITER_BASIC: E3 VAL: i=%d v=%d", i, v ? *v : -1);
+> @@ -238,7 +239,7 @@ int iter_multiple_sequential_loops(const void *ctx)
+>   	bpf_iter_num_destroy(&it);
+>   
+>   	bpf_iter_num_new(&it, 0, 2);
+> -#pragma nounroll
+> +	__pragma_loop_no_unroll
+>   	for (i = 0; i < 3; i++) {
+>   		v = bpf_iter_num_next(&it);
+>   		bpf_printk("ITER_BASIC: E3 VAL: i=%d v=%d", i, v ? *v : -1);
+
+[...]
+
 
