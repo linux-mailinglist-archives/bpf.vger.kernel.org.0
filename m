@@ -1,128 +1,264 @@
-Return-Path: <bpf+bounces-21531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 701B084E90A
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 20:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3461F84E909
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 20:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2D5CB3102A
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:34:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C42FB308A9
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16353381C2;
-	Thu,  8 Feb 2024 19:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1500B381BE;
+	Thu,  8 Feb 2024 19:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ER4dpgUe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZagQpeo0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130A6381BE
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 19:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB8D3714E
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 19:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707420854; cv=none; b=jwra7BtcbtA/Jk5LrEijVLtvUDgPaMAgKcun+1qKlPaTkiJLLi127ufP02px6xj4usQi/30/KSx4bdbQRYMTP8EfCHXQhHsJdo92FjT+0s1mhP/SOd8HJvrP14REiDlxD/TwyK/rjMA348C8rnPsTY8/Le5602kbR2EINWLXVs4=
+	t=1707420932; cv=none; b=ieGJul4ZDe96m+UbJjvjuc96DqYrN6UBy8/gUaQaICL3VQzfw2hjVLQY9M/k/lFu0ocDKC/ZQq+b/fIK6I0F4LBbB5hMEO1DAP0ziFBKzNDkSVypZk83NpIjTamDIKqzKriRnN1MO+yHkCZunAILmyLTtdCPiwX9O4b5yZrI5J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707420854; c=relaxed/simple;
-	bh=DeRXIw8gyyrXMLr7K9JSNR0GT+nRAj2uReVoMUgiQLs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=q0QdGFpDwqjMm85i6B9DDPJ7VJvwiNGbhA7EvntOpRX1cQ8EFPEp/ssKkVqboag5r9KUq38vDYr3E9GeMXllC3Utv9gYt9wYUxbGm5c78zfnLjBiVoZ3vOoo582VVlz21ByBya82i89fqDfQnX4ZSxA+dxvcgmOAvUP76Ymto5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ER4dpgUe; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1707420932; c=relaxed/simple;
+	bh=5rKecV+Ugq/vpFKCAjp0/My4Q4YZ0FAhnOCNZFa9AL0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JDapk+7MGvKABEXn3UlAof8h4/Fm/FApE4Et/7WhaSaB2tM1GkTxZMcDXMhMPYxJa/mIRx9RDpaCR4sGIym49n6auknfr4jW22XHNKdMGfb/eA3gd8RNcjGOQMtZbVxm2IJJEWrEyu/BIeUH2kA+Qm2QGzNjfVk99MpEsKOncHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZagQpeo0; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so20527066b.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 11:34:12 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-296e8c8d218so144560a91.3
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 11:35:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707420851; x=1708025651; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zSYAY8GfiPgnE9ei1FPPdjbar5PQTRIQ0Skn8g09wSE=;
-        b=ER4dpgUeBbjPlUSgIkgI65UcOsRSxWyKKmrNtLcSxDe3qPOiIsko5MYoFd4lOmSSny
-         BlS1B0Z9JK5qz+Mj2mfnIhoaNXGviFOvD+LyGsI6tK/AO2xG5Jo6cwuhKECorcwJAoq/
-         1QbUIprUgHe7/AN0Evwcf5KB7AeYkeIXLVcrixrsermGq6VhHvVaDnt4mFLws6pIZtmy
-         4r4OHIdnWRG2WKsZsRGfbVKCurj0eU6J8e+6b62CHUePIWAm9cnOcdp6xZ1KkogJ/jcp
-         un37Ksx8DmmN7UuWICJEqLbfs4WBYzXbK7aRvgR4qWu9c27od2gks/Ui3orPws0c30mn
-         jm4w==
+        d=gmail.com; s=20230601; t=1707420930; x=1708025730; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=67K9dz2k1WC8A2hJTgg+s5iqZIEFf42/rDwd2R3rJnc=;
+        b=ZagQpeo0N1mppO7XS8u8ECEASZAAuuDEQwnb+EK8OFjNgLIYkj6aOE+0xuF3qp92PW
+         Ajbx491UGWyjMsw4cs7UO5rLWeZNupKqePjH1YN9rQSxiGtqwxDtGgY3/nUQJRarbFMq
+         TWRq+QZbOojgztZqfhbsc3xMY8BXn3dca+AQBvI0FAOVGVhia9EZzVQi0L0YfxD6ybeR
+         16D1rNFJEdnXMUEaVohu+44P1nRHEO/WPFPNrdoURCK+lRzSU+Dkyth3rn/cHLNe7Zri
+         /NpSBnPxJkKITfjwYQzQrSIT/9fBZbA3xc8DxIZzGAWDANK/4juPrgtdkl10fyqpHcnt
+         dhzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707420851; x=1708025651;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zSYAY8GfiPgnE9ei1FPPdjbar5PQTRIQ0Skn8g09wSE=;
-        b=fUIceUkCUeum6Th8wqwr9Syplvumw5qWuVDXHZal4/82M82sx/j3D6wE0giX5UVA3R
-         MVucReVD8Myr8609D+YMh+L4Z6/bBQSKj7kTq38FNauFq1lyl4EDuy3KtCExCcDkHKML
-         sY9DxZhYtL4NJSJYko97OguRK2zkrWc+RKQvxmV9haYHybmkPOYglndBEWncY6NyCZWi
-         +TgLSI6Mvh7sZKpEYZlobK36KC5J3/TIz51suxhdE/dx7mJtEGbjDUh7YqixY+jZq9XT
-         bilVUMl6RkFJKspBQW1nutMaR2NQsGOw4lln8FMLvZZ50ESM7I2DzP8i5qbeDTVbU1cf
-         LNqw==
-X-Gm-Message-State: AOJu0YyclpSrbz/maa/xBoSNfbX0YdlFiR4q2wBSyG74gWMS7Q31JDx2
-	pX8CWNzNnOVntKBMapC3A3uYZMKTqtx8qR+4T4XPMYwk027JQURl
-X-Google-Smtp-Source: AGHT+IF3CGMcOSBxha7B3qgbRcHAp3pgA89vLJLlIxImjsibIO2VnKqdvFYCAi8CwiZgqpv3i1E9jw==
-X-Received: by 2002:a17:906:4acf:b0:a38:350:bbdd with SMTP id u15-20020a1709064acf00b00a380350bbddmr224441ejt.48.1707420851230;
-        Thu, 08 Feb 2024 11:34:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWcctNAL2py4AOO6nUD0zMZLNawA6pinRRru6w08qLCBeSP2+6DY7IpInhC6m/hM1FF8W3jA1ZJhfR4Zi/9gUrd2VCcf5LnAiWWOYFhNPfm9mOZFhTqw9VolwmHbbEiicphQYBx4t7AeIjhI8NIJoYWhOgh/dRZZLQVF3mU5AvOq4FdUNWNrC1EnbaBYaiMfJi3GqTEOB2xU0qosVL2MjzqY21xKqItTLLF
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id n26-20020a170906b31a00b00a36a94ecf9dsm365355ejz.175.2024.02.08.11.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 11:34:10 -0800 (PST)
-Message-ID: <a21d4915bb861ac5c2def8ea2f48c99689cc854a.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: abstract loop unrolling pragmas in BPF
- selftests
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, Yonghong Song
-	 <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Yonghong Song <yhs@meta.com>, Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>, david.faust@oracle.com, 
-	cupertino.miranda@oracle.com
-Date: Thu, 08 Feb 2024 21:34:09 +0200
-In-Reply-To: <875xyydbir.fsf@oracle.com>
-References: <20240207101253.11420-1-jose.marchesi@oracle.com>
-	 <c3d29d43-ffa3-47e5-9e44-9114f650bfc4@linux.dev>
-	 <87h6ijfayj.fsf@oracle.com> <87wmrfdsk7.fsf@oracle.com>
-	 <4ad9dad64b38ae90e4a050ce5181ced750913b23.camel@gmail.com>
-	 <87o7crdmjn.fsf@oracle.com>
-	 <eea74ef852fc57e9fb69d18e1e5960523c4f7abb.camel@gmail.com>
-	 <87il2zdl43.fsf@oracle.com>
-	 <7d2b05bf2e7ae7c95807ac4b2a9664f203facbfe.camel@gmail.com>
-	 <871q9mew62.fsf@oracle.com>
-	 <8297be08-cd05-4f08-8bb2-5956f13bbd25@linux.dev>
-	 <514b171d-8a3c-4134-a0b4-9b6531b3fc38@linux.dev>
-	 <87a5oadboq.fsf@oracle.com> <875xyydbir.fsf@oracle.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1707420930; x=1708025730;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=67K9dz2k1WC8A2hJTgg+s5iqZIEFf42/rDwd2R3rJnc=;
+        b=n4GMLgs/RhVtZcwVltTf9CrG/QktollD0H5y/ghtnJegWr3LBQ69HFHJ5lpyQbGOZk
+         2aQjUaJtqwb/stcIXlob6LUkeUgXv8ldlVHcf+aWxUJjqwT9DHFOyUTw1d/J+yUw+G90
+         V7iFaxyjwZ6iXF4YjQzhwjiZ1h5FK/XzFX2y9lfk9RYXUoHhRHYjL6vbFR+QWqhp7ewi
+         G2qM0RMmypTFKjybQwgQyPpgCiClmkuZPuidO/nvzIrnw0g+M/KEXOe7Z83SfgN3DYw8
+         dfsIBMlJwAsvxci1eIRP3Uh/qd8MupRoL8jLByoLxd4pJqWCgNjXIw/sUGuKMR5ws6SU
+         5CuA==
+X-Gm-Message-State: AOJu0YxYq33DXRtRW6FH76NTVUGge2cSbeXfNCWhhZf1YkBlRzVjY4Rw
+	vHgbCnJFPQw3O0UE2GI+kmZVxxleyfOJFf1tL9TMvcAc5ijCHt8lIPpb9CXb7DL9BKIafRafA6l
+	Km6EofXnVgvzrU9B4tUUL50j/l7I=
+X-Google-Smtp-Source: AGHT+IFnMOQgPZW0wZydRCqqaNixAEr/LhIBVufY9hULOkrS9OrvuYEIG9PtwXomcdmkPfDMtCRcTyh2yVyuG31Igdk=
+X-Received: by 2002:a17:90b:3d03:b0:297:7d8:e64d with SMTP id
+ pt3-20020a17090b3d0300b0029707d8e64dmr175270pjb.1.1707420930283; Thu, 08 Feb
+ 2024 11:35:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240207153550.856536-1-jolsa@kernel.org>
+In-Reply-To: <20240207153550.856536-1-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 8 Feb 2024 11:35:18 -0800
+Message-ID: <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-02-08 at 20:03 +0100, Jose E. Marchesi wrote:
-[...]
+On Wed, Feb 7, 2024 at 7:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> hi,
+> adding support to attach both entry and return bpf program on single
+> kprobe multi link.
+>
+> Having entry together with return probe for given function is common
+> use case for tetragon, bpftrace and most likely for others.
+>
+> At the moment if we want both entry and return probe to execute bpf
+> program we need to create two (entry and return probe) links. The link
+> for return probe creates extra entry probe to setup the return probe.
+> The extra entry probe execution could be omitted if we had a way to
+> use just single link for both entry and exit probe.
+>
+> In addition it's possible to control the execution of the return probe
+> with the return value of the entry bpf program. If the entry program
+> returns 0 the return probe is installed and executed, otherwise it's
+> skip.
+>
 
-> This makes me wonder, asking from ignorance: what is the benefit/point
-> for BPF programs to partially unroll a loop?  I would have said either
-> we unroll them completely in order to avoid verification problems, or we
-> don't unroll them because the verifier is supposed to handle it the way
-> it is written...
+In general, I think this is a very useful ability to have a combined
+entry/return program.
 
-Generally speaking, I'd agree.
-But basing on the git history, this specific test was added to check
-if verifier is capable to process some specific pattern generated by clang.
-See [0]:
+But the way you implement it with extra flag and extra fd parameter
+makes it harder to have a nice high-level support in libbpf (and
+presumably other BPF loader libraries) for this.
 
-    The main purpose of the profiler test to check different llvm generatio=
-n
-    patterns to make sure the verifier can load these large programs.
+When I was thinking about doing something like this, I was considering
+adding a new program type, actually. That way it's possible to define
+this "let's skip return probe" protocol without backwards
+compatibility concerns. It's easier to use it declaratively in libbpf.
+You just declare SEC("kprobe.wrap/...") (or whatever the name,
+something to designate that it's both entry and exit probe) as one
+program and in the code there would be some way to determine whether
+we are in entry mode or exit mode (helper or field in the custom
+context type, the latter being faster and more usable, but it's
+probably not critical).
 
-I'd say it would be fair to select any reasonable combination
-of unroll pragmas for GCC, e.g. use unroll(fully) instead of "unroll".
+Another frequently requested feature and a very common use case is to
+measure duration of the function, so if we have a custom type, we can
+have a field to record entry timestamp and let user calculate
+duration, if necessary. Without this users have to pay a bunch of
+extra overhead to record timestamp and put it into hashmap (keyed by
+thread id) or thread local storage (even if they have no other use for
+thread local storage).
 
-[0] 03d4d13fab3f ("selftests/bpf: Add profiler test")
+Also, consider that a similar concept is applicable to uprobes and we
+should do that as well, in similar fashion. And the above approach
+works for both kprobe/kretprobe and uprobe/uretprobe cases, because
+they have the same pt_regs data structure as a context (even if for
+exit probes most of the values of pt_regs are not that meaningful).
+
+So anyways, great feature, but let's discuss end-to-end usability
+story before we finalize the implementation?
+
+
+> I'm still working on the tetragon change, so I'll be sending non-RFC
+> version once that's ready, meanwhile any ideas and feedback on the
+> approach would be great.
+>
+> The change in bpftrace [1] using the new interface shows speed increase
+> with tracing perf bench messaging:
+>
+>   # perf bench sched messaging -l 100000
+>
+> having system wide bpftrace:
+>
+>   # bpftrace -e 'kprobe:ksys_write { }, kretprobe:ksys_write { }'
+>
+> without bpftrace:
+>
+>   # Running 'sched/messaging' benchmark:
+>   # 20 sender and receiver processes per group
+>   # 10 groups =3D=3D 400 processes run
+>
+>        Total time: 119.595 [sec]
+>
+>    Performance counter stats for 'perf bench sched messaging -l 100000':
+>
+>      102,419,967,282      cycles:u
+>    5,652,444,107,001      cycles:k
+>    5,782,645,019,612      cycles
+>       22,187,151,206      instructions:u                   #    0.22  ins=
+n per cycle
+>    2,979,040,498,455      instructions:k                   #    0.53  ins=
+n per cycle
+>
+>        119.671169829 seconds time elapsed
+>
+>         94.959198000 seconds user
+>       1815.371616000 seconds sys
+>
+> with current bpftrace:
+>
+>   # Running 'sched/messaging' benchmark:
+>   # 20 sender and receiver processes per group
+>   # 10 groups =3D=3D 400 processes run
+>
+>        Total time: 221.153 [sec]
+>
+>    Performance counter stats for 'perf bench sched messaging -l 100000':
+>
+>      125,292,164,504      cycles:u
+
+btw, why +25% in user space?... this looks weird
+
+
+>   10,315,020,393,735      cycles:k
+>   10,501,379,274,042      cycles
+>       22,187,583,545      instructions:u                   #    0.18  ins=
+n per cycle
+>    4,856,893,111,303      instructions:k                   #    0.47  ins=
+n per cycle
+>
+>        221.229234283 seconds time elapsed
+>
+>        103.792498000 seconds user
+>       3432.643302000 seconds sys
+>
+> with bpftrace using the new interface:
+>
+>   # Running 'sched/messaging' benchmark:
+>   # 20 sender and receiver processes per group
+>   # 10 groups =3D=3D 400 processes run
+>
+>        Total time: 157.825 [sec]
+>
+>    Performance counter stats for 'perf bench sched messaging -l 100000':
+>
+>      102,423,112,279      cycles:u
+>    7,450,856,354,744      cycles:k
+>    7,584,769,726,693      cycles
+>       22,187,270,661      instructions:u                   #    0.22  ins=
+n per cycle
+>    3,985,522,383,425      instructions:k                   #    0.53  ins=
+n per cycle
+>
+>        157.900787760 seconds time elapsed
+>
+>         97.953898000 seconds user
+>       2425.314753000 seconds sys
+>
+> thanks,
+> jirka
+>
+>
+> [1] https://github.com/bpftrace/bpftrace/pull/2984
+> ---
+> Jiri Olsa (4):
+>       fprobe: Add entry/exit callbacks types
+>       bpf: Add return prog to kprobe multi
+>       libbpf: Add return_prog_fd to kprobe multi opts
+>       selftests/bpf: Add kprobe multi return prog test
+>
+>  include/linux/fprobe.h                                       |  18 +++++=
++++++------
+>  include/uapi/linux/bpf.h                                     |   4 +++-
+>  kernel/trace/bpf_trace.c                                     |  50 +++++=
++++++++++++++++++++++++++++-----------
+>  tools/include/uapi/linux/bpf.h                               |   4 +++-
+>  tools/lib/bpf/bpf.c                                          |   1 +
+>  tools/lib/bpf/bpf.h                                          |   1 +
+>  tools/lib/bpf/libbpf.c                                       |   5 +++++
+>  tools/lib/bpf/libbpf.h                                       |   6 +++++=
+-
+>  tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c   |  53 +++++=
+++++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/kprobe_multi_return_prog.c | 105 +++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+++++++++++
+>  10 files changed, 226 insertions(+), 21 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_return=
+_prog.c
 
