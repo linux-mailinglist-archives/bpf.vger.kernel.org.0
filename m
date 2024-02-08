@@ -1,93 +1,97 @@
-Return-Path: <bpf+bounces-21568-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4610D84EE6D
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 01:43:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C1284EF07
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 03:51:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D62A28A6E0
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 00:43:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470FC1F22A0D
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 02:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D6C7FF;
-	Fri,  9 Feb 2024 00:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D62B184D;
+	Fri,  9 Feb 2024 02:50:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kwZ46+gg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hPSh6adM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1220136E
-	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 00:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6F35663;
+	Fri,  9 Feb 2024 02:50:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707439390; cv=none; b=UTrW4QbTpC3j3iPoyCXToQ+HVtSWfG/RD0a6tWvpDi2EBBvANL1bitkGFyIKOJCO2/oEDx+XEK07vtxfSNtRKNpy7Tc6v2NdZuqP9PSxcsCB7sP2NzkCIbBHb4NKWxE+GQW4L0GSqTgioqr6IYrWAv997CG+RTJB/Yxr3yAkImg=
+	t=1707447053; cv=none; b=IaFVUCOSVNv5bQGtSBRpEw28Gkc/FWArorK14JP6vjWVFiMjY3VER9hC99VumYeph6+G4HLnLw3nEcHan5ZyL6Z3qLm6bMBhvyNtArfoBRHWVemRPKVsCbUZx/SMIBkxVrc4fb5MUskTqEJLgYfLda2UT3nXoViDGWfK46/HAhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707439390; c=relaxed/simple;
-	bh=2oAnO/g2tacYgXjulh1LaEWxa3FD8yP3GFfq3RtHp1Y=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CDNA55hya3HVJG/ghWezGj2CAba9d7RBDl+TERsORmYBh53oHiZKEUzYBuOCnDoUuNcWxFrduhi7plLxJftnpcGp3761rkBZYI2vByujfv0+0/NiGlM7D7/98LdG+tNr9lIIGOoiPu/3U2CBPDPy5LsyuEh2gfr5FCM+Af46qM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kwZ46+gg; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1d9f3136c74so12451365ad.0
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 16:43:08 -0800 (PST)
+	s=arc-20240116; t=1707447053; c=relaxed/simple;
+	bh=7afYQWsKUrAcpAeznLizU1hFIZ9xJ5fDSzGextpy+8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I7nxmZgt8bukDocjlfMUwIFX5kxy4FEJzJO2iS0sfeIYdqWED1gu86XANaYCyeqwjC5A8/IYUhj7gz70eaJf7+tnlGaBsDtVO/fWfruXqo2VWdSXdj/q9cc/xCIuiIIqTY1A1S+X5ZuF6Umai2lp2ZXqWiaDZMHGamUmjB77vMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hPSh6adM; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68009cb4669so2265676d6.1;
+        Thu, 08 Feb 2024 18:50:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707439388; x=1708044188; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RoO/AYczjRmfK2y8baMVNsK+Qib8OGiIWBRfrTnSMC0=;
-        b=kwZ46+ggv4uU1SrG73Hng0g5SQ/dtXSNpFuqQZ5oLiq+Y6FXzYYq/427qtFf5G6Kkx
-         aXm8PvZiY66EHr3/ruAGwlFI21+9JUkedT//yvn7Fkm7Ow3dNVIQOluIZgVzxTfWaUbN
-         0HE/3ezEqFXtGM1xi8AQjsV7M7iLhHzriepqXud6QKD1nVHuJWPX5PaWRJZB2SBKLyU/
-         3LCXcNb0RtTk0+eJQVe1cPv7aOTuQ3Nh58rwPuw13iHukTvWxTc5bFRA5C4WNU+UqFrA
-         OTqS8bIfetihF4PAahoQtEoatEHk5LX4BuSjsa/gB4RgoEhpVf6WsYJb3Z/m54XjJp2q
-         pquw==
+        d=gmail.com; s=20230601; t=1707447051; x=1708051851; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nj9opqbQ5/AcFYVCj/vP5eercGB3ykX399OJ84biNsE=;
+        b=hPSh6adMMw8Qio8TJYQ0ehXbSTBcDfsILTDctSLk9WxjlyoGnvyhiWGD84mHjQti5D
+         oLW/4JiKX3/+HsTiJEKWRRqd1Fw4DcD7iAHFdS/HFbD7C5HDiDy7CN4nA9z82ODZfToh
+         LzztFw189W48KXchlaooJcPwB5JKVEl+p+Kh6aBC/DnmM7zJChucc4sv7iwmIKeJ6Zv0
+         p5Q9U25q3o/auQ0oQe6tikfHIt9Gl3KglQa7kbWIW+a/wOxcYZUp4HPxEIaelZEMRusc
+         iKPrNIPwOZqiumZXwwt+jMp+5th107ZsD0KZOpLyD76enA28U5bQ4zNh/CU5xwkK9jw9
+         +3vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707439388; x=1708044188;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RoO/AYczjRmfK2y8baMVNsK+Qib8OGiIWBRfrTnSMC0=;
-        b=Jr8Ioxu0olVEpPw1W+OkrTnLEPQeUEd72pYZb/VPDh1RNFAgL6dJO0PSwm00hdetzC
-         LlLAttI8He/m6PaLJHb0uzOUBB8m7up6BqaImcfQY7OPnlEX+VHVV6lC/HKBy6Sh91Zq
-         B0hpZlTip/2MfhCPTukghNbD2NneA/fpnFbOqtn05mLq1CZgjbNeNwfvLdBpD5FZmd+Q
-         /OXWIyIjv4jclco5Cml20Zw+WvNoDdKsNHk96eQL/r59w8uQkNgXPau6zdkUQDLnVgR7
-         gT9jlOg950L55zs5jWEXeHbZRHTWVcODVGUQ+ws2Xu+sLdem+lBSuay3hMKu62/n5Sm7
-         Fzrg==
-X-Gm-Message-State: AOJu0YwX3B+zL4UHZpsdO/v8x+xvwyTpeoS+nqFQYie5P4qIWnJXzrY8
-	w7yt5TkfzC5+HBD5mMPY7XylF3zLzl3D6/d1GmaoKYhqtXD80e2nT311D6nBHavD/Q==
-X-Google-Smtp-Source: AGHT+IFZnd8udM0KilTMMSVGa4jLpsB3x5qs3wwE4l4I4E77leqDdXNGCu6+M+9voS/U12Rl58Qj77M=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:903:2349:b0:1d9:3baa:ef64 with SMTP id
- c9-20020a170903234900b001d93baaef64mr146plh.3.1707439388220; Thu, 08 Feb 2024
- 16:43:08 -0800 (PST)
-Date: Thu, 8 Feb 2024 16:43:06 -0800
-In-Reply-To: <ngc7klapduckb67tsymb3blu2wlmdsjo4pa4gbaivgxezbwzxp@v7akqu7gbwl4>
+        d=1e100.net; s=20230601; t=1707447051; x=1708051851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nj9opqbQ5/AcFYVCj/vP5eercGB3ykX399OJ84biNsE=;
+        b=ukVr9GLSkRzTtTGTESPaId/CXwglS8hYNN0KGr+wvAsZg4Hl9QcSm1JJBSXRL+PshV
+         7jWG0NftwXJFzg41wSyvCkyY3xRLP6GCQbnosDzBzw9B0YAeXcLxzttdFQaM7we/LjcZ
+         w6kpo0UR5yIZA4aFXJE1kasJR6WpWLzkrCmCsGczF+otou4sRFZuYcaXAxo5rH3MKOrJ
+         oIwJa2cLfX4gJAAbk6Xm7KfPvsDrIxxfba/zD5Tqr8zagZmyaovSiS2FO/2z3KP69Y7z
+         y6ipPpUSO9IuDlBd1Gj3Sw9G/Cf/+zZhNOfhYhdz8ml60tfkVc8C5TUGday4GXo11qSl
+         IRKA==
+X-Gm-Message-State: AOJu0YyldLR2d5xrHmCFoBWbKOUu1Ij0sLyt8OaXi+pEdxyrHKaMurb+
+	ShY7kfOVuU3TgBldwOBCU00n88TRQpPcQO845GEGCUpNip5Jw+tc
+X-Google-Smtp-Source: AGHT+IHkcvpt/oyuKL6dZTMlzk4EHfqgduaB3NjUqo79ofdNrhbIIjXXee3ZA5FrNviknnwSYi3Baw==
+X-Received: by 2002:a0c:aa1b:0:b0:68c:c249:4c47 with SMTP id d27-20020a0caa1b000000b0068cc2494c47mr309388qvb.28.1707447050935;
+        Thu, 08 Feb 2024 18:50:50 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUCIynohXxMMivTiDa/ehKzYq04RxDtgYQ5miiPimefr/7rpfEkzDi+j/XRJyXugl4AHYteurMru3C+cEwE/G52cmFX0FtYQ7OKLjzn
+Received: from localhost ([2601:8c:502:14f0:acdd:1182:de4a:7f88])
+        by smtp.gmail.com with ESMTPSA id lr9-20020a0562145bc900b0068cd399760fsm163333qvb.61.2024.02.08.18.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 18:50:50 -0800 (PST)
+Date: Thu, 8 Feb 2024 16:50:49 -0500
+From: Oliver Crumrine <ozlinuxc@gmail.com>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: remove check before __cgroup_bpf_run_filter_skb
+Message-ID: <3htegzrugq4xwlizizsaku6g2pzwhndcnxxxmji4fvblisiuro@icvcsa3mky3w>
+References: <ngc7klapduckb67tsymb3blu2wlmdsjo4pa4gbaivgxezbwzxp@v7akqu7gbwl4>
+ <ZcV1GgitdBUIcKJT@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ngc7klapduckb67tsymb3blu2wlmdsjo4pa4gbaivgxezbwzxp@v7akqu7gbwl4>
-Message-ID: <ZcV1GgitdBUIcKJT@google.com>
-Subject: Re: [PATCH] net: remove check before __cgroup_bpf_run_filter_skb
-From: Stanislav Fomichev <sdf@google.com>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcV1GgitdBUIcKJT@google.com>
 
-On 02/08, Oliver Crumrine wrote:
-> Checking if __sk is a full socket in macro 
-> BPF_CGROUP_RUN_PROG_INET_EGRESS is redundant, as the same check is 
-> done in function __cgroup_bpf_run_filter_skb, called as part of the 
-> macro.
+On Thu, Feb 08, 2024 at 04:43:06PM -0800, Stanislav Fomichev wrote:
+> The check is here to make sure we only run this hook on non-req sockets.
+> Dropping it would mean we'd be running the hook on the listeners
+> instead. I don't think we want that.
 
-The check is here to make sure we only run this hook on non-req sockets.
-Dropping it would mean we'd be running the hook on the listeners
-instead. I don't think we want that.
+You are correct that we don't want to run the code on listeners. However
+the check for that is in the function this macro calls,
+__cgroup_bpf_run_filter_skb (the check is on line 1367 of
+kernel/bpf/cgroup.c, for 6.8.0-rc3). The check doesn't need to be done
+twice, so it can be removed in this macro. 
 
