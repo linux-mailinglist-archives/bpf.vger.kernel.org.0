@@ -1,271 +1,142 @@
-Return-Path: <bpf+bounces-21518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CE684E77E
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:15:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C1784E786
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:16:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 151A01C21415
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 18:15:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0231F23AF7
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 18:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41D08528E;
-	Thu,  8 Feb 2024 18:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9602285C58;
+	Thu,  8 Feb 2024 18:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfyDDHqz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R8ha/thR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C897683CB4
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 18:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03DF83CAB
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 18:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416094; cv=none; b=QA4tfvzSY6mesbvKw8qEKzszt7rubPnKFWIUjlNj8IagYQE92BDc1s9vuO47fMmTn80zOAQzteji4pfi+loIiXd371evBQ6msljz0Dv7HwYnlugrjcXCnm1XaoL4sRhkqadRyPpmiLCMCmDzZZ4xML6cqpEcS/kcsF61fYP3iB8=
+	t=1707416179; cv=none; b=jC53S8va6sNqoaadQUrCmzWRiZA7FPMxM0S3/fGG/OQ5cozpkHSTABEA/RcSu9PuE51Q27ZE60XwI0R5IJKLA4JZ8jxm7u+iOxLcfX7Ic7ab3A1JvHzMlHlbnJCFN8T3XkA30UctcPtLMvE/bIsk5LW5pVqocce36om2cwKyJ60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416094; c=relaxed/simple;
-	bh=koQPRzNQv+a2lmnxGDcJycWSUlZTuiVc+O+iTzp7Zrg=;
+	s=arc-20240116; t=1707416179; c=relaxed/simple;
+	bh=cnDiLDu9MZNgorIDQfQF21dr/gmoqSPuTUIc2Jq1WGM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ndCoZpFtXJibhUdwm4i4R5JUk8m0KS75MCCD9BKxDy/rjNe6iGpSdCsZW8DF1jE9yPr07z5KpXjVpd8MJJyZPNcqc6iUi3adFhBXaTQJuOCy2astoyaeIgkGx9UJ15oUmvcaCaXz7kYoJuKJhNIBMF6ftsQxqGyn5RK7pzgKseI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZfyDDHqz; arc=none smtp.client-ip=209.85.215.182
+	 To:Cc:Content-Type; b=b2DqjhPGkFhkKscfLnBkzSJFLd5Hzwi8yLtcw5vFKDWEGyvKJLluw3SQPlM0SxX9FIkFwtUT/1D3BnO97tbbDsgXt/8gH7xWpPJ/LUZAJ2Qt65IzPFzZCwpQOV5pBiQ4BDNc5OSGEltKR8VGjI5b54QU078+myx/hSNFKs9aIUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R8ha/thR; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8b519e438so27291a12.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 10:14:52 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-296a02b7104so86604a91.2
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 10:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707416092; x=1708020892; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707416177; x=1708020977; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q0sl79zOO5CGpFJ7tL5mm1ThR0aaYkO7LzBjcZ3883c=;
-        b=ZfyDDHqzlHcYGUZj6nx+oznoyit2fJj21dK337i7qRzhGIUXdk8SI6Tcmcg1bXI+l0
-         8shnJ8cNYtyo+eD6dKpwfow5Fl8lvgrvRNekWMPQQS9ifd/PBFSc2rK5g1oPE1zbgRCT
-         5So4CG0hQ0Wo+EjvLEICDNVo2kflQKmBiyx5mC4XOTIrU6eK1e/o5j38TF5BZvtORxXW
-         +9uuBcfaKKsBpSNqVxpRVmoRoQt3t7i72aoOk4ZyKUgpAuWJg48eSL2v16TlBSiiRh/Y
-         YL7f/HTdYOxRmsuNZloFV20Mho2AGcgA/Ir0KbWrczKN5zySpzrGLzxDbxaBYSA386D6
-         AhQg==
+        bh=ljpBnK+8wOzJ7+Xn5YzIBHCj5S2R/t4SlRbJ1rxOd9Q=;
+        b=R8ha/thRXgnZYRZqvDwA901UeJpr815YixZgqizS3i+mw3x7q5kK6vLf6KJalu+ox0
+         Bkbz62Rzll68jQ7UgMF/MShwrWCTPBT3zj1WytKQD5cobVbl8+qn/nM6IOXm1iawBHYi
+         Jn0UpJruue1MdbQHk+JYrgHYxiGLz25E+JqUKiaIc00LRlJUr9QBwj2AXQyl37QIXiB6
+         iGVXsrQ7kO+FfHWAk6n8GHW7J6cZq94Yl6pnDz2+I0qmS0aGVcS4cFJ06t5O2NufP4it
+         AwwPLg+JEIq+qeRMiVTji9FF2UozFEdiQnpz+O9mnTJjvRjJKVDs0Jq4+RPvHnS/Ea8l
+         r/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707416092; x=1708020892;
+        d=1e100.net; s=20230601; t=1707416177; x=1708020977;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q0sl79zOO5CGpFJ7tL5mm1ThR0aaYkO7LzBjcZ3883c=;
-        b=g47eJCaO+jJszrGf/z/J6NLAnOvF9ucgoy5O9EZL2+ytNcYicKPAVoj4RQWMsNnIMc
-         EJ/eZxdX6uvbME19JnSxj5w34nhLXoPmSBb2O8LvPX2dP0t+9BI3FypdB7SVWgh+6MUl
-         F5zrqIrbY3wYfzu97/8cof+LTmL5fTyRqdcJpjNq7xU7yOfgvRHf88eEKY7hJTakNluy
-         Ig1uzk0OQufaZQPIyCOl6ZXhRI6u/YNFaogoIR8UO4STp6xoQDisqg5D45n1QTWsYT+o
-         XF1vNf8gU90hckG0R2vC9OOZeYe+G0fLJo1luGYz2S4E1t7L2mCHWkqR7/NwjYZQOVix
-         e/6A==
-X-Gm-Message-State: AOJu0Yxxb8+y07hKdMd9mD7dLhkLHDl4DbLcKi+Rdx5SA+vbTI1wWqHs
-	ccXj3nqeYTx25xq2m2ck2dvjT5LDlrYOJ7yoH9AlKXzuka3bEAUdVnx2+6GeiuDsX3U9EK4+nD8
-	vhwQUPFPuUCYdLEAVKvQYhZr4PnA=
-X-Google-Smtp-Source: AGHT+IEhnuRwcKP301sdNI0p01YbcHZp4ZbGXYrUTNPd3Xb9pV5Z1ubBIso+MDfgQAv7apNqva0X8qYw3AxC1d0YgYw=
-X-Received: by 2002:a17:90a:e508:b0:296:cca0:ee34 with SMTP id
- t8-20020a17090ae50800b00296cca0ee34mr30332pjy.31.1707416092085; Thu, 08 Feb
- 2024 10:14:52 -0800 (PST)
+        bh=ljpBnK+8wOzJ7+Xn5YzIBHCj5S2R/t4SlRbJ1rxOd9Q=;
+        b=LK1PIZA1E6eP30Hy2aYoeAg+M0rPW1TuadoiCcbvOCPljbspB/EkWye9P48ewJmv6y
+         PpXBwE3VpXMeifD0tZJFhYbvMLhYBIxbnEOs0sSqWhdYondVHpbF3ZwoyhE/D+ZAV1U0
+         WYUVQ6jGzN/0KBjUuAEOfmryikk/hZJj3YHvJEB8It5LuOtfpsxzI+MKGjGc9GfEhuNP
+         y8iwrv9lIUBELhupjj4IOtR6GxG+WkeF2HQqIRRz9/Ezh1pzLwvDgUNw4vWMFkJURGhA
+         NErKdJTuyTny000P1juhxdgQ34d5Dukz2eev8MYGMmEKxR9xbIzwXDWTGMJBmzh/3Xi6
+         V0xQ==
+X-Gm-Message-State: AOJu0YwBy3/hjSpz2UHQ2NEutnj7/NmQE6QAwfvB1M2yxmjF8NfLgwQQ
+	Cyui6KtTp0dfcOBeO8IAOF6LJUhqW1HQQvw1VHcl+/k1tK1XUG5UuL0mCbgYENlcGV8UNx8xlCE
+	0oHopXukOHW1S+dRIVJQluiSXhjA=
+X-Google-Smtp-Source: AGHT+IEruEjlYUY5Sd25qriV9Hc1A/32+Nqy+mQedfdwn26Q0AM6HrhIiPhbsPwcXoFmJFBrC3w0lKaLSX3m246FCVc=
+X-Received: by 2002:a17:90b:117:b0:296:2035:a3c2 with SMTP id
+ p23-20020a17090b011700b002962035a3c2mr22913pjz.36.1707416177005; Thu, 08 Feb
+ 2024 10:16:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208063015.3893418-1-yonghong.song@linux.dev>
-In-Reply-To: <20240208063015.3893418-1-yonghong.song@linux.dev>
+References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
+ <20240206220441.38311-13-alexei.starovoitov@gmail.com> <CAEf4BzbAj=zU+iAc6KFsCscKKYZBKmCtNvtW1e9u=TJ+LpUG7A@mail.gmail.com>
+ <CAADnVQL9ctDPTOLMHp=4EURUODrReCk5KuRVZN1stwhuwP1t_g@mail.gmail.com>
+In-Reply-To: <CAADnVQL9ctDPTOLMHp=4EURUODrReCk5KuRVZN1stwhuwP1t_g@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Feb 2024 10:14:40 -0800
-Message-ID: <CAEf4BzbV6oEn80DyNwHqz6SH=zE1M5fXSako4x_O-N8O7PV+1A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Fix test verif_scale_strobemeta_subprogs
- failure due to llvm19
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
+Date: Thu, 8 Feb 2024 10:16:05 -0800
+Message-ID: <CAEf4BzYMoe9ATtEBDwiTAn1E99R0yDCVF-ixKRu4h95mb=5JUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 12/16] libbpf: Allow specifying 64-bit integers
+ in map BTF.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, linux-mm <linux-mm@kvack.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 7, 2024 at 10:30=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Wed, Feb 7, 2024 at 5:59=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> With latest llvm19, I hit the following selftest failures with
+> On Wed, Feb 7, 2024 at 5:17=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Feb 6, 2024 at 2:05=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > __uint() macro that is used to specify map attributes like:
+> > >   __uint(type, BPF_MAP_TYPE_ARRAY);
+> > >   __uint(map_flags, BPF_F_MMAPABLE);
+> > > is limited to 32-bit, since BTF_KIND_ARRAY has u32 "number of element=
+s" field.
+> > >
+> > > Introduce __ulong() macro that allows specifying values bigger than 3=
+2-bit.
+> > > In map definition "map_extra" is the only u64 field.
+> > >
+> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/bpf_helpers.h |  1 +
+> > >  tools/lib/bpf/libbpf.c      | 44 ++++++++++++++++++++++++++++++++++-=
+--
+> > >  2 files changed, 42 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.=
+h
+> > > index 9c777c21da28..fb909fc6866d 100644
+> > > --- a/tools/lib/bpf/bpf_helpers.h
+> > > +++ b/tools/lib/bpf/bpf_helpers.h
+> > > @@ -13,6 +13,7 @@
+> > >  #define __uint(name, val) int (*name)[val]
+> > >  #define __type(name, val) typeof(val) *name
+> > >  #define __array(name, val) typeof(val) *name[]
+> > > +#define __ulong(name, val) enum name##__enum { name##__value =3D val=
+ } name
+> >
+> > Can you try using __ulong() twice in the same file? enum type and
+> > value names have global visibility, so I suspect second use with the
+> > same field name would cause compilation error
 >
->   $ ./test_progs -j
->   libbpf: prog 'on_event': BPF program load failed: Permission denied
->   libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
->   combined stack size of 4 calls is 544. Too large
->   verification time 1344153 usec
->   stack depth 24+440+0+32
->   processed 51008 insns (limit 1000000) max_states_per_insn 19 total_stat=
-es 1467 peak_states 303 mark_read 146
->   -- END PROG LOAD LOG --
->   libbpf: prog 'on_event': failed to load: -13
->   libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
->   scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
->   #498     verif_scale_strobemeta_subprogs:FAIL
+> Good point will change it to:
 >
-> The verifier complains too big of the combined stack size (544 bytes) whi=
-ch
-> exceeds the maximum stack limit 512. This is a regression from llvm19 ([1=
-]).
->
-> In the above error log, the original stack depth is 24+440+0+32.
-> To satisfy interpreter's need, in verifier the stack depth is adjusted to
-> 32+448+32+32=3D544 which exceeds 512, hence the error. The same adjusted
-> stack size is also used for jit case.
->
-> But the jitted codes could use smaller stack size.
->
->   $ egrep -r stack_depth | grep round_up
->   arm64/net/bpf_jit_comp.c:       ctx->stack_size =3D round_up(prog->aux-=
->stack_depth, 16);
->   loongarch/net/bpf_jit.c:        bpf_stack_adjust =3D round_up(ctx->prog=
-->aux->stack_depth, 16);
->   powerpc/net/bpf_jit_comp.c:     cgctx.stack_size =3D round_up(fp->aux->=
-stack_depth, 16);
->   riscv/net/bpf_jit_comp32.c:             round_up(ctx->prog->aux->stack_=
-depth, STACK_ALIGN);
->   riscv/net/bpf_jit_comp64.c:     bpf_stack_adjust =3D round_up(ctx->prog=
-->aux->stack_depth, 16);
->   s390/net/bpf_jit_comp.c:        u32 stack_depth =3D round_up(fp->aux->s=
-tack_depth, 8);
->   sparc/net/bpf_jit_comp_64.c:            stack_needed +=3D round_up(stac=
-k_depth, 16);
->   x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xEC, round_up(=
-stack_depth, 8));
->   x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
->   x86/net/bpf_jit_comp.c:                     round_up(stack_depth, 8));
->   x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
->   x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xC4, round_up(=
-stack_depth, 8));
->
-> In the above, STACK_ALIGN in riscv/net/bpf_jit_comp32.c is defined as 16.
-> So stack is aligned in either 8 or 16, x86/s390 having 8-byte stack align=
-ment and
-> the rest having 16-byte alignment.
->
-> This patch calculates total stack depth based on 16-byte alignment if jit=
- is requested.
-> For the above failing case, the new stack size will be 32+448+0+32=3D512 =
-and no verification
-> failure. llvm19 regression will be discussed separately in llvm upstream.
->
-> The verifier change caused three test failures as these tests compared me=
-ssages
-> with stack size. More specifically,
->   - test_global_funcs/global_func1, adjusted to interpreter only since ve=
-rification will
->     succeed in jit mode. A new test will be added for jit mode later.
->   - async_stack_depth/{pseudo_call_check, async_call_root_check}, adjuste=
-d based on
->     new stack size calculation.
->
->   [1] https://lore.kernel.org/bpf/32bde0f0-1881-46c9-931a-673be566c61d@li=
-nux.dev/
->
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/bpf/verifier.c                          | 18 +++++++++++++-----
->  .../bpf/prog_tests/test_global_funcs.c         |  5 ++++-
->  .../selftests/bpf/progs/async_stack_depth.c    |  4 ++--
->  3 files changed, 19 insertions(+), 8 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ddaf09db1175..6441a540904b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5812,6 +5812,17 @@ static int check_ptr_alignment(struct bpf_verifier=
-_env *env,
->                                            strict);
->  }
->
-> +static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
-depth)
-> +{
-> +       if (env->prog->jit_requested)
-> +               return round_up(stack_depth, 16);
-> +
-> +       /* round up to 32-bytes, since this is granularity
-> +        * of interpreter stack size
-> +        */
-> +       return round_up(max_t(u32, stack_depth, 1), 32);
-> +}
-> +
->  /* starting from main bpf function walk all instructions of the function
->   * and recursively walk all callees that given function can call.
->   * Ignore jump and exit insns.
-> @@ -5855,10 +5866,7 @@ static int check_max_stack_depth_subprog(struct bp=
-f_verifier_env *env, int idx)
->                         depth);
->                 return -EACCES;
->         }
-> -       /* round up to 32-bytes, since this is granularity
-> -        * of interpreter stack size
-> -        */
-> -       depth +=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
-> +       depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
->         if (depth > MAX_BPF_STACK) {
->                 verbose(env, "combined stack size of %d calls is %d. Too =
-large\n",
->                         frame + 1, depth);
-> @@ -5952,7 +5960,7 @@ static int check_max_stack_depth_subprog(struct bpf=
-_verifier_env *env, int idx)
->          */
->         if (frame =3D=3D 0)
->                 return 0;
-> -       depth -=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
-> +       depth -=3D round_up_stack_depth(env, subprog[idx].stack_depth);
->         frame--;
->         i =3D ret_insn[frame];
->         idx =3D ret_prog[frame];
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b=
-/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> index e905cbaf6b3d..a3a41680b38e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> @@ -138,7 +138,10 @@ static void subtest_ctx_arg_rewrite(void)
->
->  void test_test_global_funcs(void)
->  {
-> -       RUN_TESTS(test_global_func1);
-> +       if (!env.jit_enabled) {
-> +               RUN_TESTS(test_global_func1);
-> +       }
-> +
->         RUN_TESTS(test_global_func2);
->         RUN_TESTS(test_global_func3);
->         RUN_TESTS(test_global_func4);
-> diff --git a/tools/testing/selftests/bpf/progs/async_stack_depth.c b/tool=
-s/testing/selftests/bpf/progs/async_stack_depth.c
-> index 3517c0e01206..a03f313b7482 100644
-> --- a/tools/testing/selftests/bpf/progs/async_stack_depth.c
-> +++ b/tools/testing/selftests/bpf/progs/async_stack_depth.c
-> @@ -30,7 +30,7 @@ static int bad_timer_cb(void *map, int *key, struct bpf=
-_timer *timer)
->  }
->
->  SEC("tc")
-> -__failure __msg("combined stack size of 2 calls is 576. Too large")
-> +__failure __msg("combined stack size of 2 calls is 544. Too large")
+> #define __ulong(name, val) enum { __PASTE(__unique_value,__COUNTER__)
+> =3D val } name
 
-maybe it's better to adjust existing test to fail in both JIT and !JIT
-modes, just not expect exact size in message. I.e., truncate the
-message to just "combined stack size of 2 calls is") and be done with
-it?
-
->  int pseudo_call_check(struct __sk_buff *ctx)
->  {
->         struct hmap_elem *elem;
-> @@ -45,7 +45,7 @@ int pseudo_call_check(struct __sk_buff *ctx)
->  }
->
->  SEC("tc")
-> -__failure __msg("combined stack size of 2 calls is 608. Too large")
-> +__failure __msg("combined stack size of 2 calls is 576. Too large")
->  int async_call_root_check(struct __sk_buff *ctx)
->  {
->         struct hmap_elem *elem;
-> --
-> 2.39.3
->
+yep, that should work. We still can have name collisions across
+multiple files, but it doesn't matter when linking two .bpf.o files.
 
