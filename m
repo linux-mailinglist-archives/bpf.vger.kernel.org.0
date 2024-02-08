@@ -1,331 +1,197 @@
-Return-Path: <bpf+bounces-21497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D23F084DF12
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 12:02:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCBC184DF79
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 12:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46DA61F272BD
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 11:02:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B12241C26B3D
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 11:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B027E6F090;
-	Thu,  8 Feb 2024 10:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DA46F075;
+	Thu,  8 Feb 2024 11:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jh7w1I82"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="RpawQ/8o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC4F763E0
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 10:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBE96F09C
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 11:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707389678; cv=none; b=H53QkLZ7yXPZ5vDvLRxY6jhmMLUxXbt5O5ZUzLJG9Q5LnvynUhfxPExRHy01+2HrlbkSkBXPuyHD8CoO+P4sJSdFAYf1Qpd/KIo4Ppo/2UjLYIt9bOkKs/H5Om+Wfkb5JMKjGir2kG4enfL9jY0NT8ABrgV0z71eKIkPAkPGn2s=
+	t=1707390680; cv=none; b=a1Z6Sv085QJvbw6pJhtJN2iYOH8rrDA2y3H7+fDZ0GXTX8wtyCyAI4piDIMv6XxTt4Ua0E9lK4WaOp3CWg2HLvRskhnmoCSmU/J+DDI4Iynp4IXRE9stiZCV4EEd6RCunObuTKK1jEEOmp3O2Kf2HMSM0Zu5Yf7hn1jSNxGs9NM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707389678; c=relaxed/simple;
-	bh=t4jjhQCQU5K2RcQenB+fy1X5o6Y7FBupo8tnX6DuXkk=;
+	s=arc-20240116; t=1707390680; c=relaxed/simple;
+	bh=SfsTIEYF5nz9Cb0cxRhXXrzdoVThlSmayIKOjaXCU0k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=khF14qX3fXaQz5cnLczrZnqDReENFgU04pMOWyyXs44XYkRKX7xfV146FaS1UzqLfSuBdZQhSl/RKnC0j3G9Lts+/oPD8sl94Qt5xNmaHMo/kDwDCawwXU4MidSW8Cde1jPDE2V7WWAnXvcHHktgmD2aXCqqpkbNE55ca33N+tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jh7w1I82; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b4b121e28so834249f8f.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 02:54:35 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=soMbm0Ge6EfkW3dZ99Jr85pmuDvBKsA3/Nq8HriIiu2KBvOs6dqY4Smz6lSi7Na+/uP8yqRN2+PSsPmekGT96Ejzz1HY/9b2Fo95AlNDoaOMeOrsIGOn4R24wLyf4GbasFr0pFOhzRD2dv+YfTmDCs1nBKlrYxy5YRbhvhLFdV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=RpawQ/8o; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so1178402f8f.1
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 03:11:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707389674; x=1707994474; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S/kb+gyU3Rtfx6Hm+9IXxrBKwcOt1NhZJ++2tQxBh8Y=;
-        b=Jh7w1I82iPCbA9wvE0wqHlimKp5H6YkSqa/l7xHuvSDUxsqsFR7AsGBeAyqW3qPo2B
-         XzIk118w0bK25v1u/uuaKfZExtsKH2Y3r0Pjvmss4b41loMxqX04Tsffszy+ATXaaDYF
-         W3oYdDmLnLb9inMSlBlnQBr210U+l88EJpUNpLOfVEjQMdIbWIBonweAHsEYqbGvyhQm
-         8ARNT4CRVDxG7UQNM0WMsPSevcWR6ZtRl9b3Bve0dWYrdMXZA4elIcvxmW3vFi2270C2
-         DksNz5lz9t6OuzAqBHRTmObdRNR4WrDgaRFy1iMoQFYYVA2Fdz5WFwCaSxQJ1YMWM7bY
-         xkPA==
+        d=isovalent.com; s=google; t=1707390677; x=1707995477; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uLungcIawGR5RKZ1xMpgR9j3eOWGEPnwLuycn02votM=;
+        b=RpawQ/8oT8gls/l3m+ceJKysw+6JB9qLq27xuNPKInyfFMyQA7a51OUYasfKZViDEK
+         OFUT1Cci5OWxs64oRbRg9+xsmrFDhIqim4MFoGyvHKLPhzXg45sZ/Vw3pS9InLTYcrhG
+         1rKBzrVPv+02mRaU3FScNsoSBu3SS9c2fHy+vJaA92bifZfUj3L/krhvjovNRkBRX3hQ
+         Q/WjU55SQmwEAS3f9dZBeaBy5nHLZ6ov+LnXjO6ZjzZvOXduDl8PJZnYiImwpIAipCiP
+         wBLOsynW/yXJ+0jhDaL9S3BqG6fWpHP6ZDks4OB9NlrWxG0f4lpCDwpgNBAC8CFtW5Dv
+         lHaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707389674; x=1707994474;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S/kb+gyU3Rtfx6Hm+9IXxrBKwcOt1NhZJ++2tQxBh8Y=;
-        b=Jgui1S50j4iv31/iJpZ593zC9IY+G2xdoPuCQSTVCf0+g+WYcM+aT89ukX43nOYKtT
-         DAyHdwCMSJQzPVNV74lsJlrUafhTU/KuEmFnBQ3Kbj4E+iyUJ546NAnVtlMeinZ604O1
-         6m7yxUk4TdvjL37NyPX3J7VHGxcDDe5muE7mhpdKLA7EymiiswFOu/d8gTvVn8np69jN
-         a0q+JNzO0W5r24ByXzlwiJNi4egyLfZwc6A4T0Ai13Utv9y8YoGaW2mixdY0Wxi7Nno7
-         Met3qeM6SJNjJma8SF8uWrbjXJ4uQNpwI2QOGU6JEDiRSyLDxyGPrST/7YhOu7jm3kPK
-         8fRA==
-X-Forwarded-Encrypted: i=1; AJvYcCUbHJiqhp2QdQdQ+ZVZElkz3eUS0Gdxg8Ps/UE6px8w9VRB6Iiq+EX4+FXA52Yd1XQIndo4hONyMedIfVlDtv4pEiFt
-X-Gm-Message-State: AOJu0Yw4yTkJ2X7WelcGvwbFCEHuz8ttKngv1h+NztpM4Y3MRU4hMIWW
-	iSxAnwbvRCGmelCKeX1dMgZK5Al3knmSb0aPcc/3yknaNhzBfiRA9frMua/VHw==
-X-Google-Smtp-Source: AGHT+IF+IJpnfbvbF0ih1s0lb4YYEYsUqwWNm9pfTy93m/cXmHg332cMznQi4soNtyqci/EWTd0Tpg==
-X-Received: by 2002:a05:6000:110b:b0:33b:4f08:ac9e with SMTP id z11-20020a056000110b00b0033b4f08ac9emr3510758wrw.34.1707389673485;
-        Thu, 08 Feb 2024 02:54:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWuwHeFPV3uIlxqCtv9KzsVgdLmeMJHm3Ze9vu5+QmqRFygR7ZCD03KV7KqDAq8m7x7sxwo3BHEvysqkMFRYouCWqwZkw3b0Gg2bv8zdGiVG6SQXi7lKback5OGEPJOG/+rPklOk7EHN4f25fAqLffIKhYm3R247FJxDfJSiE/VuLtuPwF4rjVkdvfLihUDod9wJ7Gfi1njCJx5dPfLtfSFdRB6BDCuYKF4HvSotYt87aOXLhwZ/3j3q91rpXl4/zkBrmYnzcNng2ro85Rl0CSK+PhD5y7B4z+Ev1LXD0pSIeOZLWTGuf4NBWfK0DiW2Luj0wWp4JXjraAhinaAJV8ffhCY93fgViwxZVM/rkhj6CX7XpLUxT4yuYbIEKdRZClvgHRk5t6lJbvxgWkwSxUmlPXnNPfij1JkWpjIGyoCECASIpQ8OhVs5FsQBQsvAi83NCZ0nGqbvqZPkYd7EhLRHkfG4NlnDPUOabhzZ1zLaOYMnzBxUV0jr2kMt0TckKH7eWf5da9Vp/eFNHY5Wpo=
-Received: from elver.google.com ([2a00:79e0:9c:201:d242:69f5:cb36:120])
-        by smtp.gmail.com with ESMTPSA id c13-20020a056000184d00b0033b07f428b6sm3382401wri.0.2024.02.08.02.54.32
+        d=1e100.net; s=20230601; t=1707390677; x=1707995477;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uLungcIawGR5RKZ1xMpgR9j3eOWGEPnwLuycn02votM=;
+        b=KQ3KDdfjU7JJYEz56+H9Y2ZF34lcR3FyNGXBoT91alFw8vU/54KwpIRUO560rMY1bZ
+         p+OmmWX8ynLoGKEr/o80hPqBXnBZLR/my2/JKl/8tkgNrGWcz8p3Itid6X+EE8fJZQgR
+         cnhsMtAhEAFlfCMplfWj4y0w2FBvjH22fFMiMQO8D71W5yGcncIIvnZvPe/FA/Rmt2lS
+         Kv7ekMajVzO++Vwa7HXARAwerZVaHCtXaGZzgZkYJuX/gWswqVdwM+AT1IH+48upLPza
+         rEDga7vNTKyduc16raQZSzoelqXA9G5Qf4McSddXlQ2iU00IJcEfcYkKomfArV2x03MH
+         4RaA==
+X-Forwarded-Encrypted: i=1; AJvYcCWbqlfMm/IdzQQpLppoSypX2iKBg3JlkN4pyZ2jbvZhI5hybCPtbJzNS0z+Ca6Hy68jXBUcVARiPJlyHEQEEQc0dsd6
+X-Gm-Message-State: AOJu0YxXxFHlLwlaTXQYIDqBmeSwpgiv7Hk9w2CFWUS93eLaesCPaYer
+	pNQIEN6tD9WPHbPC9NuMy8KJfDNasPeQMGAY1ncI5fPj/S26IhSH+tOud4ryY/yZEJVm+bHvHBo
+	Qxro=
+X-Google-Smtp-Source: AGHT+IHLglhKgGocjyASmxuHjCTXorDnJQviSvZscEK+ECro+sNP403bwwSTnK3jlrz/BP6zJBxqmQ==
+X-Received: by 2002:a5d:4523:0:b0:33b:1ac8:aebe with SMTP id j3-20020a5d4523000000b0033b1ac8aebemr6662615wra.44.1707390676816;
+        Thu, 08 Feb 2024 03:11:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXHzJunG4+ST11GIvcMB8h3tle36jsYY7zgo/0qCBKRzD55dhnillPU8IXnK8FKdmWEK8JKx3zGXb2FdjWvZDqHJ3jV+v/wF6RQCYALFkgULtbvUFMuUQLR74c1RYCDgqsitzevdpgq5Q5cDCP9PKUC48y2HvkmIVgzoU+sweCCxpojhsOF4z4GGh3Xmm/ESnDRAs5XRA9zHBQ4BDASYoHjEqvfKQvSSjDReEGfNyItJCtD/OqDk1RRrlBwLAiCZEWpBBBeMeprzG4EnIn2UbBbEl1OQtEeMLOfz03t0Es7LI8ceymmW2w=
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id c14-20020adfe70e000000b0033b4b4a216asm3367529wrm.14.2024.02.08.03.11.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 02:54:32 -0800 (PST)
-Date: Thu, 8 Feb 2024 11:54:27 +0100
-From: Marco Elver <elver@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>
+        Thu, 08 Feb 2024 03:11:16 -0800 (PST)
+Date: Thu, 8 Feb 2024 11:05:10 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] bpf: Allow compiler to inline most of
- bpf_local_storage_lookup()
-Message-ID: <ZcSy49GKt3EWIdbK@elver.google.com>
-References: <20240207122626.3508658-1-elver@google.com>
- <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
- <CANpmjNMGW3zTGOn_69=+KjE4Txik8aQBbdefeo0GuVOkqjgV6Q@mail.gmail.com>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Stanislav Fomichev <sdf@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf-next 3/9] bpf: expose how xlated insns map to
+ jitted insns
+Message-ID: <ZcS1ZruKKZ1euzlb@zh-lab-node-5>
+References: <20240202162813.4184616-1-aspsk@isovalent.com>
+ <20240202162813.4184616-4-aspsk@isovalent.com>
+ <CAADnVQLnk=UyKBkRAC1tNkiaF7C4+FG7V-b2xrR3oa_E4+QX7Q@mail.gmail.com>
+ <ZcIDqnXFjsWYyu1G@zh-lab-node-5>
+ <CAADnVQLfidjTWa4+kyRH-qC29gbGvFsRJHu6smcaL0Yk0HqgmA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANpmjNMGW3zTGOn_69=+KjE4Txik8aQBbdefeo0GuVOkqjgV6Q@mail.gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLfidjTWa4+kyRH-qC29gbGvFsRJHu6smcaL0Yk0HqgmA@mail.gmail.com>
 
-On Thu, Feb 08, 2024 at 08:37AM +0100, Marco Elver wrote:
-> On Thu, 8 Feb 2024 at 00:58, Yonghong Song <yonghong.song@linux.dev> wrote:
-> > On 2/7/24 4:26 AM, Marco Elver wrote:
-> > > In various performance profiles of kernels with BPF programs attached,
-> > > bpf_local_storage_lookup() appears as a significant portion of CPU
-> > > cycles spent. To enable the compiler generate more optimal code, turn
-> > > bpf_local_storage_lookup() into a static inline function, where only the
-> > > cache insertion code path is outlined
+On Tue, Feb 06, 2024 at 06:26:12PM -0800, Alexei Starovoitov wrote:
+> On Tue, Feb 6, 2024 at 2:08 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > On Mon, Feb 05, 2024 at 05:09:51PM -0800, Alexei Starovoitov wrote:
+> > > On Fri, Feb 2, 2024 at 8:34 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> > > >
+> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > index 4def3dde35f6..bdd6be718e82 100644
+> > > > --- a/include/linux/bpf.h
+> > > > +++ b/include/linux/bpf.h
+> > > > @@ -1524,6 +1524,13 @@ struct bpf_prog_aux {
+> > > >         };
+> > > >         /* an array of original indexes for all xlated instructions */
+> > > >         u32 *orig_idx;
+> > > > +       /* for every xlated instruction point to all generated jited
+> > > > +        * instructions, if allocated
+> > > > +        */
+> > > > +       struct {
+> > > > +               u32 off;        /* local offset in the jitted code */
+> > > > +               u32 len;        /* the total len of generated jit code */
+> > > > +       } *xlated_to_jit;
 > > >
-> > > Notably, outlining cache insertion helps avoid bloating callers by
-> > > duplicating setting up calls to raw_spin_{lock,unlock}_irqsave() (on
-> > > architectures which do not inline spin_lock/unlock, such as x86), which
-> > > would cause the compiler produce worse code by deciding to outline
-> > > otherwise inlinable functions. The call overhead is neutral, because we
-> > > make 2 calls either way: either calling raw_spin_lock_irqsave() and
-> > > raw_spin_unlock_irqsave(); or call __bpf_local_storage_insert_cache(),
-> > > which calls raw_spin_lock_irqsave(), followed by a tail-call to
-> > > raw_spin_unlock_irqsave() where the compiler can perform TCO and (in
-> > > optimized uninstrumented builds) turns it into a plain jump. The call to
-> > > __bpf_local_storage_insert_cache() can be elided entirely if
-> > > cacheit_lockit is a false constant expression.
+> > > Simply put Nack to this approach.
 > > >
-> > > Based on results from './benchs/run_bench_local_storage.sh' (21 trials,
-> > > reboot between each trial; x86 defconfig + BPF, clang 16) this produces
-> > > improvements in throughput and latency in the majority of cases, with an
-> > > average (geomean) improvement of 8%:
-> [...]
-> > >   include/linux/bpf_local_storage.h             | 30 ++++++++++-
-> > >   kernel/bpf/bpf_local_storage.c                | 52 +++++--------------
-> > >   .../bpf/prog_tests/task_local_storage.c       |  6 ---
-> > >   .../selftests/bpf/progs/cgrp_ls_recursion.c   | 26 ----------
-> > >   .../selftests/bpf/progs/task_ls_recursion.c   | 17 ------
-> > >   5 files changed, 41 insertions(+), 90 deletions(-)
+> > > Patches 2 and 3 add an extreme amount of memory overhead.
 > > >
-> > > diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> > > index 173ec7f43ed1..dcddb0aef7d8 100644
-> > > --- a/include/linux/bpf_local_storage.h
-> > > +++ b/include/linux/bpf_local_storage.h
-> > > @@ -129,10 +129,36 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
-> > >                           struct bpf_local_storage_cache *cache,
-> > >                           bool bpf_ma);
+> > > As we discussed during office hours we need a "pointer to insn" concept
+> > > aka "index on insn".
+> > > The verifier would need to track that such things exist and adjust
+> > > indices of insns when patching affects those indices.
 > > >
-> > > -struct bpf_local_storage_data *
-> > > +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
-> > > +                                   struct bpf_local_storage_map *smap,
-> > > +                                   struct bpf_local_storage_elem *selem);
-> > > +/* If cacheit_lockit is false, this lookup function is lockless */
-> > > +static inline struct bpf_local_storage_data *
-> > >   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
-> > >                        struct bpf_local_storage_map *smap,
-> > > -                      bool cacheit_lockit);
-> > > +                      bool cacheit_lockit)
-> > > +{
-> > > +     struct bpf_local_storage_data *sdata;
-> > > +     struct bpf_local_storage_elem *selem;
-> > > +
-> > > +     /* Fast path (cache hit) */
-> > > +     sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
-> > > +                                   bpf_rcu_lock_held());
-> > > +     if (sdata && rcu_access_pointer(sdata->smap) == smap)
-> > > +             return sdata;
+> > > For every static branch there will be one such "pointer to insn".
+> > > Different algorithms can be used to keep them correct.
+> > > The simplest 'lets iterate over all such pointers and update them'
+> > > during patch_insn() may even be ok to start.
+> > >
+> > > Such "pointer to insn" won't add any memory overhead.
+> > > When patch+jit is done all such "pointer to insn" are fixed value.
 > >
-> > I think we should focus on fast path (your v1 patch)
-> > and I suppose most production environments
-> > want to hit fast path in most times. In your production environment did
-> > you see more than 16 local storage maps per entity (task/sk/inode)?
+> > Ok, thanks for looking, this makes sense.
 > 
-> I think having more than 16 local storage maps isn't entirely unlikely
-> as eBPF usage grows. But at the moment, it should be rare.
-> 
-> > In the fast path, the memory accesses are
-> >    two from local_storage->cache[smap->cache_idx] and
-> >    one from sdata->smap
-> >
-> >
-> > > +
-> > > +     /* Slow path (cache miss) */
-> > > +     hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
-> > > +                               rcu_read_lock_trace_held())
-> > > +             if (rcu_access_pointer(SDATA(selem)->smap) == smap)
-> > > +                     break;
-> >
-> > But if we reach slow path here which means we have more than 16 local
-> > storage maps, then traversing the list and getting SDATA(selem)->smap
-> > will be very expensive, in addition to memory accesses in fast path.
-> >
-> > I suppose here we mostly care about socket local storage since it is
-> > totally possible for a production workload to have millions of sockets.
-> > To improve performance, fast path should hit in most cases.
-> > If there are too many sk local storage maps, some kind of sharing
-> > can be done so multiple applications might be using a single sk
-> > local storage.
-> >
-> > Your above inlining/outlining analysis also show how tricky it is
-> > for compilation optimization. Without profiling, it is totally
-> > possible that compiler might do optimization differently in
-> > the future.
-> 
-> Sure, but it's usually the case that we have to help the compiler a
-> little to produce more optimal code - if the compiler becomes stupid
-> in future, we need either fix the compiler or help it some more.
-> 
-> > So here is my suggestion, let us do inlining
-> > for fast path and focus on performance of fast path.
-> 
-> The slow-path (iterate list w/o cache insertion) is still relatively
-> small (it's a pointer-chasing loop and a compare), and I decided that
-> it can be justified inlining it. Martin asked in v1 why there were
-> slowdowns above 16 local maps, and I analyzed, and concluded that
-> inlining most is needed to fix and does not hurt performance: in fact,
-> the current version is better than v1 in all cases (even for 16 maps
-> or below).
-> 
-> Let me know which version you prefer, and I'll change it. However,
-> based on the results, I would prefer the current version.
+> Before jumping into coding I think it would be good to discuss
+> the design first.
+> I'm thinking such "address of insn" will be similar to
+> existing "address of subprog",
+> which is encoded in ld_imm64 as BPF_PSEUDO_FUNC.
+> "address of insn" would be a bit more involved to track
+> during JIT and likely trivial during insn patching,
+> since we're already doing imm adjustment for pseudo_func.
+> So that part of design is straightforward.
+> Implementation in the kernel and libbpf can copy paste from pseudo_func too.
 
-FTR, these were the results going from v1 (before) -> v2 (after):
+To implement the "primitive version" of static branches, where the
+only API is `static_branch_update(xlated off, on/off)` the only
+requirement is to build `xlated -> jitted` mapping (which is done
+in JIT, after the verification). This can be done in a simplified
+version of this patch, without xlated->orig mapping and with
+xlated->jit mapping only done to gotol_or_nop instructions.
 
-+---- Local Storage ----------------------
-|
-| + num_maps: 1
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 38.593 M ops/s       | 39.068 M ops/s (+1.2%)
-|   +- hits latency                       | 25.913 ns/op         | 25.598 ns/op   (-1.2%)
-|   +- important_hits throughput          | 38.593 M ops/s       | 39.068 M ops/s (+1.2%)
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 44.406 M ops/s       | 44.926 M ops/s (+1.2%)
-|   +- hits latency                       | 22.521 ns/op         | 22.259 ns/op   (-1.2%)
-|   +- important_hits throughput          | 44.406 M ops/s       | 44.926 M ops/s (+1.2%)
-|
-| + num_maps: 10
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 37.583 M ops/s       | 38.099 M ops/s (+1.4%)
-|   +- hits latency                       | 26.609 ns/op         | 26.248 ns/op   (-1.4%)
-|   +- important_hits throughput          | 3.758 M ops/s        | 3.810 M ops/s  (+1.4%)
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 40.698 M ops/s       | 41.145 M ops/s (+1.1%)
-|   +- hits latency                       | 24.573 ns/op         | 24.307 ns/op   (-1.1%)
-|   +- important_hits throughput          | 14.535 M ops/s       | 14.695 M ops/s (+1.1%)
-|
-| + num_maps: 16
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 38.061 M ops/s       | 38.341 M ops/s (  ~  )
-|   +- hits latency                       | 26.275 ns/op         | 26.083 ns/op   (  ~  )
-|   +- important_hits throughput          | 2.379 M ops/s        | 2.396 M ops/s  (  ~  )
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 40.890 M ops/s       | 41.338 M ops/s (+1.1%)
-|   +- hits latency                       | 24.458 ns/op         | 24.193 ns/op   (-1.1%)
-|   +- important_hits throughput          | 13.010 M ops/s       | 13.153 M ops/s (+1.1%)
-|
-| + num_maps: 17
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 31.799 M ops/s       | 32.756 M ops/s (+3.0%)
-|   +- hits latency                       | 31.448 ns/op         | 30.530 ns/op   (-2.9%)
-|   +- important_hits throughput          | 1.873 M ops/s        | 1.929 M ops/s  (+3.0%)
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 35.284 M ops/s       | 36.110 M ops/s (+2.3%)
-|   +- hits latency                       | 28.343 ns/op         | 27.697 ns/op   (-2.3%)
-|   +- important_hits throughput          | 10.742 M ops/s       | 10.993 M ops/s (+2.3%)
-|
-| + num_maps: 24
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 17.947 M ops/s       | 19.937 M ops/s (+11.1%)
-|   +- hits latency                       | 55.725 ns/op         | 50.166 ns/op   (-10.0%)
-|   +- important_hits throughput          | 0.748 M ops/s        | 0.831 M ops/s  (+11.1%)
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 21.379 M ops/s       | 23.332 M ops/s (+9.1%)
-|   +- hits latency                       | 46.775 ns/op         | 42.865 ns/op   (-8.4%)
-|   +- important_hits throughput          | 6.014 M ops/s        | 6.564 M ops/s  (+9.1%)
-|
-| + num_maps: 32
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 13.279 M ops/s       | 14.626 M ops/s (+10.1%)
-|   +- hits latency                       | 75.317 ns/op         | 68.381 ns/op   (-9.2%)
-|   +- important_hits throughput          | 0.416 M ops/s        | 0.458 M ops/s  (+10.2%)
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 16.444 M ops/s       | 17.906 M ops/s (+8.9%)
-|   +- hits latency                       | 60.816 ns/op         | 55.865 ns/op   (-8.1%)
-|   +- important_hits throughput          | 4.590 M ops/s        | 4.998 M ops/s  (+8.9%)
-|
-| + num_maps: 100
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 4.912 M ops/s        | 5.528 M ops/s  (+12.5%)
-|   +- hits latency                       | 207.291 ns/op        | 183.059 ns/op  (-11.7%)
-|   +- important_hits throughput          | 0.049 M ops/s        | 0.055 M ops/s  (+12.7%)
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 6.039 M ops/s        | 6.498 M ops/s  (+7.6%)
-|   +- hits latency                       | 167.325 ns/op        | 152.877 ns/op  (-8.6%)
-|   +- important_hits throughput          | 1.577 M ops/s        | 1.697 M ops/s  (+7.6%)
-|
-| + num_maps: 1000
-| :                                         <before>             | <after>
-| +-+ local_storage cache sequential get  +----------------------+----------------------
-|   +- hits throughput                    | 0.342 M ops/s        | 0.354 M ops/s  (+3.6%)
-|   +- hits latency                       | 2930.550 ns/op       | 2827.139 ns/op (-3.5%)
-|   +- important_hits throughput          | 0.000 M ops/s        | 0.000 M ops/s  (  ~  )
-| :
-| :                                         <before>             | <after>
-| +-+ local_storage cache interleaved get +----------------------+----------------------
-|   +- hits throughput                    | 0.413 M ops/s        | 0.403 M ops/s  (-2.5%)
-|   +- hits latency                       | 2427.830 ns/op       | 2487.555 ns/op (+2.5%)
-|   +- important_hits throughput          | 0.104 M ops/s        | 0.101 M ops/s  (-2.6%)
-|
-| Geomean:
-| hits throughput: 102.93%
-| hits latency: 97.11%
-| important_hits throughput: 102.77%
+The "address of insn" appears when we want to provide a more
+higher-level API when some object (in user-space or in kernel) keeps
+track of one or more gotol_or_nop instructions so that after the
+program load this controlling object has a list of xlated offsets.
+But this would be a follow-up to the initial static branches patch.
+
+> The question is whether such "address of insn" should be allowed
+> in the data section. If so, we need to brainstorm how to
+> do it cleanly.
+> We had various hacks for similar things in the past. Like prog_array.
+> Let's not repeat such mistakes.
+
+So, data section is required for implementing jump tables? Like,
+to add a new PTR_TO_LABEL or PTR_TO_INSN data type, and a
+corresponding "ptr to insn" object for every occurence of &&label,
+which will be adjusted during verification.
+Looks to me like this one doesn't require any more API than specifying
+a list of &&label occurencies on program load.
+
+For "static keys" though (a feature on top of this patch series) we
+need to have access to the corresponding set of adjusted pointers.
+
+Isn't this enough to add something like an array of
+
+  struct insn_ptr {
+      u32 type; /* LABEL, STATIC_BRANCH,... */
+      u32 insn_off; /* original offset on load */
+      union {
+          struct label {...};
+          struct st_branch { u32 key_id, ..};
+      };
+  };
+
+to load attrs and then get the xlated list after the program is
+loaded? Then no new maps/APIs are needed and this can be extended.
 
