@@ -1,349 +1,555 @@
-Return-Path: <bpf+bounces-21557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ABB584EBDD
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 23:46:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293E684EC3D
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 00:01:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E317B255A0
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:46:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 180CBB21DE8
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 23:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87AE50250;
-	Thu,  8 Feb 2024 22:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0776C5025A;
+	Thu,  8 Feb 2024 23:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="aE9bX37f";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="EfuQ3FKN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nyh1ZMIb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B6050253
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 22:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707432358; cv=fail; b=LKwm4tUxUTuxG4l8UW5P4aixd/gDKcUIzAE+DwE8RepxhbRLV9iPDH7FOo/UrMBBS4z5IoBdnkK/syQIqPtuqQhJaA/XISGQo8dSqYGRBxMMubVuebF+1R2uSSFyh3lnmFqebzkRoshiSupS5mGHKLGKEZLPAwC/zt6THxGnu1Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707432358; c=relaxed/simple;
-	bh=oxaALLNW/rIP34k86lmhIqiMntBoTz3+W0L4ROVRVlw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=fAquL3kDgWBPH4soFVki+1YLINedaNm1cPTpgNquNYqcZHFby5LMCFJZH0TRnJdch8KJM9jbzI5KN1OpZCnvB7ce0CO0IahmVJ/IXbCTjqciywXMezGBaJGLsRaMpthN5r4UbJsR4Ahiuizt5fIgwKXO9OSdU4gpURFPo5Hfrtc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=aE9bX37f; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=EfuQ3FKN; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 418LTWJA000531;
-	Thu, 8 Feb 2024 22:45:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=9ldEt72qf+hgeAU96dQpnOVKIRKpiYQUcjOHlg5qSvM=;
- b=aE9bX37fh5UFkjMGAp2L6fVJupzZCj/w5I8AOlVQZ1Bn/IQfHfCfzaTAgtnzikMJUr04
- fMcW+bt/wZw+q3MMFLoIFfbq3BDbUmPUEpZr67JAyj2x2LKz9Dq5oVX/S7Qo8JpAKvyb
- X/eu2yOHopgTX88JAkn3S5SXfP2q57oGGYqNLWr+OW2/VUcvai+GVpxVqO8g0XUpb8XA
- 3dsxjfmD3xEKk138us6m9K/HrefEZdl/JCwCPxzV7XfOZplZiiF1SenwnD0XVv0s4K8Z
- xY/xNSZfO7XjGoU0hHqE0J5le2fFmuQqCN22LmUhpR3a8EKhJTQam/OMWARobxTSEs4Q pA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1cdd64hc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 08 Feb 2024 22:45:36 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 418MVYsj019727;
-	Thu, 8 Feb 2024 22:45:35 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bxhp3uf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 08 Feb 2024 22:45:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UTxqAJtf0FAI3E7JxSFdTaQcdyS1bDg2BKtTphUY4H5/n051V61ANzxOuUvr1Y23p57NwF+d0OTuUrl0yATg2+L7oZaS0yOM7J5ue/nHgnfv8xq9fLmeNiJiVU8Jagi/LdLvQ20++BeJnbW1XzfziM/q7Ss0RSN1tOcbnLefBScEmHkyR2oi7RBisu4zEFUzbaVX9Ave/jWHABuPbPuYJNox0rycKKmdLgs/Mm/xZticTIvlNgoyPx/RPmyQHBmEaTU/Ugep6bLOotQ5HmnAgN6gXf4AaSBTucdAF3DSPJcGN4kLqsLi0img7atyZy3Ux/wt8FtBWL0BViZEoSKm8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9ldEt72qf+hgeAU96dQpnOVKIRKpiYQUcjOHlg5qSvM=;
- b=AEl/vnuCIRTbYXy4bdTuxgmsBayaF6nJaYNW25dOonT7u3vdyzoPrJOTDmemRQOQpHHlOzIQBiRwk9ZLoOofQlt/HWqGHSeV1u22Bs2pnQw3wZzHNYe0RwgviwQoeyVh9Sj70LuxvippitpUDLl/N4AxTDhDhckEFIn+7MKT/Jlz3AYoC1IGkxNUXZwQ5/nm1Ijm3uTEaVL2RnZzFsc579Ycq/cKSyuufceOVpocJ6Q5/kmQm9FGuQennEwJJ0pwva2H1YJedXD1xG8GQxz7H455xM8HJVScDB5U6UtvOUffFzI7AGz72CILPRwNfpNxDm/vJYR6KODyP/+75Bcniw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9ldEt72qf+hgeAU96dQpnOVKIRKpiYQUcjOHlg5qSvM=;
- b=EfuQ3FKNdJJlHosJO5i+B4bGpzs8pNRY9F0chRzhndLA51eq7QMvK+LPd/cG3nMl0NufMN4KgCP6mXZ9i1NRUkeb4Sf4gA46jF0uVlVLASDlsOUEqEX6Q5HlI8uBI+D/pE4+svOP6FyUiCKzSeS0Syhd0lG6oq5TVbbAlnZlfAU=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by CY8PR10MB6706.namprd10.prod.outlook.com (2603:10b6:930:92::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Thu, 8 Feb
- 2024 22:45:32 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::b3b:c19f:bbba:7f70]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::b3b:c19f:bbba:7f70%7]) with mapi id 15.20.7270.024; Thu, 8 Feb 2024
- 22:45:32 +0000
-Message-ID: <db6628e6-74e2-4fb3-8e43-8588956684dc@oracle.com>
-Date: Thu, 8 Feb 2024 22:45:28 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4] bpftool: add support for split BTF to gen
- min_core_btf
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Bryce Kahle <git@brycekahle.com>, bpf@vger.kernel.org,
-        quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
-        Bryce Kahle <bryce.kahle@datadoghq.com>
-References: <20240130230510.791-1-git@brycekahle.com>
- <01046526-c9b1-4d7b-b6b3-296c1bda1903@oracle.com>
- <CAEf4Bzb8zopBkfSxynV4DwzODgvPeM_M9rDJ+BtrfriW+TyAZA@mail.gmail.com>
- <53c5bf7a-97ef-48f6-90f2-d2a170acf1b2@oracle.com>
- <CAEf4BzZm-fSSQbp85dx3exoPK2oRhNFg5Op0ggcaD7ZPv=XCxg@mail.gmail.com>
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <CAEf4BzZm-fSSQbp85dx3exoPK2oRhNFg5Op0ggcaD7ZPv=XCxg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO4P123CA0550.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:319::20) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC91950257
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 23:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707433309; cv=none; b=Ctv6geeAWdF+GXGo7OZT8PEMwojuF4IIFXeP8fZ4X83Wu5SqioyqetGXDN5uWzF73YYYuteu4WxqDPc28q2oBqIUvIueLndEEct6gcSK2I1Ii7ACK80qWgB9jO926M5B0mcufUELaRyv+UeaZ9jk+R89SO0UzPUbffERjOqf46w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707433309; c=relaxed/simple;
+	bh=JY73RQYGLHFfADFaNHRGwO5l42hBhjzfxAd6Ifzb7JE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cGmYmK+u7qgWj7rT9BiyvwxCEHcf9h5rrQErabWniwRbUOqNM9sc1VJQmPSYM5JktEY980rbAXVxGhqa7C357/8b56m7gxRlw8264eeOVMRkXqRhR2Ycxp8p2LZLOyhby1vhBbSObWuOQ2ze+RiYnatNl6VkGSCchWRj6e+WMnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nyh1ZMIb; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ed958d9e-d1c7-4189-9f3f-d89eb86d4897@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707433304;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OQ4075DJBtI5zjjQrGVC8aJPKhnn6A816766ml/kCOs=;
+	b=nyh1ZMIbaafZf/LCldh4uGPTbePnZ0IGgw/ZhWyY3CRBiRngTMf/FYlsuvkSUs2E4HOEKa
+	AtSmfTo8s2lfQzW1kH4RP+eFJ9M2TR5HNmJm4JxbeX04QHDy7FLjgRVTD74aq/9H0GmfPG
+	hejaYJc3ssQyOmlAdfNhAVdjG61Ipe4=
+Date: Thu, 8 Feb 2024 15:01:34 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CY8PR10MB6706:EE_
-X-MS-Office365-Filtering-Correlation-Id: 31bc7be6-a8fb-45c7-37a2-08dc28f7a83d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	8hWJz8Ej5m8NrN1DlNdUb/V8D78JOGW0PO6ROb2TNz0u/MbR2Pkp0o26DaZknz2/DO830ajL+tUbFYaeIItUqh4MgWG3T8RCTzoujksQesdYoNuvOSaBty0vVDxAJetbeJbCrbLFAWHPPf7qLp17J/c12siwl3MQdS92JAZDz24fJ5kqNWdFl21BnbWFhaZLOz5JMSk4BpaTbF9VREK2hjQ38ZFxozZ92jiGhVMY1hZ1uGs0wpiWBCs13btMZq4zIq4nE/WK+boLi7egtJyO5EbjRJtP/aV5lx73C43a696qQqo930HGyv98UbZw6zeLsIFZcNmJv+IOkIQ0sp/K3kBsELhuZrCeAikIB0h5EBoJk0gmmRpbFf1+1VRGpDS7lgmptMVLE93aZWnD3U4kijJnmLaqwJ4qX2GYDl1necXmiXTrsTyO3kWb1DKzAGc85iVk4l+ZEYzG7Dy08pDhnRoEaFcO69mDjtb13zl4glGD89ULBC5KaGztYTus8ESlWZN/VHl1X1MqemhsBYny1nUeP4X/b5DGuJjNK5iLWZ2XNFPCbJBzmgqauB87Lc5v
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(39860400002)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(41300700001)(316002)(66476007)(54906003)(66899024)(6916009)(66556008)(5660300002)(8936002)(4326008)(66946007)(2906002)(8676002)(83380400001)(36756003)(31686004)(38100700002)(6666004)(6512007)(44832011)(53546011)(6506007)(478600001)(6486002)(2616005)(31696002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?YlV4MzJyQXZQNVY0MzVocjhHMEFZTlZhbXd2cEw5OEM3N3RYUGQ1SHNtMW5T?=
- =?utf-8?B?NUwxSmozQ3lLdjYzcm9YWmRwL2VIK29RTFprL1pLb0RjN3dBMEpPbisraVNk?=
- =?utf-8?B?SjFUVGxHc2VXTE43d3Z1alRMWUZ6RDNsQ3lybi9MWFRIL0hXeTJFMTFINi90?=
- =?utf-8?B?YVc0MTlaVE93QURHTU5QWjhiVVlrNGdNUkROOTZKZHlBSlRTWFVkRFRXWlpZ?=
- =?utf-8?B?NlVJaHpZY3p0UUZoNUZDL1lWekRkWXYvR2hyMC9CY0RCRGU0ZEdRRVEyMERR?=
- =?utf-8?B?Z0Iwb1dzdy92bEkvVG5VWnZuQlJJMkJQd1oyd1RuWTdaVHRuTktNQWh6VjBq?=
- =?utf-8?B?QjhTU3pOejd5Rk5OTDBuOVVXU25LOUxBaWUvT0lHOG1neHpPTnlRakJITWZR?=
- =?utf-8?B?NlpsZ3VmQmsrelloQmw3MUU2THVKL2JjVnlwd2lKWldaQkZKSHlMMWNzYXpP?=
- =?utf-8?B?K1U4eVdKY3VMVG5hQ1BXbVNneWhFYWNPMlJqeDg0WVBNSUlKK09Oc1BmTklC?=
- =?utf-8?B?T0JXRGQwR0tuUmJQdGxYbjIzNStMSjBRSGR0OG5hVjFOR2QwY0xsTlFTV0ox?=
- =?utf-8?B?aHVkamxoQVpyT0tIYlhKcm9ia2RROFUzY1dDWE5iZmFoUWFWR3R2MTJuRkp5?=
- =?utf-8?B?V2UrazNsQWZVSGpsMUdac3FrY2JJYTdWQnFkaGFYMXJqMEpsUFFWS29JMmF1?=
- =?utf-8?B?eTRhYlpaTEt1ZnIvUi9tVzVBQXFJQW9LY0dkMDBsVVRrdW5Gb1pYbGdxSjZm?=
- =?utf-8?B?a09JcnRtaUhONzYzSFcvTWhGOGs1SzFnWTFSd1o4Q09QK25yVmllaVQ2SGlQ?=
- =?utf-8?B?UTNKQmg5Q1Qzd2NHNEtZMzFBKzdMZTJiVyswTGhnZit2SmRYbXl2bEIvRDZk?=
- =?utf-8?B?cmdOS0FyT2ZDYTVtYk0yekpoc0xNMWFYMFoydGRMQXp1cFBxNWRaNlRrbW1u?=
- =?utf-8?B?aFdzVWxkT2pwYVR3V253MkRwbmpBdm8wTFpzNzAxZkpYR01zbTJDN3hrWnpK?=
- =?utf-8?B?ci9YYzRiRWs5OGc1akdBazF4NzN4cU9lUnB5ZXVkaTF2Y2dDZDBSaGtlU3lU?=
- =?utf-8?B?cjJqeFh0ZXNtVXlXMlphRjZMeHJqMk11Nkx5RjM0TFJsSTZKQ2l5OWVOTWgz?=
- =?utf-8?B?NW5helNPTlFNeTYyNzZCaHdvaU9nWHE3TjdWUXBRY05ISHJ6Yi96MDN0MEV0?=
- =?utf-8?B?MWFpSG5JR1J3WjN4TjM1VWMwTVpJMlUwN1RLVTk0VFZTUGEyTlA1M3BZMUw2?=
- =?utf-8?B?eVJOL2d3ckxVSVd3d3c0QTREcEhDb1dwUjhBYkoxQVh4RnFnUXRDbW9CUjM5?=
- =?utf-8?B?TmxrVFdJRGVybGxIODVqZFJ0dzdiQjlnLzZBMXQ0aDc2NE4vYVBob3dTczg0?=
- =?utf-8?B?Zi81NGlZL0MxaFlEbVFSZmhLajVTbFFoQ0FIaTlDVFdVb0d2eUpUbUMycmc2?=
- =?utf-8?B?L282MFR1WVRHeFBZaWs1L1B0Y01OZmVYZlpmbUdxeURsYTVUcHpUTWR2VDRH?=
- =?utf-8?B?dGNKQzBMWjdaNVNHQkszN1Z6bVBQd1BGaE5wS0hNVTZpT1JUb0lKT0J0Q2JL?=
- =?utf-8?B?d041M29zeWFMOG9YNUlaaDdnR0x3cE5qWk5aMEJmamlIeFFuYU5kc3BCdjIx?=
- =?utf-8?B?MmIvTlora2xMZHVzMHM1STZURUhMWUZzOG9SMll3eWY0TGNLUkF5b0gvdDNE?=
- =?utf-8?B?K29hQ0hqejBCbTZzTFNFOEVBTDMxWjhVOHdnbDJOQ3l3U2wvTU40S1hhL2tF?=
- =?utf-8?B?Zisvc0pXaXB1T2hpQTEwNkEwOS9DNUpPeFlPWXpYaEY2Tm0vNUtveTI3VXJM?=
- =?utf-8?B?K25HaEFXT29YVlFIQ0VlL3h3akNLL3hlSEJVcGh0NFN2M21VZXZ6ckY2SHNU?=
- =?utf-8?B?K2dBU0twcFo3NElSeGlzQVJvYjBFbElHdi9ubmRlL0pIcGZyUHJLZ0FkK0xq?=
- =?utf-8?B?VzZCSmlUYlBnbEtsQ3pFdUdGVUVXSzlHcVVGdnFWM2c3MXdwQVc1UlRKRDBG?=
- =?utf-8?B?QWNNeWN4d3EzaVF3ZUJwUURKTHVLcXNzeHBzMjVVNHZzSjhkd2k3VXNCczZk?=
- =?utf-8?B?S3labVRkUjlqZnBYZlJhMFVMd3cwU3UrT2ExcmRBazZkNTc0NUFwVUhFUWV2?=
- =?utf-8?B?WTRnWjJsRnV5RmJHaGp5WUxqb2orZi9LbU1IZWlDL3lNQzNXRy9ENDY5cFBZ?=
- =?utf-8?Q?l+xhR/jzjgMVgHLLddC+v9k=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	MLSNLCaJq283HR6VYLoyvCU3Hde6yJxU3PSDIGw2Q5rkBlHmJgGVq4AiQIEywPp795FD30Om/k+YuwZFKjiVizt1ICSYkvLeN1oWEv9zEPMWjU2R7F/cjX+nKJ8NdeEocZh1Iptdj5+Xu5PcB0S0toLCbIlzKVfnXJncz+lMqQ16JD9V5/YCflJ9r/AdVs0dwcWL7FZ/tCQSxCcWZaoJfee7so0wX9+a5GCxqhxOC3YE1DPaXaKroTxE5o7nzYtFYQgSL2B90hIL3IFcGVd+na475CEY9pTXY8J1cbVs9IqCtZlikoQyotQU30sbgDZU8XbtWAYP/u8jn9sGYJy+cPyz0Y+Rb9t3cywtzrPR5363V4IzzVb69qb5tJK1fJD5ji+ioigB0QgQtXNovqEJ1mVJCIFyRrpytYwYlJF9KBvBCTyFhSK1sqIdFnEV7sNFhsjzjwYwXLjGhJ28GsP8w9IJVmgMM3ySbCDf69lQLwinn2CDVejc3UuaVdh7znVfFsdaM6MphgrGh6KAM95NMiexjvYp/zkm77Yn3DsG0jyJACmu718QooJwnl/Qrmjx7jvOBCZO0Ppus714D4gTxt8arkfK9KjWvY8fS9M1MoE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31bc7be6-a8fb-45c7-37a2-08dc28f7a83d
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 22:45:32.5488
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kLZ1z4XHXLR99VP43SyH/9oUT8zxz/BJmeka+mofjQuS85tf0Q6Vc84sLV0fO+DLbpGhpDdKJBB9J1AJOKnAdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6706
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-08_11,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- adultscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402080127
-X-Proofpoint-GUID: NLEewd2Fo6w-upSfVShpVMtCZDHbYjv7
-X-Proofpoint-ORIG-GUID: NLEewd2Fo6w-upSfVShpVMtCZDHbYjv7
+Subject: Re: [PATCH bpf-next v6 3/4] bpf: Create argument information for
+ nullable arguments.
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ davemarchevsky@meta.com, dvernet@meta.com
+References: <20240208065103.2154768-1-thinker.li@gmail.com>
+ <20240208065103.2154768-4-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240208065103.2154768-4-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 08/02/2024 00:26, Andrii Nakryiko wrote:
-> On Tue, Feb 6, 2024 at 2:59 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->>
->> On 02/02/2024 22:16, Andrii Nakryiko wrote:
->>> On Wed, Jan 31, 2024 at 10:47 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->>>>
->>>> On 30/01/2024 23:05, Bryce Kahle wrote:
->>>>> From: Bryce Kahle <bryce.kahle@datadoghq.com>
->>>>>
->>>>> Enables a user to generate minimized kernel module BTF.
->>>>>
->>>>> If an eBPF program probes a function within a kernel module or uses
->>>>> types that come from a kernel module, split BTF is required. The split
->>>>> module BTF contains only the BTF types that are unique to the module.
->>>>> It will reference the base/vmlinux BTF types and always starts its type
->>>>> IDs at X+1 where X is the largest type ID in the base BTF.
->>>>>
->>>>> Minimization allows a user to ship only the types necessary to do
->>>>> relocations for the program(s) in the provided eBPF object file(s). A
->>>>> minimized module BTF will still not contain vmlinux BTF types, so you
->>>>> should always minimize the vmlinux file first, and then minimize the
->>>>> kernel module file.
->>>>>
->>>>> Example:
->>>>>
->>>>> bpftool gen min_core_btf vmlinux.btf vm-min.btf prog.bpf.o
->>>>> bpftool -B vm-min.btf gen min_core_btf mod.btf mod-min.btf prog.bpf.o
->>>>
->>>> This is great! I've been working on a somewhat related problem involving
->>>> split BTF for modules, and I'm trying to figure out if there's overlap
->>>> with what you've done here that can help in either direction. I'll try
->>>> and describe what I'm doing. Sorry if this is a bit of a diversion,
->>>> but I just want to check if there are potential ways your changes could
->>>> facilitate other scenarios in the future.
->>>>
->>>> The problem I'm trying to tackle is to enable split BTF module
->>>> generation to be more resilient to underlying kernel BTF changes;
->>>> this would allow for example a module that is not built with the kernel
->>>> to generate BTF and have it work even if small changes in vmlinux occur.
->>>> Even a small change in BTF ids in base BTF is enough to invalidate the
->>>> associated split BTF, so the question is how to make this a bit less
->>>> brittle. This won't be needed for modules built along with the kernel,
->>>> but more for cases like a package delivering a kernel module.
->>>>
->>>> The way this is done is similar to what you're doing - generating
->>>> minimal base vmlinux BTF along with the module BTF. In my case however
->>>> the minimization is not driven by CO-RE relocations; rather it is driven
->>>> by only adding types that are referenced by module BTF and any other
->>>> associated types needed. We end up with minimal base BTF that is carried
->>>> along with the module BTF (in a .BTF.base_minimal section) and this
->>>> minimal BTF will be used to later reconcile module BTF with the running
->>>> kernel BTF when the module is loaded; it essentially provides the
->>>> additional information needed to map to current vmlinux types.
->>>>
->>>> In this approach, minimal vmlinux BTF is generated via an additional
->>>> option to pahole which adds an extra phase to BTF deduplication between
->>>> module and kernel. Once we have found the candidate mappings for
->>>> deduplication, we can look at all base BTF references from module BTF
->>>> and recursively add associated types to the base minimal BTF. Finally we
->>>> reparent the split BTF to this minimal base BTF. Experiments show most
->>>> modules wind up with base minimal BTF of around 4000 types, so the
->>>> minimization seems to work well. But it's complex.
->>>>
->>>> So what I've been trying to work out is if this dedup complexity can be
->>>> eliminated with your changes, but from what I can see, the membership in
->>>> the minimal base BTF in your case is driven by the CO-RE relocations
->>>> used in the BPF program. Would there do you think be a future where we
->>>> would look at doing base minimal BTF generation by other criteria (like
->>>> references from the module BTF)? Thanks!
->>>
->>> Hm... I might be misremembering or missing something, but the problem
->>> you are solving doesn't seem to be related to BTF minimization. I also
->>> forgot why you need BTF deduplication, I vaguely remember we needed to
->>> remember "expectations" of types that module BTF references in vmlinux
->>> BTF, but I fail to remember why we needed dedup... Perhaps we need a
->>> BPF office hours session to go over details again?
->>>
->>
->> Yeah, that would be great! I've put
->>
->> Making split BTF more resilient
->>
->> ..on the agenda for 02-15.
->>
->> The reason BTF minimization comes into the picture is this - the
->> expectations split BTF can have of base BTF can be quite complex, and in
->> figuring out ways to represent them, it occurred that BTF itself - in
->> the form of the minimal BTF needed to represent those split BTF
->> references - made sense. Consider cases like a split BTF struct that
->> contains a base BTF struct embedded in it. If we have a minimal base BTF
->> which contains such needed base types, we are in a position to use it to
->> later reconcile the base BTF worlds at encoding time and use time (for
->> example vmlinux BTF at module build time versus current vmlinux BTF).
->>
->> Further, a natural time to construct that minimal base BTF presents
->> itself when we do deduplication between split and base BTF.  The phase
->> after we have mapped split types to canonical types is the ideal time to
->> handle this; the algorithm is basically
->>
->> - foreach reference from split -> base BTF
->>  - add it to base minimal BTF
->> This is controlled by a new dedup option - gen_base_btf_minimal - which
->> would be enabled via  a ---btf_features option to pahole for users who
->> wanted to generate minimal base BTF. pahole places the new minimized
->> base BTF in .BTF.base_minimal section, with the split BTF referring to
->> it in the usual .BTF section. Later this base minimal BTF is used to
->> reconcile the split BTF expectations with current base BTF.
->>
->> The kinds of minimizations I see are pretty reasonable for kernel
->> modules; I tried a number of in-tree modules (which wouldn't use this
->> feature in practice, just wanted to have something to test with), and
->> around 4000 types were observed in base minimal BTF.
->>
->> It's possible we could adapt this minimization process to be guided
->> by CO-RE relocations (rather than split->base BTF references), if that
->> would help Bryce's case.
+On 2/7/24 10:51 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
 > 
-> I think this minimization idea is overcomplicating anything. First, we
-> don't have CO-RE relocations, and from BTF alone we don't know what
-> fields of base BTF structs module is referencing (that may or may not
-> be in DWARF). So I don't think there is anything to minimize.
+> Collect argument information from the type information of stub functions to
+> mark arguments of BPF struct_ops programs with PTR_MAYBE_NULL if they are
+> nullable.  A nullable argument is annotated by suffixing "__nullable" at
+> the argument name of stub function.
 > 
+> For nullable arguments, this patch sets an arg_info to label their reg_type
+> with PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL. This makes the verifier
+> to check programs and ensure that they properly check the pointer. The
+> programs should check if the pointer is null before accessing the pointed
+> memory.
+> 
+> The implementer of a struct_ops type should annotate the arguments that can
+> be null. The implementer should define a stub function (empty) as a
+> placeholder for each defined operator. The name of a stub function should
+> be in the pattern "<st_op_type>__<operator name>". For example, for
+> test_maybe_null of struct bpf_testmod_ops, it's stub function name should
+> be "bpf_testmod_ops__test_maybe_null". You mark an argument nullable by
+> suffixing the argument name with "__nullable" at the stub function.
+> 
+> Since we already has stub functions for kCFI, we just reuse these stub
+> functions with the naming convention mentioned earlier. These stub
+> functions with the naming convention is only required if there are nullable
+> arguments to annotate. For functions having not nullable arguments, stub
+> functions are not necessary for the purpose of this patch.
+> 
+> This patch will prepare a list of struct bpf_ctx_arg_aux, aka arg_info, for
+> each member field of a struct_ops type.  "arg_info" will be assigned to
+> "prog->aux->ctx_arg_info" of BPF struct_ops programs in
+> check_struct_ops_btf_id() so that it can be used by btf_ctx_access() later
+> to set reg_type properly for the verifier.
 
-The minimization is a method to capture expectations of base BTF similar
-to what you describe below. In the approach I've been pursuing, we
-capture those expectations via the minimal base BTF needed to represent
-the types the module needs.
+One more nit on the naming. It is my overlook in v5.
 
-> On the other hand, it seems reasonable to record a few basic things
-> about base BTF type expectations:
->   - name
->   - size and whether that size has to be exact. This would be
-> determined if base BTF type is ever embedded or is only referenced by
-> pointer;
->   - we can record number of fields, but you said you want to enable
-> extensions, so it will have to be treated as minimum number of fields,
-> probably?
->
+There are also things that need to address in btf_ctx_arg_offset(). Comment 
+inlined below.
 
-Yeah, the motivation here is that often when changes are backported to
-stable release-based distros, the associated struct changes try to fill
-holes in existing structures so that overall structure size does not
-change in an incompatible way, and any modules that utilize such
-structures continue to work.
+Other patches of the set lgtm.
 
-> Basically, all we want to ensure is that overall memory layout is
-> compatible and doesn't cause any module field to be shifted.
->
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/linux/bpf.h         |  22 ++++
+>   include/linux/btf.h         |   2 +
+>   kernel/bpf/bpf_struct_ops.c | 197 ++++++++++++++++++++++++++++++++++--
+>   kernel/bpf/btf.c            |  33 ++++++
+>   kernel/bpf/verifier.c       |   6 ++
+>   5 files changed, 253 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9a2ee9456989..6908bd2360ea 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1709,6 +1709,19 @@ struct bpf_struct_ops {
+>   	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
+>   };
+>   
+> +/* Every member of a struct_ops type has an instance even a member is not
+> + * an operator (function pointer). The "arg_info" field will be assigned to
+> + * prog->aux->ctx_arg_info of BPF struct_ops programs to provide the
+> + * argument information required by the verifier to verify the program.
+> + *
+> + * btf_ctx_access() will lookup prog->aux->ctx_arg_info to find the
+> + * corresponding entry for an given argument.
+> + */
+> +struct bpf_struct_ops_arg_info {
+> +	struct bpf_ctx_arg_aux *arg_info;
 
-There are a few other gotchas though. Consider the case of an enum; if
-the values associated with it get shifted between the time the module is
-built and the time it is used, and ENUM_VAL_X that was 1 when the module
-was built, but is now 2 in base vmlinux, we'd need to track that as an
-incompatibility too.
+One more nit on naming,
 
-A minimized view of base BTF - driven by the types the module needs -
-can capture these changes along with the field offset/size issues. The
-approach I use today also avoids expanding types unnecessarily; when it
-encounters a pointer to struct foo in the module representation only,
-the minimized base BTF will just use a fwd representation of that struct
-in minimal base BTF.
+It is my overlook in v5. After looking at how "arg_info" means both 
+"bpf_struct_ops_arg_info" and "bpf_ctx_arg_aux" in this patch, could you do one 
+more rename here and shorten the "*arg_info" here to "*info".
 
-So to summarize, base BTF minimization is driven by the need to capture
-the set of expectations the module has, similar to what you describe above.
+> +	u32 arg_info_cnt;
 
-Alan
+and "info_cnt" or just "cnt" here.
+
+> +};
+> +
+>   struct bpf_struct_ops_desc {
+>   	struct bpf_struct_ops *st_ops;
+>   
+> @@ -1716,6 +1729,9 @@ struct bpf_struct_ops_desc {
+>   	const struct btf_type *value_type;
+>   	u32 type_id;
+>   	u32 value_id;
+> +
+> +	/* Collection of argument information for each member */
+> +	struct bpf_struct_ops_arg_info *arg_info;
+>   };
+>   
+>   enum bpf_struct_ops_state {
+> @@ -1790,6 +1806,8 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   			     struct btf *btf,
+>   			     struct bpf_verifier_log *log);
+>   void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
+> +void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc,
+> +				 int len);
+>   #else
+>   #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+>   static inline bool bpf_try_module_get(const void *data, struct module *owner)
+> @@ -1814,6 +1832,10 @@ static inline void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struc
+>   {
+>   }
+>   
+> +static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc, int len)
+> +{
+> +}
+> +
+>   #endif
+>   
+>   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index df76a14c64f6..15ee845e6b38 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -498,6 +498,8 @@ static inline void *btf_id_set8_contains(const struct btf_id_set8 *set, u32 id)
+>   bool btf_param_match_suffix(const struct btf *btf,
+>   			    const struct btf_param *arg,
+>   			    const char *suffix);
+> +int btf_ctx_arg_offset(struct btf *btf, const struct btf_type *func_proto,
+> +		       u32 arg_no);
+>   
+>   struct bpf_verifier_log;
+>   
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index f98f580de77a..e9cc8c847736 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -116,17 +116,177 @@ static bool is_valid_value_type(struct btf *btf, s32 value_id,
+>   	return true;
+>   }
+>   
+> +#define MAYBE_NULL_SUFFIX "__nullable"
+> +#define MAX_STUB_NAME 128
+> +
+> +/* Return the type info of a stub function, if it exists.
+> + *
+> + * The name of a stub function is made up of the name of the struct_ops and
+> + * the name of the function pointer member, separated by "__". For example,
+> + * if the struct_ops type is named "foo_ops" and the function pointer
+> + * member is named "bar", the stub function name would be "foo_ops__bar".
+> + */
+> +static const struct btf_type *
+> +find_stub_func_proto(struct btf *btf, const char *st_op_name,
+> +		     const char *member_name)
+> +{
+> +	char stub_func_name[MAX_STUB_NAME];
+> +	const struct btf_type *func_type;
+> +	s32 btf_id;
+> +	int cp;
+> +
+> +	cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
+> +		      st_op_name, member_name);
+> +	if (cp >= MAX_STUB_NAME) {
+> +		pr_warn("Stub function name too long\n");
+> +		return NULL;
+> +	}
+> +	btf_id = btf_find_by_name_kind(btf, stub_func_name, BTF_KIND_FUNC);
+> +	if (btf_id < 0)
+> +		return NULL;
+> +	func_type = btf_type_by_id(btf, btf_id);
+> +	if (!func_type)
+> +		return NULL;
+> +
+> +	return btf_type_by_id(btf, func_type->type); /* FUNC_PROTO */
+> +}
+> +
+> +/* Prepare argument info for every nullable argument of a member of a
+> + * struct_ops type.
+> + *
+> + * Initialize a struct bpf_struct_ops_arg_info according to type info of
+> + * the arguments of a stub function. (Check kCFI for more information about
+> + * stub functions.)
+> + *
+> + * Each member in the struct_ops type has a struct bpf_struct_ops_arg_info
+> + * to provide an array of struct bpf_ctx_arg_aux, which in turn provides
+> + * the information that used by the verifier to check the arguments of the
+> + * BPF struct_ops program assigned to the member. Here, we only care about
+> + * the arguments that are marked as __nullable.
+> + *
+> + * The array of struct bpf_ctx_arg_aux is eventually assigned to
+> + * prog->aux->ctx_arg_info of BPF struct_ops programs and passed to the
+> + * verifier. (See check_struct_ops_btf_id())
+> + *
+> + * all_arg_info->arg_info will be the list of struct bpf_ctx_arg_aux if
+> + * success. If fails, it will be kept untouched.
+> + */
+> +static int prepare_arg_info(struct btf *btf,
+> +			    const char *st_ops_name,
+> +			    const char *member_name,
+> +			    const struct btf_type *func_proto,
+> +			    struct bpf_struct_ops_arg_info *all_arg_info)
+
+s/all_arg_info/arg_info/
+
+> +{
+> +	const struct btf_type *stub_func_proto, *pointed_type;
+> +	struct bpf_ctx_arg_aux *arg_info, *arg_info_buf;
+
+s/arg_info/info/
+s/arg_info_buf/info_buf/
+
+> +	const struct btf_param *stub_args, *args;
+> +	u32 nargs, arg_no, arg_info_cnt = 0;
+> +	s32 arg_btf_id;
+> +	int offset;
+> +
+> +	stub_func_proto = find_stub_func_proto(btf, st_ops_name, member_name);
+> +	if (!stub_func_proto)
+> +		return 0;
+> +
+> +	/* Check if the number of arguments of the stub function is the same
+> +	 * as the number of arguments of the function pointer.
+> +	 */
+> +	nargs = btf_type_vlen(func_proto);
+> +	if (nargs != btf_type_vlen(stub_func_proto)) {
+> +		pr_warn("the number of arguments of the stub function %s__%s does not match the number of arguments of the member %s of struct %s\n",
+> +			st_ops_name, member_name, member_name, st_ops_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	args = btf_params(func_proto);
+> +	stub_args = btf_params(stub_func_proto);
+> +
+> +	arg_info_buf = kcalloc(nargs, sizeof(*arg_info_buf), GFP_KERNEL);
+> +	if (!arg_info_buf)
+> +		return -ENOMEM;
+> +
+> +	/* Prepare arg_info for every nullable argument */
+> +	arg_info = arg_info_buf;
+> +	for (arg_no = 0; arg_no < nargs; arg_no++) {
+> +		/* Skip arguments that is not suffixed with
+> +		 * "__nullable".
+> +		 */
+> +		if (!btf_param_match_suffix(btf, &stub_args[arg_no],
+> +					    MAYBE_NULL_SUFFIX))
+> +			continue;
+> +
+> +		/* Should be a pointer to struct */
+> +		pointed_type = btf_type_resolve_ptr(btf,
+> +						    args[arg_no].type,
+> +						    &arg_btf_id);
+> +		if (!pointed_type ||
+> +		    !btf_type_is_struct(pointed_type))
+
+pr_warn("stub function %s__%s has %s tagging to an unsupported type\n",
+	st_ops_name, member_name, MAYBE_NULL_SUFFIX);
+
+> +			goto err_out;
+> +
+> +		offset = btf_ctx_arg_offset(btf, func_proto, arg_no);
+> +		if (offset < 0)
+
+pr_warn("stub function %s__%s has invalid trampoline ctx offset for arg#%u\n",
+	st_ops_name, member_name, arg_no);
+
+> +			goto err_out;
+> +
+> +		/* Fill the information of the new argument */
+> +		arg_info->reg_type =
+> +			PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
+> +		arg_info->btf_id = arg_btf_id;
+> +		arg_info->btf = btf;
+> +		arg_info->offset = offset;
+> +
+> +		arg_info++;
+> +		arg_info_cnt++;
+> +	}
+> +
+> +	if (arg_info_cnt) {
+> +		all_arg_info->arg_info = arg_info_buf;
+> +		all_arg_info->arg_info_cnt = arg_info_cnt;
+> +	} else {
+> +		kfree(arg_info_buf);
+> +	}
+> +
+> +	return 0;
+> +
+> +err_out:
+> +	kfree(arg_info_buf);
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +/* Clean up the arg_info in a struct bpf_struct_ops_desc.
+> + *
+> + * The callers should pass the length of st_ops_desc->arg_info.  The length
+> + * can not be derived from std_ops_desc->type since the list may be
+> + * incomplete.
+> + */
+> +void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc,
+> +				 int len)
+
+The "len" argument is not needed. It is the btf_type_vlen(st_ops_desc->type). 
+Initialize the st_ops_desc->type/value_type/type_id/value_id earlier if necessary.
+
+> +{
+> +	struct bpf_struct_ops_arg_info *arg_info;
+> +	int i;
+> +
+> +	arg_info = st_ops_desc->arg_info;
+> +	if (!arg_info)
+> +		return;
+> +
+> +	for (i = 0; i < len; i++)
+> +		kfree(arg_info[i].arg_info);
+> +
+> +	kfree(arg_info);
+> +}
+> +
+>   int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   			     struct btf *btf,
+>   			     struct bpf_verifier_log *log)
+>   {
+>   	struct bpf_struct_ops *st_ops = st_ops_desc->st_ops;
+> +	struct bpf_struct_ops_arg_info *arg_info;
+>   	const struct btf_member *member;
+>   	const struct btf_type *t;
+>   	s32 type_id, value_id;
+>   	char value_name[128];
+>   	const char *mname;
+> -	int i;
+> +	int i, err;
+>   
+>   	if (strlen(st_ops->name) + VALUE_PREFIX_LEN >=
+>   	    sizeof(value_name)) {
+> @@ -160,6 +320,12 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   	if (!is_valid_value_type(btf, value_id, t, value_name))
+>   		return -EINVAL;
+>   
+> +	arg_info = kcalloc(btf_type_vlen(t), sizeof(*arg_info),
+> +			   GFP_KERNEL);
+> +	if (!arg_info)
+> +		return -ENOMEM;
+> +
+> +	st_ops_desc->arg_info = arg_info;
+>   	for_each_member(i, t, member) {
+>   		const struct btf_type *func_proto;
+>   
+> @@ -167,32 +333,44 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   		if (!*mname) {
+>   			pr_warn("anon member in struct %s is not supported\n",
+>   				st_ops->name);
+> -			return -EOPNOTSUPP;
+> +			err = -EOPNOTSUPP;
+> +			goto errout;
+>   		}
+>   
+>   		if (__btf_member_bitfield_size(t, member)) {
+>   			pr_warn("bit field member %s in struct %s is not supported\n",
+>   				mname, st_ops->name);
+> -			return -EOPNOTSUPP;
+> +			err = -EOPNOTSUPP;
+> +			goto errout;
+>   		}
+>   
+>   		func_proto = btf_type_resolve_func_ptr(btf,
+>   						       member->type,
+>   						       NULL);
+> -		if (func_proto &&
+> -		    btf_distill_func_proto(log, btf,
+> +		if (!func_proto)
+> +			continue;
+> +
+> +		if (btf_distill_func_proto(log, btf,
+>   					   func_proto, mname,
+>   					   &st_ops->func_models[i])) {
+>   			pr_warn("Error in parsing func ptr %s in struct %s\n",
+>   				mname, st_ops->name);
+> -			return -EINVAL;
+> +			err = -EINVAL;
+> +			goto errout;
+>   		}
+> +
+> +		err = prepare_arg_info(btf, st_ops->name, mname,
+> +				       func_proto,
+> +				       arg_info + i);
+> +		if (err)
+> +			goto errout;
+>   	}
+>   
+>   	if (st_ops->init(btf)) {
+>   		pr_warn("Error in init bpf_struct_ops %s\n",
+>   			st_ops->name);
+> -		return -EINVAL;
+> +		err = -EINVAL;
+> +		goto errout;
+>   	}
+>   
+>   	st_ops_desc->type_id = type_id;
+> @@ -201,6 +379,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   	st_ops_desc->value_type = btf_type_by_id(btf, value_id);
+>   
+>   	return 0;
+> +
+> +errout:
+> +	bpf_struct_ops_desc_release(st_ops_desc, i);
+> +
+> +	return err;
+>   }
+>   
+>   static int bpf_struct_ops_map_get_next_key(struct bpf_map *map, void *key,
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index e3508b8008a2..554a57a0eaa5 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -1699,6 +1699,14 @@ static void btf_free_struct_meta_tab(struct btf *btf)
+>   static void btf_free_struct_ops_tab(struct btf *btf)
+>   {
+>   	struct btf_struct_ops_tab *tab = btf->struct_ops_tab;
+> +	int i;
+> +
+> +	if (!tab)
+> +		return;
+> +
+> +	for (i = 0; i < tab->cnt; i++)
+> +		bpf_struct_ops_desc_release(&tab->ops[i],
+> +					    btf_type_vlen(tab->ops[i].type));
+>   
+>   	kfree(tab);
+>   	btf->struct_ops_tab = NULL;
+> @@ -6130,6 +6138,31 @@ static bool prog_args_trusted(const struct bpf_prog *prog)
+>   	}
+>   }
+>   
+> +int btf_ctx_arg_offset(struct btf *btf, const struct btf_type *func_proto,
+> +		       u32 arg_no)
+> +{
+> +	const struct btf_param *args;
+> +	const struct btf_type *t;
+> +	int off = 0, i;
+> +	u32 sz, nargs;
+> +
+> +	nargs = btf_type_vlen(func_proto);
+> +	/* It is the return value if arg_no == nargs */
+
+I forgot to mention this in v5. This comment is not accurate.
+
+This function is trying to figure out the trampoline ctx offset for a particular 
+arg_no. arg_no cannot be the return value and arg_no cannot be >= nargs.
+
+> +	if (arg_no > nargs)
+
+so remove this check all together.
+
+> +		return -EINVAL;
+> +
+> +	args = btf_params(func_proto);
+> +	for (i = 0; i < arg_no; i++) {
+> +		t = btf_type_by_id(btf, args[i].type);
+> +		t = btf_resolve_size(btf, t, &sz);
+> +		if (IS_ERR(t))
+> +			return -EINVAL;
+
+return PTR_ERR(t);
+
+> +		off += roundup(sz, 8);
+> +	}
+> +
+> +	return off;
+> +}
+> +
+>   bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>   		    const struct bpf_prog *prog,
+>   		    struct bpf_insn_access_aux *info)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 7edd70eec7dd..7826d6e6a09b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20415,6 +20415,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   		}
+>   	}
+>   
+> +	/* btf_ctx_access() used this to provide argument type info */
+> +	prog->aux->ctx_arg_info =
+> +		st_ops_desc->arg_info[member_idx].arg_info;
+> +	prog->aux->ctx_arg_info_size =
+> +		st_ops_desc->arg_info[member_idx].arg_info_cnt;
+> +
+>   	prog->aux->attach_func_proto = func_proto;
+>   	prog->aux->attach_func_name = mname;
+>   	env->ops = st_ops->verifier_ops;
+
 
