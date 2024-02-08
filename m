@@ -1,94 +1,226 @@
-Return-Path: <bpf+bounces-21462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD5AB84D740
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 01:40:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5833484D74B
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 01:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46F1C1F236B9
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 00:40:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01AA31C22F4B
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 00:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C351EDDA9;
-	Thu,  8 Feb 2024 00:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF17DDBE;
+	Thu,  8 Feb 2024 00:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pCwGBHL0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bv4AqPGC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436005381;
-	Thu,  8 Feb 2024 00:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D920214267;
+	Thu,  8 Feb 2024 00:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707352827; cv=none; b=E/cb+b+ge8ITYA9aSFy170+LRDmHVqWyv9hoA4RsMAyNZ9Jt4JwFDQxPsGMSegJyqrn4GHMvHoA4LpEUdLpLVO+TwgJ6lmRwdTGnix/jM1flQMgfh83ibYUqJAue8/MsQPLd9kxwdMYzarPh9WEdSKRQhRDobnEqlIbjEj0Kmwg=
+	t=1707353430; cv=none; b=N0/1c0/80JhMrcSZdWxSaeH6kgS0DPsE5HmZnTVRmMWH7Rsd5gJxUGY9ESJZiB+fWiudofmbOdy4HKohUbrvb5ODRHm/R/TPHx8W+YrqXq5GK0M863arHQnId101AFkOllXt1mlSJbvIQuY86H3sQTUwUiqmrmrKXwVfRIZJJy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707352827; c=relaxed/simple;
-	bh=OTsPfX3ootmJaowlcdqnHuUcVRwW2q7b+EVL2LbOUqs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=UqzTk0Q/oC+EC5xpTVk1yEdBf/slE1EL+qW1Sg7godAqRNhXA/WjiwmJ3aHWngt05Zn3vyGULjfXcp6A0YrpVIb8iOccjcvHgCSauUNzK6Alj434PIvDydBUIaKlitRkvWp40V4aDNKh/3F2CN/QYbwcyXqtT7QtBN1LXvoYiNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pCwGBHL0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A6311C43390;
-	Thu,  8 Feb 2024 00:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707352826;
-	bh=OTsPfX3ootmJaowlcdqnHuUcVRwW2q7b+EVL2LbOUqs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=pCwGBHL08qx6QqevaJWrp3ZDVg2rswWEEeTyL/h6nNAQ3WVI8yhJ+uXfPK5n9eLsJ
-	 Ej9g9cdHHimG/aqYWUj9PYlvbd3OzEV5mbGgH4Wp/2QRFx15P7alDUTcpiWsGjGtSh
-	 Tppru6bgqvbG8Mcmw9IZs+eDEneHLDwlVCqjFpKnFn+KvPUMtQwr24UFVBDEJ1Ndmr
-	 IsR7H0Utzk0YyTYBM5oQye8b/NsLhFfi+oyH/TIPzY79rFNIxgg+8/g/knQ2uuwDos
-	 seaWreoJegRQO9FEkNZvTyhW2ecmQb9nmSG7HBugq5jgeXQsh9nblrQA/WNl1yJn/O
-	 IZsGMksu8bs6Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8B96DD8C96F;
-	Thu,  8 Feb 2024 00:40:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707353430; c=relaxed/simple;
+	bh=nXpn5BlvGSY0sc64IXz6i7AkTu8HDnw+rRcIZuYB39M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PUHcbecSn9astc/NfXDvETA+VG7/iTg2TEzAkNOI2bel/9BOgwjMwkXQhGNo4vf58RN3DLMMHaW5YkoJW9NayrPgBwo/1sHZ6w4OKTdOdSdjgIGcVsNLB8/vA4LI+mGO2aNfYkmtFGAUxoCNa3gEw9nBtZs7458ySz/lRVs2nKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bv4AqPGC; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bfedaaeeacso675466b6e.0;
+        Wed, 07 Feb 2024 16:50:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707353428; x=1707958228; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XhnRrncVP4lzPLUrvGryxvbt7W38XLsNAzwHJ2tdxwE=;
+        b=bv4AqPGC104QzX5+m5JWIuEtk1ITVITOczNCVZQuc0ix0puVrBkSGGEYLFhB50lEv9
+         oR7d6K0MogepQQcsyRL8mSdOx8dzHo1cSdqE8+b03pFrQM6K+m8g8L8KfvrsKZzsDf5H
+         GcV3fc/RKRmHxQouydKa13aPtTO0pG5ohct0iAxUG7SZ2WXO2dDqdqmPPGgQjeU3vXoH
+         LMDjJ0U8KzH0t9NAmvB56dSrDzhA3AEewMXK/r9UUkWfcAaZptQQganeLFQLGhOP6+N2
+         tW1CZ9zZYK1GwJZNqope5x5z6v0j9k76PgU8GFjDEFhJC63Vp0HfdI2G5xiZDxt/VDVD
+         dP9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707353428; x=1707958228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XhnRrncVP4lzPLUrvGryxvbt7W38XLsNAzwHJ2tdxwE=;
+        b=o/DNrr6A35XBuJXoA7DzaTwc8Z+FEsxEtrdVOIh2kRG4zkLDZftp4ZOhCZzUKvosSn
+         vgPZjPV16Jo0Rw9wQbMf7JeUOoRXhEXvbojizkyEGyRbPmNwwQ/o9rZFoEzYW7EUn+KU
+         IKIvff6oZ3HOSg+aGH24EBC49Znhorr9h0aU1vmQrYEzuWTjqC5ggbc4lXGa3r0ePOGu
+         yo17eZrVt/EetAgHZ7D65/LX6keHvzbMMPsgBMNYHhF0n+/PtVcEEBlRqH0Tg7YbmTHC
+         dJ/hr7CsvgUXYzTqJAfpGHrMDCfXB9Ih35+Aibgx6P/DGuDtCh/KQ2S1YcUgCNbpa1jU
+         ZCxg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0t+aycd2gi1kWQ+0cd3WUSFGAT0Vg0bs29I0Bji+VPntxWRMggYB1sCwx0pgKU1NmiIxRfQx3NoWw0ULRoxBhdq0iV3BdHJDrOpCP9EZadAXe7hKzixvI5+95UvOEsL5g
+X-Gm-Message-State: AOJu0YwRs3XGRaaQBFDlal7m+u3JmhRQ1dJUEOX0PD4rYvuEaTfGMySo
+	Nue8H1523632apJtBKKCetJDwfoZxWv2BQtx3s1UqBZ/JCMDwvh3yf0sbISbrn4zoEji/VkW90V
+	+7K2iYkiEDbbhmNss4rT9/WxDa9Y=
+X-Google-Smtp-Source: AGHT+IEUlO2zukqDSovYWf07rNVodK+7DJ9CthjKAroh1jaO14yZj9yENxACYznvsy5rK6d2wuYPvIevh8czG1Byig4=
+X-Received: by 2002:a05:6808:22a5:b0:3bf:e45c:cd6 with SMTP id
+ bo37-20020a05680822a500b003bfe45c0cd6mr8387192oib.26.1707353427806; Wed, 07
+ Feb 2024 16:50:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: merge two CONFIG_BPF entries
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170735282656.22797.7077136793931051154.git-patchwork-notify@kernel.org>
-Date: Thu, 08 Feb 2024 00:40:26 +0000
-References: <20240204075634.32969-1-masahiroy@kernel.org>
-In-Reply-To: <20240204075634.32969-1-masahiroy@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, andrii@kernel.org, haoluo@google.com, jolsa@kernel.org,
- kpsingh@kernel.org, martin.lau@linux.dev, song@kernel.org, sdf@google.com,
- yonghong.song@linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1707080349.git.dxu@dxuuu.xyz> <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
+In-Reply-To: <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 7 Feb 2024 16:50:15 -0800
+Message-ID: <CAEf4BzaSSTY0KTBYACvvVUeKVWd9wO+FM91E-9ES4dHwY-wX+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpftool: Support dumping kfunc prototypes
+ from BTF
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: quentin@isovalent.com, daniel@iogearbox.net, ast@kernel.org, 
+	andrii@kernel.org, olsajiri@gmail.com, alan.maguire@oracle.com, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Sun, Feb 4, 2024 at 1:07=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> This patch enables dumping kfunc prototypes from bpftool. This is useful
+> b/c with this patch, end users will no longer have to manually define
+> kfunc prototypes. For the kernel tree, this also means we can drop
+> kfunc prototypes from:
+>
+>         tools/testing/selftests/bpf/bpf_kfuncs.h
+>         tools/testing/selftests/bpf/bpf_experimental.h
+>
+> Example usage:
+>
+>         $ make PAHOLE=3D/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+>
+>         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | =
+rg "__ksym;" | head -3
+>         extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __=
+weak __ksym;
+>         extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym=
+;
+>         extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)=
+ __weak __ksym;
+>
+> Note that this patch is only effective after the enabling pahole [0]
+> change is merged and the resulting feature enabled with
+> --btf_features=3Ddecl_tag_kfuncs.
+>
+> [0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 91fcb75babe3..0fd78a476286 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -20,6 +20,8 @@
+>  #include "json_writer.h"
+>  #include "main.h"
+>
+> +#define KFUNC_DECL_TAG         "bpf_kfunc"
+> +
+>  static const char * const btf_kind_str[NR_BTF_KINDS] =3D {
+>         [BTF_KIND_UNKN]         =3D "UNKNOWN",
+>         [BTF_KIND_INT]          =3D "INT",
+> @@ -454,6 +456,39 @@ static int dump_btf_raw(const struct btf *btf,
+>         return 0;
+>  }
+>
+> +static int dump_btf_kfuncs(struct btf_dump *d, const struct btf *btf)
+> +{
+> +       DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts);
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+nit: use shorter LIBBPF_OPTS, DECLARE_LIBBPF_OPTS is a "deprecated"
+macro name I hid, but didn't remove
 
-On Sun,  4 Feb 2024 16:56:34 +0900 you wrote:
-> 'config BPF' exists in both init/Kconfig and kernel/bpf/Kconfig.
-> 
-> Commit b24abcff918a ("bpf, kconfig: Add consolidated menu entry for bpf
-> with core options") added the second one to kernel/bpf/Kconfig instead
-> of moving the existing one.
-> 
-> Merge them together.
-> 
-> [...]
+> +       int cnt =3D btf__type_cnt(btf);
+> +       int i;
+> +
+> +       for (i =3D 1; i < cnt; i++) {
+> +               const struct btf_type *t =3D btf__type_by_id(btf, i);
+> +               const struct btf_type *kft;
+> +               const char *name;
+> +               int err;
+> +
+> +               if (!btf_is_decl_tag(t))
+> +                       continue;
+> +
+> +               name =3D btf__name_by_offset(btf, t->name_off);
+> +               if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG))=
+)
+> +                       continue;
 
-Here is the summary with links:
-  - bpf: merge two CONFIG_BPF entries
-    https://git.kernel.org/bpf/bpf-next/c/e55dad12abe4
+should we do a bit more sanity checking here? Check that component_idx
+=3D -1 (entire func) and pointee type is FUNC?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +
+> +               printf("extern ");
+> +
+> +               kft =3D btf__type_by_id(btf, t->type);
 
+nit: reuse t?
 
+> +               opts.field_name =3D btf__name_by_offset(btf, kft->name_of=
+f);
+> +               err =3D btf_dump__emit_type_decl(d, kft->type, &opts);
+> +               if (err)
+> +                       return err;
+> +
+> +               printf(" __weak __ksym;\n\n");
+
+why extra endline?
+
+though I'd ensure two empty lines before the first kfunc declaration
+to visually separate it from other type. Maybe even add a comment like
+`/* BPF kfuncs */` or something like that?
+
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static void __printf(2, 0) btf_dump_printf(void *ctx,
+>                                            const char *fmt, va_list args)
+>  {
+> @@ -476,6 +511,12 @@ static int dump_btf_c(const struct btf *btf,
+>         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+>         printf("#pragma clang attribute push (__attribute__((preserve_acc=
+ess_index)), apply_to =3D record)\n");
+>         printf("#endif\n\n");
+> +       printf("#ifndef __ksym\n");
+> +       printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
+> +       printf("#endif\n\n");
+> +       printf("#ifndef __weak\n");
+> +       printf("#define __weak __attribute__((weak))\n");
+> +       printf("#endif\n\n");
+>
+>         if (root_type_cnt) {
+>                 for (i =3D 0; i < root_type_cnt; i++) {
+> @@ -491,6 +532,10 @@ static int dump_btf_c(const struct btf *btf,
+>                         if (err)
+>                                 goto done;
+>                 }
+> +
+> +               err =3D dump_btf_kfuncs(d, btf);
+> +               if (err)
+> +                       goto done;
+>         }
+>
+>         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+> --
+> 2.42.1
+>
 
