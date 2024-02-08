@@ -1,299 +1,205 @@
-Return-Path: <bpf+bounces-21485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DFD784DA63
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 07:51:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D9284DAC5
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 08:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8C5A1F22521
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 06:51:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AE051C233DF
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 07:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9458E6931B;
-	Thu,  8 Feb 2024 06:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8875869D30;
+	Thu,  8 Feb 2024 07:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I70Dm4Iy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JC/0kMyP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B4A67E7F
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 06:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B866F69312
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 07:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707375075; cv=none; b=ssX02RIzpuVuQoq9mSBCIynVJCRTccq8jCcjQYaHtmYyFCQy6k0ekP74VxD/Gok2KkrrCjZK59nxLTQwXBXvrCPvhuFL4nftQ2jYpSlStFJ9Br9WE/8btTLQlaO0P0ZMsT2zEMCXXaN94cwG/VO5k2+nkIeSudnE2nU1xTl0FyE=
+	t=1707377884; cv=none; b=hSWmoiu/jupJE0AsiyyZGWLQoWcL2UQH7fnrqrdWYRrDNYqhcXN2MS/4wG9508Tc05hhZGy0Xm+Np77iO2/nG2S93Posl221mlx4AyU8HHxZcG2Z4jneGVVtdrbGY1kpqCvRcAtga4nyCO8LL91hz+FtrdX3A8CVvWqzMtjX6ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707375075; c=relaxed/simple;
-	bh=tJaEvUHBGfLHhQQ6Z8IUE3m7lUAI+XObVCJa24vf10U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=k86GE8EulpagcO7MjHzigFjOpBur3Wrq0uJ3gyvIrDpGVSR6JDnZ0HhcwF53GP8e73R6flvssqlgOU8ocOSsGnFIrBSoVrjM5qA2q9DeXngwwlbHyYpbybAV55QTQawU0w0H5o6THUG4GcZHfE5Afj/EfqYbGZr3hxpEcB9kiVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I70Dm4Iy; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6049b3deee8so12256807b3.1
-        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 22:51:13 -0800 (PST)
+	s=arc-20240116; t=1707377884; c=relaxed/simple;
+	bh=C8eAIQ3ydyM/HUmEtB8c0Bl+XbiKqgz8XlTsRr8n+Is=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UGfp6SLPsTwBinujPPcq+ymMHyxSp6PQZgU5ZUjaIN4mMULAelpx7T6Y9YpyPP1or1yBYbG5bw5f0qc+KIhl+Q80jqp+VulFxCpNf1ZIo18HeFYv1sAeWEU9L+PJvZNYu+yqQz1654uIET18lrDNudUTt5kpWuNJWANjS//z5xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JC/0kMyP; arc=none smtp.client-ip=209.85.217.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-46d331e3fd2so401145137.0
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 23:38:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707375072; x=1707979872; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KL46QOptrTSppgIc8VdwygxoqnHkFvIWCBIzuCoN1ys=;
-        b=I70Dm4Iy4U1/USBxW2VOFFyPnGC2BsksjFNBlPsaGBq0OCx/INvxKr601Fcq/lpgwz
-         GiSbywyb6wODKt4kYG4D7Jd4foh+1l9ilIn2afZImvgSAYazmzl9jnbnM7WY6PorooaB
-         IlAOD8e8ilIfuY6eAErD+hBTbETC1qC+nJKvApOnkM4FyWT+YsOEzAP/zOdPeusGO5cz
-         W2d6hgx1QIjwzMWxEX+aP6GCkMjHFX9sNwSfHc4gbF+wZnK97KQtHAExhoCKkvU03/GB
-         KHORm5X7k2VItdvaTQYuCddPD+Q9Rznp/L95O8fW/4rAjWPYEYEwjrayy845jhF5J/XS
-         aBhg==
+        d=google.com; s=20230601; t=1707377880; x=1707982680; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IA6p3n1ZEVVHs3Sv4vYngSUcXEgK4Am17fVh3dyRzrg=;
+        b=JC/0kMyPEhGGwCwThybdC3/9WWbX6khEWbxqgpbgzqe1MIM2vxEB+Mls9Q0kJPJVoM
+         a3r6VLGsA/evZ94w0mkidItgvtQxaLHuQxsFYGUK7FzDfAT4fk9b6VkL5YPizkET09sl
+         q16j99j2ePxi9asjTnpLkxzq3b4VQW+9PUIDrnsaDWkKp0YFPel1sazw0uYpLB08en3H
+         /p3GoWA3kd9Jx1CxSGBqY7hmuuM7qHHlyP++n6nvAluvh/A3zHpv4pVWF013vAMAPWZt
+         emZMMVzJ/LAzbe0w/JpVXQ4FA0Z00aV+1wXKDsw+7KOWnrMSBCI+ThRnbswzIGJ8LFlP
+         oJqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707375072; x=1707979872;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KL46QOptrTSppgIc8VdwygxoqnHkFvIWCBIzuCoN1ys=;
-        b=QvkzOzcJS3/JJ7BlVEsBMVEWfYQJ5oTbiJhZY3gEzm/ah1VYUnJvIgGMG7jf2/EAom
-         Z0qj9u8Z3l4JXAAreMZG76vlOEr7oiqPziqOQl5KTPAwfA3ET0wtGn4mcDFjB4RmLlpa
-         k0y5zxaihVaHURfsxkS7wqK00tQ+V2Q9VauJ/BCJKTyH0tXzLcZ6IDzw3rzCQFi2yrNL
-         CH1TiTaPz9m5Wc/xIgazQ7uQI6W0pvt8dK/pT7fYg313En9J9dL0ON1iesUHYOUrKbA/
-         4VAMG2l8Jf6rQ9HzfIPGwK5bWC4jlxF2kPPcvagCMOB2JsTu9hkUW9ge538/itjyXNL3
-         K3DA==
-X-Gm-Message-State: AOJu0YzqHMvfwgM5zsAbcJkIu8shvSjIJpfNlpDCM3OhDDeOmkyZTQoU
-	uQLjLj06S19tyICBMtLD02x2a4DlX6U5LuCOkyJjPtplRTZAvx9uy/0+iAs4bg4=
-X-Google-Smtp-Source: AGHT+IE5KORFH+J7ZagFNnbduneZJdV0TiT47A690Dgb803DEJf7trLkpMbSedGgf71kRVVBMce19g==
-X-Received: by 2002:a81:6c93:0:b0:604:acd9:32ce with SMTP id h141-20020a816c93000000b00604acd932cemr181255ywc.8.1707375071806;
-        Wed, 07 Feb 2024 22:51:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWbE47zU2t6yxIkweYlZVPzxxzVtdbF7AWrKJVRWkAEs1vhbVEWuHutFykKn6CqrW62/Q3TOC5B01n2ZJUuGiyy/J/3KGssaqH9WLqkMNxnQ2G0vq3qkn9pLSrpUKusjmFriXJNtu5v2UVe30trfGx1jIDCWuoO33U3dZIyYRaaFX3o0C35mbc785BnIg1CeBwy8cXuLeken4AF0y3ae4zG4wCf/xjzHhUq6aUxm07DjuI32xy+1AJcrnScRWmWTnZW4emCm+b9zRoO/0ITywO4YQdBh4PNP1lV5uNJZaIMdHo=
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:1d02:e957:f461:9a61])
-        by smtp.gmail.com with ESMTPSA id u203-20020a8184d4000000b0060467650c64sm596917ywf.62.2024.02.07.22.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 22:51:11 -0800 (PST)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	davemarchevsky@meta.com,
-	dvernet@meta.com
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v6 4/4] selftests/bpf: Test PTR_MAYBE_NULL arguments of struct_ops operators.
-Date: Wed,  7 Feb 2024 22:51:03 -0800
-Message-Id: <20240208065103.2154768-5-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208065103.2154768-1-thinker.li@gmail.com>
-References: <20240208065103.2154768-1-thinker.li@gmail.com>
+        d=1e100.net; s=20230601; t=1707377880; x=1707982680;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IA6p3n1ZEVVHs3Sv4vYngSUcXEgK4Am17fVh3dyRzrg=;
+        b=eZqdsry4a6j4VB1eBkrJF6tlnPsWsDgEKqsRKe9ZvMwhN9u1HM/3oBpILe3+99eezY
+         g7Guv/925czjWaIxdP/BplaPhcDoNG78iV2pSHJ8qbJ36mVYNW9LOZ4wHVNQTXrhb9bZ
+         h2OVt6N+MYteQFCGJQ2GAl25GN2zzIExMrMs+Ymk6mJI7nFfh7Gk6klDeqwC1Hhx1un0
+         S1EV7Q7ccAHSLytyk1eC9FE+Mko9Xbhwbsjc050/B2SKshUvzNEBmfydo/2+pfV1Qo6W
+         YOghyXE+haB2okKfcU4Q0z8CyesEY6idFn5ns7D7nXSBmBzfUib8WrQ2tOWQ8Yo2TVKA
+         UXiw==
+X-Gm-Message-State: AOJu0YzBZSzMORrJ+HEfsLk5LiZvkA1ZzTy32lNPfq3R8f3qt3J/6C6P
+	nGF4v5FywnjIf3bZ5LBWIzSGCoBz3ubDCVFJtRrIsSSgPBBERJAdgS8CxD9HcB8cJT10JuoIqHS
+	u5IH59Zs3gGuS3f6jMl4wMIErjGiu/1lQW5vf
+X-Google-Smtp-Source: AGHT+IGwehdbiBvQCcs6QZkWZe4e4Jn5FvUrhyusbCezIHg5mRJvrwONdsjgCpmFZtBMzqb7AaGiRH9mgYQJuk1i2YU=
+X-Received: by 2002:a05:6102:5589:b0:46d:28a6:6e10 with SMTP id
+ dc9-20020a056102558900b0046d28a66e10mr2094170vsb.12.1707377880392; Wed, 07
+ Feb 2024 23:38:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240207122626.3508658-1-elver@google.com> <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
+In-Reply-To: <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
+From: Marco Elver <elver@google.com>
+Date: Thu, 8 Feb 2024 08:37:24 +0100
+Message-ID: <CANpmjNMGW3zTGOn_69=+KjE4Txik8aQBbdefeo0GuVOkqjgV6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Allow compiler to inline most of bpf_local_storage_lookup()
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>, 
+	Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+On Thu, 8 Feb 2024 at 00:58, Yonghong Song <yonghong.song@linux.dev> wrote:
+> On 2/7/24 4:26 AM, Marco Elver wrote:
+> > In various performance profiles of kernels with BPF programs attached,
+> > bpf_local_storage_lookup() appears as a significant portion of CPU
+> > cycles spent. To enable the compiler generate more optimal code, turn
+> > bpf_local_storage_lookup() into a static inline function, where only the
+> > cache insertion code path is outlined
+> >
+> > Notably, outlining cache insertion helps avoid bloating callers by
+> > duplicating setting up calls to raw_spin_{lock,unlock}_irqsave() (on
+> > architectures which do not inline spin_lock/unlock, such as x86), which
+> > would cause the compiler produce worse code by deciding to outline
+> > otherwise inlinable functions. The call overhead is neutral, because we
+> > make 2 calls either way: either calling raw_spin_lock_irqsave() and
+> > raw_spin_unlock_irqsave(); or call __bpf_local_storage_insert_cache(),
+> > which calls raw_spin_lock_irqsave(), followed by a tail-call to
+> > raw_spin_unlock_irqsave() where the compiler can perform TCO and (in
+> > optimized uninstrumented builds) turns it into a plain jump. The call to
+> > __bpf_local_storage_insert_cache() can be elided entirely if
+> > cacheit_lockit is a false constant expression.
+> >
+> > Based on results from './benchs/run_bench_local_storage.sh' (21 trials,
+> > reboot between each trial; x86 defconfig + BPF, clang 16) this produces
+> > improvements in throughput and latency in the majority of cases, with an
+> > average (geomean) improvement of 8%:
+[...]
+> >   include/linux/bpf_local_storage.h             | 30 ++++++++++-
+> >   kernel/bpf/bpf_local_storage.c                | 52 +++++--------------
+> >   .../bpf/prog_tests/task_local_storage.c       |  6 ---
+> >   .../selftests/bpf/progs/cgrp_ls_recursion.c   | 26 ----------
+> >   .../selftests/bpf/progs/task_ls_recursion.c   | 17 ------
+> >   5 files changed, 41 insertions(+), 90 deletions(-)
+> >
+> > diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+> > index 173ec7f43ed1..dcddb0aef7d8 100644
+> > --- a/include/linux/bpf_local_storage.h
+> > +++ b/include/linux/bpf_local_storage.h
+> > @@ -129,10 +129,36 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
+> >                           struct bpf_local_storage_cache *cache,
+> >                           bool bpf_ma);
+> >
+> > -struct bpf_local_storage_data *
+> > +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
+> > +                                   struct bpf_local_storage_map *smap,
+> > +                                   struct bpf_local_storage_elem *selem);
+> > +/* If cacheit_lockit is false, this lookup function is lockless */
+> > +static inline struct bpf_local_storage_data *
+> >   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
+> >                        struct bpf_local_storage_map *smap,
+> > -                      bool cacheit_lockit);
+> > +                      bool cacheit_lockit)
+> > +{
+> > +     struct bpf_local_storage_data *sdata;
+> > +     struct bpf_local_storage_elem *selem;
+> > +
+> > +     /* Fast path (cache hit) */
+> > +     sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
+> > +                                   bpf_rcu_lock_held());
+> > +     if (sdata && rcu_access_pointer(sdata->smap) == smap)
+> > +             return sdata;
+>
+> I think we should focus on fast path (your v1 patch)
+> and I suppose most production environments
+> want to hit fast path in most times. In your production environment did
+> you see more than 16 local storage maps per entity (task/sk/inode)?
 
-Test if the verifier verifies nullable pointer arguments correctly for BPF
-struct_ops programs.
+I think having more than 16 local storage maps isn't entirely unlikely
+as eBPF usage grows. But at the moment, it should be rare.
 
-"test_maybe_null" in struct bpf_testmod_ops is the operator defined for the
-test cases here.
+> In the fast path, the memory accesses are
+>    two from local_storage->cache[smap->cache_idx] and
+>    one from sdata->smap
+>
+>
+> > +
+> > +     /* Slow path (cache miss) */
+> > +     hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
+> > +                               rcu_read_lock_trace_held())
+> > +             if (rcu_access_pointer(SDATA(selem)->smap) == smap)
+> > +                     break;
+>
+> But if we reach slow path here which means we have more than 16 local
+> storage maps, then traversing the list and getting SDATA(selem)->smap
+> will be very expensive, in addition to memory accesses in fast path.
+>
+> I suppose here we mostly care about socket local storage since it is
+> totally possible for a production workload to have millions of sockets.
+> To improve performance, fast path should hit in most cases.
+> If there are too many sk local storage maps, some kind of sharing
+> can be done so multiple applications might be using a single sk
+> local storage.
+>
+> Your above inlining/outlining analysis also show how tricky it is
+> for compilation optimization. Without profiling, it is totally
+> possible that compiler might do optimization differently in
+> the future.
 
-A BPF program should check a pointer for NULL beforehand to access the
-value pointed by the nullable pointer arguments, or the verifier should
-reject the programs. The test here includes two parts; the programs
-checking pointers properly and the programs not checking pointers
-beforehand. The test checks if the verifier accepts the programs checking
-properly and rejects the programs not checking at all.
+Sure, but it's usually the case that we have to help the compiler a
+little to produce more optimal code - if the compiler becomes stupid
+in future, we need either fix the compiler or help it some more.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 13 +++++-
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  4 ++
- .../prog_tests/test_struct_ops_maybe_null.c   | 46 +++++++++++++++++++
- .../bpf/progs/struct_ops_maybe_null.c         | 29 ++++++++++++
- .../bpf/progs/struct_ops_maybe_null_fail.c    | 24 ++++++++++
- 5 files changed, 115 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
+> So here is my suggestion, let us do inlining
+> for fast path and focus on performance of fast path.
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index a06daebc75c9..66787e99ba1b 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -555,7 +555,11 @@ static int bpf_dummy_reg(void *kdata)
- {
- 	struct bpf_testmod_ops *ops = kdata;
- 
--	ops->test_2(4, 3);
-+	/* Some test cases (ex. struct_ops_maybe_null) may not have test_2
-+	 * initialized, so we need to check for NULL.
-+	 */
-+	if (ops->test_2)
-+		ops->test_2(4, 3);
- 
- 	return 0;
- }
-@@ -573,9 +577,16 @@ static void bpf_testmod_test_2(int a, int b)
- {
- }
- 
-+static int bpf_testmod_ops__test_maybe_null(int dummy,
-+					    struct task_struct *task__nullable)
-+{
-+	return 0;
-+}
-+
- static struct bpf_testmod_ops __bpf_testmod_ops = {
- 	.test_1 = bpf_testmod_test_1,
- 	.test_2 = bpf_testmod_test_2,
-+	.test_maybe_null = bpf_testmod_ops__test_maybe_null,
- };
- 
- struct bpf_struct_ops bpf_bpf_testmod_ops = {
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index 537beca42896..c3b0cf788f9f 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -5,6 +5,8 @@
- 
- #include <linux/types.h>
- 
-+struct task_struct;
-+
- struct bpf_testmod_test_read_ctx {
- 	char *buf;
- 	loff_t off;
-@@ -31,6 +33,8 @@ struct bpf_iter_testmod_seq {
- struct bpf_testmod_ops {
- 	int (*test_1)(void);
- 	void (*test_2)(int a, int b);
-+	/* Used to test nullable arguments. */
-+	int (*test_maybe_null)(int dummy, struct task_struct *task);
- };
- 
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
-new file mode 100644
-index 000000000000..01dc2613c8a5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+
-+#include "struct_ops_maybe_null.skel.h"
-+#include "struct_ops_maybe_null_fail.skel.h"
-+
-+/* Test that the verifier accepts a program that access a nullable pointer
-+ * with a proper check.
-+ */
-+static void maybe_null(void)
-+{
-+	struct struct_ops_maybe_null *skel;
-+
-+	skel = struct_ops_maybe_null__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open_and_load"))
-+		return;
-+
-+	struct_ops_maybe_null__destroy(skel);
-+}
-+
-+/* Test that the verifier rejects a program that access a nullable pointer
-+ * without a check beforehand.
-+ */
-+static void maybe_null_fail(void)
-+{
-+	struct struct_ops_maybe_null_fail *skel;
-+
-+	skel = struct_ops_maybe_null_fail__open_and_load();
-+	if (ASSERT_ERR_PTR(skel, "struct_ops_module_fail__open_and_load"))
-+		return;
-+
-+	struct_ops_maybe_null_fail__destroy(skel);
-+}
-+
-+void test_struct_ops_maybe_null(void)
-+{
-+	/* The verifier verifies the programs at load time, so testing both
-+	 * programs in the same compile-unit is complicated. We run them in
-+	 * separate objects to simplify the testing.
-+	 */
-+	if (test__start_subtest("maybe_null"))
-+		maybe_null();
-+	if (test__start_subtest("maybe_null_fail"))
-+		maybe_null_fail();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
-new file mode 100644
-index 000000000000..b450f72e744a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+pid_t tgid = 0;
-+
-+/* This is a test BPF program that uses struct_ops to access an argument
-+ * that may be NULL. This is a test for the verifier to ensure that it can
-+ * rip PTR_MAYBE_NULL correctly.
-+ */
-+SEC("struct_ops/test_maybe_null")
-+int BPF_PROG(test_maybe_null, int dummy,
-+	     struct task_struct *task)
-+{
-+	if (task)
-+		tgid = task->tgid;
-+
-+	return 0;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_1 = {
-+	.test_maybe_null = (void *)test_maybe_null,
-+};
-+
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
-new file mode 100644
-index 000000000000..6283099ec383
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+pid_t tgid = 0;
-+
-+SEC("struct_ops/test_maybe_null_struct_ptr")
-+int BPF_PROG(test_maybe_null_struct_ptr, int dummy,
-+	     struct task_struct *task)
-+{
-+	tgid = task->tgid;
-+
-+	return 0;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_struct_ptr = {
-+	.test_maybe_null = (void *)test_maybe_null_struct_ptr,
-+};
-+
--- 
-2.34.1
+The slow-path (iterate list w/o cache insertion) is still relatively
+small (it's a pointer-chasing loop and a compare), and I decided that
+it can be justified inlining it. Martin asked in v1 why there were
+slowdowns above 16 local maps, and I analyzed, and concluded that
+inlining most is needed to fix and does not hurt performance: in fact,
+the current version is better than v1 in all cases (even for 16 maps
+or below).
 
+Let me know which version you prefer, and I'll change it. However,
+based on the results, I would prefer the current version.
+
+Thanks,
+-- Marco
 
