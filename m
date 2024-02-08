@@ -1,127 +1,202 @@
-Return-Path: <bpf+bounces-21533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3827E84E90C
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 20:41:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8224784E91A
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 20:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37C8C1C22661
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:41:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 166F31F313B1
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5339381BD;
-	Thu,  8 Feb 2024 19:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91D5A381D9;
+	Thu,  8 Feb 2024 19:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SzrB8a4W"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RzVmuChS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD933714E
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 19:40:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44B538385
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 19:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707421255; cv=none; b=cJD5+XiBNrHEQ4fadjAvxBPfOETbBNeBXdHbjUArcTAm+ug26Ko32IffyCxTbyEAh+18vvMms+N1ky+ycOHRZpK9Ja1sY8z0Et4tfKqFYZx8dlPpANgvpFT46f9DUgKQDukTRpOWdRR8N6rA/eqk/7pPnwbNIHPFzCBMX+qTamw=
+	t=1707421511; cv=none; b=NqXKN3s6NSilSvgTTFUfCuElxAYoNZ82gIkeql/9zPVUH+0cD2hH6OjfTXlW8n5ixZybmql13Ic5zaexWb1pJgJ54TfrIK0JOgwhIvNvUYiZy6ovLkbF2yjenY/uUvGaBW+pkh7wG/kWfFX0mBhjLxjWLz2fhNhVAVwe5RKXwuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707421255; c=relaxed/simple;
-	bh=SAnX8KC+MfL+MT2psUZA7PzKP31URmvWKGXkUgg41Tc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gDmcmyatPui94JxbRByKun/IpJLVveXSoVSIJzB2qO08gOXx34crzwiV3tqFPAZwWsRXOfFz2rjJyGGxgC6J+8B6BauBhc2IzCzgRIIEntukBbvJ9oDoU9c1LWrjulqNJlg3coiuJp6AEwcczBXvDE4+sMyrGzzAnMRuBieH+Uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SzrB8a4W; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2967682b29aso164725a91.2
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 11:40:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707421253; x=1708026053; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7Uvho/3+SQ/oHGmByMgHt7zgIL+iC5vHc1U18bVb5MM=;
-        b=SzrB8a4W405B2B3OySnmIH2EJI+Lv0FLP/ohliO3kcJd3hajm5PPYVry5C1cyaKZC7
-         gM6i5lnqTGc1mgvI5SlCfrLIpMUmUVnD68XQ56XxO8epEP4P0VLmZt3p0HCbd+Frk0wp
-         yxYjPx3SADWCXib28ZthnbotyNT8KY0WIDvbH5+lZ/4lA1KvCj4HRi948SNTUIPFVqK6
-         dprRIIhpNTS3zQGshMmV6blIDXBYXRLOyD77xRxsplnh5/MJYAVFwKBEdjlK7DSnoa9a
-         sKKeQ03Ay0dVRJM9L7TqrcqN+07FgFfLnJ/P20H144gnTypBGqHWA3l0zGuTqOiUA0jy
-         qwMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707421253; x=1708026053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Uvho/3+SQ/oHGmByMgHt7zgIL+iC5vHc1U18bVb5MM=;
-        b=j8GTizZPru3rYZDVkm+HeiDN8IbOy0zrsOUSU3xZlnVUyVQWJ+8gYBKexaHmSAyDkl
-         AzKt9d3mBpvjHMK9n5cohjAk50pWwZS0I8KdrOVR/AVT7cxLHwnSCmlEqF7z+SPt7k8q
-         tcBoWJ/q7VTZ0PlFH7Wv6webTaFskpV0XFJ1Kww3HnPZ8ALheTRx3PXLG+JG75ex1Ei8
-         18uw04o4jePOC4O1g7Xvqe7KM8+INwXk2ACcReH+0967NLEd2f/6y9nrb/+qDytYRMrJ
-         Wd7Xousjs7ceuqLn0GKAmy94jhWihACWzXAVrAIjoDu7St5IHfkBIR+X65hIe5A40vxF
-         X3yw==
-X-Gm-Message-State: AOJu0YyDWZOvsvMssaHaHRbq+Zsr2WXh4GCOh6AjCDxX5ngj0OpEzMyI
-	Il4vXVljlbA3LBCG1G09vjXa6GFJ+e8xZoUa8G6GHI0sxKgZOfSCBYVn6Nri48ea8yCRHG8zbfb
-	pBu/0t2UFEMg2b0VkkjTRzN682uc=
-X-Google-Smtp-Source: AGHT+IHGBMbZXHIO7wh/7W+Hm0PyEnhoXRGksIqAPIhAHQIpdmj6FHs1+mVU6DCoLu0kkLet6IoYejSmDtZF3q20q9k=
-X-Received: by 2002:a17:90b:118d:b0:295:f83d:590 with SMTP id
- gk13-20020a17090b118d00b00295f83d0590mr252273pjb.27.1707421253360; Thu, 08
- Feb 2024 11:40:53 -0800 (PST)
+	s=arc-20240116; t=1707421511; c=relaxed/simple;
+	bh=csAhjerKkvLYTsThIdGULRmcEFeLAE1qFXGl4mzQ1T4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n+a5LJJHn9qEFccEoJhMuazMwHcUq3PCLo6f5YZo4HaDUKsCBxYuI2CukL3mBel+0xhhG8qvBXXjc/xYC1kytBHuRZ3/xC0Ry9yC8dc81C4a6S+h/3t+WA2o2mhnDrO9t9njhrUu9mS0HUkdRk8lcYGjUbPYS/rW21ZMAoMXg+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RzVmuChS; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <005d58f9-77da-48bf-b13b-7e40a1f933c3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707421503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bSFRjs7/iDDkejEtv6YEV/IpJuo1Fwdjx93qplEY9L4=;
+	b=RzVmuChShXtZx+n9flfwe/qbKNGGlWG0FjyBdIpLcQN+HfdzvVSpUh6CjTXUsj2CbkTwxl
+	LfWXXxaTCSyobrbIUk3cp2uPXCzP7qHLUwFeWvF0tAAjK1i/ZGjRxDEMLC3NUNAIoGkEEP
+	gO1FCCyy46VpMMVs4vqnQMV2Y1+sl5c=
+Date: Thu, 8 Feb 2024 11:44:57 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206220441.38311-1-alexei.starovoitov@gmail.com> <20240206220441.38311-2-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240206220441.38311-2-alexei.starovoitov@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Feb 2024 11:40:41 -0800
-Message-ID: <CAEf4BzYBjzHL20NU_yuj+en-YF0dJmHuvB1SOPGZc=tnbhjZhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/16] bpf: Allow kfuncs return 'void *'
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com, tj@kernel.org, 
-	brho@google.com, hannes@cmpxchg.org, linux-mm@kvack.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] bpf: abstract loop unrolling pragmas in BPF
+ selftests
+Content-Language: en-GB
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ Yonghong Song <yhs@meta.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>, david.faust@oracle.com,
+ cupertino.miranda@oracle.com
+References: <20240207101253.11420-1-jose.marchesi@oracle.com>
+ <c3d29d43-ffa3-47e5-9e44-9114f650bfc4@linux.dev> <87h6ijfayj.fsf@oracle.com>
+ <87wmrfdsk7.fsf@oracle.com>
+ <4ad9dad64b38ae90e4a050ce5181ced750913b23.camel@gmail.com>
+ <87o7crdmjn.fsf@oracle.com>
+ <eea74ef852fc57e9fb69d18e1e5960523c4f7abb.camel@gmail.com>
+ <87il2zdl43.fsf@oracle.com>
+ <7d2b05bf2e7ae7c95807ac4b2a9664f203facbfe.camel@gmail.com>
+ <871q9mew62.fsf@oracle.com> <8297be08-cd05-4f08-8bb2-5956f13bbd25@linux.dev>
+ <514b171d-8a3c-4134-a0b4-9b6531b3fc38@linux.dev> <87a5oadboq.fsf@oracle.com>
+ <875xyydbir.fsf@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <875xyydbir.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 6, 2024 at 2:04=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Recognize return of 'void *' from kfunc as returning unknown scalar.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  kernel/bpf/verifier.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ddaf09db1175..d9c2dbb3939f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12353,6 +12353,9 @@ static int check_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
->                                         meta.func_name);
->                                 return -EFAULT;
->                         }
-> +               } else if (btf_type_is_void(ptr_type)) {
-> +                       /* kfunc returning 'void *' is equivalent to retu=
-rning scalar */
-> +                       mark_reg_unknown(env, regs, BPF_REG_0);
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On 2/8/24 11:03 AM, Jose E. Marchesi wrote:
+>>> On 2/8/24 10:04 AM, Yonghong Song wrote:
+>>>> On 2/8/24 8:51 AM, Jose E. Marchesi wrote:
+>>>>>> On Thu, 2024-02-08 at 16:35 +0100, Jose E. Marchesi wrote:
+>>>>>> [...]
+>>>>>>
+>>>>>>> If the compiler generates assembly code the same code for
+>>>>>>> profile2.c for
+>>>>>>> before and after, that means that the loop does _not_ get
+>>>>>>> unrolled when
+>>>>>>> profiler.inc.h is built with -O2 but without #pragma unroll.
+>>>>>>>
+>>>>>>> But what if #pragma unroll is used?  If it unrolls then, that
+>>>>>>> would mean
+>>>>>>> that the pragma does something more than -funroll-loops/-O2.
+>>>>>>>
+>>>>>>> Sorry if I am not making sense.  Stuff like this confuses me to no end
+>>>>>>> ;)
+>>>>>> Sorry, I messed up while switching branches :(
+>>>>>> Here are the correct stats:
+>>>>>>
+>>>>>> | File            | insn # | insn # |
+>>>>>> |                 | before |  after |
+>>>>>> |-----------------+--------+--------|
+>>>>>> | profiler1.bpf.o |  16716 |   4813 |
+>>>>> This means:
+>>>>>
+>>>>> - With both `#pragma unroll' and -O2 we get 16716 instructions.
+>>>>> - Without `#pragma unroll' and with -O2 we get 4813 instructions.
+>>>>>
+>>>>> Weird.
+>>>> Thanks for the analysis. I can reproduce with vs. without '#pragma
+>>>> unroll' at -O2
+>>>> level, the number of generated insns is indeed different, quite
+>>>> dramatically
+>>>> as the above numbers. I will do some checking in compiler.
+>>> Okay, a quick checking compiler found that
+>>>    - with "#pragma unroll" means no profitability test and do full
+>>>     unroll as instructed
+>>
+>> I don't think clang's `#pragma unroll' does full unroll.
+>>
+>> On one side, AFAIK `pragma unroll' is supposed to be equivalent to
+>> `pragma clang loop(enable)', which is different to `pragma clang loop
+>> unroll(full)'.
+>>
+>> On the other, if you replace `pragma unroll' with `pragma clang loop
+>> unroll(full)' in the BPF selftests you will get branch instruction
+>> overflows.
 
-I think we should do a similar extension when passing `void *` into
-global funcs. It's best to treat it as SCALAR instead of rejecting it
-because we can't calculate the size. Currently users in practice just
-have to define it as `uintptr_t` and then cast (or create static
-wrappers doing the casting). Anyways, my point is that it makes sense
-to treat `void *` as non-pointer.
+You are correct. I did series of examples, and find with "#pragma unroll",
+clang may do:
+   - full unroll (smaller body, less trip count), or
+     Loop Unroll: F[kprobe__proc_sys_write] Loop %for.body.i
+       Loop Size = 40
+       Exiting block %if.then23.i: TripCount=0, TripMultiple=1, BreakoutTrip=1
+       Exiting block %for.inc.i: TripCount=10, TripMultiple=0, BreakoutTrip=0
+     COMPLETELY UNROLLING loop %for.body.i with trip count 10!
+   - partial unroll (for a loop with trip count 10000000), or
+     Loop Unroll: F[foo] Loop %for.body
+       Loop Size = 16
+       partially unrolling with count: 1000
+       Exiting block %for.body: TripCount=10000000, TripMultiple=0, BreakoutTrip=0
+     UNROLLING loop %for.body by 1000!
+   - no unrolling (for a loop with huge body) and issue warning like
+     t.c:2:5: warning: loop not unrolled: the optimizer was unable to perform the requested transformation; the transformation
+     might be disabled or specified as part of an unsupported transformation ordering [-Wpass-failed=transform-warning]
 
->                 } else if (!__btf_type_is_struct(ptr_type)) {
->                         if (!meta.r0_size) {
->                                 __u32 sz;
-> --
-> 2.34.1
+With '#pragma unroll', the compiler will do (more strict?) profitability analysis and looks like
+by default will not do partial inlining:
+
+   Loop Unroll: F[kprobe__proc_sys_write] Loop %for.body.i
+     Loop Size = 40
+   Starting LoopUnroll profitability analysis...
+    Analyzing iteration 0
+   Adding cost of instruction (iteration 0):   call void @llvm.lifetime.start.p0(i64 8, ptr nonnull %__r15.i) #7, !dbg !30496
+   Adding cost of instruction (iteration 0):   call void @llvm.lifetime.start.p0(i64 8, ptr nonnull %__t16.i) #7, !dbg !30497
+   Adding cost of instruction (iteration 0):   %67 = call ptr @llvm.bpf.passthrough.p0.p0(i32 38, ptr %66)
+   Adding cost of instruction (iteration 0):   %66 = getelementptr i8, ptr %17, i64 %65
+   Adding cost of instruction (iteration 0):   %65 = load i64, ptr @"llvm.task_struct:0:4656$0:171", align 8
+   Can't analyze cost of loop with call
+     will not try to unroll partially because -unroll-allow-partial not given
+
+>>
+>> What criteria `pragma unroll' in clang uses in order to determine how
+>> much it unrolls the loop, compared to -O2|-funroll-loops, I don't know.
+
+There are some heuristics in the compiler. I do not know exact algorithm
+either.
+
+> This makes me wonder, asking from ignorance: what is the benefit/point
+> for BPF programs to partially unroll a loop?  I would have said either
+> we unroll them completely in order to avoid verification problems, or we
+> don't unroll them because the verifier is supposed to handle it the way
+> it is written...
+
+In early days, partial unrolling probably for better performance but
+complete unrolling may exceed insn limit 4K. Later on the insn limit
+is increased....
+
+Anyway, I think you patch looks good based on current discussion.
+I will ack it.
+
 >
+>>>    - without "#pragma unroll" mean compiler will do profitability for full unroll,
+>>>      if compiler thinks full unroll is not profitable, there will be no unrolling.
+>>>
+>>> So for gcc, even users saying '#pragma unroll', gcc still do
+>>> profitability test?
+>> GCC doesn't support `#pragma unroll'.
+>>
+>> Hence in my original patch the macro __pragma_unroll expands to nothing
+>> with GCC.  That will lead to the compiler perhaps not unrolling the loop
+>> even with -O2|-funroll-loops.
+>>
+>>>>>> | profiler2.bpf.o |   2088 |   2050 |
+>>>>> - Without `#pragma unroll' and with -O2 we get 2088 instructions.
+>>>>> - With `#pragma loop unroll(disable)' and with -O2 we get 2050
+>>>>>     instructions.
+>>>>>
+>>>>> Also surprising.
+>>>>>
+>>>>>> | profiler3.bpf.o |   4465 |   1690 |
 
