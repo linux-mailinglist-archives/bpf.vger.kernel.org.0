@@ -1,261 +1,221 @@
-Return-Path: <bpf+bounces-21456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FBF884D6EB
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 01:05:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748C684D6F0
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 01:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16EC4286DED
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 00:05:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDE5B1F24397
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 00:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2F84C70;
-	Thu,  8 Feb 2024 00:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A48E846B;
+	Thu,  8 Feb 2024 00:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AdSD1hcT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Krkts/A7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2B34C84
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 00:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E68D502
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 00:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707350744; cv=none; b=RFj4mPKyTGI/gBvFp9o6Gv2RWSMW5TztlLv3Lxe5ZlJCyzeBvDAfqCd5iPBmqmQ9uD490BurQS8RKB5EliwDbCLj+7uHdgt+wjskZLCi8QbZ+bg0lYrj+81rtG1AYWpJDT1t41ohQNJmiaZtNhAnOLzUR+hXghzrrosBTl/yWcg=
+	t=1707351036; cv=none; b=meipX/4HpBA7HR6HNDcuMLXOFn2zuVmqkPQ3ZxexyTFCD2vxLBYJLDMWzoK6K0cKVmWD3iq+0ktZomdYzNRY8ZS46hp7Poq7hghxWAj+PvIp9Wb+3egRykZ9xI8QAELy/XBEiURwleeK+liE8cLZIavwderWHqUtv0OFgWXemFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707350744; c=relaxed/simple;
-	bh=bCjSUTyzpUffdghTWzZHBcjxQ5Ahgbh1u/z/cTHWEhc=;
+	s=arc-20240116; t=1707351036; c=relaxed/simple;
+	bh=k9wgThYQJP/p/LXfhMkyLkX+DC+DcWkVD1fnIRGYMxQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QkFAPYBx7ps+YdppKsYJMpMXUH4g4xeMVjRksD9taQFc2dx0VbDOGuc04x6vsj69oXyrUgXlIs3rbZ7u1Mulbk7fz3LaJrjq/y+4YNeyR+2l4GZQSQFbLGJwy+3FpMRhY//d0SzieA5ZjQjQGadMeJs8yMEOkDPjDbUSoME3V5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AdSD1hcT; arc=none smtp.client-ip=209.85.210.170
+	 To:Cc:Content-Type; b=hDFW5wNoKZRp9iwXuDY4MrpqLl4uKhM/V9Nhjcsny3rj9PwPiwa7Yo9smnpSnlh4NlypAygNVbnWmNTs2tGVylDrKp77yaDR85/x1g0WBEHR9ZuhEj+O3OdU4IRrjcZUS+WJHH9xVI8VV2ZCox65ZeBTv6GM6ZjlqRv1hMDjdzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Krkts/A7; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e071953676so459343b3a.2
-        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 16:05:42 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e06725a08dso869248b3a.3
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 16:10:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707350742; x=1707955542; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707351034; x=1707955834; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=l3ZDjwUN4SXd2KtKNqH0q3JMlANpgNCwNNJwkXTLV9M=;
-        b=AdSD1hcTBFkpXmNi2V2vKehEp+MR1kn2qKqDrXsOCebBA2qMdumKyOi61sNCkntHst
-         Es2oXVbKgTcs/yNDXz9T8rQJKLYB2TtI5s7DOjH7sgap3OTO/hFJH4FxPc9cvpvZ5MhN
-         rsndEXCESH+DccfPAB2qkUD77o79PAgnAnVi6W0IC2bSaNTG0wAcpri8d9nUuy1L5y3L
-         efDTw58BCVJk4tQR5/R7wICf30NL3bEuikkFsMj7EpRBVbpSMyse+93Kotb36Hne56sD
-         y2bRgNqVvYle48Krat9Qnt43AdxEyhS+lhg6nofjr+Wv/jcMdwj5IWPt4dbG1dVMbRcu
-         lp6g==
+        bh=SSxhu0NNvkMzlM9x4xh0XGzXv7b++GwmxfYGqYBvnos=;
+        b=Krkts/A7b8v4dAs5BdVWJVQx1urI4iQbrpRrjrby6JN+psxy1bIeC0V1wWwzUHwlPD
+         PRLggnEK1Y3Z/pYJPqwVLrYOYXrIoqcqn/mf8XAD21Eoq5i4SKHi3Ktp33z+p3/m5khS
+         OJD6Y2oJ0XQHPftwEmal8WAuD2FlGKKoI6MpUn4jUrASVwhPcFdc2NqM02Bu+cZ33OQ/
+         PUqVGcjUEjnsoioKjxPC3TTh4cZFji62VhhjIhucSvYtyXhYIHBTqgb73P5wG9hRQxT+
+         YhsVdWXkbmUSGm+6xiXemNBtqJE8u9nEbp+HNMv0XPC5/w69FL0U2BeL7qsi3e70UtFo
+         FTNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707350742; x=1707955542;
+        d=1e100.net; s=20230601; t=1707351034; x=1707955834;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=l3ZDjwUN4SXd2KtKNqH0q3JMlANpgNCwNNJwkXTLV9M=;
-        b=u619agLmhnQJ9j99cKnriBh9X+XNvpIvSbtuN75AgDxp7N9Dkd+bQfDNyhaw58NNVp
-         8mMP9BSDce0yUwBsVs81PmiUeroVHPDM7jCoCzPK6W87xzVBaGsNCNuvsIwygapkcmXg
-         n0N4eHOL89E5+ObHJitXU4g2HH2OtTSB7gTPuutCik2hDFjV43TuFzEmaXPOCojCssOC
-         OBj3LnPtEb6FjerU0KO1/TY7m1R8J3njz4zdZ2y06IMU+8FoY+evwY24PdPsLch/Jb43
-         S6WRaMxOD7DX3DionrhsrRTNAGY/B7IeK56bJViTny+xIMM9jMlgJdUvnG0jd2RcfCLS
-         jWRg==
-X-Gm-Message-State: AOJu0Yz5/FXn1lL5ptYa+NlHkGRHuGojFrVeSvuTxJkaIP/lE6mEsRp9
-	v1Xuw2SpjtC+csSiH1K4sqdVzPWUWcPskIwiZ1cysPG5IIRo+ov/Pv6k56g/JvpnUZJjab93DTI
-	x4u1SqlA+VNrPu6DZJM2pmAq9xZI=
-X-Google-Smtp-Source: AGHT+IGWJqoerE+Cl6bEhvVKv1sk0xVvpxNn1El5Uo0ZdcUzcpqOUhFunUkDwz60DStYQbAkF0K1hkxvjavQyCxl5BI=
-X-Received: by 2002:a05:6a00:1788:b0:6e0:503f:f506 with SMTP id
- s8-20020a056a00178800b006e0503ff506mr5604022pfg.7.1707350741895; Wed, 07 Feb
- 2024 16:05:41 -0800 (PST)
+        bh=SSxhu0NNvkMzlM9x4xh0XGzXv7b++GwmxfYGqYBvnos=;
+        b=Uv9BY7g0vF2ywZ/64pl1SwwckOiBTfOMDvA5xlhEfdJxLi9Hrb0KyNalcskxjp/kdi
+         4l6iqxxjH36/uXBTT8AjAIsX2QOEymgt5LkvphiYu9B/1rleV/0pZhYaAa5JpymeQDWH
+         xI7ynDMUnlwExWEr5M7pMDukdTwQ/8iO64CStYvO6rK6Z8GfihcXFCgG5NfzF5olzX7o
+         wgh2mhdVZHeFN0bpnNAOx21sxrBLOVxEWVrL+Mn8Gu81PKfaxGiik1NvLDnjQR7u7Zsv
+         xTZuEAHRyYXtFAyvrQESUIYqMYmVmKuttKW/izF+TrUsVX/a5VIFE4rfAkBmbN42qaQE
+         seBg==
+X-Gm-Message-State: AOJu0YxsP/Mk9/wDDKzHbaGTcgfkysPbGiRk4aJTsPgOS/6YA2b4iRQq
+	izcPpDQvkvAwfn5wxOyBKS5DDqsMtahdR3J6Yg1esq7b7KangR1+HVIMQ+oOclvbWZU/copsmqG
+	KGhmfI04amaJ43uaXiuUJxko2f8I=
+X-Google-Smtp-Source: AGHT+IH3c3vNiwKK4fe3edoyj7HfVsAaU5+iUt0ZOddMQ42msqjbvuNdKqhBdF+iieS3U1Skf4IXDPRpwL1Zv2HfWYU=
+X-Received: by 2002:aa7:864f:0:b0:6e0:3c60:11c8 with SMTP id
+ a15-20020aa7864f000000b006e03c6011c8mr4127905pfo.2.1707351034283; Wed, 07 Feb
+ 2024 16:10:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131162003.962665-1-alan.maguire@oracle.com>
- <CAEf4BzbeBiNj2GHJkDBAWASwLMy6nDNMbmqtQGOABZsRGAEytQ@mail.gmail.com> <bd4d548a-0f41-4086-bb34-ac2a7384157a@oracle.com>
-In-Reply-To: <bd4d548a-0f41-4086-bb34-ac2a7384157a@oracle.com>
+References: <20240206063010.1352503-1-yonghong.song@linux.dev>
+In-Reply-To: <20240206063010.1352503-1-yonghong.song@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Feb 2024 16:05:30 -0800
-Message-ID: <CAEf4BzZkrZ1toBE11-utYZEk6fajF7ewtWNsr8bXC8YwFub8cg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/2] libbpf Userspace Runtime-Defined Tracing (URDT)
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+Date: Wed, 7 Feb 2024 16:10:22 -0800
+Message-ID: <CAEf4Bzbg7Yzt7JdVWSPKnC6O3nhtOB6MqyfW5LOxqA+g6PStDA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix flaky test verif_scale_strobemeta_subprogs
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 1:49=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
-m> wrote:
+On Mon, Feb 5, 2024 at 10:30=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
-> On 02/02/2024 21:39, Andrii Nakryiko wrote:
-> > On Wed, Jan 31, 2024 at 8:20=E2=80=AFAM Alan Maguire <alan.maguire@orac=
-le.com> wrote:
-> >>
-> >> Adding userspace tracepoints in other languages like python and
-> >> go is a very useful for observability.  libstapsdt [1]
-> >> and language bindings like python-stapsdt [2] that rely on it
-> >> use a clever scheme of emulating static (USDT) userspace tracepoints
-> >> at runtime.  This involves (as I understand it):
-> >>
-> >> - fabricating a shared library
-> >> - annotating it with ELF notes that describe its tracepoints
-> >> - dlopen()ing it and calling the appropriate probe fire function
-> >>   to trigger probe firing.
-> >>
-> >> bcc already supports this mechanism (the examples in [2] use
-> >> bcc to list/trigger the tracepoints), so it seems like it
-> >> would be a good candidate for adding support to libbpf.
-> >>
-> >> However, before doing that, it's worth considering if there
-> >> are simpler ways to support runtime probe firing.  This
-> >> small series demonstrates a simple method based on USDT
-> >> probes added to libbpf itself.
-> >>
-> >> The suggested solution comprises 3 parts
-> >>
-> >> 1. functions to fire dynamic probes are added to libbpf itself
-> >>    bpf_urdt__probeN(), where N is the number of probe arguemnts.
-> >>    A sample usage would be
-> >>         bpf_urdt__probe3("myprovider", "myprobe", 1, 2, 3);
-> >>
-> >>    Under the hood these correspond to USDT probes with an
-> >>    additional argument for uniquely identifying the probe
-> >>    (a hash of provider/probe name).
-> >>
-> >> 2. we attach to the appropriate USDT probe for the specified
-> >>    number of arguments urdt/probe0 for none, urdt/probe1 for
-> >>    1, etc.  We utilize the high-order 32 bits of the attach
-> >>    cookie to store the hash of the provider/probe name.
-> >>
-> >> 3. when urdt/probeN fires, the BPF_URDT() macro (which
-> >>    is similar to BPF_USDT()) checks if the hash passed
-> >>    in (identifying provider/probe) matches the attach
-> >>    cookie high-order 32 bits; if not it must be a firing
-> >>    for a different dynamic probe and we exit early.
-> >
-> > I'm sorry Alan, but I don't see this being added to libbpf. This is
-> > nothing else than USDT with a bunch of extra conventions bolted on.
-> > And those conventions might not work for many environments. It is
-> > completely arbitrary that libbpf is a) assumed to be a dynamic library
-> > and b) provides USDT hooks that will be triggered. Just because it
-> > will be libbpf that will be used to trace those USDT hooks doesn't
-> > mean that libbpf has to define those hooks.
+> With latest llvm19, I hit the following selftest failures with
 >
-> Right - that came up with the discussion with Daniel also. Adding
-> probes in libbpf was just a means of providing a method of last resort
-> for runtime probe firing, it's not strictly necessary.
+>   $ ./test_progs -j
+>   libbpf: prog 'on_event': BPF program load failed: Permission denied
+>   libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+>   combined stack size of 4 calls is 544. Too large
+>   verification time 1344153 usec
+>   stack depth 24+440+0+32
+>   processed 51008 insns (limit 1000000) max_states_per_insn 19 total_stat=
+es 1467 peak_states 303 mark_read 146
+>   -- END PROG LOAD LOG --
+>   libbpf: prog 'on_event': failed to load: -13
+>   libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
+>   scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
+>   #498     verif_scale_strobemeta_subprogs:FAIL
 >
-
-Ok, glad we agree on not putting this into libbpf.
-
-> > Just because libbpf can
-> > trace USDTs it doesn't mean that libbpf should provide those
-> > STAP_PROBEx() macros to define and trigger USDTs within some
-> > application. Applications that define USDTs and applications that
-> > attach to those USDTs are completely separate and independent. Same
-> > here, there might be an overlap in some cases, but conceptually it's
-> > two separate sides of the solution.
-> >
+> The verifier complains too big of the combined stack size (544 bytes) whi=
+ch
+> exceeds the maximum stack limit 512. This is a regression from llvm19 ([1=
+]).
 >
-> I think the point is though that USDT got its start by establishing a
-> shared set of conventions between the to-be-traced side and the tracer,
-> and built upon existing uprobe support to make that work. Is there a
-> similar approach that we could apply for dynamic probes? libbpf isn't
-> necessarily the right vehicle for establishing those conventions and I'm
-> far from wedded to the specifics of this approach, but I do think it's a
-> question we should explore a bit.
-
-I'm a bit skeptical about "standardizing" this approach so early.
-Let's see how and whether this gets used in practice widely enough,
-before adding SEC("urdt") as a standard feature into libbpf.
-
-
+> In the above error log, the original stack depth is 24+440+0+32.
+> To satisfy interpreter's need, in verifier the stack depth is adjusted to
+> 32+448+32+32=3D544 which exceeds 512, hence the error. The same adjusted
+> stack size is also used for jit case.
 >
-> > Overall, this is definitely a useful overall approach, to have a
-> > single system-wide .so library that can be attached to trace some
-> > USDTs, and we've explored this approach internally at Meta as well.
-> > But I don't believe it should be part of libbpf. From libbpf's
-> > standpoint it's just a standard USDT probe to attach to.
-> >
-> >
+> But the jitted codes could use smaller stack size.
 >
-> For now we can pursue the approach of adding a static probe - triggered
-> when a dynamic probe firing is requested - to libstapsdt, and this would
-> give us libbpf support via USDT tracing of libstapsdt.
-
-Exactly. And I suspect big companies like Meta, Google and whatnot
-might have their own small system-wide shared library, developed and
-maintained internally, deployed using whatever deployment strategy
-they see fit, with their own USDT name and convention about naming and
-namespacing these dynamic USDTs, etc, etc.
-
-As I said, the idea is sound and neat, I'm just not sure that assuming
-libstapsdt (or whatever other predefined library) is going to work in
-practice.
-
-If anything, maybe making the kernel provide something like this as a
-standard functionality is the right way to go. Something along the
-VDSO lines, which doesn't trigger a context switch, but can be
-centralized through the kernel? Have you considered such options?
-
+>   $ egrep -r stack_depth | grep round_up
+>   arm64/net/bpf_jit_comp.c:       ctx->stack_size =3D round_up(prog->aux-=
+>stack_depth, 16);
+>   loongarch/net/bpf_jit.c:        bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+>   powerpc/net/bpf_jit_comp.c:     cgctx.stack_size =3D round_up(fp->aux->=
+stack_depth, 16);
+>   riscv/net/bpf_jit_comp32.c:             round_up(ctx->prog->aux->stack_=
+depth, STACK_ALIGN);
+>   riscv/net/bpf_jit_comp64.c:     bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+>   s390/net/bpf_jit_comp.c:        u32 stack_depth =3D round_up(fp->aux->s=
+tack_depth, 8);
+>   sparc/net/bpf_jit_comp_64.c:            stack_needed +=3D round_up(stac=
+k_depth, 16);
+>   x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xEC, round_up(=
+stack_depth, 8));
+>   x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+>   x86/net/bpf_jit_comp.c:                     round_up(stack_depth, 8));
+>   x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+>   x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xC4, round_up(=
+stack_depth, 8));
 >
-> >>
-> >> Auto-attach support is also added, for example the following
-> >> would add a dynamic probe for provider:myprobe:
-> >>
-> >> SEC("udrt/libbpf.so:2:myprovider:myprobe")
-> >> int BPF_URDT(myprobe, int arg1, char *arg2)
-> >> {
-> >>  ...
-> >> }
-> >>
-> >> (Note the "2" above specifies the number of arguments to
-> >> the probe, otherwise it is identical to USDT).
-> >>
-> >> The above program can then be triggered by a call to
-> >>
-> >>  BPF_URDT_PROBE2("myprovider", "myprobe", 1, "hi");
-> >>
-> >> The useful thing about this is that by attaching to
-> >> libbpf.so (and firing probes using that library) we
-> >> can get system-wide dynamic probe firing.  It is also
-> >> easy to fire a dynamic probe - no setup is required.
-> >>
-> >> More examples of auto and manual attach can be found in
-> >> the selftests (patch 2).
-> >>
-> >> If this approach appears to be worth pursing, we could
-> >> also look at adding support to libstapsdt for it.
-> >>
-> >> Alan Maguire (2):
-> >>   libbpf: add support for Userspace Runtime Dynamic Tracing (URDT)
-> >>   selftests/bpf: add tests for Userspace Runtime Defined Tracepoints
-> >>     (URDT)
-> >>
-> >>  tools/lib/bpf/Build                           |   2 +-
-> >>  tools/lib/bpf/Makefile                        |   2 +-
-> >>  tools/lib/bpf/libbpf.c                        |  94 ++++++++++
-> >>  tools/lib/bpf/libbpf.h                        |  94 ++++++++++
-> >>  tools/lib/bpf/libbpf.map                      |  13 ++
-> >>  tools/lib/bpf/libbpf_internal.h               |   2 +
-> >>  tools/lib/bpf/urdt.bpf.h                      | 103 +++++++++++
-> >>  tools/lib/bpf/urdt.c                          | 145 +++++++++++++++
-> >>  tools/testing/selftests/bpf/Makefile          |   2 +-
-> >>  tools/testing/selftests/bpf/prog_tests/urdt.c | 173 +++++++++++++++++=
-+
-> >>  tools/testing/selftests/bpf/progs/test_urdt.c | 100 ++++++++++
-> >>  .../selftests/bpf/progs/test_urdt_shared.c    |  59 ++++++
-> >>  12 files changed, 786 insertions(+), 3 deletions(-)
-> >>  create mode 100644 tools/lib/bpf/urdt.bpf.h
-> >>  create mode 100644 tools/lib/bpf/urdt.c
-> >>  create mode 100644 tools/testing/selftests/bpf/prog_tests/urdt.c
-> >>  create mode 100644 tools/testing/selftests/bpf/progs/test_urdt.c
-> >>  create mode 100644 tools/testing/selftests/bpf/progs/test_urdt_shared=
-.c
-> >>
-> >> --
-> >> 2.39.3
-> >>
-> >
+> In the above, STACK_ALIGN in riscv/net/bpf_jit_comp32.c is defined as 16.
+> So stack is aligned in either 8 or 16, x86/s390 having 8-byte stack align=
+ment and
+> the rest having 16-byte alignment.
+>
+> This patch calculates total stack depth based on 16-byte alignment if jit=
+ is requested.
+> For the above failing case, the new stack size will be 32+448+0+32=3D512 =
+and no verification
+> failure. llvm19 regression will be discussed separately in llvm upstream.
+>
+>   [1] https://lore.kernel.org/bpf/32bde0f0-1881-46c9-931a-673be566c61d@li=
+nux.dev/
+>
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+
+Seems like a few selftests have to be adjusted, current BPF CI is unhappy (=
+[0])
+
+  [0] https://github.com/kernel-patches/bpf/actions/runs/7795686155/job/212=
+59132248
+
+pw-bot: cr
+
+>  kernel/bpf/verifier.c | 19 ++++++++++++++-----
+>  1 file changed, 14 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ddaf09db1175..10e33d49ca21 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5812,6 +5812,17 @@ static int check_ptr_alignment(struct bpf_verifier=
+_env *env,
+>                                            strict);
+>  }
+>
+> +static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
+depth)
+> +{
+> +       if (env->prog->jit_requested)
+> +               return round_up(stack_depth, 16);
+> +
+> +       /* round up to 32-bytes, since this is granularity
+> +        * of interpreter stack size
+> +        */
+> +       return round_up(max_t(u32, stack_depth, 1), 32);
+> +}
+> +
+>  /* starting from main bpf function walk all instructions of the function
+>   * and recursively walk all callees that given function can call.
+>   * Ignore jump and exit insns.
+> @@ -5855,10 +5866,8 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx)
+>                         depth);
+>                 return -EACCES;
+>         }
+> -       /* round up to 32-bytes, since this is granularity
+> -        * of interpreter stack size
+> -        */
+> -       depth +=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
+> +
+> +       depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+>         if (depth > MAX_BPF_STACK) {
+>                 verbose(env, "combined stack size of %d calls is %d. Too =
+large\n",
+>                         frame + 1, depth);
+> @@ -5952,7 +5961,7 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx)
+>          */
+>         if (frame =3D=3D 0)
+>                 return 0;
+> -       depth -=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
+> +       depth -=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+>         frame--;
+>         i =3D ret_insn[frame];
+>         idx =3D ret_prog[frame];
+> --
+> 2.34.1
+>
 
