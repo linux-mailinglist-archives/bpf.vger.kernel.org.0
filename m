@@ -1,334 +1,261 @@
-Return-Path: <bpf+bounces-21455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12B184D6D3
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 00:59:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FBF884D6EB
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 01:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5578E284680
-	for <lists+bpf@lfdr.de>; Wed,  7 Feb 2024 23:58:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16EC4286DED
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 00:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317E5535D9;
-	Wed,  7 Feb 2024 23:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2F84C70;
+	Thu,  8 Feb 2024 00:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pIQbZVK9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AdSD1hcT"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6D2535BD
-	for <bpf@vger.kernel.org>; Wed,  7 Feb 2024 23:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2B34C84
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 00:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707350330; cv=none; b=sq6dvNuKQ6PhgICzlb7SLgfxd/ZXifmWCqXsET3gxfje6uH7RNyFOdOcTNwWq+KAqlJoGK36nEFlvF4N0ON95oxWptFQ6WV6mNjLbNuLRjku9WHYnxM6aeXY7db/yclQ6ANpgJ0RUXYIylBXXqMKDfNbXvVNMRNUar+rUAEi2E4=
+	t=1707350744; cv=none; b=RFj4mPKyTGI/gBvFp9o6Gv2RWSMW5TztlLv3Lxe5ZlJCyzeBvDAfqCd5iPBmqmQ9uD490BurQS8RKB5EliwDbCLj+7uHdgt+wjskZLCi8QbZ+bg0lYrj+81rtG1AYWpJDT1t41ohQNJmiaZtNhAnOLzUR+hXghzrrosBTl/yWcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707350330; c=relaxed/simple;
-	bh=R4QNkyQjSAfAfY7FrkR0iT+UnKekRPxtGiyIy+jBGc4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ijBba/pMTYe/QEdAB9jnWuUXyWVaO2zq068q0Mkl7AksNMVJxS3NDY+4TWW3IKZUOYQBeq1/a0Ue0WyxwDyQWbSNM5JFkUCvA33FV8eZcuBWpjD0aUNcaoNTaNYyhZfBQVlsgjKxdRLd78OgW9uAml2MBZgEmvHWJ4jbZ4IQGqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pIQbZVK9; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707350324;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WK54SxKnBujvpL5BBhfinuafXj82ZQYILhUA9QEnG84=;
-	b=pIQbZVK96gXzmxL4IOP+dzQgVE6JGxzMqmbmaFevTzD1mAuv56f6q3U1U9WHp/ib0xUE3H
-	Iu0XaTYt4fFPfLuNAuAAxKiPqMTkpNgFU1cNmnkejMeLAztzaMQtAVJOvzHXv8SqjuckFv
-	Gi+F1+v+/wr3RvX0MoiDAd6zgxMhbV0=
-Date: Wed, 7 Feb 2024 15:58:33 -0800
+	s=arc-20240116; t=1707350744; c=relaxed/simple;
+	bh=bCjSUTyzpUffdghTWzZHBcjxQ5Ahgbh1u/z/cTHWEhc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QkFAPYBx7ps+YdppKsYJMpMXUH4g4xeMVjRksD9taQFc2dx0VbDOGuc04x6vsj69oXyrUgXlIs3rbZ7u1Mulbk7fz3LaJrjq/y+4YNeyR+2l4GZQSQFbLGJwy+3FpMRhY//d0SzieA5ZjQjQGadMeJs8yMEOkDPjDbUSoME3V5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AdSD1hcT; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e071953676so459343b3a.2
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 16:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707350742; x=1707955542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l3ZDjwUN4SXd2KtKNqH0q3JMlANpgNCwNNJwkXTLV9M=;
+        b=AdSD1hcTBFkpXmNi2V2vKehEp+MR1kn2qKqDrXsOCebBA2qMdumKyOi61sNCkntHst
+         Es2oXVbKgTcs/yNDXz9T8rQJKLYB2TtI5s7DOjH7sgap3OTO/hFJH4FxPc9cvpvZ5MhN
+         rsndEXCESH+DccfPAB2qkUD77o79PAgnAnVi6W0IC2bSaNTG0wAcpri8d9nUuy1L5y3L
+         efDTw58BCVJk4tQR5/R7wICf30NL3bEuikkFsMj7EpRBVbpSMyse+93Kotb36Hne56sD
+         y2bRgNqVvYle48Krat9Qnt43AdxEyhS+lhg6nofjr+Wv/jcMdwj5IWPt4dbG1dVMbRcu
+         lp6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707350742; x=1707955542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l3ZDjwUN4SXd2KtKNqH0q3JMlANpgNCwNNJwkXTLV9M=;
+        b=u619agLmhnQJ9j99cKnriBh9X+XNvpIvSbtuN75AgDxp7N9Dkd+bQfDNyhaw58NNVp
+         8mMP9BSDce0yUwBsVs81PmiUeroVHPDM7jCoCzPK6W87xzVBaGsNCNuvsIwygapkcmXg
+         n0N4eHOL89E5+ObHJitXU4g2HH2OtTSB7gTPuutCik2hDFjV43TuFzEmaXPOCojCssOC
+         OBj3LnPtEb6FjerU0KO1/TY7m1R8J3njz4zdZ2y06IMU+8FoY+evwY24PdPsLch/Jb43
+         S6WRaMxOD7DX3DionrhsrRTNAGY/B7IeK56bJViTny+xIMM9jMlgJdUvnG0jd2RcfCLS
+         jWRg==
+X-Gm-Message-State: AOJu0Yz5/FXn1lL5ptYa+NlHkGRHuGojFrVeSvuTxJkaIP/lE6mEsRp9
+	v1Xuw2SpjtC+csSiH1K4sqdVzPWUWcPskIwiZ1cysPG5IIRo+ov/Pv6k56g/JvpnUZJjab93DTI
+	x4u1SqlA+VNrPu6DZJM2pmAq9xZI=
+X-Google-Smtp-Source: AGHT+IGWJqoerE+Cl6bEhvVKv1sk0xVvpxNn1El5Uo0ZdcUzcpqOUhFunUkDwz60DStYQbAkF0K1hkxvjavQyCxl5BI=
+X-Received: by 2002:a05:6a00:1788:b0:6e0:503f:f506 with SMTP id
+ s8-20020a056a00178800b006e0503ff506mr5604022pfg.7.1707350741895; Wed, 07 Feb
+ 2024 16:05:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] bpf: Allow compiler to inline most of
- bpf_local_storage_lookup()
-Content-Language: en-GB
-To: Marco Elver <elver@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>,
- Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240207122626.3508658-1-elver@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240207122626.3508658-1-elver@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240131162003.962665-1-alan.maguire@oracle.com>
+ <CAEf4BzbeBiNj2GHJkDBAWASwLMy6nDNMbmqtQGOABZsRGAEytQ@mail.gmail.com> <bd4d548a-0f41-4086-bb34-ac2a7384157a@oracle.com>
+In-Reply-To: <bd4d548a-0f41-4086-bb34-ac2a7384157a@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 7 Feb 2024 16:05:30 -0800
+Message-ID: <CAEf4BzZkrZ1toBE11-utYZEk6fajF7ewtWNsr8bXC8YwFub8cg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/2] libbpf Userspace Runtime-Defined Tracing (URDT)
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 2/7/24 4:26 AM, Marco Elver wrote:
-> In various performance profiles of kernels with BPF programs attached,
-> bpf_local_storage_lookup() appears as a significant portion of CPU
-> cycles spent. To enable the compiler generate more optimal code, turn
-> bpf_local_storage_lookup() into a static inline function, where only the
-> cache insertion code path is outlined
+On Tue, Feb 6, 2024 at 1:49=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
+m> wrote:
 >
-> Notably, outlining cache insertion helps avoid bloating callers by
-> duplicating setting up calls to raw_spin_{lock,unlock}_irqsave() (on
-> architectures which do not inline spin_lock/unlock, such as x86), which
-> would cause the compiler produce worse code by deciding to outline
-> otherwise inlinable functions. The call overhead is neutral, because we
-> make 2 calls either way: either calling raw_spin_lock_irqsave() and
-> raw_spin_unlock_irqsave(); or call __bpf_local_storage_insert_cache(),
-> which calls raw_spin_lock_irqsave(), followed by a tail-call to
-> raw_spin_unlock_irqsave() where the compiler can perform TCO and (in
-> optimized uninstrumented builds) turns it into a plain jump. The call to
-> __bpf_local_storage_insert_cache() can be elided entirely if
-> cacheit_lockit is a false constant expression.
+> On 02/02/2024 21:39, Andrii Nakryiko wrote:
+> > On Wed, Jan 31, 2024 at 8:20=E2=80=AFAM Alan Maguire <alan.maguire@orac=
+le.com> wrote:
+> >>
+> >> Adding userspace tracepoints in other languages like python and
+> >> go is a very useful for observability.  libstapsdt [1]
+> >> and language bindings like python-stapsdt [2] that rely on it
+> >> use a clever scheme of emulating static (USDT) userspace tracepoints
+> >> at runtime.  This involves (as I understand it):
+> >>
+> >> - fabricating a shared library
+> >> - annotating it with ELF notes that describe its tracepoints
+> >> - dlopen()ing it and calling the appropriate probe fire function
+> >>   to trigger probe firing.
+> >>
+> >> bcc already supports this mechanism (the examples in [2] use
+> >> bcc to list/trigger the tracepoints), so it seems like it
+> >> would be a good candidate for adding support to libbpf.
+> >>
+> >> However, before doing that, it's worth considering if there
+> >> are simpler ways to support runtime probe firing.  This
+> >> small series demonstrates a simple method based on USDT
+> >> probes added to libbpf itself.
+> >>
+> >> The suggested solution comprises 3 parts
+> >>
+> >> 1. functions to fire dynamic probes are added to libbpf itself
+> >>    bpf_urdt__probeN(), where N is the number of probe arguemnts.
+> >>    A sample usage would be
+> >>         bpf_urdt__probe3("myprovider", "myprobe", 1, 2, 3);
+> >>
+> >>    Under the hood these correspond to USDT probes with an
+> >>    additional argument for uniquely identifying the probe
+> >>    (a hash of provider/probe name).
+> >>
+> >> 2. we attach to the appropriate USDT probe for the specified
+> >>    number of arguments urdt/probe0 for none, urdt/probe1 for
+> >>    1, etc.  We utilize the high-order 32 bits of the attach
+> >>    cookie to store the hash of the provider/probe name.
+> >>
+> >> 3. when urdt/probeN fires, the BPF_URDT() macro (which
+> >>    is similar to BPF_USDT()) checks if the hash passed
+> >>    in (identifying provider/probe) matches the attach
+> >>    cookie high-order 32 bits; if not it must be a firing
+> >>    for a different dynamic probe and we exit early.
+> >
+> > I'm sorry Alan, but I don't see this being added to libbpf. This is
+> > nothing else than USDT with a bunch of extra conventions bolted on.
+> > And those conventions might not work for many environments. It is
+> > completely arbitrary that libbpf is a) assumed to be a dynamic library
+> > and b) provides USDT hooks that will be triggered. Just because it
+> > will be libbpf that will be used to trace those USDT hooks doesn't
+> > mean that libbpf has to define those hooks.
 >
-> Based on results from './benchs/run_bench_local_storage.sh' (21 trials,
-> reboot between each trial; x86 defconfig + BPF, clang 16) this produces
-> improvements in throughput and latency in the majority of cases, with an
-> average (geomean) improvement of 8%:
+> Right - that came up with the discussion with Daniel also. Adding
+> probes in libbpf was just a means of providing a method of last resort
+> for runtime probe firing, it's not strictly necessary.
 >
-> +---- Hashmap Control --------------------
-> |
-> | + num keys: 10
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 14.789 M ops/s       | 14.745 M ops/s (  ~  )
-> |   +- hits latency                       | 67.679 ns/op         | 67.879 ns/op   (  ~  )
-> |   +- important_hits throughput          | 14.789 M ops/s       | 14.745 M ops/s (  ~  )
-> |
-> | + num keys: 1000
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 12.233 M ops/s       | 12.170 M ops/s (  ~  )
-> |   +- hits latency                       | 81.754 ns/op         | 82.185 ns/op   (  ~  )
-> |   +- important_hits throughput          | 12.233 M ops/s       | 12.170 M ops/s (  ~  )
-> |
-> | + num keys: 10000
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 7.220 M ops/s        | 7.204 M ops/s  (  ~  )
-> |   +- hits latency                       | 138.522 ns/op        | 138.842 ns/op  (  ~  )
-> |   +- important_hits throughput          | 7.220 M ops/s        | 7.204 M ops/s  (  ~  )
-> |
-> | + num keys: 100000
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 5.061 M ops/s        | 5.165 M ops/s  (+2.1%)
-> |   +- hits latency                       | 198.483 ns/op        | 194.270 ns/op  (-2.1%)
-> |   +- important_hits throughput          | 5.061 M ops/s        | 5.165 M ops/s  (+2.1%)
-> |
-> | + num keys: 4194304
-> | :                                         <before>             | <after>
-> | +-+ hashmap (control) sequential get    +----------------------+----------------------
-> |   +- hits throughput                    | 2.864 M ops/s        | 2.882 M ops/s  (  ~  )
-> |   +- hits latency                       | 365.220 ns/op        | 361.418 ns/op  (-1.0%)
-> |   +- important_hits throughput          | 2.864 M ops/s        | 2.882 M ops/s  (  ~  )
-> |
-> +---- Local Storage ----------------------
-> |
-> | + num_maps: 1
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 33.005 M ops/s       | 39.068 M ops/s (+18.4%)
-> |   +- hits latency                       | 30.300 ns/op         | 25.598 ns/op   (-15.5%)
-> |   +- important_hits throughput          | 33.005 M ops/s       | 39.068 M ops/s (+18.4%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 37.151 M ops/s       | 44.926 M ops/s (+20.9%)
-> |   +- hits latency                       | 26.919 ns/op         | 22.259 ns/op   (-17.3%)
-> |   +- important_hits throughput          | 37.151 M ops/s       | 44.926 M ops/s (+20.9%)
-> |
-> | + num_maps: 10
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 32.288 M ops/s       | 38.099 M ops/s (+18.0%)
-> |   +- hits latency                       | 30.972 ns/op         | 26.248 ns/op   (-15.3%)
-> |   +- important_hits throughput          | 3.229 M ops/s        | 3.810 M ops/s  (+18.0%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 34.473 M ops/s       | 41.145 M ops/s (+19.4%)
-> |   +- hits latency                       | 29.010 ns/op         | 24.307 ns/op   (-16.2%)
-> |   +- important_hits throughput          | 12.312 M ops/s       | 14.695 M ops/s (+19.4%)
-> |
-> | + num_maps: 16
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 32.524 M ops/s       | 38.341 M ops/s (+17.9%)
-> |   +- hits latency                       | 30.748 ns/op         | 26.083 ns/op   (-15.2%)
-> |   +- important_hits throughput          | 2.033 M ops/s        | 2.396 M ops/s  (+17.9%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 34.575 M ops/s       | 41.338 M ops/s (+19.6%)
-> |   +- hits latency                       | 28.925 ns/op         | 24.193 ns/op   (-16.4%)
-> |   +- important_hits throughput          | 11.001 M ops/s       | 13.153 M ops/s (+19.6%)
-> |
-> | + num_maps: 17
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 28.861 M ops/s       | 32.756 M ops/s (+13.5%)
-> |   +- hits latency                       | 34.649 ns/op         | 30.530 ns/op   (-11.9%)
-> |   +- important_hits throughput          | 1.700 M ops/s        | 1.929 M ops/s  (+13.5%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 31.529 M ops/s       | 36.110 M ops/s (+14.5%)
-> |   +- hits latency                       | 31.719 ns/op         | 27.697 ns/op   (-12.7%)
-> |   +- important_hits throughput          | 9.598 M ops/s        | 10.993 M ops/s (+14.5%)
-> |
-> | + num_maps: 24
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 18.602 M ops/s       | 19.937 M ops/s (+7.2%)
-> |   +- hits latency                       | 53.767 ns/op         | 50.166 ns/op   (-6.7%)
-> |   +- important_hits throughput          | 0.776 M ops/s        | 0.831 M ops/s  (+7.2%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 21.718 M ops/s       | 23.332 M ops/s (+7.4%)
-> |   +- hits latency                       | 46.047 ns/op         | 42.865 ns/op   (-6.9%)
-> |   +- important_hits throughput          | 6.110 M ops/s        | 6.564 M ops/s  (+7.4%)
-> |
-> | + num_maps: 32
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 14.118 M ops/s       | 14.626 M ops/s (+3.6%)
-> |   +- hits latency                       | 70.856 ns/op         | 68.381 ns/op   (-3.5%)
-> |   +- important_hits throughput          | 0.442 M ops/s        | 0.458 M ops/s  (+3.6%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 17.111 M ops/s       | 17.906 M ops/s (+4.6%)
-> |   +- hits latency                       | 58.451 ns/op         | 55.865 ns/op   (-4.4%)
-> |   +- important_hits throughput          | 4.776 M ops/s        | 4.998 M ops/s  (+4.6%)
-> |
-> | + num_maps: 100
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 5.281 M ops/s        | 5.528 M ops/s  (+4.7%)
-> |   +- hits latency                       | 192.398 ns/op        | 183.059 ns/op  (-4.9%)
-> |   +- important_hits throughput          | 0.053 M ops/s        | 0.055 M ops/s  (+4.9%)
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 6.265 M ops/s        | 6.498 M ops/s  (+3.7%)
-> |   +- hits latency                       | 161.436 ns/op        | 152.877 ns/op  (-5.3%)
-> |   +- important_hits throughput          | 1.636 M ops/s        | 1.697 M ops/s  (+3.7%)
-> |
-> | + num_maps: 1000
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache sequential get  +----------------------+----------------------
-> |   +- hits throughput                    | 0.355 M ops/s        | 0.354 M ops/s  (  ~  )
-> |   +- hits latency                       | 2826.538 ns/op       | 2827.139 ns/op (  ~  )
-> |   +- important_hits throughput          | 0.000 M ops/s        | 0.000 M ops/s  (  ~  )
-> | :
-> | :                                         <before>             | <after>
-> | +-+ local_storage cache interleaved get +----------------------+----------------------
-> |   +- hits throughput                    | 0.404 M ops/s        | 0.403 M ops/s  (  ~  )
-> |   +- hits latency                       | 2481.190 ns/op       | 2487.555 ns/op (  ~  )
-> |   +- important_hits throughput          | 0.102 M ops/s        | 0.101 M ops/s  (  ~  )
+
+Ok, glad we agree on not putting this into libbpf.
+
+> > Just because libbpf can
+> > trace USDTs it doesn't mean that libbpf should provide those
+> > STAP_PROBEx() macros to define and trigger USDTs within some
+> > application. Applications that define USDTs and applications that
+> > attach to those USDTs are completely separate and independent. Same
+> > here, there might be an overlap in some cases, but conceptually it's
+> > two separate sides of the solution.
+> >
 >
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> ---
-> v2:
-> * Inline most of bpf_local_storage_lookup(), which produces greater
->    speedup and avoids regressing the cases with large map arrays.
-> * Drop "likely()" hint, it didn't produce much benefit.
-> * Re-run benchmark and collect 21 trials of results.
-> * Remove the on_lookup tests, which no longer work because
->    e.g. bpf_task_storage_delete() no longer does calls to
->    bpf_local_storage_*() helpers.
-> ---
->   include/linux/bpf_local_storage.h             | 30 ++++++++++-
->   kernel/bpf/bpf_local_storage.c                | 52 +++++--------------
->   .../bpf/prog_tests/task_local_storage.c       |  6 ---
->   .../selftests/bpf/progs/cgrp_ls_recursion.c   | 26 ----------
->   .../selftests/bpf/progs/task_ls_recursion.c   | 17 ------
->   5 files changed, 41 insertions(+), 90 deletions(-)
+> I think the point is though that USDT got its start by establishing a
+> shared set of conventions between the to-be-traced side and the tracer,
+> and built upon existing uprobe support to make that work. Is there a
+> similar approach that we could apply for dynamic probes? libbpf isn't
+> necessarily the right vehicle for establishing those conventions and I'm
+> far from wedded to the specifics of this approach, but I do think it's a
+> question we should explore a bit.
+
+I'm a bit skeptical about "standardizing" this approach so early.
+Let's see how and whether this gets used in practice widely enough,
+before adding SEC("urdt") as a standard feature into libbpf.
+
+
 >
-> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> index 173ec7f43ed1..dcddb0aef7d8 100644
-> --- a/include/linux/bpf_local_storage.h
-> +++ b/include/linux/bpf_local_storage.h
-> @@ -129,10 +129,36 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
->   			    struct bpf_local_storage_cache *cache,
->   			    bool bpf_ma);
->   
-> -struct bpf_local_storage_data *
-> +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
-> +				      struct bpf_local_storage_map *smap,
-> +				      struct bpf_local_storage_elem *selem);
-> +/* If cacheit_lockit is false, this lookup function is lockless */
-> +static inline struct bpf_local_storage_data *
->   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
->   			 struct bpf_local_storage_map *smap,
-> -			 bool cacheit_lockit);
-> +			 bool cacheit_lockit)
-> +{
-> +	struct bpf_local_storage_data *sdata;
-> +	struct bpf_local_storage_elem *selem;
-> +
-> +	/* Fast path (cache hit) */
-> +	sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
-> +				      bpf_rcu_lock_held());
-> +	if (sdata && rcu_access_pointer(sdata->smap) == smap)
-> +		return sdata;
+> > Overall, this is definitely a useful overall approach, to have a
+> > single system-wide .so library that can be attached to trace some
+> > USDTs, and we've explored this approach internally at Meta as well.
+> > But I don't believe it should be part of libbpf. From libbpf's
+> > standpoint it's just a standard USDT probe to attach to.
+> >
+> >
+>
+> For now we can pursue the approach of adding a static probe - triggered
+> when a dynamic probe firing is requested - to libstapsdt, and this would
+> give us libbpf support via USDT tracing of libstapsdt.
 
-I think we should focus on fast path (your v1 patch)
-and I suppose most production environments
-want to hit fast path in most times. In your production environment did
-you see more than 16 local storage maps per entity (task/sk/inode)?
+Exactly. And I suspect big companies like Meta, Google and whatnot
+might have their own small system-wide shared library, developed and
+maintained internally, deployed using whatever deployment strategy
+they see fit, with their own USDT name and convention about naming and
+namespacing these dynamic USDTs, etc, etc.
 
-In the fast path, the memory accesses are
-   two from local_storage->cache[smap->cache_idx] and
-   one from sdata->smap
-    
+As I said, the idea is sound and neat, I'm just not sure that assuming
+libstapsdt (or whatever other predefined library) is going to work in
+practice.
 
-> +
-> +	/* Slow path (cache miss) */
-> +	hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
-> +				  rcu_read_lock_trace_held())
-> +		if (rcu_access_pointer(SDATA(selem)->smap) == smap)
-> +			break;
+If anything, maybe making the kernel provide something like this as a
+standard functionality is the right way to go. Something along the
+VDSO lines, which doesn't trigger a context switch, but can be
+centralized through the kernel? Have you considered such options?
 
-But if we reach slow path here which means we have more than 16 local
-storage maps, then traversing the list and getting SDATA(selem)->smap
-will be very expensive, in addition to memory accesses in fast path.
-
-I suppose here we mostly care about socket local storage since it is
-totally possible for a production workload to have millions of sockets.
-To improve performance, fast path should hit in most cases.
-If there are too many sk local storage maps, some kind of sharing
-can be done so multiple applications might be using a single sk
-local storage.
-
-Your above inlining/outlining analysis also show how tricky it is
-for compilation optimization. Without profiling, it is totally
-possible that compiler might do optimization differently in
-the future. So here is my suggestion, let us do inlining
-for fast path and focus on performance of fast path.
-
-> +	if (!selem)
-> +		return NULL;
-> +	if (cacheit_lockit)
-> +		__bpf_local_storage_insert_cache(local_storage, smap, selem);
-> +	return SDATA(selem);
-> +}
->   
->   void bpf_local_storage_destroy(struct bpf_local_storage *local_storage);
->   
-[...]
+>
+> >>
+> >> Auto-attach support is also added, for example the following
+> >> would add a dynamic probe for provider:myprobe:
+> >>
+> >> SEC("udrt/libbpf.so:2:myprovider:myprobe")
+> >> int BPF_URDT(myprobe, int arg1, char *arg2)
+> >> {
+> >>  ...
+> >> }
+> >>
+> >> (Note the "2" above specifies the number of arguments to
+> >> the probe, otherwise it is identical to USDT).
+> >>
+> >> The above program can then be triggered by a call to
+> >>
+> >>  BPF_URDT_PROBE2("myprovider", "myprobe", 1, "hi");
+> >>
+> >> The useful thing about this is that by attaching to
+> >> libbpf.so (and firing probes using that library) we
+> >> can get system-wide dynamic probe firing.  It is also
+> >> easy to fire a dynamic probe - no setup is required.
+> >>
+> >> More examples of auto and manual attach can be found in
+> >> the selftests (patch 2).
+> >>
+> >> If this approach appears to be worth pursing, we could
+> >> also look at adding support to libstapsdt for it.
+> >>
+> >> Alan Maguire (2):
+> >>   libbpf: add support for Userspace Runtime Dynamic Tracing (URDT)
+> >>   selftests/bpf: add tests for Userspace Runtime Defined Tracepoints
+> >>     (URDT)
+> >>
+> >>  tools/lib/bpf/Build                           |   2 +-
+> >>  tools/lib/bpf/Makefile                        |   2 +-
+> >>  tools/lib/bpf/libbpf.c                        |  94 ++++++++++
+> >>  tools/lib/bpf/libbpf.h                        |  94 ++++++++++
+> >>  tools/lib/bpf/libbpf.map                      |  13 ++
+> >>  tools/lib/bpf/libbpf_internal.h               |   2 +
+> >>  tools/lib/bpf/urdt.bpf.h                      | 103 +++++++++++
+> >>  tools/lib/bpf/urdt.c                          | 145 +++++++++++++++
+> >>  tools/testing/selftests/bpf/Makefile          |   2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/urdt.c | 173 +++++++++++++++++=
++
+> >>  tools/testing/selftests/bpf/progs/test_urdt.c | 100 ++++++++++
+> >>  .../selftests/bpf/progs/test_urdt_shared.c    |  59 ++++++
+> >>  12 files changed, 786 insertions(+), 3 deletions(-)
+> >>  create mode 100644 tools/lib/bpf/urdt.bpf.h
+> >>  create mode 100644 tools/lib/bpf/urdt.c
+> >>  create mode 100644 tools/testing/selftests/bpf/prog_tests/urdt.c
+> >>  create mode 100644 tools/testing/selftests/bpf/progs/test_urdt.c
+> >>  create mode 100644 tools/testing/selftests/bpf/progs/test_urdt_shared=
+.c
+> >>
+> >> --
+> >> 2.39.3
+> >>
+> >
 
