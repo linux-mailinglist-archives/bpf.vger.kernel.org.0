@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EBB784DA62
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 07:51:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DFD784DA63
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 07:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC154287421
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 06:51:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8C5A1F22521
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 06:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8022269306;
-	Thu,  8 Feb 2024 06:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9458E6931B;
+	Thu,  8 Feb 2024 06:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fllm0eue"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I70Dm4Iy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2717769300
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 06:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B4A67E7F
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 06:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707375074; cv=none; b=uYGb3u5owIatr7hDgYurAIPtOz/h6woZ7MzazjICHI1sTwO+Q3JWrkrJWu3RhIHpOjpqkTV0aEktVDsmk/RjOD9EDKes3cr/5V0bxw/u3hnboxDAy/9u4V9LAz+D66LHDitdUtXYBdQcWYjCWfQ5RasKhWf0hc99j0AbFMACDfw=
+	t=1707375075; cv=none; b=ssX02RIzpuVuQoq9mSBCIynVJCRTccq8jCcjQYaHtmYyFCQy6k0ekP74VxD/Gok2KkrrCjZK59nxLTQwXBXvrCPvhuFL4nftQ2jYpSlStFJ9Br9WE/8btTLQlaO0P0ZMsT2zEMCXXaN94cwG/VO5k2+nkIeSudnE2nU1xTl0FyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707375074; c=relaxed/simple;
-	bh=lOrH4J3W0ygrZBMY0zgTUv9nMIp8xXzWMVxXEbhX1Po=;
+	s=arc-20240116; t=1707375075; c=relaxed/simple;
+	bh=tJaEvUHBGfLHhQQ6Z8IUE3m7lUAI+XObVCJa24vf10U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ulD85/qx/8YGbmiutMNzK4Onh0F39FzmpH6ViFMFl1SzJDRLImYNrBxlCDAMmEyc5XJfo8ZosBGbVotKwBuUH86k3bAuJxmifG6wBoclvfERU59rdqfEzAllNZK3CLlGw3BzzJX/PCy9uB5KIFoamWW+nPO5PnoKJ5nTz2H8EbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fllm0eue; arc=none smtp.client-ip=209.85.128.170
+	 MIME-Version; b=k86GE8EulpagcO7MjHzigFjOpBur3Wrq0uJ3gyvIrDpGVSR6JDnZ0HhcwF53GP8e73R6flvssqlgOU8ocOSsGnFIrBSoVrjM5qA2q9DeXngwwlbHyYpbybAV55QTQawU0w0H5o6THUG4GcZHfE5Afj/EfqYbGZr3hxpEcB9kiVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I70Dm4Iy; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60495209415so13838037b3.3
-        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 22:51:11 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6049b3deee8so12256807b3.1
+        for <bpf@vger.kernel.org>; Wed, 07 Feb 2024 22:51:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707375071; x=1707979871; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707375072; x=1707979872; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=51F7VcLRf2Wd+gYo29Mip9pS2Z1Vgrk3wHLMj+uL3RU=;
-        b=fllm0euep8ZJDoadr8gQjHsakcEscv2vb9RK11Yjcuzr4A06xTiMS9ULPisEfxBWp3
-         pVVY85MscQmRL4nwyvwaYhgTfiQXGU2tdMuw80/m92kLrbu/2pmDfueGS9ZguNCzc8NU
-         oreT9DXt1OZlOzlPYz89pGSZLxZihBkVu7CsDvFF3sq7u+OCY3N4ArL0aLxZUW/oJIfS
-         kL5FGqMiEq1l61g8QsrYdqP0q1yCibGC+MSIdba7mqIH9xND5QhJ3BOg5nBgVczGG3cq
-         yem+Fa9M6y8HJkXsefb/9Z7OreysM16wA5TzsZP2jFhp5TBPGMRACC/d90hDyYgjHiss
-         pgPA==
+        bh=KL46QOptrTSppgIc8VdwygxoqnHkFvIWCBIzuCoN1ys=;
+        b=I70Dm4Iy4U1/USBxW2VOFFyPnGC2BsksjFNBlPsaGBq0OCx/INvxKr601Fcq/lpgwz
+         GiSbywyb6wODKt4kYG4D7Jd4foh+1l9ilIn2afZImvgSAYazmzl9jnbnM7WY6PorooaB
+         IlAOD8e8ilIfuY6eAErD+hBTbETC1qC+nJKvApOnkM4FyWT+YsOEzAP/zOdPeusGO5cz
+         W2d6hgx1QIjwzMWxEX+aP6GCkMjHFX9sNwSfHc4gbF+wZnK97KQtHAExhoCKkvU03/GB
+         KHORm5X7k2VItdvaTQYuCddPD+Q9Rznp/L95O8fW/4rAjWPYEYEwjrayy845jhF5J/XS
+         aBhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707375071; x=1707979871;
+        d=1e100.net; s=20230601; t=1707375072; x=1707979872;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=51F7VcLRf2Wd+gYo29Mip9pS2Z1Vgrk3wHLMj+uL3RU=;
-        b=Izlc179yVvID629iQRwmwQ29POT6IKsOvuiv1ZzR/bgGkLAlEFWzYybrKNxGyHMxoE
-         pKUtagx1V7dHWWVQ9uGHKGBc9ujkYgFhwRKaVNbBVUjEk0jDW2egXLTMkH6iqVveTalH
-         WJ5PgjuQaAhXHuNM16HNM1ChimjpylQC1ZPJzPU1H1VGxNAfLjNg5jYrEO9M9OamtBvw
-         KcrUlcAl+sLAFEImERmqmU2Yx86P5eM3dSMNIkatPyCRlTS6HSfzOnxQTcWHjchWKW3S
-         PGUtEeZEX7AA3o+TE/BNO+szcuySNehPA5aOFxJyvnZZVTY+iAdjFOWRb/LRW+aTssMD
-         dWIg==
-X-Gm-Message-State: AOJu0Yy2Aon5u0JJhYpUXUHjAKtrVKX+7tJToPaKZfQd4q0bXMU9N1PI
-	EZfD3DhEFwdAtfM30+EvL+bWeKxvHjQYUVRKNgy2AawylFEbPcJzyp4cy4hoElc=
-X-Google-Smtp-Source: AGHT+IHToiZhxOu+vroL0dFClCPGK5/MERs9Y5jfYB9s2D1UmTntIYgxA8NYtghWCnFwnHFzET0/3g==
-X-Received: by 2002:a81:c40c:0:b0:604:788d:267f with SMTP id j12-20020a81c40c000000b00604788d267fmr7390413ywi.6.1707375070571;
-        Wed, 07 Feb 2024 22:51:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWA/F3+f3jSt69VoHW03616jRt2Aox/PG9GZZvMKklyT4uN8f+e8DVWvw4exQLBGOgDhk+SQ6/aPKj5GQENHocd1c18OJmcV5DPxtiQPBlw5OpiWiyNWeCQaD7Qa83DZQ3J+4xM6Ya2QPqla688IRstSjRfpo4oKLp9vWDZaY+ZnnquflQ9wzO8HQtAXLj2QxbNnHzIXFUyPfOEbnOmRuLxphLIIjGTr7dXVzfPjjg605PIkdLAHk0qblT920esl0CuarppzwBkoafkNA9sPeXIcyA8x6gxlqvDKxEakBmt6hQ=
+        bh=KL46QOptrTSppgIc8VdwygxoqnHkFvIWCBIzuCoN1ys=;
+        b=QvkzOzcJS3/JJ7BlVEsBMVEWfYQJ5oTbiJhZY3gEzm/ah1VYUnJvIgGMG7jf2/EAom
+         Z0qj9u8Z3l4JXAAreMZG76vlOEr7oiqPziqOQl5KTPAwfA3ET0wtGn4mcDFjB4RmLlpa
+         k0y5zxaihVaHURfsxkS7wqK00tQ+V2Q9VauJ/BCJKTyH0tXzLcZ6IDzw3rzCQFi2yrNL
+         CH1TiTaPz9m5Wc/xIgazQ7uQI6W0pvt8dK/pT7fYg313En9J9dL0ON1iesUHYOUrKbA/
+         4VAMG2l8Jf6rQ9HzfIPGwK5bWC4jlxF2kPPcvagCMOB2JsTu9hkUW9ge538/itjyXNL3
+         K3DA==
+X-Gm-Message-State: AOJu0YzqHMvfwgM5zsAbcJkIu8shvSjIJpfNlpDCM3OhDDeOmkyZTQoU
+	uQLjLj06S19tyICBMtLD02x2a4DlX6U5LuCOkyJjPtplRTZAvx9uy/0+iAs4bg4=
+X-Google-Smtp-Source: AGHT+IE5KORFH+J7ZagFNnbduneZJdV0TiT47A690Dgb803DEJf7trLkpMbSedGgf71kRVVBMce19g==
+X-Received: by 2002:a81:6c93:0:b0:604:acd9:32ce with SMTP id h141-20020a816c93000000b00604acd932cemr181255ywc.8.1707375071806;
+        Wed, 07 Feb 2024 22:51:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWbE47zU2t6yxIkweYlZVPzxxzVtdbF7AWrKJVRWkAEs1vhbVEWuHutFykKn6CqrW62/Q3TOC5B01n2ZJUuGiyy/J/3KGssaqH9WLqkMNxnQ2G0vq3qkn9pLSrpUKusjmFriXJNtu5v2UVe30trfGx1jIDCWuoO33U3dZIyYRaaFX3o0C35mbc785BnIg1CeBwy8cXuLeken4AF0y3ae4zG4wCf/xjzHhUq6aUxm07DjuI32xy+1AJcrnScRWmWTnZW4emCm+b9zRoO/0ITywO4YQdBh4PNP1lV5uNJZaIMdHo=
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:1d02:e957:f461:9a61])
-        by smtp.gmail.com with ESMTPSA id u203-20020a8184d4000000b0060467650c64sm596917ywf.62.2024.02.07.22.51.09
+        by smtp.gmail.com with ESMTPSA id u203-20020a8184d4000000b0060467650c64sm596917ywf.62.2024.02.07.22.51.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 22:51:10 -0800 (PST)
+        Wed, 07 Feb 2024 22:51:11 -0800 (PST)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -79,9 +79,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v6 3/4] bpf: Create argument information for nullable arguments.
-Date: Wed,  7 Feb 2024 22:51:02 -0800
-Message-Id: <20240208065103.2154768-4-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v6 4/4] selftests/bpf: Test PTR_MAYBE_NULL arguments of struct_ops operators.
+Date: Wed,  7 Feb 2024 22:51:03 -0800
+Message-Id: <20240208065103.2154768-5-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240208065103.2154768-1-thinker.li@gmail.com>
 References: <20240208065103.2154768-1-thinker.li@gmail.com>
@@ -95,440 +95,204 @@ Content-Transfer-Encoding: 8bit
 
 From: Kui-Feng Lee <thinker.li@gmail.com>
 
-Collect argument information from the type information of stub functions to
-mark arguments of BPF struct_ops programs with PTR_MAYBE_NULL if they are
-nullable.  A nullable argument is annotated by suffixing "__nullable" at
-the argument name of stub function.
+Test if the verifier verifies nullable pointer arguments correctly for BPF
+struct_ops programs.
 
-For nullable arguments, this patch sets an arg_info to label their reg_type
-with PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL. This makes the verifier
-to check programs and ensure that they properly check the pointer. The
-programs should check if the pointer is null before accessing the pointed
-memory.
+"test_maybe_null" in struct bpf_testmod_ops is the operator defined for the
+test cases here.
 
-The implementer of a struct_ops type should annotate the arguments that can
-be null. The implementer should define a stub function (empty) as a
-placeholder for each defined operator. The name of a stub function should
-be in the pattern "<st_op_type>__<operator name>". For example, for
-test_maybe_null of struct bpf_testmod_ops, it's stub function name should
-be "bpf_testmod_ops__test_maybe_null". You mark an argument nullable by
-suffixing the argument name with "__nullable" at the stub function.
-
-Since we already has stub functions for kCFI, we just reuse these stub
-functions with the naming convention mentioned earlier. These stub
-functions with the naming convention is only required if there are nullable
-arguments to annotate. For functions having not nullable arguments, stub
-functions are not necessary for the purpose of this patch.
-
-This patch will prepare a list of struct bpf_ctx_arg_aux, aka arg_info, for
-each member field of a struct_ops type.  "arg_info" will be assigned to
-"prog->aux->ctx_arg_info" of BPF struct_ops programs in
-check_struct_ops_btf_id() so that it can be used by btf_ctx_access() later
-to set reg_type properly for the verifier.
+A BPF program should check a pointer for NULL beforehand to access the
+value pointed by the nullable pointer arguments, or the verifier should
+reject the programs. The test here includes two parts; the programs
+checking pointers properly and the programs not checking pointers
+beforehand. The test checks if the verifier accepts the programs checking
+properly and rejects the programs not checking at all.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- include/linux/bpf.h         |  22 ++++
- include/linux/btf.h         |   2 +
- kernel/bpf/bpf_struct_ops.c | 197 ++++++++++++++++++++++++++++++++++--
- kernel/bpf/btf.c            |  33 ++++++
- kernel/bpf/verifier.c       |   6 ++
- 5 files changed, 253 insertions(+), 7 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 13 +++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  4 ++
+ .../prog_tests/test_struct_ops_maybe_null.c   | 46 +++++++++++++++++++
+ .../bpf/progs/struct_ops_maybe_null.c         | 29 ++++++++++++
+ .../bpf/progs/struct_ops_maybe_null_fail.c    | 24 ++++++++++
+ 5 files changed, 115 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9a2ee9456989..6908bd2360ea 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1709,6 +1709,19 @@ struct bpf_struct_ops {
- 	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
- };
- 
-+/* Every member of a struct_ops type has an instance even a member is not
-+ * an operator (function pointer). The "arg_info" field will be assigned to
-+ * prog->aux->ctx_arg_info of BPF struct_ops programs to provide the
-+ * argument information required by the verifier to verify the program.
-+ *
-+ * btf_ctx_access() will lookup prog->aux->ctx_arg_info to find the
-+ * corresponding entry for an given argument.
-+ */
-+struct bpf_struct_ops_arg_info {
-+	struct bpf_ctx_arg_aux *arg_info;
-+	u32 arg_info_cnt;
-+};
-+
- struct bpf_struct_ops_desc {
- 	struct bpf_struct_ops *st_ops;
- 
-@@ -1716,6 +1729,9 @@ struct bpf_struct_ops_desc {
- 	const struct btf_type *value_type;
- 	u32 type_id;
- 	u32 value_id;
-+
-+	/* Collection of argument information for each member */
-+	struct bpf_struct_ops_arg_info *arg_info;
- };
- 
- enum bpf_struct_ops_state {
-@@ -1790,6 +1806,8 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 			     struct btf *btf,
- 			     struct bpf_verifier_log *log);
- void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
-+void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc,
-+				 int len);
- #else
- #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
- static inline bool bpf_try_module_get(const void *data, struct module *owner)
-@@ -1814,6 +1832,10 @@ static inline void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struc
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index a06daebc75c9..66787e99ba1b 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -555,7 +555,11 @@ static int bpf_dummy_reg(void *kdata)
  {
- }
+ 	struct bpf_testmod_ops *ops = kdata;
  
-+static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc, int len)
-+{
-+}
-+
- #endif
- 
- #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index df76a14c64f6..15ee845e6b38 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -498,6 +498,8 @@ static inline void *btf_id_set8_contains(const struct btf_id_set8 *set, u32 id)
- bool btf_param_match_suffix(const struct btf *btf,
- 			    const struct btf_param *arg,
- 			    const char *suffix);
-+int btf_ctx_arg_offset(struct btf *btf, const struct btf_type *func_proto,
-+		       u32 arg_no);
- 
- struct bpf_verifier_log;
- 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index f98f580de77a..e9cc8c847736 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -116,17 +116,177 @@ static bool is_valid_value_type(struct btf *btf, s32 value_id,
- 	return true;
- }
- 
-+#define MAYBE_NULL_SUFFIX "__nullable"
-+#define MAX_STUB_NAME 128
-+
-+/* Return the type info of a stub function, if it exists.
-+ *
-+ * The name of a stub function is made up of the name of the struct_ops and
-+ * the name of the function pointer member, separated by "__". For example,
-+ * if the struct_ops type is named "foo_ops" and the function pointer
-+ * member is named "bar", the stub function name would be "foo_ops__bar".
-+ */
-+static const struct btf_type *
-+find_stub_func_proto(struct btf *btf, const char *st_op_name,
-+		     const char *member_name)
-+{
-+	char stub_func_name[MAX_STUB_NAME];
-+	const struct btf_type *func_type;
-+	s32 btf_id;
-+	int cp;
-+
-+	cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
-+		      st_op_name, member_name);
-+	if (cp >= MAX_STUB_NAME) {
-+		pr_warn("Stub function name too long\n");
-+		return NULL;
-+	}
-+	btf_id = btf_find_by_name_kind(btf, stub_func_name, BTF_KIND_FUNC);
-+	if (btf_id < 0)
-+		return NULL;
-+	func_type = btf_type_by_id(btf, btf_id);
-+	if (!func_type)
-+		return NULL;
-+
-+	return btf_type_by_id(btf, func_type->type); /* FUNC_PROTO */
-+}
-+
-+/* Prepare argument info for every nullable argument of a member of a
-+ * struct_ops type.
-+ *
-+ * Initialize a struct bpf_struct_ops_arg_info according to type info of
-+ * the arguments of a stub function. (Check kCFI for more information about
-+ * stub functions.)
-+ *
-+ * Each member in the struct_ops type has a struct bpf_struct_ops_arg_info
-+ * to provide an array of struct bpf_ctx_arg_aux, which in turn provides
-+ * the information that used by the verifier to check the arguments of the
-+ * BPF struct_ops program assigned to the member. Here, we only care about
-+ * the arguments that are marked as __nullable.
-+ *
-+ * The array of struct bpf_ctx_arg_aux is eventually assigned to
-+ * prog->aux->ctx_arg_info of BPF struct_ops programs and passed to the
-+ * verifier. (See check_struct_ops_btf_id())
-+ *
-+ * all_arg_info->arg_info will be the list of struct bpf_ctx_arg_aux if
-+ * success. If fails, it will be kept untouched.
-+ */
-+static int prepare_arg_info(struct btf *btf,
-+			    const char *st_ops_name,
-+			    const char *member_name,
-+			    const struct btf_type *func_proto,
-+			    struct bpf_struct_ops_arg_info *all_arg_info)
-+{
-+	const struct btf_type *stub_func_proto, *pointed_type;
-+	struct bpf_ctx_arg_aux *arg_info, *arg_info_buf;
-+	const struct btf_param *stub_args, *args;
-+	u32 nargs, arg_no, arg_info_cnt = 0;
-+	s32 arg_btf_id;
-+	int offset;
-+
-+	stub_func_proto = find_stub_func_proto(btf, st_ops_name, member_name);
-+	if (!stub_func_proto)
-+		return 0;
-+
-+	/* Check if the number of arguments of the stub function is the same
-+	 * as the number of arguments of the function pointer.
+-	ops->test_2(4, 3);
++	/* Some test cases (ex. struct_ops_maybe_null) may not have test_2
++	 * initialized, so we need to check for NULL.
 +	 */
-+	nargs = btf_type_vlen(func_proto);
-+	if (nargs != btf_type_vlen(stub_func_proto)) {
-+		pr_warn("the number of arguments of the stub function %s__%s does not match the number of arguments of the member %s of struct %s\n",
-+			st_ops_name, member_name, member_name, st_ops_name);
-+		return -EINVAL;
-+	}
-+
-+	args = btf_params(func_proto);
-+	stub_args = btf_params(stub_func_proto);
-+
-+	arg_info_buf = kcalloc(nargs, sizeof(*arg_info_buf), GFP_KERNEL);
-+	if (!arg_info_buf)
-+		return -ENOMEM;
-+
-+	/* Prepare arg_info for every nullable argument */
-+	arg_info = arg_info_buf;
-+	for (arg_no = 0; arg_no < nargs; arg_no++) {
-+		/* Skip arguments that is not suffixed with
-+		 * "__nullable".
-+		 */
-+		if (!btf_param_match_suffix(btf, &stub_args[arg_no],
-+					    MAYBE_NULL_SUFFIX))
-+			continue;
-+
-+		/* Should be a pointer to struct */
-+		pointed_type = btf_type_resolve_ptr(btf,
-+						    args[arg_no].type,
-+						    &arg_btf_id);
-+		if (!pointed_type ||
-+		    !btf_type_is_struct(pointed_type))
-+			goto err_out;
-+
-+		offset = btf_ctx_arg_offset(btf, func_proto, arg_no);
-+		if (offset < 0)
-+			goto err_out;
-+
-+		/* Fill the information of the new argument */
-+		arg_info->reg_type =
-+			PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
-+		arg_info->btf_id = arg_btf_id;
-+		arg_info->btf = btf;
-+		arg_info->offset = offset;
-+
-+		arg_info++;
-+		arg_info_cnt++;
-+	}
-+
-+	if (arg_info_cnt) {
-+		all_arg_info->arg_info = arg_info_buf;
-+		all_arg_info->arg_info_cnt = arg_info_cnt;
-+	} else {
-+		kfree(arg_info_buf);
-+	}
-+
-+	return 0;
-+
-+err_out:
-+	kfree(arg_info_buf);
-+
-+	return -EINVAL;
-+}
-+
-+/* Clean up the arg_info in a struct bpf_struct_ops_desc.
-+ *
-+ * The callers should pass the length of st_ops_desc->arg_info.  The length
-+ * can not be derived from std_ops_desc->type since the list may be
-+ * incomplete.
-+ */
-+void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc,
-+				 int len)
-+{
-+	struct bpf_struct_ops_arg_info *arg_info;
-+	int i;
-+
-+	arg_info = st_ops_desc->arg_info;
-+	if (!arg_info)
-+		return;
-+
-+	for (i = 0; i < len; i++)
-+		kfree(arg_info[i].arg_info);
-+
-+	kfree(arg_info);
-+}
-+
- int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 			     struct btf *btf,
- 			     struct bpf_verifier_log *log)
- {
- 	struct bpf_struct_ops *st_ops = st_ops_desc->st_ops;
-+	struct bpf_struct_ops_arg_info *arg_info;
- 	const struct btf_member *member;
- 	const struct btf_type *t;
- 	s32 type_id, value_id;
- 	char value_name[128];
- 	const char *mname;
--	int i;
-+	int i, err;
- 
- 	if (strlen(st_ops->name) + VALUE_PREFIX_LEN >=
- 	    sizeof(value_name)) {
-@@ -160,6 +320,12 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 	if (!is_valid_value_type(btf, value_id, t, value_name))
- 		return -EINVAL;
- 
-+	arg_info = kcalloc(btf_type_vlen(t), sizeof(*arg_info),
-+			   GFP_KERNEL);
-+	if (!arg_info)
-+		return -ENOMEM;
-+
-+	st_ops_desc->arg_info = arg_info;
- 	for_each_member(i, t, member) {
- 		const struct btf_type *func_proto;
- 
-@@ -167,32 +333,44 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 		if (!*mname) {
- 			pr_warn("anon member in struct %s is not supported\n",
- 				st_ops->name);
--			return -EOPNOTSUPP;
-+			err = -EOPNOTSUPP;
-+			goto errout;
- 		}
- 
- 		if (__btf_member_bitfield_size(t, member)) {
- 			pr_warn("bit field member %s in struct %s is not supported\n",
- 				mname, st_ops->name);
--			return -EOPNOTSUPP;
-+			err = -EOPNOTSUPP;
-+			goto errout;
- 		}
- 
- 		func_proto = btf_type_resolve_func_ptr(btf,
- 						       member->type,
- 						       NULL);
--		if (func_proto &&
--		    btf_distill_func_proto(log, btf,
-+		if (!func_proto)
-+			continue;
-+
-+		if (btf_distill_func_proto(log, btf,
- 					   func_proto, mname,
- 					   &st_ops->func_models[i])) {
- 			pr_warn("Error in parsing func ptr %s in struct %s\n",
- 				mname, st_ops->name);
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto errout;
- 		}
-+
-+		err = prepare_arg_info(btf, st_ops->name, mname,
-+				       func_proto,
-+				       arg_info + i);
-+		if (err)
-+			goto errout;
- 	}
- 
- 	if (st_ops->init(btf)) {
- 		pr_warn("Error in init bpf_struct_ops %s\n",
- 			st_ops->name);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto errout;
- 	}
- 
- 	st_ops_desc->type_id = type_id;
-@@ -201,6 +379,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 	st_ops_desc->value_type = btf_type_by_id(btf, value_id);
++	if (ops->test_2)
++		ops->test_2(4, 3);
  
  	return 0;
-+
-+errout:
-+	bpf_struct_ops_desc_release(st_ops_desc, i);
-+
-+	return err;
  }
- 
- static int bpf_struct_ops_map_get_next_key(struct bpf_map *map, void *key,
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index e3508b8008a2..554a57a0eaa5 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -1699,6 +1699,14 @@ static void btf_free_struct_meta_tab(struct btf *btf)
- static void btf_free_struct_ops_tab(struct btf *btf)
+@@ -573,9 +577,16 @@ static void bpf_testmod_test_2(int a, int b)
  {
- 	struct btf_struct_ops_tab *tab = btf->struct_ops_tab;
-+	int i;
-+
-+	if (!tab)
-+		return;
-+
-+	for (i = 0; i < tab->cnt; i++)
-+		bpf_struct_ops_desc_release(&tab->ops[i],
-+					    btf_type_vlen(tab->ops[i].type));
- 
- 	kfree(tab);
- 	btf->struct_ops_tab = NULL;
-@@ -6130,6 +6138,31 @@ static bool prog_args_trusted(const struct bpf_prog *prog)
- 	}
  }
  
-+int btf_ctx_arg_offset(struct btf *btf, const struct btf_type *func_proto,
-+		       u32 arg_no)
++static int bpf_testmod_ops__test_maybe_null(int dummy,
++					    struct task_struct *task__nullable)
 +{
-+	const struct btf_param *args;
-+	const struct btf_type *t;
-+	int off = 0, i;
-+	u32 sz, nargs;
-+
-+	nargs = btf_type_vlen(func_proto);
-+	/* It is the return value if arg_no == nargs */
-+	if (arg_no > nargs)
-+		return -EINVAL;
-+
-+	args = btf_params(func_proto);
-+	for (i = 0; i < arg_no; i++) {
-+		t = btf_type_by_id(btf, args[i].type);
-+		t = btf_resolve_size(btf, t, &sz);
-+		if (IS_ERR(t))
-+			return -EINVAL;
-+		off += roundup(sz, 8);
-+	}
-+
-+	return off;
++	return 0;
 +}
 +
- bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		    const struct bpf_prog *prog,
- 		    struct bpf_insn_access_aux *info)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7edd70eec7dd..7826d6e6a09b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20415,6 +20415,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
- 		}
- 	}
+ static struct bpf_testmod_ops __bpf_testmod_ops = {
+ 	.test_1 = bpf_testmod_test_1,
+ 	.test_2 = bpf_testmod_test_2,
++	.test_maybe_null = bpf_testmod_ops__test_maybe_null,
+ };
  
-+	/* btf_ctx_access() used this to provide argument type info */
-+	prog->aux->ctx_arg_info =
-+		st_ops_desc->arg_info[member_idx].arg_info;
-+	prog->aux->ctx_arg_info_size =
-+		st_ops_desc->arg_info[member_idx].arg_info_cnt;
+ struct bpf_struct_ops bpf_bpf_testmod_ops = {
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index 537beca42896..c3b0cf788f9f 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -5,6 +5,8 @@
+ 
+ #include <linux/types.h>
+ 
++struct task_struct;
 +
- 	prog->aux->attach_func_proto = func_proto;
- 	prog->aux->attach_func_name = mname;
- 	env->ops = st_ops->verifier_ops;
+ struct bpf_testmod_test_read_ctx {
+ 	char *buf;
+ 	loff_t off;
+@@ -31,6 +33,8 @@ struct bpf_iter_testmod_seq {
+ struct bpf_testmod_ops {
+ 	int (*test_1)(void);
+ 	void (*test_2)(int a, int b);
++	/* Used to test nullable arguments. */
++	int (*test_maybe_null)(int dummy, struct task_struct *task);
+ };
+ 
+ #endif /* _BPF_TESTMOD_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
+new file mode 100644
+index 000000000000..01dc2613c8a5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_maybe_null.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++
++#include "struct_ops_maybe_null.skel.h"
++#include "struct_ops_maybe_null_fail.skel.h"
++
++/* Test that the verifier accepts a program that access a nullable pointer
++ * with a proper check.
++ */
++static void maybe_null(void)
++{
++	struct struct_ops_maybe_null *skel;
++
++	skel = struct_ops_maybe_null__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open_and_load"))
++		return;
++
++	struct_ops_maybe_null__destroy(skel);
++}
++
++/* Test that the verifier rejects a program that access a nullable pointer
++ * without a check beforehand.
++ */
++static void maybe_null_fail(void)
++{
++	struct struct_ops_maybe_null_fail *skel;
++
++	skel = struct_ops_maybe_null_fail__open_and_load();
++	if (ASSERT_ERR_PTR(skel, "struct_ops_module_fail__open_and_load"))
++		return;
++
++	struct_ops_maybe_null_fail__destroy(skel);
++}
++
++void test_struct_ops_maybe_null(void)
++{
++	/* The verifier verifies the programs at load time, so testing both
++	 * programs in the same compile-unit is complicated. We run them in
++	 * separate objects to simplify the testing.
++	 */
++	if (test__start_subtest("maybe_null"))
++		maybe_null();
++	if (test__start_subtest("maybe_null_fail"))
++		maybe_null_fail();
++}
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
+new file mode 100644
+index 000000000000..b450f72e744a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null.c
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++pid_t tgid = 0;
++
++/* This is a test BPF program that uses struct_ops to access an argument
++ * that may be NULL. This is a test for the verifier to ensure that it can
++ * rip PTR_MAYBE_NULL correctly.
++ */
++SEC("struct_ops/test_maybe_null")
++int BPF_PROG(test_maybe_null, int dummy,
++	     struct task_struct *task)
++{
++	if (task)
++		tgid = task->tgid;
++
++	return 0;
++}
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_1 = {
++	.test_maybe_null = (void *)test_maybe_null,
++};
++
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
+new file mode 100644
+index 000000000000..6283099ec383
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_maybe_null_fail.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++pid_t tgid = 0;
++
++SEC("struct_ops/test_maybe_null_struct_ptr")
++int BPF_PROG(test_maybe_null_struct_ptr, int dummy,
++	     struct task_struct *task)
++{
++	tgid = task->tgid;
++
++	return 0;
++}
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_struct_ptr = {
++	.test_maybe_null = (void *)test_maybe_null_struct_ptr,
++};
++
 -- 
 2.34.1
 
