@@ -1,178 +1,234 @@
-Return-Path: <bpf+bounces-21548-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ACEE84EAD4
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:50:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CCF284EAEB
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:54:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E05B1F25EFB
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 21:50:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A1311C25799
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 21:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1F84F5F3;
-	Thu,  8 Feb 2024 21:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WyXd0Q2v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C90B4F5E5;
+	Thu,  8 Feb 2024 21:54:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA41F4F5E5
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 21:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41AAD4F88C
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 21:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707429045; cv=none; b=DuQmdtV5Z+E82lfsLbWkGY7y/ubu/afNGkQFeRxwllSIbrpujI+cmHAHjM16LqzjIjkTYNqym5IPp8UeoR6OZW9doTNH2nqjup8AnltWyUcD3XEetdoarAYpC+uJRcLjV6Ijwr+V6VFhCHWmaJwm5kFyFXpBgVivjSccxkXdcJ4=
+	t=1707429278; cv=none; b=IE1Vct/lEngdZITnvBJA0lfDxO8gG4CXnn2ajaLWFazOaVrbxxNBIP/+IvpLMWfiC+H6GrqeSw74o9qezHfph8okzMsdgi4P3bQvJD7wsyyiMYtZAQoaT0a2lrtrAZ+6/diyeMutnI+nzGX7oEtdSd8C/cEFNdZNFLRyey9684c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707429045; c=relaxed/simple;
-	bh=kUygteJBS6KCH//gRa+4ItB8/T9NYxGBC59L0JWpVSg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WHLw0s8XAUQBU/gRXOs0VxZam69w4DI4PEIA/C6S269UkYbRj2GsRai13xltR2E8jz0SHBeiBCHvykFxd9TXGLS3fgP9PrBYldqtOnX6V/kdskOFc364U+5z9U4yR9+dEwVv/+0NuIXuFtL7wZS7G0lJqkn5DdgNW9Oqsv/ON0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WyXd0Q2v; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3566c0309fso35795066b.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 13:50:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707429042; x=1708033842; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rk2Mf+CYgNj0rrQ4AtP2FsCs3Z7W5vLJ8AK+GUlsuys=;
-        b=WyXd0Q2vVI3up9xny/h7wHXd+hutHmY/PqjLQKhMXoOtXxu78K7WC6ZJyllrbHUCbA
-         lKbETycZzjHnKIPtsAxlvylGJDB9VEYu1EfiAbTy9xNgafzgvpMWrujbN/AQCRFGqEv/
-         uT214YQXfL9d8jbeq5OwioI+N9Qp16szXGDYSp4OdLnJcr8k9066h9OWI8bmMEMvtD/q
-         u09UL6KFoK29UuYN8G3K5+pruDZ83pAEeMcHVH+rF3CPqKlrIyHbvPngtN6J2GfGNgGf
-         Emqu/P5826ry+2awo19cEOLjxCSVJQYsUDBgbbRtVjvc58wTpU4vlL4VKl1cdzNyaXGK
-         9DkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707429042; x=1708033842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rk2Mf+CYgNj0rrQ4AtP2FsCs3Z7W5vLJ8AK+GUlsuys=;
-        b=n7KpnX10TMqsex7spqtNUb27ooKYzN6NisTv2N61Lz04MaE5c9RQ08U5FgGa3O/De1
-         3Hq9xzj7jfT/sHllCyPUyvnthWvk3qvqydm9mJrAGVnMR9FMAUNmfzBa2o7wQXFlcAUR
-         UaArp1jIeKNyZPJNR2qZZNjYdsJzWz6MgpeZ2w0omL44eBxanGZHHBBd8rcwktSRCAFa
-         peJKZL891duNSD9Lm83Uw5nUdWXBiAOEiFnobavjy21tTs1v7qA0qgTrpSQyC/o4EoX9
-         e6zCkT44S6prcce8gOUMDFrVTFRpbgn0wxGF4atdHmk7IrgYHgI+ksEP9wYmdILVKHGw
-         WW3w==
-X-Gm-Message-State: AOJu0YwLPXCmXrRJbbewVFxxrVuxT/jvaY6zK7wY0KE54gozsBnoazdw
-	jzI3fCzzFA/XLl8IUt03OGh5XsGnC+cAOkEYJxYd9ZP2Fi3+iTmuWa05Nbt9x+80LPVFQQNJ6jo
-	7DkV5IiaRWgHQp+hlKshoaXwysltGGrh7qsrV
-X-Google-Smtp-Source: AGHT+IHJV6Lqt0M69QP75rhTnc4EGw8bgsYHixzIOWzmQ/W0T5fBOc4OYsmaq0/5BaxifVnY2kb+0zD0SFv1RUA+6eM=
-X-Received: by 2002:a17:907:39a:b0:a38:5302:89ec with SMTP id
- ss26-20020a170907039a00b00a38530289ecmr380516ejb.42.1707429041842; Thu, 08
- Feb 2024 13:50:41 -0800 (PST)
+	s=arc-20240116; t=1707429278; c=relaxed/simple;
+	bh=xZnXNmIjozIYFYAdL5RcYDL/T4YEBVaphclZ8bbHCxk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ftS9tVSm5E0QEKzQTgR1l15mV1EbxbMTALrPeVBNolbFTCM5XsvRhzOL9ng4Q6x2OuMAbednxX75LcbqrjqaBpsSwZn3hlOLH2JkYcwYXb+GYxiA4LY62D43TMGE2pO5wgjVkO65TMHJFdp/6XtrIRFQv5u3z8pBDT2Et9k6I4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 9436D26CC56; Thu,  8 Feb 2024 13:54:22 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v3 1/2] bpf: Fix test verif_scale_strobemeta_subprogs failure due to llvm19
+Date: Thu,  8 Feb 2024 13:54:22 -0800
+Message-Id: <20240208215422.110920-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
-In-Reply-To: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
-From: Justin Stitt <justinstitt@google.com>
-Date: Thu, 8 Feb 2024 13:50:29 -0800
-Message-ID: <CAFhGd8pfMjkdTWx3HnVRpZNgbOy7KkvuD5vytP0G+0ByY_++9w@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Fix changing ELF file type for output of gen_btf
- for big endian
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: masahiroy@kernel.org, nicolas@fjasle.eu, ndesaulniers@google.com, 
-	morbo@google.com, keescook@chromium.org, maskray@google.com, 
-	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
-	patches@lists.linux.dev, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 12:21=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-> changed the ELF type of .btf.vmlinux.bin.o from ET_EXEC to ET_REL via
-> dd, which works fine for little endian platforms:
->
->    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
-.......|
->   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
-.......|
->   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
-.......|
->
-> However, for big endian platforms, it changes the wrong byte, resulting
-> in an invalid ELF file type, which ld.lld rejects:
->
->    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
-.......|
->   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
-.......|
->   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
-.......|
->
->   Type:                              <unknown>: 103
->
->   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
->
-> Fix this by using a different seek value for dd when targeting big
-> endian, so that the correct byte gets changed and everything works
-> correctly for all linkers.
->
->    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
-.......|
->   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
-.......|
->   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
-.......|
->
->   Type:                              REL (Relocatable file)
->
-> Cc: stable@vger.kernel.org
-> Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-> Link: https://github.com/llvm/llvm-project/pull/75643
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+With latest llvm19, I hit the following selftest failures with
 
-Tested-by: Justin Stitt <justinstitt@google.com>
+  $ ./test_progs -j
+  libbpf: prog 'on_event': BPF program load failed: Permission denied
+  libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+  combined stack size of 4 calls is 544. Too large
+  verification time 1344153 usec
+  stack depth 24+440+0+32
+  processed 51008 insns (limit 1000000) max_states_per_insn 19 total_stat=
+es 1467 peak_states 303 mark_read 146
+  -- END PROG LOAD LOG --
+  libbpf: prog 'on_event': failed to load: -13
+  libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
+  scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
+  #498     verif_scale_strobemeta_subprogs:FAIL
 
-> ---
->  scripts/link-vmlinux.sh | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index a432b171be82..8a9f48b3cb32 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -135,8 +135,15 @@ gen_btf()
->         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dalloc=
-,readonly \
->                 --strip-all ${1} ${2} 2>/dev/null
->         # Change e_type to ET_REL so that it can be used to link final vm=
-linux.
-> -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
-> -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 status=
-=3Dnone
-> +       # Unlike GNU ld, lld does not allow an ET_EXEC input. Make sure t=
-he correct
-> +       # byte gets changed with big endian platforms, otherwise e_type m=
-ay be an
-> +       # invalid value.
-> +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
-> +               seek=3D17
-> +       else
-> +               seek=3D16
-> +       fi
-> +       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D${seek} s=
-tatus=3Dnone
->  }
->
->  # Create ${2} .S file with all symbols from the ${1} object file
->
-> ---
-> base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
-> change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e129=
-6
->
-> Best regards,
-> --
-> Nathan Chancellor <nathan@kernel.org>
->
+The verifier complains too big of the combined stack size (544 bytes) whi=
+ch
+exceeds the maximum stack limit 512. This is a regression from llvm19 ([1=
+]).
+
+In the above error log, the original stack depth is 24+440+0+32.
+To satisfy interpreter's need, in verifier the stack depth is adjusted to
+32+448+32+32=3D544 which exceeds 512, hence the error. The same adjusted
+stack size is also used for jit case.
+
+But the jitted codes could use smaller stack size.
+
+  $ egrep -r stack_depth | grep round_up
+  arm64/net/bpf_jit_comp.c:       ctx->stack_size =3D round_up(prog->aux-=
+>stack_depth, 16);
+  loongarch/net/bpf_jit.c:        bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+  powerpc/net/bpf_jit_comp.c:     cgctx.stack_size =3D round_up(fp->aux->=
+stack_depth, 16);
+  riscv/net/bpf_jit_comp32.c:             round_up(ctx->prog->aux->stack_=
+depth, STACK_ALIGN);
+  riscv/net/bpf_jit_comp64.c:     bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+  s390/net/bpf_jit_comp.c:        u32 stack_depth =3D round_up(fp->aux->s=
+tack_depth, 8);
+  sparc/net/bpf_jit_comp_64.c:            stack_needed +=3D round_up(stac=
+k_depth, 16);
+  x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xEC, round_up(=
+stack_depth, 8));
+  x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+  x86/net/bpf_jit_comp.c:                     round_up(stack_depth, 8));
+  x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+  x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xC4, round_up(=
+stack_depth, 8));
+
+In the above, STACK_ALIGN in riscv/net/bpf_jit_comp32.c is defined as 16.
+So stack is aligned in either 8 or 16, x86/s390 having 8-byte stack align=
+ment and
+the rest having 16-byte alignment.
+
+This patch calculates total stack depth based on 16-byte alignment if jit=
+ is requested.
+For the above failing case, the new stack size will be 32+448+0+32=3D512 =
+and no verification
+failure. llvm19 regression will be discussed separately in llvm upstream.
+
+The verifier change caused three test failures as these tests compared me=
+ssages
+with stack size. More specifically,
+  - test_global_funcs/global_func1: adjusted to interpreter only since ve=
+rification will
+    succeed in jit mode. A new test will be added for jit mode later.
+  - async_stack_depth/{pseudo_call_check, async_call_root_check}: since j=
+it and interpreter
+    will calculate different stack sizes, the failure msg is adjusted to =
+omit those
+    specific stack size numbers.
+
+  [1] https://lore.kernel.org/bpf/32bde0f0-1881-46c9-931a-673be566c61d@li=
+nux.dev/
+
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/verifier.c                          | 18 +++++++++++++-----
+ .../bpf/prog_tests/test_global_funcs.c         |  5 ++++-
+ .../selftests/bpf/progs/async_stack_depth.c    |  4 ++--
+ 3 files changed, 19 insertions(+), 8 deletions(-)
+
+Changelogs:
+  v2 -> v3:
+    - fix async_stack_depth test failure if jit is turned off
+  v1 -> v2:
+    - fix some selftest failures
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ddaf09db1175..6441a540904b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5812,6 +5812,17 @@ static int check_ptr_alignment(struct bpf_verifier=
+_env *env,
+ 					   strict);
+ }
+=20
++static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
+depth)
++{
++	if (env->prog->jit_requested)
++		return round_up(stack_depth, 16);
++
++	/* round up to 32-bytes, since this is granularity
++	 * of interpreter stack size
++	 */
++	return round_up(max_t(u32, stack_depth, 1), 32);
++}
++
+ /* starting from main bpf function walk all instructions of the function
+  * and recursively walk all callees that given function can call.
+  * Ignore jump and exit insns.
+@@ -5855,10 +5866,7 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx)
+ 			depth);
+ 		return -EACCES;
+ 	}
+-	/* round up to 32-bytes, since this is granularity
+-	 * of interpreter stack size
+-	 */
+-	depth +=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
++	depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+ 	if (depth > MAX_BPF_STACK) {
+ 		verbose(env, "combined stack size of %d calls is %d. Too large\n",
+ 			frame + 1, depth);
+@@ -5952,7 +5960,7 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx)
+ 	 */
+ 	if (frame =3D=3D 0)
+ 		return 0;
+-	depth -=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
++	depth -=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+ 	frame--;
+ 	i =3D ret_insn[frame];
+ 	idx =3D ret_prog[frame];
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b=
+/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+index e905cbaf6b3d..a3a41680b38e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+@@ -138,7 +138,10 @@ static void subtest_ctx_arg_rewrite(void)
+=20
+ void test_test_global_funcs(void)
+ {
+-	RUN_TESTS(test_global_func1);
++	if (!env.jit_enabled) {
++		RUN_TESTS(test_global_func1);
++	}
++
+ 	RUN_TESTS(test_global_func2);
+ 	RUN_TESTS(test_global_func3);
+ 	RUN_TESTS(test_global_func4);
+diff --git a/tools/testing/selftests/bpf/progs/async_stack_depth.c b/tool=
+s/testing/selftests/bpf/progs/async_stack_depth.c
+index 3517c0e01206..36734683acbd 100644
+--- a/tools/testing/selftests/bpf/progs/async_stack_depth.c
++++ b/tools/testing/selftests/bpf/progs/async_stack_depth.c
+@@ -30,7 +30,7 @@ static int bad_timer_cb(void *map, int *key, struct bpf=
+_timer *timer)
+ }
+=20
+ SEC("tc")
+-__failure __msg("combined stack size of 2 calls is 576. Too large")
++__failure __msg("combined stack size of 2 calls is")
+ int pseudo_call_check(struct __sk_buff *ctx)
+ {
+ 	struct hmap_elem *elem;
+@@ -45,7 +45,7 @@ int pseudo_call_check(struct __sk_buff *ctx)
+ }
+=20
+ SEC("tc")
+-__failure __msg("combined stack size of 2 calls is 608. Too large")
++__failure __msg("combined stack size of 2 calls is")
+ int async_call_root_check(struct __sk_buff *ctx)
+ {
+ 	struct hmap_elem *elem;
+--=20
+2.39.3
+
 
