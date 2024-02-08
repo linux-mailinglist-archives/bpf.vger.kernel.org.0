@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-21476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862A184DA07
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 07:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C993D84DA0B
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 07:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 240AE1F22EEF
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 06:24:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6550C1F22CFA
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 06:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC5267E62;
-	Thu,  8 Feb 2024 06:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6BC67E96;
+	Thu,  8 Feb 2024 06:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ny7IfhII"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FRvbgY6z"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE2863410;
-	Thu,  8 Feb 2024 06:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333AE679FB;
+	Thu,  8 Feb 2024 06:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707373489; cv=none; b=O+GmHaqJqqpDNqIvZY2pwwpmVZIkrzs5sGiD6XEGPAwcAnW3GgcHCRSa7jgvkAuPspyKSM9xYzDaM1uehTB4JH4+C5/kSipPnJOTcddKr8Jd5GopRd6sNxXpTlg3jrwn2Qw39ErfMG+8whJcN7vJrBVHKGJ3pGNSJ+nNgh+z+Yk=
+	t=1707373495; cv=none; b=pxMDEA7gPsQY6xiefxyWVixk7ttNjkaqrVPVH75xcV3h1L5QlNRAaNsQqvfwzk2n2mon9fT6P3vHosdfFdI5cTxKyTH+ysZhNtxb0S3Vfv3TowdESiZnBGgJ4ByZEcLE4HoqorOF/cAMciQ6MSYlZmRqvRi+0t4laChs4qvrhEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707373489; c=relaxed/simple;
-	bh=uJ7n0v1Hu3yIwlxagQmhtcAIEoBMxKcWkHCp7Khv0OI=;
+	s=arc-20240116; t=1707373495; c=relaxed/simple;
+	bh=uiDA2nuOrPwyYuDShNZ10B8oLeFQNQ7Cu4/PyTufBB4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fmSzOE/tFQgwBUJ6Ii58WInGN3agrFWRV4B19UJ5EkFztvR8zNJk3EdY7EkzGRRr4iE33PNAMdsrpUQGWFX0qzMWZ2KhFFqNjNTU3/1BpoecOd5XBZTPETmBDIFazqJ9LtNrWkDXP7rhULMoGTW8Z8ch8TVZKl+V3+ixWCdPQbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ny7IfhII; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65269C43390;
-	Thu,  8 Feb 2024 06:24:43 +0000 (UTC)
+	 MIME-Version; b=Hh76WY/O/U85eaq+YqjabgM2MKZpyQN25BL5pWezN26Js4CP4MNM2ZoDep6KhgfqliCSSGLbXDMhKI8ZBPYbNiRJL5ODUBgS95E8fH04Gr90ankjmlYbBXfbHeApmvNTyK0at99mo6vS/GOAoRZL2YLmJ2VhfqeB6RCsgyxmWvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FRvbgY6z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87982C43399;
+	Thu,  8 Feb 2024 06:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707373488;
-	bh=uJ7n0v1Hu3yIwlxagQmhtcAIEoBMxKcWkHCp7Khv0OI=;
+	s=k20201202; t=1707373495;
+	bh=uiDA2nuOrPwyYuDShNZ10B8oLeFQNQ7Cu4/PyTufBB4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ny7IfhIIZ+0CchtfwLbSzQmhLoR/XtW8kGJYjPXGv40NCDHneDYzkuXID6vIi75PG
-	 dEJ71dyQYyTfpAenaJUjf9KXA0jw7WRTp2IzLlnbSP7GAVUqJlBKWCbr0q+l1KmM0s
-	 rNkSTTpMIBZYc1TQtxxxGQRq9PmlLANJgDVzSDvU0Xk0WAQ/zfMPM76bDrlpd7p6Uv
-	 qRfRBKJzZ8AJpz1YQoYKXAuXnv3YFggPBvfzan96nGOjoOZQfRj/XtM44w9hV5EOvb
-	 7dSR0k6j/z2yc+RLgFLUQ65pPDa2emCbnotp/ukA9EQVkueNExsUVs71ZYDUZVHen8
-	 11tU6fobRrpYA==
+	b=FRvbgY6zGzqb6MTKH4BjFLAJ3oxdAJJvk68dndAs7ZcWbpfpMMHmyTrgJK+wd2fjd
+	 JwXKBn7PddlBA8qNhskeTXZ/+F4syws6QAi1wHVywkUhtOlQ+UOmzRhNtFHMnHVmpx
+	 8wm+vWmMTmMInBkPLKRzi4DJlu65xnC7eaWIxCnl/aJuWeucLUVoU/HYvN3YwamKjA
+	 g+UHBRN0zQy8d+qo8tUeXf15YdvgpwnNf+4Di11x5QjP+g22bAszTH6DZUH739dqfn
+	 svfcrtT17zeFrIUtBKFbrMtPHT41d+XuVxXB945RczAoqOB4bnUmbnfl7UdZPvVNR/
+	 jhT3ojz7+F85w==
 From: Geliang Tang <geliang@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -58,9 +58,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 Cc: Geliang Tang <tanggeliang@kylinos.cn>,
 	bpf@vger.kernel.org,
 	mptcp@lists.linux.dev
-Subject: [PATCH bpf-next v5 2/3] bpf, btf: Add check_btf_kconfigs helper
-Date: Thu,  8 Feb 2024 14:24:22 +0800
-Message-Id: <fa5537fc55f1e4d0bfd686598c81b7ab9dbd82b7.1707373307.git.tanggeliang@kylinos.cn>
+Subject: [PATCH bpf-next v5 3/3] bpf, btf: Check btf for register_bpf_struct_ops
+Date: Thu,  8 Feb 2024 14:24:23 +0800
+Message-Id: <69082b9835463fe36f9e354bddf2d0a97df39c2b.1707373307.git.tanggeliang@kylinos.cn>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1707373307.git.tanggeliang@kylinos.cn>
 References: <cover.1707373307.git.tanggeliang@kylinos.cn>
@@ -74,74 +74,31 @@ Content-Transfer-Encoding: 8bit
 
 From: Geliang Tang <tanggeliang@kylinos.cn>
 
-This patch extracts duplicate code on error path when btf_get_module_btf()
-returns NULL from the functions __register_btf_kfunc_id_set() and
-register_btf_id_dtor_kfuncs() into a new helper named check_btf_kconfigs()
-to check CONFIG_DEBUG_INFO_BTF and CONFIG_DEBUG_INFO_BTF_MODULES in it.
+Similar to the handling in the functions __register_btf_kfunc_id_set()
+and register_btf_id_dtor_kfuncs(), this patch uses the newly added
+helper check_btf_kconfigs() and IS_ERR() to check the return value of
+btf_get_module_btf().
 
 Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
 ---
- kernel/bpf/btf.c | 33 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
+ kernel/bpf/btf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 16eb937eca46..e318df7f0071 100644
+index e318df7f0071..c18b0f47f1f9 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -7738,6 +7738,17 @@ static struct btf *btf_get_module_btf(const struct module *module)
- 	return btf;
- }
+@@ -8882,7 +8882,9 @@ int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
  
-+static int check_btf_kconfigs(const struct module *module)
-+{
-+	if (!module && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-+		pr_err("missing vmlinux BTF, cannot register kfuncs\n");
-+		return -ENOENT;
-+	}
-+	if (module && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
-+		pr_warn("missing module BTF, cannot register kfuncs\n");
-+	return 0;
-+}
-+
- BPF_CALL_4(bpf_btf_find_by_name_kind, char *, name, int, name_sz, u32, kind, int, flags)
- {
- 	struct btf *btf = NULL;
-@@ -8098,15 +8109,8 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
- 	int ret, i;
+ 	btf = btf_get_module_btf(st_ops->owner);
+ 	if (!btf)
+-		return -EINVAL;
++		return check_btf_kconfigs(st_ops->owner);
++	if (IS_ERR(btf))
++		return PTR_ERR(btf);
  
- 	btf = btf_get_module_btf(kset->owner);
--	if (!btf) {
--		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
--			pr_err("missing vmlinux BTF, cannot register kfuncs\n");
--			return -ENOENT;
--		}
--		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
--			pr_warn("missing module BTF, cannot register kfuncs\n");
--		return 0;
--	}
-+	if (!btf)
-+		return check_btf_kconfigs(kset->owner);
- 	if (IS_ERR(btf))
- 		return PTR_ERR(btf);
- 
-@@ -8214,15 +8218,8 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
- 	int ret;
- 
- 	btf = btf_get_module_btf(owner);
--	if (!btf) {
--		if (!owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
--			pr_err("missing vmlinux BTF, cannot register dtor kfuncs\n");
--			return -ENOENT;
--		}
--		if (owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
--			pr_warn("missing module BTF, cannot register dtor kfuncs\n");
--		return 0;
--	}
-+	if (!btf)
-+		return check_btf_kconfigs(owner);
- 	if (IS_ERR(btf))
- 		return PTR_ERR(btf);
- 
+ 	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+ 	if (!log) {
 -- 
 2.40.1
 
