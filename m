@@ -1,111 +1,212 @@
-Return-Path: <bpf+bounces-21558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21545-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273DB84EBE5
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 23:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7EB684EA22
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:12:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC349B2155C
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3A151C22154
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 21:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6E35025A;
-	Thu,  8 Feb 2024 22:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901134C3BF;
+	Thu,  8 Feb 2024 21:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BgBNulay"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=smtpservice.net header.i=@smtpservice.net header.b="JHjzMH3g";
+	dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="RTkDQ5YA";
+	dkim=pass (1024-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="xE1PUwcQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from e2i605.smtp2go.com (e2i605.smtp2go.com [103.2.142.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FFF50256;
-	Thu,  8 Feb 2024 22:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C764C3BB
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 21:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.2.142.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707432623; cv=none; b=PEMBB5qAVUQINRX9DWGmy/iUMmDPPES/5h77UzTuz9ay2J9xpAHyow1qhB+NvOmMZotOlYvJMp3LKwqFvw8U14q/R/WQeOA3R6sI1USe0EvRxCnV/dU639C6DD8t85TVrEl1a89sV7+BMNRgkMC80rFFQbeIUKEl6rrX6FKAQ/Y=
+	t=1707426735; cv=none; b=UHvQhSKHMMZI0Eaf9lVRKLVNiw2PcRHsRhVhBKyXngczedK/eADIMjnOCi/C78RNbtRR8iSjrqfXJzAwWKETEHORlU53tgips5y7mi5sfieLKwQWuOrUriik1IhYZ8inO1t4p0hRb7HLwL7in9M9HjaUnuqAyVP5YKkI+D+VpfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707432623; c=relaxed/simple;
-	bh=QQbWm1vnzLUS1txRr9hch/TyTh+VOwAmW8Axv2tX8O8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=YcMCp/jlSLdQ8TR/nGHiMu5yezQPDnymWVi2nb4SMCv6/jkvLMLVsKzL9CiGs4ynev/gUVBsc0Maj3rey6Y8+1BSv+uaQrvPhX1I7QzOoJIVGCLJa1ueOFl794jTrPiGT0XPxipPtqr6oJ/2oQoWXXUY1zo0/0YWoELfUbO6lrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BgBNulay; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bfeb155d31so144132b6e.1;
-        Thu, 08 Feb 2024 14:50:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707432620; x=1708037420; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MGoqD8TT68ixzRNm3vNixXDLMpdkKEucKJo6ktMulao=;
-        b=BgBNulay1MXMfxpqEYVvKTuArU58i7RXPInBmj5ZkrsFnzBdvx4eSJCACHSsm3m01M
-         lLfOPwtqP5yp1MXmLcQ3V2uBsgaxm9qR5MMiI+38ZENrg7yXs2HnQS17fbAom7a8DMeV
-         hUW5CvsHUZSO3iNVzzs0uGyMEZFHRmuT2LLbJhG/+o7gTI2omc/Eps9Sx+X8tBb3VAkm
-         t8Do2h/ziUOoAv9/GvbywmCPJ/V+H4Zl1mW5qyWGWSEjuqkGdkCShELnYeT4hIMxsY5D
-         ivPO23GJUou+w9EOXGME75XT7MF/JcNlYLKAUvt3A/m2sYEHeyXYFzuHdF9BWNbBK66k
-         05oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707432620; x=1708037420;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MGoqD8TT68ixzRNm3vNixXDLMpdkKEucKJo6ktMulao=;
-        b=QAPdCyQc0Tf5eQvdLa2UaFcXY85rpBAykkZYzA9hy0haWjfkqfGgwdU/NkaYBR4p/b
-         Acr0C+dlFgTeHLEeqTOeiViH1Rj7VDn9jwL10eRYCue+aS5TiWRBuIY93cmrDyZ2o9KU
-         EyVXvISBsdWI1TXVLApdXvGGNiSoKfHrAvkOQyzcv9dat/uXCywaUPlvb7T2qrm3+W+w
-         6uWShJuUj2pGb+fUs1V7/gTh7kyiKb2VV51aOriY3FLpTdmXI3E28fHrGhkotlarNACk
-         oaaF7DZjBGO2YRR49ufKi7X0Ql13vZB7JYKr94Fol8PtOponSlmDqfgee/TkRD2bfqtp
-         fy4A==
-X-Gm-Message-State: AOJu0Yz381/sl2dEE5wgDPX0LWnS552G8JZGj1LTCCci6T7IruX6RfJP
-	DJMNIskxZ9+Ii9AGpo+5mhesBNCXcHK28cR9xi59pQk6GIGFIZWY
-X-Google-Smtp-Source: AGHT+IERRUQ4GDpJ49o40yXi6V2s2n9mKovBi13RS4qwlL6Kk00nSycdLPKOBYqEZOIxw7iA9TiRMQ==
-X-Received: by 2002:a05:6808:99a:b0:3bd:ca59:8f4 with SMTP id a26-20020a056808099a00b003bdca5908f4mr916041oic.33.1707432620697;
-        Thu, 08 Feb 2024 14:50:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWrdk7DGYjpSsbeF/CgHLCOVICu4qBMhDjjrKtVyldYxtifcOf07d0ouGzEjpLXZ5mVm6b8OoijaNmq/HpEx5rG3bzdDTCuOU8vUh9qWs0XkgRw+waz+bGhJAwsKpp42NKCfI+ngQlscsrpBrLHSzJ2vLhwLQnKlFbuY+/ZMknZ1lz/pcv8+FvxrVDqvgTY97EKCDc+EyQQXyAnK61fIEoDb7kuoH4RPwrodzx9kG/7Ao3tIR+cpEdPPXpB+qt+3xP8p96jB5BQiWEa0tztZE9swmqRsG67+MRscBVLrxCkXFspkOjdB1Dx/N1V3DbBEtpXMd7xIrELRbycb7r0ickyjQ4J0ZkZTwzDNKeP/VADxmtA9cbi7I8k
-Received: from localhost ([2601:8c:502:14f0:acdd:1182:de4a:7f88])
-        by smtp.gmail.com with ESMTPSA id e2-20020ac84b42000000b0042c3bb838cdsm173488qts.90.2024.02.08.14.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 14:50:20 -0800 (PST)
-Date: Thu, 8 Feb 2024 12:50:18 -0500
-From: Oliver Crumrine <ozlinuxc@gmail.com>
-To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: remove check before __cgroup_bpf_run_filter_skb
-Message-ID: <ngc7klapduckb67tsymb3blu2wlmdsjo4pa4gbaivgxezbwzxp@v7akqu7gbwl4>
+	s=arc-20240116; t=1707426735; c=relaxed/simple;
+	bh=gzAJXh0AuWP2Tj6EfnlN6wMOTN9/0yYV+XNsGIOcsSc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iyAetfn4IUGw/dODYZMwbGEGJlixCKS8knQ6kc9H5kGXQec4ca2XGrTHhIJzK43SzKljt0WcIhiVxe6hORSBD/0BxpoVCYQTgSLjCBbtIEQeDKD5NUlerxGrIR3VN5TgwdIJHdX7G88ylNF/KGr6o+GXLSU8gWgfT/DPG7M+PKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=em1174286.fjasle.eu; dkim=pass (2048-bit key) header.d=smtpservice.net header.i=@smtpservice.net header.b=JHjzMH3g; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=RTkDQ5YA; dkim=pass (1024-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=xE1PUwcQ; arc=none smtp.client-ip=103.2.142.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174286.fjasle.eu
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=smtpservice.net; s=mp6320.a1-4.dyn; x=1707427625; h=Feedback-ID:
+	X-Smtpcorp-Track:Message-ID:Subject:To:From:Date:Reply-To:Sender:
+	List-Unsubscribe; bh=AkSd+9ljsMOd7NA01/E1CL+KQikkc5RfKtKGGSWOSqg=; b=JHjzMH3g
+	9dGG8ARdoxXHJrAh08elOSBEAH2kMkLBYvYksoYl/mlu9lWlCBrhqQTHDODuuu8NNb90i7/uJMyUW
+	SAprzH8qPDJ5WO+3XDQSjLBBUqjT6mD0cIr3ikMYUC2rmImo0i0ZHeESyCulXDOzjwG/K9i7fsdOo
+	RfOLF4QJOJfMXiHYL/IdAiggsp9QZ2R3X7QymRt2qN0K0JiOWYixZSC4q/FpwOfTNhYgrc/J9Ywg/
+	WFOpdUQ6kKIkUqJq9BvNmFuC0qGQ3YI6u1z+Q1aHhRddfdmZl1cqpB8/ZVwVJiXVdWNrUmpxD2xxQ
+	kHQMU6qIsjZ9UDAQnx8+3uWPJg==;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fjasle.eu;
+ i=@fjasle.eu; q=dns/txt; s=s1174286; t=1707426725; h=from : subject :
+ to : message-id : date;
+ bh=AkSd+9ljsMOd7NA01/E1CL+KQikkc5RfKtKGGSWOSqg=;
+ b=RTkDQ5YAJonkpWplLGu2DkKRIvayrPY6Vo76x16M2/CHN4uzlYEs4lixMdOuDg0CEgEcL
+ AyGtuCPcOF9ZiBoBiunpStCh6wXPJrHqZpqDZgzOnlxEZukfOcgmpyWWiWn6VSFNIzjTjix
+ RLOPnYEZ5VBBSCmyhxQ/RyZy3CJSJrvrFP+qni2i4+upynXbTp0TU258iZKGoRIfbjdZIqv
+ R4LM1urJBJqaW4QwRI5Ars8MVpi7pLLUZO5Opp/AS0lfu2ZwFf9nW650oGCUoyZ+PB0ga23
+ KzvpO7XXsRDU7YOtpEXGl2q/b0zCIZTXVGlvqOc2mtsTr0B2pyaduJVlCbRQ==
+Received: from [10.139.162.187] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94.2-S2G) (envelope-from <nicolas@fjasle.eu>)
+ id 1rYBfe-qt4Jyo-EJ; Thu, 08 Feb 2024 21:10:59 +0000
+Received: from [10.85.249.164] (helo=leknes.fjasle.eu)
+ by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.96.1-S2G) (envelope-from <nicolas@fjasle.eu>)
+ id 1rYBfd-4XfCcG-2o; Thu, 08 Feb 2024 21:10:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+ t=1707426655; bh=gzAJXh0AuWP2Tj6EfnlN6wMOTN9/0yYV+XNsGIOcsSc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=xE1PUwcQLvNxCpxh2E6tXBVZCGwTH6W4SofQhNfO6QGaZrwyPYKNp0LHyiECrVfjS
+ z3S63tY/aF5luf6wbL+jrpE8KUX1t/P/3lnOAc2c16HyIPn9i0MxhtoaTtdkb+045B
+ YfNihq/0HaPCRfZ8EG+CKZTSNlMDr38HVeO1S7Ec=
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+ id EDEF03E8DB; Thu,  8 Feb 2024 22:10:54 +0100 (CET)
+Date: Thu, 8 Feb 2024 22:10:54 +0100
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: masahiroy@kernel.org, ndesaulniers@google.com, morbo@google.com,
+ justinstitt@google.com, keescook@chromium.org, maskray@google.com,
+ linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
+ llvm@lists.linux.dev, patches@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Fix changing ELF file type for output of gen_btf
+ for big endian
+Message-ID: <ZcVDXhFQB1tzka3C@fjasle.eu>
+References: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="zTk1qaPnG2VuQe0/"
+Content-Disposition: inline
+In-Reply-To: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
+X-Smtpcorp-Track: 1rYUfd4bfCcG2o.xZNr1KhvYuN5m
+Feedback-ID: 1174286m:1174286a9YXZ7r:1174286sYq_OVzP5R
+X-Report-Abuse: Please forward a copy of this message, including all headers,
+ to <abuse-report@smtp2go.com>
+
+
+--zTk1qaPnG2VuQe0/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Checking if __sk is a full socket in macro 
-BPF_CGROUP_RUN_PROG_INET_EGRESS is redundant, as the same check is 
-done in function __cgroup_bpf_run_filter_skb, called as part of the 
-macro.
+On Thu, Feb 08, 2024 at 01:21:06PM -0700 Nathan Chancellor wrote:
+> Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> changed the ELF type of .btf.vmlinux.bin.o from ET_EXEC to ET_REL via
+> dd, which works fine for little endian platforms:
+>=20
+>    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+=2E......|
+>   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
+=2E......|
+>   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
+=2E......|
+>=20
+> However, for big endian platforms, it changes the wrong byte, resulting
+> in an invalid ELF file type, which ld.lld rejects:
+>=20
+>    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+=2E......|
+>   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+=2E......|
+>   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+=2E......|
+>=20
+>   Type:                              <unknown>: 103
+>=20
+>   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
+>=20
+> Fix this by using a different seek value for dd when targeting big
+> endian, so that the correct byte gets changed and everything works
+> correctly for all linkers.
+>=20
+>    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+=2E......|
+>   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+=2E......|
+>   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+=2E......|
+>=20
+>   Type:                              REL (Relocatable file)
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> Link: https://github.com/llvm/llvm-project/pull/75643
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  scripts/link-vmlinux.sh | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index a432b171be82..8a9f48b3cb32 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -135,8 +135,15 @@ gen_btf()
+>  	${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dalloc,reado=
+nly \
+>  		--strip-all ${1} ${2} 2>/dev/null
+>  	# Change e_type to ET_REL so that it can be used to link final vmlinux.
+> -	# Unlike GNU ld, lld does not allow an ET_EXEC input.
+> -	printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 status=3Dnone
+> +	# Unlike GNU ld, lld does not allow an ET_EXEC input. Make sure the cor=
+rect
+> +	# byte gets changed with big endian platforms, otherwise e_type may be =
+an
+> +	# invalid value.
+> +	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+> +		seek=3D17
+> +	else
+> +		seek=3D16
+> +	fi
+> +	printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D${seek} status=
+=3Dnone
+>  }
+> =20
+>  # Create ${2} .S file with all symbols from the ${1} object file
+>=20
+> ---
+> base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+> change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e1296
+>=20
+> Best regards,
+> --=20
+> Nathan Chancellor <nathan@kernel.org>
+>=20
 
-Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
----
- include/linux/bpf-cgroup.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the verbose examples!
+Looks good to me.
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index a789266feac3..95b4a4715d60 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -208,7 +208,7 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
- 	int __ret = 0;							       \
- 	if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {		       \
- 		typeof(sk) __sk = sk_to_full_sk(sk);			       \
--		if (sk_fullsock(__sk) && __sk == skb_to_full_sk(skb) &&	       \
-+		if (__sk == skb_to_full_sk(skb) &&			       \
- 		    cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))	       \
- 			__ret = __cgroup_bpf_run_filter_skb(__sk, skb,	       \
- 						      CGROUP_INET_EGRESS); \
--- 
-2.43.0
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
+--zTk1qaPnG2VuQe0/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXFQ1AACgkQB1IKcBYm
+EmnYTw//fDS4aaPzwOImLhpKzX3i1BC6Qx2THMdosxC72mSxiGL2TPRWRq/eGRln
+ywqA6ZiSICotXS+vXCQHVgycTKquxjTybXb0OxNaV1Tx3RrE3NfgKZ1+KtrMePoy
+bjbU5SYJ6kYKUOR3laTcc0YcSbAH0GgAL6S43ZyWjtuJKha6puzXvQdz5H6SvfiT
+eKsXy/nQvy+7vuWxWhT+sgx9KGLMPisSqVtrTiC5XjoKB6KH8Emn7xOx6SQEL/12
+NfV5ESzVOeXrQjgkUaYPm8dHlseZynIr5F4FPsAB6jGJUg7o/Y2Ye7S5e/dqxLWL
+haddv3lmmVeuKWOcLl2LWQEK2EWOfqNMDAYrjWSruuQqNIuVtuUwmBkdVvq+H1Lt
+oPXt4A/qScMAjWjBQAp382jx952rzBnSlQ5t7tXsuff0XE+JWslZZHzn4l11G4C6
+p0DCERyQkCEP8aOf1NKdn9NILmlT76ecy4koe44/V/eVWtybLeQWVMN9O/nwNFBK
+fJkJ+gPRn+PajfYeorZk3sBnPSKQMHGw1x2+1C0rFKSdxVgVuRsyuBgQse/wVWWW
+aCRm/K27PwfJAhW3WplFUlzjMm7ejN8DHhDTUrlLN9yswke46jY3NhDLQJQMeMUx
+XthcV13qCT75e9GfpZuO1hgO26my+rHV/kkt0nuGNl0Fx8wHmv0=
+=OENS
+-----END PGP SIGNATURE-----
+
+--zTk1qaPnG2VuQe0/--
 
