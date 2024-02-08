@@ -1,150 +1,113 @@
-Return-Path: <bpf+bounces-21522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F27084E7F6
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:47:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F5984E891
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 19:59:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BD7B293F9B
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 18:47:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C54481F2F102
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 18:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317552E415;
-	Thu,  8 Feb 2024 18:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7A528DD2;
+	Thu,  8 Feb 2024 18:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dSNm9R1R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QaK+fd4F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BE528DC1
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 18:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8462032D
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 18:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707417959; cv=none; b=Z7JjGz+eBGV5FwPB/vuBmaFZ/hgI4UCKFRi6RLWBBdXplJuicx41cn6tmHL8SMjJx2NWPydQ/XbKKfYJAi/TDAp1EIZkdiQ76l1XsUtihDy42j8YLSCDXssmNsJfmYzxuG1J4jLtXyHqYpa3OyMW4W4orPzbCTK85wv+eIRO6ZE=
+	t=1707418230; cv=none; b=qqHp76ivhW6so7poW2yxYaXOalvOx/QuCN6BVNgfnGbA9VJBM1ZxH3Thyv1boGsAXhaMWobuIqptrXaKJQATthFHQZZTEEr0L1RsSytayuPUBd+mRTovdoLhYiDhcAOOLT6nhwYRCzxqep/QmQogoBQpi1yKprCSR/EvMDKpT5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707417959; c=relaxed/simple;
-	bh=24VPnlyanZViQIemn48tocUO2GE1K3pjHcB6Xbxklsw=;
+	s=arc-20240116; t=1707418230; c=relaxed/simple;
+	bh=UEt6P93iBzne7jj66ZtWbMY9Ynm54TWHWff9P4nKiKA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TxVZ2fq5uKrUIPtI0mPLhydQ05cmNF0jEMnzMzE63WtVLQ3wase4H+GpP1YwZ1YqgRwbFO1opYwDNfdXVGExEkHWPpukfCd/odNkqU0GbdDyqA2l5T3/gEZ3qS3q+9Yu5IlGH5bqwCSA52lqCdTDWy2S7g9sFqPYwc8a6dWDy18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dSNm9R1R; arc=none smtp.client-ip=209.85.221.49
+	 To:Cc:Content-Type; b=TedTJ+IPQMBfsgJo3nfMJIFtFXePy8BH2OrtJgiK9sDOd4YuJiimC7ELnBdpZ6SpY9GlFYPPnX9jBc+zWlJSjBe4pM8Lk5gmVDTU/zV015nNEDL68hBvd5ehPQtTFQIUfiYc9HilX7AgvE2T0r5IE+cFcfx4Zatmj6TJEVVCHmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QaK+fd4F; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33b0ecb1965so13320f8f.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 10:45:57 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-295d22bd625so128860a91.1
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 10:50:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707417956; x=1708022756; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707418229; x=1708023029; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Uoidg8jtyamuAXUa0zJiO0kLCu5An00+T5KbzBdmD3M=;
-        b=dSNm9R1R19XachyA7gVOWEmeVL5yFj7RuXKTlj0CFZ4N9Pqo0JQGHu4WoIkGtLAZCE
-         LDlkdqWBOn8EyC2ptdSRgh9Hm6YWP3/nGkKDuShkGN3642JE1UJbnRhLds7f6auPM+py
-         y+KuxJbGoDfFiMS/VTK0Vp6piM4ykx29SVf6EZPLpKjruOadvlfOH+29LPlWpTuCyuG4
-         xAb7hXmJP0p+/a4WH+l6scdz1YI0Tm6DBwyFzXDbv/W16uh2nc/g2pfYjLLlyCmW5Xbk
-         YUMb0L+CRMC4z7iEwfj2UUhIgGb/DDRKU97TQW1deEhrT2LvZHkd8jhD1yGn5zfmXxtP
-         mAPA==
+        bh=UEt6P93iBzne7jj66ZtWbMY9Ynm54TWHWff9P4nKiKA=;
+        b=QaK+fd4F831i/8sj9TPWblKMZXG/TRmEKKjKeu0E01zUAqV3cMd+2rLXyB5w/zAX/B
+         mSARj/YRdadbbRcN2LUXGuFRR3kDA/RbsVu55F+V17SjIy6k/xuIlCosB1/EexoGQVDU
+         HUY1Z3ZRg4KRdmVXca2VwSMyWB5Zkl/SXOYCUymRhAl6WvzPgty30gZAtFis71akrVpi
+         9a6dKeSwetXLaDpPs0951Ur7D4spdpekCQ3vn66Gf5E59GHUI6MEFdv6w1+JYnGNV6Lc
+         VWujrgGLuX4U+y+jvXXwy+pictDWCr7hmSQJZ4Xqa6zltAm/5Ju+3rHoRe8o0HyHoDfG
+         wQgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707417956; x=1708022756;
+        d=1e100.net; s=20230601; t=1707418229; x=1708023029;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Uoidg8jtyamuAXUa0zJiO0kLCu5An00+T5KbzBdmD3M=;
-        b=PfqYNW84VhHy+KkzIVQBiYff9Gi+G004vzhvSg0hzOT+A4ZeaU+m4VpcnKz6D2VRJk
-         FKfM1WTc1A20T+1UyHxLBltIYAA27WN9Ba/IuWaV5GhBkhRXgYpcEskQRH+iiBQK95O2
-         qBU/rrNWC6HTDipgq35hEB2rGiP681GoWhXTw1UZ53Y2yNRS9zmHZTKikX8DRpJkEZzK
-         OiNEDrLnSkKD2SbcvkFGdA92jggDn8HviXUFlPNM6I14gKNVKA3rVDtZ2ROdX8NgdmT8
-         X+VkpfcP7IZZ9KR8TFLbW8KJ1ykU9QvTqZ1xhIlWG9x1wnNUjQaqUdSySb0zrCk+JFn/
-         owwg==
-X-Gm-Message-State: AOJu0YwE6h7mHxjblNsXsSg3UlH2pg58vhTkujS/sv9jvxrkKT4uWX5g
-	eElm79LYGl8UIV0gUfpEIi+Ksi66ZXyINJ2YxWACrFhU26p+27dsEQ7W4BcuAke8oqOY+kyNYsD
-	ECZP5e/OWfNiCx6iZCxwhR0QIgM2A8nek3Ig=
-X-Google-Smtp-Source: AGHT+IFxiN2IOCoshVTm5pZG4zD0LuOVCO362rjxDyFXTRwL1uu1ge6OeDcy1OxvlVMq6xuzwRoSwDoNM5J9/ceoACo=
-X-Received: by 2002:a5d:4b92:0:b0:33b:343c:2e68 with SMTP id
- b18-20020a5d4b92000000b0033b343c2e68mr283345wrt.10.1707417956089; Thu, 08 Feb
- 2024 10:45:56 -0800 (PST)
+        bh=UEt6P93iBzne7jj66ZtWbMY9Ynm54TWHWff9P4nKiKA=;
+        b=USz48TvDfojl7TExVeeuZ3xVhEDphrPAZ4Y8pRevssWYb64v1qk9m3l/5K7ozVe+Tc
+         a183jlbRSCWJNbl85LF/h2tQGpCS0i8k5xh/PX2+gVsoeHn6diwVZ88hVeU7f8hMBbwQ
+         Joa5S+1Kc7IUV42ZStTHkOiwrnQrrqaz3OJZOGZ61BkCWdLVFBPagBUh+pcH/g5wHDcD
+         wUE1JfHeRKU3HhXk2eLCKDH1RaMCdbHUwj0RVIbQF5kAv9ITVyIUonG7OAwHILQQJMWl
+         MRFMcbapH+tqY+WQUp4h1LFJs7Dkso+gWgHLyAyvcd3Yx507iMd53OP+tWBEZDYObWql
+         Lb3g==
+X-Gm-Message-State: AOJu0YwFTjZm1bwHhhQ2dp65yZJXyVv0mRJtO1p6a9nlj6p3dJPHY0sQ
+	tdL0rG88P/97vndqYgxJa8Tiqf8s1DmmgxF0q9Xp8y3S8yF6lftRtzTMORTsH04MggBUsK8RQRm
+	dNM6WW3ytfpCUe44oUEsDf3BIZS4=
+X-Google-Smtp-Source: AGHT+IHvMsdm6AlBQVwK3JE+NZ9k8Y3IiDAwkPLBORdGFTdL/nXC2j1wdq/D6OtCxSC1U8M2VwCGfA27g9wwMBYXWW0=
+X-Received: by 2002:a17:90b:b04:b0:296:393d:a5fa with SMTP id
+ bf4-20020a17090b0b0400b00296393da5famr164800pjb.1.1707418228546; Thu, 08 Feb
+ 2024 10:50:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
- <20240206220441.38311-12-alexei.starovoitov@gmail.com> <CAEf4Bza9gNXfGXuQnvWnoYNA08enBCkqn9uyHtBNdTpZRvn7og@mail.gmail.com>
- <CAADnVQKjkba_wiUJ9wps_k8+TYu_q3Ai5oQ1mnZQmpv+pnPfFw@mail.gmail.com> <CAEf4BzYvgHoBQ0KNFOWoK8XOvRTzGNBM1QsS=zR5iPTq-Z+=4g@mail.gmail.com>
-In-Reply-To: <CAEf4BzYvgHoBQ0KNFOWoK8XOvRTzGNBM1QsS=zR5iPTq-Z+=4g@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 8 Feb 2024 10:45:44 -0800
-Message-ID: <CAADnVQJ-rrx-_tC5ek_wyhNdFw2Ya6o3eN_hpdgFswT=CfuXnA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/16] libbpf: Add support for bpf_arena.
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, linux-mm <linux-mm@kvack.org>, 
-	Kernel Team <kernel-team@fb.com>
+References: <87v86z150o.fsf@oracle.com>
+In-Reply-To: <87v86z150o.fsf@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 8 Feb 2024 10:50:16 -0800
+Message-ID: <CAEf4BzZ5=E+EFs4vccWr-NPpqHej915w-GQfhSG=F1RaAJXB-A@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add support to GCC in CORE macro definitions
+To: Cupertino Miranda <cupertino.miranda@oracle.com>
+Cc: bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, david.faust@oracle.com, 
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 10:29=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Feb 8, 2024 at 5:07=E2=80=AFAM Cupertino Miranda
+<cupertino.miranda@oracle.com> wrote:
 >
-> On Wed, Feb 7, 2024 at 5:38=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Feb 7, 2024 at 5:15=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Feb 6, 2024 at 2:05=E2=80=AFPM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > >
-> > > > mmap() bpf_arena right after creation, since the kernel needs to
-> > > > remember the address returned from mmap. This is user_vm_start.
-> > > > LLVM will generate bpf_arena_cast_user() instructions where
-> > > > necessary and JIT will add upper 32-bit of user_vm_start
-> > > > to such pointers.
-> > > >
-> > > > Use traditional map->value_size * map->max_entries to calculate mma=
-p sz,
-> > > > though it's not the best fit.
-> > >
-> > > We should probably make bpf_map_mmap_sz() aware of specific map type
-> > > and do different calculations based on that. It makes sense to have
-> > > round_up(PAGE_SIZE) for BPF map arena, and use just just value_size o=
-r
-> > > max_entries to specify the size (fixing the other to be zero).
-> >
-> > I went with value_size =3D=3D key_size =3D=3D 8 in order to be able to =
-extend
-> > it in the future and allow map_lookup/update/delete to do something
-> > useful. Ex: lookup/delete can behave just like arena_alloc/free_pages.
-> >
-> > Are you proposing to force key/value_size to zero ?
 >
-> Yeah, I was thinking either (value_size=3D<size-in-bytes> and
-> max_entries=3D0) or (value_size=3D0 and max_entries=3D<size-in-bytes>). T=
-he
-> latter is what we do for BPF ringbuf, for example.
+> Hi everyone,
+>
+> This is a patch to make CORE builtin macros work with builtin
+> implementation within GCC.
+>
+> Looking forward to your comments.
+>
 
-Ouch. since map_update_elem() does:
-        value_size =3D bpf_map_value_size(map);
-        value =3D kvmemdup_bpfptr(uvalue, value_size);
-...
-static inline void *kvmemdup_bpfptr(bpfptr_t src, size_t len)
-{
-        void *p =3D kvmalloc(len, GFP_USER | __GFP_NOWARN);
+Can you please repost it as a proper patch email, not as an attachment?
 
-        if (!p)
-                return ERR_PTR(-ENOMEM);
-        if (copy_from_bpfptr(p, src, len)) {
-...
-        if (unlikely(!size))
-                return ZERO_SIZE_PTR;
+But generally speaking, is there any way to change/fix GCC to allow a
+much more straightforward way to capture type, similar to how Clang
+does it? I'm not a big fan of extern declarations and using per-file
+__COUNTER__. Externs are globally visible and we can potentially run
+into name conflicts because __COUNTER__ is not globally unique.
 
-and it's probably crashing the kernel.
+And just in general, it seems like this shouldn't require such acrobatics.
 
-Looks like we have fixes to do anyway :(
+Jose, do you have any thoughts on this?
+
+> Regards,
+> Cupertino
+>
 
