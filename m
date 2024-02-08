@@ -1,100 +1,178 @@
-Return-Path: <bpf+bounces-21547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFBF384EACD
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:48:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ACEE84EAD4
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 22:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9C9D1C218C9
-	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 21:48:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E05B1F25EFB
+	for <lists+bpf@lfdr.de>; Thu,  8 Feb 2024 21:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E084F5EB;
-	Thu,  8 Feb 2024 21:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1F84F5F3;
+	Thu,  8 Feb 2024 21:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WyXd0Q2v"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D067F4F21E
-	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 21:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA41F4F5E5
+	for <bpf@vger.kernel.org>; Thu,  8 Feb 2024 21:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707428913; cv=none; b=E8n/Ca1ZzYVIOIIMMFUBzxok2m+8M60ohLOrv7SDZdjEObXfHONZiA1ANEzBb7RG9dH8j0GNsSc05jTinxdFkDGW5RlW552WiFBwfG1olIfmVRCjmTuBFvofTNtVvdgMI31BLitup0O6WTQf+TRcR+e3trTi18MDm0m1c/E9Ws8=
+	t=1707429045; cv=none; b=DuQmdtV5Z+E82lfsLbWkGY7y/ubu/afNGkQFeRxwllSIbrpujI+cmHAHjM16LqzjIjkTYNqym5IPp8UeoR6OZW9doTNH2nqjup8AnltWyUcD3XEetdoarAYpC+uJRcLjV6Ijwr+V6VFhCHWmaJwm5kFyFXpBgVivjSccxkXdcJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707428913; c=relaxed/simple;
-	bh=x5X/SpXcWWm2drcgwtU8g/8NQadRYVVVLQ/7tbIX2x8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rxhSviuxdmUGfBPlGIqi+Q52MBzJEPOL9r9Cq5f8crLJhh4+EWamOI8VW2Mmz7qXn3rOrlwA4anLTFS+m9ahd7dRHoS57zo86cGyzLGDwsEGJBV68IpCtAvhP2sHlXY0a+/CXQBh12dxu0au1873m84+Ropa4xNzky2AFnH5sgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-360c3346ecbso1724495ab.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 13:48:31 -0800 (PST)
+	s=arc-20240116; t=1707429045; c=relaxed/simple;
+	bh=kUygteJBS6KCH//gRa+4ItB8/T9NYxGBC59L0JWpVSg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WHLw0s8XAUQBU/gRXOs0VxZam69w4DI4PEIA/C6S269UkYbRj2GsRai13xltR2E8jz0SHBeiBCHvykFxd9TXGLS3fgP9PrBYldqtOnX6V/kdskOFc364U+5z9U4yR9+dEwVv/+0NuIXuFtL7wZS7G0lJqkn5DdgNW9Oqsv/ON0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WyXd0Q2v; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3566c0309fso35795066b.1
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 13:50:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707429042; x=1708033842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rk2Mf+CYgNj0rrQ4AtP2FsCs3Z7W5vLJ8AK+GUlsuys=;
+        b=WyXd0Q2vVI3up9xny/h7wHXd+hutHmY/PqjLQKhMXoOtXxu78K7WC6ZJyllrbHUCbA
+         lKbETycZzjHnKIPtsAxlvylGJDB9VEYu1EfiAbTy9xNgafzgvpMWrujbN/AQCRFGqEv/
+         uT214YQXfL9d8jbeq5OwioI+N9Qp16szXGDYSp4OdLnJcr8k9066h9OWI8bmMEMvtD/q
+         u09UL6KFoK29UuYN8G3K5+pruDZ83pAEeMcHVH+rF3CPqKlrIyHbvPngtN6J2GfGNgGf
+         Emqu/P5826ry+2awo19cEOLjxCSVJQYsUDBgbbRtVjvc58wTpU4vlL4VKl1cdzNyaXGK
+         9DkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707428911; x=1708033711;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rcy+RP+3gbw7fm5zCL72DPRbjcLix4B+pCNRB7ycwkg=;
-        b=q3XslRPNZpOpaFH9859wsfb8R+kwm2uOSdAd9f4iksmYg2jAr8jDavo/8T2OOv6YRl
-         zCCdBp7btInqE/ScOPE4LvZXH+R0Ufxt9DnnkJQvyh7beTlCDMucG071G78+Vs624cqm
-         W0e64Xn4g2bApHtQkXicPpQYB5f/Z6NZOyvVa3gaGhPVgk4okb83r6/zMV9IXu2wi6oq
-         VCyNuGo9r4NE3kVN3OJTb89VBXVQDkd6Gs2Yy6LnpNpJKkbViFmb2nQaRKUMIkybBlwd
-         zWWBcSUJd9x58ja3TMTpPIEON3Yn4zeh3j/oWrpwDqgxXkPccWtI3U5lKdbx8JLAWGAm
-         69Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4dXLGvl896NxnY6NHH9n+Q3v8dYUYogiZeFalzqwWOFhfHX5hnW/BYURZaN7mV+M4g2ATWWu4Na8Ff+i96zaIzPtw
-X-Gm-Message-State: AOJu0YzzChDIs4KOiap/lbITtOknTi/lZ61h01In8MWBjHNcy7VYBZ4b
-	g8Z6kjB5xP1dqtsYu2H7vrhb7UeJk4FbNbdmMG6Ej+owRWFzcjKVBfvG+klp+abtmu5uAmu+T2y
-	Nh+pcUpdIauNKSpweiQ4+4F8Hw205TkJuiUsEcFmafDZq4FShHeY/L4M=
-X-Google-Smtp-Source: AGHT+IFtte76dKULRywQHjdaJAxVanDStW7HCAN6er85mHH1lSIM/J8p9GOwTK8goVs8+X1JMOEuYkNw0BKCgSWTuzSleIkfJafB
+        d=1e100.net; s=20230601; t=1707429042; x=1708033842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rk2Mf+CYgNj0rrQ4AtP2FsCs3Z7W5vLJ8AK+GUlsuys=;
+        b=n7KpnX10TMqsex7spqtNUb27ooKYzN6NisTv2N61Lz04MaE5c9RQ08U5FgGa3O/De1
+         3Hq9xzj7jfT/sHllCyPUyvnthWvk3qvqydm9mJrAGVnMR9FMAUNmfzBa2o7wQXFlcAUR
+         UaArp1jIeKNyZPJNR2qZZNjYdsJzWz6MgpeZ2w0omL44eBxanGZHHBBd8rcwktSRCAFa
+         peJKZL891duNSD9Lm83Uw5nUdWXBiAOEiFnobavjy21tTs1v7qA0qgTrpSQyC/o4EoX9
+         e6zCkT44S6prcce8gOUMDFrVTFRpbgn0wxGF4atdHmk7IrgYHgI+ksEP9wYmdILVKHGw
+         WW3w==
+X-Gm-Message-State: AOJu0YwLPXCmXrRJbbewVFxxrVuxT/jvaY6zK7wY0KE54gozsBnoazdw
+	jzI3fCzzFA/XLl8IUt03OGh5XsGnC+cAOkEYJxYd9ZP2Fi3+iTmuWa05Nbt9x+80LPVFQQNJ6jo
+	7DkV5IiaRWgHQp+hlKshoaXwysltGGrh7qsrV
+X-Google-Smtp-Source: AGHT+IHJV6Lqt0M69QP75rhTnc4EGw8bgsYHixzIOWzmQ/W0T5fBOc4OYsmaq0/5BaxifVnY2kb+0zD0SFv1RUA+6eM=
+X-Received: by 2002:a17:907:39a:b0:a38:5302:89ec with SMTP id
+ ss26-20020a170907039a00b00a38530289ecmr380516ejb.42.1707429041842; Thu, 08
+ Feb 2024 13:50:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2199:b0:363:c1c5:79da with SMTP id
- j25-20020a056e02219900b00363c1c579damr43586ila.4.1707428911094; Thu, 08 Feb
- 2024 13:48:31 -0800 (PST)
-Date: Thu, 08 Feb 2024 13:48:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9aa8e0610e5c55c@google.com>
-Subject: [syzbot] Monthly bpf report (Feb 2024)
-From: syzbot <syzbot+listb6955cf0d43f0daabf0c@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
+In-Reply-To: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
+From: Justin Stitt <justinstitt@google.com>
+Date: Thu, 8 Feb 2024 13:50:29 -0800
+Message-ID: <CAFhGd8pfMjkdTWx3HnVRpZNgbOy7KkvuD5vytP0G+0ByY_++9w@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Fix changing ELF file type for output of gen_btf
+ for big endian
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: masahiroy@kernel.org, nicolas@fjasle.eu, ndesaulniers@google.com, 
+	morbo@google.com, keescook@chromium.org, maskray@google.com, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
+	patches@lists.linux.dev, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello bpf maintainers/developers,
+On Thu, Feb 8, 2024 at 12:21=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> changed the ELF type of .btf.vmlinux.bin.o from ET_EXEC to ET_REL via
+> dd, which works fine for little endian platforms:
+>
+>    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+.......|
+>   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
+.......|
+>   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
+.......|
+>
+> However, for big endian platforms, it changes the wrong byte, resulting
+> in an invalid ELF file type, which ld.lld rejects:
+>
+>    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+.......|
+>   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+>   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+>
+>   Type:                              <unknown>: 103
+>
+>   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
+>
+> Fix this by using a different seek value for dd when targeting big
+> endian, so that the correct byte gets changed and everything works
+> correctly for all linkers.
+>
+>    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+.......|
+>   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+>   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+>
+>   Type:                              REL (Relocatable file)
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> Link: https://github.com/llvm/llvm-project/pull/75643
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+Tested-by: Justin Stitt <justinstitt@google.com>
 
-During the period, 0 new issues were detected and 1 were fixed.
-In total, 9 issues are still open and 205 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 164     No    KMSAN: uninit-value in bpf_prog_run_generic_xdp
-                  https://syzkaller.appspot.com/bug?extid=0e6ddb1ef80986bdfe64
-<2> 34      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
-                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
-<3> 5       Yes   BUG: unable to handle kernel NULL pointer dereference in sk_psock_verdict_data_ready
-                  https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> ---
+>  scripts/link-vmlinux.sh | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index a432b171be82..8a9f48b3cb32 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -135,8 +135,15 @@ gen_btf()
+>         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dalloc=
+,readonly \
+>                 --strip-all ${1} ${2} 2>/dev/null
+>         # Change e_type to ET_REL so that it can be used to link final vm=
+linux.
+> -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
+> -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 status=
+=3Dnone
+> +       # Unlike GNU ld, lld does not allow an ET_EXEC input. Make sure t=
+he correct
+> +       # byte gets changed with big endian platforms, otherwise e_type m=
+ay be an
+> +       # invalid value.
+> +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+> +               seek=3D17
+> +       else
+> +               seek=3D16
+> +       fi
+> +       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D${seek} s=
+tatus=3Dnone
+>  }
+>
+>  # Create ${2} .S file with all symbols from the ${1} object file
+>
+> ---
+> base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+> change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e129=
+6
+>
+> Best regards,
+> --
+> Nathan Chancellor <nathan@kernel.org>
+>
 
