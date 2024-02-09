@@ -1,199 +1,134 @@
-Return-Path: <bpf+bounces-21606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1865084F39B
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 11:40:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13CFA84F53E
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 13:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C38E8288365
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 10:39:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 974FC1F23162
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 12:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3228200AA;
-	Fri,  9 Feb 2024 10:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99D1364D6;
+	Fri,  9 Feb 2024 12:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOJa1aQA"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a8ZJQ4Kj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2A71DA44;
-	Fri,  9 Feb 2024 10:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975862E847
+	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 12:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707475189; cv=none; b=sSpZQ3dsqmcD8KAwzZNkEj2yCNXNE5BeCkUv3SSEBXvSwEEKyllU9Ja9YscRt+gbwP7Dy0IuHskB2frZvege60kGOgMOkvMMVIGNd+Akeg9DcjIsIV8PYGmuUx6sTyUJg6t//uIGE9geYLy0xSRt4oGqDrTCzJE0Omn+FO96ZOQ=
+	t=1707482177; cv=none; b=FlRlEipqnjr2HpTZB9rJG/j8GolE2IlYNgCqegQH4cexynnUg74nH+x5qtUZ/0xsSr+P+mYofmO9Tb8ErReEB1lmWxv2sTxTL3pp8Thw+0/rdMBV9AL4CQ4S+OGwEGUfaMo31RUQpwn+IQIOTLTfIpU7PD0jVkeJwWJgv9RKHbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707475189; c=relaxed/simple;
-	bh=6JSed9WghJtQfys5PKUQxL5lBNUCn4xxXb2Iqm1mn0Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X2A6kkmgezydPEOmJ5TBzs5cjlOY3g3EZQ9Fjqqxi/KSPJePH2geI3pT4QonmpeWlmItT3Kjx6UmId9M/1d/rXfpZ942eR30JcVTN7zw5LjOXO9LjV17TIh8OxNYbe1Y4+QTEu+IdOVZlB3/fN9eiTTEgCwUQ7V9MZGWehNxXvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YOJa1aQA; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a389ea940f1so89231466b.3;
-        Fri, 09 Feb 2024 02:39:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707475186; x=1708079986; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lo4dnUNSo3H3+Ts+jrQPCY8fwThOM1DvpZ/VFX/5iBk=;
-        b=YOJa1aQAmMdJfA0wT/0UDwonGW0fHgz66AGGMbmghvi+dEZXf4xUnA1ERhb/vrmCzI
-         OXcgauZ/flmUyxoYqzO3VClN3w2lN/hiEHplkT+rJ40r3bOrS7qfw9h8SMT0wNmwzvIJ
-         aL+W0oHjcjcx6jrhmBRuCL0V3E+lfYmrlDCBTwOiKGcjovLIvd7F/0G9CQ3+n3Ppn3f9
-         97v1AplY+nCgKcXZa5aJukudwN4f6pOw+2J9TBldX+6z35Dsu/gamtCvSCBa7W6XvIRi
-         DXKu5zny8Ez8+I/2UVfUHqNQKPm3d05ndxJr7mbYXksDL5LgBZF4+Tsb96Nf+0hWJ0sA
-         jbug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707475186; x=1708079986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Lo4dnUNSo3H3+Ts+jrQPCY8fwThOM1DvpZ/VFX/5iBk=;
-        b=XbVEHI+DTOlCSRJczSituEo2R350+lqmISqCdlQIb1xJij8CYcm/zFDFsFzDKkfco+
-         CkMsiRELeJg9gJ7qQ2otYoPlgPVINtl1SupyklupXs7hnSC58wsy0mnb0DFPrmEx8w4a
-         9w0vnN+M3T7trXijYciYxmhOZaUoc6ELBwAMQsBNOWw/a8bZP3ERN7o7gnWN1/NUEG9g
-         jbetFQMiTcpjNXtpPzj50nxSwg4Sbp/8krnC7R1PjEzPKuG5B7p5pPmmi69N5e5n8nT1
-         8yOpUXY1wsb8HCZvBf73hwTuY8GlZT9NNivv3qFXTnB5zjvXzlJ0lEpOmceH3UXjhb10
-         fV9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUhoTyZ5sjuJJf6WDEkIWW4ufL/gw+NHsWVBUvBKSIlGrpeYvGbHWAQjMdhnWXMfySlCfWlqKaAI6s1Ul57tRJs0oyNas3zokoGZmbF4aFaUVwMaF/h3Z/lbTHQd+eT/FlnF6bFszq2s9o+wJW7dUNxEp2QhDSVeW/3
-X-Gm-Message-State: AOJu0YxCkCBz5FBwZfpa5NCseNtFHYK4fm+5LokCWVstpwMtvA3BU7zz
-	v0zDeRkGsMRLRWU2pcVIrCK8ByS1W1QezFXFr86CiuKJh0z9oUmvWT6Mh76LWuFvObGIwpr5Af+
-	RGdjWLbBetAwzamTTCjptLkL/vcY=
-X-Google-Smtp-Source: AGHT+IFUK5AxhGByklr28zTpKRrQt9q1kxLKqg64jZ/i/mBwJE44NAngtOYMahNnaMPpzwR1AIyeJ8ulHoCfGKfp1bs=
-X-Received: by 2002:a17:906:3b0b:b0:a3b:e8b7:9ff0 with SMTP id
- g11-20020a1709063b0b00b00a3be8b79ff0mr960923ejf.67.1707475185671; Fri, 09 Feb
- 2024 02:39:45 -0800 (PST)
+	s=arc-20240116; t=1707482177; c=relaxed/simple;
+	bh=ttsbX7I0BWPrflzO4B46/VG4Dk/YGNfAARkHA3Fomt4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SxOjkmSoRL2Zj9+RlouLxT86h4yBQlU2PgE7noXO33jfhPAte4V8j20nyqdLn2eg7ErGAyR38H25WftJ1x7Et3Lbbpu6LQYqjaKLfstD87b6XfKPZ8lWPF/QaVCGoQhYEGPb2AVlmbNnXlKe5U7zf4XzS/QUBMoZHPSI63FI1DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a8ZJQ4Kj; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 419A7MPj018626;
+	Fri, 9 Feb 2024 12:35:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=vubZIESnt7jrvGwvc8I12ElOSW5kfQEZSaDgQBPHH8g=;
+ b=a8ZJQ4KjQBWCF+DW1CiZeLNHAdwZQARd0bTtL9YJgAoW/aqfeDmnUABH0b7xWEbyIJQI
+ ogAbMWkH8EPf2QeRNc5xiqx7J74YnOD3LGUqR6A7trBb74FAh9FcQ7HD2nJL+AvPSI7v
+ /KCjetZoWWO8jkMGiLSUNGuKr2P4X9Cl7WEfaazTkEzzlRSjCyBrGZ54N9QDxy8qyPAs
+ F6vanJdbN4cgOTquBXE9hId2+SwN6wdQFbUS1Pitt0NxEFmbg2x685bG6WVmx1yt9C4H
+ U5nybpuMmOFplIhs0xiEi7rsherQgsTbHIHEWTzngxaiI8hqxB7Fzv5hY3ezBz7rSZpT Gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5j10b9a8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 12:35:27 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 419CR6cK005713;
+	Fri, 9 Feb 2024 12:35:27 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5j10b99u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 12:35:27 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4199i4OU014765;
+	Fri, 9 Feb 2024 12:35:26 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w20tpb4a0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 12:35:25 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 419CZNIe18350722
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 9 Feb 2024 12:35:24 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E05F420043;
+	Fri,  9 Feb 2024 12:35:23 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2B7D320040;
+	Fri,  9 Feb 2024 12:35:22 +0000 (GMT)
+Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.81.13])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  9 Feb 2024 12:35:21 +0000 (GMT)
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: bpf@vger.kernel.org
+Cc: Kexec-ml <kexec@lists.infradead.org>, Baoquan He <bhe@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH linux-next] bpf: fix warning for crash_kexec
+Date: Fri,  9 Feb 2024 18:05:20 +0530
+Message-ID: <20240209123520.778599-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vu9_NhhfI1MMhEB7lQioL_xJ-UTS49Zg
+X-Proofpoint-ORIG-GUID: 4l2-SQyZW1ffC1O9ZoSlBmEuNjNUBGMA
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202121151.65710-1-liangchen.linux@gmail.com>
- <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
- <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
- <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com> <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
-In-Reply-To: <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
-From: Liang Chen <liangchen.linux@gmail.com>
-Date: Fri, 9 Feb 2024 18:39:33 +0800
-Message-ID: <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, jasowang@redhat.com, 
-	xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org, 
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net, 
-	ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_10,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 mlxlogscore=917
+ phishscore=0 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2402090091
 
-On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
-> > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> =
-wrote:
-> > >
-> > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
-> > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Brouer <haw=
-k@kernel.org> wrote:
-> > > > > On 02/02/2024 13.11, Liang Chen wrote:
-> > > [...]
-> > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp_buf=
-f *xdp)
-> > > > > >       }
-> > > > > >   }
-> > > > > >
-> > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_buff *=
-virtnet_xdp,
-> > > > > > +                                  struct net_device *dev,
-> > > > > > +                                  struct virtio_net_hdr_v1_has=
-h *hdr_hash)
-> > > > > > +{
-> > > > > > +     if (dev->features & NETIF_F_RXHASH) {
-> > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_value;
-> > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash_repor=
-t;
-> > > > > > +     }
-> > > > > > +}
-> > > > > > +
-> > > > >
-> > > > > Would it be possible to store a pointer to hdr_hash in virtnet_xd=
-p_buff,
-> > > > > with the purpose of delaying extracting this, until and only if X=
-DP
-> > > > > bpf_prog calls the kfunc?
-> > > > >
-> > > >
-> > > > That seems to be the way v1 works,
-> > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen.linux=
-@gmail.com/
-> > > > . But it was pointed out that the inline header may be overwritten =
-by
-> > > > the xdp prog, so the hash is copied out to maintain its integrity.
-> > >
-> > > Why? isn't XDP supposed to get write access only to the pkt
-> > > contents/buffer?
-> > >
-> >
-> > Normally, an XDP program accesses only the packet data. However,
-> > there's also an XDP RX Metadata area, referenced by the data_meta
-> > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
-> > point somewhere ahead of the data buffer, thereby granting the XDP
-> > program access to the virtio header located immediately before the
->
-> AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data before
-> xdp->data_hard_start:
->
-> https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4210
->
-> and virtio net set such field after the virtio_net_hdr:
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net.c#L=
-1218
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net.c#L=
-1420
->
-> I don't see how the virtio hdr could be touched? Possibly even more
-> important: if such thing is possible, I think is should be somewhat
-> denied (for the same reason an H/W nic should prevent XDP from
-> modifying its own buffer descriptor).
+With [1], CONFIG_KEXEC & !CONFIG_CRASH_DUMP is supported but that led
+to the below warning:
 
-Thank you for highlighting this concern. The header layout differs
-slightly between small and mergeable mode. Taking 'mergeable mode' as
-an example, after calling xdp_prepare_buff the layout of xdp_buff
-would be as depicted in the diagram below,
+  "WARN: resolve_btfids: unresolved symbol crash_kexec"
 
-                      buf
-                       |
-                       v
-        +--------------+--------------+-------------+
-        | xdp headroom | virtio header| packet      |
-        | (256 bytes)  | (20 bytes)   | content     |
-        +--------------+--------------+-------------+
-        ^                             ^
-        |                             |
- data_hard_start                    data
-                                  data_meta
+Fix it by using the appropriate #ifdef.
 
-If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
-towards 'data_hard_start', it would point to the inline header, thus
-potentially allowing the XDP program to access the inline header.
+[1] https://lore.kernel.org/all/20240124051254.67105-1-bhe@redhat.com/
 
-We will take a closer look on how to prevent the inline header from
-being altered, possibly by borrowing some ideas from other
-xdp_metadata_ops implementation.
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+---
+ kernel/bpf/helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 4db1c658254c..e408d1115e26 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2545,7 +2545,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(generic_btf_ids)
+-#ifdef CONFIG_KEXEC_CORE
++#ifdef CONFIG_CRASH_DUMP
+ BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+ #endif
+ BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
+-- 
+2.43.0
 
-Thanks,
-Liang
-
->
-> Cheers,
->
-> Paolo
->
 
