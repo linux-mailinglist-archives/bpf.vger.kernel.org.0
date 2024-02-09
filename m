@@ -1,172 +1,216 @@
-Return-Path: <bpf+bounces-21639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5635284FAEC
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 18:20:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED6E84FB3E
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 18:47:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E8EB2881CD
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 17:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 092561F2B18F
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 17:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52DF17F46B;
-	Fri,  9 Feb 2024 17:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFECB7EF01;
+	Fri,  9 Feb 2024 17:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nrAH3P9A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c081SQv5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6767BB02
-	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 17:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62777BB1E
+	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 17:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707499220; cv=none; b=qPYIelEKIQmsZ/VYiYQoExrQZ+cekaYfNa6NtgAmG0y4I8lMNkrd0VWYq1GKcLl3r5QasWLYxvcnacarlOTrIGUNKVv8JsCtD54Tjw3stIB0NZf1IDvwGaPx3X2UQmkxVZIe7ycZP0WZV4m/SG7lPbFxWb3bWN5kpp7ZRWkXcUo=
+	t=1707500823; cv=none; b=owzP3IdQJPyoJgbT+O3ZbHfZlQLDZtMdursQsfX4Tu6ziw/TnmOoQMG5mj134XjG5F1KGOjyG8HcP2KQzJLHZXrhKTZNukoxg77mYpcBTKX1lh5W6J3NVLVCgCqQ7v8B4f0P67WDvDTb3mqIHcVMmqxqO5FiNX+4vmyjqCsY64Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707499220; c=relaxed/simple;
-	bh=dTUCCJ6GZhbWY+AcKoCDx6Kei+Xpf22KV9TfmXy4imc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jrDm6yRBmuOSC7yWWUr2AV1b/BS9cAlDJ/KEMrnJraGSVDePaWKe2NrZBruefrdfMcfzEe0TUlQaIqqKZv7mhK925tKWumvkNI66fgtsbODdIgNqOA+2Md8YC7HxlmopEIa1OwHFhAfHVjFscW/tKqS/ULlA5SzA284FJ9+/c+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nrAH3P9A; arc=none smtp.client-ip=209.85.208.41
+	s=arc-20240116; t=1707500823; c=relaxed/simple;
+	bh=da1K+ABA7b7BBasBYbyRr0psOcBrp87wtaLh29XpTO4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hk9stlRR3rJVCm40fY5xvapVaIZmo197loEkBkM0zQ8+dc+aEy9gZM7DrqAP4MhBqFKSNe4pgq5V5V8QlboPPmnlOMVhbof4Ra7uVRGw1H/vFbNkZ2hheUDx4G0QARbsWmP8sTOQvU9vQ/Mg7pfF/Lfx2KGdi7HaqdycJys7S5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c081SQv5; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so1558977a12.1
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 09:20:18 -0800 (PST)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e05b72fd56so783599b3a.2
+        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 09:47:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707499217; x=1708104017; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Yb3+u+NQguLS/li+kaMHx2OU0Nns40V2ZAiikmaHqLo=;
-        b=nrAH3P9Ax3PTxOEdmtJgF7LzlmpcyoQOsJpDdOdem88n5bfkOuR09IiqrhpuLLln4O
-         kNr6lVA0iWCUNexLR7Ub4D+Ry+9xkD46Whn4kM1E5Vqtn6liZMUOD1EPiFfbm5E1CmpE
-         JnBs1qsuuNsbIg9RM08vlEU9utsXbVrN5d9WRY0VC+jgZ2A4SbbTr8WSq6cgtdnndN4S
-         90boRkvvgdcrhH6mEz++j+MVFI5g+7/ddDmWbOP7pJcA3/nN+PVjVMVWnbx6egoka/j1
-         HPlnxfBJ8JlzMH1MWtCcrzHhUrb8vYSK3zKKWkkKl6cetuIi2+8edl5QG2/Jc2kpTip1
-         hbjw==
+        d=gmail.com; s=20230601; t=1707500821; x=1708105621; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3PrzA+anQJfRHKq9Mt7etEQWWGYWT/UrxKbrjmadqb8=;
+        b=c081SQv5Djdix2Yjov4ScQ40t5W8z06SV9bu18r5gJ5qTD7kZ6P5WONSJ0L0xamUPM
+         arGaT8srCWvIzs9Y1djiPI9TNtq2rZaykraW80dtxwc2WYj62w1R1wo19hiaAET9S2sT
+         m3i8cNBryXhVbN8P1kw8d1We9tMidwQukdmPSKcT1kOSN69QcEqMnPWOBWXZyYpY2rnW
+         pG7Pm5lo2sbGZYYzqiiLTk7ultcpdphSPnb8K/xGyKg2/4KhXO5R2owKHi7OEqkr+DuB
+         rM1tIpdytCa7AmVfB/g7Z8OWgzgPn4F2V86aXO27Ka1yqpJGTElckSqI4mHnXDi3FQVM
+         NWFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707499217; x=1708104017;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yb3+u+NQguLS/li+kaMHx2OU0Nns40V2ZAiikmaHqLo=;
-        b=lXj/zwMr0UCejLzepSyinag30NIUh1VqdAXdTGJaAqrFK5jhRbwgVKPH73eSzPGoBH
-         xX96cbNzgMqNgvdUMScAgwBdes3/eLF7MLD38uyji5iwEJESnsWSJYlvpWtjLfW6YRbN
-         tc7xEdzZl9a3g8wlIOm41NGGOFFDQMdq0MOcaZZj+W39HCMAE3t+gKhg7ZowmTrbgSHL
-         dpoRoKQriaQcuwLvIffmQi2R1GXRZuvahFWpMM0kR/quRkQAzqQhklG48ygZuaQNJ3Cv
-         +6d29laX69yyUBZWmnTGJkycUQapDr/ILAHz2mZYK2d9jYuOXMMS2rrBTX5H3ZDn18+H
-         Pxdg==
-X-Gm-Message-State: AOJu0Yyd+N+8F2N8D12C1mnsn3ogP2LVV4PsqLEMJk0GxhxRFw4sLqUu
-	qhH2Nsf132IT6MiEw8dYdcQ4hje0aWEe7D6Wr70CFnvp8RuH3YPw
-X-Google-Smtp-Source: AGHT+IGKqE8Ypo7bQgt1GIII1E+JLIobh/hSE56P169utGfYWsKNJjFvSKKYWEsJVe36HZOQVL/OUw==
-X-Received: by 2002:aa7:d40e:0:b0:55f:cca3:e89e with SMTP id z14-20020aa7d40e000000b0055fcca3e89emr1707673edq.21.1707499217179;
-        Fri, 09 Feb 2024 09:20:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW26FksTgcNEfWk0e8oyMu8bAXpZ5/A+42+N7NDm0kAyh+3c8FEs62LiUAFzXs0EWRgO3QICwzGjAqlfNl2zaMALmeyLrPG66e9keFVoOPdBVql8A/J6l7xNwEpBsfqP5DpP8H775kiJWLZVpgMd8I+tOH3hzA7km2+mh6uE903fkjgxW/WZlyeZaK1dOaBFqBAt7znD9ArPWhMRjfSxZn21aOnX0aeh+F3hy37SvGvaisHgVIuuNrzrsZjyjDjMjnisJPWkSVDQ7K5XQsZNdMRVPnewTAEkZp51OA8vuOEkuzy0L+vwV5SVQ49yTq+JQucnP0tSuWoPbFqseShIuR6H5V5CfBazy3Gqi92Na2kyP76C0E6YV+4
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id a17-20020aa7cf11000000b005612ac47d85sm951380edy.82.2024.02.09.09.20.16
+        d=1e100.net; s=20230601; t=1707500821; x=1708105621;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3PrzA+anQJfRHKq9Mt7etEQWWGYWT/UrxKbrjmadqb8=;
+        b=D01raUVDZnEZQIQcXW6+Xu1MGoxKNbn8a9luI1Hpo39uDyYCJbw97Ln/uxl7A73Sx8
+         IxLOISvAmWllf5adoEcuCNuqBTInHBS1FIdnREqacct/xxXEJBZrSTy5euiq/h65VnEb
+         pavjhxlE28OiebGxVrSauwxeufyCnl4Jf0ehm09BvCw6izkfXGJyoSUG+XbGRG+Ta9XH
+         EGb44rTYW1K9BiPNCYJ+aTRoVn6ktn6jXN4LKmoKVrjn6WJwflz+B+I5ruZubUtYgoyG
+         Ig+d2tp6T7cyll1sqiUBgbfeXQ6Sb0TpjckLggeAUBU9aSrSYnW+XWvciiraQ5afk7z6
+         RkeQ==
+X-Gm-Message-State: AOJu0YzIX/RBWWRGnNaPzOoRFRQHQe71TKvjB+S4PbU4o3xisLuNKtJn
+	20uUpw4f23ludvec1L5GwAMeGlnALS/WPCTodk8S+h95TrVRJiMM
+X-Google-Smtp-Source: AGHT+IG8INriH1ZsuS017BwwZogJVVcXIZ/KPw6gV7OMhr7fblkm5cszcsoNoH1eUXAMnTUAnIIHcQ==
+X-Received: by 2002:a05:6a20:c90e:b0:19e:a26c:b02c with SMTP id gx14-20020a056a20c90e00b0019ea26cb02cmr2403794pzb.48.1707500821125;
+        Fri, 09 Feb 2024 09:47:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXSVDsRzRWBW1kGhUitCYNxX4M4TyzWjMZ626N+kDy//MnqGAVMV/NO6V6s0SipX5lYWCeFWGCUnAQLyMdYMzGMQt5O/O+7WUdpSSjPjVLIIk76jfLhLwXO+M9twd+T1uJWfAsnRxEEcbsNAQnXJCZyBXqoNHwPM3G3E7DZ7tGcOCaX8JBs0Tfpcrc8Zo1F2IrZKNyfX0Uliw86ZsKUnprUctc/vGG/tfNtcGgjtrIQ40e34YiD6O9tywsTOQWleaF2iix4GxtDuyaIjJ4IFZ1XM1ru8kgbPkB8caGzrci1cP7/8Tc+YAfnXZaGQYac3w==
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:a894])
+        by smtp.gmail.com with ESMTPSA id hq5-20020a056a00680500b006e051ec4f90sm804827pfb.84.2024.02.09.09.46.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 09:20:16 -0800 (PST)
-Message-ID: <b8e3b8382dbb58418a89a74995732e5aade6d4df.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 07/20] bpf: Add x86-64 JIT support for
- PROBE_MEM32 pseudo instructions.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com,
- tj@kernel.org,  brho@google.com, hannes@cmpxchg.org, lstoakes@gmail.com,
- akpm@linux-foundation.org,  urezki@gmail.com, hch@infradead.org,
- linux-mm@kvack.org, kernel-team@fb.com
-Date: Fri, 09 Feb 2024 19:20:15 +0200
-In-Reply-To: <20240209040608.98927-8-alexei.starovoitov@gmail.com>
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
-	 <20240209040608.98927-8-alexei.starovoitov@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        Fri, 09 Feb 2024 09:47:00 -0800 (PST)
+Date: Fri, 9 Feb 2024 09:46:57 -0800
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: David Vernet <void@manifault.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com, tj@kernel.org, 
+	brho@google.com, hannes@cmpxchg.org, linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 02/16] bpf: Recognize '__map' suffix in kfunc
+ arguments
+Message-ID: <jxfd2zufwee3rom5zt3pger5wkytwiuy3lepw5vacvg6lwuv7g@cxnjdxb3tr2d>
+References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
+ <20240206220441.38311-3-alexei.starovoitov@gmail.com>
+ <20240209165745.GB975217@maniforge.lan>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209165745.GB975217@maniforge.lan>
 
-On Thu, 2024-02-08 at 20:05 -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
->=20
-> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW] instructi=
-ons.
-> They are similar to PROBE_MEM instructions with the following differences=
-:
-> - PROBE_MEM has to check that the address is in the kernel range with
->   src_reg + insn->off >=3D TASK_SIZE_MAX + PAGE_SIZE check
-> - PROBE_MEM doesn't support store
-> - PROBE_MEM32 relies on the verifier to clear upper 32-bit in the registe=
-r
-> - PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in %r12 =
-in the prologue)
->   Due to bpf_arena constructions such %r12 + %reg + off16 access is guara=
-nteed
->   to be within arena virtual range, so no address check at run-time.
-> - PROBE_MEM32 allows STX and ST. If they fault the store is a nop.
->   When LDX faults the destination register is zeroed.
->=20
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
-
-It would be great to add support for these new probe instructions in disasm=
-,
-otherwise commands like "bpftool prog dump xlated" can't print them.
-
-I sort-of brute-force verified jit code generated for new instructions
-and disassembly seem to be as expected.
-
-[...]
-
-> @@ -1564,6 +1697,52 @@ st:			if (is_imm8(insn->off))
->  			emit_stx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
->  			break;
-> =20
-> +		case BPF_ST | BPF_PROBE_MEM32 | BPF_B:
-> +		case BPF_ST | BPF_PROBE_MEM32 | BPF_H:
-> +		case BPF_ST | BPF_PROBE_MEM32 | BPF_W:
-> +		case BPF_ST | BPF_PROBE_MEM32 | BPF_DW:
-> +			start_of_ldx =3D prog;
-> +			emit_st_r12(&prog, BPF_SIZE(insn->code), dst_reg, insn->off, insn->im=
-m);
-> +			goto populate_extable;
+On Fri, Feb 09, 2024 at 10:57:45AM -0600, David Vernet wrote:
+> On Tue, Feb 06, 2024 at 02:04:27PM -0800, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> > 
+> > Recognize 'void *p__map' kfunc argument as 'struct bpf_map *p__map'.
+> > It allows kfunc to have 'void *' argument for maps, since bpf progs
+> > will call them as:
+> > struct {
+> >         __uint(type, BPF_MAP_TYPE_ARENA);
+> > 	...
+> > } arena SEC(".maps");
+> > 
+> > bpf_kfunc_with_map(... &arena ...);
+> > 
+> > Underneath libbpf will load CONST_PTR_TO_MAP into the register via ld_imm64 insn.
+> > If kfunc was defined with 'struct bpf_map *' it would pass
+> > the verifier, but bpf prog would need to use '(void *)&arena'.
+> > Which is not clean.
+> > 
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  kernel/bpf/verifier.c | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index d9c2dbb3939f..db569ce89fb1 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -10741,6 +10741,11 @@ static bool is_kfunc_arg_ignore(const struct btf *btf, const struct btf_param *a
+> >  	return __kfunc_param_match_suffix(btf, arg, "__ign");
+> >  }
+> >  
+> > +static bool is_kfunc_arg_map(const struct btf *btf, const struct btf_param *arg)
+> > +{
+> > +	return __kfunc_param_match_suffix(btf, arg, "__map");
+> > +}
+> > +
+> >  static bool is_kfunc_arg_alloc_obj(const struct btf *btf, const struct btf_param *arg)
+> >  {
+> >  	return __kfunc_param_match_suffix(btf, arg, "__alloc");
+> > @@ -11064,7 +11069,7 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+> >  		return KF_ARG_PTR_TO_CONST_STR;
+> >  
+> >  	if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
+> > -		if (!btf_type_is_struct(ref_t)) {
+> > +		if (!btf_type_is_struct(ref_t) && !btf_type_is_void(ref_t)) {
+> >  			verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
+> >  				meta->func_name, argno, btf_type_str(ref_t), ref_tname);
+> >  			return -EINVAL;
+> > @@ -11660,6 +11665,13 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> >  		if (kf_arg_type < 0)
+> >  			return kf_arg_type;
+> >  
+> > +		if (is_kfunc_arg_map(btf, &args[i])) {
+> > +			/* If argument has '__map' suffix expect 'struct bpf_map *' */
+> > +			ref_id = *reg2btf_ids[CONST_PTR_TO_MAP];
+> > +			ref_t = btf_type_by_id(btf_vmlinux, ref_id);
+> > +			ref_tname = btf_name_by_offset(btf, ref_t->name_off);
+> > +		}
+> 
+> This is fine, but given that this should only apply to KF_ARG_PTR_TO_BTF_ID,
+> this seems a bit cleaner, wdyt?
+> 
+> index ddaf09db1175..998da8b302ac 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10741,6 +10741,11 @@ static bool is_kfunc_arg_ignore(const struct btf *btf, const struct btf_param *a
+>         return __kfunc_param_match_suffix(btf, arg, "__ign");
+>  }
+> 
+> +static bool is_kfunc_arg_map(const struct btf *btf, const struct btf_param *arg)
+> +{
+> +       return __kfunc_param_match_suffix(btf, arg, "__map");
+> +}
 > +
-> +			/* LDX: dst_reg =3D *(u8*)(src_reg + r12 + off) */
-> +		case BPF_LDX | BPF_PROBE_MEM32 | BPF_B:
-> +		case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
-> +		case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
-> +		case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
-> +		case BPF_STX | BPF_PROBE_MEM32 | BPF_B:
-> +		case BPF_STX | BPF_PROBE_MEM32 | BPF_H:
-> +		case BPF_STX | BPF_PROBE_MEM32 | BPF_W:
-> +		case BPF_STX | BPF_PROBE_MEM32 | BPF_DW:
-> +			start_of_ldx =3D prog;
-> +			if (BPF_CLASS(insn->code) =3D=3D BPF_LDX)
-> +				emit_ldx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->of=
-f);
-> +			else
-> +				emit_stx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->of=
-f);
-> +populate_extable:
-> +			{
-> +				struct exception_table_entry *ex;
-> +				u8 *_insn =3D image + proglen + (start_of_ldx - temp);
-> +				s64 delta;
-> +
-> +				if (!bpf_prog->aux->extable)
-> +					break;
-> +
-> +				ex =3D &bpf_prog->aux->extable[excnt++];
+>  static bool is_kfunc_arg_alloc_obj(const struct btf *btf, const struct btf_param *arg)
+>  {
+>         return __kfunc_param_match_suffix(btf, arg, "__alloc");
+> @@ -10910,6 +10915,7 @@ enum kfunc_ptr_arg_type {
+>         KF_ARG_PTR_TO_RB_NODE,
+>         KF_ARG_PTR_TO_NULL,
+>         KF_ARG_PTR_TO_CONST_STR,
+> +       KF_ARG_PTR_TO_MAP,      /* pointer to a struct bpf_map */
+>  };
+> 
+>  enum special_kfunc_type {
+> @@ -11064,12 +11070,12 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+>                 return KF_ARG_PTR_TO_CONST_STR;
+> 
+>         if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
+> -               if (!btf_type_is_struct(ref_t)) {
+> +               if (!btf_type_is_struct(ref_t) && !btf_type_is_void(ref_t)) {
+>                         verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
+>                                 meta->func_name, argno, btf_type_str(ref_t), ref_tname);
+>                         return -EINVAL;
+>                 }
+> -               return KF_ARG_PTR_TO_BTF_ID;
+> +               return is_kfunc_arg_map(meta->btf, &args[argno]) ? KF_ARG_PTR_TO_MAP : KF_ARG_PTR_TO_BTF_ID;
 
-Nit: this seem to mostly repeat exception logic for
-     "BPF_LDX | BPF_MEM | BPF_B" & co,
-     is there a way to abstract it a bit?
-     Also note that there excnt is checked for overflow.
+Makes sense, but then should I add the following on top:
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e970d9fd7f32..b524dc168023 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11088,13 +11088,16 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+        if (is_kfunc_arg_const_str(meta->btf, &args[argno]))
+                return KF_ARG_PTR_TO_CONST_STR;
+
++       if (is_kfunc_arg_map(meta->btf, &args[argno]))
++               return KF_ARG_PTR_TO_MAP;
++
+        if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
+-               if (!btf_type_is_struct(ref_t) && !btf_type_is_void(ref_t)) {
++               if (!btf_type_is_struct(ref_t)) {
+                        verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
+                                meta->func_name, argno, btf_type_str(ref_t), ref_tname);
+                        return -EINVAL;
+                }
+-               return is_kfunc_arg_map(meta->btf, &args[argno]) ? KF_ARG_PTR_TO_MAP : KF_ARG_PTR_TO_BTF_ID;
++               return KF_ARG_PTR_TO_BTF_ID;
+        }
+
+?
+
 
