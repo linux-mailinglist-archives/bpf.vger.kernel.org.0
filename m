@@ -1,163 +1,199 @@
-Return-Path: <bpf+bounces-21605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F294184F046
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 07:39:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1865084F39B
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 11:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 680BD1F24992
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 06:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C38E8288365
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 10:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C995B651BA;
-	Fri,  9 Feb 2024 06:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3228200AA;
+	Fri,  9 Feb 2024 10:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CB36Eg8+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOJa1aQA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A574C657A8
-	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 06:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2A71DA44;
+	Fri,  9 Feb 2024 10:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707460746; cv=none; b=uzxA5CVzOHWIAY2oGNRTx6UoIyHofckSJtstF23illbYxX4gEX3YVr8RDVuJO/0sv+glvlH8tORLKDc4JspYLHfEwZ/8EmOv5lahYBAEdSQ9txUpZuIugSNi00Q4ES0X3XOnBpNpRRm6EJ+5TeLbsp7Bl7fzAjmk55SVkOXuW2A=
+	t=1707475189; cv=none; b=sSpZQ3dsqmcD8KAwzZNkEj2yCNXNE5BeCkUv3SSEBXvSwEEKyllU9Ja9YscRt+gbwP7Dy0IuHskB2frZvege60kGOgMOkvMMVIGNd+Akeg9DcjIsIV8PYGmuUx6sTyUJg6t//uIGE9geYLy0xSRt4oGqDrTCzJE0Omn+FO96ZOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707460746; c=relaxed/simple;
-	bh=gGbGyGc8JL/lSzURGkvPdcfI/7YMtQSBWkf15oXUQ0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=phWL8naZXj3Saf6l3JHRuGBe1dMWnqs55KzEaAmz6D+DGZXdXtNjFd43RZCEuHoAMaBvGMquH6xnalKJ0qbPZr6HETeoLDE1Mb8Y2U4O9e3TojjAIxKGWa4lqaXz6xydKcyCZH9viFCr5mazcFkPitoFZLve+GtspfkmTn5nIEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CB36Eg8+; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1707475189; c=relaxed/simple;
+	bh=6JSed9WghJtQfys5PKUQxL5lBNUCn4xxXb2Iqm1mn0Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X2A6kkmgezydPEOmJ5TBzs5cjlOY3g3EZQ9Fjqqxi/KSPJePH2geI3pT4QonmpeWlmItT3Kjx6UmId9M/1d/rXfpZ942eR30JcVTN7zw5LjOXO9LjV17TIh8OxNYbe1Y4+QTEu+IdOVZlB3/fN9eiTTEgCwUQ7V9MZGWehNxXvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YOJa1aQA; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41059577f26so5726155e9.0
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 22:39:04 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a389ea940f1so89231466b.3;
+        Fri, 09 Feb 2024 02:39:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707460743; x=1708065543; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gGbGyGc8JL/lSzURGkvPdcfI/7YMtQSBWkf15oXUQ0I=;
-        b=CB36Eg8+VMDGVECfUYmr8n3KNIXPD/9ePK2+ZpKoTILmeNWdujBqfEvxoeLzYVf2vn
-         ofE9u/ihwoxoylNd1bxoy5n50Dd39B84Ci+ZxTSLTyEuS/3Xm32fRuh4BneaMOvMZJ/U
-         PrjhSzvHQCeKtCMpLF/+cplseMzb4czOvh2ddabpXXQkhMLRa9VlNpGzWEcupBkER7q5
-         /40XXZtqEBVd3QigtmrOS6QZUskTB+ZyRqp0iCNAs9t9dI18HY2hps9z57QJeB8eDc8c
-         BqSfQhoNQwkd5cVd7fVF7vfaOA4pRiIhIwF+u4aXMgK64qMhVchSE/07fBWKC08BH0Hc
-         SyvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707460743; x=1708065543;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707475186; x=1708079986; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gGbGyGc8JL/lSzURGkvPdcfI/7YMtQSBWkf15oXUQ0I=;
-        b=NkvNMkwYaU/yhD6Xqn8Lzd7QFAE8+EWmOAoahHpjJInjWE5VhEra5P+Wkc0Olqgxxi
-         PXVnd+MG6pl/PNjjp3rBpFDugiyocDdtOIoYZWU6ypBm2hJ9AJ49fhvI5AUQ7dSGWmAj
-         aMfvbV4ztWlc+crcezw9gO5CXxC/pP4cXPPw4aArgXvDSs6JsVGxVpC+kbhdmq3kM67e
-         4csmkJIqJ9cNkAqnKoHMvaUWmAHrpsyYKLE7O+CiReAdhtczeA2QScQAflbyYPfL5mFG
-         +mncG/0b/LF7i2xWyzG/bAW/Z5lJZ9FM1wCf8Ry7xn5LDXJ+BSBJHbnnTVB5weRIYUEC
-         KfrA==
-X-Gm-Message-State: AOJu0Yy/yIA9Bf4dgZ9aRYtJNT1OUZNDgKuokxwHh9B2D18IkT5YHra9
-	rkxyoZxvlqPJO2GuM9FhRojGcrSOmyF/Mvz8MTvYYPitObfq5DRK
-X-Google-Smtp-Source: AGHT+IHH02HUeNDa5Mlgg4UD2e0pVLRle/mWIx2WZRQr8nbdARSwIX/yjti8IJ/t6bPc0/1HIETD1w==
-X-Received: by 2002:a05:600c:4f43:b0:410:2223:553f with SMTP id m3-20020a05600c4f4300b004102223553fmr419588wmq.9.1707460742529;
-        Thu, 08 Feb 2024 22:39:02 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX6bfGDSuARvjOJTg7t5TaVK9hXO61Z12WojUwpMtDHtLOG/LZzIfDy/47TcDhZ9fi9Lb0kEzefCRPBucMoceegkMdsmkokMoQ46rT3sVeRIC52mNi9zBH+cGvDVccvSZNTKIY8mkrbtM1fi6w+qrpkV87h8nOsBJIa31w9tEYHtFgOnuEz+iZv2q8YpXgyhtb4Z/a2Hx1HkgzZ3HSxsGRa/dRUYQ9Awwp9YrrYWKBir+l8SrshacqSSlJo/GQ3tPAflbbIgqldjTfEYFJstU2h8tffc18L1RGjpUvYXZ/zghLM/8FbqNHYgxoVpKzDyvbdA0a0S6OEwdfnRbQD6cJ7QQAwSPoHEB4/he10sfmdjLfW5x0Hw7W7BdA1pSIHDPy2NzkhVNNZmwhkccpG+hLJ
-Received: from localhost (host109-150-53-182.range109-150.btcentralplus.com. [109.150.53.182])
-        by smtp.gmail.com with ESMTPSA id l8-20020a05600c4f0800b0040fb44a9288sm1538120wmq.48.2024.02.08.22.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 22:39:01 -0800 (PST)
-Date: Fri, 9 Feb 2024 06:36:46 +0000
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	memxor@gmail.com, eddyz87@gmail.com, tj@kernel.org, brho@google.com,
-	linux-mm@kvack.org, kernel-team@fb.com,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH bpf-next 03/16] mm: Expose vmap_pages_range() to the rest
- of the kernel.
-Message-ID: <16158935-80fb-41d5-ba9b-4d5b9c4d22d7@lucifer.local>
-References: <20240206220441.38311-1-alexei.starovoitov@gmail.com>
- <20240206220441.38311-4-alexei.starovoitov@gmail.com>
- <30a722f3-dbf5-4fa3-9079-6574aae4b81d@lucifer.local>
- <20240208054435.GD185687@cmpxchg.org>
+        bh=Lo4dnUNSo3H3+Ts+jrQPCY8fwThOM1DvpZ/VFX/5iBk=;
+        b=YOJa1aQAmMdJfA0wT/0UDwonGW0fHgz66AGGMbmghvi+dEZXf4xUnA1ERhb/vrmCzI
+         OXcgauZ/flmUyxoYqzO3VClN3w2lN/hiEHplkT+rJ40r3bOrS7qfw9h8SMT0wNmwzvIJ
+         aL+W0oHjcjcx6jrhmBRuCL0V3E+lfYmrlDCBTwOiKGcjovLIvd7F/0G9CQ3+n3Ppn3f9
+         97v1AplY+nCgKcXZa5aJukudwN4f6pOw+2J9TBldX+6z35Dsu/gamtCvSCBa7W6XvIRi
+         DXKu5zny8Ez8+I/2UVfUHqNQKPm3d05ndxJr7mbYXksDL5LgBZF4+Tsb96Nf+0hWJ0sA
+         jbug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707475186; x=1708079986;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lo4dnUNSo3H3+Ts+jrQPCY8fwThOM1DvpZ/VFX/5iBk=;
+        b=XbVEHI+DTOlCSRJczSituEo2R350+lqmISqCdlQIb1xJij8CYcm/zFDFsFzDKkfco+
+         CkMsiRELeJg9gJ7qQ2otYoPlgPVINtl1SupyklupXs7hnSC58wsy0mnb0DFPrmEx8w4a
+         9w0vnN+M3T7trXijYciYxmhOZaUoc6ELBwAMQsBNOWw/a8bZP3ERN7o7gnWN1/NUEG9g
+         jbetFQMiTcpjNXtpPzj50nxSwg4Sbp/8krnC7R1PjEzPKuG5B7p5pPmmi69N5e5n8nT1
+         8yOpUXY1wsb8HCZvBf73hwTuY8GlZT9NNivv3qFXTnB5zjvXzlJ0lEpOmceH3UXjhb10
+         fV9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUhoTyZ5sjuJJf6WDEkIWW4ufL/gw+NHsWVBUvBKSIlGrpeYvGbHWAQjMdhnWXMfySlCfWlqKaAI6s1Ul57tRJs0oyNas3zokoGZmbF4aFaUVwMaF/h3Z/lbTHQd+eT/FlnF6bFszq2s9o+wJW7dUNxEp2QhDSVeW/3
+X-Gm-Message-State: AOJu0YxCkCBz5FBwZfpa5NCseNtFHYK4fm+5LokCWVstpwMtvA3BU7zz
+	v0zDeRkGsMRLRWU2pcVIrCK8ByS1W1QezFXFr86CiuKJh0z9oUmvWT6Mh76LWuFvObGIwpr5Af+
+	RGdjWLbBetAwzamTTCjptLkL/vcY=
+X-Google-Smtp-Source: AGHT+IFUK5AxhGByklr28zTpKRrQt9q1kxLKqg64jZ/i/mBwJE44NAngtOYMahNnaMPpzwR1AIyeJ8ulHoCfGKfp1bs=
+X-Received: by 2002:a17:906:3b0b:b0:a3b:e8b7:9ff0 with SMTP id
+ g11-20020a1709063b0b00b00a3be8b79ff0mr960923ejf.67.1707475185671; Fri, 09 Feb
+ 2024 02:39:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208054435.GD185687@cmpxchg.org>
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+ <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+ <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
+ <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com> <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
+In-Reply-To: <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
+From: Liang Chen <liangchen.linux@gmail.com>
+Date: Fri, 9 Feb 2024 18:39:33 +0800
+Message-ID: <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, jasowang@redhat.com, 
+	xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net, 
+	ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 08, 2024 at 06:44:35AM +0100, Johannes Weiner wrote:
-> On Wed, Feb 07, 2024 at 09:07:51PM +0000, Lorenzo Stoakes wrote:
-> > On Tue, Feb 06, 2024 at 02:04:28PM -0800, Alexei Starovoitov wrote:
-> > > From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+> On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
+> > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> =
+wrote:
 > > >
-> > > The next commit will introduce bpf_arena which is a sparsely populated shared
-> > > memory region between bpf program and user space process.
-> > > It will function similar to vmalloc()/vm_map_ram():
-> > > - get_vm_area()
-> > > - alloc_pages()
-> > > - vmap_pages_range()
+> > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
+> > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Brouer <haw=
+k@kernel.org> wrote:
+> > > > > On 02/02/2024 13.11, Liang Chen wrote:
+> > > [...]
+> > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp_buf=
+f *xdp)
+> > > > > >       }
+> > > > > >   }
+> > > > > >
+> > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_buff *=
+virtnet_xdp,
+> > > > > > +                                  struct net_device *dev,
+> > > > > > +                                  struct virtio_net_hdr_v1_has=
+h *hdr_hash)
+> > > > > > +{
+> > > > > > +     if (dev->features & NETIF_F_RXHASH) {
+> > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_value;
+> > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash_repor=
+t;
+> > > > > > +     }
+> > > > > > +}
+> > > > > > +
+> > > > >
+> > > > > Would it be possible to store a pointer to hdr_hash in virtnet_xd=
+p_buff,
+> > > > > with the purpose of delaying extracting this, until and only if X=
+DP
+> > > > > bpf_prog calls the kfunc?
+> > > > >
+> > > >
+> > > > That seems to be the way v1 works,
+> > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen.linux=
+@gmail.com/
+> > > > . But it was pointed out that the inline header may be overwritten =
+by
+> > > > the xdp prog, so the hash is copied out to maintain its integrity.
+> > >
+> > > Why? isn't XDP supposed to get write access only to the pkt
+> > > contents/buffer?
+> > >
 > >
-> > This tells me absolutely nothing about why it is justified to expose this
-> > internal interface. You need to put more explanation here along the lines
-> > of 'we had no other means of achieving what we needed from vmalloc because
-> > X, Y, Z and are absolutely convinced it poses no risk of breaking anything'.
+> > Normally, an XDP program accesses only the packet data. However,
+> > there's also an XDP RX Metadata area, referenced by the data_meta
+> > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
+> > point somewhere ahead of the data buffer, thereby granting the XDP
+> > program access to the virtio header located immediately before the
 >
-> How about this:
+> AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data before
+> xdp->data_hard_start:
 >
-> ---
+> https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4210
 >
-> BPF would like to use the vmap API to implement a lazily-populated
-> memory space which can be shared by multiple userspace threads.
+> and virtio net set such field after the virtio_net_hdr:
 >
-> The vmap API is generally public and has functions to request and
-> release areas of kernel address space, as well as functions to map
-> various types of backing memory into that space.
+> https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net.c#L=
+1218
+> https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net.c#L=
+1420
 >
-> For example, there is the public ioremap_page_range(), which is used
-> to map device memory into addressable kernel space.
->
-> The new BPF code needs the functionality of vmap_pages_range() in
-> order to incrementally map privately managed arrays of pages into its
-> vmap area. Indeed this function used to be public, but became private
-> when usecases other than vmalloc happened to disappear.
->
-> Make it public again for the new external user.
+> I don't see how the virtio hdr could be touched? Possibly even more
+> important: if such thing is possible, I think is should be somewhat
+> denied (for the same reason an H/W nic should prevent XDP from
+> modifying its own buffer descriptor).
 
-Thanks yes this is much better!
+Thank you for highlighting this concern. The header layout differs
+slightly between small and mergeable mode. Taking 'mergeable mode' as
+an example, after calling xdp_prepare_buff the layout of xdp_buff
+would be as depicted in the diagram below,
+
+                      buf
+                       |
+                       v
+        +--------------+--------------+-------------+
+        | xdp headroom | virtio header| packet      |
+        | (256 bytes)  | (20 bytes)   | content     |
+        +--------------+--------------+-------------+
+        ^                             ^
+        |                             |
+ data_hard_start                    data
+                                  data_meta
+
+If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
+towards 'data_hard_start', it would point to the inline header, thus
+potentially allowing the XDP program to access the inline header.
+
+We will take a closer look on how to prevent the inline header from
+being altered, possibly by borrowing some ideas from other
+xdp_metadata_ops implementation.
+
+
+Thanks,
+Liang
 
 >
-> ---
+> Cheers,
 >
-> > I mean I see a lot of checks in vmap() that aren't in vmap_pages_range()
-> > for instance. We good to expose that, not only for you but for any other
-> > core kernel users?
+> Paolo
 >
-> Those are applicable only to the higher-level vmap/vmalloc usecases:
-> controlling the implied call to get_vm_area; managing the area with
-> vfree(). They're not relevant for mapping privately-managed pages into
-> an existing vm area. It's the same pattern and layer of abstraction as
-> ioremap_pages_range(), which doesn't have any of those checks either.
-
-OK that makes more sense re: comparison to ioremap_page_range(). My concern
-arises from a couple things - firstly to avoid the exposure of an interface
-that might be misinterpreted as acting as if it were a standard vmap() when
-it instead skips a lot of checks (e.g. count > totalram_pages()).
-
-Secondly my concern is that this side-steps metadata tracking the use of
-the vmap range doesn't it? So there is nothing something coming along and
-remapping some other vmalloc memory into that range later right?
-
-It feels like exposing page table code that sits outside of the whole
-vmalloc mechanism for other users.
-
-On the other hand... since we already expose ioremap_page_range() and that
-has the exact same issue I guess it's moot anyway?
 
