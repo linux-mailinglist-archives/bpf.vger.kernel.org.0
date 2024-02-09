@@ -1,76 +1,49 @@
-Return-Path: <bpf+bounces-21655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C5B84FE8A
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 22:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B607A84FF0C
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 22:41:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028161F25C7C
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 21:19:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BF191F22296
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 21:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FA3374F1;
-	Fri,  9 Feb 2024 21:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD571B7E9;
+	Fri,  9 Feb 2024 21:41:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="XtZKTBm/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q+2KEg6G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6667A175B0
-	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 21:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7EF149DFA;
+	Fri,  9 Feb 2024 21:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707513085; cv=none; b=Unno/RlS6PWSwAFehtDkw2gjCkZsRzFISm80X4+JCVWsOmayM0yY4kj8jbsfC9pMEBCNK+n7plZoYW2DwPcl2A2mz/5QmSpxSQFgUiaVFixmd88sBc2w2fQ2KsSTJ+eUsLcXi56X2elAs/08sVtT557SKH85Aemvo7rBja7vCgE=
+	t=1707514874; cv=none; b=R8rEgcOyxEbDRnHYcZeFcr2lLqODvGO3zs+rMQLzHjn3LjHhNAw+8pi1VpaNkf0jnMQlk+W+TnaSW6GVnBeS9Vbzj8+DyNgeHUwqTztlgXL01K+rwlTlYBSXCZqDrPdCrA7eEWAme1Eyl38U+7uiRtYn0gmZtX7exVFmf9SdzZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707513085; c=relaxed/simple;
-	bh=XUcH1UxLCxfIwyJ9CRFC+7ICqDqroCA5cgXdrikWaRY=;
+	s=arc-20240116; t=1707514874; c=relaxed/simple;
+	bh=tZosFHr8PqySTr1vT1GdQmj3Mjs87KTJSyGNLrRgLVk=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h76YW2gzhQoZa0rmJlo+Hpci4enM6TOW+lze4j3xOLpzR8Psfdnme0THO6j+iX31aGlJ6EfXRW4BagVU8TtcWihWoHPf5JxzInxB6g76dFrf88xhCc6vg3Ppi5oZXs1G5ISJo716hxF9Lf+LXiD76FyFeDvpXY4gNvqUWgA4fdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=XtZKTBm/; arc=none smtp.client-ip=209.85.160.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-218642337c9so767923fac.3
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 13:11:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1707513082; x=1708117882; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l6TgcwAbgsmLtLyu5Ofw1Dd466E2FrR34L8AWToaH3s=;
-        b=XtZKTBm/Z7iEq+KpASrtQOEc3Q/EOxUyJs3Saw4h4NpnJHItCkXPFXdzi42DcvTBOH
-         pZsN5nbUAfuruNVx5GoXepMIIpCgQd5EtvbfkLPXVgLMTAWr4fcsl8aQsugCV/RNr6yT
-         05dc8nvQ2Q2l5xw9tK2KQpaAMJnGpHhZLwSbFHtVEfr3GdGlNcF+h2cvtP5cfmNlnO5Y
-         lhNS3pwhZkHBH7FB7EnFbuAkYlwCIFs5TUuDV2GsBAxYkhEsbMetRNY0Tqc71aqPVbP6
-         f40Ngtv1zmY7+0cqn25V7DUarhE1wWW0rpHpregX2WOsar1dGkdgOBoLkcAMKjpX34eU
-         UTHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707513082; x=1708117882;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l6TgcwAbgsmLtLyu5Ofw1Dd466E2FrR34L8AWToaH3s=;
-        b=q2AIgmxfKOC/utP1lzu+S2ssa/viRCj20hGPxox/lQsEY0yak/KHVZQ+sVJkwf67zx
-         CKGp8Id/sT3yz0kn0PBU29HOxINqFPp4bybLI6Gmm0Gfk61KbwNCO6pqMUIti8dKsNq2
-         f7tTu09Tl9G3qwZmI6JgztAD+2dQTdPZHo/EYiUA6tuOAvfjiE9e/HskX/ZD/UgwxYru
-         lkQWGg1vLx/f9NFGtrZtCXDa5R8Hy8yvUm7p/RTyDU8HbXNLqHGzSJFrm3LRwHqEvh31
-         CWUJPzkydV2anm7S2RZXm+ymhAK42+fidc0fDgQVlOYrVa1X8elOc4IYxiro60QYjcDt
-         YWVw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5wOlj+mRzJ/x81HZRaryXNq5SmB0uLFXQK1OQdJhY6atWmPOvYIFQfzy4hsmEc61fLyduBHZCEDMxtEv26gc9hXIy
-X-Gm-Message-State: AOJu0YzSmAObRipRxNaaPcvUmtEjWyQyC65+bdhH/VOj5BHLPz75J719
-	a05B6BI/9TFOtsLfuLcQL86rhGefXPgimVo93+xzEYGVhEpATegw3kO9TECPec8=
-X-Google-Smtp-Source: AGHT+IGl3bcIXf9vxhkEqrznfhES+9b4LRsM6WT2DoAnggZow6RhmartJWmHnoEjEXctYwPR1K8p3A==
-X-Received: by 2002:a05:6870:b250:b0:219:b163:70d8 with SMTP id b16-20020a056870b25000b00219b16370d8mr552722oam.6.1707513082402;
-        Fri, 09 Feb 2024 13:11:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXm3qqN7nurWgs9IaVrQ6JuoBgeVnXrUdVl39H6TG/U/U9XfNjgLSUynl36AntPvANxVhyPrAcht2SAT/qsUR1SWgM32c8saU0lm4578MElg9Mym2NaaOkFMFEtPMYsZxnZEKrVAKX3QLkDwEML4umP3Bq2P9v5yRwOIR1TXTjKj8gGHXbNWWctV9sKk6p4ZYW4gQ3y8FMeEpx3CkGvGa7KZxnpcVOVi2bUFH4q/x49qRl68MfMvnjk0uewdY0rCov92fBPwa7O3yypCTDysSJrWPuN0TmvB+hBqyDByVBJa6bylcoR7qjqdw27s7AU3GXCoURVufP5e5XaNUAqetK7A9CMOUFM5ksHcT56zwg/HOuaWGFmS6S1ES7OJXlQNMV8cKFlhO55G1XY0RppWhk2pLTJjlIVwv2iNZ1oFt3KEOCr3FnwQpXyeV83sdY0eXvLCZQk++lC6wzubsY0QzZBsQ8wUirg1IHvWNzht7zrvyy+POKQvf0RR+dTCnKG5r8FIpzanAory9C60cbXIMryjFS5e863M+S0Q5qxEX7t2g4Kst3xz/0jBfpu7nmUaiMK/za6cXUtXuaLedTjoNju0mvpixm/mGZ/T9s=
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id e21-20020a631e15000000b005d8e280c879sm2240643pge.84.2024.02.09.13.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 13:11:22 -0800 (PST)
-Date: Fri, 9 Feb 2024 13:11:19 -0800
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: Jakub Kicinski <kuba@kernel.org>
+	 MIME-Version:Content-Type; b=NECZWS9HoBuaft07CVPD9AhcOFMVzkyxGX+WXWfxhFkS4gcIHT5ZW47U9pJVlV8vpfOmx7y4zNvhjJ7GZCtDOX/J2Z68ZGcKZr0i6J1RX4gW7Knzyn4oxs/NH+sKppaFlg6Pv4dDGAZdEWTBwoqI+sScvHWWe0JGLQ3BAHi+c0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q+2KEg6G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29ABC433C7;
+	Fri,  9 Feb 2024 21:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707514874;
+	bh=tZosFHr8PqySTr1vT1GdQmj3Mjs87KTJSyGNLrRgLVk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Q+2KEg6Gv8Azh+UWCEMd0oRMkG+S1rsEZelQvAtkkhRzbqXTAhWJdfrPtGsHejdEx
+	 8FK3BDV5d+am8zpHfjdQDByOrgsmZ3puXFK9/8UpoL2NLBkup3GHKyeq5Ak2YsBduF
+	 VGBe5fDrkMbx3E/fF6tIBxR5MDrxMi83CpH+QMSYiNQ2OcRT7YUWEwLDeiePX6S6rF
+	 vZ5SOAJ33G01z/d8qkEiE6jD7BXELoY4E2FCYFqUGfDcH2iam4Sk3KtgiFD8AaprXh
+	 P+eAnthBzMVMrCltUvYZlVefEYmNmHKw0kwyi4O6gT43TRBcAgkUpK/6TaKAnDmilU
+	 0sRs1CxmjSe8w==
+Date: Fri, 9 Feb 2024 13:41:12 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Stephen Hemminger <stephen@networkplumber.org>
 Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
  Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
  Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
@@ -85,10 +58,11 @@ Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
  linux-kernel@vger.kernel.org (open list)
 Subject: Re: [PATCH net-next v2] net/sched: actions report errors with
  extack
-Message-ID: <20240209131119.6399c91b@hermes.local>
-In-Reply-To: <20240208182731.682985dd@kernel.org>
+Message-ID: <20240209134112.4795eb19@kernel.org>
+In-Reply-To: <20240209131119.6399c91b@hermes.local>
 References: <20240205185537.216873-1-stephen@networkplumber.org>
 	<20240208182731.682985dd@kernel.org>
+	<20240209131119.6399c91b@hermes.local>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,15 +72,21 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 8 Feb 2024 18:27:31 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> > -	if (!tb[TCA_ACT_BPF_PARMS])
-> > +	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
-> > +		NL_SET_ERR_MSG(extack, "Missing required attribute");  
+On Fri, 9 Feb 2024 13:11:19 -0800 Stephen Hemminger wrote:
+> On Thu, 8 Feb 2024 18:27:31 -0800
+> Jakub Kicinski <kuba@kernel.org> wrote:
 > 
-> Please fix the userspace to support missing attr parsing instead.
+> > > -	if (!tb[TCA_ACT_BPF_PARMS])
+> > > +	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
+> > > +		NL_SET_ERR_MSG(extack, "Missing required attribute");    
+> > 
+> > Please fix the userspace to support missing attr parsing instead.  
+> 
+> I was just addressing the error handling. This keeps the same impact as
+> before, i.e no userspace API change.
 
-I was just addressing the error handling. This keeps the same impact as
-before, i.e no userspace API change.
+I mean that NL_REQ_ATTR_CHECK() should be more than enough by itself.
+We have full TC specs in YAML now, we can hack up a script to generate
+reverse parsing tables for iproute2 even if you don't want to go full
+YNL.
 
