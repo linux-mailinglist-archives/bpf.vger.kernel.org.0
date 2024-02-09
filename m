@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 282DD84EF8E
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 05:07:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123E784EF8F
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 05:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 923051F28392
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 04:07:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C323528D60E
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 04:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB5E53A9;
-	Fri,  9 Feb 2024 04:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217165227;
+	Fri,  9 Feb 2024 04:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ire1UH1c"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i4uUpAQ1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194535667
-	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 04:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6500F5667
+	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 04:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707451617; cv=none; b=kA3sI8oucVbLK0RRnLSCUKMrzfGEauRLjtejtbQcQrIEAgLxPAesa2o6eq92QhFPuiksQzld5zpfLr37LXHbiIyLA8IyCVj92Cg5tZqM3CY5W3mYC6xTxWfeugxIHqDT/oUcLqZe4H/RWHUM6elcq0sAROPSXIoaxBTRs0gg96Q=
+	t=1707451621; cv=none; b=j5TFlmjUpBmN4ZcMZ9hpJ7zxtVLh038v5yw40IaMlawO6gR1Ymb6MMrhItbpeMI+Uy8WCcqDvT0kMZI32359xpxta+zWnzh0VomF3y5T8CfUweLntal3GaiRLhzJDLrOXkKcyLHxTgDtMDz5UaW/UlJVsWwWxU9t3vrezLpgFpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707451617; c=relaxed/simple;
-	bh=Bg5aGjdIz8HulVZArC9AzXZ4d0bb4JFzjyEXMh1sB5w=;
+	s=arc-20240116; t=1707451621; c=relaxed/simple;
+	bh=B9RYqjZPOWV6C0GMRY3SkdIHMqd4rfBrkE8wPVtghus=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sikYJ6f1NcLChCg81FkUMpqISBag+6eZe8uEfTZvxBsCQcS0sVayAJKsUfdGPXihQpnenmfDixPLlnfBop57vxcvLz9wisyBQFng0BGHDCQCBGR9rVgZ3w28lQh6nTTLu2B7yGBYEr4NRoSRL6FU277yrK9n8rZMfsMGS9293rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ire1UH1c; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=JSfSYQnO94VUwaS0944dHRsA49D0k97KAyu5y6sXD1xbkj+F9zoxJt4jm3yAvnD78ITZx5xNsU63BepdSve7mJg+6ZOsVYBhA0v5n+2fIr84y0mA2y6ZyrC6qf/ZABTLXFceF5j4pPOiG/4UuhDh22xpAcYOIkgTGG4/byT6IRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i4uUpAQ1; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d7354ba334so4476085ad.1
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 20:06:55 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e04fd5e05aso440758b3a.0
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 20:07:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707451615; x=1708056415; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707451619; x=1708056419; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XZ9Snvkhjzxk5f60xE38IZQNIMkdSN5DBO4L+T7puE0=;
-        b=Ire1UH1ciFgYSUnaAX3+hxFI1ATA37DVRT8gPeUm10r7cFwA6qcDKQvktBvSksinCP
-         ryDM1vcsaWc2u5X66oLEGLVtVpuoeGEo6uca1LWWy1HnTSGvqxpLn0LTlxw+KZowbmH6
-         hO/4g6YMngxp4H/PaxE6qO00ArQQGr5vRWUnA8cFl837/5XImqAtXDCLC1IM+gkBxuyA
-         xn2cHg0Paz/09+sRb69b6MAMMvxDjWWZXm/Bv1u3zcLBtErfkiR/RQQgXMHBqLd6GrKI
-         iPM3vTd2rJlg8Xe1pQO68mmtqwObtugsp7HiXUXWWvEhaun7l+2Vu9UlRDNDdmpnUOWO
-         4g4w==
+        bh=kyKA4wCImIZZ5xJE04KmfmUkjYhSBJW7+tRHKBcOaBI=;
+        b=i4uUpAQ1x7wpjggITqtMPKx/vCgmCHEe7EtF7/j3senHuBaTMDIktrUprZdzPgmoUu
+         LkC2Uaf8Et/W3WZB4FBUimkdvofvsbL2aXJ9mCJc0Jej3SAlCcWxfQ4h3hct74CDnJJH
+         4WwcGSzzES6GqexNCX6NAiZloL/k1fSqBt15frLCjTde0u1IlnOHU/R4Jio5DV4j1vwg
+         VtvkZLV1oT5n2A6EiMJc7Qa7nhoAs6BcFziIHBtJ3ebHaK6YZFO9O0kZ63MRdDzGxYo3
+         fYIQbYee3Ij8om7CcFk3SM1tN/omGuShZWGdpgOAnxdLFpkiygqGQl4+4tN5cQenCdsF
+         ndyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707451615; x=1708056415;
+        d=1e100.net; s=20230601; t=1707451619; x=1708056419;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XZ9Snvkhjzxk5f60xE38IZQNIMkdSN5DBO4L+T7puE0=;
-        b=cGcx5Ib9Gr/33ADYCfYtu5cUgKrsbj6lzCRZsLVjM8VKl2ckb+nsTnf9bjLl2ob2IU
-         0F/O/TaQOYPfiL6snXHnTlwzJfDwvbCCVN8SKOugrO/bqXSp1bF6GzssM7MlLsp23Jul
-         OjYJG/YueHKRUW3ZIVoBwOyVGvLtP1es+OALVDSzTNPnsMafDWmYlU+t1lJztDIZ24os
-         EPlFj9pqSM4KUlP/q33PrvtGeipdboBJTwYZoh/zMY4axGwRS+eeyO76cwel/1Q87Hh8
-         161F/0yHOZwJgy/5Pa1xrGgJMLjhI7yeCOMcCCe0fhlsiYBGF36LXZKEwcayjLixjsdu
-         fA3w==
-X-Gm-Message-State: AOJu0Yykly7J8kH38L1oonhnnsMRGzY28qgbMP1p/WEV20n+EXrJFFXb
-	OHNa0V6IwCwP+Oux6UzJFQpg3zCBDjzNunHQHKHIon6JaB+8SMvvGpCPpNnT
-X-Google-Smtp-Source: AGHT+IGdKvGloD2x7T0TvljdUW1/xtPfwtVY4eu3Wz+SojJrERvkkNs762n7o/a8ViAyTbYVnq16Ig==
-X-Received: by 2002:a17:902:c403:b0:1d9:bbc2:87e7 with SMTP id k3-20020a170902c40300b001d9bbc287e7mr500885plk.36.1707451615176;
-        Thu, 08 Feb 2024 20:06:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU/x2cbpnz0BUBrwD3oynKGkbQWd49A9Q51EP6K/5fCnnF23ZUpv0qRDmHTlrR6yA0AtXPMi3FuK5K+KFjNWQZB5mJntsOxS8Pm1u0s8ziWoeQw2r37+Me/HIxl3XgxR4kF3y3DhvCArqcZd+TXsi4bpWVUbTSne3QN9pquK2NsflaDJazTaGUXoTDw5FqEjjU2zuYKegJHRBDw6WC7STY0O4c1TLAlrG4mfSz/8Qw8kYBzblb0HSXdBLKCCxn0P8d6aqm9/j/gIVQKJRkMiVlEC3V3y4n8PzaD9mBz4h5KNSVPY3TwerwIV4dK9wOn2J489jvaUMgPG6ksWBRa0Vjh8eFWxGtM4aKjqcZVj6h9pFRxYkRbAg==
+        bh=kyKA4wCImIZZ5xJE04KmfmUkjYhSBJW7+tRHKBcOaBI=;
+        b=rq7e35yY3ErOJE/Q5NqA+RQFFe5aUXWnFwO5BXhPTs1xtrMjL6yKBsCSx+/0v9Rzgn
+         w74DBXtjrB1yd8rGIVcvitvmrNAP3IyBzxWHv9PajWBu3LEgvdNwJZWhwIWlEdtl4jtF
+         UQvL+SCiyK8SKpVANH2v2F5/kZ9jmkE0mbx8Tq98fgAn+Gt4iw3A9R8LBfGfx7yzn/wd
+         V9BpQOX2LUf+QDcEUzYmrULFZWomQkL5bqVoLXx8dB/Msu9VfvEWgsBV2Lk6IK6iqW9n
+         I9jGlj3t+8XoJD5JQ0a8gunuJ3MLgWXTgmgdq9uiJ0yN6mOTwQpq5HCjNiP9RxbesEL1
+         vF0Q==
+X-Gm-Message-State: AOJu0Ywgm5QBwn12XUbZhgv6KS/yjqRYGCwciKMVuqDbZt8Z5VXizk+f
+	LF1E/gg+JCAHvShtJwYpiCjArUJOyJJddBz5+eElacDe2AuNHlS1qji9R0Pj
+X-Google-Smtp-Source: AGHT+IEcq3u8IxQEchLTqYOdj8JCUTyhf++9XKhZV1VlMQZ/9+Av7nCVAWvySSMoNnMsdtUnppsIjA==
+X-Received: by 2002:a05:6a20:8c01:b0:19e:b477:33a4 with SMTP id j1-20020a056a208c0100b0019eb47733a4mr520269pzh.27.1707451619456;
+        Thu, 08 Feb 2024 20:06:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWQEeNvrqoRwizmtNe7laAnu501WQNUUrnNc5bjAfQWP+sx+w5e2Fh+IdN7e3m/thOyA1PXmPbUrKFF2iv85lnNbw22sei0R1dMfM2b8sjF/scMfelPDzWIRLb3Rbmeu0nynfi0QRD9uaXnafRn3hsJTcHF8/wZcK3Qf+kv3Ni8kHO8NrzDQeHD4uLmFd/P0i5q1NYeju6EtjYm1j4OJY8+q7gyU4OR7agn4uOilcwA8qebcGY49lcc99jxuByats2X9fUO/pyRnbvi0DCQwCENKvViTtlTpGJaicvrQlE97J3YVk3FS629SYdh7Ivcfb+pS7C/9gwvPVJnwZqDz03apakQb62uN7S8jWHLS7hJgoSz3YlDeQ==
 Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:a894])
-        by smtp.gmail.com with ESMTPSA id kw13-20020a170902f90d00b001d752c4f180sm560989plb.94.2024.02.08.20.06.53
+        by smtp.gmail.com with ESMTPSA id f19-20020a056a00229300b006dbda7bcf3csm589192pfe.83.2024.02.08.20.06.57
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 08 Feb 2024 20:06:54 -0800 (PST)
+        Thu, 08 Feb 2024 20:06:59 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -82,9 +82,9 @@ Cc: daniel@iogearbox.net,
 	hch@infradead.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 10/20] bpf: Recognize btf_decl_tag("arg:arena") as PTR_TO_ARENA.
-Date: Thu,  8 Feb 2024 20:05:58 -0800
-Message-Id: <20240209040608.98927-11-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 bpf-next 11/20] libbpf: Add __arg_arena to bpf_helpers.h
+Date: Thu,  8 Feb 2024 20:05:59 -0800
+Message-Id: <20240209040608.98927-12-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
 References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
@@ -98,111 +98,25 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-In global bpf functions recognize btf_decl_tag("arg:arena") as PTR_TO_ARENA.
-
-Note, when the verifier sees:
-
-__weak void foo(struct bar *p)
-
-it recognizes 'p' as PTR_TO_MEM and 'struct bar' has to be a struct with scalars.
-Hence the only way to use arena pointers in global functions is to tag them with "arg:arena".
+Add __arg_arena to bpf_helpers.h
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/bpf.h   |  1 +
- kernel/bpf/btf.c      | 19 +++++++++++++++----
- kernel/bpf/verifier.c | 15 +++++++++++++++
- 3 files changed, 31 insertions(+), 4 deletions(-)
+ tools/lib/bpf/bpf_helpers.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 70d5351427e6..46a92e41b9d5 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -718,6 +718,7 @@ enum bpf_arg_type {
- 	 * on eBPF program stack
- 	 */
- 	ARG_PTR_TO_MEM,		/* pointer to valid memory (stack, packet, map value) */
-+	ARG_PTR_TO_ARENA,
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index 79eaa581be98..9c777c21da28 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -192,6 +192,7 @@ enum libbpf_tristate {
+ #define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
+ #define __arg_nullable __attribute((btf_decl_tag("arg:nullable")))
+ #define __arg_trusted __attribute((btf_decl_tag("arg:trusted")))
++#define __arg_arena __attribute((btf_decl_tag("arg:arena")))
  
- 	ARG_CONST_SIZE,		/* number of bytes accessed from memory */
- 	ARG_CONST_SIZE_OR_ZERO,	/* number of bytes accessed from memory or 0 */
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 8e06d29961f1..857059c8d56c 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7053,10 +7053,11 @@ static int btf_get_ptr_to_btf_id(struct bpf_verifier_log *log, int arg_idx,
- }
- 
- enum btf_arg_tag {
--	ARG_TAG_CTX = 0x1,
--	ARG_TAG_NONNULL = 0x2,
--	ARG_TAG_TRUSTED = 0x4,
--	ARG_TAG_NULLABLE = 0x8,
-+	ARG_TAG_CTX	 = BIT_ULL(0),
-+	ARG_TAG_NONNULL  = BIT_ULL(1),
-+	ARG_TAG_TRUSTED  = BIT_ULL(2),
-+	ARG_TAG_NULLABLE = BIT_ULL(3),
-+	ARG_TAG_ARENA	 = BIT_ULL(4),
- };
- 
- /* Process BTF of a function to produce high-level expectation of function
-@@ -7168,6 +7169,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 				tags |= ARG_TAG_NONNULL;
- 			} else if (strcmp(tag, "nullable") == 0) {
- 				tags |= ARG_TAG_NULLABLE;
-+			} else if (strcmp(tag, "arena") == 0) {
-+				tags |= ARG_TAG_ARENA;
- 			} else {
- 				bpf_log(log, "arg#%d has unsupported set of tags\n", i);
- 				return -EOPNOTSUPP;
-@@ -7222,6 +7225,14 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 			sub->args[i].btf_id = kern_type_id;
- 			continue;
- 		}
-+		if (tags & ARG_TAG_ARENA) {
-+			if (tags & ~ARG_TAG_ARENA) {
-+				bpf_log(log, "arg#%d arena cannot be combined with any other tags\n", i);
-+				return -EINVAL;
-+			}
-+			sub->args[i].arg_type = ARG_PTR_TO_ARENA;
-+			continue;
-+		}
- 		if (is_global) { /* generic user data pointer */
- 			u32 mem_size;
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5eeb9bf7e324..fa49602194d5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9348,6 +9348,18 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
- 				bpf_log(log, "arg#%d is expected to be non-NULL\n", i);
- 				return -EINVAL;
- 			}
-+		} else if (base_type(arg->arg_type) == ARG_PTR_TO_ARENA) {
-+			/*
-+			 * Can pass any value and the kernel won't crash, but
-+			 * only PTR_TO_ARENA or SCALAR make sense. Everything
-+			 * else is a bug in the bpf program. Point it out to
-+			 * the user at the verification time instead of
-+			 * run-time debug nightmare.
-+			 */
-+			if (reg->type != PTR_TO_ARENA && reg->type != SCALAR_VALUE) {
-+				bpf_log(log, "R%d is not a pointer to arena or scalar.\n", regno);
-+				return -EINVAL;
-+			}
- 		} else if (arg->arg_type == (ARG_PTR_TO_DYNPTR | MEM_RDONLY)) {
- 			ret = process_dynptr_func(env, regno, -1, arg->arg_type, 0);
- 			if (ret)
-@@ -20329,6 +20341,9 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
- 				reg->btf = bpf_get_btf_vmlinux(); /* can't fail at this point */
- 				reg->btf_id = arg->btf_id;
- 				reg->id = ++env->id_gen;
-+			} else if (base_type(arg->arg_type) == ARG_PTR_TO_ARENA) {
-+				/* caller can pass either PTR_TO_ARENA or SCALAR */
-+				mark_reg_unknown(env, regs, i);
- 			} else {
- 				WARN_ONCE(1, "BUG: unhandled arg#%d type %d\n",
- 					  i - BPF_REG_1, arg->arg_type);
+ #ifndef ___bpf_concat
+ #define ___bpf_concat(a, b) a ## b
 -- 
 2.34.1
 
