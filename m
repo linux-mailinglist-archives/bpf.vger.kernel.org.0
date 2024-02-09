@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-21601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39FB584EF95
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 05:07:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C1484EF96
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 05:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2B371F2275D
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 04:07:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6E331C23A14
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 04:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3218A5224;
-	Fri,  9 Feb 2024 04:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A250538A;
+	Fri,  9 Feb 2024 04:07:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AVOG1qK+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QL9KRfKp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E835667
-	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 04:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3641C525D
+	for <bpf@vger.kernel.org>; Fri,  9 Feb 2024 04:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707451647; cv=none; b=VPyaHoxqfu03R3VawlFRi8mTI6p6pgPd5It5+qbZiF5iXI92VOt8wUKZurFJTeS1SCoHlEzOCDa5SZfdVrapohGoNjNu5RruXGjy7tkYDbMuexps2fGcpMxyoRCNI7GPZkhetMc9SUt4bA9KbFSd0w/CxM3TMMIAy9CqJaHvn/A=
+	t=1707451652; cv=none; b=DVhxaDxGYocAfCyfHtwHUwz0JDX82lGg90YtaQ+NNr8jegiqzIpgVyo6kBH54NLg6dfd814K0CSRipXiXEqhQKGFfgHJ+XMzstm5y/3mEPjXfL0IoMkEji7jt9S46uihbq1q0aP7Y5M8xbkAZmZBGQ5EccEpsVMly4x5xdGAbZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707451647; c=relaxed/simple;
-	bh=YONaFYwtRZfCUHSPP/xLCZA0fjMcy/91+vEi9K1d3BI=;
+	s=arc-20240116; t=1707451652; c=relaxed/simple;
+	bh=Dh/Oq8ZZBWmdokJ7xdFmxBMzQGBQw/0kJBzxQd6oHlA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hvcWZ2fYgu1bqvmsd8CIFHMLDunhLh1rZzzClzwl4OI/0ESRNqPD1eT0NzCwrdPBpknQ6PjNmOZTeu4TAvhyR4iGtdpCus/cn6J/zY1uz/lodV30UqhVcBjdS54VcAzpvUrkAtJpgoh1o1rxVintyrDJOBPOd3252A/oW92cMK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AVOG1qK+; arc=none smtp.client-ip=209.85.210.182
+	 MIME-Version; b=OM9aSJL1e9N5QYbggvm8aL5DlCZxGaWEMQTkbLY5KlDqC19kVQRjfDySnaiMNdCcbaBAnwmCGzq1OX8VQguNDFrIVXLMCOVreSPs4Xmq+ZAsaewmteXbuRxmuDkKlho44p9RmO8in/MNE9t5rgtZ8JPiLY8V1QxXLvIt786cnKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QL9KRfKp; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e04fd5e05aso440878b3a.0
-        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 20:07:25 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e05d41828aso397935b3a.0
+        for <bpf@vger.kernel.org>; Thu, 08 Feb 2024 20:07:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707451645; x=1708056445; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707451649; x=1708056449; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cygxMwXpUKU81RFmqoqePBosJeNZ00y1PK/p5gN4GLo=;
-        b=AVOG1qK+yXhZIH57PzV+AQ3ucpbxtsqbikR211PxUN/ipyyli9UFyF9M9hn4SfR1Qx
-         AJqHpmnNlXrWMmdijUCluGUX+NHHYTnAk3oLSjO4FgcKvkVZZKCod6D15nCM278fQOnk
-         mBLahtxFV/eY1S+j5hDLv7Er7G8UTizCRFkB/J20rz9KeGNbuayitlhhGUoIrA0NLfpk
-         owTQu/frMwdiGpfZnEQWP3zyCqp03QD3bkBEsLS8MVdFxhPt4Lc/RGCmeEHp0DA68hXx
-         mkFUiIEOVIi9qtFYnQg4RPSKMQ/zZgh5Q0ZbaxsTMmjnpw9Wv5UxVxZiDpfe+P5XSONw
-         wCJA==
+        bh=eb+bGqWXAT7EYhVLB+w+aV2CuyvwLgJLPbtGe0eOYJ0=;
+        b=QL9KRfKpWXPBKuKJhHSFsVoteYSrCsEntvJ0ntF6DPhzkxjUsYOOkSRXSzNr38ct2H
+         8HYuUIHg+CKjgmsGPlG/7s1zRYgVqBf8Wt4rZUo60R++aQjNHVKLftZVdnI/yHrZRz8a
+         Rf0FpnBYKefkK6Ohi0IPE9Xm35Puqeoi47DMrjBuMuCZVMqYxhuWrLpWvqMY7L2sSZ3J
+         zUEkm+wylV3mzeOXqeo2ON7z1M00LwcrXM/6njEZ5d3I9xOQA3vQmRJDN5m7jn8kKA2U
+         JLb08IaEWr+1BwOIV1opdVTaWUzpbTnkhoLwXD2nQe6ATOGeKTMTVXn06W/LJJCvQ1WW
+         9ULA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707451645; x=1708056445;
+        d=1e100.net; s=20230601; t=1707451649; x=1708056449;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cygxMwXpUKU81RFmqoqePBosJeNZ00y1PK/p5gN4GLo=;
-        b=P/sUuGk7Qg06yylDuUf4H9pGnPOMHAfJEMAtQvbHjFa9Ly3EeM7EOS9ipRtBgTpvpp
-         pnIV0KB/OiuuZ8JXX3VoRgDE48uAc2uHHYR2uPVfh6j15QpPXIhEa9PvWaONJ0M6lKSF
-         AddtbZbp0Bvuaq4vnajs2YajsB+FvDDV8fcmj/LsYMJG51Q0/L8KJTh1WApiP6XyT+n7
-         vKQ7RWa2Uu84lH/lhYOV3FlPOiVxnbHA+73kj5kTUpnVxKcgWslMe8nVjZTLXAsSUcNU
-         dYGiEFPSUQJCBbhn9Dqgg5sj2AASdjcBiEfdvqWMlATgTPKRFK3eDRQRId2fXNJUIHnM
-         eOhg==
-X-Gm-Message-State: AOJu0Yw+zs4aL/QFu9nstTBd+1doevwPE4bl/QY0FzVczxs/FJ9gV0Gm
-	FsDXZ+pGflu4EdOQakRMF4idtmIXxgyiPah88lgTqV9XuTyaqW12VTOcnTch
-X-Google-Smtp-Source: AGHT+IHaHqKC2gjT6eMMFa5TCSDFBnv1yNEkB/syWL6KEWt6hbk/NU6aBcqi1y0pyAXerAeLHX9DIA==
-X-Received: by 2002:a62:f901:0:b0:6da:bcea:4cd4 with SMTP id o1-20020a62f901000000b006dabcea4cd4mr650234pfh.16.1707451645004;
-        Thu, 08 Feb 2024 20:07:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXKa7AoYoSTpHf4QY1MuRhoeHy/otD5YbJxf7F1nq3Kf80HMJe7T0JPldiANHIWK0RPvaLH7ALpvryppvlFYP3mvzADeCO+6W0Df2OEfEyZCy1EthA0awtTR8laxGBdXgAA+oT4niKbJetncz2Fps4xueuExRoXrm/pX3Gcvt7rdxSEJ2rWTFSq+W25Wl3Drj8BYjUFe9Ck6okd8ulBbCOHQJIDRJ8dlA6f3o17pQoFudGpIsq00Zyk6sAn17YSRtSDazpAvv0earkDd4DsTwoFLj0GNPgNctSu+ObZYiRoMJJK+zmn/wkbO9+fovsxt3aeg00hIDWktHbfbs2uiBwomv1vCaKMYx0lfUcmtBHD7mvIUD0euQ==
+        bh=eb+bGqWXAT7EYhVLB+w+aV2CuyvwLgJLPbtGe0eOYJ0=;
+        b=oYqoR5uxtdcAH1pf04MPpTMCcFM5R0u0Sv5p7R45qo3LSOJ3PxD6ziWt00R0bkSZfY
+         RFm77Q+z4CmB1n+5NAXxgGSC4/JUT/sqCvAImXezzfqWkq1KadCx1wVFWz0cCmxBXkaE
+         ZDbhV+j6/VNsN7DdaK1Yu5XblRmzufxeq2brCeRCzUcJZa3T7lnqTjFKeXY78rMkerRh
+         HsWZ9bZ8CZVm5GU1Bxw8Jb3/viuPVaTu/FPV0t9A2NZC4mNQTT+NHL+Pg+W5eWCVIbFi
+         hgmQMb0Y0YTMT5+s56EQigfghuiyvi9VEToljPGNwjtkbLSe8fGYvlR+vH/MVn1sXCu2
+         Zhgw==
+X-Gm-Message-State: AOJu0YxEemzA24R9i0KBx480jfK/SBqmbIR2oYJtH7tK230PmI7F1YQW
+	KoXPrAg8q8Qsgqia2F4ZdlweCUmifkB74ElWUpn0mPobQssJI1vC43XCuajO
+X-Google-Smtp-Source: AGHT+IGG5TNU//6saVXjiaDd3768cg95qj6j0b0wUL2WN3QIR5+8d+0UOYlVtQ8UWRPRvc2Z7Z+eHQ==
+X-Received: by 2002:aa7:8058:0:b0:6d9:bb2f:3a69 with SMTP id y24-20020aa78058000000b006d9bb2f3a69mr491139pfm.28.1707451649186;
+        Thu, 08 Feb 2024 20:07:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUjtlzegU4md9eHPzOxI0W1dNxIUvJ3ODioqbSz+ZgQBvX4dmxdiUbBS7O0w8vBr9vAaA6uqWY3U+OSwiXqgbz757P/uWzG9Bl/sXQ7GtnQIvtx20f9N7sMwORHdhPk1jSJQUGn+dV9YbQOAp9CA6N76SE+oDBaw4b2sQToICMcKVjX46jljS+JQMlD//n/vyjn+4CQctUA2dDpLFz731lYn5YNR6kHFjmOpnCVsqCimcT4OO69W6fLm3kO0bz103wJeDiTKCf2y2EhDA8TpqLgZ0/vRkNtoRuBNvX+x8dmjKsHDq6+BYewLzKAphfVEbgNcG8GaOwoAFr2ClxgPEgiiSFHz8ev2mjVD2N/VkgGqLN8yyjFNg==
 Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:a894])
-        by smtp.gmail.com with ESMTPSA id v14-20020aa7850e000000b006e0825acbc3sm590230pfn.77.2024.02.08.20.07.23
+        by smtp.gmail.com with ESMTPSA id z19-20020aa785d3000000b006ddcf5d5b0bsm582570pfn.153.2024.02.08.20.07.27
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 08 Feb 2024 20:07:24 -0800 (PST)
+        Thu, 08 Feb 2024 20:07:28 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -82,9 +82,9 @@ Cc: daniel@iogearbox.net,
 	hch@infradead.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 17/20] selftests/bpf: Add unit tests for bpf_arena_alloc/free_pages
-Date: Thu,  8 Feb 2024 20:06:05 -0800
-Message-Id: <20240209040608.98927-18-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 bpf-next 18/20] selftests/bpf: Add bpf_arena_list test.
+Date: Thu,  8 Feb 2024 20:06:06 -0800
+Message-Id: <20240209040608.98927-19-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
 References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
@@ -98,270 +98,364 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Add unit tests for bpf_arena_alloc/free_pages() functionality
-and bpf_arena_common.h with a set of common helpers and macros that
-is used in this test and the following patches.
+bpf_arena_alloc.h - implements page_frag allocator as a bpf program.
+bpf_arena_list.h - doubly linked link list as a bpf program.
 
-Also modify test_loader that didn't support running bpf_prog_type_syscall
-programs.
+Compiled as a bpf program and as native C code.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
  tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
  tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
- .../testing/selftests/bpf/bpf_arena_common.h  | 70 ++++++++++++++
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_arena.c      | 91 +++++++++++++++++++
- tools/testing/selftests/bpf/test_loader.c     |  9 +-
- 6 files changed, 172 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/bpf_arena_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_arena.c
+ tools/testing/selftests/bpf/bpf_arena_alloc.h | 58 +++++++++++
+ tools/testing/selftests/bpf/bpf_arena_list.h  | 95 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/arena_list.c     | 68 +++++++++++++
+ .../testing/selftests/bpf/progs/arena_list.c  | 76 +++++++++++++++
+ 6 files changed, 299 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/bpf_arena_alloc.h
+ create mode 100644 tools/testing/selftests/bpf/bpf_arena_list.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/arena_list.c
+ create mode 100644 tools/testing/selftests/bpf/progs/arena_list.c
 
 diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 5c2cc7e8c5d0..8e70af386e52 100644
+index 8e70af386e52..83a3d9bee59c 100644
 --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
 +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -11,3 +11,4 @@ fill_link_info/kprobe_multi_link_info            # bpf_program__attach_kprobe_mu
- fill_link_info/kretprobe_multi_link_info         # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+@@ -12,3 +12,4 @@ fill_link_info/kretprobe_multi_link_info         # bpf_program__attach_kprobe_mu
  fill_link_info/kprobe_multi_invalid_ubuff        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
  missed/kprobe_recursion                          # missed_kprobe_recursion__attach unexpected error: -95 (errno 95)
-+verifier_arena                                   # JIT does not support arena
+ verifier_arena                                   # JIT does not support arena
++arena						 # JIT does not support arena
 diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
-index 1a63996c0304..ded440277f6e 100644
+index ded440277f6e..9293b88a327e 100644
 --- a/tools/testing/selftests/bpf/DENYLIST.s390x
 +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -3,3 +3,4 @@
- exceptions				 # JIT does not support calling kfunc bpf_throw				       (exceptions)
+@@ -4,3 +4,4 @@ exceptions				 # JIT does not support calling kfunc bpf_throw				       (excepti
  get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
  stacktrace_build_id                      # compare_map_keys stackid_hmap vs. stackmap err -2 errno 2                   (?)
-+verifier_arena                           # JIT does not support arena
-diff --git a/tools/testing/selftests/bpf/bpf_arena_common.h b/tools/testing/selftests/bpf/bpf_arena_common.h
+ verifier_arena                           # JIT does not support arena
++arena					 # JIT does not support arena
+diff --git a/tools/testing/selftests/bpf/bpf_arena_alloc.h b/tools/testing/selftests/bpf/bpf_arena_alloc.h
 new file mode 100644
-index 000000000000..07849d502f40
+index 000000000000..0f4cb399b4c7
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_arena_common.h
-@@ -0,0 +1,70 @@
++++ b/tools/testing/selftests/bpf/bpf_arena_alloc.h
+@@ -0,0 +1,58 @@
 +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
 +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
 +#pragma once
++#include "bpf_arena_common.h"
 +
-+#ifndef WRITE_ONCE
-+#define WRITE_ONCE(x, val) ((*(volatile typeof(x) *) &(x)) = (val))
++#ifndef __round_mask
++#define __round_mask(x, y) ((__typeof__(x))((y)-1))
++#endif
++#ifndef round_up
++#define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
 +#endif
 +
-+#ifndef NUMA_NO_NODE
-+#define	NUMA_NO_NODE	(-1)
-+#endif
++void __arena *cur_page;
++int cur_offset;
 +
-+#ifndef arena_container_of
-+#define arena_container_of(ptr, type, member)			\
-+	({							\
-+		void __arena *__mptr = (void __arena *)(ptr);	\
-+		((type *)(__mptr - offsetof(type, member)));	\
-+	})
-+#endif
-+
-+#ifdef __BPF__ /* when compiled as bpf program */
-+
-+#ifndef PAGE_SIZE
-+#define PAGE_SIZE __PAGE_SIZE
-+/*
-+ * for older kernels try sizeof(struct genradix_node)
-+ * or flexible:
-+ * static inline long __bpf_page_size(void) {
-+ *   return bpf_core_enum_value(enum page_size_enum___l, __PAGE_SIZE___l) ?: sizeof(struct genradix_node);
-+ * }
-+ * but generated code is not great.
-+ */
-+#endif
-+
-+#if defined(__BPF_FEATURE_ARENA_CAST) && !defined(BPF_ARENA_FORCE_ASM)
-+#define __arena __attribute__((address_space(1)))
-+#define cast_kern(ptr) /* nop for bpf prog. emitted by LLVM */
-+#define cast_user(ptr) /* nop for bpf prog. emitted by LLVM */
-+#else
-+#define __arena
-+#define cast_kern(ptr) bpf_arena_cast(ptr, BPF_ARENA_CAST_KERN, 1)
-+#define cast_user(ptr) bpf_arena_cast(ptr, BPF_ARENA_CAST_USER, 1)
-+#endif
-+
-+void __arena* bpf_arena_alloc_pages(void *map, void __arena *addr, __u32 page_cnt,
-+				    int node_id, __u64 flags) __ksym __weak;
-+void bpf_arena_free_pages(void *map, void __arena *ptr, __u32 page_cnt) __ksym __weak;
-+
-+#else /* when compiled as user space code */
-+
-+#define __arena
-+#define __arg_arena
-+#define cast_kern(ptr) /* nop for user space */
-+#define cast_user(ptr) /* nop for user space */
-+__weak char arena[1];
-+
-+#ifndef offsetof
-+#define offsetof(type, member)  ((unsigned long)&((type *)0)->member)
-+#endif
-+
-+static inline void __arena* bpf_arena_alloc_pages(void *map, void *addr, __u32 page_cnt,
-+						  int node_id, __u64 flags)
++/* Simple page_frag allocator */
++static inline void __arena* bpf_alloc(unsigned int size)
 +{
-+	return NULL;
-+}
-+static inline void bpf_arena_free_pages(void *map, void __arena *ptr, __u32 page_cnt)
-+{
++	__u64 __arena *obj_cnt;
++	void __arena *page = cur_page;
++	int offset;
++
++	size = round_up(size, 8);
++	if (size >= PAGE_SIZE - 8)
++		return NULL;
++	if (!page) {
++refill:
++		page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++		if (!page)
++			return NULL;
++		cast_kern(page);
++		cur_page = page;
++		cur_offset = PAGE_SIZE - 8;
++		obj_cnt = page + PAGE_SIZE - 8;
++		*obj_cnt = 0;
++	} else {
++		cast_kern(page);
++		obj_cnt = page + PAGE_SIZE - 8;
++	}
++
++	offset = cur_offset - size;
++	if (offset < 0)
++		goto refill;
++
++	(*obj_cnt)++;
++	cur_offset = offset;
++	return page + offset;
 +}
 +
-+#endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 9c6072a19745..985273832f89 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -4,6 +4,7 @@
- 
- #include "cap_helpers.h"
- #include "verifier_and.skel.h"
-+#include "verifier_arena.skel.h"
- #include "verifier_array_access.skel.h"
- #include "verifier_basic_stack.skel.h"
- #include "verifier_bitfield_write.skel.h"
-@@ -118,6 +119,7 @@ static void run_tests_aux(const char *skel_name,
- #define RUN(skel) run_tests_aux(#skel, skel##__elf_bytes, NULL)
- 
- void test_verifier_and(void)                  { RUN(verifier_and); }
-+void test_verifier_arena(void)                { RUN(verifier_arena); }
- void test_verifier_basic_stack(void)          { RUN(verifier_basic_stack); }
- void test_verifier_bitfield_write(void)       { RUN(verifier_bitfield_write); }
- void test_verifier_bounds(void)               { RUN(verifier_bounds); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena.c b/tools/testing/selftests/bpf/progs/verifier_arena.c
++static inline void bpf_free(void __arena *addr)
++{
++	__u64 __arena *obj_cnt;
++
++	addr = (void __arena *)(((long)addr) & ~(PAGE_SIZE - 1));
++	obj_cnt = addr + PAGE_SIZE - 8;
++	if (--(*obj_cnt) == 0)
++		bpf_arena_free_pages(&arena, addr, 1);
++}
+diff --git a/tools/testing/selftests/bpf/bpf_arena_list.h b/tools/testing/selftests/bpf/bpf_arena_list.h
 new file mode 100644
-index 000000000000..0e667132ef92
+index 000000000000..31fd744dfb72
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena.c
-@@ -0,0 +1,91 @@
++++ b/tools/testing/selftests/bpf/bpf_arena_list.h
+@@ -0,0 +1,95 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#pragma once
++#include "bpf_arena_common.h"
++
++struct arena_list_node;
++
++typedef struct arena_list_node __arena arena_list_node_t;
++
++struct arena_list_node {
++	arena_list_node_t *next;
++	arena_list_node_t * __arena *pprev;
++};
++
++struct arena_list_head {
++	struct arena_list_node __arena *first;
++};
++typedef struct arena_list_head __arena arena_list_head_t;
++
++#define list_entry(ptr, type, member) arena_container_of(ptr, type, member)
++
++#define list_entry_safe(ptr, type, member) \
++	({ typeof(*ptr) * ___ptr = (ptr); \
++	 ___ptr ? ({ cast_kern(___ptr); list_entry(___ptr, type, member); }) : NULL; \
++	 })
++
++#ifndef __BPF__
++static inline void *bpf_iter_num_new(struct bpf_iter_num *it, int i, int j) { return NULL; }
++static inline void bpf_iter_num_destroy(struct bpf_iter_num *it) {}
++static inline bool bpf_iter_num_next(struct bpf_iter_num *it) { return true; }
++#endif
++
++/* Safely walk link list of up to 1M elements. Deletion of elements is allowed. */
++#define list_for_each_entry(pos, head, member)						\
++	for (struct bpf_iter_num ___it __attribute__((aligned(8),			\
++						      cleanup(bpf_iter_num_destroy))),	\
++			* ___tmp = (			\
++				bpf_iter_num_new(&___it, 0, (1000000)),			\
++				pos = list_entry_safe((head)->first,			\
++						      typeof(*(pos)), member),		\
++				(void)bpf_iter_num_destroy, (void *)0);			\
++	     bpf_iter_num_next(&___it) && pos &&				\
++		({ ___tmp = (void *)pos->member.next; 1; });			\
++	     pos = list_entry_safe((void __arena *)___tmp, typeof(*(pos)), member))
++
++static inline void list_add_head(arena_list_node_t *n, arena_list_head_t *h)
++{
++	arena_list_node_t *first = h->first, * __arena *tmp;
++
++	cast_user(first);
++	cast_kern(n);
++	WRITE_ONCE(n->next, first);
++	cast_kern(first);
++	if (first) {
++		tmp = &n->next;
++		cast_user(tmp);
++		WRITE_ONCE(first->pprev, tmp);
++	}
++	cast_user(n);
++	WRITE_ONCE(h->first, n);
++
++	tmp = &h->first;
++	cast_user(tmp);
++	cast_kern(n);
++	WRITE_ONCE(n->pprev, tmp);
++}
++
++static inline void __list_del(arena_list_node_t *n)
++{
++	arena_list_node_t *next = n->next, *tmp;
++	arena_list_node_t * __arena *pprev = n->pprev;
++
++	cast_user(next);
++	cast_kern(pprev);
++	tmp = *pprev;
++	cast_kern(tmp);
++	WRITE_ONCE(tmp, next);
++	if (next) {
++		cast_user(pprev);
++		cast_kern(next);
++		WRITE_ONCE(next->pprev, pprev);
++	}
++}
++
++#define POISON_POINTER_DELTA 0
++
++#define LIST_POISON1  ((void __arena *) 0x100 + POISON_POINTER_DELTA)
++#define LIST_POISON2  ((void __arena *) 0x122 + POISON_POINTER_DELTA)
++
++static inline void list_del(arena_list_node_t *n)
++{
++	__list_del(n);
++	n->next = LIST_POISON1;
++	n->pprev = LIST_POISON2;
++}
+diff --git a/tools/testing/selftests/bpf/prog_tests/arena_list.c b/tools/testing/selftests/bpf/prog_tests/arena_list.c
+new file mode 100644
+index 000000000000..e61886debab1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/arena_list.c
+@@ -0,0 +1,68 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include <sys/mman.h>
++#include <network_helpers.h>
 +
++#define PAGE_SIZE 4096
++
++#include "bpf_arena_list.h"
++#include "arena_list.skel.h"
++
++struct elem {
++	struct arena_list_node node;
++	__u64 value;
++};
++
++static int list_sum(struct arena_list_head *head)
++{
++	struct elem __arena *n;
++	int sum = 0;
++
++	list_for_each_entry(n, head, node)
++		sum += n->value;
++	return sum;
++}
++
++static void test_arena_list_add_del(int cnt)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
++	struct arena_list *skel;
++	int expected_sum = (u64)cnt * (cnt - 1) / 2;
++	int ret, sum;
++
++	skel = arena_list__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "arena_list__open_and_load"))
++		return;
++
++	skel->bss->cnt = cnt;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arena_list_add), &opts);
++	ASSERT_OK(ret, "ret_add");
++	ASSERT_OK(opts.retval, "retval");
++	if (skel->bss->skip) {
++		printf("%s:SKIP:compiler doesn't support arena_cast\n", __func__);
++		test__skip();
++		goto out;
++	}
++	sum = list_sum(skel->bss->list_head);
++	ASSERT_EQ(sum, expected_sum, "sum of elems");
++	ASSERT_EQ(skel->arena->arena_sum, expected_sum, "__arena sum of elems");
++	ASSERT_EQ(skel->arena->test_val, cnt + 1, "num of elems");
++
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arena_list_del), &opts);
++	ASSERT_OK(ret, "ret_del");
++	sum = list_sum(skel->bss->list_head);
++	ASSERT_EQ(sum, 0, "sum of list elems after del");
++	ASSERT_EQ(skel->bss->list_sum, expected_sum, "sum of list elems computed by prog");
++	ASSERT_EQ(skel->arena->arena_sum, expected_sum, "__arena sum of elems");
++out:
++	arena_list__destroy(skel);
++}
++
++void test_arena_list(void)
++{
++	if (test__start_subtest("arena_list_1"))
++		test_arena_list_add_del(1);
++	if (test__start_subtest("arena_list_1000"))
++		test_arena_list_add_del(1000);
++}
+diff --git a/tools/testing/selftests/bpf/progs/arena_list.c b/tools/testing/selftests/bpf/progs/arena_list.c
+new file mode 100644
+index 000000000000..04ebcdd98f10
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/arena_list.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
 +#include <vmlinux.h>
 +#include <bpf/bpf_helpers.h>
 +#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
++#include <bpf/bpf_core_read.h>
 +#include "bpf_experimental.h"
-+#include "bpf_arena_common.h"
 +
 +struct {
 +	__uint(type, BPF_MAP_TYPE_ARENA);
 +	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, 2); /* arena of two pages close to 32-bit boundary*/
-+	__ulong(map_extra, (1ull << 44) | (~0u - __PAGE_SIZE * 2 + 1)); /* start of mmap() region */
++	__uint(max_entries, 1000); /* number of pages */
++	__ulong(map_extra, 2ull << 44); /* start of mmap() region */
 +} arena SEC(".maps");
 +
-+SEC("syscall")
-+__success __retval(0)
-+int basic_alloc1(void *ctx)
-+{
-+	volatile int __arena *page1, *page2, *no_page, *page3;
++#include "bpf_arena_alloc.h"
++#include "bpf_arena_list.h"
 +
-+	page1 = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page1)
-+		return 1;
-+	*page1 = 1;
-+	page2 = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page2)
-+		return 2;
-+	*page2 = 2;
-+	no_page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (no_page)
-+		return 3;
-+	if (*page1 != 1)
-+		return 4;
-+	if (*page2 != 2)
-+		return 5;
-+	bpf_arena_free_pages(&arena, (void __arena *)page2, 1);
-+	if (*page1 != 1)
-+		return 6;
-+	if (*page2 != 0) /* use-after-free should return 0 */
-+		return 7;
-+	page3 = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page3)
-+		return 8;
-+	*page3 = 3;
-+	if (page2 != page3)
-+		return 9;
-+	if (*page1 != 1)
-+		return 10;
++struct elem {
++	struct arena_list_node node;
++	__u64 value;
++};
++
++struct arena_list_head __arena *list_head;
++int list_sum;
++int cnt;
++bool skip = false;
++
++long __arena arena_sum;
++int __arena test_val = 1;
++struct arena_list_head __arena global_head;
++
++SEC("syscall")
++int arena_list_add(void *ctx)
++{
++#ifdef __BPF_FEATURE_ARENA_CAST
++	__u64 i;
++
++	list_head = &global_head;
++
++	bpf_for(i, 0, cnt) {
++		struct elem __arena *n = bpf_alloc(sizeof(*n));
++
++		test_val++;
++		n->value = i;
++		arena_sum += i;
++		list_add_head(&n->node, list_head);
++	}
++#else
++	skip = true;
++#endif
 +	return 0;
 +}
 +
 +SEC("syscall")
-+__success __retval(0)
-+int basic_alloc2(void *ctx)
++int arena_list_del(void *ctx)
 +{
-+	volatile char __arena *page1, *page2, *page3, *page4;
++#ifdef __BPF_FEATURE_ARENA_CAST
++	struct elem __arena *n;
++	int sum = 0;
 +
-+	page1 = bpf_arena_alloc_pages(&arena, NULL, 2, NUMA_NO_NODE, 0);
-+	if (!page1)
-+		return 1;
-+	page2 = page1 + __PAGE_SIZE;
-+	page3 = page1 + __PAGE_SIZE * 2;
-+	page4 = page1 - __PAGE_SIZE;
-+	*page1 = 1;
-+	*page2 = 2;
-+	*page3 = 3;
-+	*page4 = 4;
-+	if (*page1 != 1)
-+		return 1;
-+	if (*page2 != 2)
-+		return 2;
-+	if (*page3 != 0)
-+		return 3;
-+	if (*page4 != 0)
-+		return 4;
-+	bpf_arena_free_pages(&arena, (void __arena *)page1, 2);
-+	if (*page1 != 0)
-+		return 5;
-+	if (*page2 != 0)
-+		return 6;
-+	if (*page3 != 0)
-+		return 7;
-+	if (*page4 != 0)
-+		return 8;
++	arena_sum = 0;
++	list_for_each_entry(n, list_head, node) {
++		sum += n->value;
++		arena_sum += n->value;
++		list_del(&n->node);
++		bpf_free(n);
++	}
++	list_sum = sum;
++#else
++	skip = true;
++#endif
 +	return 0;
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index ba57601c2a4d..524c38e9cde4 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -501,7 +501,7 @@ static bool is_unpriv_capable_map(struct bpf_map *map)
- 	}
- }
- 
--static int do_prog_test_run(int fd_prog, int *retval)
-+static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts)
- {
- 	__u8 tmp_out[TEST_DATA_LEN << 2] = {};
- 	__u8 tmp_in[TEST_DATA_LEN] = {};
-@@ -514,6 +514,10 @@ static int do_prog_test_run(int fd_prog, int *retval)
- 		.repeat = 1,
- 	);
- 
-+	if (empty_opts) {
-+		memset(&topts, 0, sizeof(struct bpf_test_run_opts));
-+		topts.sz = sizeof(struct bpf_test_run_opts);
-+	}
- 	err = bpf_prog_test_run_opts(fd_prog, &topts);
- 	saved_errno = errno;
- 
-@@ -649,7 +653,8 @@ void run_subtest(struct test_loader *tester,
- 			}
- 		}
- 
--		do_prog_test_run(bpf_program__fd(tprog), &retval);
-+		do_prog_test_run(bpf_program__fd(tprog), &retval,
-+				 bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false);
- 		if (retval != subspec->retval && subspec->retval != POINTER_VALUE) {
- 			PRINT_FAIL("Unexpected retval: %d != %d\n", retval, subspec->retval);
- 			goto tobj_cleanup;
 -- 
 2.34.1
 
