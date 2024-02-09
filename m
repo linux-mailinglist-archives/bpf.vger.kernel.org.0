@@ -1,92 +1,115 @@
-Return-Path: <bpf+bounces-21656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B607A84FF0C
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 22:41:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD1784FF1F
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 22:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BF191F22296
-	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 21:41:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0C08B2906F
+	for <lists+bpf@lfdr.de>; Fri,  9 Feb 2024 21:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD571B7E9;
-	Fri,  9 Feb 2024 21:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29554210FB;
+	Fri,  9 Feb 2024 21:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q+2KEg6G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XgdGDBVO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7EF149DFA;
-	Fri,  9 Feb 2024 21:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1AAF210EE;
+	Fri,  9 Feb 2024 21:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707514874; cv=none; b=R8rEgcOyxEbDRnHYcZeFcr2lLqODvGO3zs+rMQLzHjn3LjHhNAw+8pi1VpaNkf0jnMQlk+W+TnaSW6GVnBeS9Vbzj8+DyNgeHUwqTztlgXL01K+rwlTlYBSXCZqDrPdCrA7eEWAme1Eyl38U+7uiRtYn0gmZtX7exVFmf9SdzZ4=
+	t=1707515243; cv=none; b=fwBwHIB2BPvCw0OgDagGmP8qKUHqwYX+FDkJlcaoGr/aZTMKvFMHzgBK4BpNIyk6StEKD87Mjtz5KnB8TipoPHOLyxB+NaDV+3t6iQpldmxaIzKpyjVQgJxN6qvCy64zP6QA5vQuZIy6+pWvdr4CVGtnlbc7DOVOPz2qO+3ld7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707514874; c=relaxed/simple;
-	bh=tZosFHr8PqySTr1vT1GdQmj3Mjs87KTJSyGNLrRgLVk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NECZWS9HoBuaft07CVPD9AhcOFMVzkyxGX+WXWfxhFkS4gcIHT5ZW47U9pJVlV8vpfOmx7y4zNvhjJ7GZCtDOX/J2Z68ZGcKZr0i6J1RX4gW7Knzyn4oxs/NH+sKppaFlg6Pv4dDGAZdEWTBwoqI+sScvHWWe0JGLQ3BAHi+c0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q+2KEg6G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29ABC433C7;
-	Fri,  9 Feb 2024 21:41:13 +0000 (UTC)
+	s=arc-20240116; t=1707515243; c=relaxed/simple;
+	bh=Gtqx3D5Gbbnno6TsCD64LQ0pTqiMIshXtXteTUCc1g4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oazw9fPrkvXhI2RXLHYHBOO1lyAae0iDV88nwOQ0m6rwgK7NIcA0zVB7fonu74DhltUdLVS0Kke0UVHkJ6AGUTYBAYw0j9zIn778RLemM7U0ZPhI5yf7EsJLOGpLNdv4tVZN7wjW6Y0KnhZGO9Vl2PQRYpJBDsKJZ19sQHsGu/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XgdGDBVO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF4A5C433F1;
+	Fri,  9 Feb 2024 21:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707514874;
-	bh=tZosFHr8PqySTr1vT1GdQmj3Mjs87KTJSyGNLrRgLVk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q+2KEg6Gv8Azh+UWCEMd0oRMkG+S1rsEZelQvAtkkhRzbqXTAhWJdfrPtGsHejdEx
-	 8FK3BDV5d+am8zpHfjdQDByOrgsmZ3puXFK9/8UpoL2NLBkup3GHKyeq5Ak2YsBduF
-	 VGBe5fDrkMbx3E/fF6tIBxR5MDrxMi83CpH+QMSYiNQ2OcRT7YUWEwLDeiePX6S6rF
-	 vZ5SOAJ33G01z/d8qkEiE6jD7BXELoY4E2FCYFqUGfDcH2iam4Sk3KtgiFD8AaprXh
-	 P+eAnthBzMVMrCltUvYZlVefEYmNmHKw0kwyi4O6gT43TRBcAgkUpK/6TaKAnDmilU
-	 0sRs1CxmjSe8w==
-Date: Fri, 9 Feb 2024 13:41:12 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Stephen Hemminger <stephen@networkplumber.org>
-Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim
- <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org
- (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
- linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next v2] net/sched: actions report errors with
- extack
-Message-ID: <20240209134112.4795eb19@kernel.org>
-In-Reply-To: <20240209131119.6399c91b@hermes.local>
-References: <20240205185537.216873-1-stephen@networkplumber.org>
-	<20240208182731.682985dd@kernel.org>
-	<20240209131119.6399c91b@hermes.local>
+	s=k20201202; t=1707515243;
+	bh=Gtqx3D5Gbbnno6TsCD64LQ0pTqiMIshXtXteTUCc1g4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XgdGDBVOuzv+za9SNorNgn+PTtSl9mPVciU4CqjuFS64a26En4KXo1PALP5sydVNt
+	 dXLOuPe741TTnd9bElcOAdjaqqSkDMMLD8pSgX1GjAjvpc4aqwPuBqYnLeqB4mLad0
+	 wWKlJsuroOlNzhhX5Sd3aolX6GseyapCzj+8OK6GbXrO7hTAVU1Q5XUxE+6trl+GOt
+	 VgISeaG6PjpiKhjly/tJ4cANj4Afdlnr8BD3u0jauP6mqu4tu7kPz9M/qSx5C7dxty
+	 tR36Iv/+ETzHK+9oUiGB/Vx3iyUww5OQqOmyO8JPcbhb0AnBm6LVHsCgvSerlL3uhF
+	 tYiDX889EBflg==
+Date: Fri, 9 Feb 2024 22:47:19 +0100
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	bpf@vger.kernel.org, toke@redhat.com,
+	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+	sdf@google.com, hawk@kernel.org, ilias.apalodimas@linaro.org,
+	linyunsheng@huawei.com
+Subject: Re: [PATCH v8 net-next 0/4] add multi-buff support for xdp running
+ in generic mode
+Message-ID: <ZcadZx1IMoB9xgG8@lore-desk>
+References: <cover.1707132752.git.lorenzo@kernel.org>
+ <20240209083834.78a9e941@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QPYuqvCzkqYHWj6Y"
+Content-Disposition: inline
+In-Reply-To: <20240209083834.78a9e941@kernel.org>
 
-On Fri, 9 Feb 2024 13:11:19 -0800 Stephen Hemminger wrote:
-> On Thu, 8 Feb 2024 18:27:31 -0800
-> Jakub Kicinski <kuba@kernel.org> wrote:
-> 
-> > > -	if (!tb[TCA_ACT_BPF_PARMS])
-> > > +	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
-> > > +		NL_SET_ERR_MSG(extack, "Missing required attribute");    
-> > 
-> > Please fix the userspace to support missing attr parsing instead.  
-> 
-> I was just addressing the error handling. This keeps the same impact as
-> before, i.e no userspace API change.
 
-I mean that NL_REQ_ATTR_CHECK() should be more than enough by itself.
-We have full TC specs in YAML now, we can hack up a script to generate
-reverse parsing tables for iproute2 even if you don't want to go full
-YNL.
+--QPYuqvCzkqYHWj6Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> On Mon,  5 Feb 2024 12:35:11 +0100 Lorenzo Bianconi wrote:
+> > Introduce multi-buffer support for xdp running in generic mode not alwa=
+ys
+> > linearizing the skb in netif_receive_generic_xdp routine.
+> > Introduce generic percpu page_pools allocator.
+>=20
+> breaks the veth test, apparently:
+>=20
+> https://netdev-3.bots.linux.dev/vmksft-net/results/458181/60-veth-sh/stdo=
+ut
+>=20
+> could be that the test needs fixing not the code.
+> But either way we need a respin :(
+> --=20
+> pw-bot: cr
+
+Hi Jakub,
+
+Ack, thx for reporting the problem. The issue is we should use skb_pp_cow_d=
+ata()
+instead of skb_cow_data_for_xdp() in veth_convert_skb_to_xdp_buff() since w=
+e do
+not have any requirement for the attached bpf_prog there. I will fix it in =
+v9.
+
+Regards,
+Lorenzo
+
+--QPYuqvCzkqYHWj6Y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZcadZwAKCRA6cBh0uS2t
+rMb9AQCaD1jFTLZkYCpxZWkclrCBKsWkCh82J9PKeqBVVCRx5AD6Aqtj/sbfnW4u
+nrO5sxyd2Y84Nrqp6Gcx0Te82zm6eg0=
+=9Nar
+-----END PGP SIGNATURE-----
+
+--QPYuqvCzkqYHWj6Y--
 
