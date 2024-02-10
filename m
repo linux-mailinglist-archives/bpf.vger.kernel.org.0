@@ -1,126 +1,196 @@
-Return-Path: <bpf+bounces-21677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29F085023E
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 03:46:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC2E850241
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 03:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00D601C22D8D
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 02:46:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E35641C23AA2
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 02:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894755234;
-	Sat, 10 Feb 2024 02:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC74C522F;
+	Sat, 10 Feb 2024 02:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="FsV23qRh"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bBDt3Or0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814A933C0
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 02:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E009546B7
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 02:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707533162; cv=none; b=lUI2WrP2M4Fdoxau2N4VMAAWNsFB6X5oTs7/zlyUlTgPrAIrR7yo3AnnLKnDHpmCCL8HK/hgbdLTuCcA4CUmMKkJxwJiGMf7HVemSFkMTtqpW+GI5putdW1Btb8vp+vFG7hMMHNhMQpjfVE6LPJCdTiP57Rq8lOWsKdcC/fkL9Y=
+	t=1707533205; cv=none; b=tS3JX6YHhGwXyRpOvijkbAIKf8yKFPmvD9aRkwlEpPdpM1QRL5L1lkPj2/uGmn/IiCNwEBwuDVxygc1h/KMSoocAOl35VlzGvL0NWqW5u9ix/iAdd47z6exJSrAXvUUIxDV7g8ixfk9VO2fFHj+1D+41ojKMCOoh6TfagITRYPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707533162; c=relaxed/simple;
-	bh=fvcxdwhch+UgCOqtnEyZPh1ECKl5d5IgD43prRrJsXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=piW/hq2WCLepNN22oDWpAdCaZO/6p/0KOl4umxXCErgXyNFVBma/wfkDuMFMQrBVtmaGhbsaJfN1rlP//e7zBDyOSNKruqhdfU/MlpZOtR6IQHjtMITUM19CXvwZZ9vuC8VU+MiHsI4BnXALjk8YtztgWzYR4ttQNY15vHicC98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=FsV23qRh; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d8ef977f1eso13721675ad.0
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 18:46:00 -0800 (PST)
+	s=arc-20240116; t=1707533205; c=relaxed/simple;
+	bh=uLiR7Kz1MbofB8E4x+ZPySEkA1M0AMIiXoKEeJbpDXM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VQlQVcMf74G9J4YW11lgMwbOPemZhYJ8tAWSdJY8JSG1q5x7nZRbW+FugHeg1NALFAoje7V/AVSH+UIDfzemsWKtdo2TLFgKLnvMi4lyQOtQjjFmbLPfP7wWYzLr07HZmh3j/m4C+lshtyy/cG8unnt4RFBzYtfwpZtSnxIZBaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bBDt3Or0; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d89f0ab02bso50875ad.1
+        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 18:46:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1707533160; x=1708137960; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1707533203; x=1708138003; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=juvAKGT5CeRrHs5S/LFrLMDdPScLSP5NQP+Ax181rF0=;
-        b=FsV23qRhe5NqfIAPYtjRTgh5nDJf2nmCSeZ9e6MTvkdNvQL2XXHld8zP+U4UsM8E1L
-         qTqO/zRwefc78kJB7t1Vws7Juk9BcfPS+TQuLHGo4CdFEMtYT9EXmFxfwjsmDeOQ99zJ
-         YmgHXcRp0CUKO9RAIMFPmdXLx1bP8iCx4IJjVbNdqdorUNFFHQVbtmGzL+gv6eT7VJIn
-         gcAaDtws+OhMjCJ6JF3UPfXSupgXKDUX501bGbCjXOKJ41/tc2sLEMCMm3xM/Yyggbtj
-         yvp682EFc2LfEC6XolT/H38hICo6OhwkIDLTl77YGH7Sh+Yg3BDoeoKZzefEMf2hCq6E
-         WsVg==
+        bh=gvPi1gupQqIT9F22A3YjxH75GO/tG9qnD/uz9dNXdsA=;
+        b=bBDt3Or0HXwHv8cIE4k9ENtqtkvQICUKscvsTOiZXGGSfucELfFJLHJDCUVgyrtbbS
+         Xn1seiv+0YdtiNrD8v6EQ4on3+maY9OgenyG+DZX/xNgUxEb4yftqHaN7JnD9Rf7O41Y
+         PXMJCF00fmv0s1kpcsVzeESt+eaDXZBsXyCjD1wvpZjcmvPrOPaiLcNjT5WwPxUUOv0v
+         Ztc6MfMOiYe8IvDxVxWoohv10pbHx5I1q80ehi4jPYHlKnPhC2AsKMBfFXj+AVmhOIXn
+         wZLyIg56rcy0Tx21R7zmMHsU4yeJgdolAJ0ZmgfWcYN/efk9ewHYWPb3GSzbNj1NTIdf
+         lrzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707533160; x=1708137960;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707533203; x=1708138003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=juvAKGT5CeRrHs5S/LFrLMDdPScLSP5NQP+Ax181rF0=;
-        b=klfZ2JZ3R9OMMMiiu2Q2lZH8sf7tm2wtkYIQLiO24Wbhc1/Hxx9dZI4Y8HMy87Ct4M
-         dj2c19CUSUoshjyEybtZ6pIjj/pug6P7yYgesZQ1w4gUivyfg7lDWDhcXDkGBS+fOCK9
-         8fpnIUcofRrdsSXqBWmzQlbNS2cdaaaETZ+mdPAQaiyDWX67x5InIbVxjhcqLgLLBkNy
-         MS1zdvF3i6qEnDw1p8f+ju8Q4+POXt5Dyv+qOC74elJIotvyDA33bEMBs18IcUYebd9z
-         EWLuWRTiciX1AmddBhF0f0OYPQ8HNujo1olPdZ0R7DvOf8S4yn3CpskOrX3zQBNtw8Bc
-         70Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCVq5MVucYHPH7J9fMlR8BtY8WyzlZqo7VvPn55sa1QR31N4lpnWSv+bfsxzMLChzRuYSMgfq0ohOGvIrX/r0b6Kq9Ln
-X-Gm-Message-State: AOJu0YzW9Pnv3w/rgqD8QKBAb4r6R+2KvqaaGNdfEISs3jPw6OPSOsXW
-	m2EcQYZKl6F5vM54YKrqzHnuXvayAyUB2Z4pNVNjp7VY8p5LxkM/Oq7W+b8X1bM=
-X-Google-Smtp-Source: AGHT+IHEDqbAC4lmL3ZpUXSCN9GdkEM2l7fe8xTltkLkxmu1UR60/e25RS/zMOOX5wfJlxuteXW2tw==
-X-Received: by 2002:a17:902:ec8f:b0:1da:e86:3d9e with SMTP id x15-20020a170902ec8f00b001da0e863d9emr1412208plg.43.1707533159777;
-        Fri, 09 Feb 2024 18:45:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUMhzRkPJU68x71VCI0cCzTS1iGPROvorEHI8y/T4VEsPqoWKRiyLc6jpPnVnKyR0zJXFEBaQnHeIE9zBh6zGXKxKyy+69dAWbHc0cnlF/TixP9rdrhlkWGVbNYTmzwM8fPlu9XTnBpdXUyqMKn3yTL6Rsutw05p5yMUO5nqD1NE31MbFZvloHyWGYSV1eJJVaMWJ2keeytwpKYeVaELobWX4mCrvEtYg//ovV0TKLVKwXW7JhD3Tx4+WaLMube7ba5D8oQGgw83DyJ8YXup0gXBaT92tcI0eNYel3yhLEXra2BvSwFKyGdEJ48enl3MzyOclUYmQr1sL3m8FyrEm8q8rLyPEjIy+uHll/0f0hse679uE3lxbRm3BP676KdKumQKhN3ISg6shx/pXVo63coSaXdfB9bti21OvyKuV/uhofsNXW5tac4rbv/lticgt4p+dalE9KXCG3XGt2a5rTwLptPsnyG+3nsvILh9cGGbTQZYElnQdeGHU/SzhqwIloQYcRKUR0cqO54hwxFz1nBRZx+OVdWweRwpzKCKYsfSHi1DphxVSx4LeLATF3KML1avYiiqwq+Dx1TeVhwXMGLdZa4EXGE+V64Stk=
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id a1-20020a170902ee8100b001d94c709738sm2149523pld.217.2024.02.09.18.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 18:45:59 -0800 (PST)
-Date: Fri, 9 Feb 2024 18:45:56 -0800
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim
- <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org
- (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
- linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next v2] net/sched: actions report errors with
- extack
-Message-ID: <20240209184556.00cde1a2@hermes.local>
-In-Reply-To: <20240209183133.1cc0a4f5@kernel.org>
-References: <20240205185537.216873-1-stephen@networkplumber.org>
-	<20240208182731.682985dd@kernel.org>
-	<20240209131119.6399c91b@hermes.local>
-	<20240209134112.4795eb19@kernel.org>
-	<20240209155830.448c2215@hermes.local>
-	<20240209183133.1cc0a4f5@kernel.org>
+        bh=gvPi1gupQqIT9F22A3YjxH75GO/tG9qnD/uz9dNXdsA=;
+        b=HGsR0Wt7X6Q4gp/i69drClLoT0K+88E4sbw+6z/wuU6RM7b4+xOVOGVz807XHRIu67
+         GcteDXBXWkoTk6wNB6zsx5b34l6OJN6thAVsnN/J7MzKSTOxGqRgPmbfr38QVwFo6oLc
+         3TlTyHSPdLSC+73Td0RW7etAGnVkQKrKepimcTYULQ4zqHm4tVGYydiWRF3Ypxjwicnb
+         CoAkm/mTga3pdSme1ySYy2PK6UDkncfRUEfUJ73StEIuK+SweMy86qJqPxGYC/+D23PR
+         vwdklOz7WLuO6cAUaHfR3YsSGWM0xHm60AbyUdKgw9wM/5+3qH6B4hCRCS5u508TlBmr
+         cCng==
+X-Forwarded-Encrypted: i=1; AJvYcCWzIaTAJePXt6+GrdCiNR/lDy7JmxMZyiPVG28fKF6pNVXZOk+Y1LY6Z9K0N57TZaUtMmrYgoEaZIJ0ZYw5gSk3Csp0
+X-Gm-Message-State: AOJu0YwpY74YgErMBgLFLRKC0tcCbundZrG3zoRdIKI7633XM6ZtrqJv
+	A8ikWqmD0bLbG2XcGTqI5zaIYudaUsQAyw6VgPB7oWX3W1e+dgqqeafVqmyToZ5bEpY603AON1v
+	G5c0KFP4iffI4y432zSmmbX6E1nCNkIvQ85Fy
+X-Google-Smtp-Source: AGHT+IGTCvpDi/N93KDltxbd+jCsgx+d2H4/3YL9Lk68bhh5nVQRaWaPF8hEL4Kp36NHmdjWMtDnU0IrZiIHcdBg/KA=
+X-Received: by 2002:a17:903:44b:b0:1d9:a393:4a38 with SMTP id
+ iw11-20020a170903044b00b001d9a3934a38mr38401plb.26.1707533202817; Fri, 09 Feb
+ 2024 18:46:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
+In-Reply-To: <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 9 Feb 2024 18:46:31 -0800
+Message-ID: <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
+	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 9 Feb 2024 18:31:33 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> Hi Ian,
+>
+> On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > First 6 patches from:
+> > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.co=
+m/
+> >
+> > v2. Fix NO_LIBUNWIND=3D1 build issue.
+> >
+> > Ian Rogers (6):
+> >   perf maps: Switch from rbtree to lazily sorted array for addresses
+> >   perf maps: Get map before returning in maps__find
+> >   perf maps: Get map before returning in maps__find_by_name
+> >   perf maps: Get map before returning in maps__find_next_entry
+> >   perf maps: Hide maps internals
+> >   perf maps: Locking tidy up of nr_maps
+>
+> Now I see a perf test failure on the vmlinux test:
+>
+> $ sudo ./perf test -v vmlinux
+>   1: vmlinux symtab matches kallsyms                                 :
+> --- start ---
+> test child forked, pid 4164115
+> /proc/{kallsyms,modules} inconsistency while looking for
+> "[__builtin__kprobes]" module!
+> /proc/{kallsyms,modules} inconsistency while looking for
+> "[__builtin__kprobes]" module!
+> /proc/{kallsyms,modules} inconsistency while looking for
+> "[__builtin__ftrace]" module!
+> Looking at the vmlinux_path (8 entries long)
+> Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbols
+> perf: Segmentation fault
+> Obtained 16 stack frames.
+> ./perf(+0x1b7dcd) [0x55c40be97dcd]
+> ./perf(+0x1b7eb7) [0x55c40be97eb7]
+> /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
+> ./perf(+0x1c2e9c) [0x55c40bea2e9c]
+> ./perf(+0x1c43f6) [0x55c40bea43f6]
+> ./perf(+0x1c4649) [0x55c40bea4649]
+> ./perf(+0x1c46d3) [0x55c40bea46d3]
+> ./perf(+0x1c7303) [0x55c40bea7303]
+> ./perf(+0x1c70b5) [0x55c40bea70b5]
+> ./perf(+0x1c73e6) [0x55c40bea73e6]
+> ./perf(+0x11833e) [0x55c40bdf833e]
+> ./perf(+0x118f78) [0x55c40bdf8f78]
+> ./perf(+0x103d49) [0x55c40bde3d49]
+> ./perf(+0x103e75) [0x55c40bde3e75]
+> ./perf(+0x1044c0) [0x55c40bde44c0]
+> ./perf(+0x104de0) [0x55c40bde4de0]
+> test child interrupted
+> ---- end ----
+> vmlinux symtab matches kallsyms: FAILED!
 
-> On Fri, 9 Feb 2024 15:58:30 -0800 Stephen Hemminger wrote:
-> > > I mean that NL_REQ_ATTR_CHECK() should be more than enough by itself.
-> > > We have full TC specs in YAML now, we can hack up a script to generate
-> > > reverse parsing tables for iproute2 even if you don't want to go full
-> > > YNL.    
-> > 
-> > Ok, then will take the err msg across all places using NL_REQ_ATTR_CHECK?  
-> 
-> Take _out_ ? That'd be great, yup.
+Ah, tripped over a latent bug summarized in this part of an asan stack trac=
+e:
+```
+freed by thread T0 here:
+   #0 0x7fa13bcd74b5 in __interceptor_realloc
+../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
+   #1 0x561d66377713 in __maps__insert util/maps.c:353
+   #2 0x561d66377b89 in maps__insert util/maps.c:413
+   #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.c:1460
+   #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:1675
+   #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
+   #6 0x561d66321a4e in dso__load util/symbol.c:1914
+   #7 0x561d66372cd9 in map__load util/map.c:353
+   #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
+   #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
+   #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:524
+   #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
+   #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
+   #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/machine.h=
+:243
+   #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
+tests/vmlinux-kallsyms.c:330
+...
+```
+dso__process_kernel_symbol rewrites the kernel maps here:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/util/symbol-elf.c#n1378
+which resizes the maps_by_address array causing the maps__for_each_map
+iteration in frame 11 to be iterating over a stale/freed value.
 
+The most correct solutions would be to clone the maps_by_address array
+prior to iteration, or reference count maps_by_address and its size.
+Neither of these solutions particularly appeal, so just reloading the
+maps_by_address and size on each iteration also fixes the problem, but
+possibly causes some maps to be skipped/repeated. I think this is
+acceptable correctness for the performance.
 
-I don't think that is actually a good idea because new kernel needs to still
-report errors to older userspace iproute2.
+Thanks,
+Ian
 
-This is kind of academic hair splitting, iproute2 doesn't send these kind
-of missing part messages. It is more from test suites, or from custom
-user programs; found this when looking at DPDK device driver that was
-sending its own netlink.
+> Thanks,
+> Namhyung
 
