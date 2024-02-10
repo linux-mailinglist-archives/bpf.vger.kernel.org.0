@@ -1,164 +1,157 @@
-Return-Path: <bpf+bounces-21685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB70850273
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 04:19:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5918485028B
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 05:35:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B3F1C2492B
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 03:19:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A973284330
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 04:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B072364CB;
-	Sat, 10 Feb 2024 03:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A58923CA;
+	Sat, 10 Feb 2024 04:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ueZrGJ0I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bapohd0W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF90360AE
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 03:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3316F8462
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 04:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707535093; cv=none; b=aGVMbUQeAe44xO2Vrdjh5iQttEb+osLq12RFBpJfcL9q26J/jayPrU0rtWVmtMJO/OrbGUpKMLiVdSGS+1ineXu3emo3UigpQr3ZTWxhNh85tO9o/foKZLJX/AqjoX605VOvIbFS0gqzI6W4lQtZ98I0V53aVC5omS736bjQZnQ=
+	t=1707539716; cv=none; b=YnjtELpccVAaUbVs5Pg62gk1WTq9hw+vVvYytdLebD6r0EHHnv/jFvlLvibS5K83ioDLyMcTB7DNQNP6PYjCaOcGOOiF/QQNUFwNlgI7jvC2qZWXu39iTtEON4jSkRgdT5jAr86MCHJscILYZ4ADKy345PKLqDizilJfD9eRlGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707535093; c=relaxed/simple;
-	bh=fmY7OGiQyoafs0dUqE06bQrvTXGFG0wOIGJr3qrBCDk=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=b3dzlblQ8CCEmmcIstBhZTLoL7ms8kFVZs8lrD6Sx6sYkL2fh64OP2O4W5BFHvw8sgcFxs2vDM1h61NZ/TshgBcRLEpSrm4FDr9ng1+7XVjyIY2lrdtFnBjNvCS490UMJowsJjTcEl7iUTFVCbdo++qaQGRSBR+NfKXE/KZ0pYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ueZrGJ0I; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ee22efe5eeso31743027b3.3
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 19:18:11 -0800 (PST)
+	s=arc-20240116; t=1707539716; c=relaxed/simple;
+	bh=CD+TybYfqMK6NarsAhKItCooYAQKUbEMZAMyjpYMdlw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dMkB5Qgm8SeZojuEhxHweTsdJBsHK6yPdT59qQkrM7D2wqsrV0yFZbBD4/qzvoBix4WG+02T0QU4gYba1JBWk9fEc2azdGxujrJGC8w1G3x0pJ/aEPIMYxMsPjkDys+D0n80Vz3lRBM5A2BOoYXYCY82K0Gx9JEFjyh9Q1jPF/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bapohd0W; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51165efb684so2793662e87.3
+        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 20:35:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707535090; x=1708139890; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ie89sB6IlXpvkiQnUaYF5PTvKc7dfqYdcE9ndiylfmM=;
-        b=ueZrGJ0IuPfGlwXCKjovy5gGGS30jkNrGtsNC8pnicR1KIk7lhl7dwkZUTTREAOoJn
-         NztsMiVXbJgsmEcNLj4vd4HNyYmGU6iDVlGEsEDePPLWhfY0MrnR1rsXNVEXNnrUx7Xq
-         Ya6tpJEpWKjWuLP/CZ7d5tmfZU0ulM+GHc7NbiuEBH9vpd/pt/jYMMkvWMnni+Zhlab1
-         x7qQZ8ux3//bPdqmSGd+SC2MqMA0k3M7nDu8yY6UgHEBm/SlbSS5PKGXZnL/lP0dawbD
-         gMm2dlCbtU9N4Rx+SXav2XKoBtqnExXgy4hn2CCnLJNAsuhuna7RTGWqy4QthZpYDbwg
-         Iv2Q==
+        d=gmail.com; s=20230601; t=1707539713; x=1708144513; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/EelMK3MNqQ7kc2Ty0nKSU3ZVwcIo6iAgFWKPjvAcvk=;
+        b=Bapohd0WLpMT5/6yeEZl7PaOrgrEkyT7R7C7rtl1syw9vh8tCvNNzqA6s5kYstAEc7
+         NB4Y9zy0hRev5xYbvGCQLk6pyCEMwPQTmiK+r6ci32J4ekh1kR/QQ9uSfUTmdaSixyMx
+         0HGZpr8JgCSs5rs9tPQJx8dm+BRas3gLRXIH65G8k9qyCXM3seMxRzqTTkNsHg1uzMDd
+         ScWk8dZy5D3TgwNAp1LTi4HTT7d2l2hPDSWwQyLXBcr2+iAHkO9c6VBhI9HZ2w4XhydT
+         lww16/5fp02c6d/uZoHyY4eGyMKw3IFQNRbdDejEHOTT0Zxl51OBB/AbZrnBGEmp0Xog
+         GUfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707535090; x=1708139890;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ie89sB6IlXpvkiQnUaYF5PTvKc7dfqYdcE9ndiylfmM=;
-        b=T7Hgt3CBRwImiqHvWLtKho1iQVFThAOIlvj6VgPCtIxvuY04mL2/+/aqDdMG2T+xAB
-         3mhc7ptUHrL0opoy6DDI5AUyIRDQ9oEC5pGuv28loh5eBKbk7QS5H0f0gLYIpJgReuqb
-         4cpd7Ijzjk4zowGa0a4dLrnsl5hpKVJQtDrX3oWx9EsulW7xzqWS6NQTfXPcJZz3i6I+
-         UMT1O6L5Ya94W0iGRmMcTbBgIYq3WSPKy0FyN3O65AeIPP7PogKcrsgEbksnx/AkrNim
-         MKv0psSjP4202v+cggbMfyGJFNj3Mndx+MGYttF01Qy+h6xn8rVgogW1hCYBXMMixdD0
-         9+mA==
-X-Forwarded-Encrypted: i=1; AJvYcCXsYjfoc12jrHaYigdG20bpXqhZqZ40ww0eeP3x6DjWvhZaaDMRgR+HtQ79Tdksuxs9Mi8pdVqpKvMA5HZILk+c9f9C
-X-Gm-Message-State: AOJu0Yx/V4mP3rmq4yMtJBHmlufnm9BnN/2f+hYf9SO24SbATP5pofvK
-	yej2tMd5Ze9NIC1MpER4/55XmRo1QwHZoC5Q4DViBgHXE44XzboMci0pyV62k+W9xwpw3mMf9oL
-	Nc8NJgw==
-X-Google-Smtp-Source: AGHT+IFrn1CHZlVjSpwmvdN+dl+BaRe9nkKsGon6NJpS0hJXAXYFpUNu2G/yduT8mliL5SE1aGM0Nbh2LJ+v
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:877:241d:8c35:1c5b])
- (user=irogers job=sendgmr) by 2002:a0d:d549:0:b0:604:499:fee1 with SMTP id
- x70-20020a0dd549000000b006040499fee1mr191533ywd.6.1707535090579; Fri, 09 Feb
- 2024 19:18:10 -0800 (PST)
-Date: Fri,  9 Feb 2024 19:17:46 -0800
-In-Reply-To: <20240210031746.4057262-1-irogers@google.com>
-Message-Id: <20240210031746.4057262-7-irogers@google.com>
+        d=1e100.net; s=20230601; t=1707539713; x=1708144513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/EelMK3MNqQ7kc2Ty0nKSU3ZVwcIo6iAgFWKPjvAcvk=;
+        b=cG5hBdw7nomTQuFDHV+IIsG0c9WVr1umLRG5B5RvgVt3TN3mehPHekp3ptCIsitAvY
+         ILdk0rnNxs6ztYp7H/r3cXeb6YYXyszw/5Hltm4cus5la2d86nvmKBOV5I7+hsR9gNTs
+         iiTk1K8hq5Cn0RLcgWnMwRGzV7/PDB7gp4LiO1SedTelOpNd6P58k+ZFFZPobWnxfcWM
+         I/FMdYEHrY14xIXjKSnMV66Xxum7Pf48UBOKSO/f5+zUBeafrucnzCvyjZsIjMPPwxiP
+         irMF7Hxv+RsGdjcfNfVqhm90IvLv9GofG3+Kcl/uX9tTEv6Py2+YHsTysvZsKiZwXBYx
+         4Z8A==
+X-Gm-Message-State: AOJu0Yz6JPm0FN8Atw/0aC/NlkUh0iBlAy0jp7cFxWQCpf07n9MTCDlk
+	MZgOjOUtrFtN2fOi1JeOsPJmMbwmlVJ44YWfvoRknj6Rg/L5QenMG2T5GDrzmHuRxyoHvo3Vsli
+	rTglAhvMkxIYnakU6xxCt2aqPLqI=
+X-Google-Smtp-Source: AGHT+IF+y/dAhddg2G9++QGcoCfVBM8iGq8fEgZ8U1iiAhwmWIH5JO54RAihATpQnmZtdbCjG/ShsWTjGvD3Lpsgwew=
+X-Received: by 2002:ac2:593a:0:b0:511:71fe:dc10 with SMTP id
+ v26-20020ac2593a000000b0051171fedc10mr582654lfi.10.1707539712964; Fri, 09 Feb
+ 2024 20:35:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240210031746.4057262-1-irogers@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Subject: [PATCH v3 6/6] perf maps: Locking tidy up of nr_maps
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
-	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+MIME-Version: 1.0
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-18-alexei.starovoitov@gmail.com> <20240209231433.GE975217@maniforge.lan>
+In-Reply-To: <20240209231433.GE975217@maniforge.lan>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 9 Feb 2024 20:35:01 -0800
+Message-ID: <CAADnVQJsdbUuvkp67_z5xprA+UP=O9rTcwm3xRkpqSArrGqNaA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 17/20] selftests/bpf: Add unit tests for bpf_arena_alloc/free_pages
+To: David Vernet <void@manifault.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, 
+	Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-After this change maps__nr_maps is only used by tests, existing users
-are migrated to maps__empty. Compute maps__empty under the read lock.
+On Fri, Feb 9, 2024 at 3:14=E2=80=AFPM David Vernet <void@manifault.com> wr=
+ote:
+>
+> > +
+> > +#ifndef arena_container_of
+>
+> Why is this ifndef required if we have a pragma once above?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/machine.c |  2 +-
- tools/perf/util/maps.c    | 10 ++++++++--
- tools/perf/util/maps.h    |  4 ++--
- 3 files changed, 11 insertions(+), 5 deletions(-)
+Just a habit to check for a macro before defining it.
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 4911734411b5..3da92f18814a 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -440,7 +440,7 @@ static struct thread *findnew_guest_code(struct machine *machine,
- 		return NULL;
- 
- 	/* Assume maps are set up if there are any */
--	if (maps__nr_maps(thread__maps(thread)))
-+	if (!maps__empty(thread__maps(thread)))
- 		return thread;
- 
- 	host_thread = machine__find_thread(host_machine, -1, pid);
-diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 439cefab112a..53aea6d2ef93 100644
---- a/tools/perf/util/maps.c
-+++ b/tools/perf/util/maps.c
-@@ -541,7 +541,13 @@ void maps__remove(struct maps *maps, struct map *map)
- 
- bool maps__empty(struct maps *maps)
- {
--	return maps__nr_maps(maps) == 0;
-+	bool res;
-+
-+	down_read(maps__lock(maps));
-+	res = maps__nr_maps(maps) == 0;
-+	up_read(maps__lock(maps));
-+
-+	return res;
- }
- 
- bool maps__equal(struct maps *a, struct maps *b)
-@@ -871,7 +877,7 @@ int maps__copy_from(struct maps *dest, struct maps *parent)
- 
- 	parent_maps_by_address = maps__maps_by_address(parent);
- 	n = maps__nr_maps(parent);
--	if (maps__empty(dest)) {
-+	if (maps__nr_maps(dest) == 0) {
- 		/* No existing mappings so just copy from parent to avoid reallocs in insert. */
- 		unsigned int nr_maps_allocated = RC_CHK_ACCESS(parent)->nr_maps_allocated;
- 		struct map **dest_maps_by_address =
-diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
-index 4bcba136ffe5..d9aa62ed968a 100644
---- a/tools/perf/util/maps.h
-+++ b/tools/perf/util/maps.h
-@@ -43,8 +43,8 @@ int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, void *data)
- void maps__remove_maps(struct maps *maps, bool (*cb)(struct map *map, void *data), void *data);
- 
- struct machine *maps__machine(const struct maps *maps);
--unsigned int maps__nr_maps(const struct maps *maps);
--refcount_t *maps__refcnt(struct maps *maps);
-+unsigned int maps__nr_maps(const struct maps *maps); /* Test only. */
-+refcount_t *maps__refcnt(struct maps *maps); /* Test only. */
- 
- #ifdef HAVE_LIBUNWIND_SUPPORT
- void *maps__addr_space(const struct maps *maps);
--- 
-2.43.0.687.g38aa6559b0-goog
+> Obviously it's way better for us to actually have arenas in the interim
+> so this is fine for now, but UAF bugs could potentially be pretty
+> painful until we get proper exception unwinding support.
 
+Detection that arena access faulted doesn't have to come after
+exception unwinding. Exceptions vs cancellable progs are also different.
+A record of the line in bpf prog that caused the first fault is probably
+good enough for prog debugging.
+
+> Otherwise, in terms of usability, this looks really good. The only thing
+> to bear in mind is that I don't think we can fully get away from kptrs
+> that will have some duplicated logic compared to what we can enable in
+> an arena. For example, we will have to retain at least some of the
+> struct cpumask * kptrs for e.g. copying a struct task_struct's struct
+> cpumask *cpus_ptr field.
+
+I think that's a bit orthogonal.
+task->cpus_ptr is a trusted_ptr_to_btf_id access that can be mixed
+within a program with arena access.
+
+> For now, we could iterate over the cpumask and manually set the bits, so
+> maybe even just supporting bpf_cpumask_test_cpu() would be enough
+> (though donig a bitmap_copy() would be better of course)? This is
+> probably fine for most use cases as we'd likely only be doing struct
+> cpumask * -> arena copies on slowpaths. But is there any kind of more
+> generalized integration we want to have between arenas and kptrs?  Not
+> sure, can't think of any off the top of my head.
+
+Hopefully we'll be able to invent a way to store kptr-s inside the arena,
+but from a cpumask perspective bpf_cpumask_test_cpu() can be made
+polymorphic to work with arena ptrs and kptrs.
+Same with bpf_cpumask_and(). Mixed arguments can be allowed.
+Args can be either kptr or ptr_to_arena.
+
+I still believe that we can deprecate 'struct bpf_cpumask'.
+The cpumask_t will stay, of course, but we won't need to
+bpf_obj_new(bpf_cpumask) and carefully track refcnt.
+The arena can do the same much faster.
+
+>
+> > +             return 7;
+> > +     page3 =3D bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0)=
+;
+> > +     if (!page3)
+> > +             return 8;
+> > +     *page3 =3D 3;
+> > +     if (page2 !=3D page3)
+> > +             return 9;
+> > +     if (*page1 !=3D 1)
+> > +             return 10;
+>
+> Should we also test doing a store after an arena has been freed?
+
+You mean the whole bpf arena map was freed ?
+I don't see how the verifier would allow that.
+If you meant a few pages were freed from the arena then such a test is
+already in the patches.
 
