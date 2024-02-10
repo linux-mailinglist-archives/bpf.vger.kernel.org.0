@@ -1,212 +1,225 @@
-Return-Path: <bpf+bounces-21713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77FD8505E6
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 19:09:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E14850688
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 22:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1141F2440A
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 18:09:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D8111F21FC4
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 21:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFED5D498;
-	Sat, 10 Feb 2024 18:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8E75FDA4;
+	Sat, 10 Feb 2024 21:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A7qpWCRC"
+	dkim=pass (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b="FUbnVO2j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506325D485
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 18:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1B13612E
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 21:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707588531; cv=none; b=LuZ7ClvPGFLalYnMfH5DULpKCKXBIZHM5l27zeSG/9kQDkAcoEjInNzTz5iXtjKILHLiRmoJ5W6Pj6NoUiPjLVxJN2tWQDtpqBAtMKmqZa784UUek3S/l8DRfAcVB0F3s+ga4iqB291HLpZWwDslBRPllokTimpw6IAgiZTEUTs=
+	t=1707601634; cv=none; b=kRFm12GkBGykZKo039ftl3da1Upyh+TGmdWWUeAXkfIZ8kWpk08tnlCjZp1mnFv55H3I1ZyxA6N3IyXVCtYkdEz3fskBZ3YmNpHozm9pv+6tBfL5pY0ktmgVBVYqg0ZarW0YHH3h0yWUSUl+Q/SbsecVGKyY+jrvOLxPg46st5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707588531; c=relaxed/simple;
-	bh=lcKrX2aRjFNkP4jX/gX7lMq1/swjJPiwcvS8JJ2UKac=;
+	s=arc-20240116; t=1707601634; c=relaxed/simple;
+	bh=fyNRvy9bRGBjrYR1bPAlZJp6O2ggurI82fvo2dmFciQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D/XBOE8aYikBA5kUx8l8ft5OJdmhlTDyJHgu3hxpYcZaqHe1rsX0W0OKtWu2JzkVkHonPRltp/6p1OuLfL0nxymkoUJnKdcIMPLhxXppCalx7nGFaLAOnxnGFYG1f6Mdl9Twr2Tk9LvP5HIpTfxFmGptciulbsJuHo4RWec+xVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A7qpWCRC; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d93b982761so666405ad.0
-        for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 10:08:50 -0800 (PST)
+	 To:Cc:Content-Type; b=idt+SIocsx1timjd42w5UyeaulHJ0Q/OBguNQdjoxNa5CQR5hzTfiCMV801BOk/C3Q0glSODakZIaPjEbM7FhtxnoO2pF/9dPx0i4qqhInPBpreBkdSyKG7ymVFhl8wd6d1Q0jgLa4dJNCpRS3SDPEqmrx+9WKdaluzAk4/Zdmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=obs.cr; spf=none smtp.mailfrom=obs.cr; dkim=pass (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b=FUbnVO2j; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=obs.cr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=obs.cr
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42c6e2f3aa2so1536211cf.2
+        for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 13:47:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707588530; x=1708193330; darn=vger.kernel.org;
+        d=obs-cr.20230601.gappssmtp.com; s=20230601; t=1707601631; x=1708206431; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XDX7C5VgeWEhXGxm3lJpibeXlVT0VMTj0KZSmCI04qk=;
-        b=A7qpWCRCrhJ3efdfaOt6THSkyp4Jv1fQJl9W43N56EeFekdBF6cELcPhMQ+QWXLgTB
-         wWTmE/OiVhD/45O7AuX9VBUPc0jxDB1iVm2XNZIVZdGHDH3fkiI74ZjANsMaw8aNo6R4
-         M407VHw4mA3Gdx+6U2cLMSqM148I6xVVGJgH2sfhYWo2NU7tYaMmV/qH1D8g8vDJJz1W
-         Jm+mk4rl7pxC+IhO8DZhCEZdLGM6NzMw9pYuEOkDKJ8fTmoEW1ciDZrWju/dg9OXPjDX
-         T5UKC4MErtuvWgfq0eXhXGnv7ggR7HL6W5xu4iTDB1F6z/Kfq6H3l6tS8QHfSaLTBHNW
-         meBQ==
+        bh=7AEpMK3KT1MsXa+SSX1BqR09ZNKqXqg4aHA0Fy+hmJU=;
+        b=FUbnVO2j6aKlEM4Y0llWUWGgHB5v+fsfPEHIhZGV9oSGGQ+AmBv4TNKR9r2mNTAHB4
+         2X46ZEpGp/UQuaR5h20gstgUjKprewNVEoqPfJJq1Y20lBF2y5FcPmN/puMt3tSApT8p
+         ulQqbleKY1rafgOYZa6Oh0VrbtPe+YVOXrwx3Wj9NffQ4e5HODu4cmPjqy/xwEtQ6ves
+         XVOFXEjoWLAwpiwuoAtI7CUVfT/HO9JEZ3QHUWn5U/H9qZhCKESWu65ZgvBl+AE0JT85
+         gLsgJd3Dqtu5odhjsU0RgN3knJ/Dd5nU25eVsWx3DUNI6chwte3RN8xavEIhlri3j37o
+         Tj2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707588530; x=1708193330;
+        d=1e100.net; s=20230601; t=1707601631; x=1708206431;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XDX7C5VgeWEhXGxm3lJpibeXlVT0VMTj0KZSmCI04qk=;
-        b=H6hNkrrC51Z5EMV3j90H5RaVh0ONvg708DgI5brYR3gGNY6l7KkEMrZDJezWqFcX5V
-         3iBHyeV6PfiKv94koJDn7n/mbTkCNNYoP9aaVgfQwpYez4sEhyImylieMKfx5nnoycCW
-         Y6PhLtZ+7noYouukU854NPbGw0ywBRUt2rsCuO49wvDNLc4Tg++32jZB8+KXnR3+hUZP
-         5FxZqnmCSJoN0D8mhM/ooOfbl7UKnXHX1MFmII3niq86kuXj2D9C8scSWRx8bv4S0XKX
-         QETH6MEVKwJ044ZeWHIKqkWOHZVy19x8SOyladWiTPaWnbRQM/CZvZRWVxwbuo5eqFKu
-         4RJw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHVb1hJx7G4qXyQNhzlp8B0gm8wd95L8cpb/tvOl75eXc5r59XBp/sO0CYy49GIvIIO3yKEIo3SEeJjcsR9xxvaBUw
-X-Gm-Message-State: AOJu0YyMBeUw9huov6dnALC3ExbuLv4US37fuxWiwAoW+Dq1MK1Y9WJl
-	rV2I0cvnVPJyKf1LxQVxHQk0ZkWq9AQfHf2dINnTiAPdBrc2ufxp6+j62kmE+Zd/vGcv630RaDF
-	xJWf+7U8ikbl24zq39Fi4Sv2IdVOjBZVIKz2j
-X-Google-Smtp-Source: AGHT+IFy3H9+Iwf1AWzIzjSIJM9jx52R90mLMMKQKjC/oVRCYUD5d4W+fplaW0pXNusL1NHPcf+mHRVioCIfzLDLn9Q=
-X-Received: by 2002:a17:902:c24d:b0:1d9:6c20:b900 with SMTP id
- 13-20020a170902c24d00b001d96c20b900mr64520plg.7.1707588529249; Sat, 10 Feb
- 2024 10:08:49 -0800 (PST)
+        bh=7AEpMK3KT1MsXa+SSX1BqR09ZNKqXqg4aHA0Fy+hmJU=;
+        b=A408Cp79YU6bALGurqAKjsBxLXFSZovgZnLc/zzLs7860mF+sivCZzVqeDy2qVyzns
+         hEIZC0LFZm4f3BmlLukGfPavF6rkH30pnahHNZmrzvgoOusJkF1bjb581driF9lwXKKf
+         teS7hZSj55xdxnjG0ismquIKBFrDYaoXS+/u4RROQj3WddOQzmTdbsqGV225LwjRTzll
+         CH+jcFkNQKrDRq80CeiBA9c/2tVrxd+AFIzvsMnwE9xNCOeS1KZ2gLCWr0Q3t8gEHcQh
+         EBYZg0YkQLRajll3T/VNWYX2rDl4dpgjZAbgs4N9RtEM267uC+dW1v8q8xv5ehDwY5YR
+         xoNw==
+X-Gm-Message-State: AOJu0YxyTzkfiemNz3wYYmTXdg/PxaZkiWekNpSvr/EBRdI5WceXH90a
+	3C4dR9Jp50kkn4CtDk6iAiFWJB6Z1+saguLw4RPG5aqeuvc6UjXqusVCjUWTyHQtRf4My9ya8Cm
+	dxlNGPBdlqQGx0igEJ1joutof+TqjBIqKWhd2Kw==
+X-Google-Smtp-Source: AGHT+IHlDZuPMMBBjQc3nR5gNC2dJsPA3L6hQs92W0YXWGP1fQZMKN3DtalgYVkMTz2ZpEWr6AjP4MfrkmpaWxWsRMU=
+X-Received: by 2002:a0c:e1cf:0:b0:68c:6746:274f with SMTP id
+ v15-20020a0ce1cf000000b0068c6746274fmr3377680qvl.47.1707601631209; Sat, 10
+ Feb 2024 13:47:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
- <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
-In-Reply-To: <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Sat, 10 Feb 2024 10:08:35 -0800
-Message-ID: <CAP-5=fXs8=HvjGpkLwuZBi0Hh8jtmz7=0Tp7HRgU8FOFN0GZvg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20240208223237.12528-1-dthaler1968@gmail.com>
+In-Reply-To: <20240208223237.12528-1-dthaler1968@gmail.com>
+From: Will Hawkins <hawkinsw@obs.cr>
+Date: Sat, 10 Feb 2024 16:47:00 -0500
+Message-ID: <CADx9qWiOXUVwKK50Mqj7fUMGSxF7MEP9tJ93nzXWrbWcqAp0-w@mail.gmail.com>
+Subject: Re: [Bpf] [PATCH bpf-next] bpf, docs: Add callx instructions in new
+ conformance group
+To: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+Cc: bpf@vger.kernel.org, bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 6:46=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
+On Thu, Feb 8, 2024 at 5:32=E2=80=AFPM Dave Thaler
+<dthaler1968=3D40googlemail.com@dmarc.ietf.org> wrote:
 >
-> On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kernel.org>=
- wrote:
-> >
-> > Hi Ian,
-> >
-> > On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google.com> =
-wrote:
-> > >
-> > > First 6 patches from:
-> > > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.=
-com/
-> > >
-> > > v2. Fix NO_LIBUNWIND=3D1 build issue.
-> > >
-> > > Ian Rogers (6):
-> > >   perf maps: Switch from rbtree to lazily sorted array for addresses
-> > >   perf maps: Get map before returning in maps__find
-> > >   perf maps: Get map before returning in maps__find_by_name
-> > >   perf maps: Get map before returning in maps__find_next_entry
-> > >   perf maps: Hide maps internals
-> > >   perf maps: Locking tidy up of nr_maps
-> >
-> > Now I see a perf test failure on the vmlinux test:
-> >
-> > $ sudo ./perf test -v vmlinux
-> >   1: vmlinux symtab matches kallsyms                                 :
-> > --- start ---
-> > test child forked, pid 4164115
-> > /proc/{kallsyms,modules} inconsistency while looking for
-> > "[__builtin__kprobes]" module!
-> > /proc/{kallsyms,modules} inconsistency while looking for
-> > "[__builtin__kprobes]" module!
-> > /proc/{kallsyms,modules} inconsistency while looking for
-> > "[__builtin__ftrace]" module!
-> > Looking at the vmlinux_path (8 entries long)
-> > Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbols
-> > perf: Segmentation fault
-> > Obtained 16 stack frames.
-> > ./perf(+0x1b7dcd) [0x55c40be97dcd]
-> > ./perf(+0x1b7eb7) [0x55c40be97eb7]
-> > /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
-> > ./perf(+0x1c2e9c) [0x55c40bea2e9c]
-> > ./perf(+0x1c43f6) [0x55c40bea43f6]
-> > ./perf(+0x1c4649) [0x55c40bea4649]
-> > ./perf(+0x1c46d3) [0x55c40bea46d3]
-> > ./perf(+0x1c7303) [0x55c40bea7303]
-> > ./perf(+0x1c70b5) [0x55c40bea70b5]
-> > ./perf(+0x1c73e6) [0x55c40bea73e6]
-> > ./perf(+0x11833e) [0x55c40bdf833e]
-> > ./perf(+0x118f78) [0x55c40bdf8f78]
-> > ./perf(+0x103d49) [0x55c40bde3d49]
-> > ./perf(+0x103e75) [0x55c40bde3e75]
-> > ./perf(+0x1044c0) [0x55c40bde44c0]
-> > ./perf(+0x104de0) [0x55c40bde4de0]
-> > test child interrupted
-> > ---- end ----
-> > vmlinux symtab matches kallsyms: FAILED!
+> * Add a "callx" conformance group
+> * Add callx rows to table
+> * Update helper function to section to be agnostic between BPF_K vs
+>   BPF_X
+> * Rename "legacy" conformance group to "packet"
 >
-> Ah, tripped over a latent bug summarized in this part of an asan stack tr=
-ace:
-> ```
-> freed by thread T0 here:
->    #0 0x7fa13bcd74b5 in __interceptor_realloc
-> ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
->    #1 0x561d66377713 in __maps__insert util/maps.c:353
->    #2 0x561d66377b89 in maps__insert util/maps.c:413
->    #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.c:1460
->    #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:1675
->    #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
->    #6 0x561d66321a4e in dso__load util/symbol.c:1914
->    #7 0x561d66372cd9 in map__load util/map.c:353
->    #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
->    #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
->    #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:524
->    #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
->    #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
->    #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/machine=
-.h:243
->    #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
-> tests/vmlinux-kallsyms.c:330
-> ...
-> ```
-> dso__process_kernel_symbol rewrites the kernel maps here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
-tree/tools/perf/util/symbol-elf.c#n1378
-> which resizes the maps_by_address array causing the maps__for_each_map
-> iteration in frame 11 to be iterating over a stale/freed value.
+> Based on mailing list discussion at
+> https://mailarchive.ietf.org/arch/msg/bpf/l5tNEgL-Wo7qSEuaGssOl5VChKk/
 >
-> The most correct solutions would be to clone the maps_by_address array
-> prior to iteration, or reference count maps_by_address and its size.
-> Neither of these solutions particularly appeal, so just reloading the
-> maps_by_address and size on each iteration also fixes the problem, but
-> possibly causes some maps to be skipped/repeated. I think this is
-> acceptable correctness for the performance.
+> Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+> ---
+>  .../bpf/standardization/instruction-set.rst   | 32 ++++++++++++-------
+>  1 file changed, 21 insertions(+), 11 deletions(-)
+>
+> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Docu=
+mentation/bpf/standardization/instruction-set.rst
+> index bdfe0cd0e..8f0ada22e 100644
+> --- a/Documentation/bpf/standardization/instruction-set.rst
+> +++ b/Documentation/bpf/standardization/instruction-set.rst
+> @@ -127,7 +127,7 @@ This document defines the following conformance group=
+s:
+>  * divmul32: includes 32-bit division, multiplication, and modulo instruc=
+tions.
+>  * divmul64: includes divmul32, plus 64-bit division, multiplication,
+>    and modulo instructions.
+> -* legacy: deprecated packet access instructions.
+> +* packet: deprecated packet access instructions.
+>
+>  Instruction encoding
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> @@ -404,9 +404,12 @@ BPF_JSET  0x4    any  PC +=3D offset if dst & src
+>  BPF_JNE   0x5    any  PC +=3D offset if dst !=3D src
+>  BPF_JSGT  0x6    any  PC +=3D offset if dst > src        signed
+>  BPF_JSGE  0x7    any  PC +=3D offset if dst >=3D src       signed
+> -BPF_CALL  0x8    0x0  call helper function by address  BPF_JMP | BPF_K o=
+nly, see `Helper functions`_
+> +BPF_CALL  0x8    0x0  call_by_address(imm)             BPF_JMP | BPF_K o=
+nly
+> +BPF_CALL  0x8    0x0  call_by_address(reg_val(imm))    BPF_JMP | BPF_X o=
+nly
+>  BPF_CALL  0x8    0x1  call PC +=3D imm                   BPF_JMP | BPF_K=
+ only, see `Program-local functions`_
+> -BPF_CALL  0x8    0x2  call helper function by BTF ID   BPF_JMP | BPF_K o=
+nly, see `Helper functions`_
+> +BPF_CALL  0x8    0x1  call PC +=3D reg_val(imm)          BPF_JMP | BPF_X=
+ only, see `Program-local functions`_
+> +BPF_CALL  0x8    0x2  call_by_btfid(imm)               BPF_JMP | BPF_K o=
+nly
+> +BPF_CALL  0x8    0x2  call_by_btfid(reg_val(imm))      BPF_JMP | BPF_X o=
+nly
+>  BPF_EXIT  0x9    0x0  return                           BPF_JMP | BPF_K o=
+nly
+>  BPF_JLT   0xa    any  PC +=3D offset if dst < src        unsigned
+>  BPF_JLE   0xb    any  PC +=3D offset if dst <=3D src       unsigned
+> @@ -414,6 +417,12 @@ BPF_JSLT  0xc    any  PC +=3D offset if dst < src   =
+     signed
+>  BPF_JSLE  0xd    any  PC +=3D offset if dst <=3D src       signed
+>  =3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D  =3D=3D=3D  =3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> +where
+> +
+> +* reg_val(imm) gets the value of the register with the specified number
+> +* call_by_address(value) means to call a helper function by address (see=
+ `Helper functions`_ for details)
+> +* call_by_btfid(value) means to call a helper function by BTF ID (see `H=
+elper functions`_ for details)
+> +
 
-An aside, shouldn't taking a write lock to modify the maps deadlock
-with holding the read lock for iteration? Well no because
-perf_singlethreaded is true for the test:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/rwsem.c#n17
-Another perf_singlethreaded considered evil :-) Note, just getting rid
-of perf_singlethreaded means latent bugs like this will pop up and
-will need resolution.
+Could we say
 
-Thanks,
-Ian
+* reg_val(imm) gets the value of the register specified by ``imm``
+* call_by_address(value) means to call a helper function by address
+specified by ``value`` (see `Helper functions`_ for details)
+* call_by_btfid(value) means to call a helper function by BTF ID
+specified by ``value`` (see `Helper functions`_ for details)
 
-> Thanks,
-> Ian
+I'm not sure that it helps, but I thought I would offer the suggestion.
+
+Otherwise, looks good to me!
+Will
+
+
+
+>  The BPF program needs to store the return value into register R0 before =
+doing a
+>  ``BPF_EXIT``.
 >
-> > Thanks,
-> > Namhyung
+> @@ -438,8 +447,9 @@ specified by the 'imm' field. A > 16-bit conditional =
+jump may be
+>  converted to a < 16-bit conditional jump plus a 32-bit unconditional
+>  jump.
+>
+> -All ``BPF_CALL`` and ``BPF_JA`` instructions belong to the
+> -base32 conformance group.
+> +All ``BPF_CALL | BPF_X`` instructions belong to the callx
+> +conformance group.  All other ``BPF_CALL`` instructions and all
+> +``BPF_JA`` instructions belong to the base32 conformance group.
+>
+>  Helper functions
+>  ~~~~~~~~~~~~~~~~
+> @@ -447,13 +457,13 @@ Helper functions
+>  Helper functions are a concept whereby BPF programs can call into a
+>  set of function calls exposed by the underlying platform.
+>
+> -Historically, each helper function was identified by an address
+> -encoded in the imm field.  The available helper functions may differ
+> -for each program type, but address values are unique across all program =
+types.
+> +Historically, each helper function was identified by an address.
+> +The available helper functions may differ for each program type,
+> +but address values are unique across all program types.
+>
+>  Platforms that support the BPF Type Format (BTF) support identifying
+> -a helper function by a BTF ID encoded in the imm field, where the BTF ID
+> -identifies the helper name and type.
+> +a helper function by a BTF ID, where the BTF ID identifies the helper
+> +name and type.
+>
+>  Program-local functions
+>  ~~~~~~~~~~~~~~~~~~~~~~~
+> @@ -660,4 +670,4 @@ carried over from classic BPF. These instructions use=
+d an instruction
+>  class of BPF_LD, a size modifier of BPF_W, BPF_H, or BPF_B, and a
+>  mode modifier of BPF_ABS or BPF_IND.  However, these instructions are
+>  deprecated and should no longer be used.  All legacy packet access
+> -instructions belong to the "legacy" conformance group.
+> +instructions belong to the "packet" conformance group.
+> --
+> 2.40.1
+>
+> --
+> Bpf mailing list
+> Bpf@ietf.org
+> https://www.ietf.org/mailman/listinfo/bpf
 
