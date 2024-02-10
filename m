@@ -1,111 +1,143 @@
-Return-Path: <bpf+bounces-21692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1789C8502D1
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 07:53:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6207F8502E3
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 08:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2E5D282C8B
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 06:53:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0349C1F23966
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 07:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E41018C3D;
-	Sat, 10 Feb 2024 06:53:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE20C16435;
+	Sat, 10 Feb 2024 07:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJ/7kQD0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZRldGd8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3322B17BD2
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 06:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06DF12E7B
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 07:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707547981; cv=none; b=ZAiEqbGAmnR+u2mk6UIxKD28mJaJUjADlX+ioMFclNdGelk2QqwKsqjuYVPv7SmbRbOA3il7Od+gaUWmDKEKZ4cDVsbwcTkPcySNu59wZ1xlApSbN4tHd5a95FIt4PSFpzvYcN0nTvW8RIFxUElPnXyCte7zCYzJdrqaxgoQMdg=
+	t=1707548624; cv=none; b=HUMWWHUOBfMgqs3uSFCIi1Lp7KFcQKoaxL4OJV2/YOluVN31dXZ6SaNi5Zttab9KEOjvnSGA0ZpgXrnIlcW9ldTTYJUY4bT+ncD9qdkkJaiO3aPd62uFXZ934x4O240XJa2Dtc+AyTiODenPuI1E3VyDiZUGnO40w1tMpqw2LWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707547981; c=relaxed/simple;
-	bh=kJkY5AHWOqObAweCuP2zdClK0TvjFJhtgwo8JH7kvGo=;
+	s=arc-20240116; t=1707548624; c=relaxed/simple;
+	bh=dY4bAgmiPdR3pX90/8kcNfhDxfuMVD8H6PrgM0fXk5c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VQWuxHmTx9CzHAbtY5WtaJW5twgMHxRAD3WPfwN4XPQe1oZkhYGQO0PqpDhLHsVGNltl88U1hGMKS3edS5fLX1avZtj3xoKVKw3lMJmML3dMnYXzzy/u+hvIjCU9F2+odeHhygknsYpiDFyOJUF6ANXHqQNL9U92uaYS3K6Pw2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJ/7kQD0; arc=none smtp.client-ip=209.85.218.66
+	 To:Cc:Content-Type; b=Sov/QmTXvIlln/kKU63ArYa9b4XBaTd4r/bzbZseHPMxyrVLfbmwtpmOiccDdkU0pfgOJKv89GnyOdS4qa4sLV8ok/NSSQxbUz0bEMPUSTsd7DLCew7FgCNudYWIPDN1XRV5TVobPMc89/OQJDXxiQs0D9MPe9KNnnoFmK7KaRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZRldGd8; arc=none smtp.client-ip=209.85.208.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-a3c3be8c988so8990166b.1
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 22:52:59 -0800 (PST)
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-561587ce966so1151078a12.1
+        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 23:03:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707547978; x=1708152778; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7dJdLr/sIF3IpU/iFQovedynGnB9w67KGuY5Yb4/uvE=;
-        b=RJ/7kQD0DZsftThyiEMkiSCzukKOW5VjQlYhjnt/OiCdRPjBZWwZtZbxnILM6fwHIT
-         Xr0zBWSKQa6UtJtv/KE99NeshDz5NaGjmslSY3Wt7zFVmE/wuOOBULIliZ3YmznoDddS
-         cRX4uMf2FnDKGOyEWNOeYkrTbdkj7RBRa3KovjPZO+W27/bcnJTcuwTDDq7haYgTM0S4
-         eCRn1vH/OvjA4panT/YlreIQhwoL/pqRaGnSItyjwPehUB7UFYHcgxmfVvVz/xkpx9eP
-         9gb6noBq2WKEsNr0Qvdu7ssrRluo6QFUhVLBJL7EBCM6ALBnd8i5dkIipWIHqR2JIp0Y
-         bs+g==
+        d=gmail.com; s=20230601; t=1707548621; x=1708153421; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dY4bAgmiPdR3pX90/8kcNfhDxfuMVD8H6PrgM0fXk5c=;
+        b=kZRldGd8JQBlyWzaDMmQCQtBXagfs88Gvhgp9hseAKmgWDgxxuZm3vQu49Kcbokbu+
+         bYu/MZs7uEebYBAUNVinx5H56BikYHgN4/yOZAx1UuFLJcON3ag/0U74xgEI8cC2kLrY
+         F5IkDAPO3M1dlObCd5DYahqq+tSA8+YFvIidXXPbBvDBm8QGJg+8NK2kGPBzYnXq3C9I
+         HmTL0/1S494dGnySkn0pyW+EUISrZczIqe/O5OHw1qTa6sc37HH8pqq6MmQtRg3OcIa8
+         qnPmQFu/RS5zxQ7Rtk3eL7ZXGXcKmG6Nn4AL24/WDCtxp87/EYdfbNjWlyp2Spzsgco8
+         Edfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707547978; x=1708152778;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7dJdLr/sIF3IpU/iFQovedynGnB9w67KGuY5Yb4/uvE=;
-        b=RvV+EuTifKwQBlPrPvtOzvYhrqfZI6XOOUo7Qj64HXlshBC5ajy6BnasV++Qmn1My3
-         6KuSxhBdmNNOW+fd0N7Vs4d2up2yG88vc09VMsNC23GQgi36AlceFXJHvha20oTge5WV
-         nCPLxDsEYKQuXmdvL76NJ/tTQjaVPmWHcW8kei/xR8SyZ18IgDIAY+7lnJXxzG9TcRxl
-         +M0vVyrPsonc321ry2X3vXRTKmPbrap4RMzsU4XsJfqzoweVp1D2EG9CFy83dA21qRTU
-         sf9arLoWSGHzCF/X8g4k1TtLBFvQf/TQzzPwaV/l8GxbertD9WwpjEz/9n8Qxe9hHjys
-         vp5Q==
-X-Gm-Message-State: AOJu0YwoxuU/pX0g4winSAagHht3xBH+t6oXGdYt64OEzTlABQ0gZBBi
-	AfWpgtDndcPdXW5N6Pwga9zJBQj/oy27cFfB6rPpQCWA5ysvrP6IvAemFX/k2q2l33Nx0rLatr8
-	Q27MmpE760ZoWq9ysH5+CcqbttnU=
-X-Google-Smtp-Source: AGHT+IGy4yYJe1tXH3ggJrbUXrfdkuKyEseCtdxmACAT47cb4QZxxka7h//p1T4NY9IAXqOLFl7ZTGlRbzAZFi2xkNQ=
-X-Received: by 2002:a17:906:29d6:b0:a38:4869:65cd with SMTP id
- y22-20020a17090629d600b00a38486965cdmr768937eje.71.1707547978240; Fri, 09 Feb
- 2024 22:52:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707548621; x=1708153421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dY4bAgmiPdR3pX90/8kcNfhDxfuMVD8H6PrgM0fXk5c=;
+        b=JofpcaItczySrrOuMJlbGwNiFx919SO7151sLU6S/ZxnMV1TLC6efwfPKfYVz+Sj+q
+         MhlIITH6UKMBMvhHar7b3xIvKjTCFhIUJ/fLOo/wTGiIWJqSdHBYEOtrZl9xRrL5yqc5
+         dGjmZ3kolMmyITsanSMARaZx5S9DRyCMtM1gfUNNrIX7gUJd+FoqpQq5I1dJGa3R/H2Y
+         q0tUdvI5Z12jxONzaRKrlvre1TQx1++7H4u1/NVvM6T2vmuP9GsjoyaxoVCNFRCzIIAP
+         9GUuzrzajVLfmw2AGFaYevLtBMln4TQjWsqhyvWLwQByG/r+/maJ4m7o0Xjvltp0zP1h
+         YCsQ==
+X-Gm-Message-State: AOJu0Yw6xu+4hDaBG1J6jm6dkwek79thVrMdbh0aHWofjHAMylm+qW/M
+	m3XYTd6dO+n049aeDUjxQzok1h+QuOTQ/DaqgmJZ2tZ62RDxjLJiJPV0VgWL/XcZuH807nwBsYi
+	NHRh2zpOQUKIxSl9ke438yoDZ7IM=
+X-Google-Smtp-Source: AGHT+IE0rdJyg8Tk3BWL1yiBubD/Dr7uxRA6OE/CslCveFezFgZR/Uab1Yot7fUO0bEYDKx+47yUMMNlfZceAyKpMjc=
+X-Received: by 2002:aa7:ccc6:0:b0:561:2f3b:7213 with SMTP id
+ y6-20020aa7ccc6000000b005612f3b7213mr1089783edt.13.1707548619999; Fri, 09 Feb
+ 2024 23:03:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com> <20240209040608.98927-3-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240209040608.98927-3-alexei.starovoitov@gmail.com>
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-18-alexei.starovoitov@gmail.com> <20240209231433.GE975217@maniforge.lan>
+ <CAADnVQJsdbUuvkp67_z5xprA+UP=O9rTcwm3xRkpqSArrGqNaA@mail.gmail.com>
+In-Reply-To: <CAADnVQJsdbUuvkp67_z5xprA+UP=O9rTcwm3xRkpqSArrGqNaA@mail.gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Sat, 10 Feb 2024 07:52:22 +0100
-Message-ID: <CAP01T76K5WF+6xOCv-KtgNBcwy7L35MDK-y4MMg27cX45XEZ2w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 02/20] bpf: Recognize '__map' suffix in kfunc arguments
+Date: Sat, 10 Feb 2024 08:03:03 +0100
+Message-ID: <CAP01T75qCUabu4-18nYwRDnSyTTgeAgNN3kePY5PXdnoTKt+Cg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 17/20] selftests/bpf: Add unit tests for bpf_arena_alloc/free_pages
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, tj@kernel.org, brho@google.com, hannes@cmpxchg.org, 
-	lstoakes@gmail.com, akpm@linux-foundation.org, urezki@gmail.com, 
-	hch@infradead.org, linux-mm@kvack.org, kernel-team@fb.com
+Cc: David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 9 Feb 2024 at 05:06, Alexei Starovoitov
+On Sat, 10 Feb 2024 at 05:35, Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> On Fri, Feb 9, 2024 at 3:14=E2=80=AFPM David Vernet <void@manifault.com> =
+wrote:
+> >
+> > > +
+> > > +#ifndef arena_container_of
+> >
+> > Why is this ifndef required if we have a pragma once above?
 >
-> Recognize 'void *p__map' kfunc argument as 'struct bpf_map *p__map'.
-> It allows kfunc to have 'void *' argument for maps, since bpf progs
-> will call them as:
-> struct {
->         __uint(type, BPF_MAP_TYPE_ARENA);
->         ...
-> } arena SEC(".maps");
+> Just a habit to check for a macro before defining it.
 >
-> bpf_kfunc_with_map(... &arena ...);
+> > Obviously it's way better for us to actually have arenas in the interim
+> > so this is fine for now, but UAF bugs could potentially be pretty
+> > painful until we get proper exception unwinding support.
 >
-> Underneath libbpf will load CONST_PTR_TO_MAP into the register via ld_imm64 insn.
-> If kfunc was defined with 'struct bpf_map *' it would pass
-> the verifier, but bpf prog would need to use '(void *)&arena'.
-> Which is not clean.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+> Detection that arena access faulted doesn't have to come after
+> exception unwinding. Exceptions vs cancellable progs are also different.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+What do you mean exactly by 'cancellable progs'? That they can be
+interrupted at any (or well-known) points and stopped? I believe
+whatever plumbing was done to enable exceptions will be useful there
+as well. The verifier would just need to know e.g. that a load into
+PTR_TO_ARENA may fault, and thus generate descriptors for all frames
+for that pc. Then, at runtime, you could technically release all
+resources by looking up the frame descriptor and unwind the stack and
+return back to the caller of the prog.
+
+> A record of the line in bpf prog that caused the first fault is probably
+> good enough for prog debugging.
+>
+
+I think it would make more sense to abort the program by default,
+because use-after-free in the arena most certainly means a bug in the
+program.
+There is no speed up from zeroing faults, it only papers over
+potential problems in the program.
+Something is being accessed in a page that has since been unallocated,
+or the pointer is bad/access is out-of-bounds.
+If not for all UAFs, especially for guard pages. In that case it is
+100% a problem in the program.
+Unlike PROBE_MEM where we cannot reason about what kernel memory
+tracing programs may read from, there is no need for a best-effort
+continuation here.
+
+Now that the verifier will stop reasoning precisely about object
+lifetimes unlike bpf_obj_new objects, all bugs that happen in normal C
+have a possibility of surfacing in a BPF program using arenas as
+heaps, so it is more likely that these cases are hit.
 
 > [...]
 
