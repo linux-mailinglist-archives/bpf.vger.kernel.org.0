@@ -1,133 +1,169 @@
-Return-Path: <bpf+bounces-21667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A294C8500EF
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 01:01:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD7A85013B
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 01:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB4F1C22CD4
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 00:01:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 477C4B2656A
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 00:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8231FD1;
-	Sat, 10 Feb 2024 00:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2FC5224;
+	Sat, 10 Feb 2024 00:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nC/5y7nX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VGwZv8lB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E5AD36B
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 00:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A036F4C7B
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 00:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707523284; cv=none; b=lj2t7+XS/N7VT71mDJm2DqZwoUsLwtw3fvaP2cUFERbPbcysLcb7dYY8S1I5M/+VbNJLxCnTF72sx+lNx7WUEhKqjhFzDyZ+yyEcPuR4R8cwJdOOLKAYLjxL7pnP20WahNHogNjnoZlrnRUd+VQCX6yddKzTMkQodF8iiGIxaxw=
+	t=1707525191; cv=none; b=EXMLQkJAL2rJ35WbgjzMFU+bGBR4m9zUAbGddFkApVDgdz3QLI0rsdT0XrL/KVfi1roixfX6aXoUmhqjgTaSfc3q7n4xhLPorBGmAxRbQbSAl8IlHe8hHoibo/xlwZex9Zhnn7mADPONVdFNifC6tvg29vsLK40kTw0gG1RZ+Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707523284; c=relaxed/simple;
-	bh=rCfJsAKeXXcZCAjkOXWwNzPHH0iNeMtutMIl0Ma/wGc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=L1R3jpmd9z26hfKjxzmWRVfN5+CnUdgDRLWd+T4jZmFSZFfabLDnnOWFwZBSiAoxHLGVmCiOx3BrD+ZWlVWxLWQJsLgqkU2L9+2KTr7NT7jGqLZutv8gPxw2Xy5+titDoCXoLKte1+Aizc8ODQj2WLWobBvtKPrCwgIt/XtwCQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nC/5y7nX; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-290e7a0a585so1476401a91.3
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 16:01:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707523283; x=1708128083; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=c6ofdqHOHjOqeu37knmsIEqYVGa2yCjdBWHlcP9NF/Q=;
-        b=nC/5y7nX6754PKWviq40EEoJ8KQ3RAp6ciXnVF5LUbmsfBfjYlGeNTlV+Fl2VElfiz
-         TSTXtT7to/x8w3LyvSpI6IrPv3zJDpFJHbDs1gaqVQe9Oe8QGYPAJLQcM9TEu70NB0D3
-         SBErKEyVMpGk+MtiP22z9PpvxZKTD3JzjblflOxY4eiaM6JN8mqh0zZORx9LrKmvXKW9
-         xWMA9G4x+/bESdmjlUzo5q+a4+UBfgOvOn1LtnWSkKEqiWeqP0YMOhrEjjSQw8NimIZG
-         hgrsZdSPbzgCcFhdpEpQ/okg614Yk3971CcpsXDW8rzA4ktLaKVjYYPdXS9No14I3KrH
-         ciNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707523283; x=1708128083;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c6ofdqHOHjOqeu37knmsIEqYVGa2yCjdBWHlcP9NF/Q=;
-        b=EsYHEqx/FITNWYQcfvF84NUj6DUzSRfPg4yyQVsvc3e+iv9L/kSndjAkl1tzv4LQjM
-         CblshtCCFWmELjh3RbGUSP8IjoEdq3TaOwUUHLHv3wKvlNPRec8baQP7uXWb/rLdCdRN
-         Dihhtew9CVYgULAyujEhDNNnA66WT4Pklw6vFLlRforPWTx5+5QckgoGPZN+YrQzSkcz
-         wI1/l5RdLlOr1av4f62pJHbIw3mVmgv/R6kDQw/DYwEQEkQSKgVVRTLagQ3XWQf2vgPv
-         PNy7xs3Rqvr1iHuUkFNKWMmVv56mg9oPoC1i1tORBnomYhQIQ5jk5G4RFjPVO/7SJli4
-         F30A==
-X-Gm-Message-State: AOJu0YzcbQ6KIChRVHMq5tGA583S25l9GsurCWdW/a8Ik0rV6WATcRxB
-	lI6SNhR8w7b+JW/fkLgD2zkAJg6aSCzrujuFTrUSU/8zcASnSekoe462PKsqOPP/eg==
-X-Google-Smtp-Source: AGHT+IF9QXd1fY5X9EOvsnSL9kEOtXqg/M1FMsRHU6x6+GdLrUXw3lbf88I0IE+ePtSMWI89x2Qr0BY=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:fc4b:b0:296:c9f1:a67e with SMTP id
- ee11-20020a17090afc4b00b00296c9f1a67emr10371pjb.6.1707523282741; Fri, 09 Feb
- 2024 16:01:22 -0800 (PST)
-Date: Fri, 9 Feb 2024 16:01:21 -0800
-In-Reply-To: <5ac3e6uwvhdujq6tywb6b5bh5flqln6d7kedmcbvhyp55jp4yo@65pnej6e2ub6>
+	s=arc-20240116; t=1707525191; c=relaxed/simple;
+	bh=Myu864pIfYCHIHmS3c4+kThRdMzyF1sbliXBAGjB45M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uqYgYhRNpVvcQE6yrJhEUhQvWJHsceDUaM+p+0XD4y8FF3y8xW+O0BBndIMBEv1OqrF69Iad1UDV0MLtRjYfdSkhLVlUAHpDxr42bjxBenmuEc9YKR4pFnoktPHRYTrD5chtdPCFudVC3dIo6x8X2qHVJV9bLI0oFF31z+mzz90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VGwZv8lB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0F1BC433C7;
+	Sat, 10 Feb 2024 00:33:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707525191;
+	bh=Myu864pIfYCHIHmS3c4+kThRdMzyF1sbliXBAGjB45M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VGwZv8lBUnvjTf1ysLjXDj89ML9keg0vWabUuTFHEjI0zQqtzzVAnfyUkp8vdwlQX
+	 /7k4m8P4xdVvW42LPELoWtN/x0all7MbwEy3s/6Iw9jhPlqzmQ9azGd0xnq+ZWlbMj
+	 3PEQ5W7zrXjPugiEqJ7YZf9a6kb7G2vFIv2AzRJcMn3tzkpj2PEdIC0WMZ8Kj//eW5
+	 A7JqWI8TlZb5MgAlMjRmZtGa2B5JfZkEnMz4gvwu5T8DggasZEjDRnDx6++txrx7+2
+	 o1d683+L04QX+OGynQiBLoO3qEvKlqBWfyqtsRwUbjWDm2x8r/gwX53oMszdUFGrCN
+	 CsAfYNgTM0O2w==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next] bpf: emit source code file name and line number in verifier log
+Date: Fri,  9 Feb 2024 16:33:08 -0800
+Message-Id: <20240210003308.3374075-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <5ac3e6uwvhdujq6tywb6b5bh5flqln6d7kedmcbvhyp55jp4yo@65pnej6e2ub6>
-Message-ID: <Zca80Uetl26BsICU@google.com>
-Subject: Re: [PATCH v3 bpf-next] net: remove check in __cgroup_bpf_run_filter_skb
-From: Stanislav Fomichev <sdf@google.com>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On 02/09, Oliver Crumrine wrote:
-> Originally, this patch removed a redundant check in
-> BPF_CGROUP_RUN_PROG_INET_EGRESS, as the check was already being done in
-> the function it called, __cgroup_bpf_run_filter_skb. For v2, it was
-> reccomended that I remove the check from __cgroup_bpf_run_filter_skb,
-> and add the checks to the other macro that calls that function,
-> BPF_CGROUP_RUN_PROG_INET_INGRESS.
-> 
-> To sum it up, checking that the socket exists and that it is a full
-> socket is now part of both macros BPF_CGROUP_RUN_PROG_INET_EGRESS and
-> BPF_CGROUP_RUN_PROG_INET_INGRESS, and it is no longer part of the
-> function they call, __cgroup_bpf_run_filter_skb.
-> 
-> Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
-> 
-> v2->v3: Sent to bpf-next instead of generic patch
-> v1->v2: Addressed feedback about where check should be removed.
-> ---
->  include/linux/bpf-cgroup.h | 7 ++++---
->  kernel/bpf/cgroup.c        | 3 ---
->  2 files changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index a789266feac3..b28dc0ff4218 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -195,10 +195,11 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
->  #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)			      \
->  ({									      \
->  	int __ret = 0;							      \
-> -	if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) &&			      \
-> -	    cgroup_bpf_sock_enabled(sk, CGROUP_INET_INGRESS))		      \
-> +	if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) &&			      \
-> +	    cgroup_bpf_sock_enabled(sk, CGROUP_INET_INGRESS) && sk &&	      \
-> +	    sk_fullsock(sk))						      \
->  		__ret = __cgroup_bpf_run_filter_skb(sk, skb,		      \
+As BPF applications grow in size and complexity and are separated into
+multiple .bpf.c files that are statically linked together, it becomes
+harder and harder to match verifier's BPF assembly level output to
+original C code. While often annotated C source code is unique enough to
+be able to identify the file it belongs to, quite often this is actually
+problematic as parts of source code can be quite generic.
 
-[..]
+Long story short, it is very useful to see source code file name and
+line number information along with the original C code. Verifier already
+knows this information, we just need to output it.
 
-> -						    CGROUP_INET_INGRESS);     \
-> +						    CGROUP_INET_INGRESS);     \
+This patch set is an initial proposal on how this can be done. No new
+flags are added and file:line information is appended at the end of
+C code:
 
-The bot still can't git-am it. And I can't either. Did you somehow
-manually mangle that part above? The original line has less trailing spaces
-than what your diff source has, look at:
+  ; <original C code> (<filename>.bpf.c:<line>)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/bpf-cgroup.h#n201
+If file name has directory names in it, they are stripped away. This
+should be fine in practice as file names tend to be pretty unique with
+C code anyways, and keeping log size smaller is always good.
 
-Can you drop this part? Let the idents stay broken :-)
+In practice this might look something like below, where some code is
+coming from application files, while others are from libbpf's usdt.bpf.h
+header file:
+
+  ; if (STROBEMETA_READ( (strobemeta_probe.bpf.c:534)
+  5592: (79) r1 = *(u64 *)(r10 -56)     ; R1_w=mem_or_null(id=1589,sz=7680) R10=fp0 fp-56_w=mem_or_null(id=1589,sz=7680)
+  5593: (7b) *(u64 *)(r10 -56) = r1     ; R1_w=mem_or_null(id=1589,sz=7680) R10=fp0 fp-56_w=mem_or_null(id=1589,sz=7680)
+  5594: (79) r3 = *(u64 *)(r10 -8)      ; R3_w=scalar() R10=fp0 fp-8=mmmmmmmm
+
+  ...
+
+  170: (71) r1 = *(u8 *)(r8 +15)        ; frame1: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) R8_w=map_value(map=__bpf_usdt_spec,ks=4,vs=208)
+  171: (67) r1 <<= 56                   ; frame1: R1_w=scalar(smax=0x7f00000000000000,umax=0xff00000000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xff00000000000000))
+  172: (c7) r1 s>>= 56                  ; frame1: R1_w=scalar(smin=smin32=-128,smax=smax32=127)
+  ; val <<= arg_spec->arg_bitshift; (usdt.bpf.h:183)
+  173: (67) r1 <<= 32                   ; frame1: R1_w=scalar(smax=0x7f00000000,umax=0xffffffff00000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xffffffff00000000))
+  174: (77) r1 >>= 32                   ; frame1: R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
+  175: (79) r2 = *(u64 *)(r10 -8)       ; frame1: R2_w=scalar() R10=fp0 fp-8=mmmmmmmm
+  176: (6f) r2 <<= r1                   ; frame1: R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R2_w=scalar()
+  177: (7b) *(u64 *)(r10 -8) = r2       ; frame1: R2_w=scalar(id=61) R10=fp0 fp-8_w=scalar(id=61)
+  ; if (arg_spec->arg_signed) (usdt.bpf.h:184)
+  178: (bf) r3 = r2                     ; frame1: R2_w=scalar(id=61) R3_w=scalar(id=61)
+  179: (7f) r3 >>= r1                   ; frame1: R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R3_w=scalar()
+  ; if (arg_spec->arg_signed) (usdt.bpf.h:184)
+  180: (71) r4 = *(u8 *)(r8 +14)
+  181: safe
+
+I've played with few different formats and none stood out as
+particularly better than other. Suggestions and votes are appreciated:
+
+  a) ; if (arg_spec->arg_signed) (usdt.bpf.h:184)
+  b) ; if (arg_spec->arg_signed) [usdt.bpf.h:184]
+  c) ; [usdt.bpf.h:184] if (arg_spec->arg_signed)
+  d) ; (usdt.bpf.h:184) if (arg_spec->arg_signed)
+
+Above output shows variant a), which is quite non-distracting in
+practice.
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/bpf/log.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index 594a234f122b..4b49d0eb5cd1 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -9,6 +9,7 @@
+ #include <linux/bpf.h>
+ #include <linux/bpf_verifier.h>
+ #include <linux/math64.h>
++#include <linux/string.h>
+ 
+ #define verbose(env, fmt, args...) bpf_verifier_log_write(env, fmt, ##args)
+ 
+@@ -362,6 +363,8 @@ __printf(3, 4) void verbose_linfo(struct bpf_verifier_env *env,
+ 				  const char *prefix_fmt, ...)
+ {
+ 	const struct bpf_line_info *linfo;
++	const struct btf *btf;
++	const char *s, *fname;
+ 
+ 	if (!bpf_verifier_log_needed(&env->log))
+ 		return;
+@@ -378,9 +381,15 @@ __printf(3, 4) void verbose_linfo(struct bpf_verifier_env *env,
+ 		va_end(args);
+ 	}
+ 
+-	verbose(env, "%s\n",
+-		ltrim(btf_name_by_offset(env->prog->aux->btf,
+-					 linfo->line_off)));
++	btf = env->prog->aux->btf;
++	s = ltrim(btf_name_by_offset(btf, linfo->line_off));
++	verbose(env, "%s", s); /* source code line */
++
++	s = btf_name_by_offset(btf, linfo->file_name_off);
++	/* leave only file name */
++	fname = strrchr(s, '/');
++	fname = fname ? fname + 1 : s;
++	verbose(env, " (%s:%u)\n", fname, BPF_LINE_INFO_LINE_NUM(linfo->line_col));
+ 
+ 	env->prev_linfo = linfo;
+ }
+-- 
+2.39.3
+
 
