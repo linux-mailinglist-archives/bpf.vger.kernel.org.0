@@ -1,196 +1,128 @@
-Return-Path: <bpf+bounces-21678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC2E850241
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 03:46:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE7D850267
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 04:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E35641C23AA2
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 02:46:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43FB7B24D8B
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 03:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC74C522F;
-	Sat, 10 Feb 2024 02:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC5E524B;
+	Sat, 10 Feb 2024 03:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bBDt3Or0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rkkOBcXa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E009546B7
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 02:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9C23C2C
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 03:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707533205; cv=none; b=tS3JX6YHhGwXyRpOvijkbAIKf8yKFPmvD9aRkwlEpPdpM1QRL5L1lkPj2/uGmn/IiCNwEBwuDVxygc1h/KMSoocAOl35VlzGvL0NWqW5u9ix/iAdd47z6exJSrAXvUUIxDV7g8ixfk9VO2fFHj+1D+41ojKMCOoh6TfagITRYPM=
+	t=1707535078; cv=none; b=JT6TKnrr5dyByGp/kXekkLRaEN5E5KGzNW0YGiePnBmx8/uSch/Q9NIufmwiL/LcOjVNuCqYeq6wMWv/Ovj4puujSrl8RPNuPIuhETS2Ljuqeh7V5dhlm9KNHIcJyzcEORXVVArn+Aqpvz/dLsFqd4Qgj5fThKVOWLNSxFYUKRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707533205; c=relaxed/simple;
-	bh=uLiR7Kz1MbofB8E4x+ZPySEkA1M0AMIiXoKEeJbpDXM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VQlQVcMf74G9J4YW11lgMwbOPemZhYJ8tAWSdJY8JSG1q5x7nZRbW+FugHeg1NALFAoje7V/AVSH+UIDfzemsWKtdo2TLFgKLnvMi4lyQOtQjjFmbLPfP7wWYzLr07HZmh3j/m4C+lshtyy/cG8unnt4RFBzYtfwpZtSnxIZBaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bBDt3Or0; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1707535078; c=relaxed/simple;
+	bh=YAb4FlNOlAfLeMVXc4h45YX0N5LZt0PmJHt3lr+GdM8=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=nfd975ceoTXAqHN9lv0BOv906IhzVEgCPGHJ0KzlWGkDtgAtp6J/LoPZz2BhlB18MxJ5xOaDvdrNiU31za/ZReHtFa11hVRAIF4Fl3Jv2gErSavGrKBlhnjWrzl0GDqxNYVpCnn1goA1EID6saL7fJLB4rx9/VjjpSPsSKVUopU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rkkOBcXa; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d89f0ab02bso50875ad.1
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 18:46:43 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc75a87e0e5so1013768276.1
+        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 19:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707533203; x=1708138003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gvPi1gupQqIT9F22A3YjxH75GO/tG9qnD/uz9dNXdsA=;
-        b=bBDt3Or0HXwHv8cIE4k9ENtqtkvQICUKscvsTOiZXGGSfucELfFJLHJDCUVgyrtbbS
-         Xn1seiv+0YdtiNrD8v6EQ4on3+maY9OgenyG+DZX/xNgUxEb4yftqHaN7JnD9Rf7O41Y
-         PXMJCF00fmv0s1kpcsVzeESt+eaDXZBsXyCjD1wvpZjcmvPrOPaiLcNjT5WwPxUUOv0v
-         Ztc6MfMOiYe8IvDxVxWoohv10pbHx5I1q80ehi4jPYHlKnPhC2AsKMBfFXj+AVmhOIXn
-         wZLyIg56rcy0Tx21R7zmMHsU4yeJgdolAJ0ZmgfWcYN/efk9ewHYWPb3GSzbNj1NTIdf
-         lrzw==
+        d=google.com; s=20230601; t=1707535076; x=1708139876; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cyyhzZNS8ki5ynML3KytcROjeKIHNvTXQuDKrxr/+s8=;
+        b=rkkOBcXaCHIJwlM/NBMSaArU/iKtllJxFbcFW8N4r95XaP38e2jJsJCHl7sAsOyIXH
+         zuyfXB3feNtzpwyBY1ulfjoA/O/LCXJPJwhElD6vqnf72UimHIric2MzuhE88zquvSrT
+         s1kCJ3GL5+hp+Nw5pi9TtPOVyluCaC990S26E47D27gzhl2svLH6rc3dtpFPhPKRepRK
+         GtJFsJvkn+x6565a9pNfcbzYCExEa1WlWyXDZoVesY0BOcdDRT+jSgaKvX2jgpM3WjyH
+         GBoL2jPRjAp5uD5hjs7ov0CSe3gDJ5XGFM8Jzs9YsjOaPq1NexUCTGWDOHx6iRayDfes
+         Dj7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707533203; x=1708138003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gvPi1gupQqIT9F22A3YjxH75GO/tG9qnD/uz9dNXdsA=;
-        b=HGsR0Wt7X6Q4gp/i69drClLoT0K+88E4sbw+6z/wuU6RM7b4+xOVOGVz807XHRIu67
-         GcteDXBXWkoTk6wNB6zsx5b34l6OJN6thAVsnN/J7MzKSTOxGqRgPmbfr38QVwFo6oLc
-         3TlTyHSPdLSC+73Td0RW7etAGnVkQKrKepimcTYULQ4zqHm4tVGYydiWRF3Ypxjwicnb
-         CoAkm/mTga3pdSme1ySYy2PK6UDkncfRUEfUJ73StEIuK+SweMy86qJqPxGYC/+D23PR
-         vwdklOz7WLuO6cAUaHfR3YsSGWM0xHm60AbyUdKgw9wM/5+3qH6B4hCRCS5u508TlBmr
-         cCng==
-X-Forwarded-Encrypted: i=1; AJvYcCWzIaTAJePXt6+GrdCiNR/lDy7JmxMZyiPVG28fKF6pNVXZOk+Y1LY6Z9K0N57TZaUtMmrYgoEaZIJ0ZYw5gSk3Csp0
-X-Gm-Message-State: AOJu0YwpY74YgErMBgLFLRKC0tcCbundZrG3zoRdIKI7633XM6ZtrqJv
-	A8ikWqmD0bLbG2XcGTqI5zaIYudaUsQAyw6VgPB7oWX3W1e+dgqqeafVqmyToZ5bEpY603AON1v
-	G5c0KFP4iffI4y432zSmmbX6E1nCNkIvQ85Fy
-X-Google-Smtp-Source: AGHT+IGTCvpDi/N93KDltxbd+jCsgx+d2H4/3YL9Lk68bhh5nVQRaWaPF8hEL4Kp36NHmdjWMtDnU0IrZiIHcdBg/KA=
-X-Received: by 2002:a17:903:44b:b0:1d9:a393:4a38 with SMTP id
- iw11-20020a170903044b00b001d9a3934a38mr38401plb.26.1707533202817; Fri, 09 Feb
- 2024 18:46:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707535076; x=1708139876;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cyyhzZNS8ki5ynML3KytcROjeKIHNvTXQuDKrxr/+s8=;
+        b=q2iYG69GpQH5l8Y0/DMgW2tG2eMFGf2pyolBOQkMq75wxnvu+U9+rymAzC8krcB7LF
+         BDB19hfF9ecd4EAaK6xuxMbsO0NZxxGg1gCRKMVzrJWZPSJFSO8HpWcJUg948f9E90id
+         YE24QIdkaIy+rvC+R02MRAekNpeiFuIfk1ryRGfglmT/8A2AfdLPkuaHL9pJthojNdjx
+         b5FCrmrGrxsZehiYnGCzDXAjxsuPXRfSa7pe168QFEOG9GeKd/szTp0rpLK6YogF3l1W
+         sxG8Vxzpg1CqT8fymxDH52MJ7Q9TeiMSsnqqB2O/dD1F/OS6eJyCIKLcdwaFkngwO1Zb
+         X1wg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIfc1nj0CxQJjJTemhFDuly5CYqCbzB5D4J3dqbhF2NILToRIC9n/3oQBCpeAyKa8b1lOY6rxZApAHbnrhLkzRVER/
+X-Gm-Message-State: AOJu0Yzwvzc7XRGJKcQ4cpV1ma5Iq5WhWEvRS4lcjAO34xyrGWJIEfLn
+	EYROfm/r7+D1dT/WEZ1oWhzYfNyTitoABQs3f5OMtsEcXjkh6jcyge0XK1KePojO2Z89FwtzcXe
+	g8m2I9g==
+X-Google-Smtp-Source: AGHT+IF1SwDaOZUfH6p6f3vnVppObrWGYDyiolwE6lbi/prKPGdxMlVbinVXuYjFA0KQF2Caw7xd7oz5mCZc
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:877:241d:8c35:1c5b])
+ (user=irogers job=sendgmr) by 2002:a05:6902:1207:b0:dc6:dd76:34cc with SMTP
+ id s7-20020a056902120700b00dc6dd7634ccmr31801ybu.1.1707535075759; Fri, 09 Feb
+ 2024 19:17:55 -0800 (PST)
+Date: Fri,  9 Feb 2024 19:17:40 -0800
+Message-Id: <20240210031746.4057262-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
-In-Reply-To: <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Subject: [PATCH v3 0/6] maps memory improvements and fixes
 From: Ian Rogers <irogers@google.com>
-Date: Fri, 9 Feb 2024 18:46:31 -0800
-Message-ID: <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
+	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
+	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
+	Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hi Ian,
->
-> On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > First 6 patches from:
-> > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.co=
-m/
-> >
-> > v2. Fix NO_LIBUNWIND=3D1 build issue.
-> >
-> > Ian Rogers (6):
-> >   perf maps: Switch from rbtree to lazily sorted array for addresses
-> >   perf maps: Get map before returning in maps__find
-> >   perf maps: Get map before returning in maps__find_by_name
-> >   perf maps: Get map before returning in maps__find_next_entry
-> >   perf maps: Hide maps internals
-> >   perf maps: Locking tidy up of nr_maps
->
-> Now I see a perf test failure on the vmlinux test:
->
-> $ sudo ./perf test -v vmlinux
->   1: vmlinux symtab matches kallsyms                                 :
-> --- start ---
-> test child forked, pid 4164115
-> /proc/{kallsyms,modules} inconsistency while looking for
-> "[__builtin__kprobes]" module!
-> /proc/{kallsyms,modules} inconsistency while looking for
-> "[__builtin__kprobes]" module!
-> /proc/{kallsyms,modules} inconsistency while looking for
-> "[__builtin__ftrace]" module!
-> Looking at the vmlinux_path (8 entries long)
-> Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbols
-> perf: Segmentation fault
-> Obtained 16 stack frames.
-> ./perf(+0x1b7dcd) [0x55c40be97dcd]
-> ./perf(+0x1b7eb7) [0x55c40be97eb7]
-> /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
-> ./perf(+0x1c2e9c) [0x55c40bea2e9c]
-> ./perf(+0x1c43f6) [0x55c40bea43f6]
-> ./perf(+0x1c4649) [0x55c40bea4649]
-> ./perf(+0x1c46d3) [0x55c40bea46d3]
-> ./perf(+0x1c7303) [0x55c40bea7303]
-> ./perf(+0x1c70b5) [0x55c40bea70b5]
-> ./perf(+0x1c73e6) [0x55c40bea73e6]
-> ./perf(+0x11833e) [0x55c40bdf833e]
-> ./perf(+0x118f78) [0x55c40bdf8f78]
-> ./perf(+0x103d49) [0x55c40bde3d49]
-> ./perf(+0x103e75) [0x55c40bde3e75]
-> ./perf(+0x1044c0) [0x55c40bde44c0]
-> ./perf(+0x104de0) [0x55c40bde4de0]
-> test child interrupted
-> ---- end ----
-> vmlinux symtab matches kallsyms: FAILED!
+First 6 patches from:
+https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.com/
 
-Ah, tripped over a latent bug summarized in this part of an asan stack trac=
-e:
-```
-freed by thread T0 here:
-   #0 0x7fa13bcd74b5 in __interceptor_realloc
-../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
-   #1 0x561d66377713 in __maps__insert util/maps.c:353
-   #2 0x561d66377b89 in maps__insert util/maps.c:413
-   #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.c:1460
-   #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:1675
-   #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
-   #6 0x561d66321a4e in dso__load util/symbol.c:1914
-   #7 0x561d66372cd9 in map__load util/map.c:353
-   #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
-   #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
-   #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:524
-   #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
-   #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
-   #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/machine.h=
-:243
-   #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
-tests/vmlinux-kallsyms.c:330
-...
-```
-dso__process_kernel_symbol rewrites the kernel maps here:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/symbol-elf.c#n1378
-which resizes the maps_by_address array causing the maps__for_each_map
-iteration in frame 11 to be iterating over a stale/freed value.
+v3. Fix latent concurrent modification bug in maps__for_each_map.
+v2. Fix NO_LIBUNWIND=1 build issue.
 
-The most correct solutions would be to clone the maps_by_address array
-prior to iteration, or reference count maps_by_address and its size.
-Neither of these solutions particularly appeal, so just reloading the
-maps_by_address and size on each iteration also fixes the problem, but
-possibly causes some maps to be skipped/repeated. I think this is
-acceptable correctness for the performance.
+Ian Rogers (6):
+  perf maps: Switch from rbtree to lazily sorted array for addresses
+  perf maps: Get map before returning in maps__find
+  perf maps: Get map before returning in maps__find_by_name
+  perf maps: Get map before returning in maps__find_next_entry
+  perf maps: Hide maps internals
+  perf maps: Locking tidy up of nr_maps
 
-Thanks,
-Ian
+ tools/perf/arch/x86/tests/dwarf-unwind.c |    1 +
+ tools/perf/tests/maps.c                  |    3 +
+ tools/perf/tests/thread-maps-share.c     |    8 +-
+ tools/perf/tests/vmlinux-kallsyms.c      |   10 +-
+ tools/perf/util/bpf-event.c              |    1 +
+ tools/perf/util/callchain.c              |    2 +-
+ tools/perf/util/event.c                  |    4 +-
+ tools/perf/util/machine.c                |   34 +-
+ tools/perf/util/map.c                    |    1 +
+ tools/perf/util/maps.c                   | 1302 ++++++++++++++--------
+ tools/perf/util/maps.h                   |   65 +-
+ tools/perf/util/probe-event.c            |    1 +
+ tools/perf/util/symbol-elf.c             |    4 +-
+ tools/perf/util/symbol.c                 |   31 +-
+ tools/perf/util/thread.c                 |    2 +-
+ tools/perf/util/unwind-libdw.c           |    2 +-
+ tools/perf/util/unwind-libunwind-local.c |    2 +-
+ tools/perf/util/unwind-libunwind.c       |    7 +-
+ 18 files changed, 906 insertions(+), 574 deletions(-)
 
-> Thanks,
-> Namhyung
+-- 
+2.43.0.687.g38aa6559b0-goog
+
 
