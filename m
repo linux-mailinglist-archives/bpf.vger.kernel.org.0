@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-21697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C101850344
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 08:18:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF96E85034F
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 08:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 197901F20EEB
-	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 07:18:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 008DD1C223B7
+	for <lists+bpf@lfdr.de>; Sat, 10 Feb 2024 07:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BACE2FC29;
-	Sat, 10 Feb 2024 07:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12C0288B0;
+	Sat, 10 Feb 2024 07:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AyyBEgYs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="idLETbjh"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12FEF2E632
-	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 07:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFF22B9B7
+	for <bpf@vger.kernel.org>; Sat, 10 Feb 2024 07:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707549420; cv=none; b=RJAjD/wOLIgw0TAqbRLdOwMvxs4OpXNntuvpmNFzOHMUU1eDHt0DGP4/Ez7QtPzYN6jDU3ESuW9yEvbji2qn1xzZy7Y5BTPUUKFBqLHYXP3SLc7Rfg6+GYuYTJvrZ50zpHZizuWMLmg/RElOxDxSkMoue8v2laZk8hDwbU/MMrY=
+	t=1707550867; cv=none; b=EYdNU9i2nY4dsbwYpde5t+d70u9cZJRMhaxXzSyV0otNB+Swa5GaLZRJsVdxCyHA1qAoLj+Xazkkis0HldpOobpw4uVXtvgRiB1H4qU9QSjVG1cA3LRbD+4w3rSjn/Z/XNuGohJH3Crj1pxkOcFZxDot/pzawczwDDaQFERSs1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707549420; c=relaxed/simple;
-	bh=luv/nozxQiaR+dTBlsUTbS7gmBhprrhBjeFkNiOxAIo=;
+	s=arc-20240116; t=1707550867; c=relaxed/simple;
+	bh=/EA0A9ClMivjrzgeHT6u7jGp4VTLJt/zJ2i+BQvJZB0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KV7MmvqpYp5/osQEsSmp/mzNoxfhpQarDmJsIQymDLK3iJpB1YhITy60rl86tciQbven/+9WEqnVMpQ+AXxxM8WWPk9BotG6cGC4E7jtZOBPxAkz55fSQAajFAVxURqTm9+sShELSslLu8IpjMuQUC0J/wgEPmGjodcMFgpcApc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AyyBEgYs; arc=none smtp.client-ip=209.85.218.65
+	 To:Cc:Content-Type; b=q5r/pWZNz2mPCWQ0yOpBX0OnRrl4Dgy284iA1J88m3QHblzs4X6POdGMoTUeCxa/l7rj/48HZts1bI9lJZfaknw65kLg0wOvDLkvyEpRcl97Ux0jBlKPKqU8cXVme/sNuMp5ivM/i/VFvfoJS+Q24VTFo35S68Lq5B8lDcBMmyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=idLETbjh; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a28a6cef709so223140366b.1
-        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 23:16:58 -0800 (PST)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a28a6cef709so224386166b.1
+        for <bpf@vger.kernel.org>; Fri, 09 Feb 2024 23:41:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707549417; x=1708154217; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707550864; x=1708155664; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y97i1bM3fowwtIiLcqiCPU79flprtC3sB1VR0OaMOMQ=;
-        b=AyyBEgYs7WPaaRB6bEWIwn/LZtviUgMkRffnQITDG65Hml8RTPGdJIO21nm5azP/1P
-         zletx3TAFY5HpDL/TupBTNPOq4vSqWer58nokM15gWdEkX4BdftF/rSm2UWpwtYbYnMm
-         5Wr2UB1Kgbm3XkJWfZGxVpTUuKSgXS+UcK6WXoGXICoZOSulPYk8u/Beu3xN/pO5T0pL
-         r4YO8u2f9731PCuMGJydC9ambZkVnZqcMZB7q1ebrCFqJBIOSu49s0WtZUr51Pf7p5mj
-         EfpIqVSSHxI2fr5QZb9l3Dc6IXWnOH/XXpbJNkV3HYqoaS2rQ0aa2LwsesWCx4Z6/FT0
-         8qTg==
+        bh=oZ+9Cb9F8pQbHqJBfYcNULR1QGntyh+v0wn8qHbrX0E=;
+        b=idLETbjhe7DjoIRRNjgY1hv7tWaLnXJtWgwBhsCwSqaX03/tUzTXIuzuv158yApJs+
+         7Yjf0jIGHiZxFdY7Zd0CjxRbvMj+3fIxPPhjVNTZj5A4ICV46OsrhX/pdUWuNMldPjQw
+         ZGsCGpWy/ce2FdDYF041AdqAVX3dNhRXmbnmcP104+n/cOEjgZQKR65XGYXYRtrMfWzu
+         yVuPcASM5lsnvhN//4WzYvGiUo7TgBmXe5A+hX8gQwnsM4v2jrEFbxoKheUGlAN+LKwH
+         zib350wQvSqK3KHKiotO7/fy2MNDLY/+pSJwaKypj3GKgZJhs9EiZAEM5sLhWzQ75ToO
+         bmjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707549417; x=1708154217;
+        d=1e100.net; s=20230601; t=1707550864; x=1708155664;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y97i1bM3fowwtIiLcqiCPU79flprtC3sB1VR0OaMOMQ=;
-        b=uMl1kO3XzMJyKeVGxns6IFH3ePoieagHdE71BL2TAfbsOGPeXLpmpZ8l2NhcIJA0Z+
-         krsRUzSw9FF7UCP6xe+trjyh+ucvJwAlUxNxs4ff+orzuxZDC1sBeGTYKWHt87LKSoiS
-         +L26XGqh3KYv2vUCOeH+YvjzIkyFuUxTUYj6rFSMO9Z+VHjddXWsx+XX/zg8e6MG1frX
-         uFrcl/Ci+dRdeWqsCbgdhi7m3Kqoph9sXU0dzhluJxRRAK03eR2X0Wfbp3M0bg0A2nvg
-         HUFokKCiy3aILHbIhj26xdPUF2lDhsrSYx1u14hKxoqmNN8NoJHYXrxa2hNNTNHmTrIx
-         MVGw==
-X-Gm-Message-State: AOJu0YyjVS8cicyLvop+Ck+1kgTLKWaxsK8vQEGR1hO5O8NL6QH9eVOl
-	lDYlKMrcwkI27/s1vXWSCJnoiFHz/Ygt1Zvf02p59LqT273Y2wRU3rb21gyjTFj75DiSyx39thM
-	0WC8ki9ZdfTcw6FkPDtrLflndIfk=
-X-Google-Smtp-Source: AGHT+IEWobhmE1/WwMHn6oX5ZN80IWRQNYjBDrldUZX4i4anOyMX2ZlYR3J04Gg+rJ599TivW5b2bCmN+cUc4fiu+Uk=
-X-Received: by 2002:a17:906:35d9:b0:a38:a6a0:3c43 with SMTP id
- p25-20020a17090635d900b00a38a6a03c43mr886180ejb.50.1707549417181; Fri, 09 Feb
- 2024 23:16:57 -0800 (PST)
+        bh=oZ+9Cb9F8pQbHqJBfYcNULR1QGntyh+v0wn8qHbrX0E=;
+        b=enaUN9o4fmXTa6hKBmevI2cVZg6c0xY7kIGu/MtEW3gOrDDiIZrnGjOjv0PRraxxOM
+         D/ppxoS8x+1IZdlfZNGsdlHZJlYQnt/XCycY7vm/M+Qk1iJfZFC+gR3WMIaeLOXKNZjI
+         MZ7jtrhLA4QafQDbeIBlJQRWxf9YSI6t5HjCTJJRA+vkz7mH2+nv9ZAg0XqiheMMUiux
+         P3r2L94IJh3vBbWHLRazuBkj9fo5c740V0Bmc1kElt37jvgHRUbQ2MHbjAJkCF6BQoPa
+         9/2YkYc+0wY6Pbo/IbXj63NRA2f/omjo67MeNNXA8k54maDnMlztfDcVgp+dFXnyK3Ba
+         Lt4w==
+X-Gm-Message-State: AOJu0YzlcVNCMNa6dUS5zTs6drY1rHds9fbp6r00OZLDAK2H7PFKTW2z
+	+HyWC7/rdRWxM7WtbOmIIl5Vv22DJEGuWri9g3HaMHnFFvm0SrX1wjMrFJ71CF4euEknXoIZjWE
+	EHDSM0o9a0980m4W9EmTtZSwfj7g=
+X-Google-Smtp-Source: AGHT+IFPSvgrqpy62N0H+pYl5zgLQmOCd7r8/4cMGj/KOxMM4r6/9U9hpiMmqkhRfoMLoTGLd1J0svoYIyib5dEuztU=
+X-Received: by 2002:a17:906:c28e:b0:a38:e747:e893 with SMTP id
+ r14-20020a170906c28e00b00a38e747e893mr871547ejz.51.1707550863765; Fri, 09 Feb
+ 2024 23:41:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com> <20240209040608.98927-13-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240209040608.98927-13-alexei.starovoitov@gmail.com>
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com> <20240209040608.98927-6-alexei.starovoitov@gmail.com>
+In-Reply-To: <20240209040608.98927-6-alexei.starovoitov@gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Sat, 10 Feb 2024 08:16:21 +0100
-Message-ID: <CAP01T761B1+paMwrQesjX+zqFwQp8iUzLORueTjTLSHPbJ+0fQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 12/20] libbpf: Add support for bpf_arena.
+Date: Sat, 10 Feb 2024 08:40:27 +0100
+Message-ID: <CAP01T75y-E8qjMpn_9E-k8H0QpPdjvYx9MMgx6cxGfmdVat+Xw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/20] bpf: Introduce bpf_arena.
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	eddyz87@gmail.com, tj@kernel.org, brho@google.com, hannes@cmpxchg.org, 
@@ -82,122 +82,107 @@ Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 	hch@infradead.org, linux-mm@kvack.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 9 Feb 2024 at 05:07, Alexei Starovoitov
+On Fri, 9 Feb 2024 at 05:06, Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> mmap() bpf_arena right after creation, since the kernel needs to
-> remember the address returned from mmap. This is user_vm_start.
-> LLVM will generate bpf_arena_cast_user() instructions where
-> necessary and JIT will add upper 32-bit of user_vm_start
-> to such pointers.
+> Introduce bpf_arena, which is a sparse shared memory region between the bpf
+> program and user space.
 >
-> Fix up bpf_map_mmap_sz() to compute mmap size as
-> map->value_size * map->max_entries for arrays and
-> PAGE_SIZE * map->max_entries for arena.
+> Use cases:
+> 1. User space mmap-s bpf_arena and uses it as a traditional mmap-ed anonymous
+>    region, like memcached or any key/value storage. The bpf program implements an
+>    in-kernel accelerator. XDP prog can search for a key in bpf_arena and return a
+>    value without going to user space.
+> 2. The bpf program builds arbitrary data structures in bpf_arena (hash tables,
+>    rb-trees, sparse arrays), while user space consumes it.
+> 3. bpf_arena is a "heap" of memory from the bpf program's point of view.
+>    The user space may mmap it, but bpf program will not convert pointers
+>    to user base at run-time to improve bpf program speed.
 >
-> Don't set BTF at arena creation time, since it doesn't support it.
+> Initially, the kernel vm_area and user vma are not populated. User space can
+> fault in pages within the range. While servicing a page fault, bpf_arena logic
+> will insert a new page into the kernel and user vmas. The bpf program can
+> allocate pages from that region via bpf_arena_alloc_pages(). This kernel
+> function will insert pages into the kernel vm_area. The subsequent fault-in
+> from user space will populate that page into the user vma. The
+> BPF_F_SEGV_ON_FAULT flag at arena creation time can be used to prevent fault-in
+> from user space. In such a case, if a page is not allocated by the bpf program
+> and not present in the kernel vm_area, the user process will segfault. This is
+> useful for use cases 2 and 3 above.
+>
+> bpf_arena_alloc_pages() is similar to user space mmap(). It allocates pages
+> either at a specific address within the arena or allocates a range with the
+> maple tree. bpf_arena_free_pages() is analogous to munmap(), which frees pages
+> and removes the range from the kernel vm_area and from user process vmas.
+>
+> bpf_arena can be used as a bpf program "heap" of up to 4GB. The speed of bpf
+> program is more important than ease of sharing with user space. This is use
+> case 3. In such a case, the BPF_F_NO_USER_CONV flag is recommended. It will
+> tell the verifier to treat the rX = bpf_arena_cast_user(rY) instruction as a
+> 32-bit move wX = wY, which will improve bpf prog performance. Otherwise,
+> bpf_arena_cast_user is translated by JIT to conditionally add the upper 32 bits
+> of user vm_start (if the pointer is not NULL) to arena pointers before they are
+> stored into memory. This way, user space sees them as valid 64-bit pointers.
+>
+> Diff https://github.com/llvm/llvm-project/pull/79902 taught LLVM BPF backend to
+> generate the bpf_cast_kern() instruction before dereference of the arena
+> pointer and the bpf_cast_user() instruction when the arena pointer is formed.
+> In a typical bpf program there will be very few bpf_cast_user().
+>
+> From LLVM's point of view, arena pointers are tagged as
+> __attribute__((address_space(1))). Hence, clang provides helpful diagnostics
+> when pointers cross address space. Libbpf and the kernel support only
+> address_space == 1. All other address space identifiers are reserved.
+>
+> rX = bpf_cast_kern(rY, addr_space) tells the verifier that
+> rX->type = PTR_TO_ARENA. Any further operations on PTR_TO_ARENA register have
+> to be in the 32-bit domain. The verifier will mark load/store through
+> PTR_TO_ARENA with PROBE_MEM32. JIT will generate them as
+> kern_vm_start + 32bit_addr memory accesses. The behavior is similar to
+> copy_from_kernel_nofault() except that no address checks are necessary. The
+> address is guaranteed to be in the 4GB range. If the page is not present, the
+> destination register is zeroed on read, and the operation is ignored on write.
+>
+> rX = bpf_cast_user(rY, addr_space) tells the verifier that
+> rX->type = unknown scalar. If arena->map_flags has BPF_F_NO_USER_CONV set, then
+> the verifier converts cast_user to mov32. Otherwise, JIT will emit native code
+> equivalent to:
+> rX = (u32)rY;
+> if (rY)
+>   rX |= clear_lo32_bits(arena->user_vm_start); /* replace hi32 bits in rX */
+>
+> After such conversion, the pointer becomes a valid user pointer within
+> bpf_arena range. The user process can access data structures created in
+> bpf_arena without any additional computations. For example, a linked list built
+> by a bpf program can be walked natively by user space.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c        | 43 ++++++++++++++++++++++++++++++-----
->  tools/lib/bpf/libbpf_probes.c |  7 ++++++
->  2 files changed, 44 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 01f407591a92..4880d623098d 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -185,6 +185,7 @@ static const char * const map_type_name[] = {
->         [BPF_MAP_TYPE_BLOOM_FILTER]             = "bloom_filter",
->         [BPF_MAP_TYPE_USER_RINGBUF]             = "user_ringbuf",
->         [BPF_MAP_TYPE_CGRP_STORAGE]             = "cgrp_storage",
-> +       [BPF_MAP_TYPE_ARENA]                    = "arena",
->  };
->
->  static const char * const prog_type_name[] = {
-> @@ -1577,7 +1578,7 @@ static struct bpf_map *bpf_object__add_map(struct bpf_object *obj)
->         return map;
->  }
->
-> -static size_t bpf_map_mmap_sz(unsigned int value_sz, unsigned int max_entries)
-> +static size_t __bpf_map_mmap_sz(unsigned int value_sz, unsigned int max_entries)
->  {
->         const long page_sz = sysconf(_SC_PAGE_SIZE);
->         size_t map_sz;
-> @@ -1587,6 +1588,20 @@ static size_t bpf_map_mmap_sz(unsigned int value_sz, unsigned int max_entries)
->         return map_sz;
->  }
->
-> +static size_t bpf_map_mmap_sz(const struct bpf_map *map)
-> +{
-> +       const long page_sz = sysconf(_SC_PAGE_SIZE);
-> +
-> +       switch (map->def.type) {
-> +       case BPF_MAP_TYPE_ARRAY:
-> +               return __bpf_map_mmap_sz(map->def.value_size, map->def.max_entries);
-> +       case BPF_MAP_TYPE_ARENA:
-> +               return page_sz * map->def.max_entries;
-> +       default:
-> +               return 0; /* not supported */
-> +       }
-> +}
-> +
->  static int bpf_map_mmap_resize(struct bpf_map *map, size_t old_sz, size_t new_sz)
->  {
->         void *mmaped;
-> @@ -1740,7 +1755,7 @@ bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
->         pr_debug("map '%s' (global data): at sec_idx %d, offset %zu, flags %x.\n",
->                  map->name, map->sec_idx, map->sec_offset, def->map_flags);
->
-> -       mmap_sz = bpf_map_mmap_sz(map->def.value_size, map->def.max_entries);
-> +       mmap_sz = bpf_map_mmap_sz(map);
->         map->mmaped = mmap(NULL, mmap_sz, PROT_READ | PROT_WRITE,
->                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
->         if (map->mmaped == MAP_FAILED) {
-> @@ -4852,6 +4867,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         case BPF_MAP_TYPE_SOCKHASH:
->         case BPF_MAP_TYPE_QUEUE:
->         case BPF_MAP_TYPE_STACK:
-> +       case BPF_MAP_TYPE_ARENA:
->                 create_attr.btf_fd = 0;
->                 create_attr.btf_key_type_id = 0;
->                 create_attr.btf_value_type_id = 0;
-> @@ -4908,6 +4924,21 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         if (map->fd == map_fd)
->                 return 0;
->
-> +       if (def->type == BPF_MAP_TYPE_ARENA) {
-> +               map->mmaped = mmap((void *)map->map_extra, bpf_map_mmap_sz(map),
-> +                                  PROT_READ | PROT_WRITE,
-> +                                  map->map_extra ? MAP_SHARED | MAP_FIXED : MAP_SHARED,
-> +                                  map_fd, 0);
-> +               if (map->mmaped == MAP_FAILED) {
-> +                       err = -errno;
-> +                       map->mmaped = NULL;
-> +                       close(map_fd);
-> +                       pr_warn("map '%s': failed to mmap bpf_arena: %d\n",
-> +                               bpf_map__name(map), err);
-> +                       return err;
-> +               }
-> +       }
-> +
 
-Would it be possible to introduce a public API accessor for getting
-the value of map->mmaped?
-Otherwise one would have to parse through /proc/self/maps in case
-map_extra is 0.
+A few questions on the patch.
 
-The use case is to be able to use the arena as a backing store for
-userspace malloc arenas, so that
-we can pass through malloc/mallocx calls (or class specific operator
-new) directly to malloc arena using the BPF arena.
-In such a case a lot of the burden of converting existing data
-structures or code can be avoided by making much of the process
-transparent.
-Userspace malloced objects can also be easily shared to BPF progs as a
-pool through bpf_ma style per-CPU allocator.
+1. Is the expectation that user space would use syscall progs to
+manipulate mappings in the arena?
+
+2. I may have missed it, but which memcg are the allocations being
+accounted against? Will it be the process that created the map?
+When trying to explore bpf_map_alloc_pages, I could not figure out if
+the obj_cgroup was being looked up anywhere.
+I think it would be nice if it were accounted for against the caller
+of bpf_map_alloc_pages, since potentially the arena map can be shared
+across multiple processes.
+Tying it to bpf_map on bpf_map_alloc may be too coarse for arena maps.
+
+3. A bit tangential, but what would be the path to having huge page
+mappings look like (mostly from an interface standpoint)? I gather we
+could use the flags argument on the kernel side, and if 1 is true
+above, it would mean userspace would do it from inside a syscall
+program and then trigger a page fault? Because experience with use
+case 1 in the commit log suggests it is desirable to have such memory
+be backed by huge pages to reduce TLB misses.
 
 > [...]
+>
 
