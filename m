@@ -1,120 +1,120 @@
-Return-Path: <bpf+bounces-21724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63E8850F07
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 09:44:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00526850FFF
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 10:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7674E2819B4
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 08:44:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32D811C21D00
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 09:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCA1F51F;
-	Mon, 12 Feb 2024 08:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C07E17BC1;
+	Mon, 12 Feb 2024 09:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eGp3r5XS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+fmod6P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D893F50D
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 08:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FB9179AD;
+	Mon, 12 Feb 2024 09:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707727456; cv=none; b=BmLIC60b9l92aeE8Ogc0jdIK/L8uM4EEKo5Av6/etOqaAqAgnLw8c7/3LdFXWztVWAgGd9p5HF/OxJMRPAPGwpI+5jpUgcnz5VlDI6tZUAZyEmR8n/dfCT5i6hCE/Yw68KdIBvRZjxegW5J7f67VP5g6Fv1GoeF1/RZAFW+h9IQ=
+	t=1707731503; cv=none; b=ToXn3NsRSL8eaC3fx2uEAFA0UJuO3j8j2l6PTX/yBxShV/pUlWtdFLIHpqKM53kg2kRVvmACcu9QPtYOzuhn5AhNPz/MvnOL1jRjz0Pd8M9q26w4bp3edvERcmuYJICQS1aoNj5ydepm/HhCdTG5rZ0VHs/i/4uAm9fsDydidSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707727456; c=relaxed/simple;
-	bh=ATjwEUhmBxDq/KCkU6frfxMDP1x522q4neZaYt1HQWA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bDCwselqReiyDlwaUhDln+8tQb1RVTWWf1tdI3KpFBGZ/mKnBBpSoHnYdSKDPoDTAZ9XrYL8aa52PNhDVvdWclO+aifmZEbLGwIPXuLzSMvOeCUprTzqb3kDsUmFNbumvDH0hwccQSTFXVXu3zP18wSqaZeEbpzHOo672QaAlaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eGp3r5XS; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-410ec928b83so1344215e9.2
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 00:44:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707727453; x=1708332253; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LK/7MVtgjnhy5jN+N9y1+ro6J0YP7MUdBH0qcdZQKPE=;
-        b=eGp3r5XSKuZ3/A1VpVgXkAy3itzhSeHUfDpain6x1iRQ6SfQNblqpzLVJJdo8nfnBq
-         yGI15iUMalYNVWIWdtfNY7Tn4IsXmL1mxnpHKqUPGKDkLqzeW7BE168WI6oYKDdk3mAf
-         KOwZ3su8v/p4GJ0A65sPbQ4ttA6IZsQ7PsYQitadu6aiaTqMjJY3dZSIMTXixl/+/Eax
-         xVyeG5fDahDMN0OkXjLi3b87p7PceB+lxy+ZcAiGL8HWd+C9UDv2E5ckxGWKXoYDNe9p
-         SbU7+zvmGgA9uDljb2um3kxL7gYe2M/2c0C469F+R+jNOY2lCcbmrVf1PTCosK6Y8NSS
-         nqjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707727453; x=1708332253;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LK/7MVtgjnhy5jN+N9y1+ro6J0YP7MUdBH0qcdZQKPE=;
-        b=mccdNV3dgoFSBO6MH4pZyDG7i32Se+3XIDpcV3ietQLMNBebUQoPauaPf+qrF6fjvW
-         HwKt4nRQ/pE3Cl24EEsFFhFn5PNldhsEUL2mMl1ko3e/6tCeLaZQiGYn6Qcm0VLVtAax
-         yZsGRn0yY8Gkr5qjUfJTScH8cm/2wcwj4Qfhb0hx+wgj6AWBigGyTr5lPywRXyNhTKOF
-         +j1tzQ4JcuhEVKcS++PWtwrvzafRrf+DCLP4GMdb7YAbMXPaIs0KbS7b2gf7s8Y7oviW
-         vwhAaY5sIWylhqawItqXb7yu/qNtONyuP8UhNuWFELRTiZyMZ1mYcrsxnSRNf6Gh3Gwi
-         n+iw==
-X-Gm-Message-State: AOJu0Yxgmy820XNl47fXYntxDtANuUqfM6lA8Hxtu64XPqZC4Vly8/3y
-	4bTha1SwiMxIV5DRpZ+Ut5J/ZHh7k9NnRXaaQV3QwUeqxurIEF/p
-X-Google-Smtp-Source: AGHT+IHcgWyTIRk2/s69vNuoTEzWZ7SFLhl0GNuRLIzRhxaYQASimFCJsRDo/BgmOO4HZWOvB9e+aQ==
-X-Received: by 2002:a05:600c:3555:b0:410:61ce:f5c3 with SMTP id i21-20020a05600c355500b0041061cef5c3mr4944459wmq.19.1707727453055;
-        Mon, 12 Feb 2024 00:44:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWNzEsaHWl853SGIKgGisI7Lu5+D0WtUkTKgMogbKNkxzYqbjtC9qXdjgDrJQHzd8wX4J3TZ09EDmFB4ljXKLNpcH1/aG7W5GENEJD6ojRgdS2Nt/vdrlQpQFmmsXJn4Fq6+1eToKyJxbw9yovaf8tFnKGE4LXvPJb6eqaln3mEzsTsJyNy18e9WSsnhi64MUSBRGWj465JE5aZcgg=
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id q18-20020a7bce92000000b00410c04e5455sm3365842wmj.20.2024.02.12.00.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 00:44:12 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 12 Feb 2024 09:44:11 +0100
-To: Baoquan He <bhe@redhat.com>
-Cc: Stanislav Fomichev <sdf@google.com>,
-	Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
-	Kexec-ml <kexec@lists.infradead.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH linux-next] bpf: fix warning for crash_kexec
-Message-ID: <ZcnaW5hB8y3da3bI@krava>
-References: <20240209123520.778599-1-hbathini@linux.ibm.com>
- <ZcZ6myvln-v0Y98S@google.com>
- <ZccAyalp+NyKQoGp@MiWiFi-R3L-srv>
+	s=arc-20240116; t=1707731503; c=relaxed/simple;
+	bh=VKJRqZfLWsm+N7pdIsKPtIEQyQNhxJsDk3o8zVSC9fE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eDuYcBtfXAUJay2nmaYLfRvd5xYubbz3sIZmfBeHEvqjlqf67teTxgMtPL37+2Hf/eoFIs2bi83CCEmQg6o+gcTR8+w8vr55sOQqSmIxcsCqfcN4yI10gId8VRXEVMolQB2VD/I20gpemCm78pathMJfmjRvs6vX4sdgkvC5Cu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b+fmod6P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C06EC433C7;
+	Mon, 12 Feb 2024 09:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707731503;
+	bh=VKJRqZfLWsm+N7pdIsKPtIEQyQNhxJsDk3o8zVSC9fE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=b+fmod6PlGlu3Ew1zpSFEFj6Fng1Fx1+EIDaBVoUrp3VhG4iPQxMVJYcHhbwcsLAv
+	 XrmHKBovA12Q+WlaCHsGL7FvgBSO5CVrsnZNrSNAt1esCu6y6zfIBMJkj0PQi0hDxy
+	 HqsUwAMsgVQ2xWU1orgf8m/BhIvonssDbOdQusavYiUCMCiYqV3o0f++/aB6sE8qXC
+	 Y9+r4IcnBdgIFhj7grWLbMgA0GP9NxdcyksMFijPXk9ckVUXfO0zS3y997NYBsO9yH
+	 8j7NjcIMF5lYZcxJrQeNpR7yIqIYIq/Jdlij6iG8J8gO6ZOilrpgVDlxh6AlTu2ifD
+	 BfuYgxqDbd3bw==
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: netdev@vger.kernel.org
+Cc: lorenzo.bianconi@redhat.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	bpf@vger.kernel.org,
+	toke@redhat.com,
+	willemdebruijn.kernel@gmail.com,
+	jasowang@redhat.com,
+	sdf@google.com,
+	hawk@kernel.org,
+	ilias.apalodimas@linaro.org,
+	linyunsheng@huawei.com
+Subject: [PATCH v9 net-next 0/4] add multi-buff support for xdp running in generic mode
+Date: Mon, 12 Feb 2024 10:50:53 +0100
+Message-ID: <cover.1707729884.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZccAyalp+NyKQoGp@MiWiFi-R3L-srv>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 10, 2024 at 12:51:21PM +0800, Baoquan He wrote:
-> On 02/09/24 at 11:18am, Stanislav Fomichev wrote:
-> > On 02/09, Hari Bathini wrote:
-> > > With [1], CONFIG_KEXEC & !CONFIG_CRASH_DUMP is supported but that led
-> > > to the below warning:
-> > > 
-> > >   "WARN: resolve_btfids: unresolved symbol crash_kexec"
-> > > 
-> > > Fix it by using the appropriate #ifdef.
-> > 
-> > Same question here: how did you find this particular kconfig option
-> > (CONFIG_CRASH_DUMP) to use? Looking at the code, crash_kexec is defined
-> > in kernel/kexec_core.c and it's gated by CONFIG_KEXEC_CORE. So the
-> > existing ifdef seems correct?
-> 
-> This patch is based on the latest next tree, I have made some changes to
-> split the crash code from kexec_core.c. If you check next/master branch,
-> crash_kexec is not in kernel/keec_core.c any more.
+Introduce multi-buffer support for xdp running in generic mode not always
+linearizing the skb in netif_receive_generic_xdp routine.
+Introduce generic percpu page_pools allocator.
 
-makes sense, it should have fixes tag:
+Changes since v8:
+- fix veth regression introduce in veth.sh selftest
+Changes since v7:
+- fix sparse warnings
+Changes since v6:
+- remove patch 4/5 'net: page_pool: make stats available just for global pools'
+- rename netif_skb_segment_for_xdp() in
+  skb_cow_data_for_xdp()/skb_pp_cow_data()
+- rename net_page_pool_alloc() in net_page_pool_create()
+- rename page_pool percpu pointer in system_page_pool
+- set percpu page_pool memory size
+Changes since v5:
+- move percpu page_pool pointer out of softnet_data in a dedicated variable
+- make page_pool stats available just for global pools
+- rely on netif_skb_segment_for_xdp utility routine in veth driver
+Changes since v4:
+- fix compilation error if page_pools are not enabled
+Changes since v3:
+- introduce page_pool in softnet_data structure
+- rely on page_pools for xdp_generic code
+Changes since v2:
+- rely on napi_alloc_frag() and napi_build_skb() to build the new skb
+Changes since v1:
+- explicitly keep the skb segmented in netif_skb_check_for_generic_xdp() and
+  do not rely on pskb_expand_head()
 
-Fixes: 29fd9ae62910 ("crash: split crash dumping code out from kexec_core.c")
+Lorenzo Bianconi (4):
+  net: add generic percpu page_pool allocator
+  xdp: rely on skb pointer reference in do_xdp_generic and
+    netif_receive_generic_xdp
+  xdp: add multi-buff support for xdp running in generic mode
+  veth: rely on skb_pp_cow_data utility routine
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+ drivers/net/tun.c             |   4 +-
+ drivers/net/veth.c            |  74 +------------------
+ include/linux/netdevice.h     |   2 +-
+ include/linux/skbuff.h        |   4 ++
+ include/net/page_pool/types.h |   3 +
+ net/core/dev.c                | 131 +++++++++++++++++++++++++++-------
+ net/core/page_pool.c          |  23 ++++--
+ net/core/skbuff.c             |  97 ++++++++++++++++++++++++-
+ 8 files changed, 231 insertions(+), 107 deletions(-)
 
-thanks,
-jirka
+-- 
+2.43.0
+
 
