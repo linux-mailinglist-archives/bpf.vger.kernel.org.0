@@ -1,925 +1,246 @@
-Return-Path: <bpf+bounces-21772-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21774-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E649851EED
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 21:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC852851F45
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 22:13:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530861C21DAC
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 20:53:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9E71C2223D
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 21:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E0B4CB3D;
-	Mon, 12 Feb 2024 20:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8314C622;
+	Mon, 12 Feb 2024 21:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="XvDgZzSr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="CpBGvYXN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="b8LBwe6I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B424C63D
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 20:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08D24C61B
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 21:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707771201; cv=none; b=c6yBathqNd++AOCoRViSZqDWNdEFhXp8rEIH0S64lQxC7tPhH1U0jUP8VlCm6+4M5agd7auphAP+4qS9/XWBtLKc9sJNR/vsNrd5ElUtA02L5UKqCipK1rHNM+4FKif9DmaZTCXINC8kVQZfNMJ6pZ/92BEix3jeFmqE1sDjyGA=
+	t=1707772408; cv=none; b=uY8awy2bg8M3Eo162uPJrNsYUaxctWI8xd4XpdUFIHoeUo25dUqmYMricafp3HRaJ39jrJendhKMU1ctsfBBajyTsezUp1lBjKrsyct37booUP6/gwd0imufIrml/7YHnB97i0wC6O30h1VTWP8u23eDvRw0WwHreFqF4EKEjcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707771201; c=relaxed/simple;
-	bh=SSrGC0GB0cn1kLz/tZW59U5Q8UugZG2T2Vx4qxyj/Kk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FMpK9AOLFDBBOsAKIuzWQku/8gWocRhsaZYgu6WGNHtRaXxsRNG1W2ugBfAb0OlOv+wN1SCbk4CNmY2VCWix/ptYPWGRFQNjnW1Y5LGkmmv8XUH9HWk5y6rgdDe/bFxeELQq0r8q3Zvsdvf8sEJFteJ9+n9hsuKT8Hg/uEHtryc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c2f4c3282so17521776d6.3
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 12:53:18 -0800 (PST)
+	s=arc-20240116; t=1707772408; c=relaxed/simple;
+	bh=efLg9SNjT4tMbV2+3qaJCI9cHbmpVCz3FPx0rMwik2A=;
+	h=To:Cc:Date:Message-Id:MIME-Version:Subject:Content-Type:From; b=Gwvh4XOizoL0ZUEdfatjQCSJTWnYULsJWeyj81g1VNqluhGVj7HDCoFHBScYsp2qSWsXTmJEIZIiM21QES8/PMaAwRIYKAScPVbxen8cP2Inc3O9x0OE1FET3tOgoXJKQSP3SU0hTqHU2Z496yDcN99/GR42Hk6PesSUDIv/mNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=XvDgZzSr; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=CpBGvYXN reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=b8LBwe6I reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 6E27DC15199B
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 13:13:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1707772400; bh=efLg9SNjT4tMbV2+3qaJCI9cHbmpVCz3FPx0rMwik2A=;
+	h=To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XvDgZzSrHgXbd6K2BUFOz2BYC76CnfKKhaVXKFUs7m3YzaaPzPnuFVlRuCm9E9IK1
+	 w0It4QOW0eQ3xag3CQGpEcv3nSQ5cHiMravWiD9RjajhTpajHfaFn/0zSHI5rSTEWJ
+	 t9dDmpYIJxs8gL/kUlUs8spK6/d0HYJQHCZVO4FQ=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 416EEC151553;
+ Mon, 12 Feb 2024 13:13:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1707772400; bh=efLg9SNjT4tMbV2+3qaJCI9cHbmpVCz3FPx0rMwik2A=;
+ h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+ List-Post:List-Help:List-Subscribe;
+ b=CpBGvYXNKZuHsgp8VAnw8/5+wQ/ocqP6Qo1iBJGTjXXzoOL17p8F7O13gQFLhTzg1
+ ViPYDXBX3jqR5Co9CGJLLkbYki7cPdXaP8IdppJmcqENtKOXlQeaMoZzmDkz2INt/Z
+ 8HNnapugj+05oq15Qh3akJhT1DauFyPrnxvGsWH8=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6C908C151553
+ for <bpf@ietfa.amsl.com>; Mon, 12 Feb 2024 13:13:19 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.856
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ZemP8uJ0neV3 for <bpf@ietfa.amsl.com>;
+ Mon, 12 Feb 2024 13:13:15 -0800 (PST)
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com
+ [IPv6:2607:f8b0:4864:20::631])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id CDB5EC151552
+ for <bpf@ietf.org>; Mon, 12 Feb 2024 13:13:15 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id
+ d9443c01a7336-1d958e0d73dso25304425ad.1
+ for <bpf@ietf.org>; Mon, 12 Feb 2024 13:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=googlemail.com; s=20230601; t=1707772395; x=1708377195; darn=ietf.org;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=6Y3qDIbEUDhtRMCmQ9gvyrPS3BRUQBD/sYtg6yEOvUg=;
+ b=b8LBwe6IZPk3TuJRY/5jQqERIE4Gk4WVTfXg8vM3MGD2Xc9Z2vq/PMf6MQWvy3MA6c
+ WskFwQyW/uPuoS8UjzgcE/dGVv2bYkK+DsMDD+Qtji8ZYwMBaqDShAZjVmzt2dJWOjdB
+ U4T00MGlNTXOzQeZqlE9rtyhcydt91mxQ68TMqFCZBwWJ8dQGXKofBZKaL2Sh8C/JSl5
+ O9myciMBWdwjsiONmB9atyOOnOsfPA98bwUJn2d8Pac2+jgE+NZit2qizfFR+zaJvoXJ
+ hfuGddFvw9481C2OVvh6+MI0aTEPC9FPL2nIM32hT+mxqMo5QnhMfvMNXyG8P2FNYjXu
+ gELw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707771197; x=1708375997;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UCh+LpAxDje7B7msspWV1zLjdJ82yVqcHvv+2BsZFMA=;
-        b=UEe7eJnJV4TM9ZMMsK84B2rvWIqt9XuevXeEhlfy8OmUHJtqvWojmRYXoGVRU18fqh
-         9xL3bzkP2az3kwN82QwkaEbkAdLRcfn/QkScVfM91u8qkCdmSsO0W+Bu6ly55EkHKWrD
-         bwf2ri5OtIZMKAlmGwifccMducklwjvPEpmOUely75rxvDA7c1oSQMFV08Yl+gXiMzaZ
-         zGS7UVQ6HK2V67bMLhYH41a5YCSC/64qCLIHhJcvAuOnmnl06NTa9UE9kj9+miRs9hb/
-         dsfWK301YPDWyvOzyddzIjyhdK13wkd6ipHhRRCzlS/ax9SBZihsRQouR0R1/PdDnioT
-         1wOw==
-X-Gm-Message-State: AOJu0YyEC1KBhKIKdTYMrVIMQmLcq1N8L6N0erRRr47l5msJBJ9/5Yo8
-	o++bw78RRKntdthakvT1JUukXY6PCSlJzRsjs5CaqT/bnN5USrxh
-X-Google-Smtp-Source: AGHT+IEe9+1b4xy06KiDQdvJIIhodE8DE59KiK3PMAUb/Wdzz/KjZ3MHPFaFhPE2csxeYy+4E84F9g==
-X-Received: by 2002:a0c:e309:0:b0:68c:c057:8a07 with SMTP id s9-20020a0ce309000000b0068cc0578a07mr7168840qvl.18.1707771197155;
-        Mon, 12 Feb 2024 12:53:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWFkwPOC7wkhS4X2O0cE7Hv8RiWo1RFg7s08oJ6qQNtal+4DxHR+cjkxfONUWOQOgi0zeinHdPiH5dPDQ7Z5aJbj28/gfKdGA5NBa98KLzTPUVC7amLQGfBvkLECpn22ldrNuwL+biMihv+6tOIV+t1CyCKGCIqILm0hrhujSWZRe/xRtpL1ScFL0h3XLVcITuVUmESzrZWUaShISZgC2a+kyNfTI4wDoS6AHYVSeepd3cKqmhXunDTAQ4IbwZ5XPKHGVo0L3kfMEZmUPWy0xC4ib9SRQzLPOQt0IKNCg==
-Received: from maniforge.lan (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id or32-20020a05621446a000b0068c9086c4d2sm540944qvb.10.2024.02.12.12.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 12:53:16 -0800 (PST)
-Date: Mon, 12 Feb 2024 14:53:14 -0600
-From: David Vernet <void@manifault.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Raj Sahu <rjsu26@vt.edu>, Dan Williams <djwillia@vt.edu>,
-	Rishabh Iyer <rishabh.iyer@epfl.ch>,
-	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
-Subject: Re: [RFC PATCH v1 14/14] selftests/bpf: Add tests for exceptions
- runtime cleanup
-Message-ID: <20240212205314.GC2200361@maniforge.lan>
-References: <20240201042109.1150490-1-memxor@gmail.com>
- <20240201042109.1150490-15-memxor@gmail.com>
+ d=1e100.net; s=20230601; t=1707772395; x=1708377195;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=6Y3qDIbEUDhtRMCmQ9gvyrPS3BRUQBD/sYtg6yEOvUg=;
+ b=mbAMVmzrI+iQa402ti5IQGd1pd4K45Vdg3eSAU39BFKErIYoRr1WfxR/3vO/W8d0ky
+ 6ZuxNWf0jlyH2wg3CQWsJJ+mDVcSdhOzGOCi64VlhsGBpwFPJnWr5f4iG/6S7dtkbE7d
+ Aj4wB9cD98XhZz7MgGgDUfpkxOAQ/Tn/S/87sAjKGi8HLZn5veJk8M6bA5BU58Nxg4tb
+ wy9MxpIE198SwdTvtZx67rxTeUL/vLcM0kcCTs38JXrYMsNJ9G2LdqCZpGTp3yr15s5o
+ /u11IH+LTquw+xe5qgEthZ95oMOu8jQ0aPP73glYYwBqJLWJuV3lHCzzOTZSH0CSA0pl
+ bDNA==
+X-Gm-Message-State: AOJu0Yz/HfVPK49HdN2ROL15zNFhhd5abLkRHERdLtQdkYnqkSiCIGF8
+ 4/SOtri+GpMbZurFPJi7gS/fzGVAD8LJMrCmxW+XVpcaVCYPJRLjqVHYwsGmEvg=
+X-Google-Smtp-Source: AGHT+IFkuMhe9/ysk/wBgeexWHFrd+8JKQQYLuk4aTPiZU9xEcahE2sKGM/C59bQThJqj6zGknKD2A==
+X-Received: by 2002:a17:903:494:b0:1db:2d8f:8dc1 with SMTP id
+ jj20-20020a170903049400b001db2d8f8dc1mr520720plb.13.1707772394338; 
+ Mon, 12 Feb 2024 13:13:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVEgA4QKWEEdFo5nGbLz6bJbbVwoZgZEUeFWYfaBqi2RoM0jd2Do8QdSwKy+PFFl5kzGjxUgEhhEGTa0c1/VcOwDzEFnsk=
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ l13-20020a170903244d00b001d9b092bcd9sm762721pls.148.2024.02.12.13.13.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 12 Feb 2024 13:13:13 -0800 (PST)
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Cc: bpf@ietf.org,
+	Dave Thaler <dthaler1968@gmail.com>
+Date: Mon, 12 Feb 2024 13:13:10 -0800
+Message-Id: <20240212211310.8282-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Pvx2Q3781o2xIZn/"
-Content-Disposition: inline
-In-Reply-To: <20240201042109.1150490-15-memxor@gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/9tdmvCE7BvQeLYyMmHTfw4RYS2w>
+Subject: [Bpf] [PATCH bpf-next v2] bpf,
+ docs: Add callx instructions in new conformance group
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
+From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
 
+* Add a "callx" conformance group
+* Add callx rows to table
+* Update helper function to section to be agnostic between BPF_K vs
+  BPF_X
+* Rename "legacy" conformance group to "packet"
 
---Pvx2Q3781o2xIZn/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Based on mailing list discussion at
+https://mailarchive.ietf.org/arch/msg/bpf/l5tNEgL-Wo7qSEuaGssOl5VChKk/
 
-On Thu, Feb 01, 2024 at 04:21:09AM +0000, Kumar Kartikeya Dwivedi wrote:
-> Add tests for the runtime cleanup support for exceptions, ensuring that
-> resources are correctly identified and released when an exception is
-> thrown. Also, we add negative tests to exercise corner cases the
-> verifier should reject.
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
->  tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
->  .../bpf/prog_tests/exceptions_cleanup.c       |  65 +++
->  .../selftests/bpf/progs/exceptions_cleanup.c  | 468 ++++++++++++++++++
->  .../bpf/progs/exceptions_cleanup_fail.c       | 154 ++++++
->  .../selftests/bpf/progs/exceptions_fail.c     |  13 -
->  6 files changed, 689 insertions(+), 13 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/exceptions_cle=
-anup.c
->  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_cleanup.c
->  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_cleanup_=
-fail.c
->=20
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing=
-/selftests/bpf/DENYLIST.aarch64
-> index 5c2cc7e8c5d0..6fc79727cd14 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> @@ -1,6 +1,7 @@
->  bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api=
-_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
->  bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api=
-_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
->  exceptions					 # JIT does not support calling kfunc bpf_throw: -524
-> +exceptions_unwind				 # JIT does not support calling kfunc bpf_throw: -5=
-24
->  fexit_sleep                                      # The test never return=
-s. The remaining tests cannot start.
->  kprobe_multi_bench_attach                        # needs CONFIG_FPROBE
->  kprobe_multi_test                                # needs CONFIG_FPROBE
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
-elftests/bpf/DENYLIST.s390x
-> index 1a63996c0304..f09a73dee72c 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
-> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-> @@ -1,5 +1,6 @@
->  # TEMPORARY
->  # Alphabetical order
->  exceptions				 # JIT does not support calling kfunc bpf_throw				       =
-(exceptions)
-> +exceptions_unwind			 # JIT does not support calling kfunc bpf_throw				 =
-      (exceptions)
->  get_stack_raw_tp                         # user_stack corrupted user sta=
-ck                                             (no backchain userspace)
->  stacktrace_build_id                      # compare_map_keys stackid_hmap=
- vs. stackmap err -2 errno 2                   (?)
-> diff --git a/tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c =
-b/tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c
-> new file mode 100644
-> index 000000000000..78df037b60ea
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c
-> @@ -0,0 +1,65 @@
-> +#include "bpf/bpf.h"
-> +#include "exceptions.skel.h"
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +
-> +#include "exceptions_cleanup.skel.h"
-> +#include "exceptions_cleanup_fail.skel.h"
-> +
-> +static void test_exceptions_cleanup_fail(void)
-> +{
-> +	RUN_TESTS(exceptions_cleanup_fail);
-> +}
-> +
-> +void test_exceptions_cleanup(void)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, ropts,
-> +		.data_in =3D &pkt_v4,
-> +		.data_size_in =3D sizeof(pkt_v4),
-> +		.repeat =3D 1,
-> +	);
-> +	struct exceptions_cleanup *skel;
-> +	int ret;
-> +
-> +	if (test__start_subtest("exceptions_cleanup_fail"))
-> +		test_exceptions_cleanup_fail();
+v1->v2: Incorporated feedback from Will Hawkins
 
-RUN_TESTS takes care of doing test__start_subtest(), etc. You should be
-able to just call RUN_TESTS(exceptions_cleanup_fail) directly here.
+Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+---
+ .../bpf/standardization/instruction-set.rst   | 32 ++++++++++++-------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
 
-> +
-> +	skel =3D exceptions_cleanup__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "exceptions_cleanup__open_and_load"))
-> +		return;
-> +
-> +	ret =3D exceptions_cleanup__attach(skel);
-> +	if (!ASSERT_OK(ret, "exceptions_cleanup__attach"))
-> +		return;
-> +
-> +#define RUN_EXC_CLEANUP_TEST(name)                                      \
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index bdfe0cd0e..9861bac6b 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -127,7 +127,7 @@ This document defines the following conformance groups:
+ * divmul32: includes 32-bit division, multiplication, and modulo instructions.
+ * divmul64: includes divmul32, plus 64-bit division, multiplication,
+   and modulo instructions.
+-* legacy: deprecated packet access instructions.
++* packet: deprecated packet access instructions.
+ 
+ Instruction encoding
+ ====================
+@@ -404,9 +404,12 @@ BPF_JSET  0x4    any  PC += offset if dst & src
+ BPF_JNE   0x5    any  PC += offset if dst != src
+ BPF_JSGT  0x6    any  PC += offset if dst > src        signed
+ BPF_JSGE  0x7    any  PC += offset if dst >= src       signed
+-BPF_CALL  0x8    0x0  call helper function by address  BPF_JMP | BPF_K only, see `Helper functions`_
++BPF_CALL  0x8    0x0  call_by_address(imm)             BPF_JMP | BPF_K only
++BPF_CALL  0x8    0x0  call_by_address(reg_val(imm))    BPF_JMP | BPF_X only
+ BPF_CALL  0x8    0x1  call PC += imm                   BPF_JMP | BPF_K only, see `Program-local functions`_
+-BPF_CALL  0x8    0x2  call helper function by BTF ID   BPF_JMP | BPF_K only, see `Helper functions`_
++BPF_CALL  0x8    0x1  call PC += reg_val(imm)          BPF_JMP | BPF_X only, see `Program-local functions`_
++BPF_CALL  0x8    0x2  call_by_btfid(imm)               BPF_JMP | BPF_K only
++BPF_CALL  0x8    0x2  call_by_btfid(reg_val(imm))      BPF_JMP | BPF_X only
+ BPF_EXIT  0x9    0x0  return                           BPF_JMP | BPF_K only
+ BPF_JLT   0xa    any  PC += offset if dst < src        unsigned
+ BPF_JLE   0xb    any  PC += offset if dst <= src       unsigned
+@@ -414,6 +417,12 @@ BPF_JSLT  0xc    any  PC += offset if dst < src        signed
+ BPF_JSLE  0xd    any  PC += offset if dst <= src       signed
+ ========  =====  ===  ===============================  =============================================
+ 
++where
++
++* reg_val(imm) gets the value of the register specified by 'imm'
++* call_by_address(value) means to call a helper function by the address specified by 'value' (see `Helper functions`_ for details)
++* call_by_btfid(value) means to call a helper function by the BTF ID specified by 'value' (see `Helper functions`_ for details)
++
+ The BPF program needs to store the return value into register R0 before doing a
+ ``BPF_EXIT``.
+ 
+@@ -438,8 +447,9 @@ specified by the 'imm' field. A > 16-bit conditional jump may be
+ converted to a < 16-bit conditional jump plus a 32-bit unconditional
+ jump.
+ 
+-All ``BPF_CALL`` and ``BPF_JA`` instructions belong to the
+-base32 conformance group.
++All ``BPF_CALL | BPF_X`` instructions belong to the callx
++conformance group.  All other ``BPF_CALL`` instructions and all
++``BPF_JA`` instructions belong to the base32 conformance group.
+ 
+ Helper functions
+ ~~~~~~~~~~~~~~~~
+@@ -447,13 +457,13 @@ Helper functions
+ Helper functions are a concept whereby BPF programs can call into a
+ set of function calls exposed by the underlying platform.
+ 
+-Historically, each helper function was identified by an address
+-encoded in the imm field.  The available helper functions may differ
+-for each program type, but address values are unique across all program types.
++Historically, each helper function was identified by an address.
++The available helper functions may differ for each program type,
++but address values are unique across all program types.
+ 
+ Platforms that support the BPF Type Format (BTF) support identifying
+-a helper function by a BTF ID encoded in the imm field, where the BTF ID
+-identifies the helper name and type.
++a helper function by a BTF ID, where the BTF ID identifies the helper
++name and type.
+ 
+ Program-local functions
+ ~~~~~~~~~~~~~~~~~~~~~~~
+@@ -660,4 +670,4 @@ carried over from classic BPF. These instructions used an instruction
+ class of BPF_LD, a size modifier of BPF_W, BPF_H, or BPF_B, and a
+ mode modifier of BPF_ABS or BPF_IND.  However, these instructions are
+ deprecated and should no longer be used.  All legacy packet access
+-instructions belong to the "legacy" conformance group.
++instructions belong to the "packet" conformance group.
+-- 
+2.40.1
 
-Should we add a call to if (test__start_subtest(#name)) to this macro?
-
-> +	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.name), \
-> +				     &ropts);                           \
-> +	if (!ASSERT_OK(ret, #name ": return value"))                    \
-> +		return;                                                 \
-> +	if (!ASSERT_EQ(ropts.retval, 0xeB9F, #name ": opts.retval"))    \
-> +		return;                                                 \
-> +	ret =3D bpf_prog_test_run_opts(                                   \
-> +		bpf_program__fd(skel->progs.exceptions_cleanup_check),  \
-> +		&ropts);                                                \
-> +	if (!ASSERT_OK(ret, #name " CHECK: return value"))              \
-> +		return;                                                 \
-> +	if (!ASSERT_EQ(ropts.retval, 0, #name " CHECK: opts.retval"))   \
-> +		return;													\
-> +	skel->bss->only_count =3D 0;
-> +
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_prog_num_iter);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_prog_num_iter_mult);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_prog_dynptr_iter);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_obj);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_percpu_obj);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_ringbuf);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_reg);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_null_or_ptr_do_ptr);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_null_or_ptr_do_null);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_callee_saved);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_frame);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_loop_iterations);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_dead_code_elim);
-> +	RUN_EXC_CLEANUP_TEST(exceptions_cleanup_frame_dce);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/exceptions_cleanup.c b/too=
-ls/testing/selftests/bpf/progs/exceptions_cleanup.c
-> new file mode 100644
-> index 000000000000..ccf14fe6bd1b
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/exceptions_cleanup.c
-> @@ -0,0 +1,468 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_core_read.h>
-> +#include <bpf/bpf_endian.h>
-> +#include "bpf_misc.h"
-> +#include "bpf_kfuncs.h"
-> +#include "bpf_experimental.h"
-> +
-> +struct {
-> +    __uint(type, BPF_MAP_TYPE_RINGBUF);
-> +    __uint(max_entries, 8);
-> +} ringbuf SEC(".maps");
-> +
-> +enum {
-> +    RES_DYNPTR,
-> +    RES_ITER,
-> +    RES_REG,
-> +    RES_SPILL,
-> +    __RES_MAX,
-> +};
-> +
-> +struct bpf_resource {
-> +    int type;
-> +};
-> +
-> +struct {
-> +    __uint(type, BPF_MAP_TYPE_HASH);
-> +    __uint(max_entries, 1024);
-> +    __type(key, int);
-> +    __type(value, struct bpf_resource);
-> +} hashmap SEC(".maps");
-> +
-> +const volatile bool always_false =3D false;
-> +bool only_count =3D false;
-> +int res_count =3D 0;
-> +
-> +#define MARK_RESOURCE(ptr, type) ({ res_count++; bpf_map_update_elem(&ha=
-shmap, &(void *){ptr}, &(struct bpf_resource){type}, 0); });
-> +#define FIND_RESOURCE(ptr) ((struct bpf_resource *)bpf_map_lookup_elem(&=
-hashmap, &(void *){ptr}) ?: &(struct bpf_resource){__RES_MAX})
-> +#define FREE_RESOURCE(ptr) bpf_map_delete_elem(&hashmap, &(void *){ptr})
-> +#define VAL 0xeB9F
-> +
-> +SEC("fentry/bpf_cleanup_resource")
-> +int BPF_PROG(exception_cleanup_mark_free, struct bpf_frame_desc_reg_entr=
-y *fd, void *ptr)
-> +{
-> +    if (fd->spill_type =3D=3D STACK_INVALID)
-> +        bpf_probe_read_kernel(&ptr, sizeof(ptr), ptr);
-> +    if (only_count) {
-> +        res_count--;
-> +        return 0;
-> +    }
-> +    switch (fd->spill_type) {
-> +    case STACK_SPILL:
-> +        if (FIND_RESOURCE(ptr)->type =3D=3D RES_SPILL)
-> +            FREE_RESOURCE(ptr);
-> +        break;
-> +    case STACK_INVALID:
-> +        if (FIND_RESOURCE(ptr)->type =3D=3D RES_REG)
-> +            FREE_RESOURCE(ptr);
-> +        break;
-> +    case STACK_ITER:
-> +        if (FIND_RESOURCE(ptr)->type =3D=3D RES_ITER)
-> +            FREE_RESOURCE(ptr);
-> +        break;
-> +    case STACK_DYNPTR:
-> +        if (FIND_RESOURCE(ptr)->type =3D=3D RES_DYNPTR)
-> +            FREE_RESOURCE(ptr);
-> +        break;
-> +    }
-> +    return 0;
-> +}
-> +
-> +static long map_cb(struct bpf_map *map, void *key, void *value, void *ct=
-x)
-> +{
-> +    int *cnt =3D ctx;
-> +
-> +    (*cnt)++;
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_check(struct __sk_buff *ctx)
-> +{
-> +    int cnt =3D 0;
-> +
-> +    if (only_count)
-> +        return res_count;
-> +    bpf_for_each_map_elem(&hashmap, map_cb, &cnt, 0);
-> +    return cnt;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_prog_num_iter(struct __sk_buff *ctx)
-> +{
-> +    int i;
-> +
-> +    bpf_for(i, 0, 10) {
-> +        MARK_RESOURCE(&___it, RES_ITER);
-> +        bpf_throw(VAL);
-> +    }
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_prog_num_iter_mult(struct __sk_buff *ctx)
-> +{
-> +    int i, j, k;
-> +
-> +    bpf_for(i, 0, 10) {
-> +        MARK_RESOURCE(&___it, RES_ITER);
-> +        bpf_for(j, 0, 10) {
-> +            MARK_RESOURCE(&___it, RES_ITER);
-> +            bpf_for(k, 0, 10) {
-> +                MARK_RESOURCE(&___it, RES_ITER);
-> +                bpf_throw(VAL);
-> +            }
-> +        }
-> +    }
-> +    return 0;
-> +}
-> +
-> +__noinline
-> +static int exceptions_cleanup_subprog(struct __sk_buff *ctx)
-> +{
-> +    int i;
-> +
-> +    bpf_for(i, 0, 10) {
-> +        MARK_RESOURCE(&___it, RES_ITER);
-> +        bpf_throw(VAL);
-> +    }
-> +    return ctx->len;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_prog_dynptr_iter(struct __sk_buff *ctx)
-> +{
-> +    struct bpf_dynptr rbuf;
-> +    int ret =3D 0;
-> +
-> +    bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, &rbuf);
-> +    MARK_RESOURCE(&rbuf, RES_DYNPTR);
-> +    if (ctx->protocol)
-> +        ret =3D exceptions_cleanup_subprog(ctx);
-> +    bpf_ringbuf_discard_dynptr(&rbuf, 0);
-> +    return ret;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_obj(struct __sk_buff *ctx)
-> +{
-> +    struct { int i; } *p;
-> +
-> +    p =3D bpf_obj_new(typeof(*p));
-> +    MARK_RESOURCE(&p, RES_SPILL);
-> +    bpf_throw(VAL);
-> +    return p->i;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_percpu_obj(struct __sk_buff *ctx)
-> +{
-> +    struct { int i; } *p;
-> +
-> +    p =3D bpf_percpu_obj_new(typeof(*p));
-> +    MARK_RESOURCE(&p, RES_SPILL);
-> +    bpf_throw(VAL);
-
-It would be neat if we could have the bpf_throw() kfunc signature be
-marked as __attribute__((noreturn)) and have things work correctly;
-meaning you wouldn't have to even return a value here. The verifier
-should know that bpf_throw() is terminal, so it should be able to prune
-any subsequent instructions as unreachable anyways.
-
-> +    return !p;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_ringbuf(struct __sk_buff *ctx)
-> +{
-> +    void *p;
-> +
-> +    p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    MARK_RESOURCE(&p, RES_SPILL);
-> +    bpf_throw(VAL);
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_reg(struct __sk_buff *ctx)
-> +{
-> +    void *p;
-> +
-> +    p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    MARK_RESOURCE(p, RES_REG);
-> +    bpf_throw(VAL);
-> +    if (p)
-> +        bpf_ringbuf_discard(p, 0);
-
-Does the prog fail to load if you don't have this bpf_ringbuf_discard()
-check? I assume not given that in
-exceptions_cleanup_null_or_ptr_do_ptr() and elsewhere we do a reserve
-without discarding. Is there some subtle stack state difference here or
-something?
-
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_null_or_ptr_do_ptr(struct __sk_buff *ctx)
-> +{
-> +    union {
-> +        void *p;
-> +        char buf[8];
-> +    } volatile p;
-> +    u64 z =3D 0;
-> +
-> +    __builtin_memcpy((void *)&p.p, &z, sizeof(z));
-> +    MARK_RESOURCE((void *)&p.p, RES_SPILL);
-> +    if (ctx->len)
-> +        p.p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    bpf_throw(VAL);
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_null_or_ptr_do_null(struct __sk_buff *ctx)
-> +{
-> +    union {
-> +        void *p;
-> +        char buf[8];
-> +    } volatile p;
-> +
-> +    p.p =3D 0;
-> +    MARK_RESOURCE((void *)p.buf, RES_SPILL);
-> +    if (!ctx->len)
-> +        p.p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    bpf_throw(VAL);
-> +    return 0;
-> +}
-> +
-> +__noinline static int mark_resource_subprog(u64 a, u64 b, u64 c, u64 d)
-> +{
-> +    MARK_RESOURCE((void *)a, RES_REG);
-> +    MARK_RESOURCE((void *)b, RES_REG);
-> +    MARK_RESOURCE((void *)c, RES_REG);
-> +    MARK_RESOURCE((void *)d, RES_REG);
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_callee_saved(struct __sk_buff *ctx)
-> +{
-> +    asm volatile (
-> +       "r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        r6 =3D r0;                        \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        r7 =3D r0;                        \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        r8 =3D r0;                        \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        r9 =3D r0;                        \
-> +        r1 =3D r6;                        \
-> +        r2 =3D r7;                        \
-> +        r3 =3D r8;                        \
-> +        r4 =3D r9;                        \
-> +        call mark_resource_subprog;     \
-> +        r1 =3D 0xeB9F;                    \
-> +        call bpf_throw;                 \
-> +    " : : __imm(bpf_ringbuf_reserve),
-> +          __imm_addr(ringbuf)
-> +      : __clobber_all);
-> +    mark_resource_subprog(0, 0, 0, 0);
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_callee_saved_noopt(struct __sk_buff *ctx)
-> +{
-> +    mark_resource_subprog(1, 2, 3, 4);
-> +    return 0;
-> +}
-> +
-> +__noinline int global_subprog_throw(struct __sk_buff *ctx)
-> +{
-> +    u64 *p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    bpf_throw(VAL);
-> +    return p ? *p : 0 + ctx->len;
-> +}
-> +
-> +__noinline int global_subprog(struct __sk_buff *ctx)
-> +{
-> +    u64 *p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    if (!p)
-> +        return ctx->len;
-> +    global_subprog_throw(ctx);
-> +    bpf_ringbuf_discard(p, 0);
-> +    return !!p + ctx->len;
-> +}
-> +
-> +__noinline static int static_subprog(struct __sk_buff *ctx)
-> +{
-> +    struct bpf_dynptr rbuf;
-> +    u64 *p, r =3D 0;
-> +
-> +    bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, &rbuf);
-> +    p =3D bpf_dynptr_data(&rbuf, 0, 8);
-> +    if (!p)
-> +        goto end;
-> +    *p =3D global_subprog(ctx);
-> +    r +=3D *p;
-> +end:
-> +    bpf_ringbuf_discard_dynptr(&rbuf, 0);
-> +    return r + ctx->len;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_frame(struct __sk_buff *ctx)
-> +{
-> +    struct foo { int i; } *p =3D bpf_obj_new(typeof(*p));
-> +    int i;
-> +    only_count =3D 1;
-> +    res_count =3D 4;
-> +    if (!p)
-> +        return 1;
-> +    p->i =3D static_subprog(ctx);
-> +    i =3D p->i;
-> +    bpf_obj_drop(p);
-> +    return i + ctx->len;
-> +}
-> +
-> +SEC("tc")
-> +__success
-> +int exceptions_cleanup_loop_iterations(struct __sk_buff *ctx)
-> +{
-> +    struct { int i; } *f[50] =3D {};
-> +    int i;
-> +
-> +    only_count =3D true;
-> +
-> +    for (i =3D 0; i < 50; i++) {
-> +        f[i] =3D bpf_obj_new(typeof(*f[0]));
-> +        if (!f[i])
-> +            goto end;
-> +        res_count++;
-> +        if (i =3D=3D 49) {
-> +            bpf_throw(VAL);
-> +        }
-> +    }
-> +end:
-> +    for (i =3D 0; i < 50; i++) {
-> +        if (!f[i])
-> +            continue;
-> +        bpf_obj_drop(f[i]);
-> +    }
-> +    return 0;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_dead_code_elim(struct __sk_buff *ctx)
-> +{
-> +    void *p;
-> +
-> +    p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    if (!p)
-> +        return 0;
-> +    asm volatile (
-> +        "r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +    " ::: "r0");
-> +    bpf_throw(VAL);
-> +    bpf_ringbuf_discard(p, 0);
-> +    return 0;
-> +}
-> +
-> +__noinline int global_subprog_throw_dce(struct __sk_buff *ctx)
-> +{
-> +    u64 *p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    bpf_throw(VAL);
-> +    return p ? *p : 0 + ctx->len;
-> +}
-> +
-> +__noinline int global_subprog_dce(struct __sk_buff *ctx)
-> +{
-> +    u64 *p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    if (!p)
-> +        return ctx->len;
-> +    asm volatile (
-> +        "r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +    " ::: "r0");
-> +    global_subprog_throw_dce(ctx);
-> +    bpf_ringbuf_discard(p, 0);
-> +    return !!p + ctx->len;
-> +}
-> +
-> +__noinline static int static_subprog_dce(struct __sk_buff *ctx)
-> +{
-> +    struct bpf_dynptr rbuf;
-> +    u64 *p, r =3D 0;
-> +
-> +    bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, &rbuf);
-> +    p =3D bpf_dynptr_data(&rbuf, 0, 8);
-> +    if (!p)
-> +        goto end;
-> +    asm volatile (
-> +        "r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +         r0 =3D r0;        \
-> +    " ::: "r0");
-> +    *p =3D global_subprog_dce(ctx);
-> +    r +=3D *p;
-> +end:
-> +    bpf_ringbuf_discard_dynptr(&rbuf, 0);
-> +    return r + ctx->len;
-> +}
-> +
-> +SEC("tc")
-> +int exceptions_cleanup_frame_dce(struct __sk_buff *ctx)
-> +{
-> +    struct foo { int i; } *p =3D bpf_obj_new(typeof(*p));
-> +    int i;
-> +    only_count =3D 1;
-> +    res_count =3D 4;
-> +    if (!p)
-> +        return 1;
-> +    p->i =3D static_subprog_dce(ctx);
-> +    i =3D p->i;
-> +    bpf_obj_drop(p);
-> +    return i + ctx->len;
-> +}
-> +
-> +SEC("tc")
-> +int reject_slot_with_zero_vs_ptr_ok(struct __sk_buff *ctx)
-> +{
-> +    asm volatile (
-> +       "r7 =3D *(u32 *)(r1 + 0);          \
-> +        r0 =3D 0;                         \
-> +        *(u64 *)(r10 - 8) =3D r0;         \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        if r7 !=3D 0 goto jump4;          \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        *(u64 *)(r10 - 8) =3D r0;         \
-> +    jump4:                              \
-> +        r0 =3D 0;                         \
-> +        r1 =3D 0;                         \
-> +        call bpf_throw;                 \
-> +    " : : __imm(bpf_ringbuf_reserve),
-> +          __imm_addr(ringbuf)
-> +      : "memory");
-> +    return 0;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/exceptions_cleanup_fail.c =
-b/tools/testing/selftests/bpf/progs/exceptions_cleanup_fail.c
-> new file mode 100644
-> index 000000000000..b3c70f92b35f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/exceptions_cleanup_fail.c
-> @@ -0,0 +1,154 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_core_read.h>
-> +
-> +#include "bpf_misc.h"
-> +#include "bpf_experimental.h"
-> +
-> +struct {
-> +    __uint(type, BPF_MAP_TYPE_RINGBUF);
-> +    __uint(max_entries, 8);
-> +} ringbuf SEC(".maps");
-> +
-> +SEC("?tc")
-> +__failure __msg("Unreleased reference")
-> +int reject_with_reference(void *ctx)
-> +{
-> +	struct { int i; } *f;
-> +
-> +	f =3D bpf_obj_new(typeof(*f));
-> +	if (!f)
-> +		return 0;
-> +	bpf_throw(0);
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("frame_desc: merge: failed to merge old and new frame de=
-sc entry")
-> +int reject_slot_with_distinct_ptr(struct __sk_buff *ctx)
-> +{
-> +    void *p;
-> +
-> +    if (ctx->len) {
-> +        p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    } else {
-> +        p =3D bpf_obj_new(typeof(struct { int i; }));
-> +    }
-> +    bpf_throw(0);
-> +    return !p;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("frame_desc: merge: failed to merge old and new frame de=
-sc entry")
-> +int reject_slot_with_distinct_ptr_old(struct __sk_buff *ctx)
-> +{
-> +    void *p;
-> +
-> +    if (ctx->len) {
-> +        p =3D bpf_obj_new(typeof(struct { int i; }));
-> +    } else {
-> +        p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    }
-> +    bpf_throw(0);
-> +    return !p;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("frame_desc: merge: failed to merge old and new frame de=
-sc entry")
-> +int reject_slot_with_misc_vs_ptr(struct __sk_buff *ctx)
-> +{
-> +    void *p =3D (void *)bpf_ktime_get_ns();
-> +
-> +    if (ctx->protocol)
-> +        p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +    bpf_throw(0);
-> +    return !p;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("Unreleased reference")
-> +int reject_slot_with_misc_vs_ptr_old(struct __sk_buff *ctx)
-> +{
-> +    void *p =3D bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> +
-> +    if (ctx->protocol)
-> +        p =3D (void *)bpf_ktime_get_ns();
-> +    bpf_throw(0);
-> +    return !p;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("frame_desc: merge: failed to merge old and new frame de=
-sc entry")
-> +int reject_slot_with_invalid_vs_ptr(struct __sk_buff *ctx)
-> +{
-> +    asm volatile (
-> +       "r7 =3D r1;                        \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        r4 =3D *(u32 *)(r7 + 0);          \
-> +        r6 =3D *(u64 *)(r10 - 8);         \
-> +        if r4 =3D=3D 0 goto jump;           \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        r6 =3D r0;                        \
-> +    jump:                               \
-> +        r0 =3D 0;                         \
-> +        r1 =3D 0;                         \
-> +        call bpf_throw;                 \
-> +    " : : __imm(bpf_ringbuf_reserve),
-> +          __imm_addr(ringbuf)
-> +      : "memory");
-> +    return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("Unreleased reference")
-> +int reject_slot_with_invalid_vs_ptr_old(struct __sk_buff *ctx)
-> +{
-> +    asm volatile (
-> +       "r7 =3D r1;                        \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        r6 =3D r0;                        \
-> +        r4 =3D *(u32 *)(r7 + 0);          \
-> +        if r4 =3D=3D 0 goto jump2;          \
-> +        r6 =3D *(u64 *)(r10 - 8);         \
-> +    jump2:                              \
-> +        r0 =3D 0;                         \
-> +        r1 =3D 0;                         \
-> +        call bpf_throw;                 \
-> +    " : : __imm(bpf_ringbuf_reserve),
-> +          __imm_addr(ringbuf)
-> +      : "memory");
-> +    return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("Unreleased reference")
-> +int reject_slot_with_zero_vs_ptr(struct __sk_buff *ctx)
-> +{
-> +    asm volatile (
-> +       "r7 =3D *(u32 *)(r1 + 0);          \
-> +        r1 =3D %[ringbuf] ll;             \
-> +        r2 =3D 8;                         \
-> +        r3 =3D 0;                         \
-> +        call %[bpf_ringbuf_reserve];    \
-> +        *(u64 *)(r10 - 8) =3D r0;         \
-> +        r0 =3D 0;                         \
-> +        if r7 !=3D 0 goto jump3;          \
-> +        *(u64 *)(r10 - 8) =3D r0;         \
-> +    jump3:                              \
-> +        r0 =3D 0;                         \
-> +        r1 =3D 0;                         \
-> +        call bpf_throw;                 \
-> +    " : : __imm(bpf_ringbuf_reserve),
-> +          __imm_addr(ringbuf)
-> +      : "memory");
-> +    return 0;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/exceptions_fail.c b/tools/=
-testing/selftests/bpf/progs/exceptions_fail.c
-> index dfd164a7a261..1e73200c6276 100644
-> --- a/tools/testing/selftests/bpf/progs/exceptions_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/exceptions_fail.c
-> @@ -182,19 +182,6 @@ int reject_with_rbtree_add_throw(void *ctx)
->  	return 0;
->  }
-> =20
-> -SEC("?tc")
-> -__failure __msg("Unreleased reference")
-> -int reject_with_reference(void *ctx)
-> -{
-> -	struct foo *f;
-> -
-> -	f =3D bpf_obj_new(typeof(*f));
-> -	if (!f)
-> -		return 0;
-> -	bpf_throw(0);
-
-Hmm, so why is this a memory leak exactly? Apologies if this is already
-explained clearly elsewhere in the stack.
-
-> -	return 0;
-> -}
-> -
->  __noinline static int subprog_ref(struct __sk_buff *ctx)
->  {
->  	struct foo *f;
-> --=20
-> 2.40.1
->=20
-
---Pvx2Q3781o2xIZn/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZcqFOgAKCRBZ5LhpZcTz
-ZJbzAP0cocGsCHEFsZqPqjcwMWLQLjnIQ9iQByrV1JgX1Ce9GAEAkmf8l24q63Xj
-n5fOb289m4DjYWP/Q9ip2XiFytx07Qo=
-=8P1r
------END PGP SIGNATURE-----
-
---Pvx2Q3781o2xIZn/--
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
