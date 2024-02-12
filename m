@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-21799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E89852292
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 00:32:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79684852293
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 00:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A292D1F23963
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 23:32:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16DF91F239C7
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 23:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68034F895;
-	Mon, 12 Feb 2024 23:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C914F5FE;
+	Mon, 12 Feb 2024 23:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="suI74l96"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvKfARnI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417623A8C2
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 23:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C68C3A8C2
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 23:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707780754; cv=none; b=S+gd9G4BDTifwt/pyUfwvv5BORNbbKDmvq354kncMeuoIvKdEcbeYr1zrz59Rb1hIiZy5+cstW2E9fU9718CAJx3Y2x6fsd0LnmRk9uKEJ1Wg0W0hNaL+VgRRoBO1YsXFIlZkezV66zJ/3lan4xV3wHJkskySZlKGzxeCT7lBCc=
+	t=1707780757; cv=none; b=YzCYLI1pfSEHqk4gWFxOfSNG60QyMPVO5GVPB8qSJKxoUCwrKUIDEL9t2GKtvQ/FNZ5BSmFvQhOFM3dSyslMPWuRLzazVH/5plQFCIl+mzusdohu8OvQ9GJt28xEqzETzcn9s2aLWHhoxctRFkPRSDsYf9rLzbkfCoRe2Ttk8u4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707780754; c=relaxed/simple;
-	bh=XH/M62z74kSPVa6XW93VnqBVlGXo/YIsCmSRdiS5Dsw=;
+	s=arc-20240116; t=1707780757; c=relaxed/simple;
+	bh=N37XfCaS7bdcPg0qDrwSRW/oJljCUpgb2fdACke0c00=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rGP7lqDjOPYbZ2KmAWK+Pgqqj6U1pq5NTIzxudb6Fbt2tnt3FmkL890g89juO+xzQ2oOEVjCHj4QS1562oKi1/8dURy+ArJPX0emyPha1yykS6PSqSEUhlNFQxVTvY36pN6koiHA32+0DCXcuTgb64YQZy/wPM/pmHaSleGCguw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=suI74l96; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97DD3C433C7;
-	Mon, 12 Feb 2024 23:32:33 +0000 (UTC)
+	 MIME-Version; b=audKgeifA6zhL3cOn6x/Z8pJMmJU7erT5BJUwby6tL2xp1dwnbgjmbLsw5j4H/oje3r40OCAFCS1sdhRLZ9ku+5gyIuST5dQxM9dPBYOPkwxsg/F5X0/KWb0UtkDIW7B8+PyY8H94LcTP7zbZH206zttFesJ85ft8O1Gj9Ql6ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvKfARnI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3713C433F1;
+	Mon, 12 Feb 2024 23:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707780753;
-	bh=XH/M62z74kSPVa6XW93VnqBVlGXo/YIsCmSRdiS5Dsw=;
+	s=k20201202; t=1707780756;
+	bh=N37XfCaS7bdcPg0qDrwSRW/oJljCUpgb2fdACke0c00=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=suI74l96m6rryUZnUMZVq9399XlFfZWaea/PetjvZ9oGA3jPervLIljxcY9qCjJ4Q
-	 O8q1d+l/1b4TjZViEVKRr4akHw+oQhfrZ9xeKCc3dVNYsd9tAghl1Rk+xPb+RG/v4Q
-	 gWhnEkMkz+dL6h+syiVRFvs7usgMJ7tchkyNQu2hj406/jjG/JkZ5cyJGpwSPxmtju
-	 8sdrGfonybTuW3LX09CtOYxYnNJWm8tCe1c5ZQOIXFBmZIyQw4tiF8qeIOYOFO1HZk
-	 1MLtPnFexzUaeXNjCwLGRWoArFdjo1KJWC9EnWz+0NXkWhfw6ffKa+QxPPeA5Hs7Fz
-	 mKzp2GT4PDZ+g==
+	b=uvKfARnINcSypFMgI2SHm390tl3enQgUYFcDYSrdjaNAaB4jtluKuXA2g4o1qpzMW
+	 itXFj7oXgWP3sKqaW+CEDmurtQCMq9mj+rG1QuQZmgXl6yCPlDyxlAMDapjv9Krnyk
+	 ThdTKGHuDFwE9OL9lVIbzB7h1hDKIPY3nA9pOB4Pr1R/NB1fRn7tTBuFcHFYyjTRlO
+	 CVeEUJmvM8JwCnhxtA1wn4V2h89dqpWfEQ9hswqd8+PbC3fW5UPWdmBu/PboEXalwf
+	 z4RACQUM/6fuy3t5FTGCpPMLbqRvRk4ZyIuAIciMgRRaf0nt6BUodfm9htzf22oFs5
+	 p6aA/29VfJ+OQ==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -48,9 +48,9 @@ To: bpf@vger.kernel.org,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH v2 bpf-next 3/4] bpf: don't infer PTR_TO_CTX for programs with unnamed context type
-Date: Mon, 12 Feb 2024 15:32:20 -0800
-Message-Id: <20240212233221.2575350-4-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: add anonymous user struct as global subprog arg test
+Date: Mon, 12 Feb 2024 15:32:21 -0800
+Message-Id: <20240212233221.2575350-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240212233221.2575350-1-andrii@kernel.org>
 References: <20240212233221.2575350-1-andrii@kernel.org>
@@ -62,88 +62,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For program types that don't have named context type name (e.g., BPF
-iterator programs or tracepoint programs), ctx_tname will be a non-NULL
-empty string. For such programs it shouldn't be possible to have
-PTR_TO_CTX argument for global subprogs based on type name alone.
-arg:ctx tag is the only way to have PTR_TO_CTX passed into global
-subprog for such program types.
+Add tests validating that kernel handles pointer to anonymous struct
+argument as PTR_TO_MEM case, not as PTR_TO_CTX case.
 
-Fix this loophole, which currently would assume PTR_TO_CTX whenever
-user uses a pointer to anonymous struct as an argument to their global
-subprogs. This happens in practice with the following (quite common, in
-practice) approach:
-
-typedef struct { /* anonymous */
-    int x;
-} my_type_t;
-
-int my_subprog(my_type_t *arg) { ... }
-
-User's intent is to have PTR_TO_MEM argument for `arg`, but verifier
-will complain about expecting PTR_TO_CTX.
-
-This fix also closes unintended s390x-specific KPROBE handling of
-PTR_TO_CTX case. Selftest change is necessary to accommodate this.
-
-Fixes: 91cc1a99740e ("bpf: Annotate context types")
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/btf.c                              |  3 +++
- .../bpf/progs/test_global_func_ctx_args.c     | 19 +++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ .../bpf/progs/verifier_global_subprogs.c      | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index da958092c969..13bd93efeed0 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5739,6 +5739,9 @@ bool btf_is_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
- 		bpf_log(log, "Please fix kernel include/linux/bpf_types.h\n");
- 		return false;
- 	}
-+	/* program types without named context types work only with arg:ctx tag */
-+	if (ctx_tname[0] == '\0')
-+		return false;
- 	/* only compare that prog's ctx type name is the same as
- 	 * kernel expects. No need to compare field by field.
- 	 * It's ok for bpf prog to do:
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-index 9a06e5eb1fbe..143c8a4852bf 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-@@ -26,6 +26,23 @@ int kprobe_typedef_ctx(void *ctx)
- 	return kprobe_typedef_ctx_subprog(ctx);
+diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+index 67dddd941891..baff5ffe9405 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
++++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+@@ -115,6 +115,35 @@ int arg_tag_nullable_ptr_fail(void *ctx)
+ 	return subprog_nullable_ptr_bad(&x);
  }
  
-+/* s390x defines:
-+ *
-+ * typedef user_pt_regs bpf_user_pt_regs_t;
-+ * typedef struct { ... } user_pt_regs;
-+ *
-+ * And so "canonical" underlying struct type is anonymous.
-+ * So on s390x only valid ways to have PTR_TO_CTX argument in global subprogs
-+ * are:
-+ *   - bpf_user_pt_regs_t *ctx (typedef);
-+ *   - struct bpf_user_pt_regs_t *ctx (backwards compatible struct hack);
-+ *   - void *ctx __arg_ctx (arg:ctx tag)
-+ *
-+ * Other architectures also allow using underlying struct types (e.g.,
-+ * `struct pt_regs *ctx` for x86-64)
-+ */
-+#ifndef bpf_target_s390
++typedef struct {
++	int x;
++} user_struct_t;
 +
- #define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
- 
- __weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
-@@ -40,6 +57,8 @@ int kprobe_resolved_ctx(void *ctx)
- 	return kprobe_struct_ctx_subprog(ctx);
- }
- 
-+#endif
++__noinline __weak int subprog_user_anon_mem(user_struct_t *t)
++{
++	return t ? t->x : 0;
++}
 +
- /* this is current hack to make this work on old kernels */
- struct bpf_user_pt_regs_t {};
- 
++SEC("?tracepoint")
++__failure __log_level(2)
++__msg("invalid bpf_context access")
++__msg("Caller passes invalid args into func#1 ('subprog_user_anon_mem')")
++int anon_user_mem_invalid(void *ctx)
++{
++	/* can't pass PTR_TO_CTX as user memory */
++	return subprog_user_anon_mem(ctx);
++}
++
++SEC("?tracepoint")
++__success __log_level(2)
++__msg("Func#1 ('subprog_user_anon_mem') is safe for any args that match its prototype")
++int anon_user_mem_valid(void *ctx)
++{
++	user_struct_t t = { .x = 42 };
++
++	return subprog_user_anon_mem(&t);
++}
++
+ __noinline __weak int subprog_nonnull_ptr_good(int *p1 __arg_nonnull, int *p2 __arg_nonnull)
+ {
+ 	return (*p1) * (*p2); /* good, no need for NULL checks */
 -- 
 2.39.3
 
