@@ -1,124 +1,135 @@
-Return-Path: <bpf+bounces-21801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A1A852295
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 00:34:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7BF852297
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 00:36:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 093E4B21761
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 23:34:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 012DE1F2365C
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 23:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756474F895;
-	Mon, 12 Feb 2024 23:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05C55025A;
+	Mon, 12 Feb 2024 23:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VeqV3B7R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i9c78PPH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDAA1EB20
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 23:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B184F5FE
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 23:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707780853; cv=none; b=BlzH/1eJwUmqHTP6q6AADNoJLMuBKP2Hi0efqA5L+dqzoOcZ68UhodRa2Sw1HpEhCpjNndhr2+tTTZclP1yTvYgg/LGj7dEMc5EdPD7nR6ggoO6i34wrC295y1QLfEsbbxOW649yuu/Kaa7spELBoc3fDQZRtqo/FCZazHE+Vi8=
+	t=1707780979; cv=none; b=L37HiEwCduj7xbv3ntPtYpfL0dMjEKqsLL++m+xJBkl/IIeWLdMUnzj+P+n7i104vMKj1etQNB3Jz6s/U8nmRkHzzP5nCWCJ35A3/wTiP8IjB43AWH+0dFkTOzUKuHwuk9ngnhhC3u53riwcWXw91WrwQ74RYYH6sqd8r+heDfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707780853; c=relaxed/simple;
-	bh=ElB0aQYi6qg5W3vpk67coQAA6A6ZmLsPgeLLOvUTFuM=;
+	s=arc-20240116; t=1707780979; c=relaxed/simple;
+	bh=YLWXTqghvsglCoXndxnsOe4T1T8QQ5Sl1oDXPSZ/lOQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=di2YcL1ULDhHmFgkyBnq2cAGM+8CvctgGc11XCzBUNtgFAEW4Ru4h/fodxNl3Hv4AoHIurv9sYyaFkV4ne6WpGGYe9yNwTxiYkKoWBXMlI01mPAgJlrtD57eMVIMKi2ylRA7kctgoIGnU8eCwDxZ8TxV+6UzuNf4tFQ5gXoY5ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VeqV3B7R; arc=none smtp.client-ip=209.85.128.47
+	 To:Cc:Content-Type; b=tlZt+MWzEGpNjvGGS69Nj3JZoftdfJ7vjB5lZcWYeAm6pVlXqS9KccY1t3AgxvG3967RYlurgV0nkd4fq8wtmAgLE2f8WHqRHB2D0IcM9+PYcAhEbiTJVs+dVNyuLroJKxvqTDtwrkJMsSY2tcD8fXxYRgCTsN+LZ7LwrKiAzDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i9c78PPH; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-410cb9315f6so12073445e9.2
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 15:34:11 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-296c562ac70so2813195a91.2
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 15:36:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707780849; x=1708385649; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707780977; x=1708385777; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SiQkbqTYDKtAqkX/QCzTTFAJP9oikZLzxIXaAIWMJ2s=;
-        b=VeqV3B7RdI7IvZjO4ZE0G3gdyNNwVaVkaceoSJwibJ5V1MHASrTL3sjPfBTm6XTNym
-         gKbZLjaNcjUKWb+RStSW+vqmPVeao6zxxVlGARgN8GB0E6pKFSZnClQTFCv3AGudNZ0p
-         bXfyJkdoZp0nTY2xSjOj7Oerk+BLw1fbSctGEOhhqXpwUxCTz1o/GWApj1xNLV3yhVyW
-         B1wRdORy0Z/WDF1BQ4KBgBX6ziRP8FyynvQDAfNSHdaMBNgynEgZ60HjutWIcMNfpruF
-         Zia6JrlTpxyxmgbW/+kusMQogkUj/JMXl0wgRK7CvCRYT2c8VnezHMjDSKZqxv/HhAQv
-         1nfg==
+        bh=IluwmsoNDeBnltxjIw/yWu9CZY8NaMdb7cmbMpwlcJE=;
+        b=i9c78PPHyx/IzfaeDF4fgucBeKyb1+yNHo5u45bXR8wTs0MKUIvTMUJduD2NwjoGD7
+         MiAcHpUyzPfbkyXdSnO4W4FRqUUrBhNx4lUXuX+2+E2paN7Zs8bF8tbrg3oDBEJ7LMmG
+         rUUtaR4Jii/sBgyPd5ZW6/l/dmcJBATd7sqIo/iOdT1SMZazlzkE61xEr+oJu8ve+hQa
+         6HPGhRKmk6huytF9N/Ng50GS63Mkx8r4BwhozVphk9OS+DvOoxm98cR/eu7wkmh5WqOS
+         P7E4DXfZOMw+7lf4KlUtaSOj10Zubn960TYb+WB/14NPuTuLGG70G9zKJaUCHFBVE3hU
+         t5lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707780849; x=1708385649;
+        d=1e100.net; s=20230601; t=1707780977; x=1708385777;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SiQkbqTYDKtAqkX/QCzTTFAJP9oikZLzxIXaAIWMJ2s=;
-        b=ehofPbR41CvG8v6ESZV5l7q0UbxSoNq37NmdQWZv/OUV08Z4TRJJZx6LLs+1F2r5qU
-         NjU5BAsXv4z/m1Do4iy6vdqG/YEneKxRY69JM3qENfVTuKDuTqmuv6zKcPSR2O6pLj11
-         EhvrSeKQfYI/xjiYptWZ7zeBQd2Umohiw8Dn9tTDbAgAze/+WFx9WkAmwUZsm2B0/5Ht
-         wBE5TwvFnwRmOidxBmJtwPw8JODr1PouR0AwfW2z6LtJW8zrt4+Idbcmw59r/w07Qbob
-         XV3nT8odXdv7lfJjFtf32LySoLcASS3Cm2a1QrwAofzixhE5LS7d5kKTlxDbDjL79hAT
-         hHfA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5GBnlCYPUrI9A9ExHgw1eBGN6qpwUgw1vmDr8C5pzr4RSiErSFeg21IJ01x9U+KCUZiCu+faYBQgma7nBsEkZKI84
-X-Gm-Message-State: AOJu0YyCxQ8o/ezrFb20dKOvfWNp4SGTnsct4YvJRLUzy3bxHMAf3dse
-	Nh8C/xfYYwngvczycdRUwpiJzL4P1jsOeSb+Ll31ZL5HY+V+xSQ0BaMRkzSws0dHot9fP5wXcOY
-	mT6+EnL1w80snDrT6W3qOS2sJfdk=
-X-Google-Smtp-Source: AGHT+IFmHIO/h2z74NhMwgvtNJ/IO2eSrTPPPXT2WnZI3bbXdOhzEzIQMJAJ4bk19R1o87032XEkE+dp+GUwnyOtulA=
-X-Received: by 2002:a5d:44c5:0:b0:33b:5198:11d9 with SMTP id
- z5-20020a5d44c5000000b0033b519811d9mr5116121wrr.71.1707780849215; Mon, 12 Feb
- 2024 15:34:09 -0800 (PST)
+        bh=IluwmsoNDeBnltxjIw/yWu9CZY8NaMdb7cmbMpwlcJE=;
+        b=KHb9RqiEH4MFBfgdIyQuEp5zBNcX6ytjhGKHz3lJP1BAozVPsy3/dNV1aLFc+YGD2T
+         DjcBlzDfg8KkmO2nnz2onhuP+ZvDYarzMiENU86LYuwfRCJMaV4hsRzV7xt9pCUq31vX
+         3xXyauPOG0G7iOCV16rinY+jsW9xo9HKI2src8jJN/DOuzCb+D3atmRfZNjPu9YvkVbc
+         RY0RdCVuyhN+mbyRcZg04XCL/fq3bIkWR4AGTjypMpLs3bkZwiKLYNoaYaqMgdKKAHpR
+         AdgvR7mY8ubdZiiffJFR8eLy6OfddtHviQ01BuZ7JeO9Uki5ndvSBmKfncXFocBY3lb7
+         QRUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUk7ksITJtYoizk1/oePwzG8FrbE7gSgPbsnUoho0+pHsCVyc6xkGaTP5gBQ6CAv9He8G+VBggJx0xUQqijf4Q67HWX
+X-Gm-Message-State: AOJu0Ywgk7ho4Hp7cr3LDyC+OtziEoozxmJmpGkqrk1uWe0RLGPLv4x7
+	GkmIZ+RJ9CqAwq9Rh+3hfTedf8XIMy9Ek7lgzFOz1USZmBfk4/mxwYxMMnkKIQfP2yp8SJp1jrw
+	4Eq+8evGGaPxIMtCK4D+BYCqqDOs=
+X-Google-Smtp-Source: AGHT+IFnFfBnTHtaUWfKehfnGlMHkh6RcAyk3PP6gsyXgyZC4vFC8jRqoMyDvjV4rMv+ze8aUVSPWQ6Na+8duuGZNFM=
+X-Received: by 2002:a17:90a:9a86:b0:297:11b3:6064 with SMTP id
+ e6-20020a17090a9a8600b0029711b36064mr5300036pjp.43.1707780977140; Mon, 12 Feb
+ 2024 15:36:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZcqYNrktYhHFTtzH@debian.debian> <CAP01T74dQAt1UUGkUazx17XAj7k3LCMvw8Y+_rKzwH8eUao75g@mail.gmail.com>
- <CALrw=nGU-gBihe-08rJaxdwpRPQLBPLEQn5q+aBwzLKZ4Go+JQ@mail.gmail.com>
-In-Reply-To: <CALrw=nGU-gBihe-08rJaxdwpRPQLBPLEQn5q+aBwzLKZ4Go+JQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 12 Feb 2024 15:33:57 -0800
-Message-ID: <CAADnVQ+EL71GN6z3RnSBX5jfCmD9f5T9WN=sr_k+JmZzOOLqPg@mail.gmail.com>
-Subject: Re: Page faults in tracepoint caused by aliased pointer
-To: Ignat Korchagin <ignat@cloudflare.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Yan Zhai <yan@cloudflare.com>, bpf <bpf@vger.kernel.org>, 
-	kernel-team <kernel-team@cloudflare.com>, Jakub Sitnicki <jakub@cloudflare.com>
+References: <20240210003308.3374075-1-andrii@kernel.org> <CAADnVQ+yvpZ=-gWtU_4w4wJ52ULZcqVRq+4E-BGNZmTjfKPYRA@mail.gmail.com>
+ <CAEf4Bzb11hQw9DX7c+AKcCjTrsh8yAcEPvUotCBwZv=1B3Su2g@mail.gmail.com>
+ <CAEf4Bzb0KajZt85zgRJSeSJazFDFFXmJyhQd64zZUc5phqBUFA@mail.gmail.com> <CAADnVQLU0Gp0T6nATdMCJrwDQRA1wGcWPqi+N2a=aXUBiy87Zg@mail.gmail.com>
+In-Reply-To: <CAADnVQLU0Gp0T6nATdMCJrwDQRA1wGcWPqi+N2a=aXUBiy87Zg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 12 Feb 2024 15:36:05 -0800
+Message-ID: <CAEf4BzbtzuPstmTp+mwgMQGmbzvwf-jbxNmyys_bUyKxZUq6vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: emit source code file name and line number
+ in verifier log
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 3:16=E2=80=AFPM Ignat Korchagin <ignat@cloudflare.c=
-om> wrote:
+On Mon, Feb 12, 2024 at 12:05=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> [288931.217143][T109754] CPU: 4 PID: 109754 Comm: bpftrace Not tainted
-> 6.6.16+ #10
-
-...
-> [288931.217143][T109754]  ? copy_from_kernel_nofault+0x1d/0xe0
-> [288931.217143][T109754]  bpf_probe_read_compat+0x6a/0x90
+> On Mon, Feb 12, 2024 at 11:02=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > >
+> > > Can't say that either is super nice and clean. But when I tried e)
+> > > proposal, I realized that semicolon separators are used also for
+> > > register state (next to instruction dump) and they sort of overlap
+> > > visually more and make it a bit harder to read log (subjective IMO, o=
+f
+> > > course).
+> > >
+> > > But let me know if you still prefer e) and I'll send v2 with it.
+> > >
+> >
+> > Goodness, gmail made everything even worse. See [0] for visual comparis=
+on
+> >
+> >   [0] https://gist.github.com/anakryiko/f5e9217f277b0f8cd156ceb6cb64126=
+8
 >
-> And Jakub CCed here did it for 6.8.0-rc2+
+>
+> Two ; ; are indeed not pretty.
+> Maybe let's use a single character that is not used in C ?
+> Like @ ?
 
-I suspect something is broken in your kernels.
-Above is doing generic copy_from_kernel_nofault(),
-so one should be able to crash the kernel without any bpf.
+I like @, it's both distinctive and meaningful. Will send v2 with @
+<file>:<line>.
 
-We have this in selftests/bpf:
-__weak noinline struct file *bpf_testmod_return_ptr(int arg)
-{
-        static struct file f =3D {};
-
-        switch (arg) {
-        case 1: return (void *)EINVAL;          /* user addr */
-        case 2: return (void *)0xcafe4a11;      /* user addr */
-        case 3: return (void *)-EINVAL;         /* canonical, but invalid *=
-/
-        case 4: return (void *)(1ull << 60);    /* non-canonical and invali=
-d */
-        case 5: return (void *)~(1ull << 30);   /* trigger extable */
-        case 6: return &f;                      /* valid addr */
-        case 7: return (void *)((long)&f | 1);  /* kernel tricks */
-        default: return NULL;
-        }
-}
-where we check that extables setup by JIT for bpf progs are working correct=
-ly.
-You should see the kernel crashing when you just run bpf selftests.
+>
+> Then it will be:
+> ; if (i >=3D map->cnt) @ strobemeta_probe.bpf.c:396
+> ; descr->key_lens[i] =3D 0; @ strobemeta_probe.bpf.c:398
+>
+> Some asm languages use ! as a comment. It's ok-ish. a bit worse imo:
+> ; if (i >=3D map->cnt) ! strobemeta_probe.bpf.c:396
+> ; descr->key_lens[i] =3D 0; ! strobemeta_probe.bpf.c:398
+>
+> or single underscore ?
+> ; if (i >=3D map->cnt) _ strobemeta_probe.bpf.c:396
+> ; descr->key_lens[i] =3D 0; _ strobemeta_probe.bpf.c:398
+>
+> I think all of the above are better than () or []
 
