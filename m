@@ -1,116 +1,124 @@
-Return-Path: <bpf+bounces-21800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21801-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79684852293
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 00:32:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A1A852295
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 00:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16DF91F239C7
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 23:32:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 093E4B21761
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 23:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C914F5FE;
-	Mon, 12 Feb 2024 23:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756474F895;
+	Mon, 12 Feb 2024 23:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvKfARnI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VeqV3B7R"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C68C3A8C2
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 23:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDAA1EB20
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 23:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707780757; cv=none; b=YzCYLI1pfSEHqk4gWFxOfSNG60QyMPVO5GVPB8qSJKxoUCwrKUIDEL9t2GKtvQ/FNZ5BSmFvQhOFM3dSyslMPWuRLzazVH/5plQFCIl+mzusdohu8OvQ9GJt28xEqzETzcn9s2aLWHhoxctRFkPRSDsYf9rLzbkfCoRe2Ttk8u4=
+	t=1707780853; cv=none; b=BlzH/1eJwUmqHTP6q6AADNoJLMuBKP2Hi0efqA5L+dqzoOcZ68UhodRa2Sw1HpEhCpjNndhr2+tTTZclP1yTvYgg/LGj7dEMc5EdPD7nR6ggoO6i34wrC295y1QLfEsbbxOW649yuu/Kaa7spELBoc3fDQZRtqo/FCZazHE+Vi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707780757; c=relaxed/simple;
-	bh=N37XfCaS7bdcPg0qDrwSRW/oJljCUpgb2fdACke0c00=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=audKgeifA6zhL3cOn6x/Z8pJMmJU7erT5BJUwby6tL2xp1dwnbgjmbLsw5j4H/oje3r40OCAFCS1sdhRLZ9ku+5gyIuST5dQxM9dPBYOPkwxsg/F5X0/KWb0UtkDIW7B8+PyY8H94LcTP7zbZH206zttFesJ85ft8O1Gj9Ql6ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvKfARnI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3713C433F1;
-	Mon, 12 Feb 2024 23:32:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707780756;
-	bh=N37XfCaS7bdcPg0qDrwSRW/oJljCUpgb2fdACke0c00=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uvKfARnINcSypFMgI2SHm390tl3enQgUYFcDYSrdjaNAaB4jtluKuXA2g4o1qpzMW
-	 itXFj7oXgWP3sKqaW+CEDmurtQCMq9mj+rG1QuQZmgXl6yCPlDyxlAMDapjv9Krnyk
-	 ThdTKGHuDFwE9OL9lVIbzB7h1hDKIPY3nA9pOB4Pr1R/NB1fRn7tTBuFcHFYyjTRlO
-	 CVeEUJmvM8JwCnhxtA1wn4V2h89dqpWfEQ9hswqd8+PbC3fW5UPWdmBu/PboEXalwf
-	 z4RACQUM/6fuy3t5FTGCpPMLbqRvRk4ZyIuAIciMgRRaf0nt6BUodfm9htzf22oFs5
-	 p6aA/29VfJ+OQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: add anonymous user struct as global subprog arg test
-Date: Mon, 12 Feb 2024 15:32:21 -0800
-Message-Id: <20240212233221.2575350-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240212233221.2575350-1-andrii@kernel.org>
-References: <20240212233221.2575350-1-andrii@kernel.org>
+	s=arc-20240116; t=1707780853; c=relaxed/simple;
+	bh=ElB0aQYi6qg5W3vpk67coQAA6A6ZmLsPgeLLOvUTFuM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=di2YcL1ULDhHmFgkyBnq2cAGM+8CvctgGc11XCzBUNtgFAEW4Ru4h/fodxNl3Hv4AoHIurv9sYyaFkV4ne6WpGGYe9yNwTxiYkKoWBXMlI01mPAgJlrtD57eMVIMKi2ylRA7kctgoIGnU8eCwDxZ8TxV+6UzuNf4tFQ5gXoY5ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VeqV3B7R; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-410cb9315f6so12073445e9.2
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 15:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707780849; x=1708385649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SiQkbqTYDKtAqkX/QCzTTFAJP9oikZLzxIXaAIWMJ2s=;
+        b=VeqV3B7RdI7IvZjO4ZE0G3gdyNNwVaVkaceoSJwibJ5V1MHASrTL3sjPfBTm6XTNym
+         gKbZLjaNcjUKWb+RStSW+vqmPVeao6zxxVlGARgN8GB0E6pKFSZnClQTFCv3AGudNZ0p
+         bXfyJkdoZp0nTY2xSjOj7Oerk+BLw1fbSctGEOhhqXpwUxCTz1o/GWApj1xNLV3yhVyW
+         B1wRdORy0Z/WDF1BQ4KBgBX6ziRP8FyynvQDAfNSHdaMBNgynEgZ60HjutWIcMNfpruF
+         Zia6JrlTpxyxmgbW/+kusMQogkUj/JMXl0wgRK7CvCRYT2c8VnezHMjDSKZqxv/HhAQv
+         1nfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707780849; x=1708385649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SiQkbqTYDKtAqkX/QCzTTFAJP9oikZLzxIXaAIWMJ2s=;
+        b=ehofPbR41CvG8v6ESZV5l7q0UbxSoNq37NmdQWZv/OUV08Z4TRJJZx6LLs+1F2r5qU
+         NjU5BAsXv4z/m1Do4iy6vdqG/YEneKxRY69JM3qENfVTuKDuTqmuv6zKcPSR2O6pLj11
+         EhvrSeKQfYI/xjiYptWZ7zeBQd2Umohiw8Dn9tTDbAgAze/+WFx9WkAmwUZsm2B0/5Ht
+         wBE5TwvFnwRmOidxBmJtwPw8JODr1PouR0AwfW2z6LtJW8zrt4+Idbcmw59r/w07Qbob
+         XV3nT8odXdv7lfJjFtf32LySoLcASS3Cm2a1QrwAofzixhE5LS7d5kKTlxDbDjL79hAT
+         hHfA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5GBnlCYPUrI9A9ExHgw1eBGN6qpwUgw1vmDr8C5pzr4RSiErSFeg21IJ01x9U+KCUZiCu+faYBQgma7nBsEkZKI84
+X-Gm-Message-State: AOJu0YyCxQ8o/ezrFb20dKOvfWNp4SGTnsct4YvJRLUzy3bxHMAf3dse
+	Nh8C/xfYYwngvczycdRUwpiJzL4P1jsOeSb+Ll31ZL5HY+V+xSQ0BaMRkzSws0dHot9fP5wXcOY
+	mT6+EnL1w80snDrT6W3qOS2sJfdk=
+X-Google-Smtp-Source: AGHT+IFmHIO/h2z74NhMwgvtNJ/IO2eSrTPPPXT2WnZI3bbXdOhzEzIQMJAJ4bk19R1o87032XEkE+dp+GUwnyOtulA=
+X-Received: by 2002:a5d:44c5:0:b0:33b:5198:11d9 with SMTP id
+ z5-20020a5d44c5000000b0033b519811d9mr5116121wrr.71.1707780849215; Mon, 12 Feb
+ 2024 15:34:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <ZcqYNrktYhHFTtzH@debian.debian> <CAP01T74dQAt1UUGkUazx17XAj7k3LCMvw8Y+_rKzwH8eUao75g@mail.gmail.com>
+ <CALrw=nGU-gBihe-08rJaxdwpRPQLBPLEQn5q+aBwzLKZ4Go+JQ@mail.gmail.com>
+In-Reply-To: <CALrw=nGU-gBihe-08rJaxdwpRPQLBPLEQn5q+aBwzLKZ4Go+JQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 12 Feb 2024 15:33:57 -0800
+Message-ID: <CAADnVQ+EL71GN6z3RnSBX5jfCmD9f5T9WN=sr_k+JmZzOOLqPg@mail.gmail.com>
+Subject: Re: Page faults in tracepoint caused by aliased pointer
+To: Ignat Korchagin <ignat@cloudflare.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Yan Zhai <yan@cloudflare.com>, bpf <bpf@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add tests validating that kernel handles pointer to anonymous struct
-argument as PTR_TO_MEM case, not as PTR_TO_CTX case.
+On Mon, Feb 12, 2024 at 3:16=E2=80=AFPM Ignat Korchagin <ignat@cloudflare.c=
+om> wrote:
+>
+> [288931.217143][T109754] CPU: 4 PID: 109754 Comm: bpftrace Not tainted
+> 6.6.16+ #10
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/progs/verifier_global_subprogs.c      | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+...
+> [288931.217143][T109754]  ? copy_from_kernel_nofault+0x1d/0xe0
+> [288931.217143][T109754]  bpf_probe_read_compat+0x6a/0x90
+>
+> And Jakub CCed here did it for 6.8.0-rc2+
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-index 67dddd941891..baff5ffe9405 100644
---- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-@@ -115,6 +115,35 @@ int arg_tag_nullable_ptr_fail(void *ctx)
- 	return subprog_nullable_ptr_bad(&x);
- }
- 
-+typedef struct {
-+	int x;
-+} user_struct_t;
-+
-+__noinline __weak int subprog_user_anon_mem(user_struct_t *t)
-+{
-+	return t ? t->x : 0;
-+}
-+
-+SEC("?tracepoint")
-+__failure __log_level(2)
-+__msg("invalid bpf_context access")
-+__msg("Caller passes invalid args into func#1 ('subprog_user_anon_mem')")
-+int anon_user_mem_invalid(void *ctx)
-+{
-+	/* can't pass PTR_TO_CTX as user memory */
-+	return subprog_user_anon_mem(ctx);
-+}
-+
-+SEC("?tracepoint")
-+__success __log_level(2)
-+__msg("Func#1 ('subprog_user_anon_mem') is safe for any args that match its prototype")
-+int anon_user_mem_valid(void *ctx)
-+{
-+	user_struct_t t = { .x = 42 };
-+
-+	return subprog_user_anon_mem(&t);
-+}
-+
- __noinline __weak int subprog_nonnull_ptr_good(int *p1 __arg_nonnull, int *p2 __arg_nonnull)
- {
- 	return (*p1) * (*p2); /* good, no need for NULL checks */
--- 
-2.39.3
+I suspect something is broken in your kernels.
+Above is doing generic copy_from_kernel_nofault(),
+so one should be able to crash the kernel without any bpf.
 
+We have this in selftests/bpf:
+__weak noinline struct file *bpf_testmod_return_ptr(int arg)
+{
+        static struct file f =3D {};
+
+        switch (arg) {
+        case 1: return (void *)EINVAL;          /* user addr */
+        case 2: return (void *)0xcafe4a11;      /* user addr */
+        case 3: return (void *)-EINVAL;         /* canonical, but invalid *=
+/
+        case 4: return (void *)(1ull << 60);    /* non-canonical and invali=
+d */
+        case 5: return (void *)~(1ull << 30);   /* trigger extable */
+        case 6: return &f;                      /* valid addr */
+        case 7: return (void *)((long)&f | 1);  /* kernel tricks */
+        default: return NULL;
+        }
+}
+where we check that extables setup by JIT for bpf progs are working correct=
+ly.
+You should see the kernel crashing when you just run bpf selftests.
 
