@@ -1,208 +1,112 @@
-Return-Path: <bpf+bounces-21766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37A59851E8B
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 21:19:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0719851E94
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 21:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B5811C2261B
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 20:19:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E7B02816FD
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 20:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3567482C5;
-	Mon, 12 Feb 2024 20:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9755481B8;
+	Mon, 12 Feb 2024 20:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="11FMG5XN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R7yg78Ty"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8E0481AD
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 20:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B334E482C0
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 20:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707769184; cv=none; b=W2m75b+1E3GGVXqUrDL5mWOq/PtRdl4feof2tzyAXZIAqw1cc8Rxw6im5rQmL5vQFg6GsTEChNWA/HIZjG6O3OEMCoIHChgrOIbTQaO3tsWOd12J2hI/4y2nVCeNq/oivcmbdBGTpAjZVGhk4tG86gjPicTWgVDF+/9gpNZn09Q=
+	t=1707769298; cv=none; b=gTayIX+HEgV90n5+ar9R/8GXi6/UzMf7LnuKAtjxZ8Xgy3U8THfvlm3s6BgJowiGkaICL46eHoghiZBb/S+0N60clEVs2Qhs+BQSK3nh5kBx/ZLyVFGB0Sh05BvQhuYH8fJMyaS3laqs0ElKpqooXqIrGrSY3qPH1FeeBaXFNuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707769184; c=relaxed/simple;
-	bh=uJODUvONYUlc20hpmSj0J1uA1bYdfMjYs2on9f3uMaU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dMOyMYcbEH5BFlWpomDO2WzwJbYFVfLhwaPPWmedbEyClAIJFFJuINeuKpJQIxaqSJ8+qvwD7t5aKrIVpPl5TNc75v4bE+G/FnXIzwHUmM++rWLYKA+xugS6JJB4GpU/L+eQ0S3hbGjtoIc7mOJLuoYNsoUwRHh5df6IWin/OG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=11FMG5XN; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d93b982761so49195ad.0
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 12:19:42 -0800 (PST)
+	s=arc-20240116; t=1707769298; c=relaxed/simple;
+	bh=N66AZoaKzq/CEvQ+la0vd6qQhVz2VqCbjeOFzoIccak=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nJbyB8DitejcZBcNjoxrCJvRZckJEZXyvpmi27r8/RyX3HIbkvATBJpnL5cSQmuEFDjYbXsZ6yd2VfKPeW6DWPyX0LcgXTOmEl0O25fJlIa+C6bipLRkqkRLKiiQ/Bw9Y9t8x4oLnBQNw/ixyhck3ExigvG6AORAOV07H73Br2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R7yg78Ty; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d107133b6fso287651fa.3
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 12:21:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707769182; x=1708373982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Icnm5yBA0aCxHiFxkqBy8LL31RhB/IB62tLF3Y2+Rh4=;
-        b=11FMG5XNHfIstKlv1zF3fyvh+Of51VOIQ2onsVY8flJARraF4gjA5LIN+TFj2G1O5W
-         JWiTYiKZ+SEZLn/+eX1i9XDfHJE+fcfUbAclkhxjoN9r6sxui/mioNKfqwkLfYqQ+lHA
-         H77yyFuuYc9HakPkptohUGOu4QJ7/e3wzSYQXPcQm6A3o6wGW2MciPyiWFpIvEBBCqjj
-         TI/wYJ34DXgJ6R5fHY/mLEUAuhJXGEUn2yghX4Mj2RL82+ltrj89lcoxG57yLODw4jGD
-         0/dmZyZAP206IU2Bk/rFDz0iwPpsvL4FvZvmbQbPZDKX6ctgz3naW+Tl+PG6p3a/gQsg
-         cRVg==
+        d=gmail.com; s=20230601; t=1707769295; x=1708374095; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=N66AZoaKzq/CEvQ+la0vd6qQhVz2VqCbjeOFzoIccak=;
+        b=R7yg78TyRbm4lqMmKnv6BhssrgJWxLNPwmeKWV/QbhcP1nYL+eDC49FvpdFqiyGf0v
+         3rvzGgs1jwQz4l5P1G8C54h3VSvSzLZj+TO67K0ixyRmMmWW9gkrZzvxzPKITGiPvRDo
+         olQI0AzE5GIzXGUjLVvXUpoR6eAsgWdwKwpOVSWMITDIAy/Pgv8wap0k8f92b9dmnchp
+         iM5PuQqFC4XUwFm8bUSaepkej/e2Q7uZFLpGckJ8GO+rfEYAKgXdp7phbJou1eypDGS4
+         ObZA0AFEKic/mdiLqmy9G2lcFGbhkWDVIoQVVJYPvxi2pnXEfqjGplIjWr6tfvCKutDC
+         Ilpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707769182; x=1708373982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Icnm5yBA0aCxHiFxkqBy8LL31RhB/IB62tLF3Y2+Rh4=;
-        b=PrZrxseYm4b/XP47cbOJPbjF9rV6MAMn8JV9AO9muQh+nTlP9Zp4qblnxdomCvNvMJ
-         sVU6T++xI8Y9MRVgejpjDCHKXPKOSraisgN/5oijQQqn6iPbvGBwHHTR6fMwmGU8e9vf
-         Mcbv/6h9jos14vnhGQOiGK4A89bdFl+RX/qH997hcMeojFx10jPIcbKIoPvZicq/kYu6
-         A76vVCEy+GwFfRfZyOBOVLoR4azbl6SVqJRnLkGHddIiGEEu7jNjzhf+eS1gIq7TsdwG
-         rN0zceqVxt5GEsUIeRKMyqm24ku7D2WlilgjxqC8deyTM29sy+CftbKxWdGixY0iIsKS
-         zPxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWyANk4jxSfKb4zx46YMYeZAuqClcNaB++fedcSoMYE76Q+clwiR70Ym/qMXiZt22KPA2UC9UZ5ntAOvFMvxqAhUcKT
-X-Gm-Message-State: AOJu0Yzie12223nFPh6oGrUjJYuUE7gCkrh+PA940kjgs/j0zO4payIk
-	cjCAttWBcJ93ixvuJcTnMLdbvrfzHAfdOfA4CpZrpuS1uVZu+g0lH5u765efD6zMVx6SbeH6Phd
-	h++sgStAUBgupIWMpasvmHlJYwa+IFTiKOhX+
-X-Google-Smtp-Source: AGHT+IFlMmc/VgL27uQvdpqBTW3rRUsQvhkAr01w85UMAaL7w4vejw2tDQTJNnyrG/NRrY5ESxZBez3SdEz5nMr0uSI=
-X-Received: by 2002:a17:902:c1d4:b0:1d8:e076:21f3 with SMTP id
- c20-20020a170902c1d400b001d8e07621f3mr550plc.2.1707769181746; Mon, 12 Feb
- 2024 12:19:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707769295; x=1708374095;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N66AZoaKzq/CEvQ+la0vd6qQhVz2VqCbjeOFzoIccak=;
+        b=jcrmWy/ttRdQyWdiwLS+AOL7pVjdZRjUkwxuoixElooYvcEBBEysXG4YpmMCADhstw
+         gnWpeIqrqt45Csh6aexA+XGzyZMXkNVlCkxM2GeYPNRn9iGPh793d85zcd4bhaoI9qBQ
+         TArMzzWJis14qmBdpExZ7hpQORbOBxb9sJD7A5l6J7nvdxdpSzjWLuCdRh+w47lVyi6r
+         NlFrg0KRCfM5u2a6LMnvuoIBU22k+OWfpVtdsdV7PfC0lPZ9PjAco1VwnL7X3CmNl+2N
+         fTXs7/YKfJpR05a/kWWMme3ua/JWcRcvHlk6eBxrJ3iYUwH2TOXr1aIVJhG4vGxL166c
+         ZLOQ==
+X-Gm-Message-State: AOJu0Yyxvmjn7/Y2G3cJakhdumYGiP0xA8Ijf2GkwtfYzuZqgORfPmUJ
+	TxQx0fPaSzblfEK3+hGJ2o2jYdAL6QM5etn/HXItf062vRMZtni5
+X-Google-Smtp-Source: AGHT+IFjrSM9jU90iQ6jQrUhRh/xONekQternGuenadDAIZmdAuq7Yzy8KrWKQrdZvGsVpLYGY4REw==
+X-Received: by 2002:a2e:95cc:0:b0:2d0:aecf:3a3 with SMTP id y12-20020a2e95cc000000b002d0aecf03a3mr5892400ljh.14.1707769294490;
+        Mon, 12 Feb 2024 12:21:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXMDtfvzQnlKRt1UQxQfe7eOjvXCa6s0VDzY7RMf3NGA319djDlsNE5PnaEswaQIG7082pQjY9aGrdm8wPpkbxRfknmD9Z8VAmWBkkQ5gg/Fd9BtHPM+9GJN2Rro+lWAgws3J3i3ZD7gTT4URm/07yUSo5sBornrocRlTXQwMYf88D0VT3Eo8M5X9Kh/NLXiLi8DAPV0UOyw9opw/9PJUW8gGxGn4C/fBDpVo/8inAHVOyVahci+zMgF0ShzNsZDUKVSwvqPSzJEthHbE+gbhbGlK9zZ13TCw8hk52uLpOpnZtGxWAwCMJKZlxG3GLCSdXyMxFDIlsd0W0PaEC0WTGbRZDRLgSkd0zjrV3cUrRZYRQcFqatBFZCZA==
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05640217c700b005602346c3f5sm3061213edy.79.2024.02.12.12.21.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 12:21:33 -0800 (PST)
+Message-ID: <76ec9b657e4a16ad29b928114fbc207318c6e53b.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 12/20] libbpf: Add support for bpf_arena.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi
+ <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,  Barret Rhoden
+ <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes
+ <lstoakes@gmail.com>,  Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Date: Mon, 12 Feb 2024 22:21:27 +0200
+In-Reply-To: <CAADnVQLxymxv5TGsu94=FznK9qqZjSLfwq4k2BSxg-v0FCVuSA@mail.gmail.com>
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+	 <20240209040608.98927-13-alexei.starovoitov@gmail.com>
+	 <59623808ebfd5ecd48cdb4c07a28326d777e7769.camel@gmail.com>
+	 <CAADnVQLxymxv5TGsu94=FznK9qqZjSLfwq4k2BSxg-v0FCVuSA@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210031746.4057262-1-irogers@google.com> <20240210031746.4057262-2-irogers@google.com>
- <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com>
-In-Reply-To: <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 12 Feb 2024 12:19:26 -0800
-Message-ID: <CAP-5=fX7h9ku-XgjYe+3B5NWOJnapLnuJ_JqxywPaTu76VxazA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] perf maps: Switch from rbtree to lazily sorted
- array for addresses
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
-	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, leo.yan@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 12:15=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> On Fri, Feb 9, 2024 at 7:18=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > Maps is a collection of maps primarily sorted by the starting address
-> > of the map. Prior to this change the maps were held in an rbtree
-> > requiring 4 pointers per node. Prior to reference count checking, the
-> > rbnode was embedded in the map so 3 pointers per node were
-> > necessary. This change switches the rbtree to an array lazily sorted
-> > by address, much as the array sorting nodes by name. 1 pointer is
-> > needed per node, but to avoid excessive resizing the backing array may
-> > be twice the number of used elements. Meaning the memory overhead is
-> > roughly half that of the rbtree. For a perf record with
-> > "--no-bpf-event -g -a" of true, the memory overhead of perf inject is
-> > reduce fom 3.3MB to 3MB, so 10% or 300KB is saved.
-> >
-> > Map inserts always happen at the end of the array. The code tracks
-> > whether the insertion violates the sorting property. O(log n) rb-tree
-> > complexity is switched to O(1).
-> >
-> > Remove slides the array, so O(log n) rb-tree complexity is degraded to
-> > O(n).
-> >
-> > A find may need to sort the array using qsort which is O(n*log n), but
-> > in general the maps should be sorted and so average performance should
-> > be O(log n) as with the rbtree.
-> >
-> > An rbtree node consumes a cache line, but with the array 4 nodes fit
-> > on a cache line. Iteration is simplified to scanning an array rather
-> > than pointer chasing.
-> >
-> > Overall it is expected the performance after the change should be
-> > comparable to before, but with half of the memory consumed.
-> >
-> > To avoid a list and repeated logic around splitting maps,
-> > maps__merge_in is rewritten in terms of
-> > maps__fixup_overlap_and_insert. maps_merge_in splits the given mapping
-> > inserting remaining gaps. maps__fixup_overlap_and_insert splits the
-> > existing mappings, then adds the incoming mapping. By adding the new
-> > mapping first, then re-inserting the existing mappings the splitting
-> > behavior matches.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> [SNIP]
-> >  int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, v=
-oid *data), void *data)
-> >  {
-> > -       struct map_rb_node *pos;
-> > +       bool done =3D false;
-> >         int ret =3D 0;
-> >
-> > -       down_read(maps__lock(maps));
-> > -       maps__for_each_entry(maps, pos) {
-> > -               ret =3D cb(pos->map, data);
-> > -               if (ret)
-> > -                       break;
-> > +       /* See locking/sorting note. */
-> > +       while (!done) {
-> > +               down_read(maps__lock(maps));
-> > +               if (maps__maps_by_address_sorted(maps)) {
-> > +                       /*
-> > +                        * maps__for_each_map callbacks may buggily/uns=
-afely
-> > +                        * insert into maps_by_address. Deliberately re=
-load
-> > +                        * maps__nr_maps and maps_by_address on each it=
-eration
-> > +                        * to avoid using memory freed by maps__insert =
-growing
-> > +                        * the array - this may cause maps to be skippe=
-d or
-> > +                        * repeated.
-> > +                        */
-> > +                       for (unsigned int i =3D 0; i < maps__nr_maps(ma=
-ps); i++) {
-> > +                               struct map **maps_by_address =3D maps__=
-maps_by_address(maps);
->
-> Any chance they can move out of the loop?  I guess not as they are
-> not marked to const/pure functions..
+On Mon, 2024-02-12 at 12:14 -0800, Alexei Starovoitov wrote:
 
-It's not because the cb(...) call below will potentially modify
-maps_by_address by inserting maps and reallocating the array. Having
-it outside the loop was what caused the original bug.
+[...]
 
-Thanks,
-Ian
+> It doesn't and doesn't work for ringbuf either.
+> I guess we can add a filter by map type, but I'm not sure
+> how big this can of worms (extra checks) will be.
+> There are probably many libbpf apis that can be misused.
+> Like bpf_map__set_type()
 
-> Thanks,
-> Namhyung
->
->
-> > +                               struct map *map =3D maps_by_address[i];
-> > +
-> > +                               ret =3D cb(map, data);
-> > +                               if (ret)
-> > +                                       break;
-> > +                       }
-> > +                       done =3D true;
-> > +               }
-> > +               up_read(maps__lock(maps));
-> > +               if (!done)
-> > +                       maps__sort_by_address(maps);
-> >         }
-> > -       up_read(maps__lock(maps));
-> >         return ret;
-> >  }
+Right, probably such extra checks should be a subject of a different
+patch-set (if any).
 
