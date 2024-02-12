@@ -1,261 +1,228 @@
-Return-Path: <bpf+bounces-21758-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A527A851D86
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 20:02:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A57851DA6
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 20:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 562F9288368
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 19:02:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7551B1F21EC4
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 19:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A3B45970;
-	Mon, 12 Feb 2024 19:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA28647A53;
+	Mon, 12 Feb 2024 19:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nb3IIlLY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S/7OaOEx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB48241206
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 19:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C837A4C60B
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 19:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707764524; cv=none; b=DzGJ5yJK67/XcEN9WNrJbvTYceFsjeMBndZ5jRRzmaaH+S868chwMKkxXojPMqHWN8DrYZEpJBNWmpd9ZbUP+rIvHyeJ4vJ7tyvAeq7UfMRaXUBl1TT1wAoHlmws4Nw6fy6KLY3Ejn/hQ36NnI6MAT6uCuRT6bMjQzNUpULo6LU=
+	t=1707765101; cv=none; b=S3oeeLoJHqILrTrxeeuTQb9ZhFADUDPZvPMSgCxPgJelFlLMArMSvi/seSulNae3YCnyjAHHbcL4FD9fhphUMx2PoVIQnGDtIDXzaf08n5P5brsYKdTgY+cIRCZNgYqcglacqGttPuyKawq4jIi0p29pjs60aUHyulHJjArHiRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707764524; c=relaxed/simple;
-	bh=fpyI/wk9UxuA0eASFLHRQvr+n9HbzGvxdRv1OaS3Dz4=;
+	s=arc-20240116; t=1707765101; c=relaxed/simple;
+	bh=uu0tNijahduA2skY7MM+5lIFyKYbSfPzOMgZucTtvkA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hor6pYC2k8uBFHNbD5NzULSjgIgmAtrQeBz3UP52Eplw4NveefZanZnmji98IQkg0NzOdMSRTYV2hTD/3xGfrDsqne1C7XUzoxW92XLO3mU+qUVs3eScizdM4hSKVWcedeQTVTsHiiYpfq5RgQx9WH7syGeW6QWLyAN2oatvaeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nb3IIlLY; arc=none smtp.client-ip=209.85.214.171
+	 To:Cc:Content-Type; b=dkbptBYo4L4EMIrrYmO9TFUSP9mo63jYzZTcR0skMOiseWaTW4c9ps+TnHDcHShHJDPjWSWFSi9YEDB24+FVLt82TBdXME7hb5k5bKd9hmvDPABMmfoieUIXZ+fbmNERurgslCE5pA4pTk9nY8FQrl/1MSN6OijVjkBsONA1ceY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S/7OaOEx; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d99c5f6bfeso27416715ad.1
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 11:02:02 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e0eacc5078so557671b3a.0
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 11:11:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707764522; x=1708369322; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707765099; x=1708369899; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ee3OmApGGxROBDlK2MKC2RYXp0IBoseonzGeOcm5gTU=;
-        b=Nb3IIlLYa3RHbdKvESD5Vm3gvyicX1oCgxfZjYita3alFvtHwtDq+3Ii/DKrubc9qk
-         jZLkyP+Wt0IFOXeCjFlRNNTezd6jWRyTZAa9q/WrhLY9LjpzTn9XBymvLJb07jAzcZ09
-         LluosxBqjyEL2RZWSw0NEcw1hn9m+RkohYCT7MSPr8Ya7cMlLAPMyONFQTHGVuXOKrvh
-         xR1n6xV2vpUPSMfclyL1ufII77r6ZiAu+vbuGrQ1e8tKby7eSTMfgdpXJLDDo7yZN63P
-         CaGsXeABfkQvyq7lhzY2AtMCChJqpTggKjD2R1sfypvexYkp6NE9HK41SVbnm1cjPfT9
-         8Tmg==
+        bh=zUD0wC9KyENgwYKaRGo4h2B/QZ9QTMhsPhKclpkb0Ns=;
+        b=S/7OaOEx0akGPxvD+rL4ozmgl/r0fF10rHqbVN2rm4KlCnSQXzgqniXoeMJIuNZum+
+         U1cRnwPP6qGqRk0mOGrnKNwVX+C6lRGpyog6QCzbZJwJBBbSVsnjMhjmAU7cQMqaMMwF
+         OwuP+wEu2vUdLxnxaFUO7Gx1yk06LQTrHKKN8Xjfz8NvvsEe9wYJcs0gIpEnyZK1SIIw
+         ESzozMZSBy/YaPofYoY0eBBMQIcVeiD/JPGvKdw6t9GYHc7ZL5tV+fTEGUeL0SOmpxyz
+         fb32XD2KkmArdGrhktyx5KTbndBSjQJFwQcA5qTG52gnUjANJ1pfH6snsRR6fdDFwE4C
+         /MqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707764522; x=1708369322;
+        d=1e100.net; s=20230601; t=1707765099; x=1708369899;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ee3OmApGGxROBDlK2MKC2RYXp0IBoseonzGeOcm5gTU=;
-        b=sZE14iw7VQ5PxCYESbQ7oOUAUB8FOssDGQhI6wmMsZ8LxRzen6vq7tjGXSeUCoaHco
-         CXKhotF8/qdbauH7o/hOxjCBe/eIkGvl0VJKosMZZyFuat0UTWJyIGDGimoMFgv6n8KX
-         U4Z3eWPOL1cwFI3jLUHR4RxNzYIyGlPqGHb5o4XA1jgrHenaDHhhru1OVV6AMUJfh5nE
-         X01AHmbwoDWwhi7VDXGr3jbFmQWQOUt9+AjTvz6cpycy09O2HiAWSc/Q/DWohvchx2Ve
-         k/Y1a5qUUt3ZuMPlQlAdai6ThPadYiDXwtZKZEyYQskir4OpOmWUCniXtNZkiCM72KKY
-         DHEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUgOCLW/NbOIU3xmGdJD2A81d1zlFbGiid3OIJ0KJJDIlOpPZJhh6m6Xf0IABWPRIuVjVcKB+i7xs+Mi8PuRFWQ+rP2
-X-Gm-Message-State: AOJu0YxuRzErfvdruXYjjtix05fkQclLlA9jHv42bRsk33mAnCij/ts3
-	RSNFhq9BI3a+bS9U77uGRIPH0M54E16IfY2SE5hcrN5kFESj/xy5LKn/aHJutEM26OjSE/hJHvM
-	a9Zc5fzCYMLwvURXrJBbM4ABKfZM=
-X-Google-Smtp-Source: AGHT+IH0oRFoVAaxbiH9JgOTd5ofoeo4A0hrz5aAvOj9fYY0dUAGhCk0S7PVZXoKhsEHk31L5/IiqY75MDy0LYLS5vo=
-X-Received: by 2002:a17:90b:1498:b0:298:9883:c3b with SMTP id
- js24-20020a17090b149800b0029898830c3bmr469698pjb.16.1707764522188; Mon, 12
- Feb 2024 11:02:02 -0800 (PST)
+        bh=zUD0wC9KyENgwYKaRGo4h2B/QZ9QTMhsPhKclpkb0Ns=;
+        b=eGulFd8xt0f5miK+QimckNhXRqXPwcfqMIxbcop7knw5buzYzrFH+arpRcahrvBNgo
+         pjruypem8P00OhjKFUYwsoeBvs6Vnezi81TfcJTLY3s9QHcenrM3wgL030PgRekFhwc7
+         I2uCjJCY+LPjANlTl2mZwBmNFhZOBwDYJzd5HNl8N4628Bql+1Krr4dq/UUKGRwdcYpu
+         pNhw0TfDFxd/U/wwaULQkA+MGsoq8sb9YP8/2ra2TPJu8hsAR0eW7c6jyHYYlwKb+sFj
+         w2APKhqnsB8ABCDVBKWk7+EkfUVzVW2komkPfaRzMBySQBum7zeDwP8LcuHmunxMAui+
+         QOIA==
+X-Forwarded-Encrypted: i=1; AJvYcCU812oYxxn5aRScMtrIJ2tg8sAaDMlo+r96RPTAkm8PHh41/JWmOVPldCASjWIr4Oncs67/5qmlveYBtDY0s2JnCH2Q
+X-Gm-Message-State: AOJu0Yy/qP2sGIVmQNVVAM5VovofObxCKE/tPksrf5jhpMT6BLcz3v01
+	A/TdL0018+asTMLH1aELnpJmjcmlHTmWFS6gC08b+iyOLk6pY02ns7ZEeVVLpbnTg1Vanz+gatA
+	e6FIZrhRKAGKqr5YuTPYpLl4ki/VQea8DEDo=
+X-Google-Smtp-Source: AGHT+IGNiw+DUyIDHERvScrza7oc6iEntlqOOfnknQgYeMWs6zMwCrObVgEuyc334tRqHNiDvuFjcvsNdUxxav3Hmr8=
+X-Received: by 2002:a17:90b:380e:b0:296:43a:932e with SMTP id
+ mq14-20020a17090b380e00b00296043a932emr5025578pjb.7.1707765098951; Mon, 12
+ Feb 2024 11:11:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210003308.3374075-1-andrii@kernel.org> <CAADnVQ+yvpZ=-gWtU_4w4wJ52ULZcqVRq+4E-BGNZmTjfKPYRA@mail.gmail.com>
- <CAEf4Bzb11hQw9DX7c+AKcCjTrsh8yAcEPvUotCBwZv=1B3Su2g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb11hQw9DX7c+AKcCjTrsh8yAcEPvUotCBwZv=1B3Su2g@mail.gmail.com>
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-13-alexei.starovoitov@gmail.com> <CAP01T761B1+paMwrQesjX+zqFwQp8iUzLORueTjTLSHPbJ+0fQ@mail.gmail.com>
+In-Reply-To: <CAP01T761B1+paMwrQesjX+zqFwQp8iUzLORueTjTLSHPbJ+0fQ@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 12 Feb 2024 11:01:50 -0800
-Message-ID: <CAEf4Bzb0KajZt85zgRJSeSJazFDFFXmJyhQd64zZUc5phqBUFA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: emit source code file name and line number
- in verifier log
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+Date: Mon, 12 Feb 2024 11:11:27 -0800
+Message-ID: <CAEf4BzYikhyH8TF8GJy9rLX1SrmGKz1xSd_zFhGYhvXtTFwMgA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 12/20] libbpf: Add support for bpf_arena.
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, eddyz87@gmail.com, tj@kernel.org, brho@google.com, 
+	hannes@cmpxchg.org, lstoakes@gmail.com, akpm@linux-foundation.org, 
+	urezki@gmail.com, hch@infradead.org, linux-mm@kvack.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 10:59=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Feb 9, 2024 at 11:17=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Sun, Feb 11, 2024 at 11:43=E2=80=AFAM Alexei Starovoitov
+> On Fri, 9 Feb 2024 at 05:07, Alexei Starovoitov
 > <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Fri, Feb 9, 2024 at 4:33=E2=80=AFPM Andrii Nakryiko <andrii@kernel.o=
-rg> wrote:
-> > >
-> > > As BPF applications grow in size and complexity and are separated int=
-o
-> > > multiple .bpf.c files that are statically linked together, it becomes
-> > > harder and harder to match verifier's BPF assembly level output to
-> > > original C code. While often annotated C source code is unique enough=
- to
-> > > be able to identify the file it belongs to, quite often this is actua=
-lly
-> > > problematic as parts of source code can be quite generic.
-> > >
-> > > Long story short, it is very useful to see source code file name and
-> > > line number information along with the original C code. Verifier alre=
-ady
-> > > knows this information, we just need to output it.
-> > >
-> > > This patch set is an initial proposal on how this can be done. No new
-> > > flags are added and file:line information is appended at the end of
-> > > C code:
-> > >
-> > >   ; <original C code> (<filename>.bpf.c:<line>)
-> > >
-> > > If file name has directory names in it, they are stripped away. This
-> > > should be fine in practice as file names tend to be pretty unique wit=
-h
-> > > C code anyways, and keeping log size smaller is always good.
-> > >
-> > > In practice this might look something like below, where some code is
-> > > coming from application files, while others are from libbpf's usdt.bp=
-f.h
-> > > header file:
-> > >
-> > >   ; if (STROBEMETA_READ( (strobemeta_probe.bpf.c:534)
-> > >   5592: (79) r1 =3D *(u64 *)(r10 -56)     ; R1_w=3Dmem_or_null(id=3D1=
-589,sz=3D7680) R10=3Dfp0 fp-56_w=3Dmem_or_null(id=3D1589,sz=3D7680)
-> > >   5593: (7b) *(u64 *)(r10 -56) =3D r1     ; R1_w=3Dmem_or_null(id=3D1=
-589,sz=3D7680) R10=3Dfp0 fp-56_w=3Dmem_or_null(id=3D1589,sz=3D7680)
-> > >   5594: (79) r3 =3D *(u64 *)(r10 -8)      ; R3_w=3Dscalar() R10=3Dfp0=
- fp-8=3Dmmmmmmmm
-> > >
-> > >   ...
-> > >
-> > >   170: (71) r1 =3D *(u8 *)(r8 +15)        ; frame1: R1_w=3Dscalar(smi=
-n=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,var_off=3D(0x0; 0xff)) R=
-8_w=3Dmap_value(map=3D__bpf_usdt_spec,ks=3D4,vs=3D208)
-> > >   171: (67) r1 <<=3D 56                   ; frame1: R1_w=3Dscalar(sma=
-x=3D0x7f00000000000000,umax=3D0xff00000000000000,smin32=3D0,smax32=3Dumax32=
-=3D0,var_off=3D(0x0; 0xff00000000000000))
-> > >   172: (c7) r1 s>>=3D 56                  ; frame1: R1_w=3Dscalar(smi=
-n=3Dsmin32=3D-128,smax=3Dsmax32=3D127)
-> > >   ; val <<=3D arg_spec->arg_bitshift; (usdt.bpf.h:183)
-> > >   173: (67) r1 <<=3D 32                   ; frame1: R1_w=3Dscalar(sma=
-x=3D0x7f00000000,umax=3D0xffffffff00000000,smin32=3D0,smax32=3Dumax32=3D0,v=
-ar_off=3D(0x0; 0xffffffff00000000))
-> > >   174: (77) r1 >>=3D 32                   ; frame1: R1_w=3Dscalar(smi=
-n=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
-> > >   175: (79) r2 =3D *(u64 *)(r10 -8)       ; frame1: R2_w=3Dscalar() R=
-10=3Dfp0 fp-8=3Dmmmmmmmm
-> > >   176: (6f) r2 <<=3D r1                   ; frame1: R1_w=3Dscalar(smi=
-n=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff)) R2_w=3Dscalar()
-> > >   177: (7b) *(u64 *)(r10 -8) =3D r2       ; frame1: R2_w=3Dscalar(id=
-=3D61) R10=3Dfp0 fp-8_w=3Dscalar(id=3D61)
-> > >   ; if (arg_spec->arg_signed) (usdt.bpf.h:184)
-> > >   178: (bf) r3 =3D r2                     ; frame1: R2_w=3Dscalar(id=
-=3D61) R3_w=3Dscalar(id=3D61)
-> > >   179: (7f) r3 >>=3D r1                   ; frame1: R1_w=3Dscalar(smi=
-n=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff)) R3_w=3Dscalar()
-> > >   ; if (arg_spec->arg_signed) (usdt.bpf.h:184)
-> > >   180: (71) r4 =3D *(u8 *)(r8 +14)
-> > >   181: safe
-> > >
-> > > I've played with few different formats and none stood out as
-> > > particularly better than other. Suggestions and votes are appreciated=
-:
-> > >
-> > >   a) ; if (arg_spec->arg_signed) (usdt.bpf.h:184)
-> > >   b) ; if (arg_spec->arg_signed) [usdt.bpf.h:184]
-> > >   c) ; [usdt.bpf.h:184] if (arg_spec->arg_signed)
-> > >   d) ; (usdt.bpf.h:184) if (arg_spec->arg_signed)
+> > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > Great idea.
-> > I would drop parenthesis. Don't see a reason to wrap a text.
-> > Since we already use ';' as a comment I would continue:
->
-> A bit worried that it will quite weird for any source line which ends
-> in ';', like:
->
-> ; x =3D 123; ; my_file.bpf.c:123
-> r1 =3D 123;
->
->
-> E.g., here's a real excerpt (I cut some register states for cleanliness):
->
-> ; if (i >=3D map->cnt) ; strobemeta_probe.bpf.c:396
-> 5376: (79) r1 =3D *(u64 *)(r10 -40)     ;
-> R1_w=3Dmap_value(map=3Draw_map_heap,ks=3D4,vs=3D264) R10=3Dfp0
-> 5377: (79) r1 =3D *(u64 *)(r1 +8)       ; R1_w=3Dscalar(...) R9_w=3D10
-> ; if (i >=3D map->cnt) ; strobemeta_probe.bpf.c:396
-> 5378: (dd) if r1 s<=3D r9 goto pc-5     ; R1_w=3Dscalar(smin=3Dumin=3D11,=
-...)
-> ; descr->key_lens[i] =3D 0; ; strobemeta_probe.bpf.c:398
-> 5379: (b4) w1 =3D 0                     ; R1_w=3D0
-> 5380: (6b) *(u16 *)(r8 -30) =3D r1      ; R1_w=3D0
-> ; task, data, off, STROBE_MAX_STR_LEN, map->entries[i].key); ;
-> strobemeta_probe.bpf.c:400
-> 5381: (79) r3 =3D *(u64 *)(r7 -8)       ; R3_w=3Dscalar()
-> R7_w=3Dmap_value(map=3Draw_map_heap,ks=3D4,vs=3D264,off=3D192)
-> 5382: (7b) *(u64 *)(r10 -24) =3D r6     ; ...
-> ; task, data, off, STROBE_MAX_STR_LEN, map->entries[i].key); ;
-> strobemeta_probe.bpf.c:400
-> 5383: (bc) w6 =3D w6                    ; R6_w=3Dscalar(...)
-> ; barrier_var(payload_off); ; strobemeta_probe.bpf.c:280
-> 5384: (bf) r2 =3D r6                    ; R2_w=3Dscalar(...)
-> 5385: (bf) r1 =3D r4
->
-> VS
->
-> ; if (i >=3D map->cnt) (strobemeta_probe.bpf.c:396)
-> 5376: (79) r1 =3D *(u64 *)(r10 -40)     ;
-> R1_w=3Dmap_value(map=3Draw_map_heap,ks=3D4,vs=3D264) R10=3Dfp0
-> 5377: (79) r1 =3D *(u64 *)(r1 +8)       ; R1_w=3Dscalar()
-> ; if (i >=3D map->cnt) (strobemeta_probe.bpf.c:396)
-> 5378: (dd) if r1 s<=3D r9 goto pc-5     ; R1_w=3Dscalar(...) R9_w=3D10
-> ; descr->key_lens[i] =3D 0; (strobemeta_probe.bpf.c:398)
-> 5379: (b4) w1 =3D 0                     ; R1_w=3D0
-> 5380: (6b) *(u16 *)(r8 -30) =3D r1      ; R1_w=3D0
-> ; task, data, off, STROBE_MAX_STR_LEN, map->entries[i].key);
-> (strobemeta_probe.bpf.c:400)
-> 5381: (79) r3 =3D *(u64 *)(r7 -8)       ; R3_w=3Dscalar()
-> R7_w=3Dmap_value(map=3Draw_map_heap,ks=3D4,vs=3D264,off=3D192)
-> 5382: (7b) *(u64 *)(r10 -24) =3D r6     ; ...
-> ; task, data, off, STROBE_MAX_STR_LEN, map->entries[i].key);
-> (strobemeta_probe.bpf.c:400)
-> 5383: (bc) w6 =3D w6                    ; R6_w=3Dscalar(...)
-> ; barrier_var(payload_off); (strobemeta_probe.bpf.c:280)
-> 5384: (bf) r2 =3D r6                    ; R2_w=3Dscalar(...)
-> 5385: (bf) r1 =3D r4
->
->
-> Can't say that either is super nice and clean. But when I tried e)
-> proposal, I realized that semicolon separators are used also for
-> register state (next to instruction dump) and they sort of overlap
-> visually more and make it a bit harder to read log (subjective IMO, of
-> course).
->
-> But let me know if you still prefer e) and I'll send v2 with it.
->
-
-Goodness, gmail made everything even worse. See [0] for visual comparison
-
-  [0] https://gist.github.com/anakryiko/f5e9217f277b0f8cd156ceb6cb641268
-
-
+> > mmap() bpf_arena right after creation, since the kernel needs to
+> > remember the address returned from mmap. This is user_vm_start.
+> > LLVM will generate bpf_arena_cast_user() instructions where
+> > necessary and JIT will add upper 32-bit of user_vm_start
+> > to such pointers.
 > >
-> > e) ; if (arg_spec->arg_signed) ; usdt.bpf.h:184
+> > Fix up bpf_map_mmap_sz() to compute mmap size as
+> > map->value_size * map->max_entries for arrays and
+> > PAGE_SIZE * map->max_entries for arena.
 > >
-> > Note that that fragile test needs to be adjusted again:
-> > Error: #137/3 log_fixup/bad_core_relo_trunc_full
->
-> yep, my bad, I forgot to run all test_progs tests this time, already
-> fixed locally
->
+> > Don't set BTF at arena creation time, since it doesn't support it.
 > >
-> > pw-bot: cr
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  tools/lib/bpf/libbpf.c        | 43 ++++++++++++++++++++++++++++++-----
+> >  tools/lib/bpf/libbpf_probes.c |  7 ++++++
+> >  2 files changed, 44 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 01f407591a92..4880d623098d 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -185,6 +185,7 @@ static const char * const map_type_name[] =3D {
+> >         [BPF_MAP_TYPE_BLOOM_FILTER]             =3D "bloom_filter",
+> >         [BPF_MAP_TYPE_USER_RINGBUF]             =3D "user_ringbuf",
+> >         [BPF_MAP_TYPE_CGRP_STORAGE]             =3D "cgrp_storage",
+> > +       [BPF_MAP_TYPE_ARENA]                    =3D "arena",
+> >  };
+> >
+> >  static const char * const prog_type_name[] =3D {
+> > @@ -1577,7 +1578,7 @@ static struct bpf_map *bpf_object__add_map(struct=
+ bpf_object *obj)
+> >         return map;
+> >  }
+> >
+> > -static size_t bpf_map_mmap_sz(unsigned int value_sz, unsigned int max_=
+entries)
+> > +static size_t __bpf_map_mmap_sz(unsigned int value_sz, unsigned int ma=
+x_entries)
+> >  {
+> >         const long page_sz =3D sysconf(_SC_PAGE_SIZE);
+> >         size_t map_sz;
+> > @@ -1587,6 +1588,20 @@ static size_t bpf_map_mmap_sz(unsigned int value=
+_sz, unsigned int max_entries)
+> >         return map_sz;
+> >  }
+> >
+> > +static size_t bpf_map_mmap_sz(const struct bpf_map *map)
+> > +{
+> > +       const long page_sz =3D sysconf(_SC_PAGE_SIZE);
+> > +
+> > +       switch (map->def.type) {
+> > +       case BPF_MAP_TYPE_ARRAY:
+> > +               return __bpf_map_mmap_sz(map->def.value_size, map->def.=
+max_entries);
+> > +       case BPF_MAP_TYPE_ARENA:
+> > +               return page_sz * map->def.max_entries;
+> > +       default:
+> > +               return 0; /* not supported */
+> > +       }
+> > +}
+> > +
+> >  static int bpf_map_mmap_resize(struct bpf_map *map, size_t old_sz, siz=
+e_t new_sz)
+> >  {
+> >         void *mmaped;
+> > @@ -1740,7 +1755,7 @@ bpf_object__init_internal_map(struct bpf_object *=
+obj, enum libbpf_map_type type,
+> >         pr_debug("map '%s' (global data): at sec_idx %d, offset %zu, fl=
+ags %x.\n",
+> >                  map->name, map->sec_idx, map->sec_offset, def->map_fla=
+gs);
+> >
+> > -       mmap_sz =3D bpf_map_mmap_sz(map->def.value_size, map->def.max_e=
+ntries);
+> > +       mmap_sz =3D bpf_map_mmap_sz(map);
+> >         map->mmaped =3D mmap(NULL, mmap_sz, PROT_READ | PROT_WRITE,
+> >                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> >         if (map->mmaped =3D=3D MAP_FAILED) {
+> > @@ -4852,6 +4867,7 @@ static int bpf_object__create_map(struct bpf_obje=
+ct *obj, struct bpf_map *map, b
+> >         case BPF_MAP_TYPE_SOCKHASH:
+> >         case BPF_MAP_TYPE_QUEUE:
+> >         case BPF_MAP_TYPE_STACK:
+> > +       case BPF_MAP_TYPE_ARENA:
+> >                 create_attr.btf_fd =3D 0;
+> >                 create_attr.btf_key_type_id =3D 0;
+> >                 create_attr.btf_value_type_id =3D 0;
+> > @@ -4908,6 +4924,21 @@ static int bpf_object__create_map(struct bpf_obj=
+ect *obj, struct bpf_map *map, b
+> >         if (map->fd =3D=3D map_fd)
+> >                 return 0;
+> >
+> > +       if (def->type =3D=3D BPF_MAP_TYPE_ARENA) {
+> > +               map->mmaped =3D mmap((void *)map->map_extra, bpf_map_mm=
+ap_sz(map),
+> > +                                  PROT_READ | PROT_WRITE,
+> > +                                  map->map_extra ? MAP_SHARED | MAP_FI=
+XED : MAP_SHARED,
+> > +                                  map_fd, 0);
+> > +               if (map->mmaped =3D=3D MAP_FAILED) {
+> > +                       err =3D -errno;
+> > +                       map->mmaped =3D NULL;
+> > +                       close(map_fd);
+> > +                       pr_warn("map '%s': failed to mmap bpf_arena: %d=
+\n",
+> > +                               bpf_map__name(map), err);
+> > +                       return err;
+> > +               }
+> > +       }
+> > +
+>
+> Would it be possible to introduce a public API accessor for getting
+> the value of map->mmaped?
+
+That would be bpf_map__initial_value(), no?
+
+> Otherwise one would have to parse through /proc/self/maps in case
+> map_extra is 0.
+>
+> The use case is to be able to use the arena as a backing store for
+> userspace malloc arenas, so that
+> we can pass through malloc/mallocx calls (or class specific operator
+> new) directly to malloc arena using the BPF arena.
+> In such a case a lot of the burden of converting existing data
+> structures or code can be avoided by making much of the process
+> transparent.
+> Userspace malloced objects can also be easily shared to BPF progs as a
+> pool through bpf_ma style per-CPU allocator.
+>
+> > [...]
 
