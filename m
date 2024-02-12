@@ -1,307 +1,131 @@
-Return-Path: <bpf+bounces-21750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458B0851C04
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 18:50:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE660851C8A
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 19:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF67A1F22AAB
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 17:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E32E283684
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 18:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14E13F9DE;
-	Mon, 12 Feb 2024 17:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82D93FB0D;
+	Mon, 12 Feb 2024 18:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W6ZTxzBw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DsYAhSY4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888BA3F9CE
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 17:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED4A45BF3
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 18:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760226; cv=none; b=ueMR/tKP5S8A/9yfjF7T/pi0HPn+IzUyFTCtNugFiSanMvwBzwd4PecqPcbd0GNhbfpVaUubQig1JknKfAqvwZQNc/00AeKYI09v21q5+xmyjGzcgWdLqhztY7daOrvxMB2XEmqL9/6FxQxvPAHX0gryHUEeT0KvMdDbvcViDt4=
+	t=1707761553; cv=none; b=RI0nM0NQi2lCZb2NL7L6Sdu4h0H9pxrMOGVhjKrkm/TfLCDAa8xgFyH52POKDF//BVzSAlaRiIFbpwE4eEloAjyUidIXK1VNpXrmXgn93XX43XchoPmp+HpSTcvVtyFudq5NTO2R941VLGNlEFYJlJ3Hx3QVvo5fWQAy4s266Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760226; c=relaxed/simple;
-	bh=xVxMl9vrUvkn3WCLREztAjLpiJpKh/mJtabZuP4KQWo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hv2g3eUC1ZGUg7majB69SK+Zs5Xc7+2xge6kzytoRVZoY2LxpflQBp+F0m/IND7EE4CwOGUCHQMsN6PDa3gbyItngKdtozvkHG8fj38yfSsVFALZeWOr9a1zyXnu/mNuyHMht091YAcXsZF6yHwEZUpr0buksJwm+VvCdfMgfn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W6ZTxzBw; arc=none smtp.client-ip=209.85.219.177
+	s=arc-20240116; t=1707761553; c=relaxed/simple;
+	bh=qx2t+2xf1Vkjj7Tz3q+BhACRMcg/P3H4ADCrB2+NUKo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lu8QxvBcJhCrrbLFT1CalegW/PsDI6TZcwdnzdAwNFNfgt9xm8FedFIQa9T8N+k6ImcU1XVIbpgRxNkZOY/0c3Q5X53baYokHi08mK6L7j1cW8/Tgy6icvbY8zjJLWcsSzrPsyB84Uz0jvEDuSpATw+RxFd5FYD9His0cA9yEHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DsYAhSY4; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso556505276.2
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 09:50:24 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a26f73732c5so481855566b.3
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 10:12:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707760223; x=1708365023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uoUFYWfF2r2sgb0abwyPjf+GNTcoAPT+E0f2qU2iCXA=;
-        b=W6ZTxzBwAwgGw5EVGLJD28Bxssip1fNNwhuIwA06XNqxFR3rxjyD+zdH2/KbgXDobN
-         NWzPKpMUDbDhZJg9Oj21oWZOIqcIHYGE8Lv8nd4WTtHESx/mr412A6XQMGRkU1olMJIZ
-         0hlQD5XBRBE5KZiTTP2a+UrEsXP0zbJcB3xxRYrBxD4pI1AaKQKwvBo7Q6dR9C4ceLNt
-         nSNiF6m0KrUriYlsrlaRxenDEu6tfL7gmKsLij0+Hkp/67HXDL6CCt1ztX1Gtpry5sPD
-         FMiPtTZK+H0PrrURvU0Txe9oFvZCMXpzCGo+934R37ht+APdB5m9bXmzJ7jUkNWt8QZq
-         eUlA==
+        d=gmail.com; s=20230601; t=1707761550; x=1708366350; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=r++RqVTTRmgIAA96TrA9uBfy6z0w+8s1Y0IlIAISWKA=;
+        b=DsYAhSY4/3ZY6pDk6lrS535zVCxi9eOafRpMzSr/fMqnpf56sET1NN2LbuHvHf3a77
+         0POIFgl/6ZDZVWQKOAxdkeNWlXGutdZlecRs0fsicgXNAbtO+NKfM+4UcY0S6ag5nSOa
+         BrmfDufxYnrsyfiJrRSn34YcVXS7WCtt8TBc0b7DqUSRIpm3t6VwJDJwiSBpd79a6L5x
+         l3H6qcM9cIZCm3etSa9h29Vc+QXPQ4ZVBnWiRXYsSla1zXlZfDajMVvLtNPNo/FlgaVk
+         y7i7rSARhCfSc+AFXZQyo5U6ID3fiGoEHzsd9hRO/WstHdKr+sWmwgnkNf1lX2pJmS8L
+         l0cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707760223; x=1708365023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1707761550; x=1708366350;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uoUFYWfF2r2sgb0abwyPjf+GNTcoAPT+E0f2qU2iCXA=;
-        b=UTdx9J3O/7D+YqNTy297o2ylTF1E0SGvwKu2v1OCxvEuNa2BdHokQapUOt0TxmXAcn
-         V+aigIVd5rMofk6W7PjvJntgWtyMaAiv820qvp8K9mpEq55mB0vmJT6kJztPd2MUIAB+
-         QWkkqLZnglp7Ui6gwiiTs5AT5MiUPW91bau7xN8wi2FtAGPjqS2y7cYCxDk/0mD3ioMB
-         lp3IMAk5xN8/6OMnhbBRYgVRenC1A5ZSjwBZ/QS5sONvaXDTk133OrWNuxSZqH8umKHH
-         e7JLkZK6gHAWUE3p9gP7NVO18yad0hx0fY5yLOeDB8+cwH/xxerHGKWrqeXT3zeExnUj
-         3flA==
-X-Gm-Message-State: AOJu0YwXE1krmSA2zOZzjdFTyGs0zq59jpSc55cO77w+Oz281Hiqr84O
-	WM2zcWe1LaWU5i6eTVN+KcKE8XtKRTIPplW5YGga4bsQ0AwUaRhu
-X-Google-Smtp-Source: AGHT+IGTflLTUL3apWmoH2hw5AEapNg/XT1jR/XNu2fsEhFD63Ir8YsJQmxcjgJMy1jNnT5wsGsZJg==
-X-Received: by 2002:a0d:eb54:0:b0:602:b343:60c9 with SMTP id u81-20020a0deb54000000b00602b34360c9mr5284049ywe.26.1707760223441;
-        Mon, 12 Feb 2024 09:50:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWW3omzMb8IS9PhieLlh8AJ11oMAaSC/5sB5+2fuMCOFZHoSu45livsOrrusOFEwx/Loi7JSWrSOiB7Kw2DDYmAtDnN2ygMpB2uQl7mRTr6Ih7qJITjir9CNGMWGULYmnG36ee6Ds3vluxAOzhdndF0ObOGgvu5WjmZ97VXbUPeRB0hVsaksMvSlr5eIFEp+ra4/yjhYbZNQpFF782fCnmkWuDRXi1eLeLvGhMpTNOjjNxhRAjgPRkN7IIX9MJ0vzRLpTwjUXfA41ZtnroXkT+zgSUXmt/U0o+Gthwjj4UNufQ=
-Received: from ?IPV6:2600:1700:6cf8:1240:e85e:3ff0:f75c:4129? ([2600:1700:6cf8:1240:e85e:3ff0:f75c:4129])
-        by smtp.gmail.com with ESMTPSA id w199-20020a0dd4d0000000b006077f869225sm2403ywd.73.2024.02.12.09.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 09:50:23 -0800 (PST)
-Message-ID: <ecded04a-6917-49ee-ae83-e1bfa43bd725@gmail.com>
-Date: Mon, 12 Feb 2024 09:50:21 -0800
+        bh=r++RqVTTRmgIAA96TrA9uBfy6z0w+8s1Y0IlIAISWKA=;
+        b=L972v5CtNr+un3WyRjbKED7++l+/TzVfaFo53emzEAQGY5/eM7MORd6NztL0Y+lGEB
+         IY9YbRs+49YVex4T7psWWfaGQzcp/LYxl0GKaKkm+WfPi9qeVpnqD7QuvN1B0dygZnSN
+         oyuGOtqNChENgozeRrr+PacD0cny4yPtKPdIcS4rwUtOvSC6Eb1M0DU/ia3X9hQrxxWO
+         xrNDyod1Omd2YnsjUvCuk0zZcR0Yh5++yFQzMHDEtbASOJPT1KM/1v/IuJpwWgsQygL0
+         WFaipnSp7Wj02OC1F2+LVcQPWFBvt4mjxocvZ3bR6bx9dRfFOiUxvJ/M4XjWaVMZQrEE
+         QxXw==
+X-Forwarded-Encrypted: i=1; AJvYcCW7gH/3qNovRrJ2ae0bdK2SM62Q+9V0dvok3NILNyYDa4WtLbBRn3qjDXlGjPQzh84Yokj5sNT3TGfIm12Dhkpd1bTT
+X-Gm-Message-State: AOJu0Yzyg07hyjedFvKyVVwJad1ZSewFATZSsxfxi8veuxPkwr7Crlpr
+	yMh/JX9j5qZNVSvBB3ziKaGpelr0J1kaWJE7adThbSmyxAwPBY6X
+X-Google-Smtp-Source: AGHT+IGsffcSjpQMeW19JrV2Xf+QsmR2my5S7mHLKH+jhdQoICPJ4mPnG7c7REPVTBy+DP1EkzGh6A==
+X-Received: by 2002:a17:906:a40b:b0:a3c:31d0:592b with SMTP id l11-20020a170906a40b00b00a3c31d0592bmr4848274ejz.11.1707761549652;
+        Mon, 12 Feb 2024 10:12:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWqeZpSIOi0t+tR86P4W5Aaq9YfJMHgfLA62n7DEPrgs6jVmdF+3F+919/KglI0xfooT/iw2/g8wfR+G4YXM2/cdfE+fJ5oA/+TVtJlejv0dIFsTo44e4QJeZk8sP6O4tRJHOam3XLjz0hdQWEnS4wKSImpF2min7RGe+a32zxNtt26iT6drcdnth5Zq5tg7orwSiEnS/gmdRywGqlkVUp/Nzf8JAyCGqCtkbhdXjhLeOtQIvRrY5mhBxgn2onP9NFeJviajG/bCvAjCbOEjNUq3pLPHnESATeOWO8EU/iBv/BVqXw1vizqyCKfoAMBv6WDbpsfyK3aoCPXRpjp1dnwWzFMps1o1d7MN00SVvUS0Cv7X9JmL/5+
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id bq24-20020a170906d0d800b00a3bd84233b2sm437715ejb.85.2024.02.12.10.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 10:12:29 -0800 (PST)
+Message-ID: <59623808ebfd5ecd48cdb4c07a28326d777e7769.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 12/20] libbpf: Add support for bpf_arena.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com,
+ tj@kernel.org,  brho@google.com, hannes@cmpxchg.org, lstoakes@gmail.com,
+ akpm@linux-foundation.org,  urezki@gmail.com, hch@infradead.org,
+ linux-mm@kvack.org, kernel-team@fb.com
+Date: Mon, 12 Feb 2024 20:12:27 +0200
+In-Reply-To: <20240209040608.98927-13-alexei.starovoitov@gmail.com>
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+	 <20240209040608.98927-13-alexei.starovoitov@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v8 3/4] bpf: Create argument information for
- nullable arguments.
-Content-Language: en-US
-To: Jiri Olsa <olsajiri@gmail.com>, thinker.li@gmail.com
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- davemarchevsky@meta.com, dvernet@meta.com, kuifeng@meta.com
-References: <20240209023750.1153905-1-thinker.li@gmail.com>
- <20240209023750.1153905-4-thinker.li@gmail.com> <ZcoEzyRzxLUWWhw4@krava>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <ZcoEzyRzxLUWWhw4@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+On Thu, 2024-02-08 at 20:06 -0800, Alexei Starovoitov wrote:
+[...]
 
+> @@ -9830,8 +9861,8 @@ int bpf_map__set_value_size(struct bpf_map *map, __=
+u32 size)
+>  		int err;
+>  		size_t mmap_old_sz, mmap_new_sz;
+> =20
+> -		mmap_old_sz =3D bpf_map_mmap_sz(map->def.value_size, map->def.max_entr=
+ies);
+> -		mmap_new_sz =3D bpf_map_mmap_sz(size, map->def.max_entries);
+> +		mmap_old_sz =3D bpf_map_mmap_sz(map);
+> +		mmap_new_sz =3D __bpf_map_mmap_sz(size, map->def.max_entries);
+>  		err =3D bpf_map_mmap_resize(map, mmap_old_sz, mmap_new_sz);
+>  		if (err) {
+>  			pr_warn("map '%s': failed to resize memory-mapped region: %d\n",
 
-On 2/12/24 03:45, Jiri Olsa wrote:
-> On Thu, Feb 08, 2024 at 06:37:49PM -0800, thinker.li@gmail.com wrote:
-> 
-> SNIP
-> 
->>   enum bpf_struct_ops_state {
->> @@ -1790,6 +1806,7 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
->>   			     struct btf *btf,
->>   			     struct bpf_verifier_log *log);
->>   void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
->> +void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc);
->>   #else
->>   #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
->>   static inline bool bpf_try_module_get(const void *data, struct module *owner)
->> @@ -1814,6 +1831,10 @@ static inline void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struc
->>   {
->>   }
->>   
->> +static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc, int len)
->> +{
->> +}
-> 
-> extra len argument?
+I think that as is bpf_map__set_value_size() won't work for arenas.
+The bpf_map_mmap_resize() does the following:
 
-Yes, this one should be removed.
+static int bpf_map_mmap_resize(struct bpf_map *map, size_t old_sz, size_t n=
+ew_sz)
+{
+	...
+	mmaped =3D mmap(NULL, new_sz, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANO=
+NYMOUS, -1, 0);
+	...
+	memcpy(mmaped, map->mmaped, min(old_sz, new_sz));
+	munmap(map->mmaped, old_sz);
+	map->mmaped =3D mmaped;
+	...
+}
 
-> 
-> jirka
-> 
-> 
-> SNIP
-> 
->> +/* Clean up the arg_info in a struct bpf_struct_ops_desc. */
->> +void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc)
->> +{
->> +	struct bpf_struct_ops_arg_info *arg_info;
->> +	int i;
->> +
->> +	arg_info = st_ops_desc->arg_info;
->> +	if (!arg_info)
->> +		return;
->> +
->> +	for (i = 0; i < btf_type_vlen(st_ops_desc->type); i++)
->> +		kfree(arg_info[i].info);
->> +
->> +	kfree(arg_info);
->> +}
->> +
->>   int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
->>   			     struct btf *btf,
->>   			     struct bpf_verifier_log *log)
->>   {
->>   	struct bpf_struct_ops *st_ops = st_ops_desc->st_ops;
->> +	struct bpf_struct_ops_arg_info *arg_info;
->>   	const struct btf_member *member;
->>   	const struct btf_type *t;
->>   	s32 type_id, value_id;
->>   	char value_name[128];
->>   	const char *mname;
->> -	int i;
->> +	int i, err;
->>   
->>   	if (strlen(st_ops->name) + VALUE_PREFIX_LEN >=
->>   	    sizeof(value_name)) {
->> @@ -160,6 +320,17 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
->>   	if (!is_valid_value_type(btf, value_id, t, value_name))
->>   		return -EINVAL;
->>   
->> +	arg_info = kcalloc(btf_type_vlen(t), sizeof(*arg_info),
->> +			   GFP_KERNEL);
->> +	if (!arg_info)
->> +		return -ENOMEM;
->> +
->> +	st_ops_desc->arg_info = arg_info;
->> +	st_ops_desc->type = t;
->> +	st_ops_desc->type_id = type_id;
->> +	st_ops_desc->value_id = value_id;
->> +	st_ops_desc->value_type = btf_type_by_id(btf, value_id);
->> +
->>   	for_each_member(i, t, member) {
->>   		const struct btf_type *func_proto;
->>   
->> @@ -167,40 +338,52 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
->>   		if (!*mname) {
->>   			pr_warn("anon member in struct %s is not supported\n",
->>   				st_ops->name);
->> -			return -EOPNOTSUPP;
->> +			err = -EOPNOTSUPP;
->> +			goto errout;
->>   		}
->>   
->>   		if (__btf_member_bitfield_size(t, member)) {
->>   			pr_warn("bit field member %s in struct %s is not supported\n",
->>   				mname, st_ops->name);
->> -			return -EOPNOTSUPP;
->> +			err = -EOPNOTSUPP;
->> +			goto errout;
->>   		}
->>   
->>   		func_proto = btf_type_resolve_func_ptr(btf,
->>   						       member->type,
->>   						       NULL);
->> -		if (func_proto &&
->> -		    btf_distill_func_proto(log, btf,
->> +		if (!func_proto)
->> +			continue;
->> +
->> +		if (btf_distill_func_proto(log, btf,
->>   					   func_proto, mname,
->>   					   &st_ops->func_models[i])) {
->>   			pr_warn("Error in parsing func ptr %s in struct %s\n",
->>   				mname, st_ops->name);
->> -			return -EINVAL;
->> +			err = -EINVAL;
->> +			goto errout;
->>   		}
->> +
->> +		err = prepare_arg_info(btf, st_ops->name, mname,
->> +				       func_proto,
->> +				       arg_info + i);
->> +		if (err)
->> +			goto errout;
->>   	}
->>   
->>   	if (st_ops->init(btf)) {
->>   		pr_warn("Error in init bpf_struct_ops %s\n",
->>   			st_ops->name);
->> -		return -EINVAL;
->> +		err = -EINVAL;
->> +		goto errout;
->>   	}
->>   
->> -	st_ops_desc->type_id = type_id;
->> -	st_ops_desc->type = t;
->> -	st_ops_desc->value_id = value_id;
->> -	st_ops_desc->value_type = btf_type_by_id(btf, value_id);
->> -
->>   	return 0;
->> +
->> +errout:
->> +	bpf_struct_ops_desc_release(st_ops_desc);
->> +
->> +	return err;
->>   }
->>   
->>   static int bpf_struct_ops_map_get_next_key(struct bpf_map *map, void *key,
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index db53bb76387e..533f02b92c94 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -1699,6 +1699,13 @@ static void btf_free_struct_meta_tab(struct btf *btf)
->>   static void btf_free_struct_ops_tab(struct btf *btf)
->>   {
->>   	struct btf_struct_ops_tab *tab = btf->struct_ops_tab;
->> +	int i;
->> +
->> +	if (!tab)
->> +		return;
->> +
->> +	for (i = 0; i < tab->cnt; i++)
->> +		bpf_struct_ops_desc_release(&tab->ops[i]);
->>   
->>   	kfree(tab);
->>   	btf->struct_ops_tab = NULL;
->> @@ -6130,6 +6137,26 @@ static bool prog_args_trusted(const struct bpf_prog *prog)
->>   	}
->>   }
->>   
->> +int btf_ctx_arg_offset(struct btf *btf, const struct btf_type *func_proto,
->> +		       u32 arg_no)
->> +{
->> +	const struct btf_param *args;
->> +	const struct btf_type *t;
->> +	int off = 0, i;
->> +	u32 sz;
->> +
->> +	args = btf_params(func_proto);
->> +	for (i = 0; i < arg_no; i++) {
->> +		t = btf_type_by_id(btf, args[i].type);
->> +		t = btf_resolve_size(btf, t, &sz);
->> +		if (IS_ERR(t))
->> +			return PTR_ERR(t);
->> +		off += roundup(sz, 8);
->> +	}
->> +
->> +	return off;
->> +}
->> +
->>   bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->>   		    const struct bpf_prog *prog,
->>   		    struct bpf_insn_access_aux *info)
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index c92d6af7d975..72ca27f49616 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20419,6 +20419,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
->>   		}
->>   	}
->>   
->> +	/* btf_ctx_access() used this to provide argument type info */
->> +	prog->aux->ctx_arg_info =
->> +		st_ops_desc->arg_info[member_idx].info;
->> +	prog->aux->ctx_arg_info_size =
->> +		st_ops_desc->arg_info[member_idx].cnt;
->> +
->>   	prog->aux->attach_func_proto = func_proto;
->>   	prog->aux->attach_func_name = mname;
->>   	env->ops = st_ops->verifier_ops;
->> -- 
->> 2.34.1
->>
->>
+Which does not seem to tie the new mapping to arena, or am I missing someth=
+ing?
 
