@@ -1,129 +1,114 @@
-Return-Path: <bpf+bounces-21734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DD085170B
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 15:31:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4BEC85172A
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 15:38:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47491C21715
-	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 14:31:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3B328371E
+	for <lists+bpf@lfdr.de>; Mon, 12 Feb 2024 14:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA7E3AC14;
-	Mon, 12 Feb 2024 14:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC083B189;
+	Mon, 12 Feb 2024 14:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="r9U9a1Pw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aveoCYaZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F2118646
-	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 14:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E063A8F2
+	for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 14:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707748251; cv=none; b=YVF2P3kdm2EPFQs1xSARPf8j53kEQ6d4eLFU3+FmcJrAUh/q+8K/GapDbyXHn14ldDBqRAk0miKjvvMfkGy6VJ/Er8PBnSJQckqATdGGFJS9w8MVT71fsJZceCzRXv3d9hLv/KnLGkyvyzyCvMpi0xMPROvDYvDaxwsl2EWzGf8=
+	t=1707748732; cv=none; b=uTFHwhZ0sPqKgGcuT0vXegAE+KcBEhDWOa6th/nmYRfp0VE4wC5drCg9EkpuPOh27JgqHmLhJ0D7iSryEGTCjaSi6PZ6frVHgU5/YJ7PcCmmBVk3pZ6up2+wnAZ2bvyfm3e88ZWWL1rvUDoKPHFxCouUGFw7ENaCx12ZAjEWF5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707748251; c=relaxed/simple;
-	bh=p9vOfnePUV1vkqui1jKfajElpdn9UJuYx8Lvstoz6CI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uZ6+AMZkOOlhid+QO6g0HrJ//MCupBaiKSCGUbx+0m6sdO7H7uU7qg/xxpcp9TuZgOGXBw9mDsrptnEXKe4Vuw9EZaePJxxtGQjyq0WYZ8SDNfcmzLrv/PiOlMAODs3X/NWLim1plovv1cFowH8bNTmOyaBVEFptH4Pm6HfSfxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=r9U9a1Pw; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6049e8a54b5so32487297b3.0
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 06:30:48 -0800 (PST)
+	s=arc-20240116; t=1707748732; c=relaxed/simple;
+	bh=Yc8ceEFAMlycLqwVYsm9vIOOXtOO6I2qjtCJFX9oBaU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nHerFzI65Mvfqbigl/8TmkrMTbEvqPLWQUktX501fpTnK3860Jvc0J4kumceoGr2bCHJjhDkTBBg6UDfy9lteE5xClwT3iDPWeglfzOTE2S370LHgxeO017hpRfwFsHIVGJjdG5Y8ynPXoxXlIrfa4YZUaIKUMj+t01sTwSOFks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aveoCYaZ; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3ca40db065so99732766b.2
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 06:38:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1707748248; x=1708353048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nHfkimgnQqa9pmxY7xUwBKCcRRo2tt3mrL+Jov7rDrk=;
-        b=r9U9a1Pw73I69igyrW9NlH78GGf5gDZmZKKgnw6XWrNLiiMNqaSQNDy2QC3h5P4Uxb
-         VXqfE21VeNRMcrQHYMqOX5RWlU+3x/z7FJcnusOiRxIu7Bfu/mC4iaNWEqhWgI1Phgzn
-         jDFGH0Spl0dfM6R5TN8d24wMLyotgqvfYhJHUqSCk3flNzMrKKA/qyuJGC7YfGcUAqbT
-         l29o75QeuEFg7vPZ/amcg+3Pa0gVnoYAcQcCJfpQqclhv0qbTTwTgLHvtdE4UGY2yKcu
-         +iW/SXgG2Eu9eLRRX8mWus1wVk84QVuMClHzK6tKVUKyuIDflG5WZp18Z7LXHa69UZ5n
-         WCtQ==
+        d=gmail.com; s=20230601; t=1707748728; x=1708353528; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UCVswzWHlPY8KNSzlKinQMb8Ol7fvZKzpdAP7x2wgE0=;
+        b=aveoCYaZaghThqTNMjzbsdYk4BEYUaqDBb3Bi3L+Vh35gOR3xJQDn34k4e2FmqgjOm
+         1S4OXSU13RvvEdH6HYEeqLTKGWDMoBTl7EMEf18mtdetJ3WWMUYAoPUkT/LZyqgyU9XF
+         RvUBhZEZWN881GqPFmD7FroRtzw3o3/Jyx60B1YzDlmbfrqlocZ55SbjXaHLZVDP7ElH
+         x0V7iCWT01oHRsarcKhQK2Mdo/XIypEH1d8yTMmT6JzpKNxcLSBpCpN4HQ+NlX3GZjZZ
+         BbucxjMBvv47AQ7FZl+OJGfUt2rkNpnjB2wh2COC4++d0QX+uXIstWQFL+rJOHZDrYSi
+         41+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707748248; x=1708353048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nHfkimgnQqa9pmxY7xUwBKCcRRo2tt3mrL+Jov7rDrk=;
-        b=iamYdlLDGB1TcOz8oX0tZPwYeOzR1I7A0qJ5jGYNoqbUe3rrcSzkcWCVsHLI2QAKyh
-         KbIPTBjY4Nun1+U/GI+eg8Yxr7ynpEt0mJSKbp0lVwDzLXz/M8Wqs/Xtp0Y2eZS1BClK
-         Zg/uf0I7yqAZjGK7KwJ0oD969ku63gkd1NlRIZwOY7gJpzCRhxNF2dzg7iy/npD0p86d
-         m3iQr6jqatj2lJ2FruEWEiZDfV+jSeqkdL1BVnNp88jvW+drG827lXMDmFvcnqzbnJAn
-         MOdtyuIzVFH6EtuEY85yqhlTM/Z+zQsjhAJLzjx2B7jUDYLveQd8sFn4l9mDCtAVHRBW
-         FpNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmaOiOE7hcOWQvUlhNjqwhstcVdmbjhL4wpdQPq2Q26zf49u3v0e8Z2piitkaCtxa3tyqBgE1laxygKoKFP76NW69f
-X-Gm-Message-State: AOJu0Yzekgm5WgiEm6wJQLObpSX9YHnkUFhKkz8VNGn7Sm8o+bK7/SM+
-	umwhkwDNopbup1mds5cVd/Tzzvh5wuVfYy0DVY9dij2rnvrNZSUph877pKjmiC4q9YPbkK9FORP
-	VheJnmxd5Mm5ZNVfThTDMlnlxkHfK/lj/lVMw
-X-Google-Smtp-Source: AGHT+IGgkXOeWFRC0kD8AvUJh5gqRcJZ7vXLyuTDLZrRPmueX7K9FwVydl54BFjd7DYsYX8pFLa/WxHERXEmf4eoHgk=
-X-Received: by 2002:a0d:dc07:0:b0:604:92e0:c76f with SMTP id
- f7-20020a0ddc07000000b0060492e0c76fmr6197823ywe.30.1707748248046; Mon, 12 Feb
- 2024 06:30:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707748728; x=1708353528;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UCVswzWHlPY8KNSzlKinQMb8Ol7fvZKzpdAP7x2wgE0=;
+        b=PN0vkJ0EKZUM4kGK5SxJNjEko2+6A2c6SxIAWSKI3ctr4VJfCsX4agTC3e3yflcfPa
+         nY/tT6FK+97V1EVtFUIUJ8IkMXLq3MabaiCkMVMr5bg2M8QQw3kdkEspdbTO7ZOyF5rL
+         l+jzUCDxDiBKoYkIoiLEm32bezczu3y+aN8k5996wyBaJmRq3irax0UHi6hk7n3ilQ+k
+         tzJZqejpIaDqHAhhmGncQbliCXthCGp8H2VWvBjev78ndeYGBNvtb78nAnQ7fYObrTNJ
+         0VLVF3lPJ5wJUS8w/B2yyQIcmUbK4mLAGYoabPWA5d/T/WQUYIVoUv6e0rzdv3+p2Wgy
+         hr6w==
+X-Gm-Message-State: AOJu0Yx9n+v/tI3Umn0Qhvbv589aJCNSFRnduGaMUhw+e9dLKsk5W5io
+	ZXjbUFCHjcEyEi3MDGEUepZUGOhLxqLZTMVNh0MlFSz2ROHKuFDyqcKdwfzp
+X-Google-Smtp-Source: AGHT+IEdsEBr9YnQIndq54ggvf/+/tdLUL/G22VOSeolpn6VCozLsMS1NPHOE/lnQP+tlBamnJctOQ==
+X-Received: by 2002:a17:906:2b11:b0:a3c:8f4c:ec5a with SMTP id a17-20020a1709062b1100b00a3c8f4cec5amr2431852ejg.30.1707748728338;
+        Mon, 12 Feb 2024 06:38:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVRFyNdRmnrI56/3dx7QUefjzjs57XDJDIjTpqrTat4pAyajiOLgUWz5f4ruyVgpr9T0RDzZfdPHXec5UUU8dLhEeZe1fAl6TznusNB7EuQTtTq8DLG+2uv37V6j723a8rvtHVMVey6FqmmQuUvPyxUiC+tDupTmdBSnpheORl5W8LbgXK0cKYpov1jbc4iSbb7liEiYk31tXNn4TtUIXkyrfKZDlmhf/aQo9QTFGypz0PtEGLKaFlB0CFA7tA=
+Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id k3-20020a1709061c0300b00a360ba43173sm266918ejg.99.2024.02.12.06.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 06:38:47 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	kuniyu@amazon.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/3] check bpf_func_state->callback_depth when pruning states
+Date: Mon, 12 Feb 2024 16:38:29 +0200
+Message-ID: <20240212143832.28838-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122194801.152658-1-jhs@mojatatu.com> <20240122194801.152658-9-jhs@mojatatu.com>
- <CALnP8ZZAjsnp=_NhqV6XZ5EaAO-ZKOc=18aHXnRGJvvZQ_0ePg@mail.gmail.com>
-In-Reply-To: <CALnP8ZZAjsnp=_NhqV6XZ5EaAO-ZKOc=18aHXnRGJvvZQ_0ePg@mail.gmail.com>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Mon, 12 Feb 2024 09:30:36 -0500
-Message-ID: <CAM0EoM=CKAGm=qi0pxAvJBOR0aQyHDR4OkBsfyg+DcaQqOUD6g@mail.gmail.com>
-Subject: Re: [PATCH v10 net-next 08/15] p4tc: add template pipeline create,
- get, update, delete
-To: Marcelo Ricardo Leitner <mleitner@redhat.com>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	namrata.limaye@intel.com, tom@sipanda.io, Mahesh.Shirshyad@amd.com, 
-	tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, 
-	mattyk@nvidia.com, daniel@iogearbox.net, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 9, 2024 at 3:44=E2=80=AFPM Marcelo Ricardo Leitner
-<mleitner@redhat.com> wrote:
->
-> On Mon, Jan 22, 2024 at 02:47:54PM -0500, Jamal Hadi Salim wrote:
-> > @@ -39,6 +55,27 @@ struct p4tc_template_ops {
-> >  struct p4tc_template_common {
-> >       char                     name[P4TC_TMPL_NAMSZ];
-> >       struct p4tc_template_ops *ops;
-> > +     u32                      p_id;
-> > +     u32                      PAD0;
->
-> Perhaps __pad0 is more common. But, is it really needed?
->
+This patch-set fixes bug in states pruning logic hit in mailing list
+discussion [0]. The details of the fix are in patch #2.
+A change to the test case test_tcp_custom_syncookie.c is necessary,
+otherwise updated verifier won't be able to process it due to
+instruction complexity limit. This change is done in patch #1.
 
-$ pahole -C p4tc_template_common net/sched/p4tc/p4tc_tmpl_api.o
-struct p4tc_template_common {
-        char                       name[32];             /*     0    32 */
-        struct p4tc_template_ops * ops;                  /*    32     8 */
-        u32                        p_id;                 /*    40     4 */
-        u32                        PAD0;                 /*    44     4 */
+The main idea for the fix belongs to Yonghong Song,
+mine contribution is merely in review and test cases.
 
-        /* size: 48, cachelines: 1, members: 4 */
-        /* last cacheline: 48 bytes */
-};
+[0] https://lore.kernel.org/bpf/9b251840-7cb8-4d17-bd23-1fc8071d8eef@linux.dev/
 
-Looks good for 64b alignment. We can change the name.
+Eduard Zingerman (3):
+  selftests/bpf: update tcp_custom_syncookie to use scalar packet offset
+  bpf: check bpf_func_state->callback_depth when pruning states
+  selftests/bpf: test case for callback_depth states pruning logic
 
-> > +};
->
-> Only nit.
->
-> Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+ kernel/bpf/verifier.c                         |  3 +
+ .../bpf/progs/test_tcp_custom_syncookie.c     | 83 ++++++++++++-------
+ .../bpf/progs/verifier_iterating_callbacks.c  | 70 ++++++++++++++++
+ 3 files changed, 126 insertions(+), 30 deletions(-)
 
-Thanks for this and all the other reviews. Much appreciated!
+-- 
+2.43.0
 
-cheers,
-jamal
 
