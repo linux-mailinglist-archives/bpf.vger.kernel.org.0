@@ -1,198 +1,218 @@
-Return-Path: <bpf+bounces-21824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9556E852789
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:42:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4541852795
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:47:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 701AA1C2337E
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:42:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FA491F23754
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6701F3D6D;
-	Tue, 13 Feb 2024 02:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB628BFC;
+	Tue, 13 Feb 2024 02:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="flN+DJdF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K5NZstl8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3701415B7;
-	Tue, 13 Feb 2024 02:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1848489
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 02:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707792141; cv=none; b=DmfXEYKVWFJuRQSCIVBYQal3E9auIDfAJr28YiHl6VEChrEOfqucEHPbRsLHU0QGavrfPU0U8kNwzqqQN47Bb3PNwJpeTbZk1aqp5xbFZUPUA+ebUEKXSC6okJAL+bOGWboth1IP6RcF/deRkNAnC4RyjrYxGaIVF6Vc77B5Aiw=
+	t=1707792469; cv=none; b=afeilqLwUu8z1Ai208k/y0sOfkcbLv6KZ5sSpaVJRlpTQad3YGosai3NUHQgMzAxUvWNfQW1Fp4XFEPTdxBv5WFWWIfXp/jna4MWx/dCGS8Cc80oFIJRdyEf1ePXge9RSTnEiA/YuQIydNJRbOeOJzs/4xddnzK8gypA19miq60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707792141; c=relaxed/simple;
-	bh=/9hajlwYk/rvsyuO51iMyQDNbLLqRFyaoZc4ehCnN7s=;
+	s=arc-20240116; t=1707792469; c=relaxed/simple;
+	bh=1ENHKjt3Uc2mr1Ke1IQDakTrAi2JOlr6brAtfQuPsQY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OmwCIL07N/nfpF78zAQWLwiAzsEVITdWxjpl1RQjvYTv0CzxHAiukHXwEHptsuzg2ntUs8m2Bd99yra7HVaE8zeWGUpt+nJtBrYf8nX6gS5ioJhr/mxrJLvWx483mHSWuxQxxXinoVV16A+KcJu3NhTzv0JNYn0FCLvqZ7uD0Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=flN+DJdF; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33934567777so2544857f8f.1;
-        Mon, 12 Feb 2024 18:42:18 -0800 (PST)
+	 To:Cc:Content-Type; b=KMY8o31882xo5kVqp/6JrPXmgTpHv4HkSzKYQkXHSfmHpbJ/MvcFdUeo6qC82QY3sQmF1qWJNc9QAcOCazg3CyZqTWYCnYSgjTpuyvaJPeApG6KyUWsJJsN8tDrluC9hFdwmCuyaajBNRUrQwzZ6lvOi92D2vU3O1b3Xjz1B3c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K5NZstl8; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56037115bb8so3976a12.0
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 18:47:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707792137; x=1708396937; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707792466; x=1708397266; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rxk9tTynWHUWVnj9UZhwfBhaRWhwkQhpAgLGbZWzgJc=;
-        b=flN+DJdFLib4HqTob2u90SLMPRx/1z9ta4Prye8Zbc3ZG05UTQ69PH38J4zwH0oGlH
-         idQQHNqVZP30sHjJmcxLowdfMvuBzT2Em4kyDApNxVdFnpBU/YAF0NkGSeQN1JIzzqf8
-         YO0FcRzrVvl1ZaTfROa9HHNj3FxM5avHJQjlW40cOg2ZB8hKcDmH2IRTM4m0APcB3s7A
-         xj6sSnMDt85NdeFI9afin/pKnnB8B3OZMucxnyG0vPglAeui1F2SfE0KFo+sQosjomJ8
-         H5y6mMnMOYTzNy4FWbiGd7SFl00k7YBWNNJ6csZk84Awqd2OvCiTFmQNsXQMBDlQRwS6
-         lPEA==
+        bh=zgrUTvQOJUYDuKbHFZKlpKXYvoGRnWvQmByrFkbKhpY=;
+        b=K5NZstl8qsnTB4L+YhEd/c41q/HMQ3SwCDTHWmJwIicsWrz2N360xTNTDlnu7w35QG
+         Y0kf+E+UGbsbYVo6fpDweisjB414TuJD5ooCK+RGxInaO4FGlojeLTnyivwB5fakT3dr
+         5ag7eaA2K7mCoeCVrkns021oA14wiWdKCLIIXsh8F4+qCOXpm8D4FwvT6Z+GOz82Ze89
+         kc6qfWvoCgh9bFFPzLMTJlzR5BS2aOzhLNurkU8UM5SlmkhxwvKFQN40GXhB2XT0vGEG
+         izkA5/6ufUszmOPeKGIcgnuLgwqKBVEFX5H4r+/+e8oYySHMbE4Yh3Dvvvx8bKO+mMOO
+         PV0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707792137; x=1708396937;
+        d=1e100.net; s=20230601; t=1707792466; x=1708397266;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rxk9tTynWHUWVnj9UZhwfBhaRWhwkQhpAgLGbZWzgJc=;
-        b=GWHjBH6pz1vs81o+298Ui9ttdRMKIe7vfKNSLEAMFksGVmYKcJHPSajHTMWuVqYe7y
-         f687sPv8sPa56jY/CEfNQlyGcC3KkAKZQxioy9ZxKOaJJ+O0A++GKAZcVxaHjU8JnTO7
-         4g/worB22A0yldxSdHgvMp4R6pAicZyGvMg32wFdkchH+Bo5oPL+8VLK/te+TqY334l4
-         JpYZg3jWqcbuTYhQVQQP58lfSfmDuUsB9XZSpWp1HYtEGaW7Jd6k1Xdg7wHmrkZ+7drf
-         Kzey3DPQddSlqBI+iaowM7CveHh8m56SmjIGbTA+tf8cAGwRLC7kAa/6uwqoD93rUZq/
-         8FPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnZUG9EZUq9ZjcZQFfd4w9oRV5TIhOVb8PtjpfXL46Aes2S7nls0JpYjHqA2PlWqUM4kUS5/WfMM7rY3HQ5XpFoly8cf7O8jeruVrKpJe9DUE94x+7zguuxAXZs5a7Inhc
-X-Gm-Message-State: AOJu0Ywk6lckl/7FLA7vzPeIlrKvae4AnVPozsNrgAwwcf00ghl3rOOm
-	sOO+YLhqfyZ0eEG9dt5C3rDThPD5X0V5tE2eubA0KUtHlZ6SIzycGMf5dg5MwdaDOvQYrEEhQcE
-	ZC+Jx64+6S4mVjcdSm+NyS6QhSSI=
-X-Google-Smtp-Source: AGHT+IHtztV834P91o8nikwmI9WOia8raU0tU6uGzvQQMfDeYO1FL4vchpLUrS1j73DWy/WlKhq5Sc1ooP1iFZyiVX8=
-X-Received: by 2002:a5d:5f93:0:b0:33a:e6e4:945d with SMTP id
- dr19-20020a5d5f93000000b0033ae6e4945dmr8307057wrb.2.1707792137151; Mon, 12
- Feb 2024 18:42:17 -0800 (PST)
+        bh=zgrUTvQOJUYDuKbHFZKlpKXYvoGRnWvQmByrFkbKhpY=;
+        b=AOtlqF7U0y2OUN4ifs+fvVnStAGZ/IxbYiTjpBHJaMTv+H6Sn5fFI9Zv3DLgXVachP
+         f6Pte++8guA0QAIeOGhXesx0P892drUBu9GKekBsiPvL01SYoFowjFyXbBt2PVWtuvif
+         Gcw2geC0x+PtHHxyzOdgjhzzWS7ijSVPiI7wwMkCn4IS32jU+teRHr8vrdYKXkNFfIxV
+         v376/1+cyK+K4iy5K3uV9ZGw0ufXZKIBz4JCRymXDIXzCSqc3gLpUpcTQER5E5cMY25p
+         AphoXZzwOq8CejYRIMNHhQfH4GeR976STozM/QmhyQkqwUGRoeowzeG9BAi1t0CCj5qJ
+         n2sw==
+X-Gm-Message-State: AOJu0YwSZJMDX6xzXiKUqhtspJj3qM+IIGctMnk9BtyTbZIWW7egvgC1
+	d63yqixk7CknytM3K98wFonPdF3PMB8A7Jr71zZmA5AfMwEYGDWJ6Zp2hNgFQlQ4zHKJE2QFtba
+	Bu5/zkcSPdheKt5letWjBFxXNK9UHyhwKUVLe
+X-Google-Smtp-Source: AGHT+IEct+r39gbb5nT7BKUPki00osiOdxLM8JznhwylxUtmHwxRUvLEwmdDrymuS+ebBIImPsxnRRZuVs2lgoq7LJ8=
+X-Received: by 2002:a50:9f21:0:b0:561:519f:85c4 with SMTP id
+ b30-20020a509f21000000b00561519f85c4mr67882edf.4.1707792465570; Mon, 12 Feb
+ 2024 18:47:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122062535.8265-1-khuey@kylehuey.com> <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
-In-Reply-To: <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 12 Feb 2024 18:42:05 -0800
-Message-ID: <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	bpf <bpf@vger.kernel.org>
+References: <20240212-fix-elf-type-btf-vmlinux-bin-o-big-endian-v2-1-22c0a6352069@kernel.org>
+ <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
+In-Reply-To: <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
+From: Fangrui Song <maskray@google.com>
+Date: Mon, 12 Feb 2024 18:47:32 -0800
+Message-ID: <CAFP8O3LVgVRsrBAmJKV02bw2yrHziTFeRtJsnqx0iXieYMTJUg@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: Fix changing ELF file type for output of
+ gen_btf for big endian
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, nicolas@fjasle.eu, ndesaulniers@google.com, 
+	morbo@google.com, justinstitt@google.com, keescook@chromium.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
+	patches@lists.linux.dev, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 8:37=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
+On Mon, Feb 12, 2024 at 6:16=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrot=
-e:
+> On Tue, Feb 13, 2024 at 11:06=E2=80=AFAM Nathan Chancellor <nathan@kernel=
+.org> wrote:
 > >
-> > rr, a userspace record and replay debugger[0], replays asynchronous eve=
-nts
-> > such as signals and context switches by essentially[1] setting a breakp=
-oint
-> > at the address where the asynchronous event was delivered during record=
-ing
-> > with a condition that the program state matches the state when the even=
-t
-> > was delivered.
-> >
-> > Currently, rr uses software breakpoints that trap (via ptrace) to the
-> > supervisor, and evaluates the condition from the supervisor. If the
-> > asynchronous event is delivered in a tight loop (thus requiring the
-> > breakpoint condition to be repeatedly evaluated) the overhead can be
-> > immense. A patch to rr that uses hardware breakpoints via perf events w=
-ith
-> > an attached BPF program to reject breakpoint hits where the condition i=
+> > Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> > changed the ELF type of .btf.vmlinux.bin.o to ET_REL via dd, which work=
 s
-> > not satisfied reduces rr's replay overhead by 94% on a pathological (bu=
-t a
-> > real customer-provided, not contrived) rr trace.
+> > fine for little endian platforms:
 > >
-> > The only obstacle to this approach is that while the kernel allows a BP=
-F
-> > program to suppress sample output when a perf event overflows it does n=
-ot
-> > suppress signalling the perf event fd or sending the perf event's SIGTR=
-AP.
-> > This patch set redesigns __perf_overflow_handler() and
-> > bpf_overflow_handler() so that the former invokes the latter directly w=
-hen
-> > appropriate rather than through the generic overflow handler machinery,
-> > passes the return code of the BPF program back to __perf_overflow_handl=
-er()
-> > to allow it to decide whether to execute the regular overflow handler,
-> > reorders bpf_overflow_handler() and the side effects of perf event
-> > overflow, changes __perf_overflow_handler() to suppress those side effe=
-cts
-> > if the BPF program returns zero, and adds a selftest.
+> >    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF...=
+.........|
+> >   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
+.........|
+> >   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
+.........|
 > >
-> > The previous version of this patchset can be found at
-> > https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kylehu=
-ey.com/
+> > However, for big endian platforms, it changes the wrong byte, resulting
+> > in an invalid ELF file type, which ld.lld rejects:
 > >
-> > Changes since v4:
+> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
+.........|
+> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+.........|
+> >   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+.........|
 > >
-> > Patches 1, 2, 3, 4 added various Acked-by.
+> >   Type:                              <unknown>: 103
 > >
-> > Patch 4 addresses additional nits from Song.
+> >   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
 > >
-> > v3 of this patchset can be found at
-> > https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kyleh=
-uey.com/
+> > Fix this by updating the entire 16-bit e_type field rather than just a
+> > single byte, so that everything works correctly for all platforms and
+> > linkers.
 > >
-> > Changes since v3:
+> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
+.........|
+> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+.........|
+> >   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+.........|
 > >
-> > Patches 1, 2, 3 added various Acked-by.
+> >   Type:                              REL (Relocatable file)
 > >
-> > Patch 4 addresses Song's review comments by dropping signals_expected a=
-nd the
-> > corresponding ASSERT_OKs, handling errors from signal(), and fixing mul=
-tiline
-> > comment formatting.
+> > While in the area, update the comment to mention that binutils 2.35+
+> > matches LLD's behavior of rejecting an ET_EXEC input, which occurred
+> > after the comment was added.
 > >
-> > v2 of this patchset can be found at
-> > https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehu=
-ey.com/
-> >
-> > Changes since v2:
-> >
-> > Patches 1 and 2 were added from a suggestion by Namhyung Kim to refacto=
-r
-> > this code to implement this feature in a cleaner way. Patch 2 is separa=
-ted
-> > for the benefit of the ARM arch maintainers.
-> >
-> > Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleane=
-r
-> > implementation thanks to the earlier refactoring.
-> >
-> > Patch 4 is v2's patch 3, and addresses review comments about C++ style
-> > comments, getting a TRAP_PERF definition into the test, and unnecessary
-> > NULL checks.
-> >
-> > [0] https://rr-project.org/
-> > [1] Various optimizations exist to skip as much as execution as possibl=
-e
-> > before setting a breakpoint, and to determine a set of program state th=
-at
-> > is practical to check and verify.
->
-> Since everyone seems to be satisfied with this now, can we get it into
-> bpf-next (or wherever) for 6.9?
+> > Cc: stable@vger.kernel.org
+> > Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> > Link: https://github.com/llvm/llvm-project/pull/75643
+> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-The changes look fine, but since they change perf side we need
-perf maintainer's ack-s before we can land the patches.
-And none of them were cc-ed.
-So please resend the whole set and cc
-PERFORMANCE EVENTS SUBSYSTEM
-M:      Peter Zijlstra <peterz@infradead.org>
-M:      Ingo Molnar <mingo@redhat.com>
-M:      Arnaldo Carvalho de Melo <acme@kernel.org>
-M:      Namhyung Kim <namhyung@kernel.org>
+Thanks for updating the comment.
+
+Reviewed-by: Fangrui Song <maskray@google.com>
+
+>
+> Thanks.
+>
+> I will wait for a few days until
+> the reviewers come back to give Reviewed-by again.
+>
+>
+>
+>
+>
+> > ---
+> > Changes in v2:
+> > - Rather than change the seek value for dd, update the entire e_type
+> >   field (Masahiro). Due to this change, I did not carry forward the
+> >   tags of v1.
+> > - Slightly update commit message to remove mention of ET_EXEC, which
+> >   does not match the dump (Masahiro).
+> > - Update comment to mention binutils 2.35+ has the same behavior as LLD
+> >   (Fangrui).
+> > - Link to v1: https://lore.kernel.org/r/20240208-fix-elf-type-btf-vmlin=
+ux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org
+> > ---
+> >  scripts/link-vmlinux.sh | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> > index a432b171be82..7862a8101747 100755
+> > --- a/scripts/link-vmlinux.sh
+> > +++ b/scripts/link-vmlinux.sh
+> > @@ -135,8 +135,13 @@ gen_btf()
+> >         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dall=
+oc,readonly \
+> >                 --strip-all ${1} ${2} 2>/dev/null
+> >         # Change e_type to ET_REL so that it can be used to link final =
+vmlinux.
+> > -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
+> > -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 stat=
+us=3Dnone
+> > +       # GNU ld 2.35+ and lld do not allow an ET_EXEC input.
+> > +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+> > +               et_rel=3D'\0\1'
+> > +       else
+> > +               et_rel=3D'\1\0'
+> > +       fi
+> > +       printf "${et_rel}" | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D=
+16 status=3Dnone
+> >  }
+> >
+> >  # Create ${2} .S file with all symbols from the ${1} object file
+> >
+> > ---
+> > base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+> > change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e1=
+296
+> >
+> > Best regards,
+> > --
+> > Nathan Chancellor <nathan@kernel.org>
+> >
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+>
+
+
+--=20
+=E5=AE=8B=E6=96=B9=E7=9D=BF
 
