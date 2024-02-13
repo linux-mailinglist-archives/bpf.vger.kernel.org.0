@@ -1,307 +1,608 @@
-Return-Path: <bpf+bounces-21863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D622F853865
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 18:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C228538DB
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 18:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075951C264AD
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 17:37:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 325271C224ED
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 17:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8513605D0;
-	Tue, 13 Feb 2024 17:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30CD5FF15;
+	Tue, 13 Feb 2024 17:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Vdxw1l8k";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="oz790ZHR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNP8/pNm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28778605B5
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 17:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707845762; cv=fail; b=V7AQtvE9yNzrPdLMqZKD7/oyKtXG7Zs1pCh9aSVkzW7xyP+yzfYryJvGO0bQ2w8E7ebJIsvxQ7+SmaGzF+vv8eOJiq8f/Y8LDJLJWdXN4MXYxpHA88YPvgOC54dBf5dMDnJSziRqckcCotbNXMO2P8DJzcM28JMMFOT4IIqPxBg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707845762; c=relaxed/simple;
-	bh=Df/8tRmrF9fc1dLOMzz7l6C5/rBTc43A1uoeW3/6SZY=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=cM3jswp41JKyyM6vNi3sd/+tyJoHmnQeqnNH+Gcrfc4jnaZsQHQe7oys71357+AybeP+MDny0p4pO6rlD2u027RzY4A9SK1uBakHhKIShctGpi1YBpGrBEqKjKj2zr7thrTLeS8AbDdzrTzupesJe516KKUmzfkTjegTU+Gy1ds=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Vdxw1l8k; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=oz790ZHR; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DHYs2U009554;
-	Tue, 13 Feb 2024 17:35:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=TGVs3fu94LV/T+ZKo3+kr5Yijpv2NykdXis4Bx9wHrQ=;
- b=Vdxw1l8kXWLW1HvONLG1Sxzi6waxRP82TeQ6y3nhG7HOaHLzE70Of7SpERT7T3rAq1Re
- 5D8FenrWjZozQ40yjI2cMR2w5EQlO7pwkYKKhT/fkFSAi2W5gESVPRpMIfoZdjqxtwh+
- ERrS7gMDrkkVoz+AQyxGCPJhR+ykZxn/91vHRu5gvhu9JP4viyuAR5Rv1q61e/7nFOrc
- 2a3sSFX60SYNWuagjgR0DaqtC+PT+NqZbz3RT8PLFuYCs/tuE0PL399z2hGo7CsdDDT0
- LmDVIp1dZdOeqHO/keQwBNfvaTzqA6pJVYvJR6TR2wImo1KfWsgToubnN/uk1H3jjxdf MQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w8cxr8016-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 17:35:56 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41DGqW9O031484;
-	Tue, 13 Feb 2024 17:35:54 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yk7p6xd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 17:35:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MgI8lEdNkwUPzzVkidU9+OLoQIKCBPeVrty++u83dV1jKloTh4lJUcgZc7dJFGvl7FuKmcrDnBEsMCYSw7KlQSkb6VMIlvVxazA2yhxeovmTy/mucpVTlr80/Dg+Dxrpb4kLh9Nbz5wCBBstW6pT149RjBuKTfCLeUnioGcBEN09675KmfLYP7/NsrHKtbTquMehT8nmGYC6t/YofeFgR3+yMkHCJ2S1qfE1g+f1FpuSnvtOIshbahDOR+B+knMBfUNqZh1oZwpL7FcxQhmtHCGEkoJOCe2UT4IfQhgs1EselRt42x8WQCx7kadWqL4dVxedQ6+qnO4uYQv0FstQQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TGVs3fu94LV/T+ZKo3+kr5Yijpv2NykdXis4Bx9wHrQ=;
- b=OLZTJ4qJAIQr2X6vEokX47vtiulOZh2FI8NPS0eNv2klmSDPFJf+LYWYLJpEKlnMtbz5vNunUMwO+er7TaU35lsxnaHBOYFQvbFlNGOohKoAoS0EVsPWv/E8MeImQvf4ogpX2/w+mAn4zwWOA78/STGtXZrIumblkjGoYXXgH3wi0KdkM6VNZr9B/f+lp+f+ecIixg2mKJTowDWbHs87POPHp04NKuQBNkrHNV7fv8V0+TI+jMUOBiyJfGIs+SM1hCub4sBAp3hQZXeHSLHxAJnr/HCSSe5Zsb1RC/hcvm6lpR3SB2+HLxEih1ySdfOa4FkUbOYQwap0lDVkTqVWdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TGVs3fu94LV/T+ZKo3+kr5Yijpv2NykdXis4Bx9wHrQ=;
- b=oz790ZHRsGGqCDjf7MaFO9see3nBD2E8is1pzRXLvbP9LoGr0H1ZS04pPh1jNPUhXbGChmA4TbYnX+0zlEDxYy+00lWrJN0p2nHuE1f0aD5BsM9Y1XsBnwv4rHuC8nq/6ilk0rFlx3st4VTzh8C897mg5Gxr/F8ldYMNiCYh1OE=
-Received: from MN2PR10MB4382.namprd10.prod.outlook.com (2603:10b6:208:1d7::13)
- by DS0PR10MB7341.namprd10.prod.outlook.com (2603:10b6:8:f8::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.35; Tue, 13 Feb
- 2024 17:35:52 +0000
-Received: from MN2PR10MB4382.namprd10.prod.outlook.com
- ([fe80::8de3:eccb:9288:95d0]) by MN2PR10MB4382.namprd10.prod.outlook.com
- ([fe80::8de3:eccb:9288:95d0%6]) with mapi id 15.20.7270.036; Tue, 13 Feb 2024
- 17:35:50 +0000
-From: Cupertino Miranda <cupertino.miranda@oracle.com>
-To: bpf@vger.kernel.org
-Cc: andrii.nakryiko@gmail.com, yonghong.song@linux.dev, eddyz87@gmail.com,
-        alexei.starovoitov@gmail.com, david.faust@oracle.com,
-        jose.marchesi@oracle.com,
-        Cupertino Miranda <cupertino.miranda@oracle.com>
-Subject: [PATCH v2 bpf-next] libbpf: add support to GCC in CORE macro definitions
-Date: Tue, 13 Feb 2024 17:35:43 +0000
-Message-Id: <20240213173543.1397708-1-cupertino.miranda@oracle.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P265CA0188.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:311::17) To MN2PR10MB4382.namprd10.prod.outlook.com
- (2603:10b6:208:1d7::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CE48C0A;
+	Tue, 13 Feb 2024 17:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707846377; cv=none; b=ARrZy4RLvhLy7YEl9GqiHa9Z6Bw+BklieIOPzn/ZTB6bTrIF0b2yJjj5nj8lYO07EQKQnhpo9rxyVIHwprjuKK325Ch59qKLygprgHzZ/gb45ag/+tzAkC5SS+DAs2nzbObVOqFvGRV6pOQqoJwzFTv2T09gTwsH/dL9GhKPQIA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707846377; c=relaxed/simple;
+	bh=AVSXJeMD8NMzaOCebzmgDUBvECAgBumsSpW90nbp8nc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lvymrw5xvHrkrNVtXoRD0SP4OfWGTGlk5xhZG2dCBqaRlXEcVzWM9RC6q4bxchV610eR3e1pcdk7k9Jw49CPwKelE3fHfwgTetIRsn9MnnYVa1a0wscS4RZLQdw7kFLdiaQlJfU/XqohpS+FdloGHcBkjKLl31X0gOKDBqqPurs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNP8/pNm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D321C433C7;
+	Tue, 13 Feb 2024 17:46:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707846376;
+	bh=AVSXJeMD8NMzaOCebzmgDUBvECAgBumsSpW90nbp8nc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jNP8/pNmDSRSpssOu0s+Dy4OJmCqL9e0TIaaBU4JFMFgZnxhf0IFy8K48jVsbtSos
+	 PjaTJOyud5FkG8tuWgcqKcGipwvWkxePULMG177ZnXfQ6ZSq8tIB+7IFiJARU/XE65
+	 7sntG/ZVG457BryVF7UiQKP2ut4DPEGhwhuvN1pJTH4UEw8FOf2+e/L0yTRdyF7D4L
+	 MWWrVDAJHdz8d7RM2FEUjLm+AU5AAaj4WObRWf/zoIBDyWm+D9BO2Af/K6oCx8BTmM
+	 ER6f8bcgIaL06wbFOveLWQHcLbF8fdQWroyyuyptaArtWRUjnlk8cMOaTgBSkZtJvt
+	 uiM/dm3jbtdJg==
+Date: Tue, 13 Feb 2024 18:46:09 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+Message-ID: <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk>
+ <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk>
+ <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk>
+ <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+ <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4382:EE_|DS0PR10MB7341:EE_
-X-MS-Office365-Filtering-Correlation-Id: 30aacf3a-b965-42e5-e3ec-08dc2cba38b2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	6ZRMvtC/GXm0ZzdB95fp1HhdJzDdyUWXq61d8H3E+rldCNiEwOwf2Acyh+8HMVq0v5mXzUCfliSnWXW9VNbfA32tgmasDleigGq+BHElFq29xMl4l6uNnGtC7NAkobcpq1M5EUlCT3JVIssG9ufialthkqlFtnT1T8FI/+zTW4i+123Ndg+Es6hysoPI0BgVw5/DtuXbWPKqoHOvK3PXaVly5Qe6BlhSuOb3s4sgZZl/N7sydRi0DfYvTkdg5ykpO8n9QRLx6PSZ5Q3F/FpFrBlQJXvc7fAu71Ts/YyVgjj5WbNI49GpfLVeYZtq16jHXrlohasSMksCrJDZIncPu02Y0JCFNolsLyD/ZmSawNSSrvPqLb4DVzAFa9BiBHZitueVWv52aG5LG9Xw0rF/fqZ3e/VzJ8Ila4Yxk3HJzAFHIt7d6EufOsa7FympkW/uVwiaXUVRYtHuGgrSOxcLlSKyRuVU2qWDY0qZrSEsgnDS9U0G2iS1p2E4v2yKeK1A8RPTo2hns31orw2GXA1kYkabkvzD0knFzXcRyp5nwYbOFAQCqhndyV6d+2lv5o1+
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4382.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(39860400002)(346002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6486002)(6506007)(6512007)(2906002)(36756003)(44832011)(66946007)(86362001)(66556008)(6916009)(38100700002)(1076003)(478600001)(6666004)(66476007)(4326008)(83380400001)(107886003)(5660300002)(316002)(8676002)(8936002)(2616005)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?hN9fKJejkbVUHGpt08jrxH4juuyY3tPZLSHs+zFAPqFS7v9v1siWg06k7EB/?=
- =?us-ascii?Q?rTiqw2UKRa/g+elGsqvaC1meF7TehJexrOkhiDtcCO3f8lNCZZJEC5kZv+4Q?=
- =?us-ascii?Q?2slxPczHpoQr9yc+70O00SDX+ja3znV2rT4Cv7FwQnrBzS9nctEsNwBa4Kk+?=
- =?us-ascii?Q?Q+OxPDUvhQ/dZDmed6icP4PFzh0RMNevzz59HCssLlx565cLe0cS/nvRvAtN?=
- =?us-ascii?Q?0lQfpyB8fIjjTaVMHm96eqAw4Vsit68K7qrix566a2ODVsrBe8MukajcJz3J?=
- =?us-ascii?Q?pV5B9kOGmKSLqCxE67oe/ATVpI2/N4whiEytGQIQxI+0XmifAkMgo+LWwH4h?=
- =?us-ascii?Q?+Uz+nj8FYvJ9vi2xQ2c95wbEIVdwDnLY1HB5385J0gEPI3s/AyhH5cOFKGlQ?=
- =?us-ascii?Q?25qBMX6H7VtZJTR6+ZRVWXMImGvghp67FDCMV+plPw06FY7A6s3J0pCUe8om?=
- =?us-ascii?Q?JCLhFPOb4TC0yWSaAwzmV/VEZPcxfIwNN0eT7cCKk3r7HTzl+AP+5VGc3Fbv?=
- =?us-ascii?Q?dRBEtno+86t6dFvFL7nX01RNo0krdVvvPkPSscS7WTYozHYyxQ2SNHPHf6/r?=
- =?us-ascii?Q?6gCzX/GDD9aIM5O3iWh/KNULoDMrSDl+qGJhNI+ziXD+qHcI5DEHNu3d+n9s?=
- =?us-ascii?Q?DGZCb8GCGxvcEL2V2OU2LaGcpYEABx+KcoxF3deEFkh21qDmhUZRM/1S9O11?=
- =?us-ascii?Q?l++vDrxwHWMHDx+MMwT1cbsnN/tpPFhGJR87MhyCOHB50PT6peFFovp23wVW?=
- =?us-ascii?Q?5FPhQAyn9iWbmlhZqaD4T5GC2nbzrzVaAf6WRES38s46RAuyc/GMYfUOS7Vs?=
- =?us-ascii?Q?+mYlCMLQJjT1MIx31eyTprDEuF+HSayxnk3sbYDES7texeCiECZvCCCygR35?=
- =?us-ascii?Q?Y2IkCBWh1wps8QuiekdUbzQP49Qam03e6IFMQfFEDmbMfs3bLot8PbM2f8qw?=
- =?us-ascii?Q?7M8b3CS9YwO2rr+naM7Q8qSIYvYLpjWka4lRFTWLh7UtEivgbCP5vZu/czsk?=
- =?us-ascii?Q?AhI+GLXNVUGrNQs4vwPwqcsKQpe22rcH3xgqjcwYQuBgGRK8Zn/l76242nrY?=
- =?us-ascii?Q?7zzMY5TeEA1QWx9zmki+2Hll8aiWx4VB34eLafxMhRUjUo2BYEHkEqUew2yH?=
- =?us-ascii?Q?zSd9+ZPIHjT6XlXhBgOFO0c7CPxkLop6tXVmX0TLGep5VAAkmNze/r5/ipXP?=
- =?us-ascii?Q?YPamFM2mBEVBMqK6VCjX3eF9mmEdIELOipt33wV7aNyaeSeNglni7NvKHQ5Y?=
- =?us-ascii?Q?CSxWsRcL873gRkwGPm4fDISbJDcynS7T0LG4F45k03hPtpHBnSGfJ9AIN5EG?=
- =?us-ascii?Q?PmcJgABEpZCLdDsRsakgePfrOoJj9U6W4BP8Eqk1cpdPxSgjIh/9feZ2EuY7?=
- =?us-ascii?Q?l+KKjZwMwiv6D1976xfx1i7aIVuAYcnNJ8TA1sXlqGmOigJfq8+IVOuJKp5n?=
- =?us-ascii?Q?+t5DwWH9KTZ/t3cV+Umg1OARJk1NKsyvL8itjhvOTMhOYH2Cl62wx+EUBP8s?=
- =?us-ascii?Q?GRV0TesGQKw5W1DBZRmJp0yErL1tXHpCmQj/V4Fc6GBdZG++Rz/+2n/F2AYS?=
- =?us-ascii?Q?klr1uDLZ1LpUrLIFzSyv678csTiouWyWdiep8xxy/IlHNudGUlGEyogBzfoC?=
- =?us-ascii?Q?gpukpaIvZj8TgzUPuCAOGgA=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	Po0cw2y2SjVl3NfiTYR/qX/qkLrkrZj7d9u4uvjdGaPak6P1QIcPlnA1KKbkcc80VhOPZX8kNkT/WU7B8G+8Gl3Jhrta7GbQQcl5antEGLv7VRLRu3lZ9100JXi3L0NPB5GpbmLk9leYMkEL4K0GQqSX7VfB7nTvn/NBSI/h55mua9bAERm54WnuMy1VAs92Z2L+LOnVnBXC8kBgGZ5phmWEggppDrE3Js0CsavINPERB57GYGMY+YYaEw9DCukH2vncYujzMVHjHogH46KWXi7EYxCsl/Gy3mdSKYgXNsnkOyc8ENKcGloIIZihcYyrBmh+Ix411Z0l1E8jVzLRQ3TlQcw8469QrAIjJCX3KQQoVnM43Z0oynsIDnhuVYOWzRx0B9Bbykh5gAQ/KAn+QPqY/Lnt0f3Mi0nJJcvMCFSeG+GiyraRNaOrT3Pb3I8K1arrbEQBt8iOaPr3y3V6sKsHO5JnoLRWFo/3QPZo82b5R1TdAgByt+o2U4qakNiA6x0S1FUvWL3Sn6PBYAx6EN0/1nwL1JIg4tcGV0IIpUmFVV9bv8Okwhz6bEby3RITIWZPzPvLHsJX23/DEqwCIdXwJO+109z0WK7J3IX1wRM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30aacf3a-b965-42e5-e3ec-08dc2cba38b2
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4382.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 17:35:50.8081
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xjAhq9zRCQoIlM7kG8z0+OxVrZRN6AsQa9ZkXhmpNd4QvklRqqb8dJp7cS6bDUl9/4HSqLgOUv+q2YH8qUXEFiuoFM4N+QuikgYNUljXOVs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7341
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_10,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402130138
-X-Proofpoint-GUID: Hm6-gRB1jUm9GX5gRBhhDlwUosiUGacP
-X-Proofpoint-ORIG-GUID: Hm6-gRB1jUm9GX5gRBhhDlwUosiUGacP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
 
-Due to internal differences between LLVM and GCC the current
-implementation for the CO-RE macros does not fit GCC parser, as it will
-optimize those expressions even before those would be accessible by the
-BPF backend.
+On Feb 12 2024, Alexei Starovoitov wrote:
+> On Mon, Feb 12, 2024 at 10:21 AM Benjamin Tissoires
+> <benjamin.tissoires@redhat.com> wrote:
+> >
+> > On Mon, Feb 12, 2024 at 6:46 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> > >
+> > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+> > >
+[...]
+> I agree that workqueue delegation fits into the bpf_timer concept and
+> a lot of code can and should be shared.
 
-As examples, the following would be optimized out with the original
-definitions:
-  - As enums are converted to their integer representation during
-  parsing, the IR would not know how to distinguish an integer
-  constant from an actual enum value.
-  - Types need to be kept as temporary variables, as the existing type
-  casts of the 0 address (as expanded for LLVM), are optimized away by
-  the GCC C parser, never really reaching GCCs IR.
+Thanks Alexei for the detailed answer. I've given it an attempt but still can not
+figure it out entirely.
 
-Although, the macros appear to add extra complexity, the expanded code
-is removed from the compilation flow very early in the compilation
-process, not really affecting the quality of the generated assembly.
+> All the lessons(bugs) learned with bpf_timer don't need to be re-discovered :)
+> Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+> so we need a new kfunc to set a sleepable callback.
+> Maybe
+> bpf_timer_set_sleepable_cb() ?
 
-Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() flag?
+
+> The verifier will set is_async_cb = true for it (like it does for regular cb-s).
+> And since prog->aux->sleepable is kinda "global" we need another
+> per subprog flag:
+> bool is_sleepable: 1;
+
+done (in push_callback_call())
+
+> 
+> We can factor out a check "if (prog->aux->sleepable)" into a helper
+> that will check that "global" flag and another env->cur_state->in_sleepable
+> flag that will work similar to active_rcu_lock.
+
+done (I think), cf patch 2 below
+
+> Once the verifier starts processing subprog->is_sleepable
+> it will set cur_state->in_sleepable = true;
+> to make all subprogs called from that cb to be recognized as sleepable too.
+
+That's the point I don't know where to put the new code.
+
+It seems the best place would be in do_check(), but I am under the impression
+that the code of the callback is added at the end of the instruction list, meaning
+that I do not know where it starts, and which subprog index it corresponds to.
+
+> 
+> A bit of a challenge is what to do with global subprogs,
+> since they're verified lazily. They can be called from
+> sleepable and non-sleepable contex. Should be solvable.
+
+I must confess this is way over me (and given that I didn't even managed to make
+the "easy" case working, that might explain things a little :-P )
+
+> 
+> Overall I think this feature is needed urgently,
+> so if you don't have cycles to work on this soon,
+> I can prioritize it right after bpf_arena work.
+
+I can try to spare a few cycles on it. Even if your instructions were on
+spot, I still can't make the subprogs recognized as sleepable.
+
+For reference, this is where I am (probably bogus, but seems to be
+working when timer_set_sleepable_cb() is called from a sleepable context
+as mentioned by Toke):
+
 ---
- tools/lib/bpf/bpf_core_read.h | 43 ++++++++++++++++++++++++++++++-----
- 1 file changed, 37 insertions(+), 6 deletions(-)
+From d4aa3d969fa9a89c6447d843dad338fde2ac0155 Mon Sep 17 00:00:00 2001
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Tue, 13 Feb 2024 18:40:01 +0100
+Subject: [PATCH RFC bpf-next v2 01/11] Sleepable timers
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-hid-bpf-sleepable-v2-1-6c2d6b49865c@kernel.org>
 
-diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-index 0d3e88bd7d5f..b548ceb28be4 100644
---- a/tools/lib/bpf/bpf_core_read.h
-+++ b/tools/lib/bpf/bpf_core_read.h
-@@ -81,6 +81,22 @@ enum bpf_enum_value_kind {
- 	val;								      \
- })
+---
+ include/linux/bpf_verifier.h   |  2 +
+ include/uapi/linux/bpf.h       | 13 ++++++
+ kernel/bpf/helpers.c           | 91 +++++++++++++++++++++++++++++++++++++++---
+ kernel/bpf/verifier.c          | 20 ++++++++--
+ tools/include/uapi/linux/bpf.h | 13 ++++++
+ 5 files changed, 130 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 84365e6dd85d..789ef5fec547 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -426,6 +426,7 @@ struct bpf_verifier_state {
+ 	 * while they are still in use.
+ 	 */
+ 	bool used_as_loop_entry;
++	bool in_sleepable;
  
-+/* Differentiator between compilers builtin implementations. This is a
-+ * requirement due to the compiler parsing differences where GCC optimizes
-+ * early in parsing those constructs of type pointers to the builtin specific
-+ * type, resulting in not being possible to collect the required type
-+ * information in the builtin expansion.
-+ */
-+#ifdef __clang__
-+#define ___bpf_typeof(type) ((typeof(type) *) 0)
-+#else
-+#define ___bpf_typeof1(type, NR) ({					\
-+	extern typeof(type) *___concat(bpf_type_tmp_, NR);		\
-+	___concat(bpf_type_tmp_, NR);					\
-+})
-+#define ___bpf_typeof(type) ___bpf_typeof1(type, __COUNTER__)
-+#endif
+ 	/* first and last insn idx of this verifier state */
+ 	u32 first_insn_idx;
+@@ -626,6 +627,7 @@ struct bpf_subprog_info {
+ 	bool is_async_cb: 1;
+ 	bool is_exception_cb: 1;
+ 	bool args_cached: 1;
++	bool is_sleepable: 1;
+ 
+ 	u8 arg_cnt;
+ 	struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index d96708380e52..ef1f2be4cfef 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5742,6 +5742,18 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf_local_storage cannot be found.
++ *
++ * long bpf_timer_set_sleepable_cb(struct bpf_timer *timer, void *callback_fn)
++ *	Description
++ *		Configure the timer to call *callback_fn* static function in a
++ *		sleepable context.
++ *	Return
++ *		0 on success.
++ *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
++ *		**-EPERM** if *timer* is in a map that doesn't have any user references.
++ *		The user space should either hold a file descriptor to a map with timers
++ *		or pin such map in bpffs. When map is unpinned or file descriptor is
++ *		closed all timers in the map will be cancelled and freed.
+  */
+ #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+ 	FN(unspec, 0, ##ctx)				\
+@@ -5956,6 +5968,7 @@ union bpf_attr {
+ 	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	FN(cgrp_storage_get, 210, ##ctx)		\
+ 	FN(cgrp_storage_delete, 211, ##ctx)		\
++	FN(timer_set_sleepable_cb, 212, ##ctx)		\
+ 	/* */
+ 
+ /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 4db1c658254c..e3b83d27b1b6 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1097,9 +1097,11 @@ const struct bpf_func_proto bpf_snprintf_proto = {
+  */
+ struct bpf_hrtimer {
+ 	struct hrtimer timer;
++	struct work_struct work;
+ 	struct bpf_map *map;
+ 	struct bpf_prog *prog;
+ 	void __rcu *callback_fn;
++	void __rcu *sleepable_cb_fn;
+ 	void *value;
+ };
+ 
+@@ -1113,18 +1115,64 @@ struct bpf_timer_kern {
+ 	struct bpf_spin_lock lock;
+ } __attribute__((aligned(8)));
+ 
++static void bpf_timer_work_cb(struct work_struct *work)
++{
++	struct bpf_hrtimer *t = container_of(work, struct bpf_hrtimer, work);
++	struct bpf_map *map = t->map;
++	void *value = t->value;
++	bpf_callback_t callback_fn;
++	void *key;
++	u32 idx;
 +
- /*
-  * Extract bitfield, identified by s->field, and return its value as u64.
-  * This version of macro is using direct memory reads and should be used from
-@@ -145,8 +161,13 @@ enum bpf_enum_value_kind {
- 	}								\
- })
++	BTF_TYPE_EMIT(struct bpf_timer);
++
++	rcu_read_lock();
++	callback_fn = rcu_dereference(t->sleepable_cb_fn);
++	rcu_read_unlock();
++	if (!callback_fn)
++		return;
++
++	// /* bpf_timer_work_cb() runs in hrtimer_run_softirq. It doesn't migrate and
++	//  * cannot be preempted by another bpf_timer_cb() on the same cpu.
++	//  * Remember the timer this callback is servicing to prevent
++	//  * deadlock if callback_fn() calls bpf_timer_cancel() or
++	//  * bpf_map_delete_elem() on the same timer.
++	//  */
++	// this_cpu_write(hrtimer_running, t);
++	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
++		struct bpf_array *array = container_of(map, struct bpf_array, map);
++
++		/* compute the key */
++		idx = ((char *)value - array->value) / array->elem_size;
++		key = &idx;
++	} else { /* hash or lru */
++		key = value - round_up(map->key_size, 8);
++	}
++
++	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
++	/* The verifier checked that return value is zero. */
++
++	// this_cpu_write(hrtimer_running, NULL);
++}
++
+ static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
  
-+#ifdef __clang__
- #define ___bpf_field_ref1(field)	(field)
--#define ___bpf_field_ref2(type, field)	(((typeof(type) *)0)->field)
-+#define ___bpf_field_ref2(type, field)	(___bpf_typeof(type)->field)
-+#else
-+#define ___bpf_field_ref1(field)	(&(field))
-+#define ___bpf_field_ref2(type, field)	(&(___bpf_typeof(type)->field))
-+#endif
- #define ___bpf_field_ref(args...)					    \
- 	___bpf_apply(___bpf_field_ref, ___bpf_narg(args))(args)
+ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+ {
+ 	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
++	bpf_callback_t callback_fn, sleepable_cb_fn;
+ 	struct bpf_map *map = t->map;
+ 	void *value = t->value;
+-	bpf_callback_t callback_fn;
+ 	void *key;
+ 	u32 idx;
  
-@@ -196,7 +217,7 @@ enum bpf_enum_value_kind {
-  * BTF. Always succeeds.
+ 	BTF_TYPE_EMIT(struct bpf_timer);
++	sleepable_cb_fn = rcu_dereference_check(t->sleepable_cb_fn, rcu_read_lock_bh_held());
++	if (sleepable_cb_fn) {
++		schedule_work(&t->work);
++		goto out;
++	}
++
+ 	callback_fn = rcu_dereference_check(t->callback_fn, rcu_read_lock_bh_held());
+ 	if (!callback_fn)
+ 		goto out;
+@@ -1190,7 +1238,9 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *, timer, struct bpf_map *, map
+ 	t->map = map;
+ 	t->prog = NULL;
+ 	rcu_assign_pointer(t->callback_fn, NULL);
++	rcu_assign_pointer(t->sleepable_cb_fn, NULL);
+ 	hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
++	INIT_WORK(&t->work, bpf_timer_work_cb);
+ 	t->timer.function = bpf_timer_cb;
+ 	WRITE_ONCE(timer->timer, t);
+ 	/* Guarantee the order between timer->timer and map->usercnt. So
+@@ -1221,8 +1271,8 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
+ };
+ 
+-BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callback_fn,
+-	   struct bpf_prog_aux *, aux)
++static int __bpf_timer_set_callback(struct bpf_timer_kern *timer, void *callback_fn,
++				    struct bpf_prog_aux *aux, bool is_sleepable)
+ {
+ 	struct bpf_prog *prev, *prog = aux->prog;
+ 	struct bpf_hrtimer *t;
+@@ -1260,12 +1310,24 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callb
+ 			bpf_prog_put(prev);
+ 		t->prog = prog;
+ 	}
+-	rcu_assign_pointer(t->callback_fn, callback_fn);
++	if (is_sleepable) {
++		rcu_assign_pointer(t->sleepable_cb_fn, callback_fn);
++		rcu_assign_pointer(t->callback_fn, NULL);
++	} else {
++		rcu_assign_pointer(t->callback_fn, callback_fn);
++		rcu_assign_pointer(t->sleepable_cb_fn, NULL);
++	}
+ out:
+ 	__bpf_spin_unlock_irqrestore(&timer->lock);
+ 	return ret;
+ }
+ 
++BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callback_fn,
++	   struct bpf_prog_aux *, aux)
++{
++	return __bpf_timer_set_callback(timer, callback_fn, aux, false);
++}
++
+ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
+ 	.func		= bpf_timer_set_callback,
+ 	.gpl_only	= true,
+@@ -1274,6 +1336,20 @@ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
+ 	.arg2_type	= ARG_PTR_TO_FUNC,
+ };
+ 
++BPF_CALL_3(bpf_timer_set_sleepable_cb, struct bpf_timer_kern *, timer, void *, callback_fn,
++	   struct bpf_prog_aux *, aux)
++{
++	return __bpf_timer_set_callback(timer, callback_fn, aux, true);
++}
++
++static const struct bpf_func_proto bpf_timer_set_sleepable_cb_proto = {
++	.func		= bpf_timer_set_sleepable_cb,
++	.gpl_only	= true,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_TIMER,
++	.arg2_type	= ARG_PTR_TO_FUNC,
++};
++
+ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, flags)
+ {
+ 	struct bpf_hrtimer *t;
+@@ -1353,6 +1429,7 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
+ 	 * if it was running.
+ 	 */
+ 	ret = ret ?: hrtimer_cancel(&t->timer);
++	ret = ret ?: cancel_work_sync(&t->work);
+ 	return ret;
+ }
+ 
+@@ -1405,8 +1482,10 @@ void bpf_timer_cancel_and_free(void *val)
+ 	 * effectively cancelled because bpf_timer_cb() will return
+ 	 * HRTIMER_NORESTART.
+ 	 */
+-	if (this_cpu_read(hrtimer_running) != t)
++	if (this_cpu_read(hrtimer_running) != t) {
+ 		hrtimer_cancel(&t->timer);
++	}
++	cancel_work_sync(&t->work);
+ 	kfree(t);
+ }
+ 
+@@ -1749,6 +1828,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_timer_init_proto;
+ 	case BPF_FUNC_timer_set_callback:
+ 		return &bpf_timer_set_callback_proto;
++	case BPF_FUNC_timer_set_sleepable_cb:
++		return &bpf_timer_set_sleepable_cb_proto;
+ 	case BPF_FUNC_timer_start:
+ 		return &bpf_timer_start_proto;
+ 	case BPF_FUNC_timer_cancel:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 64fa188d00ad..400c625efe22 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -513,7 +513,8 @@ static bool is_sync_callback_calling_function(enum bpf_func_id func_id)
+ 
+ static bool is_async_callback_calling_function(enum bpf_func_id func_id)
+ {
+-	return func_id == BPF_FUNC_timer_set_callback;
++	return func_id == BPF_FUNC_timer_set_callback ||
++	       func_id == BPF_FUNC_timer_set_sleepable_cb;
+ }
+ 
+ static bool is_callback_calling_function(enum bpf_func_id func_id)
+@@ -1414,6 +1415,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	}
+ 	dst_state->speculative = src->speculative;
+ 	dst_state->active_rcu_lock = src->active_rcu_lock;
++	dst_state->in_sleepable = src->in_sleepable;
+ 	dst_state->curframe = src->curframe;
+ 	dst_state->active_lock.ptr = src->active_lock.ptr;
+ 	dst_state->active_lock.id = src->active_lock.id;
+@@ -9434,11 +9436,13 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
+ 
+ 	if (insn->code == (BPF_JMP | BPF_CALL) &&
+ 	    insn->src_reg == 0 &&
+-	    insn->imm == BPF_FUNC_timer_set_callback) {
++	    (insn->imm == BPF_FUNC_timer_set_callback ||
++	     insn->imm == BPF_FUNC_timer_set_sleepable_cb)) {
+ 		struct bpf_verifier_state *async_cb;
+ 
+ 		/* there is no real recursion here. timer callbacks are async */
+ 		env->subprog_info[subprog].is_async_cb = true;
++		env->subprog_info[subprog].is_sleepable = insn->imm == BPF_FUNC_timer_set_sleepable_cb;
+ 		async_cb = push_async_cb(env, env->subprog_info[subprog].start,
+ 					 insn_idx, subprog);
+ 		if (!async_cb)
+@@ -10280,6 +10284,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 					 set_map_elem_callback_state);
+ 		break;
+ 	case BPF_FUNC_timer_set_callback:
++		fallthrough;
++	case BPF_FUNC_timer_set_sleepable_cb:
+ 		err = push_callback_call(env, insn, insn_idx, meta.subprogno,
+ 					 set_timer_callback_state);
+ 		break;
+@@ -15586,7 +15592,9 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
+ 		return DONE_EXPLORING;
+ 
+ 	case BPF_CALL:
+-		if (insn->src_reg == 0 && insn->imm == BPF_FUNC_timer_set_callback)
++		if (insn->src_reg == 0 &&
++		    (insn->imm == BPF_FUNC_timer_set_callback ||
++		     insn->imm == BPF_FUNC_timer_set_sleepable_cb))
+ 			/* Mark this call insn as a prune point to trigger
+ 			 * is_state_visited() check before call itself is
+ 			 * processed by __check_func_call(). Otherwise new
+@@ -16762,6 +16770,9 @@ static bool states_equal(struct bpf_verifier_env *env,
+ 	if (old->active_rcu_lock != cur->active_rcu_lock)
+ 		return false;
+ 
++	if (old->in_sleepable != cur->in_sleepable)
++		return false;
++
+ 	/* for states to be equal callsites have to be the same
+ 	 * and all frame states need to be equivalent
+ 	 */
+@@ -19639,7 +19650,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			continue;
+ 		}
+ 
+-		if (insn->imm == BPF_FUNC_timer_set_callback) {
++		if (insn->imm == BPF_FUNC_timer_set_callback ||
++		    insn->imm == BPF_FUNC_timer_set_sleepable_cb) {
+ 			/* The verifier will process callback_fn as many times as necessary
+ 			 * with different maps and the register states prepared by
+ 			 * set_timer_callback_state will be accurate.
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index d96708380e52..ef1f2be4cfef 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5742,6 +5742,18 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf_local_storage cannot be found.
++ *
++ * long bpf_timer_set_sleepable_cb(struct bpf_timer *timer, void *callback_fn)
++ *	Description
++ *		Configure the timer to call *callback_fn* static function in a
++ *		sleepable context.
++ *	Return
++ *		0 on success.
++ *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
++ *		**-EPERM** if *timer* is in a map that doesn't have any user references.
++ *		The user space should either hold a file descriptor to a map with timers
++ *		or pin such map in bpffs. When map is unpinned or file descriptor is
++ *		closed all timers in the map will be cancelled and freed.
   */
- #define bpf_core_type_id_local(type)					    \
--	__builtin_btf_type_id(*(typeof(type) *)0, BPF_TYPE_ID_LOCAL)
-+	__builtin_btf_type_id(*___bpf_typeof(type), BPF_TYPE_ID_LOCAL)
+ #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+ 	FN(unspec, 0, ##ctx)				\
+@@ -5956,6 +5968,7 @@ union bpf_attr {
+ 	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	FN(cgrp_storage_get, 210, ##ctx)		\
+ 	FN(cgrp_storage_delete, 211, ##ctx)		\
++	FN(timer_set_sleepable_cb, 212, ##ctx)		\
+ 	/* */
  
- /*
-  * Convenience macro to get BTF type ID of a target kernel's type that matches
-@@ -206,7 +227,7 @@ enum bpf_enum_value_kind {
-  *    - 0, if no matching type was found in a target kernel BTF.
-  */
- #define bpf_core_type_id_kernel(type)					    \
--	__builtin_btf_type_id(*(typeof(type) *)0, BPF_TYPE_ID_TARGET)
-+	__builtin_btf_type_id(*___bpf_typeof(type), BPF_TYPE_ID_TARGET)
- 
- /*
-  * Convenience macro to check that provided named type
-@@ -216,7 +237,7 @@ enum bpf_enum_value_kind {
-  *    0, if no matching type is found.
-  */
- #define bpf_core_type_exists(type)					    \
--	__builtin_preserve_type_info(*(typeof(type) *)0, BPF_TYPE_EXISTS)
-+	__builtin_preserve_type_info(*___bpf_typeof(type), BPF_TYPE_EXISTS)
- 
- /*
-  * Convenience macro to check that provided named type
-@@ -226,7 +247,7 @@ enum bpf_enum_value_kind {
-  *    0, if the type does not match any in the target kernel
-  */
- #define bpf_core_type_matches(type)					    \
--	__builtin_preserve_type_info(*(typeof(type) *)0, BPF_TYPE_MATCHES)
-+	__builtin_preserve_type_info(*___bpf_typeof(type), BPF_TYPE_MATCHES)
- 
- /*
-  * Convenience macro to get the byte size of a provided named type
-@@ -236,7 +257,7 @@ enum bpf_enum_value_kind {
-  *    0, if no matching type is found.
-  */
- #define bpf_core_type_size(type)					    \
--	__builtin_preserve_type_info(*(typeof(type) *)0, BPF_TYPE_SIZE)
-+	__builtin_preserve_type_info(*___bpf_typeof(type), BPF_TYPE_SIZE)
- 
- /*
-  * Convenience macro to check that provided enumerator value is defined in
-@@ -246,8 +267,13 @@ enum bpf_enum_value_kind {
-  *    kernel's BTF;
-  *    0, if no matching enum and/or enum value within that enum is found.
-  */
-+#ifdef __clang__
- #define bpf_core_enum_value_exists(enum_type, enum_value)		    \
- 	__builtin_preserve_enum_value(*(typeof(enum_type) *)enum_value, BPF_ENUMVAL_EXISTS)
-+#else
-+#define bpf_core_enum_value_exists(enum_type, enum_value)		    \
-+	__builtin_preserve_enum_value(___bpf_typeof(enum_type), enum_value, BPF_ENUMVAL_EXISTS)
-+#endif
- 
- /*
-  * Convenience macro to get the integer value of an enumerator value in
-@@ -257,8 +283,13 @@ enum bpf_enum_value_kind {
-  *    present in target kernel's BTF;
-  *    0, if no matching enum and/or enum value within that enum is found.
-  */
-+#ifdef __clang__
- #define bpf_core_enum_value(enum_type, enum_value)			    \
- 	__builtin_preserve_enum_value(*(typeof(enum_type) *)enum_value, BPF_ENUMVAL_VALUE)
-+#else
-+#define bpf_core_enum_value(enum_type, enum_value)			    \
-+	__builtin_preserve_enum_value(___bpf_typeof(enum_type), enum_value, BPF_ENUMVAL_VALUE)
-+#endif
- 
- /*
-  * bpf_core_read() abstracts away bpf_probe_read_kernel() call and captures
--- 
-2.30.2
+ /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
 
+-- 
+2.43.0
+
+---
+From 6c654010a4660fd26ffce44406dba308ded3b465 Mon Sep 17 00:00:00 2001
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Tue, 13 Feb 2024 18:40:02 +0100
+Subject: [PATCH RFC bpf-next v2 02/11] bpf/verifier: introduce in_sleepable() helper
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-hid-bpf-sleepable-v2-2-6c2d6b49865c@kernel.org>
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+ kernel/bpf/verifier.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 400c625efe22..8c3707d27c02 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5257,6 +5257,12 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
+ 	return -EINVAL;
+ }
+ 
++static bool in_sleepable(struct bpf_verifier_env *env)
++{
++	return env->prog->aux->sleepable ||
++	       (env->cur_state && env->cur_state->in_sleepable);
++}
++
+ /* The non-sleepable programs and sleepable programs with explicit bpf_rcu_read_lock()
+  * can dereference RCU protected pointers and result is PTR_TRUSTED.
+  */
+@@ -5264,7 +5270,7 @@ static bool in_rcu_cs(struct bpf_verifier_env *env)
+ {
+ 	return env->cur_state->active_rcu_lock ||
+ 	       env->cur_state->active_lock.ptr ||
+-	       !env->prog->aux->sleepable;
++	       !in_sleepable(env);
+ }
+ 
+ /* Once GCC supports btf_type_tag the following mechanism will be replaced with tag check */
+@@ -10153,7 +10159,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!env->prog->aux->sleepable && fn->might_sleep) {
++	if (!in_sleepable(env) && fn->might_sleep) {
+ 		verbose(env, "helper call might sleep in a non-sleepable prog\n");
+ 		return -EINVAL;
+ 	}
+@@ -10183,7 +10189,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 			return -EINVAL;
+ 		}
+ 
+-		if (env->prog->aux->sleepable && is_storage_get_function(func_id))
++		if (in_sleepable(env) && is_storage_get_function(func_id))
+ 			env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
+ 	}
+ 
+@@ -11544,7 +11550,7 @@ static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
+ 			return true;
+ 		fallthrough;
+ 	default:
+-		return env->prog->aux->sleepable;
++		return in_sleepable(env);
+ 	}
+ }
+ 
+@@ -12065,7 +12071,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	}
+ 
+ 	sleepable = is_kfunc_sleepable(&meta);
+-	if (sleepable && !env->prog->aux->sleepable) {
++	if (sleepable && !in_sleepable(env)) {
+ 		verbose(env, "program must be sleepable to call sleepable kfunc %s\n", func_name);
+ 		return -EACCES;
+ 	}
+@@ -18208,7 +18214,7 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
+ 				return -E2BIG;
+ 			}
+ 
+-			if (env->prog->aux->sleepable)
++			if (in_sleepable(env))
+ 				atomic64_inc(&map->sleepable_refcnt);
+ 			/* hold the map. If the program is rejected by verifier,
+ 			 * the map will be released by release_maps() or it
+@@ -19685,7 +19691,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 		}
+ 
+ 		if (is_storage_get_function(insn->imm)) {
+-			if (!env->prog->aux->sleepable ||
++			if (!in_sleepable(env) ||
+ 			    env->insn_aux_data[i + delta].storage_get_func_atomic)
+ 				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
+ 			else
+
+-- 
+2.43.0
+---
+
+Cheers,
+Benjamin
 
