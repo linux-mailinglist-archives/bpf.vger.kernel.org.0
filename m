@@ -1,281 +1,212 @@
-Return-Path: <bpf+bounces-21826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51DA85279F
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:58:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08CE88527E5
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 04:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E391B1C23216
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:58:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B39F2849C1
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AE58C0A;
-	Tue, 13 Feb 2024 02:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326F9A93C;
+	Tue, 13 Feb 2024 03:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MKXotUu6"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bfXONbeI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B755C8BEB
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 02:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5AA883B
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 03:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707793121; cv=none; b=inL3txIEehPbW732ijasykI+uwxfTLHE8j3/8NroVwJCVQlaQI1rKn/MWIWlYRirxFZ+R/agTPGqa3xW38OjbJK3N8hhCkLPNLbIAva+LdnI8PHGtDwQHr8RxmGEG1VwxNZY7T/qBAAja2N4ZCUhXkceYlVxSqiP6O1EwaXxY1U=
+	t=1707796676; cv=none; b=dIpO5FpiLBxYLgRpx0uD/MRvcD6YWyb+D/Dh5dLL+lISdVW3g9PvR3zjsWqWXXgK2QcKU3Jq+WR9TaazdPP6IyQyjJw5hM9ZUYE0GS6z6zrjNqkkS9L06ulH9cweJ8X4mNe3lsedQ+rSDLSHyxaxBwv8i1dTR6eKnnS2A760+zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707793121; c=relaxed/simple;
-	bh=xIztOWD5ZEAdJ9A5XLvKF0tO0WoXD88cewVqrKvAbeg=;
+	s=arc-20240116; t=1707796676; c=relaxed/simple;
+	bh=bN6dK6aD4FKyqegpnhvZEjDICtz9+BSGPPA7uv6RYgw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uIksmQeHJ1EE0O0xHXDlQBH06KbmmdhWq2ZhuvLXtkon7iJo0XrNAoNzAz2FFliinuk4IjRH7KVWb6cbni63ii1ipjQPp/jhjPK8g7pkxN/XwtuGxbf/ShRzlRV+nu4pA5c4DSet2pwF7rf1ZY2hAzlFJT384f9BoBpIwQSS3sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MKXotUu6; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33b66883de9so2731577f8f.0
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 18:58:39 -0800 (PST)
+	 To:Cc:Content-Type; b=ai0C4ZEibTdiO8j27GSLWwpJGDNAiGdqlyCgNVbu94FQOUXa6oAvkBJH8uJyjhJcsMhdN5QTY66t/I221OF0SXHP5RaSoH0j8cpUsaybp9k2OWVIZdHE21N9JVP4m66YouBb+3Q9DgBys6YmlDu0J+gHaOfvG6q1IZQT0fVT7ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bfXONbeI; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-511490772f6so4835868e87.2
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 19:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707793118; x=1708397918; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1707796673; x=1708401473; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E5DyR8fDFLIzSIkcDfBvNVsU4P0IM/S18QO0AAjZ5vI=;
-        b=MKXotUu62RJJgWqSrFORBNhzBx0gkYjWRqAnkKdpupCNDZC0FBnt1hNSlZhfYRrEqY
-         ZX9QEC7/xX2fIQZRwY+2Vldrhmb5SEhjiJd2ukBwCN9Z1BYQz5+M+aFyb/dA3g/EPqub
-         teFRgWEfNprlm2LBShzcbZaLY8/DTVv17HhjSLbZHGYU6utkmttN2zOYF8QA53RP3Ylu
-         u4WNYLhYJ4sI7r6RIy9bqogLJLCWZu/Y2KIVRxdgCSmLhXHPqChm+fqEtTLA6VktaMWN
-         j7rzv7IR1vzm8oa4zdd/5vDEWCMNiqUGky7Lw76qpzL446A0c9HM7rYFIiaQwRnY+pJZ
-         L0JQ==
+        bh=HGDUec+ltrfJRSqU4fW2OgD37xMy9JdASW7ExQePVdQ=;
+        b=bfXONbeIwgulPmbNIGSf3ZL3eerOXb59wypn7JW2Io7Rp8kOgFTW3N+UWfs1IfPQBx
+         cc/20zR2N/3OOt5j46uwtp1wSbw62eS2iUvpRHkEXYA2+JfYSfSjItBG+MrhDIFdEB8e
+         9lfhIvyZT61V2Qv62C5AflXNlSQ24Dy4J75SKq+1xw++gBkrBovZUgj66WGJ3kEnSAKL
+         GNOf/iFlguMLqybAXhYJgPsQgepHOmxNHK8lrb1Htz0/9rpObut8bUiN+zL9pMbGidll
+         kgiGPotOEZaK55/n/ir5NSIBadEmltbCRGBxOqDYThNcqX6Vb/X6LAzJMqUtNkCELp+w
+         aMAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707793118; x=1708397918;
+        d=1e100.net; s=20230601; t=1707796673; x=1708401473;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E5DyR8fDFLIzSIkcDfBvNVsU4P0IM/S18QO0AAjZ5vI=;
-        b=Ig6lE8wih6CXUofVG8QSohI5XgMt/f36ttyWgVG04+udK2I/lpG722rUDn6Y6iN6sB
-         YY7mGfSvqIauVMevp3BM8HfnNdoqV2TsSgvdLiCRyQkrI/VyPgePPNfoEaBGHijoYeIX
-         gW7C7uKY5wTArTo/byhEfmrJIoLB4/DV7g90df7L02y//wJFqyPkMQ5dKG+/pJt/wreR
-         trV5cb9EAAtfQH/F3sfAKzrRyTN0XZ0nWWE7/MuGwe9SQxZnPiFZ5JO+KB0FXFH9KoI9
-         FPsBd5twcD064rUsLmpUoi/GGamvjs9uAUx821HQFPArYDUrVkkMCDNPgPLTkalg4rSH
-         I74A==
-X-Gm-Message-State: AOJu0Yxk+N6O+/PMG74KEW0rSA6F2gJ4g0sH0t+yKK4GNhLqddNF6Kjw
-	zarVfI/yN4mIllOMHY42BlXOLX5cShpaNG5l689fIGdq5s31Q2sb34kOweSWJSLHHi8SctEuZG9
-	Pw2JGqLnVV14pRFWLHflB5QQaXlsWw7jLG28=
-X-Google-Smtp-Source: AGHT+IFbWRDdv8vEgmsMld/P0q++IFNkDvO1Qj/yaxFVFy3l5mfHNaa0qcOeNttbJrumnue4eXuOSr5EwjstzMgGO7U=
-X-Received: by 2002:a5d:56d2:0:b0:33b:1ae4:10bb with SMTP id
- m18-20020a5d56d2000000b0033b1ae410bbmr5902430wrw.56.1707793117709; Mon, 12
- Feb 2024 18:58:37 -0800 (PST)
+        bh=HGDUec+ltrfJRSqU4fW2OgD37xMy9JdASW7ExQePVdQ=;
+        b=ae1Vd5fOWevBTBY5zFTTMjDUPYlBSap0jP8AnZz29zHTQwofZ5E196XcFd47Hla8VZ
+         teIUgNiplINVTX8xocNuSann91GiptYI7LeBMzKvCOsSl3gVk6XryQvLybVuKwvmUlGL
+         LTvMX6JkvILPxQ0H391mAysDDpbVveYNmhDH34Bt+U9MaKmTC9/EJMQOFhKyucOOdQ+U
+         pu3ihaYGfimTUvRUXMJhjQajoSJAlFjOCZPFcB/SZFl3P5Qi2lrQ0NkyfzLrTaLLS26P
+         IrApkgHjWEZJwVZxshFo+PsXRbGVL/xp7Qo0dDJg25y9ePPPVTmiZ+eksGsGusXS08YP
+         dp6g==
+X-Gm-Message-State: AOJu0YysI3E0xQ34qEQ+b/7ruc7pEvyxRMMxUS1d12w3XzSJHsyfzeFF
+	eaE01zKeiWsnbK2KnUSVcBeh54IJ1UsCcQaDPy1tGw3EdKEwGRGfZmqr5Kj75O1360FhEikIQQy
+	E2p2s7mCUx5YK0nW3XRF2rAG/R9Su/q6+7dus
+X-Google-Smtp-Source: AGHT+IGQ73ms9lvthgj1vaExSwJhqchVTtOPhgRTVKEo8nXQ6D60UgUj5YD6xewgwpha12/NNyS7VOLR2tN8UZ5sPds=
+X-Received: by 2002:a05:6512:2e9:b0:511:2e97:add2 with SMTP id
+ m9-20020a05651202e900b005112e97add2mr5394630lfq.66.1707796672701; Mon, 12 Feb
+ 2024 19:57:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-10-alexei.starovoitov@gmail.com> <ed656ef900c33cb1bf9ffb06d0f4f59d7708e29c.camel@gmail.com>
-In-Reply-To: <ed656ef900c33cb1bf9ffb06d0f4f59d7708e29c.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 12 Feb 2024 18:58:26 -0800
-Message-ID: <CAADnVQKfJsq6abdL5ShmmzOUKyBard4-9CH_j_V-yARfdn31qA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 09/20] bpf: Recognize cast_kern/user
- instructions in the verifier.
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, 
-	Kernel Team <kernel-team@fb.com>
+References: <20240122062535.8265-1-khuey@kylehuey.com> <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
+ <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
+From: Kyle Huey <me@kylehuey.com>
+Date: Mon, 12 Feb 2024 19:57:39 -0800
+Message-ID: <CAP045Aoc3e1NE8VMWz67LZNVo68nGhxfgapjd30vAaSyBD4kFg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
+ breakpoint conditions
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, LKML <linux-kernel@vger.kernel.org>, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 5:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
+On Mon, Feb 12, 2024 at 6:42=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Thu, 2024-02-08 at 20:05 -0800, Alexei Starovoitov wrote:
-> [...]
->
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 3c77a3ab1192..5eeb9bf7e324 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
->
-> [...]
->
-> > @@ -13837,6 +13844,21 @@ static int adjust_reg_min_max_vals(struct bpf_=
-verifier_env *env,
+> On Mon, Feb 12, 2024 at 8:37=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote=
+:
 > >
-> >       dst_reg =3D &regs[insn->dst_reg];
-> >       src_reg =3D NULL;
-> > +
-> > +     if (dst_reg->type =3D=3D PTR_TO_ARENA) {
-> > +             struct bpf_insn_aux_data *aux =3D cur_aux(env);
-> > +
-> > +             if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
-> > +                     /*
-> > +                      * 32-bit operations zero upper bits automaticall=
-y.
-> > +                      * 64-bit operations need to be converted to 32.
-> > +                      */
-> > +                     aux->needs_zext =3D true;
->
-> It should be possible to write an example, when the same insn is
-> visited with both PTR_TO_ARENA and some other PTR type.
-> Such examples should be rejected as is currently done in do_check()
-> for BPF_{ST,STX} using save_aux_ptr_type().
-
-Good catch. Fixed reg_type_mismatch_ok().
-Didn't craft a unit test. That will be in a follow up.
-
-> [...]
->
-> > @@ -13954,16 +13976,17 @@ static int check_alu_op(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn)
-> >       } else if (opcode =3D=3D BPF_MOV) {
+> > On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> wr=
+ote:
+> > >
+> > > rr, a userspace record and replay debugger[0], replays asynchronous e=
+vents
+> > > such as signals and context switches by essentially[1] setting a brea=
+kpoint
+> > > at the address where the asynchronous event was delivered during reco=
+rding
+> > > with a condition that the program state matches the state when the ev=
+ent
+> > > was delivered.
+> > >
+> > > Currently, rr uses software breakpoints that trap (via ptrace) to the
+> > > supervisor, and evaluates the condition from the supervisor. If the
+> > > asynchronous event is delivered in a tight loop (thus requiring the
+> > > breakpoint condition to be repeatedly evaluated) the overhead can be
+> > > immense. A patch to rr that uses hardware breakpoints via perf events=
+ with
+> > > an attached BPF program to reject breakpoint hits where the condition=
+ is
+> > > not satisfied reduces rr's replay overhead by 94% on a pathological (=
+but a
+> > > real customer-provided, not contrived) rr trace.
+> > >
+> > > The only obstacle to this approach is that while the kernel allows a =
+BPF
+> > > program to suppress sample output when a perf event overflows it does=
+ not
+> > > suppress signalling the perf event fd or sending the perf event's SIG=
+TRAP.
+> > > This patch set redesigns __perf_overflow_handler() and
+> > > bpf_overflow_handler() so that the former invokes the latter directly=
+ when
+> > > appropriate rather than through the generic overflow handler machiner=
+y,
+> > > passes the return code of the BPF program back to __perf_overflow_han=
+dler()
+> > > to allow it to decide whether to execute the regular overflow handler=
+,
+> > > reorders bpf_overflow_handler() and the side effects of perf event
+> > > overflow, changes __perf_overflow_handler() to suppress those side ef=
+fects
+> > > if the BPF program returns zero, and adds a selftest.
+> > >
+> > > The previous version of this patchset can be found at
+> > > https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kyle=
+huey.com/
+> > >
+> > > Changes since v4:
+> > >
+> > > Patches 1, 2, 3, 4 added various Acked-by.
+> > >
+> > > Patch 4 addresses additional nits from Song.
+> > >
+> > > v3 of this patchset can be found at
+> > > https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kyl=
+ehuey.com/
+> > >
+> > > Changes since v3:
+> > >
+> > > Patches 1, 2, 3 added various Acked-by.
+> > >
+> > > Patch 4 addresses Song's review comments by dropping signals_expected=
+ and the
+> > > corresponding ASSERT_OKs, handling errors from signal(), and fixing m=
+ultiline
+> > > comment formatting.
+> > >
+> > > v2 of this patchset can be found at
+> > > https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kyle=
+huey.com/
+> > >
+> > > Changes since v2:
+> > >
+> > > Patches 1 and 2 were added from a suggestion by Namhyung Kim to refac=
+tor
+> > > this code to implement this feature in a cleaner way. Patch 2 is sepa=
+rated
+> > > for the benefit of the ARM arch maintainers.
+> > >
+> > > Patch 3 conceptually supercedes v2's patches 1 and 2, now with a clea=
+ner
+> > > implementation thanks to the earlier refactoring.
+> > >
+> > > Patch 4 is v2's patch 3, and addresses review comments about C++ styl=
+e
+> > > comments, getting a TRAP_PERF definition into the test, and unnecessa=
+ry
+> > > NULL checks.
+> > >
+> > > [0] https://rr-project.org/
+> > > [1] Various optimizations exist to skip as much as execution as possi=
+ble
+> > > before setting a breakpoint, and to determine a set of program state =
+that
+> > > is practical to check and verify.
 > >
-> >               if (BPF_SRC(insn->code) =3D=3D BPF_X) {
-> > -                     if (insn->imm !=3D 0) {
-> > -                             verbose(env, "BPF_MOV uses reserved field=
-s\n");
-> > -                             return -EINVAL;
-> > -                     }
-> > -
-> >                       if (BPF_CLASS(insn->code) =3D=3D BPF_ALU) {
-> > -                             if (insn->off !=3D 0 && insn->off !=3D 8 =
-&& insn->off !=3D 16) {
-> > +                             if ((insn->off !=3D 0 && insn->off !=3D 8=
- && insn->off !=3D 16) ||
-> > +                                 insn->imm) {
-> >                                       verbose(env, "BPF_MOV uses reserv=
-ed fields\n");
-> >                                       return -EINVAL;
-> >                               }
-> > +                     } else if (insn->off =3D=3D BPF_ARENA_CAST_KERN |=
-| insn->off =3D=3D BPF_ARENA_CAST_USER) {
-> > +                             if (!insn->imm) {
-> > +                                     verbose(env, "cast_kern/user insn=
- must have non zero imm32\n");
-> > +                                     return -EINVAL;
-> > +                             }
-> >                       } else {
-> >                               if (insn->off !=3D 0 && insn->off !=3D 8 =
-&& insn->off !=3D 16 &&
-> >                                   insn->off !=3D 32) {
+> > Since everyone seems to be satisfied with this now, can we get it into
+> > bpf-next (or wherever) for 6.9?
 >
-> I think it is now necessary to check insn->imm here,
-> as is it allows ALU64 move with non-zero imm.
+> The changes look fine, but since they change perf side we need
+> perf maintainer's ack-s before we can land the patches.
+> And none of them were cc-ed.
+> So please resend the whole set and cc
+> PERFORMANCE EVENTS SUBSYSTEM
+> M:      Peter Zijlstra <peterz@infradead.org>
+> M:      Ingo Molnar <mingo@redhat.com>
+> M:      Arnaldo Carvalho de Melo <acme@kernel.org>
+> M:      Namhyung Kim <namhyung@kernel.org>
 
-great catch too. Fixed.
+They're all CCd to the three non-test patches in this set, Namhyung
+Kim is CCd to all of them and this cover email, and he both suggested
+the first patch and acked the third.
 
-> > @@ -13993,7 +14016,12 @@ static int check_alu_op(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn)
-> >                       struct bpf_reg_state *dst_reg =3D regs + insn->ds=
-t_reg;
-> >
-> >                       if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64) {
-> > -                             if (insn->off =3D=3D 0) {
-> > +                             if (insn->imm) {
-> > +                                     /* off =3D=3D BPF_ARENA_CAST_KERN=
- || off =3D=3D BPF_ARENA_CAST_USER */
-> > +                                     mark_reg_unknown(env, regs, insn-=
->dst_reg);
-> > +                                     if (insn->off =3D=3D BPF_ARENA_CA=
-ST_KERN)
-> > +                                             dst_reg->type =3D PTR_TO_=
-ARENA;
->
-> This effectively allows casting anything to PTR_TO_ARENA.
-> Do we want to check that src_reg somehow originates from arena?
-> Might be tricky, a new type modifier bit or something like that.
-
-Yes. Casting anything is fine.
-I don't think we need to enforce anything.
-Those insns will be llvm generated. If src_reg is somehow ptr_to_ctx
-or something it's likely llvm bug or crazy manual type cast
-by the user, but if they do so let them experience debug pains.
-The kernel won't crash.
-
-> > +                             } else if (insn->off =3D=3D 0) {
-> >                                       /* case: R1 =3D R2
-> >                                        * copy register state to dest re=
-g
-> >                                        */
-> > @@ -14059,6 +14087,9 @@ static int check_alu_op(struct bpf_verifier_env=
- *env, struct bpf_insn *insn)
-> >                                               dst_reg->subreg_def =3D e=
-nv->insn_idx + 1;
-> >                                               coerce_subreg_to_size_sx(=
-dst_reg, insn->off >> 3);
-> >                                       }
-> > +                             } else if (src_reg->type =3D=3D PTR_TO_AR=
-ENA) {
-> > +                                     mark_reg_unknown(env, regs, insn-=
->dst_reg);
-> > +                                     dst_reg->type =3D PTR_TO_ARENA;
->
-> This describes a case wX =3D wY, where rY is PTR_TO_ARENA,
-> should rX be marked as SCALAR instead of PTR_TO_ARENA?
-
-That was a leftover from earlier experiments when alu64->alu32 was
-done early.
-Removed this hunk now.
-
-> [...]
->
-> > @@ -18235,6 +18272,31 @@ static int resolve_pseudo_ldimm64(struct bpf_v=
-erifier_env *env)
-> >                               fdput(f);
-> >                               return -EBUSY;
-> >                       }
-> > +                     if (map->map_type =3D=3D BPF_MAP_TYPE_ARENA) {
-> > +                             if (env->prog->aux->arena) {
->
-> Does this have to be (env->prog->aux->arena && env->prog->aux->arena !=3D=
- map) ?
-
-No. all maps in used_maps[] are unique.
-Adding "env->prog->aux->arena !=3D map" won't make any difference.
-It will only be confusing.
-
-> > +                                     verbose(env, "Only one arena per =
-program\n");
-> > +                                     fdput(f);
-> > +                                     return -EBUSY;
-> > +                             }
->
-> [...]
->
-> > @@ -18799,6 +18861,18 @@ static int convert_ctx_accesses(struct bpf_ver=
-ifier_env *env)
-> >                          insn->code =3D=3D (BPF_ST | BPF_MEM | BPF_W) |=
-|
-> >                          insn->code =3D=3D (BPF_ST | BPF_MEM | BPF_DW))=
- {
-> >                       type =3D BPF_WRITE;
-> > +             } else if (insn->code =3D=3D (BPF_ALU64 | BPF_MOV | BPF_X=
-) && insn->imm) {
-> > +                     if (insn->off =3D=3D BPF_ARENA_CAST_KERN ||
-> > +                         (((struct bpf_map *)env->prog->aux->arena)->m=
-ap_flags & BPF_F_NO_USER_CONV)) {
-> > +                             /* convert to 32-bit mov that clears uppe=
-r 32-bit */
-> > +                             insn->code =3D BPF_ALU | BPF_MOV | BPF_X;
-> > +                             /* clear off, so it's a normal 'wX =3D wY=
-' from JIT pov */
-> > +                             insn->off =3D 0;
-> > +                     } /* else insn->off =3D=3D BPF_ARENA_CAST_USER sh=
-ould be handled by JIT */
-> > +                     continue;
-> > +             } else if (env->insn_aux_data[i + delta].needs_zext) {
-> > +                     /* Convert BPF_CLASS(insn->code) =3D=3D BPF_ALU64=
- to 32-bit ALU */
-> > +                     insn->code =3D BPF_ALU | BPF_OP(insn->code) | BPF=
-_SRC(insn->code);
->
-> Tbh, I think this should be done in do_misc_fixups(),
-> mixing it with context handling in convert_ctx_accesses()
-> seems a bit confusing.
-
-Good point. Moved.
-
-Thanks a lot for the review!
+- Kyle
 
