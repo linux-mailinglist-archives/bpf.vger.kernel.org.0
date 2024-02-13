@@ -1,223 +1,219 @@
-Return-Path: <bpf+bounces-21893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9882853C76
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:53:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91BF6853C7E
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDD5C1C22806
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 20:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4C7D1C22652
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 20:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA0162172;
-	Tue, 13 Feb 2024 20:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF1C6166F;
+	Tue, 13 Feb 2024 20:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="OVfsxu8f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DdCmCYZS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880225FF03;
-	Tue, 13 Feb 2024 20:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D95627E7;
+	Tue, 13 Feb 2024 20:52:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707857552; cv=none; b=YrSu86UddSUFpplDwL8zckC8Cgiw0UZUZTNbLoZztDtFOI5rb4gZWBe9YcM6gb1TfjMEuUFj8NwJuXaP+bdNkrsnfXQEsNsb1VadVOCXHqrkn8NYhHdjSidO2S3bEId//uNhZth5ZsgwkBq2HLkgKRjZEbuukqLICYJSzsbeavo=
+	t=1707857575; cv=none; b=rrgk5Or6tdXhDWY5fHJdqFlVwHneD/wKP/N9JeREuHkdfTr1Sptkxn9JFitKTAAOrQr5xc61Z0FNxLVMxTk2M1+dMhjkwTYcUPV6tOFwi9mTA0LbyCuOHeTmvveycOLtgWT44XKmbnoJGTbcexwaabzaABA7al9/AQ9iNDOvgCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707857552; c=relaxed/simple;
-	bh=64I1TgtHDDIt6/p7AHX6u2hXP67VwmvVIRlSAqFWpzA=;
+	s=arc-20240116; t=1707857575; c=relaxed/simple;
+	bh=9PwvXRhAMugLtHuzOt+aDQ3KQbytSBWLZhzNRbCHAUo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lffe9PcQ4Ab37s2gsy6gTOacuhpWWo/jmNXEZbp55j4RPXQLzy6IDFWU4cE8R8rcZiTSe4Xjye8T670bORy64rUUI2JHKVTEoPeLe7OBBKojATWlWKiJ+GalqFYosL+3rHUpsPwAfgfjjTgAaop3LHKCUv7DwfHxbJwQuKNwFj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=OVfsxu8f; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
-	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=AynPBu8jS0YBZE5dCSOc1gqeyaauXcsGk9RK7JNo4+E=; b=OVfsxu8fyN677OC6MCjrWC9Msm
-	YgE2jZ+MuT/ObdYNvqwDd6jNqdDDlQOn2T90JuFIa7XQrz7hc5Wnv4DiXOa1s+XDGZMYwxV6TAOzl
-	+7beOSD+8xCsjHSh3NqSEBumSecmG3el6PHcJOQs5kdxdUqPtSgqgyIqTTIRF+galECY/WVS1zOYs
-	hDliJrLgHjS0DluetlyEa26cfpoEc4hNyACTh02TGjewGvA6tuJ22l6h2hcxuFSEy8pRjvXfAulb5
-	WJT9oRkUsCJsnsAQ0oInuuKqbQTsvj1fPwW6g9q3/vgI+2w8htu+kUvHX6WZKk//xtPYkA8LX0n7m
-	z1HvapMA==;
-Received: from [2001:9e8:9d1:8401:6f0:21ff:fe91:394] (port=36842 helo=bergen.fjasle.eu)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <nicolas@fjasle.eu>)
-	id 1rZzlN-00HT8U-CK;
-	Tue, 13 Feb 2024 21:52:21 +0100
-Date: Tue, 13 Feb 2024 21:52:14 +0100
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, ndesaulniers@google.com,
-	morbo@google.com, justinstitt@google.com, keescook@chromium.org,
-	maskray@google.com, linux-kbuild@vger.kernel.org,
-	bpf@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] kbuild: Fix changing ELF file type for output of
- gen_btf for big endian
-Message-ID: <ZcvWfsv1ohV5qHSI@bergen.fjasle.eu>
-References: <20240212-fix-elf-type-btf-vmlinux-bin-o-big-endian-v2-1-22c0a6352069@kernel.org>
- <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eBgWdGjSC1ARBJh+sAdOOo8FmjT4f8WP6jeZOAJRQGyukGmoFnNeLY2NegEUxhGUgvT4wiQwZ2voa8EkjD5tn1IPkoZIELaXOxhzaTieZQ94nLzZRr9hqUF7HNuGSegA3isBIJ9BEnakNHCE9ishgzRGRvIz0a39AQ9xbwmBfd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DdCmCYZS; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-296d24631c0so2805017a91.3;
+        Tue, 13 Feb 2024 12:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707857573; x=1708462373; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6oMv83TSgQDRLR6Sio2134HLfx7oE5pFJJA1vfpzEPI=;
+        b=DdCmCYZScjzHzvNqnWEW1uWEgFmUWPunr7Nmm93TKnrVQVk9hOzq6y4y4aJ6acR5I+
+         Ninf9c0MIte7jcFSoUh7hByqzODVQ/UJIFycO5SepgfalXh9ZozlFUs1MUrGYjLH9Pii
+         PPjvltsoeKso8F4401//QfCE3pjNEwluhB5WaPilOQ2Tx21DalhSocu4QrKzqrw4SBDw
+         Phq053FWjfXpc30HeDDveMAiYkStxrZgaormU8BAy8geGPCDz4oEHhS1Sh61Hft6pt/Z
+         TsQ5bQX6IzkgHsNq1EXPvocBLOAP7GztFKp2s5GOZ6CeSHgsVrFBO0YNLf3ScoWkRA/H
+         a4jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707857573; x=1708462373;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6oMv83TSgQDRLR6Sio2134HLfx7oE5pFJJA1vfpzEPI=;
+        b=b0/QTG/DCVB4uBiQxdOy/DlH33wSHr21Jiy8zA+kRfUwfjgH/BKzr46TNyFJ7gtalW
+         06GCHWvB0LpS2WU+Yrx+wOaDDUr53SJOLJqeOvILq6DXrzPsr+2zm7xMdod/oeWk8y0U
+         QKiFj+ehzJi/T6vg1JhfIqUaInnAZYPZ6/RCeIT64Gk3bDbFYcqRlaM6YhnFw+d12iIb
+         dyRBtZXfYlIDZJFq3r0As9cMeArcBWpTrUov1oUVpjUpEgGKV6XOKZ9PqkABDEcbUDPa
+         NfPptvuMw2jUtNsxAFeVTcnjiC+oOebU0ghrkBtRNtasiYF6+66QO2i62MXgWJeO4Rdd
+         AHmA==
+X-Forwarded-Encrypted: i=1; AJvYcCUruUygb7Xvm4mRLOiLFhJ8rkuQSypTMZMOeAuJ2zOctKcEIBDvxHEqseK3nkbh6AD3axUm0qzt2puwJNwkiIgRGvEtjZ6KpIeAFFZYvO7AEkAKSplp/b7FGerl2T0ZNF3Ale3XozdGoYBnz9zIulbSIAhOGHKyb2wEJE8mSB9kvmf3gz+PWIBkZDEa5W7PKiDCsjgZ838YPS5pkPXMOmY0dTmGXfidkUhzPunqlQvOEB20XudsveFMPIQ=
+X-Gm-Message-State: AOJu0Ywe81isc/bleaz/LXQJm7YTFlrxBw8cpcBpCBMhG40O7Z/0Br9F
+	F9NXnQeSD8hwc8lD9yyaOKRF4rxq+Sz3K+TdrFIJQ3eLX4JvRMep
+X-Google-Smtp-Source: AGHT+IHE7IRAy6H5onujqJT/ftqmB93CgRKWtRpljbAkBkwOoObI6kOILuCJtaTXA2cYq7usG9E45w==
+X-Received: by 2002:a17:90a:eb0e:b0:297:2f49:7aa with SMTP id j14-20020a17090aeb0e00b002972f4907aamr581305pjz.43.1707857572667;
+        Tue, 13 Feb 2024 12:52:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXQX4P2q4KPM9M0RPcwWGMfbHa16M6MAKUtvc44DFjC0I+o5aUdqeRReIvnRyuJ2d89DmnqSA7k9VLwU8ANpllpxzKV9ULYoqGccwf6+8PMw7ys5HYrHk8kDM2WkSuFqCgbvrr31ZiQVNRXuHH1AWYu5GFloJ7WZYk/pTJJ6ZWrM7Rjl/mtWiU7eHynd64EuaZqpMQC/KKCPqsBeaqExdPg2qEStG3eO20xTOD1gS0mYbGjgNqAjc/WY20o2QZTraJTY/ooqb3Gddcu+xfEOCnvN8ycs/RcqVw+9kaPSIT4kTqAtWW/0LdqqpeN6azTxYPgwsF4wTZoS/RUZD4HCT4LLWXrmz5gzcLuNI4TSjTpqzbXUPkcoDn1/bHSaiX56JD4VpadM8hyDsyNNlBD8AVscR8FiR/M0dbsbrxu1CpXedBC/ZmKNYq83+/jy9UfbdewaSZS8K893TAevC+K47QKGe9zIskiGByd7NnKdm5xDW+fxZFFOK0jisUY0zc3uKXifkihsm0+k8qZzIymf8J35/BTzGbIWCDhADxaQwiVxIgYNItAdOPTcFTwavuYIeBri35Uus/ENPtNt0JnCF1x4E5t1KCa48J3mvrHnTJKZV7ztkS3GQLK7zy9vNl9aLeIN2J9ucS5jIbBqxRtXdzk7jxMdM0S9fzvSIZ8LvfUuMnn8Y0u6DC1MpBdkAFswGk=
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:500::6:7312])
+        by smtp.gmail.com with ESMTPSA id fa3-20020a17090af0c300b00296e2434e7esm2958426pjb.53.2024.02.13.12.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 12:52:52 -0800 (PST)
+Date: Tue, 13 Feb 2024 12:52:49 -0800
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Benjamin Tissoires <bentiss@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+Message-ID: <b2k6rlzu5vgpouedwjbsigoteo43nwfk6qeeb2pc7c3r4ejnm6@nml66ds6wbeo>
+References: <87bk8pve2z.fsf@toke.dk>
+ <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk>
+ <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk>
+ <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+ <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+ <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+ <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+ <877cj8f8ht.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="k3DOEzKl6wHMV12g"
-Content-Disposition: inline
-In-Reply-To: <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
-X-Operating-System: Debian GNU/Linux trixie/sid
-Jabber-ID: nicolas@jabber.no
-
-
---k3DOEzKl6wHMV12g
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <877cj8f8ht.fsf@toke.dk>
 
-On Tue 13 Feb 2024 11:15:40 GMT, Masahiro Yamada wrote:
-> On Tue, Feb 13, 2024 at 11:06=E2=80=AFAM Nathan Chancellor=20
-> <nathan@kernel.org> wrote:
+On Tue, Feb 13, 2024 at 08:51:26PM +0100, Toke Høiland-Jørgensen wrote:
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+> 
+> > On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wrote:
+> >>
+> >> On Feb 12 2024, Alexei Starovoitov wrote:
+> >> > On Mon, Feb 12, 2024 at 10:21 AM Benjamin Tissoires
+> >> > <benjamin.tissoires@redhat.com> wrote:
+> >> > >
+> >> > > On Mon, Feb 12, 2024 at 6:46 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> >> > > >
+> >> > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+> >> > > >
+> >> [...]
+> >> > I agree that workqueue delegation fits into the bpf_timer concept and
+> >> > a lot of code can and should be shared.
+> >>
+> >> Thanks Alexei for the detailed answer. I've given it an attempt but still can not
+> >> figure it out entirely.
+> >>
+> >> > All the lessons(bugs) learned with bpf_timer don't need to be re-discovered :)
+> >> > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+> >> > so we need a new kfunc to set a sleepable callback.
+> >> > Maybe
+> >> > bpf_timer_set_sleepable_cb() ?
+> >>
+> >> OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() flag?
+> >>
+> >> > The verifier will set is_async_cb = true for it (like it does for regular cb-s).
+> >> > And since prog->aux->sleepable is kinda "global" we need another
+> >> > per subprog flag:
+> >> > bool is_sleepable: 1;
+> >>
+> >> done (in push_callback_call())
+> >>
+> >> >
+> >> > We can factor out a check "if (prog->aux->sleepable)" into a helper
+> >> > that will check that "global" flag and another env->cur_state->in_sleepable
+> >> > flag that will work similar to active_rcu_lock.
+> >>
+> >> done (I think), cf patch 2 below
+> >>
+> >> > Once the verifier starts processing subprog->is_sleepable
+> >> > it will set cur_state->in_sleepable = true;
+> >> > to make all subprogs called from that cb to be recognized as sleepable too.
+> >>
+> >> That's the point I don't know where to put the new code.
+> >>
 > >
-> > Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-> > changed the ELF type of .btf.vmlinux.bin.o to ET_REL via dd, which works
-> > fine for little endian platforms:
+> > I think that would go in the already existing special case for
+> > push_async_cb where you get the verifier state of the async callback.
+> > You can make setting the boolean in that verifier state conditional on
+> > whether it's your kfunc/helper you're processing taking a sleepable
+> > callback.
 > >
-> >    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF...=
-=2E........|
-> >   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
-=2E........|
-> >   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
-=2E........|
+> >> It seems the best place would be in do_check(), but I am under the impression
+> >> that the code of the callback is added at the end of the instruction list, meaning
+> >> that I do not know where it starts, and which subprog index it corresponds to.
+> >>
+> >> >
+> >> > A bit of a challenge is what to do with global subprogs,
+> >> > since they're verified lazily. They can be called from
+> >> > sleepable and non-sleepable contex. Should be solvable.
+> >>
+> >> I must confess this is way over me (and given that I didn't even managed to make
+> >> the "easy" case working, that might explain things a little :-P )
+> >>
 > >
-> > However, for big endian platforms, it changes the wrong byte, resulting
-> > in an invalid ELF file type, which ld.lld rejects:
+> > I think it will be solvable but made somewhat difficult by the fact
+> > that even if we mark subprog_info of some global_func A as
+> > in_sleepable, so that we explore it as sleepable during its
+> > verification, we might encounter later another global_func that calls
+> > a global func, already explored as non-sleepable, in sleepable
+> > context. In this case I think we need to redo the verification of that
+> > global func as sleepable once again. It could be that it is called
+> > from both non-sleepable and sleepable contexts, so both paths
+> > (in_sleepable = true, and in_sleepable = false) need to be explored,
+> > or we could reject such cases, but it might be a little restrictive.
 > >
-> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
-=2E........|
-> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-=2E........|
-> >   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-=2E........|
+> > Some common helper global func unrelated to caller context doing some
+> > auxiliary work, called from sleepable timer callback and normal main
+> > subprog might be an example where rejection will be prohibitive.
 > >
-> >   Type:                              <unknown>: 103
+> > An approach might be to explore main and global subprogs once as we do
+> > now, and then keep a list of global subprogs that need to be revisited
+> > as in_sleepable (due to being called from a sleepable context) and
+> > trigger do_check_common for them again, this might have to be repeated
+> > as the list grows on each iteration, but eventually we will have
+> > explored all of them as in_sleepable if need be, and the loop will
+> > end. Surely, this trades off logical simplicity of verifier code with
+> > redoing verification of global subprogs again.
 > >
-> >   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
-> >
-> > Fix this by updating the entire 16-bit e_type field rather than just a
-> > single byte, so that everything works correctly for all platforms and
-> > linkers.
-> >
-> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
-=2E........|
-> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-=2E........|
-> >   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-=2E........|
-> >
-> >   Type:                              REL (Relocatable file)
-> >
-> > While in the area, update the comment to mention that binutils 2.35+
-> > matches LLD's behavior of rejecting an ET_EXEC input, which occurred
-> > after the comment was added.
-> >
-> > Cc: stable@vger.kernel.org
-> > Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-> > Link: https://github.com/llvm/llvm-project/pull/75643
-> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->=20
->=20
-> Thanks.
->=20
-> I will wait for a few days until
-> the reviewers come back to give Reviewed-by again.
+> > To add items to such a list, for each global subprog we encounter that
+> > needs to be analyzed as in_sleepable, we will also collect all its
+> > callee global subprogs by walking its instructions (a bit like
+> > check_max_stack_depth does).
+> 
+> Sorry if I'm being dense, but why is all this needed if it's already
+> possible to just define the timer callback from a program type that
+> allows sleeping, and then set the actual timeout from a different
+> program that is not sleepable? Isn't the set_sleepable_cb() kfunc just a
+> convenience then? Or did I misunderstand and it's not actually possible
+> to mix callback/timer arming from different program types?
 
-thanks, v2 looks even better.
-
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-
-> > ---
-> > Changes in v2:
-> > - Rather than change the seek value for dd, update the entire e_type
-> >   field (Masahiro). Due to this change, I did not carry forward the
-> >   tags of v1.
-> > - Slightly update commit message to remove mention of ET_EXEC, which
-> >   does not match the dump (Masahiro).
-> > - Update comment to mention binutils 2.35+ has the same behavior as LLD
-> >   (Fangrui).
-> > - Link to v1: https://lore.kernel.org/r/20240208-fix-elf-type-btf-vmlin=
-ux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org
-> > ---
-> >  scripts/link-vmlinux.sh | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > index a432b171be82..7862a8101747 100755
-> > --- a/scripts/link-vmlinux.sh
-> > +++ b/scripts/link-vmlinux.sh
-> > @@ -135,8 +135,13 @@ gen_btf()
-> >         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dall=
-oc,readonly \
-> >                 --strip-all ${1} ${2} 2>/dev/null
-> >         # Change e_type to ET_REL so that it can be used to link final =
-vmlinux.
-> > -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
-> > -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 stat=
-us=3Dnone
-> > +       # GNU ld 2.35+ and lld do not allow an ET_EXEC input.
-> > +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
-> > +               et_rel=3D'\0\1'
-> > +       else
-> > +               et_rel=3D'\1\0'
-> > +       fi
-> > +       printf "${et_rel}" | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D=
-16 status=3Dnone
-> >  }
-> >
-> >  # Create ${2} .S file with all symbols from the ${1} object file
-> >
-> > ---
-> > base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
-> > change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e1=
-296
-> >
-> > Best regards,
-> > --
-> > Nathan Chancellor <nathan@kernel.org>
-> >
-> >
->=20
->=20
-> --=20
-> Best Regards
-> Masahiro Yamada
-
---k3DOEzKl6wHMV12g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXL1nkACgkQB1IKcBYm
-EmknARAA2E4GEywHnpFzwMKgFe11O30rRL3/W2ji1MkLji9oI5NquTUJZ6Qw/9Nc
-LT69QvkdpCrRX+zpqqI+hCV5CsyXzUKbOmcd0FQ3F6jxB35QM4ko1sYLJBcw3Xau
-waRdyD0agJ3IbcF85/f3xIvUk33Qhm55yMzLx/IZl7YKwI3/E4iO3JSWY1IfijMo
-l9fWpu7ZOSHrbglfgONr3GPt9vLwVBP5hXxwbkbR9r2VRL8Mc5oHHFMJYcY4y3bF
-wQVT7Fsz++dgnxD8VoyBBtVWrmrFx9pc/3sGbgK6tECwuVKd4ZzeGi0uRaB94Shy
-AoigytM4RQo8CxDhI3E952P1IYStX3yitI6hVcYcpOK6rOikKqwc9SZvmOyNbleY
-mUkeddNa3TA90BIJ1TdG+SFWdpfbx1R516pkagHLkt89jYq4uvb5pDs4QO65umxN
-D0OMvKaRBpPZNmy90557DA4s0BOhs6DZWmCGWR/nsz7h5zPHi7kDVwH4I7M+1VI6
-L2hQXFIYWvY17HAXHXyULgefp4bEhnvCCAzckkf6edpVdzloBhYWkzoGQn9eoERP
-NT9cRMElIP5s7ejDDaB5fwog6K5oNg6Wjbce2aV0Kpb8QTx2pDT1aw2Ml+RUm83N
-kiAoHupA7gVA1dio5hG1x7KZDHwK6CfhzhPFGnfFa0wNs7iWqmU=
-=ghs2
------END PGP SIGNATURE-----
-
---k3DOEzKl6wHMV12g--
+More than just convience.
+bpf_set_sleepable_cb() might need to be called from non-sleepable and
+there could be no way to hack it around with fake sleepable entry.
+bpf_timer_cancel() clears callback_fn.
+So if prog wants to bpf_timer_start() and later bpf_timer_cancel()
+it would need to bpf_set_sleepable_cb() every time before bpf_timer_start().
+And at that time it might be in non-sleepable ctx.
 
