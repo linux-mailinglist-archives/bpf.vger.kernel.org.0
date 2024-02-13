@@ -1,81 +1,86 @@
-Return-Path: <bpf+bounces-21843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0DBB8530F4
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 13:51:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A8885310A
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 13:59:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D321D1C22D5E
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 12:51:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E40028A532
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 12:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2097641C76;
-	Tue, 13 Feb 2024 12:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9EA4EB43;
+	Tue, 13 Feb 2024 12:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GotawsVe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lodjaTz+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC0D4E1BA
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 12:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C33482CA;
+	Tue, 13 Feb 2024 12:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707828696; cv=none; b=jm6NN+QkQ38i+8UU8tV+9ja2ZzV5n+udTLohSWmTPBzG+KjAsI4T+EPIEnHzGLPR7ZZla9lbDT3LZPUtnthxjx/DYwU16xAkdbjrXRugoRTUDcbXnWPFHKR/0IXFeoYoYv0bOywat7+s1WbzVQwaH7UO18hc5tiwWRifFLnoBHg=
+	t=1707829125; cv=none; b=XIuT/Xpenle8X1ZehEYutsleS/mZOhHud5WlknYijO03LpxBZC5PKK+0ATktcJVcFYQFh0DdW3/2u2xVCufGT8oEl05jJ7Ui+4CaGgXEScxsxessjqvr1JHI0eUAo7cPErYXLOUTdvs2GTIg5Bw6aLBNYwy1XpwrAbO79BstiD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707828696; c=relaxed/simple;
-	bh=aHKWpQjuHKzQXZch0xVcUY/j4NVqKUpHkDHLka6I2X0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mh5vEjDMAZy/U2Q6Mvaf2CFT+vSaPzuNVSVcqbYPT6FKEr2D2DPo3Ofn/xmvR2toAp+YI1db9Ff4m62oUrbGALorkXovn6BRUSqyZZUWWZRxq/jJdTPxMut8671Wi9/EVHE2xVVxm/3RiFylqhWwy3DfFfFBtoMDlmDyeat2al0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GotawsVe; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1707829125; c=relaxed/simple;
+	bh=umx89uCbZMhhKzQRBvjpXYMdKTEly2WVpnghTGFsbPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dgvnZmP1oUJw4P0zCn6CIFqMAZjKJwvYMQqmMyfKbMWmGCZVx7rqfM6itpDHoaFxuSt7NbonXUFkVLuD/excmlFHXDvLb0qXP7/EOZ/WwegO0gind3sOnxXt153MJ6SA9hoyx7yv7P6/2ONC2wD1VC1YeEJFuWqXacKvqnZBnV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lodjaTz+; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a34c5ca2537so549898366b.0
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 04:51:34 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3d002bc6f7so66002266b.3;
+        Tue, 13 Feb 2024 04:58:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707828693; x=1708433493; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707829122; x=1708433922; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2EGQ/mUr4Oz7J3v4QLiwG30b1jfbPTRHvscnK7OylsM=;
-        b=GotawsVesIKZUqsqNsLXWRb2RPzEnaaOgV9SChmNYSneMP+pGQWs1r2LuD5lEf1/w3
-         qvUyxW3rQwNzpgZLyvcvWvzm1Vyr7WIJuv7Iu5p2pczlSmMy73PJpdHwlzGI3E6u094V
-         YRoZ3uYpeFzuXFAc/XUPbgxp5C+HvzyPA3Mu3mkfO1Zit2wbXH08NAqyssEwcYa1g/St
-         zdtyrwSWOmGo4XAgj2wCB+qD/yvYMk9wtgNyaO3obLGRz1ahrm6L5K4cWdsrmxK64oJN
-         ZAWcbXhLHvE8LTEKaOVA3tDYAhlEXBhvir1oAjWQ7TyFxIiOllEBotIHSkUOC/91TFuu
-         jeaw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4agJ1A7KZIyEQouGbFZaSxgaZc9xYgjCUppDYmRrYw=;
+        b=lodjaTz+ughA3q7ZV2t6Vnc/KHKQ6y/4GX2Bd0cphMtrjhg3j+ZWN8FAi+iGRlJZGS
+         dJJKx17mahhSj5NjSHNi1SoOIZmUrWEA2je+27SRgpNnOoBmcyw5ayDJ68V0f5ZEuLgx
+         /naDUB/vPJ7LwRqbbJ1l2TTr3eHdkpGCfkh+TEkQAYNHEjT+vhHsGrO6jlLtaN4J1SAU
+         3xB5KRnQS/jApGmaH2uvh9Ry5po60R/qj8cyxLlPGiWWOxDqEE8uT2hsvfHhKM8EjV4C
+         odiDovP/U2MeKHDKLBuNPCA6IapQTyk6L0x2u+h4rOlBNLJBGmSr2XJ91xuxhc7riMGr
+         GcUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707828693; x=1708433493;
+        d=1e100.net; s=20230601; t=1707829122; x=1708433922;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2EGQ/mUr4Oz7J3v4QLiwG30b1jfbPTRHvscnK7OylsM=;
-        b=R0XoVR9SWsFViCKdAW4LRdQm58t2MtWE9L+AeGdIBzHn68H9SjVFQKb4I1KpCUEzT2
-         wOOVWAA2+3g86alHZm/HRPFo6oKEbPSnVpoBXDG94HJYhVH7yxzgV4E9IDe0fswgVq0p
-         qoCPrmfb7ViE09mMhof/sIkNwtnjrjED8V8vyPGadEYQPUYT3+xE2Vz1425vMnYjvd/G
-         YoNYgo2ldGPA1iz6HL3airA13alzKKsbn4/pgjl7wlPDTIuiKFHjHRjURxHYdOUxmwji
-         XG5Z1xdBly7b405FoCtdQoz2aqdLeGEGCwWHTq2PaVao3DQivkvrbxEmeUirgBg0sWSp
-         K6DA==
-X-Gm-Message-State: AOJu0Yy3d9lYZPxibK+peN3GdxBzDHdiQg2ufVQSNlQ5EQRvlSGDzL5i
-	o+JCzHNYr7r0Fk9O7mWUtulM8HVNOO51zTExR6iduNudZ0wpVnZk
-X-Google-Smtp-Source: AGHT+IHF6pvksEdOUv+KYnpja4oIEJaoklrzj404F/AP8pKJnN7Coj68jdIQBGznjcOaHG9Vv+mINw==
-X-Received: by 2002:a17:906:c411:b0:a38:551d:ff1d with SMTP id u17-20020a170906c41100b00a38551dff1dmr7463444ejz.73.1707828693037;
-        Tue, 13 Feb 2024 04:51:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUZb1K3TD/iOW33O3L75OzR0y5YJIgwMG4sngukMma3bQHqlp5Di9rWcRgOKkO471wb3hkGvBeq6oJmfxJJtZEwHkGbrSmYobVFxd53V3Lzt575P3ZGoSyfrQ7K/NK8SqtzmF/nmeA+jvMPsk+Px2NLpqNo5Q2ERysUaJwWpB3ziew=
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id m10-20020a1709060d8a00b00a3cd0c09a05sm1251948eji.180.2024.02.13.04.51.32
+        bh=g4agJ1A7KZIyEQouGbFZaSxgaZc9xYgjCUppDYmRrYw=;
+        b=GNZfS/+oBA1qnPd3nYDW8yVI1ygzwJRdfkWMEEow34cM+gRh1pB2nqxh6B5g0eTUmp
+         jwvEcLwTYttTdWVWbc8I54uwGp63MrTDXGhnyTYNFJaup/0dtD4ZMby62OPb28ObJZ0F
+         Irsuy1S2WcePEYXTkYBdKvgvX5WmJwE5tnwqlHLRxAiHa5OQb3noQee/Uh+AJUiFKc4O
+         /IsG7bOhnCGLdJN/k1ixAqL5IzcQxgnYFiRM3ALvEgSVWp5vyF36zW1w8qtDtxrpulNN
+         b0SPZmcwIN6irbx534XUYhX6QPxp5aBssbclKlw8LPheZtiVZ71bTV/kTCeFtggARILv
+         rmSw==
+X-Gm-Message-State: AOJu0Yy+dtUw/yvF8VHA9vqri1vED/PIZOx27BtP/tXDu/Re0Ov1Zi7W
+	1rcuTxiu7mBh595lTHeCYFyOYYI2VK6aDX+iyRzck3Z9ESDheeJoK6+4vlSsZQydjA==
+X-Google-Smtp-Source: AGHT+IHLPgXjndJjue7JZCBb/Obkgqkz3O5ORbVsw7IyIJPKIogN2/XvGhQzDXSxhNqngAW1Otj59Q==
+X-Received: by 2002:a17:906:5f86:b0:a36:f314:d8be with SMTP id a6-20020a1709065f8600b00a36f314d8bemr6544824eju.38.1707829122035;
+        Tue, 13 Feb 2024 04:58:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW8GmVWpVtXsv9CUGlgzj9xI5iu34FvcBpV3uY1aOPlxcvXc+l3iWpei19GntcgFFyJIg2eg7P6LnYOufUi2XZcFkCkXD3BSw3RWQv60Qn5r/uEtnk1rJEhwmPWmK7IoRsQdPF18sCyHtt0m/09EbqN0KyTZYU++MkE7E0J4Hd08q0jlw2xmMF1bPJzSXtuUt+sayp5fR/ZXOzO+ioJELvmcu20PDMAgyIsjqsho9ZbYV1fzIWfgP+dAZoFn8cu1nMGcwv2Oi82XHAJa3ZpM/tyRpUXmdmUBAIpysqGsCzhWbmiqhPnWHf1KoSyXSQxzFcmvtNGR2/RF1ivkSR7reT44XXl9/iSjUBuq0rmxYY7+75GWVKdYCb/lhjEJeV1UjS+exhDKGBihw==
+Received: from andrea ([31.189.95.98])
+        by smtp.gmail.com with ESMTPSA id st10-20020a170907c08a00b00a3c5e6515d0sm1267324ejc.24.2024.02.13.04.58.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 04:51:32 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 13 Feb 2024 13:51:25 +0100
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf-next 0/4] Fix global subprog PTR_TO_CTX arg
- handling
-Message-ID: <ZctlzbtQ9K5PpIBc@krava>
-References: <20240212233221.2575350-1-andrii@kernel.org>
+        Tue, 13 Feb 2024 04:58:41 -0800 (PST)
+Date: Tue, 13 Feb 2024 13:58:37 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jason Baron <jbaron@akamai.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>, bpf@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>
+Subject: Re: [PATCH 0/7] riscv: Various text patching improvements
+Message-ID: <ZctnfZWWO3HCiXe5@andrea>
+References: <20240212025529.1971876-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,49 +89,34 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212233221.2575350-1-andrii@kernel.org>
+In-Reply-To: <20240212025529.1971876-1-samuel.holland@sifive.com>
 
-On Mon, Feb 12, 2024 at 03:32:17PM -0800, Andrii Nakryiko wrote:
-> Fix confusing and incorrect inference of PTR_TO_CTX argument type in BPF
-> global subprogs. For some program types (iters, tracepoint, any program type
-> that doesn't have fixed named "canonical" context type) when user uses (in
-> a correct and valid way) a pointer argument to user-defined anonymous struct
-> type, verifier will incorrectly assume that it has to be PTR_TO_CTX argument.
-> While it should be just a PTR_TO_MEM argument with allowed size calculated
-> from user-provided (even if anonymous) struct.
-> 
-> This did come up in practice and was very confusing to users, so let's prevent
-> this going forward. We had to do a slight refactoring of
-> btf_get_prog_ctx_type() to make it easy to support a special s390x KPROBE use
-> cases. See details in respective patches.
-> 
-> v1->v2:
->   - special-case typedef bpf_user_pt_regs_t handling for KPROBE programs,
->     fixing s390x after changes in patch #2.
+Hi Samuel,
 
-lgtm
+On Sun, Feb 11, 2024 at 06:55:11PM -0800, Samuel Holland wrote:
+> Here are a few changes to minimize calls to stop_machine() and
+> flush_icache_*() in the various text patching functions, as well as
+> to simplify the code.
+> 
+> 
+> Samuel Holland (7):
+>   riscv: jump_label: Batch icache maintenance
+>   riscv: jump_label: Simplify assembly syntax
+>   riscv: kprobes: Use patch_text_nosync() for insn slots
+>   riscv: Simplify text patching loops
+>   riscv: Pass patch_text() the length in bytes
+>   riscv: Use offset_in_page() in text patching functions
+>   riscv: Remove extra variable in patch_text_nosync()
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+This does look like a nice clean-up.  Just curious (a "teach me"-like question),
+how did you test these changes? kselftests, micro-benchmarks, other?
 
-jirka
+BTW, I recall a parallel work from Alex and Bjorn [1] that might have some minor
+conflict with these changes; + both of them to Cc: for further sync.
 
-> 
-> Andrii Nakryiko (4):
->   bpf: simplify btf_get_prog_ctx_type() into btf_is_prog_ctx_type()
->   bpf: handle bpf_user_pt_regs_t typedef explicitly for PTR_TO_CTX
->     global arg
->   bpf: don't infer PTR_TO_CTX for programs with unnamed context type
->   selftests/bpf: add anonymous user struct as global subprog arg test
-> 
->  include/linux/btf.h                           | 17 ++++---
->  kernel/bpf/btf.c                              | 45 +++++++++++++------
->  kernel/bpf/verifier.c                         |  2 +-
->  .../bpf/progs/test_global_func_ctx_args.c     | 19 ++++++++
->  .../bpf/progs/verifier_global_subprogs.c      | 29 ++++++++++++
->  5 files changed, 88 insertions(+), 24 deletions(-)
-> 
-> -- 
-> 2.39.3
-> 
-> 
+  Andrea
+
+[1] https://lore.kernel.org/lkml/20240206204607.527195-1-alexghiti@rivosinc.com/
+
+
 
