@@ -1,218 +1,281 @@
-Return-Path: <bpf+bounces-21825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4541852795
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:47:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B51DA85279F
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FA491F23754
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E391B1C23216
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB628BFC;
-	Tue, 13 Feb 2024 02:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AE58C0A;
+	Tue, 13 Feb 2024 02:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K5NZstl8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MKXotUu6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1848489
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 02:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B755C8BEB
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 02:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707792469; cv=none; b=afeilqLwUu8z1Ai208k/y0sOfkcbLv6KZ5sSpaVJRlpTQad3YGosai3NUHQgMzAxUvWNfQW1Fp4XFEPTdxBv5WFWWIfXp/jna4MWx/dCGS8Cc80oFIJRdyEf1ePXge9RSTnEiA/YuQIydNJRbOeOJzs/4xddnzK8gypA19miq60=
+	t=1707793121; cv=none; b=inL3txIEehPbW732ijasykI+uwxfTLHE8j3/8NroVwJCVQlaQI1rKn/MWIWlYRirxFZ+R/agTPGqa3xW38OjbJK3N8hhCkLPNLbIAva+LdnI8PHGtDwQHr8RxmGEG1VwxNZY7T/qBAAja2N4ZCUhXkceYlVxSqiP6O1EwaXxY1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707792469; c=relaxed/simple;
-	bh=1ENHKjt3Uc2mr1Ke1IQDakTrAi2JOlr6brAtfQuPsQY=;
+	s=arc-20240116; t=1707793121; c=relaxed/simple;
+	bh=xIztOWD5ZEAdJ9A5XLvKF0tO0WoXD88cewVqrKvAbeg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KMY8o31882xo5kVqp/6JrPXmgTpHv4HkSzKYQkXHSfmHpbJ/MvcFdUeo6qC82QY3sQmF1qWJNc9QAcOCazg3CyZqTWYCnYSgjTpuyvaJPeApG6KyUWsJJsN8tDrluC9hFdwmCuyaajBNRUrQwzZ6lvOi92D2vU3O1b3Xjz1B3c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K5NZstl8; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56037115bb8so3976a12.0
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 18:47:47 -0800 (PST)
+	 To:Cc:Content-Type; b=uIksmQeHJ1EE0O0xHXDlQBH06KbmmdhWq2ZhuvLXtkon7iJo0XrNAoNzAz2FFliinuk4IjRH7KVWb6cbni63ii1ipjQPp/jhjPK8g7pkxN/XwtuGxbf/ShRzlRV+nu4pA5c4DSet2pwF7rf1ZY2hAzlFJT384f9BoBpIwQSS3sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MKXotUu6; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33b66883de9so2731577f8f.0
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 18:58:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707792466; x=1708397266; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707793118; x=1708397918; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zgrUTvQOJUYDuKbHFZKlpKXYvoGRnWvQmByrFkbKhpY=;
-        b=K5NZstl8qsnTB4L+YhEd/c41q/HMQ3SwCDTHWmJwIicsWrz2N360xTNTDlnu7w35QG
-         Y0kf+E+UGbsbYVo6fpDweisjB414TuJD5ooCK+RGxInaO4FGlojeLTnyivwB5fakT3dr
-         5ag7eaA2K7mCoeCVrkns021oA14wiWdKCLIIXsh8F4+qCOXpm8D4FwvT6Z+GOz82Ze89
-         kc6qfWvoCgh9bFFPzLMTJlzR5BS2aOzhLNurkU8UM5SlmkhxwvKFQN40GXhB2XT0vGEG
-         izkA5/6ufUszmOPeKGIcgnuLgwqKBVEFX5H4r+/+e8oYySHMbE4Yh3Dvvvx8bKO+mMOO
-         PV0w==
+        bh=E5DyR8fDFLIzSIkcDfBvNVsU4P0IM/S18QO0AAjZ5vI=;
+        b=MKXotUu62RJJgWqSrFORBNhzBx0gkYjWRqAnkKdpupCNDZC0FBnt1hNSlZhfYRrEqY
+         ZX9QEC7/xX2fIQZRwY+2Vldrhmb5SEhjiJd2ukBwCN9Z1BYQz5+M+aFyb/dA3g/EPqub
+         teFRgWEfNprlm2LBShzcbZaLY8/DTVv17HhjSLbZHGYU6utkmttN2zOYF8QA53RP3Ylu
+         u4WNYLhYJ4sI7r6RIy9bqogLJLCWZu/Y2KIVRxdgCSmLhXHPqChm+fqEtTLA6VktaMWN
+         j7rzv7IR1vzm8oa4zdd/5vDEWCMNiqUGky7Lw76qpzL446A0c9HM7rYFIiaQwRnY+pJZ
+         L0JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707792466; x=1708397266;
+        d=1e100.net; s=20230601; t=1707793118; x=1708397918;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zgrUTvQOJUYDuKbHFZKlpKXYvoGRnWvQmByrFkbKhpY=;
-        b=AOtlqF7U0y2OUN4ifs+fvVnStAGZ/IxbYiTjpBHJaMTv+H6Sn5fFI9Zv3DLgXVachP
-         f6Pte++8guA0QAIeOGhXesx0P892drUBu9GKekBsiPvL01SYoFowjFyXbBt2PVWtuvif
-         Gcw2geC0x+PtHHxyzOdgjhzzWS7ijSVPiI7wwMkCn4IS32jU+teRHr8vrdYKXkNFfIxV
-         v376/1+cyK+K4iy5K3uV9ZGw0ufXZKIBz4JCRymXDIXzCSqc3gLpUpcTQER5E5cMY25p
-         AphoXZzwOq8CejYRIMNHhQfH4GeR976STozM/QmhyQkqwUGRoeowzeG9BAi1t0CCj5qJ
-         n2sw==
-X-Gm-Message-State: AOJu0YwSZJMDX6xzXiKUqhtspJj3qM+IIGctMnk9BtyTbZIWW7egvgC1
-	d63yqixk7CknytM3K98wFonPdF3PMB8A7Jr71zZmA5AfMwEYGDWJ6Zp2hNgFQlQ4zHKJE2QFtba
-	Bu5/zkcSPdheKt5letWjBFxXNK9UHyhwKUVLe
-X-Google-Smtp-Source: AGHT+IEct+r39gbb5nT7BKUPki00osiOdxLM8JznhwylxUtmHwxRUvLEwmdDrymuS+ebBIImPsxnRRZuVs2lgoq7LJ8=
-X-Received: by 2002:a50:9f21:0:b0:561:519f:85c4 with SMTP id
- b30-20020a509f21000000b00561519f85c4mr67882edf.4.1707792465570; Mon, 12 Feb
- 2024 18:47:45 -0800 (PST)
+        bh=E5DyR8fDFLIzSIkcDfBvNVsU4P0IM/S18QO0AAjZ5vI=;
+        b=Ig6lE8wih6CXUofVG8QSohI5XgMt/f36ttyWgVG04+udK2I/lpG722rUDn6Y6iN6sB
+         YY7mGfSvqIauVMevp3BM8HfnNdoqV2TsSgvdLiCRyQkrI/VyPgePPNfoEaBGHijoYeIX
+         gW7C7uKY5wTArTo/byhEfmrJIoLB4/DV7g90df7L02y//wJFqyPkMQ5dKG+/pJt/wreR
+         trV5cb9EAAtfQH/F3sfAKzrRyTN0XZ0nWWE7/MuGwe9SQxZnPiFZ5JO+KB0FXFH9KoI9
+         FPsBd5twcD064rUsLmpUoi/GGamvjs9uAUx821HQFPArYDUrVkkMCDNPgPLTkalg4rSH
+         I74A==
+X-Gm-Message-State: AOJu0Yxk+N6O+/PMG74KEW0rSA6F2gJ4g0sH0t+yKK4GNhLqddNF6Kjw
+	zarVfI/yN4mIllOMHY42BlXOLX5cShpaNG5l689fIGdq5s31Q2sb34kOweSWJSLHHi8SctEuZG9
+	Pw2JGqLnVV14pRFWLHflB5QQaXlsWw7jLG28=
+X-Google-Smtp-Source: AGHT+IFbWRDdv8vEgmsMld/P0q++IFNkDvO1Qj/yaxFVFy3l5mfHNaa0qcOeNttbJrumnue4eXuOSr5EwjstzMgGO7U=
+X-Received: by 2002:a5d:56d2:0:b0:33b:1ae4:10bb with SMTP id
+ m18-20020a5d56d2000000b0033b1ae410bbmr5902430wrw.56.1707793117709; Mon, 12
+ Feb 2024 18:58:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212-fix-elf-type-btf-vmlinux-bin-o-big-endian-v2-1-22c0a6352069@kernel.org>
- <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
-In-Reply-To: <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
-From: Fangrui Song <maskray@google.com>
-Date: Mon, 12 Feb 2024 18:47:32 -0800
-Message-ID: <CAFP8O3LVgVRsrBAmJKV02bw2yrHziTFeRtJsnqx0iXieYMTJUg@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: Fix changing ELF file type for output of
- gen_btf for big endian
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, nicolas@fjasle.eu, ndesaulniers@google.com, 
-	morbo@google.com, justinstitt@google.com, keescook@chromium.org, 
-	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
-	patches@lists.linux.dev, stable@vger.kernel.org
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-10-alexei.starovoitov@gmail.com> <ed656ef900c33cb1bf9ffb06d0f4f59d7708e29c.camel@gmail.com>
+In-Reply-To: <ed656ef900c33cb1bf9ffb06d0f4f59d7708e29c.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 12 Feb 2024 18:58:26 -0800
+Message-ID: <CAADnVQKfJsq6abdL5ShmmzOUKyBard4-9CH_j_V-yARfdn31qA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 09/20] bpf: Recognize cast_kern/user
+ instructions in the verifier.
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 6:16=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
+On Fri, Feb 9, 2024 at 5:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> On Tue, Feb 13, 2024 at 11:06=E2=80=AFAM Nathan Chancellor <nathan@kernel=
-.org> wrote:
+> On Thu, 2024-02-08 at 20:05 -0800, Alexei Starovoitov wrote:
+> [...]
+>
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 3c77a3ab1192..5eeb9bf7e324 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+>
+> [...]
+>
+> > @@ -13837,6 +13844,21 @@ static int adjust_reg_min_max_vals(struct bpf_=
+verifier_env *env,
 > >
-> > Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-> > changed the ELF type of .btf.vmlinux.bin.o to ET_REL via dd, which work=
-s
-> > fine for little endian platforms:
-> >
-> >    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF...=
-.........|
-> >   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
-.........|
-> >   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
-.........|
-> >
-> > However, for big endian platforms, it changes the wrong byte, resulting
-> > in an invalid ELF file type, which ld.lld rejects:
-> >
-> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
-.........|
-> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-.........|
-> >   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-.........|
-> >
-> >   Type:                              <unknown>: 103
-> >
-> >   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
-> >
-> > Fix this by updating the entire 16-bit e_type field rather than just a
-> > single byte, so that everything works correctly for all platforms and
-> > linkers.
-> >
-> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
-.........|
-> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-.........|
-> >   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
-.........|
-> >
-> >   Type:                              REL (Relocatable file)
-> >
-> > While in the area, update the comment to mention that binutils 2.35+
-> > matches LLD's behavior of rejecting an ET_EXEC input, which occurred
-> > after the comment was added.
-> >
-> > Cc: stable@vger.kernel.org
-> > Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-> > Link: https://github.com/llvm/llvm-project/pull/75643
-> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> >       dst_reg =3D &regs[insn->dst_reg];
+> >       src_reg =3D NULL;
+> > +
+> > +     if (dst_reg->type =3D=3D PTR_TO_ARENA) {
+> > +             struct bpf_insn_aux_data *aux =3D cur_aux(env);
+> > +
+> > +             if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
+> > +                     /*
+> > +                      * 32-bit operations zero upper bits automaticall=
+y.
+> > +                      * 64-bit operations need to be converted to 32.
+> > +                      */
+> > +                     aux->needs_zext =3D true;
+>
+> It should be possible to write an example, when the same insn is
+> visited with both PTR_TO_ARENA and some other PTR type.
+> Such examples should be rejected as is currently done in do_check()
+> for BPF_{ST,STX} using save_aux_ptr_type().
 
-Thanks for updating the comment.
+Good catch. Fixed reg_type_mismatch_ok().
+Didn't craft a unit test. That will be in a follow up.
 
-Reviewed-by: Fangrui Song <maskray@google.com>
+> [...]
+>
+> > @@ -13954,16 +13976,17 @@ static int check_alu_op(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn)
+> >       } else if (opcode =3D=3D BPF_MOV) {
+> >
+> >               if (BPF_SRC(insn->code) =3D=3D BPF_X) {
+> > -                     if (insn->imm !=3D 0) {
+> > -                             verbose(env, "BPF_MOV uses reserved field=
+s\n");
+> > -                             return -EINVAL;
+> > -                     }
+> > -
+> >                       if (BPF_CLASS(insn->code) =3D=3D BPF_ALU) {
+> > -                             if (insn->off !=3D 0 && insn->off !=3D 8 =
+&& insn->off !=3D 16) {
+> > +                             if ((insn->off !=3D 0 && insn->off !=3D 8=
+ && insn->off !=3D 16) ||
+> > +                                 insn->imm) {
+> >                                       verbose(env, "BPF_MOV uses reserv=
+ed fields\n");
+> >                                       return -EINVAL;
+> >                               }
+> > +                     } else if (insn->off =3D=3D BPF_ARENA_CAST_KERN |=
+| insn->off =3D=3D BPF_ARENA_CAST_USER) {
+> > +                             if (!insn->imm) {
+> > +                                     verbose(env, "cast_kern/user insn=
+ must have non zero imm32\n");
+> > +                                     return -EINVAL;
+> > +                             }
+> >                       } else {
+> >                               if (insn->off !=3D 0 && insn->off !=3D 8 =
+&& insn->off !=3D 16 &&
+> >                                   insn->off !=3D 32) {
+>
+> I think it is now necessary to check insn->imm here,
+> as is it allows ALU64 move with non-zero imm.
 
->
-> Thanks.
->
-> I will wait for a few days until
-> the reviewers come back to give Reviewed-by again.
->
->
->
->
->
-> > ---
-> > Changes in v2:
-> > - Rather than change the seek value for dd, update the entire e_type
-> >   field (Masahiro). Due to this change, I did not carry forward the
-> >   tags of v1.
-> > - Slightly update commit message to remove mention of ET_EXEC, which
-> >   does not match the dump (Masahiro).
-> > - Update comment to mention binutils 2.35+ has the same behavior as LLD
-> >   (Fangrui).
-> > - Link to v1: https://lore.kernel.org/r/20240208-fix-elf-type-btf-vmlin=
-ux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org
-> > ---
-> >  scripts/link-vmlinux.sh | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > index a432b171be82..7862a8101747 100755
-> > --- a/scripts/link-vmlinux.sh
-> > +++ b/scripts/link-vmlinux.sh
-> > @@ -135,8 +135,13 @@ gen_btf()
-> >         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dall=
-oc,readonly \
-> >                 --strip-all ${1} ${2} 2>/dev/null
-> >         # Change e_type to ET_REL so that it can be used to link final =
-vmlinux.
-> > -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
-> > -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 stat=
-us=3Dnone
-> > +       # GNU ld 2.35+ and lld do not allow an ET_EXEC input.
-> > +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
-> > +               et_rel=3D'\0\1'
-> > +       else
-> > +               et_rel=3D'\1\0'
-> > +       fi
-> > +       printf "${et_rel}" | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D=
-16 status=3Dnone
-> >  }
-> >
-> >  # Create ${2} .S file with all symbols from the ${1} object file
-> >
-> > ---
-> > base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
-> > change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e1=
-296
-> >
-> > Best regards,
-> > --
-> > Nathan Chancellor <nathan@kernel.org>
-> >
-> >
->
->
-> --
-> Best Regards
-> Masahiro Yamada
->
+great catch too. Fixed.
 
+> > @@ -13993,7 +14016,12 @@ static int check_alu_op(struct bpf_verifier_en=
+v *env, struct bpf_insn *insn)
+> >                       struct bpf_reg_state *dst_reg =3D regs + insn->ds=
+t_reg;
+> >
+> >                       if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64) {
+> > -                             if (insn->off =3D=3D 0) {
+> > +                             if (insn->imm) {
+> > +                                     /* off =3D=3D BPF_ARENA_CAST_KERN=
+ || off =3D=3D BPF_ARENA_CAST_USER */
+> > +                                     mark_reg_unknown(env, regs, insn-=
+>dst_reg);
+> > +                                     if (insn->off =3D=3D BPF_ARENA_CA=
+ST_KERN)
+> > +                                             dst_reg->type =3D PTR_TO_=
+ARENA;
+>
+> This effectively allows casting anything to PTR_TO_ARENA.
+> Do we want to check that src_reg somehow originates from arena?
+> Might be tricky, a new type modifier bit or something like that.
 
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+Yes. Casting anything is fine.
+I don't think we need to enforce anything.
+Those insns will be llvm generated. If src_reg is somehow ptr_to_ctx
+or something it's likely llvm bug or crazy manual type cast
+by the user, but if they do so let them experience debug pains.
+The kernel won't crash.
+
+> > +                             } else if (insn->off =3D=3D 0) {
+> >                                       /* case: R1 =3D R2
+> >                                        * copy register state to dest re=
+g
+> >                                        */
+> > @@ -14059,6 +14087,9 @@ static int check_alu_op(struct bpf_verifier_env=
+ *env, struct bpf_insn *insn)
+> >                                               dst_reg->subreg_def =3D e=
+nv->insn_idx + 1;
+> >                                               coerce_subreg_to_size_sx(=
+dst_reg, insn->off >> 3);
+> >                                       }
+> > +                             } else if (src_reg->type =3D=3D PTR_TO_AR=
+ENA) {
+> > +                                     mark_reg_unknown(env, regs, insn-=
+>dst_reg);
+> > +                                     dst_reg->type =3D PTR_TO_ARENA;
+>
+> This describes a case wX =3D wY, where rY is PTR_TO_ARENA,
+> should rX be marked as SCALAR instead of PTR_TO_ARENA?
+
+That was a leftover from earlier experiments when alu64->alu32 was
+done early.
+Removed this hunk now.
+
+> [...]
+>
+> > @@ -18235,6 +18272,31 @@ static int resolve_pseudo_ldimm64(struct bpf_v=
+erifier_env *env)
+> >                               fdput(f);
+> >                               return -EBUSY;
+> >                       }
+> > +                     if (map->map_type =3D=3D BPF_MAP_TYPE_ARENA) {
+> > +                             if (env->prog->aux->arena) {
+>
+> Does this have to be (env->prog->aux->arena && env->prog->aux->arena !=3D=
+ map) ?
+
+No. all maps in used_maps[] are unique.
+Adding "env->prog->aux->arena !=3D map" won't make any difference.
+It will only be confusing.
+
+> > +                                     verbose(env, "Only one arena per =
+program\n");
+> > +                                     fdput(f);
+> > +                                     return -EBUSY;
+> > +                             }
+>
+> [...]
+>
+> > @@ -18799,6 +18861,18 @@ static int convert_ctx_accesses(struct bpf_ver=
+ifier_env *env)
+> >                          insn->code =3D=3D (BPF_ST | BPF_MEM | BPF_W) |=
+|
+> >                          insn->code =3D=3D (BPF_ST | BPF_MEM | BPF_DW))=
+ {
+> >                       type =3D BPF_WRITE;
+> > +             } else if (insn->code =3D=3D (BPF_ALU64 | BPF_MOV | BPF_X=
+) && insn->imm) {
+> > +                     if (insn->off =3D=3D BPF_ARENA_CAST_KERN ||
+> > +                         (((struct bpf_map *)env->prog->aux->arena)->m=
+ap_flags & BPF_F_NO_USER_CONV)) {
+> > +                             /* convert to 32-bit mov that clears uppe=
+r 32-bit */
+> > +                             insn->code =3D BPF_ALU | BPF_MOV | BPF_X;
+> > +                             /* clear off, so it's a normal 'wX =3D wY=
+' from JIT pov */
+> > +                             insn->off =3D 0;
+> > +                     } /* else insn->off =3D=3D BPF_ARENA_CAST_USER sh=
+ould be handled by JIT */
+> > +                     continue;
+> > +             } else if (env->insn_aux_data[i + delta].needs_zext) {
+> > +                     /* Convert BPF_CLASS(insn->code) =3D=3D BPF_ALU64=
+ to 32-bit ALU */
+> > +                     insn->code =3D BPF_ALU | BPF_OP(insn->code) | BPF=
+_SRC(insn->code);
+>
+> Tbh, I think this should be done in do_misc_fixups(),
+> mixing it with context handling in convert_ctx_accesses()
+> seems a bit confusing.
+
+Good point. Moved.
+
+Thanks a lot for the review!
 
