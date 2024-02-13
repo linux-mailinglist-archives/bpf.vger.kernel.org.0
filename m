@@ -1,223 +1,337 @@
-Return-Path: <bpf+bounces-21896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A1F5853CFB
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 22:23:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D2C853D06
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 22:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 809F6B287A6
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:23:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3C8A28D935
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D30061695;
-	Tue, 13 Feb 2024 21:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3AF4626C7;
+	Tue, 13 Feb 2024 21:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eF624UXc"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3qw+DHL3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F166166D
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 21:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB31A626AF
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 21:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858554; cv=none; b=kB/LuUJNAWB1CAyDaNQniFA+LYs+65nDpg+4ashIq/yzf5npNvarA2NM4w/pLTD+J4EbVvVWtPuEIt+hLxcgnyp34pAs5DVFjXu2ok9FzRZmQ8eixQNWI4/i6iEDteuL5dqyT3Q82jDsJMqbjtmuLd2dHIULtoghg2r7PHnDga8=
+	t=1707858705; cv=none; b=ab/TQ3B7Q/Pts6p3oV7uxHjUvrbJif1BIhZJBRoNWAM9nwf/u3BzI3VCydF685anhBO7FTFr+sDqLgMfMn8SwuYYeBtkt2wYwgZN1Nys0V3dIR0AxXwUEjXXV4sX/fU74S+2QepufCYD/SZVzcKf3S6uqN/cM8Pn7+HIfrs0yIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858554; c=relaxed/simple;
-	bh=uXJ3VW6ttGBp/pbdABPLWM7AHvh+V1BMPzxn4kHehDc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HcZFmWq1W8lfhgWdDrUfPOu2nr6/MFb/dXCinRM7Gmq4uNXPYeNKT3O9OoXrPW0l4mkAEH/lrWEtCeccYWywP+axJ0i8GJ2WEzzmzTkzHRqLwXFo4sC/Ms82oJZfDgX0nz05lBCOF/SqgDfWOmPLv4Px0GDXHPiL9J+T6BnEdl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eF624UXc; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41102f140b4so10074735e9.2
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 13:09:12 -0800 (PST)
+	s=arc-20240116; t=1707858705; c=relaxed/simple;
+	bh=8PgonvMIbvrH9MSbhuItBe3sWcnPc7IU56AmceLpoEw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iyZSODGAoYPaYpp5Ku0oVXVvmU8YoZE160mkaxA97qzF0cq65gdIQp0kjrh+ZuVNU1Lvcd1kV/KEh5p4GLMsAuxmcLoEnFK3GqPith0wuOkLoZ2ImnLNTc4uciGkHubjzXibzcghX0PGMdynn6ETVkewXHTRc7iK/gHB+lJ0haY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3qw+DHL3; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3d39b2c269so8600066b.3
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 13:11:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707858551; x=1708463351; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PzfoaM1567Bb0GBaOzj52WBx64hNw7OtSaaNo8rx5Ag=;
-        b=eF624UXcwuAexhlFyfPwBN+DgDUGQsWE+qiTKPdOXQUIAXuVo80sCDiqS8SbwTQX59
-         YoJee/DG6wmhYxXSHOkdxNPXmQNHegJB0Xkjc/NRT8r4LajoBQq5TehBqbPXa8Drms7k
-         b6mLhYvCEA2Mk/Ni2J01WsYr9XmsFN1uodSan0FPh4tiSgunydFL8SO+llM93mAovwFF
-         o2pRPFkFt7nwdcp0EvLIAbLfTlqSSBi9193gitnmhPXRkJI/8093B6R1ZwhpAMCVsZvw
-         XcDZypfF2HClN6MOdD6IMchgAiw7WWI8EPMeKeO3jsoMrNJBsJmoQbyHsTEnf4ChNyGe
-         24zg==
+        d=google.com; s=20230601; t=1707858701; x=1708463501; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zsOIUemMTVXHoEVROLysOcQX18quXE3mcOSmusaiTVU=;
+        b=3qw+DHL3WKlvdWe731UgqTCdG+qi223RsObe3z8CUbETTRm40/NN6mBjH9dyNhgr5g
+         s33N2CJFc+rqmBDXPEqp1KSyPW8W2LMKeGsrgtN8m9F4+AZBS1GiPhBk73x4Po73Ug1z
+         ghvS03vAElxM0Ms8sO62V0tRLtk/6tnozaNNfNNYN1NGGj+qvBdNh70xCj0EIvwg1LBI
+         o148syW51Ot0cGQdz0rlPhjYAmhNxxf4TbCdrHIvglxbE1M/2+B2q3GZuB6YP1S8lZjr
+         LkBH0EFmodTlsm4KnccJYrPjlq0NCH1D3nDjfCEfEQ/88RtrGhpZgh66F8SUReet9Eqi
+         P68A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707858551; x=1708463351;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PzfoaM1567Bb0GBaOzj52WBx64hNw7OtSaaNo8rx5Ag=;
-        b=em15VxHIekOALIFRUcxBmsNgPNpSbTyA5HeByeoxCqtAMpn24NfLHvxCkiJssgBGyp
-         S/mLx1C3kriiXgaEVupk5qIrYXa6poMSVyqszWjLKsC7aTOj7qtjiJs9To6YSLw9BAZ2
-         28SDpxEay9Z1pqR43lPCy+aYZXarapdR39nK2AKrxb+NPFLx5L/7MQxUtRRUl5RwdkKV
-         2Bnhgeo0r7oTUWuYQSLLwGrjNZm0ByP4K5ROP5kFhFMkESbY+4nn5aHmFvs+Kmot/C1T
-         oZpTk0WWeHVjqlYJY/NgoEnhN3cv2pSdENWZQbzLJ0BpxPhbtOwCu5AfVK7RAgSsDdMl
-         ZL6w==
-X-Forwarded-Encrypted: i=1; AJvYcCV+9BfWfoN7ii+k6bY6wxfNWdgydKbclPhnHNgQV+pHOR9O+OwOhzDp3hbIAwzdhvrYGpZekrVcBcSiliYD8A0pNMOt
-X-Gm-Message-State: AOJu0Yz1wcLjMDz8Ci5d3RSF6OSRlnj4ljmj00/WbbCjlqM75igOsLWI
-	OfhX9W5bFuR3ATm5213rQp05QabiEQstHln9QFQXxLkMPM3CQeU0
-X-Google-Smtp-Source: AGHT+IEZcPC1DfnInxMapP28osmHBF8t8aouiXMxPYRUPAart9QvK96TogUmxQKFwNxUC2zH0JH0BQ==
-X-Received: by 2002:a05:600c:190a:b0:410:1da3:2ccf with SMTP id j10-20020a05600c190a00b004101da32ccfmr652122wmq.21.1707858551068;
-        Tue, 13 Feb 2024 13:09:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVijdxkZMwA/TAXAqqxtHlQPf3wmgIMG1qnl3gyDna7WaCR1dh+JVEZjn5k1yW4VDe8LMi4PaPuNqOx7uTKNKhyViam2+Zxo9fI+OzsPRlmSe8jPnBzCcMxE8SmqGFQlnTJy4tN+juBuY18bqnpVXfvODyZRp/iNuiUYeg3J4PDSz+L9WAWFU9tNZxMyYbUFlcxQ96J4AuEkKEV7y0KDD1B+MdiqlcYgIGnnhni7xFx95JVvuuOKPnxsCGldExkytFTsTxM06ViUxsSgIWhn6QZJPDc6L+p5wmVAH38+T6EpLUZi+kkvTiFQiEUYGJLAby3IrSc+oM+90+oxazR+FNingxR7HssuisuTctZ7FSN+3uSI48gCyKaCc5stEiP0zf2BDvESLiZrA==
-Received: from krava ([83.240.60.124])
-        by smtp.gmail.com with ESMTPSA id m6-20020a7bcb86000000b00410df4bf22esm6314338wmi.38.2024.02.13.13.09.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 13:09:10 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 13 Feb 2024 22:09:09 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
- in kprobe multi
-Message-ID: <ZcvadcwSA37sfDk4@krava>
-References: <20240207153550.856536-1-jolsa@kernel.org>
- <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
- <ZceWuIgsmiLYyCxQ@krava>
- <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
- <ZctcEpz3fHK4RqUX@krava>
- <CAEf4BzY_UBNe4ONqKGg5VtA-nY-ozgpQ=Du1+8ipQNnZ+JKCew@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1707858701; x=1708463501;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zsOIUemMTVXHoEVROLysOcQX18quXE3mcOSmusaiTVU=;
+        b=sPsleqNcoCc1+sthA+hCb2ha9aMhNpLXbeKP07Yt7JyaMTVROj/DjGHbTd4avAKhVi
+         gnBgmKWc467hjQ50WydJ1s6lEA7f6QTrWsUcn2P1zUVKhSoIFwcql4vF8gzwn5Cwiz1o
+         zKeS5+aA89z91kpE+Q5wgtw91ogDeyk40gbIrxGVgTTGV2qanlGrXRKg9gd0L6v6dbL6
+         tlA7viI7JHwr7LeaAfI+RVVS4hTS0IaugLnkhWyOy7NJUvgHQuXevDUCfvUE4clckWnn
+         /bjJKsYvLj+47NPttA3bRHQUe1UI5esYMWFfwv89KN7rYAKGDsg+KZ1FSdwkVUpVNcu9
+         2QSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUFIwb79QQMVDIF3dWkgdvezHZHAF0C5JUoiXCGr/z1Ui3hLz1jvWjJ0g0nOq8Fqo7QUpEWKGRlQKsLGY+n+LVJjpFf
+X-Gm-Message-State: AOJu0Yw6+stxyZQsPEX30d0Ati+fuJJo/rhVSZ/mJ/L1IPfD8TKG9+4F
+	nTZ1gDyE9zAyumdYNKs/yc5vir/9ug3U4Fdc/YUgPNhkFpn4yb9O+lJnGVBTaqz/k3ZBuckWFEw
+	i3YEafCNT62hlfORyCQqRFm+B41IkucBlyIHu
+X-Google-Smtp-Source: AGHT+IExITBQize1fGZuvy7b+0mnYFOUMkpqQ+6ifMmjq7oa8jqrG3qPbdpWEJmCURVq8IK8JranwyOGOl5XdgYpzX0=
+X-Received: by 2002:a17:906:8410:b0:a3c:eb18:8a4d with SMTP id
+ n16-20020a170906841000b00a3ceb188a4dmr349416ejx.62.1707858700745; Tue, 13 Feb
+ 2024 13:11:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzY_UBNe4ONqKGg5VtA-nY-ozgpQ=Du1+8ipQNnZ+JKCew@mail.gmail.com>
+References: <20231218024024.3516870-1-almasrymina@google.com>
+ <20231218024024.3516870-8-almasrymina@google.com> <3374356e-5f4b-4a6f-bb19-8cb7c56103bc@gmail.com>
+In-Reply-To: <3374356e-5f4b-4a6f-bb19-8cb7c56103bc@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 13 Feb 2024 13:11:28 -0800
+Message-ID: <CAHS8izO2zARuMovrYU3kdwSXsQAM6+SajQjDT3ckSvVOfHwaCQ@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v5 07/14] page_pool: devmem support
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 10:20:46AM -0800, Andrii Nakryiko wrote:
-> On Tue, Feb 13, 2024 at 4:09 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Feb 13, 2024 at 5:28=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
+com> wrote:
+>
+> On 12/18/23 02:40, Mina Almasry wrote:
+> > Convert netmem to be a union of struct page and struct netmem. Overload
+> > the LSB of struct netmem* to indicate that it's a net_iov, otherwise
+> > it's a page.
 > >
-> > On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
+> > Currently these entries in struct page are rented by the page_pool and
+> > used exclusively by the net stack:
 > >
-> > SNIP
+> > struct {
+> >       unsigned long pp_magic;
+> >       struct page_pool *pp;
+> >       unsigned long _pp_mapping_pad;
+> >       unsigned long dma_addr;
+> >       atomic_long_t pp_ref_count;
+> > };
 > >
-> > > > > But the way you implement it with extra flag and extra fd parameter
-> > > > > makes it harder to have a nice high-level support in libbpf (and
-> > > > > presumably other BPF loader libraries) for this.
-> > > > >
-> > > > > When I was thinking about doing something like this, I was considering
-> > > > > adding a new program type, actually. That way it's possible to define
-> > > > > this "let's skip return probe" protocol without backwards
-> > > > > compatibility concerns. It's easier to use it declaratively in libbpf.
-> > > >
-> > > > ok, that seems cleaner.. but we need to use current kprobe programs,
-> > > > so not sure at the moment how would that fit in.. did you mean new
-> > > > link type?
-> > >
-> > > It's kind of a less important detail, actually. New program type would
-> > > allow us to have an entirely different context type, but I think we
-> > > can make do with the existing kprobe program type. We can have a
-> > > separate attach_type and link type, just like multi-kprobe and
-> > > multi-uprobe are still kprobe programs.
+> > Mirror these (and only these) entries into struct net_iov and implement
+> > netmem helpers that can access these common fields regardless of
+> > whether the underlying type is page or net_iov.
+> > Implement checks for net_iov in netmem helpers which delegate to mm
+> > APIs, to ensure net_iov are never passed to the mm stack.
 > >
-> > ok, having new attach type on top of kprobe_multi link makes sense
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
 > >
-> > >
-> > > >
-> > > > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
-> > > > > something to designate that it's both entry and exit probe) as one
-> > > > > program and in the code there would be some way to determine whether
-> > > > > we are in entry mode or exit mode (helper or field in the custom
-> > > > > context type, the latter being faster and more usable, but it's
-> > > > > probably not critical).
-> > > >
-> > > > hum, so the single program would be for both entry and exit probe,
-> > > > I'll need to check how bad it'd be for us, but it'd probably mean
-> > > > just one extra tail call, so it's likely ok
-> > >
-> > > I guess, I don't know what you are doing there :) I'd recommend
-> > > looking at utilizing BPF global subprogs instead of tail calls, if
-> > > your kernel allows for that, as that's a saner way to scale BPF
-> > > verification.
+> > ---
 > >
-> > ok, we should probably do that.. given this enhancement will be
-> > available on latest kernel anyway, we could use global subprogs
-> > as well
+> > RFCv5:
+> > - Use netmem instead of page* with LSB set.
+> > - Use pp_ref_count for refcounting net_iov.
+> > - Removed many of the custom checks for netmem.
 > >
-> > the related bpftrace might be bit more challenging.. will have to
-> > generate program calling entry or return program now, but seems
-> > doable of course
-> 
-> So you want users to still have separate kprobe and kretprobe in
-> bpftrace, but combine them into this kwrapper transparently? It does
+> > v1:
+> > - Disable fragmentation support for iov properly.
+> > - fix napi_pp_put_page() path (Yunsheng).
+> > - Use pp_frag_count for devmem refcounting.
+> >
+> > ---
+> >   include/net/netmem.h            | 145 ++++++++++++++++++++++++++++++-=
+-
+> >   include/net/page_pool/helpers.h |  25 +++---
+> >   net/core/page_pool.c            |  26 +++---
+> >   net/core/skbuff.c               |   9 +-
+> >   4 files changed, 164 insertions(+), 41 deletions(-)
+> >
+> > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > index 31f338f19da0..7557aecc0f78 100644
+> > --- a/include/net/netmem.h
+> > +++ b/include/net/netmem.h
+> > @@ -12,11 +12,47 @@
+> >
+> >   /* net_iov */
+> >
+> > +DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
+> > +
+> > +/*  We overload the LSB of the struct page pointer to indicate whether=
+ it's
+> > + *  a page or net_iov.
+> > + */
+> > +#define NET_IOV 0x01UL
+> > +
+> >   struct net_iov {
+> > +     unsigned long __unused_padding;
+> > +     unsigned long pp_magic;
+> > +     struct page_pool *pp;
+> >       struct dmabuf_genpool_chunk_owner *owner;
+> >       unsigned long dma_addr;
+> > +     atomic_long_t pp_ref_count;
+> >   };
+>
+> I wonder if it would be better to extract a common sub-struct
+> used in struct page, struct_group_tagged can help to avoid
+> touching old code:
+>
+> struct page {
+>         unsigned long flags;
+>         union {
+>                 ...
+>                 struct_group_tagged(<struct_name>, ...,
+>                         /**
+>                          * @pp_magic: magic value to avoid recycling non
+>                          * page_pool allocated pages.
+>                          */
+>                         unsigned long pp_magic;
+>                         struct page_pool *pp;
+>                         unsigned long _pp_mapping_pad;
+>                         unsigned long dma_addr;
+>                         atomic_long_t pp_ref_count;
+>                 );
+>         };
+> }
+>
+> struct net_iov {
+>         unsigned long pad;
+>         struct <struct_name> p;
+> };
+>
+>
+> A bit of a churn with the padding and nesting net_iov but looks
+> sturdier. No duplication, and you can just check positions of the
+> structure instead of per-field NET_IOV_ASSERT_OFFSET, which you
+> have to not forget to update e.g. when adding a new field. Also,
 
-no I meant I'd need to generate the wrapper program for the new
-interface.. which is extra compared to current bpftrace changes
+Yes, this is nicer. If possible I'll punt it to a minor cleanup as a
+follow up change. Logistically I think if this series need-not touch
+code outside of net/, that's better.
 
-> seem doable, but hopefully we'll be able to write kwrapper programs in
-> bpftrace directly as well.
+> with the change __netmem_clear_lsb can return a pointer to that
+> structure, casting struct net_iov when it's a page is a bit iffy.
+>
+> And the next question would be whether it'd be a good idea to encode
+> iov vs page not by setting a bit but via one of the fields in the
+> structure, maybe pp_magic.
+>
 
-yes, it should be fine
+I will push back against this, for 2 reasons:
 
-SNIP
+1. I think pp_magic's first 2 bits (and maybe more) are used by mm
+code and thus I think extending usage of pp_magic in this series is a
+bit iffy and I would like to avoid it. I just don't want to touch the
+semantics of struct page if I don't have to.
+2. I think this will be a measurable perf regression. Currently we can
+tell if a pointer is a page or net_iov without dereferencing the
+pointer and dirtying the cache-line. This will cause us to possibly
+dereference the pointer in areas where we don't need to. I think I had
+an earlier version of this code that required a dereference to tell if
+a page was devmem and Eric pointed to me it was a perf regression.
 
-> > >
-> > > Yes, I realize special-casing zero might be a bit inconvenient, but I
-> > > think simplicity trumps a potential for zero to be a valid value (and
-> > > there are always ways to work around zero as a meaningful value).
-> > >
-> > > Now, in more complicated cases 8 bytes of temporary session state
-> > > isn't enough, just like BPF cookie being 8 byte (read-only) value
-> > > might not be enough. But the solution is the same as with the BPF
-> > > cookie. You just use those 8 bytes as a key into ARRAY/HASHMAP/whatnot
-> > > storage. It's simple and fast enough for pretty much any case.
+I also don't see any upside of using pp_magic, other than making the
+code slightly more readable, maybe.
+
+> With that said I'm a bit concerned about the net_iov size. If each
+> represents 4096 bytes and you're registering 10MB, then you need
+> 30 pages worth of memory just for the iov array. Makes kvmalloc
+> a must even for relatively small sizes.
+>
+
+This I think is an age-old challenge with pages. 1.6% of the machine's
+memory is 'wasted' on every machine because a struct page needs to be
+allocated for each PAGE_SIZE region. We're running into the same issue
+here where if we want to refer to PAGE_SIZE regions of memory we need
+to allocate some reference to it. Note that net_iov can be relatively
+easily extended to support N order pages. Also note that in the devmem
+TCP use case it's not really an issue; the minor increase in mem
+utilization is more than offset by the saving in memory bw as compared
+to using host memory as a bounce buffer. All in all I vote this is
+something that can be tuned or improved in the future if someone finds
+the extra memory usage a hurdle to using devmem TCP or this net_iov
+infra.
+
+> And the final bit, I don't believe the overlay is necessary in
+> this series. Optimisations are great, but this one is a bit more on
+> the controversial side. Unless I missed something and it does make
+> things easier, it might make sense to do it separately later.
+>
+
+I completely agree, the overlay is not necessary. I implemented the
+overlay in response to Yunsheng's  strong requests for more 'unified'
+processing between page and devmem. This is the most unification I can
+do IMO without violating the requirements from Jason. I'm prepared to
+remove the overlay if it turns out controversial, but so far I haven't
+seen any complaints. Jason, please do take a look if you have not
+already.
+
+>
+> > +/* These fields in struct page are used by the page_pool and net stack=
+:
+> > + *
+> > + *   struct {
+> > + *           unsigned long pp_magic;
+> > + *           struct page_pool *pp;
+> > + *           unsigned long _pp_mapping_pad;
+> > + *           unsigned long dma_addr;
+> > + *           atomic_long_t pp_ref_count;
+> > + *   };
+> > + *
+> > + * We mirror the page_pool fields here so the page_pool can access the=
+se fields
+> > + * without worrying whether the underlying fields belong to a page or =
+net_iov.
+> > + *
+> > + * The non-net stack fields of struct page are private to the mm stack=
+ and must
+> > + * never be mirrored to net_iov.
+> > + */
+> > +#define NET_IOV_ASSERT_OFFSET(pg, iov)             \
+> > +     static_assert(offsetof(struct page, pg) =3D=3D \
+> > +                   offsetof(struct net_iov, iov))
+> > +NET_IOV_ASSERT_OFFSET(pp_magic, pp_magic);
+> > +NET_IOV_ASSERT_OFFSET(pp, pp);
+> > +NET_IOV_ASSERT_OFFSET(dma_addr, dma_addr);
+> > +NET_IOV_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
+> > +#undef NET_IOV_ASSERT_OFFSET
+> > +
+> >   static inline struct dmabuf_genpool_chunk_owner *
+> >   net_iov_owner(const struct net_iov *niov)
+> >   {
+> > @@ -47,19 +83,25 @@ net_iov_binding(const struct net_iov *niov)
+> >   struct netmem {
+> >       union {
+> >               struct page page;
+> > -
+> > -             /* Stub to prevent compiler implicitly converting from pa=
+ge*
+> > -              * to netmem_t* and vice versa.
+> > -              *
+> > -              * Other memory type(s) net stack would like to support
+> > -              * can be added to this union.
+> > -              */
+> > -             void *addr;
+> > +             struct net_iov niov;
+> >       };
+> >   };
 > >
-> > I was recently asked for a way to have function arguments available
-> > in the return kprobe as it is in fexit programs (which was not an
-> > option to use, because we don't have fast multi attach for it)
-> >
-> > using the hash map to store arguments and storing its key in the
-> > session data might be solution for this
-> 
-> if you are ok using hashmap keyed by tid, you can do it today without
-> any kernel changes. With session cookie you'll be able to utilize
-> faster ARRAY map (by building a simple ID allocator to get a free slot
-> in ARRAY map).
+> ...
+>
+> --
+> Pavel Begunkov
 
-ok
 
-SNIP
 
-> > > I bet there is something similar in the kretprobe case, where we can
-> > > carve out 8 bytes and pass it to both entry and exit parts of kwrapper
-> > > program.
-> >
-> > for kprobes.. both kprobe and kprobe_multi/fprobe use rethook to invoke
-> > return probes, so I guess we could use it and store that shared data
-> > in there
-> >
-> > btw Masami is in process of removing rethook from kprobe_multi/fprobe,
-> > as part of migrating fprobe on top of ftrace [0]
-> >
-> > but instead the rethook I think there'll be some sort of shadow stack/data
-> > area accessible from both entry and return probes, that we could use
-> 
-> ok, cool. We also need to be careful to not share session cookie
-> between unrelated programs. E.g., if two independent kwrapper programs
-> are attached to the same function, they should each have their own
-> cookie. Otherwise it's not clear how to build anything reliable on top
-> of that, tbh. This might be a problem, though, right?
-
-IIRC it's tracer specific data, the shadow stack data should be unique
-for tracer and its called function, but I'll double check on that
-
-jirka
+--
+Thanks,
+Mina
 
