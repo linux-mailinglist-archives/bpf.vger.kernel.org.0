@@ -1,121 +1,244 @@
-Return-Path: <bpf+bounces-21812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC5E85258C
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4368852699
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A8E289E08
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 01:17:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68D43288BD0
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 01:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4839CEBE;
-	Tue, 13 Feb 2024 00:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4D4374C5;
+	Tue, 13 Feb 2024 00:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyQhQyEe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HH6dqeeM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DDE1CAA9
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 00:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705F764CE6;
+	Tue, 13 Feb 2024 00:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707785346; cv=none; b=BLJdwYvz5KUG9WJ65HZxBy2H7HuJT7mRfW56kPcCYLwemaFB30k4sjx53A6DdUSGxLRLlRAL3MfXTD0tvFScb/4K5pTyPMwZnX8FH1mWYDhsd0ZGXJSm6QwBiepaARM7f7Z9adLvRVO+GPgyQc9Wdfx/h373J/0o/hHM1eiO1ZU=
+	t=1707785746; cv=none; b=CXFokEZ7sx+0U+RFY0yRhKRWJflFTPKtHqVEx3lrJWJDAVPWeT4qeeLTMNepCuwFHsS9I/DO9qy8hIs5QS5hMzTwb0TTDbKnZgYcpFPFqMrhcovhXQwpRyeu6PFPBW53c1sN0FZtVzS7ppRY0DTeFcylrQv9yl+5Fh0yK+R9yRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707785346; c=relaxed/simple;
-	bh=lu/brvjSSleY1eS2L23tlLVXTd19SBoAtmpY4CrDI7k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QjItWQmfHr43UwWChzxn/N5j86/1RWRb4gA1NSRtLWco06NzYR/i7OKeku5NSo2fsUnArHcdvRsFcVQmuQEK0+EQ1/iMV4kEeFiQXq/9qdIh01Ej1XlvktxZlXeiEj7ZNfvWPoj0OFroaQGBiSwSzgvVhcvQoqwMZdob+zNsp4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyQhQyEe; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3cfacf0eadso17017466b.2
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 16:49:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707785343; x=1708390143; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/dwE/gJs3UjhLkiVxd8ovvyGICgHNTOI+7wm4P8nOQE=;
-        b=EyQhQyEenKIG3d0atL0FthiNDp3Vr9OFEl/p7OpM/mwn++NvrP/87QgJvtXIuT817H
-         zoKOJMmo31hvc9ZiBmB5flv2NBAO8zK9MsOYh9W9vjyW2PJiVaNCDN9m5P0Ukg6dpnHV
-         Sr3k/AcdkN9zJVm4rLS+neBVSG5RPlw8pahd28A08q/B0tH9M7Wyu6J95P/vfvdACNx/
-         qi0ZkTm3ShNEVwkQO1yj1noGCnT++cx0Y7iwYS6gStGEF2gluTg9IlqfNE7gzoHK1yUL
-         gDkB0d66EJIIjdk5GdX+K0AWNBkC5pwE7zO9XaJCcX6qvRTUReumg+ogcEXtxjl/wuNp
-         Yn2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707785343; x=1708390143;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/dwE/gJs3UjhLkiVxd8ovvyGICgHNTOI+7wm4P8nOQE=;
-        b=J4I9Dwisn9mye8VJmOP0+sVNofVq8/rb9CM2x/lxNOjO3cWVPqfhr+EWZZ7oPv663O
-         v1YVfZdhvVDj6DlW+uEyGSNzCmS2NMoC9t2ZgrCN62vtHrr638k/4cM7Rpk7xkqQ3F3j
-         U5y2MTpplJpQVreLr/XAQ+VqcjxBNeUPfKmBirlNDwY2BrHrfHLnDDWuZ+ZqdOfRQvXr
-         NsNSQuHXR1SNeMmh6QISMsfVrHxXI5csKnH86m3Q5dprKVA41Vdn4LWMnLfPsb+R4ZwV
-         PEqvogqGD6uYm23TbRw+hsjX4nnXi7ah+VWEotWEWyYfx3PObYSQw4797PlKRD8yHA3E
-         a5bg==
-X-Gm-Message-State: AOJu0YwDii6jsQJNtiVBqidn/aKEOfeJK9kUuzukcR30fWJFU9vlRGiE
-	ITT7NtHHvHQHJvGM/MkQ1tv0aLJaFrO8pNtF667jGDhY7f37eVBb
-X-Google-Smtp-Source: AGHT+IHIYyHIvasJPYh6N03Sm0e3bNL3POKRUz5X/TG+aZ7P3YoEygEh1A7UXrykLL0Pyj7ztfQTHQ==
-X-Received: by 2002:a17:906:4c57:b0:a3c:8a77:e67d with SMTP id d23-20020a1709064c5700b00a3c8a77e67dmr3416738ejw.59.1707785343422;
-        Mon, 12 Feb 2024 16:49:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWVEMAUG5ZdA41WmN+K04yTub5KSlMncD3n5y/BosNSomLGmeJorCc/JPjggPJoERPq1XsbF/iRV11XMdBfJwApx+ZzU/jsaqz/RkZyPJGA2n++LEOpcjMKoedEjBcAMma/PW3dKe05PwrZlMoiPbEifDGdhJHbnrLVB7Vrj657N/ZkIA1jGNcxYWZsGRCMqorOqHIDrT66IwGK5fuVBukWqbdMpz82sIAIaaJ8TcVYzyG4Ceq/YKClkOu7bbbxpHa4g+t+pcVI65rYsEBLehZL8yt3zR+nKYb+OjEyBV/9a9byxWogammXplD3HEKixlXqWnUZdOyQm5sF+A60ea9DOg5aZkikufHewV6gjxC74fnQ4d9iNMAjUQ==
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id gz3-20020a170906f2c300b00a3793959b4asm715477ejb.134.2024.02.12.16.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 16:49:03 -0800 (PST)
-Message-ID: <d5b827ea37af7b5ac71bede71f17c96e8c434422.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global
- varaibles.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,  Barret Rhoden
- <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>,  Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Date: Tue, 13 Feb 2024 02:49:01 +0200
-In-Reply-To: <CAADnVQKTHfRWxBm08O7CcKri1NOSTS8vby3+ez2gRVM_XYEfKg@mail.gmail.com>
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
-	 <20240209040608.98927-15-alexei.starovoitov@gmail.com>
-	 <d84964662e2e11e6c94da99c7c3e8a8591d1376c.camel@gmail.com>
-	 <CAADnVQKTHfRWxBm08O7CcKri1NOSTS8vby3+ez2gRVM_XYEfKg@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1707785746; c=relaxed/simple;
+	bh=x5LbtggR4Z3xaic6f6M9HxtLNo4SYpCsgxFez8n4Mqs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u5ej6mFN+6o1TMq7ScucUhCPQHv5kq9ph6vPEteThxn6Ix8HEy7Ugwhd96e2SOrS9xgtVlYMgyki373/kslfY+O9Znt4kuHVGNN9WkT/alMbKm2UcfOWIt/ixDRtNuIT/0ZaTj6j77ig1Y78pODwX3fNqUJ2XAhdnCL8CuLJeQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HH6dqeeM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11CECC43330;
+	Tue, 13 Feb 2024 00:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707785746;
+	bh=x5LbtggR4Z3xaic6f6M9HxtLNo4SYpCsgxFez8n4Mqs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HH6dqeeMCz4ysgu5nOyiSwKFIVRhElfGwxll//vyMwoV5+dzYmBVbWne9Epn50sHC
+	 Xv64bndEVgi2v47iqTNtM91j1nUk8TZQ1xRburn2kU7BqBRzGs7b8TwCGsHJX9xsOn
+	 6XC256+nLTPFY/DiJ2hRMNRwmfmXB/gRcvckxZOMU8oU+hDjlN/2+9CnvrF+5lAbkZ
+	 9wg3/lc5jeMv2lguto4nh62ncD0EFC5BV2yx+oFrL8Lo1xyDIKd3mXOdYKJ5BeUClh
+	 UL1LRqm8+32I59VUAuWI7VMQ5XB6maGbHVorypG2rBo3VOkVYBPLO6lT9BxDxn9uI+
+	 JQUndQiOOdjJw==
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0e2adfeefso38320771fa.2;
+        Mon, 12 Feb 2024 16:55:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWPuBdLRyV5H7NSPO8/1387sQWdMDNnYGsOUIJpZjrrxNxDyIWJKIcTeZUHkOoi9NyfDfLq6cPL5lp1Nxp9f/ep6C4ysSXOcxVBF8Wr2av2gyXxYZ4pvEX8PBLVq1brvZ/33omMUQYiS8ucBYUPJ+slDW71TggnrEG2
+X-Gm-Message-State: AOJu0YwFFjB3gzVYtz9nGEsnF1yYbosgmK00ZUZUKaxMilYWXOP2jGn4
+	DxGTT7qhhtSjRbSYoOBwfmOEc5YTujFuR5vFjUz7nIwgjAq+z6qSDA+MF66QvuIkrxJkRstB9Fl
+	371jlvAFbwKGpBBNzDe4CVdPncbk=
+X-Google-Smtp-Source: AGHT+IHKL6G3yu5doOJaxyZoeQuHPK6LLjZ7gg1ZT1vESg0Rl9kdoUbQ0BifEkJzoizI59vLRa0vB/zcugpsMQjVSQc=
+X-Received: by 2002:ac2:4245:0:b0:511:4268:3a54 with SMTP id
+ m5-20020ac24245000000b0051142683a54mr5659125lfl.29.1707785744497; Mon, 12 Feb
+ 2024 16:55:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
+In-Reply-To: <20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 13 Feb 2024 09:55:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT1+K87M2f_8enCydaKgDPLP9E1ex-as85eC2hB49bkBA@mail.gmail.com>
+Message-ID: <CAK7LNAT1+K87M2f_8enCydaKgDPLP9E1ex-as85eC2hB49bkBA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Fix changing ELF file type for output of gen_btf
+ for big endian
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: nicolas@fjasle.eu, ndesaulniers@google.com, morbo@google.com, 
+	justinstitt@google.com, keescook@chromium.org, maskray@google.com, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
+	patches@lists.linux.dev, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-02-12 at 16:44 -0800, Alexei Starovoitov wrote:
-> > I hit a strange bug when playing with patch. Consider a simple example =
-[0].
-> > When the following BPF global variable:
-> >=20
-> >     int __arena * __arena bar;
-> >=20
-> > - is commented -- the test passes;
-> > - is uncommented -- in the test fails because global variable 'shared' =
-is NULL.
->=20
-> Right. That's expected, because __uint(max_entries, 1);
-> The test creates an area on 1 page and it's consumed
-> by int __arena * __arena bar; variable.
-> Of course, one variable doesn't take the whole page.
-> There could have been many arena global vars.
-> But that page is not available anymore to bpf_arena_alloc_pages,
-> so it returns NULL.
+On Fri, Feb 9, 2024 at 5:21=E2=80=AFAM Nathan Chancellor <nathan@kernel.org=
+> wrote:
+>
+> Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> changed the ELF type of .btf.vmlinux.bin.o from ET_EXEC to ET_REL via
+> dd, which works fine for little endian platforms:
+>
+>    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+.......|
+>   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
+.......|
 
-My bad, thank you for explaining.
+
+
+I am afraid this dump is confusing.
+
+The byte stream "03 00" is ET_DYN, as specified in ELF:
+
+
+
+  Name        Value
+  ------------------
+  ET_REL        1
+  ET_EXEC       2
+  ET_DYN        3
+
+
+
+It disagrees with your commit message "from ET_EXEC to ET_REL"
+
+The dump for the old ELF was "02 00", wasn't it?
+
+
+
+
+
+>   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.........=
+.......|
+>
+> However, for big endian platforms, it changes the wrong byte, resulting
+> in an invalid ELF file type, which ld.lld rejects:
+
+
+Fangrui pointed out this is true for inutils >=3D 2.35
+
+
+
+>
+>    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+.......|
+>   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+>   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+
+ -  00 02
+ +  01 02
+
+
+
+>
+>   Type:                              <unknown>: 103
+>
+>   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
+>
+> Fix this by using a different seek value for dd when targeting big
+> endian, so that the correct byte gets changed and everything works
+> correctly for all linkers.
+>
+>    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF.....=
+.......|
+>   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+
+
+Ditto.
+
+
+
+
+>   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.........=
+.......|
+>
+>   Type:                              REL (Relocatable file)
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> Link: https://github.com/llvm/llvm-project/pull/75643
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  scripts/link-vmlinux.sh | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index a432b171be82..8a9f48b3cb32 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -135,8 +135,15 @@ gen_btf()
+>         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dalloc=
+,readonly \
+>                 --strip-all ${1} ${2} 2>/dev/null
+>         # Change e_type to ET_REL so that it can be used to link final vm=
+linux.
+> -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
+> -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 status=
+=3Dnone
+> +       # Unlike GNU ld, lld does not allow an ET_EXEC input. Make sure t=
+he correct
+> +       # byte gets changed with big endian platforms, otherwise e_type m=
+ay be an
+> +       # invalid value.
+> +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+> +               seek=3D17
+> +       else
+> +               seek=3D16
+> +       fi
+> +       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D${seek} s=
+tatus=3Dnone
+>  }
+>
+>  # Create ${2} .S file with all symbols from the ${1} object file
+
+
+
+Do you want to send v2 to update the commit description?
+
+
+The current code will work, but another approach might be to
+update both byte 16 and byte 17 because e_type is a 16-bit field.
+
+
+It works without relying on the MSB of the previous e_type being zero.
+The comment does not need updating because the intention is obvious
+from the code.
+
+
+if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+        et_rel=3D'\0\1'
+else
+        et_rel=3D'\1\0'
+fi
+
+printf "${et_rel}" | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 status=3D=
+none
+
+
+
+
+
+
+
+
+
+
+> ---
+> base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+> change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e129=
+6
+>
+> Best regards,
+> --
+> Nathan Chancellor <nathan@kernel.org>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
