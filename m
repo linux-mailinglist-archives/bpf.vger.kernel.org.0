@@ -1,96 +1,96 @@
-Return-Path: <bpf+bounces-21895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D7BF853CF9
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 22:23:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A1F5853CFB
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 22:23:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9C001C26792
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:23:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 809F6B287A6
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D86F61679;
-	Tue, 13 Feb 2024 21:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D30061695;
+	Tue, 13 Feb 2024 21:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="h/FZeJqm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GysW0BV4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eF624UXc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897A66166D;
-	Tue, 13 Feb 2024 21:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F166166D
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 21:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858539; cv=none; b=MkdtiivCvl3YLrLqnIbiSzgdoDR3D+kOCZOqfCuNF8fa+n365AlVudbdc4LJlVFcDsRN0v0oqKaX0PcxZfA+LJVkGBxjKKe+bHOuhsK52c2kOZuUZqTTwPSNaA5gbmBVd5TFvHZArjfY6R0ROPPzWYZCLfF6D2rbzoU3vbuXJ2s=
+	t=1707858554; cv=none; b=kB/LuUJNAWB1CAyDaNQniFA+LYs+65nDpg+4ashIq/yzf5npNvarA2NM4w/pLTD+J4EbVvVWtPuEIt+hLxcgnyp34pAs5DVFjXu2ok9FzRZmQ8eixQNWI4/i6iEDteuL5dqyT3Q82jDsJMqbjtmuLd2dHIULtoghg2r7PHnDga8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858539; c=relaxed/simple;
-	bh=ng462qQizCjYYSN6BAOfse1PoLyEhBQpuqEkECNoHv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VjT6QdPJyEgYklMXCgr1zv70mWoL96KfyAOE7CsEOiEwp7zt1xEaFW/WVUadpI4hOatZiI3Hz++VWyiQ018IyqQJrSZq8uap0nrdoXLYucy/aLuTlK8l+mW3gQVB1QGU4/wpI02ezTPtk9l/ZFh+fvCfdTtGBLHE3ERAaKoxhfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=h/FZeJqm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GysW0BV4; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id 74ABE5C00E0;
-	Tue, 13 Feb 2024 16:08:56 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 13 Feb 2024 16:08:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1707858536;
-	 x=1707944936; bh=+SBciZiT6vEzM12Yvi5B9bmxj/6Jh0lugT098mnxOwU=; b=
-	h/FZeJqmk82sHAe/NfujKJf8cE5OCLjqPEx6i7kbDNGDcjBX2a8wf3V+hwAVehzW
-	d6BImC3+cjmfJpTMru5MgcNBr0lHpwQ8RFonBaquyTnJ40/IXAmz14Ja6KcTowhd
-	/yp0wBuRfyXy6m9JU7PQvVHPCRzVcjwXZ6n0AC3uipFdMFaXlsMycHs6t7GC/Q9q
-	t7rxxNfFuML6eFVJociEDDu3cEEQU8YMQx2FfcTc4ACqaClNQnfWk1NGvPFA/Gj+
-	eJkPeT9+i5LsHdnJQbqruyKGaj80+UbzEUKOlyYOcizUb0ORgq6wHg9iAUtBnQQo
-	VIhr8IJ988A+OQRppTh8Ew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707858536; x=
-	1707944936; bh=+SBciZiT6vEzM12Yvi5B9bmxj/6Jh0lugT098mnxOwU=; b=G
-	ysW0BV4R36wOEy3h5UdzylXppNBOo2Bnf/JJTjDIn+h4Kmm66qVL1q+ss4sTTIpa
-	X0KIYUpm7fpjT/KVId5HRT05ktCTaQpvyBgVjbtywFS8dPwB1RwRBBjf5d7r/etx
-	q+0NxXvFV07d+M/ieTuKqUmoPe9mMPMhd9zp96TGSYl6cLhDVaBIQvza+vokL+Fc
-	gkLG6HJA9KYfYi0twsVBhAXrIpTmmEEfUXxfqhkPSQdaWFBv4rqGow1vJB6EnXJu
-	NzdgRDJibTGkqJhOJAmGWP/dw/4sSaPRxkjwzPHzU0jkFaCSbnEO1HYT40fvNeAv
-	ajbEm2LN9gJWBpPJP6C3w==
-X-ME-Sender: <xms:aNrLZVcbFvOitqjgc0kmtC2t-uDJIZ5L3NNignqqb2drxDFeQKllOQ>
-    <xme:aNrLZTPqI0v7PnVI_BGrgcL04-41_05rpAJiG51H3_-a2m9gNl8VYqgt0Dym76pjB
-    2uRV9tyZ9aUBAQaDw>
-X-ME-Received: <xmr:aNrLZejhGFvXsvWRL-HTBRl_xdZTL8CY0wIwgNb-1LncnbOpT4tWr-Dqbsa7Zz8XmidH7m_vqElwfzaRv57CPa5c6MJRbw-NLkK3Np0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgddugeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedvuddvudeiteefjeegheeuudfhgefhkeekteeulefggeev
-    heevieekffffiedvtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
-    giihii
-X-ME-Proxy: <xmx:aNrLZe8LUtuSFzqFgweHVSe9hQ14dMYAzUIDz6g3tCN_M__wMvIhWQ>
-    <xmx:aNrLZRuTP5coCsNyzv4Ls9LzZTlm1OgKgRtWEYYAiSt85tVrAhi3rA>
-    <xmx:aNrLZdGABgyE2v2Qm4gfgver3oR_cxXvcitXOvnYL84idHWZ3IXT5A>
-    <xmx:aNrLZfXpRYIL7WUy5bB3hZUgbqB3l6SapHWhGP6Lh4-g4dqH6AAZ0A>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Feb 2024 16:08:55 -0500 (EST)
-Date: Tue, 13 Feb 2024 14:08:54 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
+	s=arc-20240116; t=1707858554; c=relaxed/simple;
+	bh=uXJ3VW6ttGBp/pbdABPLWM7AHvh+V1BMPzxn4kHehDc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HcZFmWq1W8lfhgWdDrUfPOu2nr6/MFb/dXCinRM7Gmq4uNXPYeNKT3O9OoXrPW0l4mkAEH/lrWEtCeccYWywP+axJ0i8GJ2WEzzmzTkzHRqLwXFo4sC/Ms82oJZfDgX0nz05lBCOF/SqgDfWOmPLv4Px0GDXHPiL9J+T6BnEdl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eF624UXc; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41102f140b4so10074735e9.2
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 13:09:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707858551; x=1708463351; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PzfoaM1567Bb0GBaOzj52WBx64hNw7OtSaaNo8rx5Ag=;
+        b=eF624UXcwuAexhlFyfPwBN+DgDUGQsWE+qiTKPdOXQUIAXuVo80sCDiqS8SbwTQX59
+         YoJee/DG6wmhYxXSHOkdxNPXmQNHegJB0Xkjc/NRT8r4LajoBQq5TehBqbPXa8Drms7k
+         b6mLhYvCEA2Mk/Ni2J01WsYr9XmsFN1uodSan0FPh4tiSgunydFL8SO+llM93mAovwFF
+         o2pRPFkFt7nwdcp0EvLIAbLfTlqSSBi9193gitnmhPXRkJI/8093B6R1ZwhpAMCVsZvw
+         XcDZypfF2HClN6MOdD6IMchgAiw7WWI8EPMeKeO3jsoMrNJBsJmoQbyHsTEnf4ChNyGe
+         24zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707858551; x=1708463351;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PzfoaM1567Bb0GBaOzj52WBx64hNw7OtSaaNo8rx5Ag=;
+        b=em15VxHIekOALIFRUcxBmsNgPNpSbTyA5HeByeoxCqtAMpn24NfLHvxCkiJssgBGyp
+         S/mLx1C3kriiXgaEVupk5qIrYXa6poMSVyqszWjLKsC7aTOj7qtjiJs9To6YSLw9BAZ2
+         28SDpxEay9Z1pqR43lPCy+aYZXarapdR39nK2AKrxb+NPFLx5L/7MQxUtRRUl5RwdkKV
+         2Bnhgeo0r7oTUWuYQSLLwGrjNZm0ByP4K5ROP5kFhFMkESbY+4nn5aHmFvs+Kmot/C1T
+         oZpTk0WWeHVjqlYJY/NgoEnhN3cv2pSdENWZQbzLJ0BpxPhbtOwCu5AfVK7RAgSsDdMl
+         ZL6w==
+X-Forwarded-Encrypted: i=1; AJvYcCV+9BfWfoN7ii+k6bY6wxfNWdgydKbclPhnHNgQV+pHOR9O+OwOhzDp3hbIAwzdhvrYGpZekrVcBcSiliYD8A0pNMOt
+X-Gm-Message-State: AOJu0Yz1wcLjMDz8Ci5d3RSF6OSRlnj4ljmj00/WbbCjlqM75igOsLWI
+	OfhX9W5bFuR3ATm5213rQp05QabiEQstHln9QFQXxLkMPM3CQeU0
+X-Google-Smtp-Source: AGHT+IEZcPC1DfnInxMapP28osmHBF8t8aouiXMxPYRUPAart9QvK96TogUmxQKFwNxUC2zH0JH0BQ==
+X-Received: by 2002:a05:600c:190a:b0:410:1da3:2ccf with SMTP id j10-20020a05600c190a00b004101da32ccfmr652122wmq.21.1707858551068;
+        Tue, 13 Feb 2024 13:09:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVijdxkZMwA/TAXAqqxtHlQPf3wmgIMG1qnl3gyDna7WaCR1dh+JVEZjn5k1yW4VDe8LMi4PaPuNqOx7uTKNKhyViam2+Zxo9fI+OzsPRlmSe8jPnBzCcMxE8SmqGFQlnTJy4tN+juBuY18bqnpVXfvODyZRp/iNuiUYeg3J4PDSz+L9WAWFU9tNZxMyYbUFlcxQ96J4AuEkKEV7y0KDD1B+MdiqlcYgIGnnhni7xFx95JVvuuOKPnxsCGldExkytFTsTxM06ViUxsSgIWhn6QZJPDc6L+p5wmVAH38+T6EpLUZi+kkvTiFQiEUYGJLAby3IrSc+oM+90+oxazR+FNingxR7HssuisuTctZ7FSN+3uSI48gCyKaCc5stEiP0zf2BDvESLiZrA==
+Received: from krava ([83.240.60.124])
+        by smtp.gmail.com with ESMTPSA id m6-20020a7bcb86000000b00410df4bf22esm6314338wmi.38.2024.02.13.13.09.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 13:09:10 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 13 Feb 2024 22:09:09 +0100
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, andrii@kernel.org, 
-	olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com
-Subject: Re: [PATCH bpf-next v2 0/2] bpf, bpftool: Support dumping kfunc
- prototypes from BTF
-Message-ID: <ogy7lbgnlvpmgfpd5ag4la6qsroddrvl4t6uxojr4faexsl7qb@ltrvn7kku5v4>
-References: <cover.1707080349.git.dxu@dxuuu.xyz>
- <CAEf4Bzb8dvboBVe-qN4+KEG_=phcMxCL25dr0ysjdVx5-MentQ@mail.gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+Message-ID: <ZcvadcwSA37sfDk4@krava>
+References: <20240207153550.856536-1-jolsa@kernel.org>
+ <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+ <ZceWuIgsmiLYyCxQ@krava>
+ <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
+ <ZctcEpz3fHK4RqUX@krava>
+ <CAEf4BzY_UBNe4ONqKGg5VtA-nY-ozgpQ=Du1+8ipQNnZ+JKCew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,49 +100,124 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzb8dvboBVe-qN4+KEG_=phcMxCL25dr0ysjdVx5-MentQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzY_UBNe4ONqKGg5VtA-nY-ozgpQ=Du1+8ipQNnZ+JKCew@mail.gmail.com>
 
-On Tue, Feb 13, 2024 at 11:09:29AM -0800, Andrii Nakryiko wrote:
-> On Sun, Feb 4, 2024 at 1:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Tue, Feb 13, 2024 at 10:20:46AM -0800, Andrii Nakryiko wrote:
+> On Tue, Feb 13, 2024 at 4:09 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> > This patchset enables dumping kfunc prototypes from bpftool. This is
-> > useful b/c with this patchset, end users will no longer have to manually
-> > define kfunc prototypes. For the kernel tree, this also means we can
-> > drop kfunc prototypes from:
+> > On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
 > >
-> >         tools/testing/selftests/bpf/bpf_kfuncs.h
-> >         tools/testing/selftests/bpf/bpf_experimental.h
+> > SNIP
 > >
-> > Example usage:
+> > > > > But the way you implement it with extra flag and extra fd parameter
+> > > > > makes it harder to have a nice high-level support in libbpf (and
+> > > > > presumably other BPF loader libraries) for this.
+> > > > >
+> > > > > When I was thinking about doing something like this, I was considering
+> > > > > adding a new program type, actually. That way it's possible to define
+> > > > > this "let's skip return probe" protocol without backwards
+> > > > > compatibility concerns. It's easier to use it declaratively in libbpf.
+> > > >
+> > > > ok, that seems cleaner.. but we need to use current kprobe programs,
+> > > > so not sure at the moment how would that fit in.. did you mean new
+> > > > link type?
+> > >
+> > > It's kind of a less important detail, actually. New program type would
+> > > allow us to have an entirely different context type, but I think we
+> > > can make do with the existing kprobe program type. We can have a
+> > > separate attach_type and link type, just like multi-kprobe and
+> > > multi-uprobe are still kprobe programs.
 > >
-> >         $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+> > ok, having new attach type on top of kprobe_multi link makes sense
 > >
-> >         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
-> >         extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __weak __ksym;
-> >         extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym;
-> >         extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags) __weak __ksym;
+> > >
+> > > >
+> > > > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
+> > > > > something to designate that it's both entry and exit probe) as one
+> > > > > program and in the code there would be some way to determine whether
+> > > > > we are in entry mode or exit mode (helper or field in the custom
+> > > > > context type, the latter being faster and more usable, but it's
+> > > > > probably not critical).
+> > > >
+> > > > hum, so the single program would be for both entry and exit probe,
+> > > > I'll need to check how bad it'd be for us, but it'd probably mean
+> > > > just one extra tail call, so it's likely ok
+> > >
+> > > I guess, I don't know what you are doing there :) I'd recommend
+> > > looking at utilizing BPF global subprogs instead of tail calls, if
+> > > your kernel allows for that, as that's a saner way to scale BPF
+> > > verification.
 > >
-> > Note that this patchset is only effective after the enabling pahole [0]
-> > change is merged and the resulting feature enabled with
-> > --btf_features=decl_tag_kfuncs.
+> > ok, we should probably do that.. given this enhancement will be
+> > available on latest kernel anyway, we could use global subprogs
+> > as well
 > >
-> > [0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
-> >
-> > === Changelog ===
-> >
-> > From v1:
-> > * Add __weak annotation
-> > * Use btf_dump for kfunc prototypes
-> > * Update kernel bpf_rdonly_cast() signature
-> >
-> > Daniel Xu (2):
-> >   bpf: Have bpf_rdonly_cast() take a const pointer
-> >   bpftool: Support dumping kfunc prototypes from BTF
+> > the related bpftrace might be bit more challenging.. will have to
+> > generate program calling entry or return program now, but seems
+> > doable of course
 > 
-> I've applied patch #1 as it's a good change regardless. Please send v2
-> for patch #2.
+> So you want users to still have separate kprobe and kretprobe in
+> bpftrace, but combine them into this kwrapper transparently? It does
 
-Ack. Been a bit busy recently - will probably have time to work on this
-again next weekend.
+no I meant I'd need to generate the wrapper program for the new
+interface.. which is extra compared to current bpftrace changes
 
+> seem doable, but hopefully we'll be able to write kwrapper programs in
+> bpftrace directly as well.
+
+yes, it should be fine
+
+SNIP
+
+> > >
+> > > Yes, I realize special-casing zero might be a bit inconvenient, but I
+> > > think simplicity trumps a potential for zero to be a valid value (and
+> > > there are always ways to work around zero as a meaningful value).
+> > >
+> > > Now, in more complicated cases 8 bytes of temporary session state
+> > > isn't enough, just like BPF cookie being 8 byte (read-only) value
+> > > might not be enough. But the solution is the same as with the BPF
+> > > cookie. You just use those 8 bytes as a key into ARRAY/HASHMAP/whatnot
+> > > storage. It's simple and fast enough for pretty much any case.
+> >
+> > I was recently asked for a way to have function arguments available
+> > in the return kprobe as it is in fexit programs (which was not an
+> > option to use, because we don't have fast multi attach for it)
+> >
+> > using the hash map to store arguments and storing its key in the
+> > session data might be solution for this
+> 
+> if you are ok using hashmap keyed by tid, you can do it today without
+> any kernel changes. With session cookie you'll be able to utilize
+> faster ARRAY map (by building a simple ID allocator to get a free slot
+> in ARRAY map).
+
+ok
+
+SNIP
+
+> > > I bet there is something similar in the kretprobe case, where we can
+> > > carve out 8 bytes and pass it to both entry and exit parts of kwrapper
+> > > program.
+> >
+> > for kprobes.. both kprobe and kprobe_multi/fprobe use rethook to invoke
+> > return probes, so I guess we could use it and store that shared data
+> > in there
+> >
+> > btw Masami is in process of removing rethook from kprobe_multi/fprobe,
+> > as part of migrating fprobe on top of ftrace [0]
+> >
+> > but instead the rethook I think there'll be some sort of shadow stack/data
+> > area accessible from both entry and return probes, that we could use
+> 
+> ok, cool. We also need to be careful to not share session cookie
+> between unrelated programs. E.g., if two independent kwrapper programs
+> are attached to the same function, they should each have their own
+> cookie. Otherwise it's not clear how to build anything reliable on top
+> of that, tbh. This might be a problem, though, right?
+
+IIRC it's tracer specific data, the shadow stack data should be unique
+for tracer and its called function, but I'll double check on that
+
+jirka
 
