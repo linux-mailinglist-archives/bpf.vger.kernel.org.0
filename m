@@ -1,153 +1,349 @@
-Return-Path: <bpf+bounces-21870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20758539B5
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 19:15:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 483218539C7
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 19:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A60601C22962
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 18:15:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F323B2877B4
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 18:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A0560864;
-	Tue, 13 Feb 2024 18:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1892F605CA;
+	Tue, 13 Feb 2024 18:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O4p/tCfG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LBHGHG5D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92985605BE
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 18:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9AC605C6
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 18:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707848096; cv=none; b=feOLNo1AslDQKjgojqric2pmQT3Gwa7ZYmg0AU9thV5KpikWgRtiRW6trWZTQ+N3vXbXyJTOcJf1qzY5dmObk3R4w6mWKESKx6Fm15AVUKrtSYyZ3GEEhxeCi8T0AqvfKSvJDjtwqoXblyuGdX+tQppolIXgiLCXzLnjJepUIDs=
+	t=1707848460; cv=none; b=BXHnezcYb2aYKpYypSKSFpf69Lj/Q78k7NsHbszJVspBsgrpaPJaRfYLlk8JB1ShWo7F2f0xVTGJBGgU3+uaS2k89RMVmuVosRDFOoDEu4IJGoNYw/g92lxMQR82BygDJyLUu6Ybff/jFL95yJ5pn8ZmXlMFyUe2NhL+qkDB5sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707848096; c=relaxed/simple;
-	bh=240vc5Fn5uIgJCZ7uffEJij8mNuvPSDdLcE28Kg0p4w=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qZY0f/LFHSIDRw86O8iloWBaQVrjUD5ugn6oZFjomcnOl8EKpUeVQBxIOdvHOY/aX8aOo7mvxiBurGYPwx/EGocEKEWiVRMzduKYh8zJRPZ5BCEafJyLr+m3Rg6A0QcEBZ8YFAZsuCAdwv0DLzSHdmLPSeHLmHhfOAGghXWeHIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O4p/tCfG; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1707848460; c=relaxed/simple;
+	bh=E4+Qpd4UVeL2w77Lfx1HvMKeezapOPAJPg0poUrdtT8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u6tV7/aicx6aiXyGPJTegDay7AT1q3X44v6EhEPBoiw+RIqNBuow2u9kA1SB4QTwdMzA4YawM7oxOEqIHUP0OKglq0vQkMcfQhqDt1DjAMmHBwknisTGY5DCpcjqjhv6bUM6ZHEjYcdO1tD5XLQNDpDQcGl2MzteZdlHBxqh0pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LBHGHG5D; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so639433066b.0
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 10:14:54 -0800 (PST)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d8df34835aso13053a12.0
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 10:20:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707848093; x=1708452893; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=J2HbGKitMz2Z+9QA6FLuUKlZr7NnYpNYYzJZ1Mo2yUg=;
-        b=O4p/tCfG5R8YItvOE9F2iHaUVfee810q3oc43fUqspFbSTTbmik6nJ4htTyjEDLpgs
-         SK9sSMJtzZ36AsFDADjqTLc7V08TwAfTZGjVQynOegyfns5rDCXURobgd0z1kYhUAVH9
-         ADYV1Q0q7lymFMWAqmD2QHWYPE/wNeyHD3TgY9IRwYcjy9XHUgSNAPFZVzEW8mf2yS+J
-         XAymHKbHe4S+gMsBUwYUwW7VpyHY+PqApdOV/hlr/FuAsmuqS9/RYXwFtfzhvxhGP0XZ
-         vXZZ0BOJjriMDSj6QzGcUNWYz9i/F6LWRsg4LhrqcD/U1vwLyO4ondL2IAZK4bnaI6dQ
-         h9vQ==
+        d=gmail.com; s=20230601; t=1707848458; x=1708453258; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WMCDWe4nTrur1kVGwJ31A6yxxlrw9DIaTAO8cCqFrxo=;
+        b=LBHGHG5D8DWkW7UH19Le9dEBng3fSfaUjDThgn/QrKY6CoF1GoTsGDQXdTtMYOjMXa
+         tjjYhxfFM4ITcQkfzklycryO1IAMmE5t/TkPA+wojMCHyDKifySM4dYdVT1sKVpNOJ5V
+         gWIieQfGR1OIbkI9VoO+bSXfeKGzlZtOkOsidTUE4JgxLTUDeHmQU8GrNuf6xrDOCVSp
+         PfDjp3QootEYuLALdxza6Q1O6FrAO4FC0Ntov+x9nbHA0EwwnaG5XlM1ZjNyu7vv5vBK
+         ORL7cmv6v67qKPniIBO4hQNV5u3udQSVW0eBQQo9p2PcZZkSpMp9OpSvfCgDghckvh9U
+         7+Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707848093; x=1708452893;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J2HbGKitMz2Z+9QA6FLuUKlZr7NnYpNYYzJZ1Mo2yUg=;
-        b=eXnuJ0DKL+W1OYWE3K1LTTDBFZTb2QzqBS3L3KBljOb8253qbEEB5bxzsJQW//oNK2
-         3aRXk+8ppOY5R60bbNQsDCp0/cYh6tLBQNgRmos1xyujR2gCcpMOPMtqlWiAnB7MG7BE
-         btLx0YNz1O/YyyCHrDRQ41ws1JfL7gzqeHykmGwHteFL/LnV4rqHKCa/xvz3+O5nqEjH
-         FHcruWqLhQpTu9Zbtpb8egAaI+TTxQu92N7Ql9QRQBVU3HBgDmOA2iVfuE2eGTAZfKSf
-         O2rX3gNWccyA28ghDdrXHAw29UsEc5544b19sSg9/xq6UY8rAdyna6HJUYmF9oo90tna
-         Y8hg==
-X-Forwarded-Encrypted: i=1; AJvYcCXcmbvZn6Wv1ygIcm2269+32B6m5VJxP6MZJig+FfX2vGbL7MmENppVKjRDH/v4359XsF/dnf0lK+O2FRF5Cde+a3j2
-X-Gm-Message-State: AOJu0Yw+lwUr2T4od+LEbdrUsoKywKwil6lXftc/aCrGwSxzX996hedR
-	Q2tZWnbVILokwiKJVYqfE/u7vtAsipBvl4w4+uAWZBeE3Y8kgRk9
-X-Google-Smtp-Source: AGHT+IGatHmRighOl4OmZPsz4sQDLxp0mnlBWe1oZq6EL5xIThkQJ37Jh+ZVmNmPX31Zkx0iG9hqJw==
-X-Received: by 2002:a17:906:5f8e:b0:a3c:8770:3795 with SMTP id a14-20020a1709065f8e00b00a3c87703795mr85963eju.15.1707848092623;
-        Tue, 13 Feb 2024 10:14:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWfSyn5Ah47v3KrQMgx/KkOCa10Ixm2v0awRFj1ge4cLJAszsNlvAi5C/rcrLfvlr0vAltFoIePc2VkpgH6elGIdsc4fSNrDgSG2wnTBM4R8HxKv/zIWytC1+qbJrD6ZwBgXsvjFpygjqeeOp7RXT7jPxRitLDHBLMMrx8hvibZRaDMxIVgIjuFqf/6PL068ZiY8ufgJ4XfjMiaOsSs63ZsmsN53ulL
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id vu7-20020a170907a64700b00a3d1cce7c31sm433804ejc.211.2024.02.13.10.14.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 10:14:52 -0800 (PST)
-Message-ID: <0e5b990eeaa63590e067c8ac10642b6bc6d0e9a8.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: check bpf_func_state->callback_depth
- when pruning states
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, kuniyu@amazon.com
-Date: Tue, 13 Feb 2024 20:14:51 +0200
-In-Reply-To: <925915504557d991bf9b576a362e0ef4a8953795.camel@gmail.com>
-References: <20240212143832.28838-1-eddyz87@gmail.com>
-	 <20240212143832.28838-3-eddyz87@gmail.com>
-	 <fdf38873-a1e2-4a16-974b-ea2f265e08e1@linux.dev>
-	 <925915504557d991bf9b576a362e0ef4a8953795.camel@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1707848458; x=1708453258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WMCDWe4nTrur1kVGwJ31A6yxxlrw9DIaTAO8cCqFrxo=;
+        b=VhSvDwAcNXOVss8q9b7rQ4Ax0PMM1OoyfP7w6SFKEOQFb00pSL41SsNOCwy9jFksKf
+         U5ICZEd3bNHkIsnp/X657m0OSdAqk000jo7V0R/Y9qC2Rz5fDtGHIaITOz7qj0umEpf3
+         OyXnt0tnxmdbG2EGOH32XkPzdwBzM6vRxHa/xUnsMnE9VaBx2PutoWSkdIw84Ese/tH6
+         2VObc2CevvcOAZuGEDTCibQg2unovFCUKFXXGwmXn6doo4J4ZtC/f4DYfkF/SFH8vbNp
+         om7DkNH0z6rLoqvSiIDrdrlNk0ZFSuAW9oahSpjavtQPXcBFP7GI8wwLB0DXcjpHZ5yz
+         Zfvw==
+X-Forwarded-Encrypted: i=1; AJvYcCVVzAU7eQ3bOwBQ7/X9txRbQQFnAjOXVt95iQr7hPX8Q0Zou3xdehbIkq6gIcAP58so0JHpHPJRl9thfeUv/fV+Vk1M
+X-Gm-Message-State: AOJu0Yz19NRloeZJmndwnJ4yVRdYJGl5navweK45IKyNmZfU7u3oppUb
+	DBpqBZbz8Sy/Eq/Ze2CR58yqoYY4zptHGSNWfOz7eT51S4wRSb6KHNkqVC6dSjt+g21XZB7Mdlu
+	8UECsKM8llTAtL/ZxJT07o1SqI6ism03n
+X-Google-Smtp-Source: AGHT+IEX67UJ4DpBnqQCJzmzzZGrGhQsU2226gA02Y/LATUfMVay9lSFkqzm0KZx1sqAX8+44nWkPXUj0nSVsvkVxa8=
+X-Received: by 2002:a17:90a:6c22:b0:296:c2a1:d05e with SMTP id
+ x31-20020a17090a6c2200b00296c2a1d05emr343980pjj.2.1707848458195; Tue, 13 Feb
+ 2024 10:20:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240207153550.856536-1-jolsa@kernel.org> <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+ <ZceWuIgsmiLYyCxQ@krava> <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
+ <ZctcEpz3fHK4RqUX@krava>
+In-Reply-To: <ZctcEpz3fHK4RqUX@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 13 Feb 2024 10:20:46 -0800
+Message-ID: <CAEf4BzY_UBNe4ONqKGg5VtA-nY-ozgpQ=Du1+8ipQNnZ+JKCew@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Updated diagram with a few fixes, line numbers would be removed in the
-final version.
+On Tue, Feb 13, 2024 at 4:09=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
+>
+> SNIP
+>
+> > > > But the way you implement it with extra flag and extra fd parameter
+> > > > makes it harder to have a nice high-level support in libbpf (and
+> > > > presumably other BPF loader libraries) for this.
+> > > >
+> > > > When I was thinking about doing something like this, I was consider=
+ing
+> > > > adding a new program type, actually. That way it's possible to defi=
+ne
+> > > > this "let's skip return probe" protocol without backwards
+> > > > compatibility concerns. It's easier to use it declaratively in libb=
+pf.
+> > >
+> > > ok, that seems cleaner.. but we need to use current kprobe programs,
+> > > so not sure at the moment how would that fit in.. did you mean new
+> > > link type?
+> >
+> > It's kind of a less important detail, actually. New program type would
+> > allow us to have an entirely different context type, but I think we
+> > can make do with the existing kprobe program type. We can have a
+> > separate attach_type and link type, just like multi-kprobe and
+> > multi-uprobe are still kprobe programs.
+>
+> ok, having new attach type on top of kprobe_multi link makes sense
+>
+> >
+> > >
+> > > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
+> > > > something to designate that it's both entry and exit probe) as one
+> > > > program and in the code there would be some way to determine whethe=
+r
+> > > > we are in entry mode or exit mode (helper or field in the custom
+> > > > context type, the latter being faster and more usable, but it's
+> > > > probably not critical).
+> > >
+> > > hum, so the single program would be for both entry and exit probe,
+> > > I'll need to check how bad it'd be for us, but it'd probably mean
+> > > just one extra tail call, so it's likely ok
+> >
+> > I guess, I don't know what you are doing there :) I'd recommend
+> > looking at utilizing BPF global subprogs instead of tail calls, if
+> > your kernel allows for that, as that's a saner way to scale BPF
+> > verification.
+>
+> ok, we should probably do that.. given this enhancement will be
+> available on latest kernel anyway, we could use global subprogs
+> as well
+>
+> the related bpftrace might be bit more challenging.. will have to
+> generate program calling entry or return program now, but seems
+> doable of course
 
---- 8< ---------------------------------
+So you want users to still have separate kprobe and kretprobe in
+bpftrace, but combine them into this kwrapper transparently? It does
+seem doable, but hopefully we'll be able to write kwrapper programs in
+bpftrace directly as well.
 
- .------------------------------------- Checkpoint / State name
- |    .-------------------------------- Code point number
- |    |   .---------------------------- Stack state {ctx.a,ctx.b,ctx.c}
- |    |   |        .------------------- Callback depth in frame #0
- v    v   v        v
-1  - (0) {7P,7P,7},depth=3D0
-2    - (3) {7P,7P,7},depth=3D1
-3      - (0) {7P,7P,42},depth=3D1
-(a)      - (3) {7P,7,42},depth=3D2
-4          - (0) {7P,7,42},depth=3D2      loop terminates because of depth =
-limit
-5            - (4) {7P,7,42},depth=3D0    predicted false, ctx.a marked pre=
-cise
-6            - (6) exit
-7        - (2) {7P,7,42},depth=3D2
-8          - (0) {7P,42,42},depth=3D2     loop terminates because of depth =
-limit
-9            - (4) {7P,42,42},depth=3D0   predicted false, ctx.a marked pre=
-cise
-10           - (6) exit
-(b)      - (1) {7P,7P,42},depth=3D2
-11         - (0) {42P,7P,42},depth=3D2    loop terminates because of depth =
-limit
-12           - (4) {42P,7P,42},depth=3D0  predicted false, ctx.{a,b} marked=
- precise
-13           - (6) exit
-14   - (2) {7P,7,7},depth=3D1
-15     - (0) {7P,42,7},depth=3D1          considered safe, pruned using che=
-ckpoint (a)
-(c)  - (1) {7P,7P,7},depth=3D1            considered safe, pruned using che=
-ckpoint (b)
+>
+> >
+> > >
+> > > >
+> > > > Another frequently requested feature and a very common use case is =
+to
+> > > > measure duration of the function, so if we have a custom type, we c=
+an
+> > > > have a field to record entry timestamp and let user calculate
+> > >
+> > > you mean bpf program context right?
+> >
+> > Yes, when I was writing that I was imagining a new context type with ne=
+w fields.
+> >
+> > But thinking about this a bit more, I like a slightly different
+> > approach now. Instead of having a new context type, kernel capturing
+> > timestamps, etc, what if we introduce a concept of "a session". This
+> > paired kprobe+kretprobe (and same for uprobe+uretprobe) share a common
+> > session. So, say, if we are tracing kernel function abc() and we have
+> > our kwrapper (let's call it that for now, kwrapper and uwrapper?)
+> > program attached to abc, we have something like this:
+> >
+> > 1) abc() is called
+> > 2) we intercept it at its entry, initialize "session"
+> > 3) call our kwrapper program in entry mode
+> > 4) abc() proceeds, until return
+> > 5) our kwrapper program is called in exit mode
+> > 6) at this point the session has ended
+> >
+> > If abc() is called again or in parallel on another CPU, each such
+> > abc() invocation (with kwrapper prog) has its own session state.
+> >
+> > Now, it all sounds scary, but a session could be really just a 8 byte
+> > value that has to last for the duration of a single kprobe+kretprobe
+> > execution.
+> >
+> > Imagine we introduce just one new kfunc that would be usable from
+> > kwrapper and uwrapper programs:
+> >
+> > u64 *bpf_get_session_cookie(void);
+> >
+> > It returns a pointer to an 8-byte slot which initially is set to zero
+> > by kernel (before kprobe/entry part). And then the program can put
+> > anything into it. Either from entry (kprobe/uprobe) or exit
+> > (kretprobe/uretprobe) executions. Whatever value was stored in entry
+> > mode will still be there in exit mode as well.
+> >
+> > This gives a lot of flexibility without requiring the kernel to do
+> > anything expensive.
+> >
+> > E.g., it's easy to detect if kwrapper program is an entry call or exit =
+call:
+> >
+> > u64 *cookie =3D bpf_get_session_cookie();
+> > if (*cookie =3D=3D 0) {
+> >   /* entry mode */
+> >   *cookie =3D 1;
+> > } else {
+> >   /* exit mode */
+> > }
+> >
+> > Or if we wanted to measure function duration/latency:
+> >
+> > u64 *cookie =3D bpf_get_session_cookie();
+> > if (*cookie =3D=3D 0) {
+> >   *cookie =3D bpf_get_ktime_ns();
+> > } else {
+> >   u64 duration =3D bpf_get_ktime_ns() - *cookie;
+> >   /* output duration somehow */
+> > }
+> >
+> > Yes, I realize special-casing zero might be a bit inconvenient, but I
+> > think simplicity trumps a potential for zero to be a valid value (and
+> > there are always ways to work around zero as a meaningful value).
+> >
+> > Now, in more complicated cases 8 bytes of temporary session state
+> > isn't enough, just like BPF cookie being 8 byte (read-only) value
+> > might not be enough. But the solution is the same as with the BPF
+> > cookie. You just use those 8 bytes as a key into ARRAY/HASHMAP/whatnot
+> > storage. It's simple and fast enough for pretty much any case.
+>
+> I was recently asked for a way to have function arguments available
+> in the return kprobe as it is in fexit programs (which was not an
+> option to use, because we don't have fast multi attach for it)
+>
+> using the hash map to store arguments and storing its key in the
+> session data might be solution for this
 
-Here checkpoint (b) has callback_depth of 2, meaning that it would
-never reach state {42,42,7}.
-While checkpoint (c) has callback_depth of 1, and thus
-could yet explore the state {42,42,7} if not pruned prematurely.
-This commit makes forbids such premature pruning,
-allowing verifier to explore states sub-tree starting at (c):
+if you are ok using hashmap keyed by tid, you can do it today without
+any kernel changes. With session cookie you'll be able to utilize
+faster ARRAY map (by building a simple ID allocator to get a free slot
+in ARRAY map).
 
-(c)  - (1) {7,7,7P},depth=3D1
-16     - (0) {42P,7,7P},depth=3D1
-         ...
-17       - (2) {42,7,7},depth=3D2
-18         - (0) {42,42,7},depth=3D2      loop terminates because of depth =
-limit
-19           - (4) {42,42,7},depth=3D0    predicted true, ctx.{a,b,c} marke=
-d precise
-20             - (5) division by zero
+>
+> >
+> >
+> > Now, how do we implement this storage session? I recently looked into
+> > uprobe/uretprobe implementation, and I know that for uretprobes there
+> > is a dynamically allocated uretprobe_instance (or whatever the name)
+> > allocated for each runtime invocation of uretprobe. We can use that.
+> > We'll need to allocate this instance a bit earlier, before uprobe part
+> > of uwrapper BPF program has to be executed, initialize session cookie
+> > to zero, and store pointer to this memory in bpf_run_ctx (just like we
+> > do for BPF cookie).
+>
+> I think you refer to the return_instance and it seems like we could use i=
+t,
+> I'll check on that
+>
 
---------------------------------- >8 ---
+yep, probably
+
+> >
+> > I bet there is something similar in the kretprobe case, where we can
+> > carve out 8 bytes and pass it to both entry and exit parts of kwrapper
+> > program.
+>
+> for kprobes.. both kprobe and kprobe_multi/fprobe use rethook to invoke
+> return probes, so I guess we could use it and store that shared data
+> in there
+>
+> btw Masami is in process of removing rethook from kprobe_multi/fprobe,
+> as part of migrating fprobe on top of ftrace [0]
+>
+> but instead the rethook I think there'll be some sort of shadow stack/dat=
+a
+> area accessible from both entry and return probes, that we could use
+
+ok, cool. We also need to be careful to not share session cookie
+between unrelated programs. E.g., if two independent kwrapper programs
+are attached to the same function, they should each have their own
+cookie. Otherwise it's not clear how to build anything reliable on top
+of that, tbh. This might be a problem, though, right?
+
+>
+> jirka
+>
+>
+> [0] https://lore.kernel.org/bpf/170723204881.502590.11906735097521170661.=
+stgit@devnote2/
+>
+> >
+> > So anyways, might need some internal refactoring, but seems very
+> > doable and will give a lot of power and flexibility for tracing use
+> > cases.
+> >
+> > It would be cool to also have a similar fentry/fexit combo with "BPF
+> > session cookie", but that's something we can think about separately,
+> > probably.
+> >
+> >
+> > >
+> > > > duration, if necessary. Without this users have to pay a bunch of
+> > > > extra overhead to record timestamp and put it into hashmap (keyed b=
+y
+> > > > thread id) or thread local storage (even if they have no other use =
+for
+> > > > thread local storage).
+> > >
+> > > sounds good
+> > >
+> > > >
+> > > > Also, consider that a similar concept is applicable to uprobes and =
+we
+> > > > should do that as well, in similar fashion. And the above approach
+> > > > works for both kprobe/kretprobe and uprobe/uretprobe cases, because
+> > > > they have the same pt_regs data structure as a context (even if for
+> > > > exit probes most of the values of pt_regs are not that meaningful).
+> > >
+> > > ok, that seems useful for uprobes as well
+> >
+> > yes, absolutely
+> >
+> > >
+> > > btw I have another unrelated change in stash that that let you choose
+> > > the bpf_prog_active or prog->active re-entry check before program is
+> > > executed in krobe_multi link.. I also added extra flag, and it still
+> > > seems like good idea to me, thoughts? ;-)
+> > >
+> >
+> > no specific opinion on this from my side, I guess
+> >
+> > > >
+> > > > So anyways, great feature, but let's discuss end-to-end usability
+> > > > story before we finalize the implementation?
+> > >
+> > > yep, it does say RFC in the subject ;-)
+> > >
+> > > >
+> > > >
+> >
+> > [...]
 
