@@ -1,350 +1,223 @@
-Return-Path: <bpf+bounces-21892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4DEA853C71
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:52:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9882853C76
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 21:53:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 253CB1F283B8
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 20:52:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDD5C1C22806
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 20:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16AB612FA;
-	Tue, 13 Feb 2024 20:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA0162172;
+	Tue, 13 Feb 2024 20:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ju/7C4Nd"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="OVfsxu8f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65315FF03
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 20:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880225FF03;
+	Tue, 13 Feb 2024 20:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707857531; cv=none; b=S01kpJyIv0IGlkgAr2kyKtiUIcKAEJAKcYIEr1fglUzTxb+VKd/Fo6bAbV/Cs5h7j5LCV5wD6cK5kOBzdt3Su1mq4g8/PdgNbA/CBjTlfa2UCLi2Hj4t5ItOKpph1IkDQpNBtzKtNXe26ApSysIaHITc6B9YL9wV1/I+Sqv75ZA=
+	t=1707857552; cv=none; b=YrSu86UddSUFpplDwL8zckC8Cgiw0UZUZTNbLoZztDtFOI5rb4gZWBe9YcM6gb1TfjMEuUFj8NwJuXaP+bdNkrsnfXQEsNsb1VadVOCXHqrkn8NYhHdjSidO2S3bEId//uNhZth5ZsgwkBq2HLkgKRjZEbuukqLICYJSzsbeavo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707857531; c=relaxed/simple;
-	bh=NeHzQXnNfgEFXzNwjYOjEV2KcCZa0afnUfqZO/BPCMU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PHE1suarKr9aFO8xdP3tbhoPqF9Rm5FTGlfjTnBuwzCO9Ez3yltI8Ebu097p7NSnZw9U6xYSWSiItMWj6MbXMpLwyC00T6YcpmCNE01uu5dfA82BrIH7m4mr+VRyHc3Aut65fe8itgiQuSyDRbEi75pRt9k8cWldH3F6hMdc7zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ju/7C4Nd; arc=none smtp.client-ip=209.85.208.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-55a90a0a1a1so6661552a12.0
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 12:52:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707857527; x=1708462327; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KKXAW8M0YfvMRz5/0feISztMjPDlB+YmAzmITXC5IdM=;
-        b=Ju/7C4NdcK9tKfcBKzaK0ZtGm23IoGTD4epxRQQqX6ry3+ey8UwEfEr9Yn23wAssXs
-         NnuOYDewvI352ojPdC3Gt7g2lykEyFJveHdvt4Xb6FXjRgRIMKe4rBlMgnSCWkOVubMK
-         O+vI0tLoeQCxRhchEcabKSiw92nuLuxiRJUDF1vL1B9vG/gYZnGApnwWquhYc7OorQdI
-         N1nGPzcREOJroemTDPGIGyg037vq1z6uK1qW20jF/+l3Hjtv1qMJXbHfB56K349rUsNo
-         IoWwNTndmz5zsSsRFAzkSQiy2Zq1sIeCu4Ny7fYGi/PoUvSNmEzEe2eazTVQjC2s1er2
-         tWQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707857527; x=1708462327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KKXAW8M0YfvMRz5/0feISztMjPDlB+YmAzmITXC5IdM=;
-        b=NHEqKvas6e5T2eTf0/THtdbyN4MDeW6h42fKBh0ip6cRXNy+EPqETItRzMuNYDBHKd
-         XPv79mRi6H410s0uyTRI3Mxn6TkqWzlZhWLZZSaGNZ3uTl07iDJkU2XusvE+4Ysi7/Vy
-         m/eXt9gN2GNYtyRy8jZG1F4xJV/D/ZIAMSLc2N6RLm8CUH/ymLfcqRnhTPOvJlUzkNhw
-         w97VruZM7EsjsZ/1oTFSnpC3n5kmIQRyZOCx5RM1eSDSN6XVonlNFKdTbmE7KKxLYvxX
-         KpPIid+eIHLYF6JUcLCmKWJGl9wmAfY90QNPmrrWUyLFDbkShwDDeSD0hIXLIH1NVQhL
-         L+9A==
-X-Gm-Message-State: AOJu0YyC5UylxYJ0nLmapWVphNRg5TtPgL4vOXMmZO/yzaX9lBaBQ1bk
-	QlVMZZTmZxNxm/DVIedL/kptPjoQzoO99RPBRaDO+cWALQpEpMl4gVPSOXxnsRHV9a81YZIsOEK
-	Px9/ki9zDvcLOEiVrGuvN18Vei14=
-X-Google-Smtp-Source: AGHT+IHe6J67kYgmJcXac6xebgWqqF9MfuvCsHVZrnfXVfYxDkegcIAewGHjHx6mZACQSiGivxYQwRrpX5vajXQszWw=
-X-Received: by 2002:a17:907:10c1:b0:a3c:1f9d:e7c with SMTP id
- rv1-20020a17090710c100b00a3c1f9d0e7cmr424805ejb.34.1707857526782; Tue, 13 Feb
- 2024 12:52:06 -0800 (PST)
+	s=arc-20240116; t=1707857552; c=relaxed/simple;
+	bh=64I1TgtHDDIt6/p7AHX6u2hXP67VwmvVIRlSAqFWpzA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lffe9PcQ4Ab37s2gsy6gTOacuhpWWo/jmNXEZbp55j4RPXQLzy6IDFWU4cE8R8rcZiTSe4Xjye8T670bORy64rUUI2JHKVTEoPeLe7OBBKojATWlWKiJ+GalqFYosL+3rHUpsPwAfgfjjTgAaop3LHKCUv7DwfHxbJwQuKNwFj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=OVfsxu8f; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
+	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=AynPBu8jS0YBZE5dCSOc1gqeyaauXcsGk9RK7JNo4+E=; b=OVfsxu8fyN677OC6MCjrWC9Msm
+	YgE2jZ+MuT/ObdYNvqwDd6jNqdDDlQOn2T90JuFIa7XQrz7hc5Wnv4DiXOa1s+XDGZMYwxV6TAOzl
+	+7beOSD+8xCsjHSh3NqSEBumSecmG3el6PHcJOQs5kdxdUqPtSgqgyIqTTIRF+galECY/WVS1zOYs
+	hDliJrLgHjS0DluetlyEa26cfpoEc4hNyACTh02TGjewGvA6tuJ22l6h2hcxuFSEy8pRjvXfAulb5
+	WJT9oRkUsCJsnsAQ0oInuuKqbQTsvj1fPwW6g9q3/vgI+2w8htu+kUvHX6WZKk//xtPYkA8LX0n7m
+	z1HvapMA==;
+Received: from [2001:9e8:9d1:8401:6f0:21ff:fe91:394] (port=36842 helo=bergen.fjasle.eu)
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <nicolas@fjasle.eu>)
+	id 1rZzlN-00HT8U-CK;
+	Tue, 13 Feb 2024 21:52:21 +0100
+Date: Tue, 13 Feb 2024 21:52:14 +0100
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, ndesaulniers@google.com,
+	morbo@google.com, justinstitt@google.com, keescook@chromium.org,
+	maskray@google.com, linux-kbuild@vger.kernel.org,
+	bpf@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] kbuild: Fix changing ELF file type for output of
+ gen_btf for big endian
+Message-ID: <ZcvWfsv1ohV5qHSI@bergen.fjasle.eu>
+References: <20240212-fix-elf-type-btf-vmlinux-bin-o-big-endian-v2-1-22c0a6352069@kernel.org>
+ <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201042109.1150490-1-memxor@gmail.com> <20240201042109.1150490-15-memxor@gmail.com>
- <20240212205314.GC2200361@maniforge.lan> <CAP01T76hX2jxHiJ_iiWSj7Wgu5t4RL48-eLGJmEtik9GR0rq6g@mail.gmail.com>
- <20240213193324.GA2453398@maniforge.lan>
-In-Reply-To: <20240213193324.GA2453398@maniforge.lan>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 13 Feb 2024 21:51:30 +0100
-Message-ID: <CAP01T75CnbchAnqG6wJnzrTcQTtQ4Ygyo0LmB+HMUU+9W3SG5w@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 14/14] selftests/bpf: Add tests for exceptions
- runtime cleanup
-To: David Vernet <void@manifault.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>, Raj Sahu <rjsu26@vt.edu>, 
-	Dan Williams <djwillia@vt.edu>, Rishabh Iyer <rishabh.iyer@epfl.ch>, 
-	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="k3DOEzKl6wHMV12g"
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATK=8V+BroyN+uo9OynkfR6s6HtRgh=LF7yan7cPkbaTA@mail.gmail.com>
+X-Operating-System: Debian GNU/Linux trixie/sid
+Jabber-ID: nicolas@jabber.no
 
-On Tue, 13 Feb 2024 at 20:33, David Vernet <void@manifault.com> wrote:
->
-> On Mon, Feb 12, 2024 at 11:43:42PM +0100, Kumar Kartikeya Dwivedi wrote:
-> > On Mon, 12 Feb 2024 at 21:53, David Vernet <void@manifault.com> wrote:
-> > >
-> > > On Thu, Feb 01, 2024 at 04:21:09AM +0000, Kumar Kartikeya Dwivedi wrote:
-> > > > Add tests for the runtime cleanup support for exceptions, ensuring that
-> > > > resources are correctly identified and released when an exception is
-> > > > thrown. Also, we add negative tests to exercise corner cases the
-> > > > verifier should reject.
-> > > >
-> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
-> > > >  tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
-> > > >  .../bpf/prog_tests/exceptions_cleanup.c       |  65 +++
-> > > >  .../selftests/bpf/progs/exceptions_cleanup.c  | 468 ++++++++++++++++++
-> > > >  .../bpf/progs/exceptions_cleanup_fail.c       | 154 ++++++
-> > > >  .../selftests/bpf/progs/exceptions_fail.c     |  13 -
-> > > >  6 files changed, 689 insertions(+), 13 deletions(-)
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_cleanup.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_cleanup_fail.c
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > > > index 5c2cc7e8c5d0..6fc79727cd14 100644
-> > > > --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > > > +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > > > @@ -1,6 +1,7 @@
-> > > >  bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
-> > > >  bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
-> > > >  exceptions                                    # JIT does not support calling kfunc bpf_throw: -524
-> > > > +exceptions_unwind                             # JIT does not support calling kfunc bpf_throw: -524
-> > > >  fexit_sleep                                      # The test never returns. The remaining tests cannot start.
-> > > >  kprobe_multi_bench_attach                        # needs CONFIG_FPROBE
-> > > >  kprobe_multi_test                                # needs CONFIG_FPROBE
-> > > > diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
-> > > > index 1a63996c0304..f09a73dee72c 100644
-> > > > --- a/tools/testing/selftests/bpf/DENYLIST.s390x
-> > > > +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-> > > > @@ -1,5 +1,6 @@
-> > > >  # TEMPORARY
-> > > >  # Alphabetical order
-> > > >  exceptions                            # JIT does not support calling kfunc bpf_throw                                (exceptions)
-> > > > +exceptions_unwind                     # JIT does not support calling kfunc bpf_throw                                (exceptions)
-> > > >  get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
-> > > >  stacktrace_build_id                      # compare_map_keys stackid_hmap vs. stackmap err -2 errno 2                   (?)
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c b/tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c
-> > > > new file mode 100644
-> > > > index 000000000000..78df037b60ea
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/exceptions_cleanup.c
-> > > > @@ -0,0 +1,65 @@
-> > > > +#include "bpf/bpf.h"
-> > > > +#include "exceptions.skel.h"
-> > > > +#include <test_progs.h>
-> > > > +#include <network_helpers.h>
-> > > > +
-> > > > +#include "exceptions_cleanup.skel.h"
-> > > > +#include "exceptions_cleanup_fail.skel.h"
-> > > > +
-> > > > +static void test_exceptions_cleanup_fail(void)
-> > > > +{
-> > > > +     RUN_TESTS(exceptions_cleanup_fail);
-> > > > +}
-> > > > +
-> > > > +void test_exceptions_cleanup(void)
-> > > > +{
-> > > > +     LIBBPF_OPTS(bpf_test_run_opts, ropts,
-> > > > +             .data_in = &pkt_v4,
-> > > > +             .data_size_in = sizeof(pkt_v4),
-> > > > +             .repeat = 1,
-> > > > +     );
-> > > > +     struct exceptions_cleanup *skel;
-> > > > +     int ret;
-> > > > +
-> > > > +     if (test__start_subtest("exceptions_cleanup_fail"))
-> > > > +             test_exceptions_cleanup_fail();
-> > >
-> > > RUN_TESTS takes care of doing test__start_subtest(), etc. You should be
-> > > able to just call RUN_TESTS(exceptions_cleanup_fail) directly here.
-> > >
-> >
-> > Ack, will fix.
-> >
-> > > > +
-> > > > +     skel = exceptions_cleanup__open_and_load();
-> > > > +     if (!ASSERT_OK_PTR(skel, "exceptions_cleanup__open_and_load"))
-> > > > +             return;
-> > > > +
-> > > > +     ret = exceptions_cleanup__attach(skel);
-> > > > +     if (!ASSERT_OK(ret, "exceptions_cleanup__attach"))
-> > > > +             return;
-> > > > +
-> > > > +#define RUN_EXC_CLEANUP_TEST(name)                                      \
-> > >
-> > > Should we add a call to if (test__start_subtest(#name)) to this macro?
-> > >
-> >
-> > Makes sense, will change this.
-> >
-> > > > [...]
-> > > > +
-> > > > +SEC("tc")
-> > > > +int exceptions_cleanup_percpu_obj(struct __sk_buff *ctx)
-> > > > +{
-> > > > +    struct { int i; } *p;
-> > > > +
-> > > > +    p = bpf_percpu_obj_new(typeof(*p));
-> > > > +    MARK_RESOURCE(&p, RES_SPILL);
-> > > > +    bpf_throw(VAL);
-> > >
-> > > It would be neat if we could have the bpf_throw() kfunc signature be
-> > > marked as __attribute__((noreturn)) and have things work correctly;
-> > > meaning you wouldn't have to even return a value here. The verifier
-> > > should know that bpf_throw() is terminal, so it should be able to prune
-> > > any subsequent instructions as unreachable anyways.
-> > >
-> >
-> > Originally, I was tagging the kfunc as noreturn, but Alexei advised
-> > against it in
-> > https://lore.kernel.org/bpf/CAADnVQJtUD6+gYinr+6ensj58qt2LeBj4dvT7Cyu-aBCafsP5g@mail.gmail.com
-> > ... so I have dropped it since.
->
-> I see. Ok, we can ignore this for now, though I think we should consider
-> revisiting this at some point once we've clarified the rules behind the
-> implicit prologue/epilogue. Being able to actually specify noreturn
-> really can make a difference in performance in some cases.
->
 
-I agree. I will add this to my TODO list to explore after this set is merged.
+--k3DOEzKl6wHMV12g
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> [...]
-> > > > +
-> > > > +SEC("tc")
-> > > > +int exceptions_cleanup_reg(struct __sk_buff *ctx)
-> > > > +{
-> > > > +    void *p;
-> > > > +
-> > > > +    p = bpf_ringbuf_reserve(&ringbuf, 8, 0);
-> > > > +    MARK_RESOURCE(p, RES_REG);
-> > > > +    bpf_throw(VAL);
-> > > > +    if (p)
-> > > > +        bpf_ringbuf_discard(p, 0);
-> > >
-> > > Does the prog fail to load if you don't have this bpf_ringbuf_discard()
-> > > check? I assume not given that in
-> > > exceptions_cleanup_null_or_ptr_do_ptr() and elsewhere we do a reserve
-> > > without discarding. Is there some subtle stack state difference here or
-> > > something?
-> > >
+On Tue 13 Feb 2024 11:15:40 GMT, Masahiro Yamada wrote:
+> On Tue, Feb 13, 2024 at 11:06=E2=80=AFAM Nathan Chancellor=20
+> <nathan@kernel.org> wrote:
 > >
-> > So I will add comments explaining this, since I realized this confused
-> > you in a couple of places, but basically if I didn't do a discard
-> > here, the compiler wouldn't save the value of p across the bpf_throw
-> > call. So it may end up in some caller-saved register (R1-R5) and since
-> > bpf_throw needs things to be either saved in the stack or in
-> > callee-saved regs (R6-R9) to be able to do the stack unwinding, we
-> > would not be able to test the case where the resource is held in
-> > R6-R9.
+> > Commit 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> > changed the ELF type of .btf.vmlinux.bin.o to ET_REL via dd, which works
+> > fine for little endian platforms:
 > >
-> > In a correctly written program, in the path where bpf_throw is not
-> > done, you will always have some cleanup code (otherwise your program
-> > wouldn't pass), so the value should always end up being preserved
-> > across a bpf_throw call (this is kind of why Alexei was sort of
-> > worried about noreturn, because in that case the compiler may decide
-> > to not preserve it for the bpf_throw path).
-> > You cannot just leak a resource acquired before bpf_throw in the path
-> > where exception is not thrown.
->
-> Ok, that makes sense. I suppose another way to frame this would be to
-> consider it in a typical scheduling scenario:
->
-> struct task_ctx *lookup_task_ctx(struct task_struct *p)
-> {
->         struct task_ctx *taskc;
->         s32 pid = p->pid;
->
->         taskc = bpf_map_lookup_elem(&task_data, &pid);
->         if (!taskc)
->                 bpf_throw(-ENOENT); // Verifier
->
->         return taskc;
-> }
->
-> void BPF_STRUCT_OPS(sched_stopping, struct task_struct *p, bool runnable)
-> {
->         struct task_ctx *taskc;
->
->         taskc = lookup_task_ctx(p)
->
->         /* scale the execution time by the inverse of the weight and charge */
->         p->scx.dsq_vtime +=
->                 (bpf_ktime_get_ns() - taskc->running_at) * 100 / p->scx.weight;
-> }
->
-> We're not dropping a reference here, but taskc is preserved across the
-> bpf_throw() path, so the same idea applies.
->
-
-Yeah, I will add an example like this to the selftests to make sure we
-also exercise such a pattern.
-
-> > Also,  I think the test is a bit fragile, I should probably rewrite it
-> > in inline assembly, because while the compiler chooses to hold it in a
-> > register here, it is not bound to do so in this case.
->
-> To that point, I wonder if it would be useful or possible to come up with some
-> kind of a macro that allows us to specify a list of variables that must be
-> preserved after a bpf_throw() call? Not sure how or if that would work exactly.
->
-
-I think it can be useful, supposedly if we can force the compiler to
-do a spill to the stack, that will be enough to enable unwinding.
-But we should probably come back to this in case we see there are
-certain compiler optimizations causing trouble.
-Otherwise it's unnecessary cognitive overhead for someone writing a
-program to have to explicitly mark variables like this.
-
-> > > >  [...]
-> > > >
-> > > > -SEC("?tc")
-> > > > -__failure __msg("Unreleased reference")
-> > > > -int reject_with_reference(void *ctx)
-> > > > -{
-> > > > -     struct foo *f;
-> > > > -
-> > > > -     f = bpf_obj_new(typeof(*f));
-> > > > -     if (!f)
-> > > > -             return 0;
-> > > > -     bpf_throw(0);
-> > >
-> > > Hmm, so why is this a memory leak exactly? Apologies if this is already
-> > > explained clearly elsewhere in the stack.
-> > >
+> >    00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF...=
+=2E........|
+> >   -00000010  03 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
+=2E........|
+> >   +00000010  01 00 b7 00 01 00 00 00  00 00 00 80 00 80 ff ff  |.......=
+=2E........|
 > >
-> > I will add comments around some of these to better explain this in the
-> > non-RFC v1.
-> > Basically, this program is sort of unrealistic (since it's always
-> > throwing, and not really cleaning up the object since there is no
-> > other path except the one with bpf_throw). So the compiler ends up
-> > putting 'f' in a caller-saved register, during release_reference we
-> > don't find it after bpf_throw has been processed (since caller-saved
-> > regs have been cleared due to kfunc processing, and we generate frame
-> > descriptors after check_kfunc_call, basically simulating the state
-> > where only preserved state after the call is observed at runtime), but
-> > the reference state still lingers around for 'f', so you get this
-> > "Unreleased reference" error later when check_reference_leak is hit.
+> > However, for big endian platforms, it changes the wrong byte, resulting
+> > in an invalid ELF file type, which ld.lld rejects:
 > >
-> > It's just trying to exercise the case where the pointer tied to a
-> > reference state has been lost in verifier state, and that we return an
-> > error in such a case and don't succeed in verifying the program
-> > accidently (because there is no way we can recover the value to free
-> > at runtime).
->
-> Makes total sense, thanks a lot for explaining!
->
-> This looks great, I'm really excited to use it.
+> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
+=2E........|
+> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+=2E........|
+> >   +00000010  01 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+=2E........|
+> >
+> >   Type:                              <unknown>: 103
+> >
+> >   ld.lld: error: .btf.vmlinux.bin.o: unknown file type
+> >
+> > Fix this by updating the entire 16-bit e_type field rather than just a
+> > single byte, so that everything works correctly for all platforms and
+> > linkers.
+> >
+> >    00000000  7f 45 4c 46 02 02 01 00  00 00 00 00 00 00 00 00  |.ELF...=
+=2E........|
+> >   -00000010  00 03 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+=2E........|
+> >   +00000010  00 01 00 16 00 00 00 01  00 00 00 00 00 10 00 00  |.......=
+=2E........|
+> >
+> >   Type:                              REL (Relocatable file)
+> >
+> > While in the area, update the comment to mention that binutils 2.35+
+> > matches LLD's behavior of rejecting an ET_EXEC input, which occurred
+> > after the comment was added.
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
+> > Link: https://github.com/llvm/llvm-project/pull/75643
+> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>=20
+>=20
+> Thanks.
+>=20
+> I will wait for a few days until
+> the reviewers come back to give Reviewed-by again.
 
-Thanks for the review! Will respin addressing your comments after
-waiting for a day or two.
+thanks, v2 looks even better.
+
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+
+> > ---
+> > Changes in v2:
+> > - Rather than change the seek value for dd, update the entire e_type
+> >   field (Masahiro). Due to this change, I did not carry forward the
+> >   tags of v1.
+> > - Slightly update commit message to remove mention of ET_EXEC, which
+> >   does not match the dump (Masahiro).
+> > - Update comment to mention binutils 2.35+ has the same behavior as LLD
+> >   (Fangrui).
+> > - Link to v1: https://lore.kernel.org/r/20240208-fix-elf-type-btf-vmlin=
+ux-bin-o-big-endian-v1-1-cb3112491edc@kernel.org
+> > ---
+> >  scripts/link-vmlinux.sh | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> > index a432b171be82..7862a8101747 100755
+> > --- a/scripts/link-vmlinux.sh
+> > +++ b/scripts/link-vmlinux.sh
+> > @@ -135,8 +135,13 @@ gen_btf()
+> >         ${OBJCOPY} --only-section=3D.BTF --set-section-flags .BTF=3Dall=
+oc,readonly \
+> >                 --strip-all ${1} ${2} 2>/dev/null
+> >         # Change e_type to ET_REL so that it can be used to link final =
+vmlinux.
+> > -       # Unlike GNU ld, lld does not allow an ET_EXEC input.
+> > -       printf '\1' | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D16 stat=
+us=3Dnone
+> > +       # GNU ld 2.35+ and lld do not allow an ET_EXEC input.
+> > +       if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+> > +               et_rel=3D'\0\1'
+> > +       else
+> > +               et_rel=3D'\1\0'
+> > +       fi
+> > +       printf "${et_rel}" | dd of=3D${2} conv=3Dnotrunc bs=3D1 seek=3D=
+16 status=3Dnone
+> >  }
+> >
+> >  # Create ${2} .S file with all symbols from the ${1} object file
+> >
+> > ---
+> > base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+> > change-id: 20240208-fix-elf-type-btf-vmlinux-bin-o-big-endian-dbc55a1e1=
+296
+> >
+> > Best regards,
+> > --
+> > Nathan Chancellor <nathan@kernel.org>
+> >
+> >
+>=20
+>=20
+> --=20
+> Best Regards
+> Masahiro Yamada
+
+--k3DOEzKl6wHMV12g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXL1nkACgkQB1IKcBYm
+EmknARAA2E4GEywHnpFzwMKgFe11O30rRL3/W2ji1MkLji9oI5NquTUJZ6Qw/9Nc
+LT69QvkdpCrRX+zpqqI+hCV5CsyXzUKbOmcd0FQ3F6jxB35QM4ko1sYLJBcw3Xau
+waRdyD0agJ3IbcF85/f3xIvUk33Qhm55yMzLx/IZl7YKwI3/E4iO3JSWY1IfijMo
+l9fWpu7ZOSHrbglfgONr3GPt9vLwVBP5hXxwbkbR9r2VRL8Mc5oHHFMJYcY4y3bF
+wQVT7Fsz++dgnxD8VoyBBtVWrmrFx9pc/3sGbgK6tECwuVKd4ZzeGi0uRaB94Shy
+AoigytM4RQo8CxDhI3E952P1IYStX3yitI6hVcYcpOK6rOikKqwc9SZvmOyNbleY
+mUkeddNa3TA90BIJ1TdG+SFWdpfbx1R516pkagHLkt89jYq4uvb5pDs4QO65umxN
+D0OMvKaRBpPZNmy90557DA4s0BOhs6DZWmCGWR/nsz7h5zPHi7kDVwH4I7M+1VI6
+L2hQXFIYWvY17HAXHXyULgefp4bEhnvCCAzckkf6edpVdzloBhYWkzoGQn9eoERP
+NT9cRMElIP5s7ejDDaB5fwog6K5oNg6Wjbce2aV0Kpb8QTx2pDT1aw2Ml+RUm83N
+kiAoHupA7gVA1dio5hG1x7KZDHwK6CfhzhPFGnfFa0wNs7iWqmU=
+=ghs2
+-----END PGP SIGNATURE-----
+
+--k3DOEzKl6wHMV12g--
 
