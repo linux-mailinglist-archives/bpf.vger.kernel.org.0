@@ -1,133 +1,318 @@
-Return-Path: <bpf+bounces-21840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E433852FFC
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 13:01:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83BC9853039
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 13:10:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 816A71C217DF
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 12:01:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B2FE28A6FE
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 12:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2AA383B2;
-	Tue, 13 Feb 2024 12:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B7D3D966;
+	Tue, 13 Feb 2024 12:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUDwLAm8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgY2LAi2"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D414383B9
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 12:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71B438DD5
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 12:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707825683; cv=none; b=cw4xS4xWgP1zgjvoM8TYh+i5rwrsAZKDPLtUUgYCW7vienlzSdVx7xVmWTQRMzjIdOif910DgcFnOo37ILhVT3qfePAirNQNIFx2cxVkY4Di8nNH2K8R9qAgTJCDYHwYdsqkvyBkGhOr5d9l8r1fny0oZxBChZh4FYJmj//uOcI=
+	t=1707826200; cv=none; b=oOQLyXaU72VIun9kFWgHd7ixiiUgm3jmqyA03kBGFugpWT7wQ6f8fBstXW3Cgu5URkE5BjIHbt2L59+KTTw6vh70Ya7H/GkIyvLOwi5XUeVO0lthz/mZA3zHF7QX3kuSb6nqW5Tz3sRov8cOOAwoUhgQvDlvf1T3KNJn3y9j6tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707825683; c=relaxed/simple;
-	bh=2NGhDIskYMOM8G7MM5rUf2STjd75pFIgYrl55pxzqHs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LaMtAzSXjPY3wjyJ5CqVsbNPvV/+pnJjvuL8+USAvO5vRVMBIX/9Z8njKSpqx7lk4SkBreM5S0EvMORPrxS908JqOZEz2jmyW1zyL+zfOHTWsrHHr3qIWdLj/D7WmWHJ3HGwcLrOrVG47R26BWIgmGCHvlRNHE+mGpqVf+GBUUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mUDwLAm8; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1707826200; c=relaxed/simple;
+	bh=57Flo6mvELkrEZ2ywjnspRj1AcLIzpcQ9r5zowshJ5c=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RzvsfEX8wdncBxUeYJxsjFs674H91O981LXhT7GuxFpEQ9W0z/xZG8okWntQKwBYPOetdqQh6Nc/glyUmoNw/OQjl8r1VMOLxFUr20u/m1DCTx/MyIe12NMTYrfYy/Qfb9XKkmSWysFaFhK0famSkoVpld6dcTXjS20sDVKGnv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgY2LAi2; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3122b70439so550078766b.3
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 04:01:20 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3566c0309fso518704066b.1
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 04:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707825679; x=1708430479; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OG1r0NtLTO7Nq37a+qBaAqxHHKm+oftf3Z3AGoZnsYQ=;
-        b=mUDwLAm8NehvktLWxeUzjS7ZjierThVI6DvkiM8d5tjoVjhaHUK9yXkPQCB2qJLR5X
-         GyYTyyx9Ov4rlsL22hVRy1FsZHBzhmf/gtwe7lotCud+/uN11CbB/YhlpuPXuIoe5m04
-         /UXNLU8bWUJeGY3+aOitLYGkzWM2cpRAPuEqxkHLtGpcgLm1P9ga4g0Bqp9Q+R7NJCht
-         Vu6epuhI4bxjO/1RxX2LCVzhGub0wtu4PH94Q/g3ya4pydMUZNZKeaCKcIBnQ9AdZ8BF
-         HG/wcjyFzLOspsjyrVHOjwcBP9bxQoksA/oNydZApPi400coMysrVH65RaxINZVHrov2
-         rv/g==
+        d=gmail.com; s=20230601; t=1707826197; x=1708430997; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TcED3Do+9sfLY5n+pZWyKVSZZ/thd5xao6sle07KKgc=;
+        b=KgY2LAi2+ORAfuqbqRPAVdf41dTJgjTeuVngjb6xTvvFhqw5ijk0WrT8gdpaaIoKCI
+         xiturfbhIeMmjeZEHY9YhjI/0htsZAMb9sxZm4BWNG1vaJM/Uu7saJhlg9jG13DRp5w8
+         oh7MOz36Iktyp6D+ZgHq5uwO4y6WYnPGEWMaZHoS1OZYr4+ds0bCq0kvhR+WkP/Ugwe1
+         O+rdo0odiNrjZ/VcNLWyPWQOyg7BRQI3D194fuBcx+OkJJWdbnfpcjfneRo1sUPNAGa5
+         QBo7z0QeE/9OCrhlo5VmyRZ+jsLBjfwdQcaY2Wq7lTzmkD4U/aipf0GjxRjnhsJ/b4jS
+         haVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707825679; x=1708430479;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OG1r0NtLTO7Nq37a+qBaAqxHHKm+oftf3Z3AGoZnsYQ=;
-        b=GsDyWxZq7bFv1roo8efN6a3c0XhTcEpWUdcIUy5IoXmLxRB6AzziR0J+fm1JG6wLDD
-         mLn/xhHIjoq8/WnMtmhHPe4YM7hji5qd6UY58Se5OfVumxhDMSAV6NpspAGCWDtW4QdL
-         O2XsivYCFOzKlPJn6g0h5Ya1OIL6MZrNh8v2a+BYR2Mz7L18TFPA323UFrx7al1NPUwN
-         2T076C2pCGLMtIX+92s5uC0EpU0qXT077O07vTSPSB5EnPJiFNCoORLBERhYnov0f8Ar
-         liebSreV4Pj51ILjtZP3CM/ogsO7+icRK6+hj95zBV4MDkLhW5Lf2grVK5GAXgUTWcwz
-         lINQ==
-X-Gm-Message-State: AOJu0Yw177XT4gQxuSAny6kaYt9KWDTilE9kuSM7Q57hxj9ZORp98KU2
-	NWkqqBuIZ/hbFvVil3ohiDJ/JC3fHgxhFB5/s/7AwAR1OgDj44nO
-X-Google-Smtp-Source: AGHT+IGVq/FGBVTOMmd5u4Bo+rLXidfbF6tQJXQNKFoq1kNboQ4ummkLLalYQL6X5h1LYBkvBX/Ltg==
-X-Received: by 2002:a17:906:488:b0:a38:107a:94f6 with SMTP id f8-20020a170906048800b00a38107a94f6mr864045eja.71.1707825679173;
-        Tue, 13 Feb 2024 04:01:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUUvdWZXM74bJB4Rm9is6EK8VXw0yMKJKBtt86Ip5QfFLyeVGqzL55Ok3sdvvtBmkJwVD+J43coQurJBxoVyoVJ1XDVZ10V5U7TBi2JREafSU/a1gF+aT30mEOa3PDoV2R+2pP3CqkykOxsBd9NQ/we9Rkqns0S2yMVji4vNuLHOxlGb2sq61KySZByPq0s2iS5jcFFhUyVpZmfPHc4tvWfOJntk1E3wy7EAB52UdvpbF8QDi7djjomjhba+WUcLPIxYfYt7K3eDLL+p8HccfjJQQJ0Vw1Cupin+Qyy8qpVY550VFLZn2026t8EP+zQ3157j6oOqwJwA5GqqIgcv8MOk5eoCAJwoMVbXEpwBwqhYpHT4mnjP4ZpGA==
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id gz3-20020a170906f2c300b00a3793959b4asm1216026ejb.134.2024.02.13.04.01.17
+        d=1e100.net; s=20230601; t=1707826197; x=1708430997;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TcED3Do+9sfLY5n+pZWyKVSZZ/thd5xao6sle07KKgc=;
+        b=mGL595PEVrYKooI23XhgR0TirG1iBHr5fBn0wnrOqghWxgVtad4A0SMksh2L3Pujeu
+         yYakD0IejOMkvh2J7doM6HOp6NAbxuBiBxaiddFGU0VS1BOMUxs43zOZFf2yVTOgUZsw
+         1OePoq/73aJkl6qyG8zo7g7vKN/axUkZaPvxy8ahfgL3VVSFHH7dmgUprOz6W56lUlm8
+         kLoNQ83hAUmSSnm/fMWaAfOv9G75CrXfQI7xWNHrN1Lh+2ABKSgPA5FcypY+3wG0v/QX
+         5dvioBRRae8LrgK1JVDVIPXbMZ+JATQiI4WsJ46uNjvV2RSpbiq2S2ZzPjmOqjfD9Ozw
+         rpEg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMGIfqtUGW3c+UPU3xUgL+VSXierUKfoAHvrnPoVBrjoHPzWFKUoVqIOHSyMjxh0BInw5NAT/ntpGhgtxNXl1U3CIA
+X-Gm-Message-State: AOJu0YyhIh4q0WJa2uIPD/b7FsEZZWowi4YXLOOJWgAFy2YA4DhgiiuI
+	nnYklnFlhYsdg8MTU0DLgbhTw8E7hY8xo9xt4gXEehWhLVsJ14Jl
+X-Google-Smtp-Source: AGHT+IGtt1LLbuCv7cK460NDnv0S4mfyWQMSEGLSSYd7pjNrTr7zGuqOHxFojEuxJg49jE74RyHtzw==
+X-Received: by 2002:a17:906:5ad8:b0:a3c:9bc7:7a0e with SMTP id x24-20020a1709065ad800b00a3c9bc77a0emr4055577ejs.9.1707826196723;
+        Tue, 13 Feb 2024 04:09:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVWuakFXi/8hkQW/GkTX1XYHvHR05Cw6gOU81JIwnru3KCark/M98EGoH+QQo1unltO5RNbnHN/BcxU0EXPji6gl1AVIjFFCLkOIJekjFjpT+Tv+jzyFbxQKqB9IxuRTUFannWArCT93iuSdszzT6Ip3pOY960QiXw8YRmeq+TJQ2MHk+bJPByUeP+cfpw01icqpP6KUovBSR9DLu1xUYzAS6fzhYyN2un/d1wUu69hdOZ+h1ce1dEDzPPC/JDv/jTfyBmjS5uShlcavc/P/V6PaK7KWWJOKAgTeZih3Nhtu/BZWLkBHWPvALuXapdpR7XWFzlSYMrJXsmGMfoW/IYiGlAMabBFjp+jGWAET2DnB0SeYnEZZmxLQVM9NL1PupTlkFMYLipzTw==
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id hu18-20020a170907a09200b00a3d1cce7c6fsm144780ejc.62.2024.02.13.04.09.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 04:01:18 -0800 (PST)
-Message-ID: <845fb766bbe90865e2859af347ace76593e42c66.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 09/20] bpf: Recognize cast_kern/user
- instructions in the verifier.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,  Barret Rhoden
- <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>,  Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Date: Tue, 13 Feb 2024 14:01:18 +0200
-In-Reply-To: <CAADnVQKfJsq6abdL5ShmmzOUKyBard4-9CH_j_V-yARfdn31qA@mail.gmail.com>
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
-	 <20240209040608.98927-10-alexei.starovoitov@gmail.com>
-	 <ed656ef900c33cb1bf9ffb06d0f4f59d7708e29c.camel@gmail.com>
-	 <CAADnVQKfJsq6abdL5ShmmzOUKyBard4-9CH_j_V-yARfdn31qA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        Tue, 13 Feb 2024 04:09:56 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 13 Feb 2024 13:09:54 +0100
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+Message-ID: <ZctcEpz3fHK4RqUX@krava>
+References: <20240207153550.856536-1-jolsa@kernel.org>
+ <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+ <ZceWuIgsmiLYyCxQ@krava>
+ <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
 
-On Mon, 2024-02-12 at 18:58 -0800, Alexei Starovoitov wrote:
+On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
 
-[...]
+SNIP
 
-> Yes. Casting anything is fine.
-> I don't think we need to enforce anything.
-> Those insns will be llvm generated. If src_reg is somehow ptr_to_ctx
-> or something it's likely llvm bug or crazy manual type cast
-> by the user, but if they do so let them experience debug pains.
-> The kernel won't crash.
+> > > But the way you implement it with extra flag and extra fd parameter
+> > > makes it harder to have a nice high-level support in libbpf (and
+> > > presumably other BPF loader libraries) for this.
+> > >
+> > > When I was thinking about doing something like this, I was considering
+> > > adding a new program type, actually. That way it's possible to define
+> > > this "let's skip return probe" protocol without backwards
+> > > compatibility concerns. It's easier to use it declaratively in libbpf.
+> >
+> > ok, that seems cleaner.. but we need to use current kprobe programs,
+> > so not sure at the moment how would that fit in.. did you mean new
+> > link type?
+> 
+> It's kind of a less important detail, actually. New program type would
+> allow us to have an entirely different context type, but I think we
+> can make do with the existing kprobe program type. We can have a
+> separate attach_type and link type, just like multi-kprobe and
+> multi-uprobe are still kprobe programs.
 
-Ok, makes sense.
+ok, having new attach type on top of kprobe_multi link makes sense
 
-[...]
+> 
+> >
+> > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
+> > > something to designate that it's both entry and exit probe) as one
+> > > program and in the code there would be some way to determine whether
+> > > we are in entry mode or exit mode (helper or field in the custom
+> > > context type, the latter being faster and more usable, but it's
+> > > probably not critical).
+> >
+> > hum, so the single program would be for both entry and exit probe,
+> > I'll need to check how bad it'd be for us, but it'd probably mean
+> > just one extra tail call, so it's likely ok
+> 
+> I guess, I don't know what you are doing there :) I'd recommend
+> looking at utilizing BPF global subprogs instead of tail calls, if
+> your kernel allows for that, as that's a saner way to scale BPF
+> verification.
 
-> > > @@ -18235,6 +18272,31 @@ static int resolve_pseudo_ldimm64(struct bpf=
-_verifier_env *env)
-> > >                               fdput(f);
-> > >                               return -EBUSY;
-> > >                       }
-> > > +                     if (map->map_type =3D=3D BPF_MAP_TYPE_ARENA) {
-> > > +                             if (env->prog->aux->arena) {
-> >=20
-> > Does this have to be (env->prog->aux->arena && env->prog->aux->arena !=
-=3D map) ?
->=20
-> No. all maps in used_maps[] are unique.
-> Adding "env->prog->aux->arena !=3D map" won't make any difference.
-> It will only be confusing.
+ok, we should probably do that.. given this enhancement will be
+available on latest kernel anyway, we could use global subprogs
+as well
 
-Right, sorry, I missed the loop above that checks if map had been
-already seen.
+the related bpftrace might be bit more challenging.. will have to
+generate program calling entry or return program now, but seems
+doable of course
+
+> 
+> >
+> > >
+> > > Another frequently requested feature and a very common use case is to
+> > > measure duration of the function, so if we have a custom type, we can
+> > > have a field to record entry timestamp and let user calculate
+> >
+> > you mean bpf program context right?
+> 
+> Yes, when I was writing that I was imagining a new context type with new fields.
+> 
+> But thinking about this a bit more, I like a slightly different
+> approach now. Instead of having a new context type, kernel capturing
+> timestamps, etc, what if we introduce a concept of "a session". This
+> paired kprobe+kretprobe (and same for uprobe+uretprobe) share a common
+> session. So, say, if we are tracing kernel function abc() and we have
+> our kwrapper (let's call it that for now, kwrapper and uwrapper?)
+> program attached to abc, we have something like this:
+> 
+> 1) abc() is called
+> 2) we intercept it at its entry, initialize "session"
+> 3) call our kwrapper program in entry mode
+> 4) abc() proceeds, until return
+> 5) our kwrapper program is called in exit mode
+> 6) at this point the session has ended
+> 
+> If abc() is called again or in parallel on another CPU, each such
+> abc() invocation (with kwrapper prog) has its own session state.
+> 
+> Now, it all sounds scary, but a session could be really just a 8 byte
+> value that has to last for the duration of a single kprobe+kretprobe
+> execution.
+> 
+> Imagine we introduce just one new kfunc that would be usable from
+> kwrapper and uwrapper programs:
+> 
+> u64 *bpf_get_session_cookie(void);
+> 
+> It returns a pointer to an 8-byte slot which initially is set to zero
+> by kernel (before kprobe/entry part). And then the program can put
+> anything into it. Either from entry (kprobe/uprobe) or exit
+> (kretprobe/uretprobe) executions. Whatever value was stored in entry
+> mode will still be there in exit mode as well.
+> 
+> This gives a lot of flexibility without requiring the kernel to do
+> anything expensive.
+> 
+> E.g., it's easy to detect if kwrapper program is an entry call or exit call:
+> 
+> u64 *cookie = bpf_get_session_cookie();
+> if (*cookie == 0) {
+>   /* entry mode */
+>   *cookie = 1;
+> } else {
+>   /* exit mode */
+> }
+> 
+> Or if we wanted to measure function duration/latency:
+> 
+> u64 *cookie = bpf_get_session_cookie();
+> if (*cookie == 0) {
+>   *cookie = bpf_get_ktime_ns();
+> } else {
+>   u64 duration = bpf_get_ktime_ns() - *cookie;
+>   /* output duration somehow */
+> }
+> 
+> Yes, I realize special-casing zero might be a bit inconvenient, but I
+> think simplicity trumps a potential for zero to be a valid value (and
+> there are always ways to work around zero as a meaningful value).
+> 
+> Now, in more complicated cases 8 bytes of temporary session state
+> isn't enough, just like BPF cookie being 8 byte (read-only) value
+> might not be enough. But the solution is the same as with the BPF
+> cookie. You just use those 8 bytes as a key into ARRAY/HASHMAP/whatnot
+> storage. It's simple and fast enough for pretty much any case.
+
+I was recently asked for a way to have function arguments available
+in the return kprobe as it is in fexit programs (which was not an
+option to use, because we don't have fast multi attach for it)
+
+using the hash map to store arguments and storing its key in the
+session data might be solution for this
+
+> 
+> 
+> Now, how do we implement this storage session? I recently looked into
+> uprobe/uretprobe implementation, and I know that for uretprobes there
+> is a dynamically allocated uretprobe_instance (or whatever the name)
+> allocated for each runtime invocation of uretprobe. We can use that.
+> We'll need to allocate this instance a bit earlier, before uprobe part
+> of uwrapper BPF program has to be executed, initialize session cookie
+> to zero, and store pointer to this memory in bpf_run_ctx (just like we
+> do for BPF cookie).
+
+I think you refer to the return_instance and it seems like we could use it,
+I'll check on that
+
+> 
+> I bet there is something similar in the kretprobe case, where we can
+> carve out 8 bytes and pass it to both entry and exit parts of kwrapper
+> program.
+
+for kprobes.. both kprobe and kprobe_multi/fprobe use rethook to invoke
+return probes, so I guess we could use it and store that shared data
+in there
+
+btw Masami is in process of removing rethook from kprobe_multi/fprobe,
+as part of migrating fprobe on top of ftrace [0]
+
+but instead the rethook I think there'll be some sort of shadow stack/data
+area accessible from both entry and return probes, that we could use
+
+jirka
+
+
+[0] https://lore.kernel.org/bpf/170723204881.502590.11906735097521170661.stgit@devnote2/
+
+> 
+> So anyways, might need some internal refactoring, but seems very
+> doable and will give a lot of power and flexibility for tracing use
+> cases.
+> 
+> It would be cool to also have a similar fentry/fexit combo with "BPF
+> session cookie", but that's something we can think about separately,
+> probably.
+> 
+> 
+> >
+> > > duration, if necessary. Without this users have to pay a bunch of
+> > > extra overhead to record timestamp and put it into hashmap (keyed by
+> > > thread id) or thread local storage (even if they have no other use for
+> > > thread local storage).
+> >
+> > sounds good
+> >
+> > >
+> > > Also, consider that a similar concept is applicable to uprobes and we
+> > > should do that as well, in similar fashion. And the above approach
+> > > works for both kprobe/kretprobe and uprobe/uretprobe cases, because
+> > > they have the same pt_regs data structure as a context (even if for
+> > > exit probes most of the values of pt_regs are not that meaningful).
+> >
+> > ok, that seems useful for uprobes as well
+> 
+> yes, absolutely
+> 
+> >
+> > btw I have another unrelated change in stash that that let you choose
+> > the bpf_prog_active or prog->active re-entry check before program is
+> > executed in krobe_multi link.. I also added extra flag, and it still
+> > seems like good idea to me, thoughts? ;-)
+> >
+> 
+> no specific opinion on this from my side, I guess
+> 
+> > >
+> > > So anyways, great feature, but let's discuss end-to-end usability
+> > > story before we finalize the implementation?
+> >
+> > yep, it does say RFC in the subject ;-)
+> >
+> > >
+> > >
+> 
+> [...]
 
