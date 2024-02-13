@@ -1,212 +1,300 @@
-Return-Path: <bpf+bounces-21827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08CE88527E5
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 04:58:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E3848527EA
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 05:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B39F2849C1
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 03:58:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6778EB2368C
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 04:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326F9A93C;
-	Tue, 13 Feb 2024 03:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E82BA92E;
+	Tue, 13 Feb 2024 04:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bfXONbeI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GriTrCrg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5AA883B
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 03:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E9915CC
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 04:06:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707796676; cv=none; b=dIpO5FpiLBxYLgRpx0uD/MRvcD6YWyb+D/Dh5dLL+lISdVW3g9PvR3zjsWqWXXgK2QcKU3Jq+WR9TaazdPP6IyQyjJw5hM9ZUYE0GS6z6zrjNqkkS9L06ulH9cweJ8X4mNe3lsedQ+rSDLSHyxaxBwv8i1dTR6eKnnS2A760+zY=
+	t=1707797181; cv=none; b=MUQCeRbcgTPQP3QEC3oBN9FpFDzvlNCfwWH3MgUpvydsNhWkfeR79JWgi2kG9aVQ2E6j3PDVtNpAmB7NC2ldOZNmioRpGN6dn2siNGcrZXUcPoQQMhoHw2AgslmpLmnEQCOXw5sl2VlcSUVCgWspk38wZ7AJ1nnUMhxKWFHqxec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707796676; c=relaxed/simple;
-	bh=bN6dK6aD4FKyqegpnhvZEjDICtz9+BSGPPA7uv6RYgw=;
+	s=arc-20240116; t=1707797181; c=relaxed/simple;
+	bh=QSRZrMgXrYAh+oyC+6liJnnDctZ3hBciAcSb2hT/a4o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ai0C4ZEibTdiO8j27GSLWwpJGDNAiGdqlyCgNVbu94FQOUXa6oAvkBJH8uJyjhJcsMhdN5QTY66t/I221OF0SXHP5RaSoH0j8cpUsaybp9k2OWVIZdHE21N9JVP4m66YouBb+3Q9DgBys6YmlDu0J+gHaOfvG6q1IZQT0fVT7ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bfXONbeI; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-511490772f6so4835868e87.2
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 19:57:54 -0800 (PST)
+	 To:Cc:Content-Type; b=YvZccKj+yoBH7kfJTBA1wmDZKxjLtVIazDscpYdkxGsZpqHCPxzgNPBG/iz5Ex2AU2slnU6LOxx+qeIxATRVO7K/iabXFDNcV3VYqpCCIhMJoEX7+bvHQuSTY2hxJOW82b3Scr6f2eAt9vVP86P5GSzN2hhpx92JWdsEjXjcu3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GriTrCrg; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e0eacc5078so795979b3a.0
+        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 20:06:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1707796673; x=1708401473; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707797178; x=1708401978; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HGDUec+ltrfJRSqU4fW2OgD37xMy9JdASW7ExQePVdQ=;
-        b=bfXONbeIwgulPmbNIGSf3ZL3eerOXb59wypn7JW2Io7Rp8kOgFTW3N+UWfs1IfPQBx
-         cc/20zR2N/3OOt5j46uwtp1wSbw62eS2iUvpRHkEXYA2+JfYSfSjItBG+MrhDIFdEB8e
-         9lfhIvyZT61V2Qv62C5AflXNlSQ24Dy4J75SKq+1xw++gBkrBovZUgj66WGJ3kEnSAKL
-         GNOf/iFlguMLqybAXhYJgPsQgepHOmxNHK8lrb1Htz0/9rpObut8bUiN+zL9pMbGidll
-         kgiGPotOEZaK55/n/ir5NSIBadEmltbCRGBxOqDYThNcqX6Vb/X6LAzJMqUtNkCELp+w
-         aMAw==
+        bh=S7xHDs2qhDh3noqWDEYCdw06CL601S2uA5IGFDOqJyU=;
+        b=GriTrCrg4LVyxCyTOvtrDQ9vxOzNw1wzrXFdZjGsdRMZEL7DQixta5I8N1d8KlYAfg
+         scq8+n0PyB8rj64Y/FgadTyHs8XXZnSETPgucT8P1wtxdJbM4AYasePeyRZYjd/AN++z
+         2kwjuyzkEpk5YGO7U3zUWYjP10vRPyKwzKiaip5/YJWx5df7dR8YFNWKxfFXpIzqQKxq
+         pmMcbCV0qK7tIpAQ7+k7xMP/nd3yX4B2G1qmA2mMZrwwTkR6beQSEr5cFtxGwJB3Ro/X
+         ChGgOOEGd1tUsbZHOr60N/Pp3pYGg9cpu+uDMECo/jwNLxlq9nejN9fE0KQ66HGGz+pV
+         eMBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707796673; x=1708401473;
+        d=1e100.net; s=20230601; t=1707797178; x=1708401978;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HGDUec+ltrfJRSqU4fW2OgD37xMy9JdASW7ExQePVdQ=;
-        b=ae1Vd5fOWevBTBY5zFTTMjDUPYlBSap0jP8AnZz29zHTQwofZ5E196XcFd47Hla8VZ
-         teIUgNiplINVTX8xocNuSann91GiptYI7LeBMzKvCOsSl3gVk6XryQvLybVuKwvmUlGL
-         LTvMX6JkvILPxQ0H391mAysDDpbVveYNmhDH34Bt+U9MaKmTC9/EJMQOFhKyucOOdQ+U
-         pu3ihaYGfimTUvRUXMJhjQajoSJAlFjOCZPFcB/SZFl3P5Qi2lrQ0NkyfzLrTaLLS26P
-         IrApkgHjWEZJwVZxshFo+PsXRbGVL/xp7Qo0dDJg25y9ePPPVTmiZ+eksGsGusXS08YP
-         dp6g==
-X-Gm-Message-State: AOJu0YysI3E0xQ34qEQ+b/7ruc7pEvyxRMMxUS1d12w3XzSJHsyfzeFF
-	eaE01zKeiWsnbK2KnUSVcBeh54IJ1UsCcQaDPy1tGw3EdKEwGRGfZmqr5Kj75O1360FhEikIQQy
-	E2p2s7mCUx5YK0nW3XRF2rAG/R9Su/q6+7dus
-X-Google-Smtp-Source: AGHT+IGQ73ms9lvthgj1vaExSwJhqchVTtOPhgRTVKEo8nXQ6D60UgUj5YD6xewgwpha12/NNyS7VOLR2tN8UZ5sPds=
-X-Received: by 2002:a05:6512:2e9:b0:511:2e97:add2 with SMTP id
- m9-20020a05651202e900b005112e97add2mr5394630lfq.66.1707796672701; Mon, 12 Feb
- 2024 19:57:52 -0800 (PST)
+        bh=S7xHDs2qhDh3noqWDEYCdw06CL601S2uA5IGFDOqJyU=;
+        b=iIIYXnZ4Ifh+pBNo7DpYHDUJ9dJGv7Cppv5msQbwUb3zd7mBXoVDUgStd9PzDt4lGr
+         S9hyNMdmPFcLEOwEHNbQGhgfhsh9xdWSmd1xZwswhbGZoLfjYDB3KaMfVcgtW2PxaMz9
+         8SD2WDX1vZR2LbKlSdjTeoti301V/vtw76762BJvCpmXbYzvSfBIGZnNCthu3jPMJTVK
+         DPb+HyryY1/7qaKQeNF2B/FikRzJ9kh8gUTtq/rDuPhqb9ZHZiv+614dpWOkTceBFqkh
+         Y6jkT8ELxndlwx953Pp/UyRBkIAUbBMWSDUoz87iONZ9hq/i0mmfwBoPEz7UA1DgBsfu
+         iS0A==
+X-Gm-Message-State: AOJu0YwRyR9C+WfwRWhTgGUrUP1Y3Tj7zkVs6PK3kBkUQd1BCWwRrdqp
+	7qmNhi4I6w/3S1OdHkWABTQPUakf7KH+N1xdNi6ljgdgSSQ5rzkW/5MRNeieG3M9oD1Thzfz98M
+	4qEUbQkv0dj/J+MwRbyVZ0GkpqPU=
+X-Google-Smtp-Source: AGHT+IHmh7M5Pk7VzErNgJ99HfbdfqbJiPFfgWOKR3ffl7gC9caxQ+qWLWT527LzT6bzGHMH7Po1SB+snNi3KV+IlJE=
+X-Received: by 2002:a17:90b:38c1:b0:297:228a:fa6c with SMTP id
+ nn1-20020a17090b38c100b00297228afa6cmr3989147pjb.3.1707797178520; Mon, 12 Feb
+ 2024 20:06:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122062535.8265-1-khuey@kylehuey.com> <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
- <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
-From: Kyle Huey <me@kylehuey.com>
-Date: Mon, 12 Feb 2024 19:57:39 -0800
-Message-ID: <CAP045Aoc3e1NE8VMWz67LZNVo68nGhxfgapjd30vAaSyBD4kFg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	bpf <bpf@vger.kernel.org>
+References: <20240207153550.856536-1-jolsa@kernel.org> <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+ <ZceWuIgsmiLYyCxQ@krava>
+In-Reply-To: <ZceWuIgsmiLYyCxQ@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 12 Feb 2024 20:06:06 -0800
+Message-ID: <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Viktor Malik <vmalik@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 6:42=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Feb 10, 2024 at 7:31=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> On Mon, Feb 12, 2024 at 8:37=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote=
-:
-> >
-> > On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> wr=
-ote:
+> On Thu, Feb 08, 2024 at 11:35:18AM -0800, Andrii Nakryiko wrote:
+> > On Wed, Feb 7, 2024 at 7:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wro=
+te:
 > > >
-> > > rr, a userspace record and replay debugger[0], replays asynchronous e=
-vents
-> > > such as signals and context switches by essentially[1] setting a brea=
-kpoint
-> > > at the address where the asynchronous event was delivered during reco=
-rding
-> > > with a condition that the program state matches the state when the ev=
-ent
-> > > was delivered.
+> > > hi,
+> > > adding support to attach both entry and return bpf program on single
+> > > kprobe multi link.
 > > >
-> > > Currently, rr uses software breakpoints that trap (via ptrace) to the
-> > > supervisor, and evaluates the condition from the supervisor. If the
-> > > asynchronous event is delivered in a tight loop (thus requiring the
-> > > breakpoint condition to be repeatedly evaluated) the overhead can be
-> > > immense. A patch to rr that uses hardware breakpoints via perf events=
- with
-> > > an attached BPF program to reject breakpoint hits where the condition=
- is
-> > > not satisfied reduces rr's replay overhead by 94% on a pathological (=
-but a
-> > > real customer-provided, not contrived) rr trace.
+> > > Having entry together with return probe for given function is common
+> > > use case for tetragon, bpftrace and most likely for others.
 > > >
-> > > The only obstacle to this approach is that while the kernel allows a =
-BPF
-> > > program to suppress sample output when a perf event overflows it does=
- not
-> > > suppress signalling the perf event fd or sending the perf event's SIG=
-TRAP.
-> > > This patch set redesigns __perf_overflow_handler() and
-> > > bpf_overflow_handler() so that the former invokes the latter directly=
- when
-> > > appropriate rather than through the generic overflow handler machiner=
-y,
-> > > passes the return code of the BPF program back to __perf_overflow_han=
-dler()
-> > > to allow it to decide whether to execute the regular overflow handler=
-,
-> > > reorders bpf_overflow_handler() and the side effects of perf event
-> > > overflow, changes __perf_overflow_handler() to suppress those side ef=
-fects
-> > > if the BPF program returns zero, and adds a selftest.
+> > > At the moment if we want both entry and return probe to execute bpf
+> > > program we need to create two (entry and return probe) links. The lin=
+k
+> > > for return probe creates extra entry probe to setup the return probe.
+> > > The extra entry probe execution could be omitted if we had a way to
+> > > use just single link for both entry and exit probe.
 > > >
-> > > The previous version of this patchset can be found at
-> > > https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kyle=
-huey.com/
-> > >
-> > > Changes since v4:
-> > >
-> > > Patches 1, 2, 3, 4 added various Acked-by.
-> > >
-> > > Patch 4 addresses additional nits from Song.
-> > >
-> > > v3 of this patchset can be found at
-> > > https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kyl=
-ehuey.com/
-> > >
-> > > Changes since v3:
-> > >
-> > > Patches 1, 2, 3 added various Acked-by.
-> > >
-> > > Patch 4 addresses Song's review comments by dropping signals_expected=
- and the
-> > > corresponding ASSERT_OKs, handling errors from signal(), and fixing m=
-ultiline
-> > > comment formatting.
-> > >
-> > > v2 of this patchset can be found at
-> > > https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kyle=
-huey.com/
-> > >
-> > > Changes since v2:
-> > >
-> > > Patches 1 and 2 were added from a suggestion by Namhyung Kim to refac=
-tor
-> > > this code to implement this feature in a cleaner way. Patch 2 is sepa=
-rated
-> > > for the benefit of the ARM arch maintainers.
-> > >
-> > > Patch 3 conceptually supercedes v2's patches 1 and 2, now with a clea=
-ner
-> > > implementation thanks to the earlier refactoring.
-> > >
-> > > Patch 4 is v2's patch 3, and addresses review comments about C++ styl=
+> > > In addition it's possible to control the execution of the return prob=
 e
-> > > comments, getting a TRAP_PERF definition into the test, and unnecessa=
-ry
-> > > NULL checks.
+> > > with the return value of the entry bpf program. If the entry program
+> > > returns 0 the return probe is installed and executed, otherwise it's
+> > > skip.
 > > >
-> > > [0] https://rr-project.org/
-> > > [1] Various optimizations exist to skip as much as execution as possi=
-ble
-> > > before setting a breakpoint, and to determine a set of program state =
-that
-> > > is practical to check and verify.
 > >
-> > Since everyone seems to be satisfied with this now, can we get it into
-> > bpf-next (or wherever) for 6.9?
+> > In general, I think this is a very useful ability to have a combined
+> > entry/return program.
 >
-> The changes look fine, but since they change perf side we need
-> perf maintainer's ack-s before we can land the patches.
-> And none of them were cc-ed.
-> So please resend the whole set and cc
-> PERFORMANCE EVENTS SUBSYSTEM
-> M:      Peter Zijlstra <peterz@infradead.org>
-> M:      Ingo Molnar <mingo@redhat.com>
-> M:      Arnaldo Carvalho de Melo <acme@kernel.org>
-> M:      Namhyung Kim <namhyung@kernel.org>
+> great, thanks
+>
+> >
+> > But the way you implement it with extra flag and extra fd parameter
+> > makes it harder to have a nice high-level support in libbpf (and
+> > presumably other BPF loader libraries) for this.
+> >
+> > When I was thinking about doing something like this, I was considering
+> > adding a new program type, actually. That way it's possible to define
+> > this "let's skip return probe" protocol without backwards
+> > compatibility concerns. It's easier to use it declaratively in libbpf.
+>
+> ok, that seems cleaner.. but we need to use current kprobe programs,
+> so not sure at the moment how would that fit in.. did you mean new
+> link type?
 
-They're all CCd to the three non-test patches in this set, Namhyung
-Kim is CCd to all of them and this cover email, and he both suggested
-the first patch and acked the third.
+It's kind of a less important detail, actually. New program type would
+allow us to have an entirely different context type, but I think we
+can make do with the existing kprobe program type. We can have a
+separate attach_type and link type, just like multi-kprobe and
+multi-uprobe are still kprobe programs.
 
-- Kyle
+>
+> > You just declare SEC("kprobe.wrap/...") (or whatever the name,
+> > something to designate that it's both entry and exit probe) as one
+> > program and in the code there would be some way to determine whether
+> > we are in entry mode or exit mode (helper or field in the custom
+> > context type, the latter being faster and more usable, but it's
+> > probably not critical).
+>
+> hum, so the single program would be for both entry and exit probe,
+> I'll need to check how bad it'd be for us, but it'd probably mean
+> just one extra tail call, so it's likely ok
+
+I guess, I don't know what you are doing there :) I'd recommend
+looking at utilizing BPF global subprogs instead of tail calls, if
+your kernel allows for that, as that's a saner way to scale BPF
+verification.
+
+>
+> >
+> > Another frequently requested feature and a very common use case is to
+> > measure duration of the function, so if we have a custom type, we can
+> > have a field to record entry timestamp and let user calculate
+>
+> you mean bpf program context right?
+
+Yes, when I was writing that I was imagining a new context type with new fi=
+elds.
+
+But thinking about this a bit more, I like a slightly different
+approach now. Instead of having a new context type, kernel capturing
+timestamps, etc, what if we introduce a concept of "a session". This
+paired kprobe+kretprobe (and same for uprobe+uretprobe) share a common
+session. So, say, if we are tracing kernel function abc() and we have
+our kwrapper (let's call it that for now, kwrapper and uwrapper?)
+program attached to abc, we have something like this:
+
+1) abc() is called
+2) we intercept it at its entry, initialize "session"
+3) call our kwrapper program in entry mode
+4) abc() proceeds, until return
+5) our kwrapper program is called in exit mode
+6) at this point the session has ended
+
+If abc() is called again or in parallel on another CPU, each such
+abc() invocation (with kwrapper prog) has its own session state.
+
+Now, it all sounds scary, but a session could be really just a 8 byte
+value that has to last for the duration of a single kprobe+kretprobe
+execution.
+
+Imagine we introduce just one new kfunc that would be usable from
+kwrapper and uwrapper programs:
+
+u64 *bpf_get_session_cookie(void);
+
+It returns a pointer to an 8-byte slot which initially is set to zero
+by kernel (before kprobe/entry part). And then the program can put
+anything into it. Either from entry (kprobe/uprobe) or exit
+(kretprobe/uretprobe) executions. Whatever value was stored in entry
+mode will still be there in exit mode as well.
+
+This gives a lot of flexibility without requiring the kernel to do
+anything expensive.
+
+E.g., it's easy to detect if kwrapper program is an entry call or exit call=
+:
+
+u64 *cookie =3D bpf_get_session_cookie();
+if (*cookie =3D=3D 0) {
+  /* entry mode */
+  *cookie =3D 1;
+} else {
+  /* exit mode */
+}
+
+Or if we wanted to measure function duration/latency:
+
+u64 *cookie =3D bpf_get_session_cookie();
+if (*cookie =3D=3D 0) {
+  *cookie =3D bpf_get_ktime_ns();
+} else {
+  u64 duration =3D bpf_get_ktime_ns() - *cookie;
+  /* output duration somehow */
+}
+
+Yes, I realize special-casing zero might be a bit inconvenient, but I
+think simplicity trumps a potential for zero to be a valid value (and
+there are always ways to work around zero as a meaningful value).
+
+Now, in more complicated cases 8 bytes of temporary session state
+isn't enough, just like BPF cookie being 8 byte (read-only) value
+might not be enough. But the solution is the same as with the BPF
+cookie. You just use those 8 bytes as a key into ARRAY/HASHMAP/whatnot
+storage. It's simple and fast enough for pretty much any case.
+
+
+Now, how do we implement this storage session? I recently looked into
+uprobe/uretprobe implementation, and I know that for uretprobes there
+is a dynamically allocated uretprobe_instance (or whatever the name)
+allocated for each runtime invocation of uretprobe. We can use that.
+We'll need to allocate this instance a bit earlier, before uprobe part
+of uwrapper BPF program has to be executed, initialize session cookie
+to zero, and store pointer to this memory in bpf_run_ctx (just like we
+do for BPF cookie).
+
+I bet there is something similar in the kretprobe case, where we can
+carve out 8 bytes and pass it to both entry and exit parts of kwrapper
+program.
+
+So anyways, might need some internal refactoring, but seems very
+doable and will give a lot of power and flexibility for tracing use
+cases.
+
+It would be cool to also have a similar fentry/fexit combo with "BPF
+session cookie", but that's something we can think about separately,
+probably.
+
+
+>
+> > duration, if necessary. Without this users have to pay a bunch of
+> > extra overhead to record timestamp and put it into hashmap (keyed by
+> > thread id) or thread local storage (even if they have no other use for
+> > thread local storage).
+>
+> sounds good
+>
+> >
+> > Also, consider that a similar concept is applicable to uprobes and we
+> > should do that as well, in similar fashion. And the above approach
+> > works for both kprobe/kretprobe and uprobe/uretprobe cases, because
+> > they have the same pt_regs data structure as a context (even if for
+> > exit probes most of the values of pt_regs are not that meaningful).
+>
+> ok, that seems useful for uprobes as well
+
+yes, absolutely
+
+>
+> btw I have another unrelated change in stash that that let you choose
+> the bpf_prog_active or prog->active re-entry check before program is
+> executed in krobe_multi link.. I also added extra flag, and it still
+> seems like good idea to me, thoughts? ;-)
+>
+
+no specific opinion on this from my side, I guess
+
+> >
+> > So anyways, great feature, but let's discuss end-to-end usability
+> > story before we finalize the implementation?
+>
+> yep, it does say RFC in the subject ;-)
+>
+> >
+> >
+
+[...]
 
