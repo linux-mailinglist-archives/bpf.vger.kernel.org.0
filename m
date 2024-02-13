@@ -1,159 +1,183 @@
-Return-Path: <bpf+bounces-21815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8979D8526E6
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:46:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E10758526E8
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 02:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 404AA28198D
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 01:46:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1481C2557C
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 01:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580763D6D;
-	Tue, 13 Feb 2024 01:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926EF8825;
+	Tue, 13 Feb 2024 01:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="eXB4vHiz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JFjV4fYZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653E310EB
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 01:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6F615B7
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 01:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707787113; cv=none; b=KvL5/yt0ErrUFF75sH47NCdtmizNRU5SH7uAnPG2INJpgfIxumRuPfNdT5Bp/2YAySv7rHKnzKIOX9lk6uFwFdqPjZgBC8EMayE97P+8O+N1GtcsyLojFqMeakaVO7o7vA+YdHVxapWP1MY/u2ht3hhS11Xea338N+c7uDy91mI=
+	t=1707787231; cv=none; b=q4kQ4g0UFY0VxwnddU+wDApOPBBlrHlmLvidSFyH3yutNz53PPRaK302R4n7KfNgZ8n17qY4YbD68P7Wng4OlwRHiqHckaVWeXr1hdFeg+3jl1oEc+DILUC0iadHgvBMWGn5Bufdbc11Z8b/qr6udHyYV9iuG/u4ILQjlDD7LkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707787113; c=relaxed/simple;
-	bh=2nGoxm+WjZU6AVea51wZ3M/eN1iAEyQQ/ziXUflo/PA=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ATm3LCJXPz9k29l6uytK6H+E7zpmZluwuQvtW8/sJs5NOj28Hi2aAs2oMNJjJoo6vf5YSZUjWh205xpLULdQCT6gOD7SBsw8vorzo3Oev8D/a9bVMmQWc2OE/89eBtQCAfaOd3s1IJUXQZtuIg3qkRndDpAeFVe3qHmuUZmyL+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=eXB4vHiz; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e0a479a6cbso1269446b3a.0
-        for <bpf@vger.kernel.org>; Mon, 12 Feb 2024 17:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1707787110; x=1708391910; darn=vger.kernel.org;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=r/iL9hk9z65BlWcihXx6WQ/ZeCAECR3zF2bC+FtSh4c=;
-        b=eXB4vHizo+QzdyaAXVIcGRyhf4KmdjZayNNw3RmT+Eg9R5NMHN555pFbxQdcdBfcrO
-         VOgjYUnzykCrA4MB9dxQ4pu4jL2YoFX172wb78HRDCCZwp6yc9M8H78noMjUvTySt8cQ
-         vNQK7KY7mceXjXoI4CRdLOAoTr/wi1FdOjQbCdJqampvuP0LwxEYrmlRwM8OIZrfm0oc
-         9Mu2E2TCnDvpt6ssuAm4gnew9XBbS82Y3+YfbQOmTPlzvVSQcB13KDPohmimkQBfX/AU
-         K8wpJ2gLkuu2VLIERa4f9Rn/b7E85fBgf9AvtzCEix2akj6Iw71mnplwyvuSWQZVLDyt
-         fmjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707787110; x=1708391910;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r/iL9hk9z65BlWcihXx6WQ/ZeCAECR3zF2bC+FtSh4c=;
-        b=Pi9CQAHv3qrWvY/PK+MX+BZ7mUVKVsAib6xt85bH85XBtii++91yYS4pnkt47arfxQ
-         KptIxZrCUexX0BA0hQ8Xqa+TDCJZDRvn3KARMUzc4ILVh4seWXQm+/o0wELAvvOAu4vj
-         G4ARAauDHCJ/h/wIQ0HfYu4VTq0jFOK5OmmeNjiX6lxAmcFihdbQ18be3GvHT3DGfEQ2
-         JPHaAZdBLQ98+jMDkx/PEhggVnisWQ9TT8pL8ZRPLH9gJo1aCM0SRDZkJunsQj2Yn0Nk
-         gxg+aQI+z7ZlFHdyRzCpsQSU6pSGakylv5gYLfhetiZxD4R9LwEPRWsmFdH6dSBX10Xa
-         JhFg==
-X-Gm-Message-State: AOJu0YwmkQbQunNZM2FHEbN7ol3909BxMyeeluhp0vxQOgZmSGmCwudO
-	05iUVRP3Hg2sO4sDLotkfi8/1ZhDUdSwBAeNduVmv7GzgX0/G1QzoeDKdMjmr+s=
-X-Google-Smtp-Source: AGHT+IHsjdMXpUH31e+aKErlxkbLoYrBL9hMng63nigj5d/ZtUOaFvXsf00AfWfVTcPMeEzG/buJEQ==
-X-Received: by 2002:aa7:8557:0:b0:6d9:b941:dbf5 with SMTP id y23-20020aa78557000000b006d9b941dbf5mr7120874pfn.11.1707787110538;
-        Mon, 12 Feb 2024 17:18:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6siuus/c8HjoUW/4yK2KePDSVjB+bW40vpXQ6kB16ljjH1qBwaPmH1EvkBRsL7UoX/0xMsnHf4eRVnm+d/oL075MV+Z+SL/Fbop/WriCIV1m1vEgrMw==
-Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
-        by smtp.gmail.com with ESMTPSA id b18-20020aa78712000000b006dfbecb5027sm6341097pfo.171.2024.02.12.17.18.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Feb 2024 17:18:30 -0800 (PST)
-From: dthaler1968@googlemail.com
-X-Google-Original-From: <dthaler1968@gmail.com>
-To: "'Yonghong Song'" <yonghong.song@linux.dev>,
-	"'Jose E. Marchesi'" <jose.marchesi@oracle.com>
-Cc: <bpf@vger.kernel.org>,
-	<bpf@ietf.org>
-References: <20240212211310.8282-1-dthaler1968@gmail.com> <87le7ptlsq.fsf@oracle.com> <b5072dfb-ab2b-40eb-891e-630a02c58fe8@linux.dev> <036301da5dfd$be7d1b30$3b775190$@gmail.com> <a81da29b-b671-484a-8f3d-743f1dac44f1@linux.dev>
-In-Reply-To: <a81da29b-b671-484a-8f3d-743f1dac44f1@linux.dev>
-Subject: RE: [Bpf] [PATCH bpf-next v2] bpf, docs: Add callx instructions in new conformance group
-Date: Mon, 12 Feb 2024 17:18:27 -0800
-Message-ID: <03a801da5e1a$8d0274c0$a7075e40$@gmail.com>
+	s=arc-20240116; t=1707787231; c=relaxed/simple;
+	bh=K9CLr6JNcYww1MRscDOYfeCRcZSVBf8dR+JwJq0OUyY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u0/fNqONDmJPYmEE6mUHRB3O6BiUWBIifP9pHtYu17y5iQiKl/wyrrSFlCJb16nrXS6IjWZDoUwZ6TomvRzweYMkkC4hE95AQSA1kqZZjUOZya3bensb5c+FO+kKtkNAn2tcjd1KOUwATLx4IR7VYAebRHcK/Vmiks25rmqPXYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JFjV4fYZ; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fdf38873-a1e2-4a16-974b-ea2f265e08e1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707787227;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T9VCL6dcfOIUM9I966X/Y4DCLxRn1w31b6ArmDo6KJM=;
+	b=JFjV4fYZloXKt753A8/e/1em+yhpZZ+Tsy682R7PBGmpiVpAvlgkshIVXuv5oMrf+lgbSj
+	qshmN71NIkwENopq7QUpLV775pqHK21u0AMTFqKHUpKLTyeXEsOmjsz5dkiSOKwWP9n/51
+	B/dqphFDMPDJp/1YoNdpIbSG/FESFvc=
+Date: Mon, 12 Feb 2024 17:20:18 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKk5nBwvPPKgL8m8zzpY/2G4YK4bQLYE4TWAif8DTYBtYA5rwFjf1HurzGcgzA=
-Content-Language: en-us
+Subject: Re: [PATCH bpf-next 2/3] bpf: check bpf_func_state->callback_depth
+ when pruning states
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, kuniyu@amazon.com
+References: <20240212143832.28838-1-eddyz87@gmail.com>
+ <20240212143832.28838-3-eddyz87@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240212143832.28838-3-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-> -----Original Message-----
-> From: Yonghong Song <yonghong.song@linux.dev>
-> Sent: Monday, February 12, 2024 2:49 PM
-> To: dthaler1968@googlemail.com; 'Jose E. Marchesi'
-> <jose.marchesi@oracle.com>; 'Dave Thaler'
-> <dthaler1968=3D40googlemail.com@dmarc.ietf.org>
-> Cc: bpf@vger.kernel.org; bpf@ietf.org
-> Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Add callx =
-instructions in new
-> conformance group
->=20
->=20
-> On 2/12/24 1:52 PM, dthaler1968@googlemail.com wrote:
-> >> -----Original Message-----
-> >> From: Yonghong Song <yonghong.song@linux.dev>
-> >> Sent: Monday, February 12, 2024 1:49 PM
-> >> To: Jose E. Marchesi <jose.marchesi@oracle.com>; Dave Thaler
-> >> <dthaler1968=3D40googlemail.com@dmarc.ietf.org>
-> >> Cc: bpf@vger.kernel.org; bpf@ietf.org; Dave Thaler
-> >> <dthaler1968@gmail.com>
-> >> Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Add callx
-> >> instructions in new conformance group
-> >>
-> >>
-> >> On 2/12/24 1:28 PM, Jose E. Marchesi wrote:
-> >>>> +BPF_CALL  0x8    0x1  call PC +=3D reg_val(imm)          BPF_JMP =
-| BPF_X
-> >> only, see `Program-local functions`_
-> >>> If the instruction requires a register operand, why not using one =
-of
-> >>> the register fields?  Is there any reason for not doing that?
-> >> Talked to Alexei and we think using dst_reg for the register for
-> >> callx insn is better. I will craft a llvm patch for this today. =
-Thanks!
-> > Why dst_reg instead of src_reg?
-> > BPF_X is supposed to mean use src_reg.
->=20
-> Let us use dst_reg. Currently, for BPF_K, we have src_reg for a bunch =
-of flags
-> (pseudo call, kfunc call, etc.). So for BPF_X, let us preserve this =
-property as
-> well in case in the future we will introduce variants for callx.
 
-Ah yes, that makes sense.
+On 2/12/24 6:38 AM, Eduard Zingerman wrote:
+> When comparing current and cached states verifier should consider
+> bpf_func_state->callback_depth. Current state cannot be pruned against
+> cached state, when current states has more iterations left compared to
+> cached state. Current state has more iterations left when it's
+> callback_depth is smaller.
+>
+> Below is an example illustrating this bug, minimized from mailing list
+> discussion [0].
+> The example is not a safe program: if loop_cb point (1) is followed by
+> loop_cb point (2), then division by zero is possible at point (4).
+>
+>      struct ctx {
+>      	__u64 a;
+>      	__u64 b;
+>      	__u64 c;
+>      };
+>
+>      static void loop_cb(int i, struct ctx *ctx)
+>      {
+>      	/* assume that generated code is "fallthrough-first":
+>      	 * if ... == 1 goto
+>      	 * if ... == 2 goto
+>      	 * <default>
+>      	 */
+>      	switch (bpf_get_prandom_u32()) {
+>      	case 1:  /* 1 */ ctx->a = 42; return 0; break;
+>      	case 2:  /* 2 */ ctx->b = 42; return 0; break;
+>      	default: /* 3 */ ctx->c = 42; return 0; break;
+>      	}
+>      }
+>
+>      SEC("tc")
+>      __failure
+>      __flag(BPF_F_TEST_STATE_FREQ)
+>      int test(struct __sk_buff *skb)
+>      {
+>      	struct ctx ctx = { 7, 7, 7 };
+>
+>      	bpf_loop(2, loop_cb, &ctx, 0);              /* 0 */
+>      	/* assume generated checks are in-order: .a first */
+>      	if (ctx.a == 42 && ctx.b == 42 && ctx.c == 7)
+>      		asm volatile("r0 /= 0;":::"r0");    /* 4 */
+>      	return 0;
+>      }
+>
+The change LGTM. But the below description seems not very clear to me.
 
-> The following is the llvm diff:
->=20
-> https://github.com/llvm/llvm-project/pull/81546
+> Prior to this commit verifier built the following checkpoint tree for
+> this example (notation: `(code point #) {<ctx->a>,<ctx->b>,<ctx->c>}`):
+>
+> - (0) {7P,7,7}
 
-Which llvm release is it targeted for?
-18.1.0-rc3? 18.1.1?  later?
+Why we have '7P' here?
 
-> > But this thread is about reserving/documenting the existing =
-practice,
-> > since anyone trying to use it would run into interop issues because
-> > of existing clang.   Should we document both and list one as =
-deprecated?
->=20
-> I think just documenting the new encoding is good enough. But other
-> people can chime in just in case that I missed something.
+>    - (3) {7P,7,7}
 
-Ok.
+So here when (3) is hit, we have callback_depth  = 1, right?
 
-Dave
+>      - (0) {7P,7,42} (checkpoint #1):
 
+So for below (3)/(2)/(1) we have callback_depth = 2, right?
+
+>        - (3) {7P,7,42}
+>          - (0) {7P,7,42}   -> to end
+>        - (2) {7P,7,42}
+>          - (0) {7P,42,42}  -> to end
+>        - (1) {7P,7,42} (checkpoint #2)
+>          - (0) {42P,7P,42} -> to end
+>    - (2) {7P,7,7}
+
+So now we back to callback_depth = 1.
+
+>      - (0) {7P,42,7} safe (checkpoint #1)
+>    - (1) {7,7,7} safe (checkpoint #2)
+>
+> Here checkpoint #2 has callback_depth of 1, meaning that it would
+> never reach state {42,42,7}.
+
+It would be good to specify which 'checkpoint #2' has callback_depth of 1.
+
+> While the last branch of the tree has callback_depth of 0, and thus
+> could yet explore the state {42,42,7} if not pruned prematurely.
+
+which 'last branch'?
+
+> This commit makes disallows such premature pruning.
+
+It would be good if the commit message mentions what will change
+for the above digram if this commit is applied, so people can understand
+why this commit helps.
+
+>
+> [0] https://lore.kernel.org/bpf/9b251840-7cb8-4d17-bd23-1fc8071d8eef@linux.dev/
+>
+> Suggested-by: Yonghong Song <yonghong.song@linux.dev>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>   kernel/bpf/verifier.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ddaf09db1175..df99fcdbaa05 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16715,6 +16715,9 @@ static bool func_states_equal(struct bpf_verifier_env *env, struct bpf_func_stat
+>   {
+>   	int i;
+>   
+> +	if (old->callback_depth > cur->callback_depth)
+> +		return false;
+> +
+>   	for (i = 0; i < MAX_BPF_REG; i++)
+>   		if (!regsafe(env, &old->regs[i], &cur->regs[i],
+>   			     &env->idmap_scratch, exact))
 
