@@ -1,173 +1,133 @@
-Return-Path: <bpf+bounces-21839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05DDC852DFB
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 11:35:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E433852FFC
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 13:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFFA2282C20
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 10:35:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 816A71C217DF
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 12:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9002822636;
-	Tue, 13 Feb 2024 10:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2AA383B2;
+	Tue, 13 Feb 2024 12:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PmmNzIWJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUDwLAm8"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5327522630
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 10:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D414383B9
+	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 12:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707820540; cv=none; b=pdB9RIvBXgTnX5TcIcYh2BfR/cixvNqd/WEtcp7/nSe6Qie9VmqfZmCCxxmDmX3+dxl06PjzWvgAaUJLjoFKZ31H0nGK3n8Vmug+iG3kkxDWKtcvt+n3EDo+MMskzQbIWPY0XjBSYNowRESyeI0O6v2CpKPLJFweJzz98cUR7uc=
+	t=1707825683; cv=none; b=cw4xS4xWgP1zgjvoM8TYh+i5rwrsAZKDPLtUUgYCW7vienlzSdVx7xVmWTQRMzjIdOif910DgcFnOo37ILhVT3qfePAirNQNIFx2cxVkY4Di8nNH2K8R9qAgTJCDYHwYdsqkvyBkGhOr5d9l8r1fny0oZxBChZh4FYJmj//uOcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707820540; c=relaxed/simple;
-	bh=lOHYbQBrB2CsXB+FhbkZrKyE8qxPerKPfslIYM60v6E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XBb/ocENXKI/wfxOyYZ+zGU9wd6NZNdF/5pNIFYkoaEgFLzB9da4rC8ltkisl2Sr7hjDjqQA9pABVmkIV+mMgA+GXf8CYj+2IE+fcHEBmoI8YAFiy2vHdV166rWohxVF4yhz30I3XaPcHFIuOP3lKYxR3m6dJCqbLkojBNTfcOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PmmNzIWJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707820537;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=94CGc8C3RNCzA4ug/rXnYY/4jow0sgtDYF5aBFbKpTI=;
-	b=PmmNzIWJy0ccvrPWR7zFIAodTCBBNyxDJoCKkfgb60z7js19l0fJ5NROOJLk3tvoTNsKqV
-	Vc0A/+qylVTcbHvn2QNHTZM+HNUCpC/fy82Uji48+iJlHp7LPcCmG96nUsGWylU/1a9H3+
-	hCVFC5ELlbDu11XuCJQb6gcgghi/Ykk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-492-czWDbAO4NSOqvPbp1UFDVA-1; Tue, 13 Feb 2024 05:35:34 -0500
-X-MC-Unique: czWDbAO4NSOqvPbp1UFDVA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-410e6b59df4so8295935e9.3
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 02:35:34 -0800 (PST)
+	s=arc-20240116; t=1707825683; c=relaxed/simple;
+	bh=2NGhDIskYMOM8G7MM5rUf2STjd75pFIgYrl55pxzqHs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LaMtAzSXjPY3wjyJ5CqVsbNPvV/+pnJjvuL8+USAvO5vRVMBIX/9Z8njKSpqx7lk4SkBreM5S0EvMORPrxS908JqOZEz2jmyW1zyL+zfOHTWsrHHr3qIWdLj/D7WmWHJ3HGwcLrOrVG47R26BWIgmGCHvlRNHE+mGpqVf+GBUUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mUDwLAm8; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3122b70439so550078766b.3
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 04:01:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707825679; x=1708430479; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OG1r0NtLTO7Nq37a+qBaAqxHHKm+oftf3Z3AGoZnsYQ=;
+        b=mUDwLAm8NehvktLWxeUzjS7ZjierThVI6DvkiM8d5tjoVjhaHUK9yXkPQCB2qJLR5X
+         GyYTyyx9Ov4rlsL22hVRy1FsZHBzhmf/gtwe7lotCud+/uN11CbB/YhlpuPXuIoe5m04
+         /UXNLU8bWUJeGY3+aOitLYGkzWM2cpRAPuEqxkHLtGpcgLm1P9ga4g0Bqp9Q+R7NJCht
+         Vu6epuhI4bxjO/1RxX2LCVzhGub0wtu4PH94Q/g3ya4pydMUZNZKeaCKcIBnQ9AdZ8BF
+         HG/wcjyFzLOspsjyrVHOjwcBP9bxQoksA/oNydZApPi400coMysrVH65RaxINZVHrov2
+         rv/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707820534; x=1708425334;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=94CGc8C3RNCzA4ug/rXnYY/4jow0sgtDYF5aBFbKpTI=;
-        b=ClXl2B0Bs/KzvSwMRm40b55lWLH1aqS9Hrf2RA/ec3VMtVcWRF0BjphX5yPZ0P0UN2
-         +M24+qw21nebwslndmepc9E/Yt2ggNXc0Yh20wwESKUSkW2VcdJYnu3K8GlpCqkdBL0u
-         YHaGkpZjU1fulTXPSyS+t4/2zG6btkeSaAc1eta+jPdZ4TYdZjmEp72LjwHFMyv6iimw
-         ay5/0eSeGt36bq+/p+/FSWPPRbJO8H+A+NulPhxaL8PoJwEMriSelt06JtLLAzlruOYX
-         xIxsaAdwMMxbTdJt/xxHfs74Jo2Xr2qIqwMpbInpFpjP8dZrzWevOFJ4sN11pHMtERap
-         n1/w==
-X-Gm-Message-State: AOJu0YxJbBZm7FJAe/OxRoGcWnrqb/Po9dHBjyQKQ1YEz2Xmtv52koIm
-	wlZVtsXuO/gcsqj5F6c5TVOULozl2dDtkjbr7Sr7dgqm9PM+yA4bTxyon19zsW9esnhW4Wwiy+j
-	3hxdG5zel8tQ66irS23CFhBA0De/03dHf+oQRJ/rp66FOosDY88K0Zj/t3g==
-X-Received: by 2002:a05:600c:4511:b0:411:ba7c:99a with SMTP id t17-20020a05600c451100b00411ba7c099amr1352726wmo.38.1707820533848;
-        Tue, 13 Feb 2024 02:35:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFOb4xGg8BDbhQhdZjBonzE6AA2wjuToT9maNwG+fikcue/KzhD3xECDzmAAPD/n4kvmWvrvQ==
-X-Received: by 2002:a05:600c:4511:b0:411:ba7c:99a with SMTP id t17-20020a05600c451100b00411ba7c099amr1352700wmo.38.1707820533409;
-        Tue, 13 Feb 2024 02:35:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXSdlXAfsEbXg/YKO8HftPVCIQNei+OyqhGipL1RyHZZNQredG1PZdGrAvHppPuntrmYcHDKyU2cAc3VmzrxgMzdySGyncRdhAoiNm1c0idHUAzeXYv05FqcTG50f6ZwjUzAG6CsM8EeArB5Movyj4e9geD6SXuEQtUm/J7IcBoHJF470J/9KQ/4RVJSXNx10M98vPZTp0xd2aj+5A1c5GQoWjyh8rgIM1bOXFTq+ZCij/GKBpBZb7ieJKkKyLd+IuzwqDVkVPxliEC84prnTAeeJFOnAdb0/8xAYx8h214SeMSys2lZHyD2PhNSFtATDc/rIhYmtPUEwAagHWzxDKnG9iUoTOsQqayEDtOdTtoJ2MlmLMcYqat1D2oMXX6AjRkmmhJS+8SnU82QJM=
-Received: from ?IPV6:2003:cb:c70a:4d00:b968:9e7a:af8b:adf7? (p200300cbc70a4d00b9689e7aaf8badf7.dip0.t-ipconnect.de. [2003:cb:c70a:4d00:b968:9e7a:af8b:adf7])
-        by smtp.gmail.com with ESMTPSA id bp9-20020a5d5a89000000b0033b4796641asm9321521wrb.22.2024.02.13.02.35.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 02:35:32 -0800 (PST)
-Message-ID: <1a290655-f8ab-41b6-8c44-377a44847c5d@redhat.com>
-Date: Tue, 13 Feb 2024 11:35:31 +0100
+        d=1e100.net; s=20230601; t=1707825679; x=1708430479;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OG1r0NtLTO7Nq37a+qBaAqxHHKm+oftf3Z3AGoZnsYQ=;
+        b=GsDyWxZq7bFv1roo8efN6a3c0XhTcEpWUdcIUy5IoXmLxRB6AzziR0J+fm1JG6wLDD
+         mLn/xhHIjoq8/WnMtmhHPe4YM7hji5qd6UY58Se5OfVumxhDMSAV6NpspAGCWDtW4QdL
+         O2XsivYCFOzKlPJn6g0h5Ya1OIL6MZrNh8v2a+BYR2Mz7L18TFPA323UFrx7al1NPUwN
+         2T076C2pCGLMtIX+92s5uC0EpU0qXT077O07vTSPSB5EnPJiFNCoORLBERhYnov0f8Ar
+         liebSreV4Pj51ILjtZP3CM/ogsO7+icRK6+hj95zBV4MDkLhW5Lf2grVK5GAXgUTWcwz
+         lINQ==
+X-Gm-Message-State: AOJu0Yw177XT4gQxuSAny6kaYt9KWDTilE9kuSM7Q57hxj9ZORp98KU2
+	NWkqqBuIZ/hbFvVil3ohiDJ/JC3fHgxhFB5/s/7AwAR1OgDj44nO
+X-Google-Smtp-Source: AGHT+IGVq/FGBVTOMmd5u4Bo+rLXidfbF6tQJXQNKFoq1kNboQ4ummkLLalYQL6X5h1LYBkvBX/Ltg==
+X-Received: by 2002:a17:906:488:b0:a38:107a:94f6 with SMTP id f8-20020a170906048800b00a38107a94f6mr864045eja.71.1707825679173;
+        Tue, 13 Feb 2024 04:01:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUUvdWZXM74bJB4Rm9is6EK8VXw0yMKJKBtt86Ip5QfFLyeVGqzL55Ok3sdvvtBmkJwVD+J43coQurJBxoVyoVJ1XDVZ10V5U7TBi2JREafSU/a1gF+aT30mEOa3PDoV2R+2pP3CqkykOxsBd9NQ/we9Rkqns0S2yMVji4vNuLHOxlGb2sq61KySZByPq0s2iS5jcFFhUyVpZmfPHc4tvWfOJntk1E3wy7EAB52UdvpbF8QDi7djjomjhba+WUcLPIxYfYt7K3eDLL+p8HccfjJQQJ0Vw1Cupin+Qyy8qpVY550VFLZn2026t8EP+zQ3157j6oOqwJwA5GqqIgcv8MOk5eoCAJwoMVbXEpwBwqhYpHT4mnjP4ZpGA==
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id gz3-20020a170906f2c300b00a3793959b4asm1216026ejb.134.2024.02.13.04.01.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 04:01:18 -0800 (PST)
+Message-ID: <845fb766bbe90865e2859af347ace76593e42c66.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 09/20] bpf: Recognize cast_kern/user
+ instructions in the verifier.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi
+ <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,  Barret Rhoden
+ <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes
+ <lstoakes@gmail.com>,  Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Date: Tue, 13 Feb 2024 14:01:18 +0200
+In-Reply-To: <CAADnVQKfJsq6abdL5ShmmzOUKyBard4-9CH_j_V-yARfdn31qA@mail.gmail.com>
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+	 <20240209040608.98927-10-alexei.starovoitov@gmail.com>
+	 <ed656ef900c33cb1bf9ffb06d0f4f59d7708e29c.camel@gmail.com>
+	 <CAADnVQKfJsq6abdL5ShmmzOUKyBard4-9CH_j_V-yARfdn31qA@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next 00/20] bpf: Introduce BPF arena.
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>,
- Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <8dd6d3c0-6b76-480c-8fba-3b0e50fd9040@redhat.com>
- <CAADnVQ+nQuD1mNfe0ihX2fjAEGfBVtT=U+_ek8yD-uW=0GKbHA@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAADnVQ+nQuD1mNfe0ihX2fjAEGfBVtT=U+_ek8yD-uW=0GKbHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 12.02.24 19:14, Alexei Starovoitov wrote:
-> On Mon, Feb 12, 2024 at 6:14 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> How easy is this to access+use by unprivileged userspace?
-> 
-> not possible. bpf arena requires cap_bpf + cap_perfmon.
-> 
->> arena_vm_fault() seems to allocate new pages simply via
->> alloc_page(GFP_KERNEL | __GFP_ZERO); No memory accounting, mlock limit
->> checks etc.
-> 
-> Right. That's a bug. As Kumar commented on the patch 5 that it needs to
-> move to memcg accounting the way we do for all other maps.
-> It will be very similar to bpf_map_kmalloc_node().
-> 
+On Mon, 2024-02-12 at 18:58 -0800, Alexei Starovoitov wrote:
 
-Great, thanks!
+[...]
 
--- 
-Cheers,
+> Yes. Casting anything is fine.
+> I don't think we need to enforce anything.
+> Those insns will be llvm generated. If src_reg is somehow ptr_to_ctx
+> or something it's likely llvm bug or crazy manual type cast
+> by the user, but if they do so let them experience debug pains.
+> The kernel won't crash.
 
-David / dhildenb
+Ok, makes sense.
 
+[...]
+
+> > > @@ -18235,6 +18272,31 @@ static int resolve_pseudo_ldimm64(struct bpf=
+_verifier_env *env)
+> > >                               fdput(f);
+> > >                               return -EBUSY;
+> > >                       }
+> > > +                     if (map->map_type =3D=3D BPF_MAP_TYPE_ARENA) {
+> > > +                             if (env->prog->aux->arena) {
+> >=20
+> > Does this have to be (env->prog->aux->arena && env->prog->aux->arena !=
+=3D map) ?
+>=20
+> No. all maps in used_maps[] are unique.
+> Adding "env->prog->aux->arena !=3D map" won't make any difference.
+> It will only be confusing.
+
+Right, sorry, I missed the loop above that checks if map had been
+already seen.
 
