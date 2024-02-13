@@ -1,281 +1,225 @@
-Return-Path: <bpf+bounces-21877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E947853ACE
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 20:21:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA1F7853ADB
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 20:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11ACD1F2231E
-	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 19:21:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 853B3284B83
+	for <lists+bpf@lfdr.de>; Tue, 13 Feb 2024 19:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2525605D0;
-	Tue, 13 Feb 2024 19:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91992605C8;
+	Tue, 13 Feb 2024 19:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PKejL25s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vtrd7/o0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05FD57883
-	for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 19:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF7C6086A;
+	Tue, 13 Feb 2024 19:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707852083; cv=none; b=L9im0XE4aJUpj3+J1rqeBdyOSLM+x3Je/9q2lHIYhYwclLxQOzEp2NKsy8enP/+1AXQkINg3xNN3g0QIwyUhoKKmdBwbwDKMJplxuJhKedQI2vksyNySdbOiKb9oUPKafFEmEzcHma74/YhoV2TWabOoxGdbsVtsX5o6ThrXwZA=
+	t=1707852238; cv=none; b=UqtTi6N+xsMaonvTnk/+INDSXreRLQoSbaYxRJVQw+NVd+O8c1hW4evHCqSehRLA9+CHglPN4n1WKFdNk5YHWuOR0HOw/dfLYPPhD2rQoh2rsKr3YRNJqmiDseNtMY1W1roaoMrD+YGdvxHVMMA7q7SmjslDBqUd74KJMRZ69z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707852083; c=relaxed/simple;
-	bh=5YocGEpS6SRL+JgmdutbRvvDeBGg0FokNWsNOzVHxkU=;
+	s=arc-20240116; t=1707852238; c=relaxed/simple;
+	bh=0B3uRJhmyT1XuLMISGiYjXxLVeAFL5LNdwOdq4xlDX4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XqGIS/XjTwSuwiFuJPEesniJU4C0t3bgGTc335sjObE6XfLBz4Kq9qJ/ZBplqTb2uPMIW5lCBO5cDw9mPa3fcGWtz6ELiy88Yanh7xYG3dw15J8a9Z7SS9b6mrJxzRw35q0vPXsvfpPXeiI6MXyory+So9sprLZijU7+xQjjrHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PKejL25s; arc=none smtp.client-ip=209.85.216.51
+	 To:Cc:Content-Type; b=n2pc8JAiT8bSpfTcWWuUVlwQtmNNdUCuPa02JLCiEPBcwiH+C7XgTA/9yPPYIB2y03K940WWvhNp0To8CqJP7y8EBmX2ARahN97RiHRDDHrSFKVwOaGESKwZwV4U5eqagmFn1FN6kIt5sqbRYa0cMWbRomGdv9yC7gEvjrBxerM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vtrd7/o0; arc=none smtp.client-ip=209.85.208.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-290fb65531eso930496a91.2
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 11:21:20 -0800 (PST)
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so6256457a12.1;
+        Tue, 13 Feb 2024 11:23:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707852080; x=1708456880; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707852234; x=1708457034; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LE6/ca+PGmfF5GaqtxZaSvhN+dnCSVu3MKqxUjVq6AU=;
-        b=PKejL25s75go0i6JSa1mldiu+C79QjZN4CBT63zrNVVd6FQtbM2fGtMNkjARrIuIYP
-         GouskIapb7vy05P9EGQde1e4XfB8p74/+gfZYiARUA7DP/66NuORw4V3deeNzevnPt+6
-         EhawtB7rxgDrzPIzpKiEiA+rT/kAUEeK2Qm5QTTKf3d/+vZn6n9RSQHNkTb8McKPiBaa
-         o3GdN5OvYlBFMnyIQsTnkOEkOZ+cRYQfc7ixv2Gu1roT2pVfvs2NdjrDaKx/fvOhEafk
-         skzy7R2k4GUVDWFFjjSXNliWy0GJiYGAkEpYyq/MrAtMKtb/f3Vequ2Lw+5fPIROwo05
-         MMVg==
+        bh=0B3uRJhmyT1XuLMISGiYjXxLVeAFL5LNdwOdq4xlDX4=;
+        b=Vtrd7/o0MHexn+sVI9y4b7W1DOy41qDcgXz8TtOEU8F/zSjkBQ0WdS827M+l6tt5iz
+         /yh3fBBDHWpAJJr6polkJJmDOlE0pprPg9GDx0RrsU6gpWoF0tRmALOkWSCjTAb/rmPq
+         HEf61L1TQhbKjFnXdUkFEkuWyBEdhDMXLvoyPoKVxxRljQOrmHl9z0TjxEeWmCC3EYfR
+         jrhgB+mt6Cjj4vzIaXUSrWiiSeBXr8rYo5WfBWhbCsS9v8c5QzVBUZEl8H9U4OWwhow4
+         YbxwJVBqDIMezyBdMCP6Q/8uwZ7tYInc0x9RX3JzCmNltU4/IFvzZnvf0j4P22l/X9aV
+         WA8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707852080; x=1708456880;
+        d=1e100.net; s=20230601; t=1707852234; x=1708457034;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LE6/ca+PGmfF5GaqtxZaSvhN+dnCSVu3MKqxUjVq6AU=;
-        b=gGO2F5s6XrHjB/Hb7Gz2eEeHBTxEa57HriQ4Axoe+JousJMrsI8vJZJl8yPGuS484y
-         fzfemfephlMjuNZ+xlmpGt+S/gxlqc/xrFW52UlomE908y98fMjq8SWFlRFR9a0x12f9
-         nGgcjkQy/ya+KnXiv3pRcB5Px6ONqWu3vUd68fjoXa5hUPEIcgf3WK5AyWI7laNITbLU
-         GlFpVXVkMYYec4DD/eAEC5ulsz/6gGZW+84GcoLI2xgvQKzD6GeYH1dw9UF1MSbq3TFu
-         VnOosXaQTLR1E+iU1MjRIKiUwtRSCEALX6mN4ABLW5EQJLIvtRJhwBDvIUq3/4QkXO+Q
-         jZ1A==
-X-Gm-Message-State: AOJu0Yx81JTnFioBABdFiL+RJchL2qNQy44agdo0yXEPlaIdQjb6I1bl
-	nV9RGnBsZb6ofz25vmg9o/uFuNdy/rHI8riBsO35+alGpvYibAA+vn7uADFaKLcOb0SHX4SW3KA
-	XI/nn0Dk1HFGXHMkf27XRdxZ/Rec=
-X-Google-Smtp-Source: AGHT+IG60evpPIsIHUSa/K083MEaXyjfnSrTrznADhP8YRi0deNxffi6CMiTCd5I3POLVcbF8bbr5XzPrK2BebY5Ke0=
-X-Received: by 2002:a17:90a:17a2:b0:295:cfb4:9d4c with SMTP id
- q31-20020a17090a17a200b00295cfb49d4cmr394072pja.33.1707852080118; Tue, 13 Feb
- 2024 11:21:20 -0800 (PST)
+        bh=0B3uRJhmyT1XuLMISGiYjXxLVeAFL5LNdwOdq4xlDX4=;
+        b=O7SHAgAl5wgOKH18AYNvGnREaz1q4Gaw4eSX9OZpqZb5JcZmfx7sQRG6SF8m5hCVbQ
+         YtmAOrYanPyUAR6+073Hff+wXFQ7JeQEjCDUjZVb4O+tQprPwo8sVCpRIwQHhxLMYQju
+         4pKxX0zpOUoGc0MPIv/T9f6TcZzQHC5sogs3fVhPEDd8zOYU2plpbeRKW0MCgED6GMDi
+         i+Txhuqv7Xj9cNqPRJfY94dSSC7VnWNLhHEiu1JdgNcmdhfvZQU6vVKfRAvmP3ystVuN
+         r8J8SnMnIWXhzwqaCNR+KR3NSF5H6sg6rXQ5UbIZ4pT0Iek8FbwjzlZ5Yplxc+TVJE/z
+         Se5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVUIUzBe3f9e6VMcrM3u09GS8YnhWCcxWCtbx/S7f+PvNqYQsPPFH57LHGdIXHxxGuoVRmzQ3Ve0qrnK6G3+RYcEv7YD31AU1ydesBEUT2JsDvxan9nER0gJNvV2f2b9I09VZzW5VxGLarFPcvxOVinSKLQmttlUXBVLNHUywoFFC+Yy3Y2zUdEXyzAftoPdYV7FADlPWADo+4KMLD/MDn5SFJkQMAD4X+CQr9dgJM6d0ECMn3hTKFhWOw=
+X-Gm-Message-State: AOJu0YzwNQCQUSPHzfAIO5Sr3ZcKFEf+uXNvNgzu8tJ2WwIgzJoZbXBl
+	iPPfcGFM44bHpU6xkqniKQI0AnU+MJLLjCCyK50l4hg8r9Q2LzOhAdexIm4hh8SzXsJzowFioFN
+	RymorSENgnirFuzWHsYYjVfwHXqY=
+X-Google-Smtp-Source: AGHT+IHNWC5dzy02TygLZzR+lN/Pi5k41JXMUom8PqU9BAxHkbw6tqD9WrKBNP04934vbG+r6JwgS+Mw7fhMEQnLQxg=
+X-Received: by 2002:a17:906:aad6:b0:a3c:a655:3a3c with SMTP id
+ kt22-20020a170906aad600b00a3ca6553a3cmr210638ejb.16.1707852234355; Tue, 13
+ Feb 2024 11:23:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208215422.110920-1-yonghong.song@linux.dev>
-In-Reply-To: <20240208215422.110920-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 13 Feb 2024 11:21:08 -0800
-Message-ID: <CAEf4Bza9Z8v5ATLv0jctbP1rmQ0QOcWr6JHh4903cBW77GF0nQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix test verif_scale_strobemeta_subprogs
- failure due to llvm19
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk> <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk> <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk> <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+ <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com> <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+In-Reply-To: <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 13 Feb 2024 20:23:17 +0100
+Message-ID: <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 1:54=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
+On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wrote=
+:
 >
-> With latest llvm19, I hit the following selftest failures with
+> On Feb 12 2024, Alexei Starovoitov wrote:
+> > On Mon, Feb 12, 2024 at 10:21=E2=80=AFAM Benjamin Tissoires
+> > <benjamin.tissoires@redhat.com> wrote:
+> > >
+> > > On Mon, Feb 12, 2024 at 6:46=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgen=
+sen <toke@redhat.com> wrote:
+> > > >
+> > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+> > > >
+> [...]
+> > I agree that workqueue delegation fits into the bpf_timer concept and
+> > a lot of code can and should be shared.
 >
->   $ ./test_progs -j
->   libbpf: prog 'on_event': BPF program load failed: Permission denied
->   libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
->   combined stack size of 4 calls is 544. Too large
->   verification time 1344153 usec
->   stack depth 24+440+0+32
->   processed 51008 insns (limit 1000000) max_states_per_insn 19 total_stat=
-es 1467 peak_states 303 mark_read 146
->   -- END PROG LOAD LOG --
->   libbpf: prog 'on_event': failed to load: -13
->   libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
->   scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
->   #498     verif_scale_strobemeta_subprogs:FAIL
+> Thanks Alexei for the detailed answer. I've given it an attempt but still=
+ can not
+> figure it out entirely.
 >
-> The verifier complains too big of the combined stack size (544 bytes) whi=
-ch
-> exceeds the maximum stack limit 512. This is a regression from llvm19 ([1=
-]).
+> > All the lessons(bugs) learned with bpf_timer don't need to be re-discov=
+ered :)
+> > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+> > so we need a new kfunc to set a sleepable callback.
+> > Maybe
+> > bpf_timer_set_sleepable_cb() ?
 >
-> In the above error log, the original stack depth is 24+440+0+32.
-> To satisfy interpreter's need, in verifier the stack depth is adjusted to
-> 32+448+32+32=3D544 which exceeds 512, hence the error. The same adjusted
-> stack size is also used for jit case.
+> OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() f=
+lag?
 >
-> But the jitted codes could use smaller stack size.
+> > The verifier will set is_async_cb =3D true for it (like it does for reg=
+ular cb-s).
+> > And since prog->aux->sleepable is kinda "global" we need another
+> > per subprog flag:
+> > bool is_sleepable: 1;
 >
->   $ egrep -r stack_depth | grep round_up
->   arm64/net/bpf_jit_comp.c:       ctx->stack_size =3D round_up(prog->aux-=
->stack_depth, 16);
->   loongarch/net/bpf_jit.c:        bpf_stack_adjust =3D round_up(ctx->prog=
-->aux->stack_depth, 16);
->   powerpc/net/bpf_jit_comp.c:     cgctx.stack_size =3D round_up(fp->aux->=
-stack_depth, 16);
->   riscv/net/bpf_jit_comp32.c:             round_up(ctx->prog->aux->stack_=
-depth, STACK_ALIGN);
->   riscv/net/bpf_jit_comp64.c:     bpf_stack_adjust =3D round_up(ctx->prog=
-->aux->stack_depth, 16);
->   s390/net/bpf_jit_comp.c:        u32 stack_depth =3D round_up(fp->aux->s=
-tack_depth, 8);
->   sparc/net/bpf_jit_comp_64.c:            stack_needed +=3D round_up(stac=
-k_depth, 16);
->   x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xEC, round_up(=
-stack_depth, 8));
->   x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
->   x86/net/bpf_jit_comp.c:                     round_up(stack_depth, 8));
->   x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
->   x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xC4, round_up(=
-stack_depth, 8));
+> done (in push_callback_call())
 >
-> In the above, STACK_ALIGN in riscv/net/bpf_jit_comp32.c is defined as 16.
-> So stack is aligned in either 8 or 16, x86/s390 having 8-byte stack align=
-ment and
-> the rest having 16-byte alignment.
+> >
+> > We can factor out a check "if (prog->aux->sleepable)" into a helper
+> > that will check that "global" flag and another env->cur_state->in_sleep=
+able
+> > flag that will work similar to active_rcu_lock.
 >
-> This patch calculates total stack depth based on 16-byte alignment if jit=
- is requested.
-> For the above failing case, the new stack size will be 32+448+0+32=3D512 =
-and no verification
-> failure. llvm19 regression will be discussed separately in llvm upstream.
+> done (I think), cf patch 2 below
 >
-> The verifier change caused three test failures as these tests compared me=
-ssages
-> with stack size. More specifically,
->   - test_global_funcs/global_func1: adjusted to interpreter only since ve=
-rification will
->     succeed in jit mode. A new test will be added for jit mode later.
->   - async_stack_depth/{pseudo_call_check, async_call_root_check}: since j=
-it and interpreter
->     will calculate different stack sizes, the failure msg is adjusted to =
-omit those
->     specific stack size numbers.
+> > Once the verifier starts processing subprog->is_sleepable
+> > it will set cur_state->in_sleepable =3D true;
+> > to make all subprogs called from that cb to be recognized as sleepable =
+too.
 >
->   [1] https://lore.kernel.org/bpf/32bde0f0-1881-46c9-931a-673be566c61d@li=
-nux.dev/
+> That's the point I don't know where to put the new code.
 >
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/bpf/verifier.c                          | 18 +++++++++++++-----
->  .../bpf/prog_tests/test_global_funcs.c         |  5 ++++-
->  .../selftests/bpf/progs/async_stack_depth.c    |  4 ++--
->  3 files changed, 19 insertions(+), 8 deletions(-)
->
-> Changelogs:
->   v2 -> v3:
->     - fix async_stack_depth test failure if jit is turned off
->   v1 -> v2:
->     - fix some selftest failures
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ddaf09db1175..6441a540904b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5812,6 +5812,17 @@ static int check_ptr_alignment(struct bpf_verifier=
-_env *env,
->                                            strict);
->  }
->
-> +static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
-depth)
-> +{
-> +       if (env->prog->jit_requested)
-> +               return round_up(stack_depth, 16);
-> +
-> +       /* round up to 32-bytes, since this is granularity
-> +        * of interpreter stack size
-> +        */
-> +       return round_up(max_t(u32, stack_depth, 1), 32);
-> +}
-> +
->  /* starting from main bpf function walk all instructions of the function
->   * and recursively walk all callees that given function can call.
->   * Ignore jump and exit insns.
-> @@ -5855,10 +5866,7 @@ static int check_max_stack_depth_subprog(struct bp=
-f_verifier_env *env, int idx)
->                         depth);
->                 return -EACCES;
->         }
-> -       /* round up to 32-bytes, since this is granularity
-> -        * of interpreter stack size
-> -        */
-> -       depth +=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
-> +       depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
->         if (depth > MAX_BPF_STACK) {
->                 verbose(env, "combined stack size of %d calls is %d. Too =
-large\n",
->                         frame + 1, depth);
-> @@ -5952,7 +5960,7 @@ static int check_max_stack_depth_subprog(struct bpf=
-_verifier_env *env, int idx)
->          */
->         if (frame =3D=3D 0)
->                 return 0;
-> -       depth -=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
-> +       depth -=3D round_up_stack_depth(env, subprog[idx].stack_depth);
->         frame--;
->         i =3D ret_insn[frame];
->         idx =3D ret_prog[frame];
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b=
-/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> index e905cbaf6b3d..a3a41680b38e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> @@ -138,7 +138,10 @@ static void subtest_ctx_arg_rewrite(void)
->
->  void test_test_global_funcs(void)
->  {
-> -       RUN_TESTS(test_global_func1);
-> +       if (!env.jit_enabled) {
-> +               RUN_TESTS(test_global_func1);
-> +       }
 
-Can we increase the amount of used stack size to make it fail
-regardless of JIT? That's what I was asking on v1, actually. We have
-those arbitrarily sized buf[256] and buf[300], what prevents us from
-making them a few bytes bigger to not be affected by 16 vs 32 byte
-rounding?
+I think that would go in the already existing special case for
+push_async_cb where you get the verifier state of the async callback.
+You can make setting the boolean in that verifier state conditional on
+whether it's your kfunc/helper you're processing taking a sleepable
+callback.
 
+> It seems the best place would be in do_check(), but I am under the impres=
+sion
+> that the code of the callback is added at the end of the instruction list=
+, meaning
+> that I do not know where it starts, and which subprog index it correspond=
+s to.
+>
+> >
+> > A bit of a challenge is what to do with global subprogs,
+> > since they're verified lazily. They can be called from
+> > sleepable and non-sleepable contex. Should be solvable.
+>
+> I must confess this is way over me (and given that I didn't even managed =
+to make
+> the "easy" case working, that might explain things a little :-P )
+>
 
-> +
->         RUN_TESTS(test_global_func2);
->         RUN_TESTS(test_global_func3);
->         RUN_TESTS(test_global_func4);
-> diff --git a/tools/testing/selftests/bpf/progs/async_stack_depth.c b/tool=
-s/testing/selftests/bpf/progs/async_stack_depth.c
-> index 3517c0e01206..36734683acbd 100644
-> --- a/tools/testing/selftests/bpf/progs/async_stack_depth.c
-> +++ b/tools/testing/selftests/bpf/progs/async_stack_depth.c
-> @@ -30,7 +30,7 @@ static int bad_timer_cb(void *map, int *key, struct bpf=
-_timer *timer)
->  }
+I think it will be solvable but made somewhat difficult by the fact
+that even if we mark subprog_info of some global_func A as
+in_sleepable, so that we explore it as sleepable during its
+verification, we might encounter later another global_func that calls
+a global func, already explored as non-sleepable, in sleepable
+context. In this case I think we need to redo the verification of that
+global func as sleepable once again. It could be that it is called
+from both non-sleepable and sleepable contexts, so both paths
+(in_sleepable =3D true, and in_sleepable =3D false) need to be explored,
+or we could reject such cases, but it might be a little restrictive.
+
+Some common helper global func unrelated to caller context doing some
+auxiliary work, called from sleepable timer callback and normal main
+subprog might be an example where rejection will be prohibitive.
+
+An approach might be to explore main and global subprogs once as we do
+now, and then keep a list of global subprogs that need to be revisited
+as in_sleepable (due to being called from a sleepable context) and
+trigger do_check_common for them again, this might have to be repeated
+as the list grows on each iteration, but eventually we will have
+explored all of them as in_sleepable if need be, and the loop will
+end. Surely, this trades off logical simplicity of verifier code with
+redoing verification of global subprogs again.
+
+To add items to such a list, for each global subprog we encounter that
+needs to be analyzed as in_sleepable, we will also collect all its
+callee global subprogs by walking its instructions (a bit like
+check_max_stack_depth does).
+
+> >
+> > Overall I think this feature is needed urgently,
+> > so if you don't have cycles to work on this soon,
+> > I can prioritize it right after bpf_arena work.
 >
->  SEC("tc")
-> -__failure __msg("combined stack size of 2 calls is 576. Too large")
-> +__failure __msg("combined stack size of 2 calls is")
->  int pseudo_call_check(struct __sk_buff *ctx)
->  {
->         struct hmap_elem *elem;
-> @@ -45,7 +45,7 @@ int pseudo_call_check(struct __sk_buff *ctx)
->  }
+> I can try to spare a few cycles on it. Even if your instructions were on
+> spot, I still can't make the subprogs recognized as sleepable.
 >
->  SEC("tc")
-> -__failure __msg("combined stack size of 2 calls is 608. Too large")
-> +__failure __msg("combined stack size of 2 calls is")
->  int async_call_root_check(struct __sk_buff *ctx)
->  {
->         struct hmap_elem *elem;
-> --
-> 2.39.3
+> For reference, this is where I am (probably bogus, but seems to be
+> working when timer_set_sleepable_cb() is called from a sleepable context
+> as mentioned by Toke):
 >
+
+I just skimmed the patch but I think it's already 90% there. The only
+other change I would suggest is switching from helper to kfunc, as
+originally proposed by Alexei.
+
+> [...]
 
