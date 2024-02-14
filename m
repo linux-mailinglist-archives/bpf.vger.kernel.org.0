@@ -1,203 +1,141 @@
-Return-Path: <bpf+bounces-21980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C55CA854DD3
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:13:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A20D854DDB
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C5D1B2A706
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:13:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE85E1C2713E
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D031B5FF13;
-	Wed, 14 Feb 2024 16:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AAF5FF18;
+	Wed, 14 Feb 2024 16:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DlJ/aHCw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kc+gpjxi"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D006B5FDBA
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 16:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B56C5FDD4
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 16:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927191; cv=none; b=h5ZRm7nlpTsBocVJs5nVJEOyO9YFS3LmHPmjOssM7pErAOi+SRjTLmU4Cpo8wLj4W4HA2obXcHBPlum/9xuII4fSgsYuF4NkzF8mHavtlgaSElHNQLldtvRJa/QIYTOf6Mk3zyjWcpQuN9fdl8xSKSQ/eIlsFV6dMrtES9Cz0to=
+	t=1707927399; cv=none; b=V9NsXTsBr4ndGSJHwfCw5TYszysiMnXwxIQ5HS16qNT9rLvn6ioLR8uHOh23rIKZaiCxXNeHy4ToD7ttw6xG5XRa1Ojw4SlOb7QpVo+yBoUJ/vVnRt04HImxpMXrG1ZH0J+Aixv639Up921Xz8fYWIZHD1CZ3/lSCrbjKV2/9O8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927191; c=relaxed/simple;
-	bh=zvAF82k8O/KXPUb8REbRkHwsgb0iVH0S92JZsfCAT7E=;
+	s=arc-20240116; t=1707927399; c=relaxed/simple;
+	bh=NynwJ0AFNEyMAfXdjjgwyAof/FM1H7Av8eStEA2GWQ8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Akwn+o0ImYVbUjA44bGG1nRTWJorFqZfY4sfIFYL5j7LrQfhK5H5PSAU2gg/IrVgmKQo4s/lRZ3hzOqEageDMCkjDkyZXjlaDKHSA/+LKyLUOkWvtyUm6ZVUSpFcVLSmiCNpfJ0nWWHb/NF/dNqx4egpI1zYmx8MpFrJo7XqM4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DlJ/aHCw; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=AZv6aEmovxq6VXx/zfXz5ZCRcP6z5AzoFgfQiQ1edAGoxtf6ypgALEsoWBo/e2id4Fb/De1PlHgMEglhrg+CpycOSz749j0Hni9HLxhKdAMn0uU9PZXQ5fRwFpSGi6kccqznvQhunhtQNelj5Ng4kPibI/26mkcv1SGiBfna9+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kc+gpjxi; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707927188;
+	s=mimecast20190719; t=1707927396;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qg012SthvSNAvLyRq8Vb5Hgl2UceVv6l801GSSZJ2rU=;
-	b=DlJ/aHCw5C6wBwy/6FtHDHm1Y/pMdqlMkIAazUNA6IFrKPc/CQib3MbpfWtNa313sD+Jg9
-	aT8pzKLb/K7fUZLVgSF6w80Ens3DNav7ZNpb3SuFPSa3RoNyH0k2Ksm2v/TfsdH/2LjBBy
-	YQlKAEW2tZoo2FmQ+cgks+LkMHko6DI=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=NynwJ0AFNEyMAfXdjjgwyAof/FM1H7Av8eStEA2GWQ8=;
+	b=Kc+gpjxiOKrD/RnlXipQQ/cxt6fzBMlxX+3zLAbaZDg57gqlAGq3u2wUlOCKzL+OPomk1W
+	3UM7Uj++KTSqNZqXY8bm42957RgGokbohGWIKk9B4cciYQLLuvEy48U3JuwMfVer5s8weo
+	c10aMUM6e1hxMtByDChBrDDbJhmwKD4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-mEazuXO6NO-RqZkauN-15A-1; Wed, 14 Feb 2024 11:13:06 -0500
-X-MC-Unique: mEazuXO6NO-RqZkauN-15A-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-560d965f599so3203095a12.3
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 08:13:05 -0800 (PST)
+ us-mta-269-yn0ME2hpMNq-TQWDuvxJvQ-1; Wed, 14 Feb 2024 11:16:34 -0500
+X-MC-Unique: yn0ME2hpMNq-TQWDuvxJvQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a2f71c83b7eso176019066b.1
+        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 08:16:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707927185; x=1708531985;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qg012SthvSNAvLyRq8Vb5Hgl2UceVv6l801GSSZJ2rU=;
-        b=MqLMH851l34n7RK/MVzfrSxQCjIADu2DPjcYpz54/Pzpx/D86uzMkmEhlu7pWFs8Mf
-         ylT1n1eydmPlSBq/7yMB2AiXPWMIh1Sr+wN1t33MBmpEetLH/zv7V6N9jszNjN4snmsw
-         JI5z5GENa6Q0ii8Lfy5Nj3+WIbgx+Nzv1An3+H8iFNaERe5FfFMG5btNNHKervr3kj1H
-         JwSglrDOSHgW+xMfdZxmm1ELouwC1l2GQR8ieFz0R5VnZNeTePx4acgpDJRXeUVxlhFc
-         R/6xvXMajNVUYdYVrCiNO07Y2zRV8Vz+8VyvhcjLXzyul6YHICLXd/VEmkMnHeZ9cbmG
-         w6Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJi97vDt8O8TVUIS1XYZXTIISwVqJh1A7n4j6QvJVQCLCf9B2giMJXVkOjjFVYwWlVsf5tRHanYWQCs8HD3JYCu/9y
-X-Gm-Message-State: AOJu0YzMTNDjMKKQxGQI6bcF1rE430rt9wbKL9hjyRa84BP5+G0mtPyv
-	ghfQ9EuuD82qjzYAL1T2f4mXcvWZSHj5VHGaZobJ2PlgSfwnRG4FkzJ3LY5Prn76THWpVo+E6E/
-	ONTxeta0Ybv5cWqoI28tQ4aDl+b6o4mb2Kx+MmmRZPKrakGCQgw==
-X-Received: by 2002:a05:6402:35c1:b0:563:2069:9555 with SMTP id z1-20020a05640235c100b0056320699555mr2380360edc.35.1707927184926;
-        Wed, 14 Feb 2024 08:13:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFE7VFiwPVMQPPB+3QwjbT+YDJNosDKqsi0KjM+5ABUdILFrkMoXzaFU6MuzHW91CprIYmaVQ==
-X-Received: by 2002:a05:6402:35c1:b0:563:2069:9555 with SMTP id z1-20020a05640235c100b0056320699555mr2380322edc.35.1707927184608;
-        Wed, 14 Feb 2024 08:13:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWd0bGtKCMWr8nWasnN2GmlD5wcqpU3qVkgdpCSws/54CSpwO3BvQzSc4Q+MFxtSLOHI3sfPrpghPCqPiAdROw4WuZCt1a0WPnFLYDSFWdrb5M5pKvAwKgcVk3w1O2LqrXvdyh8NTboni1r0pAvYZBikwUcCxnDRuvj+WLsz9G5W8ZocGTn6ZjSlmDTPCPxkkki8wwlt70fu45JLg2XqoVDmzXYsfumhRxwrnGh972lFGUiLJmgpHCNHpNVlmoL4AxyHCeFUvB2yveT7zp+0j1/lkE95aZ++sPvLku/Nuk8lXzpEiCDiy8oBPshkDRyzB10Jvqiea2CbRSw/r/1Fy2m7BgnlmTi8lpT0O8JSU0mw8aI2OtMCRg/AY2zNqqLJPZ/KLFwqB0jUZzMiL/ustALw+shMAjbO4DGwOMfmZJ5egk+qUIzmQ1UrlvLwyJRAjJxizJ+AtjdJUrf9Rx6kIYZEJBvaOA47tljz5t5cYuj4rPXXYIleTUx1EPQXsZi+foYzrASnFg+lheagA3piPwilPVrQXjdxcgW6p6QkuEMd0pVw4TLFSeCksrHqJFYlDohJ31wP9odq76JOfpbAKpPWh7GTdWEhVP4NEWiKuzoiyZMTkHJ5aGbSc7yBOyUY6+TbHP9LcRuNMjlKSreQ6d54zJ+0n8Wjbl2PEjT6AQCBEtjIdDcfcZTK0tjOUzYAmztZAk=
+        d=1e100.net; s=20230601; t=1707927393; x=1708532193;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NynwJ0AFNEyMAfXdjjgwyAof/FM1H7Av8eStEA2GWQ8=;
+        b=FOvaNvsut/27atCXGfBx/LT1Q4IyetndvtqjU4YGTZM3wxcHbc6phZmW6CnJN7a0ni
+         Ki/sGUWNo7ADAcs7PKTZpZlPIdECDptiYrECk8p1xbHw0hXQmR8vwRbbZ5KLgKide8m9
+         wp69Uz2QqNmVyJBoF3yOwE0cztIOiqHFTmZqAT0wjDr1ElvVjem5xKG9dRZBaJtvRq0U
+         cC+KnN22j1Wo4vgRBntjtor8MZWXav9o3OxDDxSAanLnODxMHrvtwMs1BEFK74RCY6EU
+         NpkRDYWzcmW3qea5Ihl5Um553kgtPqyhlIWyWEtIHOuwe85puHw9Ku5JdQ523O4AwIoF
+         Wu6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXY++ADU9tqgBFue6FH1fZNySiet41oQ/nFdr61mDSBXCIFypc1mrwJTm+83/HHeLP47yW+RV/YmvEqt18E0O6eKvZI
+X-Gm-Message-State: AOJu0YzOqbLXgQl1++n5ApbGyQuTOk/zV+KN+JzCn4zV/a8abq6RNtjK
+	sVWFvz5Eqb+1WxBbFd7iU2MqhLv6YByx6S0HxurC8eDedHkxLZ/X2w+kmiYKYowyLHlrPm0Nzcm
+	q13nJGVSbz6Z62AERu9NYgTO7jLBM0D8iuCGXjC6teq0Kh6GIYA==
+X-Received: by 2002:a17:906:b295:b0:a3d:7559:6ed1 with SMTP id q21-20020a170906b29500b00a3d75596ed1mr180340ejz.4.1707927393607;
+        Wed, 14 Feb 2024 08:16:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEBF50fj2t1VrO4nlcJxfDzb3+UgO6SrtoiH8S6oP0zsV+naqCZz8OsshNnXDp0xJ5kbRGiJA==
+X-Received: by 2002:a17:906:b295:b0:a3d:7559:6ed1 with SMTP id q21-20020a170906b29500b00a3d75596ed1mr180311ejz.4.1707927393183;
+        Wed, 14 Feb 2024 08:16:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUvWSzW/sHbHaDDzeSp1uL8SKv5n9VHwyIwWL7PGYq0Ek7HvpPw616TcD402iBl0wutzUvWVCAVEQ29muGToMScmOgRaJ1PMCgmnGQCAbVp6qvs/t0Pl2OeofCKEBrj5e1zQCkSs5GlDvLUIkMRlCY+d6+jH3c4aCcDacPCCdVQ0vIXMATTuIO6E9b2ZhNJhtUIWRhrLp/1YNd9amOmlTfUUtKibKRlmp2prRkrJFuu1KLpvU8yBSjKFsTeplDxqRydRYtBlGOoJG+qMybE+Oy+b9mj8mxubSjhmQs7IorCsGXhahWgAJ9AcB/MPNDoAkgflCXMGbgH
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id er13-20020a056402448d00b005607825b11bsm4756968edb.12.2024.02.14.08.13.03
+        by smtp.gmail.com with ESMTPSA id cw5-20020a170907160500b00a3ce60b003asm2260365ejd.176.2024.02.14.08.16.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 08:13:04 -0800 (PST)
+        Wed, 14 Feb 2024 08:16:32 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 9CA4810F57E7; Wed, 14 Feb 2024 17:13:03 +0100 (CET)
+	id 4A91510F57EE; Wed, 14 Feb 2024 17:16:32 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, "David S. Miller"
- <davem@davemloft.net>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eric Dumazet
- <edumazet@google.com>, Hao Luo <haoluo@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Jonathan
- Lemon <jonathan.lemon@gmail.com>, KP Singh <kpsingh@kernel.org>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Thomas
- Gleixner <tglx@linutronix.de>, Yonghong Song <yonghong.song@linux.dev>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-In-Reply-To: <20240213145923.2552753-2-bigeasy@linutronix.de>
-References: <20240213145923.2552753-1-bigeasy@linutronix.de>
- <20240213145923.2552753-2-bigeasy@linutronix.de>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Jakub Kicinski <kuba@kernel.org>, Maciej
+ Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf/test_run: increase Page Pool's ptr_ring
+ size in live frames mode
+In-Reply-To: <20240214153838.4159970-1-aleksander.lobakin@intel.com>
+References: <20240214153838.4159970-1-aleksander.lobakin@intel.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 14 Feb 2024 17:13:03 +0100
-Message-ID: <87il2rdnxs.fsf@toke.dk>
+Date: Wed, 14 Feb 2024 17:16:32 +0100
+Message-ID: <87cyszdnrz.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+Alexander Lobakin <aleksander.lobakin@intel.com> writes:
 
-> The XDP redirect process is two staged:
-> - bpf_prog_run_xdp() is invoked to run a eBPF program which inspects the
->   packet and makes decisions. While doing that, the per-CPU variable
->   bpf_redirect_info is used.
+> Currently, when running xdp-trafficgen, test_run creates page_pools with
+> the ptr_ring size of %NAPI_POLL_WEIGHT (64).
+> This might work fine if XDP Tx queues are polled with the budget
+> limitation. However, we often clear them with no limitation to ensure
+> maximum free space when sending.
+> For example, in ice and idpf (upcoming), we use "lazy" cleaning, i.e. we
+> clean XDP Tx queue only when the free space there is less than 1/4 of
+> the queue size. Let's take the ring size of 512 just as an example. 3/4
+> of the ring is 384 and often times, when we're entering the cleaning
+> function, we have this whole amount ready (or 256 or 192, doesn't
+> matter).
+> Then we're calling xdp_return_frame_bulk() and after 64th frame,
+> page_pool_put_page_bulk() starts returning pages to the page allocator
+> due to that the ptr_ring is already full. put_page(), alloc_page() et at
+> starts consuming a ton of CPU time and leading the board of the perf top
+> output.
 >
-> - Afterwards xdp_do_redirect() is invoked and accesses bpf_redirect_info
->   and it may also access other per-CPU variables like xskmap_flush_list.
+> Let's not limit ptr_ring to 64 for no real reason and allow more pages
+> to be recycled. Just don't put anything to page_pool_params::size and
+> let the Page Pool core pick the default of 1024 entries (I don't believe
+> there are real use cases to clean more than that amount of descriptors).
+> After the change, the MM layer disappears from the perf top output and
+> all pages get recycled to the PP. On my test setup on idpf with the
+> default ring size (512), this gives +80% of Tx performance with no
+> visible memory consumption increase.
 >
-> At the very end of the NAPI callback, xdp_do_flush() is invoked which
-> does not access bpf_redirect_info but will touch the individual per-CPU
-> lists.
->
-> The per-CPU variables are only used in the NAPI callback hence disabling
-> bottom halves is the only protection mechanism. Users from preemptible
-> context (like cpu_map_kthread_run()) explicitly disable bottom halves
-> for protections reasons.
-> Without locking in local_bh_disable() on PREEMPT_RT this data structure
-> requires explicit locking to avoid corruption if preemption occurs.
->
-> PREEMPT_RT has forced-threaded interrupts enabled and every
-> NAPI-callback runs in a thread. If each thread has its own data
-> structure then locking can be avoided and data corruption is also avoided.
->
-> Create a struct bpf_xdp_storage which contains struct bpf_redirect_info.
-> Define the variable on stack, use xdp_storage_set() to set a pointer to
-> it in task_struct of the current task. Use the __free() annotation to
-> automatically reset the pointer once function returns. Use a pointer which can
-> be used by the __free() annotation to avoid invoking the callback the pointer
-> is NULL. This helps the compiler to optimize the code.
-> The xdp_storage_set() can nest. For instance local_bh_enable() in
-> bpf_test_run_xdp_live() may run NET_RX_SOFTIRQ/ net_rx_action() which
-> also uses xdp_storage_set(). Therefore only the first invocations
-> updates the per-task pointer.
-> Use xdp_storage_get_ri() as a wrapper to retrieve the current struct
-> bpf_redirect_info.
->
-> This is only done on PREEMPT_RT. The !PREEMPT_RT builds keep using the
-> per-CPU variable instead. This should also work for !PREEMPT_RT but
-> isn't needed.
->
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-[...]
+Hmm, so my original idea with keeping this low was to avoid having a lot
+of large rings lying around if it is used by multiple processes at once.
+But we need to move away from the per-syscall allocation anyway, and
+with Lorenzo's patches introducing a global system page pool we have an
+avenue for that. So in the meantime, I have no objection to this...
 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index de362d5f26559..c3f7d2a6b6134 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3988,11 +3988,15 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
->  		   struct net_device *orig_dev, bool *another)
->  {
->  	struct bpf_mprog_entry *entry = rcu_dereference_bh(skb->dev->tcx_ingress);
-> +	struct bpf_xdp_storage *xdp_store __free(xdp_storage_clear) = NULL;
->  	enum skb_drop_reason drop_reason = SKB_DROP_REASON_TC_INGRESS;
-> +	struct bpf_xdp_storage __xdp_store;
->  	int sch_ret;
->  
->  	if (!entry)
->  		return skb;
-> +
-> +	xdp_store = xdp_storage_set(&__xdp_store);
->  	if (*pt_prev) {
->  		*ret = deliver_skb(skb, *pt_prev, orig_dev);
->  		*pt_prev = NULL;
-> @@ -4044,12 +4048,16 @@ static __always_inline struct sk_buff *
->  sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
->  {
->  	struct bpf_mprog_entry *entry = rcu_dereference_bh(dev->tcx_egress);
-> +	struct bpf_xdp_storage *xdp_store __free(xdp_storage_clear) = NULL;
->  	enum skb_drop_reason drop_reason = SKB_DROP_REASON_TC_EGRESS;
-> +	struct bpf_xdp_storage __xdp_store;
->  	int sch_ret;
->  
->  	if (!entry)
->  		return skb;
->  
-> +	xdp_store = xdp_storage_set(&__xdp_store);
-> +
->  	/* qdisc_skb_cb(skb)->pkt_len & tcx_set_ingress() was
->  	 * already set by the caller.
->  	 */
-
-
-These, and the LWT code, don't actually have anything to do with XDP,
-which indicates that the 'xdp_storage' name misleading. Maybe
-'bpf_net_context' or something along those lines? Or maybe we could just
-move the flush lists into bpf_redirect_info itself and just keep that as
-the top-level name?
-
--Toke
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
