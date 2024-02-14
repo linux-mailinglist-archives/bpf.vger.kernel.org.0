@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-21933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28E2E8540ED
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 01:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA1898540FE
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 02:03:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4DD81F281C2
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 00:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6085A1F27FD7
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 01:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E23625;
-	Wed, 14 Feb 2024 00:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE09E801;
+	Wed, 14 Feb 2024 01:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gueHk0ZV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gACx7tzh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94C5372
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 00:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC79A372
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 01:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707871914; cv=none; b=LZhi79r7JJ69YkuttblvqpCxnfWys7l7L2HuEk9a9lLSAB1EtvM0Jcvxj/3MOIDO592r+7O8l3TJhDm9x2O+2/ATXKGhd99qj9K6D5anNAhTYrtI598P5Gw/tAe4BnTRpR7yYyHOtwixxFMEdalSOGP/FmAntB3R4Nz9hCXswDM=
+	t=1707872573; cv=none; b=QVzKyGgrl7I86JLDTQeFWB7XyV+3Yag50OHnguxxzSLus3mABZxn4tp8ghII+HOmsnCn84EnSTAuBt1JsvmHWZGrcBs8i19aXHGXymcXsxLBM0zTktEYvnehzZvep7rjZ7xP3qbsCauGyKcdsSGib06p5PrhewQPQwy7bz7fKg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707871914; c=relaxed/simple;
-	bh=SQKS172aDHZ1yLw/B+H+qhyMuUDWHV5flYuN9Ux1n1Q=;
+	s=arc-20240116; t=1707872573; c=relaxed/simple;
+	bh=ys+FQv4cHhRTNkKNZnsImn3WYfc3yYQguCKdDIqBhDY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lFxed6QDjPa6uNaeEHCNZCaOMb3JJ4OYOd018TreTXSQQsSTpiTelulp+BX8KH0BwEIRm3EVPU9djHgZGP7zd12Yos8hZls7HncTeYrOBXbjeJMdz7ejr1LkNGdqzwgy55uPxOOvYDp7XHkU3QvgeJi6E1ZaWPZtOgAao7GGlmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gueHk0ZV; arc=none smtp.client-ip=209.85.215.169
+	 To:Cc:Content-Type; b=HlgLZIIILyOZuchJ3hgxNv6ZpvtO0ZZMoLG4LlCpbRZbBBey/Q9WT6bskf107ruRBiG7gO56MNHL+6YfWYRuCTa0h+KC2H+VC0mO1ZdwmXkNHS/6bkjvAJ7npLr3Xh4k96I6yfMG916DeYmkuCimwLVKhGYATntJjJoL/NeHM/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gACx7tzh; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5dc4a487b1eso3566356a12.1
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 16:51:52 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-411a5b8765bso1509315e9.1
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 17:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707871912; x=1708476712; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707872570; x=1708477370; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DC1nMc7pTknOKkwzDFTIRsHpNbe/6K187I4SurZ5w94=;
-        b=gueHk0ZVSCdo2SXbLonmodH+v3qAo1LuexBqHtfPvHRF8tD7QeJViRDVJiSiCptvyq
-         /vCtIHZeSshPj6n+wzpopXh1clD1XTUL2Lgnhbf/+3x66P0vjRiJZv8xOXzohHWdIwD5
-         OnqOG4AfZXXpyz40/OUh8x7CKI5ZWyBrbee6SE1+kVuyo/qYWRdk+24dQzSMolZnJy7l
-         qwVxlto8WSCxQxbvt93UErbr5l4XYY3yD2PyARKE9STBzt0W4Vh5WO6mIu8KuArV3/Cb
-         UFnggZ/nwgHMzy5mzoMS81LVtD+FrhzNuOk873h/6zUbu1Rz1F0gs8/2mRwbC7wNkiu0
-         hj6w==
+        bh=ys+FQv4cHhRTNkKNZnsImn3WYfc3yYQguCKdDIqBhDY=;
+        b=gACx7tzhUvnQyhqGZpuhcaKDB29AMSlbGX76bgO+ygv+ccVbvF7xDIGTxUSOdh282k
+         wj6aZ5Dn6sdHK5dB2r9Sy7KtCkgFGwF28ttBWOYiR6BK/cd6jQsD/9t2+69gZoMReYdm
+         M0i6JeI+mHWnoSycUm9cNH8ZvqcCuLBCrMQaplNsXcNZrqkEC5+fz88xpyKT5/q9xHrY
+         o/xs8OdkCRjY0bCAR21z6+sHMtqr258V1wwyHmdTY9BB76OY7MoXBA+4Pl8Jqzl8wqK8
+         JxJlYwJ82hd2gbrwkK+O3mhHp8TJp+A60fJ3+mO5sGqwLSFEdcZgUIecdHuwGsYlu3a1
+         WoaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707871912; x=1708476712;
+        d=1e100.net; s=20230601; t=1707872570; x=1708477370;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DC1nMc7pTknOKkwzDFTIRsHpNbe/6K187I4SurZ5w94=;
-        b=serFcHxEPSFEffyxO3deQPtNIc6MG8I/5JvQcR1fx5H5CUx+K6+YVQSVwh4VrveoQ6
-         PjQJm12sCjFWkNVTbgJ0NoEsCKX650MIu3mlmbiEUjVAmpMqDPaXqg62w6VnCR2dpCCS
-         lBCjh1eDGXEo0NN1Mg4ilU5T2eOtpYw0mxiGU5HUjtMDDyL+UH3vIemO4XKb6uAgVe+4
-         UuO5XYMgX4Iyf1miEkE6UL2Ua9P3LdY8kQtDUUoioDGqD7ljTTMxY+Fbf9C4Wn5zaUvB
-         izltJEHmrZN5suajrrPH6pUhtbgTmxBP+raBCxq5vp8Ygc46Hp0v9fJBMcROU8rd9qX4
-         U97w==
-X-Gm-Message-State: AOJu0YxgYsqVZwqX2fAXrqB8IBa6y30m4dhl3iojY2W8r6ilzqwbIo8I
-	zd63P0V7ARkg+3MkxH1yilbZ1If23LbWYcwBnD+i3N+3J7Rg6r/W/DrHDGMoTOtC9zFwPP23sBX
-	aC2+lewH9CP30BqpXoYSR1ZKfdaM=
-X-Google-Smtp-Source: AGHT+IHhACzmU3aQSLzC8/ggDCQIWh1793NT5PEgliUAYx9/pkD8SJ81Uqqc5deCHSGZXPeyHxcnllORnbLSfrWbjTk=
-X-Received: by 2002:a05:6a20:c68e:b0:19e:4e58:5026 with SMTP id
- gq14-20020a056a20c68e00b0019e4e585026mr1349286pzb.4.1707871912163; Tue, 13
- Feb 2024 16:51:52 -0800 (PST)
+        bh=ys+FQv4cHhRTNkKNZnsImn3WYfc3yYQguCKdDIqBhDY=;
+        b=a8bDO2aU5rQ+QJCP+KHDDPoXu8voq4OHbhc9CJYwe1xQNZ5+HkBYwhu57iEJgUE4DS
+         DefEBNs/zVKb/kNOvVDJFvWFaUyzDFGSFk78B0+eKEg39mBQzVQ/KsEV2g5071ZJgd66
+         rM/JX1qX/uq1kD09P1IbcwgItD5zY6ZiST4uQvqrsLGagNLkkR8STvyNQvvxcnnevjGC
+         kOCPlUPZMsWWuYWKMcqSyGsMwhA3vr6phMSqUfYum8VsYkHtLPKU9Vi6pyuXYfGWEFkl
+         VScKXcJediQxPevDNMgS0IpTSLGuAWyTjN1DpjeeRWfcXpt1IRbY3dvc8CnF7JDhDb9u
+         Ix5w==
+X-Gm-Message-State: AOJu0YxN5l0l7J36IE9mjvOlrToIt7qlx2xX2LGNUeb79weI+S7I5ieY
+	HvKwxmsNRFIO9TEtgs6vsACs9lBbCTUX/ccptszT1rFq6dxDQQew+jm7XFan3VQRz4mPPQ1JBzL
+	+PhrisgxwU7dVAC9Ft8S/bSu7LkA=
+X-Google-Smtp-Source: AGHT+IHV+SVGA5NF/7QPEK4Ttn1/8o7VyqCtO5vXBmdGha6JCjy+FpATDjyvLQVHjcbRzgIle2TYS79aytqxb77ELV4=
+X-Received: by 2002:a05:600c:5107:b0:411:c8a7:7b6e with SMTP id
+ o7-20020a05600c510700b00411c8a77b6emr320022wms.10.1707872569949; Tue, 13 Feb
+ 2024 17:02:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,189 +71,100 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-14-alexei.starovoitov@gmail.com> <CAEf4BzZGLJfKRbZdbrZzkYeHfa0Dz8fDLSngv3k+t4b3f80ksg@mail.gmail.com>
- <CAADnVQLrR-pWQfOCknnu2A3=4NvQOnteJ2thWEFjys+g+hA+1g@mail.gmail.com>
-In-Reply-To: <CAADnVQLrR-pWQfOCknnu2A3=4NvQOnteJ2thWEFjys+g+hA+1g@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 13 Feb 2024 16:51:40 -0800
-Message-ID: <CAEf4Bza8GeomF77tqgwHVipq1Nb17SQbz6JryWJawk67U1YEhQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 13/20] libbpf: Allow specifying 64-bit
- integers in map BTF.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+ <20240209040608.98927-15-alexei.starovoitov@gmail.com> <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
+In-Reply-To: <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 Feb 2024 17:02:38 -0800
+Message-ID: <CAADnVQ+jDLDK9TXCjRWsLg9SK4N1VHgiSLoqqdGfvtUpKbmLaw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global varaibles.
+To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, 
-	Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
 	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, 
 	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 4:47=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Feb 13, 2024 at 3:11=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Tue, Feb 13, 2024 at 3:15=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Thu, 2024-02-08 at 20:06 -0800, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > On Thu, Feb 8, 2024 at 8:07=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > From: Alexei Starovoitov <ast@kernel.org>
-> > >
-> > > __uint() macro that is used to specify map attributes like:
-> > >   __uint(type, BPF_MAP_TYPE_ARRAY);
-> > >   __uint(map_flags, BPF_F_MMAPABLE);
-> > > is limited to 32-bit, since BTF_KIND_ARRAY has u32 "number of element=
-s" field.
-> > >
-> > > Introduce __ulong() macro that allows specifying values bigger than 3=
-2-bit.
-> > > In map definition "map_extra" is the only u64 field.
-> > >
-> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/bpf_helpers.h |  5 +++++
-> > >  tools/lib/bpf/libbpf.c      | 44 ++++++++++++++++++++++++++++++++++-=
---
-> > >  2 files changed, 46 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.=
-h
-> > > index 9c777c21da28..0aeac8ea7af2 100644
-> > > --- a/tools/lib/bpf/bpf_helpers.h
-> > > +++ b/tools/lib/bpf/bpf_helpers.h
-> > > @@ -13,6 +13,11 @@
-> > >  #define __uint(name, val) int (*name)[val]
-> > >  #define __type(name, val) typeof(val) *name
-> > >  #define __array(name, val) typeof(val) *name[]
-> > > +#ifndef __PASTE
-> > > +#define ___PASTE(a,b) a##b
-> > > +#define __PASTE(a,b) ___PASTE(a,b)
-> > > +#endif
+> > LLVM automatically places __arena variables into ".arena.1" ELF section=
+.
+> > When libbpf sees such section it creates internal 'struct bpf_map' LIBB=
+PF_MAP_ARENA
+> > that is connected to actual BPF_MAP_TYPE_ARENA 'struct bpf_map'.
+> > They share the same kernel's side bpf map and single map_fd.
+> > Both are emitted into skeleton. Real arena with the name given by bpf p=
+rogram
+> > in SEC(".maps") and another with "__arena_internal" name.
+> > All global variables from ".arena.1" section are accessible from user s=
+pace
+> > via skel->arena->name_of_var.
 > >
-> > we already have ___bpf_concat defined further in this file (it's macro
-> > so ordering shouldn't matter), let's just use that instead of adding
-> > another variant
->
-> Ohh. forgot about this one. will do.
->
-> > > +#define __ulong(name, val) enum { __PASTE(__unique_value, __COUNTER_=
-_) =3D val } name
-> > >
-> > >  /*
-> > >   * Helper macro to place programs, maps, license in
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 4880d623098d..f8158e250327 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -2243,6 +2243,39 @@ static bool get_map_field_int(const char *map_=
-name, const struct btf *btf,
-> > >         return true;
-> > >  }
-> > >
-> > > +static bool get_map_field_long(const char *map_name, const struct bt=
-f *btf,
-> > > +                              const struct btf_member *m, __u64 *res=
-)
-> > > +{
-> > > +       const struct btf_type *t =3D skip_mods_and_typedefs(btf, m->t=
-ype, NULL);
-> > > +       const char *name =3D btf__name_by_offset(btf, m->name_off);
-> > > +
-> > > +       if (btf_is_ptr(t))
-> > > +               return false;
+> > For bss/data/rodata the skeleton/libbpf perform the following sequence:
+> > 1. addr =3D mmap(MAP_ANONYMOUS)
+> > 2. user space optionally modifies global vars
+> > 3. map_fd =3D bpf_create_map()
+> > 4. bpf_update_map_elem(map_fd, addr) // to store values into the kernel
+> > 5. mmap(addr, MAP_FIXED, map_fd)
+> > after step 5 user spaces see the values it wrote at step 2 at the same =
+addresses
 > >
-> > It's not great that anyone that uses __uint(map_extra, ...) would get
-> > warnings now.
+> > arena doesn't support update_map_elem. Hence skeleton/libbpf do:
+> > 1. addr =3D mmap(MAP_ANONYMOUS)
+> > 2. user space optionally modifies global vars
+> > 3. map_fd =3D bpf_create_map(MAP_TYPE_ARENA)
+> > 4. real_addr =3D mmap(map->map_extra, MAP_SHARED | MAP_FIXED, map_fd)
+> > 5. memcpy(real_addr, addr) // this will fault-in and allocate pages
+> > 6. munmap(addr)
+> >
+> > At the end look and feel of global data vs __arena global data is the s=
+ame from bpf prog pov.
 >
-> What warning ?
-> This specific check makes it fallback to ptr without warning.
-> We have a bloom filter test that uses map_extra.
-> No warnings there.
+> [...]
+>
+> So, at first I thought that having two maps is a bit of a hack.
+> However, after trying to make it work with only one map I don't really
+> like that either :)
 
-ah, right, forget about the warning, you exit early. But still makes
-sense to handle ulong vs uint transparently
+My first attempt was with single arena map, but it ended up with
+hacks all over libbpf and bpftool to treat one map differently depending
+on conditions.
+Two maps simplified the code a lot.
 
+> The patch looks good to me, have not spotted any logical issues.
+>
+> I have two questions if you don't mind:
+>
+> First is regarding initialization data.
+> In bpf_object__init_internal_map() the amount of bpf_map_mmap_sz(map)
+> bytes is mmaped and only data_sz bytes are copied,
+> then bpf_map_mmap_sz(map) bytes are copied in bpf_object__create_maps().
+> Is Linux/libc smart enough to skip action on pages which were mmaped but
+> never touched?
+
+kernel gives zeroed out pages to user space.
+So it's ok to mmap a page, copy data_sz bytes into it
+and later copy the full page from one addr to another.
+No garbage copy.
+In this case there will be data by llvm construction of ".arena.1"
+It looks to me that even .bss-like __arena vars have zero-s in data
+and non-zero data_sz.
 
 >
-> > Let's just teach get_map_field_long to recognize __uint vs __ulong?
-> >
-> > Let's call into get_map_field_int() here if we have a pointer, and
-> > then upcast u32 into u64?
->
-> makes sense.
->
-> > > +
-> > > +       if (!btf_is_enum(t) && !btf_is_enum64(t)) {
-> > > +               pr_warn("map '%s': attr '%s': expected enum or enum64=
-, got %s.\n",
-> >
-> > seems like get_map_field_int() is using "PTR" and "ARRAY" all caps
-> > spelling in warnings, let's use ENUM and ENUM64 for consistency?
->
-> done.
->
-> > > +                       map_name, name, btf_kind_str(t));
-> > > +               return false;
-> > > +       }
-> > > +
-> > > +       if (btf_vlen(t) !=3D 1) {
-> > > +               pr_warn("map '%s': attr '%s': invalid __ulong\n",
-> > > +                       map_name, name);
-> > > +               return false;
-> > > +       }
-> > > +
-> > > +       if (btf_is_enum(t)) {
-> > > +               const struct btf_enum *e =3D btf_enum(t);
-> > > +
-> > > +               *res =3D e->val;
-> > > +       } else {
-> > > +               const struct btf_enum64 *e =3D btf_enum64(t);
-> > > +
-> > > +               *res =3D btf_enum64_value(e);
-> > > +       }
-> > > +       return true;
-> > > +}
-> > > +
-> > >  static int pathname_concat(char *buf, size_t buf_sz, const char *pat=
-h, const char *name)
-> > >  {
-> > >         int len;
-> > > @@ -2476,10 +2509,15 @@ int parse_btf_map_def(const char *map_name, s=
-truct btf *btf,
-> > >                         map_def->pinning =3D val;
-> > >                         map_def->parts |=3D MAP_DEF_PINNING;
-> > >                 } else if (strcmp(name, "map_extra") =3D=3D 0) {
-> > > -                       __u32 map_extra;
-> > > +                       __u64 map_extra;
-> > >
-> > > -                       if (!get_map_field_int(map_name, btf, m, &map=
-_extra))
-> > > -                               return -EINVAL;
-> > > +                       if (!get_map_field_long(map_name, btf, m, &ma=
-p_extra)) {
-> > > +                               __u32 map_extra_u32;
-> > > +
-> > > +                               if (!get_map_field_int(map_name, btf,=
- m, &map_extra_u32))
-> > > +                                       return -EINVAL;
-> > > +                               map_extra =3D map_extra_u32;
-> > > +                       }
-> >
-> > with the above change it would be a simple
-> > s/get_map_field_int/get_map_field_long/ (and __u32 -> __u64, of
-> > course)
->
-> so this logic will move into get_map_field_long.
-> makes sense.
+> Second is regarding naming.
+> Currently only one arena is supported, and generated skel has a single '-=
+>arena' field.
+> Is there a plan to support multiple arenas at some point?
+> If so, should '->arena' field use the same name as arena map declared in =
+program?
 
-yep, seems good to not care about int vs long here
-
->
-> I thought about making get_map_field_int() to handle enum,
-> but way too many places need refactoring, since it's called like:
-> get_map_field_int(map_name, btf, m, &map_def->map_type)
-> get_map_field_int(map_name, btf, m, &map_def->max_entries)
-
-yeah, not worth it
+I wanted to place all global arena vars into a default name "arena"
+and let skeleton to use that name without thinking what name
+bpf prog gave to the actual map.
 
