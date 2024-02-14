@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-22030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8AC85548F
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 22:15:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0980F8554F2
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 22:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FE991C23AA8
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 21:15:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF5981F27213
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 21:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C095813EFEE;
-	Wed, 14 Feb 2024 21:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD15813F007;
+	Wed, 14 Feb 2024 21:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bfWC7NN+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zZUZLQkh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D190741C71
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 21:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D9F13DBA7
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 21:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707945343; cv=none; b=YFPNIieqoWgmaS11s74dUyhnhI/X/xQjWKDuu1vBxYlL1MVZwoeTQUICHxKkkL8jOEVBm6zSkayAi1VNymIHUxAFK2QSNCeYumv9flwfZzbvPj6LFbEyp/WfJRRdCCPXq9w37JFFQAl6jeywQyLnAO43LjqXdxflTmi/loM2ZT4=
+	t=1707946620; cv=none; b=WwI3JGUUUlqIThXIpX0+W3NtW1yiEJGvgFg9s7J/Hy8KOzyAksg8/NgexAaVG2D4NhlhqPYLWTQ81TJ/PSkhbW1odHYvLXIM/KOXorgo5y637GwF6OYMaSv2Yc1/s7TGEuq8M4V3ynLYo57j0lWvs1zWK2EoYhB62vVWVt1JRqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707945343; c=relaxed/simple;
-	bh=F9oKYLh44bvwDgUu2A/DAornn6Az7M/1rM8//1GfUsY=;
+	s=arc-20240116; t=1707946620; c=relaxed/simple;
+	bh=8NTIdvfdUShCf6KiTT4xVJr3A6EVG7UAZSouPXwWvFs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jskDsx04utVyYNqvpLp7dH0Y3x7wvMa+9CFo9JnXFgM5yrORXyCOAiJwUYhcZWa3P255tuT4agfQOd6FLODEXcfflBhMgFbAkTyfDsqFy6VoZl9XLn4ZLBOgwnAk+DHLYCgV9VsjyiNCLaf65JAtoh5/OFBXo3lzu5unCJglLQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bfWC7NN+; arc=none smtp.client-ip=209.85.160.170
+	 To:Cc:Content-Type; b=bMahB8y1IzfFT4LtpZlgDhGtkmZNhby+4+tNBDX0VtEcP/Qk1jpI9MtyX9EuGSKO0ELYICPGQVBw4esuyCzXNhPMRwN+xxLzP7qqHKvm0M/SyPNxRl+Bh+fydYwXspWOdTgFQEixSBiBz/eHd+qeDEepmZdLNR5cGDkFZxi+FNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zZUZLQkh; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-428405a0205so15411cf.1
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 13:15:41 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1db61f7ebcbso11085ad.0
+        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 13:36:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707945341; x=1708550141; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707946618; x=1708551418; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rtPYS+AuuZocKBV8MQsQ9n8ruvZkdc3y9Vt/v5r10Go=;
-        b=bfWC7NN+E64DVyDhqXIBAFqshBjmiiXEfnsjOpJGgY8cD3ewiUtMOdVSNjCMuqW14T
-         q/OvfVbpdLQW9VdwtkDUVlIKn8+04TlyPL8BuR2qslAJajSF2CU2j88oCbGjMyukeS8x
-         AOAthsstPPUXOQEYDOXIXIW5U0nPddGJvhWQJswl/8zvaHCeIWfyO1/P8H8Dui81byYz
-         vlAUP4hmSbkbPJk53netgDL3RuuOQALSsvi+hDqgMsmiYHQK0ocVZbHDQy2vwipSGTrI
-         NWkxstYgj686YNcd2Q6c4l9841Tmh6HoBStqdiscHsGij92OIFoepr5uPtFHczdQwuL8
-         Xq+w==
+        bh=qm+3lAjNKCUXMK2MWRX3aA9k1EZES8aqndD5uWRzKz4=;
+        b=zZUZLQkhf/CogbGFIeK5zRCFwghXNPXzycZM/MtAFgXa2PlMR9+LHRRjTejEL82o66
+         1/CDPdgLTmdv5u+cpLtgUWKmFSIvGUYm2r1PxSmRTMmDIuBQq3G94PHMGpsITbCs1x48
+         YMg1/EDTJ3Xd2zJSevQ6zG1byffgP2NXyiOadttSROhU+dVeqBS1vj4nE1lDr/A2T8bE
+         GNwpGCtwesf6t4pENX0FH6QGoW2hGYmsJgcYltE2/VpsjWolzEKrC+5CHa4UnjOKEVSV
+         MutFRk1jW68cx4gfnTZQAAmEUxVpqihr5uuzUSGROC1ttOqnO/IAHgfNebtmgsAE3aNW
+         ZKGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707945341; x=1708550141;
+        d=1e100.net; s=20230601; t=1707946618; x=1708551418;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rtPYS+AuuZocKBV8MQsQ9n8ruvZkdc3y9Vt/v5r10Go=;
-        b=N+TnXJ2K4DuCirD7hcx+gHsoJawa1LqJEbeizKB02RAqih+PksXhSncQTDehxt701C
-         F99jvUk0QmN2UVeLlg6k7w5Ioa7L9c6gJ6I8KXu+Y+0BeSWMBctayYV0ju+TAAR9kTij
-         GAT/ldHxBUtviD988DHDJIDIgOqMub9VopwlXxgXjCZvP5mV9dw4f+bmNkkW3aoFStYt
-         iG1XMyCTtZxRlh538sDLON6h95oIRQ4IFc1MzAS9NNf7mUOp4sehJZkEmqa3p7VE7HNA
-         y50oTSzdewDEYmaepZh3F9Xne3Xp7xqLbWnB/UGV+X8L3iBDgLpcD8gvbbDYS+bbVY24
-         q0PA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ1mdKyHvDjqFn9FEjQgZ8lUVn8TTVrHp85ZguDkWJQeF9+bkHuogkPK6ZvG1hpRySHphRpqVvq6gUk4nqjTEJzVMY
-X-Gm-Message-State: AOJu0YzIa2bRz5tnceNVtDc+hGSN8C1kc7jE/HeGzwCCTPSJYBQaSA7m
-	FhdJ9r+cLEIcIty0WO/Y2YB2oMkYzuyqmHZtcxBQSKFD0XLlKk9utcZuNIOBFl+o7OGAsniGwY8
-	1cezXAaUaEFH0FuprVxVu5ZQMB2h5JJL4LpXz
-X-Google-Smtp-Source: AGHT+IEipjTakTkH6uUdqHEGoQ/AQsh79Py+LRmsAxPdIx46RUJnI91c573VL4Jo7dlUQ0Sjjg38UhtVioJEXHjoSuw=
-X-Received: by 2002:a05:622a:1882:b0:42c:501c:ed12 with SMTP id
- v2-20020a05622a188200b0042c501ced12mr495153qtc.4.1707945340646; Wed, 14 Feb
- 2024 13:15:40 -0800 (PST)
+        bh=qm+3lAjNKCUXMK2MWRX3aA9k1EZES8aqndD5uWRzKz4=;
+        b=jo+j+s8DX78y4jqrOsmuLnBRuQ3lxYJSVoGnH1xuSv0nusOM/ocr4XfZHT6OmRn3Hg
+         Ef+2WJrI4gv3YgjX1trBEsImcKCz0a/r2BWZzq0jKYLbOD4NscbaIRib+hhMmDjlhLJ1
+         DKWLRzCsQo5cvi1QQXKnzl9ZgKju5p06/lpDanl5eg+94jO6n0+yU0erOBbjXkRmv5AR
+         HjWevfX1rf3/+IJtWAEiQM86meraAGZWunfkIU1Lh7A15dsGVXZYoptufJ7+P7vAG773
+         /BbcdXsYorG6Ynbrf7NqNvvmpz2v2T0bFuiqVJyvrSHKVCSR3+DFS7ye38kT/Z+st+B3
+         gxHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTIbg4jqoPbYQpmEfogR78jWpJ75VoJDo4c5IpIS4NcRk/px38zNehsdRyXa2Y0YqD51OiFPGlLD+GC5Eo/CDBhxdu
+X-Gm-Message-State: AOJu0YwemRuTzfI+0NT394dMgdweee6b1VCpN46DYYkDBrXyB7EuGUDF
+	vODgzCBx6CYFqba2RCfCL4wq/TFI0oAhivSRj37eCRIFdtjyllRjy+R+WuivEsApe7ZUQROFSo5
+	FQzOSWfCNH7xfUA7+FFQPeCIyET0hSCWKWm5W
+X-Google-Smtp-Source: AGHT+IEGLkc+Vg1BB8RNbFLPcn9sA2EgZUBHfDxP0H0iDn+vMm3xC36CC6KY+0zBUA64/i36/KFEaMcOA8knBoDpJss=
+X-Received: by 2002:a17:903:2053:b0:1da:292b:cf94 with SMTP id
+ q19-20020a170903205300b001da292bcf94mr397991pla.4.1707946617972; Wed, 14 Feb
+ 2024 13:36:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,10 +73,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-3-irogers@google.com>
  <Zcz3iSt5k3_74O4J@x1> <CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com>
-In-Reply-To: <CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com>
+ <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
 From: Ian Rogers <irogers@google.com>
-Date: Wed, 14 Feb 2024 13:15:27 -0800
-Message-ID: <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
+Date: Wed, 14 Feb 2024 13:36:46 -0800
+Message-ID: <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
 Subject: Re: [PATCH v1 2/6] perf trace: Ignore thread hashing in summary
 To: Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -88,40 +89,62 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 10:27=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
-ote:
+On Wed, Feb 14, 2024 at 1:15=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
 >
-> On Wed, Feb 14, 2024 at 9:25=E2=80=AFAM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
+> On Wed, Feb 14, 2024 at 10:27=E2=80=AFAM Ian Rogers <irogers@google.com> =
+wrote:
 > >
-> > On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
-> > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
-> > > threads") made the iteration of thread tids unordered. The perf trace
-> > > --summary output sorts and prints each hash bucket, rather than all
-> > > threads globally. Change this behavior by turn all threads into a
-> > > list, sort the list by number of trace events then by tids, finally
-> > > print the list. This also allows the rbtree in threads to be not
-> > > accessed outside of machine.
+> > On Wed, Feb 14, 2024 at 9:25=E2=80=AFAM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
+> > > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
+> > > > threads") made the iteration of thread tids unordered. The perf tra=
+ce
+> > > > --summary output sorts and prints each hash bucket, rather than all
+> > > > threads globally. Change this behavior by turn all threads into a
+> > > > list, sort the list by number of trace events then by tids, finally
+> > > > print the list. This also allows the rbtree in threads to be not
+> > > > accessed outside of machine.
+> > >
+> > > Can you please provide a refresh of the output that is changed by you=
+r patch?
 > >
-> > Can you please provide a refresh of the output that is changed by your =
-patch?
+> > Hmm.. looks like perf trace record has broken and doesn't produce
+> > output in newer perfs. It works on 6.5 and so a bisect is necessary.
 >
-> Hmm.. looks like perf trace record has broken and doesn't produce
-> output in newer perfs. It works on 6.5 and so a bisect is necessary.
+> Bisect result:
+> ```
+> 9925495d96efc14d885ba66c5696f664fe0e663c is the first bad commit
+> commit 9925495d96efc14d885ba66c5696f664fe0e663c
+> Author: Ian Rogers <irogers@google.com>
+> Date:   Thu Sep 14 14:19:45 2023 -0700
+>
+>    perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+> ...
+> https://lore.kernel.org/r/20230914211948.814999-3-irogers@google.com
+> ```
+>
+> Now to do the bisect with BUILD_BPF_SKEL=3D1 on each make.
 
-Bisect result:
+This looks better (how could I be at fault :-) ):
 ```
-9925495d96efc14d885ba66c5696f664fe0e663c is the first bad commit
-commit 9925495d96efc14d885ba66c5696f664fe0e663c
-Author: Ian Rogers <irogers@google.com>
-Date:   Thu Sep 14 14:19:45 2023 -0700
+1836480429d173c01664a633b61e525b13d41a2a is the first bad commit
+commit 1836480429d173c01664a633b61e525b13d41a2a
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Wed Aug 16 13:53:26 2023 -0300
 
-   perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+   perf bpf_skel augmented_raw_syscalls: Cap the socklen parameter
+using &=3D sizeof(saddr)
 ...
-https://lore.kernel.org/r/20230914211948.814999-3-irogers@google.com
+   Cc: Adrian Hunter <adrian.hunter@intel.com>
+   Cc: Ian Rogers <irogers@google.com>
+   Cc: Jiri Olsa <jolsa@kernel.org>
+   Cc: Namhyung Kim <namhyung@kernel.org>
+   Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ```
-
-Now to do the bisect with BUILD_BPF_SKEL=3D1 on each make.
+No LKML link.
 
 Thanks,
 Ian
