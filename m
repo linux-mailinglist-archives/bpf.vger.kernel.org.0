@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-21985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776CB854E08
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:23:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF81854E0F
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:24:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CCA41C2211F
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:23:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7528B2315B
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9A160BB4;
-	Wed, 14 Feb 2024 16:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA61B60ED0;
+	Wed, 14 Feb 2024 16:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gr21UQ3Q"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XZCI7xAs"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882B060884;
-	Wed, 14 Feb 2024 16:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B02060DE2;
+	Wed, 14 Feb 2024 16:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927772; cv=none; b=Lpnrv5vtMqWP1wlBAjYC0BQ5HF1GVoaHjdvnqCSmJYUivPpcOvUs0osld7dKTfvHNse2jM8UdsXZmvDFkNkTLa86j21c3pfdC0ybTE2D/I9De6+yzR27aQ070l+d7fONzyVGE7Ss0cW+ROaEoWMbsCEbBjoQxMkvNvjGayKMQww=
+	t=1707927776; cv=none; b=GUF7SGDak/LU/bzMD+eNKQbrfaJYwNATPoGM++kbZnMtw3ASLP3ivd+rCKk4oHyiPFo0rlAGaL+l7Uh64blyOvwEINb2BuCdUUXM5al+Zw4HYrZZROcLqP+Anf5vE4062F/KBoLGpqRSys0W0KR30F9ZT1I+uZ7CAs81Kj3x+gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927772; c=relaxed/simple;
-	bh=hcetF/PnslkcN3jX68+J8IOB6E8XYwzSEUS+T5IkqzM=;
+	s=arc-20240116; t=1707927776; c=relaxed/simple;
+	bh=LVf5BgWT9OSmbGH+Qwko5u5SJBVWf1jKCf7S7n+8WTs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=djwIgagdBoSEy4SahK/eNZ9d+P3H2Aby2umHrYLnCh9RmaS+O7jyEdjNo7GuJnqsAT6WSecapjrEEEZTEKKsmkmPvgYJEvzFkMcvxnBziBMKCCnDOqm6CDIMPP89pzYlBbINzTClkYAU+85WK6LzHK4y2ORftxoTXWSXYcCdfXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gr21UQ3Q; arc=none smtp.client-ip=192.198.163.12
+	 MIME-Version; b=cr8JNv9ggdVKV2zUaXJAn2ZOTqdpbQtJpKPIdmTuMq87EM8A2RCzNwxq4DVtKReDZzN+MCWSnTYrWIuNTD3iFhpsQTM/7BQ7M9oBsE9SbbOfK/ch4Qa3bIG5tmiFuN/hBk37iDk3lsIijl7BIXWBPnEEuzOMzHXjIJNiSdNlk3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XZCI7xAs; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707927770; x=1739463770;
+  t=1707927774; x=1739463774;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hcetF/PnslkcN3jX68+J8IOB6E8XYwzSEUS+T5IkqzM=;
-  b=gr21UQ3QREOJ6BZSuoENygQp3FGqEXUPwpNipsLaKXUsDTUN2MYrAHA7
-   q2a2DuEqabi0yxdQ2H2uMuR3GZ+AP2pmopRcRiRlrB3lSzY0zY+I+eaMh
-   tSIYwXJ4gBbKKbrscC1PC8l3kg0Ux3G7MHXxbeX1sca5WlqlJwm9TOMsy
-   4fDtowc8YqnUjCsId3pegQAivsvaLTj598/kuAh9SDXW7pk7XsEKfpR/L
-   EP0HkFyHhC5N1EX5FYChjQHqXILaIALMjiPH48p4gBSfJ/0fQ2/PRaKwa
-   zMesdr0DEWX9xjT87mKCRSwJAGbTkXfnKgQOjPbZCYuoHXYrUN6He4Tah
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5755550"
+  bh=LVf5BgWT9OSmbGH+Qwko5u5SJBVWf1jKCf7S7n+8WTs=;
+  b=XZCI7xAseoMQmku7hs3afH1TFpoM5LdApzAmTc9FxyvFOvpVfcVFlySy
+   fA7YruRI1xUBsp0VjL8TKuIQM0Ugv2jElBxsc3ZcpsOcGvPpml76qLiaF
+   ResO5SLLX2Lwp9ml0w4oddszgZEqI72oy6VGdFHgnfjti/3hitP4C2Pqj
+   WIwLVTJrrUvrIno3L9+AGhdJWYy08N3DUgzE7LJ5zdCohBxjqoOn3/XV2
+   pLzLrNguAv/ND9DnPPoX0D9Do9I7d9BEppJpZ8RBWHm+m/LHyBEl8c5jF
+   JQ/EKpsRL/hayVc+P/foNiGzaR3nJTWxYSoe69r0mYgzVF1m1EPVg5Sof
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5755570"
 X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="5755550"
+   d="scan'208";a="5755570"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 08:22:50 -0800
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 08:22:54 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="26399979"
+   d="scan'208";a="26400001"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa002.fm.intel.com with ESMTP; 14 Feb 2024 08:22:46 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 14 Feb 2024 08:22:50 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -74,9 +74,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	netdev@vger.kernel.org,
 	iommu@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 2/7] dma: avoid redundant calls for sync operations
-Date: Wed, 14 Feb 2024 17:21:56 +0100
-Message-ID: <20240214162201.4168778-3-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v3 3/7] iommu/dma: avoid expensive indirect calls for sync operations
+Date: Wed, 14 Feb 2024 17:21:57 +0100
+Message-ID: <20240214162201.4168778-4-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
 References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
@@ -88,213 +88,80 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Quite often, devices do not need dma_sync operations on x86_64 at least.
-Indeed, when dev_is_dma_coherent(dev) is true and
-dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
-and friends do nothing.
+When IOMMU is on, the actual synchronization happens in the same cases
+as with the direct DMA. Advertise %DMA_F_CAN_SKIP_SYNC in IOMMU DMA to
+skip sync ops calls (indirect) for non-SWIOTLB buffers.
 
-However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
-10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
-Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
+perf profile before the patch:
 
-Add dev->skip_dma_sync boolean which is set during the device
-initialization depending on the setup: dev_is_dma_coherent() for the
-direct DMA, !(sync_single_for_device || sync_single_for_cpu) or the new
-dma_map_ops flag, %DMA_F_CAN_SKIP_SYNC, advertised for non-NULL DMA ops.
-Then later, if/when swiotlb is used for the first time, the flag
-is turned off, from swiotlb_tbl_map_single().
+    18.53%  [kernel]       [k] gq_rx_skb
+    14.77%  [kernel]       [k] napi_reuse_skb
+     8.95%  [kernel]       [k] skb_release_data
+     5.42%  [kernel]       [k] dev_gro_receive
+     5.37%  [kernel]       [k] memcpy
+<*>  5.26%  [kernel]       [k] iommu_dma_sync_sg_for_cpu
+     4.78%  [kernel]       [k] tcp_gro_receive
+<*>  4.42%  [kernel]       [k] iommu_dma_sync_sg_for_device
+     4.12%  [kernel]       [k] ipv6_gro_receive
+     3.65%  [kernel]       [k] gq_pool_get
+     3.25%  [kernel]       [k] skb_gro_receive
+     2.07%  [kernel]       [k] napi_gro_frags
+     1.98%  [kernel]       [k] tcp6_gro_receive
+     1.27%  [kernel]       [k] gq_rx_prep_buffers
+     1.18%  [kernel]       [k] gq_rx_napi_handler
+     0.99%  [kernel]       [k] csum_partial
+     0.74%  [kernel]       [k] csum_ipv6_magic
+     0.72%  [kernel]       [k] free_pcp_prepare
+     0.60%  [kernel]       [k] __napi_poll
+     0.58%  [kernel]       [k] net_rx_action
+     0.56%  [kernel]       [k] read_tsc
+<*>  0.50%  [kernel]       [k] __x86_indirect_thunk_r11
+     0.45%  [kernel]       [k] memset
 
-On iavf, the UDP trafficgen with XDP_DROP in skb mode test shows
-+3-5% increase for direct DMA.
+After patch, lines with <*> no longer show up, and overall
+cpu usage looks much better (~60% instead of ~72%):
 
-Suggested-by: Christoph Hellwig <hch@lst.de> # direct DMA shortcut
+    25.56%  [kernel]       [k] gq_rx_skb
+     9.90%  [kernel]       [k] napi_reuse_skb
+     7.39%  [kernel]       [k] dev_gro_receive
+     6.78%  [kernel]       [k] memcpy
+     6.53%  [kernel]       [k] skb_release_data
+     6.39%  [kernel]       [k] tcp_gro_receive
+     5.71%  [kernel]       [k] ipv6_gro_receive
+     4.35%  [kernel]       [k] napi_gro_frags
+     4.34%  [kernel]       [k] skb_gro_receive
+     3.50%  [kernel]       [k] gq_pool_get
+     3.08%  [kernel]       [k] gq_rx_napi_handler
+     2.35%  [kernel]       [k] tcp6_gro_receive
+     2.06%  [kernel]       [k] gq_rx_prep_buffers
+     1.32%  [kernel]       [k] csum_partial
+     0.93%  [kernel]       [k] csum_ipv6_magic
+     0.65%  [kernel]       [k] net_rx_action
+
+iavf yields +10% of Mpps on Rx. This also unblocks batched allocations
+of XSk buffers when IOMMU is active.
+
 Co-developed-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/device.h      |  5 +++++
- include/linux/dma-map-ops.h | 21 ++++++++++++++++++++
- include/linux/dma-mapping.h |  6 +++++-
- drivers/base/dd.c           |  2 ++
- kernel/dma/mapping.c        | 39 ++++++++++++++++++++++++++++++++++++-
- kernel/dma/swiotlb.c        |  8 ++++++++
- 6 files changed, 79 insertions(+), 2 deletions(-)
+ drivers/iommu/dma-iommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 97c4b046c09d..f23e6a32bea0 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -686,6 +686,8 @@ struct device_physical_location {
-  *		other devices probe successfully.
-  * @dma_coherent: this particular device is dma coherent, even if the
-  *		architecture supports non-coherent devices.
-+ * @dma_skip_sync: DMA sync operations can be skipped for coherent non-SWIOTLB
-+ *		buffers.
-  * @dma_ops_bypass: If set to %true then the dma_ops are bypassed for the
-  *		streaming DMA operations (->map_* / ->unmap_* / ->sync_*),
-  *		and optionall (if the coherent mask is large enough) also
-@@ -800,6 +802,9 @@ struct device {
-     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
- 	bool			dma_coherent:1;
- #endif
-+#ifdef CONFIG_DMA_NEED_SYNC
-+	bool			dma_skip_sync:1;
-+#endif
- #ifdef CONFIG_DMA_OPS_BYPASS
- 	bool			dma_ops_bypass : 1;
- #endif
-diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-index 4abc60f04209..327b73f653ad 100644
---- a/include/linux/dma-map-ops.h
-+++ b/include/linux/dma-map-ops.h
-@@ -18,8 +18,11 @@ struct iommu_ops;
-  *
-  * DMA_F_PCI_P2PDMA_SUPPORTED: Indicates the dma_map_ops implementation can
-  * handle PCI P2PDMA pages in the map_sg/unmap_sg operation.
-+ * DMA_F_CAN_SKIP_SYNC: DMA sync operations can be skipped if the device is
-+ * coherent and it's not an SWIOTLB buffer.
-  */
- #define DMA_F_PCI_P2PDMA_SUPPORTED     (1 << 0)
-+#define DMA_F_CAN_SKIP_SYNC		BIT(1)
- 
- struct dma_map_ops {
- 	unsigned int flags;
-@@ -111,6 +114,24 @@ static inline void set_dma_ops(struct device *dev,
- }
- #endif /* CONFIG_DMA_OPS */
- 
-+#ifdef CONFIG_DMA_NEED_SYNC
-+void dma_setup_skip_sync(struct device *dev);
-+
-+static inline void dma_clear_skip_sync(struct device *dev)
-+{
-+	/* Clear it only once so that the function can be called on hotpath */
-+	if (unlikely(dev->dma_skip_sync))
-+		dev->dma_skip_sync = false;
-+}
-+#else /* !CONFIG_DMA_NEED_SYNC */
-+static inline void dma_setup_skip_sync(struct device *dev)
-+{
-+}
-+static inline void dma_clear_skip_sync(struct device *dev)
-+{
-+}
-+#endif /* !CONFIG_DMA_NEED_SYNC */
-+
- #ifdef CONFIG_DMA_CMA
- extern struct cma *dma_contiguous_default_area;
- 
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 6c7640441214..d85ae541c267 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -364,7 +364,11 @@ static inline void __dma_sync_single_range_for_device(struct device *dev,
- 
- static inline bool dma_skip_sync(const struct device *dev)
- {
--	return !IS_ENABLED(CONFIG_DMA_NEED_SYNC);
-+#ifdef CONFIG_DMA_NEED_SYNC
-+	return dev->dma_skip_sync;
-+#else
-+	return true;
-+#endif
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 50ccc4f1ef81..4ab9ac13d362 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1707,7 +1707,8 @@ static size_t iommu_dma_opt_mapping_size(void)
  }
  
- static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 85152537dbf1..67ad3e1d51f6 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -642,6 +642,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 			goto pinctrl_bind_failed;
- 	}
- 
-+	dma_setup_skip_sync(dev);
-+
- 	ret = driver_sysfs_add(dev);
- 	if (ret) {
- 		pr_err("%s: driver_sysfs_add(%s) failed\n",
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 85feaa0e008c..5f588e31ea89 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -846,8 +846,14 @@ bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr)
- 	const struct dma_map_ops *ops = get_dma_ops(dev);
- 
- 	if (dma_map_direct(dev, ops))
-+		/*
-+		 * dma_skip_sync could've been set to false on first SWIOTLB
-+		 * buffer mapping, but @dma_addr is not necessary an SWIOTLB
-+		 * buffer. In this case, fall back to more granular check.
-+		 */
- 		return dma_direct_need_sync(dev, dma_addr);
--	return ops->sync_single_for_cpu || ops->sync_single_for_device;
-+
-+	return true;
- }
- EXPORT_SYMBOL_GPL(__dma_need_sync);
- 
-@@ -861,3 +867,34 @@ unsigned long dma_get_merge_boundary(struct device *dev)
- 	return ops->get_merge_boundary(dev);
- }
- EXPORT_SYMBOL_GPL(dma_get_merge_boundary);
-+
-+#ifdef CONFIG_DMA_NEED_SYNC
-+void dma_setup_skip_sync(struct device *dev)
-+{
-+	const struct dma_map_ops *ops = get_dma_ops(dev);
-+
-+	if (dma_map_direct(dev, ops))
-+		/*
-+		 * dma_skip_sync will be set to false on first SWIOTLB buffer
-+		 * mapping, if any. During the device initialization, it's
-+		 * enough to check only for DMA coherence.
-+		 */
-+		dev->dma_skip_sync = dev_is_dma_coherent(dev);
-+	else if (!ops->sync_single_for_device && !ops->sync_single_for_cpu)
-+		/*
-+		 * Synchronization is not possible when none of DMA sync ops
-+		 * is set. This check precedes the below one as it disables
-+		 * the synchronization unconditionally.
-+		 */
-+		dev->dma_skip_sync = true;
-+	else if (ops->flags & DMA_F_CAN_SKIP_SYNC)
-+		/*
-+		 * Assume that when ``DMA_F_CAN_SKIP_SYNC`` is advertised,
-+		 * the conditions for synchronizing are the same as with
-+		 * the direct DMA.
-+		 */
-+		dev->dma_skip_sync = dev_is_dma_coherent(dev);
-+	else
-+		dev->dma_skip_sync = false;
-+}
-+#endif /* CONFIG_DMA_NEED_SYNC */
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index b079a9a8e087..0b737eab4d48 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -1323,6 +1323,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
- 		return (phys_addr_t)DMA_MAPPING_ERROR;
- 	}
- 
-+	/*
-+	 * If dma_skip_sync was set, reset it to false on first SWIOTLB buffer
-+	 * mapping to always sync SWIOTLB buffers.
-+	 */
-+	dma_clear_skip_sync(dev);
-+
- 	/*
- 	 * Save away the mapping from the original address to the DMA address.
- 	 * This is needed when we sync the memory.  Then we sync the buffer if
-@@ -1640,6 +1646,8 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
- 	if (index == -1)
- 		return NULL;
- 
-+	dma_clear_skip_sync(dev);
-+
- 	tlb_addr = slot_addr(pool->start, index);
- 
- 	return pfn_to_page(PFN_DOWN(tlb_addr));
+ static const struct dma_map_ops iommu_dma_ops = {
+-	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
++	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED |
++				  DMA_F_CAN_SKIP_SYNC,
+ 	.alloc			= iommu_dma_alloc,
+ 	.free			= iommu_dma_free,
+ 	.alloc_pages		= dma_common_alloc_pages,
 -- 
 2.43.0
 
