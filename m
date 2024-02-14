@@ -1,210 +1,192 @@
-Return-Path: <bpf+bounces-21995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FE6854F8A
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 18:12:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B959854FBF
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 18:19:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8D8A1F2AB62
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:12:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FFC71C21ABB
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F1663120;
-	Wed, 14 Feb 2024 17:11:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E2C7C6D4;
+	Wed, 14 Feb 2024 17:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uSBuA6CN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hx0HSkx1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273726087D;
-	Wed, 14 Feb 2024 17:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1126A002;
+	Wed, 14 Feb 2024 17:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930661; cv=none; b=F2hrDwDkUewkKUDB4oYFur6ik3MG/73VsPGz5QMfItIZw8BQ2EOQoWad7J2PjR1wflukDN957KtJS1Q/JkP/LzfSz+kT9KYIZQqHPKopMIBR2hha523SIH4XZAf7a+0uhPtMBxnB990GegEzutmprpkJxcmQxnF94t5pdYtOMX8=
+	t=1707931140; cv=none; b=csKW+ARMcoAXc+oCedrNqXyhvQ7Ca2iy6jWHXGExPHG1s7o+qeZVe2NmepQ2c/fpJv0O5pxbfwpKWVLHmaxi7nKgsEDfcbCvkKO6cYtQxUPJ6li729CU05cUhuGhrP86P9S/C9mgrFFWXwsOiS+uSCsg5O3KEz7l+bsDnlc2RuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930661; c=relaxed/simple;
-	bh=A6NbyRZQhC46qPsrT0BBp6me28szmBiiUUjKG4u5PT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GIbKYlWp6IWUo5/wx1S+PqyZCFZTPgiNKjpnn4jriiqHctDBrXQQI1pOyKyZqoKW9ON7eLvhT61gy0kj7+85qhMGKbuuXDHBqiA83j0CbMSoqcw6j/fyAR4KbI8HgZp+Iqa4Ymll8GqJ7gd/8gD0yJqs5C6ECshRULzkrmsM27Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uSBuA6CN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2FB4C43601;
-	Wed, 14 Feb 2024 17:10:54 +0000 (UTC)
+	s=arc-20240116; t=1707931140; c=relaxed/simple;
+	bh=l4jPudJnwEihlvPPrQPrGvmbzUPliLgvg6nSOC6YQe0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=jROi+tTVeAd1zRaWhbBEJBxYv/btedw4zs9Z+z184UhiKxj5MxM1a9r+uKq3UxHbvGYAMMhj+qyA5BAEr+uY7bJHCD7LNLmFAw7nu1LpF2sYZ9r0XA979eNoKLDVVkyM6dSNmj69mexwp7Huk4Rl4kaH5NYNtHOUYHTdY5EeKvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hx0HSkx1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19A79C433F1;
+	Wed, 14 Feb 2024 17:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707930659;
-	bh=A6NbyRZQhC46qPsrT0BBp6me28szmBiiUUjKG4u5PT4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uSBuA6CNHXE7KeWvUxHCv8XUEy7YyEQ9KOnw8syeKd65PeMoml6JLITOjmUgZL1h1
-	 1r/o39U9gpoI3eLY8Dy+Woi+y2ZESnI1lE0i+utAPjHGI2JOJfpUv4gUM+FnhHuFyA
-	 zTlD9IzT08eFSfjrV5UL97Niv7ZvXsoZ5Ui+8RwkDpYJGYK3Y0m9RafBu49bD0sw0t
-	 C6fuAet39YnNfFNzXtxtklDO2ougI34VJtKJQAOComG2377YMWV0j9zWwZ80adERtr
-	 BCGw8R1eM03m1UsEQL47IXzebdDou5lyWiZn3IX0XiOOsVpvyX40iQXi/fkUi1FIYE
-	 /UqfYUDMIBHYA==
-Date: Wed, 14 Feb 2024 18:10:51 +0100
+	s=k20201202; t=1707931140;
+	bh=l4jPudJnwEihlvPPrQPrGvmbzUPliLgvg6nSOC6YQe0=;
+	h=From:Subject:Date:To:Cc:From;
+	b=hx0HSkx1O1vfzja/tcyeZbnl6f8DBH6HsvtBo3ONzOetV9It+308217dhB44DWKtj
+	 185FjCFdmK4w50Q/Fodsi68L4Fzq2BbLu8VCWU/WBn5Wj62Qw9ytHq53Xa8s3BZS0I
+	 +NVewubwnkk+oH7tKIog+zZDjKF2k0lSfburOYaN4ClYy9K0umRFBp7WjCkbze9CXU
+	 L76vSRCcAVrO1RjrasfJd3lJdqtd+iIL/36BM4xsNB6KbYTqezPlesT6IV6YZpUN8z
+	 KJAeRmL6EN9ZeCFbkeIGFW86Jundzi80P3xleNLsmhR4lCaWaLrcODAwze5HYhzffX
+	 KhqgKoNs1do4w==
 From: Benjamin Tissoires <bentiss@kernel.org>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-Message-ID: <e6ipl34ajoprzskvjuvdnlw5ak4sjwplh75qqboi2v572byrbm@z4d5ntl27ojp>
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
- <87bk8pve2z.fsf@toke.dk>
- <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
- <875xyxva9u.fsf@toke.dk>
- <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
- <87r0hhfudh.fsf@toke.dk>
- <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
- <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
- <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
- <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+Subject: [PATCH RFC bpf-next v2 00/10] allow HID-BPF to do device IOs
+Date: Wed, 14 Feb 2024 18:18:29 +0100
+Message-Id: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOX1zGUC/22NzQqDMBCEX0X23C1J0FJ7Kgh9gF6Lh/ysulSiJ
+ CIW8d0bpccev2HmmxUiBaYIt2yFQDNHHnwCdcrAdtq3hOwSgxIqF0oU2LFDMzYYe6JRm57QCqk
+ uonGltDmk3Rio4eVwvuD5qPZsX3haJqgTdBynIXyOz1ketZ++/KOfJQrMrb2WhSm0M+7+puCpP
+ w+hhXrbti9T1WMxxAAAAA==
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707931135; l=4831;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=l4jPudJnwEihlvPPrQPrGvmbzUPliLgvg6nSOC6YQe0=;
+ b=hDh4ILe9/u3jIkDCjyvSuvoJvM06QQCqlwjQWjY8/CM4pM6y+4TuGu4kVCvcawjJhIlrsZ1Ea
+ vihnZbrsM5AAHQJuhsj1rOE9w9lWKerP8iZ7fltXljCYW50rWrsGdZ8
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On Feb 13 2024, Kumar Kartikeya Dwivedi wrote:
-> On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > On Feb 12 2024, Alexei Starovoitov wrote:
-> > > On Mon, Feb 12, 2024 at 10:21 AM Benjamin Tissoires
-> > > <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > > > On Mon, Feb 12, 2024 at 6:46 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > > > >
-> > > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
-> > > > >
-> > [...]
-> > > I agree that workqueue delegation fits into the bpf_timer concept and
-> > > a lot of code can and should be shared.
-> >
-> > Thanks Alexei for the detailed answer. I've given it an attempt but still can not
-> > figure it out entirely.
-> >
-> > > All the lessons(bugs) learned with bpf_timer don't need to be re-discovered :)
-> > > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
-> > > so we need a new kfunc to set a sleepable callback.
-> > > Maybe
-> > > bpf_timer_set_sleepable_cb() ?
-> >
-> > OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() flag?
-> >
-> > > The verifier will set is_async_cb = true for it (like it does for regular cb-s).
-> > > And since prog->aux->sleepable is kinda "global" we need another
-> > > per subprog flag:
-> > > bool is_sleepable: 1;
-> >
-> > done (in push_callback_call())
-> >
-> > >
-> > > We can factor out a check "if (prog->aux->sleepable)" into a helper
-> > > that will check that "global" flag and another env->cur_state->in_sleepable
-> > > flag that will work similar to active_rcu_lock.
-> >
-> > done (I think), cf patch 2 below
-> >
-> > > Once the verifier starts processing subprog->is_sleepable
-> > > it will set cur_state->in_sleepable = true;
-> > > to make all subprogs called from that cb to be recognized as sleepable too.
-> >
-> > That's the point I don't know where to put the new code.
-> >
-> 
-> I think that would go in the already existing special case for
-> push_async_cb where you get the verifier state of the async callback.
-> You can make setting the boolean in that verifier state conditional on
-> whether it's your kfunc/helper you're processing taking a sleepable
-> callback.
+[Still a RFC: there are a lot of FIXMEs in the code, and
+calling the sleepable timer cb actually crashes.]
+[Also using bpf-next as the base tree as there will be conflicting
+changes otherwise]
 
-Hehe, thanks a lot. Indeed, it was a simple fix. I tried to put this
-everywhere but here, and with your help got it working in 2 mins :)
+This is crashing, and I have a few questions in the code (look for all
+of the FIXMEs), so sending this now before I become insane :)
 
-> 
-> > It seems the best place would be in do_check(), but I am under the impression
-> > that the code of the callback is added at the end of the instruction list, meaning
-> > that I do not know where it starts, and which subprog index it corresponds to.
-> >
-> > >
-> > > A bit of a challenge is what to do with global subprogs,
-> > > since they're verified lazily. They can be called from
-> > > sleepable and non-sleepable contex. Should be solvable.
-> >
-> > I must confess this is way over me (and given that I didn't even managed to make
-> > the "easy" case working, that might explain things a little :-P )
-> >
-> 
-> I think it will be solvable but made somewhat difficult by the fact
-> that even if we mark subprog_info of some global_func A as
-> in_sleepable, so that we explore it as sleepable during its
-> verification, we might encounter later another global_func that calls
-> a global func, already explored as non-sleepable, in sleepable
-> context. In this case I think we need to redo the verification of that
-> global func as sleepable once again. It could be that it is called
-> from both non-sleepable and sleepable contexts, so both paths
-> (in_sleepable = true, and in_sleepable = false) need to be explored,
-> or we could reject such cases, but it might be a little restrictive.
-> 
-> Some common helper global func unrelated to caller context doing some
-> auxiliary work, called from sleepable timer callback and normal main
-> subprog might be an example where rejection will be prohibitive.
-> 
-> An approach might be to explore main and global subprogs once as we do
-> now, and then keep a list of global subprogs that need to be revisited
-> as in_sleepable (due to being called from a sleepable context) and
-> trigger do_check_common for them again, this might have to be repeated
-> as the list grows on each iteration, but eventually we will have
-> explored all of them as in_sleepable if need be, and the loop will
-> end. Surely, this trades off logical simplicity of verifier code with
-> redoing verification of global subprogs again.
-> 
-> To add items to such a list, for each global subprog we encounter that
-> needs to be analyzed as in_sleepable, we will also collect all its
-> callee global subprogs by walking its instructions (a bit like
-> check_max_stack_depth does).
+For reference, the use cases I have in mind:
 
-FWIW, this (or Alexei's suggestion) is still not implemented in v2
+---
 
-> 
-> > >
-> > > Overall I think this feature is needed urgently,
-> > > so if you don't have cycles to work on this soon,
-> > > I can prioritize it right after bpf_arena work.
-> >
-> > I can try to spare a few cycles on it. Even if your instructions were on
-> > spot, I still can't make the subprogs recognized as sleepable.
-> >
-> > For reference, this is where I am (probably bogus, but seems to be
-> > working when timer_set_sleepable_cb() is called from a sleepable context
-> > as mentioned by Toke):
-> >
-> 
-> I just skimmed the patch but I think it's already 90% there. The only
-> other change I would suggest is switching from helper to kfunc, as
-> originally proposed by Alexei.
+Basically, I need to be able to defer a HID-BPF program for the
+following reasons (from the aforementioned patch):
+1. defer an event:
+   Sometimes we receive an out of proximity event, but the device can not
+   be trusted enough, and we need to ensure that we won't receive another
+   one in the following n milliseconds. So we need to wait those n
+   milliseconds, and eventually re-inject that event in the stack.
 
-the kfunc was a rabbit hole:
-- I needed to teach the verifier about BPF_TIMER in kfunc
-- I needed to teach the verifier about the kfunc itself
-- I'm failing at calling the callback :(
+2. inject new events in reaction to one given event:
+   We might want to transform one given event into several. This is the
+   case for macro keys where a single key press is supposed to send
+   a sequence of key presses. But this could also be used to patch a
+   faulty behavior, if a device forgets to send a release event.
 
-Anyway, I'm about to send a second RFC so we can discuss on the code and
-see where my monkey patching capabilities are reaching their limits.
+3. communicate with the device in reaction to one event:
+   We might want to communicate back to the device after a given event.
+   For example a device might send us an event saying that it came back
+   from sleeping state and needs to be re-initialized.
+
+Currently we can achieve that by keeping a userspace program around,
+raise a bpf event, and let that userspace program inject the events and
+commands.
+However, we are just keeping that program alive as a daemon for just
+scheduling commands. There is no logic in it, so it doesn't really justify
+an actual userspace wakeup. So a kernel workqueue seems simpler to handle.
+
+The other part I'm not sure is whether we can say that BPF maps of type
+queue/stack can be used in sleepable context.
+I don't see any warning when running the test programs, but that's probably
+not a guarantee I'm doing the things properly :)
 
 Cheers,
 Benjamin
+
+To: Alexei Starovoitov <ast@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+To: John Fastabend <john.fastabend@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+To: Eduard Zingerman <eddyz87@gmail.com>
+To: Song Liu <song@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+To: KP Singh <kpsingh@kernel.org>
+To: Stanislav Fomichev <sdf@google.com>
+To: Hao Luo <haoluo@google.com>
+To: Jiri Olsa <jolsa@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To: Jonathan Corbet <corbet@lwn.net>
+To: Shuah Khan <shuah@kernel.org>
+Cc:  <bpf@vger.kernel.org>
+Cc:  <linux-kernel@vger.kernel.org>
+Cc:  <linux-input@vger.kernel.org>
+Cc:  <linux-doc@vger.kernel.org>
+Cc:  <linux-kselftest@vger.kernel.org>
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+
+---
+Changes in v2:
+- make use of bpf_timer (and dropped the custom HID handling)
+- implemented bpf_timer_set_sleepable_cb as a kfunc
+- still not implemented global subprogs
+- no sleepable bpf_timer selftests yet
+- Link to v1: https://lore.kernel.org/r/20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org
+
+---
+Benjamin Tissoires (10):
+      bpf/verifier: introduce in_sleepable() helper
+      bpf/helpers: introduce sleepable timers
+      bpf/verifier: allow more maps in sleepable bpf programs
+      HID: bpf/dispatch: regroup kfuncs definitions
+      HID: bpf: export hid_hw_output_report as a BPF kfunc
+      selftests/hid: Add test for hid_bpf_hw_output_report
+      HID: bpf: allow to inject HID event from BPF
+      selftests/hid: add tests for hid_bpf_input_report
+      HID: bpf: allow to use bpf_timer_set_sleepable_cb() in tracing callbacks.
+      selftests/hid: add test for bpf_timer
+
+ Documentation/hid/hid-bpf.rst                      |   2 +-
+ drivers/hid/bpf/hid_bpf_dispatch.c                 | 232 ++++++++++++++-------
+ drivers/hid/hid-core.c                             |   2 +
+ include/linux/bpf_verifier.h                       |   2 +
+ include/linux/hid_bpf.h                            |   3 +
+ include/uapi/linux/bpf.h                           |  12 ++
+ kernel/bpf/helpers.c                               | 105 +++++++++-
+ kernel/bpf/verifier.c                              |  91 +++++++-
+ tools/testing/selftests/hid/hid_bpf.c              | 195 ++++++++++++++++-
+ tools/testing/selftests/hid/progs/hid.c            | 198 ++++++++++++++++++
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  |   8 +
+ 11 files changed, 756 insertions(+), 94 deletions(-)
+---
+base-commit: 4f7a05917237b006ceae760507b3d15305769ade
+change-id: 20240205-hid-bpf-sleepable-c01260fd91c4
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
+
 
