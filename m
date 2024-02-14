@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-22040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA78855770
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 00:46:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C3E0855777
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 00:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B67128D6F4
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 23:46:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E8411C21B7C
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 23:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D95F13F003;
-	Wed, 14 Feb 2024 23:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3063A1420C6;
+	Wed, 14 Feb 2024 23:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROb/g6o4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PITBkLEo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE2D13DB90;
-	Wed, 14 Feb 2024 23:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13701419AC;
+	Wed, 14 Feb 2024 23:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707954358; cv=none; b=ijam2aRpr+124yIW6Usu1/ONrs88xIlM2qTz0Arcj4sbLk7ZpKNDD1r6RAMDV4Rp5ykNaDiOOqD8sgMRuu7fKO0yKKtZScimQd/vWwhDs/FLj7bJmrqTviWlFOQxcMsgfLC47MInUG5pxo721F+aLyfM6pplv/CM1fo/PQv6XMY=
+	t=1707954490; cv=none; b=qbG48Sfdxp1uz20wj09PbNZhLDNNMH5n2Zecdy4cDM0DcRNBBg2QxIpRHfEFc96pIxiaIAYNRMrnV6IpIr32raq3TWZM5cOz4S+Fnq9cNCc+5Na9jCPO7kzTMbKeyC/FuzFhH4voZvNkcQytniZ6fu5vDya1+dFG5pBDhJgNtxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707954358; c=relaxed/simple;
-	bh=hn5Jto1lbD3UHNlb8zUDUPu4Gm63tv903DcDXQ0+ApI=;
+	s=arc-20240116; t=1707954490; c=relaxed/simple;
+	bh=Cgrogkp2dlp3tPwb6L9tN/P6MjANUWODpHGq+fQtbis=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=agpvCoibGdYldhjn0vRE4r+x706HBjRHiGCzvN0udnMcu9c0SCJYpW7AmVMAaxknfQl+KjFE3kOqwXrPp9wL/Xn0310ANYBitPvRvJI/+WJd4D6n591+7d8XNMcBuo3WZwaoqIcN5tlACFQRxXFHUeIC8/Hvp7rRYyzsJ4/I/50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROb/g6o4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81BDC433F1;
-	Wed, 14 Feb 2024 23:45:54 +0000 (UTC)
+	 Mime-Version:Content-Type; b=TA3sVZ8HkpOCSgmRDSv+kLGLrw5HOr1PSGZHuUemiLp+GdvCLrthyQbggP164w0zynSil89Jrc9Io4voJ48FB3Ydz2hpFdLLr80+2Cz1n8uiycIkemMDZqjQJ+X+hhodh8w3MzRBCTlm3a+gTr4dJKTXHXxjWitnbPVU3vaJiyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PITBkLEo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E546C433C7;
+	Wed, 14 Feb 2024 23:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707954358;
-	bh=hn5Jto1lbD3UHNlb8zUDUPu4Gm63tv903DcDXQ0+ApI=;
+	s=k20201202; t=1707954490;
+	bh=Cgrogkp2dlp3tPwb6L9tN/P6MjANUWODpHGq+fQtbis=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ROb/g6o4xeezKeZLKlXyLy3rPKgfQLts9chQg4z2aKEOn6iAzcTEYaZsmNGajI9NN
-	 G3xX8reIVUmp0jCg3fdzBXzBZW1gcW2IBX0xwrA7//yVVm609XLvRPY0SZJOKGsyUU
-	 dOZjWr6jSUoTfskYgTsK6Kh0PolaH5QBU7IpscamflkQxirQKnZSL4VrwIgFA6PEmS
-	 A9Zndmm5qaijY8dyxVZy1UbZeO5U/QomSplCyr5mgwn6XhqvAtdGxuxYIDUNNyeO0q
-	 8E3vdGLhm9x3A0jS7D3OPDaAgpZvq9QFiaRvNQ5o9bSmcwZoLMRwZYRlzWsljy+NfY
-	 GkzGElWMW+CbQ==
-Date: Thu, 15 Feb 2024 08:45:52 +0900
+	b=PITBkLEo+/lsTuiHjE5DosLP7YVRlm3TfbDrtA1qK+en+pjL2/ZRbmC/jdY4TQL2T
+	 tkA9Yd3rEo8IGpLJ76miNnxY54ha9xkj2BqPpPlyMyzWUeNtXvHq/VGsw5Va+tEp0N
+	 ZVKUMPePKcY9habt24PxSqqBZmFjFoFdXMAtqn7J4420HireaY09UAsuJG4tQIpDCv
+	 pN8mwuXlJAbaqcn/4vCt835DpCLU2i6YZ7qsno/UsWuQz8IHFCCkDGASfv5Dvj0Kkr
+	 /uXOQo7WGJeckToHhcufNYd5Ki1m5Jefj5R+zRb+kq9Vc9NiAYX5X5NRjOV4UZTXd1
+	 SH/2Xdw9tJezA==
+Date: Thu, 15 Feb 2024 08:48:03 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
@@ -53,13 +53,13 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
  Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
  <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
  Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 19/36] function_graph: Implement
- fgraph_reserve_data() and fgraph_retrieve_data()
-Message-Id: <20240215084552.b72d6d22ce1b93bb8e04b70a@kernel.org>
-In-Reply-To: <20240214135958.23ed55e1@gandalf.local.home>
+Subject: Re: [PATCH v7 14/36] function_graph: Use a simple LRU for
+ fgraph_array index number
+Message-Id: <20240215084803.7bf4e38c5d202bf7a7516220@kernel.org>
+In-Reply-To: <20240214130409.463ae408@gandalf.local.home>
 References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723226123.502590.4924916690354403889.stgit@devnote2>
-	<20240214135958.23ed55e1@gandalf.local.home>
+	<170723220474.502590.7646977373091779892.stgit@devnote2>
+	<20240214130409.463ae408@gandalf.local.home>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,86 +70,165 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 14 Feb 2024 13:59:58 -0500
+On Wed, 14 Feb 2024 13:04:09 -0500
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Wed,  7 Feb 2024 00:11:01 +0900
+> On Wed,  7 Feb 2024 00:10:04 +0900
 > "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 > 
-> > From: Ste
-> > +/**
-> > + * fgraph_reserve_data - Reserve storage on the task's ret_stack
-> > + * @idx:	The index of fgraph_array
-> > + * @size_bytes: The size in bytes to reserve
-> > + *
-> > + * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
-> > + * task's ret_stack shadow stack, for a given fgraph_ops during
-> > + * the entryfunc() call. If entryfunc() returns zero, the storage
-> > + * is discarded. An entryfunc() can only call this once per iteration.
-> > + * The fgraph_ops retfunc() can retrieve this stored data with
-> > + * fgraph_retrieve_data().
-> > + *
-> > + * Returns: On success, a pointer to the data on the stack.
-> > + *   Otherwise, NULL if there's not enough space left on the
-> > + *   ret_stack for the data, or if fgraph_reserve_data() was called
-> > + *   more than once for a single entryfunc() call.
-> > + */
-> > +void *fgraph_reserve_data(int idx, int size_bytes)
+> > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> > index ae42de909845..323a74623543 100644
+> > --- a/kernel/trace/fgraph.c
+> > +++ b/kernel/trace/fgraph.c
+> > @@ -99,10 +99,44 @@ enum {
+> >  DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+> >  int ftrace_graph_active;
+> >  
+> > -static int fgraph_array_cnt;
+> > -
+> >  static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
+> >  
+> > +/* LRU index table for fgraph_array */
+> > +static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
+> > +static int fgraph_lru_next;
+> > +static int fgraph_lru_last;
+> > +
+> > +static void fgraph_lru_init(void)
 > > +{
-> > +	unsigned long val;
-> > +	void *data;
-> > +	int curr_ret_stack = current->curr_ret_stack;
-> > +	int data_size;
+> > +	int i;
 > > +
-> > +	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
-> > +		return NULL;
+> > +	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
+> > +		fgraph_lru_table[i] = i;
+> > +}
 > > +
-> > +	/* Convert to number of longs + data word */
-> > +	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
+> > +static int fgraph_lru_release_index(int idx)
+> > +{
+> > +	if (idx < 0 || idx >= FGRAPH_ARRAY_SIZE ||
+> > +	    fgraph_lru_table[fgraph_lru_last] != -1)
 > 
-> Hmm, the above is a fast path. I wonder if we should add a patch to make that into:
+> Can fgraph_lru_table[fgraph_lru_last] != -1 ever happen? If not, we should
+> probably add a:
 > 
-> 	if (unlikely(size_bytes & (sizeof(long) - 1)))
-> 		data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
-> 	else
-> 		data_size = size_bytes >> (sizeof(long) == 4 ? 2 : 3);
+> 	    WARN_ON_ONCE(fgraph_lru_table[fgraph_lru_last] != -1))
 > 
-> to keep from doing the division.
+> As the size of fgraph_lru_table is the same size as the available indexes,
+> if we hit this I would think we had a fgraph_lru_relaese_index() without a
+> fgraph_lru_alloc_index() associated with it.
 
-OK, I thought DIV_ROUND_UP was not much cost. Since sizeof(long) is
-fixed 4 or 8, so 
+OK, let me make it warning.
 
-data_size = (size_bytes + sizeof(long) - 1) >> BITS_PER_LONG;
+> 
+> > +		return -1;
+> > +
+> > +	fgraph_lru_table[fgraph_lru_last] = idx;
+> > +	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
+> > +	return 0;
+> > +}
+> > +
+> > +static int fgraph_lru_alloc_index(void)
+> > +{
+> > +	int idx = fgraph_lru_table[fgraph_lru_next];
+> > +
+> > +	if (idx == -1)
+> > +		return -1;
+> > +
+> > +	fgraph_lru_table[fgraph_lru_next] = -1;
+> > +	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
+> > +	return idx;
+> > +}
+> > +
+> >  static inline int get_ret_stack_index(struct task_struct *t, int offset)
+> >  {
+> >  	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
+> > @@ -367,7 +401,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+> >  	if (index < 0)
+> >  		goto out;
+> >  
+> > -	for (i = 0; i < fgraph_array_cnt; i++) {
+> > +	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+> >  		struct fgraph_ops *gops = fgraph_array[i];
+> >  
+> >  		if (gops == &fgraph_stub)
+> > @@ -935,21 +969,17 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+> >  		/* The array must always have real data on it */
+> >  		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
+> >  			fgraph_array[i] = &fgraph_stub;
+> > +		fgraph_lru_init();
+> >  	}
+> >  
+> > -	/* Look for an available spot */
+> > -	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+> > -		if (fgraph_array[i] == &fgraph_stub)
+> > -			break;
+> > -	}
+> > -	if (i >= FGRAPH_ARRAY_SIZE) {
+> > +	i = fgraph_lru_alloc_index();
+> > +	if (i < 0 ||
+> > +	    WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
+> 
+> The above can nicely fit on one column. No need to break it up:
+> 
+> 	if (i < 0 || WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
 
-will this work?
+OK. 
 
-Thanks,
+> 
+> 
+> >  		ret = -EBUSY;
+> >  		goto out;
+> >  	}
+> >  
+> >  	fgraph_array[i] = gops;
+> > -	if (i + 1 > fgraph_array_cnt)
+> > -		fgraph_array_cnt = i + 1;
+> >  	gops->idx = i;
+> >  
+> >  	ftrace_graph_active++;
+> > @@ -979,25 +1009,22 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+> >  void unregister_ftrace_graph(struct fgraph_ops *gops)
+> >  {
+> >  	int command = 0;
+> > -	int i;
+> >  
+> >  	mutex_lock(&ftrace_lock);
+> >  
+> >  	if (unlikely(!ftrace_graph_active))
+> >  		goto out;
+> >  
+> > -	if (unlikely(gops->idx < 0 || gops->idx >= fgraph_array_cnt))
+> > +	if (unlikely(gops->idx < 0 || gops->idx >= FGRAPH_ARRAY_SIZE))
+> > +		goto out;
+> > +
+> > +	if (WARN_ON_ONCE(fgraph_array[gops->idx] != gops))
+> >  		goto out;
+> >  
+> > -	WARN_ON_ONCE(fgraph_array[gops->idx] != gops);
+> > +	if (fgraph_lru_release_index(gops->idx) < 0)
+> > +		goto out;
+> 
+> Removing the above WARN_ON_ONCE() is more reason to add it to the release
+> function.
+
+OK.
+
+Thank you for review!
 
 > 
 > -- Steve
 > 
-> > +
-> > +	val = get_fgraph_entry(current, curr_ret_stack - 1);
-> > +	data = &current->ret_stack[curr_ret_stack];
-> > +
-> > +	curr_ret_stack += data_size + 1;
-> > +	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
-> > +		return NULL;
-> > +
-> > +	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
-> > +
-> > +	/* Set the last word to be reserved */
-> > +	current->ret_stack[curr_ret_stack - 1] = val;
-> > +
-> > +	/* Make sure interrupts see this */
-> > +	barrier();
-> > +	current->curr_ret_stack = curr_ret_stack;
-> > +	/* Again sync with interrupts, and reset reserve */
-> > +	current->ret_stack[curr_ret_stack - 1] = val;
-> > +
-> > +	return data;
-> > +}
-> > +
+> 
+> >  
+> >  	fgraph_array[gops->idx] = &fgraph_stub;
+> > -	if (gops->idx + 1 == fgraph_array_cnt) {
+> > -		i = gops->idx;
+> > -		while (i >= 0 && fgraph_array[i] == &fgraph_stub)
+> > -			i--;
+> > -		fgraph_array_cnt = i + 1;
+> > -	}
+> >  
+> >  	ftrace_graph_active--;
+> >  
+> 
 
 
 -- 
