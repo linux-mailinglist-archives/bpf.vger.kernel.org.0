@@ -1,182 +1,394 @@
-Return-Path: <bpf+bounces-21962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B1C8544CE
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 10:14:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9A6E854839
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 12:25:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D4EA285EB7
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 09:14:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9196728856A
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 11:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3738A125B0;
-	Wed, 14 Feb 2024 09:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FF019475;
+	Wed, 14 Feb 2024 11:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HbjbPvm3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IK7gHaPd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0154B125A2
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 09:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707902071; cv=none; b=W40FhslMOoAnWvuofVDk67nc5O9+yA+q5JlJHP5SrZBmbGSqhI4GI0X6BpvGDOigW478VxnaxouuKA8mJ2RnK9+ey57glPs+zbJgE4MFy1cA8HVeWumPuohte9Sh7UK2nXGbFh7QSzTZPoQz/FK3JIHMDjiBEpor40CcFgS/w/g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707902071; c=relaxed/simple;
-	bh=SDD+K+Yv6yN8ji3fIWSICKnf+rOBF90dBZGOM0pd8Hw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RC67TH/ROYDKKvJKbWW1lYsqDr5LLEYALtnRGavBx2hbE/kGs3QPRtyLDSfOwWxXNLhiQlMdawyOn+mGvMhY10twmvddy/tUqLvsuWaOODk6ZkDAU+SL9oUbaqVU1ygBv006WHgB5+arojY0ZahiLimLHw+8jrFq445BSCXAe0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HbjbPvm3; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55f279dca99so8361829a12.3
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 01:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707902067; x=1708506867; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AS5JVIWdNa+5VoSKRh/QU4HSpmGvSZqp0tJVbXIS324=;
-        b=HbjbPvm3lUvi2o/4tnsAEXXuyl3vSZncOeQoaA8b++yxiwd9gUFnIWiFS1tAFputby
-         ehviH3RXKXmgw78uLLWwCcMUkqzu3pSe2Yk8uv+3K/byGFNoEveCls8D3FErRDlwLu9N
-         VNzOEhwi7Tt4rv8Z9bO74GN3Rx6fOB6FV1pib7uv6KZcHyS4hPNTcsl7Cwpc3eI+CoM9
-         ccbKrGx0uBWcRNLde0zPdgKEGRAA0a1NbHSIUJmYd6unl7EYxO2gBtk8iEdhSlurCYWx
-         hggb5QGDXAzYoIs2CZk9cWKtF7vuHQNLQ5bKVlL6Jrbs7bPGazsAQ7CDkjKuZnbEAwYO
-         9xag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707902067; x=1708506867;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AS5JVIWdNa+5VoSKRh/QU4HSpmGvSZqp0tJVbXIS324=;
-        b=dZAADmmh7BJ32c3bopMYhw3i6WawndQbZIFbwWYCz9ZRavtDe9VOcn9+YerwDIsDg3
-         jbiBznTEQAijQv54XRTrTzFm+fsALsw84cizI/UaU7iAc2J+A8WlEMtAh0yC56due9x9
-         0z9ZgRzPH7a6s5v7jy/8uGe06TM1DKjCyBBnxPPDE6Z9VMDaOrrqBgIP2sru+qS/JGjw
-         Cg3kG3+xznRLLBO2DBTVDOX5D+ygtmVJNYf52LH7z5W7kSm8NXdYl7HBntUWtO14xA/B
-         8h/Gfxltq8OyhxqPyxSWz2Bsx64aq3+4/jh2hkCrCbE96TwSesftANWwQ5RY4U08PeSA
-         Pz/w==
-X-Gm-Message-State: AOJu0YxA51GJ7E9Ej2wDNtnMSvXfFdyK2nx9m8OuhLu3L3OH3fjlXfV+
-	2i8Srtg+Sx68CR/UPCuvkbwIHKfR9ZWMUkK4Lq1GJlnlMfdbtsgEGs4jvA+1r8HmruiV0AJOXt+
-	nRw==
-X-Google-Smtp-Source: AGHT+IFDipQW8/wKAx1I+C8d/PLooMQrGefnrErWT3Zf2PVylM314zlU75zT3+ByZ9V/VjOzumjrcQ==
-X-Received: by 2002:a05:6402:2034:b0:560:8385:811b with SMTP id ay20-20020a056402203400b005608385811bmr1368161edb.36.1707902067444;
-        Wed, 14 Feb 2024 01:14:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWQ+y8055TkdQmTiFN0jdnq+JfvRPeoUumsFNtIldfQc7lL2Ra0SaO8OJLcyfxMC4DycgcWsZAtw+3puTK1Zy99wbvz8Bf4Koxsqxn2FFNn1iwNYfPK
-Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
-        by smtp.gmail.com with ESMTPSA id ij6-20020a056402158600b005621bdbfdb0sm615052edb.75.2024.02.14.01.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 01:14:27 -0800 (PST)
-Date: Wed, 14 Feb 2024 09:14:23 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org, olsajiri@gmail.com
-Subject: [PATCH v3 bpf-next] libbpf: make remark about zero-initializing
- bpf_*_info structs
-Message-ID: <ZcyEb8x4VbhieWsL@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4537818EB0
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 11:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707909925; cv=fail; b=OicHenIdl2KO0GOZ7dW6FiUd/BId24+CHIZiTizKbNMr3Q8yFb8KTDdsqkrrTfyNkL2QlsjZTi8CWd+AVL+SVB4SOk6cxQqQO2vc7wAwP+RSJ9Xt2LZuRQOPfn2STRc9tatVLYFCaOhR1O2RXXHmZdX2eBSsRyOprA4DnlmGeO0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707909925; c=relaxed/simple;
+	bh=UZz/IOjvz3q47duPhUykux/tyhF4jVJqdSZxSjX3i+o=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=eGgvk9iePhriW65DnhfnsitNvWeMTCcl2KXR9SVwRFGIVM/xleUgcHZfioPXhNafIQwHBPka0YEfXLUADOHUmMwGwMHkqaoeYgDpAKe+4HOdxo3e3t6u+xwIWWptALK1WTgxbXJO1JC94ovhmBZSgQ8m8LhqwpPRPqigkW5OcfU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IK7gHaPd; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707909923; x=1739445923;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=UZz/IOjvz3q47duPhUykux/tyhF4jVJqdSZxSjX3i+o=;
+  b=IK7gHaPdFDfF8mvDiI3qQCTskm07ziTFd6rgjUtZls2aCJXR1gsISTuB
+   OT/R2hZcXudYmJZd9KabNAw65NXKwcVQIGckxM0cHVsZGzVMJxkUv7JEg
+   56i32QkKwpPSeVbBSeZrqYaM+MOQ8R3oA8SNSNH0YdPa3mt+68kSOCatl
+   Ih5RgafF/BYHyosDob9zI/+1JTo8o7w63Fyi89DCCjG8YANBMpBVbi92z
+   IKX9Fzkxqo+ykhmW1X7X0kaNJgFV22zHvlX0VwvTtx6QnLTuOdOd3SmBs
+   cMBTUxGZ04/n4J51RzMNhxSGjE3l+1+Qzq98uY1sbvL+3T4VUhQoaM53d
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1857201"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="1857201"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:25:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="33967111"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Feb 2024 03:25:20 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 14 Feb 2024 03:25:19 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 14 Feb 2024 03:25:19 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 14 Feb 2024 03:25:19 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 14 Feb 2024 03:25:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QBPPPv23uZQLeYrOqw5FRllq79MvvOPRvEQf8aIdGqXwTaAeQjNiW0LtUjRa9j1hrvK00dUdvhk5EP2Bk47k/cdBUT7Tk33UAa8hVRyscuIAruj1SXsYWUZ7WpiSFjaDBOpZQRgXUuJF04x5CY9TUDDWjdjOdgto5WXDo3gwVuJ/sFOt7pxXeJKhsISuoqQ/A/lZDE6jIFTHzozqS/UHrEhYwjlcu9FfDOXzJYqx2IQPzM8VAV00AeSD+6NJXHZ8ugJs/5mHwsGrj9JbRAXfc8+f+87CaWK3snexSVdfrwuDDyxa8FMApBjtukHVFOZxcMhyVUHx8t5nlsMDJihc8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hnOctem82Zm5/L/p4bffFwNgmUqZ5bPIs2PZBJy/c+0=;
+ b=Gx+RoObX5f/bDLoxduDqD226IEOXrWIqQCMxqN2Oezhhx4hc4lOqsLHVBCZGEuycsYBP07D1tvV8uPtltpG+kK5w6l/TeOWPvEraT3H8VkksjOmNGvgG6X2RTklza/3QXic0ZGHIEnS4zgQfXVLWuj7oArN7lLHMhodbaDfEWNMVXWygZPkFO6SqSRZQegl79jh3tElZ3n/hRBiNogqQOKbZof2oT/EjFQ9giZHA2okn6Q7st8fbyi85DpOVjLrO9NwOUbQLkZj/pOhhW5PLfy++swkWx0HXIDyuYYaTTHdSW4y5CXH0YOqyYfAHcb90YmPPJdFPnJh+c8nSJibbCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ DS7PR11MB6013.namprd11.prod.outlook.com (2603:10b6:8:70::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.26; Wed, 14 Feb 2024 11:25:17 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ccab:b5f4:e200:ee47]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ccab:b5f4:e200:ee47%6]) with mapi id 15.20.7270.036; Wed, 14 Feb 2024
+ 11:25:17 +0000
+Date: Wed, 14 Feb 2024 12:25:04 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Leon Hwang <hffilwlqm@gmail.com>
+CC: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf
+	<bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Jakub Sitnicki
+	<jakub@cloudflare.com>, Ilya Leoshkevich <iii@linux.ibm.com>, Hengqi Chen
+	<hengqi.chen@gmail.com>, <kernel-patches-bot@fb.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
+Message-ID: <ZcyjENeiN1/7KyHl@boxer>
+References: <20240104142226.87869-1-hffilwlqm@gmail.com>
+ <20240104142226.87869-3-hffilwlqm@gmail.com>
+ <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
+ <7af3f9c6-d25a-4ca5-9e15-c1699adcf7ab@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7af3f9c6-d25a-4ca5-9e15-c1699adcf7ab@gmail.com>
+X-ClientProxiedBy: FR4P281CA0376.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f7::19) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DS7PR11MB6013:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ce309f6-0975-48f9-d17a-08dc2d4f9f23
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wj/aUVLiyyWF4YCV/TxBQA8ilsxTWu/suBpSoUVlRvRO/DZUyXEMKPHNzAojFIKmCgziAmZNuqzopV5aBtycz/TAPFCswTwoRi2/ksK6FEcE9JAP1zzAh3zQcjaDz7eTYiaPdr2rCJFW0QH5l+lCcmHdY6WUwR9aLGoMu4iVIoLhjmYk7I7F2Ig/NPioqGDPaG0+Je0lhbPWikicudgErrSUYmTLa7lD2lxgiaIK1/zkJi1YGvA2uRor1jF5fP3JKS8PnXQvHrYLS2MH+6Lte0yIfCPCQN6wxi/DlTehLWOJLiWE6dglt4+lONtBvjZO5FM6yMc0fh/Rjb74KWcuM8xY+LFfPw8W/ir4TCEFtMhB4DwiYr1ZiISs4a3Jgo+edxdw6faOhLc7/R4q/ZTKYJUpLTzVvgY6sa6QUdX0nXQvLLCg6DqeAfwr98FYjoBq2b2lRGWlbkOJltmrXwC42WuLprBOQmrIYytWv/xBEOEfyo9kl7js5Z9wx9ICcKBDtVdfueadzduEEYKT+bWyFJpugLp8u8cg+GJ4SEdUWxb+LV1YlgPTz8nhuDbC5F3h
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(346002)(39860400002)(396003)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(4326008)(8676002)(8936002)(44832011)(5660300002)(7416002)(33716001)(83380400001)(26005)(38100700002)(86362001)(82960400001)(316002)(6916009)(66476007)(66946007)(66556008)(54906003)(53546011)(6506007)(478600001)(6512007)(9686003)(6666004)(6486002)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVNoMUlQRHc0MEtOTGd1QiswWDRaK0ZaWlg2ejQzNy8zUFZER0NQR204WTBL?=
+ =?utf-8?B?cmpFU1Vvalp3cy9uN0dHZFZDcGJVNW5NY1l1amN0N3RkTi96c0pGcVNYc1Vj?=
+ =?utf-8?B?UXNMcEtEWVZSNFZFa3hBblJKTnBhekZrUkNwd1FydlRrbVVIbkltSUNMeWly?=
+ =?utf-8?B?S1FUd1NsZnBvZmw4MElNVXJUK2IySHpFWm9uRFNiVGkraUNhMmF2RWpNdDJt?=
+ =?utf-8?B?bUsyZDJ3QWR1QlNuRDFlM2pjK0NXeUpJN2ZRWWZCbTFHVkxMK0ZWYkdKTzlD?=
+ =?utf-8?B?a2tsNjFGSHA0RWpHUWZVZkw4TWNsVE01dWx3MFpCRVJKRUhEVjZrc0g5YXZF?=
+ =?utf-8?B?RFJ1bkliYm1raGczZ3ptZnArOFRxb040Q2o4QStWd3BYRmduQ1FJdjk4RW1I?=
+ =?utf-8?B?QTNvdTJMYlpYR0NBYklicFRyNGZ1ZytoN3lkbEpnYlpJaHV2STJmRmRJY3Ni?=
+ =?utf-8?B?R2djdU5jNkdnOEFWVVlmdHd3YVBUdXQrQ2pvRFNCREZvK2M1czNXbk04Y044?=
+ =?utf-8?B?MEJtQzJZYmoyTis0RjNIS3N1dXNxS0JSMUhCVmw0eWRrdUp3dXcyQmpna0dj?=
+ =?utf-8?B?T1V6dHZUTUQwTDNJdU5xOThZMy9nbzVsM2lvbnZsTHdYQ1V0SXhldjl2NEFY?=
+ =?utf-8?B?ZGhTL3hMR1JWNXIvTzV4UGowR0daV0xVK2cxK3NkWFBnaUFDdTdISXUrcC9Q?=
+ =?utf-8?B?OFRDRmZ5OTl5bm9Kci9POVFaYkYycFhjb2p3WHNmMFdlZXJWL2J5VElkdzkx?=
+ =?utf-8?B?Ukprb0xHc0o5SU9UODFCRXJoZE1haE5ReWVWVklBWHRCK3BKNlNueHlkWGlB?=
+ =?utf-8?B?K2lwU0FrTnplbEVaWDJGcURUN3d0aGNnc1dBVmVrV2JtZmdFWml6QWdWZTRl?=
+ =?utf-8?B?Z0tFU0d2a2NHcThXeE5oR2YvWENrcUo3TkJUS09oMmQrN2xIWmNrWTcxSEh3?=
+ =?utf-8?B?OHkxckJQWm5hK2dMczFQVkFNenU0dzZnMVVkVkRjZmJJbGU5VVU0ckJOMjAy?=
+ =?utf-8?B?VHFpNXRUZU9yRXFiNlVxalBpclV4MVEzdWEzVWJvVzk2VlZuL3FleDV2VTYv?=
+ =?utf-8?B?U0tsNURRMFJleTg0SGhJL3p2NnZRNjIwWk1LWjNmUTY2ZHczUHZHcHlZVTVK?=
+ =?utf-8?B?WURXaUxzeHVtdXdlalI1eVAxZ09DM202NlBFSEsxUTU4YjFjSGFrMmFkQ1NM?=
+ =?utf-8?B?WGd2NjJGdlBxRGpKVjU1ekVsdUFkYmk0ZHV3NVliMnRaVFhqVjFTMDdIMjJp?=
+ =?utf-8?B?VW41dmZ4aGNzc1NHY2p3aWVRdFk2MGRZTS9HMEIwR2FsSHZuaUV2c0xDZUgv?=
+ =?utf-8?B?OFdqNm91T3owa1NlNUZoNzB2akFwaVlCMmk5MU4yY05rQ0RsdGsxSTkyVmQr?=
+ =?utf-8?B?TkVWbmxFUUhVWXI4VUFrQ2MyM1B2dWhmWDZCcWRoUENtT2E1WnJJb20xOXdz?=
+ =?utf-8?B?NHhaRVViKzFFWEtMMG12Mk1PNkFId1dkNmszSHk3bmlCakF0bHRxZFRZYlNK?=
+ =?utf-8?B?MjJyOGs5YWlNNWg4NS8zTXBnMVhkaitrNmVzN2w1V2RseUtlb2x6YytqdEhH?=
+ =?utf-8?B?NjNOMnY2dmxLTWxYMWhyZXE4Wko4Nm5MODViYTFYQkprRDJweUxDRGRZMzYz?=
+ =?utf-8?B?NjZ2UVpkZGREQkdpSWFPZWVPZ1hyWWJLMDQ0eU9mUmR0Vmo0bDg1RGJZSk10?=
+ =?utf-8?B?Z0xJZVNnaXh3TXJnaEM1ZWcxZ0l6OUNUYVk0RjE2dTd4RHpkbUNyZjRpQXVn?=
+ =?utf-8?B?alJQOTYrdXZOQnAwU2JycG0vOWxyL3dmdEp5eVBzUzN0SzI1Z05nZjZFY2F0?=
+ =?utf-8?B?MFBuYjFXV1FMZi9hc1diTjlHczR2VGdlMWVuMGUzMTFYUlh6N1N5NmlTdU5S?=
+ =?utf-8?B?NEw0SEx6UGNoeTlCVmkrelRERlVxN2FRY3JiY3JLbFRxcmZ6YjVnYmNQQjN1?=
+ =?utf-8?B?ZTB2VjRlMGgzWWtHTURpeTNKZUFJWFRQa1hhUStVYUZFeVYzbHlVYVVkaHY3?=
+ =?utf-8?B?UnQwcUl5Q1BCY3hHZEVJendIUlJQRWZMd3kwN01Ecm1sZWpVSk83N3U5Mlhw?=
+ =?utf-8?B?Ung4Z2pkeFhCSjA4d0RkR0xBcTlRZGVqNmhZY0JLYktXelFrbi82aTMvelBo?=
+ =?utf-8?B?Q2VFVVJrSEZNUWc2bHc3R3d0ajhzL2U5SW5DWktwdWZjYmU5OWtROWNURGhX?=
+ =?utf-8?B?cVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ce309f6-0975-48f9-d17a-08dc2d4f9f23
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 11:25:17.6443
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eVOb6lGbhjjcGVsSq4JIYaWotPoWPRKoGm0XKy4LejWGJluDpgi0nT5Y47MiMQWwvuI+NIKIFK5vyaEW34dWW8imM5A1cbivi2yVaKT+Pzk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6013
+X-OriginatorOrg: intel.com
 
-In some situations, if you fail to zero-initialize the
-bpf_{prog,map,btf,link}_info structs supplied to the set of LIBBPF
-helpers bpf_{prog,map,btf,link}_get_info_by_fd(), you can expect the
-helper to return an error. This can possibly leave people in a
-situation where they're scratching their heads for an unnnecessary
-amount of time. Make an explicit remark about the requirement of
-zero-initializing the supplied bpf_{prog,map,btf,link}_info structs
-for the respective LIBBPF helpers.
+On Wed, Feb 14, 2024 at 01:47:45PM +0800, Leon Hwang wrote:
+> 
+> 
+> On 2024/1/5 12:15, Alexei Starovoitov wrote:
+> > On Thu, Jan 4, 2024 at 6:23 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+> >>
+> >>
+> > 
+> > Other alternatives?
+> 
+> I've finish the POC of an alternative, which passed all tailcall
+> selftests including these tailcall hierarchy ones.
+> 
+> In this alternative, I use a new bpf_prog_run_ctx to wrap the original
+> ctx and the tcc_ptr, then get the tcc_ptr and recover the original ctx
+> in JIT.
+> 
+> Then, to avoid breaking runtime with tailcall on other arch, I add an
+> arch-related check bpf_jit_supports_tail_call_cnt_ptr() to determin
+> whether to use bpf_prog_run_ctx.
+> 
+> Here's the diff:
 
-Internally, LIBBPF helpers bpf_{prog,map,btf,link}_get_info_by_fd()
-call into bpf_obj_get_info_by_fd() where the bpf(2)
-BPF_OBJ_GET_INFO_BY_FD command is used. This specific command is
-effectively backed by restrictions enforced by the
-bpf_check_uarg_tail_zero() helper. This function ensures that if the
-size of the supplied bpf_{prog,map,btf,link}_info structs are larger
-than what the kernel can handle, trailing bits are zeroed. This can be
-a problem when compiling against UAPI headers that don't necessarily
-match the sizes of the same underlying types known to the kernel.
+This is diff against your previous proposed solution, would be good to see
+how it currently looks being put together (this diff on top of your
+patch), would save us some effort to dig the patch up and include diff.
 
-Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
----
-
-v2 to v3:
-
-* Modified the comment wording a little to make it less
-  misleading. Specifically, noting that the supplied
-  bpf_{prog,map,btf,link}_info structs should be zero-initialized or
-  initialized as expected. In some cases, subsequent invocations to
-  bpf_{prog,map,btf,link}_get_info_by_fd() helpers don't necessarily
-  require the bpf_{prog,map,btf,link}_info struct to be
-  zero-initialized, but rather that it just has been properly
-  initialized at some point.
-
- tools/lib/bpf/bpf.h | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index f866e98b2436..ab2570d28aec 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -500,7 +500,10 @@ LIBBPF_API int bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len);
-  * program corresponding to *prog_fd*.
-  *
-  * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-- * actual number of bytes written to *info*.
-+ * actual number of bytes written to *info*. Note that *info* should be
-+ * zero-initialized or initialized as expected by the requested *info*
-+ * type. Failing to (zero-)initialize *info* under certain circumstances can
-+ * result in this helper returning an error.
-  *
-  * @param prog_fd BPF program file descriptor
-  * @param info pointer to **struct bpf_prog_info** that will be populated with
-@@ -517,7 +520,10 @@ LIBBPF_API int bpf_prog_get_info_by_fd(int prog_fd, struct bpf_prog_info *info,
-  * map corresponding to *map_fd*.
-  *
-  * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-- * actual number of bytes written to *info*.
-+ * actual number of bytes written to *info*. Note that *info* should be
-+ * zero-initialized or initialized as expected by the requested *info*
-+ * type. Failing to (zero-)initialize *info* under certain circumstances can
-+ * result in this helper returning an error.
-  *
-  * @param map_fd BPF map file descriptor
-  * @param info pointer to **struct bpf_map_info** that will be populated with
-@@ -530,11 +536,14 @@ LIBBPF_API int bpf_prog_get_info_by_fd(int prog_fd, struct bpf_prog_info *info,
- LIBBPF_API int bpf_map_get_info_by_fd(int map_fd, struct bpf_map_info *info, __u32 *info_len);
- 
- /**
-- * @brief **bpf_btf_get_info_by_fd()** obtains information about the 
-+ * @brief **bpf_btf_get_info_by_fd()** obtains information about the
-  * BTF object corresponding to *btf_fd*.
-  *
-  * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-- * actual number of bytes written to *info*.
-+ * actual number of bytes written to *info*. Note that *info* should be
-+ * zero-initialized or initialized as expected by the requested *info*
-+ * type. Failing to (zero-)initialize *info* under certain circumstances can
-+ * result in this helper returning an error.
-  *
-  * @param btf_fd BTF object file descriptor
-  * @param info pointer to **struct bpf_btf_info** that will be populated with
-@@ -551,7 +560,10 @@ LIBBPF_API int bpf_btf_get_info_by_fd(int btf_fd, struct bpf_btf_info *info, __u
-  * link corresponding to *link_fd*.
-  *
-  * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-- * actual number of bytes written to *info*.
-+ * actual number of bytes written to *info*. Note that *info* should be
-+ * zero-initialized or initialized as expected by the requested *info*
-+ * type. Failing to (zero-)initialize *info* under certain circumstances can
-+ * result in this helper returning an error.
-  *
-  * @param link_fd BPF link file descriptor
-  * @param info pointer to **struct bpf_link_info** that will be populated with
--- 
-2.43.0.687.g38aa6559b0-goog
-
-/M
+> 
+>  diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 4065bdcc5b2a4..56cea2676863e 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -259,7 +259,7 @@ struct jit_context {
+>  /* Number of bytes emit_patch() needs to generate instructions */
+>  #define X86_PATCH_SIZE		5
+>  /* Number of bytes that will be skipped on tailcall */
+> -#define X86_TAIL_CALL_OFFSET	(22 + ENDBR_INSN_SIZE)
+> +#define X86_TAIL_CALL_OFFSET	(16 + ENDBR_INSN_SIZE)
+> 
+>  static void push_r12(u8 **pprog)
+>  {
+> @@ -407,21 +407,19 @@ static void emit_prologue(u8 **pprog, u32
+> stack_depth, bool ebpf_from_cbpf,
+>  	emit_nops(&prog, X86_PATCH_SIZE);
+>  	if (!ebpf_from_cbpf) {
+>  		if (tail_call_reachable && !is_subprog) {
+> -			/* When it's the entry of the whole tailcall context,
+> -			 * zeroing rax means initialising tail_call_cnt.
+> -			 */
+> -			EMIT2(0x31, 0xC0);       /* xor eax, eax */
+> -			EMIT1(0x50);             /* push rax */
+> -			/* Make rax as ptr that points to tail_call_cnt. */
+> -			EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
+> -			EMIT1_off32(0xE8, 2);    /* call main prog */
+> -			EMIT1(0x59);             /* pop rcx, get rid of tail_call_cnt */
+> -			EMIT1(0xC3);             /* ret */
+> +			/* Make rax as tcc_ptr. */
+> +			EMIT4(0x48, 0x8B, 0x47, 0x08); /* mov rax, qword ptr [rdi + 8] */
+>  		} else {
+> -			/* Keep the same instruction size. */
+> -			emit_nops(&prog, 13);
+> +			/* Keep the same instruction layout. */
+> +			emit_nops(&prog, 4);
+>  		}
+>  	}
+> +	if (!is_subprog)
+> +		/* Recover the original ctx. */
+> +		EMIT3(0x48, 0x8B, 0x3F); /* mov rdi, qword ptr [rdi] */
+> +	else
+> +		/* Keep the same instruction layout. */
+> +		emit_nops(&prog, 3);
+>  	/* Exception callback receives FP as third parameter */
+>  	if (is_exception_cb) {
+>  		EMIT3(0x48, 0x89, 0xF4); /* mov rsp, rsi */
+> @@ -3152,6 +3150,12 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+>  	return true;
+>  }
+> 
+> +/* Indicate the JIT backend supports tail call count pointer in
+> tailcall context. */
+> +bool bpf_jit_supports_tail_call_cnt_ptr(void)
+> +{
+> +	return true;
+> +}
+> +
+>  void bpf_jit_free(struct bpf_prog *prog)
+>  {
+>  	if (prog->jited) {
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 7671530d6e4e0..fea4326c27d31 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1919,6 +1919,11 @@ int bpf_prog_array_copy(struct bpf_prog_array
+> *old_array,
+>  			u64 bpf_cookie,
+>  			struct bpf_prog_array **new_array);
+> 
+> +struct bpf_prog_run_ctx {
+> +	const void *ctx;
+> +	u32 *tail_call_cnt;
+> +};
+> +
+>  struct bpf_run_ctx {};
+> 
+>  struct bpf_cg_run_ctx {
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 68fb6c8142fec..c1c035c44b4ab 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -629,6 +629,10 @@ typedef unsigned int (*bpf_dispatcher_fn)(const
+> void *ctx,
+>  					  unsigned int (*bpf_func)(const void *,
+>  								   const struct bpf_insn *));
+> 
+> +static __always_inline u32 __bpf_prog_run_dfunc(const struct bpf_prog
+> *prog,
+> +						const void *ctx,
+> +						bpf_dispatcher_fn dfunc);
+> +
+>  static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+>  					  const void *ctx,
+>  					  bpf_dispatcher_fn dfunc)
+> @@ -641,14 +645,14 @@ static __always_inline u32 __bpf_prog_run(const
+> struct bpf_prog *prog,
+>  		u64 start = sched_clock();
+>  		unsigned long flags;
+> 
+> -		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> +		ret = __bpf_prog_run_dfunc(prog, ctx, dfunc);
+>  		stats = this_cpu_ptr(prog->stats);
+>  		flags = u64_stats_update_begin_irqsave(&stats->syncp);
+>  		u64_stats_inc(&stats->cnt);
+>  		u64_stats_add(&stats->nsecs, sched_clock() - start);
+>  		u64_stats_update_end_irqrestore(&stats->syncp, flags);
+>  	} else {
+> -		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> +		ret = __bpf_prog_run_dfunc(prog, ctx, dfunc);
+>  	}
+>  	return ret;
+>  }
+> @@ -952,12 +956,31 @@ struct bpf_prog *bpf_int_jit_compile(struct
+> bpf_prog *prog);
+>  void bpf_jit_compile(struct bpf_prog *prog);
+>  bool bpf_jit_needs_zext(void);
+>  bool bpf_jit_supports_subprog_tailcalls(void);
+> +bool bpf_jit_supports_tail_call_cnt_ptr(void);
+>  bool bpf_jit_supports_kfunc_call(void);
+>  bool bpf_jit_supports_far_kfunc_call(void);
+>  bool bpf_jit_supports_exceptions(void);
+>  void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64
+> sp, u64 bp), void *cookie);
+>  bool bpf_helper_changes_pkt_data(void *func);
+> 
+> +static __always_inline u32 __bpf_prog_run_dfunc(const struct bpf_prog
+> *prog,
+> +						const void *ctx,
+> +						bpf_dispatcher_fn dfunc)
+> +{
+> +	struct bpf_prog_run_ctx run_ctx = {};
+> +	u32 ret, tcc = 0;
+> +
+> +	run_ctx.ctx = ctx;
+> +	run_ctx.tail_call_cnt = &tcc;
+> +
+> +	if (bpf_jit_supports_tail_call_cnt_ptr() && prog->jited)
+> +		ret = dfunc(&run_ctx, prog->insnsi, prog->bpf_func);
+> +	else
+> +		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> +
+> +	return ret;
+> +}
+> +
+>  static inline bool bpf_dump_raw_ok(const struct cred *cred)
+>  {
+>  	/* Reconstruction of call-sites is dependent on kallsyms,
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index ea6843be2616c..80b20e99456f0 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2915,6 +2915,15 @@ bool __weak bpf_jit_supports_subprog_tailcalls(void)
+>  	return false;
+>  }
+> 
+> +/* Return TRUE if the JIT backend supports tail call count pointer in
+> tailcall
+> + * context.
+> + */
+> +bool __weak bpf_jit_supports_tail_call_cnt_ptr(void)
+> +{
+> +	return false;
+> +}
+> +EXPORT_SYMBOL(bpf_jit_supports_tail_call_cnt_ptr);
+> +
+>  bool __weak bpf_jit_supports_kfunc_call(void)
+>  {
+>  	return false;
+> 
+> Why use EXPORT_SYMBOL here?
+> 
+> It's to avoid the building error.
+> 
+> ERROR: modpost: "bpf_jit_supports_tail_call_cnt_ptr"
+> [net/sched/act_bpf.ko] undefined!
+> ERROR: modpost: "bpf_jit_supports_tail_call_cnt_ptr"
+> [net/sched/cls_bpf.ko] undefined!
+> ERROR: modpost: "bpf_jit_supports_tail_call_cnt_ptr"
+> [net/netfilter/xt_bpf.ko] undefined!
+> ERROR: modpost: "bpf_jit_supports_tail_call_cnt_ptr" [net/ipv6/ipv6.ko]
+> undefined!
+> 
+> I'm not familiar with this building error. Is it OK to use EXPORT_SYMBOL
+> here?
+> 
+> Thanks,
+> Leon
+> 
 
