@@ -1,201 +1,483 @@
-Return-Path: <bpf+bounces-22008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B31B855046
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 18:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45056855047
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 18:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E762B284EC3
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:29:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F080F285230
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7060A84FDF;
-	Wed, 14 Feb 2024 17:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E518526F;
+	Wed, 14 Feb 2024 17:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QUxh5Nat"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UH+cVosV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FF284FC9
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 17:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13AF784FC9;
+	Wed, 14 Feb 2024 17:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931466; cv=none; b=gjVHP5oe8kwryGVMDfbs2XVB72LF2nEoB59hGH2ZnWdQJf8zSm4sLHNN25nvOd0/rHLAEtFe1JPryowLxrW38zF+1ZtrvHn84s/ORDwLdkOTjoGMYO6ke6L2E5uzTrx3/3GnfEYQ74IfIFhPEhJ4mxC2aOJwWhiJ2bq2cAT5oN0=
+	t=1707931476; cv=none; b=Pq/QAEFbM7+RvjrjMIjZWzJkV0yLnxuqGj3E94bmENzS6xcl9na7whJ/65fmcLmccmj+18igyTkQxlB+jxUPEbgtYDtdHdSLh0dGy9whKwUFmu7okx1BZk7zmOfvrMtpPuuAigUlzFJaLVOkyu966Qc6uhHBBzOeHVEGIoIcBBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931466; c=relaxed/simple;
-	bh=7MKIm+BZFGarc08fO9i5p4oGbPfnH1oOrTTEk1DU3gQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dt1Pzg5sFmsY7Iteqtt0FoZKGAMUFyA6nHjOy/QpSyT/i66WvSy67l6VUx9FI4eAHtZJSKhxbUWfrD57xhd7xyPKoSGRmxu48TgXclI6FDNkkDld1OHdLpOkSEPxJYl0Q6/bV7y1PaJkXph4jczhqp/WcuenrJDk5m7nYMrTcBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QUxh5Nat; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e10746c6f4so13415b3a.2
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 09:24:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707931464; x=1708536264; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S6qAbhUtem/s1YgKm360zEs1FN7y6mvxL+lYin6s8rw=;
-        b=QUxh5NatpsEGa/ATKDJesngtemjo0286esDmyXMko72601Z2mQv0ep63uuKOyfJf7x
-         JMog6o3zZ86Ssw7LhlBvNcWXyGrkY+mOGgl/O4EsUZ7RjXs3SSZwY/LamIeuDVGty5KX
-         QQpN7KLMIuZkmF3Z19EqKVBG16YYnfK6ruioacHbuqo2//x/CFz/SRdAjZDomyzFRy8p
-         IuGPRYWZbFNZgXL9q+uxI52hhKPIDJtsSayEUXkXjAqQ5ZtGcxDuJu3+IIl5/JosyF6W
-         6yOyiSh82hLer+VsajvLv+nkJw3qSbqJbj7lYgbINIzI0dHM8em93kgxCcE94/77HLVX
-         urlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707931464; x=1708536264;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S6qAbhUtem/s1YgKm360zEs1FN7y6mvxL+lYin6s8rw=;
-        b=crRalOaXtuvhwcsMCNMv5n2BQL5neyRc/miCQkX7YyQehRsmqfQSyPdG9TAXWG0GFd
-         eJg+FKbe89Lat0lUCg2K8XAcZdFZgaK4sF/X2YCRfn+1zbKI3j8WSscmwQSYcmawOqRn
-         Y3K/dUt8U2camCpmXG5oVIUcPYt1D8WNWlmdVGwVvCmN8BooDelY+ApXscFpielhV46r
-         36X+6uUyXxFZQfz/4VWmbtAOfndlMbhdONFKu7ekKamU7gSTD0/0ydu30gkFfbLDHsOO
-         2L5+46JTHZ+VcvxYBtzgB7BZQf4KqYTgojAqwQdMbF0pbRelaxjRzozhLDFPHwo+tXlF
-         yL+w==
-X-Forwarded-Encrypted: i=1; AJvYcCU/G5YGVT4lPtiK0ijHUM3Not7mW1yvwGy/gNHcdpEkICBRb5vmPh4S91iRHLxhhmTHaKsuJ2JAQagkVQLnRk/t/cI1
-X-Gm-Message-State: AOJu0Ywtmeqs5xPr2P7gk11H7u9ez6HGUx3LEz2pYOYmvuff9MD3qbXV
-	MyP8MwixDwk13ldY8vwTe4kpQtJ/H/vnvPMt5QNvObZrRhRq1+OVbgjWKPP70MvzFg6z+vM3zqc
-	78LMw1q+nInoNXnPFSzm/zirERhQ=
-X-Google-Smtp-Source: AGHT+IGwGGW7d+E2Ow0+w4Z2OiiBv3qgTxH7Wd3Ycop1PVBco9owHvyGcMfM/zsGNspZhGCVjiyWgo3IsSv+hbpu8CM=
-X-Received: by 2002:a05:6a20:e68c:b0:19e:b96e:e6b with SMTP id
- mz12-20020a056a20e68c00b0019eb96e0e6bmr4228071pzb.19.1707931463713; Wed, 14
- Feb 2024 09:24:23 -0800 (PST)
+	s=arc-20240116; t=1707931476; c=relaxed/simple;
+	bh=JGNgmytcFrLuaY14RZkXoDCEeX+VONBkvjuEZp3aXoQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T1oDNEoVkFk5ALPXCq96YFcLaKDu/EGVqmV4P3nCqnKFxn5DMpvAHdUYqKb3a1gv6ncnUe8svcRxcPbFyblwcbUk+rXHVSIn7YzGc98ZDoHFy5s8MWc2M7czCi9IKCjzy3uaplSkmc7brxK1kP6GYtBIJNpI5049XsaLoVeUM7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UH+cVosV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF2CC433F1;
+	Wed, 14 Feb 2024 17:24:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707931475;
+	bh=JGNgmytcFrLuaY14RZkXoDCEeX+VONBkvjuEZp3aXoQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UH+cVosVCxuPLixvta2LyIUAs37bbc/qk1rh845izNebYfQzG1VzkVg1iLp0RnEKI
+	 ybH6KWrZnrdwvzeXmBty4t8xId1AU+oiUSV6xIp1t3qI8w+/1m9iU03vDkKVlD6di6
+	 +VwCyBTKTX6LG+670F/XwB8HOUAJVq6OCx5/MqUcxW2Pm11Rwa5lnnJTRZCBsb8Fwm
+	 PzcIKqTupHd7NyO7Ys4Djbgyf9kpwVUAPJN6xD6hsAc26JOGqQZjKO+IcOJxpATaEp
+	 pLSl7TINj5TAs9fCAprKPJT6ULsnK7W5Yc9ChrOCiSjpaQ7R+5C5qSCvEzKJrUWsZb
+	 bjkja6tJCc6ww==
+Date: Wed, 14 Feb 2024 14:24:32 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v1 1/6] perf report: Sort child tasks by tid
+Message-ID: <Zcz3UO5Jq4zAqSfx@x1>
+References: <20240214063708.972376-1-irogers@google.com>
+ <20240214063708.972376-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-15-alexei.starovoitov@gmail.com> <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
- <CAEf4BzYbkqhrPCY1RfyHHY1nq-fmpxP2O-n0gMzWoDFe4Msofw@mail.gmail.com>
- <7af0d2e0cc168eb8f57be0fe185d7fa9caf87824.camel@gmail.com>
- <CAEf4BzZyPDdtV8xyFxpLmPQpKrtO-affGrEfyDkodr_BDHVZcA@mail.gmail.com> <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
-In-Reply-To: <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 14 Feb 2024 09:24:11 -0800
-Message-ID: <CAEf4BzY8grOqDUOAuvyBw+t1oZh6x_6xubHePv3byxV3sC9uVg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global varaibles.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes <lstoakes@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240214063708.972376-2-irogers@google.com>
 
-On Tue, Feb 13, 2024 at 5:24=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Feb 13, 2024 at 4:09=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Feb 13, 2024 at 3:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > On Tue, 2024-02-13 at 15:17 -0800, Andrii Nakryiko wrote:
-> > >
-> > > [...]
-> > >
-> > > > > So, at first I thought that having two maps is a bit of a hack.
-> > > >
-> > > > yep, that was my instinct as well
-> > > >
-> > > > > However, after trying to make it work with only one map I don't r=
-eally
-> > > > > like that either :)
-> > > >
-> > > > Can you elaborate? see my reply to Alexei, I wonder how did you thi=
-nk
-> > > > about doing this?
-> > >
-> > > Relocations in the ELF file are against a new section: ".arena.1".
-> > > This works nicely with logic in bpf_program__record_reloc().
-> > > If single map is used, we effectively need to track two indexes for
-> > > the map section:
-> > > - one used for relocations against map variables themselves
-> > >   (named "generic map reference relocation" in the function code);
-> > > - one used for relocations against ".arena.1"
-> > >   (named "global data map relocation" in the function code).
-> > >
-> > > This spooked me off:
-> > > - either bpf_object__init_internal_map() would have a specialized
-> > >   branch for arenas, as with current approach;
-> > > - or bpf_program__record_reloc() would have a specialized branch for =
-arenas,
-> > >   as with one map approach.
-> >
-> > Yes, relocations would know about .arena.1, but it's a pretty simple
-> > check in a few places. We basically have arena *definition* sec_idx
-> > (corresponding to SEC(".maps")) and arena *data* sec_idx. The latter
-> > is what is recorded for global variables in .arena.1. We can remember
-> > this arena data sec_idx in struct bpf_object once during ELF
-> > processing, and then just special case it internally in a few places.
->
-> That was my first attempt and bpf_program__record_reloc()
-> became a mess.
-> Currently it does relo search either in internal maps
-> or in obj->efile.btf_maps_shndx.
-> Doing double search wasn't nice.
-> And further, such dual meaning of 'struct bpf_map' object messes
-> assumptions of bpf_object__shndx_is_maps, bpf_object__shndx_is_data
-> and the way libbpf treats map->libbpf_type everywhere.
->
-> bpf_map__is_internal() cannot really say true or false
-> for such dual use map.
-> Then skeleton gen gets ugly.
-> Needs more public libbpf APIs to use in bpftool gen.
-> Just a mess.
+On Tue, Feb 13, 2024 at 10:37:03PM -0800, Ian Rogers wrote:
+> Commit 91e467bc568f ("perf machine: Use hashtable for machine
+> threads") made the iteration of thread tids unordered. The perf report
+> --tasks output now shows child threads in an order determined by the
+> hashing. For example, in this snippet tid 3 appears after tid 256 even
+> though they have the same ppid 2:
+> 
+> ```
+> $ perf report --tasks
+> %      pid      tid     ppid  comm
+>          0        0       -1 |swapper
+>          2        2        0 | kthreadd
+>        256      256        2 |  kworker/12:1H-k
+>     693761   693761        2 |  kworker/10:1-mm
+>    1301762  1301762        2 |  kworker/1:1-mm_
+>    1302530  1302530        2 |  kworker/u32:0-k
+>          3        3        2 |  rcu_gp
+> ...
+> ```
+> 
+> The output is easier to read if threads appear numerically
+> increasing. To allow for this, read all threads into a list then sort
+> with a comparator that orders by the child task's of the first common
+> parent. The list creation and deletion are created as utilities on
+> machine.  The indentation is possible by counting the number of
+> parents a child has.
+> 
+> With this change the output for the same data file is now like:
+> ```
+> $ perf report --tasks
+> %      pid      tid     ppid  comm
+>          0        0       -1 |swapper
+>          1        1        0 | systemd
+>        823      823        1 |  systemd-journal
+>        853      853        1 |  systemd-udevd
+>       3230     3230        1 |  systemd-timesyn
+>       3236     3236        1 |  auditd
+>       3239     3239     3236 |   audisp-syslog
+>       3321     3321        1 |  accounts-daemon
 
-It might be easier for me to try implement it the way I see it than
-discuss it over emails. I'll give it a try today-tomorrow and get back
-to you.
 
->
-> > The "fake" bpf_map for __arena_internal is user-visible and requires
-> > autocreate=3Dfalse tricks, etc. I feel like it's a worse tradeoff from =
-a
-> > user API perspective than a few extra ARENA-specific internal checks
-> > (which we already have a few anyways, ARENA is not completely
-> > transparent internally anyways).
->
-> what do you mean 'user visible'?
+Since we're adding extra code for sorting wouldn't be more convenient to
+have this done in an graphically hierarchical output?
 
-That __arena_internal (representing .area.1 data section) actually is
-separate from actual ARENA map (represented by variable in .maps
-section). And both have separate `struct bpf_map`, which you can look
-up by name or through iterating all maps of bpf_object. And that you
-can call getters/setters on __arena_internal, even though the only
-thing that actually makes sense there is bpf_map__initial_value(),
-which would just as much make sense on ARENA map itself.
+But maybe to make this honour asking for a CSV output the above is
+enough? Or can we have both, i.e. for people just doing --tasks, the
+hirarchical way, for CSV, then like above, with the comma separator.
 
-> I can add a filter to avoid generating a pointer for it in a skeleton.
-> Then it won't be any more visible than other bss/data fake maps.
+But then perf stat has -x to ask for CSV that is used by the more
+obscure --exclude-other option :-\
 
-bss/data are not fake maps, they have corresponding BPF map (ARRAY) in
-the kernel. Which is different from __arena_internal. And even if we
-hide it from skeleton, it's still there in bpf_object, as I mentioned
-above.
+Maybe we need a --csv that is consistent accross all tools.
 
-Let me try implementing what I have in mind and see how bad it is.
+- Arnaldo
 
-> The 2nd fake arena returns true out of bpf_map__is_internal.
->
-> The key comment in the patch:
->                 /* bpf_object will contain two arena maps:
->                  * LIBBPF_MAP_ARENA & BPF_MAP_TYPE_ARENA
->                  * and
->                  * LIBBPF_MAP_UNSPEC & BPF_MAP_TYPE_ARENA.
->                  * The former map->arena will point to latter.
->                  */
+⬢[acme@toolbox b]$ perf stat -x, ls
+perf.data
+0.65,msec,task-clock:u,648266,100.00,0.534,CPUs utilized
+0,,context-switches:u,648266,100.00,0.000,/sec
+0,,cpu-migrations:u,648266,100.00,0.000,/sec
+91,,page-faults:u,648266,100.00,140.374,K/sec
+775564,,cpu_atom/cycles/u,276334,42.00,1.196,GHz
+<not counted>,,cpu_core/cycles/u,0,0.00,,
+508381,,cpu_atom/instructions/u,648266,100.00,0.66,insn per cycle
+<not counted>,,cpu_core/instructions/u,0,0.00,,
+99137,,cpu_atom/branches/u,648266,100.00,152.926,M/sec
+<not counted>,,cpu_core/branches/u,0,0.00,,
+6238,,cpu_atom/branch-misses/u,648266,100.00,6.29,of all branches
+<not counted>,,cpu_core/branch-misses/u,0,0.00,,
+,648266,100.00,,,,TopdownL1 (cpu_atom)
+,,,,,87.9,%  tma_bad_speculation
+,648266,100.00,,,24.0,%  tma_frontend_bound
+,648266,100.00,,,31.5,%  tma_backend_bound
+,,,,,31.5,%  tma_backend_bound_aux
+,371932,57.00,,,0.0,%  tma_retiring
+⬢[acme@toolbox b]$ perf report -h -x
 
-Yes, and I'd like to not have two arena maps because they are logically one=
-.
+ Usage: perf report [<options>]
+
+    -x, --exclude-other   Only display entries with parent-match
+
+⬢[acme@toolbox b]$
+
+- Arnaldo
+
+> ...
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/builtin-report.c | 203 ++++++++++++++++++++----------------
+>  tools/perf/util/machine.c   |  30 ++++++
+>  tools/perf/util/machine.h   |  10 ++
+>  3 files changed, 155 insertions(+), 88 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 8e16fa261e6f..b48f1d5309e3 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -59,6 +59,7 @@
+>  #include <linux/ctype.h>
+>  #include <signal.h>
+>  #include <linux/bitmap.h>
+> +#include <linux/list_sort.h>
+>  #include <linux/string.h>
+>  #include <linux/stringify.h>
+>  #include <linux/time64.h>
+> @@ -828,35 +829,6 @@ static void tasks_setup(struct report *rep)
+>  	rep->tool.no_warn = true;
+>  }
+>  
+> -struct task {
+> -	struct thread		*thread;
+> -	struct list_head	 list;
+> -	struct list_head	 children;
+> -};
+> -
+> -static struct task *tasks_list(struct task *task, struct machine *machine)
+> -{
+> -	struct thread *parent_thread, *thread = task->thread;
+> -	struct task   *parent_task;
+> -
+> -	/* Already listed. */
+> -	if (!list_empty(&task->list))
+> -		return NULL;
+> -
+> -	/* Last one in the chain. */
+> -	if (thread__ppid(thread) == -1)
+> -		return task;
+> -
+> -	parent_thread = machine__find_thread(machine, -1, thread__ppid(thread));
+> -	if (!parent_thread)
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	parent_task = thread__priv(parent_thread);
+> -	thread__put(parent_thread);
+> -	list_add_tail(&task->list, &parent_task->children);
+> -	return tasks_list(parent_task, machine);
+> -}
+> -
+>  struct maps__fprintf_task_args {
+>  	int indent;
+>  	FILE *fp;
+> @@ -900,89 +872,144 @@ static size_t maps__fprintf_task(struct maps *maps, int indent, FILE *fp)
+>  	return args.printed;
+>  }
+>  
+> -static void task__print_level(struct task *task, FILE *fp, int level)
+> +static int thread_level(struct machine *machine, const struct thread *thread)
+>  {
+> -	struct thread *thread = task->thread;
+> -	struct task *child;
+> -	int comm_indent = fprintf(fp, "  %8d %8d %8d |%*s",
+> -				  thread__pid(thread), thread__tid(thread),
+> -				  thread__ppid(thread), level, "");
+> +	struct thread *parent_thread;
+> +	int res;
+>  
+> -	fprintf(fp, "%s\n", thread__comm_str(thread));
+> +	if (thread__tid(thread) <= 0)
+> +		return 0;
+>  
+> -	maps__fprintf_task(thread__maps(thread), comm_indent, fp);
+> +	if (thread__ppid(thread) <= 0)
+> +		return 1;
+>  
+> -	if (!list_empty(&task->children)) {
+> -		list_for_each_entry(child, &task->children, list)
+> -			task__print_level(child, fp, level + 1);
+> +	parent_thread = machine__find_thread(machine, -1, thread__ppid(thread));
+> +	if (!parent_thread) {
+> +		pr_err("Missing parent thread of %d\n", thread__tid(thread));
+> +		return 0;
+>  	}
+> +	res = 1 + thread_level(machine, parent_thread);
+> +	thread__put(parent_thread);
+> +	return res;
+>  }
+>  
+> -static int tasks_print(struct report *rep, FILE *fp)
+> +static void task__print_level(struct machine *machine, struct thread *thread, FILE *fp)
+>  {
+> -	struct perf_session *session = rep->session;
+> -	struct machine      *machine = &session->machines.host;
+> -	struct task *tasks, *task;
+> -	unsigned int nr = 0, itask = 0, i;
+> -	struct rb_node *nd;
+> -	LIST_HEAD(list);
+> +	int level = thread_level(machine, thread);
+> +	int comm_indent = fprintf(fp, "  %8d %8d %8d |%*s",
+> +				  thread__pid(thread), thread__tid(thread),
+> +				  thread__ppid(thread), level, "");
+>  
+> -	/*
+> -	 * No locking needed while accessing machine->threads,
+> -	 * because --tasks is single threaded command.
+> -	 */
+> +	fprintf(fp, "%s\n", thread__comm_str(thread));
+>  
+> -	/* Count all the threads. */
+> -	for (i = 0; i < THREADS__TABLE_SIZE; i++)
+> -		nr += machine->threads[i].nr;
+> +	maps__fprintf_task(thread__maps(thread), comm_indent, fp);
+> +}
+>  
+> -	tasks = malloc(sizeof(*tasks) * nr);
+> -	if (!tasks)
+> -		return -ENOMEM;
+> +static int task_list_cmp(void *priv, const struct list_head *la, const struct list_head *lb)
+> +{
+> +	struct machine *machine = priv;
+> +	struct thread_list *task_a = list_entry(la, struct thread_list, list);
+> +	struct thread_list *task_b = list_entry(lb, struct thread_list, list);
+> +	struct thread *a = task_a->thread;
+> +	struct thread *b = task_b->thread;
+> +	int level_a, level_b, res;
+> +
+> +	/* Compare a and b to root. */
+> +	if (thread__tid(a) == thread__tid(b))
+> +		return 0;
+>  
+> -	for (i = 0; i < THREADS__TABLE_SIZE; i++) {
+> -		struct threads *threads = &machine->threads[i];
+> +	if (thread__tid(a) == 0)
+> +		return -1;
+>  
+> -		for (nd = rb_first_cached(&threads->entries); nd;
+> -		     nd = rb_next(nd)) {
+> -			task = tasks + itask++;
+> +	if (thread__tid(b) == 0)
+> +		return 1;
+>  
+> -			task->thread = rb_entry(nd, struct thread_rb_node, rb_node)->thread;
+> -			INIT_LIST_HEAD(&task->children);
+> -			INIT_LIST_HEAD(&task->list);
+> -			thread__set_priv(task->thread, task);
+> -		}
+> +	/* If parents match sort by tid. */
+> +	if (thread__ppid(a) == thread__ppid(b)) {
+> +		return thread__tid(a) < thread__tid(b)
+> +			? -1
+> +			: (thread__tid(a) > thread__tid(b) ? 1 : 0);
+>  	}
+>  
+>  	/*
+> -	 * Iterate every task down to the unprocessed parent
+> -	 * and link all in task children list. Task with no
+> -	 * parent is added into 'list'.
+> +	 * Find a and b such that if they are a child of each other a and b's
+> +	 * tid's match, otherwise a and b have a common parent and distinct
+> +	 * tid's to sort by. First make the depths of the threads match.
+>  	 */
+> -	for (itask = 0; itask < nr; itask++) {
+> -		task = tasks + itask;
+> -
+> -		if (!list_empty(&task->list))
+> -			continue;
+> -
+> -		task = tasks_list(task, machine);
+> -		if (IS_ERR(task)) {
+> -			pr_err("Error: failed to process tasks\n");
+> -			free(tasks);
+> -			return PTR_ERR(task);
+> +	level_a = thread_level(machine, a);
+> +	level_b = thread_level(machine, b);
+> +	a = thread__get(a);
+> +	b = thread__get(b);
+> +	for (int i = level_a; i > level_b; i--) {
+> +		struct thread *parent = machine__find_thread(machine, -1, thread__ppid(a));
+> +
+> +		thread__put(a);
+> +		if (!parent) {
+> +			pr_err("Missing parent thread of %d\n", thread__tid(a));
+> +			thread__put(b);
+> +			return -1;
+>  		}
+> +		a = parent;
+> +	}
+> +	for (int i = level_b; i > level_a; i--) {
+> +		struct thread *parent = machine__find_thread(machine, -1, thread__ppid(b));
+>  
+> -		if (task)
+> -			list_add_tail(&task->list, &list);
+> +		thread__put(b);
+> +		if (!parent) {
+> +			pr_err("Missing parent thread of %d\n", thread__tid(b));
+> +			thread__put(a);
+> +			return 1;
+> +		}
+> +		b = parent;
+> +	}
+> +	/* Search up to a common parent. */
+> +	while (thread__ppid(a) != thread__ppid(b)) {
+> +		struct thread *parent;
+> +
+> +		parent = machine__find_thread(machine, -1, thread__ppid(a));
+> +		thread__put(a);
+> +		if (!parent)
+> +			pr_err("Missing parent thread of %d\n", thread__tid(a));
+> +		a = parent;
+> +		parent = machine__find_thread(machine, -1, thread__ppid(b));
+> +		thread__put(b);
+> +		if (!parent)
+> +			pr_err("Missing parent thread of %d\n", thread__tid(b));
+> +		b = parent;
+> +		if (!a || !b)
+> +			return !a && !b ? 0 : (!a ? -1 : 1);
+> +	}
+> +	if (thread__tid(a) == thread__tid(b)) {
+> +		/* a is a child of b or vice-versa, deeper levels appear later. */
+> +		res = level_a < level_b ? -1 : (level_a > level_b ? 1 : 0);
+> +	} else {
+> +		/* Sort by tid now the parent is the same. */
+> +		res = thread__tid(a) < thread__tid(b) ? -1 : 1;
+>  	}
+> +	thread__put(a);
+> +	thread__put(b);
+> +	return res;
+> +}
+> +
+> +static int tasks_print(struct report *rep, FILE *fp)
+> +{
+> +	struct machine *machine = &rep->session->machines.host;
+> +	LIST_HEAD(tasks);
+> +	int ret;
+>  
+> -	fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "comm");
+> +	ret = machine__thread_list(machine, &tasks);
+> +	if (!ret) {
+> +		struct thread_list *task;
+>  
+> -	list_for_each_entry(task, &list, list)
+> -		task__print_level(task, fp, 0);
+> +		list_sort(machine, &tasks, task_list_cmp);
+>  
+> -	free(tasks);
+> -	return 0;
+> +		fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "comm");
+> +
+> +		list_for_each_entry(task, &tasks, list)
+> +			task__print_level(machine, task->thread, fp);
+> +	}
+> +	thread_list__delete(&tasks);
+> +	return ret;
+>  }
+>  
+>  static int __cmd_report(struct report *rep)
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 3da92f18814a..7872ce92c9fc 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -3261,6 +3261,36 @@ int machines__for_each_thread(struct machines *machines,
+>  	return rc;
+>  }
+>  
+> +
+> +static int thread_list_cb(struct thread *thread, void *data)
+> +{
+> +	struct list_head *list = data;
+> +	struct thread_list *entry = malloc(sizeof(*entry));
+> +
+> +	if (!entry)
+> +		return -ENOMEM;
+> +
+> +	entry->thread = thread__get(thread);
+> +	list_add_tail(&entry->list, list);
+> +	return 0;
+> +}
+> +
+> +int machine__thread_list(struct machine *machine, struct list_head *list)
+> +{
+> +	return machine__for_each_thread(machine, thread_list_cb, list);
+> +}
+> +
+> +void thread_list__delete(struct list_head *list)
+> +{
+> +	struct thread_list *pos, *next;
+> +
+> +	list_for_each_entry_safe(pos, next, list, list) {
+> +		thread__zput(pos->thread);
+> +		list_del(&pos->list);
+> +		free(pos);
+> +	}
+> +}
+> +
+>  pid_t machine__get_current_tid(struct machine *machine, int cpu)
+>  {
+>  	if (cpu < 0 || (size_t)cpu >= machine->current_tid_sz)
+> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+> index 1279acda6a8a..b738ce84817b 100644
+> --- a/tools/perf/util/machine.h
+> +++ b/tools/perf/util/machine.h
+> @@ -280,6 +280,16 @@ int machines__for_each_thread(struct machines *machines,
+>  			      int (*fn)(struct thread *thread, void *p),
+>  			      void *priv);
+>  
+> +struct thread_list {
+> +	struct list_head	 list;
+> +	struct thread		*thread;
+> +};
+> +
+> +/* Make a list of struct thread_list based on threads in the machine. */
+> +int machine__thread_list(struct machine *machine, struct list_head *list);
+> +/* Free up the nodes within the thread_list list. */
+> +void thread_list__delete(struct list_head *list);
+> +
+>  pid_t machine__get_current_tid(struct machine *machine, int cpu);
+>  int machine__set_current_tid(struct machine *machine, int cpu, pid_t pid,
+>  			     pid_t tid);
+> -- 
+> 2.43.0.687.g38aa6559b0-goog
+> 
 
