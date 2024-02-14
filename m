@@ -1,270 +1,201 @@
-Return-Path: <bpf+bounces-22007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38B185500D
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 18:24:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B31B855046
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 18:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F51E1F2AA70
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E762B284EC3
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013F08528A;
-	Wed, 14 Feb 2024 17:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7060A84FDF;
+	Wed, 14 Feb 2024 17:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QUxh5Nat"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF88E839ED;
-	Wed, 14 Feb 2024 17:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FF284FC9
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 17:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931256; cv=none; b=QF3/lu5wFsJl7ZsVBV7lGQa6rk8OYot1Piw+WT4cFMg4x7XuMUCuuIRfzme1r6IPHHdp6j5XDuu/Z/6JZ32MKNhmG+kLyDaHVTR5PuBJtKvmOieYbzCWSMxOEmusHhPtBbqSwlx360dOS3L6/EEgdGKBZvrklgCtnNQRvvgn5CQ=
+	t=1707931466; cv=none; b=gjVHP5oe8kwryGVMDfbs2XVB72LF2nEoB59hGH2ZnWdQJf8zSm4sLHNN25nvOd0/rHLAEtFe1JPryowLxrW38zF+1ZtrvHn84s/ORDwLdkOTjoGMYO6ke6L2E5uzTrx3/3GnfEYQ74IfIFhPEhJ4mxC2aOJwWhiJ2bq2cAT5oN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931256; c=relaxed/simple;
-	bh=DRFlqUoQ+56jX8SosJW0HOg/C/81XeRHYKQhTNegNK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KmiWFU5gOpzYZYF5zo8ir6NnR8WPmhhn32J3RGDjCmmKHmZz8q6gEXgBTmIjFxA7+u5MauL7iUFSl4uQVhqSaUzYCt1kH8SIjJqCWJ1xMfqUSM8NkP2XNnPciHunhWDEoV/3q2cwi0QE1W7lxVvskmGiNNztENSs6485D9QiuUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22EF71FB;
-	Wed, 14 Feb 2024 09:21:35 -0800 (PST)
-Received: from [10.57.47.86] (unknown [10.57.47.86])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65B743F766;
-	Wed, 14 Feb 2024 09:20:51 -0800 (PST)
-Message-ID: <893ad3a4-ba24-43cf-8200-b8cd7742622d@arm.com>
-Date: Wed, 14 Feb 2024 17:20:50 +0000
+	s=arc-20240116; t=1707931466; c=relaxed/simple;
+	bh=7MKIm+BZFGarc08fO9i5p4oGbPfnH1oOrTTEk1DU3gQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dt1Pzg5sFmsY7Iteqtt0FoZKGAMUFyA6nHjOy/QpSyT/i66WvSy67l6VUx9FI4eAHtZJSKhxbUWfrD57xhd7xyPKoSGRmxu48TgXclI6FDNkkDld1OHdLpOkSEPxJYl0Q6/bV7y1PaJkXph4jczhqp/WcuenrJDk5m7nYMrTcBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QUxh5Nat; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e10746c6f4so13415b3a.2
+        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 09:24:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707931464; x=1708536264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S6qAbhUtem/s1YgKm360zEs1FN7y6mvxL+lYin6s8rw=;
+        b=QUxh5NatpsEGa/ATKDJesngtemjo0286esDmyXMko72601Z2mQv0ep63uuKOyfJf7x
+         JMog6o3zZ86Ssw7LhlBvNcWXyGrkY+mOGgl/O4EsUZ7RjXs3SSZwY/LamIeuDVGty5KX
+         QQpN7KLMIuZkmF3Z19EqKVBG16YYnfK6ruioacHbuqo2//x/CFz/SRdAjZDomyzFRy8p
+         IuGPRYWZbFNZgXL9q+uxI52hhKPIDJtsSayEUXkXjAqQ5ZtGcxDuJu3+IIl5/JosyF6W
+         6yOyiSh82hLer+VsajvLv+nkJw3qSbqJbj7lYgbINIzI0dHM8em93kgxCcE94/77HLVX
+         urlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707931464; x=1708536264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S6qAbhUtem/s1YgKm360zEs1FN7y6mvxL+lYin6s8rw=;
+        b=crRalOaXtuvhwcsMCNMv5n2BQL5neyRc/miCQkX7YyQehRsmqfQSyPdG9TAXWG0GFd
+         eJg+FKbe89Lat0lUCg2K8XAcZdFZgaK4sF/X2YCRfn+1zbKI3j8WSscmwQSYcmawOqRn
+         Y3K/dUt8U2camCpmXG5oVIUcPYt1D8WNWlmdVGwVvCmN8BooDelY+ApXscFpielhV46r
+         36X+6uUyXxFZQfz/4VWmbtAOfndlMbhdONFKu7ekKamU7gSTD0/0ydu30gkFfbLDHsOO
+         2L5+46JTHZ+VcvxYBtzgB7BZQf4KqYTgojAqwQdMbF0pbRelaxjRzozhLDFPHwo+tXlF
+         yL+w==
+X-Forwarded-Encrypted: i=1; AJvYcCU/G5YGVT4lPtiK0ijHUM3Not7mW1yvwGy/gNHcdpEkICBRb5vmPh4S91iRHLxhhmTHaKsuJ2JAQagkVQLnRk/t/cI1
+X-Gm-Message-State: AOJu0Ywtmeqs5xPr2P7gk11H7u9ez6HGUx3LEz2pYOYmvuff9MD3qbXV
+	MyP8MwixDwk13ldY8vwTe4kpQtJ/H/vnvPMt5QNvObZrRhRq1+OVbgjWKPP70MvzFg6z+vM3zqc
+	78LMw1q+nInoNXnPFSzm/zirERhQ=
+X-Google-Smtp-Source: AGHT+IGwGGW7d+E2Ow0+w4Z2OiiBv3qgTxH7Wd3Ycop1PVBco9owHvyGcMfM/zsGNspZhGCVjiyWgo3IsSv+hbpu8CM=
+X-Received: by 2002:a05:6a20:e68c:b0:19e:b96e:e6b with SMTP id
+ mz12-20020a056a20e68c00b0019eb96e0e6bmr4228071pzb.19.1707931463713; Wed, 14
+ Feb 2024 09:24:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 1/7] dma: compile-out DMA sync op calls when
- not used
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
- <20240214162201.4168778-2-aleksander.lobakin@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240214162201.4168778-2-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-15-alexei.starovoitov@gmail.com> <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
+ <CAEf4BzYbkqhrPCY1RfyHHY1nq-fmpxP2O-n0gMzWoDFe4Msofw@mail.gmail.com>
+ <7af0d2e0cc168eb8f57be0fe185d7fa9caf87824.camel@gmail.com>
+ <CAEf4BzZyPDdtV8xyFxpLmPQpKrtO-affGrEfyDkodr_BDHVZcA@mail.gmail.com> <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
+In-Reply-To: <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 14 Feb 2024 09:24:11 -0800
+Message-ID: <CAEf4BzY8grOqDUOAuvyBw+t1oZh6x_6xubHePv3byxV3sC9uVg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global varaibles.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes <lstoakes@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
-> Some platforms do have DMA, but DMA there is always direct and coherent.
-> Currently, even on such platforms DMA sync operations are compiled and
-> called.
-> Add a new hidden Kconfig symbol, DMA_NEED_SYNC, and set it only when
-> either sync operations are needed or there is DMA ops or swiotlb
-> enabled. Set dma_need_sync() and dma_skip_sync() depending on this
-> symbol state and don't call sync ops when dma_skip_sync() is true.
-> The change allows for future optimizations of DMA sync calls depending
-> on compile-time or runtime conditions.
-> 
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->   kernel/dma/Kconfig          |  4 ++
->   include/linux/dma-mapping.h | 80 +++++++++++++++++++++++++++++++------
->   kernel/dma/mapping.c        | 20 +++++-----
->   3 files changed, 81 insertions(+), 23 deletions(-)
-> 
-> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-> index d62f5957f36b..1c9ff05b1ecb 100644
-> --- a/kernel/dma/Kconfig
-> +++ b/kernel/dma/Kconfig
-> @@ -107,6 +107,10 @@ config DMA_BOUNCE_UNALIGNED_KMALLOC
->   	bool
->   	depends on SWIOTLB
->   
-> +config DMA_NEED_SYNC
-> +	def_bool ARCH_HAS_SYNC_DMA_FOR_DEVICE || ARCH_HAS_SYNC_DMA_FOR_CPU || \
-> +		 ARCH_HAS_SYNC_DMA_FOR_CPU_ALL || DMA_OPS || SWIOTLB
+On Tue, Feb 13, 2024 at 5:24=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Feb 13, 2024 at 4:09=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 3:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > On Tue, 2024-02-13 at 15:17 -0800, Andrii Nakryiko wrote:
+> > >
+> > > [...]
+> > >
+> > > > > So, at first I thought that having two maps is a bit of a hack.
+> > > >
+> > > > yep, that was my instinct as well
+> > > >
+> > > > > However, after trying to make it work with only one map I don't r=
+eally
+> > > > > like that either :)
+> > > >
+> > > > Can you elaborate? see my reply to Alexei, I wonder how did you thi=
+nk
+> > > > about doing this?
+> > >
+> > > Relocations in the ELF file are against a new section: ".arena.1".
+> > > This works nicely with logic in bpf_program__record_reloc().
+> > > If single map is used, we effectively need to track two indexes for
+> > > the map section:
+> > > - one used for relocations against map variables themselves
+> > >   (named "generic map reference relocation" in the function code);
+> > > - one used for relocations against ".arena.1"
+> > >   (named "global data map relocation" in the function code).
+> > >
+> > > This spooked me off:
+> > > - either bpf_object__init_internal_map() would have a specialized
+> > >   branch for arenas, as with current approach;
+> > > - or bpf_program__record_reloc() would have a specialized branch for =
+arenas,
+> > >   as with one map approach.
+> >
+> > Yes, relocations would know about .arena.1, but it's a pretty simple
+> > check in a few places. We basically have arena *definition* sec_idx
+> > (corresponding to SEC(".maps")) and arena *data* sec_idx. The latter
+> > is what is recorded for global variables in .arena.1. We can remember
+> > this arena data sec_idx in struct bpf_object once during ELF
+> > processing, and then just special case it internally in a few places.
+>
+> That was my first attempt and bpf_program__record_reloc()
+> became a mess.
+> Currently it does relo search either in internal maps
+> or in obj->efile.btf_maps_shndx.
+> Doing double search wasn't nice.
+> And further, such dual meaning of 'struct bpf_map' object messes
+> assumptions of bpf_object__shndx_is_maps, bpf_object__shndx_is_data
+> and the way libbpf treats map->libbpf_type everywhere.
+>
+> bpf_map__is_internal() cannot really say true or false
+> for such dual use map.
+> Then skeleton gen gets ugly.
+> Needs more public libbpf APIs to use in bpftool gen.
+> Just a mess.
 
-I'm not sure DMA_OPS belongs here - several architectures have 
-non-trivial ops without syncs, e.g. Alpha.
+It might be easier for me to try implement it the way I see it than
+discuss it over emails. I'll give it a try today-tomorrow and get back
+to you.
 
-> +
->   config DMA_RESTRICTED_POOL
->   	bool "DMA Restricted Pool"
->   	depends on OF && OF_RESERVED_MEM && SWIOTLB
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 4a658de44ee9..6c7640441214 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -117,13 +117,13 @@ dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
->   		size_t size, enum dma_data_direction dir, unsigned long attrs);
->   void dma_unmap_resource(struct device *dev, dma_addr_t addr, size_t size,
->   		enum dma_data_direction dir, unsigned long attrs);
-> -void dma_sync_single_for_cpu(struct device *dev, dma_addr_t addr, size_t size,
-> +void __dma_sync_single_for_cpu(struct device *dev, dma_addr_t addr, size_t size,
->   		enum dma_data_direction dir);
-> -void dma_sync_single_for_device(struct device *dev, dma_addr_t addr,
-> +void __dma_sync_single_for_device(struct device *dev, dma_addr_t addr,
->   		size_t size, enum dma_data_direction dir);
-> -void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
-> +void __dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
->   		    int nelems, enum dma_data_direction dir);
-> -void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
-> +void __dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
->   		       int nelems, enum dma_data_direction dir);
->   void *dma_alloc_attrs(struct device *dev, size_t size, dma_addr_t *dma_handle,
->   		gfp_t flag, unsigned long attrs);
-> @@ -147,7 +147,7 @@ u64 dma_get_required_mask(struct device *dev);
->   bool dma_addressing_limited(struct device *dev);
->   size_t dma_max_mapping_size(struct device *dev);
->   size_t dma_opt_mapping_size(struct device *dev);
-> -bool dma_need_sync(struct device *dev, dma_addr_t dma_addr);
-> +bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr);
->   unsigned long dma_get_merge_boundary(struct device *dev);
->   struct sg_table *dma_alloc_noncontiguous(struct device *dev, size_t size,
->   		enum dma_data_direction dir, gfp_t gfp, unsigned long attrs);
-> @@ -195,19 +195,19 @@ static inline void dma_unmap_resource(struct device *dev, dma_addr_t addr,
->   		size_t size, enum dma_data_direction dir, unsigned long attrs)
->   {
->   }
-> -static inline void dma_sync_single_for_cpu(struct device *dev, dma_addr_t addr,
-> -		size_t size, enum dma_data_direction dir)
-> +static inline void __dma_sync_single_for_cpu(struct device *dev,
-> +		dma_addr_t addr, size_t size, enum dma_data_direction dir)
+>
+> > The "fake" bpf_map for __arena_internal is user-visible and requires
+> > autocreate=3Dfalse tricks, etc. I feel like it's a worse tradeoff from =
+a
+> > user API perspective than a few extra ARENA-specific internal checks
+> > (which we already have a few anyways, ARENA is not completely
+> > transparent internally anyways).
+>
+> what do you mean 'user visible'?
 
-To me it would feel more logical to put all the wrappers inside the 
-#ifdef CONFIG_HAS_DMA and not touch these stubs at all (what does it 
-mean to skip an inline no-op?). Or in fact, if dma_skip_sync() is 
-constant false for !HAS_DMA, then we could also just make the external 
-function declarations unconditional and remove the stubs. Not a critical 
-matter though, and I defer to whatever Christoph thinks is most 
-maintainable.
+That __arena_internal (representing .area.1 data section) actually is
+separate from actual ARENA map (represented by variable in .maps
+section). And both have separate `struct bpf_map`, which you can look
+up by name or through iterating all maps of bpf_object. And that you
+can call getters/setters on __arena_internal, even though the only
+thing that actually makes sense there is bpf_map__initial_value(),
+which would just as much make sense on ARENA map itself.
 
->   {
->   }
-> -static inline void dma_sync_single_for_device(struct device *dev,
-> +static inline void __dma_sync_single_for_device(struct device *dev,
->   		dma_addr_t addr, size_t size, enum dma_data_direction dir)
->   {
->   }
-> -static inline void dma_sync_sg_for_cpu(struct device *dev,
-> +static inline void __dma_sync_sg_for_cpu(struct device *dev,
->   		struct scatterlist *sg, int nelems, enum dma_data_direction dir)
->   {
->   }
-> -static inline void dma_sync_sg_for_device(struct device *dev,
-> +static inline void __dma_sync_sg_for_device(struct device *dev,
->   		struct scatterlist *sg, int nelems, enum dma_data_direction dir)
->   {
->   }
-> @@ -277,7 +277,7 @@ static inline size_t dma_opt_mapping_size(struct device *dev)
->   {
->   	return 0;
->   }
-> -static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-> +static inline bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr)
->   {
->   	return false;
->   }
-> @@ -348,18 +348,72 @@ static inline void dma_unmap_single_attrs(struct device *dev, dma_addr_t addr,
->   	return dma_unmap_page_attrs(dev, addr, size, dir, attrs);
->   }
->   
-> +static inline void __dma_sync_single_range_for_cpu(struct device *dev,
-> +		dma_addr_t addr, unsigned long offset, size_t size,
-> +		enum dma_data_direction dir)
-> +{
-> +	__dma_sync_single_for_cpu(dev, addr + offset, size, dir);
-> +}
-> +
-> +static inline void __dma_sync_single_range_for_device(struct device *dev,
-> +		dma_addr_t addr, unsigned long offset, size_t size,
-> +		enum dma_data_direction dir)
-> +{
-> +	__dma_sync_single_for_device(dev, addr + offset, size, dir);
-> +}
+> I can add a filter to avoid generating a pointer for it in a skeleton.
+> Then it won't be any more visible than other bss/data fake maps.
 
-There is no need to introduce these two.
+bss/data are not fake maps, they have corresponding BPF map (ARRAY) in
+the kernel. Which is different from __arena_internal. And even if we
+hide it from skeleton, it's still there in bpf_object, as I mentioned
+above.
 
-> +
-> +static inline bool dma_skip_sync(const struct device *dev)
-> +{
-> +	return !IS_ENABLED(CONFIG_DMA_NEED_SYNC);
-> +}
-> +
-> +static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-> +{
-> +	return !dma_skip_sync(dev) ? __dma_need_sync(dev, dma_addr) : false;
-> +}
+Let me try implementing what I have in mind and see how bad it is.
 
-That's a bit of a mind-bender... is it actually just
+> The 2nd fake arena returns true out of bpf_map__is_internal.
+>
+> The key comment in the patch:
+>                 /* bpf_object will contain two arena maps:
+>                  * LIBBPF_MAP_ARENA & BPF_MAP_TYPE_ARENA
+>                  * and
+>                  * LIBBPF_MAP_UNSPEC & BPF_MAP_TYPE_ARENA.
+>                  * The former map->arena will point to latter.
+>                  */
 
-	return !dma_skip_sync(dev) && __dma_need_sync(dev, dma_addr);
-
-?
-
-(I do still think the negative flag makes it all a little harder to 
-follow in general than a positive "device needs to consider syncs" flag 
-would.)
-
-> +static inline void dma_sync_single_for_cpu(struct device *dev, dma_addr_t addr,
-> +		size_t size, enum dma_data_direction dir)
-> +{
-> +	if (!dma_skip_sync(dev))
-> +		__dma_sync_single_for_cpu(dev, addr, size, dir);
-> +}
-> +
-> +static inline void dma_sync_single_for_device(struct device *dev,
-> +		dma_addr_t addr, size_t size, enum dma_data_direction dir)
-> +{
-> +	if (!dma_skip_sync(dev))
-> +		__dma_sync_single_for_device(dev, addr, size, dir);
-> +}
-> +
-> +static inline void dma_sync_sg_for_cpu(struct device *dev,
-> +		struct scatterlist *sg, int nelems, enum dma_data_direction dir)
-> +{
-> +	if (!dma_skip_sync(dev))
-> +		__dma_sync_sg_for_cpu(dev, sg, nelems, dir);
-> +}
-> +
-> +static inline void dma_sync_sg_for_device(struct device *dev,
-> +		struct scatterlist *sg, int nelems, enum dma_data_direction dir)
-> +{
-> +	if (!dma_skip_sync(dev))
-> +		__dma_sync_sg_for_device(dev, sg, nelems, dir);
-> +}
-> +
->   static inline void dma_sync_single_range_for_cpu(struct device *dev,
->   		dma_addr_t addr, unsigned long offset, size_t size,
->   		enum dma_data_direction dir)
->   {
-> -	return dma_sync_single_for_cpu(dev, addr + offset, size, dir);
-> +	if (!dma_skip_sync(dev))
-> +		__dma_sync_single_for_cpu(dev, addr + offset, size, dir);
->   }
->   
->   static inline void dma_sync_single_range_for_device(struct device *dev,
->   		dma_addr_t addr, unsigned long offset, size_t size,
->   		enum dma_data_direction dir)
->   {
-> -	return dma_sync_single_for_device(dev, addr + offset, size, dir);
-> +	if (!dma_skip_sync(dev))
-> +		__dma_sync_single_for_device(dev, addr + offset, size, dir);
->   }
-
-These two don't need changing either, since the dma_sync_single_* 
-wrappers have already taken care of it.
-
-Thanks,
-Robin.
+Yes, and I'd like to not have two arena maps because they are logically one=
+.
 
