@@ -1,160 +1,169 @@
-Return-Path: <bpf+bounces-22034-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22035-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3845E85557A
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 23:03:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5DE855659
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 23:52:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4EF028596A
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 22:03:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ED9F1C21EDC
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 22:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18AD14198E;
-	Wed, 14 Feb 2024 22:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14764502D;
+	Wed, 14 Feb 2024 22:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S0lruz5D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ovj9ljpj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F15D13EFE3
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 22:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD905182DF;
+	Wed, 14 Feb 2024 22:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707948182; cv=none; b=r7J0tEWrDHPANDZxPzkQ7wNOCjWSpf7PmXlmHsSQZYsFnXWzvu4zx24zG02gWhyz0aPkeksvcG8HHSOxGgAk59qQCF+ngkuyOTWkCeo5aQ++HiyZ32FPoDL1bxqlXo5RvXMc+uv69/wkZIoPcF+nY2EEejSf8i0dEmvHp3s3xVY=
+	t=1707951126; cv=none; b=cq6y+PWJmRs8pMBPn4O4mNgclVKOQAmbXBS6+SlyKEd1LJho8LthLOgqJ09uP/9ZxGwLU2g3kKk1QnEe/6VXbAd2G1YaolLeaSIcLLMuevIuCATn0rGN/+T+oQzvXYXTA1WxtjUc8Ats1ZFaykSsgCMOUA84GU/9+vdTOalEQuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707948182; c=relaxed/simple;
-	bh=mowh5P/4USMz1hX4Z6lQ+7O67PyHytCTcWCBD3Z33XA=;
+	s=arc-20240116; t=1707951126; c=relaxed/simple;
+	bh=u09PV9YbBb9hMy1rCPxXxP9YHVWOw9esnqZGdmRe0G0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=GG44GcAIimuHf6MDxMuxnz98bi9cKE4siA8DX982f92V+yyempgRnD0k8L0js5QxwMMY6Oun+WTd8pfpbndWFYeUy0tD2qwtQ/1Sq6rTcZgFLr30xP13HHX6caRj2mRthuIaFCrlzvlTLywtiIJCW9G4353z2T5Gt0D7avuOwrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S0lruz5D; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1db61f7ebcbso15525ad.0
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 14:02:59 -0800 (PST)
+	 To:Cc:Content-Type; b=hIGwmB1+TDQie3xur2AKVHnZ08Hsr6W26+W9/KY2apJMk5WXN+1wzoN9uY0mL0YAUx6pA59acLqkugvsTq3gRPEQIfpJLkboA8Sfz3sOSrY6yIqR0GUeGhHTI5WlvLmqXc+cTw22x1eZmfth6N9ac4P7zhUilQY2hXFEuMbWP7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ovj9ljpj; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33934567777so99557f8f.1;
+        Wed, 14 Feb 2024 14:52:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707948179; x=1708552979; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=gmail.com; s=20230601; t=1707951123; x=1708555923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8wYfCtUOcHCknKPxjQLZZJYk5nY9b53cOSCJihn+f7U=;
-        b=S0lruz5DM19Czn95YTg5N1eYWkyGuqgN2rW2k3HLvRXe6vU+6tfgFMul3IRePjVrJB
-         OoMwkuxojD+sa0da/NcMv6PDJdT0TQlmKteQIemHTw+LyrGT5+Sl3c9eTTPqVAolXFH/
-         8uhPAp0qCaR7VYXByn7CSzAJnHhDQmoYfmNectK5EXJDk3LMJNNEEmjJGVGh0bSkwApD
-         I/3Muv8zZfl7AzW0po/OAMSbtdRvFfDa//hUNUiiVTrLdKNAJ4zcXwaFO1tJE//HzRaf
-         xooz8e4hwOET5Bu8Ln8ek9UyAupr4DXplVSz0gOcvHRJ43+MjXPM8eQwz411Kmn3CAnx
-         PKdw==
+        bh=BQ51eSPqqPDCFvp0TDSFvQ80BT6J5ZmQ2kvwhoUpX+E=;
+        b=Ovj9ljpjlH/XyH63Wtu1PqDK21IGBY2ejK62EM0KizPQaW3lVz9CnMla/HuGA5Nd5Y
+         CEGg+OqXpAdQR4W6XSzmDW0MDIMXY40D6V0ZLoF8uv2yPSRAQIhMz/GEOQwzovNl4kV3
+         AjMILDpQ9MT84TEbuwDlaLr3vktXxi5YArn1xQNptKzwWLvIunLHtDuAH9tM9M3i49hg
+         rfCSb5UxyCla9h55+n//kZIXwuSgVhufs6K9biVHjcQikUH/vahQK0zk/sFAqw7mWlAg
+         skHujKnophKMGfhCbNn+Fnb7q5gzg6LphjYkiBYjgrQArMJahJrMfPwosAAyWrGKwEgd
+         CJiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707948179; x=1708552979;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1707951123; x=1708555923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8wYfCtUOcHCknKPxjQLZZJYk5nY9b53cOSCJihn+f7U=;
-        b=AKTg8gu+H/Pqv+CYj+LxGo+RJIIbDpU+HS4cZU846tlTEy59MItx6j4m5f8/bcpzTk
-         p/SLW/rW9Tv92Ji+dwjDzSsB5x0zYn8RJMjfvZmibDnbDOTJJXoiG7Gupjf/GUgbGKzR
-         GhL4VIodqTeGB2hc5xsOSnmXmCN8NZT6PtAFyFexiwZE2Z4fwznr5D00YSlYFmYQoNEL
-         gKRJPeDdbtk/a8N+OM59PIwuLFMGPyh/l/v3rgfAeKRQZmMxh9PntTRkSao1c5S7wUuL
-         IcrxjE0xiHd8y9F21cvq/rbNUJayFtwPFNHugBDz1DX6HAMrh04hgO4EzpBglhcfGB2T
-         akww==
-X-Forwarded-Encrypted: i=1; AJvYcCWd+6rCFYZcsi+pBPnen4GRcxJyhREl+zfXOQeh0X0pVjH45LVOvMMKkRpoFJTGz62EZQ2+ft2QHKjj4xknj/B/fEc+
-X-Gm-Message-State: AOJu0Yy1h5e5rrFDwSb0jdzHchlBNee8BiSCfs3Xg57JpOrrln4Drh4i
-	dY+fYrCRQGNgH54EIvefA+9SvyfvvItgMgvegVgZ1zinP/mHYzx495YSW3Dq80/LaPmEMdtFOQt
-	fS6yPiqyIs5RftFVBeLJkg68TebJQxwNvZjtM
-X-Google-Smtp-Source: AGHT+IH8fTyTH+/fM9kh+waGifLqVnENEU1P+zY6NsEz1lp6qycSifgB+8s/ccRmemr7gEoPy9nvbyQJ7zrcjZ+apN0=
-X-Received: by 2002:a17:903:2053:b0:1da:292b:cf94 with SMTP id
- q19-20020a170903205300b001da292bcf94mr405169pla.4.1707948179247; Wed, 14 Feb
- 2024 14:02:59 -0800 (PST)
+        bh=BQ51eSPqqPDCFvp0TDSFvQ80BT6J5ZmQ2kvwhoUpX+E=;
+        b=m4zZ8dklX0eYNZWTPryzgH6Rsdt4mVCM6n6zFxaskP+vipKxzr/RJ5Jj1bGn+dc+IK
+         d8DIkQM6uBDqnjdh9ay/0ab4QadA/6+fUvuMUBEAapmx6Cdq3ycGI8eCDgb0RB8oiAx2
+         /P/XzRy/GyAiQx2xZMsk2oSIrz00hORFvxOgJScBiVQd4wJ1l9TkNcnPlLJ27cM4QZAB
+         cXTxSLR61DFBcjd0NhvPd2lHfkN4yyhhcVNUeSTmwN28aoXapKrkyQp4J5nNPussQhc7
+         21Wm+u2SOv+D3enEhJVUaBtOzmmd5sa1yz21hwfshCjB/+5zTs7VOxP/ezoEUCOJDNmk
+         iZpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPmTyc+8VF8mKN7+L06udbh/ER0/t/5iU0PD0WbpP/QEfD3IpCePKQPMha5axW1VVfEAwJds4jyfZHu48+Zhha9tCMwJzba5uEYLJLtyhoZg8oxBbmo1naK6BIMjA0ekSH
+X-Gm-Message-State: AOJu0Yy27dAnNCKudfsN5NTHEelHa/5L1CdX36EgbNua6ELHGHUfywos
+	Gfxnn69KrwKEqgk7RZleCqBr6JGEDg7hx3+D8W/0uaDvoUQZ0zdy316mJITkQS6misE2iH1ZH1F
+	Rg1XhnYulFqr35aZe5wJ88Xo27Ck=
+X-Google-Smtp-Source: AGHT+IHnlQU4HFey720O/neAbzq4u7yDtbjLSoM696QDkEhKyq8MSwDD9Js+9A6XtBi9LShYLh/3FPdKitff8sbQV/A=
+X-Received: by 2002:adf:eec5:0:b0:33b:74a3:dcfe with SMTP id
+ a5-20020adfeec5000000b0033b74a3dcfemr25991wrp.14.1707951122714; Wed, 14 Feb
+ 2024 14:52:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202234057.2085863-1-irogers@google.com>
-In-Reply-To: <20240202234057.2085863-1-irogers@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 14 Feb 2024 14:02:44 -0800
-Message-ID: <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
-	Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>, 
-	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
-	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+References: <20240202103935.3154011-1-houtao@huaweicloud.com>
+ <20240202103935.3154011-3-houtao@huaweicloud.com> <eacdea9b-4d4c-4833-b7a4-ac0b042c9efa@intel.com>
+In-Reply-To: <eacdea9b-4d4c-4833-b7a4-ac0b042c9efa@intel.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 14 Feb 2024 14:51:51 -0800
+Message-ID: <CAADnVQK8avOCKuqE2g__WOKzTKCAqdphxjncvXuEQ801g8jf-g@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 2/3] x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+To: Sohil Mehta <sohil.mehta@intel.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Hou Tao <houtao@huaweicloud.com>, X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	"H . Peter Anvin" <hpa@zytor.com>, LKML <linux-kernel@vger.kernel.org>, 
+	xingwei lee <xrivendell7@gmail.com>, Jann Horn <jannh@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
+On Fri, Feb 2, 2024 at 11:03=E2=80=AFAM Sohil Mehta <sohil.mehta@intel.com>=
+ wrote:
 >
-> Rename and clean up the use of libperf CPU map functions particularly
-> focussing on perf_cpu_map__empty that may return true for maps
-> containing CPUs but also with an "any CPU"/dummy value.
->
-> perf_cpu_map__nr is also troubling in that iterating an empty CPU map
-> will yield the "any CPU"/dummy value. Reduce the appearance of some
-> calls to this by using the perf_cpu_map__for_each_cpu macro.
->
-> v3: Address handling of "any" is arm-spe/cs-etm patch.
-> v2: 6 patches were merged by Arnaldo. New patch added ensure empty
->     maps are allocated as NULL (suggested by James Clark). Hopefully a
->     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
->
-> Ian Rogers (8):
->   libperf cpumap: Add any, empty and min helpers
->   libperf cpumap: Ensure empty cpumap is NULL from alloc
->   perf arm-spe/cs-etm: Directly iterate CPU maps
->   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_empty
->     use
->   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
->   perf arm64 header: Remove unnecessary CPU map get and put
->   perf stat: Remove duplicate cpus_map_matched function
->   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
+> On 2/2/2024 2:39 AM, Hou Tao wrote:
+> > From: Hou Tao <houtao1@huawei.com>
+> >
+> > When trying to use copy_from_kernel_nofault() to read vsyscall page
+> > through a bpf program, the following oops was reported:
+> >
+> >   BUG: unable to handle page fault for address: ffffffffff600000
+> >   #PF: supervisor read access in kernel mode
+> >   #PF: error_code(0x0000) - not-present page
+> >   PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
+> >   Oops: 0000 [#1] PREEMPT SMP PTI
+> >   CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
+> >   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+> >   RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
+> >   ......
+> >   Call Trace:
+> >    <TASK>
+> >    ? copy_from_kernel_nofault+0x6f/0x110
+> >    bpf_probe_read_kernel+0x1d/0x50
+> >    bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
+> >    trace_call_bpf+0xc5/0x1c0
+> >    perf_call_bpf_enter.isra.0+0x69/0xb0
+> >    perf_syscall_enter+0x13e/0x200
+> >    syscall_trace_enter+0x188/0x1c0
+> >    do_syscall_64+0xb5/0xe0
+> >    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >    </TASK>
+> >   ......
+> >   ---[ end trace 0000000000000000 ]---
+> >
+> > The oops is triggered when:
+> >
+> > 1) A bpf program uses bpf_probe_read_kernel() to read from the vsyscall
+> > page and invokes copy_from_kernel_nofault() which in turn calls
+> > __get_user_asm().
+> >
+> > 2) Because the vsyscall page address is not readable from kernel space,
+> > a page fault exception is triggered accordingly.
+> >
+> > 3) handle_page_fault() considers the vsyscall page address as a user
+> > space address instead of a kernel space address. This results in the
+> > fix-up setup by bpf not being applied and a page_fault_oops() is invoke=
+d
+> > due to SMAP.
+> >
+> > Considering handle_page_fault() has already considered the vsyscall pag=
+e
+> > address as a userspace address, fix the problem by disallowing vsyscall
+> > page read for copy_from_kernel_nofault().
+> >
+> > Originally-by: Thomas Gleixner <tglx@linutronix.de>
 
-Ping. Thanks,
-Ian
+Thomas,
 
->  tools/lib/perf/cpumap.c                       |  33 ++++-
->  tools/lib/perf/include/perf/cpumap.h          |  16 +++
->  tools/lib/perf/libperf.map                    |   4 +
->  tools/perf/arch/arm/util/cs-etm.c             | 114 ++++++++----------
->  tools/perf/arch/arm64/util/arm-spe.c          |   4 +-
->  tools/perf/arch/arm64/util/header.c           |  13 +-
->  tools/perf/arch/x86/util/intel-bts.c          |   4 +-
->  tools/perf/arch/x86/util/intel-pt.c           |  10 +-
->  tools/perf/builtin-c2c.c                      |   6 +-
->  tools/perf/builtin-stat.c                     |  31 +----
->  tools/perf/tests/bitmap.c                     |  13 +-
->  tools/perf/tests/topology.c                   |  46 +++----
->  tools/perf/util/auxtrace.c                    |   4 +-
->  tools/perf/util/bpf_kwork.c                   |  16 +--
->  tools/perf/util/bpf_kwork_top.c               |  12 +-
->  tools/perf/util/cpumap.c                      |  12 +-
->  tools/perf/util/record.c                      |   2 +-
->  .../scripting-engines/trace-event-python.c    |  12 +-
->  tools/perf/util/session.c                     |   5 +-
->  tools/perf/util/stat.c                        |   2 +-
->  tools/perf/util/svghelper.c                   |  20 ++-
->  21 files changed, 192 insertions(+), 187 deletions(-)
+could you please Ack the patch if you're still ok with it,
+so we can take through the bpf tree to Linus soon ?
+
+Not only syzbot, but real users are hitting this bug.
+
+Thanks!
+
+> > Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/bpf/CAG48ez06TZft=3DATH1qh2c5mpS5BT8Uak=
+wNkzi6nvK5_djC-4Nw@mail.gmail.com
+> > Reported-by: xingwei lee <xrivendell7@gmail.com>
+> > Closes: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsji=
+W+UWLoB=3Dw33LvScw@mail.gmail.com
+> > Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > ---
+> >  arch/x86/mm/maccess.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
 >
-> --
-> 2.43.0.594.gd9cf4e227d-goog
+> Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
 >
 
