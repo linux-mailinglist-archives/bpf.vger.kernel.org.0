@@ -1,270 +1,255 @@
-Return-Path: <bpf+bounces-22038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E05985571F
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 00:17:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2FB85574A
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 00:30:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 225C6B26A4B
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 23:17:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D06F21C21A61
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 23:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6EC1419B5;
-	Wed, 14 Feb 2024 23:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L+ytmsQa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B971419AC;
+	Wed, 14 Feb 2024 23:30:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E32613DB90
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 23:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2912A1DDD7
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 23:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707952616; cv=none; b=V+hDmiBu2DKMvqfB6IbCqlbynMEb4lJbF/k9tmzbkew3FCrW+yMO73S4K60on8TMt73ntVZJcV3DYrSJfEm3OyoJiYa7a5NsoreFnRItS47jRyw9MhaILAnCNwebLnJ0ox4H3M5W5PRiPcB+iXANuV5JYf2RoohLsBSNKEu1C8U=
+	t=1707953408; cv=none; b=pQGDt+kfmBhENp9L5ev8JF88AgdkwfLUjutGugYGZ9eAyj4wzW8Dvt7dzN+v3EA4GTeS/yJYehbcmIHDVlauJczVWDITMaOsR7NIEIxfPMJUJQLe+5T2LDOZmMOWPyQlBuhEY7u9Yhru8lPAQduVwe9IOPwqaUJMNuDA27nzsJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707952616; c=relaxed/simple;
-	bh=KW+j5odgQuaXeYXyptUHgKBbzh6bV1ieB1xe957iW0U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jk3PX0fGerZOkM5+NSM6SSL2lvZ9m+HwCRJ7NjkgGdWypnKjC6DeE/dps4p/B8uAVi/T3dZWcr55a5GZFHjFItDkD/bIPUemsVeqfbDdheA3mQek3jV3rJcTlRTrxECbQtjdM53Kcm4TBxtP5xyc4ommPT1BCmplVW3Vc9KCNGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L+ytmsQa; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33b189ae5e8so90910f8f.2
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 15:16:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707952612; x=1708557412; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YjOyJV1dbBaznI3qMs9e4Zg02vzVwxdPSugvt//oIXw=;
-        b=L+ytmsQap/BmjEOVuS66gLj7K4dLfvGexH+pgI7j7mmu1YOKGWAxcbdOr7fUac0d9C
-         iAEl5cw2brBjx3OwlPxgnCzTnVoTfyiqt+jV19Tp+RR5Kafzx83T1la5PU+YGKaPBLgG
-         ucDfRIi+f7+eUoVFsVJ2LVkvrP5xTRZd44o7YtBSepkmMXITWPF2/nZhL/+I5Dd9Z2zA
-         k7HKdXD1oQYTFJv1r68Devef5d+PgWmv/EwYiQTnJ0BvFLjWghcULnOQMvXHKMwfVdZq
-         BIn7Bf6tHAiFycLe0+LgIz4mRyK/xGh3cCy9fCNCgSoAm6ZdV2r0M/XaQxBVI/uiDurq
-         bwtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707952612; x=1708557412;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YjOyJV1dbBaznI3qMs9e4Zg02vzVwxdPSugvt//oIXw=;
-        b=rZnqP8Kkm6nTIizxEINx6VBayhHHCw8WJH2R2zu+7q2bs+vtuqTN170cvyzgbGtcRt
-         XgWWqTcAaSDkEeXJWFmHQdKSdrYZ0x3pYi8WSjGZY9cbs1zk/R8R+84TzfKlyQDpq1IT
-         EQ0sCyeNvzu8kNsa6D0ElO8euwv0R1fZgY2kdocJhSd01Qdl/3rTigIwTmcBTbMCuhxl
-         cx01HkJ66GMQKWzT4g47Xscb6DzRfZqUuVNsz96J5uTCunVLa1xdrpsnGnOyB7TsUjb4
-         zP5NMJSuTQBhEDxICPEydz+5CeVUNL0aYyCQd6M1klSDRvX8Si+vCql20Mv2meYtRRRB
-         yfOA==
-X-Gm-Message-State: AOJu0YyUIYm5ikpDKHrbFM1K395vu3j4QNID0AtbrCoxl8EtHJK6CAN0
-	OUfqK07qzO5RC6Wg872HbjdJ4sRXInlyfD46JINZb/4dC77GrWsU5z6B0xhPsJJLVmGdiRKXFHp
-	RHQ9YZa2Pwagci8cIFzvCwS9EdMs=
-X-Google-Smtp-Source: AGHT+IFcHPyPS1v/R118H03hNER8jp1pYmhONAbdQbRiP0D+6NjIDKD6QfKxs3jYNTzNTH5mceJwVU/bff4/pzg+3pM=
-X-Received: by 2002:a5d:430d:0:b0:33b:65b3:e51b with SMTP id
- h13-20020a5d430d000000b0033b65b3e51bmr63327wrq.48.1707952612379; Wed, 14 Feb
- 2024 15:16:52 -0800 (PST)
+	s=arc-20240116; t=1707953408; c=relaxed/simple;
+	bh=pxDHzXWJmDGVGOvrXZ/R9rO7lIRxGd+YfzpLHOoAQko=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PTvvaeZiZ3vJVVOJBO1/EC0WcVeE2xBdoEtG7BzZXMr0PfNWzaiqNmfGvSH9dRUHhnh3ezK6sgy2cWKynBaG0rBX72r/vhQv3tf1nLruZ8q5nKOQ0c9nBdhMZRkLctJbYgEOT56AQNyOfVfCT5GsCEBGA9ayqUNx5pveeJSfQNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 7D5546490FF; Wed, 14 Feb 2024 15:29:51 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v4] bpf: Fix test verif_scale_strobemeta_subprogs failure due to llvm19
+Date: Wed, 14 Feb 2024 15:29:51 -0800
+Message-Id: <20240214232951.4113094-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104142226.87869-1-hffilwlqm@gmail.com> <20240104142226.87869-3-hffilwlqm@gmail.com>
- <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com> <7af3f9c6-d25a-4ca5-9e15-c1699adcf7ab@gmail.com>
-In-Reply-To: <7af3f9c6-d25a-4ca5-9e15-c1699adcf7ab@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 14 Feb 2024 15:16:41 -0800
-Message-ID: <CAADnVQLOswL3BY1s0B28wRZH1PU675S6_2=XknjZKNgyJ=yDxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
-To: Leon Hwang <hffilwlqm@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 9:47=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
-ote:
->
->
->
-> On 2024/1/5 12:15, Alexei Starovoitov wrote:
-> > On Thu, Jan 4, 2024 at 6:23=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com>=
- wrote:
-> >>
-> >>
-> >
-> > Other alternatives?
->
-> I've finish the POC of an alternative, which passed all tailcall
-> selftests including these tailcall hierarchy ones.
->
-> In this alternative, I use a new bpf_prog_run_ctx to wrap the original
-> ctx and the tcc_ptr, then get the tcc_ptr and recover the original ctx
-> in JIT.
->
-> Then, to avoid breaking runtime with tailcall on other arch, I add an
-> arch-related check bpf_jit_supports_tail_call_cnt_ptr() to determin
-> whether to use bpf_prog_run_ctx.
->
-> Here's the diff:
->
->  diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 4065bdcc5b2a4..56cea2676863e 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -259,7 +259,7 @@ struct jit_context {
->  /* Number of bytes emit_patch() needs to generate instructions */
->  #define X86_PATCH_SIZE         5
->  /* Number of bytes that will be skipped on tailcall */
-> -#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
-> +#define X86_TAIL_CALL_OFFSET   (16 + ENDBR_INSN_SIZE)
->
->  static void push_r12(u8 **pprog)
->  {
-> @@ -407,21 +407,19 @@ static void emit_prologue(u8 **pprog, u32
-> stack_depth, bool ebpf_from_cbpf,
->         emit_nops(&prog, X86_PATCH_SIZE);
->         if (!ebpf_from_cbpf) {
->                 if (tail_call_reachable && !is_subprog) {
-> -                       /* When it's the entry of the whole tailcall cont=
-ext,
-> -                        * zeroing rax means initialising tail_call_cnt.
-> -                        */
-> -                       EMIT2(0x31, 0xC0);       /* xor eax, eax */
-> -                       EMIT1(0x50);             /* push rax */
-> -                       /* Make rax as ptr that points to tail_call_cnt. =
-*/
-> -                       EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
-> -                       EMIT1_off32(0xE8, 2);    /* call main prog */
-> -                       EMIT1(0x59);             /* pop rcx, get rid of t=
-ail_call_cnt */
-> -                       EMIT1(0xC3);             /* ret */
-> +                       /* Make rax as tcc_ptr. */
-> +                       EMIT4(0x48, 0x8B, 0x47, 0x08); /* mov rax, qword =
-ptr [rdi + 8] */
->                 } else {
-> -                       /* Keep the same instruction size. */
-> -                       emit_nops(&prog, 13);
-> +                       /* Keep the same instruction layout. */
-> +                       emit_nops(&prog, 4);
->                 }
->         }
-> +       if (!is_subprog)
-> +               /* Recover the original ctx. */
-> +               EMIT3(0x48, 0x8B, 0x3F); /* mov rdi, qword ptr [rdi] */
-> +       else
-> +               /* Keep the same instruction layout. */
-> +               emit_nops(&prog, 3);
->         /* Exception callback receives FP as third parameter */
->         if (is_exception_cb) {
->                 EMIT3(0x48, 0x89, 0xF4); /* mov rsp, rsi */
-> @@ -3152,6 +3150,12 @@ bool bpf_jit_supports_subprog_tailcalls(void)
->         return true;
->  }
->
-> +/* Indicate the JIT backend supports tail call count pointer in
-> tailcall context. */
-> +bool bpf_jit_supports_tail_call_cnt_ptr(void)
-> +{
-> +       return true;
-> +}
-> +
->  void bpf_jit_free(struct bpf_prog *prog)
->  {
->         if (prog->jited) {
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 7671530d6e4e0..fea4326c27d31 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1919,6 +1919,11 @@ int bpf_prog_array_copy(struct bpf_prog_array
-> *old_array,
->                         u64 bpf_cookie,
->                         struct bpf_prog_array **new_array);
->
-> +struct bpf_prog_run_ctx {
-> +       const void *ctx;
-> +       u32 *tail_call_cnt;
-> +};
-> +
->  struct bpf_run_ctx {};
->
->  struct bpf_cg_run_ctx {
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 68fb6c8142fec..c1c035c44b4ab 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -629,6 +629,10 @@ typedef unsigned int (*bpf_dispatcher_fn)(const
-> void *ctx,
->                                           unsigned int (*bpf_func)(const =
-void *,
->                                                                    const =
-struct bpf_insn *));
->
-> +static __always_inline u32 __bpf_prog_run_dfunc(const struct bpf_prog
-> *prog,
-> +                                               const void *ctx,
-> +                                               bpf_dispatcher_fn dfunc);
-> +
->  static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
->                                           const void *ctx,
->                                           bpf_dispatcher_fn dfunc)
-> @@ -641,14 +645,14 @@ static __always_inline u32 __bpf_prog_run(const
-> struct bpf_prog *prog,
->                 u64 start =3D sched_clock();
->                 unsigned long flags;
->
-> -               ret =3D dfunc(ctx, prog->insnsi, prog->bpf_func);
-> +               ret =3D __bpf_prog_run_dfunc(prog, ctx, dfunc);
->                 stats =3D this_cpu_ptr(prog->stats);
->                 flags =3D u64_stats_update_begin_irqsave(&stats->syncp);
->                 u64_stats_inc(&stats->cnt);
->                 u64_stats_add(&stats->nsecs, sched_clock() - start);
->                 u64_stats_update_end_irqrestore(&stats->syncp, flags);
->         } else {
-> -               ret =3D dfunc(ctx, prog->insnsi, prog->bpf_func);
-> +               ret =3D __bpf_prog_run_dfunc(prog, ctx, dfunc);
->         }
->         return ret;
->  }
-> @@ -952,12 +956,31 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> bpf_prog *prog);
->  void bpf_jit_compile(struct bpf_prog *prog);
->  bool bpf_jit_needs_zext(void);
->  bool bpf_jit_supports_subprog_tailcalls(void);
-> +bool bpf_jit_supports_tail_call_cnt_ptr(void);
->  bool bpf_jit_supports_kfunc_call(void);
->  bool bpf_jit_supports_far_kfunc_call(void);
->  bool bpf_jit_supports_exceptions(void);
->  void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64
-> sp, u64 bp), void *cookie);
->  bool bpf_helper_changes_pkt_data(void *func);
->
-> +static __always_inline u32 __bpf_prog_run_dfunc(const struct bpf_prog
-> *prog,
-> +                                               const void *ctx,
-> +                                               bpf_dispatcher_fn dfunc)
-> +{
-> +       struct bpf_prog_run_ctx run_ctx =3D {};
-> +       u32 ret, tcc =3D 0;
-> +
-> +       run_ctx.ctx =3D ctx;
-> +       run_ctx.tail_call_cnt =3D &tcc;
-> +
-> +       if (bpf_jit_supports_tail_call_cnt_ptr() && prog->jited)
-> +               ret =3D dfunc(&run_ctx, prog->insnsi, prog->bpf_func);
-> +       else
-> +               ret =3D dfunc(ctx, prog->insnsi, prog->bpf_func);
+With latest llvm19, I hit the following selftest failures with
 
-This is no good either.
-We cannot introduce two extra run-time checks before calling every bpf prog=
-.
-The solution must be overhead free for common cases.
+  $ ./test_progs -j
+  libbpf: prog 'on_event': BPF program load failed: Permission denied
+  libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+  combined stack size of 4 calls is 544. Too large
+  verification time 1344153 usec
+  stack depth 24+440+0+32
+  processed 51008 insns (limit 1000000) max_states_per_insn 19 total_stat=
+es 1467 peak_states 303 mark_read 146
+  -- END PROG LOAD LOG --
+  libbpf: prog 'on_event': failed to load: -13
+  libbpf: failed to load object 'strobemeta_subprogs.bpf.o'
+  scale_test:FAIL:expect_success unexpected error: -13 (errno 13)
+  #498     verif_scale_strobemeta_subprogs:FAIL
 
-Can we switch to percpu tail_call_cnt instead of on stack and %rax tricks ?
+The verifier complains too big of the combined stack size (544 bytes) whi=
+ch
+exceeds the maximum stack limit 512. This is a regression from llvm19 ([1=
+]).
 
-If that won't work, then we'd have to disable tail_calls from subprogs
-in the verifier.
+In the above error log, the original stack depth is 24+440+0+32.
+To satisfy interpreter's need, in verifier the stack depth is adjusted to
+32+448+32+32=3D544 which exceeds 512, hence the error. The same adjusted
+stack size is also used for jit case.
+
+But the jitted codes could use smaller stack size.
+
+  $ egrep -r stack_depth | grep round_up
+  arm64/net/bpf_jit_comp.c:       ctx->stack_size =3D round_up(prog->aux-=
+>stack_depth, 16);
+  loongarch/net/bpf_jit.c:        bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+  powerpc/net/bpf_jit_comp.c:     cgctx.stack_size =3D round_up(fp->aux->=
+stack_depth, 16);
+  riscv/net/bpf_jit_comp32.c:             round_up(ctx->prog->aux->stack_=
+depth, STACK_ALIGN);
+  riscv/net/bpf_jit_comp64.c:     bpf_stack_adjust =3D round_up(ctx->prog=
+->aux->stack_depth, 16);
+  s390/net/bpf_jit_comp.c:        u32 stack_depth =3D round_up(fp->aux->s=
+tack_depth, 8);
+  sparc/net/bpf_jit_comp_64.c:            stack_needed +=3D round_up(stac=
+k_depth, 16);
+  x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xEC, round_up(=
+stack_depth, 8));
+  x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+  x86/net/bpf_jit_comp.c:                     round_up(stack_depth, 8));
+  x86/net/bpf_jit_comp.c: int tcc_off =3D -4 - round_up(stack_depth, 8);
+  x86/net/bpf_jit_comp.c:         EMIT3_off32(0x48, 0x81, 0xC4, round_up(=
+stack_depth, 8));
+
+In the above, STACK_ALIGN in riscv/net/bpf_jit_comp32.c is defined as 16.
+So stack is aligned in either 8 or 16, x86/s390 having 8-byte stack align=
+ment and
+the rest having 16-byte alignment.
+
+This patch calculates total stack depth based on 16-byte alignment if jit=
+ is requested.
+For the above failing case, the new stack size will be 32+448+0+32=3D512 =
+and no verification
+failure. llvm19 regression will be discussed separately in llvm upstream.
+
+The verifier change caused three test failures as these tests compared me=
+ssages
+with stack size. More specifically,
+  - test_global_funcs/global_func1: fail with interpreter mode and succes=
+s with jit mode.
+    Adjusted stack sizes so both jit and interpreter modes will fail.
+  - async_stack_depth/{pseudo_call_check, async_call_root_check}: since j=
+it and interpreter
+    will calculate different stack sizes, the failure msg is adjusted to =
+omit those
+    specific stack size numbers.
+
+  [1] https://lore.kernel.org/bpf/32bde0f0-1881-46c9-931a-673be566c61d@li=
+nux.dev/
+
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/verifier.c                          | 18 +++++++++++++-----
+ .../selftests/bpf/progs/async_stack_depth.c    |  4 ++--
+ .../selftests/bpf/progs/test_global_func1.c    |  8 ++++++--
+ 3 files changed, 21 insertions(+), 9 deletions(-)
+
+Changelogs:
+  v3 -> v4:
+    - make a change in test_global_funcs/global_func1 so both interpreter=
+ and
+      jit modes failed the test.
+  v2 -> v3:
+    - fix async_stack_depth test failure if jit is turned off
+  v1 -> v2:
+    - fix some selftest failures
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index aa192dc735a9..011d54a1dc53 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5812,6 +5812,17 @@ static int check_ptr_alignment(struct bpf_verifier=
+_env *env,
+ 					   strict);
+ }
+=20
++static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
+depth)
++{
++	if (env->prog->jit_requested)
++		return round_up(stack_depth, 16);
++
++	/* round up to 32-bytes, since this is granularity
++	 * of interpreter stack size
++	 */
++	return round_up(max_t(u32, stack_depth, 1), 32);
++}
++
+ /* starting from main bpf function walk all instructions of the function
+  * and recursively walk all callees that given function can call.
+  * Ignore jump and exit insns.
+@@ -5855,10 +5866,7 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx)
+ 			depth);
+ 		return -EACCES;
+ 	}
+-	/* round up to 32-bytes, since this is granularity
+-	 * of interpreter stack size
+-	 */
+-	depth +=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
++	depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+ 	if (depth > MAX_BPF_STACK) {
+ 		verbose(env, "combined stack size of %d calls is %d. Too large\n",
+ 			frame + 1, depth);
+@@ -5952,7 +5960,7 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx)
+ 	 */
+ 	if (frame =3D=3D 0)
+ 		return 0;
+-	depth -=3D round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
++	depth -=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+ 	frame--;
+ 	i =3D ret_insn[frame];
+ 	idx =3D ret_prog[frame];
+diff --git a/tools/testing/selftests/bpf/progs/async_stack_depth.c b/tool=
+s/testing/selftests/bpf/progs/async_stack_depth.c
+index 3517c0e01206..36734683acbd 100644
+--- a/tools/testing/selftests/bpf/progs/async_stack_depth.c
++++ b/tools/testing/selftests/bpf/progs/async_stack_depth.c
+@@ -30,7 +30,7 @@ static int bad_timer_cb(void *map, int *key, struct bpf=
+_timer *timer)
+ }
+=20
+ SEC("tc")
+-__failure __msg("combined stack size of 2 calls is 576. Too large")
++__failure __msg("combined stack size of 2 calls is")
+ int pseudo_call_check(struct __sk_buff *ctx)
+ {
+ 	struct hmap_elem *elem;
+@@ -45,7 +45,7 @@ int pseudo_call_check(struct __sk_buff *ctx)
+ }
+=20
+ SEC("tc")
+-__failure __msg("combined stack size of 2 calls is 608. Too large")
++__failure __msg("combined stack size of 2 calls is")
+ int async_call_root_check(struct __sk_buff *ctx)
+ {
+ 	struct hmap_elem *elem;
+diff --git a/tools/testing/selftests/bpf/progs/test_global_func1.c b/tool=
+s/testing/selftests/bpf/progs/test_global_func1.c
+index 17a9f59bf5f3..fc69ff18880d 100644
+--- a/tools/testing/selftests/bpf/progs/test_global_func1.c
++++ b/tools/testing/selftests/bpf/progs/test_global_func1.c
+@@ -5,7 +5,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+=20
+-#define MAX_STACK (512 - 3 * 32 + 8)
++#define MAX_STACK 260
+=20
+ static __attribute__ ((noinline))
+ int f0(int var, struct __sk_buff *skb)
+@@ -30,6 +30,10 @@ int f3(int, struct __sk_buff *skb, int);
+ __attribute__ ((noinline))
+ int f2(int val, struct __sk_buff *skb)
+ {
++	volatile char buf[MAX_STACK] =3D {};
++
++	__sink(buf[MAX_STACK - 1]);
++
+ 	return f1(skb) + f3(val, skb, 1);
+ }
+=20
+@@ -44,7 +48,7 @@ int f3(int val, struct __sk_buff *skb, int var)
+ }
+=20
+ SEC("tc")
+-__failure __msg("combined stack size of 4 calls is 544")
++__failure __msg("combined stack size of 3 calls is")
+ int global_func1(struct __sk_buff *skb)
+ {
+ 	return f0(1, skb) + f1(skb) + f2(2, skb) + f3(3, skb, 4);
+--=20
+2.39.3
+
 
