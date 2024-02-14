@@ -1,211 +1,153 @@
-Return-Path: <bpf+bounces-21978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33309854DB4
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:09:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1EC4854DC4
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 17:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE8E41F20FDD
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:08:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F45F285CDE
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A545FDD5;
-	Wed, 14 Feb 2024 16:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDDA5FF04;
+	Wed, 14 Feb 2024 16:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HmyQlMG4"
+	dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b="Tpv+90Ek";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dxhMlzuH"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from wflow1-smtp.messagingengine.com (wflow1-smtp.messagingengine.com [64.147.123.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284F95F871
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 16:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB51A5D756;
+	Wed, 14 Feb 2024 16:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926931; cv=none; b=cwn4gPTxSOAgVcOaxMWocK6NRJH4fPd39c2JhqgnOXxYQLmuWVbR759CwwuDw22ZfdRfyYY2it0sRS/LuoM+pZfbTOJ6eYdmqwC9xA42FOdu4Q8R8i0uHMr1v/Vl1Obs/oRIuXwUS9mtjUZqiEmwSQVCiJwT2CuhOqO+eg1fOfs=
+	t=1707927058; cv=none; b=J4NwiRUL7uljVrOjr2pNw0m+z166+bZPsJnrV/OOR+vM0Udch+OUgGOPf1TGfqdx4CwULHm7MtScKoH6C4Q63Ntk4nhuHTGjDUvyvMUrtHr0Hg1XC3R2Gm4rrGsdnG55rP21dgR07U1CPN5G8MBl/fUk+Uxiei+PCJcxnRe9xMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926931; c=relaxed/simple;
-	bh=pYQ6m2g2xB9FiGc7fUVB9aFo+2SuHOv/Hk+omg8ZnFM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nF4LtzrDiOOb9fh9XDZdfNnBamMEO5xZHKAcR2xRnofdxvsrw4zGphHaf9DF2vK+sPgZvcMWZt7POxtQ/tGvTYUPvGi2/PrLC68BquQXbxMACVn7NkXwUUkP+rOso55Oyotu7AujhNFnm98AqaZnldava5bEbHy3a/ZFAB/xjFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HmyQlMG4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707926929;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LFkYGBKgoKWvAKwSi8jHrZTu6gO8Ejnv8YkRpe/tU0c=;
-	b=HmyQlMG4Mg2euSZzRaMxSymTDdqYJWP3RFfQCeX0oHf4Q5GUhg5vNzjpXr5t/VOsruq5aJ
-	Hrbv7/DFS1voaEYrH9J0q5hlraCtwieHW7/1vbQ/ZYsW1U9ZPPyhH/erZRr4BrAFF6+dqa
-	avLGC0dSiqvY+kpVwKECFJpNaKW2rnY=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-313-lpyk96cENSqszTyGprdVHg-1; Wed, 14 Feb 2024 11:08:47 -0500
-X-MC-Unique: lpyk96cENSqszTyGprdVHg-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-56261857d31so500673a12.2
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 08:08:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707926926; x=1708531726;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LFkYGBKgoKWvAKwSi8jHrZTu6gO8Ejnv8YkRpe/tU0c=;
-        b=Ko2b8QI+l3YyV1wz3w7RfeR+/34sDIoaVQYBfTRPN44iwRyggzMsBthRCZdkp7fMVX
-         z7vJym8svex87gEY5M5AkddnALylvH59AWXoaV52Ap0elA5mbfu6v6iYEOZwr47vEfkl
-         DdRFLNwnaV3scF7oPJPyZf6X4HMXrSuDc/4JaONF4psGKYRHS0KYFYkXDEtTW+8MtNMY
-         V1Lt3WWv+XWUvUXnKvg8BDsg/yFiXcYsyCm+h35ZTd0i7YzBlRiUGLyGNgt6kU7OwlTt
-         0LgryBH6aod2lD5UcviojQ3NGujU9/wKKXKUE+MwBpBjkBFom8ZJ2+3O+nlAPFUDjHnp
-         VZdw==
-X-Forwarded-Encrypted: i=1; AJvYcCXIkashLe8gz8oKlIIKD57IS9v7iBTys2KdKNFxk88h7iaa3/YXw5m2o4P5/pPlX7kVLZw7z7i+eEbibprRM3Ao09nl
-X-Gm-Message-State: AOJu0Ywbg2FB2kV+rACm97vsQEmRb5Qtbu9NlZB0XbYkNWmd0c+9XSM4
-	nPH3oisG4KFzDseWu/OpxiVPl52Rtr6eHk8RJSXXbdeRXfdlZkU7X3CceQY+iWiIQCdLQa1MB68
-	GfOGQNE9pwr7gqCJiYxxCguxo6eWi2Lkihq1KXVd+eppIAwUM3A==
-X-Received: by 2002:a50:fb02:0:b0:561:f645:aa88 with SMTP id d2-20020a50fb02000000b00561f645aa88mr2658744edq.39.1707926926001;
-        Wed, 14 Feb 2024 08:08:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGqMJkRFF7ruKRiTmj9Ex1FZJe+wFMrOrs0QX5Gp+kJGSeSOkxFT4Pppctp781Lc1jKhcoC/g==
-X-Received: by 2002:a50:fb02:0:b0:561:f645:aa88 with SMTP id d2-20020a50fb02000000b00561f645aa88mr2658717edq.39.1707926925681;
-        Wed, 14 Feb 2024 08:08:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXhv+05WW9Uc2W8dgxJoZ9zYI2AMvlYhkyzz+2EZWmq7YKUCFlI4VZayvObHgvKf/5ly5iMrX+26uECqTzxXMNj7vHnUD9j9Vb8BLhrfxnqPeMV/tdvEE5PAe/3MhX0YRlS2Kkp9pdU2tVxkXw7cvWrwEQGRH50jucZeSyD5O1VREfFZ/0rH0jsfXhFRzcsXZ+iQq+HzKTba0UYL6Unj9BkZEB6U1xoxQV0AMs3WVoJp8NFy7BAcXVuQeVghGOsQE4gjzDs7Tysv3rOPukyzsh7AdVqlKkjLElry+1JJAqTBj4uFaM84yH64fZedec8j50DKpYB8BsQ9uupX27KYlWhZRXgX8emfQEU0l0NcTsjZi/F6CN8qCB80thiJ0Twjfox1+i8UPXqJgKzHYLllAwiAdA26OBZJh2C01HSrCwhzRojtMXFtM3FWjfX6bunVNWTSsRwjEG+p2P/JY/me0TarTwvuCIZQWpu9SxgK7mCG88tgbPilko/N5pvNEUiDR2uptiH6MFEeEPcTPIg26QVmenO2d2uUPdjQKA4qsDTldmrunb241dNZEtBO42PS6nVmGhpbuPh61nBx/b7smATRhzicWQKMGCr1OMi+Rr5ocU5QdoJ/A5jFVEd2Bua6yRyC9KwRsp3RuznoQy+QuB5V5a/qm9O7aV2g3lVcYEhujgtOmhgR3HtyIigR+Qs6ZenDKl0
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id x21-20020aa7d395000000b0056166a5ee75sm4699065edq.30.2024.02.14.08.08.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 08:08:45 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id A167A10F57E5; Wed, 14 Feb 2024 17:08:44 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eric
- Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Thomas
- Gleixner <tglx@linutronix.de>, Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-In-Reply-To: <20240214142827.3vV2WhIA@linutronix.de>
-References: <20240213145923.2552753-1-bigeasy@linutronix.de>
- <20240213145923.2552753-2-bigeasy@linutronix.de>
- <66d9ee60-fbe3-4444-b98d-887845d4c187@kernel.org>
- <20240214121921.VJJ2bCBE@linutronix.de> <87y1bndvsx.fsf@toke.dk>
- <20240214142827.3vV2WhIA@linutronix.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 14 Feb 2024 17:08:44 +0100
-Message-ID: <87le7ndo4z.fsf@toke.dk>
+	s=arc-20240116; t=1707927058; c=relaxed/simple;
+	bh=BJ8Y8fUdQ1xOtt2jp/NbPlc+IjOdmH4pyylKU6FtVhI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GTzrnq+AaFoeqZwWOwY6PiLKgAYohE8slzpRuovGiOk3WTnBiWlyhwHo4D5Z8dXE9KEzbMgkQMBMKkEs+8v0lr5WblLD3p2D3FUCdP42uYtmjs/5pZthmdqqwjr3J6tP2Lxj1AQPWmXkQ9P5zHsuKGTb/vWANkD2fTlQzvhu3Tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de; spf=pass smtp.mailfrom=naccy.de; dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b=Tpv+90Ek; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dxhMlzuH; arc=none smtp.client-ip=64.147.123.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=naccy.de
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailflow.west.internal (Postfix) with ESMTP id 49EDA2CC02DB;
+	Wed, 14 Feb 2024 11:10:52 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 14 Feb 2024 11:10:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=naccy.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1707927051;
+	 x=1707930651; bh=7LuzJ5QzAz/5BlqTwKiwRs+lnWNPOrkb3Emw0YAjd84=; b=
+	Tpv+90EkPlHZetaXFhuzepSMszyB0SEbqWYhQLjagTC7kzoMxgp8U8TBPInR8Kge
+	gXRayGn4OT3M3hvMIkjYGtq1KaQ6x1a9G+5Pdy932ZLDdYtEmrcNNamIvTikOniB
+	0OKB58dFnTSWoY1FSHovh04f1qCONXs1v8iwaVcLjwtJlWq36S3O191vqyo3mS22
+	PaInIxY+R41dgFiK01TCYbnVz+0uhibXrdoi+2MbKN1vtJzfnB5TCpqb0y+kQadl
+	C+5JcZcvEq4pCPNE7NKwxP7OHTJQvUeAuxjWz7iOcpJCPxIzn8ss/RyaB5lciJqs
+	p7jrz7TksFxPWvVLnRnYtg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707927051; x=
+	1707930651; bh=7LuzJ5QzAz/5BlqTwKiwRs+lnWNPOrkb3Emw0YAjd84=; b=d
+	xhMlzuHuyAQE69JjIpIs9uFpteR4CGHdcSBAgfs8DP+QUF1pdXsKVQXy56Lsbacl
+	90UJipFGL6QqzkcajQ2mCoHsVrcBkqEHKzF+jGGlkMq4qEGgU4Z854GeG1131LJF
+	pX5IoutBLP/M8KafPHE0eBkqhS3g5lF1FqizuwCmy/sM60cGaXAxGkFnhN9d2xFL
+	wPwxYD+yrZIhOX0poovM5lzEoyCbC17p8PHR0u2DXIWC47jRwqGXVe1YS5rH+Ff8
+	kT9fSX4fJu+4NFGIM4PRoCfQ5sVSc9J++t0ogB4jJSndP4AEiZE+jxupWavAIsf9
+	XXKBGCWCD+EW98T1DVh0A==
+X-ME-Sender: <xms:CubMZQnwm0A9SR_5uw25O2n-8D_yFoZyIfTtIGINCgQqJl4-T67l2Q>
+    <xme:CubMZf1lT_pkuRzw-FSv4wpT9LnmxspsQH1bjvxXAlgi3xXgsblrGlxvIDrH8X5q2
+    YkRn4RRsuZYeivG3L0>
+X-ME-Received: <xmr:CubMZeoSDEwY6pBOZKmhRv_AN8epLLXvd9wTH2F4W8QSNe1PUFXji6qkvYq154paQq1uEm_OXohN-x3MWgghqoIEy0o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdekiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtje
+    ertddtvdejnecuhfhrohhmpefsuhgvnhhtihhnucffvghslhgrnhguvghsuceoqhguvges
+    nhgrtggthidruggvqeenucggtffrrghtthgvrhhnpeehfeegiefggefhvefffeeluddtud
+    eiieefgeelhffffedvfefgjeegieeljeeuteenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehquggvsehnrggttgihrdguvg
+X-ME-Proxy: <xmx:CubMZcm1vdrp0IMJLQ3eKGRhivHOS_RMN7wa4W4Bd8w84a70tRUgBA>
+    <xmx:CubMZe3AqLMpDEjgWZekx7eiVMhuDTg3VX51nPEPJihEnlzK6yENqA>
+    <xmx:CubMZTuvkf078HQDnBhQROcxxyAnaI3c7KT4Iue0nrTZmoiD22f1AQ>
+    <xmx:C-bMZR3x1H1-cW0B28A3B1WAazcbAtOzZnAdr0XOy9qALPa-KEsujA7eq09I3lb2>
+Feedback-ID: i14194934:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 14 Feb 2024 11:10:49 -0500 (EST)
+Message-ID: <70114fff-43bd-4e27-9abf-45345624042c@naccy.de>
+Date: Wed, 14 Feb 2024 17:10:46 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [RFC nf-next v5 0/2] netfilter: bpf: support prog update
+Content-Language: en-US
+To: "D. Wythe" <alibuda@linux.alibaba.com>, pablo@netfilter.org,
+ kadlec@netfilter.org, fw@strlen.de
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, coreteam@netfilter.org,
+ netfilter-devel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org
+References: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+From: Quentin Deslandes <qde@naccy.de>
+In-Reply-To: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+On 2024-01-02 07:11, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> This patches attempt to implements updating of progs within
+> bpf netfilter link, allowing user update their ebpf netfilter
+> prog in hot update manner.
+> 
+> Besides, a corresponding test case has been added to verify
+> whether the update works.
+> --
+> v1:
+> 1. remove unnecessary context, access the prog directly via rcu.
+> 2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
+> 3. check the dead flag during the update.
+> --
+> v1->v2:
+> 1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
+> --
+> v2->v3:
+> 1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
+> --
+> v3->v4:
+> 1. remove mutex for link update, as it is unnecessary and can be replaced
+> by atomic operations.
+> --
+> v4->v5:
+> 1. fix error retval check on cmpxhcg
+> 
+> D. Wythe (2):
+>   netfilter: bpf: support prog update
+>   selftests/bpf: Add netfilter link prog update test
+> 
+>  net/netfilter/nf_bpf_link.c                        | 50 ++++++++-----
+>  .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
+>  .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
+>  3 files changed, 141 insertions(+), 16 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+> 
 
-> On 2024-02-14 14:23:10 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
->>=20
->> > On 2024-02-13 21:50:51 [+0100], Jesper Dangaard Brouer wrote:
->> >> I generally like the idea around bpf_xdp_storage.
->> >>=20
->> >> I only skimmed the code, but noticed some extra if-statements (for
->> >> !NULL). I don't think they will make a difference, but I know Toke wa=
-nt
->> >> me to test it...
->> >
->> > I've been looking at the assembly for the return value of
->> > bpf_redirect_info() and there is a NULL pointer check. I hoped it was
->> > obvious to be nun-NULL because it is a static struct.
->> >
->> > Should this become a problem I could add
->> > "__attribute__((returns_nonnull))" to the declaration of the function
->> > which will optimize the NULL check away.
->>=20
->> If we know the function will never return NULL (I was wondering about
->> that, actually), why have the check in the C code at all? Couldn't we ju=
-st
->> omit it entirely instead of relying on the compiler to optimise it out?
->
-> The !RT version does:
-> | static inline struct bpf_redirect_info *xdp_storage_get_ri(void)
-> | {
-> |         return this_cpu_ptr(&bpf_redirect_info);
-> | }
->
-> which is static and can't be NULL (unless by mysterious ways the per-CPU
-> offset + bpf_redirect_info offset is NULL). Maybe I can put this in
-> this_cpu_ptr()=E2=80=A6 Let me think about it.
->
-> For RT I have:
-> | static inline struct bpf_xdp_storage *xdp_storage_get(void)
-> | {
-> |         struct bpf_xdp_storage *xdp_store =3D current->bpf_xdp_storage;
-> |
-> |         WARN_ON_ONCE(!xdp_store);
-> |         return xdp_store;
-> | }
-> |
-> | static inline struct bpf_redirect_info *xdp_storage_get_ri(void)
-> | {
-> |         struct bpf_xdp_storage *xdp_store =3D xdp_storage_get();
-> |
-> |         if (!xdp_store)
-> |                 return NULL;
-> |         return &xdp_store->ri;
-> | }
->
-> so if current->bpf_xdp_storage is NULL then we get a warning and a NULL
-> pointer. This *should* not happen due to xdp_storage_set() which
-> assigns the pointer. However if I missed a spot then there is the check
-> which aborts further processing.
->
-> During testing I forgot a spot in egress and the test module. You could
-> argue that the warning is enough since it should pop up in testing and
-> not production because the code is always missed and not by chance (go
-> boom, send a report). I *think* I covered all spots, at least the test
-> suite didn't point anything out to me.
+It seems this patch has been forgotten, hopefully this answer
+will give it more visibility.
 
-Well, I would prefer if we could make sure we covered everything and not
-have this odd failure mode where redirect just mysteriously stops
-working. At the very least, if we keep the check we should have a
-WARN_ON in there to make it really obvious that something needs to be
-fixed.
+I've applied this change on 6.8.0-rc4 and tested BPF_LINK_UPDATE
+with bpfilter and everything seems alright.
 
-This brings me to another thing I was going to point out separately, but
-may as well mention it here: It would be good if we could keep the
-difference between the RT and !RT versions as small as possible to avoid
-having subtle bugs that only appear in one configuration.
-
-I agree with Jesper that the concept of a stack-allocated "run context"
-for the XDP program makes sense in general (and I have some vague ideas
-about other things that may be useful to stick in there). So I'm
-wondering if it makes sense to do that even in the !RT case? We can't
-stick the pointer to it into 'current' when running in softirq, but we
-could change the per-cpu variable to just be a pointer that gets
-populated by xdp_storage_set()?
-
-I'm not really sure if this would be performance neutral (it's just
-moving around a few bits of memory, but we do gain an extra pointer
-deref), but it should be simple enough to benchmark.
-
-> I was unsure if I need something around net_tx_action() due to
-> TC_ACT_REDIRECT (I think qdisc) but this seems to be handled by
-> sch_handle_egress().
-
-Yup, I believe you're correct.
-
--Toke
-
+Thanks,
+Quentin
 
