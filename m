@@ -1,161 +1,219 @@
-Return-Path: <bpf+bounces-21974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C11854CD0
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:32:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1EE6854CE3
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 16:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 031EF1F26E3A
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 15:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4676D1F21D1A
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 15:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D655FDCE;
-	Wed, 14 Feb 2024 15:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120B3605B3;
+	Wed, 14 Feb 2024 15:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="1EBC5M9Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rdd+gZm8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E435F848
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 15:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FD15D757;
+	Wed, 14 Feb 2024 15:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707924622; cv=none; b=rpuaTNwuYUlwKMD7dnf4MTLddKgid9C8VmOqH2T42CDXgDosI8/2FfiDrNXvbRb7FAbWU4irh0sS0GKDimORK2bMnTGra3aOdizyh3MT2bKopdUUrj85WK1wSVpklxtF5njnmgOoNSQxxBumCGUG19rTXdgLEY5Yvp1Qff2zseA=
+	t=1707924713; cv=none; b=J/8FoUxHp7sFV3sCppRGrANXBafQr45+pIhPLsLzpJZejhKzBmbPQuKSSicgVVWbe3hN8AjE9uvov5ls7Mb1ZG/cRVrJDaNJ0Nn78cvEf6Y2a46Kxw9STotg5qO9Ud0PzB/h7sQRHG9sNHBXzoVJiXeqKt8ufnoBG09KcFj1Y7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707924622; c=relaxed/simple;
-	bh=WrkguPar9ql3C3T5wMJtZ7lUXaJANSRNogIEho1Ui3M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SUlYUxu3STHhgQ4MUEbAj73Irem0QnCUK+mcgeogtjSBphC51a9Tns3GLEqqEjFqnClCeknsDOl5uZpjjIdinvgxYX36godJjo2BpY0eMali8T3tDmKbwjTmMnKOAsGBsPbzOax4SMnB/R+/cCRCyfTtAFRbpNu/Z1uAGVhAgOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=1EBC5M9Y; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60757c46e34so20804257b3.1
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 07:30:20 -0800 (PST)
+	s=arc-20240116; t=1707924713; c=relaxed/simple;
+	bh=L1paFLsmS7WUNRU/qVQfEO1XBs8PZDgIRaP0CUaswrk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oIMKDXgvk1XcrK+IlfYhwDtiAvomgvRB5FANnm3aBN6iuKpeJSc+JdTkfIKSVJ0gcQAkBYbqzNibgxivUhm5DHqu2NtcPVm07rlI7X1HFE+/zyYIBKeb+8k+rB0PAmR0Bm0RdWKj9iWoRDoP3h3N17j5a/Iah/WJ89JZ5nxizv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rdd+gZm8; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5639b00a25cso62513a12.0;
+        Wed, 14 Feb 2024 07:31:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1707924620; x=1708529420; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nqCerqF3ja6QnWQP2aiud2hCV1tCK6BCZ35Lnyt8050=;
-        b=1EBC5M9YFjG9IhoZ6UffwWeUn7zTcbDeA723Zg1Vl0BLZriwzUXzNMKOwkw+3bo9fn
-         6l3LHPMkUkVL5i+f8NovPkNzDt/8304+1XIdnRzfjZ5FibqmpSqJv+HM9Pj/OW7Ju6AJ
-         cD0/r8Ej+7n0mfMlEuzAJ+wVhuLtBqiIydgvHY0zFDbKfGAi6/k0LV2YXtyG7QVvCasx
-         jwRAJ2vr2ieIulBJ/3TVOPYnRQuOap4zELX8IPlma0eim7JYlWXMUARoTEjzeAGjr+xr
-         hoYInQCR0QZ/JTuJhD5+XXQ3PYSPmvNQppzCU+eK+PfHs5AzymVCJlOQGgQnaJYefkjJ
-         0NUg==
+        d=gmail.com; s=20230601; t=1707924710; x=1708529510; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vE8/xX9uxStoXuIsHuY6FjGx2HBrbtcyHjIC0Q0+HAE=;
+        b=Rdd+gZm8hPbnQn2r99IHDGjBaUgjMjmLE9rzjbXb3hzFy6mlwvTH/iFqen/TkFx5v7
+         Epkrd5s5r2NroHPYZ1B9k0nm7P3zSbUlqhiHoasPVr9DhSk+rZ41OZ+yqC9U/cpotaEv
+         YK2ON5r0Z6tvkENvEl2+br+nV+DSZy9iE5tNjD5K757N4BwImcqvCM7jdYhPIFlR22xV
+         KZQYbK8NM7yqZupwQpvcC6SP/y5b2Go5VrsKKPgGmwitpTfIa7BRily8mZ8/53rV18j7
+         EyA1QG5eWahX3B4JC2xdUs2TAbg8WP8Xo9PFY/DRSGS5u11Bb4lF++zPjtNAKoUFq4yl
+         gfzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707924620; x=1708529420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nqCerqF3ja6QnWQP2aiud2hCV1tCK6BCZ35Lnyt8050=;
-        b=Pyb5yFV652gQCgw5hFbUPSapaS0O1X2j+/SWIkwaAyU4GMRYTWvCLq1iySVNn8XhLs
-         DtFGIe5iscQ8jnwTHRo8zuJ99nEHQbSz8wrrbjKXQ4GbSbtn1e5PoAQznSNjGHXyFP7U
-         J95TwugGoOI51cqydZpUXTlt2RIH9lubpY6jj9yFxfMHLkeiGtUV2aB0hlbo8BG6021Q
-         FT8eNzmKtadYxUo3/cBw8oc72NVgS2sTU/J396VYchRXGwCRALK7we7uc/vXTGed8+Ws
-         v49GL8EpAFcxOokWY9YF7GPJ3L7z0PTtf3kA5DazxWiIzeizXVr5DN7p/71oHQpssmbw
-         GIpg==
-X-Forwarded-Encrypted: i=1; AJvYcCWlYW0YewIBw7Yc/0+hVc1lRp4QB7itjI9uGJu/Sb8Gwj6Uu4YyjKsxJaASaxKJ8UErWAh1pjP95I41Lj1u8cDhTcH8
-X-Gm-Message-State: AOJu0Yzj2mFnx+bqwFd5DmKCRMy+psjUChn9B3B9f4fyFh5M5IM+b5bF
-	3swhkzt06KNCRVbp/ubP1ILxQbIK7MlS1Z+rMHPDQZnpZjxIXLVBAuYlXHrgg599k2WZ2UFYH91
-	t3sP8PV3H87ami2gLt441ujbfe4peIrL9VOPD
-X-Google-Smtp-Source: AGHT+IEyD0lWziPyy9rHNuxr7JUQQsbhZsIy0Eykcr8qscAtKVGIFIBi5+hcqzDkdAhpAIyLPHStwMTQAnxzTvV39JE=
-X-Received: by 2002:a0d:cb4d:0:b0:604:a0e0:5863 with SMTP id
- n74-20020a0dcb4d000000b00604a0e05863mr3294321ywd.21.1707924619774; Wed, 14
- Feb 2024 07:30:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707924710; x=1708529510;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vE8/xX9uxStoXuIsHuY6FjGx2HBrbtcyHjIC0Q0+HAE=;
+        b=PqfYxKxyz8xInCSGBDb4VP963m+nmHw2Rx0eSJbCPyCJ1z7HTEYg1Q1Y0aQcyyhrMK
+         44mhVj5W3sa6s2f2oaAQZmeEUq/CS6Nvy/mWs5+73Jm3lcqNZ/5BXGxpsAdPlECCN18V
+         TKugOUBwRF3bKNODdIsZ7pADDGU0gyyv5CMtvhoJfiJ0ULnB2daY5sEbh1it5bdWSuZS
+         nc3sOlSgpxab9OTlN6lFYp0glyMa1svRF2Sug7o5il9oDp6t5hRJ1c92+qeOCdwZeNN/
+         67AUf+bkoWseMkac2+5IRzWVN4L36gBNBVLcT9aUug7dL942tuAGl3wLRjZ5E+3FN0a8
+         V99A==
+X-Forwarded-Encrypted: i=1; AJvYcCUfgDzfagAW+PmMyiN6rIZnCvSkL+Sm4VhLQJCHEm0oM4p5C9gmLEkhlrXhq9Kdxh083DjHUZalFo+d/IYGkb7g3pDGgjcZD61YgIJx/xPJ35fcQlhlxpZ0xuxkeoruda630RwSt6p4K+Za6W5LAh2BaTZmQiEPG+/n7E0Swcxf9VLQFsTROjsbVy1E2+hVvcJpZXWwbe9XzFCzjY1njyY21g2uELnGbk9dvTQtYi3yxKcVmFqkjQPgFCWRIOz+GiYfYRmyPP1J04K0hscnsuSz7aE6aWs8uG0Sal046N1fiOOgIQ3aldv9snrWw7g8dTuuwXlm3R6iTqMhT2HTxnZ0dlnSdYGHU0KKTwfwB2Oc8xd8cDH5lDIJPXMAxd7EpUY8qiwj2gaDM2yMPZUA6qAYSr8QFwWOhBJETDvq33r7vSdAnbOBWjjkSg8KTDCjXbqNV3794BDuzb1tJxolgHpMgV0ED4pN5V2Z3nBBKyG+KwQ7FbO0G5EDEt9HB9iiCJrN9vItFA==
+X-Gm-Message-State: AOJu0Yw+8u/sRlru+9nGWNsXE3UJE4Mz8pkd6IZ1VyS/YXt50ktXNXhX
+	FpzAdlHp963s5X5d3MvVqwUJo0Ekj0lpyPVZkYfXCtl45miXWXoE
+X-Google-Smtp-Source: AGHT+IFJjeHJkhu4E/5PQL7Dr2d77iKz2i3apIzpMMgqPcQHi77X+UE8B2mD6qzLMtE6+dUYVhK/OA==
+X-Received: by 2002:a17:906:4091:b0:a3d:1458:3db9 with SMTP id u17-20020a170906409100b00a3d14583db9mr2033804ejj.18.1707924709571;
+        Wed, 14 Feb 2024 07:31:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWIAccAWgK4lRqfWAiTFf2zOmFvQ0cjuzenXB/9W2eZuobq9WyoNFiLAq2+XZEu2KOwhDhUl08prR0TdsNqdt/p3fpS9OUX1dkDg7gMrca8l0pMYcjca3KdKCHAbXzom2/SHjYBQRvzRQOm0yWyInuamEGg2Pd+Tbd0vhH0EK/PYfsXk/0D7tnStMVzl8NvP4nE6Bm9xf0XXnPDt+BWsU+fVlOW0fRFcRJt68nbjiuUymX8Ihykx4Bi5UI7l8MmYHivujIr3jrYd5OmNiULju6LqVQ03h9J2mVBr6Y4kzJq7y0O7Y+ruaIY8dfB3gAotuMx8fmGXmej+7OAM+CcDmS8GZusMWnjhcYnmSN9iEw2XGLFRDv/zEzfWiCb7k33Gf9N+dpzm+tkstNr2Gv3qd/4aII5CgI+apL16oBzPzLR4RdWuDLHRKBFMmbiG2GUg5AnYJrWI/4HkU0G59qJGf1LzoIKp7SoSz2PUuCtBd514aE91bAYOarQ980ubpMjW2voJ2og6U0AJ8p6S/p9Utx56Iv7xID1qdz9xFxK79njnb00TS9bn6KS3ONPx/m481JXuEoeIU8pUzwiaJy1g/stIFY6RBxPgYLb8VfuaxiMjn4lPPr1ide8Wejcsvmcp9yU6ddXzx9BOYhdv+iwf/4gSyB25dMQtXKhMRZFA1hdzaJaynUszbGA5ez1fsjJmuIdeHIos+gF/xdADWxZU8R1eTCy1Vr60X1ySsGcZTeUp/1brqlaxAOH0K5vdvoYlIaU/pfEfOpj9RIc+ecCLcimJczreESQYF2PsecL7g2H5UJ0QiS89kiIaBbSPuyWtmWyWnQxyHtQG+QRb4cc0uiguUzZ/X96gxQWoGE2ogXIEoZ40Q4TB5oqV+RZbOR+phuAGVeDNVyT1JeYVeXZnPaBL+zoE4cNc9MPgLb+7hp5KWodx26/txiDdRRn81u7Y8uOET
+ Rnm5a54n8LY+pNVqm5CnENC/aQlazL9whyTZqQDlzTgJJG6l/C7EYlZEweZxiHjDpP/74qNMrYpjA99qdtlWh/2b/hzjZeOXV0OOOU+rocIfsYQxVz8kw91HRewTVN1gKiLDHy/niFZoMQgdxB3ZUmOOvlZljJ4yvu19cGehAMo0FAjoXIzIRqGdjKPnJfcbxadZKphWyKeUSGU9KQueszPKDRdfZDLMzBRofZNCIjKv/CR1jIrVveae6Pd+K86hHHAfU3kEuXlu15R9X+G37gMcknMRcdazHnScHuIkr/IHyyHAvazM8sgkmfz73WoxATV7VXEw5EXn2NrWHl+BIDhc1ZktbbLtUQFQ+M9OA+N8LHBQqZeoUvfGps63MAly944RryRFGlG+qOZsmvZqccm3MissuaLU8rlcmFDT2T80P7vGr2SbUcFMzRDkAKRoQiNLLJkLXXCurYv6LyrF8CuLq3v7mzm2QysNKEfPzeM2agEDFVxXyiKqJOVWP7HnzPQI89geXQUy5CNF1Gte1i7RLyTqi/oV7FtdsN1PxVMr0sZd3ffQmAbB7fRu42ueEjbAcz4ZxfUr1wnFzznCSy/ffFm7dJs9Iu+1t4PzbZwkd8U4TmvDxqWyAyUKavcPnbSX0y7o+iJorMgo79HW+r5LSzwjoroqXVA8lAg7Mt1smJJye8qFRlnTWpKKoiU2zQ8IFaWIC5Ih5sr/Tmaie9syohfdfLfuaeMQrQepLF1JE=
+Received: from ?IPV6:2620:10d:c096:310::23d8? ([2620:10d:c092:600::1:1e51])
+        by smtp.gmail.com with ESMTPSA id o14-20020a1709061d4e00b00a3d5efc65e8sm403200ejh.221.2024.02.14.07.31.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 07:31:49 -0800 (PST)
+Message-ID: <c28e1f66-84c8-40f7-b200-f18bee06cb33@gmail.com>
+Date: Wed, 14 Feb 2024 15:30:25 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122194801.152658-1-jhs@mojatatu.com> <20240122194801.152658-9-jhs@mojatatu.com>
- <CALnP8ZZAjsnp=_NhqV6XZ5EaAO-ZKOc=18aHXnRGJvvZQ_0ePg@mail.gmail.com>
- <CAM0EoM=CKAGm=qi0pxAvJBOR0aQyHDR4OkBsfyg+DcaQqOUD6g@mail.gmail.com> <CA+JHD91MqtsyrBD=OheYio7bddrqKGtXjgiC7oJDGQjpFU17iQ@mail.gmail.com>
-In-Reply-To: <CA+JHD91MqtsyrBD=OheYio7bddrqKGtXjgiC7oJDGQjpFU17iQ@mail.gmail.com>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Wed, 14 Feb 2024 10:30:08 -0500
-Message-ID: <CAM0EoMm7JDwa_1qavJWwM=2e8TsX=zJQsToFaEHuf0zkWrm74Q@mail.gmail.com>
-Subject: Re: [PATCH v10 net-next 08/15] p4tc: add template pipeline create,
- get, update, delete
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Marcelo Ricardo Leitner <mleitner@redhat.com>, netdev <netdev@vger.kernel.org>, 
-	deb.chatterjee@intel.com, anjali.singhai@intel.com, namrata.limaye@intel.com, 
-	tom@sipanda.io, Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, 
-	jiri@resnulli.us, Cong Wang <xiyou.wangcong@gmail.com>, 
-	David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, vladbu@nvidia.com, horms@kernel.org, 
-	khalidm@nvidia.com, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	mattyk@nvidia.com, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v5 07/14] page_pool: devmem support
+Content-Language: en-US
+To: Mina Almasry <almasrymina@google.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20231218024024.3516870-1-almasrymina@google.com>
+ <20231218024024.3516870-8-almasrymina@google.com>
+ <3374356e-5f4b-4a6f-bb19-8cb7c56103bc@gmail.com>
+ <CAHS8izO2zARuMovrYU3kdwSXsQAM6+SajQjDT3ckSvVOfHwaCQ@mail.gmail.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izO2zARuMovrYU3kdwSXsQAM6+SajQjDT3ckSvVOfHwaCQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 12, 2024 at 11:27=E2=80=AFAM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
->
->
-> On Mon, Feb 12, 2024, 11:30 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+On 2/13/24 21:11, Mina Almasry wrote:
+> On Tue, Feb 13, 2024 at 5:28 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >>
->> On Fri, Feb 9, 2024 at 3:44=E2=80=AFPM Marcelo Ricardo Leitner
->> <mleitner@redhat.com> wrote:
->> >
->> > On Mon, Jan 22, 2024 at 02:47:54PM -0500, Jamal Hadi Salim wrote:
->> > > @@ -39,6 +55,27 @@ struct p4tc_template_ops {
->> > >  struct p4tc_template_common {
->> > >       char                     name[P4TC_TMPL_NAMSZ];
->> > >       struct p4tc_template_ops *ops;
->> > > +     u32                      p_id;
->> > > +     u32                      PAD0;
->> >
->> > Perhaps __pad0 is more common. But, is it really needed?
->> >
+...
 >>
->> $ pahole -C p4tc_template_common net/sched/p4tc/p4tc_tmpl_api.o
->> struct p4tc_template_common {
->>         char                       name[32];             /*     0    32 =
-*/
->>         struct p4tc_template_ops * ops;                  /*    32     8 =
-*/
->>         u32                        p_id;                 /*    40     4 =
-*/
->>         u32                        PAD0;                 /*    44     4 =
-*/
->>
->>         /* size: 48, cachelines: 1, members: 4 */
->>         /* last cacheline: 48 bytes */
->> };
->>
->> Looks good for 64b alignment. We can change the name.
->
->
-> I bet that is you just remove PAD0 the compiler will introduce our for yo=
-u.
->
+>> A bit of a churn with the padding and nesting net_iov but looks
+>> sturdier. No duplication, and you can just check positions of the
+>> structure instead of per-field NET_IOV_ASSERT_OFFSET, which you
+>> have to not forget to update e.g. when adding a new field. Also,
+> 
+> Yes, this is nicer. If possible I'll punt it to a minor cleanup as a
+> follow up change. Logistically I think if this series need-not touch
+> code outside of net/, that's better.
 
-True dat.
+Outside of net it should only be a small change in struct page
+layout, but otherwise with struct_group_tagged things like
+page->pp_magic would still work. Anyway, I'm not insisting.
 
-> Doing it explicitly documents explicitly tho.
 
-Documentation justifies it - so we'll leave it there.
+>> with the change __netmem_clear_lsb can return a pointer to that
+>> structure, casting struct net_iov when it's a page is a bit iffy.
+>>
+>> And the next question would be whether it'd be a good idea to encode
+>> iov vs page not by setting a bit but via one of the fields in the
+>> structure, maybe pp_magic.
+>>
+> 
+> I will push back against this, for 2 reasons:
+> 
+> 1. I think pp_magic's first 2 bits (and maybe more) are used by mm
+> code and thus I think extending usage of pp_magic in this series is a
+> bit iffy and I would like to avoid it. I just don't want to touch the
+> semantics of struct page if I don't have to.
+> 2. I think this will be a measurable perf regression. Currently we can
+> tell if a pointer is a page or net_iov without dereferencing the
+> pointer and dirtying the cache-line. This will cause us to possibly
+> dereference the pointer in areas where we don't need to. I think I had
+> an earlier version of this code that required a dereference to tell if
+> a page was devmem and Eric pointed to me it was a perf regression.
 
-cheers,
-jamal
+fair enough
 
-> - Arnaldo
+> I also don't see any upside of using pp_magic, other than making the
+> code slightly more readable, maybe.
+> 
+>> With that said I'm a bit concerned about the net_iov size. If each
+>> represents 4096 bytes and you're registering 10MB, then you need
+>> 30 pages worth of memory just for the iov array. Makes kvmalloc
+>> a must even for relatively small sizes.
 >>
+> 
+> This I think is an age-old challenge with pages. 1.6% of the machine's
+> memory is 'wasted' on every machine because a struct page needs to be
+> allocated for each PAGE_SIZE region. We're running into the same issue
+> here where if we want to refer to PAGE_SIZE regions of memory we need
+> to allocate some reference to it. Note that net_iov can be relatively
+> easily extended to support N order pages. Also note that in the devmem
+> TCP use case it's not really an issue; the minor increase in mem
+> utilization is more than offset by the saving in memory bw as compared
+> to using host memory as a bounce buffer.
+
+It's not about memory consumption per se but rather the need
+to vmalloc everything because of size.
+
+> All in all I vote this is
+> something that can be tuned or improved in the future if someone finds
+> the extra memory usage a hurdle to using devmem TCP or this net_iov
+> infra.
+
+That's exactly what I was saying about overlaying it with
+struct page, where the increase in size came from, but I agree
+it's not critical
+
+>> And the final bit, I don't believe the overlay is necessary in
+>> this series. Optimisations are great, but this one is a bit more on
+>> the controversial side. Unless I missed something and it does make
+>> things easier, it might make sense to do it separately later.
 >>
->> > > +};
->> >
->> > Only nit.
->> >
->> > Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
->>
->> Thanks for this and all the other reviews. Much appreciated!
->>
->> cheers,
->> jamal
->>
+> 
+> I completely agree, the overlay is not necessary. I implemented the
+> overlay in response to Yunsheng's  strong requests for more 'unified'
+> processing between page and devmem. This is the most unification I can
+> do IMO without violating the requirements from Jason. I'm prepared to
+> remove the overlay if it turns out controversial, but so far I haven't
+> seen any complaints. Jason, please do take a look if you have not
+> already.
+
+Just to be clear, I have no objections to the change but noting
+that IMHO it can be removed for now if it'd be dragging down
+the set.
+
+-- 
+Pavel Begunkov
 
