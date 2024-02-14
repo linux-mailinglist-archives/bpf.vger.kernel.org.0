@@ -1,69 +1,70 @@
-Return-Path: <bpf+bounces-21934-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1898540FE
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 02:03:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61EA485413A
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 02:28:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6085A1F27FD7
-	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 01:03:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862E51C26459
+	for <lists+bpf@lfdr.de>; Wed, 14 Feb 2024 01:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE09E801;
-	Wed, 14 Feb 2024 01:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AB98C09;
+	Wed, 14 Feb 2024 01:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gACx7tzh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AHKcySYP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC79A372
-	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 01:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6C6BA30
+	for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 01:24:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707872573; cv=none; b=QVzKyGgrl7I86JLDTQeFWB7XyV+3Yag50OHnguxxzSLus3mABZxn4tp8ghII+HOmsnCn84EnSTAuBt1JsvmHWZGrcBs8i19aXHGXymcXsxLBM0zTktEYvnehzZvep7rjZ7xP3qbsCauGyKcdsSGib06p5PrhewQPQwy7bz7fKg8=
+	t=1707873888; cv=none; b=cIXVgj0fG+At78TcDQiI0kJIQwzxtrkU5M7EAgoLVZkFtFE7hg5E/k5d7JniGx+xnhIN/KlCwJrc7HMjLPwxIGqQ+iuc1hukeemqApzKaN8MqS/U+w+W760LgbLMv8H1jMLFC6uni6CY+uNzUUFb2zlQuMv1YopyRnjIO51SGtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707872573; c=relaxed/simple;
-	bh=ys+FQv4cHhRTNkKNZnsImn3WYfc3yYQguCKdDIqBhDY=;
+	s=arc-20240116; t=1707873888; c=relaxed/simple;
+	bh=u/OUWl+47j5cDJjs2LVRm6Fw1jbuaIzIh7BhdxjDwZ4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HlgLZIIILyOZuchJ3hgxNv6ZpvtO0ZZMoLG4LlCpbRZbBBey/Q9WT6bskf107ruRBiG7gO56MNHL+6YfWYRuCTa0h+KC2H+VC0mO1ZdwmXkNHS/6bkjvAJ7npLr3Xh4k96I6yfMG916DeYmkuCimwLVKhGYATntJjJoL/NeHM/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gACx7tzh; arc=none smtp.client-ip=209.85.128.51
+	 To:Cc:Content-Type; b=R/6P9+DF/2ej9LxQLWevOR3qzHv9NeYdrZ8s3cOLEykg5XJMxcZuUp98QX74XNDATdTlCGQcey9YvYTnvFDMd36wlwyFuncAZCwC89GSx6GiWyZBdpMIk3Vw9rYhbH7ZGNQ5dOKhNq1cmZyublrdwY4RGOixo8c8kGL5ajm1naM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AHKcySYP; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-411a5b8765bso1509315e9.1
-        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 17:02:51 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-337d05b8942so4027271f8f.3
+        for <bpf@vger.kernel.org>; Tue, 13 Feb 2024 17:24:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707872570; x=1708477370; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707873885; x=1708478685; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ys+FQv4cHhRTNkKNZnsImn3WYfc3yYQguCKdDIqBhDY=;
-        b=gACx7tzhUvnQyhqGZpuhcaKDB29AMSlbGX76bgO+ygv+ccVbvF7xDIGTxUSOdh282k
-         wj6aZ5Dn6sdHK5dB2r9Sy7KtCkgFGwF28ttBWOYiR6BK/cd6jQsD/9t2+69gZoMReYdm
-         M0i6JeI+mHWnoSycUm9cNH8ZvqcCuLBCrMQaplNsXcNZrqkEC5+fz88xpyKT5/q9xHrY
-         o/xs8OdkCRjY0bCAR21z6+sHMtqr258V1wwyHmdTY9BB76OY7MoXBA+4Pl8Jqzl8wqK8
-         JxJlYwJ82hd2gbrwkK+O3mhHp8TJp+A60fJ3+mO5sGqwLSFEdcZgUIecdHuwGsYlu3a1
-         WoaQ==
+        bh=MAN6wJN8t3Wj9pNbdOPZpab49RIQxLUbM2po1RJfgNg=;
+        b=AHKcySYPEbJEYXka5OjLhj7ZxpcNpPG7gcaL8dsDHbGkOmG0ZGUHZkHB/YzDZvepW9
+         nFtyCLV+Wt4g0E4sqWtNoGWSafdmCBDBpAdKQSMVMxpKWJMyxgAXEKVlISSKPw5Q0tbC
+         K3qd9XpPK+WloJ00AqByTAgwpO1YHiZ2TxIxKG9HkGAQPhD+7AN2gtfhg1RQxpwZ5p5c
+         v7dAlEHM9VEgTz3Phrr6fFKNcCLYqllk8Qy68Ozezixeu2YmqRTsSd9ys1AC69NlqQ1d
+         VZ7ah9LIxU4HeDcrHHhIP6YIJzVk1lHHFgqXk5oxlJgI5UdIxdY6AXl0pAc2PN0DzMxZ
+         Z3+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707872570; x=1708477370;
+        d=1e100.net; s=20230601; t=1707873885; x=1708478685;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ys+FQv4cHhRTNkKNZnsImn3WYfc3yYQguCKdDIqBhDY=;
-        b=a8bDO2aU5rQ+QJCP+KHDDPoXu8voq4OHbhc9CJYwe1xQNZ5+HkBYwhu57iEJgUE4DS
-         DefEBNs/zVKb/kNOvVDJFvWFaUyzDFGSFk78B0+eKEg39mBQzVQ/KsEV2g5071ZJgd66
-         rM/JX1qX/uq1kD09P1IbcwgItD5zY6ZiST4uQvqrsLGagNLkkR8STvyNQvvxcnnevjGC
-         kOCPlUPZMsWWuYWKMcqSyGsMwhA3vr6phMSqUfYum8VsYkHtLPKU9Vi6pyuXYfGWEFkl
-         VScKXcJediQxPevDNMgS0IpTSLGuAWyTjN1DpjeeRWfcXpt1IRbY3dvc8CnF7JDhDb9u
-         Ix5w==
-X-Gm-Message-State: AOJu0YxN5l0l7J36IE9mjvOlrToIt7qlx2xX2LGNUeb79weI+S7I5ieY
-	HvKwxmsNRFIO9TEtgs6vsACs9lBbCTUX/ccptszT1rFq6dxDQQew+jm7XFan3VQRz4mPPQ1JBzL
-	+PhrisgxwU7dVAC9Ft8S/bSu7LkA=
-X-Google-Smtp-Source: AGHT+IHV+SVGA5NF/7QPEK4Ttn1/8o7VyqCtO5vXBmdGha6JCjy+FpATDjyvLQVHjcbRzgIle2TYS79aytqxb77ELV4=
-X-Received: by 2002:a05:600c:5107:b0:411:c8a7:7b6e with SMTP id
- o7-20020a05600c510700b00411c8a77b6emr320022wms.10.1707872569949; Tue, 13 Feb
- 2024 17:02:49 -0800 (PST)
+        bh=MAN6wJN8t3Wj9pNbdOPZpab49RIQxLUbM2po1RJfgNg=;
+        b=R3TXgtgJtUNlhvC7wEBn/ohgvAtW9cD8LDdkDthHnVUAviaiXWve0RpSL3y4uYxU1+
+         BWHD4chH0GOQHDWq/1o9p1Bfndi9/CF6g7f9nc6INUpg6HqViz72YV/Q3dCn9F2QBqE2
+         x6xkrdTYR4URXF5ag6K9QwdmmU7NqCjm2hNebQsd3paePoBwQsGTkad5ZDraZxdzGemn
+         pz2FR0ichNUe9FK6KWeAX6vk7sfMiBU7GKR5MAugLwhpVTvpkziz5TjORdg1iJ0cRX0/
+         wguePH0XGZvkJG1bdAvOb5U1mxZFjKdtXPDgWC2JLBoXl/5WOpWaRkCzaMWc2gpKaRq0
+         ibmA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUdBs9yZMGsvkClcDgcAYior5m4ovYyPc1E7j30yU/Kz8y25L7yjTd233ax3kwySJD4y1wZA1vJtj/uuD096D2aOhl
+X-Gm-Message-State: AOJu0YydKBkrXQ1gZkKjAU6pZL72lNjyI4Z7uVuKcEp3p2OocvtU8RDX
+	JL4360eqR1HQQoysW9/yAmGYbnO4hLEu9KGK/oGSp18J/a8v/sMahESUG+etHZ+yxFyQs4ADwsn
+	KGl6SC6unCouWN7XsW+SOpuz3PLQ=
+X-Google-Smtp-Source: AGHT+IFP7jE013omUuIgoWyBfFFWhzTkKFhQzL7TUr3fOux83eVKQoDaYji9CCkwZ74pHixiVhVfjLLxON6raCpg6go=
+X-Received: by 2002:a5d:5912:0:b0:33b:15fc:22bc with SMTP id
+ v18-20020a5d5912000000b0033b15fc22bcmr645921wrd.52.1707873885278; Tue, 13 Feb
+ 2024 17:24:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,99 +73,98 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
  <20240209040608.98927-15-alexei.starovoitov@gmail.com> <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
-In-Reply-To: <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
+ <CAEf4BzYbkqhrPCY1RfyHHY1nq-fmpxP2O-n0gMzWoDFe4Msofw@mail.gmail.com>
+ <7af0d2e0cc168eb8f57be0fe185d7fa9caf87824.camel@gmail.com> <CAEf4BzZyPDdtV8xyFxpLmPQpKrtO-affGrEfyDkodr_BDHVZcA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZyPDdtV8xyFxpLmPQpKrtO-affGrEfyDkodr_BDHVZcA@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 13 Feb 2024 17:02:38 -0800
-Message-ID: <CAADnVQ+jDLDK9TXCjRWsLg9SK4N1VHgiSLoqqdGfvtUpKbmLaw@mail.gmail.com>
+Date: Tue, 13 Feb 2024 17:24:33 -0800
+Message-ID: <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
 Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global varaibles.
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, 
-	Kernel Team <kernel-team@fb.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes <lstoakes@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 3:11=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Tue, Feb 13, 2024 at 4:09=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, 2024-02-08 at 20:06 -0800, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
+> On Tue, Feb 13, 2024 at 3:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
 > >
-> > LLVM automatically places __arena variables into ".arena.1" ELF section=
-.
-> > When libbpf sees such section it creates internal 'struct bpf_map' LIBB=
-PF_MAP_ARENA
-> > that is connected to actual BPF_MAP_TYPE_ARENA 'struct bpf_map'.
-> > They share the same kernel's side bpf map and single map_fd.
-> > Both are emitted into skeleton. Real arena with the name given by bpf p=
-rogram
-> > in SEC(".maps") and another with "__arena_internal" name.
-> > All global variables from ".arena.1" section are accessible from user s=
-pace
-> > via skel->arena->name_of_var.
+> > On Tue, 2024-02-13 at 15:17 -0800, Andrii Nakryiko wrote:
 > >
-> > For bss/data/rodata the skeleton/libbpf perform the following sequence:
-> > 1. addr =3D mmap(MAP_ANONYMOUS)
-> > 2. user space optionally modifies global vars
-> > 3. map_fd =3D bpf_create_map()
-> > 4. bpf_update_map_elem(map_fd, addr) // to store values into the kernel
-> > 5. mmap(addr, MAP_FIXED, map_fd)
-> > after step 5 user spaces see the values it wrote at step 2 at the same =
-addresses
+> > [...]
 > >
-> > arena doesn't support update_map_elem. Hence skeleton/libbpf do:
-> > 1. addr =3D mmap(MAP_ANONYMOUS)
-> > 2. user space optionally modifies global vars
-> > 3. map_fd =3D bpf_create_map(MAP_TYPE_ARENA)
-> > 4. real_addr =3D mmap(map->map_extra, MAP_SHARED | MAP_FIXED, map_fd)
-> > 5. memcpy(real_addr, addr) // this will fault-in and allocate pages
-> > 6. munmap(addr)
+> > > > So, at first I thought that having two maps is a bit of a hack.
+> > >
+> > > yep, that was my instinct as well
+> > >
+> > > > However, after trying to make it work with only one map I don't rea=
+lly
+> > > > like that either :)
+> > >
+> > > Can you elaborate? see my reply to Alexei, I wonder how did you think
+> > > about doing this?
 > >
-> > At the end look and feel of global data vs __arena global data is the s=
-ame from bpf prog pov.
+> > Relocations in the ELF file are against a new section: ".arena.1".
+> > This works nicely with logic in bpf_program__record_reloc().
+> > If single map is used, we effectively need to track two indexes for
+> > the map section:
+> > - one used for relocations against map variables themselves
+> >   (named "generic map reference relocation" in the function code);
+> > - one used for relocations against ".arena.1"
+> >   (named "global data map relocation" in the function code).
+> >
+> > This spooked me off:
+> > - either bpf_object__init_internal_map() would have a specialized
+> >   branch for arenas, as with current approach;
+> > - or bpf_program__record_reloc() would have a specialized branch for ar=
+enas,
+> >   as with one map approach.
 >
-> [...]
->
-> So, at first I thought that having two maps is a bit of a hack.
-> However, after trying to make it work with only one map I don't really
-> like that either :)
+> Yes, relocations would know about .arena.1, but it's a pretty simple
+> check in a few places. We basically have arena *definition* sec_idx
+> (corresponding to SEC(".maps")) and arena *data* sec_idx. The latter
+> is what is recorded for global variables in .arena.1. We can remember
+> this arena data sec_idx in struct bpf_object once during ELF
+> processing, and then just special case it internally in a few places.
 
-My first attempt was with single arena map, but it ended up with
-hacks all over libbpf and bpftool to treat one map differently depending
-on conditions.
-Two maps simplified the code a lot.
+That was my first attempt and bpf_program__record_reloc()
+became a mess.
+Currently it does relo search either in internal maps
+or in obj->efile.btf_maps_shndx.
+Doing double search wasn't nice.
+And further, such dual meaning of 'struct bpf_map' object messes
+assumptions of bpf_object__shndx_is_maps, bpf_object__shndx_is_data
+and the way libbpf treats map->libbpf_type everywhere.
 
-> The patch looks good to me, have not spotted any logical issues.
->
-> I have two questions if you don't mind:
->
-> First is regarding initialization data.
-> In bpf_object__init_internal_map() the amount of bpf_map_mmap_sz(map)
-> bytes is mmaped and only data_sz bytes are copied,
-> then bpf_map_mmap_sz(map) bytes are copied in bpf_object__create_maps().
-> Is Linux/libc smart enough to skip action on pages which were mmaped but
-> never touched?
+bpf_map__is_internal() cannot really say true or false
+for such dual use map.
+Then skeleton gen gets ugly.
+Needs more public libbpf APIs to use in bpftool gen.
+Just a mess.
 
-kernel gives zeroed out pages to user space.
-So it's ok to mmap a page, copy data_sz bytes into it
-and later copy the full page from one addr to another.
-No garbage copy.
-In this case there will be data by llvm construction of ".arena.1"
-It looks to me that even .bss-like __arena vars have zero-s in data
-and non-zero data_sz.
+> The "fake" bpf_map for __arena_internal is user-visible and requires
+> autocreate=3Dfalse tricks, etc. I feel like it's a worse tradeoff from a
+> user API perspective than a few extra ARENA-specific internal checks
+> (which we already have a few anyways, ARENA is not completely
+> transparent internally anyways).
 
->
-> Second is regarding naming.
-> Currently only one arena is supported, and generated skel has a single '-=
->arena' field.
-> Is there a plan to support multiple arenas at some point?
-> If so, should '->arena' field use the same name as arena map declared in =
-program?
+what do you mean 'user visible'?
+I can add a filter to avoid generating a pointer for it in a skeleton.
+Then it won't be any more visible than other bss/data fake maps.
+The 2nd fake arena returns true out of bpf_map__is_internal.
 
-I wanted to place all global arena vars into a default name "arena"
-and let skeleton to use that name without thinking what name
-bpf prog gave to the actual map.
+The key comment in the patch:
+                /* bpf_object will contain two arena maps:
+                 * LIBBPF_MAP_ARENA & BPF_MAP_TYPE_ARENA
+                 * and
+                 * LIBBPF_MAP_UNSPEC & BPF_MAP_TYPE_ARENA.
+                 * The former map->arena will point to latter.
+                 */
 
