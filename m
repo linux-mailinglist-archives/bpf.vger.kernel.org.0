@@ -1,190 +1,233 @@
-Return-Path: <bpf+bounces-22103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D716856E82
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 21:23:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B07856EE4
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 21:51:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C95D1C232E0
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 20:23:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AB9CB2421F
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 20:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F76E13AA49;
-	Thu, 15 Feb 2024 20:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF84813B2A9;
+	Thu, 15 Feb 2024 20:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LSXiedEo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hVjnTr4Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB2613A89C
-	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 20:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF4023D0
+	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 20:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708028609; cv=none; b=omdg6B/Rs9QIlxCXNjiE942P4o9ZM8zoWjInPqGiu5LnxexUvm1kmNdC9mCdgXnm4iGKDzCfn1O1LYoNKuC6C+wPHH7oKPdwnfwo8McYwZsTQDzwv7x4rowub5Y+dRX4ECWQ9HN38LMuXFfS7X5XJKDwJ5cXkJrSdJPbGwLm61g=
+	t=1708030271; cv=none; b=b0RkUIlkH4uezhqPQQaXMGtZrT7MKW29Y4wtPEOdifq2BHL/GRPS+mRCU47+k8vzXtRJzYah2+exVf2j5xZdKhW5QDBw8H1MEJ7bNbQa/X5BQf8f9NDf3BC5TAW8r23nVgF2eff8MHvawksr7Q9zszn1EeoYn5HgCchei2VZl+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708028609; c=relaxed/simple;
-	bh=1D+WvK1GlQuVjRbE3g6JG6QhxIRdYO3lve18plRPqGE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MAc40zZj30Spe6IV43X8cs0LSqU+L3OWkwtYuN+gLNRmnnl6TrNsE1TsHYun2spgMuwoABZzufrJ29L//XhLdIs6V+i8RrvtUOm2VjAlhhpFUfZG4TYFVmjmc0AayijfEDIsX6xG3gUdI3cC5fk+cz6EhOYEUKMYL+kbuN2GCGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LSXiedEo; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708028607;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1D+WvK1GlQuVjRbE3g6JG6QhxIRdYO3lve18plRPqGE=;
-	b=LSXiedEoZuijDijnFFN8c3SPOoL5wY9Y7Cbynn/a1cDsN2WvFe2NrsprglhncvbTGWNYXt
-	dKpPdn31YAK1eZm5S2E+j4JR18VnE2KMJ8ExSzIdSHGS4IBYx3nDhPOj5aP8DimHxXcVXV
-	swqX1gMndHumah5RWMfq/XqnTcBJ36I=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-204-2csXASvYMT-abdradDB-fQ-1; Thu, 15 Feb 2024 15:23:25 -0500
-X-MC-Unique: 2csXASvYMT-abdradDB-fQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a3c2a65d99eso77170466b.0
-        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 12:23:25 -0800 (PST)
+	s=arc-20240116; t=1708030271; c=relaxed/simple;
+	bh=CN3QDZcmK6IUQcx4HF1P7zaLuLQMU8OLCTs+h9oxVuA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kSqVjbDMA8J9dWoNUUhLmXWqaTdBPUhKV2pDIGgHDir3xBT6DNJVRtq0dq/7ztZ5QciwEwsjQoRrpawEEpYS/IsGsLg9nFUxq5FyOVLH3XF4+YkZCafguIHM4g6dvNcPmVLqmPC9vv/EBlKg+TBDAW4ylOBD3/JPB0NiMfPfaWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hVjnTr4Z; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-410e820a4feso13892985e9.1
+        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 12:51:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708030268; x=1708635068; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QCQCkGfwLZq3s4Iau/1AjCFP8ny+xskYknnBBlXlkxY=;
+        b=hVjnTr4ZS2TEqw01XH+XTBjK7oPkrgdqVzIKkiJnU2Xq1r1+jMP9B/30Oxjjxf9nve
+         GcbqiwD8NzRT12RBbdMQ6hJDGzZkiXL6xeJV7rXYW0pikvAMZ2FYhzU/9QXTgVW3kzUJ
+         1LI/V2VeeSzpfr3gdVJEXsIjS8ROhhmWyJTvZFvmsQVrVOFgG/sr9Zdc4AMezAIM0qvd
+         sJYLSB0eLjLZggtuyGkknwYIadScfoDo5YKWfi692cRWLHhb5B0WghZx8puyb8lfd9xo
+         AlApNNCgWVY/F4llRKoiN0Mozl6e4i6HNctgy3IkLezMM1nvR+Wtx8Hi6j6u00oXSLSr
+         MVMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708028604; x=1708633404;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708030268; x=1708635068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1D+WvK1GlQuVjRbE3g6JG6QhxIRdYO3lve18plRPqGE=;
-        b=ulC+2mF7/qYjCInxxw6eimDAC2Qn0DrmnXa1YCfVTywlJaR6a1tqlH1sGVtyXK4FCv
-         a3ueJK1Es773Nj8M0t5YH+2WvDMrKYZSgrePdDnUw4b4+XbI+x9NVDq+46ZYAPFBqlKi
-         ffjeodBRdE6F5aU1fYGA583lHQ6g3sDiFqcC2e4A5+HEe8dpqtTlN61oR2wO//HY3ffu
-         mQdgLKzOI+W33naG8AvZK7LsxqsPXbZFHKtMNvIAsNz/ek+aU5VAb5jyHLfdcwepHsgj
-         MxPjhEgrOzKNx1pZU/fR34Vw2g4Bu8C7vN/nkhxGM6S/ygZRnHlfkQM734fZ3haiHB8G
-         jpaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXOlCf+dT/49BYDLHCN3xlLN1Lw4M3525IHjWBXlov4VHFjXgEV29fYeaM11NUIcrIP2KTut4BHsNWH4wpl6LFnLnCr
-X-Gm-Message-State: AOJu0YxEZWzVpTw4MAVfY8K+zGIsnl9JLBpw+jeGrHx+k3+1GrlmuMxM
-	luQBWJ+xCTTKwvInRAOs/QqAg1KD0kvwD4XYZtu6mCBIPIKoGrGZnURWIzOPRF3rTROOycaDowe
-	TBHzVDBO05c5+A/kN/oBKZyCPcsTWr9dz6V7fFN7cAkDqTsWkQQ==
-X-Received: by 2002:a17:906:ecea:b0:a36:fc15:c6d2 with SMTP id qt10-20020a170906ecea00b00a36fc15c6d2mr1983946ejb.5.1708028604651;
-        Thu, 15 Feb 2024 12:23:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFjMCOfzmzUW84gaUjk+fIq8/Pz5pfJYAG1xBKJ3oR8bLMhqrtDkSZ7woZT0xqoe7qN4E0QeQ==
-X-Received: by 2002:a17:906:ecea:b0:a36:fc15:c6d2 with SMTP id qt10-20020a170906ecea00b00a36fc15c6d2mr1983935ejb.5.1708028604261;
-        Thu, 15 Feb 2024 12:23:24 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id tl11-20020a170907c30b00b00a3dc41cc812sm143314ejc.17.2024.02.15.12.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 12:23:23 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 3CFD810F5A55; Thu, 15 Feb 2024 21:23:23 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eric
- Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Thomas
- Gleixner <tglx@linutronix.de>, Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-In-Reply-To: <20240214163607.RjjT5bO_@linutronix.de>
-References: <20240213145923.2552753-1-bigeasy@linutronix.de>
- <20240213145923.2552753-2-bigeasy@linutronix.de>
- <66d9ee60-fbe3-4444-b98d-887845d4c187@kernel.org>
- <20240214121921.VJJ2bCBE@linutronix.de> <87y1bndvsx.fsf@toke.dk>
- <20240214142827.3vV2WhIA@linutronix.de> <87le7ndo4z.fsf@toke.dk>
- <20240214163607.RjjT5bO_@linutronix.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 15 Feb 2024 21:23:23 +0100
-Message-ID: <87jzn5cw90.fsf@toke.dk>
+        bh=QCQCkGfwLZq3s4Iau/1AjCFP8ny+xskYknnBBlXlkxY=;
+        b=jc9/GXU+XVBZQthrxxl4qCgn2r4QaQnWd2417nMrVZgUw7A1nTmY+VBWNzYuCtw8rG
+         LMjVOs7XpzHq9cm/ZXPpiw3bo3qs8AV7s0euGD3v8FLV1KuDNMpHLdIvjXNQTwHgXwp9
+         HXq6THZ4hpW+Gjp1EbyEyvFZO9NB9IEbrq7NTyuFHr3ckmlIdab75mpoXwfeGc6myjhq
+         rCU0PWUPaQPsBDcNwHOovojpINe/p4JMMKNJd7C+Z2e4gUqsZdQL1JoezU4QFxsOfJme
+         da3AqEjIXbPFN3eNm1Iy1+sntW9oTafpnxNBuV4yprGOzPP4fXdJFVZ31fEBZxOeBYJb
+         gMkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnMXobF5Q5rxP8oq/7YxanP26alfWcY36eTcq6m/mQ1bzAK4BXb6rLXqFiMi9sjttA+bxx3hTCo6rpc/5H1YXZalbw
+X-Gm-Message-State: AOJu0YxLuXFHNjlYfcuvIiWqonOc/KpxYeYDL8X203Km32X64PNqw7Lz
+	NswSf0eJA25XxZ62Ic6ACadyfiDg7nBvzlayxx/nPTpswtO1/w2QntSqzrxGklxgH3ljm7PD8mb
+	1eSgSgTizm11tkEgNIlL88CNlnUg=
+X-Google-Smtp-Source: AGHT+IEPnGsvbr1tJTG+gyyqiI3Y8G+EwvxKkP5fkOEAuVU78C4KIW2X18viQCnsXyibS/aviqAE7uV5AWjleP3wzIE=
+X-Received: by 2002:a5d:544f:0:b0:33b:69ef:dfb with SMTP id
+ w15-20020a5d544f000000b0033b69ef0dfbmr2478786wrv.14.1708030267421; Thu, 15
+ Feb 2024 12:51:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-5-alexei.starovoitov@gmail.com> <Zcx7lXfPxCEtNjDC@infradead.org>
+ <CAADnVQKT9X1iSLXojVs1sWy4B-qEGccuk6S6u1d9GBmW9pBAeA@mail.gmail.com> <Zc22DluhMNk5_Zfn@infradead.org>
+In-Reply-To: <Zc22DluhMNk5_Zfn@infradead.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 15 Feb 2024 12:50:55 -0800
+Message-ID: <CAADnVQJ8azcUznU6KHhwEM99NUOx8oai8EOyay4dxLM6ho8mjw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 04/20] mm: Expose vmap_pages_range() to the
+ rest of the kernel.
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
-
-> On 2024-02-14 17:08:44 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> > During testing I forgot a spot in egress and the test module. You could
->> > argue that the warning is enough since it should pop up in testing and
->> > not production because the code is always missed and not by chance (go
->> > boom, send a report). I *think* I covered all spots, at least the test
->> > suite didn't point anything out to me.
->>=20
->> Well, I would prefer if we could make sure we covered everything and not
->> have this odd failure mode where redirect just mysteriously stops
->> working. At the very least, if we keep the check we should have a
->> WARN_ON in there to make it really obvious that something needs to be
->> fixed.
+On Wed, Feb 14, 2024 at 10:58=E2=80=AFPM Christoph Hellwig <hch@infradead.o=
+rg> wrote:
 >
-> Agree.
+> On Wed, Feb 14, 2024 at 12:53:42PM -0800, Alexei Starovoitov wrote:
+> > On Wed, Feb 14, 2024 at 12:36=E2=80=AFAM Christoph Hellwig <hch@infrade=
+ad.org> wrote:
+> > >
+> > > NAK.  Please
+> >
+> > What is the alternative?
+> > Remember, maintainers cannot tell developers "go away".
+> > They must suggest a different path.
 >
->> This brings me to another thing I was going to point out separately, but
->> may as well mention it here: It would be good if we could keep the
->> difference between the RT and !RT versions as small as possible to avoid
->> having subtle bugs that only appear in one configuration.
+> That criteria is something you've made up.
+
+I didn't invent it. I internalized it based on the feedback received.
+
+> Telling that something
+> is not ok is the most important job of not just maintainers but all
+> developers.
+
+I'm not saying that maintainers should not say "no",
+I'm saying that maintainers should say "no", understand the problem
+being solved, and suggest an alternative.
+
+> Maybe start with a description of the problem you're
+> solving and why you think it matters and needs different APIs.
+
+bpf_arena doesn't need a different api. These 5 api-s below are enough.
+I'm saying that vmap_pages_range() is equivalent to apply_to_page_range()
+for all practical purposes.
+So, since apply_to_page_range() is available to the kernel
+(xen, gpu, kasan, etc) then I see no reason why
+vmap_pages_range() shouldn't be available as well, since:
+
+struct vmap_ctx {
+     struct page **pages;
+     int idx;
+};
+
+static int __for_each_pte(pte_t *ptep, unsigned long addr, void *data)
+{
+     struct vmap_ctx *ctx =3D data;
+     struct page *page =3D ctx->pages[ctx->idx++];
+
+     /* TODO: sanity checks here */
+     set_pte_at(&init_mm, addr, ptep, mk_pte(page, PAGE_KERNEL));
+     return 0;
+}
+
+static int vmap_pages_range_hack(unsigned long addr, unsigned long end,
+                                 struct page **pages)
+{
+    struct vmap_ctx ctx =3D { .pages =3D pages };
+
+    return apply_to_page_range(&init_mm, addr, end - addr,
+__for_each_pte, &ctx);
+}
+
+Anything I miss?
+
+> > . get_vm_area - external
+> > . free_vm_area - EXPORT_SYMBOL_GPL
+> > . vunmap_range - external
+> > . vmalloc_to_page - EXPORT_SYMBOL
+> > . apply_to_page_range - EXPORT_SYMBOL_GPL
+> >
+> > and the last one is pretty much equivalent to vmap_pages_range,
+> > hence I'm surprised by push back to make vmap_pages_range available to =
+bpf.
 >
-> Yes. I do so, too.
+> And the last we've been trying to get rid of by ages because we don't
+> want random modules to
+
+Get rid of EXPORT_SYMBOL from it? Fine by me.
+Or you're saying that you have a plan to replace apply_to_page_range()
+with something else ? With what ?
+
+> > > > For example, there is the public ioremap_page_range(), which is use=
+d
+> > > > to map device memory into addressable kernel space.
+> > >
+> > > It's not really public.  It's a helper for the ioremap implementation
+> > > which really should not be arch specific to start with and are in
+> > > the process of beeing consolidatd into common code.
+> >
+> > Any link to such consolidation of ioremap ? I couldn't find one.
 >
->> I agree with Jesper that the concept of a stack-allocated "run context"
->> for the XDP program makes sense in general (and I have some vague ideas
->> about other things that may be useful to stick in there). So I'm
->> wondering if it makes sense to do that even in the !RT case? We can't
->> stick the pointer to it into 'current' when running in softirq, but we
->> could change the per-cpu variable to just be a pointer that gets
->> populated by xdp_storage_set()?
+> Second hit on google:
 >
-> I *think* that it could be added to current. The assignment currently
-> allows nesting so that is not a problem. Only the outer most set/clear
-> would do something. If you run in softirq, you would hijack a random
-> task_struct. If the pointer is already assigned then the list and so one
-> must be empty because access is only allowed in BH-disabled sections.
+> https://lore.kernel.org/lkml/20230609075528.9390-1-bhe@redhat.com/T/
+
+Thanks.
+It sounded like you were referring to some future work.
+The series that landed was a good cleanup.
+No questions about it.
+
+> > I surely don't want bpf_arena to cause headaches to mm folks.
+> >
+> > Anyway, ioremap_page_range() was just an example.
+> > I could have used vmap() as an equivalent example.
+> > vmap is EXPORT_SYMBOL, btw.
 >
-> However, using per-CPU for the pointer (instead of task_struct) would
-> have the advantage that it is always CPU/node local memory while the
-> random task_struct could have been allocated on a different NUMA node.
+> vmap is a good well defined API.  vmap_pages_range is not.
 
-Ah yes, good point, that's probably desirable :)
+since vmap() is nothing but get_vm_area() + vmap_pages_range()
+and few checks... I'm missing the point.
+Pls elaborate.
 
->> I'm not really sure if this would be performance neutral (it's just
->> moving around a few bits of memory, but we do gain an extra pointer
->> deref), but it should be simple enough to benchmark.
+> > What bpf_arena needs is pretty much vmap(), but instead of
+> > allocating all pages in advance, allocate them and insert on demand.
 >
-> My guess is that we remain with one per-CPU dereference and an
-> additional "add offset". That is why I kept the !RT bits as they are
-> before getting yelled at.
->
-> I could prepare something and run a specific test if you have one.
+> So propose an API that does that instead of exposing random low-level
+> details.
 
-The test itself is simple enough: Simply run xdp-bench (from
-xdp-tools[0]) in drop mode, serve some traffic to the machine and
-observe the difference in PPS before and after the patch.
+The generic_ioremap_prot() and vmap() APIs make sense for the cases
+when phys memory exists with known size. It needs to vmap-ed and
+not touched after.
+bpf_arena use case is similar to kasan which
+reserves a giant virtual memory region, and then
+does apply_to_page_range() to populate certain pte-s with pages in that reg=
+ion,
+and later apply_to_existing_page_range() to free pages in kasan's region.
 
-The tricky part is that the traffic actually has to stress the CPU,
-which means that the offered load has to be higher than what the CPU can
-handle. Which generally means running on high-speed NICs with small
-packets: a modern server CPU has no problem keeping up with a 10G link
-even at 64-byte packet size, so a 100G NIC is needed, or the test needs
-to be run on a low-powered machine.
+bpf_arena is very similar, except it currently calls get_vm_area()
+to get a 4Gb+guard_pages region, and then vmap_pages_range() to
+populate a page in it, and vunmap_range() to remove a page.
 
-As a traffic generator, the xdp-trafficgen utility also in xdp-tools can
-be used, or the in-kernel pktgen, or something like T-rex or Moongen.
-Generally serving UDP traffic with 64-byte packets on a single port
-is enough to make sure the traffic is serviced by a single CPU, although
-some configuration may be needed to steer IRQs as well.
+These existing api-s work, so not sure what you're requesting.
+I can guess many different things, but pls clarify to reduce
+this back and forth.
+Are you worried about range checking? That vmap_pages_range()
+can accidently hit an unintended range?
 
--Toke
-
-[0] https://github.com/xdp-project/xdp-tools
-
+btw the cover letter and patch 5 explain the higher level motivation
+from bpf pov in detail.
+There was a bunch of feedback on that patch, which was addressed,
+and the latest version is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git/commit/?h=3Dare=
+na&id=3Da752b4122071adb5307d7ab3ae6736a9a0e45317
 
