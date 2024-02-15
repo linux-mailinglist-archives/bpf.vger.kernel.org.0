@@ -1,169 +1,158 @@
-Return-Path: <bpf+bounces-22067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42186855D70
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 10:09:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42A32855FDB
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 11:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E23141F21453
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 09:09:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75B481C23621
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 10:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407A1171CE;
-	Thu, 15 Feb 2024 09:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402EB12DDA2;
+	Thu, 15 Feb 2024 10:36:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FGjAUcWN"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jYcIOh7n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111D513ADD
-	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 09:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F52312D76C
+	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 10:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988124; cv=none; b=VBjz8Tvs2aq4F1dWErpZgMGIu4QIyCfW27V49NdQyKymi2piT89ZpdyXUltVjMBsmbLOm6fmRNuRsMeKW4MxkUkMVdEHKtbF/hBDqiJQHeOw3ImXQyFMiNfUbLvNeTmyOyXk7FTeWH7AvBK2ekf98GPIamzXMnkRKe9RegdoP+k=
+	t=1707993390; cv=none; b=huos1GS/Y+JsKjJ7+lnYM0KPfWHBDforHSlM6rcwfwsaycS919bNmAokt91u1+Sp53wk2Ujp8bKVlmTHMjY/03Rm45JrMWuljCN2oS+FmvMW48DStA2j/11ha15whHHs9ycgBRMMvFbcxeRJkD3mdpYjeaFN2fS52uiLQI7PJoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988124; c=relaxed/simple;
-	bh=bBEIV1cBxCJ3hS8tirG0+JX+DH5KxdRy484gLlTDizI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eZIzwR8kyChQZT1/7N0+qWt+MSnltXOoIGjVrKb8WenCI7P+mj1WX4sheVYmiMris6CWX7V0agqnpV0FScwo6fmoFG4MpoyWW24AoYF0ls8Re3Fgj4ZVVBuAruSEjtugM7arpc2BdTogreA6rEds0DBCZHqFOQruZCwviEQmJUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FGjAUcWN; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5120ecfd75cso799885e87.0
-        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 01:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707988121; x=1708592921; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EBmepH5HqEG5bo+NhXzjNcQva+/AEu2Rw+wtIvUhXtA=;
-        b=FGjAUcWNWy7jZ5w2PmoK5YY2PLKtXRaGjLz4qA95uDUzNB/GH/1rjm8xaq8mbpmbE8
-         sn1J7iXDwtyA0lhJHhF3VXkBuPxzH31juX9TNrAkrwrbCMfqhRZlcb5C4zJ5HTYYM30w
-         tNRguubfWhEdPxE3hJ+zRHjXJBf1UHvsIgRKjl8OZfFT43KHk6cT0HXIC5gzTL9UOyGx
-         AlQsaKIYO+MKYcLnBnh06pcPvSH2R+P9fpwgIXaG3QaoWw90xrTWvF0iWVjnDqHA72vz
-         0QulwjiDU9uE3c54GdCP8wQHgDUFBMijcQqpsqbbZ/A6JUipvtWseEY0JIl7nigNc0XL
-         U+EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707988121; x=1708592921;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EBmepH5HqEG5bo+NhXzjNcQva+/AEu2Rw+wtIvUhXtA=;
-        b=Kd/obfo3F9ZmfaVvRKWnvyMKQYAsO+ttWr7GiDBoTmSEbSBczLUPyvbEsJd0NPNgyX
-         uVoViysMzBsFC7iWaZFTXoVBs1UfrmMDFBrEd6noRKoD0brjNBtnIifGhdNKJwYgc6kL
-         r6KChGX74hwP9+3Q/UvRuc41DZYhx/C9gqaALFEtDcwhfdX8to+yLjD+OnMc00ztG70U
-         K+HcOWzoMharcaBPmPir6ZSANgmjk9m/6n4YGbChNAzjb5a49jHHUG2L0CP4aM1wAlbR
-         cZQBubosoXBwsTwQVuNOLOlWCyrzR4cFw/+vrlAnVciC+IP3r3U5V2GGBlZQ3t9qKIcP
-         K9Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCX9urAy/vRcZLsGmPzIx67v5YU8T7E9c7Sh012QZAh6Cqso2IrG1THk5Lvw96PGq+KjJgML4om76lhw0/lfG6ay9wQc
-X-Gm-Message-State: AOJu0YxwIRZ/8T7lFdseAYH6/dyXCuKEMYnD5iF5pEaMVYj5OKfRkHiI
-	MQr9HK6BwVb1KrtNEE36A7oybMliJkf9lKJKzfPgCD2+nknRLl/K
-X-Google-Smtp-Source: AGHT+IGB6D4hm0/YvviZGMeWALzabUUYKsSOdopm9St0H0hzK9E9TjifRRLuDVnKoV6f/arJg1tkTg==
-X-Received: by 2002:a05:6512:32b2:b0:511:3a32:4e4f with SMTP id q18-20020a05651232b200b005113a324e4fmr824628lfe.18.1707988120736;
-        Thu, 15 Feb 2024 01:08:40 -0800 (PST)
-Received: from krava ([2a02:8308:b08e:be00:8f2b:9f9:3953:bf])
-        by smtp.gmail.com with ESMTPSA id r8-20020a05600c458800b0040fb783ad93sm1288535wmo.48.2024.02.15.01.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 01:08:40 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 15 Feb 2024 10:08:38 +0100
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCH RFC bpf-next 1/4] fprobe: Add entry/exit callbacks types
-Message-ID: <Zc3UllfMobF109i7@krava>
-References: <20240207153550.856536-1-jolsa@kernel.org>
- <20240207153550.856536-2-jolsa@kernel.org>
- <20240214003546.75688cf56b548a86eb090068@kernel.org>
+	s=arc-20240116; t=1707993390; c=relaxed/simple;
+	bh=5oS12a1+72pCetee/pRRwlcEJNXteRPPJ7auFcYDWx0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X8Vg70T28ernPIBssI1o6sDD8LOqO8V34U3vMX4vq/sP574iGfULIvQ1lSag+iFxxpm6yIrcVIsEEXNcj0Ra+25yyYd017mzdNcfg8vsKgqsnrex8oVEX4pLnnTlwlN7k8Pk5WD5fcsSUAO0UJaqY7yNif7Gos3Ye1Cm2xGNe1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jYcIOh7n; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41F90FQm013242;
+	Thu, 15 Feb 2024 10:35:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0Lkd6nG2l1dtyAWgztLgpaGyC5DsaIeusO5eKZMkEBg=;
+ b=jYcIOh7nez39njav3GC+DYC+yt409Qu6wbgK8IAgfjq1xHTLU8Hg3uK59a3ec2aQg7j1
+ S9Ngzs44XvxgSv9M0uaX0a0dOQObQvoFwEVGPyJAsKtNtTLZlsl44/YtMdlVcmhGUMHC
+ j5YSe0Dpf+Jd25x4gkrh6nuElo1ldSJbE57Gb3WWhLz8UtQ8vWzKMi/bnGIn6NW8Vvg6
+ KzOzQ1tThT+6vC+mop3oMJG9WfZIVkFR/ycqkVtNchWTQc6d4nMYtbQbnc2BhLQQe0Pm
+ crSCNy8cy/xvEYWW/jbNVpdfR6lTYas8ePKAq08WqK88bQCXB3asvPGSj/d5g8axZdn2 GQ== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9fkkt7ru-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 10:35:54 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41F9e2Ap009904;
+	Thu, 15 Feb 2024 10:35:54 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p633mrt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 10:35:54 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FAZooO18154122
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 10:35:52 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 49FEA20043;
+	Thu, 15 Feb 2024 10:35:50 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 31D8A2004B;
+	Thu, 15 Feb 2024 10:35:47 +0000 (GMT)
+Received: from [9.43.101.252] (unknown [9.43.101.252])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 15 Feb 2024 10:35:46 +0000 (GMT)
+Message-ID: <71d6f107-7fd5-45f9-b2cd-e2d1b018720a@linux.ibm.com>
+Date: Thu, 15 Feb 2024 16:05:45 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214003546.75688cf56b548a86eb090068@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] powerpc/bpf: enable kfunc call
+Content-Language: en-US
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+References: <20240201171249.253097-1-hbathini@linux.ibm.com>
+ <20240201171249.253097-2-hbathini@linux.ibm.com>
+ <4dd99601-6990-444c-af23-95cb3f7b156b@csgroup.eu>
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <4dd99601-6990-444c-af23-95cb3f7b156b@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TrzXTGFBWof91yLdJ646PcDA4ucgAwkv
+X-Proofpoint-ORIG-GUID: TrzXTGFBWof91yLdJ646PcDA4ucgAwkv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_10,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 phishscore=0 spamscore=0 bulkscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150083
 
-On Wed, Feb 14, 2024 at 12:35:46AM +0900, Masami Hiramatsu wrote:
-> Hi,
-> 
-> On Wed,  7 Feb 2024 16:35:47 +0100
-> Jiri Olsa <jolsa@kernel.org> wrote:
-> 
-> > We are going to store callbacks in following change,
-> > so this will ease up the code.
-> > 
-> 
-> Yeah, this looks good to me.
-> 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Hmm, can I pick this in my for-next tree?
 
-I don't mind you picking that up, I'll have to send new version of
-the rest of the patchset, but I think I'll still need these types
 
-jirka
+On 13/02/24 1:24 pm, Christophe Leroy wrote:
+> 
+> 
+> Le 01/02/2024 à 18:12, Hari Bathini a écrit :
+>> With module addresses supported, override bpf_jit_supports_kfunc_call()
+>> to enable kfunc support. Module address offsets can be more than 32-bit
+>> long, so override bpf_jit_supports_far_kfunc_call() to enable 64-bit
+>> pointers.
+> 
+> What's the impact on PPC32 ? There are no 64-bit pointers on PPC32.
 
-> 
-> Thank you,
-> 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/linux/fprobe.h | 18 ++++++++++++------
-> >  1 file changed, 12 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-> > index 3e03758151f4..f39869588117 100644
-> > --- a/include/linux/fprobe.h
-> > +++ b/include/linux/fprobe.h
-> > @@ -7,6 +7,16 @@
-> >  #include <linux/ftrace.h>
-> >  #include <linux/rethook.h>
-> >  
-> > +struct fprobe;
-> > +
-> > +typedef int (*fprobe_entry_cb)(struct fprobe *fp, unsigned long entry_ip,
-> > +			       unsigned long ret_ip, struct pt_regs *regs,
-> > +			       void *entry_data);
-> > +
-> > +typedef void (*fprobe_exit_cb)(struct fprobe *fp, unsigned long entry_ip,
-> > +			       unsigned long ret_ip, struct pt_regs *regs,
-> > +			       void *entry_data);
-> > +
-> >  /**
-> >   * struct fprobe - ftrace based probe.
-> >   * @ops: The ftrace_ops.
-> > @@ -34,12 +44,8 @@ struct fprobe {
-> >  	size_t			entry_data_size;
-> >  	int			nr_maxactive;
-> >  
-> > -	int (*entry_handler)(struct fprobe *fp, unsigned long entry_ip,
-> > -			     unsigned long ret_ip, struct pt_regs *regs,
-> > -			     void *entry_data);
-> > -	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip,
-> > -			     unsigned long ret_ip, struct pt_regs *regs,
-> > -			     void *entry_data);
-> > +	fprobe_entry_cb entry_handler;
-> > +	fprobe_exit_cb  exit_handler;
-> >  };
-> >  
-> >  /* This fprobe is soft-disabled. */
-> > -- 
-> > 2.43.0
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Yeah. Not required to return true for PPC32 case and probably not a
+good thing to claim support for far kfunc calls for PPC32. Changing to:
+
++bool bpf_jit_supports_far_kfunc_call(void)
++{
++	return IS_ENABLED(CONFIG_PPC64);
++}
+
+>>
+>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>> ---
+>>
+>> * No changes since v1.
+>>
+>>
+>>    arch/powerpc/net/bpf_jit_comp.c | 10 ++++++++++
+>>    1 file changed, 10 insertions(+)
+>>
+>> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+>> index 7b4103b4c929..f896a4213696 100644
+>> --- a/arch/powerpc/net/bpf_jit_comp.c
+>> +++ b/arch/powerpc/net/bpf_jit_comp.c
+>> @@ -359,3 +359,13 @@ void bpf_jit_free(struct bpf_prog *fp)
+>>    
+>>    	bpf_prog_unlock_free(fp);
+>>    }
+>> +
+>> +bool bpf_jit_supports_kfunc_call(void)
+>> +{
+>> +	return true;
+>> +}
+>> +
+>> +bool bpf_jit_supports_far_kfunc_call(void)
+>> +{
+>> +	return true;
+>> +}
 
