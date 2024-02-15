@@ -1,82 +1,95 @@
-Return-Path: <bpf+bounces-22048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13EA18558F1
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 03:24:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46FF7855922
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 04:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC66C28F3F8
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 02:24:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A30FFB28C49
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 03:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2D31C06;
-	Thu, 15 Feb 2024 02:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304044A15;
+	Thu, 15 Feb 2024 03:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FQ091itb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="heb5Zclc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA421392
-	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 02:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266841870;
+	Thu, 15 Feb 2024 03:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707963848; cv=none; b=C6GGMNOfA2AHBlUA0Egjuo2emsRkkz1LxXTbB9HmOmDrMqFhEcWTRI+wrG0D1YDDKWh2h/E6qx5wYLKyXvCWWMrZkXjIJrgVupJEVPxO1jVqRB0kIXSlkWZ6cJAuJ4RDGx9aJqPQouKyo0NMpUYKHtUqsfWTGKmQeIt0HehY+BI=
+	t=1707966450; cv=none; b=nrbplWpLAeS3oB0zZYsGE07Qk4l9BdeKazPjeaGqadsn3zilxZgN3ci35wtoxJnJLKfzcYpPAcjFzvIOZEbZCm+DErN26x9FnaaX9zyizNdPCAD4wxyh/0IZRDuLRiyxPUSQxbt996Qu3elL7Y4cFgIiF2Tv6QkZ8zOJojfAO3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707963848; c=relaxed/simple;
-	bh=XL1oV/oDVHT21E0pZFTXCPJ4tx98GzpndorHJ8aYVd8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iWzqcP+0+rttOWe1cB27unoWxtwAiq3NStMIgn+aFHF9DxG+gljWretCrrpVUSCQxpyULY2RuhanwM+Mhdg0iat9C9BpJdNu3uC9Iyc0OT65gKyJ/Nuyp6Xzz6Z0ZNsMIVHDl6q+rO+FEAY/IElYsuLrLpTu7ZdbfuSjX39oyMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FQ091itb; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc74435c428so294472276.2
-        for <bpf@vger.kernel.org>; Wed, 14 Feb 2024 18:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707963845; x=1708568645; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO3iRhMBz2n0K3g1h5S+ohi0clTPy6tmg9Fvmq5N/EI=;
-        b=FQ091itb+HkCYa810AgfIJCVIOVzsmWxDhD5BSk8YrDtGbRfwoN8WY2PnE7+jnumd7
-         oV44IumdU6UW/oNmsCcmypVTaQQulrlHG7xvfL4kvChLv2zyzr2PkhvYA4pLvRyqXHJs
-         ZT2nNBMQsCGiBGanAZIllN4odbR0CfuKmHOsGY/OGa4+SV+nu+GBTRW3a0c+zxcxLY0C
-         GFmcdKvCqMjz6HbszZoZc8EnkxM9IU8Du2pRmrMRRA5g2Ob/ndGripHhoR7QGFiPEzOD
-         eCWHHxV6Pf4bJVMeqUvhskB69kXhJU/ykcUWpNch008m+/ncamoN/sKibqX1kH7AqAb8
-         LzxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707963845; x=1708568645;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jO3iRhMBz2n0K3g1h5S+ohi0clTPy6tmg9Fvmq5N/EI=;
-        b=atwuWcxItFDv1bI2gVw5EhvIV8jl3CjGJsz/E9CZ5ZLoibAaWnGOeCREODNVyzt+EV
-         c36z/F/3QNab+l5ZQq9icaKYn1l4bUluhh+tD2uDBeH5t7AFXR9wpJtN78pBDYvyD1jm
-         P4YdSc3x2GP4xg+ZNDOVvdpAy+qmQfDirUP2cHIpXkxVZ+z41cIC2LbBl98KZM+3/16M
-         ymO56xKl6fx+JcFJ5wy1G9iHFepFqAiw78arfXiVT/+sapdid/VPQOMub5wtKYm2TVWW
-         e4WveOICADOfyNxBWY1qEJa19gLWAo81rkT+HaUNQExbwk68Z3UujnYX7yD77illODZY
-         0Ctg==
-X-Gm-Message-State: AOJu0YzdlGz50NLWJCs4+wKQAHf86ftWCNvYKfF2h6/EoWfbxzX/9FE2
-	Bcd7BkgSckldIxcFD4bKtqYHMHRZFPp20N+jQ+uR3tZN11Q9Y6LNkpTLVHy6
-X-Google-Smtp-Source: AGHT+IGz5Z0plAYx8JAiTSfylZSvu4ZyRnh7OXmfiRUIVrnNQEw19PxFjuoBkg7Wzd1RtsaCwX/G0g==
-X-Received: by 2002:a25:f203:0:b0:dcd:b034:b504 with SMTP id i3-20020a25f203000000b00dcdb034b504mr334289ybe.27.1707963845299;
-        Wed, 14 Feb 2024 18:24:05 -0800 (PST)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:d584:8b21:ee08:57bd])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05690204ac00b00dc7496891f1sm35627ybs.54.2024.02.14.18.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 18:24:04 -0800 (PST)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next] bpf: Check cfi_stubs before registering a struct_ops type.
-Date: Wed, 14 Feb 2024 18:24:01 -0800
-Message-Id: <20240215022401.1882010-1-thinker.li@gmail.com>
+	s=arc-20240116; t=1707966450; c=relaxed/simple;
+	bh=qwwasO+1xBKjEezC6aXWqJJmEG8jQepQBuZ9KNK5I8Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RKehzgzwOshpO00cl4Ct58VMa6Tt20Ge51ZfXi1gahESQaQyYp74+GCIskN/W3ck7f6LwI7LQCygDW/0oOyuRQsB+iJbll/mnNL7+azK9YvulOgs02SLeqaus+IxMogySsDEGY+Hy34mn98ymw0b4WeH2kj347obGCKkT/E54bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=heb5Zclc; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707966450; x=1739502450;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qwwasO+1xBKjEezC6aXWqJJmEG8jQepQBuZ9KNK5I8Y=;
+  b=heb5ZclcVvK5Havye35ORgU/HuR1tlGUYPHV9B7NPewpumBoEIBGWKRf
+   Yus6w3PNaTnWaXlrUOod08VjgnDaoA93ig4cGaoOv5Z/c7JcY2JNguwC7
+   kjRB2DXhlngi/7H9F8eu1ABKkFVgiQE9jkH1zkr83s5do2GnpXS0C+7lw
+   kF0/XzfKM/Z0nU+P8pUGJNWbSGYdCuBZAJj2dGPNcYRuYUzh/pwa/BL4O
+   A5NCjC+c1JAdfDmqxJim1nAaE9MEB3Tx0NK2n9dacQjCeCSoFY8QpQDqu
+   n5jDDJxusdaLTBfrqjR/3ot+5Gx9reUO5VsP3Dfj2jL3krr20cUypzvtM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="19461201"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="19461201"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 19:07:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="3385643"
+Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
+  by fmviesa009.fm.intel.com with ESMTP; 14 Feb 2024 19:07:21 -0800
+From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Andrew Halaney <ahalaney@redhat.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Voon Wei Feng <weifeng.voon@intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
+	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
+Subject: [PATCH net-next v5 0/9] Enable SGMII and 2500BASEX interface mode switching for Intel platforms
+Date: Thu, 15 Feb 2024 11:04:50 +0800
+Message-Id: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -86,34 +99,91 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+From: root <root@YongLiang-Ubuntu20-iLBPG12.png.intel.com>
 
-Recently, cfi_stubs were introduced. However, existing struct_ops types
-that are not in the upstream may not be aware of this, resulting in kernel
-crashes. By rejecting struct_ops types that do not provide cfi_stubs during
-registration, these crashes can be avoided.
+During the interface mode change, the 'phylink_major_config' function
+will be triggered in phylink. The modification of the following functions
+will be triggered to support the switching between SGMII and 2500BASEX
+interfaces mode for the Intel platform.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- kernel/bpf/bpf_struct_ops.c | 5 +++++
- 1 file changed, 5 insertions(+)
+- mac_get_pcs_neg_mode: A new function that selects the PCS negotiation
+  mode according to the interface mode.
+- xpcs_do_config: Re-initiate clause 37 auto-negotiation for SGMII interface
+  mode to perform auto-negotiation.
+- mac_finish: Configures the SerDes according to the interface mode.
 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 0d7be97a2411..e35958142dce 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -302,6 +302,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 	}
- 	sprintf(value_name, "%s%s", VALUE_PREFIX, st_ops->name);
+With the above changes, the code will work as follows during the
+interface mode change. The PCS and PCS negotiation mode will be selected
+for PCS configuration according to the interface mode. Then, the MAC
+driver will perform SerDes configuration on the 'mac_finish' based on the
+interface mode. During the SerDes configuration, the selected interface
+mode will identify TSN lane registers from FIA and then send IPC commands
+to the Power Management Controller (PMC) through the PMC driver/API.
+PMC will act as a proxy to program the PLL registers.
+
+Change log:
+v1 -> v2: 
+ - Add static to pmc_lpm_modes declaration
+ - Add cur_link_an_mode to the kernel doc
+ - Combine 2 commits i.e. "stmmac: intel: Separate driver_data of ADL-N
+ from TGL" and "net: stmmac: Add 1G/2.5G auto-negotiation
+ support for ADL-N" into 1 commit.
+
+v2 -> v3:
+ - Create `pmc_ipc.c` file for `intel_pmc_ipc()` function and 
+ allocate the file in `arch/x86/platform/intel/` directory.
+ - Update phylink's AN mode during phy interface change and 
+ not exposing phylink's AN mode into phylib.
  
-+	if (!st_ops->cfi_stubs) {
-+		pr_warn("The struct_ops %s has no cfi_stubs\n", st_ops->name);
-+		return -EINVAL;
-+	}
-+
- 	type_id = btf_find_by_name_kind(btf, st_ops->name,
- 					BTF_KIND_STRUCT);
- 	if (type_id < 0) {
+ v3 -> v4:
+ - Introduce `allow_switch_interface` flag to have all ethtool 
+ link modes that are supported and advertised will be published.
+ - Introduce `mac_get_pcs_neg_mode` function that selects the PCS 
+ negotiation mode according to the interface mode.
+ - Remove pcs-xpcs.c changes and handle pcs during `mac_select_pcs`
+ function
+ - Configure SerDes base on the interface on `mac_finish` function.
+ 
+ v4 -> v5:
+ - remove 'allow_switch_interface' related patches.
+ - remove 'mac_select_pcs' related patches.
+ - add a soft reset according to XPCS datasheet for re-initiate Clause 37
+ auto-negotiation when switching to SGMII interface mode.
+
+Choong Yong Liang (7):
+  net: phylink: provide mac_get_pcs_neg_mode() function
+  net: phylink: add phylink_pcs_neg_mode() declaration into phylink.h
+  net: stmmac: select PCS negotiation mode according to the interface
+    mode
+  net: pcs: xpcs: re-initiate clause 37 Auto-negotiation
+  net: stmmac: configure SerDes on mac_finish
+  stmmac: intel: interface switching support for EHL platform
+  stmmac: intel: interface switching support for ADL-N platform
+
+David E. Box (1):
+  arch: x86: Add IPC mailbox accessor function and add SoC register
+    access
+
+Tan, Tee Min (1):
+  stmmac: intel: configure SerDes according to the interface mode
+
+ MAINTAINERS                                   |   2 +
+ arch/x86/Kconfig                              |   9 +
+ arch/x86/platform/intel/Makefile              |   1 +
+ arch/x86/platform/intel/pmc_ipc.c             |  75 ++++++
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |   2 +
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 233 ++++++++++++++++--
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  81 ++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  30 +++
+ drivers/net/pcs/pcs-xpcs.c                    |  62 ++++-
+ drivers/net/phy/phylink.c                     |  21 +-
+ include/linux/phylink.h                       |   8 +
+ .../linux/platform_data/x86/intel_pmc_ipc.h   |  34 +++
+ include/linux/stmmac.h                        |   5 +
+ 13 files changed, 538 insertions(+), 25 deletions(-)
+ create mode 100644 arch/x86/platform/intel/pmc_ipc.c
+ create mode 100644 include/linux/platform_data/x86/intel_pmc_ipc.h
+
 -- 
 2.34.1
 
