@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-22084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0FA585669E
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 15:56:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CACB68566C6
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 16:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85E0DB22D08
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 14:56:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 087B81C214C3
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 15:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9C813248E;
-	Thu, 15 Feb 2024 14:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 615D5132C01;
+	Thu, 15 Feb 2024 15:01:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32D220B3D;
-	Thu, 15 Feb 2024 14:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F947131E3D;
+	Thu, 15 Feb 2024 15:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708008967; cv=none; b=e5jSyOTwRfoTCnI/vLEa+MR/2jw3AX+VN+RA12/mOA6IqNgQ17HnXdcUPDIQ+ZDQi6hEcqCZnIM2WVyWJgMmKnKZLp8BbJJ/+CgnKwjqmhznZTGzbePKXx0BHFWzfVmQp0tuH9CvCr5tr1mK0o6T51E+6J/YvFjkmzHWpWfl9I8=
+	t=1708009283; cv=none; b=qJten8rPfNtTil7J6xT6AwRjUL3NyiSXj8q1/8Iz2wtG/HoFiKUTslrnjcebcxKZLSfqtjaG5NH2tlzFH+RcvJuCBKDBVhGZYTY6zoj9JOt8r/spuz2FKABA/oGeshO//ikcCgmROkPOxjLCeglGYfgJ4A8bYE5kagpJ7tzaBes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708008967; c=relaxed/simple;
-	bh=nH02mRbEf+x2rpYZvYmd3xMiMm7jKKeDp+ZWKf4JDmg=;
+	s=arc-20240116; t=1708009283; c=relaxed/simple;
+	bh=idPar8TnYrcn1/ehunJjNHy7HB5Glf8ubsjkXlG3MF4=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JvAjG50/LZFPKq5AAPMa6FGRw6i2ZRjarBJ3zHWoN161HMdlhOM9Q/hGP62q9x7cK1eW2/3LHtvU8A3FuijNhUvaBpcabF67fZmKpkXlQ61lGxylUtSuPmEQpxgZtqNJxOW5kMRvyIWCY2K4VLaZdEVda/o4cIzQ1d+Evj2OxqI=
+	 MIME-Version:Content-Type; b=Q7GVdUPhoW1MZ3jxQayIwDJnuCy3VtlaOaOvhhxuAPnfqMeP00mq58Ln5pZT9PpOO6CYmBOYP2ZG7tb32kaA8C1yrMrfVGXOM2Q1yP8XNSKJyA9EYdzvx04xfYMKh08Y0F+AyETv/7IJ0lB1mxD0P6hmVg30N05C68nYd22mJHo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853DAC433F1;
-	Thu, 15 Feb 2024 14:56:05 +0000 (UTC)
-Date: Thu, 15 Feb 2024 09:57:39 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9CB4C433F1;
+	Thu, 15 Feb 2024 15:01:20 +0000 (UTC)
+Date: Thu, 15 Feb 2024 10:02:54 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
@@ -41,12 +41,12 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
  Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
  <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
  Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 20/36] function_graph: Improve push operation for
- several interrupts
-Message-ID: <20240215095739.41a2fac7@gandalf.local.home>
-In-Reply-To: <170723227198.502590.10431025573751489041.stgit@devnote2>
+Subject: Re: [PATCH v7 21/36] function_graph: Add selftest for passing local
+ variables
+Message-ID: <20240215100254.2891c5da@gandalf.local.home>
+In-Reply-To: <170723228217.502590.6615001674278328094.stgit@devnote2>
 References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723227198.502590.10431025573751489041.stgit@devnote2>
+	<170723228217.502590.6615001674278328094.stgit@devnote2>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -57,67 +57,86 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed,  7 Feb 2024 00:11:12 +0900
+On Wed,  7 Feb 2024 00:11:22 +0900
 "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
-> Improve push and data reserve operation on the shadow stack for
-> several sequencial interrupts.
+> Add boot up selftest that passes variables from a function entry to a
+> function exit, and make sure that they do get passed around.
 > 
-> To push a ret_stack or data entry on the shadow stack, we need to
-> prepare an index (offset) entry before updating the stack pointer
-> (curr_ret_stack) so that unwinder from interrupts can find the
-> next return address from the shadow stack. Currently we do write index,
-> update the curr_ret_stack, and rewrite it again. But that is not enough
-> for the case if two interrupts happens and the first one breaks it.
-> For example,
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Changes in v2:
+>   - Add reserved size test.
+>   - Use pr_*() instead of printk(KERN_*).
+> ---
+>  kernel/trace/trace_selftest.c |  169 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
 > 
->  1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
->  2. interrupt comes.
->     2.1. push new index and ret addr on ret_stack.
->     2.2. pop it. (corrupt entries on new_index - 1)
->  3. return from interrupt.
->  4. update curr_ret_stack = new_index
->  5. interrupt comes again.
->     5.1. unwind <------ may not work.
+> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> index f0758afa2f7d..4d86cd4c8c8c 100644
+> --- a/kernel/trace/trace_selftest.c
+> +++ b/kernel/trace/trace_selftest.c
+> @@ -756,6 +756,173 @@ trace_selftest_startup_function(struct tracer *trace, struct trace_array *tr)
+>  
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE
+> +
+> +#define BYTE_NUMBER 123
+> +#define SHORT_NUMBER 12345
+> +#define WORD_NUMBER 1234567890
+> +#define LONG_NUMBER 1234567890123456789LL
+> +
+> +static int fgraph_store_size __initdata;
+> +static const char *fgraph_store_type_name __initdata;
+> +static char *fgraph_error_str __initdata;
+> +static char fgraph_error_str_buf[128] __initdata;
+> +
+> +static __init int store_entry(struct ftrace_graph_ent *trace,
+> +			      struct fgraph_ops *gops)
+> +{
+> +	const char *type = fgraph_store_type_name;
+> +	int size = fgraph_store_size;
+> +	void *p;
+> +
+> +	p = fgraph_reserve_data(gops->idx, size);
+> +	if (!p) {
+> +		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
+> +			 "Failed to reserve %s\n", type);
+> +		fgraph_error_str = fgraph_error_str_buf;
+> +		return 0;
+> +	}
+> +
+> +	switch (fgraph_store_size) {
+> +	case 1:
+> +		*(char *)p = BYTE_NUMBER;
+> +		break;
+> +	case 2:
+> +		*(short *)p = SHORT_NUMBER;
+> +		break;
+> +	case 4:
+> +		*(int *)p = WORD_NUMBER;
+> +		break;
+> +	case 8:
+> +		*(long long *)p = LONG_NUMBER;
+> +		break;
+> +	}
+> +
 
-I'm curious if you saw this happen?
+What would be an interesting test is to run all versions together. That is,
+to attach a callback that stores a byte, a callback that stores a short, a
+callback that stores a word and a callback that stores a long, and attach
+them all to the same function.
 
-That is, did you trigger this or only noticed it by inspection?
-
-This code is already quite complex, I would like to simplify it more before
-we try to fix rare race conditions that only affect the unwinder.
-
-Let's hold off on this change.
+I guess we can add that as a separate patch.
 
 -- Steve
 
 
-> 
-> To avoid this issue, this introduces a new rsrv_ret_stack stack
-> reservation pointer and a new push code (slow path) to commit
-> previous reserved code forcibly.
-> 
->  0. update rsrv_ret_stack = new_index.
->  1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
->  2. interrupt comes.
->     2.0. if rsrv_ret_stack != curr_ret_stack, add reserved index
->         entry on ret_stack[rsrv_ret_stack - 1] to point the previous
-> 	ret_stack pointed by ret_stack[curr_ret_stack - 1]. and
-> 	update curr_ret_stack = rsrv_ret_stack.
->     2.1. push new index and ret addr on ret_stack.
->     2.2. pop it. (corrupt entries on new_index - 1)
->  3. return from interrupt.
->  4. update curr_ret_stack = new_index
->  5. interrupt comes again.
->     5.1. unwind works, because curr_ret_stack points the previously
->         saved ret_stack.
->     5.2. this can do push/pop operations too.
-> 6. return from interrupt.
-> 7. rewrite reserved index entry at ret_stack[new_index] again.
-> 
-> This maybe a bit heavier but safer.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> +	return 1;
+> +}
+> +
 
