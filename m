@@ -1,71 +1,88 @@
-Return-Path: <bpf+bounces-22065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 077C0855AE2
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 07:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE40855D5E
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 10:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE0462944D0
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 06:58:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9757C28C113
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 09:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6637CBE65;
-	Thu, 15 Feb 2024 06:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C2A13FFD;
+	Thu, 15 Feb 2024 09:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ap220Frv"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="numNNyzH";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7grj45p3"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EE4BA37
-	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 06:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0C3134D3;
+	Thu, 15 Feb 2024 09:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707980305; cv=none; b=JqXpWokG0UHEGy2e6m9/s1z02LHfS4SCvg1Brt4EOnwqiZake8OIiyET5hGE+TpaIVijMJ8eRSFzOXFd0RYcXFBOQS4Lj1LKVn4NPzceEPbPjN25vcrJRRt2WkBSB+/DhN7AMfz5ImG48LvdjoNtTVQSE3/oEtpRuK1SBw97wus=
+	t=1707987874; cv=none; b=JWdqvxOD9vxq+NhRlz+PGZMdxarI6Hn4P7CxYQnczpsBvBFN5znXSpE3jozbBDBEWqU6PX1bukjtDOVYFWvxz5mf36Vz5VEnRxwSJRdSTxkQQxzFzLm1P9Suz8dEnz3jEVZXS/tGZGopO9t8iZGj63fLlZhb44J5RO6ZhXwepe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707980305; c=relaxed/simple;
-	bh=rrqrakVMh2CwiqgT49VVbRBSSEZK4ZNwEF8E3zVPwAE=;
+	s=arc-20240116; t=1707987874; c=relaxed/simple;
+	bh=GCpT6CXYqbGGLaAOGkXkfJ/a2YvRtUjhN61mhn++udc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QlXLfExP29hu+1MFhkbYrIZa6ZgBh0/VO5aotDGyaRqks3PrqAtY9QgNPx8yQMrO6KYHgbYi6qDBcsi+guKe/HnDVLkZMdZuqY0rlOv2nVM6MBGksH9Mn+oZPLUlwIbqa9EPWSgAaNOkBsubGOAjrxTwjUNMNa8+AckaVm6R/n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ap220Frv; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=4U8Tkg5NEwftO2A4hO+rPpqrK6CjKdnJ9oxED/Cw8Bs=; b=ap220FrviDH5PR7HF5N4sqkMy0
-	pHMmBmgQrKAlQohHs7zCZ8TMwiDE2JJShawCnko8tGjULaOkbrbNJ5/oT0FIUJniFQBQcmHJAXbjC
-	ZmdOHR71Iqog9Y4ALTLpJp/ndfiUeUtM89q5VnmYridWw1McoCw6Kd3nLotNVSNGEsRSwMLvYU/Pf
-	iQZFXtlf9GiiiensomuHn3vK2WWjm6N6AvFHBaTtlhB87nCZAFxpsH5N5s8exGRMAyumYLaWHWV/U
-	u3MRh7XFmNhugeR4FNdwpi5FlHvVyhI7YzMxTickdPEmrEpzIQMrUzZtmi55tQAJ3Gt5o4bI5QpUh
-	fnThg4bg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVhO-0000000F9jf-0NzZ;
-	Thu, 15 Feb 2024 06:58:22 +0000
-Date: Wed, 14 Feb 2024 22:58:22 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=biB0T/nmTQfHOtamzm81/kN0aSc2XWXuCV2WMnIoIYFCa5GMimtUbgwVmutoZkHQaulEHLiJlBfDjH/HpkDfRiGtQfusTXV95+JW0PZ7tibdS7zd4CO+WH0uHTlBAFkgd2nqxuROPWbR0JuqjgSxGG9uMD8q9Utj5I4WFAvm70w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=numNNyzH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=7grj45p3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 15 Feb 2024 10:04:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707987870;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1AZdGOLLnzyQxUT703z+M77uxLasTsDovXub6Os9ovQ=;
+	b=numNNyzHYxCv0LIEVOl7KD4/F40UbEEx6Q1S+u/zg63W4VNcSWfn7wROIKCYw1/R8DzyOC
+	qhtO6egfEcwJ9lRo17no7sNhFP3dgzdg7Avvtg+d/ZSpBwotR3lrOsekDLaYyzcGEn2ydH
+	RElwTJ+Xe7Zx02vV95U4U3+z1kqaNo0zE0Wib9dYhLT+/UxKCKsTg6agqN70ij3raj1lgx
+	cpZoGUcXfjRcUph5HzalS+WYB7xhvc0piRR61uw2Ou4Y+OuLmQBPY/4XVlRnGKSH7JEtim
+	wHm7/ePInAs4gKmrm4uYG5qLb6lU5KlNGIcRoJe3y7Ul5S62sHaSF4O6rT8EtA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707987870;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1AZdGOLLnzyQxUT703z+M77uxLasTsDovXub6Os9ovQ=;
+	b=7grj45p3lGo7L+bnWQKEOF8k/kPq4pUs0yPT4K58WHihzEmbaO0sDNsRq89KKWu1PRRrqf
+	iBF6afCGIOce7hBA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>,
-	Barret Rhoden <brho@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 04/20] mm: Expose vmap_pages_range() to the
- rest of the kernel.
-Message-ID: <Zc22DluhMNk5_Zfn@infradead.org>
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-5-alexei.starovoitov@gmail.com>
- <Zcx7lXfPxCEtNjDC@infradead.org>
- <CAADnVQKT9X1iSLXojVs1sWy4B-qEGccuk6S6u1d9GBmW9pBAeA@mail.gmail.com>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Message-ID: <20240215090428.3OW_j0S8@linutronix.de>
+References: <20240213145923.2552753-1-bigeasy@linutronix.de>
+ <20240213145923.2552753-2-bigeasy@linutronix.de>
+ <87il2rdnxs.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,61 +91,45 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKT9X1iSLXojVs1sWy4B-qEGccuk6S6u1d9GBmW9pBAeA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87il2rdnxs.fsf@toke.dk>
 
-On Wed, Feb 14, 2024 at 12:53:42PM -0800, Alexei Starovoitov wrote:
-> On Wed, Feb 14, 2024 at 12:36 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > NAK.  Please
-> 
-> What is the alternative?
-> Remember, maintainers cannot tell developers "go away".
-> They must suggest a different path.
+On 2024-02-14 17:13:03 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index de362d5f26559..c3f7d2a6b6134 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -4044,12 +4048,16 @@ static __always_inline struct sk_buff *
+> >  sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *de=
+v)
+> >  {
+> >  	struct bpf_mprog_entry *entry =3D rcu_dereference_bh(dev->tcx_egress);
+> > +	struct bpf_xdp_storage *xdp_store __free(xdp_storage_clear) =3D NULL;
+> >  	enum skb_drop_reason drop_reason =3D SKB_DROP_REASON_TC_EGRESS;
+> > +	struct bpf_xdp_storage __xdp_store;
+> >  	int sch_ret;
+> > =20
+> >  	if (!entry)
+> >  		return skb;
+> > =20
+> > +	xdp_store =3D xdp_storage_set(&__xdp_store);
+> > +
+> >  	/* qdisc_skb_cb(skb)->pkt_len & tcx_set_ingress() was
+> >  	 * already set by the caller.
+> >  	 */
+>=20
+>=20
+> These, and the LWT code, don't actually have anything to do with XDP,
+> which indicates that the 'xdp_storage' name misleading. Maybe
+> 'bpf_net_context' or something along those lines? Or maybe we could just
+> move the flush lists into bpf_redirect_info itself and just keep that as
+> the top-level name?
 
-That criteria is something you've made up.   Telling that something
-is not ok is the most important job of not just maintainers but all
-developers.  Maybe start with a description of the problem you're
-solving and why you think it matters and needs different APIs.
+I'm going to rename it for now as suggested for now. If it is a better
+fit to include the lists into bpf_redirect_info then I will update
+accordingly.
 
-> . get_vm_area - external
-> . free_vm_area - EXPORT_SYMBOL_GPL
-> . vunmap_range - external
-> . vmalloc_to_page - EXPORT_SYMBOL
-> . apply_to_page_range - EXPORT_SYMBOL_GPL
-> 
-> and the last one is pretty much equivalent to vmap_pages_range,
-> hence I'm surprised by push back to make vmap_pages_range available to bpf.
+> -Toke
 
-And the last we've been trying to get rid of by ages because we don't
-want random modules to 
-
-> > > For example, there is the public ioremap_page_range(), which is used
-> > > to map device memory into addressable kernel space.
-> >
-> > It's not really public.  It's a helper for the ioremap implementation
-> > which really should not be arch specific to start with and are in
-> > the process of beeing consolidatd into common code.
-> 
-> Any link to such consolidation of ioremap ? I couldn't find one.
-
-Second hit on google:
-
-https://lore.kernel.org/lkml/20230609075528.9390-1-bhe@redhat.com/T/
-
-> I surely don't want bpf_arena to cause headaches to mm folks.
-> 
-> Anyway, ioremap_page_range() was just an example.
-> I could have used vmap() as an equivalent example.
-> vmap is EXPORT_SYMBOL, btw.
-
-vmap is a good well defined API.  vmap_pages_range is not.
-
-> What bpf_arena needs is pretty much vmap(), but instead of
-> allocating all pages in advance, allocate them and insert on demand.
-
-So propose an API that does that instead of exposing random low-level
-details.
-
+Sebastian
 
