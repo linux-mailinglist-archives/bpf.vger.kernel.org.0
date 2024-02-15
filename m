@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-22062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22063-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EAF18559F5
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 06:07:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DAC855A05
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 06:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A11E11C22AD9
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 05:07:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3B3D1F2A9B0
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 05:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346D19475;
-	Thu, 15 Feb 2024 05:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59F89476;
+	Thu, 15 Feb 2024 05:09:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DB9D527;
-	Thu, 15 Feb 2024 05:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A3579DD;
+	Thu, 15 Feb 2024 05:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707973622; cv=none; b=hOij3cjqf6le6zFxN0o2PaqRzRjilytI7duyerKwVRXPbyX1aMde5rdrcjydStDrZtjLrV/QndCodWoMIR+1XZE09KnJYGtH34IGqW5pZEhAgNj2XMOBFe/BrJ4k8HWtpXN8oTHiaTQsKmqKRntpcmLk1oY+HnL4me7SJ565I/Y=
+	t=1707973744; cv=none; b=UwIdp+YtDpTDnEku/LDnfP71lYlre1Cur+k5YSdKkqwhHCChdCn4PKSIDaT1MMTynOvCUUgcyyvJvYRPLVAmUPok04ribA9pfl9QXQtVPqwEXjioLXALJkeowkbuSe7iqcG0CmMuWoyauSQuNS2TyYURzLZIMzGYveJFiEt/mQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707973622; c=relaxed/simple;
-	bh=5re37oOePDTxHjW5+SSD0nC43vuOZ1VTWg1epuIetnE=;
+	s=arc-20240116; t=1707973744; c=relaxed/simple;
+	bh=cNwF0UBoZgTorJtcVmtOzDAYbe9MG8JuAeNdYwPv0w4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zv2YcGim448uE3+MYek+CCh20BuoaEz0/x7rH4ogK+ZbilYVkSwZ2QsQB/o6jZHBizYw33P2u53BRDOEHfzDn7PXDjJLEP4l2+Jxayaz3xxVpiju5sBHcb+xbqIzMb3B7o3Uww8xewSq2OgD9KuwftNVvGc7H5DpsdLuOcgFxAU=
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pkoqr+mJ9kh0xIuq8XaRQ5mf5eQN1zj2uWpcUqynLg+uDryya95D+2LCd9P1//H0dR1GaqKNIJaOq25RdtTMYZHsGqs8BtMf4t9ztM8A5CsOhkGcpy18RFnJCepN2INW5SlbDDoDwphJ6QCS/iidysxCBorFYdzr2WhTwPWXskw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 952B567373; Thu, 15 Feb 2024 06:06:57 +0100 (CET)
-Date: Thu, 15 Feb 2024 06:06:57 +0100
+	id D1E0D67373; Thu, 15 Feb 2024 06:08:57 +0100 (CET)
+Date: Thu, 15 Feb 2024 06:08:57 +0100
 From: Christoph Hellwig <hch@lst.de>
 To: Robin Murphy <robin.murphy@arm.com>
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -48,10 +48,10 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
 	netdev@vger.kernel.org, iommu@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 1/7] dma: compile-out DMA sync op calls
- when not used
-Message-ID: <20240215050657.GB4861@lst.de>
-References: <20240214162201.4168778-1-aleksander.lobakin@intel.com> <20240214162201.4168778-2-aleksander.lobakin@intel.com> <fba9018d-3783-4d3c-8948-409d7d5258d5@arm.com>
+Subject: Re: [PATCH net-next v3 2/7] dma: avoid redundant calls for sync
+ operations
+Message-ID: <20240215050857.GC4861@lst.de>
+References: <20240214162201.4168778-1-aleksander.lobakin@intel.com> <20240214162201.4168778-3-aleksander.lobakin@intel.com> <3a9dd580-1977-418f-a3f3-73003dd37710@arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,20 +60,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fba9018d-3783-4d3c-8948-409d7d5258d5@arm.com>
+In-Reply-To: <3a9dd580-1977-418f-a3f3-73003dd37710@arm.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, Feb 14, 2024 at 06:09:08PM +0000, Robin Murphy wrote:
-> On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
-> [...]
->> +static inline bool dma_skip_sync(const struct device *dev)
->> +{
->> +	return !IS_ENABLED(CONFIG_DMA_NEED_SYNC);
->> +}
+On Wed, Feb 14, 2024 at 05:55:23PM +0000, Robin Murphy wrote:
+>>   #define DMA_F_PCI_P2PDMA_SUPPORTED     (1 << 0)
+>> +#define DMA_F_CAN_SKIP_SYNC		BIT(1)
 >
-> One more thing, could we please also make this conditional on 
-> !CONFIG_DMA_API_DEBUG so that that doesn't lose coverage for validating 
-> syncs?
+> Yuck, please be consistent - either match the style of the existing code, 
+> or change that to BIT(0) as well.
 
-Agreed.
+Just don't use BIT() ever.  It doesn't save any typing and creates a
+totally pointless mental indirection.
+
+> I guess this was the existing condition from dma_need_sync(), but now it's 
+> on a one-off slow path it might be nice to check the sync_sg_* ops as well 
+> for completeness, or at least comment that nobody should be implementing 
+> those without also implementing the sync_single_* ops.
+
+Implementing only one and not the other doesn't make any sense.  Maybe
+a debug check for that is ok, but thing will break badly if they aren't
+in sync anyway.
 
