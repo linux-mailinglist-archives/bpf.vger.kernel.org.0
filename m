@@ -1,193 +1,115 @@
-Return-Path: <bpf+bounces-22107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880A0856F1E
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 22:12:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFFE1856F47
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 22:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF411C225FD
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 21:12:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B978B236DE
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 21:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB97D13B7A1;
-	Thu, 15 Feb 2024 21:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86CF13B7AE;
+	Thu, 15 Feb 2024 21:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YZrEj8E+"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZjfSB21p"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424BC13B2BF
-	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 21:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3310912BF18
+	for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 21:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708031562; cv=none; b=OsFwAk5wAKaM3I1MygRcOnF9J7nvZejcqMaDNfOGb3ZZw5/uPulyfZxGKWc9BwRgDy6odin+Cf9pmwwUtcw2vO6wpaKLcSRtPXCqndw/OCOAMNPtqNDP1mHtosKxG1EnOAWYADnrx+CE4/x4TTb7vpUGpVnqHcrfypK09Sf7vCk=
+	t=1708032417; cv=none; b=YlIJKvtwHvHz8hHGDw3xw286OeGPM1oI11QH35BBDOG8duL0orDfdMYJGEDh++kHEfMdCT3r8ab/PGJABxjtudlt58JF71BG9xp+LxIuCTY4hSFfShrdjIpUPkgWfNTbIxL1k+TyGofhuCPaWmeKQtHPX4ATn2F8l9Akl9vseQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708031562; c=relaxed/simple;
-	bh=S5AlSuY/Wf1hMZPoK1f7AYH9IvXMqT4heQG0cEqo5GM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FYdXz/0tZdvvgu8xShWioGBnNAuU8TgGz19dwah2w3tMwJkM0zKGVlKsh/afl4Edibv7Ca3likhFGLBwVpLTGw0bKi0+j3ARrdz9CITL9gJxORaL0TWLv+Ezp2fibOG1AHd7EXrw5A2Qo3flgy/S000ER1APxL/YUxawNDK6kcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YZrEj8E+; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708031558;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bKNEBeFh7zh+iQKBPTYYoSGcAWTfBE1UjemENCtGIH8=;
-	b=YZrEj8E+ydqSaSe+cduye7Sbq5/ttVCvXuaKURnFeFBJeBSNVp5zXAwWNAxpcQBW7Mg0xD
-	t0o6RGIoHSrjj0qfllC0VSfy6nutJLAN1t3NHa+4a+3K4L6LeKliISufk2o125FOJxB/IF
-	YDYkOPCxzPJ+oHXdI2fAdJiRnujJYmU=
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@meta.com
-Subject: [PATCH bpf 2/2] selftests/bpf: Test racing between bpf_timer_cancel_and_free and bpf_timer_cancel
-Date: Thu, 15 Feb 2024 13:12:18 -0800
-Message-Id: <20240215211218.990808-2-martin.lau@linux.dev>
-In-Reply-To: <20240215211218.990808-1-martin.lau@linux.dev>
-References: <20240215211218.990808-1-martin.lau@linux.dev>
+	s=arc-20240116; t=1708032417; c=relaxed/simple;
+	bh=oX9UIv2DGzZDEww/5x3TuyFY0BWb+dpTJwQFjLrGnu0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=urqceOnf3r5zBWt9TUlYQAsce98HJe6egkPhfLWi5K6d5XOPIydgO9Uc2mnR5mx/Jv5lAB0CGXi0Ok0Edse7E9sdZlmhdaB6HgTzPkDY+JDC9zS4Pb1TU8K4RBJ+zWZHAKyn2eLOna5yAz/neLP2JDSwOmTCtQJAk44J3JRh51s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZjfSB21p; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3d6ea28d46so292829866b.1
+        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 13:26:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1708032413; x=1708637213; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bcraGSBoVm/uvFQNDkSWRb05huDhJAD0L2piK4rqJO8=;
+        b=ZjfSB21pbjsTQCqxmRW7Iz7KbH/cbsUIVogsglTgD8aWQ6bVJ3OUgI6D8KgYu0hLvD
+         jOlEF9b3B3+Nvpks8pMJ4KEqsHVRNH3CCjD1c2F4+gHqnrLb+mbWhkj/gHFFa9I+HexA
+         hSYmn0OndUgQe5xBCPeBsX7DaUkrqQf2ehcBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708032413; x=1708637213;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bcraGSBoVm/uvFQNDkSWRb05huDhJAD0L2piK4rqJO8=;
+        b=YjUd/uzv1JxdrehMZoBKfm1yCqSnfqhLoMaylz/vL4qUnzuAZfv4opkAmUsB5jOKFd
+         WuORrXisC7Osx0mGFkp0oKd2dhFfcFgQ5vKotIRIe+xjO9bQwDO+PSfcJmxQCt3Gl0P+
+         YqVSmWHD9XYlo601GKRz6C9CnO45wSSFNP0wzUnirCK3hB97IDMQ+rEI2gyJEIEEvYQ+
+         WCwSnhEHg/DoqTk2yWUMlkQ7b6GI/Fb5aI4hKPC5OJFm6urkUp5KE+cypK0CUMuo1gQ4
+         84N0X/JXgyIg5/7oFhtKrwjWaIesaSOjwkuRRMH4u3er8qwQKurAqh3wGcVAnKQ0YqfQ
+         ddAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXu62ZcnE+kF50HWzk4Rqwb/+jOoeGpxX6i2U5mS/fy0nKGzuZPRtJlmw/k2dbyqnGq35zRoykf4UtD5HPqw6NtypH1
+X-Gm-Message-State: AOJu0YxI/Sb8AWwBvAZ68JHO6kxtt5u9wjqnztxmosfZNZ+4HEI1GsFa
+	JY/PgBNa584+2pbV1LGvOM/ydosiIIDcgim82ymGpDAHTPazvGGFhXgaIEyYP6CTiIgmEXOp8l2
+	yuyA=
+X-Google-Smtp-Source: AGHT+IHxrUr6AU7PEAqcK5TDaWquy9Ow/qHY04YT1qJ0mgyJbiMW9HNFTbo6lSR4AeZ3SLO4YKjRwQ==
+X-Received: by 2002:a17:906:6617:b0:a3d:5058:50ff with SMTP id b23-20020a170906661700b00a3d505850ffmr2737176ejp.2.1708032413233;
+        Thu, 15 Feb 2024 13:26:53 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id w13-20020a17090633cd00b00a3d52f8ccbesm931603eja.170.2024.02.15.13.26.52
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 13:26:52 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563b49a0f44so1720054a12.0
+        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 13:26:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUmKLCj40By/6Tntzl0eclDsdZBCPYevNY5fwUU/lQb+sJyMsQ31YueeicDlndooK6K6PJP0f5P0GxTWK7MghOIxTSm
+X-Received: by 2002:a17:906:8a58:b0:a38:5443:f4e0 with SMTP id
+ gx24-20020a1709068a5800b00a385443f4e0mr5270607ejc.19.1708032411978; Thu, 15
+ Feb 2024 13:26:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-5-alexei.starovoitov@gmail.com> <Zcx7lXfPxCEtNjDC@infradead.org>
+ <CAADnVQKT9X1iSLXojVs1sWy4B-qEGccuk6S6u1d9GBmW9pBAeA@mail.gmail.com>
+ <Zc22DluhMNk5_Zfn@infradead.org> <CAADnVQJ8azcUznU6KHhwEM99NUOx8oai8EOyay4dxLM6ho8mjw@mail.gmail.com>
+In-Reply-To: <CAADnVQJ8azcUznU6KHhwEM99NUOx8oai8EOyay4dxLM6ho8mjw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 15 Feb 2024 13:26:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whD2HMe4ja5nR6WWofUh3nLmhjoSPDvZm2-XMGjeie5Tg@mail.gmail.com>
+Message-ID: <CAHk-=whD2HMe4ja5nR6WWofUh3nLmhjoSPDvZm2-XMGjeie5Tg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 04/20] mm: Expose vmap_pages_range() to the
+ rest of the kernel.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+On Thu, 15 Feb 2024 at 12:51, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> I didn't invent it. I internalized it based on the feedback received.
 
-This selftest is based on a Alexei's test adopted from an internal
-user to troubleshoot another bug. During this exercise, a separate
-racing bug was discovered between bpf_timer_cancel_and_free
-and bpf_timer_cancel. The details can be found in the previous
-patch.
+No. It's not up to maintainers to suggest alternatives. Sometimes it's
+simply enough to explain *why* something isn't acceptable.
 
-This patch is to add a selftest that can trigger the bug.
-I can trigger the UAF everytime in my qemu setup with KASAN. The idea
-is to have multiple user space threads running in a tight loop to exercise
-both bpf_map_update_elem (which calls into bpf_timer_cancel_and_free)
-and bpf_timer_cancel.
+A plain "no" without explanation isn't sufficient. NAKs need a good
+reason. But they don't need more than that.
 
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/timer.c  | 35 ++++++++++++++++++-
- tools/testing/selftests/bpf/progs/timer.c     | 34 +++++++++++++++++-
- 2 files changed, 67 insertions(+), 2 deletions(-)
+The onus of coming up with an acceptable solution is on the person who
+needs something new.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index 760ad96b4be0..d66687f1ee6a 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -4,10 +4,29 @@
- #include "timer.skel.h"
- #include "timer_failure.skel.h"
- 
-+#define NUM_THR 8
-+
-+static void *spin_lock_thread(void *arg)
-+{
-+	int i, err, prog_fd = *(int *)arg;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	for (i = 0; i < 10000; i++) {
-+		err = bpf_prog_test_run_opts(prog_fd, &topts);
-+		if (!ASSERT_OK(err, "test_run_opts err") ||
-+		    !ASSERT_OK(topts.retval, "test_run_opts retval"))
-+			break;
-+	}
-+
-+	pthread_exit(arg);
-+}
-+
- static int timer(struct timer *timer_skel)
- {
--	int err, prog_fd;
-+	int i, err, prog_fd;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	pthread_t thread_id[NUM_THR];
-+	void *ret;
- 
- 	err = timer__attach(timer_skel);
- 	if (!ASSERT_OK(err, "timer_attach"))
-@@ -43,6 +62,20 @@ static int timer(struct timer *timer_skel)
- 	/* check that code paths completed */
- 	ASSERT_EQ(timer_skel->bss->ok, 1 | 2 | 4, "ok");
- 
-+	prog_fd = bpf_program__fd(timer_skel->progs.race);
-+	for (i = 0; i < NUM_THR; i++) {
-+		err = pthread_create(&thread_id[i], NULL,
-+				     &spin_lock_thread, &prog_fd);
-+		if (!ASSERT_OK(err, "pthread_create"))
-+			break;
-+	}
-+
-+	while (i) {
-+		err = pthread_join(thread_id[--i], &ret);
-+		if (ASSERT_OK(err, "pthread_join"))
-+			ASSERT_EQ(ret, (void *)&prog_fd, "pthread_join");
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-index 8b946c8188c6..f615da97df26 100644
---- a/tools/testing/selftests/bpf/progs/timer.c
-+++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -51,7 +51,8 @@ struct {
- 	__uint(max_entries, 1);
- 	__type(key, int);
- 	__type(value, struct elem);
--} abs_timer SEC(".maps"), soft_timer_pinned SEC(".maps"), abs_timer_pinned SEC(".maps");
-+} abs_timer SEC(".maps"), soft_timer_pinned SEC(".maps"), abs_timer_pinned SEC(".maps"),
-+	race_array SEC(".maps");
- 
- __u64 bss_data;
- __u64 abs_data;
-@@ -390,3 +391,34 @@ int BPF_PROG2(test5, int, a)
- 
- 	return 0;
- }
-+
-+static int race_timer_callback(void *race_array, int *race_key, struct bpf_timer *timer)
-+{
-+	bpf_timer_start(timer, 1000000, 0);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int race(void *ctx)
-+{
-+	struct bpf_timer *timer;
-+	int err, race_key = 0;
-+	struct elem init;
-+
-+	__builtin_memset(&init, 0, sizeof(struct elem));
-+	bpf_map_update_elem(&race_array, &race_key, &init, BPF_ANY);
-+
-+	timer = bpf_map_lookup_elem(&race_array, &race_key);
-+	if (!timer)
-+		return 1;
-+
-+	err = bpf_timer_init(timer, &race_array, CLOCK_MONOTONIC);
-+	if (err && err != -EBUSY)
-+		return 1;
-+
-+	bpf_timer_set_callback(timer, race_timer_callback);
-+	bpf_timer_start(timer, 0, 0);
-+	bpf_timer_cancel(timer);
-+
-+	return 0;
-+}
--- 
-2.34.1
-
+          Linus
 
