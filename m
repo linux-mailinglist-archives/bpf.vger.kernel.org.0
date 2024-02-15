@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-22053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8915B855939
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 04:08:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBF585593F
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 04:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD8221C2952A
-	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 03:08:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED5341C29A4D
+	for <lists+bpf@lfdr.de>; Thu, 15 Feb 2024 03:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D62BCA4E;
-	Thu, 15 Feb 2024 03:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F2128F4E;
+	Thu, 15 Feb 2024 03:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kD+Qn0ZP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iDsRkvRQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1D9DDD1;
-	Thu, 15 Feb 2024 03:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4EA12B7C;
+	Thu, 15 Feb 2024 03:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707966475; cv=none; b=CHJySDgchONrqwGRFQatn9/aVrzWe0xkyDwRWmUCjhfCSYMVFd1ctVyND3s4dD1Bce9CBeVwBsqoGKLYsBs3MsOk2PawajUaWP4eT2BdH4Wp0s9wfcMxO3V6wvFeflgKD7a+pXRbi4F2l6XwvrjeRjcsIBmMykEbcYwOtAPrCJY=
+	t=1707966484; cv=none; b=cA2m/k5lWD/ZDiIVbxCvSWG0TTt8NnDn6a/CK1YHmfSs6be1RJ8zMmqLFGgWwu8jN8mndUANyoCnb0NcnKkfKRV+vJpjstEc7Yz3WCwt+EIr8C4/twOJRqm+Yp3J3MJPpK2nJCgdZ2r6MGlWh/7rqgbbsDuQPAvnzqKsAvCjivw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707966475; c=relaxed/simple;
-	bh=v3YcIHzlZFo38gIzLCM5tNLAmbkmNuWw2PgAfJFV8dc=;
+	s=arc-20240116; t=1707966484; c=relaxed/simple;
+	bh=N38loWFo7GWrJwwLm4tKbNOCG6/JHGqNKZcHVjVV0zo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BZu70Pl7MSPbsMAiSQXuOw0TMjWsjvypE5XCpDTPDyKNrOeEE+fFcnpx3OLDpzClh364CAKEIyrmH23pwZzMDHRlFFUdFoYivXc1Trb3/BT6sfuYwuS+8DbCvmNMhNQaPzATSKDZRJw0ucBPmqgT37SHXnIGvu8BPVRU65pCTN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kD+Qn0ZP; arc=none smtp.client-ip=198.175.65.10
+	 MIME-Version; b=DES4+nRyxsLDhAjSqpjc7v0WK/j6/inkJT74npSl6yBq2TJ9YJhsvxy1UpWtwbWTbP3SHbPJ7SCi3NMkP2dQACANaX9ewBdoJdETFtl4LPZFBkOsNQy2vCgB7U9g9zzQ3C20mdvCaMPeT5cpT81DmMiMAIOEGg1EdKc8NBwE1Co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iDsRkvRQ; arc=none smtp.client-ip=198.175.65.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707966475; x=1739502475;
+  t=1707966483; x=1739502483;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=v3YcIHzlZFo38gIzLCM5tNLAmbkmNuWw2PgAfJFV8dc=;
-  b=kD+Qn0ZPy188G8KIREi7TNKTp9fMm/mZ8bjO4FdyFbEjsMK2Lv6sDbxt
-   IokgGEOjqEUjG0WkAUVKuhbTWgNSpXpCx4e6W8cZgvWKNXeh30EHkBSA3
-   ncld2BkCl4A1MH9mq/czA7JMD/Toatd+/F8zCYbgsjbxfzARdwt/KLXsz
-   Y+4a3J3B1UtzuFoVjrRiJls+cN/7H8Z1Xx4igk5VU/1ZKWgs2VNNDR8ei
-   Hqe/OoWJtwNeGR4LPP00uzYtwV0l+fkVe06llFsgc0GCHyfIfv2dQQcS7
-   tzLS7r42TtfEyA45AVtaCpX0ZwREmIXuThtvbCFAquzQOdPygmnuKp8UK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="19461278"
+  bh=N38loWFo7GWrJwwLm4tKbNOCG6/JHGqNKZcHVjVV0zo=;
+  b=iDsRkvRQMDRa+uQ6VV67mkQvEDkDeEbnAasWg8LIEFnDvPvhOsmNl7XA
+   b377T/RuiCJ9vJlPTN33zoHKaaAnOpz5hGhRwn1DfoVxVIBfFfLl/Kbwx
+   nCkn5sZgYIkbYYQMzZ2vPxFClkul/KcqKgFJRf9bTzYFcH2vqx41/HsJP
+   6dSXI4YQd6Z5YR0b8hPaDLk0vNgip0DflIaCsqRWmEhfloBUgLiOiB6J0
+   optO2e/GOD3uioY3j4oE7t+KVaJ/qcjD8XXeZiRf8KRe3aBhQ/YyEufAR
+   94I6Soow2ECfXsNqkYghonej4M/QqOYCmRGBO6YSjoxxfWAwLzM+VUEfW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="19461309"
 X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="19461278"
+   d="scan'208";a="19461309"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 19:07:54 -0800
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 19:08:02 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="3385692"
+   d="scan'208";a="3385742"
 Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmviesa009.fm.intel.com with ESMTP; 14 Feb 2024 19:07:46 -0800
+  by fmviesa009.fm.intel.com with ESMTP; 14 Feb 2024 19:07:54 -0800
 From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	David E Box <david.e.box@linux.intel.com>,
@@ -88,9 +88,9 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
 	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
 	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: [PATCH net-next v5 3/9] net: stmmac: select PCS negotiation mode according to the interface mode
-Date: Thu, 15 Feb 2024 11:04:53 +0800
-Message-Id: <20240215030500.3067426-4-yong.liang.choong@linux.intel.com>
+Subject: [PATCH net-next v5 4/9] net: pcs: xpcs: re-initiate clause 37 Auto-negotiation
+Date: Thu, 15 Feb 2024 11:04:54 +0800
+Message-Id: <20240215030500.3067426-5-yong.liang.choong@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
 References: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
@@ -102,155 +102,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The 'stmmac_get_pcs_neg_mode' is invoked during link initialization or
-interface mode changes.
+According to the XPCS datasheet, a soft reset is required to initiate
+Clause 37 auto-negotiation when the XPCS switches interface modes.
 
-In cases where 'priv->plat->get_pcs_neg_mode' is absent, the default
-'phylink_pcs_neg_mode' function is utilized.
+When the interface mode is set to 2500BASE-X, Clause 37 Auto-Negotiation
+is turned off.
 
-Additionally, the 'intel_get_pcs_neg_mode' function is available to
-determine the PCS negotiation mode based on the provided interface mode.
+Subsequently, when the interface mode switches from 2500BASE-X to SGMII,
+re-initiating Clause 37 auto-negotiation is required for the SGMII
+interface mode to function properly.
 
 Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 ---
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 +++++++++++++++----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 17 +++++++
- include/linux/stmmac.h                        |  2 +
- 3 files changed, 57 insertions(+), 10 deletions(-)
+ drivers/net/pcs/pcs-xpcs.c | 62 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 57 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 60283543ffc8..6f12e80b8a05 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -414,6 +414,39 @@ static void intel_mgbe_pse_crossts_adj(struct intel_priv_data *intel_priv,
- 	}
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index 52a7757ee419..cf1ed89d6418 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -848,6 +848,60 @@ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
+ 	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
  }
  
-+static bool is_fixed_link(struct pci_dev *pdev)
++static int xpcs_switch_to_aneg_c37_sgmii(const struct xpcs_compat *compat,
++					 struct dw_xpcs *xpcs,
++					 unsigned int neg_mode)
 +{
-+	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
-+	bool is_fixed_link = false;
++	bool an_c37_enabled;
++	int ret, mdio_ctrl;
 +
-+	if (fwnode) {
-+		struct fwnode_handle *fixed_node;
++	if (neg_mode == PHYLINK_PCS_NEG_INBAND_ENABLED) {
++		mdio_ctrl = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
++		if (mdio_ctrl < 0)
++			return mdio_ctrl;
 +
-+		fixed_node = fwnode_get_named_child_node(fwnode, "fixed-link");
-+		if (fixed_node)
-+			is_fixed_link = true;
-+
-+		fwnode_handle_put(fixed_node);
++		an_c37_enabled = mdio_ctrl & AN_CL37_EN;
++		if (!an_c37_enabled) {
++			//Perform soft reset to initiate C37 auto-negotiation
++			ret = xpcs_soft_reset(xpcs, compat);
++			if (ret)
++				return ret;
++		}
 +	}
-+
-+	return is_fixed_link;
++	return 0;
 +}
 +
-+static unsigned int intel_get_pcs_neg_mode(phy_interface_t interface,
-+					   struct pci_dev *pdev)
++static int xpcs_switch_interface_mode(const struct xpcs_compat *compat,
++				      struct dw_xpcs *xpcs,
++				      phy_interface_t interface,
++				      unsigned int neg_mode)
 +{
-+	unsigned int neg_mode;
++	int ret;
 +
-+	if ((interface == PHY_INTERFACE_MODE_SGMII ||
-+	     interface == PHY_INTERFACE_MODE_1000BASEX) &&
-+	     !is_fixed_link(pdev))
-+		neg_mode = PHYLINK_PCS_NEG_INBAND_ENABLED;
-+	else
-+		neg_mode = PHYLINK_PCS_NEG_OUTBAND;
++	if (xpcs->dev_flag == DW_DEV_TXGBE) {
++		ret = txgbe_xpcs_switch_mode(xpcs, interface);
++		if (ret)
++			return ret;
++	} else {
++		if (xpcs->interface != interface) {
++			xpcs->interface = interface;
 +
-+	return neg_mode;
++			switch (compat->an_mode) {
++			case DW_AN_C37_SGMII:
++				ret = xpcs_switch_to_aneg_c37_sgmii(compat,
++								    xpcs,
++								    neg_mode);
++				if (ret)
++					return ret;
++				break;
++			default:
++				return 0;
++			}
++		}
++	}
++	return 0;
 +}
 +
- static void common_default_data(struct plat_stmmacenet_data *plat)
+ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+ 		   const unsigned long *advertising, unsigned int neg_mode)
  {
- 	plat->clk_csr = 2;	/* clk_csr_i = 20-35MHz & MDC = clk_csr_i/16 */
-@@ -590,15 +623,8 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	}
+@@ -858,11 +912,9 @@ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+ 	if (!compat)
+ 		return -ENODEV;
  
- 	/* For fixed-link setup, we clear xpcs_an_inband */
--	if (fwnode) {
--		struct fwnode_handle *fixed_node;
--
--		fixed_node = fwnode_get_named_child_node(fwnode, "fixed-link");
--		if (fixed_node)
--			plat->mdio_bus_data->xpcs_an_inband = false;
--
--		fwnode_handle_put(fixed_node);
+-	if (xpcs->dev_flag == DW_DEV_TXGBE) {
+-		ret = txgbe_xpcs_switch_mode(xpcs, interface);
+-		if (ret)
+-			return ret;
 -	}
-+	if (is_fixed_link(pdev))
-+		plat->mdio_bus_data->xpcs_an_inband = false;
++	ret = xpcs_switch_interface_mode(compat, xpcs, interface, neg_mode);
++	if (ret)
++		return ret;
  
- 	/* Ensure mdio bus scan skips intel serdes and pcs-xpcs */
- 	plat->mdio_bus_data->phy_mask = 1 << INTEL_MGBE_ADHOC_ADDR;
-@@ -649,7 +675,7 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
- 	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
--
-+	plat->get_pcs_neg_mode = intel_get_pcs_neg_mode;
- 	plat->clk_ptp_rate = 204800000;
- 
- 	return ehl_common_data(pdev, plat);
-@@ -708,6 +734,7 @@ static int ehl_pse0_sgmii1g_data(struct pci_dev *pdev,
- 	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
-+	plat->get_pcs_neg_mode = intel_get_pcs_neg_mode;
- 	return ehl_pse0_common_data(pdev, plat);
- }
- 
-@@ -749,6 +776,7 @@ static int ehl_pse1_sgmii1g_data(struct pci_dev *pdev,
- 	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
-+	plat->get_pcs_neg_mode = intel_get_pcs_neg_mode;
- 	return ehl_pse1_common_data(pdev, plat);
- }
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ae2ffa9595d6..dbd16fc38888 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1104,11 +1104,28 @@ static void stmmac_mac_link_up(struct phylink_config *config,
- 		stmmac_hwtstamp_correct_latency(priv, priv);
- }
- 
-+static unsigned int stmmac_get_pcs_neg_mode(struct phylink_config *config,
-+					    unsigned int mode,
-+					    phy_interface_t interface,
-+					    const unsigned long *advertising)
-+{
-+	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
-+	unsigned int neg_mode;
-+
-+	if (priv->plat->get_pcs_neg_mode)
-+		neg_mode = priv->plat->get_pcs_neg_mode(interface, priv->plat->pdev);
-+	else
-+		neg_mode = phylink_pcs_neg_mode(mode, interface, advertising);
-+
-+	return neg_mode;
-+}
-+
- static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
- 	.mac_select_pcs = stmmac_mac_select_pcs,
- 	.mac_config = stmmac_mac_config,
- 	.mac_link_down = stmmac_mac_link_down,
- 	.mac_link_up = stmmac_mac_link_up,
-+	.mac_get_pcs_neg_mode = stmmac_get_pcs_neg_mode,
- };
- 
- /**
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index dfa1828cd756..ffd66722eeda 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -277,6 +277,8 @@ struct plat_stmmacenet_data {
- 	int (*serdes_powerup)(struct net_device *ndev, void *priv);
- 	void (*serdes_powerdown)(struct net_device *ndev, void *priv);
- 	void (*speed_mode_2500)(struct net_device *ndev, void *priv);
-+	unsigned int (*get_pcs_neg_mode)(phy_interface_t interface,
-+					 struct pci_dev *pdev);
- 	void (*ptp_clk_freq_config)(struct stmmac_priv *priv);
- 	int (*init)(struct platform_device *pdev, void *priv);
- 	void (*exit)(struct platform_device *pdev, void *priv);
+ 	switch (compat->an_mode) {
+ 	case DW_10GBASER:
 -- 
 2.34.1
 
