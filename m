@@ -1,149 +1,158 @@
-Return-Path: <bpf+bounces-22120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0151857379
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 02:35:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB9685739B
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 03:00:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E524C281C83
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 01:34:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5319E1F22CCD
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 02:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B654DDAD;
-	Fri, 16 Feb 2024 01:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204E3DDD5;
+	Fri, 16 Feb 2024 01:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nTxjIyNi"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="DkCTWick"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F7CD2EE
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 01:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30D1DDAE
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 01:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708047270; cv=none; b=nKGwuvae5BjrovnqIOvLyFHvGIfKuWsKvQEyAYCeMp7QoBwDc7H67rWADdwjISTxiCQFi/xhiQVjsXnA2zF2xZr1Vs5nTDav/jsZxBEb7T45jEnZbUkp2R86QSPVq9ClJZcODv3xplFNnPwtMqCGHhG7sWTc0gEYZOfNzLildeg=
+	t=1708048796; cv=none; b=oz72zdjmPrZllZEVyfcBSCnAPetfgfXmV2zuKE2YkoltCUAu7ylAy11gJtz5TgJ0bs9NF/vf8lYSZV6Z3VvSP4NBaZUz75r9uEb0lCBsk+s7rEwMXqDJ/RIiAymGwxKfsIZ8uzy4JZli3nCu9WJsjNC+x2sO/uHMAx/XZBJLCYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708047270; c=relaxed/simple;
-	bh=hHBnTwS/madWzpJT8F6K0IhIJbkW1QgzlT6vLmulCCo=;
+	s=arc-20240116; t=1708048796; c=relaxed/simple;
+	bh=6Jf8Tf3YNL8Iit35UP///6Wu8rWBNYzPIySyhB9DyxQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p9EF9mqRFbisaSQT9/0RT6wfz3usDh3yi7SlIf0czoEzZaJV1oIfHCfgmSMVp7PmmQQ5bSSKU2PkqiPe+OAHZf19E1nROiwisg58z9H1ekoRrkKiLQDrwdRtYFulhWsFuPC3jZgX2K//MfFXNhNlMHD20ej+WtapvFssS3FwK04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nTxjIyNi; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-410e820a4feso14680645e9.1
-        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 17:34:28 -0800 (PST)
+	 To:Cc:Content-Type; b=EuBtmnNYKuCKNK59ID9NMkkfZyBBOIkRDaCIwUuPGzENSGW1prbw1XakRrBjv4fdZ672pBn22X9BQjTOBo/qJ/I/EWD+SbllUmlcGSD7oO8pcnr5lFjOWmXs9Trc9Mg6JmgoCOCbEho0DnakbA0EfSCdwxpVoAH3Ij+S2iezyX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=DkCTWick; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2a17f3217aso193282366b.2
+        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 17:59:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708047267; x=1708652067; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1708048793; x=1708653593; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v11hDBMoJ35S/9vJCehJMvG0Fni/QxtjIEuJ20WEdbI=;
-        b=nTxjIyNiyxs2rl4REL/W23u6XS1dbt4ac8cUZOcDXIk9i34Mm+Ufmd/5gnTf+QZE9Q
-         yfdJx2NHpormpB2LhgdRIThFaao4WBehprK9VQOQJ5BuCuARtvA7rkgh3NK6MHIqH9vK
-         nm1A8hfDTC/YoKapolkOrX/jM+8OVVI/WO/q00h3QQ44RwrcjMzDSzjPkShSE9xt7Etl
-         LHJmfHu28UDvMCbsy6xDvFMfOaiboewjU2c2103TpqafU1QcT2m5m6oDIoyfLj5sTcGe
-         umFd1kNhS/kDTJ0pBBEAq8peQh2BssAJp69VPWc9NDDoP/IBEXv6bSwyqXex6bq19ct8
-         9WvA==
+        bh=Mkh1NITpOSxywtc0rXIfkglAv7pc2Po+WHLtzXx3g5M=;
+        b=DkCTWicksi/iGrSwllQAvEn0iDjk5BaGaBQ+GgjBTOTwHL0pgWMc1LYxy8F6kY9Hwq
+         dGrxgywpRbRrrMmt/NwgHdR/h6r08EjjdU9t9YBzUaZauDNvDkrHkVOMWoMV5UVhE8IH
+         a+8xXqIdS1guLqD9bMjHK/JujRg26lUdUB7cqitSEX5LPz/xxkGpXvbSHeLCAD+/6Fkg
+         wz4uoPjqHrdhDp07919YKejqyY0N73BbcJRUa9N0UMxgyKCSiD+hqfQ/JjCq3pe88/ue
+         gLrc9n0GIfJTBWT2IqNom/QsWLvvgI31mHsbopd/0EqHV/xqahT40f/f/s3Sjdk/yHXQ
+         g5ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708047267; x=1708652067;
+        d=1e100.net; s=20230601; t=1708048793; x=1708653593;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v11hDBMoJ35S/9vJCehJMvG0Fni/QxtjIEuJ20WEdbI=;
-        b=lSERLmOaGsXE/luxjvMl6xR+IEPAQJ6h10B9Sj7khCluJtVGXET2fsX0Rz92cVZMfd
-         Q0TzNUPgieVyWiWxkBzdahtsa689KdtiCr4Lj+eWLcS/T63nJUWxsK5RKGLiySCtVwlm
-         gB9nYUP/NbLgD6esA7PdzRHA+zL4bdZNJMkqwSSxs4XvER49vRFW9SWAzOebcGknTix/
-         QSESODYdwC8xFCkjQLDbPd/deQpFviEkTwA1SLwHuTJ7mWgI3vHXprvGBPzRve7v9QHB
-         msTUngW24VsxVDvTi7c7KjGw6C9gPay68a9tf/GeaN1re4iKr/0CR+rAddfk9AG2cu88
-         TKfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLfNbTUGTzXG18mSeF6LSzd8T5I6jOsgg2KSOHiUu6nXcIoV3xG1d+CYHFtEF+4xot/GRHMy4c2fbaKH/CKjpjsMQC
-X-Gm-Message-State: AOJu0YzcDZueYz9m+L4ToS8ePGMTrbLgeRbaz0zv8sqVBCbFM4EHMPvU
-	vFW07YZtffjA3MolPF3lgoG04VNldUcggEGCyqCM1cgIG41I18On/E3lEMz/fJziunb3KNG+0Q9
-	kOt1MHZQeeVSudJn6Lftem3vEU3A=
-X-Google-Smtp-Source: AGHT+IHmsNbfRcds+7XrS4r4mxcIEyITV/r5kZwwlMsctd08MdOnruyCs49crdhmLOvPloCNdn8/QgRiRgziy1p9si0=
-X-Received: by 2002:a05:600c:444f:b0:411:fd40:4296 with SMTP id
- v15-20020a05600c444f00b00411fd404296mr5015651wmn.5.1708047266900; Thu, 15 Feb
- 2024 17:34:26 -0800 (PST)
+        bh=Mkh1NITpOSxywtc0rXIfkglAv7pc2Po+WHLtzXx3g5M=;
+        b=QVVg3wmH+ZO0xMgpx5gB10LlC2/KMo/DlIbJaCCLWtSoePYkg2WN0vHZ3Ha0Pv+fNL
+         44BQDQTMhsmezfjBkCDEnZpRFtBc11EXi/F10hIAITcB8I8mUmZBHtDL1ym7gcp8kpyX
+         spmtEuXErMxY/qC0hz3m/PvsrQEc8hsq71SDoa1bLZzb1Xjs/Dgl0lnMR7fwASLszhFB
+         QJ+ZCc14SCB5zhogUQXCVRg6lVqsVRwuwkar3UvX5Cd0hNrm8Ry7eHllA4b38Ovx7XZj
+         1+hlo0llO5J5qp672VcJrXLiY14F3wlBErYateIo0aMYEwdcPK/ktxR+bqvRXElDMqp5
+         somg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQfMJOWnLWE+RnwfdZ/2yHA+IPnYsw7fhbR3Eq6nbd5WCYWYQNvoGYuoB45bHNH5au3uvehztvKuJCPwKga1aTF0up
+X-Gm-Message-State: AOJu0YwRynwKjKX0RqN8jLCHLw5WfSCo71tHwZW106gapAlA2H1pF/ze
+	489lhDJSLWlOX17YREIeBlUKNz0fBQX142H1lfURvbEpECrIP/15h6O+9eIoDU6pN3FOf8mfb+e
+	sya/dbiICo0yqcSWiSQZ0quk9Wz6H253XFgRp
+X-Google-Smtp-Source: AGHT+IHtbu8SCnFfkPU/Y3/W/5A60xjkCU/AfNXafWbyJ2P+SAyHGSfW0pyRBRZ1ZhJj7Tob7k2Zd4P+HLFt+T344/k=
+X-Received: by 2002:a17:906:e52:b0:a3d:678e:d020 with SMTP id
+ q18-20020a1709060e5200b00a3d678ed020mr2263334eji.43.1708048793090; Thu, 15
+ Feb 2024 17:59:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-5-alexei.starovoitov@gmail.com> <Zcx7lXfPxCEtNjDC@infradead.org>
- <CAADnVQKT9X1iSLXojVs1sWy4B-qEGccuk6S6u1d9GBmW9pBAeA@mail.gmail.com>
- <Zc22DluhMNk5_Zfn@infradead.org> <CAADnVQJ8azcUznU6KHhwEM99NUOx8oai8EOyay4dxLM6ho8mjw@mail.gmail.com>
-In-Reply-To: <CAADnVQJ8azcUznU6KHhwEM99NUOx8oai8EOyay4dxLM6ho8mjw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 15 Feb 2024 17:34:15 -0800
-Message-ID: <CAADnVQ+8Ag1tKaAFgrXoyRFxcsWWNGthc0kUv7sxYBJgPK6kqg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 04/20] mm: Expose vmap_pages_range() to the
- rest of the kernel.
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+References: <20240214173950.18570-1-khuey@kylehuey.com> <20240214173950.18570-4-khuey@kylehuey.com>
+ <CAEf4BzYFbVeVhSjj2wSLfg+qRs5x+yS1Wq9jwLNpJJPPtFiFqQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYFbVeVhSjj2wSLfg+qRs5x+yS1Wq9jwLNpJJPPtFiFqQ@mail.gmail.com>
+From: Kyle Huey <me@kylehuey.com>
+Date: Thu, 15 Feb 2024 17:59:41 -0800
+Message-ID: <CAP045Aq=siNqY_Nr6nbzdAaFUq7Rok0e+PWByYQuSspWguwsNQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 3/4] perf/bpf: Allow a bpf program to suppress
+ all sample side effects
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	"Robert O'Callahan" <robert@ocallahan.org>, Song Liu <song@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 12:50=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Feb 15, 2024 at 4:14=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
+> On Wed, Feb 14, 2024 at 9:40=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote=
+:
 > >
-> > So propose an API that does that instead of exposing random low-level
-> > details.
+> > Returning zero from a bpf program attached to a perf event already
+> > suppresses any data output. Return early from __perf_event_overflow() i=
+n
+> > this case so it will also suppress event_limit accounting, SIGTRAP
+> > generation, and F_ASYNC signalling.
+> >
+> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> > Acked-by: Song Liu <song@kernel.org>
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> > Acked-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  kernel/events/core.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index 24a718e7eb98..a329bec42c4d 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -9574,6 +9574,11 @@ static int __perf_event_overflow(struct perf_eve=
+nt *event,
+> >
+> >         ret =3D __perf_event_account_interrupt(event, throttle);
+> >
+> > +#ifdef CONFIG_BPF_SYSCALL
+> > +       if (event->prog && !bpf_overflow_handler(event, data, regs))
+> > +               return ret;
+> > +#endif
+> > +
+> >         /*
+> >          * XXX event_limit might not quite work as expected on inherite=
+d
+> >          * events
+> > @@ -9623,10 +9628,7 @@ static int __perf_event_overflow(struct perf_eve=
+nt *event,
+> >                 irq_work_queue(&event->pending_irq);
+> >         }
+> >
+> > -#ifdef CONFIG_BPF_SYSCALL
+> > -       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+> > -#endif
+> > -               READ_ONCE(event->overflow_handler)(event, data, regs);
+> > +       READ_ONCE(event->overflow_handler)(event, data, regs);
+> >
 >
-> The generic_ioremap_prot() and vmap() APIs make sense for the cases
-> when phys memory exists with known size. It needs to vmap-ed and
-> not touched after.
-> bpf_arena use case is similar to kasan which
-> reserves a giant virtual memory region, and then
-> does apply_to_page_range() to populate certain pte-s with pages in that r=
-egion,
-> and later apply_to_existing_page_range() to free pages in kasan's region.
->
-> bpf_arena is very similar, except it currently calls get_vm_area()
-> to get a 4Gb+guard_pages region, and then vmap_pages_range() to
-> populate a page in it, and vunmap_range() to remove a page.
->
-> These existing api-s work, so not sure what you're requesting.
-> I can guess many different things, but pls clarify to reduce
-> this back and forth.
-> Are you worried about range checking? That vmap_pages_range()
-> can accidently hit an unintended range?
+> Sorry, I haven't followed previous discussions, but why can't this
+> change be done as part of patch 1?
 
-guessing... like this ?
+The idea was to refactor the code without making any behavior changes
+(patches 1 and 2) and then to change the behavior (patch 3).
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index d12a17fc0c17..3bc67b526272 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -635,6 +635,18 @@ static int vmap_pages_range(unsigned long addr,
-unsigned long end,
-        return err;
- }
+- Kyle
 
-+
-+int vm_area_map_pages(struct vm_struct *area, unsigned long addr,
-unsigned int count,
-+                     struct page **pages)
-+{
-+       unsigned long size =3D ((unsigned long)count) * PAGE_SIZE;
-+       unsigned long end =3D addr + size;
-+
-+       if (addr < (unsigned long)area->addr || (void *)end >
-area->addr + area->size)
-+               return -EINVAL;
-+       return vmap_pages_range(addr, end, PAGE_KERNEL, pages, PAGE_SHIFT);
-+}
-
-in addition.. can conditionally silence WARN_ON-s in vmap_pages_pte_range()=
-,
-but imo overkill.
-What did you have in mind?
+> >         if (*perf_event_fasync(event) && event->pending_kill) {
+> >                 event->pending_wakeup =3D 1;
+> > --
+> > 2.34.1
+> >
 
