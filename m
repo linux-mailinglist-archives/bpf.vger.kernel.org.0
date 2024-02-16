@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-22160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2655858011
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 16:04:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98196858012
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 16:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0245F1C21ED6
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 15:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E929282F50
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 15:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A45012F59C;
-	Fri, 16 Feb 2024 15:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2514C12F5AE;
+	Fri, 16 Feb 2024 15:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJ6suFyz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QCWxQqCl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E559B12EBFB
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 15:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED50312F388
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 15:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095831; cv=none; b=PP8stmW+wqbQKxOgCVbWnhmx2Z3d4Xl6Gzfxgfh+SFsFfHXphqNJQrXa7agxYeIkM+sfNfhJsecWb3Qi93xiaqVkwxg+HGTKWWakXrzZRY7pddYw248MfHVwjohyZQn9fir48RA1j8Do2c6z6AUrk3Omi+/7O7gb81E49eEfVKg=
+	t=1708095832; cv=none; b=TQMi4IPFqNpfLJcf7COwYH3EQAnDatB+IGNim4TfgOQkBg2yT2eNSyOpBKMF2avVzObfnRXqp6VReoR7QOl2h1kz+LPE8U1uuhOwL7KlnofN/inFTDKnLRXh/96RtpNSQP85YJyWGeCbwp0EsNc3CsjhoS4/5E0GVMovhz/nxxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095831; c=relaxed/simple;
-	bh=0vQa1arAOf6036rzaNC6SNLMF0X6x5KNXTIYPMzhabM=;
+	s=arc-20240116; t=1708095832; c=relaxed/simple;
+	bh=nAJLrNeDIk+AzI92zeZXbt5cyvDRwN0FuHKNfLufySk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ngpe/AtG3RLsOAHaybCozo+5BEpiFNe87mAR5YVDjPgJtP/HEUn+jiGkVLFJCYIajguqckjq7YvmQic4LHgDR4+xDl1l3DDq1khzi7IPRcgKV4uZ4VrQ4i6JMtFhYFldUdLMDdZegzBXtKoW1pxFgn02kVb5KWQ8H20xFccVS80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jJ6suFyz; arc=none smtp.client-ip=209.85.218.49
+	 MIME-Version; b=mFCelG6Q/dpLrsXeyDW2rSgeOrhd/nX35q5aaj4IToAP7samGAwnL4WVWbqgWrrgQOWHe/+2eim1pK0mgtVgpwBe5Qgw0/SiHh9NNJXDBTEfwyoCXt237NA9oe/5ygsqBu3v9c05SOwGKreT0bkIL+BaoA5gdcoLFNYG4XRb1Fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QCWxQqCl; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3d6ea28d46so416222366b.1
-        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 07:03:49 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563cc707c7cso2624679a12.1
+        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 07:03:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708095828; x=1708700628; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708095829; x=1708700629; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5e/UOnR4VZrr0bxSEvcV1RJ+RRPBCJyMhSwdbaW0OG8=;
-        b=jJ6suFyzwraFqcja3LhuanBZM7kcTlC6Y6hUnzZK6VYPrchttnqlUnbTbRlpUIuDMo
-         XreVeKVlax0zAaeCPSuLORLmZbEdij7qSZv1eK8JpOEeFsTkItmoYqi+ILZbsLtUnuUA
-         xhz2pqFWpO3lkl0cqzy8mPE3TbbzLjosWxqx4VdlaRCp1DIok4cI7gXIrp0RjiTy4GKn
-         ftcnAT+TBXlii9OpziRMZIThr2FGOBOYISsdPxPjO4kC1gAVHKVhdyMhNBzFQMLuyqTu
-         wk0px30t7TAoiP2LzXWujYPPpoFmfgJmLg1IsPz0cfGeMOzXk4hJaAC4khswHxCD6+Os
-         yXpw==
+        bh=7B+AEL2My8XcQ8DkTnvszcHoUUs6Fwt8t+hT7QGhDVg=;
+        b=QCWxQqClDPu05rTPFDvYlxGfMfjqM/xEb4+xZvwxe6DuPBIMcTwUWMuxf7rwbyvpyJ
+         rcmZqyyj11pUU0KH7fNjsQne9TgYde2kawDIhMiPh/sn8Gq3TY+XvvoPY1OHD8vEg8Pg
+         UAJQCDwBehz1anyrR+S91d6yEzK2u0QjkKVyMkjUX23W4nCjcDHD75rkfZpnbYIVgfmC
+         GwHKxiUyucORMfMyyfu0WhoA5hOnpsrpCQ9PvidfajwWdB1gbEbaPptMMDCHqQurVawB
+         Ut4I2gLVdCiB9d5OvCC1MrPYkVAMzV4Lkum4KRHjvs82K1an2Ggcp8PpPaxMgq7b2A5g
+         CpBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708095828; x=1708700628;
+        d=1e100.net; s=20230601; t=1708095829; x=1708700629;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5e/UOnR4VZrr0bxSEvcV1RJ+RRPBCJyMhSwdbaW0OG8=;
-        b=PCIz109GfastVLc+r44cwfVyMg0ovpe1t36ASyHFmpGMZpwrl0iRfsltl3CKpMNFbU
-         pBa71AMVq54OESU+3TsH7zmmRwdjLYBxFZyq1xufzCxghVEZi92KE53KFzj41i5YP4/2
-         M4ZkHXw5/eQiTveUUn6m4fupB35J4pzidpgIQl6vWWrY3/MK0z5h8CMmmNYYVMBnYHLS
-         7x8O8oGx80UF5SSWsUnyHyy0riY7QcoKXkQmeRTD3xRv1yPO91NOe80M5weNhkD1vFL7
-         RBfeebmdweSbkkKa6ZwDsN7EdiEXXOPcTzzM/OqyeO4Q1Y6nS1ON9v9x5QTkS5pgjuV9
-         C4qA==
-X-Gm-Message-State: AOJu0YwOVQzJn4EDFruRTDlagsEWA5STFVELfbsSfy8RhIxzZe1+0tDQ
-	vl0U3HqgtZhSTJCCqWOcXsUFNHJGWrOf98YC8Pg/yRY22IwguvQKncCKxw4+
-X-Google-Smtp-Source: AGHT+IHfpByecIuL0z52tSjDFmJjRHUWZoz/joMxcBzkPgJROra4437QMRsiDQ5WtunQNIainBIqUg==
-X-Received: by 2002:a17:906:e24e:b0:a3d:a74b:e3d5 with SMTP id gq14-20020a170906e24e00b00a3da74be3d5mr3636830ejb.31.1708095827862;
-        Fri, 16 Feb 2024 07:03:47 -0800 (PST)
+        bh=7B+AEL2My8XcQ8DkTnvszcHoUUs6Fwt8t+hT7QGhDVg=;
+        b=FKYK+08U82XvPxdtVftjv6GlsrKhBanSX+H12zK5hSqqUDtqXjnoRlTWz8TGM05d9j
+         0DUEEPgUth1ZfcbrQaYfoc6tF5VO4OgKo5im3voG0QDooA9HG/dzeQLl+535aZxLqgtY
+         EUQDb/mnZWzXFyzxwQbv/uG7b99MOKWOCOiGyIR5k31jla+DF+dF6xEmouJCNTfq/I/F
+         UJwUeQMD4XDCFTtF5Y/k1BsuhjpTX67eKooLTPvd0myYnk4BAiYh13JOPmbPbcyOIdCf
+         GsP8wulmf6HBzwvzLt4ibbKV0Lq08H1MXxIveVs+VdCrLxWgBNs/YmOian2Txo2nozuu
+         SBow==
+X-Gm-Message-State: AOJu0YzyzCeDHOgYzYhIcZjhpwm9VOcZARQywbCcKMV5tt8AngPlcXqg
+	I5RI+4lxXGPTHqKzXVCy6+q9oniUEi+acWHNKYL5UTS6cs36SmdLYCxVtoQy
+X-Google-Smtp-Source: AGHT+IEGx3TjtLOqWp071HK2Qtap+jOR9AN2BqN0+X59IgArka/9PbwVh/wxNIsRmMw5AjOH43kXtg==
+X-Received: by 2002:a17:907:b9ca:b0:a3d:6637:48be with SMTP id xa10-20020a170907b9ca00b00a3d663748bemr4300976ejc.29.1708095828947;
+        Fri, 16 Feb 2024 07:03:48 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id fj16-20020a1709069c9000b00a3d07f3ac61sm14209ejc.101.2024.02.16.07.03.46
+        by smtp.gmail.com with ESMTPSA id fj16-20020a1709069c9000b00a3d07f3ac61sm14209ejc.101.2024.02.16.07.03.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 07:03:47 -0800 (PST)
+        Fri, 16 Feb 2024 07:03:48 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	kuniyu@amazon.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 1/3] selftests/bpf: update tcp_custom_syncookie to use scalar packet offset
-Date: Fri, 16 Feb 2024 17:03:32 +0200
-Message-ID: <20240216150334.31937-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 2/3] bpf: check bpf_func_state->callback_depth when pruning states
+Date: Fri, 16 Feb 2024 17:03:33 +0200
+Message-ID: <20240216150334.31937-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240216150334.31937-1-eddyz87@gmail.com>
 References: <20240216150334.31937-1-eddyz87@gmail.com>
@@ -90,203 +90,115 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The next commit in a series fixes bug in bpf_loop() handling.
-That change makes tcp_custom_syncookie test too complex to verify.
+When comparing current and cached states verifier should consider
+bpf_func_state->callback_depth. Current state cannot be pruned against
+cached state, when current states has more iterations left compared to
+cached state. Current state has more iterations left when it's
+callback_depth is smaller.
 
-This commit updates tcp_custom_syncookie.c:tcp_parse_option() to use
-explicit packet offset (ctx->off) for packet access instead of ever
-moving pointer (ctx->ptr), this reduces verification complexity:
-- the tcp_parse_option() is passed as a callback to bpf_loop();
-- suppose a checkpoint is created each time at function entry;
-- the ctx->ptr is tracked by verifier as PTR_TO_PACKET;
-- the ctx->ptr is incremented in tcp_parse_option(),
-  thus umax_value field tracked for it is incremented as well;
-- on each next iteration of tcp_parse_option()
-  checkpoint from a previous iteration can't be reused
-  for state pruning, because PTR_TO_PACKET registers are
-  considered equivalent only if old->umax_value >= cur->umax_value;
-- on the other hand, the ctx->off is a SCALAR,
-  subject to widen_imprecise_scalars();
-- it's exact bounds are eventually forgotten and it is tracked as
-  unknown scalar at entry to tcp_parse_option();
-- hence checkpoints created at the start of the function eventually
-  converge.
+Below is an example illustrating this bug, minimized from mailing list
+discussion [0].
+The example is not a safe program: if loop_cb point (1) is followed by
+loop_cb point (2), then division by zero is possible at point (4).
 
-The change is similar to one applied in [0] to xdp_synproxy_kern.c.
+    struct ctx {
+    	__u64 a;
+    	__u64 b;
+    	__u64 c;
+    };
 
-[0] commit 977bc146d4eb ("selftests/bpf: track tcp payload offset as scalar in xdp_synproxy")
+    static void loop_cb(int i, struct ctx *ctx)
+    {
+    	/* assume that generated code is "fallthrough-first":
+    	 * if ... == 1 goto
+    	 * if ... == 2 goto
+    	 * <default>
+    	 */
+    	switch (bpf_get_prandom_u32()) {
+    	case 1:  /* 1 */ ctx->a = 42; return 0; break;
+    	case 2:  /* 2 */ ctx->b = 42; return 0; break;
+    	default: /* 3 */ ctx->c = 42; return 0; break;
+    	}
+    }
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+    SEC("tc")
+    __failure
+    __flag(BPF_F_TEST_STATE_FREQ)
+    int test(struct __sk_buff *skb)
+    {
+    	struct ctx ctx = { 7, 7, 7 };
+
+    	bpf_loop(2, loop_cb, &ctx, 0);              /* 0 */
+    	/* assume generated checks are in-order: .a first */
+    	if (ctx.a == 42 && ctx.b == 42 && ctx.c == 7)
+    		asm volatile("r0 /= 0;":::"r0");    /* 4 */
+    	return 0;
+    }
+
+Prior to this commit verifier built the following checkpoint tree for
+this example:
+
+ .------------------------------------- Checkpoint / State name
+ |    .-------------------------------- Code point number
+ |    |   .---------------------------- Stack state {ctx.a,ctx.b,ctx.c}
+ |    |   |        .------------------- Callback depth in frame #0
+ v    v   v        v
+   - (0) {7P,7P,7},depth=0
+     - (3) {7P,7P,7},depth=1
+       - (0) {7P,7P,42},depth=1
+         - (3) {7P,7,42},depth=2
+           - (0) {7P,7,42},depth=2      loop terminates because of depth limit
+             - (4) {7P,7,42},depth=0    predicted false, ctx.a marked precise
+             - (6) exit
+         - (2) {7P,7,42},depth=2
+(a)        - (0) {7P,42,42},depth=2     loop terminates because of depth limit
+             - (4) {7P,42,42},depth=0   predicted false, ctx.a marked precise
+             - (6) exit
+(b)      - (1) {7P,7P,42},depth=2
+           - (0) {42P,7P,42},depth=2    loop terminates because of depth limit
+             - (4) {42P,7P,42},depth=0  predicted false, ctx.{a,b} marked precise
+             - (6) exit
+     - (2) {7P,7,7},depth=1
+       - (0) {7P,42,7},depth=1          considered safe, pruned using checkpoint (a)
+(c)  - (1) {7P,7P,7},depth=1            considered safe, pruned using checkpoint (b)
+
+Here checkpoint (b) has callback_depth of 2, meaning that it would
+never reach state {42,42,7}.
+While checkpoint (c) has callback_depth of 1, and thus
+could yet explore the state {42,42,7} if not pruned prematurely.
+This commit makes forbids such premature pruning,
+allowing verifier to explore states sub-tree starting at (c):
+
+(c)  - (1) {7,7,7P},depth=1
+       - (0) {42P,7,7P},depth=1
+         ...
+         - (2) {42,7,7},depth=2
+           - (0) {42,42,7},depth=2      loop terminates because of depth limit
+             - (4) {42,42,7},depth=0    predicted true, ctx.{a,b,c} marked precise
+               - (5) division by zero
+
+[0] https://lore.kernel.org/bpf/9b251840-7cb8-4d17-bd23-1fc8071d8eef@linux.dev/
+
+Suggested-by: Yonghong Song <yonghong.song@linux.dev>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../bpf/progs/test_tcp_custom_syncookie.c     | 83 ++++++++++++-------
- 1 file changed, 53 insertions(+), 30 deletions(-)
+ kernel/bpf/verifier.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
-index a5501b29979a..c8e4553648bf 100644
---- a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
-@@ -10,6 +10,8 @@
- #include "test_siphash.h"
- #include "test_tcp_custom_syncookie.h"
- 
-+#define MAX_PACKET_OFF 0xffff
-+
- /* Hash is calculated for each client and split into ISN and TS.
-  *
-  *       MSB                                   LSB
-@@ -52,16 +54,15 @@ static siphash_key_t test_key_siphash = {
- 
- struct tcp_syncookie {
- 	struct __sk_buff *skb;
-+	void *data;
- 	void *data_end;
- 	struct ethhdr *eth;
- 	struct iphdr *ipv4;
- 	struct ipv6hdr *ipv6;
- 	struct tcphdr *tcp;
--	union {
--		char *ptr;
--		__be32 *ptr32;
--	};
-+	__be32 *ptr32;
- 	struct bpf_tcp_req_attrs attrs;
-+	u32 off;
- 	u32 cookie;
- 	u64 first;
- };
-@@ -70,6 +71,7 @@ bool handled_syn, handled_ack;
- 
- static int tcp_load_headers(struct tcp_syncookie *ctx)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 011d54a1dc53..c1fa1de590dc 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16705,6 +16705,9 @@ static bool func_states_equal(struct bpf_verifier_env *env, struct bpf_func_stat
  {
-+	ctx->data = (void *)(long)ctx->skb->data;
- 	ctx->data_end = (void *)(long)ctx->skb->data_end;
- 	ctx->eth = (struct ethhdr *)(long)ctx->skb->data;
+ 	int i;
  
-@@ -134,6 +136,7 @@ static int tcp_reload_headers(struct tcp_syncookie *ctx)
- 	if (bpf_skb_change_tail(ctx->skb, data_len + 60 - ctx->tcp->doff * 4, 0))
- 		goto err;
- 
-+	ctx->data = (void *)(long)ctx->skb->data;
- 	ctx->data_end = (void *)(long)ctx->skb->data_end;
- 	ctx->eth = (struct ethhdr *)(long)ctx->skb->data;
- 	if (ctx->ipv4) {
-@@ -195,47 +198,68 @@ static int tcp_validate_header(struct tcp_syncookie *ctx)
- 	return -1;
- }
- 
--static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
-+static __always_inline void *next(struct tcp_syncookie *ctx, __u32 sz)
- {
--	char opcode, opsize;
-+	__u64 off = ctx->off;
-+	__u8 *data;
- 
--	if (ctx->ptr + 1 > ctx->data_end)
--		goto stop;
-+	/* Verifier forbids access to packet when offset exceeds MAX_PACKET_OFF */
-+	if (off > MAX_PACKET_OFF - sz)
-+		return NULL;
++	if (old->callback_depth > cur->callback_depth)
++		return false;
 +
-+	data = ctx->data + off;
-+	barrier_var(data);
-+	if (data + sz >= ctx->data_end)
-+		return NULL;
- 
--	opcode = *ctx->ptr++;
-+	ctx->off += sz;
-+	return data;
-+}
- 
--	if (opcode == TCPOPT_EOL)
-+static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
-+{
-+	__u8 *opcode, *opsize, *wscale;
-+	__u32 *tsval, *tsecr;
-+	__u16 *mss;
-+	__u32 off;
-+
-+	off = ctx->off;
-+	opcode = next(ctx, 1);
-+	if (!opcode)
- 		goto stop;
- 
--	if (opcode == TCPOPT_NOP)
-+	if (*opcode == TCPOPT_EOL)
-+		goto stop;
-+
-+	if (*opcode == TCPOPT_NOP)
- 		goto next;
- 
--	if (ctx->ptr + 1 > ctx->data_end)
-+	opsize = next(ctx, 1);
-+	if (!opsize)
- 		goto stop;
- 
--	opsize = *ctx->ptr++;
--
--	if (opsize < 2)
-+	if (*opsize < 2)
- 		goto stop;
- 
--	switch (opcode) {
-+	switch (*opcode) {
- 	case TCPOPT_MSS:
--		if (opsize == TCPOLEN_MSS && ctx->tcp->syn &&
--		    ctx->ptr + (TCPOLEN_MSS - 2) < ctx->data_end)
--			ctx->attrs.mss = get_unaligned_be16(ctx->ptr);
-+		mss = next(ctx, 2);
-+		if (*opsize == TCPOLEN_MSS && ctx->tcp->syn && mss)
-+			ctx->attrs.mss = get_unaligned_be16(mss);
- 		break;
- 	case TCPOPT_WINDOW:
--		if (opsize == TCPOLEN_WINDOW && ctx->tcp->syn &&
--		    ctx->ptr + (TCPOLEN_WINDOW - 2) < ctx->data_end) {
-+		wscale = next(ctx, 1);
-+		if (*opsize == TCPOLEN_WINDOW && ctx->tcp->syn && wscale) {
- 			ctx->attrs.wscale_ok = 1;
--			ctx->attrs.snd_wscale = *ctx->ptr;
-+			ctx->attrs.snd_wscale = *wscale;
- 		}
- 		break;
- 	case TCPOPT_TIMESTAMP:
--		if (opsize == TCPOLEN_TIMESTAMP &&
--		    ctx->ptr + (TCPOLEN_TIMESTAMP - 2) < ctx->data_end) {
--			ctx->attrs.rcv_tsval = get_unaligned_be32(ctx->ptr);
--			ctx->attrs.rcv_tsecr = get_unaligned_be32(ctx->ptr + 4);
-+		tsval = next(ctx, 4);
-+		tsecr = next(ctx, 4);
-+		if (*opsize == TCPOLEN_TIMESTAMP && tsval && tsecr) {
-+			ctx->attrs.rcv_tsval = get_unaligned_be32(tsval);
-+			ctx->attrs.rcv_tsecr = get_unaligned_be32(tsecr);
- 
- 			if (ctx->tcp->syn && ctx->attrs.rcv_tsecr)
- 				ctx->attrs.tstamp_ok = 0;
-@@ -244,13 +268,12 @@ static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
- 		}
- 		break;
- 	case TCPOPT_SACK_PERM:
--		if (opsize == TCPOLEN_SACK_PERM && ctx->tcp->syn &&
--		    ctx->ptr + (TCPOLEN_SACK_PERM - 2) < ctx->data_end)
-+		if (*opsize == TCPOLEN_SACK_PERM && ctx->tcp->syn)
- 			ctx->attrs.sack_ok = 1;
- 		break;
- 	}
- 
--	ctx->ptr += opsize - 2;
-+	ctx->off = off + *opsize;
- next:
- 	return 0;
- stop:
-@@ -259,7 +282,7 @@ static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
- 
- static void tcp_parse_options(struct tcp_syncookie *ctx)
- {
--	ctx->ptr = (char *)(ctx->tcp + 1);
-+	ctx->off = (__u8 *)(ctx->tcp + 1) - (__u8 *)ctx->data,
- 
- 	bpf_loop(40, tcp_parse_option, ctx, 0);
- }
+ 	for (i = 0; i < MAX_BPF_REG; i++)
+ 		if (!regsafe(env, &old->regs[i], &cur->regs[i],
+ 			     &env->idmap_scratch, exact))
 -- 
 2.43.0
 
