@@ -1,161 +1,119 @@
-Return-Path: <bpf+bounces-22132-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22133-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9C8857613
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 07:36:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63518576E2
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 08:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7F271F2264B
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 06:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E442B1C21719
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 07:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9AF1429F;
-	Fri, 16 Feb 2024 06:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C681757E;
+	Fri, 16 Feb 2024 07:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tBnKIN5q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHyoB/Zm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302E210962
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 06:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB1B14F64;
+	Fri, 16 Feb 2024 07:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708065391; cv=none; b=L+9i7B87kj8Rp8KXZ45vSJde5rFiDs/wagggJ4P6yIuTGfCDf6FelP9upymaSY/HB8ZvZoHyHQfJpcB0hn/9LEYH1dgIEjPIjtH0+NagR3wO3YsW6waArfoBfy9+aAxVSZHHjUYXTJERkUUzeSGr4wnPic2CJFm4mGNxyvpdUJU=
+	t=1708069214; cv=none; b=cXndlbxHPuiRxs/vf0PrrUJpiuJLBiVgPT1Lhc5UcXSSKffS9A+3Q8wf4Xiz2azE2UkDK1wP17q69fGdS2ajs+BEgzanCHSj6dauIbYg2uBgrGgXYWPEK0xIC+mvtHqzx7vL2n/ZKbnwhxypw2gR14p/C86NrCOUipKIFD6H9Cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708065391; c=relaxed/simple;
-	bh=8c1US9OauGX6MoQAcSIvGGnaJf+45MAgZiqviPZZqa0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IteYWb4m9FY5f9CE6aHntkWb1+PqGGZYTh2CnfH6HsF6jZ0mW3bW5XRh8r6yYwPnUpib27Lu063gAl73zaGYh1DcJDN+p5xrUr6MzIFFQxYG5rvNgz6bhhsQwRmD3uI99ExRZcf8MK8cPrW+KB1OWTwN3HpqaZyrx3uIQlafGTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tBnKIN5q; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a72147f5-2b7d-4267-9881-6a645c575838@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708065387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sbr4QPVSTcHUa+AezXbiMdDvlOjSGnMLEs0dFzkc8tc=;
-	b=tBnKIN5qT9O82LzS5wQNyKs9/9Jb+2Nc3qdyyuiBtmOVizx2dqWVe5a8J1MYRI23lPllFO
-	j/SZsfaf+P6X/lHOIi+2MCjlLrur4E4RLAT/YArdbMOhYy0W/dVa7NmBcz64oHTYxea4q9
-	/yoOzUZ8yBH9dlUy1WcGM+fUCpQtCk8=
-Date: Thu, 15 Feb 2024 22:36:16 -0800
+	s=arc-20240116; t=1708069214; c=relaxed/simple;
+	bh=icz55HJQfZZHEN/btHPRBr3cpgSXuR4YteZ6R/WPaGA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=LWV7mBLpwmVf2kLccfwyD1TjWVEgJNod7rYabSS7MIPWnAbIuWonw+DiBdeG494vi0GCCFqsSZfuiY3i8+rXaefJ49GkD8eeWb5jrUaWUY0V7QHSNkzMEe7fryi6bYz7/P+CQxdgu1Vgn7nY4Stfp3YCpN4IeVEHCkbAarye9KU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHyoB/Zm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F255C433C7;
+	Fri, 16 Feb 2024 07:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708069214;
+	bh=icz55HJQfZZHEN/btHPRBr3cpgSXuR4YteZ6R/WPaGA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RHyoB/Zm+aeCpXvsdcAkjZ/8IP0JIcV9o5cVs3hvqpviLm+GagX2Su7pi1IzmbFTI
+	 egsQDa7ec2GbV/tx00to1LvWI7cUqCtFZbVRCA+hJ6tEaXpXf2SXZaWIRZf9hW3P3V
+	 14k+yC+cS4EZoFOf1pkEXd7JEIlN1616BOSHmiot2zsknR6TT/hB3pcHYGCYALkUgq
+	 3/MpJEb5Qu0tMkq7dlDZKPDAoDxDeZCr3R26s2hBY9Z/0qPKuuYKzoFX4LlPpaNpZn
+	 GHCAEPY6d6nFk7ERFwPg2osOonvSBgwtQb0+uPgrFpnv9+JFklxoEmklr63HlMMVYR
+	 8BGq/CQgSk+6g==
+Date: Fri, 16 Feb 2024 16:40:07 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 19/36] function_graph: Implement
+ fgraph_reserve_data() and fgraph_retrieve_data()
+Message-Id: <20240216164007.2de685ce5c78cee69e168601@kernel.org>
+In-Reply-To: <20240214185407.767243b4@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723226123.502590.4924916690354403889.stgit@devnote2>
+	<20240214135958.23ed55e1@gandalf.local.home>
+	<20240215084552.b72d6d22ce1b93bb8e04b70a@kernel.org>
+	<20240214185407.767243b4@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH RFC bpf-next v2 02/10] bpf/helpers: introduce sleepable
- timers
-Content-Language: en-US
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-References: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
- <20240214-hid-bpf-sleepable-v2-2-5756b054724d@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240214-hid-bpf-sleepable-v2-2-5756b054724d@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 2/14/24 9:18 AM, Benjamin Tissoires wrote:
-> +static void bpf_timer_work_cb(struct work_struct *work)
-> +{
-> +	struct bpf_hrtimer *t = container_of(work, struct bpf_hrtimer, work);
-> +	struct bpf_map *map = t->map;
-> +	void *value = t->value;
-> +	bpf_callback_t callback_fn;
-> +	void *key;
-> +	u32 idx;
-> +
-> +	BTF_TYPE_EMIT(struct bpf_timer);
-> +
-> +	rcu_read_lock();
-> +	callback_fn = rcu_dereference(t->sleepable_cb_fn);
-> +	rcu_read_unlock();
+On Wed, 14 Feb 2024 18:54:07 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I took a very brief look at patch 2. One thing that may worth to ask here, the 
-rcu_read_unlock() seems to be done too early. It is protecting the 
-t->sleepable_cb_fn (?), so should it be done after finished using the callback_fn?
+> On Thu, 15 Feb 2024 08:45:52 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > > Hmm, the above is a fast path. I wonder if we should add a patch to make that into:
+> > > 
+> > > 	if (unlikely(size_bytes & (sizeof(long) - 1)))
+> > > 		data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
+> > > 	else
+> > > 		data_size = size_bytes >> (sizeof(long) == 4 ? 2 : 3);
+> > > 
+> > > to keep from doing the division.  
+> > 
+> > OK, I thought DIV_ROUND_UP was not much cost. Since sizeof(long) is
+> > fixed 4 or 8, so 
+> > 
+> > data_size = (size_bytes + sizeof(long) - 1) >> BITS_PER_LONG;
+> > 
+> > will this work?
+> 
+> No, because BITS_PER_LONG is 32 or 64 ;-)
 
-A high level design question. The intention of the new 
-bpf_timer_set_sleepable_cb() kfunc is actually to delay work to a workqueue. It 
-is useful to delay work from the bpf_timer_cb and it may also useful to delay 
-work from other bpf running context (e.g. the networking hooks like "tc"). The 
-bpf_timer_set_sleepable_cb() seems to be unnecessary forcing delay-work must be 
-done in a bpf_timer_cb.
+Oops indeed.
 
-Have you thought about if it is possible to create a more generic kfunc like 
-bpf_schedule_work() to delay work to a workqueue ?
+> 
+> But this should;
+> 
+> 	data_size = (size_bytes + sizeof(long) - 1) >> (sizeof(long) == 4 ? 2 : 3);
+> 
+> As sizeof(long) is a constant, that conditional expression will be hard
+> coded into either 2 or 3 by the compiler.
+
+Yeah. OK, let me update it.
+
+Thank you,
+
+> 
+> -- Steve
 
 
-
-> +	if (!callback_fn)
-> +		return;
-> +
-> +	/* FIXME: do we need any locking? */
-> +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-> +		struct bpf_array *array = container_of(map, struct bpf_array, map);
-> +
-> +		/* compute the key */
-> +		idx = ((char *)value - array->value) / array->elem_size;
-> +		key = &idx;
-> +	} else { /* hash or lru */
-> +		key = value - round_up(map->key_size, 8);
-> +	}
-> +
-> +	/* FIXME: this crashes the system with
-> +	 * BUG: kernel NULL pointer dereference, address: 000000000000000b
-> +	 */
-> +	/* callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0); */
-> +	/* The verifier checked that return value is zero. */
-> +}
-> +
-
-[ ... ]
-
-> +/* FIXME: use kernel doc style */
-> +/* Description
-> + *	Configure the timer to call *callback_fn* static function in a
-> + *	sleepable context.
-> + * Return
-> + *	0 on success.
-> + *	**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
-> + *	**-EPERM** if *timer* is in a map that doesn't have any user references.
-> + *	The user space should either hold a file descriptor to a map with timers
-> + *	or pin such map in bpffs. When map is unpinned or file descriptor is
-> + *	closed all timers in the map will be cancelled and freed.
-> + */
-> +__bpf_kfunc int bpf_timer_set_sleepable_cb(struct bpf_timer_kern *timer,
-> +					   int (callback_fn)(void *map, int *key, struct bpf_timer *timer))
-> +{
-> +	struct bpf_throw_ctx ctx = {};
-> +
-> +	/* FIXME: definietely not sure this is OK */
-> +	arch_bpf_stack_walk(bpf_stack_walker, &ctx);
-> +	WARN_ON_ONCE(!ctx.aux);
-> +
-> +	if (!ctx.aux)
-> +		return -EINVAL;
-> +
-> +	return __bpf_timer_set_callback(timer, (void *)callback_fn, ctx.aux, true);
-> +}
-> +
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
