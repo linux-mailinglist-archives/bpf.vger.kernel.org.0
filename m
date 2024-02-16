@@ -1,147 +1,96 @@
-Return-Path: <bpf+bounces-22169-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22170-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1A858583ED
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 18:18:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F0D18583FF
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 18:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C771282EA2
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 17:18:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C390DB24D3B
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 17:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9FE130E47;
-	Fri, 16 Feb 2024 17:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73E713173A;
+	Fri, 16 Feb 2024 17:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EAYdGpCy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SdTyIlkF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63752E641
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 17:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AD412FB31;
+	Fri, 16 Feb 2024 17:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103898; cv=none; b=OAAO13dTxgWztfezFJ7M743NrUCQY/68mb6adQBLQ/D+rZnUita3BwKXf3VTnKtWVIC/prDCA3K2GM2fURa/VhyIwcw8Nt2jG23fKfo9XRB+TUaXqTGAuyKF3oGjjV7j8Uu7eIDQ9Xnrxl6UTrP+h+t6dA8ibOLKuOIbV/mqlrU=
+	t=1708104026; cv=none; b=ofp1ArGivld8sLelx2/Q1Yahw5afAPtfew84Yw+4dBqOPsC2gnyJtK6jnsdAGG4sV0QQukhTq5TZoO5b23phOMJOo/nI6uhZT3D2PobSOuxwLyeizrtyD2dtlRnV1L/IZjgPyjhyrhNXgnsPbvwEPjXsIaSsSihOfRzRguqUe68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103898; c=relaxed/simple;
-	bh=8ejHiYGzHvpliygLFvxIO3w4t7CIjLxTT4s3bLYDPK4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h0DFyVzcEI9VywFbQfNNueNPKZrinC8GPTRe68cQJKVN14f2Atr9VBujQ/Jx7YGLTnGy64guR5rJDofqRVjSZyFrivUGMtU77zrHoflGWWPswBTWzm7MMQh+sbndcTTgNS5hAVldpSpBKnkdNzCv97PzCk0NFUFlXH7w5wosm8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EAYdGpCy; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d220ad10b3so3845021fa.1
-        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 09:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708103895; x=1708708695; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wPLwlhY91L9qTZWCNsWjRuWkNsJGX2gH26bhSLROSnI=;
-        b=EAYdGpCydgX0pmiZU0cHnmsx7+su9bDxciUqMfKixbRJwnG75I1/Bni9fC/oF5rKgl
-         K21KYXDVLc57isXIcfn8Ol8oAGzE1SkjbLFZuXTbj16YisAtikdHKDT/K00qRGUfuG33
-         bmLc7696o8X8ni8uGdgb3FuZTpW7VWP9HlfNjM0VwrM4ThxHCwXBH1OQa/fGUhTNuSZQ
-         Vt8VSRZGR+UvEY0CSmdgDyO0L+WNnuLdijNgAt3rHlCtCW6AWDrR/fMVaQznaAXZbKWJ
-         bq3DJoO1SbswA6qj/mjlaXzDLgiooV0Bb5eR3sRdRuI//Ot4aVbO8TkoBdMy0MnchArZ
-         XFHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708103895; x=1708708695;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wPLwlhY91L9qTZWCNsWjRuWkNsJGX2gH26bhSLROSnI=;
-        b=YdkiIFPyKZOYZsRkYxcQ3OI6rGxUHLEwDYPcsHj7/csBRtNV8JEUW6xA8iW+2njmPV
-         yokiLV7qxBbOrzhkdp23CGMbcqGrXA2XTEUV457dd8OwFyHJGu/tEtfhHSQyZAkRnNh5
-         gUaoh/ZNfpTTuqMSNGfAI+fDzR90TCB1GsoNYStMf7mE/TmE7XKkVdtTXXn3yePBFPLO
-         pOkl2DlgVqp4T9frsrAiEJ1c9cSSyEiW/HKUxCSkUZ6m+KxAn3sJx8sgg0LoSqZnLblh
-         aNP5h8cFwo0biqDcFOfNkB+Q/VsDPlo6DPvq4QmTTKAaO3g63EUIuXHN3C6zbtNUNbCn
-         9cgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVcSR9xCEgmH6GGvbe+B5J55SF8PLddBPhCxgagVj9vv1WaagcHVyM/+JyLffG1bjDQlOSGcaOZFiYEQaGiHgy9WyPf
-X-Gm-Message-State: AOJu0Yz62KEZlzjfnWAoc4Nz2FnbUSsJLELWzXSY6fvmz656AR7u640t
-	sCFCKFqVBwTXZptdiYaVg0peFzQV9ipfWum/FpKghtXPnexRM3Tc
-X-Google-Smtp-Source: AGHT+IHv5z/KYz8K59TvIWSRmnoqhh/KI/68YnUgWMsLNgswIXXm4noNopRENorEe9kCplMhz+wWWw==
-X-Received: by 2002:ac2:4e81:0:b0:512:8777:1f3e with SMTP id o1-20020ac24e81000000b0051287771f3emr3390823lfr.43.1708103894460;
-        Fri, 16 Feb 2024 09:18:14 -0800 (PST)
-Received: from pc636 (host-90-235-18-79.mobileonline.telia.com. [90.235.18.79])
-        by smtp.gmail.com with ESMTPSA id v7-20020a197407000000b005128c3561b4sm23519lfe.13.2024.02.16.09.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 09:18:13 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 16 Feb 2024 18:18:11 +0100
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Eddy Z <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>,
-	Barret Rhoden <brho@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 04/20] mm: Expose vmap_pages_range() to the
- rest of the kernel.
-Message-ID: <Zc-Y09fYxwbXOWj1@pc636>
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-5-alexei.starovoitov@gmail.com>
- <Zcx7lXfPxCEtNjDC@infradead.org>
- <CAADnVQKT9X1iSLXojVs1sWy4B-qEGccuk6S6u1d9GBmW9pBAeA@mail.gmail.com>
- <Zc22DluhMNk5_Zfn@infradead.org>
- <CAADnVQJ8azcUznU6KHhwEM99NUOx8oai8EOyay4dxLM6ho8mjw@mail.gmail.com>
- <Zc8rZCQtsETe-cxU@infradead.org>
- <CAADnVQJ_rn+PEETAApwK6iW5LYxGh=-rijpfTB6Y6r8K6sG4zA@mail.gmail.com>
+	s=arc-20240116; t=1708104026; c=relaxed/simple;
+	bh=8DCxioTSQAbCL2w8t8Wo0mPMDi8xtgenwxPfpVXNezU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=u9YfZwpjjpOmIDyujAF7n6d1sjOwhW79v4DzYe901rTFKxcQx8DqopF+skG1jUoezGaR25y7yLkBh6HHNrdj3tIkpFS/BoTeyR+++SCm8m6bVjALI0kiJcM6Op3rtPEVg1Iav48STBap9Ip29vctHpp7Hu3u7lBnB4mKSahJAxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SdTyIlkF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9A6C1C433C7;
+	Fri, 16 Feb 2024 17:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708104025;
+	bh=8DCxioTSQAbCL2w8t8Wo0mPMDi8xtgenwxPfpVXNezU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=SdTyIlkFD0mamipzQgenp7kFUq+xjF1lcx6lKd7w4x6LeL8baRyYe0CiO/VhAsuxc
+	 aS6DwTkpjtLJO8EWuKlRlUG4Agxr3Y6+WV0pTjqkDef5bOwhyRUzbnWLj35oWtIjOI
+	 93eKbnENQcTvVRN7YUcF1SA5KPIKRl8dJDpTSn7ma3o/XMK9t4OULJ+EuYN+OgaIza
+	 ZTes8kHtIkoxh4Hyte4YLLPUEVtR86nNgr4ud7SeSPKUgwHoIe8KVR3A0/3rjrlU/m
+	 fC08qTNcmGe+Kumn/zyEEHFU/gZsQVH2XlCYn3C+K+0ZZFm4dtjhTf1em2MCU6CdzU
+	 dxaJRNRPp8FXQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7B77FD8C97F;
+	Fri, 16 Feb 2024 17:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJ_rn+PEETAApwK6iW5LYxGh=-rijpfTB6Y6r8K6sG4zA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests: bpf: Remove empty TEST_CUSTOM_PROGS
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170810402550.3129.12516651246134620322.git-patchwork-notify@kernel.org>
+Date: Fri, 16 Feb 2024 17:20:25 +0000
+References: <20240216-bpf-selftests-custom-progs-v1-1-f7cf281a1fda@suse.com>
+In-Reply-To: <20240216-bpf-selftests-custom-progs-v1-1-f7cf281a1fda@suse.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Fri, Feb 16, 2024 at 08:54:08AM -0800, Alexei Starovoitov wrote:
-> On Fri, Feb 16, 2024 at 1:31 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Thu, Feb 15, 2024 at 12:50:55PM -0800, Alexei Starovoitov wrote:
-> > > So, since apply_to_page_range() is available to the kernel
-> > > (xen, gpu, kasan, etc) then I see no reason why
-> > > vmap_pages_range() shouldn't be available as well, since:
-> >
-> > In case it wasn't clear before:  apply_to_page_range is a bad API to
-> > be exported.  We've been working on removing it but it stalled.
-> > Exposing something that allows a module to change arbitrary page table
-> > bits is not a good idea.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Fri, 16 Feb 2024 09:42:45 -0300 you wrote:
+> Commit f04a32b2c5b5 ("selftests/bpf: Do not use sign-file as testcase")
+> removed the TEST_CUSTOM_PROGS assignment, and removed it from being used
+> on TEST_GEN_FILES. Remove two leftovers from that cleanup.
 > 
-> I never said that that module should do that.
+> Found by inspection.
 > 
-> > Please take a step back and think of how to expose a vmalloc like
-> > allocation that grows only when used as a proper abstraction.  I could
-> > actually think of various other uses for it.
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> "vmalloc like allocation that grows" is not what I'm after.
-> I need 4G+guard region at the start.
-> Please read my earlier email and reply to my questions and api proposals.
-> Replying to half of the sentence, and out of context, is not a
-> productive discussion.
->
-1. The concern here is that this interface, which you would like to add,
-exposes the "addr", "end" to upper layer, so fake values can easily be
-passed to vmap internals.
+> [...]
 
-2. Other users can start using this API/function which is hidden now
-and is not supposed to be used outside of vmap code. Because it is a
-static helper.
+Here is the summary with links:
+  - [bpf-next] selftests: bpf: Remove empty TEST_CUSTOM_PROGS
+    https://git.kernel.org/bpf/bpf-next/c/7648f0c91eaa
 
-3. It opens new dependencies which we would like to avoid. As a second
-step someone wants to dump "such region(4G+guard region)" over vmallocifo
-to see what is mapped what requires a certain tracking.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---
-Uladzislau Rezki
+
 
