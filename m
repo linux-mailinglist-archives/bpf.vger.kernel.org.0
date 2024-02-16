@@ -1,239 +1,161 @@
-Return-Path: <bpf+bounces-22127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A58FE8573D0
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 03:40:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B88E88573D2
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 03:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 053C01F24350
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 02:40:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35B531F24790
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 02:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3DBDF78;
-	Fri, 16 Feb 2024 02:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF73ADF69;
+	Fri, 16 Feb 2024 02:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="auWcVfjb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fv1BHE3k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06993D27A
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 02:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2260DF46
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 02:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708051241; cv=none; b=CocneNukxvYFItcMgyZHBCxY7VG2uFYZITd6IwoQhk1gaV73XMuVnKfbUKbLOH/Ggf6lauE9PlSAV0s3diCYCxHPHpWS3q8wOt7HgoY3uosHiqQNVD/oANb8NWHkhsiaTlTKA/4PxV/Ombl8rCgEeCsotR9NDM9rqyx7YcTas0o=
+	t=1708051537; cv=none; b=K3tMEMny0MHNceGwJ2nEuQNzpyjXNXAf1gSLyw/iM2uRywlKWxgdLBM0FW7X1PofZdt8aMXoxL0SJAbY6SBEUqJTHjoa3E575o2nG1bLTQkZNsPzMA6tmPWWmCkznwUMXcGk5GGolRvEn2zxDdaKFLlr046QpZzRyYTM2u3PY3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708051241; c=relaxed/simple;
-	bh=TJPCOqZZ813H3y58oRgeF262FLdR2tZ/h4uYpzV+fvg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TZl1a+EmFiWL0FNc6fzpTH8rv4925cBfMKuRSUI9mE+muyJSfscN2n+saClle6saQ3UpogLByNylXXkwL8LHNMV5dtkd6KtzgHypKivzltk5sYgco7QwAbdXgtBagEookthYBc1SXYkKFR9mSNkci0aXTIhQmYXGAXXzgtBGf78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=auWcVfjb; arc=none smtp.client-ip=209.85.128.172
+	s=arc-20240116; t=1708051537; c=relaxed/simple;
+	bh=I6CZrGq98OVoRK5ZGDKJkyz/KU45t3nHWWIZI2sIWzc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IWYx2TRgPAAONInI/uj04O2/r54UQ0+RdpSJlCi2d04BGx0/QbfKKPhMNHkUTKZZd18enb6El4wMzuej8Q/5af9W10ilWhwTM2IB+TWH2QSigKIWNnLgjE/4PMWhjz3jUhJWsBRR/MSi+USLvy9vXCp4jqRgdjj2wzMZE47n12I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fv1BHE3k; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607f8482b88so2422817b3.0
-        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 18:40:39 -0800 (PST)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3392b045e0aso938112f8f.2
+        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 18:45:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708051239; x=1708656039; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aAqx+DNtfohx3A0ohaMlGEV6NccyucAWbnrcMy+yVXs=;
-        b=auWcVfjbPyqCnW/VtVUu7YZZljp70m+ia1TdJHfItcDy3qRtNl2/RX+PwRCAfkLSed
-         VH37NoGppGPkWVaQYvDCb8oTWWWa4exs8LCEs7PHMZqyzgC2PgI2JHhXqLsm0+Na3bTX
-         eY/2dudezECA2FirDuOLOW42y5nchsQmzHLGhf21oA3TrmsNFLnYg1gBQh3Yb2t3JHQi
-         t4sgTkvuuERgiUWhq497N40zJwYzROHCoP1QfiiriMDqj8lxNfuMb7MsC6GTrWAOGplS
-         B5+IcE4szdCzD+UaxY8pQrO5Fyyp0EXvnJtiW8mI5IonULQuBN0zHbzoWCbc71TKhKru
-         kXBA==
+        d=gmail.com; s=20230601; t=1708051534; x=1708656334; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Jq1I98c0HFEH8i89FSBMCINNN8shwU76Ufbohm2ZQ4=;
+        b=Fv1BHE3konpsR7iX2cgmMrD9dXU9rbuKSW83hrGB8YPFhc6sZZFILsgEnLYsPTw0ce
+         wviuVClDAPUEbR0hRcGPNRupThTktbhpMgmWruO0gbTr6t5lzKWl1N17Pat9L5PnMWvq
+         sCVBTXWRNMfFlbCEvQXCa2jjr/0SwkqBWb6LFs1EMZ+01RpDaYq5rP3CytCLMpmeym1Z
+         4cqbV8nw0FuTek6nL6JOT0auBzsRhTtt9vCa8q/KrLrxUQ7NFBXZ2MdU+hkRc2dXhvXT
+         dXvURiGby4e0Paau7E4PcA8ZJ0EA/CJ1f4nQuKJj2OTFEP3X9pMXjA5Uwv6+qyc4F0LW
+         nGBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708051239; x=1708656039;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aAqx+DNtfohx3A0ohaMlGEV6NccyucAWbnrcMy+yVXs=;
-        b=DLiJ7Y1NVHepVZ02T74OM5WDHu9psnAh12RAlzX+IJ+5OFtRBlPAuhayIuqEbDDDpE
-         H1zH/srBFBL+7iida4aPJgFpX3NoFgSt+D1sikgx9grLK1kibsmekrHIJ9kO/rYEbcN/
-         qqve5mFUplsMBvBP6gmizDT5TWzwedngkC2qmZ8qrf/TJgA6WeDQ29qe9fQyOAwTYe9j
-         hPrLbDNckEIKL7oVh1p3WHTrUZ+tBTtnF0TuWI8ApaDJlyI3tXRc5Pouz4wzy30NqlUu
-         Hx6690apiwg6TdhJxa47sG5fU3xjYXUJhyKvUbIfhjsH5bGc8Dpy6LV8EvIV4iYP8jxj
-         b0Mw==
-X-Gm-Message-State: AOJu0YziVGnTEla6tEBPxzubUAfS1e+dDMdDoPyNM4io0XTvH0b1ocr6
-	KJ0B6K2FTuqo31B6H6yqO9yOJayJ2CnSvcRb40AZiUiz/eCciezSnVashYZL
-X-Google-Smtp-Source: AGHT+IGbXX1Q5UUSmn3jNEiO7LT6L3dTXwYAlKhoSevWkYJwsNu4vPmjtnbReoAyOw4bjX06VcbutA==
-X-Received: by 2002:a81:7bc5:0:b0:604:9c2e:923f with SMTP id w188-20020a817bc5000000b006049c2e923fmr3828825ywc.32.1708051238850;
-        Thu, 15 Feb 2024 18:40:38 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:ad0b:a28:ac5d:fc77? ([2600:1700:6cf8:1240:ad0b:a28:ac5d:fc77])
-        by smtp.gmail.com with ESMTPSA id t22-20020a0dea16000000b006042eeb20e1sm161968ywe.29.2024.02.15.18.40.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 18:40:38 -0800 (PST)
-Message-ID: <65f8cbbc-0330-4df8-8e8b-79c389f82f78@gmail.com>
-Date: Thu, 15 Feb 2024 18:40:37 -0800
+        d=1e100.net; s=20230601; t=1708051534; x=1708656334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/Jq1I98c0HFEH8i89FSBMCINNN8shwU76Ufbohm2ZQ4=;
+        b=ZdypI5F4OqRLD73ykq1JKctOS6qrd++9fN/Vf3Blb9uXmrv3C2Oq8HIQnshbYsEpt9
+         f4x14Bog3Gz6ZCY/l1kECMNDUEamNlGo9qp4dNHC3zo7BNDr/t2PAQZ1oVDaRREBloCH
+         E1NbMCG863LYcC4ybEvjA9MoNB8R7x2nkxOPq3gTVyZKtY3Ae7mXiDuI1OSrvzZL/bpS
+         fttqVenbQ+Nd1LNN8aaSe1Mp1Phue2u4q+a16bzmJCU5+yjdwFDfK7klg5jqzGsUwGR3
+         o2MGLtKHApISjjEbbdYgCzwcvCgiWnrBPS6mcVmqy7prxk3UpL6nrrrEoguuF0SM6GlC
+         h+gA==
+X-Forwarded-Encrypted: i=1; AJvYcCXdl0A2oBpVmL0KSi4JTEqfjbJloNzSmWVzohNBdh8TCuRntIXMBlsXuUEDDb7qigmnqM37CED+XawCSkNZ4WpIpUyK
+X-Gm-Message-State: AOJu0YxanbnKyNzsQ4AmyXhByS1pGL4qqjJ5prKJmiZoJADmO2b9DNfp
+	GwnedoW26/Pr6e3dlx7xwxD+j7NN37oO88Vx2LUUbpL09o8AG9KnIC2qI/4cSEDxHZ7Fq7zXLGT
+	isNcLgaVohyi9wa2y3FDXTUrHIi/MfBk4kDc=
+X-Google-Smtp-Source: AGHT+IHLIG8k7oqYj6t7NSLoTK5FY10olYtQd8yoVEmQ3abgDYU+6cjqmx1R16JPuz6Mv0m7QLEUxZyD3EtureIDKDY=
+X-Received: by 2002:adf:e7cb:0:b0:33b:6773:1481 with SMTP id
+ e11-20020adfe7cb000000b0033b67731481mr2611769wrn.56.1708051533878; Thu, 15
+ Feb 2024 18:45:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next v2 0/3] Create shadow variables for struct_ops in
- skeletons
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, thinker.li@gmail.com
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org, kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
-References: <20240214020836.1845354-1-thinker.li@gmail.com>
- <CAEf4BzbwZLMD=LWqZ_kmMeyLWvpzbeLGXSgWVQPSCsdnh+mufQ@mail.gmail.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzbwZLMD=LWqZ_kmMeyLWvpzbeLGXSgWVQPSCsdnh+mufQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
+ <20240209040608.98927-15-alexei.starovoitov@gmail.com> <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
+ <CAEf4BzYbkqhrPCY1RfyHHY1nq-fmpxP2O-n0gMzWoDFe4Msofw@mail.gmail.com>
+ <7af0d2e0cc168eb8f57be0fe185d7fa9caf87824.camel@gmail.com>
+ <CAEf4BzZyPDdtV8xyFxpLmPQpKrtO-affGrEfyDkodr_BDHVZcA@mail.gmail.com>
+ <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
+ <CAEf4BzY8grOqDUOAuvyBw+t1oZh6x_6xubHePv3byxV3sC9uVg@mail.gmail.com> <CAEf4BzapMe_zjrN9j7w41xP05VZOV_Nys9kwks7yCC312Omdpg@mail.gmail.com>
+In-Reply-To: <CAEf4BzapMe_zjrN9j7w41xP05VZOV_Nys9kwks7yCC312Omdpg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 15 Feb 2024 18:45:22 -0800
+Message-ID: <CAADnVQJROT_DYp_PmQrrM3NU-rt94gynDw1Y=dNc3jgaSVNDHA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global varaibles.
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes <lstoakes@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 15, 2024 at 3:22=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+>  {
+> @@ -2835,6 +2819,33 @@ static int
+> bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
+>              return err;
+>      }
+>
+> +    for (i =3D 0; i < obj->nr_maps; i++) {
+> +        struct bpf_map *map =3D &obj->maps[i];
+> +
+> +        if (map->def.type !=3D BPF_MAP_TYPE_ARENA)
+> +            continue;
+> +
+> +        if (obj->arena_map) {
+> +            pr_warn("map '%s': only single ARENA map is supported
+> (map '%s' is also ARENA)\n",
+> +                map->name, obj->arena_map->name);
+> +            return -EINVAL;
+> +        }
+> +        obj->arena_map =3D map;
+> +
+> +        if (obj->efile.arena_data) {
+> +            err =3D init_arena_map_data(obj, map, ARENA_SEC,
+> obj->efile.arena_data_shndx,
+> +                          obj->efile.arena_data->d_buf,
+> +                          obj->efile.arena_data->d_size);
+> +            if (err)
+> +                return err;
+> +        }
+> +    }
+> +    if (obj->efile.arena_data && !obj->arena_map) {
+> +        pr_warn("elf: sec '%s': to use global __arena variables the
+> ARENA map should be explicitly declared in SEC(\".maps\")\n",
+> +            ARENA_SEC);
+> +        return -ENOENT;
+> +    }
+> +
+>      return 0;
+>  }
+>
+> @@ -3699,9 +3710,8 @@ static int bpf_object__elf_collect(struct bpf_objec=
+t *obj)
+>                  obj->efile.st_ops_link_data =3D data;
+>                  obj->efile.st_ops_link_shndx =3D idx;
+>              } else if (strcmp(name, ARENA_SEC) =3D=3D 0) {
+> -                sec_desc->sec_type =3D SEC_ARENA;
+> -                sec_desc->shdr =3D sh;
+> -                sec_desc->data =3D data;
+> +                obj->efile.arena_data =3D data;
+> +                obj->efile.arena_data_shndx =3D idx;
 
+I see. So these two are sort-of main tricks.
+Special case ARENA_SEC like ".maps" and then look for this
+obj level map in the right spots.
+The special case around bpf_map__[set_]initial_value kind break
+the layering with:
+if (map->def.type =3D=3D BPF_MAP_TYPE_ARENA)
+  actual_sz =3D map->obj->arena_data_sz;
+but no big deal.
 
-On 2/15/24 15:50, Andrii Nakryiko wrote:
-> On Tue, Feb 13, 2024 at 6:08 PM <thinker.li@gmail.com> wrote:
->>
->> From: Kui-Feng Lee <thinker.li@gmail.com>
->>
->> This RFC is for gathering feedback/opinions on the design.
->> Based on the feedback received for v1, I made some modifications.
->>
->> == Pointers to Shadow Copies ==
->>
->> With the current implementation, the code generator will create a
->> pointer to a shadow copy of the struct_ops map for each map. For
->> instance, if we define a testmod_1 as a struct_ops map, we can access
->> its corresponding shadow variable "data" using the pointer.
->>
->>      skel->struct_ops.testmod1->data
->>
->> == Shadow Info ==
->>
->> The code generator also generates a shadow info to describe the layout
->> of the data pointed to by all these pointers. For instance, the
->> following shadow info describes the layout of a struct_ops map called
->> testmod_1, which has 3 members: test_1, test_2, and data.
->>
->>      static struct bpf_struct_ops_member_info member_info_testmod_1[] = {
->>          {
->>                  .name = "test_1",
->>                  .offset = .....,
->>                  .size = .....,
->>          },
->>          {
->>                  .name = "test_2",
->>                  .offset = .....,
->>                  .size = .....,
->>          },
->>          {
->>                  .name = "data",
->>                  .offset = .....,
->>                  .size = .....,
->>          },
->>      };
->>      static struct bpf_struct_ops_map_info map_info[] = {
->>          {
->>                  .name = "testmod_1",
->>                  .members = member_info_testmod_1,
->>                  .cnt = ARRAY_SIZE(member_info_testmod_1),
->>                  .data_size = sizeof(struct_ops->testmod_1),
->>          },
->>      };
->>      static struct bpf_struct_ops_shadow_info shadow_info = {
->>          .maps = map_info,
->>          .cnt = ARRAY_SIZE(map_info),
->>      };
->>
->> A shadow info describes the layout of the shadow copies of all
->> struct_ops maps included in a skeleton. (Defined in *__shadow_info())
-> 
-> I must be missing something, but libbpf knows the layout of struct_ops
-> struct through BTF, why do we need all these descriptors?
-
-I explain it in the response for part 1.
-
-> 
->>
->> == libbpf Creates Shadow Copies ==
->>
->> This shadow info should be passed to bpf_object__open_skeleton() as a
->> part of "opts" so that libbpf can create shadow copies with the layout
->> described by the shadow info. For now, *__open() in the skeleton will
->> automatically pass the shadow info to bpf_object__open_skeleton(),
->> looking like the following example.
->>
->>      static inline struct struct_ops_module *
->>      struct_ops_module__open(void)
->>      {
->>          DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
->>
->>          opts.struct_ops_shadow = struct_ops_module__shadow_info();
->>
->>          return struct_ops_module__open_opts(*** BLURB HERE ***opts);
->>      }
->>
->> The function bpf_map__initial_value() will return the shadow copy that
->> is created based on the received shadow info. Therefore, in the
->> function *__open_opts() in the skeleton, the pointers to shadow copies
->> will be initialized with the values returned from
->> bpf_map__initial_value(). For instance,
->>
->>     obj->struct_ops.testmod_1 =
->>          bpf_map__initial_value(obj->maps.testmod_1, NULL);
->>
-> 
-> I also don't get why you need to allocate some extra "shadow memory"
-> if we already have struct bpf_struct_ops->data pointer malloc()'ed
-> during bpf_map initialization, and its size matches exactly the
-> struct_ops's type size.
-
-
-I assume that the alignments & padding of BPF and the user space
-programs are different. (Check the response for part 1 as well)
-
-> 
->> This line of code will be included in the *__open_opts() function. If
->> the opts.struct_ops_shadow is not set, bpf_map__initial_value() will
->> return a NULL.
->>
->> ========================================
->> DESCRIPTION form v1
->> ========================================
->>
-> 
-> you probably don't need to keep cover letter from previous versions if
-> they are not relevant anymore
-> 
-> [...]
-
-
-Sure!
-It explains what the feature is and how to use this feature.
-So, I keep it here for people just found this discussion.
-
-> 
->>
->> ---
->>
->> v1: https://lore.kernel.org/all/20240124224130.859921-1-thinker.li@gmail.com/
->>
->> Kui-Feng Lee (3):
->>    libbpf: Create a shadow copy for each struct_ops map if necessary.
->>    bpftool: generated shadow variables for struct_ops maps.
->>    selftests/bpf: Test if shadow variables work.
->>
->>   tools/bpf/bpftool/gen.c                       | 358 +++++++++++++++++-
->>   tools/lib/bpf/libbpf.c                        | 195 +++++++++-
->>   tools/lib/bpf/libbpf.h                        |  34 +-
->>   tools/lib/bpf/libbpf.map                      |   1 +
->>   tools/lib/bpf/libbpf_internal.h               |   1 +
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +-
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   1 +
->>   .../bpf/prog_tests/test_struct_ops_module.c   |  16 +-
->>   .../selftests/bpf/progs/struct_ops_module.c   |   8 +
->>   9 files changed, 596 insertions(+), 24 deletions(-)
->>
->> --
->> 2.34.1
->>
+How do you want me to squash the patches?
+Keep "rename is_internal_mmapable_map into is_mmapable_map" patch as-is
+and then squash mine and your 2nd and 3rd?
 
