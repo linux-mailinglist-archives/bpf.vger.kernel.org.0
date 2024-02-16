@@ -1,182 +1,133 @@
-Return-Path: <bpf+bounces-22130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FCE4857568
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 05:51:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9BC8857573
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 06:03:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E56E3B22941
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 04:51:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F1BA287D26
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 05:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E0211C85;
-	Fri, 16 Feb 2024 04:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0994511733;
+	Fri, 16 Feb 2024 05:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+BFY/NC"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Px1/TqOq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jnEF6t3c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332ED10A0C
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 04:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541A6C15D
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 05:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708059079; cv=none; b=ViVtrinGI7tDKBIk2CqFnN5sO5zEiUygXnsKnKSz9cSr1s3UMhBx9ZKS7cxOlRk4DrU3ZzAbiBvXFpdcl5zNOIW9G31KHf8EI8FsxpFb480E/DUm3L5KEoVwii2sA5nx0xfiUQtexoRQ3zn1u4qeLBh8IBP6IA1fUFShj5mKoYQ=
+	t=1708059810; cv=none; b=YVDWg/QYJeCT4GN0hgwsIM00X1ZKqR8y+TlKkMADmJ8LpuXYpvxx+VxJxC6YXKNcIe07F3QKOV2xNUz0oR2T0ecdUMULsBFn4noDfL76fhyF9UiA465MxAmo4Pw7EfzVwd60kMuDV804Mxd1VTQh+5kcHmSmkaJ/Rxqsun67mdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708059079; c=relaxed/simple;
-	bh=sZkwodbNn+Omf9UdP2MEEvY0C/w/SAvFpeCUFSESngA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DrzF+NdkewAaIOVVDn+44szag5t5g78ddhIzN69wFfNUGOwVhuFIxT7vv3y/lse/PvHt6ET0f6OHPQaE0vXe8s4zdIP/Ax0go/elIvdklWsHSIINW6QdVz5yJguYCmySr+6SXTl9HpLlxPuT4WsAUvvUHRUZDvwaf6l0bMo40Mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+BFY/NC; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d944e8f367so15719525ad.0
-        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 20:51:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708059077; x=1708663877; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i6/VJ0JfXKC1lOJsbcyV+No0q+mraHhGZvW0Oa6VLFc=;
-        b=E+BFY/NCTygS77JU4LhivpjQe/0ujGegYKedYF3XCgxNfsUtlfle4hfb9W3Ojv78QK
-         ipM8CLC7bhfyaghx1l+B81Ub+IYZB9S86XaV+/X9LgR0KcwTEFe/OKJ59HImZ1SlGKns
-         rMQurE7UMBJsiFRGL7hTmCPX5j2AIZbW6LHiIP8NbojpX2tqaDBVu/to1770oXd99GUE
-         Usawym1YhLWThkDbQmhCzle1foHlB3NOH7sqjmEwpZl9Nwt7kH95RlFibDR19dvyHjS4
-         JrM8Rth8AC9KSLXcLfw2Ark8hmvcft7IfEbEbvBSSauGE/s6MwdvS/yo2MVI8QlRjUAB
-         asHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708059077; x=1708663877;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i6/VJ0JfXKC1lOJsbcyV+No0q+mraHhGZvW0Oa6VLFc=;
-        b=cyUaTZOTozQXlz8dhp6Uxf6YoFzkYLdVrqkxKfLrTmRdGukyTTzgL+Q+meq/WOc5wo
-         2jTopjkjKoQh++jUHkn8GOcDA/gVE0GaDoSm82fH59a3OdIYW/GKfON9fM2wL5EFmTsl
-         IBgGKePfpngSMhs1HzHYd8FQw0430Uwk6oSNohBnMYv9ZRpjzOnTOOWxUTGiHNRuGQKs
-         O2tOz2I6vRdpY3dz5Mox8m7u+jEEpy6ixNNnjonqfesrPtaEP8vuZX1ew6SmvsZpal8D
-         nvPpORYbxEfD6ZkR2JCgq4ePBWJs4Omp0Ki7HGzQ7Ke/NcbuJ9lrf4U0ETsNSgSGMHSj
-         MHiw==
-X-Forwarded-Encrypted: i=1; AJvYcCXjGWryFefROwx1hrFo3Rg7SZO/9PZEu4otyZ54y2DxATAlqbzi40JGahN8E77U5L6JHQrliPLdR6+W16kM8WI1Q06P
-X-Gm-Message-State: AOJu0Yz4pwf1LnG7S4ta0yYb8bG6PHLBY5sg4q1h3e7DGPGeHy+mrKLc
-	K7XFaV9txJhW0UmrWAWL1h+kXbYxbGdiidBdZeOVMrjzOI1ABqTkZpVbUQPy+Zi02EOj/CQwEaL
-	OWJzkFqRLpj1DtUDOf1s2/GUB3Fo=
-X-Google-Smtp-Source: AGHT+IHNYBImYYUc1t4TDkDT16OADsr/q5qavH8/DXizlPeWEyL5RdPBIcCQUxqloBxJE8qGLdpCuj0axkF4vdQZPFA=
-X-Received: by 2002:a17:90b:fd6:b0:299:c65:db3a with SMTP id
- gd22-20020a17090b0fd600b002990c65db3amr3026120pjb.46.1708059077320; Thu, 15
- Feb 2024 20:51:17 -0800 (PST)
+	s=arc-20240116; t=1708059810; c=relaxed/simple;
+	bh=dLEPQ52pPjxHYhnINN5A7zfGQ4KtGpP9p3ny2HoJhxE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J3oUYK0vSU+TxkTU95APGQUEJ6DoiYjpQpUv6HqES+jruBN60szMTjKGmgAHpaKWq1X6LI15/ZyiBjpNgdN+89oSBcFvhn1Zz2vj34mM/qRf58jIGksJiHtU/IoNhtQxYwDjgqUNaIhBcwU7vTBdACbixjmdv/oFjsLZxI6hV5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Px1/TqOq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jnEF6t3c; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.west.internal (Postfix) with ESMTP id 7F8D83200A4C;
+	Fri, 16 Feb 2024 00:03:26 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 16 Feb 2024 00:03:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1708059806;
+	 x=1708146206; bh=aEzo+N7tJsaCTlc8GAVUCM726Y+9q3UQM6yZ+dfZ8Qg=; b=
+	Px1/TqOqMn9Vm/X0296PV2y8/s8DAF7jZ1BmT0VP9PRHglxIt1YxnJiZ7jJK433h
+	sYgEfYmr70dWcFWMWuBL37oF6CX4IGOP8TDaibP+JD9dBAl061Xb/5C1XggrwZTU
+	jjyDCaeFypF74VO7VZchfeqNq8LGZEUp3un6MDnhH+J9FDewih71zbah6tejAx1T
+	f2CgmNuOLClqJSACw8SPXb3Pgl6Zvi0ewzrRZprMUVXXei7jUOCN+bDcWnB88urj
+	aJAKuZXn21CBl9YIzS6oknsbbGK8nkKm+U7ABhxaNNWgFi/gi62jRVIoisCxkbRg
+	wsDPM3tnJjgxC3GdeKix/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708059806; x=
+	1708146206; bh=aEzo+N7tJsaCTlc8GAVUCM726Y+9q3UQM6yZ+dfZ8Qg=; b=j
+	nEF6t3czLkMVLotEDfdJdSZ6BhyIljk038on5OFxaV8bE0UDaSzeaXKiL/0dMP7u
+	/hLZhVbJBmohBhkb418duw1d1q+hjrmmf4jeElWM+r7LYUMblfK97RYEdMlx3KvR
+	tjJ77C3YGlfsI6Tms6o0Sa44x60RqZzoi7RowBSMucIZrH/hPq/paX6nX/juV/B9
+	MXHj+bq2dXFjTTXPe/yFd+4IHrTVnqdcDDCBpmjZK2y2ghs53xbHW6eIBMtCvrKv
+	pKxyleXsa9pAvxmi9OPvpB7sPDZQn1tPmBuKuFqBScxb2nVJ1vbVGEylC9/kxW5O
+	5qjRYv7zQxiGRCHzfcfVg==
+X-ME-Sender: <xms:nezOZTW8n5E_8U-NXKxK7M9_qz4aRTvHeQw2eFBZ1EUabdyXvWTn2Q>
+    <xme:nezOZbnc7EJ8jXp5gIyaj_U6E79IWWTHNW65UOrQiYlkYCQbl5EdXq5Ta8aPWxGBL
+    2nvMxim0I5MLaLuqg>
+X-ME-Received: <xmr:nezOZfaIFC3Cpye2D1CgIXtKMUd9EyofgTTXpvD_M-8tCgnZU9NYUIUJqEd6Q6_-d8pyj0MTu4Mh-_9IMWZI387k9sVR0CXF8H1dcgE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddugdektdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tddunecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepudefiedtieehffeuffelffegheegjeekteekgfdtkeefjeeh
+    ffejtdfgkeeiteelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:nezOZeXAdoD_KGhUKJQFL8JHsQRIn1Podrcl8D2JV1lxyMkL-Ys5fw>
+    <xmx:nezOZdmjPQko_ol-xAu8D56pyqk_vvO9Jh6Pd7ite40svg_s-9ODbQ>
+    <xmx:nezOZbdVZguD54xpF8tw0vo43pksvBkPHIT1fZav54hcZHSf3qiTpA>
+    <xmx:nuzOZWCGCO5LbtOlItvsNm_2dPqUYbWODDx5xO4sqhg9ndbgKmrQog>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Feb 2024 00:03:23 -0500 (EST)
+Date: Thu, 15 Feb 2024 22:03:21 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, David Vernet <void@manifault.com>, 
+	lsf-pc@lists.linux-foundation.org
+Subject: Re: [LSF/MM/BPF TOPIC] Segmented Stacks for BPF Programs
+Message-ID: <g2eynf5qrku2y5g433syeftgp3l2yg2sqawmvcee37ygezkslx@tklh2vnevwhx>
+References: <a15f6a20-c902-4057-a1a9-8259a225bb8b@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209040608.98927-1-alexei.starovoitov@gmail.com>
- <20240209040608.98927-15-alexei.starovoitov@gmail.com> <e9fbe163f0273448142ba70b2cf8a13b6cca57ad.camel@gmail.com>
- <CAEf4BzYbkqhrPCY1RfyHHY1nq-fmpxP2O-n0gMzWoDFe4Msofw@mail.gmail.com>
- <7af0d2e0cc168eb8f57be0fe185d7fa9caf87824.camel@gmail.com>
- <CAEf4BzZyPDdtV8xyFxpLmPQpKrtO-affGrEfyDkodr_BDHVZcA@mail.gmail.com>
- <CAADnVQKY0UKYRUBmUZ8BPUrcx-t-v6iMz7u0AaBUKLB1-CS0qg@mail.gmail.com>
- <CAEf4BzY8grOqDUOAuvyBw+t1oZh6x_6xubHePv3byxV3sC9uVg@mail.gmail.com>
- <CAEf4BzapMe_zjrN9j7w41xP05VZOV_Nys9kwks7yCC312Omdpg@mail.gmail.com> <CAADnVQJROT_DYp_PmQrrM3NU-rt94gynDw1Y=dNc3jgaSVNDHA@mail.gmail.com>
-In-Reply-To: <CAADnVQJROT_DYp_PmQrrM3NU-rt94gynDw1Y=dNc3jgaSVNDHA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Feb 2024 20:51:05 -0800
-Message-ID: <CAEf4BzbeKSfhDnspJaDNZ8bHtCy9Zupcq6cOUQA=ZzOzm38phg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 14/20] libbpf: Recognize __arena global varaibles.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Lorenzo Stoakes <lstoakes@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a15f6a20-c902-4057-a1a9-8259a225bb8b@linux.dev>
 
-On Thu, Feb 15, 2024 at 6:45=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Feb 15, 2024 at 3:22=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> >  {
-> > @@ -2835,6 +2819,33 @@ static int
-> > bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
-> >              return err;
-> >      }
-> >
-> > +    for (i =3D 0; i < obj->nr_maps; i++) {
-> > +        struct bpf_map *map =3D &obj->maps[i];
-> > +
-> > +        if (map->def.type !=3D BPF_MAP_TYPE_ARENA)
-> > +            continue;
-> > +
-> > +        if (obj->arena_map) {
-> > +            pr_warn("map '%s': only single ARENA map is supported
-> > (map '%s' is also ARENA)\n",
-> > +                map->name, obj->arena_map->name);
-> > +            return -EINVAL;
-> > +        }
-> > +        obj->arena_map =3D map;
-> > +
-> > +        if (obj->efile.arena_data) {
-> > +            err =3D init_arena_map_data(obj, map, ARENA_SEC,
-> > obj->efile.arena_data_shndx,
-> > +                          obj->efile.arena_data->d_buf,
-> > +                          obj->efile.arena_data->d_size);
-> > +            if (err)
-> > +                return err;
-> > +        }
-> > +    }
-> > +    if (obj->efile.arena_data && !obj->arena_map) {
-> > +        pr_warn("elf: sec '%s': to use global __arena variables the
-> > ARENA map should be explicitly declared in SEC(\".maps\")\n",
-> > +            ARENA_SEC);
-> > +        return -ENOENT;
-> > +    }
-> > +
-> >      return 0;
-> >  }
-> >
-> > @@ -3699,9 +3710,8 @@ static int bpf_object__elf_collect(struct bpf_obj=
-ect *obj)
-> >                  obj->efile.st_ops_link_data =3D data;
-> >                  obj->efile.st_ops_link_shndx =3D idx;
-> >              } else if (strcmp(name, ARENA_SEC) =3D=3D 0) {
-> > -                sec_desc->sec_type =3D SEC_ARENA;
-> > -                sec_desc->shdr =3D sh;
-> > -                sec_desc->data =3D data;
-> > +                obj->efile.arena_data =3D data;
-> > +                obj->efile.arena_data_shndx =3D idx;
->
-> I see. So these two are sort-of main tricks.
-> Special case ARENA_SEC like ".maps" and then look for this
-> obj level map in the right spots.
+Hi Yonghong,
 
-yep
+On Wed, Feb 14, 2024 at 11:53:13AM -0800, Yonghong Song wrote:
+> For each active kernel thread, the thread stack size is 2*PAGE_SIZE ([1]).
+> Each bpf program has a maximum stack size 512 bytes to avoid
+> overflowing the thread stack. But nested bpf programs may post
+> a challenge to avoid stack overflow.
+> 
+> For example, currently we already allow nested bpf
+> programs esp in tracing, i.e.,
+>   Prog_A
+>     -> Call Helper_B
+>       -> Call Func_C
+>         -> fentry program is called due to Func_C.
+>           -> Call Helper_D and then Func_E
+>             -> fentry due to Func_E
+>               -> ...
+> If we have too many bpf programs in the chain and each bpf program
+> has close to 512 byte stack size, it could overflow the kernel thread
+> stack.
 
-> The special case around bpf_map__[set_]initial_value kind break
-> the layering with:
-> if (map->def.type =3D=3D BPF_MAP_TYPE_ARENA)
->   actual_sz =3D map->obj->arena_data_sz;
-> but no big deal.
->
+Just curious - overflowing the thread stack would cause some kind of
+panic right? And also, segmented/split stacks for bpf just reduces
+likelihood of stack overflow due to BPF prog stack requirements. In
+theory, a deep call stack due to fentry probes could still occur, right?
 
-true, and struct_ops will be another special case, so we might want to
-think about generalizing that a bit, but that's a separate thing we
-can handle later on
+[...]
 
-> How do you want me to squash the patches?
-> Keep "rename is_internal_mmapable_map into is_mmapable_map" patch as-is
-
-yep
-
-> and then squash mine and your 2nd and 3rd?
-
-I think `libbpf: move post-creation steps for ARENA map` should be
-squashed into your `libbpf: Add support for bpf_arena.` which
-introduces ARENA map by itself. And then `libbpf: Recognize __arena
-global varaibles.` and `libbpf: remove fake __arena_internal map` can
-be squashed together as well.
+Thanks,
+Daniel
 
