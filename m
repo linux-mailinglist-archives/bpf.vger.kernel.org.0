@@ -1,82 +1,81 @@
-Return-Path: <bpf+bounces-22187-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EECAE858840
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 22:52:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB8B858849
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 23:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E0831F21D83
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 21:52:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F10EA28BFCB
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 22:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87E61468F6;
-	Fri, 16 Feb 2024 21:52:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1C0146917;
+	Fri, 16 Feb 2024 21:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vw3xZPLL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RK+4Jckj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C121D69A
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 21:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A91E1420B8
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 21:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708120363; cv=none; b=tOwyk4lu3UFW0BkD4dHVVZb9mbdWHoVUu6d+SkAyKWIj5lATyuGTMgu4Z77V4BoP6O3OD6et3UdWwZ6U2OFBB+RDca6koUR38v5oQ7KMwH6z0kNWGlUydxf/YqWHzuBu5vB1QYXgoKX2Y+Rde3FLNrjdM7CwkwbvXR1/yPy24Ws=
+	t=1708120798; cv=none; b=b0mutOxLPaChsK9sHFtHWQc4sxTVhw0grkb2aD+6KixhTcUsxp+3GVFWtuyVrGCDOQY455+QsAS88ylpa/In+QhyeefSNc3GK/v5/cNdvvFFVXJPGq8L26FoXm6ipA2xsj+Hkt1boW9D185Y1njQaoYYi3Ei+Y/V4wAIlCi63tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708120363; c=relaxed/simple;
-	bh=EbSPtbmwX/bze1qZpTtU1HI6bKvCONem6tEIpDUng5Y=;
+	s=arc-20240116; t=1708120798; c=relaxed/simple;
+	bh=utvIg8r9qXT3h4YOfpYBfr1G9hACotrBF0lws97HELQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kun0ELJQJMw671al5ZlmQE1aBCkzfkRCW3JefhpfYs+EiRSvQoGjzKO8rglcnVhLh+kmg05QXlxFae7BxcxYv57iMVE3hCPwt8fJb7ryaYGzWetTEpuLB55EtzSPrvS1mPbGgz0HklwkMdUvrrkP+XyTcduGkQx7d4sakp5EqyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vw3xZPLL; arc=none smtp.client-ip=209.85.218.66
+	 To:Cc:Content-Type; b=Xc0AqFqnkBTw5OSfDO4akGqLt9F9uvOyvRYqYDLj93G/EXUW52CG+QGb5QI63DATaAwrlOu7Yx6EKboBTRq4Xak5MurStM9hF+hjOAzg1h+5Lpf0aNb1JiOKQ7tFPiXUc8m9Sr5OuVn2o3bTlHnAlVFuTuc5bmNWpgxQoCaj7vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RK+4Jckj; arc=none smtp.client-ip=209.85.208.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso376432566b.2
-        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 13:52:41 -0800 (PST)
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so3749508a12.1
+        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 13:59:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708120360; x=1708725160; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708120795; x=1708725595; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xgBZ9kbesLU6xAxhKrucivEtZzSSknCHMJdfRqXcZxg=;
-        b=Vw3xZPLLryZf0Hu/UJJkHZVAnH4XevTgcX2UVohYPc8ODO0q16zh29PA4d8sC37sjT
-         QVCe153vk1OT8bei/qoChVTogD9c7J+dX5oFySmmgwVW622bqryRjrQX+9E5Y/0H05+K
-         YgSQX6aqO9vHWDTJ3G6uvHTRoBG4pykjBgyMnOZxji1CoSKlm7NKbTrjpp/YV3DBmf+3
-         3XlB40RRGXdV94L6TS5lFR0nZvmfm84rqH6HfWnN3zk95oRu0t+WHtFJNOpUBApw96vM
-         w3v42yz3PrXvMojxu9iiHsNVAHa2jENmFaLnv291OQaIrdVnORxAsGbOt2KP5mm3KaJ1
-         teDQ==
+        bh=FIWjajWCUuvjD6fSgfJ99FdPBiLxJmHn0+9z9qcgpYQ=;
+        b=RK+4JckjWS166Zf4v2/C3svrFf0cXXQA2FcVq+jyoPzEQh39RXGTuwQMr2nMoacCIv
+         NE7Xdapr91fBAKaUAh7GAJhkKfj4AX0shQD+lHu1Xy5xLKxH+kaVW81ZDIUW2+pt9KLe
+         4Adtr5OZRcYMODNItfGiYPK5FaKDhbDo5w0C8eIGJTF+yC+gIzIpz02h5QlJbjuGkyhA
+         nFP1iSCCRBIZBxij7ueawF1jCIukU4dMH3YqbqfDGNIxFeaqxiS6gxFNitNYwZqeNZqs
+         Oq8YOjSUqv2/27XX/oXpZXDVi6HizvdBFdDVcOLVgINmujA0Yd0MdIGCEgpqMd27IKK1
+         x/iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708120360; x=1708725160;
+        d=1e100.net; s=20230601; t=1708120795; x=1708725595;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xgBZ9kbesLU6xAxhKrucivEtZzSSknCHMJdfRqXcZxg=;
-        b=B2z4YKEKvvprSegGm9c7DsVME7FsCpH39U1JOwU/Km1F+Oe3lR02XI5JhBMUVjeCpW
-         F1yr3YmidQcMd83O/a0zwWTEAlCnzWxm/Fd3oJW9o2bpXA1fydGsCw3Z6fsLfDPkZtDJ
-         a2yFdq4TgjKWNRSD2N4hZFbQiew5YbQZunqea8Bcgg+pccAD+JDviFWdcTRKh+g9B5wV
-         RMXr51KoD6a5PR9z69z2JY3e7x/ueu6RQG+KORQNfiZEYELaQOWuJtgeXOjh4MwbHZXG
-         GkmUcycc93WgJUAw89ibjsUb7Dzv60V46XJZf84i+u5hN20pEbj8EfSsx13Xw4YMd6Fv
-         tA5g==
-X-Gm-Message-State: AOJu0YxpVo/mPAs6e/+B9tcxglYMek9ewBwFyTVjJMyzvSFxLKmbrMQq
-	A8bzOzSNk+bL9KKvQxSqjOF2h8jts6CvbOoKGIEZ160TlMxZk3rEUe3ksMTsyj4+HVhmhXfe1uq
-	xhSCIMJoCa/ATVSqZZ9cQ69vZaDQ=
-X-Google-Smtp-Source: AGHT+IHnPoLNkxGhDoa6CRrXboYUIeKooGFahMPeW2x65P+LrCRpwTZLoohncW5B7g2/b00IlPkvTCTLJ7q8VuZQTBA=
-X-Received: by 2002:a17:906:d78a:b0:a3d:4036:4543 with SMTP id
- pj10-20020a170906d78a00b00a3d40364543mr4626036ejb.51.1708120359765; Fri, 16
- Feb 2024 13:52:39 -0800 (PST)
+        bh=FIWjajWCUuvjD6fSgfJ99FdPBiLxJmHn0+9z9qcgpYQ=;
+        b=phRlipGPVnwWVEbwgM7flfHuk2Vz91kxEqVQ5CIuopI5/R8E6L5TSN2AO2KR7iJHjG
+         5OHNp4aYd4ZirIWuyns5eg7mTh5k9SiRuidbHt/wen9m4q4ih4H518v2lz9ShbZu/fzE
+         DzPZ6IDhmjbPSw8P1w1M0KbzjvLVAwxU7VbRrV1k9INnrIYEXy416J82L9CqjrZssvFD
+         Jp3k+SUnq9FnbTZ4NMVIZpX+hjWo25TFJYi8TF1L3mmBkXgCj7eyiTJuw7Iv5ay4HPGm
+         fwb4yuQFbDs/VvZhrEsP85mxveJ2QsNaQ7cq3dNKKqo59FcS+ueQrEDnba+FpyJKKfVa
+         DFnA==
+X-Gm-Message-State: AOJu0YypFoe+2iag/w7/u9xggUcNE6QDaBleoOxEScHDOBh08aKXnCkr
+	86wCFNhzLsWAWlPUvEa1ZEl76/YWL2JfwVm30nd+Ek7d7epMlwh+X9QiSaDidpGQH7u+6L40wtT
+	5NCt9xcx58361RMsz3ElCaf7f+m0=
+X-Google-Smtp-Source: AGHT+IFLmgPQsTdR/F09tqnZ1eywXhh9FVpOK421gsjIjLnzU/mE+OeCPWIi0CtsLqsM0cMd45yylCZHj4LzmCjgfGE=
+X-Received: by 2002:aa7:d845:0:b0:564:16b0:1c63 with SMTP id
+ f5-20020aa7d845000000b0056416b01c63mr398511eds.21.1708120795420; Fri, 16 Feb
+ 2024 13:59:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201042109.1150490-1-memxor@gmail.com> <20240201042109.1150490-7-memxor@gmail.com>
- <8cb6e0ffa4810396ef618bfc92449dfd54d47043.camel@gmail.com>
-In-Reply-To: <8cb6e0ffa4810396ef618bfc92449dfd54d47043.camel@gmail.com>
+References: <20240201042109.1150490-1-memxor@gmail.com> <20240201042109.1150490-8-memxor@gmail.com>
+ <956ffbdd1998236db4c576606729303034fe121a.camel@gmail.com>
+In-Reply-To: <956ffbdd1998236db4c576606729303034fe121a.camel@gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 16 Feb 2024 22:52:03 +0100
-Message-ID: <CAP01T77+q_72KjRBB31DX+QWG3qHPsOrj_z=ihXJcAV=O=M2rQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 06/14] bpf: Adjust frame descriptor pc on
- instruction patching
+Date: Fri, 16 Feb 2024 22:59:18 +0100
+Message-ID: <CAP01T7454ab6aUh_iE90qFLOUj+iL9uTUTy1Gbh1yzkh5-qrRw@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 07/14] bpf: Use hidden subprog trampoline for bpf_throw
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -85,36 +84,57 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 15 Feb 2024 at 17:31, Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Thu, 15 Feb 2024 at 23:11, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
 > On Thu, 2024-02-01 at 04:21 +0000, Kumar Kartikeya Dwivedi wrote:
+> > When we perform a bpf_throw kfunc call, callee saved registers in BPF
+> > calling convention (R6-R9) may end up getting saved and clobbered by
+> > bpf_throw. Typically, the kernel will restore the registers before
+> > returning back to the BPF program, but in case of bpf_throw, the
+> > function will never return. Therefore, any acquired resources sitting in
+> > these registers will end up getting destroyed if not saved on the
+> > stack, without any cleanup happening for them.
 >
-> [...]
+> Could you please paraphrase this description a bit?
+> It took me a while to figure out the difference between regular bpf
+> calls and kfunc calls. Something like:
 >
-> > +static int adjust_subprog_frame_descs_after_remove(struct bpf_verifier_env *env, u32 off, u32 cnt)
-> > +{
-> > +     for (int i = 0; i < env->subprog_cnt; i++) {
-> > +             struct bpf_exception_frame_desc_tab *fdtab = subprog_info(env, i)->fdtab;
-> > +
-> > +             if (!fdtab)
-> > +                     continue;
-> > +             for (int j = 0; j < fdtab->cnt; j++) {
-> > +                     /* Part of a subprog_info whose instructions were removed partially, but the fdtab remained. */
-> > +                     if (fdtab->desc[j]->pc >= off && fdtab->desc[j]->pc < off + cnt) {
-> > +                             void *p = fdtab->desc[j];
-> > +                             if (j < fdtab->cnt - 1)
-> > +                                     memmove(fdtab->desc + j, fdtab->desc + j + 1, sizeof(fdtab->desc[0]) * (fdtab->cnt - j - 1));
-> > +                             kfree(p);
->
-> Is it necessary to release btf references for desc entries that are removed?
-> Those that were grabbed by add_used_btf() in gen_exception_frame_desc_iter_entry().
+>   - For regular bpf subprogram calls jit emits code that pushes R6-R9 to stack
+>     before jumping into callee.
+>   - For kfunc calls jit emits instructions that do not guarantee that
+>     R6-R9 would be preserved on stack. E.g. for x86 kfunc call is translated
+>     as "call" instruction, which only pushes return address to stack.
 >
 
-I think these btf pointers are just a view, the real owner is in
-the used_btfs array, in case of failure, it is dropped as part of
-bpf_verifier_env cleanup, or in case of success, transferred to
-bpf_prog struct and released on bpf_prog cleanup.
-So I think it should be ok, but I will recheck again.
+Will rephrase like this, thanks for the suggestions.
+
+> --
+>
+> Also, what do you think about the following hack:
+> - declare a hidden kfunc "bpf_throw_r(u64 r6, u64 r7, u64 r8, u64 r9)";
+> - replace all calls to bpf_throw() with calls to bpf_throw_r()
+>   (r1-r5 do not have to be preserved anyways).
+> Thus avoid necessity to introduce the trampoline.
+>
+
+I think we can do such a thing as well, but there are other tradeoffs.
+
+Do you mean that R6 to R9 would be copied to R1 to R5? We will have to
+special case such calls in each architecture's JIT, and add extra code
+to handle it, since fixups from the verifier would also need to pass
+the 6th argument, the cookie value to the bpf_throw call, which can't
+fit in the 5 argument limit for existing kfuncs. I did contemplate
+this solution but then decided against it for these reasons.
+
+One of the advantages of this bpf_throw_tramp stuff is that it does
+not increase code size for all callees, by doing the saving only when
+subprog is called. We can do something similar for bpf_throw_r, but it
+would be in architecture specific code in JIT or some arch_bpf_throw_r
+instead.
+
+Let me know if you suggested something different than what I understood above.
 
 > [...]
+>
+>
 
