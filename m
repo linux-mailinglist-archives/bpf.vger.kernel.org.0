@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-22161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98196858012
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 16:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0052858013
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 16:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E929282F50
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 15:04:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76E8E282828
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 15:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2514C12F5AE;
-	Fri, 16 Feb 2024 15:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E75412F5B4;
+	Fri, 16 Feb 2024 15:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QCWxQqCl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I8NSEpmd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED50312F388
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 15:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D8E12F592
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 15:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095832; cv=none; b=TQMi4IPFqNpfLJcf7COwYH3EQAnDatB+IGNim4TfgOQkBg2yT2eNSyOpBKMF2avVzObfnRXqp6VReoR7QOl2h1kz+LPE8U1uuhOwL7KlnofN/inFTDKnLRXh/96RtpNSQP85YJyWGeCbwp0EsNc3CsjhoS4/5E0GVMovhz/nxxw=
+	t=1708095833; cv=none; b=maR2MxohxQRO0wGUk/PvW08xLYzDTOVjidhuki0SvdR+txk5TYDuiawNicJZQKXUQ+SWPuiHSPxKSwSrwJYGaQUvjM/1rd49EsCt9EXTov0cPhqwNfvcWpcgogJM40os24Zpbaw3HmlAmOUPWNn/zdxKODfFPDnzybqfBgc1+HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095832; c=relaxed/simple;
-	bh=nAJLrNeDIk+AzI92zeZXbt5cyvDRwN0FuHKNfLufySk=;
+	s=arc-20240116; t=1708095833; c=relaxed/simple;
+	bh=ZZGZ8jg42ZNxJPS33J4vIOEC18dNvJreMcUt/b38mzY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mFCelG6Q/dpLrsXeyDW2rSgeOrhd/nX35q5aaj4IToAP7samGAwnL4WVWbqgWrrgQOWHe/+2eim1pK0mgtVgpwBe5Qgw0/SiHh9NNJXDBTEfwyoCXt237NA9oe/5ygsqBu3v9c05SOwGKreT0bkIL+BaoA5gdcoLFNYG4XRb1Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QCWxQqCl; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version; b=jgMOrY6mTPoQ0cfh9aTFZuIToy/6AC5lKghYj1djZqf6hlndwn2tiz5hLsoRx9ZBGkUw4Bl9T+Kdl69xtcJOATSV2Rw1kq7eKNylmEyRnQg+pvbam7LcPfHCbZCwfEcwx4rxmswhm+BwMeUwPCZP1LXuibVRrddZijPG1Nviwy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I8NSEpmd; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563cc707c7cso2624679a12.1
-        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 07:03:50 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a34c5ca2537so265603666b.0
+        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 07:03:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708095829; x=1708700629; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708095830; x=1708700630; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7B+AEL2My8XcQ8DkTnvszcHoUUs6Fwt8t+hT7QGhDVg=;
-        b=QCWxQqClDPu05rTPFDvYlxGfMfjqM/xEb4+xZvwxe6DuPBIMcTwUWMuxf7rwbyvpyJ
-         rcmZqyyj11pUU0KH7fNjsQne9TgYde2kawDIhMiPh/sn8Gq3TY+XvvoPY1OHD8vEg8Pg
-         UAJQCDwBehz1anyrR+S91d6yEzK2u0QjkKVyMkjUX23W4nCjcDHD75rkfZpnbYIVgfmC
-         GwHKxiUyucORMfMyyfu0WhoA5hOnpsrpCQ9PvidfajwWdB1gbEbaPptMMDCHqQurVawB
-         Ut4I2gLVdCiB9d5OvCC1MrPYkVAMzV4Lkum4KRHjvs82K1an2Ggcp8PpPaxMgq7b2A5g
-         CpBg==
+        bh=qbZZJtHttgWYhCWR6rqzHSFm1UqLGzy74tIhV2kB3GA=;
+        b=I8NSEpmd2gDsr+ir4gLVeMqbmjIVbuMDqP+ZirIogm1NYiD1OyaSAPOvBzC1c6Ka85
+         0MfqUZl3WVJKlsdV0hrwaJy0YTeE0J9P7nHA65OxnLyavtJMfa27JIVVji4wjgEl8xiB
+         QfsoNOS5I1uu0zMpEVMj6mS6RpyvtbBm3oZZn//G105wKx3GWSVF6KpnZMYnkfI9KAXq
+         DM8E1w9caOGeTm1SZ2FHFk2Fit6UEt3uqjDEhgeirxBO7L9mKLlDYEtUUrrtJzBWMm9m
+         scVlO7EdOA5kFuBkQHDZdgVeJM+1X1nHB7olbLGT4PWo3v1ly5wdG9bEekWZ4FYwoSpN
+         Ce8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708095829; x=1708700629;
+        d=1e100.net; s=20230601; t=1708095830; x=1708700630;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7B+AEL2My8XcQ8DkTnvszcHoUUs6Fwt8t+hT7QGhDVg=;
-        b=FKYK+08U82XvPxdtVftjv6GlsrKhBanSX+H12zK5hSqqUDtqXjnoRlTWz8TGM05d9j
-         0DUEEPgUth1ZfcbrQaYfoc6tF5VO4OgKo5im3voG0QDooA9HG/dzeQLl+535aZxLqgtY
-         EUQDb/mnZWzXFyzxwQbv/uG7b99MOKWOCOiGyIR5k31jla+DF+dF6xEmouJCNTfq/I/F
-         UJwUeQMD4XDCFTtF5Y/k1BsuhjpTX67eKooLTPvd0myYnk4BAiYh13JOPmbPbcyOIdCf
-         GsP8wulmf6HBzwvzLt4ibbKV0Lq08H1MXxIveVs+VdCrLxWgBNs/YmOian2Txo2nozuu
-         SBow==
-X-Gm-Message-State: AOJu0YzyzCeDHOgYzYhIcZjhpwm9VOcZARQywbCcKMV5tt8AngPlcXqg
-	I5RI+4lxXGPTHqKzXVCy6+q9oniUEi+acWHNKYL5UTS6cs36SmdLYCxVtoQy
-X-Google-Smtp-Source: AGHT+IEGx3TjtLOqWp071HK2Qtap+jOR9AN2BqN0+X59IgArka/9PbwVh/wxNIsRmMw5AjOH43kXtg==
-X-Received: by 2002:a17:907:b9ca:b0:a3d:6637:48be with SMTP id xa10-20020a170907b9ca00b00a3d663748bemr4300976ejc.29.1708095828947;
-        Fri, 16 Feb 2024 07:03:48 -0800 (PST)
+        bh=qbZZJtHttgWYhCWR6rqzHSFm1UqLGzy74tIhV2kB3GA=;
+        b=w7o5dZhd/mtt5V0L0Ogeww01reKrSY0OtzCWFLRbSAnY7/c6Zj2oNbLsFGSQ7SRKhb
+         8OKOv8VD/PpWaBV37CoCVvGnw58vGgElb0GJ6BuPM7yqap68CdAOkYf07hdCqw08sSCK
+         cgPv4mrF20ymDCLFyaG9xRgU/YDEoQKKWG/oMPRvRHdum23/w5to9C6UVpfO9qgogK2/
+         dCv4scn1+DPBkyXRYmgIgNUEOsi/QCSprqx06sApSFeW/+IxHaZyLT90j6Qr+7baxQ/k
+         IrNRtr4mhi8cg/p9Q0NGrTTfNnHxIPFC8MFq908B/CBgTrwpqTAjNlFjdsGrIsZx+i7R
+         78tA==
+X-Gm-Message-State: AOJu0Yz0itdnDoDrHIyhDs8SFJlTG+YzM0i4F/AYw5PCZN4NacfmaCyR
+	uP+e2uWnBVAr9ZARPitGp2y5iwnR7CFEV7vT3Z5pQ6qLTrtQxo3J8duWwaOW
+X-Google-Smtp-Source: AGHT+IFFiSevplw0c9Ow7DxhJi8hIuQGZ/RoHPochOacdp20n9I0L3TSbwzlN+ZJN7FkoFtzW/5ZFA==
+X-Received: by 2002:a17:906:b0d9:b0:a3d:2243:29da with SMTP id bk25-20020a170906b0d900b00a3d224329damr3673812ejb.36.1708095830038;
+        Fri, 16 Feb 2024 07:03:50 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id fj16-20020a1709069c9000b00a3d07f3ac61sm14209ejc.101.2024.02.16.07.03.47
+        by smtp.gmail.com with ESMTPSA id fj16-20020a1709069c9000b00a3d07f3ac61sm14209ejc.101.2024.02.16.07.03.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 07:03:48 -0800 (PST)
+        Fri, 16 Feb 2024 07:03:49 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	kuniyu@amazon.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 2/3] bpf: check bpf_func_state->callback_depth when pruning states
-Date: Fri, 16 Feb 2024 17:03:33 +0200
-Message-ID: <20240216150334.31937-3-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: test case for callback_depth states pruning logic
+Date: Fri, 16 Feb 2024 17:03:34 +0200
+Message-ID: <20240216150334.31937-4-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240216150334.31937-1-eddyz87@gmail.com>
 References: <20240216150334.31937-1-eddyz87@gmail.com>
@@ -90,115 +90,123 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When comparing current and cached states verifier should consider
-bpf_func_state->callback_depth. Current state cannot be pruned against
-cached state, when current states has more iterations left compared to
-cached state. Current state has more iterations left when it's
-callback_depth is smaller.
+The test case was minimized from mailing list discussion [0].
+It is equivalent to the following C program:
 
-Below is an example illustrating this bug, minimized from mailing list
-discussion [0].
-The example is not a safe program: if loop_cb point (1) is followed by
-loop_cb point (2), then division by zero is possible at point (4).
+    struct iter_limit_bug_ctx { __u64 a; __u64 b; __u64 c; };
 
-    struct ctx {
-    	__u64 a;
-    	__u64 b;
-    	__u64 c;
-    };
-
-    static void loop_cb(int i, struct ctx *ctx)
+    static __naked void iter_limit_bug_cb(void)
     {
-    	/* assume that generated code is "fallthrough-first":
-    	 * if ... == 1 goto
-    	 * if ... == 2 goto
-    	 * <default>
-    	 */
     	switch (bpf_get_prandom_u32()) {
-    	case 1:  /* 1 */ ctx->a = 42; return 0; break;
-    	case 2:  /* 2 */ ctx->b = 42; return 0; break;
-    	default: /* 3 */ ctx->c = 42; return 0; break;
+    	case 1:  ctx->a = 42; break;
+    	case 2:  ctx->b = 42; break;
+    	default: ctx->c = 42; break;
     	}
     }
 
-    SEC("tc")
-    __failure
-    __flag(BPF_F_TEST_STATE_FREQ)
-    int test(struct __sk_buff *skb)
+    int iter_limit_bug(struct __sk_buff *skb)
     {
-    	struct ctx ctx = { 7, 7, 7 };
+    	struct iter_limit_bug_ctx ctx = { 7, 7, 7 };
 
-    	bpf_loop(2, loop_cb, &ctx, 0);              /* 0 */
-    	/* assume generated checks are in-order: .a first */
+    	bpf_loop(2, iter_limit_bug_cb, &ctx, 0);
     	if (ctx.a == 42 && ctx.b == 42 && ctx.c == 7)
-    		asm volatile("r0 /= 0;":::"r0");    /* 4 */
+    	  asm volatile("r1 /= 0;":::"r1");
     	return 0;
     }
 
-Prior to this commit verifier built the following checkpoint tree for
-this example:
-
- .------------------------------------- Checkpoint / State name
- |    .-------------------------------- Code point number
- |    |   .---------------------------- Stack state {ctx.a,ctx.b,ctx.c}
- |    |   |        .------------------- Callback depth in frame #0
- v    v   v        v
-   - (0) {7P,7P,7},depth=0
-     - (3) {7P,7P,7},depth=1
-       - (0) {7P,7P,42},depth=1
-         - (3) {7P,7,42},depth=2
-           - (0) {7P,7,42},depth=2      loop terminates because of depth limit
-             - (4) {7P,7,42},depth=0    predicted false, ctx.a marked precise
-             - (6) exit
-         - (2) {7P,7,42},depth=2
-(a)        - (0) {7P,42,42},depth=2     loop terminates because of depth limit
-             - (4) {7P,42,42},depth=0   predicted false, ctx.a marked precise
-             - (6) exit
-(b)      - (1) {7P,7P,42},depth=2
-           - (0) {42P,7P,42},depth=2    loop terminates because of depth limit
-             - (4) {42P,7P,42},depth=0  predicted false, ctx.{a,b} marked precise
-             - (6) exit
-     - (2) {7P,7,7},depth=1
-       - (0) {7P,42,7},depth=1          considered safe, pruned using checkpoint (a)
-(c)  - (1) {7P,7P,7},depth=1            considered safe, pruned using checkpoint (b)
-
-Here checkpoint (b) has callback_depth of 2, meaning that it would
-never reach state {42,42,7}.
-While checkpoint (c) has callback_depth of 1, and thus
-could yet explore the state {42,42,7} if not pruned prematurely.
-This commit makes forbids such premature pruning,
-allowing verifier to explore states sub-tree starting at (c):
-
-(c)  - (1) {7,7,7P},depth=1
-       - (0) {42P,7,7P},depth=1
-         ...
-         - (2) {42,7,7},depth=2
-           - (0) {42,42,7},depth=2      loop terminates because of depth limit
-             - (4) {42,42,7},depth=0    predicted true, ctx.{a,b,c} marked precise
-               - (5) division by zero
+The main idea is that each loop iteration changes one of the state
+variables in a non-deterministic manner. Hence it is premature to
+prune the states that have two iterations left comparing them to
+states with one iteration left.
+E.g. {{7,7,7}, callback_depth=0} can reach state {42,42,7},
+while {{7,7,7}, callback_depth=1} can't.
 
 [0] https://lore.kernel.org/bpf/9b251840-7cb8-4d17-bd23-1fc8071d8eef@linux.dev/
 
-Suggested-by: Yonghong Song <yonghong.song@linux.dev>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../bpf/progs/verifier_iterating_callbacks.c  | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 011d54a1dc53..c1fa1de590dc 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -16705,6 +16705,9 @@ static bool func_states_equal(struct bpf_verifier_env *env, struct bpf_func_stat
- {
- 	int i;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+index 5905e036e0ea..a955a6358206 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
++++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+@@ -239,4 +239,74 @@ int bpf_loop_iter_limit_nested(void *unused)
+ 	return 1000 * a + b + c;
+ }
  
-+	if (old->callback_depth > cur->callback_depth)
-+		return false;
++struct iter_limit_bug_ctx {
++	__u64 a;
++	__u64 b;
++	__u64 c;
++};
 +
- 	for (i = 0; i < MAX_BPF_REG; i++)
- 		if (!regsafe(env, &old->regs[i], &cur->regs[i],
- 			     &env->idmap_scratch, exact))
++static __naked void iter_limit_bug_cb(void)
++{
++	/* This is the same as C code below, but written
++	 * in assembly to control which branches are fall-through.
++	 *
++	 *   switch (bpf_get_prandom_u32()) {
++	 *   case 1:  ctx->a = 42; break;
++	 *   case 2:  ctx->b = 42; break;
++	 *   default: ctx->c = 42; break;
++	 *   }
++	 */
++	asm volatile (
++	"r9 = r2;"
++	"call %[bpf_get_prandom_u32];"
++	"r1 = r0;"
++	"r2 = 42;"
++	"r0 = 0;"
++	"if r1 == 0x1 goto 1f;"
++	"if r1 == 0x2 goto 2f;"
++	"*(u64 *)(r9 + 16) = r2;"
++	"exit;"
++	"1: *(u64 *)(r9 + 0) = r2;"
++	"exit;"
++	"2: *(u64 *)(r9 + 8) = r2;"
++	"exit;"
++	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all
++	);
++}
++
++SEC("tc")
++__failure
++__flag(BPF_F_TEST_STATE_FREQ)
++int iter_limit_bug(struct __sk_buff *skb)
++{
++	struct iter_limit_bug_ctx ctx = { 7, 7, 7 };
++
++	bpf_loop(2, iter_limit_bug_cb, &ctx, 0);
++
++	/* This is the same as C code below,
++	 * written in assembly to guarantee checks order.
++	 *
++	 *   if (ctx.a == 42 && ctx.b == 42 && ctx.c == 7)
++	 *     asm volatile("r1 /= 0;":::"r1");
++	 */
++	asm volatile (
++	"r1 = *(u64 *)%[ctx_a];"
++	"if r1 != 42 goto 1f;"
++	"r1 = *(u64 *)%[ctx_b];"
++	"if r1 != 42 goto 1f;"
++	"r1 = *(u64 *)%[ctx_c];"
++	"if r1 != 7 goto 1f;"
++	"r1 /= 0;"
++	"1:"
++	:
++	: [ctx_a]"m"(ctx.a),
++	  [ctx_b]"m"(ctx.b),
++	  [ctx_c]"m"(ctx.c)
++	: "r1"
++	);
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
