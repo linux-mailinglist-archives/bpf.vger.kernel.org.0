@@ -1,158 +1,126 @@
-Return-Path: <bpf+bounces-22121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB9685739B
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 03:00:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FBB98573A2
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 03:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5319E1F22CCD
-	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 02:00:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 318FD284898
+	for <lists+bpf@lfdr.de>; Fri, 16 Feb 2024 02:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204E3DDD5;
-	Fri, 16 Feb 2024 01:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E74EAC2;
+	Fri, 16 Feb 2024 02:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="DkCTWick"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YA6jm+Z5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30D1DDAE
-	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 01:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A8AF9DB
+	for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 02:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708048796; cv=none; b=oz72zdjmPrZllZEVyfcBSCnAPetfgfXmV2zuKE2YkoltCUAu7ylAy11gJtz5TgJ0bs9NF/vf8lYSZV6Z3VvSP4NBaZUz75r9uEb0lCBsk+s7rEwMXqDJ/RIiAymGwxKfsIZ8uzy4JZli3nCu9WJsjNC+x2sO/uHMAx/XZBJLCYg=
+	t=1708049036; cv=none; b=Y8euqSLsbgKPAChZMez0yqDhpUXJSC7iFOP1ekExnk+m1cKHaXeLd8qmmFeNGFMmPZ3oYd7cgwDEqEXu3j2n3hhYjEuwOdcuphqq5N55fTXtxTO9/UKgmLe1P11dSrDziF06i0R9erk4E9rOP+l7Xo+EgiouVFDdCRyQN68R8TA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708048796; c=relaxed/simple;
-	bh=6Jf8Tf3YNL8Iit35UP///6Wu8rWBNYzPIySyhB9DyxQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EuBtmnNYKuCKNK59ID9NMkkfZyBBOIkRDaCIwUuPGzENSGW1prbw1XakRrBjv4fdZ672pBn22X9BQjTOBo/qJ/I/EWD+SbllUmlcGSD7oO8pcnr5lFjOWmXs9Trc9Mg6JmgoCOCbEho0DnakbA0EfSCdwxpVoAH3Ij+S2iezyX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=DkCTWick; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2a17f3217aso193282366b.2
-        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 17:59:54 -0800 (PST)
+	s=arc-20240116; t=1708049036; c=relaxed/simple;
+	bh=75/ZAHxSMiV546ouDnXqiBsYMXjde9zCYTo1JDebkcg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ghSdaXskvrn1DRBcx8GgCPI1hEY0R6xqTUZ6Jy1iYn1bzVfUxES+iYAyfInj4JruZTrFOzlSZBT05RYdXO9GDovs4/Nxk0gOnwEkqTrYv6k8K/7uzdXNE/vYM8gO4aN9HVnxD0fedo+DtIbhEuf5qv4d/+v+13x0WTxjrxbQI1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YA6jm+Z5; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso1689969276.3
+        for <bpf@vger.kernel.org>; Thu, 15 Feb 2024 18:03:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1708048793; x=1708653593; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mkh1NITpOSxywtc0rXIfkglAv7pc2Po+WHLtzXx3g5M=;
-        b=DkCTWicksi/iGrSwllQAvEn0iDjk5BaGaBQ+GgjBTOTwHL0pgWMc1LYxy8F6kY9Hwq
-         dGrxgywpRbRrrMmt/NwgHdR/h6r08EjjdU9t9YBzUaZauDNvDkrHkVOMWoMV5UVhE8IH
-         a+8xXqIdS1guLqD9bMjHK/JujRg26lUdUB7cqitSEX5LPz/xxkGpXvbSHeLCAD+/6Fkg
-         wz4uoPjqHrdhDp07919YKejqyY0N73BbcJRUa9N0UMxgyKCSiD+hqfQ/JjCq3pe88/ue
-         gLrc9n0GIfJTBWT2IqNom/QsWLvvgI31mHsbopd/0EqHV/xqahT40f/f/s3Sjdk/yHXQ
-         g5ww==
+        d=gmail.com; s=20230601; t=1708049033; x=1708653833; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O0WExi8ewTgWgfVxQjijS2p/prQkW/3Q1IY6QnrZUy0=;
+        b=YA6jm+Z5W9Uu/beDsPcyuiHzB+wf9gHHBIeieLCubIy7fIuyq0tAqyemlokBikpHlY
+         TU3gIsNjGr/xyVK9iU/bAVP056ijm5IVBXa9rgg2O/HBMY9ErZzZ2/T4jHwWXstovp+C
+         teI6bcvVwbsjdfgEhixDHcIkuEYMiSYNaTKftCSDNu316FSfx7G8ptZEZKZz2qAOF68z
+         ZxUZqgPQm/gZOGk3ladd48YmQB5i82cQ88B0IUavcVl8f/ytpNttUSc6S+R+anXYClOb
+         fV5arugGvVrjSUD4t6uWz3eh7WCD1g75Ytvq0hHlgcWMeTlTwWFOTY3iDqnfv7NDPaH1
+         rTaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708048793; x=1708653593;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Mkh1NITpOSxywtc0rXIfkglAv7pc2Po+WHLtzXx3g5M=;
-        b=QVVg3wmH+ZO0xMgpx5gB10LlC2/KMo/DlIbJaCCLWtSoePYkg2WN0vHZ3Ha0Pv+fNL
-         44BQDQTMhsmezfjBkCDEnZpRFtBc11EXi/F10hIAITcB8I8mUmZBHtDL1ym7gcp8kpyX
-         spmtEuXErMxY/qC0hz3m/PvsrQEc8hsq71SDoa1bLZzb1Xjs/Dgl0lnMR7fwASLszhFB
-         QJ+ZCc14SCB5zhogUQXCVRg6lVqsVRwuwkar3UvX5Cd0hNrm8Ry7eHllA4b38Ovx7XZj
-         1+hlo0llO5J5qp672VcJrXLiY14F3wlBErYateIo0aMYEwdcPK/ktxR+bqvRXElDMqp5
-         somg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQfMJOWnLWE+RnwfdZ/2yHA+IPnYsw7fhbR3Eq6nbd5WCYWYQNvoGYuoB45bHNH5au3uvehztvKuJCPwKga1aTF0up
-X-Gm-Message-State: AOJu0YwRynwKjKX0RqN8jLCHLw5WfSCo71tHwZW106gapAlA2H1pF/ze
-	489lhDJSLWlOX17YREIeBlUKNz0fBQX142H1lfURvbEpECrIP/15h6O+9eIoDU6pN3FOf8mfb+e
-	sya/dbiICo0yqcSWiSQZ0quk9Wz6H253XFgRp
-X-Google-Smtp-Source: AGHT+IHtbu8SCnFfkPU/Y3/W/5A60xjkCU/AfNXafWbyJ2P+SAyHGSfW0pyRBRZ1ZhJj7Tob7k2Zd4P+HLFt+T344/k=
-X-Received: by 2002:a17:906:e52:b0:a3d:678e:d020 with SMTP id
- q18-20020a1709060e5200b00a3d678ed020mr2263334eji.43.1708048793090; Thu, 15
- Feb 2024 17:59:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708049033; x=1708653833;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O0WExi8ewTgWgfVxQjijS2p/prQkW/3Q1IY6QnrZUy0=;
+        b=cnYYqDMqVFGmXAfydmQIJS7aALv2ZjBLt0co3geNEmn0cLUIRPh/SyQeFrvCsBXxrN
+         rxearzScJNHf+M6I34tkHxauGiBsVEGMW5XXTynxmVTJxBpct5641ebOgOqnFpie0NmM
+         ydmdPxMkeiPxLMkGBUENtJgXR2qLZDJOVY0TQyBLNsKGNm/pC+h7ylf/NF7aYS/MakQz
+         wb2YmVJRsvbVezYpu0rMsOinWRjVqqQzO1hHfyX6LaxlPHP6eIWtPhyJTzE1G4J5wgN/
+         ZqNNVdgNGB5vMjdA+ihqxKP0yBUDD0j/2OV1QZnSup3S7SJSIl+io1CkLwyj0hIG4dJa
+         8hzA==
+X-Gm-Message-State: AOJu0YzzUo5xEDtf1wMUCsf7FtKXJBVLymCACmQt7hl7rke3ImkgsSy8
+	GaqaoNK1smo+AAqSwR5yuQWALeXxbtyw5urLdxGJD0MUmDqZIFmom6zICXyo
+X-Google-Smtp-Source: AGHT+IEeNfrEKaXa9uLGBOb/KsGvvkmbWGTkXOCN+A16Q9ZCmpEtres3RvF8z/2Oq7Vw7qkHaJebYQ==
+X-Received: by 2002:a25:9383:0:b0:dc2:48af:bf09 with SMTP id a3-20020a259383000000b00dc248afbf09mr3310111ybm.62.1708049033068;
+        Thu, 15 Feb 2024 18:03:53 -0800 (PST)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:ad0b:a28:ac5d:fc77])
+        by smtp.gmail.com with ESMTPSA id d71-20020a25cd4a000000b00dcd2c2e7550sm133211ybf.21.2024.02.15.18.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 18:03:52 -0800 (PST)
+From: thinker.li@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v2 0/2] Check cfi_stubs before registering a struct_ops type.
+Date: Thu, 15 Feb 2024 18:03:48 -0800
+Message-Id: <20240216020350.2061373-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214173950.18570-1-khuey@kylehuey.com> <20240214173950.18570-4-khuey@kylehuey.com>
- <CAEf4BzYFbVeVhSjj2wSLfg+qRs5x+yS1Wq9jwLNpJJPPtFiFqQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYFbVeVhSjj2wSLfg+qRs5x+yS1Wq9jwLNpJJPPtFiFqQ@mail.gmail.com>
-From: Kyle Huey <me@kylehuey.com>
-Date: Thu, 15 Feb 2024 17:59:41 -0800
-Message-ID: <CAP045Aq=siNqY_Nr6nbzdAaFUq7Rok0e+PWByYQuSspWguwsNQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 3/4] perf/bpf: Allow a bpf program to suppress
- all sample side effects
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Song Liu <song@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 4:14=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Feb 14, 2024 at 9:40=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote=
-:
-> >
-> > Returning zero from a bpf program attached to a perf event already
-> > suppresses any data output. Return early from __perf_event_overflow() i=
-n
-> > this case so it will also suppress event_limit accounting, SIGTRAP
-> > generation, and F_ASYNC signalling.
-> >
-> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > Acked-by: Song Liu <song@kernel.org>
-> > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  kernel/events/core.c | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 24a718e7eb98..a329bec42c4d 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -9574,6 +9574,11 @@ static int __perf_event_overflow(struct perf_eve=
-nt *event,
-> >
-> >         ret =3D __perf_event_account_interrupt(event, throttle);
-> >
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +       if (event->prog && !bpf_overflow_handler(event, data, regs))
-> > +               return ret;
-> > +#endif
-> > +
-> >         /*
-> >          * XXX event_limit might not quite work as expected on inherite=
-d
-> >          * events
-> > @@ -9623,10 +9628,7 @@ static int __perf_event_overflow(struct perf_eve=
-nt *event,
-> >                 irq_work_queue(&event->pending_irq);
-> >         }
-> >
-> > -#ifdef CONFIG_BPF_SYSCALL
-> > -       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
-> > -#endif
-> > -               READ_ONCE(event->overflow_handler)(event, data, regs);
-> > +       READ_ONCE(event->overflow_handler)(event, data, regs);
-> >
->
-> Sorry, I haven't followed previous discussions, but why can't this
-> change be done as part of patch 1?
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
-The idea was to refactor the code without making any behavior changes
-(patches 1 and 2) and then to change the behavior (patch 3).
+Recently, cfi_stubs were introduced. However, existing struct_ops
+types that are not in the upstream may not be aware of this, resulting
+in kernel crashes. By rejecting struct_ops types that do not provide
+cfi_stubs properly during registration, these crashes can be avoided.
 
-- Kyle
+---
+Changes from v1:
 
-> >         if (*perf_event_fasync(event) && event->pending_kill) {
-> >                 event->pending_wakeup =3D 1;
-> > --
-> > 2.34.1
-> >
+ - Check *(void **)(cfi_stubs + moff) to make sure stub functions are
+   provided for every operator.
+
+ - Add a test case to ensure that struct_ops rejects incomplete
+   cfi_stub.
+
+v1: https://lore.kernel.org/all/20240215022401.1882010-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (2):
+  bpf: Check cfi_stubs before registering a struct_ops type.
+  selftests/bpf: Test case for lacking CFI stub functions.
+
+ kernel/bpf/bpf_struct_ops.c                   | 14 +++
+ tools/testing/selftests/bpf/Makefile          | 10 +-
+ .../selftests/bpf/bpf_test_no_cfi/Makefile    | 19 ++++
+ .../bpf/bpf_test_no_cfi/bpf_test_no_cfi.c     | 93 +++++++++++++++++++
+ .../bpf/prog_tests/test_struct_ops_no_cfi.c   | 31 +++++++
+ tools/testing/selftests/bpf/testing_helpers.c |  4 +-
+ tools/testing/selftests/bpf/testing_helpers.h |  2 +
+ 7 files changed, 170 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
+
+-- 
+2.34.1
+
 
