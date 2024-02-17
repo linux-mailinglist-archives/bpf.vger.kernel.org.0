@@ -1,165 +1,187 @@
-Return-Path: <bpf+bounces-22201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFFA4858D06
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 04:03:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5A5858E8F
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 11:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36131284B0D
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 03:03:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 629F71F2215F
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 10:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036281BC2D;
-	Sat, 17 Feb 2024 03:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CC21DDC9;
+	Sat, 17 Feb 2024 10:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="McLXvosS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6Spw9tF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FB01AAB1
-	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 03:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEE01DA3D;
+	Sat, 17 Feb 2024 10:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708139002; cv=none; b=bONam+AMvz+QCuNufrmcuO5Jt1qbfRnBL+nOe33BrH+2J1GCFU+tq6AVICVWc2NlzR6omTIK1R6LPw+PnuGaXfnf3qLsXWphk6LeMQ26xYVWU8IFMGFvVnG8r63mFUUate5VdljN+2QKAx3VylKLGjSuPxU9cD7VnoEljLK2N64=
+	t=1708164432; cv=none; b=GvARgCK2sQecXbZ9pSmUJ4nD9weRI1GhmIMNUEn4DxVmO4Ykt5GryVppWknHdJi46CrahkWmzLCVVSpd337OUtQG9+82WQE+vUQ7MX2uNFE/FB5LyuaGIUyAKKlqXoXOo9yFxgkkX0eYp9aq8aqltgM9n/WtjSyP9hgJDnnnugU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708139002; c=relaxed/simple;
-	bh=xpvnUQORiMZ/oAeyo85a9kbOqGl2fDmjOk2texpVn8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X7fU6IuCNz6mbKDIbCuQuvi99HKHCjDuuXWDZzKDVlBXuWvTkvQGF2ujNNFVglIIdDs5gMLsKqltUfUskrERSamn/PBZgE6A4rIKmJWfWQg4ZAZCtp7K3eZj0qWL1XxWRz6Nf+LuANJpXKWUjPdlWpwAZKq3KJRvUDfk6A2vGzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=McLXvosS; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5dc949f998fso1882682a12.3
-        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 19:03:20 -0800 (PST)
+	s=arc-20240116; t=1708164432; c=relaxed/simple;
+	bh=JavLGhUTJDpG8aaqbfw3hSE1Z1tpC/+8PIHUmyudyvE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eYHzEKxlu5sZrJPCA7o8oC1D8HXLjHMQhUB3i74FAdKJmYM8iD/tdNpn/MwoJhzPA5XdJ9HJQMPsNpNBG3akc/7cNPex3reuqm0/9hkItmG64Ing86qyelcygQRdP/8H6mYS8/D2oWOmyeBZC4UgqsG4ZE9zHlYn6lT0lZo0sFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y6Spw9tF; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511a02b82dbso1135140e87.0;
+        Sat, 17 Feb 2024 02:07:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708139000; x=1708743800; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9E8QSOafC61clD8Eej3Har3OU/+oWCjszElG8x74Hj8=;
-        b=McLXvosSYm2MWVUEK/eacWgTkwXq1xzXKmxqORZBZPBuc3Ea19jdw3dDdgY4rnRJc+
-         Lg8YS/ydevC1hc4f3uEOa4b87WlgZw4yJO/MSqSdFhnjwhspJEgP/FkxIIXw+iicBmkf
-         QKnB14duiBoR5bPq8YbixNjN9g6iGJXuq0h1I=
+        d=gmail.com; s=20230601; t=1708164424; x=1708769224; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xcGMykGXnDItFmDLKz+olIPa5dx1f4SG2gEoYVEaPaw=;
+        b=Y6Spw9tFOprSWJbLIzrtdGfnBELoxZjeZchGGkOMuE+QICtt66+pZCRi6LJOmiBVx/
+         RedtWTcyOy1df9EcZsSdacpr7/qTfD7zVHTKbFVCqHvn8QoYdwIzsI4Mo8EKS88oDxHT
+         QnJvtmPTbLw7UQEpnrJXHb+RE34F/UuSeCAE8Sehha2r7fYYSXab9bWZumA/7NpDZS9O
+         DUd+qSLV1J//QaHFmWiruHuYe+jsv0v5w48WLoBhJsUJ5mD9bn60Wi0FgOuip62ttFV3
+         Ed7SzTJ6F25bJCBvNGQqz76ab0cJxl8E03dNBGX+Ryyu6U4Q2/uIz0bUqVn/AEo2y5pf
+         gJAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708139000; x=1708743800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9E8QSOafC61clD8Eej3Har3OU/+oWCjszElG8x74Hj8=;
-        b=BR7n+jdUTmvH1xkQEP8LRmb1NqUjt9/7UP/+v2inyZkVVMxecs8pWN9MafQq0xo9Rd
-         8SG1caA8JbxT49mLbjJ82/adnLxh4jXw1HGxRt+QAlOBIyJK4b7qiamIopoFp/Q5DxEM
-         2sHscgaBS4q5qQ+s9JLGs2cdtIZzkdzeO1JWWIrgyN4Gsk4rr8oza/wbgGGiiu2adbFJ
-         xqUcCDPPpQRdtfUg9ECYTnZ4lw0Mkuw0o01Noi29qmmgctKusg/x8M5N1pGOrnJ1tPyk
-         8Ea3f4D/VSpuCrD6mKjSavwcpWU5fxCpqiWcE+9B4hRxTblx9VnWXrOaxStPWmibE7Ga
-         4xLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWN5mXCMusUo/0YSvV0WElfTeOpP8C7lbfGTAnwuh9suLDFIfhXKxF3x8MR2vMWZpUJP3Kr4QZr1ar+o8FnNn0zCqEd
-X-Gm-Message-State: AOJu0YwNAyF4wYlIDZy9njH/A6YXut7Jh9lqFc/TLScsCcAs2byjw/WB
-	UNmuxfBubnY9Vv1SqfGUzpD+HOajTnzIPXidDgw1SHkRQsBnm1TuiB4/A//TZw==
-X-Google-Smtp-Source: AGHT+IGk3vr0O8poIMmGJlhPEiEvPKSSXAAztZELBQ+98gW6sIlAiN+nPC+62bRu84NsZRY0YVzpBw==
-X-Received: by 2002:a17:902:f54a:b0:1db:55cc:d222 with SMTP id h10-20020a170902f54a00b001db55ccd222mr9000388plf.4.1708139000004;
-        Fri, 16 Feb 2024 19:03:20 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kq13-20020a170903284d00b001db5c8202a4sm525497plb.59.2024.02.16.19.03.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 19:03:19 -0800 (PST)
-Date: Fri, 16 Feb 2024 19:03:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with
- flexible array
-Message-ID: <202402161902.FCFFEC322@keescook>
-References: <20240216235536.it.234-kees@kernel.org>
- <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
+        d=1e100.net; s=20230601; t=1708164424; x=1708769224;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xcGMykGXnDItFmDLKz+olIPa5dx1f4SG2gEoYVEaPaw=;
+        b=RCdUC3jRS5q1Y15+aqVJma8nFbeofExr+W9orP2GKFH7YuexpuNKULY1FhkxCaqgbX
+         PyFVLusIFkU7VJQl8yKxDBbCLNABbFfEk8JYIWKmVB4icSOinJ8bcf1KJEqLIl6SZ/hm
+         5BvgnPaBMHydt++aWxkv6B1x/TKTtIR2JE1t2ctxl4ViypvBM8HxEgT12IG5tKEVkl+O
+         HaEi/i9KYBdThIOCdeXQUuxJYBxqdhiRfQJ1QHAtWzy5afV4SVsyPf8c1LMkOPYjwlp/
+         EBHi8Y+yWwgcxfj+lRA0RCD5wL3rCJQ9H/kcYCcvWCdB5nMLCrDZTxf77zrhmX1S3Kj8
+         UxIw==
+X-Forwarded-Encrypted: i=1; AJvYcCUV/SJ56k0Kl6hXfabWZszWoUFlquAkDKbcc4/S+TpTMIj0Rog0CCfQNys7rsN0lCn/6RJJKDpe9+tn+z5SomtVoTpRpQX255AgHHM2owZIkbav3/WeJ9pY8FB/
+X-Gm-Message-State: AOJu0YxdP3Qx8JiFNBfjwpLrLRFd8DCyddqmC810/DeHlfXJsUmcNwxC
+	IAIugJCgBJZb0sFH/rpfYP9UaZA20DezgAF1YQfC3iLM4OzlLr24
+X-Google-Smtp-Source: AGHT+IFZITD1alzdjiGsGJWP4t2oMSqBd0n4h0pF+hbK4bjvdtIidy9ksejZPHT3MI0ztxbRiQ0d1A==
+X-Received: by 2002:a19:7016:0:b0:511:9ea2:f589 with SMTP id h22-20020a197016000000b005119ea2f589mr2604639lfc.0.1708164423822;
+        Sat, 17 Feb 2024 02:07:03 -0800 (PST)
+Received: from [192.168.8.105] (m91-129-97-170.cust.tele2.ee. [91.129.97.170])
+        by smtp.gmail.com with ESMTPSA id c33-20020a05651223a100b00512a740d502sm101221lfv.108.2024.02.17.02.07.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 02:07:03 -0800 (PST)
+Message-ID: <8b68b781-879a-43b5-be41-7b5f75342daf@gmail.com>
+Date: Sat, 17 Feb 2024 12:07:01 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 net-next 3/4] xdp: add multi-buff support for xdp
+ running in generic mode
+To: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
+Cc: lorenzo.bianconi@redhat.com, kuba@kernel.org, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, bpf@vger.kernel.org,
+ toke@redhat.com, willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+ sdf@google.com, hawk@kernel.org, ilias.apalodimas@linaro.org,
+ linyunsheng@huawei.com
+References: <cover.1707729884.git.lorenzo@kernel.org>
+ <1044d6412b1c3e95b40d34993fd5f37cd2f319fd.1707729884.git.lorenzo@kernel.org>
+Content-Language: en-US
+From: Julian Wiedmann <jwiedmann.dev@gmail.com>
+In-Reply-To: <1044d6412b1c3e95b40d34993fd5f37cd2f319fd.1707729884.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 16, 2024 at 06:27:08PM -0600, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 2/16/24 17:55, Kees Cook wrote:
-> > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> > flexible array. Found with GCC 13:
-> > 
-> > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
-> >    207 |                                        *(__be16 *)&key->data[i]);
-> >        |                                                   ^~~~~~~~~~~~~
-> > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
-> >    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-> >        |                                                      ^
-> > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
-> >     97 | #define be16_to_cpu __be16_to_cpu
-> >        |                     ^~~~~~~~~~~~~
-> > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
-> >    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> > ^
-> >        |                            ^~~~~~~~~~~
-> > In file included from ../include/linux/bpf.h:7:
-> > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
-> >     82 |         __u8    data[0];        /* Arbitrary size */
-> >        |                 ^~~~
-> > 
-> > And found at run-time under CONFIG_FORTIFY_SOURCE:
-> > 
-> >    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
-> >    index 0 is out of range for type '__u8 [*]'
-> > 
-> > This includes fixing the selftest which was incorrectly using a
-> > variable length struct as a header, identified earlier[1]. Avoid this
-> > by just explicitly including the prefixlen member instead of struct
-> > bpf_lpm_trie_key.
-> > 
-> > Note that it is not possible to simply remove the "data" member, as it
-> > is referenced by userspace
-> > 
-> > cilium:
-> >          struct egress_gw_policy_key in_key = {
-> >                  .lpm_key = { 32 + 24, {} },
-> >                  .saddr   = CLIENT_IP,
-> >                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
-> >          };
-> > 
-> > systemd:
-> > 	ipv6_map_fd = bpf_map_new(
-> > 			BPF_MAP_TYPE_LPM_TRIE,
-> > 			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
-> > 			sizeof(uint64_t),
-> > 			...
-> > 
-> > The only risk to UAPI would be if sizeof() were used directly on the
-> > data member, which it does not seem to be. It is only used as a static
-> > initializer destination and to find its location via offsetof().
-> > 
-> > Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
-> > Reported-by: Mark Rutland <mark.rutland@arm.com>
-> > Closes: https://paste.debian.net/hidden/ca500597/
-> 
-> mmh... this URL expires: 2024-05-15
 
-Yup, but that's why I included the run-time splat above too. :)
 
--- 
-Kees Cook
+On 12.02.24 11:50, Lorenzo Bianconi wrote:
+> Similar to native xdp, do not always linearize the skb in
+> netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
+> processed by the eBPF program. This allow to add multi-buffer support
+> for xdp running in generic mode.
+> 
+> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> Reviewed-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/linux/skbuff.h |  2 +
+>  net/core/dev.c         | 70 +++++++++++++++++++++++---------
+>  net/core/skbuff.c      | 91 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 144 insertions(+), 19 deletions(-)
+> 
+
+[...]
+
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 9e5eb47b4025..bdb94749f05d 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -895,6 +895,97 @@ static bool is_pp_page(struct page *page)
+>  	return (page->pp_magic & ~0x3UL) == PP_SIGNATURE;
+>  }
+>  
+> +static int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
+> +			   unsigned int headroom)
+> +{
+> +#if IS_ENABLED(CONFIG_PAGE_POOL)
+> +	u32 size, truesize, len, max_head_size, off;
+> +	struct sk_buff *skb = *pskb, *nskb;
+> +	int err, i, head_off;
+> +	void *data;
+> +
+> +	/* XDP does not support fraglist so we need to linearize
+> +	 * the skb.
+> +	 */
+> +	if (skb_has_frag_list(skb))
+> +		return -EOPNOTSUPP;
+> +
+> +	max_head_size = SKB_WITH_OVERHEAD(PAGE_SIZE - headroom);
+> +	if (skb->len > max_head_size + MAX_SKB_FRAGS * PAGE_SIZE)
+> +		return -ENOMEM;
+> +
+> +	size = min_t(u32, skb->len, max_head_size);
+> +	truesize = SKB_HEAD_ALIGN(size) + headroom;
+> +	data = page_pool_dev_alloc_va(pool, &truesize);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	nskb = napi_build_skb(data, truesize);
+> +	if (!nskb) {
+> +		page_pool_free_va(pool, data, true);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	skb_reserve(nskb, headroom);
+> +	skb_copy_header(nskb, skb);
+> +	skb_mark_for_recycle(nskb);
+> +
+> +	err = skb_copy_bits(skb, 0, nskb->data, size);
+> +	if (err) {
+> +		consume_skb(nskb);
+> +		return err;
+> +	}
+> +	skb_put(nskb, size);
+> +
+> +	head_off = skb_headroom(nskb) - skb_headroom(skb);
+> +	skb_headers_offset_update(nskb, head_off);
+> +
+> +	off = size;
+> +	len = skb->len - off;
+> +	for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
+> +		struct page *page;
+> +		u32 page_off;
+> +
+> +		size = min_t(u32, len, PAGE_SIZE);
+> +		truesize = size;
+> +
+> +		page = page_pool_dev_alloc(pool, &page_off, &truesize);
+> +		if (!data) {
+> +			consume_skb(nskb);
+> +			return -ENOMEM;
+> +		}
+> +
+
+This should check for !page instead, no?
+
+(picked up as CID 1583654 by the coverity scan for linux-next)
 
