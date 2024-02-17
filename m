@@ -1,157 +1,119 @@
-Return-Path: <bpf+bounces-22207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11031858F2A
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 12:42:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D70D8858F32
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 12:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42E631C214A9
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 11:42:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 420592837FD
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 11:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E61569DF0;
-	Sat, 17 Feb 2024 11:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3BB6A02A;
+	Sat, 17 Feb 2024 11:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l+xMLNTQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqeokdX0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5F663407
-	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 11:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8AE069DE4;
+	Sat, 17 Feb 2024 11:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708170134; cv=none; b=Tc0QLhqN+grD4LAcCvnSReZkOlMUr2xBg4xABzcujDYIFgbWqUB+OtyhU5hEKgDY63v/AdCPDYDc4pcsvtLgJ3M/f5GAPVlvAFiE/VjAlM/c5EqzMg4Y9tcKl1U/OFM/u/xUY4OtnLke+hY9KOk9DoetQtae0IKrNbNuI1vGiq0=
+	t=1708171053; cv=none; b=UsPL2Ug8kL4ZIAqsKb/IWcMty9alzqIn1XSwUgBbLj/CF+Wu1VbTRY0kK/HFfgc8OO5lhuryUR6FJbxKz/HA+feYwkTRwKg8scakOPD6+7W4AkkI/VrMH6JKNRJdZnIVeGHYO+mPun61b5clqkw3IMFMrRctIZE40N5duCOSpvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708170134; c=relaxed/simple;
-	bh=UgSHNW8lssCl1G9AZjbvSGCwOQyWHiD28zM9BeFYB5k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ltlHnqORNbmEi3btT2I+xlnvZidhgWotkysTNfV7j2kf3ngV4Kvfb+ZKYFRUiNvF5T/6R9YSJdyy51gNQiNRAdt36ef59FW8l2MuMDx99na2VI3xYwdZj4G7LWJZKZRKhRQ4EXC4t/MvFwF9/rlZO4JCBA9p1KQD9VpT697fhqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l+xMLNTQ; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1708171053; c=relaxed/simple;
+	bh=DYE5MHoB4iU6UqVOI9xCwDqXRm2zS5gEUdWLduWrELE=;
+	h=From:Message-ID:Subject:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Xzc4gTCmQQEKM2OBwPUSTgoxuIwtBBgN5Z/t7G9S9EV9DNkpf34Eb1FTWJmkNKzr5wf2ld8vWAGYlA+P8JJTis3nNcSZCjLzaLpDwsc8xTCEHYPloebcdppjSlFkRLSrR/gCWhnQ8Pfrh+7h6jrSEwT41wx7p5N+gws0OQUmZzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqeokdX0; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so2135626a12.3
-        for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 03:42:13 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4125f065ed6so856825e9.2;
+        Sat, 17 Feb 2024 03:57:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708170132; x=1708774932; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YloBOO91rudoAeMOs6kzXhUv6qEy0P5+n2VgX0+i3jU=;
-        b=l+xMLNTQKWv65yX26EJu0H3Aiq85/tZE2IR1Amq6LGZqh1BikQ/oaZ/lrqoQ0jmxAt
-         KRBVO+tgZiaekcywa6QupM2b3dwSXvvVVOAhQOEpL2IZhtGYs4PbxZU9Bx05YdPQvuG3
-         q/boZqzZERi0QoG4MHeOySPszW2ddy2bmYH5yBW10kHrikA/UooS3av/ReHm5S+R3d8K
-         Bo2OrNstgPKJH3uoP7vaEQXVpCjFZRR0cjt0Yi/LPKMF6MD9/13G+CrBOZOER0bu3cb1
-         JdpoFc0nUYX023p0hwazoTKHDdP73fwVjLvN/UAID52SbiEYYkE0sDubPxA8tEYvJZk+
-         OSXw==
+        d=gmail.com; s=20230601; t=1708171050; x=1708775850; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:subject:message-id:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vUsOgHzp8r6kWIn49FLfR/dfD+6UhIXiD2CyZpx4J48=;
+        b=kqeokdX0ny9ziPwGVPJ7GXnOwcQ96fAr/D4Nwu7C7dDbswCWQi6gwnhZ6hpeg0wLhH
+         7pOBLu0d+zllb8XclBVUaDlBAiSZXwB5wU/GrC4OF8pTh0YvCmT7x05J2afB+FRGy2K/
+         m1HFHLPi7n7RWK+Z0T7QfNuzUYEtQgWJYx+yMR0m5Oo3kXjUUO0tGDuZ23OS8cZxqBh5
+         rpObjSqMmDYFCN5jCKYE4bWOsHpIQe78vykXOhhb7nz3RahnEpVmws4vrQY5GOLAyYWh
+         zd0+h9YPw0SbUcJbJCqWAKouz7A8jpVHNDFrBRafKqkBr71E4CJgTZJjqOqFRjHhTDBU
+         /0BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708170132; x=1708774932;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YloBOO91rudoAeMOs6kzXhUv6qEy0P5+n2VgX0+i3jU=;
-        b=MOnTKORYIZhiThcPBbCTA8E8W152neAOo7afxz+Aalf1jMlYec4dqtxWwx9XkzENqz
-         RZQl3GbIIRYp+ito5Ei4LFAn2gdNZkkARlGHvtK698sRiYJ6ZNL5FShA+cKBtwwGI7RS
-         k1WiHehKG/jxIgnh1Kc4JChHUbRT1RtmFx9F2W/JNq901DCD0/z+ym21fLg9BF2BsS4u
-         ilLmQzLoDcpvFgsOs11KzkXiG84Kya5K997j7tEMDE6wvQeZjdzSkoboOSi8SM/elCmb
-         nhzVxp2n5olIAg999WCXk5GSXNQdFl3QdHTSrewu9XMz0XxdT8PmpLkVfsK1BCGVmx8B
-         hZOw==
-X-Gm-Message-State: AOJu0Yy6tJJEdBy0/Q+EAkiq4FdShS4AYwKhRIbHgAd5bvCCwoB9kwHb
-	PBXt84tb644SDCx78O9oPt75qvKsr159r29daJ8CyB+hx6akXFxw
-X-Google-Smtp-Source: AGHT+IF/yoqSp/2RH0+qFwygpin4L5kwHoBYuTDn4Av3jI5DpmmcXUAOYAlaypFCt0gkKWi9JbHe8Q==
-X-Received: by 2002:a17:902:c949:b0:1db:d13d:6bf3 with SMTP id i9-20020a170902c94900b001dbd13d6bf3mr607597pla.62.1708170132631;
-        Sat, 17 Feb 2024 03:42:12 -0800 (PST)
-Received: from localhost.localdomain ([39.144.45.19])
-        by smtp.gmail.com with ESMTPSA id m20-20020a170902f21400b001d8f6ae51aasm1307201plc.64.2024.02.17.03.42.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Feb 2024 03:42:12 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: Add negtive test cases for task iter
-Date: Sat, 17 Feb 2024 19:41:52 +0800
-Message-Id: <20240217114152.1623-3-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20240217114152.1623-1-laoar.shao@gmail.com>
-References: <20240217114152.1623-1-laoar.shao@gmail.com>
+        d=1e100.net; s=20230601; t=1708171050; x=1708775850;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:subject:message-id:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vUsOgHzp8r6kWIn49FLfR/dfD+6UhIXiD2CyZpx4J48=;
+        b=j0CZHGM9jMc+MQ9qmBYv+up9rT9pWIKI9ZH8SYvoVauer4nDvREyDjJO+OIS/8ZiLX
+         oknPJ5dQMQip6VKEXqXRlFC65ZdsiBjeW4HDELnbYkWMOzKT6QyuD7DD/PWGx0sOWoHg
+         qSb+16P+pGz0p3LEc4eQCQsnki6hiOdoLDOW7JLLlSD5zLdHGVvSTU7z2RSHwvUzlULL
+         Nv58EB62fSwF0+AmrxCbyuN/H8GXuUNMlHUj/d6i0B06B2zUi3gxr7PZeWMkOGr8Byd0
+         Jbliaxk/HqsIOeWWFE3PXUkg2YwXveTajlrwWD4iDrcP/QEw46lWk0CFL/4kKiyupt01
+         q8mw==
+X-Forwarded-Encrypted: i=1; AJvYcCWYsE0aGjN85ZaTnsQ4KidKGVV5vwRrBvDQRNowHZ93XOa5OlXwUrc1r4oH9flf+16DjBspv5uV9e9jbqnrMquQ9hnerzL4ULatVO1EWNrppZqz670CDKsz9VD0tiWRHM6DUWs9M7KgajttlPUQhZBX856xuAp23Kar0vyy4qld4fHLTH5/z3pBo3Q4sw9+mz9Nv7+tuOsP
+X-Gm-Message-State: AOJu0Yx/LNoTlkVh0eCGw/RsSbEjMQIQpTg42mSC5hclSnL9FzUeozZG
+	JOZ26K2KE0aZgCCxI+6UlwH687CN1cYGiu1Ot7RzvHaOyGnHBVcv
+X-Google-Smtp-Source: AGHT+IEgt4lASuS58P85SkCYtQ+4L6sOssHAkGTZm9qejp+87GdqbxGLue1Q9HifEME4xc7jobqShQ==
+X-Received: by 2002:a05:600c:3ba6:b0:411:d89d:d7ba with SMTP id n38-20020a05600c3ba600b00411d89dd7bamr6456069wms.7.1708171049914;
+        Sat, 17 Feb 2024 03:57:29 -0800 (PST)
+Received: from 192.168.10.34 ([39.45.172.107])
+        by smtp.gmail.com with ESMTPSA id je11-20020a05600c1f8b00b0040fdf5e6d40sm5096840wmb.20.2024.02.17.03.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 03:57:29 -0800 (PST)
+From: Muhammad Usama Anjum <musamaanjum@gmail.com>
+X-Google-Original-From: Muhammad Usama Anjum <MUsamaAnjum@gmail.com>
+Message-ID: <0e96289fdbda200b9608284c7d5fb72546ce4267.camel@gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
+To: Matthew Wilcox <willy@infradead.org>, lsf-pc@lists.linux-foundation.org
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+ linux-block@vger.kernel.org, linux-ide@vger.kernel.org, 
+ linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+ bpf@vger.kernel.org
+Date: Sat, 17 Feb 2024 16:57:51 +0500
+In-Reply-To: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
+References: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0-1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Incorporate a test case to assess the handling of invalid flags or
-task__nullable parameters passed to bpf_iter_task_new(). Prior to the
-preceding commit, this scenario could potentially trigger a kernel panic.
-However, with the previous commit, this test case is expected to function
-correctly.
+On Mon, 2024-01-29 at 04:32 +0000, Matthew Wilcox wrote:
+> Our documentation of the current page flags is ... not great.  I think
+> I can improve it for the page cache side of things; I understand the
+> meanings of locked, writeback, uptodate, dirty, head, waiters, slab,
+> mlocked, mappedtodisk, error, hwpoison, readahead, anon_exclusive,
+> has_hwpoisoned, hugetlb and large_remappable.
+>=20
+> Where I'm a lot more shaky is the meaning of the more "real MM" flags,
+> like active, referenced, lru, workingset, reserved, reclaim, swapbacked,
+> unevictable, young, idle, swapcache, isolated, and reported.
+>=20
+> Perhaps we could have an MM session where we try to explain slowly and
+> carefully to each other what all these flags actually mean, talk about
+> what combinations of them make sense, how we might eliminate some of
+> them to make more space in the flags word, and what all this looks like
+> in a memdesc world.
+>=20
+> And maybe we can get some documentation written about it!  Not trying
+> to nerd snipe Jon into attending this session, but if he did ...
+This is great idea. Instead of having a session to write
+documentation, we can have a session which would be documentation
+itself even if nobody translates it to text.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Chuyi Zhou <zhouchuyi@bytedance.com>
----
- tools/testing/selftests/bpf/prog_tests/iters.c |  1 +
- tools/testing/selftests/bpf/progs/iters_task.c | 12 +++++++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
-index bf84d4a1d9ae..3c440370c1f0 100644
---- a/tools/testing/selftests/bpf/prog_tests/iters.c
-+++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-@@ -193,6 +193,7 @@ static void subtest_task_iters(void)
- 	ASSERT_EQ(skel->bss->procs_cnt, 1, "procs_cnt");
- 	ASSERT_EQ(skel->bss->threads_cnt, thread_num + 1, "threads_cnt");
- 	ASSERT_EQ(skel->bss->proc_threads_cnt, thread_num + 1, "proc_threads_cnt");
-+	ASSERT_EQ(skel->bss->invalid_cnt, 0, "invalid_cnt");
- 	pthread_mutex_unlock(&do_nothing_mutex);
- 	for (int i = 0; i < thread_num; i++)
- 		ASSERT_OK(pthread_join(thread_ids[i], &ret), "pthread_join");
-diff --git a/tools/testing/selftests/bpf/progs/iters_task.c b/tools/testing/selftests/bpf/progs/iters_task.c
-index c9b4055cd410..e4d53e40ff20 100644
---- a/tools/testing/selftests/bpf/progs/iters_task.c
-+++ b/tools/testing/selftests/bpf/progs/iters_task.c
-@@ -10,7 +10,7 @@
- char _license[] SEC("license") = "GPL";
- 
- pid_t target_pid;
--int procs_cnt, threads_cnt, proc_threads_cnt;
-+int procs_cnt, threads_cnt, proc_threads_cnt, invalid_cnt;
- 
- void bpf_rcu_read_lock(void) __ksym;
- void bpf_rcu_read_unlock(void) __ksym;
-@@ -26,6 +26,16 @@ int iter_task_for_each_sleep(void *ctx)
- 	procs_cnt = threads_cnt = proc_threads_cnt = 0;
- 
- 	bpf_rcu_read_lock();
-+	bpf_for_each(task, pos, NULL, ~0U) {
-+		/* Below instructions shouldn't be executed for invalid flags */
-+		invalid_cnt++;
-+	}
-+
-+	bpf_for_each(task, pos, NULL, BPF_TASK_ITER_PROC_THREADS) {
-+		/* Below instructions shouldn't be executed for invalid task__nullable */
-+		invalid_cnt++;
-+	}
-+
- 	bpf_for_each(task, pos, NULL, BPF_TASK_ITER_ALL_PROCS)
- 		if (pos->pid == target_pid)
- 			procs_cnt++;
--- 
-2.39.1
+>=20
+> [thanks to Amir for reminding me that I meant to propose this topic]
+>=20
 
 
