@@ -1,187 +1,290 @@
-Return-Path: <bpf+bounces-22202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D5A5858E8F
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 11:07:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A43858EAE
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 11:24:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 629F71F2215F
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 10:07:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DCD3282DA3
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 10:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CC21DDC9;
-	Sat, 17 Feb 2024 10:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6Spw9tF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C703B1DFE1;
+	Sat, 17 Feb 2024 10:24:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEE01DA3D;
-	Sat, 17 Feb 2024 10:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37D281E;
+	Sat, 17 Feb 2024 10:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708164432; cv=none; b=GvARgCK2sQecXbZ9pSmUJ4nD9weRI1GhmIMNUEn4DxVmO4Ykt5GryVppWknHdJi46CrahkWmzLCVVSpd337OUtQG9+82WQE+vUQ7MX2uNFE/FB5LyuaGIUyAKKlqXoXOo9yFxgkkX0eYp9aq8aqltgM9n/WtjSyP9hgJDnnnugU=
+	t=1708165462; cv=none; b=B5KKg1JED7k/GMm2WoR4sI+n4eokVsSxnbUYyM6/6HGHd6kZ0jFGEJtEJJCXEMDd6Zj5XG4t0mykuCRFjbK2ztSKc372mhC8x6uFkWalL3A8vNGuqMT60JzNEpmrerGZIQ5v7tz7fg01/2YVE1do+tLhJgZqG0ysMUDV6TiYzes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708164432; c=relaxed/simple;
-	bh=JavLGhUTJDpG8aaqbfw3hSE1Z1tpC/+8PIHUmyudyvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eYHzEKxlu5sZrJPCA7o8oC1D8HXLjHMQhUB3i74FAdKJmYM8iD/tdNpn/MwoJhzPA5XdJ9HJQMPsNpNBG3akc/7cNPex3reuqm0/9hkItmG64Ing86qyelcygQRdP/8H6mYS8/D2oWOmyeBZC4UgqsG4ZE9zHlYn6lT0lZo0sFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y6Spw9tF; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511a02b82dbso1135140e87.0;
-        Sat, 17 Feb 2024 02:07:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708164424; x=1708769224; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xcGMykGXnDItFmDLKz+olIPa5dx1f4SG2gEoYVEaPaw=;
-        b=Y6Spw9tFOprSWJbLIzrtdGfnBELoxZjeZchGGkOMuE+QICtt66+pZCRi6LJOmiBVx/
-         RedtWTcyOy1df9EcZsSdacpr7/qTfD7zVHTKbFVCqHvn8QoYdwIzsI4Mo8EKS88oDxHT
-         QnJvtmPTbLw7UQEpnrJXHb+RE34F/UuSeCAE8Sehha2r7fYYSXab9bWZumA/7NpDZS9O
-         DUd+qSLV1J//QaHFmWiruHuYe+jsv0v5w48WLoBhJsUJ5mD9bn60Wi0FgOuip62ttFV3
-         Ed7SzTJ6F25bJCBvNGQqz76ab0cJxl8E03dNBGX+Ryyu6U4Q2/uIz0bUqVn/AEo2y5pf
-         gJAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708164424; x=1708769224;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xcGMykGXnDItFmDLKz+olIPa5dx1f4SG2gEoYVEaPaw=;
-        b=RCdUC3jRS5q1Y15+aqVJma8nFbeofExr+W9orP2GKFH7YuexpuNKULY1FhkxCaqgbX
-         PyFVLusIFkU7VJQl8yKxDBbCLNABbFfEk8JYIWKmVB4icSOinJ8bcf1KJEqLIl6SZ/hm
-         5BvgnPaBMHydt++aWxkv6B1x/TKTtIR2JE1t2ctxl4ViypvBM8HxEgT12IG5tKEVkl+O
-         HaEi/i9KYBdThIOCdeXQUuxJYBxqdhiRfQJ1QHAtWzy5afV4SVsyPf8c1LMkOPYjwlp/
-         EBHi8Y+yWwgcxfj+lRA0RCD5wL3rCJQ9H/kcYCcvWCdB5nMLCrDZTxf77zrhmX1S3Kj8
-         UxIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUV/SJ56k0Kl6hXfabWZszWoUFlquAkDKbcc4/S+TpTMIj0Rog0CCfQNys7rsN0lCn/6RJJKDpe9+tn+z5SomtVoTpRpQX255AgHHM2owZIkbav3/WeJ9pY8FB/
-X-Gm-Message-State: AOJu0YxdP3Qx8JiFNBfjwpLrLRFd8DCyddqmC810/DeHlfXJsUmcNwxC
-	IAIugJCgBJZb0sFH/rpfYP9UaZA20DezgAF1YQfC3iLM4OzlLr24
-X-Google-Smtp-Source: AGHT+IFZITD1alzdjiGsGJWP4t2oMSqBd0n4h0pF+hbK4bjvdtIidy9ksejZPHT3MI0ztxbRiQ0d1A==
-X-Received: by 2002:a19:7016:0:b0:511:9ea2:f589 with SMTP id h22-20020a197016000000b005119ea2f589mr2604639lfc.0.1708164423822;
-        Sat, 17 Feb 2024 02:07:03 -0800 (PST)
-Received: from [192.168.8.105] (m91-129-97-170.cust.tele2.ee. [91.129.97.170])
-        by smtp.gmail.com with ESMTPSA id c33-20020a05651223a100b00512a740d502sm101221lfv.108.2024.02.17.02.07.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Feb 2024 02:07:03 -0800 (PST)
-Message-ID: <8b68b781-879a-43b5-be41-7b5f75342daf@gmail.com>
-Date: Sat, 17 Feb 2024 12:07:01 +0200
+	s=arc-20240116; t=1708165462; c=relaxed/simple;
+	bh=Mz+g/1CVM2PJP2Uq812BuwnoZ/L5UEO66m09oWnr1QU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WQvBrvQrcHcfdKG+B11wOFv56JfwN/roY/yA1i+GU2GinoUBe/TyC3VERDWNcQibMqvK63GVPMQltX7591HPV7/7tMM+HT8PsSowWU9TeFL41COtYrE/0M4b0q+7T1GC8av+Z07R00+hk45f1TJstcKMwjJ1XsyVh7VJqSTrJV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4TcPzb6CXPz9v73;
+	Sat, 17 Feb 2024 11:24:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 6KspJ0V2-DIb; Sat, 17 Feb 2024 11:24:11 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4TcPzb5FtVz9v6y;
+	Sat, 17 Feb 2024 11:24:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id A5B908B76E;
+	Sat, 17 Feb 2024 11:24:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id rrFoO8lLqJVF; Sat, 17 Feb 2024 11:24:11 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.2])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EB7E8B763;
+	Sat, 17 Feb 2024 11:24:10 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
+Subject: [PATCH bpf-next] bpf: Check return from set_memory_rox() and friends
+Date: Sat, 17 Feb 2024 11:24:07 +0100
+Message-ID: <63322c8e8454de9b240583de58cd730bc97bb789.1708165016.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 net-next 3/4] xdp: add multi-buff support for xdp
- running in generic mode
-To: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
-Cc: lorenzo.bianconi@redhat.com, kuba@kernel.org, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, bpf@vger.kernel.org,
- toke@redhat.com, willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
- sdf@google.com, hawk@kernel.org, ilias.apalodimas@linaro.org,
- linyunsheng@huawei.com
-References: <cover.1707729884.git.lorenzo@kernel.org>
- <1044d6412b1c3e95b40d34993fd5f37cd2f319fd.1707729884.git.lorenzo@kernel.org>
-Content-Language: en-US
-From: Julian Wiedmann <jwiedmann.dev@gmail.com>
-In-Reply-To: <1044d6412b1c3e95b40d34993fd5f37cd2f319fd.1707729884.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708165448; l=6853; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Mz+g/1CVM2PJP2Uq812BuwnoZ/L5UEO66m09oWnr1QU=; b=YEQ3YCkk7J/1zGFK/ZSlyru0s4KexlE0XcLFVWKXeuTKMVK6q0ZK4DS5AuxlH0/h+hGSMoxRU O7BYxxTK8QeAcyh9SKokVb9ivVqn208+RoHx3eOdpBoZRkSdtyz6u2w
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
+arch_protect_bpf_trampoline() and alloc_new_pack() call
+set_memory_rox() which can fail, leading to unprotected memory.
 
+Take into account return from set_memory_XX() functions and add
+__must_check flag to arch_protect_bpf_trampoline().
 
-On 12.02.24 11:50, Lorenzo Bianconi wrote:
-> Similar to native xdp, do not always linearize the skb in
-> netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
-> processed by the eBPF program. This allow to add multi-buffer support
-> for xdp running in generic mode.
-> 
-> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> Reviewed-by: Toke Hoiland-Jorgensen <toke@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  include/linux/skbuff.h |  2 +
->  net/core/dev.c         | 70 +++++++++++++++++++++++---------
->  net/core/skbuff.c      | 91 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 144 insertions(+), 19 deletions(-)
-> 
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/x86/net/bpf_jit_comp.c    |  6 ++++--
+ include/linux/bpf.h            |  4 ++--
+ kernel/bpf/bpf_struct_ops.c    |  9 +++++++--
+ kernel/bpf/core.c              | 25 +++++++++++++++++++------
+ kernel/bpf/trampoline.c        | 18 ++++++++++++------
+ net/bpf/bpf_dummy_struct_ops.c |  4 +++-
+ 6 files changed, 47 insertions(+), 19 deletions(-)
 
-[...]
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 919f647c740f..db05e0ba9f68 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2780,12 +2780,14 @@ void arch_free_bpf_trampoline(void *image, unsigned int size)
+ 	bpf_prog_pack_free(image, size);
+ }
+ 
+-void arch_protect_bpf_trampoline(void *image, unsigned int size)
++int arch_protect_bpf_trampoline(void *image, unsigned int size)
+ {
++	return 0;
+ }
+ 
+-void arch_unprotect_bpf_trampoline(void *image, unsigned int size)
++int arch_unprotect_bpf_trampoline(void *image, unsigned int size)
+ {
++	return 0;
+ }
+ 
+ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index e30100597d0a..169847ed1f8d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1112,8 +1112,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 				void *func_addr);
+ void *arch_alloc_bpf_trampoline(unsigned int size);
+ void arch_free_bpf_trampoline(void *image, unsigned int size);
+-void arch_protect_bpf_trampoline(void *image, unsigned int size);
+-void arch_unprotect_bpf_trampoline(void *image, unsigned int size);
++int __must_check arch_protect_bpf_trampoline(void *image, unsigned int size);
++int arch_unprotect_bpf_trampoline(void *image, unsigned int size);
+ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+ 			     struct bpf_tramp_links *tlinks, void *func_addr);
+ 
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 02068bd0e4d9..7638a735f48f 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -522,7 +522,9 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 			if (err)
+ 				goto reset_unlock;
+ 		}
+-		arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
++		err = arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
++		if (err)
++			goto reset_unlock;
+ 		/* Let bpf_link handle registration & unregistration.
+ 		 *
+ 		 * Pair with smp_load_acquire() during lookup_elem().
+@@ -531,7 +533,10 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 		goto unlock;
+ 	}
+ 
+-	arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
++	err = arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
++	if (err)
++		goto reset_unlock;
++
+ 	err = st_ops->reg(kdata);
+ 	if (likely(!err)) {
+ 		/* This refcnt increment on the map here after
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ea6843be2616..23ce17da3bf7 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -898,23 +898,30 @@ static LIST_HEAD(pack_list);
+ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_insns)
+ {
+ 	struct bpf_prog_pack *pack;
++	int err;
+ 
+ 	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)),
+ 		       GFP_KERNEL);
+ 	if (!pack)
+ 		return NULL;
+ 	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
+-	if (!pack->ptr) {
+-		kfree(pack);
+-		return NULL;
+-	}
++	if (!pack->ptr)
++		goto out;
+ 	bpf_fill_ill_insns(pack->ptr, BPF_PROG_PACK_SIZE);
+ 	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
+ 	list_add_tail(&pack->list, &pack_list);
+ 
+ 	set_vm_flush_reset_perms(pack->ptr);
+-	set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
++	err = set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
++	if (err)
++		goto out_free;
+ 	return pack;
++
++out_free:
++	bpf_jit_free_exec(pack->ptr);
++out:
++	kfree(pack);
++	return NULL;
+ }
+ 
+ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
+@@ -929,9 +936,15 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
+ 		size = round_up(size, PAGE_SIZE);
+ 		ptr = bpf_jit_alloc_exec(size);
+ 		if (ptr) {
++			int err;
++
+ 			bpf_fill_ill_insns(ptr, size);
+ 			set_vm_flush_reset_perms(ptr);
+-			set_memory_rox((unsigned long)ptr, size / PAGE_SIZE);
++			err = set_memory_rox((unsigned long)ptr, size / PAGE_SIZE);
++			if (err) {
++				bpf_jit_free_exec(ptr);
++				ptr = NULL;
++			}
+ 		}
+ 		goto out;
+ 	}
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index d382f5ebe06c..6e64ac9083b6 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -456,7 +456,9 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 	if (err < 0)
+ 		goto out_free;
+ 
+-	arch_protect_bpf_trampoline(im->image, im->size);
++	err = arch_protect_bpf_trampoline(im->image, im->size);
++	if (err)
++		goto out_free;
+ 
+ 	WARN_ON(tr->cur_image && total == 0);
+ 	if (tr->cur_image)
+@@ -1072,17 +1074,21 @@ void __weak arch_free_bpf_trampoline(void *image, unsigned int size)
+ 	bpf_jit_free_exec(image);
+ }
+ 
+-void __weak arch_protect_bpf_trampoline(void *image, unsigned int size)
++int __weak arch_protect_bpf_trampoline(void *image, unsigned int size)
+ {
+ 	WARN_ON_ONCE(size > PAGE_SIZE);
+-	set_memory_rox((long)image, 1);
++	return set_memory_rox((long)image, 1);
+ }
+ 
+-void __weak arch_unprotect_bpf_trampoline(void *image, unsigned int size)
++int __weak arch_unprotect_bpf_trampoline(void *image, unsigned int size)
+ {
++	int err;
+ 	WARN_ON_ONCE(size > PAGE_SIZE);
+-	set_memory_nx((long)image, 1);
+-	set_memory_rw((long)image, 1);
++
++	err = set_memory_nx((long)image, 1);
++	if (err)
++		return err;
++	return set_memory_rw((long)image, 1);
+ }
+ 
+ int __weak arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+index 8906f7bdf4a9..6d49a00fba4d 100644
+--- a/net/bpf/bpf_dummy_struct_ops.c
++++ b/net/bpf/bpf_dummy_struct_ops.c
+@@ -129,7 +129,9 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	if (err < 0)
+ 		goto out;
+ 
+-	arch_protect_bpf_trampoline(image, PAGE_SIZE);
++	err = arch_protect_bpf_trampoline(image, PAGE_SIZE);
++	if (err)
++		goto out;
+ 	prog_ret = dummy_ops_call_op(image, args);
+ 
+ 	err = dummy_ops_copy_args(args);
+-- 
+2.43.0
 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 9e5eb47b4025..bdb94749f05d 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -895,6 +895,97 @@ static bool is_pp_page(struct page *page)
->  	return (page->pp_magic & ~0x3UL) == PP_SIGNATURE;
->  }
->  
-> +static int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
-> +			   unsigned int headroom)
-> +{
-> +#if IS_ENABLED(CONFIG_PAGE_POOL)
-> +	u32 size, truesize, len, max_head_size, off;
-> +	struct sk_buff *skb = *pskb, *nskb;
-> +	int err, i, head_off;
-> +	void *data;
-> +
-> +	/* XDP does not support fraglist so we need to linearize
-> +	 * the skb.
-> +	 */
-> +	if (skb_has_frag_list(skb))
-> +		return -EOPNOTSUPP;
-> +
-> +	max_head_size = SKB_WITH_OVERHEAD(PAGE_SIZE - headroom);
-> +	if (skb->len > max_head_size + MAX_SKB_FRAGS * PAGE_SIZE)
-> +		return -ENOMEM;
-> +
-> +	size = min_t(u32, skb->len, max_head_size);
-> +	truesize = SKB_HEAD_ALIGN(size) + headroom;
-> +	data = page_pool_dev_alloc_va(pool, &truesize);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	nskb = napi_build_skb(data, truesize);
-> +	if (!nskb) {
-> +		page_pool_free_va(pool, data, true);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	skb_reserve(nskb, headroom);
-> +	skb_copy_header(nskb, skb);
-> +	skb_mark_for_recycle(nskb);
-> +
-> +	err = skb_copy_bits(skb, 0, nskb->data, size);
-> +	if (err) {
-> +		consume_skb(nskb);
-> +		return err;
-> +	}
-> +	skb_put(nskb, size);
-> +
-> +	head_off = skb_headroom(nskb) - skb_headroom(skb);
-> +	skb_headers_offset_update(nskb, head_off);
-> +
-> +	off = size;
-> +	len = skb->len - off;
-> +	for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
-> +		struct page *page;
-> +		u32 page_off;
-> +
-> +		size = min_t(u32, len, PAGE_SIZE);
-> +		truesize = size;
-> +
-> +		page = page_pool_dev_alloc(pool, &page_off, &truesize);
-> +		if (!data) {
-> +			consume_skb(nskb);
-> +			return -ENOMEM;
-> +		}
-> +
-
-This should check for !page instead, no?
-
-(picked up as CID 1583654 by the coverity scan for linux-next)
 
