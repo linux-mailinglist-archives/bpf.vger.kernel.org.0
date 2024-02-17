@@ -1,236 +1,164 @@
-Return-Path: <bpf+bounces-22195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22197-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35660858BDE
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 01:30:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17FA9858C0B
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 01:52:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E146428875D
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 00:30:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C9811F226B3
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 00:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EEFE36136;
-	Sat, 17 Feb 2024 00:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BAB6D518;
+	Sat, 17 Feb 2024 00:52:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="ZvI+7UlQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pVfEHcpu"
 X-Original-To: bpf@vger.kernel.org
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43564381CD
-	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 00:27:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4C14C84
+	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 00:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708129638; cv=none; b=kfXe73KsXdToixePRmB0GhRK2JSH88aMhdGHG50faI2SOnJmbHnQdMHjY9sTuZ0fSotkMAHLOERoqJlbpTskrlpzBtmtT1sq/6gN1fk8lothl/IdERRRXRyub3UrRFr7p9sMT+z452pKCgYbZRP0nEVT1kayykFwzVCBzvDokB4=
+	t=1708131167; cv=none; b=U2A/zejzkcHH9VSuY0IDNmGJfz1nJt71CD+Ecye1dRiOyqrPLg/3wdjIWeaBpQazuPGPhbH/Bro/ZdYLlJZ9oGuqTff8c0Q4fthGiMzyzFcBKVl8mKO1tl53D3Cg5NzDSesRZpNNRtTaFBzPUgueeKaWH8YKt/ioR8r2ICq7DCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708129638; c=relaxed/simple;
-	bh=6qi5i2HZdurFWg68hISCVmuDEvRQ7/se82kz2njo5qI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AnFK28SYMdAag+Ej6YxOMTP7IFIfT9SxtB3BlCjrZbjVLDE7T3U65EUQb+S5qLyGKk4ngKP7SjI6BwfV3Bm5XdHXv1CNjrRfqyYwPCDwV4EVz4/Vjj+6SUI+VVOh20yA1t+uzk6CJ9m+wMcU6Dn/i74in0rmTqYpYz2l7EvoLq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=ZvI+7UlQ; arc=none smtp.client-ip=44.202.169.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
-	by cmsmtp with ESMTPS
-	id b53ErgXGKAxAkb8XyrrY5L; Sat, 17 Feb 2024 00:27:14 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id b8XxrC1Bo8ZXdb8XxrgnTR; Sat, 17 Feb 2024 00:27:13 +0000
-X-Authority-Analysis: v=2.4 cv=eqR8zZpX c=1 sm=1 tr=0 ts=65cffd61
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=7CQSdrXTAAAA:8 a=3_uRt0xjAAAA:8 a=cm27Pg_UAAAA:8 a=hWMQpYRtAAAA:8
- a=FOH2dFAWAAAA:8 a=pGLkceISAAAA:8 a=1XWaLZrsAAAA:8 a=yjU-xTemAAAA:8
- a=EU4AEG8cihyboLecn_oA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=a-qgeE7W1pNrGK8U0ZQC:22 a=z1SuboXgGPGzQ8_2mWib:22 a=xmb-EsYY8bH0VWELuYED:22
- a=KCsI-UfzjElwHeZNREa_:22 a=i3VuKzQdj-NEYjvDI-p3:22 a=SwQY0DHxSCHDbjv2szoi:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wByDJQzTAShm7Gkyw4stFr/KXSxVitihfe54G/dVvfE=; b=ZvI+7UlQ3j/mAJ/+A1JIB2m0jL
-	B9lbVrudd/U0viF7X6bD8UkKruJQvjyk+hcvIGQAUNI6MlvbTRREVimfouXeUJRLlvlMFmqpigGrO
-	XibCe5LuLxruX6X8A/RZnkqgTnvIiE2JYnjjPul+PWnUHKQe4wNQsRBZlDqZje7xmHSLMagUhxpW/
-	NGa18liFeIj8rFEFxmDUJ1sMT1XZMqT7eoaQ8VR0g/DYqB9krGTbUS+1VGgRE3fqV7rukR8ugpMq+
-	orHqy9oZN8xnQwysXH6XWC0hJww9hcZP33W6ViBtYVAxCXrZrGqKaJr202Hpjp/CuA7b5aFKjN52h
-	pQuh+e3Q==;
-Received: from [201.172.172.225] (port=39390 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rb8Xv-002wqL-0B;
-	Fri, 16 Feb 2024 18:27:11 -0600
-Message-ID: <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
-Date: Fri, 16 Feb 2024 18:27:08 -0600
+	s=arc-20240116; t=1708131167; c=relaxed/simple;
+	bh=xMjUVfiyxmaguXvZrW6crG3aoQIwn8QnYYLwV+KSSWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EjGmt6tnmNmPIty9/m3B8ZoHPOF7x3NWlqYTS5qgT3hbzAKGKRyQte7NMhyoInW1j0+YJew0lFANwVnbMs973BhqU2HMMqArzqmTRUlXUBootETy6t8SMeLK4BiLIn+C4nj9y8mrjI7FyQqG+b2xHrd+64ufbAQ3fBmL3JQ/8Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pVfEHcpu; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1db61f7ebcbso39485ad.0
+        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 16:52:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708131165; x=1708735965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zvr57WXSGKgreDl2S3+cS6Q3DlJ9MFO+tZDONyxR8WE=;
+        b=pVfEHcpu9cuLDlTbA+B73bEzwdSAI33O59xw1XUAjm+2D2RkU9FhRwtiOCZjT6ONmO
+         ITGz9nCbcps+KSWsv8DUSqlo1PfN4HqtS9FswiKLIw4aPZELISMRKWHQvz2tC8mpvvsw
+         0giSomXQOEjZQYjpkEE8wOT2VVrl0dGT5MZn4XxAolJpH1PdZRvtj2A40rMh7B4889RC
+         UuiaKXm0GX2v+KNcFb/ERPMvQCxHJTH5+l8t+Oz1pq5j5Acsl6aMzFwnRE7gvyYORY9Z
+         8qp1BeVLyJh427UCoeqPgWrZk0MzF6GaTaqJJvxmhyLRi2rk8HPXtN+7iZkjiXxYxSjC
+         TBBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708131165; x=1708735965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zvr57WXSGKgreDl2S3+cS6Q3DlJ9MFO+tZDONyxR8WE=;
+        b=bUoLQ50d8qyO4oVHWTP0Sm/HKD6v4bxaMwAL/8eql4JZzwKKUDI8gj6HEeJub7Wr21
+         7Lr7ePqNU1So4jQNz0jp6CmHPPCG/bcSZwVKhT5hbdodBDNMytZcMBoxhGaZlAgFAocj
+         bY69Pa5VbbwStxxTw7IeUR7WpmU9eo3Q2DQrq9HmPsL7OwS1Ecbo9nO6CEI/RpzJj0jV
+         zJ4n1vrcEmj4GcNjvZ8wWpbTu/b93/4uTqhxscd5iuDAhKUuxHXffEQDb1wFd6tMjVYl
+         E+DUkGHdcEkl9uUQa1vng6x9c1MOFqUAg/NTyAUop+O7Euhv3Hrz+9TydQHs8meL8qei
+         lRDg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTSfG4PKILfm1IWmOkd+l7pZQKNuhl/sCTg4f/4Ml/YsJ0d7xOB9ilbRrstdGqOOPU/yt9ogNpicqYi062XIgbFQtn
+X-Gm-Message-State: AOJu0YyoU6atvJAB8pnS0HgQlbEB6Gs13mj1wF94mz5f80MSVE7Gnta1
+	ZH0UIcof+hq4K6qRGhdeAb6Uqc/cTSbx2YyYQZRBmdDjKambvLgOqXd9aZ8oqvyMEb0fmGo6z4B
+	1zlTy+G7E4zqY4ztKOfG3494mBxxBsEi41ydn
+X-Google-Smtp-Source: AGHT+IE3HGUrOS/cMjy3dK83NQcHQ7z42RJxNSfu2ZjNKxNaIs4MfqHN+ZrLaeTNVN7unFneCe3UnNRtF7B+qxo7VzY=
+X-Received: by 2002:a17:902:c70c:b0:1d8:eac9:bbfc with SMTP id
+ p12-20020a170902c70c00b001d8eac9bbfcmr98349plp.15.1708131164390; Fri, 16 Feb
+ 2024 16:52:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with
- flexible array
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Alexei Starovoitov <ast@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>,
- Anton Protopopov <aspsk@isovalent.com>, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240216235536.it.234-kees@kernel.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240216235536.it.234-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1rb8Xv-002wqL-0B
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:39390
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 23
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfJdzqatdsnbltcQ+IgaMteVDtnVxMSqTlR2S/ElivDqLxuZqba2go/jOAsZlj0iU5iNK17oW/WDA9Wh+G+kpjbc1WEy/cpJuYKLvZOQK5oLbNAIlgR0r
- 8jGSiOG0PNehcZKu15bNf6KcGYfjQ/Se4ZMZOlj6d/GVAWv9OYpPKUx1m4HmbwhYFvdXZoIrnkXop7s86HeeOmEePL/T+n5G/HU=
+References: <20240202234057.2085863-1-irogers@google.com> <20240202234057.2085863-3-irogers@google.com>
+ <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 16 Feb 2024 16:52:31 -0800
+Message-ID: <CAP-5=fVNLoes2VaCcqrueiDLBZAZNthSJVD17z77cnyE7wF7ag@mail.gmail.com>
+Subject: Re: [PATCH v3 2/8] libperf cpumap: Ensure empty cpumap is NULL from alloc
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
+	Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 16, 2024 at 4:25=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > Potential corner cases could cause a cpumap to be allocated with size
+> > 0, but an empty cpumap should be represented as NULL. Add a path in
+> > perf_cpu_map__alloc to ensure this.
+> >
+> > Suggested-by: James Clark <james.clark@arm.com>
+> > Closes: https://lore.kernel.org/lkml/2cd09e7c-eb88-6726-6169-647dcd0a81=
+01@arm.com/
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/lib/perf/cpumap.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> > index ba49552952c5..cae799ad44e1 100644
+> > --- a/tools/lib/perf/cpumap.c
+> > +++ b/tools/lib/perf/cpumap.c
+> > @@ -18,9 +18,13 @@ void perf_cpu_map__set_nr(struct perf_cpu_map *map, =
+int nr_cpus)
+> >
+> >  struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+> >  {
+> > -       RC_STRUCT(perf_cpu_map) *cpus =3D malloc(sizeof(*cpus) + sizeof=
+(struct perf_cpu) * nr_cpus);
+> > +       RC_STRUCT(perf_cpu_map) *cpus;
+> >         struct perf_cpu_map *result;
+> >
+> > +       if (nr_cpus =3D=3D 0)
+> > +               return NULL;
+>
+> But allocation failure also returns NULL.  Then callers should check
+> what's the expected result.
 
+Right, we don't have a habit of just aborting on memory allocation
+errors. In the case that NULL is returned it is assumed that an empty
+CPU map is appropriate. Adding checks throughout the code base that an
+empty CPU map is only returned when 0 is given is beyond the scope of
+this patch set.
 
-On 2/16/24 17:55, Kees Cook wrote:
-> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> flexible array. Found with GCC 13:
-> 
-> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
->    207 |                                        *(__be16 *)&key->data[i]);
->        |                                                   ^~~~~~~~~~~~~
-> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
->    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
->        |                                                      ^
-> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
->     97 | #define be16_to_cpu __be16_to_cpu
->        |                     ^~~~~~~~~~~~~
-> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
->    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> ^
->        |                            ^~~~~~~~~~~
-> In file included from ../include/linux/bpf.h:7:
-> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
->     82 |         __u8    data[0];        /* Arbitrary size */
->        |                 ^~~~
-> 
-> And found at run-time under CONFIG_FORTIFY_SOURCE:
-> 
->    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
->    index 0 is out of range for type '__u8 [*]'
-> 
-> This includes fixing the selftest which was incorrectly using a
-> variable length struct as a header, identified earlier[1]. Avoid this
-> by just explicitly including the prefixlen member instead of struct
-> bpf_lpm_trie_key.
-> 
-> Note that it is not possible to simply remove the "data" member, as it
-> is referenced by userspace
-> 
-> cilium:
->          struct egress_gw_policy_key in_key = {
->                  .lpm_key = { 32 + 24, {} },
->                  .saddr   = CLIENT_IP,
->                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
->          };
-> 
-> systemd:
-> 	ipv6_map_fd = bpf_map_new(
-> 			BPF_MAP_TYPE_LPM_TRIE,
-> 			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
-> 			sizeof(uint64_t),
-> 			...
-> 
-> The only risk to UAPI would be if sizeof() were used directly on the
-> data member, which it does not seem to be. It is only used as a static
-> initializer destination and to find its location via offsetof().
-> 
-> Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
-> Reported-by: Mark Rutland <mark.rutland@arm.com>
-> Closes: https://paste.debian.net/hidden/ca500597/
+Thanks,
+Ian
 
-mmh... this URL expires: 2024-05-15
-
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
---
-Gustavo
-
-> ---
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Mykola Lysenko <mykolal@fb.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Haowen Bai <baihaowen@meizu.com>
-> Cc: bpf@vger.kernel.org
-> Cc: linux-kselftest@vger.kernel.org
-> 
-> v2- clarify commit log, add more failure examples
-> v1- https://lore.kernel.org/all/63e531e3.170a0220.3a46a.3262@mx.google.com/
-> ---
->   include/uapi/linux/bpf.h                         | 2 +-
->   tools/testing/selftests/bpf/progs/map_ptr_kern.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 754e68ca8744..359dd8a429c1 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -80,7 +80,7 @@ struct bpf_insn {
->   /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
->   struct bpf_lpm_trie_key {
->   	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
-> -	__u8	data[0];	/* Arbitrary size */
-> +	__u8	data[];		/* Arbitrary size */
->   };
->   
->   struct bpf_cgroup_storage_key {
-> diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> index 3325da17ec81..1d476c6ae284 100644
-> --- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> @@ -316,7 +316,7 @@ struct lpm_trie {
->   } __attribute__((preserve_access_index));
->   
->   struct lpm_key {
-> -	struct bpf_lpm_trie_key trie_key;
-> +	__u32 prefixlen;
->   	__u32 data;
->   };
->   
+> Thanks,
+> Namhyung
+>
+> > +
+> > +       cpus =3D malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cp=
+us);
+> >         if (ADD_RC_CHK(result, cpus)) {
+> >                 cpus->nr =3D nr_cpus;
+> >                 refcount_set(&cpus->refcnt, 1);
+> > --
+> > 2.43.0.594.gd9cf4e227d-goog
+> >
 
