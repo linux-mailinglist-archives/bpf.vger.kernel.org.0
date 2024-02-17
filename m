@@ -1,364 +1,165 @@
-Return-Path: <bpf+bounces-22200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFA88858CC2
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 02:33:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFFA4858D06
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 04:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E217E1C21DC4
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 01:33:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36131284B0D
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 03:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED42C1773D;
-	Sat, 17 Feb 2024 01:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036281BC2D;
+	Sat, 17 Feb 2024 03:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dIPYl4Ib"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="McLXvosS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0499149DE8
-	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 01:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FB01AAB1
+	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 03:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708133596; cv=none; b=V5P8G0o/uZKm62Mmy+1C2ekGtyioeL/DeHBlKXB/UiBNExmNiG4b7bNT8uhIJa+xZLNaioro0Tw8TFOxkX0p3Gnz4KS9jCjgnGJWwzq2iFEyW3/kFoa+Z8KQfDwDDSbPC6nRgpSRwtvs1hwSXxdTNPZXZJ2EhsLvlhLGnRKpQ5w=
+	t=1708139002; cv=none; b=bONam+AMvz+QCuNufrmcuO5Jt1qbfRnBL+nOe33BrH+2J1GCFU+tq6AVICVWc2NlzR6omTIK1R6LPw+PnuGaXfnf3qLsXWphk6LeMQ26xYVWU8IFMGFvVnG8r63mFUUate5VdljN+2QKAx3VylKLGjSuPxU9cD7VnoEljLK2N64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708133596; c=relaxed/simple;
-	bh=tFma9MVvMZhragAW2jVg6+DR3rScNJ0SSQlrZIb5aVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nIFkN+yZsUIuiarbLEr6p1wdTOMs+yIoacaFVtExBDzZ3foDY4e004Xyd0yCNmYDy3Bywhqpz5E9ufwyKIAJ+kxY+Xd7g2c2Sg8K1hKwSIujU7dhTmvqEk5ytpKs3QDZ7EK3X1+5H9Q2DigBk27YmNsUCV3hxQ0dVJWldvxj4s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dIPYl4Ib; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d5ce88b51cso44955ad.0
-        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 17:33:14 -0800 (PST)
+	s=arc-20240116; t=1708139002; c=relaxed/simple;
+	bh=xpvnUQORiMZ/oAeyo85a9kbOqGl2fDmjOk2texpVn8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X7fU6IuCNz6mbKDIbCuQuvi99HKHCjDuuXWDZzKDVlBXuWvTkvQGF2ujNNFVglIIdDs5gMLsKqltUfUskrERSamn/PBZgE6A4rIKmJWfWQg4ZAZCtp7K3eZj0qWL1XxWRz6Nf+LuANJpXKWUjPdlWpwAZKq3KJRvUDfk6A2vGzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=McLXvosS; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5dc949f998fso1882682a12.3
+        for <bpf@vger.kernel.org>; Fri, 16 Feb 2024 19:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708133594; x=1708738394; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+4QEsHt96n7jp5q0hO7Dy2wXjjgUx+HdH4AM/lX65g4=;
-        b=dIPYl4IbR4hu+a0CELtOEM7ST4Ul8nUuEX+RqJGpKHwK7JZxTcNH7gHpOzU63UYtct
-         H5/wfXpAO0vmCCdbkKD+neWzrGRqVAXSs/h1nMGBtNO3dk0zcUYX9I/jtj8vtMdGpnXI
-         FA0Y/0vPa6w/MJcN7oLqVMyQ5wHUzq5I+iPoICgfRY/dWEiCbVsmJoZJateJRj6WCamk
-         c1qvY+GCUFQ0fnaBCnXqHFIOOK7O1ULPdXweOBxPDAdCcqLCcldiaQNKZ0QjUHaL03g1
-         i9Plo6MFR/rXR+/mvXpsqXdLzHPJZRQxuwGP+QjwCeNVXORTxbRzkC5IXnGfHgUw6v/d
-         G1jw==
+        d=chromium.org; s=google; t=1708139000; x=1708743800; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9E8QSOafC61clD8Eej3Har3OU/+oWCjszElG8x74Hj8=;
+        b=McLXvosSYm2MWVUEK/eacWgTkwXq1xzXKmxqORZBZPBuc3Ea19jdw3dDdgY4rnRJc+
+         Lg8YS/ydevC1hc4f3uEOa4b87WlgZw4yJO/MSqSdFhnjwhspJEgP/FkxIIXw+iicBmkf
+         QKnB14duiBoR5bPq8YbixNjN9g6iGJXuq0h1I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708133594; x=1708738394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+4QEsHt96n7jp5q0hO7Dy2wXjjgUx+HdH4AM/lX65g4=;
-        b=Ed1uTS5ojbkiIyGplvCWUVdzXMxA0gadl4FtcyxXxDew4F3KzWpJmOOOr+2a4BBZyW
-         Yj7wvYE8dUMn90W2/8H0HWihblNvWCdIIj6wX4xEqzq+8o+bk8rjtFIr2aDKz+Jhbhxj
-         Wqupm3LOX+MXYVJfXrIdt2h/qUjZe1HMMqfd91xGYHgFVlSrnh80mKzAo6BH30xDPLs/
-         F/Km9Z2lCL5WFFAVYoQ9Xgu5erpqxqtE3EyX4ScihuVBsbvzmb7JaQiS5Vtp6OqKnzkd
-         x5eaese/U6qXOHahP/oH9D2GUbeQnM+H4v3ZXPNesWMV8ED3RR9rfazq2R5t8KFIovcF
-         4/5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVAf0U/BcxlG1bHNS5595xRASc2QRY4kQ7+xnlk9+CwwLrcI4KVREnmanmwdubtVwqxoMWw9nQO+9D7AStsWz3nYFj0
-X-Gm-Message-State: AOJu0YzE52/es97h9VSVOYOyJr0tbeNoBswHSjrVenNDVn0xUpKiklQr
-	fnUq7NIdRaRwi+n8NmB8JZKPzgneGhHJRy42h0J2k9gvyMznbP5ZABZwKWduhb+JDwOMqmr77mw
-	vOUXEx+dpv+VyLKzS3bRg14qejBAWD+AmATEB
-X-Google-Smtp-Source: AGHT+IGFdyC08PZ9ECT8uEXa3o1IBOv+/SzYzkyXo7tLXy11o0kACK0N9i0Bl/vYIGE1Qe7iS/7+PXDiU8G3GIfZpR8=
-X-Received: by 2002:a17:902:e489:b0:1db:8119:7ce3 with SMTP id
- i9-20020a170902e48900b001db81197ce3mr78884ple.20.1708133593737; Fri, 16 Feb
- 2024 17:33:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708139000; x=1708743800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9E8QSOafC61clD8Eej3Har3OU/+oWCjszElG8x74Hj8=;
+        b=BR7n+jdUTmvH1xkQEP8LRmb1NqUjt9/7UP/+v2inyZkVVMxecs8pWN9MafQq0xo9Rd
+         8SG1caA8JbxT49mLbjJ82/adnLxh4jXw1HGxRt+QAlOBIyJK4b7qiamIopoFp/Q5DxEM
+         2sHscgaBS4q5qQ+s9JLGs2cdtIZzkdzeO1JWWIrgyN4Gsk4rr8oza/wbgGGiiu2adbFJ
+         xqUcCDPPpQRdtfUg9ECYTnZ4lw0Mkuw0o01Noi29qmmgctKusg/x8M5N1pGOrnJ1tPyk
+         8Ea3f4D/VSpuCrD6mKjSavwcpWU5fxCpqiWcE+9B4hRxTblx9VnWXrOaxStPWmibE7Ga
+         4xLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWN5mXCMusUo/0YSvV0WElfTeOpP8C7lbfGTAnwuh9suLDFIfhXKxF3x8MR2vMWZpUJP3Kr4QZr1ar+o8FnNn0zCqEd
+X-Gm-Message-State: AOJu0YwNAyF4wYlIDZy9njH/A6YXut7Jh9lqFc/TLScsCcAs2byjw/WB
+	UNmuxfBubnY9Vv1SqfGUzpD+HOajTnzIPXidDgw1SHkRQsBnm1TuiB4/A//TZw==
+X-Google-Smtp-Source: AGHT+IGk3vr0O8poIMmGJlhPEiEvPKSSXAAztZELBQ+98gW6sIlAiN+nPC+62bRu84NsZRY0YVzpBw==
+X-Received: by 2002:a17:902:f54a:b0:1db:55cc:d222 with SMTP id h10-20020a170902f54a00b001db55ccd222mr9000388plf.4.1708139000004;
+        Fri, 16 Feb 2024 19:03:20 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id kq13-20020a170903284d00b001db5c8202a4sm525497plb.59.2024.02.16.19.03.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 19:03:19 -0800 (PST)
+Date: Fri, 16 Feb 2024 19:03:18 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+Message-ID: <202402161902.FCFFEC322@keescook>
+References: <20240216235536.it.234-kees@kernel.org>
+ <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202234057.2085863-1-irogers@google.com> <20240202234057.2085863-4-irogers@google.com>
- <CAM9d7chPqFGEih7z7rp=eS5P30gSMvG=6fi=0QqT=EdfdMOH_A@mail.gmail.com>
-In-Reply-To: <CAM9d7chPqFGEih7z7rp=eS5P30gSMvG=6fi=0QqT=EdfdMOH_A@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 16 Feb 2024 17:33:00 -0800
-Message-ID: <CAP-5=fXzqF--KUOo1awmxDewupF-r_a2=yFC75tuGasNE-WpXg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/8] perf arm-spe/cs-etm: Directly iterate CPU maps
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
-	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	Leo Yan <leo.yan@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
 
-On Fri, Feb 16, 2024 at 5:02=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > Rather than iterate all CPUs and see if they are in CPU maps, directly
-> > iterate the CPU map. Similarly make use of the intersect function
-> > taking care for when "any" CPU is specified. Switch
-> > perf_cpu_map__has_any_cpu_or_is_empty to more appropriate
-> > alternatives.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/arch/arm/util/cs-etm.c    | 114 ++++++++++++---------------
-> >  tools/perf/arch/arm64/util/arm-spe.c |   4 +-
-> >  2 files changed, 51 insertions(+), 67 deletions(-)
-> >
-> > diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/ut=
-il/cs-etm.c
-> > index 77e6663c1703..07be32d99805 100644
-> > --- a/tools/perf/arch/arm/util/cs-etm.c
-> > +++ b/tools/perf/arch/arm/util/cs-etm.c
-> > @@ -197,38 +197,37 @@ static int cs_etm_validate_timestamp(struct auxtr=
-ace_record *itr,
-> >  static int cs_etm_validate_config(struct auxtrace_record *itr,
-> >                                   struct evsel *evsel)
-> >  {
-> > -       int i, err =3D -EINVAL;
-> > +       int idx, err =3D 0;
-> >         struct perf_cpu_map *event_cpus =3D evsel->evlist->core.user_re=
-quested_cpus;
-> > -       struct perf_cpu_map *online_cpus =3D perf_cpu_map__new_online_c=
-pus();
-> > -
-> > -       /* Set option of each CPU we have */
-> > -       for (i =3D 0; i < cpu__max_cpu().cpu; i++) {
-> > -               struct perf_cpu cpu =3D { .cpu =3D i, };
-> > +       struct perf_cpu_map *intersect_cpus;
-> > +       struct perf_cpu cpu;
-> >
-> > -               /*
-> > -                * In per-cpu case, do the validation for CPUs to work =
-with.
-> > -                * In per-thread case, the CPU map is empty.  Since the=
- traced
-> > -                * program can run on any CPUs in this case, thus don't=
- skip
-> > -                * validation.
-> > -                */
-> > -               if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) =
-&&
-> > -                   !perf_cpu_map__has(event_cpus, cpu))
-> > -                       continue;
-> > +       /*
-> > +        * Set option of each CPU we have. In per-cpu case, do the vali=
-dation
-> > +        * for CPUs to work with. In per-thread case, the CPU map has t=
-he "any"
-> > +        * CPU value. Since the traced program can run on any CPUs in t=
-his case,
-> > +        * thus don't skip validation.
-> > +        */
-> > +       if (!perf_cpu_map__has_any_cpu(event_cpus)) {
-> > +               struct perf_cpu_map *online_cpus =3D perf_cpu_map__new_=
-online_cpus();
-> >
-> > -               if (!perf_cpu_map__has(online_cpus, cpu))
-> > -                       continue;
-> > +               intersect_cpus =3D perf_cpu_map__intersect(event_cpus, =
-online_cpus);
-> > +               perf_cpu_map__put(online_cpus);
-> > +       } else {
-> > +               intersect_cpus =3D perf_cpu_map__new_online_cpus();
-> > +       }
->
-> Would it be ok if any of these operations fail?  I believe the
-> cpu map functions work well with NULL already.
+On Fri, Feb 16, 2024 at 06:27:08PM -0600, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 2/16/24 17:55, Kees Cook wrote:
+> > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+> > flexible array. Found with GCC 13:
+> > 
+> > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+> >    207 |                                        *(__be16 *)&key->data[i]);
+> >        |                                                   ^~~~~~~~~~~~~
+> > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+> >    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+> >        |                                                      ^
+> > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+> >     97 | #define be16_to_cpu __be16_to_cpu
+> >        |                     ^~~~~~~~~~~~~
+> > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+> >    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+> > ^
+> >        |                            ^~~~~~~~~~~
+> > In file included from ../include/linux/bpf.h:7:
+> > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+> >     82 |         __u8    data[0];        /* Arbitrary size */
+> >        |                 ^~~~
+> > 
+> > And found at run-time under CONFIG_FORTIFY_SOURCE:
+> > 
+> >    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
+> >    index 0 is out of range for type '__u8 [*]'
+> > 
+> > This includes fixing the selftest which was incorrectly using a
+> > variable length struct as a header, identified earlier[1]. Avoid this
+> > by just explicitly including the prefixlen member instead of struct
+> > bpf_lpm_trie_key.
+> > 
+> > Note that it is not possible to simply remove the "data" member, as it
+> > is referenced by userspace
+> > 
+> > cilium:
+> >          struct egress_gw_policy_key in_key = {
+> >                  .lpm_key = { 32 + 24, {} },
+> >                  .saddr   = CLIENT_IP,
+> >                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+> >          };
+> > 
+> > systemd:
+> > 	ipv6_map_fd = bpf_map_new(
+> > 			BPF_MAP_TYPE_LPM_TRIE,
+> > 			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
+> > 			sizeof(uint64_t),
+> > 			...
+> > 
+> > The only risk to UAPI would be if sizeof() were used directly on the
+> > data member, which it does not seem to be. It is only used as a static
+> > initializer destination and to find its location via offsetof().
+> > 
+> > Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
+> > Reported-by: Mark Rutland <mark.rutland@arm.com>
+> > Closes: https://paste.debian.net/hidden/ca500597/
+> 
+> mmh... this URL expires: 2024-05-15
 
-If the allocation fails then the loop below won't iterate (the map
-will be empty). The map is released and not used elsewhere in the
-code. An allocation failure here won't cause the code to crash, but
-there are other places where the code assumes what the properties of
-having done this function are and they won't be working as intended.
-It's not uncommon to see ENOMEM to just be abort for this reason.
+Yup, but that's why I included the run-time splat above too. :)
 
-Thanks,
-Ian
-
-> Thanks,
-> Namhyung
->
-> >
-> > -               err =3D cs_etm_validate_context_id(itr, evsel, i);
-> > +       perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
-> > +               err =3D cs_etm_validate_context_id(itr, evsel, cpu.cpu)=
-;
-> >                 if (err)
-> > -                       goto out;
-> > -               err =3D cs_etm_validate_timestamp(itr, evsel, i);
-> > +                       break;
-> > +
-> > +               err =3D cs_etm_validate_timestamp(itr, evsel, cpu.cpu);
-> >                 if (err)
-> > -                       goto out;
-> > +                       break;
-> >         }
-> >
-> > -       err =3D 0;
-> > -out:
-> > -       perf_cpu_map__put(online_cpus);
-> > +       perf_cpu_map__put(intersect_cpus);
-> >         return err;
-> >  }
-> >
-> > @@ -435,7 +434,7 @@ static int cs_etm_recording_options(struct auxtrace=
-_record *itr,
-> >          * Also the case of per-cpu mmaps, need the contextID in order =
-to be notified
-> >          * when a context switch happened.
-> >          */
-> > -       if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
-> > +       if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
-> >                 evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
-> >                                            "timestamp", 1);
-> >                 evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
-> > @@ -461,7 +460,7 @@ static int cs_etm_recording_options(struct auxtrace=
-_record *itr,
-> >         evsel->core.attr.sample_period =3D 1;
-> >
-> >         /* In per-cpu case, always need the time of mmap events etc */
-> > -       if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
-> > +       if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus))
-> >                 evsel__set_sample_bit(evsel, TIME);
-> >
-> >         err =3D cs_etm_validate_config(itr, cs_etm_evsel);
-> > @@ -533,45 +532,31 @@ static size_t
-> >  cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
-> >                       struct evlist *evlist __maybe_unused)
-> >  {
-> > -       int i;
-> > +       int idx;
-> >         int etmv3 =3D 0, etmv4 =3D 0, ete =3D 0;
-> >         struct perf_cpu_map *event_cpus =3D evlist->core.user_requested=
-_cpus;
-> > -       struct perf_cpu_map *online_cpus =3D perf_cpu_map__new_online_c=
-pus();
-> > -
-> > -       /* cpu map is not empty, we have specific CPUs to work with */
-> > -       if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
-> > -               for (i =3D 0; i < cpu__max_cpu().cpu; i++) {
-> > -                       struct perf_cpu cpu =3D { .cpu =3D i, };
-> > +       struct perf_cpu_map *intersect_cpus;
-> > +       struct perf_cpu cpu;
-> >
-> > -                       if (!perf_cpu_map__has(event_cpus, cpu) ||
-> > -                           !perf_cpu_map__has(online_cpus, cpu))
-> > -                               continue;
-> > +       if (!perf_cpu_map__has_any_cpu(event_cpus)) {
-> > +               /* cpu map is not "any" CPU , we have specific CPUs to =
-work with */
-> > +               struct perf_cpu_map *online_cpus =3D perf_cpu_map__new_=
-online_cpus();
-> >
-> > -                       if (cs_etm_is_ete(itr, i))
-> > -                               ete++;
-> > -                       else if (cs_etm_is_etmv4(itr, i))
-> > -                               etmv4++;
-> > -                       else
-> > -                               etmv3++;
-> > -               }
-> > +               intersect_cpus =3D perf_cpu_map__intersect(event_cpus, =
-online_cpus);
-> > +               perf_cpu_map__put(online_cpus);
-> >         } else {
-> > -               /* get configuration for all CPUs in the system */
-> > -               for (i =3D 0; i < cpu__max_cpu().cpu; i++) {
-> > -                       struct perf_cpu cpu =3D { .cpu =3D i, };
-> > -
-> > -                       if (!perf_cpu_map__has(online_cpus, cpu))
-> > -                               continue;
-> > -
-> > -                       if (cs_etm_is_ete(itr, i))
-> > -                               ete++;
-> > -                       else if (cs_etm_is_etmv4(itr, i))
-> > -                               etmv4++;
-> > -                       else
-> > -                               etmv3++;
-> > -               }
-> > +               /* Event can be "any" CPU so count all online CPUs. */
-> > +               intersect_cpus =3D perf_cpu_map__new_online_cpus();
-> >         }
-> > -
-> > -       perf_cpu_map__put(online_cpus);
-> > +       perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
-> > +               if (cs_etm_is_ete(itr, cpu.cpu))
-> > +                       ete++;
-> > +               else if (cs_etm_is_etmv4(itr, cpu.cpu))
-> > +                       etmv4++;
-> > +               else
-> > +                       etmv3++;
-> > +       }
-> > +       perf_cpu_map__put(intersect_cpus);
-> >
-> >         return (CS_ETM_HEADER_SIZE +
-> >                (ete   * CS_ETE_PRIV_SIZE) +
-> > @@ -813,16 +798,15 @@ static int cs_etm_info_fill(struct auxtrace_recor=
-d *itr,
-> >         if (!session->evlist->core.nr_mmaps)
-> >                 return -EINVAL;
-> >
-> > -       /* If the cpu_map is empty all online CPUs are involved */
-> > -       if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
-> > +       /* If the cpu_map has the "any" CPU all online CPUs are involve=
-d */
-> > +       if (perf_cpu_map__has_any_cpu(event_cpus)) {
-> >                 cpu_map =3D online_cpus;
-> >         } else {
-> >                 /* Make sure all specified CPUs are online */
-> > -               for (i =3D 0; i < perf_cpu_map__nr(event_cpus); i++) {
-> > -                       struct perf_cpu cpu =3D { .cpu =3D i, };
-> > +               struct perf_cpu cpu;
-> >
-> > -                       if (perf_cpu_map__has(event_cpus, cpu) &&
-> > -                           !perf_cpu_map__has(online_cpus, cpu))
-> > +               perf_cpu_map__for_each_cpu(cpu, i, event_cpus) {
-> > +                       if (!perf_cpu_map__has(online_cpus, cpu))
-> >                                 return -EINVAL;
-> >                 }
-> >
-> > diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm=
-64/util/arm-spe.c
-> > index 51ccbfd3d246..0b52e67edb3b 100644
-> > --- a/tools/perf/arch/arm64/util/arm-spe.c
-> > +++ b/tools/perf/arch/arm64/util/arm-spe.c
-> > @@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrac=
-e_record *itr,
-> >          * In the case of per-cpu mmaps, sample CPU for AUX event;
-> >          * also enable the timestamp tracing for samples correlation.
-> >          */
-> > -       if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
-> > +       if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
-> >                 evsel__set_sample_bit(arm_spe_evsel, CPU);
-> >                 evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
-> >                                            "ts_enable", 1);
-> > @@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrac=
-e_record *itr,
-> >         tracking_evsel->core.attr.sample_period =3D 1;
-> >
-> >         /* In per-cpu case, always need the time of mmap events etc */
-> > -       if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
-> > +       if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
-> >                 evsel__set_sample_bit(tracking_evsel, TIME);
-> >                 evsel__set_sample_bit(tracking_evsel, CPU);
-> >
-> > --
-> > 2.43.0.594.gd9cf4e227d-goog
-> >
+-- 
+Kees Cook
 
