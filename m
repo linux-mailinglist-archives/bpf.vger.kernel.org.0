@@ -1,119 +1,125 @@
-Return-Path: <bpf+bounces-22208-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22209-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D70D8858F32
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 12:57:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2CCA858F3C
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 13:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 420592837FD
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 11:57:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28DB11C20DC7
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 12:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3BB6A02A;
-	Sat, 17 Feb 2024 11:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058206A01C;
+	Sat, 17 Feb 2024 12:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqeokdX0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WfhWbkGj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8AE069DE4;
-	Sat, 17 Feb 2024 11:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C48629ED
+	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 12:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708171053; cv=none; b=UsPL2Ug8kL4ZIAqsKb/IWcMty9alzqIn1XSwUgBbLj/CF+Wu1VbTRY0kK/HFfgc8OO5lhuryUR6FJbxKz/HA+feYwkTRwKg8scakOPD6+7W4AkkI/VrMH6JKNRJdZnIVeGHYO+mPun61b5clqkw3IMFMrRctIZE40N5duCOSpvk=
+	t=1708171506; cv=none; b=Z+WFl63avuuuyIZEPYeNOmi3xeZ7g9mqDtVqVe07oLR0cyD4d+ebHsuD5Gl5DneWil9XZu8xhcUpRM1YYLYslgDzB2x9BmGLgHS+XTPnmW2CKvhW6dU3SE0xJh7khueCEcrmLEE5+WLlUIzSXyYJEM0bBZqQQxglVDGCfAK0Mnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708171053; c=relaxed/simple;
-	bh=DYE5MHoB4iU6UqVOI9xCwDqXRm2zS5gEUdWLduWrELE=;
-	h=From:Message-ID:Subject:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Xzc4gTCmQQEKM2OBwPUSTgoxuIwtBBgN5Z/t7G9S9EV9DNkpf34Eb1FTWJmkNKzr5wf2ld8vWAGYlA+P8JJTis3nNcSZCjLzaLpDwsc8xTCEHYPloebcdppjSlFkRLSrR/gCWhnQ8Pfrh+7h6jrSEwT41wx7p5N+gws0OQUmZzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqeokdX0; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4125f065ed6so856825e9.2;
-        Sat, 17 Feb 2024 03:57:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708171050; x=1708775850; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:subject:message-id:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vUsOgHzp8r6kWIn49FLfR/dfD+6UhIXiD2CyZpx4J48=;
-        b=kqeokdX0ny9ziPwGVPJ7GXnOwcQ96fAr/D4Nwu7C7dDbswCWQi6gwnhZ6hpeg0wLhH
-         7pOBLu0d+zllb8XclBVUaDlBAiSZXwB5wU/GrC4OF8pTh0YvCmT7x05J2afB+FRGy2K/
-         m1HFHLPi7n7RWK+Z0T7QfNuzUYEtQgWJYx+yMR0m5Oo3kXjUUO0tGDuZ23OS8cZxqBh5
-         rpObjSqMmDYFCN5jCKYE4bWOsHpIQe78vykXOhhb7nz3RahnEpVmws4vrQY5GOLAyYWh
-         zd0+h9YPw0SbUcJbJCqWAKouz7A8jpVHNDFrBRafKqkBr71E4CJgTZJjqOqFRjHhTDBU
-         /0BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708171050; x=1708775850;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:subject:message-id:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vUsOgHzp8r6kWIn49FLfR/dfD+6UhIXiD2CyZpx4J48=;
-        b=j0CZHGM9jMc+MQ9qmBYv+up9rT9pWIKI9ZH8SYvoVauer4nDvREyDjJO+OIS/8ZiLX
-         oknPJ5dQMQip6VKEXqXRlFC65ZdsiBjeW4HDELnbYkWMOzKT6QyuD7DD/PWGx0sOWoHg
-         qSb+16P+pGz0p3LEc4eQCQsnki6hiOdoLDOW7JLLlSD5zLdHGVvSTU7z2RSHwvUzlULL
-         Nv58EB62fSwF0+AmrxCbyuN/H8GXuUNMlHUj/d6i0B06B2zUi3gxr7PZeWMkOGr8Byd0
-         Jbliaxk/HqsIOeWWFE3PXUkg2YwXveTajlrwWD4iDrcP/QEw46lWk0CFL/4kKiyupt01
-         q8mw==
-X-Forwarded-Encrypted: i=1; AJvYcCWYsE0aGjN85ZaTnsQ4KidKGVV5vwRrBvDQRNowHZ93XOa5OlXwUrc1r4oH9flf+16DjBspv5uV9e9jbqnrMquQ9hnerzL4ULatVO1EWNrppZqz670CDKsz9VD0tiWRHM6DUWs9M7KgajttlPUQhZBX856xuAp23Kar0vyy4qld4fHLTH5/z3pBo3Q4sw9+mz9Nv7+tuOsP
-X-Gm-Message-State: AOJu0Yx/LNoTlkVh0eCGw/RsSbEjMQIQpTg42mSC5hclSnL9FzUeozZG
-	JOZ26K2KE0aZgCCxI+6UlwH687CN1cYGiu1Ot7RzvHaOyGnHBVcv
-X-Google-Smtp-Source: AGHT+IEgt4lASuS58P85SkCYtQ+4L6sOssHAkGTZm9qejp+87GdqbxGLue1Q9HifEME4xc7jobqShQ==
-X-Received: by 2002:a05:600c:3ba6:b0:411:d89d:d7ba with SMTP id n38-20020a05600c3ba600b00411d89dd7bamr6456069wms.7.1708171049914;
-        Sat, 17 Feb 2024 03:57:29 -0800 (PST)
-Received: from 192.168.10.34 ([39.45.172.107])
-        by smtp.gmail.com with ESMTPSA id je11-20020a05600c1f8b00b0040fdf5e6d40sm5096840wmb.20.2024.02.17.03.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 03:57:29 -0800 (PST)
-From: Muhammad Usama Anjum <musamaanjum@gmail.com>
-X-Google-Original-From: Muhammad Usama Anjum <MUsamaAnjum@gmail.com>
-Message-ID: <0e96289fdbda200b9608284c7d5fb72546ce4267.camel@gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
-To: Matthew Wilcox <willy@infradead.org>, lsf-pc@lists.linux-foundation.org
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
- linux-block@vger.kernel.org, linux-ide@vger.kernel.org, 
- linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
- bpf@vger.kernel.org
-Date: Sat, 17 Feb 2024 16:57:51 +0500
-In-Reply-To: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
-References: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
+	s=arc-20240116; t=1708171506; c=relaxed/simple;
+	bh=BX6e6hiBTnGSalv/9HIVusi20VfWVEw4yj4oii3v4ZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZMTeiubmppYUw3CDrni/RdhDPiu+nIvf9j29D4OX6EEq2PNtvJ0OeEHgD2oPCT+Iamtt7jQIej9BRFYj8R6KXLMzSi04v3f/5slUybvI4j+l6aFWCwl5BjF2SFAj8n4ms+Y4c9S2Wswvc+ztVbtLE0WSeI68QkS1KUNSGSW+q+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WfhWbkGj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708171503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hjeMVE/jd7HxmGs4iR7IXp3QfULUw904tPe7/0WHtQI=;
+	b=WfhWbkGjvslnZXEKjPXZoidOwGXVvL69tkw/26YWat1ibGD6MRf7Zt2pHyiwyXNKChezgL
+	dKzl5AKmjKmrhQgxf4LbfT2tEehXKMR9I5kgF8tOUbMi0TFQc8JvkWRW9ny+Jxzb1zjMZK
+	OlRYMDRU34VRn78ZwLgS5LbkrlD/MJo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-6-7vO-qyLaOHOuoLEWRkWBkQ-1; Sat,
+ 17 Feb 2024 07:04:56 -0500
+X-MC-Unique: 7vO-qyLaOHOuoLEWRkWBkQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FDC33C0008A;
+	Sat, 17 Feb 2024 12:04:55 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.33])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 0A5CA112132A;
+	Sat, 17 Feb 2024 12:04:51 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sat, 17 Feb 2024 13:03:37 +0100 (CET)
+Date: Sat, 17 Feb 2024 13:03:33 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+	bpf@vger.kernel.org, Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix an issue due to uninitialized
+ bpf_iter_task
+Message-ID: <20240217120333.GC10393@redhat.com>
+References: <20240217114152.1623-1-laoar.shao@gmail.com>
+ <20240217114152.1623-2-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240217114152.1623-2-laoar.shao@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Mon, 2024-01-29 at 04:32 +0000, Matthew Wilcox wrote:
-> Our documentation of the current page flags is ... not great.  I think
-> I can improve it for the page cache side of things; I understand the
-> meanings of locked, writeback, uptodate, dirty, head, waiters, slab,
-> mlocked, mappedtodisk, error, hwpoison, readahead, anon_exclusive,
-> has_hwpoisoned, hugetlb and large_remappable.
->=20
-> Where I'm a lot more shaky is the meaning of the more "real MM" flags,
-> like active, referenced, lru, workingset, reserved, reclaim, swapbacked,
-> unevictable, young, idle, swapcache, isolated, and reported.
->=20
-> Perhaps we could have an MM session where we try to explain slowly and
-> carefully to each other what all these flags actually mean, talk about
-> what combinations of them make sense, how we might eliminate some of
-> them to make more space in the flags word, and what all this looks like
-> in a memdesc world.
->=20
-> And maybe we can get some documentation written about it!  Not trying
-> to nerd snipe Jon into attending this session, but if he did ...
-This is great idea. Instead of having a session to write
-documentation, we can have a session which would be documentation
-itself even if nobody translates it to text.
+On 02/17, Yafang Shao wrote:
+>
+> Failure to initialize it->pos, coupled with the presence of an invalid
+> value in the flags variable, can lead to it->pos referencing an invalid
+> task, potentially resulting in a kernel panic. To mitigate this risk, it's
+> crucial to ensure proper initialization of it->pos to NULL.
+>
+> Fixes: ac8148d957f5 ("bpf: bpf_iter_task_next: use next_task(kit->task) rather than next_task(kit->pos)")
 
->=20
-> [thanks to Amir for reminding me that I meant to propose this topic]
->=20
+Confused...
+
+Does this mean that bpf_iter_task_next() (the only user of ->pos) can be
+called even if bpf_iter_task_new() returns -EINVAL ?
+
+Oleg.
+
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> Cc: Chuyi Zhou <zhouchuyi@bytedance.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/bpf/task_iter.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index e5c3500443c6..ec4e97c61eef 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -978,6 +978,8 @@ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
+>  	BUILD_BUG_ON(__alignof__(struct bpf_iter_task_kern) !=
+>  					__alignof__(struct bpf_iter_task));
+>  
+> +	kit->pos = NULL;
+> +
+>  	switch (flags) {
+>  	case BPF_TASK_ITER_ALL_THREADS:
+>  	case BPF_TASK_ITER_ALL_PROCS:
+> -- 
+> 2.39.1
+> 
 
 
