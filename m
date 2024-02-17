@@ -1,129 +1,137 @@
-Return-Path: <bpf+bounces-22196-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B145C858C08
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 01:51:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063DB858BCE
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 01:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68BFF2833AE
-	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 00:51:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B18FC1F2149C
+	for <lists+bpf@lfdr.de>; Sat, 17 Feb 2024 00:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715EF4C8F;
-	Sat, 17 Feb 2024 00:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="KQ/Sdues"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD189171D1;
+	Sat, 17 Feb 2024 00:25:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6117C4C91
-	for <bpf@vger.kernel.org>; Sat, 17 Feb 2024 00:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43975C8B;
+	Sat, 17 Feb 2024 00:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708131115; cv=none; b=COFrD0ZGIZVD1mS6fYcA/vdyOI1OC57GrwutjbcTsLRTmValMXRXe/9V7b1YvJBNEdMDKOVk1pH+q5GN02j8REnKlY8YGyrCWsIyh3nFgf22UQm2e0Xu7Iehfu5iTsoCSaXCmks0hpSRLw2pNoZFE1thu+bITTKAS+Gr8ZQUTcE=
+	t=1708129523; cv=none; b=LGwNf2IBYNlrC2JNDVAcvBD3zfCfQEu1o407kxAi9I6jkKWTVQCJbzSFXccur6cNibqlqb586zbGvX00d3FWXoED+XQD6mnbjZxThCanFYdlsMej7muaznQHe1SvBxx37WelKDRCusdRmq/QuE7vARY3TAayyriWNLSp5VplRTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708131115; c=relaxed/simple;
-	bh=YGlOqnv0UTpqTRqQpulA3pm4qa8rnyr4nv9KbfiLYTI=;
-	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=PYA057736BgSeHC7lt7dZi1m/PKFKdEBFzTxSRq0hJWzEmjKfemvRjXLs1iT+jsrnXizOBxjpqCRdG4NsddLrRXEFP0GvAWXHW1EzJW69shbSrytae+nOMG8rKX8HJHu5i8p3gJ5E9n+PtjeXd9GAuRCQUTc62vv5f1f7p/Ytw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=KQ/Sdues; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354650.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GMITlX004236;
-	Sat, 17 Feb 2024 00:24:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:to:cc:from:subject:content-type
-	:content-transfer-encoding; s=default; bh=gPLDkcVy/8DeTfrk1oQa2M
-	VhXgrqJ20n4xtBbEN4fGw=; b=KQ/SduesDlGDHZrq59QTm64gC2mf696oTtS644
-	m96TvmTDXpurAFs/0g72adrnRxpsHM8uHwkKBRzT3dgvjUz9IUKNTerps60RhXIm
-	qHXFnVWS34RShEsB+qGBbmpoT9DjeCvgo75HDW5bHJ3E5Lzn5/ZC1rIWFM3EMj65
-	u6zGZq/nXZh1QCLTsuzN2ThgjBReW9X9wXBQZedJ9gV+fMSNWJZpl3/EfOQ7FGK6
-	hd+WNdPWuDzYAgzytDUQQuBjYQO1zX+j5ayYIkbYdlMFRJOI+hMrPUzCfPr8XEV9
-	0pN3bjxNExk3HmJy/VtBvsrS/sopp76gHo+5GaXY12qMrSJg==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3wagcqg5sx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 17 Feb 2024 00:24:51 +0000 (GMT)
-Received: from [10.82.58.117] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Sat, 17 Feb
- 2024 00:24:50 +0000
-Message-ID: <1f98a10d-9fd7-4a0c-baa8-be31c1e78fa8@crowdstrike.com>
-Date: Fri, 16 Feb 2024 16:24:49 -0800
+	s=arc-20240116; t=1708129523; c=relaxed/simple;
+	bh=TB3RsJQOiyTR8tEs8xp9ZVxkFZri+g+5FS8M54/Voa0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f3YRCYAahlryNjFtsBpOqpCg9bdVXQgRsqWgEpsrPoR5gMIM+8luAYOpeC2XaUPmX9Yqm6XYCHhcR/HQpy0FbnSZVqv8MtBwPdeD1NHKXQeGS0BcYRLm15co/KhgKvOZvkKgFROxspS6jnMjpWq7NdRG91oWYni4ceh8Ew2ck9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so2087790a12.0;
+        Fri, 16 Feb 2024 16:25:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708129521; x=1708734321;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gV3LRreLb1kZqKq2G0q5vBMXGxsObp5N7fG6tA3C6K8=;
+        b=KOGv5NFOj4lVtbUwt6FmRVE099GCSoVBvp5B47tiZ8sbfP+u/GBhnuOSmjNGPhOC00
+         WBAzX8LC+Nii9s0Y339H0K8MURKLZS3lGLBsi2gC0mj/PaDEBYzIlo6zzwtXdml/gPIp
+         fJO0e6BW1Vlx8AiYe5Tn7VPSmA5Gf3olK3lMYwxjQyfIhuetAZucCv1ipIdNy1X7Db16
+         FpsJ1czLwH0pcp0uihfMuD9y1OCjpMP/W1BMiHAWylLs7uAgoIfsAi6l/MtLG7LEAAEm
+         OdfcczUKqUphdm4eabjE2VliQHEbexdHXQA0U729RsOP6htb/W3uRJx143kWQfXEPy2G
+         AOrA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6cMKPk9gOhyOg8gxRfJBiye+tRXsh7z/ZheAslzddFcrZmgccVtAkF7wa22ZNAoyK51g1fy2OZtx8ptqT9m/kXFswLnPHdEznOywrSaccehpcWXmhUfZIkI5OTlwprI5XVHaaEfy2jVFRh33YBHSD8u2YtN0ApbiC0hd+0xM+gexRuA==
+X-Gm-Message-State: AOJu0YzlAinW5BC3uba+kVeS2PYJ81cDBAy3FCWrPYXdtoy2lKhtMzsA
+	S15MfAFavF2CoJfSGqtsJ1n5Ynljam8wghJHIU+1VpPHdSZZWQ8xfAySmITdgs4p9U5RB9Mv8Jq
+	gP5ryyJNT98j6vZG0LoCaPt433Ws=
+X-Google-Smtp-Source: AGHT+IEgpCI0dTfACZVpuBHoCKGcTgiO+7b7Q9T9pTbKkzbsQbncP1/gmAFLhNBzmL85pp+qTwVtCNOZYq6nrUHrEq4=
+X-Received: by 2002:a05:6a21:1706:b0:19c:6a60:b433 with SMTP id
+ nv6-20020a056a21170600b0019c6a60b433mr6463168pzb.3.1708129520906; Fri, 16 Feb
+ 2024 16:25:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song
-	<yonghong.song@linux.dev>
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-Subject: Memory corruption in out_batch parameter of batch lookup APIs
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: 04WPEXCH12.crowdstrike.sys (10.100.11.116) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-GUID: JjwHLh3VKoYf93RD4MDD-9yCZDqSAirB
-X-Proofpoint-ORIG-GUID: JjwHLh3VKoYf93RD4MDD-9yCZDqSAirB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_23,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 spamscore=0 clxscore=1011 adultscore=0 phishscore=0
- bulkscore=0 mlxlogscore=262 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402170000
+References: <20240202234057.2085863-1-irogers@google.com> <20240202234057.2085863-3-irogers@google.com>
+In-Reply-To: <20240202234057.2085863-3-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 16 Feb 2024 16:25:09 -0800
+Message-ID: <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/8] libperf cpumap: Ensure empty cpumap is NULL from alloc
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
+	Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi, I noticed there's a subtlety to to the batch APIs 
-(bpf_map_lookup_batch and bpf_map_lookup_and_delete_batch) that can lead 
-to bugs if callers are not careful, and I'm wondering about the best way 
-to document or address it.
+On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> Potential corner cases could cause a cpumap to be allocated with size
+> 0, but an empty cpumap should be represented as NULL. Add a path in
+> perf_cpu_map__alloc to ensure this.
+>
+> Suggested-by: James Clark <james.clark@arm.com>
+> Closes: https://lore.kernel.org/lkml/2cd09e7c-eb88-6726-6169-647dcd0a8101=
+@arm.com/
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/perf/cpumap.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index ba49552952c5..cae799ad44e1 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -18,9 +18,13 @@ void perf_cpu_map__set_nr(struct perf_cpu_map *map, in=
+t nr_cpus)
+>
+>  struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+>  {
+> -       RC_STRUCT(perf_cpu_map) *cpus =3D malloc(sizeof(*cpus) + sizeof(s=
+truct perf_cpu) * nr_cpus);
+> +       RC_STRUCT(perf_cpu_map) *cpus;
+>         struct perf_cpu_map *result;
+>
+> +       if (nr_cpus =3D=3D 0)
+> +               return NULL;
 
-Specifically, the size of the data pointed to by in_batch/out_batch is 
-not clear, and if it's too small, the caller can see memory/stack 
-corruption. The function documentation isn't super clear about this, 
-calling in_batch "address of the first element in batch to read", so a 
-caller might reasonably assume that a pointer size is fine. However, the 
-right size actually depends on the map type.
-
-For hash and array maps, out_batch will be u32 (as the parameter is used 
-as an index). But for LPM trie, it will be the size of the key (in the 
-case of LPM trie, I think that's 260 bytes). If a caller passes a 
-pointer to memory smaller the key size, the kernel will overwrite past 
-that memory and corrupt the stack (or wherever out_batch points). This 
-is because of the copy_to_user(uobatch, prev_key, map->key_size) at the 
-end of generic_map_lookup_batch.
-
-It seems to me that we could add documentation to these functions 
-indicating that out_batch should be able to hold at least one key to be 
-safe. This is simple but overly strict (at the moment) for all map types 
-other than LPM trie. However, if we specifically call out LPM trie as 
-needing key-sized width while other map types need 4 bytes, then this 
-documentation could easily become out-of-date as new map types are added.
-
-We could alternatively add a statement like "out_batch should generally 
-point to memory large enough to hold a single key, but for some map 
-implementations a smaller type is possible". This gives more information 
-but might be too vague for many API users, and it means future kernels 
-could be tied to this implementation to avoid breaking users.
-
-Any thoughts/preferences on how best to handle this? I'm happy to send a 
-patch clarifying the documentation, but I'd like to get a general 
-consensus on the best way to proceed first.
+But allocation failure also returns NULL.  Then callers should check
+what's the expected result.
 
 Thanks,
+Namhyung
 
-Martin
-
+> +
+> +       cpus =3D malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cpus=
+);
+>         if (ADD_RC_CHK(result, cpus)) {
+>                 cpus->nr =3D nr_cpus;
+>                 refcount_set(&cpus->refcnt, 1);
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
