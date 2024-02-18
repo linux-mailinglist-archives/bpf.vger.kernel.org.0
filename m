@@ -1,535 +1,171 @@
-Return-Path: <bpf+bounces-22230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD8A78596B7
-	for <lists+bpf@lfdr.de>; Sun, 18 Feb 2024 12:49:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F98859784
+	for <lists+bpf@lfdr.de>; Sun, 18 Feb 2024 16:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F5DAB21F23
-	for <lists+bpf@lfdr.de>; Sun, 18 Feb 2024 11:49:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED3D9B21072
+	for <lists+bpf@lfdr.de>; Sun, 18 Feb 2024 15:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A1E633E7;
-	Sun, 18 Feb 2024 11:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A886BFD3;
+	Sun, 18 Feb 2024 15:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iiuyvBhC"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Nok6Eciu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563A84EB41
-	for <bpf@vger.kernel.org>; Sun, 18 Feb 2024 11:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F302B65BBA
+	for <bpf@vger.kernel.org>; Sun, 18 Feb 2024 15:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708256948; cv=none; b=Ez1JiS30VVtOVjs2iHzMRTFO96Lit3+EUR53brAZUlKYLWW6xnfWHI7Rt9S/HOyzr93e4pXPVcEfRPmg3J7ym080j+OTz8Q6x1rXDyoXW+RRHshjKrlQ7nN0JGcS6LT6pw1lV4Ax8zvXcA47JglFbn9jitr7LL0bFA5V6mJ6mFA=
+	t=1708268782; cv=none; b=F254NFLXCGbFU0+zZO3yV3x3AAvPEVWAC7z6ts+BwJWnkztXGLAiIetocSEfzOKZZt6ttLICBw5atLBn6vN/xSAWdTcoXrgvk0V8a3zHYS9ma6oERXKlCJEmdbIk4ZXhqgrmEl9wvUKc8GRXKZ+xsSYaegGmNDZVK5XLj2/cmZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708256948; c=relaxed/simple;
-	bh=3WaNp7qmkJ9WPmz1dOL0Kot/z30M8cGEzLsty2daexA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Nngll+n2LlqvoO7dZNABZIu5OB7os46GsBiTUdGWUo8JDXH6zxl2JMC48ih78APe2s5cOYg20O1yafLAj3M+tyczFzq17K//b/grxAfdRG18lQO4kI/mIXJGgck2IzfMfx84U1KSUU+lSFIOzJfMKgyRa2aM/sohj/OfJmOcWIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iiuyvBhC; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7c745af8f1cso18885439f.1
-        for <bpf@vger.kernel.org>; Sun, 18 Feb 2024 03:49:06 -0800 (PST)
+	s=arc-20240116; t=1708268782; c=relaxed/simple;
+	bh=tGxXT1XhuS6erETM7SEYMuB1n/Ny+q6o/Kd1LNyFGkY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WE5aYbVo2gOomwd1sKWt6uBBVQHg/2WHVUoiupttoDk5pJ7wM403KoDGsfOAWZO9lMVqgjCZXMO6a4wMiYVeU3v3nYP1VkiqRHXAf+ke0Mxbm4UOzgrrEvfMMCWxsHfnCexAISZ5nUPfsrLUPR6ZVPumTbK6hagnBsjMDn5SAjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Nok6Eciu; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so3014887a12.1
+        for <bpf@vger.kernel.org>; Sun, 18 Feb 2024 07:06:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708256945; x=1708861745; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h2tMCAdIMGkoJHjGZWIft4gPYp2SoUh78o9uKIOLnqQ=;
-        b=iiuyvBhChLKqz8QHuivUTtLNAE/B/sRK/44GrJA1/COVTxGEajxWhFDC8HBXg/9VLj
-         p1EdNQpms67nQPaoMWV1nc/KmX2xShBEUQSlnkdGNiZA/N1v3/R5XzO7tOQkdF84082p
-         8h1xekmQVtWbYhVDdpZiX02VSMaX0isY2vvqIkOnZWtHfCuceLdcMb08aS5Ujy++6qA9
-         r6SwFysi5TuoYQXJfHbQ4kYDmdTHUfNuXCKO1j42VFLP5FwoTdpbWamjwkiS2Fh86y1f
-         QBXCmdazU7wse1QcTh/NeOj6L0XiLGC5CMXwVHrQClkjj2RNCmsRMee69bzHOoOx5Awu
-         J24A==
+        d=chromium.org; s=google; t=1708268780; x=1708873580; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=weWvwdjLFnP8JZ5vKjO/UijVTnJpQLLncBhysMzZFhc=;
+        b=Nok6EciuTdMz1z1pS6cwicCCDdDOCTlLLo8ABabxLV63CY9iqUxn64wyit7TOT0kaJ
+         QX2hm83AMDkBl2NkOt5cVe4oG7h2l8B+qZVKbsRS73MoqmO7I6RX4K8TrcKX5jtJzLUk
+         tI3z8QSxh8c2UaT8LapZMXo5PsTJA9g3cZCDQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708256945; x=1708861745;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h2tMCAdIMGkoJHjGZWIft4gPYp2SoUh78o9uKIOLnqQ=;
-        b=UPp18TgSpIiSKgjyDVue2AWrPTcJ6OlJ1W52HOOUSREuOuXlnyK2ZAlMrli2JzPPZz
-         +PwloFlMrQN0qttY3zy5OjkQo2Y6gsMcx7SPvldzO94nBiatkFCAA6NdNLDS5YRR6EMg
-         AKRnXnzp2fyAqxQgoiJ86t/YMuJubCbygi6voEjj5STbXoAPtT2gbkf1jxppshUHM66T
-         4nccjxwmljaoxBTM+1Hxr3A4OCzzcJ0CLgNdYZnq2YUcFgp7cjEpAuuBGYNgvPmGC2fL
-         GARfOqPTmBpxgj2dbUnajFOPa7Np4CsnGcLQPmYo3hTbwLe1fkQz1muO7DFTdW3ZZ5rE
-         pSmg==
-X-Gm-Message-State: AOJu0Yy1W7oAcORWmnWkO8SbSaxFkCoudpGzfrC1bre/fhwkFTLVpmfC
-	LtOic4NVlZsRZXHktnlFzOrXQtpTFBYESuBes/CMQilUYEOimCSnL/NfBQkIaJqmr+SZ
-X-Google-Smtp-Source: AGHT+IH7NCMHQcdyxrm8HHUefh2QQZ3n8rWF9HhPE7tTt5KFHf/OOtmnOFo33rnU8pIdTmfRaaJV9Q==
-X-Received: by 2002:a05:6602:1238:b0:7c3:6323:306b with SMTP id z24-20020a056602123800b007c36323306bmr11891846iot.12.1708256945414;
-        Sun, 18 Feb 2024 03:49:05 -0800 (PST)
-Received: from localhost.localdomain ([39.144.106.222])
-        by smtp.gmail.com with ESMTPSA id 203-20020a6302d4000000b005dc832ed816sm2857551pgc.59.2024.02.18.03.48.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Feb 2024 03:49:04 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for bits iter
-Date: Sun, 18 Feb 2024 19:48:18 +0800
-Message-Id: <20240218114818.13585-3-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20240218114818.13585-1-laoar.shao@gmail.com>
-References: <20240218114818.13585-1-laoar.shao@gmail.com>
+        d=1e100.net; s=20230601; t=1708268780; x=1708873580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=weWvwdjLFnP8JZ5vKjO/UijVTnJpQLLncBhysMzZFhc=;
+        b=AXX7x+hNgGYsPdNEKwO183US56f8qQz6KFmxb17I7vH/4VLurE0i4kYFjS/Zs5vnZ5
+         p0QF+7/wNIcq2aQSXCWYmLMiKYixEHB8jLmRcbaa55yEnIgu9yOsC8vQ4+91QQgSIhtj
+         VGfb5SLmlTD9BeLl5Z8JV2x+Q8heWzsvMJFinrkoseYyl4aju15DFcc0D2LrohYHejAO
+         SDeUpsBYWzXGct+Vai/0p5Aq2ejVzlpC479Vr5qINsuWYLXH6joCPYqZHI8dQSh+L2Qi
+         K7gYe/SDgZltTMOplRglQ1mkrYv5NWFJl3kHmS6W52CZnGNBqS1Mz+5GDWxS0iglE3fQ
+         6Y3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUDuAVMVI/Q35e+DlkCAwoTOs4hRiX/WtGnTfiZ68CY7q6dCJMdgFo5DIkwmtnF4PnZEWkdlIgd/S4QOX2+PvAeUuGR
+X-Gm-Message-State: AOJu0YyOYMrCes3k7oZgU8WSQqH0qFdcKPGh8kH2zaDIaRwIytKj9pWn
+	qzaI2RICvLv7SZDbuTKvX4VCGS47TdqBCEmeaXhdkhRFio1jdFjZNaILX+B0hA==
+X-Google-Smtp-Source: AGHT+IG/mO2zX6w/nhGHQ9iPPz8f+kIiHx6ka4l6BoesYRu+P37Fs580FgkZTJG8iwIS84D9OwUWXw==
+X-Received: by 2002:a05:6a00:450e:b0:6e2:9bca:fdc4 with SMTP id cw14-20020a056a00450e00b006e29bcafdc4mr4640585pfb.21.1708268780315;
+        Sun, 18 Feb 2024 07:06:20 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a30-20020aa78e9e000000b006e45fc20539sm598295pfr.123.2024.02.18.07.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 07:06:19 -0800 (PST)
+Date: Sun, 18 Feb 2024 07:06:19 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Take return from set_memory_ro() into
+ account with bpf_prog_lock_ro()
+Message-ID: <202402180701.FA42F70BE2@keescook>
+References: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
 
-Add selftests for the newly added bits iter.
-- bits_iter_success
-  - The number of CPUs should be expected when iterating over a cpumask
-  - percpu data extracted from the percpu struct should be expected
-  - RCU lock is not required
-  - It is fine without calling bpf_iter_cpumask_next()
-  - It can work as expected when invalid arguments are passed
+On Sun, Feb 18, 2024 at 11:55:01AM +0100, Christophe Leroy wrote:
+> set_memory_ro() can fail, leaving memory unprotected.
+> 
+> Check its return and take it into account as an error.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/linux/filter.h | 5 +++--
+>  kernel/bpf/core.c      | 4 +++-
+>  kernel/bpf/verifier.c  | 4 +++-
+>  3 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index fee070b9826e..fc0994dc5c72 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -881,14 +881,15 @@ bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
+>  
+>  #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+>  
+> -static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+> +static inline int __must_check bpf_prog_lock_ro(struct bpf_prog *fp)
+>  {
+>  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+>  	if (!fp->jited) {
+>  		set_vm_flush_reset_perms(fp);
+> -		set_memory_ro((unsigned long)fp, fp->pages);
+> +		return set_memory_ro((unsigned long)fp, fp->pages);
+>  	}
+>  #endif
+> +	return 0;
+>  }
+>  
+>  static inline void bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 71c459a51d9e..c49619ef55d0 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2392,7 +2392,9 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+>  	}
+>  
+>  finalize:
+> -	bpf_prog_lock_ro(fp);
+> +	*err = bpf_prog_lock_ro(fp);
+> +	if (*err)
+> +		return fp;
 
-- bits_iter_failure
-  - bpf_iter_bits_destroy() is required after calling
-    bpf_iter_bits_new()
-  - bpf_iter_bits_destroy() can only destroy an initialized iter
-  - bpf_iter_bits_next() must use an initialized iter
+Weird error path, but yes.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/bits_iter.c      | 180 ++++++++++++++++++
- .../bpf/progs/test_bits_iter_failure.c        |  53 ++++++
- .../bpf/progs/test_bits_iter_success.c        | 146 ++++++++++++++
- 4 files changed, 380 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bits_iter.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_bits_iter_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_bits_iter_success.c
+>  
+>  	/* The tail call compatibility check can only be done at
+>  	 * this late stage as we need to determine, if we deal
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c5d68a9d8acc..1f831a6b4bbc 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19020,7 +19020,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>  	 * bpf_prog_load will add the kallsyms for the main program.
+>  	 */
+>  	for (i = 1; i < env->subprog_cnt; i++) {
+> -		bpf_prog_lock_ro(func[i]);
+> +		err = bpf_prog_lock_ro(func[i]);
+> +		if (err)
+> +			goto out_free;
+>  		bpf_prog_kallsyms_add(func[i]);
+>  	}
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 01f241ea2c67..dd4b0935e35f 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -78,6 +78,7 @@ CONFIG_NF_CONNTRACK_MARK=y
- CONFIG_NF_DEFRAG_IPV4=y
- CONFIG_NF_DEFRAG_IPV6=y
- CONFIG_NF_NAT=y
-+CONFIG_PSI=y
- CONFIG_RC_CORE=y
- CONFIG_SECURITY=y
- CONFIG_SECURITYFS=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/bits_iter.c b/tools/testing/selftests/bpf/prog_tests/bits_iter.c
-new file mode 100644
-index 000000000000..778a7c942dba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bits_iter.c
-@@ -0,0 +1,180 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#define _GNU_SOURCE
-+#include <sched.h>
-+
-+#include <test_progs.h>
-+#include "test_bits_iter_success.skel.h"
-+#include "test_bits_iter_failure.skel.h"
-+#include "cgroup_helpers.h"
-+
-+static const char * const positive_testcases[] = {
-+	"cpumask_iter",
-+};
-+
-+static const char * const negative_testcases[] = {
-+	"null_pointer",
-+	"zero_bit",
-+	"no_mem",
-+	"invalid_bits"
-+};
-+
-+static int read_percpu_data(struct bpf_link *link, int nr_cpu_exp, int nr_running_exp)
-+{
-+	int iter_fd, len, item, nr_running, psi_running, nr_cpus, err = -1;
-+	char buf[128];
-+	size_t left;
-+	char *p;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_GE(iter_fd, 0, "iter_fd"))
-+		return -1;
-+
-+	memset(buf, 0, sizeof(buf));
-+	left = ARRAY_SIZE(buf);
-+	p = buf;
-+	while ((len = read(iter_fd, p, left)) > 0) {
-+		p += len;
-+		left -= len;
-+	}
-+
-+	item = sscanf(buf, "nr_running %u nr_cpus %u psi_running %u\n",
-+		      &nr_running, &nr_cpus, &psi_running);
-+	if (!ASSERT_EQ(item, 3, "seq_format"))
-+		goto out;
-+	if (!ASSERT_EQ(nr_cpus, nr_cpu_exp, "nr_cpus"))
-+		goto out;
-+	if (!ASSERT_GE(nr_running, nr_running_exp, "nr_running"))
-+		goto out;
-+	if (!ASSERT_GE(psi_running, nr_running_exp, "psi_running"))
-+		goto out;
-+
-+	err = 0;
-+out:
-+	close(iter_fd);
-+	return err;
-+}
-+
-+static void verify_iter_success(const char *prog_name, bool negtive)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	int cgrp_fd, nr_cpus, err, i, chosen = 0;
-+	struct test_bits_iter_success *skel;
-+	union bpf_iter_link_info linfo;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+	cpu_set_t set;
-+
-+	if (setup_cgroup_environment())
-+		return;
-+
-+	/* Utilize the cgroup iter */
-+	cgrp_fd = get_root_cgroup();
-+	if (!ASSERT_GE(cgrp_fd, 0, "create_cgrp"))
-+		goto cleanup;
-+
-+	skel = test_bits_iter_success__open();
-+	if (!ASSERT_OK_PTR(skel, "cpumask_iter_success__open"))
-+		goto close_fd;
-+
-+	skel->bss->pid = getpid();
-+	nr_cpus = libbpf_num_possible_cpus();
-+	skel->bss->total_nr_cpus = nr_cpus;
-+
-+	err = test_bits_iter_success__load(skel);
-+	if (!ASSERT_OK(err, "cpumask_iter_success__load"))
-+		goto destroy;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto destroy;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.cgroup.cgroup_fd = cgrp_fd;
-+	linfo.cgroup.order = BPF_CGROUP_ITER_SELF_ONLY;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+	link = bpf_program__attach_iter(prog, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
-+		goto destroy;
-+
-+	if (negtive)
-+		goto negtive;
-+
-+	/* Case 1): Enable all possible CPUs */
-+	CPU_ZERO(&set);
-+	for (i = 0; i < nr_cpus; i++)
-+		CPU_SET(i, &set);
-+	err = sched_setaffinity(skel->bss->pid, sizeof(set), &set);
-+	if (!ASSERT_OK(err, "setaffinity_all_cpus"))
-+		goto free_link;
-+	err = read_percpu_data(link, nr_cpus, 1);
-+	if (!ASSERT_OK(err, "read_percpu_data"))
-+		goto free_link;
-+	if (!ASSERT_OK(skel->bss->err, "null_rq"))
-+		goto free_link;
-+
-+	/* Case 2): CPU0 only */
-+	CPU_ZERO(&set);
-+	CPU_SET(0, &set);
-+	err = sched_setaffinity(skel->bss->pid, sizeof(set), &set);
-+	if (!ASSERT_OK(err, "setaffinity_cpu0"))
-+		goto free_link;
-+	err = read_percpu_data(link, 1, 1);
-+	if (!ASSERT_OK(err, "read_percpu_data"))
-+		goto free_link;
-+	if (!ASSERT_OK(skel->bss->err, "null_rq_psi"))
-+		goto free_link;
-+
-+	/* Case 3): Partial CPUs */
-+	CPU_ZERO(&set);
-+	for (i = 0; i < nr_cpus; i++) {
-+		if (i < 4 && i & 0x1)
-+			continue;
-+		if (i > 8 && i & 0x2)
-+			continue;
-+		CPU_SET(i, &set);
-+		chosen++;
-+	}
-+	err = sched_setaffinity(skel->bss->pid, sizeof(set), &set);
-+	if (!ASSERT_OK(err, "setaffinity_partial_cpus"))
-+		goto free_link;
-+	err = read_percpu_data(link, chosen, 1);
-+	if (!ASSERT_OK(err, "read_percpu_data"))
-+		goto free_link;
-+
-+negtive:
-+	ASSERT_OK(skel->bss->err, "null_rq_psi");
-+
-+free_link:
-+	bpf_link__destroy(link);
-+destroy:
-+	test_bits_iter_success__destroy(skel);
-+close_fd:
-+	close(cgrp_fd);
-+cleanup:
-+	cleanup_cgroup_environment();
-+}
-+
-+void test_bits_iter(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(positive_testcases); i++) {
-+		if (!test__start_subtest(positive_testcases[i]))
-+			continue;
-+
-+		verify_iter_success(positive_testcases[i], false);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(negative_testcases); i++) {
-+		if (!test__start_subtest(negative_testcases[i]))
-+			continue;
-+
-+		verify_iter_success(negative_testcases[i], true);
-+	}
-+
-+	RUN_TESTS(test_bits_iter_success);
-+	RUN_TESTS(test_bits_iter_failure);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bits_iter_failure.c b/tools/testing/selftests/bpf/progs/test_bits_iter_failure.c
-new file mode 100644
-index 000000000000..c51f18f4f334
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_bits_iter_failure.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include "bpf_misc.h"
-+#include "task_kfunc_common.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int bpf_iter_bits_new(struct bpf_iter_bits *it, const void *unsafe_ptr, u32 nr_bits) __ksym __weak;
-+int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
-+void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
-+
-+SEC("iter.s/cgroup")
-+__failure __msg("Unreleased reference id=3 alloc_insn=10")
-+int BPF_PROG(no_destroy, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct bpf_iter_bits it;
-+	struct task_struct *p;
-+
-+	p = bpf_task_from_pid(1);
-+	if (!p)
-+		return 1;
-+
-+	bpf_iter_bits_new(&it, p->cpus_ptr, 8192);
-+
-+	bpf_iter_bits_next(&it);
-+	bpf_task_release(p);
-+	return 0;
-+}
-+
-+SEC("iter/cgroup")
-+__failure __msg("expected an initialized iter_bits as arg #1")
-+int BPF_PROG(next_uninit, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct bpf_iter_bits *it = NULL;
-+
-+	bpf_iter_bits_next(it);
-+	return 0;
-+}
-+
-+SEC("iter/cgroup")
-+__failure __msg("expected an initialized iter_bits as arg #1")
-+int BPF_PROG(destroy_uninit, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct bpf_iter_bits it = {};
-+
-+	bpf_iter_bits_destroy(&it);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bits_iter_success.c b/tools/testing/selftests/bpf/progs/test_bits_iter_success.c
-new file mode 100644
-index 000000000000..6e5f12ad17ce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_bits_iter_success.c
-@@ -0,0 +1,146 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include "vmlinux.h"
-+#include <linux/const.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include "task_kfunc_common.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+extern const struct psi_group_cpu system_group_pcpu __ksym __weak;
-+extern const struct rq runqueues __ksym __weak;
-+
-+int bpf_iter_bits_new(struct bpf_iter_bits *it, const void *unsafe_ptr, u32 nr_bits) __ksym __weak;
-+int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
-+void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
-+
-+int pid, err, total_nr_cpus;
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(cpumask_iter, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	u32 nr_running = 0, psi_nr_running = 0, nr_cpus = 0;
-+	struct psi_group_cpu *groupc;
-+	struct task_struct *p;
-+	struct rq *rq;
-+	int *cpu;
-+
-+	/* epilogue */
-+	if (!cgrp)
-+		return 0;
-+
-+	p = bpf_task_from_pid(pid);
-+	if (!p)
-+		return 1;
-+
-+	bpf_for_each(bits, cpu, p->cpus_ptr, total_nr_cpus) {
-+		rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);
-+		/* Each valid CPU must have a runqueue, even if it is offline. */
-+		if (!rq) {
-+			err++;
-+			continue;
-+		}
-+
-+		nr_running += rq->nr_running;
-+		nr_cpus++;
-+
-+		groupc = (struct psi_group_cpu *)bpf_per_cpu_ptr(&system_group_pcpu, *cpu);
-+		if (!groupc) {
-+			err++;
-+			continue;
-+		}
-+		psi_nr_running += groupc->tasks[NR_RUNNING];
-+	}
-+	BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n",
-+		       nr_running, nr_cpus, psi_nr_running);
-+	bpf_task_release(p);
-+	return 0;
-+}
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(null_pointer, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	int *cpu;
-+
-+	bpf_for_each(bits, cpu, NULL, total_nr_cpus)
-+		err++;
-+	return 0;
-+}
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(zero_bit, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct task_struct *p;
-+	int *cpu;
-+
-+	p = bpf_task_from_pid(pid);
-+	if (!p)
-+		return 1;
-+
-+	bpf_for_each(bits, cpu, p->cpus_ptr, 0)
-+		err++;
-+	bpf_task_release(p);
-+	return 0;
-+}
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(no_mem, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct task_struct *p;
-+	int *cpu;
-+
-+	p = bpf_task_from_pid(pid);
-+	if (!p)
-+		return 1;
-+
-+	/* The max size of memalloc is 4096, so it will fail to allocate (8192 * 8) */
-+	bpf_for_each(bits, cpu, p->cpus_ptr, 8192 * 8)
-+		err++;
-+	bpf_task_release(p);
-+	return 0;
-+}
-+
-+SEC("iter/cgroup")
-+int BPF_PROG(invalid_bits, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct task_struct *p;
-+	struct rq *rq;
-+	int *cpu;
-+
-+	p = bpf_task_from_pid(pid);
-+	if (!p)
-+		return 1;
-+
-+	bpf_for_each(bits, cpu, p->cpus_ptr, 8192) {
-+		rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);
-+		/* For invalid CPU IDs, the rq must be NULL. */
-+		if (!rq)
-+			err++;
-+	}
-+	if (err)
-+		err -= 8192 - total_nr_cpus;
-+	bpf_task_release(p);
-+	return 0;
-+}
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(no_next, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct bpf_iter_bits it;
-+	struct task_struct *p;
-+
-+	p = bpf_task_from_pid(1);
-+	if (!p)
-+		return 1;
-+
-+	bpf_iter_bits_new(&it, p->cpus_ptr, 8192);
-+
-+	/* It is fine without calling bpf_iter_bits_next(). */
-+
-+	bpf_iter_bits_destroy(&it);
-+	bpf_task_release(p);
-+	return 0;
-+}
+Just to double-check if memory permissions being correctly restored on
+this error path, I walked back through it and see that it ultimately
+lands on vfree(), which appears to just throw the entire mapping away,
+so I think that's safe. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.39.1
-
+Kees Cook
 
