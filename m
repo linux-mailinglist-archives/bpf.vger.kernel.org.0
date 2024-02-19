@@ -1,171 +1,193 @@
-Return-Path: <bpf+bounces-22260-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22261-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 122EC85A729
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 16:15:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988E385A77C
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 16:35:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B486C284670
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 15:15:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD1C41C22397
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 15:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213BD38389;
-	Mon, 19 Feb 2024 15:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D7239FF8;
+	Mon, 19 Feb 2024 15:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZmsOnAFN"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OWVBcK7j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E39D38384;
-	Mon, 19 Feb 2024 15:15:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E321383A6;
+	Mon, 19 Feb 2024 15:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708355725; cv=none; b=Avk2ZMX+Ahxj49vTtx+QxmOiWIdsB4uBJlug2mKzDfE8ad4oAqUHA6uTir1Z3zSmYjLiSDgz4Za9LQ2obKneMIAyZf0GIO0xg/QE5x5j0vvtAJGX39EBJuxdiHIAXvyqmFuHFlDzOZS1+Uwoh0t1rq0Td7QFWLc/J/bmRvMg/Do=
+	t=1708356903; cv=none; b=bPaqxiJFt80oRb1zKOxz/+7xqzWun5x6Do+NOhxUk35NB35brqMXdt8A1sAWs/MqAnVwfMgCeusUBDAr7fSqCBfWEpw5LDPxUxmxasepX3EzgIJ+nJhG3Vnlnh1eiiwYmCR4RFz/wKJtxljVOaxGOQza4LT0R4e/WPfW2ZndoGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708355725; c=relaxed/simple;
-	bh=aJvikAeIgXMvlPz4lvrIgTsZaCV2Z527m3bSofD38vE=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=kTccW26TkvConYW+wSZAj2bMmquzJjuRBH78fSXHnyFDYBtuTZfUCBnRHGU8vGprE7IQvUz9YN5g6qw4wU0U6fvgtJC+LNPNNyMUJrN8m+0Lr2Lp+5Ws5Ep893CHIEcUEAwEVLK2JCX4J6pBcwNFSkLj6TZwVWvunHlxqReDy/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZmsOnAFN; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41265e39b8bso7574835e9.2;
-        Mon, 19 Feb 2024 07:15:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708355722; x=1708960522; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BUQoKtz44vOOVJo62FPP78n4Nrne/6aGsoTt/S82hxo=;
-        b=ZmsOnAFNA+cxlZwxoSdCAFtFsslm8HpQQE6kZVmbCo5HGVDt4diJbInBNwW65DqHi1
-         oiYI9SNvMC99yVoIp0VJ/AaB++Z9Blr9jDi6zE+OGvkB20YVvjB1GBbKapmQzivGhLqa
-         PnD3pxE8nLcwQJQBZIuUMGlsAU64v7ElkiZnTTmzCMHGDhuiBpNNTX6pYnzcgL+cW5DI
-         W/KEpZm42lQiWUFKhGar3etw7LhN1jjJbfFCI0hKmeFb9Usq/5o8Zj4jleIDN6MBAJj6
-         ZvhwEZeY7M1OZELUH5Bl+3WXa++tStZX+yvcXqPb50/F+Agm4p5yf03W9Uk7QiPAUNux
-         oPDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708355722; x=1708960522;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BUQoKtz44vOOVJo62FPP78n4Nrne/6aGsoTt/S82hxo=;
-        b=J5gYjzPU0GYCpVYmuHrIZr8/9gB77aGHRjnC27Y46zMEwAIJDEAKg5ZJ9Uy0JNqd4s
-         6/ZaQjG0shd1DhMg7JNwGBb5NZ4iHcWjakwPrIqIpxYQZayl2rCPIAtgIsiuib1H4sju
-         +XrGIdF3EVtCQtB9ihxMQkk9tnjc+3zMAJpKtUx58skFpcsZHhnd7fa4gak87mV2OhJU
-         M0mWm6B8f5G8MdJJBOpXexJB009A8ODKBNZ0eZZ79gGa4XpX33t1GNdzdW+M+J+uBnZq
-         duKIDjFaZnwE2zDeCWgS3GBcdWVGf5PTq4zXnFqd0293Mzsj3OE8ZbDGaY8/+fpiP9Yj
-         0Row==
-X-Forwarded-Encrypted: i=1; AJvYcCVSYqjX8RFE049Y9gTFeXJNG3G/ywU2FKP4e3Vi9CbaQ19QcEuiXDCgLwQgqVjG6DNJGObj73I8R1Bf1BctXvnkDIKJ2AdrTeauaZNLUzAJokgZ/wIIiSpdNOAyR7jNuQHn
-X-Gm-Message-State: AOJu0Yxxu887jHPnipkCpouttWhoKwuNF5bU7WTGbkfPkRlodA2g6ANQ
-	zbVZU2uOq85SgvnAw5YKOQxjtGvX/5DgASbTv2A9E1JiX+d1S9f0
-X-Google-Smtp-Source: AGHT+IFNc2bddpDmHF5WMNwyiQh2ePqca0WdGeTGxcJa8okEtUtxcrk9VhcgJd0YK5ODCJ7PA6yzxQ==
-X-Received: by 2002:a05:600c:1f8d:b0:410:c5a9:a24a with SMTP id je13-20020a05600c1f8d00b00410c5a9a24amr9785269wmb.20.1708355722344;
-        Mon, 19 Feb 2024 07:15:22 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id l5-20020a05600c4f0500b0041253692606sm9913320wmq.17.2024.02.19.07.15.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Feb 2024 07:15:21 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
- bpf@vger.kernel.org, kpsingh@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 1/2] arm64: patching: implement text_poke API
-In-Reply-To: <79088869-a5ba-4335-b3ab-8a2a26d8be74@huaweicloud.com>
-References: <20240125133159.85086-1-puranjay12@gmail.com>
- <20240125133159.85086-2-puranjay12@gmail.com>
- <79088869-a5ba-4335-b3ab-8a2a26d8be74@huaweicloud.com>
-Date: Mon, 19 Feb 2024 15:15:20 +0000
-Message-ID: <mb61p34topjsn.fsf@gmail.com>
+	s=arc-20240116; t=1708356903; c=relaxed/simple;
+	bh=wx8UZpkWB55VrmVZn+PIeRREueg/WVQO+NB1kQsXNLg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qznhUnVMIQIzD6dNxp+aPLxdB9YnUdrid9x7ebGNaNUwlMI4DpX33wO8XvOyxarqKdhPSpvCzU6PzLmNLeqk0/v+DBn19OmDmVOp+cf/sk85IJibIz3q7nEk3IvPTOaJORn1o2HEVAGEVuzdTNodXmv++y4//wnGEFwDN+Km94Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OWVBcK7j; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41JFKlbC006461;
+	Mon, 19 Feb 2024 15:33:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=T0e8ZFc3HV5eBAy00h0ivxaRla4eT9eTAKF3wMIZvmY=;
+ b=OWVBcK7j66OefOnldfIzP7QCMhMkvfXX49U1qwWLHciyoAtt5yG3w15/ro32CjhNzuv/
+ 561kb8L6+7SvjndVy3Zik1AfLwnLeK435nzfAU8pLAYOuxF43kkaXdzv6fhb7ZCcKO+p
+ nG+qYTQ7fJKL/vcBNDFEevXTP/7lyRp71FcnBD8Sy2F0UDN5WZz+J/ocf7QYcfud6UFv
+ ah5LG7QyuhDw9/52rtceHNlCyZBrsSQusd21pzOEVjA5B7RCSGUJexCj2m+ikRd0+U2E
+ kJmLaQRWUywfuCw3ucDmtcyeIV2BP6wVIwJWuKyzatYNNuefQfe+B8x9tCy9LOi8qr4L Hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wbdgwnbjd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 15:33:49 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41JFLb8F008437;
+	Mon, 19 Feb 2024 15:33:47 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wbdgwnb6e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 15:33:47 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41JEjmF0017278;
+	Mon, 19 Feb 2024 15:33:40 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb8mm1vb0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 15:33:40 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41JFXYuB11534896
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Feb 2024 15:33:36 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 929232004B;
+	Mon, 19 Feb 2024 15:33:34 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E93220049;
+	Mon, 19 Feb 2024 15:33:33 +0000 (GMT)
+Received: from [9.155.200.166] (unknown [9.155.200.166])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 19 Feb 2024 15:33:33 +0000 (GMT)
+Message-ID: <ddd5157cc9e61c218edff5cae572119d67b2717d.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Take return from set_memory_rox()
+ into account with bpf_jit_binary_lock_ro()
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+ <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song
+ <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Russell King
+ <linux@armlinux.org.uk>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Zi Shen Lim
+ <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will
+ Deacon <will@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Hengqi Chen
+ <hengqi.chen@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David
+ S. Miller" <davem@davemloft.net>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Wang YanQing <udknight@gmail.com>, David Ahern <dsahern@kernel.org>,
+        Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav
+ Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
+Date: Mon, 19 Feb 2024 16:33:33 +0100
+In-Reply-To: <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
+References: 
+	<135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
+	 <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oAChKg23BdNBTZrcSP06tgBD6BxLsz0g
+X-Proofpoint-ORIG-GUID: pcDzFPwvseJ0VbrYr5hrpvU0P_mie-dV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_11,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ mlxlogscore=767 lowpriorityscore=0 adultscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402190116
 
-Xu Kuohai <xukuohai@huaweicloud.com> writes:
+On Sun, 2024-02-18 at 11:55 +0100, Christophe Leroy wrote:
+> set_memory_rox() can fail, leaving memory unprotected.
+>=20
+> Check return and bail out when bpf_jit_binary_lock_ro() returns
+> and error.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> Previous patch introduces a dependency on this patch because it
+> modifies bpf_prog_lock_ro(), but they are independant.
+> It is possible to apply this patch as standalone by handling trivial
+> conflict with unmodified bpf_prog_lock_ro().
+> ---
+> =C2=A0arch/arm/net/bpf_jit_32.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ | 25 ++++++++++++-------------
+> =C2=A0arch/arm64/net/bpf_jit_comp.c=C2=A0=C2=A0=C2=A0 | 21 ++++++++++++++=
++------
+> =C2=A0arch/loongarch/net/bpf_jit.c=C2=A0=C2=A0=C2=A0=C2=A0 | 21 +++++++++=
+++++++------
+> =C2=A0arch/mips/net/bpf_jit_comp.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 ++-
+> =C2=A0arch/parisc/net/bpf_jit_core.c=C2=A0=C2=A0 |=C2=A0 8 +++++++-
+> =C2=A0arch/s390/net/bpf_jit_comp.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 6 ++++=
++-
+> =C2=A0arch/sparc/net/bpf_jit_comp_64.c |=C2=A0 6 +++++-
+> =C2=A0arch/x86/net/bpf_jit_comp32.c=C2=A0=C2=A0=C2=A0 |=C2=A0 3 +--
+> =C2=A0include/linux/filter.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 4 ++--
+> =C2=A09 files changed, 64 insertions(+), 33 deletions(-)
 
-> On 1/25/2024 9:31 PM, Puranjay Mohan wrote:
->> The text_poke API is used to implement functions like memcpy() and
->> memset() for instruction memory (RO+X). The implementation is similar to
->> the x86 version.
->> 
->> This will be used by the BPF JIT to write and modify BPF programs. There
->> could be more users of this in the future.
->> 
->> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->> ---
->>   arch/arm64/include/asm/patching.h |  2 +
->>   arch/arm64/kernel/patching.c      | 80 +++++++++++++++++++++++++++++++
->>   2 files changed, 82 insertions(+)
->> 
->> diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/patching.h
->> index 68908b82b168..587bdb91ab7a 100644
->> --- a/arch/arm64/include/asm/patching.h
->> +++ b/arch/arm64/include/asm/patching.h
->> @@ -8,6 +8,8 @@ int aarch64_insn_read(void *addr, u32 *insnp);
->>   int aarch64_insn_write(void *addr, u32 insn);
->>   
->>   int aarch64_insn_write_literal_u64(void *addr, u64 val);
->> +void *aarch64_insn_set(void *dst, u32 insn, size_t len);
->> +void *aarch64_insn_copy(void *dst, void *src, size_t len);
->>   
->>   int aarch64_insn_patch_text_nosync(void *addr, u32 insn);
->>   int aarch64_insn_patch_text(void *addrs[], u32 insns[], int cnt);
->> diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
->> index b4835f6d594b..5c2d34d890cf 100644
->> --- a/arch/arm64/kernel/patching.c
->> +++ b/arch/arm64/kernel/patching.c
->> @@ -105,6 +105,86 @@ noinstr int aarch64_insn_write_literal_u64(void *addr, u64 val)
->>   	return ret;
->>   }
->>   
->> +typedef void text_poke_f(void *dst, void *src, size_t patched, size_t len);
->> +
->
-> How about removing the argument 'patched' and passing 'src + patched' as the
-> second argument?
->
-
-The memcpy() function needs 'src + patched' but the memset() needs only the 'src' and
-will ignore the 'patched'. To make these implementations generic, I pass
-both src and patched separately and allow the implementation of
-text_poke_f() to use them.
-
-If you think there is a better way to implement this then I would love
-to use that.
-
->> +static void *__text_poke(text_poke_f func, void *addr, void *src, size_t len)
->> +{
->> +	unsigned long flags;
->> +	size_t patched = 0;
->> +	size_t size;
->> +	void *waddr;
->> +	void *ptr;
->> +	int ret;
->> +
->> +	raw_spin_lock_irqsave(&patch_lock, flags);
->> +
->> +	while (patched < len) {
->> +		ptr = addr + patched;
->> +		size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
->> +			     len - patched);
->> +
->> +		waddr = patch_map(ptr, FIX_TEXT_POKE0);
->> +		func(waddr, src, patched, size);
->> +		patch_unmap(FIX_TEXT_POKE0);
->> +
->> +		if (ret < 0) {
->
-> Where is 'ret' assigned?
->
-
-Will remove the error check in next version as func() is of type void
-and this error check was left from the previous version.
-
-Thanks,
-Puranjay
+Reviewed-by: Ilya Leoshkevich <iii@linux.ibm.com>  # s390x
 
