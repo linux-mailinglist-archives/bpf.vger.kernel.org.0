@@ -1,241 +1,127 @@
-Return-Path: <bpf+bounces-22238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E109859F4C
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 10:09:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2C81859F56
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 10:11:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 324901C21021
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 09:09:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8213FB20BB9
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 09:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A852261B;
-	Mon, 19 Feb 2024 09:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F86622619;
+	Mon, 19 Feb 2024 09:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DZBiokTQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cEu3F6wK"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Lm1Pcsea"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C7222309;
-	Mon, 19 Feb 2024 09:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000A422098
+	for <bpf@vger.kernel.org>; Mon, 19 Feb 2024 09:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708333737; cv=none; b=gF69JPBpbvVEeI8lwciac4cNBXDAxmFGlD3Yl/ccQfhYYKlVq5dPsNK3raWEuYtlVJi211l0iO3ZUtlpUuoL9hqTJBrvlFQsWpHw9/k9UQzU+Iemvi3tmTSoXsVlx+AaOwWfpdoB+hjqRaZrRTrOpxue6xY5qCoeKXqFMKiwxz4=
+	t=1708333896; cv=none; b=TiTbZAt+QDyPo1+N8s9uJ+FFEWH+xrh4+P4lAq6dXpLpjIVEx8/1ACqOAUJyXhp/2Ve00/1FDz02v60pyB+l8X9Qtsvw1O90ZINDJrsOkyHFUNAyMLrggMJcjXKePuv8Ut8S188TrFiAqFFqn7mYjTQjezbGtCNextG9NSFqUSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708333737; c=relaxed/simple;
-	bh=+ZMPIvIwkppldENup3GEYut/raXsv5r8fa0cHqLSbv0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k1CHWdp4/kG6C5k4KKQtAgWAYc9B/BEVd/VYEv/HgabxydiXp1M1TJ4xv7VgJCTdrUalaTNgKq0nqOJVjdKN4VS7xL2c3pAwJD1eRFerAzkdtv5b4VlMkwQElfWy3wD61K6hjNxGk0fZMThKHDvQjsgQcWF4eMMwcuW8SRwNWm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DZBiokTQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cEu3F6wK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Florian Kauer <florian.kauer@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708333733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CyuTyEUacN3pepSBJWL72y/0RunhnYpq37IXOd+sUdI=;
-	b=DZBiokTQDlOdztrlEBO0BdhvIfliISfFM5K/4igbF+EX0M5Mp/S53BDNd5VvTXiEMasiC+
-	1pefmKJK+6CZMS6Y0jjI5fLAfoPYLIdlKbqc239RxTpshpEr3JiGjXvtxKnO1gdNNuiFeN
-	/4rHIuIH/vToEnRmlN1KCZI94VpP8qeqK5W3rUcSGMFzlPiVDcl8XGqY6UyLuX8Rq/Vd6Y
-	NOSzYyxXxP2QooXTb1qGagaeOP6WCtrKISM/skhN1DwZudviNR5dtMOavYKqUZCbHLWGNf
-	4qUaTzsJOhkEJqTTtlCweMo+zOQAJRxQ/mR6D4FaFyyY3FobjVLEQdIRRcp1dg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708333733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CyuTyEUacN3pepSBJWL72y/0RunhnYpq37IXOd+sUdI=;
-	b=cEu3F6wKVZE3xIS+G90z7VEP0pbOGI6Cah5j92ZjIX8P7r+WNCPCb+EsBK0mtFje58an/p
-	G0lCqcsKHNsJqlDA==
-To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jithu Joseph <jithu.joseph@intel.com>,
-	Andre Guedes <andre.guedes@intel.com>,
-	Vedang Patel <vedang.patel@intel.com>
-Cc: Florian Kauer <florian.kauer@linutronix.de>,
-	kurt@linutronix.de,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net 1/1] igc: avoid returning frame twice in XDP_REDIRECT
-Date: Mon, 19 Feb 2024 10:08:43 +0100
-Message-Id: <20240219090843.9307-1-florian.kauer@linutronix.de>
+	s=arc-20240116; t=1708333896; c=relaxed/simple;
+	bh=1WdiEP+0fA+v16Oei/yLsxaxyP4HsTJoMMhhaj9M2Ns=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I0hX6LD52RTYp6LIjdmBQM5bWJrIj17SNlvGWbI21CnSe4qBTL4JLdFhqCCGM31tzzkiron+2nN047U7PZpQvkyMmHxGIs+LVk0boJpdLceUkf5cu068ZtHHy4etcAB0+StnHwCuf1bcywG8uHVWsfuAJP/aH/f06hTZrNmlcN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Lm1Pcsea; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-68f41af71ebso25366316d6.1
+        for <bpf@vger.kernel.org>; Mon, 19 Feb 2024 01:11:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1708333894; x=1708938694; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UrK/mzYV98JZRDND2ZbtiaPxIsN4h8AdKvp2Uw1jyuk=;
+        b=Lm1Pcsea0L8zDOE27HKuBW0nGEuDtmaIKNRPg8jVbWTm/iTi/1SlniRqs6eHQEw7Hc
+         99DXgjfmApu2GLHGahueR4BFXHPHiSYIOJMnol466AHQMfsatMmvYXDOuy0KlUbvJpZb
+         Bm7TsPtU8kIq+iZapaUoepxKsBzfO0fRVTIwA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708333894; x=1708938694;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UrK/mzYV98JZRDND2ZbtiaPxIsN4h8AdKvp2Uw1jyuk=;
+        b=Vdc7/BFRHAC91ALV8mjuh2Bk2pX4kSXgBnp9kO2TrU2+xKQyRRaui1L13yxE0LsaRP
+         BYPGIf24xGNDt/2pJV0eyEwzTjpexLqqT4KPP5dMdJ/heEcGtSIVTc9lGUE6+6rj4t4d
+         JhVA+A5mPnknVFVYpW3AX7P7oa4IhMdiUgfkW51tbccUduOHhI9bGloCn/ltmR+tvYB4
+         aHUSZ9/8540YT2X7nu9hFVyQlxkSnPGu+vssDA5IPZV3l9d6E7wBHal8Vr5orB7+Jo0S
+         eIREdMiFMA7BJgtbUV6EvTHRvJwo58M0tY7MtAcxytlwRcmipooxWqwgxr1ifwqjycoV
+         MqMg==
+X-Gm-Message-State: AOJu0YxgyVE/HovcKn1/xhuMSqG/JEjL/LIr+VKdCP7sHvvkbaw+5JHx
+	I/bPEzUQhjmqqDwlu8nfauurBGonzFv7u2d3KOKLzz94z3yUaFC42la/wx22nzg=
+X-Google-Smtp-Source: AGHT+IHIefgen36OLi8bhje0qZ3N6hdCoiSBC/26WeqjC4/nJDcC3Iix/lUgdB/biSLC1JUfAS0+dQ==
+X-Received: by 2002:a0c:c990:0:b0:68f:5c6a:172e with SMTP id b16-20020a0cc990000000b0068f5c6a172emr4666636qvk.48.1708333893858;
+        Mon, 19 Feb 2024 01:11:33 -0800 (PST)
+Received: from [10.5.0.2] ([217.114.38.27])
+        by smtp.gmail.com with ESMTPSA id oo6-20020a056214450600b0068c440bc7d0sm2918349qvb.105.2024.02.19.01.11.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 01:11:32 -0800 (PST)
+Message-ID: <9aa4b307-145e-4188-8027-df8360a8cd32@joelfernandes.org>
+Date: Mon, 19 Feb 2024 04:11:27 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LSF/MM/BPF TOPIC] Discuss more features + use cases for
+ sched_ext
+Content-Language: en-US
+To: Muhammad Usama Anjum <musamaanjum@gmail.com>,
+ David Vernet <void@manifault.com>, lsf-pc@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org, htejun@kernel.org, schatzberg.dan@gmail.com,
+ andrea.righi@canonical.com, davemarchevsky@meta.com, changwoo@igalia.com,
+ julia.lawall@inria.fr, himadrispandya@gmail.com
+References: <20240126215908.GA28575@maniforge>
+ <41193af3bd250b9e1e4a52e6699fdbe59027270d.camel@gmail.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <41193af3bd250b9e1e4a52e6699fdbe59027270d.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When a frame can not be transmitted in XDP_REDIRECT
-(e.g. due to a full queue), it is necessary to free
-it by calling xdp_return_frame_rx_napi.
 
-However, this is the reponsibility of the caller of
-the ndo_xdp_xmit (see for example bq_xmit_all in
-kernel/bpf/devmap.c) and thus calling it inside
-igc_xdp_xmit (which is the ndo_xdp_xmit of the igc
-driver) as well will lead to memory corruption.
 
-In fact, bq_xmit_all expects that it can return all
-frames after the last successfully transmitted one.
-Therefore, break for the first not transmitted frame,
-but do not call xdp_return_frame_rx_napi in igc_xdp_xmit.
-This is equally implemented in other Intel drivers
-such as the igb.
+On 2/19/2024 3:48 AM, Muhammad Usama Anjum wrote:
+> On Fri, 2024-01-26 at 15:59 -0600, David Vernet wrote:
+>> Hello,
+>>
+>> A few more use cases have emerged for sched_ext that are not yet
+>> supported that I wanted to discuss in the BPF track. Specifically:
+>>
+>> - EAS: Energy Aware Scheduling
+>>
+>> While firmware ultimately controls the frequency of a core, the kernel
+>> does provide frequency scaling knobs such as EPP. It could be useful for
+>> BPF schedulers to have control over these knobs to e.g. hint that
+>> certain cores should keep a lower frequency and operate as E cores.
+>> This could have applications in battery-aware devices, or in other
+>> contexts where applications have e.g. latency-sensitive
+>> compute-intensive workloads.
+> The current scheduler must already be using the frequency scaling
+> knobs. Can sched_ext use those knobs directly with hint from userspace
+> easily?
 
-There are two alternatives to this that were rejected:
-1. Return num_frames as all the frames would have been
-   transmitted and release them inside igc_xdp_xmit.
-   While it might work technically, it is not what
-   the return value is meant to repesent (i.e. the
-   number of SUCCESSFULLY transmitted packets).
-2. Rework kernel/bpf/devmap.c and all drivers to
-   support non-consecutively dropped packets.
-   Besides being complex, it likely has a negative
-   performance impact without a significant gain
-   since it is anyway unlikely that the next frame
-   can be transmitted if the previous one was dropped.
+With regards to the current way of doing things, it depends. On Intel platforms,
+if HWP is enabled (Hardware-Controlled Performance States) which it is on almost
+all Intel platforms I've seen, then the selection of the individual Performance
+states (P-states) is done by the hardware, not the OS. My understanding is the
+benefit of HWP is responsiveness of the state selection. So the only thing OS
+can control then is either Turbo boost, or EPP.  Unfortunately, this hinders
+using an energy model and doing energy calculations (ex. If I place shit on this
+core instead of that, then the total system power is such and such because
+P-state on this core is this) the way EAS on ARM does. But maybe we can do
+something simple with what is available and reap some benefits.
 
-The memory corruption can be reproduced with
-the following script which leads to a kernel panic
-after a few seconds.  It basically generates more
-traffic than a i225 NIC can transmit and pushes it
-via XDP_REDIRECT from a virtual interface to the
-physical interface where frames get dropped.
+On ARM platforms, there is more finer grained OS control of different operating
+performance points (what they call OPP).
 
-   #!/bin/bash
-   INTERFACE=enp4s0
-   INTERFACE_IDX=`cat /sys/class/net/$INTERFACE/ifindex`
-
-   sudo ip link add dev veth1 type veth peer name veth2
-   sudo ip link set up $INTERFACE
-   sudo ip link set up veth1
-   sudo ip link set up veth2
-
-   cat << EOF > redirect.bpf.c
-
-   SEC("prog")
-   int redirect(struct xdp_md *ctx)
-   {
-       return bpf_redirect($INTERFACE_IDX, 0);
-   }
-
-   char _license[] SEC("license") = "GPL";
-   EOF
-   clang -O2 -g -Wall -target bpf -c redirect.bpf.c -o redirect.bpf.o
-   sudo ip link set veth2 xdp obj redirect.bpf.o
-
-   cat << EOF > pass.bpf.c
-
-   SEC("prog")
-   int pass(struct xdp_md *ctx)
-   {
-       return XDP_PASS;
-   }
-
-   char _license[] SEC("license") = "GPL";
-   EOF
-   clang -O2 -g -Wall -target bpf -c pass.bpf.c -o pass.bpf.o
-   sudo ip link set $INTERFACE xdp obj pass.bpf.o
-
-   cat << EOF > trafgen.cfg
-
-   {
-     /* Ethernet Header */
-     0xe8, 0x6a, 0x64, 0x41, 0xbf, 0x46,
-     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-     const16(ETH_P_IP),
-
-     /* IPv4 Header */
-     0b01000101, 0,   # IPv4 version, IHL, TOS
-     const16(1028),   # IPv4 total length (UDP length + 20 bytes (IP header))
-     const16(2),      # IPv4 ident
-     0b01000000, 0,   # IPv4 flags, fragmentation off
-     64,              # IPv4 TTL
-     17,              # Protocol UDP
-     csumip(14, 33),  # IPv4 checksum
-
-     /* UDP Header */
-     10,  0, 1, 1,    # IP Src - adapt as needed
-     10,  0, 1, 2,    # IP Dest - adapt as needed
-     const16(6666),   # UDP Src Port
-     const16(6666),   # UDP Dest Port
-     const16(1008),   # UDP length (UDP header 8 bytes + payload length)
-     csumudp(14, 34), # UDP checksum
-
-     /* Payload */
-     fill('W', 1000),
-   }
-   EOF
-
-   sudo trafgen -i trafgen.cfg -b3000MB -o veth1 --cpp
-
-Fixes: 4ff320361092 ("igc: Add support for XDP_REDIRECT action")
-Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
----
- drivers/net/ethernet/intel/igc/igc_main.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index ba8d3fe186ae..81c21a893ede 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -6487,7 +6487,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 	int cpu = smp_processor_id();
- 	struct netdev_queue *nq;
- 	struct igc_ring *ring;
--	int i, drops;
-+	int i, nxmit;
- 
- 	if (unlikely(!netif_carrier_ok(dev)))
- 		return -ENETDOWN;
-@@ -6503,16 +6503,15 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 	/* Avoid transmit queue timeout since we share it with the slow path */
- 	txq_trans_cond_update(nq);
- 
--	drops = 0;
-+	nxmit = 0;
- 	for (i = 0; i < num_frames; i++) {
- 		int err;
- 		struct xdp_frame *xdpf = frames[i];
- 
- 		err = igc_xdp_init_tx_descriptor(ring, xdpf);
--		if (err) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (err)
-+			break;
-+		nxmit++;
- 	}
- 
- 	if (flags & XDP_XMIT_FLUSH)
-@@ -6520,7 +6519,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 
- 	__netif_tx_unlock(nq);
- 
--	return num_frames - drops;
-+	return nxmit;
- }
- 
- static void igc_trigger_rxtxq_interrupt(struct igc_adapter *adapter,
--- 
-2.39.2
-
+Thanks.
 
