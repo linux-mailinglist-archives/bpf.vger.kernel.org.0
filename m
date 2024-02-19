@@ -1,126 +1,142 @@
-Return-Path: <bpf+bounces-22258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE0F85A559
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 15:04:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EF2585A6F3
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 16:08:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA6F1F248C2
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 14:04:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79830B23AA2
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 15:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6390537162;
-	Mon, 19 Feb 2024 14:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A73940BE7;
+	Mon, 19 Feb 2024 15:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jedCcVnU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUODdbyZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7380374CB;
-	Mon, 19 Feb 2024 14:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36CC3F9FB;
+	Mon, 19 Feb 2024 15:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708351483; cv=none; b=d3Zcq2zeX/op1fV0TYyKBhgP1We4ldPGk6ax4eDOOaFBKzey/QetTzhJGuuBN7fJk56LelK3oq/AoXoAe2S5Cno+K87db8EDD97B5lLUKQPraBZNY0+9lUbtFIUBeE8GCpvb+TDUP7aM3/prMBfJOhDd7Pza33ackTZJM9Ejp2s=
+	t=1708355203; cv=none; b=dMe8rxzB5nQaTY6CD5JqMW/C0RnqTHydzWcjpXMnkyGZ0QT91GAoE+vBqz+TIoJvhwROm0YBsQ1R/E3D/pRP4+MdeOCNY7OQEIfvukKqmpwMkIZVkW3Wmf+yOraPDPuaruM1LFjsCNol94nkjQWTW5tCDdKa3unJuYsJY9l7xMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708351483; c=relaxed/simple;
-	bh=MIUwjUjiAAu1+q/+I/qDOmSpFjx0udf6D1AQ0UhEV0k=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Moko6YmUs9VBaJe3gswYATlz21uLWzHzJd6tGzdnuR2BppuRkoK3FoAFu/0C04n3/yikxEIfBBG9xXmCoTq8wRyPz5mjx/pdA0ZRnHjlbpK3PbGCJ2QRIUGTHk1qQCNXu1komn4YBTWZrIFAvupLeXd83BFax2Yvz9i+KLLeLLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jedCcVnU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69997C433F1;
-	Mon, 19 Feb 2024 14:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708351482;
-	bh=MIUwjUjiAAu1+q/+I/qDOmSpFjx0udf6D1AQ0UhEV0k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jedCcVnUuRu7WsgBTsb7EkozXwzEc3q772jGzsuk/FFQmz1tgYk50Mc2U2wZx/91y
-	 WbyV4CYns7fJxNb3T8sbT12ZpsxAvz2UMK8HNJHAexd4YIf8Hs2kCUnCPh9LjJA5i9
-	 +hn23n7mOO5tHgEfkBrZgFCR2JEFmex5DzGDmSxO+YbV1llrm+6ORSDZrT3eMEfBRX
-	 agBkU5jq7zX0iCu9JbIUWEkodqBPYXRWjjT9cerlSRJrTQNy15NwcypdqVWi+pqJ0s
-	 garRRcf/WFr8bICdloI03C9IvteoR/FOsb4rhi1IkfFqsHafVmJeun6ny9xToBXma0
-	 5+xmyVcvS+AFA==
-Date: Mon, 19 Feb 2024 23:04:35 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 23/36] function_graph: Add a new exit handler with
- parent_ip and ftrace_regs
-Message-Id: <20240219230435.3158a36f60c20dcf2112cf0f@kernel.org>
-In-Reply-To: <20240218115328.c95bfe7001b7260071e6b674@kernel.org>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723230476.502590.16817817024423790038.stgit@devnote2>
-	<20240215110404.4e8c5a94@gandalf.local.home>
-	<20240216175108.79a256a20c89ed1d672c7e14@kernel.org>
-	<20240218115328.c95bfe7001b7260071e6b674@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708355203; c=relaxed/simple;
+	bh=nJGhWNzAdmlA3lSqk7zXCDQYN188FpjuKH/iLDfwq2c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ad1jEjYAc9WuiVrQvJ4qnHh9A0BtkEI8bZ+py8eHuP5mzKY8DNu3WXLG3+RLeRfTEQyBKVg2G81JMFxytYNQNI3MRtwL8LotOx633l9uBzItpgr6W4HJKuSUG4l6CXLp2tp9+7/Uyr/UX/tTRVAZzMUSIHUZAbrbozJDh/gmiJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUODdbyZ; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d61e39912so167090f8f.3;
+        Mon, 19 Feb 2024 07:06:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708355200; x=1708960000; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+yOTnLimYUvPNkTFJn38nSneD1s53IeoM0jyre9BMIA=;
+        b=LUODdbyZc0pEfVSAgx2VGvR6lMov2ggBmoSF/ZjJzEbE7w9PvfkONZmmFTgtMuPWGG
+         7Z1tTJSL/YOBww6XBbHeAFv3eRcbN1g9us2cc6aL/RmPw3rz25xB6tzwUSiMGTb5ZpER
+         GXfrXVfCdOhKCmZO19VTQOmotMVjHdyema14bct92dqfz9tA+G6Br2YaHCYMuOHrII+9
+         kb6lXzZ2WOg0viqBwDzqJdmeq7GoZOHFF2o06zKziifQ0pURjF8o51PpM9m+rbJqPAG3
+         VCj6frLih4Q9SoYWpRARBRfFOVn/+U+BiHqz91rETT89QVUFJC9SVRBmlpEOCjWeKfQA
+         hRGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708355200; x=1708960000;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+yOTnLimYUvPNkTFJn38nSneD1s53IeoM0jyre9BMIA=;
+        b=nT2AO3m2wby4cpEl+tqNEswQD7tvI8gTTXssxm9vUxwHdH2k4Y/xorVsgMd8PsQ0iU
+         2ZzX6EahM9AvGUtoMdZUJBWsxPBzoF2ePt/knU7gg+k39kPvGa6xvdmKTlQ7kSrhR5su
+         usDCWsBPr5ZQa1HMyAIBytGMd0t7TPc5ntpaHeqNtASbwaLOBnwOcgaPmc0ZTTi8p4yw
+         FTEh75gDAse6/8RdccjrISs0mKmUGf+lGpeCcnj1dnEc4OcD/8jyjdbCUXoFo4B+oR5t
+         MJzZH3kNc1vHHbMUGcnORajLVc1qPDOc7JgqUGQon/6rVIoeQGgvREtNdS5EdojcL6nO
+         bxfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjIc0bkSUAVxTM7kS4zv2ehKxVf64s6kEQb/e9WsEZ2a+TES/NZFW03XRElYl75QZtH8tmrpvJfAulSCc4bl27VkTpJ5VJAW6mxilKqM62PdCx1D8N9mxCQeAhND27zpoYsAi8A68C8K4Eu96dpUmxBvVEz91rS66YVYd6V1ltw6I9XCmGm7KfO++Qq6kYFKJXhPCb9A34IlxPyeJa1wne1c8+R8zSuGN3khJZs9Y7nAI8jc31dOR9ltrGcTDnzYGThg24lqg5yfnLw0fL4F26E4N/qu5pJfNvzfuirjKTAyhyfm2WSSt1Gu6NnJ2welS7j360K79JQElItPZIOSv7nhVJvBil99JN7IpF
+X-Gm-Message-State: AOJu0YxT+/4jXhCEFolXtkUYErPaO9ky+HjkLU9oiKC9Jy/p0tHw1x22
+	YgYyAvmsVQj53ik3IyFTH/qiDX2A2qE6Ac5QZ7sUakvuOW9b6Aam
+X-Google-Smtp-Source: AGHT+IGV3Dv8X5d9m0XBa0wcUYD14lxx+K6CWQDd1wmnBIzjONKraLrRCWecBGSIPRcOqs5nu0aqbw==
+X-Received: by 2002:a5d:64ea:0:b0:33d:46b6:396a with SMTP id g10-20020a5d64ea000000b0033d46b6396amr3316172wri.4.1708355199934;
+        Mon, 19 Feb 2024 07:06:39 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id i13-20020a5d55cd000000b0033b198efbedsm10518754wrw.15.2024.02.19.07.06.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Feb 2024 07:06:39 -0800 (PST)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Russell King
+ <linux@armlinux.org.uk>, Zi Shen Lim <zlim.lnx@gmail.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Tiezhu Yang
+ <yangtiezhu@loongson.cn>, Hengqi Chen <hengqi.chen@gmail.com>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Johan Almbladh
+ <johan.almbladh@anyfinetworks.com>, Paul Burton <paulburton@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
+ Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, "David
+ S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
+ Wang YanQing <udknight@gmail.com>, David Ahern <dsahern@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, netdev@vger.kernel.org, Kees Cook
+ <keescook@chromium.org>, "linux-hardening @ vger . kernel . org"
+ <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Take return from set_memory_rox()
+ into account with bpf_jit_binary_lock_ro()
+In-Reply-To: <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
+References: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
+ <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
+Date: Mon, 19 Feb 2024 15:06:36 +0000
+Message-ID: <mb61p5xykpk77.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Hi Steve,
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-On Sun, 18 Feb 2024 11:53:28 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> set_memory_rox() can fail, leaving memory unprotected.
+>
+> Check return and bail out when bpf_jit_binary_lock_ro() returns
+> and error.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> Previous patch introduces a dependency on this patch because it modifies bpf_prog_lock_ro(), but they are independant.
+> It is possible to apply this patch as standalone by handling trivial conflict with unmodified bpf_prog_lock_ro().
+> ---
+>  arch/arm/net/bpf_jit_32.c        | 25 ++++++++++++-------------
+>  arch/arm64/net/bpf_jit_comp.c    | 21 +++++++++++++++------
+>  arch/loongarch/net/bpf_jit.c     | 21 +++++++++++++++------
+>  arch/mips/net/bpf_jit_comp.c     |  3 ++-
+>  arch/parisc/net/bpf_jit_core.c   |  8 +++++++-
+>  arch/s390/net/bpf_jit_comp.c     |  6 +++++-
+>  arch/sparc/net/bpf_jit_comp_64.c |  6 +++++-
+>  arch/x86/net/bpf_jit_comp32.c    |  3 +--
+>  include/linux/filter.h           |  4 ++--
+>  9 files changed, 64 insertions(+), 33 deletions(-)
+>
 
-> On Fri, 16 Feb 2024 17:51:08 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > > > @@ -798,10 +798,6 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
-> > > >  
-> > > >  	*index += FGRAPH_RET_INDEX;
-> > > >  	*ret = ret_stack->ret;
-> > > > -	trace->func = ret_stack->func;
-> > > > -	trace->calltime = ret_stack->calltime;
-> > > > -	trace->overrun = atomic_read(&current->trace_overrun);
-> > > > -	trace->depth = current->curr_ret_depth;
-> > > 
-> > > There's a lot of information stored in the trace structure. Why not pass
-> > > that to the new retregfunc?
-> > > 
-> > > Then you don't need to separate this code out.
-> > 
-> > Sorry, I couldn't catch what you meant, Would you mean to call
-> > ftrace_pop_return_trace() before calling retregfunc()?? because some of the
-> > information are found from ret_stack, which is poped from shadow stack.
-> 
-> Ah, sorry I got what you said. I think this `trace` is not usable for the new
-> interface. Most of the information is only used for the function-graph tracer.
-> For example, trace->calltime and trace->overrun, trace->depth are used only
-> for the function-graph tracer, but not for the other tracers.
-> 
-> But yeah, this idea is considerable. It also allows us to just update
-> entryfunc() and retfunc() to pass fgraph_regs and return address.
+Reviewed-by: Puranjay Mohan <puranjay12@gmail.com>
 
-The reason why I didn't use the those for *regfunc() is not only those
-have unused information, but those does not have some params.
-
- - ftrace_graph_ent only have current `func`, but entryregfunc()
-    needs `parent_ip` (== return address)
- - ftrace_graph_ret only have current `func`, but retregfunc()
-    needs `ret` (== return address) too.
-
-If I update the ftrace_graph_ent/ret to add 'retaddr', we can just pass
-ftrace_graph_ent/ret, ftrace_regs, and fgraph_ops to *regfunc().
-Moreover, maybe we don't need *regfunc, but just update entryfunc/retfunc
-to pass ftrace_regs *, which will be NULL if it is not supported.
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks,
+Puranjay Mohan
 
