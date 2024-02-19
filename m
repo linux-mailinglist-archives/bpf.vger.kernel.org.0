@@ -1,164 +1,164 @@
-Return-Path: <bpf+bounces-22262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7059285A823
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 17:05:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524AF85AA52
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 18:49:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C442282E32
-	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 16:05:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 771A01C21618
+	for <lists+bpf@lfdr.de>; Mon, 19 Feb 2024 17:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF223BB48;
-	Mon, 19 Feb 2024 16:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740714779F;
+	Mon, 19 Feb 2024 17:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="hCcq1zsL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2573A8FB;
-	Mon, 19 Feb 2024 16:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DB3446BD;
+	Mon, 19 Feb 2024 17:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708358724; cv=none; b=MX+8E0ND/AboiToynBW2/al1k5z3GQtBi/fYCP651u/xd+7MubxpxVCQxk84r+ivtWyVGxkLeoQfT1IsDpZQopc4EAc5AnbbQcRW0BNo8L9XJadsG3RCM0lDm0NHNXE8jjiUh+H16UkkY/rXLrCbcE6xEQZVlkfOcPS3kIDXktQ=
+	t=1708364957; cv=none; b=lUHduLGDKIKwmUm7dGoVvF7EiBjZApEM5XZaEMldQOspBDc7DKYWPBIYnmxW1h9PWMrlQ21G8iNnIBiftnrMUJt4asAQYK0sk8PgNxl3Z3aunvfxHKMs3RiSBdKyGFICac3XyrvswWMgNVcvLh08hd1W8IlfUEMemTm+F5tq8E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708358724; c=relaxed/simple;
-	bh=/dckHxJU8Um9rSbczYrIkkwQ4W5d5/C4/kuOUKIhTok=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=txD7BYYttdKICxqutmsqG/Np+7T9JXzRaGhnaI5qN0LwadVKuYXnSxywGonn0xfMCI/QvUTWarLYpr5C0DBPKk8yb3LtHohLEXF36BQLs6gUQZ7s6vhbAmgBKk2wkWx3TuAda2kg3PMfOowHo/MzAOP+7D/rHcTV+IstNLJAm2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B9FC433C7;
-	Mon, 19 Feb 2024 16:05:22 +0000 (UTC)
-Date: Mon, 19 Feb 2024 11:07:05 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 22/36] function_graph: Add a new entry handler with
- parent_ip and ftrace_regs
-Message-ID: <20240219110705.0c1ffa9c@gandalf.local.home>
-In-Reply-To: <170723229401.502590.8644663781359457778.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723229401.502590.8644663781359457778.stgit@devnote2>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708364957; c=relaxed/simple;
+	bh=T+ilHvIJo7mvktPqiHHlT/wupzYq6gaObcSmlVAN4N0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XiB3rKINNdPFQvybxd83KfJbbFT1lEmU6mZoo2ZEtGWZ9spGY7/1lXJGqzI9zmUfpXK/eXyArI87INfaMpmHRvVCb9zqu2fsrQUR9fZYzNGIFdL+LqiJOCya4R/5+TDYEqT49G6lPnkNEHEBNCVEmbiN4xGh0fc8Z7bNGstVJXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=hCcq1zsL; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=KdPVSdquWfVokbMo6HkoK9vt0kJIUA8fT46lxDlLy60=; b=hCcq1zsLglJyIz4/JHN8EDbD0A
+	yPDMggzeimuwzZcupYzSYSXn1YbU+0Q8fNaajk1LTP7DkFAY3dfynDWxNAsQWHCXd6+9n5mcfzDiT
+	fDFhSNS33ZLdOCu07FGc55yt81ths3F372V1PzANHFOHBeiBjUnpdGSjiUYcTN49XvBMk0m2Pfp4i
+	L6+HbF+ewX652/MoQsAXpq8dCaBxt01sq3zYiuvjaJNAno6hccTOrVI2FlKEXU4po3oDXKEBLarA9
+	KxZGpubFkOzx3OeihnB5lOP7b/DZo9Uw19G6llHDvf0J/d7ekBiiFqvLR9POkBfTTZY/MpVy6G5I/
+	2j6zjh7w==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rc7ky-000GeN-1B; Mon, 19 Feb 2024 18:48:44 +0100
+Received: from [178.197.249.53] (helo=linux.home)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rc7kw-000XAK-Of; Mon, 19 Feb 2024 18:48:42 +0100
+Subject: Re: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+To: Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>,
+ Anton Protopopov <aspsk@isovalent.com>, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20240216235536.it.234-kees@kernel.org>
+ <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
+ <202402161902.FCFFEC322@keescook>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a74a7255-5dbd-060e-fe2f-ac3563f466fb@iogearbox.net>
+Date: Mon, 19 Feb 2024 18:48:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <202402161902.FCFFEC322@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27190/Mon Feb 19 10:24:27 2024)
 
-On Wed,  7 Feb 2024 00:11:34 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On 2/17/24 4:03 AM, Kees Cook wrote:
+> On Fri, Feb 16, 2024 at 06:27:08PM -0600, Gustavo A. R. Silva wrote:
+>> On 2/16/24 17:55, Kees Cook wrote:
+>>> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+>>> flexible array. Found with GCC 13:
+>>>
+>>> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+>>>     207 |                                        *(__be16 *)&key->data[i]);
+>>>         |                                                   ^~~~~~~~~~~~~
+>>> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+>>>     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+>>>         |                                                      ^
+>>> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+>>>      97 | #define be16_to_cpu __be16_to_cpu
+>>>         |                     ^~~~~~~~~~~~~
+>>> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+>>>     206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+>>> ^
+>>>         |                            ^~~~~~~~~~~
+>>> In file included from ../include/linux/bpf.h:7:
+>>> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+>>>      82 |         __u8    data[0];        /* Arbitrary size */
+>>>         |                 ^~~~
+>>>
+>>> And found at run-time under CONFIG_FORTIFY_SOURCE:
+>>>
+>>>     UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
+>>>     index 0 is out of range for type '__u8 [*]'
+>>>
+>>> This includes fixing the selftest which was incorrectly using a
+>>> variable length struct as a header, identified earlier[1]. Avoid this
+>>> by just explicitly including the prefixlen member instead of struct
+>>> bpf_lpm_trie_key.
+>>>
+>>> Note that it is not possible to simply remove the "data" member, as it
+>>> is referenced by userspace
+>>>
+>>> cilium:
+>>>           struct egress_gw_policy_key in_key = {
+>>>                   .lpm_key = { 32 + 24, {} },
+>>>                   .saddr   = CLIENT_IP,
+>>>                   .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+>>>           };
+>>>
+>>> systemd:
+>>> 	ipv6_map_fd = bpf_map_new(
+>>> 			BPF_MAP_TYPE_LPM_TRIE,
+>>> 			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
+>>> 			sizeof(uint64_t),
+>>> 			...
+>>>
+>>> The only risk to UAPI would be if sizeof() were used directly on the
+>>> data member, which it does not seem to be. It is only used as a static
+>>> initializer destination and to find its location via offsetof().
+>>>
+>>> Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
+>>> Reported-by: Mark Rutland <mark.rutland@arm.com>
+>>> Closes: https://paste.debian.net/hidden/ca500597/
+>>
+>> mmh... this URL expires: 2024-05-15
 > 
-> Add a new entry handler to fgraph_ops as 'entryregfunc'  which takes
-> parent_ip and ftrace_regs. Note that the 'entryfunc' and 'entryregfunc'
-> are mutual exclusive. You can set only one of them.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  Changes in v3:
->   - Update for new multiple fgraph.
-> ---
->  arch/arm64/kernel/ftrace.c               |    2 +
->  arch/loongarch/kernel/ftrace_dyn.c       |    2 +
->  arch/powerpc/kernel/trace/ftrace.c       |    2 +
->  arch/powerpc/kernel/trace/ftrace_64_pg.c |   10 ++++---
->  arch/x86/kernel/ftrace.c                 |   42 ++++++++++++++++--------------
->  include/linux/ftrace.h                   |   19 +++++++++++---
->  kernel/trace/fgraph.c                    |   30 +++++++++++++++++----
->  7 files changed, 72 insertions(+), 35 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-> index b96740829798..779b975f03f5 100644
-> --- a/arch/arm64/kernel/ftrace.c
-> +++ b/arch/arm64/kernel/ftrace.c
-> @@ -497,7 +497,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  		return;
->  
->  	if (!function_graph_enter_ops(*parent, ip, frame_pointer,
-> -				      (void *)frame_pointer, gops))
-> +				      (void *)frame_pointer, fregs, gops))
+> Yup, but that's why I included the run-time splat above too. :)
 
-I would like to replace that second frame_pointer with fregs.
+I don't quite follow, this basically undoes 3024d95a4c52 ("bpf: Partially revert
+flexible-array member replacement") again with the small change that this 'fixes'
+up the BPF selftest to not embed struct bpf_lpm_trie_key.
 
+Outside of BPF selftests though aren't we readding the same error that we fixed
+earlier for BPF programs in the wild which embed struct bpf_lpm_trie_key into their
+key structure?
 
->  		*parent = (unsigned long)&return_to_handler;
->  
->  	ftrace_test_recursion_unlock(bit);
-> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
-> index 81d18b911cc1..45d26c6e6564 100644
-> --- a/arch/loongarch/kernel/ftrace_dyn.c
-> +++ b/arch/loongarch/kernel/ftrace_dyn.c
-> @@ -250,7 +250,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  
->  	old = *parent;
->  
-> -	if (!function_graph_enter_ops(old, ip, 0, parent, gops))
-> +	if (!function_graph_enter_ops(old, ip, 0, parent, fregs, gops))
-
-That is, to replace the parent with fregs, as the parent can be retrieved
-from fregs.
-
-We should add a fregs helper (something like):
-
-unsigned long *fregs_caller_addr(fregs) {
-	return (unsigned long *)(kernel_stack_pointer(fregs->regs) + PT_R1);
-}
-
-That returns the address that points to the parent caller on the stack.
-
-This was on my todo list to do. That is, replace the passing of the parent
-of the stack with fregs as it is redundant information.
-
->  		*parent = return_hooker;
->  }
->  #else
-> diff --git a/arch/powerpc/kernel/trace/ftrace.c b/arch/powerpc/kernel/trace/ftrace.c
-> index 4ef8bf480279..eeaaa798f4f9 100644
-> --- a/arch/powerpc/kernel/trace/ftrace.c
-> +++ b/arch/powerpc/kernel/trace/ftrace.c
-> @@ -423,7 +423,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  	if (bit < 0)
->  		goto out;
->  
-> -	if (!function_graph_enter_ops(parent_ip, ip, 0, (unsigned long *)sp, gops))
-> +	if (!function_graph_enter_ops(parent_ip, ip, 0, (unsigned long *)sp, fregs, gops))
->  		parent_ip = ppc_function_entry(return_to_handler);
->  
->  	ftrace_test_recursion_unlock(bit);
-> diff --git a/arch/powerpc/kernel/trace/ftrace_64_pg.c b/arch/powerpc/kernel/trace/ftrace_64_pg.c
-> index 7b85c3b460a3..43f6cfaaf7db 100644
-> --- a/arch/powerpc/kernel/trace/ftrace_64_pg.c
-> +++ b/arch/powerpc/kernel/trace/ftrace_64_pg.c
-> @@ -795,7 +795,8 @@ int ftrace_disable_ftrace_graph_caller(void)
->   * in current thread info. Return the address we want to divert to.
->   */
->  static unsigned long
-> -__prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp)
-> +__prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp,
-> +			struct ftrace_regs *fregs)
-
-And sp shouldn't need to be passed in either, as hat should be part of the fregs.
-
-I really like to consolidate the parameters and not just keep adding to
-them. This all slows down the logic to load the parameters.
-
--- Steve
-
-
->  {
->  	unsigned long return_hooker;
->  	int bit;
+Thanks,
+Daniel
 
