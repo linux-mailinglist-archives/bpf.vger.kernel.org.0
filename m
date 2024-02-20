@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-22301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22302-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2FE85B763
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D91B085B765
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:28:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A496F1C24662
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 09:28:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09DB51C2450D
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 09:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5ACA5FDC9;
-	Tue, 20 Feb 2024 09:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B57460BA7;
+	Tue, 20 Feb 2024 09:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hVNiM5T3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SoEGGpT/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DBD5FDDB
-	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 09:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1419E5FDBF
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 09:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708421278; cv=none; b=TIHHeAWcrLluMr7FB9FxiB43ZHx8yJ0mCB/9Xp/5DJBKXzW+3tq0+lMLcoim3Q3K4YsEVINORN8wr48p6IVdX2brPdGYthnpKCfRJ7xsWc97gI/vw7gKgMvOQjMVui9movpkLdOQfuLZ8vCqiGYDfgb+XPgVad7OLqUzQhGv+t4=
+	t=1708421284; cv=none; b=Lxf2olynfD5xhtq0O3OAfkGOAzE7gvROZeRvjUzAbGzgu9CE9LNEiES+6SJiLa4D3rWGx1Vb+2wEqtXH2tbYJq2jQIBK3lonJZN8DQ8HZM4tUwLiX+b+gFVI2BBnYITzf74ZzT9CpdF3mHSZk2a9gVFJ9Ai0VdeFchdex2/P1os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708421278; c=relaxed/simple;
-	bh=OZioy8AfLsmSlw0w0r3twrLcp1c+FgadOLiPu1XclVM=;
+	s=arc-20240116; t=1708421284; c=relaxed/simple;
+	bh=xyujBvXum3UlmVDv38rdAkOo5btSybwxbuNuxnw9+8s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fxZZ33MWjGWhOBMBsPNi2sv0sSX20GXSAapgU/lYVI2K9m3UgZ80zDHpgnDcRJtBGBfqNNQwXo3lr+RAXxj7Xp3K24xatn8f5AU1zrD4oilalP9OgUd6CjlB4UA7Ide4bR0xVLC2+VbL/MaNHX3HDZfLa503FeI3fqqg+vymaH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hVNiM5T3; arc=none smtp.client-ip=209.85.208.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=ER0CtMDqjhEd1Uf+qTPDzckRwVJlI0Fj594u+Rn+875nve8pxIV+5rh9a+3ZnDBqFm6MnnRw5+bkio+CbULmUGEWxWQ8vEZckA3Z39YSllk0bCyPgD2HuHzzbt+B38W5PHqTTjz/6gNEH8cMsIO1lYaCFwdetke0kiWosc7V+iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SoEGGpT/; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-564a05ab3efso2037816a12.0
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 01:27:56 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso206626166b.0
+        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 01:28:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708421274; x=1709026074; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708421281; x=1709026081; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mXZ+DN3CcnefV4u4W5SMOCurbndJVv4wj08ijEsPqwU=;
-        b=hVNiM5T3tLpYBBtr1KxqFFMwK/ZwjrMR9qQdzLR4N30JahneU+1pE/JmpVSKADItr7
-         9bUksLderTjak8+ldH8OQfhWVct35aDklE1j2HgvHR4XsvBNA3EusxAmn/vjtQrE02Xt
-         3j/bwzQBcY5skH07yrvBRKEveE5UnEpc1zX9laQSjeVZXz+iyGKjKRUv/KJJcIAPcZQj
-         a30j3H3O3u3q8GQ/J2UNDphfZHw8bSSlWxYM+iVKEFdBdloEJjD6sk3Aa6ZLshmKG5xL
-         m26jltMOkP39eqMGiyIZF4zpnBlFXNVprxWBgDwUGteHhS2w2ue0A69uvM4/igxW+dkP
-         DHWg==
+        bh=T8XADQWdbtL6TzlHk6jI8Rohfxav5CYgO71BwjhKPiQ=;
+        b=SoEGGpT/SDbQKrP4MR3A3E9JNwSzXbeoyAObgXnzpYupTk6I9RTUnd84gwGmkOcxWR
+         CyLdt8u+cHJmV35uk70NnCigfzAKOuPUlFhgPndNSIuYEuHNXgsZnr9e0u9D3B3vedHN
+         T4bxOnWDQCOeBzi+WkOldaIzlaOP/Cy+ZnHPSmEy1WAkILVFjG3rKxUXBGHSvZfYIXyV
+         CVYQI8StCjTTLRmNAGhw53ylj2K/Z7YtjtAoPcTMGlojKrE6iWRsSLZqwIoAdNiMFkKF
+         NPpuf52YMPdLEJcIBXU790H9zwxXSDFrlYnKTwikI/JPej0x+YCl+ARLuqe7uQxtYJcq
+         0oLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708421274; x=1709026074;
+        d=1e100.net; s=20230601; t=1708421281; x=1709026081;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mXZ+DN3CcnefV4u4W5SMOCurbndJVv4wj08ijEsPqwU=;
-        b=STYkzn3k/8mkl/XOvD/n84ZhSxqFOmXqmH4YqQUnNFqJT6aBH4mL91OCl6rGbQsK+q
-         OCO7DywOA+jpStHPlJSikvycb9pluc5OfD4XhyWBPNovKv37ptVxGt8wryEWAKZhBblq
-         qcQviDHFFe8f5/oS3KjvwPeWt/l5HM5CcyEsB6oJORiH1K+3iN8Gs5CfixX6ZAE/MEbq
-         h8S2+7Bx557tCSwYaD8UBVXN+4862uWPMLMfcKv3Cx/e4MV3T4mzwHC5jTI0N/s/k19g
-         maDgyYQ9a0pq/f74IT84ANk1SuaM9dINwwjLvHZsDU4jPthsiPLW/291s0SJQ9SGP94Q
-         1K/A==
-X-Gm-Message-State: AOJu0Yx+oAihN1soWbx/GDiC/DsTcPFpf4Ct94vWYPgskHW35gvoN9Qv
-	jvc3t3TrD7TPEYig48heLNFlRR9zBIapW8BBw9tx01BTW2Ba4ugl61OLA/tLsTLvd2XXx6na+aA
-	pOQ==
-X-Google-Smtp-Source: AGHT+IHkFYDXFwT6cS1Y6ESD1QzbPdMU6iw9dKRUM8cEUuLz0d+G3e4wiXXNVR3TuLLPAbfiZ6GnYg==
-X-Received: by 2002:a05:6402:40c4:b0:563:b7b4:a30e with SMTP id z4-20020a05640240c400b00563b7b4a30emr11299389edb.3.1708421274505;
-        Tue, 20 Feb 2024 01:27:54 -0800 (PST)
+        bh=T8XADQWdbtL6TzlHk6jI8Rohfxav5CYgO71BwjhKPiQ=;
+        b=n8Ud5172GjrRv0G1mdpDpvcgfarcfuuVLL0ZHkFtJQAzukqAxeti/fS8yFBfl8P7yb
+         JdLYNzl2f4nbR+Z6Jtxq0GgOrniSNj5OOZDy+v/S3+uojKxhm0b/Uka0B3Ixwg8zp3hZ
+         l9EgG57utwFlwyjGC3m1S5eMOBOJSmqWGyGiwGr6A/xLoGk6EdTTffeYeTkZfK86yyQv
+         rnMD+zMEQVodOydmn+ClFQXfZaQrIE8Ymvk8Tt/DlYRByor3jxGS5BkyBgJP/qThdcU4
+         rAEhqSXgdbeAHRM7nJ7BhLaxW7rmSr1XF7i/L3g/cC1FSXU3O8QcCRsWil6qbnB1eSDR
+         gtvg==
+X-Gm-Message-State: AOJu0YxUtke9yxpQvELH6ZJqVab0mOHb+HNwySM1314MhJ2lHr0gSg42
+	uwfAHEvY6lXI3zikLRBMf2hfPvwIYJJGqoKeRydBqfsGeGQnEcenlczDjXGr4joksPAWHoUZpd7
+	a9g==
+X-Google-Smtp-Source: AGHT+IG6DBO9pTBCpfeSrUfztxUsQ8peP2QTW/fPaF8CQmyYXocw8drxpjYga4ytiZkuVZEVMSE2Fg==
+X-Received: by 2002:a17:906:5297:b0:a3d:de7f:2827 with SMTP id c23-20020a170906529700b00a3dde7f2827mr6505802ejm.14.1708421281034;
+        Tue, 20 Feb 2024 01:28:01 -0800 (PST)
 Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
-        by smtp.gmail.com with ESMTPSA id b2-20020aa7dc02000000b00564cb5a3c7esm338161edu.81.2024.02.20.01.27.54
+        by smtp.gmail.com with ESMTPSA id gc24-20020a170906c8d800b00a3e4d2d99adsm2870810ejb.219.2024.02.20.01.28.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 01:27:54 -0800 (PST)
-Date: Tue, 20 Feb 2024 09:27:50 +0000
+        Tue, 20 Feb 2024 01:28:00 -0800 (PST)
+Date: Tue, 20 Feb 2024 09:27:56 +0000
 From: Matt Bobrowski <mattbobrowski@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, andrii@kernel.org, kpsingh@google.com, jannh@google.com,
 	jolsa@kernel.org, daniel@iogearbox.net, brauner@kernel.org,
 	linux-fsdevel@vger.kernel.org
-Subject: [PATCH bpf-next 04/11] bpf: add new acquire/release BPF kfuncs for
- mm_struct
-Message-ID: <ac8e4dfb7c3438b488ca0478612e584800ee35de.1708377880.git.mattbobrowski@google.com>
+Subject: [PATCH bpf-next 05/11] bpf/selftests: add selftests for mm_struct
+ acquire/release BPF kfuncs
+Message-ID: <2f5099cd6b2ec1594c1215f15f7a484e4989315e.1708377880.git.mattbobrowski@google.com>
 References: <cover.1708377880.git.mattbobrowski@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -86,87 +86,249 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1708377880.git.mattbobrowski@google.com>
 
-A BPF LSM program at times will introspect a mm_struct that is
-associated with a task_struct. In order to perform this reliably, we
-need introduce a new set of BPF kfuncs that have the ability to
-acquire and release references on a mm_struct.
-
-The following BPF kfuncs have been added in order to support this
-capability:
+Add a new mm_kfunc test suite that is responsible for verifying the
+behaviour of the newly added mm_struct based BPF kfuncs. As of now,
+these selftests cover the operability of the following:
 
 struct mm_struct *bpf_task_mm_grab(struct task_struct *task);
 void bpf_mm_drop(struct mm_struct *mm);
 
-These newly added mm_struct based BPF kfuncs are simple wrappers
-around the mmgrab() and mmdrop() in-kernel helpers. Both mmgrab() and
-mmdrop() are used in favour of their somewhat similar counterparts
-mmget() and mmput() as they're considered to be the more lightweight
-variants in comparison i.e. they don't pin the associated address
-space.
-
 Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
 ---
- kernel/trace/bpf_trace.c | 43 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ .../selftests/bpf/prog_tests/mm_kfunc.c       |  48 ++++++++
+ .../selftests/bpf/progs/mm_kfunc_common.h     |  19 ++++
+ .../selftests/bpf/progs/mm_kfunc_failure.c    | 103 ++++++++++++++++++
+ .../selftests/bpf/progs/mm_kfunc_success.c    |  30 +++++
+ 4 files changed, 200 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mm_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mm_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/mm_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mm_kfunc_success.c
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index c45c8d42316c..d1d29452dd0c 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1472,10 +1472,53 @@ __bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__str,
- 	return __vfs_getxattr(dentry, dentry->d_inode, name__str, value, value_len);
- }
- 
-+/**
-+ * bpf_task_mm_grab - get a reference on the mm_struct associated with the
-+ * 		      supplied task_struct
-+ * @task: task_struct of which the mm_struct is to be referenced
-+ *
-+ * Grab a reference on the mm_struct associated with the supplied *task*. This
-+ * kfunc will return NULL for threads that do not possess a valid mm_struct, for
-+ * example those that are flagged as PF_KTHREAD. A reference on a mm_struct
-+ * pointer acquired by this kfunc must be released using bpf_mm_drop().
-+ *
-+ * This helper only pins the underlying mm_struct and not necessarily the
-+ * address space that is associated with the referenced mm_struct that is
-+ * returned from this kfunc. This kfunc internally calls mmgrab().
-+ *
-+ * Return: A referenced pointer to the mm_struct associated with the supplied
-+ * 	   *task*, or NULL.
-+ */
-+__bpf_kfunc struct mm_struct *bpf_task_mm_grab(struct task_struct *task)
+diff --git a/tools/testing/selftests/bpf/prog_tests/mm_kfunc.c b/tools/testing/selftests/bpf/prog_tests/mm_kfunc.c
+new file mode 100644
+index 000000000000..aece5c25486d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/mm_kfunc.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++
++#define _GNU_SOURCE
++#include <test_progs.h>
++
++#include "mm_kfunc_failure.skel.h"
++#include "mm_kfunc_success.skel.h"
++
++static void run_test(const char *prog_name)
 +{
-+	struct mm_struct *mm;
++	struct bpf_link *link;
++	struct bpf_program *prog;
++	struct mm_kfunc_success *skel;
 +
-+	task_lock(task);
-+	mm = task->mm;
-+	if (likely(mm))
-+		mmgrab(mm);
-+	task_unlock(task);
++	skel = mm_kfunc_success__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "mm_kfunc_success__open_and_load"))
++		return;
 +
-+	return mm;
++	link = NULL;
++	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		goto cleanup;
++
++	link = bpf_program__attach(prog);
++	ASSERT_OK_PTR(link, "bpf_program__attach");
++cleanup:
++	bpf_link__destroy(link);
++	mm_kfunc_success__destroy(skel);
 +}
 +
-+/**
-+ * bpf_mm_drop - put the reference on the supplied mm_struct
-+ * @mm: mm_struct of which to put the reference on
-+ *
-+ * Put the reference on the supplied *mm*. This kfunc internally calls mmdrop().
-+ */
-+__bpf_kfunc void bpf_mm_drop(struct mm_struct *mm)
++static const char * const success_tests[] = {
++	"task_mm_grab_drop_from_argument",
++	"task_mm_acquire_release_from_current",
++};
++
++void test_mm_kfunc(void)
 +{
-+	mmdrop(mm);
++	int i = 0;
++
++	for (; i < ARRAY_SIZE(success_tests); i++) {
++		if (!test__start_subtest(success_tests[i]))
++			continue;
++		run_test(success_tests[i]);
++	}
++
++	RUN_TESTS(mm_kfunc_failure);
++}
+diff --git a/tools/testing/selftests/bpf/progs/mm_kfunc_common.h b/tools/testing/selftests/bpf/progs/mm_kfunc_common.h
+new file mode 100644
+index 000000000000..043d74d4148b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/mm_kfunc_common.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++
++#ifndef _MM_KFUNC_COMMON_H
++#define _MM_KFUNC_COMMON_H
++
++#include <vmlinux.h>
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++#include "bpf_misc.h"
++
++struct mm_struct *bpf_task_mm_grab(struct task_struct *task) __ksym;
++void bpf_mm_drop(struct mm_struct *mm) __ksym;
++
++char _license[] SEC("license") = "GPL";
++
++#endif /* _MM_KFUNC_COMMON_H */
+diff --git a/tools/testing/selftests/bpf/progs/mm_kfunc_failure.c b/tools/testing/selftests/bpf/progs/mm_kfunc_failure.c
+new file mode 100644
+index 000000000000..d818dfcab20e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/mm_kfunc_failure.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++
++#include "mm_kfunc_common.h"
++
++SEC("lsm.s/file_open")
++__failure __msg("Possibly NULL pointer passed to trusted arg0")
++int BPF_PROG(task_mm_grab_null_kfunc)
++{
++	struct mm_struct *acquired;
++
++	/* Can't pass a NULL pointer to bpf_task_mm_grab(). */
++	acquired = bpf_task_mm_grab(NULL);
++	if (!acquired)
++		return 0;
++	bpf_mm_drop(acquired);
++
++	return 0;
 +}
 +
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(lsm_kfunc_set_ids)
- BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_task_mm_grab, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL);
-+BTF_ID_FLAGS(func, bpf_mm_drop, KF_RELEASE);
- BTF_KFUNCS_END(lsm_kfunc_set_ids)
- 
- static int bpf_lsm_kfunc_filter(const struct bpf_prog *prog, u32 kfunc_id)
++SEC("lsm/task_free")
++__failure __msg("R1 must be referenced or trusted")
++int BPF_PROG(task_mm_grab_from_lsm_task_free_kfunc, struct task_struct *task)
++{
++	struct mm_struct *acquired;
++
++	/* The task_struct supplied to this LSM hook isn't trusted. */
++	acquired = bpf_task_mm_grab(task);
++	if (!acquired)
++		return 0;
++	bpf_mm_drop(acquired);
++
++	return 0;
++}
++
++SEC("lsm.s/task_alloc")
++__failure __msg("arg#0 pointer type STRUCT task_struct must point")
++int BPF_PROG(task_mm_grab_fp_kfunc, struct task_struct *task, u64 clone_flags)
++{
++	struct task_struct *fp;
++	struct mm_struct *acquired;
++
++	fp = (struct task_struct *)&clone_flags;
++	/* Can't pass random frame pointer to bpf_task_mm_grab(). */
++	acquired = bpf_task_mm_grab(fp);
++	if (!acquired)
++		return 0;
++	bpf_mm_drop(acquired);
++
++	return 0;
++}
++
++SEC("lsm.s/task_alloc")
++__failure __msg("Unreleased reference")
++int BPF_PROG(task_mm_grab_unreleased_kfunc, struct task_struct *task)
++{
++	struct mm_struct *acquired;
++
++	acquired = bpf_task_mm_grab(task);
++	__sink(acquired);
++
++	/* Acquired but never released. */
++	return 0;
++}
++
++SEC("lsm.s/task_alloc")
++__failure __msg("R1 must be referenced or trusted")
++int BPF_PROG(task_mm_drop_untrusted_kfunc, struct task_struct *task)
++{
++	struct mm_struct *acquired;
++
++	/* task->mm from struct task_struct yields an untrusted pointer. */
++	acquired = task->mm;
++	if (!acquired)
++		return 0;
++	bpf_mm_drop(acquired);
++
++	return 0;
++}
++
++SEC("lsm/vm_enough_memory")
++__failure __msg("release kernel function bpf_mm_drop expects")
++int BPF_PROG(mm_drop_unacquired_kfunc, struct mm_struct *mm)
++{
++	/* Can't release an unacquired pointer. */
++	bpf_mm_drop(mm);
++
++	return 0;
++}
++
++SEC("lsm/vm_enough_memory")
++__failure __msg("arg#0 pointer type STRUCT mm_struct must point")
++int BPF_PROG(mm_drop_fp_kfunc, struct mm_struct *mm, long pages)
++{
++	struct mm_struct *fp;
++
++	fp = (struct mm_struct *)&pages;
++
++	/* Can't release random frame pointer. */
++	bpf_mm_drop(fp);
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/mm_kfunc_success.c b/tools/testing/selftests/bpf/progs/mm_kfunc_success.c
+new file mode 100644
+index 000000000000..5400abd2ee2d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/mm_kfunc_success.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++
++#include "mm_kfunc_common.h"
++
++SEC("lsm.s/task_alloc")
++int BPF_PROG(task_mm_grab_drop_from_argument, struct task_struct *task)
++{
++	struct mm_struct *acquired;
++
++	acquired = bpf_task_mm_grab(task);
++	if (!acquired)
++		return 0;
++	bpf_mm_drop(acquired);
++
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++int BPF_PROG(task_mm_acquire_release_from_current)
++{
++	struct mm_struct *acquired;
++
++	acquired = bpf_task_mm_grab(bpf_get_current_task_btf());
++	if (!acquired)
++		return 0;
++	bpf_mm_drop(acquired);
++
++	return 0;
++}
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
