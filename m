@@ -1,196 +1,134 @@
-Return-Path: <bpf+bounces-22272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D4685AFFF
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 01:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A84E485B004
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 01:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50FEBB21AAC
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 00:21:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39721B21E67
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 00:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012C62568;
-	Tue, 20 Feb 2024 00:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840FA17F6;
+	Tue, 20 Feb 2024 00:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eHEgPEMA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AqAbl95u";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eHEgPEMA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AqAbl95u"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M5hg8pAy"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD1815BB;
-	Tue, 20 Feb 2024 00:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C1C15BB
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 00:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708388505; cv=none; b=uBD11+qh9T4ZwpYYbQf+DPHOH94Ex6vtrjCfpVCF4kgCJIVJ6+A9UELq84KdboD9ukxo2TwDIlOcB43xLxjTyEgEqJGbG/5RDripNr5d/gb9QSeWQaeDrZd2EV3MyIQqLvGV9oEiBU6gwIG5QxeZVjtR1RRyCLwAZQCUpBP/2GI=
+	t=1708388741; cv=none; b=n7n3kk0GOe0qZxgYjzCB5BGmvv7s+xC8nxuxeS3N8HDv617R5gflBrz38h5CALxubWuUhqk4JVIUrcyHCer1Jelek/ETTNu2yU2JujYjL5A+yShAXEIFjPe/u53CibQW5WMq0X1gqBFHqzdGkaFso3EQMN6jHRLceppBrPtTm+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708388505; c=relaxed/simple;
-	bh=HoYfSU1LERQNtThH9A+NVMysOQp+ECNTZweM8N3vBII=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=dDgi9j2Xo+jdf/NCW2A/A/og6h8BPLG9nMQGl5ghtiro1aitLJAvA66DDKLz8ephvo89BIA9IANMhQiF/oe++7VmdRMiG0FqwUvQNBGnNLPxRZorVmmPrpVtJtIpjh8KJdr737J64DeqgUiogod2I0tg/N+I83SYP3HTSJu9U3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eHEgPEMA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=AqAbl95u; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eHEgPEMA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=AqAbl95u; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A9F2121EAD;
-	Tue, 20 Feb 2024 00:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708388501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1708388741; c=relaxed/simple;
+	bh=WkcAqIaEmKG2lz+mWq4qRiQnuAmmN619esXlTolgQnQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=onRK6/Nc29miU2MNqShdLPHeWcnt94pSgoZ4lBsqqOz1u/lHV37AUhts6Wus7Ap/oNuxZLI+LlpxL8LfH7q69brm3IxdJxo//X4eKi7uBM/KMdAe7HqkCaIJdxlp8IwOE2zIYbySvk+pr3sR8gHV4er6l7qOXjtmHqtn09FWiXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M5hg8pAy; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f21c1a87-a657-407b-a074-496503edd20e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708388737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aCStDtcRffeU4jURBHp/euC2Vn/pS2u4zscwEUzLt+k=;
-	b=eHEgPEMAEvAjhowMWVtD1L45v2+oTmGs40a7GZOJ1Ov9Jb9s5RNEuhdI/LqkTAnSckTKAJ
-	xfUbQrIRGupq65EmcwwUqT+dl/wp3Vn/I5B1feDMhJv4MQfRlAcEH77ONSSW6Ocsj9HK2+
-	lGA0/CFkumnx/sZEaFmPNPhFZu0ydRY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708388501;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aCStDtcRffeU4jURBHp/euC2Vn/pS2u4zscwEUzLt+k=;
-	b=AqAbl95uLUKL7GTueZQ3qWuww7EqxAm3/78Jlrz4vkGAoFUdNbY3/TvYsv215SIX5ySpk0
-	4UPPxuSKOkij04Dw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708388501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aCStDtcRffeU4jURBHp/euC2Vn/pS2u4zscwEUzLt+k=;
-	b=eHEgPEMAEvAjhowMWVtD1L45v2+oTmGs40a7GZOJ1Ov9Jb9s5RNEuhdI/LqkTAnSckTKAJ
-	xfUbQrIRGupq65EmcwwUqT+dl/wp3Vn/I5B1feDMhJv4MQfRlAcEH77ONSSW6Ocsj9HK2+
-	lGA0/CFkumnx/sZEaFmPNPhFZu0ydRY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708388501;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aCStDtcRffeU4jURBHp/euC2Vn/pS2u4zscwEUzLt+k=;
-	b=AqAbl95uLUKL7GTueZQ3qWuww7EqxAm3/78Jlrz4vkGAoFUdNbY3/TvYsv215SIX5ySpk0
-	4UPPxuSKOkij04Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 657EF139D0;
-	Tue, 20 Feb 2024 00:21:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KtjvBpLw02UVagAAD6G6ig
-	(envelope-from <neilb@suse.de>); Tue, 20 Feb 2024 00:21:38 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	bh=Tp+xcGFSxyPlC/H+ak3Mkq2Y+jZatU49IreSsReZE4E=;
+	b=M5hg8pAyIdCzVSpK6WP/nzmhsG6exIWQINAGsOTtfypGVX2peUGDZKUXghX9bzjXeAmuCd
+	g9/PLhPAzi5pPhf5j/SHJoydDw5FosLHhNBhBRJ1Ns1UJxiDlERNUy4+R79/1hAcd763cD
+	GLVd9a+gYPIzrZTgNnAQf+8BTKg2XC0=
+Date: Mon, 19 Feb 2024 16:25:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Matthew Wilcox" <willy@infradead.org>
-Cc: "Mike Rapoport" <rppt@kernel.org>, lsf-pc@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
- bpf@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
-In-reply-to: <ZdPkWsxKZN8CvQTN@casper.infradead.org>
-References: <Zbcn-P4QKgBhyxdO@casper.infradead.org>,
- <Zb9pZTmyb0lPMQs8@kernel.org>, <ZcACya-MJr_fNRSH@casper.infradead.org>,
- <ZcOnEGyr6y3jei68@kernel.org>, <ZdO2eABfGoPNnR07@casper.infradead.org>,
- <170838273655.1530.946393725104206593@noble.neil.brown.name>,
- <ZdPkWsxKZN8CvQTN@casper.infradead.org>
-Date: Tue, 20 Feb 2024 11:21:35 +1100
-Message-id: <170838849545.1530.13553329646368488958@noble.neil.brown.name>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=eHEgPEMA;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=AqAbl95u
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.43 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.10)[-0.487];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[54.65%]
-X-Spam-Score: -1.43
-X-Rspamd-Queue-Id: A9F2121EAD
-X-Spam-Flag: NO
+Subject: Re: [PATCH bpf-next 2/3] bpf: check bpf_func_state->callback_depth
+ when pruning states
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, kuniyu@amazon.com
+References: <20240212143832.28838-1-eddyz87@gmail.com>
+ <20240212143832.28838-3-eddyz87@gmail.com>
+ <fdf38873-a1e2-4a16-974b-ea2f265e08e1@linux.dev>
+ <925915504557d991bf9b576a362e0ef4a8953795.camel@gmail.com>
+ <0e5b990eeaa63590e067c8ac10642b6bc6d0e9a8.camel@gmail.com>
+ <1fbcd9f1-6c83-4430-b797-a92285d1d151@linux.dev>
+ <9e19786565a3fbfea58dcd25bba644fe8e0ed6b0.camel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <9e19786565a3fbfea58dcd25bba644fe8e0ed6b0.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 20 Feb 2024, Matthew Wilcox wrote:
-> On Tue, Feb 20, 2024 at 09:45:36AM +1100, NeilBrown wrote:
-> > On Tue, 20 Feb 2024, Matthew Wilcox wrote:
-> > > The example is filemap_range_has_writeback().  It's EXPORT_SYMBOL_GPL()
-> > > and it's a helper function for filemap_range_needs_writeback().
-> > > filemap_range_needs_writeback() has kernel-doc, but nobody should be
-> > > calling filemap_range_has_writeback() directly, so it shouldn't even
-> > > exist in the htmldocs.  But we should have a comment on it saying
-> > > "Use filemap_range_needs_writeback(), don't use this", in case anyone
-> > > discovers it.  And the existance of that comment should be enough to
-> > > tell our tools to not flag this as a function that needs kernel-doc.
-> > > 
-> > 
-> > Don't we use a __prefix for internal stuff that shouldn't be used?
-> 
-> No?  Or if we do, we are inconsistent with that convention.  Let's
-> consider some examples.
-> 
-> __SetPageReferenced -- non-atomic version of SetPageReferenced.
-> Akin to __set_bit.
-> 
-> __filemap_fdatawrite_range() -- like filemap_fdatawrite_range but
-> allows the specification of sync_mode
-> 
-> __page_cache_alloc() -- like page_cache_alloc() but takes the gfp mask
-> directly instead of inferring it from mapping_gfp_mask()
-> 
-> __folio_lock() -- This does fit the "don't call this pattern"!
-> 
-> __set_page_dirty() -- Like set_page_dirty() but allows warn to be
-> specified.
-> 
-> __filemap_remove_folio() -- Like filemap_remove_folio() but allows it
-> to be replaced with a shadow entry.
-> 
-> __readahead_folio() -- Another internal one
-> 
-> I mostly confined myself to pagemap.h for this survey, but if you've
-> conducted a different survey that shows your assertion is generally true
-> and I've hit on the exceptions to the rule ... ?
-> 
 
-Yes, __ is used for other things too.
-It would be nice to have some consistency with naming, but probably
-impossible.
+On 2/16/24 6:27 AM, Eduard Zingerman wrote:
+> On Wed, 2024-02-14 at 09:42 -0800, Yonghong Song wrote:
+>
+>>>    .------------------------------------- Checkpoint / State name
+>>>    |    .-------------------------------- Code point number
+>>>    |    |   .---------------------------- Stack state {ctx.a,ctx.b,ctx.c}
+>>>    |    |   |        .------------------- Callback depth in frame #0
+>>>    v    v   v        v
+>>> 1  - (0) {7P,7P,7},depth=0
+>>> 2    - (3) {7P,7P,7},depth=1
+>>> 3      - (0) {7P,7P,42},depth=1
+>>> (a)      - (3) {7P,7,42},depth=2
+>>> 4          - (0) {7P,7,42},depth=2      loop terminates because of depth limit
+>>> 5            - (4) {7P,7,42},depth=0    predicted false, ctx.a marked precise
+>>> 6            - (6) exit
+>>> 7        - (2) {7P,7,42},depth=2
+>>> 8          - (0) {7P,42,42},depth=2     loop terminates because of depth limit
+>>> 9            - (4) {7P,42,42},depth=0   predicted false, ctx.a marked precise
+>>> 10           - (6) exit
+>>> (b)      - (1) {7P,7P,42},depth=2
+>>> 11         - (0) {42P,7P,42},depth=2    loop terminates because of depth limit
+>>> 12           - (4) {42P,7P,42},depth=0  predicted false, ctx.{a,b} marked precise
+>>> 13           - (6) exit
+>>> 14   - (2) {7P,7,7},depth=1
+>>> 15     - (0) {7P,42,7},depth=1          considered safe, pruned using checkpoint (a)
+>>> (c)  - (1) {7P,7P,7},depth=1            considered safe, pruned using checkpoint (b)
+>> For the above line
+>>      (c)  - (1) {7P,7P,7},depth=1            considered safe, pruned using checkpoint (b)
+>> I would change to
+>>      (c)  - (1) {7P,7P,7},depth=1
+>>             - (0) {42P, 7P, 7},depth = 1     considered safe, pruned using checkpoint (11)
+> At that point:
+> - there is a checkpoint at (1) with state {7P,7P,42}
+> - verifier is at (1) in state {7,7,7}
+> Thus, verifier won't proceed to (0) because {7,7,7} is states_equal to {7P,7P,42}.
 
-And with 1074 functions named __foo having kernel doc already, it is too
-late to close that gate.
-:-(
+Okay, I think the above example has BPF_F_TEST_STATE_FREQ set as in Patch 3. It will
+be great if you can explicitly mention this (BPF_F_TEST_STATE_FREQ) in the commit message.
+With this flag,
+   (c)  - (1) {7P,7P,7},depth=1            considered safe, pruned using checkpoint (b)
+is correct.
 
-Thanks,
-NeilBrown
+But then for
+   14   - (2) {7P,7,7},depth=1
+   15     - (0) {7P,42,7},depth=1          considered safe, pruned using checkpoint (a)
+The state
+   14   - (2) {7P,7,7},depth=1
+will have state equal to
+    7        - (2) {7P,7,42},depth=2
+right?
+   
+
+>
+>> For
+>> 14   - (2) {7P,7,7},depth=1
+>> 15     - (0) {7P,42,7},depth=1          considered safe, pruned using checkpoint (a)
+>> I suspect for line 15, the pruning uses checking point at line (8).
+> Right, because checkpoints for a particular insn form a stack. My bad.
+>
+>> Other than the above, the diagram LGTM.
+> Thank you for the feedback, I'll post v2 shortly.
 
