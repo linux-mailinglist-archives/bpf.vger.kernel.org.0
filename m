@@ -1,218 +1,248 @@
-Return-Path: <bpf+bounces-22336-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22337-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE4085C4E6
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 20:34:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAC985C5DD
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 21:33:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DA1F1F25214
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 19:34:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27C421F23746
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 20:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35B614601B;
-	Tue, 20 Feb 2024 19:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91A414F9E4;
+	Tue, 20 Feb 2024 20:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W4ak81ii"
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="TCM9V8XE"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mx0a-00823401.pphosted.com (mx0a-00823401.pphosted.com [148.163.148.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64C1137C2B
-	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 19:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDAB41AAC;
+	Tue, 20 Feb 2024 20:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708457641; cv=none; b=qeaAYOMIZfLzoh6KQUxVpz3rlYRaWeh408RuISL1LjS+DlV8/RpCi7psaOfaq3pxu8FuIhCVscCj1hhJ9lMFL6e4VSfBqHMlsGa02F7ViygMT6UR+/+Hlqn0fYfCHPalZDog08j8IrYOeZwN2yQNECS9kaQYlWtJN1dAP/hMlf4=
+	t=1708461224; cv=none; b=HNl6RrwCr6dloAdXAbeU2xjrVXD6GGCqveNgiU7YXa9LL/B7ZQSsDjhMQ6Sv3QN62bOCPVVvqnipFvc2S8UKwwmRaPGaKUYjWiyTtCnm0xAgwyls8vsuvTaQKlVVYdyxc8UpKg2DJ9Fl0ZLESX13XZz5bEtLTrVBZJjBnJUuUnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708457641; c=relaxed/simple;
-	bh=MSsWNZbrSA8jmwOTwY01KkTTLNM6KGirzTg57mM/DHc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GDTAWPE/IlD7rjLt3ouXYTyFGEeK/4q4eAbQPTYAsauWGl8o0Jpp+zH1ospFLjmR1AVWJjiHXOZajaFDe5hNERxcxu5oBywsqNCxvlD4+9JDOBPj/VLCDeU+Nl1wEnoDJaiHuztyRc0z7ZNRCjUM45Tg8er4Pf95SOcel3Ed6TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W4ak81ii; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708457638;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d2+K9SYZnDq2b2vxFoXzss6f5L3wcHVChuNq2JQkC0k=;
-	b=W4ak81iiUroQCB+SEnxHqZc8n2HvxeZ0BW0QS+R25uazlr4Us9p5HAqGDAuXV1h4/hE3j2
-	Etx7L69lE0/Npnk12Zfxvvs7OHuofy7BNKuCDs6HxTc20Ru9PnNcxcCewV/sxqQxbA4lMu
-	IYUpCZ4L0i0oKGPiUybCVP3yISzqKVE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516-JIJ0L6OgNSyyGHu_FFoXXA-1; Tue, 20 Feb 2024 14:33:56 -0500
-X-MC-Unique: JIJ0L6OgNSyyGHu_FFoXXA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a30f9374db7so698554366b.0
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 11:33:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708457635; x=1709062435;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d2+K9SYZnDq2b2vxFoXzss6f5L3wcHVChuNq2JQkC0k=;
-        b=kGffwZlajSbZrceEHzQKU1/aBXsKL9rdQGQu710yZVKslfzxfPEz4dFvyVgr6fxmLz
-         owDxMdbQ8Wc14MCN+W5SeyAzK0BG60K4RKIYCyBNwJicqRKjHPZQzIoNIoEbsBVPvJWH
-         ZR3nW0bN+7B5JXwAgrptR0W9ay1zjMQnCPyHWWNyh2QWtvQF706d1pSG0gn1DYEYkhVr
-         jnV5+pn8/588py0DFSkXPKdEqEuULK55kCr0YS+sHx+qzHWc/EUutuEib5Jv4NKrDgpC
-         BIDbtbzjtroycWWiM7ehumS/zgqV+dCPj7gCen/chD4dhJrT4hcaT2nyW7g5+S5sZWOQ
-         iNOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxvpzXWPS1xDP2a9o0sng00SAvBtyPE5VBo8dBtQcbNd63AGXHiH5yppenSYYrOJW3IBCt7RiZ8/8u/JJv74wg88hO
-X-Gm-Message-State: AOJu0Yx6KnvkqOww9//1XcDFI9QI7RHR6NRTF6O7rJo/YSCvbgxoqbxh
-	YO5CQI7qTaOKPL7QbMFRLTHzdPwi+mT7PCxhSt1pLTZYxKt/Dfw3HnrH5jxo2LhVTtlcHttCGhE
-	/8iXA/nYCJNbqYRTUHtNDkHbBaDU89d13WicKWI0m2pRWDGEfQw==
-X-Received: by 2002:a17:907:7ea9:b0:a3e:b57f:2b8a with SMTP id qb41-20020a1709077ea900b00a3eb57f2b8amr6030590ejc.10.1708457635356;
-        Tue, 20 Feb 2024 11:33:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGbxIJ1yuGOFI6iLmW9ulpsaRCDfsBBUAz1piwEm4OhcKvAQVntnoQjtfgklYIhoIN0YmrB+Q==
-X-Received: by 2002:a17:907:7ea9:b0:a3e:b57f:2b8a with SMTP id qb41-20020a1709077ea900b00a3eb57f2b8amr6030569ejc.10.1708457635000;
-        Tue, 20 Feb 2024 11:33:55 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id pk27-20020a170906d7bb00b00a3ee20b00d0sm1254310ejb.4.2024.02.20.11.33.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 11:33:53 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 4E1A010F63D2; Tue, 20 Feb 2024 20:33:53 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Paolo Abeni <pabeni@redhat.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
- Brouer <hawk@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Eric Dumazet
- <edumazet@google.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 2/3] bpf: test_run: Use system page pool for
- XDP live frame mode
-In-Reply-To: <83e7faeb4a241a00053fc71dbb18d1dbc7c0fac6.camel@redhat.com>
-References: <20240215132634.474055-1-toke@redhat.com>
- <20240215132634.474055-3-toke@redhat.com>
- <59c022bf-4cc4-850f-f8ab-3b8aab36f958@iogearbox.net>
- <e73b7562e4333d3295eaf6d08bc1c6219c2541e5.camel@redhat.com>
- <87frxn1dnq.fsf@toke.dk>
- <83e7faeb4a241a00053fc71dbb18d1dbc7c0fac6.camel@redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 20 Feb 2024 20:33:53 +0100
-Message-ID: <877ciz0w2m.fsf@toke.dk>
+	s=arc-20240116; t=1708461224; c=relaxed/simple;
+	bh=rW/xVgJbTyFQ2fgHviSkb96HUf5zr3bGLibJyUmtocM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=H6aNkiRR6FKZPnGhYqhglyx5fvXYuvnoKWWBRTmmwNlMu+0l0lw/sar39uBvuPIZZN7BBuzCkzlOUqkIN2W2P0uD+oFV0lpJlzNK1pCgsnxmfowa/Pw8vy/XGJTmRuANHW5CUt0/tlDohzJbE3uYTlLNtUGnzATgo0HVrtuMKOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=TCM9V8XE; arc=none smtp.client-ip=148.163.148.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355086.ppops.net [127.0.0.1])
+	by mx0a-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KJDXCa003915;
+	Tue, 20 Feb 2024 20:33:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	from:to:cc:subject:date:message-id; s=DKIM202306; bh=apTduRvBWpk
+	BsoALNYmwCiUzyclrqb5Qqfle8axRCBQ=; b=TCM9V8XExFWvbGVqBcf32wkNxb+
+	BrfAh7wITVBSxO18Poqt5IgDbcjXMCl/VaVDbZwOEwbvOj7EeUlK1f/xMJAq6Sdc
+	U8QWrc+4tRL0xT+xN/vq8GeuVulsDE7m4je2OFTbm2gRlF/OPCrOB74ewg75HmSq
+	KStzACWZEXUh7ExFSOYMLkmXAzp0vHx6eSCSNPVrTlGhW9oCqqspLFSNQARFJ3MJ
+	b/ucayKYZxdIAU6650Bjwzwsehfvo+FtpOaVoAzEMD8elDEbBgTzG2f0TlICEgen
+	HJ/O8kdJxYrtUK9S/mJWn97aDSgo4e3PxZM/wYKwKpMNdV1HTjda54mLMvQ==
+Received: from ilclpfpp01.lenovo.com ([144.188.128.67])
+	by mx0a-00823401.pphosted.com (PPS) with ESMTPS id 3wd21w05e0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 20:33:15 +0000 (GMT)
+Received: from ilclmmrp01.lenovo.com (ilclmmrp01.mot.com [100.65.83.165])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ilclpfpp01.lenovo.com (Postfix) with ESMTPS id 4TfWLy1rvZzdDsy;
+	Tue, 20 Feb 2024 20:33:14 +0000 (UTC)
+Received: from ilclasset01.mot.com (ilclasset01.mot.com [100.64.7.105])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by ilclmmrp01.lenovo.com (Postfix) with ESMTPSA id 4TfWLy0zLHz3n3fr;
+	Tue, 20 Feb 2024 20:33:14 +0000 (UTC)
+From: Maxwell Bland <mbland@motorola.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: gregkh@linuxfoundation.org, agordeev@linux.ibm.com,
+        akpm@linux-foundation.org, andreyknvl@gmail.com, andrii@kernel.org,
+        aneesh.kumar@kernel.org, aou@eecs.berkeley.edu, ardb@kernel.org,
+        arnd@arndb.de, ast@kernel.org, borntraeger@linux.ibm.com,
+        bpf@vger.kernel.org, brauner@kernel.org, catalin.marinas@arm.com,
+        christophe.leroy@csgroup.eu, cl@linux.com, daniel@iogearbox.net,
+        dave.hansen@linux.intel.com, david@redhat.com, dennis@kernel.org,
+        dvyukov@google.com, glider@google.com, gor@linux.ibm.com,
+        guoren@kernel.org, haoluo@google.com, hca@linux.ibm.com,
+        hch@infradead.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kasan-dev@googlegroups.com, kpsingh@kernel.org,
+        linux-arch@vger.kernel.org, linux@armlinux.org.uk,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        lstoakes@gmail.com, mark.rutland@arm.com, martin.lau@linux.dev,
+        meted@linux.ibm.com, michael.christie@oracle.com, mjguzik@gmail.com,
+        mpe@ellerman.id.au, mst@redhat.com, muchun.song@linux.dev,
+        naveen.n.rao@linux.ibm.com, npiggin@gmail.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, quic_nprakash@quicinc.com,
+        quic_pkondeti@quicinc.com, rick.p.edgecombe@intel.com,
+        ryabinin.a.a@gmail.com, ryan.roberts@arm.com, samitolvanen@google.com,
+        sdf@google.com, song@kernel.org, surenb@google.com,
+        svens@linux.ibm.com, tj@kernel.org, urezki@gmail.com,
+        vincenzo.frascino@arm.com, will@kernel.org, wuqiang.matt@bytedance.com,
+        yonghong.song@linux.dev, zlim.lnx@gmail.com, mbland@motorola.com,
+        awheeler@motorola.com
+Subject: [PATCH 0/4] arm64: mm: support dynamic vmalloc/pmd configuration
+Date: Tue, 20 Feb 2024 14:32:52 -0600
+Message-Id: <20240220203256.31153-1-mbland@motorola.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-GUID: doXRsqZ8zYPmc1DRvfdxdFLT0EPlBuO3
+X-Proofpoint-ORIG-GUID: doXRsqZ8zYPmc1DRvfdxdFLT0EPlBuO3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=509 phishscore=0
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402200146
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-Paolo Abeni <pabeni@redhat.com> writes:
+Reworks ARM's virtual memory allocation infrastructure to support
+dynamic enforcement of page middle directory PXNTable restrictions
+rather than only during the initial memory mapping. Runtime enforcement
+of this bit prevents write-then-execute attacks, where malicious code is
+staged in vmalloc'd data regions, and later the page table is changed to
+make this code executable.
 
-> On Tue, 2024-02-20 at 14:14 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Paolo Abeni <pabeni@redhat.com> writes:
->>=20
->> > On Tue, 2024-02-20 at 10:06 +0100, Daniel Borkmann wrote:
->> > > On 2/15/24 2:26 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> > > > The BPF_TEST_RUN code in XDP live frame mode creates a new page po=
-ol
->> > > > each time it is called and uses that to allocate the frames used f=
-or the
->> > > > XDP run. This works well if the syscall is used with a high repeti=
-tions
->> > > > number, as it allows for efficient page recycling. However, if use=
-d with
->> > > > a small number of repetitions, the overhead of creating and tearin=
-g down
->> > > > the page pool is significant, and can even lead to system stalls i=
-f the
->> > > > syscall is called in a tight loop.
->> > > >=20
->> > > > Now that we have a persistent system page pool instance, it becomes
->> > > > pretty straight forward to change the test_run code to use it. The=
- only
->> > > > wrinkle is that we can no longer rely on a custom page init callba=
-ck
->> > > > from page_pool itself; instead, we change the test_run code to wri=
-te a
->> > > > random cookie value to the beginning of the page as an indicator t=
-hat
->> > > > the page has been initialised and can be re-used without copying t=
-he
->> > > > initial data again.
->> > > >=20
->> > > > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> > >=20
->> > > [...]
->> > > > -
->> > > >   	/* We create a 'fake' RXQ referencing the original dev, but wit=
-h an
->> > > >   	 * xdp_mem_info pointing to our page_pool
->> > > >   	 */
->> > > >   	xdp_rxq_info_reg(&xdp->rxq, orig_ctx->rxq->dev, 0, 0);
->> > > > -	xdp->rxq.mem.type =3D MEM_TYPE_PAGE_POOL;
->> > > > -	xdp->rxq.mem.id =3D pp->xdp_mem_id;
->> > > > +	xdp->rxq.mem.type =3D MEM_TYPE_PAGE_POOL; /* mem id is set per-f=
-rame below */
->> > > >   	xdp->dev =3D orig_ctx->rxq->dev;
->> > > >   	xdp->orig_ctx =3D orig_ctx;
->> > > >=20=20=20
->> > > > +	/* We need a random cookie for each run as pages can stick around
->> > > > +	 * between runs in the system page pool
->> > > > +	 */
->> > > > +	get_random_bytes(&xdp->cookie, sizeof(xdp->cookie));
->> > > > +
->> > >=20
->> > > So the assumption is that there is only a tiny chance of collisions =
-with
->> > > users outside of xdp test_run. If they do collide however, you'd lea=
-k data.
->> >=20
->> > Good point. @Toke: what is the worst-case thing that could happen in
->> > case a page is recycled from another pool's user?
->> >=20
->> > could we possibly end-up matching the cookie for a page containing
->> > 'random' orig_ctx/ctx, so that bpf program later tries to access
->> > equally random ptrs?
->>=20
->> Well, yes, if there's a collision in the cookie value we'll end up
->> basically dereferencing garbage pointer values, with all the badness
->> that ensues (most likely just a crash, but system compromise is probably
->> also possible in such a case).
->>=20
->> A 64-bit value is probably too small to be resistant against random
->> collisions in a "protect global data across the internet" type scenario
->> (for instance, a 64-bit cryptographic key is considered weak). However,
->> in this case the collision domain is only for the lifetime of the
->> running system, and each cookie value only stays valid for the duration
->> of a single syscall (seconds, at most), so I figured it was acceptable.
->>=20
->> We could exclude all-zeros as a valid cookie value (and also anything
->> that looks as a valid pointer), but that only removes a few of the
->> possible random collision values, so if we're really worried about
->> random collisions of 64-bit numbers, I think a better approach would be
->> to just make the cookie a 128-bit value instead. I can respin with that
->> if you prefer? :)
->
-> I must admit that merging a code that will allow trashing the kernel -
-> even with a very low probability - is quite scaring to me.
->
-> How much relevant is the recycle case optimization? Could removing
-> completely that optimization be considered?
+Previously the entire region from VMALLOC_START to VMALLOC_END was
+vulnerable, but now the vulnerable region is restricted to the 2GB
+reserved by module_alloc, a region which is generally read-only and more
+difficult to inject staging code into, e.g., data must pass the BPF
+verifier. These changes also set the stage for other systems, such as
+KVM-level (EL2) changes to mark page tables immutable and code page
+verification changes, forging a path toward complete mitigation of
+kernel exploits on ARM.
 
-Did a quick test of this, and skipping the recycling eats ~12.5%
-performance, so I don't think getting rid of it is a good solution.
+Implementing this required minimal changes to the generic vmalloc
+interface in the kernel to allow architecture overrides of some vmalloc
+wrapper functions, refactoring vmalloc calls to use a standard interface
+in the generic kernel, and passing the address parameter already passed
+into PTE allocation to the pte_allocate child function call.
 
-However, increasing the cookie size to 128 bits makes no performance
-difference (everything stays in the same cache lines). If we do that,
-the collision probability enters "won't happen before the heat death of
-the universe" territory, so I don't think there's any real concern that
-this will happen.
+The new arm64 vmalloc wrapper functions ensure vmalloc data is not
+allocated into the region reserved for module_alloc. arm64 BPF and
+kprobe code also see a two-line-change ensuring their allocations abide
+by the segmentation of code from data. Finally, arm64's pmd_populate
+function is modified to set the PXNTable bit appropriately.
 
-I'll respin with the bigger cookie size (and add that patch Olek
-suggested to remove the init callback from the page pool code).
+Signed-off-by: Maxwell Bland <mbland@motorola.com>
 
--Toke
+---
+
+After Mark Rutland's feedback last week on my more minimal patch, see
+
+<CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com>
+
+I adopted a more sweeping and more correct overhaul of ARM's virtual
+memory allocation infrastructure to support these changes. This patch
+guarantees our ability to write future systems with a strong and
+accessible distinction between code and data at the page allocation
+layer, bolstering the guarantees of complementary contributions, i.e.
+W^X and kCFI.
+
+The current patch minimally reduces available vmalloc space, removing
+the 2GB that should be reserved for code allocations regardless, and I
+feel really benefits the kernel by making several memory allocation
+interfaces more uniform, and providing hooks for non-ARM architectures
+to follow suit.
+
+I have done some minimal runtime testing using Torvald's test-tlb script
+on a QEMU VM, but maybe more extensive benchmarking is needed?
+
+Size: Before Patch -> After Patch
+4k: 4.09ns  4.15ns  4.41ns  4.43ns -> 3.68ns  3.73ns  3.67ns  3.73ns 
+8k: 4.22ns  4.19ns  4.30ns  4.15ns -> 3.99ns  3.89ns  4.12ns  4.04ns 
+16k: 3.97ns  4.31ns  4.30ns  4.28ns -> 4.03ns  3.98ns  4.06ns  4.06ns 
+32k: 3.82ns  4.51ns  4.25ns  4.31ns -> 3.99ns  4.09ns  4.07ns  5.17ns 
+64k: 4.50ns  5.59ns  6.13ns  6.14ns -> 4.23ns  4.26ns  5.91ns  5.93ns 
+128k: 5.06ns  4.47ns  6.75ns  6.69ns -> 4.47ns  4.71ns  6.54ns  6.44ns 
+256k: 4.83ns  4.43ns  6.62ns  6.21ns -> 4.39ns  4.62ns  6.71ns  6.65ns 
+512k: 4.45ns  4.75ns  6.19ns  6.65ns -> 4.86ns  5.26ns  7.77ns  6.68ns 
+1M: 4.72ns  4.73ns  6.74ns  6.47ns -> 4.29ns  4.45ns  6.87ns  6.59ns 
+2M: 4.66ns  4.86ns  14.49ns  15.00ns -> 4.53ns  4.57ns  15.91ns  15.90ns 
+4M: 4.85ns  4.95ns  15.90ns  15.98ns -> 4.48ns  4.74ns  17.27ns  17.36ns 
+6M: 4.94ns  5.03ns  17.19ns  17.31ns -> 4.70ns  4.93ns  18.02ns  18.23ns 
+8M: 5.05ns  5.18ns  17.49ns  17.64ns -> 4.96ns  5.07ns  18.84ns  18.72ns 
+16M: 5.55ns  5.79ns  20.99ns  23.70ns -> 5.46ns  5.72ns  22.76ns  26.51ns
+32M: 8.54ns  9.06ns  124.61ns 125.07ns -> 8.43ns  8.59ns  116.83ns 138.83ns
+64M: 8.42ns  8.63ns  196.17ns 204.52ns -> 8.26ns  8.43ns  193.49ns 203.85ns
+128M: 8.31ns  8.58ns  230.46ns 242.63ns -> 8.22ns  8.39ns  227.99ns 240.29ns
+256M: 8.80ns  8.80ns  248.24ns 261.68ns -> 8.35ns  8.55ns  250.18ns 262.20ns
+
+Note I also chose to enforce PXNTable at the PMD layer only (for now),
+since the 194 descriptors which are affected by this change on my
+testing setup are not sufficient to warrant enforcement at a coarser
+granularity.
+
+The architecture-independent changes (I term "generic") can be
+classified only as refactoring, but I feel are also major improvements
+in that they standardize most uses of the vmalloc interface across the
+kernel.
+
+Note this patch reduces the arm64 allocated region for BPF and kprobes,
+but only to match with the existing allocation choices made by the
+generic kernel. I will admit I do not understand why BPF JIT allocation
+code was duplicated into arm64, but I also feel that this was either an
+artifact or that these overrides for generic allocation should require a
+specific KConfig as they trade off between security and space. That
+said, I have chosen not to wrap this patch in a KConfig interface, as I
+feel the changes provide significant benefit to the arm64 kernel's
+baseline security, though a KConfig could certainly be added if the
+maintainers see the need.
+
+Maxwell Bland (4):
+  mm/vmalloc: allow arch-specific vmalloc_node overrides
+  mm: pgalloc: support address-conditional pmd allocation
+  arm64: separate code and data virtual memory allocation
+  arm64: dynamic enforcement of pmd-level PXNTable
+
+ arch/arm/kernel/irq.c               |  2 +-
+ arch/arm64/include/asm/pgalloc.h    | 11 +++++-
+ arch/arm64/include/asm/vmalloc.h    |  8 ++++
+ arch/arm64/include/asm/vmap_stack.h |  2 +-
+ arch/arm64/kernel/efi.c             |  2 +-
+ arch/arm64/kernel/module.c          |  7 ++++
+ arch/arm64/kernel/probes/kprobes.c  |  2 +-
+ arch/arm64/mm/Makefile              |  3 +-
+ arch/arm64/mm/trans_pgd.c           |  2 +-
+ arch/arm64/mm/vmalloc.c             | 57 +++++++++++++++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c       |  5 ++-
+ arch/powerpc/kernel/irq.c           |  2 +-
+ arch/riscv/include/asm/irq_stack.h  |  2 +-
+ arch/s390/hypfs/hypfs_diag.c        |  2 +-
+ arch/s390/kernel/setup.c            |  6 +--
+ arch/s390/kernel/sthyi.c            |  2 +-
+ include/asm-generic/pgalloc.h       | 18 +++++++++
+ include/linux/mm.h                  |  4 +-
+ include/linux/vmalloc.h             | 15 +++++++-
+ kernel/bpf/syscall.c                |  4 +-
+ kernel/fork.c                       |  4 +-
+ kernel/scs.c                        |  3 +-
+ lib/objpool.c                       |  2 +-
+ lib/test_vmalloc.c                  |  6 +--
+ mm/hugetlb_vmemmap.c                |  4 +-
+ mm/kasan/init.c                     | 22 ++++++-----
+ mm/memory.c                         |  4 +-
+ mm/percpu.c                         |  2 +-
+ mm/pgalloc-track.h                  |  3 +-
+ mm/sparse-vmemmap.c                 |  2 +-
+ mm/util.c                           |  3 +-
+ mm/vmalloc.c                        | 39 +++++++-------------
+ 32 files changed, 176 insertions(+), 74 deletions(-)
+ create mode 100644 arch/arm64/mm/vmalloc.c
+
+
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+-- 
+2.39.2
 
 
