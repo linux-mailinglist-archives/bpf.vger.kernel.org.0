@@ -1,185 +1,161 @@
-Return-Path: <bpf+bounces-22319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E00CC85BCEB
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 14:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16C5585BD17
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 14:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B9841F24335
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 13:14:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 958751F23F99
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 13:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B286A038;
-	Tue, 20 Feb 2024 13:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62DCC6A323;
+	Tue, 20 Feb 2024 13:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Cl03WB01"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2+kYIfsF"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0966A01A
-	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 13:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8806A034
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 13:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708434850; cv=none; b=JjD2HVSzrtA9oAhjz5L2CMFsQI5SzfO9s9MdrkccbL15dnlq6nzXHCtbNe3dzHTB/12bQTvr5LEdMi97CFZ3wzK3mPsYb2YJO97HRzTjiYPem4jPGRCHaQiArZ0XKpsi1Rjc8HoTxnjlC/rGQv2e4q2e87UQc1K7sRemCRIMV/0=
+	t=1708435342; cv=none; b=Mm9bFUwxOQOEzRhvdmQ5g+tLzUjtdfQvZKM6zuiWUZi3J3Bi30q4SstLdt46AvkGU0dq+cgUu9MMKTbjuh6U4eOnym3mvWWRpwmAbCNRqEaPc6GHdbqk0r1GCJIQh/BqXpF3gUgov9FE/QzH/g9I7kTkTItimlHBQdGRm91wQNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708434850; c=relaxed/simple;
-	bh=9P+qGZ09vKP1bVu9xDA/zAFHdQr1RJe/fY/2APMl9sI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=O8q8IIPB7SO2l4kBpAFjRjWRVUIresOCIPt2cSXKj9uCAG0QlBlBBUFOgKfB7IyiylsYAWT3RhKRaB7Ile8FF6EE8PlMErshnBX/q4YISxhCPZ1Oun8Qp7CEq8SQtujMuiE6mXYkbNG5gM7k9B5MZ4N4Upuc4aU7e1KVQcnk9hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cl03WB01; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708434847;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kpefqOp0oZS0+OYDrex40+aBinTmwsqS3fR+A5/fHEk=;
-	b=Cl03WB01iuT1/BuE+qogAAP2n66ZCzMSEUPzr5/SoC2JPjFLt4NJe9TSlG8yDa+XjG5ZP3
-	RvrORDm6tw5bPDN8T4VoMht7q9YhinHmjQ9z4NVOe7B1Wm0WnReXdqn7t6IkGqxcsa1sIP
-	cENRKkpbpfyN9BD0amX4Pn0uczDYzlE=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-267-V7-QmqmAPQ6-g2H3T9QITA-1; Tue, 20 Feb 2024 08:14:05 -0500
-X-MC-Unique: V7-QmqmAPQ6-g2H3T9QITA-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-512a5c6465bso2478034e87.1
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 05:14:04 -0800 (PST)
+	s=arc-20240116; t=1708435342; c=relaxed/simple;
+	bh=o0xRepjUnYiSiEcYPL2K6bmUQMgSoJTcVGYeumgAp/4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TPDoAs9gWhQ1oScKk+mmsHo4zuTOR2SFV+d5i1swweiuXwKbmza2B3+TNN+ksmjpOhVJnCBfsWo9dptMcGkRng9esSeqi+91IRTGIArgbxGh95SPWBmqVIGOdzCvnaSDWXJpkiyoHR3RdvMb2msDbAcFDvS5cYER/jHrgz9m/s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2+kYIfsF; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3e4765c86eso334796066b.0
+        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 05:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708435339; x=1709040139; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8B/NFmfqoyBPMsxDp+WDF9UL3KyYLkhiqUPY5SMyjdk=;
+        b=2+kYIfsF27rP5ohy2mglzr5xpGQjrJldBXpy3iaga8hoSPwRlLauuSxmJucYGb/1V2
+         kVpbJyrqjUTbfnxXGgR7KdY3wd0sV8boZeo4znqW/kKtceVIVbJuAfraAB3P6YZ8969O
+         1XQlDRTjhX3wpGPzMuuB4Bke1QqKtQ/9L36M1u1fEZaIGD7VpkZn3Wjw6ToXlj7741Hn
+         76dV5iA22SB2tQKtD5+7nU03+0ftmmsBst6x2PliKCgC4cqNpGcDYlEBzO4AJHJ8C9rz
+         Vcqz55YPsuFmonhSzTRhSY+TKXStKzwCneoIgSlH8JdtJeiGdzpkmtMLnYUpGYS8Vo9b
+         1Buw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708434843; x=1709039643;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kpefqOp0oZS0+OYDrex40+aBinTmwsqS3fR+A5/fHEk=;
-        b=wSURCTigPZ4y+e+2m87+SCSeJAbnphRKTRgzeqQiuLsINrijWO9oI3PY6lfS80OhVf
-         /rtkor/ii5omC9RZWZ8KLex7l39Qvxl8bw3TGmli2dsz2alXRUGYVyTa7F895D3L1k1p
-         5T55NgiwkKvsVrJeuLvfbwGWwaEjTYed43Hs0Mew9TXwlRHzV06W+TcjCsGExqbkS5DU
-         0+DWIDcXsbrpoG0jrrH5Hxr2zWVoN4ZHWJOnkMiabq5/okEPdQbstKXSWVpbhDBRJyHJ
-         qksOvGfjtyhzQABB8u9Cyqdjb7S0OV0rDVIS1cid/ZpdLwrUueb04ov2Ye+c+if+aWKz
-         /cwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVmH51uLuCz7VqHtcOlXTiVkPmx9nkvjaKN/ORsxioAQi42r9/+PPKioc7oJRdJXx1E0YOGKnq8py6gX9wgBGORLXPr
-X-Gm-Message-State: AOJu0Yxsg3QMcoVeujNUmlUuOsyyiaBUruSEZ6VXF1V31jDuz5lvNdqs
-	MbDHE2jtpaDUdHmw3jajlJnKIF73ReGMOYITwJi8zvtaH//UFwCxhFEQRxCfGAA94P09b+FqTPI
-	vDTk3jVIRLcoJqPxCiyCdMZ31jSlZagHy517c3aui+mjz85506Y28iGAd+g==
-X-Received: by 2002:a05:6512:1244:b0:512:bf7e:ca25 with SMTP id fb4-20020a056512124400b00512bf7eca25mr2175377lfb.20.1708434842773;
-        Tue, 20 Feb 2024 05:14:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH8GOsb9PCUAoG+xTokA/O/bJ8lqnvFxihET48bAH7rH5bSJopZDtx4usFA3e5/XmG7h0DGbQ==
-X-Received: by 2002:a05:6512:1244:b0:512:bf7e:ca25 with SMTP id fb4-20020a056512124400b00512bf7eca25mr2175339lfb.20.1708434842396;
-        Tue, 20 Feb 2024 05:14:02 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id f16-20020a17090624d000b00a3efce660c2sm561653ejb.198.2024.02.20.05.14.01
+        d=1e100.net; s=20230601; t=1708435339; x=1709040139;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8B/NFmfqoyBPMsxDp+WDF9UL3KyYLkhiqUPY5SMyjdk=;
+        b=ENv/1GY9qGZFNmgFwlB5df0gIQzVEzpKngltJZcZKj+9Y08POjq8xbi/1GKmI6COmv
+         1qAV3Ed/kH2/weleWO9e89zizRxupQ/GBqZpoNAtqnVOEjZJsnqdjQgzTSLNZpt+xMa6
+         x3RwXSTwmh/X+vTkwarFK5QKEVoKi3Xua2xrGzM8S7R4EONv12zys75IHn//oUtuQpng
+         69WENz2Chxmt4LLIQ0wYz3xpbCusOpU2kTNtM13GyuCmtwyO8cN30bIwmXjEXZTtveB/
+         MbEWlFDRlb7ROEMc87BqJHYnK/b53lOH2abhDYAMHxOrno/+01fB0+AvZnao2ScLjF/G
+         sDMQ==
+X-Gm-Message-State: AOJu0YzIA+dlAD8RjoOSWbaL9hHuG83rxo5TA326ARW9kbr1dQXy6EXD
+	ZFhjoqhUKXcLUnYyLZb2lt7H+2vswlf8kCjFHsRFfn06zNI9WqO+/tL3rTwkqg==
+X-Google-Smtp-Source: AGHT+IHM3r3mCpqoJIGBtRxw3x+74bF8MV4e++ZPwM7Qrin9FZU1JhFz8hSgTSqkyBRbGZNjFvQzXw==
+X-Received: by 2002:a17:906:7f92:b0:a3e:6465:4195 with SMTP id f18-20020a1709067f9200b00a3e64654195mr4181663ejr.63.1708435339303;
+        Tue, 20 Feb 2024 05:22:19 -0800 (PST)
+Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
+        by smtp.gmail.com with ESMTPSA id y13-20020a170906470d00b00a3ec0600ddasm1539091ejq.148.2024.02.20.05.22.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 05:14:02 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 83DF410F6365; Tue, 20 Feb 2024 14:14:01 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Paolo Abeni <pabeni@redhat.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
- Brouer <hawk@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Eric Dumazet
- <edumazet@google.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 2/3] bpf: test_run: Use system page pool for
- XDP live frame mode
-In-Reply-To: <e73b7562e4333d3295eaf6d08bc1c6219c2541e5.camel@redhat.com>
-References: <20240215132634.474055-1-toke@redhat.com>
- <20240215132634.474055-3-toke@redhat.com>
- <59c022bf-4cc4-850f-f8ab-3b8aab36f958@iogearbox.net>
- <e73b7562e4333d3295eaf6d08bc1c6219c2541e5.camel@redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 20 Feb 2024 14:14:01 +0100
-Message-ID: <87frxn1dnq.fsf@toke.dk>
+        Tue, 20 Feb 2024 05:22:18 -0800 (PST)
+Date: Tue, 20 Feb 2024 13:22:14 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	kpsingh@google.com, jannh@google.com, jolsa@kernel.org,
+	daniel@iogearbox.net, linux-fsdevel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH bpf-next 01/11] bpf: make bpf_d_path() helper use
+ probe-read semantics
+Message-ID: <ZdSnhqkO_JbRP5lO@google.com>
+References: <cover.1708377880.git.mattbobrowski@google.com>
+ <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
+ <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
 
-Paolo Abeni <pabeni@redhat.com> writes:
+On Tue, Feb 20, 2024 at 10:48:10AM +0100, Christian Brauner wrote:
+> On Tue, Feb 20, 2024 at 09:27:23AM +0000, Matt Bobrowski wrote:
+> > There has now been several reported instances [0, 1, 2] where the
+> > usage of the BPF helper bpf_d_path() has led to some form of memory
+> > corruption issue.
+> > 
+> > The fundamental reason behind why we repeatedly see bpf_d_path() being
+> > susceptible to such memory corruption issues is because it only
+> > enforces ARG_PTR_TO_BTF_ID constraints onto it's struct path
+> > argument. This essentially means that it only requires an in-kernel
+> > pointer of type struct path to be provided to it. Depending on the
+> > underlying context and where the supplied struct path was obtained
+> > from and when, depends on whether the struct path is fully intact or
+> > not when calling bpf_d_path(). It's certainly possible to call
+> > bpf_d_path() and subsequently d_path() from contexts where the
+> > supplied struct path to bpf_d_path() has already started being torn
+> > down by __fput() and such. An example of this is perfectly illustrated
+> > in [0].
+> > 
+> > Moving forward, we simply cannot enforce KF_TRUSTED_ARGS semantics
+> > onto struct path of bpf_d_path(), as this approach would presumably
+> > lead to some pretty wide scale and highly undesirable BPF program
+> > breakage. To avoid breaking any pre-existing BPF program that is
+> > dependent on bpf_d_path(), I propose that we take a different path and
+> > re-implement an incredibly minimalistic and bare bone version of
+> > d_path() which is entirely backed by kernel probe-read semantics. IOW,
+> > a version of d_path() that is backed by
+> > copy_from_kernel_nofault(). This ensures that any reads performed
+> > against the supplied struct path to bpf_d_path() which may end up
+> > faulting for whatever reason end up being gracefully handled and fixed
+> > up.
+> > 
+> > The caveats with such an approach is that we can't fully uphold all of
+> > d_path()'s path resolution capabilities. Resolving a path which is
+> > comprised of a dentry that make use of dynamic names via isn't
+> > possible as we can't enforce probe-read semantics onto indirect
+> > function calls performed via d_op as they're implementation
+> > dependent. For such cases, we just return -EOPNOTSUPP. This might be a
+> > little surprising to some users, especially those that are interested
+> > in resolving paths that involve a dentry that resides on some
+> > non-mountable pseudo-filesystem, being pipefs/sockfs/nsfs, but it's
+> > arguably better than enforcing KF_TRUSTED_ARGS onto bpf_d_path() and
+> > causing an unnecessary shemozzle for users. Additionally, we don't
+> 
+> NAK. We're not going to add a semi-functional reimplementation of
+> d_path() for bpf. This relied on VFS internals and guarantees that were
+> never given. Restrict it to KF_TRUSTED_ARGS as it was suggested when
+> this originally came up or fix it another way. But we're not adding a
+> bunch of kfuncs to even more sensitive VFS machinery and then build a
+> d_path() clone just so we can retroactively justify broken behavior.
 
-> On Tue, 2024-02-20 at 10:06 +0100, Daniel Borkmann wrote:
->> On 2/15/24 2:26 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> > The BPF_TEST_RUN code in XDP live frame mode creates a new page pool
->> > each time it is called and uses that to allocate the frames used for t=
-he
->> > XDP run. This works well if the syscall is used with a high repetitions
->> > number, as it allows for efficient page recycling. However, if used wi=
-th
->> > a small number of repetitions, the overhead of creating and tearing do=
-wn
->> > the page pool is significant, and can even lead to system stalls if the
->> > syscall is called in a tight loop.
->> >=20
->> > Now that we have a persistent system page pool instance, it becomes
->> > pretty straight forward to change the test_run code to use it. The only
->> > wrinkle is that we can no longer rely on a custom page init callback
->> > from page_pool itself; instead, we change the test_run code to write a
->> > random cookie value to the beginning of the page as an indicator that
->> > the page has been initialised and can be re-used without copying the
->> > initial data again.
->> >=20
->> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>=20
->> [...]
->> > -
->> >   	/* We create a 'fake' RXQ referencing the original dev, but with an
->> >   	 * xdp_mem_info pointing to our page_pool
->> >   	 */
->> >   	xdp_rxq_info_reg(&xdp->rxq, orig_ctx->rxq->dev, 0, 0);
->> > -	xdp->rxq.mem.type =3D MEM_TYPE_PAGE_POOL;
->> > -	xdp->rxq.mem.id =3D pp->xdp_mem_id;
->> > +	xdp->rxq.mem.type =3D MEM_TYPE_PAGE_POOL; /* mem id is set per-frame=
- below */
->> >   	xdp->dev =3D orig_ctx->rxq->dev;
->> >   	xdp->orig_ctx =3D orig_ctx;
->> >=20=20=20
->> > +	/* We need a random cookie for each run as pages can stick around
->> > +	 * between runs in the system page pool
->> > +	 */
->> > +	get_random_bytes(&xdp->cookie, sizeof(xdp->cookie));
->> > +
->>=20
->> So the assumption is that there is only a tiny chance of collisions with
->> users outside of xdp test_run. If they do collide however, you'd leak da=
-ta.
->
-> Good point. @Toke: what is the worst-case thing that could happen in
-> case a page is recycled from another pool's user?
->
-> could we possibly end-up matching the cookie for a page containing
-> 'random' orig_ctx/ctx, so that bpf program later tries to access
-> equally random ptrs?
+OK, I agree, having a semi-functional re-implementation of d_path() is
+indeed suboptimal. However, also understand that slapping the
+KF_TRUSTED_ARGS constraint onto the pre-existing BPF helper
+bpf_d_path() would outright break a lot of BPF programs out there, so
+I can't see how taht would be an acceptable approach moving forward
+here either.
 
-Well, yes, if there's a collision in the cookie value we'll end up
-basically dereferencing garbage pointer values, with all the badness
-that ensues (most likely just a crash, but system compromise is probably
-also possible in such a case).
+Let's say that we decided to leave the pre-existing bpf_d_path()
+implementation as is, accepting that it is fundamentally succeptible
+to memory corruption issues, are you saying that you're also not for
+adding the KF_TRUSTED_ARGS d_path() variant as I've done so here
+[0]. Or, is it the other supporting reference counting based BPF
+kfuncs [1, 2] that have irked you and aren't supportive of either?
 
-A 64-bit value is probably too small to be resistant against random
-collisions in a "protect global data across the internet" type scenario
-(for instance, a 64-bit cryptographic key is considered weak). However,
-in this case the collision domain is only for the lifetime of the
-running system, and each cookie value only stays valid for the duration
-of a single syscall (seconds, at most), so I figured it was acceptable.
+[0] https://lore.kernel.org/bpf/20240220-erstochen-notwehr-755dbd0a02b3@brauner/T/#m542b86991b257cf9612406f1cc4d5692bcb75da8
+[1] https://lore.kernel.org/bpf/20240220-erstochen-notwehr-755dbd0a02b3@brauner/T/#mc2aaadbe17490aeb1dde09071629b0b2a87d7436
+[2] https://lore.kernel.org/bpf/20240220-erstochen-notwehr-755dbd0a02b3@brauner/T/#m07fa7a0c03af530d2ab3c4ef25c377b1d6ef17f8
 
-We could exclude all-zeros as a valid cookie value (and also anything
-that looks as a valid pointer), but that only removes a few of the
-possible random collision values, so if we're really worried about
-random collisions of 64-bit numbers, I think a better approach would be
-to just make the cookie a 128-bit value instead. I can respin with that
-if you prefer? :)
-
--Toke
-
+/M
 
