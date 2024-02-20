@@ -1,171 +1,282 @@
-Return-Path: <bpf+bounces-22326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC3C85C226
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 18:13:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499C385C258
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 18:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39696B216E6
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 17:13:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA0101F22086
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 17:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A938676C61;
-	Tue, 20 Feb 2024 17:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFD276C76;
+	Tue, 20 Feb 2024 17:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVMV9Zu/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMBYgHSj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7858B76C60
-	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 17:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD3B76909;
+	Tue, 20 Feb 2024 17:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449190; cv=none; b=ZAS4EthrP8dzBcsnsoLetlzwDmcdYHj96chG423K/WOXcwkLIP/zJ7Tu33Ol89MycOFfcLouyKTyy3P9C9BUAHFjpxI6a3Lq15NP11YOgm2EsBye+3B3mfRSwIVth5rLwcQKKyGyC0zOS7FM39c8vdcL+VjPBNTN7nVWtsm2iSI=
+	t=1708449516; cv=none; b=u/iKt7o5Z0EDvm8s/0Xgwm1cvV/ZTH56O+ydaOOjIOpkfq/KwdGix0Cn1iPeyqp9lh6BEEYgpADiNlisDNfuPrFUzMw5Z95fypmlwnTnvKI97mAqCEQzYDSxvjEFIvaBbU/AT+8OT09DVkoQk3hPBY7UgNsij3QJOaWZ2gnIYIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449190; c=relaxed/simple;
-	bh=QyFYjFJzgtcet9LSgs+jYg9ym7r2VYbpOOAqT6ZvYL4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XOlL2r/kKEQNnaxTPP2YSRtqVdS4DK7HplsmzNLupa1s8TmY9bcf4c5pvxQwhS8AK0ASIWXA5rCMB46aMJcs1yNJIlueppXA+kaDv0ukZnNwHCQL5cu/B53MHOn7nTRuyGfnEAdQ+vvy4efxC1gqJdAVJ/sRv2S8zBaQ0KnA1eE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZVMV9Zu/; arc=none smtp.client-ip=209.85.167.44
+	s=arc-20240116; t=1708449516; c=relaxed/simple;
+	bh=BVzlnbEPLER7R7THzPc5B1uYCCS6jDIuLa1IqpQ5PA4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U7NYU/Q6z9aUMWl3VfYNpSdue4dUhfHBLLm/qhq6k95KdnNAWlJ4sARifNQLBChbKzvqPjDk4ZboBQZNdahMr+rq4t1v4qnvGJxdD5LL6zZe7cc4632L1KWvshDwoSR4NFkxWzQW4OOJr5I4IJiOIOBR2G3VISUY9CrA1RhdtDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XMBYgHSj; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512cca90f38so529954e87.2
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 09:13:08 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so795176266b.0;
+        Tue, 20 Feb 2024 09:18:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708449186; x=1709053986; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4k3iHBAGn0bZkooXGxLnRnep+EYS7gZ6teN+oVAJjCg=;
-        b=ZVMV9Zu/1ETihpXhyJ0lyVSMY/moqMDR5FDfzpmV1NyBW965ZIOmVd5DUehyOjhUhp
-         vuK7KtWyeuaFjtAQnEo+9yUYHHDGvMQ1shAk2bd07BqvQPdKK4p39GxFGfFkmlI3JU9W
-         K1G4aeFdRqvJEEvQ95vIJ6kvI/QfyU6JL6E6BwD42cYri8byBkIZjI9rDGueqyU2cuMm
-         avZbpPIpe+JAAjTOXV40fM4Nd17eGy32ODpMpjVqHsN/Ad9bKs2SR0w8EhakSDy9OmoE
-         JyG4vuQahYl+vIDlLray+kBNxUWhzoLFMOvrriLY7JgHTHPc0ge2A7lONa09RpeizXmG
-         97KQ==
+        d=gmail.com; s=20230601; t=1708449513; x=1709054313; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dmxS6iktBtidz6yGIwqms+MtYfTcC8Gwrx4Li+2LctM=;
+        b=XMBYgHSjW1pXnuRJWXWJV9+GNB7SdT2yBsoYWBSrB4HImFCTfOdSP1FdRaKQlbebDE
+         M96vPMUp8YpJ8tcUtpxkDI9jpy5JXYTGyIHvaMxDapK1QDga1I42gwIVWCMphT2mknWG
+         Gl/HPEB0CMAnjc98DAfRKkYxh1G1QPBnvLqwF60DiAzSE7Bn5FbpAxOCaTeQaaJ82XxN
+         mLFeARqbn/1As36meb8b2EMQE6Go+yvL0rj63gCjORgu5ZniaVoZ2+sbh1G1WLzGafzm
+         LZi06c//T6t8Gjr9A0KH7hAxsYEtbMagoC/dsIqpQlsK+yHSKSj6JPFf6q6NXfpPyYGZ
+         HVFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708449186; x=1709053986;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4k3iHBAGn0bZkooXGxLnRnep+EYS7gZ6teN+oVAJjCg=;
-        b=AiQmC1buIhMOPEfoYYs6biy8LB9DcekxE54nGSt3HU5mZ0S3+OANBljMWIrkvWJ31t
-         k0RtojffhFUWsXXVmJXDLNxdvbLUAZqtJpQf53xlK0WKLF/O0WEvWRpu4HByMOMeaw1j
-         ntsNk2oR9Vp2ASerqZVgscpRy2dx5wNtUCUT+0N5uO/VvUwA/v5GurJYRW7DeJ0fusB2
-         mecXdtY3O5yQVcXvfiET+m79gLZgtt/UZDg/yVk6EAW4l5YP5vo/7ZLvAzSS4bYvpWXm
-         ZMlHWQDgVlxakakr89f9Aj7tfwnjiOpSHXootufTuv4vaFxQ9CzhQQBl1G69BI40ROK7
-         caMg==
-X-Forwarded-Encrypted: i=1; AJvYcCWeskR4sQcYFvZZStTbrFjrugip4S1eJ6uUd2+QemRfVCpUQ4nVVsSX2g6apufSfbFNVO+WGMAF0YVR2bAwY0z373Q0
-X-Gm-Message-State: AOJu0Yys8xujYOrSYtWvvg+gXFhLfHWg/tL0Lt6wtbYxzm8yxU/+PT3X
-	kDLA3Wqwe++8hNP2kuEgpCDaPz0FepEYa7nlwRs1G+5E+z+PX+BM
-X-Google-Smtp-Source: AGHT+IEJ2kRPXXFskHmKZsGSM11jFGHvstFICHjnf9zGmrTTGN9ExKw+b/pKud180sGg9cD32wQ+OQ==
-X-Received: by 2002:ac2:5e62:0:b0:512:a93a:f5a5 with SMTP id a2-20020ac25e62000000b00512a93af5a5mr4945690lfr.19.1708449186257;
-        Tue, 20 Feb 2024 09:13:06 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v4-20020a5d6784000000b0033d39626c27sm9628728wru.76.2024.02.20.09.13.05
+        d=1e100.net; s=20230601; t=1708449513; x=1709054313;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dmxS6iktBtidz6yGIwqms+MtYfTcC8Gwrx4Li+2LctM=;
+        b=MeRb4rcmwFOLF+LSneN6G4UJfmFNurqyyplWhkX2Ju57/fIUOBzHl4lG8DldzA105q
+         W2XUBHylE9S8SmnCJDdte+ec07diWOAuclJRXEu1FsgLKE7LYlg410ugokOSQucW02Iv
+         ZeNcjCIdrifH2lNY/9aw1WGleMFfnWIFGelHUg78dgmWIh1d2B/DzsoWf/3Zr9Za+d34
+         cLg630T+msJqpg0oTgkmkSv2v6tDfBPWIkPyCNFiB32WMFGHx4oa1ei85FPT/1/lKbpE
+         +Zft95CeeWcjGmRdbzBPXLWnA4Q2J53WQ9DXqfM/LlUqEJuE0Mr+PilkwvK+Q80ZFoRX
+         zEdw==
+X-Forwarded-Encrypted: i=1; AJvYcCWp02saBdXsfs6WGeW2OGx8I0elj41wdi3S6m1WAk3ApcefFVyDW6gFnqNi8AIjoKY2RJpk5DmPKPT4XN9xEBdYVule3FHP6ByoZduYF1BCbIdKKUaEYvrD/qAkDzi0UpnRPrlhXZk8ZpG3BfDeKq5jEd8u/a8xJmvWebA/ge1ZCjNH
+X-Gm-Message-State: AOJu0YxZgd5X4GTYoWeV3lPa5sDpOUGdTDqXNKRyD/vyTXZLsM2BMg7B
+	P+3wQPPigaTeAbhjwvup4I8rJnjn3M7cQKRnaLlJGkmfzacjbhkq
+X-Google-Smtp-Source: AGHT+IFcO8MiaoD6Cte2ItgLhV+w9LAMsoeBHZyEn5ZrO/x7ZBnibRjWEqOEGIuYMtJYCpOsxEMCFg==
+X-Received: by 2002:a17:906:28d1:b0:a3e:c77a:8100 with SMTP id p17-20020a17090628d100b00a3ec77a8100mr4485554ejd.17.1708449513035;
+        Tue, 20 Feb 2024 09:18:33 -0800 (PST)
+Received: from krava ([83.240.60.70])
+        by smtp.gmail.com with ESMTPSA id g1-20020a170906c18100b00a3e278c4a3fsm3668349ejz.53.2024.02.20.09.18.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 09:13:05 -0800 (PST)
-Message-ID: <68ee71a1a4f86b05882e1065027150152f3c2f2d.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: check bpf_func_state->callback_depth
- when pruning states
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, kuniyu@amazon.com
-Date: Tue, 20 Feb 2024 19:13:04 +0200
-In-Reply-To: <f21c1a87-a657-407b-a074-496503edd20e@linux.dev>
-References: <20240212143832.28838-1-eddyz87@gmail.com>
-	 <20240212143832.28838-3-eddyz87@gmail.com>
-	 <fdf38873-a1e2-4a16-974b-ea2f265e08e1@linux.dev>
-	 <925915504557d991bf9b576a362e0ef4a8953795.camel@gmail.com>
-	 <0e5b990eeaa63590e067c8ac10642b6bc6d0e9a8.camel@gmail.com>
-	 <1fbcd9f1-6c83-4430-b797-a92285d1d151@linux.dev>
-	 <9e19786565a3fbfea58dcd25bba644fe8e0ed6b0.camel@gmail.com>
-	 <f21c1a87-a657-407b-a074-496503edd20e@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        Tue, 20 Feb 2024 09:18:32 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 20 Feb 2024 18:18:30 +0100
+To: Menglong Dong <dongmenglong.8@bytedance.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	mykolal@fb.com, shuah@kernel.org, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com, thinker.li@gmail.com,
+	zhoufeng.zf@bytedance.com, davemarchevsky@fb.com, dxu@dxuuu.xyz,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next 2/5] bpf: tracing: support to attach program to
+ multi hooks
+Message-ID: <ZdTe5pyV16y4wYzv@krava>
+References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+ <20240220035105.34626-3-dongmenglong.8@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220035105.34626-3-dongmenglong.8@bytedance.com>
 
-On Mon, 2024-02-19 at 16:25 -0800, Yonghong Song wrote:
-> On 2/16/24 6:27 AM, Eduard Zingerman wrote:
-> > On Wed, 2024-02-14 at 09:42 -0800, Yonghong Song wrote:
-> >=20
-> > > >    .------------------------------------- Checkpoint / State name
-> > > >    |    .-------------------------------- Code point number
-> > > >    |    |   .---------------------------- Stack state {ctx.a,ctx.b,=
-ctx.c}
-> > > >    |    |   |        .------------------- Callback depth in frame #=
-0
-> > > >    v    v   v        v
-> > > > 1  - (0) {7P,7P,7},depth=3D0
-> > > > 2    - (3) {7P,7P,7},depth=3D1
-> > > > 3      - (0) {7P,7P,42},depth=3D1
-> > > > (a)      - (3) {7P,7,42},depth=3D2
-> > > > 4          - (0) {7P,7,42},depth=3D2      loop terminates because o=
-f depth limit
-> > > > 5            - (4) {7P,7,42},depth=3D0    predicted false, ctx.a ma=
-rked precise
-> > > > 6            - (6) exit
-> > > > 7        - (2) {7P,7,42},depth=3D2
-> > > > 8          - (0) {7P,42,42},depth=3D2     loop terminates because o=
-f depth limit
-> > > > 9            - (4) {7P,42,42},depth=3D0   predicted false, ctx.a ma=
-rked precise
-> > > > 10           - (6) exit
-> > > > (b)      - (1) {7P,7P,42},depth=3D2
-> > > > 11         - (0) {42P,7P,42},depth=3D2    loop terminates because o=
-f depth limit
-> > > > 12           - (4) {42P,7P,42},depth=3D0  predicted false, ctx.{a,b=
-} marked precise
-> > > > 13           - (6) exit
-> > > > 14   - (2) {7P,7,7},depth=3D1
-> > > > 15     - (0) {7P,42,7},depth=3D1          considered safe, pruned u=
-sing checkpoint (a)
-> > > > (c)  - (1) {7P,7P,7},depth=3D1            considered safe, pruned u=
-sing checkpoint (b)
-> > > For the above line
-> > >      (c)  - (1) {7P,7P,7},depth=3D1            considered safe, prune=
-d using checkpoint (b)
-> > > I would change to
-> > >      (c)  - (1) {7P,7P,7},depth=3D1
-> > >             - (0) {42P, 7P, 7},depth =3D 1     considered safe, prune=
-d using checkpoint (11)
-> > At that point:
-> > - there is a checkpoint at (1) with state {7P,7P,42}
-> > - verifier is at (1) in state {7,7,7}
-> > Thus, verifier won't proceed to (0) because {7,7,7} is states_equal to =
-{7P,7P,42}.
->=20
-> Okay, I think the above example has BPF_F_TEST_STATE_FREQ set as in Patch=
- 3. It will
-> be great if you can explicitly mention this (BPF_F_TEST_STATE_FREQ) in th=
-e commit message.
+On Tue, Feb 20, 2024 at 11:51:02AM +0800, Menglong Dong wrote:
 
-Will do.
+SNIP
 
-[...]
+> @@ -3228,7 +3260,9 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  	struct bpf_link_primer link_primer;
+>  	struct bpf_prog *tgt_prog = NULL;
+>  	struct bpf_trampoline *tr = NULL;
+> +	struct btf *attach_btf = NULL;
+>  	struct bpf_tracing_link *link;
+> +	struct module *mod = NULL;
+>  	u64 key = 0;
+>  	int err;
+>  
+> @@ -3258,31 +3292,50 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  		goto out_put_prog;
+>  	}
+>  
+> -	if (!!tgt_prog_fd != !!btf_id) {
+> -		err = -EINVAL;
+> -		goto out_put_prog;
+> -	}
+> -
+>  	if (tgt_prog_fd) {
+> -		/*
+> -		 * For now we only allow new targets for BPF_PROG_TYPE_EXT. If this
+> -		 * part would be changed to implement the same for
+> -		 * BPF_PROG_TYPE_TRACING, do not forget to update the way how
+> -		 * attach_tracing_prog flag is set.
+> -		 */
+> -		if (prog->type != BPF_PROG_TYPE_EXT) {
+> +		if (!btf_id) {
+>  			err = -EINVAL;
+>  			goto out_put_prog;
+>  		}
+> -
+>  		tgt_prog = bpf_prog_get(tgt_prog_fd);
+>  		if (IS_ERR(tgt_prog)) {
+> -			err = PTR_ERR(tgt_prog);
+>  			tgt_prog = NULL;
+> -			goto out_put_prog;
+> +			/* tgt_prog_fd is the fd of the kernel module BTF */
+> +			attach_btf = btf_get_by_fd(tgt_prog_fd);
 
-> But then for
->    14   - (2) {7P,7,7},depth=3D1
->    15     - (0) {7P,42,7},depth=3D1          considered safe, pruned usin=
-g checkpoint (a)
-> The state
->    14   - (2) {7P,7,7},depth=3D1
-> will have state equal to
->     7        - (2) {7P,7,42},depth=3D2
-> right?
+I think we should pass the btf_fd through attr, like add
+link_create.tracing_btf_fd instead, this seems confusing
 
-I think you are correct.
+> +			if (IS_ERR(attach_btf)) {
+> +				attach_btf = NULL;
+> +				err = -EINVAL;
+> +				goto out_put_prog;
+> +			}
+> +			if (!btf_is_kernel(attach_btf)) {
+> +				btf_put(attach_btf);
+> +				err = -EOPNOTSUPP;
+> +				goto out_put_prog;
+> +			}
+> +		} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+> +			   tgt_prog->type == BPF_PROG_TYPE_TRACING) {
+> +			prog->aux->attach_tracing_prog = true;
+>  		}
+
+could you please add comment on why this check is in here?
+
+> -
+> -		key = bpf_trampoline_compute_key(tgt_prog, NULL, btf_id);
+> +		key = bpf_trampoline_compute_key(tgt_prog, attach_btf,
+> +						 btf_id);
+> +	} else if (btf_id) {
+> +		attach_btf = bpf_get_btf_vmlinux();
+> +		if (IS_ERR(attach_btf)) {
+> +			attach_btf = NULL;
+> +			err = PTR_ERR(attach_btf);
+> +			goto out_unlock;
+> +		}
+> +		if (!attach_btf) {
+> +			err = -EINVAL;
+> +			goto out_unlock;
+> +		}
+> +		btf_get(attach_btf);
+> +		key = bpf_trampoline_compute_key(NULL, attach_btf, btf_id);
+> +	} else {
+> +		attach_btf = prog->aux->attach_btf;
+> +		/* get the reference of the btf for bpf link */
+> +		if (attach_btf)
+> +			btf_get(attach_btf);
+>  	}
+>  
+>  	link = kzalloc(sizeof(*link), GFP_USER);
+> @@ -3319,7 +3372,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  	 *   are NULL, then program was already attached and user did not provide
+>  	 *   tgt_prog_fd so we have no way to find out or create trampoline
+>  	 */
+> -	if (!prog->aux->dst_trampoline && !tgt_prog) {
+> +	if (!prog->aux->dst_trampoline && !tgt_prog && !btf_id) {
+>  		/*
+>  		 * Allow re-attach for TRACING and LSM programs. If it's
+>  		 * currently linked, bpf_trampoline_link_prog will fail.
+> @@ -3346,17 +3399,27 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  		 * different from the destination specified at load time, we
+>  		 * need a new trampoline and a check for compatibility
+>  		 */
+> +		struct btf *origin_btf = prog->aux->attach_btf;
+>  		struct bpf_attach_target_info tgt_info = {};
+>  
+> +		/* use the new attach_btf to check the target */
+> +		prog->aux->attach_btf = attach_btf;
+>  		err = bpf_check_attach_target(NULL, prog, tgt_prog, btf_id,
+>  					      &tgt_info);
+> +		prog->aux->attach_btf = origin_btf;
+
+could we pass the attach_btf as argument then?
+
+jirka
+
+>  		if (err)
+>  			goto out_unlock;
+>  
+> -		if (tgt_info.tgt_mod) {
+> -			module_put(prog->aux->mod);
+> -			prog->aux->mod = tgt_info.tgt_mod;
+> -		}
+> +		mod = tgt_info.tgt_mod;
+> +		/* the new target and the previous target are in the same
+> +		 * module, release the reference once.
+> +		 */
+> +		if (mod && mod == prog->aux->mod)
+> +			module_put(mod);
+> +		err = bpf_tracing_check_multi(prog, tgt_prog, attach_btf,
+> +					      tgt_info.tgt_type);
+> +		if (err)
+> +			goto out_unlock;
+>  
+>  		tr = bpf_trampoline_get(key, &tgt_info);
+>  		if (!tr) {
+> @@ -3373,6 +3436,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  		 */
+>  		tr = prog->aux->dst_trampoline;
+>  		tgt_prog = prog->aux->dst_prog;
+> +		mod = prog->aux->mod;
+>  	}
+>  
+>  	err = bpf_link_prime(&link->link.link, &link_primer);
+> @@ -3388,6 +3452,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  
+>  	link->tgt_prog = tgt_prog;
+>  	link->trampoline = tr;
+> +	link->attach_btf = attach_btf;
+> +	link->mod = mod;
+>  
+>  	/* Always clear the trampoline and target prog from prog->aux to make
+>  	 * sure the original attach destination is not kept alive after a
+> @@ -3400,20 +3466,27 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  	if (prog->aux->dst_trampoline && tr != prog->aux->dst_trampoline)
+>  		/* we allocated a new trampoline, so free the old one */
+>  		bpf_trampoline_put(prog->aux->dst_trampoline);
+> +	if (prog->aux->mod && mod != prog->aux->mod)
+> +		/* the mod in prog is not used anywhere, move it to link */
+> +		module_put(prog->aux->mod);
+>  
+>  	prog->aux->dst_prog = NULL;
+>  	prog->aux->dst_trampoline = NULL;
+> +	prog->aux->mod = NULL;
+>  	mutex_unlock(&prog->aux->dst_mutex);
+>  
+>  	return bpf_link_settle(&link_primer);
+>  out_unlock:
+>  	if (tr && tr != prog->aux->dst_trampoline)
+>  		bpf_trampoline_put(tr);
+> +	if (mod && mod != prog->aux->mod)
+> +		module_put(mod);
+>  	mutex_unlock(&prog->aux->dst_mutex);
+>  	kfree(link);
+>  out_put_prog:
+>  	if (tgt_prog_fd && tgt_prog)
+>  		bpf_prog_put(tgt_prog);
+> +	btf_put(attach_btf);
+>  	return err;
+>  }
+>  
+> -- 
+> 2.39.2
+> 
 
