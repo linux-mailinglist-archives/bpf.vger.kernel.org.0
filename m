@@ -1,236 +1,269 @@
-Return-Path: <bpf+bounces-22325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22324-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C6F85C052
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 16:49:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E8B85BFFC
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 16:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BB411C22594
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 15:49:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1499284E51
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 15:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE98762EB;
-	Tue, 20 Feb 2024 15:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEAC76047;
+	Tue, 20 Feb 2024 15:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gTCPRfh1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dTrbqXLc";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1kfZv9oQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0687E76059;
-	Tue, 20 Feb 2024 15:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B047602A;
+	Tue, 20 Feb 2024 15:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444179; cv=none; b=lFrbDTyiTlXEvdXAa8XlBHCoLdSBqs+a7NxMIKzh/x057rDWJ4Y+tds7inj5dQB7f2ptAMF0x2/p7k8kI/3g/G4L0smuw0Ob/sBBQf0wH+VeC6bsuE+B22co0z9Qy2PDKmSNQBPsMwtwXtwXmFkF9Q/Vle56s0iVb2+ROLQihzI=
+	t=1708443132; cv=none; b=uztYGi8L+YlEEwCa27seH3ttGfpKe/iZmwf4cJbAMb3ysWjsFCoLtCeZHWuJJL2LwhjisYIHf9JMnqeGuigPRI6mxl00FopVl/0iEFgsNs99e2FPg/rFTzOASZVufbtzPut7smzXOQAiXPxxfsQk6Bg+WO71RRTzJtpoQ9Iu9Bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444179; c=relaxed/simple;
-	bh=u/2HKUJb6KGR6GS1f6EQ0sj4zlsfwLdjihnnE9eniGM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=kNXNs96sN/x8Ou1zPa6ORSDLHCXPMvwx576ETaiPaDvFwKK3rlCA5djdaOjZHKijkHoKM48SDxunO/+BtcENPmTbJZSxNwmvWIJKVct/PQIl6ep0PXFOSgVuFHBKod27qHU7sWWLTAJX058EMPO51bWx7ub6MmjsijBC9Np49oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gTCPRfh1; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=yjD/eaYEnzVF/8XY0SxXdbxqNJ3HkVv8gNxXdrBIF80=; b=gTCPRfh1k+KWhdFTHcqLyyleoR
-	lV1pGoxSo9EGhdFaJD4L3IHUn3RWRMHtxZqDqpj4oWwAlvYmmeB5vrDDMUZELfJlYGL5xa/2AW3Za
-	ZFT44Tqy14S/cnmWe9hPqJOTNXvNaH1JJWLZeEZ++XB3vGcy+rsvPf/MLIVt7rhbynI34NspQW/py
-	2ZHBVVFQ++yR8MykRPM4ALrcm/RAiukUjrRhdYrQELo0z1qpQgpCvm73Va2KTYiQUkZFShKjiRIGB
-	hFoSJytNDo2AxtfWaPvPGAmXjsVWqLHl9+Rvn6qt+9iKxVrcIgzBkLOxJunuKsyrqe2zmjuWwBokc
-	Dce1TJUQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcS65-000I8h-3v; Tue, 20 Feb 2024 16:31:53 +0100
-Received: from [178.197.249.29] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcS63-000Re9-MX; Tue, 20 Feb 2024 16:31:51 +0100
-Subject: Re: [PATCH v10 net-next 15/15] p4tc: add P4 classifier
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com,
- anjali.singhai@intel.com, namrata.limaye@intel.com, tom@sipanda.io,
- mleitner@redhat.com, Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com,
- jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com,
- horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com,
- bpf@vger.kernel.org, Victor Nogueira <victor@mojatatu.com>,
- Pedro Tammela <pctammela@mojatatu.com>
-References: <20240122194801.152658-1-jhs@mojatatu.com>
- <20240122194801.152658-16-jhs@mojatatu.com>
- <6841ee07-40c6-9a67-a1a7-c04cbff84757@iogearbox.net>
- <CAM0EoMnjEpZrajgfKLQhsJjDANsdsZf3z2W8CT9FTMQDw2hGMw@mail.gmail.com>
- <a567ac93-2564-2235-b65f-d0940da076a5@iogearbox.net>
- <CAM0EoM=XPJ96s3Y=ivrjH-crGb6hRu4hi90WB-O_SkxvLZNYpQ@mail.gmail.com>
- <CAM0EoM=TfDESv=Ewsf_HM3aN+p+718DXoVm-vvmz+5+7-9z3dQ@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c44e2c3f-06dd-4709-6799-3ab8f85a7265@iogearbox.net>
-Date: Tue, 20 Feb 2024 16:31:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1708443132; c=relaxed/simple;
+	bh=6ech/PEhJDQEwCIpjvyq59hk10aKaaCGBDEhyusDcPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r5T2oB74QaqkQq5//YMOle1H28gQZtTa/v5Cjkrx91c3y9/GARBflQCgoNzDaNSnw0OHc7+2jY8684BxZY1TIMY4a+awMhvjJZ1qtbrQCnheTWDloRm9UEmNHY1jQyCUsZCouBdptZA9kxFF3WPR4tHpwlZeJDl0L3Hm+05Ssnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dTrbqXLc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1kfZv9oQ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 20 Feb 2024 16:32:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708443128;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AVP2rsPhM53x+ceiqRGWvvmw5DZQWdOcX0FyAtmF2+E=;
+	b=dTrbqXLcBY8Ii+cuYpGP5bLrT4EU/02KkVhrL5GloVuhUQXZBasT6XqfN8GN64K7LfQI6C
+	cxncbL9Q+Mn7tqL7kDjE3s6IUd/tGxFBO6okK/3PdNBkMkieVZyWtwmSdOdMhgkrmVXYqv
+	k2FOP8wTkOf6M630DZNmq1HhJaPVgzYsv9qc8w41tSxnWfgJaHfRGONOKfTxbWGfb/D/xK
+	7lQ0/ZhpfFbPJgthAhZOo+Lq9I4owipkHXXe4o+Bn2dpD/ItAHbFSZMKCi5GW46pl755rM
+	I8VhYYc2iI+IK9C1W9UNcmbXIZ8r8unKpLxW5f+7DJAGBU+V8SOHo7YvF11KJw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708443128;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AVP2rsPhM53x+ceiqRGWvvmw5DZQWdOcX0FyAtmF2+E=;
+	b=1kfZv9oQvpjjyl4zOATuO0S9i1Y/OXrWTMeTmenKldNGvVEv1qTD4X94POOop44XBUiMVy
+	y9BlfIsLhi9vuwDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Message-ID: <20240220153206.AUZ_zP24@linutronix.de>
+References: <87le7ndo4z.fsf@toke.dk>
+ <20240214163607.RjjT5bO_@linutronix.de>
+ <87jzn5cw90.fsf@toke.dk>
+ <20240216165737.oIFG5g-U@linutronix.de>
+ <87ttm4b7mh.fsf@toke.dk>
+ <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
+ <20240220101741.PZwhANsA@linutronix.de>
+ <0b1c8247-ccfb-4228-bd64-53583329aaa7@kernel.org>
+ <20240220120821.1Tbz6IeI@linutronix.de>
+ <07620deb-2b96-4bcc-a045-480568a27c58@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAM0EoM=TfDESv=Ewsf_HM3aN+p+718DXoVm-vvmz+5+7-9z3dQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27191/Tue Feb 20 10:25:13 2024)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <07620deb-2b96-4bcc-a045-480568a27c58@kernel.org>
 
-On 2/16/24 10:18 PM, Jamal Hadi Salim wrote:
-> On Thu, Jan 25, 2024 at 12:59 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->> On Thu, Jan 25, 2024 at 10:47 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>> On 1/24/24 3:40 PM, Jamal Hadi Salim wrote:
->>>> On Wed, Jan 24, 2024 at 8:59 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>> On 1/22/24 8:48 PM, Jamal Hadi Salim wrote:
->>> [...]
->>>>>>
->>>>>> It should also be noted that it is feasible to split some of the ingress
->>>>>> datapath into XDP first and more into TC later (as was shown above for
->>>>>> example where the parser runs at XDP level). YMMV.
->>>>>> Regardless of choice of which scheme to use, none of these will affect
->>>>>> UAPI. It will all depend on whether you generate code to load on XDP vs
->>>>>> tc, etc.
->>>>>>
->>>>>> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
->>>>>> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
->>>>>> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
->>>>>> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
->>>>>> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
->>>>>
->>>>> My objections from last iterations still stand, and I also added a nak,
->>>>> so please do not just drop it with new revisions.. from the v10 as you
->>>>> wrote you added further code but despite the various community feedback
->>>>> the design still stands as before, therefore:
->>>>>
->>>>> Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
->>>>
->>>> We didnt make code changes - but did you read the cover letter and the
->>>> extended commentary in this patch's commit log? We should have
->>>> mentioned it in the changes log. It did respond to your comments.
->>>> There's text that says "the filter manages the lifetime of the
->>>> pipeline" - which in the future could include not only tc but XDP but
->>>> also the hardware path (in the form of a file that gets loaded). I am
->>>> not sure if that message is clear. Your angle being this is layer
->>>> violation. In the last discussion i asked you for suggestions and we
->>>> went the tcx route, which didnt make sense, and  then you didnt
->>>> respond.
->>> [...]
->>>
->>>>> Also as mentioned earlier I don't think tc should hold references on
->>>>> XDP programs in here. It doesn't make any sense aside from the fact
->>>>> that the cls_p4 is also not doing anything with it. This is something
->>>>> that a user space control plane should be doing i.e. managing a XDP
->>>>> link on the target device.
->>>>
->>>> This is the same argument about layer violation that you made earlier.
->>>> The filter manages the p4 pipeline - i.e it's not just about the ebpf
->>>> blob(s) but for example in the future (discussions are still ongoing
->>>> with vendors who have P4 NICs) a filter could be loaded to also
->>>> specify the location of the hardware blob.
->>>
->>> Ah, so there is a plan to eventually add HW offload support for cls_p4?
->>> Or is this only specifiying a location of a blob through some opaque
->>> cookie value from user space?
->>
->> Current thought process is it will be something along these lines (the
->> commit provides more details):
->>
->> tc filter add block 22 ingress protocol all prio 1 p4 pname simple_l3 \
->>     prog type hw filename "mypnameprog.o" ... \
->>     prog type xdp obj $PARSER.o section parser/xdp pinned_link
->> /sys/fs/bpf/mylink \
->>     action bpf obj $PROGNAME.o section prog/tc-ingress
->>
->> These discussions are still ongoing - but that is the current
->> consensus. Note: we are not pushing any code for that, but hope it
->> paints the bigger picture....
->> The idea is the cls p4 owns the lifetime of the pipeline. Installing
->> the filter instantiates the p4 pipeline "simple_l3" and triggers a lot
->> of the refcounts to make sure the pipeline and its components stays
->> alive.
->> There could be multiple such filters - when someone deletes the last
->> filter, then it is safe to delete the pipeline.
->> Essentially the filter manages the lifetime of the pipeline.
->>
->>>> I would be happy with a suggestion that gets us moving forward with
->>>> that context in mind.
->>>
->>> My question on the above is mainly what does it bring you to hold a
->>> reference on the XDP program? There is no guarantee that something else
->>> will get loaded onto XDP, and then eventually the cls_p4 is the only
->>> entity holding the reference but w/o 'purpose'. We do have BPF links
->>> and the user space component orchestrating all this needs to create
->>> and pin the BPF link in BPF fs, for example. An artificial reference
->>> on XDP prog feels similar as if you'd hold a reference on an inode
->>> out of tc.. Again, that should be delegated to the control plane you
->>> have running interacting with the compiler which then manages and
->>> loads its artifacts. What if you would also need to set up some
->>> netfilter rules for the SW pipeline, would you then embed this too?
->>
->> Sorry, a slight tangent first:
->> P4 is self-contained, there are a handful of objects that are defined
->> by the spec (externs, actions, tables, etc) and we model them in the
->> patchset, so that part is self-contained. For the extra richness such
->> as the netfilter example you quoted - based on my many years of
->> experience deploying SDN - using daemons(sorry if i am reading too
->> much in what I think you are implying) for control is not the best
->> option i.e you need all kinds of coordination - for example where do
->> you store state, what happens when the daemon dies, how do you
->> graceful restarts etc. Based on that, if i can put things in the
->> kernel (which is essentially a "perpetual daemon", unless the kernel
->> crashes) it's a lot simpler to manage as a source of truth especially
->> when there is not that much info. There is a limit when there are
->> multiple pieces (to use your netfilter example) because you need
->> another layer to coordinate things.
+On 2024-02-20 13:57:24 [+0100], Jesper Dangaard Brouer wrote:
+> > so I replaced nr_cpu_ids with 64 and bootet maxcpus=3D64 so that I can =
+run
+> > xdp-bench on the ixgbe.
+> >=20
+>=20
+> Yes, ixgbe HW have limited TX queues, and XDP tries to allocate a
+> hardware TX queue for every CPU in the system.  So, I guess you have too
+> many CPUs in your system - lol.
+>=20
+> Other drivers have a fallback to a locked XDP TX path, so this is also
+> something to lookout for in the machine with i40e.
 
-'source of truth' for the various attach points or BPF links, yes, but in
-this case here it is not, since the source of truth on what is attached
-is not in cls_p4 but rather on the XDP link. How do you handle the case
-when cls_p4 says something different to what is /actually/ attached? Why
-is it not enough to establish some convention in user space, to pin the
-link and retrieve/update from there when needed? Like everyone else does.
-... even if you consider iproute2 your "control plane" (which I have the
-feeling you do)?
+this locked XDP TX path starts at 64 but xdp_progs are rejected > 64 * 2.
 
->> Re: the XDP part - our key reason is mostly managerial, in that the
->> filter is the lifetime manager of the pipeline; and that if i dump
+> > so. i40 send, ixgbe receive.
+> >=20
+> > -t 2
+> >=20
+> > | Summary                 2,348,800 rx/s                  0 err/s
+> > |   receive total         2,348,800 pkt/s         2,348,800 drop/s     =
+           0 error/s
+> > |     cpu:0               2,348,800 pkt/s         2,348,800 drop/s     =
+           0 error/s
+> > |   xdp_exception                 0 hit/s
+> >=20
+>=20
+> This is way too low, with i40e sending.
+>=20
+> On my system with only -t 1 my i40e driver can send with approx 15Mpps:
+>=20
+>  Ethtool(i40e2) stat:     15028585 (  15,028,585) <=3D tx-0.packets /sec
+>  Ethtool(i40e2) stat:     15028589 (  15,028,589) <=3D tx_packets /sec
 
-This is imho the problematic part which feels like square peg in round
-hole, trying to fit this whole lifetime manager of the pipeline into
-the cls_p4 filter. We agree to disagree here. Instead of reusing
-individual building blocks from user space, this tries to cramp control
-plane parts into the kernel for which its not a great fit with what is
-build here as-is.
+-t1 in ixgbe
+Show adapter(s) (eth1) statistics (ONLY that changed!)
+Ethtool(eth1    ) stat:    107857263 (    107,857,263) <=3D tx_bytes /sec
+Ethtool(eth1    ) stat:    115047684 (    115,047,684) <=3D tx_bytes_nic /s=
+ec
+Ethtool(eth1    ) stat:      1797621 (      1,797,621) <=3D tx_packets /sec
+Ethtool(eth1    ) stat:      1797636 (      1,797,636) <=3D tx_pkts_nic /sec
+Ethtool(eth1    ) stat:    107857263 (    107,857,263) <=3D tx_queue_0_byte=
+s /sec
+Ethtool(eth1    ) stat:      1797621 (      1,797,621) <=3D tx_queue_0_pack=
+ets /sec
 
->> that filter i can see all the details in regards to the pipeline(tc,
->> XDP and in future hw, etc) in one spot. You are right, the link
->> pinning is our protection from someone replacing the XDP prog (this
->> was a tip from Toke in the early days) and the comparison of tc
->> holding inode is apropos.
->> There's some history: in the early days we were also using metadata
->> which comes from the XDP program at the tc layer if more processing
->> was to be done (and there was extra metadata which told us which XDP
->> prog produced it which we would vet before trusting the metadata).
->> Given all the above, we should still be able to hold this info without
->> necessarily holding the extra refcount and be able to see this detail.
->> So we can remove the refcounting.
-> 
-> Daniel?
+-t i40e
+Ethtool(eno2np1 ) stat:           90 (             90) <=3D port.rx_bytes /=
+sec
+Ethtool(eno2np1 ) stat:            1 (              1) <=3D port.rx_size_12=
+7 /sec
+Ethtool(eno2np1 ) stat:            1 (              1) <=3D port.rx_unicast=
+ /sec
+Ethtool(eno2np1 ) stat:     79554379 (     79,554,379) <=3D port.tx_bytes /=
+sec
+Ethtool(eno2np1 ) stat:      1243037 (      1,243,037) <=3D port.tx_size_64=
+ /sec
+Ethtool(eno2np1 ) stat:      1243037 (      1,243,037) <=3D port.tx_unicast=
+ /sec
+Ethtool(eno2np1 ) stat:           86 (             86) <=3D rx-32.bytes /sec
+Ethtool(eno2np1 ) stat:            1 (              1) <=3D rx-32.packets /=
+sec
+Ethtool(eno2np1 ) stat:           86 (             86) <=3D rx_bytes /sec
+Ethtool(eno2np1 ) stat:            1 (              1) <=3D rx_cache_waive =
+/sec
+Ethtool(eno2np1 ) stat:            1 (              1) <=3D rx_packets /sec
+Ethtool(eno2np1 ) stat:            1 (              1) <=3D rx_unicast /sec
+Ethtool(eno2np1 ) stat:     74580821 (     74,580,821) <=3D tx-0.bytes /sec
+Ethtool(eno2np1 ) stat:      1243014 (      1,243,014) <=3D tx-0.packets /s=
+ec
+Ethtool(eno2np1 ) stat:     74580821 (     74,580,821) <=3D tx_bytes /sec
+Ethtool(eno2np1 ) stat:      1243014 (      1,243,014) <=3D tx_packets /sec
+Ethtool(eno2np1 ) stat:      1243037 (      1,243,037) <=3D tx_unicast /sec
 
-The refcount should definitely be removed, but then again, see the point
-above in that it is inconsistent information. Why can't this be done in
-user space with some convention in your user space control plane - if you
-take iproute2, then why it cannot pin the link in a bpf fs instance and
-retrieve it from there?
+mine is slightly slower. But this seems to match what I see on the RX
+side.
+
+> At this level, if you can verify that CPU:60 is 100% loaded, and packet
+> generator is sending more than rx number, then it could work as a valid
+> experiment.
+
+i40e receiving on 8:
+%Cpu8  :  0.0 us,  0.0 sy,  0.0 ni, 84.8 id,  0.0 wa,  0.0 hi, 15.2 si,  0.=
+0 st=20
+
+ixgbe receiving on 13:
+%Cpu13 :  0.0 us,  0.0 sy,  0.0 ni, 56.7 id,  0.0 wa,  0.0 hi, 43.3 si,  0.=
+0 st=20
+
+looks idle. On the sending side kpktgend_0 is always at 100%.
+
+> > -t 18
+> > | Summary                 7,784,946 rx/s                  0 err/s
+> > |   receive total         7,784,946 pkt/s         7,784,946 drop/s     =
+           0 error/s
+> > |     cpu:60              7,784,946 pkt/s         7,784,946 drop/s     =
+           0 error/s
+> > |   xdp_exception                 0 hit/s
+> >=20
+> > after t18 it drop down to 2,=E2=80=A6
+> > Now I got worse than before since -t8 says 7,5=E2=80=A6 and it did 8,4 =
+in the
+> > morning. Do you have maybe a .config for me in case I did not enable the
+> > performance switch?
+> >=20
+>=20
+> I would look for root-cause with perf record +
+>  perf report --sort cpu,comm,dso,symbol --no-children
+
+while sending with ixgbe while running perf top on the box:
+| Samples: 621K of event 'cycles', 4000 Hz, Event count (approx.): 49979376=
+685 lost: 0/0 drop: 0/0
+| Overhead  CPU  Command          Shared Object             Symbol
+|   31.98%  000  kpktgend_0       [kernel]                  [k] xas_find
+|    6.72%  000  kpktgend_0       [kernel]                  [k] pfn_to_dma_=
+pte
+|    5.63%  000  kpktgend_0       [kernel]                  [k] ixgbe_xmit_=
+frame_ring
+|    4.78%  000  kpktgend_0       [kernel]                  [k] dma_pte_cle=
+ar_level
+|    3.16%  000  kpktgend_0       [kernel]                  [k] __iommu_dma=
+_unmap
+|    2.30%  000  kpktgend_0       [kernel]                  [k] fq_ring_fre=
+e_locked
+|    1.99%  000  kpktgend_0       [kernel]                  [k] __domain_ma=
+pping
+|    1.82%  000  kpktgend_0       [kernel]                  [k] iommu_dma_a=
+lloc_iova
+|    1.80%  000  kpktgend_0       [kernel]                  [k] __iommu_map
+|    1.72%  000  kpktgend_0       [kernel]                  [k] iommu_pgsiz=
+e.isra.0
+|    1.70%  000  kpktgend_0       [kernel]                  [k] __iommu_dma=
+_map
+|    1.63%  000  kpktgend_0       [kernel]                  [k] alloc_iova_=
+fast
+|    1.59%  000  kpktgend_0       [kernel]                  [k] _raw_spin_l=
+ock_irqsave
+|    1.32%  000  kpktgend_0       [kernel]                  [k] iommu_map
+|    1.30%  000  kpktgend_0       [kernel]                  [k] iommu_dma_m=
+ap_page
+|    1.23%  000  kpktgend_0       [kernel]                  [k] intel_iommu=
+_iotlb_sync_map
+|    1.21%  000  kpktgend_0       [kernel]                  [k] xa_find_aft=
+er
+|    1.17%  000  kpktgend_0       [kernel]                  [k] ixgbe_poll
+|    1.06%  000  kpktgend_0       [kernel]                  [k] __iommu_unm=
+ap
+|    1.04%  000  kpktgend_0       [kernel]                  [k] intel_iommu=
+_unmap_pages
+|    1.01%  000  kpktgend_0       [kernel]                  [k] free_iova_f=
+ast
+|    0.96%  000  kpktgend_0       [pktgen]                  [k] pktgen_thre=
+ad_worker
+
+the i40e box while sending:
+|Samples: 400K of event 'cycles:P', 4000 Hz, Event count (approx.): 8051244=
+3924 lost: 0/0 drop: 0/0
+|Overhead  CPU  Command          Shared Object         Symbol
+|  24.04%  000  kpktgend_0       [kernel]              [k] i40e_lan_xmit_fr=
+ame
+|  17.20%  019  swapper          [kernel]              [k] i40e_napi_poll
+|   4.84%  019  swapper          [kernel]              [k] intel_idle_irq
+|   4.20%  019  swapper          [kernel]              [k] napi_consume_skb
+|   3.00%  000  kpktgend_0       [pktgen]              [k] pktgen_thread_wo=
+rker
+|   2.76%  008  swapper          [kernel]              [k] i40e_napi_poll
+|   2.36%  000  kpktgend_0       [kernel]              [k] dma_map_page_att=
+rs
+|   1.93%  019  swapper          [kernel]              [k] dma_unmap_page_a=
+ttrs
+|   1.70%  008  swapper          [kernel]              [k] intel_idle_irq
+|   1.44%  008  swapper          [kernel]              [k] __udp4_lib_rcv
+|   1.44%  008  swapper          [kernel]              [k] __netif_receive_=
+skb_core.constprop.0
+|   1.40%  008  swapper          [kernel]              [k] napi_build_skb
+|   1.28%  000  kpktgend_0       [kernel]              [k] kfree_skb_reason
+|   1.27%  008  swapper          [kernel]              [k] ip_rcv_core
+|   1.19%  008  swapper          [kernel]              [k] inet_gro_receive
+|   1.01%  008  swapper          [kernel]              [k] kmem_cache_free.=
+part.0
+
+> --Jesper
+
+Sebastian
 
