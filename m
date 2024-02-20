@@ -1,142 +1,143 @@
-Return-Path: <bpf+bounces-22313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 190EA85B957
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 11:43:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2965385BA78
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 12:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DA81B222A8
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCB831F25D88
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 11:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE387627FF;
-	Tue, 20 Feb 2024 10:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3800166B5F;
+	Tue, 20 Feb 2024 11:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a+4/430e"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tt3N7L2z"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747E43EA88;
-	Tue, 20 Feb 2024 10:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1AD66B5A
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 11:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708425783; cv=none; b=LsHnCi6JlPaz0y31sKZ6gqOlKD1IaytLSGBUsWgqnKydHvgot0qIa540NnlFF2WTNIGfu4QFlziw5BR42QE6pRJsf+pLieaLnFz6SGW9qa5uTYjXER95toc5PYULJJZMvK9GLTOHJKZAc0N0VCOWBjZEalMYS/OhH5d/1iV6u6s=
+	t=1708428234; cv=none; b=XTbhKc5IUXzBFJR2SUhPthT9zZvflbRyHf2UuVsWyO0MJuCOdJZ/TBoOiGnsG7OFrzIRP0Eha5cUTVOcOXILGmlzrx46pw4/wWn7DQ/5uzjgAlSZ0UjSc+baYBm4hhv9GuKIC24vLfkvDv70pGl76YU9ZR1Wb9P/DgkpM5QCyS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708425783; c=relaxed/simple;
-	bh=KN/9eAsuetSnf1YuKZN74PDoEk4+o0nerLs+2e8yZPI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JLdxE4HNH6AJw1nqEjpDbYEXZ1sbXF577Jb5RYud1MCs9OVCZ8rZy2+vvXMynTFeSXyL/d7oTynRJvgo0EBbVKxylbhWE1WOD5j74fWzeJLjDXxmf62Ucr/70fBMRMb+CJ5KG+IaCCwqOQvCLFIXpSsE+5yL9mNMxcmhNSjGJVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a+4/430e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CE66C433C7;
-	Tue, 20 Feb 2024 10:43:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708425782;
-	bh=KN/9eAsuetSnf1YuKZN74PDoEk4+o0nerLs+2e8yZPI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=a+4/430eZDxmfKGa3jFXyElOroI2LT61/iEsQicEw/czIXo097yQbHPUngAWwdI0w
-	 W69qqkzFxu+pIPzRF0UcaqtBrlP3p9Fi+FxaV1d0peQk48+3T3gndymN4btydDDGQQ
-	 MUZd1BCXhNupQqBylfWlwEzXD+d9yz+bR5KRd1EvXuVkcuRAGS3aSArphIxADIQ5i3
-	 sMAWgM81x34qJeOuvQ/LsR9BXRGHi2S43/kG0E/c5DqiATyyHWFO5tGxOv0prHofuL
-	 De2f7LzsObrMkG7z+7oShdb4ohUuwreXwx7VGIA763arifZtVfS6A9njQA9STRYB2q
-	 6vZ1ATIJKSbxw==
-Message-ID: <0b1c8247-ccfb-4228-bd64-53583329aaa7@kernel.org>
-Date: Tue, 20 Feb 2024 11:42:57 +0100
+	s=arc-20240116; t=1708428234; c=relaxed/simple;
+	bh=/m5l675lvhpdek52eIYzQ2WRIO9Em8rH6DpHO14nHoc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=n8rCIeNISce8GAr8pOw1xOmw4PgtTZA1Byu+In7iSrxhuDJVwgpNNvTdN0KJ0/PvKqcPcwuvX/5OGoUDiWl5UrTnP2cgiYFZ31+S8PEzQTc+RRGcRfFbC7XWdqjehjrqB7nslumMrx34w9CkcPphHcPle1d3jTrzcp2lN91IMxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tt3N7L2z; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708428232;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aHBopp27NiYjGG/312hFWNf4Ro7Aht8Q8wDQZilTwiY=;
+	b=Tt3N7L2zHxfK1yCz8i+eaFnKrR8EtZ5lQSKtUEo5gRlCdWV0zj0nnlKm+hpLN4fUiDe3il
+	DvS+ksHa1QNk8TQpgFIYwTLEalsaZv8GBfdITauz5OBE4NjCAEJucCx9R+mmv+NkaQKkdm
+	hTXtDAtBC9ADlxC1w7l/YjRW1drV/us=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-204-ta8fuCONOBacyk7pCPKm1Q-1; Tue, 20 Feb 2024 06:23:50 -0500
+X-MC-Unique: ta8fuCONOBacyk7pCPKm1Q-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a2cb0d70d6cso366058866b.2
+        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 03:23:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708428229; x=1709033029;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aHBopp27NiYjGG/312hFWNf4Ro7Aht8Q8wDQZilTwiY=;
+        b=m0hU7bc0ddf0RtwXfXNgGW/oIhFCajFYyPb0Id3eQrXcFjDKViSDmOL1oExtPwPNhM
+         9gfKqT2KjnIB6GZkHK33w/wSHDN8WrBLfbftqtyNWq9eC+4tjqhfo8XUmFojOMgDBkmi
+         7sxwXvHRjknBQIg1oCVTuh32CY/tkfTNmqDC1AWwRzZc3BsW/xfN9JV5p2bHRbVUzSuE
+         IJfl5JIedRHLG7I3gQjwEA3D4RHAQtOhgfN6ZIyN2Bf6mxA1EnIORm9d3486Bsw43TIg
+         KqUMiJEu3qasJBa7ZFXBHk0wzEgLYBbrN/vZkcqdKOuLwqJXscukTfu/JhJkYDJ5h4Rz
+         Bjmg==
+X-Forwarded-Encrypted: i=1; AJvYcCUjTgxnr+sGQGI8mYigls3PJBnkXf368cCKMRsc238ea0/uJnofsQklGBi+w8criicAduz5fn8gF8NqjYcZu3pJIEdz
+X-Gm-Message-State: AOJu0YwmLJcETSqtd5+iwLl11Dm8VErM8JcWPH/55BlnbBM8P+JDZiF5
+	35NE0LU4t85mtmDKRQ9QxtmgkXkmffJt0ldaOnfa3yHvDPUqjxb2a3HPNnU8CkXTe5GQeY0h5Yi
+	m4oqZRchDyDRvx19s6d1D5SwQ3sPuzwdlIuWE5L1MeDls47xonQ==
+X-Received: by 2002:a17:906:6b99:b0:a3e:6a25:2603 with SMTP id l25-20020a1709066b9900b00a3e6a252603mr3484338ejr.33.1708428229730;
+        Tue, 20 Feb 2024 03:23:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHn+dYqYLg6+WkxQUfBYPRXWnBfJq01cV9qnvwWwoJA6M4vithRhzp4KiPcpYPiB6huGquIYw==
+X-Received: by 2002:a17:906:6b99:b0:a3e:6a25:2603 with SMTP id l25-20020a1709066b9900b00a3e6a252603mr3484320ejr.33.1708428229358;
+        Tue, 20 Feb 2024 03:23:49 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ld1-20020a170906f94100b00a3e82ec0d76sm2214072ejb.113.2024.02.20.03.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 03:23:49 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 8C19710F62CB; Tue, 20 Feb 2024 12:23:48 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+ <ast@kernel.org>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 0/3] Change BPF_TEST_RUN use the system page
+ pool for live XDP frames
+In-Reply-To: <631d6b12-fb5c-3074-3770-d6927aea393d@iogearbox.net>
+References: <20240215132634.474055-1-toke@redhat.com>
+ <87wmr0b82y.fsf@toke.dk>
+ <631d6b12-fb5c-3074-3770-d6927aea393d@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Tue, 20 Feb 2024 12:23:48 +0100
+Message-ID: <87o7cbbcqj.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-Content-Language: en-US
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <66d9ee60-fbe3-4444-b98d-887845d4c187@kernel.org>
- <20240214121921.VJJ2bCBE@linutronix.de> <87y1bndvsx.fsf@toke.dk>
- <20240214142827.3vV2WhIA@linutronix.de> <87le7ndo4z.fsf@toke.dk>
- <20240214163607.RjjT5bO_@linutronix.de> <87jzn5cw90.fsf@toke.dk>
- <20240216165737.oIFG5g-U@linutronix.de> <87ttm4b7mh.fsf@toke.dk>
- <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
- <20240220101741.PZwhANsA@linutronix.de>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20240220101741.PZwhANsA@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
+> On 2/19/24 7:52 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+>>=20
+>>> Now that we have a system-wide page pool, we can use that for the live
+>>> frame mode of BPF_TEST_RUN (used by the XDP traffic generator), and
+>>> avoid the cost of creating a separate page pool instance for each
+>>> syscall invocation. See the individual patches for more details.
+>>>
+>>> Toke H=C3=B8iland-J=C3=B8rgensen (3):
+>>>    net: Register system page pool as an XDP memory model
+>>>    bpf: test_run: Use system page pool for XDP live frame mode
+>>>    bpf: test_run: Fix cacheline alignment of live XDP frame data
+>>>      structures
+>>>
+>>>   include/linux/netdevice.h |   1 +
+>>>   net/bpf/test_run.c        | 138 +++++++++++++++++++-------------------
+>>>   net/core/dev.c            |  13 +++-
+>>>   3 files changed, 81 insertions(+), 71 deletions(-)
+>>=20
+>> Hi maintainers
+>>=20
+>> This series is targeting net-next, but it's listed as delegate:bpf in
+>> patchwork[0]; is that a mistake? Do I need to do anything more to nudge =
+it
+>> along?
+>
+> I moved it over to netdev, it would be good next time if there are depend=
+encies
+> which are in net-next but not yet bpf-next to clearly state them given fr=
+om this
+> series the majority touches the bpf test infra code.
 
-On 20/02/2024 11.17, Sebastian Andrzej Siewior wrote:
-> On 2024-02-20 10:17:53 [+0100], Jesper Dangaard Brouer wrote:
->>
->>
->> On 19/02/2024 20.01, Toke Høiland-Jørgensen wrote:
->>> may be simpler to use pktgen, and at 10G rates that shouldn't become a
->>> bottleneck either. The pktgen_sample03_burst_single_flow.sh script in
->>> samples/pktgen in the kernel source tree is fine for this usage.
->>
->> Example of running script:
->>   ./pktgen_sample03_burst_single_flow.sh -vi mlx5p1 -d 198.18.1.1 -m
->> ec:0d:9a:db:11:c4 -t 12
->>
->> Notice the last parameter, which is number threads to start.
->> If you have a ixgbe NIC driver, then I recommend -t 2 even if you have more
->> CPUs.
-> 
-> I get
-> | Summary                 8,435,690 rx/s                  0 err/s
+Right, I thought that was what I was doing by targeting them at net-next
+(in the subject). What's the proper way to do this, then, just noting it
+in the cover letter? :)
 
-This seems low...
-Have you remembered to disable Ethernet flow-control?
+-Toke
 
-  # ethtool -A ixgbe1 rx off tx off
-  # ethtool -A i40e2 rx off tx off
-
-
-> | Summary                 8,436,294 rx/s                  0 err/s
-
-You want to see the "extended" info via cmdline (or Ctrl+\)
-
-  # xdp-bench drop -e eth1
-
-
-> 
-> with "-t 8 -b 64". I started with 2 and then increased until rx/s was
-> falling again. I have ixgbe on the sending side and i40e on the
-
-With ixgbe on the sending side, my testlab shows I need -t 2.
-
-With -t 2 :
-Summary                14,678,170 rx/s                  0 err/s
-   receive total        14,678,170 pkt/s        14,678,170 drop/s 
-         0 error/s
-     cpu:1              14,678,170 pkt/s        14,678,170 drop/s 
-         0 error/s
-   xdp_exception                 0 hit/s
-
-with -t 4:
-
-Summary                10,255,385 rx/s                  0 err/s
-   receive total        10,255,385 pkt/s        10,255,385 drop/s 
-         0 error/s
-     cpu:1              10,255,385 pkt/s        10,255,385 drop/s 
-         0 error/s
-   xdp_exception                 0 hit/s
-
-> receiving side. I tried to receive on ixgbe but this ended with -ENOMEM
-> | # xdp-bench drop eth1
-> | Failed to attach XDP program: Cannot allocate memory
-> 
-> This is v6.8-rc5 on both sides. Let me see where this is coming from…
-> 
-
-Another pitfall with ixgbe is that it does a full link reset when
-adding/removing XDP prog on device.  This can be annoying if connected
-back-to-back, because "remote" pktgen will stop on link reset.
-
---Jesper
 
