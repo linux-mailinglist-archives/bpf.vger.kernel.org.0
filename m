@@ -1,161 +1,169 @@
-Return-Path: <bpf+bounces-22320-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22321-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C5585BD17
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 14:22:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794EA85BE91
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 15:19:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 958751F23F99
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 13:22:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E65C71F218C3
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 14:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62DCC6A323;
-	Tue, 20 Feb 2024 13:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC206BB29;
+	Tue, 20 Feb 2024 14:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2+kYIfsF"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fIWmtA/o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8806A034
-	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 13:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CFF6A35B;
+	Tue, 20 Feb 2024 14:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435342; cv=none; b=Mm9bFUwxOQOEzRhvdmQ5g+tLzUjtdfQvZKM6zuiWUZi3J3Bi30q4SstLdt46AvkGU0dq+cgUu9MMKTbjuh6U4eOnym3mvWWRpwmAbCNRqEaPc6GHdbqk0r1GCJIQh/BqXpF3gUgov9FE/QzH/g9I7kTkTItimlHBQdGRm91wQNA=
+	t=1708438749; cv=none; b=YriPMrucwcSLrq0Cn+AB3RHQy2a7Y0HMWJ0FBzhBjYIB2UIs7r2GOzberXOmMW/VMy8wy8AMc+ROL/HQy+mOoAYeQn29Lt3jppET3K0NFGZKjIjCW82cMRjaX7uelpm8U1HzUa+f7EIkngEncnvkPQjcCjfuMkOP4OysEKfnxGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435342; c=relaxed/simple;
-	bh=o0xRepjUnYiSiEcYPL2K6bmUQMgSoJTcVGYeumgAp/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TPDoAs9gWhQ1oScKk+mmsHo4zuTOR2SFV+d5i1swweiuXwKbmza2B3+TNN+ksmjpOhVJnCBfsWo9dptMcGkRng9esSeqi+91IRTGIArgbxGh95SPWBmqVIGOdzCvnaSDWXJpkiyoHR3RdvMb2msDbAcFDvS5cYER/jHrgz9m/s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2+kYIfsF; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3e4765c86eso334796066b.0
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 05:22:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708435339; x=1709040139; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8B/NFmfqoyBPMsxDp+WDF9UL3KyYLkhiqUPY5SMyjdk=;
-        b=2+kYIfsF27rP5ohy2mglzr5xpGQjrJldBXpy3iaga8hoSPwRlLauuSxmJucYGb/1V2
-         kVpbJyrqjUTbfnxXGgR7KdY3wd0sV8boZeo4znqW/kKtceVIVbJuAfraAB3P6YZ8969O
-         1XQlDRTjhX3wpGPzMuuB4Bke1QqKtQ/9L36M1u1fEZaIGD7VpkZn3Wjw6ToXlj7741Hn
-         76dV5iA22SB2tQKtD5+7nU03+0ftmmsBst6x2PliKCgC4cqNpGcDYlEBzO4AJHJ8C9rz
-         Vcqz55YPsuFmonhSzTRhSY+TKXStKzwCneoIgSlH8JdtJeiGdzpkmtMLnYUpGYS8Vo9b
-         1Buw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708435339; x=1709040139;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8B/NFmfqoyBPMsxDp+WDF9UL3KyYLkhiqUPY5SMyjdk=;
-        b=ENv/1GY9qGZFNmgFwlB5df0gIQzVEzpKngltJZcZKj+9Y08POjq8xbi/1GKmI6COmv
-         1qAV3Ed/kH2/weleWO9e89zizRxupQ/GBqZpoNAtqnVOEjZJsnqdjQgzTSLNZpt+xMa6
-         x3RwXSTwmh/X+vTkwarFK5QKEVoKi3Xua2xrGzM8S7R4EONv12zys75IHn//oUtuQpng
-         69WENz2Chxmt4LLIQ0wYz3xpbCusOpU2kTNtM13GyuCmtwyO8cN30bIwmXjEXZTtveB/
-         MbEWlFDRlb7ROEMc87BqJHYnK/b53lOH2abhDYAMHxOrno/+01fB0+AvZnao2ScLjF/G
-         sDMQ==
-X-Gm-Message-State: AOJu0YzIA+dlAD8RjoOSWbaL9hHuG83rxo5TA326ARW9kbr1dQXy6EXD
-	ZFhjoqhUKXcLUnYyLZb2lt7H+2vswlf8kCjFHsRFfn06zNI9WqO+/tL3rTwkqg==
-X-Google-Smtp-Source: AGHT+IHM3r3mCpqoJIGBtRxw3x+74bF8MV4e++ZPwM7Qrin9FZU1JhFz8hSgTSqkyBRbGZNjFvQzXw==
-X-Received: by 2002:a17:906:7f92:b0:a3e:6465:4195 with SMTP id f18-20020a1709067f9200b00a3e64654195mr4181663ejr.63.1708435339303;
-        Tue, 20 Feb 2024 05:22:19 -0800 (PST)
-Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
-        by smtp.gmail.com with ESMTPSA id y13-20020a170906470d00b00a3ec0600ddasm1539091ejq.148.2024.02.20.05.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 05:22:18 -0800 (PST)
-Date: Tue, 20 Feb 2024 13:22:14 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-	kpsingh@google.com, jannh@google.com, jolsa@kernel.org,
-	daniel@iogearbox.net, linux-fsdevel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH bpf-next 01/11] bpf: make bpf_d_path() helper use
- probe-read semantics
-Message-ID: <ZdSnhqkO_JbRP5lO@google.com>
-References: <cover.1708377880.git.mattbobrowski@google.com>
- <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
- <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
+	s=arc-20240116; t=1708438749; c=relaxed/simple;
+	bh=vCxLBF+LxDOqOl0qgvAauEYG2QYdT2TKN94lI0gRLw0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a1vUkYZGkrDgygS4xzYsrtGmCI2BxPHrp5xEE6nqRuVtanVL22luBE36EWqL2Pjd3qJRlAh4RKM1RAzXS1IUQg7kLp5/6Tcv987M4aHayYHSDQIvEZ8FL31gQDiHepKJaBIQ2UpmXszRL68Y5NQS10pCeZOsfPPLc98TQrorbPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fIWmtA/o; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41KDV1Hw025709;
+	Tue, 20 Feb 2024 14:18:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lwg89Fejrts84YeaKU8repsaV4y5Gi7gxXNcjrj4/H0=;
+ b=fIWmtA/onYq24esqtZ73ktfPBTnYIpYFXlJDPahdh2CVKpi2f3XFRbRdvVoo8/s/Twg4
+ Gugfrif7lC51GwCtxaDT6NUorELWUYRjE7k3f01QR8KyA49d9i2RKOk3orwiBV9xTmGe
+ n1KjfGR6Vwu/m7F3FIG8MVapwpw3o9F2pqXNyZB6fFK+9Ucl/+slsOSzeK9EHXBxwrrp
+ yQzHgzl7VvPWC9Xmjdfao7dHj0DO5L5WBUq6WDygLhepqV9ES4qXld+TKnxrYVcTs736
+ HluvRBPiyKhzCPHYdcGLiVOE3cQ+IRmrOk1PP/IpgW6tphlXdeciCY5IEAkFpStTIop4 pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wcunmkqgd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 14:18:28 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41KE6dH7031572;
+	Tue, 20 Feb 2024 14:18:26 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wcunmkqfc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 14:18:26 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41KDjTcI013492;
+	Tue, 20 Feb 2024 14:18:24 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb7h08ube-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 14:18:24 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41KEIIx511535068
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 20 Feb 2024 14:18:21 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DC54F2006B;
+	Tue, 20 Feb 2024 14:18:18 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 789E22006A;
+	Tue, 20 Feb 2024 14:18:18 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 20 Feb 2024 14:18:18 +0000 (GMT)
+Date: Tue, 20 Feb 2024 15:18:15 +0100
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jason Wang <jasowang@redhat.com>, virtualization@lists.linux.dev,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg
+ <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David
+ S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Hans de Goede
+ <hdegoede@redhat.com>,
+        Ilpo =?UTF-8?B?SsOkcnZpbmVu?=
+ <ilpo.jarvinen@linux.intel.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn
+ Andersson <andersson@kernel.org>,
+        Mathieu Poirier
+ <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>, Eric
+ Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily
+ Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle
+ <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+ <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John
+ Fastabend <john.fastabend@gmail.com>,
+        Benjamin Berg
+ <benjamin.berg@intel.com>,
+        Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        Halil
+ Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH vhost 07/17] virtio: find_vqs: pass struct instead of
+ multi parameters
+Message-ID: <20240220151815.5c867cce.pasic@linux.ibm.com>
+In-Reply-To: <1706756442.5524123-1-xuanzhuo@linux.alibaba.com>
+References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
+	<20240130114224.86536-8-xuanzhuo@linux.alibaba.com>
+	<CACGkMEvb4N8kthr4qWXrLOh9v422OYhrYU6hQejusw-e5EacPw@mail.gmail.com>
+	<1706756442.5524123-1-xuanzhuo@linux.alibaba.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eUllX_-qgAsmHKd_JgBJQZtujh7cPJYr
+X-Proofpoint-ORIG-GUID: RtiekxNRFN2wBWltsYALkmwUnLKUTe6e
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 mlxlogscore=809 adultscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402200103
 
-On Tue, Feb 20, 2024 at 10:48:10AM +0100, Christian Brauner wrote:
-> On Tue, Feb 20, 2024 at 09:27:23AM +0000, Matt Bobrowski wrote:
-> > There has now been several reported instances [0, 1, 2] where the
-> > usage of the BPF helper bpf_d_path() has led to some form of memory
-> > corruption issue.
+On Thu, 1 Feb 2024 11:00:42 +0800
+Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+
+> > > And squish the parameters from transport to a structure.  
 > > 
-> > The fundamental reason behind why we repeatedly see bpf_d_path() being
-> > susceptible to such memory corruption issues is because it only
-> > enforces ARG_PTR_TO_BTF_ID constraints onto it's struct path
-> > argument. This essentially means that it only requires an in-kernel
-> > pointer of type struct path to be provided to it. Depending on the
-> > underlying context and where the supplied struct path was obtained
-> > from and when, depends on whether the struct path is fully intact or
-> > not when calling bpf_d_path(). It's certainly possible to call
-> > bpf_d_path() and subsequently d_path() from contexts where the
-> > supplied struct path to bpf_d_path() has already started being torn
-> > down by __fput() and such. An example of this is perfectly illustrated
-> > in [0].
+> > The patch did more than what is described here, it also switch to use
+> > a structure for vring_create_virtqueue() etc.
 > > 
-> > Moving forward, we simply cannot enforce KF_TRUSTED_ARGS semantics
-> > onto struct path of bpf_d_path(), as this approach would presumably
-> > lead to some pretty wide scale and highly undesirable BPF program
-> > breakage. To avoid breaking any pre-existing BPF program that is
-> > dependent on bpf_d_path(), I propose that we take a different path and
-> > re-implement an incredibly minimalistic and bare bone version of
-> > d_path() which is entirely backed by kernel probe-read semantics. IOW,
-> > a version of d_path() that is backed by
-> > copy_from_kernel_nofault(). This ensures that any reads performed
-> > against the supplied struct path to bpf_d_path() which may end up
-> > faulting for whatever reason end up being gracefully handled and fixed
-> > up.
-> > 
-> > The caveats with such an approach is that we can't fully uphold all of
-> > d_path()'s path resolution capabilities. Resolving a path which is
-> > comprised of a dentry that make use of dynamic names via isn't
-> > possible as we can't enforce probe-read semantics onto indirect
-> > function calls performed via d_op as they're implementation
-> > dependent. For such cases, we just return -EOPNOTSUPP. This might be a
-> > little surprising to some users, especially those that are interested
-> > in resolving paths that involve a dentry that resides on some
-> > non-mountable pseudo-filesystem, being pipefs/sockfs/nsfs, but it's
-> > arguably better than enforcing KF_TRUSTED_ARGS onto bpf_d_path() and
-> > causing an unnecessary shemozzle for users. Additionally, we don't
+> > Is it better to split?  
 > 
-> NAK. We're not going to add a semi-functional reimplementation of
-> d_path() for bpf. This relied on VFS internals and guarantees that were
-> never given. Restrict it to KF_TRUSTED_ARGS as it was suggested when
-> this originally came up or fix it another way. But we're not adding a
-> bunch of kfuncs to even more sensitive VFS machinery and then build a
-> d_path() clone just so we can retroactively justify broken behavior.
+> Sure.
 
-OK, I agree, having a semi-functional re-implementation of d_path() is
-indeed suboptimal. However, also understand that slapping the
-KF_TRUSTED_ARGS constraint onto the pre-existing BPF helper
-bpf_d_path() would outright break a lot of BPF programs out there, so
-I can't see how taht would be an acceptable approach moving forward
-here either.
+I understand there will be a v2. From virtio-ccw perspective I have
+no objections.
 
-Let's say that we decided to leave the pre-existing bpf_d_path()
-implementation as is, accepting that it is fundamentally succeptible
-to memory corruption issues, are you saying that you're also not for
-adding the KF_TRUSTED_ARGS d_path() variant as I've done so here
-[0]. Or, is it the other supporting reference counting based BPF
-kfuncs [1, 2] that have irked you and aren't supportive of either?
-
-[0] https://lore.kernel.org/bpf/20240220-erstochen-notwehr-755dbd0a02b3@brauner/T/#m542b86991b257cf9612406f1cc4d5692bcb75da8
-[1] https://lore.kernel.org/bpf/20240220-erstochen-notwehr-755dbd0a02b3@brauner/T/#mc2aaadbe17490aeb1dde09071629b0b2a87d7436
-[2] https://lore.kernel.org/bpf/20240220-erstochen-notwehr-755dbd0a02b3@brauner/T/#m07fa7a0c03af530d2ab3c4ef25c377b1d6ef17f8
-
-/M
+Regards,
+Halil
 
