@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-22329-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22330-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C5F85C2C2
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 18:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE1985C2C6
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 18:35:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22E04B21639
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 17:34:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17D9DB23567
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 17:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981E477620;
-	Tue, 20 Feb 2024 17:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F6077652;
+	Tue, 20 Feb 2024 17:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gf6j3JbF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MYR/rB3z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA79763F6
-	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 17:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1616F74E0C
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 17:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708450445; cv=none; b=Kwdf3hhMiGHH9Nx/kJn0etPftyit5MtrT6Nc9iTei7vUC9LI1lm0y25RKftGV33d+XA4q4DoSluhdjZ8Il6o8Z5KzWA4nnb7SxxsMH/bHBajXNfobUZ3qJUrUbDEQGDd/6yEx+g9TYM5MA5NlA+WSOZdH+ndRsgIpNBMFQFsJkk=
+	t=1708450495; cv=none; b=NytWVTVUd6cUm8cW6wiNN5v4HbkU6xzhoQVnZVVQBnmbWU5gPUY5/0MvBJwwPsrpGc4fu/diLS01SijVrVGzXHPoap2qDqClLjPKFAOzo5+LszuRM0OKuDbfG6jH553riroHYepJm2ED7kYJBQcfVHdg23rMUKbSH5686k0uwBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708450445; c=relaxed/simple;
-	bh=6lXSrF5UAZanGRds9Z8pRkvw1aWBUg+HG+k5uGseyhM=;
+	s=arc-20240116; t=1708450495; c=relaxed/simple;
+	bh=4qRz/QG9QpmT914D9ePj/lTEpLRxLcOn7JpymBEX5O4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W7lKy+iC+SLj4CJtXsRQ6MjcRbYSJxzYRik7rLzcyxrqfpmj704sY+fBGRYUDukBExgYwyoIb/MH9Po1HfkYKupX4hYjYYyVoJBQaMP1sx+s3qBt7ZU8tY1vHWTXbhMYu+xiJGq//BmFuyZmoEgn6Ta8qX5mxMRk+rhO7LeatrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gf6j3JbF; arc=none smtp.client-ip=209.85.221.54
+	 To:Cc:Content-Type; b=Gu4Ms7VhWUDoa2FMitQ9KIenBwY6NRc2p9b9x0lZ/dgLpgEwRW7XYtcwfxMvRRO046zAQtsQFkHkNXe6TrN3haiKnbxKWAIebFzA3RiChK3gz7K1nf3VThgmyihzwiiA03dl/mxhCeqd4fEO3gFmikaIJKxI2CERHWHaejdNc14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MYR/rB3z; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d6fe64a9bso623231f8f.0
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 09:34:03 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3394bec856fso3896298f8f.0
+        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 09:34:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708450442; x=1709055242; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708450492; x=1709055292; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2hq9MJRpGB31gWNRU1/tgciKdKYPK8sgYljgF0LN4Xg=;
-        b=gf6j3JbFG9ALpbXPpcJFFrJp9v6m+SK+yuVl0P3F3SWbfHY5DhvGX2IXoUk8TAH9xI
-         AiwtpxfJfnjVYYcNI9aF5Wnho58PplM6XcMZiXL/F/X8cl4A2Y8bHZFXPQiL2501PmA+
-         RhI43ZfNV34X/T92IoWSCACjJ6bbJyzZZ+BwzYBCvi0GyKOVCOozTOpJSfbvklMUxphj
-         yJtpQamZZCQinLDowDoM3igmcMDBlcpoabI2foy48ftLu2FpEz6sUu1kW1kdNi50TKe8
-         5jDl5+DJiLd7524aBn20B8fxHRPGnOpLNmnAOPHqdO7nL/qH1oHgpwV5yQFvBdTFF+S3
-         7cLA==
+        bh=4qRz/QG9QpmT914D9ePj/lTEpLRxLcOn7JpymBEX5O4=;
+        b=MYR/rB3zIWmWNUVn+HnbWt601kJnV9uV3PELRFfXKXLQuF/jetZkAQDeceV88kwzXF
+         6AqJooP9/Xis1aIx6uyQVwCXknnIAvHaYjmMU7H4zWQ8AZ12o+v/1ijrXQK9tPF0CyX/
+         I4vsAAsSzWy+PVq0ZCr888IG46H7BDvZyCcH0mtqbnW3sxCTVkQaAr8IZS4PWthkQqjM
+         gBXxI0bQkcNQlvupBeOMYRlCG1PMkPRSPQ8eYhROi3fP/LNyupIx2dUUnm/Wyd/TSdUI
+         8A3S6ezjYoTj/HEMbG5k/OlB3r85TMlYtMG/fHoqvZhsJFglzENgZEzpDs98+iUHcUPw
+         oGRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708450442; x=1709055242;
+        d=1e100.net; s=20230601; t=1708450492; x=1709055292;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2hq9MJRpGB31gWNRU1/tgciKdKYPK8sgYljgF0LN4Xg=;
-        b=C5dNrpfXnzth45nNEmqbIgKfv8/U8f09tPOeRXB0f0xbij/6P295tOb9sJ93rRO+aJ
-         wrzj9axoK5QpeUOVS9r6uzBVXTGEYqGwOeh+69s8TihnDl9oT6Glh94rib0TSDx8nIj4
-         m3gjKFs/JNU+p+bGmhQUAdMQdqOXE7jwVN0MA5AbXVjYvXJLt/Sn9IpQR/Og+JCZ9bue
-         oaXWrgtKRdvVlOzO0dt3fJMay2YImaMnPpc80lNPkd8SVc3eiOqQBd+JIFs04mRNtiEe
-         Yqz6UA4htmDMJUlsRhbr8+7M5kOMPHi8dgjNwDCHJOA+Qq2eFnrMY5C7s4X3VzUdv8GU
-         lxwQ==
-X-Gm-Message-State: AOJu0YxMU+470EYlGF5TY7nZ1qsYtcqoVP+ezFvgMgZyX9DWne5y4Kjp
-	rTt2XvI+0QWyRxQPiuetmIk32viVll44abMu75bW4d3Fw6ECUDPkNrq8O8ULVuMkV8RfADHlQmz
-	aihAhuQMgpQdgZZ4vSOka61s4Cak=
-X-Google-Smtp-Source: AGHT+IFPh/UlvwCHYlARFJSldBoBUhup0E9HeMBnNuMz+bGHXeB/IpqDNh6aL2UEjO1IfuFwFzFzGt+Vo9A+6RhJBAM=
-X-Received: by 2002:adf:fc88:0:b0:33d:3fd4:9334 with SMTP id
- g8-20020adffc88000000b0033d3fd49334mr6429579wrr.18.1708450441930; Tue, 20 Feb
- 2024 09:34:01 -0800 (PST)
+        bh=4qRz/QG9QpmT914D9ePj/lTEpLRxLcOn7JpymBEX5O4=;
+        b=FN31ku/2ko2tw/qzdhwH7nVDAPrdE9yH5aEs/ARTXv5MJG12W3KkEqKJNLP1Aevovu
+         qGZv8bru9itCkOrgFcpt93fNxv3LydTRVHryyRSPuprLLWnCNws73VRZkN0sx6sKQd8S
+         FtycbnfGiwOCsPbClI2+iqkhGrPoB/j4LbJGbYKoQBnxqsUKNQk8ynHA+N4a6xz15hRg
+         L7kpqLEf2tykNsU/b7RcB7kvgFRwoZOxdwqT8inHq0VUFAlTZPtRjbF0gMf8WFkyfC0x
+         41cvCzVb+9aU2d/SHy718zm6TxzFUc/FhUbbhEf50bCfd+CCE/rUdJ+Ad6/5RlZNrXKY
+         RRDQ==
+X-Gm-Message-State: AOJu0YxbI4zts4ZObJwWPrQTRQPw5cg/QwyVYJISk8SLt8lclAFYMtrs
+	yZh/RZAbpMkQhrggdFxlKLDlx5ue4I21yEQ/+7GwgKrY+4frFTwRulFA9ok6l6LRtxzhSSsoYu+
+	+f0gHATKRNqqr2Cqk1FpwBALOEI0=
+X-Google-Smtp-Source: AGHT+IEb4ee78N9y8IW5u6T2BYJlHOAXCg2qoiQnA+YgARwpipQ7+vPm2BffF7fU+PbBf1Khk3k+kGqlibU5EKQAnO8=
+X-Received: by 2002:a5d:570b:0:b0:33d:47c6:24fe with SMTP id
+ a11-20020a5d570b000000b0033d47c624femr5317130wrv.12.1708450492498; Tue, 20
+ Feb 2024 09:34:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,11 +74,11 @@ References: <20240104142226.87869-1-hffilwlqm@gmail.com> <20240104142226.87869-3
  <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
  <7af3f9c6-d25a-4ca5-9e15-c1699adcf7ab@gmail.com> <CAADnVQLOswL3BY1s0B28wRZH1PU675S6_2=XknjZKNgyJ=yDxw@mail.gmail.com>
  <81607ab3-a7f5-4ad1-98c2-771c73bfb55c@gmail.com> <CAADnVQJVC21dh9igQ7w=iMamx-M=U2H+Vt7fJE-9tB4qR4tHsQ@mail.gmail.com>
- <98557e73-1fdf-453d-b5d0-7d0e2b471a8b@gmail.com>
-In-Reply-To: <98557e73-1fdf-453d-b5d0-7d0e2b471a8b@gmail.com>
+ <98557e73-1fdf-453d-b5d0-7d0e2b471a8b@gmail.com> <d298b319-d8a0-4a34-a865-d2f1b7b28305@gmail.com>
+In-Reply-To: <d298b319-d8a0-4a34-a865-d2f1b7b28305@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 20 Feb 2024 09:33:50 -0800
-Message-ID: <CAADnVQJopb=p-w-RtrDPfNUePjtOO1QtMDEq0DW3nbG7nPL7wQ@mail.gmail.com>
+Date: Tue, 20 Feb 2024 09:34:41 -0800
+Message-ID: <CAADnVQLrbAhf_Mwhtckv7o5pAcXbz2etX69m8nVGRsR1v=4cuA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
 To: Leon Hwang <hffilwlqm@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
@@ -88,20 +88,12 @@ Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 17, 2024 at 5:43=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> wr=
+On Mon, Feb 19, 2024 at 9:14=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
 ote:
 >
 >
-> Finally, here's the diff against latest bpf-next with asm to handle
-> percpu tail_call_cnt:
+> May I add "Suggested-by: Alexei Starovoitov <ast@kernel.org>" at PATCH
+> v2? Because the key idea, percpu tail_call_cnt, is suggested by you.
 
-It is not against bpf-next.
-
->  /* Number of bytes that will be skipped on tailcall */
-> -#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
-
-There is no such thing in bpf-next.
-
-Please make a proper patch post following the rules in
-Documentation/bpf/bpf_devel_QA.rst
+No need for such attribution.
 
