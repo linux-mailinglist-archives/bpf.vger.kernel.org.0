@@ -1,57 +1,76 @@
-Return-Path: <bpf+bounces-22310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C785C85B82A
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:51:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A445C85B8D4
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 11:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41D001F2188B
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 09:51:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABD60283E22
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08AA16217F;
-	Tue, 20 Feb 2024 09:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AE6612DC;
+	Tue, 20 Feb 2024 10:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/NMLa1k"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GYy/jaWq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lTiFMWWX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F52361699;
-	Tue, 20 Feb 2024 09:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D4D612D3;
+	Tue, 20 Feb 2024 10:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422496; cv=none; b=MS0nxEUO8okpLVHaU/oTAp204X2tUmrCyJP7lzfmY5sVVs/LT6ZEPZI9oMiArjI34zEyvLk5YlgCeWI0G0tqsFrktZ49sL/oemRvGwdrHC03zyHH66z1O/Ds3IclF96Yo0F8W1pTwBIl46BUyS88YF6zxKJexeZcXjn1mla+0Yg=
+	t=1708424266; cv=none; b=ZCGYXam07bHJVOD17L0ZjCm9CyWpeiyQvFRe4su5m7d28DtflFvi1JZTH9reImVJ69o3ua/6XXGMmJmmceR0LqmdCi3vaapG0zIA1IgO6NiR53pddnwz/5PbRNoTQw7ifr9ACfqzOl1jTTY79fmeAWFs158YPf7YNswTYnAN9ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422496; c=relaxed/simple;
-	bh=ycB7feGoMgOOYRRk2SzQ5E4UrY1BK6VU1Ai3KyHgdwg=;
+	s=arc-20240116; t=1708424266; c=relaxed/simple;
+	bh=aifVOZHUn4ejHKv9dJW1chxcb0eXKyDyyjE3Vt09lx8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rPe3Pgc+757n9SQsL6P77czTmA/y11nHAXEXE480cPIKe3f1aCnjXklDGD9NQQPD70bmPrnVvWUvtrziJydM5BpVa+FwOlOUDlseL5EGJVZmaLNrXZMCPttT5KoZhkGbxLvZkGayB4z7GNUtFRWU98NA6ctDYfLyUCpTXbeJyxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/NMLa1k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D0A8C43390;
-	Tue, 20 Feb 2024 09:48:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708422496;
-	bh=ycB7feGoMgOOYRRk2SzQ5E4UrY1BK6VU1Ai3KyHgdwg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L/NMLa1kkSbZ8oURln4ckWxg/R6k55qYd+S4NfVFKFpKG7ehZkUGvHM0PaPkMHELJ
-	 oCBHUAKWwxdG1AWLHSdcOVnTbokPWA7Gioq/ur1/cj6kIQXT7PgwQNR30bwdq4H9wL
-	 GEnrX39HYFsUrV9VpdKbhfmHIOsdM5p7b2n8tGEVKdu9qDRmoXEwfGy0I4U/YWhuUy
-	 8L4yY4wtj4N+55irvd8Y++Etwiuxm0yb23W97D1m0gmfjoH7z5NIGMtELxfriztXyk
-	 uQRwjFgr+f5WQuhhXtF19njEoP7IhwkwEATuTZ8Utc1imxsuLGEpt7Us6kRLV2r1E6
-	 gUZ6CUlI+W/AA==
-Date: Tue, 20 Feb 2024 10:48:10 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	kpsingh@google.com, jannh@google.com, jolsa@kernel.org, daniel@iogearbox.net, 
-	linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH bpf-next 01/11] bpf: make bpf_d_path() helper use
- probe-read semantics
-Message-ID: <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
-References: <cover.1708377880.git.mattbobrowski@google.com>
- <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hOd9lmZJPh04WdxEeD7EKtDnkqtJxhhoryr39WpsunWdq2An0hOln/FVCwU/sRw5tbLlrryHdfaz3JFVXY19xJy2reHOXzy7MXmN7dAeyRoz6l7Dnz5kywTynt0xW7SxnpmDypfBscPDd1wn2LdivuoXn/96J9nM58eWw2SsNpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GYy/jaWq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lTiFMWWX; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 20 Feb 2024 11:17:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708424262;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lYHUGjIHbZMRfwCj8LUS9e4pU93xVsPLVMybAEahurE=;
+	b=GYy/jaWqnJOiGNl3TM19wnPTL9iVjomun+FXHD5Gduz9UMSdwD3LZqUkCgdhRtYNVsT9Yc
+	WRK1nuWDRXFnSAUIs7MtJkZtUtFe0QRRY8gtUSsRG+b1TW6HzzL1gOcwC1BSZiLmQQxP8r
+	jL4nj8z8VHet6yoIf7h31DM8VRpsVT1ZW9YvS3RqoO2XYHOJFZORoQ335casVmU1KGIdDc
+	gRsEekBCcaQH++X1nE5WYbT4wJp+x0uYRhKsPy/qJ69f6wTt4KqvCOqXzyJUNa2/QvzRwg
+	W3S1wKbIw1c5raNquOfwOxtyXDfHAXM3dhuT6uSD869NnQ/09l/UPHiBi9XDCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708424262;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lYHUGjIHbZMRfwCj8LUS9e4pU93xVsPLVMybAEahurE=;
+	b=lTiFMWWXju58R+UIZ8UU0dAoCvJy4RKKx85mzIc3USLo6CMG6SL1nC2XidYRLJ7CW56dwc
+	wr3hKXINwyNMYADA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Message-ID: <20240220101741.PZwhANsA@linutronix.de>
+References: <66d9ee60-fbe3-4444-b98d-887845d4c187@kernel.org>
+ <20240214121921.VJJ2bCBE@linutronix.de>
+ <87y1bndvsx.fsf@toke.dk>
+ <20240214142827.3vV2WhIA@linutronix.de>
+ <87le7ndo4z.fsf@toke.dk>
+ <20240214163607.RjjT5bO_@linutronix.de>
+ <87jzn5cw90.fsf@toke.dk>
+ <20240216165737.oIFG5g-U@linutronix.de>
+ <87ttm4b7mh.fsf@toke.dk>
+ <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,324 +79,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
 
-On Tue, Feb 20, 2024 at 09:27:23AM +0000, Matt Bobrowski wrote:
-> There has now been several reported instances [0, 1, 2] where the
-> usage of the BPF helper bpf_d_path() has led to some form of memory
-> corruption issue.
-> 
-> The fundamental reason behind why we repeatedly see bpf_d_path() being
-> susceptible to such memory corruption issues is because it only
-> enforces ARG_PTR_TO_BTF_ID constraints onto it's struct path
-> argument. This essentially means that it only requires an in-kernel
-> pointer of type struct path to be provided to it. Depending on the
-> underlying context and where the supplied struct path was obtained
-> from and when, depends on whether the struct path is fully intact or
-> not when calling bpf_d_path(). It's certainly possible to call
-> bpf_d_path() and subsequently d_path() from contexts where the
-> supplied struct path to bpf_d_path() has already started being torn
-> down by __fput() and such. An example of this is perfectly illustrated
-> in [0].
-> 
-> Moving forward, we simply cannot enforce KF_TRUSTED_ARGS semantics
-> onto struct path of bpf_d_path(), as this approach would presumably
-> lead to some pretty wide scale and highly undesirable BPF program
-> breakage. To avoid breaking any pre-existing BPF program that is
-> dependent on bpf_d_path(), I propose that we take a different path and
-> re-implement an incredibly minimalistic and bare bone version of
-> d_path() which is entirely backed by kernel probe-read semantics. IOW,
-> a version of d_path() that is backed by
-> copy_from_kernel_nofault(). This ensures that any reads performed
-> against the supplied struct path to bpf_d_path() which may end up
-> faulting for whatever reason end up being gracefully handled and fixed
-> up.
-> 
-> The caveats with such an approach is that we can't fully uphold all of
-> d_path()'s path resolution capabilities. Resolving a path which is
-> comprised of a dentry that make use of dynamic names via isn't
-> possible as we can't enforce probe-read semantics onto indirect
-> function calls performed via d_op as they're implementation
-> dependent. For such cases, we just return -EOPNOTSUPP. This might be a
-> little surprising to some users, especially those that are interested
-> in resolving paths that involve a dentry that resides on some
-> non-mountable pseudo-filesystem, being pipefs/sockfs/nsfs, but it's
-> arguably better than enforcing KF_TRUSTED_ARGS onto bpf_d_path() and
-> causing an unnecessary shemozzle for users. Additionally, we don't
+On 2024-02-20 10:17:53 [+0100], Jesper Dangaard Brouer wrote:
+>=20
+>=20
+> On 19/02/2024 20.01, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > may be simpler to use pktgen, and at 10G rates that shouldn't become a
+> > bottleneck either. The pktgen_sample03_burst_single_flow.sh script in
+> > samples/pktgen in the kernel source tree is fine for this usage.
+>=20
+> Example of running script:
+>  ./pktgen_sample03_burst_single_flow.sh -vi mlx5p1 -d 198.18.1.1 -m
+> ec:0d:9a:db:11:c4 -t 12
+>=20
+> Notice the last parameter, which is number threads to start.
+> If you have a ixgbe NIC driver, then I recommend -t 2 even if you have mo=
+re
+> CPUs.
 
-NAK. We're not going to add a semi-functional reimplementation of
-d_path() for bpf. This relied on VFS internals and guarantees that were
-never given. Restrict it to KF_TRUSTED_ARGS as it was suggested when
-this originally came up or fix it another way. But we're not adding a
-bunch of kfuncs to even more sensitive VFS machinery and then build a
-d_path() clone just so we can retroactively justify broken behavior.
+I get=20
+| Summary                 8,435,690 rx/s                  0 err/s
+| Summary                 8,436,294 rx/s                  0 err/s
 
-> make use of all the locking semantics, or handle all the erroneous
-> cases in which d_path() naturally would. This is fine however, as
-> we're only looking to provide users with a rather acceptable version
-> of a reconstructed path, whilst they eventually migrate over to the
-> trusted bpf_path_d_path() BPF kfunc variant.
-> 
-> Note that the selftests that go with this change to bpf_d_path() have
-> been purposely split out into a completely separate patch. This is so
-> that the reviewers attention is not torn by noise and can remain
-> focused on reviewing the implementation details contained within this
-> patch.
-> 
-> [0] https://lore.kernel.org/bpf/CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com/
-> [1] https://lore.kernel.org/bpf/20230606181714.532998-1-jolsa@kernel.org/
-> [2] https://lore.kernel.org/bpf/20220219113744.1852259-1-memxor@gmail.com/
-> 
-> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
-> ---
->  fs/Makefile                       |   6 +-
->  fs/probe_read_d_path.c            | 150 ++++++++++++++++++++++++++++++
->  include/linux/probe_read_d_path.h |  13 +++
->  kernel/trace/bpf_trace.c          |  13 ++-
->  4 files changed, 172 insertions(+), 10 deletions(-)
->  create mode 100644 fs/probe_read_d_path.c
->  create mode 100644 include/linux/probe_read_d_path.h
-> 
-> diff --git a/fs/Makefile b/fs/Makefile
-> index c09016257f05..945c9c84d35d 100644
-> --- a/fs/Makefile
-> +++ b/fs/Makefile
-> @@ -4,7 +4,7 @@
->  #
->  # 14 Sep 2000, Christoph Hellwig <hch@infradead.org>
->  # Rewritten to use lists instead of if-statements.
-> -# 
-> +#
->  
->  
->  obj-y :=	open.o read_write.o file_table.o super.o \
-> @@ -12,7 +12,7 @@ obj-y :=	open.o read_write.o file_table.o super.o \
->  		ioctl.o readdir.o select.o dcache.o inode.o \
->  		attr.o bad_inode.o file.o filesystems.o namespace.o \
->  		seq_file.o xattr.o libfs.o fs-writeback.o \
-> -		pnode.o splice.o sync.o utimes.o d_path.o \
-> +		pnode.o splice.o sync.o utimes.o d_path.o probe_read_d_path.o \
->  		stack.o fs_struct.o statfs.o fs_pin.o nsfs.o \
->  		fs_types.o fs_context.o fs_parser.o fsopen.o init.o \
->  		kernel_read_file.o mnt_idmapping.o remap_range.o
-> @@ -58,7 +58,7 @@ obj-$(CONFIG_CONFIGFS_FS)	+= configfs/
->  obj-y				+= devpts/
->  
->  obj-$(CONFIG_DLM)		+= dlm/
-> - 
-> +
->  # Do not add any filesystems before this line
->  obj-$(CONFIG_NETFS_SUPPORT)	+= netfs/
->  obj-$(CONFIG_REISERFS_FS)	+= reiserfs/
-> diff --git a/fs/probe_read_d_path.c b/fs/probe_read_d_path.c
-> new file mode 100644
-> index 000000000000..8d0db902f836
-> --- /dev/null
-> +++ b/fs/probe_read_d_path.c
-> @@ -0,0 +1,150 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2024 Google LLC.
-> + */
-> +
-> +#include "asm/ptrace.h"
-> +#include <linux/container_of.h>
-> +#include <linux/dcache.h>
-> +#include <linux/fs_struct.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/path.h>
-> +#include <linux/probe_read_d_path.h>
-> +
-> +#include "mount.h"
-> +
-> +#define PROBE_READ(src)                                              \
-> +	({                                                           \
-> +		typeof(src) __r;                                     \
-> +		if (copy_from_kernel_nofault((void *)(&__r), (&src), \
-> +					     sizeof((__r))))         \
-> +			memset((void *)(&__r), 0, sizeof((__r)));    \
-> +		__r;                                                 \
-> +	})
-> +
-> +static inline bool probe_read_d_unlinked(const struct dentry *dentry)
-> +{
-> +	return !PROBE_READ(dentry->d_hash.pprev) &&
-> +	       !(dentry == PROBE_READ(dentry->d_parent));
-> +}
-> +
-> +static long probe_read_prepend(const char *s, int len, char *buf, int *buflen)
-> +{
-> +	/*
-> +	 * The supplied len that is to be copied into the buffer will result in
-> +	 * an overflow. The true implementation of d_path() already returns an
-> +	 * error for such overflow cases, so the semantics with regards to the
-> +	 * bpf_d_path() helper returning the same error value for overflow cases
-> +	 * remain the same.
-> +	 */
-> +	if (len > *buflen)
-> +		return -ENAMETOOLONG;
-> +
-> +	/*
-> +	 * The supplied string fits completely into the remaining buffer
-> +	 * space. Attempt to make the copy.
-> +	 */
-> +	*buflen -= len;
-> +	buf += *buflen;
-> +	return copy_from_kernel_nofault(buf, s, len);
-> +}
-> +
-> +static bool use_dname(const struct path *path)
-> +{
-> +	const struct dentry_operations *d_op;
-> +	char *(*d_dname)(struct dentry *, char *, int);
-> +
-> +	d_op = PROBE_READ(path->dentry->d_op);
-> +	d_dname = PROBE_READ(d_op->d_dname);
-> +
-> +	return d_op && d_dname &&
-> +	       (!(path->dentry == PROBE_READ(path->dentry->d_parent)) ||
-> +		path->dentry != PROBE_READ(path->mnt->mnt_root));
-> +}
-> +
-> +char *probe_read_d_path(const struct path *path, char *buf, int buflen)
-> +{
-> +	int len;
-> +	long err;
-> +	struct path root;
-> +	struct mount *mnt;
-> +	struct dentry *dentry;
-> +
-> +	dentry = path->dentry;
-> +	mnt = container_of(path->mnt, struct mount, mnt);
-> +
-> +	/*
-> +	 * We cannot back dentry->d_op->d_dname() with probe-read semantics, so
-> +	 * just return an error to the caller when the supplied path contains a
-> +	 * dentry component that makes use of a dynamic name.
-> +	 */
-> +	if (use_dname(path))
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	err = probe_read_prepend("\0", 1, buf, &buflen);
-> +	if (err)
-> +		return ERR_PTR(err);
-> +
-> +	if (probe_read_d_unlinked(dentry)) {
-> +		err = probe_read_prepend(" (deleted)", 10, buf, &buflen);
-> +		if (err)
-> +			return ERR_PTR(err);
-> +	}
-> +
-> +	len = buflen;
-> +	root = PROBE_READ(current->fs->root);
-> +	while (dentry != root.dentry || &mnt->mnt != root.mnt) {
-> +		struct dentry *parent;
-> +		if (dentry == PROBE_READ(mnt->mnt.mnt_root)) {
-> +			struct mount *m;
-> +
-> +			m = PROBE_READ(mnt->mnt_parent);
-> +			if (mnt != m) {
-> +				dentry = PROBE_READ(mnt->mnt_mountpoint);
-> +				mnt = m;
-> +				continue;
-> +			}
-> +
-> +			/*
-> +			 * If we've reached the global root, then there's
-> +			 * nothing we can really do but bail.
-> +			 */
-> +			break;
-> +		}
-> +
-> +		parent = PROBE_READ(dentry->d_parent);
-> +		if (dentry == parent) {
-> +			/*
-> +			 * Escaped? We return an ECANCELED error here to signify
-> +			 * that we've prematurely terminated pathname
-> +			 * reconstruction. We've potentially hit a root dentry
-> +			 * that isn't associated with any roots from the mounted
-> +			 * filesystems that we've jumped through, so it's not
-> +			 * clear where we are in the VFS exactly.
-> +			 */
-> +			err = -ECANCELED;
-> +			break;
-> +		}
-> +
-> +		err = probe_read_prepend(dentry->d_name.name,
-> +					 PROBE_READ(dentry->d_name.len), buf,
-> +					 &buflen);
-> +		if (err)
-> +			break;
-> +
-> +		err = probe_read_prepend("/", 1, buf, &buflen);
-> +		if (err)
-> +			break;
-> +		dentry = parent;
-> +	}
-> +
-> +	if (err)
-> +		return ERR_PTR(err);
-> +
-> +	if (len == buflen) {
-> +		err = probe_read_prepend("/", 1, buf, &buflen);
-> +		if (err)
-> +			return ERR_PTR(err);
-> +	}
-> +	return buf + buflen;
-> +}
-> diff --git a/include/linux/probe_read_d_path.h b/include/linux/probe_read_d_path.h
-> new file mode 100644
-> index 000000000000..9b3908746657
-> --- /dev/null
-> +++ b/include/linux/probe_read_d_path.h
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2024 Google LLC.
-> + */
-> +
-> +#ifndef _LINUX_PROBE_READ_D_PATH_H
-> +#define _LINUX_PROBE_READ_D_PATH_H
-> +
-> +#include <linux/path.h>
-> +
-> +extern char *probe_read_d_path(const struct path *path, char *buf, int buflen);
-> +
-> +#endif /* _LINUX_PROBE_READ_D_PATH_H */
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 241ddf5e3895..12dbd9cef1fa 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -25,6 +25,7 @@
->  #include <linux/verification.h>
->  #include <linux/namei.h>
->  #include <linux/fileattr.h>
-> +#include <linux/probe_read_d_path.h>
->  
->  #include <net/bpf_sk_storage.h>
->  
-> @@ -923,14 +924,12 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
->  	if (len < 0)
->  		return len;
->  
-> -	p = d_path(&copy, buf, sz);
-> -	if (IS_ERR(p)) {
-> -		len = PTR_ERR(p);
-> -	} else {
-> -		len = buf + sz - p;
-> -		memmove(buf, p, len);
-> -	}
-> +	p = probe_read_d_path(&copy, buf, sz);
-> +	if (IS_ERR(p))
-> +		return PTR_ERR(p);
->  
-> +	len = buf + sz - p;
-> +	memmove(buf, p, len);
->  	return len;
->  }
->  
-> -- 
-> 2.44.0.rc0.258.g7320e95886-goog
-> 
-> /M
+with "-t 8 -b 64". I started with 2 and then increased until rx/s was
+falling again. I have ixgbe on the sending side and i40e on the
+receiving side. I tried to receive on ixgbe but this ended with -ENOMEM
+| # xdp-bench drop eth1
+| Failed to attach XDP program: Cannot allocate memory
+
+This is v6.8-rc5 on both sides. Let me see where this is coming from=E2=80=
+=A6
+
+> --Jesper
+
+Sebastian
 
