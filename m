@@ -1,199 +1,128 @@
-Return-Path: <bpf+bounces-22339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F201685C5E4
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 21:34:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAAE985C6AA
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 22:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 212241C20404
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 20:34:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 980861F2146F
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 21:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2443415099C;
-	Tue, 20 Feb 2024 20:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B418B151CE9;
+	Tue, 20 Feb 2024 21:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="3DviofDb"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UZ4gpzuP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E426E69D10;
-	Tue, 20 Feb 2024 20:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A971F151CD0
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 21:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708461225; cv=none; b=CdX9j/OPLFznpaahddYFbNpl80Zr8DlhcxXmnxIS59L7jzEdFTrAWpSD6HDNPi80eLMKvYY/xrK3vMEYL7fZFNw6NVuqrq1FkoLF0Wcn8NQL6CBNxsaYgTrS29wC7NalwMfCxvoPV69SWYp60Z2nZ39KeBJP9I6hStnP8qTsduY=
+	t=1708463030; cv=none; b=a0I8dJQvMCdb6qBhZCmd1ypdoC7RrpYPFu4y8mdU5S8xa7lYr+SVyCJIVfnTCMgyr/VnrwbkaAHUafeekyhxkehocBsb6oPWRMectSxwcgzPmRVBu3ei1Xw4ljSQXdfvkdrVqqs8WiDZDTIigpIG5ogqOEWVdHHge4w4Xn4x76g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708461225; c=relaxed/simple;
-	bh=5fyrpL6I35oXbQ79JL+OMciY0wUkV8Hs5J/Gm9DAExw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=Esn3ERIaTK7klEhKDQMe3hOzgksO7Nl+CNIf7IyxneyjzbjE93haTcvy5Q34FYAB5H5EqBLElPW28QdRtZIf8rGYRxpCaxgAZ6/WU07n/I52RrqHD/hBcO5C/rp/Kb6Zu6vT2NoQJxydHB5K6GIiSExFhLgYzXIfQ+XB8TR08sU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=3DviofDb; arc=none smtp.client-ip=148.163.152.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355089.ppops.net [127.0.0.1])
-	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KJFBgl020507;
-	Tue, 20 Feb 2024 20:33:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references; s=
-	DKIM202306; bh=yYaZ6KkZCfPgvE7ldRLRah8LlOxOAhyoW4Oo9vMYLI4=; b=3
-	DviofDb9pzniwChbEs283Q/nhrnZBOGxIjIbYC1Xij4+lyhygZxJPN3GIzERfFUn
-	FRqnViLZyoLn8VtqSCE6yax3k1cyJkMzduys1f9K06sujdOQdyJ5v8X4aLSf7YQv
-	DJpHBVfe55tafJqy9d0n6/2snEve64mdY1j6Ao9A4r/vZEWTvqGph4TEb0IydBJV
-	29uSUIr0Bz33FEtALIf1RFGASoSx7cTH2Mlm/csy1VwndF+H5rvB0gZI1BGaao9K
-	uo4ExG1esCF3SuXWz284KarBuUKzF8ywJu6hJwimy2/BNJtTjQCKyOnRt9V1ibg4
-	196bpTuBMlRupJNonffFg==
-Received: from va32lpfpp02.lenovo.com ([104.232.228.22])
-	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3wd22x86fy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 20:33:23 +0000 (GMT)
-Received: from ilclmmrp01.lenovo.com (ilclmmrp01.mot.com [100.65.83.165])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by va32lpfpp02.lenovo.com (Postfix) with ESMTPS id 4TfWM709tKz50TkW;
-	Tue, 20 Feb 2024 20:33:23 +0000 (UTC)
-Received: from ilclasset01.mot.com (ilclasset01.mot.com [100.64.7.105])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by ilclmmrp01.lenovo.com (Postfix) with ESMTPSA id 4TfWM65bfHz3n3fr;
-	Tue, 20 Feb 2024 20:33:22 +0000 (UTC)
-From: Maxwell Bland <mbland@motorola.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: gregkh@linuxfoundation.org, agordeev@linux.ibm.com,
-        akpm@linux-foundation.org, andreyknvl@gmail.com, andrii@kernel.org,
-        aneesh.kumar@kernel.org, aou@eecs.berkeley.edu, ardb@kernel.org,
-        arnd@arndb.de, ast@kernel.org, borntraeger@linux.ibm.com,
-        bpf@vger.kernel.org, brauner@kernel.org, catalin.marinas@arm.com,
-        christophe.leroy@csgroup.eu, cl@linux.com, daniel@iogearbox.net,
-        dave.hansen@linux.intel.com, david@redhat.com, dennis@kernel.org,
-        dvyukov@google.com, glider@google.com, gor@linux.ibm.com,
-        guoren@kernel.org, haoluo@google.com, hca@linux.ibm.com,
-        hch@infradead.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kasan-dev@googlegroups.com, kpsingh@kernel.org,
-        linux-arch@vger.kernel.org, linux@armlinux.org.uk,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        lstoakes@gmail.com, mark.rutland@arm.com, martin.lau@linux.dev,
-        meted@linux.ibm.com, michael.christie@oracle.com, mjguzik@gmail.com,
-        mpe@ellerman.id.au, mst@redhat.com, muchun.song@linux.dev,
-        naveen.n.rao@linux.ibm.com, npiggin@gmail.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, quic_nprakash@quicinc.com,
-        quic_pkondeti@quicinc.com, rick.p.edgecombe@intel.com,
-        ryabinin.a.a@gmail.com, ryan.roberts@arm.com, samitolvanen@google.com,
-        sdf@google.com, song@kernel.org, surenb@google.com,
-        svens@linux.ibm.com, tj@kernel.org, urezki@gmail.com,
-        vincenzo.frascino@arm.com, will@kernel.org, wuqiang.matt@bytedance.com,
-        yonghong.song@linux.dev, zlim.lnx@gmail.com, mbland@motorola.com,
-        awheeler@motorola.com
-Subject: [PATCH 4/4] arm64: dynamic enforcement of pmd-level PXNTable
-Date: Tue, 20 Feb 2024 14:32:56 -0600
-Message-Id: <20240220203256.31153-5-mbland@motorola.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240220203256.31153-1-mbland@motorola.com>
-References: <20240220203256.31153-1-mbland@motorola.com>
-X-Proofpoint-ORIG-GUID: IdOVOSFTH5OwTQnHH7fAIQBlI2JoJAu-
-X-Proofpoint-GUID: IdOVOSFTH5OwTQnHH7fAIQBlI2JoJAu-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=766 spamscore=0 malwarescore=0 adultscore=0
- suspectscore=0 impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402200146
+	s=arc-20240116; t=1708463030; c=relaxed/simple;
+	bh=3kAUrurtNiP3UC2xmS0OvkVVvGjX0dVAutxqdUZ2qnw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qUUJDE2NbL5P15Q9XXMrMfH+WZ7GFHzOpbSsB+lvPi4n+AvAACAecglIxAVAruA6AUwekNoWrUqwMLy2CZ+0YMC0FReHKbZ3yhr/QkVPgtrtuztlLA/nZOg6NZEd1+bUdbYqnEk9ORMSl2e+sEE74KdRBNaMI2CRvCf0klXKctE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UZ4gpzuP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708463027;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+zwA9HmxBE9kkApmb5DFejONB4Ab5PK9ozyBZlq85qY=;
+	b=UZ4gpzuPJROqtDVU9JgiwI/0lW5K91XLLfXAbcLT0fRc+dJH7nBw6XCf8lK2KvXfJ14fhJ
+	qBMahT11Pg1xlDxAOlaU8erBCdf1K8oHwr3YhzPgXxYqNqJov1AiaUYTLNctwyW5If4PWY
+	ecucV2G9iVzDsfb2dmuII7D52rxFY70=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-1twbMQ2hPBSW5_sdphboDA-1; Tue, 20 Feb 2024 16:03:45 -0500
+X-MC-Unique: 1twbMQ2hPBSW5_sdphboDA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a3ed1fb115eso129175366b.2
+        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 13:03:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708463025; x=1709067825;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+zwA9HmxBE9kkApmb5DFejONB4Ab5PK9ozyBZlq85qY=;
+        b=MuZ1KV/rbAxAGGu3+9AGnGj0c1O2L4q3ajGlltUxeG4J0YQQ1swQ7f488jYxC2qdNm
+         lUYEoSqdp4bRTTl0iY5pDKTppV4jDdArjEZ4V81etfnbutoKYweldg3ujJtIggHLwt4c
+         aEr+Z25/UYFvjsD7YkkM3Wevrwk+mqTkdCj0tvhOS3p1GDaAGPOUsvUpBDAu76HpAdIO
+         HbahS0ahNKUQKUyZu981Wxc7AVxOmBQhbu+Ce+F5SHxWGJcbk2q52v9XtaF1iGo5ZjQH
+         CrnFWSjZFUdQDTwPzwDmt31Fd095alDatpXXTEx1jN5y1LCR+LuBMhYhivbNHTl+bONN
+         blQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgxJ/Hjj5tycw9h4lLazjMeMBTxbOFY6tZxFzqP6ySMj8q2syAxVDlXuu4EOaODSyU/MmFuyIpN7kK+XvW6wadQCpD
+X-Gm-Message-State: AOJu0Ywxyk3cNV5r4h75MzLOrygraKn36s7cef6IwbVQ413Ecjfhuw8C
+	u3BPRT/mdJJrkobXMOzi+tQMbvm+F8of673wFiQJvm1yUgcBdxwRUXot90haGARRjJUclqJLLZz
+	KXKMfCBCURDrhpD4dAp2ybVOnIX40Sg48TRdKQaNklsibYO43kw==
+X-Received: by 2002:a17:906:b885:b0:a3e:9952:e13f with SMTP id hb5-20020a170906b88500b00a3e9952e13fmr4074072ejb.13.1708463024787;
+        Tue, 20 Feb 2024 13:03:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH/ijJ9Hlq7WY8BZGRla/sShQW1G/ckI7AdP5MFERXYPNtvx5V8pEGMRemteB7pNtpZbizTig==
+X-Received: by 2002:a17:906:b885:b0:a3e:9952:e13f with SMTP id hb5-20020a170906b88500b00a3e9952e13fmr4074068ejb.13.1708463024495;
+        Tue, 20 Feb 2024 13:03:44 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id ss15-20020a170907c00f00b00a3e0dc787bfsm4245971ejc.17.2024.02.20.13.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 13:03:44 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B02E510F63EC; Tue, 20 Feb 2024 22:03:43 +0100 (CET)
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next v2 0/4] Change BPF_TEST_RUN use the system page pool for live XDP frames
+Date: Tue, 20 Feb 2024 22:03:37 +0100
+Message-ID: <20240220210342.40267-1-toke@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-In an attempt to protect against write-then-execute attacks wherein an
-adversary stages malicious code into a data page and then later uses a
-write gadget to mark the data page executable, arm64 enforces PXNTable
-when allocating pmd descriptors during the init process. However, these
-protections are not maintained for dynamic memory allocations, creating
-an extensive threat surface to write-then-execute attacks targeting
-pages allocated through the vmalloc interface.
+Now that we have a system-wide page pool, we can use that for the live
+frame mode of BPF_TEST_RUN (used by the XDP traffic generator), and
+avoid the cost of creating a separate page pool instance for each
+syscall invocation. See the individual patches for more details.
 
-Straightforward modifications to the pgalloc interface allow for the
-dynamic enforcement of PXNTable, restricting writable and
-privileged-executable code pages to known kernel text, bpf-allocated
-programs, and kprobe-allocated pages, all of which have more extensive
-verification interfaces than the generic vmalloc region.
+This series targets net-next because it depends on this series of
+Lorenzo's, that adds a global system page pool:
 
-This patch adds a preprocessor define to check whether a pmd is
-allocated by vmalloc and exists outside of a known code region, and if
-so, marks the pmd as PXNTable, protecting over 100 last-level page
-tables from manipulation in the process.
+https://lore.kernel.org/r/cover.1707729884.git.lorenzo@kernel.org
 
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
----
- arch/arm64/include/asm/pgalloc.h | 11 +++++++++--
- arch/arm64/include/asm/vmalloc.h |  5 +++++
- arch/arm64/mm/trans_pgd.c        |  2 +-
- 3 files changed, 15 insertions(+), 3 deletions(-)
+Changelog:
+v2:
+ - Change the cookie that marks the page for recycling to be a 128-bit
+   value (Paolo)
+ - Add a patch that removes the init_callback parameter from page
+   pool (Olek)
+ - Carry forward review tags from v1
 
-diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
-index 237224484d0f..5e9262241e8b 100644
---- a/arch/arm64/include/asm/pgalloc.h
-+++ b/arch/arm64/include/asm/pgalloc.h
-@@ -13,6 +13,7 @@
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
- 
-+#define __HAVE_ARCH_ADDR_COND_PMD
- #define __HAVE_ARCH_PGD_FREE
- #include <asm-generic/pgalloc.h>
- 
-@@ -74,10 +75,16 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t ptep,
-  * of the mm address space.
-  */
- static inline void
--pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep)
-+pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep,
-+			unsigned long address)
- {
-+	pmdval_t pmd = PMD_TYPE_TABLE | PMD_TABLE_UXN;
- 	VM_BUG_ON(mm && mm != &init_mm);
--	__pmd_populate(pmdp, __pa(ptep), PMD_TYPE_TABLE | PMD_TABLE_UXN);
-+	if (IS_DATA_VMALLOC_ADDR(address) &&
-+		IS_DATA_VMALLOC_ADDR(address + PMD_SIZE)) {
-+		pmd |= PMD_TABLE_PXN;
-+	}
-+	__pmd_populate(pmdp, __pa(ptep), pmd);
- }
- 
- static inline void
-diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
-index dbcf8ad20265..6f254ab83f4a 100644
---- a/arch/arm64/include/asm/vmalloc.h
-+++ b/arch/arm64/include/asm/vmalloc.h
-@@ -34,4 +34,9 @@ static inline pgprot_t arch_vmap_pgprot_tagged(pgprot_t prot)
- extern unsigned long code_region_start __ro_after_init;
- extern unsigned long code_region_end __ro_after_init;
- 
-+#define IS_DATA_VMALLOC_ADDR(vaddr) (((vaddr) < code_region_start || \
-+				      (vaddr) > code_region_end) && \
-+				      ((vaddr) >= VMALLOC_START && \
-+				       (vaddr) < VMALLOC_END))
-+
- #endif /* _ASM_ARM64_VMALLOC_H */
-diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
-index 7b14df3c6477..7f903c51e1eb 100644
---- a/arch/arm64/mm/trans_pgd.c
-+++ b/arch/arm64/mm/trans_pgd.c
-@@ -69,7 +69,7 @@ static int copy_pte(struct trans_pgd_info *info, pmd_t *dst_pmdp,
- 	dst_ptep = trans_alloc(info);
- 	if (!dst_ptep)
- 		return -ENOMEM;
--	pmd_populate_kernel(NULL, dst_pmdp, dst_ptep);
-+	pmd_populate_kernel_at(NULL, dst_pmdp, dst_ptep, addr);
- 	dst_ptep = pte_offset_kernel(dst_pmdp, start);
- 
- 	src_ptep = pte_offset_kernel(src_pmdp, start);
+Toke Høiland-Jørgensen (4):
+  net: Register system page pool as an XDP memory model
+  bpf: test_run: Use system page pool for XDP live frame mode
+  bpf: test_run: Fix cacheline alignment of live XDP frame data
+    structures
+  page pool: Remove init_callback parameter
+
+ include/linux/netdevice.h     |   1 +
+ include/net/page_pool/types.h |   4 -
+ net/bpf/test_run.c            | 143 +++++++++++++++++-----------------
+ net/core/dev.c                |  13 +++-
+ net/core/page_pool.c          |   4 -
+ 5 files changed, 86 insertions(+), 79 deletions(-)
+
 -- 
-2.39.2
+2.43.0
 
 
