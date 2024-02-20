@@ -1,47 +1,93 @@
-Return-Path: <bpf+bounces-22287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7932A85B3B7
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 08:16:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7D0D85B3C0
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 08:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23FE21F23EA6
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 07:16:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63FF61F2118C
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 07:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744765A4CE;
-	Tue, 20 Feb 2024 07:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36BD5A4EF;
+	Tue, 20 Feb 2024 07:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kWA+ZmhB"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="2ZP2VMC6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yZBmTjiY";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="2ZP2VMC6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yZBmTjiY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0772E414;
-	Tue, 20 Feb 2024 07:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8113E5A11D;
+	Tue, 20 Feb 2024 07:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708413371; cv=none; b=HNX3DjHzNe9msufQrBO9WHz3ae0a7uaQvklSCRkvU6OStbxW03ZriicSSpIvJjNVYV26CmGmzhDjDbTNb8s6S69cVXkRlXtQevkRi7bLpUrdLqGH5SIAsyei4+mILxUoyNcnCGjR/MKOFmyqs5iR5mUlSL6svN5IrwlGCN4jKiY=
+	t=1708413413; cv=none; b=u5BZWhwxNklYOg/GOtlnPnuWBYWFH0pWSssNIuLjlT0rIijMccfRK7eBNStHaqaIE5+dwfEXSqgzUySHF0O6d+Yq92QHYzaV4v+nJ7W0m0d+RRc1YpdFP13aEkQmQdIVVPU30OQuErRJu+sBmQQi7gJABmwR3d8mOQySpupPJDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708413371; c=relaxed/simple;
-	bh=cu/T1BOs7iJNYFJOKO7j3SL4H6llYux4Y5Jm+sXsTL4=;
+	s=arc-20240116; t=1708413413; c=relaxed/simple;
+	bh=sVEvf81HYL71592XjYLXKdVLfIgi4fW83G+GimHMgu4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eqIc88PGczjo9tKtzSmCxY7wwKZ4ds5MqfFVbextZGYepvVn75GON6WjZnfs7cdchVJVnb/ho2MMMvC7CMQQGefPmhsiuPTKnIgKiGTGlD3sB63EXu/RVd5pVlZtDdKy1DrpChT2WmuUYdvxgk9S5+Ir4zQo6bHvmC9Clh2lwCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kWA+ZmhB; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708413365; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=aRVK0RBqvwU9ESK4wUCOXJ5JGHcyUKkaoM4QJ3fPRkU=;
-	b=kWA+ZmhB9lo4K/EAOIii30ukVBvjUbQWy+Jvm3l7T3FJYZvcYARr1rVOPZixaFA6y8WnkNybUM2QkZZXxa0G13uR4ogobpgi7vWWA58f7VtCuP/OrrGWtxQTtFdyi8sqFJ7mp1Mkko6MG56dHe0eyWNOodmUIyT1ZZLlrAxp+8o=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W0w0R3Y_1708413363;
-Received: from 30.221.148.206(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0w0R3Y_1708413363)
-          by smtp.aliyun-inc.com;
-          Tue, 20 Feb 2024 15:16:05 +0800
-Message-ID: <e1c747a9-64b7-471b-8fb8-093b8f080490@linux.alibaba.com>
-Date: Tue, 20 Feb 2024 15:16:01 +0800
+	 In-Reply-To:Content-Type; b=o6nZJFdhPt+ZfRc8NOa0Hg88l+tZA7qs/gIKeqPBbJMR6TqkIjHOFPdzjbSi3T4DD8pRT5QB03oDVlfhkYO9095kDAFwqi0s4UHp4gFRCaeNuAgOlbfWXbMQH4ina9vu1d3SPCWE7fMerjLtDPa70zMsuCmDzux4xJtq9bsdAkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=2ZP2VMC6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yZBmTjiY; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=2ZP2VMC6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yZBmTjiY; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 335122203C;
+	Tue, 20 Feb 2024 07:16:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708413409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mRahtuQSFMxt05TGxYHbI48NSmxiy73yXCx+h0UNDqg=;
+	b=2ZP2VMC6DM1eu/RhehDHocjEQiLkCkLr4elj8T43K1MbOVsvwtXgmu4qm/wUJNXejvvR1i
+	EMRmls/ryG0ZwiXXwcxJN8Yw5BChSCPnHHhm2zWN5bzvU0W2fOdBxfvnWR0Qp98QQbKZai
+	R4iVacnIqXx8DLu16oTtnv8ZgLJIdLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708413409;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mRahtuQSFMxt05TGxYHbI48NSmxiy73yXCx+h0UNDqg=;
+	b=yZBmTjiY3bD9EYX0Pm7MQzWKCke58cJGugOtYVp3LfJ2fYt+kfzoSQ97B0l0VWnQV9bZTy
+	8w1TBNsXbk6niEAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708413409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mRahtuQSFMxt05TGxYHbI48NSmxiy73yXCx+h0UNDqg=;
+	b=2ZP2VMC6DM1eu/RhehDHocjEQiLkCkLr4elj8T43K1MbOVsvwtXgmu4qm/wUJNXejvvR1i
+	EMRmls/ryG0ZwiXXwcxJN8Yw5BChSCPnHHhm2zWN5bzvU0W2fOdBxfvnWR0Qp98QQbKZai
+	R4iVacnIqXx8DLu16oTtnv8ZgLJIdLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708413409;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mRahtuQSFMxt05TGxYHbI48NSmxiy73yXCx+h0UNDqg=;
+	b=yZBmTjiY3bD9EYX0Pm7MQzWKCke58cJGugOtYVp3LfJ2fYt+kfzoSQ97B0l0VWnQV9bZTy
+	8w1TBNsXbk6niEAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 29582134E4;
+	Tue, 20 Feb 2024 07:16:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id A8MCCOBR1GUmRAAAD6G6ig
+	(envelope-from <hare@suse.de>); Tue, 20 Feb 2024 07:16:48 +0000
+Message-ID: <427e3fdb-5be2-4ff3-9bad-a21c49d0aab4@suse.de>
+Date: Tue, 20 Feb 2024 08:16:46 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,78 +95,99 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC nf-next v5 0/2] netfilter: bpf: support prog update
+Subject: Re: [LSF/MM/BPF TOPIC] Reclaiming & documenting page flags
 Content-Language: en-US
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Quentin Deslandes <qde@naccy.de>
-Cc: kadlec@netfilter.org, fw@strlen.de, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org
-References: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
- <70114fff-43bd-4e27-9abf-45345624042c@naccy.de> <ZcztLZPiz+FkF8kF@calendula>
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <ZcztLZPiz+FkF8kF@calendula>
+To: Matthew Wilcox <willy@infradead.org>, Mike Rapoport <rppt@kernel.org>
+Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+ bpf@vger.kernel.org
+References: <Zbcn-P4QKgBhyxdO@casper.infradead.org>
+ <Zb9pZTmyb0lPMQs8@kernel.org> <ZcACya-MJr_fNRSH@casper.infradead.org>
+ <ZcOnEGyr6y3jei68@kernel.org> <ZdO2eABfGoPNnR07@casper.infradead.org>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <ZdO2eABfGoPNnR07@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=2ZP2VMC6;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=yZBmTjiY
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -4.50
+X-Rspamd-Queue-Id: 335122203C
+X-Spam-Flag: NO
 
-
-
-On 2/15/24 12:41 AM, Pablo Neira Ayuso wrote:
-> On Wed, Feb 14, 2024 at 05:10:46PM +0100, Quentin Deslandes wrote:
->> On 2024-01-02 07:11, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>
->>> This patches attempt to implements updating of progs within
->>> bpf netfilter link, allowing user update their ebpf netfilter
->>> prog in hot update manner.
->>>
->>> Besides, a corresponding test case has been added to verify
->>> whether the update works.
->>> --
->>> v1:
->>> 1. remove unnecessary context, access the prog directly via rcu.
->>> 2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
->>> 3. check the dead flag during the update.
->>> --
->>> v1->v2:
->>> 1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
->>> --
->>> v2->v3:
->>> 1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
->>> --
->>> v3->v4:
->>> 1. remove mutex for link update, as it is unnecessary and can be replaced
->>> by atomic operations.
->>> --
->>> v4->v5:
->>> 1. fix error retval check on cmpxhcg
->>>
->>> D. Wythe (2):
->>>    netfilter: bpf: support prog update
->>>    selftests/bpf: Add netfilter link prog update test
->>>
->>>   net/netfilter/nf_bpf_link.c                        | 50 ++++++++-----
->>>   .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
->>>   .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
->>>   3 files changed, 141 insertions(+), 16 deletions(-)
->>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
->>>   create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
->>>
->> It seems this patch has been forgotten, hopefully this answer
->> will give it more visibility.
+On 2/19/24 21:13, Matthew Wilcox wrote:
+> On Wed, Feb 07, 2024 at 05:51:44PM +0200, Mike Rapoport wrote:
+>> On Sun, Feb 04, 2024 at 09:34:01PM +0000, Matthew Wilcox wrote:
+>>> I'm doing my best to write documentation as I go.  I think we're a bit
+>>> better off than we were last year.  Do we have scripts to tell us which
+>>> public functions (ie EXPORT_SYMBOL and static inline functions in header
+>>> files) have kernel-doc?  And could we run them against kernels from, say,
+>>> April 2023, 2022, 2021, 2020, 2019 (and in two months against April 2024)
+>>> and see how we're doing in terms of percentage undocumented functions?
 >>
->> I've applied this change on 6.8.0-rc4 and tested BPF_LINK_UPDATE
->> with bpfilter and everything seems alright.
-> Just post it without RFC tag.
+>> We didn't have such script, but it was easy to compare "grep
+>> EXPORT_SYMBOL\|static inline" with ".. c:function" in kernel-doc.
+>> We do improve slowly, but we are still below 50% with kernel-doc for
+>> EXPORT_SYMBOL functions and slightly above 10% for static inlines.
+> 
+> Thanks for doing this!  Data is good ;-)
+> 
+> I just came across an interesting example of a function which I believe
+> should NOT have kernel-doc.  But it should have documentation for why it
+> doesn't have kernel-doc!  Any thoughts about how we might accomplish that?
+> 
+> The example is filemap_range_has_writeback().  It's EXPORT_SYMBOL_GPL()
+> and it's a helper function for filemap_range_needs_writeback().
+> filemap_range_needs_writeback() has kernel-doc, but nobody should be
+> calling filemap_range_has_writeback() directly, so it shouldn't even
+> exist in the htmldocs.  But we should have a comment on it saying
+> "Use filemap_range_needs_writeback(), don't use this", in case anyone
+> discovers it.  And the existance of that comment should be enough to
+> tell our tools to not flag this as a function that needs kernel-doc.
+> 
+> 
+Or, indeed, coming up with a method of signalling "this is an internal
+function for a specific need, don't use otherwise".
 
-Glad to know that, I will send a formal version soon.
+EXPORT_SYMBOL_INTERNAL?
 
-D. Wythe
+I would love to have it; it would solve _so_ many problems we're having
+wrt kABI...
 
+Cheers,
 
-
-
-
+Hannes
+-- 
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
 
