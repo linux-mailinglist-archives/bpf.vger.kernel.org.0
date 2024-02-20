@@ -1,136 +1,164 @@
-Return-Path: <bpf+bounces-22296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 055DF85B72C
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A9C85B754
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 10:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9397BB26A29
-	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 09:20:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B360B22724
+	for <lists+bpf@lfdr.de>; Tue, 20 Feb 2024 09:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F4F5F87F;
-	Tue, 20 Feb 2024 09:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5115FEED;
+	Tue, 20 Feb 2024 09:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="lQFRjvtM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TqKIznuo"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AEF5F48B;
-	Tue, 20 Feb 2024 09:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B72D5FDC5
+	for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 09:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708420795; cv=none; b=SilOFOdhnNKP40P5XMFLjrZohN0RB+SPVA0ujWaMdtC+zqd27xy+TdFauXLZ21D7Hcd1Bd7+YO29+AIedusv/RBlG4Tbn6636cN9G3pq9WQQPF+Y6fvHaHjGiroGHR/6a79xW5AtzbB0trrP5QAraYK/LoSGN/Kj0oSf/ckLwm8=
+	t=1708421243; cv=none; b=QtQdFUiKUw+ZWjLgeS0nn3ZuSflks42XNgYYw4ca61E9rOAIFj3b8kuFdVYTop97OoSWC0K/L3a8frDkyRy8U7utefPMixVoGHehh0r3WhFdgU1i66onlX4zwBaK4aGLLDI06LTQEykChK1tDJMOLqiQaNFTgG/q0hTSivlege0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708420795; c=relaxed/simple;
-	bh=bwT3c4fTnCDe05dvq1l/DYWXthS7YYkrWruFJpPD8tc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=lNv7a7ALQpKd3j74bftWH2f5RlDUnK0y8wxXK7q1relj9r54k99CFV8i/e1nqUmZKUhRhk9IXQaKpmZ48usVS7NdxNvxvq+uJWaE6Zl6zSXBZEZX9kYK0YBia9DKp5PKdO1dvvHIMtY6H+F5v66zKDBfvV4/GcP+4n5U5Q9K4JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=lQFRjvtM; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=pnB5JW9TLOshndb6+kfruCaB3IU6xVBqoQ1BTt8gcAY=; b=lQFRjvtM2mkLsBg5Xqe+eZ07n6
-	Bgw+WRmbTlgGAfjMwbv/1RP1wa13H0Mj8G+FNxXb8a89ejwXhAZaING9OMZhnGj1Svx6yFUpcMKwT
-	x25yPhIrrj3r2aAbS6yjGS8LMRT/u8l1xKfnMGB4N+Ek10FMkFyt5a6AEfeyAosQaddc5C2Ow9ug+
-	lFn2Q51kUpSlvJuHt0IC1PeL44DbUYUGEakvSBOfsN11Zz+nrLx1qOfNWlLEBnXpW4e6zIFTFuQlz
-	KYzn6XYuvw7ypx25tGD+DM4l3gsgzk4TCOzZzlBEN7Kq7prKpYWwpbrZ3D+Q/YXgIbE7uEfRmRUYR
-	ojRFTuFA==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcMHv-000NpA-HC; Tue, 20 Feb 2024 10:19:43 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcMHu-000Dqw-Vd; Tue, 20 Feb 2024 10:19:43 +0100
-Subject: Re: [PATCH net-next 0/3] Change BPF_TEST_RUN use the system page pool
- for live XDP frames
-To: Paolo Abeni <pabeni@redhat.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?=
- =?UTF-8?Q?sen?= <toke@redhat.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20240215132634.474055-1-toke@redhat.com> <87wmr0b82y.fsf@toke.dk>
- <631d6b12-fb5c-3074-3770-d6927aea393d@iogearbox.net>
- <b5a062465f9afe36106fe1d624b2e9e129bea0f4.camel@redhat.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9b211443-a6a1-981c-b2a8-42ec0e876fba@iogearbox.net>
-Date: Tue, 20 Feb 2024 10:19:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1708421243; c=relaxed/simple;
+	bh=kcSwDMjQ4HwXRXDe7nNAi5ffp6zgzfbhOceAg8MaAFU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=T59aldB9lF/TkKiTcSJc8IEaoz6gqbuIkmrrJmA2Kj3q2MNgPf3M/fdVyzVq2KIj9OSIXkdkOyCGLPPesMkDAx45Sodzk+MZBtt2CKQYrPUdZrY0kE7+7E5DzC8AbSF1vmSjvSzc+oJByVRdIMPEShtjJj4M2I8Yljr2+ef8T3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TqKIznuo; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso4917962a12.2
+        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 01:27:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708421240; x=1709026040; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hp2TuWu2HbbWzt6t/Ms6hSusaZxhHf6cH//9t+dYHaA=;
+        b=TqKIznuofWcwUUivYjnZROHEFKMVi+8Cg6y7+7i4ypf2zJ4J6X2jb8AdccFgy0esHG
+         fehcpnT/k0mBZGBVnG69iKp0ylPXH4LMEKu3Nl+zggS48/4HQ9mtotq8v5b/qKz3cjjC
+         QxzZ5guDK4rohFYXEEohJy5Lu6lEOsErC0u73OATTwjLkEeW7sdIzwcIaZ196OOXUdRq
+         5Vj4F5C1/VLP6NOX2FkZCvoqe6FtY/KQiRulAVWTzOeDR9SvARBXNBVXJ88s2RjyCnmP
+         ngIirysRIjxv6/OiPK5Yg1imejhLlxjgRag+sPeV+ShpcYr2e/dU4JM/ZiIu+UarJf+c
+         0N/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708421240; x=1709026040;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hp2TuWu2HbbWzt6t/Ms6hSusaZxhHf6cH//9t+dYHaA=;
+        b=t0wi1scLR073/IvkElG6AYq55yLzMrRW6dEiEDsans3KL63sPEiN89UxIy9qTbMf4C
+         VE5EANx9ZFlM7cAb2gNykoM/mnvEnPcGww+xIuDikLTPOR5wbyzEcGMW2qfFFS1Ep03C
+         a9f00bcmWhXIJKDthY6uEdOnYWthaNTLlNv9TntAfflrNwVchASjuGlmE/zIiwbxBcbh
+         pUDrD+7qsPp5K9B1gkG0uDt7Zy++XN7kyxax09Yd79auGRsBMEhll+elwTFv+OcUTQNl
+         GAb5uUhAdWtf9jKTMX//80ocN+QDPJwQ2BmDY/VmnC5nbnTse/vEfzwhZxzh2nnfZ28w
+         N0TA==
+X-Gm-Message-State: AOJu0YzVbabqOln6mspCfxLlD2qi1XvH8BdGjIFxv6hEp2ASrok75+Lm
+	/c/4daSxIhRQ6v77ASIo6sjYTAIKWFMC1eisodS7Bwv27Kwuq/G2DnQqwJ1UP5W7aqyLnSz+4Ca
+	KwQ==
+X-Google-Smtp-Source: AGHT+IFeB+mh4ygCJyvjBo5cQ9e7OvA6Pdq01PX8Ja4typ3tr+wDucWBaMq8mY0bnpXSck8WivflVg==
+X-Received: by 2002:a05:6402:2812:b0:563:c54e:ee with SMTP id h18-20020a056402281200b00563c54e00eemr14001224ede.2.1708421239790;
+        Tue, 20 Feb 2024 01:27:19 -0800 (PST)
+Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
+        by smtp.gmail.com with ESMTPSA id y5-20020aa7d505000000b0056200715130sm3458526edq.54.2024.02.20.01.27.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 01:27:19 -0800 (PST)
+Date: Tue, 20 Feb 2024 09:27:14 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, kpsingh@google.com, jannh@google.com,
+	jolsa@kernel.org, daniel@iogearbox.net, brauner@kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH bpf-next 00/11] bpf: probe-read bpf_d_path() and add new
+ acquire/release BPF kfuncs
+Message-ID: <cover.1708377880.git.mattbobrowski@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b5a062465f9afe36106fe1d624b2e9e129bea0f4.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27190/Mon Feb 19 10:24:27 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2/20/24 10:03 AM, Paolo Abeni wrote:
-> On Tue, 2024-02-20 at 09:39 +0100, Daniel Borkmann wrote:
->> On 2/19/24 7:52 PM, Toke Høiland-Jørgensen wrote:
->>> Toke Høiland-Jørgensen <toke@redhat.com> writes:
->>>
->>>> Now that we have a system-wide page pool, we can use that for the live
->>>> frame mode of BPF_TEST_RUN (used by the XDP traffic generator), and
->>>> avoid the cost of creating a separate page pool instance for each
->>>> syscall invocation. See the individual patches for more details.
->>>>
->>>> Toke Høiland-Jørgensen (3):
->>>>     net: Register system page pool as an XDP memory model
->>>>     bpf: test_run: Use system page pool for XDP live frame mode
->>>>     bpf: test_run: Fix cacheline alignment of live XDP frame data
->>>>       structures
->>>>
->>>>    include/linux/netdevice.h |   1 +
->>>>    net/bpf/test_run.c        | 138 +++++++++++++++++++-------------------
->>>>    net/core/dev.c            |  13 +++-
->>>>    3 files changed, 81 insertions(+), 71 deletions(-)
->>>
->>> Hi maintainers
->>>
->>> This series is targeting net-next, but it's listed as delegate:bpf in
->>> patchwork[0]; is that a mistake? Do I need to do anything more to nudge it
->>> along?
->>
->> I moved it over to netdev, it would be good next time if there are dependencies
->> which are in net-next but not yet bpf-next to clearly state them given from this
->> series the majority touches the bpf test infra code.
-> 
-> This series apparently causes bpf self-tests failures:
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/7929088890/job/21648828278
-> 
-> I'm unsure if that is blocking, or just a CI glitch.
-> 
-> The series LGTM, but I think it would be better if someone from the
-> ebpf team could also have a look.
+On a number of occasions [0, 1, 2], usage of the pre-existing BPF
+helper bpf_d_path() under certain circumstances has led to memory
+corruption issues.
 
-The CI was not able to apply the patches, so this looks unrelated :
+This patch series intends to address bpf_d_path()'s susceptibility to
+such memory corruption issues by fundamentally swapping out the
+underlying bpf_d_path() implementation such that it makes use of
+probe-read semantics. Enforcing probe-read semantics onto bpf_d_path()
+however doesn't come without it's own set of limitations. Therefore,
+to overcome such limitations, this patch series also adds new BPF
+kfunc based infrastructure which ultimately allows BPF program authors
+to adopt a safer and true implementation of d_path() moving forward
+which is fundamentally backed by KF_TRUSTED_ARGS semantics.
 
-Cmd('git') failed due to: exit code(128)
-   cmdline: git am --3way
-   stdout: 'Applying: net: Register system page pool as an XDP memory model
-Patch failed at 0001 net: Register system page pool as an XDP memory model
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".'
-   stderr: 'error: sha1 information is lacking or useless (include/linux/netdevice.h).
-error: could not build fake ancestor
-hint: Use 'git am --show-current-patch=diff' to see the failed patch'
+[0] https://lore.kernel.org/bpf/CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com/
+[1] https://lore.kernel.org/bpf/20230606181714.532998-1-jolsa@kernel.org/
+[2] https://lore.kernel.org/bpf/20220219113744.1852259-1-memxor@gmail.com/
+
+Matt Bobrowski (11):
+  bpf: make bpf_d_path() helper use probe-read semantics
+  bpf/selftests: adjust selftests for BPF helper bpf_d_path()
+  bpf: rename fs_kfunc_set_ids to lsm_kfunc_set_ids
+  bpf: add new acquire/release BPF kfuncs for mm_struct
+  bpf/selftests: add selftests for mm_struct acquire/release BPF kfuncs
+  bpf: add new acquire/release based BPF kfuncs for exe_file
+  bpf/selftests: add selftests for exe_file acquire/release BPF kfuncs
+  bpf: add acquire/release based BPF kfuncs for fs_struct's paths
+  bpf/selftests: add selftests for root/pwd path based BPF kfuncs
+  bpf: add trusted d_path() based BPF kfunc bpf_path_d_path()
+  bpf/selftests: adapt selftests test_d_path for BPF kfunc
+    bpf_path_d_path()
+
+ fs/Makefile                                   |   6 +-
+ fs/probe_read_d_path.c                        | 150 +++++++++++
+ include/linux/probe_read_d_path.h             |  13 +
+ kernel/trace/bpf_trace.c                      | 249 ++++++++++++++++--
+ .../testing/selftests/bpf/prog_tests/d_path.c | 182 +++++++++++--
+ .../selftests/bpf/prog_tests/exe_file_kfunc.c |  49 ++++
+ .../selftests/bpf/prog_tests/mm_kfunc.c       |  48 ++++
+ .../selftests/bpf/prog_tests/path_kfunc.c     |  48 ++++
+ .../selftests/bpf/progs/d_path_common.h       |  34 +++
+ .../bpf/progs/d_path_kfunc_failure.c          |  66 +++++
+ .../bpf/progs/d_path_kfunc_success.c          |  25 ++
+ .../bpf/progs/exe_file_kfunc_common.h         |  23 ++
+ .../bpf/progs/exe_file_kfunc_failure.c        | 181 +++++++++++++
+ .../bpf/progs/exe_file_kfunc_success.c        |  52 ++++
+ .../selftests/bpf/progs/mm_kfunc_common.h     |  19 ++
+ .../selftests/bpf/progs/mm_kfunc_failure.c    | 103 ++++++++
+ .../selftests/bpf/progs/mm_kfunc_success.c    |  30 +++
+ .../selftests/bpf/progs/path_kfunc_common.h   |  20 ++
+ .../selftests/bpf/progs/path_kfunc_failure.c  | 114 ++++++++
+ .../selftests/bpf/progs/path_kfunc_success.c  |  30 +++
+ .../testing/selftests/bpf/progs/test_d_path.c |  20 +-
+ .../bpf/progs/test_d_path_check_rdonly_mem.c  |   6 +-
+ .../bpf/progs/test_d_path_check_types.c       |   6 +-
+ 23 files changed, 1396 insertions(+), 78 deletions(-)
+ create mode 100644 fs/probe_read_d_path.c
+ create mode 100644 include/linux/probe_read_d_path.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/exe_file_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mm_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/path_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/d_path_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/d_path_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/d_path_kfunc_success.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exe_file_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/exe_file_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exe_file_kfunc_success.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mm_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/mm_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mm_kfunc_success.c
+ create mode 100644 tools/testing/selftests/bpf/progs/path_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/path_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/path_kfunc_success.c
+
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
+/M
 
