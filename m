@@ -1,70 +1,69 @@
-Return-Path: <bpf+bounces-22464-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22465-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8200F85EB25
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 22:40:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D046B85EB80
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 23:01:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D50A5B2672F
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 21:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29ABEB232CF
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 22:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454E812AAD1;
-	Wed, 21 Feb 2024 21:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569771272D6;
+	Wed, 21 Feb 2024 22:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LNhDoZGR"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bpj48WmF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD6E1292FC
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 21:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543A4126F3A
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 22:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708551524; cv=none; b=rzgb5K6ESbgsccQQQls6FEeWanXDOul1sLXP177tFjX6iPnCqaUwoux8iOpEWtDRqLbUuDcg3Pgo8vve+Skuebys3q9/GCGrTVfxF4CH+2c62nV2lzr5/By1HMtiLhYyltmPm4T1YlM2hquNmu+17f9j1vg54G/gH9fKOACYqAw=
+	t=1708552872; cv=none; b=LKL+KcWuMsVhLjkS11783wn6D2+Zp74IsQhpt/HA+F/IVC+Nf5ZLEjYLXJq4K8mkihtGhyWgNo/lRt8h8isVRdFNVnGDrqfUvGLkvsJx50veiZ03hw/vKIfQWePhjWpctefBUwQZ45Ii+Sxgvt+DoflSwlKeimVugYFVct12vgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708551524; c=relaxed/simple;
-	bh=tdC/CiuVWPHSufrgRHTfCGIP/BXt+NRLyAohkR1KzmM=;
+	s=arc-20240116; t=1708552872; c=relaxed/simple;
+	bh=wqGWw9nOiid78rmVoNJpLAKogw9OxxtIINANjebVuns=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eJHUWKXoF69fpiIhAuqyYRqzc+InaijmNhKy7rKvM55PPKkTfFhYoKwNliX7n6viZLCHZMJKq9xWOv0AZEhR5YmpUsSQX1MwMCqKeIrhPmpE2Xcu5aZTcxAB/vkJPwAtAhZyrRhSY3/X6WG6wDPPilrnluSDhDPLuuRVvHNRYUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LNhDoZGR; arc=none smtp.client-ip=209.85.210.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=QqvzCmQK7gFrM+md/p3gd9JKTAJo+O7QQx9hpoF4M8q2btoO+Rj0rGGx5RxslONs4XyGlNHI27TNfxEFseCPxX0qJA023BkeMzFcJzfOILg92pUZmDqVbHqLYHB7phPr5g0ArTvIaPHR8whohRXEr30+WvvyDfuYVma3zsuVc/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bpj48WmF; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e43ee3f6fbso4194069b3a.3
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 13:38:42 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc0d11d1b7so27338775ad.2
+        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 14:01:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708551521; x=1709156321; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UQex++ttS4RzCrpq+AKJPUO9eah2DR726vpHNT3YCIg=;
-        b=LNhDoZGRhp2bqQOiJ1qjqrA970ZBKux361+V7tI+5aENf+JiyIYxOvdBaFVR9h+3q2
-         72iEdCibq48fBJwOeWpyJArrnwMXfg5ilHXZmRgkQCipKC/b6Qq0A60XAOswRFlzDELW
-         C6DCRbL8VGc1seF8EQHY+PwqXmAgx+GyrtFe4=
+        d=chromium.org; s=google; t=1708552871; x=1709157671; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=k+6LHH2NPUzYokJHyaMeg6P0BHjKGeB4TbkarefmniY=;
+        b=bpj48WmFS/Iv/Pl0hg7lOS8zJgnv0NSStFCNmbJ6KEpuG46kTUN/691glGTo/3Ussp
+         p+NO4+VI9TFFxK1I1IpwAumuQPpNmQosA0O5VcsIoRgOfll/Zs90O7tq42+7asod3qYo
+         QfauMBovnb/+K04a39tMMdP5sPWShkQq8NrPA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708551521; x=1709156321;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQex++ttS4RzCrpq+AKJPUO9eah2DR726vpHNT3YCIg=;
-        b=MWGbO88I2Khf/s85YR1BigPLvT1r4LEOans1udFrm50e9rgPzLbdWUbLPZjx/t34yE
-         97NvqYXb4UcFX+pMr+xAOxOI8GCpgkPu9xxAJ6mo7pnAoejOYGTqS8udyybFq4X50B8Y
-         IjrXLQF3mMEgvkpd6DMK7N9Y7MhuNi6/0zBVbJ/b+o19L9qYo6ozkolC0b/QAFnsNzdL
-         3cmKavMnfExoX26D4ghDqESmJxTAMhOzYxeRqzgx1WetIX6V26AhEH48tM/f0yM5R5Kx
-         +iNFk88RLmc3Bj2hI3fqrbaVM2GBZ2BnCOU0on8JBa+aMWL3eYabXxRTmalqE3KuP1tu
-         Ii/A==
-X-Forwarded-Encrypted: i=1; AJvYcCU9RAy1XP2+8gjq38HEyGAITuRwNNLNWb8z4VzZ0gn66KXG4efsTyTJwreomQhe/jjP75bk4ruPV7IrFDuew98RrrFe
-X-Gm-Message-State: AOJu0YzNglPc5IDF6ZjZVGzanD4e7yjGtb3A0dx4EzAd3wVW0Oxk1Uxi
-	TBzoqSNLyfQe2Mocwz3JiYnKPaajfxlaVZSyCkV6YhBII7e1+2jOIMh5SFuVWQ==
-X-Google-Smtp-Source: AGHT+IHDh/MRb5Op0VGAH3i2K/wXYQriert54RdfL+L6lC7CA/epD+rsZx/gHYIBfDp8bfXy2Py4ow==
-X-Received: by 2002:a05:6a21:1014:b0:1a0:c46f:62be with SMTP id nk20-20020a056a21101400b001a0c46f62bemr3014569pzb.38.1708551521543;
-        Wed, 21 Feb 2024 13:38:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708552871; x=1709157671;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k+6LHH2NPUzYokJHyaMeg6P0BHjKGeB4TbkarefmniY=;
+        b=n8rAVuSqbpiO2ERsuK9TIoOmsnP+i8L3IePHvf2Qh38hthcTdhgJXDTFIq4VJ3d0eQ
+         aG5b2l/UrI8FsvgjNZkeGYGT3eu3qpAxjhf7q4CsS3Ko7H6TwFTfZC5XcTaJXUQQCviW
+         69CqrQh5031m+im8oUcx28GqP6m/iXkoEUPn6PzMj3fwPoMvPNReF56K6T9eOAZgZ4VB
+         8kteYeokOYMkNz0QO1iWlwpnAiMzNJOjx6fnOVIn5kKwHhOm3jWH6U9yl+BlfPge8TCO
+         3HoYPB/dWVOZJAv2xIh6/6lTB4PS76pzYJ2HOj0Mm9qWCyN0Qgq9agIRjQMZjR73PMrD
+         dhEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSHaNmfj/z6WwO1/yfbtbIzLV0kfQ80ymbhjn6p+lWwI4Hq1/N+Ym+uog6E2UR1ho22WuCeZt6WIIG0j0zOWvLX9D5
+X-Gm-Message-State: AOJu0Yxk1AMImUKeKrDB9Kv850Z3Munl7pxK1z1uPGyjRF6VG+WcdwzY
+	V3L4dqPetziHSOeri9iltmOaxEexwyOV9qnMhtR6HuvWNxr2aV202reeXcjw2w==
+X-Google-Smtp-Source: AGHT+IEf5eKUQSWm+opFfaiF5eBQJmg0AXhYyA+h2y9jNbW7sOQuiyq0AM8mKQQVx25bJ6R/7Y4UCw==
+X-Received: by 2002:a17:902:f70f:b0:1dc:4b04:13d4 with SMTP id h15-20020a170902f70f00b001dc4b0413d4mr60269plo.8.1708552870628;
+        Wed, 21 Feb 2024 14:01:10 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y5-20020a056a00180500b006e45daf9e89sm7123140pfa.131.2024.02.21.13.38.40
+        by smtp.gmail.com with ESMTPSA id k4-20020a170902e90400b001dbba4c8289sm8533989pld.202.2024.02.21.14.01.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 13:38:40 -0800 (PST)
-Date: Wed, 21 Feb 2024 13:38:40 -0800
+        Wed, 21 Feb 2024 14:01:10 -0800 (PST)
+Date: Wed, 21 Feb 2024 14:01:09 -0800
 From: Kees Cook <keescook@chromium.org>
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Mark Rutland <mark.rutland@arm.com>,
@@ -91,7 +90,7 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
 	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH v4] bpf: Replace bpf_lpm_trie_key 0-length array with
  flexible array
-Message-ID: <202402211317.4D3DEDCA2@keescook>
+Message-ID: <202402211347.2AF2EC4621@keescook>
 References: <20240220185421.it.949-kees@kernel.org>
  <da75b2bf-0d14-6ed5-91c2-dfeba9ad55c4@iogearbox.net>
 Precedence: bulk
@@ -100,114 +99,38 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <da75b2bf-0d14-6ed5-91c2-dfeba9ad55c4@iogearbox.net>
 
 On Wed, Feb 21, 2024 at 05:39:55PM +0100, Daniel Borkmann wrote:
-> On 2/20/24 7:54 PM, Kees Cook wrote:
-> > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> > flexible array. Found with GCC 13:
-> > 
-> > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
-> >    207 |                                        *(__be16 *)&key->data[i]);
-> >        |                                                   ^~~~~~~~~~~~~
-> > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
-> >    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-> >        |                                                      ^
-> > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
-> >     97 | #define be16_to_cpu __be16_to_cpu
-> >        |                     ^~~~~~~~~~~~~
-> > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
-> >    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> > ^
-> >        |                            ^~~~~~~~~~~
-> > In file included from ../include/linux/bpf.h:7:
-> > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
-> >     82 |         __u8    data[0];        /* Arbitrary size */
-> >        |                 ^~~~
-> > 
-> > And found at run-time under CONFIG_FORTIFY_SOURCE:
-> > 
-> >    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
-> >    index 0 is out of range for type '__u8 [*]'
-> > 
-> > Changing struct bpf_lpm_trie_key is difficult since has been used by
-> > userspace. For example, in Cilium:
-> > 
-> > 	struct egress_gw_policy_key {
-> > 	        struct bpf_lpm_trie_key lpm_key;
-> > 	        __u32 saddr;
-> > 	        __u32 daddr;
-> > 	};
-> > 
-> > While direct references to the "data" member haven't been found, there
-> > are static initializers what include the final member. For example,
-> > the "{}" here:
-> > 
-> >          struct egress_gw_policy_key in_key = {
-> >                  .lpm_key = { 32 + 24, {} },
-> >                  .saddr   = CLIENT_IP,
-> >                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
-> >          };
-> > 
-> > To avoid the build time and run time warnings seen with a 0-sized
-> > trailing array for struct bpf_lpm_trie_key, introduce a new struct
-> > that correctly uses a flexible array for the trailing bytes,
-> > struct bpf_lpm_trie_key_u8. As part of this, include the "header"
-> > portion (which is just the "prefixlen" member), so it can be used
-> > by anything building a bpf_lpr_trie_key that has trailing members that
-> > aren't a u8 flexible array (like the self-test[1]), which is named
-> > struct bpf_lpm_trie_key_hdr.
-> > 
-> > Adjust the kernel code to use struct bpf_lpm_trie_key_u8 through-out,
-> > and for the selftest to use struct bpf_lpm_trie_key_hdr. Add a comment
-> > to the UAPI header directing folks to the two new options.
-> > 
-> > Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
-> > Reported-by: Mark Rutland <mark.rutland@arm.com>
-> > Closes: https://paste.debian.net/hidden/ca500597/
-> > Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> [...]
-> 
 > The build in BPF CI is still broken, did you try to build selftests?
 
-I did! I didn't have this error. :(
+Okay, I give up. How is a mortal supposed to build these?
 
->   https://github.com/kernel-patches/bpf/actions/runs/7978647641
-
-Thanks for the pointer. It took a bit of digging, but I found this:
+If I try to follow what I see in
 https://github.com/libbpf/ci/blob/main/build-selftests/build_selftests.sh
-which is much more involved than just "make -C tools/testing/selftests/bpf"
+I just get more and more kinds of errors:
 
-> 
->   [...]
->     GEN-SKEL [test_progs] linked_funcs.skel.h
->     LINK-BPF [test_progs] test_usdt.bpf.o
->     GEN-SKEL [test_progs-no_alu32] profiler1.skel.h
->     GEN-SKEL [test_progs] test_usdt.skel.h
->   In file included from /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:11,
->                    from test_cpp.cpp:4:
->   /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:92:17: error: ‘struct bpf_lpm_trie_key_u8::<unnamed union>::bpf_lpm_trie_key_hdr’ invalid; an anonymous union may only have public non-static data members [-fpermissive]
->      92 |  __struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
->         |                 ^~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/include/uapi/linux/stddef.h:29:10: note: in definition of macro ‘__struct_group’
->      29 |   struct TAG { MEMBERS } ATTRS NAME; \
->         |          ^~~
+In file included from progs/cb_refs.c:5:
+progs/../bpf_testmod/bpf_testmod_kfunc.h:29:8: error: redefinition of 'prog_test_pass1'
+   29 | struct prog_test_pass1 {
+      |        ^
+/srv/code/tools/testing/selftests/bpf/tools/include/vmlinux.h:106850:8: note: previous definition is
+ here
+ 106850 | struct prog_test_pass1 {
+        |        ^
 
-I'll see if I can figure out where this is coming from. This sounds like
-something is being built with an unexpectedly strict option. (The above
-report seems weird -- this isn't coming from -fpermissive, and is
-actually an _error_ not a warning, which is the opposite of what
--fpermissive is supposed to do.) Also the mention of "public" is scary
-here... that implies a C++ compiler is involved? Maybe that's why my
-builds didn't catch this?
+Messing around with deleting vmlinux.h seems to get me further, but later:
 
->   make: *** [Makefile:703: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/test_cpp] Error 1
+/srv/code/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c: In function 'bpf_testmod_ops_is_valid_access':
+/srv/code/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c:535:16: error: implicit declaration of function 'bpf_tracing_btf_ctx_access' [-Werror=implicit-function-declaration]
+  535 |         return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ah yes, cpp. Fun. I will try to reproduce this failure.
+and then I'm stuck. It looks like the build isn't actually using
+KBUILD_OUTPUT for finding includes. If I try to add -I flags to the
+Makefile I just drown in new errors.
 
 -- 
 Kees Cook
