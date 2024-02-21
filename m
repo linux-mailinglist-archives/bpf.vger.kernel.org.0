@@ -1,139 +1,234 @@
-Return-Path: <bpf+bounces-22454-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F5085E5FC
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 19:29:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C95985E5EA
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 19:28:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEA9FB21392
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 18:29:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D54D41F29143
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 18:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8325B85C7B;
-	Wed, 21 Feb 2024 18:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9F185626;
+	Wed, 21 Feb 2024 18:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F4ZxiS5W"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UCmndk71"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D345485950
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 18:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A58385628
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 18:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708540026; cv=none; b=deuKk/sPZxtfEgsGFdbLxYL0wPQ5bNkoNYweMcxHMY3NxWUaLOGloCq6jq4kCPPZ2oS8sGgHjJhetsCYJGz/CPuFh/wZQsE2tYXHAaNkL6dMWd5C3MwgaPCC9bZDqRuGnZt8xy151PSSfaIp54b+IsVNQ7z2kmp9OcGq7+TaDHU=
+	t=1708539941; cv=none; b=plVKxxwzewIHlXiTrCWzlApwCUI/TF5ZqgDD6s8qJ7/67XVO0OxQTs0EndGDrwjPiZ1lDGYW7zjbtNQfIRUYwMTH+1H95L7FRQKaWGtz5k9WPNunocG6ZxCo2HxBFx4pWU7Xa1A/3f+3YlCPkJDieT+qenULEHPXBBERiyZ/TfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708540026; c=relaxed/simple;
-	bh=yHv4YLihaI4wjBJjCVU/hu18mkRLgE84I+vpF5Fdl/0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BSnqKKRQNZzEu3D83ClL+wqBxkLqLJOhmjhUEoo5BWNwnoRN83l8fJQ6mS6shLIigwITeHm/jeZxOKrBXywoOrwqCLB1zntg4qlrVs9NPQkuQJtN9SbC9mDv/z2dTBkcv9ogeTorimTJTSTDaFjO3YghuU/mUaxFhW0juBtttyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F4ZxiS5W; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708540025; x=1740076025;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yHv4YLihaI4wjBJjCVU/hu18mkRLgE84I+vpF5Fdl/0=;
-  b=F4ZxiS5WDdE/+RGDZ5fnb3TXay4mU1I1crJXXusIag322pIUAzLA0shf
-   DK4AAQhWzZN5TVAN5k0mcKFZ2qR6vYaPhUbDy3zUjbf9tVbzLe9R+69W4
-   27PPctnE0q0YnSUGx3Zdziy0bu4XygL7VQYwXfemHcTDvn98Ww53N7Rky
-   +AnjaMKEP4sXz/1apP1NmuKaj5bRTE0VPrqSugAW+FyW6ZfvUPIMbdoRY
-   8NhyrEabXfqE/Cym8lhxsWbUI963apLMMcOzJEMZBK0XaOTEKBRtsSGos
-   f/iY7+tWoecA4hkT6PBmQ100u24uEL7BxVJAXRctC14xEY4C4+UWrCMPZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="6495324"
-X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
-   d="scan'208";a="6495324"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 10:27:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
-   d="scan'208";a="5383021"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 21 Feb 2024 10:26:57 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rcrIS-0005ae-1U;
-	Wed, 21 Feb 2024 18:26:26 +0000
-Date: Thu, 22 Feb 2024 02:25:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Maxwell Bland <mbland@motorola.com>,
-	linux-arm-kernel@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, gregkh@linuxfoundation.org,
-	agordeev@linux.ibm.com, akpm@linux-foundation.org,
-	andreyknvl@gmail.com, andrii@kernel.org, aneesh.kumar@kernel.org,
-	aou@eecs.berkeley.edu, ardb@kernel.org, arnd@arndb.de,
-	ast@kernel.org, borntraeger@linux.ibm.com, bpf@vger.kernel.org,
-	brauner@kernel.org, catalin.marinas@arm.com,
-	christophe.leroy@csgroup.eu, cl@linux.com, daniel@iogearbox.net,
-	dave.hansen@linux.intel.com, david@redhat.com, dennis@kernel.org,
-	dvyukov@google.com, glider@google.com, gor@linux.ibm.com,
-	guoren@kernel.org, haoluo@google.com, hca@linux.ibm.com,
-	hch@infradead.org, john.fastabend@gmail.com, jolsa@kernel.org
-Subject: Re: [PATCH 1/4] mm/vmalloc: allow arch-specific vmalloc_node
- overrides
-Message-ID: <202402220229.5xZWdZBK-lkp@intel.com>
-References: <20240220203256.31153-2-mbland@motorola.com>
+	s=arc-20240116; t=1708539941; c=relaxed/simple;
+	bh=9WhPaLM23w40xVQ8ApBisKTb4d+ysywDKS2NjcB2JE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CLolTeau2nQYDoe3Kpx6sOObxCsPNLOa0Nunw6+uUg2mPfaUtPpAfI7sOKKu0Z21pwnwJXTkLSMajfobGJ1ElxA7w+RSFDvObbAxuYktckIpPC0zmehZClGs2kw6/qHQfpBFW9aOIaxj6CHqngxs2Tga6D2TakXHn6L1Wh59Ock=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UCmndk71; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8e6e79d6-e003-446b-bc36-b6a4500f802b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708539927;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w6JuQ/bMzJw4D8tgHfkfECgX6UhARoXwFykwzdVIKKg=;
+	b=UCmndk71nOXf15SGfEhwgDJ7Ze9SsMelGUkviTpQDqVIouuNGHW7lee7W3xJRiPZBBOfIR
+	DIvTM+cgq8wdIqCeQbKzhXN5kntjLrccyLRlPOEIwjBP5Tft8Z8TvRtHBo65p9jPCK7Nue
+	m91cvJr8ntksfJbls0NciBWRaZCEUhQ=
+Date: Wed, 21 Feb 2024 10:25:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220203256.31153-2-mbland@motorola.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Check cfi_stubs before registering a
+ struct_ops type.
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org
+References: <20240221075213.2071454-1-thinker.li@gmail.com>
+ <20240221075213.2071454-3-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240221075213.2071454-3-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Maxwell,
+On 2/20/24 11:52 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Recently, cfi_stubs were introduced. However, existing struct_ops types
+> that are not in the upstream may not be aware of this, resulting in kernel
+> crashes. By rejecting struct_ops types that do not provide cfi_stubs during
+> registration, these crashes can be avoided.
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   kernel/bpf/bpf_struct_ops.c | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+> 
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 0d7be97a2411..c1c502caae08 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -302,6 +302,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   	}
+>   	sprintf(value_name, "%s%s", VALUE_PREFIX, st_ops->name);
+>   
+> +	if (!st_ops->cfi_stubs) {
+> +		pr_warn("struct %s has no cfi_stubs\n", st_ops->name);
+> +		return -EINVAL;
+> +	}
+> +
+>   	type_id = btf_find_by_name_kind(btf, st_ops->name,
+>   					BTF_KIND_STRUCT);
+>   	if (type_id < 0) {
+> @@ -339,6 +344,7 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   
+>   	for_each_member(i, t, member) {
+>   		const struct btf_type *func_proto;
+> +		u32 moff;
+>   
+>   		mname = btf_name_by_offset(btf, member->name_off);
+>   		if (!*mname) {
+> @@ -361,6 +367,17 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   		if (!func_proto)
+>   			continue;
+>   
+> +		moff = __btf_member_bit_offset(t, member) / 8;
+> +		err = st_ops->check_member ?
+> +			st_ops->check_member(t, member, NULL) : 0;
 
-kernel test robot noticed the following build errors:
+I don't think it is necessary to make check_member more complicated by taking
+NULL prog. The struct_ops implementer then needs to handle this extra NULL
+prog case.
 
-[auto build test ERROR on b401b621758e46812da61fa58a67c3fd8d91de0d]
+Have you thought about Alexei's earlier suggestion in v3 to reuse the NULL
+member in cfi_stubs to flag unsupported member and remove the unsupported_ops[]
+from bpf_tcp_ca.c?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Maxwell-Bland/mm-vmalloc-allow-arch-specific-vmalloc_node-overrides/20240221-043458
-base:   b401b621758e46812da61fa58a67c3fd8d91de0d
-patch link:    https://lore.kernel.org/r/20240220203256.31153-2-mbland%40motorola.com
-patch subject: [PATCH 1/4] mm/vmalloc: allow arch-specific vmalloc_node overrides
-config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20240222/202402220229.5xZWdZBK-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240222/202402220229.5xZWdZBK-lkp@intel.com/reproduce)
+If the verifier can consistently reject loading unsupported bpf prog, it will
+not reach the bpf_struct_ops_map_update_elem and then hits the NULL member
+in cfi_stubs during map_update_elem.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402220229.5xZWdZBK-lkp@intel.com/
+Untested code:
 
-All errors (new ones prefixed by >>):
-
->> mm/nommu.c:160:7: error: conflicting types for '__vmalloc_node'; have 'void *(long unsigned int,  long unsigned int,  gfp_t,  int,  const void *)' {aka 'void *(long unsigned int,  long unsigned int,  unsigned int,  int,  const void *)'}
-     160 | void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
-         |       ^~~~~~~~~~~~~~
-   In file included from include/asm-generic/io.h:994,
-                    from arch/m68k/include/asm/io.h:14,
-                    from arch/m68k/include/asm/pgtable_no.h:14,
-                    from arch/m68k/include/asm/pgtable.h:6,
-                    from include/linux/pgtable.h:6,
-                    from include/linux/mm.h:29,
-                    from mm/nommu.c:20:
-   include/linux/vmalloc.h:152:7: note: previous declaration of '__vmalloc_node' with type 'void *(long unsigned int,  long unsigned int,  gfp_t,  long unsigned int,  int,  const void *)' {aka 'void *(long unsigned int,  long unsigned int,  unsigned int,  long unsigned int,  int,  const void *)'}
-     152 | void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
-         |       ^~~~~~~~~~~~~~
-
-
-vim +160 mm/nommu.c
-
-041de93ff86fc5 Christoph Hellwig 2020-06-01  159  
-2b9059489c839e Christoph Hellwig 2020-06-01 @160  void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
-2b9059489c839e Christoph Hellwig 2020-06-01  161  		int node, const void *caller)
-a7c3e901a46ff5 Michal Hocko      2017-05-08  162  {
-2b9059489c839e Christoph Hellwig 2020-06-01  163  	return __vmalloc(size, gfp_mask);
-a7c3e901a46ff5 Michal Hocko      2017-05-08  164  }
-a7c3e901a46ff5 Michal Hocko      2017-05-08  165  
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 011d54a1dc53..c57cb0e2a8a7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20370,6 +20370,7 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+  	u32 btf_id, member_idx;
+  	struct btf *btf;
+  	const char *mname;
++	u32 moff;
+  
+  	if (!prog->gpl_compatible) {
+  		verbose(env, "struct ops programs must have a GPL compatible license\n");
+@@ -20417,11 +20418,18 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+  		return -EINVAL;
+  	}
+  
++	moff = __btf_member_bit_offset(t, member) / 8;
++	if (!*(void **)(st_ops->cfi_stubs + moff)) {
++		verbose(env, "attach to unsupported member %s of struct %s\n",
++			mname, st_ops->name);
++		return -ENOTSUPP;
++	}
++
+  	if (st_ops->check_member) {
+  		int err = st_ops->check_member(t, member, prog);
+  
+  		if (err) {
+-			verbose(env, "attach to unsupported member %s of struct %s\n",
++			verbose(env, "cannot attach to member %s of struct %s\n",
+  				mname, st_ops->name);
+  			return err;
+  		}
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index 7f518ea5f4ac..bcb1fcd00973 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -14,10 +14,6 @@
+  /* "extern" is to avoid sparse warning.  It is only used in bpf_struct_ops.c. */
+  static struct bpf_struct_ops bpf_tcp_congestion_ops;
+  
+-static u32 unsupported_ops[] = {
+-	offsetof(struct tcp_congestion_ops, get_info),
+-};
+-
+  static const struct btf_type *tcp_sock_type;
+  static u32 tcp_sock_id, sock_id;
+  static const struct btf_type *tcp_congestion_ops_type;
+@@ -45,18 +41,6 @@ static int bpf_tcp_ca_init(struct btf *btf)
+  	return 0;
+  }
+  
+-static bool is_unsupported(u32 member_offset)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(unsupported_ops); i++) {
+-		if (member_offset == unsupported_ops[i])
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+  static bool bpf_tcp_ca_is_valid_access(int off, int size,
+  				       enum bpf_access_type type,
+  				       const struct bpf_prog *prog,
+@@ -248,15 +232,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
+  	return 0;
+  }
+  
+-static int bpf_tcp_ca_check_member(const struct btf_type *t,
+-				   const struct btf_member *member,
+-				   const struct bpf_prog *prog)
+-{
+-	if (is_unsupported(__btf_member_bit_offset(t, member) / 8))
+-		return -ENOTSUPP;
+-	return 0;
+-}
+-
+  static int bpf_tcp_ca_reg(void *kdata)
+  {
+  	return tcp_register_congestion_control(kdata);
+@@ -350,7 +325,6 @@ static struct bpf_struct_ops bpf_tcp_congestion_ops = {
+  	.reg = bpf_tcp_ca_reg,
+  	.unreg = bpf_tcp_ca_unreg,
+  	.update = bpf_tcp_ca_update,
+-	.check_member = bpf_tcp_ca_check_member,
+  	.init_member = bpf_tcp_ca_init_member,
+  	.init = bpf_tcp_ca_init,
+  	.validate = bpf_tcp_ca_validate,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
+
+
+
+> +
+> +		if (!err && !*(void **)(st_ops->cfi_stubs + moff)) {
+> +			pr_warn("member %s in struct %s has no cfi stub function\n",
+> +				mname, st_ops->name);
+> +			err = -EINVAL;
+> +			goto errout;
+> +		}
+> +
+>   		if (btf_distill_func_proto(log, btf,
+>   					   func_proto, mname,
+>   					   &st_ops->func_models[i])) {
+
 
