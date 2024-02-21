@@ -1,140 +1,221 @@
-Return-Path: <bpf+bounces-22434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22436-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B8E85E36C
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 17:32:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113C485E388
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 17:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A75021F221E2
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 16:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90BA81F239CE
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 16:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33BB182D82;
-	Wed, 21 Feb 2024 16:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85543839F0;
+	Wed, 21 Feb 2024 16:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U0FrWQ+u"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="nxtdSMGu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FDE7C097
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 16:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8636E1C20;
+	Wed, 21 Feb 2024 16:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708533143; cv=none; b=qnm9039uJ5s1C2L9Ckg65FBvQKhEuv+ItbSdiACrN0dIGq1Wn1y4qZCUIw6Ud/0GEoJEM+5VWlJBvybQXVvuxSfYbqJQYHkoouHvn7Z29liQcIpzCURrI1uZr2kB+4YvsuIixNMTZTx/yiQlgX3HktewACDFj3+alLbeM6zVacU=
+	t=1708533631; cv=none; b=RNCWtSRif23ZoZTN/nzgxHWUVMF2SC7dCdohrXb7SXUuwdilFhb9cRepdaGgF1k2wHw4vy2IIRGBHIMXO6F0iZov1S61WasAo4sawDAUMr0RG5ZoLhlo0u88GpeUr5R19VW+3oRSEueP0VHQLn3lqmBuNjaMIdZdRROIlCegLh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708533143; c=relaxed/simple;
-	bh=GQFkeIWwGqIjlekC4ujQt1TpQpHwp6nEQABEN+jNJWk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tBOK8GCPdo9ySth0lkdo1AF63x0hX/oNhPDoTsNLyub2CzUosYvS1wORuIIWNGn1uQkjNs3zI18LF5TxJvVM/U6/kFoEaVqsX7CE61Yusj05yR3h/Sweb0tPqxBvPJSW9TP/vat+YJi+OCMlHqtZc1ReJfPVfr9UKuxFJFw9HvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U0FrWQ+u; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60821136c5aso27255117b3.1
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 08:32:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708533141; x=1709137941; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u7JXVQFwBDndUh5fJidwUl/Gbzg8C+3RZcO5hzxgkGg=;
-        b=U0FrWQ+u7EOpoobDQ/VRFfe8BVKlhxafvsRK3b+ddsH8aQmAETTmjg185499tEgDa6
-         dld0anlcEsARTRf59WinQ5D/DlcWXOujfLKKoj6FD/lyx/ky75Xk0oUnZfarru5MiOdX
-         UXKQuvXimS6K8iclTa69j5fIgpqOjp+DLmnav4IB9mf2PnUZD1kn4Y0/J+JX4Ezi5nSW
-         OHS23QwcIgYhz3vuT8jiRydcEt/hmAg50PGzmPeknA3FtcNnG2AOhhk82fyArm2YbKdP
-         VOh8l28baf5Et4/U/mx3osNX1z3NCnrfvYirpldW3L/dKcPMeguJzgizS04hnprUGYKv
-         58Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708533141; x=1709137941;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u7JXVQFwBDndUh5fJidwUl/Gbzg8C+3RZcO5hzxgkGg=;
-        b=GndwmgWAvgR85/pa3vnAzt+vm+MNBt6nL6+hq9cgK9q3go/fq9kvdM7oWPLYnNQHod
-         BAqJkf+oCQuyhdVX9ZQuATqrMSGh+gDjRVbZZbKXn+wZyI91tdhG2G5LtBjlNv5pax+F
-         akeU6hMaLD1DdcupWDW6P9K/JrwG9KOdAK+v+XJy5Yb5htykgGBxiRhgZAj0id4vgksn
-         juxVQFHSSb7gIg87k2GsSIMlWZEmFw++I8YcTchA+2uzEeyQTozlS38yGnl8soa4u5kn
-         kmae+iaZnfT+NFqwsI/8awh1/ul73DDRX1bm4drvN6i1i6+4Oal8KTMEttLD2wp5Fyp1
-         0jDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUeFmEZVFbCscYGD1RMct9SO6W9Hkf7/1WTL+xgQyq4yNf+9+4lvvbvc3oOUODQYb4Yv+Z+Pcqs/w3ZVhl1AtCyGd8M
-X-Gm-Message-State: AOJu0Yyz7nuIh2tHHs2W0MHqKPdeeiK5UkZ5L6pCQKit4Zoz1dkb7sFo
-	t1Bb1iZeQCBLm0wlmKFD6/M/btw58qzNmYNS4SrUxPaJCV7AQzat
-X-Google-Smtp-Source: AGHT+IFuQobJmlWxI0DveKOl9L1vVIydrk9/2hqsnH4kMVzICDtQWfl77xcI7DbCv19t0aSmR8OuOg==
-X-Received: by 2002:a81:8d50:0:b0:608:4e3f:f8a with SMTP id w16-20020a818d50000000b006084e3f0f8amr6611689ywj.31.1708533139587;
-        Wed, 21 Feb 2024 08:32:19 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:bc3b:b762:a625:955f? ([2600:1700:6cf8:1240:bc3b:b762:a625:955f])
-        by smtp.gmail.com with ESMTPSA id gi2-20020a05690c424200b0060893443e56sm89054ywb.75.2024.02.21.08.32.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 08:32:19 -0800 (PST)
-Message-ID: <923db0bc-cd9c-4c67-a477-cb9b12a58eb2@gmail.com>
-Date: Wed, 21 Feb 2024 08:32:17 -0800
+	s=arc-20240116; t=1708533631; c=relaxed/simple;
+	bh=45I0J5biXwYLiUaf/PmqF1jvW/5x55RLPKwzjIKpH4I=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cv1d4b7OiKxi8I++gZCzaLjaVyNnVOiHssqAUoJZSw8KH0AqrrY4AX+rpZvd+WMvVOspuyottxqI8e8lLaOwdnFFyhFsHtcMqQe0Nn0wBM94lFZ4sKnqt0d7YNK4bdDzNVjjkwb3F2m4TSQtpUwoZyHyXMY6fevY5zccHkuR/b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=nxtdSMGu; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=iE/w7zcXxXdaU9PL76g2DzI65P5Qvx6HEpMubn6cjls=; b=nxtdSMGuBsIvBlcGsFV4q/QyMF
+	TgOVPrStsVJMCkxFJBEqMlQSHAzM+REezZFM0xOLRHPRXVSajD7AuVxjN89Gx8zV8VfQaROCuWJ9A
+	hsKvkN0wOOFwEAN6pFc8y73S6NAYPyvKNlCWQfSndtOWsQDCCadb/MAydty5bhz/Zq3BFJxoh0CIR
+	a2Ne48t1iTcE2roNaY1NWfiRbYJf8DdWNP79eI3L97P88sN1qdZL9NnF8z2INf8oE+Saj3QB2dpB0
+	ENlP8JXP2KoHERxkPQL1sRIBscnF0jK0so1z2Qi3PdIX6N417a9CoXAIjTLRVkK9YA2p0bewcxPbd
+	9aLoNtDA==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rcpdW-0007PB-Iw; Wed, 21 Feb 2024 17:39:58 +0100
+Received: from [178.197.249.13] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rcpdU-0005ll-2a;
+	Wed, 21 Feb 2024 17:39:56 +0100
+Subject: Re: [PATCH v4] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+To: Kees Cook <keescook@chromium.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>,
+ Jonathan Corbet <corbet@lwn.net>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Joanne Koong <joannelkoong@gmail.com>, Yafang Shao <laoar.shao@gmail.com>,
+ Kui-Feng Lee <kuifeng@meta.com>, Anton Protopopov <aspsk@isovalent.com>,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240220185421.it.949-kees@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <da75b2bf-0d14-6ed5-91c2-dfeba9ad55c4@iogearbox.net>
+Date: Wed, 21 Feb 2024 17:39:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 1/5] libbpf: expose resolve_func_ptr() through
- libbpf_internal.h.
+In-Reply-To: <20240220185421.it.949-kees@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: Quentin Monnet <quentin@isovalent.com>, thinker.li@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-Cc: kuifeng@meta.com
-References: <20240221012329.1387275-1-thinker.li@gmail.com>
- <20240221012329.1387275-2-thinker.li@gmail.com>
- <fc37d1cd-6fbe-4507-b496-2a2dd622934f@isovalent.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <fc37d1cd-6fbe-4507-b496-2a2dd622934f@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27192/Wed Feb 21 10:23:23 2024)
 
-
-
-On 2/21/24 03:49, Quentin Monnet wrote:
-> 2024-02-21 01:23 UTC+0000 ~ thinker.li@gmail.com
->> From: Kui-Feng Lee <thinker.li@gmail.com>
->>
->> bpftool is going to reuse this helper function to support shadow types of
->> struct_ops maps.
->>
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
->>   tools/lib/bpf/libbpf.c          | 2 +-
->>   tools/lib/bpf/libbpf_internal.h | 1 +
->>   2 files changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 01f407591a92..ef8fd20f33ca 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -2145,7 +2145,7 @@ skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id)
->>   	return t;
->>   }
->>   
->> -static const struct btf_type *
->> +const struct btf_type *
->>   resolve_func_ptr(const struct btf *btf, __u32 id, __u32 *res_id)
->>   {
->>   	const struct btf_type *t;
->> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
->> index ad936ac5e639..aec6d57fe5d1 100644
->> --- a/tools/lib/bpf/libbpf_internal.h
->> +++ b/tools/lib/bpf/libbpf_internal.h
->> @@ -234,6 +234,7 @@ struct btf_type;
->>   struct btf_type *btf_type_by_id(const struct btf *btf, __u32 type_id);
->>   const char *btf_kind_str(const struct btf_type *t);
->>   const struct btf_type *skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id);
->> +const struct btf_type *resolve_func_ptr(const struct btf *btf, __u32 id, __u32 *res_id);
+On 2/20/24 7:54 PM, Kees Cook wrote:
+> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+> flexible array. Found with GCC 13:
 > 
-> If you respin, please add a comment to mention we expose it to bpftool
-> (see bpf_core_add_cands() in the same file), to avoid people trying to
-> remove it from the header file in a clean-up attempt.
-
-No problem
-
+> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+>    207 |                                        *(__be16 *)&key->data[i]);
+>        |                                                   ^~~~~~~~~~~~~
+> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+>    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+>        |                                                      ^
+> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+>     97 | #define be16_to_cpu __be16_to_cpu
+>        |                     ^~~~~~~~~~~~~
+> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+>    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+> ^
+>        |                            ^~~~~~~~~~~
+> In file included from ../include/linux/bpf.h:7:
+> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+>     82 |         __u8    data[0];        /* Arbitrary size */
+>        |                 ^~~~
 > 
-> Quentin
+> And found at run-time under CONFIG_FORTIFY_SOURCE:
+> 
+>    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
+>    index 0 is out of range for type '__u8 [*]'
+> 
+> Changing struct bpf_lpm_trie_key is difficult since has been used by
+> userspace. For example, in Cilium:
+> 
+> 	struct egress_gw_policy_key {
+> 	        struct bpf_lpm_trie_key lpm_key;
+> 	        __u32 saddr;
+> 	        __u32 daddr;
+> 	};
+> 
+> While direct references to the "data" member haven't been found, there
+> are static initializers what include the final member. For example,
+> the "{}" here:
+> 
+>          struct egress_gw_policy_key in_key = {
+>                  .lpm_key = { 32 + 24, {} },
+>                  .saddr   = CLIENT_IP,
+>                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+>          };
+> 
+> To avoid the build time and run time warnings seen with a 0-sized
+> trailing array for struct bpf_lpm_trie_key, introduce a new struct
+> that correctly uses a flexible array for the trailing bytes,
+> struct bpf_lpm_trie_key_u8. As part of this, include the "header"
+> portion (which is just the "prefixlen" member), so it can be used
+> by anything building a bpf_lpr_trie_key that has trailing members that
+> aren't a u8 flexible array (like the self-test[1]), which is named
+> struct bpf_lpm_trie_key_hdr.
+> 
+> Adjust the kernel code to use struct bpf_lpm_trie_key_u8 through-out,
+> and for the selftest to use struct bpf_lpm_trie_key_hdr. Add a comment
+> to the UAPI header directing folks to the two new options.
+> 
+> Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
+> Reported-by: Mark Rutland <mark.rutland@arm.com>
+> Closes: https://paste.debian.net/hidden/ca500597/
+> Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+[...]
+
+The build in BPF CI is still broken, did you try to build selftests?
+
+   https://github.com/kernel-patches/bpf/actions/runs/7978647641
+
+   [...]
+     GEN-SKEL [test_progs] linked_funcs.skel.h
+     LINK-BPF [test_progs] test_usdt.bpf.o
+     GEN-SKEL [test_progs-no_alu32] profiler1.skel.h
+     GEN-SKEL [test_progs] test_usdt.skel.h
+   In file included from /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:11,
+                    from test_cpp.cpp:4:
+   /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:92:17: error: ‘struct bpf_lpm_trie_key_u8::<unnamed union>::bpf_lpm_trie_key_hdr’ invalid; an anonymous union may only have public non-static data members [-fpermissive]
+      92 |  __struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
+         |                 ^~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/include/uapi/linux/stddef.h:29:10: note: in definition of macro ‘__struct_group’
+      29 |   struct TAG { MEMBERS } ATTRS NAME; \
+         |          ^~~
+     BINARY   bench
+   make: *** [Makefile:703: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/test_cpp] Error 1
+   make: *** Waiting for unfinished jobs....
+   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
+   Error: Process completed with exit code 2.
+
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 754e68ca8744..31e9bdd4641e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -8,6 +8,7 @@
+>   #ifndef _UAPI__LINUX_BPF_H__
+>   #define _UAPI__LINUX_BPF_H__
+>   
+> +#include <linux/stddef.h>
+>   #include <linux/types.h>
+>   #include <linux/bpf_common.h>
+>   
+> @@ -77,12 +78,24 @@ struct bpf_insn {
+>   	__s32	imm;		/* signed immediate constant */
+>   };
+>   
+> -/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+> +/* Deprecated: use struct bpf_lpm_trie_key_u8 (when the "data" member is needed for
+> + * byte access) or struct bpf_lpm_trie_key_hdr (when using an alternative type for
+> + * the trailing flexible array member) instead.
+> + */
+>   struct bpf_lpm_trie_key {
+>   	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+>   	__u8	data[0];	/* Arbitrary size */
+>   };
+>   
+> +/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry, with trailing byte array. */
+> +struct bpf_lpm_trie_key_u8 {
+> +	__struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
+> +		/* up to 32 for AF_INET, 128 for AF_INET6 */
+> +		__u32	prefixlen;
+> +	);
+> +	__u8	data[];		/* Arbitrary size */
+> +};
+> +
+>   struct bpf_cgroup_storage_key {
+>   	__u64	cgroup_inode_id;	/* cgroup inode id */
+>   	__u32	attach_type;		/* program attach type (enum bpf_attach_type) */
 
