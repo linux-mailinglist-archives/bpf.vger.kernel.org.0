@@ -1,95 +1,155 @@
-Return-Path: <bpf+bounces-22378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38C685D022
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 06:52:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BCF85D044
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 07:12:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D385B2450C
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 05:52:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D7E91F243F5
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 06:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B697539AF1;
-	Wed, 21 Feb 2024 05:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032DE39FE8;
+	Wed, 21 Feb 2024 06:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NiN7EbQJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xjl6EOBf"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170AA3A1AC
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 05:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC1739FCC
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 06:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708494736; cv=none; b=LYchNBTKoBq69VVEDDxEIcrzDS7FLpHejSvoMEagrpVBVJbdLMHyzbdMkRUBySdtaFGipZwYcIQEvplHPzBXvGs5y8SVU7gJ1GCZkeaC08qmOJNJeQhw4U/t2VgqckgZAODNYjAukyXvfNeqO4hjxdy/mDsknDsw3AycDOJZ51E=
+	t=1708495960; cv=none; b=gm+GJxhmi81noxZNdhc3TXUIJKlwdK+ecTcT/G0Pbk4Si3oakJZL2V2QPA7uzrUNPt4GXJhm5CsoPtLLa+Ppy8p3nGQcM4MHiepL5hbHM2yH/16bC6JS/9oyD5rehc1r4vBfD0oND35GmpBulMJiUVB1u9/h/GWErF+raEzm0wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708494736; c=relaxed/simple;
-	bh=dMSjqrA7qa54g2+SzoIciLB6oG2hHmcgMXm3LQeX86s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DmzhNcwuHCz5c16IP/MBHDRbv9eOLC8OOUNmHNW5bl5LtNJ1ss0af1pZYopsS225mulhhnQ7BuG9oA70hjqXFtmlz0WUHBdQR26Fd/uvOUlorOr/YngBNgF2OUsSTjmPngCc0vbWwT/Fi8DA9kTLabbuTZ6fdgGD3VOz2eDMvZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NiN7EbQJ; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=UbNxQ1liHw+Zrw6EYvRDTxiCL1NoWqq2klpIUBju22A=; b=NiN7EbQJMivDDH04XSw2wwT8Q7
-	ymkmtYksxuEvgW9GXmt8TsFhqWs4aFtICRWpTElPeEM7hh9Wf5mSPQNV5n+yWBTj3IOKJnRaU2HXB
-	N4aFKolR/us4pGgPPhUOe50r4XF2bj0rzwyZiDbgKrXf7zyLfb7bbfit9K1wi8afBqvITSTtVl4Lk
-	dfz1qusktLYFTgNPbOs64HGfdhs2rYW0EmAuVOWLET0yDhSkhYOt5Rh8enh/gzsZGqY21DPQKgg7I
-	w1rLPXPV80gFailh9mvKqu3bsqjq3MAVHZc4nVpWbvTYbFlETJ6ydjmdyNlojTK/EBQWxv0ero0Ud
-	RgMSoqUQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcfWg-0000000HGti-0kHQ;
-	Wed, 21 Feb 2024 05:52:14 +0000
-Date: Tue, 20 Feb 2024 21:52:14 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	torvalds@linux-foundation.org, brho@google.com, hannes@cmpxchg.org,
-	lstoakes@gmail.com, akpm@linux-foundation.org, urezki@gmail.com,
-	hch@infradead.org, linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next] mm: Introduce vm_area_[un]map_pages().
-Message-ID: <ZdWPjmwi8D0n01HP@infradead.org>
-References: <20240220192613.8840-1-alexei.starovoitov@gmail.com>
+	s=arc-20240116; t=1708495960; c=relaxed/simple;
+	bh=LmiO0+KsUbduHRiEIEV11DpTdlk5gEPbETd8ZHml1+Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a5frknp1L5hGbj91fjP5PO5ckuPQztMPBNOzBSv+onJDxaiaKX2CC9mKltKbNJDSuJk1F8RW5XJ9i74GLWCZZolb0C1wTvt0yQnQ0xldcjn8pBAwvVzf0AJHGC/oBljb8qUKnTR9Bz+BOI3FLNE2dL5XdQYYYGlHPsVYDIzRLig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xjl6EOBf; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <00a55f84-d6ad-480e-9479-d38f454c067b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708495956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aopWvGCT6qzYBcdNBKZ4Rm93b6emQJ3NOd8ujYyL8Ew=;
+	b=xjl6EOBfuTO+w3vZYLKCH8cxmVj2BFW6xTL9BMUAeMdXUYdqDIrcNn3jLksVk3jyWu5ScY
+	dl191T9kzQmU3RI9dxo535ISlSwL81CMnCkCluYoT/mFnhJ/8PL9PwjCxBe8X5b8cysZau
+	bRAmcOKXnrR4pHQSwHjh6umC7GADPUk=
+Date: Tue, 20 Feb 2024 22:12:27 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220192613.8840-1-alexei.starovoitov@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Subject: Re: [PATCH bpf] libbpf: clarify batch lookup semantics
+Content-Language: en-GB
+To: Martin Kelly <martin.kelly@crowdstrike.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+References: <20240221010057.1061333-1-martin.kelly@crowdstrike.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240221010057.1061333-1-martin.kelly@crowdstrike.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 20, 2024 at 11:26:13AM -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> vmap() API is used to map a set of pages into contiguous kernel virtual space.
-> 
-> BPF would like to extend the vmap API to implement a lazily-populated
-> contiguous kernel virtual space which size and start address is fixed early.
-> 
-> The vmap API has functions to request and release areas of kernel address space:
-> get_vm_area() and free_vm_area().
 
-As said before I really hate growing more get_vm_area and
-free_vm_area outside the core vmalloc code.  We have a few of those
-mostly due to ioremap (which is beeing consolidate) and executable code
-allocation (which there have been various attempts at consolidation,
-and hopefully one finally succeeds..).  So let's take a step back and
-think how we can do that without it.
+On 2/20/24 5:00 PM, Martin Kelly wrote:
+> The batch lookup APIs copy key memory into out_batch, which is then
 
-For the dynamically growing part do you need a special allocator or
-can we just go straight to the page allocator and implement this
-in common code?
+The above 'key memory' is not precise. The 'in_batch' and 'out_batch'
+intends to be opaque and its size is map specific. So maybe we could
+reword the description like below:
 
-> For BPF use case the area_size will be 4Gbyte plus 64Kbyte of guard pages and
-> area->addr known and fixed at the program verification time.
+The batch lookup and lookup_and_delete APIs have two parameters,
+in_batch and out_batch, to facilitate iterative lookup/lookup_and_deletion
+operations for supported maps. Except NULL for in_batch at the start
+of these two batch operations, both parameters need to point to memory
+equal or larger than the respective map size, except for various hashmaps
+(hash, percpu_hash, lru_hash, lru_percpu_hash) where the in_batch/out_batch
+memory size should be at least 4 bytes.
 
-How is this ever going to to work on 32-bit platforms?
+Please also change your patch subject to
+   [PATCH bpf-next] bpf: Clarify batch lookup/lookup_and_delete semantics
 
+> supplied in later calls to in_batch. Thus both parameters need to point
+> to memory large enough to hold a single key (other than an initial NULL
+> in_batch). For many maps, keys are pointer sized or less, but for larger
+> maps, it's important to point to a larger block of memory to avoid
+> memory corruption.
+>
+> Document these semantics to clarify the API.
+>
+> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+> ---
+>   include/uapi/linux/bpf.h |  5 ++++-
+>   tools/lib/bpf/bpf.h      | 15 ++++++++++-----
+>   2 files changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index d96708380e52..dae613b8778a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -617,7 +617,10 @@ union bpf_iter_link_info {
+>    *		to NULL to begin the batched operation. After each subsequent
+>    *		**BPF_MAP_LOOKUP_BATCH**, the caller should pass the resultant
+>    *		*out_batch* as the *in_batch* for the next operation to
+> - *		continue iteration from the current point.
+> + *		continue iteration from the current point. Both *in_batch* and
+> + *		*out_batch* must point to memory large enough to hold a key,
+> + *		except for maps of type **BPF_MAP_TYPE_HASH**, for which batch
+
+Not just BPF_MAP_TYPE_HASH. It should be
+BPF_MAP_TYPE_{HASH, PERCPU_HASH, LRU_HASH, LRU_PERCPU_HASH}.
+Similar for some changes below.
+
+> + *		parameters must be at least 4 bytes wide regardless of key size.
+>    *
+>    *		The *keys* and *values* are output parameters which must point
+>    *		to memory large enough to hold *count* items based on the key
+
+Please also sync updated include/uapi/linux/bpf.h to tools/include/uapi/linux/bpf.h.
+
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index ab2570d28aec..c7e918ab0a60 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -190,10 +190,13 @@ LIBBPF_API int bpf_map_delete_batch(int fd, const void *keys,
+>   /**
+>    * @brief **bpf_map_lookup_batch()** allows for batch lookup of BPF map elements.
+>    *
+> - * The parameter *in_batch* is the address of the first element in the batch to read.
+> - * *out_batch* is an output parameter that should be passed as *in_batch* to subsequent
+> - * calls to **bpf_map_lookup_batch()**. NULL can be passed for *in_batch* to indicate
+> - * that the batched lookup starts from the beginning of the map.
+> + * The parameter *in_batch* is the address of the first element in the batch to
+> + * read. *out_batch* is an output parameter that should be passed as *in_batch*
+> + * to subsequent calls to **bpf_map_lookup_batch()**. NULL can be passed for
+> + * *in_batch* to indicate that the batched lookup starts from the beginning of
+> + * the map. Both *in_batch* and *out_batch* must point to memory large enough to
+> + * hold a single key, except for maps of type **BPF_MAP_TYPE_HASH**, for which
+> + * the memory pointed to must be at least 4 bytes wide regardless of key size.
+>    *
+>    * The *keys* and *values* are output parameters which must point to memory large enough to
+>    * hold *count* items based on the key and value size of the map *map_fd*. The *keys*
+> @@ -226,7 +229,9 @@ LIBBPF_API int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch,
+>    *
+>    * @param fd BPF map file descriptor
+>    * @param in_batch address of the first element in batch to read, can pass NULL to
+> - * get address of the first element in *out_batch*
+> + * get address of the first element in *out_batch*. If not NULL, must be large
+> + * enough to hold a key. For **BPF_MAP_TYPE_HASH**, must be large enough to hold
+> + * 4 bytes.
+>    * @param out_batch output parameter that should be passed to next call as *in_batch*
+>    * @param keys pointer to an array of *count* keys
+>    * @param values pointer to an array large enough for *count* values
 
