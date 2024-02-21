@@ -1,224 +1,292 @@
-Return-Path: <bpf+bounces-22399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332AD85DB42
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 14:39:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822C485DD90
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 15:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C861F23068
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 13:39:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3176E284647
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 14:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7157BB03;
-	Wed, 21 Feb 2024 13:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19887EEF2;
+	Wed, 21 Feb 2024 14:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EUHdH049"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="zCkplmGs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB377A715
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 13:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9057E78B;
+	Wed, 21 Feb 2024 14:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708522724; cv=none; b=hRwtRY7oNYk1KcUuKWQ+LD5213ZpIHriBvKbaw1QyrDronAAQ4xrrctLSk6b3nUa/OOnXNm4k4xQdCVjpkziTmTrk+8QRSHuhXzb4Iz7liz0wepjOEDI16bIFNyJXrk2EgCJyRUbia1+eC9+d39TQer1d2+074kZ2qkeXDaEBRM=
+	t=1708524357; cv=none; b=qqDGE80I0IZHFRp2P+WCGKlZM3UkK9gQClgp758hs0GLyLBGvgIpfNDqWxkLpr51sYuRbQvuFEMDxi4OsLPvFn64drzMH6GnHE7OTudVh5VFMPwgLB0PX01qG0dRYTnbxpTrdjrtUDEzVtIg9sRmG+23Ppepee53iZ+kDVdGtNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708522724; c=relaxed/simple;
-	bh=vjW1tSI2YCOHS9iyo/Q6jkhR2oPIQ63fd/EtDSsExGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DtKsghwrrlsxrl08mm+Tli3zaWYzHbjAdoJBp0Z7j6Q3yRgWZMoO9hkR3BfLHMqyeI8wgbXT9GRTVEA+QaJty0pWTKlv8fSP1b7rLaOxJ2aK5oAItsNZrp32CDyqWa6R3pV1wN8b4amv6loei0wlHiiMj8MVgkgee+BM87qbMVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EUHdH049; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-564d9b0e96dso2183731a12.2
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 05:38:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708522720; x=1709127520; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q2ggNhJZ+8gOe2CxqkSn6OtuJ/B/sg2EScFlrM19ZUQ=;
-        b=EUHdH049KeVN6WgJ4+yr2XYDp2ZmAQv8RCAgWJLTexclGwHToLM5HOIQK13S02VxAv
-         yE2645x5FLafJZ9/GT42rcJhiI8wgjaN1RQQT2qxrzV0RwsKpum1BgZ0A+I/bIZB9HHx
-         l02uDkV1WnTmYCths53+k+/K6sp3j/cJQaKxr4nam4BzXGojsg9me+5TMbIxH80yAUut
-         9I8+Qa7cuVkuQ7VR8cBGAB0mCuoAPeVARw5eJmhu/eRhlR6XIU4h6SYAFFL53E8RydLH
-         NrvU7ph+8vSSpib7iVyaXb5XSGSHQSWJOm19h24UBeXmHGQXs2hsN0eeCvKwTz79aUGU
-         kZWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708522720; x=1709127520;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q2ggNhJZ+8gOe2CxqkSn6OtuJ/B/sg2EScFlrM19ZUQ=;
-        b=uM/WYf4Xy0/1wjarrvld980YpGa0Mcgv5p1R+K1myJwcIB6Mh1IXbry48EhInihsQt
-         IdXkbDW3cvNZmYM8vSGPMVbn/tE5w8o4HlbIkYtTKybRneAA1sEB6TfWefGquO8nmgNC
-         Os/+bJhU+UFzk+I4UjJHOny9M998gKPcAHd4sC74pWKu1oc44qx/9Wn5s8cExx5LBvU9
-         m9cvM+8OVrV57Faw0jqMmoMkTQV3IqkoZERO+cbmxt3kNyfyEhd4GHsmDqvA9SLv/Y/f
-         UYvBNEU/42GoZhKcPf073WwlddZXxN2iWSP6dcCdZW6OU8tNYDt5yroyZ97Ly1NNq3SN
-         mCEQ==
-X-Gm-Message-State: AOJu0Yw0dUM2jpHFBMlUDZ53Db0Oib02fJHobb6ZnrcwyeKxIX3JHfyZ
-	AFsYFWMIBdHbUHndYuOavrZpifqRt83i73IsSC7uuRjfh9CsRXR7Uu0cxM3uoo/mZBsaKke5LQv
-	pnA==
-X-Google-Smtp-Source: AGHT+IG2aAgbx/tffCu6qXqPL9X4Y2tgaTWtxuY808f8FM/gBhbkj3QLBMbqBXwBbRy7jOcG1N8WIw==
-X-Received: by 2002:a05:6402:649:b0:564:5150:76a2 with SMTP id u9-20020a056402064900b00564515076a2mr6459084edx.4.1708522720465;
-        Wed, 21 Feb 2024 05:38:40 -0800 (PST)
-Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
-        by smtp.gmail.com with ESMTPSA id i16-20020a0564020f1000b0056411b3fc4bsm4597347eda.30.2024.02.21.05.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 05:38:39 -0800 (PST)
-Date: Wed, 21 Feb 2024 13:38:36 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-	kpsingh@google.com, jannh@google.com, jolsa@kernel.org,
-	daniel@iogearbox.net, linux-fsdevel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH bpf-next 01/11] bpf: make bpf_d_path() helper use
- probe-read semantics
-Message-ID: <ZdX83H7rTEwMYvs2@google.com>
-References: <cover.1708377880.git.mattbobrowski@google.com>
- <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
- <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
- <ZdSnhqkO_JbRP5lO@google.com>
- <20240221-fugen-turmbau-07ec7df36609@brauner>
+	s=arc-20240116; t=1708524357; c=relaxed/simple;
+	bh=I7jqWKOrzrHMCe8EuaiKBHGPPoI8dnJeRLwfMcA1ysc=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=IpoedMd2xspakBqRnLf/quY7J6u2LRAW46+LUK6Ms9vxzO6C3q5U3GST0Q7faV/xLKeTHSusBlar5OJYxAQpuw9jtSElm/bZ1qVpEuz5DKvCJyqlMN5xeVy5AHWr0APPnRdhj6IDPUEqj1HYaYG7YWDj4ldiPKxHm1IcgS1g6nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=zCkplmGs; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708524347;
+	bh=I7jqWKOrzrHMCe8EuaiKBHGPPoI8dnJeRLwfMcA1ysc=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=zCkplmGs3coQgzUZiT9Uyt9kTsV5pWnDApeb36YYD9uNJNLsvT5/IkB0JAvpCtRrr
+	 CLgx6Bb8/ffJdih9YrNHJCSe4ZlmYmK0YfAhzCtZ7BvrZ/qPkAbnONOv6MH610njLY
+	 Pvxo1fpjY862xoapewtyOKQBLGudMBJ1Kzx+pmPvNxFQ/JZ8TSsaf4T4y12ObCu+qq
+	 tI6i07U4IaNlAXO0jiOqMQ38L6aQNNpqiFnbBYsrWQEcVkq1r99v45T9o4pgXs/Z4A
+	 7NAlAyqK4dhYZbKBslJ6rYwyXI/XrLZIbUoQzjtH8uCGcDUJwsW1+/DxupxNfvxq2U
+	 Ug581xosqu1Hg==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E35093782082;
+	Wed, 21 Feb 2024 14:05:40 +0000 (UTC)
+Message-ID: <a0fb8d9a-ae4d-4fc0-a921-efaa180e1bd7@collabora.com>
+Date: Wed, 21 Feb 2024 19:06:05 +0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221-fugen-turmbau-07ec7df36609@brauner>
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Move test_dev_cgroup to
+ prog_tests
+Content-Language: en-US
+To: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>
+References: <20240221092248.1945364-1-usama.anjum@collabora.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240221092248.1945364-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hey Christian,
-
-On Wed, Feb 21, 2024 at 08:55:25AM +0100, Christian Brauner wrote:
-> On Tue, Feb 20, 2024 at 01:22:14PM +0000, Matt Bobrowski wrote:
-> > On Tue, Feb 20, 2024 at 10:48:10AM +0100, Christian Brauner wrote:
-> > > On Tue, Feb 20, 2024 at 09:27:23AM +0000, Matt Bobrowski wrote:
-> > > > There has now been several reported instances [0, 1, 2] where the
-> > > > usage of the BPF helper bpf_d_path() has led to some form of memory
-> > > > corruption issue.
-> > > > 
-> > > > The fundamental reason behind why we repeatedly see bpf_d_path() being
-> > > > susceptible to such memory corruption issues is because it only
-> > > > enforces ARG_PTR_TO_BTF_ID constraints onto it's struct path
-> > > > argument. This essentially means that it only requires an in-kernel
-> > > > pointer of type struct path to be provided to it. Depending on the
-> > > > underlying context and where the supplied struct path was obtained
-> > > > from and when, depends on whether the struct path is fully intact or
-> > > > not when calling bpf_d_path(). It's certainly possible to call
-> > > > bpf_d_path() and subsequently d_path() from contexts where the
-> > > > supplied struct path to bpf_d_path() has already started being torn
-> > > > down by __fput() and such. An example of this is perfectly illustrated
-> > > > in [0].
-> > > > 
-> > > > Moving forward, we simply cannot enforce KF_TRUSTED_ARGS semantics
-> > > > onto struct path of bpf_d_path(), as this approach would presumably
-> > > > lead to some pretty wide scale and highly undesirable BPF program
-> > > > breakage. To avoid breaking any pre-existing BPF program that is
-> > > > dependent on bpf_d_path(), I propose that we take a different path and
-> > > > re-implement an incredibly minimalistic and bare bone version of
-> > > > d_path() which is entirely backed by kernel probe-read semantics. IOW,
-> > > > a version of d_path() that is backed by
-> > > > copy_from_kernel_nofault(). This ensures that any reads performed
-> > > > against the supplied struct path to bpf_d_path() which may end up
-> > > > faulting for whatever reason end up being gracefully handled and fixed
-> > > > up.
-> > > > 
-> > > > The caveats with such an approach is that we can't fully uphold all of
-> > > > d_path()'s path resolution capabilities. Resolving a path which is
-> > > > comprised of a dentry that make use of dynamic names via isn't
-> > > > possible as we can't enforce probe-read semantics onto indirect
-> > > > function calls performed via d_op as they're implementation
-> > > > dependent. For such cases, we just return -EOPNOTSUPP. This might be a
-> > > > little surprising to some users, especially those that are interested
-> > > > in resolving paths that involve a dentry that resides on some
-> > > > non-mountable pseudo-filesystem, being pipefs/sockfs/nsfs, but it's
-> > > > arguably better than enforcing KF_TRUSTED_ARGS onto bpf_d_path() and
-> > > > causing an unnecessary shemozzle for users. Additionally, we don't
-> > > 
-> > > NAK. We're not going to add a semi-functional reimplementation of
-> > > d_path() for bpf. This relied on VFS internals and guarantees that were
-> > > never given. Restrict it to KF_TRUSTED_ARGS as it was suggested when
-> > > this originally came up or fix it another way. But we're not adding a
-> > > bunch of kfuncs to even more sensitive VFS machinery and then build a
-> > > d_path() clone just so we can retroactively justify broken behavior.
-> > 
-> > OK, I agree, having a semi-functional re-implementation of d_path() is
-> > indeed suboptimal. However, also understand that slapping the
+On 2/21/24 2:22 PM, Muhammad Usama Anjum wrote:
+> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
+> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
+> dev_cgroup.skel.h and load program from it accourdingly.
 > 
-> The ugliness of the duplicated code made me start my mail with NAK. It
-> would've been enough to just say no.
+>   ./test_progs -t test_dev_cgroup
+>   mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>   64+0 records in
+>   64+0 records out
+>   32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+>   dd: failed to open '/dev/full': Operation not permitted
+>   dd: failed to open '/dev/random': Operation not permitted
+>   #365     test_dev_cgroup:OK
+>   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 > 
-> > KF_TRUSTED_ARGS constraint onto the pre-existing BPF helper
-> > bpf_d_path() would outright break a lot of BPF programs out there, so
-> > I can't see how taht would be an acceptable approach moving forward
-> > here either.
-> > 
-> > Let's say that we decided to leave the pre-existing bpf_d_path()
-> > implementation as is, accepting that it is fundamentally succeptible
-> > to memory corruption issues, are you saying that you're also not for
-> > adding the KF_TRUSTED_ARGS d_path() variant as I've done so here
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
+> next. It is passing on both. Not sure why it was failed on BPFCI.
+> Test run with vmtest.h:
+> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh ./test_progs -t dev_cgroup
+> ./test_progs -t dev_cgroup
+> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+> 64+0 records in
+> 64+0 records out
+> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
+> dd: failed to open '/dev/full': Operation not permitted
+> dd: failed to open '/dev/random': Operation not permitted
+>  #69      dev_cgroup:OK
+> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Locally this test passes, but fails on BPFCI:
+https://github.com/kernel-patches/bpf/actions/runs/7986809998/job/21808178301#step:5:9744
+
 > 
-> No, that's fine and was the initial proposal anyway. You're already
-> using the existing d_path() anway in that bpf_d_path() thing. So
-> exposing another variant with KF_TRUSTED_ARGS restriction is fine. But
-> not hacking up a custom d_path() variant.
-
-OK, thank you for clarifying. Perhaps we should just make a remark in
-the form of a comment against bpf_d_path() stating that this BPF
-helper is considered unsafe and users should look to migrate to the
-newly added KF_TRUSTED_ARGS variant if at all possible.
-
-> > [0]. Or, is it the other supporting reference counting based BPF
-> > kfuncs [1, 2] that have irked you and aren't supportive of either?
+> Changes since v1:
+> - Rename file from test_dev_cgroup.c to dev_cgroup.c
+> - Use ASSERT_* in-place of CHECK
+> ---
+>  .../selftests/bpf/prog_tests/dev_cgroup.c     | 58 +++++++++++++
+>  tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
+>  2 files changed, 58 insertions(+), 85 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+>  delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
 > 
-> Yes, because you're exposing fs_root, fs_pwd, path_put() and fdput(),
-> get_task_exe_file(), get_mm_exe_file(). None of that I see being turned
-> into kfuncs.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+> new file mode 100644
+> index 0000000000000..980b015a116ff
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2017 Facebook
+> + */
+> +
+> +#include <test_progs.h>
+> +#include <time.h>
+> +#include "cgroup_helpers.h"
+> +#include "dev_cgroup.skel.h"
+> +
+> +#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
+> +
+> +void test_dev_cgroup(void)
+> +{
+> +	struct dev_cgroup *skel;
+> +	int cgroup_fd, err;
+> +	__u32 prog_cnt;
+> +
+> +	skel = dev_cgroup__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +		goto cleanup;
+> +
+> +	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+> +	if (!ASSERT_GT(cgroup_fd, 0, "cgroup_setup_and_join"))
+> +		goto cleanup;
+> +
+> +	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
+> +			      BPF_CGROUP_DEVICE, 0);
+> +	if (!ASSERT_EQ(err, 0, "bpf_attach"))
+> +		goto cleanup;
+> +
+> +	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
+> +	if (!ASSERT_EQ(err, 0, "bpf_query") || (!ASSERT_EQ(prog_cnt, 1, "bpf_query")))
+> +		goto cleanup;
+> +
+> +	/* All operations with /dev/zero and /dev/urandom are allowed,
+> +	 * everything else is forbidden.
+> +	 */
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
+> +	ASSERT_NEQ(system("mknod /tmp/test_dev_cgroup_null c 1 3"), 0, "mknod");
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
+> +
+> +	/* /dev/zero is whitelisted */
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
+> +	ASSERT_EQ(system("mknod /tmp/test_dev_cgroup_zero c 1 5"), 0, "mknod");
+Access to major number 1 and minor number 5 is allowed. The return code of
+0 is expected, but on CI we are getting 256 which indicates error. mknod
+help page mentions the same:
 
-Hm, OK, but do know that BPF kfuncs do not make any promises around
-being a stable interface, they never have and never will. Therefore,
-it's not like introducing this kind of dependency on such APIs from
-BPF kfuncs would hinder you from fundamentally modifying them moving
-forward?
+> An exit status of zero indicates success, and a nonzero value indicates
+failure.
 
-Additionally, given that these new acquire/release based BPF kfuncs
-which rely on APIs like get_fs_root() and path_put() are in fact
-restricted to BPF LSM programs, usage of such BPF kfuncs from the
-context of a BPF LSM program would rather be analogous to a
-pre-existing LSM module calling get_fs_root() and path_put()
-explicitly within one of its implemented hooks, no? IOW, once a BPF
-LSM program is loaded and JITed, what's the fundamental difference
-between a baked in LSM module hook implementation which calls
-get_fs_root() and a BPF LSM program which calls
-bpf_get_task_fs_root()?  They're both being used in a perfectly
-reasonable and sane like-for-like context, so what's the issue with
-exposing such APIs as BPF kfuncs if they're being used appropriately?
-It really doesn't make sense to provide independent reference counting
-implementations just for BPF if there's some pre-existing
-infrastructure in the kernel that does it the right way.
 
-Also note that without such new reference counting BPF kfuncs which
-I've proposed within this patch series the KF_TRUSTED_ARGS variant of
-bpf_d_path() that we've agreed on becomes somewhat difficult to use in
-practice. It'd essentially only be usable from LSM hooks that pass in
-a struct path via the context parameter. Whilst in reality, it's
-considered rather typical to also pass a struct path like
-&current->mm->exe_file->f_path and &current->fs->pwd to bpf_d_path()
-and friends from within the the implementation of an LSM hook. Such
-struct path objects nested some levels deep isn't considered as being
-trusted and therefore cannot be passed to a BPF kfunc that enforces
-the KF_TRUSTED_ARGS constraint. The only way to acquire trust on a
-pointer after performing such a struct walk is by grabbing a reference
-on it, and hence why this KF_TRUSTED_ARGS change to d_path() and these
-new BPF kfuncs go hand in hand.
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
+> +
+> +	ASSERT_EQ(system("dd if=/dev/urandom of=/dev/zero count=64"), 0, "dd");
+> +
+> +	/* src is allowed, target is forbidden */
+> +	ASSERT_NEQ(system("dd if=/dev/urandom of=/dev/full count=64"), 0, "dd");
+> +
+> +	/* src is forbidden, target is allowed */
+> +	ASSERT_NEQ(system("dd if=/dev/random of=/dev/zero count=64"), 0, "dd");
+> +
+> +cleanup:
+> +	cleanup_cgroup_environment();
+> +	dev_cgroup__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
+> deleted file mode 100644
+> index adeaf63cb6fa3..0000000000000
+> --- a/tools/testing/selftests/bpf/test_dev_cgroup.c
+> +++ /dev/null
+> @@ -1,85 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/* Copyright (c) 2017 Facebook
+> - */
+> -
+> -#include <stdio.h>
+> -#include <stdlib.h>
+> -#include <string.h>
+> -#include <errno.h>
+> -#include <assert.h>
+> -#include <sys/time.h>
+> -
+> -#include <linux/bpf.h>
+> -#include <bpf/bpf.h>
+> -#include <bpf/libbpf.h>
+> -
+> -#include "cgroup_helpers.h"
+> -#include "testing_helpers.h"
+> -
+> -#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
+> -
+> -#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
+> -
+> -int main(int argc, char **argv)
+> -{
+> -	struct bpf_object *obj;
+> -	int error = EXIT_FAILURE;
+> -	int prog_fd, cgroup_fd;
+> -	__u32 prog_cnt;
+> -
+> -	/* Use libbpf 1.0 API mode */
+> -	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> -
+> -	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
+> -			  &obj, &prog_fd)) {
+> -		printf("Failed to load DEV_CGROUP program\n");
+> -		goto out;
+> -	}
+> -
+> -	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+> -	if (cgroup_fd < 0) {
+> -		printf("Failed to create test cgroup\n");
+> -		goto out;
+> -	}
+> -
+> -	/* Attach bpf program */
+> -	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
+> -		printf("Failed to attach DEV_CGROUP program");
+> -		goto err;
+> -	}
+> -
+> -	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
+> -			   &prog_cnt)) {
+> -		printf("Failed to query attached programs");
+> -		goto err;
+> -	}
+> -
+> -	/* All operations with /dev/zero and and /dev/urandom are allowed,
+> -	 * everything else is forbidden.
+> -	 */
+> -	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+> -	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
+> -	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+> -
+> -	/* /dev/zero is whitelisted */
+> -	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+> -	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
+> -	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+> -
+> -	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
+> -
+> -	/* src is allowed, target is forbidden */
+> -	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
+> -
+> -	/* src is forbidden, target is allowed */
+> -	assert(system("dd if=/dev/random of=/dev/zero count=64"));
+> -
+> -	error = 0;
+> -	printf("test_dev_cgroup:PASS\n");
+> -
+> -err:
+> -	cleanup_cgroup_environment();
+> -
+> -out:
+> -	return error;
+> -}
 
-Apologies about all the questions and comments here, but I'm really
-just trying to understand why there's so much push back with regards
-adding these reference counting BPF kfuncs?
-
-/M
+-- 
+BR,
+Muhammad Usama Anjum
 
