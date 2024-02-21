@@ -1,69 +1,72 @@
-Return-Path: <bpf+bounces-22467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22468-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71EF985EC1A
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 23:59:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96DC985EC1C
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 23:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277281F247F2
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 22:59:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1713B215B3
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 22:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93197FBC2;
-	Wed, 21 Feb 2024 22:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B410A86632;
+	Wed, 21 Feb 2024 22:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FTYOyMz1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="edL3vLAr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC645232
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 22:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE673C470;
+	Wed, 21 Feb 2024 22:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708556357; cv=none; b=FXFt5zZphxptAdCh6erkCcCjWFT4r5sew7MlIx6a29/Rf5oK4imYT7dnPaSuDkGi7eziKWVNnYlznjAJaBMvxkoPttB9QKhaCMoeVnnpd7DnRkU8qMacpQBHh5FlcgMmu5fgvIgmFB/msSzxOlkBTdv9yevlftJUHpGkY+KEvcs=
+	t=1708556358; cv=none; b=a6qTvUG3YdXjPetVgKAPGYVhgBtx5N+RozWkrUK/rpKKmoRa2XzLPIlWAuI0xEHJ4LTk95DDt5rgYzbz9TCC1OXYA02keFaVQgDgYkABvlflOWPN2TxpkzRfgWrG5n9NMcEPyALja51pi3pid+mdqOQz83VXCd5ErQ5zpKKAEos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708556357; c=relaxed/simple;
-	bh=EoF7uIhcEXX9pabP8z91gMAsYYKMJqiXzoW7J0nrxhE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jpCW1PMWNYkj19zsU+NUH75jzj1fDRgSHNpVx4BqYAZoBOIyqwM0X2hHqLoRjHamPSp0WiWdSYmJ0fHc3WBJPZSCu3kY/bFwwpCxuZEdaDWJqIhKQvq2k5YHiWVv1L6+EBTugbJwKKxgl79USMTeQQ14xHDdOVmDsJVm8MUQ768=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FTYOyMz1; arc=none smtp.client-ip=209.85.128.180
+	s=arc-20240116; t=1708556358; c=relaxed/simple;
+	bh=8DszHd8Yh2iLgRH5yS1Ubvp/IpbprkrxBS0YFmimpR4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tXr6NcTICQPasPtmw6DGS2hGpiRHpPwVMH1/aERYbYwtwpEtihwQgFTvYTzed6/06az/lgEa2UTMA/KPzVzfOliZum32fpqutimdjlw297gO232EQ+RJDE9CDJCg3jDovcE8WdQCf/RLNmk3Y5OAQd3GEGSK8Yt2DYBgB79L9/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=edL3vLAr; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6089365e554so6809957b3.1
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 14:59:15 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6079d44b02bso52642427b3.3;
+        Wed, 21 Feb 2024 14:59:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708556354; x=1709161154; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AczTUjKSft50HMf0YK95szXpYdd+0mMAF2SbRQWztAo=;
-        b=FTYOyMz1ndylYTp4MXH8DiUUioMK7yRAKYvC6x7dB1kpcJC11LU+CLlMeFUMSNecE+
-         n1+PKQBsP2052HLExhdypHq8AOupRM5zyVwN9DlbQiziZ53+2pGmbm78SIdI9AnqFJhv
-         SoOIYnGurJ/c+ICJoUnpbrHKn/hJJWBjAY/+1v9iwdLYP679gGIkeTtC+AkJxhxtVv6M
-         BM+0IioJhe1ppMdVMEAY9NoPamMVqhRg5/Q781H1MEeVdaZXH+XkKChIuhwQzrAuzSKt
-         sowhT3U5PNskrZaPtKccMs0za3qt8Si1Q+BjrZISCBKvwJxrDNflTOGO6V+5WBpNTvcu
-         enYw==
+        d=gmail.com; s=20230601; t=1708556355; x=1709161155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ApHR3wqPEgShTz8EdjIgnsj0XrqO8wckCeRoLIO1Hlc=;
+        b=edL3vLAro4/eES0SeMSbVmFS91KP/naGBIBwiR8hRlxHTHpZgLsL3Wp3MppxXMPjiW
+         muMklmL+0Hc+vskwsmhK9lvIBQDbqSfTILUj/xdlj7qO4VYaFej1G6w0rouIJyluMBH1
+         fbuPrOpk0WL5/Zy9WAczb+t1tSrcJiYyN/DHdK6mgqlO2vyJJO2ySI/AthfYCkrd9hpS
+         ueZARtzugdyv2NpJUYYSdI4ewARRadLmUW0Uh4aYAKx/yVelETVhuAEmhnxJ7d6yNzcE
+         i2Lqe9yf1iiAtlmP4zcjAb01StcizkXlDaljJ2bBOCdSOIDCN5muEm4ivQ+7R/0FylP+
+         6Vwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708556354; x=1709161154;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AczTUjKSft50HMf0YK95szXpYdd+0mMAF2SbRQWztAo=;
-        b=uKFBwpvzKyezDZt1VxHUYhnpYWo9EEjqmC2VQ9Yqo+tEKFuo8MKV5lnTcqnNq/t6nj
-         RwXbp+s9vfUHkPg/9mPhrvKZpe9e06YElDCT5c2/irlFkGXEi+e7dhByel3c8YydC7t1
-         rRYoIlZ8mtywq2JIPygPomFGQlmvj8DWJVOqHkJmiqXNNTh/wo9pJYsY7h0iOBV3Q5U+
-         X3ZOoMrbhuwAWCBySh4d1If6Z6SnPR9HjDnWQql+Vznfy24Vw78jRAp/1ykW60/hunZN
-         +B9nulExj6LtCV23iuYODn0ra36vLwDdFJBvBd3fdBXKap5i6wxmdC7kasmi+mM9Hgf0
-         I3MA==
-X-Gm-Message-State: AOJu0YzvTNZT0xLUHMN2UJvUTnGlIqC4o2TxV4yPo8nFRBvOvkCzuE2v
-	v9+ghmc3Hv+2FnnVSL3CnzerE7zEyoiV3zd2tS2y8qDifsX8w6xCKQAJJDJx
-X-Google-Smtp-Source: AGHT+IHWtFYUzrvU5OnmVCZixQCT+MbErYhQfxDurSesQZmpoHFZMXHI2UykK/mua7vTIOASQLZpvg==
-X-Received: by 2002:a81:8d04:0:b0:608:3cb0:4c97 with SMTP id d4-20020a818d04000000b006083cb04c97mr10526551ywg.21.1708556354187;
-        Wed, 21 Feb 2024 14:59:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708556355; x=1709161155;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ApHR3wqPEgShTz8EdjIgnsj0XrqO8wckCeRoLIO1Hlc=;
+        b=mzympbhhHs2rts8arMSRCa7rVUAAWr1jDf4vIbBfvRKp/XZ2bYdF4DgV50Vt1yU8dB
+         X6ufoDkkvVT0zdSrv3qoTHRvWtI0+aczucJ1V0ZrBMoXKVUZKKxOE3tDhHGlB5952Ey3
+         Re81lGDmns6GfUEiKaZdjzyqZ+L2t1xIh4Jr1EE6f4i3mzO5kd+OWJSyNef4K9PTszYm
+         NZVUfL306sF11y35ktE4C9SPI2bytcp1NuMyLiyaVxldQucI0xD4hp/UR/QAIuFTwp1h
+         Gg4m6gKFvyYDA1ikUdCOjIbCFkQIAuzwt1t/Qe3f+cd86yvmh8nQkviOAMYQ7mTbdZGE
+         Kzew==
+X-Forwarded-Encrypted: i=1; AJvYcCXLFSYyd/ovPtEdRMGfdVO+jUMPe8LDyginIaVQ+oN8+0rl9OWrdvSlyMolDUOhUuupvBCrlIhn1odDjhIoG8KsTa75TZRU
+X-Gm-Message-State: AOJu0YwjzLRT5tHQpeQI9pTOcQ5WitDsPiO2znML0OVZKIEYy7hVH1WH
+	vAAvZayJb2yg3eh3w/NBtgEG5qSPweywztDvoC+4JYnp/hr86UZgmwRCknxR
+X-Google-Smtp-Source: AGHT+IHiy7PkPnbN35acFNftsrHydVmFdo29ylKaVbWiUS2vDhj86RpTdukMThDBIg7AedqsjXPr3Q==
+X-Received: by 2002:a81:ae13:0:b0:604:7b9e:f622 with SMTP id m19-20020a81ae13000000b006047b9ef622mr15760158ywh.30.1708556355445;
+        Wed, 21 Feb 2024 14:59:15 -0800 (PST)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:bc3b:b762:a625:955f])
-        by smtp.gmail.com with ESMTPSA id s67-20020a0de946000000b006078c48a265sm2820090ywe.6.2024.02.21.14.59.13
+        by smtp.gmail.com with ESMTPSA id s67-20020a0de946000000b006078c48a265sm2820090ywe.6.2024.02.21.14.59.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 14:59:13 -0800 (PST)
+        Wed, 21 Feb 2024 14:59:15 -0800 (PST)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -73,11 +76,14 @@ To: bpf@vger.kernel.org,
 	andrii@kernel.org
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v2 0/3] Allow struct_ops maps with a large number of programs
-Date: Wed, 21 Feb 2024 14:59:08 -0800
-Message-Id: <20240221225911.757861-1-thinker.li@gmail.com>
+	Kui-Feng Lee <thinker.li@gmail.com>,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/3] bpf, net: validate struct_ops when updating value.
+Date: Wed, 21 Feb 2024 14:59:09 -0800
+Message-Id: <20240221225911.757861-2-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240221225911.757861-1-thinker.li@gmail.com>
+References: <20240221225911.757861-1-thinker.li@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,35 +94,59 @@ Content-Transfer-Encoding: 8bit
 
 From: Kui-Feng Lee <thinker.li@gmail.com>
 
-The BPF struct_ops previously only allowed for one page to be used for
-the trampolines of all links in a map. However, we have recently run
-out of space due to the large number of BPF program links. By
-allocating additional pages when we exhaust an existing page, we can
-accommodate more links in a single map.
+Perform all validations when updating values of struct_ops maps. Doing
+validation in st_ops->reg() and st_ops->update() is not necessary anymore.
+However, tcp_register_congestion_control() has been called in various
+places. It still needs to do validations.
 
-The variable st_map->image has been changed to st_map->image_pages,
-and its type has been changed to an array of pointers to buffers of
-PAGE_SIZE. The array is dynamically resized and additional pages are
-allocated when all existing pages are exhausted.
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+---
+ kernel/bpf/bpf_struct_ops.c | 11 ++++++-----
+ net/ipv4/tcp_cong.c         |  6 +-----
+ 2 files changed, 7 insertions(+), 10 deletions(-)
 
-The test case loads a struct_ops maps having 40 programs. Their
-trampolines takes about 6.6k+ bytes over 1.5 pages on x86.
-
-Kui-Feng Lee (3):
-  bpf, net: validate struct_ops when updating value.
-  bpf: struct_ops supports more than one page for trampolines.
-  selftests/bpf: Test struct_ops maps with a large number of program
-    links.
-
- kernel/bpf/bpf_struct_ops.c                   | 123 ++++++++++++------
- net/ipv4/tcp_cong.c                           |   6 +-
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  44 +++++++
- .../prog_tests/test_struct_ops_multi_pages.c  |  31 +++++
- .../bpf/progs/struct_ops_multi_pages.c        | 102 +++++++++++++++
- 5 files changed, 263 insertions(+), 43 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_multi_pages.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_multi_pages.c
-
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 0d7be97a2411..c244ed5114fd 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -667,13 +667,14 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 		*(unsigned long *)(udata + moff) = prog->aux->id;
+ 	}
+ 
++	if (st_ops->validate) {
++		err = st_ops->validate(kdata);
++		if (err)
++			goto reset_unlock;
++	}
++
+ 	if (st_map->map.map_flags & BPF_F_LINK) {
+ 		err = 0;
+-		if (st_ops->validate) {
+-			err = st_ops->validate(kdata);
+-			if (err)
+-				goto reset_unlock;
+-		}
+ 		arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
+ 		/* Let bpf_link handle registration & unregistration.
+ 		 *
+diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
+index 1b34050a7538..28ffcfbeef14 100644
+--- a/net/ipv4/tcp_cong.c
++++ b/net/ipv4/tcp_cong.c
+@@ -146,11 +146,7 @@ EXPORT_SYMBOL_GPL(tcp_unregister_congestion_control);
+ int tcp_update_congestion_control(struct tcp_congestion_ops *ca, struct tcp_congestion_ops *old_ca)
+ {
+ 	struct tcp_congestion_ops *existing;
+-	int ret;
+-
+-	ret = tcp_validate_congestion_control(ca);
+-	if (ret)
+-		return ret;
++	int ret = 0;
+ 
+ 	ca->key = jhash(ca->name, sizeof(ca->name), strlen(ca->name));
+ 
 -- 
 2.34.1
 
