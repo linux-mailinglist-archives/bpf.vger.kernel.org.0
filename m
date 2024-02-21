@@ -1,124 +1,252 @@
-Return-Path: <bpf+bounces-22405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A85685E040
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 15:51:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7615A85E044
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 15:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E0151C22797
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 14:51:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB622B239EF
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 14:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671327FBBF;
-	Wed, 21 Feb 2024 14:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE167FBBC;
+	Wed, 21 Feb 2024 14:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRDAvBZz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aWGq15+f"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80423D393;
-	Wed, 21 Feb 2024 14:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156917FBA9;
+	Wed, 21 Feb 2024 14:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708527067; cv=none; b=aAszj4kCp4eYo5yRtxtfhyyJIUb0M0itx5JpMhAZnFODi5nIXZMyM0OQMFp+T7oSLSBz1n5pxV0NnGc/5/62JtR02oU742eAlrNchCXgbOw8V/+voP2In9dWKnQv/E5SwfJg7WZMlgo1lEUgd36tpkDBosWdELH4ZuFQS0zQb3A=
+	t=1708527089; cv=none; b=eDiRsr/obVOnIqVOB3bKdty/n7JsieEdAKy9PDOn5JDm+QmkZzVF1vO8SpiurBl64VjSegjYdcjSnOwEf7BtIrstOO9gtBbZ11O14XoVA3hr/cGDkOZpNxfmmDZg1QEKYTO1Lad9bG+dBTJuT11U9AVIvJSBDHex5Kn4IBrfm98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708527067; c=relaxed/simple;
-	bh=jR116JpyfvNBm06wmEVLlKKRHi5BQ5NesCFPXL2SImk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s8NMgyJ86LFugkhLrRG3SWmC3mK1FTvsyPbrMAbGn4HSwZcypA83E5ON/WKRMvznHEjIgQ/ywGdSrfHTOjOomc/VYeiqU20bIcwsMZHd+vGOeMpAN85ZRLLAMCTXQ9R6XDb0XGChJBIKrMpniB59Z4vStVSymGjeffK95DOd/hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WRDAvBZz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8107DC433C7;
-	Wed, 21 Feb 2024 14:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708527066;
-	bh=jR116JpyfvNBm06wmEVLlKKRHi5BQ5NesCFPXL2SImk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WRDAvBZzYYuE5uEfs/DEtOe7zPNcnoZYbwSu75Up2HHOCiaYs3dPtA3OFeS3aPijj
-	 cdCJEC4io72wTxOSQfnNvLnLW0c2gv6tih+AGJaN/cIIMfccENvgOGgW+Y4y73EviJ
-	 /95XICjCmk7hF5YBUPHW0H5+53rvT5IPFuNh9DzIoo/B/iZuLVvbEAjqaT79MVu+SO
-	 zoH5NBPAIyQheTU4QmU6vzAQxSV9MnS1mlP894VbFgkaw3S9I8y+HXI75doohUQtiO
-	 LrWh102L8ZI7FGNYQCmOW2aK0zb6kqrnVpxfNYFRZM3L9sb8iFhtUia1zIniN3qzQ2
-	 6qH0YCc10mUxQ==
-Date: Wed, 21 Feb 2024 14:50:51 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Maxwell Bland <mbland@motorola.com>
-Cc: linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-	agordeev@linux.ibm.com, akpm@linux-foundation.org,
-	andreyknvl@gmail.com, andrii@kernel.org, aneesh.kumar@kernel.org,
-	aou@eecs.berkeley.edu, ardb@kernel.org, arnd@arndb.de,
-	ast@kernel.org, borntraeger@linux.ibm.com, bpf@vger.kernel.org,
-	brauner@kernel.org, catalin.marinas@arm.com,
-	christophe.leroy@csgroup.eu, cl@linux.com, daniel@iogearbox.net,
-	dave.hansen@linux.intel.com, david@redhat.com, dennis@kernel.org,
-	dvyukov@google.com, glider@google.com, gor@linux.ibm.com,
-	guoren@kernel.org, haoluo@google.com, hca@linux.ibm.com,
-	hch@infradead.org, john.fastabend@gmail.com, jolsa@kernel.org,
-	kasan-dev@googlegroups.com, kpsingh@kernel.org,
-	linux-arch@vger.kernel.org, linux@armlinux.org.uk,
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	lstoakes@gmail.com, mark.rutland@arm.com, martin.lau@linux.dev,
-	meted@linux.ibm.com, michael.christie@oracle.com, mjguzik@gmail.com,
-	mpe@ellerman.id.au, mst@redhat.com, muchun.song@linux.dev,
-	naveen.n.rao@linux.ibm.com, npiggin@gmail.com, palmer@dabbelt.com,
-	paul.walmsley@sifive.com, quic_nprakash@quicinc.com,
-	quic_pkondeti@quicinc.com, rick.p.edgecombe@intel.com,
-	ryabinin.a.a@gmail.com, ryan.roberts@arm.com,
-	samitolvanen@google.com, sdf@google.com, song@kernel.org,
-	surenb@google.com, svens@linux.ibm.com, tj@kernel.org,
-	urezki@gmail.com, vincenzo.frascino@arm.com, will@kernel.org,
-	wuqiang.matt@bytedance.com, yonghong.song@linux.dev,
-	zlim.lnx@gmail.com, awheeler@motorola.com
-Subject: Re: [PATCH 0/4] arm64: mm: support dynamic vmalloc/pmd configuration
-Message-ID: <20240221-ipod-uneaten-4da8b229f4a4@spud>
-References: <20240220203256.31153-1-mbland@motorola.com>
+	s=arc-20240116; t=1708527089; c=relaxed/simple;
+	bh=s2T7R4N1p3lnMwGvtR4zo0PLgd2eVzvYetbPnMYISZw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ipFRfF/PHspUG3Z9GrpxNR0+YrTQOEhqdC7O7iYuk16IHq3BPdO0w+dxlFmb+HrXpaayvStWIadndoE1uCpMGh9Ps6MY5Y76KwY/UfTM5/8wWB+dkp7/OEgbFivCvJb7LQJlxkYzP7DvU1/XvZU2VIqOPoGGISTNUf1ce7EKxog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aWGq15+f; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41275971886so5258575e9.3;
+        Wed, 21 Feb 2024 06:51:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708527086; x=1709131886; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RZg1sv8+ovEl7fsqj4X1zEjMkSsF35TkvVOPYv4FlCY=;
+        b=aWGq15+fiMSa6+lwv3HYXujXZL1jBnqqyTbK7IBJ+yIGMUniGkvSRe2BnSxuFlrEVe
+         3GtUCcuysGlOgH5jJJeLC0sPE/wVQItphM0wjwV66Yb2+4TrB7zsHbPJm4gHXMxzQ7wE
+         0AXOnW8e/dHugcjUxQdJVh3kKiW0UKfH3I5zNzSMpMBGGaUydozoX9MdRC3T3fEHClD9
+         Hmra1jS/s+r46C/4CKrTFWgkjPudWL7y9tGbgVZibhwKuooC5EMNjUzZh0DkXJEBgHNY
+         sxTzct0olAbFy/krOOkiKaiBJoHTKt8vC+TnUjGqrwZnVfLO4vGnZfygrNZtq9Zm4oPK
+         GkAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708527086; x=1709131886;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RZg1sv8+ovEl7fsqj4X1zEjMkSsF35TkvVOPYv4FlCY=;
+        b=GB3lE+gkAjl4uLC4gLwKE+Nj5cl/ziNNVWY9i50PnJJs7kxs3bejxe7RgSTcBzgWIO
+         cvAINIy0ndx96IqW6szyCn+Jr/xBIcL5A+N0GeARtWVreQ7wGUwdV4RPUmgtthomox/I
+         eiE3jylME5LIxIDydJFa0PXylQEkl8wHQtS/VkAB3CWTlNEAQ86VLDMTjA8Dw5VQJfM9
+         rLMbIvwHUKc57GExX+Nv6dHbMRhI9VyuCHGaki/E9MLfTlL/9oOM5XpyuIWtsJ1yqCzZ
+         39dAYoHVWqr1aH6JSl7q0s/wYc/rtwGtVlPtyKVu2siYEjKDTTrI2iZaIIYDY2wk95OX
+         TXJw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9jwowl6CNXavI2Zu1kFSVDHaUwE9St829RxIC+GjkCecpKZNzukuqE8Zycz/ELsZW4uctEBkjGTcpfPkhoulR6Jn+Gg8cKFsN5LGa0wH/myDzcrHmot7eW57rSRSC9TwA
+X-Gm-Message-State: AOJu0YxcfvmgEPIeSa/uJX4JJcqNWlGjrlhZq5lxfyiaw6HPADbag6d5
+	2Wwby5oK0ci4oSgDPZBa/E4t2CiGUIfRWDrI+phOqbJwtfThcJ/QVssZd1eIDwrvHA==
+X-Google-Smtp-Source: AGHT+IFkapUJ45YcchhcfJZimsRNd//nNdGZzZXboG8jOlZGf8yL/sbdyFoTkGzLRTgHwNvsg3Dmpg==
+X-Received: by 2002:a5d:6652:0:b0:33d:15c1:cfcb with SMTP id f18-20020a5d6652000000b0033d15c1cfcbmr12051412wrw.40.1708527086026;
+        Wed, 21 Feb 2024 06:51:26 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id bk26-20020a0560001d9a00b0033d568f8310sm9256360wrb.89.2024.02.21.06.51.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Feb 2024 06:51:25 -0800 (PST)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	catalin.marinas@arm.com,
+	mark.rutland@arm.com,
+	bpf@vger.kernel.org,
+	kpsingh@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	xukuohai@huaweicloud.com
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v8 0/2] bpf, arm64: use BPF prog pack allocator in BPF JIT
+Date: Wed, 21 Feb 2024 14:51:04 +0000
+Message-Id: <20240221145106.105995-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r+os/L6iBAa0yd7x"
-Content-Disposition: inline
-In-Reply-To: <20240220203256.31153-1-mbland@motorola.com>
+Content-Transfer-Encoding: 8bit
 
+Changes in V7 => V8:
+V7: https://lore.kernel.org/bpf/20240125133159.85086-1-puranjay12@gmail.com/
+1. Rebase on bpf-next/master
+2. Fix __text_poke() by removing usage of 'ret' that was never set.
 
---r+os/L6iBAa0yd7x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes in V6 => V7:
+V6: https://lore.kernel.org/all/20240124164917.119997-1-puranjay12@gmail.com/
+1. Rebase on bpf-next/master.
 
-Hey Maxwell,
+Changes in V5 => V6:
+V5: https://lore.kernel.org/all/20230908144320.2474-1-puranjay12@gmail.com/
+1. Implement a text poke api to reduce code repeatition.
+2. Use flush_icache_range() in place of caches_clean_inval_pou() in the
+   functions that modify code.
+3. Optimize the bpf_jit_free() by not copying the all instructions on
+   the rw image to the ro_image
 
-FYI:
+Changes in V4 => v5:
+1. Remove the patch for making prog pack allocator portable as it will come
+   through the RISCV tree[1].
 
->   mm/vmalloc: allow arch-specific vmalloc_node overrides
->   mm: pgalloc: support address-conditional pmd allocation
+2. Add a new function aarch64_insn_set() to be used in
+   bpf_arch_text_invalidate() for putting illegal instructions after a
+   program is removed. The earlier implementation of bpf_arch_text_invalidate()
+   was calling aarch64_insn_patch_text_nosync() in a loop and making it slow
+   because each call invalidated the cache.
 
-With these two arch/riscv/configs/* are broken with calls to undeclared
-functions.
+   Here is test_tag now:
+   [root@ip-172-31-6-176 bpf]# time ./test_tag
+   test_tag: OK (40945 tests)
 
->   arm64: separate code and data virtual memory allocation
->   arm64: dynamic enforcement of pmd-level PXNTable
+   real    0m19.695s
+   user    0m1.514s
+   sys     0m17.841s
 
-And with these two the 32-bit and nommu builds are broken.
+   test_tag without these patches:
+   [root@ip-172-31-6-176 bpf]# time ./test_tag
+   test_tag: OK (40945 tests)
 
-Cheers,
-Conor.
+   real    0m21.487s
+   user    0m1.647s
+   sys     0m19.106s
 
---r+os/L6iBAa0yd7x
-Content-Type: application/pgp-signature; name="signature.asc"
+   test_tag in the previous version was really slow > 2 minutes. see [2]
 
------BEGIN PGP SIGNATURE-----
+3. Add cache invalidation in aarch64_insn_copy() so other users can call the
+   function without worrying about the cache. Currently only bpf_arch_text_copy()
+   is using it, but there might be more users in the future.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdYNywAKCRB4tDGHoIJi
-0gMuAP9F/qaVnaevMHMAFC79aMoA7T8MPtngzCYgeGKGkodjfwD+LfeSF0KgFWRs
-XPWMo+0cR11PZYg4ErTvrYapXzyvsgY=
-=uABL
------END PGP SIGNATURE-----
+Chanes in V3 => V4: Changes only in 3rd patch
+1. Fix the I-cache maintenance: Clean the data cache and invalidate the i-Cache
+   only *after* the instructions have been copied to the ROX region.
 
---r+os/L6iBAa0yd7x--
+Chanes in V2 => V3: Changes only in 3rd patch
+1. Set prog = orig_prog; in the failure path of bpf_jit_binary_pack_finalize()
+call.
+2. Add comments explaining the usage of the offsets in the exception table.
+
+Changes in v1 => v2:
+1. Make the naming consistent in the 3rd patch:
+   ro_image and image
+   ro_header and header
+   ro_image_ptr and image_ptr
+2. Use names dst/src in place of addr/opcode in second patch.
+3. Add Acked-by: Song Liu <song@kernel.org> in 1st and 2nd patch.
+
+BPF programs currently consume a page each on ARM64. For systems with many BPF
+programs, this adds significant pressure to instruction TLB. High iTLB pressure
+usually causes slow down for the whole system.
+
+Song Liu introduced the BPF prog pack allocator[3] to mitigate the above issue.
+It packs multiple BPF programs into a single huge page. It is currently only
+enabled for the x86_64 BPF JIT.
+
+This patch series enables the BPF prog pack allocator for the ARM64 BPF JIT.
+
+====================================================
+Performance Analysis of prog pack allocator on ARM64
+====================================================
+
+To test the performance of the BPF prog pack allocator on ARM64, a stresser
+tool[4] was built. This tool loads 8 BPF programs on the system and triggers
+5 of them in an infinite loop by doing system calls.
+
+The runner script starts 20 instances of the above which loads 8*20=160 BPF
+programs on the system, 5*20=100 of which are being constantly triggered.
+
+In the above environment we try to build Python-3.8.4 and try to find different
+iTLB metrics for the compilation done by gcc-12.2.0.
+
+The source code[5] is  configured with the following command:
+./configure --enable-optimizations --with-ensurepip=install
+
+Then the runner script is executed with the following command:
+./run.sh "perf stat -e ITLB_WALK,L1I_TLB,INST_RETIRED,iTLB-load-misses -a make -j32"
+
+This builds Python while 160 BPF programs are loaded and 100 are being constantly
+triggered and measures iTLB related metrics.
+
+The output of the above command is discussed below before and after enabling the
+BPF prog pack allocator.
+
+The tests were run on qemu-system-aarch64 with 32 cpus, 4G memory, -machine virt,
+-cpu host, and -enable-kvm.
+
+Results
+-------
+
+Before enabling prog pack allocator:
+------------------------------------
+
+Performance counter stats for 'system wide':
+
+         333278635      ITLB_WALK
+     6762692976558      L1I_TLB
+    25359571423901      INST_RETIRED
+       15824054789      iTLB-load-misses
+
+     189.029769053 seconds time elapsed
+
+After enabling prog pack allocator:
+-----------------------------------
+
+Performance counter stats for 'system wide':
+
+         190333544      ITLB_WALK
+     6712712386528      L1I_TLB
+    25278233304411      INST_RETIRED
+        5716757866      iTLB-load-misses
+
+     185.392650561 seconds time elapsed
+
+Improvements in metrics
+-----------------------
+
+Compilation time                             ---> 1.92% faster
+iTLB-load-misses/Sec (Less is better)        ---> 63.16% decrease
+ITLB_WALK/1000 INST_RETIRED (Less is better) ---> 42.71% decrease
+ITLB_Walk/L1I_TLB (Less is better)           ---> 42.47% decrease
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=for-next&id=20e490adea279d49d57b800475938f5b67926d98
+[2] https://lore.kernel.org/all/CANk7y0gcP3dF2mESLp5JN1+9iDfgtiWRFGqLkCgZD6wby1kQOw@mail.gmail.com/
+[3] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+[4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+[5] https://www.python.org/ftp/python/3.8.4/Python-3.8.4.tgz
+
+Puranjay Mohan (2):
+  arm64: patching: implement text_poke API
+  bpf, arm64: use bpf_prog_pack for memory management
+
+ arch/arm64/include/asm/patching.h |   2 +
+ arch/arm64/kernel/patching.c      |  75 ++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c     | 139 ++++++++++++++++++++++++------
+ 3 files changed, 192 insertions(+), 24 deletions(-)
+
+-- 
+2.40.1
+
 
