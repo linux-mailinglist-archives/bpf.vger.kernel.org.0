@@ -1,148 +1,155 @@
-Return-Path: <bpf+bounces-22354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6293485CD34
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 02:03:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5245885CD7F
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 02:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB9841F237C0
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 01:02:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59F11F247C3
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 01:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64E21FBF;
-	Wed, 21 Feb 2024 01:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A4120E6;
+	Wed, 21 Feb 2024 01:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="eKfkw5/k"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="ya7xmQFp"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC6917D5
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 01:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC17E5684
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 01:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708477373; cv=none; b=l+MVfU6sZWwf5q5edw5JO/Ahl8EZ/W12+GATbEQ5i8+FJhBCorhrW9XFwb78CwaTf1Sdl1NmY176h+qb21weIiG4TFL4TLv2rb5PM6tEtVWLjUv1o8DABZTIRHAvEVD2vlNQwPYazLA22GSpfSbZnoOWVSsJAPNlh8Xjc5MAQ64=
+	t=1708479100; cv=none; b=KV2TfAXrJ/f5zwb3FCrn+K+Bb+HcWyVzSHojnWVTFw2ZE0Aj0iMt5/lkiKWHscwgHHMEhCixFlUfvytWHVD6Ij+icVV971zKmKknEO+Eg55JWfD4OUeX0Sih6y//wjBgVkMrnx/auTiUtlZZ+75ZWh8lcCoBunqWqV02wE/p1Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708477373; c=relaxed/simple;
-	bh=vteEZjMOkKUDtcMuJwOAhkGa3c3ls+5EIIo7zsBpvns=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=I158qrsKLA/JDHW8JTagcP+nE8GPcXNhffv2mS9vslL0RYmRhdpZPOHqUA8zqBzYJQ2o9gR35YU92s/N3tlA3B3Pz0B9HCV/GdlCJKA/KZrbl6d2MMW7e/m/GEGySEGwoXgokE1c/Xg6XDMLRrX01ngOWS3TUwZbFcp1S2jjTYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=eKfkw5/k; arc=none smtp.client-ip=148.163.152.16
+	s=arc-20240116; t=1708479100; c=relaxed/simple;
+	bh=fhbfkIN5wAhNc9HTeKolpxP5Ornlg+oQJDYS6W/CqDo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O4mixFYF/P+WhmL68Np2tPjNwdMO+eexozo43+agO5HN37wbWsgH+f0Hph8SnpHkpQ97wJh8YVz7UTUJ3OTDwkbj/G2zApgoqS7A8bPGalR5zTWxrWz5L/Hox6IStZbQMbRL7YjWVS2Z1DTxh5iB/pINh7VI0Gf0wVGuBd8bV08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=ya7xmQFp; arc=none smtp.client-ip=148.163.152.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
 Received: from pps.filterd (m0354655.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41L0gg2I027336;
-	Wed, 21 Feb 2024 01:02:31 GMT
+	by mx0b-00206402.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KK7HY2027620;
+	Wed, 21 Feb 2024 01:01:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=default;
-	 bh=weASN+FemywF0dmsGN2wuTMcsedQ2suLr4JofulVrJo=; b=eKfkw5/kn6Gs
-	S3nG6xVkq+yOH6GnYSCvZmCJNmlB7auzZipxR5b2k+IWeBLjRFJUwSqaFeikFO8u
-	UyMnWYiR/4RiW+EwwNsptzul/Mra9pMimptR3li+jGlyFtV7nUK+vjNMs8DdTD7H
-	YayyfYjZXIGz5AI0mjcEf/QdKGaTBULuX4mSIVPx6nV3xhuwBa+WAKmRxMtlYd7p
-	mHD5WplLYizQII4GOcqMUKLM/SyqatXre9EFopjapm0UFRU4yLqdtyhE/E73PEMO
-	M2eHyqpcwk3sKtshuI4166OUvapv3y9nxZYT4xBKd0rot2zd/tarOEwFWlc3vzds
-	ZOJS6Xlqow==
+	 h=from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=default; bh=HBBOaU1zE
+	82xQnhq8k1L4btrIhfz2uvaYV8xuG2OX6Y=; b=ya7xmQFpc33v7mgYRHtity2XX
+	v54mN5r7QWxukCinYYk7O+/m8R0nwM1G5lBHvJ/pk8eRvnUAt+Fsb6kX36ly/9Ur
+	nGqZFM0Z9c+l2E5oWZrOrBQ+kIh4jDayVsm93wowXDc/LA9CAzebcTN9esBjqQtg
+	qh6CgYB0oyYHwgQ4vyh7PwLJLMeYeX1SAoOPjhjv6VJtvJoKFC+loxn5NXDNQCWn
+	rNtTHuMxqGEG47Lf7nT1/FCs6iDz/wXszJIZpv+cmDzbFRZX3f+cCAL2WZv2yfv1
+	zytaviEgELOO/M9936rtaUOAQ8025f3ttvn2MP0yNeotCXPwvgY+IJUoFrMtA==
 Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 3wd21t8kqx-1
+	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 3wd21t8kpy-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 01:02:30 +0000 (GMT)
-Received: from [10.82.58.119] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Wed, 21 Feb
- 2024 01:02:28 +0000
-Message-ID: <5293d90d-7bed-40e6-9f53-7524a9877fd5@crowdstrike.com>
-Date: Tue, 20 Feb 2024 17:02:27 -0800
+	Wed, 21 Feb 2024 01:01:46 +0000 (GMT)
+Received: from LL-556NGK3.crowdstrike.sys (10.100.11.122) by
+ 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 21 Feb 2024 01:01:44 +0000
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+To: <bpf@vger.kernel.org>
+CC: Yonghong Song <yonghong.song@linux.dev>,
+        Alexei Starovoitov
+	<ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+	<andrii@kernel.org>,
+        Martin Kelly <martin.kelly@crowdstrike.com>
+Subject: [PATCH bpf] libbpf: clarify batch lookup semantics
+Date: Tue, 20 Feb 2024 17:00:57 -0800
+Message-ID: <20240221010057.1061333-1-martin.kelly@crowdstrike.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Memory corruption in out_batch parameter of batch lookup APIs
-Content-Language: en-US
-To: Yonghong Song <yonghong.song@linux.dev>, <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <1f98a10d-9fd7-4a0c-baa8-be31c1e78fa8@crowdstrike.com>
- <0aa59bdf-b443-4a56-bdec-368c958c9629@linux.dev>
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-In-Reply-To: <0aa59bdf-b443-4a56-bdec-368c958c9629@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: 04WPEXCH12.crowdstrike.sys (10.100.11.116) To
  04wpexch06.crowdstrike.sys (10.100.11.99)
 X-Disclaimer: USA
-X-Proofpoint-ORIG-GUID: 2VwKC-jBt7D0D5stseHBlZlMG1ZTZq6V
-X-Proofpoint-GUID: 2VwKC-jBt7D0D5stseHBlZlMG1ZTZq6V
+X-Proofpoint-ORIG-GUID: qMWw5PaowjtWkghwoKEDNzalhFZtd4J9
+X-Proofpoint-GUID: qMWw5PaowjtWkghwoKEDNzalhFZtd4J9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=658 phishscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=756 phishscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
  malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 priorityscore=1501
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2402210006
 
-On 2/19/24 17:22, Yonghong Song wrote:
->
-> On 2/16/24 4:24 PM, Martin Kelly wrote:
->> Hi, I noticed there's a subtlety to to the batch APIs 
->> (bpf_map_lookup_batch and bpf_map_lookup_and_delete_batch) that can 
->> lead to bugs if callers are not careful, and I'm wondering about the 
->> best way to document or address it.
->>
->> Specifically, the size of the data pointed to by in_batch/out_batch 
->> is not clear, and if it's too small, the caller can see memory/stack 
->> corruption. The function documentation isn't super clear about this, 
->> calling in_batch "address of the first element in batch to read", so 
->> a caller might reasonably assume that a pointer size is fine. 
->> However, the right size actually depends on the map type.
->>
->> For hash and array maps, out_batch will be u32 (as the parameter is 
->> used as an index). But for LPM trie, it will be the size of the key 
->> (in the case of LPM trie, I think that's 260 bytes). If a caller 
->> passes a pointer to memory smaller the key size, the kernel will 
->> overwrite past that memory and corrupt the stack (or wherever 
->> out_batch points). This is because of the copy_to_user(uobatch, 
->> prev_key, map->key_size) at the end of generic_map_lookup_batch.
->>
->> It seems to me that we could add documentation to these functions 
->> indicating that out_batch should be able to hold at least one key to 
->> be safe. This is simple but overly strict (at the moment) for all map 
->> types other than LPM trie. However, if we specifically call out LPM 
->> trie as needing key-sized width while other map types need 4 bytes, 
->> then this documentation could easily become out-of-date as new map 
->> types are added.
->>
->> We could alternatively add a statement like "out_batch should 
->> generally point to memory large enough to hold a single key, but for 
->> some map implementations a smaller type is possible". This gives more 
->> information but might be too vague for many API users, and it means 
->> future kernels could be tied to this implementation to avoid breaking 
->> users.
->>
->> Any thoughts/preferences on how best to handle this? I'm happy to 
->> send a patch clarifying the documentation, but I'd like to get a 
->> general consensus on the best way to proceed first.
->
-> For in_batch/out_batch, the only exception is hashmap which has 
-> in_batch/out_batch memory size to be 32.
-> For all other supported maps, in_batch/out_batch memory size should be 
-> equal to their corresponding key size.
-> Maybe you can clarify this in include/uapi/linux/bpf.h?
->
-> We can update the documentation later if there are any exceptions to 
-> the above rule.
-That sounds reasonable; I sent a patch for this. Thanks!
->
->>
->> Thanks,
->>
->> Martin
->>
+The batch lookup APIs copy key memory into out_batch, which is then
+supplied in later calls to in_batch. Thus both parameters need to point
+to memory large enough to hold a single key (other than an initial NULL
+in_batch). For many maps, keys are pointer sized or less, but for larger
+maps, it's important to point to a larger block of memory to avoid
+memory corruption.
+
+Document these semantics to clarify the API.
+
+Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+---
+ include/uapi/linux/bpf.h |  5 ++++-
+ tools/lib/bpf/bpf.h      | 15 ++++++++++-----
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index d96708380e52..dae613b8778a 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -617,7 +617,10 @@ union bpf_iter_link_info {
+  *		to NULL to begin the batched operation. After each subsequent
+  *		**BPF_MAP_LOOKUP_BATCH**, the caller should pass the resultant
+  *		*out_batch* as the *in_batch* for the next operation to
+- *		continue iteration from the current point.
++ *		continue iteration from the current point. Both *in_batch* and
++ *		*out_batch* must point to memory large enough to hold a key,
++ *		except for maps of type **BPF_MAP_TYPE_HASH**, for which batch
++ *		parameters must be at least 4 bytes wide regardless of key size.
+  *
+  *		The *keys* and *values* are output parameters which must point
+  *		to memory large enough to hold *count* items based on the key
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index ab2570d28aec..c7e918ab0a60 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -190,10 +190,13 @@ LIBBPF_API int bpf_map_delete_batch(int fd, const void *keys,
+ /**
+  * @brief **bpf_map_lookup_batch()** allows for batch lookup of BPF map elements.
+  *
+- * The parameter *in_batch* is the address of the first element in the batch to read.
+- * *out_batch* is an output parameter that should be passed as *in_batch* to subsequent
+- * calls to **bpf_map_lookup_batch()**. NULL can be passed for *in_batch* to indicate
+- * that the batched lookup starts from the beginning of the map.
++ * The parameter *in_batch* is the address of the first element in the batch to
++ * read. *out_batch* is an output parameter that should be passed as *in_batch*
++ * to subsequent calls to **bpf_map_lookup_batch()**. NULL can be passed for
++ * *in_batch* to indicate that the batched lookup starts from the beginning of
++ * the map. Both *in_batch* and *out_batch* must point to memory large enough to
++ * hold a single key, except for maps of type **BPF_MAP_TYPE_HASH**, for which
++ * the memory pointed to must be at least 4 bytes wide regardless of key size.
+  *
+  * The *keys* and *values* are output parameters which must point to memory large enough to
+  * hold *count* items based on the key and value size of the map *map_fd*. The *keys*
+@@ -226,7 +229,9 @@ LIBBPF_API int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch,
+  *
+  * @param fd BPF map file descriptor
+  * @param in_batch address of the first element in batch to read, can pass NULL to
+- * get address of the first element in *out_batch*
++ * get address of the first element in *out_batch*. If not NULL, must be large
++ * enough to hold a key. For **BPF_MAP_TYPE_HASH**, must be large enough to hold
++ * 4 bytes.
+  * @param out_batch output parameter that should be passed to next call as *in_batch*
+  * @param keys pointer to an array of *count* keys
+  * @param values pointer to an array large enough for *count* values
+-- 
+2.34.1
+
 
