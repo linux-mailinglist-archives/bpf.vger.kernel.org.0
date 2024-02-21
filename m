@@ -1,363 +1,146 @@
-Return-Path: <bpf+bounces-22389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7170685D1C8
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 08:52:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA6185D1DC
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 08:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93E271C248DF
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 07:52:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA3F8B2461A
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 07:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EFFD3AC26;
-	Wed, 21 Feb 2024 07:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCE43B793;
+	Wed, 21 Feb 2024 07:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q4qb/jrQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPPQIkvS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335D43AC24
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 07:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952543B781;
+	Wed, 21 Feb 2024 07:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708501945; cv=none; b=eI9kMOXKF51rTZNGFYuUClKrjqP7zsE9nrTrtOHse/amwGYQFi+fuI1F6AIeLMq9J+3rlCP0fW0TRZwDz2T9qkZqr+HwoRx1fDSm1QZVT/pR2s7XxGH2kcIavh4inPbu11mcaBZymod0oMXSXv/ZkZy//64On33bcERkZKSobmU=
+	t=1708502131; cv=none; b=oy6ngC95y41xS2D0R+Uqn937wyOaSHuUT+g8KXD/xdUgX0/moKOkE1921dO/HHOAbn31i2yAs5LJPU4Z4IUnh5H782rQ6x6fOQeVCAlahmDXu2C+Uz181XhU/Gw3UWJqSUh0hgBR5jD/rp6GcxuInD90Ms05rDRoTdu3v0PG/o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708501945; c=relaxed/simple;
-	bh=Dw4CJaNHKe+pg7XSzegbfn6FDwV+t1G1PwNSdjdIsdc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KbFR2Eyti+4TIP2HSvrMO8z+yet+fo2udBj+3CFBonSOljFbhlJUTsBc3L7MvJLIYFKyUeo2lcNCM8S7m8+b7H0ZW16T0SUJPmHkCfDfo1a8QioAMEPVPdIyqdMlkQFmobbg9y3p0yeiQse0u4rAScFam5mEbZ4cDoK6tPQoIVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q4qb/jrQ; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-607f94d0b7cso53340257b3.3
-        for <bpf@vger.kernel.org>; Tue, 20 Feb 2024 23:52:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708501942; x=1709106742; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JWynwO0I8208AcDlFWz1kBnWyZmLTlcYH9g+FM611g8=;
-        b=Q4qb/jrQIXcmy5rxTGV4+N0SqlOb77JSesFRFNTjp4dxwOWeRWzKQ0mrnYwhdgvwLT
-         Wp+ZHEeE5GCUrse7KNFE7obsPZjZk+CHuWxAvSJ5/AhspylLIUIr+BCGRrrVYKOYugDY
-         F7H3ryop6GOH0phGffxZpp+mBg48SLgMaPxldlINi0H6gsPndNKuE9HrrVOrlE8h9KFM
-         HVT1hY7t6f4Fe54ckIbAcAwVgts1qw5M5qTCPJ1h1pQ8RAiDfgBeAGVneFcH1Q9SKgbn
-         JSH3wmdJch2pe6TIVBC5if86PVbb9JuGyZREH+0Ggv07XY+jskGHOt1d33azIjRMiVkH
-         R9/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708501942; x=1709106742;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JWynwO0I8208AcDlFWz1kBnWyZmLTlcYH9g+FM611g8=;
-        b=KYSvBp70/hw80/Pvsk8X8Rk1b8Olu+VyfpGsOQ/VqFJdBkn78bci2y21aLvpA4fU3G
-         8eHj7yv+MR4vBNVct8Ef5WG1aBGKrzfMGgGpjjkKaEkCT0KhrvGlyT2naXE7HVsSt7bL
-         IE7+Uzio9dU0nytEw1P+UNeZqkef+LPpn+ickgMTVmQdjc/tBoKbcsTwwsvLS9+0/PE5
-         IF3ANMBgKRf2sCRNG/lIn3bgpQxbB+sYYk7jf9cK9GvVIQmyZ01DUDXSerxK3VudU6Yb
-         va/slALc863SZj0kK3CA0BkqTz28VhJf6HgKJHvUdbBJFR19vuF04CpsYDGKf7WyKU+O
-         JdpQ==
-X-Gm-Message-State: AOJu0YxU9ND4BVa60CNCIScefzTH85AFuiHn7WtzIgs1Ygw+uXzs4uj/
-	PcP6V+3Czmgwj0iAnCw5AmSotLIGp1ZexGRFwzx7FKFUN/9bAvodGo39uMQy
-X-Google-Smtp-Source: AGHT+IFEoD20cdseNyJB1Ku6rcJoEL+vP3FBn32iU/BPRyzxqWWAhMuiwMj3j3JMMdmNEkrdIadMOg==
-X-Received: by 2002:a0d:f5c1:0:b0:608:2ad1:bac6 with SMTP id e184-20020a0df5c1000000b006082ad1bac6mr8318678ywf.27.1708501941697;
-        Tue, 20 Feb 2024 23:52:21 -0800 (PST)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:26eb:2942:8151:a089])
-        by smtp.gmail.com with ESMTPSA id m205-20020a8171d6000000b006048e2331fcsm2488715ywc.91.2024.02.20.23.52.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 23:52:21 -0800 (PST)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v4 3/3] selftests/bpf: Test case for lacking CFI stub functions.
-Date: Tue, 20 Feb 2024 23:52:13 -0800
-Message-Id: <20240221075213.2071454-4-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240221075213.2071454-1-thinker.li@gmail.com>
-References: <20240221075213.2071454-1-thinker.li@gmail.com>
+	s=arc-20240116; t=1708502131; c=relaxed/simple;
+	bh=8Gjs3UyGstIz+V//qXmGOQrur0RJZg8xu/QusoSW3Hs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nBAbe9b4hnWutqhWSS1GCsHmJCQ9zdfoaPFEDJrTXdLrUCFZSZgluUJGlUmHaru/0mcKkivKGWm3e6pa3F+nqnKj+9HCpPBSHpoO41kIFWInrZSDHjG+s3mf0sNzt9wP75FrBvDWAb1QmM609q1xDNo2hWTfu0d9Vcx75+yAIkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPPQIkvS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F58C43399;
+	Wed, 21 Feb 2024 07:55:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708502130;
+	bh=8Gjs3UyGstIz+V//qXmGOQrur0RJZg8xu/QusoSW3Hs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hPPQIkvSE9Ft9sp9lxixoHAzNGl/Q9i4t8QZNSt9SU/kUAEspPDDVyAX9V/q9Z0x/
+	 BmFYubP2pHFDG/S/sz5mwOGiyaYp0aliL7931BapY1CRdaWCKavxem/83NQVsVfyBq
+	 z/cyh62szYytjtNkuOpg2VuD0JGsVODJtG4cGiIXLxf0ZlLcx/7kcrpNF7KF9dRErN
+	 f4ukMQAjK4wKsPqjtxHAqkyQ6i4FQB4FpteczRMkqriHWSt/+HncB6M/KfTrmVPmoG
+	 l6m6t+KoUeidixjk502g4yQSZ8t93VXJJw6clYacn3matBVgdrCrekEzeE+jDE8clz
+	 6lhkH8fUIVeJg==
+Date: Wed, 21 Feb 2024 08:55:25 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	kpsingh@google.com, jannh@google.com, jolsa@kernel.org, daniel@iogearbox.net, 
+	linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH bpf-next 01/11] bpf: make bpf_d_path() helper use
+ probe-read semantics
+Message-ID: <20240221-fugen-turmbau-07ec7df36609@brauner>
+References: <cover.1708377880.git.mattbobrowski@google.com>
+ <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
+ <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
+ <ZdSnhqkO_JbRP5lO@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZdSnhqkO_JbRP5lO@google.com>
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+On Tue, Feb 20, 2024 at 01:22:14PM +0000, Matt Bobrowski wrote:
+> On Tue, Feb 20, 2024 at 10:48:10AM +0100, Christian Brauner wrote:
+> > On Tue, Feb 20, 2024 at 09:27:23AM +0000, Matt Bobrowski wrote:
+> > > There has now been several reported instances [0, 1, 2] where the
+> > > usage of the BPF helper bpf_d_path() has led to some form of memory
+> > > corruption issue.
+> > > 
+> > > The fundamental reason behind why we repeatedly see bpf_d_path() being
+> > > susceptible to such memory corruption issues is because it only
+> > > enforces ARG_PTR_TO_BTF_ID constraints onto it's struct path
+> > > argument. This essentially means that it only requires an in-kernel
+> > > pointer of type struct path to be provided to it. Depending on the
+> > > underlying context and where the supplied struct path was obtained
+> > > from and when, depends on whether the struct path is fully intact or
+> > > not when calling bpf_d_path(). It's certainly possible to call
+> > > bpf_d_path() and subsequently d_path() from contexts where the
+> > > supplied struct path to bpf_d_path() has already started being torn
+> > > down by __fput() and such. An example of this is perfectly illustrated
+> > > in [0].
+> > > 
+> > > Moving forward, we simply cannot enforce KF_TRUSTED_ARGS semantics
+> > > onto struct path of bpf_d_path(), as this approach would presumably
+> > > lead to some pretty wide scale and highly undesirable BPF program
+> > > breakage. To avoid breaking any pre-existing BPF program that is
+> > > dependent on bpf_d_path(), I propose that we take a different path and
+> > > re-implement an incredibly minimalistic and bare bone version of
+> > > d_path() which is entirely backed by kernel probe-read semantics. IOW,
+> > > a version of d_path() that is backed by
+> > > copy_from_kernel_nofault(). This ensures that any reads performed
+> > > against the supplied struct path to bpf_d_path() which may end up
+> > > faulting for whatever reason end up being gracefully handled and fixed
+> > > up.
+> > > 
+> > > The caveats with such an approach is that we can't fully uphold all of
+> > > d_path()'s path resolution capabilities. Resolving a path which is
+> > > comprised of a dentry that make use of dynamic names via isn't
+> > > possible as we can't enforce probe-read semantics onto indirect
+> > > function calls performed via d_op as they're implementation
+> > > dependent. For such cases, we just return -EOPNOTSUPP. This might be a
+> > > little surprising to some users, especially those that are interested
+> > > in resolving paths that involve a dentry that resides on some
+> > > non-mountable pseudo-filesystem, being pipefs/sockfs/nsfs, but it's
+> > > arguably better than enforcing KF_TRUSTED_ARGS onto bpf_d_path() and
+> > > causing an unnecessary shemozzle for users. Additionally, we don't
+> > 
+> > NAK. We're not going to add a semi-functional reimplementation of
+> > d_path() for bpf. This relied on VFS internals and guarantees that were
+> > never given. Restrict it to KF_TRUSTED_ARGS as it was suggested when
+> > this originally came up or fix it another way. But we're not adding a
+> > bunch of kfuncs to even more sensitive VFS machinery and then build a
+> > d_path() clone just so we can retroactively justify broken behavior.
+> 
+> OK, I agree, having a semi-functional re-implementation of d_path() is
+> indeed suboptimal. However, also understand that slapping the
 
-Ensure struct_ops rejects the registration of struct_ops types without
-proper CFI stub functions.
+The ugliness of the duplicated code made me start my mail with NAK. It
+would've been enough to just say no.
 
-bpf_test_no_cfi.ko is a module that attempts to register a struct_ops type
-called "bpf_test_no_cfi_ops" with varying levels of cfi_stubs. It starts
-with a NULL cfi_stub and ends with a fully complete cfi_stub. Only the
-fully complete cfi_stub should be accepted by struct_ops. The module can
-only be loaded successfully if these registrations yield the expected
-results.
+> KF_TRUSTED_ARGS constraint onto the pre-existing BPF helper
+> bpf_d_path() would outright break a lot of BPF programs out there, so
+> I can't see how taht would be an acceptable approach moving forward
+> here either.
+> 
+> Let's say that we decided to leave the pre-existing bpf_d_path()
+> implementation as is, accepting that it is fundamentally succeptible
+> to memory corruption issues, are you saying that you're also not for
+> adding the KF_TRUSTED_ARGS d_path() variant as I've done so here
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- tools/testing/selftests/bpf/Makefile          | 10 +-
- .../selftests/bpf/bpf_test_no_cfi/Makefile    | 19 ++++
- .../bpf/bpf_test_no_cfi/bpf_test_no_cfi.c     | 93 +++++++++++++++++++
- .../bpf/prog_tests/test_struct_ops_no_cfi.c   | 38 ++++++++
- tools/testing/selftests/bpf/testing_helpers.c |  4 +-
- tools/testing/selftests/bpf/testing_helpers.h |  2 +
- 6 files changed, 163 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
- create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
+No, that's fine and was the initial proposal anyway. You're already
+using the existing d_path() anway in that bpf_d_path() thing. So
+exposing another variant with KF_TRUSTED_ARGS restriction is fine. But
+not hacking up a custom d_path() variant.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index dbb8c5f94f34..c219da5e60e6 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -132,7 +132,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
- 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
--	xdp_features
-+	xdp_features bpf_test_no_cfi.ko
- 
- TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi
- 
-@@ -254,6 +254,12 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_testmo
- 	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_testmod
- 	$(Q)cp bpf_testmod/bpf_testmod.ko $@
- 
-+$(OUTPUT)/bpf_test_no_cfi.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_test_no_cfi/Makefile bpf_test_no_cfi/*.[ch])
-+	$(call msg,MOD,,$@)
-+	$(Q)$(RM) bpf_test_no_cfi/bpf_test_no_cfi.ko # force re-compilation
-+	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_test_no_cfi
-+	$(Q)cp bpf_test_no_cfi/bpf_test_no_cfi.ko $@
-+
- DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
- ifneq ($(CROSS_COMPILE),)
- CROSS_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
-@@ -628,6 +634,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
- 			 flow_dissector_load.h	\
- 			 ip_check_defrag_frags.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
-+		       $(OUTPUT)/bpf_test_no_cfi.ko			\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
- 		       $(OUTPUT)/sign-file				\
-@@ -756,6 +763,7 @@ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	feature bpftool							\
- 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
- 			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
-+			       bpf_test_no_cfi.ko			\
- 			       liburandom_read.so)
- 
- .PHONY: docs docs-clean
-diff --git a/tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile b/tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
-new file mode 100644
-index 000000000000..ed5143b79edf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
-@@ -0,0 +1,19 @@
-+BPF_TEST_NO_CFI_DIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-+KDIR ?= $(abspath $(BPF_TEST_NO_CFI_DIR)/../../../../..)
-+
-+ifeq ($(V),1)
-+Q =
-+else
-+Q = @
-+endif
-+
-+MODULES = bpf_test_no_cfi.ko
-+
-+obj-m += bpf_test_no_cfi.o
-+
-+all:
-+	+$(Q)make -C $(KDIR) M=$(BPF_TEST_NO_CFI_DIR) modules
-+
-+clean:
-+	+$(Q)make -C $(KDIR) M=$(BPF_TEST_NO_CFI_DIR) clean
-+
-diff --git a/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c b/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-new file mode 100644
-index 000000000000..0fb63feecb31
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+
-+struct bpf_test_no_cfi_ops {
-+	void (*fn_1)(void);
-+	void (*fn_2)(void);
-+};
-+
-+static int dummy_init(struct btf *btf)
-+{
-+	return 0;
-+}
-+
-+static int dummy_init_member(const struct btf_type *t,
-+			     const struct btf_member *member,
-+			     void *kdata, const void *udata)
-+{
-+	return 0;
-+}
-+
-+static int dummy_reg(void *kdata)
-+{
-+	return 0;
-+}
-+
-+static void dummy_unreg(void *kdata)
-+{
-+}
-+
-+static const struct bpf_verifier_ops dummy_verifier_ops;
-+
-+static void bpf_test_no_cfi_ops__fn_1(void)
-+{
-+}
-+
-+static void bpf_test_no_cfi_ops__fn_2(void)
-+{
-+}
-+
-+static struct bpf_test_no_cfi_ops __bpf_test_no_cfi_ops;
-+
-+static struct bpf_struct_ops bpf_bpf_test_no_cif_ops = {
-+	.verifier_ops = &dummy_verifier_ops,
-+	.init = dummy_init,
-+	.init_member = dummy_init_member,
-+	.reg = dummy_reg,
-+	.unreg = dummy_unreg,
-+	.name = "bpf_test_no_cfi_ops",
-+	.owner = THIS_MODULE,
-+};
-+
-+static int bpf_test_no_cfi_init(void)
-+{
-+	int ret;
-+
-+	ret = register_bpf_struct_ops(&bpf_bpf_test_no_cif_ops,
-+				      bpf_test_no_cfi_ops);
-+	if (!ret)
-+		return -EINVAL;
-+
-+	bpf_bpf_test_no_cif_ops.cfi_stubs = &__bpf_test_no_cfi_ops;
-+	ret = register_bpf_struct_ops(&bpf_bpf_test_no_cif_ops,
-+				      bpf_test_no_cfi_ops);
-+	if (!ret)
-+		return -EINVAL;
-+
-+	__bpf_test_no_cfi_ops.fn_1 = bpf_test_no_cfi_ops__fn_1;
-+	ret = register_bpf_struct_ops(&bpf_bpf_test_no_cif_ops,
-+				      bpf_test_no_cfi_ops);
-+	if (!ret)
-+		return -EINVAL;
-+
-+	__bpf_test_no_cfi_ops.fn_2 = bpf_test_no_cfi_ops__fn_2;
-+	ret = register_bpf_struct_ops(&bpf_bpf_test_no_cif_ops,
-+				      bpf_test_no_cfi_ops);
-+	return ret;
-+}
-+
-+static void bpf_test_no_cfi_exit(void)
-+{
-+}
-+
-+module_init(bpf_test_no_cfi_init);
-+module_exit(bpf_test_no_cfi_exit);
-+
-+MODULE_AUTHOR("Kuifeng Lee");
-+MODULE_DESCRIPTION("BPF no cfi_stubs test module");
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
-new file mode 100644
-index 000000000000..19703e250549
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <testing_helpers.h>
-+
-+static void load_bpf_test_no_cfi(void)
-+{
-+	int fd;
-+	int err;
-+
-+	fd = open("bpf_test_no_cfi.ko", O_RDONLY);
-+	if (!ASSERT_GT(fd, 0, "open")) {
-+		close(fd);
-+		return;
-+	}
-+
-+	/* The module will try to register a struct_ops type with
-+	 * no cfi_stubs, incomplete cfi_stubs, and full cfi_stubs.
-+	 *
-+	 * Only full cfi_stubs should be allowed. The module will be loaded
-+	 * successfully if the result of the registration is as expected,
-+	 * or it fails.
-+	 */
-+	err = finit_module(fd, "", 0);
-+	close(fd);
-+	if (!ASSERT_OK(err, "finit_module"))
-+		return;
-+
-+	err = delete_module("bpf_test_no_cfi", 0);
-+	ASSERT_OK(err, "delete_module");
-+}
-+
-+void test_struct_ops_no_cfi(void)
-+{
-+	if (test__start_subtest("load_bpf_test_no_cfi"))
-+		load_bpf_test_no_cfi();
-+}
-+
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index a59e56d804ee..28b6646662af 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -356,12 +356,12 @@ __u64 read_perf_max_sample_freq(void)
- 	return sample_freq;
- }
- 
--static int finit_module(int fd, const char *param_values, int flags)
-+int finit_module(int fd, const char *param_values, int flags)
- {
- 	return syscall(__NR_finit_module, fd, param_values, flags);
- }
- 
--static int delete_module(const char *name, int flags)
-+int delete_module(const char *name, int flags)
- {
- 	return syscall(__NR_delete_module, name, flags);
- }
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index d14de81727e6..d55f6ab12433 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -36,6 +36,8 @@ __u64 read_perf_max_sample_freq(void);
- int load_bpf_testmod(bool verbose);
- int unload_bpf_testmod(bool verbose);
- int kern_sync_rcu(void);
-+int finit_module(int fd, const char *param_values, int flags);
-+int delete_module(const char *name, int flags);
- 
- static inline __u64 get_time_ns(void)
- {
--- 
-2.34.1
+> [0]. Or, is it the other supporting reference counting based BPF
+> kfuncs [1, 2] that have irked you and aren't supportive of either?
 
+Yes, because you're exposing fs_root, fs_pwd, path_put() and fdput(),
+get_task_exe_file(), get_mm_exe_file(). None of that I see being turned
+into kfuncs.
 
