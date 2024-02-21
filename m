@@ -1,297 +1,224 @@
-Return-Path: <bpf+bounces-22398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CF985D76A
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 12:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 332AD85DB42
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 14:39:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2E001F22F99
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 11:50:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C861F23068
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 13:39:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25ACC45C06;
-	Wed, 21 Feb 2024 11:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7157BB03;
+	Wed, 21 Feb 2024 13:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="IoU5+qWg"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EUHdH049"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B573747A79
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 11:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB377A715
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 13:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708516188; cv=none; b=mtldKKXZSgH9IbDF+I56In8UCjgSTvAfBr27xtRCEhUCsa/cBVRp6UNsb/QLnXDaPDR12is9q6c1jJt06+ptimzaOSBBJc3AMypjZ1LI6FnB2zPmXl9/yH5E3u1z6ubJtzkGFnv5/rvmZgXTRbN8zO0bwe6Nu1LPzMDotn3Ie78=
+	t=1708522724; cv=none; b=hRwtRY7oNYk1KcUuKWQ+LD5213ZpIHriBvKbaw1QyrDronAAQ4xrrctLSk6b3nUa/OOnXNm4k4xQdCVjpkziTmTrk+8QRSHuhXzb4Iz7liz0wepjOEDI16bIFNyJXrk2EgCJyRUbia1+eC9+d39TQer1d2+074kZ2qkeXDaEBRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708516188; c=relaxed/simple;
-	bh=OFJj0MNekxMwz0N3n4bK7VDzgmk7ibORDahCKwIwZxk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UdKDlULh2ML/9MXgp6p7teXA1BUHVeoP8JsBuF5JZBJ0nQ/4l18VxZTuO2KwUD+pfvPAS5oBEIguiCwMoEMrm9YCL6HH6Wsa/uqlf1rITraY099HDcRHFjxPfBzfbHxxgjAiuiRUbuM8kws6jlIR6tc30N26hPO+FDNCJEh2S6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=IoU5+qWg; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d23d301452so5699061fa.1
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 03:49:46 -0800 (PST)
+	s=arc-20240116; t=1708522724; c=relaxed/simple;
+	bh=vjW1tSI2YCOHS9iyo/Q6jkhR2oPIQ63fd/EtDSsExGE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DtKsghwrrlsxrl08mm+Tli3zaWYzHbjAdoJBp0Z7j6Q3yRgWZMoO9hkR3BfLHMqyeI8wgbXT9GRTVEA+QaJty0pWTKlv8fSP1b7rLaOxJ2aK5oAItsNZrp32CDyqWa6R3pV1wN8b4amv6loei0wlHiiMj8MVgkgee+BM87qbMVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EUHdH049; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-564d9b0e96dso2183731a12.2
+        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 05:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1708516185; x=1709120985; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RTOZ8Gs/A4Ar2seHb8g4kjHrVQkMtpxWuSEL8mT4Ehc=;
-        b=IoU5+qWgXaiV1xA4JEXL6iEFRNrkDFm51ubfUIaRfCuplk6gGDe7E3UHWu6zUL6ea+
-         Qh6P1GD1Rd+UamoLsAF6JtYdtb863H8d8IY6of6ZpMGoAC9iqVG58jx2dTiKn7RbA4Hb
-         gWBmEFzBsF3s/R8AUXHi2fqCToFJ8qN6+BS+4tJhS9ex3+68a5f6ClWVxM+Xa8JGcROc
-         Gg/R4H38yklnTNj5l00hHfhHmOrK3PiF2vxHwMUOYKvHOy0PyudWMR4jl+wgoHvYc3RC
-         m/PAXSWAX48yzkGv6avzqcvp8oFBEW3oH/VAUmttaDv4b/sT2ri96QvGlHo55Wt1fqOQ
-         PlDQ==
+        d=google.com; s=20230601; t=1708522720; x=1709127520; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q2ggNhJZ+8gOe2CxqkSn6OtuJ/B/sg2EScFlrM19ZUQ=;
+        b=EUHdH049KeVN6WgJ4+yr2XYDp2ZmAQv8RCAgWJLTexclGwHToLM5HOIQK13S02VxAv
+         yE2645x5FLafJZ9/GT42rcJhiI8wgjaN1RQQT2qxrzV0RwsKpum1BgZ0A+I/bIZB9HHx
+         l02uDkV1WnTmYCths53+k+/K6sp3j/cJQaKxr4nam4BzXGojsg9me+5TMbIxH80yAUut
+         9I8+Qa7cuVkuQ7VR8cBGAB0mCuoAPeVARw5eJmhu/eRhlR6XIU4h6SYAFFL53E8RydLH
+         NrvU7ph+8vSSpib7iVyaXb5XSGSHQSWJOm19h24UBeXmHGQXs2hsN0eeCvKwTz79aUGU
+         kZWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708516185; x=1709120985;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RTOZ8Gs/A4Ar2seHb8g4kjHrVQkMtpxWuSEL8mT4Ehc=;
-        b=ot7sydYQH/9mmwlLsJS9cnP6tXTeFZVJhIlY9u2FTDFVaoIMVXei1wuNETTMjSfbE4
-         daCPCpdFIiBdRXJYnLRosE970tOCI24GEfAHDrIkha3KxIPN95LZN37mA393ND640mau
-         +XhxK1UmpbpYBBrZGdG0NmZwVcK65Y+ZiN/6mupKPwObmpqo7CfOsUT5MfcLiDzeRVy2
-         JTGtNDfEDgqCwC2rMFQneEpHHVrVhHbd3YBoresXGOGgf32bSK/WC4F5OaSc6SLVnMS/
-         OC1gBCfQjpDsF3d0/MqPnmLDtY20KG9QTXriUJ+XNjPjRexancC6hNBuN4kcCntDmCZn
-         LejA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXdnqxH7mmGmYkTa9ycltfMvaT4iwfk9HRYP24lgVoy+s8AmY6Ixg8ZJlIszomob0S8JrDzqHr6UwcJepauulcNAMX
-X-Gm-Message-State: AOJu0Yyv4czAmOlA+p7EWfoT3kkQTekkMgIiyBVXhpEX157C7EDGumN0
-	hEQuEbEJaqvfbZXVCJDdx2axJMLlHeEvrEUvHoB4bS9DLtLl0b6dU39gAvUjf0s=
-X-Google-Smtp-Source: AGHT+IGl0AHUJll3VsYBeGntq92oC5CoVIt89imtv1ArfUC8R7UaW0Uawh18v9LPC3m2O9Pu5XVCWA==
-X-Received: by 2002:a05:6512:3a7:b0:512:b37f:a9ae with SMTP id v7-20020a05651203a700b00512b37fa9aemr4677166lfp.63.1708516184838;
-        Wed, 21 Feb 2024 03:49:44 -0800 (PST)
-Received: from ?IPV6:2a02:8011:e80c:0:94d:9869:c48b:acac? ([2a02:8011:e80c:0:94d:9869:c48b:acac])
-        by smtp.gmail.com with ESMTPSA id o20-20020a05600c4fd400b00412590eee7csm14945004wmq.10.2024.02.21.03.49.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 03:49:44 -0800 (PST)
-Message-ID: <70fe67f3-4ae2-4866-95d6-e41c908ca300@isovalent.com>
-Date: Wed, 21 Feb 2024 11:49:43 +0000
+        d=1e100.net; s=20230601; t=1708522720; x=1709127520;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q2ggNhJZ+8gOe2CxqkSn6OtuJ/B/sg2EScFlrM19ZUQ=;
+        b=uM/WYf4Xy0/1wjarrvld980YpGa0Mcgv5p1R+K1myJwcIB6Mh1IXbry48EhInihsQt
+         IdXkbDW3cvNZmYM8vSGPMVbn/tE5w8o4HlbIkYtTKybRneAA1sEB6TfWefGquO8nmgNC
+         Os/+bJhU+UFzk+I4UjJHOny9M998gKPcAHd4sC74pWKu1oc44qx/9Wn5s8cExx5LBvU9
+         m9cvM+8OVrV57Faw0jqMmoMkTQV3IqkoZERO+cbmxt3kNyfyEhd4GHsmDqvA9SLv/Y/f
+         UYvBNEU/42GoZhKcPf073WwlddZXxN2iWSP6dcCdZW6OU8tNYDt5yroyZ97Ly1NNq3SN
+         mCEQ==
+X-Gm-Message-State: AOJu0Yw0dUM2jpHFBMlUDZ53Db0Oib02fJHobb6ZnrcwyeKxIX3JHfyZ
+	AFsYFWMIBdHbUHndYuOavrZpifqRt83i73IsSC7uuRjfh9CsRXR7Uu0cxM3uoo/mZBsaKke5LQv
+	pnA==
+X-Google-Smtp-Source: AGHT+IG2aAgbx/tffCu6qXqPL9X4Y2tgaTWtxuY808f8FM/gBhbkj3QLBMbqBXwBbRy7jOcG1N8WIw==
+X-Received: by 2002:a05:6402:649:b0:564:5150:76a2 with SMTP id u9-20020a056402064900b00564515076a2mr6459084edx.4.1708522720465;
+        Wed, 21 Feb 2024 05:38:40 -0800 (PST)
+Received: from google.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
+        by smtp.gmail.com with ESMTPSA id i16-20020a0564020f1000b0056411b3fc4bsm4597347eda.30.2024.02.21.05.38.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 05:38:39 -0800 (PST)
+Date: Wed, 21 Feb 2024 13:38:36 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	kpsingh@google.com, jannh@google.com, jolsa@kernel.org,
+	daniel@iogearbox.net, linux-fsdevel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH bpf-next 01/11] bpf: make bpf_d_path() helper use
+ probe-read semantics
+Message-ID: <ZdX83H7rTEwMYvs2@google.com>
+References: <cover.1708377880.git.mattbobrowski@google.com>
+ <5643840bd57d0c2345635552ae228dfb2ed3428c.1708377880.git.mattbobrowski@google.com>
+ <20240220-erstochen-notwehr-755dbd0a02b3@brauner>
+ <ZdSnhqkO_JbRP5lO@google.com>
+ <20240221-fugen-turmbau-07ec7df36609@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 4/5] bpftool: generated shadow variables for
- struct_ops maps.
-Content-Language: en-GB
-To: thinker.li@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: sinquersw@gmail.com, kuifeng@meta.com
-References: <20240221012329.1387275-1-thinker.li@gmail.com>
- <20240221012329.1387275-5-thinker.li@gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20240221012329.1387275-5-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221-fugen-turmbau-07ec7df36609@brauner>
 
-2024-02-21 01:23 UTC+0000 ~ thinker.li@gmail.com
-> From: Kui-Feng Lee <thinker.li@gmail.com>
+Hey Christian,
+
+On Wed, Feb 21, 2024 at 08:55:25AM +0100, Christian Brauner wrote:
+> On Tue, Feb 20, 2024 at 01:22:14PM +0000, Matt Bobrowski wrote:
+> > On Tue, Feb 20, 2024 at 10:48:10AM +0100, Christian Brauner wrote:
+> > > On Tue, Feb 20, 2024 at 09:27:23AM +0000, Matt Bobrowski wrote:
+> > > > There has now been several reported instances [0, 1, 2] where the
+> > > > usage of the BPF helper bpf_d_path() has led to some form of memory
+> > > > corruption issue.
+> > > > 
+> > > > The fundamental reason behind why we repeatedly see bpf_d_path() being
+> > > > susceptible to such memory corruption issues is because it only
+> > > > enforces ARG_PTR_TO_BTF_ID constraints onto it's struct path
+> > > > argument. This essentially means that it only requires an in-kernel
+> > > > pointer of type struct path to be provided to it. Depending on the
+> > > > underlying context and where the supplied struct path was obtained
+> > > > from and when, depends on whether the struct path is fully intact or
+> > > > not when calling bpf_d_path(). It's certainly possible to call
+> > > > bpf_d_path() and subsequently d_path() from contexts where the
+> > > > supplied struct path to bpf_d_path() has already started being torn
+> > > > down by __fput() and such. An example of this is perfectly illustrated
+> > > > in [0].
+> > > > 
+> > > > Moving forward, we simply cannot enforce KF_TRUSTED_ARGS semantics
+> > > > onto struct path of bpf_d_path(), as this approach would presumably
+> > > > lead to some pretty wide scale and highly undesirable BPF program
+> > > > breakage. To avoid breaking any pre-existing BPF program that is
+> > > > dependent on bpf_d_path(), I propose that we take a different path and
+> > > > re-implement an incredibly minimalistic and bare bone version of
+> > > > d_path() which is entirely backed by kernel probe-read semantics. IOW,
+> > > > a version of d_path() that is backed by
+> > > > copy_from_kernel_nofault(). This ensures that any reads performed
+> > > > against the supplied struct path to bpf_d_path() which may end up
+> > > > faulting for whatever reason end up being gracefully handled and fixed
+> > > > up.
+> > > > 
+> > > > The caveats with such an approach is that we can't fully uphold all of
+> > > > d_path()'s path resolution capabilities. Resolving a path which is
+> > > > comprised of a dentry that make use of dynamic names via isn't
+> > > > possible as we can't enforce probe-read semantics onto indirect
+> > > > function calls performed via d_op as they're implementation
+> > > > dependent. For such cases, we just return -EOPNOTSUPP. This might be a
+> > > > little surprising to some users, especially those that are interested
+> > > > in resolving paths that involve a dentry that resides on some
+> > > > non-mountable pseudo-filesystem, being pipefs/sockfs/nsfs, but it's
+> > > > arguably better than enforcing KF_TRUSTED_ARGS onto bpf_d_path() and
+> > > > causing an unnecessary shemozzle for users. Additionally, we don't
+> > > 
+> > > NAK. We're not going to add a semi-functional reimplementation of
+> > > d_path() for bpf. This relied on VFS internals and guarantees that were
+> > > never given. Restrict it to KF_TRUSTED_ARGS as it was suggested when
+> > > this originally came up or fix it another way. But we're not adding a
+> > > bunch of kfuncs to even more sensitive VFS machinery and then build a
+> > > d_path() clone just so we can retroactively justify broken behavior.
+> > 
+> > OK, I agree, having a semi-functional re-implementation of d_path() is
+> > indeed suboptimal. However, also understand that slapping the
 > 
-> Declares and defines a pointer of the shadow type for each struct_ops map.
+> The ugliness of the duplicated code made me start my mail with NAK. It
+> would've been enough to just say no.
 > 
-> The code generator will create an anonymous struct type as the shadow type
-> for each struct_ops map. The shadow type is translated from the original
-> struct type of the map. The user of the skeleton use pointers of them to
-> access the values of struct_ops maps.
+> > KF_TRUSTED_ARGS constraint onto the pre-existing BPF helper
+> > bpf_d_path() would outright break a lot of BPF programs out there, so
+> > I can't see how taht would be an acceptable approach moving forward
+> > here either.
+> > 
+> > Let's say that we decided to leave the pre-existing bpf_d_path()
+> > implementation as is, accepting that it is fundamentally succeptible
+> > to memory corruption issues, are you saying that you're also not for
+> > adding the KF_TRUSTED_ARGS d_path() variant as I've done so here
 > 
-> However, shadow types only supports certain types of fields, such as scalar
+> No, that's fine and was the initial proposal anyway. You're already
+> using the existing d_path() anway in that bpf_d_path() thing. So
+> exposing another variant with KF_TRUSTED_ARGS restriction is fine. But
+> not hacking up a custom d_path() variant.
 
-Nit: "such as" implies the list may not be exhaustive.
+OK, thank you for clarifying. Perhaps we should just make a remark in
+the form of a comment against bpf_d_path() stating that this BPF
+helper is considered unsafe and users should look to migrate to the
+newly added KF_TRUSTED_ARGS variant if at all possible.
 
-> types and function pointers. Any fields of unsupported types are translated
-> into an array of characters to occupy the space of the original
-> field. Function pointers are translated into pointers of the struct
-> bpf_program. Additionally, padding fields are generated to occupy the space
-> between two consecutive fields.
+> > [0]. Or, is it the other supporting reference counting based BPF
+> > kfuncs [1, 2] that have irked you and aren't supportive of either?
 > 
-> The pointers of shadow types of struct_osp maps are initialized when
-> *__open_opts() in skeletons are called. For a map called FOO, the user can
-> access it through the pointer at skel->struct_ops.FOO.
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->  tools/bpf/bpftool/gen.c | 229 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 228 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index a9334c57e859..20c5d5912df7 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -909,6 +909,201 @@ codegen_progs_skeleton(struct bpf_object *obj, size_t prog_cnt, bool populate_li
->  	}
->  }
->  
-> +static int walk_st_ops_shadow_vars(struct btf *btf,
-> +				   const char *ident,
-> +				   const struct bpf_map *map)
-> +{
-> +	DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts,
-> +			    .indent_level = 3,
-> +			    );
-> +	const struct btf_type *map_type, *member_type;
-> +	__u32 map_type_id, member_type_id;
-> +	__u32 offset, next_offset = 0;
-> +	const struct btf_member *m;
-> +	const char *member_name;
-> +	struct btf_dump *d = NULL;
-> +	int i, err = 0;
-> +	int size, map_size;
-> +
-> +	map_type_id = bpf_map__btf_value_type_id(map);
-> +	if (map_type_id == 0)
-> +		return -EINVAL;
-> +	map_type = btf__type_by_id(btf, map_type_id);
-> +	if (!map_type)
-> +		return -EINVAL;
-> +
-> +	d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
-> +	if (!d)
-> +		return -errno;
-> +
-> +	for (i = 0, m = btf_members(map_type);
-> +	     i < btf_vlen(map_type);
-> +	     i++, m++) {
-> +		member_type = skip_mods_and_typedefs(btf, m->type,
-> +						     &member_type_id);
-> +		if (!member_type) {
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
-> +
-> +		member_name = btf__name_by_offset(btf, m->name_off);
-> +		if (!member_name) {
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
-> +
-> +		offset = m->offset / 8;
-> +		if (next_offset != offset) {
-> +			printf("\t\t\tchar __padding_%d[%d];\n",
-> +			       i - 1, offset - next_offset);
-> +		}
-> +
-> +		switch (btf_kind(member_type)) {
-> +		case BTF_KIND_INT:
-> +		case BTF_KIND_FLOAT:
-> +		case BTF_KIND_ENUM:
-> +		case BTF_KIND_ENUM64:
-> +			/* scalar type */
-> +			printf("\t\t\t");
-> +			opts.field_name = member_name;
-> +			err = btf_dump__emit_type_decl(d, member_type_id,
-> +						       &opts);
-> +			if (err)
-> +				goto out;
-> +			printf(";\n");
-> +
-> +			size = btf__resolve_size(btf, member_type_id);
-> +			if (size < 0) {
-> +				err = size;
-> +				goto out;
-> +			}
-> +
-> +			next_offset = offset + size;
-> +			break;
-> +
-> +		case BTF_KIND_PTR:
-> +			if (resolve_func_ptr(btf, m->type, NULL)) {
-> +				/* Function pointer */
-> +				printf("\t\t\tconst struct bpf_program *%s;\n",
-> +				       member_name);
-> +
-> +				next_offset = offset + sizeof(void *);
-> +				break;
-> +			}
-> +			fallthrough;
+> Yes, because you're exposing fs_root, fs_pwd, path_put() and fdput(),
+> get_task_exe_file(), get_mm_exe_file(). None of that I see being turned
+> into kfuncs.
 
-I wouldn't mind a comment about the "fallthrough;" to state explicitly
-that only function pointers are supported for now.
+Hm, OK, but do know that BPF kfuncs do not make any promises around
+being a stable interface, they never have and never will. Therefore,
+it's not like introducing this kind of dependency on such APIs from
+BPF kfuncs would hinder you from fundamentally modifying them moving
+forward?
 
-> +
-> +		default:
-> +			/* Unsupported types
-> +			 *
-> +			 * For unsupported types, we have to generate
-> +			 * definitions for them in order to support
-> +			 * them. For example, we need to generate a
-> +			 * definition for a struct type or a union type. It
-> +			 * may cause type conflicts without renaming since
-> +			 * the same type may be defined for several
-> +			 * skeletons, and the user may include these
-> +			 * skeletons in the same compile unit.
-> +			 */
+Additionally, given that these new acquire/release based BPF kfuncs
+which rely on APIs like get_fs_root() and path_put() are in fact
+restricted to BPF LSM programs, usage of such BPF kfuncs from the
+context of a BPF LSM program would rather be analogous to a
+pre-existing LSM module calling get_fs_root() and path_put()
+explicitly within one of its implemented hooks, no? IOW, once a BPF
+LSM program is loaded and JITed, what's the fundamental difference
+between a baked in LSM module hook implementation which calls
+get_fs_root() and a BPF LSM program which calls
+bpf_get_task_fs_root()?  They're both being used in a perfectly
+reasonable and sane like-for-like context, so what's the issue with
+exposing such APIs as BPF kfuncs if they're being used appropriately?
+It really doesn't make sense to provide independent reference counting
+implementations just for BPF if there's some pre-existing
+infrastructure in the kernel that does it the right way.
 
-This comment could be clearer. "For unsupported types, we have to
-generate definitions for them in order to support them". So do we, or do
-we not support them? "It may cause type conflicts [...]" -> do we
-address these?
+Also note that without such new reference counting BPF kfuncs which
+I've proposed within this patch series the KF_TRUSTED_ARGS variant of
+bpf_d_path() that we've agreed on becomes somewhat difficult to use in
+practice. It'd essentially only be usable from LSM hooks that pass in
+a struct path via the context parameter. Whilst in reality, it's
+considered rather typical to also pass a struct path like
+&current->mm->exe_file->f_path and &current->fs->pwd to bpf_d_path()
+and friends from within the the implementation of an LSM hook. Such
+struct path objects nested some levels deep isn't considered as being
+trusted and therefore cannot be passed to a BPF kfunc that enforces
+the KF_TRUSTED_ARGS constraint. The only way to acquire trust on a
+pointer after performing such a struct walk is by grabbing a reference
+on it, and hence why this KF_TRUSTED_ARGS change to d_path() and these
+new BPF kfuncs go hand in hand.
 
-My understanding is that this note describes the work to do if we want
-to add support in the future, and this could perhaps be more explicit:
-"We do not support other types yet. The reason is that ... But when we
-generate definitions, we will have to take care of type conflicts
-because ...". What do you think?
+Apologies about all the questions and comments here, but I'm really
+just trying to understand why there's so much push back with regards
+adding these reference counting BPF kfuncs?
 
-> +			if (i == btf_vlen(map_type) - 1) {
-> +				map_size = btf__resolve_size(btf, map_type_id);
-> +				if (map_size < 0)
-> +					return -EINVAL;
-> +				size = map_size - offset;
-> +			} else {
-> +				size = (m[1].offset - m->offset) / 8;
-> +			}
-> +
-> +			printf("\t\t\tchar __padding_%d[%d];\n", i, size);
-> +
-> +			next_offset = offset + size;
-> +			break;
-> +		}
-> +	}
-> +
-> +out:
-> +	btf_dump__free(d);
-> +
-> +	return err;
-> +}
-> +
-> +/* Generate the pointer of the shadow type for a struct_ops map.
-> + *
-> + * This function adds a pointer of the shadow type for a struct_ops map.
-> + * The members of a struct_ops map can be exported through a pointer to a
-> + * shadow type. The user can access these members through the pointer.
-> + *
-> + * A shadow type includes not all members, only members of some types.
-> + * They are scalar types and function pointers. The function pointers are
-> + * translated to the pointer of the struct bpf_program. The scalar types
-> + * are translated to the original type without any modifiers.
-> + *
-> + * Unsupported types will be translated to a char array to take the same
-> + * space of the original field. However, due to handling padding and
-> + * alignments, the user should not access them directly.
-
-What's the risk, and how should users know?
-
-> + */
-
-[...]
-
-Thanks for this work! The bpftool changes look good. I've got these few
-observations above, but notwithstanding:
-
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-
-I wonder, did you think of adding a paragraph or an example to the man
-page for "bpftool gen"? Your change is for a specific use case, but
-otherwise I'm not sure how users will ever know that these shadow types
-are available (other than discovering them by luck in a skeleton) or how
-to use them if they need to.
-
-Thanks,
-Quentin
+/M
 
