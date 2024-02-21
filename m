@@ -1,177 +1,198 @@
-Return-Path: <bpf+bounces-22473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1D7485EC9F
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 00:18:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02D1E85ED0E
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 00:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79920283AD1
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 23:18:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 266D01C22850
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 23:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137143EA8E;
-	Wed, 21 Feb 2024 23:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F65126F37;
+	Wed, 21 Feb 2024 23:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="hJpAh9zT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RHt6CT4D"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6962286632;
-	Wed, 21 Feb 2024 23:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1465F1E485
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 23:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708557514; cv=none; b=mxSY7fo24sW8Yz68AK/irfTLowMDvnvp2bTDavjarnDCNdQir0VV6ddg4ellsZKVpbfcPo8N+JcADA5r0+bmdCG05cefpftKX+jgYUaaNCrte/qkd0Fgb5j0Dft7B16Bo2KNX9uDOyf3nokkjRKDH0NkFi3OI2c8UHlsJ87Bfn8=
+	t=1708558460; cv=none; b=qvMw8n4Hi0WVulSxI/090WIVB8RYqOVZahn0a8QfjQ/ot63gyw7OCrO7vaJJnIMguw4tj1yzUuBbA/7oGu3+ekMe5YdBkqiWz0bU25lu282JWluw2d0jb6GkgGkH5KBqJul+ga/PF9SHGUUIUG+NQLKncQmKGM0VLc5i3ehecbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708557514; c=relaxed/simple;
-	bh=UDcGzGul9Icnjvt6qd6RLlmCUaupBeENA5OE/+plvLg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OBaolTfh7UWy7FkRAugDIV5eBTVhmjQCwVZJym4IzVrPOun1Se/AXpHzmhVL0sKc/OzXz/pd55uIPs6MGjYNx+Q3WDYgy3FIrKqBV4jW+ma0YriccI9emSi2Qe1R1ekfaGjBN24V7xjOFMPaaFbG394hG+4JmQpPrMP0sXAPHzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=hJpAh9zT; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=25B2YKkUbc7F6L5A9NU1leqoK1R6wInGRQ6Y4kq6IO4=; b=hJpAh9zTcKKj8xWLIcQE0guUHx
-	TvOhf4E/z2863QluDWoBzPXksYeC/yKS5/uy20d3EpQkX4C9Pshcwqfl4LGSPA/FzrAVTWgjOjUtC
-	g/JVTL2SMI0pu4+H4vAR05rWDDoHVfTT/rCbv1EM7nuf0M8UFvlnfILGwLniiJzzR23GnL8A1JA53
-	alouzgOMqy8cXa0Erf2cmZbZNbyA2lGe/qR0paETlzsrl1+DlOEiZZt0SV9RSsctByNKPTPJhu+U8
-	sMl4X0AHnppmHjs4us+ed4ZLiKFlz/Y8ZQem6aWGxth7N/VMMCQ77oVwcSF+Jr2iQ6Lkz97uV/wZZ
-	k6sHrSCw==;
-Received: from 13.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.13] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcvr9-00035I-BR; Thu, 22 Feb 2024 00:18:27 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf 2024-02-22
-Date: Thu, 22 Feb 2024 00:18:26 +0100
-Message-Id: <20240221231826.1404-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	s=arc-20240116; t=1708558460; c=relaxed/simple;
+	bh=Ytw/aZue3qNJwidoA07bHxITlQ0KC8w/Zs2Km2wyYhM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CVha2Vz3ADeLTG17CoO3OUA5t8O09vH1dO9Xs7nA/tL1LRjd9FiOPQfDQPT+s8s0/3DRoP9LGaBqBVGjEUOE1N2F7VHe9asiGGmGld0j5aTbJBg1cUPs4jE2a8zfvY6pOyaCkrjtnmXdzTi/j0nX1V39yAcCF1ILew3mUBWXHF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RHt6CT4D; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7ef09893-c990-420d-8e0d-ff7be38c7fa2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708558453;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bYfFKyFA9B+j4MnpKp0xT4MIDgg2Aba0lFMCr5PmaiI=;
+	b=RHt6CT4D8jtTUzwEsNs6q+pjgyUZ5CQs114pQgbbAJyUuTF4A1ANVlY5Eu3j342bxCco/r
+	2FqAqn23pTQUEVfkPNgCYPjj5pC9jz+kQljBozS+6ZoZ6RmiMnWmOOxDeCxWav1UqUyn6I
+	S0e5v+pqjz3hm/BDMcdTINTC4ivPO04=
+Date: Wed, 21 Feb 2024 15:33:58 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2] bpf: clarify batch lookup semantics
+Content-Language: en-GB
+To: Martin Kelly <martin.kelly@crowdstrike.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+References: <20240221211838.1241578-1-martin.kelly@crowdstrike.com>
+ <a382f71d-3677-4545-a4e2-4e93f0ae3864@crowdstrike.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <a382f71d-3677-4545-a4e2-4e93f0ae3864@crowdstrike.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27192/Wed Feb 21 10:23:23 2024)
+X-Migadu-Flow: FLOW_OUT
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
 
-The following pull-request contains BPF updates for your *net* tree.
+On 2/21/24 1:38 PM, Martin Kelly wrote:
+> On 2/21/24 13:18, Martin Kelly wrote:
+>> The batch lookup and lookup_and_delete APIs have two parameters,
+>> in_batch and out_batch, to facilitate iterative
+>> lookup/lookup_and_deletion operations for supported maps. Except NULL
+>> for in_batch at the start of these two batch operations, both parameters
+>> need to point to memory equal or larger than the respective map key
+>> size, except for various hashmaps (hash, percpu_hash, lru_hash,
+>> lru_percpu_hash) where the in_batch/out_batch memory size should be
+>> at least 4 bytes.
+>>
+>> Document these semantics to clarify the API.
+>>
+>> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+>> ---
+>>   include/uapi/linux/bpf.h       |  6 +++++-
+>>   tools/include/uapi/linux/bpf.h |  6 +++++-
+>>   tools/lib/bpf/bpf.h            | 17 ++++++++++++-----
+>>   3 files changed, 22 insertions(+), 7 deletions(-)
+>
+> Yonghong, looks like I missed your comment to change from "clarify 
+> batch lookup semantics" to "Clarify batch lookup/lookup_and_delete 
+> semantics"; sorry about that. Feel free to change it if you merge 
+> this, or I can include it in a v3 if needed.
 
-We've added 11 non-merge commits during the last 24 day(s) which contain
-a total of 15 files changed, 217 insertions(+), 17 deletions(-).
+Ok, LGTM except the subject. I guess it is up to maintainers who will either change the subject
+or asking for another revision if more change is needed. From my part,
 
-The main changes are:
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-1) Fix a syzkaller-triggered oops when attempting to read the vsyscall
-   page through bpf_probe_read_kernel and friends, from Hou Tao.
-
-2) Fix a kernel panic due to uninitialized iter position pointer in
-   bpf_iter_task, from Yafang Shao.
-
-3) Fix a race between bpf_timer_cancel_and_free and bpf_timer_cancel,
-   from Martin KaFai Lau.
-
-4) Fix a xsk warning in skb_add_rx_frag() (under CONFIG_DEBUG_NET)
-   due to incorrect truesize accounting, from Sebastian Andrzej Siewior.
-
-5) Fix a NULL pointer dereference in sk_psock_verdict_data_ready,
-   from Shigeru Yoshida.
-
-6) Fix a resolve_btfids warning when bpf_cpumask symbol cannot be
-   resolved, from Hari Bathini.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-David Vernet, Hou Tao, Jiri Olsa, John Fastabend, Maciej Fijalkowski, 
-Oleg Nesterov, Quentin Monnet, Sohil Mehta, Stanislav Fomichev, Thomas 
-Gleixner, xingwei lee, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 577e4432f3ac810049cb7e6b71f4d96ec7c6e894:
-
-  tcp: add sanity checks to rx zerocopy (2024-01-29 12:07:35 +0000)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-for you to fetch changes up to 4cd12c6065dfcdeba10f49949bffcf383b3952d8:
-
-  bpf, sockmap: Fix NULL pointer dereference in sk_psock_verdict_data_ready() (2024-02-21 17:15:23 +0100)
-
-----------------------------------------------------------------
-bpf-for-netdev
-
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'fix-the-read-of-vsyscall-page-through-bpf'
-
-Gianmarco Lusvardi (1):
-      bpf, scripts: Correct GPL license name
-
-Hari Bathini (1):
-      bpf: Fix warning for bpf_cpumask in verifier
-
-Hou Tao (3):
-      x86/mm: Move is_vsyscall_vaddr() into asm/vsyscall.h
-      x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
-      selftest/bpf: Test the read of vsyscall page under x86-64
-
-Martin KaFai Lau (2):
-      bpf: Fix racing between bpf_timer_cancel_and_free and bpf_timer_cancel
-      selftests/bpf: Test racing between bpf_timer_cancel_and_free and bpf_timer_cancel
-
-Sebastian Andrzej Siewior (1):
-      xsk: Add truesize to skb_add_rx_frag().
-
-Shigeru Yoshida (1):
-      bpf, sockmap: Fix NULL pointer dereference in sk_psock_verdict_data_ready()
-
-Yafang Shao (2):
-      bpf: Fix an issue due to uninitialized bpf_iter_task
-      selftests/bpf: Add negtive test cases for task iter
-
- arch/x86/include/asm/vsyscall.h                    | 10 ++++
- arch/x86/mm/fault.c                                |  9 ----
- arch/x86/mm/maccess.c                              | 10 ++++
- kernel/bpf/helpers.c                               |  5 +-
- kernel/bpf/task_iter.c                             |  2 +
- kernel/bpf/verifier.c                              |  2 +
- net/core/skmsg.c                                   |  7 ++-
- net/xdp/xsk.c                                      |  3 +-
- scripts/bpf_doc.py                                 |  2 +-
- tools/testing/selftests/bpf/prog_tests/iters.c     |  1 +
- .../selftests/bpf/prog_tests/read_vsyscall.c       | 57 ++++++++++++++++++++++
- tools/testing/selftests/bpf/prog_tests/timer.c     | 35 ++++++++++++-
- tools/testing/selftests/bpf/progs/iters_task.c     | 12 ++++-
- tools/testing/selftests/bpf/progs/read_vsyscall.c  | 45 +++++++++++++++++
- tools/testing/selftests/bpf/progs/timer.c          | 34 ++++++++++++-
- 15 files changed, 217 insertions(+), 17 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+>
+>>
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index d96708380e52..d2e6c5fcec01 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -617,7 +617,11 @@ union bpf_iter_link_info {
+>>    *        to NULL to begin the batched operation. After each 
+>> subsequent
+>>    *        **BPF_MAP_LOOKUP_BATCH**, the caller should pass the 
+>> resultant
+>>    *        *out_batch* as the *in_batch* for the next operation to
+>> - *        continue iteration from the current point.
+>> + *        continue iteration from the current point. Both *in_batch* 
+>> and
+>> + *        *out_batch* must point to memory large enough to hold a key,
+>> + *        except for maps of type **BPF_MAP_TYPE_{HASH, PERCPU_HASH,
+>> + *        LRU_HASH, LRU_PERCPU_HASH}**, for which batch parameters
+>> + *        must be at least 4 bytes wide regardless of key size.
+>>    *
+>>    *        The *keys* and *values* are output parameters which must 
+>> point
+>>    *        to memory large enough to hold *count* items based on the 
+>> key
+>> diff --git a/tools/include/uapi/linux/bpf.h 
+>> b/tools/include/uapi/linux/bpf.h
+>> index d96708380e52..d2e6c5fcec01 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -617,7 +617,11 @@ union bpf_iter_link_info {
+>>    *        to NULL to begin the batched operation. After each 
+>> subsequent
+>>    *        **BPF_MAP_LOOKUP_BATCH**, the caller should pass the 
+>> resultant
+>>    *        *out_batch* as the *in_batch* for the next operation to
+>> - *        continue iteration from the current point.
+>> + *        continue iteration from the current point. Both *in_batch* 
+>> and
+>> + *        *out_batch* must point to memory large enough to hold a key,
+>> + *        except for maps of type **BPF_MAP_TYPE_{HASH, PERCPU_HASH,
+>> + *        LRU_HASH, LRU_PERCPU_HASH}**, for which batch parameters
+>> + *        must be at least 4 bytes wide regardless of key size.
+>>    *
+>>    *        The *keys* and *values* are output parameters which must 
+>> point
+>>    *        to memory large enough to hold *count* items based on the 
+>> key
+>> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+>> index ab2570d28aec..df0db2f0cdb7 100644
+>> --- a/tools/lib/bpf/bpf.h
+>> +++ b/tools/lib/bpf/bpf.h
+>> @@ -190,10 +190,14 @@ LIBBPF_API int bpf_map_delete_batch(int fd, 
+>> const void *keys,
+>>   /**
+>>    * @brief **bpf_map_lookup_batch()** allows for batch lookup of BPF 
+>> map elements.
+>>    *
+>> - * The parameter *in_batch* is the address of the first element in 
+>> the batch to read.
+>> - * *out_batch* is an output parameter that should be passed as 
+>> *in_batch* to subsequent
+>> - * calls to **bpf_map_lookup_batch()**. NULL can be passed for 
+>> *in_batch* to indicate
+>> - * that the batched lookup starts from the beginning of the map.
+>> + * The parameter *in_batch* is the address of the first element in 
+>> the batch to
+>> + * read. *out_batch* is an output parameter that should be passed as 
+>> *in_batch*
+>> + * to subsequent calls to **bpf_map_lookup_batch()**. NULL can be 
+>> passed for
+>> + * *in_batch* to indicate that the batched lookup starts from the 
+>> beginning of
+>> + * the map. Both *in_batch* and *out_batch* must point to memory 
+>> large enough to
+>> + * hold a single key, except for maps of type **BPF_MAP_TYPE_{HASH, 
+>> PERCPU_HASH,
+>> + * LRU_HASH, LRU_PERCPU_HASH}**, for which the memory size must be at
+>> + * least 4 bytes wide regardless of key size.
+>>    *
+>>    * The *keys* and *values* are output parameters which must point 
+>> to memory large enough to
+>>    * hold *count* items based on the key and value size of the map 
+>> *map_fd*. The *keys*
+>> @@ -226,7 +230,10 @@ LIBBPF_API int bpf_map_lookup_batch(int fd, void 
+>> *in_batch, void *out_batch,
+>>    *
+>>    * @param fd BPF map file descriptor
+>>    * @param in_batch address of the first element in batch to read, 
+>> can pass NULL to
+>> - * get address of the first element in *out_batch*
+>> + * get address of the first element in *out_batch*. If not NULL, 
+>> must be large
+>> + * enough to hold a key. For **BPF_MAP_TYPE_{HASH, PERCPU_HASH, 
+>> LRU_HASH,
+>> + * LRU_PERCPU_HASH}**, the memory size must be at least 4 bytes wide 
+>> regardless
+>> + * of key size.
+>>    * @param out_batch output parameter that should be passed to next 
+>> call as *in_batch*
+>>    * @param keys pointer to an array of *count* keys
+>>    * @param values pointer to an array large enough for *count* values
 
