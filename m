@@ -1,251 +1,147 @@
-Return-Path: <bpf+bounces-22457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5779885E718
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 20:17:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D08085E946
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 21:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BAA428A4B9
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 19:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9753C1C21F43
+	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 20:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB4C85C51;
-	Wed, 21 Feb 2024 19:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="J65vDEqq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="uu/0l9M6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="JVyKFSg5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9C086642;
+	Wed, 21 Feb 2024 20:55:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21068592D
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 19:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FE739FCC
+	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 20:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708543057; cv=none; b=j23lXSDh6tzEl+Hd6FURh7MQratU9aavjFv2Gi3aLMb0MiYPynqOjelT03DyLuCookUMmR6q0YTW6BCdvsc1dW6CfOcwL7BlLhImGVmaKhwQzQ86b8mcS/w9kjaVp0nGi7uGeoEA6ZMK4eGutvr2ZPr4YjOpbm1BhksWFJKfTus=
+	t=1708548925; cv=none; b=PIWRb388ro+rDSKBGrLFoas30zvkbqDey53Lh953LXyNukHLeDJYPtJcpd6xbXXhNs/1FN0iIeJvv7weO4Hyt2yk5iUdu1L/kfapMN7NyLjKBjUuPmaoCVz89vsiBagENe9Tm4qguXJDQ+usxuzj0ZT08wZTVK4BPfZGKhWdxg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708543057; c=relaxed/simple;
-	bh=K3rKCjiBOXotqm9J/WUhgsaV9DP2FxPu+sJSJ3/vu0Y=;
-	h=To:Cc:Date:Message-Id:MIME-Version:Subject:Content-Type:From; b=fk+HunvZTv/5r+0+RmEmt2x1haq2nPO1/Jjs2F9E6/dO7HKoL0mLUeeE5zeNBc9z3YrFDKu8IeHMTpmGOwupD63yfOTnUdbFUIZg9YTJO/zNFQpcbMJ8ifLnAahuevb61hrSHqCU6cltcK1+ijjLdITf+0WyEPATYQ4HO8GJ4sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=J65vDEqq; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=uu/0l9M6 reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=JVyKFSg5 reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 576E4C1519A8
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 11:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1708543055; bh=K3rKCjiBOXotqm9J/WUhgsaV9DP2FxPu+sJSJ3/vu0Y=;
-	h=To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=J65vDEqqdPiwjf9TxIGCHsWvobwRRwkae6t6U8WqYZ1lkhL88Y6GXexAT7LiKrppc
-	 cBqLP5/BJ9M5Q/Fnt7Y/s4PHMObwGRzOGIngblQ9dflPM/3oNFha7RnC+vapB2WKYW
-	 9CFG6gshW2EvrsbhM4k/O0w/TpKZrcb4E2XzyYXA=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id 34F07C14F702;
- Wed, 21 Feb 2024 11:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1708543055; bh=K3rKCjiBOXotqm9J/WUhgsaV9DP2FxPu+sJSJ3/vu0Y=;
- h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
- List-Post:List-Help:List-Subscribe;
- b=uu/0l9M6K2KVG+vxTKUCBmr8/ho5EVIO/EuFpuoHveRlPua+ctxpbhqVdV07MsjQj
- BF6VSYB9klPcKeEz6M5LFIZ3IZaLetLQDf7vuWGwDDnvsm1OpcOb7E6K8nseIAAkU0
- XosAu84I2EfDL+DNKWuq9DbGXN6tIw6wrtECMiA4=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id E72AAC14F702
- for <bpf@ietfa.amsl.com>; Wed, 21 Feb 2024 11:17:33 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.855
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=googlemail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id s_pneo8SpKMf for <bpf@ietfa.amsl.com>;
- Wed, 21 Feb 2024 11:17:29 -0800 (PST)
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
- [IPv6:2607:f8b0:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id D2541C14F616
- for <bpf@ietf.org>; Wed, 21 Feb 2024 11:17:29 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id
- d2e1a72fcca58-6e4560664b5so911811b3a.1
- for <bpf@ietf.org>; Wed, 21 Feb 2024 11:17:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20230601; t=1708543049; x=1709147849; darn=ietf.org;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=+GfbLVCDf+8jb3m/1Q4Xr36f6hEaNOVT6MYMat+StDw=;
- b=JVyKFSg5tIZt1rXdlxYyez2nWd1SjF6/h1+/13wUWalaeXpv9Byt0KokKSyhht26Fz
- ENDBXEpFTpcQzRDd3HMxMscDjMXMEg+0TQ3jvXfpnkQZL0nZVnaQKOMfzVvz2o3noGzC
- VkTiXiooApZP7mStckEXQOTqA2BEFLLZQl8yUl2hwlK/LNEqXyFv66Kr+tpCxFu2Lt7G
- kpp1/H1QOdMIaYVoC0IdTh0TDHJp1wDnk09ODKyHLMxjnjY0CdYy9mPWmEi1+54LFpwJ
- OUZAwczqrru8zq8xZyLno5L4avSNIZZAlnKDJplNA96RoJWOj2vGd4KowuRWMDvWXWit
- cX3Q==
+	s=arc-20240116; t=1708548925; c=relaxed/simple;
+	bh=caKc/CPpM4x3ScSRVkyxc33LEvt4ZNW7IkX4c5n4n9Y=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mXxdb7lyD697seCIztTf/ykoVZUYfX6UpK3IjUH6Nd8FQRo+tCKRAI55YOyekL2IwRetVX1gQhxHQi9m/nw0eoZ1Cay88Tz1RMpbvo8z/N40HT9LGFwiGoqQaP8LTKVfCfb2+XUSpvocy80y4EvIJkFUVRvewZ+VqCaD7I22kvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bfe777fe22so583731839f.3
+        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 12:55:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1708543049; x=1709147849;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=+GfbLVCDf+8jb3m/1Q4Xr36f6hEaNOVT6MYMat+StDw=;
- b=HNlVXeYAFsGtKd/Dmy/kEhOJHb15Rlm3nTpteju45Bo5tpXdkzs3YSE/LogWhpoBV5
- kUfofRP5Za+9ZUZXs5MGSFUQVwFvkYJEiFi9hL4vlpB0uyfDvZSNRzgMVv+UR5vCnd4X
- fF5jtOeW1Kw4H/nbde9hyO8PszO1QDqmxOmvTEBu7LSACM/nMhcHU7CBwDdsCb1h4zC3
- BYIOxo9hksi52LBBvdCms82NiJ+XOvxcsnhHpzeGOlw6/bCkQeY3JxEJK4NAVLzgWwH7
- pOUWXKCp5iub4l1zssO/qv8D6a7m7SfH6arWkk1CikOPti3kxnS9J3nMlQyz9LsXhLMD
- mY/g==
-X-Gm-Message-State: AOJu0YyDG1RNCw8ixHwZnGpwELfhjtP7GViu1+1MoC5MCvpjuihZzXV1
- cWSwB/Uo2dlCnjZy/aLWBObJfyCq66ODInmLcioSKb5FqcEco4NqxmkNdRnxVvg=
-X-Google-Smtp-Source: AGHT+IHkMqJq6GrwZYmU2lgyGwFR0/T6ORBe9qWNwPqAcJbcZp4TanCNfKu6NAVS6lh5yXbBSDES4w==
-X-Received: by 2002:a05:6a21:1693:b0:19e:98b3:a1e with SMTP id
- np19-20020a056a21169300b0019e98b30a1emr21509305pzb.55.1708543049164; 
- Wed, 21 Feb 2024 11:17:29 -0800 (PST)
-Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net.
- [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
- z11-20020a62d10b000000b006e4432027d1sm7856656pfg.142.2024.02.21.11.17.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 21 Feb 2024 11:17:28 -0800 (PST)
-X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
-To: bpf@vger.kernel.org
-Cc: bpf@ietf.org,
-	Dave Thaler <dthaler1968@gmail.com>
-Date: Wed, 21 Feb 2024 11:17:25 -0800
-Message-Id: <20240221191725.17586-1-dthaler1968@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1708548923; x=1709153723;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qtt7yIyV6XwD7hBaKZDpwR3hipJAtiE0FYIHBc4h1jM=;
+        b=ZlytCCM+QFsxk9UmuCNp21WjqjBCnj4dch2akzXhjnWrvp7Od4bpcH1FnXSwOy0NyP
+         jnSaJBgCurHV4NHDP0kfLb3wUhOG1FxFBqUBsxgNh7z8QYvWRAf0IfSpOtA0i7Lew++y
+         CHD+nOUb5IiaHMK7HMFcpQ9cEN9u67XMKyqHWNTQGk0YojbxpC204diHHlWhfBZXfJ6e
+         Rx+JnQ+Hca/8oND0S2OYJ6srDLehvaXkf1GbxmDPexNBp5AY6xg5Ea9HMP/Vl+V6fHKi
+         cr7Fdaq9TJZK0lFoeI+SMSavrtnCO0XyL2IE9btIjwAfzyLkXuQkfxFIni+1RpvkIdMC
+         ajyw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3N29k+A6A/xGxH4JokVrzt9OBHBXkzdJJJTfy7/3pMTs74XMyKBOiEzdrp/GE72fDs0TnaG9IW35Kj+E2hc0k3sLW
+X-Gm-Message-State: AOJu0YzzbS69lOMRYbFB0/4z6P2J9XQPFWz3zixEwssNyVzjW1AUj+TN
+	MZzpOUS/FYvYmyBc9rDXDOKuI9ganvKdjUQ+899CcnVaDwfuEXXnQL0x5wCLxtptzLUP6j4X/HX
+	KGcVvbohCX4KYMadC2ieLkyu2n2QyCwqeVxLmY7o1PVmoloBcTQmMmAk=
+X-Google-Smtp-Source: AGHT+IFjfWHHZS+CgUYJNUaiQuXIriqXVLJFN+VJLxesSIvlRJ1EDKEoQIr4araHddqeZbQgAx1C7OUvBcpBz0UgEp7qjreX/92G
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/JNrxzJiBd09zaqU_pVeQ4s8mqKg>
-Subject: [Bpf] [PATCH bpf-next v4] bpf,
- docs: Add callx instructions in new conformance group
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
-From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+X-Received: by 2002:a05:6638:4905:b0:473:edc2:9589 with SMTP id
+ cx5-20020a056638490500b00473edc29589mr459889jab.3.1708548922907; Wed, 21 Feb
+ 2024 12:55:22 -0800 (PST)
+Date: Wed, 21 Feb 2024 12:55:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a1a6990611ea8b4d@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in bpf_bprintf_prepare
+From: syzbot <syzbot+c2dc95f7d0825a145992@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-* Add a "callx" conformance group
-* Add callx row to table
-* Update helper function to section to be agnostic between BPF_K vs
-  BPF_X
-* Rename "legacy" conformance group to "packet"
+Hello,
 
-Based on mailing list discussion at
-https://mailarchive.ietf.org/arch/msg/bpf/l5tNEgL-Wo7qSEuaGssOl5VChKk/
+syzbot found the following issue on:
 
-Only src=0 is currently listed for callx. Neither clang nor gcc
-use src=1 or src=2, and both use exactly the same semantics for
-src=0 which was agreed between them (Yonghong and Jose). Since src=0
-semantics are agreed upon by both and is already implemented, src=0
-is documented as implemented.
+HEAD commit:    c1ca10ceffbb Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1364db0c180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e3dd779fba027968
+dashboard link: https://syzkaller.appspot.com/bug?extid=c2dc95f7d0825a145992
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-v1->v2: Incorporated feedback from Will Hawkins
+Unfortunately, I don't have any reproducer for this issue yet.
 
-v2->v3: Use "dst" not "imm" field
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/83d019f0ac47/disk-c1ca10ce.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/49e05dd7a23d/vmlinux-c1ca10ce.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/68ec9fa2d33d/bzImage-c1ca10ce.xz
 
-v3->v4: Only use src=0
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c2dc95f7d0825a145992@syzkaller.appspotmail.com
 
-Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+=====================================================
+BUG: KMSAN: uninit-value in bpf_bprintf_prepare+0x20d7/0x23b0 kernel/bpf/helpers.c:904
+ bpf_bprintf_prepare+0x20d7/0x23b0 kernel/bpf/helpers.c:904
+ ____bpf_snprintf kernel/bpf/helpers.c:1060 [inline]
+ bpf_snprintf+0x141/0x360 kernel/bpf/helpers.c:1044
+ ___bpf_prog_run+0x2180/0xdb80 kernel/bpf/core.c:1986
+ __bpf_prog_run288+0xb5/0xe0 kernel/bpf/core.c:2226
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+ bpf_flow_dissect+0x127/0x470 net/core/flow_dissector.c:991
+ bpf_prog_test_run_flow_dissector+0x6f4/0xa20 net/bpf/test_run.c:1359
+ bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
+ __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
+ __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+ __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Local variable stack created at:
+ __bpf_prog_run288+0x45/0xe0 kernel/bpf/core.c:2226
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+ bpf_flow_dissect+0x127/0x470 net/core/flow_dissector.c:991
+
+CPU: 0 PID: 6318 Comm: syz-executor.2 Not tainted 6.8.0-rc4-syzkaller-00331-gc1ca10ceffbb #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
+
+
 ---
- .../bpf/standardization/instruction-set.rst   | 29 ++++++++++++-------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index bdfe0cd0e..a68445899 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -127,7 +127,7 @@ This document defines the following conformance groups:
- * divmul32: includes 32-bit division, multiplication, and modulo instructions.
- * divmul64: includes divmul32, plus 64-bit division, multiplication,
-   and modulo instructions.
--* legacy: deprecated packet access instructions.
-+* packet: deprecated packet access instructions.
- 
- Instruction encoding
- ====================
-@@ -404,9 +404,10 @@ BPF_JSET  0x4    any  PC += offset if dst & src
- BPF_JNE   0x5    any  PC += offset if dst != src
- BPF_JSGT  0x6    any  PC += offset if dst > src        signed
- BPF_JSGE  0x7    any  PC += offset if dst >= src       signed
--BPF_CALL  0x8    0x0  call helper function by address  BPF_JMP | BPF_K only, see `Helper functions`_
-+BPF_CALL  0x8    0x0  call_by_address(imm)             BPF_JMP | BPF_K only
-+BPF_CALL  0x8    0x0  call_by_address(dst)             BPF_JMP | BPF_X only
- BPF_CALL  0x8    0x1  call PC += imm                   BPF_JMP | BPF_K only, see `Program-local functions`_
--BPF_CALL  0x8    0x2  call helper function by BTF ID   BPF_JMP | BPF_K only, see `Helper functions`_
-+BPF_CALL  0x8    0x2  call_by_btfid(imm)               BPF_JMP | BPF_K only
- BPF_EXIT  0x9    0x0  return                           BPF_JMP | BPF_K only
- BPF_JLT   0xa    any  PC += offset if dst < src        unsigned
- BPF_JLE   0xb    any  PC += offset if dst <= src       unsigned
-@@ -414,6 +415,11 @@ BPF_JSLT  0xc    any  PC += offset if dst < src        signed
- BPF_JSLE  0xd    any  PC += offset if dst <= src       signed
- ========  =====  ===  ===============================  =============================================
- 
-+where
-+
-+* call_by_address(value) means to call a helper function by the address specified by 'value' (see `Helper functions`_ for details)
-+* call_by_btfid(value) means to call a helper function by the BTF ID specified by 'value' (see `Helper functions`_ for details)
-+
- The BPF program needs to store the return value into register R0 before doing a
- ``BPF_EXIT``.
- 
-@@ -438,8 +444,9 @@ specified by the 'imm' field. A > 16-bit conditional jump may be
- converted to a < 16-bit conditional jump plus a 32-bit unconditional
- jump.
- 
--All ``BPF_CALL`` and ``BPF_JA`` instructions belong to the
--base32 conformance group.
-+The ``BPF_CALL | BPF_X`` instruction belongs to the callx
-+conformance group.  All other ``BPF_CALL`` instructions and all
-+``BPF_JA`` instructions belong to the base32 conformance group.
- 
- Helper functions
- ~~~~~~~~~~~~~~~~
-@@ -447,13 +454,13 @@ Helper functions
- Helper functions are a concept whereby BPF programs can call into a
- set of function calls exposed by the underlying platform.
- 
--Historically, each helper function was identified by an address
--encoded in the imm field.  The available helper functions may differ
--for each program type, but address values are unique across all program types.
-+Historically, each helper function was identified by an address.
-+The available helper functions may differ for each program type,
-+but address values are unique across all program types.
- 
- Platforms that support the BPF Type Format (BTF) support identifying
--a helper function by a BTF ID encoded in the imm field, where the BTF ID
--identifies the helper name and type.
-+a helper function by a BTF ID, where the BTF ID identifies the helper
-+name and type.
- 
- Program-local functions
- ~~~~~~~~~~~~~~~~~~~~~~~
-@@ -660,4 +667,4 @@ carried over from classic BPF. These instructions used an instruction
- class of BPF_LD, a size modifier of BPF_W, BPF_H, or BPF_B, and a
- mode modifier of BPF_ABS or BPF_IND.  However, these instructions are
- deprecated and should no longer be used.  All legacy packet access
--instructions belong to the "legacy" conformance group.
-+instructions belong to the "packet" conformance group.
--- 
-2.40.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
