@@ -1,173 +1,149 @@
-Return-Path: <bpf+bounces-22480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 983EF85EE79
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 02:12:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35EC385EF01
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 03:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76446B22D9E
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 01:12:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C919B1F22A05
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 02:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65359111AC;
-	Thu, 22 Feb 2024 01:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4639814287;
+	Thu, 22 Feb 2024 02:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ib1RHhFj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IO9Vua84"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5948F45
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 01:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56044F516
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 02:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708564322; cv=none; b=Y9gtQ/pIbuqExpN/p0Knzfa1AO3/YjhaEQL8HoFQytHqIOIVyx6v1WcO51Ac0lAiCwUTyQcklBZGWucjQnwtPVoo24Rhxmhol2rNsjvIxjQFB2nE17uuSH7WHM3tXpsvAceNbywwh67l+B9d6lX+i9q+4hE7b87tENsjlOCvufw=
+	t=1708567871; cv=none; b=Mr+LoPS2hqb/b+EvW+4RCQGe27QptxIiihL7bWD7XLjNSeTxtcUUdqpQrhMX1RON9Ofv8TPdfNQuSixRjDH1OZM+piMQKubf7WghUPxpJHtQ4Ie2OEVKwwf636pM+4g8rTwdprnbkGU3XoquCi9VFNJo3Z1NJs9MI1t2VRni/QU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708564322; c=relaxed/simple;
-	bh=dig9585Q08BWaERKU/d+5ComP4Q9BgvIB0HKFBIv0tg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=sEeeHGNa5GVjpNvzhVMEZEjpFzCcOg012Jqs4rQZx0BwgmPfZwSL0ImYBm9oys6lZ5FS8MqOI53boCzmI+dDdRw6eC4x+pvqWZZnZ1djFf+yJgUX6jYhW9D/eqpcROVKGjXGHJgKPCu5u4Uhj3fWac54W7kx9b+irY9dOGwWGxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ib1RHhFj; arc=none smtp.client-ip=209.85.219.175
+	s=arc-20240116; t=1708567871; c=relaxed/simple;
+	bh=qfJ5Yi7vHvnQYv4pnSBpSupvyc8NfJt2cQl9iKPMBNo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ORqkydqiTJKviMrR4dKGAGDOyMehCpKbKaThj2qPP5nSQgIgqVdnLLk7K0Bfhk89OUg4Er8LkvjDA/8rCHVdFKz+BUAJf9PoBEDAVFAzXRNUd/5IguUXQgAeA+iiN6DtjW68l6X7pzXIz6Ch1/CFyE1sdFB5MVlPYW4Sj5kKcR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IO9Vua84; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso359736276.0
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 17:12:00 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so6920837276.3
+        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 18:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708564319; x=1709169119; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QNsYuef5BgHinC9jVRaLW1wLGgTyYv6V2x1wyOnYDZI=;
-        b=ib1RHhFjRWZM5sm+SxD9dC9ZvpnrxodmTNtixMhNMNKADqi90nKaLCkj/ioMb7kZZX
-         J6RLwqPbTG9SBJ76RSO+izZh9YNewVdFExju15Ok0JJGjGsfNgxIcZdkvgGb48aBsc88
-         3cuuEqfp3+4Wz9v7oYuQNjksLLqrFl10RhAr/HUcQ7XVizdDnb7iu8w5uaCXrKISGjIA
-         bpeiK+w4ZTzDR8jBsO4MuKnZ2GG0tAMn3QjS6TFPHed8MtK0z7nTcEbRgpZcorL0IFB7
-         nZPsneoBoN1PHBSs2eHVm5AybIzl6luwqCiCUKsYNJsPflyCNy/OQLvDjozjWVkq3XRx
-         DhOw==
+        d=gmail.com; s=20230601; t=1708567869; x=1709172669; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZdUp7qQwCKjpmewl4kU92y+BQG+mrQtdN36vyTXtWk0=;
+        b=IO9Vua84uEYFN+GSfPxcpdYHZtxXNLiktPcwCIPnkZpwDaMHqYzHa6DX2mxhY7ocHd
+         ViQN4eaY9iyfgGrogjYYzjZw8AUhMBhEPI2oQYiU2UTmg2Hz/sETl+DZLqHKWL5peqFG
+         tkN7gExPEs4u+zDGI5gl20A5Vqdx09H0fb+QY3X5rR9L9IfNDwE1bIX6zG9AF+XEg8tz
+         WK9co0OMp5L3AvtNhIVawV//U6AlvXMI/axDpz30tAe/R2ue4giZlrc+NjQ2a6U3eJXU
+         x9w4VJIqVp4NwxEQutTZEGm8kg3vUYjpmsF4K98onpWHEP0KTZ9eE9HvIs9nwcVFwOU5
+         pwLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708564319; x=1709169119;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QNsYuef5BgHinC9jVRaLW1wLGgTyYv6V2x1wyOnYDZI=;
-        b=cwRfmABKXwXnMTzlsc6ahleV+gpUJhjT2xjVLe5ndGXbStd0lUmKd6SPdkDeQRI1Rx
-         A1CQPQZGWz9DP29L/TMipjB6a5xnx+cttFroE+jANM+IhYcAW+5Jm0B+E+rtjDBp1iCm
-         EPnZ9qLNOPFJXkdv8arE4JFf00Sm6+/564hGQye1xzEgG2KlROmkb/9UHOtMU13uGpqJ
-         EJ4kjERfeofB/9BgZgUhidWybRj3VpyV+1LZBGVlNl/zLWNj7Dv/G6vktFOL0WCQmRYz
-         9TdvNvlnRg1/Wo/zKiHvgYIoRyXldP2SA6gk9TvSfwKMnj3a/pbsfv55pvouLYaKBTDb
-         l9oA==
-X-Forwarded-Encrypted: i=1; AJvYcCUq5PZpXpJlLGcSuK/xJbn+qHzYphl9cYiRKP9fTdToZK/xrGqgCB7JhKcHyY0g1xnI+qWF6uQLt46giagQrCQD60yN
-X-Gm-Message-State: AOJu0Yx3l2W6RxVajxuP4535m8RxJr5xVzLACHzaur65F0kgvswUckYf
-	X6r7HskuwkPqcXuYqdo2bPDEZf1v7+8Kj5x9G5uF/qBf5Txup12o
-X-Google-Smtp-Source: AGHT+IHM0x4haC1WolnhdDhTo1twGXELSFKOWKyQGwShlj+9/KcWVHegTwGNKqY0DHF2xWAsofIDjw==
-X-Received: by 2002:a25:d507:0:b0:dc7:494e:ff33 with SMTP id r7-20020a25d507000000b00dc7494eff33mr461714ybe.7.1708564319275;
-        Wed, 21 Feb 2024 17:11:59 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:bc3b:b762:a625:955f? ([2600:1700:6cf8:1240:bc3b:b762:a625:955f])
-        by smtp.gmail.com with ESMTPSA id h63-20020a25d042000000b00dc74ac54f5fsm2571731ybg.63.2024.02.21.17.11.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 17:11:58 -0800 (PST)
-Message-ID: <d45c29e9-d772-4f4d-a50e-6e1bcdc3d27b@gmail.com>
-Date: Wed, 21 Feb 2024 17:11:57 -0800
+        d=1e100.net; s=20230601; t=1708567869; x=1709172669;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZdUp7qQwCKjpmewl4kU92y+BQG+mrQtdN36vyTXtWk0=;
+        b=uYfg+dI2/qNYv946SHXji4qxkzhFbWwigNUbCLxlN2c1XNOv4R0iT3iv/2PYyfk8qF
+         jqCcx1c6MA1/5pKRxQEUx9tPZG8nWYvJzXk4t3RW2wnzD5OZyG3OW5Mt/ZYN4ggpVh4F
+         +7iHxmw0nGlMt66Poz8A0oidDoHyCeWC9x+HLk5zXY+wo2E6N6hvRrDWruKKk7PyxSPe
+         IZ796u02mGdsAYOrET3ljEG2C5iISZ7IqVfxKi9BIktjkCiUh3XbOLcZ3AWQTlnp6MP/
+         9wXhrtxZifxz76RfzASvqNL7FCRHlYxaonmOj91fxYbxN1EuQULppll8ss9tv8BxhEc3
+         9WLw==
+X-Gm-Message-State: AOJu0Yz5xol5g1L1Z2Y7NAgjzR9bOHKdBDV1baMNfcp4uiEmLVOlm/P0
+	Av99wGQpjr6ZEkWWRHsH/nSSgwnXB+Y7Ef9w0xeVkGJ6WNYKCiUDtTkwlKdM
+X-Google-Smtp-Source: AGHT+IENr8Wj5OeCO7VvbLdCtA95hBTUVy6hUb2rrdAZ816pfWYTwtB+D8s3P5cM95gFnS2YFkZDfw==
+X-Received: by 2002:a25:ad0d:0:b0:dc7:49e1:2b0e with SMTP id y13-20020a25ad0d000000b00dc749e12b0emr1144346ybi.45.1708567868620;
+        Wed, 21 Feb 2024 18:11:08 -0800 (PST)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:bc3b:b762:a625:955f])
+        by smtp.gmail.com with ESMTPSA id t34-20020a25f622000000b00dc73705ec59sm2613590ybd.0.2024.02.21.18.11.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 18:11:08 -0800 (PST)
+From: thinker.li@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v5 0/2] Check cfi_stubs before registering a struct_ops type.
+Date: Wed, 21 Feb 2024 18:11:03 -0800
+Message-Id: <20240222021105.1180475-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 2/3] bpf: Check cfi_stubs before registering a
- struct_ops type.
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-References: <20240221075213.2071454-1-thinker.li@gmail.com>
- <20240221075213.2071454-3-thinker.li@gmail.com>
- <8e6e79d6-e003-446b-bc36-b6a4500f802b@linux.dev>
- <286d36e1-1d1e-49d3-93d6-d29b402e6009@gmail.com>
-In-Reply-To: <286d36e1-1d1e-49d3-93d6-d29b402e6009@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
+Recently, cfi_stubs were introduced. However, existing struct_ops
+types that are not in the upstream may not be aware of this, resulting
+in kernel crashes. By rejecting struct_ops types that do not provide
+cfi_stubs properly during registration, these crashes can be avoided.
 
-On 2/21/24 15:13, Kui-Feng Lee wrote:
-> 
-> 
-> On 2/21/24 10:25, Martin KaFai Lau wrote:
->> On 2/20/24 11:52 PM, thinker.li@gmail.com wrote:
->>> From: Kui-Feng Lee <thinker.li@gmail.com>
->>>
->>> Recently, cfi_stubs were introduced. However, existing struct_ops types
->>> that are not in the upstream may not be aware of this, resulting in 
->>> kernel
->>> crashes. By rejecting struct_ops types that do not provide cfi_stubs 
->>> during
->>> registration, these crashes can be avoided.
->>>
->>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->>> ---
->>>   kernel/bpf/bpf_struct_ops.c | 17 +++++++++++++++++
->>>   1 file changed, 17 insertions(+)
->>>
->>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->>> index 0d7be97a2411..c1c502caae08 100644
->>> --- a/kernel/bpf/bpf_struct_ops.c
->>> +++ b/kernel/bpf/bpf_struct_ops.c
->>> @@ -302,6 +302,11 @@ int bpf_struct_ops_desc_init(struct 
->>> bpf_struct_ops_desc *st_ops_desc,
->>>       }
->>>       sprintf(value_name, "%s%s", VALUE_PREFIX, st_ops->name);
->>> +    if (!st_ops->cfi_stubs) {
->>> +        pr_warn("struct %s has no cfi_stubs\n", st_ops->name);
->>> +        return -EINVAL;
->>> +    }
->>> +
->>>       type_id = btf_find_by_name_kind(btf, st_ops->name,
->>>                       BTF_KIND_STRUCT);
->>>       if (type_id < 0) {
->>> @@ -339,6 +344,7 @@ int bpf_struct_ops_desc_init(struct 
->>> bpf_struct_ops_desc *st_ops_desc,
->>>       for_each_member(i, t, member) {
->>>           const struct btf_type *func_proto;
->>> +        u32 moff;
->>>           mname = btf_name_by_offset(btf, member->name_off);
->>>           if (!*mname) {
->>> @@ -361,6 +367,17 @@ int bpf_struct_ops_desc_init(struct 
->>> bpf_struct_ops_desc *st_ops_desc,
->>>           if (!func_proto)
->>>               continue;
->>> +        moff = __btf_member_bit_offset(t, member) / 8;
->>> +        err = st_ops->check_member ?
->>> +            st_ops->check_member(t, member, NULL) : 0;
->>
->> I don't think it is necessary to make check_member more complicated by 
->> taking
->> NULL prog. The struct_ops implementer then needs to handle this extra 
->> NULL
->> prog case.
->>
->> Have you thought about Alexei's earlier suggestion in v3 to reuse the 
->> NULL
->> member in cfi_stubs to flag unsupported member and remove the 
->> unsupported_ops[]
->> from bpf_tcp_ca.c?
->>
->> If the verifier can consistently reject loading unsupported bpf prog, 
->> it will
->> not reach the bpf_struct_ops_map_update_elem and then hits the NULL 
->> member
->> in cfi_stubs during map_update_elem.
->>
-> 
-> Ok! I misunderstood previously. I will go this way.
-> 
+---
+Changes from v4:
 
-According to the off-line discussion, the changes for unsupported_ops[]
-should be in a separate patchset. The check of (void
-**)(st_ops->cfi_stubs + moff)) will be removed. Changes of check_member
-should be removed as well.
+ - Remove changes of check_member.
+
+ - Remove checks of the pointers in cfi_stubs[].
+
+Changes from v3:
+
+ - Remove CFI stub function for get_info.
+
+ - Allow passing NULL prog arg to check_member of struct
+   bpf_struct_ops type.
+
+ - Call check_member to determines if a CFI stub function should be
+   defined for an operator.
+
+Changes from v2:
+
+ - Add a stub function for get_info of struct tcp_congestion_ops.
+
+Changes from v1:
+
+ - Check *(void **)(cfi_stubs + moff) to make sure stub functions are
+   provided for every operator.
+
+ - Add a test case to ensure that struct_ops rejects incomplete
+   cfi_stub.
+
+v4: https://lore.kernel.org/all/20240221075213.2071454-1-thinker.li@gmail.com/
+v3: https://lore.kernel.org/all/20240216193434.735874-1-thinker.li@gmail.com/
+v2: https://lore.kernel.org/all/20240216020350.2061373-1-thinker.li@gmail.com/
+v1: https://lore.kernel.org/all/20240215022401.1882010-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (2):
+  bpf: Check cfi_stubs before registering a struct_ops type.
+  selftests/bpf: Test case for lacking CFI stub functions.
+
+ kernel/bpf/bpf_struct_ops.c                   |  5 ++
+ tools/testing/selftests/bpf/Makefile          | 10 ++-
+ .../selftests/bpf/bpf_test_no_cfi/Makefile    | 19 +++++
+ .../bpf/bpf_test_no_cfi/bpf_test_no_cfi.c     | 84 +++++++++++++++++++
+ .../bpf/prog_tests/test_struct_ops_no_cfi.c   | 38 +++++++++
+ tools/testing/selftests/bpf/testing_helpers.c |  4 +-
+ tools/testing/selftests/bpf/testing_helpers.h |  2 +
+ 7 files changed, 159 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
+
+-- 
+2.34.1
 
 
