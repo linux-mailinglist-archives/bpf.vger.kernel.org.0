@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-22535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40AE8605AB
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 23:26:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5583D8605AC
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 23:26:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A5F22840BB
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 22:26:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFF861F250E8
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 22:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993D012D21B;
-	Thu, 22 Feb 2024 22:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AEC137926;
+	Thu, 22 Feb 2024 22:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uj+nZwzY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZpmBon58"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FB913792A
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 22:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFC3137925
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 22:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640796; cv=none; b=SL2Btlva86KHruBI+xSaPm4c9WPjhmr0nbDJHWZhQgbdyJQMB3xuezRavXTLFQYX9emLzDRgnOphUxoWP8UFBNUBKWy5kZeT6qQKsA89y5b5AC195W/uCjB/QxDHjq+mOh1DQcXpsMp9VX4bBr4CGtP/8KxB4VMZrBSsUeNGlNg=
+	t=1708640797; cv=none; b=jdz7udXgru5Ih0cTiSgTGOWNtG9ksDunNWd1rOXrOXQi9zbdbet4ALpQFPPyC5wuFMEfSPZRnHu4ybhmZeMk8C9jYifmsN5czFaB3SqO1WB09gid5XDkn+gfEzMxhnCH4jK39hsQ/9lu/SgERBB5QypCNi3F+cr3vv172zAik0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640796; c=relaxed/simple;
-	bh=xHL0akAEglGOwsUZTmTuC24f6eHkZmXrL9gCcjz+37Y=;
+	s=arc-20240116; t=1708640797; c=relaxed/simple;
+	bh=kY+MSlkBXyBkmnvb+NaTneZsRI1XZ8ED3i+XLagur6U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FKsyKRpG2Hz1muByVu7pMgrbHW/RTAXswCl2LHHXtuqOj5vxgs/hSJwDj1bhkQCbc9KpY3OHG43++zzNIHS24+uHN+ZmmBnTRRsExmWxndQRVXlTICJvIR4lXeXVRBlS0VR0CDRX2DJlqElTzdeI4P45llOySez3JNRcDUZCE2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uj+nZwzY; arc=none smtp.client-ip=209.85.128.177
+	 MIME-Version; b=oa8obt+dMAWUC+lMbg2ltz3v90d6oGrhfdUPhvN2L/TNNz3ttuMmliYecq0AtZdsJ2BYovfXRDS7xQfwYXQ2lCzsMh7maU04JsHlxmnDGqnPd9GUU1CwM24LtNEr/VqpfX58u/+w1vMsyhlWW9b9jHn5eoFqkDPNR5i0B2Tdup4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZpmBon58; arc=none smtp.client-ip=209.85.128.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6083cabc2f9so2766107b3.1
-        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 14:26:34 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-607c5679842so2779987b3.2
+        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 14:26:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708640793; x=1709245593; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708640795; x=1709245595; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GXLAX7ArfBFQiuOv1Px8GCmtaMpXT3tYhEK+eN8KW9Q=;
-        b=Uj+nZwzYZXAmHFKkDOb4isRJz+FaP4H+LwKoVT70IkT2vJkOibwZKsO7zCcmYPFn7I
-         lgjPJcC2teaxAqjMigTyTglWRiW1BU+otTlSBXLONkNSjnIk2uR170cVM8066WrloEYt
-         pTTpfRA++fsO9L77xqjaPchwOZyK39AsEpQ099eT7vBo+1aYaP08R6RWLybFqBVdIGrQ
-         jS+5lRsI694j+pzRX4Dp3+yCs2FGs3itJpaAKY9DaYfb4vkznG+3bMO6RVnXulNp4rF7
-         Q++HX5ESFzq7liL01iD4tgaF22fWmGA9z+BpUjnl45MGMMPf4si5rMIF8qGZ4gDl9d2T
-         KP8w==
+        bh=gvyBlmzvCQZn7YJtlhRv6cuFksnihPgBjQqmVbCumoc=;
+        b=ZpmBon58zK1UX7kbSFOepJ4hs1qja/R8O5L4POFqykg3QH4FJgEVgiNuzj0qQMedme
+         4unVGL5GSrlavi3/4CpK6BQa1ip0eWpVmUkVkibXIwXl0alL6odAX01QbIntxEDmDqP+
+         V/EmAsHKF1DaWYSh3BxHTvqT54PTycWgbBiXL0QE4P2EnsK6Tazf+ifEazPQrQw4dxI+
+         6qDpKuN0GOUBm5hLkSN8HAalXjZGhju0bOJXKQTclnSCSOH16tjFUSurz74J5Gmt6fdi
+         eXd4tVaPFwvh7maOLhD1OkMhtTW3MiZgZSUSytMjH9johUDe5vKhpK7BFWre1uIy3JUe
+         hMPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708640793; x=1709245593;
+        d=1e100.net; s=20230601; t=1708640795; x=1709245595;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GXLAX7ArfBFQiuOv1Px8GCmtaMpXT3tYhEK+eN8KW9Q=;
-        b=uYCH9ffdx2Dcf5fmbktWiwJc85Uw2W0hXkNJkl17hPW6e1IhL3SHERB3govkSfLjTr
-         cu8uvlG0c7ri9dWUiWAjYaebQUV0qUkqVJ74KF5oUfb/UObxT1ro8TW2d8Xc9z/ARk8t
-         FzGLzqzoK6CAP8zUYJ4XeaTnYD9DUqgY0MO7dTt+2zvwnQDpS88qUH2/a7d7Cll550R9
-         6rMXrR8Cxds3SvlMHmjO7nQ7g2Wif9fV3gZFw5m/0MlY7Cj+4WB2pqT6KOTBbe7osTxg
-         nZ/qopi1VfGoAli5C1H+elHN4F1jDr18c/j1U3IYD0ldJCIagvHWQG2kMVINmM/MWqPF
-         uaqA==
-X-Gm-Message-State: AOJu0YyVdsUdPuCqS4fiYIZ3nRZz9UtdA0tY9xrVdK2I5nwcjfGCLHq7
-	1VYYHnfWvioKdUPeY+rgQ2husmYETkKWveXybDFCTm3k/TTlDZzJTSqgHEmg
-X-Google-Smtp-Source: AGHT+IGEW5DbpSO5evf4OlY+ObZqc/2Ezh5WKHYSL7iQIBFfEbH93rppifTdPc7T5b5gK2zD8DKPVw==
-X-Received: by 2002:a0d:e808:0:b0:607:d9f7:e884 with SMTP id r8-20020a0de808000000b00607d9f7e884mr482817ywe.4.1708640793287;
-        Thu, 22 Feb 2024 14:26:33 -0800 (PST)
+        bh=gvyBlmzvCQZn7YJtlhRv6cuFksnihPgBjQqmVbCumoc=;
+        b=WQ71jFwsbRP+qJF32Hg7sFEyhRdEZ9stdeQcydxgFWaNIg7pu305PNlsklZFWVxH/b
+         GrQ7W4lHkoPI1jXXIYUyll3rxr+NqeSbKKbHSTmHy/zAf9hB1+7BXO8Lhh+UChxZbO2h
+         7mKyI+0hxoYRa0G98OzvvN+drbZgcGGnUCbwnwoHn8NSCjSkoXVJ6nNvo1Jfx0BJ8mpN
+         FNKEsz5gTdczsuPAM0xbzqCXqAx5FU+1+IlkaVwEk14pohGVyir3UgZq2CuktDfkNsts
+         4Dol5LTwikC1wySvOii1m3iDRuA4iixElte2dbZnZfWBVmEfYOnqB16OpHVbgIURylTx
+         884A==
+X-Gm-Message-State: AOJu0YzN9n+FQt7uesS9KbnLOsEZuEXlX8qYahLbeyCk/kWjAbej4Imb
+	V4Rqzo2xK3QMHQqVkuG9MSkrlYrK1CEOx9duD/4P8fO1haXp54ewRs29nRf3
+X-Google-Smtp-Source: AGHT+IE+Sv3rh+SRxHSqodb9K1iyCLLxOITK7SP6YoyxECdvH5005eWroJRx2bDsMCAqcHN3YsnM/A==
+X-Received: by 2002:a0d:cb11:0:b0:608:b61c:1a4e with SMTP id n17-20020a0dcb11000000b00608b61c1a4emr207559ywd.15.1708640794528;
+        Thu, 22 Feb 2024 14:26:34 -0800 (PST)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:34d2:7236:710a:117c])
-        by smtp.gmail.com with ESMTPSA id e129-20020a0df587000000b00604a2e45cf2sm3280666ywf.140.2024.02.22.14.26.32
+        by smtp.gmail.com with ESMTPSA id e129-20020a0df587000000b00604a2e45cf2sm3280666ywf.140.2024.02.22.14.26.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 14:26:33 -0800 (PST)
+        Thu, 22 Feb 2024 14:26:34 -0800 (PST)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -77,9 +77,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v4 5/6] bpftool: Add an example for struct_ops map and shadow type.
-Date: Thu, 22 Feb 2024 14:26:23 -0800
-Message-Id: <20240222222624.1163754-6-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v4 6/6] selftests/bpf: Test if shadow types work correctly.
+Date: Thu, 22 Feb 2024 14:26:24 -0800
+Message-Id: <20240222222624.1163754-7-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240222222624.1163754-1-thinker.li@gmail.com>
 References: <20240222222624.1163754-1-thinker.li@gmail.com>
@@ -93,122 +93,139 @@ Content-Transfer-Encoding: 8bit
 
 From: Kui-Feng Lee <thinker.li@gmail.com>
 
-The example in bpftool-gen.8 explains how to use the pointer of the shadow
-type to change the value of a field of a struct_ops map.
+Change the values of fields, including scalar types and function pointers,
+and check if the struct_ops map works as expected.
+
+The test changes the field "test_2" of "testmod_1" from the pointer to
+test_2() to pointer to test_3() and the field "data" to 13. The function
+test_2() and test_3() both compute a new value for "test_2_result", but in
+different way. By checking the value of "test_2_result", it ensures the
+struct_ops map works as expected with changes through shadow types.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- .../bpf/bpftool/Documentation/bpftool-gen.rst | 58 +++++++++++++++++--
- 1 file changed, 52 insertions(+), 6 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 11 ++++++++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  8 ++++++++
+ .../bpf/prog_tests/test_struct_ops_module.c   | 19 +++++++++++++++----
+ .../selftests/bpf/progs/struct_ops_module.c   |  8 ++++++++
+ 4 files changed, 41 insertions(+), 5 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index 5006e724d1bc..62572f5beed9 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -257,18 +257,48 @@ EXAMPLES
-   	return 0;
-   }
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 66787e99ba1b..098ddd067224 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -539,6 +539,15 @@ static int bpf_testmod_ops_init_member(const struct btf_type *t,
+ 				       const struct btf_member *member,
+ 				       void *kdata, const void *udata)
+ {
++	if (member->offset == offsetof(struct bpf_testmod_ops, data) * 8) {
++		/* For data fields, this function has to copy it and return
++		 * 1 to indicate that the data has been handled by the
++		 * struct_ops type, or the verifier will reject the map if
++		 * the value of the data field is not zero.
++		 */
++		((struct bpf_testmod_ops *)kdata)->data = ((struct bpf_testmod_ops *)udata)->data;
++		return 1;
++	}
+ 	return 0;
+ }
  
--This is example BPF application with two BPF programs and a mix of BPF maps
--and global variables. Source code is split across two source code files.
-+**$ cat example3.bpf.c**
-+
-+::
-+
-+  #include <linux/ptrace.h>
-+  #include <linux/bpf.h>
-+  #include <bpf/bpf_helpers.h>
-+  /* This header file is provided by the bpf_testmod module. */
-+  #include "bpf_testmod.h"
-+
-+  int test_2_result = 0;
-+
-+  /* bpf_Testmod.ko calls this function, passing a "4"
-+   * and testmod_map->data.
-+   */
-+  SEC("struct_ops/test_2")
-+  void BPF_PROG(test_2, int a, int b)
-+  {
-+	test_2_result = a + b;
-+  }
-+
-+  SEC(".struct_ops")
-+  struct bpf_testmod_ops testmod_map = {
-+	.test_2 = (void *)test_2,
-+	.data = 0x1,
-+  };
-+
-+This is example BPF application with three BPF programs and a mix of BPF
-+maps and global variables. Source code is split across three source code
-+files.
+@@ -559,7 +568,7 @@ static int bpf_dummy_reg(void *kdata)
+ 	 * initialized, so we need to check for NULL.
+ 	 */
+ 	if (ops->test_2)
+-		ops->test_2(4, 3);
++		ops->test_2(4, ops->data);
  
- **$ clang --target=bpf -g example1.bpf.c -o example1.bpf.o**
- 
- **$ clang --target=bpf -g example2.bpf.c -o example2.bpf.o**
- 
--**$ bpftool gen object example.bpf.o example1.bpf.o example2.bpf.o**
-+**$ clang --target=bpf -g example3.bpf.c -o example3.bpf.o**
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index c3b0cf788f9f..971458acfac3 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -35,6 +35,14 @@ struct bpf_testmod_ops {
+ 	void (*test_2)(int a, int b);
+ 	/* Used to test nullable arguments. */
+ 	int (*test_maybe_null)(int dummy, struct task_struct *task);
 +
-+**$ bpftool gen object example.bpf.o example1.bpf.o example2.bpf.o example3.bpf.o**
- 
--This set of commands compiles *example1.bpf.c* and *example2.bpf.c*
--individually and then statically links respective object files into the final
--BPF ELF object file *example.bpf.o*.
-+This set of commands compiles *example1.bpf.c*, *example2.bpf.c* and
-+*example3.bpf.c* individually and then statically links respective object
-+files into the final BPF ELF object file *example.bpf.o*.
- 
- **$ bpftool gen skeleton example.bpf.o name example | tee example.skel.h**
- 
-@@ -291,7 +321,15 @@ BPF ELF object file *example.bpf.o*.
-   		struct bpf_map *data;
-   		struct bpf_map *bss;
-   		struct bpf_map *my_map;
-+		struct bpf_map *testmod_map;
-   	} maps;
++	/* The following fields are used to test shadow copies. */
++	char onebyte;
 +	struct {
-+		struct {
-+			const struct bpf_program *test_1;
-+			const struct bpf_program *test_2;
-+			int data;
-+		} *testmod_map;
-+	} struct_ops;
-   	struct {
-   		struct bpf_program *handle_sys_enter;
-   		struct bpf_program *handle_sys_exit;
-@@ -304,6 +342,7 @@ BPF ELF object file *example.bpf.o*.
-   		struct {
-   			int x;
-   		} data;
-+		int test_2_result;
-   	} *bss;
-   	struct example__data {
-   		_Bool global_flag;
-@@ -342,10 +381,16 @@ BPF ELF object file *example.bpf.o*.
++		int a;
++		int b;
++	} unsupported;
++	int data;
+ };
  
-   	skel->rodata->param1 = 128;
+ #endif /* _BPF_TESTMOD_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+index 8d833f0c7580..7d6facf46ebb 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+@@ -32,17 +32,23 @@ static void check_map_info(struct bpf_map_info *info)
  
-+	/* Change the value through the pointer of shadow type */
-+	skel->struct_ops.testmod_map->data = 13;
+ static void test_struct_ops_load(void)
+ {
+-	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+ 	struct struct_ops_module *skel;
+ 	struct bpf_map_info info = {};
+ 	struct bpf_link *link;
+ 	int err;
+ 	u32 len;
+ 
+-	skel = struct_ops_module__open_opts(&opts);
++	skel = struct_ops_module__open();
+ 	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
+ 		return;
+ 
++	skel->struct_ops.testmod_1->data = 13;
++	skel->struct_ops.testmod_1->test_2 = skel->progs.test_3;
++	/* Since test_2() is not being used, it should be disabled from
++	 * auto-loading, or it will fail to load.
++	 */
++	bpf_program__set_autoload(skel->progs.test_2, false);
 +
-   	err = example__load(skel);
-   	if (err)
-   		goto cleanup;
+ 	err = struct_ops_module__load(skel);
+ 	if (!ASSERT_OK(err, "struct_ops_module_load"))
+ 		goto cleanup;
+@@ -56,8 +62,13 @@ static void test_struct_ops_load(void)
+ 	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
+ 	ASSERT_OK_PTR(link, "attach_test_mod_1");
  
-+	/* The result of the function test_2() */
-+	printf("test_2_result: %d\n", skel->bss->test_2_result);
+-	/* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
+-	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
++	/* test_3() will be called from bpf_dummy_reg() in bpf_testmod.c
++	 *
++	 * In bpf_testmod.c it will pass 4 and 13 (the value of data) to
++	 * .test_2.  So, the value of test_2_result should be 20 (4 + 13 +
++	 * 3).
++	 */
++	ASSERT_EQ(skel->bss->test_2_result, 20, "check_shadow_variables");
+ 
+ 	bpf_link__destroy(link);
+ 
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
+index b78746b3cef3..25952fa09348 100644
+--- a/tools/testing/selftests/bpf/progs/struct_ops_module.c
++++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
+@@ -21,9 +21,17 @@ void BPF_PROG(test_2, int a, int b)
+ 	test_2_result = a + b;
+ }
+ 
++SEC("struct_ops/test_3")
++int BPF_PROG(test_3, int a, int b)
++{
++	test_2_result = a + b + 3;
++	return a + b + 3;
++}
 +
-   	err = example__attach(skel);
-   	if (err)
-   		goto cleanup;
-@@ -372,6 +417,7 @@ BPF ELF object file *example.bpf.o*.
+ SEC(".struct_ops.link")
+ struct bpf_testmod_ops testmod_1 = {
+ 	.test_1 = (void *)test_1,
+ 	.test_2 = (void *)test_2,
++	.data = 0x1,
+ };
  
- ::
- 
-+  test_2_result: 17
-   my_map name: my_map
-   sys_enter prog FD: 8
-   my_static_var: 7
 -- 
 2.34.1
 
