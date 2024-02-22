@@ -1,109 +1,151 @@
-Return-Path: <bpf+bounces-22522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9324D86031F
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 20:45:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E4A860343
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 20:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8BC61C236E8
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 19:45:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20A7B282F60
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 19:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DFD6AF94;
-	Thu, 22 Feb 2024 19:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E6F6AFB8;
+	Thu, 22 Feb 2024 19:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DUkJXEdR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ci9Tw2o/"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ACCB548E5
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 19:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9792F6AF8A
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 19:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708631122; cv=none; b=Lqd3dgWzkATBpr3BCWA72dIm+6GBPZaMOP5wOokpMheCNzGFsoBoUwqGTM/vjis4d6hzcCQB6KNxWo4g01X4T6ETK4vVMPoZUoJmVjAz5hYFNtzgeJsqba2q2g/KvFNMEiYv8LAyG4QCG7AF7vIUWMoeXVzrEWcARShapPWTKc8=
+	t=1708631611; cv=none; b=ITltjR7+7Y9yWD9lQ4ICt+HJhLDHd5T0M/hI3MMwXDt25OSIa5yuEJKff9vBA7ATMBt6SXBw1CQfQtz3rKZXdzIjp7GOsiQ52WW3Na+6qImlyQKjRH7SJS0UEiOuh+uAAB/+uBbi86xhMW1QqRwAjWRakaD7EWwLN0FH1JF3Q/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708631122; c=relaxed/simple;
-	bh=oLWpUQzEDg1YWW4cOetAqNAPnhZ9oahsEaWv5ozR+LU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K4ON1ac9wuDl2Rg/I6/JPhviJ2/IYOBoV/wTlCR1/n73/ujuzUalg+06W4dANj8xAtBkejLXCJAjb4DsuB+7oQ78NKQnhdBSscmA9Beh/q+jlrZdGWBg4wL//1Z5H/ysx9LYUeD63nSWFXIuMOY3bhrwKg3nqBHY+p57XxWxc0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DUkJXEdR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708631120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HtS3rO3/k4CHxBCems7dZZwyABPFlcoiWlBHvKoMPuE=;
-	b=DUkJXEdRs6sBn4RPr5yJv9Wwh02RZ1Vq3hq5JgRtQPgNgSbggbI1EYD0mTS/aTWkJdtJcP
-	huht9TfFjwEFXrPIGWYGt8gSjiBckTx+ULttZcNkLXmeYbtL6J7ZHU0E403KC1a9F/kMwB
-	pCmvlSAi7utyTZtPiR3D+okP4KtVdTs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-468-GhSXYrInMH-aBQC-V50clw-1; Thu, 22 Feb 2024 14:45:18 -0500
-X-MC-Unique: GhSXYrInMH-aBQC-V50clw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-410e6b59df4so937985e9.3
-        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 11:45:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708631117; x=1709235917;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1708631611; c=relaxed/simple;
+	bh=v7Lvw1at5ToQVVbfg922jXBVHEWjc2/wWHZvRYkA7rY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fuLok98NcFDq+3ELscUpO+qvnN07IGeObMug4BibtgKac0e+YqB4Q8hGzDjMqmdN/39pGiV/gJYIDPmnF9ZE8WFsSI/9v9U/zM710p1gi23HsCGvyxwu5BtPgCKixGZ3TY1eO6SdN8f/C864ukTjTOYNv9DFp0hApMR48CesR1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ci9Tw2o/; arc=none smtp.client-ip=209.85.221.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-4cb26623dc1so40738e0c.2
+        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 11:53:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708631608; x=1709236408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HtS3rO3/k4CHxBCems7dZZwyABPFlcoiWlBHvKoMPuE=;
-        b=f5eTdhuiXro+0jomaIk5WPA3ADaR6As9Kf/4gnivQkBS5rovrTDg8x27hbUwLVS5c6
-         Q6iHdGq+irIkl9noLNROU4q2O0tzD6ZO2SeeG8ET7v4lMQNgIH+m+vonZbShEvRyWBBn
-         tMNduuB+r1fnhU2ppsADlno2myoROSaEwqCWAzFgh8jNsSHB0m+ikuq70kwlBIXj5v3x
-         k7iIGa5Qnl2M1aPrnjZGNQyIxNutDC7Er+BpMnMlzrRQQ8Rcm6KPbS0xAMksXk9ljnlO
-         JVeKaZ5bNK8ZLCJLb+tnnW9Wt9OcFEx87TqizVMD9pyDg2HgaQaNJi7+/jVvP7MPEJ88
-         PYjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUr0nNGYubH6lo1YDhy90Hy9vSFx+SOMOkqwMmJX1kDW4mi51lBFE5dgnvJJChSk+ERINrnsiwVOnxRqs1c5bpozYzk
-X-Gm-Message-State: AOJu0YwdBfYRLPRswfT58rbov0+37aOaAmo1INj2QWglpAUWQHGPWdZb
-	O6YRj3gd5ruawlPmUHe1NRszOLT0nRM/BHbBZ9+rsDnuyItXHj1iY0hUAYcGwtdK95a07C82TAo
-	Gu7wy/gTKsUyKzp9HXSiuUkVH21W6IM8iLnfffOd3MSIzp2/HNA==
-X-Received: by 2002:a05:600c:502b:b0:412:9064:fd12 with SMTP id n43-20020a05600c502b00b004129064fd12mr133427wmr.26.1708631117009;
-        Thu, 22 Feb 2024 11:45:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGIRLu3qZVKJ5FnK2wvIF3qslAVzVoLbk3KPH5Qa9qhUzWeKOnysKrycrAsYRbxrz39i8PjAQ==
-X-Received: by 2002:a05:600c:502b:b0:412:9064:fd12 with SMTP id n43-20020a05600c502b00b004129064fd12mr133422wmr.26.1708631116744;
-        Thu, 22 Feb 2024 11:45:16 -0800 (PST)
-Received: from redhat.com ([172.93.237.99])
-        by smtp.gmail.com with ESMTPSA id 11-20020a05600c228b00b0041290cd9483sm137666wmf.28.2024.02.22.11.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 11:45:16 -0800 (PST)
-Date: Thu, 22 Feb 2024 14:45:08 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	virtualization@lists.linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 0/5] virtio-net: sq support premapped mode
-Message-ID: <20240222144420-mutt-send-email-mst@kernel.org>
-References: <20240116075924.42798-1-xuanzhuo@linux.alibaba.com>
+        bh=3kozEGOJC/7xLH6aBy/2SvD0c9oKy8kT6TL2kXc3Klg=;
+        b=ci9Tw2o/9nlr0pOl1j90xlI84177T1unyzEQNEBsNbwIZxRYI/+5WnVzDQpPZOK9Jb
+         abU46ojoM/TPpDZ1P/VNK3gD3Fd/9YtZ+W3S3jo2eIopdJGN1vFUJ0vl7UiiW3XOF0kv
+         6/yWvFJuUrtqJDAEjw+8T1dYO5GKIiZJc47Y+vBouikueL2Rj/RJuGeLoDgWjAxobxB1
+         tq/VYTKplCSHztRZ30IsBgPpwL5xLIqreLnbRPTSHHMh7x9XinjowLtNkKafFPJCeluO
+         /jR8zX1y8Kp4VMeCwxaoF+OX/nzrkK1q2szRsYHplIsE0dRU3ZAeamqSstItDVCR6i8k
+         QgkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708631608; x=1709236408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3kozEGOJC/7xLH6aBy/2SvD0c9oKy8kT6TL2kXc3Klg=;
+        b=qzRXegPJ24toYuKomgXoy3EpfmUTVhMjdMQLCrFPmsmU1kn0YNIo4RQlSSomkZmYn2
+         c2gKPYaHqZ2dleIuJL6cQ9Mp8wZuZ4cZDnnpAh7l1tW/vWcocfsFQNdr+4uTSLSNS/tc
+         2/ZjSprORdR+aYrrmwxjn5MNKfXRFvpsO9sZtHg3Mbo4yEB0f87V0Z6GhMzqfR6M7Jjw
+         jZN7IJRLyzXiM+CJYeLMj3GBlpXTAdmu6IRSb0f4ox9idvLabTsycVY+QL2UvOp5JVH7
+         J0z6EFALVr7GpR0JoaAQBARqOwhukcvOXOv3ug/l9XGd0jPo5Jzw8jf5+M4Zzhpy8B/3
+         YfGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUlDEux6AL+kc/cvzZUy2QyqZUN6tUFiLA+9dxLiqC1u1FadVaeJg+92vr5r/gRaKn2bQlb2MXOLH8UqwTfbHtSfzDy
+X-Gm-Message-State: AOJu0Yx9W5+aY69QCqMQX8xizyQesDw8inzuChiHedoA/L6p/M0mZ8xk
+	LooXlvdXziiK78Gl2wOkeGW9HlsTykm9qYyFB91Ojv1bQJsnZKgpm3etjuh41V8iV5WdAVVbLZ7
+	yOQnCzqDFjtdP/Y8O1JH94x8JHMAMSFZVhDyL
+X-Google-Smtp-Source: AGHT+IHd1fOHDrami1l/FXC8S9WReyWr/r16zMqJ++U2IMGyqdRRRkXy54yvZV6zhDuC7vRCY24PZbj2//w/q+ZxR8M=
+X-Received: by 2002:a1f:e782:0:b0:4cd:1430:7834 with SMTP id
+ e124-20020a1fe782000000b004cd14307834mr42201vkh.7.1708631608338; Thu, 22 Feb
+ 2024 11:53:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116075924.42798-1-xuanzhuo@linux.alibaba.com>
+References: <20240222-stmmac_xdp-v1-1-e8d2d2b79ff0@linutronix.de>
+In-Reply-To: <20240222-stmmac_xdp-v1-1-e8d2d2b79ff0@linutronix.de>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Thu, 22 Feb 2024 11:53:14 -0800
+Message-ID: <CAKH8qBsCrYuT+18CsydQ5TeauRzu0Hdz7mZQ2c0W7er0KrJnkg@mail.gmail.com>
+Subject: Re: [PATCH net] net: stmmac: Complete meta data only when enabled
+To: Kurt Kanzenbach <kurt@linutronix.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Song Yoong Siang <yoong.siang.song@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Serge Semin <fancer.lancer@gmail.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, netdev@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 03:59:19PM +0800, Xuan Zhuo wrote:
-> This is the second part of virtio-net support AF_XDP zero copy.
+On Thu, Feb 22, 2024 at 1:45=E2=80=AFAM Kurt Kanzenbach <kurt@linutronix.de=
+> wrote:
+>
+> Currently using XDP/ZC sockets on stmmac results in a kernel crash:
+>
+> |[  255.822584] Unable to handle kernel NULL pointer dereference at virtu=
+al address 0000000000000000
+> |[...]
+> |[  255.822764] Call trace:
+> |[  255.822766]  stmmac_tx_clean.constprop.0+0x848/0xc38
+>
+> The program counter indicates xsk_tx_metadata_complete(). However, this
+> function shouldn't be called unless metadata is actually enabled.
+>
+> Tested on imx93 without XDP, with XDP and with XDP/ZC.
+>
+> Fixes: 1347b419318d ("net: stmmac: Add Tx HWTS support to XDP ZC")
+> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+> Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+> Tested-by: Serge Semin <fancer.lancer@gmail.com>
+> Link: https://lore.kernel.org/netdev/87r0h7wg8u.fsf@kurt.kurt.home/
 
-My understanding is, there's going to be another version of all
-this work?
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
--- 
-MST
+LGTM, thanks!
 
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/=
+net/ethernet/stmicro/stmmac/stmmac_main.c
+> index e80d77bd9f1f..8b77c0952071 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -2672,7 +2672,8 @@ static int stmmac_tx_clean(struct stmmac_priv *priv=
+, int budget, u32 queue,
+>                         }
+>                         if (skb) {
+>                                 stmmac_get_tx_hwtstamp(priv, p, skb);
+> -                       } else {
+> +                       } else if (tx_q->xsk_pool &&
+> +                                  xp_tx_metadata_enabled(tx_q->xsk_pool)=
+) {
+>                                 struct stmmac_xsk_tx_complete tx_compl =
+=3D {
+>                                         .priv =3D priv,
+>                                         .desc =3D p,
+>
+> ---
+> base-commit: 603ead96582d85903baec2d55f021b8dac5c25d2
+> change-id: 20240222-stmmac_xdp-585ebf1680b3
+>
+> Best regards,
+> --
+> Kurt Kanzenbach <kurt@linutronix.de>
+>
 
