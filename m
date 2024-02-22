@@ -1,198 +1,185 @@
-Return-Path: <bpf+bounces-22474-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02D1E85ED0E
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 00:34:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A0F685EE4A
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 01:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 266D01C22850
-	for <lists+bpf@lfdr.de>; Wed, 21 Feb 2024 23:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CE582823E1
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 00:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F65126F37;
-	Wed, 21 Feb 2024 23:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF1510A1D;
+	Thu, 22 Feb 2024 00:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RHt6CT4D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aH8X3vYc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1465F1E485
-	for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 23:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A192528EF
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 00:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708558460; cv=none; b=qvMw8n4Hi0WVulSxI/090WIVB8RYqOVZahn0a8QfjQ/ot63gyw7OCrO7vaJJnIMguw4tj1yzUuBbA/7oGu3+ekMe5YdBkqiWz0bU25lu282JWluw2d0jb6GkgGkH5KBqJul+ga/PF9SHGUUIUG+NQLKncQmKGM0VLc5i3ehecbc=
+	t=1708563028; cv=none; b=n+tmNt0hhF8ynRbmfVyFxPybPW02mbx90JWeBtlFEnTpTyPc6ytb9AfR1A9D4zcuLhY/7ryd7dSndaLYsDPg05gQ4NHPboQwAaFssjuAV6Xj00veHgVIfI06bv4TTi77iXjMcJ3oAjSuq52BB15ryXpwn4SrtA/SiJZShrvHqSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708558460; c=relaxed/simple;
-	bh=Ytw/aZue3qNJwidoA07bHxITlQ0KC8w/Zs2Km2wyYhM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CVha2Vz3ADeLTG17CoO3OUA5t8O09vH1dO9Xs7nA/tL1LRjd9FiOPQfDQPT+s8s0/3DRoP9LGaBqBVGjEUOE1N2F7VHe9asiGGmGld0j5aTbJBg1cUPs4jE2a8zfvY6pOyaCkrjtnmXdzTi/j0nX1V39yAcCF1ILew3mUBWXHF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RHt6CT4D; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7ef09893-c990-420d-8e0d-ff7be38c7fa2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708558453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bYfFKyFA9B+j4MnpKp0xT4MIDgg2Aba0lFMCr5PmaiI=;
-	b=RHt6CT4D8jtTUzwEsNs6q+pjgyUZ5CQs114pQgbbAJyUuTF4A1ANVlY5Eu3j342bxCco/r
-	2FqAqn23pTQUEVfkPNgCYPjj5pC9jz+kQljBozS+6ZoZ6RmiMnWmOOxDeCxWav1UqUyn6I
-	S0e5v+pqjz3hm/BDMcdTINTC4ivPO04=
-Date: Wed, 21 Feb 2024 15:33:58 -0800
+	s=arc-20240116; t=1708563028; c=relaxed/simple;
+	bh=W3jdvn7O+rVSxbGkfeHCXVFg2BMRRfMkyNF5Ijxc190=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GyecNojU54ErBhxrNiZ6KL8Ywmxzi9VHBuCtKgQ4/e6aC2XKl3blRuKO0IFvIvl9T8UGRRoLq0iKPE1YgRdRvnOjSHAwLW5rS9tsmwbbfvstQG/6mxEYbTpPyAHuLBiTQz7bYP8/1OkoilkLtwgVa801F/huI/Po/YO4nDv1xYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aH8X3vYc; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d09cf00214so82509091fa.0
+        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 16:50:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708563024; x=1709167824; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rDhZJJbqKRL4ZBnD3IZkskY16wdnIAQP25dHPAq3bu0=;
+        b=aH8X3vYc9UXtQ/3h0nwctuZ6fs/35B4W2TRNpBVQjiW2/Lk31PCiGwj8s2OE+0Z2Ab
+         LCiVZNyDK53bHn7kvNZ/C3DwyK6WmAPrCHh75YfU4lq0WYMQLO8U8Hi7J7GPicTmOzJ1
+         4wuqnwCqrm5WmD10k7+ZMtCRqTgu3NqQjA55YT55A3fRnW5Bdm/2ZUNJHTjjcg9oAlkH
+         hu39kzru+kbL7kZJXZKXT8aNw/woU3eEPHngZpZzPifQrmpNypVNoAJky3w5oJ/c0YjI
+         cDD6qKENQKbofCvb8XYOPvcf+pCIp4TrOQ5Ick0GlsYlro56RMKUk0tWeQUhi0sb1B0Z
+         959Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708563024; x=1709167824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rDhZJJbqKRL4ZBnD3IZkskY16wdnIAQP25dHPAq3bu0=;
+        b=QNKOxJfHcK2kZdVea5G/CnmtCfNWOKoWihtEeNkZBx2qT0VYnhkRFaYuRGnXp6Qflt
+         z9HlrxCj2yNfiSOM++sONhcW2WpVgzg9G9lRmq7XKOScObMleOM4TNAPRiRj+TV/seX2
+         zrGyj3NnMauXNCek26HzW743e5MnoAhahQ3eyyNXhqtsYycJ9cNjbf1qrj+qKdndApa4
+         XQM/biM4f64B3LkG623shXX/P40HHzJWmmCUlrDrIf2FpI4j6FGSsHfrSfIuwurEDN3l
+         3Bi4OPvmbxBig7MCLbhlSjByzo/DKaB7zf4Ye0wgcmREkEmebG9gQnOVj9c+Ubu7o/fV
+         F67w==
+X-Gm-Message-State: AOJu0YyyoOxNmNwPLEu0uFlqAyO/Ib5937sXcsN1aPUxpovMuSO4OL7a
+	HCYWUdmam10u0X3M7ejajchs8fkbeJ8RV072MipUB8N7lEEgDAjroC2N3xKu
+X-Google-Smtp-Source: AGHT+IHQcCogtH9V2IBwM/FULU7CMxtbZFBlJP/go5KJdS2IYxNFoF/3vp7pC7y9OR9J3nh/BBgSkg==
+X-Received: by 2002:a2e:8290:0:b0:2d2:1fed:8029 with SMTP id y16-20020a2e8290000000b002d21fed8029mr10075495ljg.28.1708563024109;
+        Wed, 21 Feb 2024 16:50:24 -0800 (PST)
+Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id i17-20020a05600c355100b0041279ac13adsm2031992wmq.36.2024.02.21.16.50.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 16:50:23 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	sunhao.th@gmail.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/4] bpf: track find_equal_scalars history on per-instruction level
+Date: Thu, 22 Feb 2024 02:50:01 +0200
+Message-ID: <20240222005005.31784-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] bpf: clarify batch lookup semantics
-Content-Language: en-GB
-To: Martin Kelly <martin.kelly@crowdstrike.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-References: <20240221211838.1241578-1-martin.kelly@crowdstrike.com>
- <a382f71d-3677-4545-a4e2-4e93f0ae3864@crowdstrike.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <a382f71d-3677-4545-a4e2-4e93f0ae3864@crowdstrike.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+This is a fix for precision tracking bug reported in [0].
+It supersedes my previous attempt to fix similar issue in commit [1].
+Here is a minimized test case from [0]:
 
-On 2/21/24 1:38 PM, Martin Kelly wrote:
-> On 2/21/24 13:18, Martin Kelly wrote:
->> The batch lookup and lookup_and_delete APIs have two parameters,
->> in_batch and out_batch, to facilitate iterative
->> lookup/lookup_and_deletion operations for supported maps. Except NULL
->> for in_batch at the start of these two batch operations, both parameters
->> need to point to memory equal or larger than the respective map key
->> size, except for various hashmaps (hash, percpu_hash, lru_hash,
->> lru_percpu_hash) where the in_batch/out_batch memory size should be
->> at least 4 bytes.
->>
->> Document these semantics to clarify the API.
->>
->> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
->> ---
->>   include/uapi/linux/bpf.h       |  6 +++++-
->>   tools/include/uapi/linux/bpf.h |  6 +++++-
->>   tools/lib/bpf/bpf.h            | 17 ++++++++++++-----
->>   3 files changed, 22 insertions(+), 7 deletions(-)
->
-> Yonghong, looks like I missed your comment to change from "clarify 
-> batch lookup semantics" to "Clarify batch lookup/lookup_and_delete 
-> semantics"; sorry about that. Feel free to change it if you merge 
-> this, or I can include it in a v3 if needed.
+    0:  call bpf_get_prandom_u32;
+    1:  r7 = r0;
+    2:  r8 = r0;
+    3:  call bpf_get_prandom_u32;
+    4:  if r0 > 1 goto +0;
+    /* --- checkpoint #1: r7.id=1, r8.id=1 --- */
+    5:  if r8 >= r0 goto 9f;
+    6:  r8 += r8;
+    /* --- checkpoint #2: r7.id=1, r8.id=0 --- */
+    7:  if r7 == 0 goto 9f;
+    8:  r0 /= 0;
+    /* --- checkpoint #3 --- */
+    9:  r0 = 42;
+    10: exit;
 
-Ok, LGTM except the subject. I guess it is up to maintainers who will either change the subject
-or asking for another revision if more change is needed. From my part,
+W/o this fix verifier incorrectly assumes that instruction at label
+(8) is unreachable. The issue is caused by failure to infer
+precision mark for r0 at checkpoint #1:
+- first verification path is:
+  - (0-4): r0 range [0,1];
+  - (5): r8 range [0,0], propagated to r7;
+  - (6): r8.id is reset;
+  - (7): jump is predicted to happen;
+  - (9-10): safe exit.
+- when jump at (7) is predicted mark_chain_precision() for r7 is
+  called and backtrack_insn() proceeds as follows:
+  - at (7) r7 is marked as precise;
+  - at (5) r8 is not currently tracked and thus r0 is not marked;
+  - at (4-5) boundary logic from [1] is triggered and r7,r8 are marked
+    as precise;
+  - => r0 precision mark is missed.
+- when second branch of (4) is considered, verifier prunes the state
+  because r0 is not marked as precise in the visited state.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Basically, backtracking logic fails to notice that at (5)
+range information is gained for both r7 and r8, and thus both
+r8 and r0 have to be marked as precise.
+This happens because [1] can only account for such range
+transfers at parent/child state boundaries.
 
->
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index d96708380e52..d2e6c5fcec01 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -617,7 +617,11 @@ union bpf_iter_link_info {
->>    *        to NULL to begin the batched operation. After each 
->> subsequent
->>    *        **BPF_MAP_LOOKUP_BATCH**, the caller should pass the 
->> resultant
->>    *        *out_batch* as the *in_batch* for the next operation to
->> - *        continue iteration from the current point.
->> + *        continue iteration from the current point. Both *in_batch* 
->> and
->> + *        *out_batch* must point to memory large enough to hold a key,
->> + *        except for maps of type **BPF_MAP_TYPE_{HASH, PERCPU_HASH,
->> + *        LRU_HASH, LRU_PERCPU_HASH}**, for which batch parameters
->> + *        must be at least 4 bytes wide regardless of key size.
->>    *
->>    *        The *keys* and *values* are output parameters which must 
->> point
->>    *        to memory large enough to hold *count* items based on the 
->> key
->> diff --git a/tools/include/uapi/linux/bpf.h 
->> b/tools/include/uapi/linux/bpf.h
->> index d96708380e52..d2e6c5fcec01 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -617,7 +617,11 @@ union bpf_iter_link_info {
->>    *        to NULL to begin the batched operation. After each 
->> subsequent
->>    *        **BPF_MAP_LOOKUP_BATCH**, the caller should pass the 
->> resultant
->>    *        *out_batch* as the *in_batch* for the next operation to
->> - *        continue iteration from the current point.
->> + *        continue iteration from the current point. Both *in_batch* 
->> and
->> + *        *out_batch* must point to memory large enough to hold a key,
->> + *        except for maps of type **BPF_MAP_TYPE_{HASH, PERCPU_HASH,
->> + *        LRU_HASH, LRU_PERCPU_HASH}**, for which batch parameters
->> + *        must be at least 4 bytes wide regardless of key size.
->>    *
->>    *        The *keys* and *values* are output parameters which must 
->> point
->>    *        to memory large enough to hold *count* items based on the 
->> key
->> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
->> index ab2570d28aec..df0db2f0cdb7 100644
->> --- a/tools/lib/bpf/bpf.h
->> +++ b/tools/lib/bpf/bpf.h
->> @@ -190,10 +190,14 @@ LIBBPF_API int bpf_map_delete_batch(int fd, 
->> const void *keys,
->>   /**
->>    * @brief **bpf_map_lookup_batch()** allows for batch lookup of BPF 
->> map elements.
->>    *
->> - * The parameter *in_batch* is the address of the first element in 
->> the batch to read.
->> - * *out_batch* is an output parameter that should be passed as 
->> *in_batch* to subsequent
->> - * calls to **bpf_map_lookup_batch()**. NULL can be passed for 
->> *in_batch* to indicate
->> - * that the batched lookup starts from the beginning of the map.
->> + * The parameter *in_batch* is the address of the first element in 
->> the batch to
->> + * read. *out_batch* is an output parameter that should be passed as 
->> *in_batch*
->> + * to subsequent calls to **bpf_map_lookup_batch()**. NULL can be 
->> passed for
->> + * *in_batch* to indicate that the batched lookup starts from the 
->> beginning of
->> + * the map. Both *in_batch* and *out_batch* must point to memory 
->> large enough to
->> + * hold a single key, except for maps of type **BPF_MAP_TYPE_{HASH, 
->> PERCPU_HASH,
->> + * LRU_HASH, LRU_PERCPU_HASH}**, for which the memory size must be at
->> + * least 4 bytes wide regardless of key size.
->>    *
->>    * The *keys* and *values* are output parameters which must point 
->> to memory large enough to
->>    * hold *count* items based on the key and value size of the map 
->> *map_fd*. The *keys*
->> @@ -226,7 +230,10 @@ LIBBPF_API int bpf_map_lookup_batch(int fd, void 
->> *in_batch, void *out_batch,
->>    *
->>    * @param fd BPF map file descriptor
->>    * @param in_batch address of the first element in batch to read, 
->> can pass NULL to
->> - * get address of the first element in *out_batch*
->> + * get address of the first element in *out_batch*. If not NULL, 
->> must be large
->> + * enough to hold a key. For **BPF_MAP_TYPE_{HASH, PERCPU_HASH, 
->> LRU_HASH,
->> + * LRU_PERCPU_HASH}**, the memory size must be at least 4 bytes wide 
->> regardless
->> + * of key size.
->>    * @param out_batch output parameter that should be passed to next 
->> call as *in_batch*
->>    * @param keys pointer to an array of *count* keys
->>    * @param values pointer to an array large enough for *count* values
+The solution suggested by Andrii Nakryiko in [0] is to use jump
+history to remember which registers gained range as a result of
+find_equal_scalars() and use this information in backtrack_insn().
+Which is what this patch-set does.
+
+The patch-set uses u64 value as a vector of 10-bit values that
+identify registers gaining range in find_equal_scalars().
+This amounts to maximum of 6 possible values.
+To check if such capacity is sufficient I've instrumented kernel
+to track a histogram for maximal amount of registers that gain range
+in find_equal_scalars per program verification [2].
+Measurements done for verifier selftests and Cilium bpf object files
+from [3] show that number of such registers is *always* <= 4 and
+in 98% of cases it is <= 2.
+
+When tested on a subset of selftests identified by
+selftests/bpf/veristat.cfg and Cilium bpf object files from [3]
+this patch-set has minimal verification performance impact:
+
+File                      Program                   Insns    (DIFF)  States (DIFF)
+------------------------  ------------------------  ---------------  -------------
+bpf_host.o                tail_handle_nat_fwd_ipv4     -75 (-0.61%)    -3 (-0.39%)
+pyperf180.bpf.o           on_event                     -24 (-0.02%)    -8 (-0.09%)
+pyperf600_nounroll.bpf.o  on_event                  -11498 (-2.12%)  +551 (+1.64%)
+
+Note:
+  patch #1 is a small refactoring which is not really used by
+  subsequent patches, but it fixes a surprising behavior that I hit
+  while exploring solutions for the issue at hand,
+  thus I decided to keep it.
+
+[0] https://lore.kernel.org/bpf/CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com/
+[1] 904e6ddf4133 ("bpf: Use scalar ids in mark_chain_precision()")
+[2] https://github.com/eddyz87/bpf/tree/find-equal-scalars-in-jump-history-with-stats
+[3] https://github.com/anakryiko/cilium
+
+Eduard Zingerman (4):
+  bpf: replace env->cur_hist_ent with a getter function
+  bpf: track find_equal_scalars history on per-instruction level
+  bpf: remove mark_precise_scalar_ids()
+  selftests/bpf: tests for per-insn find_equal_scalars() precision
+    tracking
+
+ include/linux/bpf_verifier.h                  |   2 +-
+ kernel/bpf/verifier.c                         | 356 ++++++++++--------
+ .../selftests/bpf/progs/verifier_scalar_ids.c | 256 +++++++++----
+ .../bpf/progs/verifier_subprog_precision.c    |   2 +-
+ .../testing/selftests/bpf/verifier/precise.c  |  10 +-
+ 5 files changed, 395 insertions(+), 231 deletions(-)
+
+--
+2.43.0
 
