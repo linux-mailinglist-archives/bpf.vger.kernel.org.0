@@ -1,87 +1,81 @@
-Return-Path: <bpf+bounces-22483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7296F85EF03
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 03:12:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD0F85F184
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 07:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28B8D28364D
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 02:12:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C08FF283B9D
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 06:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53091428F;
-	Thu, 22 Feb 2024 02:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57ECDC8E2;
+	Thu, 22 Feb 2024 06:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MXLcieXF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gehUlPJW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6774614291
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 02:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A9AA3F
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 06:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708567874; cv=none; b=RpwWt7EkEq6wakkwTHtaaD41D4zkc6Gbius+m3Sb4+V8UO9kdFz5YQed+PZaXg+yl6wNEXp4rHS+HGHSsbN7FXVFIM/wuPArzOeDF7cyl6dFx9sgZ9vlxTjVSavOGk/gvJtK8JkdM7HNPH07wwHwFsGkhaNNngaLIai8yEZR1mM=
+	t=1708583611; cv=none; b=b7shx9YxG1O4Ny1POxcu/M6cg+NpYsdxUdcaPCqzb/dOhlf5pSOuXDNNXgQWAhCcRrBvcH62s2zHuW4mNkNlqfbn8aW75NEt4NvCY6eVVAKwHLKuOGRCbI3NUzsBySvM7OKN0ItZnjOQW1wWREURF6Qdq96OyHMkt0wGpgkzBd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708567874; c=relaxed/simple;
-	bh=MLIA/ZknjVeX3ercA5IQIixqqOuyMFpfn4y/jpqrx7I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i2yThqz5BDMvvmTe4eDtfyxn2BYiTduUMooS8n3rYd4pbIp69KfWXEbHezIBzk0dLcoFnZtHyNvJg8iZKYnXh5eHLyvmG2S9Bea3QBe1/1ddFNVAuBm8ayIBDQpouvHkTsz1ppVCxIzlOrDDAjf7aJ89IUImZ/VvqtTUz48eGZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MXLcieXF; arc=none smtp.client-ip=209.85.219.174
+	s=arc-20240116; t=1708583611; c=relaxed/simple;
+	bh=GK1Qevp9bAQ1QfDDHDKhImK9I//g4re9QBNblWOBlNg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UakJ53wJe8sHk5qweKttPe8Ghqo8FsuqwNO7C+vsuuUqz+7+NbdVMlmA/B0/vvh+YGAMNuzrlaaxtZiSotEhX2BV1LRRX4uVIOxQ+8f6CPIRQ6t1AkcZBn5QKmuhLAklA4mRFyuj0cBOihPLVVV7UVIFKu69yxABYR+ZmHOdrq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gehUlPJW; arc=none smtp.client-ip=209.85.167.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db3a09e96daso6480831276.3
-        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 18:11:12 -0800 (PST)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so5154808b6e.3
+        for <bpf@vger.kernel.org>; Wed, 21 Feb 2024 22:33:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708567871; x=1709172671; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PmP7/E4qUyfUubTrSrh+cg/xb5ozRzks1/kEWD/CJZ8=;
-        b=MXLcieXFmQpOjqUxxBMuDbkEkB5l0HyqxgQ1oVf40yo6wekYfHWKJl6Opv4KL5lSo9
-         d69L0TRGDee2zjUOJMjHWPY4wgzPMO84AGeX0N1iZXInp4ROgLFY/p41rAKR2oi8wltA
-         RHki15qWtaU0gJ2ESQXvp625WbTMCU5XpVUvw2hRQgDBgIexDReDPKUVIJ4N5c/tdMST
-         ThtEN9kipicQ4aoUOiUDYBSxfgpe3GZI3936p9EWFzl8skoFqrb3nBd562GG+MZOMu16
-         tarzlOKH2T8FLSFIuc/1C9ceBY8jVenQwDXXdmhQyX9y0njLTB0fKqn+rv5QLfAey9gI
-         /+Og==
+        d=gmail.com; s=20230601; t=1708583608; x=1709188408; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a2gZuYRtiTotepc7PFTXdr1qOCfIMT5KjPGc40lYHjA=;
+        b=gehUlPJWzNsbfL8TlZviM7zEblkMPqtCk6FG6IsUaKDlCNheY6DRqHhUmDbmE0YsOc
+         5UtaJT6N/3IaqiX2BRrnfhYlgW/x+0BeK9/dXpR069FPHnKKqr+Wifx/XexGYFJft/Je
+         +Znq6oTOLbNz0uYgKivkvp9GxeP/Q8V2/5zjc9bvjul3FtH6uQvVWbs9z9u25vT9/qGF
+         jLZS4Khp8GG0iTcybF/J2Rgk+VJFGRebzX2XCcIWX2KoN691bs67w0wnDKUpbxn1AakT
+         qiDxNqRgSxxWZvpSq3qWN+Couw7s9FR4EicDWr7JRdJH/KZJqs81rt5TjEZVhc/0pbHe
+         VPJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708567871; x=1709172671;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PmP7/E4qUyfUubTrSrh+cg/xb5ozRzks1/kEWD/CJZ8=;
-        b=Vy+xdsV5Z/N29Cta57Ny9ocqyFSporIjkpRG2VXV//sJacrhKNkVhTrfywHIZ44LU0
-         HXM8Y6x8l3YqK+qpc1xm6O0jYDoJWewvR7Ix/mlg3Z+PbLveHOAAS+iw3feFyqmwgTRF
-         tPgt47t+/Wy6cNIeh6c4TouMhZs4XT81fvbWueIIVM+VCbBA+H3Y3OoNO8cU63iIcz5x
-         u7QDCR9zvL5Hp1ic5QsEV+YG9MIA6JxfPPGLrbXViI1itTs5PpTrUm9LAhVErXueohGi
-         JPFo8BHtxvamHtgWUejQcucsCkph5bsbcuwvMnmhdZ81ZJqMWr0JsPq0P1hernA8k+AY
-         0Vmw==
-X-Gm-Message-State: AOJu0Yyk18vnLcbEZCTE/J3FraPjaDleeM7yURMlTFacYHI0dtnpAdP9
-	8GSrOsmUS9RQF3fTEVpuHF4wccDknWyf343iHDUk8cyh6SIbPbZrXzS+de2B
-X-Google-Smtp-Source: AGHT+IGENjNcDK8fzO2iuR9qiiqI1nRUe/QOeoIwmg5FP57qe/qqQ9enxOxhM2a2QTOIzPKFUJPBqA==
-X-Received: by 2002:a25:bed0:0:b0:dcd:2f2d:7a04 with SMTP id k16-20020a25bed0000000b00dcd2f2d7a04mr1117664ybm.10.1708567870819;
-        Wed, 21 Feb 2024 18:11:10 -0800 (PST)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:bc3b:b762:a625:955f])
-        by smtp.gmail.com with ESMTPSA id t34-20020a25f622000000b00dc73705ec59sm2613590ybd.0.2024.02.21.18.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 18:11:10 -0800 (PST)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v5 2/2] selftests/bpf: Test case for lacking CFI stub functions.
-Date: Wed, 21 Feb 2024 18:11:05 -0800
-Message-Id: <20240222021105.1180475-3-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240222021105.1180475-1-thinker.li@gmail.com>
-References: <20240222021105.1180475-1-thinker.li@gmail.com>
+        d=1e100.net; s=20230601; t=1708583608; x=1709188408;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a2gZuYRtiTotepc7PFTXdr1qOCfIMT5KjPGc40lYHjA=;
+        b=WbuJqGQb0HVuF5TYa8I/fYYIG7JWy8ksA0u7tQUUYuDlPwH5MRJ5dA2rV+3qkgmnOm
+         /3cTtYOo7ZeT9zvbU8ythlAEDzNPWU1yktrHnPPhyTTaRrw32Aw8//4wPZEHjfXGipSY
+         eqK8EmBPcRqt1Fpx+0iJosP1FDQY6xVE9RJXEnFsUVN93ckPa0H4lL8tYHjte0HIJflm
+         Zf+aRJg+JNHuws3Yl9wv0eDsyw2Za9ZBBzzjMI7jOkALhOQ5JOlhAmfIDQuG1VQhDv8G
+         ZKaqIlw0ZgdCBUpoHCHuYei/JSJuWZlqnK87aH9C4dQeV3F0qLEHP/PVmdNXxdM/J+Oe
+         1BjQ==
+X-Gm-Message-State: AOJu0YzEV07dJkKHerfQYz0YgqcBekblUojRMfJaJsD7zyEeMlDScLMF
+	zKMuLigpCJkHe8aFtg2NX8F5ZZGZpHjueyX/COuLjjtk6XB7jSvfQT98TTjb
+X-Google-Smtp-Source: AGHT+IH9cdODG3M6M+PesJnNFmZHMLLqJL6idKsujP6FhqfP2sa6+0qK/oXxzKfzbt2EcVEAmmakrw==
+X-Received: by 2002:a05:6808:1995:b0:3c1:7bc1:5b4d with SMTP id bj21-20020a056808199500b003c17bc15b4dmr648247oib.26.1708583608240;
+        Wed, 21 Feb 2024 22:33:28 -0800 (PST)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:b11c])
+        by smtp.gmail.com with ESMTPSA id a6-20020aa780c6000000b006e134c4d6b0sm10066160pfn.217.2024.02.21.22.33.26
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 21 Feb 2024 22:33:27 -0800 (PST)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	memxor@gmail.com,
+	eddyz87@gmail.com,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next 1/2] bpf: Introduce bpf_can_loop() kfunc
+Date: Wed, 21 Feb 2024 22:33:23 -0800
+Message-Id: <20240222063324.46468-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,263 +84,442 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+From: Alexei Starovoitov <ast@kernel.org>
 
-Ensure struct_ops rejects the registration of struct_ops types without
-proper CFI stub functions.
+While working on bpf_arena the following monster macro had to be
+used to iterate a link list:
+        for (struct bpf_iter_num ___it __attribute__((aligned(8),                       \
+                                                      cleanup(bpf_iter_num_destroy))),  \
+                        * ___tmp = (                                                    \
+                                bpf_iter_num_new(&___it, 0, (1000000)),                 \
+                                pos = list_entry_safe((head)->first,                    \
+                                                      typeof(*(pos)), member),          \
+                                (void)bpf_iter_num_destroy, (void *)0);                 \
+             bpf_iter_num_next(&___it) && pos &&                                        \
+                ({ ___tmp = (void *)pos->member.next; 1; });                            \
+             pos = list_entry_safe((void __arena *)___tmp, typeof(*(pos)), member))
 
-bpf_test_no_cfi.ko is a module that attempts to register a struct_ops type
-called "bpf_test_no_cfi_ops" with cif_stubs of NULL and non-NULL value.
-The NULL one should fail, and the non-NULL one should success. The module
-can only be loaded successfully if these registrations yield the expected
-results.
+It's similar to bpf_for(), bpf_repeat() macros.
+Unfortunately every "for" in normal C code needs an equivalent monster macro.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+Instead, let's introduce bpf_can_loop() kfunc that acts on a hidden bpf_iter_num,
+so that bpf_iter_num_new(), bpf_iter_num_destroy() don't need to be called explicitly.
+It simplifies the macro to:
+        for (void * ___tmp = (pos = list_entry_safe((head)->first,                    \
+                                                    typeof(*(pos)), member),          \
+                                (void *)0);                                           \
+             bpf_can_loop(0) && pos &&                                                \
+                ({ ___tmp = (void *)pos->member.next; 1; });                          \
+             pos = list_entry_safe((void __arena *)___tmp, typeof(*(pos)), member))
+
+and can be used in any normal "for" or "while" loop, like
+
+  for (i = 0; i < cnt && bpf_can_loop(0); i++) {
+
+The verifier recognizes that bpf_can_loop() is used in the program,
+reserves additional 8 bytes of stack, zero initializes them in subprog prologue,
+and passes that address to bpf_can_loop() kfunc that simply increments
+the counter until it reaches BPF_MAX_LOOPS.
+
+In the future bpf_can_loop() can be inlined to improve performance.
+New instruction with the same semantics can be added, so that LLVM can generate it.
+
+WARNING:
+bpf_can_loop() is not a substitute for bpf_for() when it's used to
+iterate normal arrays or map_values.
+bpf_can_loop() works well only with arena pointers that don't need
+to be bounds-checked on every iteration.
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile          | 10 ++-
- .../selftests/bpf/bpf_test_no_cfi/Makefile    | 19 +++++
- .../bpf/bpf_test_no_cfi/bpf_test_no_cfi.c     | 84 +++++++++++++++++++
- .../bpf/prog_tests/test_struct_ops_no_cfi.c   | 38 +++++++++
- tools/testing/selftests/bpf/testing_helpers.c |  4 +-
- tools/testing/selftests/bpf/testing_helpers.h |  2 +
- 6 files changed, 154 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
- create mode 100644 tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
+ include/linux/bpf_verifier.h |   3 +
+ kernel/bpf/helpers.c         |  12 +++
+ kernel/bpf/verifier.c        | 141 ++++++++++++++++++++++++++++++-----
+ 3 files changed, 136 insertions(+), 20 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 9be69ff701ba..84cb5500e8ef 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -132,7 +132,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
- 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
--	xdp_features
-+	xdp_features bpf_test_no_cfi.ko
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 84365e6dd85d..69bc7f2d20f1 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -449,6 +449,7 @@ struct bpf_verifier_state {
+ 	u32 jmp_history_cnt;
+ 	u32 dfs_depth;
+ 	u32 callback_unroll_depth;
++	struct bpf_reg_state can_loop_reg;
+ };
  
- TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi
+ #define bpf_get_spilled_reg(slot, frame, mask)				\
+@@ -549,6 +550,7 @@ struct bpf_insn_aux_data {
+ 	bool zext_dst; /* this insn zero extends dst reg */
+ 	bool storage_get_func_atomic; /* bpf_*_storage_get() with atomic memory alloc */
+ 	bool is_iter_next; /* bpf_iter_<type>_next() kfunc call */
++	bool is_can_loop; /* bpf_can_loop() kfunc call */
+ 	bool call_with_percpu_alloc_ptr; /* {this,per}_cpu_ptr() with prog percpu alloc */
+ 	u8 alu_state; /* used in combination with alu_limit */
  
-@@ -254,6 +254,12 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_testmo
- 	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_testmod
- 	$(Q)cp bpf_testmod/bpf_testmod.ko $@
+@@ -619,6 +621,7 @@ struct bpf_subprog_info {
+ 	u32 start; /* insn idx of function entry point */
+ 	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
+ 	u16 stack_depth; /* max. stack depth used by this function */
++	u16 stack_extra;
+ 	bool has_tail_call: 1;
+ 	bool tail_call_reachable: 1;
+ 	bool has_ld_abs: 1;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 93edf730d288..d1d93ad8a010 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2542,6 +2542,17 @@ __bpf_kfunc void bpf_throw(u64 cookie)
+ 	WARN(1, "A call to BPF exception callback should never return\n");
+ }
  
-+$(OUTPUT)/bpf_test_no_cfi.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_test_no_cfi/Makefile bpf_test_no_cfi/*.[ch])
-+	$(call msg,MOD,,$@)
-+	$(Q)$(RM) bpf_test_no_cfi/bpf_test_no_cfi.ko # force re-compilation
-+	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_test_no_cfi
-+	$(Q)cp bpf_test_no_cfi/bpf_test_no_cfi.ko $@
-+
- DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
- ifneq ($(CROSS_COMPILE),)
- CROSS_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
-@@ -631,6 +637,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
- 			 flow_dissector_load.h	\
- 			 ip_check_defrag_frags.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
-+		       $(OUTPUT)/bpf_test_no_cfi.ko			\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
- 		       $(OUTPUT)/sign-file				\
-@@ -759,6 +766,7 @@ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	feature bpftool							\
- 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
- 			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
-+			       bpf_test_no_cfi.ko			\
- 			       liburandom_read.so)
- 
- .PHONY: docs docs-clean
-diff --git a/tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile b/tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
-new file mode 100644
-index 000000000000..ed5143b79edf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_test_no_cfi/Makefile
-@@ -0,0 +1,19 @@
-+BPF_TEST_NO_CFI_DIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-+KDIR ?= $(abspath $(BPF_TEST_NO_CFI_DIR)/../../../../..)
-+
-+ifeq ($(V),1)
-+Q =
-+else
-+Q = @
-+endif
-+
-+MODULES = bpf_test_no_cfi.ko
-+
-+obj-m += bpf_test_no_cfi.o
-+
-+all:
-+	+$(Q)make -C $(KDIR) M=$(BPF_TEST_NO_CFI_DIR) modules
-+
-+clean:
-+	+$(Q)make -C $(KDIR) M=$(BPF_TEST_NO_CFI_DIR) clean
-+
-diff --git a/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c b/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-new file mode 100644
-index 000000000000..7a2c8c99987f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+
-+struct bpf_test_no_cfi_ops {
-+	void (*fn_1)(void);
-+	void (*fn_2)(void);
-+};
-+
-+static int dummy_init(struct btf *btf)
++__bpf_kfunc long bpf_can_loop(void *ptr__ign)
 +{
++	u64 *pcnt = ptr__ign, cnt = *pcnt;
++
++	if (cnt < BPF_MAX_LOOPS) {
++		*pcnt = cnt + 1;
++		return cnt + 1;
++	}
 +	return 0;
 +}
 +
-+static int dummy_init_member(const struct btf_type *t,
-+			     const struct btf_member *member,
-+			     void *kdata, const void *udata)
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(generic_btf_ids)
+@@ -2618,6 +2629,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+ BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+ BTF_ID_FLAGS(func, bpf_dynptr_size)
+ BTF_ID_FLAGS(func, bpf_dynptr_clone)
++BTF_ID_FLAGS(func, bpf_can_loop)
+ BTF_KFUNCS_END(common_btf_ids)
+ 
+ static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 011d54a1dc53..89667734abf5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -502,6 +502,7 @@ static bool is_dynptr_ref_function(enum bpf_func_id func_id)
+ 
+ static bool is_sync_callback_calling_kfunc(u32 btf_id);
+ static bool is_bpf_throw_kfunc(struct bpf_insn *insn);
++static bool is_can_loop_kfunc(struct bpf_kfunc_call_arg_meta *meta);
+ 
+ static bool is_sync_callback_calling_function(enum bpf_func_id func_id)
+ {
+@@ -1436,6 +1437,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 		if (err)
+ 			return err;
+ 	}
++	dst_state->can_loop_reg = src->can_loop_reg;
+ 	return 0;
+ }
+ 
+@@ -7954,10 +7956,14 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 	struct bpf_reg_state *cur_iter, *queued_iter;
+ 	int iter_frameno = meta->iter.frameno;
+ 	int iter_spi = meta->iter.spi;
++	bool is_can_loop = is_can_loop_kfunc(meta);
+ 
+ 	BTF_TYPE_EMIT(struct bpf_iter);
+ 
+-	cur_iter = &env->cur_state->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++	if (is_can_loop)
++		cur_iter = &cur_st->can_loop_reg;
++	else
++		cur_iter = &cur_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
+ 
+ 	if (cur_iter->iter.state != BPF_ITER_STATE_ACTIVE &&
+ 	    cur_iter->iter.state != BPF_ITER_STATE_DRAINED) {
+@@ -7985,7 +7991,10 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 		if (!queued_st)
+ 			return -ENOMEM;
+ 
+-		queued_iter = &queued_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++		if (is_can_loop)
++			queued_iter = &queued_st->can_loop_reg;
++		else
++			queued_iter = &queued_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
+ 		queued_iter->iter.state = BPF_ITER_STATE_ACTIVE;
+ 		queued_iter->iter.depth++;
+ 		if (prev_st)
+@@ -10925,6 +10934,7 @@ enum special_kfunc_type {
+ 	KF_bpf_percpu_obj_new_impl,
+ 	KF_bpf_percpu_obj_drop_impl,
+ 	KF_bpf_throw,
++	KF_bpf_can_loop,
+ 	KF_bpf_iter_css_task_new,
+ };
+ 
+@@ -10949,6 +10959,7 @@ BTF_ID(func, bpf_dynptr_clone)
+ BTF_ID(func, bpf_percpu_obj_new_impl)
+ BTF_ID(func, bpf_percpu_obj_drop_impl)
+ BTF_ID(func, bpf_throw)
++BTF_ID(func, bpf_can_loop)
+ #ifdef CONFIG_CGROUPS
+ BTF_ID(func, bpf_iter_css_task_new)
+ #endif
+@@ -10977,6 +10988,7 @@ BTF_ID(func, bpf_dynptr_clone)
+ BTF_ID(func, bpf_percpu_obj_new_impl)
+ BTF_ID(func, bpf_percpu_obj_drop_impl)
+ BTF_ID(func, bpf_throw)
++BTF_ID(func, bpf_can_loop)
+ #ifdef CONFIG_CGROUPS
+ BTF_ID(func, bpf_iter_css_task_new)
+ #else
+@@ -11003,6 +11015,11 @@ static bool is_kfunc_bpf_rcu_read_unlock(struct bpf_kfunc_call_arg_meta *meta)
+ 	return meta->func_id == special_kfunc_list[KF_bpf_rcu_read_unlock];
+ }
+ 
++static bool is_can_loop_kfunc(struct bpf_kfunc_call_arg_meta *meta)
 +{
-+	return 0;
++	return meta->func_id == special_kfunc_list[KF_bpf_can_loop];
 +}
 +
-+static int dummy_reg(void *kdata)
+ static enum kfunc_ptr_arg_type
+ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+ 		       struct bpf_kfunc_call_arg_meta *meta,
+@@ -12049,6 +12066,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	insn_aux = &env->insn_aux_data[insn_idx];
+ 
+ 	insn_aux->is_iter_next = is_iter_next_kfunc(&meta);
++	insn_aux->is_can_loop = is_can_loop_kfunc(&meta);
+ 
+ 	if (is_kfunc_destructive(&meta) && !capable(CAP_SYS_BOOT)) {
+ 		verbose(env, "destructive kfunc calls require CAP_SYS_BOOT capability\n");
+@@ -12424,7 +12442,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			mark_btf_func_reg_size(env, regno, t->size);
+ 	}
+ 
+-	if (is_iter_next_kfunc(&meta)) {
++	if (is_iter_next_kfunc(&meta) || is_can_loop_kfunc(&meta)) {
+ 		err = process_iter_next_call(env, insn_idx, &meta);
+ 		if (err)
+ 			return err;
+@@ -15609,7 +15627,7 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
+ 			struct bpf_kfunc_call_arg_meta meta;
+ 
+ 			ret = fetch_kfunc_meta(env, insn, &meta, NULL);
+-			if (ret == 0 && is_iter_next_kfunc(&meta)) {
++			if (ret == 0 && (is_iter_next_kfunc(&meta) || is_can_loop_kfunc(&meta))) {
+ 				mark_prune_point(env, t);
+ 				/* Checking and saving state checkpoints at iter_next() call
+ 				 * is crucial for fast convergence of open-coded iterator loop
+@@ -16759,6 +16777,9 @@ static bool states_equal(struct bpf_verifier_env *env,
+ 	if (old->active_rcu_lock != cur->active_rcu_lock)
+ 		return false;
+ 
++	if (old->can_loop_reg.iter.state != cur->can_loop_reg.iter.state)
++		return false;
++
+ 	/* for states to be equal callsites have to be the same
+ 	 * and all frame states need to be equivalent
+ 	 */
+@@ -16933,6 +16954,11 @@ static bool is_iter_next_insn(struct bpf_verifier_env *env, int insn_idx)
+ 	return env->insn_aux_data[insn_idx].is_iter_next;
+ }
+ 
++static bool is_can_loop_insn(struct bpf_verifier_env *env, int insn_idx)
 +{
-+	return 0;
++	return env->insn_aux_data[insn_idx].is_can_loop;
 +}
 +
-+static void dummy_unreg(void *kdata)
-+{
-+}
+ /* is_state_visited() handles iter_next() (see process_iter_next_call() for
+  * terminology) calls specially: as opposed to bounded BPF loops, it *expects*
+  * states to match, which otherwise would look like an infinite loop. So while
+@@ -16997,6 +17023,9 @@ static bool iter_active_depths_differ(struct bpf_verifier_state *old, struct bpf
+ 	struct bpf_func_state *state;
+ 	int i, fr;
+ 
++	if (old->can_loop_reg.iter.depth != cur->can_loop_reg.iter.depth)
++		return true;
 +
-+static const struct bpf_verifier_ops dummy_verifier_ops;
+ 	for (fr = old->curframe; fr >= 0; fr--) {
+ 		state = old->frame[fr];
+ 		for (i = 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
+@@ -17101,23 +17130,27 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 * comparison would discard current state with r7=-32
+ 			 * => unsafe memory access at 11 would not be caught.
+ 			 */
+-			if (is_iter_next_insn(env, insn_idx)) {
++			if (is_iter_next_insn(env, insn_idx) || is_can_loop_insn(env, insn_idx)) {
+ 				if (states_equal(env, &sl->state, cur, true)) {
+ 					struct bpf_func_state *cur_frame;
+ 					struct bpf_reg_state *iter_state, *iter_reg;
+ 					int spi;
+ 
+-					cur_frame = cur->frame[cur->curframe];
+-					/* btf_check_iter_kfuncs() enforces that
+-					 * iter state pointer is always the first arg
+-					 */
+-					iter_reg = &cur_frame->regs[BPF_REG_1];
+-					/* current state is valid due to states_equal(),
+-					 * so we can assume valid iter and reg state,
+-					 * no need for extra (re-)validations
+-					 */
+-					spi = __get_spi(iter_reg->off + iter_reg->var_off.value);
+-					iter_state = &func(env, iter_reg)->stack[spi].spilled_ptr;
++					if (is_can_loop_insn(env, insn_idx)) {
++						iter_state = &cur->can_loop_reg;
++					} else {
++						cur_frame = cur->frame[cur->curframe];
++						/* btf_check_iter_kfuncs() enforces that
++						 * iter state pointer is always the first arg
++						 */
++						iter_reg = &cur_frame->regs[BPF_REG_1];
++						/* current state is valid due to states_equal(),
++						 * so we can assume valid iter and reg state,
++						 * no need for extra (re-)validations
++						 */
++						spi = __get_spi(iter_reg->off + iter_reg->var_off.value);
++						iter_state = &func(env, iter_reg)->stack[spi].spilled_ptr;
++					}
+ 					if (iter_state->iter.state == BPF_ITER_STATE_ACTIVE) {
+ 						update_loop_entry(cur, &sl->state);
+ 						goto hit;
+@@ -19258,7 +19291,8 @@ static void __fixup_collection_insert_kfunc(struct bpf_insn_aux_data *insn_aux,
+ }
+ 
+ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+-			    struct bpf_insn *insn_buf, int insn_idx, int *cnt)
++			    struct bpf_insn *insn_buf, int insn_idx, int stack_base,
++			    int *cnt, int *stack_extra)
+ {
+ 	const struct bpf_kfunc_desc *desc;
+ 
+@@ -19349,6 +19383,12 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 		   desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+ 		insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
+ 		*cnt = 1;
++	} else if (desc->func_id == special_kfunc_list[KF_bpf_can_loop]) {
++		insn_buf[0] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_FP);
++		insn_buf[1] = BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, stack_base - 8);
++		insn_buf[2] = *insn;
++		*cnt = 3;
++		*stack_extra = 8;
+ 	}
+ 	return 0;
+ }
+@@ -19396,7 +19436,10 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 	struct bpf_insn insn_buf[16];
+ 	struct bpf_prog *new_prog;
+ 	struct bpf_map *map_ptr;
+-	int i, ret, cnt, delta = 0;
++	int i, ret, cnt, delta = 0, cur_subprog = 0;
++	struct bpf_subprog_info *subprogs = env->subprog_info;
++	u16 stack_depth = subprogs[cur_subprog].stack_depth;
++	u16 stack_depth_extra = 0;
+ 
+ 	if (env->seen_exception && !env->exception_callback_subprog) {
+ 		struct bpf_insn patch[] = {
+@@ -19416,7 +19459,16 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 		mark_subprog_exc_cb(env, env->exception_callback_subprog);
+ 	}
+ 
+-	for (i = 0; i < insn_cnt; i++, insn++) {
++	for (i = 0; i < insn_cnt;
++	     ({
++		if (stack_depth_extra && subprogs[cur_subprog + 1].start == i + delta + 1) {
++			subprogs[cur_subprog].stack_depth += stack_depth_extra;
++			subprogs[cur_subprog].stack_extra = stack_depth_extra;
++			cur_subprog++;
++			stack_depth = subprogs[cur_subprog].stack_depth;
++			stack_depth_extra = 0;
++		}
++	      }), i++, insn++) {
+ 		/* Make divide-by-zero exceptions impossible. */
+ 		if (insn->code == (BPF_ALU64 | BPF_MOD | BPF_X) ||
+ 		    insn->code == (BPF_ALU64 | BPF_DIV | BPF_X) ||
+@@ -19536,11 +19588,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 		if (insn->src_reg == BPF_PSEUDO_CALL)
+ 			continue;
+ 		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+-			ret = fixup_kfunc_call(env, insn, insn_buf, i + delta, &cnt);
++			int stack_extra = 0;
 +
-+static void bpf_test_no_cfi_ops__fn_1(void)
-+{
-+}
++			ret = fixup_kfunc_call(env, insn, insn_buf, i + delta,
++					       -stack_depth, &cnt, &stack_extra);
+ 			if (ret)
+ 				return ret;
+ 			if (cnt == 0)
+ 				continue;
++			if (stack_extra & (BPF_REG_SIZE - 1)) {
++				verbose(env, "verifier bug: kfunc stack extra must be power of 8\n");
++				return -EFAULT;
++			}
+ 
+ 			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+ 			if (!new_prog)
+@@ -19549,6 +19608,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			delta	 += cnt - 1;
+ 			env->prog = prog = new_prog;
+ 			insn	  = new_prog->insnsi + i + delta;
++			if (stack_extra)
++				stack_depth_extra = max(stack_depth_extra, stack_extra);
+ 			continue;
+ 		}
+ 
+@@ -19942,6 +20003,30 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 		insn->imm = fn->func - __bpf_call_base;
+ 	}
+ 
++	env->prog->aux->stack_depth = subprogs[0].stack_depth;
++	for (i = 0; i < env->subprog_cnt; i++) {
++		int subprog_start = subprogs[i].start, j;
++		int stack_slots = subprogs[i].stack_extra / 8;
 +
-+static void bpf_test_no_cfi_ops__fn_2(void)
-+{
-+}
++		if (stack_slots >= ARRAY_SIZE(insn_buf)) {
++			verbose(env, "verifier bug: stack_extra is too large\n");
++			return -EFAULT;
++		}
 +
-+static struct bpf_test_no_cfi_ops __bpf_test_no_cfi_ops = {
-+	.fn_1 = bpf_test_no_cfi_ops__fn_1,
-+	.fn_2 = bpf_test_no_cfi_ops__fn_2,
-+};
++		/* Add insns to subprog prologue to zero init extra stack */
++		for (j = 0; j < stack_slots; j++)
++			insn_buf[j] = BPF_ST_MEM(BPF_DW, BPF_REG_FP,
++						 -subprogs[i].stack_depth + j * 8, 0);
++		if (j) {
++			insn_buf[j] = env->prog->insnsi[subprog_start];
 +
-+static struct bpf_struct_ops bpf_bpf_test_no_cif_ops = {
-+	.verifier_ops = &dummy_verifier_ops,
-+	.init = dummy_init,
-+	.init_member = dummy_init_member,
-+	.reg = dummy_reg,
-+	.unreg = dummy_unreg,
-+	.name = "bpf_test_no_cfi_ops",
-+	.owner = THIS_MODULE,
-+};
-+
-+static int bpf_test_no_cfi_init(void)
-+{
-+	int ret;
-+
-+	ret = register_bpf_struct_ops(&bpf_bpf_test_no_cif_ops,
-+				      bpf_test_no_cfi_ops);
-+	if (!ret)
-+		return -EINVAL;
-+
-+	bpf_bpf_test_no_cif_ops.cfi_stubs = &__bpf_test_no_cfi_ops;
-+	ret = register_bpf_struct_ops(&bpf_bpf_test_no_cif_ops,
-+				      bpf_test_no_cfi_ops);
-+	return ret;
-+}
-+
-+static void bpf_test_no_cfi_exit(void)
-+{
-+}
-+
-+module_init(bpf_test_no_cfi_init);
-+module_exit(bpf_test_no_cfi_exit);
-+
-+MODULE_AUTHOR("Kuifeng Lee");
-+MODULE_DESCRIPTION("BPF no cfi_stubs test module");
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
-new file mode 100644
-index 000000000000..f16d4dcccacf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_no_cfi.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <testing_helpers.h>
-+
-+static void load_bpf_test_no_cfi(void)
-+{
-+	int fd;
-+	int err;
-+
-+	fd = open("bpf_test_no_cfi.ko", O_RDONLY);
-+	if (!ASSERT_GT(fd, 0, "open")) {
-+		close(fd);
-+		return;
++			new_prog = bpf_patch_insn_data(env, subprog_start, insn_buf, j + 1);
++			if (!new_prog)
++				return -ENOMEM;
++			env->prog = prog = new_prog;
++		}
 +	}
 +
-+	/* The module will try to register a struct_ops type without
-+	 *  cfi_stubs and with cfi_stubs.
-+	 *
-+	 * The one without cfi_stub should fail. The module will be loaded
-+	 * successfully only if the result of the registration is as
-+	 * expected, or it fails.
-+	 */
-+	err = finit_module(fd, "", 0);
-+	close(fd);
-+	if (!ASSERT_OK(err, "finit_module"))
-+		return;
-+
-+	err = delete_module("bpf_test_no_cfi", 0);
-+	ASSERT_OK(err, "delete_module");
-+}
-+
-+void test_struct_ops_no_cfi(void)
+ 	/* Since poke tab is now finalized, publish aux to tracker. */
+ 	for (i = 0; i < prog->aux->size_poke_tab; i++) {
+ 		map_ptr = prog->aux->poke_tab[i].tail_call.map;
+@@ -20130,6 +20215,21 @@ static void free_states(struct bpf_verifier_env *env)
+ 	}
+ }
+ 
++static void init_can_loop_reg(struct bpf_reg_state *st)
 +{
-+	if (test__start_subtest("load_bpf_test_no_cfi"))
-+		load_bpf_test_no_cfi();
++	__mark_reg_known_zero(st);
++	st->type = PTR_TO_STACK;
++	st->live |= REG_LIVE_WRITTEN;
++	st->ref_obj_id = 0;
++	st->iter.btf = NULL;
++	st->iter.btf_id = 0;
++	/* Init register state to sane values.
++	 * Only iter.state and iter.depth are used during verification.
++	 */
++	st->iter.state = BPF_ITER_STATE_ACTIVE;
++	st->iter.depth = 0;
 +}
 +
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index a59e56d804ee..28b6646662af 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -356,12 +356,12 @@ __u64 read_perf_max_sample_freq(void)
- 	return sample_freq;
- }
- 
--static int finit_module(int fd, const char *param_values, int flags)
-+int finit_module(int fd, const char *param_values, int flags)
+ static int do_check_common(struct bpf_verifier_env *env, int subprog)
  {
- 	return syscall(__NR_finit_module, fd, param_values, flags);
- }
- 
--static int delete_module(const char *name, int flags)
-+int delete_module(const char *name, int flags)
- {
- 	return syscall(__NR_delete_module, name, flags);
- }
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index d14de81727e6..d55f6ab12433 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -36,6 +36,8 @@ __u64 read_perf_max_sample_freq(void);
- int load_bpf_testmod(bool verbose);
- int unload_bpf_testmod(bool verbose);
- int kern_sync_rcu(void);
-+int finit_module(int fd, const char *param_values, int flags);
-+int delete_module(const char *name, int flags);
- 
- static inline __u64 get_time_ns(void)
- {
+ 	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
+@@ -20147,6 +20247,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 	state->curframe = 0;
+ 	state->speculative = false;
+ 	state->branches = 1;
++	init_can_loop_reg(&state->can_loop_reg);
+ 	state->frame[0] = kzalloc(sizeof(struct bpf_func_state), GFP_KERNEL);
+ 	if (!state->frame[0]) {
+ 		kfree(state);
 -- 
 2.34.1
 
