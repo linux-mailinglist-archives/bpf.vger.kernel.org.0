@@ -1,127 +1,109 @@
-Return-Path: <bpf+bounces-22494-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22495-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0F2A85F555
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 11:10:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9376885F57F
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 11:18:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD2461C2272E
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 10:10:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E670284D0F
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 10:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B7939861;
-	Thu, 22 Feb 2024 10:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1181B59E;
+	Thu, 22 Feb 2024 10:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKWMaG1r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQBK96hA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41793717C;
-	Thu, 22 Feb 2024 10:10:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807E739FF0
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 10:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596647; cv=none; b=HrUTYb+UL+w5nZBrHvya59ZCj1/QxxjcZH82o0lctVhbPvC9bL0+wFjUmJDfjMwTe8NW5O+mboJV65cLXuRigw2jxBPWWb+JtUE56ZB5xrBN69tXKnveX6FwQM/JE6WHa4+hSC33945Cr1z17NV8shhf4K1rsGSfvH6I1+3o5Pc=
+	t=1708597119; cv=none; b=Kg4wGTAOzwGNqBKOwULJDPmJTrxqP7raxjgk4YIRyEKjcGEhUMnqmOTa0zm1rYF03DLhHEaDHUgDLBRFT5pajXbps8V5Lx1F0UMb7HXFRW1pr5vkdrHBQbAz0TvryYfycjU1k5WHLKyWfBBb5C2lwhBab2ayl+Sb8gOAgO9SFwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596647; c=relaxed/simple;
-	bh=tSCey7ELn07ZU9G79jg+PQl0/S1XaKqMN+IGgH7so/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZljmNY5oMDwjweFsrEJLivQHl/JibNCEhtje2NkKFdW198vuTGiNhsRSDB9Ooue0cu6gbfze2A2Oy+GesIvq6MUFoYJ0uU7c1zzBTwxMhe5CKb1DXTjNbcCSP3tg5fvmBAD7W2WiXNRs2+UEER/qAl8CMS3hukFQWp6N2nGxXdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKWMaG1r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 776BCC433C7;
-	Thu, 22 Feb 2024 10:10:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708596647;
-	bh=tSCey7ELn07ZU9G79jg+PQl0/S1XaKqMN+IGgH7so/g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XKWMaG1rDE8S2F4Hq5jrogc5oGjI3onN35wJZU9oOP7BocfcdgMcBx3o1+7smOHy8
-	 WOJASqOCGIm/K8H+GcTqROYQV3NBqgDcVrYCWTnAJVW6ZSdRSMCDw21xeN/3xgGtnh
-	 /valzWQDyvWH2Vcmtzbb7yJqDnw7NYC0qBpu1bxl6+IRtovEbr28sYC5DK5MMRS1GY
-	 cBdXKplni5mq+8wwzS6wgVp6xthTIoo7iBqTHUrnUUFu7UCgsmo95cK6mfuekph9la
-	 IuFLgTMUKS98IDolsrr/nf9HNCaaqxqWTa9wkEsJ7hW3xT8TOWUEogaB5EbgP1lAnh
-	 8Zah+axbDNJ6A==
-Message-ID: <f782b460-38fc-4c2b-b886-870760a96ece@kernel.org>
-Date: Thu, 22 Feb 2024 11:10:44 +0100
+	s=arc-20240116; t=1708597119; c=relaxed/simple;
+	bh=3yd9APvrnglv5A1KSGXmHMAENtM2yNNRlvSlah5fGe4=;
+	h=From:Date:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=seIERnYMXNhYuJkcE48xNT6MmuIFw7AT/dgEVnTrAfK34OgwWD2zGmmbCPwyLe3WgazIVGx2yW7ZA9hJTdPVbuAg4xhty6J8lvbKQxMCZqBBcesR0dwJWWZy3pjv4b97Nj2Q38zN8j+D8v7G7qjAF1p3vz+Qm2QiVcQ55ew67iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQBK96hA; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-564e4df00f3so3097356a12.3
+        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 02:18:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708597116; x=1709201916; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:date:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pWCrDso5/lkvnXbPDxi7h75VdYXX3PrF2jTFUGYgYI0=;
+        b=YQBK96hAvJHJTwRPDOIOdOmYq1mQFz6L5IVLjvEh3wbDAQrR7ZbHR8XmqbBx+r2QXr
+         vfZuj249bH8habftf4F2z3jhtVwy1TwHeCJMtZWY4ntRk37fPEUNWqKAkf43M7wPG0OT
+         xRF3J91p/kWFpHiucB8w98l427Dd9Wnp3/LlacR7HSQkzHKccaKcU2PSuH6lPmKs3hIT
+         oXb86YMlWsTlGi6MqXvYg67nv4XXgNLTYT+oKcoE8FezJ+fAfeG4mIVpD9bnU0c2KTfW
+         sEXkbcoJJVlOv+mBdzvDTBqD3mYHtpX2mVQs2uvbdy9vmVOeiceJdMXSMP8nSIAUdik1
+         bc1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708597116; x=1709201916;
+        h=content-disposition:mime-version:message-id:subject:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pWCrDso5/lkvnXbPDxi7h75VdYXX3PrF2jTFUGYgYI0=;
+        b=iktciWuJVbT+ullpHPoiTibxEB3/84IHLEIR1uqmz4bp5w5GPCbgdWTtmmgQ92an2u
+         BpcVtyNxrRFoqsMpnD2JDdoqr52GTOFQTUwbD48ctq+SkCOGxPWb5r3oxat05f3fdW3/
+         yWGWYl+TZ8F1vMd3R4Wls6qGPljxJRWnMAVplIsoGhF5m+0CMqn5Qct90K8yJOKPAWOn
+         C1/MExO5lsK0rv0EwPtgyYAk6NtzqE7kCnGQ+DQjM8eO1BvMnHgiv3FuFgnSmWTnIhmQ
+         e3DPHb+le55yl89j9HB4X6H89WG7VgMSk1JRSSh+yVwR/T6hdRc/GtApCoibJkqzdSGn
+         wWHA==
+X-Gm-Message-State: AOJu0Yy6FUptORsYR8HAZrT26iivMxCgBZU8I1RA1DeHnF/zpiGrfa3r
+	5HYbJk+3fNO3sL7AxS2ujvWFMKXsaqPlMa7HHebopH5SnyZ/jZEeI8SWx5gB
+X-Google-Smtp-Source: AGHT+IGe5RB4XUz9xvgjiI46gTq3EHZa/JJKL00qnwesR7TKk8H2jl9/qzG4WtmsTlcpFRsWeEbJew==
+X-Received: by 2002:a17:906:f199:b0:a3f:5115:1840 with SMTP id gs25-20020a170906f19900b00a3f51151840mr2742277ejb.62.1708597115358;
+        Thu, 22 Feb 2024 02:18:35 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id vh8-20020a170907d38800b00a3f28bf94f8sm1689681ejc.199.2024.02.22.02.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 02:18:35 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 22 Feb 2024 11:18:33 +0100
+To: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	lsf-pc@lists.linux-foundation.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [LSF/MM/BPF TOPIC] multi kprobe updates
+Message-ID: <ZdcfedGHCwxOI29a@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-Content-Language: en-US
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20240214163607.RjjT5bO_@linutronix.de> <87jzn5cw90.fsf@toke.dk>
- <20240216165737.oIFG5g-U@linutronix.de> <87ttm4b7mh.fsf@toke.dk>
- <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
- <20240220101741.PZwhANsA@linutronix.de>
- <0b1c8247-ccfb-4228-bd64-53583329aaa7@kernel.org>
- <20240220120821.1Tbz6IeI@linutronix.de>
- <07620deb-2b96-4bcc-a045-480568a27c58@kernel.org>
- <20240220153206.AUZ_zP24@linutronix.de>
- <20240222092228.4ACXUrvU@linutronix.de>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20240222092228.4ACXUrvU@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+There's few ongoing kprobe multi features that I'd like to give an update
+about and discuss.
+
+- Support to execute bpf program for both entry and return probes. This
+  way we don't need to create 2 links when we need to run bpf program on
+  entry/return probes of the same function, first rfc posted [0].
+
+- In addition to above feature introduce shared 'session' data between
+  entry and exit probe accessible from bpf program, originally discussed
+  in [1].
+
+- Allow to use per program re-entry checks instead of current hard coded
+  per cpu re-entry check, or just change to per program check directly.
+
+- There's ongoing development of patchset moving fprobe implementation
+  from function tracer on top of fgraph tracer by Masami Hiramatsu [2].
+  As kprobe multi link is implemented via fprobe I'd like to give an
+  update what this change means for kprobe multi link.
 
 
-
-On 22/02/2024 10.22, Sebastian Andrzej Siewior wrote:
-> On 2024-02-20 16:32:08 [+0100], To Jesper Dangaard Brouer wrote:
->>>
->>>   Ethtool(i40e2) stat:     15028585 (  15,028,585) <= tx-0.packets /sec
->>>   Ethtool(i40e2) stat:     15028589 (  15,028,589) <= tx_packets /sec
->>
->> -t1 in ixgbe
->> Show adapter(s) (eth1) statistics (ONLY that changed!)
->> Ethtool(eth1    ) stat:    107857263 (    107,857,263) <= tx_bytes /sec
->> Ethtool(eth1    ) stat:    115047684 (    115,047,684) <= tx_bytes_nic /sec
->> Ethtool(eth1    ) stat:      1797621 (      1,797,621) <= tx_packets /sec
->> Ethtool(eth1    ) stat:      1797636 (      1,797,636) <= tx_pkts_nic /sec
->> Ethtool(eth1    ) stat:    107857263 (    107,857,263) <= tx_queue_0_bytes /sec
->> Ethtool(eth1    ) stat:      1797621 (      1,797,621) <= tx_queue_0_packets /sec
-> …
->> while sending with ixgbe while running perf top on the box:
->> | Samples: 621K of event 'cycles', 4000 Hz, Event count (approx.): 49979376685 lost: 0/0 drop: 0/0
->> | Overhead  CPU  Command          Shared Object             Symbol
->> |   31.98%  000  kpktgend_0       [kernel]                  [k] xas_find
->> |    6.72%  000  kpktgend_0       [kernel]                  [k] pfn_to_dma_pte
->> |    5.63%  000  kpktgend_0       [kernel]                  [k] ixgbe_xmit_frame_ring
->> |    4.78%  000  kpktgend_0       [kernel]                  [k] dma_pte_clear_level
->> |    3.16%  000  kpktgend_0       [kernel]                  [k] __iommu_dma_unmap
-> 
-> I disabled the iommu and I get to
-
-Yes, clearly IOMMU code that cause the performance issue for you.
-
-This driver doesn't use page_pool, so I want to point out (for people
-finding this post in the future) that page_pool keeps DMA mappings for
-recycled frame, which should address the IOMMU overhead issue here.
-
-> 
-> Ethtool(eth1    ) stat:     14158562 (     14,158,562) <= tx_packets /sec
-> Ethtool(eth1    ) stat:     14158685 (     14,158,685) <= tx_pkts_nic /sec
-> 
-> looks like a small improvement… It is not your 15 but close. -t2 does
-> improve the situation. 
-
-You cannot reach 15Mpps on 10Gbit/s as wirespeed for 10G is 14.88Mpps.
-
-Congratulations, I think this 14.15 Mpps is as close to wirespeed as it
-possible on your hardware.
-
-BTW what CPU are you using?
-
-> There is a warning from DMA mapping code but ;)
-
-It is a warning from IOMMU code?
-It usually means there is a real DMA unmap bug (which we should fix).
-
---Jesper
+[0] https://lore.kernel.org/bpf/20240207153550.856536-1-jolsa@kernel.org/
+[1] https://lore.kernel.org/bpf/CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com/
+[2] https://lore.kernel.org/bpf/170723204881.502590.11906735097521170661.stgit@devnote2/
 
