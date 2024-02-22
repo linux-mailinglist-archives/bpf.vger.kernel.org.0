@@ -1,109 +1,134 @@
-Return-Path: <bpf+bounces-22495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9376885F57F
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 11:18:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D831485F650
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 11:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E670284D0F
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 10:18:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77EC51F27649
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 10:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1181B59E;
-	Thu, 22 Feb 2024 10:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB96405E6;
+	Thu, 22 Feb 2024 10:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQBK96hA"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HKLm/d/M";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sz3ehyfG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807E739FF0
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 10:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5C945976;
+	Thu, 22 Feb 2024 10:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597119; cv=none; b=Kg4wGTAOzwGNqBKOwULJDPmJTrxqP7raxjgk4YIRyEKjcGEhUMnqmOTa0zm1rYF03DLhHEaDHUgDLBRFT5pajXbps8V5Lx1F0UMb7HXFRW1pr5vkdrHBQbAz0TvryYfycjU1k5WHLKyWfBBb5C2lwhBab2ayl+Sb8gOAgO9SFwE=
+	t=1708599534; cv=none; b=m9drfpLV3iuvHwNlwAGFaCqo1G7UQgppQLPERy/PRNWwKCzVqWW6op3sMXUVQwZU75Prpy06LFzyWJEsZrtHpRXAZSTkrCGWca8UNTPkJQD4qMAl5exBHb3F2xKxjWnZJFAhHNGXQdBh7jkr0vYIHuT1MrPqOaowia2G2Uebhh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597119; c=relaxed/simple;
-	bh=3yd9APvrnglv5A1KSGXmHMAENtM2yNNRlvSlah5fGe4=;
-	h=From:Date:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=seIERnYMXNhYuJkcE48xNT6MmuIFw7AT/dgEVnTrAfK34OgwWD2zGmmbCPwyLe3WgazIVGx2yW7ZA9hJTdPVbuAg4xhty6J8lvbKQxMCZqBBcesR0dwJWWZy3pjv4b97Nj2Q38zN8j+D8v7G7qjAF1p3vz+Qm2QiVcQ55ew67iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQBK96hA; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-564e4df00f3so3097356a12.3
-        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 02:18:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708597116; x=1709201916; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pWCrDso5/lkvnXbPDxi7h75VdYXX3PrF2jTFUGYgYI0=;
-        b=YQBK96hAvJHJTwRPDOIOdOmYq1mQFz6L5IVLjvEh3wbDAQrR7ZbHR8XmqbBx+r2QXr
-         vfZuj249bH8habftf4F2z3jhtVwy1TwHeCJMtZWY4ntRk37fPEUNWqKAkf43M7wPG0OT
-         xRF3J91p/kWFpHiucB8w98l427Dd9Wnp3/LlacR7HSQkzHKccaKcU2PSuH6lPmKs3hIT
-         oXb86YMlWsTlGi6MqXvYg67nv4XXgNLTYT+oKcoE8FezJ+fAfeG4mIVpD9bnU0c2KTfW
-         sEXkbcoJJVlOv+mBdzvDTBqD3mYHtpX2mVQs2uvbdy9vmVOeiceJdMXSMP8nSIAUdik1
-         bc1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708597116; x=1709201916;
-        h=content-disposition:mime-version:message-id:subject:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pWCrDso5/lkvnXbPDxi7h75VdYXX3PrF2jTFUGYgYI0=;
-        b=iktciWuJVbT+ullpHPoiTibxEB3/84IHLEIR1uqmz4bp5w5GPCbgdWTtmmgQ92an2u
-         BpcVtyNxrRFoqsMpnD2JDdoqr52GTOFQTUwbD48ctq+SkCOGxPWb5r3oxat05f3fdW3/
-         yWGWYl+TZ8F1vMd3R4Wls6qGPljxJRWnMAVplIsoGhF5m+0CMqn5Qct90K8yJOKPAWOn
-         C1/MExO5lsK0rv0EwPtgyYAk6NtzqE7kCnGQ+DQjM8eO1BvMnHgiv3FuFgnSmWTnIhmQ
-         e3DPHb+le55yl89j9HB4X6H89WG7VgMSk1JRSSh+yVwR/T6hdRc/GtApCoibJkqzdSGn
-         wWHA==
-X-Gm-Message-State: AOJu0Yy6FUptORsYR8HAZrT26iivMxCgBZU8I1RA1DeHnF/zpiGrfa3r
-	5HYbJk+3fNO3sL7AxS2ujvWFMKXsaqPlMa7HHebopH5SnyZ/jZEeI8SWx5gB
-X-Google-Smtp-Source: AGHT+IGe5RB4XUz9xvgjiI46gTq3EHZa/JJKL00qnwesR7TKk8H2jl9/qzG4WtmsTlcpFRsWeEbJew==
-X-Received: by 2002:a17:906:f199:b0:a3f:5115:1840 with SMTP id gs25-20020a170906f19900b00a3f51151840mr2742277ejb.62.1708597115358;
-        Thu, 22 Feb 2024 02:18:35 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id vh8-20020a170907d38800b00a3f28bf94f8sm1689681ejc.199.2024.02.22.02.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 02:18:35 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 22 Feb 2024 11:18:33 +0100
-To: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	lsf-pc@lists.linux-foundation.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [LSF/MM/BPF TOPIC] multi kprobe updates
-Message-ID: <ZdcfedGHCwxOI29a@krava>
+	s=arc-20240116; t=1708599534; c=relaxed/simple;
+	bh=Diss7zlBPxC4jTn0gu/kGE8cJpycBkyC63PKOC6t6vg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KHBrMjMbkFQEf2qcS/QtkQs682x5sTY6iL6wTX8hr+TTHZJEsgoa0N7CwDTYLNd8w6z7/mNe5jKACT6mc/FPVtk3blRmI8Xaiy82Nts6bcVRF45Vvo2gWfAfttwMDU3afsQLmCTceA4NbwhFyAzkTbKBQMHrMsFXD7exVTYF6cQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HKLm/d/M; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sz3ehyfG; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 22 Feb 2024 11:58:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708599523;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dzKJ0M4bd7vLp9/i2P/cVKIkDRUIoIsDR4fq498vcgA=;
+	b=HKLm/d/MjfOth0EWHg8nQcBrqW2D7+n9rFZicTzaHBSobHmj3naHZv7LHa88yH6k0b0C+u
+	o2YrrcYtkZXiZw1Towb4onB+uFQOTKig354GH44QpRSVZEOu/EziplswmSLg4RMKz67jAK
+	joUObS3nptwVI+wz/Vk96oGc4BrxZGajsgPzeP5Pk5BPfPdlPdnZ48gWKoi6EMiK0cwVTp
+	DzXLQJlSOOP1XaW1i6V4dZjpA4vtXCat4r4qU7xADmKkAqJYpnBunFXG/XmviL+FiAGXh/
+	wXmQwhPSL+cu4NoS4bhTMKL77nKMtHPELf3Z5k/fIIGEO0d2YxtEkuMSaNGSpg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708599523;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dzKJ0M4bd7vLp9/i2P/cVKIkDRUIoIsDR4fq498vcgA=;
+	b=sz3ehyfGOi9r6v3/OHe094X4Oh5G9HEyxWUM/AG4RxGswAgfRHhmz53nWvOMMlT386wpyh
+	4t0okMMPZEWP1/Cg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Message-ID: <20240222105842.AuHJQwT-@linutronix.de>
+References: <20240216165737.oIFG5g-U@linutronix.de>
+ <87ttm4b7mh.fsf@toke.dk>
+ <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
+ <20240220101741.PZwhANsA@linutronix.de>
+ <0b1c8247-ccfb-4228-bd64-53583329aaa7@kernel.org>
+ <20240220120821.1Tbz6IeI@linutronix.de>
+ <07620deb-2b96-4bcc-a045-480568a27c58@kernel.org>
+ <20240220153206.AUZ_zP24@linutronix.de>
+ <20240222092228.4ACXUrvU@linutronix.de>
+ <f782b460-38fc-4c2b-b886-870760a96ece@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <f782b460-38fc-4c2b-b886-870760a96ece@kernel.org>
 
-There's few ongoing kprobe multi features that I'd like to give an update
-about and discuss.
+On 2024-02-22 11:10:44 [+0100], Jesper Dangaard Brouer wrote:
+> > Ethtool(eth1    ) stat:     14158562 (     14,158,562) <=3D tx_packets =
+/sec
+> > Ethtool(eth1    ) stat:     14158685 (     14,158,685) <=3D tx_pkts_nic=
+ /sec
+> >=20
+> > looks like a small improvement=E2=80=A6 It is not your 15 but close. -t=
+2 does
+> > improve the situation.
+>=20
+> You cannot reach 15Mpps on 10Gbit/s as wirespeed for 10G is 14.88Mpps.
 
-- Support to execute bpf program for both entry and return probes. This
-  way we don't need to create 2 links when we need to run bpf program on
-  entry/return probes of the same function, first rfc posted [0].
+Oh, my bad.
 
-- In addition to above feature introduce shared 'session' data between
-  entry and exit probe accessible from bpf program, originally discussed
-  in [1].
+> Congratulations, I think this 14.15 Mpps is as close to wirespeed as it
+> possible on your hardware.
+>=20
+> BTW what CPU are you using?
 
-- Allow to use per program re-entry checks instead of current hard coded
-  per cpu re-entry check, or just change to per program check directly.
+"Intel(R) Xeon(R) CPU E7-8890 v3 @ 2.50GHz"
+The "performance" governor is used, I lowered the number of CPUs and
+disabled SMT.
 
-- There's ongoing development of patchset moving fprobe implementation
-  from function tracer on top of fgraph tracer by Masami Hiramatsu [2].
-  As kprobe multi link is implemented via fprobe I'd like to give an
-  update what this change means for kprobe multi link.
+> > There is a warning from DMA mapping code but ;)
+>=20
+> It is a warning from IOMMU code?
+> It usually means there is a real DMA unmap bug (which we should fix).
 
+Not sure, I don't think so:
+| ------------[ cut here ]------------
+| ehci-pci 0000:00:1a.0: DMA addr 0x0000000105016ce8+8 overflow (mask fffff=
+fff, bus limit 0).
+| WARNING: CPU: 0 PID: 1029 at kernel/dma/direct.h:105 dma_map_page_attrs+0=
+x1e8/0x1f0
+| RIP: 0010:dma_map_page_attrs+0x1e8/0x1f0
+| Call Trace:
+|  <TASK>
+|  usb_hcd_map_urb_for_dma+0x1b0/0x4d0
+|  usb_hcd_submit_urb+0x342/0x9b0
+|  usb_start_wait_urb+0x50/0xc0
+|  usb_control_msg+0xc8/0x110
+|  get_bMaxPacketSize0+0x5a/0xb0
 
-[0] https://lore.kernel.org/bpf/20240207153550.856536-1-jolsa@kernel.org/
-[1] https://lore.kernel.org/bpf/CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com/
-[2] https://lore.kernel.org/bpf/170723204881.502590.11906735097521170661.stgit@devnote2/
+and USB isn't working. I *think* it is the "memory above 4G" thing, not
+sure where it took the wrong turn.
+
+> --Jesper
+
+Sebastian
 
