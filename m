@@ -1,146 +1,127 @@
-Return-Path: <bpf+bounces-22493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CEB985F4E5
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 10:46:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F2A85F555
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 11:10:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F22A1C228B9
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 09:46:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD2461C2272E
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 10:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEBA3A1CA;
-	Thu, 22 Feb 2024 09:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B7939861;
+	Thu, 22 Feb 2024 10:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MWlwlCPH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MxGKK76k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKWMaG1r"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4432383BA;
-	Thu, 22 Feb 2024 09:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41793717C;
+	Thu, 22 Feb 2024 10:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708595135; cv=none; b=U34GG6cr7z2B3ZUPRD55l0jG8AyVs/NECuQEXMqr6xxOWGh+TGy+Ib5Jj3k8TfDfLIktDONzQOtR8j927njyarJdcqeEAxrIN12OG2yVeUY/+GW4cvLpaATP7f0xqNKNQwIkO1gm8ckY9iAMpq6lv1dp90oBejWxzXW/af1QDLg=
+	t=1708596647; cv=none; b=HrUTYb+UL+w5nZBrHvya59ZCj1/QxxjcZH82o0lctVhbPvC9bL0+wFjUmJDfjMwTe8NW5O+mboJV65cLXuRigw2jxBPWWb+JtUE56ZB5xrBN69tXKnveX6FwQM/JE6WHa4+hSC33945Cr1z17NV8shhf4K1rsGSfvH6I1+3o5Pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708595135; c=relaxed/simple;
-	bh=+uP4Aru1jO+hGv9BqKIcoveDNM3YshsEp66xmEqSbno=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=B1NPUGM+akC9686BxlOYi6GIqU9lfGL4vqapgAUQRyFXCVQBPyzhhCCZAitG3msn70OyZUSteByA0sxeEWa0bUtO2aToF/k4q9lRQP1QHUzRlOmmPiI2WBLUPBV0Sb3SoH/ABPSIz2Mchvppk8T5f4rMkGDtSp78iYMzakfwsDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MWlwlCPH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MxGKK76k; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708595131;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=hDPIpDaJ04CEUJVADkl2USSeO4nobgJA2IAQrE2lwHE=;
-	b=MWlwlCPHtPUyElbQv/nVU2F1JnjJPVHNU1v4NMGQVnceTPlYBmk730QRsnUAbF5Bouw0b1
-	JTjQUIj4wG4y14dr34p4CO/QwGOtWJ6PeVYq69oTsT7DD5rcXp0utZDgqicu1QLOfnjcR8
-	mSjabYhLhcuQnvGjbUCtooPIMWyEwIHQ8eQ3qfvtuhM5tsbrEMp3Oj2+JAv/pvilHPRNyY
-	bcb9rCFScggMxDNfgoMIGWC/iFnwLbcxIQ4u7fZO3Bal8PwPMcBbBxQy3Xp3R6skTfo69g
-	EXH7K4mZb6MWNLaWMKODzSHY1cIfip3+iZkkA3zWpnjNVD4iSfzXetDZ6nV1og==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708595131;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=hDPIpDaJ04CEUJVADkl2USSeO4nobgJA2IAQrE2lwHE=;
-	b=MxGKK76kOYzpcuMnnAUCOVbNmESzHb6aCMutTvsQLIIUHJP23j2DIJOSXjviCIuu6cdl1R
-	WMZvWpOyK0iyVEAA==
-Date: Thu, 22 Feb 2024 10:45:24 +0100
-Subject: [PATCH net] net: stmmac: Complete meta data only when enabled
+	s=arc-20240116; t=1708596647; c=relaxed/simple;
+	bh=tSCey7ELn07ZU9G79jg+PQl0/S1XaKqMN+IGgH7so/g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZljmNY5oMDwjweFsrEJLivQHl/JibNCEhtje2NkKFdW198vuTGiNhsRSDB9Ooue0cu6gbfze2A2Oy+GesIvq6MUFoYJ0uU7c1zzBTwxMhe5CKb1DXTjNbcCSP3tg5fvmBAD7W2WiXNRs2+UEER/qAl8CMS3hukFQWp6N2nGxXdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKWMaG1r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 776BCC433C7;
+	Thu, 22 Feb 2024 10:10:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708596647;
+	bh=tSCey7ELn07ZU9G79jg+PQl0/S1XaKqMN+IGgH7so/g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XKWMaG1rDE8S2F4Hq5jrogc5oGjI3onN35wJZU9oOP7BocfcdgMcBx3o1+7smOHy8
+	 WOJASqOCGIm/K8H+GcTqROYQV3NBqgDcVrYCWTnAJVW6ZSdRSMCDw21xeN/3xgGtnh
+	 /valzWQDyvWH2Vcmtzbb7yJqDnw7NYC0qBpu1bxl6+IRtovEbr28sYC5DK5MMRS1GY
+	 cBdXKplni5mq+8wwzS6wgVp6xthTIoo7iBqTHUrnUUFu7UCgsmo95cK6mfuekph9la
+	 IuFLgTMUKS98IDolsrr/nf9HNCaaqxqWTa9wkEsJ7hW3xT8TOWUEogaB5EbgP1lAnh
+	 8Zah+axbDNJ6A==
+Message-ID: <f782b460-38fc-4c2b-b886-870760a96ece@kernel.org>
+Date: Thu, 22 Feb 2024 11:10:44 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240222-stmmac_xdp-v1-1-e8d2d2b79ff0@linutronix.de>
-X-B4-Tracking: v=1; b=H4sIALMX12UC/x2N0QqDMAwAf0XyvELN5pD9yhgjrVHz0E6SIoL47
- 6s+HsdxOxirsMGr2UF5FZNfrtDeGogz5YmdDJUBPT48IjorKVH8bsPiur7jMLbP3oc71CCQsQt
- KOc5nksgK6ykW5VG26/KGzAU+x/EHwB3qpXoAAAA=
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Song Yoong Siang <yoong.siang.song@intel.com>, 
- Stanislav Fomichev <sdf@google.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Serge Semin <fancer.lancer@gmail.com>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, netdev@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
- Kurt Kanzenbach <kurt@linutronix.de>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1670; i=kurt@linutronix.de;
- h=from:subject:message-id; bh=+uP4Aru1jO+hGv9BqKIcoveDNM3YshsEp66xmEqSbno=;
- b=owEBbQKS/ZANAwAKAcGT0fKqRnOCAcsmYgBl1xe5krMQNx7AKgDQ6kfscGrcYyY+wgvhNsbdr
- Kmy6KpDJkCJAjMEAAEKAB0WIQS8ub+yyMN909/bWZLBk9HyqkZzggUCZdcXuQAKCRDBk9HyqkZz
- gtgZD/9wcuhH+3J6snCA+Xn8jYNRSY8o2hCaqYmzqiuZynWNp1AnKnPkyPthIVuAEISiPfb0JBA
- PnX2WzT7WM/dtNW/XlxuEsMvVc4Lm35eIWmmpHJHJ1AUgMeXddxYuahrST726AQU7+QWptGBkEE
- BMOSuJ/rEfWDUZNOR5twXV/O9UoHQ7EAnUIMTOuIwLerhi+lFXwC6wSsGLKmjiS08wUT83BYzlf
- NgQDZy84CxY2fuKV110GB8aRS7pju8paZtZJhL8CFCOcNJ6aq/nZdqV4Fa9H357eIQlqqHLzPOx
- fE1dYu1xPhKErWfn8vQCfLWgz2lHEogDAPHBR8ZFnrSPgbhc9DTBjA9h4E6iO2ybC3i6H7/zWLX
- yCJEG0n7jXeKPS+Zf+DridZyGPdKgyKBcClPaikmc9HBK08EvmegFSHGA1zkiNxjAgt1LKquSJ1
- IUetlz69p/YrVM6Qx9V01sPejfbeFviQRl35RObJWpopx9ug5n8W2ohr6DNszdaxKjE8ju8EJh7
- x35G4bx8HMPRbl68atdLaeStK+15pDdwDPZWAuojghO31sk6u6MuSlQjgMjbKAlEZ7NjyupFlQU
- B1Ayqlho+unvlf49pa5YUCJ8eULvhvw2Eh/8j7YC5nYr2eYRbrHI2kzgSPRJ8k1ccK4RUJ6V9Bh
- 91tc+TF+qX/qSKQ==
-X-Developer-Key: i=kurt@linutronix.de; a=openpgp;
- fpr=BCB9BFB2C8C37DD3DFDB5992C193D1F2AA467382
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC net-next 1/2] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Content-Language: en-US
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20240214163607.RjjT5bO_@linutronix.de> <87jzn5cw90.fsf@toke.dk>
+ <20240216165737.oIFG5g-U@linutronix.de> <87ttm4b7mh.fsf@toke.dk>
+ <04d72b93-a423-4574-a98e-f8915a949415@kernel.org>
+ <20240220101741.PZwhANsA@linutronix.de>
+ <0b1c8247-ccfb-4228-bd64-53583329aaa7@kernel.org>
+ <20240220120821.1Tbz6IeI@linutronix.de>
+ <07620deb-2b96-4bcc-a045-480568a27c58@kernel.org>
+ <20240220153206.AUZ_zP24@linutronix.de>
+ <20240222092228.4ACXUrvU@linutronix.de>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20240222092228.4ACXUrvU@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Currently using XDP/ZC sockets on stmmac results in a kernel crash:
 
-|[  255.822584] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-|[...]
-|[  255.822764] Call trace:
-|[  255.822766]  stmmac_tx_clean.constprop.0+0x848/0xc38
 
-The program counter indicates xsk_tx_metadata_complete(). However, this
-function shouldn't be called unless metadata is actually enabled.
+On 22/02/2024 10.22, Sebastian Andrzej Siewior wrote:
+> On 2024-02-20 16:32:08 [+0100], To Jesper Dangaard Brouer wrote:
+>>>
+>>>   Ethtool(i40e2) stat:     15028585 (  15,028,585) <= tx-0.packets /sec
+>>>   Ethtool(i40e2) stat:     15028589 (  15,028,589) <= tx_packets /sec
+>>
+>> -t1 in ixgbe
+>> Show adapter(s) (eth1) statistics (ONLY that changed!)
+>> Ethtool(eth1    ) stat:    107857263 (    107,857,263) <= tx_bytes /sec
+>> Ethtool(eth1    ) stat:    115047684 (    115,047,684) <= tx_bytes_nic /sec
+>> Ethtool(eth1    ) stat:      1797621 (      1,797,621) <= tx_packets /sec
+>> Ethtool(eth1    ) stat:      1797636 (      1,797,636) <= tx_pkts_nic /sec
+>> Ethtool(eth1    ) stat:    107857263 (    107,857,263) <= tx_queue_0_bytes /sec
+>> Ethtool(eth1    ) stat:      1797621 (      1,797,621) <= tx_queue_0_packets /sec
+> …
+>> while sending with ixgbe while running perf top on the box:
+>> | Samples: 621K of event 'cycles', 4000 Hz, Event count (approx.): 49979376685 lost: 0/0 drop: 0/0
+>> | Overhead  CPU  Command          Shared Object             Symbol
+>> |   31.98%  000  kpktgend_0       [kernel]                  [k] xas_find
+>> |    6.72%  000  kpktgend_0       [kernel]                  [k] pfn_to_dma_pte
+>> |    5.63%  000  kpktgend_0       [kernel]                  [k] ixgbe_xmit_frame_ring
+>> |    4.78%  000  kpktgend_0       [kernel]                  [k] dma_pte_clear_level
+>> |    3.16%  000  kpktgend_0       [kernel]                  [k] __iommu_dma_unmap
+> 
+> I disabled the iommu and I get to
 
-Tested on imx93 without XDP, with XDP and with XDP/ZC.
+Yes, clearly IOMMU code that cause the performance issue for you.
 
-Fixes: 1347b419318d ("net: stmmac: Add Tx HWTS support to XDP ZC")
-Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-Link: https://lore.kernel.org/netdev/87r0h7wg8u.fsf@kurt.kurt.home/
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This driver doesn't use page_pool, so I want to point out (for people
+finding this post in the future) that page_pool keeps DMA mappings for
+recycled frame, which should address the IOMMU overhead issue here.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index e80d77bd9f1f..8b77c0952071 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2672,7 +2672,8 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue,
- 			}
- 			if (skb) {
- 				stmmac_get_tx_hwtstamp(priv, p, skb);
--			} else {
-+			} else if (tx_q->xsk_pool &&
-+				   xp_tx_metadata_enabled(tx_q->xsk_pool)) {
- 				struct stmmac_xsk_tx_complete tx_compl = {
- 					.priv = priv,
- 					.desc = p,
+> 
+> Ethtool(eth1    ) stat:     14158562 (     14,158,562) <= tx_packets /sec
+> Ethtool(eth1    ) stat:     14158685 (     14,158,685) <= tx_pkts_nic /sec
+> 
+> looks like a small improvement… It is not your 15 but close. -t2 does
+> improve the situation. 
 
----
-base-commit: 603ead96582d85903baec2d55f021b8dac5c25d2
-change-id: 20240222-stmmac_xdp-585ebf1680b3
+You cannot reach 15Mpps on 10Gbit/s as wirespeed for 10G is 14.88Mpps.
 
-Best regards,
--- 
-Kurt Kanzenbach <kurt@linutronix.de>
+Congratulations, I think this 14.15 Mpps is as close to wirespeed as it
+possible on your hardware.
 
+BTW what CPU are you using?
+
+> There is a warning from DMA mapping code but ;)
+
+It is a warning from IOMMU code?
+It usually means there is a real DMA unmap bug (which we should fix).
+
+--Jesper
 
