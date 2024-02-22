@@ -1,232 +1,133 @@
-Return-Path: <bpf+bounces-22536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5583D8605AC
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 23:26:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD008605CC
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 23:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFF861F250E8
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 22:26:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 214232856C2
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 22:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AEC137926;
-	Thu, 22 Feb 2024 22:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BB518050;
+	Thu, 22 Feb 2024 22:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZpmBon58"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ku1lUnks"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFC3137925
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 22:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1E7DDB0;
+	Thu, 22 Feb 2024 22:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640797; cv=none; b=jdz7udXgru5Ih0cTiSgTGOWNtG9ksDunNWd1rOXrOXQi9zbdbet4ALpQFPPyC5wuFMEfSPZRnHu4ybhmZeMk8C9jYifmsN5czFaB3SqO1WB09gid5XDkn+gfEzMxhnCH4jK39hsQ/9lu/SgERBB5QypCNi3F+cr3vv172zAik0k=
+	t=1708641629; cv=none; b=ej8DjtFk5LiWmJeT24h2KCH+r0WUGb8nVVneSr0jczLlo30qL1oiXS0U/PnXiGV0pyLkBGZBBgc5XPlYizRdmGqMvznplsfSZCK9QfaHMkPB/fQSE4IIZAocJyYPiH0PPddcQhiwd2Rm23fd8ijFr+6Yihhgh2mRpCLBLgS2AHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640797; c=relaxed/simple;
-	bh=kY+MSlkBXyBkmnvb+NaTneZsRI1XZ8ED3i+XLagur6U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oa8obt+dMAWUC+lMbg2ltz3v90d6oGrhfdUPhvN2L/TNNz3ttuMmliYecq0AtZdsJ2BYovfXRDS7xQfwYXQ2lCzsMh7maU04JsHlxmnDGqnPd9GUU1CwM24LtNEr/VqpfX58u/+w1vMsyhlWW9b9jHn5eoFqkDPNR5i0B2Tdup4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZpmBon58; arc=none smtp.client-ip=209.85.128.178
+	s=arc-20240116; t=1708641629; c=relaxed/simple;
+	bh=QU7B0XmAaxdAKxWi2ZnCqyUi/1Q95b2uymSLhj4IYas=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Wsz9rvL0NY4vG5lwu82CO/iPyCDo3wsmBdNfKiCKsBYzPfPwQ+7cOBeFkXHu5Ooi7QB/46HmmBaWvPE+LDNplVsqjl4JRVzPhAn/fBKe63D+MD6KuNHP/9vwEi9XXAiUQWytfRoTkA8u6UlEcBJIO7JByFLt3rgLChork3LuqkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ku1lUnks; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-607c5679842so2779987b3.2
-        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 14:26:35 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33d28468666so180179f8f.0;
+        Thu, 22 Feb 2024 14:40:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708640795; x=1709245595; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gvyBlmzvCQZn7YJtlhRv6cuFksnihPgBjQqmVbCumoc=;
-        b=ZpmBon58zK1UX7kbSFOepJ4hs1qja/R8O5L4POFqykg3QH4FJgEVgiNuzj0qQMedme
-         4unVGL5GSrlavi3/4CpK6BQa1ip0eWpVmUkVkibXIwXl0alL6odAX01QbIntxEDmDqP+
-         V/EmAsHKF1DaWYSh3BxHTvqT54PTycWgbBiXL0QE4P2EnsK6Tazf+ifEazPQrQw4dxI+
-         6qDpKuN0GOUBm5hLkSN8HAalXjZGhju0bOJXKQTclnSCSOH16tjFUSurz74J5Gmt6fdi
-         eXd4tVaPFwvh7maOLhD1OkMhtTW3MiZgZSUSytMjH9johUDe5vKhpK7BFWre1uIy3JUe
-         hMPQ==
+        d=gmail.com; s=20230601; t=1708641626; x=1709246426; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rrbPrUW0ZTICdu2T6tV53S8IPihVOgjh3KZxbVHsClY=;
+        b=Ku1lUnksAnCgco/gNyWmhpqJACD54APc9v83UJ/0F0FNQbciLcMw9GrpDZCWjCBzt4
+         cba+X1wlm36CIax1upRIP1OWvN9O7JKCSrLRs1u+iGlXw8dqJMP+LNuTsoeiJjojYtEA
+         S90PjE3iyUfhBnWvcXsCDkjtzN5/89X7j1KgyVmIDkXfUUwVe4i1fVUn3Xa4iWbe5xV2
+         gBeVBJNv5cpLyAFEN73Y4TDZs7CCso+VVfLfPNbSd9xiHKyDrYuawjkfseFJrOBsoeW+
+         G7pbvoXS7p/wUOIG/li/kV5DStFJtrpFkWGNuzMQDiubYStmzDvlvV+kTMARokGqcYof
+         Ct8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708640795; x=1709245595;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gvyBlmzvCQZn7YJtlhRv6cuFksnihPgBjQqmVbCumoc=;
-        b=WQ71jFwsbRP+qJF32Hg7sFEyhRdEZ9stdeQcydxgFWaNIg7pu305PNlsklZFWVxH/b
-         GrQ7W4lHkoPI1jXXIYUyll3rxr+NqeSbKKbHSTmHy/zAf9hB1+7BXO8Lhh+UChxZbO2h
-         7mKyI+0hxoYRa0G98OzvvN+drbZgcGGnUCbwnwoHn8NSCjSkoXVJ6nNvo1Jfx0BJ8mpN
-         FNKEsz5gTdczsuPAM0xbzqCXqAx5FU+1+IlkaVwEk14pohGVyir3UgZq2CuktDfkNsts
-         4Dol5LTwikC1wySvOii1m3iDRuA4iixElte2dbZnZfWBVmEfYOnqB16OpHVbgIURylTx
-         884A==
-X-Gm-Message-State: AOJu0YzN9n+FQt7uesS9KbnLOsEZuEXlX8qYahLbeyCk/kWjAbej4Imb
-	V4Rqzo2xK3QMHQqVkuG9MSkrlYrK1CEOx9duD/4P8fO1haXp54ewRs29nRf3
-X-Google-Smtp-Source: AGHT+IE+Sv3rh+SRxHSqodb9K1iyCLLxOITK7SP6YoyxECdvH5005eWroJRx2bDsMCAqcHN3YsnM/A==
-X-Received: by 2002:a0d:cb11:0:b0:608:b61c:1a4e with SMTP id n17-20020a0dcb11000000b00608b61c1a4emr207559ywd.15.1708640794528;
-        Thu, 22 Feb 2024 14:26:34 -0800 (PST)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:34d2:7236:710a:117c])
-        by smtp.gmail.com with ESMTPSA id e129-20020a0df587000000b00604a2e45cf2sm3280666ywf.140.2024.02.22.14.26.33
+        d=1e100.net; s=20230601; t=1708641626; x=1709246426;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rrbPrUW0ZTICdu2T6tV53S8IPihVOgjh3KZxbVHsClY=;
+        b=EyMkrFeMibsK0C1yQKInGVgpp54xT2jZZzl0gSoy744S0caN02LXqt8SMQqCIalCsr
+         eDYzKIhjNRpccsMkczaEzAjs2k9kC85eJ5bfVUKepH/d9oC6avYCGxqjxCxfSFPVLdm3
+         3yefs3PtrDx8JqcpE7sn5mj9rsawK10JNlBGnNCxI2qeCKTkC7izMS6dQEaw98wFNEai
+         lqrjjZqIfG5IgkzRmov4pEbaDmLtLgExgfItS9levVikMBsCZG3yZLacfLHqwWca0XOV
+         1fxb3/kmq+CRhHtUClCWKN4TR/GZC4rspL6pm7l0tPTD3xhKbflrebyCQ5IYCMPUrukO
+         XEHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUF6oJDkhzajtxftj+O3LK/Qyx65D6w7ZnqGCVG0MrsdZ4MsxMs+922Mk/uvOC956+xVgPySqahwlsOJsjwuSCjAQfshOBAjSxbavhEgufp/x2b/moaAFf7HXr/vM6yPzqc/MCfIROy5O4pBak5l+wDenktC3Ie/0CprEE3skJLpOpANpnqQVdWWfPZsN8PtzsV/ZGFEK6hy4wcQKSfKYP5WouRndA=
+X-Gm-Message-State: AOJu0Yx+gvOI3v7d6pJ52g4vLp0lfvMd9rVzbbTGThU8dq4roGubhVPm
+	YjmNBwV/frkYtE83t8S2VYZDhopXhNo0PgothxQZlQJyqbfeA3hS
+X-Google-Smtp-Source: AGHT+IF1THB2ejW4S987dQwSKgSrOpBW5FOkzcaoipMhvGebOGY8HsQnjvJfNBnKaMgrYrUm7wBmCg==
+X-Received: by 2002:adf:db4d:0:b0:33d:3ab8:2da7 with SMTP id f13-20020adfdb4d000000b0033d3ab82da7mr294318wrj.11.1708641625699;
+        Thu, 22 Feb 2024 14:40:25 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id un8-20020a170907cb8800b00a3fa6a322adsm457653ejc.56.2024.02.22.14.40.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 14:26:34 -0800 (PST)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	quentin@isovalent.com
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v4 6/6] selftests/bpf: Test if shadow types work correctly.
-Date: Thu, 22 Feb 2024 14:26:24 -0800
-Message-Id: <20240222222624.1163754-7-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240222222624.1163754-1-thinker.li@gmail.com>
-References: <20240222222624.1163754-1-thinker.li@gmail.com>
+        Thu, 22 Feb 2024 14:40:25 -0800 (PST)
+Message-ID: <818e43447651af1a659993897c14d05fec5038e4.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v3 04/16] bpf/helpers: introduce sleepable
+ bpf_timers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>,  Benjamin Tissoires
+ <benjamin.tissoires@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Shuah
+ Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Fri, 23 Feb 2024 00:40:23 +0200
+In-Reply-To: <20240221-hid-bpf-sleepable-v3-4-1fb378ca6301@kernel.org>
+References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
+	 <20240221-hid-bpf-sleepable-v3-4-1fb378ca6301@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+On Wed, 2024-02-21 at 17:25 +0100, Benjamin Tissoires wrote:
 
-Change the values of fields, including scalar types and function pointers,
-and check if the struct_ops map works as expected.
+[...]
 
-The test changes the field "test_2" of "testmod_1" from the pointer to
-test_2() to pointer to test_3() and the field "data" to 13. The function
-test_2() and test_3() both compute a new value for "test_2_result", but in
-different way. By checking the value of "test_2_result", it ensures the
-struct_ops map works as expected with changes through shadow types.
+> @@ -1282,7 +1333,7 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *=
+, timer, u64, nsecs, u64, fla
+> =20
+>  	if (in_nmi())
+>  		return -EOPNOTSUPP;
+> -	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
+> +	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN | BPF_F_TIMER_SLEEP=
+ABLE))
+>  		return -EINVAL;
+>  	__bpf_spin_lock_irqsave(&timer->lock);
+>  	t =3D timer->timer;
+> @@ -1299,7 +1350,10 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern =
+*, timer, u64, nsecs, u64, fla
+>  	if (flags & BPF_F_TIMER_CPU_PIN)
+>  		mode |=3D HRTIMER_MODE_PINNED;
+> =20
+> -	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+> +	if (flags & BPF_F_TIMER_SLEEPABLE)
+> +		schedule_work(&t->work);
+> +	else
+> +		hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 11 ++++++++++-
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  8 ++++++++
- .../bpf/prog_tests/test_struct_ops_module.c   | 19 +++++++++++++++----
- .../selftests/bpf/progs/struct_ops_module.c   |  8 ++++++++
- 4 files changed, 41 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 66787e99ba1b..098ddd067224 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -539,6 +539,15 @@ static int bpf_testmod_ops_init_member(const struct btf_type *t,
- 				       const struct btf_member *member,
- 				       void *kdata, const void *udata)
- {
-+	if (member->offset == offsetof(struct bpf_testmod_ops, data) * 8) {
-+		/* For data fields, this function has to copy it and return
-+		 * 1 to indicate that the data has been handled by the
-+		 * struct_ops type, or the verifier will reject the map if
-+		 * the value of the data field is not zero.
-+		 */
-+		((struct bpf_testmod_ops *)kdata)->data = ((struct bpf_testmod_ops *)udata)->data;
-+		return 1;
-+	}
- 	return 0;
- }
- 
-@@ -559,7 +568,7 @@ static int bpf_dummy_reg(void *kdata)
- 	 * initialized, so we need to check for NULL.
- 	 */
- 	if (ops->test_2)
--		ops->test_2(4, 3);
-+		ops->test_2(4, ops->data);
- 
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index c3b0cf788f9f..971458acfac3 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -35,6 +35,14 @@ struct bpf_testmod_ops {
- 	void (*test_2)(int a, int b);
- 	/* Used to test nullable arguments. */
- 	int (*test_maybe_null)(int dummy, struct task_struct *task);
-+
-+	/* The following fields are used to test shadow copies. */
-+	char onebyte;
-+	struct {
-+		int a;
-+		int b;
-+	} unsupported;
-+	int data;
- };
- 
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-index 8d833f0c7580..7d6facf46ebb 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -32,17 +32,23 @@ static void check_map_info(struct bpf_map_info *info)
- 
- static void test_struct_ops_load(void)
- {
--	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
- 	struct struct_ops_module *skel;
- 	struct bpf_map_info info = {};
- 	struct bpf_link *link;
- 	int err;
- 	u32 len;
- 
--	skel = struct_ops_module__open_opts(&opts);
-+	skel = struct_ops_module__open();
- 	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
- 		return;
- 
-+	skel->struct_ops.testmod_1->data = 13;
-+	skel->struct_ops.testmod_1->test_2 = skel->progs.test_3;
-+	/* Since test_2() is not being used, it should be disabled from
-+	 * auto-loading, or it will fail to load.
-+	 */
-+	bpf_program__set_autoload(skel->progs.test_2, false);
-+
- 	err = struct_ops_module__load(skel);
- 	if (!ASSERT_OK(err, "struct_ops_module_load"))
- 		goto cleanup;
-@@ -56,8 +62,13 @@ static void test_struct_ops_load(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
- 	ASSERT_OK_PTR(link, "attach_test_mod_1");
- 
--	/* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
--	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
-+	/* test_3() will be called from bpf_dummy_reg() in bpf_testmod.c
-+	 *
-+	 * In bpf_testmod.c it will pass 4 and 13 (the value of data) to
-+	 * .test_2.  So, the value of test_2_result should be 20 (4 + 13 +
-+	 * 3).
-+	 */
-+	ASSERT_EQ(skel->bss->test_2_result, 20, "check_shadow_variables");
- 
- 	bpf_link__destroy(link);
- 
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-index b78746b3cef3..25952fa09348 100644
---- a/tools/testing/selftests/bpf/progs/struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-@@ -21,9 +21,17 @@ void BPF_PROG(test_2, int a, int b)
- 	test_2_result = a + b;
- }
- 
-+SEC("struct_ops/test_3")
-+int BPF_PROG(test_3, int a, int b)
-+{
-+	test_2_result = a + b + 3;
-+	return a + b + 3;
-+}
-+
- SEC(".struct_ops.link")
- struct bpf_testmod_ops testmod_1 = {
- 	.test_1 = (void *)test_1,
- 	.test_2 = (void *)test_2,
-+	.data = 0x1,
- };
- 
--- 
-2.34.1
-
+It looks like nsecs is simply ignored for sleepable timers.
+Should this be hrtimer_start() that waits nsecs and schedules work,
+or schedule_delayed_work()? (but it takes delay in jiffies, which is
+probably too coarse). Sorry if I miss something.
 
