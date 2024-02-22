@@ -1,333 +1,152 @@
-Return-Path: <bpf+bounces-22486-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22487-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A069A85F276
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 09:08:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3A185F37D
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 09:53:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 528A02893D2
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 08:08:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 120761F23C7C
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 08:53:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E97CF1D69C;
-	Thu, 22 Feb 2024 08:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEAA364C2;
+	Thu, 22 Feb 2024 08:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XzCdFBgV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXO7NNUz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF561B59A;
-	Thu, 22 Feb 2024 08:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FA718030
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 08:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708589159; cv=none; b=W43+ya1sKFRI6E5V28CSzDFoknOJNwThxO4kZzEKOvGkHhCraVAqO/V0HE4tzoZcDERXDQCj728ThKlQMBGVc/G6LPXb+PPhjSGi/C8CisLxZvTBwqLey+3c+Zl8ZnoASuUX05uWjQYgg5BgstCUmmchNn1J9uRvpFBHgGXMiEk=
+	t=1708591974; cv=none; b=HDxuVVdYZ3Y37uGtcOict/AE1eELSMTVfiI6ru0zup0PN/TJVCAGYbwsTY5oSdUH1p4YZ72ezQ0cvu2px52VCccOKepAVf1fzzlV+1aSGvyb86gCoi+vrS1hXgz10f2kGfX2ai5Y8lSxUx/cKBZ62zJknntzPnDUsX6V1p95Va4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708589159; c=relaxed/simple;
-	bh=izavFdox2dLt/OX5kfsvzHbaYzAHoAgZM7WJkytNCT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lKMNV6Bc9P+yNBeYTlTbl23aHwIBeeAYG1YDu/ju4b+1D2uSmwhdaZNQma8jE5pIZX/htDXBHFz6l8DNpD0MPg03cMJMyJ5KdQ0Zxuw9C9lbMdAeQUm/iryYSi+kal8NMsfg/JiP9iKuoJGT9ioaXl10eNMC5txsHhhU3p5zPDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XzCdFBgV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E9DC433C7;
-	Thu, 22 Feb 2024 08:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708589158;
-	bh=izavFdox2dLt/OX5kfsvzHbaYzAHoAgZM7WJkytNCT4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XzCdFBgVlHUzxeSH93+yGQkIF8hUeNg4CHg6cReqfpgxKW01yktyQW8wYU0OEuADe
-	 F8u1K20U30GdRCw/xu+6dx27zaMqdduY2+blwHxoFfOsd9Pn5hkmUmhRQ5bUDrP9l5
-	 /2kNzRhmopRT0pKEZjlLlULYQid0d0f8blKiHwJmi2EipyZ38MJ/OnAjHQeS2GtSF5
-	 QdbIkB5OLRTexTO1sIEjEbkA1T0oNin52AlSUJFDDgbFX+6dHpyt0FltbJ66J8bfPP
-	 /rxYRa+gF+VQ12wYYAwwmY83ncFV7SC1/jo+NjbnGr0YF0MjxUpGKMFvYXEqMwXZZ+
-	 DqmQu94hlKf0A==
-Date: Thu, 22 Feb 2024 09:05:51 +0100
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v3 04/16] bpf/helpers: introduce sleepable
- bpf_timers
-Message-ID: <kxpwidrgvrkunjygeene45dbil4mfwqjspvfsjh6v24fxrmlk7@xfaer57k2f22>
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
- <20240221-hid-bpf-sleepable-v3-4-1fb378ca6301@kernel.org>
+	s=arc-20240116; t=1708591974; c=relaxed/simple;
+	bh=kor8q6UkJtxOdurV8lLMyDivN89CXjpv9TlhRI5HyWY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h96fuatdedjUdHsVLZKJP2K2vzmHNJy49y4HY2IeB9R7WOV1GkFgfss8H9e+eSsEFdXJqFlf7cav901v5GssbCiJxEY5Zbv7fh6CBa5REwuK6jxhFHuWozKSBbbvZW60ZW6cCLIvoQ1UL8J22U+VrpbvXHPTeJtQVsxOV/Ed8m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXO7NNUz; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e46b5e7c43so2323827b3a.2
+        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 00:52:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708591972; x=1709196772; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oDOkAdY9qrPMkWdTu/bHgC+jiBWbVfhG81xsHdXNH34=;
+        b=HXO7NNUzjKQqxdorQqPRGaUBTvXumYiRiY+ytxzPBaUpB3ufpJwKNCZUAMo2UoU0g+
+         GMJDCwX8er+Z/p0ZYbhdpL4U8tY7W83i2tfrpXjWQRPunsFmrj+jALh9EIJzIMLX2GF3
+         tv7q4zgxfufPRBouN6AX3qk0xDhE+p/JMZiOshTkVwvlcaPzyYxEm/3gOWkkQFy6cAZD
+         niMkTlBibVCsYHB4Dq0Hk6zYcGORk2B6sJtJM8GY05JayAI2FBW7POyDSF8UFdghGwfx
+         DUj1kB3cAkgsoqwEnS21wH0zQHmv9TLM5pj0eZFa3j8zrFMxYLikSWqnAOy2pqUfWTG6
+         UKgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708591972; x=1709196772;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oDOkAdY9qrPMkWdTu/bHgC+jiBWbVfhG81xsHdXNH34=;
+        b=vD4jTd6tdHYOdwDKCyCbc7njmACB7pgfkVoiI1rkTdvY1RvzmD6UpAtgZ2JryQO4kF
+         4k5ZGJmMB5qdke5V2INZYX/cX+Rere16BhwGzk7I2A2nDnXkz7mOxS5fRv9oehATsE3F
+         vN6VReIOnOA9+Ydd+i/EFyZ0GduTChEeRHUct3YLoenK7QBB03hlm/BUKacqe53gybqu
+         4b/xSu+qhEinQ2EGHmJEp4qdEomTvRqvKzFoVDYNfLH2ASt9/CrjhMexKR4R/4u50R0y
+         JqsNgScOqI/UpFBKjQQ/nviJazKWF0w1+0BfuAqKHN5C1wCke0zbFShxH9Dzb6P+Z+V5
+         VAbA==
+X-Gm-Message-State: AOJu0YwbqUi26BZHMWL1w4MX/Ok6myd0qhaF2I5UBpQlADB9x0eKqmg4
+	wrpmgxXicQqjlPts9gOPUKYWuMhpZ2Yuq48pTFoF+2bd5se8fXQaFy8WeTNXaTo=
+X-Google-Smtp-Source: AGHT+IE5EcPbcgdJsjmx3zvyt/bQ+0ZdnrR/ErQod8bnIHTfE20XVnJLbRdhWqymGYoddYJzQR38Xg==
+X-Received: by 2002:aa7:9802:0:b0:6e4:148e:2933 with SMTP id e2-20020aa79802000000b006e4148e2933mr11178308pfl.13.1708591971883;
+        Thu, 22 Feb 2024 00:52:51 -0800 (PST)
+Received: from localhost.localdomain (220-136-196-149.dynamic-ip.hinet.net. [220.136.196.149])
+        by smtp.gmail.com with ESMTPSA id s12-20020aa7828c000000b006dde0724247sm10656712pfm.149.2024.02.22.00.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 00:52:51 -0800 (PST)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	maciej.fijalkowski@intel.com,
+	jakub@cloudflare.com,
+	iii@linux.ibm.com,
+	hengqi.chen@gmail.com,
+	hffilwlqm@gmail.com,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v2 0/2] bpf, x64: Fix tailcall hierarchy
+Date: Thu, 22 Feb 2024 16:52:30 +0800
+Message-ID: <20240222085232.62483-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221-hid-bpf-sleepable-v3-4-1fb378ca6301@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Feb 21 2024, Benjamin Tissoires wrote:
-> They are implemented as a workqueue, which means that there are no
-> guarantees of timing nor ordering.
-> 
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> 
-> ---
-> 
-> changes in v3:
-> - extracted the implementation in bpf_timer only, without
->   bpf_timer_set_sleepable_cb()
-> - rely on schedule_work() only, from bpf_timer_start()
-> - add semaphore to ensure bpf_timer_work_cb() is accessing
->   consistent data
-> 
-> changes in v2 (compared to the one attaches to v1 0/9):
-> - make use of a kfunc
-> - add a (non-used) BPF_F_TIMER_SLEEPABLE
-> - the callback is *not* called, it makes the kernel crashes
-> ---
->  include/uapi/linux/bpf.h |  4 +++
->  kernel/bpf/helpers.c     | 92 ++++++++++++++++++++++++++++++++++++++++--------
->  2 files changed, 82 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index d96708380e52..1fc7ecbd9d33 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7421,10 +7421,14 @@ struct bpf_core_relo {
->   *     - BPF_F_TIMER_ABS: Timeout passed is absolute time, by default it is
->   *       relative to current time.
->   *     - BPF_F_TIMER_CPU_PIN: Timer will be pinned to the CPU of the caller.
-> + *     - BPF_F_TIMER_SLEEPABLE: Timer will run in a sleepable context, with
-> + *       no guarantees of ordering nor timing (consider this as being just
-> + *       offloaded immediately).
->   */
->  enum {
->  	BPF_F_TIMER_ABS = (1ULL << 0),
->  	BPF_F_TIMER_CPU_PIN = (1ULL << 1),
-> +	BPF_F_TIMER_SLEEPABLE = (1ULL << 2),
->  };
->  
->  /* BPF numbers iterator state */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 93edf730d288..f9add0abe40a 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -23,6 +23,7 @@
->  #include <linux/btf_ids.h>
->  #include <linux/bpf_mem_alloc.h>
->  #include <linux/kasan.h>
-> +#include <linux/semaphore.h>
->  
->  #include "../../lib/kstrtox.h"
->  
-> @@ -1094,13 +1095,19 @@ const struct bpf_func_proto bpf_snprintf_proto = {
->   * bpf_timer_cancel() cancels the timer and decrements prog's refcnt.
->   * Inner maps can contain bpf timers as well. ops->map_release_uref is
->   * freeing the timers when inner map is replaced or deleted by user space.
-> + *
-> + * sleepable_lock protects only the setup of the workqueue, not the callback
-> + * itself. This is done to ensure we don't run concurrently a free of the
-> + * callback or the associated program.
->   */
->  struct bpf_hrtimer {
->  	struct hrtimer timer;
-> +	struct work_struct work;
->  	struct bpf_map *map;
->  	struct bpf_prog *prog;
->  	void __rcu *callback_fn;
->  	void *value;
-> +	struct semaphore sleepable_lock;
->  };
->  
->  /* the actual struct hidden inside uapi struct bpf_timer */
-> @@ -1113,6 +1120,55 @@ struct bpf_timer_kern {
->  	struct bpf_spin_lock lock;
->  } __attribute__((aligned(8)));
->  
-> +static u32 __bpf_timer_compute_key(struct bpf_hrtimer *timer)
-> +{
-> +	struct bpf_map *map = timer->map;
-> +	void *value = timer->value;
-> +
-> +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-> +		struct bpf_array *array = container_of(map, struct bpf_array, map);
-> +
-> +		/* compute the key */
-> +		return ((char *)value - array->value) / array->elem_size;
-> +	}
-> +
-> +	/* hash or lru */
-> +	return *(u32 *)(value - round_up(map->key_size, 8));
-> +}
-> +
-> +static void bpf_timer_work_cb(struct work_struct *work)
-> +{
-> +	struct bpf_hrtimer *t = container_of(work, struct bpf_hrtimer, work);
-> +	struct bpf_map *map = t->map;
-> +	void *value = t->value;
-> +	bpf_callback_t callback_fn;
-> +	u32 key;
-> +
-> +	BTF_TYPE_EMIT(struct bpf_timer);
-> +
-> +	down(&t->sleepable_lock);
-> +
-> +	callback_fn = READ_ONCE(t->callback_fn);
-> +	if (!callback_fn) {
-> +		up(&t->sleepable_lock);
-> +		return;
-> +	}
-> +
-> +	key = __bpf_timer_compute_key(t);
-> +
-> +	/* prevent the callback to be freed by bpf_timer_cancel() while running
-> +	 * so we can release the semaphore
-> +	 */
-> +	bpf_prog_inc(t->prog);
-> +
-> +	up(&t->sleepable_lock);
-> +
-> +	callback_fn((u64)(long)map, (u64)(long)&key, (u64)(long)value, 0, 0);
-> +	/* The verifier checked that return value is zero. */
-> +
-> +	bpf_prog_put(t->prog);
-> +}
-> +
->  static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
->  
->  static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
-> @@ -1121,8 +1177,7 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
->  	struct bpf_map *map = t->map;
->  	void *value = t->value;
->  	bpf_callback_t callback_fn;
-> -	void *key;
-> -	u32 idx;
-> +	u32 key;
->  
->  	BTF_TYPE_EMIT(struct bpf_timer);
->  	callback_fn = rcu_dereference_check(t->callback_fn, rcu_read_lock_bh_held());
-> @@ -1136,17 +1191,9 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
->  	 * bpf_map_delete_elem() on the same timer.
->  	 */
->  	this_cpu_write(hrtimer_running, t);
-> -	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-> -		struct bpf_array *array = container_of(map, struct bpf_array, map);
-> -
-> -		/* compute the key */
-> -		idx = ((char *)value - array->value) / array->elem_size;
-> -		key = &idx;
-> -	} else { /* hash or lru */
-> -		key = value - round_up(map->key_size, 8);
-> -	}
-> +	key = __bpf_timer_compute_key(t);
->  
-> -	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
-> +	callback_fn((u64)(long)map, (u64)(long)&key, (u64)(long)value, 0, 0);
->  	/* The verifier checked that return value is zero. */
->  
->  	this_cpu_write(hrtimer_running, NULL);
-> @@ -1191,6 +1238,8 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *, timer, struct bpf_map *, map
->  	t->prog = NULL;
->  	rcu_assign_pointer(t->callback_fn, NULL);
->  	hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
-> +	INIT_WORK(&t->work, bpf_timer_work_cb);
-> +	sema_init(&t->sleepable_lock, 1);
->  	t->timer.function = bpf_timer_cb;
->  	WRITE_ONCE(timer->timer, t);
->  	/* Guarantee the order between timer->timer and map->usercnt. So
-> @@ -1245,6 +1294,7 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callb
->  		ret = -EPERM;
->  		goto out;
->  	}
-> +	down(&t->sleepable_lock);
->  	prev = t->prog;
->  	if (prev != prog) {
->  		/* Bump prog refcnt once. Every bpf_timer_set_callback()
-> @@ -1261,6 +1311,7 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callb
->  		t->prog = prog;
->  	}
->  	rcu_assign_pointer(t->callback_fn, callback_fn);
-> +	up(&t->sleepable_lock);
->  out:
->  	__bpf_spin_unlock_irqrestore(&timer->lock);
->  	return ret;
-> @@ -1282,7 +1333,7 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
->  
->  	if (in_nmi())
->  		return -EOPNOTSUPP;
-> -	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
-> +	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN | BPF_F_TIMER_SLEEPABLE))
->  		return -EINVAL;
->  	__bpf_spin_lock_irqsave(&timer->lock);
->  	t = timer->timer;
-> @@ -1299,7 +1350,10 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
->  	if (flags & BPF_F_TIMER_CPU_PIN)
->  		mode |= HRTIMER_MODE_PINNED;
->  
-> -	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
-> +	if (flags & BPF_F_TIMER_SLEEPABLE)
-> +		schedule_work(&t->work);
-> +	else
-> +		hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
->  out:
->  	__bpf_spin_unlock_irqrestore(&timer->lock);
->  	return ret;
-> @@ -1346,13 +1400,21 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
->  		ret = -EDEADLK;
->  		goto out;
->  	}
-> +	down(&t->sleepable_lock);
+The patchset fixes a tailcall hierarchy issue.
 
-Sigh. I initially used a semaphore because here I wanted to have a
-down_trylock() to mimic the behavior of hrtimer. However, this doesn't
-work because we don't know who is actually calling bpf_timer_cancel(),
-and we might not be able to cancel the timer from other threads. And
-actually it doesn't matter because the semaphore is just preventing the
-setup of the callback, not the sleepable callback itself so it's fine to
-call bpf_timer_cancel() from within the callback itself: the timer will
-be freed but the callback will not because the associated prog is
-incremented before entering the callback.
+The issue is confirmed in the discussions of "bpf, x64: Fix tailcall infinite
+loop"[0].
 
-Anyway, I better change this as a simple spinlock (or bpf_spinlock).
+But, the issue is only resolved on x86.
 
-Also I realized that I still have the RFC in the prefix.
-I can repost a v4 with the spinlock change if it is better to not have
-the RFC.
+Hopefully, the issue on aarch64 and s390x will be resolved soon.
 
-Cheers,
-Benjamin
+This CI history[1] confirms the issue on aarch64 and s390x.
 
->  	drop_prog_refcnt(t);
-> +	up(&t->sleepable_lock);
->  out:
->  	__bpf_spin_unlock_irqrestore(&timer->lock);
->  	/* Cancel the timer and wait for associated callback to finish
->  	 * if it was running.
->  	 */
->  	ret = ret ?: hrtimer_cancel(&t->timer);
-> +
-> +	/* also cancel the sleepable work, but *do not* wait for
-> +	 * it to finish if it was running as we might not be in a
-> +	 * sleepable context
-> +	 */
-> +	ret = ret ?: cancel_work(&t->work);
->  	return ret;
->  }
->  
-> @@ -1407,6 +1469,8 @@ void bpf_timer_cancel_and_free(void *val)
->  	 */
->  	if (this_cpu_read(hrtimer_running) != t)
->  		hrtimer_cancel(&t->timer);
-> +
-> +	cancel_work_sync(&t->work);
->  	kfree(t);
->  }
->  
-> 
-> -- 
-> 2.43.0
-> 
+I provide a long commit message in the first patch to describe how the issue
+happens and how this patchset resolves the issue in details.
+
+In short, it uses PERCPU tail_call_cnt to store the temporary tail_call_cnt.
+
+First, at the prologue of bpf prog, it initialise the PERCPU
+tail_call_cnt by setting current CPU's tail_call_cnt to 0.
+
+Then, when a tailcall happens, it fetches and increments current CPU's
+tail_call_cnt, and compares to MAX_TAIL_CALL_CNT.
+
+v1 -> v2:
+  * Solution changes from extra run-time call insn to percpu tail_call_cnt.
+  * Address comments from Alexei:
+    * Use percpu tail_call_cnt.
+    * Use asm to make sure no callee saved registers are touched.
+
+RFC v2 -> v1:
+  * Solution changes from propagating tail_call_cnt with its pointer to extra
+    run-time call insn.
+  * Address comments from Maciej:
+    * Replace all memcpy(prog, x86_nops[5], X86_PATCH_SIZE) with
+        emit_nops(&prog, X86_PATCH_SIZE)
+
+RFC v1 -> RFC v2:
+  * Address comments from Stanislav:
+    * Separate moving emit_nops() as first patch.
+
+Links:
+[0] https://lore.kernel.org/bpf/6203dd01-789d-f02c-5293-def4c1b18aef@gmail.com/
+[1] https://github.com/kernel-patches/bpf/pull/6476/checks
+
+Leon Hwang (2):
+  bpf, x64: Fix tailcall hierarchy
+  selftests/bpf: Add testcases for tailcall hierarchy fixing
+
+ arch/x86/net/bpf_jit_comp.c                   | 128 +++---
+ .../selftests/bpf/prog_tests/tailcalls.c      | 418 ++++++++++++++++++
+ .../bpf/progs/tailcall_bpf2bpf_hierarchy1.c   |  34 ++
+ .../bpf/progs/tailcall_bpf2bpf_hierarchy2.c   |  55 +++
+ .../bpf/progs/tailcall_bpf2bpf_hierarchy3.c   |  46 ++
+ 5 files changed, 624 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
+
+
+base-commit: 499e99ea0e8020bfc84b2327d4c37e45dc40bbd1
+-- 
+2.42.1
+
 
