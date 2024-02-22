@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-22533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86D508605A9
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 23:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A258605AA
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 23:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1552E284605
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 22:26:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E955284ADB
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 22:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74AC3137928;
-	Thu, 22 Feb 2024 22:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DCC137923;
+	Thu, 22 Feb 2024 22:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bFZAxIkz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a3cTGwsW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB2D137912
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 22:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8476137902
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 22:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640794; cv=none; b=VeIPprcsL8rKvhH/PDFXAF8OxkOfPOYPmbSfnkPb+mubh9xnevrIidCzc/2nKIGqn2M/IpyCLUuAaq2SNguIsECTdmHbagHx1BeYBi4k562bZwpz2d2B7WA5SYpwTtvzYk2wa+w51vjVj85CcMI0O/qb3mQDu1IMizE8OyBm0oQ=
+	t=1708640795; cv=none; b=EN59aKioP+ZsGCAJlVap6GJtp7Gv381hJJTir+RI8GIcNNghQOLgTqVdod936TyV7SioJg7+GzMGsmfGeTB2WBz51TxyxNly8gW0x6WnqpLO7nQqEdQJQ+Y8RzHS/qDEALyV6DaIjYISgO8iJupwQSp9MRTxpW59mTMj+PiQJOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640794; c=relaxed/simple;
-	bh=JYlor7liByBS2LlEYz/edKDIPn+GA8eleujRxigKJPQ=;
+	s=arc-20240116; t=1708640795; c=relaxed/simple;
+	bh=myYhlR77GYPMEpdusIYm14ylXipQ4PZJZSgUNWPhjkA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uTy/GCVscfaqhLBFtdEOCj8ezyFeBBi26N0wulmpIaGRZolKpjJhbMnBjCkwXhTiB/6H+XY3AIFFwpeeDOfK/x4lTx0pX/v6rrw0Gj1pUKb2KCn/jgtGN+PQYv+9KceSQNQWBc8argzYRRlhfxsewpanZkD9M1R3PkwWy0piw6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bFZAxIkz; arc=none smtp.client-ip=209.85.128.179
+	 MIME-Version; b=XUCSrg57zrl/CAcAVtRUOTYwbwMnKfNMxQ/0DrnTx+JBXR/3oBwVWIgm1Qx1y4MJ4agFxr+CyqNp5Ua6z4xuaVAeSznepppovLblDlIdO6yyzTZNB9QokYr2byb9EowIGM6NMPWpsu3qcdhlRmat5AW8SHQZYdICVwxKsDs1Zl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a3cTGwsW; arc=none smtp.client-ip=209.85.219.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-607d8506099so3094517b3.0
-        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 14:26:32 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so200570276.2
+        for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 14:26:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708640791; x=1709245591; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708640792; x=1709245592; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AtHDSZGnVRHo3SsKsHaqf43fpvkFwz2UT1hdwLb4lMI=;
-        b=bFZAxIkzO3fOpSL7Zm79zwPQbqVRoqRg7Kok6I44pJxwjfZuXUbxQZ6VYhmPzP3eBG
-         nW7+PizjqOLP+btuNCkmYljEzVHVaWUhZz06oEMnLwmLT1wI97b2+JaMGpa+w4IjkwjE
-         rOJbRjhx+9bYRvnUUY73iTrdrNkWCiD1K+BKs63UUDf8csv+nDaYOYX0J5ct8UgVWB4t
-         UNhJGylkONA5UT6OHJEVrqrqsGgW0GvUwIVoEVG21wb0lm9oliUXlbzY75V0rxgO9Mu7
-         0cawedyfu0kKHTtfrdyWnGop0RNhHFk5nG67MuRsyb0G3Iub94zzWEXBX56P2NEKXG2b
-         s1Kg==
+        bh=R371K0ydisrm+4ePeuSI88lTXvzLnBLcxh/U4PbC+3s=;
+        b=a3cTGwsWeKMS8Jt8HT5bHPk/iHP9CwRPKbgh2OFacIeaky9YwdPHnPa43+epVhmgNE
+         BOccrll0M0aoeMqnUcNLUtHxWMtk3i5vgbRBiJpG7u91K5DVilzHAjnRGgLfSP4YNOVr
+         Ui1kkVaiifYBtnDfGEc+V1HD4VztUjh76/ZOp+4cnpRePdqrwgnBPEIJd4G9+PWhrpH9
+         cIlfuYnC/UKbmBaXcz5I5iu4ZgCyqz1jrh6epVSiAic25iXSayFHDuisL7aCDE3n1GI7
+         YKKVA+BobD39wHyy5VKu1VbIdLjSLpf4KxeEyxmX+8I8lyrDthLn1IpLOob5JnXXYNqr
+         gPEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708640791; x=1709245591;
+        d=1e100.net; s=20230601; t=1708640792; x=1709245592;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AtHDSZGnVRHo3SsKsHaqf43fpvkFwz2UT1hdwLb4lMI=;
-        b=ZEDJfSICUDt5yl6MsWfScN5MdqUnNx5gHKKRSqXuur/U1I55CaLlkAmApkWiHVaTqI
-         fCNoKqTBRY7w4oLBU/sKbNEVh+3T648hqtc4truuDQpq89XcXx3liNMpxZzikTWfdmYa
-         KkEvCvI2hDSwUjd2jASLmOI6IlWlU3dXJIGm1s8zWJDMQMD1lMJFLFqm/GfEfTDLkzse
-         iaauD55SykRtiOxxAai+wYFnFkp4UhmWirS9uBt50o7AqmKxV7WWW5YpfSSTGF34eBnp
-         86KrW2VFnLAbZouYIYb+FWUh8MY/cn77Y+u3yIDu5IjKXi60uDyxpPX+x1Re2OzxL/dR
-         kZqA==
-X-Gm-Message-State: AOJu0YwDaDJr4kBME8kghG06k02fPBMyRkYD/utn06T1tAT92r3CYRdT
-	YeiWuoOBQ+j12hHfUPpNbFcudFkHnsRR0w3S2YO1RaCO34q9hjfjfToUUUXq
-X-Google-Smtp-Source: AGHT+IEGhDpv6gtauv4IYtJ72FMmifU1GWzDrnYhK6DFaF7zN22B/oY5Rx6T1uhx3ewk7KphojXTIg==
-X-Received: by 2002:a05:690c:84:b0:608:b439:4779 with SMTP id be4-20020a05690c008400b00608b4394779mr594049ywb.0.1708640791017;
-        Thu, 22 Feb 2024 14:26:31 -0800 (PST)
+        bh=R371K0ydisrm+4ePeuSI88lTXvzLnBLcxh/U4PbC+3s=;
+        b=rFxeftJi86a/yfBWl3WLheujWqygBW8CAad/kQOtSCs71OujtoWqyO/O8dpgt6Dhjw
+         +hEXv2a9Q+XYpB2hrhNU/km4NeqDRzeQHBNV+i+FuvUcVVmm1vkW2R5pPzj2oXbCosfa
+         /o1UFwLnoQx8t6R9oHXkL9GZ2fkaUBshp+DV/jP9POfJIwHFVvWiQNO953biZXWAbvi+
+         zQ3Zdo6LCda6SlnKvh5yfQmbmEs0S3eSbU+FAhhZrFiW0MDu2AWKQTTlQDEdfJEjKJaw
+         BsLLZs+Rb/xZUDnFKgAZPVRe9m8uzWcIpVlp+BExj9GM8CsTVvnHQW8CKVozWZUQ5zNP
+         VG2Q==
+X-Gm-Message-State: AOJu0Yy+44kaVayjX7kRoEIHuJLAtoLMhPeF9E0l5sbNvtPt96zkTYY8
+	GyhBUF5CWSlGRsQNEQLUcXGJ+rlCijsphsG6IdZYPPd+aEu3JiNAw/xGnJtx
+X-Google-Smtp-Source: AGHT+IHSPT6G6BgK76o7714PYcGCZJ4XIHnmp7DzJ5WxJ/Fj+cM1Vkw912Nfar3rfKerrY/FwwXibg==
+X-Received: by 2002:a05:690c:fc2:b0:608:3cb0:4c97 with SMTP id dg2-20020a05690c0fc200b006083cb04c97mr642376ywb.21.1708640792149;
+        Thu, 22 Feb 2024 14:26:32 -0800 (PST)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:34d2:7236:710a:117c])
-        by smtp.gmail.com with ESMTPSA id e129-20020a0df587000000b00604a2e45cf2sm3280666ywf.140.2024.02.22.14.26.30
+        by smtp.gmail.com with ESMTPSA id e129-20020a0df587000000b00604a2e45cf2sm3280666ywf.140.2024.02.22.14.26.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 14:26:30 -0800 (PST)
+        Thu, 22 Feb 2024 14:26:31 -0800 (PST)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -77,9 +77,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v4 3/6] libbpf: Convert st_ops->data to shadow type.
-Date: Thu, 22 Feb 2024 14:26:21 -0800
-Message-Id: <20240222222624.1163754-4-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v4 4/6] bpftool: generated shadow variables for struct_ops maps.
+Date: Thu, 22 Feb 2024 14:26:22 -0800
+Message-Id: <20240222222624.1163754-5-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240222222624.1163754-1-thinker.li@gmail.com>
 References: <20240222222624.1163754-1-thinker.li@gmail.com>
@@ -93,118 +93,338 @@ Content-Transfer-Encoding: 8bit
 
 From: Kui-Feng Lee <thinker.li@gmail.com>
 
-Convert st_ops->data to the shadow type of the struct_ops map. The shadow
-type of a struct_ops type is a variant of the original struct type
-providing a way to access/change the values in the maps of the struct_ops
-type.
+Declares and defines a pointer of the shadow type for each struct_ops map.
 
-bpf_map__initial_value() will return st_ops->data for struct_ops types. The
-skeleton is going to use it as the pointer to the shadow type of the
-original struct type.
+The code generator will create an anonymous struct type as the shadow type
+for each struct_ops map. The shadow type is translated from the original
+struct type of the map. The user of the skeleton use pointers of them to
+access the values of struct_ops maps.
 
-One of the main differences between the original struct type and the shadow
-type is that all function pointers of the shadow type are converted to
-pointers of struct bpf_program. Users can replace these bpf_program
-pointers with other BPF programs. The st_ops->progs[] will be updated
-before updating the value of a map to reflect the changes made by users.
+However, shadow types only supports certain types of fields, including
+scalar types and function pointers. Any fields of unsupported types are
+translated into an array of characters to occupy the space of the original
+field. Function pointers are translated into pointers of the struct
+bpf_program. Additionally, padding fields are generated to occupy the space
+between two consecutive fields.
 
+The pointers of shadow types of struct_osp maps are initialized when
+*__open_opts() in skeletons are called. For a map called FOO, the user can
+access it through the pointer at skel->struct_ops.FOO.
+
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- tools/lib/bpf/libbpf.c | 53 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ tools/bpf/bpftool/gen.c | 235 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 234 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 465b50235a01..becbb4d81012 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1102,6 +1102,9 @@ static int bpf_map__init_kern_struct_ops(struct bpf_map *map)
- 		if (btf_is_ptr(mtype)) {
- 			struct bpf_program *prog;
- 
-+			/* Update the value from the shadow type */
-+			st_ops->progs[i] = *(struct bpf_program **)mdata;
-+
- 			prog = st_ops->progs[i];
- 			if (!prog)
- 				continue;
-@@ -1172,6 +1175,36 @@ static int bpf_object__init_kern_struct_ops_maps(struct bpf_object *obj)
- 	return 0;
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index a9334c57e859..a21c92d95401 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -909,6 +909,207 @@ codegen_progs_skeleton(struct bpf_object *obj, size_t prog_cnt, bool populate_li
+ 	}
  }
  
-+/* Convert the data of a struct_ops map to shadow type.
-+ *
-+ * The function pointers are replaced with the pointers of bpf_program in
-+ * st_ops->progs[].
-+ */
-+static void struct_ops_convert_shadow(struct bpf_map *map,
-+				      const struct btf_type *t)
++static int walk_st_ops_shadow_vars(struct btf *btf,
++				   const char *ident,
++				   const struct bpf_map *map)
 +{
-+	struct btf *btf = map->obj->btf;
-+	struct bpf_struct_ops *st_ops = map->st_ops;
++	DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts,
++			    .indent_level = 3,
++			    );
++	const struct btf_type *map_type, *member_type;
++	__u32 map_type_id, member_type_id;
++	__u32 offset, next_offset = 0;
 +	const struct btf_member *m;
-+	const struct btf_type *mtype;
-+	char *data;
-+	int i;
++	const char *member_name;
++	struct btf_dump *d = NULL;
++	int i, err = 0;
++	int size, map_size;
 +
-+	data = st_ops->data;
++	map_type_id = bpf_map__btf_value_type_id(map);
++	if (map_type_id == 0)
++		return -EINVAL;
++	map_type = btf__type_by_id(btf, map_type_id);
++	if (!map_type)
++		return -EINVAL;
 +
-+	for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
-+		mtype = skip_mods_and_typedefs(btf, m->type, NULL);
++	d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
++	if (!d)
++		return -errno;
 +
-+		if (btf_kind(mtype) != BTF_KIND_PTR)
-+			continue;
-+		if (!resolve_func_ptr(btf, m->type, NULL))
-+			continue;
++	for (i = 0, m = btf_members(map_type);
++	     i < btf_vlen(map_type);
++	     i++, m++) {
++		member_type = skip_mods_and_typedefs(btf, m->type,
++						     &member_type_id);
++		if (!member_type) {
++			err = -EINVAL;
++			goto out;
++		}
 +
-+		*((struct bpf_program **)(data + m->offset / 8)) =
-+			st_ops->progs[i];
++		member_name = btf__name_by_offset(btf, m->name_off);
++		if (!member_name) {
++			err = -EINVAL;
++			goto out;
++		}
++
++		offset = m->offset / 8;
++		if (next_offset != offset) {
++			printf("\t\t\tchar __padding_%d[%d];\n",
++			       i - 1, offset - next_offset);
++		}
++
++		switch (btf_kind(member_type)) {
++		case BTF_KIND_INT:
++		case BTF_KIND_FLOAT:
++		case BTF_KIND_ENUM:
++		case BTF_KIND_ENUM64:
++			/* scalar type */
++			printf("\t\t\t");
++			opts.field_name = member_name;
++			err = btf_dump__emit_type_decl(d, member_type_id,
++						       &opts);
++			if (err)
++				goto out;
++			printf(";\n");
++
++			size = btf__resolve_size(btf, member_type_id);
++			if (size < 0) {
++				err = size;
++				goto out;
++			}
++
++			next_offset = offset + size;
++			break;
++
++		case BTF_KIND_PTR:
++			if (resolve_func_ptr(btf, m->type, NULL)) {
++				/* Function pointer */
++				printf("\t\t\tconst struct bpf_program *%s;\n",
++				       member_name);
++
++				next_offset = offset + sizeof(void *);
++				break;
++			}
++			/* All pointer types are unsupported except for
++			 * function pointers.
++			 */
++			fallthrough;
++
++		default:
++			/* Unsupported types
++			 *
++			 * Types other than scalar types and function
++			 * pointers are currently not supported in order to
++			 * prevent conflicts in the generated code caused
++			 * by multiple definitions. For instance, if the
++			 * struct type FOO is used in a struct_ops map,
++			 * bpftool has to generate definitions for FOO,
++			 * which may result in conflicts if FOO is defined
++			 * in different skeleton files.
++			 */
++			if (i == btf_vlen(map_type) - 1) {
++				map_size = btf__resolve_size(btf, map_type_id);
++				if (map_size < 0)
++					return -EINVAL;
++				size = map_size - offset;
++			} else {
++				size = (m[1].offset - m->offset) / 8;
++			}
++
++			printf("\t\t\tchar __padding_%d[%d];\n", i, size);
++
++			next_offset = offset + size;
++			break;
++		}
 +	}
++
++out:
++	btf_dump__free(d);
++
++	return err;
 +}
 +
- static int init_struct_ops_maps(struct bpf_object *obj, const char *sec_name,
- 				int shndx, Elf_Data *data, __u32 map_flags)
- {
-@@ -7531,6 +7564,19 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
- 	return 0;
- }
- 
-+/* Convert the data to the shadow type for each struct_ops map. */
-+static void bpf_object__init_shadow(struct bpf_object *obj)
++/* Generate the pointer of the shadow type for a struct_ops map.
++ *
++ * This function adds a pointer of the shadow type for a struct_ops map.
++ * The members of a struct_ops map can be exported through a pointer to a
++ * shadow type. The user can access these members through the pointer.
++ *
++ * A shadow type includes not all members, only members of some types.
++ * They are scalar types and function pointers. The function pointers are
++ * translated to the pointer of the struct bpf_program. The scalar types
++ * are translated to the original type without any modifiers.
++ *
++ * Unsupported types will be translated to a char array to occupy the same
++ * space as the original field. However, the user should not access them
++ * directly. These unsupported fields are also renamed as __padding_*
++ * . They may be reordered or shifted due to changes in the original struct
++ * type. Accessing them through the generated names may unintentionally
++ * corrupt data.
++ */
++static int gen_st_ops_shadow_type(struct btf *btf, const char *ident,
++				  const struct bpf_map *map)
++{
++	int err;
++
++	printf("\t\tstruct {\n");
++
++	err = walk_st_ops_shadow_vars(btf, ident, map);
++	if (err)
++		return err;
++
++	printf("\t\t} *%s;\n", ident);
++
++	return 0;
++}
++
++static int gen_st_ops_shadow(struct btf *btf, struct bpf_object *obj)
 +{
 +	struct bpf_map *map;
++	char ident[256];
++	int err;
 +
++	/* Generate the pointers to shadow types of
++	 * struct_ops maps.
++	 */
++	printf("\tstruct {\n");
 +	bpf_object__for_each_map(map, obj) {
-+		if (!bpf_map__is_struct_ops(map))
++		if (bpf_map__type(map) != BPF_MAP_TYPE_STRUCT_OPS)
 +			continue;
++		if (!get_map_ident(map, ident, sizeof(ident)))
++			continue;
++		err = gen_st_ops_shadow_type(btf, ident, map);
++		if (err)
++			return err;
++	}
++	printf("\t} struct_ops;\n");
 +
-+		struct_ops_convert_shadow(map, map->st_ops->type);
++	return 0;
++}
++
++/* Generate the code to initialize the pointers of shadow types. */
++static void gen_st_ops_shadow_init(struct btf *btf, struct bpf_object *obj)
++{
++	struct bpf_map *map;
++	char ident[256];
++
++	/* Initialize the pointers to_ops shadow types of
++	 * struct_ops maps.
++	 */
++	bpf_object__for_each_map(map, obj) {
++		if (bpf_map__type(map) != BPF_MAP_TYPE_STRUCT_OPS)
++			continue;
++		if (!get_map_ident(map, ident, sizeof(ident)))
++			continue;
++		codegen("\
++			\n\
++				obj->struct_ops.%1$s =			    \n\
++					bpf_map__initial_value(obj->maps.%1$s, NULL);\n\
++			\n\
++			", ident);
 +	}
 +}
 +
- static struct bpf_object *bpf_object_open(const char *path, const void *obj_buf, size_t obj_buf_sz,
- 					  const struct bpf_object_open_opts *opts)
+ static int do_skeleton(int argc, char **argv)
  {
-@@ -7631,6 +7677,7 @@ static struct bpf_object *bpf_object_open(const char *path, const void *obj_buf,
- 		goto out;
+ 	char header_guard[MAX_OBJ_NAME_LEN + sizeof("__SKEL_H__")];
+@@ -923,6 +1124,7 @@ static int do_skeleton(int argc, char **argv)
+ 	struct bpf_map *map;
+ 	struct btf *btf;
+ 	struct stat st;
++	int st_ops_cnt = 0;
  
- 	bpf_object__elf_finish(obj);
-+	bpf_object__init_shadow(obj);
+ 	if (!REQ_ARGS(1)) {
+ 		usage();
+@@ -1039,6 +1241,8 @@ static int do_skeleton(int argc, char **argv)
+ 		);
+ 	}
  
- 	return obj;
- out:
-@@ -9880,6 +9927,12 @@ int bpf_map__set_initial_value(struct bpf_map *map,
++	btf = bpf_object__btf(obj);
++
+ 	if (map_cnt) {
+ 		printf("\tstruct {\n");
+ 		bpf_object__for_each_map(map, obj) {
+@@ -1048,8 +1252,15 @@ static int do_skeleton(int argc, char **argv)
+ 				printf("\t\tstruct bpf_map_desc %s;\n", ident);
+ 			else
+ 				printf("\t\tstruct bpf_map *%s;\n", ident);
++			if (bpf_map__type(map) == BPF_MAP_TYPE_STRUCT_OPS)
++				st_ops_cnt++;
+ 		}
+ 		printf("\t} maps;\n");
++		if (st_ops_cnt && btf) {
++			err = gen_st_ops_shadow(btf, obj);
++			if (err)
++				goto out;
++		}
+ 	}
  
- void *bpf_map__initial_value(struct bpf_map *map, size_t *psize)
- {
-+	if (bpf_map__is_struct_ops(map)) {
-+		if (psize)
-+			*psize = map->def.value_size;
-+		return map->st_ops->data;
+ 	if (prog_cnt) {
+@@ -1075,7 +1286,6 @@ static int do_skeleton(int argc, char **argv)
+ 		printf("\t} links;\n");
+ 	}
+ 
+-	btf = bpf_object__btf(obj);
+ 	if (btf) {
+ 		err = codegen_datasecs(obj, obj_name);
+ 		if (err)
+@@ -1133,6 +1343,13 @@ static int do_skeleton(int argc, char **argv)
+ 			if (err)					    \n\
+ 				goto err_out;				    \n\
+ 									    \n\
++		", obj_name);
++
++	if (st_ops_cnt && btf)
++		gen_st_ops_shadow_init(btf, obj);
++
++	codegen("\
++		\n\
+ 			return obj;					    \n\
+ 		err_out:						    \n\
+ 			%1$s__destroy(obj);				    \n\
+@@ -1296,6 +1513,7 @@ static int do_subskeleton(int argc, char **argv)
+ 	struct btf *btf;
+ 	const struct btf_type *map_type, *var_type;
+ 	const struct btf_var_secinfo *var;
++	int st_ops_cnt = 0;
+ 	struct stat st;
+ 
+ 	if (!REQ_ARGS(1)) {
+@@ -1438,10 +1656,18 @@ static int do_subskeleton(int argc, char **argv)
+ 			if (!get_map_ident(map, ident, sizeof(ident)))
+ 				continue;
+ 			printf("\t\tstruct bpf_map *%s;\n", ident);
++			if (bpf_map__type(map) == BPF_MAP_TYPE_STRUCT_OPS)
++				st_ops_cnt++;
+ 		}
+ 		printf("\t} maps;\n");
+ 	}
+ 
++	if (st_ops_cnt && btf) {
++		err = gen_st_ops_shadow(btf, obj);
++		if (err)
++			goto out;
 +	}
 +
- 	if (!map->mmaped)
- 		return NULL;
- 	*psize = map->def.value_size;
+ 	if (prog_cnt) {
+ 		printf("\tstruct {\n");
+ 		bpf_object__for_each_program(prog, obj) {
+@@ -1553,6 +1779,13 @@ static int do_subskeleton(int argc, char **argv)
+ 			if (err)					    \n\
+ 				goto err;				    \n\
+ 									    \n\
++		");
++
++	if (st_ops_cnt && btf)
++		gen_st_ops_shadow_init(btf, obj);
++
++	codegen("\
++		\n\
+ 			return obj;					    \n\
+ 		err:							    \n\
+ 			%1$s__destroy(obj);				    \n\
 -- 
 2.34.1
 
