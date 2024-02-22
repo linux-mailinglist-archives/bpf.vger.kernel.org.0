@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-22512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6AE85FECA
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6890985FEC9
 	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 18:10:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A03A2B27815
-	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 17:10:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E87A728AB64
+	for <lists+bpf@lfdr.de>; Thu, 22 Feb 2024 17:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E302154BEC;
-	Thu, 22 Feb 2024 17:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20880154C12;
+	Thu, 22 Feb 2024 17:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QVz6ED8x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HASjmVFi"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35251E488
-	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 17:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F486154C0A
+	for <bpf@vger.kernel.org>; Thu, 22 Feb 2024 17:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708621828; cv=none; b=GAuJidgSDcy7OJpvO/YgutJIOIU4fs52GTJbdkFxqP/xaJvMFrJfHYL259tTydDbU9N7akQQtO2qzjqSWrgGKcGJ9IcdJ4Vxh/LrrgDBn2TaLz7gEv1OOjO5y+SMk1PUdghPj1BbpnbL+XlkCTa4tC4+DS2z9mcZ0TgNhQJTPB0=
+	t=1708621828; cv=none; b=QiNvKtAZNw92growieXucOmyu9A9lL1EHmtw+MKn+oyHEG4y5VjimUO5IlwuWtI+YSBVefE5BDcs+wYscco5M3NA0nYovwebd4iyAbSoOdcdmMjdpPsSVh/4bBRUbn7JArP6v76+mlGwdmr06auXfrhlLB24ql0UgwD0FkXJJ5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708621828; c=relaxed/simple;
-	bh=J1WBwVuToE+BEDKLKvJTqvzjIXci7zrlc4Gs8wbwExc=;
+	bh=Rhwhz7jsGNO0oJ1Se2MLogzAyHEVft051Mtb2GDNp2U=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=PNU3iE3KUjqHg7IXojRREH+/671If8ZnHqWVM4KEhyakO0MyVrHv31C/E85RqG9xmd81oSifA1ywDtX0iIXzEG/N78riyYGMe+UuOFX+PGWvYF4l9hCwk6MBBGgf/NWCvHsGTk/mO+Gyy9rgWeRDyZXnWqMVbGBCBnwSGXAL7r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QVz6ED8x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C078BC433C7;
-	Thu, 22 Feb 2024 17:10:27 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ou6NNYzXCBoQy6N1hSjk8jrOLmcibzDtZAh76drqFdkPx2UKQTrb6o7/EvPZ2Ryf+YSJecf8zFJ9+Tndps9eBsdXpLTcP7Dcpvx2TxwzYVl9jjpJXMxnpVw8hXD+T5hvHRshztB1lHfBFXXbncMOzR8j30Hebuchrn5bbKAubSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HASjmVFi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2092CC433B2;
+	Thu, 22 Feb 2024 17:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708621827;
-	bh=J1WBwVuToE+BEDKLKvJTqvzjIXci7zrlc4Gs8wbwExc=;
+	s=k20201202; t=1708621828;
+	bh=Rhwhz7jsGNO0oJ1Se2MLogzAyHEVft051Mtb2GDNp2U=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QVz6ED8xioix/VDYmJgxBTS3l3bEY1bF6NDcOU4p5HPUgP8PFcMeHo/tVyxjNlFgO
-	 d0Ea7mW0M9L6u1FgvLQqG1slZob+0sB3Zh/Cr2Vq61JV+eYDexBwN7POj6JCk8Cg8K
-	 Dvg/k41/b5f+zM/NkDpU/SHpCKnsHA8bFZ3nfFgiCCqyeOa0JcGmwwVLNyHsirmZRG
-	 CpZztSyDVVIDxOdkVvuikcAe7nNOrn0inDdFWQvjYWqOQsID7Z85CfFntTvBr2sYTT
-	 VN0hmWnfwey2YXecV0Lt6pQIwxdD89k0nPNyS9fTMdzMIZvx8G1nulZmPLV8y2KGEI
-	 tKviqRg3AOBgA==
+	b=HASjmVFiSDquQW7dkSwpgbeK1ZF/WpoESj/SXxY55kjkfY9HrLwacrvwqoq3F5XOK
+	 U59JFjPxo8k/s1pRZYOW6tueY8KOhns9AP8HA/6sc8DT1HTo4qODpkNJbkPlH9qgge
+	 y2p8NyNs5SzGvO73N66GnJS0YAbk6zyV3ruiRJ/9k0H2CEBmMQKPrh0i8Zsk2tQvhs
+	 bizCoSkRwt6OGqGFnoo0Xp4Pn1Gz8xvtutiW27Z6ED9sIPMFvciu32vdmO/+RiS6tA
+	 ZjdRyUxihfyi4LB8qYJ7CI+Oq+072kKTyneUmuYg7lcCgiQtUbqug8tw2eKI1EV+Ym
+	 JhRNITYTcZitA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AF3DFD84BBB;
-	Thu, 22 Feb 2024 17:10:27 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0C870C04E32;
+	Thu, 22 Feb 2024 17:10:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,40 +52,34 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v3 0/2] check bpf_func_state->callback_depth when pruning
- states
+Subject: Re: [PATCH bpf-next] bpf, docs: Fix typos in instruction-set.rst
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170862182771.10220.3181097083078946216.git-patchwork-notify@kernel.org>
-Date: Thu, 22 Feb 2024 17:10:27 +0000
-References: <20240222154121.6991-1-eddyz87@gmail.com>
-In-Reply-To: <20240222154121.6991-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev, kuniyu@amazon.com
+ <170862182804.10220.17463455691219845000.git-patchwork-notify@kernel.org>
+Date: Thu, 22 Feb 2024 17:10:28 +0000
+References: <20240221173535.16601-1-dthaler1968@gmail.com>
+In-Reply-To: <20240221173535.16601-1-dthaler1968@gmail.com>
+To: Dave Thaler <dthaler1968@googlemail.com>
+Cc: bpf@vger.kernel.org, bpf@ietf.org, dthaler1968@gmail.com
 
 Hello:
 
-This series was applied to bpf/bpf.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 22 Feb 2024 17:41:19 +0200 you wrote:
-> This patch-set fixes bug in states pruning logic hit in mailing list
-> discussion [0]. The details of the fix are in patch #1.
-> 
-> The main idea for the fix belongs to Yonghong Song,
-> mine contribution is merely in review and test cases.
-> 
-> There are some changes in verification performance:
+On Wed, 21 Feb 2024 09:35:35 -0800 you wrote:
+> * "BPF ADD" should be "BPF_ADD".
+> * "src" should be "src_reg" in several places.  The latter is the field name
+>   in the instruction.  The former refers to the value of the register, or the
+>   immediate.
+> * Add '' around field names in one sentence, for consistency with the rest
+>   of the document.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf,v3,1/2] bpf: check bpf_func_state->callback_depth when pruning states
-    https://git.kernel.org/bpf/bpf/c/f31f0fe3d738
-  - [bpf,v3,2/2] selftests/bpf: test case for callback_depth states pruning logic
-    https://git.kernel.org/bpf/bpf/c/2861d07c5289
+  - [bpf-next] bpf, docs: Fix typos in instruction-set.rst
+    https://git.kernel.org/bpf/bpf-next/c/c1bb68f6b2f6
 
 You are awesome, thank you!
 -- 
