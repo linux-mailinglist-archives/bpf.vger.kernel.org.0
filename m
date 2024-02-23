@@ -1,121 +1,141 @@
-Return-Path: <bpf+bounces-22609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 756B7861C17
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 19:46:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40627861C43
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 20:05:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 130301F26B9C
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 18:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7168B1C22B65
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 19:05:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CA21474A1;
-	Fri, 23 Feb 2024 18:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACC71420C1;
+	Fri, 23 Feb 2024 19:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vl/IoNxo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C4F143C7F;
-	Fri, 23 Feb 2024 18:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7A31F176
+	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 19:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708713908; cv=none; b=ORTvMd3ACEcf13KXOpCUTkzInyjX3JMog5Y6o3gk0NtvoCD8VAXTimEYAR3rYCrSsibTxh++P2TjKTWhF2lrZQ3JOVfs6VDDjeia5Up6yd5IgKwvG0zUWb4HNLx3TCTYTeZMIzmk+4eJsEryVq5UNfI1mHdo8M9Kb8vCWz9G5/Y=
+	t=1708715137; cv=none; b=l5nUNM+v8lqjOOpioh+L7vVByMlPsPNZoKOr1+I8184LXxuMaQx6Ung7wBGdTlYtYocfWyrkUW8ScptoPT8ROqk/v7B1e2hsLjjCTw+h6tIrJO0Qheyk5SdNe2U5nyfW5xFFBKZNOxLWTa+8E8qxKcSiQxY/afKJoVyeQcaQjT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708713908; c=relaxed/simple;
-	bh=HNxDQrAqfHomkkBAL+GsWJU+Nkbn4bLBCPF0LWecwlI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mH8XCKDle3MAUNNmPjBhTAoJf8lgWMqqOLY/1IwskOvfca79pAs0qZuk2PuwroASSBLtVEASVc4GEm+gPccW/cTRU4/KsGBsxuHoONvRWQiKYbckgjgSWIfTFSZdmDXKmLMVL7vnDSd8oo4QUUv8u/SljNoZDDP/KBLdJowgpIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3ACC433C7;
-	Fri, 23 Feb 2024 18:45:01 +0000 (UTC)
-Date: Fri, 23 Feb 2024 13:46:53 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- <linuxppc-dev@lists.ozlabs.org>, <kvm@vger.kernel.org>,
- <linux-block@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
- <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <amd-gfx@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
- <intel-xe@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
- <freedreno@lists.freedesktop.org>, <virtualization@lists.linux.dev>,
- <linux-rdma@vger.kernel.org>, <linux-pm@vger.kernel.org>,
- <iommu@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
- <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
- <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>,
- <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>,
- <linux-usb@vger.kernel.org>, <linux-bcachefs@vger.kernel.org>,
- <linux-nfs@vger.kernel.org>, <ocfs2-devel@lists.linux.dev>,
- <linux-cifs@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
- <linux-edac@vger.kernel.org>, <selinux@vger.kernel.org>,
- <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
- <linux-f2fs-devel@lists.sourceforge.net>, <linux-hwmon@vger.kernel.org>,
- <io-uring@vger.kernel.org>, <linux-sound@vger.kernel.org>,
- <bpf@vger.kernel.org>, <linux-wpan@vger.kernel.org>, <dev@openvswitch.org>,
- <linux-s390@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
- Julia Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <20240223134653.524a5c9e@gandalf.local.home>
-In-Reply-To: <0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
-References: <20240223125634.2888c973@gandalf.local.home>
-	<0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708715137; c=relaxed/simple;
+	bh=QiSuQU9OUOXKGFmc/otezWdowTBZVxizHrF9+EsiW3c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h5aChCk1mukyb1ewztHP7shdi/aD1laZv7/df8dMM09G/CPrc60+iCKekgXFKCQoxLzVy+3XY8fRnegmz6JthgP5Emr5IbjnK97rVLS7IgXh1t6ZBk9henFvEmNr6j2G55diT6LVrPuJ3M+Xh4McGwyLYklawN5OB83m9loC5Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vl/IoNxo; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-608ceccb5f4so662607b3.3
+        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 11:05:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708715135; x=1709319935; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eGPR91nZoa7tVS1EBEScyNLKIJSxk0MXscPE71LEkhE=;
+        b=Vl/IoNxoF8wQ4KV/wNH4nY9R3uFPpH5sccyZe46zLkWWKlvHO9kx2+BELmQTyne9uq
+         qo6UXuw9Tl1/GBj32EGj3LIap9urFd1B/XqllKYEam+YxJo497LxC9zjy8/nSw5EePp+
+         +eTBKZdmGQfr6geX7wUMhT4CCCD3mO7jiQymfe+Lmunb33rcE8zgPjAcd50/buLdrdQQ
+         9bnsL5XtUBw4F9Fi6tyedO5EQrPi+A5aPqBZPdOy2b1+Ff3KsS3PFzO+Kx9NCH9Pbb1c
+         WoTEXunxrarGdYOxcenZSwkjqUc3ErXIt8fD2HMYtGVwPvRSF4vc/2N+BHw58sySAYIH
+         JwTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708715135; x=1709319935;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eGPR91nZoa7tVS1EBEScyNLKIJSxk0MXscPE71LEkhE=;
+        b=r5vUlRPNFYU5dv3kL9aK3tJtEMAzcm5eBvJkHo/ukx2mR1OYRIM/QKlVM9on2d2AfD
+         4hkZ9p5odJlAC0PV45HSAIRaRN5DbRhVQKD7A/FecvKOwzOBNTf/NfWg9RqdJoDprmgY
+         K2Jo5eVTjV6rmxAdM+zWlSJLqSUd5y8it04one0CjH9F88daOwYAbjcuGjSInM1pDA6H
+         7Kb2sqdgafczqRGyY5bQz85moggTNbwEi5Z/gNl5/LXGSGpqBiLOEUgOQPfZge07+oOS
+         I5qGvjOvgju4J4N5WK6y0Bnk8yQ7BlA5qzdslkwx8c2nt8kh2oBTI3ocRFBWndcRekQr
+         gOTw==
+X-Forwarded-Encrypted: i=1; AJvYcCUe3mLJDCBz+Jx1gjA/QlRteJ7py7yewv3zVWQZUwKu7p9qfx17TGWYbXXjok44RHupxZFxLlSMFbeO2dxPQIcxyGlf
+X-Gm-Message-State: AOJu0Yzr0IEnYMSNG8xwS4SPV7e3ZaV0rZcEkaoEXmhJcG3Trq1ARmkE
+	jd+Q7OOqNNFsR9uFyjoZLQ2HnG6bU4ThUmv9uKJRgfr6HtD1O9mx
+X-Google-Smtp-Source: AGHT+IGjS1AkaywMuTk8INr992MOp6/3JDOJhGJ45idzXcYMXKIJAvKwVB9oG/riCExFEBKTHP6P6Q==
+X-Received: by 2002:a0d:db10:0:b0:607:ec66:36b3 with SMTP id d16-20020a0ddb10000000b00607ec6636b3mr693223ywe.19.1708715135042;
+        Fri, 23 Feb 2024 11:05:35 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:3e23:8885:4bfd:23ef? ([2600:1700:6cf8:1240:3e23:8885:4bfd:23ef])
+        by smtp.gmail.com with ESMTPSA id w22-20020a814916000000b0060895f49c8asm1029727ywa.120.2024.02.23.11.05.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 11:05:34 -0800 (PST)
+Message-ID: <30ffb867-ee0e-4573-b9e7-9fc0f4430adb@gmail.com>
+Date: Fri, 23 Feb 2024 11:05:33 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 2/3] bpf: struct_ops supports more than one
+ page for trampolines.
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org
+References: <20240221225911.757861-1-thinker.li@gmail.com>
+ <20240221225911.757861-3-thinker.li@gmail.com>
+ <c59cc446-531b-4b4a-897d-3b298ac72dd2@linux.dev>
+ <3e4cc350-34c9-42c1-944f-303a466022d2@gmail.com>
+ <7402facf-5f2e-4506-a381-6a84fe1ba841@linux.dev>
+ <25982f53-732e-4ce8-bbb2-3354f5684296@gmail.com>
+ <b8bac273-27c7-485a-8e45-8825251d6d5a@linux.dev>
+ <33c2317c-fde0-4503-991b-314f20d9e7f7@gmail.com>
+ <c938c3b1-8cce-4563-930d-7e8150365117@gmail.com>
+ <ded8001c-2437-48f4-88ff-4c0633f1da7c@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <ded8001c-2437-48f4-88ff-4c0633f1da7c@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024 10:30:45 -0800
-Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 
-> On 2/23/2024 9:56 AM, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > [
-> >    This is a treewide change. I will likely re-create this patch again in
-> >    the second week of the merge window of v6.9 and submit it then. Hoping
-> >    to keep the conflicts that it will cause to a minimum.
-> > ]
-> > 
-> > With the rework of how the __string() handles dynamic strings where it
-> > saves off the source string in field in the helper structure[1], the
-> > assignment of that value to the trace event field is stored in the helper
-> > value and does not need to be passed in again.  
+
+
+On 2/23/24 10:42, Martin KaFai Lau wrote:
+> On 2/23/24 10:29 AM, Kui-Feng Lee wrote:
+>> One thing I forgot to mention is that bpf_dummy_ops has to call
+>> bpf_jit_uncharge_modmem(PAGE_SIZE) as well. The other option is to move
+>> bpf_jit_charge_modmem() out of bpf_struct_ops_prepare_trampoline(),
+>> meaning bpf_struct_ops_map_update_elem() should handle the case that the
+>> allocation in bpf_struct_ops_prepare_trampoline() successes, but
+>> bpf_jit_charge_modmem() fails.
 > 
-> Just curious if this could be done piecemeal by first changing the
-> macros to be variadic macros which allows you to ignore the extra
-> argument. The callers could then be modified in their separate trees.
-> And then once all the callers have be merged, the macros could be
-> changed to no longer be variadic.
+> Keep the charge/uncharge in bpf_struct_ops_prepare_trampoline().
+> 
+> It is fine to have bpf_dummy_ops charge and then uncharge a PAGE_SIZE. 
+> There is no need to optimize for bpf_dummy_ops. Use 
+> bpf_struct_ops_free_trampoline() in bpf_dummy_ops to uncharge and free.
 
-I weighed doing that, but I think ripping off the band-aid is a better
-approach. One thing I found is that leaving unused parameters in the macros
-can cause bugs itself. I found one case doing my clean up, where an unused
-parameter in one of the macros was bogus, and when I made it a used
-parameter, it broke the build.
 
-I think for tree-wide changes, the preferred approach is to do one big
-patch at once. And since this only affects TRACE_EVENT() macros, it
-hopefully would not be too much of a burden (although out of tree users may
-suffer from this, but do we care?)
+Then, I don't get the point here.
+I agree with moving the allocation into
+bpf_struct_ops_prepare_trampoline() to avoid duplication of the code
+about flags and tlinks. It really simplifies the code with the fact
+that bpf_dummy_ops is still there. So, I tried to pass a st_map to
+bpf_struct_ops_prepare_trampoline() to keep page managements code
+together. But, you said to simplify the code of bpf_dummy_ops by
+allocating pages in bpf_struct_ops_prepare_trampoline(), do bookkeeping
+in bpf_struct_ops_map_update_elem(), so bpf_dummy_ops doesn't have to
+allocate memory. But, we have to move a bpf_jit_uncharge_modmem() to
+bpf_dummy_ops. For me, this trade-off that include removing an
+allocation and adding a bpf_jit_uncharge_modmem() make no sense.
 
-Now one thing I could do is to not remove the parameter, but just add:
-
-	WARN_ON_ONCE((src) != __data_offsets->item##_ptr_);
-
-in the __assign_str() macro to make sure that it's still the same that is
-assigned. But I'm not sure how useful that is, and still causes burden to
-have it. I never really liked the passing of the string in two places to
-begin with.
-
--- Steve
+> 
+> 
+>>>> void bpf_struct_ops_free_trampoline(void *image)
+>>>> {
+>>>>      bpf_jit_uncharge_modmem(PAGE_SIZE);
+>>>>      arch_free_bpf_trampoline(image, PAGE_SIZE);
+>>>> }
+>>>>
+> 
 
