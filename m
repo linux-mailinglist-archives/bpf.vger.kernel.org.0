@@ -1,149 +1,81 @@
-Return-Path: <bpf+bounces-22589-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22590-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8DE88615F4
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 16:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CCA1861600
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 16:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E906F1C24B96
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 15:35:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5621C23209
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 15:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E62482D80;
-	Fri, 23 Feb 2024 15:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4355F823C6;
+	Fri, 23 Feb 2024 15:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abskwHR+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fHgzjM+U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771CB81ACB;
-	Fri, 23 Feb 2024 15:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEA38484;
+	Fri, 23 Feb 2024 15:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708702526; cv=none; b=CoBTj228uaYjG5MOEfa9Y2BJxAv8KziyQfXxyUimRT6oWr8qZbxKEaOZkd7tdAqRXQEr//HaqK1HcvXyY9nZomhx4MZhu+KZYaoYLVcFmHFrq4Qkacz0ds3G+Ja3y/BujkBGqFyOSGyHU8bUY0pqUhB2vlJ47avJxumuUYVQSE8=
+	t=1708702684; cv=none; b=Ufrz3ldiL+ADtUyMmLly3s+Jtm0dvssBMc8+4BqoBb1gg8i2WZvYPqMSFiI7YJ56YLedcvXMyfGEW9saQdLz8FZXP3tLPN9TyFHfZuz8mmO7V3j7z+h+IN10h7wiiR5DuVN3ZXqTlk/X3zZGeabN+91m3GYJM//d9VwWVBUT2VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708702526; c=relaxed/simple;
-	bh=tY1h/501teFgiCPr6RmDbD0tP/QViR2mW9o+4KD5XKg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oRq5lxUJMrg0qTI4cbotyj+LQEZEfo+cG7hck3g92qZj+sPSsiDQngBP7Nyx7HeoEGJMmftfxVEtB8oaRJ+nkRdLYiHpL+eUOlS+rQ0noSwUSXAPQydWm59Whgk1ArdCRGF2qS+a670LNsoO4gJs50eNBLJkbKnKvHTXIxynzVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=abskwHR+; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3e706f50beso125046566b.0;
-        Fri, 23 Feb 2024 07:35:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708702522; x=1709307322; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MK6dDwiB3ZrZ3H37ABX4rh9mpjc5RyLXRl57mHMaXp0=;
-        b=abskwHR+JgZtzhVbWZXWfX6uTeCFONTsUyEC5x8NWelVIYB7mZ1M6crdX4UHiu+O++
-         JNzQkOQoUxshDwqkgkhQnGlWjLbSCQTvz/sCRYcgPzTjzJkbCttdJos6PfxGj6ZPkthM
-         AzbboJfYuOVcZ/Ne0880/ySrNc67DkA/HpzLxll/6ByHm0KJvWwGSNkFwzrMegpM7j3f
-         m0T68DSwFwAQ6WpgmvBQWr1SfGs6M1RHBf+s+TNpLC0vmsjdIDhgdQc+vSWL6NN405pX
-         p6HVHS300ntlE+u6pOv5w2CsRjFRz+1KeAB9c3TIZMKfbU8Z0J0WIH/9T6oCyeQDccm9
-         kDBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708702522; x=1709307322;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MK6dDwiB3ZrZ3H37ABX4rh9mpjc5RyLXRl57mHMaXp0=;
-        b=WvIrnVTFXRGxM0Jt3gxEna2k65MNwOGpiYo2e2MIewsrz/7GhJOq8wkVv4aKvtr3TM
-         qiUquKbzEfrY4sAH7ikqpsFkZYInCU2ItaOFTl9YIpjP9t7DIxO86BhaDF5mTNcFgyn5
-         J9IlWzdTYScNNL8DX7gCVT5EMRu4cuYpz2/00xHgqbRKVCTRUKgdmv0jqc1tA2Lw/lwd
-         V8SnkR0LRfEJQrnSDgkKS7zMfcwnf3mPuDl1/zGZm3ZImkohewq5e+OV3+vQTZpp/lZn
-         8hlRzz9RZmCkAkonGVwqxO75XLnvl2jY6z1nne3/mHvJW07uy3Leq335cTjP8FxPPIoE
-         cCYA==
-X-Forwarded-Encrypted: i=1; AJvYcCW9J5SyXKcoVPVoR6f+T2NtsVejalCSsGo5GK3HfAHxV0w3rIEgHYAdmy9KZNpGq5vSMMnzRFvxrPYKkPCRBqfkbvx9PlvGpxPN0PSpCtcUcVFWtDZY7BmmiwI/L4cpoO1DTh+dDCK+nx7AwhOZzcoED3T1e97RLaeEqesbv8LcjtSZkDIJaVUugk/dkI6zBRvngxbqmESOQz/qiIXBcv5PLVAgDrg=
-X-Gm-Message-State: AOJu0YwI0oc4TvWsklsgqMfiIC9ARAba+d+mjY9wvLKeNQLUVQb5udzY
-	MCVyW6IDcHVRJBimJA2fHEO3Tk/Mujs7nuzGRBKUCnmmtro78hdx
-X-Google-Smtp-Source: AGHT+IFEM/soxWfQoKXx3QMSwZcKetXJTH+EFcrwlfV0CLAETQZh68TaytBVM9F5G8Wef91zbJl1fA==
-X-Received: by 2002:a17:906:4f13:b0:a3f:cc6:57dc with SMTP id t19-20020a1709064f1300b00a3f0cc657dcmr68689eju.56.1708702521582;
-        Fri, 23 Feb 2024 07:35:21 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id qo8-20020a170907874800b00a3e4fc3919esm6047507ejc.31.2024.02.23.07.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 07:35:20 -0800 (PST)
-Message-ID: <1310411e1224f6635ba5c70c34563a4b7fafd523.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v3 07/16] bpf/helpers: mark the callback of
- bpf_timer_set_sleepable_cb() as sleepable
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>,  Benjamin Tissoires
- <benjamin.tissoires@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Shuah
- Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Fri, 23 Feb 2024 17:35:19 +0200
-In-Reply-To: <20240221-hid-bpf-sleepable-v3-7-1fb378ca6301@kernel.org>
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
-	 <20240221-hid-bpf-sleepable-v3-7-1fb378ca6301@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1708702684; c=relaxed/simple;
+	bh=APBsN9+KlkPc+UrYUeuDlX7HNno6Yv7Gwghsm2RlvrM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kjLjdC1EPrm1c3ZHsjCY/VXqZrSBvmcz2lkNd+XAp6C8j7J+cLAWnUA+xPmDKmpZlM3uuDFVaIJvQ3m/+lbN7Ws+cqxYwmI1sDc4MUEya/ZnibnS28YQtcNRiNs++PkETcSdvIt4Z2hE2sqeZh2szDN0xQN33vAC3pii/Ir6BcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fHgzjM+U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44718C433C7;
+	Fri, 23 Feb 2024 15:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708702684;
+	bh=APBsN9+KlkPc+UrYUeuDlX7HNno6Yv7Gwghsm2RlvrM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fHgzjM+UMpdBglmrtj/aI9mYZlEir3q/Nq6zVBfYrJoRIYfhHdfXtzZoVyeCBwlgc
+	 39zvMpxBMnHoe4brUJ7D+kZFNaBH8VqkB5qZVpdrC7yAvXHjc1YWWFaBKN4Of/cQj+
+	 MxCGBZhf+wloTe0yY+s/W18qkaV6UIykGZXQ+35af/EKOi+ishr//JDbLTKZAON3PW
+	 VLLcPfkKh/DuXxMnAI87g4EQy0UnZ+/YfZbRBzXOzJU84HqEngBWIsev3f9O/lgREz
+	 62JLzl463AU2GVCPlKhQL89QFfp7E1GzPGZvU2etc68VG81FpM7S8qDCY5mwS94Jsf
+	 /NlLoMEhHOL3A==
+Date: Fri, 23 Feb 2024 07:38:02 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com,
+ anjali.singhai@intel.com, namrata.limaye@intel.com, tom@sipanda.io,
+ mleitner@redhat.com, Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com,
+ tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, toke@redhat.com,
+ mattyk@nvidia.com, daniel@iogearbox.net, bpf@vger.kernel.org,
+ dan.daly@intel.com, andy.fingerhut@gmail.com, chris.sommers@keysight.com,
+ pctammela@mojatatu.com, victor@mojatatu.com
+Subject: Re: [PATCH net-next v11 0/5] Introducing P4TC (series 1)
+Message-ID: <20240223073802.13d2d3d8@kernel.org>
+In-Reply-To: <20240223131728.116717-1-jhs@mojatatu.com>
+References: <20240223131728.116717-1-jhs@mojatatu.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-02-21 at 17:25 +0100, Benjamin Tissoires wrote:
+On Fri, 23 Feb 2024 08:17:23 -0500 Jamal Hadi Salim wrote:
+> This is the first patchset of two. In this patch we are only submitting 5
+> patches which touch the general TC code given these are trivial. We will be
+> posting a second patchset which handles the P4 objects and associated infra
+> (which includes 10 patches that we have already been posting to hit the 15
+> limit).
 
-[...]
+Don't use the limit as a justification for questionable tactics :|
+If there's still BPF in it, it's not getting merged without BPF
+maintainers's acks. So we're going to merge these 5 and then what?
 
-> @@ -626,6 +627,7 @@ struct bpf_subprog_info {
->  	bool is_async_cb: 1;
->  	bool is_exception_cb: 1;
->  	bool args_cached: 1;
-> +	bool is_sleepable: 1;
-> =20
->  	u8 arg_cnt;
->  	struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
-
-[...]
-
-> @@ -2421,6 +2424,7 @@ static struct bpf_verifier_state *push_async_cb(str=
-uct bpf_verifier_env *env,
->  	 * Initialize it similar to do_check_common().
->  	 */
->  	elem->st.branches =3D 1;
-> +	elem->st.in_sleepable =3D env->subprog_info[subprog].is_sleepable;
->  	frame =3D kzalloc(sizeof(*frame), GFP_KERNEL);
->  	if (!frame)
->  		goto err;
-
-[...]
-
-> @@ -9478,6 +9483,7 @@ static int push_callback_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *ins
-> =20
->  		/* there is no real recursion here. timer callbacks are async */
->  		env->subprog_info[subprog].is_async_cb =3D true;
-> +		env->subprog_info[subprog].is_sleepable =3D is_bpf_timer_set_sleepable=
-_cb_kfunc(insn->imm);
->  		async_cb =3D push_async_cb(env, env->subprog_info[subprog].start,
->  					 insn_idx, subprog);
-
-I'd make is_sleepable a parameter for push_async_cb() instead of a field
-in struct bpf_subprog_info.
-I had to spend some time convincing myself that bpf_subprog_info->is_sleepa=
-ble
-does not have to be computed before do_check() in check_cfg(),
-or what would happen if same callback is passed as both sleepable and
-non-sleepable callback. These questions won't arise if this is a parameter.
-
-[...]
+BTW the diffstat at the end of the commit message is from the full set.
 
