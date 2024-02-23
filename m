@@ -1,136 +1,139 @@
-Return-Path: <bpf+bounces-22587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3445E861545
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 16:11:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F1118615D6
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 16:31:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B3B285F01
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 15:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FCDC1C2433C
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 15:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC9A81AD4;
-	Fri, 23 Feb 2024 15:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03087823DB;
+	Fri, 23 Feb 2024 15:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bfvFfg+q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T4veCoWG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A8A7175E;
-	Fri, 23 Feb 2024 15:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DF7823D7
+	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 15:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708701063; cv=none; b=AzFz2J4O1IugRvPmcqM2r9gQvlAJwXT050FazOhURkkmIwPDkgfltQWK5tb7bx1BLsa5IcZoV2QG+g3av88sqVzb69Kh5bfvOLS3gfOT+lG2matPJapsYs+CDEtfWWQkNNFvMrwl3s78ibakDAJbhGfN3dnSNynOwF6p8geADTU=
+	t=1708702253; cv=none; b=oM3/3aiQchGwfUn4rbovirIR97pIGix+JiUz9HvQgd9uTg9q9fV1BZ1caw3hwTuXpwOEsNo2VoeAusC2hU19ctlvNhubcb2IYs8GV8c5P1jIa7vcN1S2EWlyDBpAYXRSDS5hevEoo/Y4I2yToNGbFolytbVNGebg9NgwL29C05k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708701063; c=relaxed/simple;
-	bh=BWAULHbLWbB+KkcDJOQb/hJls2wOgcOql7I2hoBa8CY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=d054YfJTmzIIk+f0QY/T0ThiTYiNXSWyMHkt1kFktOD6u45Q/m9Mb78h34J9WoYAK8BNcVYzODZLCIUnuQzrDg/3siJXqmFv7uISqT2Rhuy0romMoNhVUv3Grq2hxnnl8mVpEqnnoPsNyWxHOLQK7BOUA91+ISRtgfbUaHND3Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bfvFfg+q; arc=none smtp.client-ip=209.85.208.47
+	s=arc-20240116; t=1708702253; c=relaxed/simple;
+	bh=rVbnM/5eDfohz3QT9cfq7zFQ5YmxVyUMY6WzUIETNdo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nH0LZcKiz9CxuzdL6BO+Zt3cKrKjE6NUgl23OaW6EYOC3L6QaCyHFFwssoM6TrqtuicIuUfZ59KdWm8+bgo53Ww4l1/Xp7p9RgOqiAMGlGpe0MpP6hpaTZz3PF1aQ2Jl5KUsmhON9Zz/ZUpA7kwAEwzHxos5gxeCFkg6Tl6j3tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T4veCoWG; arc=none smtp.client-ip=209.85.167.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso549241a12.3;
-        Fri, 23 Feb 2024 07:11:01 -0800 (PST)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bba50cd318so316979b6e.0
+        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 07:30:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708701059; x=1709305859; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7PyhNTzfUf4bqC8Lb6m5EtnwVPS+NUJXwDTRzK1tIj4=;
-        b=bfvFfg+qm9/WyLsNg0AozEVm8DZDf/VnPZXjH0DJhnrqkM/15DlQShuwg7cGMrlArO
-         qS6fRPmrClLboCIU7mOK0StBkARV3pRglNtgf4xGT4oDn2PMjOwAS7P5eXFbIplTgoxm
-         Tx/fcGGs9kmUXKlff63m44Qj9u4xzV7gx3b7PaZeIJhVcXGCPjnv9r7Dc9b+zFhOg5nL
-         wgtN+wxR8MHqd05lJgk6WAVI3b6bCRjnMm5RIOPBMomIOysZjPaBn3EaxmqoZFkbyYaz
-         1emKEt+2zT0Q4hwixNgtNKvnFcL0k3s6IzkCdumEuqu1KOuYLcVzrY6dmmlWQph1GuTP
-         fprg==
+        d=gmail.com; s=20230601; t=1708702251; x=1709307051; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0X4hUA5cKI6/CQiLoxEQeuEnn3NNM/yeXUI05XyG4L8=;
+        b=T4veCoWGsL+w5aCdxPPgXfdzkh2CJZhU+y7C3lsfRpyF774yrMip17+ACD8b56+FkC
+         atvJgKakf1Hq+cQhHcsftEdAF+30vhgZ6WCIqYs7urT8dL32AIqBDKie0XxbwM5XNfic
+         jEyx54JMg1SeCZxk7dD/J/1p8+HBxRDBK1uY8tQSVeYF6bfOrLxZoWGLpQuMLaA3aPnP
+         9ck3FB0ijFLIAT76XuBtDU1rsdQs4jOHVqUjl5L5O8F720mW0iSHqBkm3IdxKYveRDdo
+         xzaQlq43Fajnd4xDsbRfScY2KcyRfV45SAlNFnFGhnHO0hkfOt5M35DuVMYK0ejMdblh
+         BaPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708701059; x=1709305859;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
+        d=1e100.net; s=20230601; t=1708702251; x=1709307051;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7PyhNTzfUf4bqC8Lb6m5EtnwVPS+NUJXwDTRzK1tIj4=;
-        b=cLDz0Jd9EWa20YqwNfZuTwPxxXq04jqcTaCLRlSgCNFD6fsUybXbHwY+s/7fjagIbr
-         5aUiV+eQe50AB3lOwHGPgiSF3JFaqqIwNe2QaEFCynBWriL02G8k8fDgtw/DoJiI3XXU
-         HiOlolDK4azCP/Ol/4xp69Q5Hb6Qhvqp80326MgZRCoL7X4/pF3o8se8y+YcNf7WvsEe
-         KHllkdJQqLBmL3fOXuh74d5PlcGZP1vMtzwes1o7OH8q285vJRs6iRH6/gHMVAdvHpNi
-         Zx/RGWh2ojIOIztE1B3K4WdQeZt46bttSeLnuqsb35AfqzczmZVWxSfDW3T2oyBMF21L
-         iu4A==
-X-Forwarded-Encrypted: i=1; AJvYcCUIAoCFSQnu6PtoNcBUTP1TEdz7eB9/r0fwv8IEk45vPDdULGwOun1YqHJeBlf0WRmTFS7hMdKc/c4u70I0b/sRRZ6nJ5g6iFE30ej3+XfuWEF437Se5LLCyaIWtJ4jRM3wXCyKqxxdVgFtM60ndt9iezkkK8XgfDaB0NVTM+UaHIXQinHl8RBlN8MzG/XdO8z8CLjruS59aEXo91WlTjYorGtIclk=
-X-Gm-Message-State: AOJu0Yxy4EY1+2CDFuoKzL0UP6PQkZga/J2iL+c5iaknekZ8PKUazuO8
-	xldLqidFEIN1OVS4mslAcMo+XFSutLkq8hHUg6GxJGdGoImvjDHR
-X-Google-Smtp-Source: AGHT+IFHLlIjxbqlKvU05Hbq8irfng+ngnvAOtkfFot1E7lqzD44FsrcJtCQceim+cA+lqe+mCkKJQ==
-X-Received: by 2002:a17:906:a1d3:b0:a3e:b523:90b with SMTP id bx19-20020a170906a1d300b00a3eb523090bmr45439ejb.14.1708701059522;
-        Fri, 23 Feb 2024 07:10:59 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id lj7-20020a170907188700b00a3daf530fd8sm6970346ejc.210.2024.02.23.07.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 07:10:59 -0800 (PST)
-Message-ID: <de6b04bdb2627a7decfd6b6c98c1093631a6a87b.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v3 06/16] bpf/helpers: introduce
- bpf_timer_set_sleepable_cb() kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>,  Benjamin Tissoires
- <benjamin.tissoires@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Shuah
- Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Fri, 23 Feb 2024 17:10:52 +0200
-In-Reply-To: <20240221-hid-bpf-sleepable-v3-6-1fb378ca6301@kernel.org>
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
-	 <20240221-hid-bpf-sleepable-v3-6-1fb378ca6301@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        bh=0X4hUA5cKI6/CQiLoxEQeuEnn3NNM/yeXUI05XyG4L8=;
+        b=GQ2MgXmaGb7HH46/XhAO8e+QQITxrS0GRSmS8x1a9U6e+oe5cOOyUFTwEkP4x4Q0bH
+         o20lTdCBakOrdMIi+/uhqwX40N9J/osEXdSZ29zh58ST1cT1S4WTvwwEz8FelY9qfEk/
+         HtAsTMPzjLPkiYsIP0aNOJgsjQJkxKVV79vMYSlCBLhXcKj10oWGapMbN73+vHoMCPOy
+         w0pGcRb5DEQSJuGq4vcg0c4ELC1GplRDAzEgQQ+p1yUexazlEC0UbQpqXjOWVlLd0NlR
+         gNyW835oBGQo4/SPr3U2QSoggF8YAqx1sGprF0q/bPHGH+OFwvPlVu/baUjNKb/G9K96
+         UHFw==
+X-Forwarded-Encrypted: i=1; AJvYcCU7cbUYg9MzVrQptF2DBAUr4xw6hmJH5B7c2s2cHbVpqXS9I3UeMQZ+OYXwgnhHuNGKXzP7Cp2JYLNnRsf8hizp67R/
+X-Gm-Message-State: AOJu0YzS8BUn0jLK5YC0mRtrHekK2e3IpLI272uUFl1xLiZmeRs+xts9
+	rJ5HWoHvgVcH7E9+U2LPG9JgOgJisAazrtz+EeE8u0GX2Sika1nN
+X-Google-Smtp-Source: AGHT+IHkPuRLWjIGSVd+Bb+0zQ8+/LlPriYRQY8bE0NNrvl7/LIwMtfbCMgqxj0E1Mxjfr0jPVXg7A==
+X-Received: by 2002:a05:6870:7906:b0:21f:a0e6:c45b with SMTP id hg6-20020a056870790600b0021fa0e6c45bmr196695oab.11.1708702251190;
+        Fri, 23 Feb 2024 07:30:51 -0800 (PST)
+Received: from [192.168.11.208] (220-136-196-149.dynamic-ip.hinet.net. [220.136.196.149])
+        by smtp.gmail.com with ESMTPSA id 8-20020a630c48000000b005dc36761ad1sm12459146pgm.33.2024.02.23.07.30.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 07:30:50 -0800 (PST)
+Message-ID: <1fdb4ba0-5b91-419a-960c-a26de0e51c25@gmail.com>
+Date: Fri, 23 Feb 2024 23:30:45 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, x64: Fix tailcall hierarchy
+Content-Language: en-US
+To: Pu Lehui <pulehui@huawei.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ maciej.fijalkowski@intel.com, jakub@cloudflare.com, iii@linux.ibm.com,
+ hengqi.chen@gmail.com, kernel-patches-bot@fb.com
+References: <20240222085232.62483-1-hffilwlqm@gmail.com>
+ <20240222085232.62483-2-hffilwlqm@gmail.com>
+ <8a3111a0-b190-437f-979e-393f0c890bf1@huawei.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <8a3111a0-b190-437f-979e-393f0c890bf1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2024-02-21 at 17:25 +0100, Benjamin Tissoires wrote:
 
-[...]
 
-> @@ -12120,6 +12137,16 @@ static int check_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
->  		}
->  	}
-> =20
-> +	if (is_async_callback_calling_kfunc(meta.func_id)) {
+On 2024/2/23 12:06, Pu Lehui wrote:
+> 
+> 
+> On 2024/2/22 16:52, Leon Hwang wrote:
 
-I think that it's better to check specific kfunc id here:
+[SNIP]
 
-  meta.func_id =3D=3D special_kfunc_list[KF_bpf_timer_set_sleepable_cb_impl=
-]
+>>   }
+>>   @@ -575,6 +574,54 @@ static void emit_return(u8 **pprog, u8 *ip)
+>>       *pprog = prog;
+>>   }
+>>   +DEFINE_PER_CPU(u32, bpf_tail_call_cnt);
+> 
+> Hi Leon, the solution is really simplifies complexity. If I understand
+> correctly, this TAIL_CALL_CNT becomes the system global wise, not the
+> prog global wise, but before it was limiting the TCC of entry prog.
+> 
 
-In case if some new async callback calling kfunc would be added,
-for which set_timer_callback_state() won't be correct.
+Correct. It becomes a PERCPU global variable.
 
-> +		err =3D push_callback_call(env, insn, insn_idx, meta.subprogno,
-> +					 set_timer_callback_state);
-> +		if (err) {
-> +			verbose(env, "kfunc %s#%d failed callback verification\n",
-> +				func_name, meta.func_id);
-> +			return err;
-> +		}
-> +	}
-> +
->  	rcu_lock =3D is_kfunc_bpf_rcu_read_lock(&meta);
->  	rcu_unlock =3D is_kfunc_bpf_rcu_read_unlock(&meta);
-> =20
->=20
+But, I think this solution is not robust enough.
 
+For example,
+
+time      prog1           prog1
+==================================>
+line              prog2
+
+this is a time-line on a CPU. If prog1 and prog2 have tailcalls to run,
+prog2 will reset the tail_call_cnt on current CPU, which is used by
+prog1. As a result, when the CPU schedules from prog2 to prog1,
+tail_call_cnt on current CPU has been reset to 0, no matter whether
+prog1 incremented it.
+
+The tail_call_cnt reset issue happens too, even if PERCPU tail_call_cnt
+moves to 'struct bpf_prog_aux', i.e. one kprobe bpf prog can be
+triggered on many functions e.g. cilium/pwru. However, this moving is
+better than this solution.
+
+I think, my previous POC of 'struct bpf_prog_run_ctx' would be better.
+I'll resend it later, with some improvements.
+
+Thanks,
+Leon
 
