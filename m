@@ -1,131 +1,172 @@
-Return-Path: <bpf+bounces-22611-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04470861C56
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 20:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE55861C93
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 20:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3A05284ADA
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 19:15:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E571428546E
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 19:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C40143C67;
-	Fri, 23 Feb 2024 19:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nkomk8hO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFE914535B;
+	Fri, 23 Feb 2024 19:33:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 504FF101CA
-	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 19:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602AB12A16D
+	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 19:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708715731; cv=none; b=HXwU0W6fo03vVkCjJp8hxXKh0kwmCiHYV/cjyuuKOeBxzl/AptOM3PyLqpzMOlxf9BDNrrx80hqu2T9pNSWLEfJTG9f3Pw1BPi+enxivKPbudKeYBVd5sqDX20tyP/8zoluC4vyPcY/rzGp43/XmDLt6AmohsUmQbejpcNNd27Y=
+	t=1708716833; cv=none; b=HdyJKyRjPtgx2GP+iV/2ZmJOqY2EDZLqBCnA7pG+x3X5T+CDb3+QGx18UKGdSxqksOPMIH+Q1l9eerZEzcnr1bwZnf3E6Z3HXn85FUffwfTxGD42gFZcDqkGGEWeuOnCTUqBpV23WXBRZ2kO8Xvp6MDuHjKc0ghc9vxwWhFT4FQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708715731; c=relaxed/simple;
-	bh=T2soKAOo3mqK2a1xP/BzF21uwuTE2G2W0RnJ2mIb6/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fqSQie2u486Is3CjBynyN7/iKs8yW7MNY65A5/Pj7em6LXeqbd3MO/Q4wLnY857oc8eSbbTv1m3iULbWYiMdn/m7tWvFD2x2BSt7TkPlvupPC0RAn7rA0vwxDyw447ldl1XfaTUK9djBsu288nlctKm2yK1rKSDNqyNmmsPfLFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nkomk8hO; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <363c4377-f668-49fd-978d-73864c293b4e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708715727;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nIslIAnDT86/nNrLRinTSb0cAl34kXZfFoLeBJhiN6w=;
-	b=Nkomk8hOIaFH09o2FGBaZ09p21XrHmdSJ0ERTYGGUhfjq+wGTj8rRaqG1DlvXhQedRP+44
-	HRmBsztVOmZ5ycnpjQzPXwlkTzFHOO/mwB+ACIHgPQzNXYo416Ru+kZgHneVXN6K8jpCW8
-	p2k++h6n7VhT5Jnd5oWeyAaxDpcW0OE=
-Date: Fri, 23 Feb 2024 11:15:22 -0800
+	s=arc-20240116; t=1708716833; c=relaxed/simple;
+	bh=NHMUP9NraBD6Eqk68pcz1wWKgF7lFeJ89j+9hHUMX3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EpcZFO7te1TSm89IYI/WolcCgIm3abd+DS1FlfOdPC3nKxxQl9lyn5kOFd0UU27l/cbXa5knaqqyFfmj1TFui2SvfyCRV7dv2l1N4GTQ0GIdjhMTj8JWTrRcZxm3fIKavrV0kjeejaOZv/Qmq3AtG3iTwWWQ35Aqa9+lTktsxvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so1072270276.0
+        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 11:33:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708716830; x=1709321630;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NkwMxyU0Q46C/t8rQZ8Xx5eJVTBpDa+VcrdWSFgt2B0=;
+        b=wlBRqUCBmRf7/8sG3oQAGM0m5vl1ZxZSZPBvsUEqRR21wO17hoc5nwWfodSkgW3TiE
+         MU013qwJF/ylIBQT/32QxAMOdQsjODsZW1z20laCzO41uoFNEtVZXrOrJlKZywnWSye5
+         i0cpDTfLuoILlc/Y2Kf3hTHWTDoOKScYQZsTBIjifuSB05VbZWe/RbdOk80k424QEI9M
+         9Nce3AGpNoG0b1EU4OWgePCOnOh0Tpr7OSLf6U30T+D0QYm8GeFc5fCFtQBviPw6O4CH
+         4gc8forMSfZzItXoO2DHxA/UvY1XxiSJbw/YH49q4GsVu9qJyNewcBIL7+s2qZfDT5CR
+         mk6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWvo+x9L6fFm8tBvj7KFcV1GokugOlc2hmA3mvj1Ad7PxfOH/fr68AZYvhSIT1eyGeObTQNclylbXD6OLv7Tp5+vgap
+X-Gm-Message-State: AOJu0YwYoHSMyVGQRzRVq8zgOiAeD9ZYkuW6dn2EOXfNoCx9uqV/+01v
+	WnbG1heGG4Qdy80MI2dzDEYzkTonb5w6Dcqj7/9tnkz7RzWIyUhv
+X-Google-Smtp-Source: AGHT+IGccsgslU+g7fG8RH5vESyaHGN3kG/kY82DvxdiXHadySf0pGOPfauWUKWsGoYLdLArro/ecQ==
+X-Received: by 2002:a25:d391:0:b0:dcd:3663:b5e5 with SMTP id e139-20020a25d391000000b00dcd3663b5e5mr746234ybf.25.1708716830219;
+        Fri, 23 Feb 2024 11:33:50 -0800 (PST)
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id t6-20020a05622a01c600b0042c61b99f42sm574541qtw.46.2024.02.23.11.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 11:33:49 -0800 (PST)
+Date: Fri, 23 Feb 2024 13:33:47 -0600
+From: David Vernet <void@manifault.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Dave Thaler <dthaler1968@googlemail.com>,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+	bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+Subject: Re: [Bpf] [PATCH bpf-next v4] bpf, docs: Add callx instructions in
+ new conformance group
+Message-ID: <20240223193347.GA2026@maniforge>
+References: <20240221191725.17586-1-dthaler1968@gmail.com>
+ <CAADnVQJq0aG2kF2KN1SCM9cZtRLqxKG=UkF=5-XWjFBbvLZhhQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: struct_ops supports more than one
- page for trampolines.
-Content-Language: en-US
-To: Kui-Feng Lee <sinquersw@gmail.com>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-References: <20240221225911.757861-1-thinker.li@gmail.com>
- <20240221225911.757861-3-thinker.li@gmail.com>
- <c59cc446-531b-4b4a-897d-3b298ac72dd2@linux.dev>
- <3e4cc350-34c9-42c1-944f-303a466022d2@gmail.com>
- <7402facf-5f2e-4506-a381-6a84fe1ba841@linux.dev>
- <25982f53-732e-4ce8-bbb2-3354f5684296@gmail.com>
- <b8bac273-27c7-485a-8e45-8825251d6d5a@linux.dev>
- <33c2317c-fde0-4503-991b-314f20d9e7f7@gmail.com>
- <c938c3b1-8cce-4563-930d-7e8150365117@gmail.com>
- <ded8001c-2437-48f4-88ff-4c0633f1da7c@linux.dev>
- <30ffb867-ee0e-4573-b9e7-9fc0f4430adb@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <30ffb867-ee0e-4573-b9e7-9fc0f4430adb@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nqDR/5myZN5HNQ8X"
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJq0aG2kF2KN1SCM9cZtRLqxKG=UkF=5-XWjFBbvLZhhQ@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On 2/23/24 11:05 AM, Kui-Feng Lee wrote:
-> 
-> 
-> 
-> On 2/23/24 10:42, Martin KaFai Lau wrote:
->> On 2/23/24 10:29 AM, Kui-Feng Lee wrote:
->>> One thing I forgot to mention is that bpf_dummy_ops has to call
->>> bpf_jit_uncharge_modmem(PAGE_SIZE) as well. The other option is to move
->>> bpf_jit_charge_modmem() out of bpf_struct_ops_prepare_trampoline(),
->>> meaning bpf_struct_ops_map_update_elem() should handle the case that the
->>> allocation in bpf_struct_ops_prepare_trampoline() successes, but
->>> bpf_jit_charge_modmem() fails.
->>
->> Keep the charge/uncharge in bpf_struct_ops_prepare_trampoline().
->>
->> It is fine to have bpf_dummy_ops charge and then uncharge a PAGE_SIZE. There 
->> is no need to optimize for bpf_dummy_ops. Use bpf_struct_ops_free_trampoline() 
->> in bpf_dummy_ops to uncharge and free.
-> 
-> 
-> Then, I don't get the point here.
-> I agree with moving the allocation into
-> bpf_struct_ops_prepare_trampoline() to avoid duplication of the code
-> about flags and tlinks. It really simplifies the code with the fact
-> that bpf_dummy_ops is still there. So, I tried to pass a st_map to
-> bpf_struct_ops_prepare_trampoline() to keep page managements code
-> together. But, you said to simplify the code of bpf_dummy_ops by
-> allocating pages in bpf_struct_ops_prepare_trampoline(), do bookkeeping
-> in bpf_struct_ops_map_update_elem(), so bpf_dummy_ops doesn't have to
 
-I don't think I ever mentioned to do book keeping in 
-bpf_struct_ops_map_update_elem(). Have you looked at my earlier code in 
-bpf_struct_ops_prepare_trampoline() which also does the memory charging also?
+--nqDR/5myZN5HNQ8X
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> allocate memory. But, we have to move a bpf_jit_uncharge_modmem() to
-> bpf_dummy_ops. For me, this trade-off that include removing an
-> allocation and adding a bpf_jit_uncharge_modmem() make no sense.
+On Thu, Feb 22, 2024 at 09:28:47AM -0800, Alexei Starovoitov wrote:
+> On Wed, Feb 21, 2024 at 11:17=E2=80=AFAM Dave Thaler <dthaler1968@googlem=
+ail.com> wrote:
+> >
+> > -BPF_CALL  0x8    0x0  call helper function by address  BPF_JMP | BPF_K=
+ only, see `Helper functions`_
+> > +BPF_CALL  0x8    0x0  call_by_address(imm)             BPF_JMP | BPF_K=
+ only
+> > +BPF_CALL  0x8    0x0  call_by_address(dst)             BPF_JMP | BPF_X=
+ only
+>=20
+> ...
+>=20
+> > +* call_by_address(value) means to call a helper function by the addres=
+s specified by 'value' (see `Helper functions`_ for details)
+>=20
+>=20
+> Sorry, we're not going to take this path in the kernel verifier.
+> I understand that you went with this semantics in PREVAIL verifier,
+> but this is user space and I suspect once PREVAIL folks realize
+> that it's not that useful you will change that.
+> User space has a luxury to change. The kernel doesn't
+> and we won't be able to change such things in the standard either.
+>=20
+> Essentially what you're proposing is to treat
+> callx dst_reg
+> as calling any of the existing helpers by a number.
+> Let's look at the first ~6:
+> id =3D 1  void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> id =3D 2 long bpf_map_update_elem(struct bpf_map *map, const void *key,
+> const void *value, u64 flags)
+> ...
+> id =3D 6 long bpf_trace_printk(const char *fmt, u32 fmt_size, ...)
+>=20
+> They have almost nothing in common.
+> In C that would be an indirect call of "long (*fn)(...)"
+> just call anything and hope it works.
+> This is not useful in practice.
+>=20
+> Also commit log is wrong:
+>=20
+> > Only src=3D0 is currently listed for callx. Neither clang nor gcc
+> > use src=3D1 or src=3D2, and both use exactly the same semantics for
+> > src=3D0 which was agreed between them (Yonghong and Jose).
+>=20
+> this is not at all what gcc and clang are doing.
+> They emit "callx dst_reg" when they need to compile a normal indirect call
+> which address is in dst_reg.
+> It's the real address of the function and not a helper ID.
+>=20
+> Hence these two:
+> > +BPF_CALL  0x8    0x0  call_by_address(imm)             BPF_JMP | BPF_K=
+ only
+> > +BPF_CALL  0x8    0x0  call_by_address(dst)             BPF_JMP | BPF_X=
+ only
+>=20
+> are not correct.
+> call imm is a call of helper with a given ID.
+> callx dst_reg is a call of a function by its real address.
+>=20
+> This is _prelminary_ definition of callx dst_reg from compiler pov,
+> but there is no implementation of it in the kernel, so
+> it's way too early to hard code such semantics in the standard.
 
-Which part make no sense? Having bpf_dummy_ops charge/uncharge memory also?
+Dave -- are you OK with us just reserving the semantics for all callx
+instructions, including src=3D0? At this point I think it's probably just
+best for us to boot the whole thing to an extension.
 
-The bpf_dummy_ops() uses the below bpf_struct_ops_free_trampoline() which does 
-uncharge and free. bpf_struct_ops_prepare_trampoline() does charge and alloc.
-charge/alloc matches with uncharge/free.
+I'm happy to send a patch for that if you agree (or please feel free to
+send a v5 of this series which just reserves the group).
 
-> 
->>
->>
->>>>> void bpf_struct_ops_free_trampoline(void *image)
->>>>> {
->>>>>      bpf_jit_uncharge_modmem(PAGE_SIZE);
->>>>>      arch_free_bpf_trampoline(image, PAGE_SIZE);
->>>>> }
->>>>>
->>
+Thanks,
+David
 
+--nqDR/5myZN5HNQ8X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZdjzGwAKCRBZ5LhpZcTz
+ZDAyAP9EjBNLZhSAh7AGADKMfnox3Byuh7TNzpWprJc4oTUGHwD+MyT1LAORPwyG
+asVXe1cBLnDM3DMOlMf8ad6jok6ukAw=
+=CVFA
+-----END PGP SIGNATURE-----
+
+--nqDR/5myZN5HNQ8X--
 
