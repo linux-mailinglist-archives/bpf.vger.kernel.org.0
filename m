@@ -1,339 +1,205 @@
-Return-Path: <bpf+bounces-22585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 509FE861284
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 14:18:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40CE38614DD
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 15:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74BAF1C229D8
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 13:18:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9545DB21CD5
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 14:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1287F7F7D0;
-	Fri, 23 Feb 2024 13:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A306A823B1;
+	Fri, 23 Feb 2024 14:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="K4cLbt1f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6QLetlo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E464D7E78A
-	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 13:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4DB4687;
+	Fri, 23 Feb 2024 14:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708694268; cv=none; b=qrnV3YBENIMgSyeMx0Q5fkninyJQFXAMRi/J+IXBDs/DVjF9aTSD3njwRHC+Ujgqk5BxJDMLSF+eWpg1e6bVxn17XWlOEPpVuQXAv+2nCddlrh7Ur9onSE3g0ZlJjFKKAF0B8AldAFfOw2DGuA/9Fe4hJUukR73IuY3Dc9ZIoNU=
+	t=1708700084; cv=none; b=sHsG5p1+j7GHeN4C6CrOxFEtoWSGN0CnFpKa8TK01R1zHDOUPBm/robngBG30qcKE5RJh6MHKzLKHI1MI5KkNKkkLM2FbnGPIf/i6Elb11fBRU8oOBPzD+iuw9UE/08Sm2c9aIe89FJ3mloGK4EJk4fhFZD6pV2mMyd7kEHG1oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708694268; c=relaxed/simple;
-	bh=0DhGdU85buiKZ6gE/vKFkpiU6PLSJnvgVIVPpPyrqaU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pmewRL5eGqpb0tWZ6wumCCtfQsSVfb7g3iE/4aR38vyKxEa/W01S9jFFDa+fIDZ2xUWSarQwopNhbmZTMsC9uN8u3graMyImQmaHIp+sJLASR+H+bpmnh81JFTdauGZbwgcnamXPfHLBDc3bY9KhsfsCGvmfAsOC+L4IC4I4t+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=K4cLbt1f; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7874a96a01dso19129185a.3
-        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 05:17:46 -0800 (PST)
+	s=arc-20240116; t=1708700084; c=relaxed/simple;
+	bh=0BuK+30SS1xLSBY92/ETM4LxjOwrk4Z1jPGUNUyhBbk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fg/Fv9A5zIkPjW1tEYjbb+j44uE4UCYhOTJ/ymgpL9Xl9NiysqHHTlqfpFaWmwqkOw6mmDOh5owe688KKZNjBPvXHCFwYEGWUghvZ801sNsUFQEImMwAzgxYO9ugbDknOCdZK0z7AJJ7ZnRRhsCpN5EjVU3IlmDNRzAZrmKgyeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y6QLetlo; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso105791566b.0;
+        Fri, 23 Feb 2024 06:54:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1708694266; x=1709299066; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H9AIcnsxEM8NnMIh0oZV+QmkJ4BpMVmS49VYo2k2mSE=;
-        b=K4cLbt1f4ukuuqZQXwxzGWKRiAogh7Yv7bE59mTKReCL1BLAJVCJI2s1VSQrqD6ke6
-         3YI9jwH128zOSyCQ0Nbs2jEiWQLPOTPCOTiwBqgLnwDFG5RpFEuH9ct+i+qM4nOQj+Fy
-         //A5sKTISS5r6pyrJy+RQgLZILEBvZxvKmuTZYL/wMuEDnCw1WzSQphbwG0xXKiyUoxu
-         ZZl+9DQytizsRDNpK+KUezczK2kkUVRpUWj/JXdSdyzYdLf1fqOAkrkRRTbjqT+ndCu6
-         SlF/C1rEYTiQ1f2Njlispma1yiNjV5OyOEvv8FTslRt++OugH2Q1bC95fEpHnwuReG+R
-         gHmw==
+        d=gmail.com; s=20230601; t=1708700081; x=1709304881; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AGvtW5d4vN3btwDw+y/lEt12l6jVrI+Rv9XtdL0Ln1M=;
+        b=Y6QLetloPAbKMRYObcnsriipmYyfdEobw5AoMs+UwHiZqckzvzV+EU/ZItLc3XNOKD
+         QMrjlXzWmVZZ9u7JtxS7AvI3/KSe/QlCq7e7Ayb9KC4FrM6DkaoENy3l/VtqoTlLOYew
+         pS/tR/2mRqE0+aTp4WJqNWLL0CEMAZJpi1Ijr5NUfWJUxgZJpDbdWtlhpi0Klv+RtxIi
+         jqM3hwmU2/AE0XVGIcYRYnrXAGADIFKyih1CdP2oMkR5JfE1Aku/4CHjvBXcgtNeVlBi
+         tXIHPwHS5MqWqZDNpJmun1d0EGq1bExQvX/0z/o+bY+QaICdDmok++yNI0cSmGg1nA0g
+         bc4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708694266; x=1709299066;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H9AIcnsxEM8NnMIh0oZV+QmkJ4BpMVmS49VYo2k2mSE=;
-        b=tcP3AdqanPrcOBDT1pn5Psvb5/FYQzzN656/+5wAfeLjoKLY/QrsjNDVVkEP8NCxTN
-         Z+wxNV+1CabXmlLMLR9v+XVA5utZCKroMHlptbDtpuGB2IF6H9GG4p4PkotzZbbV5K8H
-         ph5GGZJvdvSsEKYbWnxsGQeJz5BJJ5pJoP+mduv6DnqPivZlqR6WMkCmuD48wS3QyqaW
-         Ctnrmmj8JfqO6YVIwoOXapNgyGG757Fwzdk7utCZaWeEoPDyzUZ03KpSBDeXzVT11EAv
-         Wj4PXXDf/XejL9ECYFgLGih3w7Q1uV7w+ZOqoWvvPZ4pKqWP1jTSqOUgjmTmSF2okxim
-         fjNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWfRZLFZDiF0cOikgb0paTB15vqlkUGHPoBUSUseoJMnBBHvtU0L7onvm+62hWdMXwfHFovJRv3r+LWgk3Uubq0VPnz
-X-Gm-Message-State: AOJu0YwhyVL+PkCKQNfBKRdC5x4lizDjUDMwuYIKkTUPPR7TeweUvCPr
-	a+XGFegQwAGCE8+iHt9QTWBS55UGGzMBjOBzcV58MdX0A+N+FgbrON8eC2RJYQ==
-X-Google-Smtp-Source: AGHT+IEvLAlXJJPSSfmEiVPqOqWHPP+NdjSs5uwg32f4GRgDxTZ8AK//Hgrd4I6ArugOyBIKdcBBtg==
-X-Received: by 2002:a05:620a:479b:b0:787:2b66:a088 with SMTP id dt27-20020a05620a479b00b007872b66a088mr1871565qkb.1.1708694265839;
-        Fri, 23 Feb 2024 05:17:45 -0800 (PST)
-Received: from majuu.waya ([174.94.28.98])
-        by smtp.gmail.com with ESMTPSA id f3-20020a05620a15a300b00787ae919d02sm844869qkk.17.2024.02.23.05.17.44
+        d=1e100.net; s=20230601; t=1708700081; x=1709304881;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGvtW5d4vN3btwDw+y/lEt12l6jVrI+Rv9XtdL0Ln1M=;
+        b=TjP7YInJeLCrLs+tzeQHpUmqyW20TIKIveO5IGwxx4JRsDBmb2cx/aTxFK9xX2F3Z3
+         5RDTtEJ3Uc76WiQkLrZG4cZ6odk707yAMa7+uNMvviumxuLfMsEHBZ4FxF7fL/nADJZA
+         3lN4yX54MkOgREoc/gqGGJuTITNB2hv3TUrz8Reg/GhhBZED/cHaLlJ3hO5S73R4k3N3
+         wOFQUeOCcEUI6meS4LWOxnXCfDCO6CtPAFt4r3/JSjLJWDUrl/ZPKXBkQ2cm73ERrkZp
+         EbVQGiYql3Uiok3sqUH0xVz5TSWHMpygx2NfUOBkkz5bRkRilkLjvR306ZOlIA9Fc/LY
+         ryEA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqd1B8lIDISmW/LWMdjldXFZv1p/dXgRygj7GzeendcjyuRO2a1JMMkfxvTf6T9VvyZKKVuxVTV8ptmxUw4hhoNYntUA0xtgMNXe02MnjANtn0hsG9xGBuhploR88F6NgbNVvPDR9ka8+SGlYCzW6MJOgc5i8a536au4pt0V1L61ECgLFMlN2+Pj28sItrDPHMSsBKKfr9Zts3GbnDJld+Y2M8slA=
+X-Gm-Message-State: AOJu0Ywh4Eyx08urt2Dgv6cbcDZMVoxWYHd1IfOgFnEVOf14re09FUam
+	v8KDJMcFAuNI8JMycOQAAnsVUX7j55wbbC45+X36SpyV0B9/F/sj
+X-Google-Smtp-Source: AGHT+IGkwF8s3YRoUYAEUX/NcdoANAHlCfDGkQ40OY6ruFDEjObNcdEGLfPl+GMjWGMNJTvyIybarA==
+X-Received: by 2002:a17:906:f9ce:b0:a3e:9ddf:9f68 with SMTP id lj14-20020a170906f9ce00b00a3e9ddf9f68mr30028ejb.43.1708700080466;
+        Fri, 23 Feb 2024 06:54:40 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id xh8-20020a170906da8800b00a3d8a76a92esm7030718ejb.175.2024.02.23.06.54.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 05:17:45 -0800 (PST)
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-To: netdev@vger.kernel.org
-Cc: deb.chatterjee@intel.com,
-	anjali.singhai@intel.com,
-	namrata.limaye@intel.com,
-	tom@sipanda.io,
-	mleitner@redhat.com,
-	Mahesh.Shirshyad@amd.com,
-	Vipin.Jain@amd.com,
-	tomasz.osinski@intel.com,
-	jiri@resnulli.us,
-	xiyou.wangcong@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	vladbu@nvidia.com,
-	horms@kernel.org,
-	khalidm@nvidia.com,
-	toke@redhat.com,
-	mattyk@nvidia.com,
-	daniel@iogearbox.net,
-	bpf@vger.kernel.org,
-	pctammela@mojatatu.com,
-	victor@mojatatu.com
-Subject: [PATCH net-next v11 5/5] net: sched: act_api: Add support for preallocated P4 action instances
-Date: Fri, 23 Feb 2024 08:17:28 -0500
-Message-Id: <20240223131728.116717-6-jhs@mojatatu.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240223131728.116717-1-jhs@mojatatu.com>
-References: <20240223131728.116717-1-jhs@mojatatu.com>
+        Fri, 23 Feb 2024 06:54:39 -0800 (PST)
+Message-ID: <ff7734f456427f4afae9f7096ad5a20f810c446a.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v3 05/16] bpf/verifier: add bpf_timer as a
+ kfunc capable type
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>,  Benjamin Tissoires
+ <benjamin.tissoires@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Shuah
+ Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Fri, 23 Feb 2024 16:54:38 +0200
+In-Reply-To: <20240221-hid-bpf-sleepable-v3-5-1fb378ca6301@kernel.org>
+References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
+	 <20240221-hid-bpf-sleepable-v3-5-1fb378ca6301@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-In P4, actions are assumed to pre exist and have an upper bound number of
-instances. Typically if you a table defined with 1M table entries you want
-to allocate enough action instances to cover the 1M entries. However, this
-is a big waste of memory if the action instances are not in use. So for our
-case, we allow the user to specify a minimal amount of actions in the
-template and then if more P4 action instances are needed then they will be
-added on demand as in the current approach with tc filter-action
-relationship.
+On Wed, 2024-02-21 at 17:25 +0100, Benjamin Tissoires wrote:
+[...]
 
-Add the necessary code to preallocate actions instances for P4
-actions.
+> @@ -11973,6 +12006,9 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>  			if (ret)
+>  				return ret;
+>  			break;
+> +		case KF_ARG_PTR_TO_TIMER:
+> +			/* FIXME: should we do anything here? */
+> +			break;
 
-We add 2 new actions flags:
-- TCA_ACT_FLAGS_PREALLOC: Indicates the action instance is a P4 action
-  and was preallocated for future use the templating phase of P4TC
-- TCA_ACT_FLAGS_UNREFERENCED: Indicates the action instance was
-  preallocated and is currently not being referenced by any other object.
-  Which means it won't show up in an action instance dump.
+I think that here it is necessary to enforce that R1
+is PTR_TO_MAP_VALUE and that it points to the timer field of the map value.
 
-Once an action instance is created we don't free it when the last table
-entry referring to it is deleted.
-Instead we add it to the pool/cache of action instances for that specific
-action kind i.e it counts as if it is preallocated.
-Preallocated actions can't be deleted by the tc actions runtime commands
-and a dump or a get will only show preallocated actions instances which are
-being used (i.e TCA_ACT_FLAGS_UNREFERENCED == false).
+As is, the following program leads to in-kernel page fault when
+printing verifier log:
 
-The preallocated actions will be deleted once the pipeline is deleted
-(which will purge the P4 action kind and its instances).
+--- 8< ----------------------------
 
-For example, if we were to create a P4 action that preallocates 128
-elements and dumped:
+struct elem {
+	struct bpf_timer t;
+};
 
-$ tc -j p4template get action/myprog/send_nh | jq .
+struct {
+	__uint(type, BPF_MAP_TYPE_ARRAY);
+	__uint(max_entries, 2);
+	__type(key, int);
+	__type(value, struct elem);
+} array SEC(".maps");
 
-We'd see the following:
+int bpf_timer_set_sleepable_cb
+  (struct bpf_timer *timer,
+   int (callback_fn)(void *map, int *key, struct bpf_timer *timer))
+  __ksym __weak;
 
-[
-  {
-    "obj": "action template",
-    "pname": "myprog",
-    "pipeid": 1
-  },
-  {
-    "templates": [
-      {
-        "aname": "myprog/send_nh",
-        "actid": 1,
-        "params": [
-          {
-            "name": "port",
-            "type": "dev",
-            "id": 1
-          }
-        ],
-        "prealloc": 128
-      }
-    ]
-  }
-]
+static int cb_sleepable(void *map, int *key, struct bpf_timer *timer)
+{
+	return 0;
+}
 
-If we try to dump the P4 action instances, we won't see any:
+SEC("fentry/bpf_fentry_test5")
+int BPF_PROG2(test_sleepable, int, a)
+{
+	struct bpf_timer *arr_timer;
+	int array_key =3D 1;
 
-$ tc -j actions ls action myprog/send_nh | jq .
+	arr_timer =3D bpf_map_lookup_elem(&array, &array_key);
+	if (!arr_timer)
+		return 0;
+	bpf_timer_init(arr_timer, &array, CLOCK_MONOTONIC);
+	bpf_timer_set_sleepable_cb((void *)&arr_timer, // note incorrrect pointer =
+type!
+				   cb_sleepable);
+	bpf_timer_start(arr_timer, 0, 0);
+	return 0;
+}
 
-[]
+---------------------------- >8 ---
 
-However, if we create a table entry which references this action kind:
+I get the page fault when doing:
 
-$ tc p4ctrl create myprog/table/cb/FDB \
-   dstAddr d2:96:91:5d:02:86 action myprog/send_nh \
-   param port type dev dummy0
+    $ ./veristat -l7 -vvv -f test_sleepable timer.bpf.o
 
-Dumping the action instance will now show this one instance which is
-associated with the table entry:
+[   21.014886] BUG: kernel NULL pointer dereference, address: 0000000000000=
+060
+...
+[   21.015780] RIP: 0010:print_reg_state (kernel/bpf/log.c:715)
 
-$ tc -j actions ls action myprog/send_nh | jq .
+And here is a relevant fragment of print_reg_state():
 
-[
-  {
-    "total acts": 1
-  },
-  {
-    "actions": [
-      {
-        "order": 0,
-        "kind": "myprog/send_nh",
-        "index": 1,
-        "ref": 1,
-        "bind": 1,
-        "params": [
-          {
-            "name": "port",
-            "type": "dev",
-            "value": "dummy0",
-            "id": 1
-          }
-        ],
-        "not_in_hw": true
-      }
-    ]
-  }
-]
+713	if (type_is_map_ptr(t)) {
+714		if (reg->map_ptr->name[0])
+715			verbose_a("map=3D%s", reg->map_ptr->name);
+716		verbose_a("ks=3D%d,vs=3D%d",
+717			  reg->map_ptr->key_size,
+718			  reg->map_ptr->value_size);
+719	}
 
-Co-developed-by: Victor Nogueira <victor@mojatatu.com>
-Signed-off-by: Victor Nogueira <victor@mojatatu.com>
-Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
-Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
-Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
----
- include/net/act_api.h |  3 +++
- net/sched/act_api.c   | 45 +++++++++++++++++++++++++++++++++++--------
- 2 files changed, 40 insertions(+), 8 deletions(-)
+The error is caused by reg->map_ptr being NULL.
+The code in check_kfunc_args() allows anything in R1,
+including registers for which type is not pointer to map and reg->map_ptr i=
+s NULL.
+When later the check_kfunc_call() is done it does push_callback_call():
 
-diff --git a/include/net/act_api.h b/include/net/act_api.h
-index 49f471c58..d35870fbf 100644
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -68,6 +68,8 @@ struct tc_action {
- #define TCA_ACT_FLAGS_REPLACE	(1U << (TCA_ACT_FLAGS_USER_BITS + 2))
- #define TCA_ACT_FLAGS_NO_RTNL	(1U << (TCA_ACT_FLAGS_USER_BITS + 3))
- #define TCA_ACT_FLAGS_AT_INGRESS	(1U << (TCA_ACT_FLAGS_USER_BITS + 4))
-+#define TCA_ACT_FLAGS_PREALLOC	(1U << (TCA_ACT_FLAGS_USER_BITS + 5))
-+#define TCA_ACT_FLAGS_UNREFERENCED	(1U << (TCA_ACT_FLAGS_USER_BITS + 6))
- 
- /* Update lastuse only if needed, to avoid dirtying a cache line.
-  * We use a temp variable to avoid fetching jiffies twice.
-@@ -201,6 +203,7 @@ int tcf_idr_create_from_flags(struct tc_action_net *tn, u32 index,
- 			      const struct tc_action_ops *ops, int bind,
- 			      u32 flags);
- void tcf_idr_insert_many(struct tc_action *actions[], int init_res[]);
-+void tcf_idr_insert_n(struct tc_action *actions[], const u32 n);
- void tcf_idr_cleanup(struct tc_action_net *tn, u32 index);
- int tcf_idr_check_alloc(struct tc_action_net *tn, u32 *index,
- 			struct tc_action **a, int bind);
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index 835ead746..418e44235 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -560,6 +560,8 @@ static int tcf_dump_walker(struct tcf_idrinfo *idrinfo, struct sk_buff *skb,
- 			continue;
- 		if (IS_ERR(p))
- 			continue;
-+		if (p->tcfa_flags & TCA_ACT_FLAGS_UNREFERENCED)
-+			continue;
- 
- 		if (jiffy_since &&
- 		    time_after(jiffy_since,
-@@ -640,6 +642,9 @@ static int tcf_del_walker(struct tcf_idrinfo *idrinfo, struct sk_buff *skb,
- 	idr_for_each_entry_ul(idr, p, tmp, id) {
- 		if (IS_ERR(p))
- 			continue;
-+		if (p->tcfa_flags & TCA_ACT_FLAGS_PREALLOC)
-+			continue;
-+
- 		ret = tcf_idr_release_unsafe(p);
- 		if (ret == ACT_P_DELETED)
- 			module_put(ops->owner);
-@@ -1398,25 +1403,40 @@ static const struct nla_policy tcf_action_policy[TCA_ACT_MAX + 1] = {
- 	[TCA_ACT_HW_STATS]	= NLA_POLICY_BITFIELD32(TCA_ACT_HW_STATS_ANY),
- };
- 
-+static void tcf_idr_insert_1(struct tc_action *a)
-+{
-+	struct tcf_idrinfo *idrinfo;
-+
-+	idrinfo = a->idrinfo;
-+	mutex_lock(&idrinfo->lock);
-+	/* Replace ERR_PTR(-EBUSY) allocated by tcf_idr_check_alloc if
-+	 * it is just created, otherwise this is just a nop.
-+	 */
-+	idr_replace(&idrinfo->action_idr, a, a->tcfa_index);
-+	mutex_unlock(&idrinfo->lock);
-+}
-+
- void tcf_idr_insert_many(struct tc_action *actions[], int init_res[])
- {
- 	struct tc_action *a;
- 	int i;
- 
- 	tcf_act_for_each_action(i, a, actions) {
--		struct tcf_idrinfo *idrinfo;
--
- 		if (init_res[i] == ACT_P_BOUND)
- 			continue;
- 
--		idrinfo = a->idrinfo;
--		mutex_lock(&idrinfo->lock);
--		/* Replace ERR_PTR(-EBUSY) allocated by tcf_idr_check_alloc */
--		idr_replace(&idrinfo->action_idr, a, a->tcfa_index);
--		mutex_unlock(&idrinfo->lock);
-+		tcf_idr_insert_1(a);
- 	}
- }
- 
-+void tcf_idr_insert_n(struct tc_action *actions[], const u32 n)
-+{
-+	int i;
-+
-+	for (i = 0; i < n; i++)
-+		tcf_idr_insert_1(actions[i]);
-+}
-+
- struct tc_action_ops *
- tc_action_load_ops(struct net *net, struct nlattr *nla,
- 		   u32 flags, struct netlink_ext_ack *extack)
-@@ -2092,8 +2112,17 @@ tca_action_gd(struct net *net, struct nlattr *nla, struct nlmsghdr *n,
- 			ret = PTR_ERR(act);
- 			goto err;
- 		}
--		attr_size += tcf_action_fill_size(act);
- 		actions[i - 1] = act;
-+
-+		if (event == RTM_DELACTION &&
-+		    act->tcfa_flags & TCA_ACT_FLAGS_PREALLOC) {
-+			ret = -EINVAL;
-+			NL_SET_ERR_MSG_FMT(extack,
-+					   "Unable to delete preallocated action %s",
-+					   act->ops->kind);
-+			goto err;
-+		}
-+		attr_size += tcf_action_fill_size(act);
- 	}
- 
- 	attr_size = tcf_action_full_attrs_size(attr_size);
--- 
-2.34.1
+12152		err =3D push_callback_call(env, insn, insn_idx, meta.subprogno,
+12153					 set_timer_callback_state);
 
+Which calls set_timer_callback_state(), that sets bogus state for R{1,2,3}:
+
+9683 static int set_timer_callback_state(...)
+9684 {
+9685	struct bpf_map *map_ptr =3D caller->regs[BPF_REG_1].map_ptr;
+9687
+9688	/* bpf_timer_set_callback(struct bpf_timer *timer, void *callback_fn);
+9689	 * callback_fn(struct bpf_map *map, void *key, void *value);
+9690	 */
+9691	callee->regs[BPF_REG_1].type =3D CONST_PTR_TO_MAP;
+9692	__mark_reg_known_zero(&callee->regs[BPF_REG_1]);
+9693	callee->regs[BPF_REG_1].map_ptr =3D map_ptr;
+                                         ^^^^^^^^^
+                                         This is NULL!
 
