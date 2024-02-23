@@ -1,126 +1,142 @@
-Return-Path: <bpf+bounces-22618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A2E861D31
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 21:02:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F1E861D47
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 21:09:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0C8C1F267FF
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 20:02:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA8CF1C23587
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 20:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1BA1474B9;
-	Fri, 23 Feb 2024 20:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2B8146019;
+	Fri, 23 Feb 2024 20:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrQwImDP"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5927984FA7;
-	Fri, 23 Feb 2024 20:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4ED1F176;
+	Fri, 23 Feb 2024 20:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708718512; cv=none; b=nhXg+lbnARdtFay6Xa3PAsWCXHb7JSheGP1aoQV6Q0o9xAm7z8lFaSkixJbp3DCbxcc09t4Q00dgbwInVq187tPsbIYwMLC8/m7L7b2w0pEEmvaEssjB2tzWJt8ITbo8So/tJJ+41N6fLefdYdfJL9GzNlNTMtcscTu/Ct0m6IU=
+	t=1708718973; cv=none; b=ln+So0qDLdUDo5hwtiP8GkZK4dVaAlV7Wc4qmo8usdLkCwraSiC20fRROakNY19hDEQjoIVRiRiqEV1FmqBWIMwRxg/NteH6101dCWFIYLyQBnvAbyq5Agd9rqYMFnO/jJymzUwAwJns+YjRyZD9XIg7npoKF/vUepwuJr2rkxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708718512; c=relaxed/simple;
-	bh=qKShU0yRSF7Qai1aRFfijNm4QP3IVl+XveltCGlIK9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u4SblV6STNVFKFHJnI4BdZ+gPsBpTKcvzBKj+lFhT5knxP4Jth6uDgUfy6ItaZTqxVN0TQLSYNf9uZl4SE8tLhr1XdrbB8zXvHE4jN3oSVIivELMoqPdZcGC7yOK83NmQ5IubAAnKiOAXT8gGpLm61MYf3+RNVkDxDlczDS1nJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C71C433F1;
-	Fri, 23 Feb 2024 20:01:46 +0000 (UTC)
-Date: Fri, 23 Feb 2024 15:03:39 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, LKML
- <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
- linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
- linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org,
- iommu@lists.linux.dev, linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
- linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, brcm80211@lists.linux.dev,
- brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org,
- selinux@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org,
- linux-sound@vger.kernel.org, bpf@vger.kernel.org,
- linux-wpan@vger.kernel.org, dev@openvswitch.org,
- linux-s390@vger.kernel.org, tipc-discussion@lists.sourceforge.net, Julia
- Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <20240223150339.2249bc95@gandalf.local.home>
-In-Reply-To: <qsksxrdinia3cxr52tfe4p3pafsy4biktnodlfn4vyzud73p2j@6ycnhrhzwsv6>
-References: <20240223125634.2888c973@gandalf.local.home>
-	<0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
-	<20240223134653.524a5c9e@gandalf.local.home>
-	<qsksxrdinia3cxr52tfe4p3pafsy4biktnodlfn4vyzud73p2j@6ycnhrhzwsv6>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708718973; c=relaxed/simple;
+	bh=284eWIcvw4+7+zPk8+Y8q0oSwuL4Yf9oRwDLuca9624=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WyPla35RbLc2t61DAn2s8qvMFfRJWZGSti5xjWTEKw5yoA/6ftPz3cA5wzbZY4+pMBp+/W3PaC/zXY/VJyQaqYR+OBf6nVj2vbTasR2/YtY2lVTPaIjd2sF07CX+LPXmM8BkVXfLFu9tKRrfiSPKhnICFbLLV5BpdOKnT7zEM6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OrQwImDP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16CD3C433C7;
+	Fri, 23 Feb 2024 20:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708718972;
+	bh=284eWIcvw4+7+zPk8+Y8q0oSwuL4Yf9oRwDLuca9624=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OrQwImDPx+1r315DWGUn++VbhArOv8dxVNRiojGwfMymkK2cfM9hAx4qS2qiqReMn
+	 P5GVuoTzhCXZvAXtopdnwG8BEmWUCwoqvI90HpbAJFnHiYOYtLSkKJ9iggibBFokCV
+	 3aIbteOVcjyrGYk6IU0x0/MhZWBN5DnrPSqAd6jy4QO5IM576JLJPb9z6wDgtGH5eC
+	 DASbD80M92UHswJ/IvcKuspdZcc1rPxezmuRpjde8LHAyDHZ9hkKYixow7W3/VqgKr
+	 RjFoxyvmnzvuS5p8GyxNseMh/gHZp+5GevM9aZcETdohvDF1ygOD+Qg7LP6tAiTTeV
+	 s4HbsM+TmS/nA==
+From: Namhyung Kim <namhyung@kernel.org>
+To: lsf-pc@lists.linux-foundation.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-trace-devel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [LSF/MM/BPF TOPIC] perf tools issues with BPF
+Date: Fri, 23 Feb 2024 12:09:29 -0800
+Message-ID: <20240223200931.3011166-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024 14:50:49 -0500
-Kent Overstreet <kent.overstreet@linux.dev> wrote:
+Hello,
 
-> Tangentially related though, what would make me really happy is if we
-> could create the string with in the TP__fast_assign() section. I have to
-> have a bunch of annoying wrappers right now because the string length
-> has to be known when we invoke the tracepoint.
-
-You can use __string_len() to determine the string length in the tracepoint
-(which is executed in the TP_fast_assign() section).
-
-My clean up patches will make __assign_str_len() obsolete too (I'm working
-on them now), and you can just use __assign_str().
-
-I noticed that I don't have a string_len example in the sample code and I'm
-actually writing it now.
-
-// cutting out everything else:
-
-TRACE_EVENT(foo_bar,
-
-	TP_PROTO(const char *foo, int bar),
-
-	TP_ARGS(foo, bar),
-
-	TP_STRUCT__entry(
-		__string_len(	lstr,	foo,	bar < strlen(foo) ? bar : strlen(foo) )
-	),
-
-	TP_fast_assign(
-		__assign_str(lstr, foo);
-
-// Note, the above is with my updates, without them, you need to duplicate the logic
-
-//		__assign_str_len(lstr, foo, bar < strlen(foo) ? bar : strlen(foo));
-	),
-
-	TP_printk("%s", __get_str(lstr))
-);
+I'd like to discuss a few BPF issues of perf tools (and the
+kernel). The perf tools already make use of BPF programs for various
+tracing and filtering work.  While these are all great, there is still
+room for improvement.
 
 
-The above will allocate "bar < strlen(foo) ? bar : strlen(foo)" size on the
-ring buffer. As the size is already stored, my clean up code uses that
-instead of requiring duplicating the logic again.
+1. Allowing unprivileged access to BPF for perf events.
 
--- Steve
+The perf_event subsystem allows non-root (!CAP_PERFMON) users to have
+events with restrictions in order to measure performance counts for
+their processes.  On the other hand, the BPF event filter [1] can be
+used to accept or reject samples based on the content of the
+sample. It's almost the same as the classic BPF socket filter.  But
+without CAP_BPF, normal users cannot use the BPF filter for their perf
+events.
+
+I noticed there's ongoing work with the BPF token for unprivileged use
+cases but it seems to focus on “trusted” container use cases, and
+I'm not sure if this would fit well for the perf use case.  Note that
+this case would need to allow random users and therefore, needs
+limited functionality to access the given sample data only.
+
+
+2. Enhancing stack trace
+
+Sometimes it can fail to get build-ID and offset for user stack traces
+because of mmap_lock contention.  As BPF programs can run in atomic
+context, it cannot wait for the lock to get the build-ID and offset.
+Also there’s a chance to get page faults in the user page which also
+makes the stack trace stop.
+
+I wonder if we can enhance this situation using the deferred stack
+trace proposed for S-Frame [2] last year.  IIUC it wasn’t designed
+for BPF in mind but I think it can be useful for stack trace with FP.
+Also it would be able to avoid duplication of the same user stacks if
+the process runs in the kernel context for a while.  The question is
+how to defer and to connect them.
+
+Another (minor) issue with stack trace is to add one more (missing)
+helper.  IIUC are 3 stack trace helpers: bpf_get_stack(),
+bpf_get_stackid() and bpf_get_task_stack().  But I find that it'd be
+useful if there's a helper (bpf_get_task_stackid) to return a single
+ID value for a stack trace of the given task.
+
+My use case is perf lock contention tool [3] to get the stack trace of
+the owner of contended mutexes.  Currently it just returns the TID of
+the owner, but it'd be nice to get the stack trace directly when it
+went to sleep.
+
+
+3. Lock symbol improvements
+
+Actually this is not specific to BPF but for general tracing.  As I
+said ‘perf lock contention’ uses BPF on a couple of tracepoints to
+track lock contentions in the kernel.  But one of the problems is that
+there's no symbol information for the lock.  While the lockdep saves
+it in the lock data structure, it's not allowed to do that in
+production.  As the tracepoint has the address of the lock instance,
+it can check kallsyms for global locks but dynamic locks are not
+handled.
+
+Currently it blindly tries to match the address with some well-known
+locks (including mmap_lock) from the task struct or global per-cpu
+symbols in BPF.  I'm curious if there's a better way to do it.  I was
+thinking about BPF iterators to get the address of well-known locks
+but it cannot handle all cases and might be racy.
+
+Looking forward to more discussion on the perf and tracing topic.
+
+Thanks,
+Namhyung
+
+
+[1] https://lore.kernel.org/r/20230314234237.3008956-1-namhyung@kernel.org/
+[2] https://lore.kernel.org/r/d5def69b0c88bcbe2a85d0e1fd6cfca62b472ed4.1699487758.git.jpoimboe@kernel.org/
+[3] https://lore.kernel.org/r/20230207002403.63590-1-namhyung@kernel.org/
 
