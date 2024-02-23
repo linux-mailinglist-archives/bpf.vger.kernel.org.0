@@ -1,96 +1,114 @@
-Return-Path: <bpf+bounces-22622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E503F861F6F
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 23:14:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A099086207B
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 00:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EF652875EC
-	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 22:14:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55FA51F24FFA
+	for <lists+bpf@lfdr.de>; Fri, 23 Feb 2024 23:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDBD914CAA3;
-	Fri, 23 Feb 2024 22:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BBF604D0;
+	Fri, 23 Feb 2024 23:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZIq1OGgu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3641448D8
-	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 22:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA3814DFC6
+	for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 23:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708726446; cv=none; b=Ud/icEjma+oz84zcvvnrHGjha7Agd252AUY5A8UX+8Xy6H+nGzGvNkXH5Ez+H2P4A9S8uPwzA1C3qESg1J6b9cQTgXgyJfGR5iZM9+km4dv55bDl1b4iAukLA4xyMjroYs2vnk0IFV5B4nASWWP8/TGp+3NYLI2/cgM2VYs2DTI=
+	t=1708729572; cv=none; b=e4SPVsUVDFW/K3cZLjqqsQBwJO2RrlXPmouNJJ7YCWS0RHDPKrGwvoJWShBAvHEwyZEHGClMUw/JhPDIVuyrMSm9LBCWSJl/hKbHi90EeeP3SancTLwGwYy4xoip4fZjHwdNH7vL//EoCNSqmFsFwQjIjzyytPpKa/+j/r4qRWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708726446; c=relaxed/simple;
-	bh=+Ctr0KrDwCeMkU+RQ454ERPkbKZTfFHQEeCdfQoA6YY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=QFwVCxHnYcHSurh+GmBLqk6+JJfqopgtAsz/hs2m9EVPlx1c+7zttGXUACCQ0aGGXH4lf0tpRoTwTSmJV9AsyBCLJXou+uvC1AVy2RnWregsmRVPYwr6BW5PcN0DRbvkWnW5xJAjK3oto7CVhuaQrNTsjCNcOYT8ihBPsyWapQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36576ec006aso12931675ab.1
-        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 14:14:04 -0800 (PST)
+	s=arc-20240116; t=1708729572; c=relaxed/simple;
+	bh=IUr132Pk6eJ50K80IPLj6eF4575nQ2pN5B5uCokP2vI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=ra6bD0J80b6zMBA9X7o7IZURzddlMHuXI/bstxjPxQLA5ecMvyLhJ+ewCHmR2wyTjIZeZIz2gZOJ3UmonLVSi/w8GVYqJhCJf7s324scuIAc9AslKG6hduWXXPmMzn4EwLPjKQ/LivYh9WKJZB0CoAIjSSGrrBUwCIERZGP9tYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZIq1OGgu; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-599f5e71d85so925628eaf.3
+        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 15:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708729570; x=1709334370; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IUr132Pk6eJ50K80IPLj6eF4575nQ2pN5B5uCokP2vI=;
+        b=ZIq1OGguWb0p75zbYx1SOwtMO0j907GJpCvb08iyn1pe6XUS9e0m72kQtAYIcu2HEx
+         Rt1uK6ifJnLQsT/yruN6pftpkJ3bUQoWJVbCALn0ip69cq3kj4vW0MFOYqvzOQoFBLSp
+         unCUtv10f4sbWQaLWK48AF8aXiieoVWpB0U7d8392XXjrA7QDag7K7qtkXiin6fX7dIq
+         RsIIwL9olNclsrkde4paiCgzv5fD5CwzR4bc1VfmMIrNoxFQcVCNqrwSwcrWr+yvvXnZ
+         g2hRvq/8j3ArnmOQouquOg6GI6ehI7DzZcozrBV9338o7kYlwmqa5aFLBpwVfquYyTZF
+         n7OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708726444; x=1709331244;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+yKIsiHPc5N6utt+zlCMndtWwFz/JR5HuS2RY9FPzik=;
-        b=iSiEMmzCOwk2RReHTjMBDqGs7TZwEXa4RyyC9q/KXhqUx3i+NzSbSzhWrDosZS/db6
-         wuYPYkrBlkE3R8etm7dI0jDP4nOTeFDPKRVLgN+HFc3LDIS6/wtfgZHZQ5QnX4xrhPiw
-         7NET6cNxMAqb8pNZw1JCwq2gZ1+jyihwHkcC85dyKhlUCNk8ewPCajWlKJhuXq5qIk4p
-         ZzeoyqAawtBnZq2myQmRy/nE7tazxWTAY69TcV4IyvQJSXOhDabaWfhsPYXbqEn21acq
-         iUBg28/K46YEe7wwyLmJHnLOIjhda8hz5pwSznltpErOyg6HGLf8h7Fo8xYa5LZc5XzZ
-         GDHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUVAjCxXVuPd+/SX0tBSuYQyT4y9lXgPp8MZKpykm3bl5Dgs2eOf07OUBr4/MBU96JCfz56z6t4v88XBMi+5zAQlOL6
-X-Gm-Message-State: AOJu0YwxLZoL+ttA1nGky3LAwcqB2LnYe5DQA8LnNbDDF5Ry3i3TecFG
-	6s9W2AfcegonYV76PAUfBTW0Uqu/jWw2LxudJ0HUSgStPsgacV2WWFDQJXBoT6TCIdmCbzmPqPX
-	5Zz1kBJKT6Xc+QsCa1hqQDHuC51vUHoXqVvj18cG3m2jE1PcXqZ6GcIk=
-X-Google-Smtp-Source: AGHT+IH9hsxeN8JWcRHnUAnRF2nUKmQ8AUA2BXRL7xlSUOURky4FyCkAe+nisCjnW4nN3TEdoItNoQFcFlvbBrsaaY6y7PJ7QRDd
+        d=1e100.net; s=20230601; t=1708729570; x=1709334370;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IUr132Pk6eJ50K80IPLj6eF4575nQ2pN5B5uCokP2vI=;
+        b=mW8rGkV+TEz+tUFwkPu70pPP6MeFVgMLFxpgqyJ+ypMRf7X4H+L6PjDSmf0pvWxKHh
+         KB3wG5pMVCKC/MoxKjdABXmFjhcGlz8tog7gSuuAPk3zFHa6UA0n/vX4GrVT6UM2mEF8
+         p1TnHpD88ce7+SUwi+Ad0635RVdMdsVqyzB81BFzevuWoGBiNXv7Sqkb4Jr+21Qrr4lz
+         Z++EoLr8wCIf788J1j2rklwwES5cKWimSpGexx0HwJHYld4Pul0R5ZUE5J9nOc3wV1Vl
+         UBC/BeEXu+s+P/GK2pRJjPSPBbqlW7mfvASXHxzICWCtZ/oYcID1gLeMfoSOL0FvK3YE
+         9ekA==
+X-Gm-Message-State: AOJu0Yz6SBpB1O4dBwgQusQPtegqsyfYtT/wswaU8gcvK0kHlpi4WyAz
+	ApFjUakLrVjjHnsSHP90dSBIskjOcSscHki4QblZdGFw5AGO7J+hsv560uEazjEvBA3InUyMRZB
+	iJephlK4WEwRi6fqV1jgxxmyWuOA=
+X-Google-Smtp-Source: AGHT+IFY+uh3ZwiigjmJFfFCdZ1h+IuEgIxIK1Gj/u54yGcB4Fi6/FU7v9/SHulsi5rdgS9PBRM2jVNlDSah+jsAOCk=
+X-Received: by 2002:a05:6870:4c1b:b0:21e:b125:d363 with SMTP id
+ pk27-20020a0568704c1b00b0021eb125d363mr1520128oab.56.1708729569929; Fri, 23
+ Feb 2024 15:06:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20ee:b0:365:1c10:9cfa with SMTP id
- q14-20020a056e0220ee00b003651c109cfamr50005ilv.5.1708726444282; Fri, 23 Feb
- 2024 14:14:04 -0800 (PST)
-Date: Fri, 23 Feb 2024 14:14:04 -0800
-In-Reply-To: <00000000000091ce6f06013df598@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000badb45061213e0c0@google.com>
-Subject: Re: [syzbot] [kernfs?] [net?] [mm?] stack segment fault in __stack_depot_save
-From: syzbot <syzbot+1f564413055af2023f17@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, bpf@vger.kernel.org, brauner@kernel.org, 
-	davem@davemloft.net, edumazet@google.com, gregkh@linuxfoundation.org, 
-	jack@suse.cz, kuba@kernel.org, linkinjeon@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	reiserfs-devel@vger.kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org
+From: Cong Wang <xiyou.wangcong@gmail.com>
+Date: Fri, 23 Feb 2024 15:05:59 -0800
+Message-ID: <CAM_iQpXzAYFES62Cbj8PoGqr_OW=R+Y-ac=6s3kmp5373R7RzQ@mail.gmail.com>
+Subject: [LSF/MM/BPF TOPIC] Inter-VM Shared Memory Communications with eBPF
+To: lsf-pc@lists.linux-foundation.org
+Cc: bpf <bpf@vger.kernel.org>, "a.mehrab@bytedance.com" <a.mehrab@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot suspects this issue was fixed by commit:
+Hi, all
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+We would like to discuss our inter-VM shared memory communications
+proposal with the BPF community.
 
-    fs: Block writes to mounted block devices
+First, VMM (virtual machine monitor) offers significant advantages
+over native machines when VMs co-resident on the same physical host
+are non-competing in terms of network and computing resources.
+However, the performance of VMs is significantly degraded compared to
+that of native machines when co-resident VMs are competing for
+resources under high workload demands due to high overheads of
+switches and events in host/guest domain and VMM. Second, the
+communication overhead between co-resident VMs can be as high as the
+communication cost between VMs located on separate physical machines.
+This is because the abstraction of VMs supported by VMM technology
+does not differentiate whether the data request is coming from
+co-resident VMs or not. More importantly, when using TCP/IP as the
+communication method, the overhead of the Linux networking stack
+itself is also significant.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a58254180000
-start commit:   815fb87b7530 Merge tag 'pm-6.7-rc4' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1101277e240af3b9
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f564413055af2023f17
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166bcf64e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111a00d2e80000
+Although vsock already offers an optimized alternative of inter-VM
+communications, we argue that lack of transparency to applications is
+the reason why vsock is not yet widely adopted. Instead of introducing
+more socket families, we propose a novel solution using shared memory
+with eBPF to bypass the TCP/IP stack completely and transparently to
+bring co-resident VM communications to optimal.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+We would like to discuss:
+- How to design a new eBPF map based on IVSHMEM (Inter-VM Shared Memory)?
+- How to reuse the existing eBPF ring buffer?
+- How to leverage the socket map to replace tcp_sendmsg() and
+tcp_recvmsg() with shared memory logic?
 
-#syz fix: fs: Block writes to mounted block devices
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks.
+Cong
 
