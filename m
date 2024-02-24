@@ -1,168 +1,180 @@
-Return-Path: <bpf+bounces-22628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F688620E1
-	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 01:00:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D40C98620E2
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 01:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41BA21C22BF8
-	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 00:00:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A14C286F19
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 00:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC1B1B943;
-	Sat, 24 Feb 2024 00:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DCC66B25;
+	Sat, 24 Feb 2024 00:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D5xUdsUU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h3AfYgHJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F77C2208E
-	for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 00:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D0317C8D
+	for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 00:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708732826; cv=none; b=lKhbzZko+D3t7j09OiI5+DvmV1H0yz3UIDYzcYTXP/GrCxbmmVyHbSQ6/WeZpF0xuQ18CfhaiJVNAU7rSLNWttht/FQEFQzVfkAnVOmVbVoDbFP4IPHb7JiGsVkuZV11MWxOj6J7LXOO0E1uVTmlo01qCpWSowREqeYs4K3e/bQ=
+	t=1708732836; cv=none; b=KYhXZJ9CeqX0k4FD4VeXtwyP+QYjqIbUEJykNSNplrDRoOgikhx+lTRKHVLozvWEmOdRodG9gMTvhwnI89DAPPpV/WZf6fUdWCN9f1yUyofxc5eG4qBatWssBpxLetnqinb9OC06GRzuSpWyDCtLG4IUaP///GwSussVTuiQf4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708732826; c=relaxed/simple;
-	bh=CedyO4qTxjui0CvlBtcat+crnvBaFE7tlTuKVKpuxBI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EMEm2eT4CbjmuyIRok6P/wvRtNVeswODNGU4gSc22hA7w646+av+Kg4/0n9mano57r/0C8W9NrcVeNC8FHeizRT4SmoTgSfRVQXDtF0QyaqSNie98RWFe5yxCN6jGjXKcs9rzPifMOKydML1cbjcUG/yizYZGR+cjGdtPPu9yFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D5xUdsUU; arc=none smtp.client-ip=209.85.221.46
+	s=arc-20240116; t=1708732836; c=relaxed/simple;
+	bh=v53x9TF6ZLu3rBGJnAaw7384KK7kwu9kDvUru6Sp+eM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=j62wLiUX1FSb/mPQL5CsC5B7se3a6/gLZD8X08JTvcHyv/itOXZiNcjp4x1PfRNs9aYqWXP9gD2HG9vmATgTYafqO9e9stBVXcp6Zg8PTpSdwjT84mp8ExfxhwzB8m7sv2do7+b3+vvYlJM0ab2i2u3j4otI0+29eyijx3eGWo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h3AfYgHJ; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33da6f289cfso595208f8f.2
-        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 16:00:24 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3fb8b0b7acso186068466b.2
+        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 16:00:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708732823; x=1709337623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EiH/ihU5kJ28qnwGKZlb7XOE+rqx3GPdjJ0oq03/PCg=;
-        b=D5xUdsUUX7Lty4O5t5zJ8RWOTi9rMKwOvJ0ehHShD88zT83mjR19tcAWVZjHOwPsrF
-         f/rP9SqnPPfGsLGrS6uUqOGf2IHuJEnkw9ZHf9v9DcDmjLInuqka1fT/pJhH3sTgFKRH
-         u5N6Fy+2wvwE0ETdQXCoDv7W66pLwActsfN9VTFgUgTzqGk3wyS8TztUMKjAxg+Ftzco
-         cr0s1tcFJtY8WqwfKqUrx9S23pGggHcg7Qd7QrxVkRG5T02HSFtC9i2tV6hm5MUiim00
-         4aalcDSvJi/kY+Q3fOqgfKsJIjrEqW98eOaChptU63sWu8e3lkN+T4X3sBHPlmJn6Qzo
-         abCA==
+        d=gmail.com; s=20230601; t=1708732833; x=1709337633; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tKbe8JK338tFTPvDET2xmgNImTIu5k34sZFecmTjJg4=;
+        b=h3AfYgHJ+cA6FBPfc8+LhAHNZzZHjfFrpt27XsWEgjNMPCUCTQ8ItV/kTL9TFmEMMh
+         fM/tVHcq88aRb20KVqyEo4SsgyJxHgFGRLmNPL+2kXkB58xqXxrsZvei91F/yLHD6e5v
+         AUzefijYYTSZFha3zDt5QqShtaYlWWdOEonQe39LFp0LKSNKApoUKQefeGaQIGjtMmPG
+         nJwjFa7BChqrdRyekwpmM5IFqfWDOz+2jha+rwQdHmDodleEijrxLsEBbvZGATwRUO+j
+         W7zF/D0gBvUxCorCwfRcgB9Qz0+JwF2PHrzTCsS360VkJ6HeGseYekxWCvb/B0R29slo
+         3+HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708732823; x=1709337623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EiH/ihU5kJ28qnwGKZlb7XOE+rqx3GPdjJ0oq03/PCg=;
-        b=tw3w1hzTjoq2GDisRGSBV+FlEaqsU2FlrzdIKYHIHeTUC25BGbqCoZaI8Prqimoae8
-         39aCqP96UxEPXMVkCan0VF8TEWaMjCic0KSBkkGa5YbS90G2UMEvM5BelGo6/kenxZvO
-         0fSi/S3Xd2d8nM7nQOgH98611rQw0iJQfBc2y5HRsuRdhfKqf85AQ2SG6TjANve9mSwN
-         /9csYcj/STk0T47sy0lOmD5KP2Td2Wz29harB3lS2CB4+X9fwoWFmcQMPoqLasFLGwwr
-         PmogzJpieRfwxA8MPwUFnMuiAjs+oXwXXFzJsehGBCnSjO/dj+Zb6uit2UQr0OLWSW5F
-         efkw==
-X-Gm-Message-State: AOJu0YwCSMy1JV3mp3iNL/Ie64ARsF6GsxkmvzLygn+svp50+lP/8OgB
-	ksGV+WFQMfbFiuG/lsews0+zaFvqrZqB4O4OB9IiRseSNhwKZ1m8IwumZUTfWaYpSFiuJs3AHMj
-	reesi5IQZ5BUpxqB2kGB2QxuDhYU=
-X-Google-Smtp-Source: AGHT+IH699flScwkheJ3wEzd2dyMtC9M3LPD8Oi75txvNVSFcIXgutW1JFu5ook/d/KJrmFht6YchTZZZUySbo2elKo=
-X-Received: by 2002:adf:f783:0:b0:33d:23a6:56ba with SMTP id
- q3-20020adff783000000b0033d23a656bamr678786wrp.42.1708732822639; Fri, 23 Feb
- 2024 16:00:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708732833; x=1709337633;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tKbe8JK338tFTPvDET2xmgNImTIu5k34sZFecmTjJg4=;
+        b=TRCCyciCZyljKlVzBwkvpQLoisvxmbVTXhDuAcKFzl8nA/UqIuRjaYKoE6jnm2BHgg
+         bQ3xbpusjn9H1rFJv8DcGRRMP2Kv50uFuXXwskNvfOfd7Fvk7qC2HgmFl37HTeqSlMFN
+         Y00aEPdq+IbjNMlo6F9laMXFVSbFx33ArisbBoRsR3oYj29+djx9GP029cMF9TLu38i3
+         vvCzRWq8Jo5DCWB32/PID3xumSgrsaOUdQ16SirDUsc8rSzklPJ67pQd5FSh3ASEDmm1
+         paybAKEKBtQ6L7xznU1/yZMIA3jeUG+275P/IL9G4t9RSroLT69ed903shqC9KzKQgj8
+         HxDA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDno0zxo0I40sJoH2R6hB/VTyzwzx98vSR3GMfMrtdzb6Z9mW1ZcazSl3t+4L7h60tW8iVDtzTUkmk/FtX2PJ76V98
+X-Gm-Message-State: AOJu0YwVKdmMgSMiI/Utt9/qQON5UJJx/2RiNNFT+ArJ8i+dRni6MHf4
+	jpRd7+OJTqz8ZpZb4ES/cRHolRvKn7reOiswUaTsFIYDBY8Lr07P
+X-Google-Smtp-Source: AGHT+IHyUhvfUxkSyo5B/LBwmQRtULtnU46TrZvEZhUbOu8RIV0rRp2L9hFxKzWYetiflHFdngdtGg==
+X-Received: by 2002:a17:906:1c08:b0:a3d:6f47:6bf7 with SMTP id k8-20020a1709061c0800b00a3d6f476bf7mr821787ejg.12.1708732833025;
+        Fri, 23 Feb 2024 16:00:33 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id w13-20020a17090633cd00b00a3f2b4e702dsm59173eja.206.2024.02.23.16.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 16:00:32 -0800 (PST)
+Message-ID: <53cc7e1fea7efb557cd4d65fdff5642c0047f255.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_can_loop() kfunc
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
+	memxor@gmail.com, kernel-team@fb.com
+Date: Sat, 24 Feb 2024 02:00:31 +0200
+In-Reply-To: <20240222063324.46468-1-alexei.starovoitov@gmail.com>
+References: <20240222063324.46468-1-alexei.starovoitov@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220192613.8840-1-alexei.starovoitov@gmail.com>
- <ZdWPjmwi8D0n01HP@infradead.org> <CAADnVQLrUpJizoVeYjFwSEPg1Eo=ACR-Gf5LWhD=c-KnnOTKuA@mail.gmail.com>
- <CAADnVQKmLnqA5W=kt8UL=z_H2nHDGjAq+w30XrU8r5Nt6ZrbQg@mail.gmail.com>
-In-Reply-To: <CAADnVQKmLnqA5W=kt8UL=z_H2nHDGjAq+w30XrU8r5Nt6ZrbQg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 23 Feb 2024 16:00:11 -0800
-Message-ID: <CAADnVQKEehARpXE78CFq8M7iP-QjwPs+81EvtuGjG3VvHnf0xA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] mm: Introduce vm_area_[un]map_pages().
-To: Christoph Hellwig <hch@infradead.org>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 3:25=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> >
-> > I can give it a shot.
-> >
-> > The ugly part is bpf_map_get_memcg() would need to be passed in somehow=
-.
-> >
-> > Another bpf specific bit is the guard pages before and after 4G range
-> > and such vm_area_alloc_pages() would need to skip them.
->
-> I've looked at this approach more.
-> The somewhat generic-ish api for mm/vmalloc.c may look like:
-> struct vm_sparse_struct *area;
->
-> area =3D get_sparse_vm_area(vm_area_size, guard_size,
->                           pgoff_offset, max_pages, memcg, ...);
->
-> vm_area_size is what get_vm_area() will reserve out of the kernel
-> vmalloc region. For bpf_arena case it will be 4gb+64k.
-> guard_size is the size of the guard area. 64k for bpf_arena.
-> pgoff_offset is the offset where pages would need to start allocating
-> after the guard area.
-> For any normal vma the pgoff=3D=3D0 is the first page after vma->vm_start=
-.
-> bpf_arena is bpf/user shared sparse region and it needs to keep lower 32-=
-bit
-> from the address that user space received from mmap().
-> So that the first allocated page with pgoff=3D0 will be the first
-> page for _user_ vma->vm_start.
-> Hence for kernel vmalloc range the page allocator needs that
-> pgoff_offset.
-> max_pages is easy. It's the max number of pages that
-> this sparse_vm_area is allowed to allocate.
-> It's also driven by user space. When user does
-> mmap(NULL, bpf_arena_size, ..., bpf_arena_map_fd)
-> it gets an address and that address determines pgoff_offset
-> and arena_size determines the max_pages.
-> That arena_size can be 1 page or 1000 pages. Always less than 4Gb.
-> But vm_area_size will be 4gb+64k regardless.
->
-> vm_area_alloc_pages(struct vm_sparse_struct *area, ulong addr,
->                     int page_cnt, int numa_id);
-> is semantically similar to user's mmap().
-> If addr =3D=3D 0 the kernel will find a free range after pgoff_offset
-> and will allocate page_cnt pages from there and vmap to
-> kernel's vm_sparse_struct area.
-> If addr is specified it would have to be >=3D pgoff_offset
-> and page_cnt <=3D max_pages.
-> All pages are accounted into memcg specified at vm_sparse_struct
-> creation time.
-> And it will use maple tree to track all these range allocation
-> within vm_sparse_struct.
->
-> So far it looks like the bigger half of kernel/bpf/arena.c
-> will migrate to mm/vmalloc.c and will be very bpf specific.
->
-> So I don't particularly like this direction. Feels like a burden
-> for mm and bpf folks.
->
-> btw LWN just posted a nice article describing the motivation
-> https://lwn.net/Articles/961941/
->
-> So far doing:
->
-> +#define VM_BPF                 0x00000800      /* bpf_arena pages */
-> or VM_SPARSE ?
->
-> and enforcing that flag where appropriate in mm/vmalloc.c
-> is the easiest for everyone.
-> We probably should add
-> #define VM_XEN 0x00001000
-> and use it in xen use cases to differentiate
-> vmalloc vs vmap vs ioremap vs bpf vs xen users.
+On Wed, 2024-02-21 at 22:33 -0800, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+>=20
+> While working on bpf_arena the following monster macro had to be
+> used to iterate a link list:
+>         for (struct bpf_iter_num ___it __attribute__((aligned(8),        =
+               \
+>                                                       cleanup(bpf_iter_nu=
+m_destroy))),  \
+>                         * ___tmp =3D (                                   =
+                 \
+>                                 bpf_iter_num_new(&___it, 0, (1000000)),  =
+               \
+>                                 pos =3D list_entry_safe((head)->first,   =
+                 \
+>                                                       typeof(*(pos)), mem=
+ber),          \
+>                                 (void)bpf_iter_num_destroy, (void *)0);  =
+               \
+>              bpf_iter_num_next(&___it) && pos &&                         =
+               \
+>                 ({ ___tmp =3D (void *)pos->member.next; 1; });           =
+                 \
+>              pos =3D list_entry_safe((void __arena *)___tmp, typeof(*(pos=
+)), member))
+>=20
+> It's similar to bpf_for(), bpf_repeat() macros.
+> Unfortunately every "for" in normal C code needs an equivalent monster ma=
+cro.
 
-Here is what I had in mind:
-https://lore.kernel.org/bpf/20240223235728.13981-1-alexei.starovoitov@gmail=
-.com/
+Tbh, I really don't like the idea of adding more hacks for loop handling.
+This would be the fourth: regular bounded loops, bpf_loop, iterators
+and now bpf_can_loop. Imo, it would be better to:
+- either create a reusable "semi-monster" macro e.g. "__with_bound(iter_nam=
+e)"
+  that would hide "struct bpf_iter_num iter_name ... cleanup ..." declarati=
+on
+  to simplify definitions of other iterating macro;
+- or add kfuncs for list iterator.
+
+Having said that, I don't see any obvious technical issues with this partic=
+ular patch.
+A few nits below.
+
+[...]
+
+> @@ -7954,10 +7956,14 @@ static int process_iter_next_call(struct bpf_veri=
+fier_env *env, int insn_idx,
+>  	struct bpf_reg_state *cur_iter, *queued_iter;
+>  	int iter_frameno =3D meta->iter.frameno;
+>  	int iter_spi =3D meta->iter.spi;
+> +	bool is_can_loop =3D is_can_loop_kfunc(meta);
+> =20
+>  	BTF_TYPE_EMIT(struct bpf_iter);
+> =20
+> -	cur_iter =3D &env->cur_state->frame[iter_frameno]->stack[iter_spi].spil=
+led_ptr;
+> +	if (is_can_loop)
+> +		cur_iter =3D &cur_st->can_loop_reg;
+> +	else
+> +		cur_iter =3D &cur_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr=
+;
+
+I think that adding of a utility function hiding this choice, e.g.:
+
+    get_iter_reg(struct bpf_verifier_state *st, int insn_idx)
+
+would simplify the code a bit, here and in is_state_visited().
+
+[...]
+
+> @@ -19549,6 +19608,8 @@ static int do_misc_fixups(struct bpf_verifier_env=
+ *env)
+>  			delta	 +=3D cnt - 1;
+>  			env->prog =3D prog =3D new_prog;
+>  			insn	  =3D new_prog->insnsi + i + delta;
+> +			if (stack_extra)
+> +				stack_depth_extra =3D max(stack_depth_extra, stack_extra);
+
+I don't think that using "max" here makes much sense.
+If several sorts of kfuncs would need extra stack space,
+most likely this space won't be shared, e.g. bpf_can_loop() would need
+it's 8 bytes + bpf_some_new_feature() would need 16 bytes on top of that et=
+c.
+So some kind of flags indicating space for which features is reacquired is =
+needed here.
+
+[...]
 
