@@ -1,150 +1,143 @@
-Return-Path: <bpf+bounces-22641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88EA58625D5
-	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 16:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAEEB8627F4
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 23:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13A1B1F22202
-	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 15:43:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A4871F21984
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 22:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7799746521;
-	Sat, 24 Feb 2024 15:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3814D5A0;
+	Sat, 24 Feb 2024 22:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bKx1he1g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HN7/sSDm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A4218021
-	for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 15:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A997B481D0
+	for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 22:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708789392; cv=none; b=d86QHdqE+25OsONaAH74JLtaKTDKnlkvR9TePkMsxnccXRmKL9Ri2I1BoMey2+uNdyGNt4Rt4+ZNNjw62DnqiNHuA6VTMwT0Ok3nzg2PHYCiUp6P/hUdl1buQPzZAo1Uf4i+2emYsGHBNrB0H9Jl9ySnnN3oeTI7OqYmRAwRPkA=
+	t=1708814064; cv=none; b=tMrFtmtnDlpe5T9kwV5FkiIlSIy+SibNXxSNGvKsmoGgCkrYtKDcI8X9kWKHEN2ZAAUjM/Njj2nEas1jB9ybXSNySx7gNYCO0bCnECw0/2CWBKQ7wOP4WQaTWSi3FrfFgFsVgz8TplaXpu+RrCwKMzEnxUzNCKyjNVrn25weXuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708789392; c=relaxed/simple;
-	bh=XDViFQqg0tFsiR4sO/KFC6SSBPB3A6gfG8V921ieHFE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rF9Au4TJg/4fOasWreIOcXpZiLH7yNDRJ53QJ9Gi/Ga0H3dENjCZfxQXWaN7O/L4T/8Ez/VwDR9LY0E+nFd2t3QLRbPXSDPqDMJFVpWy3TG9aT6Zw/me32eHNzt1sg7i00m2Ll58rbKV5g5jaaAWS9zCUFoG/PJdaLkZCt9zIC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bKx1he1g; arc=none smtp.client-ip=209.85.219.176
+	s=arc-20240116; t=1708814064; c=relaxed/simple;
+	bh=Q2Uv3KB0JLXAyNU2okLeh5p2hClorA3+u1pzTkiY+Sc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kBYWXVFMvlua0w/TRSLpA87sP4IAEC3FaIWj7WTOiHqOzRC2SVcieLFbCIMNBjf31i0dUjmizrtbdnZhXC0qBFKPAOfHoSPzJCE7ACoUfldVejxKn5hmKe2Hxk2snLblDhjzN/azc0CICmzGGbGgaY6HgOVlKnOleeU70OxMEgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HN7/sSDm; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso1520888276.0
-        for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 07:43:10 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6089b64f4eeso19306707b3.2
+        for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 14:34:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708789389; x=1709394189; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kNNRBT2NlR3oORFbXvLNJj3DNqC6KUyr47Hfg+gvCHI=;
-        b=bKx1he1g08ypfLAJ48bv8ZHcV0dyq0EKEKR0wVahuXWOMlUhxOx8o/Lvie5TmJV6Fy
-         6gaIJoCG8/NajTEUwLKv4eIsgGNG8IpuubmlolwH1Y7eo9Q5Xox85rg1RwlIFlg3/kog
-         70Aum3tUy+rjxweCmxe1Gcn4qBfyeYH0Ck4ktCV+iqeUwPd3AQ4AyXrDy4kvEKzgbWlb
-         FogPqBJbYL+o+QBm9og1UThc0RqrJOldXuvxWLSI3ab7mFv/5agjYLHGlryMXr6uWyJO
-         3ekEfNG1AdB2J6E1mkPJL4UEkDR+KMHKvgZOueVJPtI1TmVcigRHNmQIZ6rbmwlTC7rI
-         TGFA==
+        d=gmail.com; s=20230601; t=1708814061; x=1709418861; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=inwG6n/HTwkansOYZCCl6fh2aOFbOCCywNH3rDWHehU=;
+        b=HN7/sSDmH8uiWHIBd8NJ4EyzhBaBfTVv03EF6OgmeI9LxLZNkoJSFnxYNkt8IwoiA+
+         5bVaj6auq4SwFUGlg0YsHA8LpVl+3xtVIjB+2btOqS1zgeyLRVfXN1/sSq6RTF/pbM+d
+         7WcpTHJF6KakLiyI7T132qRaMM8pPPf1hZIayyArUh8YsxFvU5gui3MUE0u2zOVhun+f
+         lKHHO9SVwy+AdHxlV/sfrhsKLkwX6Nbyc4YSHanaYcd+g8hWdNVl/9hThI4uNvkmXEJa
+         GhdZfFlYvtmoZczs3hXVXrNaxWPAvZ/6mwLm+pldwZlQDhMhUYXJEDCvLWOV+tjUnWbR
+         6cGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708789389; x=1709394189;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kNNRBT2NlR3oORFbXvLNJj3DNqC6KUyr47Hfg+gvCHI=;
-        b=O7LM8x14PVYhc7lUwOUhsDh37Zq/8UA47+BF0b+8mi5/75tMTJm5TS4jH+jGoYmQjp
-         DlUyN3ioCOWYkRP3H8jo2vxQ0ygYV2ianQ5/2pcGu+WXV0nLtypB07oLhg/tdds2ig/Z
-         UgE2t3yQCfiM6gRLYMWjCurLnWTT0QoNkMoU9Tsg1J134wwvemK200Zb4HEvy5nK+cVH
-         tjoKnvgnHMxYiueklvP+krHG5Gz4Q3oN81Y3C/M+r10+/aLIEuWtHe7RBRa0pFVWOBk6
-         OFCCk+kohjO4njrZM7pXY6E3Sx7s0W2DN1X4rzaFKUNoIVCET+mpP+Us8kCJ5i/Qmin/
-         2Cxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXGMbRTnwAIp/oYLvrRIN1QBnL3W5I2TJbV0FHvjrwPZCgsaovzFvRqnTnA1kpPTTzJUykqTJ0XJYUOsbGZThFB/l/u
-X-Gm-Message-State: AOJu0YyQIPh1OSH52vTBXnaa1vEZqHPp0UmGMT6gvmDbKIfSS+bSDv/D
-	+yYIRTvXtjOZdSlScDuoZyaWCTgQeV2GvqovPpkSHREDDLqkeUpU
-X-Google-Smtp-Source: AGHT+IFbjMWf08Jw+gryUDH6tDvh3+vHx7uK/wQCS3IkX+vLjQEPB6VGVDd4nExVmAnDdYa8LMvO6w==
-X-Received: by 2002:a25:5842:0:b0:dbd:7383:d155 with SMTP id m63-20020a255842000000b00dbd7383d155mr1960426ybb.0.1708789389523;
-        Sat, 24 Feb 2024 07:43:09 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:e361:62fc:8197:fe47? ([2600:1700:6cf8:1240:e361:62fc:8197:fe47])
-        by smtp.gmail.com with ESMTPSA id x140-20020a25ce92000000b00dcc0cbb0aeesm249129ybe.27.2024.02.24.07.43.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Feb 2024 07:43:09 -0800 (PST)
-Message-ID: <c3080ecb-abb0-4d47-a8f5-607e7082b1ef@gmail.com>
-Date: Sat, 24 Feb 2024 07:43:07 -0800
+        d=1e100.net; s=20230601; t=1708814061; x=1709418861;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=inwG6n/HTwkansOYZCCl6fh2aOFbOCCywNH3rDWHehU=;
+        b=hDgYtc3OGIjvwQjoXNeOO5GrFkGwAd5lranvDT58cX80ppsAOBMoyxH1m+26DSw2zm
+         lTGIUbJe5rJLlTfFQJPQbwxNbZNym8MKbbuP7P+2QN5g2xkdJ04BtNglQcxJFHxYWeB1
+         JXe7ZfLJC/rogSdFNvmMMsQnviGVJjuc+kKnW9iebOMXNwcABIwP5HDDh3/XrgrcOms+
+         UZeeTXX/OIUJiTm27Xt4XiTk8VU4Oa8Z061bgeZMrG3p83e7BdCG2E081MUaQR+N1AGh
+         FUsVNjzaQECwvzdVrlZT8D5r88bpsr0Bnf2uv9m4WHa339Jmklr122C/UmAtub9+yU71
+         PC4g==
+X-Gm-Message-State: AOJu0Yy4G5efDuE1vyDeJB9wKyzk6AaXNwdhqMCOlvV84nNgSvT4sAOy
+	W8grwGqVjtOEnECun3LDGqcBwSaaEsA9/bBYqpBZ59VpMCgIxHe7BrzDnL+H
+X-Google-Smtp-Source: AGHT+IGYT2Xqip94BmYtPN1sU5LpqVoRpPuLZ64YgVAsS0WVgG3UUvoU8Xr6J5NRiHHoxalwWw785A==
+X-Received: by 2002:a05:690c:f85:b0:608:b83e:c346 with SMTP id df5-20020a05690c0f8500b00608b83ec346mr3752217ywb.25.1708814061117;
+        Sat, 24 Feb 2024 14:34:21 -0800 (PST)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:9221:84d5:342c:9ac4])
+        by smtp.gmail.com with ESMTPSA id i184-20020a0dc6c1000000b00607e72b478csm474010ywd.133.2024.02.24.14.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 14:34:20 -0800 (PST)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v4 0/3] Allow struct_ops maps with a large number of programs
+Date: Sat, 24 Feb 2024 14:34:15 -0800
+Message-Id: <20240224223418.526631-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/3] bpf: struct_ops supports more than one
- page for trampolines.
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Kui-Feng Lee <thinker.li@gmail.com>
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-References: <20240224030302.1500343-1-thinker.li@gmail.com>
- <20240224030302.1500343-3-thinker.li@gmail.com>
- <9d2dbd18-0d64-458a-8c95-9d549eabd3cf@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <9d2dbd18-0d64-458a-8c95-9d549eabd3cf@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+The BPF struct_ops previously only allowed for one page to be used for
+the trampolines of all links in a map. However, we have recently run
+out of space due to the large number of BPF program links. By
+allocating additional pages when we exhaust an existing page, we can
+accommodate more links in a single map.
 
+The variable st_map->image has been changed to st_map->image_pages,
+and its type has been changed to an array of pointers to buffers of
+PAGE_SIZE. Additional pages are allocated when all existing pages are
+exhausted.
 
-On 2/23/24 22:19, Martin KaFai Lau wrote:
-> On 2/23/24 7:03 PM, Kui-Feng Lee wrote:
->> +static void bpf_struct_ops_map_free_image(struct bpf_struct_ops_map 
->> *st_map)
->> +{
->> +    int i;
->> +    void *image;
->> +
->> +    bpf_jit_uncharge_modmem(PAGE_SIZE * st_map->image_pages_cnt);
->> +    for (i = 0; i < st_map->image_pages_cnt; i++) {
->> +        image = st_map->image_pages[i];
->> +        arch_free_bpf_trampoline(image, PAGE_SIZE);
->> +    }
->> +    st_map->image_pages_cnt = 0;
->> +}
->> +
-> 
-> [ ... ]
-> 
->> @@ -133,7 +128,8 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, 
->> const union bpf_attr *kattr,
->>       err = bpf_struct_ops_prepare_trampoline(tlinks, link,
->>                           &st_ops->func_models[op_idx],
->>                           &dummy_ops_test_ret_function,
->> -                        image, image + PAGE_SIZE);
->> +                        &image, &image_off,
->> +                        true);
->>       if (err < 0)
->>           goto out;
->> @@ -147,6 +143,8 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, 
->> const union bpf_attr *kattr,
->>           err = -EFAULT;
->>   out:
->>       kfree(args);
->> +    if (image)
->> +        bpf_jit_uncharge_modmem(PAGE_SIZE);
->>       arch_free_bpf_trampoline(image, PAGE_SIZE);
-> 
-> It seems my last reply on v2 has crossed over with v3.
-> 
-> The bpf_struct_ops_free_trampoline() highlighted in my last reply should
-> address your concern in v2 that the caller needs to remember
-> the bpf_jit_uncharge_modmem here.
-> 
-> I think the trampoline alloc(aka prepare here)/free pair that you also
-> suggested in v2 discussion is a nice match here and work as a
-> charge+alloc and uncharge+free pair.
+The test case loads a struct_ops maps having 40 programs. Their
+trampolines takes about 6.6k+ bytes over 1.5 pages on x86.
 
-sure
+---
+Major differences from v3:
 
-> 
->>       if (link)
->>           bpf_link_put(&link->link);
-> 
+ - Refactor buffer allocations to bpf_struct_ops_tramp_buf_alloc() and
+   bpf_struct_ops_tramp_buf_free().
+
+Major differences from v2:
+
+ - Move image buffer allocation to bpf_struct_ops_prepare_trampoline().
+
+Major differences from v1:
+
+ - Always free pages if failing to update.
+
+ - Allocate 8 pages at most.
+
+v3: https://lore.kernel.org/all/20240224030302.1500343-1-thinker.li@gmail.com/
+v2: https://lore.kernel.org/all/20240221225911.757861-1-thinker.li@gmail.com/
+v1: https://lore.kernel.org/all/20240216182828.201727-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (3):
+  bpf, net: validate struct_ops when updating value.
+  bpf: struct_ops supports more than one page for trampolines.
+  selftests/bpf: Test struct_ops maps with a large number of program
+    links.
+
+ include/linux/bpf.h                           |   4 +-
+ kernel/bpf/bpf_struct_ops.c                   | 139 ++++++++++++------
+ net/bpf/bpf_dummy_struct_ops.c                |  12 +-
+ net/ipv4/tcp_cong.c                           |   6 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  44 ++++++
+ .../prog_tests/test_struct_ops_multi_pages.c  |  30 ++++
+ .../bpf/progs/struct_ops_multi_pages.c        | 102 +++++++++++++
+ 7 files changed, 280 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_multi_pages.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_multi_pages.c
+
+-- 
+2.34.1
+
 
