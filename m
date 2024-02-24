@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-22635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031E286226E
-	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 04:03:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 103EF86226F
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 04:03:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25AA01C2365E
-	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 03:03:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F4ABB22645
+	for <lists+bpf@lfdr.de>; Sat, 24 Feb 2024 03:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6766134CA;
-	Sat, 24 Feb 2024 03:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746B4134DB;
+	Sat, 24 Feb 2024 03:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ijEEwPGU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V7Ju8TTx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1421118C
-	for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 03:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FDE134B5
+	for <bpf@vger.kernel.org>; Sat, 24 Feb 2024 03:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708743791; cv=none; b=UhMXi+sARAiNB0b5Ofjxyp+vLDmChfTKpHx4qkSJl8/QVjHRoJO/rM515VrgDCxJ0E95Z7c62QoVQUISyDDgYAflds5sTGZzKK5iv9aFhA3MHqNT33fBJ7qWuPWRm3qHBQpM0znVlKZ15UGzfRWnpHfBhxXme5IY4+GCLaMDYgk=
+	t=1708743792; cv=none; b=u0P7SzTnufjXHIgV4oFknoB6y4vFoIfN+kG7GyUi7ak2vzfgaJP8zBrT7YQKyVlxHt1x7UBGH5Zv6+XOjgZJSJTRUbYFCuRLAo+n7zZa0J60gxPzidSTvbzMdQTgvpJpULf6e9+ANnfuF2hnERIThPLsJ4VgDpmXVHhmIZt3Z7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708743791; c=relaxed/simple;
-	bh=QNljvw4Jx+xcXrYEbZHL6NcI++Ghs5m2rHEbCC2E650=;
+	s=arc-20240116; t=1708743792; c=relaxed/simple;
+	bh=6GRO6kPSGXqiAH/EjT5VLBpg0zjQANhjxF4UC3PUHJU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uEeEl9oyNGgQo2AXwmU32q1xgPmjdIi6O8tq1FzqOZWxNp/me8CqN608qmGxCktOcKrcacvrXbYrnHwgdxYnPBw5QJgOedE42ASq5bpEP5/n3QduyexeIDbeDkpVUfG3WzBJRk5MN6msooGb6rYZcr8RLUM237qD+AHd6/niMCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ijEEwPGU; arc=none smtp.client-ip=209.85.128.176
+	 MIME-Version; b=PZwChSmqxH290CZE9fED5KCFR8ODnAzH7B+yljgm1ioSQIkNl+ZusSMjUI/lJ5ttV1saQeG2LzF41iCRe9Ix40BLlgEmslsNVuwkRrm4Yk+ux/9SSpq3YuTDfZDUniRL4ICqmoMxjT3j1gIfadZmw7r1O+Hgz5oFqxx7FhJAuJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V7Ju8TTx; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6087396e405so8491747b3.0
-        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 19:03:09 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607bfa4c913so15762527b3.3
+        for <bpf@vger.kernel.org>; Fri, 23 Feb 2024 19:03:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708743788; x=1709348588; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708743789; x=1709348589; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w33reiXgkOkItwIcwIFP+h3yvXQnVHZ0N8Lo7uUN3Xc=;
-        b=ijEEwPGUB8UW09QUHhInqD4b+cKXqJbK1GIBT1o4AKppgZJsdPTWRv9OoTpCTRPcEU
-         XpRHHZt0EjstfE95qFMm8VI2rn6GV3Fh+ocsqN9c2hLocuHoS9p6pvS88qaIFPXok8ZH
-         5GCfnQh1TpxXKpqvz49RbAxmo2n/eVj5EMfxPabcu/o8OfbK7VktbQgRjCJzxexTjM06
-         yVHc7X84pEAzn2cs23VSSqXFfYu6KzUxQA8Qh92ZElD80VwVOvH55Rox/ga/V38qKu3o
-         wthzFqvucOPaHgcRhUOmUfw6aQ3quvbpJp0cdnUyzz0WQ07X7KNPAhVH/SXTN+C3YgMo
-         zb3g==
+        bh=H0fCdm6t3+/GrYi+it9WNMMgcg+iH1aau2sIAxX+fSU=;
+        b=V7Ju8TTxnFx67Ky23ckoElf4y3WcpnbY0KNnncdf79WmoL99BMy99usWXrOSLDPOXz
+         WMBATISjJYUzEbatU4zMn2+1dy2zmLPCyqzOM7Q9DWLoLHvbytkeHzVE9Y/Nqseeh3tZ
+         Abh8rl1NsLtr4CcTOSOLN0CA9rqHU1rCtJyOtsCVPL3L1xrpHcl/eqqbwjDJngsPO2nX
+         PNUXcM2nPcfH5SYcmUg7KX7Shc3dFVwUapQo94pGEsNlr9knPDajrzHjNX2oz8In62H+
+         fmeJ9zoKEEz/McKNamLsfwA/QjKL6A9gKKHel2s4+0KQ/DoGZrHxh/1n2TuCfmTfN17Z
+         HQDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708743788; x=1709348588;
+        d=1e100.net; s=20230601; t=1708743789; x=1709348589;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w33reiXgkOkItwIcwIFP+h3yvXQnVHZ0N8Lo7uUN3Xc=;
-        b=CS5H8T/XBM0LfUTN8HlLKbAYVb/hAZpqwSXMxindiEg/hgE3LTwbEmj9rmi/n8Ak/M
-         wK2nQVwrSIOexf1FFbVRg1Hg8GbanSSaphGtxRX02P42Rg6NLgjzIS4cLomoB7C6/KQR
-         fg0WSm0DZT3BRWkxPJbBx9H8eY7auYPkPmF/RSMelEepI4EzIYXXeE8zFnuK87gND2M0
-         NEYBAMVTlpVoRQmI1NQW/tw98K7sPpGlUtNk+uZ/anzTgCKo8p4inMoh+wEYUMiVVyRy
-         hbZDk1DuZfkKKGYmhYAKiEdy/i5FL9aXCNUq/evglq0F6LazB4hgH6fcqKgylva/NgFj
-         WQNA==
-X-Gm-Message-State: AOJu0YznGmbeBiZrcaQ3ypBtKiEerk18gj36Hrw302bHX5s+MPpY5TAt
-	CxeBjTBiejCyn+ggtURmtGCkp6u/5EgzoYn1w6O1E0uYhOQrseThqfhm8AXq
-X-Google-Smtp-Source: AGHT+IHPpYGqPUKu83tEXRqKcHWQGbBqdewLycnJ04egnR17y18oMA1JOfS0N5UZtIPJsGF2hAC/qw==
-X-Received: by 2002:a0d:d5c9:0:b0:608:d466:2447 with SMTP id x192-20020a0dd5c9000000b00608d4662447mr162478ywd.12.1708743787763;
-        Fri, 23 Feb 2024 19:03:07 -0800 (PST)
+        bh=H0fCdm6t3+/GrYi+it9WNMMgcg+iH1aau2sIAxX+fSU=;
+        b=UiiQKq69DlyJe05ig8bSsROgt3TAJ+v6ybCL8bSWn4bboij/fJERnm0xJj0+S0xrwq
+         vch9yWDrkGvgSV6SuGm2xh3M0xYhd6h4x/CoFX/9JCM/RdLLBQS2XlsZy7D+ae/8vC05
+         HBua5WqdBgsVsLl4YCUg8PcLFhwS/4OHep11DqJKGlSE/0j+4sPZe7xeyuX502QoUzS/
+         FqVWZMbfMrsB+ziVKh7qsrRD5zBx1NPuzhnfCMk2JOZs/EdSDFQvB8dujTduz6fzZTvJ
+         FARbZnAkq4B2H/T4FtQku4a1Nhs9IM/pd4tHjPHxfPQ2dHD1uq85ofn3BRXi27BpFYp2
+         3TwQ==
+X-Gm-Message-State: AOJu0YwOVVAP0csF9BptRgH4gHXrNlJG12P/JRg/mKJY0d7Je8EN0uQC
+	ji1IOScJxZ09CrOAj28BeQ9ZHH2dCDcHwnQJLnuuJj28mcXA03eRd25nwtGm
+X-Google-Smtp-Source: AGHT+IHvtMQbef5hW+wfkdtDzZaQkFZ8qfOS7iYe/vvptV3HzyfHdpR/sXLss6mZZeJevrOWofI3uQ==
+X-Received: by 2002:a81:d203:0:b0:607:838f:8991 with SMTP id x3-20020a81d203000000b00607838f8991mr1571420ywi.38.1708743788890;
+        Fri, 23 Feb 2024 19:03:08 -0800 (PST)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:f349:a51b:edf0:db7d])
-        by smtp.gmail.com with ESMTPSA id w66-20020a817b45000000b006087a2fc6b9sm84515ywc.101.2024.02.23.19.03.06
+        by smtp.gmail.com with ESMTPSA id w66-20020a817b45000000b006087a2fc6b9sm84515ywc.101.2024.02.23.19.03.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 19:03:07 -0800 (PST)
+        Fri, 23 Feb 2024 19:03:08 -0800 (PST)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,9 +76,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v3 2/3] bpf: struct_ops supports more than one page for trampolines.
-Date: Fri, 23 Feb 2024 19:03:01 -0800
-Message-Id: <20240224030302.1500343-3-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Test struct_ops maps with a large number of program links.
+Date: Fri, 23 Feb 2024 19:03:02 -0800
+Message-Id: <20240224030302.1500343-4-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240224030302.1500343-1-thinker.li@gmail.com>
 References: <20240224030302.1500343-1-thinker.li@gmail.com>
@@ -90,319 +90,218 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The BPF struct_ops previously only allowed for one page to be used for the
-trampolines of all links in a map. However, we have recently run out of
-space due to the large number of BPF program links. By allocating
-additional pages when we exhaust an existing page, we can accommodate more
-links in a single map.
-
-The variable st_map->image has been changed to st_map->image_pages, and its
-type has been changed to an array of pointers to buffers of
-PAGE_SIZE. Every struct_ops map can have MAX_IMAGE_PAGES (8) pages for
-trampolines at most.
+Create and load a struct_ops map with a large number of programs to
+generate trampolines taking a size over multiple pages. The map includes 40
+programs. Their trampolines takes 6.6k+, more than 1.5 pages, on x86.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- include/linux/bpf.h            |   3 +-
- kernel/bpf/bpf_struct_ops.c    | 115 ++++++++++++++++++++++-----------
- net/bpf/bpf_dummy_struct_ops.c |  12 ++--
- 3 files changed, 83 insertions(+), 47 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  44 ++++++++
+ .../prog_tests/test_struct_ops_multi_pages.c  |  30 ++++++
+ .../bpf/progs/struct_ops_multi_pages.c        | 102 ++++++++++++++++++
+ 3 files changed, 176 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_multi_pages.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_multi_pages.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 814dc913a968..0b9cc7f77cbd 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1763,7 +1763,8 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
- 				      struct bpf_tramp_link *link,
- 				      const struct btf_func_model *model,
- 				      void *stub_func,
--				      void *image, void *image_end);
-+				      void **image, u32 *image_off,
-+				      bool allow_alloc);
- static inline bool bpf_try_module_get(const void *data, struct module *owner)
- {
- 	if (owner == BPF_MODULE_OWNER)
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 07e554c191d1..1ed74589b54d 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -18,6 +18,8 @@ struct bpf_struct_ops_value {
- 	char data[] ____cacheline_aligned_in_smp;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index c3b0cf788f9f..3e6481b2a50a 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -35,6 +35,50 @@ struct bpf_testmod_ops {
+ 	void (*test_2)(int a, int b);
+ 	/* Used to test nullable arguments. */
+ 	int (*test_maybe_null)(int dummy, struct task_struct *task);
++
++	/* The following pointers are used to test the maps having multiple
++	 * pages of trampolines.
++	 */
++	int (*tramp_1)(int value);
++	int (*tramp_2)(int value);
++	int (*tramp_3)(int value);
++	int (*tramp_4)(int value);
++	int (*tramp_5)(int value);
++	int (*tramp_6)(int value);
++	int (*tramp_7)(int value);
++	int (*tramp_8)(int value);
++	int (*tramp_9)(int value);
++	int (*tramp_10)(int value);
++	int (*tramp_11)(int value);
++	int (*tramp_12)(int value);
++	int (*tramp_13)(int value);
++	int (*tramp_14)(int value);
++	int (*tramp_15)(int value);
++	int (*tramp_16)(int value);
++	int (*tramp_17)(int value);
++	int (*tramp_18)(int value);
++	int (*tramp_19)(int value);
++	int (*tramp_20)(int value);
++	int (*tramp_21)(int value);
++	int (*tramp_22)(int value);
++	int (*tramp_23)(int value);
++	int (*tramp_24)(int value);
++	int (*tramp_25)(int value);
++	int (*tramp_26)(int value);
++	int (*tramp_27)(int value);
++	int (*tramp_28)(int value);
++	int (*tramp_29)(int value);
++	int (*tramp_30)(int value);
++	int (*tramp_31)(int value);
++	int (*tramp_32)(int value);
++	int (*tramp_33)(int value);
++	int (*tramp_34)(int value);
++	int (*tramp_35)(int value);
++	int (*tramp_36)(int value);
++	int (*tramp_37)(int value);
++	int (*tramp_38)(int value);
++	int (*tramp_39)(int value);
++	int (*tramp_40)(int value);
  };
  
-+#define MAX_TRAMP_IMAGE_PAGES 8
+ #endif /* _BPF_TESTMOD_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_multi_pages.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_multi_pages.c
+new file mode 100644
+index 000000000000..645d32b5160c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_multi_pages.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
 +
- struct bpf_struct_ops_map {
- 	struct bpf_map map;
- 	struct rcu_head rcu;
-@@ -30,12 +32,11 @@ struct bpf_struct_ops_map {
- 	 */
- 	struct bpf_link **links;
- 	u32 links_cnt;
--	/* image is a page that has all the trampolines
-+	u32 image_pages_cnt;
-+	/* image_pages is an array of pages that has all the trampolines
- 	 * that stores the func args before calling the bpf_prog.
--	 * A PAGE_SIZE "image" is enough to store all trampoline for
--	 * "links[]".
- 	 */
--	void *image;
-+	void *image_pages[MAX_TRAMP_IMAGE_PAGES];
- 	/* The owner moduler's btf. */
- 	struct btf *btf;
- 	/* uvalue->data stores the kernel struct
-@@ -461,6 +462,19 @@ static void bpf_struct_ops_map_put_progs(struct bpf_struct_ops_map *st_map)
- 	}
- }
- 
-+static void bpf_struct_ops_map_free_image(struct bpf_struct_ops_map *st_map)
++#include "struct_ops_multi_pages.skel.h"
++
++static void do_struct_ops_multi_pages(void)
 +{
-+	int i;
-+	void *image;
++	struct struct_ops_multi_pages *skel;
++	struct bpf_link *link;
 +
-+	bpf_jit_uncharge_modmem(PAGE_SIZE * st_map->image_pages_cnt);
-+	for (i = 0; i < st_map->image_pages_cnt; i++) {
-+		image = st_map->image_pages[i];
-+		arch_free_bpf_trampoline(image, PAGE_SIZE);
-+	}
-+	st_map->image_pages_cnt = 0;
++	/* The size of all trampolines of skel->maps.multi_pages should be
++	 * over 1 page (at least for x86).
++	 */
++	skel = struct_ops_multi_pages__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_multi_pages_open_and_load"))
++		return;
++
++	link = bpf_map__attach_struct_ops(skel->maps.multi_pages);
++	ASSERT_OK_PTR(link, "attach_multi_pages");
++
++	bpf_link__destroy(link);
++	struct_ops_multi_pages__destroy(skel);
 +}
 +
- static int check_zero_holes(const struct btf *btf, const struct btf_type *t, void *data)
- {
- 	const struct btf_member *member;
-@@ -503,13 +517,22 @@ const struct bpf_link_ops bpf_struct_ops_link_lops = {
- 	.dealloc = bpf_struct_ops_link_dealloc,
- };
- 
-+/* *image should be NULL and allow_alloc should be true if a caller wants
-+ * this function to allocate a image buffer for it. Otherwise, this
-+ * function allocate a new image buffer only if allow_alloc is true and the
-+ * size of the trampoline is larger than the space left in the current
-+ * image buffer.
-+ */
- int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
- 				      struct bpf_tramp_link *link,
- 				      const struct btf_func_model *model,
--				      void *stub_func, void *image, void *image_end)
-+				      void *stub_func,
-+				      void **_image, u32 *image_off,
-+				      bool allow_alloc)
- {
- 	u32 flags = BPF_TRAMP_F_INDIRECT;
--	int size;
-+	void *image = *_image;
-+	int size, err;
- 
- 	tlinks[BPF_TRAMP_FENTRY].links[0] = link;
- 	tlinks[BPF_TRAMP_FENTRY].nr_links = 1;
-@@ -518,14 +541,35 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
- 		flags |= BPF_TRAMP_F_RET_FENTRY_RET;
- 
- 	size = arch_bpf_trampoline_size(model, flags, tlinks, NULL);
--	if (size < 0)
-+	if (size <= 0)
- 		return size;
--	if (size > (unsigned long)image_end - (unsigned long)image)
--		return -E2BIG;
--	return arch_prepare_bpf_trampoline(NULL, image, image_end,
++void test_struct_ops_multi_pages(void)
++{
++	if (test__start_subtest("multi_pages"))
++		do_struct_ops_multi_pages();
++}
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_multi_pages.c b/tools/testing/selftests/bpf/progs/struct_ops_multi_pages.c
+new file mode 100644
+index 000000000000..9efcc6e4d356
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_multi_pages.c
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
 +
-+	/* Allocate image buffer if necessary */
-+	if (!image || size > PAGE_SIZE - *image_off) {
-+		if (!allow_alloc)
-+			return -E2BIG;
++char _license[] SEC("license") = "GPL";
 +
-+		err = bpf_jit_charge_modmem(PAGE_SIZE);
-+		if (err)
-+			return err;
-+		image = arch_alloc_bpf_trampoline(PAGE_SIZE);
-+		if (!image) {
-+			bpf_jit_uncharge_modmem(PAGE_SIZE);
-+			return -ENOMEM;
-+		}
-+		*_image = image;
-+		*image_off = 0;
++#define TRAMP(x) \
++	SEC("struct_ops/tramp_" #x)		\
++	int BPF_PROG(tramp_ ## x, int a)	\
++	{					\
++		return a;			\
 +	}
 +
-+	size = arch_prepare_bpf_trampoline(NULL, image + *image_off,
-+					   image + PAGE_SIZE,
- 					   model, flags, tlinks, stub_func);
--}
-+	if (size > 0)
-+		*image_off += size;
-+	/* The caller should free the allocated memory even if size < 0 */
- 
-+	return size;
-+}
- static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 					   void *value, u64 flags)
- {
-@@ -539,8 +583,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	struct bpf_tramp_links *tlinks;
- 	void *udata, *kdata;
- 	int prog_fd, err;
--	void *image, *image_end;
--	u32 i;
-+	u32 i, image_off = 0;
-+	void *image = NULL;
- 
- 	if (flags)
- 		return -EINVAL;
-@@ -578,14 +622,15 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 
- 	udata = &uvalue->data;
- 	kdata = &kvalue->data;
--	image = st_map->image;
--	image_end = st_map->image + PAGE_SIZE;
- 
- 	module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
- 	for_each_member(i, t, member) {
- 		const struct btf_type *mtype, *ptype;
- 		struct bpf_prog *prog;
- 		struct bpf_tramp_link *link;
-+		void *saved_image = image;
-+		u32 init_off = image_off;
-+		bool allow_alloc;
- 		u32 moff;
- 
- 		moff = __btf_member_bit_offset(t, member) / 8;
-@@ -658,15 +703,24 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 			      &bpf_struct_ops_link_lops, prog);
- 		st_map->links[i] = &link->link;
- 
-+		allow_alloc = st_map->image_pages_cnt < MAX_TRAMP_IMAGE_PAGES;
- 		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
- 							&st_ops->func_models[i],
- 							*(void **)(st_ops->cfi_stubs + moff),
--							image, image_end);
-+							&image, &image_off,
-+							allow_alloc);
-+		if (saved_image != image) {
-+			/* Add to image_pages[] to ensure the page has been
-+			 * free later even the above call fails
-+			 */
-+			st_map->image_pages[st_map->image_pages_cnt++] = image;
-+			init_off = 0;
-+		}
- 		if (err < 0)
- 			goto reset_unlock;
- 
--		*(void **)(kdata + moff) = image + cfi_get_offset();
--		image += err;
-+		*(void **)(kdata + moff) =
-+			image + init_off + cfi_get_offset();
- 
- 		/* put prog_id to udata */
- 		*(unsigned long *)(udata + moff) = prog->aux->id;
-@@ -677,10 +731,11 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 		if (err)
- 			goto reset_unlock;
- 	}
-+	for (i = 0; i < st_map->image_pages_cnt; i++)
-+		arch_protect_bpf_trampoline(st_map->image_pages[i], PAGE_SIZE);
- 
- 	if (st_map->map.map_flags & BPF_F_LINK) {
- 		err = 0;
--		arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
- 		/* Let bpf_link handle registration & unregistration.
- 		 *
- 		 * Pair with smp_load_acquire() during lookup_elem().
-@@ -689,7 +744,6 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 		goto unlock;
- 	}
- 
--	arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
- 	err = st_ops->reg(kdata);
- 	if (likely(!err)) {
- 		/* This refcnt increment on the map here after
-@@ -712,9 +766,9 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	 * there was a race in registering the struct_ops (under the same name) to
- 	 * a sub-system through different struct_ops's maps.
- 	 */
--	arch_unprotect_bpf_trampoline(st_map->image, PAGE_SIZE);
- 
- reset_unlock:
-+	bpf_struct_ops_map_free_image(st_map);
- 	bpf_struct_ops_map_put_progs(st_map);
- 	memset(uvalue, 0, map->value_size);
- 	memset(kvalue, 0, map->value_size);
-@@ -781,10 +835,7 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
- 	if (st_map->links)
- 		bpf_struct_ops_map_put_progs(st_map);
- 	bpf_map_area_free(st_map->links);
--	if (st_map->image) {
--		arch_free_bpf_trampoline(st_map->image, PAGE_SIZE);
--		bpf_jit_uncharge_modmem(PAGE_SIZE);
--	}
-+	bpf_struct_ops_map_free_image(st_map);
- 	bpf_map_area_free(st_map->uvalue);
- 	bpf_map_area_free(st_map);
- }
-@@ -894,20 +945,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
- 	st_map->st_ops_desc = st_ops_desc;
- 	map = &st_map->map;
- 
--	ret = bpf_jit_charge_modmem(PAGE_SIZE);
--	if (ret)
--		goto errout_free;
--
--	st_map->image = arch_alloc_bpf_trampoline(PAGE_SIZE);
--	if (!st_map->image) {
--		/* __bpf_struct_ops_map_free() uses st_map->image as flag
--		 * for "charged or not". In this case, we need to unchange
--		 * here.
--		 */
--		bpf_jit_uncharge_modmem(PAGE_SIZE);
--		ret = -ENOMEM;
--		goto errout_free;
--	}
- 	st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
- 	st_map->links_cnt = btf_type_vlen(t);
- 	st_map->links =
-diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-index 02de71719aed..0a7c0b5aad78 100644
---- a/net/bpf/bpf_dummy_struct_ops.c
-+++ b/net/bpf/bpf_dummy_struct_ops.c
-@@ -91,6 +91,7 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	struct bpf_tramp_link *link = NULL;
- 	void *image = NULL;
- 	unsigned int op_idx;
-+	u32 image_off = 0;
- 	int prog_ret;
- 	s32 type_id;
- 	int err;
-@@ -114,12 +115,6 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		goto out;
- 	}
- 
--	image = arch_alloc_bpf_trampoline(PAGE_SIZE);
--	if (!image) {
--		err = -ENOMEM;
--		goto out;
--	}
--
- 	link = kzalloc(sizeof(*link), GFP_USER);
- 	if (!link) {
- 		err = -ENOMEM;
-@@ -133,7 +128,8 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
- 						&st_ops->func_models[op_idx],
- 						&dummy_ops_test_ret_function,
--						image, image + PAGE_SIZE);
-+						&image, &image_off,
-+						true);
- 	if (err < 0)
- 		goto out;
- 
-@@ -147,6 +143,8 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		err = -EFAULT;
- out:
- 	kfree(args);
-+	if (image)
-+		bpf_jit_uncharge_modmem(PAGE_SIZE);
- 	arch_free_bpf_trampoline(image, PAGE_SIZE);
- 	if (link)
- 		bpf_link_put(&link->link);
++TRAMP(1)
++TRAMP(2)
++TRAMP(3)
++TRAMP(4)
++TRAMP(5)
++TRAMP(6)
++TRAMP(7)
++TRAMP(8)
++TRAMP(9)
++TRAMP(10)
++TRAMP(11)
++TRAMP(12)
++TRAMP(13)
++TRAMP(14)
++TRAMP(15)
++TRAMP(16)
++TRAMP(17)
++TRAMP(18)
++TRAMP(19)
++TRAMP(20)
++TRAMP(21)
++TRAMP(22)
++TRAMP(23)
++TRAMP(24)
++TRAMP(25)
++TRAMP(26)
++TRAMP(27)
++TRAMP(28)
++TRAMP(29)
++TRAMP(30)
++TRAMP(31)
++TRAMP(32)
++TRAMP(33)
++TRAMP(34)
++TRAMP(35)
++TRAMP(36)
++TRAMP(37)
++TRAMP(38)
++TRAMP(39)
++TRAMP(40)
++
++#define F_TRAMP(x) .tramp_ ## x = (void *)tramp_ ## x
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops multi_pages = {
++	F_TRAMP(1),
++	F_TRAMP(2),
++	F_TRAMP(3),
++	F_TRAMP(4),
++	F_TRAMP(5),
++	F_TRAMP(6),
++	F_TRAMP(7),
++	F_TRAMP(8),
++	F_TRAMP(9),
++	F_TRAMP(10),
++	F_TRAMP(11),
++	F_TRAMP(12),
++	F_TRAMP(13),
++	F_TRAMP(14),
++	F_TRAMP(15),
++	F_TRAMP(16),
++	F_TRAMP(17),
++	F_TRAMP(18),
++	F_TRAMP(19),
++	F_TRAMP(20),
++	F_TRAMP(21),
++	F_TRAMP(22),
++	F_TRAMP(23),
++	F_TRAMP(24),
++	F_TRAMP(25),
++	F_TRAMP(26),
++	F_TRAMP(27),
++	F_TRAMP(28),
++	F_TRAMP(29),
++	F_TRAMP(30),
++	F_TRAMP(31),
++	F_TRAMP(32),
++	F_TRAMP(33),
++	F_TRAMP(34),
++	F_TRAMP(35),
++	F_TRAMP(36),
++	F_TRAMP(37),
++	F_TRAMP(38),
++	F_TRAMP(39),
++	F_TRAMP(40),
++};
 -- 
 2.34.1
 
