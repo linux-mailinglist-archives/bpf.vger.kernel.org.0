@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-22668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA5D7862B18
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 16:19:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F09862B19
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 16:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28F27B20E4F
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 15:19:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 984871C20E44
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 15:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A818175BE;
-	Sun, 25 Feb 2024 15:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E95171BB;
+	Sun, 25 Feb 2024 15:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RQt9bUlM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P3Smd3zE"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CC4175A5;
-	Sun, 25 Feb 2024 15:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42EA1B7FC;
+	Sun, 25 Feb 2024 15:18:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708874273; cv=none; b=jUaLmbIfzg3CIqZbWNt9saIzI2JTdDIOByDKgGWYWl9CVO7wDsV4dhjGExwGjBZ6jmnmW36oY01cgBcYBbFSAoKTnY5OWudH4B46+oMWr8TTtBrMycmD2WAidT6v+N3ZmBWfUL1yoxNfwNsLEwEoFeFpqV6hQoJYddBvOLNqqk8=
+	t=1708874284; cv=none; b=SFVRzyL5FuR/wUXmGmdEkZoTz2AXnKeTS9OXNlJ9QADvEuWz+BMKG2VaYE8ufJlX+vnV/UH0wdLnLV4HbC0goHY7Kw0alp+q9dMGaV04D0ine93hn/b6KLocAoQboGdNeibhyjDnsfg+3w2gfOluB2EHgivxlKiAxmR/hhD6m7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708874273; c=relaxed/simple;
-	bh=KCZGqgIeYVvFZmOBhB5ewytf0GjVMwpXASjcmqLghIg=;
+	s=arc-20240116; t=1708874284; c=relaxed/simple;
+	bh=5ZU6O1yZKo2WgktQxSz1C2P+0dzB3kSfvhbv8qkb5cU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L4v6hR4f6ys/x9Drq1NhutBw0iEFNn2s0uGlO+oOqETPvPWLoeGZBPm4a7hgKZF3D/FJGpvQgro3dT1XbJa5Ghd/XWEvlR0YeGtz1nLmSwsq29daecT9VJWI4iJ+5A9j+DVygfdavPRHH6O58Zre7+MvGheYB7qhbem3Z8dAKNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RQt9bUlM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC21C433F1;
-	Sun, 25 Feb 2024 15:17:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YYsZ2r+dUSwDO8CViKWO+EJW7MHhrPElBflLc7JA8rQK/g+5dGjUcfIC05FQtclgmUDVRdgNVtGrfgEAchgAd2GZTx8TUNKLU0UOyvVRaMzXztbrznTKkZGYEqM2EN/bZXvaC1VWQ0JvVm/Xj4KXmzbuBvzzf6vyJw84G532W68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P3Smd3zE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E93ADC433F1;
+	Sun, 25 Feb 2024 15:18:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708874273;
-	bh=KCZGqgIeYVvFZmOBhB5ewytf0GjVMwpXASjcmqLghIg=;
+	s=k20201202; t=1708874284;
+	bh=5ZU6O1yZKo2WgktQxSz1C2P+0dzB3kSfvhbv8qkb5cU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RQt9bUlMXbwhjTbG6iQbLkVm1GboUEsgah3ot6i5dhjg9mL3b5kYmeGtbGdAD3wiq
-	 kbTNtl7WnDFrv7F4JCKQ8tiP8xPrkoG1OAELm3/qjWYrT73lJUvinX8pfXpzIE70NX
-	 GDKqlZxdCACPSgUUb6IqZMDFDh87BCpPpdpI6HWvT1mKXmtebEM1V1SZXU4DQ5jrxT
-	 sWCeyz2FOGpJhBSSJ6GPjqae2s/SKpm85RgbYcTZRLs/zKhdoLRHFBlslw0ZZmqkOq
-	 wjsfeOq3higfY2jm/5cutdP1gOwxmOPvTudPY0p0oIrOr/q72mfP7QJvQT76958n8m
-	 zYp75I++PC6Yw==
+	b=P3Smd3zEvzUnYipzPvMZUKVVbktOK2kiBhXiqldlc2+TNuYRcZgLfv3LtYJ0oLetu
+	 /Ehp6CyEzxcj3CYlX/iCzFThmVMyyOU9n2mYnq1cIqTCPUZw08YijD/WP8WPsM5fPj
+	 rlXOPL0CY+AP/DbnH7PdotdWwYzUYhP/Rmlx25r+eaBrYLUz+sbFqtwewf8Kiti6J1
+	 x+yN3sDQOfbJH7E8jTuZK7bOQ/jt1FlBaPLJLx6TGC1PsiGeIED9MyxrzmGlUbWT92
+	 ukCwX0tWVYM2Us++bckeON4MM0hEJ9NiwMyPaBF0c8ZZNW3movtQK1C5k/t+ITDK1i
+	 2y/7ugJukzY0Q==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -59,9 +59,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v8 15/35] function_graph: Move set_graph_function tests to shadow stack global var
-Date: Mon, 26 Feb 2024 00:17:47 +0900
-Message-Id: <170887426741.564249.6211044332121595214.stgit@devnote2>
+Subject: [PATCH v8 16/35] function_graph: Move graph depth stored data to shadow stack global var
+Date: Mon, 26 Feb 2024 00:17:58 +0900
+Message-Id: <170887427875.564249.12987947642912987283.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170887410337.564249.6360118840946697039.stgit@devnote2>
 References: <170887410337.564249.6360118840946697039.stgit@devnote2>
@@ -77,206 +77,125 @@ Content-Transfer-Encoding: 8bit
 
 From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-The use of the task->trace_recursion for the logic used for the
-set_graph_funnction was a bit of an abuse of that variable. Now that there
+The use of the task->trace_recursion for the logic used for the function
+graph depth was a bit of an abuse of that variable. Now that there
 exists global vars that are per stack for registered graph traces, use that
 instead.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- include/linux/trace_recursion.h      |    5 +----
- kernel/trace/trace.h                 |   32 +++++++++++++++++++++-----------
- kernel/trace/trace_functions_graph.c |    6 +++---
- kernel/trace/trace_irqsoff.c         |    4 ++--
- kernel/trace/trace_sched_wakeup.c    |    4 ++--
- 5 files changed, 29 insertions(+), 22 deletions(-)
+ include/linux/trace_recursion.h |   29 -----------------------------
+ kernel/trace/trace.h            |   34 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 32 insertions(+), 31 deletions(-)
 
 diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index d48cd92d2364..2efd5ec46d7f 100644
+index 2efd5ec46d7f..00e792bf148d 100644
 --- a/include/linux/trace_recursion.h
 +++ b/include/linux/trace_recursion.h
-@@ -44,9 +44,6 @@ enum {
+@@ -44,25 +44,6 @@ enum {
   */
  	TRACE_IRQ_BIT,
  
--	/* Set if the function is in the set_graph_function file */
--	TRACE_GRAPH_BIT,
+-	/*
+-	 * In the very unlikely case that an interrupt came in
+-	 * at a start of graph tracing, and we want to trace
+-	 * the function in that interrupt, the depth can be greater
+-	 * than zero, because of the preempted start of a previous
+-	 * trace. In an even more unlikely case, depth could be 2
+-	 * if a softirq interrupted the start of graph tracing,
+-	 * followed by an interrupt preempting a start of graph
+-	 * tracing in the softirq, and depth can even be 3
+-	 * if an NMI came in at the start of an interrupt function
+-	 * that preempted a softirq start of a function that
+-	 * preempted normal context!!!! Luckily, it can't be
+-	 * greater than 3, so the next two bits are a mask
+-	 * of what the depth is when we set TRACE_GRAPH_FL
+-	 */
+-
+-	TRACE_GRAPH_DEPTH_START_BIT,
+-	TRACE_GRAPH_DEPTH_END_BIT,
 -
  	/*
- 	 * In the very unlikely case that an interrupt came in
- 	 * at a start of graph tracing, and we want to trace
-@@ -60,7 +57,7 @@ enum {
- 	 * that preempted a softirq start of a function that
- 	 * preempted normal context!!!! Luckily, it can't be
- 	 * greater than 3, so the next two bits are a mask
--	 * of what the depth is when we set TRACE_GRAPH_BIT
-+	 * of what the depth is when we set TRACE_GRAPH_FL
- 	 */
+ 	 * To implement set_graph_notrace, if this bit is set, we ignore
+ 	 * function graph tracing of called functions, until the return
+@@ -78,16 +59,6 @@ enum {
+ #define trace_recursion_clear(bit)	do { (current)->trace_recursion &= ~(1<<(bit)); } while (0)
+ #define trace_recursion_test(bit)	((current)->trace_recursion & (1<<(bit)))
  
- 	TRACE_GRAPH_DEPTH_START_BIT,
+-#define trace_recursion_depth() \
+-	(((current)->trace_recursion >> TRACE_GRAPH_DEPTH_START_BIT) & 3)
+-#define trace_recursion_set_depth(depth) \
+-	do {								\
+-		current->trace_recursion &=				\
+-			~(3 << TRACE_GRAPH_DEPTH_START_BIT);		\
+-		current->trace_recursion |=				\
+-			((depth) & 3) << TRACE_GRAPH_DEPTH_START_BIT;	\
+-	} while (0)
+-
+ #define TRACE_CONTEXT_BITS	4
+ 
+ #define TRACE_FTRACE_START	TRACE_FTRACE_BIT
 diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index c70af6dc6485..d5501b1a10a6 100644
+index d5501b1a10a6..d8cdcbb4e5a6 100644
 --- a/kernel/trace/trace.h
 +++ b/kernel/trace/trace.h
-@@ -897,11 +897,16 @@ extern void init_array_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops
- extern int allocate_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops);
- extern void free_fgraph_ops(struct trace_array *tr);
+@@ -899,8 +899,38 @@ extern void free_fgraph_ops(struct trace_array *tr);
  
-+enum {
-+	TRACE_GRAPH_FL		= 1,
-+};
+ enum {
+ 	TRACE_GRAPH_FL		= 1,
++
++	/*
++	 * In the very unlikely case that an interrupt came in
++	 * at a start of graph tracing, and we want to trace
++	 * the function in that interrupt, the depth can be greater
++	 * than zero, because of the preempted start of a previous
++	 * trace. In an even more unlikely case, depth could be 2
++	 * if a softirq interrupted the start of graph tracing,
++	 * followed by an interrupt preempting a start of graph
++	 * tracing in the softirq, and depth can even be 3
++	 * if an NMI came in at the start of an interrupt function
++	 * that preempted a softirq start of a function that
++	 * preempted normal context!!!! Luckily, it can't be
++	 * greater than 3, so the next two bits are a mask
++	 * of what the depth is when we set TRACE_GRAPH_FL
++	 */
++
++	TRACE_GRAPH_DEPTH_START_BIT,
++	TRACE_GRAPH_DEPTH_END_BIT,
+ };
+ 
++static inline unsigned long ftrace_graph_depth(unsigned long *task_var)
++{
++	return (*task_var >> TRACE_GRAPH_DEPTH_START_BIT) & 3;
++}
++
++static inline void ftrace_graph_set_depth(unsigned long *task_var, int depth)
++{
++	*task_var &= ~(3 << TRACE_GRAPH_DEPTH_START_BIT);
++	*task_var |= (depth & 3) << TRACE_GRAPH_DEPTH_START_BIT;
++}
 +
  #ifdef CONFIG_DYNAMIC_FTRACE
  extern struct ftrace_hash __rcu *ftrace_graph_hash;
  extern struct ftrace_hash __rcu *ftrace_graph_notrace_hash;
- 
--static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
-+static inline int
-+ftrace_graph_addr(unsigned long *task_var, struct ftrace_graph_ent *trace)
- {
- 	unsigned long addr = trace->func;
- 	int ret = 0;
-@@ -923,12 +928,11 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
- 	}
- 
- 	if (ftrace_lookup_ip(hash, addr)) {
--
- 		/*
- 		 * This needs to be cleared on the return functions
+@@ -933,7 +963,7 @@ ftrace_graph_addr(unsigned long *task_var, struct ftrace_graph_ent *trace)
  		 * when the depth is zero.
  		 */
--		trace_recursion_set(TRACE_GRAPH_BIT);
-+		*task_var |= TRACE_GRAPH_FL;
- 		trace_recursion_set_depth(trace->depth);
+ 		*task_var |= TRACE_GRAPH_FL;
+-		trace_recursion_set_depth(trace->depth);
++		ftrace_graph_set_depth(task_var, trace->depth);
  
  		/*
-@@ -948,11 +952,14 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
- 	return ret;
+ 		 * If no irqs are to be traced, but a set_graph_function
+@@ -958,7 +988,7 @@ ftrace_graph_addr_finish(struct fgraph_ops *gops, struct ftrace_graph_ret *trace
+ 	unsigned long *task_var = fgraph_get_task_var(gops);
+ 
+ 	if ((*task_var & TRACE_GRAPH_FL) &&
+-	    trace->depth == trace_recursion_depth())
++	    trace->depth == ftrace_graph_depth(task_var))
+ 		*task_var &= ~TRACE_GRAPH_FL;
  }
  
--static inline void ftrace_graph_addr_finish(struct ftrace_graph_ret *trace)
-+static inline void
-+ftrace_graph_addr_finish(struct fgraph_ops *gops, struct ftrace_graph_ret *trace)
- {
--	if (trace_recursion_test(TRACE_GRAPH_BIT) &&
-+	unsigned long *task_var = fgraph_get_task_var(gops);
-+
-+	if ((*task_var & TRACE_GRAPH_FL) &&
- 	    trace->depth == trace_recursion_depth())
--		trace_recursion_clear(TRACE_GRAPH_BIT);
-+		*task_var &= ~TRACE_GRAPH_FL;
- }
- 
- static inline int ftrace_graph_notrace_addr(unsigned long addr)
-@@ -979,7 +986,7 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
- }
- 
- #else
--static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
-+static inline int ftrace_graph_addr(unsigned long *task_var, struct ftrace_graph_ent *trace)
- {
- 	return 1;
- }
-@@ -988,17 +995,20 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
- {
- 	return 0;
- }
--static inline void ftrace_graph_addr_finish(struct ftrace_graph_ret *trace)
-+static inline void ftrace_graph_addr_finish(struct fgraph_ops *gops, struct ftrace_graph_ret *trace)
- { }
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- extern unsigned int fgraph_max_depth;
- 
--static inline bool ftrace_graph_ignore_func(struct ftrace_graph_ent *trace)
-+static inline bool
-+ftrace_graph_ignore_func(struct fgraph_ops *gops, struct ftrace_graph_ent *trace)
- {
-+	unsigned long *task_var = fgraph_get_task_var(gops);
-+
- 	/* trace it when it is-nested-in or is a function enabled. */
--	return !(trace_recursion_test(TRACE_GRAPH_BIT) ||
--		 ftrace_graph_addr(trace)) ||
-+	return !((*task_var & TRACE_GRAPH_FL) ||
-+		 ftrace_graph_addr(task_var, trace)) ||
- 		(trace->depth < 0) ||
- 		(fgraph_max_depth && trace->depth >= fgraph_max_depth);
- }
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 7f30652f0e97..66cce73e94f8 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -160,7 +160,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace,
- 	if (!ftrace_trace_task(tr))
- 		return 0;
- 
--	if (ftrace_graph_ignore_func(trace))
-+	if (ftrace_graph_ignore_func(gops, trace))
- 		return 0;
- 
- 	if (ftrace_graph_ignore_irqs())
-@@ -247,7 +247,7 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- 	long disabled;
- 	int cpu;
- 
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (trace_recursion_test(TRACE_GRAPH_NOTRACE_BIT)) {
- 		trace_recursion_clear(TRACE_GRAPH_NOTRACE_BIT);
-@@ -269,7 +269,7 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 				      struct fgraph_ops *gops)
- {
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (trace_recursion_test(TRACE_GRAPH_NOTRACE_BIT)) {
- 		trace_recursion_clear(TRACE_GRAPH_NOTRACE_BIT);
-diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
-index 5478f4c4f708..fce064e20570 100644
---- a/kernel/trace/trace_irqsoff.c
-+++ b/kernel/trace/trace_irqsoff.c
-@@ -184,7 +184,7 @@ static int irqsoff_graph_entry(struct ftrace_graph_ent *trace,
- 	unsigned int trace_ctx;
- 	int ret;
- 
--	if (ftrace_graph_ignore_func(trace))
-+	if (ftrace_graph_ignore_func(gops, trace))
- 		return 0;
- 	/*
- 	 * Do not trace a function if it's filtered by set_graph_notrace.
-@@ -214,7 +214,7 @@ static void irqsoff_graph_return(struct ftrace_graph_ret *trace,
- 	unsigned long flags;
- 	unsigned int trace_ctx;
- 
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (!func_prolog_dec(tr, &data, &flags))
- 		return;
-diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
-index 49bcc812652c..130ca7e7787e 100644
---- a/kernel/trace/trace_sched_wakeup.c
-+++ b/kernel/trace/trace_sched_wakeup.c
-@@ -120,7 +120,7 @@ static int wakeup_graph_entry(struct ftrace_graph_ent *trace,
- 	unsigned int trace_ctx;
- 	int ret = 0;
- 
--	if (ftrace_graph_ignore_func(trace))
-+	if (ftrace_graph_ignore_func(gops, trace))
- 		return 0;
- 	/*
- 	 * Do not trace a function if it's filtered by set_graph_notrace.
-@@ -149,7 +149,7 @@ static void wakeup_graph_return(struct ftrace_graph_ret *trace,
- 	struct trace_array_cpu *data;
- 	unsigned int trace_ctx;
- 
--	ftrace_graph_addr_finish(trace);
-+	ftrace_graph_addr_finish(gops, trace);
- 
- 	if (!func_prolog_preempt_disable(tr, &data, &trace_ctx))
- 		return;
 
 
