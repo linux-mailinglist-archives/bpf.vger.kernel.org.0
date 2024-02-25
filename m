@@ -1,381 +1,138 @@
-Return-Path: <bpf+bounces-22647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A078629B9
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 09:39:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A188629EC
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 11:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA74F1F219AB
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 08:39:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 471DF1C20A17
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 10:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223ADEADC;
-	Sun, 25 Feb 2024 08:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36998E55F;
+	Sun, 25 Feb 2024 10:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BQEM2CEG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpRsmrHh"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE385D268
-	for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 08:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5505EA50
+	for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 10:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708850341; cv=none; b=U3z2A+aAeavECoqayPMKSda7fPI+ngjWp/HxM8BBDEBep9UUOlCV+SmuPp6I2dhRm3sToAa7Cjug76reU/92tZcTwLvrDdggSQbuyAEeaKmfFyLQpOEyowUP+hiBSiHd85E45AIAD7K3ZWHM89nBbRXWDSk5KYb6DeYiQ8kyzqs=
+	t=1708855630; cv=none; b=G+ntoDd4fme+i4+g6RaIxWPoiTrentZJ2z/z5qJIFVU+6UnzjgZhptyLivrXH4V8LwTz5txQ2+8wNCo3wO4ieL0xBIpyEPzQqEv8TvuYadnVaCp25vd0wKQ1PGVUvstbN6b7rBY6zLntq7tVdHBHKf/QmCflz+lpIE5pqBwMeJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708850341; c=relaxed/simple;
-	bh=XwoBp/lZSU/lG0USQah8IAohQuQR3IGwBy6XblKxmT0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TY161nivAftj1TJMdmoLJ3vPypRu0Mgcc/TNbCXI/RKy6oqdvl8GCLHd/CCFpvP9we+5Kyy/B/wH89FQeFtYTlluc0ACQD5PyR/tDoT4RNRaRbgP3Xt/cZcGq2EOKmsqHPu1srJAj2lZGzp12qX6l/G8ItRYL0TrB52Hs8RDnng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BQEM2CEG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708850338;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EOMCrVzOmp4RbossCfe+/kCrx/xWG8OsrWuMVOuxeWU=;
-	b=BQEM2CEGCzKmpLYQUjwcXYhiOLkKw8KgLXzFfsHacxXs+41tDp5D5F9np96PK3v+DeAlT5
-	4lUCVyH6mxrnltkK0vbYnOvW3RxAMrxCDyeGv+zlzmfplauycxdOCDMAsjGGpCfIpBUO46
-	PAjG4wnqKUB/zGaoMBLvQ8uaQ/pTun4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-0thxXicQPFOnAvmcst3e9A-1; Sun, 25 Feb 2024 03:38:57 -0500
-X-MC-Unique: 0thxXicQPFOnAvmcst3e9A-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d39bc6bf4so1193120f8f.0
-        for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 00:38:57 -0800 (PST)
+	s=arc-20240116; t=1708855630; c=relaxed/simple;
+	bh=P5BD3nAEerbKfteBlsYM2K4PeJ0bQo6Ffg/q+amsGOo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HondwUoLQ8OdI2sqcgnunLuoOhAKGn2wJu4sv1IVLhsrSXO27eux7NYKwpLCA0E2rQ72Eku4n/XKX4WthxGvPOkTn03HCPeDINti94qbl2S9qiEH2oHPnn/NXaztIy5p/OSCpx79eL3XUUJNdIWVuyPJ78di+gOF+wSYgdxr0xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JpRsmrHh; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c132695f1bso1344974b6e.2
+        for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 02:07:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708855628; x=1709460428; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vekXwb3oxruqG86Lc25kSlZc7qGC3yPCrP/NRyv72aQ=;
+        b=JpRsmrHhDVAtg+RouRKQjFzvKrqPAvKO9cOvkTQE4PvZhyvEOLmQT6rXq0eJuU1vnq
+         b/B4B/x1qS12/da2GH0Fqp7BngqHpiCPaDwZAhVkSCqvhBsNX43Tauv+LplD1JXpPTB3
+         8P8k9R2ltsAcDSfAtnP0qVhUS5WLTVyd5uUwPMjp176Mz8NRBaxKgOJl6JK9TyORyxsR
+         OFUNlUWcikRa/ALc2yLkNBu9QTRbXX5CPBegzfmvx9V7S/tcKSpz5hnm0R/eFsraxRfS
+         TbxDPivqmMa4qiSARPIj1Ew87PA+tcp2xxmPiQ4VVT8QLTJKoXgbEUq4gcXzpBM9EP5d
+         4Q5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708850336; x=1709455136;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EOMCrVzOmp4RbossCfe+/kCrx/xWG8OsrWuMVOuxeWU=;
-        b=ZIiGomfVQF/+owxArtj5b2Co0nRGiFNJ2404UNW87Icq+iH6h3EQUbmn9l1741o8QZ
-         Op8rztm9VjusjjhkBTmFeHL8kSRY2Q5MsGqND+MnpqEUFNQf7uBhxn7lCesWcETj5D8Q
-         luTLcBQpdV1zxAEDW7wdbMCq3IMutUuqjzS5kZYJc6Jyep2/8RFglIDIRPJAXxA2/XV5
-         oHp45APOojmc7F+/emTn4tGStX+fgBlmSPk4q3ButooWtzSh6/5qNtq5LAqQQT5nzc8d
-         jlDpMGs0S1dpGGB3AjwKgAssZ1sdB0Ge2G0ics3gXyBaCPq5IKfWaJxubkqZLftcUbCh
-         lIaA==
-X-Forwarded-Encrypted: i=1; AJvYcCUug16MH1JJ9S9cR56QnNZFqf+EnT809lsH4IXeOp4dSqrYQ+azXwjLCLsxA7OwsYqOg6F+1GayMdWNepODhlYEspLL
-X-Gm-Message-State: AOJu0YzfSJEuCpjLCknFScgdqSwRs9TwQ6plM3bw+vcraOvwdGoAyZ3i
-	8Opa9kU8Nd8Af+wOde9QzlWuh+Azjs28Yg/wdbuD04RlcWAtzJNXAeVzU+eYolJxqwGYgNk0avZ
-	tAtGx4QgR3kEA6xNRTA/1KFL20wa28lzTC6GNLkK/GrgYtquv1w==
-X-Received: by 2002:adf:e9cb:0:b0:33d:9d49:cfd1 with SMTP id l11-20020adfe9cb000000b0033d9d49cfd1mr3666350wrn.34.1708850336198;
-        Sun, 25 Feb 2024 00:38:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEhK28+oXcoeTRfiKdRQ9r84bfxBvSjdNy60lSOACL0i+/V47ase4Z2bcj3vqDRsDCm11uahQ==
-X-Received: by 2002:adf:e9cb:0:b0:33d:9d49:cfd1 with SMTP id l11-20020adfe9cb000000b0033d9d49cfd1mr3666304wrn.34.1708850335736;
-        Sun, 25 Feb 2024 00:38:55 -0800 (PST)
-Received: from redhat.com ([2.52.10.44])
-        by smtp.gmail.com with ESMTPSA id bv20-20020a0560001f1400b0033d73e1505bsm4513271wrb.18.2024.02.25.00.38.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 00:38:54 -0800 (PST)
-Date: Sun, 25 Feb 2024 03:38:48 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Vadim Pasternak <vadimp@nvidia.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Cornelia Huck <cohuck@redhat.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Eric Farman <farman@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-um@lists.infradead.org, netdev@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-	kvm@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH vhost v2 19/19] virtio_net: sq support premapped mode
-Message-ID: <20240225032330-mutt-send-email-mst@kernel.org>
-References: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
- <20240223082726.52915-20-xuanzhuo@linux.alibaba.com>
+        d=1e100.net; s=20230601; t=1708855628; x=1709460428;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vekXwb3oxruqG86Lc25kSlZc7qGC3yPCrP/NRyv72aQ=;
+        b=p2gYVDUtQrPkzdopdLY7BvATNQ6WX1sFL15oIXdI95uhFq4ACZWYTU6aQTAUGHYSkw
+         5GklctgT+T0RiiBxui5hSiw9SXB3oQxV7Pad160qm5K490kwXh+qXOi79c45L8tBgVkM
+         6kPsgUO6zxbD4sT3+l/ChrJIPQnpeaWLtJYCrm1SA7luonkKCUUAkiXCyq448vUYv8h3
+         DWi23uSeFQ9MZb3IB39Vl0xL2+b4q2SLy8COrZRKPuYUqpBbLuCikUXw/T8RYlCO3V5d
+         Avizym0tC71s1sxNK0YVsAFPCMOj6HKFMoQyB2Mi8i1/7K26nP6f3Mz825hTlQB3A75x
+         KJVw==
+X-Gm-Message-State: AOJu0Yxqck7C+uhcm1XmabwbxXIiOY7pMVlbuaZ8rKwv/qWMB6uPhhm+
+	TOunpHwf+xg3xN5oNekxBsHMgU0DECsz1UDsA8fWz4JE8SAfWaL0
+X-Google-Smtp-Source: AGHT+IEfqczSYUp5gKpiGWmwBF/LSyWYF+V1/x0OUz+Z2nWvpIDPVtzeWQztTtXaPA98ClTWa23N1A==
+X-Received: by 2002:aca:1107:0:b0:3c1:6807:2809 with SMTP id 7-20020aca1107000000b003c168072809mr4615034oir.59.1708855628484;
+        Sun, 25 Feb 2024 02:07:08 -0800 (PST)
+Received: from localhost.localdomain ([39.144.104.176])
+        by smtp.gmail.com with ESMTPSA id f26-20020aa79d9a000000b006e1464e71f9sm2119775pfq.47.2024.02.25.02.07.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 25 Feb 2024 02:07:07 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v2 bpf-next 0/2] bpf: Add a generic bits iterator
+Date: Sun, 25 Feb 2024 18:06:35 +0800
+Message-Id: <20240225100637.48394-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223082726.52915-20-xuanzhuo@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 04:27:26PM +0800, Xuan Zhuo wrote:
-> If the xsk is enabling, the xsk tx will share the send queue.
-> But the xsk requires that the send queue use the premapped mode.
-> So the send queue must support premapped mode.
-> 
-> cmd:
->     sh samples/pktgen/pktgen_sample01_simple.sh -i eth0 \
->         -s 16 -d 10.0.0.128 -m 00:16:3e:2c:c8:2e -n 0 -p 100
-> CPU:
->     Intel(R) Xeon(R) Platinum 8369B CPU @ 2.70GHz
-> 
-> Machine:
->     ecs.g7.2xlarge(Aliyun)
-> 
-> before:              1600010.00
-> after(no-premapped): 1599966.00
-> after(premapped):    1600014.00
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 136 +++++++++++++++++++++++++++++++++++++--
->  1 file changed, 132 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 7715bb7032ec..b83ef6afc4fb 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -146,6 +146,25 @@ struct virtnet_rq_dma {
->  	u16 need_sync;
->  };
->  
-> +struct virtnet_sq_dma {
-> +	union {
-> +		struct virtnet_sq_dma *next;
-> +		void *data;
-> +	};
-> +
-> +	u32 num;
-> +
-> +	dma_addr_t addr[MAX_SKB_FRAGS + 2];
-> +	u32 len[MAX_SKB_FRAGS + 2];
-> +};
-> +
-> +struct virtnet_sq_dma_head {
-> +	/* record for kfree */
-> +	void *p;
-> +
-> +	struct virtnet_sq_dma *free;
-> +};
-> +
->  /* Internal representation of a send virtqueue */
->  struct send_queue {
->  	/* Virtqueue associated with this send _queue */
-> @@ -165,6 +184,8 @@ struct send_queue {
->  
->  	/* Record whether sq is in reset state. */
->  	bool reset;
-> +
-> +	struct virtnet_sq_dma_head dmainfo;
->  };
->  
->  /* Internal representation of a receive virtqueue */
-> @@ -368,6 +389,95 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
->  	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
->  }
->  
-> +static struct virtnet_sq_dma *virtnet_sq_unmap(struct send_queue *sq, void **data)
-> +{
-> +	struct virtnet_sq_dma *d;
-> +	int i;
-> +
-> +	d = *data;
-> +	*data = d->data;
-> +
-> +	for (i = 0; i < d->num; ++i)
-> +		virtqueue_dma_unmap_page_attrs(sq->vq, d->addr[i], d->len[i],
-> +					       DMA_TO_DEVICE, 0);
-> +
-> +	d->next = sq->dmainfo.free;
-> +	sq->dmainfo.free = d;
-> +
-> +	return d;
-> +}
-> +
-> +static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq,
-> +						int nents, void *data)
-> +{
-> +	struct virtnet_sq_dma *d;
-> +	struct scatterlist *sg;
-> +	int i;
-> +
-> +	if (!sq->dmainfo.free)
-> +		return NULL;
-> +
-> +	d = sq->dmainfo.free;
-> +	sq->dmainfo.free = d->next;
-> +
-> +	for_each_sg(sq->sg, sg, nents, i) {
-> +		if (virtqueue_dma_map_sg_attrs(sq->vq, sg, DMA_TO_DEVICE, 0))
-> +			goto err;
-> +
-> +		d->addr[i] = sg->dma_address;
-> +		d->len[i] = sg->length;
-> +	}
-> +
-> +	d->data = data;
-> +	d->num = i;
-> +	return d;
-> +
-> +err:
-> +	d->num = i;
-> +	virtnet_sq_unmap(sq, (void **)&d);
-> +	return NULL;
-> +}
+Three new kfuncs, namely bpf_iter_bits_{new,next,destroy}, have been
+added for the new bpf_iter_bits functionality. These kfuncs enable the
+iteration of the bits from a given address and a given number of bits.
 
+- bpf_iter_bits_new
+  Initialize a new bits iterator for a given memory area. Due to the
+  limitation of bpf memalloc, the max number of bits to be iterated
+  over is (4096 * 8).
+- bpf_iter_bits_next
+  Get the next bit in a bpf_iter_bits
+- bpf_iter_bits_destroy
+  Destroy a bpf_iter_bits
 
-Do I see a reimplementation of linux/llist.h here?
+The bits iterator can be used in any context and on any address.
 
+In our specific use case, we leverage the cgroup iterator to traverse
+percpu data, subsequently exposing it to userspace through a seq file.
+Refer to example in patch #2 for the usage.
 
-> +
-> +static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data)
-> +{
-> +	int ret;
-> +
-> +	if (sq->vq->premapped) {
-> +		data = virtnet_sq_map_sg(sq, num, data);
-> +		if (!data)
-> +			return -ENOMEM;
-> +	}
-> +
-> +	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
-> +	if (ret && sq->vq->premapped)
-> +		virtnet_sq_unmap(sq, &data);
-> +
-> +	return ret;
-> +}
-> +
-> +static int virtnet_sq_init_dma_mate(struct send_queue *sq)
+Changes:
+- v1->v2:
+  - Simplify the CPU number verification code to avoid the failure on s390x
+    (Eduard)
+- bpf: Add bpf_iter_cpumask
+  https://lwn.net/Articles/961104/
+- bpf: Add new bpf helper bpf_for_each_cpu
+  https://lwn.net/Articles/939939/
 
-Mate? The popular south african drink?
+Yafang Shao (2):
+  bpf: Add bits iterator
+  selftests/bpf: Add selftest for bits iter
 
-> +{
-> +	struct virtnet_sq_dma *d;
-> +	int num, i;
-> +
-> +	num = virtqueue_get_vring_size(sq->vq);
-> +
-> +	sq->dmainfo.free = kcalloc(num, sizeof(*sq->dmainfo.free), GFP_KERNEL);
-> +	if (!sq->dmainfo.free)
-> +		return -ENOMEM;
+ kernel/bpf/helpers.c                          | 100 +++++++++++++
+ .../selftests/bpf/prog_tests/bits_iter.c      | 132 ++++++++++++++++++
+ .../bpf/progs/test_bits_iter_failure.c        |  54 +++++++
+ .../bpf/progs/test_bits_iter_success.c        | 112 +++++++++++++++
+ 4 files changed, 398 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bits_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bits_iter_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bits_iter_success.c
 
-
-This could be quite a bit of memory for a large queue.  And for a bunch
-of common cases where unmap is a nop (e.g. iommu pt) this does nothing
-useful at all.  And also, this does nothing useful if PLATFORM_ACCESS is off
-which is super common.
-
-A while ago I proposed:
-- extend DMA APIs so one can query whether unmap is a nop
-  and whether sync is a nop
-- virtio wrapper taking into account PLATFORM_ACCESS too
-
-then we can save all this work and memory when not needed.
-
-
-
-> +
-> +	sq->dmainfo.p = sq->dmainfo.free;
-> +
-> +	for (i = 0; i < num; ++i) {
-> +		d = &sq->dmainfo.free[i];
-> +		d->next = d + 1;
-> +	}
-> +
-> +	d->next = NULL;
-> +
-> +	return 0;
-> +}
-> +
->  static void __free_old_xmit(struct send_queue *sq, bool in_napi,
->  			    struct virtnet_sq_free_stats *stats)
->  {
-> @@ -377,6 +487,9 @@ static void __free_old_xmit(struct send_queue *sq, bool in_napi,
->  	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
->  		++stats->packets;
->  
-> +		if (sq->vq->premapped)
-> +			virtnet_sq_unmap(sq, &ptr);
-> +
->  		if (!is_xdp_frame(ptr)) {
->  			struct sk_buff *skb = ptr;
->  
-> @@ -890,8 +1003,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
->  			    skb_frag_size(frag), skb_frag_off(frag));
->  	}
->  
-> -	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
-> -				   xdp_to_ptr(xdpf), GFP_ATOMIC);
-> +	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
->  	if (unlikely(err))
->  		return -ENOSPC; /* Caller handle free/refcnt */
->  
-> @@ -2357,7 +2469,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
->  			return num_sg;
->  		num_sg++;
->  	}
-> -	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
-> +	return virtnet_add_outbuf(sq, num_sg, skb);
->  }
->  
->  static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
-> @@ -4166,6 +4278,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
->  	for (i = 0; i < vi->max_queue_pairs; i++) {
->  		__netif_napi_del(&vi->rq[i].napi);
->  		__netif_napi_del(&vi->sq[i].napi);
-> +
-> +		kfree(vi->sq[i].dmainfo.p);
->  	}
->  
->  	/* We called __netif_napi_del(),
-> @@ -4214,6 +4328,15 @@ static void free_receive_page_frags(struct virtnet_info *vi)
->  
->  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
->  {
-> +	struct virtnet_info *vi = vq->vdev->priv;
-> +	struct send_queue *sq;
-> +	int i = vq2rxq(vq);
-> +
-> +	sq = &vi->sq[i];
-> +
-> +	if (sq->vq->premapped)
-> +		virtnet_sq_unmap(sq, &buf);
-> +
->  	if (!is_xdp_frame(buf))
->  		dev_kfree_skb(buf);
->  	else
-> @@ -4327,8 +4450,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
->  		if (ctx)
->  			ctx[rxq2vq(i)] = true;
->  
-> -		if (premapped)
-> +		if (premapped) {
->  			premapped[rxq2vq(i)] = true;
-> +			premapped[txq2vq(i)] = true;
-> +		}
->  	}
->  
->  	cfg.nvqs      = total_vqs;
-> @@ -4352,6 +4477,9 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
->  		vi->rq[i].vq = vqs[rxq2vq(i)];
->  		vi->rq[i].min_buf_len = mergeable_min_buf_len(vi, vi->rq[i].vq);
->  		vi->sq[i].vq = vqs[txq2vq(i)];
-> +
-> +		if (vi->sq[i].vq->premapped)
-> +			virtnet_sq_init_dma_mate(&vi->sq[i]);
->  	}
->  
->  	/* run here: ret == 0. */
-> -- 
-> 2.32.0.3.g01195cf9f
+-- 
+2.39.1
 
 
