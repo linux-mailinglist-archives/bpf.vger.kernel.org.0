@@ -1,121 +1,104 @@
-Return-Path: <bpf+bounces-22707-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22708-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE643862C97
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 20:40:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF05862D6E
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 23:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D6082819B4
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 19:39:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7737281105
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 22:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F94818E28;
-	Sun, 25 Feb 2024 19:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBC41B949;
+	Sun, 25 Feb 2024 22:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="at1nw81u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kekMzeaZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F77318641
-	for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 19:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC33EED9
+	for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 22:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708889995; cv=none; b=dqtzGHP7KNohWtAfuQbmFm+kTCckt3n50w/NyVeEF/NcmnbHJxYPduCBx0FWY7M3KMcDdFwBAlyHKS6MSxSOJr/m7vnRZ9sIolOPhalfSJYWKaTethVXRl2vj8rdRY5lWvC1YLQdMH4WaM8fNKmEjHlVp6o7bZzkp7DRQv4+P+Q=
+	t=1708900704; cv=none; b=Vuum6NxDMPO9v8pwd+7AcXGMdPvVPOVRqff3zUQMIeeUFv+dABIQWALnD5log9tOnj4LpzAxWy62oLh69k/++cdLnYns1974aM8wUF1uW4tsfKTXDANmSpu1JDV28T9hXdBsHU9/k2hbTNK5wrZqXTwrrzD1RNds4Fe2ODhtC/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708889995; c=relaxed/simple;
-	bh=iwgj8CbM5Z2kld7rY8UqobfhKsLHk9nnUp00/wLa1Rg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JqSBlx8H9WXbveUf8mIbl4chaAC09t+40iQa/wqT6IWVyZjXDRK/OvkCmO9z4YGEEAhxfEU6hoffhNtXdxC3geFjV2Ut+8IgMDqCWbfOy0tvKeze8qspJgvMM7R6VuSepZuTtRSzLpNz7nYoeoqHhWBmlM8oTu25D1z6qESiuh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=at1nw81u; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708889992; x=1740425992;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iwgj8CbM5Z2kld7rY8UqobfhKsLHk9nnUp00/wLa1Rg=;
-  b=at1nw81uzDiAyoB91ZRm70qLBE/l2mgQGoNOwhGDbdEAjif9s7TFiXaM
-   2IshTM7Gswi5wIZGhqU3IxAUVMzZ6ONJIdRrdMV2AJRl6GdUyP/1MAo0O
-   nAr05gR1v4xlg0SM5s5JQuP/O70HlqsDlVD1Gl/NGWRBWIH1h8qzaAnuk
-   pDxNNWfO/CFHmLcSQGbL/meiq3ILryG3mMHjM3vAAVwfMN5WMK1Do887O
-   XZPIwPMQRUcOfyySLUjL9U4PgqzxZQ7lExicieNp73L2qtdA64b9/9J8f
-   V1gALrratkc9N6HS/SQWMOrP6ewYuSuI6M9Um3M0N2DwN+GKcB3jbHkMi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3706344"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3706344"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 11:39:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="11022350"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa005.fm.intel.com with ESMTP; 25 Feb 2024 11:39:48 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1reKL0-0009ky-1y;
-	Sun, 25 Feb 2024 19:39:15 +0000
-Date: Mon, 26 Feb 2024 03:38:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for bits iter
-Message-ID: <202402260354.rwSw5NBc-lkp@intel.com>
-References: <20240218114818.13585-3-laoar.shao@gmail.com>
+	s=arc-20240116; t=1708900704; c=relaxed/simple;
+	bh=AbOPEIQXdwToN5MAZdg9bPKykOGYI7NT5yNP8Jhdrfw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=JCRpSVZ/JAwDOJTjyp9Ok0EYUK1kd8STJzOGrAFc66Fc5EV0dk+Nzc30m5eKfiup/slLPJ6ALbHVBZs7CQH6MxhYuf9mn606fMRw03XzDjPfXSPQsp20LAaX/cRMinZ2kHgckoJ+G8RbII8dUDSimxgu8QYJ7s9JmILL9Etu9nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kekMzeaZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE8FC433F1;
+	Sun, 25 Feb 2024 22:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708900704;
+	bh=AbOPEIQXdwToN5MAZdg9bPKykOGYI7NT5yNP8Jhdrfw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kekMzeaZ+nuFfBcu9YMAL1hq21lL8sifRc1I69Jd730x55HicVFlkLZVUn/vF2W/d
+	 YKTVoVaiAyJLvoijPBYN1p/a0p7GdPiN+LioQHdxDQ7UKA0AK/bcSNaLGNcknmvfIk
+	 3dCJTldtAoCi1pVKW2eOgD0A/oxA4BrfkkxNaUb9eRULe+SwQO8sd77REP7/3BsKAJ
+	 cu8qUhxe7c7qbkFVILCp9NIx/O5dtob9/Vmfjixaowj1nOf65bT1ilVR1cll6SJKck
+	 BfG6CzCSiA2dzi0YOaCz8McnJvx9eA5taVOT0j3xZgqceiMsDmJnbFvNMIzfIBF7ZM
+	 BE2OG4IIdhrig==
+Date: Mon, 26 Feb 2024 07:38:19 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ lsf-pc@lists.linux-foundation.org, Steven Rostedt <rostedt@goodmis.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] multi kprobe updates
+Message-Id: <20240226073819.e049b1b3c2c7fa9fb8f6cd4c@kernel.org>
+In-Reply-To: <ZdcfedGHCwxOI29a@krava>
+References: <ZdcfedGHCwxOI29a@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240218114818.13585-3-laoar.shao@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Yafang,
+On Thu, 22 Feb 2024 11:18:33 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-kernel test robot noticed the following build errors:
+> There's few ongoing kprobe multi features that I'd like to give an update
+> about and discuss.
+> 
+> - Support to execute bpf program for both entry and return probes. This
+>   way we don't need to create 2 links when we need to run bpf program on
+>   entry/return probes of the same function, first rfc posted [0].
+> 
+> - In addition to above feature introduce shared 'session' data between
+>   entry and exit probe accessible from bpf program, originally discussed
+>   in [1].
+> 
+> - Allow to use per program re-entry checks instead of current hard coded
+>   per cpu re-entry check, or just change to per program check directly.
+> 
+> - There's ongoing development of patchset moving fprobe implementation
+>   from function tracer on top of fgraph tracer by Masami Hiramatsu [2].
+>   As kprobe multi link is implemented via fprobe I'd like to give an
+>   update what this change means for kprobe multi link.
 
-[auto build test ERROR on bpf-next/master]
+And now I updated the series.[3] This changes the ftrace_regs accessible
+registers according to the context. In entry probe, no change, but exit
+probe can only access return value, return address (as instruction pointer)
+and frame pointer if available.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/bpf-Add-bits-iterator/20240218-195123
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20240218114818.13585-3-laoar.shao%40gmail.com
-patch subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for bits iter
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240226/202402260354.rwSw5NBc-lkp@intel.com/reproduce)
+[3] https://lore.kernel.org/all/170887410337.564249.6360118840946697039.stgit@devnote2/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402260354.rwSw5NBc-lkp@intel.com/
+Thanks,
 
-All errors (new ones prefixed by >>):
+> 
+> 
+> [0] https://lore.kernel.org/bpf/20240207153550.856536-1-jolsa@kernel.org/
+> [1] https://lore.kernel.org/bpf/CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com/
+> [2] https://lore.kernel.org/bpf/170723204881.502590.11906735097521170661.stgit@devnote2/
 
->> progs/test_bits_iter_success.c:55:27: error: incomplete definition of type 'struct psi_group_cpu'
-      55 |                 psi_nr_running += groupc->tasks[NR_RUNNING];
-         |                                   ~~~~~~^
-   progs/test_bits_iter_success.c:13:21: note: forward declaration of 'struct psi_group_cpu'
-      13 | extern const struct psi_group_cpu system_group_pcpu __ksym __weak;
-         |                     ^
->> progs/test_bits_iter_success.c:55:35: error: use of undeclared identifier 'NR_RUNNING'; did you mean 'T_RUNNING'?
-      55 |                 psi_nr_running += groupc->tasks[NR_RUNNING];
-         |                                                 ^~~~~~~~~~
-         |                                                 T_RUNNING
-   /tools/include/vmlinux.h:48349:3: note: 'T_RUNNING' declared here
-    48349 |                 T_RUNNING = 0,
-          |                 ^
-   2 errors generated.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
