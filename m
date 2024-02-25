@@ -1,97 +1,121 @@
-Return-Path: <bpf+bounces-22706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E438862C90
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 20:21:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE643862C97
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 20:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D69DBB20ECE
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 19:21:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D6082819B4
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 19:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1CF18EA2;
-	Sun, 25 Feb 2024 19:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F94818E28;
+	Sun, 25 Feb 2024 19:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="kE6OKCVf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="at1nw81u"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2943211;
-	Sun, 25 Feb 2024 19:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F77318641
+	for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 19:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708888873; cv=none; b=PIL3gaDL9AxwKvubZDxtfsFCjBe1pXoSeROeQKSK9VUCNzsXjvF7eNhGHCqRtiTK0GIrtbeigmM072dCZI7JUzX91KHlGJog54NjxKlEpDeISpSwCYCcJpQu9pEzinBnKP4RwcDA8gEgJXEnE8IXBpQ4agRel4xlAeskytUme1A=
+	t=1708889995; cv=none; b=dqtzGHP7KNohWtAfuQbmFm+kTCckt3n50w/NyVeEF/NcmnbHJxYPduCBx0FWY7M3KMcDdFwBAlyHKS6MSxSOJr/m7vnRZ9sIolOPhalfSJYWKaTethVXRl2vj8rdRY5lWvC1YLQdMH4WaM8fNKmEjHlVp6o7bZzkp7DRQv4+P+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708888873; c=relaxed/simple;
-	bh=rrAT4rFu4smIAZj32TWPlmxx4U1g/H7Bh2KKM+/G+eo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U/JMfXwv5Sho2y3gcu4GKmgT9n2Fg6xDvQjM8ROMEwiaRhcbla/Ql5mO0zWf9gDDtVkgC9Bc9yCcCwNqvioAgRBLiFcg4RVDaIHIgekr2xJTZDc/NzH2xgKd57NHbDJLVbbSHHOxviEEZ4Dr4auP2lsiyBYB7aZiX6zPuB9OyHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=kE6OKCVf; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=NR36v4rk5vaVw4rsMd0szl+As6U9bET7cOj8TCFDyNM=; b=kE6OKCVfsmTqg730pZP/QKRBH7
-	0ovgABvlV9qsmD6PzXigkiTZiQYIgCsVqYdxzjmcMXUoOCctPfL4btWhlc9CawYukpt5vySnkpXD9
-	ygY7jNkMrF9tk2xpAhqGyC6J4u6mqEuO4fcu0fEnrzUZIulzBnoc62gdRUpjvwf+CAjdSAAO8EV6a
-	HwN8GjrpujEo5JT2Qz4Yx4gFPPakKBIP6qVaPUgJRR7KXVk+G99LCHLtRUuwEwQpt1OS3maTq3puW
-	JPhyNkRlz5zacRy6ZkqaX2r2AL6xX3jPvjAPDOC42TfRmbQBZQPBlguJvX8wwlcXNSNsRzsB5dZiW
-	U7TZRh6g==;
-Received: from [187.90.173.251] (helo=[192.168.1.60])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1reJmy-003LxR-8t; Sun, 25 Feb 2024 20:03:52 +0100
-Message-ID: <aa25173c-6be0-5533-67d7-ea46648f1860@igalia.com>
-Date: Sun, 25 Feb 2024 16:03:44 -0300
+	s=arc-20240116; t=1708889995; c=relaxed/simple;
+	bh=iwgj8CbM5Z2kld7rY8UqobfhKsLHk9nnUp00/wLa1Rg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JqSBlx8H9WXbveUf8mIbl4chaAC09t+40iQa/wqT6IWVyZjXDRK/OvkCmO9z4YGEEAhxfEU6hoffhNtXdxC3geFjV2Ut+8IgMDqCWbfOy0tvKeze8qspJgvMM7R6VuSepZuTtRSzLpNz7nYoeoqHhWBmlM8oTu25D1z6qESiuh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=at1nw81u; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708889992; x=1740425992;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iwgj8CbM5Z2kld7rY8UqobfhKsLHk9nnUp00/wLa1Rg=;
+  b=at1nw81uzDiAyoB91ZRm70qLBE/l2mgQGoNOwhGDbdEAjif9s7TFiXaM
+   2IshTM7Gswi5wIZGhqU3IxAUVMzZ6ONJIdRrdMV2AJRl6GdUyP/1MAo0O
+   nAr05gR1v4xlg0SM5s5JQuP/O70HlqsDlVD1Gl/NGWRBWIH1h8qzaAnuk
+   pDxNNWfO/CFHmLcSQGbL/meiq3ILryG3mMHjM3vAAVwfMN5WMK1Do887O
+   XZPIwPMQRUcOfyySLUjL9U4PgqzxZQ7lExicieNp73L2qtdA64b9/9J8f
+   V1gALrratkc9N6HS/SQWMOrP6ewYuSuI6M9Um3M0N2DwN+GKcB3jbHkMi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3706344"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3706344"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 11:39:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11022350"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 25 Feb 2024 11:39:48 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1reKL0-0009ky-1y;
+	Sun, 25 Feb 2024 19:39:15 +0000
+Date: Mon, 26 Feb 2024 03:38:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for bits iter
+Message-ID: <202402260354.rwSw5NBc-lkp@intel.com>
+References: <20240218114818.13585-3-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
- copy_from_kernel_nofault
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>,
- Jann Horn <jannh@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Borislav Petkov <bp@alien8.de>, John Fastabend <john.fastabend@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- "luto@kernel.org" <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>
-References: <87r0jwquhv.ffs@tglx>
- <c4c422ac-d017-9944-7d03-76ad416b19a4@igalia.com>
- <CAADnVQ+9vTBj9GgxotLF0_oV7cNFRebmcq_DNUm+cRJHQXCz1Q@mail.gmail.com>
- <85cdc364-e19f-625a-16e4-4efc6451fc7d@igalia.com>
- <CAADnVQKYu5RXGwq3rCJfzGq5AA-msdgBu4gA0tY0ASGXnXu0Hg@mail.gmail.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <CAADnVQKYu5RXGwq3rCJfzGq5AA-msdgBu4gA0tY0ASGXnXu0Hg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218114818.13585-3-laoar.shao@gmail.com>
 
-On 22/02/2024 22:11, Alexei Starovoitov wrote:
-> [...]
-> 
-> Correct.
-> Please double check with your two syzbot tests.
+Hi Yafang,
 
-Thanks for confirming!
+kernel test robot noticed the following build errors:
 
-Tested the fixes both for 5.15.y and 6.1.y - working fine =)
-Cheers,
+[auto build test ERROR on bpf-next/master]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/bpf-Add-bits-iterator/20240218-195123
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240218114818.13585-3-laoar.shao%40gmail.com
+patch subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for bits iter
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240226/202402260354.rwSw5NBc-lkp@intel.com/reproduce)
 
-Guilherme
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402260354.rwSw5NBc-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> progs/test_bits_iter_success.c:55:27: error: incomplete definition of type 'struct psi_group_cpu'
+      55 |                 psi_nr_running += groupc->tasks[NR_RUNNING];
+         |                                   ~~~~~~^
+   progs/test_bits_iter_success.c:13:21: note: forward declaration of 'struct psi_group_cpu'
+      13 | extern const struct psi_group_cpu system_group_pcpu __ksym __weak;
+         |                     ^
+>> progs/test_bits_iter_success.c:55:35: error: use of undeclared identifier 'NR_RUNNING'; did you mean 'T_RUNNING'?
+      55 |                 psi_nr_running += groupc->tasks[NR_RUNNING];
+         |                                                 ^~~~~~~~~~
+         |                                                 T_RUNNING
+   /tools/include/vmlinux.h:48349:3: note: 'T_RUNNING' declared here
+    48349 |                 T_RUNNING = 0,
+          |                 ^
+   2 errors generated.
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
