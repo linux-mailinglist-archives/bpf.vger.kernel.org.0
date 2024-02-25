@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-22686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCD6F862B3B
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 16:24:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79110862B3D
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 16:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 096121C20E3D
-	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 15:24:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C882CB21306
+	for <lists+bpf@lfdr.de>; Sun, 25 Feb 2024 15:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7E91BC35;
-	Sun, 25 Feb 2024 15:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D39817C96;
+	Sun, 25 Feb 2024 15:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q+ySXoh7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fw1AueGR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0064D14F90;
-	Sun, 25 Feb 2024 15:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A04200CC;
+	Sun, 25 Feb 2024 15:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708874471; cv=none; b=jKSt1HU59bA88aurC9obX4VyAbX0dDlFGeHvRluM/WCb/sjuZ5RnayTuJkUlGwleH3LkWjXWy2JEpMDpS4Yi/ThdY0K/cjfhmifhsc4M/q5RI92mAL5bg6xcPb1L1n7gmHGcjklP8ZE6KeTzdZ8ixVZPb2iZ/DckaCYsjgfqHnc=
+	t=1708874481; cv=none; b=W61gRgG2DUdKeWGaVawg1czybVbA82ty6JOvvhuNOo+8RTyfqOKtibUfZh3YHfxbO50vzHd9DD0dBXo1dRoCNJ8yYvpiLOclDvtGL96PZY/6mJoAbYVHEiSuMSycaqKAufTieLqGcHx45ZZ7GQieCaOjt7LSwF3FFaAUpoxUyEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708874471; c=relaxed/simple;
-	bh=AhqKrJz5NqAxQZJTxzvS35/o9mTQRDXLSjKOCvX5P6o=;
+	s=arc-20240116; t=1708874481; c=relaxed/simple;
+	bh=MTl3WOEWmkU7N1ZYT3IdZA3wW+cclx8nbkw1UKe91tQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qXgdP45Lzg+WL3G3rRzbu6bCcKgXxp7hkWc1V3615Sn6GVh4x1ozFDDkgiqISsFw2huNbF1RZdp7YcwrSmXTN9ijXMCusQ4yCZu539pWjVA+YuFar+/U7cH8bgHDbeeNKBqZw2rHM4GLPCfBoA9r4t8D6G8maPUT3Wi7aMWvagc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q+ySXoh7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B33B2C433C7;
-	Sun, 25 Feb 2024 15:21:07 +0000 (UTC)
+	 MIME-Version:Content-Type; b=JkSjyWCEg2G5AV7gW9H5uR7DwhUxIKhAJF3ae8VCg68R5eRdYOzXcCoackOuY9SEaVNhV6qWMWglCpMHU339Wb3zGIY5yFWlSzfCy26szk9kcMsY3J8VRpWJlb0cEX7tg4Xkl7n7f1+crT2vCXMzNhDd42wHqmqNMxlSET0MXC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fw1AueGR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3598BC433C7;
+	Sun, 25 Feb 2024 15:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708874470;
-	bh=AhqKrJz5NqAxQZJTxzvS35/o9mTQRDXLSjKOCvX5P6o=;
+	s=k20201202; t=1708874481;
+	bh=MTl3WOEWmkU7N1ZYT3IdZA3wW+cclx8nbkw1UKe91tQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q+ySXoh7HLvNE6hevB5iAblXR2ISEo6wUzvbtcHaXE187FKd5t4cvnVTgg4j8pX2l
-	 QZHKQ7RSc04ZaIWA/gWoIrbHQhyfe7lYEm5E1RYigkD1mZk3uouMV07fQQfqv0/0Py
-	 3F3Al2sxZx+9gewJo0P27JXAbt432ErqaNBD4lh+3hhiThrLL7H2B6ZAHAWBpNlMIh
-	 BGXIM6lq3mhagovvdvvsvHviiQEFo+rH10ZcS00zg1pojmYV9dSMZCSjiRd0C9hWp0
-	 zZ9ImQtXsih9NM0lfTzg6jcht7I1h+rsGCC5Sy4q1+sQLIMVrEE4iCBVEE4JN/qbmG
-	 fUb1w+jq0Levw==
+	b=Fw1AueGRb2KQmS61rUO9jknGuHDwBG7LcUOwLUQUHYxY2vuhuI7l07Y/sKsT5cqMj
+	 dM/eVnB3YOBaj0zV2ggmDgTaptZjsfX+vNMnCLgYlNJMegoM0vaXVk0dOOV5ZFMy7i
+	 QVkgOZe+IgCDx6s5VBJcJkeiXg+oM1X0BnYDhAzkJHRxMKSVDMMn9G+S4MwW7MX5ks
+	 3j7k3wOWvB0Y+TyW7/CJGuWliK2KJjwpA0ZgULriTmNZY2oS5Qm1ntlGP2981Z+GqB
+	 NBdEpF509lKjTCUu0W+jxulY53nLH0CYEduo62LFOQ5tyXH6BhtH7EY6rlcWDZjKJr
+	 CJwbRU8PtaN2A==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -59,9 +59,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v8 33/35] selftests: ftrace: Remove obsolate maxactive syntax check
-Date: Mon, 26 Feb 2024 00:21:05 +0900
-Message-Id: <170887446544.564249.6300287188059065429.stgit@devnote2>
+Subject: [PATCH v8 34/35] selftests/ftrace: Add a test case for repeating register/unregister fprobe
+Date: Mon, 26 Feb 2024 00:21:15 +0900
+Message-Id: <170887447585.564249.7419303589804062497.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170887410337.564249.6360118840946697039.stgit@devnote2>
 References: <170887410337.564249.6360118840946697039.stgit@devnote2>
@@ -77,28 +77,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Since the fprobe event does not support maxactive anymore, stop
-testing the maxactive syntax error checking.
+This test case repeats define and undefine the fprobe dynamic event to
+ensure that the fprobe does not cause any issue with such operations.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-index 20e42c030095..66516073ff27 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-@@ -16,9 +16,7 @@ aarch64)
-   REG=%r0 ;;
- esac
- 
--check_error 'f^100 vfs_read'		# MAXACT_NO_KPROBE
--check_error 'f^1a111 vfs_read'		# BAD_MAXACT
--check_error 'f^100000 vfs_read'		# MAXACT_TOO_BIG
-+check_error 'f^100 vfs_read'		# BAD_MAXACT
- 
- check_error 'f ^non_exist_func'		# BAD_PROBE_ADDR (enoent)
- check_error 'f ^vfs_read+10'		# BAD_PROBE_ADDR
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+new file mode 100644
+index 000000000000..b4ad09237e2a
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+@@ -0,0 +1,19 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Generic dynamic event - Repeating add/remove fprobe events
++# requires: dynamic_events "f[:[<group>/][<event>]] <func-name>[%return] [<args>]":README
++
++echo 0 > events/enable
++echo > dynamic_events
++
++PLACE=$FUNCTION_FORK
++REPEAT_TIMES=64
++
++for i in `seq 1 $REPEAT_TIMES`; do
++  echo "f:myevent $PLACE" >> dynamic_events
++  grep -q myevent dynamic_events
++  test -d events/fprobes/myevent
++  echo > dynamic_events
++done
++
++clear_trace
 
 
