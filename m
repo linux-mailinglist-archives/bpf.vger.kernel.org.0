@@ -1,182 +1,244 @@
-Return-Path: <bpf+bounces-22709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50FF38668DA
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 04:49:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A52866979
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 05:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B46281FE4
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 03:49:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4913A1C2128C
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 04:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6771AACC;
-	Mon, 26 Feb 2024 03:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9DD1B7FB;
+	Mon, 26 Feb 2024 04:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PTTvxzs9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0360D17BCB
-	for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 03:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50EF0320A
+	for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 04:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708919357; cv=none; b=J0dJtKaoEx1LRtH7vR6dBPPSQ++mllT3XE953k0687z8xdZKT+6BgCs23FUdbGv3+r8ifw+XE9B90OqaeRmVITfXjawrzgGzn1USVz3NXp0FjsHVRcD9yXWdG/Kg9QW6NUCDSdU5MlwBTMqVWQgUml5SFXk1gqx/vt8rqcwZROs=
+	t=1708923583; cv=none; b=dC/l6zhsIW/0FPhHbQULS9XS6LiTeeQNM2KBGvfY71nPSutVQXJHV7XGEMWdjZq2dphA0c4a6pHSKqjch7Y/wyXiyexcUbuv+Csroj3TMP2Jw4jWtIW+6e7MDt/WjoFSvsE7RRyOsBxNo3lkMYxRFj9aHUt4KJePis+Fv1hnyrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708919357; c=relaxed/simple;
-	bh=Kv/9ghpnZXPQShU9ARicBKeEcvIWW8nIOrSAkXJtrQY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=A6pBcgk2Vy3NK6UZHXIarzezw2oh5JZ4/gy2bL5HZF9Z4XInJBHUVWsOv8O/bxIzbXqniVXC3a+jpDrbeTZf6nmdnKOKraDjIN+B5tK4NVz+zBvo48kfyTUL1twMSAs1B/0TgbDpzciAl7ApXAN5odnBeCwuWSi4vkixFca+ga8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c7229e855bso240385339f.0
-        for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 19:49:15 -0800 (PST)
+	s=arc-20240116; t=1708923583; c=relaxed/simple;
+	bh=AaJMamp2Nb+Yq5spo7QL5Q4FyDBAAXS9vg0TE+DBw+s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q5mt7VeHdZsqeM/PfUjiLdemGQaV1kNIRbSPEenq8ya/WNOC8ySeVEgqkhMGRyjzx/UyXhhsJlhnK3dRgy4+6ooWRoIvYqwTVr376vETpWyFvHk+0DXSouIX+vEjG4CGTJ55hv4mW5wLg+rVadAQTzxPQa/WE8WjLp3gVw0cKHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PTTvxzs9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708923580;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iso6K6DyWAnnF++t9+yhMMEiOuk3VKMqC/cJQai+WRQ=;
+	b=PTTvxzs9cVIp3acEcuWwCUtXx5yfaWsYiYrTGrWJz4wB5+Mo0lHsJmViIJ4TleKTKzrJxY
+	nT+zwDvpPpED8hec+tXPfZZW0Pc6kMcWjoHqYMCs1LlN47spMAofsKafX++0HgY9IE9SsP
+	5W1QPxZjjm/5aImp/WGIF13YJjVkrVA=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-434-Z7pX7n0JPZ6B82M42kGDAg-1; Sun, 25 Feb 2024 23:59:38 -0500
+X-MC-Unique: Z7pX7n0JPZ6B82M42kGDAg-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29a82907e96so2178075a91.2
+        for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 20:59:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708919355; x=1709524155;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h0zDGz1LWZDnj7pbq9vHRQdQrSo5fq2Jh5AL7Ztrk2A=;
-        b=JMGw7coQJHo0Wx2odT/7RSFv5QQlb+1ya29IPi/EOPUCXQ3+APajbZoQdZeUGFITLZ
-         EPEzrzZJM/MFc4veWzmxSF0s5BnMYmrZoXjqqGAVftQoyaI2XmRirquH7U+wE1zhaXwz
-         Gq8YHjLWvp9LUiOly36covnfxOFNUNrUKas79cxfobT2LsDxQsQYHD5EEEz538z6tRQo
-         ej3+JxVZ/64eJaq2QTkX6P/t1BPV8hjeIhXnvI+eIeZaJAmGZAPr46XF2TepFcsBVWq1
-         7jTYGUIP/a+OvtPPt7SEPK+aIIgDlIV9v2N0tEvZwBCHJDnVQ1sJ9nw2RLLqTxjATVi3
-         PbBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVi+CyZuK+H82Ho2a1TdBi+pyna304sHPmtF9yKJ4rIEHm3Jq8BXSLHFLF9t0RabyvslaPL9UuoodcnSIyMR11NXX83
-X-Gm-Message-State: AOJu0Ywns+rsoMPFM4ctmlEW7UNevy7nqjx7HlUO+B/ZOWm/ZRpJhlVw
-	fRsWPkKnQl5JnldojLhMk8DXu5gvYzJQzRQaaKxvaEfB5DJeUfuZaymXYHD52hsUZA3JmCrUdxz
-	RJTSxsDKOooZo+7sVdiEgZtBwvRJXoDFAJkJvAAuBy3Pr+eVsmQdAyt0=
-X-Google-Smtp-Source: AGHT+IHFVt7LsA6twkpn6/boz58rkQDQVkGx3V25ZV4MR7zZ40ZPzM8o8MC8I8+EfFjMh2OG5QAJBELsBDYfa3M6tanwS/3nz5U4
+        d=1e100.net; s=20230601; t=1708923578; x=1709528378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iso6K6DyWAnnF++t9+yhMMEiOuk3VKMqC/cJQai+WRQ=;
+        b=Nm+w/To31zPrVyFQpfIyKCC28x4zGLwK+3hs/YdRvEUVHjrP+ud8mqDQk8bFWceq29
+         xYSWvseQlbGYNI6AZ2tI+8G2y46VLFLnTOWJcVMvLKGoUg2PQ0USY2LhroArry0yXMJj
+         KOd6I69blRxUk+7K02vi6Dk9Wu76LE5YBqNg4QLxjz1mNUiAVUlCy6LgcUDH/0rJawlA
+         ARB/11Bnme4YaVod2oVpBr5dlxhxLMBZXZjWCcqOgAP79nVsUDVIOaEugtE3D25ZLJFa
+         MmO9/qR4kl67fSDLakEnAXiPJA7N37CLRNgx5kmSdK9H8B3pSEOwN/kXOMeaBX8CuyEn
+         eIUg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQXkrClpccb528S31AOev3qqYyU1zIJCUJAwvYAiQqgLw3j33XtGk+jHnf8aXy3URUiCX2ahQscMiXo8x4kHwrocqa
+X-Gm-Message-State: AOJu0YyyUnfVbpDStnZFnTnZhgmDxEwAn6r9yEd4zyEFqfx5uRq/upsZ
+	c6VJyUzckraI/fsNDV9zPRvHMglGzR5Sn2QUeCc2PGAoTkYgBQ//5f5QeJ45M/SDIJqUB1pQpsU
+	EgBc7dB+vfcNhKlPH4fhJzCaaZXtuZdIQjGEZvvLvkLOp44imvVJ5+XPTwHJmCwdKI1W4CL/btA
+	LOn8eOKk/DadWxIUjRPLPV26Gy
+X-Received: by 2002:a17:90a:ad8a:b0:29a:a38c:8262 with SMTP id s10-20020a17090aad8a00b0029aa38c8262mr2919881pjq.48.1708923577743;
+        Sun, 25 Feb 2024 20:59:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFFTAN/Lw+RGzf9GeokVG5jtOCl25KGwF/7DbhV8aGSvRwum+aJwJ9WzPtrwumrWZ0Ki7ztusPHGEY87VqwktA=
+X-Received: by 2002:a17:90a:ad8a:b0:29a:a38c:8262 with SMTP id
+ s10-20020a17090aad8a00b0029aa38c8262mr2919868pjq.48.1708923577403; Sun, 25
+ Feb 2024 20:59:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:349f:b0:365:7607:3f4b with SMTP id
- bp31-20020a056e02349f00b0036576073f4bmr472012ilb.2.1708919355150; Sun, 25 Feb
- 2024 19:49:15 -0800 (PST)
-Date: Sun, 25 Feb 2024 19:49:15 -0800
-In-Reply-To: <000000000000ed666a0611af6818@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001d1939061240cbd7@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
- dereference in dev_map_hash_update_elem
-From: syzbot <syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+ <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+ <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
+ <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
+ <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
+ <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
+ <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com> <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Mon, 26 Feb 2024 12:59:25 +0800
+Message-ID: <CACGkMEuUeQTJYpZDx8ggqwBWULQS1Fjd_DgPvVMLq-_cjYfm7g@mail.gmail.com>
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, 
+	hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, netdev@vger.kernel.org, virtualization@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com, 
+	daniel@iogearbox.net, ast@kernel.org, Liang Chen <liangchen.linux@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Feb 23, 2024 at 9:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
+>
+> On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.com> wrote=
+:
+> > On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
+> > > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.co=
+m> wrote:
+> > > >
+> > > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
+> > > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat=
+.com> wrote:
+> > > > > >
+> > > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
+> > > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Broue=
+r <hawk@kernel.org> wrote:
+> > > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
+> > > > > > [...]
+> > > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct x=
+dp_buff *xdp)
+> > > > > > > > >       }
+> > > > > > > > >   }
+> > > > > > > > >
+> > > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_=
+buff *virtnet_xdp,
+> > > > > > > > > +                                  struct net_device *dev=
+,
+> > > > > > > > > +                                  struct virtio_net_hdr_=
+v1_hash *hdr_hash)
+> > > > > > > > > +{
+> > > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
+> > > > > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_=
+value;
+> > > > > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash=
+_report;
+> > > > > > > > > +     }
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > >
+> > > > > > > > Would it be possible to store a pointer to hdr_hash in virt=
+net_xdp_buff,
+> > > > > > > > with the purpose of delaying extracting this, until and onl=
+y if XDP
+> > > > > > > > bpf_prog calls the kfunc?
+> > > > > > > >
+> > > > > > >
+> > > > > > > That seems to be the way v1 works,
+> > > > > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen=
+.linux@gmail.com/
+> > > > > > > . But it was pointed out that the inline header may be overwr=
+itten by
+> > > > > > > the xdp prog, so the hash is copied out to maintain its integ=
+rity.
+> > > > > >
+> > > > > > Why? isn't XDP supposed to get write access only to the pkt
+> > > > > > contents/buffer?
+> > > > > >
+> > > > >
+> > > > > Normally, an XDP program accesses only the packet data. However,
+> > > > > there's also an XDP RX Metadata area, referenced by the data_meta
+> > > > > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
+> > > > > point somewhere ahead of the data buffer, thereby granting the XD=
+P
+> > > > > program access to the virtio header located immediately before th=
+e
+> > > >
+> > > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data be=
+fore
+> > > > xdp->data_hard_start:
+> > > >
+> > > > https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4=
+210
+> > > >
+> > > > and virtio net set such field after the virtio_net_hdr:
+> > > >
+> > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_n=
+et.c#L1218
+> > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_n=
+et.c#L1420
+> > > >
+> > > > I don't see how the virtio hdr could be touched? Possibly even more
+> > > > important: if such thing is possible, I think is should be somewhat
+> > > > denied (for the same reason an H/W nic should prevent XDP from
+> > > > modifying its own buffer descriptor).
+> > >
+> > > Thank you for highlighting this concern. The header layout differs
+> > > slightly between small and mergeable mode. Taking 'mergeable mode' as
+> > > an example, after calling xdp_prepare_buff the layout of xdp_buff
+> > > would be as depicted in the diagram below,
+> > >
+> > >                       buf
+> > >                        |
+> > >                        v
+> > >         +--------------+--------------+-------------+
+> > >         | xdp headroom | virtio header| packet      |
+> > >         | (256 bytes)  | (20 bytes)   | content     |
+> > >         +--------------+--------------+-------------+
+> > >         ^                             ^
+> > >         |                             |
+> > >  data_hard_start                    data
+> > >                                   data_meta
+> > >
+> > > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
+> > > towards 'data_hard_start', it would point to the inline header, thus
+> > > potentially allowing the XDP program to access the inline header.
+> >
+> > I see. That layout was completely unexpected to me.
+> >
+> > AFAICS the virtio_net driver tries to avoid accessing/using the
+> > virtio_net_hdr after the XDP program execution, so nothing tragic
+> > should happen.
+> >
+> > @Michael, @Jason, I guess the above is like that by design? Isn't it a
+> > bit fragile?
 
-HEAD commit:    70ff1fe626a1 Merge tag 'docs-6.8-fixes3' of git://git.lwn...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1762045c180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4cf52b43f46d820d
-dashboard link: https://syzkaller.appspot.com/bug?extid=8cd36f6b65f3cafd400a
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110cf122180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142f6d8c180000
+Yes.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-70ff1fe6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bc398db9fd8c/vmlinux-70ff1fe6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6d3f8b72a671/zImage-70ff1fe6.xz
+>
+> YES. We process it carefully. That brings some troubles, we hope to put t=
+he
+> virtio-net header to the vring desc like other NICs. But that is a big pr=
+oject.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+Yes, and we still need to support the "legacy" layout.
 
-8<--- cut here ---
-Unable to handle kernel NULL pointer dereference at virtual address 00000010 when read
-[00000010] *pgd=8423f003, *pmd=fe0d5003
-Internal error: Oops: 207 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 0 PID: 2983 Comm: syz-executor360 Not tainted 6.8.0-rc5-syzkaller #0
-Hardware name: ARM-Versatile Express
-PC is at __dev_map_hash_lookup_elem kernel/bpf/devmap.c:269 [inline]
-PC is at __dev_map_hash_update_elem kernel/bpf/devmap.c:972 [inline]
-PC is at dev_map_hash_update_elem+0x90/0x210 kernel/bpf/devmap.c:1010
-LR is at get_lock_parent_ip include/linux/ftrace.h:977 [inline]
-LR is at preempt_latency_start kernel/sched/core.c:5843 [inline]
-LR is at preempt_count_add+0x12c/0x150 kernel/sched/core.c:5868
-pc : [<803e5f34>]    lr : [<8027b29c>]    psr: 60000093
-sp : df96dda8  ip : df96dd68  fp : df96dde4
-r10: 00000000  r9 : 828f71c0  r8 : 8417bb10
-r7 : 00000000  r6 : 20000013  r5 : 8417ba00  r4 : ffffffff
-r3 : 00000000  r2 : 00000010  r1 : 00000000  r0 : 20000013
-Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 30c5387d  Table: 84656480  DAC: fffffffd
-Register r0 information: non-paged memory
-Register r1 information: NULL pointer
-Register r2 information: zero-size pointer
-Register r3 information: NULL pointer
-Register r4 information: non-paged memory
-Register r5 information: slab kmalloc-512 start 8417ba00 pointer offset 0 size 512
-Register r6 information: non-paged memory
-Register r7 information: NULL pointer
-Register r8 information: slab kmalloc-512 start 8417ba00 pointer offset 272 size 512
-Register r9 information: non-slab/vmalloc memory
-Register r10 information: NULL pointer
-Register r11 information: 2-page vmalloc region starting at 0xdf96c000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
-Register r12 information: 2-page vmalloc region starting at 0xdf96c000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
-Process syz-executor360 (pid: 2983, stack limit = 0xdf96c000)
-Stack: (0xdf96dda8 to 0xdf96e000)
-dda0:                   df96ddc4 00000004 00000000 1b98af0a df96dde4 8417ba00
-ddc0: 824aeaf0 843ef140 8442a040 8365a9c0 00000004 8417ba00 df96de14 df96dde8
-dde0: 8038c0b8 803e5eb0 00000000 00000000 80884220 8417bab8 8365a9c0 8365a9c0
-de00: df96dec8 843ef140 df96de6c df96de18 8038d040 8038bec8 00000000 00000000
-de20: 8027b44c 00000004 20000140 00000004 00000000 8442a040 20000200 00000000
-de40: df96de6c 00000000 00000020 df96dea0 00000002 20000200 00000020 00000000
-de60: df96df8c df96de70 80392aa0 8038cdf8 8088300c 81856650 00000000 841ee000
-de80: df96dee0 df96dfb0 df96dea4 df96de98 80884220 df96dee0 df96dfb0 80200288
-dea0: 20000200 00000000 00000008 00000000 00000008 8041ad98 841ee000 ffffffff
-dec0: df96df2c 80200b9c 00000003 00000000 200000c0 00000000 20000140 00000000
-dee0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-df00: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-df20: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-df40: 00000000 00000000 00000000 00000000 00000000 00000000 df96df94 1b98af0a
-df60: 8134e0a0 ffffffff 00000000 0008e058 00000182 80200288 841ee000 00000182
-df80: df96dfa4 df96df90 80394ea4 80392830 20000200 00000000 00000000 df96dfa8
-dfa0: 80200060 80394e84 ffffffff 00000000 00000002 20000200 00000020 00000000
-dfc0: ffffffff 00000000 0008e058 00000182 000f4240 00000000 00000001 00003a97
-dfe0: 7e973c70 7e973c60 000106cc 0002e810 00000010 00000002 00000000 00000000
-Backtrace: 
-[<803e5ea4>] (dev_map_hash_update_elem) from [<8038c0b8>] (bpf_map_update_value+0x1fc/0x2d4 kernel/bpf/syscall.c:202)
- r10:8417ba00 r9:00000004 r8:8365a9c0 r7:8442a040 r6:843ef140 r5:824aeaf0
- r4:8417ba00
-[<8038bebc>] (bpf_map_update_value) from [<8038d040>] (map_update_elem+0x254/0x460 kernel/bpf/syscall.c:1553)
- r8:843ef140 r7:df96dec8 r6:8365a9c0 r5:8365a9c0 r4:8417bab8
-[<8038cdec>] (map_update_elem) from [<80392aa0>] (__sys_bpf+0x27c/0x2104 kernel/bpf/syscall.c:5445)
- r10:00000000 r9:00000020 r8:20000200 r7:00000002 r6:df96dea0 r5:00000020
- r4:00000000
-[<80392824>] (__sys_bpf) from [<80394ea4>] (__do_sys_bpf kernel/bpf/syscall.c:5561 [inline])
-[<80392824>] (__sys_bpf) from [<80394ea4>] (sys_bpf+0x2c/0x48 kernel/bpf/syscall.c:5559)
- r10:00000182 r9:841ee000 r8:80200288 r7:00000182 r6:0008e058 r5:00000000
- r4:ffffffff
-[<80394e78>] (sys_bpf) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
-Exception stack(0xdf96dfa8 to 0xdf96dff0)
-dfa0:                   ffffffff 00000000 00000002 20000200 00000020 00000000
-dfc0: ffffffff 00000000 0008e058 00000182 000f4240 00000000 00000001 00003a97
-dfe0: 7e973c70 7e973c60 000106cc 0002e810
-Code: e595210c e1a06000 e2433001 e003300a (e7924103) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	e595210c 	ldr	r2, [r5, #268]	@ 0x10c
-   4:	e1a06000 	mov	r6, r0
-   8:	e2433001 	sub	r3, r3, #1
-   c:	e003300a 	and	r3, r3, sl
-* 10:	e7924103 	ldr	r4, [r2, r3, lsl #2] <-- trapping instruction
+>
+> I think this patch is ok, this can be merged to net-next firstly.
 
++1
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Thanks
+
+>
+> Thanks.
+>
+>
+> >
+> > Thanks!
+> >
+> > Paolo
+> >
+>
+
 
