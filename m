@@ -1,810 +1,578 @@
-Return-Path: <bpf+bounces-22729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D0698675B9
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 13:56:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8EEE867A80
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 16:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2A191F28080
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 12:56:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 639B1B2B098
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 15:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0E27FBAF;
-	Mon, 26 Feb 2024 12:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C67912A17C;
+	Mon, 26 Feb 2024 15:32:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H2Mx5TWy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g28+F0+j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8873F604D8;
-	Mon, 26 Feb 2024 12:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09B08592F
+	for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 15:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952176; cv=none; b=jpFLNNcpCrH5S5+B5f2rWKH9pus5rFHLInqOCYIHhp0Ww90lvM4l3RowsDUoikShRTHKA8mDqO+HPkG/fbXtHTmVtilov27mDveV2Az8mUoS5JKpjFy+hOvEby9mAI6xeNYpiPMRlCfAi71sDv8R8c0Q3yujiv/Fla9jo4xC4og=
+	t=1708961549; cv=none; b=QTD1/5e9yCde2dBC60G6uN5rCZVS107r9leQogdBlMc76myCRHc7+Qz7Ytp+6lZaZySjzv+pdBJfzODfK03Q2cfoFY6eA3Mfmh4ftwHbwtHkH0QBEJ1NpvRHHkuDPLnlwtfET/bSHxtHN/k8rww95zt44y/NkPxgH53eqD2jkMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952176; c=relaxed/simple;
-	bh=z6H3+Uvzj7e5WGhrTDTa7QXNNsBg1b12mDvA0sSmDxk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cGuqPkMwmAJKJjRU4c+CkkCv+vnRmUe3ME5rHK3HufUrHaOYLOUO4+9vrRG5HqboxHyEMpEjrBDBAdCt1mxdW2/zOFjLKysbKlBhRJ4Mo308X5qJOmuOTl5pTaW4a1fva4qZk1UNZ+JpBHVuby+jQGA5vvPxfVXa6LOkdq7k+qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H2Mx5TWy; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1708961549; c=relaxed/simple;
+	bh=L8dn2JsQlgr7kPNWgo0bcfH6f0QpaU28SjDfgo7R3Fk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sUXbImoo3975JWLbilEs8a6xCDBQZ8F5olT/wtfgY1oBcdrJigMc3UbHQPN6C8F+6/VXVfi3TREG8vv+s6PzaP1s5HoJ2A8lq1eaMtWFumgxt7ZEEMjS01NgxDJrjZ99t8HXk4s6f0sMKQ94ztW7oK3sSt+TQ4XuMhcsVPbFV4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g28+F0+j; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-565b434f90aso1948843a12.3;
-        Mon, 26 Feb 2024 04:56:13 -0800 (PST)
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36576b35951so17081575ab.3
+        for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 07:32:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708952172; x=1709556972; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a7ux2RNNEDJxnQXW1gku5WDLTGrfG323rRH2ft7GgXA=;
-        b=H2Mx5TWy4uOEZUbqYZxAeUzLLNrR173nzbv4pCI1HqYuf0OrKU3jFEdS3Sx+J/ABN3
-         GSn4B4tSAiuUsKhF7alatzKJiROveIF42MzwVlZIf2gkalaEST7upaqjzor6DRaaG10G
-         Wx5HsmQND6SfyVTGyPYbdmmeXpZ32THovsGZFbj0CTxq/tIKYgbncc435QJWcNASqRss
-         OGKl+7B34nldv0iIx9+I4AqtUzUwifbAezLo59fPsSCQyOZKJygp79vb+xEHUi0tthF7
-         qRCl80/1ZHrMS11Bde2IN391vTT3bIT95dZHeilsv3JviZQCgyTwXzP1Zymi8N9/c0IU
-         ZvkA==
+        d=gmail.com; s=20230601; t=1708961547; x=1709566347; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FSJiB9bvGiGWePDQf3OhpZVE3AGUfSOIlm+9aANYSPI=;
+        b=g28+F0+jsH+PGSvYwZUN+9Az3CeeCx/AsycODOAY+PnQb1RCVHRUBvc3E2749UxLz2
+         sXyqAxywMIQfwZcxMLhpvjCB6pjKvOzwx6jjpjPTzkeBrNdgK7fRxSAJSTpiqAwkaThz
+         0EkL81xX1C9ueyMvhTmZQymPqgWwWitzdeoXAkR4FfN5bu/NrSANulJgHGnYlBdZ1J74
+         ie3T60And2P4qolO4JM8hN5qAhPx0UEuEEM08NkvH2w/CAMuTArQ7tMtSNn/A7DpiyWl
+         1TIsvQijBvz0S7iwJ+fLFIGvHqzTWUU8RQRVQ7G5hovxHM6bHZLUvqR6YIvAIJP4DO0n
+         j8LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708952172; x=1709556972;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a7ux2RNNEDJxnQXW1gku5WDLTGrfG323rRH2ft7GgXA=;
-        b=nfiuJ/YJp2KshCtON2tUmLGQozKRlmNX8mIsCEvPt6rzetAeqskhUhFiygHds7/HX7
-         sanyL9IX41OQMhBwaI+ZkD4L22OWoQKcB0L+xC7WSN8rO6JZrF+/92a3nZU9BnKLLeFb
-         qMoERcQufcFmrv06bh2ddP/mCvneLMMtZg1XbMJR8XEae1c0eewRiC5CkDyxYiZShQoG
-         6g25bB327umIxjIKvwtLFsYFrkd9p1WYrvA7KfUvFMhUVMgyw2p2rrKs+x2CUWupHjNT
-         RAMwn82fPtA/xnRvYBoxhJfKxLpQW6uFPObxZ/CZBhRtswRnSGNm9uml32erTlm75epI
-         7Blw==
-X-Forwarded-Encrypted: i=1; AJvYcCVacMdjmz7ABohEkmchaBOLmyXZ8KliXP3HUXa3hgm266AO0b1QJtCsmNfWge1M3PjMqzkzQJf+WEnjK45IrfVJPvQzFe9Xa2i55tt0dbRiRGFjv72k0RX71pe9vdtdJlGBeWf7NPFhOzpjWt/g1cZRCxNL3/1P566SBoeOlbAqbrSR2hii
-X-Gm-Message-State: AOJu0YwyYFWH263VOlhWWIJG0bjExy6aGrAgCZMi33ymFTgPVebgoryF
-	A4hro1mTGrelQAY/gCwZ2gXY1YLsqR88t99hMyHbPxKOXTJMn/Lm
-X-Google-Smtp-Source: AGHT+IHPrLg03IRw0Hco9v0zHx/l26qKb9QKDqlDfImK5gkzPY19cRzEx96SiBv0HZsxZyJwZ3Pt3w==
-X-Received: by 2002:aa7:c98b:0:b0:565:edb8:7dc0 with SMTP id c11-20020aa7c98b000000b00565edb87dc0mr1708469edt.9.1708952171417;
-        Mon, 26 Feb 2024 04:56:11 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id u19-20020a50d513000000b005653f390f77sm2416079edi.10.2024.02.26.04.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 04:56:11 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 26 Feb 2024 13:56:09 +0100
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>,
-	linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v8 31/35] fprobe: Rewrite fprobe on function-graph tracer
-Message-ID: <ZdyKaRiI-PnG80Q0@krava>
-References: <170887410337.564249.6360118840946697039.stgit@devnote2>
- <170887444346.564249.9630774181398892961.stgit@devnote2>
+        d=1e100.net; s=20230601; t=1708961547; x=1709566347;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FSJiB9bvGiGWePDQf3OhpZVE3AGUfSOIlm+9aANYSPI=;
+        b=FNh4o+I5l6vWwP33SHe9nPgWAaKKh0uzScq1SbpyJg4QfkDePm/7TXonpe1Vb6ZiRZ
+         dGaRhoUAhouWPKqnhd1E1UivKyNQzda3foUIf5DglCa5tjzSc9G9dg0A9fquLvuqJbCF
+         vIb5W5+Vn01J4ia9vq+TN7QSajVHVGXkbjQSv0thcLFiSd1AtrL4OWE16+6j/aiHR3Gc
+         YPeAuvLuSNJ6yi2M38QOV1pd1UyNKgWj8kPfR1SHqVHCf+oTpzQ/JXVAkaXYic5ZWknl
+         0WCHa4bvlk3IokiEreO6Tgff7wKodIEn83XiuXchLkWR1n5+Wi4N2Q7szcsfpa4Seg0j
+         y5fA==
+X-Forwarded-Encrypted: i=1; AJvYcCVr/oV7O0A4BU/GNNWMl8GOm3r0a15/+piYCw73OQh/UnMOQOBYm5YJch+l+fRO/pMA5JtwFR8ionqitUf3RTYs6Mig
+X-Gm-Message-State: AOJu0Yy/jTG04k+XoTQm7cMTFviape1Ecr5gm901jFzcPMM894MVsLYD
+	tammVhg+kbpAnRKgMbhP8mQObuPHxCSGwfMt5jbvYbd8PViegHFk
+X-Google-Smtp-Source: AGHT+IG+EYijsp1a+tXYO1/vrZ3EV1nPkC4OX/OR27p3a1q/52fQ59HmfVcA2H6eeBOmteAjqE3aig==
+X-Received: by 2002:a05:6e02:927:b0:365:15c3:dcb3 with SMTP id o7-20020a056e02092700b0036515c3dcb3mr7183248ilt.9.1708961546781;
+        Mon, 26 Feb 2024 07:32:26 -0800 (PST)
+Received: from [192.168.1.76] (bb219-74-10-34.singnet.com.sg. [219.74.10.34])
+        by smtp.gmail.com with ESMTPSA id s16-20020a63ff50000000b005d8b89bbf20sm4128398pgk.63.2024.02.26.07.32.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 07:32:26 -0800 (PST)
+Message-ID: <c43e82e2-7a23-44fc-b841-b3ace7dc6bcf@gmail.com>
+Date: Mon, 26 Feb 2024 23:32:20 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170887444346.564249.9630774181398892961.stgit@devnote2>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, x64: Fix tailcall hierarchy
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Pu Lehui <pulehui@huawei.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
+References: <20240222085232.62483-1-hffilwlqm@gmail.com>
+ <20240222085232.62483-2-hffilwlqm@gmail.com>
+ <8a3111a0-b190-437f-979e-393f0c890bf1@huawei.com>
+ <1fdb4ba0-5b91-419a-960c-a26de0e51c25@gmail.com>
+ <CAADnVQ+yzkAxCK=L9qVUzSEmj72CH=9kqe25=Risj_BdaLDA=A@mail.gmail.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQ+yzkAxCK=L9qVUzSEmj72CH=9kqe25=Risj_BdaLDA=A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 12:20:43AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
+On 2024/2/24 00:35, Alexei Starovoitov wrote:
+> On Fri, Feb 23, 2024 at 7:30 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>>
+>> On 2024/2/23 12:06, Pu Lehui wrote:
+>>>
+>>>
+>>> On 2024/2/22 16:52, Leon Hwang wrote:
+>>
+>> [SNIP]
+>>
+>>>>   }
+>>>>   @@ -575,6 +574,54 @@ static void emit_return(u8 **pprog, u8 *ip)
+>>>>       *pprog = prog;
+>>>>   }
+>>>>   +DEFINE_PER_CPU(u32, bpf_tail_call_cnt);
+>>>
+>>> Hi Leon, the solution is really simplifies complexity. If I understand
+>>> correctly, this TAIL_CALL_CNT becomes the system global wise, not the
+>>> prog global wise, but before it was limiting the TCC of entry prog.
+>>>
+>>
+>> Correct. It becomes a PERCPU global variable.
+>>
+>> But, I think this solution is not robust enough.
+>>
+>> For example,
+>>
+>> time      prog1           prog1
+>> ==================================>
+>> line              prog2
+>>
+>> this is a time-line on a CPU. If prog1 and prog2 have tailcalls to run,
+>> prog2 will reset the tail_call_cnt on current CPU, which is used by
+>> prog1. As a result, when the CPU schedules from prog2 to prog1,
+>> tail_call_cnt on current CPU has been reset to 0, no matter whether
+>> prog1 incremented it.
+>>
+>> The tail_call_cnt reset issue happens too, even if PERCPU tail_call_cnt
+>> moves to 'struct bpf_prog_aux', i.e. one kprobe bpf prog can be
+>> triggered on many functions e.g. cilium/pwru. However, this moving is
+>> better than this solution.
 > 
-> Rewrite fprobe implementation on function-graph tracer.
-> Major API changes are:
->  -  'nr_maxactive' field is deprecated.
->  -  This depends on CONFIG_DYNAMIC_FTRACE_WITH_ARGS or
->     !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, and
->     CONFIG_HAVE_FUNCTION_GRAPH_FREGS. So currently works only
->     on x86_64.
->  -  Currently the entry size is limited in 15 * sizeof(long).
->  -  If there is too many fprobe exit handler set on the same
->     function, it will fail to probe.
+> kprobe progs are not preemptable.
+> There is bpf_prog_active that disallows any recursion.
+> Moving this percpu count to prog->aux should solve it.
 > 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  Changes in v8:
->   - Use trace_func_graph_ret/ent_t for fgraph_ops.
->   - Update CONFIG_FPROBE dependencies.
->   - Add ftrace_regs_get_return_address() for each arch.
->  Changes in v3:
->   - Update for new reserve_data/retrieve_data API.
->   - Fix internal push/pop on fgraph data logic so that it can
->     correctly save/restore the returning fprobes.
->  Changes in v2:
->   - Add more lockdep_assert_held(fprobe_mutex)
->   - Use READ_ONCE() and WRITE_ONCE() for fprobe_hlist_node::fp.
->   - Add NOKPROBE_SYMBOL() for the functions which is called from
->     entry/exit callback.
-> ---
->  arch/arm64/include/asm/ftrace.h     |    6 
->  arch/loongarch/include/asm/ftrace.h |    6 
->  arch/powerpc/include/asm/ftrace.h   |    6 
->  arch/s390/include/asm/ftrace.h      |    6 
->  arch/x86/include/asm/ftrace.h       |    6 
->  include/linux/fprobe.h              |   54 ++-
->  include/linux/ftrace.h              |    7 
->  kernel/trace/Kconfig                |    8 
->  kernel/trace/fprobe.c               |  638 +++++++++++++++++++++++++----------
->  lib/test_fprobe.c                   |   45 --
->  10 files changed, 536 insertions(+), 246 deletions(-)
+>> I think, my previous POC of 'struct bpf_prog_run_ctx' would be better.
+>> I'll resend it later, with some improvements.
 > 
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> index 95a8f349f871..800c75f46a13 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -143,6 +143,12 @@ ftrace_regs_get_frame_pointer(const struct ftrace_regs *fregs)
->  	return fregs->fp;
->  }
->  
-> +static __always_inline unsigned long
-> +ftrace_regs_get_return_address(const struct ftrace_regs *fregs)
-> +{
-> +	return fregs->lr;
-> +}
-> +
->  static __always_inline struct pt_regs *
->  ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
->  {
-> diff --git a/arch/loongarch/include/asm/ftrace.h b/arch/loongarch/include/asm/ftrace.h
-> index 14a1576bf948..b8432b7cc9d4 100644
-> --- a/arch/loongarch/include/asm/ftrace.h
-> +++ b/arch/loongarch/include/asm/ftrace.h
-> @@ -81,6 +81,12 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs, unsigned long ip)
->  #define ftrace_regs_get_frame_pointer(fregs) \
->  	((fregs)->regs.regs[22])
->  
-> +static __always_inline unsigned long
-> +ftrace_regs_get_return_address(struct ftrace_regs *fregs)
-> +{
-> +	return *(unsigned long *)(fregs->regs.regs[1]);
-> +}
-> +
->  #define ftrace_graph_func ftrace_graph_func
->  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  		       struct ftrace_ops *op, struct ftrace_regs *fregs);
-> diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
-> index 773e9011cff1..7ac1bc3e7196 100644
-> --- a/arch/powerpc/include/asm/ftrace.h
-> +++ b/arch/powerpc/include/asm/ftrace.h
-> @@ -85,6 +85,12 @@ ftrace_regs_get_instruction_pointer(struct ftrace_regs *fregs)
->  #define ftrace_regs_query_register_offset(name) \
->  	regs_query_register_offset(name)
->  
-> +static __always_inline unsigned long
-> +ftrace_regs_get_return_address(struct ftrace_regs *fregs)
-> +{
-> +	return fregs->regs.link;
-> +}
-> +
->  struct ftrace_ops;
->  
->  #define ftrace_graph_func ftrace_graph_func
-> diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
-> index e910924eee59..d434a0497683 100644
-> --- a/arch/s390/include/asm/ftrace.h
-> +++ b/arch/s390/include/asm/ftrace.h
-> @@ -89,6 +89,12 @@ ftrace_regs_get_frame_pointer(struct ftrace_regs *fregs)
->  	return sp[0];	/* return backchain */
->  }
->  
-> +static __always_inline unsigned long
-> +ftrace_regs_get_return_address(const struct ftrace_regs *fregs)
-> +{
-> +	return fregs->regs.gprs[14];
-> +}
-> +
->  #define arch_ftrace_fill_perf_regs(fregs, _regs)	 do {		\
->  		(_regs)->psw.addr = (fregs)->regs.psw.addr;		\
->  		(_regs)->gprs[15] = (fregs)->regs.gprs[15];		\
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index 7625887fc49b..979d3458a328 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -82,6 +82,12 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
->  #define ftrace_regs_get_frame_pointer(fregs) \
->  	frame_pointer(&(fregs)->regs)
->  
-> +static __always_inline unsigned long
-> +ftrace_regs_get_return_address(struct ftrace_regs *fregs)
-> +{
-> +	return *(unsigned long *)ftrace_regs_get_stack_pointer(fregs);
-> +}
-> +
->  struct ftrace_ops;
->  #define ftrace_graph_func ftrace_graph_func
->  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-> index 879a30956009..08b37b0d1d05 100644
-> --- a/include/linux/fprobe.h
-> +++ b/include/linux/fprobe.h
-> @@ -5,32 +5,56 @@
->  
->  #include <linux/compiler.h>
->  #include <linux/ftrace.h>
-> -#include <linux/rethook.h>
-> +#include <linux/rcupdate.h>
-> +#include <linux/refcount.h>
-> +#include <linux/slab.h>
-> +
-> +struct fprobe;
-> +
-> +/**
-> + * strcut fprobe_hlist_node - address based hash list node for fprobe.
-> + *
-> + * @hlist: The hlist node for address search hash table.
-> + * @addr: The address represented by this.
-> + * @fp: The fprobe which owns this.
-> + */
-> +struct fprobe_hlist_node {
-> +	struct hlist_node	hlist;
-> +	unsigned long		addr;
-> +	struct fprobe		*fp;
-> +};
-> +
-> +/**
-> + * struct fprobe_hlist - hash list nodes for fprobe.
-> + *
-> + * @hlist: The hlist node for existence checking hash table.
-> + * @rcu: rcu_head for RCU deferred release.
-> + * @fp: The fprobe which owns this fprobe_hlist.
-> + * @size: The size of @array.
-> + * @array: The fprobe_hlist_node for each address to probe.
-> + */
-> +struct fprobe_hlist {
-> +	struct hlist_node		hlist;
-> +	struct rcu_head			rcu;
-> +	struct fprobe			*fp;
-> +	int				size;
-> +	struct fprobe_hlist_node	array[];
-> +};
->  
->  /**
->   * struct fprobe - ftrace based probe.
-> - * @ops: The ftrace_ops.
-> + *
->   * @nmissed: The counter for missing events.
->   * @flags: The status flag.
-> - * @rethook: The rethook data structure. (internal data)
->   * @entry_data_size: The private data storage size.
-> - * @nr_maxactive: The max number of active functions.
-> + * @nr_maxactive: The max number of active functions. (*deprecated)
->   * @entry_handler: The callback function for function entry.
->   * @exit_handler: The callback function for function exit.
-> + * @hlist_array: The fprobe_hlist for fprobe search from IP hash table.
->   */
->  struct fprobe {
-> -#ifdef CONFIG_FUNCTION_TRACER
-> -	/*
-> -	 * If CONFIG_FUNCTION_TRACER is not set, CONFIG_FPROBE is disabled too.
-> -	 * But user of fprobe may keep embedding the struct fprobe on their own
-> -	 * code. To avoid build error, this will keep the fprobe data structure
-> -	 * defined here, but remove ftrace_ops data structure.
-> -	 */
-> -	struct ftrace_ops	ops;
-> -#endif
->  	unsigned long		nmissed;
->  	unsigned int		flags;
-> -	struct rethook		*rethook;
->  	size_t			entry_data_size;
->  	int			nr_maxactive;
->  
-> @@ -40,6 +64,8 @@ struct fprobe {
->  	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip,
->  			     unsigned long ret_ip, struct ftrace_regs *fregs,
->  			     void *entry_data);
-> +
-> +	struct fprobe_hlist	*hlist_array;
->  };
->  
->  /* This fprobe is soft-disabled. */
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index d895767dcb93..2bb819f08725 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -254,6 +254,13 @@ static __always_inline bool ftrace_regs_has_args(struct ftrace_regs *fregs)
->  	regs_query_register_offset(name)
->  #define ftrace_regs_get_frame_pointer(fregs) \
->  	frame_pointer(&(fregs)->regs)
-> +
-> +#ifdef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
-> +/* This function works correctly in ftrace entry function. */
-> +static __always_inline unsigned long
-> +ftrace_regs_get_return_address(struct ftrace_regs *fregs);
-> +#endif
-> +
->  #endif
->  
->  #ifdef CONFIG_HAVE_REGS_AND_STACK_ACCESS_API
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index 9056315d56ed..d2ee9e6f1561 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -298,11 +298,9 @@ config DYNAMIC_FTRACE_WITH_ARGS
->  
->  config FPROBE
->  	bool "Kernel Function Probe (fprobe)"
-> -	depends on FUNCTION_TRACER
-> -	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
-> -	depends on HAVE_PT_REGS_TO_FTRACE_REGS_CAST || !HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> -	depends on HAVE_RETHOOK
-> -	select RETHOOK
-> +	depends on FUNCTION_GRAPH_TRACER
-> +	depends on HAVE_FUNCTION_GRAPH_FREGS && HAVE_FTRACE_GRAPH_FUNC
-> +	depends on DYNAMIC_FTRACE_WITH_ARGS
->  	default n
->  	help
->  	  This option enables kernel function probe (fprobe) based on ftrace.
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 31210423efc3..845ac5af4aeb 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> @@ -8,98 +8,193 @@
->  #include <linux/fprobe.h>
->  #include <linux/kallsyms.h>
->  #include <linux/kprobes.h>
-> -#include <linux/rethook.h>
-> +#include <linux/list.h>
-> +#include <linux/mutex.h>
->  #include <linux/slab.h>
->  #include <linux/sort.h>
->  
->  #include "trace.h"
->  
-> -struct fprobe_rethook_node {
-> -	struct rethook_node node;
-> -	unsigned long entry_ip;
-> -	unsigned long entry_parent_ip;
-> -	char data[];
-> -};
-> +#define FPROBE_IP_HASH_BITS 8
-> +#define FPROBE_IP_TABLE_SIZE (1 << FPROBE_IP_HASH_BITS)
->  
-> -static inline void __fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> -			struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> -{
-> -	struct fprobe_rethook_node *fpr;
-> -	struct rethook_node *rh = NULL;
-> -	struct fprobe *fp;
-> -	void *entry_data = NULL;
-> -	int ret = 0;
-> +#define FPROBE_HASH_BITS 6
-> +#define FPROBE_TABLE_SIZE (1 << FPROBE_HASH_BITS)
->  
-> -	fp = container_of(ops, struct fprobe, ops);
-> +/*
-> + * fprobe_table: hold 'fprobe_hlist::hlist' for checking the fprobe still
-> + *   exists. The key is the address of fprobe instance.
-> + * fprobe_ip_table: hold 'fprobe_hlist::array[*]' for searching the fprobe
-> + *   instance related to the funciton address. The key is the ftrace IP
-> + *   address.
-> + *
-> + * When unregistering the fprobe, fprobe_hlist::fp and fprobe_hlist::array[*].fp
-> + * are set NULL and delete those from both hash tables (by hlist_del_rcu).
-> + * After an RCU grace period, the fprobe_hlist itself will be released.
-> + *
-> + * fprobe_table and fprobe_ip_table can be accessed from either
-> + *  - Normal hlist traversal and RCU add/del under 'fprobe_mutex' is held.
-> + *  - RCU hlist traversal under disabling preempt
-> + */
-> +static struct hlist_head fprobe_table[FPROBE_TABLE_SIZE];
-> +static struct hlist_head fprobe_ip_table[FPROBE_IP_TABLE_SIZE];
-> +static DEFINE_MUTEX(fprobe_mutex);
->  
-> -	if (fp->exit_handler) {
-> -		rh = rethook_try_get(fp->rethook);
-> -		if (!rh) {
-> -			fp->nmissed++;
-> -			return;
-> -		}
-> -		fpr = container_of(rh, struct fprobe_rethook_node, node);
-> -		fpr->entry_ip = ip;
-> -		fpr->entry_parent_ip = parent_ip;
-> -		if (fp->entry_data_size)
-> -			entry_data = fpr->data;
-> +/*
-> + * Find first fprobe in the hlist. It will be iterated twice in the entry
-> + * probe, once for correcting the total required size, the second time is
-> + * calling back the user handlers.
-> + * Thus the hlist in the fprobe_table must be sorted and new probe needs to
-> + * be added *before* the first fprobe.
-> + */
-> +static struct fprobe_hlist_node *find_first_fprobe_node(unsigned long ip)
-> +{
-> +	struct fprobe_hlist_node *node;
-> +	struct hlist_head *head;
-> +
-> +	head = &fprobe_ip_table[hash_ptr((void *)ip, FPROBE_IP_HASH_BITS)];
-> +	hlist_for_each_entry_rcu(node, head, hlist,
-> +				 lockdep_is_held(&fprobe_mutex)) {
-> +		if (node->addr == ip)
-> +			return node;
->  	}
-> +	return NULL;
-> +}
-> +NOKPROBE_SYMBOL(find_first_fprobe_node);
->  
-> -	if (fp->entry_handler)
-> -		ret = fp->entry_handler(fp, ip, parent_ip, fregs, entry_data);
-> +/* Node insertion and deletion requires the fprobe_mutex */
-> +static void insert_fprobe_node(struct fprobe_hlist_node *node)
-> +{
-> +	unsigned long ip = node->addr;
-> +	struct fprobe_hlist_node *next;
-> +	struct hlist_head *head;
->  
-> -	/* If entry_handler returns !0, nmissed is not counted. */
-> -	if (rh) {
-> -		if (ret)
-> -			rethook_recycle(rh);
-> -		else
-> -			rethook_hook(rh, ftrace_get_regs(fregs), true);
-> +	lockdep_assert_held(&fprobe_mutex);
-> +
-> +	next = find_first_fprobe_node(ip);
-> +	if (next) {
-> +		hlist_add_before_rcu(&node->hlist, &next->hlist);
-> +		return;
->  	}
-> +	head = &fprobe_ip_table[hash_ptr((void *)ip, FPROBE_IP_HASH_BITS)];
-> +	hlist_add_head_rcu(&node->hlist, head);
->  }
->  
-> -static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> -		struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> +/* Return true if there are synonims */
-> +static bool delete_fprobe_node(struct fprobe_hlist_node *node)
->  {
-> -	struct fprobe *fp;
-> -	int bit;
-> +	lockdep_assert_held(&fprobe_mutex);
->  
-> -	fp = container_of(ops, struct fprobe, ops);
-> -	if (fprobe_disabled(fp))
-> -		return;
-> +	WRITE_ONCE(node->fp, NULL);
-> +	hlist_del_rcu(&node->hlist);
-> +	return !!find_first_fprobe_node(node->addr);
-> +}
->  
-> -	/* recursion detection has to go before any traceable function and
-> -	 * all functions before this point should be marked as notrace
-> -	 */
-> -	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-> -	if (bit < 0) {
-> -		fp->nmissed++;
-> -		return;
-> +/* Check existence of the fprobe */
-> +static bool is_fprobe_still_exist(struct fprobe *fp)
-> +{
-> +	struct hlist_head *head;
-> +	struct fprobe_hlist *fph;
-> +
-> +	head = &fprobe_table[hash_ptr(fp, FPROBE_HASH_BITS)];
-> +	hlist_for_each_entry_rcu(fph, head, hlist,
-> +				 lockdep_is_held(&fprobe_mutex)) {
-> +		if (fph->fp == fp)
-> +			return true;
->  	}
-> -	__fprobe_handler(ip, parent_ip, ops, fregs);
-> -	ftrace_test_recursion_unlock(bit);
-> +	return false;
-> +}
-> +NOKPROBE_SYMBOL(is_fprobe_still_exist);
-> +
-> +static int add_fprobe_hash(struct fprobe *fp)
-> +{
-> +	struct fprobe_hlist *fph = fp->hlist_array;
-> +	struct hlist_head *head;
-> +
-> +	lockdep_assert_held(&fprobe_mutex);
->  
-> +	if (WARN_ON_ONCE(!fph))
-> +		return -EINVAL;
-> +
-> +	if (is_fprobe_still_exist(fp))
-> +		return -EEXIST;
-> +
-> +	head = &fprobe_table[hash_ptr(fp, FPROBE_HASH_BITS)];
-> +	hlist_add_head_rcu(&fp->hlist_array->hlist, head);
-> +	return 0;
->  }
-> -NOKPROBE_SYMBOL(fprobe_handler);
->  
-> -static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
-> -				  struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> +static int del_fprobe_hash(struct fprobe *fp)
->  {
-> -	struct fprobe *fp;
-> -	int bit;
-> +	struct fprobe_hlist *fph = fp->hlist_array;
->  
-> -	fp = container_of(ops, struct fprobe, ops);
-> -	if (fprobe_disabled(fp))
-> -		return;
-> +	lockdep_assert_held(&fprobe_mutex);
->  
-> -	/* recursion detection has to go before any traceable function and
-> -	 * all functions called before this point should be marked as notrace
-> -	 */
-> -	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-> -	if (bit < 0) {
-> -		fp->nmissed++;
-> -		return;
-> +	if (WARN_ON_ONCE(!fph))
-> +		return -EINVAL;
-> +
-> +	if (!is_fprobe_still_exist(fp))
-> +		return -ENOENT;
-> +
-> +	fph->fp = NULL;
-> +	hlist_del_rcu(&fph->hlist);
-> +	return 0;
-> +}
-> +
-> +/* The entry data size is 4 bits (=16) * sizeof(long) in maximum */
-> +#define FPROBE_HEADER_SIZE_BITS		4
-> +#define MAX_FPROBE_DATA_SIZE_WORD	((1L << FPROBE_HEADER_SIZE_BITS) - 1)
-> +#define MAX_FPROBE_DATA_SIZE		(MAX_FPROBE_DATA_SIZE_WORD * sizeof(long))
-> +#define FPROBE_HEADER_PTR_BITS		(BITS_PER_LONG - FPROBE_HEADER_SIZE_BITS)
-> +#define FPROBE_HEADER_PTR_MASK		GENMASK(FPROBE_HEADER_PTR_BITS - 1, 0)
-> +#define FPROBE_HEADER_SIZE		sizeof(unsigned long)
-> +
-> +static inline unsigned long encode_fprobe_header(struct fprobe *fp, int size_words)
-> +{
-> +	if (WARN_ON_ONCE(size_words > MAX_FPROBE_DATA_SIZE_WORD ||
-> +	    ((unsigned long)fp & ~FPROBE_HEADER_PTR_MASK) !=
-> +	    ~FPROBE_HEADER_PTR_MASK)) {
-> +		return 0;
->  	}
-> +	return ((unsigned long)size_words << FPROBE_HEADER_PTR_BITS) |
-> +		((unsigned long)fp & FPROBE_HEADER_PTR_MASK);
-> +}
-> +
-> +/* Return reserved data size in words */
-> +static inline int decode_fprobe_header(unsigned long val, struct fprobe **fp)
-> +{
-> +	unsigned long ptr;
-> +
-> +	ptr = (val & FPROBE_HEADER_PTR_MASK) | ~FPROBE_HEADER_PTR_MASK;
-> +	if (fp)
-> +		*fp = (struct fprobe *)ptr;
-> +	return val >> FPROBE_HEADER_PTR_BITS;
-> +}
-> +
-> +/*
-> + * fprobe shadow stack management:
-> + * Since fprobe shares a single fgraph_ops, it needs to share the stack entry
-> + * among the probes on the same function exit. Note that a new probe can be
-> + * registered before a target function is returning, we can not use the hash
-> + * table to find the corresponding probes. Thus the probe address is stored on
-> + * the shadow stack with its entry data size.
-> + *
-> + */
-> +static inline int __fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +				   struct fprobe *fp, struct ftrace_regs *fregs,
-> +				   void *data)
-> +{
-> +	if (!fp->entry_handler)
-> +		return 0;
-> +
-> +	return fp->entry_handler(fp, ip, parent_ip, fregs, data);
-> +}
->  
-> +static inline int __fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +					  struct fprobe *fp, struct ftrace_regs *fregs,
-> +					  void *data)
-> +{
-> +	int ret;
->  	/*
->  	 * This user handler is shared with other kprobes and is not expected to be
->  	 * called recursively. So if any other kprobe handler is running, this will
-> @@ -108,45 +203,185 @@ static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
->  	 */
->  	if (unlikely(kprobe_running())) {
->  		fp->nmissed++;
-> -		goto recursion_unlock;
-> +		return 0;
->  	}
->  
->  	kprobe_busy_begin();
-> -	__fprobe_handler(ip, parent_ip, ops, fregs);
-> +	ret = __fprobe_handler(ip, parent_ip, fp, fregs, data);
->  	kprobe_busy_end();
-> -
-> -recursion_unlock:
-> -	ftrace_test_recursion_unlock(bit);
-> +	return ret;
->  }
->  
-> -static void fprobe_exit_handler(struct rethook_node *rh, void *data,
-> -				unsigned long ret_ip, struct pt_regs *regs)
-> +static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
-> +			struct ftrace_regs *fregs)
->  {
-> -	struct fprobe *fp = (struct fprobe *)data;
-> -	struct fprobe_rethook_node *fpr;
-> -	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
-> -	int bit;
-> +	struct fprobe_hlist_node *node, *first;
-> +	unsigned long *fgraph_data = NULL;
-> +	unsigned long func = trace->func;
-> +	unsigned long header, ret_ip;
-> +	int reserved_words;
-> +	struct fprobe *fp;
-> +	int used, ret;
->  
-> -	if (!fp || fprobe_disabled(fp))
-> -		return;
-> +	if (WARN_ON_ONCE(!fregs))
-> +		return 0;
->  
-> -	fpr = container_of(rh, struct fprobe_rethook_node, node);
-> +	first = node = find_first_fprobe_node(func);
-> +	if (unlikely(!first))
-> +		return 0;
-> +
-> +	reserved_words = 0;
-> +	hlist_for_each_entry_from_rcu(node, hlist) {
-> +		if (node->addr != func)
-> +			break;
-> +		fp = READ_ONCE(node->fp);
-> +		if (!fp || !fp->exit_handler)
-> +			continue;
-> +		/*
-> +		 * Since fprobe can be enabled until the next loop, we ignore the
-> +		 * fprobe's disabled flag in this loop.
-> +		 */
-> +		reserved_words +=
-> +			DIV_ROUND_UP(fp->entry_data_size, sizeof(long)) + 1;
-> +	}
-> +	node = first;
-> +	if (reserved_words) {
-> +		fgraph_data = fgraph_reserve_data(gops->idx, reserved_words * sizeof(long));
-> +		if (unlikely(!fgraph_data)) {
-> +			hlist_for_each_entry_from_rcu(node, hlist) {
-> +				if (node->addr != func)
-> +					break;
-> +				fp = READ_ONCE(node->fp);
-> +				if (fp && !fprobe_disabled(fp))
-> +					fp->nmissed++;
-> +			}
-> +			return 0;
-> +		}
-> +	}
->  
->  	/*
-> -	 * we need to assure no calls to traceable functions in-between the
-> -	 * end of fprobe_handler and the beginning of fprobe_exit_handler.
-> +	 * TODO: recursion detection has been done in the fgraph. Thus we need
-> +	 * to add a callback to increment missed counter.
->  	 */
-> -	bit = ftrace_test_recursion_trylock(fpr->entry_ip, fpr->entry_parent_ip);
-> -	if (bit < 0) {
-> -		fp->nmissed++;
-> +	ret_ip = ftrace_regs_get_return_address(fregs);
-> +	used = 0;
-> +	hlist_for_each_entry_from_rcu(node, hlist) {
-> +		void *data;
-> +
-> +		if (node->addr != func)
-> +			break;
-> +		fp = READ_ONCE(node->fp);
-> +		if (!fp || fprobe_disabled(fp))
-> +			continue;
-> +
-> +		if (fp->entry_data_size && fp->exit_handler)
-> +			data = fgraph_data + used + 1;
-> +		else
-> +			data = NULL;
-> +
-> +		if (fprobe_shared_with_kprobes(fp))
-> +			ret = __fprobe_kprobe_handler(func, ret_ip, fp, fregs, data);
-> +		else
-> +			ret = __fprobe_handler(func, ret_ip, fp, fregs, data);
-> +		/* If entry_handler returns !0, nmissed is not counted but skips exit_handler. */
-> +		if (!ret && fp->exit_handler) {
-> +			int size_words = DIV_ROUND_UP(fp->entry_data_size, sizeof(long));
-> +
-> +			header = encode_fprobe_header(fp, size_words);
-> +			if (likely(header)) {
-> +				fgraph_data[used] = header;
-> +				used += size_words + 1;
-> +			}
-> +		}
-> +	}
-> +	if (used < reserved_words)
-> +		memset(fgraph_data + used, 0, reserved_words - used);
-> +
-> +	/* If any exit_handler is set, data must be used. */
-> +	return used != 0;
-> +}
-> +NOKPROBE_SYMBOL(fprobe_entry);
-> +
-> +static void fprobe_return(struct ftrace_graph_ret *trace,
-> +			  struct fgraph_ops *gops,
-> +			  struct ftrace_regs *fregs)
-> +{
-> +	unsigned long *fgraph_data = NULL;
-> +	unsigned long ret_ip;
-> +	unsigned long val;
-> +	struct fprobe *fp;
-> +	int size, curr;
-> +	int size_words;
-> +
-> +	fgraph_data = (unsigned long *)fgraph_retrieve_data(gops->idx, &size);
-> +	if (WARN_ON_ONCE(!fgraph_data))
->  		return;
-> +	size_words = DIV_ROUND_UP(size, sizeof(long));
-> +	ret_ip = ftrace_regs_get_instruction_pointer(fregs);
-> +
-> +	preempt_disable();
-> +
-> +	curr = 0;
-> +	while (size_words > curr) {
-> +		val = fgraph_data[curr++];
+> percpu approach is still prefered, since it removes rax mess.
 
-hi,
-the ++ in here -----------------------^^ screws the logic below,
-I think we need the change below to properly access the stack data
+It seems that we cannot remove rax.
 
-I wrote bpf test on top of this that adds multiple fprobes attached
-on single function and makes sure the fprobe gets its own data on
-fentry/fexit callbacks and with the change below it seems to work
-properly
+Let's take a look at tailcall3.c selftest:
 
-jirka
+struct {
+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+	__uint(max_entries, 1);
+	__uint(key_size, sizeof(__u32));
+	__uint(value_size, sizeof(__u32));
+} jmp_table SEC(".maps");
 
-> +		if (!val)
-> +			break;
-> +
-> +		size = decode_fprobe_header(val, &fp);
-> +		if (fp && is_fprobe_still_exist(fp) && !fprobe_disabled(fp)) {
-> +			if (WARN_ON_ONCE(curr + size > size_words))
-> +				break;
-> +			fp->exit_handler(fp, trace->func, ret_ip, fregs,
-> +					 size ? fgraph_data + curr : NULL);
-> +		}
-> +		curr += size + 1;
->  	}
-> +	preempt_enable();
-> +}
+int count = 0;
 
+SEC("tc")
+int classifier_0(struct __sk_buff *skb)
+{
+	count++;
+	bpf_tail_call_static(skb, &jmp_table, 0);
+	return 1;
+}
 
----
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 845ac5af4aeb..bfe255e12a13 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -323,16 +323,16 @@ static void fprobe_return(struct ftrace_graph_ret *trace,
- 
- 	curr = 0;
- 	while (size_words > curr) {
--		val = fgraph_data[curr++];
-+		val = fgraph_data[curr];
- 		if (!val)
- 			break;
- 
- 		size = decode_fprobe_header(val, &fp);
- 		if (fp && is_fprobe_still_exist(fp) && !fprobe_disabled(fp)) {
--			if (WARN_ON_ONCE(curr + size > size_words))
-+			if (WARN_ON_ONCE(curr + size + 1 > size_words))
- 				break;
- 			fp->exit_handler(fp, trace->func, ret_ip, fregs,
--					 size ? fgraph_data + curr : NULL);
-+					 size ? fgraph_data + curr + 1 : NULL);
- 		}
- 		curr += size + 1;
+SEC("tc")
+int entry(struct __sk_buff *skb)
+{
+	bpf_tail_call_static(skb, &jmp_table, 0);
+	return 0;
+}
+
+Here, classifier_0 is populated to jmp_table.
+
+Then, at classifier_0's prologue, when we 'move rax,
+classifier_0->tail_call_cnt' in order to use the PERCPU tail_call_cnt in
+'struct bpf_prog' for current run-time, it fails to run selftests. It's
+because the tail_call_cnt is not from the entry bpf prog. The
+tail_call_cnt from the entry bpf prog is the expected one, even though
+classifier_0 bpf prog runs. (It seems that it's unnecessary to provide
+the diff of the exclusive approach with PERCPU tail_call_cnt.)
+
+Next, I tried a POC with PERCPU tail_call_cnt in 'struct bpf_prog' and rax:
+
+1. At prologue, initialise tail_call_cnt from bpf_prog's tail_call_cnt.
+2. Propagate tail_call_cnt pointer by the previous rax way.
+
+Here's the diff for the POC:
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index e1390d1e3..54f5770d9 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -18,18 +18,22 @@
+ #include <asm/text-patching.h>
+ #include <asm/unwind.h>
+ #include <asm/cfi.h>
++#include <asm/percpu.h>
+
+ static bool all_callee_regs_used[4] = {true, true, true, true};
+
+-static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
++static u8 *emit_code(u8 *ptr, u64 bytes, unsigned int len)
+ {
+ 	if (len == 1)
+ 		*ptr = bytes;
+ 	else if (len == 2)
+ 		*(u16 *)ptr = bytes;
+-	else {
++	else if (len == 4) {
+ 		*(u32 *)ptr = bytes;
+ 		barrier();
++	} else {
++		*(u64 *)ptr = bytes;
++		barrier();
  	}
+ 	return ptr + len;
+ }
+@@ -51,6 +55,9 @@ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+ #define EMIT4_off32(b1, b2, b3, b4, off) \
+ 	do { EMIT4(b1, b2, b3, b4); EMIT(off, 4); } while (0)
+
++#define EMIT2_off64(b1, b2, off) \
++	do { EMIT2(b1, b2); EMIT(off, 8); } while(0)
++
+ #ifdef CONFIG_X86_KERNEL_IBT
+ #define EMIT_ENDBR()		EMIT(gen_endbr(), 4)
+ #define EMIT_ENDBR_POISON()	EMIT(gen_endbr_poison(), 4)
+@@ -259,7 +266,7 @@ struct jit_context {
+ /* Number of bytes emit_patch() needs to generate instructions */
+ #define X86_PATCH_SIZE		5
+ /* Number of bytes that will be skipped on tailcall */
+-#define X86_TAIL_CALL_OFFSET	(11 + ENDBR_INSN_SIZE)
++#define X86_TAIL_CALL_OFFSET	(24 + ENDBR_INSN_SIZE)
+
+ static void push_r12(u8 **pprog)
+ {
+@@ -389,16 +396,40 @@ static void emit_cfi(u8 **pprog, u32 hash)
+ 	*pprog = prog;
+ }
+
++
++static __used void bpf_tail_call_cnt_prepare(void)
++{
++	/* The following asm equals to
++	 *
++	 * u32 *tcc_ptr = this_cpu_ptr(prog->aux->entry->tail_call_cnt);
++	 *
++	 * *tcc_ptr = 0;
++	 *
++	 * This asm must uses %rax only.
++	 */
++
++	/* %rax has been set as prog->aux->entry->tail_call_cnt. */
++	asm volatile (
++	    "addq " __percpu_arg(0) ", %%rax\n\t"
++	    "movl $0, (%%rax)\n\t"
++	    :
++	    : "m" (this_cpu_off)
++	);
++}
++
++static int emit_call(u8 **pprog, void *func, void *ip);
++
+ /*
+  * Emit x86-64 prologue code for BPF program.
+  * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
+  * while jumping to another program
+  */
+-static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+-			  bool tail_call_reachable, bool is_subprog,
+-			  bool is_exception_cb)
++static void emit_prologue(struct bpf_prog *bpf_prog, u8 **pprog, u32
+stack_depth,
++			  bool ebpf_from_cbpf, bool tail_call_reachable,
++			  bool is_subprog, bool is_exception_cb, u8 *ip)
+ {
+-	u8 *prog = *pprog;
++	struct bpf_prog *entry = bpf_prog->aux->entry;
++	u8 *prog = *pprog, *start = *pprog;
+
+ 	emit_cfi(&prog, is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash);
+ 	/* BPF trampoline can be made to work without these nops,
+@@ -406,14 +437,16 @@ static void emit_prologue(u8 **pprog, u32
+stack_depth, bool ebpf_from_cbpf,
+ 	 */
+ 	emit_nops(&prog, X86_PATCH_SIZE);
+ 	if (!ebpf_from_cbpf) {
+-		if (tail_call_reachable && !is_subprog)
+-			/* When it's the entry of the whole tailcall context,
+-			 * zeroing rax means initialising tail_call_cnt.
+-			 */
+-			EMIT2(0x31, 0xC0); /* xor eax, eax */
+-		else
++		if (tail_call_reachable && !is_subprog) {
++			/* mov rax, entry->tail_call_cnt */
++			EMIT2_off64(0x48, 0xB8, (u64) entry->tail_call_cnt);
++			/* call bpf_tail_call_cnt_prepare */
++			emit_call(&prog, bpf_tail_call_cnt_prepare,
++				  ip + (prog - start));
++		} else {
+ 			/* Keep the same instruction layout. */
+-			EMIT2(0x66, 0x90); /* nop2 */
++			emit_nops(&prog, 10 + X86_PATCH_SIZE);
++		}
+ 	}
+ 	/* Exception callback receives FP as third parameter */
+ 	if (is_exception_cb) {
+@@ -581,7 +614,7 @@ static void emit_return(u8 **pprog, u8 *ip)
+  * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
+  *   if (index >= array->map.max_entries)
+  *     goto out;
+- *   if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
++ *   if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
+  *     goto out;
+  *   prog = array->ptrs[index];
+  *   if (prog == NULL)
+@@ -594,7 +627,7 @@ static void emit_bpf_tail_call_indirect(struct
+bpf_prog *bpf_prog,
+ 					u32 stack_depth, u8 *ip,
+ 					struct jit_context *ctx)
+ {
+-	int tcc_off = -4 - round_up(stack_depth, 8);
++	int tcc_ptr_off = -8 - round_up(stack_depth, 8);
+ 	u8 *prog = *pprog, *start = *pprog;
+ 	int offset;
+
+@@ -616,16 +649,15 @@ static void emit_bpf_tail_call_indirect(struct
+bpf_prog *bpf_prog,
+ 	EMIT2(X86_JBE, offset);                   /* jbe out */
+
+ 	/*
+-	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
++	 * if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
+ 	 *	goto out;
+ 	 */
+-	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp -
+tcc_off] */
+-	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
++	EMIT3_off32(0x48, 0x8B, 0x85, tcc_ptr_off); /* mov rax, qword ptr [rbp
+- tcc_ptr_off] */
++	EMIT3(0x83, 0x38, MAX_TAIL_CALL_CNT);     /* cmp dword ptr [rax],
+MAX_TAIL_CALL_CNT */
+
+ 	offset = ctx->tail_call_indirect_label - (prog + 2 - start);
+ 	EMIT2(X86_JAE, offset);                   /* jae out */
+-	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
+-	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp -
+tcc_off], eax */
++	EMIT3(0x83, 0x00, 0x01);                  /* add dword ptr [rax], 1 */
+
+ 	/* prog = array->ptrs[index]; */
+ 	EMIT4_off32(0x48, 0x8B, 0x8C, 0xD6,       /* mov rcx, [rsi + rdx * 8 +
+offsetof(...)] */
+@@ -647,6 +679,7 @@ static void emit_bpf_tail_call_indirect(struct
+bpf_prog *bpf_prog,
+ 		pop_callee_regs(&prog, callee_regs_used);
+ 	}
+
++	/* pop tail_call_cnt_ptr */
+ 	EMIT1(0x58);                              /* pop rax */
+ 	if (stack_depth)
+ 		EMIT3_off32(0x48, 0x81, 0xC4,     /* add rsp, sd */
+@@ -675,21 +708,20 @@ static void emit_bpf_tail_call_direct(struct
+bpf_prog *bpf_prog,
+ 				      bool *callee_regs_used, u32 stack_depth,
+ 				      struct jit_context *ctx)
+ {
+-	int tcc_off = -4 - round_up(stack_depth, 8);
++	int tcc_ptr_off = -8 - round_up(stack_depth, 8);
+ 	u8 *prog = *pprog, *start = *pprog;
+ 	int offset;
+
+ 	/*
+-	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
++	 * if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
+ 	 *	goto out;
+ 	 */
+-	EMIT2_off32(0x8B, 0x85, tcc_off);             /* mov eax, dword ptr
+[rbp - tcc_off] */
+-	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);         /* cmp eax,
+MAX_TAIL_CALL_CNT */
++	EMIT3_off32(0x48, 0x8B, 0x85, tcc_ptr_off);   /* mov rax, qword ptr
+[rbp - tcc_ptr_off] */
++	EMIT3(0x83, 0x38, MAX_TAIL_CALL_CNT);         /* cmp dword ptr [rax],
+MAX_TAIL_CALL_CNT */
+
+ 	offset = ctx->tail_call_direct_label - (prog + 2 - start);
+ 	EMIT2(X86_JAE, offset);                       /* jae out */
+-	EMIT3(0x83, 0xC0, 0x01);                      /* add eax, 1 */
+-	EMIT2_off32(0x89, 0x85, tcc_off);             /* mov dword ptr [rbp -
+tcc_off], eax */
++	EMIT3(0x83, 0x00, 0x01);                      /* add dword ptr [rax], 1 */
+
+ 	poke->tailcall_bypass = ip + (prog - start);
+ 	poke->adj_off = X86_TAIL_CALL_OFFSET;
+@@ -706,6 +738,7 @@ static void emit_bpf_tail_call_direct(struct
+bpf_prog *bpf_prog,
+ 		pop_callee_regs(&prog, callee_regs_used);
+ 	}
+
++	/* pop tail_call_cnt_ptr */
+ 	EMIT1(0x58);                                  /* pop rax */
+ 	if (stack_depth)
+ 		EMIT3_off32(0x48, 0x81, 0xC4, round_up(stack_depth, 8));
+@@ -1134,7 +1167,7 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg,
+u8 src_reg, bool is64, u8 op)
+ #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+
+ /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+-#define RESTORE_TAIL_CALL_CNT(stack)				\
++#define LOAD_TAIL_CALL_CNT_PTR(stack)				\
+ 	EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
+
+ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8
+*rw_image,
+@@ -1158,9 +1191,10 @@ static int do_jit(struct bpf_prog *bpf_prog, int
+*addrs, u8 *image, u8 *rw_image
+ 	/* tail call's presence in current prog implies it is reachable */
+ 	tail_call_reachable |= tail_call_seen;
+
+-	emit_prologue(&prog, bpf_prog->aux->stack_depth,
++	emit_prologue(bpf_prog, &prog, bpf_prog->aux->stack_depth,
+ 		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
+-		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
++		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb,
++		      image);
+ 	/* Exception callback will clobber callee regs for its own use, and
+ 	 * restore the original callee regs from main prog's stack frame.
+ 	 */
+@@ -1754,7 +1788,7 @@ st:			if (is_imm8(insn->off))
+
+ 			func = (u8 *) __bpf_call_base + imm32;
+ 			if (tail_call_reachable) {
+-				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
++				LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
+ 				if (!imm32)
+ 					return -EINVAL;
+ 				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
+@@ -2679,10 +2713,10 @@ static int __arch_prepare_bpf_trampoline(struct
+bpf_tramp_image *im, void *rw_im
+ 		save_args(m, &prog, arg_stack_off, true);
+
+ 		if (flags & BPF_TRAMP_F_TAIL_CALL_CTX) {
+-			/* Before calling the original function, restore the
+-			 * tail_call_cnt from stack to rax.
++			/* Before calling the original function, load the
++			 * tail_call_cnt_ptr to rax.
+ 			 */
+-			RESTORE_TAIL_CALL_CNT(stack_size);
++			LOAD_TAIL_CALL_CNT_PTR(stack_size);
+ 		}
+
+ 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+@@ -2741,10 +2775,10 @@ static int __arch_prepare_bpf_trampoline(struct
+bpf_tramp_image *im, void *rw_im
+ 			goto cleanup;
+ 		}
+ 	} else if (flags & BPF_TRAMP_F_TAIL_CALL_CTX) {
+-		/* Before running the original function, restore the
+-		 * tail_call_cnt from stack to rax.
++		/* Before running the original function, load the
++		 * tail_call_cnt_ptr to rax.
+ 		 */
+-		RESTORE_TAIL_CALL_CNT(stack_size);
++		LOAD_TAIL_CALL_CNT_PTR(stack_size);
+ 	}
+
+ 	/* restore return value of orig_call or fentry prog back into RAX */
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 814dc913a..5e8abcb11 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1459,6 +1459,7 @@ struct bpf_prog_aux {
+ 	/* function name for valid attach_btf_id */
+ 	const char *attach_func_name;
+ 	struct bpf_prog **func;
++	struct bpf_prog *entry;
+ 	void *jit_data; /* JIT specific data. arch dependent */
+ 	struct bpf_jit_poke_descriptor *poke_tab;
+ 	struct bpf_kfunc_desc_tab *kfunc_tab;
+@@ -1542,6 +1543,7 @@ struct bpf_prog {
+ 	u8			tag[BPF_TAG_SIZE];
+ 	struct bpf_prog_stats __percpu *stats;
+ 	int __percpu		*active;
++	u32 __percpu		*tail_call_cnt;
+ 	unsigned int		(*bpf_func)(const void *ctx,
+ 					    const struct bpf_insn *insn);
+ 	struct bpf_prog_aux	*aux;		/* Auxiliary fields */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 71c459a51..7884f66fc 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -110,6 +110,13 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned
+int size, gfp_t gfp_extra_flag
+ 		kfree(aux);
+ 		return NULL;
+ 	}
++	fp->tail_call_cnt = alloc_percpu_gfp(u32, bpf_memcg_flags(GFP_KERNEL |
+gfp_extra_flags));
++	if (!fp->tail_call_cnt) {
++		free_percpu(fp->active);
++		vfree(fp);
++		kfree(aux);
++		return NULL;
++	}
+
+ 	fp->pages = size / PAGE_SIZE;
+ 	fp->aux = aux;
+@@ -142,6 +149,7 @@ struct bpf_prog *bpf_prog_alloc(unsigned int size,
+gfp_t gfp_extra_flags)
+
+ 	prog->stats = alloc_percpu_gfp(struct bpf_prog_stats, gfp_flags);
+ 	if (!prog->stats) {
++		free_percpu(prog->tail_call_cnt);
+ 		free_percpu(prog->active);
+ 		kfree(prog->aux);
+ 		vfree(prog);
+@@ -261,6 +269,7 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog
+*fp_old, unsigned int size,
+ 		fp_old->aux = NULL;
+ 		fp_old->stats = NULL;
+ 		fp_old->active = NULL;
++		fp_old->tail_call_cnt = NULL;
+ 		__bpf_prog_free(fp_old);
+ 	}
+
+@@ -277,6 +286,7 @@ void __bpf_prog_free(struct bpf_prog *fp)
+ 	}
+ 	free_percpu(fp->stats);
+ 	free_percpu(fp->active);
++	free_percpu(fp->tail_call_cnt);
+ 	vfree(fp);
+ }
+
+@@ -1428,6 +1438,7 @@ static void bpf_prog_clone_free(struct bpf_prog *fp)
+ 	fp->aux = NULL;
+ 	fp->stats = NULL;
+ 	fp->active = NULL;
++	fp->tail_call_cnt = NULL;
+ 	__bpf_prog_free(fp);
+ }
+
+@@ -2379,6 +2390,7 @@ struct bpf_prog *bpf_prog_select_runtime(struct
+bpf_prog *fp, int *err)
+ 		if (*err)
+ 			return fp;
+
++		fp->aux->entry = fp;
+ 		fp = bpf_int_jit_compile(fp);
+ 		bpf_prog_jit_attempt_done(fp);
+ 		if (!fp->jited && jit_needed) {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 011d54a1d..442d0a4b2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19025,6 +19025,7 @@ static int jit_subprogs(struct bpf_verifier_env
+*env)
+ 		}
+ 		func[i]->aux->num_exentries = num_exentries;
+ 		func[i]->aux->tail_call_reachable =
+env->subprog_info[i].tail_call_reachable;
++		func[i]->aux->entry = prog;
+ 		func[i]->aux->exception_cb = env->subprog_info[i].is_exception_cb;
+ 		if (!i)
+ 			func[i]->aux->exception_boundary = env->seen_exception;
+
+Thanks,
+Leon
 
