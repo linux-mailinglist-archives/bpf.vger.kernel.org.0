@@ -1,244 +1,323 @@
-Return-Path: <bpf+bounces-22710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A52866979
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 05:59:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A096866A3E
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 07:47:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4913A1C2128C
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 04:59:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEBD5282A9B
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 06:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9DD1B7FB;
-	Mon, 26 Feb 2024 04:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6C01BC4A;
+	Mon, 26 Feb 2024 06:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PTTvxzs9"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="NiG9q+O3"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50EF0320A
-	for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 04:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDDF1BDC3;
+	Mon, 26 Feb 2024 06:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708923583; cv=none; b=dC/l6zhsIW/0FPhHbQULS9XS6LiTeeQNM2KBGvfY71nPSutVQXJHV7XGEMWdjZq2dphA0c4a6pHSKqjch7Y/wyXiyexcUbuv+Csroj3TMP2Jw4jWtIW+6e7MDt/WjoFSvsE7RRyOsBxNo3lkMYxRFj9aHUt4KJePis+Fv1hnyrE=
+	t=1708930047; cv=none; b=u30wVM1pRrI7JmSNwLXfkgbd/h7AnevrgOm13T5LoxzEj6SFRSz5OlbpQtIf1jiigPS517SXEHQSBolDiBnb33GifpkOmObANdZQiGZ4DtRa7Eru3MNwyeaqT9hUi66dsUuWEcj7TK9BX8OOZctWLbi9LR+4JeyZuCTiMGVfv5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708923583; c=relaxed/simple;
-	bh=AaJMamp2Nb+Yq5spo7QL5Q4FyDBAAXS9vg0TE+DBw+s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q5mt7VeHdZsqeM/PfUjiLdemGQaV1kNIRbSPEenq8ya/WNOC8ySeVEgqkhMGRyjzx/UyXhhsJlhnK3dRgy4+6ooWRoIvYqwTVr376vETpWyFvHk+0DXSouIX+vEjG4CGTJ55hv4mW5wLg+rVadAQTzxPQa/WE8WjLp3gVw0cKHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PTTvxzs9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708923580;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iso6K6DyWAnnF++t9+yhMMEiOuk3VKMqC/cJQai+WRQ=;
-	b=PTTvxzs9cVIp3acEcuWwCUtXx5yfaWsYiYrTGrWJz4wB5+Mo0lHsJmViIJ4TleKTKzrJxY
-	nT+zwDvpPpED8hec+tXPfZZW0Pc6kMcWjoHqYMCs1LlN47spMAofsKafX++0HgY9IE9SsP
-	5W1QPxZjjm/5aImp/WGIF13YJjVkrVA=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-434-Z7pX7n0JPZ6B82M42kGDAg-1; Sun, 25 Feb 2024 23:59:38 -0500
-X-MC-Unique: Z7pX7n0JPZ6B82M42kGDAg-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29a82907e96so2178075a91.2
-        for <bpf@vger.kernel.org>; Sun, 25 Feb 2024 20:59:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708923578; x=1709528378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iso6K6DyWAnnF++t9+yhMMEiOuk3VKMqC/cJQai+WRQ=;
-        b=Nm+w/To31zPrVyFQpfIyKCC28x4zGLwK+3hs/YdRvEUVHjrP+ud8mqDQk8bFWceq29
-         xYSWvseQlbGYNI6AZ2tI+8G2y46VLFLnTOWJcVMvLKGoUg2PQ0USY2LhroArry0yXMJj
-         KOd6I69blRxUk+7K02vi6Dk9Wu76LE5YBqNg4QLxjz1mNUiAVUlCy6LgcUDH/0rJawlA
-         ARB/11Bnme4YaVod2oVpBr5dlxhxLMBZXZjWCcqOgAP79nVsUDVIOaEugtE3D25ZLJFa
-         MmO9/qR4kl67fSDLakEnAXiPJA7N37CLRNgx5kmSdK9H8B3pSEOwN/kXOMeaBX8CuyEn
-         eIUg==
-X-Forwarded-Encrypted: i=1; AJvYcCXQXkrClpccb528S31AOev3qqYyU1zIJCUJAwvYAiQqgLw3j33XtGk+jHnf8aXy3URUiCX2ahQscMiXo8x4kHwrocqa
-X-Gm-Message-State: AOJu0YyyUnfVbpDStnZFnTnZhgmDxEwAn6r9yEd4zyEFqfx5uRq/upsZ
-	c6VJyUzckraI/fsNDV9zPRvHMglGzR5Sn2QUeCc2PGAoTkYgBQ//5f5QeJ45M/SDIJqUB1pQpsU
-	EgBc7dB+vfcNhKlPH4fhJzCaaZXtuZdIQjGEZvvLvkLOp44imvVJ5+XPTwHJmCwdKI1W4CL/btA
-	LOn8eOKk/DadWxIUjRPLPV26Gy
-X-Received: by 2002:a17:90a:ad8a:b0:29a:a38c:8262 with SMTP id s10-20020a17090aad8a00b0029aa38c8262mr2919881pjq.48.1708923577743;
-        Sun, 25 Feb 2024 20:59:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFTAN/Lw+RGzf9GeokVG5jtOCl25KGwF/7DbhV8aGSvRwum+aJwJ9WzPtrwumrWZ0Ki7ztusPHGEY87VqwktA=
-X-Received: by 2002:a17:90a:ad8a:b0:29a:a38c:8262 with SMTP id
- s10-20020a17090aad8a00b0029aa38c8262mr2919868pjq.48.1708923577403; Sun, 25
- Feb 2024 20:59:37 -0800 (PST)
+	s=arc-20240116; t=1708930047; c=relaxed/simple;
+	bh=r+YRIokGyqR9X8s9S5ioq/Xrj7AOa13EKl+Y0GQmDFk=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=HbUinRLWub6I5w3jRjXsv3tQTy3tYYK9Nn+gJms8FvG5LLZ4YEu5l+NPj1ecohdMxAqIqlUasFPXMup1nLre9mCNUUwEk7IftQe9wO5BN1QV9g+N9yG1VX1bi4iqrwcgWqy+Ij7OIRaEOv5bcx7INPuOmmdeW5FHt6GvNNnOSHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=NiG9q+O3; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708930036; h=Message-ID:Subject:Date:From:To;
+	bh=zqZsfZ/qluUEW7qkID/ee5gWeGwmJGn3HGM5FIAvvSM=;
+	b=NiG9q+O39eHStuM8y8B1udACnITePfJKKGw2Ll8ljZALTMgpu0a+NdGnMfL6ZtMDtabKgOfh0aVod/qFUUHoC0StBwLKl7sGvsMOka0ZTtaHq2NdET55fDmavQ/jnQk7EfHcaK5ad16ZIb9pM9H0e7+uv6UPb/xVlSAl7Js4Tbg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0W1Cedgm_1708930033;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1Cedgm_1708930033)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Feb 2024 14:47:14 +0800
+Message-ID: <1708927861.8802218-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v2 19/19] virtio_net: sq support premapped mode
+Date: Mon, 26 Feb 2024 14:11:01 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ linux-um@lists.infradead.org,
+ netdev@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
+ <20240223082726.52915-20-xuanzhuo@linux.alibaba.com>
+ <20240225032330-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240225032330-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240202121151.65710-1-liangchen.linux@gmail.com>
- <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
- <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
- <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
- <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
- <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
- <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com> <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Mon, 26 Feb 2024 12:59:25 +0800
-Message-ID: <CACGkMEuUeQTJYpZDx8ggqwBWULQS1Fjd_DgPvVMLq-_cjYfm7g@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, 
-	hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, netdev@vger.kernel.org, virtualization@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com, 
-	daniel@iogearbox.net, ast@kernel.org, Liang Chen <liangchen.linux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 9:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.com> wrote=
-:
-> > On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
-> > > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.co=
-m> wrote:
-> > > >
-> > > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
-> > > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat=
-.com> wrote:
-> > > > > >
-> > > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
-> > > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Broue=
-r <hawk@kernel.org> wrote:
-> > > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
-> > > > > > [...]
-> > > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct x=
-dp_buff *xdp)
-> > > > > > > > >       }
-> > > > > > > > >   }
-> > > > > > > > >
-> > > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_=
-buff *virtnet_xdp,
-> > > > > > > > > +                                  struct net_device *dev=
-,
-> > > > > > > > > +                                  struct virtio_net_hdr_=
-v1_hash *hdr_hash)
-> > > > > > > > > +{
-> > > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
-> > > > > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_=
-value;
-> > > > > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash=
-_report;
-> > > > > > > > > +     }
-> > > > > > > > > +}
-> > > > > > > > > +
-> > > > > > > >
-> > > > > > > > Would it be possible to store a pointer to hdr_hash in virt=
-net_xdp_buff,
-> > > > > > > > with the purpose of delaying extracting this, until and onl=
-y if XDP
-> > > > > > > > bpf_prog calls the kfunc?
-> > > > > > > >
-> > > > > > >
-> > > > > > > That seems to be the way v1 works,
-> > > > > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen=
-.linux@gmail.com/
-> > > > > > > . But it was pointed out that the inline header may be overwr=
-itten by
-> > > > > > > the xdp prog, so the hash is copied out to maintain its integ=
-rity.
-> > > > > >
-> > > > > > Why? isn't XDP supposed to get write access only to the pkt
-> > > > > > contents/buffer?
-> > > > > >
-> > > > >
-> > > > > Normally, an XDP program accesses only the packet data. However,
-> > > > > there's also an XDP RX Metadata area, referenced by the data_meta
-> > > > > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
-> > > > > point somewhere ahead of the data buffer, thereby granting the XD=
-P
-> > > > > program access to the virtio header located immediately before th=
-e
-> > > >
-> > > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data be=
-fore
-> > > > xdp->data_hard_start:
-> > > >
-> > > > https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4=
-210
-> > > >
-> > > > and virtio net set such field after the virtio_net_hdr:
-> > > >
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_n=
-et.c#L1218
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_n=
-et.c#L1420
-> > > >
-> > > > I don't see how the virtio hdr could be touched? Possibly even more
-> > > > important: if such thing is possible, I think is should be somewhat
-> > > > denied (for the same reason an H/W nic should prevent XDP from
-> > > > modifying its own buffer descriptor).
-> > >
-> > > Thank you for highlighting this concern. The header layout differs
-> > > slightly between small and mergeable mode. Taking 'mergeable mode' as
-> > > an example, after calling xdp_prepare_buff the layout of xdp_buff
-> > > would be as depicted in the diagram below,
-> > >
-> > >                       buf
-> > >                        |
-> > >                        v
-> > >         +--------------+--------------+-------------+
-> > >         | xdp headroom | virtio header| packet      |
-> > >         | (256 bytes)  | (20 bytes)   | content     |
-> > >         +--------------+--------------+-------------+
-> > >         ^                             ^
-> > >         |                             |
-> > >  data_hard_start                    data
-> > >                                   data_meta
-> > >
-> > > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
-> > > towards 'data_hard_start', it would point to the inline header, thus
-> > > potentially allowing the XDP program to access the inline header.
+On Sun, 25 Feb 2024 03:38:48 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Fri, Feb 23, 2024 at 04:27:26PM +0800, Xuan Zhuo wrote:
+> > If the xsk is enabling, the xsk tx will share the send queue.
+> > But the xsk requires that the send queue use the premapped mode.
+> > So the send queue must support premapped mode.
 > >
-> > I see. That layout was completely unexpected to me.
+> > cmd:
+> >     sh samples/pktgen/pktgen_sample01_simple.sh -i eth0 \
+> >         -s 16 -d 10.0.0.128 -m 00:16:3e:2c:c8:2e -n 0 -p 100
+> > CPU:
+> >     Intel(R) Xeon(R) Platinum 8369B CPU @ 2.70GHz
 > >
-> > AFAICS the virtio_net driver tries to avoid accessing/using the
-> > virtio_net_hdr after the XDP program execution, so nothing tragic
-> > should happen.
+> > Machine:
+> >     ecs.g7.2xlarge(Aliyun)
 > >
-> > @Michael, @Jason, I guess the above is like that by design? Isn't it a
-> > bit fragile?
-
-Yes.
-
->
-> YES. We process it carefully. That brings some troubles, we hope to put t=
-he
-> virtio-net header to the vring desc like other NICs. But that is a big pr=
-oject.
-
-Yes, and we still need to support the "legacy" layout.
-
->
-> I think this patch is ok, this can be merged to net-next firstly.
-
-+1
-
-Thanks
-
->
-> Thanks.
->
->
+> > before:              1600010.00
+> > after(no-premapped): 1599966.00
+> > after(premapped):    1600014.00
 > >
-> > Thanks!
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/net/virtio_net.c | 136 +++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 132 insertions(+), 4 deletions(-)
 > >
-> > Paolo
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 7715bb7032ec..b83ef6afc4fb 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -146,6 +146,25 @@ struct virtnet_rq_dma {
+> >  	u16 need_sync;
+> >  };
 > >
->
+> > +
 
+[...]
+
+> > +static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq,
+> > +						int nents, void *data)
+> > +{
+> > +	struct virtnet_sq_dma *d;
+> > +	struct scatterlist *sg;
+> > +	int i;
+> > +
+> > +	if (!sq->dmainfo.free)
+> > +		return NULL;
+> > +
+> > +	d = sq->dmainfo.free;
+> > +	sq->dmainfo.free = d->next;
+> > +
+> > +	for_each_sg(sq->sg, sg, nents, i) {
+> > +		if (virtqueue_dma_map_sg_attrs(sq->vq, sg, DMA_TO_DEVICE, 0))
+> > +			goto err;
+> > +
+> > +		d->addr[i] = sg->dma_address;
+> > +		d->len[i] = sg->length;
+> > +	}
+> > +
+> > +	d->data = data;
+> > +	d->num = i;
+> > +	return d;
+> > +
+> > +err:
+> > +	d->num = i;
+> > +	virtnet_sq_unmap(sq, (void **)&d);
+> > +	return NULL;
+> > +}
+>
+>
+> Do I see a reimplementation of linux/llist.h here?
+
+YES. This can be done by the APIs of linux/lllist.h.
+
+But now, there is not __llist_del_first() (That will be used by
+virtnet_sq_map_sg()).
+And that is simple and just two places may use the APIs, so I implement it
+directly.
+
+>
+>
+> > +
+> > +static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data)
+> > +{
+> > +	int ret;
+> > +
+> > +	if (sq->vq->premapped) {
+> > +		data = virtnet_sq_map_sg(sq, num, data);
+> > +		if (!data)
+> > +			return -ENOMEM;
+> > +	}
+> > +
+> > +	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
+> > +	if (ret && sq->vq->premapped)
+> > +		virtnet_sq_unmap(sq, &data);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int virtnet_sq_init_dma_mate(struct send_queue *sq)
+>
+> Mate? The popular south african drink?
+
+Sorry, should be meta, I mean metadata.
+
+>
+> > +{
+> > +	struct virtnet_sq_dma *d;
+> > +	int num, i;
+> > +
+> > +	num = virtqueue_get_vring_size(sq->vq);
+> > +
+> > +	sq->dmainfo.free = kcalloc(num, sizeof(*sq->dmainfo.free), GFP_KERNEL);
+> > +	if (!sq->dmainfo.free)
+> > +		return -ENOMEM;
+>
+>
+> This could be quite a bit of memory for a large queue.  And for a bunch
+> of common cases where unmap is a nop (e.g. iommu pt) this does nothing
+> useful at all.
+
+Then can we skip the unmap api, so pass a zero to the unmap api?
+
+> And also, this does nothing useful if PLATFORM_ACCESS is off
+> which is super common.
+
+That is ok. That just work when PLATFORM_ACCESS is on.
+
+Thanks.
+
+>
+> A while ago I proposed:
+> - extend DMA APIs so one can query whether unmap is a nop
+>   and whether sync is a nop
+> - virtio wrapper taking into account PLATFORM_ACCESS too
+>
+> then we can save all this work and memory when not needed.
+>
+>
+>
+> > +
+> > +	sq->dmainfo.p = sq->dmainfo.free;
+> > +
+> > +	for (i = 0; i < num; ++i) {
+> > +		d = &sq->dmainfo.free[i];
+> > +		d->next = d + 1;
+> > +	}
+> > +
+> > +	d->next = NULL;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static void __free_old_xmit(struct send_queue *sq, bool in_napi,
+> >  			    struct virtnet_sq_free_stats *stats)
+> >  {
+> > @@ -377,6 +487,9 @@ static void __free_old_xmit(struct send_queue *sq, bool in_napi,
+> >  	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
+> >  		++stats->packets;
+> >
+> > +		if (sq->vq->premapped)
+> > +			virtnet_sq_unmap(sq, &ptr);
+> > +
+> >  		if (!is_xdp_frame(ptr)) {
+> >  			struct sk_buff *skb = ptr;
+> >
+> > @@ -890,8 +1003,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+> >  			    skb_frag_size(frag), skb_frag_off(frag));
+> >  	}
+> >
+> > -	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
+> > -				   xdp_to_ptr(xdpf), GFP_ATOMIC);
+> > +	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
+> >  	if (unlikely(err))
+> >  		return -ENOSPC; /* Caller handle free/refcnt */
+> >
+> > @@ -2357,7 +2469,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+> >  			return num_sg;
+> >  		num_sg++;
+> >  	}
+> > -	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
+> > +	return virtnet_add_outbuf(sq, num_sg, skb);
+> >  }
+> >
+> >  static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+> > @@ -4166,6 +4278,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
+> >  	for (i = 0; i < vi->max_queue_pairs; i++) {
+> >  		__netif_napi_del(&vi->rq[i].napi);
+> >  		__netif_napi_del(&vi->sq[i].napi);
+> > +
+> > +		kfree(vi->sq[i].dmainfo.p);
+> >  	}
+> >
+> >  	/* We called __netif_napi_del(),
+> > @@ -4214,6 +4328,15 @@ static void free_receive_page_frags(struct virtnet_info *vi)
+> >
+> >  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
+> >  {
+> > +	struct virtnet_info *vi = vq->vdev->priv;
+> > +	struct send_queue *sq;
+> > +	int i = vq2rxq(vq);
+> > +
+> > +	sq = &vi->sq[i];
+> > +
+> > +	if (sq->vq->premapped)
+> > +		virtnet_sq_unmap(sq, &buf);
+> > +
+> >  	if (!is_xdp_frame(buf))
+> >  		dev_kfree_skb(buf);
+> >  	else
+> > @@ -4327,8 +4450,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+> >  		if (ctx)
+> >  			ctx[rxq2vq(i)] = true;
+> >
+> > -		if (premapped)
+> > +		if (premapped) {
+> >  			premapped[rxq2vq(i)] = true;
+> > +			premapped[txq2vq(i)] = true;
+> > +		}
+> >  	}
+> >
+> >  	cfg.nvqs      = total_vqs;
+> > @@ -4352,6 +4477,9 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+> >  		vi->rq[i].vq = vqs[rxq2vq(i)];
+> >  		vi->rq[i].min_buf_len = mergeable_min_buf_len(vi, vi->rq[i].vq);
+> >  		vi->sq[i].vq = vqs[txq2vq(i)];
+> > +
+> > +		if (vi->sq[i].vq->premapped)
+> > +			virtnet_sq_init_dma_mate(&vi->sq[i]);
+> >  	}
+> >
+> >  	/* run here: ret == 0. */
+> > --
+> > 2.32.0.3.g01195cf9f
+>
 
