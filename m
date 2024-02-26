@@ -1,104 +1,88 @@
-Return-Path: <bpf+bounces-22743-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88BD7868417
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 23:57:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BDCC868491
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 00:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7ECD1C22D72
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 22:57:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE8A61F22962
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 23:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3B8135418;
-	Mon, 26 Feb 2024 22:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43CD3135A5F;
+	Mon, 26 Feb 2024 23:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="na6CGz9Y"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="u2VJUnCp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8455133998
-	for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 22:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A488133285;
+	Mon, 26 Feb 2024 23:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708988241; cv=none; b=ewHtEm3u2kPYCNkLUOm7uFQNZ9ZA4Lvuer88tGv/U979znF5f9No1YYFEDBWSP/t2FjdBT9U89G0gcWgPr8t8s2M6YJeedUJ4OxQa5T5dXqF+CLYbTp8ErHs+d8G9MaNw+5GdHaqnq2e9Rm0NxEsZMwNoxfJKxYxZWOXGcigMQ8=
+	t=1708989524; cv=none; b=Jr9xNlIJWrKU2UQ1ZDpKDACgVq2wrkzh9kV8HizRYa/PSLopwhfBve82DUkMXjTvm7XIgJ7gcpACCJx29HLpJLuWHzT2u9dGuKpqQ8qZtuJYlDnhY2xaIyUojb6J/BI6JTAEoC229DCVORA1NBRvMxXXUzRhm+X5jgNrVhrNUs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708988241; c=relaxed/simple;
-	bh=H+CFdeYqck5aymV5rKRp7XciMZfT+C71Qb0bj9f/Wf8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SboEHqmYJwf0RUUQUIDNwBkL06c6YFPFeThMoQz1eke3U074pkb1kpCkaY8SgqTftJ8ZlqGRyfs417PgZyWOVkVT8Nmol7sJluNJogFD+A14eHK7xFPqmZ8vC+o4k3hRjfEGYfzT8NJbbaGsDOoQ3tBJzBxTTPYVSjd1/+c1uec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=na6CGz9Y; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0d8d82e5-c55a-4f6f-ba92-3d169daedc8c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708988236;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rkki+md6n4ydSlDMqwoQEgH2XHsjb3uqE05aGL27yGU=;
-	b=na6CGz9Y4Pp/l+gk+QoUDhuiO+hFQ3fz2p4b9VvUjp49/yqWi37lo872EAVXbiu6AW/Iu2
-	wfrrMRVM6EECi5rhkqRfE7oUP7Vx6ZHwZp5O9LBqP51ROVE4gQAR1wrwqYkLQje/xAZgO1
-	j4O3ZbwZJwoYmNa8r1LyZRmcUGVGRIA=
-Date: Mon, 26 Feb 2024 14:57:07 -0800
+	s=arc-20240116; t=1708989524; c=relaxed/simple;
+	bh=RyR0GnuJRe7THA/MhNcC5QF7CUPey8a/ORFM9KGNV4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IWdvJmgh+Q5HX7afBn+hpPPZ3KD7C/fWRVSwoxRz4ugZK3OUx31kmwzF6gniS4bZ8g+aOUxjnm6HUSicf7Z1n1PX82c72sbzR10JbvyJwpTeuV0xbheNhGCmRIDvmQ/9t9KDqMwpQRacjTMfkFmpDYyJZKoxoBNXL5p1pSS4Ouw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=u2VJUnCp; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=g2q7Y6j0wCGTV4GevQ+ES5smo37GThY91C78pWGmQpw=; b=u2VJUnCpWA24Cmf1fN0w3E962R
+	QE/KINpYUHDTH1tnNo5Sb7+K7nSN43PB3mvL29YKQNOqOgSOVN0Vik49pUcyV0oGOPMDDPT8uYNJd
+	eznc6DyK3pVvqndBP+0ptOD+lr/RzNqIHuy+azL7oUNwuRCT9svn11R4h8ZrYKdS9c4Q=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rekFA-008lsR-HI; Tue, 27 Feb 2024 00:18:44 +0100
+Date: Tue, 27 Feb 2024 00:18:44 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Julien Panis <jpanis@baylibre.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw: Add minimal XDP support
+Message-ID: <e382df16-c78a-448d-b6d5-39a627b30652@lunn.ch>
+References: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 3/6] libbpf: Convert st_ops->data to shadow
- type.
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- quentin@isovalent.com
-References: <20240222222624.1163754-1-thinker.li@gmail.com>
- <20240222222624.1163754-4-thinker.li@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240222222624.1163754-4-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
 
-On 2/22/24 2:26 PM, thinker.li@gmail.com wrote:
-> +/* Convert the data of a struct_ops map to shadow type.
-> + *
-> + * The function pointers are replaced with the pointers of bpf_program in
-> + * st_ops->progs[].
-> + */
-> +static void struct_ops_convert_shadow(struct bpf_map *map,
-> +				      const struct btf_type *t)
+> +static struct sk_buff *am65_cpsw_alloc_skb(struct net_device *ndev, unsigned int len)
 > +{
-> +	struct btf *btf = map->obj->btf;
-> +	struct bpf_struct_ops *st_ops = map->st_ops;
-> +	const struct btf_member *m;
-> +	const struct btf_type *mtype;
-> +	char *data;
-> +	int i;
+> +	struct page *page;
+> +	struct sk_buff *skb;
 > +
-> +	data = st_ops->data;
-> +
-> +	for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
-> +		mtype = skip_mods_and_typedefs(btf, m->type, NULL);
-> +
-> +		if (btf_kind(mtype) != BTF_KIND_PTR)
-> +			continue;
-> +		if (!resolve_func_ptr(btf, m->type, NULL))
-> +			continue;
-> +
-> +		*((struct bpf_program **)(data + m->offset / 8)) =
-> +			st_ops->progs[i];
+> +	page = dev_alloc_pages(0);
 
-This is to initialize the bpf_program pointer in the st_ops->data.
-Can this be done directly at the bpf_object__collect_st_ops_relos()?
+You are likely to get better performance if you use the page_pool.
 
-> +	}
-> +}
-> +
+When FEC added XDP support, the first set of changes was to make use
+of page_pool. That improved the drivers performance. Then XDP was
+added on top. Maybe you can follow that pattern.
 
+      Andrew
 
