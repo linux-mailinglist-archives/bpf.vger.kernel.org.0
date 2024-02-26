@@ -1,137 +1,122 @@
-Return-Path: <bpf+bounces-22733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B924E867BEC
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 17:27:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A272D867E65
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 18:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAACF1C2985F
-	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 16:27:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A511F2D2EC
+	for <lists+bpf@lfdr.de>; Mon, 26 Feb 2024 17:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7861C12F5BA;
-	Mon, 26 Feb 2024 16:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A1712F38F;
+	Mon, 26 Feb 2024 17:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WFtUa+Tr"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECEF12C810;
-	Mon, 26 Feb 2024 16:27:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DFE12F366;
+	Mon, 26 Feb 2024 17:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708964848; cv=none; b=SfpLWc6J25GvPdTLI6IPQydbgSSAuWduHILjQmlwSxax2SVRV4ybwXIIFTQtYmeXPsrpYhNQMeu5Yz7NzQlrykWk/U3cdfp4V+MEkUKkeas4WyacP971kGjEGFgkU1V5mlj19BYhSiHKD3RcWyqr1bFbjnbWyX4m84NSJW+4YLg=
+	t=1708968339; cv=none; b=ea7plVrNyYlLo4RCLX0pEFLMKD082szz5oQr0m2I1n2csaI+CGoFIXvz0zw83W6EwTdcTXPLGiikc2lM9T3UdJskrhco4hk+Q7Be9Q+o08emZiACUWG1msRzY7M//15uNar0ARCu3IIb/r7r/0PvXyaMiqehWqzY9dtJ7+FlyMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708964848; c=relaxed/simple;
-	bh=mO9DSkJwDCEJi0Uvk9Pm5rQ7w+WPMSHOMnK//jgc+C8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rK+MfGUWUXkyvk/NX89qupKprsLy7tDdNLet1ny9EP3aY+idkzCLrvv6jJ5Q74Ox98x/aY0JA/ZiBxLzOu/7jEZDKEowOZYVxX/pROe5vZJnHNLQjc02oGjiLS1th649IjOym4kE+QJsM7VVRsHJlR2l7u3ndD4zrJUzgyClgOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4510EDA7;
-	Mon, 26 Feb 2024 08:27:58 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 965933F73F;
-	Mon, 26 Feb 2024 08:27:17 -0800 (PST)
-Message-ID: <94043c84-0b03-491a-9dd4-2a792d33bca0@arm.com>
-Date: Mon, 26 Feb 2024 16:27:16 +0000
+	s=arc-20240116; t=1708968339; c=relaxed/simple;
+	bh=hG1hhNEZQpoCC0ZUVla+4Zhhfd/60PsfYtOoSxY9E4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qwsqBSqcDG7sXoiTUiFA5arYtK7AMAHjOEfXrjlf5nUw39aRjFW14kTpHOTKl8htRKlG3d1UPAmTjMY3sqDbqB76EeZ1gH94eZebyMcPwb7sJIa9lrc5tX0qSotQbpwQO/pGzdc6dATfyBzR6tOy6z25I19SPxyQoWgBUVpT5AU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WFtUa+Tr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C981C433C7;
+	Mon, 26 Feb 2024 17:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708968338;
+	bh=hG1hhNEZQpoCC0ZUVla+4Zhhfd/60PsfYtOoSxY9E4A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WFtUa+TrJXH8XiYxqXIqG52N70tW+5ZYRHjsIo0O5vnhGk7FNNY2Xh+WZ2f0hL4xs
+	 QdwMS/ecbQ6bvKNeIYbyFjGh+3dyiREZ+UMz/D7hvP7rHIaUAvnikfo2OIZQcfx9k6
+	 lEtyTeiPFnDqvdcOMnJnNbrc67Q+XKUsnTANcEoPffEBnkokAdn8jDqb4ma6ddlywD
+	 3SSqb4YDjw3e/TwxNZ2F664qx/UR8Gzumtr6W42Wxivjcgi2taZx9U9KKiTqeEsPUt
+	 E5XH5er16+1ce2mFMVTiSPNOPA9+kmphEI/lgKYo9mUAXgxMjTxv5t+gNfwMt7Nq2f
+	 CidUS099rTBvA==
+Date: Mon, 26 Feb 2024 17:25:33 +0000
+From: Simon Horman <horms@kernel.org>
+To: Julien Panis <jpanis@baylibre.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw: Add minimal XDP support
+Message-ID: <20240226172533.GG13129@kernel.org>
+References: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 1/7] dma: compile-out DMA sync op calls when
- not used
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
- <20240214162201.4168778-2-aleksander.lobakin@intel.com>
- <893ad3a4-ba24-43cf-8200-b8cd7742622d@arm.com>
- <6b003271-cd83-4091-89c6-bb37da62afef@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <6b003271-cd83-4091-89c6-bb37da62afef@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
 
-On 19/02/2024 12:53 pm, Alexander Lobakin wrote:
-> From: Robin Murphy <robin.murphy@arm.com>
-> Date: Wed, 14 Feb 2024 17:20:50 +0000
+On Fri, Feb 23, 2024 at 12:01:37PM +0100, Julien Panis wrote:
+> This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
+> Ethernet driver. The following features are implemented:
+> - NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
+> - NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
+> - NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
 > 
->> On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
-> 
-> [...]
-> 
->>> -static inline void dma_sync_single_for_cpu(struct device *dev,
->>> dma_addr_t addr,
->>> -        size_t size, enum dma_data_direction dir)
->>> +static inline void __dma_sync_single_for_cpu(struct device *dev,
->>> +        dma_addr_t addr, size_t size, enum dma_data_direction dir)
->>
->> To me it would feel more logical to put all the wrappers inside the
->> #ifdef CONFIG_HAS_DMA and not touch these stubs at all (what does it
->> mean to skip an inline no-op?). Or in fact, if dma_skip_sync() is
->> constant false for !HAS_DMA, then we could also just make the external
->> function declarations unconditional and remove the stubs. Not a critical
->> matter though, and I defer to whatever Christoph thinks is most
->> maintainable.
-> 
-> It's done like that due to that I'm adding a runtime check in the second
-> patch. I don't feel like touching this twice makes sense.
+> Signed-off-by: Julien Panis <jpanis@baylibre.com>
 
-Huh? Why would anything need touching twice? All I'm saying is that it's 
-pretty pointless to add any invocations of dma_skip_sync() in !HAS_DMA 
-paths where we already know the whole API is stubbed out anyway. The 
-only cases which are worth differentiating here are HAS_DMA + 
-DMA_NEED_SYNC vs. HAS_DMA + !DMA_NEED_SYNC (with the subsequent runtime 
-check then just subdividing the former).
+...
 
-> 
-> [...]
-> 
->>> @@ -348,18 +348,72 @@ static inline void dma_unmap_single_attrs(struct
->>> device *dev, dma_addr_t addr,
->>>        return dma_unmap_page_attrs(dev, addr, size, dir, attrs);
->>>    }
->>>    +static inline void __dma_sync_single_range_for_cpu(struct device *dev,
->>> +        dma_addr_t addr, unsigned long offset, size_t size,
->>> +        enum dma_data_direction dir)
->>> +{
->>> +    __dma_sync_single_for_cpu(dev, addr + offset, size, dir);
->>> +}
->>> +
->>> +static inline void __dma_sync_single_range_for_device(struct device
->>> *dev,
->>> +        dma_addr_t addr, unsigned long offset, size_t size,
->>> +        enum dma_data_direction dir)
->>> +{
->>> +    __dma_sync_single_for_device(dev, addr + offset, size, dir);
->>> +}
->>
->> There is no need to introduce these two.
-> 
-> I already replied to this in the previous thread. Some subsys may want
-> to check for the shortcut earlier to avoid call ladders of their own
-> functions. See patch 6 for example where I use this one.
+> @@ -440,6 +476,27 @@ static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma)
+>  	dev_kfree_skb_any(skb);
+>  }
+>  
+> +static struct sk_buff *am65_cpsw_alloc_skb(struct net_device *ndev, unsigned int len)
+> +{
+> +	struct page *page;
+> +	struct sk_buff *skb;
 
-Ugh, no. If the page pool code wants to be clever poking around and 
-sidestepping parts of the documented API, it can flippin' well open-code 
-a single addition to call __dma_sync_single_for_device() directly 
-itself. I'm not at all keen on having to maintain "common" APIs for such 
-niche trickery.
+nit: please arrange local variables in reverse xmas tree order,
+     from longest line to shortest in new code.
 
-Thanks,
-Robin.
+     This tool can be useful: https://github.com/ecree-solarflare/xmastree
+
+> +
+> +	page = dev_alloc_pages(0);
+
+nit: Maybe dev_alloc_page() is appropriate here?
+
+> +	if (unlikely(!page))
+> +		return NULL;
+> +
+> +	len += AM65_CPSW_HEADROOM;
+> +
+> +	skb = build_skb(page_address(page), len);
+> +	if (unlikely(!skb))
+
+Does page need to be freed here?
+
+> +		return NULL;
+> +
+> +	skb_reserve(skb, AM65_CPSW_HEADROOM + NET_IP_ALIGN);
+> +	skb->dev = ndev;
+> +
+> +	return skb;
+> +}
+
+...
 
