@@ -1,324 +1,147 @@
-Return-Path: <bpf+bounces-22819-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22820-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEB7186A2E7
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 23:59:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A93F86A356
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 00:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 954F028E792
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 22:59:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EFAC29283F
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 23:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD0855E4F;
-	Tue, 27 Feb 2024 22:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055D455E45;
+	Tue, 27 Feb 2024 23:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Imy0SpOP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4483955C20;
-	Tue, 27 Feb 2024 22:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5FD1E86C
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 23:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709074776; cv=none; b=Vn4xbYtbbuQI9W1LIhhdQ07MNgIanYZzOMkHOBnj6HNhhpRdABtb/WOY7TUcks0eLyDGk7plzOKNM3OT97ZNK6WD5VO0NHwZiEGa8ibc9+FtpCra+c2hLznTLvp9awkOd12Gcu9HLafPM8POxJKgsdrOgY4em/AakTU7kiLVbFU=
+	t=1709075371; cv=none; b=ubsKvrkMcvaFduRMlWTZmxvZOBYmzQAb7+rLD8xEedTUP+UT0Rt/I+DC/+kcWYNyWVIijrjuToBAY7Ay5agMynXDnQuuKduVamxIIx1SjrGipzqNPO0uTqdPA6ngqvvJYzinl55D+OlHW5GGLuK35aEyAbC1Rgj3465PmCUlcFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709074776; c=relaxed/simple;
-	bh=3eAUqlT0wQJf/+jtfc2ilbcMXftHXIkOzQycF3JRhfM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZNcWMjGC6fgLZdCNUOnGedUdcH8f9froIRHDOs+OjJNrt3YKz9AEqmlJqDfy+hZQCRgou+ykHAe62MNn+R9Q1lONFC2FpiAQw3MyfZnVpN87rR+4NiMLmedNFWSSJJKMsOY3zyOUVz+oa+TG7xPo2jSDp4nTL+iHYKIh7zl8hok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709075371; c=relaxed/simple;
+	bh=8stcQoSGmMnpE0B49TkmqGpUwg91RHFJ79En4ZUzg4o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=RN5E2tZVeQlRQAXPCacwrUBEjCjNDN1ANqsYWE01gunbV7VaGjMBsTy5d9M/AV8vBwtsQhqaoOG63RNs4enwgjkIuFfY5sjnLsz2E1+hintw7D5i1/FVKMp1x2/Hg6gFmvdhLtBtaSAYWkL8ZtrRet69yyfS4aoipd8hx0wCZ8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Imy0SpOP; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29ad8ef1384so1622022a91.3;
-        Tue, 27 Feb 2024 14:59:35 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3f829cde6dso580458866b.0
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 15:09:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709075368; x=1709680168; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=62YCQsvPRjkak17F+44ZCA3DnoN+GsuOuxK7+kSasd8=;
+        b=Imy0SpOPZWgibZQ14rhDwFbl8GWJb6Fzypfhw+vgVmqcIr3G99Gtr9MeOMdMh8Rl0v
+         w753g98NcECprO9AKXYbUKClK1o/G9PMOPIDbYPiDcIp/v9Kw1KN3dlUCDNR7QQvIbW9
+         HivURDuykv/9XS4OUBymdBpTu+7C+XrAktsvSIErdRPA0HcQrBS7YuLpAYeb/5iLQ+R8
+         sotV30IwqJHJcJyHl6q//BDhTe/2n826ngcitpI3u0wrNQQ4WRMIhfk76LbuAAJ+KI/G
+         5XpuEszgIhHsNiJ64YwnQYgJRS0qa8AdgW53N4zZM6ApnMZAy+15quLzulayQstBJ5Gb
+         YsmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709074774; x=1709679574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GuCUMb0/dv6ebyslKfhHgXOZ4LoyHSK2csMcnV0iOt8=;
-        b=IzHkJ+JevyGtXsy+UjySennmMlIuEyVLL8bLWwn6BMfiVrjbVfip4s0WDtdCCRIYr3
-         cAviCnfzvLFx2gSFBTkLDLz5ugkd8H4b8LST7T2nFXnkHHYOz8pG+XfroBnyYCnuTAAz
-         a9LjYLbmHJbBL/gRAWF8B/OGHQtV4kCQPwWBVCMazTMyt6FCtVdlt/HZ9GLojFf15WJA
-         altXJQWgcedptrxwZDEYjAwje3gzjRFB5flK74IUdU1CNiaECt3AcgaEp0VqBJBsUXJv
-         KXiF6wCjpGubEWHd10ympGVPfYOq8/Lal0rPCC+Bxlgf4B/mFKs/3I5hBPBG+85BiX8+
-         wbIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVdV2rxQOqdr4/Rr3GfkPiuVhUpVd2ox1jnevyF5XdUMXMPFEZt8FYb6eZh56ABjtCh3NvKUGvaDasINAsM4CjsgN+5VpaHLWkW+Z72ChJZn6JwRXc+ShNoqpXP0ujVAba5rDi1sdsuXkcaqCGU3RPFIX8Slf9NG+1taN2GQ/O/dblZjw==
-X-Gm-Message-State: AOJu0YyURr3EodMJG78etcsYMF7/1WQIO4QT/0ms0cJq9M7f3muXj1xG
-	uW+JWuqtZ4b8K7UOhA2b25eRGGORdKEsAyLbEhlyYWnFVVWkLRHSkNXXpJ3rBl+n52pgSbJ52Sa
-	sEJgigTH6KHJcahVX4JvV5na9leXk6cdC
-X-Google-Smtp-Source: AGHT+IEC3k8yEDAodSG8V5zdY6ILU0/a/D2QUs3Ug7tboxZWyn5sSiZjS67CmPwsRhf/LJU7fLV+QO5pnM1wlMPNerM=
-X-Received: by 2002:a17:90a:1b8f:b0:29a:9093:619a with SMTP id
- w15-20020a17090a1b8f00b0029a9093619amr8775349pjc.20.1709074774466; Tue, 27
- Feb 2024 14:59:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709075368; x=1709680168;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=62YCQsvPRjkak17F+44ZCA3DnoN+GsuOuxK7+kSasd8=;
+        b=aZKRaOMoynYJSQWy4z8Ek2wjVOKL5hko8V6jUrPVCycqDskwJskTVP7t+pLndsdMcS
+         llOkYnGF67P9iaRr0Sqf262Q+qK0P3mHpEC9pOMrTttBjtEM1qoP5ftM3TBC7FI+iP8t
+         yqAYz9LqxQCbgk+J391cUbOm02v4lpsGu/8m6xkRT2s3t5Jn60GdYMGtQok1mqOmH5Bi
+         hsmnR7TWulXKDdfeJDr5x+IHL3aXPFnNw35MO8Tx22MZcajPJuNKLxasyrl6TPAq0J19
+         4XO714moBSoGT/Mdh4OhcsaFE1k30ft7MnyWrGG9xsOE/5G5Djw+cCNH6XDhdlor+tR3
+         IuJA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcOJE04Wwp3wtBG99ZQt159KXD+FGe1UOi0vRyX2XCZA1yhz7WnfqSHRVrtjCcyvjwFub5k1dykiFgAy6LF9mvTDOI
+X-Gm-Message-State: AOJu0YyhANCdfxhS8CBxvnXdtZ3w8OtjgbDy8LiBiYQU/HU3QG9Uhrll
+	hfrtAXyNnsGhbMxxmnJrIOuFHSfSS5+c12bQ5iITIv297p9DmBhP
+X-Google-Smtp-Source: AGHT+IFQ3U3tSp2dergt+zlpvmwfe8J3W+2Oj7uoN29dKeHfWRRAz6ZaaDFeGhGBbxzMwwlsMCA6rg==
+X-Received: by 2002:a17:906:4158:b0:a3e:b7a5:71f0 with SMTP id l24-20020a170906415800b00a3eb7a571f0mr7308968ejk.41.1709075368177;
+        Tue, 27 Feb 2024 15:09:28 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id ck25-20020a170906c45900b00a431cc4bd3dsm1215991ejb.182.2024.02.27.15.09.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 15:09:27 -0800 (PST)
+Message-ID: <c9395bfd3cbd27ec5280d2e55abc6a6186fc663a.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 7/8] libbpf: sync progs autoload with maps
+ autocreate for struct_ops maps
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kui-Feng Lee <sinquersw@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	kernel-team@fb.com, yonghong.song@linux.dev, void@manifault.com
+Date: Wed, 28 Feb 2024 01:09:26 +0200
+In-Reply-To: <ec9d8997-f5a2-44b6-9bc4-2caaf19df8a9@gmail.com>
+References: <20240227204556.17524-1-eddyz87@gmail.com>
+	 <20240227204556.17524-8-eddyz87@gmail.com>
+	 <ec9d8997-f5a2-44b6-9bc4-2caaf19df8a9@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209230657.1546739-1-namhyung@kernel.org>
-In-Reply-To: <20240209230657.1546739-1-namhyung@kernel.org>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 27 Feb 2024 14:59:22 -0800
-Message-ID: <CAM9d7chXmenDZQCXS_z2qbsgHpYDTjOXpWNHkaH7TF56HAe1hw@mail.gmail.com>
-Subject: Re: [PATCH RESEND] perf lock contention: Account contending locks too
-To: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Ping!
+On Tue, 2024-02-27 at 14:55 -0800, Kui-Feng Lee wrote:
+[...]
 
-On Fri, Feb 9, 2024 at 3:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Currently it accounts the contention using delta between timestamps in
-> lock:contention_begin and lock:contention_end tracepoints.  But it means
-> the lock should see the both events during the monitoring period.
->
-> Actually there are 4 cases that happen with the monitoring:
->
->                 monitoring period
->             /                       \
->             |                       |
->  1:  B------+-----------------------+--------E
->  2:    B----+-------------E         |
->  3:         |           B-----------+----E
->  4:         |     B-------------E   |
->             |                       |
->             t0                      t1
->
-> where B and E mean contention BEGIN and END, respectively.  So it only
-> accounts the case 4 for now.  It seems there's no way to handle the case
-> 1.  The case 2 might be handled if it saved the timestamp (t0), but it
-> lacks the information from the B notably the flags which shows the lock
-> types.  Also it could be a nested lock which it currently ignores.  So
-> I think we should ignore the case 2.
->
-> However we can handle the case 3 if we save the timestamp (t1) at the
-> end of the period.  And then it can iterate the map entries in the
-> userspace and update the lock stat accordinly.
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/bpf_lock_contention.c         | 116 ++++++++++++++++++
->  .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 +--
->  tools/perf/util/bpf_skel/lock_data.h          |   7 ++
->  3 files changed, 132 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_=
-lock_contention.c
-> index 31ff19afc20c..d6bafd9a3955 100644
-> --- a/tools/perf/util/bpf_lock_contention.c
-> +++ b/tools/perf/util/bpf_lock_contention.c
-> @@ -179,6 +179,119 @@ int lock_contention_prepare(struct lock_contention =
-*con)
->         return 0;
->  }
->
-> +static void mark_end_timestamp(void)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +               .flags =3D BPF_F_TEST_RUN_ON_CPU,
-> +       );
-> +       int prog_fd =3D bpf_program__fd(skel->progs.end_timestamp);
-> +
-> +       bpf_prog_test_run_opts(prog_fd, &opts);
-> +}
-> +
-> +static void update_lock_stat(int map_fd, int pid, u64 end_ts,
-> +                            enum lock_aggr_mode aggr_mode,
-> +                            struct tstamp_data *ts_data)
-> +{
-> +       u64 delta;
-> +       struct contention_key stat_key =3D {};
-> +       struct contention_data stat_data;
-> +
-> +       if (ts_data->timestamp >=3D end_ts)
-> +               return;
-> +
-> +       delta =3D end_ts - ts_data->timestamp;
-> +
-> +       switch (aggr_mode) {
-> +       case LOCK_AGGR_CALLER:
-> +               stat_key.stack_id =3D ts_data->stack_id;
-> +               break;
-> +       case LOCK_AGGR_TASK:
-> +               stat_key.pid =3D pid;
-> +               break;
-> +       case LOCK_AGGR_ADDR:
-> +               stat_key.lock_addr_or_cgroup =3D ts_data->lock;
-> +               break;
-> +       case LOCK_AGGR_CGROUP:
-> +               /* TODO */
-> +               return;
-> +       default:
-> +               return;
-> +       }
-> +
-> +       if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
-> +               return;
-> +
-> +       stat_data.total_time +=3D delta;
-> +       stat_data.count++;
-> +
-> +       if (delta > stat_data.max_time)
-> +               stat_data.max_time =3D delta;
-> +       if (delta < stat_data.min_time)
-> +               stat_data.min_time =3D delta;
-> +
-> +       bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
-> +}
-> +
-> +/*
-> + * Account entries in the tstamp map (which didn't see the corresponding
-> + * lock:contention_end tracepoint) using end_ts.
-> + */
-> +static void account_end_timestamp(struct lock_contention *con)
-> +{
-> +       int ts_fd, stat_fd;
-> +       int *prev_key, key;
-> +       u64 end_ts =3D skel->bss->end_ts;
-> +       int total_cpus;
-> +       enum lock_aggr_mode aggr_mode =3D con->aggr_mode;
-> +       struct tstamp_data ts_data, *cpu_data;
-> +
-> +       /* Iterate per-task tstamp map (key =3D TID) */
-> +       ts_fd =3D bpf_map__fd(skel->maps.tstamp);
-> +       stat_fd =3D bpf_map__fd(skel->maps.lock_stat);
-> +
-> +       prev_key =3D NULL;
-> +       while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-> +               if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) =3D=3D 0) =
-{
-> +                       int pid =3D key;
-> +
-> +                       if (aggr_mode =3D=3D LOCK_AGGR_TASK && con->owner=
-)
-> +                               pid =3D ts_data.flags;
-> +
-> +                       update_lock_stat(stat_fd, pid, end_ts, aggr_mode,
-> +                                        &ts_data);
-> +               }
-> +
-> +               prev_key =3D &key;
-> +       }
-> +
-> +       /* Now it'll check per-cpu tstamp map which doesn't have TID. */
-> +       if (aggr_mode =3D=3D LOCK_AGGR_TASK || aggr_mode =3D=3D LOCK_AGGR=
-_CGROUP)
-> +               return;
-> +
-> +       total_cpus =3D cpu__max_cpu().cpu;
-> +       ts_fd =3D bpf_map__fd(skel->maps.tstamp_cpu);
-> +
-> +       cpu_data =3D calloc(total_cpus, sizeof(*cpu_data));
-> +       if (cpu_data =3D=3D NULL)
-> +               return;
-> +
-> +       prev_key =3D NULL;
-> +       while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-> +               if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
-> +                       goto next;
-> +
-> +               for (int i =3D 0; i < total_cpus; i++) {
-> +                       update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
-> +                                        &cpu_data[i]);
-> +               }
-> +
-> +next:
-> +               prev_key =3D &key;
-> +       }
-> +       free(cpu_data);
-> +}
-> +
->  int lock_contention_start(void)
->  {
->         skel->bss->enabled =3D 1;
-> @@ -188,6 +301,7 @@ int lock_contention_start(void)
->  int lock_contention_stop(void)
->  {
->         skel->bss->enabled =3D 0;
-> +       mark_end_timestamp();
->         return 0;
->  }
->
-> @@ -301,6 +415,8 @@ int lock_contention_read(struct lock_contention *con)
->         if (stack_trace =3D=3D NULL)
->                 return -1;
->
-> +       account_end_timestamp(con);
-> +
->         if (con->aggr_mode =3D=3D LOCK_AGGR_TASK) {
->                 struct thread *idle =3D __machine__findnew_thread(machine=
-,
->                                                                 /*pid=3D*=
-/0,
-> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/=
-util/bpf_skel/lock_contention.bpf.c
-> index 95cd8414f6ef..fb54bd38e7d0 100644
-> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> @@ -19,13 +19,6 @@
->  #define LCB_F_PERCPU   (1U << 4)
->  #define LCB_F_MUTEX    (1U << 5)
->
-> -struct tstamp_data {
-> -       __u64 timestamp;
-> -       __u64 lock;
-> -       __u32 flags;
-> -       __s32 stack_id;
-> -};
-> -
->  /* callstack storage  */
->  struct {
->         __uint(type, BPF_MAP_TYPE_STACK_TRACE);
-> @@ -140,6 +133,8 @@ int perf_subsys_id =3D -1;
->  /* determine the key of lock stat */
->  int aggr_mode;
->
-> +__u64 end_ts;
-> +
->  /* error stat */
->  int task_fail;
->  int stack_fail;
-> @@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
->         return 0;
->  }
->
-> +SEC("raw_tp/bpf_test_finish")
-> +int BPF_PROG(end_timestamp)
-> +{
-> +       end_ts =3D bpf_ktime_get_ns();
-> +       return 0;
-> +}
-> +
->  char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
-> diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_s=
-kel/lock_data.h
-> index 08482daf61be..36af11faad03 100644
-> --- a/tools/perf/util/bpf_skel/lock_data.h
-> +++ b/tools/perf/util/bpf_skel/lock_data.h
-> @@ -3,6 +3,13 @@
->  #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
->  #define UTIL_BPF_SKEL_LOCK_DATA_H
->
-> +struct tstamp_data {
-> +       u64 timestamp;
-> +       u64 lock;
-> +       u32 flags;
-> +       u32 stack_id;
-> +};
-> +
->  struct contention_key {
->         u32 stack_id;
->         u32 pid;
-> --
-> 2.43.0.687.g38aa6559b0-goog
->
->
+> > @@ -4509,6 +4514,28 @@ static int bpf_get_map_info_from_fdinfo(int fd, =
+struct bpf_map_info *info)
+> >   	return 0;
+> >   }
+> >  =20
+> > +/* Sync autoload and autocreate state between struct_ops map and
+> > + * referenced programs.
+> > + */
+> > +static void bpf_map__struct_ops_toggle_progs_autoload(struct bpf_map *=
+map, bool autocreate)
+> > +{
+> > +	struct bpf_program *prog;
+> > +	int i;
+> > +
+> > +	for (i =3D 0; i < btf_vlen(map->st_ops->type); ++i) {
+> > +		prog =3D map->st_ops->progs[i];
+> > +
+> > +		if (!prog || prog->autoload_user_set)
+> > +			continue;
+> > +
+> > +		if (autocreate)
+> > +			prog->struct_ops_refs++;
+> > +		else
+> > +			prog->struct_ops_refs--;
+> > +		prog->autoload =3D prog->struct_ops_refs !=3D 0;
+> > +	}
+> > +}
+> > +
+>=20
+> This part is related to the other patch [1], which allows
+> a user to change the value of a function pointer field. The behavior of
+> autocreate and autoload may suprise a user if the user call
+> bpf_map__set_autocreate() after changing the value of a function pointer
+> field.
+>=20
+> [1]=20
+> https://lore.kernel.org/all/20240227010432.714127-1-thinker.li@gmail.com/
+
+So, it appears that with shadow types users would have more or less
+convenient way to disable / enable related BPF programs
+(the references to programs are available, but reference counting
+ would have to be implemented by user using some additional data
+ structure, if needed).
+
+I don't see a way to reconcile shadow types with this autoload/autocreate t=
+oggling
+=3D> my last two patches would have to be dropped.
+
+Wdyt?
 
