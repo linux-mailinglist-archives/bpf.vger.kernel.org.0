@@ -1,321 +1,154 @@
-Return-Path: <bpf+bounces-22771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9307F869A07
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 16:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58647869A55
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 16:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5E801C220E1
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 15:13:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD5D1C231F2
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 15:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2073D14601E;
-	Tue, 27 Feb 2024 15:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5762E145B07;
+	Tue, 27 Feb 2024 15:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laO9OWYA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h1hm5vNP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53C4145FF4;
-	Tue, 27 Feb 2024 15:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50673145322
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 15:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709046708; cv=none; b=V7r+1+Gfxr03h8R8tns+I40GekcCY+I6dee3v94YJxMA5iHo2c6gg/Ovcd/5dJMJjIQL1L67IAhhx5wESoNITQ37mViTzjIw1B/stJ5I+xh9aKDGlCl2ebuN+t2ywqnAWRruZEdErYvCTo4eDp59gs46L9QuCWDfVxetd7dJjCY=
+	t=1709047670; cv=none; b=lKlnXQXS5Kkt+WOEn9o4kKq0L9iIWTYLduV7vu6sKA9/L2SzEay1CJuunU4KlNW8tw9bdgheg4O8ISy1qUxgrh4yvwo43XEC+TryKvYAkx4skmiu2OFq77RZf4bjkj5LYtSnHSyxzpmrMTHWds9i/T5FBg5U3K4InSUztM6AR3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709046708; c=relaxed/simple;
-	bh=uXkdZ+nGgZ8dBlwogGYG/znpIjVGxCyU2Z1+CR/AVIE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Lm9uZ0h4p4qYHPsEw/XJsRFpfbgq8y5QxXVeXGS1drvRNylfHV0ZaMDW9yVox+aO4HbdyvK05mQyUMsS7z5oKc1zt2SSOkhZRuz4oFwcV+pIzS7H77ilii4MTv0GYXiI8dDPAijqOFtA95M7+GRwyHxxC0hHjKjmW/dMv+67r9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laO9OWYA; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33d6fe64a9bso3348660f8f.0;
-        Tue, 27 Feb 2024 07:11:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709046705; x=1709651505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YgUZYYEewWOr0eZgCM/D+yRszpCU2Zn6RVKpSWiScZI=;
-        b=laO9OWYAnLP2pdH5x5Zu8gfMadrLUJjXCkBtFFrZ3pqPReFmMLF1KCBY43p5dOeRX6
-         QhknXVyz2Q7vj2ZaE4qzvMCuZEujGunbiLWxD/qe5Rtkl18+yPgyMhd0htdz/c87drOb
-         /Yy+y5VqYHaVRxa79zH3ugUCHDqjfUqFO4l1Y+9NS8m9KjV+V18yhg8PDiuAihJqZ30X
-         qLuUi0nmuflyF3owGI2Z4/+CiHUJ13sV+OA/OMlki1ecikJ4ItxxwkOvuaTi0GIPKEpv
-         SMz6ZVTeQ68vXfKEgOsa+SA9Z5DChMAVnuAd6P0zvMyABtF0Hv54gCgOnG1F2iuOZl+m
-         qDVQ==
+	s=arc-20240116; t=1709047670; c=relaxed/simple;
+	bh=2Df63Y5TkYPsmn8RWXJBQXHSQxfD9l2HfIHVhK6EdD0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KTqhM729XBaPKSjYqryumDklLoy+3JJdt6WBesjca+GvP+anVKXryezqCTUedVQioCmyHgyHnHPNBNzqZpZVkR6bpfULX9T/GrR3LtUcEEHxireCEm4xe55J8PyoJPxVGUcQSBCd2qhNoJDxP+jJovmWd9IG8EOIkY3FGIrkErg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h1hm5vNP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709047668;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ENNrvrL9NDnFw3jJyvgsGCyMMkLB6+zPb2N9cTS8YnI=;
+	b=h1hm5vNPlHU4wlYpsj9Tu6GMvcX/OmzxYrkK5W9ylPlyety8uVeCNmVNppk0yruQya4Z4Q
+	siltX574MwJWtjfVdTsmoyKV6CIQc6yMV1sdV81ScRcMwb3ywpS3XNgSGBnSurK++e1uOy
+	41w52mEbN0CtDZIE1lDqBpQjt7Wt0T8=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-618-uxJm0sH6OtWqyzWnK8pjdg-1; Tue, 27 Feb 2024 10:27:46 -0500
+X-MC-Unique: uxJm0sH6OtWqyzWnK8pjdg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5116e3cce79so4075160e87.2
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 07:27:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709046705; x=1709651505;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YgUZYYEewWOr0eZgCM/D+yRszpCU2Zn6RVKpSWiScZI=;
-        b=XQKIauqn9BOol4IUuy9PTtROBuJzPsOmmy8w9jo+GcK6sltBSBgz+jGVh1MXLBXt/N
-         lbhDiBYTIezGG7yLxbIDWuqo9pKKWxiO2PMt4cgtAKtXIP2HGmQ1wI/+nCja0c22PUHT
-         RqYKJKy983GASpXQ3kEu9mgocAka1LToSLv65lV/Al+9OfzCwnZgCqc+BCAkBHQrHV7G
-         mjezjJ+2a2mbOWP5/Uxw20q125Co8F36n+C+TsrzeCvigRbkC0MUxXBoPQAhROkUUBcr
-         oBLEyp27wCEJZuvvhdseYCeSHNcBBHgZlVYVI7RpNaW8E6I2zwkzkjlY6+BzOs844XAR
-         iC3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVffLIVKjI9Mk77Nc8IV7iGKXyk8oVJLSjTa8dUGYZWygREkgJXvBBUtzws+GC6+U40+IEABIv9te4YncEembAKeQq2aOE2Oso7FYccxmRz22QUE8h+mYoicDKcZuHeSUmD
-X-Gm-Message-State: AOJu0YzZrNfLxYXEhHjR+5G/PuENFXuZm9y+JJEjy8XUzNe4tgTIHJhN
-	e7HPMYB6MunUx3c2xl0l+F5wNy+k5dTPANs7kJtIcGOdl2VYEkwN
-X-Google-Smtp-Source: AGHT+IGLirqfah9d4iGWTMCqewDLhnmBg8hi2Iy2nBqKNPhbA3EjAa6SiYGrHFnWv/yqvMG7UwDjxA==
-X-Received: by 2002:a5d:58cd:0:b0:33d:b872:1c1b with SMTP id o13-20020a5d58cd000000b0033db8721c1bmr7385349wrf.23.1709046704756;
-        Tue, 27 Feb 2024 07:11:44 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id bq7-20020a5d5a07000000b0033cddadde6esm11917259wrb.80.2024.02.27.07.11.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Feb 2024 07:11:44 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+        d=1e100.net; s=20230601; t=1709047665; x=1709652465;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ENNrvrL9NDnFw3jJyvgsGCyMMkLB6+zPb2N9cTS8YnI=;
+        b=iMIsDWyeKMkgUBR2o0ex+OHGn9I+KDdjiUMdYYgl5fzxKxQ/WFBgMMYvqxx8WVXpCb
+         7yQmsdbxAsSroAzzYr/hIx4fAVbf5rWikI0ypoN37D8GBo655TN88s5TFfuBOENrXdHj
+         LnPqT00unEOzuAdYWa+3pPGBlzRbGyka+4ssZ9EBZL0685HMPQA+MvbVjNADuwM9f3Mw
+         uewP74Avbzad2iZtOIb80giU/appVzLtv0IxB8eI4gB/sZGHL2CDNDBtAbZVEnH1aivn
+         5QxXc+G/pQlx19P1WOkxUVzgrgKRiXUelecve0Rq56rVHa56/7+9q/BRzZDmOpNZNeY3
+         uvxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJJzcFOJFEZ25wiMYX9qrDusQUYvE2H0iQ4vC0TuKD6B4cnmK7ivK/Na4GUuOQzzirZSSxCbdOT5Q//BOq/h3nE/bV
+X-Gm-Message-State: AOJu0YxXkrO2K/zUvN5FwcH+UOMJBsWdNsc0+HNZFZLQrm231n7RUCcy
+	i1xx446KhlY2gwC90eCXz+GnHoBMSJTArMfiuEmSmWrAjTM11GvPHh3j2crDtEryJ8kzX3cn0FL
+	Az7cswPQ3DoBlDWOJdu3p99QcS7r4x74KYkLaKRMbLfyZhhCI6w==
+X-Received: by 2002:a05:6512:1317:b0:512:f59e:f425 with SMTP id x23-20020a056512131700b00512f59ef425mr7363487lfu.10.1709047664869;
+        Tue, 27 Feb 2024 07:27:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFsvXx6NGEZzcHLLmTbDVJEU4gHIYzEfwKyfUcLPgu/V1ZCIC6i2RJjITcFdOioHQU6f8dOAw==
+X-Received: by 2002:a05:6512:1317:b0:512:f59e:f425 with SMTP id x23-20020a056512131700b00512f59ef425mr7363461lfu.10.1709047664485;
+        Tue, 27 Feb 2024 07:27:44 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id gg3-20020a170906e28300b00a3edb758561sm859047ejb.129.2024.02.27.07.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 07:27:44 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B025C112E52F; Tue, 27 Feb 2024 16:27:43 +0100 (CET)
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org (open list),
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next 1/1] arm64/cfi,bpf: Support kCFI + BPF on arm64
-Date: Tue, 27 Feb 2024 15:11:15 +0000
-Message-Id: <20240227151115.4623-2-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240227151115.4623-1-puranjay12@gmail.com>
-References: <20240227151115.4623-1-puranjay12@gmail.com>
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf] bpf: Fix DEVMAP_HASH overflow check on 32-bit arches
+Date: Tue, 27 Feb 2024 16:27:40 +0100
+Message-ID: <20240227152740.35120-1-toke@redhat.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Currently, bpf_dispatcher_*_func() is marked with `__nocfi` therefore
-calling BPF programs from this interface doesn't cause CFI warnings.
+The devmap code allocates a number hash buckets equal to the next power of two
+of the max_entries value provided when creating the map. When rounding up to the
+next power of two, the 32-bit variable storing the number of buckets can
+overflow, and the code checks for overflow by checking if the truncated 32-bit value
+is equal to 0. However, on 32-bit arches the rounding up itself can overflow
+mid-way through, because it ends up doing a left-shift of 32 bits on an unsigned
+long value. If the size of an unsigned long is four bytes, this is undefined
+behaviour, so there is no guarantee that we'll end up with a nice and tidy
+0-value at the end.
 
-When BPF programs are called directly from C: from BPF helpers or
-struct_ops, CFI warnings are generated.
+Syzbot managed to turn this into a crash on arm32 by creating a DEVMAP_HASH with
+max_entries > 0x80000000 and then trying to update it. Fix this by moving the
+overflow check to before the rounding up operation.
 
-Implement proper CFI prologues for the BPF programs and callbacks and
-drop __nocfi for arm64. Fix the trampoline generation code to emit kCFI
-prologue when a struct_ops trampoline is being prepared.
-
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
+Link: https://lore.kernel.org/r/000000000000ed666a0611af6818@google.com
+Reported-and-tested-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++
- arch/arm64/kernel/alternative.c | 54 +++++++++++++++++++++++++++++++++
- arch/arm64/net/bpf_jit_comp.c   | 26 ++++++++++++----
- 3 files changed, 97 insertions(+), 6 deletions(-)
- create mode 100644 arch/arm64/include/asm/cfi.h
+ kernel/bpf/devmap.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cfi.h b/arch/arm64/include/asm/cfi.h
-new file mode 100644
-index 000000000000..670e191f8628
---- /dev/null
-+++ b/arch/arm64/include/asm/cfi.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_ARM64_CFI_H
-+#define _ASM_ARM64_CFI_H
-+
-+#ifdef CONFIG_CFI_CLANG
-+#define __bpfcall
-+static inline int cfi_get_offset(void)
-+{
-+	return 4;
-+}
-+#define cfi_get_offset cfi_get_offset
-+extern u32 cfi_bpf_hash;
-+extern u32 cfi_bpf_subprog_hash;
-+extern u32 cfi_get_func_hash(void *func);
-+#else
-+#define cfi_bpf_hash 0U
-+#define cfi_bpf_subprog_hash 0U
-+static inline u32 cfi_get_func_hash(void *func)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_CFI_CLANG */
-+#endif /* _ASM_ARM64_CFI_H */
-diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-index 8ff6610af496..350057a28abe 100644
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@ -13,6 +13,7 @@
- #include <linux/elf.h>
- #include <asm/cacheflush.h>
- #include <asm/alternative.h>
-+#include <asm/cfi.h>
- #include <asm/cpufeature.h>
- #include <asm/insn.h>
- #include <asm/module.h>
-@@ -298,3 +299,56 @@ noinstr void alt_cb_patch_nops(struct alt_instr *alt, __le32 *origptr,
- 		updptr[i] = cpu_to_le32(aarch64_insn_gen_nop());
- }
- EXPORT_SYMBOL(alt_cb_patch_nops);
-+
-+#ifdef CONFIG_CFI_CLANG
-+struct bpf_insn;
-+
-+/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
-+extern unsigned int __bpf_prog_runX(const void *ctx,
-+				    const struct bpf_insn *insn);
-+
-+/*
-+ * Force a reference to the external symbol so the compiler generates
-+ * __kcfi_typid.
-+ */
-+__ADDRESSABLE(__bpf_prog_runX);
-+
-+/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
-+asm (
-+"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-+"	.type	cfi_bpf_hash,@object				\n"
-+"	.globl	cfi_bpf_hash					\n"
-+"	.p2align	2, 0x0					\n"
-+"cfi_bpf_hash:							\n"
-+"	.long	__kcfi_typeid___bpf_prog_runX			\n"
-+"	.size	cfi_bpf_hash, 4					\n"
-+"	.popsection						\n"
-+);
-+
-+/* Must match bpf_callback_t */
-+extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
-+
-+__ADDRESSABLE(__bpf_callback_fn);
-+
-+/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
-+asm (
-+"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-+"	.type	cfi_bpf_subprog_hash,@object			\n"
-+"	.globl	cfi_bpf_subprog_hash				\n"
-+"	.p2align	2, 0x0					\n"
-+"cfi_bpf_subprog_hash:						\n"
-+"	.word	__kcfi_typeid___bpf_callback_fn			\n"
-+"	.size	cfi_bpf_subprog_hash, 4				\n"
-+"	.popsection						\n"
-+);
-+
-+u32 cfi_get_func_hash(void *func)
-+{
-+	u32 hash;
-+
-+	if (get_kernel_nofault(hash, func - cfi_get_offset()))
-+		return 0;
-+
-+	return hash;
-+}
-+#endif
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index cfd5434de483..fb02862e1a3a 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -17,6 +17,7 @@
- #include <asm/asm-extable.h>
- #include <asm/byteorder.h>
- #include <asm/cacheflush.h>
-+#include <asm/cfi.h>
- #include <asm/debug-monitors.h>
- #include <asm/insn.h>
- #include <asm/patching.h>
-@@ -157,6 +158,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
- 		emit(insn, ctx);
- }
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index a936c704d4e7..9b2286f9c6da 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -130,13 +130,11 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ 	bpf_map_init_from_attr(&dtab->map, attr);
  
-+static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
-+{
-+	if (IS_ENABLED(CONFIG_CFI_CLANG))
-+		emit(hash, ctx);
-+}
+ 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
+-		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
+-
+-		if (!dtab->n_buckets) /* Overflow check */
++		if (dtab->map.max_entries > U32_MAX / 2)
+ 			return -EINVAL;
+-	}
+ 
+-	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
++		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
 +
- /*
-  * Kernel addresses in the vmalloc space use at most 48 bits, and the
-  * remaining bits are guaranteed to be 0x1. So we can compose the address
-@@ -285,7 +292,7 @@ static bool is_lsi_offset(int offset, int scale)
- /* Tail call offset to jump into */
- #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
- 
--static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
-+static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_subprog)
- {
- 	const struct bpf_prog *prog = ctx->prog;
- 	const bool is_main_prog = !bpf_is_subprog(prog);
-@@ -296,7 +303,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	const u8 fp = bpf2a64[BPF_REG_FP];
- 	const u8 tcc = bpf2a64[TCALL_CNT];
- 	const u8 fpb = bpf2a64[FP_BOTTOM];
--	const int idx0 = ctx->idx;
- 	int cur_offset;
- 
- 	/*
-@@ -322,6 +328,8 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	 *
- 	 */
- 
-+	emit_kcfi(is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash, ctx);
-+	const int idx0 = ctx->idx;
- 	/* bpf function may be invoked by 3 instruction types:
- 	 * 1. bl, attached via freplace to bpf prog via short jump
- 	 * 2. br, attached via freplace to bpf prog via long jump
-@@ -1575,7 +1583,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	 * BPF line info needs ctx->offset[i] to be the offset of
- 	 * instruction[i] in jited image, so build prologue first.
- 	 */
--	if (build_prologue(&ctx, was_classic)) {
-+	if (build_prologue(&ctx, was_classic, bpf_is_subprog(prog))) {
- 		prog = orig_prog;
- 		goto out_off;
- 	}
-@@ -1614,7 +1622,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	ctx.idx = 0;
- 	ctx.exentry_idx = 0;
- 
--	build_prologue(&ctx, was_classic);
-+	build_prologue(&ctx, was_classic, bpf_is_subprog(prog));
- 
- 	if (build_body(&ctx, extra_pass)) {
- 		bpf_jit_binary_free(header);
-@@ -1654,9 +1662,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		jit_data->image = image_ptr;
- 		jit_data->header = header;
- 	}
--	prog->bpf_func = (void *)ctx.image;
-+	prog->bpf_func = (void *)ctx.image + cfi_get_offset();
- 	prog->jited = 1;
--	prog->jited_len = prog_size;
-+	prog->jited_len = prog_size - cfi_get_offset();
- 
- 	if (!prog->is_func || extra_pass) {
- 		int i;
-@@ -1905,6 +1913,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	/* return address locates above FP */
- 	retaddr_off = stack_size + 8;
- 
-+	if (flags & BPF_TRAMP_F_INDIRECT) {
-+		/*
-+		 * Indirect call for bpf_struct_ops
-+		 */
-+		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
-+	}
- 	/* bpf trampoline may be invoked by 3 instruction types:
- 	 * 1. bl, attached to bpf prog or kernel function via short jump
- 	 * 2. br, attached to bpf prog or kernel function via long jump
+ 		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets,
+ 							   dtab->map.numa_node);
+ 		if (!dtab->dev_index_head)
 -- 
-2.40.1
+2.43.2
 
 
