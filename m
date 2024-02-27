@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-22791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91F0E86A0FE
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 21:46:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13EA786A103
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 21:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B61E21C2472C
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 20:46:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37F791C2478B
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 20:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98DA14EFD8;
-	Tue, 27 Feb 2024 20:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B21A14EFDF;
+	Tue, 27 Feb 2024 20:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KHM63m/v"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZnyTI09L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9358134B1
-	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 20:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEF314E2E7
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 20:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709066796; cv=none; b=EZzEUenv0ul+0TMZyqYPHNk7xmdIex6VUQymOf+7b6xKtEdSYndAfH8ZqCW6R85/ydPaaMdQc1m9LU638EcDrXOkNP+lKY9d+RlHBJmM+OaZZsIBLKdfaEnPjYm0aZKNxdY2a8xnW1oXGl5BycxoZharQKlAqvTbk73r2Nn1/VI=
+	t=1709066797; cv=none; b=lZKnkHfXTdo/jyXnLE6HuA/KVXVgyowCDyB5YM5FO0qFf7pWnyFcgiM6S4t3ly1Sq6T4ie4BvkJ6cEEu6dW1+evGUn+kYeRReN+sbh396YxSC4SnLxMOLcvpmGJU9YCY5JQewEsIka0MPttDR4mZ7yYnpES0dinFePgEU2IGqrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709066796; c=relaxed/simple;
-	bh=0AuSwfw14n0kaj/ajCbSsEi+4AfinuiC4BPDCRWxqjo=;
+	s=arc-20240116; t=1709066797; c=relaxed/simple;
+	bh=aPHgAlniB8mYH7lkQgh1G1ID2gwOCNzEOk5VdAFGKI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N0n5HMs1G3uZ9me0c8xu5CvXDAESQO18MuG0LwYJP+CsP2uRQPFUrMF8Z4Dmf6o2XGhOpWCIr9tFYq6Eldpy5JG4xL7eDL3pkmt+AHVetlPBh03G2e7hDiq4GBfX6wzOJlzJexSo28OWWs0EGbm8tLMTTGwZ9W/5Jackezy/HbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KHM63m/v; arc=none smtp.client-ip=209.85.208.54
+	 MIME-Version; b=NlXP0GvbAh4k5wyBuY+QKtlrCkGXNiwfEeCKhDckehvJJlpztyzGLIWjUJHn+A2/bBeiviqVTVklulHkZf56nOZWq0Wno1rc4r6oSGKPNURxtv7x6FtGVzDOgFw+7r2Vj4mz10lK2q7J/BB3s9EyTwXcC2GeikE/rwZm5m8OhuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZnyTI09L; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56533e30887so5486180a12.1
-        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 12:46:34 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so6063071a12.3
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 12:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709066793; x=1709671593; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709066794; x=1709671594; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tg81NkrF2MG3shbswEhvkPBxiUXCqbyJB/br8WJz2/I=;
-        b=KHM63m/v1yAaTqnSEEqhmZJpz+X6HKWa+c7wUZ+EWB0l8dBcssoTgalcquQjwicE8R
-         plo0ZV39q1nNFnhs8oOT1o/A2iE/GBvmbrwHkBt2a4npwPJz0pbgWTBM29/SeMVs8XOk
-         6pUaSgXR/1hjiH8bxfEwpnCgmCtLiGn6PlXbVyaKIwh3cWSXASCpVWxJLo1INiBQiGX2
-         hTG/fNGaL/hvwcNplueWlUGEiH/veP8+orLqE4oAR9gpYnBetyaEyLLKpOrV7Zk9ZzW/
-         A5eG9HWpshD4+b+bIZ3OQ88l5AyOY6o2Pezf8mLBwRUcKrQ7BOwKrOyauZbsZX+sSf7B
-         J7Pg==
+        bh=ugm6wlCTGmAs31wehy3V0RDN9q39yLThBREE/iiVQG0=;
+        b=ZnyTI09LxUqNkYXOda0sr/GqCo/xjeiIo2YF0tpGKMJ8uvWwUKpNYVbHZAc4lxt4Y0
+         KHkDQ9MWIcFrSBZkKMwgK79TRz2xMf+b5u19LhH1Cr3gUXtVRBKztZWwyaCZ+bgoGTux
+         j4fFGA3jkHyV0m48h5l4o5TQj/hdXkCQKYH/sfwkv4ugyO7ZQnsbFCPNriHlc8MWsYgT
+         1b7vpEoxLWH1nz/aP/GHE8L92rl57p+DofcDpPpc7Yw7E3le2/WwUWCNHZuZOBjNoy8x
+         +v82FxRG7pbNgDYgqvTiT4BYYlF9ppwh4d/XHxP1JGOVa4BDpfahosW9yGj+A45wlLkU
+         34mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709066793; x=1709671593;
+        d=1e100.net; s=20230601; t=1709066794; x=1709671594;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tg81NkrF2MG3shbswEhvkPBxiUXCqbyJB/br8WJz2/I=;
-        b=Z+idY6IaVlktAC92hWTB1RwyvFFjfQt97F3p4XpftHXn/MRTCnm3l42xpiFYR88Ema
-         JuBmB3K71oiTzYNtIAZKMEEXp8QyMwCWjqrKgQut9nMPfytj8Ma66EKnrV347wug3suL
-         OuOmGbSoNNWyHq6YJnf36bXKzOf0LkvFfFgsLsF5vuXKG+at2yYPGQxPlLgTat/s0yf7
-         TwuSqjdBRXRWJWHatFJRJFRQCQ1DlNNMiApoRgKLL3y9LLO3yG8FTnnRLyv/ijc5UU32
-         u0FedkQKayrd6ARFFrYjFK+ttUrIm6msmBOESAI30be4kF+Zw/iKFypFjekzVapxiqzv
-         ZTJA==
-X-Gm-Message-State: AOJu0YxI3S2SPLfOI3hjPKRbpKf+1sNoN+QkIJMfR1cZKgw3E5NQi6Ac
-	SbBV2ydkDDRdjB//Lv+SbhMDrG+iTOidsN1rh1JD8O0Em4u8j+90ZMo0JGaQxrI=
-X-Google-Smtp-Source: AGHT+IFxHQhGm+RgXWhvAbwB+FloHm5JB5I1XCV+ISW62pF1z4NUpW3oYp3BO0d4J8nxlnwMR5kv+A==
-X-Received: by 2002:a17:906:ecb4:b0:a43:1940:c7f8 with SMTP id qh20-20020a170906ecb400b00a431940c7f8mr5147462ejb.31.1709066792939;
-        Tue, 27 Feb 2024 12:46:32 -0800 (PST)
+        bh=ugm6wlCTGmAs31wehy3V0RDN9q39yLThBREE/iiVQG0=;
+        b=QOjv+s+qoVPZN0Kzu5mBpUDV30HuEj99RCNYNJjgg38aN1Hx1HzbK0pmm/a+q6Vd+r
+         tXFGhOWSZUQwIOXs5lHAvm+WTVwznom1HJT8siSep9js99tIqalCSZDnbLHHiL8fHVQB
+         3E/aSakcs4creP2lIDFekxZq+vGpULEgjWF8o0s8k2NpGvpYN2EOeF2rXm9003F4t83X
+         cIfVZtD0HgQ1DzYRNnhZn9Fkysr/N2eINf2lubNrzsKpUpZrDeIXK3LdLeZeuoiSV2Sb
+         WpNN1RNYnrOdkBUdhbQFNdxe4H8GxL0kBcVP90DAXqylfu8N3uPXqdePmwWDrtUYwpaP
+         NyQA==
+X-Gm-Message-State: AOJu0YxS6e3JAEx7SbjF+nJU8up8JhP91DBypRlIstOEytDjUCBqGSmr
+	NrS62Az7Dg053p40Z6Nan84hI9H9wI3901UiuF9BSmF+TzvdGRji6wY1zu0WE40=
+X-Google-Smtp-Source: AGHT+IFYe9DvHJshCuNGw770tMdZz2v7jqt7BdSGlRfsmrGSQqnXWm2n+GdAj9gI/l+UdPfrC7Xfag==
+X-Received: by 2002:a17:906:3397:b0:a3f:d797:e6e2 with SMTP id v23-20020a170906339700b00a3fd797e6e2mr6943126eja.28.1709066794210;
+        Tue, 27 Feb 2024 12:46:34 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id hb13-20020a170906b88d00b00a3d9e6e9983sm1119832ejb.174.2024.02.27.12.46.31
+        by smtp.gmail.com with ESMTPSA id hb13-20020a170906b88d00b00a3d9e6e9983sm1119832ejb.174.2024.02.27.12.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 12:46:32 -0800 (PST)
+        Tue, 27 Feb 2024 12:46:33 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	void@manifault.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 4/8] selftests/bpf: test struct_ops map definition with type suffix
-Date: Tue, 27 Feb 2024 22:45:52 +0200
-Message-ID: <20240227204556.17524-5-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 5/8] selftests/bpf: bad_struct_ops test
+Date: Tue, 27 Feb 2024 22:45:53 +0200
+Message-ID: <20240227204556.17524-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240227204556.17524-1-eddyz87@gmail.com>
 References: <20240227204556.17524-1-eddyz87@gmail.com>
@@ -90,125 +90,148 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extend struct_ops_module test case to check if it is possible to use
-'___' suffixes for struct_ops type specification.
+When loading struct_ops programs kernel requires BTF id of the
+struct_ops type and member index for attachment point inside that
+type. This makes it not possible to have same BPF program used in
+struct_ops maps that have different struct_ops type.
+Check if libbpf rejects such BPF objects files.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  1 +
- .../bpf/prog_tests/test_struct_ops_module.c   | 32 +++++++++++++------
- .../selftests/bpf/progs/struct_ops_module.c   | 21 +++++++++++-
- 3 files changed, 44 insertions(+), 10 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 24 +++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  4 ++
+ .../selftests/bpf/prog_tests/bad_struct_ops.c | 42 +++++++++++++++++++
+ .../selftests/bpf/progs/bad_struct_ops.c      | 17 ++++++++
+ 4 files changed, 87 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bad_struct_ops.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bad_struct_ops.c
 
 diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 66787e99ba1b..0d8437e05f64 100644
+index 0d8437e05f64..69f5eb9ad546 100644
 --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
 +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -555,6 +555,7 @@ static int bpf_dummy_reg(void *kdata)
- {
- 	struct bpf_testmod_ops *ops = kdata;
- 
-+	ops->test_1();
- 	/* Some test cases (ex. struct_ops_maybe_null) may not have test_2
- 	 * initialized, so we need to check for NULL.
- 	 */
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-index 8d833f0c7580..7bc80d2755f1 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -30,12 +30,30 @@ static void check_map_info(struct bpf_map_info *info)
- 	close(fd);
- }
- 
-+static int attach_ops_and_check(struct struct_ops_module *skel,
-+				struct bpf_map *map,
-+				int expected_test_2_result)
-+{
-+	struct bpf_link *link;
-+
-+	link = bpf_map__attach_struct_ops(map);
-+	ASSERT_OK_PTR(link, "attach_test_mod_1");
-+	if (!link)
-+		return -1;
-+
-+	/* test_{1,2}() would be called from bpf_dummy_reg() in bpf_testmod.c */
-+	ASSERT_EQ(skel->bss->test_1_result, 0xdeadbeef, "test_1_result");
-+	ASSERT_EQ(skel->bss->test_2_result, expected_test_2_result, "test_2_result");
-+
-+	bpf_link__destroy(link);
-+	return 0;
-+}
-+
- static void test_struct_ops_load(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
- 	struct struct_ops_module *skel;
- 	struct bpf_map_info info = {};
--	struct bpf_link *link;
- 	int err;
- 	u32 len;
- 
-@@ -53,15 +71,11 @@ static void test_struct_ops_load(void)
- 	if (!ASSERT_OK(err, "bpf_map_get_info_by_fd"))
- 		goto cleanup;
- 
--	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
--	ASSERT_OK_PTR(link, "attach_test_mod_1");
--
--	/* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
--	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
--
--	bpf_link__destroy(link);
--
- 	check_map_info(&info);
-+	if (!attach_ops_and_check(skel, skel->maps.testmod_1, 7))
-+		goto cleanup;
-+	if (!attach_ops_and_check(skel, skel->maps.testmod_2, 12))
-+		goto cleanup;
- 
- cleanup:
- 	struct_ops_module__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-index b78746b3cef3..e91426dc51af 100644
---- a/tools/testing/selftests/bpf/progs/struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-@@ -7,12 +7,14 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+int test_1_result = 0;
- int test_2_result = 0;
- 
- SEC("struct_ops/test_1")
- int BPF_PROG(test_1)
- {
--	return 0xdeadbeef;
-+	test_1_result = 0xdeadbeef;
-+	return 0;
- }
- 
- SEC("struct_ops/test_2")
-@@ -27,3 +29,20 @@ struct bpf_testmod_ops testmod_1 = {
- 	.test_2 = (void *)test_2,
+@@ -601,6 +601,29 @@ struct bpf_struct_ops bpf_bpf_testmod_ops = {
+ 	.owner = THIS_MODULE,
  };
  
-+SEC("struct_ops/test_2")
-+void BPF_PROG(test_2_v2, int a, int b)
++static int bpf_dummy_reg2(void *kdata)
 +{
-+	test_2_result = a * b;
++	struct bpf_testmod_ops2 *ops = kdata;
++
++	ops->test_1();
++	return 0;
 +}
 +
-+struct bpf_testmod_ops___v2 {
-+	int (*test_1)(void);
-+	void (*test_2)(int a, int b);
-+	int (*test_maybe_null)(int dummy, struct task_struct *task);
++static struct bpf_testmod_ops2 __bpf_testmod_ops2 = {
++	.test_1 = bpf_testmod_test_1,
 +};
 +
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops___v2 testmod_2 = {
-+	.test_1 = (void *)test_1,
-+	.test_2 = (void *)test_2_v2,
++struct bpf_struct_ops bpf_testmod_ops2 = {
++	.verifier_ops = &bpf_testmod_verifier_ops,
++	.init = bpf_testmod_ops_init,
++	.init_member = bpf_testmod_ops_init_member,
++	.reg = bpf_dummy_reg2,
++	.unreg = bpf_dummy_unreg,
++	.cfi_stubs = &__bpf_testmod_ops2,
++	.name = "bpf_testmod_ops2",
++	.owner = THIS_MODULE,
 +};
++
+ extern int bpf_fentry_test1(int a);
+ 
+ static int bpf_testmod_init(void)
+@@ -612,6 +635,7 @@ static int bpf_testmod_init(void)
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_testmod_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
+ 	ret = ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmod_ops);
++	ret = ret ?: register_bpf_struct_ops(&bpf_testmod_ops2, bpf_testmod_ops2);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (bpf_fentry_test1(0) < 0)
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index c3b0cf788f9f..3183fff7f246 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -37,4 +37,8 @@ struct bpf_testmod_ops {
+ 	int (*test_maybe_null)(int dummy, struct task_struct *task);
+ };
+ 
++struct bpf_testmod_ops2 {
++	int (*test_1)(void);
++};
++
+ #endif /* _BPF_TESTMOD_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/bad_struct_ops.c b/tools/testing/selftests/bpf/prog_tests/bad_struct_ops.c
+new file mode 100644
+index 000000000000..9c689db4b05b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/bad_struct_ops.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++#include "bad_struct_ops.skel.h"
++
++#define EXPECTED_MSG "libbpf: struct_ops reloc"
++
++static libbpf_print_fn_t old_print_cb;
++static bool msg_found;
++
++static int print_cb(enum libbpf_print_level level, const char *fmt, va_list args)
++{
++	old_print_cb(level, fmt, args);
++	if (level == LIBBPF_WARN && strncmp(fmt, EXPECTED_MSG, strlen(EXPECTED_MSG)) == 0)
++		msg_found = true;
++
++	return 0;
++}
++
++static void test_bad_struct_ops(void)
++{
++	struct bad_struct_ops *skel;
++	int err;
++
++	old_print_cb = libbpf_set_print(print_cb);
++	skel = bad_struct_ops__open_and_load();
++	err = errno;
++	libbpf_set_print(old_print_cb);
++	if (!ASSERT_NULL(skel, "bad_struct_ops__open_and_load"))
++		return;
++
++	ASSERT_EQ(err, EINVAL, "errno should be EINVAL");
++	ASSERT_TRUE(msg_found, "expected message");
++
++	bad_struct_ops__destroy(skel);
++}
++
++void serial_test_bad_struct_ops(void)
++{
++	if (test__start_subtest("test_bad_struct_ops"))
++		test_bad_struct_ops();
++}
+diff --git a/tools/testing/selftests/bpf/progs/bad_struct_ops.c b/tools/testing/selftests/bpf/progs/bad_struct_ops.c
+new file mode 100644
+index 000000000000..9c103afbfdb1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bad_struct_ops.c
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++SEC("struct_ops/test_1")
++int BPF_PROG(test_1) { return 0; }
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_1 = { .test_1 = (void *)test_1 };
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops2 testmod_2 = { .test_1 = (void *)test_1 };
 -- 
 2.43.0
 
