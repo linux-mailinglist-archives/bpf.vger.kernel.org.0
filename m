@@ -1,136 +1,114 @@
-Return-Path: <bpf+bounces-22746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E81928684F1
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 01:19:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB12A8684F2
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 01:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F5651F22DC7
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 00:19:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C368B22B0B
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 00:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC13376;
-	Tue, 27 Feb 2024 00:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D1681F;
+	Tue, 27 Feb 2024 00:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ccn3GhNc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+v/X80l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFEA161
-	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 00:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316BA376
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 00:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708993181; cv=none; b=fz7K7OMMh4Yu+bE8JysixMGzqcXxf6B47Ro3asP479K5NyxzWlTheaCkGO4wpJFAhMzwF+yrtcEi6zpz9nGU9fwHcHtiAB6EPpQtIl7yLcoW7l/C3CIRuIlFXanhwGmROAJxBrdXfCh/ZGhXaWMfVYoqo/fHEE/pan78keLP1rM=
+	t=1708993231; cv=none; b=EQ57iygI5gzs6OxPRFMW7jqC12IrYNWtET9FmhKzV3LtpVZ5+xHMYMjwH4cvpVg66NPfpg7Xj8MAoiMoxEFF2NRql572P4iJsX+ZWACdNNSyCacv35nTVuganJbwPMxX2/JoKJDQRHVcteUyJj/yvejnKRQHoycBYv+99pc+A2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708993181; c=relaxed/simple;
-	bh=wWRkiiKSCuOQXFUhlIOlptgx3x0hoeLhyMlKWPX405o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m9g8l40HVaycPlSswV1ag7lcIcvWA+pmyGlACN9ir/vRkxi3Le5b3MXlCA8Rx8dCO/Rq4vOkuNHGPMIcdYt2dnaUKIIOa7SxF8VJWiNgTz0WCGs45cR2+OEzn6yiOc19oCyp4FQbTs2h5ypLv2ro/BVwG7IOrbZuxQP7vgQNQnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ccn3GhNc; arc=none smtp.client-ip=209.85.128.170
+	s=arc-20240116; t=1708993231; c=relaxed/simple;
+	bh=kD7Ho5vWIa5qzv+7p10TUuvMzBHfz5/jjsy1s5Yhhic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jBeLzTv6RTIDI4Dkisgf5YcbqA5pDSJ74MxySZyRCeeh6kW62gfW0HrJ4bpa5p272mMg4LN4oq/WWiiukXBFmKgngmT5RQAu1MEDLUY+a+CpvflhHlKNVxm9LbdP3RZ2I/2a+qRgrzgvsRZkDCwT4pNVYkdLoEiU/eBfOcrIglo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f+v/X80l; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-608cf2e08f9so30750707b3.0
-        for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 16:19:40 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33d8739ddd4so2844302f8f.2
+        for <bpf@vger.kernel.org>; Mon, 26 Feb 2024 16:20:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708993179; x=1709597979; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yKlCHKEHD2OqqtboEApOQCsW27CxRDgGe3A6L1L8QBI=;
-        b=ccn3GhNcjIGjC55zN/s4Obg1eyqE8s3D1skJEoimbkFot6K+BKPxz3uOePgSTRIC8p
-         qlThQjvqK+9BFTGB99xXVjvseE4XOKfdpBtDS/dnVG8R4Nw7SELk0anzPjMOz5s9YSsJ
-         t0/7xTYxLkRJaLbFqE8lilRcQOkWG748oN5s96SBdav5RdFEpwhwt1dUBJfhyBpqaMEJ
-         6daDSIHMpZ6vWw3bDUzownOw1UgXKSj0vFFb+QCuQpmu3jTwZjphDXhohCC0NwgMEmE2
-         /gpu52BHtKjPB1cHIGVw98rzXzuMtTuhqqcxRgwXOSQd6NXeP3MIqb1YyShGm3QrvR3C
-         Mo9g==
+        d=gmail.com; s=20230601; t=1708993227; x=1709598027; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FjgQUBsNCGcu13+XB9WIRwi54S7VlQsBPwtLifMzGEw=;
+        b=f+v/X80lCJvQtFoxdZp3kWtmPVPITMmNnuEED6zfXZYBZn4KmKfynE2yE+OJBKMMD0
+         PgM6Ng6Nt5X8OC9jKt2Dc9yDqkCd4SPgYSJdUdmiS0keRKNTz1s2unabMJeDCIPrt6wN
+         k5sNnkhTCBqT/9ilQl89dmWCxOyjdg+gv20xLBGbK3+u9NclH/qaW9q+381ulRvacjvz
+         VLmiaZitKO1dAQ/tL7vrIjj/qFltq5GDZg8qC5HVPCT7EMroPxF4Oiytbg56liuhhjy7
+         3+KUg+Ey5hQkzHEsFY/EzvudkKkYhFZ1ry6uZkw9B3jHf8MVJqPt0pIN76SyluUbWgHv
+         nThQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708993179; x=1709597979;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yKlCHKEHD2OqqtboEApOQCsW27CxRDgGe3A6L1L8QBI=;
-        b=LLplpwGdMj47wZlOzGCGmB4lmLZUzHkfP3txWoE+tr3M1zNbEnVmeR2PQAs38VvU4A
-         aJ9VE9pvI6H2nyKIRMDsXk95t9Ay37Ru4aG3/4hvY5cViijsRHjiCN5C++BP3QZgz4Eu
-         VDoai0yhcQB42WggKEWonOiXzgxKO2s6+x6sVx0RcS3dtwuNVxS/Gj8I2Phcpjom6pvu
-         EuAAD5YbULo3L+1A5FWW+e7JxdYJleEfABbepu86x4jqInoAw/PcUPCX/JkKqsgZKZ1/
-         q9pvw/JXrYhAmN7l/ztsAD2f+LbsNpJupsrQZxMz2A5DX7zQwWq49O6JqJNYxzC+1A3C
-         PPug==
-X-Forwarded-Encrypted: i=1; AJvYcCXMIocftbwDQW64EVSETSSI9Wq7EW/gZvGgqyNlsKM6ZzOlIbHk2yHp8IpBlXWefrCtgtDRRONwLzjAzMYGGCPum92q
-X-Gm-Message-State: AOJu0YzaeWzfq1YEKgO8sworpZtLCIMnEMe+M9sBVEQkeJzupfGhZGhC
-	aYYpYB26BYsnXdl8lREwo0zPY+860+iJbM6lYWNaLUbVI0fvSSy1
-X-Google-Smtp-Source: AGHT+IH5C0n/wF8XkW+9zREWv7u1LMbiJvDtCe1deAT0/DHlnGzR5yqXbbPvF8IyyLZye/UAXgHbzg==
-X-Received: by 2002:a0d:d9c5:0:b0:607:75e9:c786 with SMTP id b188-20020a0dd9c5000000b0060775e9c786mr810636ywe.8.1708993179403;
-        Mon, 26 Feb 2024 16:19:39 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:5f7:55e:ea3a:9865? ([2600:1700:6cf8:1240:5f7:55e:ea3a:9865])
-        by smtp.gmail.com with ESMTPSA id d14-20020a81ab4e000000b005ffc15cea80sm1415808ywk.26.2024.02.26.16.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 16:19:39 -0800 (PST)
-Message-ID: <7f33c7dc-b2bc-48e8-840e-bfd3de5845da@gmail.com>
-Date: Mon, 26 Feb 2024 16:19:37 -0800
+        d=1e100.net; s=20230601; t=1708993227; x=1709598027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FjgQUBsNCGcu13+XB9WIRwi54S7VlQsBPwtLifMzGEw=;
+        b=v2f4BTVdJyxb6CpYplZHg9cgoRlAgPQy9aFK/JHJEw7L2v+gKxQpO3oe906wkW9eoO
+         qD2di0bCM37uGWasLnE48aNXAgx8UYlBhcnbesMF4U+oLV9kDzbZ1YiACLUzJig2K/EX
+         SSolbb0mujzgObwdoMsuFpg/4UXA2l5ZY7teDp8V0B4yLbQJjKv9hdYA3JW2604qi+f5
+         rIBxkwcuHEb0xJKdt1jr2mwP7Xua18fFPT4tl8m4X7ort3szt0MDOX0KmlQVbpgVsdHd
+         rHjRPEzI9+XdSzBauyoYSrV5ru/hHHlSol8CAALkMcqBg4QhjZNEQ1c2WHA8xuW1Bfud
+         VDKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKkjcw3Wy98En0T9AcrrrKrVKyxX0mJ7ox60Uc/qm5fb4RE3CW3JiUqKxqNS2TrRWaEGmHsXvRhiZezD1Y6BCokNgd
+X-Gm-Message-State: AOJu0YxZpPJ0hsWCM9yd81LVbzWeA50Kfusya2PQEmsfwVEQZXq7t36v
+	ECyZLurcdoSU7KV72CJq5cHfRzXT6v71jgLYdjO1qM1Tx8W2MGo6t7YbknQ9XJ7p03gxpBOLYD9
+	LE+3aMRSjFTeGFTmk1mA/apzpm0E=
+X-Google-Smtp-Source: AGHT+IES0hl+g59F7zRZmy5q7l4sHMvphb+qii873s984YvhkwTxSGuXimASwWOZsNvrBww5oSaVa3Cwydq1L5lNT+0=
+X-Received: by 2002:a5d:6d85:0:b0:33d:da6e:b7ed with SMTP id
+ l5-20020a5d6d85000000b0033dda6eb7edmr3861599wrs.18.1708993226953; Mon, 26 Feb
+ 2024 16:20:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 3/6] libbpf: Convert st_ops->data to shadow
- type.
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, quentin@isovalent.com
-References: <20240222222624.1163754-1-thinker.li@gmail.com>
- <20240222222624.1163754-4-thinker.li@gmail.com>
- <0d8d82e5-c55a-4f6f-ba92-3d169daedc8c@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <0d8d82e5-c55a-4f6f-ba92-3d169daedc8c@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240218114818.13585-1-laoar.shao@gmail.com> <20240218114818.13585-2-laoar.shao@gmail.com>
+ <65dd1d0d6e41b_20e0a208a9@john.notmuch>
+In-Reply-To: <65dd1d0d6e41b_20e0a208a9@john.notmuch>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 26 Feb 2024 16:20:15 -0800
+Message-ID: <CAADnVQKtL0mo2pqcKtOJ+nzG0K72dhH47KZP_-O06U6pfvzb1w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add bits iterator
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 26, 2024 at 3:21=E2=80=AFPM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+> > +__bpf_kfunc int *bpf_iter_bits_next(struct bpf_iter_bits *it)
+> > +{
+> > +     struct bpf_iter_bits_kern *kit =3D (void *)it;
+> > +     const unsigned long *bits =3D kit->bits;
+> > +     int bit;
+> > +
+> > +     if (!bits)
+> > +             return NULL;
+> > +
+> > +     bit =3D find_next_bit(bits, kit->nr_bits, kit->bit + 1);
+>
+> Seems like this should be ok over unsafe memory as long as find_next_bit
+> is bounded?
 
+Are you proposing to add find_next_bit() as a kfunc instead?
 
-On 2/26/24 14:57, Martin KaFai Lau wrote:
-> On 2/22/24 2:26 PM, thinker.li@gmail.com wrote:
->> +/* Convert the data of a struct_ops map to shadow type.
->> + *
->> + * The function pointers are replaced with the pointers of 
->> bpf_program in
->> + * st_ops->progs[].
->> + */
->> +static void struct_ops_convert_shadow(struct bpf_map *map,
->> +                      const struct btf_type *t)
->> +{
->> +    struct btf *btf = map->obj->btf;
->> +    struct bpf_struct_ops *st_ops = map->st_ops;
->> +    const struct btf_member *m;
->> +    const struct btf_type *mtype;
->> +    char *data;
->> +    int i;
->> +
->> +    data = st_ops->data;
->> +
->> +    for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
->> +        mtype = skip_mods_and_typedefs(btf, m->type, NULL);
->> +
->> +        if (btf_kind(mtype) != BTF_KIND_PTR)
->> +            continue;
->> +        if (!resolve_func_ptr(btf, m->type, NULL))
->> +            continue;
->> +
->> +        *((struct bpf_program **)(data + m->offset / 8)) =
->> +            st_ops->progs[i];
-> 
-> This is to initialize the bpf_program pointer in the st_ops->data.
-> Can this be done directly at the bpf_object__collect_st_ops_relos()?
-
-No problem!
-
-> 
->> +    }
->> +}
->> +
-> 
+With the bpf_can_loop() proposal these two can be combined and
+it will probably achieve the same result.
+But imo this iterator is small enough to get in now and
+delete later when there is a better way.
+Ideally we'd need to add new instructions to operate with bits efficiently.
 
