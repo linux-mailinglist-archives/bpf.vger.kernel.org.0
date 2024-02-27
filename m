@@ -1,221 +1,277 @@
-Return-Path: <bpf+bounces-22817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B8F986A2DD
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 23:56:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A4686A2E5
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 23:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00C9628A556
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 22:55:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86F41F2614A
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 22:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5913655C1E;
-	Tue, 27 Feb 2024 22:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496B455E41;
+	Tue, 27 Feb 2024 22:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLsscx2i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gAsDcU7t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1F455C06
-	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 22:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B331855C18;
+	Tue, 27 Feb 2024 22:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709074552; cv=none; b=Q7CcnDyYSB+CEu9wYDm9sTHCrvLk6qKlV3WLz6Zsn5xtkpobxaHgdSPxCjIcUrH8f19M2+CdUzJtK7DXeG9FhVlq2j11zCpDTA4N11mYuurGxDJvV29HuqwDiCAPbFEbCJlus8VIK2WWxiQMEQ6E+FKooEV7yv9uxmQRPpsfV6w=
+	t=1709074728; cv=none; b=dwR+UaQiaGLk1Sb6NR//zQTZ20yGsn/irytLkDQHHRTj861zZOo+KlGW3N37OZgKQj53ToaNbJuAg8jwNu6S1rCyfMHS725gKJgsunhNMdPOlPIxNQov+TW52vLAk88gNda2SZUUjwJtWyloqChUbOYdGiidizbW3Oeups1WKkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709074552; c=relaxed/simple;
-	bh=ARIymJr09MPfIIOhXJgc0u0Lce9qEDyqqO3GXXWFN40=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uV/MVd4GPEe93DFjmQ/tT2j33ySwqE2Xo0NT+aSQFs7RWFde8EcwHP/eWj46IpT9O2zp1hweS9//6J/3nvc0Qxp5LV3GMbIwrkucLE+X5p7RGs4kuF52l7mBfiCIdvhdPjYQ0BYKXwYtNDd3yefBxn6/RPmx/BdgCNjGw0g5XcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLsscx2i; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6092387bdd0so14856137b3.3
-        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 14:55:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709074550; x=1709679350; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sBXKUW+Ybv9zLSMqYVpwNjB6rq9+x/ksF5uYs2TmhvM=;
-        b=hLsscx2ijSxOYqPWwP9HUZY42F1oVnv8LpemPxSSLT+9eufJM96C8p8lkL0KM/WQvl
-         vfydcE/AhqObVO/Sas/B9MFLHpACGWbFnpTIHoErrYGgEVlor86HIPNQmwcXW2597Xke
-         8zmKNt4BidIArrOpwNCNhJl6kN2dP/BBYEPiRu/NNV/jDv5jCqtu1X5OZb4h9qqXDWOQ
-         1TUHCWamk/A7KiL9QUbFuEWd5jOO8aLkaLGw0IOUb6mAJtusmV+u2hZrFedb6n7+80TV
-         Jvso2za0WBPU4BGa/4xh5GglN6F+rZboyzu3pgoGPiugXrctflvRww8ZUEeKW+a3yxFv
-         pNEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709074550; x=1709679350;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sBXKUW+Ybv9zLSMqYVpwNjB6rq9+x/ksF5uYs2TmhvM=;
-        b=SqgODPGfduNi97VQ3pfMOma7xdZU4caIxcv9SLZKDZsqAOdoWYXoSkNIlUH6HSgMd7
-         wSz9V29wy/buZ576dCl2WBVyLKmqaS9kFwVWUY1etrGOjG96H0aRbgZw1noPXetJbNa4
-         ollWuDJwHaGzr3tXmgAt9bGMt9ys+DW+/a5AoO/AJkSyrfp8Slhk8OaW1/X6mwf+gLbR
-         u+setakJtNYU/2eQeePmA6mTh5RSDLYkcqo+ClMu/r7iEDNMjWm1VCE2G3LRgqDuxqT+
-         Zde9Bpt3MqUF+o1Vzdam0hTJPpJESHr14y8jRrCaKr/47o7csBp8uD+t7LKcrmVQd7eB
-         Pjhg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrBqTOQyGC7s3xANQumVbcTYmBQVsRKVsRb4CBdH7Ue51H3s7DfFCFdXYgeHxuRPYP9cgVlMFGCqZuvlGyMW9PFSTf
-X-Gm-Message-State: AOJu0YzN3QORK6Jj48FPg8tSTe/s8BHWBzBFFM78YKvgbilj68BM+8iB
-	TTTo8rgBWmXk9MPoq8684NUV8aOrBefZEpWuR/TnYu8xxLKdmgRO
-X-Google-Smtp-Source: AGHT+IHN/g5STbUCWzT62JwFKJtos6kDM5o3FUAOB53XoPp5LCWMLFX+zgVLZ6jTqkstnWrJJEPt5Q==
-X-Received: by 2002:a0d:df92:0:b0:608:290d:9f1b with SMTP id i140-20020a0ddf92000000b00608290d9f1bmr3374634ywe.49.1709074550229;
-        Tue, 27 Feb 2024 14:55:50 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:76a2:1c3:c564:933e? ([2600:1700:6cf8:1240:76a2:1c3:c564:933e])
-        by smtp.gmail.com with ESMTPSA id v11-20020a81b80b000000b00608d5de1c94sm1929115ywe.37.2024.02.27.14.55.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 14:55:49 -0800 (PST)
-Message-ID: <ec9d8997-f5a2-44b6-9bc4-2caaf19df8a9@gmail.com>
-Date: Tue, 27 Feb 2024 14:55:48 -0800
+	s=arc-20240116; t=1709074728; c=relaxed/simple;
+	bh=YZNiSepSOanBsjNoqinwC9Z2YwdOaTuwUpR7ynCMH3s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B4R5iEp+yxaZoiBd/OmA2Bk5hEKQ3QlxVACl62vK32bSlDyn7lhpbmH1XwIi7H+xuHLUzWkcQbQYd2yBP1KpqZt7V0j4bzEjSYizHj2DnvSbfZzZTthY6tdtV5PNsm5Mz7tSZue6d/60TSyH65p7uTZ0K5ouMQIFR8k93T1gGw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gAsDcU7t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32909C433F1;
+	Tue, 27 Feb 2024 22:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709074728;
+	bh=YZNiSepSOanBsjNoqinwC9Z2YwdOaTuwUpR7ynCMH3s=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=gAsDcU7toHfn0VNwIFEJLEeXW9N7qr3tLxr0Vz5AHMxmgXqlEID8BTB6mhDYY5JOi
+	 Y4JDeG1J8U19h3YqZVVN1qqLRjdtnxcXnjmkQFKM0o6XxLW9z8UZH7oqzjQKpc4oLa
+	 BwkwVQ596zNmB3zwOOvNzb7y5ommeECiJJ4U3agDatv4M1Q7UsrgDt5C4Mycv0Xf8+
+	 aSJ1Hp5w1obP1+kqC2y197xfVO3Hp3SBBls045l+Wht2xIOvktFQ2icac2+2xK1WhO
+	 WQ0pBOmBPHdGwU3qET4Vms3iurFFgeE6VM3Zhis8fk/Ykzoqwg35DGJXqJ4AMj+0pn
+	 5GTGscKLH0ZCQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CFDCDCE0D32; Tue, 27 Feb 2024 14:58:47 -0800 (PST)
+Date: Tue, 27 Feb 2024 14:58:47 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <542791aa-d8b2-4c02-8739-d928f12b3bda@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+ <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+ <CAO3-Pbp8uhWOwszbBq75kpXm+=nQphZbej1xwGCtkxeG62ou5g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v1 7/8] libbpf: sync progs autoload with maps
- autocreate for struct_ops maps
-Content-Language: en-US
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- kernel-team@fb.com, yonghong.song@linux.dev, void@manifault.com
-References: <20240227204556.17524-1-eddyz87@gmail.com>
- <20240227204556.17524-8-eddyz87@gmail.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20240227204556.17524-8-eddyz87@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAO3-Pbp8uhWOwszbBq75kpXm+=nQphZbej1xwGCtkxeG62ou5g@mail.gmail.com>
 
+On Tue, Feb 27, 2024 at 03:22:57PM -0600, Yan Zhai wrote:
+> On Tue, Feb 27, 2024 at 12:32 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 05:44:17PM +0100, Eric Dumazet wrote:
+> > > On Tue, Feb 27, 2024 at 4:44 PM Yan Zhai <yan@cloudflare.com> wrote:
+> > > >
+> > > > We noticed task RCUs being blocked when threaded NAPIs are very busy in
+> > > > production: detaching any BPF tracing programs, i.e. removing a ftrace
+> > > > trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+> > > > ranges from hundreds of seconds to even an hour, severely harming any
+> > > > observability tools that rely on BPF tracing programs. It can be
+> > > > easily reproduced locally with following setup:
+> > > >
+> > > > ip netns add test1
+> > > > ip netns add test2
+> > > >
+> > > > ip -n test1 link add veth1 type veth peer name veth2 netns test2
+> > > >
+> > > > ip -n test1 link set veth1 up
+> > > > ip -n test1 link set lo up
+> > > > ip -n test2 link set veth2 up
+> > > > ip -n test2 link set lo up
+> > > >
+> > > > ip -n test1 addr add 192.168.1.2/31 dev veth1
+> > > > ip -n test1 addr add 1.1.1.1/32 dev lo
+> > > > ip -n test2 addr add 192.168.1.3/31 dev veth2
+> > > > ip -n test2 addr add 2.2.2.2/31 dev lo
+> > > >
+> > > > ip -n test1 route add default via 192.168.1.3
+> > > > ip -n test2 route add default via 192.168.1.2
+> > > >
+> > > > for i in `seq 10 210`; do
+> > > >  for j in `seq 10 210`; do
+> > > >     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 5201
+> > > >  done
+> > > > done
+> > > >
+> > > > ip netns exec test2 ethtool -K veth2 gro on
+> > > > ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+> > > > ip netns exec test1 ethtool -K veth1 tso off
+> > > >
+> > > > Then run an iperf3 client/server and a bpftrace script can trigger it:
+> > > >
+> > > > ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+> > > > ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 >/dev/null&
+> > > > bpftrace -e 'kfunc:__napi_poll{@=count();} interval:s:1{exit();}'
+> > > >
+> > > > Above reproduce for net-next kernel with following RCU and preempt
+> > > > configuraitons:
+> > > >
+> > > > # RCU Subsystem
+> > > > CONFIG_TREE_RCU=y
+> > > > CONFIG_PREEMPT_RCU=y
+> > > > # CONFIG_RCU_EXPERT is not set
+> > > > CONFIG_SRCU=y
+> > > > CONFIG_TREE_SRCU=y
+> > > > CONFIG_TASKS_RCU_GENERIC=y
+> > > > CONFIG_TASKS_RCU=y
+> > > > CONFIG_TASKS_RUDE_RCU=y
+> > > > CONFIG_TASKS_TRACE_RCU=y
+> > > > CONFIG_RCU_STALL_COMMON=y
+> > > > CONFIG_RCU_NEED_SEGCBLIST=y
+> > > > # end of RCU Subsystem
+> > > > # RCU Debugging
+> > > > # CONFIG_RCU_SCALE_TEST is not set
+> > > > # CONFIG_RCU_TORTURE_TEST is not set
+> > > > # CONFIG_RCU_REF_SCALE_TEST is not set
+> > > > CONFIG_RCU_CPU_STALL_TIMEOUT=21
+> > > > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=0
+> > > > # CONFIG_RCU_TRACE is not set
+> > > > # CONFIG_RCU_EQS_DEBUG is not set
+> > > > # end of RCU Debugging
+> > > >
+> > > > CONFIG_PREEMPT_BUILD=y
+> > > > # CONFIG_PREEMPT_NONE is not set
+> > > > CONFIG_PREEMPT_VOLUNTARY=y
+> > > > # CONFIG_PREEMPT is not set
+> > > > CONFIG_PREEMPT_COUNT=y
+> > > > CONFIG_PREEMPTION=y
+> > > > CONFIG_PREEMPT_DYNAMIC=y
+> > > > CONFIG_PREEMPT_RCU=y
+> > > > CONFIG_HAVE_PREEMPT_DYNAMIC=y
+> > > > CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=y
+> > > > CONFIG_PREEMPT_NOTIFIERS=y
+> > > > # CONFIG_DEBUG_PREEMPT is not set
+> > > > # CONFIG_PREEMPT_TRACER is not set
+> > > > # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+> > > >
+> > > > An interesting observation is that, while tasks RCUs are blocked,
+> > > > related NAPI thread is still being scheduled (even across cores)
+> > > > regularly. Looking at the gp conditions, I am inclining to cond_resched
+> > > > after each __napi_poll being the problem: cond_resched enters the
+> > > > scheduler with PREEMPT bit, which does not account as a gp for tasks
+> > > > RCUs. Meanwhile, since the thread has been frequently resched, the
+> > > > normal scheduling point (no PREEMPT bit, accounted as a task RCU gp)
+> > > > seems to have very little chance to kick in. Given the nature of "busy
+> > > > polling" program, such NAPI thread won't have task->nvcsw or task->on_rq
+> > > > updated (other gp conditions), the result is that such NAPI thread is
+> > > > put on RCU holdouts list for indefinitely long time.
+> > > >
+> > > > This is simply fixed by mirroring the ksoftirqd behavior: after
+> > > > NAPI/softirq work, raise a RCU QS to help expedite the RCU period. No
+> > > > more blocking afterwards for the same setup.
+> > > >
+> > > > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support")
+> > > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > > > ---
+> > > >  net/core/dev.c | 4 ++++
+> > > >  1 file changed, 4 insertions(+)
+> > > >
+> > > > diff --git a/net/core/dev.c b/net/core/dev.c
+> > > > index 275fd5259a4a..6e41263ff5d3 100644
+> > > > --- a/net/core/dev.c
+> > > > +++ b/net/core/dev.c
+> > > > @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+> > > >                                 net_rps_action_and_irq_enable(sd);
+> > > >                         }
+> > > >                         skb_defer_free_flush(sd);
+> >
+> > Please put a comment here stating that RCU readers cannot cross
+> > this point.
+> >
+> > I need to add lockdep to rcu_softirq_qs() to catch placing this in an
+> > RCU read-side critical section.  And a header comment noting that from
+> > an RCU perspective, it acts as a momentary enabling of preemption.
+> >
+> Just to clarify, do you mean I should state that this polling function
+> can not be called from within an RCU read critical section? Or do you
+> mean any read critical sections need to end before raising this QS?
 
+Yes to both.
 
-On 2/27/24 12:45, Eduard Zingerman wrote:
-> Make bpf_map__set_autocreate() for struct_ops maps toggle autoload
-> state for referenced programs.
-> 
-> E.g. for the BPF code below:
-> 
->      SEC("struct_ops/test_1") int BPF_PROG(foo) { ... }
->      SEC("struct_ops/test_2") int BPF_PROG(bar) { ... }
-> 
->      SEC(".struct_ops.link")
->      struct test_ops___v1 A = {
->          .foo = (void *)foo
->      };
-> 
->      SEC(".struct_ops.link")
->      struct test_ops___v2 B = {
->          .foo = (void *)foo,
->          .bar = (void *)bar,
->      };
-> 
-> And the following libbpf API calls:
-> 
->      bpf_map__set_autocreate(skel->maps.A, true);
->      bpf_map__set_autocreate(skel->maps.B, false);
-> 
-> The autoload would be enabled for program 'foo' and disabled for
-> program 'bar'.
-> 
-> Do not apply such toggling if program autoload state is set by a call
-> to bpf_program__set_autoload().
-> 
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->   tools/lib/bpf/libbpf.c | 35 ++++++++++++++++++++++++++++++++++-
->   1 file changed, 34 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index b39d3f2898a1..1ea3046724f8 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -446,13 +446,18 @@ struct bpf_program {
->   	struct bpf_object *obj;
->   
->   	int fd;
-> -	bool autoload;
-> +	bool autoload:1;
-> +	bool autoload_user_set:1;
->   	bool autoattach;
->   	bool sym_global;
->   	bool mark_btf_static;
->   	enum bpf_prog_type type;
->   	enum bpf_attach_type expected_attach_type;
->   	int exception_cb_idx;
-> +	/* total number of struct_ops maps with autocreate == true
-> +	 * that reference this program
-> +	 */
-> +	__u32 struct_ops_refs;
->   
->   	int prog_ifindex;
->   	__u32 attach_btf_obj_fd;
-> @@ -4509,6 +4514,28 @@ static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
->   	return 0;
->   }
->   
-> +/* Sync autoload and autocreate state between struct_ops map and
-> + * referenced programs.
-> + */
-> +static void bpf_map__struct_ops_toggle_progs_autoload(struct bpf_map *map, bool autocreate)
-> +{
-> +	struct bpf_program *prog;
-> +	int i;
-> +
-> +	for (i = 0; i < btf_vlen(map->st_ops->type); ++i) {
-> +		prog = map->st_ops->progs[i];
-> +
-> +		if (!prog || prog->autoload_user_set)
-> +			continue;
-> +
-> +		if (autocreate)
-> +			prog->struct_ops_refs++;
-> +		else
-> +			prog->struct_ops_refs--;
-> +		prog->autoload = prog->struct_ops_refs != 0;
-> +	}
-> +}
-> +
+I am preparing a patch to make lockdep complain if you do something
+like this:
 
-This part is related to the other patch [1], which allows
-a user to change the value of a function pointer field. The behavior of
-autocreate and autoload may suprise a user if the user call
-bpf_map__set_autocreate() after changing the value of a function pointer
-field.
+	rcu_read_lock();
+	do_something();
+	rcu_softirq_qs();
+	do_something_else();
+	rcu_read_unlock();
 
-[1] 
-https://lore.kernel.org/all/20240227010432.714127-1-thinker.li@gmail.com/
+However, it will still be perfectly legal to do something like this:
 
+	local_bh_disable();
+	do_something();
+	rcu_softirq_qs();  // A
+	do_something_else();
+	local_bh_enable();  // B
 
->   bool bpf_map__autocreate(const struct bpf_map *map)
->   {
->   	return map->autocreate;
-> @@ -4519,6 +4546,9 @@ int bpf_map__set_autocreate(struct bpf_map *map, bool autocreate)
->   	if (map->obj->loaded)
->   		return libbpf_err(-EBUSY);
->   
-> +	if (map->st_ops && map->autocreate != autocreate)
-> +		bpf_map__struct_ops_toggle_progs_autoload(map, autocreate);
-> +
->   	map->autocreate = autocreate;
->   	return 0;
->   }
-> @@ -8801,6 +8831,7 @@ int bpf_program__set_autoload(struct bpf_program *prog, bool autoload)
->   		return libbpf_err(-EINVAL);
->   
->   	prog->autoload = autoload;
-> +	prog->autoload_user_set = 1;
->   	return 0;
->   }
->   
-> @@ -9428,6 +9459,8 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
->   			return -EINVAL;
->   		}
->   
-> +		if (map->autocreate)
-> +			prog->struct_ops_refs++;
->   		st_ops->progs[member_idx] = prog;
->   	}
->   
+Which might surprise someone expection a synchronize_rcu() to wait
+for execution to reach B.  Because of that rcu_softirq_qs(), that
+synchronize_rcu() could instead return as soon as execution reached A.
+
+So I am adding this example to a new kernel-doc header for
+rcu_softirq_qs().
+
+						Thanx, Paul
+
+> Yan
+> 
+> > > > +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > > > +                               rcu_softirq_qs();
+> > > > +
+> > > >                         local_bh_enable();
+> > > >
+> > > >                         if (!repoll)
+> > > > --
+> > > > 2.30.2
+> > > >
+> > >
+> > > Hmm....
+> > > Why napi_busy_loop() does not have a similar problem ?
+> > >
+> > > It is unclear why rcu_all_qs() in __cond_resched() is guarded by
+> > >
+> > > #ifndef CONFIG_PREEMPT_RCU
+> > >      rcu_all_qs();
+> > > #endif
+> >
+> > The theory is that PREEMPT_RCU kernels have preemption, and get their
+> > quiescent states that way.
+> >
+> > The more recent practice involves things like PREEMPT_DYNAMIC and maybe
+> > soon PREEMPT_AUTO, which might require adjustments, so thank you for
+> > pointing this out!
+> >
+> > Back on the patch, my main other concern is that someone somewhere might
+> > be using something like synchronize_rcu() to wait for all in-progress
+> > softirq handlers to complete.  But I don't know of such a thing, and if
+> > there is, there are workarounds, including synchronize_rcu_tasks().
+> >
+> > So something to be aware of, not (as far as I know) something to block
+> > this commit.
+> >
+> > With the added comment:
+> >
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> >                                                         Thanx, Paul
 
