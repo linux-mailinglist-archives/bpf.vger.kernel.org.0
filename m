@@ -1,139 +1,104 @@
-Return-Path: <bpf+bounces-22780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F54C869DC0
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 18:35:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F1C1869E78
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 19:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAD871F22D17
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 17:35:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBD791C24DC1
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 18:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF2A14DFE7;
-	Tue, 27 Feb 2024 17:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A6954FB1;
+	Tue, 27 Feb 2024 17:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XwrNH63f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118104EB4C;
-	Tue, 27 Feb 2024 17:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9BA14EB44
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 17:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709055107; cv=none; b=Qn2w9MGQle+21Om1xg1f+PSLtsRBHsqo4Gip9j2e9dVFI8Uzfw7ge5bok6GflxabmE69jsYjGZITmH0gcAmFTEeZvidfdBYy3wbEWPDmhnoKL/PGbhXl6OQA5Mb4uZNaPfCPf+SFCaaHZDzQECAyY29NOsV8U6q0hkUb024Ewck=
+	t=1709056798; cv=none; b=hp2onySHfvOhjU4MmE8h+atWCsUk++JPyaY1A8h2w6Z2uw0pqywan5IkqH27nYDQlmkXr8XqplStePQR96R+w6iTMoY+tec/svZnb7l93ZSZnOmqi8TsUvsYEshmPoF6gqTwfFTqD++1sLPS6DLC5Tj0xJGlLhpNQUgP+fYn29M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709055107; c=relaxed/simple;
-	bh=N4qrca1gfNLM7XkrrAkeiIRez2lQIublb/jwq59mkcY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Acr3wva4AHXSlP2JA056regS4qTt4G6DESGAnQiAzMXdEj4ljeiMq0EcggvDuPF7mrzqXkKKHRMM6fVwx7b9k38UUILRoDKlX35R65P7+xpChwsrLIxGnFY6BtYTmpfW8SPRJzgbLYSZ40B8S/pXNj1085kH341HTCau3mksgxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc9222b337so26716125ad.2;
-        Tue, 27 Feb 2024 09:31:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709055105; x=1709659905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iPTm1iNR6NeamAnZRn8ji0Wn/OzjaL8ol//B5bTYhxE=;
-        b=H8YXRpSsMSARCT8EkE56YPxIO3BhN/vkBea6Tu8GTn9XtmJfJzHlsll3TlKlMTtCxO
-         LSoMqv9qW5T6ixbu3ByoJMsDUUFQNWg17SVhAaufmPPBkaUxb4cSA3WVYWrBol97WL3p
-         YX1O37rNWR50lEZWwByz5h2LMDkPbtmRfg0d+V1j5QD727JeEtV0N7Vb/wiW6zoKuiSF
-         wRKOYAH4IwYn3fhy7Ta9P26BLpz0fU/RriAWATIX6MbSyyWY7HtKq71FtXi2QzXsBnGS
-         t2DQx4MsJR3Vj9AwFdhy77zGdbeS05b/0M5+kMGU2HIINMQSknYyHyqQGy3nBG+91oZj
-         9L1A==
-X-Forwarded-Encrypted: i=1; AJvYcCV+Ch6HqYEF2YCfKD11RDaGTrmzDKR3922h09noKaxuHWKBeyVxYaPl/8PoWvj8MtHEG9Swb7HHPt9NwFzlxn3uNS5Ypb1VWzo4fCqP4E38F9OBZcc4+IHmL4IvhRcbpy6GcfuoS7pg1eaFKWsreaEiZ+t0K4uF6j6Eo7Yoqbg56v7B7Q==
-X-Gm-Message-State: AOJu0YyXsCElPHyA/Soif6SLA0iYrdJiPj6VFBOh6voBQfZT5nqWFFnp
-	+YYfxoSiltFclfVWJAQMGnK5xq8EZuvuytR9/DjxRzoIJKnPT5KmRO9JyUJxtWdyooLmCxkrppf
-	Ek+fepnWHML72/AQkTkK6yB9Qc0M=
-X-Google-Smtp-Source: AGHT+IEYnA++zMUlSPGbKP161F1yBAC/gQGUg58ZRFIL5eD1XfGpeOtD1G827LxcOTVtzAYilTC/PZifSULEVoZx0LM=
-X-Received: by 2002:a17:902:6e16:b0:1dc:82bc:c073 with SMTP id
- u22-20020a1709026e1600b001dc82bcc073mr8293776plk.41.1709055105322; Tue, 27
- Feb 2024 09:31:45 -0800 (PST)
+	s=arc-20240116; t=1709056798; c=relaxed/simple;
+	bh=qHlhrLgh9oIlv5l90jXjngGOTgnvfshF6vsp6k+OIpQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R0ua7iJXQyEh/EVRqlwNju5+2CmXmt0pOvu+1e1mwxkMjt3n7xxqRnJVArsKZdpI6UN4eNKOSg7kX8lPTvcZe272Cgc6Y+Y5dxsZLJH9zT+K1oN/85krReVzdaItYXubpfl0kzSJxcPB7JkwNfTIGTtXeMC7yXdUBm+GQpkzg2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XwrNH63f; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=GukGcLj9PQJkkJdIQj2GR9q/JvN/F9bhdGOfMYM4O/U=; b=XwrNH63ffZ7GWr5zMD/MMNx9XI
+	v9aKaslPO74VTtTivC5ZzlDmyM/6RnQ6cWIobn9vQYSp0ptp30DwyT/kCVaXr+GrAXmk1GUUxWnS8
+	DyBGtLgUkEI4F5RnePXoVclfk6mgvIZ2f97YaRsMb0qfH+scl3eoThCPCW7OHCHjk3Ips9pyendm4
+	7Qy6XJfkHoF79fYInWSFYVun7XXy+OYAuvZQT8ctwRRbJGmiwvXPaP6PpCZdc832OybgiyC8SAnJv
+	rjm5Ybep2LF4gvmEhBTgaZR8l9m7fJGKIne09MLk5dj2tDRxjYnE3qEHrtHixqQ2CRTi0UmWmpsah
+	oSGmJfgw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rf1kA-00000006L78-3JBT;
+	Tue, 27 Feb 2024 17:59:54 +0000
+Date: Tue, 27 Feb 2024 09:59:54 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	torvalds@linux-foundation.org, brho@google.com, hannes@cmpxchg.org,
+	lstoakes@gmail.com, akpm@linux-foundation.org, urezki@gmail.com,
+	hch@infradead.org, boris.ostrovsky@oracle.com,
+	sstabellini@kernel.org, jgross@suse.com, linux-mm@kvack.org,
+	xen-devel@lists.xenproject.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 3/3] mm: Introduce VM_SPARSE kind and
+ vm_area_[un]map_pages().
+Message-ID: <Zd4jGhvb-Utdo2jU@infradead.org>
+References: <20240223235728.13981-1-alexei.starovoitov@gmail.com>
+ <20240223235728.13981-4-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
- <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com> <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
-In-Reply-To: <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 27 Feb 2024 09:31:33 -0800
-Message-ID: <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223235728.13981-4-alexei.starovoitov@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Feb 26, 2024 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> On Mon, Feb 26, 2024 at 11:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> >
-> > On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.com=
-> wrote:
-> > >
-> > > Move threads out of machine and move thread_rb_node into the C
-> > > file. This hides the implementation of threads from the rest of the
-> > > code allowing for it to be refactored.
-> > >
-> > > Locking discipline is tightened up in this change.
-> >
-> > Doesn't look like a simple code move.  Can we split the locking
-> > change from the move to make the reviewer's life a bit easier? :)
->
-> Not sure I follow. Take threads_nr as an example.
->
-> The old code is in machine.c, so:
-> -static size_t machine__threads_nr(const struct machine *machine)
-> -{
-> -       size_t nr =3D 0;
-> -
-> -       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++)
-> -               nr +=3D machine->threads[i].nr;
-> -
-> -       return nr;
-> -}
->
-> The new code is in threads.c:
-> +size_t threads__nr(struct threads *threads)
+> privately-managed pages into a sparse vm area with the following steps:
+> 
+>   area = get_vm_area(area_size, VM_SPARSE);  // at bpf prog verification time
+>   vm_area_map_pages(area, kaddr, 1, page);   // on demand
+>                     // it will return an error if kaddr is out of range
+>   vm_area_unmap_pages(area, kaddr, 1);
+>   free_vm_area(area);                        // after bpf prog is unloaded
+
+I'm still wondering if this should just use an opaque cookie instead
+of exposing the vm_area.  But otherwise this mostly looks fine to me.
+
+> +	if (addr < (unsigned long)area->addr || (void *)end > area->addr + area->size)
+> +		return -ERANGE;
+
+This check is duplicated so many times that it really begs for a helper.
+
+> +int vm_area_unmap_pages(struct vm_struct *area, unsigned long addr, unsigned int count)
 > +{
-> +       size_t nr =3D 0;
+> +	unsigned long size = ((unsigned long)count) * PAGE_SIZE;
+> +	unsigned long end = addr + size;
 > +
-> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
-> +               struct threads_table_entry *table =3D &threads->table[i];
+> +	if (WARN_ON_ONCE(!(area->flags & VM_SPARSE)))
+> +		return -EINVAL;
+> +	if (addr < (unsigned long)area->addr || (void *)end > area->addr + area->size)
+> +		return -ERANGE;
 > +
-> +               down_read(&table->lock);
-> +               nr +=3D table->nr;
-> +               up_read(&table->lock);
-> +       }
-> +       return nr;
-> +}
->
-> So it is a copy paste from one file to the other. The only difference
-> is that the old code failed to take a lock when reading "nr" so the
-> locking is added. I wanted to make sure all the functions in threads.c
-> were properly correct wrt locking, semaphore creation and destruction,
-> etc.  We could have a broken threads.c and fix it in the next change,
-> but given that's a bug it could make bisection more difficult.
-> Ultimately I thought the locking changes were small enough to not
-> warrant being on their own compared to the advantages of having a sane
-> threads abstraction.
+> +	vunmap_range(addr, end);
+> +	return 0;
 
-I can see some other differences like machine__findnew_thread()
-which I think is due to the locking change.  Maybe we can fix the
-problem before moving the code and let the code move simple.
-
-Thanks,
-Namhyung
+Does it make much sense to have an error return here vs just debug
+checks?  It's not like the caller can do much if it violates these
+basic invariants.
 
