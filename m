@@ -1,151 +1,231 @@
-Return-Path: <bpf+bounces-22776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22777-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48C45869C4D
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 17:37:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CA7869CA1
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 17:45:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C3A81C246D1
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 16:37:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECED8287D85
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 16:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87804C61F;
-	Tue, 27 Feb 2024 16:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2600A24205;
+	Tue, 27 Feb 2024 16:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C56muvyF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B1FOEuLn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2AA200D5;
-	Tue, 27 Feb 2024 16:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1AF208A4
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 16:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051803; cv=none; b=IP/Riqy29R0vHvSuLUw2TTSOsNFfcSilGcaGlBRU0OZl7VWC0iw9jUzMfYbQvIao6x9opTdytFfk8lJwhokyAkCqshg/GuLPwHkifJjGC8epayyQ68cyXu3zKZtZN595eYkdqsYpPyGKzhapiIAQpglm4pnBniLZKH+PED9hXxY=
+	t=1709052275; cv=none; b=JEQ3jXvvboR0jCRfDaX4BestAk95Twtu9Nmr9TFFW9daMUoNjm9fi7tzk+KYB9NpostT8ouLLhhBkYtG3pkPTLwBq8oZMhReZmIlwJVY5lfQcIfDLCGKAtz7M13tNGCIjDWWoeqUcVxs7HK/z4FgOAswExocM9RSo3fPivHAojs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051803; c=relaxed/simple;
-	bh=hXwL4660+XM+wMrQMkOFCB0IGRMCfdbE0pfYHgN8LDY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=k3eyq5Z5hX0wkoGBj1Wilu1aPIgFNyOCtWHI0eGaz+JV9GV40FF3P2KwfBzBsPI8Xx5wtZ9MLs55GcQTra1JWL5cQZSCjzvboOHpHong50A4kytoJ81gP3aohsnX2b3bV6pw3vkEPS5gAjM/eNc2cVKw+3Z1/R0hqLkDN3KfcMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C56muvyF; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso807728066b.0;
-        Tue, 27 Feb 2024 08:36:41 -0800 (PST)
+	s=arc-20240116; t=1709052275; c=relaxed/simple;
+	bh=8L9o+rkshv7jCoxYQ1OSs1r5Tuu6hIBgXJukq+nieLU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LoIUHTqtCZ527Shi9TU7t0qjH7mzPVhEA1Zzo8Igl8ExpKOjG7HlIIIvMjQuQEA9pPLoy6yB1OggTNKdczyIxvlZZMVDj0oTE7C7o8JQYrnI5t09IL4JtlFp24N9O6o6WwJjcnSOZdBm+ckfG3ity9WftlGdbZot9/c2v1n9aWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B1FOEuLn; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so13480a12.1
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 08:44:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709051800; x=1709656600; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XTzJpS7X9XEoV4xvNdFIuJu4pysu7KWGugmJiXpsQsY=;
-        b=C56muvyFgnDMKaVPLpn71owu0IHf0H6YI75i1YxDE850MmWoIyeclDs9DDGap/r2yJ
-         jkbv9SiBsVwkstzxyyK48Ofg7uz3lAunM0ICKxHEgP3HX55zW/ibBGv5dB7rbqiRn17W
-         s6njdZ7xbDVX4OatctqKbdeSQPEcq7PO6DS/qlbWinGeayOr6sRyoUxhx4rJm+HNfb1d
-         jOgL7CapHtXyS5/5IEACNvJXrQepGrT9tgDWOK5bcWNA1LdqExSnUrJXkifTmqxihyFZ
-         0/yCaPC/DXHCho0zJB3QQXuRIHlBE+xcmMzkYTw7suEER/zf6cD9AzLPNKTinyuDtPgu
-         0n2g==
+        d=google.com; s=20230601; t=1709052272; x=1709657072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y67+F1ljFr7EvcM7vrsKGJMZCewGN818+2H79M1Cvug=;
+        b=B1FOEuLnt/8hSJBh3wUIemO8PpPk3LCgmYqZWxXZrBQWZCXQfkA1Vey782oxfFvz/T
+         5HIve13wZ/jAsW73fQR4tJUqV4vWVLwKWvXrvc7A+cVFQlJoDVkbQ18a0CFjdLjRgub9
+         0sZIIqd0wdoLyHwKah0tq5kDVJg8H/3R/gm2ejmBWg+QihVzLdMYTma9Qd6CgZDiGVLl
+         C2M9hFc3noLTca+6gTGagUUkkZaRSPBvg1lURs9jXwlsz8LPkZFwfuPPgcDAGCAAuKlx
+         D9uIl1kMgb8naoOEpHLyYuvPi0aMoWicGvp3jjT9SNifY4AQGk5zJ0W9kidwdFv112LK
+         eQHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709051800; x=1709656600;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XTzJpS7X9XEoV4xvNdFIuJu4pysu7KWGugmJiXpsQsY=;
-        b=PKyeHu3KLGgl1QNpJlq3blB4jSf41d+SPlvvhfJdIhSnaOAU2RGX/NgCekHukvCa8K
-         A72VzYx8Pr8UOaqaxzeWn3NGNq3PaXFRxp07vVV4+9j98xLg8TEpH5CwSHWwoUSIl3+z
-         YfpWH52Pocj5gdfjfQ5oSySkOWEnH8U9KT26LnOPLOmU3ZJ5hRM9N99vXXm/JjMOi+ve
-         9VhyRcCRHpkuqfg18NQUivsQ6mVvvsId3/k3so+c5d+BmAvZaJ4lmA8AiqbPvwCo0GDA
-         jinc4K9oxgmhkIjUmlQ7BvaxcJd2rUgrJraGcztchn2uTE3QxYv0DX/1h/xdVmx4JPob
-         Khww==
-X-Forwarded-Encrypted: i=1; AJvYcCV+DgtwTyDTkaMDcwjl/8omOX2C4HoVfAUqB2451PbezjQYKdzyMvukmTN2oL1skCKhyrh5IlZpF7ihwaBYFPe+Y1J/2b9zK0HS3QDyqIWOvi/WqMrHTacqMdoIwY2v+tA5f8LzIcxSiLu6tR6MART4cGFbDdRlSi1JH4ROXzNT+cVtrfmxM3Hnm8/qLPfiLuMWV8LuN0f/c5CmJUm+ytNuv0VD3/Cwanc2g527HmAHGbumm5pVR3xT+XY=
-X-Gm-Message-State: AOJu0YwEMwTvy5VXBjUIi8tH92EeFePHdWm6hMZMxHyHyWyO5SawfhNM
-	VamgJ79OBgRGBwCb00HFqdK9pWAY1KKxUUkHCQob6JrkmmK6V5PZ
-X-Google-Smtp-Source: AGHT+IHTThC0untfFuCzhNiu9UcWocSFSzEw+xein1v3vrNBcEIfO/H/gNfMVPOXdUv4kGjwHs9jNQ==
-X-Received: by 2002:a17:906:408d:b0:a3c:5e17:1635 with SMTP id u13-20020a170906408d00b00a3c5e171635mr9143240ejj.30.1709051799951;
-        Tue, 27 Feb 2024 08:36:39 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id lh11-20020a170906f8cb00b00a3fb62260e3sm919913ejb.72.2024.02.27.08.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 08:36:39 -0800 (PST)
-Message-ID: <9a35a53a1887fb664fd540ec7e272cb3ea63f799.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for
- is_bpf_timer_set_sleepable_cb_kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song
- Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Jiri Kosina
- <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org,  linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org,  linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Date: Tue, 27 Feb 2024 18:36:37 +0200
-In-Reply-To: <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
-	 <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org>
-	 <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
-	 <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1709052272; x=1709657072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y67+F1ljFr7EvcM7vrsKGJMZCewGN818+2H79M1Cvug=;
+        b=puMng1LRNGDnZtNdGpSGF4bxYoW4SV388WxpStNtYhqA0hxpU3qAXm+vk89BS/Nqzg
+         /y1KFZGQPT23d4shf9+j94LuS5W5nafQT86ImZeC9gQPaNX6WBMJsrAJjoveWHjZnI88
+         WuwvAnN3+GZCYWF2KuS55QBaKgGpgfLmN+Bndyixn0ReKnRrVBKWegZjgvJlDuvj5g00
+         Gko6h1LLbOy2r7cq4tgF+fqouRHpWgDSUAprG0lDhjVfUUUjJKBpg7hVG8TNuz2pgRN6
+         VRfjVW30Rs08WtEj6AVEAJa/Si5jIEVgd3eu8fLteAwNto6ImMQ0Q0bGN/jMFXqW5tRz
+         svSA==
+X-Forwarded-Encrypted: i=1; AJvYcCUeplLLe7rJGSf8k1W04hD05a9XmeV0PKWEol1wfI0HL5K4w9n2/vxJetEfL2GnkGnMMqNa9+aWGoVChcHTVNtWva7y
+X-Gm-Message-State: AOJu0YwXicEFOy4NDgt028mQG8X0aJJBrt6qbrrnUWHkLp87xsXfxKeA
+	AEDUqJr3KN5S2l5J+CeLVR4eoRtDH1KZz7Ko7L4O/MGqDKxhxos2vSpnAJGw11Np0jUGeZL9Doy
+	02uIvTNqMD5Cxc2pBTsc/xsquEgsXT01zhA4L
+X-Google-Smtp-Source: AGHT+IHJEIutuvD5mT3lzoYNxTYBdXitRMfqCawctD2clmn+EK2ztXIcJWsbARjP3/Zy2n0mCTYUoL9z4fZMXvDxHhg=
+X-Received: by 2002:a50:9ea5:0:b0:55f:8851:d03b with SMTP id
+ a34-20020a509ea5000000b0055f8851d03bmr198565edf.5.1709052271564; Tue, 27 Feb
+ 2024 08:44:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+In-Reply-To: <Zd4DXTyCf17lcTfq@debian.debian>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 27 Feb 2024 17:44:17 +0100
+Message-ID: <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Yan Zhai <yan@cloudflare.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-02-27 at 17:18 +0100, Benjamin Tissoires wrote:
-[...]
+On Tue, Feb 27, 2024 at 4:44=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
+:
+>
+> We noticed task RCUs being blocked when threaded NAPIs are very busy in
+> production: detaching any BPF tracing programs, i.e. removing a ftrace
+> trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+> ranges from hundreds of seconds to even an hour, severely harming any
+> observability tools that rely on BPF tracing programs. It can be
+> easily reproduced locally with following setup:
+>
+> ip netns add test1
+> ip netns add test2
+>
+> ip -n test1 link add veth1 type veth peer name veth2 netns test2
+>
+> ip -n test1 link set veth1 up
+> ip -n test1 link set lo up
+> ip -n test2 link set veth2 up
+> ip -n test2 link set lo up
+>
+> ip -n test1 addr add 192.168.1.2/31 dev veth1
+> ip -n test1 addr add 1.1.1.1/32 dev lo
+> ip -n test2 addr add 192.168.1.3/31 dev veth2
+> ip -n test2 addr add 2.2.2.2/31 dev lo
+>
+> ip -n test1 route add default via 192.168.1.3
+> ip -n test2 route add default via 192.168.1.2
+>
+> for i in `seq 10 210`; do
+>  for j in `seq 10 210`; do
+>     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 520=
+1
+>  done
+> done
+>
+> ip netns exec test2 ethtool -K veth2 gro on
+> ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+> ip netns exec test1 ethtool -K veth1 tso off
+>
+> Then run an iperf3 client/server and a bpftrace script can trigger it:
+>
+> ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+> ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 =
+>/dev/null&
+> bpftrace -e 'kfunc:__napi_poll{@=3Dcount();} interval:s:1{exit();}'
+>
+> Above reproduce for net-next kernel with following RCU and preempt
+> configuraitons:
+>
+> # RCU Subsystem
+> CONFIG_TREE_RCU=3Dy
+> CONFIG_PREEMPT_RCU=3Dy
+> # CONFIG_RCU_EXPERT is not set
+> CONFIG_SRCU=3Dy
+> CONFIG_TREE_SRCU=3Dy
+> CONFIG_TASKS_RCU_GENERIC=3Dy
+> CONFIG_TASKS_RCU=3Dy
+> CONFIG_TASKS_RUDE_RCU=3Dy
+> CONFIG_TASKS_TRACE_RCU=3Dy
+> CONFIG_RCU_STALL_COMMON=3Dy
+> CONFIG_RCU_NEED_SEGCBLIST=3Dy
+> # end of RCU Subsystem
+> # RCU Debugging
+> # CONFIG_RCU_SCALE_TEST is not set
+> # CONFIG_RCU_TORTURE_TEST is not set
+> # CONFIG_RCU_REF_SCALE_TEST is not set
+> CONFIG_RCU_CPU_STALL_TIMEOUT=3D21
+> CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=3D0
+> # CONFIG_RCU_TRACE is not set
+> # CONFIG_RCU_EQS_DEBUG is not set
+> # end of RCU Debugging
+>
+> CONFIG_PREEMPT_BUILD=3Dy
+> # CONFIG_PREEMPT_NONE is not set
+> CONFIG_PREEMPT_VOLUNTARY=3Dy
+> # CONFIG_PREEMPT is not set
+> CONFIG_PREEMPT_COUNT=3Dy
+> CONFIG_PREEMPTION=3Dy
+> CONFIG_PREEMPT_DYNAMIC=3Dy
+> CONFIG_PREEMPT_RCU=3Dy
+> CONFIG_HAVE_PREEMPT_DYNAMIC=3Dy
+> CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=3Dy
+> CONFIG_PREEMPT_NOTIFIERS=3Dy
+> # CONFIG_DEBUG_PREEMPT is not set
+> # CONFIG_PREEMPT_TRACER is not set
+> # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+>
+> An interesting observation is that, while tasks RCUs are blocked,
+> related NAPI thread is still being scheduled (even across cores)
+> regularly. Looking at the gp conditions, I am inclining to cond_resched
+> after each __napi_poll being the problem: cond_resched enters the
+> scheduler with PREEMPT bit, which does not account as a gp for tasks
+> RCUs. Meanwhile, since the thread has been frequently resched, the
+> normal scheduling point (no PREEMPT bit, accounted as a task RCU gp)
+> seems to have very little chance to kick in. Given the nature of "busy
+> polling" program, such NAPI thread won't have task->nvcsw or task->on_rq
+> updated (other gp conditions), the result is that such NAPI thread is
+> put on RCU holdouts list for indefinitely long time.
+>
+> This is simply fixed by mirroring the ksoftirqd behavior: after
+> NAPI/softirq work, raise a RCU QS to help expedite the RCU period. No
+> more blocking afterwards for the same setup.
+>
+> Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support=
+")
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> ---
+>  net/core/dev.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 275fd5259a4a..6e41263ff5d3 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+>                                 net_rps_action_and_irq_enable(sd);
+>                         }
+>                         skb_defer_free_flush(sd);
+> +
+> +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +                               rcu_softirq_qs();
+> +
+>                         local_bh_enable();
+>
+>                         if (!repoll)
+> --
+> 2.30.2
+>
 
-> Hmm, I must still be missing a piece of the puzzle:
-> if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
-> argument, given that it is declared as kfunc, I also must declare it in
-> my bpf program, or I get the following:
->=20
-> # libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_proto [26=
-4] incompatible with vmlinux [18151]
->=20
-> And if I declare it, then I don't know what to pass, given that this is
-> purely added by the verifier:
->=20
-> 43: (85) call bpf_timer_set_sleepable_cb#18152
-> arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or struct wi=
-th scalar
+Hmm....
+Why napi_busy_loop() does not have a similar problem ?
 
-Right, something has to be done about number of arguments and we don't
-have a convenient mechanism for this afaik.
+It is unclear why rcu_all_qs() in __cond_resched() is guarded by
 
-The simplest way would be to have two kfuncs:
-- one with 2 arguments, used form bpf program;
-- another with 3 arguments, used at runtime;
-- replace former by latter during rewrite.
+#ifndef CONFIG_PREEMPT_RCU
+     rcu_all_qs();
+#endif
 
-> Maybe I should teach the verifier that this kfunc only takes 2
-> arguments, and the third one is virtual, but that also means that when
-> the kfunc definitions are to be included in vmlinux.h, they would also
-> have this special case.
 
-It might be a somewhat generic mechanism, e.g. btf_decl_tag("hidden")
-for kfunc parameter.
-
-imho, having two kfuncs is less hacky.
-
-> (I just tried with a blank u64 instead of the struct bpf_prog_aux*, but
->  it crashes with KASAN complaining).
-
-For my understanding:
-- you added a 3rd param (void *) to kfunc;
-- passed it as zero in BPF program;
-- applied the above rewrite, so that r3 equals to prog->aux;
-- and now KASAN complains, right?
-
-Could you please provide more details on what exactly it complains about?
+Thanks.
 
