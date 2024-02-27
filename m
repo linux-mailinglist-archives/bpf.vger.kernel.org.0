@@ -1,189 +1,108 @@
-Return-Path: <bpf+bounces-22795-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22796-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A0686A104
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 21:46:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE4BC86A171
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 22:18:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3221F24D35
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 20:46:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D48F28A4C7
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 21:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639A314EFF3;
-	Tue, 27 Feb 2024 20:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6930214F995;
+	Tue, 27 Feb 2024 21:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RfZ7P4A3"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="FaIciahU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482C214EFE3
-	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 20:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41BF514F963
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 21:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709066801; cv=none; b=I/8Fygy8GW3QvLq1OzxJA3KRwSuy3PgzYjgfB483FJzXZQfkR45D14Q5LYG7PEd6dBcyGYxs/R40zLx29ZJffRs3igGQgKMQ98b5wX75jwYFgvbZDDTqN3Jqe0u9VSr59xx9Lerf1GsuqsHpcbxmPC1ty8gpd9xNZ1B8nafaHHQ=
+	t=1709068688; cv=none; b=d0vBxmL2oD3PKoeOdrDGt0zxSZ0XCtFwFIO6OK7QM2g8q7k9+Sriy2DPGr7E58mdmrR+8Zrk5AW6is2mk7QilbSG6emKK8SLQlKW4LZA3w/L3GSpsBE0+GsBn8ak+HjifBTFsbX0dJKOpkIYd7lCdEsOiW0OTKkqPxnjNu6tSAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709066801; c=relaxed/simple;
-	bh=AUauZGL5+/rh5GG4zk54y7kpunQscNTEQCjLu4uOP+4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UHTrE+Eb21hKvaRHvXnsidNMw66GYm60SP1oNQZ2yh35g79YhiIz0a3MFKJIuWzDD3b8R4IT14q/3rF0ye9y59gDiZM/PKRotjJS11B/0T/5Q23QdsKgLJlL/09jXRGwPIPm6xpGI27PlxzVl14r9lLfOncqseruRwkzGq5J3Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RfZ7P4A3; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565b434f90aso4187469a12.3
-        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 12:46:38 -0800 (PST)
+	s=arc-20240116; t=1709068688; c=relaxed/simple;
+	bh=GM2IpfEXJUSW2VkMqcfLau6RAfFop+hHmlbXoHh2q2I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DS5vCEUlGFLL5iwem1NzAnlBB1ZK9hTivP2T57OcSsYauXxKeI7xqG/9Y2RIg+EBWmcP1tpwGCyxg3592yIJQSTZ+CblPrAbpRPvq0iFzulBKmOZVOL5BqrIUxWOTKRU62WNR6dWB6Haj8QyiKEitGqDwMdBEDvAb2PkilaylEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=FaIciahU; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512aafb3ca8so4914855e87.3
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 13:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709066797; x=1709671597; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1709068685; x=1709673485; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=liH9xyX1tymvM6hgRgnjazV5iOyyvCduV1ZAdTONLmQ=;
-        b=RfZ7P4A3UKKUr5zV+l0kcDraoJHTNHQoex2wyuaw57iC8YmkD3UVJO3EcYP9sfxRE1
-         c7WwtEVhqmq+rArP7fN6wbukD86XLKRJssTh8SN8HosHWH8YfhVn9kk3eBadwz2bwlkK
-         JaSqStFCMudHaX7+S6kKlgjWgHuTo8ds32YFYajjol0/r9SC99EuoNSUgAf26AsSTVNK
-         JA6ysMj5cQIiOVcvWndaBhtH1N2Zl28nBAxIvl5ISD3iulFltWDTIRyFDsTGDeTuIkyt
-         DUA1p3vO/PsYWsiLkXd/X2K7f7chRlBFRG8XfuOayPIlprsGkXRMiCo+J3JtUsxtE/lb
-         1bpQ==
+        bh=9w1c/wPzzC00qVzHrWYxBARFDO3pJ4orEr+vFkg8bak=;
+        b=FaIciahUxu695FYaKfbzdNFa+5S7d7DVOywOVofsV3muYJSRB76A1kCJJ1uXgtGwAN
+         JAeq8SxfHlVtVCcGFq6s0bCja+zNTWLdRHqlQQ8W5Kha1OcsmiiAN415hQLuxGendYQc
+         D655tEO03RBPhJ0TwkvWN+kO86rX/tbq0o575FOpqs6SuOCJMjzwWVYawdawycbkxtuJ
+         FwAqJYdWhqyuyHd+DsFaJ6sLtt4QwLZ6HSGjESC0oEwVktRRGdo621nYXT/snIUCuGAa
+         eICvx2HjgRsJqbjVFwWvwkwJwaAIxCpxlUpTCrO10IzYVtL79umBAbLHA3y/Yfkbz9Ip
+         0hJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709066797; x=1709671597;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709068685; x=1709673485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=liH9xyX1tymvM6hgRgnjazV5iOyyvCduV1ZAdTONLmQ=;
-        b=nJk20jV6KMu7Puy+mGutXQV39PzG5TI4y+w4YjKolUiymKZRRHOQogvEVzIjhHdnMv
-         xdOva0WxQd8OSEY3S8HAI5uVp3l5tgXIrbFaWLdtcPo9cldkYLKsiMwv7lm77Gz5STB+
-         2DMZkfVj2Ez/N77/FjsOAJDHBO1pTV3T0mEhCaEAOy+fv6knLEU3xrkleMWcAV2cjXmW
-         5d5y/SueTmqTnZEK5MPT4oG4b+9UVTo7U5JnhskMbuDYSWJ5cNVyB4+ny+x6ck0kP/Ch
-         o14p20HRUctgHe+jwSRxf4ytT8JwxmTete/hfnBXNTfwSoF4KoyunGyaRn9KJz26FZqB
-         Duhg==
-X-Gm-Message-State: AOJu0YyjmsaRwVeOjvnQ/hQdznNiJC1a4lNIFkNexKxj0HVgOS3COm+Z
-	OcgKlFzJu6OyolMK0AYJbFjpYY7ZoE3Rsz6uId1LLKat8+vuG30zVml/Ofcg6Lg=
-X-Google-Smtp-Source: AGHT+IErzoO/LnaIc4qmRfJzZUcsWM01YcbOQiB+OeyYsGD/f7xXLl4ZI7eJxX8pMiwEPh8q07X/tw==
-X-Received: by 2002:a17:906:565a:b0:a3e:6a25:2603 with SMTP id v26-20020a170906565a00b00a3e6a252603mr7837736ejr.33.1709066797437;
-        Tue, 27 Feb 2024 12:46:37 -0800 (PST)
-Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id hb13-20020a170906b88d00b00a3d9e6e9983sm1119832ejb.174.2024.02.27.12.46.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 12:46:37 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	void@manifault.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 8/8] selftests/bpf: tests for struct_ops autoload/autocreate toggling
-Date: Tue, 27 Feb 2024 22:45:56 +0200
-Message-ID: <20240227204556.17524-9-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240227204556.17524-1-eddyz87@gmail.com>
-References: <20240227204556.17524-1-eddyz87@gmail.com>
+        bh=9w1c/wPzzC00qVzHrWYxBARFDO3pJ4orEr+vFkg8bak=;
+        b=dZ4Mf7h0q1FGt3hppMUY5CfeEZ2b4rn9ECxOIVZlCOoMLPOoqlEcNMiBPqqirKFzQ6
+         18PHCQyksb6abRsiM69YwkAMpTaddx0tsFsf8bGAjjQB5yU19XewnMnurEaU6f8+vnAi
+         cv72zdZBOY/kr7pzlZ/nNWkBwTuODu6lzz5AUQLma/sa1a+oPqO7pVehMJlHlgSU/Z4E
+         NkC7J4uGuN51K+af4dsyacybif1YLhWObTr+SE6KI7jPudLcRKmAgXnDOrMmbYta9z5M
+         Q/1FUIuXDHOkt8MKF51HV0yN/HDunjcby3FI00FU4l3bD9BMJ89/uP+pw59VSiA5HcWE
+         qm/w==
+X-Forwarded-Encrypted: i=1; AJvYcCV+MCBx2DtzoTTvF/cPatcgen4wR9vpSKShGUUiq5EqeROqUFeAD5CWX8dcEm2FF0M5RUTyKebzgeLwdnv54pYfEgmJ
+X-Gm-Message-State: AOJu0YzZ+ix+COJnZxCBMYJ2bQXF0KK4TdoSii/vkKBdLBSzhnSmTzx2
+	IUH/XA9b/ujnw3Vq9roLh2R1WnJSMMBgAnW2Ni+n2G2Ixf5K2Q7BedaYUe2l+N75IEHtC2Ualwc
+	ORPtRklXLfiGNN9b34p1yaDhNFnzAUiD7GbAmAw==
+X-Google-Smtp-Source: AGHT+IHMZYDrlxvgtUhH8+R7/d2FNSTdzt9nbLZWLir6PhRBrOD/kryo5DdrPJpwQVpZCpVIgWiY6gZgPiLj6hFZ0bY=
+X-Received: by 2002:a05:6512:1114:b0:512:cba9:c5e with SMTP id
+ l20-20020a056512111400b00512cba90c5emr8178182lfg.61.1709068685183; Tue, 27
+ Feb 2024 13:18:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+In-Reply-To: <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Tue, 27 Feb 2024 15:17:54 -0600
+Message-ID: <CAO3-Pbpy7V+ZesnG7vTmV4msHW3M-sMa2Pfim2yU8jL=hbYq3A@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Verify automatic interaction between struct_ops map autocreate flag
-and struct_ops programs autoload flags.
+On Tue, Feb 27, 2024 at 10:44=E2=80=AFAM Eric Dumazet <edumazet@google.com>=
+ wrote:
+>
+> Hmm....
+> Why napi_busy_loop() does not have a similar problem ?
+>
+That's a good question. Let me try if I can repro this on a busy loop
+as well, since the structure seems very alike.
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../bpf/prog_tests/struct_ops_autocreate.c    | 65 +++++++++++++++++--
- 1 file changed, 61 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-index b21b10f94fc2..ace296aae8c4 100644
---- a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-+++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-@@ -46,10 +46,6 @@ static void can_load_partial_object(void)
- 	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
- 		return;
- 
--	err = bpf_program__set_autoload(skel->progs.test_2, false);
--	if (!ASSERT_OK(err, "bpf_program__set_autoload"))
--		goto cleanup;
--
- 	err = bpf_map__set_autocreate(skel->maps.testmod_2, false);
- 	if (!ASSERT_OK(err, "bpf_map__set_autocreate"))
- 		goto cleanup;
-@@ -70,8 +66,69 @@ static void can_load_partial_object(void)
- 	struct_ops_autocreate__destroy(skel);
- }
- 
-+static void autoload_toggles(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	struct bpf_map *testmod_1, *testmod_2;
-+	struct bpf_program *test_1, *test_2;
-+	struct struct_ops_autocreate *skel;
-+
-+	skel = struct_ops_autocreate__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
-+		return;
-+
-+	testmod_1 = skel->maps.testmod_1;
-+	testmod_2 = skel->maps.testmod_2;
-+	test_1 = skel->progs.test_1;
-+	test_2 = skel->progs.test_2;
-+
-+	/* testmod_1 on, testmod_2 on */
-+	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #1");
-+	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #1");
-+
-+	/* testmod_1 off, testmod_2 on */
-+	bpf_map__set_autocreate(testmod_1, false);
-+	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #2");
-+	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #2");
-+
-+	/* testmod_1 off, testmod_2 off,
-+	 * setting same state several times should not confuse internal state.
-+	 */
-+	bpf_map__set_autocreate(testmod_2, false);
-+	bpf_map__set_autocreate(testmod_2, false);
-+	ASSERT_FALSE(bpf_program__autoload(test_1), "autoload(test_1) #3");
-+	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #3");
-+
-+	/* testmod_1 on, testmod_2 off */
-+	bpf_map__set_autocreate(testmod_1, true);
-+	bpf_map__set_autocreate(testmod_1, true);
-+	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #4");
-+	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #4");
-+
-+	/* testmod_1 on, testmod_2 on */
-+	bpf_map__set_autocreate(testmod_2, true);
-+	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #5");
-+	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #5");
-+
-+	/* testmod_1 on, testmod_2 off */
-+	bpf_map__set_autocreate(testmod_2, false);
-+	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #6");
-+	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #6");
-+
-+	/* setting autoload manually overrides automatic toggling */
-+	bpf_program__set_autoload(test_2, false);
-+	/* testmod_1 on, testmod_2 off */
-+	bpf_map__set_autocreate(testmod_2, true);
-+	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #7");
-+	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #7");
-+
-+	struct_ops_autocreate__destroy(skel);
-+}
-+
- void serial_test_struct_ops_autocreate(void)
- {
-+	if (test__start_subtest("autoload_toggles"))
-+		autoload_toggles();
- 	if (test__start_subtest("cant_load_full_object"))
- 		cant_load_full_object();
- 	if (test__start_subtest("can_load_partial_object"))
--- 
-2.43.0
-
+> It is unclear why rcu_all_qs() in __cond_resched() is guarded by
+>
+> #ifndef CONFIG_PREEMPT_RCU
+>      rcu_all_qs();
+> #endif
+>
+>
+> Thanks.
 
