@@ -1,139 +1,128 @@
-Return-Path: <bpf+bounces-22808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEBC86A202
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 22:58:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8476986A206
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 23:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 501D8B2927E
-	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 21:58:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A34C1F246D3
+	for <lists+bpf@lfdr.de>; Tue, 27 Feb 2024 22:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219F114F977;
-	Tue, 27 Feb 2024 21:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C01D14F99C;
+	Tue, 27 Feb 2024 22:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1UxZhsV"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NAQjr5l2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038105B1E2;
-	Tue, 27 Feb 2024 21:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5501114EFF3
+	for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 22:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709071090; cv=none; b=F79plAVlQhX/B8xac+FodXmJI5pBwiEOQfj8TKU1caROYXlZGhSvEV6UXEU69FW1GnQNuIbvDE1wc/QwFQxiFECcjzun9rKC+LBfK+LqpXUBniUrMxfGsPlbevjuJhydD9dsINzTLNSN/c/00QnYscX6MYhuzq0BfE98hwrigBE=
+	t=1709071323; cv=none; b=PG5CFb5tXSweOgrKDo7b4C6LnNPbkxTKrCks5zgLpfYsBzzl1wQQhFlOrqABYBEgZK2mxRFkiYnZYpr7iYu6TpJP4SjKq23gvVS3KEFij93LSOyspNWP/oCMbpvNwAgBx8WlTGL8mX46T7/AarC+/m16MBK4XjtAMVv5d4jBC3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709071090; c=relaxed/simple;
-	bh=qZHbzzuKfkdyK1Ir+hOj1hvrx+08TuV6H84bv5TzcNo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pp/1Yt0KeZU1jr+4+40e1E2Flb1VYA56Xm2NTvV5ChsAE63zl3ZgMFIx4g740bIu8ZRDV2UPCgHmMSsjvKYzpEi9rkcF0lCI1idwMm6n+vEGWUIgkNXZ07oXP9vaioTc0Lg6/pwLrOyhyIKmeuVsHV76HIR+JLkX9elvhHaCilM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i1UxZhsV; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4129e8bc6c8so27828015e9.2;
-        Tue, 27 Feb 2024 13:58:08 -0800 (PST)
+	s=arc-20240116; t=1709071323; c=relaxed/simple;
+	bh=ukWrWX/4QAJImSWXYY9VHw3tM0MRjPKz7OGm8pghIEE=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=j4d/joLPxncii2K2oR30JuHdYvLTxcSzcXuBhw/kNtBP2/4aMIij4A5Og7iSZCtXwb6FcJFcnWwgVSqX9cXIpVBM3biPZMjO17sODBVjstTVVnGseLGtmoWp296xg0hv1YuvUN+c4Zpaxi422GAUYxjR/l+NZT23la7j1K92MHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NAQjr5l2; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so5808493276.2
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 14:02:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709071087; x=1709675887; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eb5fd1YKI19CwE/2xsKe1ke/vgyXTopoQaaPB8EDAjc=;
-        b=i1UxZhsV7MJQNVE2+1qqwR1k6h9ZUdKcxWavGOVuT72022B9GVU1p/u1kbReB+Yq0K
-         vh0FvnOX6PBUZN3Aee3YWRYz5N0x1mQ7n6gmgDdx4qN0pOG3tNQfNomhXWaGSPBMNQu2
-         U5zwQNDKZVIfTRxz6NmMqH7oaMPSQfz4A8rDTIFBGeYATQEWpSe5iy2sHegoxSOxrTo1
-         GtprnoRGW3vUPpFLk+hDv44hnrfZpr2Nfyd13CkW6XqApTLtxsb5mwzjlcMbzwRE6ybO
-         85Sev4Cp4eQ1JdehKfUZN/rtX/FKUxq20GiDDoUleDQtpvSs9CnvtHCYIs1NCqRSe6fV
-         9VyA==
+        d=google.com; s=20230601; t=1709071321; x=1709676121; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oJ3hOQ4sjw8PBE4NTH5bCPktPJ1q6cfg+IS2J6sU/VQ=;
+        b=NAQjr5l257jm1gv8jDmx2tFDw/wgZulnnPZ5bqUJrWR66P44wMmguOuKe9zS+ll74S
+         3g9u1pLv0f7mLjdnmxp1LS0fRI/kflnnOhnmJbCbKhnTeKpXQkvGhSe9PHtMKwH1fl+5
+         dV/5MM23ez7Q0vw1nE7i3SmHdJ98ksnMAGTTEjj59omYvgpYHtD6VzaHWdUdVPw32Tzd
+         LMi0OA3NujgLQbQIhEE9iymb3H6NT2nJpEAIz3WML81TiDUBJLzMNI8M/BJYRGiYfW4k
+         exAkr0tVWCWAk9HTnY7LhymptE34zt9zo/mY/uuvVM4eIKIY5L2Xh5b3z3lhEiUIoOcF
+         /qsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709071087; x=1709675887;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eb5fd1YKI19CwE/2xsKe1ke/vgyXTopoQaaPB8EDAjc=;
-        b=jOvfNQee4ZEmIuNfe66wbgVTbkHFA8OE6AgN4NHWHut2D7dxI+pKEU8oRuYP6klBzD
-         988Qn6iMmef4swJr56OpJG7GR1dhfDC3hcQ6xkRL2luYFQypB/gjH2p6LljSpqf5TJcN
-         W+TvEGCRvxYg9ZMHVT9C64sI6Yfqa4Vi50S5dfPayj7nOyO807fzpT3PLDpZ+cQFTgqU
-         zbNpD8IBNaY+UAwe8xzIho3MZCCm30fuF5DTw02eDyeK0sKAJDmzzWFNPz3c7hM9DFt9
-         kO+KTczWNydjQ4MwfsxrpYI1TwQS49Y6WNqQ4J5zG4lCFoZFszgfqm7Jm/lyWhJYZAxF
-         dNLw==
-X-Forwarded-Encrypted: i=1; AJvYcCXAjUjA2NnsFUT44bqzNZ6vddjXGklnmfEI8d1GYULKXYkLOlaa5XpraiE87Kir978MryJ4O6t82TfJbL29wMAWD4rXXzYC7u+LvP5ncIA1QUyXiH8FrdhlMBCUNG/YXiPH
-X-Gm-Message-State: AOJu0YyKN4aL8wTstniEP80YOxj37LjCnmpz0WFAju+YfIOb6/uo0+nC
-	pvCduuI/Bj53rTWdea6pkHf27XAq7PFo7jN6NBWaKgM7/ZrFIJVkhB5dreYOJfKIvJDtBC3E6al
-	EQokoC1AJTbY7xFZxtZ2Jvp6QLpI=
-X-Google-Smtp-Source: AGHT+IHkCIrDM8z6qvHeOnYtDl40GEZ+l7G7uW3Nl3V7f3gsPjHPchxsEC0GTs7ghTyqxGJ0Rzd3LVxyVU5USFRjvPs=
-X-Received: by 2002:a05:600c:4e86:b0:412:a21b:5bf8 with SMTP id
- f6-20020a05600c4e8600b00412a21b5bf8mr5286577wmq.3.1709071087093; Tue, 27 Feb
- 2024 13:58:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709071321; x=1709676121;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oJ3hOQ4sjw8PBE4NTH5bCPktPJ1q6cfg+IS2J6sU/VQ=;
+        b=KcoryVRQEH4IBdLt9vi3pq9EfIW5UssG45jg1mGktzrk+0ZD5Cw31PQg1BMG+CBdsn
+         Z+ywZSSIDfks9XfSwDbXdnWCcNubKsZYk0JQ2ZJQB978JXdYHWTV4KcHLhhz04W8FL56
+         SJbaTEkDy3M1aVdXR2H4H5ci3pt8ZoDjw5Q7xhKK0Tsi2YZksThyJRct4xG0boLPuYOX
+         yJ1Y8Nrs4EmWRT/rP1CnAG3aYHTJOpu12cl2pYM65uMADIIlW+08/VTJpVgV4qtV+tjm
+         doai7bP2j/JbKTxaBxHcU0yX9W+SLtnXtRsvwaGy4eL5zA08memtyiwHoXNK9HZig4aQ
+         /Wbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQXvnFSmmzIl3abrbHdA/a52HZLnPONVXvT72svcSXzXtuoUjdvVX9ZiaC9SPDJAzvTiqwFf1G3HyGP3fcY9/tEgVx
+X-Gm-Message-State: AOJu0YyLLMlcrGSFFDqI4fMl1v94MgNFeF+VpujEID6Od3e1K3rd4LcP
+	++e+LZD2SRdVn7ixvDFETbiAjUPXqyoyDGqNlk0dng7xLhzqgS2U3sBCt5eus2C9gdSjg/ABzhg
+	JTSHHiw==
+X-Google-Smtp-Source: AGHT+IG/cUONmoV+4UzbT+d/Hd3lVMVO8hBLQGFKSS3+qo3Oz7AGukS9JYSGimVkX4knBHbcAzSdbLvwNS/x
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:4ff1:8af6:9e1a:6382])
+ (user=irogers job=sendgmr) by 2002:a05:6902:1891:b0:dc7:82ba:ba6e with SMTP
+ id cj17-20020a056902189100b00dc782baba6emr55224ybb.7.1709071321432; Tue, 27
+ Feb 2024 14:02:01 -0800 (PST)
+Date: Tue, 27 Feb 2024 14:01:44 -0800
+Message-Id: <20240227220150.3876198-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240201125225.72796-1-puranjay12@gmail.com> <20240201125225.72796-2-puranjay12@gmail.com>
- <ZdegTX9x2ye-7xIt@arm.com> <CAADnVQLGGTshMiQAWwJ9UzrEVDR4Z8yk+ki9pUqKLgcH0DRAjA@mail.gmail.com>
- <Zd4jlPW2H7EvdlfM@arm.com> <Zd4lggegV2MeD3jP@arm.com>
-In-Reply-To: <Zd4lggegV2MeD3jP@arm.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 27 Feb 2024 13:57:55 -0800
-Message-ID: <CAADnVQKYZdAmh3V_259adfcMsRRGBrXR4k=yJ2heVMQ+AuQ8Xg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] arm64: stacktrace: Implement
- arch_bpf_stack_walk() for the BPF JIT
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Will Deacon <will@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Subject: [PATCH v2 0/6] Thread memory improvements and fixes
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 10:10=E2=80=AFAM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Tue, Feb 27, 2024 at 06:01:56PM +0000, Catalin Marinas wrote:
-> > On Thu, Feb 22, 2024 at 06:04:35PM -0800, Alexei Starovoitov wrote:
-> > > On Thu, Feb 22, 2024 at 11:28=E2=80=AFAM Catalin Marinas
-> > > <catalin.marinas@arm.com> wrote:
-> > > > On Thu, Feb 01, 2024 at 12:52:24PM +0000, Puranjay Mohan wrote:
-> > > > > This will be used by bpf_throw() to unwind till the program marke=
-d as
-> > > > > exception boundary and run the callback with the stack of the mai=
-n
-> > > > > program.
-> > > > >
-> > > > > This is required for supporting BPF exceptions on ARM64.
-> > > > >
-> > > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > > > > ---
-> > > > >  arch/arm64/kernel/stacktrace.c | 26 ++++++++++++++++++++++++++
-> > > > >  1 file changed, 26 insertions(+)
-> > [...]
-> > > > I guess you want this to be merged via the bpf tree?
-> > >
-> > > We typically take bpf jit patches through bpf-next, since
-> > > we do cross arch jits refactoring from time to time,
-> > > but nothing like this is pending for this merge window,
-> > > so if you want it to go through arm64 tree that's fine with us.
-> >
-> > I don't have any preference. I can add it on top of the other arm64
-> > patches if there are no dependencies on it from your side.
->
-> Actually, it depends on patches in bpf-next AFAICT (it doesn't apply
-> cleanly on top of vanilla -rc3). So please take the patches through the
-> bpf tree.
+The next 6 patches from:
+https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.com/
+now the initial maps fixes have landed:
+https://lore.kernel.org/all/20240210031746.4057262-1-irogers@google.com/
 
-Ok. Took it into bpf-next.
+Separate out and reimplement threads to use a hashmap for lower memory
+consumption and faster look up. The fixes a regression in memory usage
+where reference count checking switched to using non-invasive tree
+nodes.  Reduce threads default size by 32 times and improve locking
+discipline. Also, fix regressions where tids had become unordered to
+make `perf report --tasks` and `perf trace --summary` output easier to
+read.
 
-Please take a look at these Puranjay's patchset:
+v2: improve comments and a commit message.
 
-https://patchwork.kernel.org/project/netdevbpf/cover/20240221145106.105995-=
-1-puranjay12@gmail.com/
+Ian Rogers (6):
+  perf report: Sort child tasks by tid
+  perf trace: Ignore thread hashing in summary
+  perf machine: Move fprintf to for_each loop and a callback
+  perf threads: Move threads to its own files
+  perf threads: Switch from rbtree to hashmap
+  perf threads: Reduce table size from 256 to 8
 
-It's a pretty nice performance improvement.
+ tools/perf/builtin-report.c           | 217 +++++++++-------
+ tools/perf/builtin-trace.c            |  41 +--
+ tools/perf/util/Build                 |   1 +
+ tools/perf/util/bpf_lock_contention.c |   8 +-
+ tools/perf/util/machine.c             | 344 +++++++-------------------
+ tools/perf/util/machine.h             |  30 +--
+ tools/perf/util/rb_resort.h           |   5 -
+ tools/perf/util/thread.c              |   2 +-
+ tools/perf/util/thread.h              |   6 -
+ tools/perf/util/threads.c             | 186 ++++++++++++++
+ tools/perf/util/threads.h             |  35 +++
+ 11 files changed, 477 insertions(+), 398 deletions(-)
+ create mode 100644 tools/perf/util/threads.c
+ create mode 100644 tools/perf/util/threads.h
+
+-- 
+2.44.0.rc1.240.g4c46232300-goog
+
 
