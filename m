@@ -1,254 +1,157 @@
-Return-Path: <bpf+bounces-22962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77BE386BC4D
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:43:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBEC86BC4E
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:44:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1671AB24417
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:43:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C93311C225B1
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955A672931;
-	Wed, 28 Feb 2024 23:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDcqsIYR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CC37291F;
+	Wed, 28 Feb 2024 23:44:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BF072909
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 23:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1B013D2E3;
+	Wed, 28 Feb 2024 23:44:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709163806; cv=none; b=H9/mlUDX/jMC8xZaeCOjQ8NaOEpF3j5tOJb6JtRyzDeAlvx9tQT2iXiaWiQPAnLWb6Jx8CGbwGHFuboGWWOjDKfEYtLFuLDDRx4B9hGoCDUVfyDm5lFheL9VjJGrASwb7o18SnpDP6dwpGhd/bZ2CbRX0EC5BlzPysevdn2FWGY=
+	t=1709163853; cv=none; b=iSgUdBDvEw95S6YZAtJ7jABDeg0AlzSB7+MPou40BCxclefAQwq1bqbQOE6cOVCyUFvEsXDVIbhTmMkEFynNbuGDiTxRx34zT8rguvHiwdSYcrzcERLCyuaXZ8GoDmldfcSr5Snx6dTy6FYUA12mEnSlyU5arLh7HgfAk/AnRq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709163806; c=relaxed/simple;
-	bh=zzcYNIqPM8/uJJHJTix/ZQXAfRyaG1PjSXUVeou3idU=;
+	s=arc-20240116; t=1709163853; c=relaxed/simple;
+	bh=Bun5m8G8ZzV7ghqTD6WFlwdCGqvE8zICLBqsMSfoowQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sq8E/MyVpmwO2VY65zcuGApq18EX5mY2GtAynF3kiy578pYCRvoX0hw86SJTVC24hZGx9842qn0c4DzQ1pn8gM6L4SRTKh53lykEtO2/Wh2ikR/SNTbEMhZOKO7/V3ZEUQV00bW1DBKyCGZKCKvVqY4vDT5q5AL3o1gCSf3utgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDcqsIYR; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=JgJKcaeJnCAO1DmFUyEyfiqnzzlq6qcYKtydeRO9jUlAlr7hN3dIMVQ+lsgKWgcTKP8DaUry3rIRcwkdx0cMif7dZoCP65HOp/AJfs7RIR/hlrFjJRoARe5ThkWt5+I9Vj8moNRPOuPZZ7v8jaOliYJZOcbI94le8gTtLO4Xulo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so237232a12.0
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 15:43:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709163803; x=1709768603; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R835MjylIOwIJwDIzpFghwTjYVOhFMEFcmoqVVcj1I0=;
-        b=DDcqsIYRe1h2Y43f1PTSXmgxhThRtKU0NpMsL384yUoSCiuaQRZxn6jsOZllUGMcze
-         Y+ENNSI6ptnZKD8ZhKVx7LNdGP/FLMDtL9hVPzUQlVj1gDu3jL++OZBXUXOzzbGhokcu
-         e0h9S+NwEP31QTQcLUexBNVvDbHFHcw/0/m8Rf2uAtF93B1lh0Eom30uska0aXSnk4NV
-         MNnqq87B5tQseZi3Gourib9SnZykodAyEcNhG2MZBMaPPnUwqtIgCZ36GLANEHXLiXEd
-         wOXlVenpkiV4d91lbYxyreYpuTSo+Fq9yA0dMIRWDAx5G4jOn/kYnVO51DuqgDlRoLd3
-         fFPw==
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso246030a12.0;
+        Wed, 28 Feb 2024 15:44:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709163803; x=1709768603;
+        d=1e100.net; s=20230601; t=1709163851; x=1709768651;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R835MjylIOwIJwDIzpFghwTjYVOhFMEFcmoqVVcj1I0=;
-        b=jkZHmiI+D/y53VlAKf40Fy54LyL+Bavu5BCl1v1VaUPQW9Ok2BlJC/1A1sPm+f1yZq
-         Bma6LXsoqYYLRLQMqvK0rUfhzn33rdj6uKNoq+HeRmPnUx+f2C04F5kHgy1qiAhGXE+t
-         Z44zMVsFIeTzGQudHH1bEDNCmN7v1a6z8Q6njA0vucUWKv9touc/SmcrEg6q1ovUw8fB
-         4CTs4sxzXnetT+4el1gOksdDCsv7l1yhyc1z51g87bQIqw7QvBLp/mvtqdzMEyhpNDnn
-         4IbO28M62jW2J4pFRnOaQE0x6nLU9ISmAdoD7N8WNGfRCcbbsnofbM3oEm8fH91aF2uE
-         zf1w==
-X-Gm-Message-State: AOJu0YyLUVQYKdgv8HFnjyIGOL8hd7Z6J9jl4C2ohCjatFCUQCIiM8+4
-	AKdiT10cgKqTDlNANqxQg1A2jG+JIkGA/stofO6fmfy3ZK83Geyh62JF+bpsMLYQaqseS1z9Jjc
-	zOALTracefw20xhJ7iWvxXT/twTc=
-X-Google-Smtp-Source: AGHT+IH2rhvHqww9eVce+kLBRqz+7dkiei+Vn24zplgIBAn+ph+LZFcnnHAeB3WSj+ygNjoeQxATo9/x8D3ZOvs1j34=
-X-Received: by 2002:a17:90a:7145:b0:299:9999:6bae with SMTP id
- g5-20020a17090a714500b0029999996baemr642990pjs.16.1709163803045; Wed, 28 Feb
- 2024 15:43:23 -0800 (PST)
+        bh=3Z2mKmaKj61Pf7pJc9lk5Bc9rbWv418rABeaEWh7OCw=;
+        b=M1QHbuC8e4WYt/BV8w6YfPy1Fcdkmoeg1tiTIM8zMlTMsXDjt9OGDK896nWwS0ZFZU
+         zSt3fM1k/e63thE2rARqhYZ7ePQhAXvUDUzeUMzv4wrCou5Z85RWsKsww5D6HbfN2W38
+         ztjX2CRgf2dMc857XrrUmoONfQ2tkAs7KtASqaWP+LmTQflzHaYyWOqbt+L5/+cVLgb6
+         pGN5kTPEraubkpN9/IeXdX81zayKldHjjxQ1UO+pmUtVKl3V5ConhJtM04ilIye0RFXU
+         gMU5D5UptQvErnvEho6zdBCJfcFdNYj537ERr/yCmMT+iSWk1f15eOMAbNYuBVAs+pQE
+         t1Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPf+RSiGcOoagnIMf/0EWHrc81ZcX3xUlVNtYgc0ZXJLWsRXGlxhoEGZzYHZt3BCJ0pPC9282yB+ZXEYmbX4rt5lTe2kPl8ipIqW6tkgTU8TNbL5kRDaTmf0BIm2DcEOclBW4aY6ukQCCVeY26C/yzAnGzOEBwkPgN35i59qWZM6YXEg==
+X-Gm-Message-State: AOJu0YzmueW24zWK1LsIQ/33nn5opazAv5mMZfCokNk7d0zJPoLvsb5M
+	VS4NQyNqJL+O0N/phAE9mLZqomkNxJtV16CY3crrXXv+Ip0y70aolpoMV6y2wHZkHq/Xn9c9XHF
+	HSqVtWn1HgOgnlK3gqWTEGyqDT1U=
+X-Google-Smtp-Source: AGHT+IGpXyr6rC4PgckoEC9vlZ9CvQ+9sOZHQ5msGedCpWHTuAGfHXRpjzvh8PLTjI5km7wdxKh2/j2tbDhvW4NDFNg=
+X-Received: by 2002:a17:90b:4b4f:b0:29b:b70:5ace with SMTP id
+ mi15-20020a17090b4b4f00b0029b0b705acemr248351pjb.16.1709163850993; Wed, 28
+ Feb 2024 15:44:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227204556.17524-1-eddyz87@gmail.com> <20240227204556.17524-7-eddyz87@gmail.com>
-In-Reply-To: <20240227204556.17524-7-eddyz87@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 28 Feb 2024 15:43:11 -0800
-Message-ID: <CAEf4BzbXzsDUx-dvUQQEMcCVUeUjnBnbF6V4fmc36C0YzVF73A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 6/8] selftests/bpf: test autocreate behavior
- for struct_ops maps
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, void@manifault.com
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+ <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+ <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
+ <Zd41Nltnoen0cPYX@x1> <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
+ <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com> <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 28 Feb 2024 15:43:59 -0800
+Message-ID: <CAM9d7cj-kxaQc18QG_cd6EzsDbk7vmhYqg-XzCV+g5oi9Giwww@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 12:46=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
+On Tue, Feb 27, 2024 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
 >
-> Check that bpf_map__set_autocreate() can be used to disable automatic
-> creation for struct_ops maps.
+> On Tue, Feb 27, 2024 at 10:40=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 1:42=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Arnaldo Carvalho de Melo
+> > > <acme@kernel.org> wrote:
+> > > >
+> > > > On Tue, Feb 27, 2024 at 09:31:33AM -0800, Namhyung Kim wrote:
+> > > > > I can see some other differences like machine__findnew_thread()
+> > > > > which I think is due to the locking change.  Maybe we can fix the
+> > > > > problem before moving the code and let the code move simple.
+> > > >
+> > > > I was going to suggest that, agreed.
+> > > >
+> > > > We may start doing a refactoring, then find a bug, at that point we
+> > > > first fix the problem them go back to refactoring.
+> > >
+> > > Sure I do this all the time. Your typical complaint on the v+1 patch
+> > > set is to move the bug fixes to the front of the changes. On the v+2
+> > > patch set the bug fixes get applied but not the rest of the patch
+> > > series, etc.
+> > >
+> > > Here we are refactoring code for an rb-tree implementation of threads
+> > > and worrying about its correctness. There's no indication it's not
+> > > correct, it is largely copy and paste, there is also good evidence in
+> > > the locking disciple it is more correct. The next patch deletes that
+> > > implementation, replacing it with a hash table. Were I not trying to
+> > > break things apart I could squash those 2 patches together, but I've
+> > > tried to do the right thing. Now we're trying to micro correct, break
+> > > apart, etc. a state that gets deleted. A reviewer could equally
+> > > criticise this being 2 changes rather than 1, and the cognitive load
+> > > of having to look at code that gets deleted. At some point it is a
+> > > judgement call, and I think this patch is actually the right size. I
+> > > think what is missing here is some motivation in the commit message t=
+o
+> > > the findnew refactoring and so I'll add that.
+> >
+> > I'm not against your approach and actually appreciate your effort
+> > to split rb-tree refactoring and hash table introduction.  What I'm
+> > asking is just to separate out the code moving.  I think you can do
+> > whatever you want in the current file.  Once you have the final code
+> > you can move it to its own file exactly the same.  When I look at this
+> > commit, say a few years later, I won't expect a commit that says
+> > moving something to a new file has other changes.
 >
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  .../bpf/prog_tests/struct_ops_autocreate.c    | 79 +++++++++++++++++++
->  .../bpf/progs/struct_ops_autocreate.c         | 42 ++++++++++
->  2 files changed, 121 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_aut=
-ocreate.c
->  create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_autocrea=
-te.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate=
-.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> new file mode 100644
-> index 000000000000..b21b10f94fc2
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> @@ -0,0 +1,79 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <test_progs.h>
-> +#include "struct_ops_autocreate.skel.h"
-> +
-> +#define EXPECTED_MSG "libbpf: struct_ops init_kern"
-> +
-> +static libbpf_print_fn_t old_print_cb;
-> +static bool msg_found;
-> +
-> +static int print_cb(enum libbpf_print_level level, const char *fmt, va_l=
-ist args)
-> +{
-> +       old_print_cb(level, fmt, args);
-> +       if (level =3D=3D LIBBPF_WARN && strncmp(fmt, EXPECTED_MSG, strlen=
-(EXPECTED_MSG)) =3D=3D 0)
-> +               msg_found =3D true;
-> +
-> +       return 0;
-> +}
-> +
-> +static void cant_load_full_object(void)
-> +{
-> +       struct struct_ops_autocreate *skel;
-> +       int err;
-> +
-> +       old_print_cb =3D libbpf_set_print(print_cb);
-> +       skel =3D struct_ops_autocreate__open_and_load();
-> +       err =3D errno;
-> +       libbpf_set_print(old_print_cb);
-> +       if (!ASSERT_NULL(skel, "struct_ops_autocreate__open_and_load"))
-> +               return;
-> +
-> +       ASSERT_EQ(err, ENOTSUP, "errno should be ENOTSUP");
-> +       ASSERT_TRUE(msg_found, "expected message");
-> +
-> +       struct_ops_autocreate__destroy(skel);
-> +}
-> +
-> +static void can_load_partial_object(void)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+> The problem is that the code in machine treats the threads lock as if
+> it is a lock in machine. So there is __machine__findnew_thread which
+> implies the thread lock is held. This change is making threads its own
+> separate concept/collection and the lock belongs with that collection.
+> Most of the implementation of threads__findnew matches
+> __machine__findnew_thread, so we may be able to engineer a smaller
+> line diff by moving "__machine__findnew_thread" code into threads.c,
+> then renaming it to build the collection, etc. We could also build the
+> threads collection inside of machine and then in a separate change
+> move it to threads.[ch].  In the commit history this seems muddier
+> than just splitting out threads as a collection. Also, some of the API
+> design choices are motivated more by the hash table implementation of
+> the next patch than trying to have a good rbtree abstracted collection
+> of threads. Essentially it'd be engineering a collection of threads
+> but only with a view to delete it in the next patch. I don't think it
+> would be for the best and the commit history for deleted code is
+> unlikely to be looked upon.
 
-nit: prefer LIBBPF_OPTS() over DECLARE_LIBBPF_OPTS()
+I think the conversation is repeating. :)  Why not do this?
 
-> +       struct struct_ops_autocreate *skel;
-> +       struct bpf_link *link =3D NULL;
-> +       int err;
-> +
-> +       skel =3D struct_ops_autocreate__open_opts(&opts);
-> +       if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
-> +               return;
-> +
-> +       err =3D bpf_program__set_autoload(skel->progs.test_2, false);
-> +       if (!ASSERT_OK(err, "bpf_program__set_autoload"))
-> +               goto cleanup;
-> +
-> +       err =3D bpf_map__set_autocreate(skel->maps.testmod_2, false);
-> +       if (!ASSERT_OK(err, "bpf_map__set_autocreate"))
-> +               goto cleanup;
-> +
-> +       err =3D struct_ops_autocreate__load(skel);
-> +       if (ASSERT_OK(err, "struct_ops_autocreate__load"))
-> +               goto cleanup;
-> +
-> +       link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-> +       if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-> +               goto cleanup;
-> +
-> +       /* test_1() would be called from bpf_dummy_reg2() in bpf_testmod.=
-c */
-> +       ASSERT_EQ(skel->bss->test_1_result, 42, "test_1_result");
-> +
-> +cleanup:
-> +       bpf_link__destroy(link);
-> +       struct_ops_autocreate__destroy(skel);
-> +}
-> +
-> +void serial_test_struct_ops_autocreate(void)
+1. refactor threads code in machine.c and fix the locking
+2. move threads code to its own file
+3. use hash table in threads
 
-same as in the previous patch, why serial?
-
-> +{
-> +       if (test__start_subtest("cant_load_full_object"))
-> +               cant_load_full_object();
-> +       if (test__start_subtest("can_load_partial_object"))
-> +               can_load_partial_object();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_autocreate.c b/=
-tools/testing/selftests/bpf/progs/struct_ops_autocreate.c
-> new file mode 100644
-> index 000000000000..294d48bb8e3c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/struct_ops_autocreate.c
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +int test_1_result =3D 0;
-> +
-> +SEC("struct_ops/test_1")
-> +int BPF_PROG(test_1)
-> +{
-> +       test_1_result =3D 42;
-> +       return 0;
-> +}
-> +
-> +SEC("struct_ops/test_1")
-> +int BPF_PROG(test_2)
-> +{
-> +       return 0;
-> +}
-> +
-> +struct bpf_testmod_ops___v1 {
-> +       int (*test_1)(void);
-> +};
-> +
-> +struct bpf_testmod_ops___v2 {
-> +       int (*test_1)(void);
-> +       int (*does_not_exist)(void);
-> +};
-> +
-> +SEC(".struct_ops.link")
-> +struct bpf_testmod_ops___v1 testmod_1 =3D {
-> +       .test_1 =3D (void *)test_1
-> +};
-> +
-> +SEC(".struct_ops.link")
-
-can you please also have a test where we use SEC("?.struct_ops.link")
-which set autoload to false by default?
-
-> +struct bpf_testmod_ops___v2 testmod_2 =3D {
-> +       .test_1 =3D (void *)test_1,
-> +       .does_not_exist =3D (void *)test_2
-> +};
-> --
-> 2.43.0
->
+Thanks,
+Namhyung
 
