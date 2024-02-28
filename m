@@ -1,540 +1,218 @@
-Return-Path: <bpf+bounces-22842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18B8F86A840
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 07:11:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3025586A858
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 07:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E182B241EF
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 06:11:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DF0C1F25A42
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 06:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260E22209E;
-	Wed, 28 Feb 2024 06:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079382262B;
+	Wed, 28 Feb 2024 06:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PeTgemqW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EF87FA;
-	Wed, 28 Feb 2024 06:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB90125542
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 06:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709100708; cv=none; b=UyNuDTaXUB9Xwv8j1gS5jTutpZpeVZDSUCJxW8zSlxOY4unYufkokbunA0FR9p0A7GGY/SRRmD8mFCD5OQFor8gTLMen382nb6UdnraZ4jUNYjdKZL2tWXCihDh+ynwswcB9/yec9MFR5Olj3wlHPD9t5/o9DOKDFRma6JJ8xTM=
+	t=1709101861; cv=none; b=f5ecvBnCaDo5GTm+xRiRegcOwrclghi50LsSoWmgjeSU6WTR7n3lM+646MifXZuqAehFipb5px50En0t9xb/h+Drz2Arje6erhKT/q83ydIzYicbozGHFeLbhSGYpcLLFdc2bcY0ABmyZpPH8KdLjpzr5XVrxw9lqkJDmSr8U7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709100708; c=relaxed/simple;
-	bh=PCISrVUFyNjqTTXIzIpmOKhTVjy/a4Wjw+PB0uTMrVQ=;
+	s=arc-20240116; t=1709101861; c=relaxed/simple;
+	bh=hDimqeVAD8EwIL6zg7H7orV2o3/nP6hHo3srVQs8L60=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=beBenvnEGjijgMIto+DY3DcH3SiVWcrgZkkWoF4BRl0esPgmAnoMTgCdKEBsQ8nfXtmh5u0Ge0lGjMVdiBudzcAJ8tECQVKZSvdnBsMxCE8j0rwvC3oZi0bqs4Td4J9hf5+DAlsxj1z4d1aJB+IOQ8ZbdmUVedfkBZZBC+8Pb1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 To:Cc:Content-Type; b=ZxdFzJrryxp2koXJV1uPE4amuCVk4F0ZohUFbrOkk4SG+OqS0M5PY21EjKNF0gBv2fZt5ZvqRTidocSgUHnmV2cSSa3WJkVtm0V6wvUokt8CRPKVzV0rrCXEdqQ/7Iygp7oUvR2IJwubWfgoLiN+GlvRmtiUqR/IMJ2JGutFJTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PeTgemqW; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso4121395a12.2;
-        Tue, 27 Feb 2024 22:11:46 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412b34fb36bso2528465e9.3
+        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 22:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709101858; x=1709706658; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pW7gZblRxThMFEbJhGnk+I3aXHRbfZI2GR2qtUd+PcI=;
+        b=PeTgemqW2A7we+9KKWFXJVk13KcrIibfQvuJUX5MvLbSe2dsxc3nIyd1iUMXH66ddq
+         2i3zVIRh8fem/4lelhmdWqvwvy1CRxmLroM0ur/P2ieqymImCE1GwfelEEcUz5bpreS4
+         ZCvx9k5z9CPLvgTRxQl1FSYI7IUkChEm9/+WizgP225G1FAn6em6LOmjviGDpKTiHkE8
+         mUP1dmSlVL9mpBDj0AhJjFSN1JxetStG7iZFgeAUKNuu6AKI2SEm7TgBFmoOHbibO49t
+         bB2gJE+5qS6W2jNeJcsbutlOaVvn4RD2Y9n3u9kFHw3iNMYGfMVo9Ke/OtNyucqQ1jQR
+         Yxkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709100706; x=1709705506;
+        d=1e100.net; s=20230601; t=1709101858; x=1709706658;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bhQFzRFWo99nje0rg/z/A1aJvaIyL4lQvcD60Dw9htM=;
-        b=kP1WehuaKNXS0tivWOB015RcvRpqmJG8Ffk7jhLBxgEcdzE7LujIrUKk+24WWnBQIG
-         jvp4okVmz60goIpGGpEkivrcvyNDcLwogdOtsPEh3/VplSZRZjj+qh4xxHlkAssQ2TRQ
-         KknZ9VVimzfXIdqeEO7fk7GZKc9ptmzisBQ3loyD4G1MSjrGxNaItUeDPIQJB/rmf/JM
-         LrK9vrlajO3B2bh21mN2iN2WR9XY0xmliiqN9v4KfkmtmIm91h6ODwtevGCBpKs+9Ct7
-         Sg+lKFWTK9DMlgX6XfDOqcpgv6IK6B7/hKeoozOOKJRcXLf4/yj3iuGnkTF/KJrOUReS
-         A8jA==
-X-Forwarded-Encrypted: i=1; AJvYcCWm+RVfuBbxC8ni6plFjlcInTu3G6dKmUOROCrsHVCn44Bh10P4WPhxJqqlq9D4tpivB5Cezbs00UfKI4H5wn7D491nk7679CBxVZoLJWAo6iLKZEEK52WRDq8KnV+91wbiuC+NbhW6Ja+HV/J0i69s141TI/zUVYCTAFlbbZ4dnlzVdw==
-X-Gm-Message-State: AOJu0Yzhg8E62b1AQPhWXMoei2bIqiBBAPtWyf61osHAZd3sGust7qn2
-	VdsV736ttVgLXw8LL4trfM0SclCRNjXTQezrlW9JFHY+0rmg7MGfdScNQLfC2noTBGXVAIj3PZr
-	nnbi4f6cHGYytOZ3bw22ZP9HrSAE=
-X-Google-Smtp-Source: AGHT+IG1S6yDsJ8aVgZV7tnV/ywRIj82Oy4BAhjQNZDrVKcmTv3FZjRUHELZRnE5lIxxCIKoxAH6oe3F5lSoX06sPaw=
-X-Received: by 2002:a17:90a:a088:b0:299:6479:4678 with SMTP id
- r8-20020a17090aa08800b0029964794678mr8463051pjp.19.1709100706152; Tue, 27 Feb
- 2024 22:11:46 -0800 (PST)
+        bh=pW7gZblRxThMFEbJhGnk+I3aXHRbfZI2GR2qtUd+PcI=;
+        b=SFLg4Nhegl5u3Pet2joDUdhsiuYTCc5jdO9CW9TNNhBYJ16CDwUfp38qEGYU0azC+/
+         NnYUk5692NrNBbzdbMWAPWeBy0Y+Z6TH4lXORSE93lEdorZFNh0M47GbZ/SqDQy5OJLZ
+         qHCNyv19WdfecSeeqZS9VV4HF797hygLm1jk+tSncozyiAZ6oI9SDBlVfRW8bLRDQe03
+         69ND7ws1Uan5f/W5QQzS5pBZQV2h1gzX/vjIYVhwG0ZBq0kjEbSP78VKUk47m4eb6hkH
+         F+s/0VYHdzQRLv5LmeqGzOmK2qRjLr1N4oNZ3TqPRv4FiA/s3DxKHUI0XqF7wi9c0n5U
+         OFfw==
+X-Gm-Message-State: AOJu0Yxmso9W70nCPUijYB1Ci9v7yrUUz+qN4Eubfs/Vcf797BqwIH5K
+	Kpwy1V++W7QXFuniLF1IeDvCLUIBaI3Ur9IJTnkwnsS9z59b4F1oILmTuKZNssDiSH0eDE+LtV6
+	JtYemoOOjoc5FLGhG7m85tEcM6XSjDVVjuwY=
+X-Google-Smtp-Source: AGHT+IFqrwYzjXQqYsJ7HbVcPEoe0FT+IEFt9gEs6IsmqInVRVj9CJNGv8nW2uokeGRw/dvJKJxxiNdRw4OKov7kcKE=
+X-Received: by 2002:a05:600c:4f95:b0:412:6dd3:e11f with SMTP id
+ n21-20020a05600c4f9500b004126dd3e11fmr7875742wmq.5.1709101857799; Tue, 27 Feb
+ 2024 22:30:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-2-irogers@google.com>
- <CAM9d7ciB8JAgU9P6qKh-VdVCjH0ZK+Q-n6mdXTO_nRAv6kSSyA@mail.gmail.com> <CAP-5=fW+NAXNYs7LGVORsikL4+jvGNqgNgoWVsgi6w8pezS9wQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fW+NAXNYs7LGVORsikL4+jvGNqgNgoWVsgi6w8pezS9wQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 27 Feb 2024 22:11:34 -0800
-Message-ID: <CAM9d7chqy7uD0w=Y+nJyhL8cpAEp6tptqPUHx0-4rQ_NJDRrsg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] perf report: Sort child tasks by tid
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <20240222063324.46468-1-alexei.starovoitov@gmail.com>
+ <53cc7e1fea7efb557cd4d65fdff5642c0047f255.camel@gmail.com>
+ <CAADnVQLu0xzEuxfJ=6HU5yGv02Gf0Vud3X9LEOvK6AMzx3vAuQ@mail.gmail.com>
+ <971cbc8e82a3bcf93e4f30d5368a293017f3fa83.camel@gmail.com> <CAADnVQJDuFn4R1TTsgcom5Dos7criW9ZD3qpAp4zga1m7tNHGg@mail.gmail.com>
+In-Reply-To: <CAADnVQJDuFn4R1TTsgcom5Dos7criW9ZD3qpAp4zga1m7tNHGg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 27 Feb 2024 22:30:46 -0800
+Message-ID: <CAADnVQLd7MaY4r8EauhnbKS6vxTRv97cXj7+jUtXwQxLdqNK-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_can_loop() kfunc
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 11:12=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
+On Fri, Feb 23, 2024 at 5:55=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Mon, Feb 26, 2024 at 10:39=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
+> On Fri, Feb 23, 2024 at 4:50=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
 > >
-> > On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.com=
-> wrote:
-> > >
-> > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
-> > > threads") made the iteration of thread tids unordered. The perf repor=
-t
-> > > --tasks output now shows child threads in an order determined by the
-> > > hashing. For example, in this snippet tid 3 appears after tid 256 eve=
-n
-> > > though they have the same ppid 2:
-> > >
-> > > ```
-> > > $ perf report --tasks
-> > > %      pid      tid     ppid  comm
-> > >          0        0       -1 |swapper
-> > >          2        2        0 | kthreadd
-> > >        256      256        2 |  kworker/12:1H-k
-> > >     693761   693761        2 |  kworker/10:1-mm
-> > >    1301762  1301762        2 |  kworker/1:1-mm_
-> > >    1302530  1302530        2 |  kworker/u32:0-k
-> > >          3        3        2 |  rcu_gp
-> > > ...
-> > > ```
-> > >
-> > > The output is easier to read if threads appear numerically
-> > > increasing. To allow for this, read all threads into a list then sort
-> > > with a comparator that orders by the child task's of the first common
-> > > parent. The list creation and deletion are created as utilities on
-> > > machine.  The indentation is possible by counting the number of
-> > > parents a child has.
-> > >
-> > > With this change the output for the same data file is now like:
-> > > ```
-> > > $ perf report --tasks
-> > > %      pid      tid     ppid  comm
-> > >          0        0       -1 |swapper
-> > >          1        1        0 | systemd
-> > >        823      823        1 |  systemd-journal
-> > >        853      853        1 |  systemd-udevd
-> > >       3230     3230        1 |  systemd-timesyn
-> > >       3236     3236        1 |  auditd
-> > >       3239     3239     3236 |   audisp-syslog
-> > >       3321     3321        1 |  accounts-daemon
-> > > ...
-> > > ```
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-
-I know you sent out v2 already, but let me continue the discussion
-here.
-
-
-> > > ---
-> > >  tools/perf/builtin-report.c | 203 ++++++++++++++++++++--------------=
---
-> > >  tools/perf/util/machine.c   |  30 ++++++
-> > >  tools/perf/util/machine.h   |  10 ++
-> > >  3 files changed, 155 insertions(+), 88 deletions(-)
-> > >
-> > > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.=
-c
-> > > index 8e16fa261e6f..b48f1d5309e3 100644
-> > > --- a/tools/perf/builtin-report.c
-> > > +++ b/tools/perf/builtin-report.c
-> > > @@ -59,6 +59,7 @@
-> > >  #include <linux/ctype.h>
-> > >  #include <signal.h>
-> > >  #include <linux/bitmap.h>
-> > > +#include <linux/list_sort.h>
-> > >  #include <linux/string.h>
-> > >  #include <linux/stringify.h>
-> > >  #include <linux/time64.h>
-> > > @@ -828,35 +829,6 @@ static void tasks_setup(struct report *rep)
-> > >         rep->tool.no_warn =3D true;
-> > >  }
-> > >
-> > > -struct task {
-> > > -       struct thread           *thread;
-> > > -       struct list_head         list;
-> > > -       struct list_head         children;
-> > > -};
-> > > -
-> > > -static struct task *tasks_list(struct task *task, struct machine *ma=
-chine)
-> > > -{
-> > > -       struct thread *parent_thread, *thread =3D task->thread;
-> > > -       struct task   *parent_task;
-> > > -
-> > > -       /* Already listed. */
-> > > -       if (!list_empty(&task->list))
-> > > -               return NULL;
-> > > -
-> > > -       /* Last one in the chain. */
-> > > -       if (thread__ppid(thread) =3D=3D -1)
-> > > -               return task;
-> > > -
-> > > -       parent_thread =3D machine__find_thread(machine, -1, thread__p=
-pid(thread));
-> > > -       if (!parent_thread)
-> > > -               return ERR_PTR(-ENOENT);
-> > > -
-> > > -       parent_task =3D thread__priv(parent_thread);
-> > > -       thread__put(parent_thread);
-> > > -       list_add_tail(&task->list, &parent_task->children);
-> > > -       return tasks_list(parent_task, machine);
-> > > -}
-> > > -
-> > >  struct maps__fprintf_task_args {
-> > >         int indent;
-> > >         FILE *fp;
-> > > @@ -900,89 +872,144 @@ static size_t maps__fprintf_task(struct maps *=
-maps, int indent, FILE *fp)
-> > >         return args.printed;
-> > >  }
-> > >
-> > > -static void task__print_level(struct task *task, FILE *fp, int level=
-)
-> > > +static int thread_level(struct machine *machine, const struct thread=
- *thread)
-> > >  {
-> > > -       struct thread *thread =3D task->thread;
-> > > -       struct task *child;
-> > > -       int comm_indent =3D fprintf(fp, "  %8d %8d %8d |%*s",
-> > > -                                 thread__pid(thread), thread__tid(th=
-read),
-> > > -                                 thread__ppid(thread), level, "");
-> > > +       struct thread *parent_thread;
-> > > +       int res;
-> > >
-> > > -       fprintf(fp, "%s\n", thread__comm_str(thread));
-> > > +       if (thread__tid(thread) <=3D 0)
-> > > +               return 0;
-> > >
-> > > -       maps__fprintf_task(thread__maps(thread), comm_indent, fp);
-> > > +       if (thread__ppid(thread) <=3D 0)
-> > > +               return 1;
-> > >
-> > > -       if (!list_empty(&task->children)) {
-> > > -               list_for_each_entry(child, &task->children, list)
-> > > -                       task__print_level(child, fp, level + 1);
-> > > +       parent_thread =3D machine__find_thread(machine, -1, thread__p=
-pid(thread));
-> > > +       if (!parent_thread) {
-> > > +               pr_err("Missing parent thread of %d\n", thread__tid(t=
-hread));
-> > > +               return 0;
-> > >         }
-> > > +       res =3D 1 + thread_level(machine, parent_thread);
-> > > +       thread__put(parent_thread);
-> > > +       return res;
-> > >  }
-> > >
-> > > -static int tasks_print(struct report *rep, FILE *fp)
-> > > +static void task__print_level(struct machine *machine, struct thread=
- *thread, FILE *fp)
-> > >  {
-> > > -       struct perf_session *session =3D rep->session;
-> > > -       struct machine      *machine =3D &session->machines.host;
-> > > -       struct task *tasks, *task;
-> > > -       unsigned int nr =3D 0, itask =3D 0, i;
-> > > -       struct rb_node *nd;
-> > > -       LIST_HEAD(list);
-> > > +       int level =3D thread_level(machine, thread);
-> > > +       int comm_indent =3D fprintf(fp, "  %8d %8d %8d |%*s",
-> > > +                                 thread__pid(thread), thread__tid(th=
-read),
-> > > +                                 thread__ppid(thread), level, "");
-> > >
-> > > -       /*
-> > > -        * No locking needed while accessing machine->threads,
-> > > -        * because --tasks is single threaded command.
-> > > -        */
-> > > +       fprintf(fp, "%s\n", thread__comm_str(thread));
-> > >
-> > > -       /* Count all the threads. */
-> > > -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++)
-> > > -               nr +=3D machine->threads[i].nr;
-> > > +       maps__fprintf_task(thread__maps(thread), comm_indent, fp);
-> > > +}
-> > >
-> > > -       tasks =3D malloc(sizeof(*tasks) * nr);
-> > > -       if (!tasks)
-> > > -               return -ENOMEM;
-> > > +static int task_list_cmp(void *priv, const struct list_head *la, con=
-st struct list_head *lb)
+> > On Fri, 2024-02-23 at 16:22 -0800, Alexei Starovoitov wrote:
+> > [...]
 > >
-> > I'm a little afraid that this comparison logic becomes complex.
-> > But I think it's better than having a tree of thread relationship.
-> > Just a comment that explains why we need this would be nice.
+> > > I think you're missing the point.
+> > > It's not about this particular list iterator.
+> > > It's about _all_ for(), while() loops.
+> > > I've started converting lib/radix-tree.c to bpf and arena.
+> > > There are hundreds of various loops that need to be converted.
+> > > The best is to copy-paste them as-is and add bpf_can_loop() to loop
+> > > condition. That's it.
+> > > Otherwise explicit iterators are changing the code significantly
+> > > and distract from the logic of the algorithm.
+> > >
+> > > Another key point is the last sentence of the commit log:
+> > > "New instruction with the same semantics can be added, so that LLVM
+> > > can generate it."
+> > >
+> > > This is the way to implement __builtin_memcpy, __builtin_strcmp
+> > > and friends in llvm and gcc.
+> >
+> > There are two things that usage of bpf_can_loop() provides:
+> > 1. A proof that BPF program would terminate at runtime.
+> > 2. A way for verifier to terminate verification process
+> >    (by stopping processing some path when two verifier states are exact=
+ly equal).
+> >
+> > The (1) is iffy, because there are simple ways to forgo it in practical=
+ terms.
+> > E.g. for the program below it would be possible to make 64 * 10^12 iter=
+ations
+> > at runtime:
+> >
+> >     void bar(...) {
+> >       while (... && bpf_can_loop())
+> >         ... do something ...;
+> >     }
+> >
+> >     void foo(...) {
+> >       while (... && bpf_can_loop())
+> >         bar();
+> >     }
 >
-> I can add something in v2.
+> so ?
+> bpf_loop() helper and open coded iterators can do the same already.
+> It's something we need to fix regardless.
+>
+> (1) is not iffy. The program will terminate. That's a 100% guarantee.
+>
+> > If we decide that for some programs it is not necessary to enforce
+> > proof of runtime termination, then it would be possible to untie (2)
+> > from iterators and just check if looping state is states_equal(... exac=
+t=3Dtrue)
+> > to some previous one.
+>
+> No. That's not at all the same.
+> Looping and eventually exiting is a strong guarantee by
+> the verifier and the users know that all paths to exit are explored.
+> Just "looping is ok" without exit guarantee
+> means that a bunch of code may not be visited by the verifier.
+> Arguably dead code elimination should kick in,
+> but I don't think it's a territory we can go to.
 >
 > >
-> > > +{
-> > > +       struct machine *machine =3D priv;
-> > > +       struct thread_list *task_a =3D list_entry(la, struct thread_l=
-ist, list);
-> > > +       struct thread_list *task_b =3D list_entry(lb, struct thread_l=
-ist, list);
-> > > +       struct thread *a =3D task_a->thread;
-> > > +       struct thread *b =3D task_b->thread;
-> > > +       int level_a, level_b, res;
-> > > +
-> > > +       /* Compare a and b to root. */
-> > > +       if (thread__tid(a) =3D=3D thread__tid(b))
-> > > +               return 0;
-> > >
-> > > -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
-> > > -               struct threads *threads =3D &machine->threads[i];
-> > > +       if (thread__tid(a) =3D=3D 0)
-> > > +               return -1;
-> > >
-> > > -               for (nd =3D rb_first_cached(&threads->entries); nd;
-> > > -                    nd =3D rb_next(nd)) {
-> > > -                       task =3D tasks + itask++;
-> > > +       if (thread__tid(b) =3D=3D 0)
-> > > +               return 1;
-> > >
-> > > -                       task->thread =3D rb_entry(nd, struct thread_r=
-b_node, rb_node)->thread;
-> > > -                       INIT_LIST_HEAD(&task->children);
-> > > -                       INIT_LIST_HEAD(&task->list);
-> > > -                       thread__set_priv(task->thread, task);
-> > > -               }
-> > > +       /* If parents match sort by tid. */
-> > > +       if (thread__ppid(a) =3D=3D thread__ppid(b)) {
-> > > +               return thread__tid(a) < thread__tid(b)
-> > > +                       ? -1
-> > > +                       : (thread__tid(a) > thread__tid(b) ? 1 : 0);
+> > [...]
 > >
-> > Can it be simply like this?  We know tid(a) !=3D tid(b).
+> > > > > @@ -7954,10 +7956,14 @@ static int process_iter_next_call(struct =
+bpf_verifier_env *env, int insn_idx,
+> > > > >       struct bpf_reg_state *cur_iter, *queued_iter;
+> > > > >       int iter_frameno =3D meta->iter.frameno;
+> > > > >       int iter_spi =3D meta->iter.spi;
+> > > > > +     bool is_can_loop =3D is_can_loop_kfunc(meta);
+> > > > >
+> > > > >       BTF_TYPE_EMIT(struct bpf_iter);
+> > > > >
+> > > > > -     cur_iter =3D &env->cur_state->frame[iter_frameno]->stack[it=
+er_spi].spilled_ptr;
+> > > > > +     if (is_can_loop)
+> > > > > +             cur_iter =3D &cur_st->can_loop_reg;
+> > > > > +     else
+> > > > > +             cur_iter =3D &cur_st->frame[iter_frameno]->stack[it=
+er_spi].spilled_ptr;
+> > > >
+> > > > I think that adding of a utility function hiding this choice, e.g.:
+> > > >
+> > > >     get_iter_reg(struct bpf_verifier_state *st, int insn_idx)
+> > > >
+> > > > would simplify the code a bit, here and in is_state_visited().
+> > >
+> > > Hmm. That sounds like obfuscation, since 'meta' would need to be pass=
+ed in,
+> > > but is_state_visited() doesn't have meta.
+> > > Create fake meta there?!
+> > >
+> > > I'm missing how such get_iter_reg() helper will look.
+> > > meta->iter.frameno was populated by process_iter_arg().
+> > > Far away from process_iter_next_call().
 > >
-> >   return thread__tid(a) < thread__tid(b) ? -1 : 1;
+> > I meant that this helper can peek spi from R1 just like code in
+> > is_state_visited() does currently. Forgoing the 'meta' completely.
 >
-> Yes, but the parent check is still required.
+> I see.
+> You mean removing:
+>                 meta->iter.spi =3D spi;
+>                 meta->iter.frameno =3D reg->frameno;
+> from process_iter_arg() and
+> 'meta' arg from process_iter_next_call() as well then ?
 
-Sure.  I only meant the return statement.
+Ed,
 
->
-> > >         }
-> > >
-> > >         /*
-> > > -        * Iterate every task down to the unprocessed parent
-> > > -        * and link all in task children list. Task with no
-> > > -        * parent is added into 'list'.
-> > > +        * Find a and b such that if they are a child of each other a=
- and b's
-> > > +        * tid's match, otherwise a and b have a common parent and di=
-stinct
-> > > +        * tid's to sort by. First make the depths of the threads mat=
-ch.
-> > >          */
-> > > -       for (itask =3D 0; itask < nr; itask++) {
-> > > -               task =3D tasks + itask;
-> > > -
-> > > -               if (!list_empty(&task->list))
-> > > -                       continue;
-> > > -
-> > > -               task =3D tasks_list(task, machine);
-> > > -               if (IS_ERR(task)) {
-> > > -                       pr_err("Error: failed to process tasks\n");
-> > > -                       free(tasks);
-> > > -                       return PTR_ERR(task);
-> > > +       level_a =3D thread_level(machine, a);
-> > > +       level_b =3D thread_level(machine, b);
-> > > +       a =3D thread__get(a);
-> > > +       b =3D thread__get(b);
-> > > +       for (int i =3D level_a; i > level_b; i--) {
-> > > +               struct thread *parent =3D machine__find_thread(machin=
-e, -1, thread__ppid(a));
-> > > +
-> > > +               thread__put(a);
-> > > +               if (!parent) {
-> > > +                       pr_err("Missing parent thread of %d\n", threa=
-d__tid(a));
-> > > +                       thread__put(b);
-> > > +                       return -1;
-> > >                 }
-> > > +               a =3D parent;
-> > > +       }
-> > > +       for (int i =3D level_b; i > level_a; i--) {
-> > > +               struct thread *parent =3D machine__find_thread(machin=
-e, -1, thread__ppid(b));
-> > >
-> > > -               if (task)
-> > > -                       list_add_tail(&task->list, &list);
-> > > +               thread__put(b);
-> > > +               if (!parent) {
-> > > +                       pr_err("Missing parent thread of %d\n", threa=
-d__tid(b));
-> > > +                       thread__put(a);
-> > > +                       return 1;
-> > > +               }
-> > > +               b =3D parent;
-> > > +       }
-> > > +       /* Search up to a common parent. */
-> > > +       while (thread__ppid(a) !=3D thread__ppid(b)) {
-> > > +               struct thread *parent;
-> > > +
-> > > +               parent =3D machine__find_thread(machine, -1, thread__=
-ppid(a));
-> > > +               thread__put(a);
-> > > +               if (!parent)
-> > > +                       pr_err("Missing parent thread of %d\n", threa=
-d__tid(a));
-> > > +               a =3D parent;
-> > > +               parent =3D machine__find_thread(machine, -1, thread__=
-ppid(b));
-> > > +               thread__put(b);
-> > > +               if (!parent)
-> > > +                       pr_err("Missing parent thread of %d\n", threa=
-d__tid(b));
-> > > +               b =3D parent;
-> > > +               if (!a || !b)
-> > > +                       return !a && !b ? 0 : (!a ? -1 : 1);
-> >
-> > Wouldn't it leak a refcount if either a or b is NULL (not both)?
->
-> It would, but this would be an error condition anyway. I can add puts.
->
-> >
-> > > +       }
-> > > +       if (thread__tid(a) =3D=3D thread__tid(b)) {
-> > > +               /* a is a child of b or vice-versa, deeper levels app=
-ear later. */
-> > > +               res =3D level_a < level_b ? -1 : (level_a > level_b ?=
- 1 : 0);
-> > > +       } else {
-> > > +               /* Sort by tid now the parent is the same. */
-> > > +               res =3D thread__tid(a) < thread__tid(b) ? -1 : 1;
-> > >         }
-> > > +       thread__put(a);
-> > > +       thread__put(b);
-> > > +       return res;
-> > > +}
-> > > +
-> > > +static int tasks_print(struct report *rep, FILE *fp)
-> > > +{
-> > > +       struct machine *machine =3D &rep->session->machines.host;
-> > > +       LIST_HEAD(tasks);
-> > > +       int ret;
-> > >
-> > > -       fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "com=
-m");
-> > > +       ret =3D machine__thread_list(machine, &tasks);
-> > > +       if (!ret) {
-> > > +               struct thread_list *task;
-> >
-> > Do we really need this thread_list?  Why not use an
-> > array of threads directly?
->
-> The code isn't particularly performance critical. I used a list as it
-> best approximated how the rbtree was being used. The code is reused in
-> subsequent patches, there's no initial pass to size an array and I
-> think the reallocarray/qsort logic is generally more problematic than
-> the list ones. If we were worried about performance then I think
-> arrays could make sense for optimization, but I think this is good
-> enough for now.
+That was a bad idea.
+I tried what you suggested with
+static struct bpf_reg_state *get_iter_reg(struct bpf_verifier_env *env,
+                                          struct bpf_verifier_state
+*st, int insn_idx)
 
-Well, it's not about performance.  It made me think why we need
-this thread_list but I couldn't find the reason.  If you can move
-machine__threads_nr() here then you won't need realloc().
-
-Thanks,
-Namhyung
-
-> > >
-> > > -       list_for_each_entry(task, &list, list)
-> > > -               task__print_level(task, fp, 0);
-> > > +               list_sort(machine, &tasks, task_list_cmp);
-> > >
-> > > -       free(tasks);
-> > > -       return 0;
-> > > +               fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppi=
-d", "comm");
-> > > +
-> > > +               list_for_each_entry(task, &tasks, list)
-> > > +                       task__print_level(machine, task->thread, fp);
-> > > +       }
-> > > +       thread_list__delete(&tasks);
-> > > +       return ret;
-> > >  }
-> > >
-> > >  static int __cmd_report(struct report *rep)
-> > > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > > index 3da92f18814a..7872ce92c9fc 100644
-> > > --- a/tools/perf/util/machine.c
-> > > +++ b/tools/perf/util/machine.c
-> > > @@ -3261,6 +3261,36 @@ int machines__for_each_thread(struct machines =
-*machines,
-> > >         return rc;
-> > >  }
-> > >
-> > > +
-> > > +static int thread_list_cb(struct thread *thread, void *data)
-> > > +{
-> > > +       struct list_head *list =3D data;
-> > > +       struct thread_list *entry =3D malloc(sizeof(*entry));
-> > > +
-> > > +       if (!entry)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       entry->thread =3D thread__get(thread);
-> > > +       list_add_tail(&entry->list, list);
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +int machine__thread_list(struct machine *machine, struct list_head *=
-list)
-> > > +{
-> > > +       return machine__for_each_thread(machine, thread_list_cb, list=
-);
-> > > +}
-> > > +
-> > > +void thread_list__delete(struct list_head *list)
-> > > +{
-> > > +       struct thread_list *pos, *next;
-> > > +
-> > > +       list_for_each_entry_safe(pos, next, list, list) {
-> > > +               thread__zput(pos->thread);
-> > > +               list_del(&pos->list);
-> > > +               free(pos);
-> > > +       }
-> > > +}
-> > > +
-> > >  pid_t machine__get_current_tid(struct machine *machine, int cpu)
-> > >  {
-> > >         if (cpu < 0 || (size_t)cpu >=3D machine->current_tid_sz)
-> > > diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
-> > > index 1279acda6a8a..b738ce84817b 100644
-> > > --- a/tools/perf/util/machine.h
-> > > +++ b/tools/perf/util/machine.h
-> > > @@ -280,6 +280,16 @@ int machines__for_each_thread(struct machines *m=
-achines,
-> > >                               int (*fn)(struct thread *thread, void *=
-p),
-> > >                               void *priv);
-> > >
-> > > +struct thread_list {
-> > > +       struct list_head         list;
-> > > +       struct thread           *thread;
-> > > +};
-> > > +
-> > > +/* Make a list of struct thread_list based on threads in the machine=
-. */
-> > > +int machine__thread_list(struct machine *machine, struct list_head *=
-list);
-> > > +/* Free up the nodes within the thread_list list. */
-> > > +void thread_list__delete(struct list_head *list);
-> > > +
-> > >  pid_t machine__get_current_tid(struct machine *machine, int cpu);
-> > >  int machine__set_current_tid(struct machine *machine, int cpu, pid_t=
- pid,
-> > >                              pid_t tid);
-> > > --
-> > > 2.43.0.687.g38aa6559b0-goog
-> > >
+and implemented in v2.
+It's buggy as can be seen in CI (I sloppy tested it before sending it
+yesterday).
+I'm going to go back to v1 approach.
+process_iter_next_call() _has_ to use meta,
+since caller saved regs already cleared by the time it's called.
+And doing fake 'meta' in is_state_visited() is not a good idea.
+It took me a few hours to debug this :(
 
