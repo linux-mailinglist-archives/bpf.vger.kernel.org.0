@@ -1,192 +1,165 @@
-Return-Path: <bpf+bounces-22931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 085AE86B9D0
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 22:26:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362E286B9DB
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 22:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BE681C23288
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 21:26:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 946BB1F22E14
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 21:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045555E077;
-	Wed, 28 Feb 2024 21:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D58F70042;
+	Wed, 28 Feb 2024 21:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NaRXH+22"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="tmT5AqPt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A5486250;
-	Wed, 28 Feb 2024 21:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44DF54D11F
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 21:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709155596; cv=none; b=Bo87kbE3EEZjca/Gyh3KibBn1Zzcds4OURcaTkbuRRUTLab4xdcRuyZV143H2d01DHgMAkvDu99OvTnsJ8Mdo9+FzorzZ3gAvWgHazFbZ717InBmSWQky4sXXLh/2QgK4YwDHyo9wToeu54SCsRuwQCt3K5/c1lj7WKYLUA5Hwc=
+	t=1709155681; cv=none; b=OT3LrhJKn2fihuYoIBj+/C1zH7l8EcUvB0LaGKnBufXNRHBwJaLtKfCDw9JfcdFkVwEi1iXuARKq6wySqz3sYOQl8RN9j0q4P8S1De4hvQv8zMfgKD7XmTNAn//axw0zqDYp9RKXPCtEF/A87cwdXrtHu7C/gyjM7eBG5pV3vGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709155596; c=relaxed/simple;
-	bh=v94QBitZpa1c7Sm8gy43hV8ENkYjnYfbL2IWGe2j45I=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=AX74Ku6dVMRzsUzuqoHolOWfkTXEscBpPkwxdTH4XEqtJ+nC+khMq9HPsPDZrhW8i2sAgf0pD34cpRLVHNp8dSRCyYJgcrvb5lzNv0kD7lpLiJeaiQ9JUbQwwJdwB3FiAprTk4tOSq7ompXBDd+nRUSU+1qZsT5XoOG0+/oC8Xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NaRXH+22; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29ab7073dd2so123716a91.0;
-        Wed, 28 Feb 2024 13:26:34 -0800 (PST)
+	s=arc-20240116; t=1709155681; c=relaxed/simple;
+	bh=qc3IJmVO/3R3A0SFJHCdwm34OBK/Jh388HY6ha8d4zc=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=FmmG4eadTsrwYWddp9CLY1fO2vbqinHKFPkkV/LzgWxnQ6kDpZwLFCshev0C8KcSnol6gRqLTqHh8vHovoa9S0fu62uipZcDbup5Cax/MEHPVnUfblUDWs6SRqfKf0TlFAwZx+77QZoqRiJ7j+QtxdUL1OT3YxiOyz4kWUprPNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=tmT5AqPt; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42a029c8e76so1253001cf.2
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 13:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709155594; x=1709760394; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NXVaBRQsSxqdO9erylxq2DHr1iSShOnpq3FsNyMGfGk=;
-        b=NaRXH+226ruihAr4lMnZXO9q1At19rCwKvdqkdwErAwU2FwFYe1kgC58THktnrWQCy
-         9Mob4XVtuyVSO75C3+h4Omh2YYe6F3f46VEdyTQlkjp8zUaQpIhGO41PSj1yxbiUeN5y
-         //Vd8U74En1ml3fcI2y3VGbQRJ/AoPI7ikiK+3ua/ylFBinZCJWNYDBLWqvayGL9MiLm
-         jDQnga13JISOsK+I9ZIKgNhk/mYK1RtLRchiYR4j9jYzvAt686Bult6GIorZznR5dCxH
-         3ZZX3wV/1TqxNrI6MtMjfKzT8BMY7NP3tepiK3y7yKkwqf6QhPWmROD+O42hawfTkHId
-         +bJw==
+        d=joelfernandes.org; s=google; t=1709155679; x=1709760479; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Blc6MtZrUfw0pfNXYBqBV8687KOne6DSCmGwF7E1Oc=;
+        b=tmT5AqPtLKQA3SMCNqahR+zqrH8scEXZ/cx72tTHM2/ZslivTFN2t4ZB7eGjRg/y+u
+         3JsXQnqUAyj/1O0NygE3isVFTcA8dbHOPAjBrRp0M2JjWUg3GDb0vY1mW2iH2oaf/Gkv
+         ItY6FkCHH9EPYl1AeuzvBwjYihZzk+NvwOzv4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709155594; x=1709760394;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NXVaBRQsSxqdO9erylxq2DHr1iSShOnpq3FsNyMGfGk=;
-        b=dIOm7EN+HqKvyvR8OpD36ojrNWln6xIts/WsswvC7qEJ9bVAl16GP/MUlSuQKPHlLl
-         iYPfWtrNsKuPHmNPMPvAcfaQQjwJ/QRt/3+khcn9yLNqjLY13Uf3FIJkZiYWz+og0rWM
-         eRSfo4IuA1W+E+LgYupU6MEe4AfwPeNr0k2iwSnzK1Pl7w7m2+rvZN2aKC3UMyDKchNQ
-         9wImugo2LyYHFu4+Tbpdod6waKF3AheYLyc0nlDF6D3Q/EOTYl4EYYBex4K+eXQ9l/ls
-         fq6FjBeE3hnbM91zUx8yvSSdaZV5OTtRu/BYy1SQR+4FmVIkYil8wDOpfev+rCT9s0Gr
-         ZBAA==
-X-Forwarded-Encrypted: i=1; AJvYcCVigna7cEku9wCnucvkEBPyI8hRNJOcyaIQATsiwnP1VEsyOYrbV3kxziZaevV1GYg5vN97Z4JqUqjZ9GsLJO6EqMPzO3UNfYhQITLjjToXKspR6Rg6Egjltzx/
-X-Gm-Message-State: AOJu0YzD2ONaVSGvyePA7/RbtgK5D3IfSbHy+DELetmxhVq2FHupjqLM
-	3SVDoYnzsT08KlYRKjQNTuCnkBm9pxwftrHmis4GrfNbnU2Jc6ym
-X-Google-Smtp-Source: AGHT+IFxVpk4GNzefxj7rv2iumrYwwC5M9ZZePsqVADhAPQE2+0NN0O9JVgIu9iP1PAmh4FFSZ8QNA==
-X-Received: by 2002:a17:90a:8044:b0:299:5913:db15 with SMTP id e4-20020a17090a804400b002995913db15mr368957pjw.29.1709155594273;
-        Wed, 28 Feb 2024 13:26:34 -0800 (PST)
-Received: from localhost ([98.97.43.160])
-        by smtp.gmail.com with ESMTPSA id md21-20020a17090b23d500b0029a78f22bd2sm16949pjb.33.2024.02.28.13.26.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 13:26:33 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:26:30 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com, 
- netdev@vger.kernel.org, 
- bpf@vger.kernel.org
-Message-ID: <65dfa50679d0a_2beb3208c8@john.notmuch>
-In-Reply-To: <20240227152740.35120-1-toke@redhat.com>
-References: <20240227152740.35120-1-toke@redhat.com>
-Subject: RE: [PATCH bpf] bpf: Fix DEVMAP_HASH overflow check on 32-bit arches
+        d=1e100.net; s=20230601; t=1709155679; x=1709760479;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Blc6MtZrUfw0pfNXYBqBV8687KOne6DSCmGwF7E1Oc=;
+        b=AuGthxIDGoJwUOaHG9mKayCegaVJ0EzIf2tA8b5dr1C4cjOMJoWNY2n0y3JmeJRYLT
+         vccfU0Dhet/W2mUwSPqBcKnYB9Ctl2oeH46Y6wvbbkhXgc+H85V88PeYP8IQoR6EvvOz
+         Ufwx7SfQRCSY8tmSgd+LcUxT8KOQwQ8gWOjtVMgx0+RHD+wmMR0aEhAt9pNVKrlJ/lyT
+         iYtGyuy376dQkCrYwsYWxrMWH3PDpRSooHEMZDMxNNtXyZbaHidCGohKvfkgQ5jc3kGF
+         aHbQ33VrWayelkPFEj+meRTrWBgqY31FAWFUEECi5MLMtGQuU4snNHEbnyALCrAhgKLF
+         st3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXtJDiqiuilEwla1IHmPhK/RldDaWaHmqCG4uMK8LxIFm7LRwHSa67AmFi/2Wgf18zYHshGuYuALKTcm8RkadC3a3//
+X-Gm-Message-State: AOJu0YzRDneKxjVCNEi1l7yFD4PqDBkn1fiG9+SRwLfgEr6frZ/yonr/
+	CkLe3ZM2ofwOIA0YUaJR/rUC5sQAVKEBiD6sJEHHy/VmB456usCvaS65jEpvrX8=
+X-Google-Smtp-Source: AGHT+IGDQNk6NZQ43wHJ3Dd0O4jJRkuOkedQSDFeACS4W4u7SGJlKnJJwLEhOZq/P68pAYf3qzd8Kw==
+X-Received: by 2002:ac8:5ad5:0:b0:42e:7ebf:1d51 with SMTP id d21-20020ac85ad5000000b0042e7ebf1d51mr134002qtd.68.1709155679115;
+        Wed, 28 Feb 2024 13:27:59 -0800 (PST)
+Received: from smtpclient.apple ([45.88.220.126])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05622a048c00b0042e7856fbe3sm12820qtx.59.2024.02.28.13.27.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 13:27:58 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Joel Fernandes <joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> The devmap code allocates a number hash buckets equal to the next power=
- of two
-> of the max_entries value provided when creating the map. When rounding =
-up to the
-> next power of two, the 32-bit variable storing the number of buckets ca=
-n
-> overflow, and the code checks for overflow by checking if the truncated=
- 32-bit value
-> is equal to 0. However, on 32-bit arches the rounding up itself can ove=
-rflow
-> mid-way through, because it ends up doing a left-shift of 32 bits on an=
- unsigned
-> long value. If the size of an unsigned long is four bytes, this is unde=
-fined
-> behaviour, so there is no guarantee that we'll end up with a nice and t=
-idy
-> 0-value at the end.
-> =
-
-> Syzbot managed to turn this into a crash on arm32 by creating a DEVMAP_=
-HASH with
-> max_entries > 0x80000000 and then trying to update it. Fix this by movi=
-ng the
-> overflow check to before the rounding up operation.
-> =
-
-> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devi=
-ces by hashed index")
-> Link: https://lore.kernel.org/r/000000000000ed666a0611af6818@google.com=
-
-> Reported-and-tested-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotma=
-il.com
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  kernel/bpf/devmap.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> =
-
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index a936c704d4e7..9b2286f9c6da 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -130,13 +130,11 @@ static int dev_map_init_map(struct bpf_dtab *dtab=
-, union bpf_attr *attr)
->  	bpf_map_init_from_attr(&dtab->map, attr);
->  =
-
->  	if (attr->map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) {
-> -		dtab->n_buckets =3D roundup_pow_of_two(dtab->map.max_entries);
-> -
-> -		if (!dtab->n_buckets) /* Overflow check */
-> +		if (dtab->map.max_entries > U32_MAX / 2)
->  			return -EINVAL;
-> -	}
->  =
-
-> -	if (attr->map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) {
-> +		dtab->n_buckets =3D roundup_pow_of_two(dtab->map.max_entries);
-> +
->  		dtab->dev_index_head =3D dev_map_create_hash(dtab->n_buckets,
->  							   dtab->map.numa_node);
->  		if (!dtab->dev_index_head)
-> -- =
-
-> 2.43.2
-> =
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Date: Wed, 28 Feb 2024 16:27:47 -0500
+Message-Id: <4965F5CD-B33C-4B75-818A-021372020881@joelfernandes.org>
+References: <5b74968d-fe14-48b4-bb16-6cf098a04ca5@paulmck-laptop>
+Cc: Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
+ Wei Wang <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>,
+ Hannes Frederic Sowa <hannes@stressinduktion.org>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@cloudflare.com, rostedt@goodmis.org, mark.rutland@arm.com
+In-Reply-To: <5b74968d-fe14-48b4-bb16-6cf098a04ca5@paulmck-laptop>
+To: paulmck@kernel.org
+X-Mailer: iPhone Mail (21D61)
 
 
-I'm fairly sure this code was just taken from the hashtab implementation.=
 
-Do we also need a fix there?
+> On Feb 28, 2024, at 4:13=E2=80=AFPM, Paul E. McKenney <paulmck@kernel.org>=
+ wrote:
+>=20
+> =EF=BB=BFOn Wed, Feb 28, 2024 at 03:14:34PM -0500, Joel Fernandes wrote:
+>>> On Wed, Feb 28, 2024 at 12:18=E2=80=AFPM Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+>>>=20
+>>> On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
+>>>> On Wed, Feb 28, 2024 at 9:37=E2=80=AFAM Joel Fernandes <joel@joelfernan=
+des.org> wrote:
+>>>>> Also optionally, I wonder if calling rcu_tasks_qs() directly is better=
 
-        /* hash table size must be power of 2 */
-        htab->n_buckets =3D roundup_pow_of_two(htab->map.max_entries);
+>>>>> (for documentation if anything) since the issue is Tasks RCU specific.=
+ Also
+>>>>> code comment above the rcu_softirq_qs() call about cond_resched() not t=
+aking
+>>>>> care of Tasks RCU would be great!
+>>>>>=20
+>>>> Yes it's quite surprising to me that cond_resched does not help here,
+>>>=20
+>>> In theory, it would be possible to make cond_resched() take care of
+>>> Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
+>>> of cond_resched().  But if for some reason cond_resched() needs to stay
+>>> around, doing that work might make sense.
+>>=20
+>> In my opinion, cond_resched() doing Tasks-RCU QS does not make sense
+>> (to me), because cond_resched() is to inform the scheduler to run
+>> something else possibly of higher priority while the current task is
+>> still runnable. On the other hand, what's not permitted in a Tasks RCU
+>> reader is a voluntary sleep. So IMO even though cond_resched() is a
+>> voluntary call, it is still not a sleep but rather a preemption point.
+>=20
+> =46rom the viewpoint of Task RCU's users, the point is to figure out
+> when it is OK to free an already-removed tracing trampoline.  The
+> current Task RCU implementation relies on the fact that tracing
+> trampolines do not do voluntary context switches.
 
-The u32 check in hashtab is,
+Yes.
 
-        /* prevent zero size kmalloc and check for u32 overflow */
-        if (htab->n_buckets =3D=3D 0 ||
-            htab->n_buckets > U32_MAX / sizeof(struct bucket))
-                goto free_htab;                 =
+>=20
+>> So a Tasks RCU reader should perfectly be able to be scheduled out in
+>> the middle of a read-side critical section (in current code) by
+>> calling cond_resched(). It is just like involuntary preemption in the
+>> middle of a RCU reader, in disguise, Right?
+>=20
+> You lost me on this one.  This for example is not permitted:
+>=20
+>    rcu_read_lock();
+>    cond_resched();
+>    rcu_read_unlock();
+>=20
+> But in a CONFIG_PREEMPT=3Dy kernel, that RCU reader could be preempted.
+>=20
+> So cond_resched() looks like a voluntary context switch to me.  Recall
+> that vanilla non-preemptible RCU will treat them as quiescent states if
+> the grace period extends long enough.
+>=20
+> What am I missing here?
 
-                                  =
+That we are discussing Tasks-RCU read side section? Sorry I should have been=
+ more clear. I thought sleeping was not permitted in Tasks RCU reader, but n=
+on-sleep context switches (example involuntarily getting preempted were).
 
-Thanks,
-John=
+ - Joel
+
+
+
+>=20
+>                            Thanx, Paul
 
