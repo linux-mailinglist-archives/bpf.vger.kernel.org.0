@@ -1,163 +1,177 @@
-Return-Path: <bpf+bounces-22831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F87A86A509
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 02:31:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3101186A625
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 02:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E3501C235FB
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 01:31:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5C71F2E18E
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 01:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FEC81C3E;
-	Wed, 28 Feb 2024 01:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B62022092;
+	Wed, 28 Feb 2024 01:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RCVyFltV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cfwjlPFc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564FC184F
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 01:31:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACBA219E9;
+	Wed, 28 Feb 2024 01:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083903; cv=none; b=BwRBvV80oiszRk8vO1da4J5VIZq4L99FTbFWpVDOBlthGzM8P/vrx3xFmwNrYQhIZTvZQf15mdGnfwbwIc0NrnRJuD+9aY3/thRb1iOtqJFi12av5YmS222wY0VwFj1/QXRIoMHrSQvJpACLGVED2ejOXsdsoCjcS8lu7/fOHZs=
+	t=1709084966; cv=none; b=kd19/VysG4/uHgcq6F1Lyhpu174KcNwQKJfVp+cLBa4f2m66/66tFdfpAG9d8n5Nj+rsnde4fWDmcg0LXINhRoFVmqr6Gi5Z/TVcEKrXkBsISAT/UjTatAPb5FN01Gm7m93ixsQ5fjBxZXP9jonmLm/nLmMKKAa9rc7hX6kNgDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083903; c=relaxed/simple;
-	bh=8ItnNvRbX2SWsH1uTt+ise7flvo8KOnpCk15acJGb/Q=;
+	s=arc-20240116; t=1709084966; c=relaxed/simple;
+	bh=+FQUdTrkE2zK55NQ+Cu+x7TSgIAYifAQCWyaS9T97NA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f4+wh/mW56WcQ4vY00i9tG6WFNTaKXUTAMJx34WmKbVScEVMauJ+zYgnDzC3UjBoN19QVuGXWneM4anXBciY3beV0ymkPGxE+xwdA1pWHnD7cxPBoIXmIMTTlo+GeiEg7FQrgFA/s+N9sZ4mOjcdm+v7+mVIBj2BPkH3X6rjyuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RCVyFltV; arc=none smtp.client-ip=209.85.221.42
+	 To:Cc:Content-Type; b=GPPVVM6ka4pjTrwd3bygPKzKKoF3G+kPwluk1+YcQ1Ke6I68+8nzMfBor2Q5IvqBwWlopSO7uHq5QqAqqNJgGhakf6/TNiB/VPgONi6zkwTfHNtk+5vEn0Clvpt0GPpOBwRMlPYQF1+iibmC9dB+PP/bTrlZEShNVgko31092x8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cfwjlPFc; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d6cc6d2fcso3062145f8f.2
-        for <bpf@vger.kernel.org>; Tue, 27 Feb 2024 17:31:41 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412aec2505dso8369395e9.2;
+        Tue, 27 Feb 2024 17:49:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709083900; x=1709688700; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709084962; x=1709689762; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tQB+JZ1G68ICyO1N3p0oqOVpl3RnCmkeQUi97bJMYlw=;
-        b=RCVyFltV6tHxcKhFdXildNkAC/4zV8ubrIiKXd42fH1CRsady03JhalLbKeHZS1z7S
-         78J3nPTILdkLEuBzqjKkS3amSPcZ/qaEIO2o8/cCMyz55A8opp0AMAxTH3d+/kMsFZTh
-         H3r4zvhvEm4p2DkBJitU4NI/2/dRmcXyDKFvuQGTU+z/nCgxEyjtE6hc4VpDcTFkDPJB
-         bgq2NXgh+TvK6+3p1Tgtn5gvkOowJj/dVvL3MnpJCT4JarSAu28GV6L70S/dwy10YtYY
-         GjXvSwEZg7lzjLUvsHbOy8FNr8mSnKQGeYXZvKXOSETDuwK+QAYeZgbOOHeFvjZ5OrXo
-         XyXA==
+        bh=ui4sJq/l8+cxeUyr+OFsebM3T707k8kNS1YD3vIJ/Xw=;
+        b=cfwjlPFcToyuEd4MZtKyKCayQiLVbydRBOAnFL3ubSNu/J8m6ZLNarZF1TrFOYPZVG
+         ayx+iEMPleTNKvNyz9hxB1KVRlKztJKE4ZLsQn4NPUX/yfzwrPC9cM0M80EjfEDI/PxN
+         iBZCz/3Ry12G7ZUeR3Qye5GToj1xZytgSxuiIcdmSx0dYCdKC4RUB0OlIQGHQ3tK35g9
+         /XZ9QDaOkTumNPB3ibF7zHGtqgCn1wE8SfsowkD8xwo5mtIANDJU7+btg5039SQefjUE
+         ULCFSiRfL5i3dFRrrN6ksx0XEc9Te9K4S8PVvxBOEipgqJh18sF1uHjE8naH6m+enswt
+         nbGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709083900; x=1709688700;
+        d=1e100.net; s=20230601; t=1709084962; x=1709689762;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tQB+JZ1G68ICyO1N3p0oqOVpl3RnCmkeQUi97bJMYlw=;
-        b=iKdpwbqsrpjiF2lOnHS6N/vvMAY+G/+69RzfQ1sqERhoZ0AhuRucZ8xdyVtG2ylVQE
-         ay7i01FP3IXc0l3Sbs4HlzwTE/wA/pkrGDziLJIC+EwnuCq1uUxhcRGvIJS4dTlOfJVu
-         rW0KgFOdqrihRb8b8uIuxmypRjUlB+VOhTXKXxlwoFUXVEjKraAptX1ehZqNXrEWk3zE
-         GLNdrgxpoD5nH+r6zrxwhp1lM4tE6l+LX6Izz9/dRo3GmX+QrgYeXndlZg9pFqbp2a76
-         WqCEWVGAbqSP082W/CI2oQuIgYq9Vh/I53piymmC43zk4bjxm0ugdWR0iDe7pR36VlRG
-         ScKg==
-X-Gm-Message-State: AOJu0YynCwdyPiztoZCczRw47H5Nxteo5OLjA9yBVqaQcyva1ei1ZDBH
-	o5ZWxSniHKEfk9mZW7ZMy1FK7F0ngZjiYHPo+d0O68JJ0+oF/beO6G/IHiEOdY2lK/+tqHdqkuC
-	TNGdkwBXviAg5u4jaG30Iwy09QgU=
-X-Google-Smtp-Source: AGHT+IHW0RvW1Yw8eRC97o+L4oxzxSjZSar1xugDudti2CXKZy7764qOr6NgwPLSJiP97CBaYnawADxltOlqy8AvltM=
-X-Received: by 2002:adf:db07:0:b0:33d:82ae:67f8 with SMTP id
- s7-20020adfdb07000000b0033d82ae67f8mr8131519wri.50.1709083899508; Tue, 27 Feb
- 2024 17:31:39 -0800 (PST)
+        bh=ui4sJq/l8+cxeUyr+OFsebM3T707k8kNS1YD3vIJ/Xw=;
+        b=H7DTIa04x3rTG1bnwKUWUMvfkvvtaFBnVcIxvQFa3QMHr8jXrPhRpF8U7OKjhCRh2T
+         +6EXBrsRORRjl1i6cA/v7wSv6uedj62JBjqmICG+uVjO+IROZKWrXfjntv7YU8E64QG4
+         CFZRlGAzKQOZ3+G5581LoAVHkLd7NkgtpS8F47nsl6STUjsMBOvy8zhFQhn2HzgbXzbm
+         Unszin7Eav8sC9SRz+eDHS29E0T9SWI03qOg4sDFDniMtEPeL6kVIXmjlCVxIGrR1GC/
+         GanEza4zAj6Fo5OfIjc3yzBmz0fQdvPLNYRU6poNsOZnxqAA9TwSskhuKwFEA48SCxmL
+         yKPA==
+X-Forwarded-Encrypted: i=1; AJvYcCU7Ye+7L13OYHCQZBwci4C93XD6qvYkPZAsIxv6c7eHPvMh95lngCOJXasNBIoWCfxRwfvrgEECgYlQblk4gc48r3QFN8IMzL1HfEv57T4I4iB8QCs6XsEA3dtP0vDPM9+4K2zk+1/zL4xvTwrkPrgmssgaDWUSL5FMZAtiBbEP2Mrr7HJXijNQ7f4u7pJDNBD8pAXuHlH3wi6wWhe5ag0r49f8zBiRJ1VQXTSmxh7zIMpbcslzDzaFnoc=
+X-Gm-Message-State: AOJu0YwCzgQhQX8aZl/uBOcEO/xHgeE+GqmmIOI1C74tETFjT3k1FLc2
+	iEhijztTCgS8h8Sz84rbZNeMl2zmGRJc0JpkR2cLDyDfZiIngwt3AeQniVNL3p2EfyM+eR/OzsZ
+	rVUKcfaD6WT4l+MmWsnBtK3Bk5bo=
+X-Google-Smtp-Source: AGHT+IGZnDSmoeFl4CZIz+6vAS7IGmyc6HIgJYxbGn7bvr4zS6MIaN7+NdCrCxGiklkpE+8wP8mR8Pv+ITnHeccQpk0=
+X-Received: by 2002:a5d:64cb:0:b0:33d:f89b:147b with SMTP id
+ f11-20020a5d64cb000000b0033df89b147bmr781105wri.26.1709084962552; Tue, 27 Feb
+ 2024 17:49:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223235728.13981-1-alexei.starovoitov@gmail.com>
- <20240223235728.13981-4-alexei.starovoitov@gmail.com> <Zd4jGhvb-Utdo2jU@infradead.org>
-In-Reply-To: <Zd4jGhvb-Utdo2jU@infradead.org>
+References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
+ <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org> <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
+ <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
+ <9a35a53a1887fb664fd540ec7e272cb3ea63f799.camel@gmail.com> <CAO-hwJ+TGiLrc4De7htvKaSsMfQnZahK-zONAMNgUMYHEQb-7g@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+TGiLrc4De7htvKaSsMfQnZahK-zONAMNgUMYHEQb-7g@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 27 Feb 2024 17:31:28 -0800
-Message-ID: <CAADnVQ+f06b1hDrAyLM-OrzDfEEa=jtamJOKfEnEo4ewKPV0cA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/3] mm: Introduce VM_SPARSE kind and vm_area_[un]map_pages().
-To: Christoph Hellwig <hch@infradead.org>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Barret Rhoden <brho@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, sstabellini@kernel.org, 
-	Juergen Gross <jgross@suse.com>, linux-mm <linux-mm@kvack.org>, xen-devel@lists.xenproject.org, 
-	Kernel Team <kernel-team@fb.com>
+Date: Tue, 27 Feb 2024 17:49:11 -0800
+Message-ID: <CAADnVQKrKzrvzu9NmcaDYGFYicqN--R5J6r--_J58gB0jic_NA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for is_bpf_timer_set_sleepable_cb_kfunc
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Benjamin Tissoires <bentiss@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 9:59=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
-g> wrote:
+On Tue, Feb 27, 2024 at 8:51=E2=80=AFAM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
 >
-> > privately-managed pages into a sparse vm area with the following steps:
+> On Tue, Feb 27, 2024 at 5:36=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
 > >
-> >   area =3D get_vm_area(area_size, VM_SPARSE);  // at bpf prog verificat=
-ion time
-> >   vm_area_map_pages(area, kaddr, 1, page);   // on demand
-> >                     // it will return an error if kaddr is out of range
-> >   vm_area_unmap_pages(area, kaddr, 1);
-> >   free_vm_area(area);                        // after bpf prog is unloa=
-ded
+> > On Tue, 2024-02-27 at 17:18 +0100, Benjamin Tissoires wrote:
+> > [...]
+> >
+> > > Hmm, I must still be missing a piece of the puzzle:
+> > > if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
+> > > argument, given that it is declared as kfunc, I also must declare it =
+in
+> > > my bpf program, or I get the following:
+> > >
+> > > # libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_proto=
+ [264] incompatible with vmlinux [18151]
+> > >
+> > > And if I declare it, then I don't know what to pass, given that this =
+is
+> > > purely added by the verifier:
+> > >
+> > > 43: (85) call bpf_timer_set_sleepable_cb#18152
+> > > arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or struc=
+t with scalar
+> >
+> > Right, something has to be done about number of arguments and we don't
+> > have a convenient mechanism for this afaik.
+> >
+> > The simplest way would be to have two kfuncs:
+> > - one with 2 arguments, used form bpf program;
+> > - another with 3 arguments, used at runtime;
+> > - replace former by latter during rewrite.
 >
-> I'm still wondering if this should just use an opaque cookie instead
-> of exposing the vm_area.  But otherwise this mostly looks fine to me.
+> It's hacky but seems interesting enough to be tested :)
 
-What would it look like with a cookie?
-A static inline wrapper around get_vm_area() that returns area->addr ?
-And the start address of vmap range will be such a cookie?
+Too hacky imo :)
 
-Then vm_area_map_pages() will be doing find_vm_area() for kaddr
-to check that vm_area->flag & VM_SPARSE ?
-That's fine,
-but what would be an equivalent of void free_vm_area(struct vm_struct *area=
-) ?
-Another static inline wrapper similar to remove_vm_area()
-that also does kfree(area); ?
+Let's follow the existing pattern.
+See:
+__bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
 
-Fine by me, but api isn't user friendly with such obfuscation.
+__ign suffix tells the verifier to ignore it.
 
-I guess I don't understand the motivation to hide 'struct vm_struct *'.
+Then we do:
+#define bpf_obj_new(type) \
+  ((type *)bpf_obj_new_impl(bpf_core_type_id_local(type), NULL))
 
-> > +     if (addr < (unsigned long)area->addr || (void *)end > area->addr =
-+ area->size)
-> > +             return -ERANGE;
+and later the verifier replaces arg2 with the correct pointer.
+
+> We also could use the suffix (like __uninit, __k, etc...), but it
+> might introduce more headaches than the 2 kfuncs you are proposing.
+
+Only one kfunc pls. Let's not make it more complex than necessary.
+
+We cannot easily add a suffix to tell libbpf to ignore that arg,
+since bpf_core_types_are_compat() compares types and there are
+no argument names in the types.
+So it will be a significant surgery for libbpf to find the arg name
+in vmlinux BTF and strcmp the suffix.
+
 >
-> This check is duplicated so many times that it really begs for a helper.
-
-ok. will do.
-
-> > +int vm_area_unmap_pages(struct vm_struct *area, unsigned long addr, un=
-signed int count)
-> > +{
-> > +     unsigned long size =3D ((unsigned long)count) * PAGE_SIZE;
-> > +     unsigned long end =3D addr + size;
-> > +
-> > +     if (WARN_ON_ONCE(!(area->flags & VM_SPARSE)))
-> > +             return -EINVAL;
-> > +     if (addr < (unsigned long)area->addr || (void *)end > area->addr =
-+ area->size)
-> > +             return -ERANGE;
-> > +
-> > +     vunmap_range(addr, end);
-> > +     return 0;
+> >
+> > Could you please provide more details on what exactly it complains abou=
+t?
+> >
 >
-> Does it make much sense to have an error return here vs just debug
-> checks?  It's not like the caller can do much if it violates these
-> basic invariants.
+> Well, there is a simple reason: that code is never reached because, in
+> that function, there is a `if (insn->src_reg =3D=3D
+> BPF_PSEUDO_KFUNC_CALL)` above that unconditionally terminates with a
+> `continue`. So basically this part of the code is never hit.
+>
+> I'll include that new third argument and the dual kfunc call in
+> fixup_kfunc_call() and report if it works from here.
 
-Ok. Will switch to void return.
-
-Will reduce commit line logs to 75 chars in all patches as suggested.
-
-re: VM_GRANT_TABLE or VM_XEN_GRANT_TABLE suggestion for patch 2.
-
-I'm not sure it fits, since only one of get_vm_area() in xen code
-is a grant table related. The other one is for xenbus that
-creates a shared memory ring between domains.
-So I'm planning to keep it as VM_XEN in the next revision unless
-folks come up with a better name.
-
-Thanks for the reviews.
+Something is wrong. fixup_kfunc_call() can rewrite args with whatever
+it wants.
+Are you sure you've added bpf_timer_set_sleepable_cb to special_kfunc_list =
+?
 
