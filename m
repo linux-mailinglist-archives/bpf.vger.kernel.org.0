@@ -1,161 +1,202 @@
-Return-Path: <bpf+bounces-22953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4FE86BC2C
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:27:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8173386BC30
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF0EB1C22EAD
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:27:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A52BB1C22DA3
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298413FB97;
-	Wed, 28 Feb 2024 23:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAD316423;
+	Wed, 28 Feb 2024 23:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C8Ft2bAJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FEHJ4o0o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075E813D319;
-	Wed, 28 Feb 2024 23:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D684613D311
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 23:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162846; cv=none; b=DbZVBXm3BU188n5Gmd4gRM80COWV8LXgA7i4jnuC6g0IruMtvvKKawunUf8UNUVq3F5MTiHnD2dnWXr8Nn4cdYtGOQ8YCpacPYXi8fCyeE7IiOhfUWUl/vPjroshLaWSgAIyI/XapgvSRySLwYEmPHhwqTmvj8OvwSysWk+tSkI=
+	t=1709162908; cv=none; b=nRqQLBXVt80uZPrz7B86KAFjcIpYEny+l8IvtQJJsaLdaCXWPvMGhz3chR5M5ybzKBB6UL/g9Bv/1SKHJ61wJUM0FFSVbn9eAbFEzJ56rBhOavaIbgYl6uV7klRZy+ds/XWEU0M1o9Hl/eFxzGTPtvOGjRTFQlSllpFfc9Rzwh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162846; c=relaxed/simple;
-	bh=yR99aj/Y3qUCL/U7ci0Qst/HDVZ03Ni5Gp668ZTg95w=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=T+mdSpIYlH+IKCtCwNOlmbKZpS76o/mQ9SlodHkRr7nNFAnr5PoY5UrE7RPYvuiwqMHWN1jy41LjxNSPey+pQKIrfpmhWarFT0zPdd4ILvvjJ6bc7RyVB33ieikuyEIzatJglVaLsCBJ3g5LdbcfdcDtBRvZKS3imlRV9litW4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C8Ft2bAJ; arc=none smtp.client-ip=209.85.167.43
+	s=arc-20240116; t=1709162908; c=relaxed/simple;
+	bh=BLzI/0negtTF1k9smmyoXWED3Uo2ckgKHAX+cy+qty8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SneStqKLJ/cKTPQRMSQyURLie5bQyp6s9xHyQxG0tz09sbNnYFAg0kjTlw2K2TL3FF96cucVhUU7a+sX7mMwAZccsLrcyuTxXBzDbkmt1GcDVQSXwSyJpodyoxvPTkkrPSVqc/e557fo270F9gRe0YzHO1j0hTTcBiQOQExMovI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FEHJ4o0o; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513230201b2so155805e87.1;
-        Wed, 28 Feb 2024 15:27:24 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dc1ff58fe4so3426325ad.1
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 15:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709162843; x=1709767643; darn=vger.kernel.org;
-        h=mime-version:message-id:date:subject:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qUsI28IGlUJBAILlE5CNXqMn2Wot3QZGGWsRmezOGs8=;
-        b=C8Ft2bAJuHRJs50ha//S0HEUf+4TAkzx6P9B/EkWJVo6PI4f8MOYI4+z1rR7icFPVN
-         exHx9yc3aDLE8iClOLhTm1Dl9JzU+AqxO2mPfg1dqYrerfFC3FOpuM8aAmrDFAeMtbbr
-         0EjzxsG0YbaMZorOksSC8Bc3lOGoL0WBm3/muTA1GaMaoEQHD9GNsVTNn4FKwlAmkvel
-         3l+0Lp4GdGCytkpMsohMtect6MijdyfYQc0lCIOLDx7lJnK8nXjZWe40HFFwpPIbpsFa
-         5lU0ZsmLQZr/SVEC1O+JSNQZ9epYhM9sYgToHdjWgFtmFC6uynaaYtlaGxOg/gaTvl6j
-         ryZQ==
+        d=gmail.com; s=20230601; t=1709162906; x=1709767706; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=puLhld6QZfR0YeXkAnWtz/y8eEJxAWcIYLM3kTkEbM8=;
+        b=FEHJ4o0oILYSLLKSRluQdaBnvBfbCJrOryfY7uP9mc4TWiek4LJCtu+eTtPEP2vq8G
+         Bi2MQOvcVd5UDd/+rFmr5EtRTGvLlnz96P7p/PeT7/8xhRs1eV1IQT2krHDVm9Aat9wJ
+         k2QmdW5/64BaOS4FkvYLD6CVfSZ0P84us1UssEP1oL6iv+gVr2iZpSR+hv1Xd5MtfTlM
+         QMh/LcuPWZj1V/Rp0ECYbfnerwCQqORMovPzpt+v9CRzK9Fdtj2L4820iiYzVVqBQk7r
+         VybqXhch7xCxCc/OUIRiPPJbanqH7efm6hKrB1vWK4GN0l42mxifD20QTblN6SrgfIWa
+         30fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709162843; x=1709767643;
-        h=mime-version:message-id:date:subject:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qUsI28IGlUJBAILlE5CNXqMn2Wot3QZGGWsRmezOGs8=;
-        b=SafCwNlNQxuf/hMnOcdRyyUfF07A4dtLmPO3kWYHP8VDy3HOd2gN1dfWpHHMhq6Ipg
-         5b8gK9/8y4ZjlCwWThCb/JxyENigSiBR/dLyp3qE+Rgw0Z5N2cBGBb626hfOQcns1mR4
-         4m0D6I7AD8AX9bgXQI14MVdS3jlpzinqnvRcH4mVDChZiMFWEfn0fNO23FJusa1aP/UQ
-         UF519bXo02M+m2POO0RXM5i9Fc1ZXn4BsSjpLXnFc2woZB0o5BPWEK0Sz7cnPPAznCud
-         ZkhGo/njk8axUKnODTqvaTRcpAD2vts/XfypRA6cW9dRKYiPjQjPs8OMOTtjWhnCl2bS
-         detw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Qtkqk0+dQf/n/xDBB/mDexGZ4bwXcFqVFS8lertDOEnqiSmjsIJzZXD1gKcBkNkDMxRsb5keZuYl/5NQL1XMKPxp8CjXzur5sZz2ECZj2sNDZ6MXnwucj5ZRP4oBmM6Q
-X-Gm-Message-State: AOJu0YyouFEqmb8zHJcRICUcNn38Erkm7Y86FpNAW36IYzOe0rB9+Z96
-	DBCSAuuIm5rSHth3GzDp9pgPqP9MiD7TmSxHCSujCzYYhp44y0pA
-X-Google-Smtp-Source: AGHT+IEUDNBkFdHTxEGr88/rougzxjN7wW1dNLNTE4EokEqvE3FvIDWV4qKKcWv4RZPmxcXgd163Ng==
-X-Received: by 2002:a05:6512:605:b0:513:1a02:7304 with SMTP id b5-20020a056512060500b005131a027304mr202101lfe.54.1709162842814;
-        Wed, 28 Feb 2024 15:27:22 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id m19-20020a056000181300b0033d3b8820f8sm51909wrh.109.2024.02.28.15.27.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Feb 2024 15:27:22 -0800 (PST)
-From: puranjay12@gmail.com
-To: catalin.marinas@arm.com, ast@kernel.org, daniel@iogearbox.net,
- mark.rutland@arm.com, broonie@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org 
-Subject: arm64: Supporting DYNAMIC_FTRACE_WITH_CALL_OPS with CLANG_CFI 
-Date: Wed, 28 Feb 2024 23:27:03 +0000
-Message-ID: <mb61ph6hsxj94.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1709162906; x=1709767706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=puLhld6QZfR0YeXkAnWtz/y8eEJxAWcIYLM3kTkEbM8=;
+        b=INJrYE5z0QfOgC2nKFYPWFYWzqbt2dv5CbCPXaenOqRbDQnsZ0caRX3WHMtAdQkfMy
+         L2OnUb2pd3mSQ0yEEEEAkhv7YwIejdu6EdW631Qi1PGcygUQxX6nJVkfi9S+N7KNdbXm
+         rzs0Hcmo/iUo32xHAsPba/2amaL/SpyGAaAC835B0/AwESp68SSq3LnzraavEkjeITDB
+         qw1vfT2ANAM03/i0VizTbPGOK5OhcXV2wpk8R25NZc5eoEc4Qsz3DOdlKFaOUXzhirt+
+         1+3NQM+lpcGXpZ8QFyNLmzdBLs6sgpY8YaDKSEYWYohMO3i/LOB3S+OdjGM0wErkL9Wl
+         URMg==
+X-Gm-Message-State: AOJu0Yy61hxxOLxDrC7QpChqvrsAEk3ZlHYsLlr8FtMQW6TZZKNDcC6s
+	e1yb2CUnBhiKMiQ6N4SzFknRxfhgPD+cpTzRWoHko4c7e6kgbKB38T6PRRU3tq0yLzKJi50K81L
+	FH4HmqwWoV5F5tBSmC4juFKum1strjOLi
+X-Google-Smtp-Source: AGHT+IFY/FGI3d97obTeqeOTq9XQuVBmKQjt+dLg+pulidaFXR3ZBN4W0QqRFY8IzTdvb41I/3ucMvycYlaUkHVth48=
+X-Received: by 2002:a17:902:7845:b0:1dc:30d7:ff37 with SMTP id
+ e5-20020a170902784500b001dc30d7ff37mr368170pln.42.1709162906268; Wed, 28 Feb
+ 2024 15:28:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240227204556.17524-1-eddyz87@gmail.com> <20240227204556.17524-3-eddyz87@gmail.com>
+In-Reply-To: <20240227204556.17524-3-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 28 Feb 2024 15:28:14 -0800
+Message-ID: <CAEf4BzZL3+g0cN9swTGkH4bZgSFm-McUAyYnpcKLTPMENnW9qw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/8] libbpf: tie struct_ops programs to kernel
+ BTF ids, not to local ids
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, void@manifault.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 27, 2024 at 12:46=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> Enforce the following existing limitation on struct_ops programs based
+> on kernel BTF id instead of program-local BTF id:
+>
+>     struct_ops BPF prog can be re-used between multiple .struct_ops &
+>     .struct_ops.link as long as it's the same struct_ops struct
+>     definition and the same function pointer field
+>
+> This allows reusing same BPF program for versioned struct_ops map
+> definitions, e.g.:
+>
+>     SEC("struct_ops/test")
+>     int BPF_PROG(foo) { ... }
+>
+>     struct some_ops___v1 { int (*test)(void); };
+>     struct some_ops___v2 { int (*test)(void); };
+>
+>     SEC(".struct_ops.link") struct some_ops___v1 a =3D { .test =3D foo }
+>     SEC(".struct_ops.link") struct some_ops___v2 b =3D { .test =3D foo }
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 44 ++++++++++++++++++++----------------------
+>  1 file changed, 21 insertions(+), 23 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index abe663927013..c239b75d5816 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1134,8 +1134,27 @@ static int bpf_map__init_kern_struct_ops(struct bp=
+f_map *map)
+>
+>                         if (mod_btf)
+>                                 prog->attach_btf_obj_fd =3D mod_btf->fd;
+> -                       prog->attach_btf_id =3D kern_type_id;
+> -                       prog->expected_attach_type =3D kern_member_idx;
+> +
+> +                       /* if we haven't yet processed this BPF program, =
+record proper
+> +                        * attach_btf_id and member_idx
+> +                        */
+> +                       if (!prog->attach_btf_id) {
+> +                               prog->attach_btf_id =3D kern_type_id;
+> +                               prog->expected_attach_type =3D kern_membe=
+r_idx;
+> +                       }
+> +
+> +                       /* struct_ops BPF prog can be re-used between mul=
+tiple
+> +                        * .struct_ops & .struct_ops.link as long as it's=
+ the
+> +                        * same struct_ops struct definition and the same
+> +                        * function pointer field
+> +                        */
+> +                       if (prog->attach_btf_id !=3D kern_type_id ||
+> +                           prog->expected_attach_type !=3D kern_member_i=
+dx) {
+> +                               pr_warn("struct_ops reloc %s: cannot use =
+prog %s in sec %s with type %u attach_btf_id %u expected_attach_type %u for=
+ func ptr %s\n",
 
-I recently worked on allowing BPF programs to work properly on CLANG_CFI
-enabled kernels [1]. While doing this I found that fentry programs are
-failing to attach because DYNAMIC_FTRACE_WITH_CALL_OPS doesn't work with
-CLANG_CFI.
+Martin already pointed out s/reloc/init_kern/, but I also find "cannot
+use prog" a bit too unactionable. Maybe "invalid reuse of prog"?
+"reuse" is the key here to point out that this program is used at
+least twice, and that in some incompatible way?
 
-Mark told me that the problem is that clang CFI places the type hash
-immediately before any pre-function NOPs, and so where some functions
-have pre-function NOPs and others do not, the type hashes are not at a
-consistent offset (and effectively the functions have different ABIs and
-cannot call one another)
-
-I tried enabling both Clang CFI and -fpatchable-function-entry=4,2 to
-see the behaviour and where this could fail. Here is an example:
-
-This is the disassembly of jump_label_cmp() that has two pre-function nops and the CFI
-hash before them. So, the hash is at (addr - 12).
-
-ffff80008033e9b0:       16c516ce        [kCFI hash for 'static int jump_label_cmp(const void *a, const void *b)']
-ffff80008033e9b4:       d503201f        nop
-ffff80008033e9b8:       d503201f        nop
-ffff80008033e9bc <jump_label_cmp>:
-ffff80008033e9bc:       d503245f        bti     c
-ffff80008033e9c0:       d503201f        nop
-ffff80008033e9c4:       d503201f        nop
-[.....]
-
-The following is the disassembly of the sort_r() function that makes an indirect call to
-jump_label_cmp() but loads the CFI hash from (addr - 4) rather than
-(addr - 12). So, it is loading the nop instruction and not the hash.
-
-ffff80008084e19c <sort_r>:
-[.....]
-0xffff80008084e454 <+696>:   ldur    w16, [x8, #-4] (#-4 here should be #-12)
-0xffff80008084e458 <+700>:   movk    w17, #0x16ce
-0xffff80008084e45c <+704>:   movk    w17, #0x16c5, lsl #16
-0xffff80008084e460 <+708>:   cmp     w16, w17
-0xffff80008084e464 <+712>:   b.eq    0xffff80008084e46c <sort_r+720>  // b.none
-0xffff80008084e468 <+716>:   brk     #0x8228
-0xffff80008084e46c <+720>:   blr     x8
-
-This would cause a cfi exception.
-
-As I haven't spent more time trying to understand this, I am not aware
-how the compiler emits 2 nops before some functions and none for others.
-
-I would propose the following changes to the compiler that could fix this
-issue:
-
-1. The kCFI hash should always be generated at func_addr - 4, this would
-make the calling code consistent.
-
-2. The two(n) nops should be generated before the kCFI hash. We would
-modify the ftrace code to look for these nops at (fun_addr - 12) and
-(func_addr - 8) when CFI is enabled, and (func_addr - 8), (func_addr -
-4) when CFI is disabled.
-
-The generated code could then look like:
-
-ffff80008033e9b0:       d503201f        nop
-ffff80008033e9b4:       d503201f        nop
-ffff80008033e9b8:       16c516ce        kCFI hash
-ffff80008033e9bc <jump_label_cmp>:
-ffff80008033e9bc:       d503245f        bti     c
-ffff80008033e9c0:       d503201f        nop
-ffff80008033e9c4:       d503201f        nop
-[.....]
-
-Note: I am overlooking the alignment requirements here, we might need to
-add another nop above the hash to make sure the top two nops are aligned at 8 bytes.
-
-I am not sure how useful this solution is, looking forward to hear from
-others who know more about this topic.
-
-Thanks,
-Puranjay
-
-[1] https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/ 
+> +                                       map->name, prog->name, prog->sec_=
+name, prog->type,
+> +                                       prog->attach_btf_id, prog->expect=
+ed_attach_type, mname);
+> +                               return -EINVAL;
+> +                       }
+>
+>                         st_ops->kern_func_off[i] =3D kern_data_off + kern=
+_moff;
+>
+> @@ -9409,27 +9428,6 @@ static int bpf_object__collect_st_ops_relos(struct=
+ bpf_object *obj,
+>                         return -EINVAL;
+>                 }
+>
+> -               /* if we haven't yet processed this BPF program, record p=
+roper
+> -                * attach_btf_id and member_idx
+> -                */
+> -               if (!prog->attach_btf_id) {
+> -                       prog->attach_btf_id =3D st_ops->type_id;
+> -                       prog->expected_attach_type =3D member_idx;
+> -               }
+> -
+> -               /* struct_ops BPF prog can be re-used between multiple
+> -                * .struct_ops & .struct_ops.link as long as it's the
+> -                * same struct_ops struct definition and the same
+> -                * function pointer field
+> -                */
+> -               if (prog->attach_btf_id !=3D st_ops->type_id ||
+> -                   prog->expected_attach_type !=3D member_idx) {
+> -                       pr_warn("struct_ops reloc %s: cannot use prog %s =
+in sec %s with type %u attach_btf_id %u expected_attach_type %u for func pt=
+r %s\n",
+> -                               map->name, prog->name, prog->sec_name, pr=
+og->type,
+> -                               prog->attach_btf_id, prog->expected_attac=
+h_type, name);
+> -                       return -EINVAL;
+> -               }
+> -
+>                 st_ops->progs[member_idx] =3D prog;
+>         }
+>
+> --
+> 2.43.0
+>
 
