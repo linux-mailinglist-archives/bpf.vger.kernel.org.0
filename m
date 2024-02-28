@@ -1,103 +1,113 @@
-Return-Path: <bpf+bounces-22878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE3C86B1EE
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 15:38:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE43686B222
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 15:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6119288D31
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 14:38:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CE5BB248BB
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 14:44:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E70115A4A6;
-	Wed, 28 Feb 2024 14:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D76C15B961;
+	Wed, 28 Feb 2024 14:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="eMG73QO+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4Z9GmA0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451E21852
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 14:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E00158D95;
+	Wed, 28 Feb 2024 14:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709131133; cv=none; b=Ov3H6751t0sGi3GDWfNKm+YHhvyUTB9oJsPruZbT3uiIT6sbg7VKfKP4ez2v4JhLPCerTbdvBhKCZabKofWMQ6vh906iz5QxzTxccUzXabG1XM/fLBivd0WLHH38ApwzAw5Kb/awQbXNsK0pCqOhM9VwR0JsG2OcJm8JbHBiyBI=
+	t=1709131425; cv=none; b=FBS1RjeU33IPZQs0Bz725OCa3CxT77XuzOZK30x8LPrgUxp73OTgOSbCFjSD4N1mXCj405Y7BsDPGnRMoBHMVaF1RQkP+wU5Pu3ZtMUjXK4326V3mUYgINOmxg4oe97lpq6P1YCT6RvpuWAl5KTFgdEpXgtZ++TcXreIwlpAWqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709131133; c=relaxed/simple;
-	bh=RMdzcVOTNoBSqeDfKOXSW1mN8QyII4YE+UnJCch+QTk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BGqHqLkatvNCRrMEYMGNc+Rs1xgHk5Bdz8/YDwOC8khb+VmTHe7CV6L11/csDBdyDn40PRslvTCMPPo1AUau3t7iQe4MHyqTNotdWgWBJrhf/2ixzo7D2gwodNmxYQqM8YxjGIVj9gbZRVncMnWEKf4ALJzGJQlmasaDF8TQG8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=eMG73QO+; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412b5a9916eso3973745e9.1
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 06:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1709131130; x=1709735930; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C+1RRfhIt9Zrpn1OWgIdTuReOYXGBIkuKAqm9XOFS+A=;
-        b=eMG73QO++CjVMyr4Mc0RI8AeTh2sVlaoNPx0PIZLeatD8I3K1ZOF7KPCmWDfloVQCo
-         WHw3y8Po6oqM32/NqW3F30Uaq9sRciCUNSTmbb7yDd21JbOqKBH1JFW4iucX+tNH4k8k
-         qJP6gFK20dnyXIEUTzkvGKpHg7gAx3KM5ibpPRKIx1Vwf5D/ckSY8QLB0N8htTUMrt7a
-         Kvk4tmu+PyH5m9rGzsFjvtqPTTBfTNnIa6T+ilK6AihIwfyVBC/dmTukpcfICxM/3hkj
-         JpCmvHjUt5axmagv6VHAGzBPYp5whvvzt8KPwFzcMeeN2h3f0ssa3kdyj2AsDx3csKS3
-         aRcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709131130; x=1709735930;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C+1RRfhIt9Zrpn1OWgIdTuReOYXGBIkuKAqm9XOFS+A=;
-        b=Fy0Di1z3Jx+ndbxXaN/RBNYVWi7WRxEZd50QP731x1RHan2nzAMoqHFdFGD0dM5qlh
-         vemYisaTBF494DYx+/HkkpWZVZ5jR0q61iEXbR+NmM/3U+v0RbyQ+qVUTvFq+lhZHHKd
-         76FkUdgBZ1bAcIxwbHopjCFqlS6mRkO4BWv2GbjHBTb5i9tfEtJLSgPiyIS4YeBwL++J
-         TsDD7hHDCwECry4PBGIleNTcQjy6uEZM4GYHdCAnf/t19U+tk0hfdUMXbLlnzxYn1zGh
-         hIZLQYmtGiVnaqSAoLvLaxlNP4VQeYTpMMwxigmaZnXBNxmmUdr/ioXiVW3uJLV60RLx
-         QDow==
-X-Forwarded-Encrypted: i=1; AJvYcCVslGfsZFZF1SRBGThXJc6bV+vHlGOKpkpNyKbOLsExkzmSFEEs2lrZMSZ37Sv4TtLrms4mmWXgDXJQzeIlUvF/PQwY
-X-Gm-Message-State: AOJu0YwMBUa7Xfz5DHIZfqLDzXbbvI/DZmNqB8udT+1XD1oc80Jum4Yu
-	wO751i2gFo8Dw3uJtzRk5Zy1BnvOCVO1KdaB8t7cEYDU0exDZqyy2MHRCz1LhhE=
-X-Google-Smtp-Source: AGHT+IHSd9E6u7KdaxqaFc+lZHXV0ybU1zDKm9DYZOJtTklnmXLBw/43pmirSKgNA4JZmtMxOoAJCQ==
-X-Received: by 2002:a05:600c:1e0d:b0:412:b84e:91b9 with SMTP id ay13-20020a05600c1e0d00b00412b84e91b9mr160024wmb.8.1709131130680;
-        Wed, 28 Feb 2024 06:38:50 -0800 (PST)
-Received: from ?IPV6:2a02:8011:e80c:0:5379:cc82:ab28:8613? ([2a02:8011:e80c:0:5379:cc82:ab28:8613])
-        by smtp.gmail.com with ESMTPSA id k6-20020a056000004600b0033d87f61613sm14637334wrx.58.2024.02.28.06.38.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 06:38:50 -0800 (PST)
-Message-ID: <ee842834-ea90-4402-8820-66e7c0db1560@isovalent.com>
-Date: Wed, 28 Feb 2024 14:38:49 +0000
+	s=arc-20240116; t=1709131425; c=relaxed/simple;
+	bh=wvEapABnIlz3cWAlJclMlhGCT209K3a/fzamCpEyPdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ajcY4byRkY/3sh/tyiIwNyysZehxSJE8oV03pzV+ASrz3GNRKD6euPbQd1x950byC0Lo+ApIdvAcn5p5A+AJs2K1KctjFflaCPr6RvLjc9sWQl965gYDTqkMSscl1quxAilxJsMaxaC4zyiXi3WWJbj2rDHZzmII8YSdteVbdQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4Z9GmA0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77D85C433C7;
+	Wed, 28 Feb 2024 14:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709131425;
+	bh=wvEapABnIlz3cWAlJclMlhGCT209K3a/fzamCpEyPdQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=n4Z9GmA0bQq97/493YJupgjJBZsDOPLYgiZML8s/f0fQ1rBOqUaSOR7in+Q3338N8
+	 o0Z2vXW1+8p9G14v+gzNL9hzT+MQCc0qRu9UqDdPD9ut88cgy/tp4ojSBggScSh5Xr
+	 V4dfQy6Ev21c5onwhuhpFpoQio/iQzzdIm3RWPVPTCBBA0+Z2hMkQrRQ99zCX+ZpLn
+	 vgeWznAeQ2hElj3Daj7RX5MvNNWnaQx4ionAbDW7p9cPlul2mxdTJMMXyp+lgpp78r
+	 PTGq4TcgNbb/yehJy0dc6eZgk6Kljka29fsGTO0eV3f4D6AiG1JeAKvZfloWAVYMlr
+	 62rumrOhqKlpA==
+Date: Wed, 28 Feb 2024 06:43:43 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>, Yan Zhai <yan@cloudflare.com>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Paolo
+ Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, Simon Horman
+ <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang
+ <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>, Hannes
+ Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <20240228064343.578a5363@kernel.org>
+In-Reply-To: <66a81295-ab6f-41f4-a3da-8b5003634c6a@paulmck-laptop>
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+	<CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+	<d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+	<20240227191001.0c521b03@kernel.org>
+	<66a81295-ab6f-41f4-a3da-8b5003634c6a@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v5 5/6] bpftool: Add an example for struct_ops
- map and shadow type.
-Content-Language: en-GB
-To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: sinquersw@gmail.com, kuifeng@meta.com
-References: <20240227010432.714127-1-thinker.li@gmail.com>
- <20240227010432.714127-6-thinker.li@gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20240227010432.714127-6-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-2024-02-27 01:04 UTC+0000 ~ Kui-Feng Lee <thinker.li@gmail.com>
-> The example in bpftool-gen.8 explains how to use the pointer of the shadow
-> type to change the value of a field of a struct_ops map.
+On Tue, 27 Feb 2024 20:42:24 -0800 Paul E. McKenney wrote:
+> On Tue, Feb 27, 2024 at 07:10:01PM -0800, Jakub Kicinski wrote:
+> > On Tue, 27 Feb 2024 10:32:22 -0800 Paul E. McKenney wrote:  
+> > > The theory is that PREEMPT_RCU kernels have preemption, and get their
+> > > quiescent states that way.  
+> > 
+> > But that doesn't work well enough?
+> > 
+> > Assuming that's the case why don't we add it with the inverse ifdef
+> > condition next to the cond_resched() which follows a few lines down?
+> > 
+> > 			skb_defer_free_flush(sd);
+> > +
+> > +			if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > +				rcu_softirq_qs();
+> > +
+> > 			local_bh_enable();
+> > 
+> > 			if (!repoll)
+> > 				break;
+> > 
+> > 			cond_resched();
+> > 		}
+> > 
+> > We won't repoll majority of the time.  
 > 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> I am not completely clear on what you are proposing, but one complication
+> is that We need preemption disabled across calls to rcu_softirq_qs()
+> and we cannot have preemption disabled across calls to cond_resched().
 
+I was thinking of using rcu_all_qs(), like cond_resched() does.
+Not sure how it compares in terms of functionality and cost.
 
-Thanks for this, and for addressing my previous comments!
+> Another complication is that although CONFIG_PREEMPT_RT kernels are
+> built with CONFIG_PREEMPT_RCU, the reverse is not always the case.
+> And if we are not repolling, don't we have a high probability of doing
+> a voluntary context when we reach napi_thread_wait() at the beginning
+> of that loop?
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Very much so, which is why adding the cost of rcu_softirq_qs()
+for every NAPI run feels like an overkill.
 
