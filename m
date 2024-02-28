@@ -1,123 +1,322 @@
-Return-Path: <bpf+bounces-22913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC3686B82A
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 20:32:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC8F86B86F
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 20:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898D61F25299
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 19:32:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CD2328909A
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 19:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76BF74432;
-	Wed, 28 Feb 2024 19:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37606FCE0;
+	Wed, 28 Feb 2024 19:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hibym8Z+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJjVfSii"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A07374415
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 19:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728BA5E08C;
+	Wed, 28 Feb 2024 19:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709148716; cv=none; b=nSJgF6+rDfhn0wgmp/nGHwPfxvvZs8K5vO+yeAav/KNy6+yjyFcOZ1F+ZzeGHpcHrUysTIFV2m+qMajlQJHZ149h9xgK00VKhXkmaX1YiMd7YeGi/PnsRVg2YqAybgZILawJFGr7xsy0LSEZufvni6UgCQppAkcH4oAZPXI11d4=
+	t=1709149165; cv=none; b=T/qc6Wj/dBqZq+Ehs1pRmAKqCNPuBwcDKUtad5l44GSF3nittbX5CrjXGRli5EvYsUbUzvXIV4f0lZLmaHEQpTTFwlz2tQBhPQVQs6vId6/NcTIbYP7oY+KFaexJ1T7L7NQCd/LF5+abZP42rHsN/ZLzdmo8RUOnZW4ghIU7pwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709148716; c=relaxed/simple;
-	bh=0iwDGUUMPAy1W3qW85y/edohYb/+zl+hRDFXRJU9ZkU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YFEl38jBldV5au9PHHcxSIBD+tu1LxInZ3zF2VFYke7T2dhiLQK9dQvc3bDOe+QdaVD1pwyCZU8dCFCXEb8IJ8ZNfI6aXguRDNHlo4I8EiBvibt0a1M450VAQv8/rIAA0Riiv4zBJHcHKKYY5faRsla4+1pv703f1q2QTsiW0qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hibym8Z+; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512b700c8ebso41359e87.0
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 11:31:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709148713; x=1709753513; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AtR8suuqO7cMg2afwBP8yIdquuD8eUBXZkXdUGTYBfs=;
-        b=hibym8Z+Y0GYbS51iWRsRMWhJ+Wy57zW0YVf/OxfOcmvxZXgeWv5oaFUBFQFJhlnc9
-         UVwc2NgpN8GLrlQYQu3hjahVWOtrRBujXIIkXXI3wR/lWUi0eZhPzp8wPHxG6LcsItHI
-         1gB8lmcBRatdAciCK4ThSO+skbtVq3Dw1XjJYyYf8mUx2WPce9pb67FNL7QfSt4wuY6A
-         VaV6ZOS5CTgqvjKjVlyfTvHivqzPnlhnNf01Rp2sK2BjiG7V5nTQ0j+IKASsc+ScZ/oj
-         /Vm0qdk+qscD/B3iaQnCSmt5SIAZtdutRwuwTW3Kjfnw/7V/Bm/+beM5FqsR6/qH/dTl
-         MufA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709148713; x=1709753513;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AtR8suuqO7cMg2afwBP8yIdquuD8eUBXZkXdUGTYBfs=;
-        b=OnEEH1/ouN3+8rhLLZ48SHi4dqpTjvmqKAHL6ApiVXI/B45c6I0F6LmjbvPJzUHkku
-         O0Ozi5TlVAHnMGH8ow7BWkcdsmWsZfp+Nzn231t/EJzJ5kHqvLmneumdBIgXbH8O8kko
-         ksrBFYhMYb4LZ7HI2Ll4UKvOYIzuMniaNacfjcd8SI6YD2D7hLiw1JMhAMAop2Yjpt7m
-         z1y8qPrDLmSj7JLwyIMauOG7r1yaajsI3UUHYrELNDOE48dJCj3h5XsTIHiZ20aXALK0
-         AcAUZl5KXz2OSDrQSZNFu7oUIW1Fib3fmSSXTAq2kjW0Yvfkbol7KqlSmnrYMCfhn7CL
-         k3Ag==
-X-Gm-Message-State: AOJu0YxG/Yge2X3MNq9CFHmD4zEZhOf4gcSQy3cqKiKsIX2cCTu/f/Ar
-	Xnu8/9BUPz88frx5i+5libi4vL1yyK8eL18zErBT9/fpqTt/xGl3
-X-Google-Smtp-Source: AGHT+IHrgdF/LvBTPCW3Z+bxFRFefW8z+/AuK9UyCX3h745J1HulCHbI9JrynH2YsMuM6BXO/g65Uw==
-X-Received: by 2002:a19:a408:0:b0:512:fc30:51e7 with SMTP id q8-20020a19a408000000b00512fc3051e7mr416154lfc.16.1709148712475;
-        Wed, 28 Feb 2024 11:31:52 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q13-20020ac2514d000000b005131434454bsm14539lfd.228.2024.02.28.11.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 11:31:52 -0800 (PST)
-Message-ID: <05b80dc30b672df1af75ce09f0c8cb7196a07193.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 6/8] selftests/bpf: test autocreate behavior
- for struct_ops maps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: David Vernet <void@manifault.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
-Date: Wed, 28 Feb 2024 21:31:50 +0200
-In-Reply-To: <20240228182949.GH148327@maniforge>
-References: <20240227204556.17524-1-eddyz87@gmail.com>
-	 <20240227204556.17524-7-eddyz87@gmail.com>
-	 <20240228182949.GH148327@maniforge>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1709149165; c=relaxed/simple;
+	bh=gFHujCPhXxiKRFVHgKtx1CZM8LTurcNBRJLLjFO5tro=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=EKNYEGh9Sze/hFVvsjLKReBuUlTZ4iCId6R/uWpFS5J/a+LhG0oRmKA9mucyplaH9/5rNLr+L0sstdC8XOWdkWbDrmLn9tnceEoUzyf9jxRWkD0f3X8XBpN2dNNspWEjyX9VRmKCSyRdF8mf3o0uS9GBZOC5VZBd4YnMTtVQ3EQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJjVfSii; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DA20C433F1;
+	Wed, 28 Feb 2024 19:39:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709149165;
+	bh=gFHujCPhXxiKRFVHgKtx1CZM8LTurcNBRJLLjFO5tro=;
+	h=Date:From:To:Cc:Subject:From;
+	b=JJjVfSiiEwXxcn1BwJ/l6j32/p53Yb5rJKllPhc6i1rXgHPREu0NZAPMWNmxgrbHN
+	 wf1E0qX7PIFErQGr0CkPS9PygeNtGKdCt4pbA5NwdIoDm4We7N9vhjPq1JLx/uQpdV
+	 EZU6coEAxmr1GkBbl+OBVVpnNhSuJV7XJbmMphcGoL6rYy2BChnX1d3jD5QDVWwoz/
+	 0WWNNQDM61QH2ibJ5GBnFyRr+zTsxxy2PnwMOPWDywJ7Vp3fI7coi/eMdtMNgBCU/X
+	 h16sD+UMqdTRq+rnlH+Q+4ni4Bqld6uxQgkNgYPgRwqBi7fXQ/mZpdSCSdesY9SLT4
+	 6EaAPLl/DoCxw==
+Date: Wed, 28 Feb 2024 16:39:21 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: dwarves@vger.kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Jan Engelhardt <jengelh@inai.de>,
+	Domenico Andreoli <domenico.andreoli@linux.com>,
+	Matthias Schwarzott <zzam@gentoo.org>,
+	Viktor Malik <vmalik@redhat.com>,
+	Eduard Zingerman <eddyz87@gmail.com>, J B <jb.1234abcd@gmail.com>
+Subject: ANNOUNCE: pahole v1.26 (more holes, --bpf_features, --contains_enum)
+Message-ID: <YbC5MC+h+PkDZten@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url: http://acmel.wordpress.com
 
-On Wed, 2024-02-28 at 12:29 -0600, David Vernet wrote:
+Hi,
+ 
+	The v1.26 release of pahole and its friends is out, showing more
+holes (the ones in contained types) the ability to express the BTF
+features to encode, to simplify the addition of new BTF features in the
+Linux kernel build infrastructure, a way to find the enumeration with
+some enumerator and various fixes.
 
-[...]
+Main git repo:
 
-> > +static void cant_load_full_object(void)
-> > +{
-> > +	struct struct_ops_autocreate *skel;
-> > +	int err;
-> > +
-> > +	old_print_cb =3D libbpf_set_print(print_cb);
-> > +	skel =3D struct_ops_autocreate__open_and_load();
->=20
-> Optional suggestion: It might be useful to add a comment here explaining
-> exactly why we expect this to fail? Something like:
->=20
-> 	/* The testmod_2 map BTF type (struct bpf_testmod_ops___v2) doesn't
-> 	 * match the BTF of the actual struct bpf_testmod_ops defined in the
-> 	 * kernel, so we should fail to load it if we don't disable autocreate
-> 	 * for the map.
-> 	 */
->=20
-> Feel free to ignore -- I recognize that some might just consider that
-> unnecessary noise.
+   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
 
-I will add this comment, agree that it helps when tests explain what happen=
-s.
+Mirror git repo:
 
-[...]
+   https://github.com/acmel/dwarves.git
+
+tarball + gpg signature:
+
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.26.tar.xz
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.26.tar.bz2
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.26.tar.sign
+
+	Thanks a lot to all the contributors and distro packagers, you're on the
+CC list, I appreciate a lot the work you put into these tools,
+
+Best Regards,
+
+- Arnaldo
+
+pahole:
+
+- When expanding types using 'pahole -E' do it for union and struct typedefs and for enums too.
+
+  E.g: that 'state' field in 'struct module':
+
+    $ pahole module | head
+    struct module {
+            enum module_state          state;                /*     0     4 */
+
+            /* XXX 4 bytes hole, try to pack */
+
+            struct list_head           list;                 /*     8    16 */
+            char                       name[56];             /*    24    56 */
+            /* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
+            struct module_kobject      mkobj;                /*    80    96 */
+            /* --- cacheline 2 boundary (128 bytes) was 48 bytes ago --- */
+    $
+
+  now gets expanded:
+
+    $ pahole -E module | head
+    struct module {
+            enum module_state {
+                    MODULE_STATE_LIVE     = 0,
+                    MODULE_STATE_COMING   = 1,
+                    MODULE_STATE_GOING    = 2,
+                    MODULE_STATE_UNFORMED = 3,
+            } state; /*     0     4 */
+
+            /* XXX 4 bytes hole, try to pack */
+
+    $
+
+- Print number of holes, bit holes and bit paddings in class member types.
+
+  Doing this recursively to show how much waste a complex data structure has
+  is something that still needs to be done, there were the low hanging fruits
+  on the path to having that feature.
+
+  For instance, for 'struct task_struct' in the Linux kernel we get this
+  extra info:
+
+    --- task_struct.before.c      2024-02-09 11:38:39.249638750 -0300
+    +++ task_struct.after.c       2024-02-09 16:19:34.221134835 -0300
+    @@ -29,6 +29,12 @@
+
+          /* --- cacheline 2 boundary (128 bytes) --- */
+          struct sched_entity        se;                   /*   128   256 */
+    +
+    +     /* XXX last struct has 3 holes */
+    +
+          /* --- cacheline 6 boundary (384 bytes) --- */
+          struct sched_rt_entity     rt;                   /*   384    48 */
+          struct sched_dl_entity     dl;                   /*   432   224 */
+    +
+    +       /* XXX last struct has 1 bit hole */
+    +
+          /* --- cacheline 10 boundary (640 bytes) was 16 bytes ago --- */
+          const struct sched_class  * sched_class;         /*   656     8 */
+          struct rb_node             core_node;            /*   664    24 */
+    @@ -100,6 +103,9 @@
+          /* --- cacheline 35 boundary (2240 bytes) was 16 bytes ago --- */
+          struct list_head           tasks;                /*  2256    16 */
+          struct plist_node          pushable_tasks;       /*  2272    40 */
+    +
+    +     /* XXX last struct has 1 hole */
+    +
+          /* --- cacheline 36 boundary (2304 bytes) was 8 bytes ago --- */
+          struct rb_node             pushable_dl_tasks;    /*  2312    24 */
+          struct mm_struct *         mm;                   /*  2336     8 */
+    @@ -172,6 +178,9 @@
+          /* XXX last struct has 4 bytes of padding */
+
+          struct vtime               vtime;                /*  2744    48 */
+    +
+    +     /* XXX last struct has 1 hole */
+    +
+          /* --- cacheline 43 boundary (2752 bytes) was 40 bytes ago --- */
+          atomic_t                   tick_dep_mask;        /*  2792     4 */
+
+    @@ -396,9 +405,12 @@
+          /* --- cacheline 145 boundary (9280 bytes) --- */
+          struct thread_struct       thread __attribute__((__aligned__(64))); /*  9280  4416 */
+
+    +       /* XXX last struct has 1 hole, 1 bit hole */
+    +
+          /* size: 13696, cachelines: 214, members: 262 */
+          /* sum members: 13518, holes: 21, sum holes: 162 */
+          /* sum bitfield members: 82 bits, bit holes: 2, sum bit holes: 46 bits */
+          /* member types with holes: 4, total: 6, bit holes: 2, total: 2 */
+          /* paddings: 6, sum paddings: 49 */
+          /* forced alignments: 2, forced holes: 2, sum forced holes: 88 */
+     };
+
+- Introduce --contains_enumerator=ENUMERATOR_NAME:
+
+  E.g.:
+
+      $ pahole --contains_enumerator S_VERSION
+      enum file_time_flags {
+             S_ATIME   = 1,
+             S_MTIME   = 2,
+             S_CTIME   = 4,
+             S_VERSION = 8,
+      }
+      $
+
+  The shorter form --contains_enum is also accepted.
+
+- Fix pretty printing when using DWARF, where sometimes the class (-C) and a specified "type_enum",
+  may not be present on the same CU, so wait till both are found.
+
+  Now this example that reads the 'struct perf_event_header' and 'enum perf_event_type'
+  from the DWARF info in ~/bin/perf to pretty print records in the perf.data file works
+  just like when using type info from BTF in ~/bin/perf:
+
+      $ pahole -F dwarf -V ~/bin/perf \
+                --header=perf_file_header \
+                --seek_bytes '$header.data.offset' \
+                --size_bytes='$header.data.size' \
+                -C 'perf_event_header(sizeof,type,type_enum=perf_event_type,filter=type==PERF_RECORD_MMAP2)' \
+                --prettify perf.data --count 1
+      pahole: sizeof_operator for 'perf_event_header' is 'size'
+      pahole: type member for 'perf_event_header' is 'type'
+      pahole: type enum for 'perf_event_header' is 'perf_event_type'
+      pahole: filter for 'perf_event_header' is 'type==PERF_RECORD_MMAP2'
+      pahole: seek bytes evaluated from --seek_bytes=$header.data.offset is 0x3f0
+      pahole: size bytes evaluated from --size_bytes=$header.data.size is 0xd10
+      // type=perf_event_header, offset=0xc20, sizeof=8, real_sizeof=112
+      {
+            .header = {
+                    .type = PERF_RECORD_MMAP2,
+                    .misc = 2,
+                    .size = 112,
+            },
+            .pid = 1533617,
+            .tid = 1533617,
+            .start = 94667542700032,
+            .len = 90112,
+            .pgoff = 16384,{
+                    .maj = 0,
+                    .min = 33,
+                    .ino = 35914923,
+                    .ino_generation = 26870,
+            },{
+                    .build_id_size = 0,
+                    .__reserved_1 = 0,
+                    .__reserved_2 = 0,
+                    .build_id = { 33, 0, 0, 0, -85, 4, 36, 2, 0, 0, 0, 0, -10, 104, 0, 0, 0, 0, 0, 0 },
+            },
+            .prot = 5,
+            .flags = 2,
+            .filename = "/usr/bin/ls",
+      },
+      $
+
+DWARF loader:
+
+- Add support for DW_TAG_constant, first seen in Go DWARF.
+
+- Fix loading DW_TAG_subroutine_type generated by the Go compiler, where it may
+  have a DW_AT_byte_size. Go DWARF. And pretty print it as if
+  it was from C, this helped in writing BPF programs to attach to Go binaries, using
+  uprobes.
+
+BTF loader:
+
+- Fix loading of 32-bit signed enums.
+
+BTF encoder:
+
+- Add 'pahole --btf_features' to allow consumers to specify an opt-in set of
+  features they want to use in BTF encoding.
+
+  Supported features are a comma-separated combination of
+
+          encode_force    Ignore invalid symbols when encoding BTF.
+          var             Encode variables using BTF_KIND_VAR in BTF.
+          float           Encode floating-point types in BTF.
+          decl_tag        Encode declaration tags using BTF_KIND_DECL_TAG.
+          type_tag        Encode type tags using BTF_KIND_TYPE_TAG.
+          enum64          Encode enum64 values with BTF_KIND_ENUM64.
+          optimized_func  Encode representations of optimized functions
+                          with suffixes like ".isra.0" etc
+          consistent_func Avoid encoding inconsistent static functions.
+                          These occur when a parameter is optimized out
+                          in some CUs and not others, or when the same
+                          function name has inconsistent BTF descriptions
+                          in different CUs.
+
+  Specifying "--btf_features=all" is the equivalent to setting all of the
+  above.  If pahole does not know about a feature specified in
+  --btf_features it silently ignores it.
+
+  The --btf_features can either be specified via a single comma-separated
+  list
+          --btf_features=enum64,float
+
+  ...or via multiple --btf_features values
+
+          --btf_features=enum64 --btf_features=float
+
+  These properties allow us to use the --btf_features option in the kernel
+  scripts/pahole_flags.sh script to specify the desired set of BTF
+  features.
+
+  If a feature named in --btf_features is not present in the version of
+  pahole used, BTF encoding will not complain.  This is desired because it
+  means we no longer have to tie new features to a specific pahole
+  version.
+
+  Use --btf_features_strict to change that behaviour and bail out if one of
+  the requested features isn't present.
+
+  To see the supported features, use:
+
+    $ pahole --supported_btf_features
+    encode_force,var,float,decl_tag,type_tag,enum64,optimized_func,consistent_func
+    $
+
+btfdiff:
+
+- Parallelize loading BTF and DWARF, speeding up a bit.
+
+- Do type expansion to cover "private" types and enumerations.
 
