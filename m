@@ -1,354 +1,241 @@
-Return-Path: <bpf+bounces-22925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19A4F86B9B1
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 22:13:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02F286B9B7
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 22:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 755C61F262FB
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 21:13:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80A7828A49D
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 21:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84BA7003A;
-	Wed, 28 Feb 2024 21:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A9F86278;
+	Wed, 28 Feb 2024 21:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aCH830rX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fr5BBDME"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91FC86264;
-	Wed, 28 Feb 2024 21:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E1C86241
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 21:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709154795; cv=none; b=e7VyAF7ywEU5a+smTueFcIzE8/gWe1Ubt8BWfKW8ANm6visRP3Vt7YRVP3N1w0IP47rYFoRkAewbPLQH21Oa11gZF5IZK8aALM269bqjCUR4QaaPc89mof0lVGIrJZd0IG5CFszDQeFiJaJAtAAwtKNBOIns8J6oiOLwLBhDu3Y=
+	t=1709155008; cv=none; b=ZfVKyWAcpSAm9YPUgpL7i9Gh+X5zSFTp6AzmawTfhDxD1u0Am92YLqRyX5xA6E1eE6zc7xLhXAL5Q8gsbh76WUwFupKc83/tveK0AfgR6yCM+CNrPak+xKv4URzbEqt+Rvqzm7CDCozQnzKDZbXoYiSZq10eAlzTD6m8+eMOB8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709154795; c=relaxed/simple;
-	bh=ZRuRIsMpD/qNiI4RajYL+i1p5TZOP2DQdTRWpedwetE=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=dydvrZpRTAbjHl0S4NZCHMM0J+LCsfdoS/ucbHIJnIQkaWTt5LtZCsHH91K6GO5DtFWRNnzt/OEFKfdrD+iWQKh4ZJestDxw3+afRqFy4VGlfouyA9Qj2y/xjLIcOco50RuIHjcoFegdWMQnfiAFPdQrce1COaJAATyVjFD+gMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aCH830rX; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1709155008; c=relaxed/simple;
+	bh=vyolngf3BkVcmWMh++CdSxfIys8wZSrpZFO93NGzvRU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gvXSLutuE2lTOVi9aWHs23pZkGzCAWUzgtn3lkUMnl34cwQZQ5j2buKuGQGwfOPH4TFhXK/vUetcUHWOV/QGHVd5QgWLCddFnJKJi2WLkN3yU0ELR+QFzZXNUJDd6BMEitaExoL/qq+3TcjOJaAuZGpR+jv+vK9AvFN5VhzPZag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fr5BBDME; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-299d3b09342so101532a91.2;
-        Wed, 28 Feb 2024 13:13:13 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51320ca689aso144253e87.2
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 13:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709154793; x=1709759593; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GY/HrwWaBwZhe3j8OEXaoWSbdjtDuL8LBjhse5O8BB0=;
-        b=aCH830rXxGyZDRUCLwZf3/rqQMpRSTq3vYHToFb8qKNTCHgYFBkcDSHDP0uOFM1W7f
-         Dw6ziIMlVfM+2JYtMwUyWmUyN7e7FEH0TuBgsoBE6HEoIqXZxuvEScWfb2LZ+Ft0+F59
-         j+Y60OrVE8iFKTq0m3zwLnnq/F0x+D/lx4de441NhmYNEEge+ISchkg3JOZ/FIdTqW1B
-         pNoSMgHRe2eOOX/eeS9zcW2FGOoKDMD1EzctWuJRXO53ZZ5BT9XojMvFoG8rkaZp5DvJ
-         xSu6ildFBkr+P01c0hJIQOrdLIVA3cGBuqy0XDvf6G00t3Vr6MIqJy7jiuJSi0E3cbsa
-         GfkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709154793; x=1709759593;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+        d=gmail.com; s=20230601; t=1709155005; x=1709759805; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GY/HrwWaBwZhe3j8OEXaoWSbdjtDuL8LBjhse5O8BB0=;
-        b=V3YWEEZp124LUI000AcnPUF1S3/YFfx4nLNGA5Z8GfRXy/+LkKfsrnDVqG9kEFvXGq
-         /5CINyaexTau4DikeOfdiMZJS/WziD3N+wxbKZufx0ei/pGSD0izQ0E8oDfVYXyREOif
-         MPHI8kYQvs95F8s2TahomVim68WcnJDKAmGLIfq74mSmcRl5YpenxviitRjp2XDIvNrl
-         LgMgEldGmdYGBETGna6Tz3Rtp0OFahyEtsOFmLUiTjcBEYjmrbGPZ+a5nhVYETLtmbQb
-         3TUjYK/VXnpFoc4nGtMRuCJ5fMkwpIKpSVv1JZ6ZnOtXe5QoTiQeyrqvYpm8lQWAmaSx
-         r1JA==
-X-Forwarded-Encrypted: i=1; AJvYcCVL+9Ank4pPSxeldMpcrrL4gzvzVNxEpVUmylgfHGLzs+y0xoLdMfAcgShou9j8sWFGv3Cet9NlZ4TT/4u1mWVJREMi
-X-Gm-Message-State: AOJu0YyY6YLeDPxlt8uhrbdvFs8pIiVBPdeQH9mzITJt3Itv06yu215W
-	o7u9GYk2XJWvr2ofG+6IhAyRSZUzH9syrBv1bRNAIS+gv4Aad+3g
-X-Google-Smtp-Source: AGHT+IFI16FqIxaWxFZ9p9cpjTVJZDX3eJ9SDb+uSqYhBrOJRdqE7pBlVEhW0kgSI5ltMCGUIQYafA==
-X-Received: by 2002:a17:90b:795:b0:29a:8b5a:892a with SMTP id l21-20020a17090b079500b0029a8b5a892amr331490pjz.39.1709154792819;
-        Wed, 28 Feb 2024 13:13:12 -0800 (PST)
-Received: from localhost ([98.97.43.160])
-        by smtp.gmail.com with ESMTPSA id s12-20020a17090ad48c00b0029aac9c523fsm2131pju.47.2024.02.28.13.13.11
+        bh=PbNozaNCl24q3K8rxQOyKyQFDVm9XnuhjKTDhB/ZZFM=;
+        b=Fr5BBDMEmW9yUtMBqMP+/uC9sU6RB89L3edXPMntUagBZALbicJsanPXIHy7nPUx6c
+         iMApUygGoH+BYbczaq2LFXjoc6y36jV+puMRBwqe4KzV0dkaT5DKyUBm0ISTEwwNAA60
+         D7pb5setpIRMipilUBGBnddRfdXIP3kfAsNkXSdOXE5v6TKPWq/Qi5t6OdD2fw8fi7MR
+         Cgkbf8FBNq5KcjbLvT4hYPDnYzm0Egb+UlUR/DQhNI9CD/ReUxE9zQY8Y0biMT1kAr5i
+         61TzPqXvd3TBlPPOSvcblHvZQ9GWRJOuBpZneIQ0J4yRPqcJPqn4V1omOWsZZ+iuc7I6
+         ARpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709155005; x=1709759805;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PbNozaNCl24q3K8rxQOyKyQFDVm9XnuhjKTDhB/ZZFM=;
+        b=mwkC+8JB27PrXCzihXYgbEDtFJqImlmwNYshH6zPMo9Y0Xw0dSmBCidPe4tpdTLloQ
+         +vnQ23+JaMiOIFr9uaV1Hndp/he9zfnG8lhQzug/6aFnRTF3ulKs5CRE0Hqryn/f4y1u
+         ZdBViTsE1W2+lBRMUkgX5/Hmq2Qn075qgzQbhUsIt8ZhPgfW8kSL/9KTM4auXDCBPqJB
+         GWDaBp2TJmgikhx3m2lrwenMTmit/434oS2F+G1x+rpu5YM7ttbmSPJsgJP4c5nBTqEH
+         bPxfW9hzcWJxYtoMpCPtbcvR3OGQ2sCKL+IGuPh1fAIAYyZrrReHBxGSphqSauEBx5QD
+         eM8g==
+X-Gm-Message-State: AOJu0Yxv61dVlR7SS45CMAqNAOIVt6hjNemZAN8H5KxpOYkT5tdyQaYU
+	2rj7epiSPML4Awu2FiuMmlcMNhhIscVO3KC//o6AIByK+MaQiGyn
+X-Google-Smtp-Source: AGHT+IGD5xUJJG/wb0CJeXqPCvdogr1B5J3f0QWn4p70YYzVcgRg4njVkXds0NkbK4dzpmLW1mvl/g==
+X-Received: by 2002:a05:6512:250f:b0:512:f679:665b with SMTP id be15-20020a056512250f00b00512f679665bmr134318lfb.42.1709155004977;
+        Wed, 28 Feb 2024 13:16:44 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id v3-20020a056512048300b005131cacde5esm40467lfq.249.2024.02.28.13.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 13:13:12 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:13:08 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jamal Hadi Salim <jhs@mojatatu.com>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: netdev@vger.kernel.org, 
- deb.chatterjee@intel.com, 
- anjali.singhai@intel.com, 
- namrata.limaye@intel.com, 
- tom@sipanda.io, 
- mleitner@redhat.com, 
- Mahesh.Shirshyad@amd.com, 
- Vipin.Jain@amd.com, 
- tomasz.osinski@intel.com, 
- jiri@resnulli.us, 
- xiyou.wangcong@gmail.com, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- vladbu@nvidia.com, 
- horms@kernel.org, 
- khalidm@nvidia.com, 
- toke@redhat.com, 
- daniel@iogearbox.net, 
- victor@mojatatu.com, 
- pctammela@mojatatu.com, 
- dan.daly@intel.com, 
- andy.fingerhut@gmail.com, 
- chris.sommers@keysight.com, 
- mattyk@nvidia.com, 
- bpf@vger.kernel.org
-Message-ID: <65dfa1e4aee1b_2beb32081c@john.notmuch>
-In-Reply-To: <CAM0EoMnMrOAZ1iGocDDhVmoeY33fxZjiUEQc4yp0KJj8nASrAA@mail.gmail.com>
-References: <20240225165447.156954-1-jhs@mojatatu.com>
- <65df6935db67e_2a12e2083b@john.notmuch>
- <CAM0EoMnMrOAZ1iGocDDhVmoeY33fxZjiUEQc4yp0KJj8nASrAA@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 00/15] Introducing P4TC (series 1)
+        Wed, 28 Feb 2024 13:16:44 -0800 (PST)
+Message-ID: <27ec4223c14109a28422e8910232be157bf258d3.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: track find_equal_scalars history on
+ per-instruction level
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev,  sunhao.th@gmail.com
+Date: Wed, 28 Feb 2024 23:16:43 +0200
+In-Reply-To: <CAEf4BzYwoFN8GzdWt+6Avbh1jT5LoybOUVh=C-8=dX8H75J_+Q@mail.gmail.com>
+References: <20240222005005.31784-1-eddyz87@gmail.com>
+	 <20240222005005.31784-3-eddyz87@gmail.com>
+	 <CAEf4BzYwoFN8GzdWt+6Avbh1jT5LoybOUVh=C-8=dX8H75J_+Q@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 
-Jamal Hadi Salim wrote:
-> On Wed, Feb 28, 2024 at 12:11=E2=80=AFPM John Fastabend
-> <john.fastabend@gmail.com> wrote:
-> >
-> > Jamal Hadi Salim wrote:
-> > > This is the first patchset of two. In this patch we are submitting =
-15 which
-> > > cover the minimal viable P4 PNA architecture.
-> > >
-> > > __Description of these Patches__
-> > >
-> > > Patch #1 adds infrastructure for per-netns P4 actions that can be c=
-reated on
-> > > as need basis for the P4 program requirement. This patch makes a sm=
-all incision
-> > > into act_api. Patches 2-4 are minimalist enablers for P4TC and have=
- no
-> > > effect the classical tc action (example patch#2 just increases the =
-size of the
-> > > action names from 16->64B).
-> > > Patch 5 adds infrastructure support for preallocation of dynamic ac=
-tions.
-> > >
-> > > The core P4TC code implements several P4 objects.
-> > > 1) Patch #6 introduces P4 data types which are consumed by the rest=
- of the code
-> > > 2) Patch #7 introduces the templating API. i.e. CRUD commands for t=
-emplates
-> > > 3) Patch #8 introduces the concept of templating Pipelines. i.e CRU=
-D commands
-> > >    for P4 pipelines.
-> > > 4) Patch #9 introduces the action templates and associated CRUD com=
-mands.
-> > > 5) Patch #10 introduce the action runtime infrastructure.
-> > > 6) Patch #11 introduces the concept of P4 table templates and assoc=
-iated
-> > >    CRUD commands for tables.
-> > > 7) Patch #12 introduces runtime table entry infra and associated CU=
- commands.
-> > > 8) Patch #13 introduces runtime table entry infra and associated RD=
- commands.
-> > > 9) Patch #14 introduces interaction of eBPF to P4TC tables via kfun=
-c.
-> > > 10) Patch #15 introduces the TC classifier P4 used at runtime.
-> > >
-> > > Daniel, please look again at patch #15.
-> > >
-> > > There are a few more patches (5) not in this patchset that deal wit=
-h test
-> > > cases, etc.
-> > >
-> > > What is P4?
-> > > -----------
-> > >
-> > > The Programming Protocol-independent Packet Processors (P4) is an o=
-pen source,
-> > > domain-specific programming language for specifying data plane beha=
-vior.
-> > >
-> > > The current P4 landscape includes an extensive range of deployments=
-, products,
-> > > projects and services, etc[9][12]. Two major NIC vendors, Intel[10]=
- and AMD[11]
-> > > currently offer P4-native NICs. P4 is currently curated by the Linu=
-x
-> > > Foundation[9].
-> > >
-> > > On why P4 - see small treatise here:[4].
-> > >
-> > > What is P4TC?
-> > > -------------
-> > >
-> > > P4TC is a net-namespace aware P4 implementation over TC; meaning, a=
- P4 program
-> > > and its associated objects and state are attachend to a kernel _net=
-ns_ structure.
-> > > IOW, if we had two programs across netns' or within a netns they ha=
-ve no
-> > > visibility to each others objects (unlike for example TC actions wh=
-ose kinds are
-> > > "global" in nature or eBPF maps visavis bpftool).
-> >
-> > [...]
-> >
-> > Although I appreciate a good amount of work went into building above =
-I'll
-> > add my concerns here so they are not lost. These are architecture con=
-cerns
-> > not this line of code needs some tweak.
-> >
-> >  - It encodes a DSL into the kernel. Its unclear how we pick which DS=
-L gets
-> >    pushed into the kernel and which do not. Do we take any DSL folks =
-can code
-> >    up?
-> >    I would prefer a lower level  intermediate langauge. My view is th=
-is is
-> >    a lesson we should have learned from OVS. OVS had wider adoption a=
-nd
-> >    still struggled in some ways my belief is this is very similar to =
-OVS.
-> >    (Also OVS was novel/great at a lot of things fwiw.)
-> >
-> >  - We have a general purpose language in BPF that can implement the P=
-4 DSL
-> >    already. I don't see any need for another set of code when the end=
- goal
-> >    is running P4 in Linux network stack is doable. Typically we rejec=
-t
-> >    duplicate things when they don't have concrete benefits.
-> >
-> >  - P4 as a DSL is not optimized for general purpose CPUs, but
-> >    rather hardware pipelines. Although it can be optimized for CPUs i=
-ts
-> >    a harder problem. A review of some of the VPP/DPDK work here is us=
-eful.
-> >
-> >  - P4 infrastructure already has a p4c backend this is adding another=
- P4
-> >    backend instead of getting the rather small group of people to wor=
-k on
-> >    a single backend we are now creating another one.
-> >
-> >  - Common reasons I think would justify a new P4 backend and implemen=
-tation
-> >    would be: speed efficiency, or expressiveness. I think this
-> >    implementation is neither more efficient nor more expressive. Conc=
-rete
-> >    examples on expressiveness would be interesting, but I don't see a=
-ny.
-> >    Loops were mentioned once but latest kernels have loop support.
-> >
-> >  - The main talking point for many slide decks about p4tc is hardware=
+On Wed, 2024-02-28 at 11:58 -0800, Andrii Nakryiko wrote:
+[...]
 
-> >    offload. This seems like the main benefit of pushing the P4 DSL in=
-to the
-> >    kernel. But, we have no hw implementation, not even a vendor stepp=
-ing up
-> >    to comment on this implementation and how it will work for them. H=
-W
-> >    introduces all sorts of interesting problems that I don't see how =
-we
-> >    solve in this framework. For example a few off the top of my head:=
-
-> >    syncing current state into tc, how does operator program tc inside=
-
-> >    constraints, who writes the p4 models for these hardware devices, =
-do
-> >    they fit into this 'tc' infrastructure, partial updates into hardw=
-are
-> >    seems unlikely to work for most hardware, ...
-> >
-> >  - The kfuncs are mostly duplicates of map ops we already have in BPF=
- API.
-> >    The motivation by my read is to use netlink instead of bpf command=
-s. I
-> >    don't agree with this, optimizing for some low level debug a devel=
-oper
-> >    uses is the wrong design space. Actual users should not be deployi=
-ng
-> >    this via ssh into boxes. The workflow will not scale and really we=
- need
-> >    tooling and infra to land P4 programs across the network. This is =
-orders
-> >    of more pain if its an endpoint solution and not a middlebox/switc=
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.=
 h
-> >    solution. As a switch solution I don't see how p4tc sw scales to e=
-ven TOR
-> >    packet rates. So you need tooling on top and user interact with th=
-e
-> >    tooling not the Linux widget/debugger at the bottom.
-> >
-> >  - There is no performance analysis: The comment was functionality be=
-fore
-> >    performance which I disagree with. If it was a first implementatio=
-n and
-> >    we didn't have a way to do P4 DSL already than I might agree, but =
-here
-> >    we have an existing solution so it should be at least as good and =
-should
-> >    be better than existing backend. A software datapath adoption is g=
-oing
-> >    to be critically based on performance. I don't see taking even a 5=
-% hit
-> >    when porting over to P4 from existing datapath.
-> >
-> > Commentary: I think its 100% correct to debate how the P4 DSL is
-> > implemented in the kernel. I can't see why this is off limits somehow=
- this
-> > patch set proposes an approach there could be many approaches. BPF co=
-mes up
-> > not because I'm some BPF zealot that needs P4 DSL in BPF, but because=
- it
-> > exists today there is even a P4 backend. Fundamentally I don't see th=
-e
-> > value add we get by creating two P4 pipelines this is going to create=
+> > index cbfb235984c8..26e32555711c 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -361,6 +361,7 @@ struct bpf_jmp_history_entry {
+> >         u32 prev_idx : 22;
+> >         /* special flags, e.g., whether insn is doing register stack sp=
+ill/load */
+> >         u32 flags : 10;
+> > +       u64 equal_scalars;
+>=20
+> nit: should we call this concept as a bit more generic "linked
+> registers" instead of "equal scalars"?
 
-> > duplication all the way up to the P4 tooling/infra through to the ker=
-nel.
-> > From your side you keep saying I'm bike shedding and demanding BPF, b=
-ut
-> > from my perspective your introducing another entire toolchain simply
-> > because you want some low level debug commands that 99% of P4 users s=
-hould
-> > not be using or caring about.
-> >
-> > To try and be constructive some things that would change my mind woul=
-d
-> > be a vendor showing how hardware can be used. This would be compellin=
-g.
-> > Or performance showing its somehow gets a more performant implementat=
-ion.
-> > Or lastly if the current p4c implementation is fundamentally broken
-> > somehow.
-> >
-> =
+It's a historical name for the feature and it is present in a few commit an=
+d tests.
+Agree that "linked_registers" is better in current context.
+A bit reluctant but can change it here.
 
-> John,
-> With all due respect we are going back again over the same points,
-> recycled many times over to which i have responded to you many times.
-> It's gettting tiring.  This is exactly why i called it bikeshedding.
-> Let's just agree to disagree.
+[...]
 
-Yep we agree to disagree and I put them them as a summary so others
-can see them and think it over/decide where they stand on it. In the
-end you don't need my ACK here, but I wanted my opinion summarized.
+> I'm wondering if this pop/push set of primitives is the best approach?
 
-> =
+I kinda like it :)
 
-> cheers,
-> jamal
-> =
+> What if we had pack/unpack operations, where for various checking
+> logic we'd be working with "unpacked" representation, e.g., something
+> like this:
+>=20
+> struct linked_reg_set {
+>     int cnt;
+>     struct {
 
-> > Thanks
-> > John
+Will need a name here, otherwise iteration would be somewhat inconvenient.
+Suppose 'struct reg_or_spill'.
 
+>         int frameno;
+>         union {
+>             int spi;
+>             int regno;
+>         };
+>         bool is_set;
+>         bool is_reg;
+>     } reg_set[6];
+> };
+>=20
+> bt_set_equal_scalars() could accept `struct linked_reg_set*` instead
+> of bitmask itself. Same for find_equal_scalars().
 
+For clients it would be
+
+        while (equal_scalars_pop(&equal_scalars, &fr, &spi, &is_reg)) {
+                if ((is_reg && bt_is_frame_reg_set(bt, fr, spi)) ||
+                    (!is_reg && bt_is_frame_slot_set(bt, fr, spi)))
+                    ...
+        }
+
+    --- vs ---
+=20
+        for (i =3D 0; i < equal_scalars->cnt; ++i) {
+                struct reg_or_spill *r =3D equal_scalars->reg_set[i];
+
+                if ((r->is_reg && bt_is_frame_reg_set(bt, r->frameno, r->re=
+gno)) ||
+                    (!r->is_reg && bt_is_frame_slot_set(bt, r->frameno, r->=
+spi)))
+                    ...
+        }
+
+I'd say, no significant difference.
+
+> I think even implementation of packing/unpacking would be more
+> straightforward and we won't even need all those ES_xxx consts (or at
+> least fewer of them).
+>=20
+> WDYT?
+
+I wouldn't say it simplifies packing/unpacking much.
+Below is the code using new data structure and it's like
+59 lines old version vs 56 lines new version.
+
+--- 8< ----------------------------------------------------------------
+
+struct reg_or_spill {
+	int frameno;
+	union {
+		int spi;
+		int regno;
+	};
+	bool is_reg;
+};
+
+struct linked_reg_set {
+	int cnt;
+	struct reg_or_spill reg_set[6];
+};
+
+/* Pack one history entry for equal scalars as 10 bits in the following for=
+mat:
+ * - 3-bits frameno
+ * - 6-bits spi_or_reg
+ * - 1-bit  is_reg
+ */
+static u64 linked_reg_set_pack(struct linked_reg_set *s)
+{
+	u64 val =3D 0;
+	int i;
+
+	for (i =3D 0; i < s->cnt; ++i) {
+		struct reg_or_spill *r =3D &s->reg_set[i];
+		u64 tmp =3D 0;
+
+		tmp |=3D r->frameno & ES_FRAMENO_MASK;
+		tmp |=3D (r->spi & ES_SPI_MASK) << ES_SPI_OFF;
+		tmp |=3D (r->is_reg ? 1 : 0) << ES_IS_REG_OFF;
+
+		val <<=3D ES_ENTRY_BITS;
+		val |=3D tmp;
+	}
+	val <<=3D ES_SIZE_BITS;
+	val |=3D s->cnt;
+	return val;
+}
+
+static void linked_reg_set_unpack(u64 val, struct linked_reg_set *s)
+{
+	int i;
+
+	s->cnt =3D val & ES_SIZE_MASK;
+	val >>=3D ES_SIZE_BITS;
+
+	for (i =3D 0; i < s->cnt; ++i) {
+		struct reg_or_spill *r =3D &s->reg_set[i];
+
+		r->frameno =3D  val & ES_FRAMENO_MASK;
+		r->spi     =3D (val >> ES_SPI_OFF) & ES_SPI_MASK;
+		r->is_reg  =3D (val >> ES_IS_REG_OFF) & 0x1;
+		val >>=3D ES_ENTRY_BITS;
+	}
+}
+
+---------------------------------------------------------------- >8 ---
 
