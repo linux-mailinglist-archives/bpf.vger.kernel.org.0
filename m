@@ -1,144 +1,142 @@
-Return-Path: <bpf+bounces-22964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0236386BC50
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:44:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA0A286BC5C
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:53:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB75C287ACE
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:44:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 799641F22A49
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3B472910;
-	Wed, 28 Feb 2024 23:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7647442E;
+	Wed, 28 Feb 2024 23:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fojOptpl"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="b/WtlF+/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4759513D2E8
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 23:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1318972920
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 23:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709163888; cv=none; b=BR6n+DFp0llhZE6nRQr1qDMlFDeKmjdDK0xPcgmfCHSuzRnJWPzgBjYdlxvNCiyFNP5OiJb/apRy5qnHM03cEtOrZvnbHky8wZUftj1w1BgiPMHt6tiSsPUKICSXDgIeOLsTRldiUzDalDMMelCMWn639VSWdWa3QLIjcC4FpLo=
+	t=1709164427; cv=none; b=ZQs9CedjQkrllNc41Jm8CB9HPNvbRVn5+P1k7D8J66XtrcRQIyHoqUjYUbOlkH+IYzx8Ure1dqvclElHKiljGt3cOiGpAVBKVDAw0B8abaKFqCJ05DuesGZ6g0CajteT/Ldl5uJwK8hyrqErP51T7HaoPXIauN2LsYiYFgXvR+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709163888; c=relaxed/simple;
-	bh=fnlXzS7etZrvzpJdsc1VXVvs8X5zhDFb0GuoMZ+514A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jdQyxbxBtcL0Wwhoc9XtwLmtnvxm4LC9oXq6UF+Jd6cZUcHSp7Hwx95Bu8v8b3g6TMrU+gg0GNjAJklgrrlX8gznrFEbjC+WxDB0uAhjRXAE4k5QZReWvWiOqr8OUhDAzySp4lIsLXIl6Paz4L6tuAIAuZ79OwrlN+ZT6TK6gJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fojOptpl; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51325c38d10so6016e87.1
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 15:44:47 -0800 (PST)
+	s=arc-20240116; t=1709164427; c=relaxed/simple;
+	bh=226C5h/Y1VCHHH/6rHYwB8j04u2Bj9Ng00Ye5vrzpe0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FtjobTTusCylTWEzEvq9uAEspC20J/tCEdlhZ6kPIKadqL/wBSOiQj9X4gmszQvWKmxna+Snc2AHA3WabZp2RNxzgXMRyfW69DtSbMt+VFrU/wA84SbLTC4ACfAzsr70nRY0rPEOO1bOmjF5nQIFTZO9tSNczzJHehEKm+BHlGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=b/WtlF+/; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56694fdec74so298380a12.1
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 15:53:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709163885; x=1709768685; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vsp/RQ+fM/51gjS3q7TlLu1AAWo/DTWdiHPkD7rDdCQ=;
-        b=fojOptplGf4drWdXSSKfKGNn4p2CshQ6Cz6CPUT/JNyUW/HJd0nriMF24Qc3dM2GcG
-         WPf0Tt4hAbwvEkIwi7OzhEIgCnkiTckmJkyBEJOPmSwgPT1bjkR3WeZBTM0NoD2TyhTt
-         tv5IwWKAxVHWqmvNOW3JmMInY3E0JumHyZNtjQxHz6UDQZZuw4+KInS1v7cyGWNZ7izV
-         ygJe9/ehVHf8ClDrkN8Kw00Cm2pijBTabmXOvleg0nv/1EJuHxn/KJ4HwN6ZjRpfWAtX
-         NUpS+nGz5w3pruAx9+nn8kAsFWjPSuIy6uXtpaAKVuAM+fDtio3vadVBMiJVO42UaKhT
-         7QfA==
+        d=cloudflare.com; s=google09082023; t=1709164424; x=1709769224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LyTb/9u8Fut3XJA7s5sTKjASpumq9GMF8lzH2f5O968=;
+        b=b/WtlF+/cAuvq6M20JXmWz8A2nkQptPjwcnBQLZkV9kPBbnAW24f9bgh5o9TXc7veb
+         a3eOi5yMNeZ0hOuCQ3ljUOEqMjHWtp6/ScFlSp1ToC/hhPIiGktWzjz7Pdv3WAnYcinj
+         eCck83VpNb35lad8kW5Mqhr9VE5ZFzNOGWHUFbs76XLAQrQEScmGNMXDAz+j8u5YGIHO
+         R56D/9Cp+0iznOPm3kXRtfJh9YHYZhdss1n9vCIoVe4M5ivBNkgV0HDZyaRPF1N6UCFS
+         E9MKOTH213WGU0/R421/tyAuYheLu49B136cC2wpkd/ARaWY9L02tzb2vCoR9xRlVYaa
+         4uzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709163885; x=1709768685;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vsp/RQ+fM/51gjS3q7TlLu1AAWo/DTWdiHPkD7rDdCQ=;
-        b=pp754+L8AHU+XOXUPserTv7QvZqIFUKZOyq2xjzOKbyAYcxhNw/Netce3/X92emzZu
-         sC+Ft28b82z6W4Ou5vwm2CR2Zh++67WhXZczRS6jW+S6coWXiLtvdUmqZW9zoETD0Cz+
-         cSjLqFZYktxmqXlSs5IrdCFL7KFmVzTX1Fn2yGVQK0wl5B8D4H6JzcrIYhC5IuFPHywy
-         8mSTkBRFYoLLOj/cUVdKtar000K7q91KNJ+sY6drhaXrNSAYEDXUAP/KwMzU9rSonDW1
-         d+UjaPvQIBozo9JR5jOEvxiVbA0Fo2RgwLmja7O/kksGfxJDuNXt0b1U75NGh67wH2p9
-         yG6Q==
-X-Gm-Message-State: AOJu0YzHphSaEg7et7+T/exGzbzJ8CVviR9+XXpJm/QvKgjgSHyinb7N
-	rTDXUdWybbzZSiFZqceSAEa+VgWjPix1jwFGYyIJ02heL5bdkG1o
-X-Google-Smtp-Source: AGHT+IEGkId5J8z72NoG6GiIegfyRt4/NdgSHG0tB/oj066NnnjcMgTXN+6Lzf8Ssoe7G1IewmIjwQ==
-X-Received: by 2002:ac2:4478:0:b0:512:eb44:1ea1 with SMTP id y24-20020ac24478000000b00512eb441ea1mr100383lfl.21.1709163885365;
-        Wed, 28 Feb 2024 15:44:45 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id er15-20020a05651248cf00b005131e4804f9sm31115lfb.190.2024.02.28.15.44.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 15:44:44 -0800 (PST)
-Message-ID: <81fd7d298578b2bbc3d7a117c8e2144adbd0fb4b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/8] selftests/bpf: bad_struct_ops test
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev,  void@manifault.com
-Date: Thu, 29 Feb 2024 01:44:38 +0200
-In-Reply-To: <CAEf4BzaDwpTVwc_wTT74EthE5g11URiysNeuu6V+HDKrWXEnfQ@mail.gmail.com>
-References: <20240227204556.17524-1-eddyz87@gmail.com>
-	 <20240227204556.17524-6-eddyz87@gmail.com>
-	 <CAEf4BzaDwpTVwc_wTT74EthE5g11URiysNeuu6V+HDKrWXEnfQ@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1709164424; x=1709769224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LyTb/9u8Fut3XJA7s5sTKjASpumq9GMF8lzH2f5O968=;
+        b=XVH+JO5x8Gye2Z+1KhP5Zx921jIdX8hZ6DpONoRB8iWnT6DCDC2JXMHzD+DU6uBe+c
+         fRCme6NaTx6/V1oiadNP0nLhquLgC0xf7N5+pShyywrxafXh9mVGvkw1VFn8K4+6FlRh
+         vv3R+Wm+UefLuIbaAZMh8qmumgCDdpp8km0Mv/vEG3QKdypAa6+tJ6qBhkjbUJbnS9y1
+         5AZ46/jSBaVWNOt4bMQzN+AbPP8m0w+Hq+1hJQilxBcToS0wLx9X86olH2cFX580VH7j
+         /PR5aE+60+3J+ZMa6EDtpdbHewhg3RhuE91NNn9UHC6SCkdQmhLDtE7OBeNSINmkyxLD
+         L5kQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAdn6NiWx6mYnBlnBPEqkV9h05cBw7+xjhcUOH8N1LF/sfRYsGcugqIGJv8RiNA6aXwIzXuNAxnD6fE9Fs3MPGY43L
+X-Gm-Message-State: AOJu0YxCjPZr9qPPh1KAhD7tFaDnjhLv97SrGrNGwD0wAkzlhydRBVTg
+	MY7QIckeDXGfmBaSrKjJw3QGwHPKGx3u5BZILkvBPbrkktmXCcJyJmXJYzSvpjYmrgb6B0HLLIP
+	CT+LXnbm9sjK8WbdPkBW7BH7pgdvnjPy02Qn+Ew==
+X-Google-Smtp-Source: AGHT+IFWoAzwjRhf4ZRQtooisu3O7UmB386nUInSxafRbB0jMnEpyJq60SxptGuNyafKn0Mhr6ixAk9Zq1h7yoTNCaY=
+X-Received: by 2002:a05:6402:b57:b0:566:414d:d724 with SMTP id
+ bx23-20020a0564020b5700b00566414dd724mr253144edb.35.1709164424445; Wed, 28
+ Feb 2024 15:53:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+In-Reply-To: <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Wed, 28 Feb 2024 17:53:33 -0600
+Message-ID: <CAO3-Pbq4Fybyhodv5-36U=-rgttkjxFj6cRvAGcapvE8pZyWSQ@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-02-28 at 15:40 -0800, Andrii Nakryiko wrote:
-[...]
+Hi Eric,
 
-> > +static libbpf_print_fn_t old_print_cb;
-> > +static bool msg_found;
-> > +
-> > +static int print_cb(enum libbpf_print_level level, const char *fmt, va=
-_list args)
-> > +{
-> > +       old_print_cb(level, fmt, args);
-> > +       if (level =3D=3D LIBBPF_WARN && strncmp(fmt, EXPECTED_MSG, strl=
-en(EXPECTED_MSG)) =3D=3D 0)
-> > +               msg_found =3D true;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void test_bad_struct_ops(void)
-> > +{
-> > +       struct bad_struct_ops *skel;
-> > +       int err;
-> > +
-> > +       old_print_cb =3D libbpf_set_print(print_cb);
-> > +       skel =3D bad_struct_ops__open_and_load();
->=20
-> we want to check that the load step failed specifically, right? So
-> please split open from load, make sure that open succeeds, but load
-> fails
+On Tue, Feb 27, 2024 at 10:44=E2=80=AFAM Eric Dumazet <edumazet@google.com>=
+ wrote:
+>
+> Hmm....
+> Why napi_busy_loop() does not have a similar problem ?
+>
+I just tried and can reproduce similar behavior on sk busy poll.
+However, the interesting thing is, this can happen if I set a super
+high polling interval but just send rare packets. In my case I had a 5
+sec polling interval (unlikely to be realistic in prod but just for
+demonstration), then used nc to send a few packets. Here is what
+bpftrace react:
 
-Ok
+Normal:
+time sudo bpftrace -e 'kfunc:napi_busy_loop{@=3Dcount();}
+interval:s:1{exit();} kfunc:udp_recvmsg {printf("%ld\n",
+args->sk->sk_ll_usec);}'
+Attaching 3 probes...
 
->=20
-> > +       err =3D errno;
-> > +       libbpf_set_print(old_print_cb);
-> > +       if (!ASSERT_NULL(skel, "bad_struct_ops__open_and_load"))
-> > +               return;
-> > +
-> > +       ASSERT_EQ(err, EINVAL, "errno should be EINVAL");
-> > +       ASSERT_TRUE(msg_found, "expected message");
-> > +
-> > +       bad_struct_ops__destroy(skel);
-> > +}
-> > +
-> > +void serial_test_bad_struct_ops(void)
->=20
-> why does it have to be a serial test?
+@: 0
 
-Because it hijacks libbpf print callback.
+real    0m1.527s
+user    0m0.073s
+sys     0m0.128s
 
-[...]
+
+Extra wait when polling:
+time sudo bpftrace -e 'kfunc:napi_busy_loop{@=3Dcount();}
+interval:s:1{exit();} kfunc:udp_recvmsg {printf("%ld\n",
+args->sk->sk_ll_usec);}'
+Attaching 3 probes...
+5000000
+
+
+@: 16
+
+real    0m11.167s
+user    0m0.070s
+sys     0m0.120s
+
+So the symptoms are the same, bpftrace cannot exit despite having an
+1sec timeout. But the execution pattern for these two are probably
+different: NAPI threads would keep polling by itself, whereas sk poll
+program might only poll when there is no immediate data. When there
+are packets, it switches to process packets instead of polling any
+more.
+
+
+Yan
 
