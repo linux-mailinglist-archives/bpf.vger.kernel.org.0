@@ -1,177 +1,142 @@
-Return-Path: <bpf+bounces-22832-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3101186A625
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 02:53:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C771D86A65A
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 03:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5C71F2E18E
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 01:53:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 829DB2838FE
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 02:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B62022092;
-	Wed, 28 Feb 2024 01:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494F679E5;
+	Wed, 28 Feb 2024 02:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cfwjlPFc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Rknj/sva"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACBA219E9;
-	Wed, 28 Feb 2024 01:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588C64A23
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 02:11:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709084966; cv=none; b=kd19/VysG4/uHgcq6F1Lyhpu174KcNwQKJfVp+cLBa4f2m66/66tFdfpAG9d8n5Nj+rsnde4fWDmcg0LXINhRoFVmqr6Gi5Z/TVcEKrXkBsISAT/UjTatAPb5FN01Gm7m93ixsQ5fjBxZXP9jonmLm/nLmMKKAa9rc7hX6kNgDU=
+	t=1709086275; cv=none; b=WlSIfPUfZnNzUaAm44bUo6HmwC4EQzOIL55TAcLxdzNO+jKFx7uXwhXJjG52cqEEivAkETtXP5bTbrB/xvCIzGFA71Vw1C6HDTi656fyxqgQRYh4qxWSrHPBkJ/6nxZkvmQ10scPXhadL/g2PwwmG7kJxyLQDqou4Yoifpb/KmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709084966; c=relaxed/simple;
-	bh=+FQUdTrkE2zK55NQ+Cu+x7TSgIAYifAQCWyaS9T97NA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GPPVVM6ka4pjTrwd3bygPKzKKoF3G+kPwluk1+YcQ1Ke6I68+8nzMfBor2Q5IvqBwWlopSO7uHq5QqAqqNJgGhakf6/TNiB/VPgONi6zkwTfHNtk+5vEn0Clvpt0GPpOBwRMlPYQF1+iibmC9dB+PP/bTrlZEShNVgko31092x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cfwjlPFc; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412aec2505dso8369395e9.2;
-        Tue, 27 Feb 2024 17:49:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709084962; x=1709689762; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ui4sJq/l8+cxeUyr+OFsebM3T707k8kNS1YD3vIJ/Xw=;
-        b=cfwjlPFcToyuEd4MZtKyKCayQiLVbydRBOAnFL3ubSNu/J8m6ZLNarZF1TrFOYPZVG
-         ayx+iEMPleTNKvNyz9hxB1KVRlKztJKE4ZLsQn4NPUX/yfzwrPC9cM0M80EjfEDI/PxN
-         iBZCz/3Ry12G7ZUeR3Qye5GToj1xZytgSxuiIcdmSx0dYCdKC4RUB0OlIQGHQ3tK35g9
-         /XZ9QDaOkTumNPB3ibF7zHGtqgCn1wE8SfsowkD8xwo5mtIANDJU7+btg5039SQefjUE
-         ULCFSiRfL5i3dFRrrN6ksx0XEc9Te9K4S8PVvxBOEipgqJh18sF1uHjE8naH6m+enswt
-         nbGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709084962; x=1709689762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ui4sJq/l8+cxeUyr+OFsebM3T707k8kNS1YD3vIJ/Xw=;
-        b=H7DTIa04x3rTG1bnwKUWUMvfkvvtaFBnVcIxvQFa3QMHr8jXrPhRpF8U7OKjhCRh2T
-         +6EXBrsRORRjl1i6cA/v7wSv6uedj62JBjqmICG+uVjO+IROZKWrXfjntv7YU8E64QG4
-         CFZRlGAzKQOZ3+G5581LoAVHkLd7NkgtpS8F47nsl6STUjsMBOvy8zhFQhn2HzgbXzbm
-         Unszin7Eav8sC9SRz+eDHS29E0T9SWI03qOg4sDFDniMtEPeL6kVIXmjlCVxIGrR1GC/
-         GanEza4zAj6Fo5OfIjc3yzBmz0fQdvPLNYRU6poNsOZnxqAA9TwSskhuKwFEA48SCxmL
-         yKPA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7Ye+7L13OYHCQZBwci4C93XD6qvYkPZAsIxv6c7eHPvMh95lngCOJXasNBIoWCfxRwfvrgEECgYlQblk4gc48r3QFN8IMzL1HfEv57T4I4iB8QCs6XsEA3dtP0vDPM9+4K2zk+1/zL4xvTwrkPrgmssgaDWUSL5FMZAtiBbEP2Mrr7HJXijNQ7f4u7pJDNBD8pAXuHlH3wi6wWhe5ag0r49f8zBiRJ1VQXTSmxh7zIMpbcslzDzaFnoc=
-X-Gm-Message-State: AOJu0YwCzgQhQX8aZl/uBOcEO/xHgeE+GqmmIOI1C74tETFjT3k1FLc2
-	iEhijztTCgS8h8Sz84rbZNeMl2zmGRJc0JpkR2cLDyDfZiIngwt3AeQniVNL3p2EfyM+eR/OzsZ
-	rVUKcfaD6WT4l+MmWsnBtK3Bk5bo=
-X-Google-Smtp-Source: AGHT+IGZnDSmoeFl4CZIz+6vAS7IGmyc6HIgJYxbGn7bvr4zS6MIaN7+NdCrCxGiklkpE+8wP8mR8Pv+ITnHeccQpk0=
-X-Received: by 2002:a5d:64cb:0:b0:33d:f89b:147b with SMTP id
- f11-20020a5d64cb000000b0033df89b147bmr781105wri.26.1709084962552; Tue, 27 Feb
- 2024 17:49:22 -0800 (PST)
+	s=arc-20240116; t=1709086275; c=relaxed/simple;
+	bh=Zru9MPOmWqtzAYtZv3kgU63ha8BwYTDjUKer1aWG3OM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YDnG8dXufJY00mG7x2iQOhN8v4aJ83NXa99YkJRFXOEU29mAgW0Z6vDYlv3PgINrhxlYyqSloBQYW0+bUSEaZmXqo6ALqIkIR1T+Mp/0UfD+gOnEwUH8ikRMV0hLBzuaZSuOGLg7uplTQZWKb0DGyrYoXpivX80UcCrTFSf5Dok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Rknj/sva; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1e95162a-a8d7-44e6-bc63-999df8cae987@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709086271;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BIfDwSgj+uWuIZkdU49mRIeje6XVPgsLsLIu9U+HoUA=;
+	b=Rknj/svaQVCT718/RieDKsqGNWWt80b/8VV7NUkt17GrZfibZZHp3OGy7ZaWK5ndbaJdgA
+	9zsBKtSGpjavFFxWDL+u1tjT22Rc4gXBBbRhNz6KdDeZX07yerzSmGoXtIGqywG0U3H4Am
+	mbLnxF1VHFbqpaguI6YH1XEylxIjPuI=
+Date: Tue, 27 Feb 2024 18:10:10 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
- <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org> <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
- <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
- <9a35a53a1887fb664fd540ec7e272cb3ea63f799.camel@gmail.com> <CAO-hwJ+TGiLrc4De7htvKaSsMfQnZahK-zONAMNgUMYHEQb-7g@mail.gmail.com>
-In-Reply-To: <CAO-hwJ+TGiLrc4De7htvKaSsMfQnZahK-zONAMNgUMYHEQb-7g@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 27 Feb 2024 17:49:11 -0800
-Message-ID: <CAADnVQKrKzrvzu9NmcaDYGFYicqN--R5J6r--_J58gB0jic_NA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for is_bpf_timer_set_sleepable_cb_kfunc
-To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Benjamin Tissoires <bentiss@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 7/8] libbpf: sync progs autoload with maps
+ autocreate for struct_ops maps
+Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+ yonghong.song@linux.dev, void@manifault.com, bpf@vger.kernel.org,
+ ast@kernel.org
+References: <20240227204556.17524-1-eddyz87@gmail.com>
+ <20240227204556.17524-8-eddyz87@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240227204556.17524-8-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 27, 2024 at 8:51=E2=80=AFAM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> On Tue, Feb 27, 2024 at 5:36=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >
-> > On Tue, 2024-02-27 at 17:18 +0100, Benjamin Tissoires wrote:
-> > [...]
-> >
-> > > Hmm, I must still be missing a piece of the puzzle:
-> > > if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
-> > > argument, given that it is declared as kfunc, I also must declare it =
-in
-> > > my bpf program, or I get the following:
-> > >
-> > > # libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_proto=
- [264] incompatible with vmlinux [18151]
-> > >
-> > > And if I declare it, then I don't know what to pass, given that this =
-is
-> > > purely added by the verifier:
-> > >
-> > > 43: (85) call bpf_timer_set_sleepable_cb#18152
-> > > arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or struc=
-t with scalar
-> >
-> > Right, something has to be done about number of arguments and we don't
-> > have a convenient mechanism for this afaik.
-> >
-> > The simplest way would be to have two kfuncs:
-> > - one with 2 arguments, used form bpf program;
-> > - another with 3 arguments, used at runtime;
-> > - replace former by latter during rewrite.
->
-> It's hacky but seems interesting enough to be tested :)
+On 2/27/24 12:45 PM, Eduard Zingerman wrote:
+> Make bpf_map__set_autocreate() for struct_ops maps toggle autoload
+> state for referenced programs.
+> 
+> E.g. for the BPF code below:
+> 
+>      SEC("struct_ops/test_1") int BPF_PROG(foo) { ... }
+>      SEC("struct_ops/test_2") int BPF_PROG(bar) { ... }
+> 
+>      SEC(".struct_ops.link")
+>      struct test_ops___v1 A = {
+>          .foo = (void *)foo
+>      };
+> 
+>      SEC(".struct_ops.link")
+>      struct test_ops___v2 B = {
+>          .foo = (void *)foo,
+>          .bar = (void *)bar,
+>      };
+> 
+> And the following libbpf API calls:
+> 
+>      bpf_map__set_autocreate(skel->maps.A, true);
+>      bpf_map__set_autocreate(skel->maps.B, false);
+> 
+> The autoload would be enabled for program 'foo' and disabled for
+> program 'bar'.
+> 
+> Do not apply such toggling if program autoload state is set by a call
+> to bpf_program__set_autoload().
+> 
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>   tools/lib/bpf/libbpf.c | 35 ++++++++++++++++++++++++++++++++++-
+>   1 file changed, 34 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index b39d3f2898a1..1ea3046724f8 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -446,13 +446,18 @@ struct bpf_program {
+>   	struct bpf_object *obj;
+>   
+>   	int fd;
+> -	bool autoload;
+> +	bool autoload:1;
+> +	bool autoload_user_set:1;
+>   	bool autoattach;
+>   	bool sym_global;
+>   	bool mark_btf_static;
+>   	enum bpf_prog_type type;
+>   	enum bpf_attach_type expected_attach_type;
+>   	int exception_cb_idx;
+> +	/* total number of struct_ops maps with autocreate == true
+> +	 * that reference this program
+> +	 */
+> +	__u32 struct_ops_refs;
 
-Too hacky imo :)
+Instead of adding struct_ops_refs and autoload_user_set,
 
-Let's follow the existing pattern.
-See:
-__bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+for BPF_PROG_TYPE_STRUCT_OPS, how about deciding to load it or not by checking 
+prog->attach_btf_id (non zero) alone. The prog->attach_btf_id is now decided at 
+load time and is only set if it is used by at least one autocreate map, if I 
+read patch 2 & 3 correctly.
 
-__ign suffix tells the verifier to ignore it.
+Meaning ignore prog->autoload*. Load the struct_ops prog as long as it is used 
+by one struct_ops map with autocreate == true.
 
-Then we do:
-#define bpf_obj_new(type) \
-  ((type *)bpf_obj_new_impl(bpf_core_type_id_local(type), NULL))
+If the struct_ops prog is not used in any struct_ops map, the bpf prog cannot be 
+loaded even the autoload is set. If bpf prog is used in a struct_ops map and its 
+autoload is set to false, the struct_ops map will be in broken state. Thus, 
+prog->autoload does not fit very well with struct_ops prog and may as well 
+depend on whether the struct_ops prog is used by a struct_ops map alone?
 
-and later the verifier replaces arg2 with the correct pointer.
-
-> We also could use the suffix (like __uninit, __k, etc...), but it
-> might introduce more headaches than the 2 kfuncs you are proposing.
-
-Only one kfunc pls. Let's not make it more complex than necessary.
-
-We cannot easily add a suffix to tell libbpf to ignore that arg,
-since bpf_core_types_are_compat() compares types and there are
-no argument names in the types.
-So it will be a significant surgery for libbpf to find the arg name
-in vmlinux BTF and strcmp the suffix.
-
->
-> >
-> > Could you please provide more details on what exactly it complains abou=
-t?
-> >
->
-> Well, there is a simple reason: that code is never reached because, in
-> that function, there is a `if (insn->src_reg =3D=3D
-> BPF_PSEUDO_KFUNC_CALL)` above that unconditionally terminates with a
-> `continue`. So basically this part of the code is never hit.
->
-> I'll include that new third argument and the dual kfunc call in
-> fixup_kfunc_call() and report if it works from here.
-
-Something is wrong. fixup_kfunc_call() can rewrite args with whatever
-it wants.
-Are you sure you've added bpf_timer_set_sleepable_cb to special_kfunc_list =
-?
 
