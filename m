@@ -1,144 +1,101 @@
-Return-Path: <bpf+bounces-22876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCF5186B1EB
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 15:36:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9183A86B1ED
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 15:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A28A28873D
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 14:36:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF0E31C22582
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 14:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52740159562;
-	Wed, 28 Feb 2024 14:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5825E15958B;
+	Wed, 28 Feb 2024 14:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XbXWy3+r"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="X0XeIvHN"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120E214EFCD
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 14:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2940A1852
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 14:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709131001; cv=none; b=jaVqfOop+T66uhSgWei8yMjfBz1qPNvNTCGLawXb6nQPgDor2GtmVck+QEzwb2vlsh6ZaeMqwstjHAFQNpCeQ86BRhzT4FdDW9mGXVZ7IEswoxv6MoUuQGoH6tnbeO6nY/fWEKXVONjY2EOQDgFoO+DLChQP45XBpEcuJzEKP/o=
+	t=1709131129; cv=none; b=jIA42YO1XYJBcuSB1yNtcykPrxUXpVuzx3njYiznKbD9HVmdN2t6O7c28k+cyx7YyerXAcOinehVAac/ULqgRnasIAAarROpAeV36+XhSAJhwkdFySCDTn0uM3toJW0vpxrSszcEoT/+FaB1xbxrc3DUmSpzXAzZYiiOom7z6OA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709131001; c=relaxed/simple;
-	bh=Xxb5FVp/NoNytGsrFLD77UfzlXJXbuuyyr2in+lym4M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uROCYs+25kCSWiqQYX7LGlajGdyZFNsvZVfrQN9N1wH1093JD2vWXD4NGL8YRsDord6Ypyqkfq55JhBNYCIXpdVnpkTRTBNV5IyymEoXGVVJr6yLSkcCINoqt8cwa4CE4joBhBAevy4+zfHsdthrFPEMMSb2MandTnPd6AiGLXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XbXWy3+r; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709130998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xxb5FVp/NoNytGsrFLD77UfzlXJXbuuyyr2in+lym4M=;
-	b=XbXWy3+rMerkt1p1Y6evoPfVkqxyTF+8VxnNKzo/RmHJgFQl8rTTYQk3HKWHGo2tmcjg/d
-	9H4BdxGhLREv0WuoBxRMS68kVeZ6ALtYLHtfkORhsNEcHhRhA2bt4O7bndUqQJNuJRra2C
-	y98euQ1lLzP4NiENKsEjN5z+0xaKfqg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-615-lDAdJUikPs2bTll6t67PdA-1; Wed, 28 Feb 2024 09:36:37 -0500
-X-MC-Unique: lDAdJUikPs2bTll6t67PdA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3e42733561so247514666b.0
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 06:36:37 -0800 (PST)
+	s=arc-20240116; t=1709131129; c=relaxed/simple;
+	bh=ehnAQ9Uk+cmdFB8eEhfxHPixQwI/9Ksyt1XdugVVAVk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EfcZx1za9SZASXihs82YFvJx4kTAvnvHADiMe7cNIHxNCaW956uA00/HM2vb3ap5SKZkBiqrNTX65krQczKdbZO4XwT+2DgPtscjaTTPNw93vanGr54DyX9Cq6hhFrtlWBQ1YyaSmTc22fIaLqDMCzebjNJsrac4UjR2ZN4ll80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=X0XeIvHN; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412b246b386so7468735e9.3
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 06:38:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1709131126; x=1709735926; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nLWMXq65yFC7R3cB0pN8UmT5NHZrY6CCRN81VFTnD8g=;
+        b=X0XeIvHNwZr+iekCa90jUsFnaPxycvWuWVLxEVZUoG9l/T82ictKa/jcLYfWiD2ntB
+         HVn9ZvKXJYUDge09HCqdC14kcb5xB2NZhCFXzb/kvPX5BAMBenX8xQPVJa/UWCUIIceR
+         QvKCzKwDzY0MwjCPnW7CWDEFWHlgE9M+IPF4ZXRPuv1ZG7sJBXKCx0Jli4iZoxvALzzf
+         29otZIvmKV5EjWbhhf5i3hbonx4p+2pfX1VU2rAWD5JhprUZj+/K4YqExILCgphY8Iw4
+         Rd+baAeN1ask5FBa/sfgdxLmAfEvJK4Kl0q+o+55G92xuSIGrxt16sKK9OjRxoG7yl+Y
+         Qcsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709130996; x=1709735796;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xxb5FVp/NoNytGsrFLD77UfzlXJXbuuyyr2in+lym4M=;
-        b=xUQUYlyKqQHru31VpcWstvgVTY4V+k0TBRbgxwmfL2NErVqiXGQknON5E9mvB+N/Tb
-         cmcEN+Jiw9vuQ+8P6dlNAZ7lQj4AAkOojj4oL96nWdm/xbJjC7IpTj4dymsnmX2WEb45
-         vZLgY2ASzVqhf5IxRsV5Ahx1R2M3Xf5ykNLbwxAJf0zMrQBxXXrsXZyhUEVrGAIw7Vv0
-         8RztUqAgQxT4cwr1XDwT/zySBlP+yiLDUhzf05FByar4a17b2UwhjKjT/Qb1jWKftHq7
-         ISOWmjMwWa4wcXbH7ecLHnnMlzt5p14tL961dKGyCqeqcLEpKt04vJYI1etgojsfcbg7
-         clLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCURNwLGO2m0lKgLAMSftUBtFqMle/UVHJVMH95k+M4XRa4WKY/uw9j3F9Z4FquxJiTktj1/a6jSDwzm4fwvtFBjnpQT
-X-Gm-Message-State: AOJu0Yypg84OmL/9uAxx+iv5yiAmZMzt5rL0Is13K0rhkkcpK504i2lA
-	Ckl+5rscJnu8Nmuilumu1lpaqZQzOVCUgFol8uhfcGyVnyUfK3+oLHw9XDxIVAzXtDEhUgg0zxT
-	3E96qDOsS0CzAKd8LiXUII0gVpTC982z5/CAH3/aXNTzOioHnWA==
-X-Received: by 2002:a17:906:150b:b0:a3f:d742:f353 with SMTP id b11-20020a170906150b00b00a3fd742f353mr9165849ejd.57.1709130996278;
-        Wed, 28 Feb 2024 06:36:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEBUb4fVMqvQR+JrNV/Qt3//XwuekRLgoQvwiqLvpKOvm/74mS+02hNSBehoyTs9R4BM94+Tw==
-X-Received: by 2002:a17:906:150b:b0:a3f:d742:f353 with SMTP id b11-20020a170906150b00b00a3fd742f353mr9165832ejd.57.1709130995891;
-        Wed, 28 Feb 2024 06:36:35 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id vg15-20020a170907d30f00b00a4319de07c6sm1896089ejc.127.2024.02.28.06.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 06:36:35 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id ECAED112E73A; Wed, 28 Feb 2024 15:36:34 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Amery Hung
- <ameryhung@gmail.com>
-Cc: lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] bpf qdisc
-In-Reply-To: <CAP01T76R0bqdNK+LkObuVTej_TRwEB9HnvwJaTTsRrr1Y8_WmA@mail.gmail.com>
-References: <CAMB2axOYHKLQhR9b50oVgvUDXeo573amqpiXRot51_JZQcFuiw@mail.gmail.com>
- <CAP01T76R0bqdNK+LkObuVTej_TRwEB9HnvwJaTTsRrr1Y8_WmA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 28 Feb 2024 15:36:34 +0100
-Message-ID: <878r34ejv1.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1709131126; x=1709735926;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nLWMXq65yFC7R3cB0pN8UmT5NHZrY6CCRN81VFTnD8g=;
+        b=wwsKikQZq8F6GQ2hqsMgVFY1vi8OR7UxqykOldwufkaTtKh/klrVRUWfESHgmz+xMJ
+         6nxiF7CpaToEKvrxAGIM/yFIrvXFLjrMMP16WYoVDOWCXoUT83kpe9zHJEeyyLuykswU
+         ngmCp0NpiQjUPySReldulaIrPjgkSwyNjlsqjdjfYLuV/pV6LJCGa0Ls+kl087F9SvGC
+         PGUpYrgP5VuOxRz1EmNB5cIf6R/hNSLDS0dfmmLQFcCHcMDLRhx4bnnrSDVSuC6vvDXi
+         pgHkehckAB8uF6CwJTnI69tQ3oB1kQNtI+oJIuZU1pwGu9bDotkEuv5f+3Am/W1WDEVp
+         3T7w==
+X-Forwarded-Encrypted: i=1; AJvYcCXlUXf4LzNeivAoPXvzXjZyBwY484rMaSxnkfdzngb61lQKP13RwewhvI4iG72bPjl/b0Z1jujq2KmVak7+zOUk1NcM
+X-Gm-Message-State: AOJu0YzzqeHCmjZGCnvf/7sAwnvKVVOJhMRhu69UQE2cVp9XYpti7K2P
+	DJYaT4K29wyRdPebDds8bALbLkqxYXF/7TJpPwg7cTxum6xl1Z1wxMeioG49LUk=
+X-Google-Smtp-Source: AGHT+IHYS6JLzMyCCBUhEuSzV3L9KI/Xr9WNvvPERHYHbcbZ+EEUHmNdC+F92KwflbT/oxPW3uQKJA==
+X-Received: by 2002:a05:6000:48:b0:33c:ec8f:7b51 with SMTP id k8-20020a056000004800b0033cec8f7b51mr9687128wrx.16.1709131126431;
+        Wed, 28 Feb 2024 06:38:46 -0800 (PST)
+Received: from ?IPV6:2a02:8011:e80c:0:5379:cc82:ab28:8613? ([2a02:8011:e80c:0:5379:cc82:ab28:8613])
+        by smtp.gmail.com with ESMTPSA id k6-20020a056000004600b0033d87f61613sm14637334wrx.58.2024.02.28.06.38.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 06:38:46 -0800 (PST)
+Message-ID: <5e9bc786-60ef-4792-a3db-0981b1b14869@isovalent.com>
+Date: Wed, 28 Feb 2024 14:38:44 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 1/6] libbpf: expose resolve_func_ptr() through
+ libbpf_internal.h.
+Content-Language: en-GB
+To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: sinquersw@gmail.com, kuifeng@meta.com
+References: <20240227010432.714127-1-thinker.li@gmail.com>
+ <20240227010432.714127-2-thinker.li@gmail.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20240227010432.714127-2-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+2024-02-27 01:04 UTC+0000 ~ Kui-Feng Lee <thinker.li@gmail.com>
+> bpftool is going to reuse this helper function to support shadow types of
+> struct_ops maps.
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 
-> On Mon, 26 Feb 2024 at 19:04, Amery Hung <ameryhung@gmail.com> wrote:
->>
->> Hi all,
->>
->> I would like to discuss bpf qdisc in the BPF track. As we now try to
->> support bpf qdisc using struct_ops, we found some limitations of
->> bpf/struct_ops. While some have been discussed briefly on the mailing
->> list, we can discuss in more detail to make struct_ops a more
->> generic/palatable approach to replace kernel functions.
->>
->> In addition, I would like to discuss supporting adding kernel objects
->> to bpf_list/rbtree, which may have performance benefits in some
->> applications and can improve the programming experience. The current
->> bpf fq in the RFC has a 6% throughput loss compared to the native
->> counterpart due to memory allocation in enqueue() to store skb kptr.
->> With a POC I wrote that allows adding skb to bpf_list, the throughput
->> becomes comparable. We can discuss the approach and other potential
->> use cases.
->>
->
-> When discussing this with Toke (Cc'd) long ago for the XDP queueing
-> patch set, we discussed the same thing, in that the sk_buff already
-> has space for a list or rbnode due to it getting queued in other
-> layers (TCP OoO queue, qdiscs, etc.) so it would make sense to teach
-> the verifier that it is a valid bpf_list_node and bpf_rb_node and
-> allow inserting it as an element into a BPF list or rbtree. Back then
-> we didn't add that as the posting only used the PIFO map.
->
-> I think not only sk_buff, you can do a similar thing with xdp_buff as
-> well.
-
-Yeah, I agree that allowing skbs to be inserted directly into a BPF
-rbtree would make a lot of sense if it can be done safely. I am less
-sure about xdp_frames, mostly for performance reasons, but if it does
-turn out to be useful whichever mechanism we add for skbs should be
-fairly straight forward to reuse.
-
-> The verifier side changes should be fairly minimal, just allowing the
-> use of a known kernel type as the contained object in a list or
-> rbtree, and the field pointing to this allowlisted list or rbnode.
-
-I think one additional concern here is how we ensure that an skb has
-been correctly removed from any rbtrees it sits in before it is being
-transmitted to another part of the stack?
-
--Toke
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 
 
