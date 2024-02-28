@@ -1,114 +1,159 @@
-Return-Path: <bpf+bounces-22950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DAB386BC05
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:14:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EB786BC1C
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:22:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2FEEB214DC
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:14:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 733A9B257CF
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE50413D309;
-	Wed, 28 Feb 2024 23:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5056C13D30A;
+	Wed, 28 Feb 2024 23:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJIb+q5x"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WmL+yyCg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2051.outbound.protection.outlook.com [40.107.244.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB02B72903;
-	Wed, 28 Feb 2024 23:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162071; cv=none; b=uhhmqHD44RhFwAmk1swwntA8NAClgFtTLBySTgYwNR6HBVKZsORmQBjcZeUUWLK89OoyyXc63Kw3iGNy6rvBtDrKaLbKsLNhGcLvaTKFYxtu20egS17JDD/cKEDYCKDPuBdjgahPVbG3hjvFYLQksBVoAUwr8LlY4HYKNoTygBc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162071; c=relaxed/simple;
-	bh=8fdh3uYGMPOXqvAOHOoKQAaXXudO0fmxMPdCZHjqsRw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lEQzWeurHXBMvV0P9vt/z3Kk/96B/u5JpxLhH6Z8hn6iOVr9+EWpia3ZGoZUxh0Utu5lFzQT2adg0TcJp5Oog7nnngZk0e1yZ5sn/3v28HDqls3e4ft5z7hqVk6IQ0J1ERMS9RGVajDosxZ8JF75Q+o02h4fDCe6qHjsTVJ8NS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJIb+q5x; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dbd81000b6so162415ad.0;
-        Wed, 28 Feb 2024 15:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709162069; x=1709766869; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ot4CmQ/hhG4zUoY7ofq6ZiMV1G5BUrp00rn44kQoMs0=;
-        b=NJIb+q5xoF2uxAjdOR6wY23tcLSWhDLzroxqtpNts/LgfeSirmGu6lVov+gZvDz20X
-         SfPy6xiNRCU5MolZ39zsMR7KGlsZyKYaO3dOiixpNrm0VYaMIcW+qnJvzETU63cgzGx0
-         /AYLrpQVpo0vo0eELGTD422Apkv97Tbyr58zAEy7ikQy5cwJA66QbHNQEteUnuMGZZY4
-         iHaB9s7PybVCs/GszZaAq97DG2E0qHeXDBGEyXihXrrHJ0p41LSfDlxSut4au56yp9NE
-         ERfXTGBGRHUTTvRZXNh9gYgV7Hoy5HS+T3iOLkqyVm33YE8mlg62PEsPIoLsdu913G+p
-         4sGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709162069; x=1709766869;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ot4CmQ/hhG4zUoY7ofq6ZiMV1G5BUrp00rn44kQoMs0=;
-        b=KeNoHQ4oFwUEgdtx2sM8uYFaVI1lSEryXHFKhM7m3gSLSkpOkt4VByCaTJN7hlMST/
-         IhWvUT6GfM9tk0rwVIEDaE7qlEI8vb9VvX5M5jiOT2U2As1XiOn/AJIooQj4XTzkPTDv
-         Ku9yEWVbGsHoGLYTMgLonTY39HOR59xBpXf3npD3ZefijRqS3T72uU1JvpP9NQnXBJ3L
-         F0hyPCSeLWjB+De/dlVJ7PbfvII3HbkGtG4WVtPPSeP4Fmo8q//SpxDi4ZSk5ZVVKrxe
-         Ge62/3esdG9zADV5mxHmq77FAwHV/dm92CWD4JZ4lznJn65RthBDLJValQ3VI/QYhPgu
-         pIJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUkl1o5cn5HtoauDwjyUpcjdm+IsVShd2gBIGNQIZSHxQcRv7In4Bbt/ABe7rvp+YbJYvj190H7WHoTNmBHZTmLv5iKIdd05P+NN7C39tRw/mi/gPnADJbyE+2mbgSmIJ4a83dtVpKGmvMlYhz/r9ZhFSoJ5NZskfofaoAS
-X-Gm-Message-State: AOJu0Ywa2DhgO411xyaYf2T73o56/MNPHVrSlGQS4n66TSpQgEz0GpbX
-	iYznWb1WhFbfPK3zEUsLdiORMnRvxmP4qoteBiUEGRVtqxOtMsK9ccPHPhMY+um/AIQ+rU4lm7q
-	f8Wq93nhxGFarE9KjcwJXtAy8HZs=
-X-Google-Smtp-Source: AGHT+IGdgZmlOD3uGWnVHJMjyJeA37xtSoParRksvcba8xX7FIeNpPx7PfxE6W9DLFTPkUvcu1cBQtxqPixljO3Quq4=
-X-Received: by 2002:a17:90a:3d45:b0:298:b736:ecf7 with SMTP id
- o5-20020a17090a3d4500b00298b736ecf7mr667831pjf.0.1709162069188; Wed, 28 Feb
- 2024 15:14:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2937B13D309;
+	Wed, 28 Feb 2024 23:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709162500; cv=fail; b=X5vxot4usuQO+19s+DJpY2G5P5mnLHQuRdWSqdsSr7IfMbpwfvha04hQxGALm3UNz/BmCTGv/jxQ45TE/sIleFQB3fEnTPsn2ae1MnII4r/Kc1dBecOnRJQYyfHzNCEW0M8z8v8T68IEGNfPlgBDeYCadSH/xK2QIgRnYQnc35M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709162500; c=relaxed/simple;
+	bh=/nrRsoAlUFqtQ4d025Dp/rXre/CmFEjsHk/2TP7kohc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NzeToGahjbQ/C12wtFA+xDnD07gRLNDyxp/tj5XKmMrwddrznnZwzNwGEG4gkhYFggeQyvKafFW2w0rBDpVAuqGNN0L3jN/FTGV5Rwono8S8fIo5skcyu6ZAbL/YXssUz7z9B8wukOb+VFyXN3k/8qKC8689Lt7iKseNpWFPdNY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WmL+yyCg; arc=fail smtp.client-ip=40.107.244.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KAvZWnI1Gyyco+SUPZ+k4bxF6yPbUbsITqt65chS4EQWkoqAEkZKcZ0I42Q/y45lgmtsKn7NfhCqA5VpDfGCkiqDpIT919WH+tOc6hdZDcRK9+9kUYFVLZgCypJL14tM1+RyqGbhFmO2smY0IG4B1XO1jj/w5PNKBU23iC4QAVqHdNp9QKd/tb8MxM38HMlwxKCXLzqgnfeNEASsCpme4Qw61c3NF5N/MS66zJp2qAKU/7BPPR0PUYZVt+xE7H3WeB6X6UgjlCnnrxZNEEYvXhTRJPnbyTyAn1X0dBX26XpNiR0I2Rv8ofnnywEzdOOSVKwuyAcEJdEWPrY8rGrwgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OP30zesC4LFpuf/rau2OWwK4E2s3EAqdEH9eyabtqmM=;
+ b=LKhkCjUk2LOB1I8ipLBgb1MlVsCoi2sjO1+M6ls40rsFfn2IOuraJ21oNF5EqsAKwkVOkZthJCCa/6IHxSSXfuw9qXtozlRp8Om/C/CR+glqcp52crQYx0UGanYyYSC/LZgIjAbQ/uCo3j5XRTo7wRAgs22xHzcqz/LUFXSbbNKncBqOTvNv+bSPlyiT5NvVPRRCEP8ywoMxWb/7VDe3d01EA6jVM44aAnlhoMh+bzzJBkOc85QGwJgx4iEYVx9JXSmt3iYO0s3M1m7AI4iV7Tq060D3auFQhEgbE9+e6maNuIlo6sK4MWl+OK+k1wmMHS/djCEz18uafyi9gfJsKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OP30zesC4LFpuf/rau2OWwK4E2s3EAqdEH9eyabtqmM=;
+ b=WmL+yyCgu0CrNnhMISp+8hMY/3888s7SlJ8yo1/bAO9buZi4uuTL/8aBXjl8GZiCfutmx9mbtwXvaqhHYOJXmPZQ341Z1sp2bJPK3kquJXwbFV/XMJeHYt1RLko2wfucSQRnCs02KvPBPbR2/ONboxnNBN9/syFus/Y4nthx4BkLZkvhDeV+YlkwcCZfMOqlTqM2mhziugrAzYCiBupyekYGg8Hyw/gc7/uagy2ycl/yU1evpXn5Zf+M2oTNfO3ek9iP4oYNEfvqZTmVjBChDLN7t0H+NLlYmvHL+OoJnfB2ls3KLHFExJSLfqNcp2I4HFe/7Zt114fO6aotFxdYsQ==
+Received: from BY3PR05CA0006.namprd05.prod.outlook.com (2603:10b6:a03:254::11)
+ by PH7PR12MB8122.namprd12.prod.outlook.com (2603:10b6:510:2b7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
+ 2024 23:21:33 +0000
+Received: from SJ5PEPF000001D0.namprd05.prod.outlook.com
+ (2603:10b6:a03:254:cafe::a8) by BY3PR05CA0006.outlook.office365.com
+ (2603:10b6:a03:254::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.30 via Frontend
+ Transport; Wed, 28 Feb 2024 23:21:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SJ5PEPF000001D0.mail.protection.outlook.com (10.167.242.52) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Wed, 28 Feb 2024 23:21:33 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 28 Feb
+ 2024 15:21:17 -0800
+Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 28 Feb
+ 2024 15:21:17 -0800
+Message-ID: <983b98db-79c0-4178-b88f-61f39d147cf7@nvidia.com>
+Date: Wed, 28 Feb 2024 15:21:16 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227-pci2_upstream-v1-0-b952f8333606@nxp.com> <20240227-pci2_upstream-v1-1-b952f8333606@nxp.com>
-In-Reply-To: <20240227-pci2_upstream-v1-1-b952f8333606@nxp.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 28 Feb 2024 20:14:16 -0300
-Message-ID: <CAOMZO5C-01=jYbJTgQucfD8+pT-chy4xvQMckUee1O+gtE-0pQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] PCI: imx6: Rename imx6_* with imx_*
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>, Lucas Stach <l.stach@pengutronix.de>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-pci@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fix linux kernel BTF builds: increase max percpu
+ variables by 10x
+Content-Language: en-US
+To: Alan Maguire <alan.maguire@oracle.com>, Jiri Olsa <olsajiri@gmail.com>
+CC: Arnaldo Carvalho de Melo <acme@redhat.com>, Alexei Starovoitov
+	<ast@kernel.org>, <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	<dwarves@vger.kernel.org>
+References: <20240228032142.396719-1-jhubbard@nvidia.com>
+ <Zd76zrhA4LAwA_WF@krava> <856564cf-fba4-4473-bfa9-e9b03115abd1@oracle.com>
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <856564cf-fba4-4473-bfa9-e9b03115abd1@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D0:EE_|PH7PR12MB8122:EE_
+X-MS-Office365-Filtering-Correlation-Id: c12c5228-d677-4339-aa9d-08dc38b40080
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	CyoZow8D8PG8Tf/YvnPgARkOImjm9qIwkziPkc1aWRdMism/j+Y50XLLDtScrRBSaAyXLUCroppp/ijqun4cmEH5DE55PY/7sPzbqyi0kv9EqfvjFouaSp7IdsoY9Fh4rorzcXoXN66mL6qmAGZ5HWztrqSNPEhios2p4cpBTxdl9nBVBMNue0SiSVkG/hr27CaZKjqZnxGgC2pzHlC2Q5XxnufxzYxk4GIN/JrB4TdFbSrYXnDrpTETv3hC6nbIStbtPQzcaMQGB8INSJKaXTyuIqrJgK34swIk+kF+5qDI/DRAYp109Shwb0IQVR17P+bDIgvDmvU7TTMr3+290T1B029M9yw2gotlgVMop1hI7GM9Cod8vHSq4FKkg6WxjMIPc/uuI+YcCpbl9h+E1CE5w4AWIZEU5KQIOtH/z7xrAczGiwwl4S/QXxfZZ+ssZmcvGvXoFDtBSynmezu5ppKUPHJs8f71KZshjqO5vqRQ4YgpLtut+XPDn12H6w+BKFbVauNDjeI3SXq+WE6i/Sa5Hovgyv+8xs5gVwKxvXpWLAGMMF0ewPoBqXJyHYApD8k+w2zOrtGYR2U6+HEyujKuBtGHuNdKM33IJ4P2GltPqC3he/fCyBeOssIwiZq4osM6w76v9+Xi6B4dF0V8pyLmpB6sJlyylM7D3egMmJHTVrsqFyrMw2wewzJPV1KM/O4ypIxSCtx2nd/l0RKp+/P5pJbdWtBic5+1HDGsmerTCKvi9PLs3wLbif5hghcm
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 23:21:33.2218
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c12c5228-d677-4339-aa9d-08dc38b40080
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001D0.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8122
 
-On Tue, Feb 27, 2024 at 6:47=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
->
-> imx6_* actually mean for all imx chips (imx6x, imx7x, imx8x and imx9x).
+On 2/28/24 04:04, Alan Maguire wrote:
+> On 28/02/2024 09:20, Jiri Olsa wrote:
+>> On Tue, Feb 27, 2024 at 07:21:42PM -0800, John Hubbard wrote:
+...
+>> do you have an actual count of percpu variables for your config?
 
-That's OK. In the kernel, we have lots of examples where the names of
-files and functions follow the first chip model.
+That's a very reasonable question...
 
-If this same IP gets used by another SoC in the future that is not
-named i.MX, will this driver get renamed again?
+>> 10x seems a lot to me
 
-> Rename imx6_* with imx_* to avoid confuse.
+Me too. This was a "make the problem go away now please" type of "fix". :)
 
-I don't find it confusing.
+>>
+>> this might be a workaround, but we should make encoder->percpu.vars
+>> dynamically allocated like we do for functions
 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 754 +++++++++++++++++-----------=
-------
->  1 file changed, 377 insertions(+), 377 deletions(-)
+Yes, that's a much better design imho.
 
-I think this pure churn and we should not do the rename as it brings
-no benefits.
+>>
+>> jirka
+>>
+> 
+> Good idea Jiri; John would you mind trying the attached patch? Thanks!
+
+It works perfectly for me. For that patch, please feel free to add:
+
+Tested-by: John Hubbard <jhubbard@nvidia.com>
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
 
