@@ -1,69 +1,68 @@
-Return-Path: <bpf+bounces-22910-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22911-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C9A86B73B
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 19:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B2E86B741
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 19:37:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D7401F26F3E
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 18:34:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04CA31F23417
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 18:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B82F41A85;
-	Wed, 28 Feb 2024 18:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7677C79B79;
+	Wed, 28 Feb 2024 18:37:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8867279B7A
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 18:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FAE40875
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 18:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709145252; cv=none; b=cHokWNM1UTt1EQZ0cFHzmydSCxfNTJ+pbt6CMzNxCnphrrFRAoOq8UACfEIIGLDsFdyFyjrU81EYS28WLjGCS06K7iNVaEd/6jIu/PNo3AKos23ThbdYpgLgOMmfeS1GtztFp7TVA/chIKRNNPbwvvNluUaVCPcFJS+ezY6ehNo=
+	t=1709145425; cv=none; b=iGqN1lRfioejbSW9lcKcF+LbgCrHJDC0vaitZhYuX8Vrocbau8gEOxQHy8UoRwV7D3zjQYjSWLAh77bdioayNCX81bA6j6WYf48NScFEfwo/YVkh/x1nlVGxedc9SHm5femHgoEW+KT939PzOLPUA1mfzY4ER6MdC7S05msu3Z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709145252; c=relaxed/simple;
-	bh=1n2dtS/UCWO3YZHWcl9z1ZaqBrZSnGrOPXPgPNNtkQM=;
+	s=arc-20240116; t=1709145425; c=relaxed/simple;
+	bh=JiHQfeP8bDKBI+PKsbgDcawpxvodyo8Ketm0HYCkfGE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lmqKcjWYm8grXASgH2rV3GabAglA/30e4g3bl6ZmLRBboPNgvGh8qfbR6XKQ5FyMHUONftCHr6SZppmDhFeVvgVA60XhnJYE2n3gw+70vUMpuvbTqeLtcJmLNahQCp0ApvBOoGxHJ2xXlLrkJOE3xZ462utoxvXp5n71enqllLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=NKi6e7/ieh0z/EnJmsqMpKmluNW5TVd8lEBmdopXLeBzqUWJoUJ6ONLNfgL3+IoVdqTtTgG4VucXmpeFPrxvS5V99ILh5MFQW+Apsw5fEePnRakT6seiVsZZT7/4+ksi9H8jsEk9m6e00YUwS11UqIMIvnBaS+vipTV0T2JIbLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21ec3ca9ab9so2549125fac.3
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 10:34:09 -0800 (PST)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-787df45e513so4045285a.1
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 10:37:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709145248; x=1709750048;
+        d=1e100.net; s=20230601; t=1709145422; x=1709750222;
         h=user-agent:in-reply-to:content-disposition:mime-version:references
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tIncm4s4KEDj39Btu+KUfIdXeJwsUmtneUE/X3RBVE4=;
-        b=gQLnVApGd4BL3drDqwtYw9ZASC3eZfVkTBvvp/X/9Z6CQJbM24CQkUnbqMB1KWHrLx
-         3bz4m6xnDRv5Ee2XQKtCIJtZ770+qVN+KGNF1Utm5OovMj0lD7isk4vniBRtLZ6AkJEH
-         /qqiF1a1a/Q88xF3iPMwttKqTGY15Zw8/dLXRqhDeLQvu7GdpDCySKNDLm0A52dFhH2K
-         LvWwDoWijWp8FKqTGXmihRJps9LqhJXIAjMoqcQTKTfQqhvoBAAaOGdUo2ATmqPNk1ri
-         by/uD3/hVsbwPD+Jo4xgoKM4xBuUTb+W+UyFFc5k7h70a4ZO/vdwgswx34xnZbk46k4L
-         6RAg==
-X-Gm-Message-State: AOJu0YzLmXdFufxrGD2zH0k18BBl1YNa/l5f+ADa8ddurOuYPcPrAcYj
-	wMqmIrcEehc17RVKwpvG887gwupSK7j+15oBP0R38ATbEn0n7jtd
-X-Google-Smtp-Source: AGHT+IGeTXuivreZLQZKTd2rgTD/1P993kagx/ZeOLL7w687XJ1cRNwJGklxBIfly8jsjF22M7bvng==
-X-Received: by 2002:a05:6871:2583:b0:21e:a6fb:28eb with SMTP id yy3-20020a056871258300b0021ea6fb28ebmr435308oab.35.1709145248433;
-        Wed, 28 Feb 2024 10:34:08 -0800 (PST)
+        bh=+KHp4cWZddyywyIuTLIc+RBjNv9T2j3+WX9YDINhl6M=;
+        b=k1g9IrSy+1bksxRLR+q0cflh5ZTm7J0oASiGpEbpGOX6o4MDQ2J5Jpi+DQic3zU0bs
+         wuzBM7S8JdPRnVpqso9JAShWrq2fLDx1frCISzZIW+Z3RNsGoKYl2d7+WbcaONqYqBhV
+         mnl58EuOx2LL6fSKvUkoyC6y0z+Q2Fvkdke251+4Kw9f9+t+vAd0fPlHVl50hg9XZxQD
+         bxWU7IUtFXHuQNp8z5AyAWxCNV30INMo48hHJP5oc62GLiZeAlKPnwbk5rUc5Omt/faU
+         /5TrNa0bo63b3D7bKdSXV7UeoZ/ZTzlc4DTQstYXEIfgaKPwsD2c8++Ezp/cA+4ocpLF
+         zgaA==
+X-Gm-Message-State: AOJu0YwRhbfJazcGKDlnkEKKtWFcGoyD2fFUOQzHl/s+c71Zjn28ccPI
+	1xNmUuIVlkl7GjoQ0Zvu0LMtEwEmp+2ZqlDLdYxnU7jpASniEY5FdUH46M78
+X-Google-Smtp-Source: AGHT+IF2qruaBK1jP3sPSRXDYNbIjSGPTYQzEHyKnPbSyTJCDlvMRDrfrgbscIppxzWgCMNZrmtmiw==
+X-Received: by 2002:a05:620a:3703:b0:787:284b:3044 with SMTP id de3-20020a05620a370300b00787284b3044mr7599423qkb.77.1709145422254;
+        Wed, 28 Feb 2024 10:37:02 -0800 (PST)
 Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id a1-20020a05620a066100b00787289fa901sm43820qkh.36.2024.02.28.10.34.07
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a29ca00b00785d893a692sm46164qkp.27.2024.02.28.10.37.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 10:34:07 -0800 (PST)
-Date: Wed, 28 Feb 2024 12:34:05 -0600
+        Wed, 28 Feb 2024 10:37:01 -0800 (PST)
+Date: Wed, 28 Feb 2024 12:36:58 -0600
 From: David Vernet <void@manifault.com>
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
 	yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v1 6/8] selftests/bpf: test autocreate behavior
- for struct_ops maps
-Message-ID: <20240228183405.GI148327@maniforge>
+Subject: Re: [PATCH bpf-next v1 8/8] selftests/bpf: tests for struct_ops
+ autoload/autocreate toggling
+Message-ID: <20240228183658.GJ148327@maniforge>
 References: <20240227204556.17524-1-eddyz87@gmail.com>
- <20240227204556.17524-7-eddyz87@gmail.com>
- <20240228182949.GH148327@maniforge>
+ <20240227204556.17524-9-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,124 +70,132 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lP1+9OvmqShTIrPu"
+	protocol="application/pgp-signature"; boundary="zFIXGLLoGHVUtYA4"
 Content-Disposition: inline
-In-Reply-To: <20240228182949.GH148327@maniforge>
+In-Reply-To: <20240227204556.17524-9-eddyz87@gmail.com>
 User-Agent: Mutt/2.2.12 (2023-09-09)
 
 
---lP1+9OvmqShTIrPu
+--zFIXGLLoGHVUtYA4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 12:29:49PM -0600, David Vernet wrote:
-> On Tue, Feb 27, 2024 at 10:45:54PM +0200, Eduard Zingerman wrote:
-> > Check that bpf_map__set_autocreate() can be used to disable automatic
-> > creation for struct_ops maps.
-> >=20
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  .../bpf/prog_tests/struct_ops_autocreate.c    | 79 +++++++++++++++++++
-> >  .../bpf/progs/struct_ops_autocreate.c         | 42 ++++++++++
-> >  2 files changed, 121 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_a=
-utocreate.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_autocr=
-eate.c
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocrea=
-te.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> > new file mode 100644
-> > index 000000000000..b21b10f94fc2
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> > @@ -0,0 +1,79 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <test_progs.h>
-> > +#include "struct_ops_autocreate.skel.h"
-> > +
-> > +#define EXPECTED_MSG "libbpf: struct_ops init_kern"
-> > +
-> > +static libbpf_print_fn_t old_print_cb;
-> > +static bool msg_found;
-> > +
-> > +static int print_cb(enum libbpf_print_level level, const char *fmt, va=
-_list args)
-> > +{
-> > +	old_print_cb(level, fmt, args);
-> > +	if (level =3D=3D LIBBPF_WARN && strncmp(fmt, EXPECTED_MSG, strlen(EXP=
-ECTED_MSG)) =3D=3D 0)
-> > +		msg_found =3D true;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void cant_load_full_object(void)
-> > +{
-> > +	struct struct_ops_autocreate *skel;
-> > +	int err;
-> > +
-> > +	old_print_cb =3D libbpf_set_print(print_cb);
-> > +	skel =3D struct_ops_autocreate__open_and_load();
+On Tue, Feb 27, 2024 at 10:45:56PM +0200, Eduard Zingerman wrote:
+> Verify automatic interaction between struct_ops map autocreate flag
+> and struct_ops programs autoload flags.
 >=20
-> Optional suggestion: It might be useful to add a comment here explaining
-> exactly why we expect this to fail? Something like:
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../bpf/prog_tests/struct_ops_autocreate.c    | 65 +++++++++++++++++--
+>  1 file changed, 61 insertions(+), 4 deletions(-)
 >=20
-> 	/* The testmod_2 map BTF type (struct bpf_testmod_ops___v2) doesn't
-> 	 * match the BTF of the actual struct bpf_testmod_ops defined in the
-> 	 * kernel, so we should fail to load it if we don't disable autocreate
-> 	 * for the map.
-> 	 */
->=20
-> Feel free to ignore -- I recognize that some might just consider that
-> unnecessary noise.
->=20
-> > +	err =3D errno;
-> > +	libbpf_set_print(old_print_cb);
-> > +	if (!ASSERT_NULL(skel, "struct_ops_autocreate__open_and_load"))
-> > +		return;
-> > +
-> > +	ASSERT_EQ(err, ENOTSUP, "errno should be ENOTSUP");
-> > +	ASSERT_TRUE(msg_found, "expected message");
-> > +
-> > +	struct_ops_autocreate__destroy(skel);
-> > +}
-> > +
-> > +static void can_load_partial_object(void)
-> > +{
-> > +	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-> > +	struct struct_ops_autocreate *skel;
-> > +	struct bpf_link *link =3D NULL;
-> > +	int err;
-> > +
-> > +	skel =3D struct_ops_autocreate__open_opts(&opts);
-> > +	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
-> > +		return;
-> > +
-> > +	err =3D bpf_program__set_autoload(skel->progs.test_2, false);
-> > +	if (!ASSERT_OK(err, "bpf_program__set_autoload"))
-> > +		goto cleanup;
->=20
-> It feels a bit awkward to have to specify that a struct_ops prog isn't
-> autoloaded if it's not associated with an autoloaded / autocreated struct=
-_ops
-> map. Would it be possible to teach libbpf to not autoload such progs by
-> default?
+> diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate=
+=2Ec b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
+> index b21b10f94fc2..ace296aae8c4 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
+> @@ -46,10 +46,6 @@ static void can_load_partial_object(void)
+>  	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
+>  		return;
+> =20
+> -	err =3D bpf_program__set_autoload(skel->progs.test_2, false);
+> -	if (!ASSERT_OK(err, "bpf_program__set_autoload"))
+> -		goto cleanup;
+> -
+>  	err =3D bpf_map__set_autocreate(skel->maps.testmod_2, false);
+>  	if (!ASSERT_OK(err, "bpf_map__set_autocreate"))
+>  		goto cleanup;
+> @@ -70,8 +66,69 @@ static void can_load_partial_object(void)
+>  	struct_ops_autocreate__destroy(skel);
+>  }
+> =20
+> +static void autoload_toggles(void)
+> +{
+> +	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+> +	struct bpf_map *testmod_1, *testmod_2;
+> +	struct bpf_program *test_1, *test_2;
+> +	struct struct_ops_autocreate *skel;
+> +
+> +	skel =3D struct_ops_autocreate__open_opts(&opts);
+> +	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
+> +		return;
+> +
+> +	testmod_1 =3D skel->maps.testmod_1;
+> +	testmod_2 =3D skel->maps.testmod_2;
+> +	test_1 =3D skel->progs.test_1;
+> +	test_2 =3D skel->progs.test_2;
+> +
+> +	/* testmod_1 on, testmod_2 on */
+> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #1");
+> +	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #1");
+> +
+> +	/* testmod_1 off, testmod_2 on */
+> +	bpf_map__set_autocreate(testmod_1, false);
+> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #2");
+> +	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #2");
+> +
+> +	/* testmod_1 off, testmod_2 off,
+> +	 * setting same state several times should not confuse internal state.
+> +	 */
+> +	bpf_map__set_autocreate(testmod_2, false);
+> +	bpf_map__set_autocreate(testmod_2, false);
 
-I see you already added that in the next patch. Nice!!
+Duplicate line
 
---lP1+9OvmqShTIrPu
+> +	ASSERT_FALSE(bpf_program__autoload(test_1), "autoload(test_1) #3");
+> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #3");
+> +
+> +	/* testmod_1 on, testmod_2 off */
+> +	bpf_map__set_autocreate(testmod_1, true);
+> +	bpf_map__set_autocreate(testmod_1, true);
+
+Here as well
+
+> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #4");
+> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #4");
+> +
+> +	/* testmod_1 on, testmod_2 on */
+> +	bpf_map__set_autocreate(testmod_2, true);
+> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #5");
+> +	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #5");
+> +
+> +	/* testmod_1 on, testmod_2 off */
+> +	bpf_map__set_autocreate(testmod_2, false);
+> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #6");
+> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #6");
+> +
+> +	/* setting autoload manually overrides automatic toggling */
+> +	bpf_program__set_autoload(test_2, false);
+> +	/* testmod_1 on, testmod_2 off */
+> +	bpf_map__set_autocreate(testmod_2, true);
+> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #7");
+> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #7");
+> +
+> +	struct_ops_autocreate__destroy(skel);
+> +}
+> +
+>  void serial_test_struct_ops_autocreate(void)
+>  {
+> +	if (test__start_subtest("autoload_toggles"))
+> +		autoload_toggles();
+>  	if (test__start_subtest("cant_load_full_object"))
+>  		cant_load_full_object();
+>  	if (test__start_subtest("can_load_partial_object"))
+> --=20
+> 2.43.0
+>=20
+
+--zFIXGLLoGHVUtYA4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZd98nQAKCRBZ5LhpZcTz
-ZPfFAQDFF7L0w9AO03rqek9RVgIfHc4vfEylGXa8V2hnL8nCsQEAsmgNK83HLNyo
-P9t3zfC81ZQ+0YuutPwPD9JlSXMluQo=
-=CTbK
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZd99SgAKCRBZ5LhpZcTz
+ZIvhAQDOyTjSKuR3Yx1JBwLUMo+qMeXhz0oXz8D8kACERclt2AEAj2/hQdFSQ26L
+ItcEaSwNfLphCT5gsVUprPi9zxtzHgE=
+=1Ndv
 -----END PGP SIGNATURE-----
 
---lP1+9OvmqShTIrPu--
+--zFIXGLLoGHVUtYA4--
 
