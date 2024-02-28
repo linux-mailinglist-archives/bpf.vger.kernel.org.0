@@ -1,201 +1,201 @@
-Return-Path: <bpf+bounces-22911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75B2E86B741
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 19:37:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 882AD86B822
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 20:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04CA31F23417
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 18:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01A101F22AC4
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 19:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7677C79B79;
-	Wed, 28 Feb 2024 18:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6005A74410;
+	Wed, 28 Feb 2024 19:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GxZXMVpI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FAE40875
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 18:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621D079B71
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 19:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709145425; cv=none; b=iGqN1lRfioejbSW9lcKcF+LbgCrHJDC0vaitZhYuX8Vrocbau8gEOxQHy8UoRwV7D3zjQYjSWLAh77bdioayNCX81bA6j6WYf48NScFEfwo/YVkh/x1nlVGxedc9SHm5femHgoEW+KT939PzOLPUA1mfzY4ER6MdC7S05msu3Z8=
+	t=1709148480; cv=none; b=og6Ndbi8xD/+5HuDSyn7GsSbJrx1WoCe773Yhpgbr6FUZLKz4M8IWO1/Wc0w0fuhOUvUQl6s1xvN7enZbtJV9StV8tdAHKjxYnGOmNE7IH/61vpyliLyeUOrGGbrWRtJyQmiaQcxigKeyhfw+b0d3m+PxHWEKPiVP1MLru+BnlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709145425; c=relaxed/simple;
-	bh=JiHQfeP8bDKBI+PKsbgDcawpxvodyo8Ketm0HYCkfGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NKi6e7/ieh0z/EnJmsqMpKmluNW5TVd8lEBmdopXLeBzqUWJoUJ6ONLNfgL3+IoVdqTtTgG4VucXmpeFPrxvS5V99ILh5MFQW+Apsw5fEePnRakT6seiVsZZT7/4+ksi9H8jsEk9m6e00YUwS11UqIMIvnBaS+vipTV0T2JIbLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+	s=arc-20240116; t=1709148480; c=relaxed/simple;
+	bh=LxcirTAoySOPLZOPcOJUSafRcRUtlOCzo4UUwHED72o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n75BbOzVqOwwpAC0u/Trrbur16e9r3CvNqyEsE8d7PYnQV0k7R8PZ05NSQ9DyA5n+KMZTeWvf2YsK3ADVNFLLxu2dv8qTrFv/KgGBpCAyfdparaONCfp0F28Z9bdPSrvlP5fHytHUv9xfuM9FZumfqSspniTEi6/gULZygqFtHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GxZXMVpI; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-787df45e513so4045285a.1
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 10:37:03 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbed0710c74so140962276.1
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 11:27:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709148478; x=1709753278; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ufe2w4ZR5aGzqu2uKCWcsNJZG6ehd/d5wUHdeYHL2oQ=;
+        b=GxZXMVpI/qp0I+eMIyGizhrGV8wrWerM6VPs/6/7Ly56uV3Ms49uVwTHsNeM2xsNkF
+         ZIa+RFa7a5vkwzbbCljaPMZ9I73FpLlI4y2QWYoiTiKgnDeglIVsH+N12DMoE7JFWuyu
+         bb0SPPM4bPsOP9l0PGQiP5U63o5EtQ+h3lAbfpgxYDzcSJwjYlJNDC6Tu2SY0sGmFg9E
+         oPji994d2A+KlQHOIdO1SejU7m1MzhsivQV6ZiuIHNGdM/OHFfemGyU7nbpbWRiJvSsr
+         5FnOm8/NRzpFq2NALjnKQkd4wEbkVC2uJKQn+9QPXsetPHT7CGwya+JjHIXg9MbMXSaL
+         4NZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709145422; x=1709750222;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+KHp4cWZddyywyIuTLIc+RBjNv9T2j3+WX9YDINhl6M=;
-        b=k1g9IrSy+1bksxRLR+q0cflh5ZTm7J0oASiGpEbpGOX6o4MDQ2J5Jpi+DQic3zU0bs
-         wuzBM7S8JdPRnVpqso9JAShWrq2fLDx1frCISzZIW+Z3RNsGoKYl2d7+WbcaONqYqBhV
-         mnl58EuOx2LL6fSKvUkoyC6y0z+Q2Fvkdke251+4Kw9f9+t+vAd0fPlHVl50hg9XZxQD
-         bxWU7IUtFXHuQNp8z5AyAWxCNV30INMo48hHJP5oc62GLiZeAlKPnwbk5rUc5Omt/faU
-         /5TrNa0bo63b3D7bKdSXV7UeoZ/ZTzlc4DTQstYXEIfgaKPwsD2c8++Ezp/cA+4ocpLF
-         zgaA==
-X-Gm-Message-State: AOJu0YwRhbfJazcGKDlnkEKKtWFcGoyD2fFUOQzHl/s+c71Zjn28ccPI
-	1xNmUuIVlkl7GjoQ0Zvu0LMtEwEmp+2ZqlDLdYxnU7jpASniEY5FdUH46M78
-X-Google-Smtp-Source: AGHT+IF2qruaBK1jP3sPSRXDYNbIjSGPTYQzEHyKnPbSyTJCDlvMRDrfrgbscIppxzWgCMNZrmtmiw==
-X-Received: by 2002:a05:620a:3703:b0:787:284b:3044 with SMTP id de3-20020a05620a370300b00787284b3044mr7599423qkb.77.1709145422254;
-        Wed, 28 Feb 2024 10:37:02 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id s10-20020a05620a29ca00b00785d893a692sm46164qkp.27.2024.02.28.10.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 10:37:01 -0800 (PST)
-Date: Wed, 28 Feb 2024 12:36:58 -0600
-From: David Vernet <void@manifault.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
-	yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v1 8/8] selftests/bpf: tests for struct_ops
- autoload/autocreate toggling
-Message-ID: <20240228183658.GJ148327@maniforge>
-References: <20240227204556.17524-1-eddyz87@gmail.com>
- <20240227204556.17524-9-eddyz87@gmail.com>
+        d=1e100.net; s=20230601; t=1709148478; x=1709753278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ufe2w4ZR5aGzqu2uKCWcsNJZG6ehd/d5wUHdeYHL2oQ=;
+        b=oMY+fOcqJp13TR3BN9NAeFKTU3fpfPqft6GMuUpuzViVlcapmii7jrn7eZhNmPcI9T
+         zGcWPc1H2v8QTgonvGKx9i65ih21YWLarTRxz4H/x0KteRGY/x4AzlD4TgNkRpGkeEKI
+         mxOptU7A1BUZju1w8TZmQaGFohdCTzFyFyZ+4iftNOVPro5k/afaCojfqBoPN4kosR1l
+         CQFkOJEgYLZKCuAbNqPA5s1vTrAHs1kJY4YFBOw9gnATCsJd6M/a+/g8+s7aLeA3ECj7
+         mKR2P1RZuOC+jhF1RVJrejAf7O3PT7bfEVCNWgX8Zq9EgXhPOnAepUDETjwNknM0r7EA
+         ed+w==
+X-Gm-Message-State: AOJu0YzOmg0mLUTr0j2E2hYUJk/wgPmjGcwSlwlYF4XYcWI1BDC3G8H4
+	irIEDZNHntTftvEw7Hk9tReTGiGvEMoH5u271zv4z3/eWpYpotl1
+X-Google-Smtp-Source: AGHT+IHuX6zLOu5SoBsJdYQVeuiO9S3PMx7o5fSXaiscSU3nsLc3+FYljGlyhzL3ptpw9JZaWBDDcw==
+X-Received: by 2002:a25:bc8a:0:b0:dcf:56c1:5a12 with SMTP id e10-20020a25bc8a000000b00dcf56c15a12mr159236ybk.38.1709148478272;
+        Wed, 28 Feb 2024 11:27:58 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:8315:1f56:c755:e391? ([2600:1700:6cf8:1240:8315:1f56:c755:e391])
+        by smtp.gmail.com with ESMTPSA id h135-20020a25d08d000000b00dc6d6dc9771sm12530ybg.8.2024.02.28.11.27.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 11:27:57 -0800 (PST)
+Message-ID: <d342f4ee-8b70-456c-aea5-54fc9084f52c@gmail.com>
+Date: Wed, 28 Feb 2024 11:27:55 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zFIXGLLoGHVUtYA4"
-Content-Disposition: inline
-In-Reply-To: <20240227204556.17524-9-eddyz87@gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 3/6] libbpf: Convert st_ops->data to shadow
+ type.
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ quentin@isovalent.com, kuifeng@meta.com
+References: <20240227010432.714127-1-thinker.li@gmail.com>
+ <20240227010432.714127-4-thinker.li@gmail.com>
+ <CAEf4BzZbE=2Kvrx_XK60jhtFfJuFsu18=pcZFry8UuF-s_Lg_A@mail.gmail.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAEf4BzZbE=2Kvrx_XK60jhtFfJuFsu18=pcZFry8UuF-s_Lg_A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---zFIXGLLoGHVUtYA4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 10:45:56PM +0200, Eduard Zingerman wrote:
-> Verify automatic interaction between struct_ops map autocreate flag
-> and struct_ops programs autoload flags.
->=20
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  .../bpf/prog_tests/struct_ops_autocreate.c    | 65 +++++++++++++++++--
->  1 file changed, 61 insertions(+), 4 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate=
-=2Ec b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> index b21b10f94fc2..ace296aae8c4 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
-> @@ -46,10 +46,6 @@ static void can_load_partial_object(void)
->  	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
->  		return;
-> =20
-> -	err =3D bpf_program__set_autoload(skel->progs.test_2, false);
-> -	if (!ASSERT_OK(err, "bpf_program__set_autoload"))
-> -		goto cleanup;
-> -
->  	err =3D bpf_map__set_autocreate(skel->maps.testmod_2, false);
->  	if (!ASSERT_OK(err, "bpf_map__set_autocreate"))
->  		goto cleanup;
-> @@ -70,8 +66,69 @@ static void can_load_partial_object(void)
->  	struct_ops_autocreate__destroy(skel);
->  }
-> =20
-> +static void autoload_toggles(void)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-> +	struct bpf_map *testmod_1, *testmod_2;
-> +	struct bpf_program *test_1, *test_2;
-> +	struct struct_ops_autocreate *skel;
-> +
-> +	skel =3D struct_ops_autocreate__open_opts(&opts);
-> +	if (!ASSERT_OK_PTR(skel, "struct_ops_autocreate__open_opts"))
-> +		return;
-> +
-> +	testmod_1 =3D skel->maps.testmod_1;
-> +	testmod_2 =3D skel->maps.testmod_2;
-> +	test_1 =3D skel->progs.test_1;
-> +	test_2 =3D skel->progs.test_2;
-> +
-> +	/* testmod_1 on, testmod_2 on */
-> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #1");
-> +	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #1");
-> +
-> +	/* testmod_1 off, testmod_2 on */
-> +	bpf_map__set_autocreate(testmod_1, false);
-> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #2");
-> +	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #2");
-> +
-> +	/* testmod_1 off, testmod_2 off,
-> +	 * setting same state several times should not confuse internal state.
-> +	 */
-> +	bpf_map__set_autocreate(testmod_2, false);
-> +	bpf_map__set_autocreate(testmod_2, false);
+On 2/28/24 09:58, Andrii Nakryiko wrote:
+> On Mon, Feb 26, 2024 at 5:04 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+>>
+>> Convert st_ops->data to the shadow type of the struct_ops map. The shadow
+>> type of a struct_ops type is a variant of the original struct type
+>> providing a way to access/change the values in the maps of the struct_ops
+>> type.
+>>
+>> bpf_map__initial_value() will return st_ops->data for struct_ops types. The
+>> skeleton is going to use it as the pointer to the shadow type of the
+>> original struct type.
+>>
+>> One of the main differences between the original struct type and the shadow
+>> type is that all function pointers of the shadow type are converted to
+>> pointers of struct bpf_program. Users can replace these bpf_program
+>> pointers with other BPF programs. The st_ops->progs[] will be updated
+>> before updating the value of a map to reflect the changes made by users.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 21 ++++++++++++++++++++-
+>>   1 file changed, 20 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 465b50235a01..2d22344fb127 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -1102,6 +1102,9 @@ static int bpf_map__init_kern_struct_ops(struct bpf_map *map)
+>>                  if (btf_is_ptr(mtype)) {
+>>                          struct bpf_program *prog;
+>>
+>> +                       /* Update the value from the shadow type */
+>> +                       st_ops->progs[i] = *(struct bpf_program **)mdata;
+>> +
+> 
+> it's unsettling to just cast a pointer like this without any
+> validation. It's too easy for users to set either some garbage there
+> or struct bpf_program * pointer from some other skeleton.
+> 
+> Luckily, validation is pretty simple, we can just iterate over all
+> bpf_object's programs and check if any of them matches the value of
+> the mdata pointer. If not, error out with meaningful error.
 
-Duplicate line
+Make sense to me.
 
-> +	ASSERT_FALSE(bpf_program__autoload(test_1), "autoload(test_1) #3");
-> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #3");
-> +
-> +	/* testmod_1 on, testmod_2 off */
-> +	bpf_map__set_autocreate(testmod_1, true);
-> +	bpf_map__set_autocreate(testmod_1, true);
+> 
+> Also, even if the bpf_program pointer is correct, it could be a
+> program of the wrong type, so I think we should add a bit more
+> validation here, given these pointers are set by users directly after
+> bpf_object is opened.
 
-Here as well
 
-> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #4");
-> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #4");
-> +
-> +	/* testmod_1 on, testmod_2 on */
-> +	bpf_map__set_autocreate(testmod_2, true);
-> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #5");
-> +	ASSERT_TRUE(bpf_program__autoload(test_2), "autoload(test_2) #5");
-> +
-> +	/* testmod_1 on, testmod_2 off */
-> +	bpf_map__set_autocreate(testmod_2, false);
-> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #6");
-> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #6");
-> +
-> +	/* setting autoload manually overrides automatic toggling */
-> +	bpf_program__set_autoload(test_2, false);
-> +	/* testmod_1 on, testmod_2 off */
-> +	bpf_map__set_autocreate(testmod_2, true);
-> +	ASSERT_TRUE(bpf_program__autoload(test_1), "autoload(test_1) #7");
-> +	ASSERT_FALSE(bpf_program__autoload(test_2), "autoload(test_2) #7");
-> +
-> +	struct_ops_autocreate__destroy(skel);
-> +}
-> +
->  void serial_test_struct_ops_autocreate(void)
->  {
-> +	if (test__start_subtest("autoload_toggles"))
-> +		autoload_toggles();
->  	if (test__start_subtest("cant_load_full_object"))
->  		cant_load_full_object();
->  	if (test__start_subtest("can_load_partial_object"))
-> --=20
-> 2.43.0
->=20
+Agree!
+Although this will be checked by the kernel, it makes sense to check at
+the user space to provide a more meaningful error.
 
---zFIXGLLoGHVUtYA4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZd99SgAKCRBZ5LhpZcTz
-ZIvhAQDOyTjSKuR3Yx1JBwLUMo+qMeXhz0oXz8D8kACERclt2AEAj2/hQdFSQ26L
-ItcEaSwNfLphCT5gsVUprPi9zxtzHgE=
-=1Ndv
------END PGP SIGNATURE-----
-
---zFIXGLLoGHVUtYA4--
+> 
+>>                          prog = st_ops->progs[i];
+>>                          if (!prog)
+>>                                  continue;
+>> @@ -9308,7 +9311,9 @@ static struct bpf_map *find_struct_ops_map_by_offset(struct bpf_object *obj,
+>>          return NULL;
+>>   }
+>>
+>> -/* Collect the reloc from ELF and populate the st_ops->progs[] */
+>> +/* Collect the reloc from ELF, populate the st_ops->progs[], and update
+>> + * st_ops->data for shadow type.
+>> + */
+>>   static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+>>                                              Elf64_Shdr *shdr, Elf_Data *data)
+>>   {
+>> @@ -9422,6 +9427,14 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+>>                  }
+>>
+>>                  st_ops->progs[member_idx] = prog;
+>> +
+>> +               /* st_ops->data will be expose to users, being returned by
+> 
+> typo: exposed
+> 
+>> +                * bpf_map__initial_value() as a pointer to the shadow
+>> +                * type. All function pointers in the original struct type
+>> +                * should be converted to a pointer to struct bpf_program
+>> +                * in the shadow type.
+>> +                */
+>> +               *((struct bpf_program **)(st_ops->data + moff)) = prog;
+>>          }
+>>
+>>          return 0;
+>> @@ -9880,6 +9893,12 @@ int bpf_map__set_initial_value(struct bpf_map *map,
+>>
+>>   void *bpf_map__initial_value(struct bpf_map *map, size_t *psize)
+>>   {
+>> +       if (bpf_map__is_struct_ops(map)) {
+>> +               if (psize)
+>> +                       *psize = map->def.value_size;
+>> +               return map->st_ops->data;
+>> +       }
+>> +
+>>          if (!map->mmaped)
+>>                  return NULL;
+>>          *psize = map->def.value_size;
+>> --
+>> 2.34.1
+>>
 
