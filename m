@@ -1,106 +1,119 @@
-Return-Path: <bpf+bounces-22848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D5E886A923
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 08:41:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 769F986AAD5
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 10:07:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89D611C21CCF
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 07:41:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01CDFB27756
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 09:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57BF250F2;
-	Wed, 28 Feb 2024 07:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8244D2E85D;
+	Wed, 28 Feb 2024 09:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uB3qROca"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uEDzthni"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BCA21370
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 07:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D93B2E84B
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 09:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709106106; cv=none; b=dMU65wILZmMQlB5bHUfb1HIpcsXjrOvxyltwTiDoXBvfeXHi9x15vmrStAKUnhWaHsOd1NHpWmwpxuMRWKLr0KdKhvtAGEqEGq0/cNgY1LNS8CCLA7nFvzAT36acTu3S0LKJ7ewJDkc8gNQfooBcgmC6XY4BQ7tbJOFiMK84h6w=
+	t=1709110969; cv=none; b=f9hQeiVV5fKCyvAsstuLNXfegt4pyIRGXpPgmpcTxefq62lSXhc27gafSeRayp12zLuWxJQXEY7HOCt6gdWh4hMaO7UcR76S/OmJ0tOktsxa2mIlbGXuVAbDK/rz9Nrzetk+aXPLmi12Uy0enFky+lTJtUWlxtCoI0gDssndRU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709106106; c=relaxed/simple;
-	bh=/rET/S5HQ/PfPbmjlsdrQWDUAZbqfjmOjYVTxvfOTSM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h2FJRV3YfyUQmPy+nT8k8HQ2AC9Gohro9A8yhdxb8HwrIfIYwKae9C252pVVadpgCBTMEae71e+7kP/W62ILpXvU20ZbQwhCkdaJ54+GFqqr3viYBBQX9kRve3oHTUJKNrlosUUbo2lyp3j87nySkzIqfrVqj9qs2IrNR5Pywiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uB3qROca; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a7c2be77-9287-4012-b299-1222bcce1de0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709106102;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yG+ycLq6TIlCzN0aTRXcji0nA/qXOFZEcThptIIOncI=;
-	b=uB3qROcaMotLLNOF3faXH5+/Ceay0E240eN0Jt3kMsAfY9BTgOYYTflQrL0zgiM/F85R7K
-	p9l+E47Hbyma2ZgYc9LyCK94nkBl3A+wBWauryHprbG9Hmxul0CX5oWUGL+gxwvoGwvbzr
-	ZZeUTfwqRnmu0z9bGiLaSGvn8TsapYY=
-Date: Tue, 27 Feb 2024 23:41:34 -0800
+	s=arc-20240116; t=1709110969; c=relaxed/simple;
+	bh=vMA528+ZoLu0AhNGUmhxkS+c/uHxdd3mNN51rhW2MAU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mxpCogpufic/FEIZlLeHhQhlBpY+nYDsttCq387pbgmtYe9JKyQPVSpouz6fshAiJSOkc27nBV+cEp1VCqSXPQyW+pBWF8YWxIEg3Is+mGWDzesNlpUYPpR//j/+nqB9zL6n1dxHHoSfrQICkB1Hxx8ORg9w0HdDunvwQIXb2cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uEDzthni; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60CF0C433C7;
+	Wed, 28 Feb 2024 09:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709110968;
+	bh=vMA528+ZoLu0AhNGUmhxkS+c/uHxdd3mNN51rhW2MAU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=uEDzthnihbLh3VoR3X4k0nPDn86lUbJvu63ZuPrq78dU/E/OUPV/I5naDJSKRIJxG
+	 8ZRJqUMaesDKLEScKowpr5fpmnpwIYzw6z+h94UFCUZ0EFEYu7MHiVDSD1c0wTp73l
+	 QrNs0dbj8FApKRkZ4pEPoLuYK5ZxYqG/Cmzp5KHjcZhYJBJ0yThWsiMIGgwh4ecQes
+	 8KKNluK3YqxzzxcaWeYOrDnkXoQ2dGahz1YLefSfqrkUPanQxbnrtn13XNkF779oSg
+	 1tvROA0Zjgv5PSktE5Mr6mM/3gcsSFOdQ/dz31Ikxv/ch3wwiG+M5jC4f6wc9mgZig
+	 RHwpk/tjA0LaQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH RFCv2 bpf-next 0/4] bpf: Introduce kprobe multi wrapper attach
+Date: Wed, 28 Feb 2024 10:02:38 +0100
+Message-ID: <20240228090242.4040210-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 2/8] libbpf: tie struct_ops programs to kernel
- BTF ids, not to local ids
-Content-Language: en-US
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
- yonghong.song@linux.dev, void@manifault.com, bpf@vger.kernel.org,
- ast@kernel.org
-References: <20240227204556.17524-1-eddyz87@gmail.com>
- <20240227204556.17524-3-eddyz87@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240227204556.17524-3-eddyz87@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 2/27/24 12:45 PM, Eduard Zingerman wrote:
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index abe663927013..c239b75d5816 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1134,8 +1134,27 @@ static int bpf_map__init_kern_struct_ops(struct bpf_map *map)
->   
->   			if (mod_btf)
->   				prog->attach_btf_obj_fd = mod_btf->fd;
-> -			prog->attach_btf_id = kern_type_id;
-> -			prog->expected_attach_type = kern_member_idx;
-> +
-> +			/* if we haven't yet processed this BPF program, record proper
-> +			 * attach_btf_id and member_idx
-> +			 */
-> +			if (!prog->attach_btf_id) {
-> +				prog->attach_btf_id = kern_type_id;
-> +				prog->expected_attach_type = kern_member_idx;
-> +			}
-> +
-> +			/* struct_ops BPF prog can be re-used between multiple
-> +			 * .struct_ops & .struct_ops.link as long as it's the
-> +			 * same struct_ops struct definition and the same
-> +			 * function pointer field
-> +			 */
-> +			if (prog->attach_btf_id != kern_type_id ||
-> +			    prog->expected_attach_type != kern_member_idx) {
-> +				pr_warn("struct_ops reloc %s: cannot use prog %s in sec %s with type %u attach_btf_id %u expected_attach_type %u for func ptr %s\n",
+hi,
+adding support to attach both entry and return bpf program on single
+kprobe multi link. The first RFC patchset is in [0].
 
-The patch lgtm. A nit is s/reloc/init_kern/.
+Having entry together with return probe for given function is common
+use case for tetragon, bpftrace and most likely for others.
 
-> +					map->name, prog->name, prog->sec_name, prog->type,
-> +					prog->attach_btf_id, prog->expected_attach_type, mname);
-> +				return -EINVAL;
-> +			}
->   
->   			st_ops->kern_func_off[i] = kern_data_off + kern_moff;
+At the moment if we want both entry and return probe to execute bpf
+program we need to create two (entry and return probe) links. The link
+for return probe creates extra entry probe to setup the return probe.
+The extra entry probe execution could be omitted if we had a way to
+use just single link for both entry and exit probe.
 
+In addition it's possible to control the execution of the return probe
+with the return value of the entry bpf program. If the entry program
+returns 0 the return probe is installed and executed, otherwise it's
+skip.
+
+v2 changes:
+  - adding 'kprobe.wrapper' program that is called both for entry and
+    exit probe [Andrii]
+  - I kept the interface that adds new flag in attr.link_create.kprobe_multi.flags,
+    because I don't see it breaking backward compatibility and it's much simpler
+    than new attach type, I tried to discuss this in [1], but I'm ok to change
+    that if it turns out to be a problem
+
+thanks,
+jirka
+
+
+[0] https://lore.kernel.org/bpf/20240207153550.856536-1-jolsa@kernel.org/
+[1] https://lore.kernel.org/bpf/ZdhmKQ1_vpCJTS_U@krava/
+---
+Jiri Olsa (4):
+      bpf: Add support for kprobe multi wrapper attach
+      bpf: Add bpf_kprobe_multi_is_return kfunc
+      libbpf: Add support for kprobe multi wrapper attach
+      selftests/bpf: Add kprobe multi wrapper test
+
+ include/uapi/linux/bpf.h                                   |   3 ++-
+ kernel/bpf/btf.c                                           |   3 +++
+ kernel/trace/bpf_trace.c                                   |  71 +++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ tools/include/uapi/linux/bpf.h                             |   3 ++-
+ tools/lib/bpf/libbpf.c                                     |  38 ++++++++++++++++++++++++++++---
+ tools/lib/bpf/libbpf.h                                     |   4 +++-
+ tools/testing/selftests/bpf/bpf_kfuncs.h                   |   2 ++
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c |  49 ++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/kprobe_multi_wrapper.c   | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 9 files changed, 259 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_wrapper.c
 
