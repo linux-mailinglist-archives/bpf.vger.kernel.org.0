@@ -1,302 +1,299 @@
-Return-Path: <bpf+bounces-22897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BA186B658
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 18:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0863E86B65B
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 18:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8106E1F24979
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 17:47:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73B791F24CF3
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 17:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7826B15DBBC;
-	Wed, 28 Feb 2024 17:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C2915DBC3;
+	Wed, 28 Feb 2024 17:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1KhMvtx"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2455208C6;
-	Wed, 28 Feb 2024 17:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4000C6EF02;
+	Wed, 28 Feb 2024 17:47:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709142440; cv=none; b=PUIp3+hfPuAW+PnYIY3OqDbLVEwc3n0Up+xnE6FyAdEeEV5tDd+nFWIcAC2Q5bAE/LDlPC/atEGj8AWmWRIdmqFutXtfIq3Awyg4iVRyRZgF92AtxT0s5ZmmeVtmXoODF72DkYv1tct/jpbnENTo00bBpk7dTOpLZE2m0OavZJg=
+	t=1709142469; cv=none; b=CvbMd92Vc7kcldX+VWGATon9/FxCmshAetdvTOg4xhiwcyWDjKRdympdTm8CXEFQ+QM0I/fdL2w8dFCpxujMSm0yqoV/KH7t+AZHsKuPLgisdM4DJRuEnaezC4sef1zth2ZbY4E1OSUqo9pOe2EBeC+k3GJ18ISQrrXDXLOgYKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709142440; c=relaxed/simple;
-	bh=xHvKTOsABz1LDQNy4mHww2CXHcFEll/LFGFThBQaQcc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Vw53GfccyRfqw0IiPLtx8byAWPqh1F3r5akT0VKod5/LiawFY+dV3st4cJOLiKsiyfgDIwkvKy0RFYmSv6JUF2jgGZ5iHWL2FlzIJwpA3F96cVbdLSNRHPejGzIM+oepRBGOA0LEerYx75uLnsPrSPnGYRwEALm8yJRPb6r39iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlLxd34Hnz9xxS8;
-	Thu, 29 Feb 2024 01:31:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id A89DA140893;
-	Thu, 29 Feb 2024 01:47:05 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwC38SWGcd9lGPZcAw--.40616S2;
-	Wed, 28 Feb 2024 18:47:04 +0100 (CET)
-Message-ID: <e6d1314d46dc4befd78bfa33e2cf3d8572a16009.camel@huaweicloud.com>
-Subject: Re: [PATCH v3 00/13] security: digest_cache LSM
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: corbet@lwn.net, paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com,  shuah@kernel.org, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com,  mic@digikod.net
-Cc: linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
- linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
- pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
- pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
- jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
- petrtesarik@huaweicloud.com, Roberto Sassu <roberto.sassu@huawei.com>
-Date: Wed, 28 Feb 2024 18:46:43 +0100
-In-Reply-To: <20240209140917.846878-1-roberto.sassu@huaweicloud.com>
-References: <20240209140917.846878-1-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709142469; c=relaxed/simple;
+	bh=C1UU1WA26ToOkkgIYK5WS3L7oXs4voCYLwz9isVT8+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t/QYK9jTMoZOcMCpHgSH3nJkFFn4HFPABxtvh+bl6Nx7Y+yxHC2A30z26hDCOcdg263pSgSLY7iYzLU28TdMxp4yizQVPgHu7SHfN+FXoKEPc4e76q2oo7b3Ar28bPbjase+jrOXFq53ZMe+EW6BR9ViMUjGkyIZItSxB5IMa7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R1KhMvtx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E49C433F1;
+	Wed, 28 Feb 2024 17:47:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709142468;
+	bh=C1UU1WA26ToOkkgIYK5WS3L7oXs4voCYLwz9isVT8+k=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=R1KhMvtxM5TlHUYIwZOn+O6bgARaol0xJeSoEJFVnwSxhpbar1jquGj5XVuPFoaPW
+	 HKMHlekSlIk02JZumDoY6MJUZbXs7byFDqEE/u80HJTYB5YJqGCVAi8jy01RykgFxy
+	 XUy/LqS3EdJWBYaq4tvIfUWKBrI+F0NPKZTB0iuYkPTlQL+/CdG0/9SuzLhzMoR3Ug
+	 TnT6zoIZPl1WWejxVB/YlR58dXt0Gh8TRoa5KRWyttsNXKoo4IQFAH+R7EIglfzjbU
+	 eKAhiZbmGFdEz/mOgTkJ4JSqSkDRqSJNDGcshvqmHdOfmrBNkBAzDBNPi3BqLXpef7
+	 xdy4OAMIHg3Bg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 5F228CE0350; Wed, 28 Feb 2024 09:47:48 -0800 (PST)
+Date: Wed, 28 Feb 2024 09:47:48 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <e3140bd7-af1b-42b0-bef4-cf2ca39c08d3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+ <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+ <87edcwerj6.fsf@toke.dk>
+ <6b6ce007-4527-494f-8d03-079f7bf139f9@paulmck-laptop>
+ <CAO3-PbpPN0ASFbkgb1J=uBnY=hd6s4CPACRuQtWng_3Apsy_NQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwC38SWGcd9lGPZcAw--.40616S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3uF1DCFyxCw13Wr4ftry8AFb_yoWDAw17p3
-	97CF15Kws5ZFy7Aw4fA3W29FyFv395KF47Gws7Xr13ZrWYvrnYy3WxCw17Zry3XrW8Xa1I
-	yw47Kr15Ww4DJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
-	7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
-	ZVWrXwCIccxYrVCFb41lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
-	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-	C2KfnxnUUI43ZEXa7IUUCeHDUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj5bMmQAAsz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAO3-PbpPN0ASFbkgb1J=uBnY=hd6s4CPACRuQtWng_3Apsy_NQ@mail.gmail.com>
 
-On Fri, 2024-02-09 at 15:09 +0100, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->=20
-> Introduce the digest_cache LSM, whose purpose is to deliver reference
-> digest values to integrity providers, such as IMA and IPE, abstracting to
-> them how those digests where extracted from the respective data source.
->=20
-> The major benefit is the ability to use the vaste amount of digests alrea=
-dy
-> provided (and likely signed) by software vendors, without needing them to
-> adapt their format to the one understood by the integrity provider.
->=20
-> IMA and IPE can immediately interface with the digest_cache LSM and query
-> the digest of an accessed file. If the digest is found, it means that the
-> file is coming from the software vendor and not modified. If not, the fil=
-e
-> might have been corrupted. Each integrity provider decides how to handle
-> this situation.
->=20
-> The second major benefit is performance improvement. Since the digest_cac=
-he
-> LSM has the ability to extract many digests from a single data source, it
-> means that it has less signatures to verify compared to the approach of
-> verifying individual file signatures (IMA appraisal). Preliminary tests
-> have shown a speedup of IMA appraisal of about 65% for sequential read, a=
-nd
-> 45% for parallel read.
->=20
-> This patch set has as prerequisites the file_release LSM hook (to be
-> introduced with the move of IMA/EVM to the LSM infrastructure), and
-> support for PGP keys, which is still unclear how it should be done.
->=20
-> The IMA integration patch set will be introduced separately. Also a PoC
-> based on the current version of IPE can be provided.
+On Wed, Feb 28, 2024 at 09:48:42AM -0600, Yan Zhai wrote:
+> On Wed, Feb 28, 2024 at 9:10 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Wed, Feb 28, 2024 at 12:50:53PM +0100, Toke Høiland-Jørgensen wrote:
+> > > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > >
+> > > > On Tue, Feb 27, 2024 at 05:44:17PM +0100, Eric Dumazet wrote:
+> > > >> On Tue, Feb 27, 2024 at 4:44 PM Yan Zhai <yan@cloudflare.com> wrote:
+> > > >> >
+> > > >> > We noticed task RCUs being blocked when threaded NAPIs are very busy in
+> > > >> > production: detaching any BPF tracing programs, i.e. removing a ftrace
+> > > >> > trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+> > > >> > ranges from hundreds of seconds to even an hour, severely harming any
+> > > >> > observability tools that rely on BPF tracing programs. It can be
+> > > >> > easily reproduced locally with following setup:
+> > > >> >
+> > > >> > ip netns add test1
+> > > >> > ip netns add test2
+> > > >> >
+> > > >> > ip -n test1 link add veth1 type veth peer name veth2 netns test2
+> > > >> >
+> > > >> > ip -n test1 link set veth1 up
+> > > >> > ip -n test1 link set lo up
+> > > >> > ip -n test2 link set veth2 up
+> > > >> > ip -n test2 link set lo up
+> > > >> >
+> > > >> > ip -n test1 addr add 192.168.1.2/31 dev veth1
+> > > >> > ip -n test1 addr add 1.1.1.1/32 dev lo
+> > > >> > ip -n test2 addr add 192.168.1.3/31 dev veth2
+> > > >> > ip -n test2 addr add 2.2.2.2/31 dev lo
+> > > >> >
+> > > >> > ip -n test1 route add default via 192.168.1.3
+> > > >> > ip -n test2 route add default via 192.168.1.2
+> > > >> >
+> > > >> > for i in `seq 10 210`; do
+> > > >> >  for j in `seq 10 210`; do
+> > > >> >     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 5201
+> > > >> >  done
+> > > >> > done
+> > > >> >
+> > > >> > ip netns exec test2 ethtool -K veth2 gro on
+> > > >> > ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+> > > >> > ip netns exec test1 ethtool -K veth1 tso off
+> > > >> >
+> > > >> > Then run an iperf3 client/server and a bpftrace script can trigger it:
+> > > >> >
+> > > >> > ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+> > > >> > ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 >/dev/null&
+> > > >> > bpftrace -e 'kfunc:__napi_poll{@=count();} interval:s:1{exit();}'
+> > > >> >
+> > > >> > Above reproduce for net-next kernel with following RCU and preempt
+> > > >> > configuraitons:
+> > > >> >
+> > > >> > # RCU Subsystem
+> > > >> > CONFIG_TREE_RCU=y
+> > > >> > CONFIG_PREEMPT_RCU=y
+> > > >> > # CONFIG_RCU_EXPERT is not set
+> > > >> > CONFIG_SRCU=y
+> > > >> > CONFIG_TREE_SRCU=y
+> > > >> > CONFIG_TASKS_RCU_GENERIC=y
+> > > >> > CONFIG_TASKS_RCU=y
+> > > >> > CONFIG_TASKS_RUDE_RCU=y
+> > > >> > CONFIG_TASKS_TRACE_RCU=y
+> > > >> > CONFIG_RCU_STALL_COMMON=y
+> > > >> > CONFIG_RCU_NEED_SEGCBLIST=y
+> > > >> > # end of RCU Subsystem
+> > > >> > # RCU Debugging
+> > > >> > # CONFIG_RCU_SCALE_TEST is not set
+> > > >> > # CONFIG_RCU_TORTURE_TEST is not set
+> > > >> > # CONFIG_RCU_REF_SCALE_TEST is not set
+> > > >> > CONFIG_RCU_CPU_STALL_TIMEOUT=21
+> > > >> > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=0
+> > > >> > # CONFIG_RCU_TRACE is not set
+> > > >> > # CONFIG_RCU_EQS_DEBUG is not set
+> > > >> > # end of RCU Debugging
+> > > >> >
+> > > >> > CONFIG_PREEMPT_BUILD=y
+> > > >> > # CONFIG_PREEMPT_NONE is not set
+> > > >> > CONFIG_PREEMPT_VOLUNTARY=y
+> > > >> > # CONFIG_PREEMPT is not set
+> > > >> > CONFIG_PREEMPT_COUNT=y
+> > > >> > CONFIG_PREEMPTION=y
+> > > >> > CONFIG_PREEMPT_DYNAMIC=y
+> > > >> > CONFIG_PREEMPT_RCU=y
+> > > >> > CONFIG_HAVE_PREEMPT_DYNAMIC=y
+> > > >> > CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=y
+> > > >> > CONFIG_PREEMPT_NOTIFIERS=y
+> > > >> > # CONFIG_DEBUG_PREEMPT is not set
+> > > >> > # CONFIG_PREEMPT_TRACER is not set
+> > > >> > # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+> > > >> >
+> > > >> > An interesting observation is that, while tasks RCUs are blocked,
+> > > >> > related NAPI thread is still being scheduled (even across cores)
+> > > >> > regularly. Looking at the gp conditions, I am inclining to cond_resched
+> > > >> > after each __napi_poll being the problem: cond_resched enters the
+> > > >> > scheduler with PREEMPT bit, which does not account as a gp for tasks
+> > > >> > RCUs. Meanwhile, since the thread has been frequently resched, the
+> > > >> > normal scheduling point (no PREEMPT bit, accounted as a task RCU gp)
+> > > >> > seems to have very little chance to kick in. Given the nature of "busy
+> > > >> > polling" program, such NAPI thread won't have task->nvcsw or task->on_rq
+> > > >> > updated (other gp conditions), the result is that such NAPI thread is
+> > > >> > put on RCU holdouts list for indefinitely long time.
+> > > >> >
+> > > >> > This is simply fixed by mirroring the ksoftirqd behavior: after
+> > > >> > NAPI/softirq work, raise a RCU QS to help expedite the RCU period. No
+> > > >> > more blocking afterwards for the same setup.
+> > > >> >
+> > > >> > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support")
+> > > >> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > > >> > ---
+> > > >> >  net/core/dev.c | 4 ++++
+> > > >> >  1 file changed, 4 insertions(+)
+> > > >> >
+> > > >> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > > >> > index 275fd5259a4a..6e41263ff5d3 100644
+> > > >> > --- a/net/core/dev.c
+> > > >> > +++ b/net/core/dev.c
+> > > >> > @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+> > > >> >                                 net_rps_action_and_irq_enable(sd);
+> > > >> >                         }
+> > > >> >                         skb_defer_free_flush(sd);
+> > > >
+> > > > Please put a comment here stating that RCU readers cannot cross
+> > > > this point.
+> > > >
+> > > > I need to add lockdep to rcu_softirq_qs() to catch placing this in an
+> > > > RCU read-side critical section.  And a header comment noting that from
+> > > > an RCU perspective, it acts as a momentary enabling of preemption.
+> > >
+> > > OK, so one question here: for XDP, we're basically treating
+> > > local_bh_disable/enable() as the RCU critical section, cf the discussion
+> > > we had a few years ago that led to this being documented[0]. So why is
+> > > it OK to have the rcu_softirq_qs() inside the bh disable/enable pair,
+> > > but not inside an rcu_read_lock() section?
+> >
+> > In general, it is not OK.  And it is not OK in this case if this happens
+> > to be one of the local_bh_disable() regions that XDP is waiting on.
+> > Except that that region ends right after the rcu_softirq_qs(), so that
+> > should not be a problem.
+> >
+> > But you are quite right, that is an accident waiting to happen, so it
+> > would be better if the patch did something like this:
+> >
+> >         local_bh_enable();
+> >         if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> >                 preempt_disable();
+> >                 rcu_softirq_qs();
+> >                 preempt_enable();
+> >         }
+> >
+> Yeah we need preempt for this call. When I first attempt it after
+> local_bh_enable, I got the bug call:
+> [ 1166.384279] BUG: using __this_cpu_read() in preemptible [00000000]
+> code: napi/veth2-66/8439
+> [ 1166.385337] caller is rcu_softirq_qs+0x16/0x130
+> [ 1166.385900] CPU: 3 PID: 8439 Comm: napi/veth2-66 Not tainted
+> 6.7.0-rc8-g3fbf61207c66-dirty #75
+> [ 1166.386950] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [ 1166.388110] Call Trace:
+> [ 1166.388417]  <TASK>
+> [ 1166.388684]  dump_stack_lvl+0x36/0x50
+> [ 1166.389147]  check_preemption_disabled+0xd1/0xe0
+> [ 1166.389725]  rcu_softirq_qs+0x16/0x130
+> [ 1166.390190]  napi_threaded_poll+0x21e/0x260
+> [ 1166.390702]  ? __pfx_napi_threaded_poll+0x10/0x10
+> [ 1166.391277]  kthread+0xf7/0x130
+> [ 1166.391643]  ? __pfx_kthread+0x10/0x10
+> [ 1166.392130]  ret_from_fork+0x34/0x50
+> [ 1166.392574]  ? __pfx_kthread+0x10/0x10
+> [ 1166.393048]  ret_from_fork_asm+0x1b/0x30
+> [ 1166.393530]  </TASK>
+> 
+> Since this patch is trying to mirror what __do_softirq has, should the
+> similar notes/changes apply to that side as well?
 
-Hi everyone
+Up to now, the rcu_softirq_qs() was a special function strictly for
+use by __do_softirq(), hence the lack of documentation.  I will let
+the __do_softirq() maintainers decide what they would like to do there,
+if anything.
 
-I still hope to receive some comments on this and on the IMA
-integration patch set.
+							Thanx, Paul
 
-Meanwhile, I built openSUSE Tumbleweed packages with both those patch
-sets (with few changes) and the PGP one (with the parser in kernel
-space).
-
-I also published the first preliminary version of digest-cache-tools
-which contains the tools to manage the digest_cache LSM.
-
-https://github.com/linux-integrity/digest-cache-tools
-
-
-The README should give a pretty good idea on how to configure the
-digest_cache LSM correctly, to do IMA measurement (with predictable
-PCR) and IMA appraisal.
-
-That basically requires to install only the kernel and the digest-
-cache-tools packages (plus dracut, to enable IMA measurement/appraisal
-from the initial ram disk).
-
-Other than that, openSUSE Tumbleweed with these three packages (and no
-other modifications, even in the build infrastructure) is basically
-offering the integrity features that IMA supports.
-
-Roberto
-
-> v2:
-> - Include the TLV parser in this patch set (from user asymmetric keys and
->   signatures)
-> - Move from IMA and make an independent LSM
-> - Remove IMA-specific stuff from this patch set
-> - Add per algorithm hash table
-> - Expect all digest lists to be in the same directory and allow changing
->   the default directory
-> - Support digest lookup on directories, when there is no
->   security.digest_list xattr
-> - Add seq num to digest list file name, to impose ordering on directory
->   iteration
-> - Add a new data type DIGEST_LIST_ENTRY_DATA for the nested data in the
->   tlv digest list format
-> - Add the concept of verification data attached to digest caches
-> - Add the reset mechanism to track changes on digest lists and directory
->   containing the digest lists
-> - Add kernel selftests
->=20
-> v1:
-> - Add documentation in Documentation/security/integrity-digest-cache.rst
-> - Pass the mask of IMA actions to digest_cache_alloc()
-> - Add a reference count to the digest cache
-> - Remove the path parameter from digest_cache_get(), and rely on the
->   reference count to avoid the digest cache disappearing while being used
-> - Rename the dentry_to_check parameter of digest_cache_get() to dentry
-> - Rename digest_cache_get() to digest_cache_new() and add
->   digest_cache_get() to set the digest cache in the iint of the inode for
->   which the digest cache was requested
-> - Add dig_owner and dig_user to the iint, to distinguish from which inode
->   the digest cache was created from, and which is using it; consequently =
-it
->   makes the digest cache usable to measure/appraise other digest caches
->   (support not yet enabled)
-> - Add dig_owner_mutex and dig_user_mutex to serialize accesses to dig_own=
-er
->   and dig_user until they are initialized
-> - Enforce strong synchronization and make the contenders wait until
->   dig_owner and dig_user are assigned to the iint the first time
-> - Move checking IMA actions on the digest list earlier, and fail if no
->   action were performed (digest cache not usable)
-> - Remove digest_cache_put(), not needed anymore with the introduction of
->   the reference count
-> - Fail immediately in digest_cache_lookup() if the digest algorithm is
->   not set in the digest cache
-> - Use 64 bit mask for IMA actions on the digest list instead of 8 bit
-> - Return NULL in the inline version of digest_cache_get()
-> - Use list_add_tail() instead of list_add() in the iterator
-> - Copy the digest list path to a separate buffer in digest_cache_iter_dir=
-()
-> - Use digest list parsers verified with Frama-C
-> - Explicitly disable (for now) the possibility in the IMA policy to use t=
-he
->   digest cache to measure/appraise other digest lists
-> - Replace exit(<value>) with return <value> in manage_digest_lists.c
->=20
-> Roberto Sassu (13):
->   lib: Add TLV parser
->   security: Introduce the digest_cache LSM
->   digest_cache: Add securityfs interface
->   digest_cache: Add hash tables and operations
->   digest_cache: Populate the digest cache from a digest list
->   digest_cache: Parse tlv digest lists
->   digest_cache: Parse rpm digest lists
->   digest_cache: Add management of verification data
->   digest_cache: Add support for directories
->   digest cache: Prefetch digest lists if requested
->   digest_cache: Reset digest cache on file/directory change
->   selftests/digest_cache: Add selftests for digest_cache LSM
->   docs: Add documentation of the digest_cache LSM
->=20
->  Documentation/security/digest_cache.rst       | 900 ++++++++++++++++++
->  Documentation/security/index.rst              |   1 +
->  MAINTAINERS                                   |  16 +
->  include/linux/digest_cache.h                  |  89 ++
->  include/linux/kernel_read_file.h              |   1 +
->  include/linux/tlv_parser.h                    |  28 +
->  include/uapi/linux/lsm.h                      |   1 +
->  include/uapi/linux/tlv_digest_list.h          |  72 ++
->  include/uapi/linux/tlv_parser.h               |  59 ++
->  include/uapi/linux/xattr.h                    |   6 +
->  lib/Kconfig                                   |   3 +
->  lib/Makefile                                  |   3 +
->  lib/tlv_parser.c                              | 214 +++++
->  lib/tlv_parser.h                              |  17 +
->  security/Kconfig                              |  11 +-
->  security/Makefile                             |   1 +
->  security/digest_cache/Kconfig                 |  34 +
->  security/digest_cache/Makefile                |  11 +
->  security/digest_cache/dir.c                   | 245 +++++
->  security/digest_cache/htable.c                | 268 ++++++
->  security/digest_cache/internal.h              | 259 +++++
->  security/digest_cache/main.c                  | 545 +++++++++++
->  security/digest_cache/modsig.c                |  66 ++
->  security/digest_cache/parsers/parsers.h       |  15 +
->  security/digest_cache/parsers/rpm.c           | 223 +++++
->  security/digest_cache/parsers/tlv.c           | 299 ++++++
->  security/digest_cache/populate.c              | 163 ++++
->  security/digest_cache/reset.c                 | 168 ++++
->  security/digest_cache/secfs.c                 |  87 ++
->  security/digest_cache/verif.c                 | 119 +++
->  security/security.c                           |   3 +-
->  tools/testing/selftests/Makefile              |   1 +
->  .../testing/selftests/digest_cache/.gitignore |   3 +
->  tools/testing/selftests/digest_cache/Makefile |  23 +
->  .../testing/selftests/digest_cache/all_test.c | 706 ++++++++++++++
->  tools/testing/selftests/digest_cache/common.c |  79 ++
->  tools/testing/selftests/digest_cache/common.h | 131 +++
->  .../selftests/digest_cache/common_user.c      |  47 +
->  .../selftests/digest_cache/common_user.h      |  17 +
->  tools/testing/selftests/digest_cache/config   |   1 +
->  .../selftests/digest_cache/generators.c       | 248 +++++
->  .../selftests/digest_cache/generators.h       |  19 +
->  .../selftests/digest_cache/testmod/Makefile   |  16 +
->  .../selftests/digest_cache/testmod/kern.c     | 499 ++++++++++
->  .../selftests/lsm/lsm_list_modules_test.c     |   3 +
->  45 files changed, 5714 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/security/digest_cache.rst
->  create mode 100644 include/linux/digest_cache.h
->  create mode 100644 include/linux/tlv_parser.h
->  create mode 100644 include/uapi/linux/tlv_digest_list.h
->  create mode 100644 include/uapi/linux/tlv_parser.h
->  create mode 100644 lib/tlv_parser.c
->  create mode 100644 lib/tlv_parser.h
->  create mode 100644 security/digest_cache/Kconfig
->  create mode 100644 security/digest_cache/Makefile
->  create mode 100644 security/digest_cache/dir.c
->  create mode 100644 security/digest_cache/htable.c
->  create mode 100644 security/digest_cache/internal.h
->  create mode 100644 security/digest_cache/main.c
->  create mode 100644 security/digest_cache/modsig.c
->  create mode 100644 security/digest_cache/parsers/parsers.h
->  create mode 100644 security/digest_cache/parsers/rpm.c
->  create mode 100644 security/digest_cache/parsers/tlv.c
->  create mode 100644 security/digest_cache/populate.c
->  create mode 100644 security/digest_cache/reset.c
->  create mode 100644 security/digest_cache/secfs.c
->  create mode 100644 security/digest_cache/verif.c
->  create mode 100644 tools/testing/selftests/digest_cache/.gitignore
->  create mode 100644 tools/testing/selftests/digest_cache/Makefile
->  create mode 100644 tools/testing/selftests/digest_cache/all_test.c
->  create mode 100644 tools/testing/selftests/digest_cache/common.c
->  create mode 100644 tools/testing/selftests/digest_cache/common.h
->  create mode 100644 tools/testing/selftests/digest_cache/common_user.c
->  create mode 100644 tools/testing/selftests/digest_cache/common_user.h
->  create mode 100644 tools/testing/selftests/digest_cache/config
->  create mode 100644 tools/testing/selftests/digest_cache/generators.c
->  create mode 100644 tools/testing/selftests/digest_cache/generators.h
->  create mode 100644 tools/testing/selftests/digest_cache/testmod/Makefile
->  create mode 100644 tools/testing/selftests/digest_cache/testmod/kern.c
->=20
-
+> > Though maybe something like this would be better:
+> >
+> >         local_bh_enable();
+> >         if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> >                 rcu_softirq_qs_enable(local_bh_enable());
+> >         else
+> >                 local_bh_enable();
+> >
+> > A bit ugly, but it does allow exact checking of the rules and also
+> > avoids extra overhead.
+> >
+> > I could imagine pulling the CONFIG_PREEMPT_RT check into the body of
+> > rcu_softirq_qs_enable().
+> >
+> > But is there a better way?
+> >
+> > > Also, looking at the patch in question:
+> > >
+> > > >> > +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > > >> > +                               rcu_softirq_qs();
+> > > >> > +
+> > > >> >                         local_bh_enable();
+> > >
+> > > Why does that local_bh_enable() not accomplish the same thing as the qs?
+> >
+> > In this case, because it does not create the appearance of a voluntary
+> > context switch needed by RCU Tasks.  So the wait for trampoline evacuation
+> > could still take a very long time.
+> >
+> >                                                         Thanx, Paul
+> >
+> > > -Toke
+> > >
+> > > [0] https://lore.kernel.org/bpf/20210624160609.292325-6-toke@redhat.com/
+> > >
 
