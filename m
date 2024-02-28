@@ -1,190 +1,127 @@
-Return-Path: <bpf+bounces-22966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF8086BC5E
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:55:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F96B86BC62
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CF341C22676
-	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:55:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 531101C234BF
+	for <lists+bpf@lfdr.de>; Wed, 28 Feb 2024 23:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0749172931;
-	Wed, 28 Feb 2024 23:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804A072931;
+	Wed, 28 Feb 2024 23:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TUPiTmj9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fTgpWe/l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B0A13D306
-	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 23:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763F613D306
+	for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 23:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709164520; cv=none; b=NNcUX0wIqeEFXuSaYTwIvSlmlmTb/UY0qXJ4Kot0CkAFNDcQL4PlDCx89iBRZf+Z8yqKpxQBWB2AY876bkvHM0eyyxMIMb7I1dmnN9w8ChwlDtPOkqJzzM67AquOvHtCpQFDx1sEAHMrESc9ZwiY5Fiv3eggefdkwdhScLfdET0=
+	t=1709164543; cv=none; b=QtJ7Zbqvo6oxk/QquKgXTvIIR1aL94J5rtShMcVMMwZGeafXzzFsHLEi9IdJ0a0bZ88pyI4iz6MOFeC0WdMuuWgKAv2XDgecsWVXAcwH7A4fpkSOQfINOxgDY63rQB6TYA53B3dT1L5e6pBMB/wcbVf1cKUaaMCvNLYeyi1oecY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709164520; c=relaxed/simple;
-	bh=Y4cySuEqeMGtHLN0Mqivrpy7K3iJazNWfRSILB1C1L8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tGXSMDT9prx3k3+RYvqW4GthWe+VpIAt+2kpZd455pVvqAF/id8apXEFES9etS+dpOVDJlVV3OY6g2FDYIrfDa4UfJxipRwMcLdElvt04LoiiHOXlcPfYYNl/1n3DnovsclRVbqcut+WZxMWDzusBBxkOf6VdhjD6m1UpXe6zVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TUPiTmj9; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1709164543; c=relaxed/simple;
+	bh=vQ6i5jkAZdIXYKRS053VNQRCFwvVh5/pFQ6JBQ6nTXk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=iCNfu+cQHljmimP+obcbA+Evth/aHZkuu9Ng6xRhRVu9U41NUBBtf/rTKTVphk2Qr3EAVO7JWuX5XX/iXlwwgpWxb0BtdGKvCFYWHULeKXnwCdRFj0L/8/8/CPJVJr9N4goV3wUxuLJDIwMNwSxUnlRwg2p9YASuViR/TzUDQaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fTgpWe/l; arc=none smtp.client-ip=209.85.167.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d944e8f367so2877495ad.0
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 15:55:18 -0800 (PST)
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5131c21314fso337621e87.2
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 15:55:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709164518; x=1709769318; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BbIoQw1WozDnoDOR+YaVUuZap3T7yLMHZD+UWAdUh/g=;
-        b=TUPiTmj9u8kL0JI0UgwT48XuLx5EiXuUYFD4ZfFubHWTZ6ESavi8gLOrdIBiFpKSlI
-         A0wm/sdojuOXvk/BOTJvn+0i3WTezGtaLMdjKIL3xmwY7HGGbAydu34yl6sIDKK7BNOq
-         qn0saPWTWhHvDPljbtJLwZzuH6iq02uyRtRnOCFzFKvXl7E/dbtDdU8SaG/OUmHRq5Zk
-         +ae6AlXTD+4Ph8TbVsUoD+glHVCqtCLZOUXeNbZWvzPjrrFqralF7pITdUjq7Ubx7C2Z
-         7J9BGAwIVNxv/XCmxF4Ud/pf/M27FtcfIDsgjcQXlDs3lmROkQR8C7mJos4HqKTEzh6u
-         7gvw==
+        d=gmail.com; s=20230601; t=1709164540; x=1709769340; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Mz7b1wqkVuYpI8Qp9ZM3X1nbMVIpQUwNyot5K89IhDo=;
+        b=fTgpWe/lfhB1DmAf4D7KVe4qqcSKy1BkqP48fIdHP8kjvmKVl9VVB9EYt5eodJ2MCH
+         MBR8oBcoyEkaR+ATio0nXpHNwJFnrRlczhv4bwq4C4Ki9wTIvVZXHTshPbEFgNlIVevI
+         i9ciscpQVKg7iXVzlsd9Y/PePl5XTikPcXTS32tOvDxQm2tSU4bEt5bBCtxvyGSx+hNa
+         lfUnIdY6opCi0BygnUV55ntVrqhSka5muJsPX4vUOOseGqBNBfGNwZNThcBtEC3h30II
+         EAjW/Z6dwFk7IiwN87VTaqHLVyP7Cv9jpNz+UnU2MEjPzaau+7VMj2HJH7XmWcyC0i5O
+         /oJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709164518; x=1709769318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BbIoQw1WozDnoDOR+YaVUuZap3T7yLMHZD+UWAdUh/g=;
-        b=Owtd9yeJ1sBWWWQPW0GmnwxayPy3OAru/9TSEmnsOLibr+2UkDRPuBSX9xWrC4lSKO
-         r7Mt9hnDEbqrw88r1gG6oq3fBp1S2ZY49p5EWz0Arujn+AKj+q80CIYQMbq2wFheFUzA
-         Liqv3lQfyNsILG6SpYIqceWigM4Uf3DgmBmtCUJZcBrmyKhNxy+rtIK6KMGTE0z9sN1X
-         BA55U95A3rjkeqxY/QlybnZkGd8XmDUrhOEybrL6p/0lk0BiLy9Fs+XDjmSymh7wt1qv
-         t54FQch0mwc5es2S2Cz2mB9IJhisL6vcfv4Ts/FzWEDSXe77mfk89m2bd2ho9pNM+xw+
-         bTTg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7TwUabUB/xhxBNmhOaJ76weMYSeWtVahaKBN4zhYT1VnmIxQfRw3j8/ycaNWVZM8+xoi+nV1wLyeidiPFlywxa6Y8
-X-Gm-Message-State: AOJu0YxcAmZJ3iNU/VO9RiZwKGz1Q+XS3/zRmKWXILmWPplYlgxxhor+
-	lbwRjcwsnn27XjKSMfaozsQ6JS+og06Q+cl/DBM+Lt6B8tWClrD+aZLOd+xdxfl4rfSyB1ywkuG
-	Kp7bKanS1+SwiWE1MNZeF4mW7WO8=
-X-Google-Smtp-Source: AGHT+IGnrvZsESR2LWZZogkuoDI1c27+YBSM7DPTuSKvtSFnf5V9U4w7I5mZs+dz4Z5EuwjeYXWGLK5UxjJeMZr6ndM=
-X-Received: by 2002:a17:90b:23d1:b0:299:32f0:8124 with SMTP id
- md17-20020a17090b23d100b0029932f08124mr711951pjb.42.1709164518412; Wed, 28
- Feb 2024 15:55:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709164540; x=1709769340;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mz7b1wqkVuYpI8Qp9ZM3X1nbMVIpQUwNyot5K89IhDo=;
+        b=IIYm84Hn+hsa9jGjr8dD5CMsPFau9KLP+J3/JJc7bZrMxCWd1cBCzyRoBv2oALoOBl
+         Us8dXOishNEEHIN6Y+v7uENnOInCTEO9lyU5qnTM8OL9EPJT/jLmLOEmX2Rk1oRc4tBa
+         rHF7ZorgInHXRChdCP6FvuZhFcaDBk1YOjy6uK5qgo+1zWNK1txFVN9clnf2cEWR/L4A
+         2hCdXDNvlXXCcV2vuWt+xrCEPp5HutlY2b2bKZcgdZBB/bp/iQjIA2zDsqg1ReyZFHqi
+         wIYvvxNqzb0Smr/acg8b0FmUZSJ1YgHB9Cvgxq96bwSg6T6feqN0LXICmPvhrOrQIatb
+         sVDQ==
+X-Gm-Message-State: AOJu0YzQ95jEMyrlFIak5GmEeIMK90/nh8dSf4VzgIuIvoXQynJa0z4y
+	nG4AO//iag9q1MhH7IaHTJ8xgUyMzTGmwptFczcd2GYC3cUAYGDt
+X-Google-Smtp-Source: AGHT+IGHbHswfWU/KYsp/lmZcW1xqaEtOL3W75VNnfvDZQi1EsSJK0q8iwWf27WLpxklyXBX9eQqtg==
+X-Received: by 2002:ac2:43d0:0:b0:513:256f:b702 with SMTP id u16-20020ac243d0000000b00513256fb702mr101439lfl.28.1709164539466;
+        Wed, 28 Feb 2024 15:55:39 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id q21-20020ac24a75000000b0051321139817sm36599lfp.47.2024.02.28.15.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 15:55:39 -0800 (PST)
+Message-ID: <d5fda01ecfac47e096e741a68ac8a1d2d726fc16.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 6/8] selftests/bpf: test autocreate behavior
+ for struct_ops maps
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev,  void@manifault.com
+Date: Thu, 29 Feb 2024 01:55:37 +0200
+In-Reply-To: <CAEf4BzbXzsDUx-dvUQQEMcCVUeUjnBnbF6V4fmc36C0YzVF73A@mail.gmail.com>
+References: <20240227204556.17524-1-eddyz87@gmail.com>
+	 <20240227204556.17524-7-eddyz87@gmail.com>
+	 <CAEf4BzbXzsDUx-dvUQQEMcCVUeUjnBnbF6V4fmc36C0YzVF73A@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227204556.17524-1-eddyz87@gmail.com> <20240227204556.17524-8-eddyz87@gmail.com>
- <1e95162a-a8d7-44e6-bc63-999df8cae987@linux.dev>
-In-Reply-To: <1e95162a-a8d7-44e6-bc63-999df8cae987@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 28 Feb 2024 15:55:06 -0800
-Message-ID: <CAEf4BzbQryFpZFd0ruu0w9BC6VV-5BMHCzEJJNJz_OXk5j0DEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 7/8] libbpf: sync progs autoload with maps
- autocreate for struct_ops maps
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, andrii@kernel.org, daniel@iogearbox.net, 
-	kernel-team@fb.com, yonghong.song@linux.dev, void@manifault.com, 
-	bpf@vger.kernel.org, ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 6:11=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 2/27/24 12:45 PM, Eduard Zingerman wrote:
-> > Make bpf_map__set_autocreate() for struct_ops maps toggle autoload
-> > state for referenced programs.
-> >
-> > E.g. for the BPF code below:
-> >
-> >      SEC("struct_ops/test_1") int BPF_PROG(foo) { ... }
-> >      SEC("struct_ops/test_2") int BPF_PROG(bar) { ... }
-> >
-> >      SEC(".struct_ops.link")
-> >      struct test_ops___v1 A =3D {
-> >          .foo =3D (void *)foo
-> >      };
-> >
-> >      SEC(".struct_ops.link")
-> >      struct test_ops___v2 B =3D {
-> >          .foo =3D (void *)foo,
-> >          .bar =3D (void *)bar,
-> >      };
-> >
-> > And the following libbpf API calls:
-> >
-> >      bpf_map__set_autocreate(skel->maps.A, true);
-> >      bpf_map__set_autocreate(skel->maps.B, false);
-> >
-> > The autoload would be enabled for program 'foo' and disabled for
-> > program 'bar'.
-> >
-> > Do not apply such toggling if program autoload state is set by a call
-> > to bpf_program__set_autoload().
-> >
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >   tools/lib/bpf/libbpf.c | 35 ++++++++++++++++++++++++++++++++++-
-> >   1 file changed, 34 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index b39d3f2898a1..1ea3046724f8 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -446,13 +446,18 @@ struct bpf_program {
-> >       struct bpf_object *obj;
-> >
-> >       int fd;
-> > -     bool autoload;
-> > +     bool autoload:1;
-> > +     bool autoload_user_set:1;
-> >       bool autoattach;
-> >       bool sym_global;
-> >       bool mark_btf_static;
-> >       enum bpf_prog_type type;
-> >       enum bpf_attach_type expected_attach_type;
-> >       int exception_cb_idx;
-> > +     /* total number of struct_ops maps with autocreate =3D=3D true
-> > +      * that reference this program
-> > +      */
-> > +     __u32 struct_ops_refs;
->
-> Instead of adding struct_ops_refs and autoload_user_set,
->
-> for BPF_PROG_TYPE_STRUCT_OPS, how about deciding to load it or not by che=
-cking
-> prog->attach_btf_id (non zero) alone. The prog->attach_btf_id is now deci=
-ded at
-> load time and is only set if it is used by at least one autocreate map, i=
-f I
-> read patch 2 & 3 correctly.
->
-> Meaning ignore prog->autoload*. Load the struct_ops prog as long as it is=
- used
-> by one struct_ops map with autocreate =3D=3D true.
->
-> If the struct_ops prog is not used in any struct_ops map, the bpf prog ca=
-nnot be
-> loaded even the autoload is set. If bpf prog is used in a struct_ops map =
-and its
-> autoload is set to false, the struct_ops map will be in broken state. Thu=
-s,
+On Wed, 2024-02-28 at 15:43 -0800, Andrii Nakryiko wrote:
+[...]
 
-We can easily detect this condition and report meaningful error.
+> > +static void can_load_partial_object(void)
+> > +{
+> > +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+>=20
+> nit: prefer LIBBPF_OPTS() over DECLARE_LIBBPF_OPTS()
 
-> prog->autoload does not fit very well with struct_ops prog and may as wel=
-l
-> depend on whether the struct_ops prog is used by a struct_ops map alone?
+Ok
 
-I think it's probably fine from a usability standpoint to disable
-loading the BPF program if its struct_ops map was explicitly set to
-not auto-create. It's a bit of deviation from other program types, but
-in practice this logic will make it easier for users.
+[...]
 
-One question I have, though, is whether we should report as an error a
-stand-alone struct_ops BPF program that is not used from any
-struct_ops map? Or should we load it nevertheless? Or should we
-silently not load it?
+> > +void serial_test_struct_ops_autocreate(void)
+>=20
+> same as in the previous patch, why serial?
 
-I feel like silently not loading is the worst behavior here. So either
-loading it anyway or reporting an error would be my preference,
-probably.
+Because of the print callback hijacking.
+Also, what would happen when two tests would set struct_ops for same
+attachment point?
+
+[...]
+
+> > +SEC(".struct_ops.link")
+>=20
+> can you please also have a test where we use SEC("?.struct_ops.link")
+> which set autoload to false by default?
+
+As far as I understand, that would be a new behavior, currently '?'
+works only for programs. I'll add a separate patch to support this.
+
+[...]
 
