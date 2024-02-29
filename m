@@ -1,170 +1,130 @@
-Return-Path: <bpf+bounces-23039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C91E286C7CD
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 12:13:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2058686C7F7
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 12:23:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A1531F2190D
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 11:13:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFA3D285829
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 11:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41DE7B3E4;
-	Thu, 29 Feb 2024 11:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D657C0A5;
+	Thu, 29 Feb 2024 11:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FCuJGVvm"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZWQWTRv5"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CFB79DA7
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 11:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E735645B
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 11:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205173; cv=none; b=iRyg6pnmnBFuSBrdNhoYx8B1uW4x55FlfQ3cY4zEDG8Dm70V5fFX5p2996SZOfYINKxhm+V7nvjKmhhlz3dA4X5DhzQRvClzQOQfrcZ+BotE9GCQAmEWPdPJpDJKt71lykpAowDq3YZqgLAuYyiAEDCATr5kaq3qjssII8tUIns=
+	t=1709205777; cv=none; b=mle1805TADlL4ty5nKTgctsQaISWrDfa6GbUAFrLOxPl98x8LW2Z9AWA+PitwOipdDA2LNQgoxDb5qoYYtA5rDZrdDhP1T5TxAtxGdsl6GVcc49YaH9P1p591mceP4Jbyz4xly4J8yUGJrie+LiNJxsPXzy9Nq+F4NQlCJZU3gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205173; c=relaxed/simple;
-	bh=N7Mhx8vT1jnELD9+9yC9rVTfdvP/sYDILPO0ay84HGM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MEinFZHnKllcZZCjh50XuF1ufB1KsJqL2iVsByj0KJakKESiixoCqWclOnsztL+86xvbrj9qEiMlNyX6vVTiXSeTeyMeibQnpDda5TPPrAX+GtK7jK80iebl7+kzxwmUa0ldWsuQIshnRYHNZ7g1RFSpGI+B22aKW3DjS5PHyPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FCuJGVvm; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1709205777; c=relaxed/simple;
+	bh=6Xm0wpBLfk1HBefMBjtWVO94B+fykzdv9FHKbIyd22Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ANmxcxi0Sbq4Zt7rT9S6ThO3+2/WNMIskUmZDo9WB6WRUi5WJdiL+zAxs5xiTQFIKrhIOiR6H6ycTl3PK6nabWVEVFyW42/yTA/PhA7WcJEg4cohd/wf7JsHJBYfyzCVjq04nIfr0nk5r5O2U1F4hc8whcoBd6xPQrplKlBEp7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZWQWTRv5; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709205169;
+	s=mimecast20190719; t=1709205774;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=J1ljLBvAKrzOfqXsdymMG4sOPRNjFy8nCCCQL/VLcRg=;
-	b=FCuJGVvmBolUlHyQBm1XQBXIBokTImgYlUiM36k4Bug9tSN8IX9hsgh56Ttqy+Kc1e2q/8
-	KAYw8PKnCsMseguJsxKvXxKcDpYlm0vNdbkKWbQkqEgRd4Aq76pspxZ5ALqJbBfuccvkH/
-	uFf5ZalGVMyR7zzks7zJAf3JYz2X/vw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=7At+Ii/grtsrpCGb+fCHoN8LAX5Jvg5wYpJeg8H4ilQ=;
+	b=ZWQWTRv5KB2rg1h3tX3j+aI0nhd/4JAy2KJZm6NruZyvWzSn0GUSU10i7Bnd25+OgTonmK
+	Xb8A95lnVQbBIe8Xoc244m8LMZ7oWqT0Kw4WAv6tCaufCxx8VTOgsqsfpjDId4ays/ufH7
+	PJX/gKmrOAMpn+LdDTxl9XYCg4B34WQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-452-APrStcjPPFy3cwOZobFh5w-1; Thu, 29 Feb 2024 06:12:48 -0500
-X-MC-Unique: APrStcjPPFy3cwOZobFh5w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e354aaf56so1111315e9.1
-        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 03:12:48 -0800 (PST)
+ us-mta-66-xBLiDz7lOaq5kZ3YYTpzKA-1; Thu, 29 Feb 2024 06:22:53 -0500
+X-MC-Unique: xBLiDz7lOaq5kZ3YYTpzKA-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5668e56a6c4so537117a12.1
+        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 03:22:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709205167; x=1709809967;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J1ljLBvAKrzOfqXsdymMG4sOPRNjFy8nCCCQL/VLcRg=;
-        b=uVUYvfpa9Rf4Lxcm25SD5hZ5EVborQ2QGbOoH5OFLGEQUgaxDWHbcaE8WNAlizalcG
-         uIA9+TCLxYNDi+eUjNQ8r+Jkd5XDQwhduDqjjegIX3bIUA3UZWWRd3YdVnMe8rwrNrjJ
-         t3NaCXQ+dO4+3PDW6B5vHGSs5L/18gfACYTAN2+54vHF+kxK1I3tD3JtcXOBZuvC+snD
-         ltE5IlNm3GHO8Eq3lPLS8rlOeonWVnwXauEseXVsja1Dj4Fjx9zodVAAohKbPlVqm5jD
-         PRa5C+xkT+USUD7/4GgjYBoasK8O+UKzA2LWvXuSqb67kvmDv09NhuT6ZP9OonTrADPx
-         +hMQ==
-X-Gm-Message-State: AOJu0Yzszrpq27BQ3joV0LWhWZojPTBytfXrngkY3fwSHxXtBEl8yZUc
-	xOQuf1sgP53xvnIuA6wEMzGryJ8wMN0PnNRYo1+7FbdeHzXCBln2f1KkpjIMfiwc50DDsnfYwh+
-	xZaUT+uuPF+XD+aDfvybmj184tkl07KaOJ1Fvkx6Qx+0O0dI5aw==
-X-Received: by 2002:a05:6000:18a9:b0:33d:9e15:12bf with SMTP id b9-20020a05600018a900b0033d9e1512bfmr1372344wri.3.1709205167111;
-        Thu, 29 Feb 2024 03:12:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHfKKnPq3F5LjzBgxvLGpBosG5KZdsojuxXv+y3866lEvo3VcN/Hqtb7eOfxFpQwYKS/TI+dQ==
-X-Received: by 2002:a05:6000:18a9:b0:33d:9e15:12bf with SMTP id b9-20020a05600018a900b0033d9e1512bfmr1372320wri.3.1709205166722;
-        Thu, 29 Feb 2024 03:12:46 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-250-174.dyn.eolo.it. [146.241.250.174])
-        by smtp.gmail.com with ESMTPSA id e5-20020adff345000000b0033b278cf5fesm1462888wrp.102.2024.02.29.03.12.45
+        d=1e100.net; s=20230601; t=1709205772; x=1709810572;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7At+Ii/grtsrpCGb+fCHoN8LAX5Jvg5wYpJeg8H4ilQ=;
+        b=ikcKaoK8LoF7+hLs4zfSl1QQrWdyJ8ebl7W88iCxBqjawaSWlovGaerOGfoyRpS8tW
+         v+FqR4S8PfbYhaZI8quKo1ehK5gVACY9WN2Juvh0p3YDBsPYj0BiwyuZ4zDa4+vjFQEE
+         Rx2TCWNX3jGRTFnIJLobmD+s8o0Ka3BqQFzl002Idz/K2DkxXETbVIEY5JtBkAk+Qq4/
+         omoNy2ichrxN1z1MBIFmR+iCuNsL4uft0zaIixA6jPLAMVCMDB2bGVkmboU117SC8JRB
+         4UFGF55B/M4W1DxLHZi3qKrrXK9SCu2LFfuMtirN+308p/uR2/NyhOd5o5+6Jumzu7EX
+         +zJg==
+X-Forwarded-Encrypted: i=1; AJvYcCWlRPY9IhzSS9g8nucFACuAw4nRsnyYKBiep9D5Bx5LDxNm/JlTA0+CwG4iNaXVrGN2jrhXi8nnqUiWNm4aqvRJCx/S
+X-Gm-Message-State: AOJu0Ywf38tCLPk7xz/LLbCEFJwpIgfHVna1PhNwSdy/8W5nd5yUn7kV
+	BBlRcjgRKRv86mXrTP3WgIUPbYlYPgxSogT8ZFBQi0BmOp3A2789UTvpCUzrfIXqwHCS5GSCMLL
+	0fSBhK4wFr3ePMEX7tflM/7FqUnwLDBFPb3nOmqnlwcomcD8sEQ==
+X-Received: by 2002:a05:6402:2156:b0:565:f9c1:d925 with SMTP id bq22-20020a056402215600b00565f9c1d925mr1171210edb.0.1709205772083;
+        Thu, 29 Feb 2024 03:22:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFW5Mh+qKe9ZKENzsEqOvljF2oOzrK7eTWm8sNOJLak6DCHVU9G9ylchI20asRM3L6KA03OTQ==
+X-Received: by 2002:a05:6402:2156:b0:565:f9c1:d925 with SMTP id bq22-20020a056402215600b00565f9c1d925mr1171188edb.0.1709205771761;
+        Thu, 29 Feb 2024 03:22:51 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id y6-20020a056402358600b005645961ad39sm523690edc.47.2024.02.29.03.22.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 03:12:46 -0800 (PST)
-Message-ID: <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
-Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
-From: Paolo Abeni <pabeni@redhat.com>
-To: Yunjian Wang <wangyunjian@huawei.com>, mst@redhat.com, 
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com, kuba@kernel.org, 
-	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, davem@davemloft.net
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org,  kvm@vger.kernel.org,
- virtualization@lists.linux.dev, xudingke@huawei.com,  liwei395@huawei.com
-Date: Thu, 29 Feb 2024 12:12:44 +0100
-In-Reply-To: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
-References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        Thu, 29 Feb 2024 03:22:51 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id F0F0B112E802; Thu, 29 Feb 2024 12:22:50 +0100 (CET)
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf v2 0/2] Fix hashmap overflow checks for 32-bit arches
+Date: Thu, 29 Feb 2024 12:22:46 +0100
+Message-ID: <20240229112250.13723-1-toke@redhat.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2024-02-28 at 19:05 +0800, Yunjian Wang wrote:
-> @@ -2661,6 +2776,54 @@ static int tun_ptr_peek_len(void *ptr)
->  	}
->  }
-> =20
-> +static void tun_peek_xsk(struct tun_file *tfile)
-> +{
-> +	struct xsk_buff_pool *pool;
-> +	u32 i, batch, budget;
-> +	void *frame;
-> +
-> +	if (!ptr_ring_empty(&tfile->tx_ring))
-> +		return;
-> +
-> +	spin_lock(&tfile->pool_lock);
-> +	pool =3D tfile->xsk_pool;
-> +	if (!pool) {
-> +		spin_unlock(&tfile->pool_lock);
-> +		return;
-> +	}
-> +
-> +	if (tfile->nb_descs) {
-> +		xsk_tx_completed(pool, tfile->nb_descs);
-> +		if (xsk_uses_need_wakeup(pool))
-> +			xsk_set_tx_need_wakeup(pool);
-> +	}
-> +
-> +	spin_lock(&tfile->tx_ring.producer_lock);
-> +	budget =3D min_t(u32, tfile->tx_ring.size, TUN_XDP_BATCH);
-> +
-> +	batch =3D xsk_tx_peek_release_desc_batch(pool, budget);
-> +	if (!batch) {
+Syzbot managed to trigger a crash by creating a DEVMAP_HASH map with a
+large number of buckets because the overflow check relies on
+well-defined behaviour that is only correct on 64-bit arches.
 
-This branch looks like an unneeded "optimization". The generic loop
-below should have the same effect with no measurable perf delta - and
-smaller code. Just remove this.
+Fix the overflow checks to happen before values are rounded up.
 
-> +		tfile->nb_descs =3D 0;
-> +		spin_unlock(&tfile->tx_ring.producer_lock);
-> +		spin_unlock(&tfile->pool_lock);
-> +		return;
-> +	}
-> +
-> +	tfile->nb_descs =3D batch;
-> +	for (i =3D 0; i < batch; i++) {
-> +		/* Encode the XDP DESC flag into lowest bit for consumer to differ
-> +		 * XDP desc from XDP buffer and sk_buff.
-> +		 */
-> +		frame =3D tun_xdp_desc_to_ptr(&pool->tx_descs[i]);
-> +		/* The budget must be less than or equal to tx_ring.size,
-> +		 * so enqueuing will not fail.
-> +		 */
-> +		__ptr_ring_produce(&tfile->tx_ring, frame);
-> +	}
-> +	spin_unlock(&tfile->tx_ring.producer_lock);
-> +	spin_unlock(&tfile->pool_lock);
+v2:
+- Fix off-by-one error in overflow check
+- Apply the same fix to hashtab, where the devmap_hash code was copied
+  from (John)
 
-More related to the general design: it looks wrong. What if
-get_rx_bufs() will fail (ENOBUF) after successful peeking? With no more
-incoming packets, later peek will return 0 and it looks like that the
-half-processed packets will stay in the ring forever???
+Toke Høiland-Jørgensen (2):
+  bpf: Fix DEVMAP_HASH overflow check on 32-bit arches
+  bpf: Fix hashtab overflow check on 32-bit arches
 
-I think the 'ring produce' part should be moved into tun_do_read().
+ kernel/bpf/devmap.c  |  8 +++-----
+ kernel/bpf/hashtab.c | 10 +++++-----
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-Cheers,
-
-Paolo
+-- 
+2.43.2
 
 
