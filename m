@@ -1,184 +1,185 @@
-Return-Path: <bpf+bounces-22979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB40886BCF3
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 01:43:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41DA986BCF6
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 01:45:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 403CD1F25000
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:43:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C521B287BA2
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078DA168B7;
-	Thu, 29 Feb 2024 00:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A0F208A9;
+	Thu, 29 Feb 2024 00:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QwFAn02S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msD52to5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AE42D046
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 00:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7924A125CA
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 00:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709167396; cv=none; b=L9C24sRVuhjv5p16FiPHmeoQ5A3UZ2YOI+bFZ1acEMqt5kSFExthNSiL27s/BLCmoDyJvD75I+NoO9GDLdqxljOFjTTy4O/NFr8sb/o6NW9T8tc5ufZDKBusgY3S2MPoZwC8IwAmZFgbJ6yWLTmOCRsWf0UKTzUpolKqm80npow=
+	t=1709167492; cv=none; b=eyz38umOKToll/GcR5D+DTuN5Mt5vnz0uiVQOQI43gA5WpWZt8VgEQ9dmlhO/gPCrUxHUIoiD1RMuo7LIyDRGhvOTvOoJU5A4xJF5GgsAiBZLaPNP7qjFp8WyHzbhwzsIwyAaYlDWQA4HShk3jP44Xn+MnNKqV457t3J4/rKbCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709167396; c=relaxed/simple;
-	bh=W6U61PTLWWRXeqv9Yrsj+RIkVtDlR1YyW/kVnFwhL/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jFjkjGbP9QLk9087HFiMDL/oNplQ96xO+hwYRuqNmmCI3K/CIFqZUXWeoiDP3417e80o+Z698afgCwLI1bSqRU8YHphb1e26iCobuAqy7dIGbv+FD5AmBP911eigU1zeNo2VaWZZF9wIRMuVPlVYtNI7r2vkBY6/YbR0UtfJ348=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QwFAn02S; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1709167492; c=relaxed/simple;
+	bh=YnnaWDK4QqI6fVu9tXFhfIRwJpTCQz6EWcpGEdwUq5k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nkoPhI3GdeYSgtAoMaMDhfVzKJQyTurtqq92tgtG6NircN4v9KUblK78aR4gJW9/qyoJ5cGP5OH6WHjFoaan/4h+YDZ9zXY70BTYgtOpH6j8/o6Q5gxmGocWxbaCUtRuLVXXSBNdHUvBdr59qdPfweyOrARfIS5001J1lZfaEy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msD52to5; arc=none smtp.client-ip=209.85.219.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so290750a12.1
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 16:43:14 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso423382276.1
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 16:44:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709167394; x=1709772194; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ODFFkEpIINipZBbRi3SuMLI4Q63P1AegHDgSaA5pSF0=;
-        b=QwFAn02SOafL+I8OJLm7enAB2VVDbtQRF37ZCulGK/tCF1QthAVbOxCDVz6atNBKCZ
-         aHB9ZENCGl8b+AeC5EAUSalqLj/OQFPHXTPy9tkjizJ9hvDPiR5Da2JG5cHVYApJL0Lf
-         EwGPIrG4cXu459+CuB4nf0EUURr0k62842nvk3WWboPXAxqORGzt8R6g82nlxMkivs4U
-         dM370u2WvYP046lYcNj0ZR9zahZNtYDUFz8u2gXgUc0ITyWGlfZ+mYRwyb9XpgA4D2RZ
-         fPNePfpAz3uhnTjJ1zJMwiWWuFbhr6nRV526bhSWpbMLcgUlFZzSg10J0Wr7TxJpc23R
-         Givw==
+        d=gmail.com; s=20230601; t=1709167489; x=1709772289; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CWyA40Gnd1OdwxWxdIJ02tCWENZPaqYb/tjW157oKM0=;
+        b=msD52to5WQCVm69t86ssIwMlQfn/4R7b8M2EtSIC4ZCT9bbPSTQBaXEjSG7QyCaChM
+         zdYUAmBI546uIYy87qJqIy/ygoUD2vgjycZjDn3FjIQ8fg8cJ9cEvwuSp8e+8Zd4EhNY
+         PFJ7cX55ramunnp4lRQkEqjvDgRe8GHySFzEg6n5MeD6cm0Gs4ZqZv3Lq0qiSKyvMJEF
+         JMBrPG7aNZdKdC31noVfm1RtCWEfBathwwM0VWP7PqMwjZ3s8UzDz2+hLsF3d8vuIlJt
+         5ncamFLH45Yr0qhg7hTUBAnF8fZ9ixLrJGqZqlSzjmlv+E7kX2e++ec6TlbvvKw8wvzT
+         Vahg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709167394; x=1709772194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ODFFkEpIINipZBbRi3SuMLI4Q63P1AegHDgSaA5pSF0=;
-        b=XX8wzUnm4syDtAb89uDwZ0npDw3fvyI9e6+xx5t4xZpyszpn0u32O5SBpuSkPYG0EC
-         sC0+OHF6o4dnjbEpPOh6QgkyXBoNoep7NtXHjaAY76/Q7LHD7LQTOuWCgyQrp6oz0BlZ
-         xR7sodKdGQJ1DbW84Yyuw2tR2okn9mOkGeZ5TA2PDLiZmNktTbAKU+PBq6InPjah7ct/
-         olWAhk49fR6/3IEt4KW05uvYT6z0sDpa6hzJW8J3oe/0YzLjFP5tTivnpxo6rXJN/guV
-         apkLbmf5rsOd1kC9GtlY71fo5Q40vuJWUNj1SZoP4bUJxnbSNlZay8agwnwKJ+CMU5Rq
-         Zyyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXSIJzYOCaVLskshcwDNLH3Q8cMp3OabCxTMf07IQhBj84KBcz1oq9Yx7ekQPBDdVRL/aJD5N/8KiRO9F6j6Sz3Q+Zl
-X-Gm-Message-State: AOJu0YyrsgeZoaGp+Vo3V2s7JVdcXw22RMiZ1LmXPk/jwLw/Tpa5nWqk
-	KE1iA2EH3Z0lLt2Sr9CIv8cnPMCN0IRTI6QcUH5WMK5rqzwwlE4WSFLQv0AhpMP8HEHRPPyU1O5
-	ZsDwSUjBiWSZJHq6W7vVpirh8aMs=
-X-Google-Smtp-Source: AGHT+IGdr5inLwi6Kgk5vnmmRMrnVWFdk3yms3+EK3z9FPDiDS6i4s6Enaztwbj6Qc0LCVxBZZHLBKr4R9CgitmABY8=
-X-Received: by 2002:a17:90b:3697:b0:29b:c09:cdc3 with SMTP id
- mj23-20020a17090b369700b0029b0c09cdc3mr255535pjb.19.1709167394333; Wed, 28
- Feb 2024 16:43:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709167489; x=1709772289;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CWyA40Gnd1OdwxWxdIJ02tCWENZPaqYb/tjW157oKM0=;
+        b=iduHE4qTNOr4Bmgb0gKqWRk/mhZoetrWQEeP6dUrwY0AAckTb77asGUasyDu6kNkdz
+         bJ84z43ZtOoM1klZ157fQzqbw64TyZjw2Q2wqyLLKRizFugpoU0EaHpwpMGKjh2lIjC1
+         ArWgiTTQCSF99CmDib5cCWMt8MalWoQ1mHcovsTjDZ8bo2YJeF0MOHAlzI70cOoU7cmf
+         CA6DVVGF7UwSvOs0YWCw13FHEVr+smmmeRTnM1HJ1iestH45IpYQ+ZtjFajp3zAjr1mH
+         lUHVKsPCt3s6H+TQFV61Zjyw2Skn5ce59mb4TC6jQCdA3nr8niMUKENXZPznvWhE5UX4
+         49Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcmqB1NyG8eyYV52n5m3zogrU7GpNq1PP7U84MMasF4ka5+Efhpf9wLWPDWajah9tHmqJMfE2MeLghGybOVqIEogww
+X-Gm-Message-State: AOJu0YzTK1oM92h0LPpkiejHPBBF4aCYuDWs8BjhuL2/sUv2zckM5bJ+
+	HIAayZBr1k+NttRuzTUolZtOLt5XCE+J2IsMDZWp60IWg2Rax3AZ
+X-Google-Smtp-Source: AGHT+IH6dADCxnimnXKioGMUyXxA6BZx3mq+tWf4LeBXaXSeKWwLogdv+6UumKaGlsMR/GL9w3lnyw==
+X-Received: by 2002:a25:b78d:0:b0:dc7:2e:7646 with SMTP id n13-20020a25b78d000000b00dc7002e7646mr878278ybh.25.1709167489478;
+        Wed, 28 Feb 2024 16:44:49 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:8315:1f56:c755:e391? ([2600:1700:6cf8:1240:8315:1f56:c755:e391])
+        by smtp.gmail.com with ESMTPSA id x5-20020a25acc5000000b00dc74efa1bb4sm49397ybd.13.2024.02.28.16.44.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 16:44:49 -0800 (PST)
+Message-ID: <63fb7cb7-e884-472f-a81f-182d5867d1d4@gmail.com>
+Date: Wed, 28 Feb 2024 16:44:47 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207153550.856536-1-jolsa@kernel.org> <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
- <ZceWuIgsmiLYyCxQ@krava> <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
- <ZctcEpz3fHK4RqUX@krava> <ZdhmKQ1_vpCJTS_U@krava>
-In-Reply-To: <ZdhmKQ1_vpCJTS_U@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 28 Feb 2024 16:43:02 -0800
-Message-ID: <CAEf4BzYXDuPi9eqikn_mhH2Q30K6PHOSGrVn0BVzR4098FNWtg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
- in kprobe multi
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 4/6] bpftool: generated shadow variables for
+ struct_ops maps.
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org, quentin@isovalent.com, kuifeng@meta.com
+References: <20240227010432.714127-1-thinker.li@gmail.com>
+ <20240227010432.714127-5-thinker.li@gmail.com>
+ <CAEf4BzZFdyq1U2wNP4oZJy8MZrNPhp8zXFoC7mJwu=WYx_hCkg@mail.gmail.com>
+ <7c5359e7-737d-495b-b96b-22134776d3db@gmail.com>
+ <e72f726f-b815-4dee-b5da-63ee97082df6@gmail.com>
+ <CAEf4BzZSx7XJ4gmq=omjuw0u=CZpQFS=u1iHipOHg+PQN899Xw@mail.gmail.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAEf4BzZSx7XJ4gmq=omjuw0u=CZpQFS=u1iHipOHg+PQN899Xw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 1:32=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Tue, Feb 13, 2024 at 01:09:54PM +0100, Jiri Olsa wrote:
-> > On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
-> >
-> > SNIP
-> >
-> > > > > But the way you implement it with extra flag and extra fd paramet=
-er
-> > > > > makes it harder to have a nice high-level support in libbpf (and
-> > > > > presumably other BPF loader libraries) for this.
-> > > > >
-> > > > > When I was thinking about doing something like this, I was consid=
-ering
-> > > > > adding a new program type, actually. That way it's possible to de=
-fine
-> > > > > this "let's skip return probe" protocol without backwards
-> > > > > compatibility concerns. It's easier to use it declaratively in li=
-bbpf.
-> > > >
-> > > > ok, that seems cleaner.. but we need to use current kprobe programs=
-,
-> > > > so not sure at the moment how would that fit in.. did you mean new
-> > > > link type?
-> > >
-> > > It's kind of a less important detail, actually. New program type woul=
-d
-> > > allow us to have an entirely different context type, but I think we
-> > > can make do with the existing kprobe program type. We can have a
-> > > separate attach_type and link type, just like multi-kprobe and
-> > > multi-uprobe are still kprobe programs.
-> >
-> > ok, having new attach type on top of kprobe_multi link makes sense
->
-> hi,
-> I have further question in here.. ;-)
->
-> so I implemented the new behaviour on top of new attach_type, but I keep
-> thinking that it's the 'same/similar logic' as if I added extra flag to
-> attr.link_create.kprobe_multi.flags, which results in much simpler change
->
-> is following logic breaking backward compatibility in any way?
 
-Even if it doesn't break compatibility, isn't new attach_type better
-to explicitly show that semantics is completely different (it's two
-BPF program executions, before and after, for each specified kprobe),
-isn't that different enough? We can also have a different set of
-helpers for this kwrapper/uwrapper program type (probably could do it
-through flags as well, but attach_type again seems a better fit
-here..)?
 
-What makes it harder if you are doing it as a new attach_type?
+On 2/28/24 16:09, Andrii Nakryiko wrote:
+> On Wed, Feb 28, 2024 at 2:28 PM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+>>
+>>
+>>
+>> On 2/28/24 13:21, Kui-Feng Lee wrote:
+>>> Will fix most of issues.
+>>>
+>>> On 2/28/24 10:25, Andrii Nakryiko wrote:
+>>>> On Mon, Feb 26, 2024 at 5:04 PM Kui-Feng Lee <thinker.li@gmail.com>
+>>>> wrote:
+>>>>>
+>>>>> + * type. Accessing them through the generated names may unintentionally
+>>>>> + * corrupt data.
+>>>>> + */
+>>>>> +static int gen_st_ops_shadow_type(struct btf *btf, const char *ident,
+>>>>> +                                 const struct bpf_map *map)
+>>>>> +{
+>>>>> +       int err;
+>>>>> +
+>>>>> +       printf("\t\tstruct {\n");
+>>>>
+>>>> would it be useful to still name this type? E.g., if it is `struct
+>>>> bpf_struct_ops_tcp_congestion_ops in vmlinux BTF` we can name this one
+>>>> as <skeleton-name>__bpf_struct_ops_tcp_congestion_ops. We have a
+>>>> similar pattern for bss/data/rodata sections, having names is useful.
+>>>
+>>> If a user defines several struct_ops maps with the same name and type in
+>>> different files, it can cause name conflicts. Unless we also prefix the
+>>> name with the name of the skeleton. I am not sure if it is a good idea
+>>> to generate such long names. If a user want to refer to the type, he
+>>> still can use typeof(). WDYT?
+>>
+>> I misread your words. So, you were saying to prefix the skeleton name,
+>> not map names. It is doable.
+> 
+> I did say to prefix with skeleton name, but *that* actually can lead
+> to a conflict if you have two struct_ops maps that use the same BTF
+> type. On the other hand, map names are unique, they are forced to be
+> global symbols, so there is no way for them to conflict (it would be
+> link-time error).
 
->
->   - having new flag in attr.link_create.kprobe_multi.flags
->   - that force the attach of the bpf program to entry/exit function probe=
-s
->   - and the kprobe entry program return value now controls invocation
->     on the exit probe
->
-> so the new flag changes the semantics of the entry program return value,
-> which seems fine to me, because it depends on the new flag.. do I miss
-> any other problem with that?
->
-> thanks,
-> jirka
->
-> >
-> > >
-> > > >
-> > > > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
-> > > > > something to designate that it's both entry and exit probe) as on=
-e
-> > > > > program and in the code there would be some way to determine whet=
-her
-> > > > > we are in entry mode or exit mode (helper or field in the custom
-> > > > > context type, the latter being faster and more usable, but it's
-> > > > > probably not critical).
-> > > >
-> > > > hum, so the single program would be for both entry and exit probe,
-> > > > I'll need to check how bad it'd be for us, but it'd probably mean
-> > > > just one extra tail call, so it's likely ok
-> > >
-> > > I guess, I don't know what you are doing there :) I'd recommend
-> > > looking at utilizing BPF global subprogs instead of tail calls, if
-> > > your kernel allows for that, as that's a saner way to scale BPF
-> > > verification.
-> >
+I avoided conflicts by checking if the definition of a type is already
+generated.
 
-[...]
+For example, if there are two maps with the same type, they would looks 
+like.
+struct XXXSekelton {
+     ...
+     struct {
+         struct struct_ops_type {
+              ....
+         } *map1;
+         struct struct_ops_type *map2;
+     } struct_ops;
+   ...
+};
+
+WDYT?
+
+> 
+> How about we append both skeleton name, map name, and map's underlying
+> BTF type? So:
+> 
+> <skel>__<map>__bpf_struct_ops_tcp_congestion_ops
+> 
+> ?
+> 
+> Is there any problem with having a long name?
+
+No a big problem! Just not convenient to use.
+
+> 
+>>
+>>>
+>>>>
+>>>>> +
+>>>>> +       err = walk_st_ops_shadow_vars(btf, ident, map);
+>>>>> +       if (err)
+>>>>> +               return err;
+>>>>> +
+>>>>> +       printf("\t\t} *%s;\n", ident);
+>>>>> +
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
 
