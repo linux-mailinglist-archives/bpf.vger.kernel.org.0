@@ -1,160 +1,127 @@
-Return-Path: <bpf+bounces-23096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7CEB86D700
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 23:49:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB39986D702
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 23:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA12D1C20C6C
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 22:49:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 624F01F241EA
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 22:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26F444376;
-	Thu, 29 Feb 2024 22:49:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D0444376;
+	Thu, 29 Feb 2024 22:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="ROlb3vfB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nXXMyoj/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506E416FF47
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 22:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE8316FF47
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 22:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709246953; cv=none; b=GlOFiw/dVZ5o1Ni/LhIo4aQkM1DCiUjjPiJGwivMfuNk497Q0gAWIew6L+7elNF6cjcbUyE9dNIi+3RR7IT5ZL16bWfNDFinQBdGLAfHmQ3bZNyLaRWHH5RuchjD44as9+aZGeiOd6MzEi66bzHNIsejtFQipy7jX/5SDPfhqJk=
+	t=1709246978; cv=none; b=bNphQ13dYPR4Ra3gjkc3MyaGPOL3j9HvNnG+WLGE5gxaDFpFfUOMkTd4BXKkKaDU+TOPnM4EDGAdoQ/ZYlRvPrvtSv+4apbEh3Q8J/nLWJkCH6uWhEV86ce2omCANzAfgwl6Vb8tN/peR7N2qS2WKBTXpqulRxZ6dPRyUtZbdtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709246953; c=relaxed/simple;
-	bh=ygTmpByyMhxlPQGiSyreqYJt6mmhMLEUJZof6paMkak=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tcrXP7waxXm8xVeyzA34qwEbBUE0AHxIQTA9lmFFO22fD1SPEI3UfY8b6DAiGSlF5hwnfqQ9y8MsXfyZt0nMy9zSXQrE+2EkcxpAGBNDNB3rvJYeOWdgVJBLpG+XQo14cDJ744sD/444yhfd7P25/2z/oFbVq5JJUGIJLf6TAKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=ROlb3vfB; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-608e0b87594so15552777b3.1
-        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 14:49:11 -0800 (PST)
+	s=arc-20240116; t=1709246978; c=relaxed/simple;
+	bh=mPTYyW1WrXI0Rfnwgpiw/MLeEFV/skFR9j5Npf7iXGw=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=orqpzAMNDRFjx8RdOjAhiWqzgqnuSdYe/trh6itwsRjPK934LtScsKcWSxRN8sJt87pI86PU+e6brawg+UuNMxRrKSmPIbBl1tIxlgm99Bl2nEUZoEtZgHJHDaNwR1d4JblkZRubRKyIA6cxge4FpBehcBmyYaxEgevLWPFCpyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nXXMyoj/; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c1a9b567edso619714b6e.3
+        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 14:49:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709246950; x=1709851750; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709246976; x=1709851776; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K4nU5ez2SAozzKm4VgQinKC+OlAX5vTXbZ4ojo+A58g=;
-        b=ROlb3vfB3njRyayHyZPjSnEe7W9QD9d75gM+ERhxipwKANrtLHt9YpGq1QO/HaFOos
-         Jr0AEm5RBTh9TiqnVVdo0/nZYsH2px7Pg61ewovLkmZHD/W1NsYcpbz4H1H6NGJleXUr
-         UuC6J8eNBKJ7rY0FIvvIcJ69ywVZwtkIYZwPg94R1MZfhJ2063839KmUfstpHkskEUOP
-         2jIVtpNKAhaG39jayYy4F7RWdy8qoiHukJBZxdE/fvam0MssJgjG/s9rbrDix2Lm77m+
-         NZmdQXot5KnZslZ8jv40JegZ2CBRoKfndYPCrGwfjP+R7gUSYr8atrKHCvHRbVUS63PR
-         RrCQ==
+        bh=3CH7/Jfg2DLAa/6f09ZiTdW7e89T7hvWgQVRXCE9eG8=;
+        b=nXXMyoj/zSJQ6F5RYqEPS94so1CqhvKeT0sUgj+HSSqTD9xCfcf0s5jPI+bbzNdQ5g
+         p4KKfarttlDe/MYl1h04/wC4is7Ie6mymgZjCYbI5DKl1GLZubZTU1dw7EbwawDy1XpJ
+         W4kgdWiPJrFx36vUJsCmMLGnfwNGLRmSNQ/zorDehkas5hzF/YZWacgBLXfOteZviwrr
+         UqQLITJemw27YO9thERFfpUbChj/AxGvlm+vOwUJKToy5aGbE5M5/hW2P6c/nVI8zHeO
+         jGk8Ega0bPyR9LArgjMPaU7hjQvYO5qMCp7a/1pZ3B1VY8ZE39GFfBgqxlWHATF+Sa+a
+         JVoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709246950; x=1709851750;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K4nU5ez2SAozzKm4VgQinKC+OlAX5vTXbZ4ojo+A58g=;
-        b=g65zBTAzbO3o3ni3aV4aFwEJ6WarqgbrwfXGQ2OB5UYFj5qsvS6+vYmQrtECHv3rcf
-         1QVgkKVVTYg2F8KZsl1qRU7Z/3QwKA+A7CQLOHBdmmH1Mh3g8zAfqmNqu7KG3ofcDxPB
-         ptlhrh7K8NQEUxz/Nr4GDrLIn5vBJfx8zfpJVoD8kUzK3YmuqHXFVZ1S4Q343Ho+dJ6S
-         NN+ejWMARXfP+ozqlK0EBaE45Mfs8GPzQA7wcrQ42+wFbD1pdQs6YpQd5R5np/aYHkKV
-         02sC8psxxmxVysV5ZTq2mSMWpZPLgqS5/CSo3dVG3FRakIfYSK5/lKgZUTXyeXBs11YL
-         kyGw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYRUr0p0MPceT+mckI+OihF/PkzXFe2LFI+w0Ig4Iq5UwHQRYU/KeSIZFd3JetLEOyHg9pvdBr9XZDOQZ95Pmx1VP0
-X-Gm-Message-State: AOJu0YxCUlX/77Ethxi23OJFpdmPvk1Fmr8ljrPe1uZdPJP5PXooN21H
-	pzz2tCk1tyo0NfoMRuy8+YohTak0XZuuEdarQkaNfYSTCvv5ywxRgs25AEw/IYJHN2J2ueJ19uW
-	Z8J5rj/dPzcR8d8tqZ7QKCeq/X2KpUBCemeGA
-X-Google-Smtp-Source: AGHT+IEI/Cb/5bIETgQJIwAXqDgfDROdDJUXOhunysIYOOMPhE8IBkB7/3TVoz570IGz8K13hTTaq7THd5dCaCmyShc=
-X-Received: by 2002:a0d:cb14:0:b0:607:d9fb:5144 with SMTP id
- n20-20020a0dcb14000000b00607d9fb5144mr469604ywd.13.1709246950348; Thu, 29 Feb
- 2024 14:49:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709246976; x=1709851776;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3CH7/Jfg2DLAa/6f09ZiTdW7e89T7hvWgQVRXCE9eG8=;
+        b=GE2BPrQmgEhv3EoGZ+Z9sExIZWVZVj1pDdL+hW05bRS5hByYNj76UzFQ6JZ/LQLDiZ
+         ifsn3FEuP0ViCwNRdSbkQboKcIqeoc9D1fp3QKeTA1KhHYPNxUT5n+snZHhNfLDUR2qt
+         q0Wf1srnFM+1tvwqkywUOXq/2+oc1H0NNnoAVaM3gDc52pUIvwFlUzC21BbdN0ftMikJ
+         crIpCCxs0yeO0TsPReVmUOc1I/4kx7SH6s2m/4hgFR7x/GyhoM1B9Sy56CCJ8wxhugNj
+         PZdigCHls6Twcl56oZPc/YZlkcC4f7r1tLKFM6RVNyPuWsTLlYN+gp4Z1jr2W0rxwj8A
+         mdgQ==
+X-Gm-Message-State: AOJu0YwZh2el+xH09f4wzhVMLySUudHhIgAT1Ikj7Aj0Iy5hPYNhujUN
+	EY2F68iYZBjpQ/6eQF/V8YAmOESf2SYCJaZxFQ8gTXVRXoM6kqQb
+X-Google-Smtp-Source: AGHT+IHO82z6rONC7Jv4un3e6Voj9tJVb+NOpNPfOt7LnCob5fZRPHUTC+w5jOxYTXv8JGjdCq19fQ==
+X-Received: by 2002:a05:6808:181d:b0:3c0:2b65:dd2 with SMTP id bh29-20020a056808181d00b003c02b650dd2mr19274oib.8.1709246975990;
+        Thu, 29 Feb 2024 14:49:35 -0800 (PST)
+Received: from localhost ([98.97.43.160])
+        by smtp.gmail.com with ESMTPSA id y133-20020a62ce8b000000b006e45a0101basm1892897pfg.99.2024.02.29.14.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 14:49:35 -0800 (PST)
+Date: Thu, 29 Feb 2024 14:49:18 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, 
+ lsf-pc@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org, 
+ Paul Chaignon <paul@isovalent.com>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>
+Message-ID: <65e109eec79ef_43ad82086c@john.notmuch>
+In-Reply-To: <ZeA9Jqug3NqPwjtQ@u94a>
+References: <ZeA9Jqug3NqPwjtQ@u94a>
+Subject: RE: [LSF/MM/BPF TOPIC] Value Tracking in Verifier
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240225165447.156954-1-jhs@mojatatu.com> <b28f2f7900dc7bad129ad67621b2f7746c3b2e18.camel@redhat.com>
- <CO1PR11MB49931E501B20F32681F917CD935F2@CO1PR11MB4993.namprd11.prod.outlook.com>
- <65e106305ad8b_43ad820892@john.notmuch>
-In-Reply-To: <65e106305ad8b_43ad820892@john.notmuch>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Thu, 29 Feb 2024 17:48:58 -0500
-Message-ID: <CAM0EoM=r1UDnkp-csPdrz6nBt7o3fHUncXKnO7tB_rcZAcbrDg@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 00/15] Introducing P4TC (series 1)
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: "Singhai, Anjali" <anjali.singhai@intel.com>, Paolo Abeni <pabeni@redhat.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "Chatterjee, Deb" <deb.chatterjee@intel.com>, 
-	"Limaye, Namrata" <namrata.limaye@intel.com>, "tom@sipanda.io" <tom@sipanda.io>, 
-	"mleitner@redhat.com" <mleitner@redhat.com>, "Mahesh.Shirshyad@amd.com" <Mahesh.Shirshyad@amd.com>, 
-	"Vipin.Jain@amd.com" <Vipin.Jain@amd.com>, "Osinski, Tomasz" <tomasz.osinski@intel.com>, 
-	"jiri@resnulli.us" <jiri@resnulli.us>, "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, 
-	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>, 
-	"kuba@kernel.org" <kuba@kernel.org>, "vladbu@nvidia.com" <vladbu@nvidia.com>, 
-	"horms@kernel.org" <horms@kernel.org>, "khalidm@nvidia.com" <khalidm@nvidia.com>, 
-	"toke@redhat.com" <toke@redhat.com>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"victor@mojatatu.com" <victor@mojatatu.com>, "Tammela, Pedro" <pctammela@mojatatu.com>, 
-	"Daly, Dan" <dan.daly@intel.com>, "andy.fingerhut@gmail.com" <andy.fingerhut@gmail.com>, 
-	"Sommers, Chris" <chris.sommers@keysight.com>, "mattyk@nvidia.com" <mattyk@nvidia.com>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 5:33=E2=80=AFPM John Fastabend <john.fastabend@gmai=
-l.com> wrote:
->
-> Singhai, Anjali wrote:
-> > From: Paolo Abeni <pabeni@redhat.com>
-> >
-> > > I think/fear that this series has a "quorum" problem: different voice=
-s raises opposition, and nobody (?) outside the authors
-> > > supported the code and the feature.
-> >
-> > > Could be the missing of H/W offload support in the current form the r=
-oot cause for such lack support? Or there are parties
-> > > interested that have been quite so far?
-> >
-> > Hi,
-> >    Intel/AMD definitely need the p4tc offload support and a kernel SW p=
-ipeline, as a lot of customers using programmable pipeline (smart switch an=
-d smart NIC) prefer kernel standard APIs and interfaces (netlink and tc ndo=
-). Intel and other vendors have native P4 capable HW and are invested in P4=
- as a dataplane specification.
->
-> Great what hardware/driver and how do we get that code here so we can see
-> it working? Is the hardware available e.g. can I get ahold of one?
->
-> What is programmable on your devices? Is this 'just' the parser graph or
-> are you slicing up tables and so on. Is it a FPGA, DPU architecture or a
-> TCAM architecture? How do you reprogram the device? I somehow doubt its
-> through a piecemeal ndo. But let me know if I'm wrong maybe my internal
-> architecture details are dated. Fully speculating the interface is a FW
-> big thunk to the device?
->
-> Without any details its difficult to get community feedback on how the
-> hw programmable interface should work. The only reason I've even
-> bothered with this thread is I want to see P4 working.
->
-> Who owns the AMD side or some other vendor so we can get something that
-> works across at least two vendors which is our usual bar for adding hw
-> offload things.
->
-> Note if you just want a kernel SW pipeline we already have that so
-> I'm not seeing that as paticularly motivating. Again my point of view.
-> P4 as a dataplane specification is great but I don't see the connection
-> to this patchset without real hardware in a driver.
+Shung-Hsi Yu wrote:
+> Hello,
+> 
+> I'd like propose a discussion about BPF verifier itself. To avoid being too
+> vague, this proposition limits to value tracking (i.e. var_off and
+> *{min,max}_value in bpf_reg_state); taking a very brief look at the
+> challenges of current implementation, and maybe alternative implementation
+> like PREVAIL[1]. Before heading on to the actual discussion:
+> - Unify signed and unsigned min/max tracking[2]
+> - Refactor value tracking routines (as set-operations)
+> - Tracking relation between values
 
-Here's what you can buy on the market that are native P4 (not that it
-hasnt been mentioned from day 1 on patch 0 references):
-[10]https://www.intel.com/content/www/us/en/products/details/network-io/ipu=
-/e2000-asic.html
-[11]https://www.amd.com/en/accelerators/pensando
+Sounds interesting to me. Just creating a summarized list of the examples
+that have forced the signed/unsigned separation would be valuable and the
+reasons why we have both var_off and min,max would be a nice document.
+The examples would show why the bit tracking and min/max has resisted
+easily being unified.
 
-I want to emphasize again these patches are about the P4 s/w pipeline
-that is intended to work seamlessly with hw offload. If you are
-interested in h/w offload and want to contribute just show up at the
-meetings - they are open to all. The current offloadable piece is the
-match-action tables. The P4 specs may change to include parsers in the
-future or other objects etc (but not sure why we should discuss this
-in the thread).
+> 
+> Admittedly the current topic is a rather narrowly scoped. The discussion
+> could be further expanded to be about the verifier in general as needed,
+> some (less concrete) ideas to discuss:
+> - Further reducing loop/branch states
+> - Lazier precision tracking
+> - Simplification/refactoring of codebase
+> - Documentation improvement
+> 
+> 
+> Thanks,
+> Shung-Hsi Yu
+> 
+> 1: https://vbpf.github.io/
+> 2: https://lore.kernel.org/bpf/20231108054611.19531-1-shung-hsi.yu@suse.com/
+> 
 
-cheers,
-jamal
+
 
