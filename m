@@ -1,233 +1,320 @@
-Return-Path: <bpf+bounces-23076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F53786D32E
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 20:29:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F084586D388
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 20:44:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91C88B21C76
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 19:29:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67F0286006
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 19:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D0113C9D8;
-	Thu, 29 Feb 2024 19:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D488E13F434;
+	Thu, 29 Feb 2024 19:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VdCx0Qtu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A8EC12FB0B;
-	Thu, 29 Feb 2024 19:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AED413C9E5;
+	Thu, 29 Feb 2024 19:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709234969; cv=none; b=erHn7tS2ZFt93cMmWEz90B2mkVUFgskC7Yl70RTvmZoKAh3GFStSbdxO4GALTU+5nPlDg795MVHabO7zhPuQD6NT0br4cEtPTNOLA0XqSLtlcbYHi9pVmPsnvRpgxGZTT/fia2HjjxnUeamzg3+FxbSV8cPzGQdoH+5Q9AkQYoA=
+	t=1709235826; cv=none; b=Oy+wbgsFqVOzPN6XFJWvo3bzjAhg4zz7qtRtL5Jm4bHOR+F9lZcLZToh/vCfIwcEH+GUJjITqohga9jmSTQKcNa523juXpzCnxm8mxpAkvo0daHtghgITxhZu5zZqr6OEEhRWsVWvlAFWIF8Xk6Z8uzxRq4kQEjfq02+0fH2T8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709234969; c=relaxed/simple;
-	bh=ER8jFkTX8fHxUe0ER9VhE+YF/WbM+QuUTTWQrzqyZ1A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L9h1kVawz2QcXXI1n6ppivHm/rPxRNnFfntxurXcJsbxUrbuA1Rplw20f1FAuOdhwStFPbmDNeKpvTAsr5libi5ClIgmmbbSF1Y+3QY/1QrF8oyY2gTYcC3860hIALIQrO5UJJEn6r12V0dtaNNb3Orjjbrb8SbUPD3wCamGuns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709235826; c=relaxed/simple;
+	bh=fcaPBvJsB42z/fUuoywTyYUMe7RT+I5xtuNSPSRKUwA=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=f66zIj9bbxRZXqGbXyyFEOvlEJZ+N7fP0/LHNG4Rqu8WGG84gtngFuOI//BPMZwcpAw4Y5xhFMX15ei1nrcuh0DeYG/2n7QwlgOwx+f8GuJKqBaSBDIaTCnfx/Ra4PSpW4TY7O8c3pMZdGDBxHT08/SqACrgTjSG8FKAOhmG05c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VdCx0Qtu; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e495e7d697so286041a34.1;
-        Thu, 29 Feb 2024 11:29:26 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d311081954so9859371fa.2;
+        Thu, 29 Feb 2024 11:43:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709235822; x=1709840622; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FbgtyMZ4mWENGjxFShiImxlPm+xFjI/du4H0Na3k0jg=;
+        b=VdCx0QtuWgjk3mw/OswIUSPnXlTNO1MBGZD6Dp7Nz0V76WYHqxHrJckTsP0oXS7bCS
+         BMOrgeOaHaS5l9wK3cdKf6v/Vej3D76bbSR8vda18Yo3Ov54g8h9hBcy5b+LENxEikdw
+         4WPljoLv92ocYy7a9JIXPjw/DCE+w+k2gn8+Or7Tj1XhIlFDQxGDjmodaqnzys7S3xXi
+         qYW2UoHAQFOfqWNT/asTqltiBDD8PHuYBjWgbgXW3r2Lb2Xfn5CMdO/oA4WKaC4P1Bgg
+         m+U7c6MRzE3rlCjty5SL6P4flw45xOk+uE6UfwKkqdQ3YxfZR7BxXsqEZdQmReY0opC7
+         2hMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709234966; x=1709839766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vSo0N+coBNcRok/KrBy9V2vlVmSI+dcsaCeZh4GtHeQ=;
-        b=DK9fsy326QKRN2WrozV7u3zxeg07LUac7Ph5cY/XoCeyJrd6TdAhKsfcF7OlgEiNNq
-         5y/KdFusqVR0EtO2rf9Xhl2osGKc6nvpZEOFFCVXVBQe1CcC5ptsbrjZkNZo1QS3Da23
-         6I59zmFMAcWSo0x1yEXnF28Y8lnvCNyi8H2dyTSx5AM0ocAuUU9NpwcMYp5riJNIAjME
-         Dq5CGHPyGiLSi7RbVY2afMNUxlmhn2zhR9ItqJQ13XLJBlhnNo5wfgzDLOHEcDspO8we
-         xw2Cqll4na+8dJ3+R09DUnVnnZ+jUxSEwOW6+OzakCxS323VGWYRnviwLXZIoLtoRs+7
-         7ASg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNk396YZjm776DP3tpZFwoUDhIIFvwVpiMcIIqYwBL4xYdHhTC9KpmuG0duyJNxkm/aEttoSfr2q/VBmJS6F8xb9BXSllct+EfiKHcEuVvXxM1Ks7vQvwpjyomeHG3sWHn9uF6Yik7qC+SM98JOHOI1lA6XB7Hvsd1NunIP0fHirE5J3vFBPjDExql6ja1ZFdpxgo28DE3qzFKT/yg
-X-Gm-Message-State: AOJu0YwsnoMGJ3fs3HUCKnn2TC4LXt151BE6Tlm7JzYav8rpdXMpRSsQ
-	s5vrXY87zTzRvc3TOfWS8aWndK75aW/3rzyrM12ZVUDJbsW5aczQSqxtC54ElcjFbWNDWYenn4w
-	mQMNP0KjDv90j21xeF8ZX7i/BRzg=
-X-Google-Smtp-Source: AGHT+IEEzU4wkhZS54XDatEAIQZw9n2MvS0+AjIaHP6d+h7+WzJ6I8hgIA+9f8MJGlKVk+aVIzv0DN31yBoy7aXBXm0=
-X-Received: by 2002:a4a:b902:0:b0:5a0:c62a:72b3 with SMTP id
- x2-20020a4ab902000000b005a0c62a72b3mr3040562ooo.0.1709234966026; Thu, 29 Feb
- 2024 11:29:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709235822; x=1709840622;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FbgtyMZ4mWENGjxFShiImxlPm+xFjI/du4H0Na3k0jg=;
+        b=UqzjbGwaPzL+wAC/CJHIkinpuXGm2QmWD4BFbOhSAGzi4KXApAWT6IIZp0QOJ+FsgG
+         rEMU82uUwoOEZ0EOD+IyjVUYR6Z+m8wzf1FLd8y45k0X0R5+seiDGQPWHMKtmjg7MM29
+         XfXonY1rkLYmNXjb4r+aR5FURyS5xz0E6lsT88Om9VIDnlivpg4kZeQ2DZlOqpyy6IHs
+         vYsPfCA8znzdb4u3jS9B2ct6wQskm6qWMvabjsNbk1dQOLBVMraQ1QLw49v5RvbE9NUI
+         t1yPa05HVlc0TydUrFAU6btU2tamyGY+BiTq6g/W+UPT5pqJmESe3UhKRHuR5mFpcSPb
+         2EUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXzVsPC7HZXc/dxchfor3PcUx1V/wpUspDp7V8sg2sYuYqm8DxV2GCHAsA4vYIWgkBTKoMhBSv/G9Vd9dZJ94ep2lbqIKjmXP1rWAiVQAqoI6rSAZP872syO5mTpQ2Vn3ao
+X-Gm-Message-State: AOJu0Yz+ulAShtS19+aYvGaXjlIDufPtz6r4oBgeShs4aRlHHR3VG9bk
+	QMSGqPXzjkGbNxp9HjtKzxY5Iqm9tHaF+mCVqhytMBU+B6AyVAwG
+X-Google-Smtp-Source: AGHT+IFroyYD4JgISoV5wedMc8AviWrj+5iahY6O5IIcTmaLYV2N5XSkomfiCAyduVhONJi7YZrl4g==
+X-Received: by 2002:a2e:8195:0:b0:2d2:39ab:eee1 with SMTP id e21-20020a2e8195000000b002d239abeee1mr2163066ljg.32.1709235822131;
+        Thu, 29 Feb 2024 11:43:42 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id q16-20020a7bce90000000b0041069adbd87sm6020534wmj.21.2024.02.29.11.43.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Feb 2024 11:43:41 -0800 (PST)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: catalin.marinas@arm.com, ast@kernel.org, daniel@iogearbox.net,
+ mark.rutland@arm.com, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: arm64: Supporting DYNAMIC_FTRACE_WITH_CALL_OPS with CLANG_CFI
+In-Reply-To: <mb61ph6hsxj94.fsf@gmail.com>
+References: <mb61ph6hsxj94.fsf@gmail.com>
+Date: Thu, 29 Feb 2024 19:43:39 +0000
+Message-ID: <mb61pedcvxdhw.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229062201.49500-1-kai.heng.feng@canonical.com> <20240229192141.GA342851@bhelgaas>
-In-Reply-To: <20240229192141.GA342851@bhelgaas>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Feb 2024 20:29:14 +0100
-Message-ID: <CAJZ5v0if-g-pPQEWdSq_vOXsp=rheSBzk-hnyOv5oJwGzMPxPw@mail.gmail.com>
-Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>, 
-	Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, 
-	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Feb 29, 2024 at 8:21=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> [+to Rafael, can you comment on whether this is the right fix for the
-> .remove() vs .runtime_idle() race?]
+puranjay12@gmail.com writes:
 
-It doesn't seem so.
+> I would propose the following changes to the compiler that could fix this
+> issue:
+>
+> 1. The kCFI hash should always be generated at func_addr - 4, this would
+> make the calling code consistent.
+>
+> 2. The two(n) nops should be generated before the kCFI hash. We would
+> modify the ftrace code to look for these nops at (fun_addr - 12) and
+> (func_addr - 8) when CFI is enabled, and (func_addr - 8), (func_addr -
+> 4) when CFI is disabled.
+>
+> The generated code could then look like:
+>
+> ffff80008033e9b0:       d503201f        nop
+> ffff80008033e9b4:       d503201f        nop
+> ffff80008033e9b8:       16c516ce        kCFI hash
+> ffff80008033e9bc <jump_label_cmp>:
+> ffff80008033e9bc:       d503245f        bti     c
+> ffff80008033e9c0:       d503201f        nop
+> ffff80008033e9c4:       d503201f        nop
+> [.....]
+>
 
-pm_runtime_get_sync() is expected to cancel pending pm_runtime_idle()
-in all cases, so this looks like PM-runtime core issue.
+I hacked some patches and tried the above approach:
 
-Let me have a look at it.
+Both CFI and DIRECT CALLS are enabled:
 
-> On Thu, Feb 29, 2024 at 02:22:00PM +0800, Kai-Heng Feng wrote:
-> > When inserting an SD7.0 card to Realtek card reader, the card reader
-> > unplugs itself and morph into a NVMe device. The slot Link down on hot
-> > unplugged can cause the following error:
-> >
-> > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> > BUG: unable to handle page fault for address: ffffb24d403e5010
-> > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-> > Oops: 0000 [#1] PREEMPT SMP PTI
-> > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> > Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pro4=
-, BIOS P3.40 10/25/2018
-> > Workqueue: pm pm_runtime_work
-> > RIP: 0010:ioread32+0x2e/0x70
-> > Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 54 01 b8 ff=
- ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b> 07 c3 cc =
-cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-> > RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-> > RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 000000000000007f
-> > RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403e5010
-> > RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000000000000
-> > R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 000000000000007f
-> > R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000000009003
-> > FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003706e0
-> > Call Trace:
-> >  <TASK>
-> >  ? show_regs+0x68/0x70
-> >  ? __die_body+0x20/0x70
-> >  ? __die+0x2b/0x40
-> >  ? page_fault_oops+0x160/0x480
-> >  ? search_bpf_extables+0x63/0x90
-> >  ? ioread32+0x2e/0x70
-> >  ? search_exception_tables+0x5f/0x70
-> >  ? kernelmode_fixup_or_oops+0xa2/0x120
-> >  ? __bad_area_nosemaphore+0x179/0x230
-> >  ? bad_area_nosemaphore+0x16/0x20
-> >  ? do_kern_addr_fault+0x8b/0xa0
-> >  ? exc_page_fault+0xe5/0x180
-> >  ? asm_exc_page_fault+0x27/0x30
-> >  ? ioread32+0x2e/0x70
-> >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> >  pci_pm_runtime_idle+0x34/0x70
-> >  rpm_idle+0xc4/0x2b0
-> >  pm_runtime_work+0x93/0xc0
-> >  process_one_work+0x21a/0x430
-> >  worker_thread+0x4a/0x3c0
-> >  ? __pfx_worker_thread+0x10/0x10
-> >  kthread+0x106/0x140
-> >  ? __pfx_kthread+0x10/0x10
-> >  ret_from_fork+0x29/0x50
-> >  </TASK>
-> > Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_sof_pci_intel_=
-cnl snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_codec_generic sn=
-d_soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 soundwire_generi=
-c_allocation soundwire_cadence snd_sof_intel_hda_mlink snd_sof_intel_hda sn=
-d_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_core snd_soc=
-_acpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_compress ac97=
-_bus snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_intel_sdw_ac=
-pi intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core x86_pkg_temp=
-_thermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel drm_buddy tt=
-m mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_event cec crct1=
-0dif_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_simd rc_cor=
-e cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cstate i2c_algo_=
-bit joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_timer sysfillrec=
-t input_leds snd ee1004 sysimgblt mei_me soundcore
-> >  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_codel msr parpo=
-rt_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_tables x_tabl=
-es autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ahci e1000e i=
-2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas video wmi
->
-> The module list is a big distraction and isn't relevant to this issue.
->
-> > CR2: ffffb24d403e5010
-> > ---[ end trace 0000000000000000 ]---
-> >
-> > This happens because scheduled pm_runtime_idle() is not cancelled.
->
-> I think it would be useful to include a little more background about
-> how we got here.  In particular, I think we got here because
-> .runtime_idle() raced with .remove():
->
->   - rtsx_pci_runtime_idle() did iowrite32(pcr->remap_addr + RTSX_HAIMR)
->     in rtsx_pci_write_register() successfully
->
->   - rtsx_pci_remove() iounmapped pcr->remap_addr
->
->   - rtsx_pci_runtime_idle() did ioread32(pcr->remap_addr + RTSX_HAIMR)
->     in rtsx_pci_write_register(), which faulted
->
-> The write and the read access the same register, but the write was
-> successful and we faulted on the *read* (see [1]), which means
-> rtsx_pci_runtime_idle() started execution first, and rtsx_pci_remove()
-> raced with it and happened to unmap pcr->remap_addr (see [2]) between
-> the write and the read.
->
-> It looks like this kind of race between .runtime_idle() and .remove()
-> could happen with any driver.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/drivers/misc/cardreader/rtsx_pcr.c?id=3Dv6.7#n164
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/drivers/misc/cardreader/rtsx_pcr.c?id=3Dv6.7#n1633
->
-> > So before releasing the device, stop all runtime power managements by
-> > using pm_runtime_barrier() to fix the issue.
-> >
-> > Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@real=
-tek.com/
-> > Cc: Ricky Wu <ricky_wu@realtek.com>
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v3:
-> >   Move the change the device driver core.
-> >
-> > v2:
-> >   Cover more cases than just pciehp.
-> >
-> >  drivers/base/dd.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > index 85152537dbf1..38c815e2b3a2 100644
-> > --- a/drivers/base/dd.c
-> > +++ b/drivers/base/dd.c
-> > @@ -1244,6 +1244,7 @@ static void __device_release_driver(struct device=
- *dev, struct device *parent)
-> >
-> >       drv =3D dev->driver;
-> >       if (drv) {
-> > +             pm_runtime_barrier(dev);
-> >               pm_runtime_get_sync(dev);
-> >
-> >               while (device_links_busy(dev)) {
-> > --
-> > 2.34.1
-> >
+[root@localhost ~]# zcat /proc/config.gz | grep DIRECT_CALLS
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
+CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
+[root@localhost ~]# zcat /proc/config.gz | grep CONFIG_CFI
+CONFIG_CFI_CLANG=y
+CONFIG_CFI_PERMISSIVE=y
+CONFIG_CFI_WITHOUT_STATIC_CALL=y
+
+Running some BPF selftests that use this feature.
+
+./test_progs -a "*fentry*,*fexit*,tracing_struct" -b "fentry_test/fentry_many_args" -b "fexit_test/fexit_many_args"
+
+#77      fentry_attach_btf_presence:OK
+#78      fentry_fexit:OK
+#79/1    fentry_test/fentry:OK
+#79      fentry_test:OK
+#80/1    fexit_bpf2bpf/target_no_callees:OK
+#80/2    fexit_bpf2bpf/target_yes_callees:OK
+#80/3    fexit_bpf2bpf/func_replace:OK
+#80/4    fexit_bpf2bpf/func_replace_verify:OK
+#80/5    fexit_bpf2bpf/func_sockmap_update:OK
+#80/6    fexit_bpf2bpf/func_replace_return_code:OK
+#80/7    fexit_bpf2bpf/func_map_prog_compatibility:OK
+#80/8    fexit_bpf2bpf/func_replace_unreliable:OK
+#80/9    fexit_bpf2bpf/func_replace_multi:OK
+#80/10   fexit_bpf2bpf/fmod_ret_freplace:OK
+#80/11   fexit_bpf2bpf/func_replace_global_func:OK
+#80/12   fexit_bpf2bpf/fentry_to_cgroup_bpf:OK
+#80/13   fexit_bpf2bpf/func_replace_progmap:OK
+#80      fexit_bpf2bpf:OK
+#81      fexit_sleep:OK
+#82      fexit_stress:OK
+#83/1    fexit_test/fexit:OK
+#83      fexit_test:OK
+#158     module_fentry_shadow:OK
+#193/1   recursive_fentry/attach:OK
+#193/2   recursive_fentry/load:OK
+#193/3   recursive_fentry/detach:OK
+#193     recursive_fentry:OK
+#385     tracing_struct:OK
+Summary: 10/18 PASSED, 0 SKIPPED, 0 FAILED
+
+Running basic ftrace selftest:
+
+[root@localhost ftrace]# ./ftracetest test.d/00basic/
+=== Ftrace unit tests ===
+[1] Basic trace file check      [PASS]
+[2] Basic test for tracers      [PASS]
+[3] Basic trace clock test      [PASS]
+[4] Basic event tracing check   [PASS]
+[5] Change the ringbuffer size  [PASS]
+[6] Change the ringbuffer sub-buffer size       [PASS]
+[7] Snapshot and tracing setting        [PASS]
+[8] Snapshot and tracing_cpumask        [PASS]
+[9] Test file and directory owership changes for eventfs        [PASS]
+[10] Basic tests on writing to trace_marker     [PASS]
+[11] trace_pipe and trace_marker        [PASS]
+[12] (instance)  Basic test for tracers [PASS]
+[13] (instance)  Basic trace clock test [PASS]
+[14] (instance)  Change the ringbuffer size     [PASS]
+[15] (instance)  Change the ringbuffer sub-buffer size  [PASS]
+[16] (instance)  Snapshot and tracing setting   [PASS]
+[17] (instance)  Snapshot and tracing_cpumask   [PASS]
+[18] (instance)  Basic tests on writing to trace_marker [PASS]
+[19] (instance)  trace_pipe and trace_marker    [PASS]
+
+
+# of passed:  19
+# of failed:  0
+# of unresolved:  0
+# of untested:  0
+# of unsupported:  0
+# of xfailed:  0
+# of undefined(test bug):  0
+
+Here are the patches(RFC) that I created:
+
+LLVM Patch:
+
+--- >8 ---
+diff --git a/llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp b/llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp
+index e89a1c26c..f1ca33c26 100644
+--- a/llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp
++++ b/llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp
+@@ -982,9 +982,6 @@ void AsmPrinter::emitFunctionHeader() {
+     }
+   }
+
+-  // Emit KCFI type information before patchable-function-prefix nops.
+-  emitKCFITypeId(*MF);
+-
+   // Emit M NOPs for -fpatchable-function-entry=N,M where M>0. We arbitrarily
+   // place prefix data before NOPs.
+   unsigned PatchableFunctionPrefix = 0;
+@@ -1006,6 +1003,9 @@ void AsmPrinter::emitFunctionHeader() {
+     CurrentPatchableFunctionEntrySym = CurrentFnBegin;
+   }
+
++  // Emit KCFI type information after patchable-function-prefix nops.
++  emitKCFITypeId(*MF);
++
+   // Emit the function prologue data for the indirect call sanitizer.
+   if (const MDNode *MD = F.getMetadata(LLVMContext::MD_func_sanitize)) {
+     assert(MD->getNumOperands() == 2);
+diff --git a/llvm/lib/Target/AArch64/AArch64AsmPrinter.cpp b/llvm/lib/Target/AArch64/AArch64AsmPrinter.cpp
+index 4fa719ad6..678a38a6a 100644
+--- a/llvm/lib/Target/AArch64/AArch64AsmPrinter.cpp
++++ b/llvm/lib/Target/AArch64/AArch64AsmPrinter.cpp
+@@ -474,20 +474,11 @@ void AArch64AsmPrinter::LowerKCFI_CHECK(const MachineInstr &MI) {
+     assert(ScratchRegs[0] != AddrReg && ScratchRegs[1] != AddrReg &&
+            "Invalid scratch registers for KCFI_CHECK");
+
+-    // Adjust the offset for patchable-function-prefix. This assumes that
+-    // patchable-function-prefix is the same for all functions.
+-    int64_t PrefixNops = 0;
+-    (void)MI.getMF()
+-        ->getFunction()
+-        .getFnAttribute("patchable-function-prefix")
+-        .getValueAsString()
+-        .getAsInteger(10, PrefixNops);
+-
+     // Load the target function type hash.
+     EmitToStreamer(*OutStreamer, MCInstBuilder(AArch64::LDURWi)
+                                      .addReg(ScratchRegs[0])
+                                      .addReg(AddrReg)
+-                                     .addImm(-(PrefixNops * 4 + 4)));
++                                     .addImm(-4));
+   }
+
+   // Load the expected type hash.
+--- 8< ---
+
+Kernel Patch:
+
+--- >8 ---
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index aa7c1d435..979c290e6 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -197,7 +197,7 @@ config ARM64
+        select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS \
+                if DYNAMIC_FTRACE_WITH_ARGS && DYNAMIC_FTRACE_WITH_CALL_OPS
+        select HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS \
+-               if (DYNAMIC_FTRACE_WITH_ARGS && !CFI_CLANG && \
++               if (DYNAMIC_FTRACE_WITH_ARGS && \
+                    !CC_OPTIMIZE_FOR_SIZE)
+        select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+                if DYNAMIC_FTRACE_WITH_ARGS
+diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
+index f0c16640e..9be421583 100644
+--- a/arch/arm64/kernel/entry-ftrace.S
++++ b/arch/arm64/kernel/entry-ftrace.S
+@@ -48,8 +48,15 @@ SYM_CODE_START(ftrace_caller)
+         * alignment first as this allows us to fold the subtraction into the
+         * LDR.
+         */
++
++#ifdef CONFIG_CFI_CLANG
++       sub     x11, x30, #20
++       bic     x11, x11, 0x7
++       ldr     x11, [x11, 0]           // op
++#else
+        bic     x11, x30, 0x7
+        ldr     x11, [x11, #-(4 * AARCH64_INSN_SIZE)]           // op
++#endif
+
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+        /*
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index a650f5e11..ed7a86b31 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -125,6 +125,10 @@ unsigned long ftrace_call_adjust(unsigned long addr)
+        /* Skip the NOPs placed before the function entry point */
+        addr += 2 * AARCH64_INSN_SIZE;
+
++       /* Skip the hash in case of CLANG_CFI */
++       if (IS_ENABLED(CONFIG_CFI_CLANG))
++               addr += AARCH64_INSN_SIZE;
++
+        /* Skip any BTI */
+        if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)) {
+                u32 insn = le32_to_cpu(*(__le32 *)addr);
+@@ -299,7 +303,11 @@ static const struct ftrace_ops *arm64_rec_get_ops(struct dyn_ftrace *rec)
+ static int ftrace_rec_set_ops(const struct dyn_ftrace *rec,
+                              const struct ftrace_ops *ops)
+ {
++#ifdef CONFIG_CFI_CLANG
++       unsigned long literal = ALIGN_DOWN(rec->ip - 16, 8);
++#elif
+        unsigned long literal = ALIGN_DOWN(rec->ip - 12, 8);
++#endif
+        return aarch64_insn_write_literal_u64((void *)literal,
+                                              (unsigned long)ops);
+ }
+--- 8< ---
+
+I applied the kernel patch over my tree that has patches to fix kCFI
+with BPF and also has a static call related fix [1].
+
+
+Thanks,
+Puranjay
+
+[1] https://github.com/puranjaymohan/linux/tree/kcfi_bpf
 
