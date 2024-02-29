@@ -1,84 +1,86 @@
-Return-Path: <bpf+bounces-22989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E904786BE37
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 02:24:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5184D86BE38
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 02:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1908D1C20FD2
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 01:24:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9E241F2486C
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 01:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15EBD2D046;
-	Thu, 29 Feb 2024 01:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8FF2D046;
+	Thu, 29 Feb 2024 01:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FMw9j/o/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dR+5Xjty"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28740168B8
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 01:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 585B229CEF
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 01:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709169853; cv=none; b=R0HdKw3TXAzEhuFmU1ZLm97bPS/bU36St9AUVRIMc19ZfFxDmm2ms24hDB0kEU5jHGDmOLY7HFDXxB25rY6FACm58ilyxDemaVLexWBIBajC1ntgJPCtGQin242cdeepcI76H7s4+eKhSZDqr+YTwZmJcwBxSvPRh2mI7fI8aRA=
+	t=1709169919; cv=none; b=eLPUHg8bUYU+XVqTt+lRp3qNIp6xaLnpNSkCmO0p1C+BhhVSSKRNujL+qNERob2t2uSBW2Imc/3xT9WdTlz3PED9P8TFUIRWshwpp5MCHcbg3bUPgkd4wdnwckoR5IqYPnrMpo+uY8vSxpMhSIFI8foScNSByoILTdBOdhp4PvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709169853; c=relaxed/simple;
-	bh=GFvjPK9yAYx8j1WixN8y9zOoIOn2PPc4nWg/LuIuCgg=;
+	s=arc-20240116; t=1709169919; c=relaxed/simple;
+	bh=av+h9pG/g1/vG1gmxtnDDCMLr8Q+3woISBlYOMPfIx0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nGHeRx8h8Zv5MZ6IN7/EuwvTIyEcQ/mc1uk/hoxE6/lEgWrEfWzk+9VYMbLANIkqfgdGogBi51ZeYbXe8zehbxAjVCKtExn8g1toHFG0lBIl3tzf0xcwqFJ5r0mWgbUoEfrr/N2uBygbw+yS8cdA7NMFBU21tFtzEhxIc4VsNVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FMw9j/o/; arc=none smtp.client-ip=209.85.214.174
+	 To:Cc:Content-Type; b=PcSdTVIRM8HjpLYvtTEMu4U2VJvBFTAwV7BJGonRzkcelDhnNieSI0DTmc6lVSYhyOlaNTwEPbPP1moCEO+VFO2tLpruf0eOU1aETb/y3ubLoRADUaL+8vm2COR8056Y35Y1vzTSszyHAsRBcwFxaFngf13xBp/z9x/PbIecvp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dR+5Xjty; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dcd6a3da83so2082115ad.3
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 17:24:11 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dba177c596so2824175ad.0
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 17:25:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709169851; x=1709774651; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709169918; x=1709774718; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=svlUR5w/GD84bR3sTkZ3pcpq71mvhRbpKo14jk4378k=;
-        b=FMw9j/o/9wHEs2iw7/rkd5Dvqaoz/E+CzdGGSk/yZ0yXF7IMQJhPoKry8oG6CqB/Tb
-         4I5Kf+fzy9kcHJ+kqW9aLx7IhyVVScH4/b7ZK+c8+8ooO3TwM2igG6MUM0mgssMLgTW/
-         fuh4OEKTTv1bhZwZU7XgkH0gK0CeNcD7R1wVeJixw8oWrB/cbRiLokXmT2IQHpDx3m2k
-         w4J75zS+RJAFIkdxYEE8p2pcvGg/xkkNWzpC8uMF4qK9JABhP6M1ukCycdb045bnZc9u
-         INfrjPf0Whp5e67so0YuAAjyl4DMgA7FfSdNfxm78yZjVcLBcE6tRszqGModQxBylScF
-         tUlw==
+        bh=J7ktcIFREdgHgSgjRN6hEYBtA4ZTkOoctqP6rT6gcgc=;
+        b=dR+5XjtyKG3nJNu4ojwUjYpzf5CqTO4EPzAV3Inyqg/Ht9iIHCJksI+BFsTTYCI6If
+         oIj2KYnBCaLFnGVGVu2rzAltVut0b0aEeTQCDdQOlBQ9MLsJ/4aRaWrMGR15hynh6IRl
+         IgVB9TaV8q/VfkO72r1tSbgJxYAEvcMnJN7c+25nchbIGjecC6Ln1Lh3zp2TEtzePFul
+         pX0zi0DiR7KiSiXJaqGzC9Llnd4jYPLxJWzOiOheoLoyp5T6Rr2j+olWpAJELtfmn8lH
+         1cQzrnDJfWiRwJvOm7a7YzcFV5RobhwYQr3g4pS4zajTggb+RkhofvR3CGzSWzpVf7cS
+         cL5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709169851; x=1709774651;
+        d=1e100.net; s=20230601; t=1709169918; x=1709774718;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=svlUR5w/GD84bR3sTkZ3pcpq71mvhRbpKo14jk4378k=;
-        b=gNPpLYdfEFMjNOhTx2mQR8Os7DCJVLsrtOEEkie1hIxJmZY1QcdxcvasoqeU42GSaE
-         c+TJX2+JrJ/STIRlZVcfk4S83dhaYQzOLAeXQitY+2vvdIHUF0ODtn8pBnQtgVziH5wg
-         +LCsCN+QRqghyv8NsquibpDi7dDS/s/o6ZPlQu13Pnq9UnkmCZ/s+uINVwL6+qxamRQR
-         MEYR/cYkZKd1swihlRMcekZjZqGPCvVxBhcaUR85sXV5MFhzm24Q4QA+C5zbOFbFPNjM
-         XAE+rv+1hfRr5L8P+SK1l8sUTpeV5is9pv0jTXHr4UdUrq0HXz2rSsxdjzQaRGVm0cNL
-         Gmcg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdsORGGsWp0liV724Q9qBbX/GjcOeXiJv8FvkiVDAdqnx1CH42hSYmiIeN9uA9tmJL1rU9WZlOYqGMMASqGDEmSR7E
-X-Gm-Message-State: AOJu0YybU6YrjSQwjlPrnkeNrR5nb2NSVEBGjwv3fNRUlXffQDUihdIg
-	bvYE7yqEPyr9NWC50smMeUhNy6hhIIt4Mio1qL8zXbftoIHQv528yXtg+KJnK8u9MTojBETZ1er
-	ULwcEu5DbNHD231icNP2bKu2VwFc=
-X-Google-Smtp-Source: AGHT+IFqRik1te8vEpAPtN+rNjqYvRSbofDrUbUbkJH3uIGwFPNISEJmV6chpp9KUGJtbHp9BUX9QSZUw/yXMuANgZg=
-X-Received: by 2002:a17:903:2444:b0:1db:7181:c5ba with SMTP id
- l4-20020a170903244400b001db7181c5bamr779295pls.62.1709169851458; Wed, 28 Feb
- 2024 17:24:11 -0800 (PST)
+        bh=J7ktcIFREdgHgSgjRN6hEYBtA4ZTkOoctqP6rT6gcgc=;
+        b=Fo23iSHblLAgh8IxyxR2oIvA9sH1otpSOFJbyfPUx0CrcGj/U+NN3YbDUUTP4gPUai
+         Drto3aLp4zlm0ms5bjOEu/xZg6rtxs7OLld92Gswfus3G63xNg647bfMtRPvWB/3jYNF
+         K4l4g8CkuTOEbzvjKPGmtxhomK/ml9M0ueWzyOgVmyVupGTuhK1+YjyuCsIqWHjfGblV
+         lZgIBNMBS0lPymrHL1a3qY+Cfl3T/moUmSfTDTJinuNEQiUiHAWeSnoLo559xPzMEvOJ
+         r1kHjaXfBcRUqnfUUO/MzgT5wzyI6HODfvEZelD1D8AtZukMOKhcOHmmHfc0MA/POc5W
+         tE+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWKUKUYwEJPua4ZgKopGJr6MDbLeLVP1XjMp4j87hrWz+1DKht0fnQBfrEJnrqAB3lfeM/FWivWbRGPQqlHwuhQQ9FA
+X-Gm-Message-State: AOJu0YxAiWDoVdL3RlJBvaU8qKZw7GXdVn8LWAMe0AsFYewpAd1peh+Q
+	+NMUNudGFFBoy84lcupwrI497GMTBKSJG4OBCSVPT1jgNSQIz/wbF5hNGYhU5miIWyfl+PjIp5i
+	XD47wUARLsL0pIMyJ5uoClXrZ2cY=
+X-Google-Smtp-Source: AGHT+IGXw9ctNd3CFBqmUDFJOeaygeNnZryiOD9dAQ5KlPjajTlq6xUgIbjj74FW2Rw0NkLMl/9vzW/xyF8NOiwCUvI=
+X-Received: by 2002:a17:902:cecf:b0:1dc:ca39:11f9 with SMTP id
+ d15-20020a170902cecf00b001dcca3911f9mr683496plg.17.1709169917668; Wed, 28 Feb
+ 2024 17:25:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228090242.4040210-1-jolsa@kernel.org> <20240228090242.4040210-4-jolsa@kernel.org>
-In-Reply-To: <20240228090242.4040210-4-jolsa@kernel.org>
+References: <20240207153550.856536-1-jolsa@kernel.org> <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+ <ZceWuIgsmiLYyCxQ@krava> <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
+ <ZctcEpz3fHK4RqUX@krava> <ZdhmKQ1_vpCJTS_U@krava> <CAEf4BzYXDuPi9eqikn_mhH2Q30K6PHOSGrVn0BVzR4098FNWtg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYXDuPi9eqikn_mhH2Q30K6PHOSGrVn0BVzR4098FNWtg@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 28 Feb 2024 17:23:57 -0800
-Message-ID: <CAEf4Bzb28J0i_Xud+ZnBHM+urOf9T8HYp++JJghQKT3xfsfLcw@mail.gmail.com>
-Subject: Re: [PATCH RFCv2 bpf-next 3/4] libbpf: Add support for kprobe multi
- wrapper attach
-To: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 28 Feb 2024 17:25:05 -0800
+Message-ID: <CAEf4BzacHniEApUFjO8af77oGL2fm+05oTxhKJK44so5QWW4Yg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
 	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
@@ -88,158 +90,110 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 1:03=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Feb 28, 2024 at 4:43=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Adding support for specify wrapper mode in bpf_kprobe_multi_opts
-> struct object and new bpf program loader section:
+> On Fri, Feb 23, 2024 at 1:32=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wr=
+ote:
+> >
+> > On Tue, Feb 13, 2024 at 01:09:54PM +0100, Jiri Olsa wrote:
+> > > On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
+> > >
+> > > SNIP
+> > >
+> > > > > > But the way you implement it with extra flag and extra fd param=
+eter
+> > > > > > makes it harder to have a nice high-level support in libbpf (an=
+d
+> > > > > > presumably other BPF loader libraries) for this.
+> > > > > >
+> > > > > > When I was thinking about doing something like this, I was cons=
+idering
+> > > > > > adding a new program type, actually. That way it's possible to =
+define
+> > > > > > this "let's skip return probe" protocol without backwards
+> > > > > > compatibility concerns. It's easier to use it declaratively in =
+libbpf.
+> > > > >
+> > > > > ok, that seems cleaner.. but we need to use current kprobe progra=
+ms,
+> > > > > so not sure at the moment how would that fit in.. did you mean ne=
+w
+> > > > > link type?
+> > > >
+> > > > It's kind of a less important detail, actually. New program type wo=
+uld
+> > > > allow us to have an entirely different context type, but I think we
+> > > > can make do with the existing kprobe program type. We can have a
+> > > > separate attach_type and link type, just like multi-kprobe and
+> > > > multi-uprobe are still kprobe programs.
+> > >
+> > > ok, having new attach type on top of kprobe_multi link makes sense
+> >
+> > hi,
+> > I have further question in here.. ;-)
+> >
+> > so I implemented the new behaviour on top of new attach_type, but I kee=
+p
+> > thinking that it's the 'same/similar logic' as if I added extra flag to
+> > attr.link_create.kprobe_multi.flags, which results in much simpler chan=
+ge
+> >
+> > is following logic breaking backward compatibility in any way?
 >
->  SEC("kprobe.wrapper/bpf_fentry_test*")
+> Even if it doesn't break compatibility, isn't new attach_type better
+> to explicitly show that semantics is completely different (it's two
+> BPF program executions, before and after, for each specified kprobe),
+> isn't that different enough? We can also have a different set of
+> helpers for this kwrapper/uwrapper program type (probably could do it
+> through flags as well, but attach_type again seems a better fit
+> here..)?
 >
-> to load program as kprobe multi wrapper.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.c | 38 +++++++++++++++++++++++++++++++++++---
->  tools/lib/bpf/libbpf.h |  4 +++-
->  2 files changed, 38 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 01f407591a92..5416d784c857 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8944,6 +8944,7 @@ static int attach_tp(const struct bpf_program *prog=
-, long cookie, struct bpf_lin
->  static int attach_raw_tp(const struct bpf_program *prog, long cookie, st=
-ruct bpf_link **link);
->  static int attach_trace(const struct bpf_program *prog, long cookie, str=
-uct bpf_link **link);
->  static int attach_kprobe_multi(const struct bpf_program *prog, long cook=
-ie, struct bpf_link **link);
-> +static int attach_kprobe_wrapper(const struct bpf_program *prog, long co=
-okie, struct bpf_link **link);
->  static int attach_uprobe_multi(const struct bpf_program *prog, long cook=
-ie, struct bpf_link **link);
->  static int attach_lsm(const struct bpf_program *prog, long cookie, struc=
-t bpf_link **link);
->  static int attach_iter(const struct bpf_program *prog, long cookie, stru=
-ct bpf_link **link);
-> @@ -8960,6 +8961,7 @@ static const struct bpf_sec_def section_defs[] =3D =
-{
->         SEC_DEF("uretprobe.s+",         KPROBE, 0, SEC_SLEEPABLE, attach_=
-uprobe),
->         SEC_DEF("kprobe.multi+",        KPROBE, BPF_TRACE_KPROBE_MULTI, S=
-EC_NONE, attach_kprobe_multi),
->         SEC_DEF("kretprobe.multi+",     KPROBE, BPF_TRACE_KPROBE_MULTI, S=
-EC_NONE, attach_kprobe_multi),
-> +       SEC_DEF("kprobe.wrapper+",      KPROBE, BPF_TRACE_KPROBE_MULTI, S=
-EC_NONE, attach_kprobe_wrapper),
->         SEC_DEF("uprobe.multi+",        KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_NONE, attach_uprobe_multi),
->         SEC_DEF("uretprobe.multi+",     KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_NONE, attach_uprobe_multi),
->         SEC_DEF("uprobe.multi.s+",      KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_SLEEPABLE, attach_uprobe_multi),
-> @@ -11034,7 +11036,7 @@ bpf_program__attach_kprobe_multi_opts(const struc=
-t bpf_program *prog,
->         int err, link_fd, prog_fd;
->         const __u64 *cookies;
->         const char **syms;
-> -       bool retprobe;
-> +       __u32 flags =3D 0;
->         size_t cnt;
->
->         if (!OPTS_VALID(opts, bpf_kprobe_multi_opts))
-> @@ -11065,13 +11067,16 @@ bpf_program__attach_kprobe_multi_opts(const str=
-uct bpf_program *prog,
->                 cnt =3D res.cnt;
->         }
->
-> -       retprobe =3D OPTS_GET(opts, retprobe, false);
-> +       if (OPTS_GET(opts, retprobe, false))
-> +               flags |=3D BPF_F_KPROBE_MULTI_RETURN;
-> +       if (OPTS_GET(opts, wrapper, false))
-> +               flags |=3D BPF_F_KPROBE_MULTI_WRAPPER;
+> What makes it harder if you are doing it as a new attach_type?
 
-probably error out if both retprobe and wrapper are set?
+I just looked at the RFC patches you sent, and I guess it looks fine
+to me with the flag as well, given kretprobe.multi is also specified
+through flags.
 
 >
->         lopts.kprobe_multi.syms =3D syms;
->         lopts.kprobe_multi.addrs =3D addrs;
->         lopts.kprobe_multi.cookies =3D cookies;
->         lopts.kprobe_multi.cnt =3D cnt;
-> -       lopts.kprobe_multi.flags =3D retprobe ? BPF_F_KPROBE_MULTI_RETURN=
- : 0;
-> +       lopts.kprobe_multi.flags =3D flags;
+> >
+> >   - having new flag in attr.link_create.kprobe_multi.flags
+> >   - that force the attach of the bpf program to entry/exit function pro=
+bes
+> >   - and the kprobe entry program return value now controls invocation
+> >     on the exit probe
+> >
+> > so the new flag changes the semantics of the entry program return value=
+,
+> > which seems fine to me, because it depends on the new flag.. do I miss
+> > any other problem with that?
+> >
+> > thanks,
+> > jirka
+> >
+> > >
+> > > >
+> > > > >
+> > > > > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
+> > > > > > something to designate that it's both entry and exit probe) as =
+one
+> > > > > > program and in the code there would be some way to determine wh=
+ether
+> > > > > > we are in entry mode or exit mode (helper or field in the custo=
+m
+> > > > > > context type, the latter being faster and more usable, but it's
+> > > > > > probably not critical).
+> > > > >
+> > > > > hum, so the single program would be for both entry and exit probe=
+,
+> > > > > I'll need to check how bad it'd be for us, but it'd probably mean
+> > > > > just one extra tail call, so it's likely ok
+> > > >
+> > > > I guess, I don't know what you are doing there :) I'd recommend
+> > > > looking at utilizing BPF global subprogs instead of tail calls, if
+> > > > your kernel allows for that, as that's a saner way to scale BPF
+> > > > verification.
+> > >
 >
->         link =3D calloc(1, sizeof(*link));
->         if (!link) {
-> @@ -11187,6 +11192,33 @@ static int attach_kprobe_multi(const struct bpf_=
-program *prog, long cookie, stru
->         return libbpf_get_error(*link);
->  }
->
-> +static int attach_kprobe_wrapper(const struct bpf_program *prog, long co=
-okie, struct bpf_link **link)
-> +{
-> +       LIBBPF_OPTS(bpf_kprobe_multi_opts, opts,
-> +               .wrapper =3D true,
-> +       );
-
-nit: keep on a single line?
-
-> +       const char *spec;
-> +       char *pattern;
-> +       int n;
-> +
-> +       *link =3D NULL;
-> +
-> +       /* no auto-attach for SEC("kprobe.wrapper") */
-> +       if (strcmp(prog->sec_name, "kprobe.wrapper") =3D=3D 0)
-> +               return 0;
-> +
-> +       spec =3D prog->sec_name + sizeof("kprobe.wrapper/") - 1;
-> +       n =3D sscanf(spec, "%m[a-zA-Z0-9_.*?]", &pattern);
-> +       if (n < 1) {
-> +               pr_warn("kprobe wrapper pattern is invalid: %s\n", patter=
-n);
-> +               return -EINVAL;
-> +       }
-> +
-> +       *link =3D bpf_program__attach_kprobe_multi_opts(prog, pattern, &o=
-pts);
-> +       free(pattern);
-
-is it guaranteed that free() won't clobber errno? or should we record
-it right after attach call (and stop using libbpf_get_error())?
-
-
-> +       return libbpf_get_error(*link);
-> +}
-> +
->  static int attach_uprobe_multi(const struct bpf_program *prog, long cook=
-ie, struct bpf_link **link)
->  {
->         char *probe_type =3D NULL, *binary_path =3D NULL, *func_name =3D =
-NULL;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 5723cbbfcc41..72f4e3ad295f 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -539,10 +539,12 @@ struct bpf_kprobe_multi_opts {
->         size_t cnt;
->         /* create return kprobes */
->         bool retprobe;
-> +       /* create wrapper kprobes */
-> +       bool wrapper;
->         size_t :0;
->  };
->
-> -#define bpf_kprobe_multi_opts__last_field retprobe
-> +#define bpf_kprobe_multi_opts__last_field wrapper
->
->  LIBBPF_API struct bpf_link *
->  bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
-> --
-> 2.43.2
->
+> [...]
 
