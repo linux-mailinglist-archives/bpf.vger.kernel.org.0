@@ -1,127 +1,152 @@
-Return-Path: <bpf+bounces-23097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB39986D702
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 23:49:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D848B86D7F9
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 00:43:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 624F01F241EA
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 22:49:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B9C1C21B72
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 23:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D0444376;
-	Thu, 29 Feb 2024 22:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868107B3E9;
+	Thu, 29 Feb 2024 23:43:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nXXMyoj/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X2tKJqun"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE8316FF47
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 22:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B539125765
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 23:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709246978; cv=none; b=bNphQ13dYPR4Ra3gjkc3MyaGPOL3j9HvNnG+WLGE5gxaDFpFfUOMkTd4BXKkKaDU+TOPnM4EDGAdoQ/ZYlRvPrvtSv+4apbEh3Q8J/nLWJkCH6uWhEV86ce2omCANzAfgwl6Vb8tN/peR7N2qS2WKBTXpqulRxZ6dPRyUtZbdtY=
+	t=1709250204; cv=none; b=MvZ9slcYPt7GIVd6ABfikT6jSceaBEoZtQ3dVtOSVsvrM++bkLl8U2NkPwtbQKFi6bGs5NQFwCVPG4Dr3erwBf4hjaLkkqz+TuVmBiK4mFkL1kxhFfaCI9Q9yxXPLPd+ksDIYaVFFmY4aOJD049go6Qw43sG5awsBEmggTOGP3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709246978; c=relaxed/simple;
-	bh=mPTYyW1WrXI0Rfnwgpiw/MLeEFV/skFR9j5Npf7iXGw=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=orqpzAMNDRFjx8RdOjAhiWqzgqnuSdYe/trh6itwsRjPK934LtScsKcWSxRN8sJt87pI86PU+e6brawg+UuNMxRrKSmPIbBl1tIxlgm99Bl2nEUZoEtZgHJHDaNwR1d4JblkZRubRKyIA6cxge4FpBehcBmyYaxEgevLWPFCpyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nXXMyoj/; arc=none smtp.client-ip=209.85.167.182
+	s=arc-20240116; t=1709250204; c=relaxed/simple;
+	bh=HweJw/5uclsHdfwyh7T1TUIXyB08G1YB1P9wF0mSzO4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SpKSJHAdeQDpepCjqH6Vuy4P6pPHHGqCk03KDlLROgHRbdk5ftbJdyc8n9qCs9sKei6jecyhvDSpR6cmJ6I5biCiqqXOQ2T5WjvwY6XlCSTBT6Jx3NjI3MZZwaafHPSdRcXjE0HmlRkiQCC3ZOX1z2qPVx/P+cbcNzv+WN70D00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X2tKJqun; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c1a9b567edso619714b6e.3
-        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 14:49:36 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc13fb0133so12803505ad.3
+        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 15:43:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709246976; x=1709851776; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3CH7/Jfg2DLAa/6f09ZiTdW7e89T7hvWgQVRXCE9eG8=;
-        b=nXXMyoj/zSJQ6F5RYqEPS94so1CqhvKeT0sUgj+HSSqTD9xCfcf0s5jPI+bbzNdQ5g
-         p4KKfarttlDe/MYl1h04/wC4is7Ie6mymgZjCYbI5DKl1GLZubZTU1dw7EbwawDy1XpJ
-         W4kgdWiPJrFx36vUJsCmMLGnfwNGLRmSNQ/zorDehkas5hzF/YZWacgBLXfOteZviwrr
-         UqQLITJemw27YO9thERFfpUbChj/AxGvlm+vOwUJKToy5aGbE5M5/hW2P6c/nVI8zHeO
-         jGk8Ega0bPyR9LArgjMPaU7hjQvYO5qMCp7a/1pZ3B1VY8ZE39GFfBgqxlWHATF+Sa+a
-         JVoQ==
+        d=gmail.com; s=20230601; t=1709250201; x=1709855001; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NzHHSXtSLrv/NknHpxtBThbqiIeWhWk4Z2HCRi70who=;
+        b=X2tKJqun/xXYdeKTfdxu+mySkPbLw36Hya0tqymUeI7qpYgeCtLikpEQm5nKTE+n5Z
+         Dkw1gHTOtLlWHKkLl8zh/CDZmSaSPym2QN+Pl/gnVeSVeT5ePPekc1BNNCpgWcYFlIgT
+         rWqpJNjeYmuhyzd6j/htljxHvcccYJN1jXvzjzcF3DOL+kzoSl38VYbeDScvA/9m53IN
+         83Fk3WvdZe2MTleM1b/+k2KW0qDpPCg3zSV94I7XZWxUe/F1LlT2pVU3JSkNbMI+PunS
+         nwE+Z7gJdL8SBNCTs7owR5GJ5uPQvvuNcA7hqaFR/f4bqyEoowcNTpdkOyelpmqJcZNi
+         WdiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709246976; x=1709851776;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3CH7/Jfg2DLAa/6f09ZiTdW7e89T7hvWgQVRXCE9eG8=;
-        b=GE2BPrQmgEhv3EoGZ+Z9sExIZWVZVj1pDdL+hW05bRS5hByYNj76UzFQ6JZ/LQLDiZ
-         ifsn3FEuP0ViCwNRdSbkQboKcIqeoc9D1fp3QKeTA1KhHYPNxUT5n+snZHhNfLDUR2qt
-         q0Wf1srnFM+1tvwqkywUOXq/2+oc1H0NNnoAVaM3gDc52pUIvwFlUzC21BbdN0ftMikJ
-         crIpCCxs0yeO0TsPReVmUOc1I/4kx7SH6s2m/4hgFR7x/GyhoM1B9Sy56CCJ8wxhugNj
-         PZdigCHls6Twcl56oZPc/YZlkcC4f7r1tLKFM6RVNyPuWsTLlYN+gp4Z1jr2W0rxwj8A
-         mdgQ==
-X-Gm-Message-State: AOJu0YwZh2el+xH09f4wzhVMLySUudHhIgAT1Ikj7Aj0Iy5hPYNhujUN
-	EY2F68iYZBjpQ/6eQF/V8YAmOESf2SYCJaZxFQ8gTXVRXoM6kqQb
-X-Google-Smtp-Source: AGHT+IHO82z6rONC7Jv4un3e6Voj9tJVb+NOpNPfOt7LnCob5fZRPHUTC+w5jOxYTXv8JGjdCq19fQ==
-X-Received: by 2002:a05:6808:181d:b0:3c0:2b65:dd2 with SMTP id bh29-20020a056808181d00b003c02b650dd2mr19274oib.8.1709246975990;
-        Thu, 29 Feb 2024 14:49:35 -0800 (PST)
-Received: from localhost ([98.97.43.160])
-        by smtp.gmail.com with ESMTPSA id y133-20020a62ce8b000000b006e45a0101basm1892897pfg.99.2024.02.29.14.49.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 14:49:35 -0800 (PST)
-Date: Thu, 29 Feb 2024 14:49:18 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, 
- lsf-pc@lists.linux-foundation.org
-Cc: bpf@vger.kernel.org, 
- Paul Chaignon <paul@isovalent.com>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>
-Message-ID: <65e109eec79ef_43ad82086c@john.notmuch>
-In-Reply-To: <ZeA9Jqug3NqPwjtQ@u94a>
-References: <ZeA9Jqug3NqPwjtQ@u94a>
-Subject: RE: [LSF/MM/BPF TOPIC] Value Tracking in Verifier
+        d=1e100.net; s=20230601; t=1709250201; x=1709855001;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NzHHSXtSLrv/NknHpxtBThbqiIeWhWk4Z2HCRi70who=;
+        b=TCbmhtWFX/mO3kEKwOOig/aIAFY5UHqYBuZl8JDXcWJECVaI8H/9GomrbBxgj8HU9o
+         Tg3SOpqHmbcHEHCVPeH2FGIuqPeWQ0EUAlXOhTOHDhKyRVs3YT5uiqukqk/sIeEyjps5
+         drAobb2UM/raUGhXkzzr/2yF1ESKhrpWeQ+Ui90mNa04S1CrawaO7S+AqZWB2TwLkIv2
+         oah/FPklEgenbUlcRwwoqtdxk6reKFZhHK1MKRZ4fBHaIMzZf0lhm2eEoRPkdadNyxHa
+         6tqPRFKnVsfQDX1kH3BY2DVYsPmAnzQKlSu3XZvdjHCRG0DQCqFItVUOAR2FQazDXxje
+         Wp9g==
+X-Gm-Message-State: AOJu0YwXqd/PvkfcJRxnK3n5Wjtlg+pVveZD2m5wzfvtPqCNLXYdFfId
+	wy1DMr9yK+aUFFyRVCjdoh7cmsiITT1OR3/kkbljliZarSRmHVL9hzUiomHV
+X-Google-Smtp-Source: AGHT+IGfl0YdKr5QO4H+FovdTc3eTEo8Q94QPX7tglxTnGBDlmv4twi/rgWyLSio1iEhhbNejBslzA==
+X-Received: by 2002:a17:902:d511:b0:1db:be69:d037 with SMTP id b17-20020a170902d51100b001dbbe69d037mr22315plg.46.1709250201120;
+        Thu, 29 Feb 2024 15:43:21 -0800 (PST)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:8f17])
+        by smtp.gmail.com with ESMTPSA id l8-20020a170903120800b001dcc129cc2esm2079055plh.60.2024.02.29.15.43.18
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 29 Feb 2024 15:43:20 -0800 (PST)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	torvalds@linux-foundation.org,
+	brho@google.com,
+	hannes@cmpxchg.org,
+	lstoakes@gmail.com,
+	akpm@linux-foundation.org,
+	urezki@gmail.com,
+	hch@infradead.org,
+	boris.ostrovsky@oracle.com,
+	sstabellini@kernel.org,
+	jgross@suse.com,
+	linux-mm@kvack.org,
+	xen-devel@lists.xenproject.org,
+	kernel-team@fb.com
+Subject: [PATCH v3 bpf-next 0/3] mm: Cleanup and identify various users of kernel virtual address space
+Date: Thu, 29 Feb 2024 15:43:13 -0800
+Message-Id: <20240229234316.44409-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Shung-Hsi Yu wrote:
-> Hello,
-> 
-> I'd like propose a discussion about BPF verifier itself. To avoid being too
-> vague, this proposition limits to value tracking (i.e. var_off and
-> *{min,max}_value in bpf_reg_state); taking a very brief look at the
-> challenges of current implementation, and maybe alternative implementation
-> like PREVAIL[1]. Before heading on to the actual discussion:
-> - Unify signed and unsigned min/max tracking[2]
-> - Refactor value tracking routines (as set-operations)
-> - Tracking relation between values
+From: Alexei Starovoitov <ast@kernel.org>
 
-Sounds interesting to me. Just creating a summarized list of the examples
-that have forced the signed/unsigned separation would be valuable and the
-reasons why we have both var_off and min,max would be a nice document.
-The examples would show why the bit tracking and min/max has resisted
-easily being unified.
+v2 -> v3
+- added Christoph's reviewed-by to patch 1
+- cap commit log lines to 75 chars
+- factored out common checks in patch 3 into helper
+- made vm_area_unmap_pages() return void
 
-> 
-> Admittedly the current topic is a rather narrowly scoped. The discussion
-> could be further expanded to be about the verifier in general as needed,
-> some (less concrete) ideas to discuss:
-> - Further reducing loop/branch states
-> - Lazier precision tracking
-> - Simplification/refactoring of codebase
-> - Documentation improvement
-> 
-> 
-> Thanks,
-> Shung-Hsi Yu
-> 
-> 1: https://vbpf.github.io/
-> 2: https://lore.kernel.org/bpf/20231108054611.19531-1-shung-hsi.yu@suse.com/
-> 
+There are various users of kernel virtual address space:
+vmalloc, vmap, ioremap, xen.
 
+- vmalloc use case dominates the usage. Such vm areas have VM_ALLOC flag
+and these areas are treated differently by KASAN.
+
+- the areas created by vmap() function should be tagged with VM_MAP
+(as majority of the users do).
+
+- ioremap areas are tagged with VM_IOREMAP and vm area start is aligned
+to size of the area unlike vmalloc/vmap.
+
+- there is also xen usage that is marked as VM_IOREMAP, but it doesn't
+call ioremap_page_range() unlike all other VM_IOREMAP users.
+
+To clean this up:
+1. Enforce that ioremap_page_range() checks the range and VM_IOREMAP flag
+2. Introduce VM_XEN flag to separate xen us cases from ioremap
+
+In addition BPF would like to reserve regions of kernel virtual address
+space and populate it lazily, similar to xen use cases.
+For that reason, introduce VM_SPARSE flag and vm_area_[un]map_pages()
+helpers to populate this sparse area.
+
+In the end the /proc/vmallocinfo will show
+"vmalloc"
+"vmap"
+"ioremap"
+"xen"
+"sparse"
+categories for different kinds of address regions.
+
+ioremap, xen, sparse will return zero when dumped through /proc/kcore
+
+Alexei Starovoitov (3):
+  mm: Enforce VM_IOREMAP flag and range in ioremap_page_range.
+  mm, xen: Separate xen use cases from ioremap.
+  mm: Introduce VM_SPARSE kind and vm_area_[un]map_pages().
+
+ arch/x86/xen/grant-table.c         |  2 +-
+ drivers/xen/xenbus/xenbus_client.c |  2 +-
+ include/linux/vmalloc.h            |  6 +++
+ mm/vmalloc.c                       | 75 +++++++++++++++++++++++++++++-
+ 4 files changed, 81 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
 
 
