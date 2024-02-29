@@ -1,167 +1,176 @@
-Return-Path: <bpf+bounces-23068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5DB86D24B
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 19:29:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0EAB86D256
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 19:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9289288658
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 18:29:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 205EA1C211FF
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 18:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A749B7A15A;
-	Thu, 29 Feb 2024 18:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E945113441E;
+	Thu, 29 Feb 2024 18:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ieoDlsIh"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="EPJm0YDP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212C8160653;
-	Thu, 29 Feb 2024 18:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC277D412
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 18:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231374; cv=none; b=MthBduCewZXEsPQFs65T0tOtS+h55Li9V/LjMWeuPPi12zu6tCKDYRkxPtvuNkXWETttZu5F3G6vWOPHO36Kg3Thes78S+ezO60srXgbQIxPpu/FnTS+L5TGJItVjvJgArXXFCW0u8n1b9jWXs7cEZfC5QTM0+Y0AEpgd0GeWI4=
+	t=1709231426; cv=none; b=RYoWigTqMonJ2EXhAipGv8bGaADx3EQMaVKpSmi0uJC7rwa8lo6RfesjKZqJfVnf5cD7xOr6XyaH1IIgZEble7kNTXqSeV4wIhcI8G3EVn51/sg1ZbiDjqUso3yRNSZfYOdF7nrUuYDaICEa69PECe4FI6U3CaYKXlg4gqGrQ8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231374; c=relaxed/simple;
-	bh=o8/Eyjdv17Z5cxEbu17fyvIpxoYiOsECZ9JmxVF1ZH4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tJJqZ3jDHvttltZWQ3zncBkJfrHS9BxrWBgV4LykaDTtMbxqt2Ejj2y5VKUPnsAUiZ34lMNFqYXwjQH8ylYA0Nm3lxnNTNwJfy7cMAE6IwqXTDlp9Oz33QqkjiQuZcJ20LYWinKGVA9w4JFVkKRIJaOyOsmJ2rKazOfeOMBPmww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ieoDlsIh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3281AC433C7;
-	Thu, 29 Feb 2024 18:29:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709231373;
-	bh=o8/Eyjdv17Z5cxEbu17fyvIpxoYiOsECZ9JmxVF1ZH4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ieoDlsIh3FAUltmSAPDqbZgtVAB5KFy/vexGwf7MjAV0tUeTnYVlmI0lDRS8C/wcr
-	 Vh8QhEUIaQZVc7VATakuRGEiQmJYIK8o593BYDZzvEnClq5awjK1ZdgC9APFKnXwyj
-	 3zSN9A6VDPVC1M3uPzAZTqbayG6ygJdrYVdgS8HVk7kq68E7cGXuyrs9ipcB8wDmEb
-	 wE4ZfTdMWhgQKRIGsxG3EU+LZVdTLDUtvr+0o3eRlh8cUI2CKULwEWi9ZL53TUnlvE
-	 2QJuau/UBT6ggHXI1cn4pUdTZ5GSf2Yx66yQs2ahlMtTp847PUB55th43okWrOasVJ
-	 1BlvMJyRaCMKQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CCB5CCE1382; Thu, 29 Feb 2024 10:29:32 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:29:32 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Yan Zhai <yan@cloudflare.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Network Development <netdev@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Hannes Frederic Sowa <hannes@stressinduktion.org>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Message-ID: <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
+	s=arc-20240116; t=1709231426; c=relaxed/simple;
+	bh=fIDzt/zIvmS+WF3x2U2l/YsvsBtPs1hW02ywHV62az0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RwlSbNrCVMisv2whiI9cL+c2f2UZqbFqWWiPgOoqChiYmsNABh7mNK8TxJp109x7TL+nI+4E+zT12yh5Lbtvv7dwfqypeCKUS0bTv0V96WxHcfLrcVyvk0DhA5gqQ5EfaZiipuz7+mO+UnmBWtcHDrGVq1cqvO9jkogbXDUlZes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=EPJm0YDP; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6096ff3e4abso8653617b3.0
+        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 10:30:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709231424; x=1709836224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=baWFsDRpOZwDlTtI3eTOs150HYfeSnKMsWGIClmqta0=;
+        b=EPJm0YDPS1zhGGUUemd7s6UZZTtLW1oyfisnj9dcQcELyAWHVJB3tkUqoo7JTGLtyn
+         1ZX0d4nLtCpJwQX/2FgUOHHU6yu2mz83icrhkw1Kv4I8Gw5GKE6KvltnTKT4q5AWkAlG
+         0ltN6WhU9SLHHpPyBhSyUyhM6sDisFpZIeW56Q+q5Cpyx2WW+Acz8l4W0T3eI84OTI+S
+         tMiFjmN3xoUWbp37JZQv/luPmS+PfOGAWq7pG4pj+LA9Dt+xF2d9/vqhJ17FSyOU4tSv
+         f42g2DS7lkzlGuGKtFwKYh7gHpPJ0S+8Q/QsF0MSLclFmt10R16WPCrt6aucSN9Bw4cY
+         7keA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709231424; x=1709836224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=baWFsDRpOZwDlTtI3eTOs150HYfeSnKMsWGIClmqta0=;
+        b=AM1vPR8gzR31PytLqVXWNbpAC45n4bBP7KSvtdAyUOykGvDalpqj+QbnB6lPUda8tu
+         adXfJ4/QVc0xVR8lAfci6NTxRznUsnTgXblUz7vWrMFsV00jJU/Zln1TjwvtVDdAfXYu
+         S2Fd2XPJdYmLlMIa8eWucgC3ND+hN47hleFsrt/2ys+6bHoABchOGoQczIw5UU25qXJD
+         h/qV4IkFtoQTifDdclsQPG/QkN5emBmzabmsXnc3BWYp5Lzl5YftlAhZBNGCuwj6GL9Y
+         HEwIO9/LpUgg6AvmmHaQ3cBmpC2DOWzfU1V3z8Nf8Be/oNU947nZwLtNLImWPyrFM5mU
+         EArw==
+X-Forwarded-Encrypted: i=1; AJvYcCXug16E96v09vAmfwL+yT6l7/LbfMHIN4hWvBdqBi/r8gH1hNW1DpriMjqQC6a7oT8d8Cx3DnAqUqGjddVk4Ebt1Lvb
+X-Gm-Message-State: AOJu0YwTbVzOA+Ni4EDK7XwMqcfXFu6oLTUlwVN9rIbBvO+vModAhMls
+	HoFtuYcZ50caU4nTymnATJThuLHCtWtEexaXpaJgoBWfCgW7LJMZVv+yOLKrNfvnqmGtijXu4zQ
+	IHmSCDc2kzAsaG80Vlv0yvwnszRyaWgVFEmsA
+X-Google-Smtp-Source: AGHT+IHl+58LUxZ7t8QCrt7A9iFSCpNrVrsb8JlTdK4KXwKB/PkdvoaELedDm0lfkCY0ELUtzetRIR8WzH/GlSdPnLo=
+X-Received: by 2002:a81:a0c3:0:b0:609:2c2a:1115 with SMTP id
+ x186-20020a81a0c3000000b006092c2a1115mr3116390ywg.30.1709231423855; Thu, 29
+ Feb 2024 10:30:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
+References: <20240225165447.156954-1-jhs@mojatatu.com> <20240225165447.156954-4-jhs@mojatatu.com>
+ <327b473d9f6ae5e44391f75a022e4dca90a20c43.camel@redhat.com>
+In-Reply-To: <327b473d9f6ae5e44391f75a022e4dca90a20c43.camel@redhat.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Thu, 29 Feb 2024 13:30:12 -0500
+Message-ID: <CAM0EoMniTMq+mYqSg4DbOfsbOMc7BGkV7Z6PdA+j_214PLPOeQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v12 03/15] net/sched: act_api: Update
+ tc_action_ops to account for P4 actions
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
+	Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, tomasz.osinski@intel.com, 
+	jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, vladbu@nvidia.com, horms@kernel.org, 
+	khalidm@nvidia.com, toke@redhat.com, daniel@iogearbox.net, 
+	victor@mojatatu.com, pctammela@mojatatu.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 12:41:55PM -0500, Joel Fernandes wrote:
-> > On Feb 29, 2024, at 11:57 AM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > ﻿On Thu, Feb 29, 2024 at 09:21:48AM -0500, Joel Fernandes wrote:
-> >>> On 2/28/2024 5:58 PM, Paul E. McKenney wrote:
-> >>> On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
-> >>>> On Wed, Feb 28, 2024 at 2:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >>>>> 
-> >>>>> On Wed, 28 Feb 2024 14:19:11 -0800
-> >>>>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >>>>> 
-> >>>>>>>> 
-> >>>>>>>> Well, to your initial point, cond_resched() does eventually invoke
-> >>>>>>>> preempt_schedule_common(), so you are quite correct that as far as
-> >>>>>>>> Tasks RCU is concerned, cond_resched() is not a quiescent state.
-> >>>>>>> 
-> >>>>>>> Thanks for confirming. :-)
-> >>>>>> 
-> >>>>>> However, given that the current Tasks RCU use cases wait for trampolines
-> >>>>>> to be evacuated, Tasks RCU could make the choice that cond_resched()
-> >>>>>> be a quiescent state, for example, by adjusting rcu_all_qs() and
-> >>>>>> .rcu_urgent_qs accordingly.
-> >>>>>> 
-> >>>>>> But this seems less pressing given the chance that cond_resched() might
-> >>>>>> go away in favor of lazy preemption.
-> >>>>> 
-> >>>>> Although cond_resched() is technically a "preemption point" and not truly a
-> >>>>> voluntary schedule, I would be happy to state that it's not allowed to be
-> >>>>> called from trampolines, or their callbacks. Now the question is, does BPF
-> >>>>> programs ever call cond_resched()? I don't think they do.
-> >>>>> 
-> >>>>> [ Added Alexei ]
-> >>>> 
-> >>>> I'm a bit lost in this thread :)
-> >>>> Just answering the above question.
-> >>>> bpf progs never call cond_resched() directly.
-> >>>> But there are sleepable (aka faultable) bpf progs that
-> >>>> can call some helper or kfunc that may call cond_resched()
-> >>>> in some path.
-> >>>> sleepable bpf progs are protected by rcu_tasks_trace.
-> >>>> That's a very different one vs rcu_tasks.
-> >>> 
-> >>> Suppose that the various cond_resched() invocations scattered throughout
-> >>> the kernel acted as RCU Tasks quiescent states, so that as soon as a
-> >>> given task executed a cond_resched(), synchronize_rcu_tasks() might
-> >>> return or call_rcu_tasks() might invoke its callback.
-> >>> 
-> >>> Would that cause BPF any trouble?
-> >>> 
-> >>> My guess is "no", because it looks like BPF is using RCU Tasks (as you
-> >>> say, as opposed to RCU Tasks Trace) only to wait for execution to leave a
-> >>> trampoline.  But I trust you much more than I trust myself on this topic!
-> >> 
-> >> But it uses RCU Tasks Trace as well (for sleepable bpf programs), not just
-> >> Tasks? Looks like that's what Alexei said above as well, and I confirmed it in
-> >> bpf/trampoline.c
-> >> 
-> >>        /* The trampoline without fexit and fmod_ret progs doesn't call original
-> >>         * function and doesn't use percpu_ref.
-> >>         * Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
-> >>         * Then use call_rcu_tasks() to wait for the rest of trampoline asm
-> >>         * and normal progs.
-> >>         */
-> >>        call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_tasks);
-> >> 
-> >> The code comment says it uses both.
-> > 
-> > BPF does quite a few interesting things with these.
-> > 
-> > But would you like to look at the update-side uses of RCU Tasks Rude
-> > to see if lazy preemption affects them?  I don't believe that there
-> > are any problems here, but we do need to check.
-> 
-> Sure I will be happy to. I am planning look at it in detail over the 3 day weekend. Too much fun! ;-)
+On Thu, Feb 29, 2024 at 11:19=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wr=
+ote:
+>
+> On Sun, 2024-02-25 at 11:54 -0500, Jamal Hadi Salim wrote:
+> > The initialisation of P4TC action instances require access to a struct
+> > p4tc_act (which appears in later patches) to help us to retrieve
+> > information like the P4 action parameters etc. In order to retrieve
+> > struct p4tc_act we need the pipeline name or id and the action name or =
+id.
+> > Also recall that P4TC action IDs are P4 and are net namespace specific =
+and
+> > not global like standard tc actions.
+> > The init callback from tc_action_ops parameters had no way of
+> > supplying us that information. To solve this issue, we decided to creat=
+e a
+> > new tc_action_ops callback (init_ops), that provies us with the
+> > tc_action_ops  struct which then provides us with the pipeline and acti=
+on
+> > name.
+>
+> The new init ops looks a bit unfortunate. I *think* it would be better
+> adding the new argument to the existing init op
+>
 
-Thank you, and looking forward to seeing what you come up with!
+Our initial goal was to avoid creating a much larger patch by changing
+any other action's code and we observe that ->init() already has 8
+params already ;-> And only dynamic actions need this extra extension.
+If you still feel the change is needed, sure we can make that change.
 
-The canonical concern would be that someone somewhere is using either
-call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() to wait for
-non-preemptible regions of code that does not account for the possibility
-of preemption in CONFIG_PREEMPT_NONE or PREEMPT_PREEMPT_VOLUNTARY kernels.
+> > In addition we add a new refcount to struct tc_action_ops called
+> > dyn_ref, which accounts for how many action instances we have of a spec=
+ific
+> > action.
+> >
+> > Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> > Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> > Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> > Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+> > Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+> > ---
+> >  include/net/act_api.h |  6 ++++++
+> >  net/sched/act_api.c   | 14 +++++++++++---
+> >  2 files changed, 17 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/net/act_api.h b/include/net/act_api.h
+> > index c839ff57c..69be5ed83 100644
+> > --- a/include/net/act_api.h
+> > +++ b/include/net/act_api.h
+> > @@ -109,6 +109,7 @@ struct tc_action_ops {
+> >       char    kind[ACTNAMSIZ];
+> >       enum tca_id  id; /* identifier should match kind */
+> >       unsigned int    net_id;
+> > +     refcount_t p4_ref;
+> >       size_t  size;
+> >       struct module           *owner;
+> >       int     (*act)(struct sk_buff *, const struct tc_action *,
+> > @@ -120,6 +121,11 @@ struct tc_action_ops {
+> >                       struct nlattr *est, struct tc_action **act,
+> >                       struct tcf_proto *tp,
+> >                       u32 flags, struct netlink_ext_ack *extack);
+> > +     /* This should be merged with the original init action */
+> > +     int     (*init_ops)(struct net *net, struct nlattr *nla,
+> > +                         struct nlattr *est, struct tc_action **act,
+> > +                        struct tcf_proto *tp, struct tc_action_ops *op=
+s,
+>
+> shouldn't the 'ops' argument be 'const'?
+>
 
-I *think* that these are used only to handle the possibility
-of tracepoints on functions on the entry/exit path and on the
-RCU-not-watching portions of the idle loop.  If so, then there is no
-difference in behavior for lazy preemption.  But who knows?
+As it is right now this would be hard to do because we carry around a
+refcnt in that struct. We will think about it..
 
-						Thanx, Paul
+
+cheers,
+jamal
+
+
+> Thanks,
+>
+> Paolo
+>
 
