@@ -1,198 +1,167 @@
-Return-Path: <bpf+bounces-23067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E18C86D201
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 19:22:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5DB86D24B
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 19:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 759AB1C2322A
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 18:22:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9289288658
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 18:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C8A7A15A;
-	Thu, 29 Feb 2024 18:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A749B7A15A;
+	Thu, 29 Feb 2024 18:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="quVg3Oy5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ieoDlsIh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8DE78284
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 18:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212C8160653;
+	Thu, 29 Feb 2024 18:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230934; cv=none; b=T0dhtKTd7xcNFk3ThHjgrqPYr+LKXgYZzLNGg7eBCHNEdNFYCUxcdBchBHlAN1VOjLNnRc4ZEPDqiorQ/l4crJQ2PFOV3YyttJfs6WdtpkaZ2z5KqeqTWcQSvoLwpMrz/o/uIUAAOvF/sSeJs5wbvT7gXJBsIlC3lRRwTFJfxbU=
+	t=1709231374; cv=none; b=MthBduCewZXEsPQFs65T0tOtS+h55Li9V/LjMWeuPPi12zu6tCKDYRkxPtvuNkXWETttZu5F3G6vWOPHO36Kg3Thes78S+ezO60srXgbQIxPpu/FnTS+L5TGJItVjvJgArXXFCW0u8n1b9jWXs7cEZfC5QTM0+Y0AEpgd0GeWI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230934; c=relaxed/simple;
-	bh=7dzpqAwFqsgMKxQV4RX9pSEBbENuidbafHfuEJoPZnk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AjAs9Rnydx6KpK6NLeub75LkOUxeulEBg/zX67onZ8C9I5BUOO8BCmNTV6/kYJkYPUnlwBarOKIvDo2lYn3UAC5DIdQuXsk2KCuTLEfB/kaMr9rweKZAo7KmjxzxcliLYiTmQ2p+T8ZWEFK8qHP6+IJNsjNe0XshIrTnCyK5TLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=quVg3Oy5; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6093247d1acso12617767b3.0
-        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 10:22:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709230930; x=1709835730; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Smc0ukzYCQtIMKyHsBRa/Mz/AXSRooQrgYXnFsUF8VE=;
-        b=quVg3Oy5sQX/4xcZp8109eIVVG3zE6WZkxT6qJjTeNsxU0OoMN6L29ndeB7hdmvKJL
-         9vKEmKhzSgCHWA7r2aZbZmVNzp8zZTByXla7RZb1M/zbMmb6WuISebYnWwEGplPAw7Ic
-         Ub78fqI0A5OWr/BduCH9a/4TgvXpOa+49LQng3rY6//2/ZRzHmSf9Csh/0aHF9iovL32
-         IoGTpbNjsvraPOAavmuWthhrwKC79nDebhdgKAoddVJfGspctAFWSCj9zmsVq+5N56G8
-         HT5y4VwQ2q22lCAH5D2em+XoGhZp407cjAn3c/UBURhRIubLvPUthzVLhYCVUACCoAzH
-         Wr4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709230930; x=1709835730;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Smc0ukzYCQtIMKyHsBRa/Mz/AXSRooQrgYXnFsUF8VE=;
-        b=Wm2NU0qCERV6QZxTOEYdnHhjlc6wOUBRZQ3NCbHcYyGCZOpy44bvMTMEYSltiQkw6Q
-         NYm8usZMMpdIn9fFCNuhf/tI5ySe46VWZecHa9k2aNCJgyiuQPgQ4DMI9rd1xc/EBRS/
-         pTEZBvjspok6FwNtCzq1Dj5yOOHvwHKwxxQOMpU/buDtS5aPEXYKjBUuzf9NWoGjrgj4
-         RdYvD4gBsrMfS1LweVzU8PmC1wuzKTv7cnFrgBlTe6iufcmkAGkiMVZJwoZgeookVvMd
-         rJnSsf1pY1SuJWN7bpzFfuF38e2dwOJ8kGCTtoKZPVbZqtZYNneqQZfP/iieK558odA1
-         LiKA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/mufrlcyrJ9QQMoqPziFo18Roez3JVJSC43jMFcOYOHoVPJAMDa5QXVtD88GxVxxcQYxfHbwEEHoqgHTzXmIW4x4E
-X-Gm-Message-State: AOJu0Yx5VVWaYq6Jk3Stn9KAZatO0I94VK19i6yZKMVEeOSbbVliLWWx
-	A1g9c04VS86ZKEQ1KsYwTNN8UxvwH+9b2GbPGlniOIt3hfxbL1ZRrcZwzrnGmR3U9jN8Mxv/TR3
-	q5DyZk32DFBzeTZqZXE2dPTe8qn/wk2VT8RjF
-X-Google-Smtp-Source: AGHT+IFbZxS+A+uNkuH1f3efwUxOTWD76R3r3zbGnAYEN66bmkaDwZjH3YAdtPbkWnS97YoquPVvXJKipIcupW6zeno=
-X-Received: by 2002:a81:72d6:0:b0:609:77f0:ff40 with SMTP id
- n205-20020a8172d6000000b0060977f0ff40mr1463243ywc.20.1709230930192; Thu, 29
- Feb 2024 10:22:10 -0800 (PST)
+	s=arc-20240116; t=1709231374; c=relaxed/simple;
+	bh=o8/Eyjdv17Z5cxEbu17fyvIpxoYiOsECZ9JmxVF1ZH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tJJqZ3jDHvttltZWQ3zncBkJfrHS9BxrWBgV4LykaDTtMbxqt2Ejj2y5VKUPnsAUiZ34lMNFqYXwjQH8ylYA0Nm3lxnNTNwJfy7cMAE6IwqXTDlp9Oz33QqkjiQuZcJ20LYWinKGVA9w4JFVkKRIJaOyOsmJ2rKazOfeOMBPmww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ieoDlsIh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3281AC433C7;
+	Thu, 29 Feb 2024 18:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709231373;
+	bh=o8/Eyjdv17Z5cxEbu17fyvIpxoYiOsECZ9JmxVF1ZH4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ieoDlsIh3FAUltmSAPDqbZgtVAB5KFy/vexGwf7MjAV0tUeTnYVlmI0lDRS8C/wcr
+	 Vh8QhEUIaQZVc7VATakuRGEiQmJYIK8o593BYDZzvEnClq5awjK1ZdgC9APFKnXwyj
+	 3zSN9A6VDPVC1M3uPzAZTqbayG6ygJdrYVdgS8HVk7kq68E7cGXuyrs9ipcB8wDmEb
+	 wE4ZfTdMWhgQKRIGsxG3EU+LZVdTLDUtvr+0o3eRlh8cUI2CKULwEWi9ZL53TUnlvE
+	 2QJuau/UBT6ggHXI1cn4pUdTZ5GSf2Yx66yQs2ahlMtTp847PUB55th43okWrOasVJ
+	 1BlvMJyRaCMKQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CCB5CCE1382; Thu, 29 Feb 2024 10:29:32 -0800 (PST)
+Date: Thu, 29 Feb 2024 10:29:32 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, Yan Zhai <yan@cloudflare.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Network Development <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+	bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
+ <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225165447.156954-1-jhs@mojatatu.com> <20240225165447.156954-2-jhs@mojatatu.com>
- <c771211a5e62dcaf2e2b7525788958036a4280fa.camel@redhat.com>
-In-Reply-To: <c771211a5e62dcaf2e2b7525788958036a4280fa.camel@redhat.com>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Thu, 29 Feb 2024 13:21:58 -0500
-Message-ID: <CAM0EoM=t6gaY6d0EOtmMGwb=GtLjcuBqS3qjupeb_hi0HuODQA@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 01/15] net: sched: act_api: Introduce P4
- actions list
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
-	Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, tomasz.osinski@intel.com, 
-	jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, vladbu@nvidia.com, horms@kernel.org, 
-	khalidm@nvidia.com, toke@redhat.com, daniel@iogearbox.net, 
-	victor@mojatatu.com, pctammela@mojatatu.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
 
-On Thu, Feb 29, 2024 at 10:05=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wr=
-ote:
->
-> On Sun, 2024-02-25 at 11:54 -0500, Jamal Hadi Salim wrote:
-> > In P4 we require to generate new actions "on the fly" based on the
-> > specified P4 action definition. P4 action kinds, like the pipeline
-> > they are attached to, must be per net namespace, as opposed to native
-> > action kinds which are global. For that reason, we chose to create a
-> > separate structure to store P4 actions.
-> >
-> > Co-developed-by: Victor Nogueira <victor@mojatatu.com>
-> > Signed-off-by: Victor Nogueira <victor@mojatatu.com>
-> > Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
-> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
-> > Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
-> > Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-> > ---
-> >  include/net/act_api.h |   8 ++-
-> >  net/sched/act_api.c   | 123 +++++++++++++++++++++++++++++++++++++-----
-> >  net/sched/cls_api.c   |   2 +-
-> >  3 files changed, 116 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/include/net/act_api.h b/include/net/act_api.h
-> > index 77ee0c657..f22be14bb 100644
-> > --- a/include/net/act_api.h
-> > +++ b/include/net/act_api.h
-> > @@ -105,6 +105,7 @@ typedef void (*tc_action_priv_destructor)(void *pri=
-v);
-> >
-> >  struct tc_action_ops {
-> >       struct list_head head;
-> > +     struct list_head p4_head;
-> >       char    kind[IFNAMSIZ];
-> >       enum tca_id  id; /* identifier should match kind */
-> >       unsigned int    net_id;
-> > @@ -199,10 +200,12 @@ int tcf_idr_check_alloc(struct tc_action_net *tn,=
- u32 *index,
-> >  int tcf_idr_release(struct tc_action *a, bool bind);
-> >
-> >  int tcf_register_action(struct tc_action_ops *a, struct pernet_operati=
-ons *ops);
-> > +int tcf_register_p4_action(struct net *net, struct tc_action_ops *act)=
-;
-> >  int tcf_unregister_action(struct tc_action_ops *a,
-> >                         struct pernet_operations *ops);
-> >  #define NET_ACT_ALIAS_PREFIX "net-act-"
-> >  #define MODULE_ALIAS_NET_ACT(kind)   MODULE_ALIAS(NET_ACT_ALIAS_PREFIX=
- kind)
-> > +void tcf_unregister_p4_action(struct net *net, struct tc_action_ops *a=
-ct);
-> >  int tcf_action_destroy(struct tc_action *actions[], int bind);
-> >  int tcf_action_exec(struct sk_buff *skb, struct tc_action **actions,
-> >                   int nr_actions, struct tcf_result *res);
-> > @@ -210,8 +213,9 @@ int tcf_action_init(struct net *net, struct tcf_pro=
-to *tp, struct nlattr *nla,
-> >                   struct nlattr *est,
-> >                   struct tc_action *actions[], int init_res[], size_t *=
-attr_size,
-> >                   u32 flags, u32 fl_flags, struct netlink_ext_ack *exta=
-ck);
-> > -struct tc_action_ops *tc_action_load_ops(struct nlattr *nla, u32 flags=
-,
-> > -                                      struct netlink_ext_ack *extack);
-> > +struct tc_action_ops *
-> > +tc_action_load_ops(struct net *net, struct nlattr *nla,
-> > +                u32 flags, struct netlink_ext_ack *extack);
-> >  struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto =
-*tp,
-> >                                   struct nlattr *nla, struct nlattr *es=
-t,
-> >                                   struct tc_action_ops *a_o, int *init_=
-res,
-> > diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-> > index 9ee622fb1..23ef394f2 100644
-> > --- a/net/sched/act_api.c
-> > +++ b/net/sched/act_api.c
-> > @@ -57,6 +57,40 @@ static void tcf_free_cookie_rcu(struct rcu_head *p)
-> >       kfree(cookie);
-> >  }
-> >
-> > +static unsigned int p4_act_net_id;
-> > +
-> > +struct tcf_p4_act_net {
-> > +     struct list_head act_base;
-> > +     rwlock_t act_mod_lock;
->
-> Note that rwlock in networking code is discouraged, as they have to be
-> unfair, see commit 0daf07e527095e64ee8927ce297ab626643e9f51.
->
-> In this specific case I think there should be no problems, as is
-> extremely hard/impossible to have serious contention on the write
-> side,. Also there is already an existing rwlock nearby, no not a
-> blocker but IMHO worthy to be noted.
->
+On Thu, Feb 29, 2024 at 12:41:55PM -0500, Joel Fernandes wrote:
+> > On Feb 29, 2024, at 11:57 AM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > ﻿On Thu, Feb 29, 2024 at 09:21:48AM -0500, Joel Fernandes wrote:
+> >>> On 2/28/2024 5:58 PM, Paul E. McKenney wrote:
+> >>> On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
+> >>>> On Wed, Feb 28, 2024 at 2:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >>>>> 
+> >>>>> On Wed, 28 Feb 2024 14:19:11 -0800
+> >>>>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> >>>>> 
+> >>>>>>>> 
+> >>>>>>>> Well, to your initial point, cond_resched() does eventually invoke
+> >>>>>>>> preempt_schedule_common(), so you are quite correct that as far as
+> >>>>>>>> Tasks RCU is concerned, cond_resched() is not a quiescent state.
+> >>>>>>> 
+> >>>>>>> Thanks for confirming. :-)
+> >>>>>> 
+> >>>>>> However, given that the current Tasks RCU use cases wait for trampolines
+> >>>>>> to be evacuated, Tasks RCU could make the choice that cond_resched()
+> >>>>>> be a quiescent state, for example, by adjusting rcu_all_qs() and
+> >>>>>> .rcu_urgent_qs accordingly.
+> >>>>>> 
+> >>>>>> But this seems less pressing given the chance that cond_resched() might
+> >>>>>> go away in favor of lazy preemption.
+> >>>>> 
+> >>>>> Although cond_resched() is technically a "preemption point" and not truly a
+> >>>>> voluntary schedule, I would be happy to state that it's not allowed to be
+> >>>>> called from trampolines, or their callbacks. Now the question is, does BPF
+> >>>>> programs ever call cond_resched()? I don't think they do.
+> >>>>> 
+> >>>>> [ Added Alexei ]
+> >>>> 
+> >>>> I'm a bit lost in this thread :)
+> >>>> Just answering the above question.
+> >>>> bpf progs never call cond_resched() directly.
+> >>>> But there are sleepable (aka faultable) bpf progs that
+> >>>> can call some helper or kfunc that may call cond_resched()
+> >>>> in some path.
+> >>>> sleepable bpf progs are protected by rcu_tasks_trace.
+> >>>> That's a very different one vs rcu_tasks.
+> >>> 
+> >>> Suppose that the various cond_resched() invocations scattered throughout
+> >>> the kernel acted as RCU Tasks quiescent states, so that as soon as a
+> >>> given task executed a cond_resched(), synchronize_rcu_tasks() might
+> >>> return or call_rcu_tasks() might invoke its callback.
+> >>> 
+> >>> Would that cause BPF any trouble?
+> >>> 
+> >>> My guess is "no", because it looks like BPF is using RCU Tasks (as you
+> >>> say, as opposed to RCU Tasks Trace) only to wait for execution to leave a
+> >>> trampoline.  But I trust you much more than I trust myself on this topic!
+> >> 
+> >> But it uses RCU Tasks Trace as well (for sleepable bpf programs), not just
+> >> Tasks? Looks like that's what Alexei said above as well, and I confirmed it in
+> >> bpf/trampoline.c
+> >> 
+> >>        /* The trampoline without fexit and fmod_ret progs doesn't call original
+> >>         * function and doesn't use percpu_ref.
+> >>         * Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
+> >>         * Then use call_rcu_tasks() to wait for the rest of trampoline asm
+> >>         * and normal progs.
+> >>         */
+> >>        call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_tasks);
+> >> 
+> >> The code comment says it uses both.
+> > 
+> > BPF does quite a few interesting things with these.
+> > 
+> > But would you like to look at the update-side uses of RCU Tasks Rude
+> > to see if lazy preemption affects them?  I don't believe that there
+> > are any problems here, but we do need to check.
+> 
+> Sure I will be happy to. I am planning look at it in detail over the 3 day weekend. Too much fun! ;-)
 
-Sure - we can replace it. What's the preference? Spinlock?
+Thank you, and looking forward to seeing what you come up with!
 
-cheers,
-jamal
+The canonical concern would be that someone somewhere is using either
+call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() to wait for
+non-preemptible regions of code that does not account for the possibility
+of preemption in CONFIG_PREEMPT_NONE or PREEMPT_PREEMPT_VOLUNTARY kernels.
 
-> Cheers,
->
-> Paolo
->
+I *think* that these are used only to handle the possibility
+of tracepoints on functions on the entry/exit path and on the
+RCU-not-watching portions of the idle loop.  If so, then there is no
+difference in behavior for lazy preemption.  But who knows?
+
+						Thanx, Paul
 
