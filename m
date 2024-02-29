@@ -1,126 +1,184 @@
-Return-Path: <bpf+bounces-22978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-22979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38F5086BCEB
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 01:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB40886BCF3
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 01:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DA591F2502A
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:40:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 403CD1F25000
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 00:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90ED1171AA;
-	Thu, 29 Feb 2024 00:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078DA168B7;
+	Thu, 29 Feb 2024 00:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HMcPNseL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QwFAn02S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F9F13D306
-	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 00:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AE42D046
+	for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 00:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709167206; cv=none; b=d83EMI6CrAPGkZJYl/PkqHbdLRD8mgqq0PFpC60CL5DH5r/+p8SaKEF0xSmRMyTQI+f4gkQtBqac7UCYXsn9lnEnaIkjWOpqF3EoXzT3rIv0MiaAGgQ/qOYKQghYJXoufsnmBriPeuMUm+mzrf1D9JoNTvqBPZrPeSot/pTZGBw=
+	t=1709167396; cv=none; b=L9C24sRVuhjv5p16FiPHmeoQ5A3UZ2YOI+bFZ1acEMqt5kSFExthNSiL27s/BLCmoDyJvD75I+NoO9GDLdqxljOFjTTy4O/NFr8sb/o6NW9T8tc5ufZDKBusgY3S2MPoZwC8IwAmZFgbJ6yWLTmOCRsWf0UKTzUpolKqm80npow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709167206; c=relaxed/simple;
-	bh=j/JHBd8ZyrDrat3zQBKgGmy4K1YYXLo8FL6OJzHxCc8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MqGzUgH94aQvlgMLA69ljKi4PHrhd2+sgGFd8YNhAmlwlUcZzSO6+OLpGzxV6CSo9mJjbdPYMGimX4MiNn35kzUZvIv08bfOPHxjfj7vfUv7laZ7IdtKovqSxNOwvfZs6ykPfZOFXUXaeQqNQN+cV3NXVIJCznbTyRbEzaFWzZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HMcPNseL; arc=none smtp.client-ip=209.85.208.171
+	s=arc-20240116; t=1709167396; c=relaxed/simple;
+	bh=W6U61PTLWWRXeqv9Yrsj+RIkVtDlR1YyW/kVnFwhL/k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jFjkjGbP9QLk9087HFiMDL/oNplQ96xO+hwYRuqNmmCI3K/CIFqZUXWeoiDP3417e80o+Z698afgCwLI1bSqRU8YHphb1e26iCobuAqy7dIGbv+FD5AmBP911eigU1zeNo2VaWZZF9wIRMuVPlVYtNI7r2vkBY6/YbR0UtfJ348=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QwFAn02S; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d28051376eso4206611fa.0
-        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 16:40:04 -0800 (PST)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so290750a12.1
+        for <bpf@vger.kernel.org>; Wed, 28 Feb 2024 16:43:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709167202; x=1709772002; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=j/JHBd8ZyrDrat3zQBKgGmy4K1YYXLo8FL6OJzHxCc8=;
-        b=HMcPNseLVMKGqaS6cMVF83H9WGcivJlRM2wqv3u3cOvKTDNhRMjfO1q9MzrRHJedFr
-         qdlwLZjto1ISUEw4PzCZwiEr6RDqdI5pJKi4C9Pf7UK3hPboTod4PJQsksjndY+jxHxC
-         rRUvJ/kOiwOBAX3M3C04RzTkI2fk3HBXWG4N2VNnvTAvMIj5dEbU7sSXew1xO22U3STU
-         oBWKzy2/tVZBEZpIfr+AXEKPq4xbbWlosOqSnQ5VY2JfDhKlUjLjGC2J5y75lffXWkkh
-         0S4TyGf+Bix7+GjZcdK2pWczsMql6Pixhy/JSodJyzC8IVvQOcybSAgbJyis0Z6ASzOq
-         x6rw==
+        d=gmail.com; s=20230601; t=1709167394; x=1709772194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ODFFkEpIINipZBbRi3SuMLI4Q63P1AegHDgSaA5pSF0=;
+        b=QwFAn02SOafL+I8OJLm7enAB2VVDbtQRF37ZCulGK/tCF1QthAVbOxCDVz6atNBKCZ
+         aHB9ZENCGl8b+AeC5EAUSalqLj/OQFPHXTPy9tkjizJ9hvDPiR5Da2JG5cHVYApJL0Lf
+         EwGPIrG4cXu459+CuB4nf0EUURr0k62842nvk3WWboPXAxqORGzt8R6g82nlxMkivs4U
+         dM370u2WvYP046lYcNj0ZR9zahZNtYDUFz8u2gXgUc0ITyWGlfZ+mYRwyb9XpgA4D2RZ
+         fPNePfpAz3uhnTjJ1zJMwiWWuFbhr6nRV526bhSWpbMLcgUlFZzSg10J0Wr7TxJpc23R
+         Givw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709167202; x=1709772002;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j/JHBd8ZyrDrat3zQBKgGmy4K1YYXLo8FL6OJzHxCc8=;
-        b=XCQ29QQpQKqUoMnGjswgP4cIXUiEzdGrMpy6uUnRrR7rnSCLbgFGzTG+QH6UetpSyv
-         SvSjfTJ3X0mu2jCjD0GV4K++1eYDShjFgBDWME5H3MxtFNTikMTRBjcOx0KEFNhQ/Iz3
-         QJdjv+/+dLbdyVETHS4GlYpGwpRTjn9dz0Vq02xj8kaIUCit372WRadN4mHHRcvvM9vt
-         OHC/ci74OaimNmQWyk35ZpC2XWN93e653oQ7/wKOJptq4HfH+04TlMcw8dPKjGfSVeym
-         RiknHEYRHNvNuPuaFLUQc9IqdOHVf24HGWgz9EXdr4xJ7J7ICrjfGS3s+2jutsL9Cc2T
-         WeKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWoXWRphiSMiGXAl3Bqs/CYMki+PLVoO5CydZ8E17j9lW6fe7gtLWaJqWD+appj2KxsGKSdY7YjWCIhrQ2lB3Vt9T52
-X-Gm-Message-State: AOJu0Yw7JdOULPKrVfiWknI8FeYcJmtkZbSnQVZix3MBcsEvtx2RX9cF
-	mK2AZY1oOWlI9CykYwEe4VeNQGGQEYiI9jLejvX8YKtNzP94Fdpt
-X-Google-Smtp-Source: AGHT+IHp1NXPUvd/NLTlooOOFkko1nTF9KcTApb91Rp4PTFzIjOmlh2KKJuMe7vBXRvvGs4bAl7kvQ==
-X-Received: by 2002:a2e:98c9:0:b0:2d2:47c7:3f2a with SMTP id s9-20020a2e98c9000000b002d247c73f2amr270748ljj.36.1709167202282;
-        Wed, 28 Feb 2024 16:40:02 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id z6-20020a2e9646000000b002d23935c5f9sm27574ljh.140.2024.02.28.16.40.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 16:40:01 -0800 (PST)
-Message-ID: <10738f63bd2ab584e32e12fc3f251d3c3ac0b974.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 7/8] libbpf: sync progs autoload with maps
- autocreate for struct_ops maps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko
-	 <andrii.nakryiko@gmail.com>
-Cc: andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com, 
- yonghong.song@linux.dev, void@manifault.com, bpf@vger.kernel.org,
- ast@kernel.org
-Date: Thu, 29 Feb 2024 02:40:00 +0200
-In-Reply-To: <adf15573-444a-4fd9-bf3a-6e8281d0ed87@linux.dev>
-References: <20240227204556.17524-1-eddyz87@gmail.com>
-	 <20240227204556.17524-8-eddyz87@gmail.com>
-	 <1e95162a-a8d7-44e6-bc63-999df8cae987@linux.dev>
-	 <CAEf4BzbQryFpZFd0ruu0w9BC6VV-5BMHCzEJJNJz_OXk5j0DEw@mail.gmail.com>
-	 <ca62c2b8-adbb-4cbd-ab93-10a90dbdf2cf@linux.dev>
-	 <CAEf4BzYNVRaq7b+K_KqLMm+E3oybhaVFp1HzbTbR+sBYSoHM-g@mail.gmail.com>
-	 <adf15573-444a-4fd9-bf3a-6e8281d0ed87@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1709167394; x=1709772194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ODFFkEpIINipZBbRi3SuMLI4Q63P1AegHDgSaA5pSF0=;
+        b=XX8wzUnm4syDtAb89uDwZ0npDw3fvyI9e6+xx5t4xZpyszpn0u32O5SBpuSkPYG0EC
+         sC0+OHF6o4dnjbEpPOh6QgkyXBoNoep7NtXHjaAY76/Q7LHD7LQTOuWCgyQrp6oz0BlZ
+         xR7sodKdGQJ1DbW84Yyuw2tR2okn9mOkGeZ5TA2PDLiZmNktTbAKU+PBq6InPjah7ct/
+         olWAhk49fR6/3IEt4KW05uvYT6z0sDpa6hzJW8J3oe/0YzLjFP5tTivnpxo6rXJN/guV
+         apkLbmf5rsOd1kC9GtlY71fo5Q40vuJWUNj1SZoP4bUJxnbSNlZay8agwnwKJ+CMU5Rq
+         Zyyg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSIJzYOCaVLskshcwDNLH3Q8cMp3OabCxTMf07IQhBj84KBcz1oq9Yx7ekQPBDdVRL/aJD5N/8KiRO9F6j6Sz3Q+Zl
+X-Gm-Message-State: AOJu0YyrsgeZoaGp+Vo3V2s7JVdcXw22RMiZ1LmXPk/jwLw/Tpa5nWqk
+	KE1iA2EH3Z0lLt2Sr9CIv8cnPMCN0IRTI6QcUH5WMK5rqzwwlE4WSFLQv0AhpMP8HEHRPPyU1O5
+	ZsDwSUjBiWSZJHq6W7vVpirh8aMs=
+X-Google-Smtp-Source: AGHT+IGdr5inLwi6Kgk5vnmmRMrnVWFdk3yms3+EK3z9FPDiDS6i4s6Enaztwbj6Qc0LCVxBZZHLBKr4R9CgitmABY8=
+X-Received: by 2002:a17:90b:3697:b0:29b:c09:cdc3 with SMTP id
+ mj23-20020a17090b369700b0029b0c09cdc3mr255535pjb.19.1709167394333; Wed, 28
+ Feb 2024 16:43:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240207153550.856536-1-jolsa@kernel.org> <CAEf4BzZdPJWUiu9yNMsecB-tq0tHCLhrSF47b=w23fPevg=EWg@mail.gmail.com>
+ <ZceWuIgsmiLYyCxQ@krava> <CAEf4Bzb6sPXAtDVke=CtCXev0mxhfgEG_O-xUA-e9-8NnbBtJQ@mail.gmail.com>
+ <ZctcEpz3fHK4RqUX@krava> <ZdhmKQ1_vpCJTS_U@krava>
+In-Reply-To: <ZdhmKQ1_vpCJTS_U@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 28 Feb 2024 16:43:02 -0800
+Message-ID: <CAEf4BzYXDuPi9eqikn_mhH2Q30K6PHOSGrVn0BVzR4098FNWtg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/4] bpf: Add support to attach return prog
+ in kprobe multi
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-02-28 at 16:37 -0800, Martin KaFai Lau wrote:
+On Fri, Feb 23, 2024 at 1:32=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Tue, Feb 13, 2024 at 01:09:54PM +0100, Jiri Olsa wrote:
+> > On Mon, Feb 12, 2024 at 08:06:06PM -0800, Andrii Nakryiko wrote:
+> >
+> > SNIP
+> >
+> > > > > But the way you implement it with extra flag and extra fd paramet=
+er
+> > > > > makes it harder to have a nice high-level support in libbpf (and
+> > > > > presumably other BPF loader libraries) for this.
+> > > > >
+> > > > > When I was thinking about doing something like this, I was consid=
+ering
+> > > > > adding a new program type, actually. That way it's possible to de=
+fine
+> > > > > this "let's skip return probe" protocol without backwards
+> > > > > compatibility concerns. It's easier to use it declaratively in li=
+bbpf.
+> > > >
+> > > > ok, that seems cleaner.. but we need to use current kprobe programs=
+,
+> > > > so not sure at the moment how would that fit in.. did you mean new
+> > > > link type?
+> > >
+> > > It's kind of a less important detail, actually. New program type woul=
+d
+> > > allow us to have an entirely different context type, but I think we
+> > > can make do with the existing kprobe program type. We can have a
+> > > separate attach_type and link type, just like multi-kprobe and
+> > > multi-uprobe are still kprobe programs.
+> >
+> > ok, having new attach type on top of kprobe_multi link makes sense
+>
+> hi,
+> I have further question in here.. ;-)
+>
+> so I implemented the new behaviour on top of new attach_type, but I keep
+> thinking that it's the 'same/similar logic' as if I added extra flag to
+> attr.link_create.kprobe_multi.flags, which results in much simpler change
+>
+> is following logic breaking backward compatibility in any way?
+
+Even if it doesn't break compatibility, isn't new attach_type better
+to explicitly show that semantics is completely different (it's two
+BPF program executions, before and after, for each specified kprobe),
+isn't that different enough? We can also have a different set of
+helpers for this kwrapper/uwrapper program type (probably could do it
+through flags as well, but attach_type again seems a better fit
+here..)?
+
+What makes it harder if you are doing it as a new attach_type?
+
+>
+>   - having new flag in attr.link_create.kprobe_multi.flags
+>   - that force the attach of the bpf program to entry/exit function probe=
+s
+>   - and the kprobe entry program return value now controls invocation
+>     on the exit probe
+>
+> so the new flag changes the semantics of the entry program return value,
+> which seems fine to me, because it depends on the new flag.. do I miss
+> any other problem with that?
+>
+> thanks,
+> jirka
+>
+> >
+> > >
+> > > >
+> > > > > You just declare SEC("kprobe.wrap/...") (or whatever the name,
+> > > > > something to designate that it's both entry and exit probe) as on=
+e
+> > > > > program and in the code there would be some way to determine whet=
+her
+> > > > > we are in entry mode or exit mode (helper or field in the custom
+> > > > > context type, the latter being faster and more usable, but it's
+> > > > > probably not critical).
+> > > >
+> > > > hum, so the single program would be for both entry and exit probe,
+> > > > I'll need to check how bad it'd be for us, but it'd probably mean
+> > > > just one extra tail call, so it's likely ok
+> > >
+> > > I guess, I don't know what you are doing there :) I'd recommend
+> > > looking at utilizing BPF global subprogs instead of tail calls, if
+> > > your kernel allows for that, as that's a saner way to scale BPF
+> > > verification.
+> >
+
 [...]
-
-> > Yes, it's all sane in the above example. But imagine a stand-alone
-> > struct_ops program with no SEC(".struct_ops") at all:
-> >=20
-> >=20
-> > SEC("struct_ops/test1")
-> > int BPF_PROG(test1) { ... }
-> >=20
-> > /* nothing else */
-> >=20
-> > Currently this will fail, right?
-> >=20
-> > And with your proposal it will succeed without actually even
-> > attempting to load the BPF program. Or am I misunderstanding?
->=20
-> Yep, currently it should fail.
->=20
-> Agree that we need to distinguish this case and prog->attach_btf_id is no=
-t=20
-> enough. This probably can be tracked in collect_st_ops_relos at the open =
-phase.
-
-collect_st_ops_relos() should work, I'll add a flag to track this.
 
