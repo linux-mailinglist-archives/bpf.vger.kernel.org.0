@@ -1,206 +1,228 @@
-Return-Path: <bpf+bounces-23026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A6486C475
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 10:04:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 036B686C4C5
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 10:18:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79EB2B21EF1
-	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 09:03:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27A351C20EFB
+	for <lists+bpf@lfdr.de>; Thu, 29 Feb 2024 09:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7B157300;
-	Thu, 29 Feb 2024 09:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827659150;
+	Thu, 29 Feb 2024 09:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fzAeFvg4"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="LzyEvfgu";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="LbTcVW5n"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4E356B76;
-	Thu, 29 Feb 2024 09:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709197426; cv=none; b=p2c7f0P8fR3wS1M8V9duRB/BW21jQy/afSCJEk1B8JePxAgMYgIjgKQNGptwzH+RrxXb6TIaaq6Cuq3IXTzQvZ23gtAWLEbvFPxHBAo4uuy8AJpce95ibcfklu78P1soYyYSBmzBYW3wmh2uVPVGVABlCZtRIlWHkZTh3Pyotk0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709197426; c=relaxed/simple;
-	bh=nJRfK8GKMqwpq9hufK/6vQzSUVg/pOXvGhHHunOS26k=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=DgAl0u6ScS7jzB6O2ylJIipOaX+ah4n0C+sHsjdFYq11RCCPxS8+5J4ygDn/7NBW+o/mgiggHQZa3fQ1xAaeEtL7msCiMw63aeQGS5uOXMFO2Lenpm+1hx44mT33gd4kht1wdGK1Zan2eHHEbRnefgy967+Icu5oKige/5iAnSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fzAeFvg4; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709197418; h=Message-ID:Subject:Date:From:To;
-	bh=q96LGD8K04QzTgJESixwydLLt2hvpiLBYYzrturobvI=;
-	b=fzAeFvg4PHQE4+BjDp/B8Elx/J4t/lQ4R56ec4nI/2mKfOeFGtTDT3J706W97TwwX+LRTZJYJfIuRLWBAbhmV0SIb0qVNoEtY4nXlqBdoelleApzzHM3y2YiP5wzIY5MG5OX+k8cBK5rM50K9a10YN5rfAC6g+z0uWB3YrEQ8uE=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0W1SU1BR_1709197416;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1SU1BR_1709197416)
-          by smtp.aliyun-inc.com;
-          Thu, 29 Feb 2024 17:03:37 +0800
-Message-ID: <1709197357.626784-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v3 00/19] virtio: drivers maintain dma info for premapped vq
-Date: Thu, 29 Feb 2024 17:02:37 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux.dev,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- linux-um@lists.infradead.org,
- netdev@vger.kernel.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
- <20240229031755-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240229031755-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1256758235;
+	Thu, 29 Feb 2024 09:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709198285; cv=fail; b=TuOuy0QQ18vS34zF6tEDA7s4j4n5fzGDMgCzeiLJ1k6358EYBvdeZqfzdabOFbJy8P/KvHLwYTkT8snO1aEpaw4Qq+LJ7QNCh5vaoDat8z5Vh3/7nc1APC1OTRFe0ZuEkJjkpuTmfOGAqayVQcvrSh5FDQ71B20rYwVRox1FqU4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709198285; c=relaxed/simple;
+	bh=jxt0PgetA33dZYcH/oPEH+lgmATmo0jcIXhb36fQxzI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=c9C8wWd86L7onLn87iyueYXT9qPm/tbaG0vhUArc6Nxc10TxrbOsGvwJfyUd2hJTb0bqOslCyerk4kcG8CkISvFWSfQ1hy/Y4uW6cmRGvKSn4XpO65IJIW9i9EfPk5HRzWGH4VVVj/UUqjfPlzJV3klTrQnnMxoIayH/5N07aPc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=LzyEvfgu; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=LbTcVW5n; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41T1xdah012468;
+	Thu, 29 Feb 2024 09:17:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=R0v8TkAKlS5XDCNs9XvsCiuh5LqFMMn4PxVIYy2rG+Q=;
+ b=LzyEvfguxtEyHgzmviWo5Bfp7VDkUlDNxBeaE3zSqRMSvxr8OMR1bUD2qL7ViAN2rFo2
+ tG5MIWk/zmARb+2NJ0ivLdm/uJIaKRvYn1rd0k7kXMqoNK/IhTH+ymOC7/Ph2R/GicRu
+ 3YrnK1KaUUUpQ5zn+aF4H8P4OQ81Ejdx9qjFC48Did5KwqHUQjwt9Y7E6zisVkrQOM1/
+ z0Z56jJMxZusK16x6ar87HQ1YnFCbL8VbNdaEVqvLGz/eCnK7Y5pPCYRZYP2eAVf6uOJ
+ K3KgxCqsWhZ1MYQnvEf5sDnstwz9eON+5YOmirmrk+akIwI/BY19eaB43Huu9cF7i6hS bg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf82uch91-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 29 Feb 2024 09:17:50 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41T94Sm7025496;
+	Thu, 29 Feb 2024 09:17:50 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6wgpweb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 29 Feb 2024 09:17:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RhNWULRmhclxmz6NkHO9yxd8xxg7Xof9VMnsTDE//dA66E+5X9EfUUBxIACfAzCoD/SvPnl3vdj/0Ka9joOJo8nXX8oAQjiRqzvPtBZP2Xe3/M+sCq7lBvNrl5+QFUJOb5/2E9287M2y6la4WzuPpv/wL+2Xhp1Bcp9gpMFuP3QHFin9GqnGqN6DUWsYp4gJ9Z2IkrV05pMpvEow5GU1a0h9werTXs/KCTmucc/7C8pVS6hTYAnc9mFf6UU9V8EqNurJHch0LIjUHywq5fsqnclysWX6TK8F3PIrXAey2pgEzc6fE+4ZsYPVsb4Q9TMjnDP8u5xk+5l2AHn9J1/xnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R0v8TkAKlS5XDCNs9XvsCiuh5LqFMMn4PxVIYy2rG+Q=;
+ b=b0sSYccJe1pH6EnsxbmjS3N38hz6Gd5VhlnF0k/4S6VvHyvRYRkebT0ac6LKZSF9Yduz45S2Bz9J5BakmNh9fyHbdodItE07Y1nR+FJQOv+qdu7ltVHZWyDD4PNhz2QgtZs7qUjTdZuVzYRvXZLDXgoAuhZERVj8uhrfEZAk6nGTNSKM3Io3NkYUZkiATtakM3T+JRNIOa0Rlp8h5lqZiSsHpj81k3Ybgep2SaUtUFwA34qFHm7DP3NK7/LsMPCpqiLQpws7M9g6A0ECQchZ/JuchK0gRa5ZVCC9nwALWgff5uAAparfxFtQyYz8wcFrVbbHNPK/tthDvYVVQ7jL+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R0v8TkAKlS5XDCNs9XvsCiuh5LqFMMn4PxVIYy2rG+Q=;
+ b=LbTcVW5n4RC0s23/3lkTpVmX5qalaCE1PSaJLaKeunabPNXD8m2IKerAtwdk3mTMGs8z7Lb8utIy9JjO/vNBFTadU+l3J2U+CXP66Nc178FXVapsrL/wRn80SEjaTgOcBUCt0+uzqT+E0IERwDvBPf608ubPZH2mauLKUHMZ/w0=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by CY8PR10MB7244.namprd10.prod.outlook.com (2603:10b6:930:6c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
+ 2024 09:17:48 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::b3b:c19f:bbba:7f70]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::b3b:c19f:bbba:7f70%7]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
+ 09:17:47 +0000
+Message-ID: <34157878-c480-44bb-91d6-9024da329998@oracle.com>
+Date: Thu, 29 Feb 2024 09:17:44 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fix linux kernel BTF builds: increase max percpu
+ variables by 10x
+Content-Language: en-GB
+To: John Hubbard <jhubbard@nvidia.com>, Jiri Olsa <olsajiri@gmail.com>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, dwarves@vger.kernel.org
+References: <20240228032142.396719-1-jhubbard@nvidia.com>
+ <Zd76zrhA4LAwA_WF@krava> <856564cf-fba4-4473-bfa9-e9b03115abd1@oracle.com>
+ <983b98db-79c0-4178-b88f-61f39d147cf7@nvidia.com>
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <983b98db-79c0-4178-b88f-61f39d147cf7@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0482.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a8::19) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CY8PR10MB7244:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9796321b-b139-4030-2c33-08dc39074b83
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	iruO7lj5Wzxer82rN0o/tmkmeEm+VMPx1EaQvoJcDe9k1BNgpEogxqoSRXyyRH+bUzi3Fn4AgoTyLLzIe7B1gOBhzNJsymAgk7AC4fZx9yrgzBQfs1+ykKywD5zrb7+9/Bc7rZW41yb7FyzyHRAza9/0+f4+C5CCgZBaAimsXYljW1Ml9zSQladKxavLSpwNUcB6jRn7CJSGXY/72Bf5NRpqXMJ1sdS6XOeQ9s94cIn+bmnbFGrg3FRrGnFEuGfZbNZhzHIVZ5GbrFfP5xR6RQVY2UZRF9KSq18EjoG8iaFciTdQSRM3ngRdvoyoDlAhvkk4Kf+wFyFwG2DzLFu7TDeTsRhgiL3TDQsu0JmVMaWvGhHWn5uIDMliOp7hPNWM7ZC1wvT0WArmi1LquBpsO2FJtPQqsHDfAlWCYAfPR6asNZXvFLfFhJc7YH8YRtebdAGyFjgxfvIT/NuxoNpEcllFTnJy+B7CifxqfZX9R/RizHH7/Z0nLv4N+KJQ8gj3LdPaSBjLxmZTaJyowyfz7tCq3WZ3M7tYL7/y4vzTxGkWEExvVlGpeukluvC1Qge67/y/kDg8rn9udgzjox6gvz7r+Id9szdOtT99Xs7b59cPa012vz33QPdtUg5gALiokIbWKSjVlhQczmafa20cAQ==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?TUU5YkRreEIzVFF0U3ptTlFDdkY1aDhYR2pYa0NWNm5VSHhybVJ2Slc1V3lI?=
+ =?utf-8?B?UEdxRlh2eG4xSFdHRU01bmpOb0hlblRtemNKMUI3WXY3S3Y0MmEzNkpld2Zr?=
+ =?utf-8?B?b2l6YXF1bW42M2h6ZS9NME1YWVRDbHlFd1ZMVFZRNmZWYkt3alo3QU1qQmVW?=
+ =?utf-8?B?aHpOZVJsQU1lc0R4NDZjMGVTVkI4OVZabmM0cVN2ajl6enQ1LzlHai9Db3FB?=
+ =?utf-8?B?dEFJdlF2a1FoSmN5Yjc4K2prN1NWUVpUTXYvOTZTR0dRd0g4RGx4WTZ1Q09D?=
+ =?utf-8?B?dlVBZTBodE9RaSt1dDZ4THR1WXhOSURzTExObzFqVkgrMnVPNHdoOEw2MHNW?=
+ =?utf-8?B?WlFOZERKS0VXVWRwbUhkckJrMzFZb3hTVmZLZ21sU1R6LzJ0TjQ4K04rR2VH?=
+ =?utf-8?B?WlVBZnpBbitYR1daSHhla2l2NHRLUlYwR1dPTkJrS1J6djR3UzFCQnVOWE5E?=
+ =?utf-8?B?NENNUXVjamtxeHRzdCtOcURwemlpT1ZicHFOMDMxenlnOXdIR0d2UDdFRmtB?=
+ =?utf-8?B?MG41TkJSWXFndEUxbWNsOXQwNklYUm1QTUh2cld5SlVVcHdmN3hkMk9JVkVU?=
+ =?utf-8?B?VnVXWjdBSG01Ti9VN0FIUWl3ZTVHdmZEV3RqbFQvT1g0UnVtOHRxTjJmMVNZ?=
+ =?utf-8?B?bGg4WGFYVG8xMG9rWFhEN0pkU1c5bitUNWJHTGJYU0VodVdTa1FpOGpUY2VK?=
+ =?utf-8?B?OGVreWdYZmliaGpJOXlHYlhrU1UwNUQ0a09TYnFHQTdRb2JwWUlGN2tGbmI1?=
+ =?utf-8?B?d2hZRjVKZ09McXkzQzBRR1l0TVNpbFRkYTUwTDhUamxlaVlUWklEV3F5eUlR?=
+ =?utf-8?B?OXRpdk5Nc0NtNDJEWDFsVDVFdjNjM052S082b01yNkdac1JKNitNVkgwcTZX?=
+ =?utf-8?B?NC9QbEhjYUNaUEJpcGpVUlZ5Ynl5Z3U0dXpYT3h0NjcwN3I1OFp3WElBcm1s?=
+ =?utf-8?B?ajJWLyt6d0lFa05hVGxMTDF5U2NIcDN2WGw2NDlxUTlJZ2ovc1FFY0RsTE5X?=
+ =?utf-8?B?Nzg3Ym1SVHJkQk9Dem0xRUV2Z28xS2o3a1l5QURWQjNqVEpjbXhVWmFXV3Zv?=
+ =?utf-8?B?MFdabS9iaGdIaWVlMDJScTM4ZEl2ckRMa0ViM2ZqKzZyMVBjdXJjNXFQcXNJ?=
+ =?utf-8?B?UjAwSE05SEFEdHdSVGc4OXRlbmZ0d1pPWnBuR3pNWUNSalNwTDZaKzBEY2F2?=
+ =?utf-8?B?cFM1Zk1MSjF4TnZEYWxVUWVMSnYzcEhkeEN4aGRpQUNzZWdPcG5UMytkTW9r?=
+ =?utf-8?B?TEg1SzZLenAzWk10SVcwQTRLRE42Qzk4VTdCa1pwNWxsUXVTbU9WVU5UOEZm?=
+ =?utf-8?B?bTRyWXhlc2VwK0dJTzZhL3ZLcFBIVmZESkVMWWZYNmlhbyt6Q243UFNOSkZs?=
+ =?utf-8?B?YTdWaDZ0NWdrWm1XVU9kYWFIYWZsa3lmSHR2UmJvZGcvdXdYR0hISldrSFFi?=
+ =?utf-8?B?RDdPYVE1UHl5a1dSQ2Jza0NYRWJwOTNMN3N0cEZmK28vYm1Qa2QxalNlbzBK?=
+ =?utf-8?B?b28wMnRtdWpxQU4vTVF4VThlcU5rZGVOZGVYUEZXOUtuUmJKWWRUZzNVdzR2?=
+ =?utf-8?B?MmZaS0FYaVNHakZXWVpPM2hMN0w2SUdMOVpWV3pLMnk3UHNISU5HOENsVXF5?=
+ =?utf-8?B?OEJDU0cyVTRLNUpWQi9GanA4Z2RLWjB4NjZwV3VXS1RVM28wR0VOUnJ2U3Vz?=
+ =?utf-8?B?ZEp5YitYcHl0cEZ0NEFBV0FFWW9KN0EzUVRrQ2NRTS9Ralg2ZGdaRWsxRDdr?=
+ =?utf-8?B?TnM2bm55elk4bVVzOSt1Myt1VVhOaEVYamhQejBjQmNaTmI3d3c4ck4zQUdl?=
+ =?utf-8?B?UGt5NEJxeUphQjZhQm01WnZsKzNjUFJJSENTV3FjNmxMcE4vdXB1aklMRlFN?=
+ =?utf-8?B?aG1ibERYdkc1N2NVVzhhdnVkWE54czJBNWFDMStKdmpmV3ZidXVkdFNBUlk4?=
+ =?utf-8?B?TmZYVnlIRHlUSUJsdTFLSEZHVVRKN2Uxa0VNdmQrZHZPUGxkTzMyNWFGdHdG?=
+ =?utf-8?B?NFVETWlpN2RXUU83N3E0L25ZdHVHVlRNaE1hbkRBKzk3OFc4S3RIQlZYQWNl?=
+ =?utf-8?B?VDV3eDllQkg2akQrMU42S01OY29zS2ZtT3h5QXJOTFgxVE14V1JPNytOVzBo?=
+ =?utf-8?B?eU9vcGs4TjhiYng1YUZKNWIzSTZwTlNqSG9IUndiNStOQi8xR1gzVm4wcUJ4?=
+ =?utf-8?Q?UMPxXOsYjmPbTlC4TiBCdzw=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	2rlFgKf3WrNwVmRu/hSkhNmUffiSR8ephq/xBCRDmOsjztML4wvxw0bPLE1Emekmi0c/mSPXkZgI/POh9NyTEy1Q35nvnfjpwlegr05WU/8JqvzfleMwh3JEMuEd4dcJT5cXnrlepLXLavCpQE7juR/PPzShXya5r3DTWwUEeAJpkwbm+w1SnvD/f1qxT/pnSRRjcRgKzTfl0Y7pAByr51+06Wzt1rtEs/KN0oKvMiH5rI6V1kboaOf0q5bflcFoEmBmIW8rfPO5gGj0w8XtthRB1U/OqdHPYfsAovVck2ucsPqWF98Dy246qTBSIq+/xJs0/4jWjYQYyX2LqwsHgJV5Z7oSAwVU2nHAF/1pZrnz5/ms+VqG3NgXiIZlronKWzNo9ZvgSfLLtHAsbD4TgMM++KO3sBU+mgekYNv6jTRmMLi4XWAygQCzAY3CdrFPnf3suzmWnjsSynbfidRaqGiBqBqibdyowMiFhO4U1knlyh9/mzultWFthD9McvwHqn06Kv3VytqRlwMAwUcR+0R02KIR0oi4ar9IZSrHLIoy20qaEpodel2NwTtaxiNujw5/l49zpDer16KI330PaCyJs6CS7c+z/cCu5kzOU9g=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9796321b-b139-4030-2c33-08dc39074b83
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 09:17:47.6054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tsfMBN5gpi7nPrXRec4LwKymul0Jfr5ToLXIi0aJCR47FL7bvsCowQsm4bm16obegcbJqEtMmxNeM+BtYzIRDA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7244
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_01,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402290071
+X-Proofpoint-GUID: 7usWozouejJDCoANSD_-P_QJxZA_tRKA
+X-Proofpoint-ORIG-GUID: 7usWozouejJDCoANSD_-P_QJxZA_tRKA
 
-On Thu, 29 Feb 2024 03:21:14 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Thu, Feb 29, 2024 at 03:20:25PM +0800, Xuan Zhuo wrote:
-> > As discussed:
-> > http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
-> >
-> > If the virtio is premapped mode, the driver should manage the dma info by self.
-> > So the virtio core should not store the dma info.
-> > So we can release the memory used to store the dma info.
-> >
-> > But if the desc_extra has not dma info, we face a new question,
-> > it is hard to get the dma info of the desc with indirect flag.
-> > For split mode, that is easy from desc, but for the packed mode,
-> > it is hard to get the dma info from the desc. And for hardening
-> > the dma unmap is saft, we should store the dma info of indirect
-> > descs.
-> >
-> > So I introduce the "structure the indirect desc table" to
-> > allocate space to store dma info with the desc table.
-> >
-> > On the other side, we mix the descs with indirect flag
-> > with other descs together to share the unmap api. That
-> > is complex. I found if we we distinguish the descs with
-> > VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
-> >
-> > Because of the dma array is allocated in the find_vqs(),
-> > so I introduce a new parameter to find_vqs().
-> >
-> > Note:
-> >     this is on the top of
-> >         [PATCH vhost v1] virtio: packed: fix unmap leak for indirect desc table
-> >         http://lore.kernel.org/all/20240223071833.26095-1-xuanzhuo@linux.alibaba.com
-> >
-> > Please review.
-> >
-> > Thanks
-> >
-> > v3:
-> >     1. fix the conflict with the vp_modern_create_avq().
+On 28/02/2024 23:21, John Hubbard wrote:
+> On 2/28/24 04:04, Alan Maguire wrote:
+>> On 28/02/2024 09:20, Jiri Olsa wrote:
+>>> On Tue, Feb 27, 2024 at 07:21:42PM -0800, John Hubbard wrote:
+> ...
+>>> do you have an actual count of percpu variables for your config?
+> 
+> That's a very reasonable question...
+> 
+>>> 10x seems a lot to me
+> 
+> Me too. This was a "make the problem go away now please" type of "fix". :)
+> 
+
+
+Running
+
+bpftool btf dump file vmlinux |grep "] VAR"
+
+...should give us a sense of what's going on. I only see 375 per-cpu
+variables when I do this so maybe there's something
+kernel-config-specific that might explain why you have so many more?
+
+>>>
+>>> this might be a workaround, but we should make encoder->percpu.vars
+>>> dynamically allocated like we do for functions
+> 
+> Yes, that's a much better design imho.
+> 
+>>>
+>>> jirka
+>>>
+>>
+>> Good idea Jiri; John would you mind trying the attached patch? Thanks!
+> 
+> It works perfectly for me. For that patch, please feel free to add:
+> 
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
 >
-> Okay but are you going to address huge memory waste all this is causing for
-> - people who never do zero copy
-> - systems where dma unmap is a nop
->
-> ?
->
-> You should address all comments when you post a new version, not just
-> what was expedient, or alternatively tag patch as RFC and explain
-> in commit log that you plan to do it later.
 
 
-Do you miss this one?
-http://lore.kernel.org/all/1708997579.5613105-1-xuanzhuo@linux.alibaba.com
+that's great, thanks for testing this John!
 
-I asked you. But I didnot recv your answer.
+Alan
 
-Thanks.
-
-
->
-> > v2:
-> >     1. change the dma item of virtio-net, every item have MAX_SKB_FRAGS + 2
-> >         addr + len pairs.
-> >     2. introduce virtnet_sq_free_stats for __free_old_xmit
-> >
-> > v1:
-> >     1. rename transport_vq_config to vq_transport_config
-> >     2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_FRGAS +2)
-> >     3. introduce virtqueue_dma_map_sg_attrs
-> >     4. separate vring_create_virtqueue to an independent commit
-> >
-> >
-> >
-> > Xuan Zhuo (19):
-> >   virtio_ring: introduce vring_need_unmap_buffer
-> >   virtio_ring: packed: remove double check of the unmap ops
-> >   virtio_ring: packed: structure the indirect desc table
-> >   virtio_ring: split: remove double check of the unmap ops
-> >   virtio_ring: split: structure the indirect desc table
-> >   virtio_ring: no store dma info when unmap is not needed
-> >   virtio: find_vqs: pass struct instead of multi parameters
-> >   virtio: vring_create_virtqueue: pass struct instead of multi
-> >     parameters
-> >   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
-> >   virtio_ring: simplify the parameters of the funcs related to
-> >     vring_create/new_virtqueue()
-> >   virtio: find_vqs: add new parameter premapped
-> >   virtio_ring: export premapped to driver by struct virtqueue
-> >   virtio_net: set premapped mode by find_vqs()
-> >   virtio_ring: remove api of setting vq premapped
-> >   virtio_ring: introduce dma map api for page
-> >   virtio_ring: introduce virtqueue_dma_map_sg_attrs
-> >   virtio_net: unify the code for recycling the xmit ptr
-> >   virtio_net: rename free_old_xmit_skbs to free_old_xmit
-> >   virtio_net: sq support premapped mode
-> >
-> >  arch/um/drivers/virtio_uml.c             |  31 +-
-> >  drivers/net/virtio_net.c                 | 283 ++++++---
-> >  drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
-> >  drivers/remoteproc/remoteproc_virtio.c   |  31 +-
-> >  drivers/s390/virtio/virtio_ccw.c         |  33 +-
-> >  drivers/virtio/virtio_mmio.c             |  30 +-
-> >  drivers/virtio/virtio_pci_common.c       |  59 +-
-> >  drivers/virtio/virtio_pci_common.h       |   9 +-
-> >  drivers/virtio/virtio_pci_legacy.c       |  16 +-
-> >  drivers/virtio/virtio_pci_modern.c       |  38 +-
-> >  drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----------
-> >  drivers/virtio/virtio_vdpa.c             |  45 +-
-> >  include/linux/virtio.h                   |  13 +-
-> >  include/linux/virtio_config.h            |  48 +-
-> >  include/linux/virtio_ring.h              |  82 +--
-> >  tools/virtio/virtio_test.c               |   4 +-
-> >  tools/virtio/vringh_test.c               |  28 +-
-> >  17 files changed, 847 insertions(+), 625 deletions(-)
-> >
-> > --
-> > 2.32.0.3.g01195cf9f
->
+> 
+> thanks,
 
