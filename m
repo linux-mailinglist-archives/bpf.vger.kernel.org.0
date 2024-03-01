@@ -1,259 +1,250 @@
-Return-Path: <bpf+bounces-23168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A761986E7E3
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 19:01:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F9186E7E4
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 19:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CBB01F27C0A
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 18:01:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3E711F2674C
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 18:01:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9871798F;
-	Fri,  1 Mar 2024 18:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D81217BA4;
+	Fri,  1 Mar 2024 18:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KC8J4lb8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U6lJW9JF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C113BE6C
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 18:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89485443F
+	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 18:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709316065; cv=none; b=iolJbTKUHK775BCDQC1zvxukHl1vW66xuovTyWD8B9gjIcQm4bjRy3nmIT/jfimmQydk83RiI7xQlxjinzcjgtzPBX+NJCt2ujZnvvMV4glDp2v8hEqoqiwCCYYkqLR5S65UZeqfo+K1URyGlNCxZMfpqUQWNvOlfzsgA1CBnKo=
+	t=1709316092; cv=none; b=Lr7jn3r+NuMmGAZ/dI8XrdXXosdhyu3xweT1MFpD46RiDuPNJxnqWYp+WtWtHpIGdqMVtoOWZkenbmamwj1RX91McEshN2FiOp8wa5D47zGpmPqxiQRXhjM7VdHL1uJSuI7+uJkLmJnmwnrKGpQMo4oicKez80NGQ37JDKmyETI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709316065; c=relaxed/simple;
-	bh=gg+0xuuGr2zxmLzOTGwd5fb3Ef5XwpJ7LhGuUJp2h9Y=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=eujeyjebozdCRC0mfJJ+ebMAlgtVOqFWQ7imjSTWoWjUD1i9DvsQsX1pzwZMD3CPeLnMhL1iygFQKU8LE1Zr0G6ur5tzQiSYIEreIiKToE0mdg1RTtTmkUwKM73tXp9CiTJnykQW6fXsXKKnfwKKyiWSfXyehpBlSvrTyFlJzKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KC8J4lb8; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1709316092; c=relaxed/simple;
+	bh=5h5RqHaUCcXGC8GaAbdgl0uj03Yd49s0jp5Zx6mpcB8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dIUoIW0Yl0jya59WI9OJ1S8XRxMFrMHMEej2sbT/oL1p4KMv4OFuEpuZjnCqCzk12gWwfAe14UuCkxmMVX7dtvHy08lgBEegp1+n8fIFMyWKMQTNepVGoVWYD8S/cFp4n/lgBIAmfgtNV43WbIrgj6ynhDgA+ioLYF4/E80ZmQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U6lJW9JF; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso2147329a12.2
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 10:01:03 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29a2545a1e7so1802403a91.2
+        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 10:01:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709316063; x=1709920863; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709316090; x=1709920890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3W1q0kjp4FDZT759aLIu3ybGIycF4MUAkdCF9b/BhRA=;
-        b=KC8J4lb85CCZrzuIiEnsxnmudLnNFPDQQFi1rnmsrkiFXf+Tbb/DhHih6XSP5Qvgu/
-         VnM2eLk6ue9tY0EYacdFMEZI6SP8T9UbDNWKzwM3AqArcxDJFL3zEKOaVnFoqFacEPAI
-         4xKyVpiCmG0G2I2DACa6/maut2cWokzh69oROOu0p8GsAd/6go2hSKBuHyc391usQz1m
-         f/n1krli/PILCKqH6vUsE760roiGCJaSDl2taUnslzJS70n3kJq3U7x6ljWyh4HcyPg0
-         yrG492T93ANPxeL2shNN94/+Y+wRphhZ322hfwHLOukkhpxPa0uji/HKJcEZllRqrdOM
-         rqYw==
+        bh=Jm/sLBJyT4jcOEXfxvVEZ/lIA30RnuNXzydg6U2f7cQ=;
+        b=U6lJW9JFt3rzgjeSbrew0LgeO4gHSJdyE0npsRGK1ZPrPUIciLe1M3kvBizjmHXVcU
+         D6WHvTxgdTvSc/YAkuOOejwzl9Bi/NG+J/TUzx0XgocdhIRPvvKvCken4Rt0rKNsWB4Y
+         kVVj2tK7oHOgEq0ZFLtok3gH6aXG6bqZmjqTcycPD8fZw4fk7h97Q4FOTj7/R9GIHD96
+         A9oFYaVR+5UyQ0BPmSuIr0rNhbmvJE6k45jLYqRjPu4Owvusv/tzasoLxBZQAjdY69lo
+         Y8C7Fmcjfc0tWVFa+jvxRhPVuzQO0XA+ourVHa7AQ/BRKyuivWKTpQhPDI4rpydKDeQ8
+         h52A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709316063; x=1709920863;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3W1q0kjp4FDZT759aLIu3ybGIycF4MUAkdCF9b/BhRA=;
-        b=dBT1oRKuz2AodnwHlk50rA6MX95OlhZ0vznWOicHl1S4XIfbDVDZQjpBO7jzZsIQlE
-         lv+Hhc6rrJNpU/9jocxQ9bUAx0pI67+cvFXiGBdJI07Y4AEvAS2EAkzdxjMxLYB2cCiV
-         gaW4rmd9bLYZNI6hjcbH0iHKc3AFqG/mT321BJlNX+TfXJJuJggLCFJbb5LcBpH46nqw
-         JxB9VGY3R2pYCUy+WgbRjUdLx7t23+ZNNWeLbpvsuMZ3bstcDsErXBZDIJWYbBBAkuW0
-         JQ/HgEWIy8WJSGvhj0o2WTLsGDLmm7F0+9rNX083yX17cs1VuVfISRYh3QXx75kNPax/
-         MTBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWviFuX8mr0LMns5Lo6Ogs7Z+dqAKPNJAos+LsDzqcy9rnJLNH+KSrA76qEfGoRmNhz5wCRGOdgE7evtiWO5DlCgdb/
-X-Gm-Message-State: AOJu0YwozujOboZCXztsxs9W4qeGBfmZNxo/6l5r348sFCPESd+Fr34J
-	K4nNanNqK26Je/bOhcKPhGj6bjL4sEqAes5TuYlrNexawu7Zxn6D
-X-Google-Smtp-Source: AGHT+IEVuauCNm6pqiSwqjE43Of0p3ji7A0zg6g+k+lILWOWm1zK6KyY1FVvi2LVM5wo4mXE+syPYw==
-X-Received: by 2002:a17:90a:f405:b0:29b:1658:e575 with SMTP id ch5-20020a17090af40500b0029b1658e575mr2163567pjb.19.1709316062572;
-        Fri, 01 Mar 2024 10:01:02 -0800 (PST)
-Received: from localhost ([98.97.43.160])
-        by smtp.gmail.com with ESMTPSA id sw14-20020a17090b2c8e00b0029abf47ec7fsm5762357pjb.0.2024.03.01.10.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 10:01:01 -0800 (PST)
-Date: Fri, 01 Mar 2024 10:01:00 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Yafang Shao <laoar.shao@gmail.com>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- kpsingh@kernel.org, 
- sdf@google.com, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- bpf@vger.kernel.org
-Message-ID: <65e217dc4d34_5dcfe20887@john.notmuch>
-In-Reply-To: <CALOAHbBCp=KsGadzr+Yjmyx9UZXgxzuWPMzG9OLu7XsBd6eNpw@mail.gmail.com>
-References: <20240225100637.48394-1-laoar.shao@gmail.com>
- <20240225100637.48394-2-laoar.shao@gmail.com>
- <CAEf4BzZfUnV+k6kGo1+JDhhQ1SOnTJ84M-0GVn0m66z9d6DiqQ@mail.gmail.com>
- <CALOAHbARukciMpoKCDGmPRWuczS8FYLxNOK41iaHUOy1gHhDpA@mail.gmail.com>
- <CAEf4Bza3DTS4H7t1bx5JrJSrZgmbKS6-4A_pRQjocWBPsD3RHQ@mail.gmail.com>
- <CALOAHbCH8q_xPJBW=Eq-nwsS9N-EVnwt_dkKS_RjdHZMGsqq0w@mail.gmail.com>
- <CAEf4BzYK4o558CcQt=yzKZH+M-eD3z0GpdUORcapJKXAHZJy-g@mail.gmail.com>
- <65e102f6ebef2_33719208c8@john.notmuch>
- <CALOAHbBCp=KsGadzr+Yjmyx9UZXgxzuWPMzG9OLu7XsBd6eNpw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Add bits iterator
+        d=1e100.net; s=20230601; t=1709316090; x=1709920890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jm/sLBJyT4jcOEXfxvVEZ/lIA30RnuNXzydg6U2f7cQ=;
+        b=ZnRT71fCrZ2hcZPg+lutfI7tVp7Ti+prV4HpRXMHaIBWuUzfyN+9+vHdgfA1SxCrWj
+         22HPgKwZsdR2SG2XlJqfW9TQYd4yQder0OjUCuqIG/DVkqZqXN2LgTQlPfEkO1DZ0mw9
+         gFQ9AeduQNWLxK65DlmMHMbgvzzSi6U/BRLp890r36V+KaTFQTchMA2blmImYCBBv7Vk
+         XG7LUVHxHTqLHyPTGOiwTzLGLsbHDl2iXI9Bq//54RX2Ns0b5ph9iaQYNodrEkJhuMBK
+         jHHv59AD48fghWCuWsv9yqjRgIa9TeIj9hY+FJotdJkWUhAVTVFQb3ImbK6NIteuPWYw
+         /4yA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKnEBffS96QsWs9kT1IlASfzyE5yXOUwj8H9N6F5ltTvVjveVxlhZ/pEIUSgVHT634fVO+SjbEB1fMA6qE1MsjDFdu
+X-Gm-Message-State: AOJu0Yxn8eAqN+wv4PT29zXshCb5xphUQWW3MhIVLfCZPwoSOLddHmA5
+	uEOryrcDOs4klNpIFXgNd/27Q/kRnitoNlPNxmxYJlvwBQamTARKLS33VFZp6R7AKigX6DLagJB
+	fhOdMpYbVeTfjaOMCP+88wmC2B903Wck8
+X-Google-Smtp-Source: AGHT+IF1vmp2dfOCO4QFgvDvGCTZaZ3vD1O8uwzeQNCIYQ2l0TmpiXM5REp+Jl+2xvfGYZ7IV0RDJF8/bWWmWqlcnaY=
+X-Received: by 2002:a17:90a:ae14:b0:29a:6086:a8f8 with SMTP id
+ t20-20020a17090aae1400b0029a6086a8f8mr2404702pjq.16.1709316089819; Fri, 01
+ Mar 2024 10:01:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+References: <20240228090242.4040210-1-jolsa@kernel.org> <20240228090242.4040210-3-jolsa@kernel.org>
+ <CAEf4Bzbga6PK8UNUO5ZHL0Zo3t6xQ8S0tY4Da6aB+AFvm_jjsQ@mail.gmail.com> <ZeBZkmZwYqT7o4So@krava>
+In-Reply-To: <ZeBZkmZwYqT7o4So@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 1 Mar 2024 10:01:16 -0800
+Message-ID: <CAEf4BzZ_5-nORBS-MrZBLbUUmZ3j3txJhhZxHPLkP-n1SnFQfg@mail.gmail.com>
+Subject: Re: [PATCH RFCv2 bpf-next 2/4] bpf: Add bpf_kprobe_multi_is_return kfunc
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Yafang Shao wrote:
-> On Fri, Mar 1, 2024 at 6:19=E2=80=AFAM John Fastabend <john.fastabend@g=
-mail.com> wrote:
-> >
-> > Andrii Nakryiko wrote:
-> > > On Wed, Feb 28, 2024 at 6:16=E2=80=AFPM Yafang Shao <laoar.shao@gma=
-il.com> wrote:
-> > > >
-> > > > On Wed, Feb 28, 2024 at 2:04=E2=80=AFPM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Feb 27, 2024 at 6:25=E2=80=AFPM Yafang Shao <laoar.shao=
-@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Feb 28, 2024 at 9:24=E2=80=AFAM Andrii Nakryiko
-> > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Sun, Feb 25, 2024 at 2:07=E2=80=AFAM Yafang Shao <laoar.=
-shao@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Add three new kfuncs for the bits iterator:
-> > > > > > > > - bpf_iter_bits_new
-> > > > > > > >   Initialize a new bits iterator for a given memory area.=
- Due to the
-> > > > > > > >   limitation of bpf memalloc, the max number of bits that=
- can be iterated
-> > > > > > > >   over is limited to (4096 * 8).
-> > > > > > > > - bpf_iter_bits_next
-> > > > > > > >   Get the next bit in a bpf_iter_bits
-> > > > > > > > - bpf_iter_bits_destroy
-> > > > > > > >   Destroy a bpf_iter_bits
-> > > > > > > >
-> > > > > > > > The bits iterator facilitates the iteration of the bits o=
-f a memory area,
-> > > > > > > > such as cpumask. It can be used in any context and on any=
- address.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > > > > > ---
-
-[...]
-
-> > > > > > > > +/**
-> > > > > > > > + * bpf_iter_bits_new() - Initialize a new bits iterator =
-for a given memory area
-> > > > > > > > + * @it: The new bpf_iter_bits to be created
-> > > > > > > > + * @unsafe_ptr__ign: A ponter pointing to a memory area =
-to be iterated over
-> > > > > > > > + * @nr_bits: The number of bits to be iterated over. Due=
- to the limitation of
-> > > > > > > > + * memalloc, it can't greater than (4096 * 8).
-> > > > > > > > + *
-> > > > > > > > + * This function initializes a new bpf_iter_bits structu=
-re for iterating over
-> > > > > > > > + * a memory area which is specified by the @unsafe_ptr__=
-ign and @nr_bits. It
-> > > > > > > > + * copy the data of the memory area to the newly created=
- bpf_iter_bits @it for
-> > > > > > > > + * subsequent iteration operations.
-> > > > > > > > + *
-> > > > > > > > + * On success, 0 is returned. On failure, ERR is returne=
-d.
-> > > > > > > > + */
-> > > > > > > > +__bpf_kfunc int
-> > > > > > > > +bpf_iter_bits_new(struct bpf_iter_bits *it, const void *=
-unsafe_ptr__ign, u32 nr_bits)
-> > > > > > > > +{
-> > > > > > > > +       struct bpf_iter_bits_kern *kit =3D (void *)it;
-> > > > > > > > +       u32 size =3D BITS_TO_BYTES(nr_bits);
-> > > > > > > > +       int err;
-> > > > > > > > +
-> > > > > > > > +       BUILD_BUG_ON(sizeof(struct bpf_iter_bits_kern) !=3D=
- sizeof(struct bpf_iter_bits));
-> > > > > > > > +       BUILD_BUG_ON(__alignof__(struct bpf_iter_bits_ker=
-n) !=3D
-> > > > > > > > +                    __alignof__(struct bpf_iter_bits));
-> > > > > > > > +
-> > > > > > > > +       if (!unsafe_ptr__ign || !nr_bits) {
-> > > > > > > > +               kit->bits =3D NULL;
-> > > > > > > > +               return -EINVAL;
-> > > > > > > > +       }
-> > > > > > > > +
-> > > > > > > > +       kit->bits =3D bpf_mem_alloc(&bpf_global_ma, size)=
-;
-> > > > > > > > +       if (!kit->bits)
-> > > > > > > > +               return -ENOMEM;
-> > > > > > >
-> > > > > > > it's probably going to be a pretty common case to do bits i=
-teration
-> > > > > > > for nr_bits<=3D64, right?
-> > > > > >
-> > > > > > It's highly unlikely.
-> > > > > > Consider the CPU count as an example; There are 256 CPUs on o=
-ur AMD
-> > > > > > EPYC servers.
-> > > > >
-> > > > > Also consider u64-based bit masks (like struct backtrack_state =
-in
-> > > > > verifier code, which has u32 reg_mask and u64 stack_mask). This=
-
-> > > > > iterator is a generic bits iterator, there are tons of cases of=
-
-> > > > > u64/u32 masks in practice.
-> > > >
-> > > > Should we optimize it as follows?
-> > > >
-> > > >     if (nr_bits <=3D 64) {
-> > > >         // do the optimization
-> > > >     } else {
-> > > >         // fallback to memalloc
-> > > >     }
-> > > >
+On Thu, Feb 29, 2024 at 2:16=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Wed, Feb 28, 2024 at 05:23:45PM -0800, Andrii Nakryiko wrote:
+>
+> SNIP
+>
+> > >  static int
+> > >  kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> > > -                          unsigned long entry_ip, struct pt_regs *re=
+gs)
+> > > +                          unsigned long entry_ip, struct pt_regs *re=
+gs,
+> > > +                          bool is_return)
+> > >  {
+> > >         struct bpf_kprobe_multi_run_ctx run_ctx =3D {
+> > >                 .link =3D link,
+> > >                 .entry_ip =3D entry_ip,
+> > > +               .is_return =3D is_return,
+> > >         };
+> > >         struct bpf_run_ctx *old_run_ctx;
+> > >         int err;
+> > > @@ -2830,7 +2833,7 @@ kprobe_multi_link_handler(struct fprobe *fp, un=
+signed long fentry_ip,
+> > >         int err;
 > > >
-> > > Yep, that's what I'm proposing
+> > >         link =3D container_of(fp, struct bpf_kprobe_multi_link, fp);
+> > > -       err =3D kprobe_multi_link_prog_run(link, get_entry_ip(fentry_=
+ip), regs);
+> > > +       err =3D kprobe_multi_link_prog_run(link, get_entry_ip(fentry_=
+ip), regs, false);
+> > >         return link->is_wrapper ? err : 0;
+> > >  }
+> > >
+> > > @@ -2842,7 +2845,7 @@ kprobe_multi_link_exit_handler(struct fprobe *f=
+p, unsigned long fentry_ip,
+> > >         struct bpf_kprobe_multi_link *link;
+> > >
+> > >         link =3D container_of(fp, struct bpf_kprobe_multi_link, fp);
+> > > -       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), reg=
+s);
+> > > +       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), reg=
+s, true);
+> > >  }
+> > >
+> > >  static int symbols_cmp_r(const void *a, const void *b, const void *p=
+riv)
+> > > @@ -3111,6 +3114,46 @@ int bpf_kprobe_multi_link_attach(const union b=
+pf_attr *attr, struct bpf_prog *pr
+> > >         kvfree(cookies);
+> > >         return err;
+> > >  }
+> > > +
+> > > +__bpf_kfunc_start_defs();
+> > > +
+> > > +__bpf_kfunc bool bpf_kprobe_multi_is_return(void)
 > >
-> > When I suggested why not just open code this in BPF earlier I was
-> > mostly thinking of these u64 and u32 masks we have lots of them
-> > in our code base as well.
+> > and for uprobes we'll have bpf_uprobe_multi_is_return?...
+>
+> yes, but now I'm thinking maybe we could also have 'session' api and
+> have single 'bpf_session_is_return' because both kprobe and uprobe
+> are KPROBE program type.. and align it together with other session
+> kfuncs:
+>
+>   bpf_session_is_return
+>   bpf_session_set_cookie
+>   bpf_session_get_cookie
+>
+
+We can do that. But I was thinking more of a
+
+u64 *bpf_session_cookie()
+
+which would return a read/write pointer that BPF program can
+manipulate. Instead of doing two calls (get_cookie + set_cookie), it
+would be one call. Is there any benefit to having separate set/get
+cookie calls?
+
 > >
-> > I have something like this which might be even better than 3
-> > calls depending on your use case,
+> > BTW, have you tried implementing a "session cookie" idea?
+>
+> yep, with a little fix [0] it's working on top of Masami's 'fprobe over f=
+graph'
+> changes, you can check last 2 patches in [1] .. I did not do this on top =
+of the
+> current fprobe/rethook kernel code, because it seems it's about to go awa=
+y
+
+do you know what is the timeline for fprobe over fgraph work to be finished=
+?
+
+>
+> I still need to implement that on top of uprobes and I will send rfc, so =
+we can
+> see all of it and discuss the interface
+>
+
+great, yeah, I think the session cookie idea should go in at the same
+time, if possible, so that we can assume it is supported for new
+[ku]probe.wrapper programs.
+
+
+> jirka
+>
+>
+> [0] https://lore.kernel.org/bpf/ZdyKaRiI-PnG80Q0@krava/
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=
+=3Dbpf/session_data
+>
 > >
-> >  int find_next_bit(uint64_t bits, int last_bit)
-> >  {
-> >     int i =3D last_bit;
-> >     for (i =3D 0; i < sizeof(uint64_t) * 8; i++) {
-> >         if (bits & (1 << i))
-> >            return i;
-> >     }
-> >     return -1;
-> >   }
 > >
-> > Verifier seems plenty happy with above.
-> =
-
-> I'm not quite following.
-> Regarding the find_next_bit() function you mentioned, it seems it only
-> retrieves one bit at a time, necessitating a for loop for execution,
-> correct? Consequently, the verifier will likely fail the for loop.
-
-In practice for small sizes uint64_t and uint32_t we don't see any
-issue. Just a comment that this can be open coded without much
-trouble in many cases. Not against the helper at all.
-
-> =
-
-> -- =
-
-> Regards
-> Yafang=
+> > > +{
+> > > +       struct bpf_kprobe_multi_run_ctx *run_ctx;
+> > > +
+> > > +       run_ctx =3D container_of(current->bpf_ctx, struct bpf_kprobe_=
+multi_run_ctx, run_ctx);
+> > > +       return run_ctx->is_return;
+> > > +}
+> > > +
+> > > +__bpf_kfunc_end_defs();
+> > > +
+> > > +BTF_KFUNCS_START(kprobe_multi_kfunc_set_ids)
+> > > +BTF_ID_FLAGS(func, bpf_kprobe_multi_is_return)
+> > > +BTF_KFUNCS_END(kprobe_multi_kfunc_set_ids)
+> > > +
+> > > +static int bpf_kprobe_multi_filter(const struct bpf_prog *prog, u32 =
+kfunc_id)
+> > > +{
+> > > +       if (!btf_id_set8_contains(&kprobe_multi_kfunc_set_ids, kfunc_=
+id))
+> > > +               return 0;
+> > > +
+> > > +       if (prog->expected_attach_type !=3D BPF_TRACE_KPROBE_MULTI)
+> > > +               return -EACCES;
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static const struct btf_kfunc_id_set bpf_kprobe_multi_kfunc_set =3D =
+{
+> > > +       .owner =3D THIS_MODULE,
+> > > +       .set =3D &kprobe_multi_kfunc_set_ids,
+> > > +       .filter =3D bpf_kprobe_multi_filter,
+> > > +};
+> > > +
+> > > +static int __init bpf_kprobe_multi_kfuncs_init(void)
+> > > +{
+> > > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE, &bpf_k=
+probe_multi_kfunc_set);
+> > > +}
+> > > +
+> > > +late_initcall(bpf_kprobe_multi_kfuncs_init);
+> > >  #else /* !CONFIG_FPROBE */
+> > >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct =
+bpf_prog *prog)
+> > >  {
+> > > --
+> > > 2.43.2
+> > >
 
