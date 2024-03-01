@@ -1,250 +1,329 @@
-Return-Path: <bpf+bounces-23114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F054D86DB94
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 07:41:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 935B886DBB7
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 07:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7490283370
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 06:41:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA6C28873D
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 06:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0C867E7A;
-	Fri,  1 Mar 2024 06:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BEF6994B;
+	Fri,  1 Mar 2024 06:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jEdoVtNb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lrTdj711"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D9E67C74
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 06:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1F869945
+	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 06:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709275285; cv=none; b=L9siIW/QIK7/JQX32Wr49AKxiqsDksa3S/nTOmF9zgJxMgWiAr+tUq0a++Bxcne+7OXpqjSDxDrM4livCADcZc3bvgUTMN26CwWNzd15IOB7bWOezIAiZC8L9T1fsIPZyEhfriDWNwIikx5ajcHFCEY+EOhpXmkDjyjS0hETs3I=
+	t=1709275999; cv=none; b=dzTYGqRlDzZaniQ8FVwjiOIh6QLETb462UwmeeAjMVpWyQO1zXPl9iEZSSkhium40p1/iAqefhCXyrhFAF5jmR2KDUFVrn/uxUE1jTpoGfHTSkblj3ndbaZQgPoTa+1GbPux06iJAH2pOwv1Ys7RfLj/M9cdr0d2nmJsTc4jo/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709275285; c=relaxed/simple;
-	bh=dU7EKhhWYgOQ9qVvswaHxsMA8UnOiqwY6+gXNpQxVZU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U7bTawIK8nKQ4IkVoYpkGXDZPqCu+t8Z9M9ABZJn1cgAEEbgGx3sffl0jilNj1GHssEE/VLC86B5sxuQPUg2a3CbmG2tXGT8zLhGNXZzbYqauTKScSVKryWm/SEQ8teJ+zNpYlhYaYpMGJ8tHmRnh2PVXV49jpiwVEzOHfYFdyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jEdoVtNb; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68f9e399c91so12774526d6.2
-        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 22:41:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709275282; x=1709880082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gps5hwQrFgL0mTSjwEthHZH1oYf0ia9nVjWmrNj7xhw=;
-        b=jEdoVtNbEF5Gs0jiDtrHzrgoImgp9THEqmT8LChSf9v5EJBIqkqAx2GqEvssc6hup5
-         H4WVrtx8MclHRiEmxlKhHo5GshnMH2O3tL/cqzMAUD5ClaDUYDRq3l55i3JK2DgAbrGM
-         D0cWd1w0pGC7d9ZFEeQ5ua/CC4jHI9ymbZaB3ECa2/XnH7Ag5T841NEUuSfQ9g+IuwRY
-         HPbSHQDIcnyZjeHqhZwbBWq16+V6sFcq356Dph5kezdNK44cwr+m0Vmf1dU3V1ywGOO5
-         z8faK6tEXQ+zRuowr/cbs7YnVuRo3LfN4lBhLSmc0ixv761jxESbdd4kI5Q9r7YGJ3mY
-         3rdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709275282; x=1709880082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gps5hwQrFgL0mTSjwEthHZH1oYf0ia9nVjWmrNj7xhw=;
-        b=E4QYI+xfksuVoY6OkpTXrSQF7HgOY3qOUIb8rcxBRvFTzzFaln6E0Enjt8YitxHqdj
-         xU7C7QoC4PhrUn+NIf0KamQNK4V8EYzNTVTk0BSNLAtHr0MA0Xwck1OGPn1g/5dlTIwz
-         5DAXhmIZuEbr9PQkgqwj1nL3P3poMnQmvoDwRaTyB29UcqyYe2UKNyZVIUsGmOGvnYha
-         uKHUVX4u4QNda+YSEZ2mYXy3IV4U96mFKOHffbqesR3L0p60L6lMT3xsy/Uv/czEivbV
-         eERi2Yt8cvxSHmWyWNb3ryDcTJW9FOw0hyXwU31VZ+RgRMFueyndro4/60oAAcZ1sQrS
-         aYiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWk5Qe1gBlRu4Hju/GdbBUer9Xghqj7I5w5XR+y8E8QOFK4G3JW5Kt1zftVz59CYeq6cqU6MSvWwyaONGNtQMRHsA1J
-X-Gm-Message-State: AOJu0Ywg+406enBsg3yulOb+otWGR+aN3mpcQJLy8TKjodyf498u1SaL
-	YpOfXn+YRP55JptI1+NZPjW1aLyoGtyYzCbGimWgbdY6XbeHaMHtjj0tQSFjJKxihKGXBnE+pMS
-	6tSISo1Y3BsLwSfOPoxwSOsG8QPk=
-X-Google-Smtp-Source: AGHT+IGUwS692XtEdW+GlnqAT9DLAYaLkDgdEp9t5y1V/L1KY2GaM+J3P7OktsLJUGHdfeAT1xSvofzA+UTlm4o8rKs=
-X-Received: by 2002:a0c:e610:0:b0:68f:e76d:e3f with SMTP id
- z16-20020a0ce610000000b0068fe76d0e3fmr818242qvm.53.1709275282639; Thu, 29 Feb
- 2024 22:41:22 -0800 (PST)
+	s=arc-20240116; t=1709275999; c=relaxed/simple;
+	bh=e+pGzNnI82Ylax5Vbf1gmtIlH2eMeT6fQCrZkrOgc3s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gcOO3TaVbMyuGlRoMSC75lpCA4iPbzpBbpjtSbamdVIRH0ByMZ+2QHrkddXAKZa1kc/BaycneOXT5+XQTbb5HwpG4EO2wI7Z0r2aKVR5L69LAr1MJlFMUYdGNaDGRWkL5OwoH6fV7QYM9oXjaEgM22xUpcG2b6lNYjZ9hMAq+QM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lrTdj711; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9eff9a51-a945-48f6-9d14-a484b7c0d04c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709275992;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wo9twMGICbdoOxyQ6GLsYx/nQhq0DMpbpqjiav0rSys=;
+	b=lrTdj711iELnXJBNzGvwxNdbSk16vCcaQrbncv69xaOFDBMKIMXBxhJTACubpXq1M9uUyH
+	zDj+sQjm/0RjnjAUv0oVd60P/CTE1hwivpSLfxsnNnJoNs8IeJqfMkLSpy/s0zP50LwsZh
+	R37/rgQZhRRUcnHYS1yLVz5nVCrpeR8=
+Date: Thu, 29 Feb 2024 22:53:01 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225100637.48394-1-laoar.shao@gmail.com> <20240225100637.48394-2-laoar.shao@gmail.com>
- <CAEf4BzZfUnV+k6kGo1+JDhhQ1SOnTJ84M-0GVn0m66z9d6DiqQ@mail.gmail.com>
- <CALOAHbARukciMpoKCDGmPRWuczS8FYLxNOK41iaHUOy1gHhDpA@mail.gmail.com>
- <CAEf4Bza3DTS4H7t1bx5JrJSrZgmbKS6-4A_pRQjocWBPsD3RHQ@mail.gmail.com>
- <CALOAHbCH8q_xPJBW=Eq-nwsS9N-EVnwt_dkKS_RjdHZMGsqq0w@mail.gmail.com>
- <CAEf4BzYK4o558CcQt=yzKZH+M-eD3z0GpdUORcapJKXAHZJy-g@mail.gmail.com> <65e102f6ebef2_33719208c8@john.notmuch>
-In-Reply-To: <65e102f6ebef2_33719208c8@john.notmuch>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 1 Mar 2024 14:40:46 +0800
-Message-ID: <CALOAHbBCp=KsGadzr+Yjmyx9UZXgxzuWPMzG9OLu7XsBd6eNpw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Add bits iterator
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next v12 14/15] p4tc: add set of P4TC table kfuncs
+Content-Language: en-US
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: deb.chatterjee@intel.com, anjali.singhai@intel.com,
+ namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com,
+ Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, tomasz.osinski@intel.com,
+ jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com,
+ horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, daniel@iogearbox.net,
+ victor@mojatatu.com, pctammela@mojatatu.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240225165447.156954-1-jhs@mojatatu.com>
+ <20240225165447.156954-15-jhs@mojatatu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240225165447.156954-15-jhs@mojatatu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 1, 2024 at 6:19=E2=80=AFAM John Fastabend <john.fastabend@gmail=
-.com> wrote:
->
-> Andrii Nakryiko wrote:
-> > On Wed, Feb 28, 2024 at 6:16=E2=80=AFPM Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > >
-> > > On Wed, Feb 28, 2024 at 2:04=E2=80=AFPM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Tue, Feb 27, 2024 at 6:25=E2=80=AFPM Yafang Shao <laoar.shao@gma=
-il.com> wrote:
-> > > > >
-> > > > > On Wed, Feb 28, 2024 at 9:24=E2=80=AFAM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Sun, Feb 25, 2024 at 2:07=E2=80=AFAM Yafang Shao <laoar.shao=
-@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Add three new kfuncs for the bits iterator:
-> > > > > > > - bpf_iter_bits_new
-> > > > > > >   Initialize a new bits iterator for a given memory area. Due=
- to the
-> > > > > > >   limitation of bpf memalloc, the max number of bits that can=
- be iterated
-> > > > > > >   over is limited to (4096 * 8).
-> > > > > > > - bpf_iter_bits_next
-> > > > > > >   Get the next bit in a bpf_iter_bits
-> > > > > > > - bpf_iter_bits_destroy
-> > > > > > >   Destroy a bpf_iter_bits
-> > > > > > >
-> > > > > > > The bits iterator facilitates the iteration of the bits of a =
-memory area,
-> > > > > > > such as cpumask. It can be used in any context and on any add=
-ress.
-> > > > > > >
-> > > > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > > > > ---
-> > > > > > >  kernel/bpf/helpers.c | 100 +++++++++++++++++++++++++++++++++=
-++++++++++
-> > > > > > >  1 file changed, 100 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > > > > > index 93edf730d288..052f63891834 100644
-> > > > > > > --- a/kernel/bpf/helpers.c
-> > > > > > > +++ b/kernel/bpf/helpers.c
-> > > > > > > @@ -2542,6 +2542,103 @@ __bpf_kfunc void bpf_throw(u64 cookie=
-)
-> > > > > > >         WARN(1, "A call to BPF exception callback should neve=
-r return\n");
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +struct bpf_iter_bits {
-> > > > > > > +       __u64 __opaque[2];
-> > > > > > > +} __aligned(8);
-> > > > > > > +
-> > > > > > > +struct bpf_iter_bits_kern {
-> > > > > > > +       unsigned long *bits;
-> > > > > > > +       u32 nr_bits;
-> > > > > > > +       int bit;
-> > > > > > > +} __aligned(8);
-> > > > > > > +
-> > > > > > > +/**
-> > > > > > > + * bpf_iter_bits_new() - Initialize a new bits iterator for =
-a given memory area
-> > > > > > > + * @it: The new bpf_iter_bits to be created
-> > > > > > > + * @unsafe_ptr__ign: A ponter pointing to a memory area to b=
-e iterated over
-> > > > > > > + * @nr_bits: The number of bits to be iterated over. Due to =
-the limitation of
-> > > > > > > + * memalloc, it can't greater than (4096 * 8).
-> > > > > > > + *
-> > > > > > > + * This function initializes a new bpf_iter_bits structure f=
-or iterating over
-> > > > > > > + * a memory area which is specified by the @unsafe_ptr__ign =
-and @nr_bits. It
-> > > > > > > + * copy the data of the memory area to the newly created bpf=
-_iter_bits @it for
-> > > > > > > + * subsequent iteration operations.
-> > > > > > > + *
-> > > > > > > + * On success, 0 is returned. On failure, ERR is returned.
-> > > > > > > + */
-> > > > > > > +__bpf_kfunc int
-> > > > > > > +bpf_iter_bits_new(struct bpf_iter_bits *it, const void *unsa=
-fe_ptr__ign, u32 nr_bits)
-> > > > > > > +{
-> > > > > > > +       struct bpf_iter_bits_kern *kit =3D (void *)it;
-> > > > > > > +       u32 size =3D BITS_TO_BYTES(nr_bits);
-> > > > > > > +       int err;
-> > > > > > > +
-> > > > > > > +       BUILD_BUG_ON(sizeof(struct bpf_iter_bits_kern) !=3D s=
-izeof(struct bpf_iter_bits));
-> > > > > > > +       BUILD_BUG_ON(__alignof__(struct bpf_iter_bits_kern) !=
-=3D
-> > > > > > > +                    __alignof__(struct bpf_iter_bits));
-> > > > > > > +
-> > > > > > > +       if (!unsafe_ptr__ign || !nr_bits) {
-> > > > > > > +               kit->bits =3D NULL;
-> > > > > > > +               return -EINVAL;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       kit->bits =3D bpf_mem_alloc(&bpf_global_ma, size);
-> > > > > > > +       if (!kit->bits)
-> > > > > > > +               return -ENOMEM;
-> > > > > >
-> > > > > > it's probably going to be a pretty common case to do bits itera=
-tion
-> > > > > > for nr_bits<=3D64, right?
-> > > > >
-> > > > > It's highly unlikely.
-> > > > > Consider the CPU count as an example; There are 256 CPUs on our A=
-MD
-> > > > > EPYC servers.
-> > > >
-> > > > Also consider u64-based bit masks (like struct backtrack_state in
-> > > > verifier code, which has u32 reg_mask and u64 stack_mask). This
-> > > > iterator is a generic bits iterator, there are tons of cases of
-> > > > u64/u32 masks in practice.
-> > >
-> > > Should we optimize it as follows?
-> > >
-> > >     if (nr_bits <=3D 64) {
-> > >         // do the optimization
-> > >     } else {
-> > >         // fallback to memalloc
-> > >     }
-> > >
-> >
-> > Yep, that's what I'm proposing
->
-> When I suggested why not just open code this in BPF earlier I was
-> mostly thinking of these u64 and u32 masks we have lots of them
-> in our code base as well.
->
-> I have something like this which might be even better than 3
-> calls depending on your use case,
->
->  int find_next_bit(uint64_t bits, int last_bit)
->  {
->     int i =3D last_bit;
->     for (i =3D 0; i < sizeof(uint64_t) * 8; i++) {
->         if (bits & (1 << i))
->            return i;
->     }
->     return -1;
->   }
->
-> Verifier seems plenty happy with above.
+On 2/25/24 8:54 AM, Jamal Hadi Salim wrote:
+> +struct p4tc_table_entry_act_bpf_params {
 
-I'm not quite following.
-Regarding the find_next_bit() function you mentioned, it seems it only
-retrieves one bit at a time, necessitating a for loop for execution,
-correct? Consequently, the verifier will likely fail the for loop.
+Will this struct be extended in the future?
 
---=20
-Regards
-Yafang
+> +	u32 pipeid;
+> +	u32 tblid;
+> +};
+> +
+> +struct p4tc_table_entry_create_bpf_params {
+> +	u32 profile_id;
+> +	u32 pipeid;
+> +	u32 tblid;
+> +};
+> +
+
+[ ... ]
+
+> diff --git a/include/net/tc_act/p4tc.h b/include/net/tc_act/p4tc.h
+> index c5256d821..155068de0 100644
+> --- a/include/net/tc_act/p4tc.h
+> +++ b/include/net/tc_act/p4tc.h
+> @@ -13,10 +13,26 @@ struct tcf_p4act_params {
+>   	u32 tot_params_sz;
+>   };
+>   
+> +#define P4TC_MAX_PARAM_DATA_SIZE 124
+> +
+> +struct p4tc_table_entry_act_bpf {
+> +	u32 act_id;
+> +	u32 hit:1,
+> +	    is_default_miss_act:1,
+> +	    is_default_hit_act:1;
+> +	u8 params[P4TC_MAX_PARAM_DATA_SIZE];
+> +} __packed;
+> +
+> +struct p4tc_table_entry_act_bpf_kern {
+> +	struct rcu_head rcu;
+> +	struct p4tc_table_entry_act_bpf act_bpf;
+> +};
+> +
+>   struct tcf_p4act {
+>   	struct tc_action common;
+>   	/* Params IDR reference passed during runtime */
+>   	struct tcf_p4act_params __rcu *params;
+> +	struct p4tc_table_entry_act_bpf_kern __rcu *act_bpf;
+>   	u32 p_id;
+>   	u32 act_id;
+>   	struct list_head node;
+> @@ -24,4 +40,39 @@ struct tcf_p4act {
+>   
+>   #define to_p4act(a) ((struct tcf_p4act *)a)
+>   
+> +static inline struct p4tc_table_entry_act_bpf *
+> +p4tc_table_entry_act_bpf(struct tc_action *action)
+> +{
+> +	struct p4tc_table_entry_act_bpf_kern *act_bpf;
+> +	struct tcf_p4act *p4act = to_p4act(action);
+> +
+> +	act_bpf = rcu_dereference(p4act->act_bpf);
+> +
+> +	return &act_bpf->act_bpf;
+> +}
+> +
+> +static inline int
+> +p4tc_table_entry_act_bpf_change_flags(struct tc_action *action, u32 hit,
+> +				      u32 dflt_miss, u32 dflt_hit)
+> +{
+> +	struct p4tc_table_entry_act_bpf_kern *act_bpf, *act_bpf_old;
+> +	struct tcf_p4act *p4act = to_p4act(action);
+> +
+> +	act_bpf = kzalloc(sizeof(*act_bpf), GFP_KERNEL);
+
+
+[ ... ]
+
+> +__bpf_kfunc static struct p4tc_table_entry_act_bpf *
+> +bpf_p4tc_tbl_read(struct __sk_buff *skb_ctx,
+
+The argument could be "struct sk_buff *skb" instead of __sk_buff. Take a look at 
+commit 2f4643934670.
+
+> +		  struct p4tc_table_entry_act_bpf_params *params,
+> +		  void *key, const u32 key__sz)
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct net *caller_net;
+> +
+> +	caller_net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
+> +
+> +	return __bpf_p4tc_tbl_read(caller_net, params, key, key__sz);
+> +}
+> +
+> +__bpf_kfunc static struct p4tc_table_entry_act_bpf *
+> +xdp_p4tc_tbl_read(struct xdp_md *xdp_ctx,
+> +		  struct p4tc_table_entry_act_bpf_params *params,
+> +		  void *key, const u32 key__sz)
+> +{
+> +	struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+> +	struct net *caller_net;
+> +
+> +	caller_net = dev_net(ctx->rxq->dev);
+> +
+> +	return __bpf_p4tc_tbl_read(caller_net, params, key, key__sz);
+> +}
+> +
+> +static int
+> +__bpf_p4tc_entry_create(struct net *net,
+> +			struct p4tc_table_entry_create_bpf_params *params,
+> +			void *key, const u32 key__sz,
+> +			struct p4tc_table_entry_act_bpf *act_bpf)
+> +{
+> +	struct p4tc_table_entry_key *entry_key = key;
+> +	struct p4tc_pipeline *pipeline;
+> +	struct p4tc_table *table;
+> +
+> +	if (!params || !key)
+> +		return -EINVAL;
+> +	if (key__sz != P4TC_ENTRY_KEY_SZ_BYTES(entry_key->keysz))
+> +		return -EINVAL;
+> +
+> +	pipeline = p4tc_pipeline_find_byid(net, params->pipeid);
+> +	if (!pipeline)
+> +		return -ENOENT;
+> +
+> +	table = p4tc_tbl_cache_lookup(net, params->pipeid, params->tblid);
+> +	if (!table)
+> +		return -ENOENT;
+> +
+> +	if (entry_key->keysz != table->tbl_keysz)
+> +		return -EINVAL;
+> +
+> +	return p4tc_table_entry_create_bpf(pipeline, table, entry_key, act_bpf,
+> +					   params->profile_id);
+
+My understanding is this kfunc will allocate a "struct 
+p4tc_table_entry_act_bpf_kern" object. If the bpf_p4tc_entry_delete() kfunc is 
+never called and the bpf prog is unloaded, how the act_bpf object will be 
+cleaned up?
+
+> +}
+> +
+> +__bpf_kfunc static int
+> +bpf_p4tc_entry_create(struct __sk_buff *skb_ctx,
+> +		      struct p4tc_table_entry_create_bpf_params *params,
+> +		      void *key, const u32 key__sz,
+> +		      struct p4tc_table_entry_act_bpf *act_bpf)
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct net *net;
+> +
+> +	net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
+> +
+> +	return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf);
+> +}
+> +
+> +__bpf_kfunc static int
+> +xdp_p4tc_entry_create(struct xdp_md *xdp_ctx,
+> +		      struct p4tc_table_entry_create_bpf_params *params,
+> +		      void *key, const u32 key__sz,
+> +		      struct p4tc_table_entry_act_bpf *act_bpf)
+> +{
+> +	struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+> +	struct net *net;
+> +
+> +	net = dev_net(ctx->rxq->dev);
+> +
+> +	return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf);
+> +}
+> +
+> +__bpf_kfunc static int
+> +bpf_p4tc_entry_create_on_miss(struct __sk_buff *skb_ctx,
+> +			      struct p4tc_table_entry_create_bpf_params *params,
+> +			      void *key, const u32 key__sz,
+> +			      struct p4tc_table_entry_act_bpf *act_bpf)
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct net *net;
+> +
+> +	net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
+> +
+> +	return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf);
+> +}
+> +
+> +__bpf_kfunc static int
+> +xdp_p4tc_entry_create_on_miss(struct xdp_md *xdp_ctx,
+
+Same here. "struct xdp_buff *xdp".
+
+> +			      struct p4tc_table_entry_create_bpf_params *params,
+> +			      void *key, const u32 key__sz,
+> +			      struct p4tc_table_entry_act_bpf *act_bpf)
+> +{
+> +	struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+> +	struct net *net;
+> +
+> +	net = dev_net(ctx->rxq->dev);
+> +
+> +	return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf);
+> +}
+> +
+
+[ ... ]
+
+> +__bpf_kfunc static int
+> +bpf_p4tc_entry_delete(struct __sk_buff *skb_ctx,
+> +		      struct p4tc_table_entry_create_bpf_params *params,
+> +		      void *key, const u32 key__sz)
+> +{
+> +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> +	struct net *net;
+> +
+> +	net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
+> +
+> +	return __bpf_p4tc_entry_delete(net, params, key, key__sz);
+> +}
+> +
+> +__bpf_kfunc static int
+> +xdp_p4tc_entry_delete(struct xdp_md *xdp_ctx,
+> +		      struct p4tc_table_entry_create_bpf_params *params,
+> +		      void *key, const u32 key__sz)
+> +{
+> +	struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+> +	struct net *net;
+> +
+> +	net = dev_net(ctx->rxq->dev);
+> +
+> +	return __bpf_p4tc_entry_delete(net, params, key, key__sz);
+> +}
+> +
+> +BTF_SET8_START(p4tc_kfunc_check_tbl_set_skb)
+
+This soon will be broken with the latest change in bpf-next. It is replaced by 
+BTF_KFUNCS_START. commit a05e90427ef6.
+
+What is the plan on the selftest ?
+
+> +BTF_ID_FLAGS(func, bpf_p4tc_tbl_read, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, bpf_p4tc_entry_create);
+> +BTF_ID_FLAGS(func, bpf_p4tc_entry_create_on_miss);
+> +BTF_ID_FLAGS(func, bpf_p4tc_entry_update);
+> +BTF_ID_FLAGS(func, bpf_p4tc_entry_delete);
+> +BTF_SET8_END(p4tc_kfunc_check_tbl_set_skb)
+> +
+> +static const struct btf_kfunc_id_set p4tc_kfunc_tbl_set_skb = {
+> +	.owner = THIS_MODULE,
+> +	.set = &p4tc_kfunc_check_tbl_set_skb,
+> +};
+> +
+> +BTF_SET8_START(p4tc_kfunc_check_tbl_set_xdp)
+> +BTF_ID_FLAGS(func, xdp_p4tc_tbl_read, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, xdp_p4tc_entry_create);
+> +BTF_ID_FLAGS(func, xdp_p4tc_entry_create_on_miss);
+> +BTF_ID_FLAGS(func, xdp_p4tc_entry_update);
+> +BTF_ID_FLAGS(func, xdp_p4tc_entry_delete);
+> +BTF_SET8_END(p4tc_kfunc_check_tbl_set_xdp)
+
 
