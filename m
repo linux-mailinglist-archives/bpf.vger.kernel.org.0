@@ -1,398 +1,186 @@
-Return-Path: <bpf+bounces-23134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C7686E115
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 13:31:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C53386E120
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 13:35:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92E8F287D47
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 12:31:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E3E71C225E2
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 12:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582921381;
-	Fri,  1 Mar 2024 12:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0BC1374;
+	Fri,  1 Mar 2024 12:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="0F1ja4SI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SwNjmL88"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11BE8812
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 12:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF06ED8
+	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 12:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709296296; cv=none; b=AGz00w1lBe2RkTbDdtOMsd54I9Qg3otdu/AqB3kGlbxswvDYHracG/RuaMQBYVEfbadQbOTBI46s27t9rdX8SZXCsugXkBlLNiLuqdSM1PqMTpEUROgE9SzAfdUKMQSFnfAguAfXXFHwCz99WHbnErSoxV/Wk0Dxkvnp/kVyGro=
+	t=1709296536; cv=none; b=SREM0yCi3EJ4DOAwyVnZoMQhgVDGbXKVFEqukHZ8RkbHMgfwTCfyN63JmqjdQM2BfEDZB5gW9SZ8f+42YX+jRbEPH7FqiP2+QEr916vlP8Rio9C+XfEqX2MMTr9bcrS112mP3k2/m1sEWb6MEoPKWkve7bwpLetqRQaIGBovO1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709296296; c=relaxed/simple;
-	bh=XHbrW22xZ+VED6oRbACvD1qpWSMweuDsmKqCZCB3yjk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LBOeJK1F67l329grU+mWGjDf1icaBnupM/rguKlXIDP50qD/tc0L5C2qplv0FNn9z+lDoT4hklGlu73/CXImR/Q6hhLVEn+hjnNqiK8zfvnJJ/fuW92+M6XW6UjpVV5xB5cioDpkMVWT81lUw8eUFcRWYx0aM9EtZXfi2XG+AdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=0F1ja4SI; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-608342633b8so20880127b3.1
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 04:31:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709296293; x=1709901093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MTiCz8rMusxJ/A9dccAepJ6QtXPxSez+P2U/SaD1zIM=;
-        b=0F1ja4SIYtQ27+6/3oPn/q9f8M0nHamtnrgKxxNbGA2tb/OdR8eNvQX0JVkORX/9Wf
-         v0a7nlYc9MJ43fc1FS3Kc1+YyHx7Y4chWOjQ2xNTe9a5e7Ktg3uwO44P2omHM3kUlxze
-         /xrMK/q3RkXGJPdQx5ttfmd1KYelG01KU2cAWUqmLdGsgYisT2VTyJjXjFRd//x3peeN
-         WFgh06pSMEzMWGNT2fDVBy2PnQtDblm0vK/8j6eTgvWgeHLgpcu/8J35VFZuBC/fpN4T
-         z+EpF8OO8Mv343BjjLFI4Ctb+o/GvyRmdj3TQAYL/g/q4cBX/QPXWcJjelHUIH+Mdz+1
-         PujQ==
+	s=arc-20240116; t=1709296536; c=relaxed/simple;
+	bh=5JN+p2VTTqthoMND4fEiCiX29A/o+Mh11xx6yeJz63I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=urfa2k1zxUKtnyGQKrybhAeCXV2D7hcM7bmK9XJJSC/I2pT5vQ2Li/WC7dKIwHY0aZsV8at2ecBBabHksRmmdXHlecOu4aXuoNnKgDfxqMDeCdv9x3UP/LD7OxxqOnZP+4ynvl10TAs8fdBYvBoPoFYfnOI3fo4RDUz/c2SdxdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SwNjmL88; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709296533;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3eR/FBX1j94Zg32r5xPFb0StT7NNmIsLpiG0Gldp3F8=;
+	b=SwNjmL88eXl/qaJLVml2xecRYu0ld2kL+cUWbRSRauecWANQMpw/sZ/Lk+5PCpKNAE2pmp
+	dEu6/0T/UATu6Fpy81LFlphidFJJZXAZHAzpb6UVCzNLBkpXRN3qrpmUxXCQxTlUgd9qcc
+	XSkJZfw9H9FkYWLd9ucjeUq/uaJn4xo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-551-JZYMZJywOQaxzDjaU_2HOg-1; Fri, 01 Mar 2024 07:35:31 -0500
+X-MC-Unique: JZYMZJywOQaxzDjaU_2HOg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a3f9b549179so195571166b.2
+        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 04:35:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709296293; x=1709901093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709296530; x=1709901330;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MTiCz8rMusxJ/A9dccAepJ6QtXPxSez+P2U/SaD1zIM=;
-        b=WpEmszq/u0QD8MBN1jT0jNZEJnUomPXoOb4z9jIqnGGckaJLNR8Dz6YJJx+8OKURU+
-         chIr+7Ht+MJiaoCpdYVVKun2gcy1KA2R5+KvLB1lNa9HVO7tj1meIFwX5Rh7nJc3kTH4
-         3RaeM8WoPGW/mJ9XBUKVLkJg9oFVsW57DewPHKzUTH6xnLyej7CMv0EfpZfogzW4tMtZ
-         c1CjC6GhSMyry/jW4b2Nh61JvpgcEikLFHfF5YFqcufh9gNhSE2net3DO9f6sQ0WiBgl
-         jWTbaTW4CzK4t4H/mpjuhQnuceJ3Gp51VvOL5guIt1FOAz0kpwrvnk2C6Osjw5ygGGFk
-         6Bcg==
-X-Forwarded-Encrypted: i=1; AJvYcCWefPZIfh5YcaLQf1Ov+fWbRkxbpK9QZeM8ZdqtRYyoisci398TcGX00D5cbZSDu4D1A/w4v0I8GJ8NDx2k9D9Abzen
-X-Gm-Message-State: AOJu0YwO5cKQuuw23YCfw+wP1l7jMbXvWlSsMgSycZXjZqCS4uuOJxt6
-	Xztwhxr6Riue281jvrJ8ESivcgt7MFh7hbSf1Ri+RwmpNKXnpeOE1Ugxm/0yInmoWi47GpYj0H8
-	AhyGGHMT3vbLlqXbiR8wUMnSex9Z77Pb/uOQE
-X-Google-Smtp-Source: AGHT+IFfzqvIyoZOS3ugN4b6JIwFtCzuA9s+MvL0ZO2d0diPIO6GC1mLyXyzaZ4dgpmAqdbwOrOULqKOzjjiCcsLLvE=
-X-Received: by 2002:a81:520e:0:b0:609:89ad:eb46 with SMTP id
- g14-20020a81520e000000b0060989adeb46mr441861ywb.14.1709296293023; Fri, 01 Mar
- 2024 04:31:33 -0800 (PST)
+        bh=3eR/FBX1j94Zg32r5xPFb0StT7NNmIsLpiG0Gldp3F8=;
+        b=lF/wzlVFdSFCPjQedXQVCBAMWPCA6Lf2EzsL75zq06TGtXB6HBJaAeDecSfxLmEL5M
+         kNowk8CD/90Uwt4letQi0pYxYXfz0+8RaHLMlAkQ2RS2BOyrmF1QVcQOr9+McFHtnb8t
+         6e0A7OziWPMc1TI83uCLbiavU7eJQ7otj4/I+CxXpIMAnCa8MofUUNWskJJjQEFvdPa0
+         cZCm0H7sTXKXVZ47/sL0Ch+AB4KWZLJcEB6R0huo2Cy9k9KyftVAl8q1SxNTnMshNYOd
+         kbJ0EzTMu1jI9DIU8XKfZDWM0kk7LJns2jdol9thU+RCLyzkTTY4KBJa/6W+fA/ERmE/
+         xQKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNqsEdZXBoatdqD+ZXtxH+tJ+Hnc4RIj7db3rbfbiz+doOij1LCmjcqvaWizb6NMwqbQSo0MQ3MCysjm5d9POmOEIj
+X-Gm-Message-State: AOJu0YwKkufYsftLRW1jdU6QqhuHMgu6qQuys15cP9nbGZSyp21IvKcm
+	PpC3ydEZ0fuKtimosRDT966ACmCSlTpVw3EyL9SSn61q4ZinKbbTgjtZtJnRu6GPU1nQqo86ggZ
+	kXxOmfaRfTWKAJSpr/CiZ+kdM87TP30d3PDf92B/XkY6uZ4aeCw==
+X-Received: by 2002:a17:906:4091:b0:a43:a7:c683 with SMTP id u17-20020a170906409100b00a4300a7c683mr1190033ejj.42.1709296530737;
+        Fri, 01 Mar 2024 04:35:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGIaQttKwsIKw93zJmuMZQgfdpm1oLI4S7zCz5fePon9T2U5nhfy8aeBq8bIeLX9EPS/ZyG+w==
+X-Received: by 2002:a17:906:4091:b0:a43:a7:c683 with SMTP id u17-20020a170906409100b00a4300a7c683mr1190015ejj.42.1709296530413;
+        Fri, 01 Mar 2024 04:35:30 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id g8-20020a170906594800b00a42e4b5aaeesm1655145ejr.89.2024.03.01.04.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 04:35:30 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 96E47112E955; Fri,  1 Mar 2024 13:35:29 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf v2 2/2] bpf: Fix hashtab overflow check on 32-bit
+ arches
+In-Reply-To: <65e10367cb393_33719208c2@john.notmuch>
+References: <20240229112250.13723-1-toke@redhat.com>
+ <20240229112250.13723-3-toke@redhat.com>
+ <CAADnVQJTEo8c1=vs8avDakMKYjBopVXKNQ5f=bgrBSqELZhBow@mail.gmail.com>
+ <65e10367cb393_33719208c2@john.notmuch>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 01 Mar 2024 13:35:29 +0100
+Message-ID: <878r32b04u.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225165447.156954-1-jhs@mojatatu.com> <20240225165447.156954-15-jhs@mojatatu.com>
- <9eff9a51-a945-48f6-9d14-a484b7c0d04c@linux.dev>
-In-Reply-To: <9eff9a51-a945-48f6-9d14-a484b7c0d04c@linux.dev>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Fri, 1 Mar 2024 07:31:21 -0500
-Message-ID: <CAM0EoMniOaKn4W_WN9rmQZ1JY3qCugn34mmqCy9UdCTAj_tuTQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 14/15] p4tc: add set of P4TC table kfuncs
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
-	Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, tomasz.osinski@intel.com, 
-	jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com, 
-	horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, daniel@iogearbox.net, 
-	victor@mojatatu.com, pctammela@mojatatu.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 1, 2024 at 1:53=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
->
-> On 2/25/24 8:54 AM, Jamal Hadi Salim wrote:
-> > +struct p4tc_table_entry_act_bpf_params {
->
-> Will this struct be extended in the future?
->
-> > +     u32 pipeid;
-> > +     u32 tblid;
-> > +};
-> > +
+John Fastabend <john.fastabend@gmail.com> writes:
 
-Not that i can think of. We probably want to have the option to do so
-if needed. Do you see any harm if we were to make changes for whatever
-reason in the future?
+> Alexei Starovoitov wrote:
+>> On Thu, Feb 29, 2024 at 3:23=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen=
+ <toke@redhat.com> wrote:
+>> >
+>> > The hashtab code relies on roundup_pow_of_two() to compute the number =
+of
+>> > hash buckets, and contains an overflow check by checking if the result=
+ing
+>> > value is 0. However, on 32-bit arches, the roundup code itself can ove=
+rflow
+>> > by doing a 32-bit left-shift of an unsigned long value, which is undef=
+ined
+>> > behaviour, so it is not guaranteed to truncate neatly. This was trigge=
+red
+>> > by syzbot on the DEVMAP_HASH type, which contains the same check, copi=
+ed
+>> > from the hashtab code. So apply the same fix to hashtab, by moving the
+>> > overflow check to before the roundup.
+>> >
+>> > The hashtab code also contained a check that prevents the total alloca=
+tion
+>> > size for the buckets from overflowing a 32-bit value, but since all the
+>> > allocation code uses u64s, this does not really seem to be necessary, =
+so
+>> > drop it and keep only the strict overflow check of the n_buckets varia=
+ble.
+>> >
+>> > Fixes: daaf427c6ab3 ("bpf: fix arraymap NULL deref and missing overflo=
+w and zero size checks")
+>> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> > ---
+>> >  kernel/bpf/hashtab.c | 10 +++++-----
+>> >  1 file changed, 5 insertions(+), 5 deletions(-)
+>> >
+>> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>> > index 03a6a2500b6a..4caf8dab18b0 100644
+>> > --- a/kernel/bpf/hashtab.c
+>> > +++ b/kernel/bpf/hashtab.c
+>> > @@ -499,8 +499,6 @@ static struct bpf_map *htab_map_alloc(union bpf_at=
+tr *attr)
+>> >                                                           num_possible=
+_cpus());
+>> >         }
+>> >
+>> > -       /* hash table size must be power of 2 */
+>> > -       htab->n_buckets =3D roundup_pow_of_two(htab->map.max_entries);
+>> >
+>> >         htab->elem_size =3D sizeof(struct htab_elem) +
+>> >                           round_up(htab->map.key_size, 8);
+>> > @@ -510,11 +508,13 @@ static struct bpf_map *htab_map_alloc(union bpf_=
+attr *attr)
+>> >                 htab->elem_size +=3D round_up(htab->map.value_size, 8);
+>> >
+>> >         err =3D -E2BIG;
+>> > -       /* prevent zero size kmalloc and check for u32 overflow */
+>> > -       if (htab->n_buckets =3D=3D 0 ||
+>> > -           htab->n_buckets > U32_MAX / sizeof(struct bucket))
+>> > +       /* prevent overflow in roundup below */
+>> > +       if (htab->map.max_entries > U32_MAX / 2 + 1)
+>> >                 goto free_htab;
+>>=20
+>> No. We cannot artificially reduce max_entries that will break real users.
+>> Hash table with 4B elements is not that uncommon.
 
-> > +struct p4tc_table_entry_create_bpf_params {
-> > +     u32 profile_id;
-> > +     u32 pipeid;
-> > +     u32 tblid;
-> > +};
-> > +
->
-> [ ... ]
->
-> > diff --git a/include/net/tc_act/p4tc.h b/include/net/tc_act/p4tc.h
-> > index c5256d821..155068de0 100644
-> > --- a/include/net/tc_act/p4tc.h
-> > +++ b/include/net/tc_act/p4tc.h
-> > @@ -13,10 +13,26 @@ struct tcf_p4act_params {
-> >       u32 tot_params_sz;
-> >   };
-> >
-> > +#define P4TC_MAX_PARAM_DATA_SIZE 124
-> > +
-> > +struct p4tc_table_entry_act_bpf {
-> > +     u32 act_id;
-> > +     u32 hit:1,
-> > +         is_default_miss_act:1,
-> > +         is_default_hit_act:1;
-> > +     u8 params[P4TC_MAX_PARAM_DATA_SIZE];
-> > +} __packed;
-> > +
-> > +struct p4tc_table_entry_act_bpf_kern {
-> > +     struct rcu_head rcu;
-> > +     struct p4tc_table_entry_act_bpf act_bpf;
-> > +};
-> > +
-> >   struct tcf_p4act {
-> >       struct tc_action common;
-> >       /* Params IDR reference passed during runtime */
-> >       struct tcf_p4act_params __rcu *params;
-> > +     struct p4tc_table_entry_act_bpf_kern __rcu *act_bpf;
-> >       u32 p_id;
-> >       u32 act_id;
-> >       struct list_head node;
-> > @@ -24,4 +40,39 @@ struct tcf_p4act {
-> >
-> >   #define to_p4act(a) ((struct tcf_p4act *)a)
-> >
-> > +static inline struct p4tc_table_entry_act_bpf *
-> > +p4tc_table_entry_act_bpf(struct tc_action *action)
-> > +{
-> > +     struct p4tc_table_entry_act_bpf_kern *act_bpf;
-> > +     struct tcf_p4act *p4act =3D to_p4act(action);
-> > +
-> > +     act_bpf =3D rcu_dereference(p4act->act_bpf);
-> > +
-> > +     return &act_bpf->act_bpf;
-> > +}
-> > +
-> > +static inline int
-> > +p4tc_table_entry_act_bpf_change_flags(struct tc_action *action, u32 hi=
-t,
-> > +                                   u32 dflt_miss, u32 dflt_hit)
-> > +{
-> > +     struct p4tc_table_entry_act_bpf_kern *act_bpf, *act_bpf_old;
-> > +     struct tcf_p4act *p4act =3D to_p4act(action);
-> > +
-> > +     act_bpf =3D kzalloc(sizeof(*act_bpf), GFP_KERNEL);
->
->
-> [ ... ]
->
-> > +__bpf_kfunc static struct p4tc_table_entry_act_bpf *
-> > +bpf_p4tc_tbl_read(struct __sk_buff *skb_ctx,
->
-> The argument could be "struct sk_buff *skb" instead of __sk_buff. Take a =
-look at
-> commit 2f4643934670.
+Erm, huh? The existing code has the n_buckets > U32_MAX / sizeof(struct
+bucket) check, which limits max_entries to 134M (0x8000000). This patch
+is *increasing* the maximum allowable size by a factor of 16 (to 2.1B or
+0x80000000).
 
-We'll make that change.
+> Agree how about return E2BIG in these cases (32bit arch and overflow) and=
+=20
+> let user figure it out. That makes more sense to me.
 
->
-> > +               struct p4tc_table_entry_act_bpf_params *params,
-> > +               void *key, const u32 key__sz)
-> > +{
-> > +     struct sk_buff *skb =3D (struct sk_buff *)skb_ctx;
-> > +     struct net *caller_net;
-> > +
-> > +     caller_net =3D skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
-> > +
-> > +     return __bpf_p4tc_tbl_read(caller_net, params, key, key__sz);
-> > +}
-> > +
-> > +__bpf_kfunc static struct p4tc_table_entry_act_bpf *
-> > +xdp_p4tc_tbl_read(struct xdp_md *xdp_ctx,
-> > +               struct p4tc_table_entry_act_bpf_params *params,
-> > +               void *key, const u32 key__sz)
-> > +{
-> > +     struct xdp_buff *ctx =3D (struct xdp_buff *)xdp_ctx;
-> > +     struct net *caller_net;
-> > +
-> > +     caller_net =3D dev_net(ctx->rxq->dev);
-> > +
-> > +     return __bpf_p4tc_tbl_read(caller_net, params, key, key__sz);
-> > +}
-> > +
-> > +static int
-> > +__bpf_p4tc_entry_create(struct net *net,
-> > +                     struct p4tc_table_entry_create_bpf_params *params=
-,
-> > +                     void *key, const u32 key__sz,
-> > +                     struct p4tc_table_entry_act_bpf *act_bpf)
-> > +{
-> > +     struct p4tc_table_entry_key *entry_key =3D key;
-> > +     struct p4tc_pipeline *pipeline;
-> > +     struct p4tc_table *table;
-> > +
-> > +     if (!params || !key)
-> > +             return -EINVAL;
-> > +     if (key__sz !=3D P4TC_ENTRY_KEY_SZ_BYTES(entry_key->keysz))
-> > +             return -EINVAL;
-> > +
-> > +     pipeline =3D p4tc_pipeline_find_byid(net, params->pipeid);
-> > +     if (!pipeline)
-> > +             return -ENOENT;
-> > +
-> > +     table =3D p4tc_tbl_cache_lookup(net, params->pipeid, params->tbli=
-d);
-> > +     if (!table)
-> > +             return -ENOENT;
-> > +
-> > +     if (entry_key->keysz !=3D table->tbl_keysz)
-> > +             return -EINVAL;
-> > +
-> > +     return p4tc_table_entry_create_bpf(pipeline, table, entry_key, ac=
-t_bpf,
-> > +                                        params->profile_id);
->
-> My understanding is this kfunc will allocate a "struct
-> p4tc_table_entry_act_bpf_kern" object. If the bpf_p4tc_entry_delete() kfu=
-nc is
-> never called and the bpf prog is unloaded, how the act_bpf object will be
-> cleaned up?
->
+Isn't that exactly what this patch does? What am I missing here?
 
-The TC code takes care of this. Unloading the bpf prog does not affect
-the deletion, it is the TC control side that will take care of it. If
-we delete the pipeline otoh then not just this entry but all entries
-will be flushed.
+-Toke
 
-> > +}
-> > +
-> > +__bpf_kfunc static int
-> > +bpf_p4tc_entry_create(struct __sk_buff *skb_ctx,
-> > +                   struct p4tc_table_entry_create_bpf_params *params,
-> > +                   void *key, const u32 key__sz,
-> > +                   struct p4tc_table_entry_act_bpf *act_bpf)
-> > +{
-> > +     struct sk_buff *skb =3D (struct sk_buff *)skb_ctx;
-> > +     struct net *net;
-> > +
-> > +     net =3D skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
-> > +
-> > +     return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf=
-);
-> > +}
-> > +
-> > +__bpf_kfunc static int
-> > +xdp_p4tc_entry_create(struct xdp_md *xdp_ctx,
-> > +                   struct p4tc_table_entry_create_bpf_params *params,
-> > +                   void *key, const u32 key__sz,
-> > +                   struct p4tc_table_entry_act_bpf *act_bpf)
-> > +{
-> > +     struct xdp_buff *ctx =3D (struct xdp_buff *)xdp_ctx;
-> > +     struct net *net;
-> > +
-> > +     net =3D dev_net(ctx->rxq->dev);
-> > +
-> > +     return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf=
-);
-> > +}
-> > +
-> > +__bpf_kfunc static int
-> > +bpf_p4tc_entry_create_on_miss(struct __sk_buff *skb_ctx,
-> > +                           struct p4tc_table_entry_create_bpf_params *=
-params,
-> > +                           void *key, const u32 key__sz,
-> > +                           struct p4tc_table_entry_act_bpf *act_bpf)
-> > +{
-> > +     struct sk_buff *skb =3D (struct sk_buff *)skb_ctx;
-> > +     struct net *net;
-> > +
-> > +     net =3D skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
-> > +
-> > +     return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf=
-);
-> > +}
-> > +
-> > +__bpf_kfunc static int
-> > +xdp_p4tc_entry_create_on_miss(struct xdp_md *xdp_ctx,
->
-> Same here. "struct xdp_buff *xdp".
->
-
-ACK
-
-> > +                           struct p4tc_table_entry_create_bpf_params *=
-params,
-> > +                           void *key, const u32 key__sz,
-> > +                           struct p4tc_table_entry_act_bpf *act_bpf)
-> > +{
-> > +     struct xdp_buff *ctx =3D (struct xdp_buff *)xdp_ctx;
-> > +     struct net *net;
-> > +
-> > +     net =3D dev_net(ctx->rxq->dev);
-> > +
-> > +     return __bpf_p4tc_entry_create(net, params, key, key__sz, act_bpf=
-);
-> > +}
-> > +
->
-> [ ... ]
->
-> > +__bpf_kfunc static int
-> > +bpf_p4tc_entry_delete(struct __sk_buff *skb_ctx,
-> > +                   struct p4tc_table_entry_create_bpf_params *params,
-> > +                   void *key, const u32 key__sz)
-> > +{
-> > +     struct sk_buff *skb =3D (struct sk_buff *)skb_ctx;
-> > +     struct net *net;
-> > +
-> > +     net =3D skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
-> > +
-> > +     return __bpf_p4tc_entry_delete(net, params, key, key__sz);
-> > +}
-> > +
-> > +__bpf_kfunc static int
-> > +xdp_p4tc_entry_delete(struct xdp_md *xdp_ctx,
-> > +                   struct p4tc_table_entry_create_bpf_params *params,
-> > +                   void *key, const u32 key__sz)
-> > +{
-> > +     struct xdp_buff *ctx =3D (struct xdp_buff *)xdp_ctx;
-> > +     struct net *net;
-> > +
-> > +     net =3D dev_net(ctx->rxq->dev);
-> > +
-> > +     return __bpf_p4tc_entry_delete(net, params, key, key__sz);
-> > +}
-> > +
-> > +BTF_SET8_START(p4tc_kfunc_check_tbl_set_skb)
->
-> This soon will be broken with the latest change in bpf-next. It is replac=
-ed by
-> BTF_KFUNCS_START. commit a05e90427ef6.
->
-
-Ok, this wasnt in net-next when we pushed. We base our changes on
-net-next. When do you plan to merge that into net-next?
-
-> What is the plan on the selftest ?
->
-
-We may need some guidance. How do you see us writing a selftest for this?
-We have extensive testing on the control side which is netlink (not
-part of the current series).
-
-Overall: I thank you for taking time to review  - it is the kind of
-feedback we were hoping for from the ebpf side.
-
-cheers,
-jamal
-
-> > +BTF_ID_FLAGS(func, bpf_p4tc_tbl_read, KF_RET_NULL);
-> > +BTF_ID_FLAGS(func, bpf_p4tc_entry_create);
-> > +BTF_ID_FLAGS(func, bpf_p4tc_entry_create_on_miss);
-> > +BTF_ID_FLAGS(func, bpf_p4tc_entry_update);
-> > +BTF_ID_FLAGS(func, bpf_p4tc_entry_delete);
-> > +BTF_SET8_END(p4tc_kfunc_check_tbl_set_skb)
-> > +
-> > +static const struct btf_kfunc_id_set p4tc_kfunc_tbl_set_skb =3D {
-> > +     .owner =3D THIS_MODULE,
-> > +     .set =3D &p4tc_kfunc_check_tbl_set_skb,
-> > +};
-> > +
-> > +BTF_SET8_START(p4tc_kfunc_check_tbl_set_xdp)
-> > +BTF_ID_FLAGS(func, xdp_p4tc_tbl_read, KF_RET_NULL);
-> > +BTF_ID_FLAGS(func, xdp_p4tc_entry_create);
-> > +BTF_ID_FLAGS(func, xdp_p4tc_entry_create_on_miss);
-> > +BTF_ID_FLAGS(func, xdp_p4tc_entry_update);
-> > +BTF_ID_FLAGS(func, xdp_p4tc_entry_delete);
-> > +BTF_SET8_END(p4tc_kfunc_check_tbl_set_xdp)
->
 
