@@ -1,184 +1,126 @@
-Return-Path: <bpf+bounces-23142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127FC86E312
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 15:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 476D386E31A
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 15:15:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2878B1C21D48
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 14:12:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F5A1C21DCF
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 14:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B78967E8D;
-	Fri,  1 Mar 2024 14:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806996F06B;
+	Fri,  1 Mar 2024 14:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UWijkWzd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M+Zj0+d7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AFF06EF16
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 14:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEEA386;
+	Fri,  1 Mar 2024 14:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709302320; cv=none; b=ik+vu84FupLm1x9Fs8m/a3soC0SaLEJLC0JQSLegEH0/oEltaEHUuBfGlKd+QJ1Tu9z88tgPu0YeDfpEsO3+yFQg7GSHZIpXwsBoB+WNQf8/Dro9Crct+7WjnBurXsKl7PIFyq/a1MYhI8UdcEIQEgz5+IFTtFcdwRIZDU0fWMM=
+	t=1709302504; cv=none; b=j2U/bpRz2ZqwETqMMt1DnS6rzZYFOKXBQMlNyVfV9X+GLg1jHeubIFu8bCd6S500YxQ6aCrrTIoBzhHxjOyoxwrMjuK/1r2VKMqc4p4fMa2p6KWbI12gQxmo/sMAsa7lHuoEpYbCgzUgQB19o+WyFbhz+wM5yzqEw2TFsbZ/TWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709302320; c=relaxed/simple;
-	bh=HikkruI1e/loLt3J6Ehhu3BisD2M+zRqee7sgo+WcxM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qXDmVp1Ivf4X/59ErxB/sWIuIBQs+BiCkFUyI+duxZtKHU/lNQYqD81fZ2nSM/y+n2ypOC9qL/M2xEbQOjZXt4BY98/lQZrJIPTXa1KkAK/iqNAmAFbjNCnDVRyT42yiyd2e/pALdE8kpJ444Mi4if3brPbgfix6tCNsNoOeP+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UWijkWzd; arc=none smtp.client-ip=209.85.208.68
+	s=arc-20240116; t=1709302504; c=relaxed/simple;
+	bh=uNMW83LNJ2amnFUbvjiWJQyAEGNgW0Olyi94J6gfEOs=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nvFwvtot3Fjjm6zK5pFc1UR8+qexGsGIC2hypAVG6/JqmWWX4E3yCT8q3L6BE0SCpmipsGOpnIZfy8JaXgSilNYro/ZAQrg0Qf+R+VZclJpJJ9vVHXrO+ZB0r9C95KWvOt3ucaWHlfc9WSZ8RrOCK2kXhfowyeNMtWXi+ha8M4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M+Zj0+d7; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-566e1e94b47so687040a12.0
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 06:11:58 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412c83a8259so5056325e9.2;
+        Fri, 01 Mar 2024 06:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709302317; x=1709907117; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HikkruI1e/loLt3J6Ehhu3BisD2M+zRqee7sgo+WcxM=;
-        b=UWijkWzdbKGdx93ye1938kz9hVHfAzQ9umjNaQogFzKcLjnZ4E1TfZUAEdOPtxrxVT
-         MmBNABWAWwDCQLY83UIkA7LeRJGI/ijQiEDl9MysXRlVQxM36b3bnp0a7KsrrUHcJyT+
-         ZV8Elf+YWpJWKDgRdGOxwpowMCt/fsMurdpl2yxcAN+T184cjNds20eDOF1qocKJWnMv
-         bVJTagJ5y3nbHJdoVy3C/0XjOkIcW1FiZV8aZ7jLfYGQGl5e1/uYtlvsCqGqbRW+CygQ
-         R5w4UmKgAs48hQkRbWwOqlgw2Nz5ZT6tmKr55BIKkYO7htME6NqkRAePNyqbkHYIHFEG
-         1PQA==
+        d=gmail.com; s=20230601; t=1709302500; x=1709907300; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n0oUCf6IAisxelJxCU2JYLXA6npjdC01/hvoCHou+0k=;
+        b=M+Zj0+d7QIULJtkxzY2IYZxasw1Y2b05yrNKOViUQKzfTey22MuHzNZzSN8mDxZ9IH
+         yxD4Y6IBHg8adGyxdKKYpBTkRS/rxdWi4pQsukBuzkTkQJD0ygmpE/x9N3EfXZRSY7xQ
+         +A4KqXGrwdJmRCgIacm8co2qYAnWeOA+7FhqB1Aiq7gkJb63x1VRYui8YjQF22Or5sNB
+         14Fw0WRBJJSaQKUBWfwGphXBfGWhRyzxMVukf1Z4n5OjDFFuCPxT0d7hZCCwRP5fLI/0
+         2mEoC8b+IIrSckwBNdQ5G/UeflsOUXZbfI2rIaBdvEhwcSwBd4pbUGxUR0GagEZZ0CLy
+         0qRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709302317; x=1709907117;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HikkruI1e/loLt3J6Ehhu3BisD2M+zRqee7sgo+WcxM=;
-        b=sSzJjtXhacpkh/fWfIjB1393grU4y68OTJ8DpLPi+mEmxIZHikoF5WeYalej4HVr0R
-         pXGJQ0OkiTQbuLsjXg1Mk2pU6bYPmg7klkaf0fW9I+c1PYrj6FlgU/LVS5ARNrrWnyNY
-         xivA+TQF/mc9kor7mOyGIDEwSz8mo18v58GR/s10H0BC9/4kHVp+fcfNtqq0K3Vpn2Zj
-         ohMgus/ypvh1OBn24mouH3nWsZC9oPyNp7spAD3Zs/3c5NBMBEnGTu/MbTzy2DQkAMuC
-         dW6zJyIZfYrxvO7ZvdzJ/+Bnq9Xz6nlqRzF5HjykeBMYlo1IfsNwqDwv/vvPF0K06Ie3
-         AoJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWM7xPFXLdErqK4I3YG0c/9q+YN0CFdhWDh8So7PAhd1ZtUQBukr5CWB298ifCqGP2KnfMPVge1f1Ow0ZeQo8cYBvib
-X-Gm-Message-State: AOJu0YztKvBaVU6vlljUd21KGzdqvBsckTW7YG/ZIzJPEIZjjQ3bDQaF
-	MVXA+7HaXf3wBlEl0ozGv9Qdu4QOfU0/YtAxtw/flE+fxVLR8pqO1Q9DWHD3HDcra0KyfqDMJwS
-	I962vZr1HUI+jZOG+O4UHh7KmfWw=
-X-Google-Smtp-Source: AGHT+IGeJXNIpR3rAkNduoBXoMqoK1huoBRJVRki3Gae3tX2plmCtBSrs/H4nblPrtL6ARyQkhnjEkx1r0UFgIEUVa4=
-X-Received: by 2002:a17:906:f0ce:b0:a44:50bb:8cc2 with SMTP id
- dk14-20020a170906f0ce00b00a4450bb8cc2mr1779435ejb.28.1709302316614; Fri, 01
- Mar 2024 06:11:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709302500; x=1709907300;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n0oUCf6IAisxelJxCU2JYLXA6npjdC01/hvoCHou+0k=;
+        b=O3e0+w31Mgk+m4M8zirZ7YHQqvo21pbFlCuOyf0UvL4FIBAtO5Iq9G8rPDGHabSU7v
+         qAbjcKLO6dIGR1ZOXVuEXQNhNsBQSFOucrnxyTa8hXYWLyUBywBatFpCOaX1bLAdJRVl
+         A0o3F47C1r/lVQVmViDmhDwuH9TMcvQmD8M3cBV66XhjS550R/gJcoLxccmMC8MgmUWa
+         uEbdRHNu5pDNAwR53BBUSprbmwDdSulJBKx8V0OHnyOdlbiwh+VxeDUUFutfz9OfBlVw
+         o1YW1ovB4HQn+qhelvBI8LlcNEOBqXkeHTxqTYvmDWX6/K5gdVfgADdVu5RwTNRDVgg+
+         Zx5A==
+X-Forwarded-Encrypted: i=1; AJvYcCU/u+a+lM/jmufJA1SGNamvV0Ec6xH1dQ4DRudlvxR7KoZbl0mSMJ8tSOC0rgSBaBVSZKg9pEO3TOjLSwJWb48PiCujFj3NHe86jx9owkSluRYMnGvF1EdcCzHICuNlyP70E6qHNmleCDn5jc/pw4bh5kPMIWS5td+WVQ==
+X-Gm-Message-State: AOJu0YzbQpzYCSXiouMfU4im5pkLpGx0XMcm0xUF/0wypWyWhY2NoYLJ
+	nQbqExTUieGzOipiaPSpYtjcZrUQooQLfxJLHKLgQkhLO9aGciIS
+X-Google-Smtp-Source: AGHT+IEf6QUcADO0SVa0VNze/d3gfBDz4XgiCRrsEP4Mtdzlu5/Pp+jwbT52L8f+i0X0rsp+pwOYmQ==
+X-Received: by 2002:a05:600c:4691:b0:412:c809:5421 with SMTP id p17-20020a05600c469100b00412c8095421mr1539241wmo.2.1709302500276;
+        Fri, 01 Mar 2024 06:15:00 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id m9-20020a05600c3b0900b0041294d015fbsm5634372wms.40.2024.03.01.06.14.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 06:14:59 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 1 Mar 2024 15:14:58 +0100
+To: John Hubbard <jhubbard@nvidia.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Jiri Olsa <olsajiri@gmail.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, dwarves@vger.kernel.org
+Subject: Re: [PATCH] fix linux kernel BTF builds: increase max percpu
+ variables by 10x
+Message-ID: <ZeHi4qz8HqDSCC4H@krava>
+References: <20240228032142.396719-1-jhubbard@nvidia.com>
+ <Zd76zrhA4LAwA_WF@krava>
+ <856564cf-fba4-4473-bfa9-e9b03115abd1@oracle.com>
+ <983b98db-79c0-4178-b88f-61f39d147cf7@nvidia.com>
+ <34157878-c480-44bb-91d6-9024da329998@oracle.com>
+ <f248cf92-038c-480f-b077-f7d56ebc55bc@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMB2axOYHKLQhR9b50oVgvUDXeo573amqpiXRot51_JZQcFuiw@mail.gmail.com>
- <CAP01T76R0bqdNK+LkObuVTej_TRwEB9HnvwJaTTsRrr1Y8_WmA@mail.gmail.com>
- <878r34ejv1.fsf@toke.dk> <CAMB2axO3B-ziNt9AFM+Xkr1H0WQzzhaThi1PO-xKcGP3cNtxQQ@mail.gmail.com>
- <87le729h9l.fsf@toke.dk>
-In-Reply-To: <87le729h9l.fsf@toke.dk>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 1 Mar 2024 15:11:20 +0100
-Message-ID: <CAP01T76K7gsk=qyVGXkmk=8tZfKV==z62mFeurz-P7tQKWNAWw@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] bpf qdisc
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Amery Hung <ameryhung@gmail.com>, lsf-pc@lists.linux-foundation.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f248cf92-038c-480f-b077-f7d56ebc55bc@nvidia.com>
 
-On Fri, 1 Mar 2024 at 15:08, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
-com> wrote:
->
-> Amery Hung <ameryhung@gmail.com> writes:
->
-> > On Wed, Feb 28, 2024 at 6:36=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgense=
-n <toke@redhat.com> wrote:
-> >>
-> >> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-> >>
-> >> > On Mon, 26 Feb 2024 at 19:04, Amery Hung <ameryhung@gmail.com> wrote=
-:
-> >> >>
-> >> >> Hi all,
-> >> >>
-> >> >> I would like to discuss bpf qdisc in the BPF track. As we now try t=
-o
-> >> >> support bpf qdisc using struct_ops, we found some limitations of
-> >> >> bpf/struct_ops. While some have been discussed briefly on the maili=
-ng
-> >> >> list, we can discuss in more detail to make struct_ops a more
-> >> >> generic/palatable approach to replace kernel functions.
-> >> >>
-> >> >> In addition, I would like to discuss supporting adding kernel objec=
-ts
-> >> >> to bpf_list/rbtree, which may have performance benefits in some
-> >> >> applications and can improve the programming experience. The curren=
-t
-> >> >> bpf fq in the RFC has a 6% throughput loss compared to the native
-> >> >> counterpart due to memory allocation in enqueue() to store skb kptr=
-.
-> >> >> With a POC I wrote that allows adding skb to bpf_list, the throughp=
-ut
-> >> >> becomes comparable. We can discuss the approach and other potential
-> >> >> use cases.
-> >> >>
-> >> >
-> >> > When discussing this with Toke (Cc'd) long ago for the XDP queueing
-> >> > patch set, we discussed the same thing, in that the sk_buff already
-> >> > has space for a list or rbnode due to it getting queued in other
-> >> > layers (TCP OoO queue, qdiscs, etc.) so it would make sense to teach
-> >> > the verifier that it is a valid bpf_list_node and bpf_rb_node and
-> >> > allow inserting it as an element into a BPF list or rbtree. Back the=
-n
-> >> > we didn't add that as the posting only used the PIFO map.
-> >> >
-> >> > I think not only sk_buff, you can do a similar thing with xdp_buff a=
-s
-> >> > well.
-> >>
-> >> Yeah, I agree that allowing skbs to be inserted directly into a BPF
-> >> rbtree would make a lot of sense if it can be done safely. I am less
-> >> sure about xdp_frames, mostly for performance reasons, but if it does
-> >> turn out to be useful whichever mechanism we add for skbs should be
-> >> fairly straight forward to reuse.
-> >>
-> >> > The verifier side changes should be fairly minimal, just allowing th=
-e
-> >> > use of a known kernel type as the contained object in a list or
-> >> > rbtree, and the field pointing to this allowlisted list or rbnode.
-> >>
-> >> I think one additional concern here is how we ensure that an skb has
-> >> been correctly removed from any rbtrees it sits in before it is being
-> >> transmitted to another part of the stack?
-> >
-> > I think one solution is to disallow shared ownership of skb in
-> > multiple lists or rbtrees. That is, users should not be able to
-> > acquire the reference of an skb from the ctx more than once in
-> > ".enqueue" or using bpf_refcount_acquire().
->
-> Can the verifier enforce this, even across multiple enqueue/dequeue
-> calls? Not sure if acquiring a refcount ensures that the rbtree entry
-> has been cleared?
->
-> Basically, I'm worried about a dequeue() op that does something like:
->
-> skb =3D rbtree_head();
-> // skb->rbnode is not cleared
-> return skb; // stack will keep processing it
->
-> I'm a little fuzzy on how the bpf rbtree stuff works, though, so maybe
-> the verifier is already ensuring that a node cannot be read from a tree
-> without being properly cleared from it?
->
+On Thu, Feb 29, 2024 at 10:15:23AM -0800, John Hubbard wrote:
+> > ...
+> > Running
+> > 
+> > bpftool btf dump file vmlinux |grep "] VAR"
+> > 
+> 
+> $ bpftool btf dump file vmlinux |grep "] VAR" | wc -l
+> 4852
+> 
+> $ bpftool btf dump file vmlinux |grep "] VAR" | tail -5
+> [136994] VAR '_alloc_tag_cntr.9' type_id=703, linkage=static
+> [137003] VAR '_alloc_tag_cntr.5' type_id=703, linkage=static
+> [137004] VAR '_alloc_tag_cntr.7' type_id=703, linkage=static
+> [137005] VAR '_alloc_tag_cntr.17' type_id=703, linkage=static
+> [137018] VAR '_alloc_tag_cntr.14' type_id=703, linkage=static
+> 
+> > ...should give us a sense of what's going on. I only see 375 per-cpu
+> > variables when I do this so maybe there's something
+> > kernel-config-specific that might explain why you have so many more?
+> 
+> Yes, as mentioned earlier, this is specifically due to the .config.
+> The .config is a huge distro configuration that has a lot of modules
+> enabled.
 
-I think it should be ok. I'm not exactly sure what ownership scheme
-the BPF qdisc stuff will follow, but the verifier is able to
-distinguish between the cases where an skb would just be viewed but
-inserted in an rbtree, vs when it is fully owned by the program and
-not in the rbtree (say when removed from it). Therefore, it should be
-possible to ensure unique ownership at any point of time.
+could you share your .config? I tried with fedora .config and got 396
+per cpu variables, I wonder where this is coming from
 
-> -Toke
->
->
+thanks,
+jirka
 
