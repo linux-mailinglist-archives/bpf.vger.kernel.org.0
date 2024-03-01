@@ -1,146 +1,237 @@
-Return-Path: <bpf+bounces-23192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5138986EA53
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 21:28:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56DC486EAFE
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 22:16:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E564DB293AC
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 20:28:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 797DD1C22B9A
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 21:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DB43D0B6;
-	Fri,  1 Mar 2024 20:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A9C57323;
+	Fri,  1 Mar 2024 21:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HSqtTSRz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dv26pQpJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFF13CF75
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 20:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A3B3D546
+	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 21:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709324901; cv=none; b=ksxDTW4lYTmA6xBbyGGDVkBFoLw8xQzwTxDPFID+week0avbwOdPdx0BKkpydvhhgW2ZXMjLQtYfVKwccn73UlX9sCLMoPoBsRsH+h1iKDl6bXH0/FZoCoxGxBG1OMXuNmKI9k50IaO5QrjOtuSF4qv3T4cKm1FdS8mBJGweHkY=
+	t=1709327812; cv=none; b=NCLZrdys8EsCzIixtnpfi1fj91nAfr4oWvFOL8sOHb4pIcdhoJ4GcLLHCzBxTdk/JraKi4ef5gjHCTFrCp85nBK3QUIF4tDJY6WhdUTfBzbmsafCJ370Ic5PmbXyp1b6XHBByNuEZ2kQwRQffwzxNiLmLG9/f2Y4uFYDLu5u0og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709324901; c=relaxed/simple;
-	bh=wHQofL8oWcGOs9nOEbfXWWsoml5sk6uiT6DI39ueUz4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WnzBSyFGlYB1Bv7cF0wUGcj3o+SRVXJQczQmqPh55+ngjiWhDoPFPAwd48yoZWz9/pjIbq3sd03qYjl727Tn7D4DqSMj4sOrFUlax5e2Fp5m+FcjRLv2Hetex77aj68K9DG03n4AW8Ra8CBCOFLxyhC4KG7/57YxhI9A5vJV7vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HSqtTSRz; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1709327812; c=relaxed/simple;
+	bh=hByGuXSbMm0etBhv8CuvjvURdGCzZ3ecmH6Tr5c6i/E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S4zahiumyKyhwYciPJhiZYafCruq5LRDx2f/B76ie8nh0/UnGbwKsUu1s0vgwFYbuZX2KSKLRmp5mgUgwiq3qrCQYLMS4kzRrkiqMJDnHUj7LjQXMsXikAnUoTTj3/uM+YlXtY2E508lRSpMlqiSAoT4eqINJw+y/NYO9ZmCbNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dv26pQpJ; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc96f64c10so25481255ad.1
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 12:28:20 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412ce4f62f8so3003635e9.0
+        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 13:16:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709324899; x=1709929699; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709327808; x=1709932608; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d85mSHhOXIYr8Zb7pmgfSHs4D52LKsIa711XqIK68Xk=;
-        b=HSqtTSRzxWkx/Us6aLLDnl3t2geSyAFKBSEsPc/qf+zo70qVDeXLjVDNCPc2T1s4ML
-         OeeakyevFjQnXxOR1E1dJtF90Fld3CEEaegRkmtWts5wBRDWFYHWv2xaomO/31IzeHsT
-         znJS0/aMnWxTtKbO179n96U9JhkfLP4ZXZrRrRzizLK3jACtOSFMAVIpBRUT4Ism9HDH
-         1g4mWdtnIF9WKfFr1vZIgrYw2mAwYjovBoVZtgYK1nOIxGDEXvbWjdEV/z0yO/2qOmw2
-         oVEFjJGKW2rzFC1a2VvPEK5TefjM74wzlVbpvPhWqc3MKKb6ew0msRFfXtqD/qHLkwOt
-         SsPg==
+        bh=/zG6v+/TtLhyVmZn8LqdwA+2N2n3NKG9AGPzrrWfbrw=;
+        b=Dv26pQpJjYiytrzetV5G6y0XIXUy9sk1rh4h/gHPuuyhpZRfSXxQA3fcyzDus76MMs
+         DyVoKt9DbY/IKu85Qi/eNXU/R+Kycwst5chrCZ2TGaIwIrJPd9tTfp5+dRNxhuvXTaNJ
+         OCq6Vbz+J9bjDihneL3ReHsTeiSb8f+zya9S9ZwlSiHdoNehttBhn5EYHd2sgW4Y6A5D
+         rwIM1BPLRg1jGCQARTCIQt/bRnISz9zuAExlmLdKxz+vWexjLB+cZmVy0X1M0ASviB4N
+         K3c/xE97QEf6grtp8hwUl0azWY1StA4aQ9tVGpJ64h9szQDQn5+Ld/lCqe3FBiud72lz
+         n3jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709324899; x=1709929699;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709327808; x=1709932608;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=d85mSHhOXIYr8Zb7pmgfSHs4D52LKsIa711XqIK68Xk=;
-        b=f9hRH04IokUxni9ZDmvgLk1GkSlmt643lRjq/Toyw5ucQnDKAvBN2yBoUlWOwPfAo/
-         8fIC+vlLajiltK/c1QjeVH+ZvXA9k3kgLmNfod8RVUCoaf47aHYp5TvRNHjG3GCF1b5W
-         tU3upu8Wgd1GUY+cU3CU6ylOMCgs6+ji2hL8IgoYQgpW7c7WN/Hp5lKNjAz6+ocMJnd+
-         hkfkd/+1FWggz99nR+XeoOyq1mRiM1v/NxC6Fy5SzPeNkxV3+aaVvMOYKscqXZ/ztCvh
-         KfO34VB6vYrMRbNWeUa31sJWo+0Q8kTb53Qqm+gAdNukdvJvoSFu+GzNsAErSCaMJNSJ
-         e6Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMMjsOXbY5YaY2A/35ZggqtG0Zsdtj+unqlDmw2pUWz2Ab2f7AaDA3Qs10INf3bLOxjK0maf4sPNgZKEyHxc0wNCM/
-X-Gm-Message-State: AOJu0Yzy+vu4WBxosg13PtWn2OiZNbkLFNls03UM9LyRYmfkM6GTKBCT
-	mHT0ZmhLBN+nf5AA7dst+6qFjI4XWuvJqOkhZBsw8RvcJDGAUzoT
-X-Google-Smtp-Source: AGHT+IEN08O8UW9JewvSymMXj9YIhiV/w9z1UoIhyZ0FF2yjrTrFVctAaTNhvAHkgQT7esP82jRI+w==
-X-Received: by 2002:a17:903:22c1:b0:1dc:5dc0:9ba with SMTP id y1-20020a17090322c100b001dc5dc009bamr3679978plg.26.1709324899518;
-        Fri, 01 Mar 2024 12:28:19 -0800 (PST)
-Received: from valdaarhun.localnet ([223.233.80.13])
-        by smtp.gmail.com with ESMTPSA id z18-20020a170903019200b001d8be6d1ec4sm3879306plg.39.2024.03.01.12.28.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 12:28:19 -0800 (PST)
-From: Sahil <icegambit91@gmail.com>
-To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- Quentin Monnet <quentin@isovalent.com>
-Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Subject:
- Re: [PATCH bpf-next] bpftool: Mount bpffs on provided dir instead of parent
- dir
-Date: Sat, 02 Mar 2024 01:58:07 +0530
-Message-ID: <3290360.44csPzL39Z@valdaarhun>
-In-Reply-To: <d61e8537-e291-434c-b401-2b020b2b610d@isovalent.com>
-References:
- <20240229130543.17491-1-icegambit91@gmail.com>
- <d61e8537-e291-434c-b401-2b020b2b610d@isovalent.com>
+        bh=/zG6v+/TtLhyVmZn8LqdwA+2N2n3NKG9AGPzrrWfbrw=;
+        b=pK2ZotbCFgDirK5enxdAbiFGi6zGdTNaWngkUWpRlTaLVh5SJ2IegL6R2pzybhKvZR
+         uW0C/nHnde1DcJF0OC/AkWl8cUAYChtTo1DhDUTWaTODmkPkhtg1v91aATijos6IbE+9
+         dOmxi+lRaFDEQUHW2ImJVwiZQAY6QKALwkHE0E65lQIDoDHsCU021xUvCULyi4N30SYl
+         JilckhQAPn+O9ukMq82bIS8JSxI/PQCYkzSm9n1icUfIRRC7QcS5ZSSksxha7UXsU8ci
+         7djqz86O9G5GwCOhUARDiDu505IczufKPHJPFC7hmym1hGPNyIrjju9Z7fosee4oYYTY
+         Wmjg==
+X-Gm-Message-State: AOJu0YwTaMbMy0wjNlXQBvIhotNZyNJZSj/xN7yqMrwFBEhlnuIDimTx
+	3aoMh2q1zoPHzAfRAHGtRcF+yzFZrxi2fy8DgY2r5J8ujhX9I87KVzDoRPViso+SWF7W7x+hUgY
+	w1PAGJk+cyel/1DNbTpKAsHKEBzw=
+X-Google-Smtp-Source: AGHT+IGruIupzvmfVi4Mvl49kI+k7JIEAk0ilqYFKzN4JmcWBZW9Q12EhuPrcPaHjPyRRZ+iMPFUEf4Wx1GX2EYVG24=
+X-Received: by 2002:a05:600c:4748:b0:412:817c:364e with SMTP id
+ w8-20020a05600c474800b00412817c364emr2456816wmo.36.1709327808320; Fri, 01 Mar
+ 2024 13:16:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20240301033734.95939-1-alexei.starovoitov@gmail.com>
+ <20240301033734.95939-5-alexei.starovoitov@gmail.com> <65e230d4670d9_5dcfe20885@john.notmuch>
+In-Reply-To: <65e230d4670d9_5dcfe20885@john.notmuch>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 1 Mar 2024 13:16:36 -0800
+Message-ID: <CAADnVQKKFxioLAqLPNq7mvt4GOHpC0j80-SUYzYQkpno3d+49Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 4/4] selftests/bpf: Test may_goto
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Mar 1, 2024 at 11:47=E2=80=AFAM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+>
+> Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Add tests for may_goto instruction via cond_break macro.
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+> >  .../bpf/progs/verifier_iterating_callbacks.c  | 72 ++++++++++++++++++-
+> >  2 files changed, 70 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing=
+/selftests/bpf/DENYLIST.s390x
+> > index 1a63996c0304..c6c31b960810 100644
+> > --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+> > +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+> > @@ -3,3 +3,4 @@
+> >  exceptions                            # JIT does not support calling k=
+func bpf_throw                                (exceptions)
+> >  get_stack_raw_tp                         # user_stack corrupted user s=
+tack                                             (no backchain userspace)
+> >  stacktrace_build_id                      # compare_map_keys stackid_hm=
+ap vs. stackmap err -2 errno 2                   (?)
+> > +verifier_iter/cond_break
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callb=
+acks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+> > index 5905e036e0ea..8476dc47623f 100644
+> > --- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+> > @@ -1,8 +1,6 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> > -
+> > -#include <linux/bpf.h>
+> > -#include <bpf/bpf_helpers.h>
+> >  #include "bpf_misc.h"
+> > +#include "bpf_experimental.h"
+> >
+> >  struct {
+> >       __uint(type, BPF_MAP_TYPE_ARRAY);
+> > @@ -239,4 +237,72 @@ int bpf_loop_iter_limit_nested(void *unused)
+> >       return 1000 * a + b + c;
+> >  }
+> >
+> > +#define ARR_SZ 1000000
+> > +int zero;
+> > +char arr[ARR_SZ];
+> > +
+> > +SEC("socket")
+> > +__success __retval(0xd495cdc0)
+> > +int cond_break1(const void *ctx)
+> > +{
+> > +     unsigned int i;
+> > +     unsigned int sum =3D 0;
+> > +
+> > +     for (i =3D zero; i < ARR_SZ; cond_break, i++)
+> > +             sum +=3D i;
+> > +     for (i =3D zero; i < ARR_SZ; i++) {
+> > +             barrier_var(i);
+> > +             sum +=3D i + arr[i];
+> > +             cond_break;
+> > +     }
+> > +
+> > +     return sum;
+> > +}
+> > +
+> > +SEC("socket")
+> > +__success __retval(999000000)
+> > +int cond_break2(const void *ctx)
+> > +{
+> > +     int i, j;
+> > +     int sum =3D 0;
+> > +
+> > +     for (i =3D zero; i < 1000; cond_break, i++)
+> > +             for (j =3D zero; j < 1000; j++) {
+> > +                     sum +=3D i + j;
+> > +                     cond_break;
+> > +             }
+> > +
+> > +     return sum;
+> > +}
+> > +
+> > +static __noinline int loop(void)
+> > +{
+> > +     int i, sum =3D 0;
+> > +
+> > +     for (i =3D zero; i <=3D 1000000; i++, cond_break)
+> > +             sum +=3D i;
+> > +
+> > +     return sum;
+> > +}
+> > +
+> > +SEC("socket")
+> > +__success __retval(0x6a5a2920)
+> > +int cond_break3(const void *ctx)
+> > +{
+> > +     return loop();
+> > +}
+> > +
+> > +SEC("socket")
+> > +__success __retval(0x800000) /* BPF_MAX_LOOPS */
+> > +int cond_break4(const void *ctx)
+> > +{
+> > +     int cnt =3D 0;
+> > +
+> > +     for (;;) {
+> > +             cond_break;
+> > +             cnt++;
+> > +     }
+> > +     return cnt;
+> > +}
+>
+> I found this test illustrative to show how the cond_break which
 
-On Thursday, February 29, 2024 8:29:07 PM IST Quentin Monnet wrote:
-> [...]
-> Perhaps it would be clearer to split the logics of mount_bpffs_for_pin()
-> into two subfunctions, one for directories, one for file paths. This way
-> we would avoid to call malloc() and dirname() when "name" is already a
-> directory, and it would be easier to follow the different cases.
-> 
+ohh. I shouldn't have exposed this implementation detail
+in the test. I'll adjust it in the next revision.
 
-I was working on these changes here, and I have got a question. In the
-description of the github issue [1], one scenario is when the given directory
-does not exist but its parent directory is bpffs. In this scenario no mounting
-should be done.
+> is to me "feels" like a global hidden iterator appears to not
+> be reinitialized across calls?
+...
+> I guess this is by design but I sort of expected each
+> call to have its own context. It does make some sense to
+> limit main and all calls to a max loop count so not
+> complaining. Maybe consider adding the test? I at least
+> thought it helped.
 
-But to check whether the parent dir is bpffs, the malloc and dirname will still
-have to be done.
-
-In the file subfunction too, the malloc and dirname will have to be done if the
-given file does not already exist.
-
-If my understanding above is right, should the mount_bpffs_for_pin() function
-still be split?
-
-Assuming that the function is split into two subfunctions, there's another
-question that I have got.
-
->                if (is_dir && is_bpffs(name))
->                                return err;
-
-The above condition was added in commit 2a36c26fe3b8 (patch submission [2]).
-If the function is to be split into two subfunctions for dirs and files, is it ok to
-remove the above function entirely in the file subfunction?
-
-If "is_bpffs(name)" returns false, then that could imply that the file exists and its
-parent dir is not bpffs, or that the file does not exist and no comment can be
-made on the parent dir. In either case the malloc and dirname will have to be
-done.
-
-On the other hand if the file exists and is part of the bpffs then this condition
-will allow the function to exit immediately without doing a malloc and dirname.
-But this can be determined without the condition as well, since the file being
-part of the bpffs implies that the dir will be bpffs.
-
-Thanks,
-Sahil
-
-[1] https://github.com/libbpf/bpftool/issues/100
-[2] https://lore.kernel.org/bpf/1683197138-1894-1-git-send-email-yangpc@wangsu.com/
-
-
-
+At the moment each subprog has its own hidden counter,
+but we might have different limits per program type.
+Like sleepable might be allowed to loop longer.
+The actual limit of BPF_MAX_LOOPS is a random number.
+The bpf prog shouldn't rely on any particular loop count.
+Most likely we'll add a watchdog soon and will start cancelling
+bpf progs that were on cpu for more than a second
+regardless of number of iterations.
+Arena faults will be causing loops to terminate too.
+And so on.
+In other words "cond_break" is a contract between
+the verifier and the program. The verifier allows the
+program to loop assuming it's behaving well,
+but reserves the right to terminate it.
+So bpf author can assume that cond_break is a nop
+if their program is well formed.
+The loops with discoverable iteration count like
+for (i =3D 0; i < 1000; i++)
+are not really a target use case for cond_break.
+It's mainly for loops that may have unbounded looping,
+but should terminate quickly when code is correct.
+Like walking a link list or strlen().
 
