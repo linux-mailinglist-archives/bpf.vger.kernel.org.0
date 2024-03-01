@@ -1,150 +1,216 @@
-Return-Path: <bpf+bounces-23136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2171586E122
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 13:36:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5AA386E12D
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 13:39:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B4FE1F2107F
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 12:36:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C01AB22528
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 12:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D9E1841;
-	Fri,  1 Mar 2024 12:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDCD20300;
+	Fri,  1 Mar 2024 12:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="vmk0uPHp"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="MjR9JM5N"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE0110FF
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 12:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6CC138E
+	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 12:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709296587; cv=none; b=b85xvBM2Wx92mqX7G7VfeqDydsOTAUeYfILxNyBOgCYNjJDsffDOV6KQK548dc8eHFurm5W4mlh3Yjvy/mReEe43n4Wd+ixEgbduQM9iftaqEWqiDTrRg1ueUZsU/96MUNkfiB8/JLg23RM1XOUAVH3VlVOjGQUt8CDjEAAhSDg=
+	t=1709296777; cv=none; b=GwshOvAZ9og0dR2yg3xJPiG0jWYKkFKgZq5v1w8Zitz9acVLsifaUWEPJr7jRx4XujR8BgDgMwvlu2jeOcnwL14TO+o7+D3sXLkXihylvdbeqNXBVQjoRY6MR1wvB8DLrrSn/qOBJLzcXKOetqUTrEq9v8+3wUIbKs+mVvycak0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709296587; c=relaxed/simple;
-	bh=xsrGECSjGw1PlPZBoDn2pZPeXK4cECiDUMPDj/cTlLU=;
+	s=arc-20240116; t=1709296777; c=relaxed/simple;
+	bh=dNSD9QK1bvtQLgHc88xc2/f2r4NnHI7y5nn5gXliDjU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QNt0IWKzmv6oHc2pmiraFbU/gwtZlJy14po0D0mdrdyiVlBaFsoGyRvn80/dMyjcUNy2bxE14Qwb6MwSvijPNtfh4iueMinDsZd5h58im2VZbQWZZ8Pa/33bn8iP25SvX6f5X/py1wySU6QWRn5gJGHPeOvdSN3SDan3qb5E/Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=vmk0uPHp; arc=none smtp.client-ip=209.85.128.182
+	 To:Cc:Content-Type; b=IS/eP9CgASLL/eL0BrWtC08jqkIhn+jAHc+Ic+blubI4mExu4E8rlkYcjO20x9i1P+LBysCdirBvGb3W5Arfc5uuDgUwuIcoc5/SXUza3a+mTeZivwwn+oI3xmqtzTmKiylTvodmwNukSsKfXkBUFN/5fqNCXi7iqdE/CZChjJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=MjR9JM5N; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-608ceccb5f4so14275947b3.3
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 04:36:25 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607eefeea90so19046577b3.1
+        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 04:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709296585; x=1709901385; darn=vger.kernel.org;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709296775; x=1709901575; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H7HlSWsC5oSq1BRA+xkgQmaElcXOjSddWi6PBJxJbmc=;
-        b=vmk0uPHpXoKieYzNOUfPpzRqjNi9vb3jfaCs3dkWMUPb/POvHQxLKF8TsOqH8Ty4Gw
-         FbHnoGNx8MEoqOGucuPAPMTGKZYasl1ecemwUmXIL+LySnCVoDBqJB40sU/eDIGTuMec
-         BrguVZktMSjm8zOmaQV1GIiJoPSAS8YM0rmIboV4q1To9QSa7qTiL7iVNWKRAawbFE6g
-         uhEUAMekN+PdEZIiqjr1xlZotrY3TWkj6BXbJkmY5LSBq5fE1CAF/ecQyyZPfcO2KTov
-         a7JQRTKw/co29zejoJqGs3NV0mWHlpPf2MTFHPOLY2IkzQ6rkk8bbNtR1PpJblLKj9tY
-         Gp+g==
+        bh=4qXHErHZfMUXuGPvko97lD41XD8KkrxtxV708dC7EtI=;
+        b=MjR9JM5NkgAEIPHTZ9O29uUjgwDOOOORUXiPF6UdVO/ZT2GYr2UWqmuIAhmtN2K18m
+         N+FBQL1oo81UdmLNGty54m6fhNKv7pRkRM0fLKQ2luIB2iRKDE4G2xig+XZVe9TD3RHa
+         dYizSp0Js1JR+2J83Oe5+0wcFJNA4QzZpqIgysGpmqBq23gOlw5bjtHigPbQnJMUZUdj
+         Yw4WW72Rmk1mI6dT7g5utKnPbSHt7XJ7iNWbajr4yfFz68f/i+yczFQD7u9U1pulmJ8c
+         vH7hs+FyAQx+hlTCI+motQFdw57akOsIEcOWtdaeh6hARC2TYBjszQsJPhoqaLhJJia1
+         iZtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709296585; x=1709901385;
+        d=1e100.net; s=20230601; t=1709296775; x=1709901575;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H7HlSWsC5oSq1BRA+xkgQmaElcXOjSddWi6PBJxJbmc=;
-        b=A97QHlUz3/t1KdQdeNrxenD+cIj2dWPGNGiRXsojKsf4N9HqgWNYEqCBHu1N3YQMpW
-         b54wGKSvVl3BsgYTP++P938kcsrXdjnWfCb5kbX0QQ9H+RvHN0abccjN8zscXdTL1aM+
-         aRLuicsLEaKE7blENEnHGLrPqUGT57rlORh1D8VUtqSIOka2Mk3HJvbAwlFwY7Jm58KY
-         ozMCdaJF1vhsIXzr0xg4NGtJjjcdUMgYwoHTdjaIcFEmLz7crvEszmKNkHg/6Pxi2CN1
-         n8u7J1NOou7fDkcRFBOw1A5GOPplg12pSDVwq9eWrFwh1Ao3ZFVfsmhK4ZhYaQLdQjtW
-         lmIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUF1BZz7sfs+fKjY4i4HBcWcC3XGa5SzD9h4i7JlHE2Gp/CWM2fRIwyPnzbswC8ftK06WJ8RYRmiI6m40NSobrzE0L3
-X-Gm-Message-State: AOJu0YyVru5EqR2vJsrY5oyF5b87k8q9BSFjKHL8si7H5xwOPBNMzm1i
-	8CQWTNfDgMOJUWUh3WPFh4fFivyIcWpefyT4cGhEt+SMfgakQcB7/YjT3B5VPnlWap0GpfuDj82
-	NztskPT7CszrHXZA31twqYtQbAfswhS8N626Z
-X-Google-Smtp-Source: AGHT+IFzQEHDrZJKA1ImxAnOZIIUl0fPrAIdNzwGCOHKyBujENqIVsntijpQvJDrpV7rHwvh0G4w/Z8jE0GEncvX1Mw=
-X-Received: by 2002:a0d:df8e:0:b0:608:b83a:992c with SMTP id
- i136-20020a0ddf8e000000b00608b83a992cmr1413327ywe.23.1709296584805; Fri, 01
- Mar 2024 04:36:24 -0800 (PST)
+        bh=4qXHErHZfMUXuGPvko97lD41XD8KkrxtxV708dC7EtI=;
+        b=SveivZ4+mUYvm3+gr55lPhc3zh+Xa3bb+OYzCAScoPLhXsE/93d5VasAzUEoFZQh4G
+         1tAHTWOYIHvl3rPODYR9TpXsvsh4QpNli8D9XV3yUvqDRQCsJ7VEmp5xX6r+Tc6mjo0f
+         JmoXujC8Dbx3vqPH9B8r0PAcJQtCVJCJm3Yxp0uz6WoR3jGeX1SXJ1ekpKYjlzwxMS4u
+         sRKHP6un1jdFZBm2ct49Y39P4oqtsU/MwI5T+Ri9XL9oJP29QIGl7CcvPJpIoki1O1YU
+         MqCw9GI3YisocJYw1+JjgiUwmTDVWUWIepzYv7pzkWUWWFF7YvCrZv9vOSAtQctp7xkT
+         kJCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUkIP1P/P+2TKfeBlpp7zQ8mQ0A8Yme9v3RtAsPIScj3walctJepvDMrRtoUtLlaAYFNgRBckN5Wt4Itpi3NQOfhSx
+X-Gm-Message-State: AOJu0YwweIhP5/Msq+sTZVX1vCGVXtCq+tiV/CN5NzRH37ezDS4CVLtE
+	pp3hXZ/ADaLvnLMEC0e5vMKpPnEp7xfBIpL68Rjwzyy0ErItCRCjrqKT0b+4lIUub4PSE9RNVdW
+	ui1MMzqaykii1V/rm5mhRaYV+GFYvqDuTCslt
+X-Google-Smtp-Source: AGHT+IEgLXP9sL8n6K4ZcYsZ3CCmmhG7Bx+Mv5Ac+5Nl3JQLVZJHIQOPFS1w0wkyh0UBl0SX5Bhk2HfqdUSBYDTyG20=
+X-Received: by 2002:a81:5288:0:b0:608:e551:d9e9 with SMTP id
+ g130-20020a815288000000b00608e551d9e9mr1375983ywb.16.1709296775308; Fri, 01
+ Mar 2024 04:39:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225165447.156954-1-jhs@mojatatu.com> <65df6935db67e_2a12e2083b@john.notmuch>
- <332c7a04-edc8-40bd-9e8f-69c5d297e845@linux.dev>
-In-Reply-To: <332c7a04-edc8-40bd-9e8f-69c5d297e845@linux.dev>
+References: <20240225165447.156954-1-jhs@mojatatu.com> <20240225165447.156954-2-jhs@mojatatu.com>
+ <c771211a5e62dcaf2e2b7525788958036a4280fa.camel@redhat.com>
+ <CAM0EoM=t6gaY6d0EOtmMGwb=GtLjcuBqS3qjupeb_hi0HuODQA@mail.gmail.com> <0e2f24d44a565114f06c5015680b482ecc34d0e9.camel@redhat.com>
+In-Reply-To: <0e2f24d44a565114f06c5015680b482ecc34d0e9.camel@redhat.com>
 From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Fri, 1 Mar 2024 07:36:13 -0500
-Message-ID: <CAM0EoMmw25Kye4TTdFMAe8w-VgH++NkbNHcZcsfKR3diS28fSg@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 00/15] Introducing P4TC (series 1)
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: John Fastabend <john.fastabend@gmail.com>, deb.chatterjee@intel.com, 
-	anjali.singhai@intel.com, namrata.limaye@intel.com, tom@sipanda.io, 
-	mleitner@redhat.com, Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, 
-	tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, 
-	daniel@iogearbox.net, victor@mojatatu.com, pctammela@mojatatu.com, 
-	dan.daly@intel.com, andy.fingerhut@gmail.com, chris.sommers@keysight.com, 
-	mattyk@nvidia.com, bpf@vger.kernel.org, netdev@vger.kernel.org
+Date: Fri, 1 Mar 2024 07:39:24 -0500
+Message-ID: <CAM0EoMkE7GQiYsEyLVkMavtKSa86u4h6xT7oYDQRULKBid530w@mail.gmail.com>
+Subject: Re: [PATCH net-next v12 01/15] net: sched: act_api: Introduce P4
+ actions list
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
+	Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, tomasz.osinski@intel.com, 
+	jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, vladbu@nvidia.com, horms@kernel.org, 
+	khalidm@nvidia.com, toke@redhat.com, daniel@iogearbox.net, 
+	victor@mojatatu.com, pctammela@mojatatu.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 1, 2024 at 2:02=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
+On Fri, Mar 1, 2024 at 2:30=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wrot=
+e:
 >
-> On 2/28/24 9:11 AM, John Fastabend wrote:
-> >   - The kfuncs are mostly duplicates of map ops we already have in BPF =
-API.
-> >     The motivation by my read is to use netlink instead of bpf commands=
-. I
+> On Thu, 2024-02-29 at 13:21 -0500, Jamal Hadi Salim wrote:
+> > On Thu, Feb 29, 2024 at 10:05=E2=80=AFAM Paolo Abeni <pabeni@redhat.com=
+> wrote:
+> > >
+> > > On Sun, 2024-02-25 at 11:54 -0500, Jamal Hadi Salim wrote:
+> > > > In P4 we require to generate new actions "on the fly" based on the
+> > > > specified P4 action definition. P4 action kinds, like the pipeline
+> > > > they are attached to, must be per net namespace, as opposed to nati=
+ve
+> > > > action kinds which are global. For that reason, we chose to create =
+a
+> > > > separate structure to store P4 actions.
+> > > >
+> > > > Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> > > > Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> > > > Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> > > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > > > Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> > > > Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+> > > > Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+> > > > ---
+> > > >  include/net/act_api.h |   8 ++-
+> > > >  net/sched/act_api.c   | 123 +++++++++++++++++++++++++++++++++++++-=
+----
+> > > >  net/sched/cls_api.c   |   2 +-
+> > > >  3 files changed, 116 insertions(+), 17 deletions(-)
+> > > >
+> > > > diff --git a/include/net/act_api.h b/include/net/act_api.h
+> > > > index 77ee0c657..f22be14bb 100644
+> > > > --- a/include/net/act_api.h
+> > > > +++ b/include/net/act_api.h
+> > > > @@ -105,6 +105,7 @@ typedef void (*tc_action_priv_destructor)(void =
+*priv);
+> > > >
+> > > >  struct tc_action_ops {
+> > > >       struct list_head head;
+> > > > +     struct list_head p4_head;
+> > > >       char    kind[IFNAMSIZ];
+> > > >       enum tca_id  id; /* identifier should match kind */
+> > > >       unsigned int    net_id;
+> > > > @@ -199,10 +200,12 @@ int tcf_idr_check_alloc(struct tc_action_net =
+*tn, u32 *index,
+> > > >  int tcf_idr_release(struct tc_action *a, bool bind);
+> > > >
+> > > >  int tcf_register_action(struct tc_action_ops *a, struct pernet_ope=
+rations *ops);
+> > > > +int tcf_register_p4_action(struct net *net, struct tc_action_ops *=
+act);
+> > > >  int tcf_unregister_action(struct tc_action_ops *a,
+> > > >                         struct pernet_operations *ops);
+> > > >  #define NET_ACT_ALIAS_PREFIX "net-act-"
+> > > >  #define MODULE_ALIAS_NET_ACT(kind)   MODULE_ALIAS(NET_ACT_ALIAS_PR=
+EFIX kind)
+> > > > +void tcf_unregister_p4_action(struct net *net, struct tc_action_op=
+s *act);
+> > > >  int tcf_action_destroy(struct tc_action *actions[], int bind);
+> > > >  int tcf_action_exec(struct sk_buff *skb, struct tc_action **action=
+s,
+> > > >                   int nr_actions, struct tcf_result *res);
+> > > > @@ -210,8 +213,9 @@ int tcf_action_init(struct net *net, struct tcf=
+_proto *tp, struct nlattr *nla,
+> > > >                   struct nlattr *est,
+> > > >                   struct tc_action *actions[], int init_res[], size=
+_t *attr_size,
+> > > >                   u32 flags, u32 fl_flags, struct netlink_ext_ack *=
+extack);
+> > > > -struct tc_action_ops *tc_action_load_ops(struct nlattr *nla, u32 f=
+lags,
+> > > > -                                      struct netlink_ext_ack *exta=
+ck);
+> > > > +struct tc_action_ops *
+> > > > +tc_action_load_ops(struct net *net, struct nlattr *nla,
+> > > > +                u32 flags, struct netlink_ext_ack *extack);
+> > > >  struct tc_action *tcf_action_init_1(struct net *net, struct tcf_pr=
+oto *tp,
+> > > >                                   struct nlattr *nla, struct nlattr=
+ *est,
+> > > >                                   struct tc_action_ops *a_o, int *i=
+nit_res,
+> > > > diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+> > > > index 9ee622fb1..23ef394f2 100644
+> > > > --- a/net/sched/act_api.c
+> > > > +++ b/net/sched/act_api.c
+> > > > @@ -57,6 +57,40 @@ static void tcf_free_cookie_rcu(struct rcu_head =
+*p)
+> > > >       kfree(cookie);
+> > > >  }
+> > > >
+> > > > +static unsigned int p4_act_net_id;
+> > > > +
+> > > > +struct tcf_p4_act_net {
+> > > > +     struct list_head act_base;
+> > > > +     rwlock_t act_mod_lock;
+> > >
+> > > Note that rwlock in networking code is discouraged, as they have to b=
+e
+> > > unfair, see commit 0daf07e527095e64ee8927ce297ab626643e9f51.
+> > >
+> > > In this specific case I think there should be no problems, as is
+> > > extremely hard/impossible to have serious contention on the write
+> > > side,. Also there is already an existing rwlock nearby, no not a
+> > > blocker but IMHO worthy to be noted.
+> > >
+> >
+> > Sure - we can replace it. What's the preference? Spinlock?
 >
-> I also have similar thought on the kfuncs (create/update/delete) which is=
- mostly
-> bpf map ops. It could have one single kfunc to allocate a kernel specific=
- p4
-> entry/object and then store that in a bpf map. With the bpf_rbtree, bpf_l=
-ist,
-> and other recent advancements, it should be able to describe them in a bp=
-f map.
-> The reply in v9 was that the p4 table will also be used in the future HW
-> piece/driver but the HW piece is not ready yet, bpf is the only consumer =
-of the
-> kernel p4 table now and this makes mimicking the bpf map api to kfuncs no=
-t
-> convincing. bpf "tc / xdp" program uses netlink to attach/detach and the =
-policy
-> also stays in the bpf map.
+> Plain spinlock will work. Using spinlock + RCU should be quite straight
+> forward and will provide faster lookup.
 >
 
-It's a lot more complex than just attaching/detaching. Our control
-plane uses netlink (regardless of whether it is offloaded or not) for
-all object controls (not just table entries) for the many reasons that
-have been stated in the cover letters since the beginning. I
-unfortunately took out some of the text after v10 to try and shorten
-the text. I will be adding it back. If you cant find it i could
-cutnpaste and send privately.
+rcu + spinlock sounds like a bit of overkill but we'll look into it.
 
 cheers,
 jamal
 
-> When there is a HW piece that consumes the p4 table, that will be a bette=
-r time
-> to discuss the kfunc interface.
+> Cheers,
 >
-> >     don't agree with this, optimizing for some low level debug a develo=
-per
-> >     uses is the wrong design space. Actual users should not be deployin=
-g
-> >     this via ssh into boxes. The workflow will not scale and really we =
-need
-> >     tooling and infra to land P4 programs across the network. This is o=
-rders
-> >     of more pain if its an endpoint solution and not a middlebox/switch
-> >     solution. As a switch solution I don't see how p4tc sw scales to ev=
-en TOR
-> >     packet rates. So you need tooling on top and user interact with the
-> >     tooling not the Linux widget/debugger at the bottom.
+> Paolo
 >
 
