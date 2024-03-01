@@ -1,90 +1,105 @@
-Return-Path: <bpf+bounces-23155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA9D86E5F0
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 17:44:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1A8286E692
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 18:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D7FB1C22DC1
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 16:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98E1E282F25
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 17:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7263D996;
-	Fri,  1 Mar 2024 16:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9D14404;
+	Fri,  1 Mar 2024 17:00:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="3YIQ5ysi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PTD70NeR"
 X-Original-To: bpf@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730203D3A5;
-	Fri,  1 Mar 2024 16:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A19259B;
+	Fri,  1 Mar 2024 17:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709311132; cv=none; b=bH7v/8yhu3KTQb8vHdtywovflEhSxlqGpcZXW+mdrPN3K9XxRG3NLUfqzdmZdcV855EAHX4jWXIONaXEIsJFhzAYfXEdChVjKx6K84+t8H7IOjVcQPNHm0B/WXXXta+P/gx3coGkIU4mugGvFGVfesk6pL8lF+Z8Ysjnt5QZNbs=
+	t=1709312422; cv=none; b=C4FQwhBEVfJR26xOJB3+GZKdGbpZKGU5+J7+YZ6U0p1gY+ZBmlXXbT3AK07cfRhJba/Jjt94Ef/hsZ4tFvSvNWvgqmtADEk7Qh7uv0Hz3kcLOsB2BspcKy8f84rSy3Zefuw+f+K1quEcBZo6mperUsv0cRQtL2rNwV+UjdeiwBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709311132; c=relaxed/simple;
-	bh=eL5TPpLNmcEF7z0b5oJm33J07+5avJ6cc/lCJ6PzZho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XF30BKT9jHpIxMXyOcdQ8XQwzg3Y0F/DkOr/w4jT9qg/caR5Jerw1d/tQZAsQbxVJ0afV7qbycBagn8QdzSjUMMEdX2UCJ0midJ/39DE2RfSl96YQ8PmNWDktPAYsppkepYzCMowfmcC3ML4MURHTgziYcvVykNfiNnZTmA/NPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=3YIQ5ysi; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=xF6ky7oGAXgVDPcd5CPKgoDjtno54lJ8yY7B4W/SIV0=; b=3YIQ5ysiupGcrc8xo42VBnaT79
-	x4yFp4+0mNY9jAn2RkFxS5FMXLbF27o+73niCZhgoHwbKhuyStc1I5vwGAcNBq99krOB7wfV6eeBx
-	DKIPEHDZTnnSOPUXdB0kztGSw+DDhdqjL/jpQYK67rqOqnOcAFEbvocSpreTUBFv2uH0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rg5uS-0099W4-Ff; Fri, 01 Mar 2024 17:38:56 +0100
-Date: Fri, 1 Mar 2024 17:38:56 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Julien Panis <jpanis@baylibre.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/2] net: ethernet: ti: am65-cpsw: Add minimal XDP
- support
-Message-ID: <356f4dd4-eb0e-49fa-a9eb-4dffbe5c7e7c@lunn.ch>
-References: <20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com>
- <20240223-am65-cpsw-xdp-basic-v2-2-01c6caacabb6@baylibre.com>
+	s=arc-20240116; t=1709312422; c=relaxed/simple;
+	bh=WnT23L2kMGF/z8OkyEJRwnkTu72ubHKAZsAR3RXKUF8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bYKaRUxYDpzbdtHSpqEizDnd1yImlYmE5wjgQ6coE0hR2SMXBxJkBt9y2ortfvbdIkUgphhGrwD8KLe4Lm0JCyMe1QqULuBYfGTit1Y35zRfKgmVa7BXtD70HeodLjI0xKOu3qgJQtIrrUJVHTOPm5xAK7lgSApV35hdaIQa01o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PTD70NeR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44F27C433C7;
+	Fri,  1 Mar 2024 17:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709312422;
+	bh=WnT23L2kMGF/z8OkyEJRwnkTu72ubHKAZsAR3RXKUF8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PTD70NeRq/X/Xqqg5AIiIc7RIiJWd4zOSIV7okPQgZS4NCmnqRQO4r+BAzdSLGtlm
+	 j1rMgc9BaiZuJ5G5an6Fv89Y7kBSbPgvzDYdED8tepiivcFbQDes05828SckLUh+ng
+	 uZSsTt0sPa3bLr704bI1lIx05VMT93j9nla9ipoFkSheWjm3RzpZe8JM3NoOzIs3Xw
+	 8Z4KRjVUzY9NaYYzHH7VxZcI5qtckSAV9GcrGnJoWGH7VDunDvJ1vdASEVEBSNMaKb
+	 jSYm8dMQ96i5sAn+ru1dALx6XWAht/sBo5Y0h1R8ccg9/h+z2xNNdVCA7BW4iNKF6Q
+	 uHsU4ylWQpuaw==
+Date: Fri, 1 Mar 2024 09:00:20 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Tom Herbert <tom@sipanda.io>, John Fastabend <john.fastabend@gmail.com>,
+ "Singhai, Anjali" <anjali.singhai@intel.com>, Paolo Abeni
+ <pabeni@redhat.com>, Linux Kernel Network Developers
+ <netdev@vger.kernel.org>, "Chatterjee, Deb" <deb.chatterjee@intel.com>,
+ "Limaye, Namrata" <namrata.limaye@intel.com>, mleitner@redhat.com,
+ Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, "Osinski, Tomasz"
+ <tomasz.osinski@intel.com>, Jiri Pirko <jiri@resnulli.us>, Cong Wang
+ <xiyou.wangcong@gmail.com>, "David S . Miller" <davem@davemloft.net>,
+ edumazet@google.com, Vlad Buslov <vladbu@nvidia.com>, horms@kernel.org,
+ khalidm@nvidia.com, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=
+ <toke@redhat.com>, Daniel Borkmann <daniel@iogearbox.net>, Victor Nogueira
+ <victor@mojatatu.com>, "Tammela, Pedro" <pctammela@mojatatu.com>, "Daly,
+ Dan" <dan.daly@intel.com>, andy.fingerhut@gmail.com, "Sommers, Chris"
+ <chris.sommers@keysight.com>, mattyk@nvidia.com, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v12 00/15] Introducing P4TC (series 1)
+Message-ID: <20240301090020.7c9ebc1d@kernel.org>
+In-Reply-To: <CAOuuhY8qbsYCjdUYUZv8J3jz8HGXmtxLmTDP6LKgN5uRVZwMnQ@mail.gmail.com>
+References: <20240225165447.156954-1-jhs@mojatatu.com>
+	<b28f2f7900dc7bad129ad67621b2f7746c3b2e18.camel@redhat.com>
+	<CO1PR11MB49931E501B20F32681F917CD935F2@CO1PR11MB4993.namprd11.prod.outlook.com>
+	<65e106305ad8b_43ad820892@john.notmuch>
+	<CAM0EoM=r1UDnkp-csPdrz6nBt7o3fHUncXKnO7tB_rcZAcbrDg@mail.gmail.com>
+	<CAOuuhY8qbsYCjdUYUZv8J3jz8HGXmtxLmTDP6LKgN5uRVZwMnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223-am65-cpsw-xdp-basic-v2-2-01c6caacabb6@baylibre.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 01, 2024 at 04:02:53PM +0100, Julien Panis wrote:
-> This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
-> Ethernet driver. The following features are implemented:
-> - NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
-> - NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
-> - NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
+On Thu, 29 Feb 2024 19:00:50 -0800 Tom Herbert wrote:
+> > I want to emphasize again these patches are about the P4 s/w pipeline
+> > that is intended to work seamlessly with hw offload. If you are
+> > interested in h/w offload and want to contribute just show up at the
+> > meetings - they are open to all. The current offloadable piece is the
+> > match-action tables. The P4 specs may change to include parsers in the
+> > future or other objects etc (but not sure why we should discuss this
+> > in the thread).
 > 
-> The page pool memory model is used to get better performance.
+> Pardon my ignorance, but doesn't P4 want to be compiled to a backend
+> target? How does going through TC make this seamless?
 
-Do you have any benchmark numbers? It should help with none XDP
-traffic as well. So maybe iperf numbers before and after?
++1
 
-	Andrew
+My intuition is that for offload the device would be programmed at
+start-of-day / probe. By loading the compiled P4 from /lib/firmware.
+Then the _device_ tells the kernel what tables and parser graph it's
+got.
+
+Plus, if we're talking about offloads, aren't we getting back into
+the same controversies we had when merging OvS (not that I was around).
+The "standalone stack to the side" problem. Some of the tables in the
+pipeline may be for routing, not ACLs. Should they be fed from the
+routing stack? How is that integration going to work? The parsing
+graph feels a bit like global device configuration, not a piece of
+functionality that should sit under sub-sub-system in the corner.
 
