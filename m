@@ -1,269 +1,146 @@
-Return-Path: <bpf+bounces-23191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA5286EA11
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 21:08:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5138986EA53
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 21:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC3F81C23562
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 20:08:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E564DB293AC
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 20:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8993BBCD;
-	Fri,  1 Mar 2024 20:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DB43D0B6;
+	Fri,  1 Mar 2024 20:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E6+xr+el"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HSqtTSRz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCCC39ACE
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 20:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFF13CF75
+	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 20:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709323691; cv=none; b=kS3K0GFxKYK1BSxXI/8TRggUK0osTUf9aJmtR4fgWVGSl3cNndzF6VtbPDwuUEA2osqC7/z+OJLOxDMwlar5+wZgaRFvK1RtAkJvnsEoC6+IRwzfii9kDN22EEZNXBNVaLC47m1oalej/c8FP/N4cbXgOCLg1uUrSyP9IdmGx7s=
+	t=1709324901; cv=none; b=ksxDTW4lYTmA6xBbyGGDVkBFoLw8xQzwTxDPFID+week0avbwOdPdx0BKkpydvhhgW2ZXMjLQtYfVKwccn73UlX9sCLMoPoBsRsH+h1iKDl6bXH0/FZoCoxGxBG1OMXuNmKI9k50IaO5QrjOtuSF4qv3T4cKm1FdS8mBJGweHkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709323691; c=relaxed/simple;
-	bh=XZEoAW8j7FK4rHi/5y9R42ofrDeXGYmsy5nR0CWZZSA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FtFcX5MClQs8KIrkSuyqyiqSKxYJb2UZM2chKORSNvl2ooAPSmXNAKKsCEMhmrdAplUygWhfs5WzUzwbFlY9TNSqn/lKRLlKhqhcMWlwvQsLVktfiRJEWPoEDCW7PH1RjfuFxz+76O9MUrTB1au1dVAngk/ntSg4316wcrETDJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E6+xr+el; arc=none smtp.client-ip=209.85.218.68
+	s=arc-20240116; t=1709324901; c=relaxed/simple;
+	bh=wHQofL8oWcGOs9nOEbfXWWsoml5sk6uiT6DI39ueUz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WnzBSyFGlYB1Bv7cF0wUGcj3o+SRVXJQczQmqPh55+ngjiWhDoPFPAwd48yoZWz9/pjIbq3sd03qYjl727Tn7D4DqSMj4sOrFUlax5e2Fp5m+FcjRLv2Hetex77aj68K9DG03n4AW8Ra8CBCOFLxyhC4KG7/57YxhI9A5vJV7vI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HSqtTSRz; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a43dba50bb7so365451866b.0
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 12:08:09 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc96f64c10so25481255ad.1
+        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 12:28:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709323688; x=1709928488; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709324899; x=1709929699; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B4BWPIKnXHnscFGVDRM4lkRvF4ibCzbhbqTlfTTMLZM=;
-        b=E6+xr+elYroJSwllL8lWz6Av/tuZcBjkKHNmpsiGQ/+BeLyoXtd8gWFrb1YFT61EKN
-         MLmtGXJCR/wBVWMcvFt8LS1F46cvR0YVl47GXMf0diYoUjcTOjOEYoWzPqH5pmaHEjV0
-         ZxuUWPQYSZPVKw5HO/IZLZPRranzkm6NvvtkYKGq4mdz8id08jCCSpNGfkWqCFRrJaPI
-         URFL6FACWZwpWM0KDUBGlqZ228pI1hRLlreu1Tnf2TX2SAcRP+We2DSuz+kKT9Iet+/I
-         9ZNkxvAbnC1VKmizoYB+tUJnvIe28WKWksIN/WrZTQYyHhVQzxAdMtuN2jlh5/qsOK1r
-         Hxuw==
+        bh=d85mSHhOXIYr8Zb7pmgfSHs4D52LKsIa711XqIK68Xk=;
+        b=HSqtTSRzxWkx/Us6aLLDnl3t2geSyAFKBSEsPc/qf+zo70qVDeXLjVDNCPc2T1s4ML
+         OeeakyevFjQnXxOR1E1dJtF90Fld3CEEaegRkmtWts5wBRDWFYHWv2xaomO/31IzeHsT
+         znJS0/aMnWxTtKbO179n96U9JhkfLP4ZXZrRrRzizLK3jACtOSFMAVIpBRUT4Ism9HDH
+         1g4mWdtnIF9WKfFr1vZIgrYw2mAwYjovBoVZtgYK1nOIxGDEXvbWjdEV/z0yO/2qOmw2
+         oVEFjJGKW2rzFC1a2VvPEK5TefjM74wzlVbpvPhWqc3MKKb6ew0msRFfXtqD/qHLkwOt
+         SsPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709323688; x=1709928488;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709324899; x=1709929699;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B4BWPIKnXHnscFGVDRM4lkRvF4ibCzbhbqTlfTTMLZM=;
-        b=dd7k5fJHWzfgElG1C0e86xXv6KHfOF8khnpHclKPHnlVdCtdXxYC1mPyIIyhu+Ulj0
-         JNy67Qu9r+gyBZtzNPzb67jmdy3KtNYtdcThHFaBwvV61/qpPXnCmvlV9xRfUhz08nta
-         h7R3/TvST/Xsnu+0Khr/0h+6Hl/OzDy0Kg0XX8Mlfd1rdCfvFnHxynAJs24bzPjQiHga
-         C/7EBTphgMMyZdG0o6fl3ZVi1RjcRxZ9fidvUsBY0aoWhUszreFK/SDaFpVwkxAXevpe
-         QMYEtHOUoNcbrredpNkvYXTrM0xuzukMXsGl0dCfLRttxQVhmzvLL+p3q6NzDarH8f9h
-         weHg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFC5ucoxkdJ8Z3kzVby9GsR1hG6pWWS1VSRvZmR18g78tPV+sfBYw9KDvwN9WST3LcwTv++VyalGVCbP/9vfUgNtxc
-X-Gm-Message-State: AOJu0YxYL4nCwq6ipH7Z3oP8uJvRMkbac6TNHjovY7NuiEmaOKPQ0+jc
-	71orrAqf+rIYG2Qf6c1LxPfYcGav2BQrZZn/vV1JUOnu+RjycLNMycEUQ5nAjPa6EaxyXg94Og2
-	8amV9qiHIvyyJEt5EIkx4HBoC4mE=
-X-Google-Smtp-Source: AGHT+IEAtKUTikTcgrs3nIYZELTweg8gi0F6iiIc2XdjXV5xwoYMkOPsqgYHCRGvBZ3KRMhAakSWGLx/krA2XYKzmcw=
-X-Received: by 2002:a17:906:5f90:b0:a44:29a4:46fb with SMTP id
- a16-20020a1709065f9000b00a4429a446fbmr1933664eju.16.1709323688018; Fri, 01
- Mar 2024 12:08:08 -0800 (PST)
+        bh=d85mSHhOXIYr8Zb7pmgfSHs4D52LKsIa711XqIK68Xk=;
+        b=f9hRH04IokUxni9ZDmvgLk1GkSlmt643lRjq/Toyw5ucQnDKAvBN2yBoUlWOwPfAo/
+         8fIC+vlLajiltK/c1QjeVH+ZvXA9k3kgLmNfod8RVUCoaf47aHYp5TvRNHjG3GCF1b5W
+         tU3upu8Wgd1GUY+cU3CU6ylOMCgs6+ji2hL8IgoYQgpW7c7WN/Hp5lKNjAz6+ocMJnd+
+         hkfkd/+1FWggz99nR+XeoOyq1mRiM1v/NxC6Fy5SzPeNkxV3+aaVvMOYKscqXZ/ztCvh
+         KfO34VB6vYrMRbNWeUa31sJWo+0Q8kTb53Qqm+gAdNukdvJvoSFu+GzNsAErSCaMJNSJ
+         e6Dw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMMjsOXbY5YaY2A/35ZggqtG0Zsdtj+unqlDmw2pUWz2Ab2f7AaDA3Qs10INf3bLOxjK0maf4sPNgZKEyHxc0wNCM/
+X-Gm-Message-State: AOJu0Yzy+vu4WBxosg13PtWn2OiZNbkLFNls03UM9LyRYmfkM6GTKBCT
+	mHT0ZmhLBN+nf5AA7dst+6qFjI4XWuvJqOkhZBsw8RvcJDGAUzoT
+X-Google-Smtp-Source: AGHT+IEN08O8UW9JewvSymMXj9YIhiV/w9z1UoIhyZ0FF2yjrTrFVctAaTNhvAHkgQT7esP82jRI+w==
+X-Received: by 2002:a17:903:22c1:b0:1dc:5dc0:9ba with SMTP id y1-20020a17090322c100b001dc5dc009bamr3679978plg.26.1709324899518;
+        Fri, 01 Mar 2024 12:28:19 -0800 (PST)
+Received: from valdaarhun.localnet ([223.233.80.13])
+        by smtp.gmail.com with ESMTPSA id z18-20020a170903019200b001d8be6d1ec4sm3879306plg.39.2024.03.01.12.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 12:28:19 -0800 (PST)
+From: Sahil <icegambit91@gmail.com>
+To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ Quentin Monnet <quentin@isovalent.com>
+Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+Subject:
+ Re: [PATCH bpf-next] bpftool: Mount bpffs on provided dir instead of parent
+ dir
+Date: Sat, 02 Mar 2024 01:58:07 +0530
+Message-ID: <3290360.44csPzL39Z@valdaarhun>
+In-Reply-To: <d61e8537-e291-434c-b401-2b020b2b610d@isovalent.com>
+References:
+ <20240229130543.17491-1-icegambit91@gmail.com>
+ <d61e8537-e291-434c-b401-2b020b2b610d@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMB2axOYHKLQhR9b50oVgvUDXeo573amqpiXRot51_JZQcFuiw@mail.gmail.com>
- <CAP01T76R0bqdNK+LkObuVTej_TRwEB9HnvwJaTTsRrr1Y8_WmA@mail.gmail.com>
- <878r34ejv1.fsf@toke.dk> <CAMB2axO3B-ziNt9AFM+Xkr1H0WQzzhaThi1PO-xKcGP3cNtxQQ@mail.gmail.com>
- <87le729h9l.fsf@toke.dk> <CAMB2axOvfVfFFrmAkJanpJN8-W1j+XmuJcsgzvd-9WRWeqrCEw@mail.gmail.com>
- <CAP01T74B54OXbnk9eAzLvhQJWEc=Q50ys66zS7uMpDbVG_o2cw@mail.gmail.com> <CAMB2axPj5_a=s=iVqy+BfrWdnK9H4mzganUHYNK_oMxD7VTTsw@mail.gmail.com>
-In-Reply-To: <CAMB2axPj5_a=s=iVqy+BfrWdnK9H4mzganUHYNK_oMxD7VTTsw@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 1 Mar 2024 21:07:31 +0100
-Message-ID: <CAP01T77a-Tjf9z6Td8-GjnH5t3O5gQMBeic459TUtO+s3HxMAQ@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] bpf qdisc
-To: Amery Hung <ameryhung@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, 1 Mar 2024 at 20:28, Amery Hung <ameryhung@gmail.com> wrote:
->
-> On Fri, Mar 1, 2024 at 7:06=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gm=
-ail.com> wrote:
-> >
-> > On Fri, 1 Mar 2024 at 16:01, Amery Hung <ameryhung@gmail.com> wrote:
-> > >
-> > > On Fri, Mar 1, 2024 at 6:08=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgens=
-en <toke@redhat.com> wrote:
-> > > >
-> > > > Amery Hung <ameryhung@gmail.com> writes:
-> > > >
-> > > > > On Wed, Feb 28, 2024 at 6:36=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8=
-rgensen <toke@redhat.com> wrote:
-> > > > >>
-> > > > >> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-> > > > >>
-> > > > >> > On Mon, 26 Feb 2024 at 19:04, Amery Hung <ameryhung@gmail.com>=
- wrote:
-> > > > >> >>
-> > > > >> >> Hi all,
-> > > > >> >>
-> > > > >> >> I would like to discuss bpf qdisc in the BPF track. As we now=
- try to
-> > > > >> >> support bpf qdisc using struct_ops, we found some limitations=
- of
-> > > > >> >> bpf/struct_ops. While some have been discussed briefly on the=
- mailing
-> > > > >> >> list, we can discuss in more detail to make struct_ops a more
-> > > > >> >> generic/palatable approach to replace kernel functions.
-> > > > >> >>
-> > > > >> >> In addition, I would like to discuss supporting adding kernel=
- objects
-> > > > >> >> to bpf_list/rbtree, which may have performance benefits in so=
-me
-> > > > >> >> applications and can improve the programming experience. The =
-current
-> > > > >> >> bpf fq in the RFC has a 6% throughput loss compared to the na=
-tive
-> > > > >> >> counterpart due to memory allocation in enqueue() to store sk=
-b kptr.
-> > > > >> >> With a POC I wrote that allows adding skb to bpf_list, the th=
-roughput
-> > > > >> >> becomes comparable. We can discuss the approach and other pot=
-ential
-> > > > >> >> use cases.
-> > > > >> >>
-> > > > >> >
-> > > > >> > When discussing this with Toke (Cc'd) long ago for the XDP que=
-ueing
-> > > > >> > patch set, we discussed the same thing, in that the sk_buff al=
-ready
-> > > > >> > has space for a list or rbnode due to it getting queued in oth=
-er
-> > > > >> > layers (TCP OoO queue, qdiscs, etc.) so it would make sense to=
- teach
-> > > > >> > the verifier that it is a valid bpf_list_node and bpf_rb_node =
-and
-> > > > >> > allow inserting it as an element into a BPF list or rbtree. Ba=
-ck then
-> > > > >> > we didn't add that as the posting only used the PIFO map.
-> > > > >> >
-> > > > >> > I think not only sk_buff, you can do a similar thing with xdp_=
-buff as
-> > > > >> > well.
-> > > > >>
-> > > > >> Yeah, I agree that allowing skbs to be inserted directly into a =
-BPF
-> > > > >> rbtree would make a lot of sense if it can be done safely. I am =
-less
-> > > > >> sure about xdp_frames, mostly for performance reasons, but if it=
- does
-> > > > >> turn out to be useful whichever mechanism we add for skbs should=
- be
-> > > > >> fairly straight forward to reuse.
-> > > > >>
-> > > > >> > The verifier side changes should be fairly minimal, just allow=
-ing the
-> > > > >> > use of a known kernel type as the contained object in a list o=
-r
-> > > > >> > rbtree, and the field pointing to this allowlisted list or rbn=
-ode.
-> > > > >>
-> > > > >> I think one additional concern here is how we ensure that an skb=
- has
-> > > > >> been correctly removed from any rbtrees it sits in before it is =
-being
-> > > > >> transmitted to another part of the stack?
-> > > > >
-> > > > > I think one solution is to disallow shared ownership of skb in
-> > > > > multiple lists or rbtrees. That is, users should not be able to
-> > > > > acquire the reference of an skb from the ctx more than once in
-> > > > > ".enqueue" or using bpf_refcount_acquire().
-> > > >
-> > > > Can the verifier enforce this, even across multiple enqueue/dequeue
-> > > > calls? Not sure if acquiring a refcount ensures that the rbtree ent=
-ry
-> > > > has been cleared?
-> > > >
-> > > > Basically, I'm worried about a dequeue() op that does something lik=
-e:
-> > > >
-> > > > skb =3D rbtree_head();
-> > > > // skb->rbnode is not cleared
-> > > > return skb; // stack will keep processing it
-> > > >
-> > > > I'm a little fuzzy on how the bpf rbtree stuff works, though, so ma=
-ybe
-> > > > the verifier is already ensuring that a node cannot be read from a =
-tree
-> > > > without being properly cleared from it?
-> > > >
-> > >
-> > > I see what you are saying now, and thanks Kumar for the clarification=
-!
-> > >
-> > > I was thinking about how to prevent an skb from being added to lists
-> > > and rbtrees at the same time, since list and rbnode share the same
-> > > space. Hence the suggestion.
-> > >
-> >
-> > In BPF qdisc programs, you could teach the verifier that the skb has
-> > reference semantics (ref_obj_id > 0),
-> > in such a case once you push it into a list or rbtree, the program
-> > will lose ownership of the skb and all pointers same as the skb will
-> > be marked invalid.
-> > You could use some peek helper to look at it, but will never have an
-> > skb with program ownership until you pop it back from a list or
-> > rbtree.
-> >
->
-> This part makes sense. In the enqueue() op of bpf qdisc, I use a kfunc
-> to acquire an skb kptr (ref_obj_id > 0) from the skb in ctx for now.
-> Martin suggested tracking reads from ctx and assigning ref_obj_id.
->
-> However, either way, if users can do this multiple times in one
-> enqueue() call like below, they can acquire multiple references to the
-> same skb and put them on different lists/rbtrees. This is what I'd
-> like to avoid.
->
-> SEC("struct_ops/bpf_fifo_enqueue")
-> int BPF_PROG(bpf_fifo_enqueue, struct sk_buff *skb, struct Qdisc *sch,
-> struct bpf_sk_buff_ptr *to_free)
-> {
->         ...
->         skb_kptr_a =3D bpf_skb_acquire(skb);
->         skb_kptr_b =3D bpf_skb_acquire(skb);
+Hi,
 
-Yeah, this acquire kfunc is the root cause. That basically is a sign
-that 'multiple references are ok' even though that's not the case.
-It would have been the least intrusive way to allow skb kptrs, but it
-wouldn't work well to enforce unique ownership of the skb.
+On Thursday, February 29, 2024 8:29:07 PM IST Quentin Monnet wrote:
+> [...]
+> Perhaps it would be clearer to split the logics of mount_bpffs_for_pin()
+> into two subfunctions, one for directories, one for file paths. This way
+> we would avoid to call malloc() and dirname() when "name" is already a
+> directory, and it would be easier to follow the different cases.
+> 
 
-Instead of this, we could teach the verifier that a struct ops
-argument can be an acquired pointer being passed as a parameter to the
-BPF program.
-Then, on entry into the program, it would have a reference state
-created for it and the corresponding ref_obj_id be assigned to that
-when loading it from ctx.
-When the reference state goes away, loading it again from ctx will
-just mark it as an unknown scalar or return an error.
+I was working on these changes here, and I have got a question. In the
+description of the github issue [1], one scenario is when the given directory
+does not exist but its parent directory is bpffs. In this scenario no mounting
+should be done.
 
-Then, you can only push the skb into a list or rbtree once.
+But to check whether the parent dir is bpffs, the malloc and dirname will still
+have to be done.
 
->
->         bpf_list_push_back(&list_1, skb_kptr_a->bpf_list);
->         bpf_list_push_back(&list_2, skb_kptr_b->bpf_list);
->         ...
->
-> Thanks,
-> Amery
->
-> > In the XDP queueing series, we taught the verifier to have reference
-> > semantics for xdp_md in the dequeue program, and then return such a
-> > pointer from the program back to the kernel.
-> > The changes to allow PTR_TO_PACKET accesses were also fairly simple,
-> > the verifier just needs to know that comparison of data, data_end can
-> > only be done for pkt pointers coming from the same xdp_md (as there
-> > can be multiple in the same program at a time).
+In the file subfunction too, the malloc and dirname will have to be done if the
+given file does not already exist.
+
+If my understanding above is right, should the mount_bpffs_for_pin() function
+still be split?
+
+Assuming that the function is split into two subfunctions, there's another
+question that I have got.
+
+>                if (is_dir && is_bpffs(name))
+>                                return err;
+
+The above condition was added in commit 2a36c26fe3b8 (patch submission [2]).
+If the function is to be split into two subfunctions for dirs and files, is it ok to
+remove the above function entirely in the file subfunction?
+
+If "is_bpffs(name)" returns false, then that could imply that the file exists and its
+parent dir is not bpffs, or that the file does not exist and no comment can be
+made on the parent dir. In either case the malloc and dirname will have to be
+done.
+
+On the other hand if the file exists and is part of the bpffs then this condition
+will allow the function to exit immediately without doing a malloc and dirname.
+But this can be determined without the condition as well, since the file being
+part of the bpffs implies that the dir will be bpffs.
+
+Thanks,
+Sahil
+
+[1] https://github.com/libbpf/bpftool/issues/100
+[2] https://lore.kernel.org/bpf/1683197138-1894-1-git-send-email-yangpc@wangsu.com/
+
+
+
 
