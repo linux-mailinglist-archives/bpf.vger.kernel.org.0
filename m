@@ -1,145 +1,163 @@
-Return-Path: <bpf+bounces-23124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A67A486DC63
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 08:51:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1A286DC6F
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 08:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 505E4B2528A
-	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 07:51:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEE461C228C0
+	for <lists+bpf@lfdr.de>; Fri,  1 Mar 2024 07:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015E76997B;
-	Fri,  1 Mar 2024 07:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="N7gjzTS3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C0D69D05;
+	Fri,  1 Mar 2024 07:52:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1877469967
-	for <bpf@vger.kernel.org>; Fri,  1 Mar 2024 07:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71FB224C9;
+	Fri,  1 Mar 2024 07:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709279465; cv=none; b=a1bSaHii2WTA9O9xON1Mt93G4fr0CrI6EZ2/vZEopGITjuO6dmcZamca8yZhz+/cPzYW6J7pSahA+QF2CwnTDNGWFwcs8U+fCxXAG2KLMvvReXIEp7Xfsz4/dvJUZQzNkUaH2uR1UWbyu7Fv0+2sAwTjE62ri0lN5ryOXXf7wfU=
+	t=1709279566; cv=none; b=bJwHCuev+pQvlQrDcEwxBfa+kffHUk30mS5x509q077C2EtAC7f54ylmQgctTRrnX+tIVyLjDA1hHTsvrzEv6lbN09dli2FzoSOmpiT5ADjyWwdTvT1RV5WYBUnnxDPmcZ8LiveL5DQypMk/9cp657TaT+Bahq8f6hGW6TQUV7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709279465; c=relaxed/simple;
-	bh=TuuRQzWEoaH1NVjEFDOE++6u29MLWMWxkaXmHgd3VE4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=HsWBMkTRKT9IdkNYaMAx9dAons8eORt+2mBdEJz4jUARCzRVZdB27SG/2lxHYrOVe6b23wTHWIr7ci9QWpwjgURLRifHfH6on61FwCEfA+bDEnhRgGHnPz+HQmJBtmLn8SHADx/QAL37oDidYCJlOMyeIQ2PV0M4l6T8amM2MaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N7gjzTS3; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3653aaeb380so55925ab.1
-        for <bpf@vger.kernel.org>; Thu, 29 Feb 2024 23:51:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709279462; x=1709884262; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d7LWZcQoUZlxKLxUZpTru/ypydEJSZ5JsxZQauyrv0U=;
-        b=N7gjzTS3o5QSrUxlsWrwuCFEek17DY+0xnJsfqQlcMPgZbYmXDmRutSDZJfiZabI4v
-         xwu8ovynmwF4x6fri+wTK3siqkRgeM74XtzHGfgmyZaZSaRZ0EBwghn4rc0fHIvO8h2V
-         p2qVQ2YVa6DWi5M1A6nx5kajhroaZ3SRS6A4kOe1M0whDO8p6oD/GBk3CsQvOvHRdt51
-         B65QpLDwo8Jyedj1MclVKz2Yx1aqSCtjDsO72tHWaUJsM1KkvV3sXbnmiBwJ0WX0/XG9
-         akZPFzKVmoARozoU7BLXqcoVF/aP88IoPxd44qRIrQSnN5fwJuzkSyxyL3H/xrEXYwEq
-         1vWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709279462; x=1709884262;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d7LWZcQoUZlxKLxUZpTru/ypydEJSZ5JsxZQauyrv0U=;
-        b=DqEjQRDx0G7ELjghhgj8v0Uik2fkIS4HvjAjlugdPmRkXxtGF/LvrfN2t5n2BF7MeZ
-         3jL6Ef25pHPvNN4CBm0Z+37ahFn7Be3MjsGaDD6Al8S4HPnaPwHYksvpLWxK3gK4oXGl
-         BIC6PXZkwHJ2V7Z+IaY6gmodwENVHOGi3XPixKKemqTTl9XHJV3u8gTbfZv/nvsBi7TM
-         P4g/40cL9YUibD6/5NYz0OKqmgPx+Eg82AOntnJChri2Lm2kh5zVVSZY2fIT/mqQpqzI
-         Q3BqtwzWMssJc0UthgqqyIKZ8LQBU9dFUDQgrM3mUyuTjWiidx24kDc1RPDV6RkoMpxT
-         rAqg==
-X-Forwarded-Encrypted: i=1; AJvYcCW+rE6pqtm6ke3gaM4u9I7+3SWrtwid2qFp/WDCQHfhr+v3EEjuiKFU+knM/onXi8FHwrL47oAxQC1EV+nVtusu8YhY
-X-Gm-Message-State: AOJu0YzQnr4+gs53oYuUbDWd4j8SrmTMsGBCxeGM/AdxqW4qSQVhkLqW
-	4U9KeD2bg3TsuSf0zxqL0C97qY8pFaMwzuLkHP18OutduyLGO+3idv0nLvd8t/WkiaSjI36H2z8
-	qocoEHRBZU12uF6h2Zv3yO7qR1ft0cGkfTNcA
-X-Google-Smtp-Source: AGHT+IFv3s843zTdq+qbNxC9is7eEc4H3YoyiTuOQqPPNlkjR0dAw7JRCDngLN6hF+f12VRJ5vIXi//3Xla2BVihOkE=
-X-Received: by 2002:a05:6e02:1c2f:b0:363:d784:d24 with SMTP id
- m15-20020a056e021c2f00b00363d7840d24mr114895ilh.23.1709279462062; Thu, 29 Feb
- 2024 23:51:02 -0800 (PST)
+	s=arc-20240116; t=1709279566; c=relaxed/simple;
+	bh=m9JyN+OfZnBfNduvWL6HlRt2Ws8qdQM+zYhc2tHrO60=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TjLu8oj5/wja4dRS73eiuFFpI+WQoMqhXJ6PheR2+C0e24fljpIfsfbhoZp9yQyqQKQGIrBKsrj+/R7SjJQaG6qHYn2YQTfeHOE8+Zyzl3276TLY2GIxxjVWDOCzm9gpnH4htaVsvGpE+J3rN5ck6+oWA41EbkUfgyheC5SOD/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4TmL0g4qB7z9tHZ;
+	Fri,  1 Mar 2024 08:52:35 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id BqoZa5JD5ZwP; Fri,  1 Mar 2024 08:52:35 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4TmL0f46Qcz9tFS;
+	Fri,  1 Mar 2024 08:52:34 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 857FB8B774;
+	Fri,  1 Mar 2024 08:52:34 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id X5jlVshACLyB; Fri,  1 Mar 2024 08:52:34 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.117])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 6FC788B766;
+	Fri,  1 Mar 2024 08:52:33 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>,
+	Kees Cook <keescook@chromium.org>
+Subject: [PATCH bpf-next v2 1/2] bpf: Take return from set_memory_ro() into account with bpf_prog_lock_ro()
+Date: Fri,  1 Mar 2024 08:52:24 +0100
+Message-ID: <8f3b3823cce2177e5912ff5f2f11381a16db07db.1709279160.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301074639.2260708-1-irogers@google.com>
-In-Reply-To: <20240301074639.2260708-1-irogers@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 29 Feb 2024 23:50:48 -0800
-Message-ID: <CAP-5=fX7JDkyPEXwJGmhYf75EA5KsFQpZ3tC-70hNe8kUnZ=rw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] perf record: Delete session after stopping
- sideband thread
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Christian Brauner <brauner@kernel.org>, James Clark <james.clark@arm.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Tim Chen <tim.c.chen@linux.intel.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Disha Goel <disgoel@linux.ibm.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Song Liu <songliubraving@fb.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709279548; l=2705; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=m9JyN+OfZnBfNduvWL6HlRt2Ws8qdQM+zYhc2tHrO60=; b=BM8D7LKNIqd4yL3OmV1oY3lqs5bdcfaokGX528YFWG10bGRYTPO7xmnY3X/YTK0+TrgdD1oe0 Jcv1743O7HSBXVnLAvfrfkWf80mkc3ESZY06KRQSThm9AifGg/N13eN
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 11:47=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> The session has a header in it which contains a perf env with
-> bpf_progs. The bpf_progs are accessed by the sideband thread and so
-> the sideband thread must be stopped before the session is deleted, to
-> avoid a use after free.  This error was detected by AddressSanitizer
-> in the following:
->
-> ```
-> =3D=3D2054673=3D=3DERROR: AddressSanitizer: heap-use-after-free on addres=
-s 0x61d000161e00 at pc 0x55769289de54 bp 0x7f9df36d4ab0 sp 0x7f9df36d4aa8
-> READ of size 8 at 0x61d000161e00 thread T1
->     #0 0x55769289de53 in __perf_env__insert_bpf_prog_info util/env.c:42
->     #1 0x55769289dbb1 in perf_env__insert_bpf_prog_info util/env.c:29
->     #2 0x557692bbae29 in perf_env__add_bpf_info util/bpf-event.c:483
->     #3 0x557692bbb01a in bpf_event__sb_cb util/bpf-event.c:512
->     #4 0x5576928b75f4 in perf_evlist__poll_thread util/sideband_evlist.c:=
-68
->     #5 0x7f9df96a63eb in start_thread nptl/pthread_create.c:444
->     #6 0x7f9df9726a4b in clone3 ../sysdeps/unix/sysv/linux/x86_64/clone3.=
-S:81
->
-> 0x61d000161e00 is located 384 bytes inside of 2136-byte region [0x61d0001=
-61c80,0x61d0001624d8)
-> freed by thread T0 here:
->     #0 0x7f9dfa6d7288 in __interceptor_free libsanitizer/asan/asan_malloc=
-_linux.cpp:52
->     #1 0x557692978d50 in perf_session__delete util/session.c:319
->     #2 0x557692673959 in __cmd_record tools/perf/builtin-record.c:2884
->     #3 0x55769267a9f0 in cmd_record tools/perf/builtin-record.c:4259
->     #4 0x55769286710c in run_builtin tools/perf/perf.c:349
->     #5 0x557692867678 in handle_internal_command tools/perf/perf.c:402
->     #6 0x557692867a40 in run_argv tools/perf/perf.c:446
->     #7 0x557692867fae in main tools/perf/perf.c:562
->     #8 0x7f9df96456c9 in __libc_start_call_main ../sysdeps/nptl/libc_star=
-t_call_main.h:58
-> ```
->
-> Fixes: 657ee5531903 ("perf evlist: Introduce side band thread")
-> Signed-off-by: Ian Rogers <irogers@google.com>
+set_memory_ro() can fail, leaving memory unprotected.
 
-Note, after this series I'm seeing parallel perf testing being as
-reliable as serial but parallel testing is nearly 3 times faster. I
-think after these changes land we can make parallel execution the
-default.
+Check its return and take it into account as an error.
 
-Thanks,
-Ian
+Link: https://github.com/KSPP/linux/issues/7
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linux-hardening@vger.kernel.org <linux-hardening@vger.kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+Note: next patch is autonomous, it is sent as a follow-up of this one to minimize risk of conflict on filter.h because the two changes are too close to each other.
+
+v2: No modification (Just added link in patch message), patchwork discarded this series due to failed test of s390 but it seems unrelated, see https://lore.kernel.org/bpf/wvd5gzde5ejc2rzsbrtwqyof56uw5ea3rxntfrxtkdabzcuwt6@w7iczzhmay2i/T/#m2e61446f42d5dc3d78f2e0e8b7a783f15cfb109d
+---
+ include/linux/filter.h | 5 +++--
+ kernel/bpf/core.c      | 4 +++-
+ kernel/bpf/verifier.c  | 4 +++-
+ 3 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 36cc29a2934c..7dd59bccaeec 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -884,14 +884,15 @@ bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
+ 
+ #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+ 
+-static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
++static inline int __must_check bpf_prog_lock_ro(struct bpf_prog *fp)
+ {
+ #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+ 	if (!fp->jited) {
+ 		set_vm_flush_reset_perms(fp);
+-		set_memory_ro((unsigned long)fp, fp->pages);
++		return set_memory_ro((unsigned long)fp, fp->pages);
+ 	}
+ #endif
++	return 0;
+ }
+ 
+ static inline void bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 71c459a51d9e..c49619ef55d0 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2392,7 +2392,9 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+ 	}
+ 
+ finalize:
+-	bpf_prog_lock_ro(fp);
++	*err = bpf_prog_lock_ro(fp);
++	if (*err)
++		return fp;
+ 
+ 	/* The tail call compatibility check can only be done at
+ 	 * this late stage as we need to determine, if we deal
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1c34b91b9583..6ec134f76a11 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19096,7 +19096,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+ 	 * bpf_prog_load will add the kallsyms for the main program.
+ 	 */
+ 	for (i = 1; i < env->subprog_cnt; i++) {
+-		bpf_prog_lock_ro(func[i]);
++		err = bpf_prog_lock_ro(func[i]);
++		if (err)
++			goto out_free;
+ 		bpf_prog_kallsyms_add(func[i]);
+ 	}
+ 
+-- 
+2.43.0
+
 
