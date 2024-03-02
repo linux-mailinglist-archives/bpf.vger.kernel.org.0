@@ -1,35 +1,36 @@
-Return-Path: <bpf+bounces-23246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A9C86F178
-	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 17:50:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A06486F179
+	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 17:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EFB7283319
-	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 16:50:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA0C6283181
+	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 16:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2474222627;
-	Sat,  2 Mar 2024 16:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45472261F;
+	Sat,  2 Mar 2024 16:50:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88315231
-	for <bpf@vger.kernel.org>; Sat,  2 Mar 2024 16:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7935231
+	for <bpf@vger.kernel.org>; Sat,  2 Mar 2024 16:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709398231; cv=none; b=j3vr5WNDV7n9AdIMKHB7BZ5PBm2C4XVI1kfE4KMN1y2U+cdC1rRrp1UjULnuWe7hnexapRgP8EFFZK+zBpA5oxGTSp8eX/LZBd63PaxiRY2PZk3AXOvWKrj1HyKiwheC2NIkrsflL4s/8rs4yJZX4EcSYCG+YZEVYEawnB7Abyk=
+	t=1709398237; cv=none; b=qug0L2jL/dghNFKY+Yah3pycmqH3Q/echqUXlTO9ODZWlhwOagqSEFK6CIOMhsnwSuF1U0XHrBzcqeMJfhakCS5/JZO2aFTHLaq+7dHm//4VpeXgNg5SbJgNv2Ty9J4AJ09V4XeM5POFRbv6j+oEhmI8aX8+9v0tjdsPOsW2rbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709398231; c=relaxed/simple;
-	bh=lLfKQ6H1wKEjRcp/ZrfNvLY9l03rW2BWj73IqetVHcs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m1emAOd6T7aIn8R5cbXIduFM69VprMHoh2T7q/fWO8NfKljE8V80vlCPgZZrZrSJnIXNusNCYMViOuSeKKJ6p4PmpyNey7EP7bRa3/koHBAnV0N5od/2S0DJcZ3apnw1Ubq7byMqIMasTWzVJR4ujqhVqZVqPRnIGoXu7FbXhk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+	s=arc-20240116; t=1709398237; c=relaxed/simple;
+	bh=G2o0WfBT96x1x5a71jPIAJ+Cpd7PQAQW6C4cTQyizgY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=D/gIZezR4tjVrDYyWqIdMFmORNGLviz4jjvr8jtHfNFzqoy/uXT7XHLPotp7uTfIQX9WJSTzxG+A9g+/cAs+3RwdQW85NPJKKMGSCdokTA9BA0FaiqcYa+VLjvVBs4Mw+fNJB8vY7RtM47CWKcOEq+DnyIx+0r8mPl3B8809XmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 90F2A11F11A0; Sat,  2 Mar 2024 08:50:17 -0800 (PST)
+	id AA20611F11B4; Sat,  2 Mar 2024 08:50:22 -0800 (PST)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -37,10 +38,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 0/4] selftests/bpf: Fix a couple of test failures with LTO kernel
-Date: Sat,  2 Mar 2024 08:50:17 -0800
-Message-ID: <20240302165017.1627295-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next 1/4] selftests/bpf: Replace CHECK with ASSERT macros for ksyms test
+Date: Sat,  2 Mar 2024 08:50:22 -0800
+Message-ID: <20240302165022.1627562-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240302165017.1627295-1-yonghong.song@linux.dev>
+References: <20240302165017.1627295-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,27 +52,98 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-With a LTO kernel built with clang, I encountered two test failures,
-ksyms and kprobe_multi_bench_attach/kernel. Both test failures are
-due to static variable/function renaming due to cross-file inlining.
-The solution is to either skip the test or filter out those renamed
-functions. A helper function check_lto_kernel() is introduced to
-identify whether the underlying kernel is built with LTO or not.
-Please see each individual patches for details.
+I am going to modify ksyms test later so take this opportunity
+to replace old CHECK macros with new ASSERT macros.
+No functionality change.
 
-Yonghong Song (4):
-  selftests/bpf: Replace CHECK with ASSERT macros for ksyms test
-  selftests/bpf: Add check_lto_kernel() helper
-  selftests/bpf: Fix possible ksyms test failure with LTO kernel
-  selftests/bpf: Fix possible kprobe_multi_bench_attach test failure
-    with LTO kernel
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ .../testing/selftests/bpf/prog_tests/ksyms.c  | 38 +++++++++----------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
- .../bpf/prog_tests/kprobe_multi_test.c        |  7 +++
- .../testing/selftests/bpf/prog_tests/ksyms.c  | 42 +++++++++--------
- tools/testing/selftests/bpf/testing_helpers.c | 47 +++++++++++++++++++
- tools/testing/selftests/bpf/testing_helpers.h |  1 +
- 4 files changed, 78 insertions(+), 19 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testi=
+ng/selftests/bpf/prog_tests/ksyms.c
+index b295969b263b..e081f8bf3f17 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ksyms.c
++++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
+@@ -5,8 +5,6 @@
+ #include "test_ksyms.skel.h"
+ #include <sys/stat.h>
+=20
+-static int duration;
+-
+ void test_ksyms(void)
+ {
+ 	const char *btf_path =3D "/sys/kernel/btf/vmlinux";
+@@ -18,43 +16,45 @@ void test_ksyms(void)
+ 	int err;
+=20
+ 	err =3D kallsyms_find("bpf_link_fops", &link_fops_addr);
+-	if (CHECK(err =3D=3D -EINVAL, "kallsyms_fopen", "failed to open: %d\n",=
+ errno))
++	if (err =3D=3D -EINVAL) {
++		ASSERT_TRUE(false, "kallsyms_fopen for bpf_link_fops");
+ 		return;
+-	if (CHECK(err =3D=3D -ENOENT, "ksym_find", "symbol 'bpf_link_fops' not =
+found\n"))
++	}
++	if (err =3D=3D -ENOENT) {
++		ASSERT_TRUE(false, "ksym_find for bpf_link_fops");
+ 		return;
++	}
+=20
+ 	err =3D kallsyms_find("__per_cpu_start", &per_cpu_start_addr);
+-	if (CHECK(err =3D=3D -EINVAL, "kallsyms_fopen", "failed to open: %d\n",=
+ errno))
++	if (err =3D=3D -EINVAL) {
++		ASSERT_TRUE(false, "kallsyms_fopen for __per_cpu_start");
+ 		return;
+-	if (CHECK(err =3D=3D -ENOENT, "ksym_find", "symbol 'per_cpu_start' not =
+found\n"))
++	}
++	if (err =3D=3D -ENOENT) {
++		ASSERT_TRUE(false, "ksym_find for __per_cpu_start");
+ 		return;
++	}
+=20
+-	if (CHECK(stat(btf_path, &st), "stat_btf", "err %d\n", errno))
++	if (!ASSERT_OK(stat(btf_path, &st), "stat_btf"))
+ 		return;
+ 	btf_size =3D st.st_size;
+=20
+ 	skel =3D test_ksyms__open_and_load();
+-	if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
++	if (!ASSERT_OK_PTR(skel, "test_ksyms__open_and_load"))
+ 		return;
+=20
+ 	err =3D test_ksyms__attach(skel);
+-	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
++	if (!ASSERT_OK(err, "test_ksyms__attach"))
+ 		goto cleanup;
+=20
+ 	/* trigger tracepoint */
+ 	usleep(1);
+=20
+ 	data =3D skel->data;
+-	CHECK(data->out__bpf_link_fops !=3D link_fops_addr, "bpf_link_fops",
+-	      "got 0x%llx, exp 0x%llx\n",
+-	      data->out__bpf_link_fops, link_fops_addr);
+-	CHECK(data->out__bpf_link_fops1 !=3D 0, "bpf_link_fops1",
+-	      "got %llu, exp %llu\n", data->out__bpf_link_fops1, (__u64)0);
+-	CHECK(data->out__btf_size !=3D btf_size, "btf_size",
+-	      "got %llu, exp %llu\n", data->out__btf_size, btf_size);
+-	CHECK(data->out__per_cpu_start !=3D per_cpu_start_addr, "__per_cpu_star=
+t",
+-	      "got %llu, exp %llu\n", data->out__per_cpu_start,
+-	      per_cpu_start_addr);
++	ASSERT_EQ(data->out__bpf_link_fops, link_fops_addr, "bpf_link_fops");
++	ASSERT_EQ(data->out__bpf_link_fops1, 0, "bpf_link_fops1");
++	ASSERT_EQ(data->out__btf_size, btf_size, "btf_size");
++	ASSERT_EQ(data->out__per_cpu_start, per_cpu_start_addr, "__per_cpu_star=
+t");
+=20
+ cleanup:
+ 	test_ksyms__destroy(skel);
 --=20
 2.43.0
 
