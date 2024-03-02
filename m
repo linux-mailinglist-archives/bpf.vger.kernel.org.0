@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-23213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0674F86EDC5
-	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 02:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A4B86EDC6
+	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 02:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31A3B1C22008
-	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 01:19:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6F5F1C22104
+	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 01:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7169D6FCA;
-	Sat,  2 Mar 2024 01:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCFC53AC;
+	Sat,  2 Mar 2024 01:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VEkbgeZl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="egFPxj/z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3045363D5
-	for <bpf@vger.kernel.org>; Sat,  2 Mar 2024 01:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2AA26AB9
+	for <bpf@vger.kernel.org>; Sat,  2 Mar 2024 01:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709342379; cv=none; b=D2UW3KFnHbfttR9DSA1lhhkiqcznKRfpMieUmt1zU09Z7rI3BsZCRG+aUDHIDnwJLYwPvammRjRnf6C8mJHHsNUO1gssBTjb5/nbMUSnvHkSqq1+lFTSXimMh0m08Fm7uigzxBBMfAHCdh5UVxRk5v3RvEOOE80MDV2zAyPPFRo=
+	t=1709342379; cv=none; b=qJENd7DL8hPxZAG3+EgTa+6VaDz60kiH3TciM63knxKa9OGnIhOb8NZ8Gk6DHml60XzTpZHy+Bt090JmtPw/dSiYA5ttJhcTVZXhMa/bWLFMTatH7f4hFLjBfCuTeR6xnPUqyzwpd2y0SvaCynUbO25Vepu+zJ1Yhb5MSmJCKtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709342379; c=relaxed/simple;
-	bh=+/7512ls0nx43WR6FdeD5KlfXRruIV68iW1LrOMm0/Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H7f5hBZfoDY6UM2O9WF2TGVmpM+BCC5tO6glbk3ZLvMAHbTAERDLJ4gQfJsX1iGzun7VYuWIisjek5jso74rgS3l6dWmUWSR0xcBqjbJBw09qaPNmrvp4UJjcmvTpHbT2UAe1A3iFx43J4XV6gKaOsNk18G0QhIUwXZ1e/39Log=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VEkbgeZl; arc=none smtp.client-ip=209.85.208.176
+	bh=u/1jTp2CttH5gxlhCHQfZKsq9FO8kAJbKLWIR91fUBQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Xplq2iGus/1LPDQ3dccqNd1LnKw2Eiex1zxz0yIKA6WExkXc2qX1THArj5X8Pylsxb6k9lcftB89sGZw8rn8wEKvsVGzwwkBGSvEXcFICMiseOqqp9XyDXy/rE7woprUgESX70c7pe7W0yAlqu8g5z5KITgzWaxA8CGjKMR+8Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=egFPxj/z; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d2ab9c5e83so27821031fa.2
-        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 17:19:36 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d23d301452so28605581fa.1
+        for <bpf@vger.kernel.org>; Fri, 01 Mar 2024 17:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709342375; x=1709947175; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=b38v/KtlzfGvNHdI3bvQHZ2X8+/n/aIxrofQlVVKaN4=;
-        b=VEkbgeZlesEXHHXEZe4+WE0tKyKjzRBEkWU1CrX7FBsM30SPvoGTAqy2rF2R+YXMR6
-         6pg+nBkK8n/6o6W6Fm5vfL6CzxTKZAl/Yb0RyzBIaBHTlojEAdlgyog2Xcqje0yAY5Mp
-         qqy3Kb/4+bbkjb1pGaSGJSEqa7816dlYb3+up4Dhi61sFNwOj4dxZ/iNdQqVZ/CmFhMO
-         i0yUQcU0yKPVm/Qec9qFkStKHz1MBYu9Qpkb3vlnJD1iozSDE4/tvuALy8VveBOgDylu
-         fi69TQMLadCO/huuEO06wXRg3kONEz81wLncRVBy6du1VARu1XI3OdN1lL9dRlpSTJrL
-         +V3A==
+        d=gmail.com; s=20230601; t=1709342376; x=1709947176; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ghBbmU7JgmzNE0IDgqQ93JxAVATdz4P5/PxXkAkYZ4=;
+        b=egFPxj/zEzpaKUXUrqHU56/kNhb1xfMM2LZnMleI/Zy4yCEvSfBHWTQs2Yyz/KAQ1x
+         QACiHGDTMC5oWTnTDurHBeIwGSxbNQy59KIFoeX/jFGSZ/Ggnyy38D1MJZIwU1u6/F7r
+         17WyAq2h5biQYibU7VYDMOd/vgjBoMg5awhgkrWC4fvXKUrjdYYYsGAv9M3YhHGGBJEX
+         10L/yuOh8gSb0r/dlUIUf01YOmZWQhv3zTMJmeBm83Jt83ye+h7mxYflAvwCsRMt6iTx
+         K8abxiXooxuLM1ZbpYWY4VROXhYuP9hrA9oxowF6az3EuX4pl1fktv2Bn76ngdYwcJv9
+         KAhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709342375; x=1709947175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b38v/KtlzfGvNHdI3bvQHZ2X8+/n/aIxrofQlVVKaN4=;
-        b=p0PQlDhc1kdR08mMst4aGWYNfCBF6V/7oI/NAVHDhxDdl1dhR4POxt+78z3JWEG2hr
-         sD8lB6reXcbCJ3Ok+dSLFU+C7ya0n2IO/B0e5pXNLbfIoYXAq3wQKdDMiVkuJzMdYuUr
-         pMq040TQX846MA0CJ9JSxt1GXSztVHc/L6mydhsq2TmsDEPDIgfwOLQvvx8Nfg48m78e
-         mmA7IPEJSiyJKg5DoGm4dx61/rMudwqsLgyuNC+pfWqTxHfXbRadkpyh9MUDXQYqbqmc
-         v1LF0psNsU/COjq3suBHb3EDgujwvJ403irrL1obBKF9cUAUcHfGZdf6BD8mUYbWJesV
-         L4UQ==
-X-Gm-Message-State: AOJu0YzNHX46wmfYu5UH7niOCqnYpi2ejb5mUL/+0Mzjil+BqTklVAv4
-	Gc+s59IVoIacLkO4HMvYzFRiIPmm61xAv0v+OiOrcAxz6Y9jIf/wjfKiI4QW
-X-Google-Smtp-Source: AGHT+IEYRv1LsV7n/0KN8fMS9Hpb9uwDhboNzMgrp7FUk45cjM8yw9QBC6k+kMc2CGpH9BtpaA174A==
-X-Received: by 2002:a2e:a4c5:0:b0:2d2:c8ff:d2b6 with SMTP id p5-20020a2ea4c5000000b002d2c8ffd2b6mr2277294ljm.1.1709342374665;
-        Fri, 01 Mar 2024 17:19:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709342376; x=1709947176;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8ghBbmU7JgmzNE0IDgqQ93JxAVATdz4P5/PxXkAkYZ4=;
+        b=RSI2DYl8N7TJyaCBTopM/+eG5u8EXZQ6lZocLDv8uG7sciBuzShbzuWiX16rxqgoeb
+         8vHACF9WrEi7rv8xGkWUXSrCwtn/JNkgEYgxl9xlmEx3ytB2H8tins7SvjDhqstLRanz
+         e2/9v0EcZwGTdC7OIm2RkfNQ531P3TsYZScw3s0e9UAzUMExkaI98OBYutavWM16Glli
+         /U+9pT+h6v7hMLX3AtW3J9S44yfMYLxFAEPpujePiEZShe607mbhbNfiWhp3yM6K1hZ8
+         zuz7GaNepcmTIBu5kK4YBXjDnn6XFYzfUq7F77VKP5JSRJHNecUi6u55kVGkB88AIcaY
+         l5mg==
+X-Gm-Message-State: AOJu0YwC/5gvMPLr9dk5yxIhuoGIIopRsydx2HjiBDCIz91iLhrgIjcr
+	QMLbFxGyM5Nd7D39JYNHSPBy1S+wyBbzdwBasyNU96hqIss9U/l+fRFpkYO3
+X-Google-Smtp-Source: AGHT+IF2PpXr5476Y7hicTLds97Adp0NKs91UzW7FpffnBlOfg/n2q7ZvHlZN/aCpKgim9tfC5Ckig==
+X-Received: by 2002:a2e:860d:0:b0:2d3:1dcc:3b25 with SMTP id a13-20020a2e860d000000b002d31dcc3b25mr2575644lji.10.1709342375808;
+        Fri, 01 Mar 2024 17:19:35 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id z23-20020a2e9657000000b002d295828d3fsm767386ljh.9.2024.03.01.17.19.33
+        by smtp.gmail.com with ESMTPSA id z23-20020a2e9657000000b002d295828d3fsm767386ljh.9.2024.03.01.17.19.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 17:19:34 -0800 (PST)
+        Fri, 01 Mar 2024 17:19:35 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -75,10 +77,12 @@ Cc: andrii@kernel.org,
 	void@manifault.com,
 	sinquersw@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 00/15] libbpf: type suffixes and autocreate flag for struct_ops maps
-Date: Sat,  2 Mar 2024 03:19:05 +0200
-Message-ID: <20240302011920.15302-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 01/15] libbpf: allow version suffixes (___smth) for struct_ops types
+Date: Sat,  2 Mar 2024 03:19:06 +0200
+Message-ID: <20240302011920.15302-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240302011920.15302-1-eddyz87@gmail.com>
+References: <20240302011920.15302-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,136 +91,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Tweak struct_ops related APIs to allow the following features:
-- specify version suffixes for stuct_ops map types;
-- share same BPF program between several map definitions with
-  different local BTF types, assuming only maps with same
-  kernel BTF type would be selected for load;
-- toggle autocreate flag for struct_ops maps;
-- automatically toggle autoload for struct_ops programs referenced
-  from struct_ops maps, depending on autocreate status of the
-  corresponding map;
-- use SEC("?.struct_ops") and SEC("?.struct_ops.link")
-  to define struct_ops maps with autocreate == false after object open.
+E.g. allow the following struct_ops definitions:
 
-This would allow loading programs like below:
-
-    SEC("struct_ops/foo") int BPF_PROG(foo) { ... }
-    SEC("struct_ops/bar") int BPF_PROG(bar) { ... }
-
-    struct bpf_testmod_ops___v1 {
-        int (*foo)(void);
-    };
-
-    struct bpf_testmod_ops___v2 {
-        int (*foo)(void);
-        int (*bar)(void);
-    };
-
-    /* Assume kernel type name to be 'test_ops' */
-    SEC(".struct_ops.link")
-    struct test_ops___v1 map_v1 = {
-        /* Program 'foo' shared by maps with
-         * different local BTF type
-         */
-        .foo = (void *)foo
-    };
+    struct bpf_testmod_ops___v1 { int (*test)(void); };
+    struct bpf_testmod_ops___v2 { int (*test)(void); };
 
     SEC(".struct_ops.link")
-    struct test_ops___v2 map_v2 = {
-        .foo = (void *)foo,
-        .bar = (void *)bar
-    };
+    struct bpf_testmod_ops___v1 a = { .test = ... }
+    SEC(".struct_ops.link")
+    struct bpf_testmod_ops___v2 b = { .test = ... }
 
-Assuming the following tweaks are done before loading:
+Where both bpf_testmod_ops__v1 and bpf_testmod_ops__v2 would be
+resolved as 'struct bpf_testmod_ops' from kernel BTF.
 
-    /* to load v1 */
-    bpf_map__set_autocreate(skel->maps.map_v1, true);
-    bpf_map__set_autocreate(skel->maps.map_v2, false);
+Acked-by: David Vernet <void@manifault.com>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-    /* to load v2 */
-    bpf_map__set_autocreate(skel->maps.map_v1, false);
-    bpf_map__set_autocreate(skel->maps.map_v2, true);
-
-Patch #8 ties autocreate and autoload flags for struct_ops maps and
-programs. While discussion for v1 concluded that such feature is
-useful, it is an outlier compared to the rest of libbpf API that
-treats autoload / autocreate flags in most simple way possible.
-An alternative might be a dedicated API call, e.g.:
-
-  int bpf_object__infer_struct_ops_progs_autoload(struct bpf_object *)
-  
-That would set programs autoload flags depending on user defined state
-of autocreate flags of struct_ops map.
-
-It might even be accompanied by an API call:
-
-  int bpf_object__infer_struct_ops_maps_autocreate(struct bpf_object *)
-
-That would check which struct_ops maps definitions could be loaded
-with current kernel, or report error if there are ambiguities.
-
-Changelog:
-- v1 [1] -> v2:
-  - fixed memory leak in patch #1 (Kui-Feng);
-  - improved error messages in patch #2 (Martin, Andrii);
-  - in bad_struct_ops selftest from patch #6 added .test_2
-    map member setup (David);
-  - added utility functions to capture libbpf log from selftests (David)
-  - in selftests replaced usage of ...__open_and_load by separate
-    calls to ..._open() and ..._load() (Andrii);
-  - removed serial_... in selftest definitions (Andrii);
-  - improved comments in selftest struct_ops_autocreate
-    from patch #7 (David);
-  - removed autoload toggling logic incompatible with shadow variables
-    from bpf_map__set_autocreate(), instead struct_ops programs
-    autoload property is computed at struct_ops maps load phase,
-    see patch #8 (Kui-Feng, Martin, Andrii);
-  - added support for SEC("?.struct_ops") and SEC("?.struct_ops.link")
-    (Andrii).
-
-[1] https://lore.kernel.org/bpf/20240227204556.17524-1-eddyz87@gmail.com/
-
-Eduard Zingerman (15):
-  libbpf: allow version suffixes (___smth) for struct_ops types
-  libbpf: tie struct_ops programs to kernel BTF ids, not to local ids
-  libbpf: honor autocreate flag for struct_ops maps
-  selftests/bpf: test struct_ops map definition with type suffix
-  selftests/bpf: utility functions to capture libbpf log in test_progs
-  selftests/bpf: bad_struct_ops test
-  selftests/bpf: test autocreate behavior for struct_ops maps
-  libbpf: sync progs autoload with maps autocreate for struct_ops maps
-  selftests/bpf: verify struct_ops autoload/autocreate sync
-  libbpf: replace elf_state->st_ops_* fields with SEC_ST_OPS sec_type
-  libbpf: struct_ops in SEC("?.struct_ops") and SEC("?.struct_ops.link")
-  libbpf: rewrite btf datasec names starting from '?'
-  selftests/bpf: test case for SEC("?.struct_ops")
-  bpf: allow '?' at the beginning of DATASEC names
-  selftests/bpf: test cases for '?' in BTF names
-
- kernel/bpf/btf.c                              |  17 +-
- tools/lib/bpf/features.c                      |  22 +++
- tools/lib/bpf/libbpf.c                        | 174 ++++++++++++------
- tools/lib/bpf/libbpf_internal.h               |   2 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  25 +++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   4 +
- .../selftests/bpf/prog_tests/bad_struct_ops.c |  67 +++++++
- tools/testing/selftests/bpf/prog_tests/btf.c  |  46 +++++
- .../bpf/prog_tests/struct_ops_autocreate.c    | 124 +++++++++++++
- .../bpf/prog_tests/test_struct_ops_module.c   |  33 +++-
- .../selftests/bpf/progs/bad_struct_ops.c      |  25 +++
- .../selftests/bpf/progs/bad_struct_ops2.c     |  14 ++
- .../bpf/progs/struct_ops_autocreate.c         |  52 ++++++
- .../selftests/bpf/progs/struct_ops_module.c   |  21 ++-
- tools/testing/selftests/bpf/test_progs.c      |  57 ++++++
- tools/testing/selftests/bpf/test_progs.h      |   3 +
- 16 files changed, 614 insertions(+), 72 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bad_struct_ops.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_autocreate.c
- create mode 100644 tools/testing/selftests/bpf/progs/bad_struct_ops.c
- create mode 100644 tools/testing/selftests/bpf/progs/bad_struct_ops2.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_autocreate.c
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6c2979f1b471..e2a4c409980b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -948,7 +948,7 @@ static int find_btf_by_prefix_kind(const struct btf *btf, const char *prefix,
+ 				   const char *name, __u32 kind);
+ 
+ static int
+-find_struct_ops_kern_types(struct bpf_object *obj, const char *tname,
++find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+ 			   struct module_btf **mod_btf,
+ 			   const struct btf_type **type, __u32 *type_id,
+ 			   const struct btf_type **vtype, __u32 *vtype_id,
+@@ -958,8 +958,12 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname,
+ 	const struct btf_member *kern_data_member;
+ 	struct btf *btf;
+ 	__s32 kern_vtype_id, kern_type_id;
++	char tname[256];
+ 	__u32 i;
+ 
++	snprintf(tname, sizeof(tname), "%.*s",
++		 (int)bpf_core_essential_name_len(tname_raw), tname_raw);
++
+ 	kern_type_id = find_ksym_btf_id(obj, tname, BTF_KIND_STRUCT,
+ 					&btf, mod_btf);
+ 	if (kern_type_id < 0) {
 -- 
 2.43.0
 
