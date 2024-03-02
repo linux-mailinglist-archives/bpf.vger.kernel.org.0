@@ -1,98 +1,94 @@
-Return-Path: <bpf+bounces-23252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8E986F186
-	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 17:59:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37BA86F1CE
+	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 19:09:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C4FBB23501
-	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 16:59:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD68AB22932
+	for <lists+bpf@lfdr.de>; Sat,  2 Mar 2024 18:09:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3266A29416;
-	Sat,  2 Mar 2024 16:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF422C86A;
+	Sat,  2 Mar 2024 18:09:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bQSv1WjY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p9Ssb6+q"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA5829420
-	for <bpf@vger.kernel.org>; Sat,  2 Mar 2024 16:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 514E72BB12
+	for <bpf@vger.kernel.org>; Sat,  2 Mar 2024 18:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709398760; cv=none; b=NEtzI8YA8FHB7+CwfuOcEkH4l5HThZ5j4jf4t+8W++xfL/OIoIxVdsdtkA50QZjp0sCAQuvS/ZauTtecwGhubEC68WHKtLwAZnSDctMWR6j/0LTlYHvvMxc1Q0ZYsfqax2QTt6d052UhmwBFJvFqTTw4r1Y7x5UXiseKqgLEKME=
+	t=1709402964; cv=none; b=eTFYowgC4Wm5WI7NTKt+XFZqKG6WoCJXtD1AinII1CSJ2hJ09mZBHFikyjBztesyDk1JBevUcqpQqzkMwRWhLx4DBo2jydga8yE4tXWC5UIFavcAwxroRsJjaM9lYJKkHK6ch4/+/Z0wqMZnCHEKhRnbVgDYPE7Mee/9JOZjwrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709398760; c=relaxed/simple;
-	bh=SlI2ClZ+5LPqvIHlireEvXOD30hAh27j5dJEujG6hUo=;
+	s=arc-20240116; t=1709402964; c=relaxed/simple;
+	bh=FU/QoHhtyAxcZ4mjSjKgf0gjq7NkU2ZbECBmB3zef5s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DSAmtbC8gxGVyqSQ7/LepoGBXvH62/iY6qyQ1bvnnL3ueDsRVXrCJ9oE2YJjjs4Z+fmgtRsPqPjWRR24aiqykF4/VJfK3U4YXIP3CWMgbbESqUnBixSIkYpddQb2ugYAeKh2tT8wy6WWoBZZ7OX8Wxs/lcKXuia2PQS4L8rMwYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bQSv1WjY; arc=none smtp.client-ip=95.215.58.172
+	 In-Reply-To:Content-Type; b=gpYq+18KBmz4g5qbyX4ICniQ1QImm+O014CgnWd36qM1AqfKXIP0ZAIqtjnMCESzpABLxL0NUxTNk8cu51AMsdpZYPUwExk7mLXB3bnap2/kv4cTjvpbW6DOFUM5KdgNYHg2ZnegFT1woK/kvYwrQpi2k3ToLU86SPC7wvZf288=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p9Ssb6+q; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5fa03ec8-9862-4c9d-8dac-02b8cacb82b2@linux.dev>
+Message-ID: <ef878388-ecef-45ff-a33a-d7b2e18d5220@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709398754;
+	t=1709402960;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rkSfUhG/grqYOmm1TAx/V5sIiLQYtY7QQhS29PWMvbE=;
-	b=bQSv1WjYJmbeESjjSdkT9gBOeuKGFbchXqUWaxzqfONVvRzJo8lpB3CbDFWZm5LbHxkNdi
-	b1ZC+gKA5WpqTdupdYjHV54soW3jAP73V1//WSi9lXIQXZXK5WZSEuq9oWGO26XyDkJSMW
-	Oi9iwH/N0WQ+09zlb+xMhn3+xJx8GC0=
-Date: Sat, 2 Mar 2024 08:59:08 -0800
+	bh=bgPk+rTxpwWNQqzbhXb+NEtPGoKxdfgxofmyHTrXzyo=;
+	b=p9Ssb6+q75aDDRXy/EedCObSwLFirqYarxxnaXMkGnv+UYPAuaFmxAizFSvnsOPhHPH2Q9
+	3kgMaIKSZBZiSUP7inPqcNWIf5dA0Z+AQ6bJFk5NiKngw2focF1iCH6rMJhaDyY6A2XOis
+	EgGtHPhjhPfIfG1nvZBJm36yGMkeSck=
+Date: Sat, 2 Mar 2024 10:09:12 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] libbpf: Remove unneeded conversion to bool
+Subject: Re: [linux-next:master 5519/11156]
+ kernel/bpf/bpf_struct_ops.c:247:16: warning: bitwise operation between
+ different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type')
 Content-Language: en-GB
-To: Thorsten Blum <thorsten.blum@toblux.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240302005453.305015-2-thorsten.blum@toblux.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kui-Feng Lee <sinquersw@gmail.com>
+Cc: Thinker Li <thinker.li@gmail.com>, kernel test robot <lkp@intel.com>,
+ oe-kbuild-all@lists.linux.dev,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <202403010423.0vNdUDBW-lkp@intel.com>
+ <CAFVMQ6QYvHfc_=cpOddWgoWDTRt3GHG5+LLB3NoFFRRiCMWDLw@mail.gmail.com>
+ <73e0fa99-7dff-4cb9-bfed-fd3368e54542@gmail.com>
+ <CAADnVQJUZZXusOS3h9fnUUoFQ7=o5iJDDANaUqNBheuhHrUXeg@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240302005453.305015-2-thorsten.blum@toblux.com>
+In-Reply-To: <CAADnVQJUZZXusOS3h9fnUUoFQ7=o5iJDDANaUqNBheuhHrUXeg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 3/1/24 4:54 PM, Thorsten Blum wrote:
-> Fixes Coccinelle/coccicheck warning reported by boolconv.cocci.
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+On 3/1/24 10:27 AM, Alexei Starovoitov wrote:
+> On Fri, Mar 1, 2024 at 10:26 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+>> For BPF,
+>>
+>> We have a lot of code mixing bpf_type_flag and bpf_reg_type in bpf.
+>> They cause the warning messages described in the message following.
+>> Do we want to fix them all, or keep them as they are?
+>>
+>> They can be fixed by merging two enum types or casting here and there if
+>> we want. Any other idea?
+> We probably should add -Wno-enum-enum-conversion to kernel/bpf/Makefile instead.
 
-See
-   https://lore.kernel.org/bpf/229F1668-2FE9-4B09-8314-DFB13B3D0A12@fb.com/
+The warnings are only triggered with latest llvm19 development branch.
+The warnings are triggered in many subsystems, bpf, mm, etc.
+The following commandline can workaround the issue:
+    make LLVM=1 -j KCFLAGS=-Wno-enum-enum-conversion
+There is a discussion how to fix it here:
+   https://github.com/ClangBuiltLinux/linux/issues/2002
+No conclusion yet.
 
-This has been discussed multiple times and recommendation is to keep it as is.
-
-> ---
->   tools/lib/bpf/libbpf.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index afd09571c482..2dda7a6c6f85 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1801,7 +1801,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
->   				ext->name, value);
->   			return -EINVAL;
->   		}
-> -		*(bool *)ext_val = value == 'y' ? true : false;
-> +		*(bool *)ext_val = value == 'y';
->   		break;
->   	case KCFG_TRISTATE:
->   		if (value == 'y')
 
