@@ -1,109 +1,119 @@
-Return-Path: <bpf+bounces-23289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-23290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB4D8701CA
-	for <lists+bpf@lfdr.de>; Mon,  4 Mar 2024 13:46:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC72C8701F0
+	for <lists+bpf@lfdr.de>; Mon,  4 Mar 2024 14:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C788A1F21831
-	for <lists+bpf@lfdr.de>; Mon,  4 Mar 2024 12:46:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B1C81F22B5C
+	for <lists+bpf@lfdr.de>; Mon,  4 Mar 2024 13:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC223D38C;
-	Mon,  4 Mar 2024 12:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD373D963;
+	Mon,  4 Mar 2024 13:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCo+o2RK"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o/gFyWTp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53CBC224CF
-	for <bpf@vger.kernel.org>; Mon,  4 Mar 2024 12:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F1A3D555
+	for <bpf@vger.kernel.org>; Mon,  4 Mar 2024 13:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709556371; cv=none; b=Z56UT5wojSG1o3aTr/EAwIc1WKGKndD3k7q9Z59PBBhSudt1RjqMz9iA2JmLBK+rm6cnpDhtDDUFxAWrPq9XyF4FxwLTiHNebbs4fY2A1Yy+kXojzstXmN9qiqFi41RyfDPRPO//yUV0sOR28WE9Y4maVrOicNY1ijRHgAIpZ4M=
+	t=1709557329; cv=none; b=F41PyqjjrmtnkblIOty6R5sIPTAdqzI06UMFakmvPk1NhR1uSGibYQdMqmfVe7Wh6OICVTKwR0b2pBybHTi69OhatBlCoLWxEiVbYTJXIUZAQxSrfOCuAKKITeGI97uEhXsjg0S15vGfaq3CjN/lPZiRzhSroYok4DPK9uUUVlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709556371; c=relaxed/simple;
-	bh=HT7NfhkrxeeThREnXiv5aDoaQ5OHRY/8haK8zNXzsSE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hEz4wOcfxyS9hGhaK9527Ows8BNQ2/JsXKfqEMuifLPUrXYu+WYo3zcCYaSkeJf4xcdreoFQB3ZKMFkR1T+Apv286Gjl5rnlgJsKiVfTLT75vPYEFjp9D5elrQj9PZWkZHK4T8vOro63SMg2tpJ3Ln7EPvRahGS1lCQ4OkBbUq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dCo+o2RK; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a450615d1c4so220506466b.0
-        for <bpf@vger.kernel.org>; Mon, 04 Mar 2024 04:46:10 -0800 (PST)
+	s=arc-20240116; t=1709557329; c=relaxed/simple;
+	bh=QqH2KnWFLqxpG5B4aFBPQ0iQ+M6Ls3KRzEdS47EsRUE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HYixObSQ06tSAQX+94dLjcaGMbfAZQ1cyWecvcWl+Ssd2NrHV/9Yw/RdaK4DaFornfcx5Rt5O/fn9rdRECVQhuQf7eMb5qsB2o1chLSrGGtPIw+VAGqvxqmGn/KlrtRvxR7ftBjLKcMICVz4oZSdK15tmPzuFdF3pj4f99rh4PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o/gFyWTp; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412cf3c5cdeso17205645e9.2
+        for <bpf@vger.kernel.org>; Mon, 04 Mar 2024 05:02:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709556369; x=1710161169; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HT7NfhkrxeeThREnXiv5aDoaQ5OHRY/8haK8zNXzsSE=;
-        b=dCo+o2RKPUf9Lp0ht8sa2CUiDGqBg+dvbWibPGVwRJTq9pAN+iHQkt9SZusGmmC7n0
-         zNNLgVMm9TV+TDPWNFfPSEb9esRjh7XmZrlRTX+7eRyeDA8zU5rzSZsOJnKlBdEWHTQ6
-         y6ae4gL2xuJH5yzlHQnN3116q5+hWVu1SYE/bxRSCdvByDvBs/Kf4u+6skRLbY/9LSC9
-         Ghcum0m/YEHi1Ewy5N7S/5uAfosBrgYQJefZtQmF7RQADCrNyAZ1SbgPb1MUn1UYxdUU
-         e1+jNb2FWvjdOsQqIsf5t34pwPqp6/iv7KuourDH102MZYI25ugbZc5Tqd1+586p3Pv0
-         V55A==
+        d=linaro.org; s=google; t=1709557326; x=1710162126; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a84/4uqqJhM7gOiloziWXmFL3J+LSry0nXQzQ8TxAac=;
+        b=o/gFyWTp8PhEgzuJzoHezsMxwUvzFaFbuKiGY1iLtwR9e7kwic5YzxMH6FY+9lP6Z5
+         n8tV26gmshJ1JlbpOEjDs9aSQVhhr7zLYo3UTI3gfDET6YLpzwm5lFCnpolGhpMWtCoQ
+         VW8Vuoj9DXatwAOdkZGdTzyam5FvsF1r5IZU/lzXBxFCfnztyK2FghbAsklIrCWrDWjU
+         MSmobeC6jhgHZQZuYJCol9/dy/PMxDLzZx/vyhcN2HDmkT9ZZ4fWo7Ak5M9Z+Ntn3k3k
+         /5cNH2V8Qc+4wf0vcuvArDdtyFfbbdJiC1abLcsKMplNA++BPr58sachD6BBbrYRY4wj
+         A+QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709556369; x=1710161169;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HT7NfhkrxeeThREnXiv5aDoaQ5OHRY/8haK8zNXzsSE=;
-        b=DTksRedbxKWriTeiHsMUgwJQI3fUyv23BT4jX7XeK2SHHgDZGifJ6LXE+LvWMeh5bj
-         MvlB0Q2kH322M5zRF5nNUj9c1pxf6TfreQwaQjqFfeTOY4LG1XoJsFzTTHWow2hGUtEn
-         ohchpilXzhsjPk/pXzCRk6S9IAmDe8tPlHAXcNdqu4mYvD2TFG9SRpa+g6o8N2WpJ9vQ
-         gB/SNEcv3oHVYzRwzS56qoE40TmUwbHREuHwsyNvepUKAmDWaHYexDyLVCYsdy1iM9mU
-         mmnsZYyXYZWYPugDbjoeRxicg11cZFbrGpH8q3TSFn4jGDT1ewnL2peSWtuud+VYDZgv
-         3cKw==
-X-Forwarded-Encrypted: i=1; AJvYcCU6QHXGgqa8AFf37oGoiX/bMM++/hQdFjCc4wA3Uz0w75vZkfCeBfTZko1vmNpzQdHaynTSb2ymPGsWqrtS82gPRL67
-X-Gm-Message-State: AOJu0YzCFqm9upBuVozuYB7ZLgDwXnHB6iEqPWaAd0faMZN5df2QSlct
-	LSOQKS6K46evw2ee0pIurSLdkJ8XmvAS9TxoPEnp3opWIgds3awa
-X-Google-Smtp-Source: AGHT+IGyNupPARYdos8gZXuc1CiaMwwvEQOzpIFV4gvZPSVXd9U04iItdRJukisPa4oaDNi+K74KYQ==
-X-Received: by 2002:a17:906:560b:b0:a45:7dc6:29f6 with SMTP id f11-20020a170906560b00b00a457dc629f6mr735014ejq.31.1709556368323;
-        Mon, 04 Mar 2024 04:46:08 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id ti9-20020a170907c20900b00a43a4e405bbsm4796082ejc.115.2024.03.04.04.46.07
+        d=1e100.net; s=20230601; t=1709557326; x=1710162126;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a84/4uqqJhM7gOiloziWXmFL3J+LSry0nXQzQ8TxAac=;
+        b=RvmTCXDWb2sttLCNtcBmXpekLsXiRQE/jQqddXolxNWkXiFrAgNZ1spuJSskYA3MY8
+         TI+m3BoKCOYt4DNEKhK0LTREcIUnI33fBGCYU+iB4SvQq/b5oztFcRgRzkcqv15gaFpk
+         MqOZSG52FA5PylmJEX7HKlwdVMcDEUUlbKQShMT9o3J9K8KfaU7XOwLUf3QdT49EExiP
+         izWz8Gzy7YxyJMIYHD0UZUXnHDklewPzryj1LiIX4tBVqjxD1ex2ZyJh3v0Dx0ElMsAc
+         vgG7efeXofVvcGR3cK9MN2Do1/E/DhSlVThlTfUuuryZE/5bBuolwypSa6mTrNIWCxv1
+         9TXw==
+X-Gm-Message-State: AOJu0YzQxM3TBFcgZOuBBlTez1EAuYjJNKsMA7FK9DTeJE50OVRtefIW
+	OaCKQ12l2X/ePZyFWhNjc9yeJ0oPeS4v4SQ948EEiVuYIlo5s6qew4umDuljM2k=
+X-Google-Smtp-Source: AGHT+IFQlB+tCusVhE+FdH46GaC8gIHK9eLzYSpDo1oGmBpiVJEphyJiDp0uLD46KRBkj8lhO1+6kw==
+X-Received: by 2002:a05:600c:3512:b0:412:9eeb:fbca with SMTP id h18-20020a05600c351200b004129eebfbcamr7684112wmq.13.1709557326033;
+        Mon, 04 Mar 2024 05:02:06 -0800 (PST)
+Received: from hackbox2.linaro.org ([2a00:2381:fd67:101:f4c1:e8ff:fe8f:2fb2])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c229100b00412b2afb2c8sm17228496wmf.26.2024.03.04.05.02.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 04:46:07 -0800 (PST)
-Message-ID: <07f7315efef78b7a19dec16b59b74b15f7b97dd6.camel@gmail.com>
+        Mon, 04 Mar 2024 05:02:05 -0800 (PST)
+Date: Mon, 4 Mar 2024 13:02:04 +0000
+From: Haojian Zhuang <haojian.zhuang@linaro.org>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>
 Subject: Re: [PATCH] bpf: check mem for dynptr type
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Haojian Zhuang <haojian.zhuang@linaro.org>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>
-Date: Mon, 04 Mar 2024 14:46:06 +0200
-In-Reply-To: <20240303023732.1390919-1-haojian.zhuang@linaro.org>
+Message-ID: <ZeXGTP3ZIFRPGFCG@hackbox2.linaro.org>
 References: <20240303023732.1390919-1-haojian.zhuang@linaro.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+ <07f7315efef78b7a19dec16b59b74b15f7b97dd6.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07f7315efef78b7a19dec16b59b74b15f7b97dd6.camel@gmail.com>
 
-On Sun, 2024-03-03 at 02:37 +0000, Haojian Zhuang wrote:
-> When user sends message to bpf prog by a user ring buffer, a callback
-> in bpf prog should load data from the user ring buffer.
->=20
-> By default, check_mem_access() doesn't handle the type of
-> CONST_PTR_TO_DYNPTR. So verifier reports an invalid memory access issue.
->=20
-> So add the case of CONST_PTR_TO_DYNPTR type. Make bpf prog to handle
-> content in the user ring buffer.
->=20
+On Mon, Mar 04, 2024 at 02:46:06PM +0200, Eduard Zingerman wrote:
+> On Sun, 2024-03-03 at 02:37 +0000, Haojian Zhuang wrote:
+> > When user sends message to bpf prog by a user ring buffer, a callback
+> > in bpf prog should load data from the user ring buffer.
+> > 
+> > By default, check_mem_access() doesn't handle the type of
+> > CONST_PTR_TO_DYNPTR. So verifier reports an invalid memory access issue.
+> > 
+> > So add the case of CONST_PTR_TO_DYNPTR type. Make bpf prog to handle
+> > content in the user ring buffer.
+> > 
+> 
+> You are referring to bpf_user_ringbuf_drain() helper function, right?
+> Could you please provide an example of program that fails to verify?
+> (ideally the patch set should extend
+>  tools/testing/selftests/bpf/progs/user_ringbuf_success.c
+>  to make sure that intended use case is tested).
+> 
 
-You are referring to bpf_user_ringbuf_drain() helper function, right?
-Could you please provide an example of program that fails to verify?
-(ideally the patch set should extend
- tools/testing/selftests/bpf/progs/user_ringbuf_success.c
- to make sure that intended use case is tested).
+Yes, I'm referring to bpf_user_ringbuf_drain() helper function.
 
+Yes, I should extend bpf/progs/user_ringbuf_success.c. And it could be
+loaded by bpf/prog_tests/user_ringbuf.c.
+
+But I failed to find the binary of user_ringbuf.c after bpf test cases
+built. And there're no binaries for the test cases in bpf/prog_tests
+directory. How to make use of these test cases? I failed to find
+documents on it. Could you help to share any tips to me? Thanks
+
+Best Regards
+Haojian
 
