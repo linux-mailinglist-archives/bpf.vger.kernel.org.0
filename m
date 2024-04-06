@@ -1,75 +1,47 @@
-Return-Path: <bpf+bounces-26087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16FA89AB96
-	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 17:16:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67C1E89ABDE
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 18:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FF0D1F2193F
-	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 15:16:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D242823D5
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 16:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3488D39FE0;
-	Sat,  6 Apr 2024 15:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="WDRTBFYx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1748F3BBE1;
+	Sat,  6 Apr 2024 16:04:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941FC376E0;
-	Sat,  6 Apr 2024 15:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261173BBCB
+	for <bpf@vger.kernel.org>; Sat,  6 Apr 2024 16:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712416574; cv=none; b=tvK0PashjhNBBHi1QkXLVj3ByQsJg3zjTn7nRhpxwGWQl/P+/gG1PhNvzrgGRvzMfCC1zIvJTEBhr3BaBvRZv/R5f02GOiEvxE7QWn7vEZhzBx8au+5cPJJ5Xi75xnZ6I4GsCrLQAFC+zZnCPhlhqBhFHrGxli+fBSp8xKzWb+o=
+	t=1712419455; cv=none; b=CO2mXbpSh+QlPNyGE3JV0W2bjAYz+H5aL/r+3wZZS2KUldNY7Jg5wEM94ShAvQJrYTuzyMYvGXW7v0slzNkt9lJ2MXcbSwAFcp5vgP/M65g17D+jLNEtQV0QQbJxe2sn758Ca6LyN60ZIbIXCqRK/JVHeeL/j3pdWlgulWej7xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712416574; c=relaxed/simple;
-	bh=AjC9VPGBDKa+qIIk5rpRw8XzGhdO0n+wLvwpBvsUocg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m9bjfzETLr6Ok37kcW6ZSD7K9fWN27zOz6w/eT4DZWAeKlnRYGGtcpc7xfJ3v+Z9lYJ34WQUHsOkc8geWcEFKYMjAwAg1kOPZWuARu3EqboAQ8N//1SC2185h/J5AeDY7pcnmotLlJr8TeeChnq1tCIAaAGsEvpAxQBWy4FoEqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=WDRTBFYx; arc=none smtp.client-ip=195.19.76.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id 93FBAEF2DB4FB;
-	Sat,  6 Apr 2024 18:15:59 +0300 (MSK)
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id SecWJ8moq5Pd; Sat,  6 Apr 2024 18:15:59 +0300 (MSK)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id 5EF1FEF2DB4FE;
-	Sat,  6 Apr 2024 18:15:59 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru 5EF1FEF2DB4FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
-	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1712416559;
-	bh=t7XFvKjb/fmLNl9bggienWjZmjBucE0mCAmH+77OYak=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=WDRTBFYx3OPElQXj++OVzjp2iKo+06Th6kiMz1ASk7wYQ5XmEBVFGLBFZf7JBmMau
-	 VeVUUKlvJihsM+usuDUGFren83CF44GINJPM9kGJDHH/DhcrAP0oSmmI+KwQ4jCQ4b
-	 MO80/MHOMSSAHYTrNTm5zx54TVK5PcwS30WNxg3zqGtuvD2CjdbW0s08Id74Nd8wU+
-	 DTx7LLrvDNUVc2RJkMqvL0JvthZ2nX2zYzsiRQQ3kIswOkYz91j573fhsn8aRLC1ti
-	 4BnJL+HSEiYLXwWsP84dds+3JsIPmc5mRBChOiNSIMz6MEzeINwbVqgyeRdXLTnIJJ
-	 AG2ScTJaIVagQ==
-X-Virus-Scanned: amavisd-new at rosalinux.ru
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id zsqipvTHXt3j; Sat,  6 Apr 2024 18:15:59 +0300 (MSK)
-Received: from localhost.localdomain (unknown [213.87.161.43])
-	by mail.rosalinux.ru (Postfix) with ESMTPSA id 8B6F9EF2DB4FB;
-	Sat,  6 Apr 2024 18:15:58 +0300 (MSK)
-From: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1712419455; c=relaxed/simple;
+	bh=VTQECL2mkWvuxhM2/xJH0kKEro/udahGXuf+BsTW4n4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tK6gHL0Ozv+BbPITQHOHENSA1uY9Fbt4cpc0t1UAUEpQEY3/1eEkdJGwKXAwYuRy3vDTjpvtIwx4W8Fsnu4O298zw9IHYzQbF6/mRwy47ttRKB20aYV4T+gq1Oz09+3JJwkb/OhRMGYRQVifXI37Xbwj0rVQPYpNQp2B72e1tj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 079642B5514E; Sat,  6 Apr 2024 09:03:59 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] bpf: dereference of null in __cgroup_bpf_query() function
-Date: Sat,  6 Apr 2024 11:14:55 -0400
-Message-ID: <20240406151457.4774-1-m.lobanov@rosalinux.ru>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v5 0/5] bpf: Add bpf_link support for sk_msg and sk_skb progs
+Date: Sat,  6 Apr 2024 09:03:58 -0700
+Message-ID: <20240406160359.176498-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -79,34 +51,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-In the __cgroup_bpf_query() function, it is possible to dereference
-the null pointer in the line id =3D prog->aux->id; since there is no
-check for a non-zero value of the variable prog.
+One of our internal services started to use sk_msg program and currently
+it used existing prog attach/detach2 as demonstrated in selftests.
+But attach/detach of all other bpf programs are based on bpf_link.
+Consistent attach/detach APIs for all programs will make things easy to
+undersand and less error prone. So this patch added bpf_link
+support for BPF_PROG_TYPE_SK_MSG. Based on comments from
+previous RFC patch, I added BPF_PROG_TYPE_SK_SKB support as well
+as both program types have similar treatment w.r.t. bpf_link
+handling.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+For the patch series, patch 1 added kernel support. Patch 2
+added libbpf support. Patch 3 added bpftool support and
+patches 4/5 added some new tests.
 
-Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program at=
-tachment")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
----
- kernel/bpf/cgroup.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changelogs:
+  v4 -> v5:
+    - increase scope of mutex protection in link_release.
+    - remove previous-leftover entry in libbpf.map.
+    - make some code changes for better understanding.
+  v3 -> v4:
+    - use a single mutex lock to protect both attach/detach/update
+      and release/fill_info/show_fdinfo.
+    - simplify code for sock_map_link_lookup().
+    - fix a few bugs.
+    - add more tests.
+  v2 -> v3:
+    - consolidate link types of sk_msg and sk_skb to
+      a single link type BPF_PROG_TYPE_SOCKMAP.
+    - fix bpf_link lifecycle issue. in v2, after bpf_link
+      is attached, a subsequent prog_attach could change
+      that bpf_link. this patch makes bpf_link having
+      correct behavior such that it won't go away facing
+      other prog/link attach for the same map and the same
+      attach type.
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 491d20038cbe..7f2db96f0c6a 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1092,6 +1092,8 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
-const union bpf_attr *attr,
- 			i =3D 0;
- 			hlist_for_each_entry(pl, progs, node) {
- 				prog =3D prog_list_prog(pl);
-+               	       	if (!prog_list_prog(pl))
-+				continue;
- 				id =3D prog->aux->id;
- 				if (copy_to_user(prog_ids + i, &id, sizeof(id)))
- 					return -EFAULT;
+Yonghong Song (5):
+  bpf: Add bpf_link support for sk_msg and sk_skb progs
+  libbpf: Add bpf_link support for BPF_PROG_TYPE_SOCKMAP
+  bpftool: Add link dump support for BPF_LINK_TYPE_SOCKMAP
+  selftests/bpf: Refactor out helper functions for a few tests
+  selftests/bpf: Add some tests with new bpf_program__attach_sockmap()
+    APIs
+
+ include/linux/bpf.h                           |   6 +
+ include/linux/skmsg.h                         |   4 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/syscall.c                          |   4 +
+ net/core/sock_map.c                           | 270 ++++++++++++++++--
+ tools/bpf/bpftool/link.c                      |   9 +
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/lib/bpf/libbpf.c                        |   7 +
+ tools/lib/bpf/libbpf.h                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   5 +
+ tools/lib/bpf/libbpf_version.h                |   2 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 171 ++++++++++-
+ .../selftests/bpf/prog_tests/sockmap_listen.c |  38 +++
+ .../bpf/progs/test_skmsg_load_helpers.c       |  27 +-
+ .../bpf/progs/test_sockmap_pass_prog.c        |  17 +-
+ .../progs/test_sockmap_skb_verdict_attach.c   |   2 +-
+ 16 files changed, 537 insertions(+), 37 deletions(-)
+
 --=20
 2.43.0
 
