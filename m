@@ -1,216 +1,233 @@
-Return-Path: <bpf+bounces-23291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A1D88701F1
-	for <lists+bpf@lfdr.de>; Mon,  4 Mar 2024 14:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA2A589AB1D
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 15:44:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DEC61C22F8B
-	for <lists+bpf@lfdr.de>; Mon,  4 Mar 2024 13:02:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C01461C20C5E
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 13:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E81A3D3BE;
-	Mon,  4 Mar 2024 13:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="emTwkf0P"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C0E374D2;
+	Sat,  6 Apr 2024 13:44:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125083B797
-	for <bpf@vger.kernel.org>; Mon,  4 Mar 2024 13:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D846F34545
+	for <bpf@vger.kernel.org>; Sat,  6 Apr 2024 13:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709557334; cv=none; b=ZdTd1ex/SOURjwaib9H8rOkNoQbwFWAEpiWpXOBvBSIO+qIIpl8dJ72ReanDlzmBeVk8IsCiSaXVWKsi3fec5okoUh8JeNwK7bAX7w+BSvhZ6bLLbtcR2PwGsQgadlnhWWtPev823JvbMdH0IXXtjbdi4mocbCFfp5kZdAx3f9s=
+	t=1712411075; cv=none; b=np6wc9uIb5QqV+ep74KV/77hxZEjYxEUrXgbkJZC/CYQ+8Ik1z80RWhd8MbXa51GkPStBFx2os7AumKDSOEZJX3CtRQ4Ug8idR4E4OaYLYF5neCROxrHTOPgqvsKQQxD9znr4KV/1ahmSlnTkIh9RNYawH2asklLUMQ0YCAIVO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709557334; c=relaxed/simple;
-	bh=5M5V0DDCogKvRGIeGUSdnfpMyYAEumhFT9WYEfVcLyA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eM4NUTeqWsj7wTMy5/goSsC8pZWGCoCSxWecTbGzA+YUVhwvwnrW/FCY/Uu+imzfyn4FJQtY7tg2K5qoFbS0T8tGSMlf0J4ZBR3EQRIV+kV0EWvjs+SXFhcYp6Baufd/syUU3IB7hnkXQbio0xDirZn0WCDvFQPLzvzer5u7reg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=emTwkf0P; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709557332;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dAOwLpzxgUMqOOg0669y1n3/EdHToBJ2IPeng0bW5dw=;
-	b=emTwkf0Pt52GVffFUmRYDStUkX93wchwSpYgzi/A6Q6BL1/GFOdzZBBoAOdpORED4Ru7vk
-	upBB59xJgsBZNcLtnxVL69AFC3OZ8HExMkWa6EBbIt58tmyVCRLlRAxW4yf97X2cJaHWWn
-	uj7udLEy6GQsJMtjHHpbEdwsF788mG4=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-146-IqmcSASAMzi2_bF_DG4j9A-1; Mon, 04 Mar 2024 08:02:10 -0500
-X-MC-Unique: IqmcSASAMzi2_bF_DG4j9A-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a45190fd2fcso79385066b.0
-        for <bpf@vger.kernel.org>; Mon, 04 Mar 2024 05:02:10 -0800 (PST)
+	s=arc-20240116; t=1712411075; c=relaxed/simple;
+	bh=Y0I5OOiYLrisb9MHjIy5W/BnEWOKA7BhGwsnPl6CA8E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fDZKqOtiLWADV1PljFYjobLMVqAABGaqJCf8BEtUOtCTtQj/bnjBwifNI3yYEb9gitTKTBS6GAvXhuyICETeo3qtqZldgDFfax3GgYMz6ATJWbHnAu47Jf7jw30v3NtS7WHP5q3fFu3+g+C50WpfxMKBzB7CsCwDJrUxXptRo7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so329763539f.1
+        for <bpf@vger.kernel.org>; Sat, 06 Apr 2024 06:44:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709557329; x=1710162129;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dAOwLpzxgUMqOOg0669y1n3/EdHToBJ2IPeng0bW5dw=;
-        b=xMeRaVhVXUGgcVoZFIlJSZJCsSoWHe3D4mDrXs+qIMof7s4Rz4ltzYf6kjmz8cVzSz
-         zWGc/Sq5/AXPlaZlWj6TMu3ImrkHCuBgxxzxVMZCAYpMgGvgTL+CCrm0NH88S3ZxNq2X
-         nrRVsO7//56bzZivxIoNCa73oz+/NN2ot3U6ghf+urby0jR64QxdGjGkQSIiyHnbvH67
-         pN+vsapZDSs8/pNKfThJA2ln0tm51JuawLy5cPwWzQ+xX5SpNWH9NrwHySLvBwMBrCZo
-         CTVcKVdGR9k7T7N2zjEa6PNLfOZhgPJ3LnOzMZKJuDFe8TATm7aELIiYaq1+DTjBZp9N
-         3a/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUbs0KH+qexvEeaXOqo6AUsdHPzzOcDMaeXUm5pW50wAeUpnnmaVJQ0x0+u6T218Itm2U4FkDK3YZJbuasIamkIx8wQ
-X-Gm-Message-State: AOJu0YyJoxNA9T5M/z2IRoko2gvkNd3GSZIlRPm/+GOma8wImZOsV/nU
-	klSYups+rTppgkh5HBGC1uZYXs2hq8PKuJhqrLnjtRefyz5WUKdP4rNvA0EV9DJm6Wkg1OvC1H2
-	PvC/qSTgaEODnY/stqzzy9n1tctt04QYlCRsNDGFRZP62aWHGcQ==
-X-Received: by 2002:a17:906:c355:b0:a3e:7d36:62b1 with SMTP id ci21-20020a170906c35500b00a3e7d3662b1mr6522004ejb.46.1709557329563;
-        Mon, 04 Mar 2024 05:02:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IETE0MIw9GAw5FGZ8OHOSQsq0enWqFqm0Jab1zJM3q5ByFZ5FivbKUkBulc1DyUzkfMlJ7buQ==
-X-Received: by 2002:a17:906:c355:b0:a3e:7d36:62b1 with SMTP id ci21-20020a170906c35500b00a3e7d3662b1mr6521976ejb.46.1709557329098;
-        Mon, 04 Mar 2024 05:02:09 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170906111500b00a45464679b1sm1122035eja.127.2024.03.04.05.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 05:02:08 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 614EF112EDBF; Mon,  4 Mar 2024 14:02:08 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf v2 2/2] bpf: Fix hashtab overflow check on 32-bit
- arches
-In-Reply-To: <CAADnVQLzVJRut0v2dQPbBUDW971Fd-EjkOf0pyLh5-W7wYwiYA@mail.gmail.com>
-References: <20240229112250.13723-1-toke@redhat.com>
- <20240229112250.13723-3-toke@redhat.com>
- <CAADnVQJTEo8c1=vs8avDakMKYjBopVXKNQ5f=bgrBSqELZhBow@mail.gmail.com>
- <65e10367cb393_33719208c2@john.notmuch> <878r32b04u.fsf@toke.dk>
- <CAADnVQLzVJRut0v2dQPbBUDW971Fd-EjkOf0pyLh5-W7wYwiYA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 04 Mar 2024 14:02:08 +0100
-Message-ID: <87plwa6tgv.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1712411073; x=1713015873;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4q0SLtk19wfhTyOo/Bn7vTE4bJX1NRQ4iTKl5rE20uQ=;
+        b=vy2tY6wpmVfYe4vmlnoMs8hlghIfGj0cmZXXUx5fxZ3IES6e6MxbMDm0W/bPlP0kQU
+         6/0I5WCWUFhv4oXt9XzUTGloeXX5z7WU8ppxh5p/LpXB7yUaw2eBgOe5UjfMRboICw38
+         7M9uGg5oV364VFOFlnzYN8/cZ2gBPsjwo6KViuE5EqqMiu7iEMkbEmrMvleh2kOXuBbD
+         G6eJad3XlIoNQWPoj8GzZIBkBbifMLIm/TBI/4ueC+B+UPUy7TSbekHcnouFWq/h9jHA
+         jvPW31ZSksWbHZPj6UnXDTvZhw0F9NS15LSPf9pZI1i3jLrY0nLgILJ1aAOeflSiDaAN
+         H5Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCUE8c/61RAYOxOsGc6PQ7lxSqz9x88oNfYD6Onx3HvU+R58GDg8rnr0EtBC4lCj8yeJA+TWEGXX59tj7RweHadP2yJc
+X-Gm-Message-State: AOJu0YwCLEC1t9TWl/H8/wz1xPAdFDHk7Oadk98X6qtun6isQ1T2Xbzs
+	Ss1U9QBaaXH9v/K3SBF6jgQWJQcHlCGztlDu3Vos4+XhKtYhZx5QrSr8p7xTKNEdaJZKAzVrHyx
+	8yZLjqmRtm+aHEBXuhzEXsJ5mP2GomaTliCEiNfHMcNo3sezWlPaj5Rw=
+X-Google-Smtp-Source: AGHT+IHwFFRTUFT4GCJ1uM+6937cBPAwnvNrp8mwKPvygIA2rlZVjp9yqDq0OP+TpMlttf+XDsP7rtsT/+9dzZlFFO41D6k5aZ7U
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6638:891c:b0:47d:6a52:4efa with SMTP id
+ jc28-20020a056638891c00b0047d6a524efamr285122jab.5.1712411073146; Sat, 06 Apr
+ 2024 06:44:33 -0700 (PDT)
+Date: Sat, 06 Apr 2024 06:44:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b97fba06156dc57b@google.com>
+Subject: [syzbot] [bpf?] KASAN: stack-out-of-bounds Read in hash
+From: syzbot <syzbot+9459b5d7fab774cf182f@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Hello,
 
-> On Fri, Mar 1, 2024 at 4:35=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <=
-toke@redhat.com> wrote:
->>
->> John Fastabend <john.fastabend@gmail.com> writes:
->>
->> > Alexei Starovoitov wrote:
->> >> On Thu, Feb 29, 2024 at 3:23=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgen=
-sen <toke@redhat.com> wrote:
->> >> >
->> >> > The hashtab code relies on roundup_pow_of_two() to compute the numb=
-er of
->> >> > hash buckets, and contains an overflow check by checking if the res=
-ulting
->> >> > value is 0. However, on 32-bit arches, the roundup code itself can =
-overflow
->> >> > by doing a 32-bit left-shift of an unsigned long value, which is un=
-defined
->> >> > behaviour, so it is not guaranteed to truncate neatly. This was tri=
-ggered
->> >> > by syzbot on the DEVMAP_HASH type, which contains the same check, c=
-opied
->> >> > from the hashtab code. So apply the same fix to hashtab, by moving =
-the
->> >> > overflow check to before the roundup.
->> >> >
->> >> > The hashtab code also contained a check that prevents the total all=
-ocation
->> >> > size for the buckets from overflowing a 32-bit value, but since all=
- the
->> >> > allocation code uses u64s, this does not really seem to be necessar=
-y, so
->> >> > drop it and keep only the strict overflow check of the n_buckets va=
-riable.
->> >> >
->> >> > Fixes: daaf427c6ab3 ("bpf: fix arraymap NULL deref and missing over=
-flow and zero size checks")
->> >> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> > ---
->> >> >  kernel/bpf/hashtab.c | 10 +++++-----
->> >> >  1 file changed, 5 insertions(+), 5 deletions(-)
->> >> >
->> >> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->> >> > index 03a6a2500b6a..4caf8dab18b0 100644
->> >> > --- a/kernel/bpf/hashtab.c
->> >> > +++ b/kernel/bpf/hashtab.c
->> >> > @@ -499,8 +499,6 @@ static struct bpf_map *htab_map_alloc(union bpf=
-_attr *attr)
->> >> >                                                           num_possi=
-ble_cpus());
->> >> >         }
->> >> >
->> >> > -       /* hash table size must be power of 2 */
->> >> > -       htab->n_buckets =3D roundup_pow_of_two(htab->map.max_entrie=
-s);
->> >> >
->> >> >         htab->elem_size =3D sizeof(struct htab_elem) +
->> >> >                           round_up(htab->map.key_size, 8);
->> >> > @@ -510,11 +508,13 @@ static struct bpf_map *htab_map_alloc(union b=
-pf_attr *attr)
->> >> >                 htab->elem_size +=3D round_up(htab->map.value_size,=
- 8);
->> >> >
->> >> >         err =3D -E2BIG;
->> >> > -       /* prevent zero size kmalloc and check for u32 overflow */
->> >> > -       if (htab->n_buckets =3D=3D 0 ||
->> >> > -           htab->n_buckets > U32_MAX / sizeof(struct bucket))
->> >> > +       /* prevent overflow in roundup below */
->> >> > +       if (htab->map.max_entries > U32_MAX / 2 + 1)
->> >> >                 goto free_htab;
->> >>
->> >> No. We cannot artificially reduce max_entries that will break real us=
-ers.
->> >> Hash table with 4B elements is not that uncommon.
->>
->> Erm, huh? The existing code has the n_buckets > U32_MAX / sizeof(struct
->> bucket) check, which limits max_entries to 134M (0x8000000). This patch
->> is *increasing* the maximum allowable size by a factor of 16 (to 2.1B or
->> 0x80000000).
->>
->> > Agree how about return E2BIG in these cases (32bit arch and overflow) =
-and
->> > let user figure it out. That makes more sense to me.
->>
->> Isn't that exactly what this patch does? What am I missing here?
->
-> I see. Then what are you fixing?
-> roundup_pow_of_two() will return 0 and existing code is fine as-is.
+syzbot found the following issue on:
 
-On 64-bit arches it will, yes. On 32-bit arches it ends up doing a
-32-bit left-shift (1UL << 32) of a 32-bit type (unsigned long), which is
-UB, so there's no guarantee that it truncates down to 0. And it seems at
-least on arm32 it does not: syzbot managed to trigger a crash in the
-DEVMAP_HASH code by creating a map with more than 0x80000000 entries:
+HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=148ad855180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=9459b5d7fab774cf182f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d86795180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143eff76180000
 
-https://lore.kernel.org/r/000000000000ed666a0611af6818@google.com
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
 
-This patch just preemptively applies the same fix to the hashtab code,
-since I could not find any reason why it shouldn't be possible to hit
-the same issue there. I haven't actually managed to trigger a crash
-there, though (I don't have any arm32 hardware to test this on), so in
-that sense it's a bit theoretical for hashtab. So up to you if you want
-to take this, but even if you don't, could you please apply the first
-patch? That does fix the issue reported by syzbot (cf the
-reported-and-tested-by tag).
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9459b5d7fab774cf182f@syzkaller.appspotmail.com
 
--Toke
+==================================================================
+BUG: KASAN: stack-out-of-bounds in jhash2 include/linux/jhash.h:128 [inline]
+BUG: KASAN: stack-out-of-bounds in hash+0x1bf/0x410 kernel/bpf/bloom_filter.c:29
+Read of size 4 at addr ffffc900039f7c00 by task syz-executor297/5079
 
+CPU: 0 PID: 5079 Comm: syz-executor297 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ jhash2 include/linux/jhash.h:128 [inline]
+ hash+0x1bf/0x410 kernel/bpf/bloom_filter.c:29
+ bloom_map_peek_elem+0xb2/0x1b0 kernel/bpf/bloom_filter.c:43
+ bpf_prog_00798911c748094f+0x42/0x46
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+ __traceiter_ext4_drop_inode+0x76/0xd0 include/trace/events/ext4.h:265
+ trace_ext4_drop_inode include/trace/events/ext4.h:265 [inline]
+ ext4_drop_inode+0x20a/0x270 fs/ext4/super.c:1450
+ iput_final fs/inode.c:1711 [inline]
+ iput+0x45e/0x900 fs/inode.c:1767
+ d_delete_notify include/linux/fsnotify.h:301 [inline]
+ vfs_rmdir+0x38f/0x4c0 fs/namei.c:4220
+ do_rmdir+0x3b5/0x580 fs/namei.c:4266
+ __do_sys_rmdir fs/namei.c:4285 [inline]
+ __se_sys_rmdir fs/namei.c:4283 [inline]
+ __x64_sys_rmdir+0x49/0x60 fs/namei.c:4283
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fd25730cfb7
+Code: 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff78ca7198 EFLAGS: 00000207
+ ORIG_RAX: 0000000000000054
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd25730cfb7
+RDX: fffffffffffff000 RSI: 0000000000000000 RDI: 00007fff78ca82c0
+RBP: 0000000000000065 R08: 0000555571b9a73b R09: 0000000000000000
+R10: 0000000000000100 R11: 0000000000000207 R12: 00007fff78ca82c0
+R13: 0000555571b9a6c0 R14: 00007fff78ca82c0 R15: 0000000000000001
+ </TASK>
+
+The buggy address belongs to stack of task syz-executor297/5079
+ and is located at offset 0 in frame:
+ bpf_trace_run2+0x0/0x420
+
+This frame has 1 object:
+ [32, 48) 'args'
+
+The buggy address belongs to the virtual mapping at
+ [ffffc900039f0000, ffffc900039f9000) created by:
+ copy_process+0x5d1/0x3df0 kernel/fork.c:2219
+
+The buggy address belongs to the physical page:
+page:ffffea00007f36c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1fcdb
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO), pid 5077, tgid 5077 (syz-executor297), ts 73887639293, free_ts 73091924927
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
+ __alloc_pages+0x256/0x680 mm/page_alloc.c:4569
+ alloc_pages_mpol+0x3de/0x650 mm/mempolicy.c:2133
+ vm_area_alloc_pages mm/vmalloc.c:3135 [inline]
+ __vmalloc_area_node mm/vmalloc.c:3211 [inline]
+ __vmalloc_node_range+0x9a4/0x14a0 mm/vmalloc.c:3392
+ alloc_thread_stack_node kernel/fork.c:309 [inline]
+ dup_task_struct+0x3e9/0x7d0 kernel/fork.c:1114
+ copy_process+0x5d1/0x3df0 kernel/fork.c:2219
+ kernel_clone+0x21e/0x8d0 kernel/fork.c:2796
+ __do_sys_clone kernel/fork.c:2939 [inline]
+ __se_sys_clone kernel/fork.c:2923 [inline]
+ __x64_sys_clone+0x258/0x2a0 kernel/fork.c:2923
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+page last free pid 5072 tgid 5072 stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1140 [inline]
+ free_unref_page_prepare+0x968/0xa90 mm/page_alloc.c:2346
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
+ mm_free_pgd kernel/fork.c:803 [inline]
+ __mmdrop+0xb9/0x3d0 kernel/fork.c:919
+ exec_mmap+0x69d/0x730 fs/exec.c:1051
+ begin_new_exec+0x119b/0x1ce0 fs/exec.c:1309
+ load_elf_binary+0x961/0x2590 fs/binfmt_elf.c:996
+ search_binary_handler fs/exec.c:1777 [inline]
+ exec_binprm fs/exec.c:1819 [inline]
+ bprm_execve+0xaf8/0x1790 fs/exec.c:1871
+ do_execveat_common+0x553/0x700 fs/exec.c:1978
+ do_execve fs/exec.c:2052 [inline]
+ __do_sys_execve fs/exec.c:2128 [inline]
+ __se_sys_execve fs/exec.c:2123 [inline]
+ __x64_sys_execve+0x92/0xb0 fs/exec.c:2123
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Memory state around the buggy address:
+ ffffc900039f7b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc900039f7b80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc900039f7c00: f1 f1 f1 f1 00 00 f3 f3 00 00 00 00 00 00 00 00
+                   ^
+ ffffc900039f7c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc900039f7d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
