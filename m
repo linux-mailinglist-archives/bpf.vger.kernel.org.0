@@ -1,103 +1,172 @@
-Return-Path: <bpf+bounces-26096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6371789AC0A
-	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 18:34:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABAC89AC5D
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 18:59:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D39B71F2185B
-	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 16:34:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26F271C20BFE
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 16:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDC43714C;
-	Sat,  6 Apr 2024 16:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xt7H+g2Z"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEB03FBA2;
+	Sat,  6 Apr 2024 16:59:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BDF4107B3
-	for <bpf@vger.kernel.org>; Sat,  6 Apr 2024 16:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880BA2137E
+	for <bpf@vger.kernel.org>; Sat,  6 Apr 2024 16:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712421291; cv=none; b=kmd5/LH7wphVO+fdkVv62iE3sCjX0D+Qcmo7ImIAacC2xH68AJCzOP6ZyipINlBiITljeM6fqigtleDRB258MrRjVrBrOJTkdKmJLKkzBWBE1+EFCbUxo1sKChI8dc3lWfNhtbicyEEW7XSTntk1TtJelxFa6En/mJKpwIz9aRU=
+	t=1712422760; cv=none; b=uK7rqz00rJyqoy/8G9XIs5072OUfF5TVdCa8AMrzftkModx3Wmpvr6d60+m5pnRQK7CxTdxRKH6ihdIqVMSTAe0YVPvmL3OHvLMv1rEmmY2wAqaCND8XNFs0ZFRuaEpT1/RYInm3t9UcesBYM3erykO/ieFVNti2OoMw/JAfG1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712421291; c=relaxed/simple;
-	bh=ngAW/MaOLvZgswa/rXBOih7jFqyv+WY+39ZTRZ62Bbc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KxZG61YPJ5CNfeSNfhK/4PWeNvR/beuLb4v42o6QwHLLz4slPpes9EJ8n5kifXlT2M33u/0MFEmUePP9bZLWTqHelJsGje1utjY4KlrXQq8LhWn7tzGaBVN31MPvKGWsKr0/4gR4HwtuqKcIVgSYjbY3JVbVPdTUgD1FF3m9cpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xt7H+g2Z; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34175878e3cso2189939f8f.0
-        for <bpf@vger.kernel.org>; Sat, 06 Apr 2024 09:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712421288; x=1713026088; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ngAW/MaOLvZgswa/rXBOih7jFqyv+WY+39ZTRZ62Bbc=;
-        b=Xt7H+g2ZxnWOp2xCL659W+boURtDRZEy71oKO0RGjeAEyA/n1prULbYr6LzQN9i56r
-         vJ9/tINt1lwJIFpJaCurftiJ7t/zhSDO3JxxZsJH7eAj9gN+7nKIMznbxBV2RHogGW4f
-         vRq1DR45NsrRbGm83Bbueryvkj3rBA5VVZQdxCOwNpkqC/cuS2srZi8VHypTB54tMLB2
-         U8XRAvGny0UdenD0sUqQ1eVQm0LoYGMFntXPrUfA+3WIeHIbea8TDvy7V69KvkI5GPKK
-         r5+HHUtjMeConEQw+g3OsNTKrx3I9tfmo+OF9KhlNIH+/Ax8US97u/IhZVrUBZB/9h7A
-         55PA==
+	s=arc-20240116; t=1712422760; c=relaxed/simple;
+	bh=zsEqWQkVk4Cr2D8uh3GOTtBQ7gjJt79SjsrrYvRgtKs=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fKjrcHi4R0i6/d37xG2RoD1IAtil9/xUrZDeECdoLAHvYeudgVbdvmNXmK1tUjtA3LQ9SD41NttS5GtsUud2LFeBau5dZ9HEI5TYlEHDI7whj6daKHx7bwPpJ3hynSz0+neRk+AOrnmRkoEKbEv6WEA2UMaDrVStynNXPmfRal4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36a1e4a5017so248015ab.0
+        for <bpf@vger.kernel.org>; Sat, 06 Apr 2024 09:59:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712421288; x=1713026088;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ngAW/MaOLvZgswa/rXBOih7jFqyv+WY+39ZTRZ62Bbc=;
-        b=aiyHqZGZ9Ln81I0F6vaHTtPcz8k/Yv2loATuOgLK/JRONEaC+qcmStG6F9k+DdIQg9
-         A9Knz0XWz3zVAngEbnydetQ6t4kHP7KLpSv3PTNQYVt4Jp4Ah8eEUdB2wOF25D2g5Fq7
-         +0+pEGGEjcrw3jXu7prjy2oY4UlmPkgf2wddfbw1JRH0fGbTAjUIhjQnJiM+zU82OmtO
-         WfLC+IsBOXgucvZr2Np9gHMOeHIVgVggrr+F+v9hmvPaCTPJQG1UL3+5wskpJp86J5cR
-         /47vpkxCxvue1bvRZe8A7E80Pk4JWrgWslf2Ui05PY+JBjzFyfOhMFnet3Oqw5d2yS2U
-         zyYA==
-X-Forwarded-Encrypted: i=1; AJvYcCWb6WRz21QXQZdWM0sYb+mKgftWuSeREuxZBT3+fcy6mOI0+LucY/BhvHaPU31N9OuGAYPqAHZlINZYpgRHhv1jXu4m
-X-Gm-Message-State: AOJu0YzxmJz2TW2Brr1e+a5d35U8dJPPZqweGQYXn83D7CbKKpoKY4mw
-	x9vqpjiyCXi0V5KfPbjzhTWOtnfHbA7o4wqKXd3jMFvbOn7oomVc
-X-Google-Smtp-Source: AGHT+IHgiecWJ4g8YYT6nmLy4xfTukGUqZg85IYZlV5xXuwjF7306KzU6HBQ71w4DhOIjuFAuirb1Q==
-X-Received: by 2002:a05:6000:1a47:b0:33e:d244:9c62 with SMTP id t7-20020a0560001a4700b0033ed2449c62mr3452158wry.68.1712421288226;
-        Sat, 06 Apr 2024 09:34:48 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id x15-20020a5d490f000000b003439b45ca08sm4785356wrq.17.2024.04.06.09.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Apr 2024 09:34:47 -0700 (PDT)
-Message-ID: <90f0f7886ea1656eaa196f89c760b01a0d09ddf6.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add tests for atomics in
- bpf_arena.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	memxor@gmail.com, puranjay@kernel.org, kernel-team@fb.com
-Date: Sat, 06 Apr 2024 19:34:46 +0300
-In-Reply-To: <20240405231134.17274-2-alexei.starovoitov@gmail.com>
-References: <20240405231134.17274-1-alexei.starovoitov@gmail.com>
-	 <20240405231134.17274-2-alexei.starovoitov@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1712422757; x=1713027557;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zv9BUdrmcvXndcHhtFT9TLeM3fSy66U/W1eBLLniaVk=;
+        b=TDY3iA1i0C5LYUpGs31pdP0MmtaRf441bRO8K0A/vuHfayGCHjkacc9XB2RQ/1gXAF
+         k0JuTKQVMPowX7GEGFrnAKr0VD2Y3g2WPnzV8ZLpN+QP1bXqXBw1NqxJDpi6HCuEASsd
+         PJosTqWBvAN2kje3cdbN4YmAHi4Y9nROlfz+Mjfl4I+u/RwmP59BV1Jd0osKYqDUhR86
+         wiqEHi8i84NRqC1cn/Fn3iEUuMw43d9+IVP2zqMKQd8Xu2eZVYMMRbcRyetWZKYLyDwf
+         ihgHzqolwfRtU7DYnDSi3QfbNmRJ0EV1jwotdf0UqkZZIhJat9v4gEmT8VGTdMv8lK95
+         wLBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWmZeqMmQGuaZpsbqsTsObcsr3eu41JtCrdMHyIoN1c4iFWKozydLaYFpm6f9HjHk0NlLCULo3m2li7LLq2W1GrasQt
+X-Gm-Message-State: AOJu0YxYNA9vfm3ehUR+iMokMFzcw5zD7wl9J6JjbrFyzvVIz7I4gPag
+	MLnfJ9DvXrTjw/SSBCorWHzv4l9mOofypMQ1NGfb3dPoJ2YRj1v0ZKSccfwUcqCdFZlXe/asHXj
+	cUNnkj0grAJXxqhc+1mgi/sWBxGqSSPwMFIpYQ8KkQylLU9TpjKexkIE=
+X-Google-Smtp-Source: AGHT+IHPpnShZ2xt3dJaVBMnP1fvTrl/XrU/ceyS4wYI0yGevfbK7U8UnIkhkiQEacW9760UTxEsY3iwPLM2fcNJ/pNUr7h5tHrS
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1c4e:b0:366:b246:2f10 with SMTP id
+ d14-20020a056e021c4e00b00366b2462f10mr359575ilg.2.1712422757733; Sat, 06 Apr
+ 2024 09:59:17 -0700 (PDT)
+Date: Sat, 06 Apr 2024 09:59:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002e2b130615707e3c@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_lru_percpu_map_lookup_elem
+From: syzbot <syzbot+b8d77b9bb107fa1bd641@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2024-04-05 at 16:11 -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
->=20
-> Add selftests for atomic instructions in bpf_arena.
->=20
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+Hello,
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    026e680b0a08 Merge tag 'pwm/for-6.9-rc3-fixes' of git://gi..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=173c55e5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8d77b9bb107fa1bd641
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1495512d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143c2415180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b5659d2008c/disk-026e680b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7fd1552fafde/vmlinux-026e680b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ba622b1b0ec4/bzImage-026e680b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b8d77b9bb107fa1bd641@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+BUG: KMSAN: uninit-value in htab_lru_percpu_map_lookup_elem+0x39a/0x580 kernel/bpf/hashtab.c:2326
+ __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+ htab_lru_percpu_map_lookup_elem+0x39a/0x580 kernel/bpf/hashtab.c:2326
+ ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+ bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+ __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x6a5/0xa30 mm/slub.c:4377
+ kvfree+0x69/0x80 mm/util.c:680
+ __bpf_prog_put_rcu+0x37/0xf0 kernel/bpf/syscall.c:2232
+ rcu_do_batch kernel/rcu/tree.c:2196 [inline]
+ rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
+ rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
+ __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu kernel/softirq.c:633 [inline]
+ irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
+ asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
+ __preempt_count_dec_and_test arch/x86/include/asm/preempt.h:94 [inline]
+ flush_tlb_mm_range+0x294/0x320 arch/x86/mm/tlb.c:1036
+ flush_tlb_page arch/x86/include/asm/tlbflush.h:254 [inline]
+ ptep_clear_flush+0x166/0x1c0 mm/pgtable-generic.c:101
+ wp_page_copy mm/memory.c:3329 [inline]
+ do_wp_page+0x419d/0x66e0 mm/memory.c:3660
+ handle_pte_fault mm/memory.c:5316 [inline]
+ __handle_mm_fault mm/memory.c:5441 [inline]
+ handle_mm_fault+0x5b76/0xce00 mm/memory.c:5606
+ do_user_addr_fault arch/x86/mm/fault.c:1362 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x419/0x730 arch/x86/mm/fault.c:1563
+ asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:623
+
+Local variable stack created at:
+ __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+
+CPU: 1 PID: 5015 Comm: syz-executor232 Not tainted 6.9.0-rc2-syzkaller-00002-g026e680b0a08 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
