@@ -1,185 +1,196 @@
-Return-Path: <bpf+bounces-26104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E31BA89ACAF
-	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 20:49:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D805689ACDE
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 22:17:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49602B21951
-	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 18:49:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D6041F23147
+	for <lists+bpf@lfdr.de>; Sat,  6 Apr 2024 20:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B9347F50;
-	Sat,  6 Apr 2024 18:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SMfjXadp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2864E1C1;
+	Sat,  6 Apr 2024 20:17:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1AB4D9E5
-	for <bpf@vger.kernel.org>; Sat,  6 Apr 2024 18:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE35B4AEFB
+	for <bpf@vger.kernel.org>; Sat,  6 Apr 2024 20:17:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712429364; cv=none; b=WkHlxH9VvbIE7LVYWTmvypJRNxbmSInlH6d3mAMv6X66pjiIhC4LdZBNJVlD7cT+OjyTava/MyvqppK1E2ft4jwZ+0JrG04NCwk+1pe8nAiQerl1v5vl5ryXREM2DMCRV2mt6HxU7TdwfkYvqMB5RL7qvaDFElNJ/yAJ9Z4kt5A=
+	t=1712434642; cv=none; b=I0UlLMhKLa4gw4G5N7KdGcch0cKaf8/SML67E54zjhNvV29bHsc3AOCOjJR4lGjkYOUaBY2G0R/Vlu7a4bvOEUqTZbetuJuMEiWLsJSdD8LAYAPgMyyZCnfTMDvP+lFsYmB2aHwZafCKyAR/A3G7i9Xl2YWwHvd4OUahqWmtzEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712429364; c=relaxed/simple;
-	bh=t43CWXr1AvahMUiOitpxFJEZO/IZFQVwkKpyajmnW/Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=udArrtX4vexJ2NKKqsfOfiQQgJYOXfSkAmn0xykTYwrwCYexvX/d0fRe4cokHibKxqzuABLz6dICQdYlF1CmtPAF0Lasrm7fq/xAJjyXxZ8efAZPJJPCp3NeZ1Kt/CUf6p/iiBhynjzmIXOI/3vQ+3RRQ/ZrrMHYQjI667xs64Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SMfjXadp; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so635087b3a.0
-        for <bpf@vger.kernel.org>; Sat, 06 Apr 2024 11:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712429362; x=1713034162; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aCYODf1ZHtJVtBJfoxRO1z6V3mc/7NFaWgOJZp9PFJw=;
-        b=SMfjXadpwjBrvr+ba04y8Bryb6WBC9/z991i0T313GTQ5mJw58IzyrjIUUFAthuHYb
-         +ECJWsAP0N9Z2wb8LamaW3kN+pB9HBOFi4ksKGXAFXfIT5EBzqnc9JjAL5ZyfNrJ2guU
-         r5mSJiPM6WqattjQkjkpTLx4SJhq4k7PGb5kJF0p0EgtKyVPwEmrTaXMiSMynHDI/lFR
-         cr7NgXenL9Ozty/VAqnUqgbp0gXh6DWTwAVW63nQOcyXVOsVOsGKACRngi4VbhJUm/KB
-         QLqnfcPJF6LQQ1Yo89sGNfXnV5A+/52iv+9NssRoSX4zQVWkkTeUoAhfWY/Zjg4TBULl
-         Ma4w==
+	s=arc-20240116; t=1712434642; c=relaxed/simple;
+	bh=l5PIYq9FbTCxq1f1mZGF0vudjp5WVOOL2Paqpsn7l0s=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ILdGV/i348sQsdx0t7Ss61PAqb/zy1xBL7f5GopQdYZetc07WoolW1Yrt5PLRm4nmOczizDp72xYygbFsriWDqTqzeJHKnxtn56i0gUaP9i3rRIyyd2V3JrV5N3ji0qj4DtN0vtxBZXj3k0vvkusvxgCBae6VvvfmrcHOXZ4oc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5dbbc3e9fso14004139f.1
+        for <bpf@vger.kernel.org>; Sat, 06 Apr 2024 13:17:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712429362; x=1713034162;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aCYODf1ZHtJVtBJfoxRO1z6V3mc/7NFaWgOJZp9PFJw=;
-        b=CiwzuB/Ox6g+MysGbaCtp8/4Yw8qRTF7Fa0YvWCoVk4V0n0yu4nkcncI1qL0GSnceo
-         FJxEfPj2F90USDVPzkNyZvgyjiE+sFNqTwugpscpqQAjkdCJ64wWBztu4gv/ELHox8Oz
-         JZUB5FSgbnILUbvUNnudjOHMEHlnCmccbCIjNl/D0k1MflNVxEcJDib7lBbuYt/b78Pd
-         9ThCyAVtbGFY07kL1k1FJv7ubV+oK918y+1sjE8aM1kpdCQp1QJV2vH4pCLQqgLeUL8k
-         B4rn93cFk85lFQPIR2L8298dAIA4FC+ASbCqtNdEruLMVNN8sL/LGfMeYsKVij9oUcr6
-         l6tw==
-X-Gm-Message-State: AOJu0YzbO7W0NwALHjADxgOTo9kkPkGRp/mR9Z1PnG8V/Zyamtzqx4Zb
-	f1tdn6KKJvgLL9+Zkq2UgZy3roN4CmQw8MJyF9Kc2rdsLp5aga+F9+SMR2c5GI/TZlNX9EVgPHu
-	hIy2FmNjZ7c9ULB4Xam4p1cQuPhc=
-X-Google-Smtp-Source: AGHT+IGxnxytLYwws9H6HNfX+zGF/BZOKw4A0736856xfpN8f5NBGwm94qArMwlYvvjPSrb2UjGdYtS2EwPpU1dBbik=
-X-Received: by 2002:a05:6a21:150d:b0:1a7:5972:f04 with SMTP id
- nq13-20020a056a21150d00b001a759720f04mr149056pzb.16.1712429362206; Sat, 06
- Apr 2024 11:49:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712434640; x=1713039440;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ycvPrHEvjrn4zRdk7erEVtCAK7KuU2LMF20y2Gf7rxw=;
+        b=cS6oPbBka8YBf9rW7WPMCM9XWgbsBvyB/lAIThnvWuzFayUTqZRv7MhIBb1GQO9yjk
+         M8JP8xpABD+q0ds+NM5D4SqnGzQiHca0RwWSfeU5z+kGh8VkUXcEPGdurU/NmCLTWXvf
+         ek5BH/n8UVACnWO0EgamcxA09b8lRmQ5D8mWOgq6I3jrJedDMJ4ZM+GxlBvhfluQiDR0
+         lurQ1jqg0N0DGhkARStH/oJiAMJolA55TioqS18pjsDJTCv4UH33OIBkFrf/UP2oQMfr
+         M2cm6FWmc5Bq+iQCZFqg4BwWIuZE9pJONREt7iMxh9VqbmDj7xeNt+ExwTWhrCoGbv2f
+         ozgg==
+X-Forwarded-Encrypted: i=1; AJvYcCXDC0VAV2lBvEb9DcS0VlEx2fwpLBMpPCvAl11uMoJGC3GnURQQMAD2LXrjaBi5LBCW3mf+MQpIjWhoC5qqlefWOOlF
+X-Gm-Message-State: AOJu0YzIWxAomA1sT6hCYploLCgPFOl4yeiwuyIDkwvVfaVzO3MYJxkl
+	VYwFIGaUASu+dKYM2alxbN3xZHYOp/4max+nm4kU8sa2hJHQ59r8N/wWL/2+85wrXiA+4QS/zfI
+	chDifNbnLDw7Zc3GxVn3sLRut2Ecbxwgop9rgLMoMGfHzfOPFH4blkiI=
+X-Google-Smtp-Source: AGHT+IEZlwJIzLsGHFzp/vi8PSy4ul1ALtE8+7sYQ8ycE9GjtQLPAoqyz+M1ZhapFoobT7VvZWA6KDv7SINUTvqu/HtROMxYpTYv
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240406160359.176498-1-yonghong.song@linux.dev> <20240406160409.178297-1-yonghong.song@linux.dev>
-In-Reply-To: <20240406160409.178297-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Sat, 6 Apr 2024 11:49:09 -0700
-Message-ID: <CAEf4BzYpoANeuoWX4EHktf3hffDejLYmvL89sjy3NZv35aC+3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/5] libbpf: Add bpf_link support for BPF_PROG_TYPE_SOCKMAP
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jakub Sitnicki <jakub@cloudflare.com>, John Fastabend <john.fastabend@gmail.com>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>
+X-Received: by 2002:a05:6638:4090:b0:47f:cea3:5cf6 with SMTP id
+ m16-20020a056638409000b0047fcea35cf6mr159620jam.2.1712434640088; Sat, 06 Apr
+ 2024 13:17:20 -0700 (PDT)
+Date: Sat, 06 Apr 2024 13:17:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006c85760615734276@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_lru_map_delete_elem
+From: syzbot <syzbot+d40ad71c1ba64324d256@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 6, 2024 at 9:04=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
-> Introduce a libbpf API function bpf_program__attach_sockmap()
-> which allow user to get a bpf_link for their corresponding programs.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  tools/lib/bpf/libbpf.c         | 7 +++++++
->  tools/lib/bpf/libbpf.h         | 2 ++
->  tools/lib/bpf/libbpf.map       | 5 +++++
->  tools/lib/bpf/libbpf_version.h | 2 +-
->  4 files changed, 15 insertions(+), 1 deletion(-)
->
+Hello,
 
-I feel like I mentioned this before, but maybe not. Besides there
-high-level attach APIs, please also add bpf_link_create() support, it
-should be very straightforward, just follow the pattern for other link
-types.
+syzbot found the following issue on:
 
-You'll also get a conflict in libbpf.map given I just applied another
-libbpf patches (ring_buffer__consume_n). So please rebase.
+HEAD commit:    026e680b0a08 Merge tag 'pwm/for-6.9-rc3-fixes' of git://gi..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11b1fee3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=d40ad71c1ba64324d256
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b539b1180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e55795180000
 
-pw-bot: cr
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b5659d2008c/disk-026e680b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7fd1552fafde/vmlinux-026e680b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ba622b1b0ec4/bzImage-026e680b.xz
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index b091154bc5b5..97eb6e5dd7c8 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -149,6 +149,7 @@ static const char * const link_type_name[] =3D {
->         [BPF_LINK_TYPE_TCX]                     =3D "tcx",
->         [BPF_LINK_TYPE_UPROBE_MULTI]            =3D "uprobe_multi",
->         [BPF_LINK_TYPE_NETKIT]                  =3D "netkit",
-> +       [BPF_LINK_TYPE_SOCKMAP]                 =3D "sockmap",
->  };
->
->  static const char * const map_type_name[] =3D {
-> @@ -12533,6 +12534,12 @@ bpf_program__attach_netns(const struct bpf_progr=
-am *prog, int netns_fd)
->         return bpf_program_attach_fd(prog, netns_fd, "netns", NULL);
->  }
->
-> +struct bpf_link *
-> +bpf_program__attach_sockmap(const struct bpf_program *prog, int map_fd)
-> +{
-> +       return bpf_program_attach_fd(prog, map_fd, "sockmap", NULL);
-> +}
-> +
->  struct bpf_link *bpf_program__attach_xdp(const struct bpf_program *prog,=
- int ifindex)
->  {
->         /* target_fd/target_ifindex use the same field in LINK_CREATE */
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index f88ab50c0229..4c7ada03bf4f 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -795,6 +795,8 @@ bpf_program__attach_cgroup(const struct bpf_program *=
-prog, int cgroup_fd);
->  LIBBPF_API struct bpf_link *
->  bpf_program__attach_netns(const struct bpf_program *prog, int netns_fd);
->  LIBBPF_API struct bpf_link *
-> +bpf_program__attach_sockmap(const struct bpf_program *prog, int map_fd);
-> +LIBBPF_API struct bpf_link *
->  bpf_program__attach_xdp(const struct bpf_program *prog, int ifindex);
->  LIBBPF_API struct bpf_link *
->  bpf_program__attach_freplace(const struct bpf_program *prog,
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 51732ecb1385..2d0ca3e8ec18 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -416,3 +416,8 @@ LIBBPF_1.4.0 {
->                 btf__new_split;
->                 btf_ext__raw_data;
->  } LIBBPF_1.3.0;
-> +
-> +LIBBPF_1.5.0 {
-> +       global:
-> +               bpf_program__attach_sockmap;
-> +} LIBBPF_1.4.0;
-> diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_versio=
-n.h
-> index e783a47da815..d6e5eff967cb 100644
-> --- a/tools/lib/bpf/libbpf_version.h
-> +++ b/tools/lib/bpf/libbpf_version.h
-> @@ -4,6 +4,6 @@
->  #define __LIBBPF_VERSION_H
->
->  #define LIBBPF_MAJOR_VERSION 1
-> -#define LIBBPF_MINOR_VERSION 4
-> +#define LIBBPF_MINOR_VERSION 5
->
->  #endif /* __LIBBPF_VERSION_H */
-> --
-> 2.43.0
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d40ad71c1ba64324d256@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in htab_lock_bucket kernel/bpf/hashtab.c:160 [inline]
+BUG: KMSAN: uninit-value in htab_lru_map_delete_elem+0x628/0xb20 kernel/bpf/hashtab.c:1459
+ htab_lock_bucket kernel/bpf/hashtab.c:160 [inline]
+ htab_lru_map_delete_elem+0x628/0xb20 kernel/bpf/hashtab.c:1459
+ ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
+ bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+ __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x6a5/0xa30 mm/slub.c:4377
+ kvfree+0x69/0x80 mm/util.c:680
+ __bpf_prog_put_rcu+0x37/0xf0 kernel/bpf/syscall.c:2232
+ rcu_do_batch kernel/rcu/tree.c:2196 [inline]
+ rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
+ rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
+ __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu kernel/softirq.c:633 [inline]
+ irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
+ asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
+ smap_restore arch/x86/include/asm/smap.h:56 [inline]
+ get_shadow_origin_ptr mm/kmsan/instrumentation.c:37 [inline]
+ __msan_metadata_ptr_for_load_8+0x2c/0x40 mm/kmsan/instrumentation.c:92
+ last_frame arch/x86/kernel/unwind_frame.c:82 [inline]
+ is_last_frame arch/x86/kernel/unwind_frame.c:87 [inline]
+ is_last_task_frame+0x62/0x420 arch/x86/kernel/unwind_frame.c:156
+ unwind_next_frame+0x9d/0x470 arch/x86/kernel/unwind_frame.c:276
+ arch_stack_walk+0x1ec/0x2d0 arch/x86/kernel/stacktrace.c:25
+ stack_trace_save+0xaa/0xe0 kernel/stacktrace.c:122
+ kmsan_save_stack_with_flags mm/kmsan/core.c:74 [inline]
+ kmsan_internal_chain_origin+0x57/0xd0 mm/kmsan/core.c:183
+ __msan_chain_origin+0xc3/0x150 mm/kmsan/instrumentation.c:251
+ __skb_dst_copy include/net/dst.h:282 [inline]
+ skb_dst_copy include/net/dst.h:290 [inline]
+ __copy_skb_header+0x362/0x850 net/core/skbuff.c:1528
+ __skb_clone+0x57/0x650 net/core/skbuff.c:1579
+ skb_clone+0x3aa/0x550 net/core/skbuff.c:2070
+ __tcp_transmit_skb+0x438/0x4890 net/ipv4/tcp_output.c:1308
+ tcp_transmit_skb net/ipv4/tcp_output.c:1480 [inline]
+ tcp_write_xmit+0x3ee1/0x8900 net/ipv4/tcp_output.c:2792
+ __tcp_push_pending_frames+0xc4/0x380 net/ipv4/tcp_output.c:2977
+ tcp_push+0x755/0x7a0 net/ipv4/tcp.c:738
+ tcp_sendmsg_locked+0x6079/0x6cb0 net/ipv4/tcp.c:1310
+ tcp_sendmsg+0x49/0x90 net/ipv4/tcp.c:1342
+ inet_sendmsg+0x142/0x280 net/ipv4/af_inet.c:851
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x267/0x380 net/socket.c:745
+ sock_write_iter+0x368/0x3d0 net/socket.c:1160
+ call_write_iter include/linux/fs.h:2108 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xb63/0x1520 fs/read_write.c:590
+ ksys_write+0x20f/0x4c0 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __x64_sys_write+0x93/0xe0 fs/read_write.c:652
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+Local variable stack created at:
+ __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+
+CPU: 1 PID: 5008 Comm: sshd Not tainted 6.9.0-rc2-syzkaller-00002-g026e680b0a08 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
