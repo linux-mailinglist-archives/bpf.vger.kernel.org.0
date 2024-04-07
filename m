@@ -1,419 +1,231 @@
-Return-Path: <bpf+bounces-26116-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D822489B0A2
-	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 13:34:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2C989B0FA
+	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 15:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32D5CB215A4
-	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 11:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC851F218A0
+	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 13:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778311E862;
-	Sun,  7 Apr 2024 11:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOOwpcoB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4AB38DE9;
+	Sun,  7 Apr 2024 13:11:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5284322324
-	for <bpf@vger.kernel.org>; Sun,  7 Apr 2024 11:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223BE37700;
+	Sun,  7 Apr 2024 13:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712489661; cv=none; b=b4K0pY9iwZIaaqjIo0hnSUhXTitK9ZwUcMdFMTDvYRovQr+Q57a/pIxhHeAmHmQZc5fpRz8c632wB3Z0KPSVgz3YFYFNQvvLxE/022r52+WtY9dHsi8yHd4QnnMMsgcFdqAJFE6SMtguiQ+tdH2aLJaX3sQ8FDwtG+p/Zp54+QY=
+	t=1712495460; cv=none; b=Y49DTpdpqWj+iaD/X1c5Y9oQd+Bcl89u77G5gnC86CkqyBZ+yG3qLsJWE0GJL1oyb5F/3+W2/h38Okz4b7+pKb5k70ar/hWQkXz0Xv5ynBTA2grZs1j/9JsBg8AxxqlDswAZRvQiaiQp9JG+8XoTylHUP9uYceKntIYzt/2RaVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712489661; c=relaxed/simple;
-	bh=AHrnw9OFct2hHWfMCy+l3rc7lnPnbTtqToqR7AomDW8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cN+bbLHsUK3URmnP2LoKL6CrZ/+om2HM1RO6YNk2tVIElXWh1doJoKUq3lQ2wy6TBUxDgCQE8GPIXNuNPcFUq4YBlln2SGeJhcqsLDvceU1lQDpTnyPgDFCjihNRYtvlo5M+A0Gy92kTmKCqbwngVwjg7ay02X+y/T2DEeF6wDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YOOwpcoB; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e74bd85f26so3175962b3a.1
-        for <bpf@vger.kernel.org>; Sun, 07 Apr 2024 04:34:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712489658; x=1713094458; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=csQdbHk4RvUHurNPLQuddPx114+b6dZSyAF6SBdgRNo=;
-        b=YOOwpcoBKR352+dOKzsJvQRpUn0ZvNaerOYEqmG53mtpncTYpjUKdobmR1jpD6CPDR
-         J+AWZQgsiIReJVk7To8+AxmSHWpgZGCZvvC49GS7MM1kwfgvC8KP8ttWlF/9DgqSjzau
-         KZCdkuUVxzUtnIDYnL99yRFQA6zhS090XxzadX2TznWpVvWizSc/4v2FAk4fxsxz5GIW
-         5RCJwVYlKqwc0RapJsQGB2Ojf5rbeZqgMMy7jwgbQDYHKewLPcKT+giMIKGCoAF3rwd2
-         N8zbCElEsTZyJczNsMj9pX44qajOcbAF//EDf3CCaXvxmxzsoyGNmZcAHIunWu27iazu
-         014g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712489658; x=1713094458;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=csQdbHk4RvUHurNPLQuddPx114+b6dZSyAF6SBdgRNo=;
-        b=tD4nJ9pUXdG69vnlnyDUnIgr+i4W5WzsvEJhF4CXA6nss+2VQjnC+2UidT3umXaCL4
-         cfc7wi6nGJ77+RvbhV57bUDaBFvkHdrzDJvzFzlrwqqUHAeF6XKuBT8erlv9Y1g9+eRL
-         SJDlCvJOmhUdQwUROSvO5kl1R3emfHJnDzd1A+dW2oB5erhEfITdvPnTAt9MSoYhDRPR
-         jg1Em3lXqoJDIyVYBzaCbXEmF7lPpoOkMP75efTobZaWFmnvTSrTViWMjBCutHctgwCH
-         ePrznjViV8pBVkAvHZmnmGNC06IVBd+4zYF/H1tPY/tb1vsTRQONypPaU6ieaslhzzZO
-         LKPQ==
-X-Gm-Message-State: AOJu0YwOQMBrSBgcbfAQn0QsuSyTR6iAyPdcoF4UCygkdVuBxEUraWqB
-	e8Sei8tt8B5E3sUbS/+BDGxym3Z3dlSvgXZdjqHj4d+idP/yzUNS
-X-Google-Smtp-Source: AGHT+IGkTGoq422RAmr6PVeynn4DNnSxHkwqpRZhwiKWpj5jUPZZrddVGdEzk6iBb6SmGwUDocwUYg==
-X-Received: by 2002:a05:6a20:9792:b0:1a3:e2be:604c with SMTP id hx18-20020a056a20979200b001a3e2be604cmr4589802pzc.28.1712489658274;
-        Sun, 07 Apr 2024 04:34:18 -0700 (PDT)
-Received: from [192.168.1.76] (bb116-14-181-187.singnet.com.sg. [116.14.181.187])
-        by smtp.gmail.com with ESMTPSA id q18-20020a170902dad200b001e25da6f2f2sm4730203plx.68.2024.04.07.04.34.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 04:34:17 -0700 (PDT)
-Message-ID: <55442238-33d6-4e7d-9dd1-e36da20f7c90@gmail.com>
-Date: Sun, 7 Apr 2024 19:34:12 +0800
+	s=arc-20240116; t=1712495460; c=relaxed/simple;
+	bh=pYYv09HgrZO8dDeNfrFDpFe3TGrfSXjtQZHpPFKc/BU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=McrzPtQ0T1q5HKfrkPmRjHfRmJvu2wFKLT1qHkxWEClSvwXujGTSFlxY113M6KO+9Da31IxhCCDl8b4dyjIew63eTJ4YlIIVAiIdK+SaPZcjVySGKyv85VX5PnN9ugT10JVTnC9bqGyl4PLkc7JTyxPIP/Q4k3d0xKTh7R7GRIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VCCJ30Xjdz1GCqF;
+	Sun,  7 Apr 2024 21:10:11 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 05B0E1A0172;
+	Sun,  7 Apr 2024 21:10:54 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 7 Apr 2024 21:10:53 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<bpf@vger.kernel.org>
+Subject: [PATCH net-next v1 00/12] First try to replace page_frag with page_frag_cache
+Date: Sun, 7 Apr 2024 21:08:37 +0800
+Message-ID: <20240407130850.19625-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/3] bpf, x64: Fix tailcall hierarchy
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
- Jakub Sitnicki <jakub@cloudflare.com>, Pu Lehui <pulehui@huawei.com>,
- Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
-References: <20240402152638.31377-1-hffilwlqm@gmail.com>
- <20240402152638.31377-3-hffilwlqm@gmail.com>
- <CAADnVQ+vJyi6JFsck8KbyxvOuRvmAO5gVTJPwNiyNeBwzsHu9Q@mail.gmail.com>
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAADnVQ+vJyi6JFsck8KbyxvOuRvmAO5gVTJPwNiyNeBwzsHu9Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+
+After [1], Only there are two implementations for page frag:
+
+1. mm/page_alloc.c: net stack seems to be using it in the
+   rx part with 'struct page_frag_cache' and the main API
+   being page_frag_alloc_align().
+2. net/core/sock.c: net stack seems to be using it in the
+   tx part with 'struct page_frag' and the main API being
+   skb_page_frag_refill().
+
+This patchset tries to unfiy the page frag implementation
+by replacing page_frag with page_frag_cache for sk_page_frag()
+first. net_high_order_alloc_disable_key for the implementation
+in net/core/sock.c doesn't seems matter that much now have
+have pcp support for high-order pages in commit 44042b449872
+("mm/page_alloc: allow high-order pages to be stored on the
+per-cpu lists").
+
+As the related change is mostly related to networking, so
+targeting the net-next. And will try to replace the rest
+of page_frag in the follow patchset.
+
+After this patchset, we are not only able to unify the page
+frag implementation a little, but seems able to have about
+0.5+% performance boost testing by using the vhost_net_test
+introduced in [1] and page_frag_test.ko introduced in this
+patch.
+
+Before this patchset:
+Performance counter stats for './vhost_net_test' (10 runs):
+
+         603027.29 msec task-clock                       #    1.756 CPUs utilized               ( +-  0.04% )
+           2097713      context-switches                 #    3.479 K/sec                       ( +-  0.00% )
+               212      cpu-migrations                   #    0.352 /sec                        ( +-  4.72% )
+                40      page-faults                      #    0.066 /sec                        ( +-  1.18% )
+      467215266413      cycles                           #    0.775 GHz                         ( +-  0.12% )  (66.02%)
+      131736729037      stalled-cycles-frontend          #   28.20% frontend cycles idle        ( +-  2.38% )  (64.34%)
+       77728393294      stalled-cycles-backend           #   16.64% backend cycles idle         ( +-  3.98% )  (65.42%)
+      345874254764      instructions                     #    0.74  insn per cycle
+                                                  #    0.38  stalled cycles per insn     ( +-  0.75% )  (70.28%)
+      105166217892      branches                         #  174.397 M/sec                       ( +-  0.65% )  (68.56%)
+        9649321070      branch-misses                    #    9.18% of all branches             ( +-  0.69% )  (65.38%)
+
+           343.376 +- 0.147 seconds time elapsed  ( +-  0.04% )
 
 
+ Performance counter stats for 'insmod ./page_frag_test.ko nr_test=99999999' (30 runs):
 
-On 2024/4/5 09:03, Alexei Starovoitov wrote:
->>   * Solution changes from percpu tail_call_cnt to tail_call_cnt at task_struct.
-> 
-> Please remind us what was wrong with per-cpu approach?
+             39.12 msec task-clock                       #    0.001 CPUs utilized               ( +-  4.51% )
+                 5      context-switches                 #  127.805 /sec                        ( +-  3.76% )
+                 1      cpu-migrations                   #   25.561 /sec                        ( +- 15.52% )
+               197      page-faults                      #    5.035 K/sec                       ( +-  0.10% )
+          10689913      cycles                           #    0.273 GHz                         ( +-  9.46% )  (72.72%)
+           2821237      stalled-cycles-frontend          #   26.39% frontend cycles idle        ( +- 12.04% )  (76.23%)
+           5035549      stalled-cycles-backend           #   47.11% backend cycles idle         ( +-  9.69% )  (49.40%)
+           5439395      instructions                     #    0.51  insn per cycle
+                                                  #    0.93  stalled cycles per insn     ( +- 11.58% )  (51.45%)
+           1274419      branches                         #   32.575 M/sec                       ( +- 12.69% )  (77.88%)
+             49562      branch-misses                    #    3.89% of all branches             ( +-  9.91% )  (72.32%)
 
-There are some cases that the per-cpu approach cannot handle properly.
-Especialy, on non-SMP machine, if there are many bpf progs to run with
-tail call simultaneously, MAX_TAIL_CALL_CNT limit is unable to limit the
-tail call expectedly.
+            30.309 +- 0.305 seconds time elapsed  ( +-  1.01% )
 
-> 
-> Also notice we have pseudo per-cpu bpf insns now,
-> so things might be easier today.
 
-Great to hear that. With pseudo per-cpu bpf insns, it is able to get
-tcc_ptr from task_struct without a function call.
+After this patchset:
+Performance counter stats for './vhost_net_test' (10 runs):
 
-> 
-> On Tue, Apr 2, 2024 at 8:27 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>
->> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
->> handling in JIT"), the tailcall on x64 works better than before.
-> ...
->>
->> As a result, the previous tailcall way can be removed totally, including
->>
->> 1. "push rax" at prologue.
->> 2. load tail_call_cnt to rax before calling function.
->> 3. "pop rax" before jumping to tailcallee when tailcall.
->> 4. "push rax" and load tail_call_cnt to rax at trampoline.
-> 
-> Please trim it.
-> It looks like you've been copy pasting it and it's no longer
-> accurate.
-> Short description of the problem will do.
+         598081.02 msec task-clock                       #    1.752 CPUs utilized               ( +-  0.11% )
+           2097738      context-switches                 #    3.507 K/sec                       ( +-  0.00% )
+               220      cpu-migrations                   #    0.368 /sec                        ( +-  6.58% )
+                40      page-faults                      #    0.067 /sec                        ( +-  0.92% )
+      469788205101      cycles                           #    0.785 GHz                         ( +-  0.27% )  (64.86%)
+      137108509582      stalled-cycles-frontend          #   29.19% frontend cycles idle        ( +-  0.96% )  (63.62%)
+       75499065401      stalled-cycles-backend           #   16.07% backend cycles idle         ( +-  1.04% )  (65.86%)
+      345469451681      instructions                     #    0.74  insn per cycle
+                                                  #    0.40  stalled cycles per insn     ( +-  0.37% )  (70.16%)
+      102782224964      branches                         #  171.853 M/sec                       ( +-  0.62% )  (69.28%)
+        9295357532      branch-misses                    #    9.04% of all branches             ( +-  1.08% )  (66.21%)
 
-Got it.
+           341.466 +- 0.305 seconds time elapsed  ( +-  0.09% )
 
-> 
->> Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
->> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
->> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->> ---
->>  arch/x86/net/bpf_jit_comp.c | 137 +++++++++++++++++++++---------------
->>  1 file changed, 81 insertions(+), 56 deletions(-)
->>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 3b639d6f2f54d..cd06e02e83b64 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -11,6 +11,7 @@
->>  #include <linux/bpf.h>
->>  #include <linux/memory.h>
->>  #include <linux/sort.h>
->> +#include <linux/sched.h>
->>  #include <asm/extable.h>
->>  #include <asm/ftrace.h>
->>  #include <asm/set_memory.h>
->> @@ -18,6 +19,8 @@
->>  #include <asm/text-patching.h>
->>  #include <asm/unwind.h>
->>  #include <asm/cfi.h>
->> +#include <asm/current.h>
->> +#include <asm/percpu.h>
->>
->>  static bool all_callee_regs_used[4] = {true, true, true, true};
->>
->> @@ -273,7 +276,7 @@ struct jit_context {
->>  /* Number of bytes emit_patch() needs to generate instructions */
->>  #define X86_PATCH_SIZE         5
->>  /* Number of bytes that will be skipped on tailcall */
->> -#define X86_TAIL_CALL_OFFSET   (11 + ENDBR_INSN_SIZE)
->> +#define X86_TAIL_CALL_OFFSET   (14 + ENDBR_INSN_SIZE)
->>
->>  static void push_r12(u8 **pprog)
->>  {
->> @@ -403,6 +406,9 @@ static void emit_cfi(u8 **pprog, u32 hash)
->>         *pprog = prog;
->>  }
->>
->> +static int emit_call(u8 **pprog, void *func, void *ip);
->> +static __used void bpf_tail_call_cnt_init(void);
->> +
->>  /*
->>   * Emit x86-64 prologue code for BPF program.
->>   * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
->> @@ -410,9 +416,9 @@ static void emit_cfi(u8 **pprog, u32 hash)
->>   */
->>  static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
->>                           bool tail_call_reachable, bool is_subprog,
->> -                         bool is_exception_cb)
->> +                         bool is_exception_cb, u8 *ip)
->>  {
->> -       u8 *prog = *pprog;
->> +       u8 *prog = *pprog, *start = *pprog;
->>
->>         emit_cfi(&prog, is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash);
->>         /* BPF trampoline can be made to work without these nops,
->> @@ -421,13 +427,14 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
->>         emit_nops(&prog, X86_PATCH_SIZE);
->>         if (!ebpf_from_cbpf) {
->>                 if (tail_call_reachable && !is_subprog)
->> -                       /* When it's the entry of the whole tailcall context,
->> -                        * zeroing rax means initialising tail_call_cnt.
->> +                       /* Call bpf_tail_call_cnt_init to initilise
->> +                        * tail_call_cnt.
->>                          */
->> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
->> +                       emit_call(&prog, bpf_tail_call_cnt_init,
->> +                                 ip + (prog - start));
-> 
-> You're repeating the same bug we discussed before.
-> There is nothing in bpf_tail_call_cnt_init() that
-> prevents the compiler from scratching rdi,rsi,...
-> bpf_tail_call_cnt_init() is a normal function from compiler pov
-> and it's allowed to use those regs.
-> Must have been lucky that CI is not showing crashes.
 
-Oh, get it. In order to prevent the compiler from scratching
-rdi,rsi,..., the asm clobbered register list in bpf_tail_call_cnt_init()
-must be "rdi", "rsi", "rdx", "rcx", "r8". I learn it from the GCC doc[0].
+ Performance counter stats for 'insmod ./page_frag_test.ko nr_test=99999999' (30 runs):
 
-static __used void bpf_tail_call_cnt_init(void)
-{
-	/* In short:
-	 * current->bpf_tail_call_cnt = 0;
-	 */
+             40.09 msec task-clock                       #    0.001 CPUs utilized               ( +-  4.60% )
+                 5      context-switches                 #  124.722 /sec                        ( +-  3.45% )
+                 1      cpu-migrations                   #   24.944 /sec                        ( +- 12.62% )
+               197      page-faults                      #    4.914 K/sec                       ( +-  0.11% )
+          10221721      cycles                           #    0.255 GHz                         ( +-  9.05% )  (27.73%)
+           2459009      stalled-cycles-frontend          #   24.06% frontend cycles idle        ( +- 10.80% )  (29.05%)
+           5148423      stalled-cycles-backend           #   50.37% backend cycles idle         ( +-  7.30% )  (82.47%)
+           5889929      instructions                     #    0.58  insn per cycle
+                                                  #    0.87  stalled cycles per insn     ( +- 11.85% )  (87.75%)
+           1276667      branches                         #   31.846 M/sec                       ( +- 11.48% )  (89.80%)
+             50631      branch-misses                    #    3.97% of all branches             ( +-  8.72% )  (83.20%)
 
-	asm volatile (
-	    "addq " __percpu_arg(0) ", %1\n\t"
-	    "movq (%1), %1\n\t"
-	    "movl $0x0, %c2(%1)\n\t"
-	    :
-	    : "m" (__my_cpu_var(this_cpu_off)), "r" (&pcpu_hot.current_task),
-	      "i" (offsetof(struct task_struct, bpf_tail_call_cnt))
-	    : "rdi", "rsi", "rdx", "rcx", "r8" /* to avoid scratching these regs */
-	);
-}
+            29.341 +- 0.300 seconds time elapsed  ( +-  1.02% )
 
-[0]
-https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-Scratch-Registers-1
+CC: Alexander Duyck <alexander.duyck@gmail.com>
 
-> 
->>                 else
->>                         /* Keep the same instruction layout. */
->> -                       EMIT2(0x66, 0x90); /* nop2 */
->> +                       emit_nops(&prog, X86_PATCH_SIZE);
->>         }
->>         /* Exception callback receives FP as third parameter */
->>         if (is_exception_cb) {
->> @@ -452,8 +459,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
->>         /* sub rsp, rounded_stack_depth */
->>         if (stack_depth)
->>                 EMIT3_off32(0x48, 0x81, 0xEC, round_up(stack_depth, 8));
->> -       if (tail_call_reachable)
->> -               EMIT1(0x50);         /* push rax */
->>         *pprog = prog;
->>  }
->>
->> @@ -589,13 +594,61 @@ static void emit_return(u8 **pprog, u8 *ip)
->>         *pprog = prog;
->>  }
->>
->> +static __used void bpf_tail_call_cnt_init(void)
->> +{
->> +       /* The following asm equals to
->> +        *
->> +        * u32 *tcc_ptr = &current->bpf_tail_call_cnt;
->> +        *
->> +        * *tcc_ptr = 0;
->> +        */
->> +
->> +       asm volatile (
->> +           "addq " __percpu_arg(0) ", %1\n\t"
->> +           "addq %2, %1\n\t"
->> +           "movq (%1), %1\n\t"
->> +           "addq %3, %1\n\t"
->> +           "movl $0, (%1)\n\t"
->> +           :
->> +           : "m" (this_cpu_off), "r" (&pcpu_hot),
->> +             "i" (offsetof(struct pcpu_hot, current_task)),
->> +             "i" (offsetof(struct task_struct, bpf_tail_call_cnt))
->> +       );
->> +}
->> +
->> +static __used u32 *bpf_tail_call_cnt_ptr(void)
->> +{
->> +       u32 *tcc_ptr;
->> +
->> +       /* The following asm equals to
->> +        *
->> +        * u32 *tcc_ptr = &current->bpf_tail_call_cnt;
->> +        *
->> +        * return tcc_ptr;
->> +        */
->> +
->> +       asm volatile (
->> +           "addq " __percpu_arg(1) ", %2\n\t"
->> +           "addq %3, %2\n\t"
->> +           "movq (%2), %2\n\t"
->> +           "addq %4, %2\n\t"
->> +           "movq %2, %0\n\t"
->> +           : "=r" (tcc_ptr)
->> +           : "m" (this_cpu_off), "r" (&pcpu_hot),
->> +             "i" (offsetof(struct pcpu_hot, current_task)),
->> +             "i" (offsetof(struct task_struct, bpf_tail_call_cnt))
->> +       );
->> +
->> +       return tcc_ptr;
->> +}
->> +
->>  /*
->>   * Generate the following code:
->>   *
->>   * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
->>   *   if (index >= array->map.max_entries)
->>   *     goto out;
->> - *   if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
->> + *   if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
->>   *     goto out;
->>   *   prog = array->ptrs[index];
->>   *   if (prog == NULL)
->> @@ -608,7 +661,6 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
->>                                         u32 stack_depth, u8 *ip,
->>                                         struct jit_context *ctx)
->>  {
->> -       int tcc_off = -4 - round_up(stack_depth, 8);
->>         u8 *prog = *pprog, *start = *pprog;
->>         int offset;
->>
->> @@ -630,16 +682,16 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
->>         EMIT2(X86_JBE, offset);                   /* jbe out */
->>
->>         /*
->> -        * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
->> +        * if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
->>          *      goto out;
->>          */
->> -       EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
->> -       EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
->> +       /* call bpf_tail_call_cnt_ptr */
->> +       emit_call(&prog, bpf_tail_call_cnt_ptr, ip + (prog - start));
-> 
-> same issue.
+1. https://lore.kernel.org/all/20240228093013.8263-1-linyunsheng@huawei.com/
 
-I will rewrite it to emit_bpf_tail_call_cnt_ptr(), which will use pseudo
-per-cpu bpf insns to get tcc_ptr from task_struct.
+Yunsheng Lin (12):
+  mm: Move the page fragment allocator from page_alloc into its own file
+  mm: page_frag: use initial zero offset for page_frag_alloc_align()
+  mm: page_frag: change page_frag_alloc_* API to accept align param
+  mm: page_frag: add '_va' suffix to page_frag API
+  mm: page_frag: add two inline helper for page_frag API
+  mm: page_frag: reuse MSB of 'size' field for pfmemalloc
+  mm: page_frag: reuse existing bit field of 'va' for pagecnt_bias
+  net: introduce the skb_copy_to_va_nocache() helper
+  mm: page_frag: introduce prepare/commit API for page_frag
+  net: replace page_frag with page_frag_cache
+  mm: page_frag: add a test module for page_frag
+  mm: page_frag: update documentation and maintainer for page_frag
 
-static void emit_bpf_tail_call_cnt_ptr(u8 **pprog)
-{
-	u8 *prog = *pprog;
+ Documentation/mm/page_frags.rst               | 115 ++++--
+ MAINTAINERS                                   |  10 +
+ .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
+ .../chelsio/inline_crypto/chtls/chtls_io.c    | 101 ++---
+ .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
+ drivers/net/ethernet/google/gve/gve_rx.c      |   4 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |   2 +-
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   4 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ drivers/net/ethernet/mediatek/mtk_wed_wo.c    |   4 +-
+ drivers/net/tun.c                             |  34 +-
+ drivers/nvme/host/tcp.c                       |   8 +-
+ drivers/nvme/target/tcp.c                     |  22 +-
+ drivers/vhost/net.c                           |   6 +-
+ include/linux/gfp.h                           |  22 --
+ include/linux/mm_types.h                      |  18 -
+ include/linux/page_frag_cache.h               | 339 ++++++++++++++++
+ include/linux/sched.h                         |   4 +-
+ include/linux/skbuff.h                        |  15 +-
+ include/net/sock.h                            |  29 +-
+ kernel/bpf/cpumap.c                           |   2 +-
+ kernel/exit.c                                 |   3 +-
+ kernel/fork.c                                 |   2 +-
+ mm/Kconfig.debug                              |   8 +
+ mm/Makefile                                   |   2 +
+ mm/page_alloc.c                               | 136 -------
+ mm/page_frag_cache.c                          | 185 +++++++++
+ mm/page_frag_test.c                           | 366 ++++++++++++++++++
+ net/core/skbuff.c                             |  57 +--
+ net/core/skmsg.c                              |  22 +-
+ net/core/sock.c                               |  46 ++-
+ net/core/xdp.c                                |   2 +-
+ net/ipv4/ip_output.c                          |  35 +-
+ net/ipv4/tcp.c                                |  35 +-
+ net/ipv4/tcp_output.c                         |  28 +-
+ net/ipv6/ip6_output.c                         |  35 +-
+ net/kcm/kcmsock.c                             |  30 +-
+ net/mptcp/protocol.c                          |  74 ++--
+ net/rxrpc/txbuf.c                             |  16 +-
+ net/sunrpc/svcsock.c                          |   4 +-
+ net/tls/tls_device.c                          | 139 ++++---
+ 43 files changed, 1404 insertions(+), 572 deletions(-)
+ create mode 100644 include/linux/page_frag_cache.h
+ create mode 100644 mm/page_frag_cache.c
+ create mode 100644 mm/page_frag_test.c
 
-	/* In short:
-	 * return &current->bpf_tail_call_cnt;
-	 */
+-- 
+2.33.0
 
-	/* mov rax, &pcpu_hot.current_task */
-	EMIT3_off32(0x48, 0xC7, 0xC0, ((u32)(unsigned
-long)&pcpu_hot.current_task));
-
-#ifdef CONFIG_SMP
-	/* add rax, gs:[&this_cpu_off] */
-	EMIT1(0x65);
-	EMIT4_off32(0x48, 0x03, 0x04, 0x25, ((u32)(unsigned long)&this_cpu_off));
-#endif
-
-	/* mov rax, qword ptr [rax] */
-	EMIT3(0x48, 0x8B, 0x00);
-	/* add rax, offsetof(struct task_struct, bpf_tail_call_cnt) */
-	EMIT2_off32(0x48, 0x05, ((u32)offsetof(struct task_struct,
-bpf_tail_call_cnt)));
-
-	*pprog = prog;
-}
-
-> 
->> +       EMIT3(0x83, 0x38, MAX_TAIL_CALL_CNT);     /* cmp dword ptr [rax], MAX_TAIL_CALL_CNT */
->>
->>         offset = ctx->tail_call_indirect_label - (prog + 2 - start);
->>         EMIT2(X86_JAE, offset);                   /* jae out */
->> -       EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
->> -       EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
->> +       EMIT2(0xFF, 0x00);                        /* inc dword ptr [rax] */
->>
->>         /* prog = array->ptrs[index]; */
->>         EMIT4_off32(0x48, 0x8B, 0x8C, 0xD6,       /* mov rcx, [rsi + rdx * 8 + offsetof(...)] */
->> @@ -663,7 +715,6 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
->>                         pop_r12(&prog);
->>         }
->>
->> -       EMIT1(0x58);                              /* pop rax */
->>         if (stack_depth)
->>                 EMIT3_off32(0x48, 0x81, 0xC4,     /* add rsp, sd */
->>                             round_up(stack_depth, 8));
->> @@ -691,21 +742,20 @@ static void emit_bpf_tail_call_direct(struct bpf_prog *bpf_prog,
->>                                       bool *callee_regs_used, u32 stack_depth,
->>                                       struct jit_context *ctx)
->>  {
->> -       int tcc_off = -4 - round_up(stack_depth, 8);
->>         u8 *prog = *pprog, *start = *pprog;
->>         int offset;
->>
->>         /*
->> -        * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
->> +        * if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
->>          *      goto out;
->>          */
->> -       EMIT2_off32(0x8B, 0x85, tcc_off);             /* mov eax, dword ptr [rbp - tcc_off] */
->> -       EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);         /* cmp eax, MAX_TAIL_CALL_CNT */
->> +       /* call bpf_tail_call_cnt_ptr */
->> +       emit_call(&prog, bpf_tail_call_cnt_ptr, ip);
-> 
-> and here as well.
-
-Replace with emit_bpf_tail_call_cnt_ptr(), too.
-
-> 
-> pw-bot: cr
-
-I would like to send next version with these update.
-
-Thanks,
-Leon
 
