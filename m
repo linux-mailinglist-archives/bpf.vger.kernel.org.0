@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-26120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68ABA89B16E
-	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 15:23:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FCCE89B1B2
+	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 15:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08C3C1F213AA
-	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 13:23:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2F6C281ACC
+	for <lists+bpf@lfdr.de>; Sun,  7 Apr 2024 13:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E913B7A0;
-	Sun,  7 Apr 2024 13:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB471272A6;
+	Sun,  7 Apr 2024 13:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qjY7aMvR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daBV+8YH"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5A371753;
-	Sun,  7 Apr 2024 13:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9398662A;
+	Sun,  7 Apr 2024 13:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495536; cv=none; b=HdSTg2o+okXP4WKHyUubjmX4Lyi/YrXEBMK4LcIcIZq7IHDJ3Z7D6g/KkJu4XU0Pa8vOxm8VAdakXVs6xpm1mjK1RUIavcr9uyvYsOhRXK3R54cdBU/3vxrrILM1yDJoJzLsNFufoGcmNH506OHpUCmwCexvKOxJi59T1vg0Zzs=
+	t=1712495587; cv=none; b=ipN6V1CstPp+/BD/jIxYzoqFGqe53IscSi60Os6jSpRX8tPwmsBF1MZKbNGVPempgZkk+84W0r9e/antH6Il1jqwPcwTICeD426exHcgMD1aMrsOQS7o3D4N14Ooaz1aExrGOBLEvhJHycK8MWZ7Tdf6h77yAscLHidpw/uarJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495536; c=relaxed/simple;
-	bh=+JJRPG8HCYkd3ToZtORyTAyJGiVFqfS3te+4P03Lq3U=;
+	s=arc-20240116; t=1712495587; c=relaxed/simple;
+	bh=9CJNlSm7UdFGd3F3/J22Rexp6lW1kYdcgxWT5Q7WTEg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PqcuFqSfdVEm96MCGjsXa7gk2qqJWCFFLd1iJ9MPXrAXL0Hrh3TxqaLAainoJEmaao3Kt6+C03/EXdKo1qvlJ9g5B6+JVEVgGBlMXZWskf63vpL/7P59AJxz6HarS5f1Da0n39MuKffo08CLLcCKyPYzf+lbP2sMv4oYclyeQdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qjY7aMvR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A2A8C433C7;
-	Sun,  7 Apr 2024 13:12:14 +0000 (UTC)
+	 MIME-Version; b=qZ1zLOf2QVQ5PsI4AHzwxsVRSLghuT1wYw6tOjkwiqIW/mBoX8Abw8az6WHCTE232Mu5pMhZqgbU3xe2bOegDPGbJ9CGBqgsIo7vVF4tq3LO5ofTq+6OmwAU236EBWDZidAnh7UGEt25lJtywuCn3jmqRGsFAbgsikKvthoazT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=daBV+8YH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA633C433C7;
+	Sun,  7 Apr 2024 13:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495536;
-	bh=+JJRPG8HCYkd3ToZtORyTAyJGiVFqfS3te+4P03Lq3U=;
+	s=k20201202; t=1712495587;
+	bh=9CJNlSm7UdFGd3F3/J22Rexp6lW1kYdcgxWT5Q7WTEg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qjY7aMvRjHUdkyHkM5iNakjv1+7Nn7u9hW/5p6Quo9AkB3loSABF9jrqgrw3bY5mZ
-	 JH9oUYzWwLCX7ig+HrsXQEAnBP5Kb1aPpFNqOOBmk1J5reaq7vEqqK1IVEA2v6IIRM
-	 uPP9SyhrgIb7L0r1d6yqCOeY4xFSQXomC309wvb42l+AT53SQ5EzarCKsg6KLrZLYk
-	 VJx45td4aUhzZ5gY7o5LXoWAtjsY3cDAHo7sL/Na2YLzZvXOTHtUKrcPj2m2+m3J/i
-	 65afpserlzclRmN/rrEG6dtvg0r9AW5DFlajnW0AwAgaQV/lLfXah+c+ifFSaR0Syc
-	 1LJ1Eb8xJEiFg==
+	b=daBV+8YHCVPAb/i5ufo92Xboixqi09Q2Axd1nZOmQBk3KMUBPu6qTpUw4aFdoN/jh
+	 WLA9qje0faRaKDhjZgMwEhQot5ypQhL2dRGjnjHqfkewfbCgiN/pBkRSnpyrytPhr4
+	 lOA/mu/F9vdNiSkf8aFwUMjQ6uESqhOUhO5NuMDdTxLiumgnIrMcYepkgeu7wGbdnv
+	 aqq8FBQgqk5IBQYP+CO7OrJvbR/mjff5wIUT+yzlhiP2mPDf67HqoIBucZElvuJVJF
+	 SIvsrzoqzc556ZMGMCcWTDgX8OauMLKAcOE1rNUAS4apHJixq7C0QxV/GmTBvOcdTA
+	 3jA+C1+Y5bJcw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,12 +53,12 @@ Cc: Andrei Matei <andreimatei1@gmail.com>,
 	jolsa@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 23/25] bpf: Check bloom filter map value size
-Date: Sun,  7 Apr 2024 09:11:11 -0400
-Message-ID: <20240407131130.1050321-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 20/22] bpf: Check bloom filter map value size
+Date: Sun,  7 Apr 2024 09:12:19 -0400
+Message-ID: <20240407131231.1051652-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240407131130.1050321-1-sashal@kernel.org>
-References: <20240407131130.1050321-1-sashal@kernel.org>
+In-Reply-To: <20240407131231.1051652-1-sashal@kernel.org>
+References: <20240407131231.1051652-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.4
+X-stable-base: Linux 6.6.25
 Content-Transfer-Encoding: 8bit
 
 From: Andrei Matei <andreimatei1@gmail.com>
@@ -124,7 +124,7 @@ index addf3dd57b59b..35e1ddca74d21 100644
  	.map_free = bloom_map_free,
  	.map_get_next_key = bloom_map_get_next_key,
 diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-index 053f4d6da77a4..cc184e4420f6e 100644
+index d2d9e965eba59..f79815b7e951b 100644
 --- a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
 +++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
 @@ -2,6 +2,7 @@
