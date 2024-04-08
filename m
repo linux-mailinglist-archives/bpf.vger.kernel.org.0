@@ -1,165 +1,219 @@
-Return-Path: <bpf+bounces-26150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC8789B89D
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 09:41:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3241C89B952
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 09:54:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 862C11F21F7D
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 07:40:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 533861C20C9A
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 07:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27FF28DC1;
-	Mon,  8 Apr 2024 07:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17B04D9F5;
+	Mon,  8 Apr 2024 07:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWAQhQUo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YKimgngw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5390825619;
-	Mon,  8 Apr 2024 07:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B289D5FB94
+	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 07:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562051; cv=none; b=OHr3biGOi0ZSp6IYi7k7TeH238Yc9f45wybGVBkc8CwN6UJUQ3dbXMz/SHTONNoCIN6949LC2+ahUeH+Jcz+FVTdGU2QjJrrle/HKMnV44TUnliM6ZnG4N7i2aQZfTDi6JjxHewBSEautoRQrMHh4eoFZa8HSJLCAqf62fP6v+M=
+	t=1712562518; cv=none; b=rAe5du/IjnbAiQJt4CZwcEA6Zyu5+rQ8rvNKUX6XoFDEaNFgLQSr0gf7CPvW51fiV2gMfsxJPEugTcdElS4yxrUswflv7aOWk0RKMCGOHy6gOzTSQVEvKRlbcyC2uT/LMjcN7lsSjQMq0E2tbCOR908zRLnz3WbTp4LccT71+js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562051; c=relaxed/simple;
-	bh=/PwTXAMc4qIagsONctj643hd2NRLVGHlttgBejgG8j8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ae0nXd5WctShqAezhHvsSeHqNIdU85UkFIdxkZTGNGxOzmQ76pRFrJb5jsMuF7YzdNPqyP7wSgGASiS4COw7Xl62OO+nLc19gO4QTwy3qmN3d+O4DFRt/DLk0huM5CNEf7WHe8wTKhgRbiyPbVpZ/VwNDpci+N2lmw/XI02BPSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWAQhQUo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69ACAC433C7;
-	Mon,  8 Apr 2024 07:40:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712562050;
-	bh=/PwTXAMc4qIagsONctj643hd2NRLVGHlttgBejgG8j8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=BWAQhQUo/m+lzgIsUQVYBAOxqNr0gy9VJuIhOQqc7fdK4j0ctn1Sxzf4CRuItOoiy
-	 jgpzyy+pHdhB2WKLtO2xFcc9s02F7jHdZVTkZnOO2dqk/RC2+t2LLrLyG7mAp1B6z5
-	 373vOlk+ZNrKklfkwiAUxs5KRrurYxlW/oBozWhr7SV6vZrSxLDOHgm3cGt1JYQb7a
-	 M0q6ZpuEAYDx12xXCE48O43Di0EDP3W1Tn9WDbh8I8Zd5NTE6rBwCSueFDhgVBsdcv
-	 zh7jeBA0lttsxUDDgCdFKw1p1ZQ/Y0j5LyUgCQoAdhxteAZgiKvVnRPXgZVXPAP7k7
-	 1NeFBuUS+RpFw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Puranjay Mohan
- <puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next] riscv, bpf: add internal-only MOV instruction
- to resolve per-CPU addrs
-In-Reply-To: <CAEf4BzZ2Tz5-GwbQKYg7KoGwqN8ewPBakmghHaH20MfoATe74g@mail.gmail.com>
-References: <20240405124348.27644-1-puranjay12@gmail.com>
- <CAEf4BzZ2Tz5-GwbQKYg7KoGwqN8ewPBakmghHaH20MfoATe74g@mail.gmail.com>
-Date: Mon, 08 Apr 2024 09:40:47 +0200
-Message-ID: <87cyr0uwsg.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1712562518; c=relaxed/simple;
+	bh=AO6S3J1UkADcOuG3dtHKoKni47rzKE/2aQXWNVAMaa0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eoXzvXsmF0izsIC2LXVV4jgr160q07mAnfxYhY4NJx28jDbQnqrzH97DqPJODz5rx6NvvYTc9zZx/9B4kdSZzxreJaw38IrRO+sRRyDc8ppYpRJxos34UTujpAdzaXg22kOk1PrUuMUNbFLg2L8cdHrXNmT/6P/nDFjTJYv4LTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YKimgngw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712562515;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8TYgCFyRlI1iTv2tcyJ+PG3jxVx5/GPjyqoQsuNov1k=;
+	b=YKimgngwv7zCBEkH1m7AO2y945BrC9zueHtVXMy0/BUj7L8w7opllStb199WR8U4oG1T+9
+	EXkknK73UyZPtDNHSubqr0iuSnLigiSAgGgygOt078GtNufCBNDxMcyMMqryoyNOOy3C5Z
+	fyZwyK+D4fy+Bi5Fa2lfqKqeBe1tEFs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-421-QzxgnOJhOSeTOSk3siro5w-1; Mon, 08 Apr 2024 03:48:34 -0400
+X-MC-Unique: QzxgnOJhOSeTOSk3siro5w-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343c86edeb7so2268045f8f.1
+        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 00:48:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712562512; x=1713167312;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8TYgCFyRlI1iTv2tcyJ+PG3jxVx5/GPjyqoQsuNov1k=;
+        b=Y1Ai/PWX/MfZAoDvWAema3vKvEnvgrnnXGb4EBpBODms6pHYKGTWxMZwWIawGcJR+M
+         nHMDGa4HAmXAsq7FiRBIusGsCeE9NlG1fXxZHVbnXfBtdEu2t5UMZ8Z/LUFkjTJhVt2u
+         tUP+QWRsg+/9f3Rnrcgmvj9fqEs8xAApJk14dDR6A+yuEs9zO13rGn2170Av33uPMgkf
+         eBFlgsTnvu812bXShNIq5hgkn4VaqMr5DHcDOtJ45FP8I4XGDgAiBclViLk2cgwilTLQ
+         zbin7d/EQJbHu/w9LogXEUlAoXWHbOIkC00X3i9OfREQEg7Yn7TDyaZRDrl0EvohjOdK
+         pmzg==
+X-Forwarded-Encrypted: i=1; AJvYcCVFulEyrsW8lJ3D83PvYgNzzvxRERNTr0EoYuS8fadfBDRceJF64DdCWKIrF9dz/462gVyCZ7MC3xOdYMr+xeiy+Lw6
+X-Gm-Message-State: AOJu0YwtP0RIp9knmvpB4k2ataNhreLohKJdmCRwkZ0IeLqDv7Bn4puO
+	WK98Gsbl+lEWs2Vz9j0CUl0lhGaT0hb6mJa2V0DV1svW1cjxWPrDlOQjYwyQ/ObluRcFPi0doz9
+	AMqqAQitNkMsABLybjMVjj0dUuKd99CSPXFs2rRDn1iTQWUAUCw==
+X-Received: by 2002:a5d:6048:0:b0:33e:a5e1:eccc with SMTP id j8-20020a5d6048000000b0033ea5e1ecccmr6531793wrt.68.1712562511803;
+        Mon, 08 Apr 2024 00:48:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEdSMdusIIBkkxRUY3+EQubBPog0K+ZjLJesgUXee5bP5avEYpbgMpmWO+ePhpK1P9BnrPA5g==
+X-Received: by 2002:a5d:6048:0:b0:33e:a5e1:eccc with SMTP id j8-20020a5d6048000000b0033ea5e1ecccmr6531772wrt.68.1712562511220;
+        Mon, 08 Apr 2024 00:48:31 -0700 (PDT)
+Received: from redhat.com ([2.52.152.188])
+        by smtp.gmail.com with ESMTPSA id a4-20020a5d4564000000b00343826878e8sm8278091wrc.38.2024.04.08.00.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 00:48:30 -0700 (PDT)
+Date: Mon, 8 Apr 2024 03:48:26 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v6 0/5] remove page frag implementation in
+ vhost_net
+Message-ID: <20240408034726-mutt-send-email-mst@kernel.org>
+References: <20240228093013.8263-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228093013.8263-1-linyunsheng@huawei.com>
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Wed, Feb 28, 2024 at 05:30:07PM +0800, Yunsheng Lin wrote:
+> Currently there are three implementations for page frag:
+> 
+> 1. mm/page_alloc.c: net stack seems to be using it in the
+>    rx part with 'struct page_frag_cache' and the main API
+>    being page_frag_alloc_align().
+> 2. net/core/sock.c: net stack seems to be using it in the
+>    tx part with 'struct page_frag' and the main API being
+>    skb_page_frag_refill().
+> 3. drivers/vhost/net.c: vhost seems to be using it to build
+>    xdp frame, and it's implementation seems to be a mix of
+>    the above two.
+> 
+> This patchset tries to unfiy the page frag implementation a
+> little bit by unifying gfp bit for order 3 page allocation
+> and replacing page frag implementation in vhost.c with the
+> one in page_alloc.c.
+> 
+> After this patchset, we are not only able to unify the page
+> frag implementation a little, but also able to have about
+> 0.5% performance boost testing by using the vhost_net_test
+> introduced in the last patch.
+> 
+> Before this patchset:
+> Performance counter stats for './vhost_net_test' (10 runs):
+> 
+>      305325.78 msec task-clock                       #    1.738 CPUs utilized               ( +-  0.12% )
+>        1048668      context-switches                 #    3.435 K/sec                       ( +-  0.00% )
+>             11      cpu-migrations                   #    0.036 /sec                        ( +- 17.64% )
+>             33      page-faults                      #    0.108 /sec                        ( +-  0.49% )
+>   244651819491      cycles                           #    0.801 GHz                         ( +-  0.43% )  (64)
+>    64714638024      stalled-cycles-frontend          #   26.45% frontend cycles idle        ( +-  2.19% )  (67)
+>    30774313491      stalled-cycles-backend           #   12.58% backend cycles idle         ( +-  7.68% )  (70)
+>   201749748680      instructions                     #    0.82  insn per cycle
+>                                               #    0.32  stalled cycles per insn     ( +-  0.41% )  (66.76%)
+>    65494787909      branches                         #  214.508 M/sec                       ( +-  0.35% )  (64)
+>     4284111313      branch-misses                    #    6.54% of all branches             ( +-  0.45% )  (66)
+> 
+>        175.699 +- 0.189 seconds time elapsed  ( +-  0.11% )
+> 
+> 
+> After this patchset:
+> Performance counter stats for './vhost_net_test' (10 runs):
+> 
+>      303974.38 msec task-clock                       #    1.739 CPUs utilized               ( +-  0.14% )
+>        1048807      context-switches                 #    3.450 K/sec                       ( +-  0.00% )
+>             14      cpu-migrations                   #    0.046 /sec                        ( +- 12.86% )
+>             33      page-faults                      #    0.109 /sec                        ( +-  0.46% )
+>   251289376347      cycles                           #    0.827 GHz                         ( +-  0.32% )  (60)
+>    67885175415      stalled-cycles-frontend          #   27.01% frontend cycles idle        ( +-  0.48% )  (63)
+>    27809282600      stalled-cycles-backend           #   11.07% backend cycles idle         ( +-  0.36% )  (71)
+>   195543234672      instructions                     #    0.78  insn per cycle
+>                                               #    0.35  stalled cycles per insn     ( +-  0.29% )  (69.04%)
+>    62423183552      branches                         #  205.357 M/sec                       ( +-  0.48% )  (67)
+>     4135666632      branch-misses                    #    6.63% of all branches             ( +-  0.63% )  (67)
+> 
+>        174.764 +- 0.214 seconds time elapsed  ( +-  0.12% )
 
-> On Fri, Apr 5, 2024 at 5:44=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.c=
-om> wrote:
->>
->> Support an instruction for resolving absolute addresses of per-CPU
->> data from their per-CPU offsets. This instruction is internal-only and
->> users are not allowed to use them directly. They will only be used for
->> internal inlining optimizations for now between BPF verifier and BPF
->> JITs.
->>
->> RISC-V uses generic per-cpu implementation where the offsets for CPUs
->> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
->> the address of the task_struct in TP register. The first element in
->> tast_struct is struct thread_info, and we can get the cpu number by
->> reading from the TP register + offsetof(struct thread_info, cpu).
->>
->> Once we have the cpu number in a register we read the offset for that
->> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
->> offset to the destination register.
->>
->> To measure the improvement from this change, the benchmark in [1] was
->> used on Qemu:
->>
->> Before:
->> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
->> arr-inc        :    1.121 =C2=B1 0.004M/s
->> hash-inc       :    0.681 =C2=B1 0.052M/s
->>
->> After:
->> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
->> arr-inc        :    1.366 =C2=B1 0.006M/s
->> hash-inc       :    0.676 =C2=B1 0.001M/s
->
-> TBH, I don't trust benchmarks done inside QEMU. Can you try running
-> this on some real hardware?
+The perf diff is in the noise, but the cleanup is nice.
+Thanks!
 
-I just ran it on a "VisionFive2" SBC:
-
-BEFORE
-=3D=3D=3D=3D=3D=3D
-glob-arr-inc   :   11.586 =C2=B1 0.021M/s=20
-arr-inc        :   10.892 =C2=B1 0.005M/s=20
-hash-inc       :    1.517 =C2=B1 0.001M/s=20
-
-AFTER
-=3D=3D=3D=3D=3D
-glob-arr-inc   :   11.893 =C2=B1 0.017M/s  (+2.6%)
-arr-inc        :   11.630 =C2=B1 0.020M/s  (+6.8%)
-hash-inc       :    1.543 =C2=B1 0.002M/s  (+1.7%)
-
-(It's early, and the coffee haven't kicked in, so I hope the
-calculations are correct...)
-
->>
->> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->>
->> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->> ---
->>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_co=
-mp64.c
->> index 15e482f2c657..e95bd1d459a4 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -12,6 +12,7 @@
->>  #include <linux/stop_machine.h>
->>  #include <asm/patch.h>
->>  #include <asm/cfi.h>
->> +#include <asm/percpu.h>
->>  #include "bpf_jit.h"
->>
->>  #define RV_FENTRY_NINSNS 2
->> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn=
-, struct rv_jit_context *ctx,
->>                         emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
->>                         emit_mv(rd, RV_REG_T1, ctx);
->>                         break;
->> +               } else if (insn_is_mov_percpu_addr(insn)) {
->> +                       if (rd !=3D rs)
->> +                               emit_mv(rd, rs, ctx);
->
-> Is this an unconditional move instruction? in x86-64, EMIT_mov checks
-> whether source and destination registers are the same and doesn't emit
-> anything if they match (which makes sense, right)?
-
-Yeah, it is. Folding the check into the emit sounds like a good idea.
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
 
-Bj=C3=B6rn
+
+> Changelog:
+> V6: Add timeout for poll() and simplify some logic as suggested
+>     by Jason.
+> 
+> V5: Address the comment from jason in vhost_net_test.c and the
+>     comment about leaving out the gfp change for page frag in
+>     sock.c as suggested by Paolo.
+> 
+> V4: Resend based on latest net-next branch.
+> 
+> V3:
+> 1. Add __page_frag_alloc_align() which is passed with the align mask
+>    the original function expected as suggested by Alexander.
+> 2. Drop patch 3 in v2 suggested by Alexander.
+> 3. Reorder patch 4 & 5 in v2 suggested by Alexander.
+> 
+> Note that placing this gfp flags handing for order 3 page in an inline
+> function is not considered, as we may be able to unify the page_frag
+> and page_frag_cache handling.
+> 
+> V2: Change 'xor'd' to 'masked off', add vhost tx testing for
+>     vhost_net_test.
+> 
+> V1: Fix some typo, drop RFC tag and rebase on latest net-next.
+> 
+> Yunsheng Lin (5):
+>   mm/page_alloc: modify page_frag_alloc_align() to accept align as an
+>     argument
+>   page_frag: unify gfp bits for order 3 page allocation
+>   net: introduce page_frag_cache_drain()
+>   vhost/net: remove vhost_net_page_frag_refill()
+>   tools: virtio: introduce vhost_net_test
+> 
+>  drivers/net/ethernet/google/gve/gve_main.c |  11 +-
+>  drivers/net/ethernet/mediatek/mtk_wed_wo.c |  17 +-
+>  drivers/nvme/host/tcp.c                    |   7 +-
+>  drivers/nvme/target/tcp.c                  |   4 +-
+>  drivers/vhost/net.c                        |  91 ++--
+>  include/linux/gfp.h                        |  16 +-
+>  mm/page_alloc.c                            |  22 +-
+>  net/core/skbuff.c                          |   9 +-
+>  tools/virtio/.gitignore                    |   1 +
+>  tools/virtio/Makefile                      |   8 +-
+>  tools/virtio/linux/virtio_config.h         |   4 +
+>  tools/virtio/vhost_net_test.c              | 532 +++++++++++++++++++++
+>  12 files changed, 609 insertions(+), 113 deletions(-)
+>  create mode 100644 tools/virtio/vhost_net_test.c
+> 
+> -- 
+> 2.33.0
+> 
+
 
