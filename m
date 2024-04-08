@@ -1,308 +1,149 @@
-Return-Path: <bpf+bounces-26138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4044889B690
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 05:45:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 050FA89B6A4
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 05:54:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63ECB1C21132
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 03:45:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4B39281CDF
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 03:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1E546B8;
-	Mon,  8 Apr 2024 03:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4F2522F;
+	Mon,  8 Apr 2024 03:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qRUBN82i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V8pnCjng"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11A81C0DEB;
-	Mon,  8 Apr 2024 03:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A3D1FC8;
+	Mon,  8 Apr 2024 03:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712547953; cv=none; b=TEuRJPg3OIHDbzUHVqwiFn304G9o7HX+zCGrjB8nakjcJ9guY+o9tbEJtUVRPVlIecWDRSjgUIjekhAGTpoBqF+E9nsaLJHy1wSmyXD/taJevvAh981OOokHvd1dbMMRWaq/NEdIr0S6nj6O4LePvOBIOnBINxnTrtD9+gGCOuY=
+	t=1712548448; cv=none; b=d2LBDbFGCHizf/h5naSyPLfJkOTugpkMNrBAiQLzlu1Cv0RnUA8iXa3wFLknJgngviKSTLLVnTle7Rbe6Hq2tduxKngNVaNUUPnRyAFSw8McCdpeuRJ/YKccM13idbv3bzAFavsywux5q4L96SBaPqLIC8koUMiuSkDa94iiguI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712547953; c=relaxed/simple;
-	bh=YxtZ+o7jIVqquLJ4Df4JmVl3GjZNVMXsuF41jlodVds=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QPnJzgeJOvtbRVz5Vr5C9b9PLPa3bIim0kQ/qxj9MGcI9DWWwY5iJszXto0r7TLdrUmuDOc7TqjPO6PUroKwCIko5IhIyq42ZbKG2uS8GgFTPYsva/t7014U8UXhsr+kvGaoQh7hEWEl+YE6NjKtIlY87RYWPwS/FbyLIoo9ml4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qRUBN82i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC56C433C7;
-	Mon,  8 Apr 2024 03:45:47 +0000 (UTC)
+	s=arc-20240116; t=1712548448; c=relaxed/simple;
+	bh=ldaL5TI2vG8hJ2dJM8jnvwvFwNTV8s/Opak7rNRuJkQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=kFwO1wyPGg9OKGZ74Z+N9L3IWrxc4FWVCq0VyDy8oda5aOLzrSdSaMFnxLHFS4MQ0ewkPg0jM6mKBAWFTJKS2iRB0CGeQ/viVQHPnYrDcQuYafE2Q+k5U7SfdX8JfV+a3DBCaQk7Cz7TqPuhv2+FasYq9BIWzG3Y3TzH1mGW3Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V8pnCjng; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0C4C433F1;
+	Mon,  8 Apr 2024 03:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712547953;
-	bh=YxtZ+o7jIVqquLJ4Df4JmVl3GjZNVMXsuF41jlodVds=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qRUBN82idhS8v5U0WBedrqBYdRc3yg/wgoG9A38W1sqAWUsv89lqaVnFwgIU+rwyS
-	 IJhPMlA3zfXBDeYK1PoPKpmkKrJXdqin6HqPv3u3H3KVK/SRVMfG5EndsxCo/rbudt
-	 IxPFqBZ7HDngN52hGvKVuOaQBFCyDs8NUfRp48Ngx4uCL+TlZQM0qsF5kQ7hy89K06
-	 4uPU3Bf6J6YOgjQRTJ6TOSJ4J7k7oWu+JgQqmuSto7lPtqEsCglcku+qGpsJIU5XD3
-	 flARlTCmKPTPGpnJ6s5tgcp9tB/wLuimuD5diZv1pNG8GLEZ3SVUl83a4DWLsatiE+
-	 7IGPIa7bYT4fw==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	mptcp@lists.linux.dev,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Export send_recv_data helper
-Date: Mon,  8 Apr 2024 11:45:31 +0800
-Message-Id: <a8153ab2b82c8cd57aca2c6d44d5d327e8c7be92.1712547287.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1712547287.git.tanggeliang@kylinos.cn>
-References: <cover.1712547287.git.tanggeliang@kylinos.cn>
+	s=k20201202; t=1712548447;
+	bh=ldaL5TI2vG8hJ2dJM8jnvwvFwNTV8s/Opak7rNRuJkQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=V8pnCjngV44K8vktUDKHOC10cJlaZI7dD9ILMpqODQeiAnMyYymlg53uHnn4bTvpS
+	 nfLjZNy9IFergsvkjz3kVlipshMlKutYpIQ/qvSAysMYCeNE/GOPyJR0q5l+jBv4GQ
+	 juwA/wdWVwJmpITYG3zBVWrb8UddARMslSkOidhLvadEHiWGo3gz68lFc8p/XJbGjv
+	 sme6r9YOgeC8Va9i73956WqXI5AouL6Od/VbEjWtauRBfZcnEWiD8JWlVLUE1sj0ev
+	 fFqm9Eg0aOkN8ElM0H+yqIqovds1KEL4n/KLJMI1odWcEc/unLDhq2BHPxNYepOWyD
+	 erQfeKBReg/xQ==
+Date: Mon, 8 Apr 2024 12:54:01 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-Id: <20240408125401.d4f100d184b11bc01fcd0308@kernel.org>
+In-Reply-To: <20240406175558.GC3060@redhat.com>
+References: <20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+	<20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+	<20240404161108.GG7153@redhat.com>
+	<20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
+	<Zg-8r63tPSkuhN7p@krava>
+	<20240405110230.GA22839@redhat.com>
+	<20240406120536.57374198f3f45e809d7e4efa@kernel.org>
+	<20240406175558.GC3060@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Sat, 6 Apr 2024 19:55:59 +0200
+Oleg Nesterov <oleg@redhat.com> wrote:
 
-This patch extracts the code to send and receive data into a new
-helper named send_recv_data() in network_helpers.c and export it
-in network_helpers.h.
+> On 04/06, Masami Hiramatsu wrote:
+> >
+> > On Fri, 5 Apr 2024 13:02:30 +0200
+> > Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > > With or without this patch userpace can also do
+> > >
+> > > 	foo() { <-- retprobe1
+> > > 		bar() {
+> > > 			jump to xol_area
+> > > 		}
+> > > 	}
+> > >
+> > > handle_trampoline() will handle retprobe1.
+> >
+> > This is OK because the execution path has been changed to trampoline,
+> 
+> Agreed, in this case the misuse is more clear. But please see below.
+> 
+> > but the above will continue running bar() after sys_uretprobe().
+> 
+> .. and most probably crash
 
-This helper will be used for MPTCP BPF selftests.
+Yes, unless it returns with longjmp(). (but this is rare case and
+maybe malicious program.)
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/network_helpers.c | 85 +++++++++++++++++++
- tools/testing/selftests/bpf/network_helpers.h |  1 +
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 81 +-----------------
- 3 files changed, 87 insertions(+), 80 deletions(-)
+> 
+> > > sigreturn() can be "improved" too. Say, it could validate sigcontext->ip
+> > > and return -EINVAL if this addr is not valid. But why?
+> >
+> > Because sigreturn() never returns, but sys_uretprobe() will return.
+> 
+> You mean, sys_uretprobe() returns to the next insn after syscall.
+> 
+> Almost certainly yes, but this is not necessarily true. If one of consumers
+> changes regs->sp sys_uretprobe() "returns" to another location, just like
+> sys_rt_sigreturn().
+> 
+> That said.
+> 
+> Masami, it is not that I am trying to prove that you are "wrong" ;) No.
+> 
+> I see your points even if I am biased, I understand that my objections are
+> not 100% "fair".
+> 
+> I am just trying to explain why, rightly or not, I care much less about the
+> abuse of sys_uretprobe().
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 04175e16195a..e17d19f88a36 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -545,3 +545,88 @@ int set_hw_ring_size(char *ifname, struct ethtool_ringparam *ring_param)
- 	close(sockfd);
- 	return 0;
- }
-+
-+struct send_recv_arg {
-+	int		fd;
-+	uint32_t	bytes;
-+	int		stop;
-+};
-+
-+static void *send_recv_server(void *arg)
-+{
-+	struct send_recv_arg *a = (struct send_recv_arg *)arg;
-+	ssize_t nr_sent = 0, bytes = 0;
-+	char batch[1500];
-+	int err = 0, fd;
-+
-+	fd = accept(a->fd, NULL, NULL);
-+	while (fd == -1) {
-+		if (errno == EINTR)
-+			continue;
-+		err = -errno;
-+		goto done;
-+	}
-+
-+	if (settimeo(fd, 0)) {
-+		err = -errno;
-+		goto done;
-+	}
-+
-+	while (bytes < a->bytes && !READ_ONCE(a->stop)) {
-+		nr_sent = send(fd, &batch,
-+			       MIN(a->bytes - bytes, sizeof(batch)), 0);
-+		if (nr_sent == -1 && errno == EINTR)
-+			continue;
-+		if (nr_sent == -1) {
-+			err = -errno;
-+			break;
-+		}
-+		bytes += nr_sent;
-+	}
-+
-+	ASSERT_EQ(bytes, a->bytes, "send");
-+
-+done:
-+	if (fd >= 0)
-+		close(fd);
-+	if (err) {
-+		WRITE_ONCE(a->stop, 1);
-+		return ERR_PTR(err);
-+	}
-+	return NULL;
-+}
-+
-+void send_recv_data(int lfd, int fd, uint32_t total_bytes)
-+{
-+	ssize_t nr_recv = 0, bytes = 0;
-+	struct send_recv_arg arg = {
-+		.fd	= lfd,
-+		.bytes	= total_bytes,
-+		.stop	= 0,
-+	};
-+	pthread_t srv_thread;
-+	void *thread_ret;
-+	char batch[1500];
-+	int err;
-+
-+	err = pthread_create(&srv_thread, NULL, send_recv_server, (void *)&arg);
-+	if (!ASSERT_OK(err, "pthread_create"))
-+		return;
-+
-+	/* recv total_bytes */
-+	while (bytes < total_bytes && !READ_ONCE(arg.stop)) {
-+		nr_recv = recv(fd, &batch,
-+			       MIN(total_bytes - bytes, sizeof(batch)), 0);
-+		if (nr_recv == -1 && errno == EINTR)
-+			continue;
-+		if (nr_recv == -1)
-+			break;
-+		bytes += nr_recv;
-+	}
-+
-+	ASSERT_EQ(bytes, total_bytes, "recv");
-+
-+	WRITE_ONCE(arg.stop, 1);
-+	pthread_join(srv_thread, &thread_ret);
-+	ASSERT_OK(IS_ERR(thread_ret), "thread_ret");
-+}
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 6457445cc6e2..5172f0b7bf6e 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -76,6 +76,7 @@ struct nstoken;
-  */
- struct nstoken *open_netns(const char *name);
- void close_netns(struct nstoken *token);
-+void send_recv_data(int lfd, int fd, uint32_t total_bytes);
- 
- static __u16 csum_fold(__u32 csum)
- {
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 64f172f02a9a..3f822100c2b3 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -33,75 +33,15 @@ static int settcpca(int fd, const char *tcp_ca)
- 	return 0;
- }
- 
--struct send_recv_arg {
--	int		fd;
--	uint32_t	bytes;
--	int		stop;
--};
--
--static void *server(void *arg)
--{
--	struct send_recv_arg *a = (struct send_recv_arg *)arg;
--	ssize_t nr_sent = 0, bytes = 0;
--	char batch[1500];
--	int err = 0, fd;
--
--	fd = accept(a->fd, NULL, NULL);
--	while (fd == -1) {
--		if (errno == EINTR)
--			continue;
--		err = -errno;
--		goto done;
--	}
--
--	if (settimeo(fd, 0)) {
--		err = -errno;
--		goto done;
--	}
--
--	while (bytes < a->bytes && !READ_ONCE(a->stop)) {
--		nr_sent = send(fd, &batch,
--			       MIN(a->bytes - bytes, sizeof(batch)), 0);
--		if (nr_sent == -1 && errno == EINTR)
--			continue;
--		if (nr_sent == -1) {
--			err = -errno;
--			break;
--		}
--		bytes += nr_sent;
--	}
--
--	ASSERT_EQ(bytes, a->bytes, "send");
--
--done:
--	if (fd >= 0)
--		close(fd);
--	if (err) {
--		WRITE_ONCE(a->stop, 1);
--		return ERR_PTR(err);
--	}
--	return NULL;
--}
--
- static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
- {
--	ssize_t nr_recv = 0, bytes = 0;
--	struct send_recv_arg arg = {
--		.bytes	= total_bytes,
--		.stop	= 0,
--	};
- 	int lfd = -1, fd = -1;
--	pthread_t srv_thread;
--	void *thread_ret;
--	char batch[1500];
- 	int err;
- 
- 	lfd = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
- 	if (!ASSERT_NEQ(lfd, -1, "socket"))
- 		return;
- 
--	arg.fd = lfd;
--
- 	fd = socket(AF_INET6, SOCK_STREAM, 0);
- 	if (!ASSERT_NEQ(fd, -1, "socket")) {
- 		close(lfd);
-@@ -133,26 +73,7 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
- 			goto done;
- 	}
- 
--	err = pthread_create(&srv_thread, NULL, server, (void *)&arg);
--	if (!ASSERT_OK(err, "pthread_create"))
--		goto done;
--
--	/* recv total_bytes */
--	while (bytes < total_bytes && !READ_ONCE(arg.stop)) {
--		nr_recv = recv(fd, &batch,
--			       MIN(total_bytes - bytes, sizeof(batch)), 0);
--		if (nr_recv == -1 && errno == EINTR)
--			continue;
--		if (nr_recv == -1)
--			break;
--		bytes += nr_recv;
--	}
--
--	ASSERT_EQ(bytes, total_bytes, "recv");
--
--	WRITE_ONCE(arg.stop, 1);
--	pthread_join(srv_thread, &thread_ret);
--	ASSERT_OK(IS_ERR(thread_ret), "thread_ret");
-+	send_recv_data(lfd, fd, total_bytes);
- 
- done:
- 	close(lfd);
+I would like to clear that the abuse of this syscall will not possible to harm
+the normal programs, and even if it is used by malicious code (e.g. injected by
+stack overflow) it doesn't cause a problem. At least thsese points are cleared,
+and documented. it is easier to push it as new Linux API.
+
+Thank you,
+
+> 
+> Thanks!
+> 
+> Oleg.
+> 
+> 
+
+
 -- 
-2.40.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
