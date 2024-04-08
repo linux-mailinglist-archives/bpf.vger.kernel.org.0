@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-26170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D7589BEC2
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 14:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3A2D89BEC5
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 14:20:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5E91F23C21
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 12:20:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9469D1F23C3D
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 12:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA226EB7D;
-	Mon,  8 Apr 2024 12:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35A26FB9D;
+	Mon,  8 Apr 2024 12:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="RJgq+5ST"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="wvjwbxo5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505036D1A6
-	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 12:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF22E6EB62
+	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 12:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712578819; cv=none; b=r5yuDZS9gyi6VVSWRXlp7dkbP+QlV8KAI0Kq89HXSjiEhuASVtwt9k0rew2sDknXEGb1Ods8aZ1fD1MaA4yCzFvDK2K1q7ILUJc9TGgMNX9aJDyTl+/0YPj8Q/oK2hDtS9QxBl/hK+6Lzkua4ep02odW7Nmevli/sgW6QmnTjcs=
+	t=1712578821; cv=none; b=ht3eWvz1wU78siK5orvTOod8nYKm3cOvok5UDmf/jedqq8TXB36L3+IhwHoc3UxiNxINuHlQi0uO8qhxc0UZRscifjqBg2AJ0msbOv8tn56dt5Iyp+GcwGmEb2clKN+iZ7gfZkNVywUV3NMTOiQRo5vaembLS0OUWQEV+lGovA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712578819; c=relaxed/simple;
-	bh=0Rqjx80lQrZE7wZ+6UaTpRU7AKiDD72DIxmJmCIh9E4=;
+	s=arc-20240116; t=1712578821; c=relaxed/simple;
+	bh=b8bptETvG84oiXi8WEQCccf8XZFYg83kzkS/2d51CA0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J+Xx0qdVTCysx886/FPl3QknFFJw4WumiVnhlxFIBhv2NvnQl1n71J3iMit3/1oOHIot1op+GK4DeKZhkJ9hQ1sgTpOJw0E2Zoj00tUEk/JppmC2P86lFGXhRvinOpaamwKc4NZewcMB0mMXNrJ4HjuPyVp1UGyH86ydYUZnCfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=RJgq+5ST; arc=none smtp.client-ip=209.85.210.50
+	 MIME-Version:Content-Type; b=tbVgCIYZJ9rIRh49nYStyp+BGKuopLoq8mnBBmyq/V1SzWFiaxigDtvWPFCazw46p7lmbiFg7bd7I3RTDvyKGqzKw1MHW7lo/rwgNVCdK6Itc9HaxsPFRPZf+8AXsGdJ2TuGI/Y9F6fC/tCSUJh5fM09eW15jMqQrhKTZS3RPuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=wvjwbxo5; arc=none smtp.client-ip=209.85.160.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ea163eb437so658225a34.2
-        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 05:20:18 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-22f746c56a2so118522fac.0
+        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 05:20:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1712578817; x=1713183617; darn=vger.kernel.org;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1712578819; x=1713183619; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DWvw+VNSEb8FXhGNcVsqL23nMeH8Qk2hFaJebNGTIg0=;
-        b=RJgq+5STWcd50q4LgZ6GTSx95HXmXns+rlSSGSmYxRy92vtYxteJ2gYD1T1114OA4N
-         jJnyh8S4LiJz2C5bhNqUxK/ZQcNA03rOTzTbG4WYHvan6EfMWVbwLsyAy/tx1xLVDDh9
-         USkFqVVZ4RQHYIwMwUYMr9+2M/P2mrLrK66egxapo5Lcdrwf/CTucnXfy4K+nA5A18ZH
-         TtWdKmP9LM1VR9Zi4gqxpwM2GNIxtNn8jLfHnt/Z8kOlNcJZMPIWiN1/KsMyE75S3I6Z
-         3emwDdra4jm0HN3k3poFgR3r3RZiiroMJb+/o6KmmL/Kf4xVZAGFq4WoYabbhw8KbHqH
-         6Qtw==
+        bh=2Ayqzmg/dq1ZxpnFUTOb8nK1tSXrGpGgrmAqxDfILoE=;
+        b=wvjwbxo5damCd/0JNxSCHwxSlRC49LLI8jVShmSLNyr2WKt4QeOYWGleNwIVfYN34C
+         ZIw0qbtFsuM8vzSQlT++aKO8H/rvbJAQotSFhbGdpZgpd67EbvGNQv61VXfosIP7k7s0
+         BHirWHm+yhMZwcnKv/oDHmB9i9Jdn5/d6vV4SkQe4anZ2oWmd75La9gwEwg/kwsbXhp0
+         p7/s6y/kQs1ih4WNy+Liyefm2WvZAs1Oxo6RjB+aoGvn3eF9+dGKyKkGlfZuEprwJDgX
+         cwFOovCrASOH328VvjVY/UT1umSBnHbz3G60kXx6R+GtZqnHT+4a96TM6svD2zxifOPQ
+         PC1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712578817; x=1713183617;
+        d=1e100.net; s=20230601; t=1712578819; x=1713183619;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DWvw+VNSEb8FXhGNcVsqL23nMeH8Qk2hFaJebNGTIg0=;
-        b=gfBcbrS/DGE17d2HexwKbeqaw3nVV4nzg1EyKnxeTbfWm9fTFCFUs5mqQYi7nm4bZ1
-         3/D31AMBczS/zohOaRC1uS/2F8dG13UfOCXL/9VYiXnAyXL0fj3MhOsXX1hBWG3Isc9U
-         qgPDIP7A/jTql83qn2Z7e4bXOjYC2vF8a0quLdHUgqUnhHoEi4oNZEQtjsOCtlRTlZ+i
-         mdA54ob2ZGhRDRvhMC3aHTapWhODofzoRsfEuY2lyTFdk6ENEY+q0IZkN+SvweAjOrzY
-         CAYvFiZAAcbgISuIeP2iacPUeI0hCTD+XzLnSHHjTP2aX1k+/BAZS7+9XTTBxb3WuvMN
-         pGSg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+ezYp9P/gLmG8R/TQ60kO93+mYGpZC8CO8Hi5xu7g3RFogJ3wU6P5kbQiI5QCLE4A5WH6CzEs/dKUlxK3+fxvdYD4
-X-Gm-Message-State: AOJu0YyyejVDJRY4ORVZajpiS7ravaQ4X1eaLNgn27ORfPK9MDNkt3NV
-	l07Vw4/IWsgCnWpyRpswlN5+aHh79hNdxGAJ1L52qAOTPxf28pREXxJIInN7Dw==
-X-Google-Smtp-Source: AGHT+IFdNfqkjjfnGtIL4xZfGMvomNTIDKp6H49mfT2uKPwQE15l1eUPDBAevwFCH6xQgavFpwM9BA==
-X-Received: by 2002:a05:6830:7110:b0:6ea:1901:fda1 with SMTP id ek16-20020a056830711000b006ea1901fda1mr3548887otb.27.1712578817330;
-        Mon, 08 Apr 2024 05:20:17 -0700 (PDT)
+        bh=2Ayqzmg/dq1ZxpnFUTOb8nK1tSXrGpGgrmAqxDfILoE=;
+        b=TXcak7fBtQNbzgKmbOxYlb/iFMx/5LY6IkPgc7tnfP3oPjg9FAzexUmvwT/ljQfWXE
+         BAf9WHwaGhV4yVbApaBN1q1cGmpDvIXJUfjNXBQS08+OUqbaWHKkh+aN9pM/cexPvUc2
+         mywMEg+VCqxA0agfD9f6yWUoeYCwgnolqJIDdNmddNccrQk8bmlAH8XcUHR6oR7cMPzZ
+         HMwMAzXK8X/UjWLY8MO8eg9/rSZd3ksg95l2MKj9O8fEejoBWvLaKLNBNBv0Y6Z4T9wr
+         N7ziqkhd5hzGT6UwTZ3kAhjRSiuNldyim1SJ2c9nZbOYGoRfuByM0vlUtkCzyOqz8FgL
+         w3gA==
+X-Forwarded-Encrypted: i=1; AJvYcCUv2Mm+mD23M1hYQ+wKRuFf7WInKsnS2acxEsae0ritAV7GKZxJrI/pqW0rg6g8eI5BgdY8VVEBPjh5j4RBC49rpTo8
+X-Gm-Message-State: AOJu0YxCevDanwcPlWiBU+2NinhqLFuzcxrlK6BFg6JJS5y9MA24IV9B
+	lJ7IWkSKIZWniKK//e2PjYAv2HJTOQkBKKsQvc/hhXihr6jREhqeU+4NNnJOBQ==
+X-Google-Smtp-Source: AGHT+IGmIy3e7no2s4+pW7wEMrWTS5LYSv9QWlbc1ecMpjivcdifPUgAT1ROvKjwHb4YaHn0TbnuCg==
+X-Received: by 2002:a05:6871:8801:b0:221:96b2:5a4e with SMTP id te1-20020a056871880100b0022196b25a4emr9343695oab.58.1712578818949;
+        Mon, 08 Apr 2024 05:20:18 -0700 (PDT)
 Received: from majuu.waya ([174.94.28.98])
-        by smtp.gmail.com with ESMTPSA id w10-20020a05620a148a00b0078d5d81d65fsm1936142qkj.32.2024.04.08.05.20.15
+        by smtp.gmail.com with ESMTPSA id w10-20020a05620a148a00b0078d5d81d65fsm1936142qkj.32.2024.04.08.05.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 05:20:16 -0700 (PDT)
+        Mon, 08 Apr 2024 05:20:18 -0700 (PDT)
 From: Jamal Hadi Salim <jhs@mojatatu.com>
 To: netdev@vger.kernel.org
 Cc: deb.chatterjee@intel.com,
@@ -91,9 +91,9 @@ Cc: deb.chatterjee@intel.com,
 	victor@mojatatu.com,
 	pctammela@mojatatu.com,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v15  03/15] net/sched: act_api: Update tc_action_ops to account for P4 actions
-Date: Mon,  8 Apr 2024 08:19:48 -0400
-Message-Id: <20240408122000.449238-4-jhs@mojatatu.com>
+Subject: [PATCH net-next v15  04/15] net/sched: act_api: add struct p4tc_action_ops as a parameter to lookup callback
+Date: Mon,  8 Apr 2024 08:19:49 -0400
+Message-Id: <20240408122000.449238-5-jhs@mojatatu.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240408122000.449238-1-jhs@mojatatu.com>
 References: <20240408122000.449238-1-jhs@mojatatu.com>
@@ -106,19 +106,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The initialisation of P4TC action instances require access to a struct
-p4tc_act (which appears in later patches) to help us to retrieve
-information like the P4 action parameters etc. In order to retrieve
-struct p4tc_act we need the pipeline name or id and the action name or id.
-Also recall that P4TC action IDs are P4 and are net namespace specific and
-not global like standard tc actions.
-The init callback from tc_action_ops parameters had no way of
-supplying us that information. To solve this issue, we decided to create a
-new tc_action_ops callback (init_ops), that provies us with the
-tc_action_ops  struct which then provides us with the pipeline and action
-name. In addition we add a new refcount to struct tc_action_ops called
-dyn_ref, which accounts for how many action instances we have of a specific
-action.
+For P4 actions, we require information from struct tc_action_ops,
+specifically the action kind, to find and locate the P4 action information
+for the lookup operation.
 
 Co-developed-by: Victor Nogueira <victor@mojatatu.com>
 Signed-off-by: Victor Nogueira <victor@mojatatu.com>
@@ -129,59 +119,37 @@ Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
 Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- include/net/act_api.h |  6 ++++++
- net/sched/act_api.c   | 14 +++++++++++---
- 2 files changed, 17 insertions(+), 3 deletions(-)
+ include/net/act_api.h | 3 ++-
+ net/sched/act_api.c   | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/include/net/act_api.h b/include/net/act_api.h
-index c839ff57c1..59f62c2a6e 100644
+index 59f62c2a6e..52aab6dd8a 100644
 --- a/include/net/act_api.h
 +++ b/include/net/act_api.h
-@@ -120,6 +120,12 @@ struct tc_action_ops {
+@@ -115,7 +115,8 @@ struct tc_action_ops {
+ 		       struct tcf_result *); /* called under RCU BH lock*/
+ 	int     (*dump)(struct sk_buff *, struct tc_action *, int, int);
+ 	void	(*cleanup)(struct tc_action *);
+-	int     (*lookup)(struct net *net, struct tc_action **a, u32 index);
++	int     (*lookup)(struct net *net, const struct tc_action_ops *ops,
++			  struct tc_action **a, u32 index);
+ 	int     (*init)(struct net *net, struct nlattr *nla,
  			struct nlattr *est, struct tc_action **act,
  			struct tcf_proto *tp,
- 			u32 flags, struct netlink_ext_ack *extack);
-+	/* This should be merged with the original init action */
-+	int     (*init_ops)(struct net *net, struct nlattr *nla,
-+			    struct nlattr *est, struct tc_action **act,
-+			   struct tcf_proto *tp,
-+			   const struct tc_action_ops *ops, u32 flags,
-+			   struct netlink_ext_ack *extack);
- 	int     (*walk)(struct net *, struct sk_buff *,
- 			struct netlink_callback *, int,
- 			const struct tc_action_ops *,
 diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index 87eb09121c..c094a57ab7 100644
+index c094a57ab7..87b6d30077 100644
 --- a/net/sched/act_api.c
 +++ b/net/sched/act_api.c
-@@ -1044,7 +1044,7 @@ int tcf_register_action(struct tc_action_ops *act,
- 	struct tc_action_ops *a;
- 	int ret;
+@@ -726,7 +726,7 @@ static int __tcf_idr_search(struct net *net,
+ 	struct tc_action_net *tn = net_generic(net, ops->net_id);
  
--	if (!act->act || !act->dump || !act->init)
-+	if (!act->act || !act->dump || (!act->init && !act->init_ops))
- 		return -EINVAL;
+ 	if (unlikely(ops->lookup))
+-		return ops->lookup(net, a, index);
++		return ops->lookup(net, ops, a, index);
  
- 	/* We have to register pernet ops before making the action ops visible,
-@@ -1517,8 +1517,16 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
- 			}
- 		}
- 
--		err = a_o->init(net, tb[TCA_ACT_OPTIONS], est, &a, tp,
--				userflags.value | flags, extack);
-+		/* When we arrive here we guarantee that a_o->init or
-+		 * a_o->init_ops exist.
-+		 */
-+		if (a_o->init)
-+			err = a_o->init(net, tb[TCA_ACT_OPTIONS], est, &a, tp,
-+					userflags.value | flags, extack);
-+		else
-+			err = a_o->init_ops(net, tb[TCA_ACT_OPTIONS], est, &a,
-+					    tp, a_o, userflags.value | flags,
-+					    extack);
- 	} else {
- 		err = a_o->init(net, nla, est, &a, tp, userflags.value | flags,
- 				extack);
+ 	return tcf_idr_search(tn, a, index);
+ }
 -- 
 2.34.1
 
