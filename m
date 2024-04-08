@@ -1,35 +1,36 @@
-Return-Path: <bpf+bounces-26189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38ED789C82B
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:24:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59CF889C82C
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:24:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6887D1C22F61
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 15:24:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74D94B2468E
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 15:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4395140391;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4EE2140397;
 	Mon,  8 Apr 2024 15:24:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED95E13FD87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED11A6A012
 	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 15:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712589881; cv=none; b=DTWhCI8kv834jB0xEbkFa8n5/RKsn1fVaYYb67AKsQ2BV/HBO4gSr0mzutHHVn9M9cxC96NlteIPp4uxxk2pOb4OCeP4VcqCgRysgxquLTl618lgUlZeIyxtIZgLviZWKeyo5PUko0sXgB0bj+zRxil3dRZHscYnuOG6sWE+k9Q=
+	t=1712589881; cv=none; b=Cjd+MjLsx4Ri+TR4t951qKhExQzQzs5vQadN+T7Jc+734ohIbGWkNsta0MPN/DfVVegBYgMq3QUYltVM5IaN/R49Z67d0Z7V5KzmMfazAcQfIL6jUP0eklgPWn2WIhz+saVI6WfCm10uH9qtKhrwADrwc6MSMH0Im7Seb0rVVTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712589881; c=relaxed/simple;
-	bh=fk0j/agTyJLumpn2w9huXLiY4yzlb7rKIYJVHXRTFI0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KznkVKv1JnNL97lw+AhbasQ77qbG2rf1vY1YUdyUmhGFTyyzxGiSM5mnW6KXOa2fFFaZSQg4vhdsvnhB5MJmtUqH/PnQR/ERbQcPlWsW995D/jIMcL7DjGaaXRaVk8K3yhqyKRLyePsdOTp1iGnEmewHjE7r7qh0Z6peYAL7fUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+	bh=ZnjV94E+YKHxM8wi/tIIpoRshN6l5fX3y5May51vMSM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VT/PNY4yWZ49b+aWn5qjafsnYcTqw0bR7dq6MaiEsGZ8YXggDW2sah9tpNlkOddAikYZ/Eha4LsPALUcd/tzYXO4xwrqu8/3HkfzpheE8XWtshQXvmrHU7IaotLevHJHiskLH6FQ9x5q+dRtjzWGu/1M0CJ2T0IdwjzdSWKy078=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id E41962C7DFC3; Mon,  8 Apr 2024 08:24:25 -0700 (PDT)
+	id 0A42D2C7DFEF; Mon,  8 Apr 2024 08:24:31 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -39,10 +40,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v6 0/5] bpf: Add bpf_link support for sk_msg and sk_skb progs
-Date: Mon,  8 Apr 2024 08:24:25 -0700
-Message-ID: <20240408152425.4160829-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v6 1/5] bpf: Add bpf_link support for sk_msg and sk_skb progs
+Date: Mon,  8 Apr 2024 08:24:31 -0700
+Message-ID: <20240408152431.4161022-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240408152425.4160829-1-yonghong.song@linux.dev>
+References: <20240408152425.4160829-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -51,70 +54,503 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-One of our internal services started to use sk_msg program and currently
-it used existing prog attach/detach2 as demonstrated in selftests.
-But attach/detach of all other bpf programs are based on bpf_link.
-Consistent attach/detach APIs for all programs will make things easy to
-undersand and less error prone. So this patch added bpf_link
-support for BPF_PROG_TYPE_SK_MSG. Based on comments from
-previous RFC patch, I added BPF_PROG_TYPE_SK_SKB support as well
-as both program types have similar treatment w.r.t. bpf_link
-handling.
+Add bpf_link support for sk_msg and sk_skb programs. We have an
+internal request to support bpf_link for sk_msg programs so user
+space can have a uniform handling with bpf_link based libbpf
+APIs. Using bpf_link based libbpf API also has a benefit which
+makes system robust by decoupling prog life cycle and
+attachment life cycle.
 
-For the patch series, patch 1 added kernel support. Patch 2
-added libbpf support. Patch 3 added bpftool support and
-patches 4/5 added some new tests.
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf.h            |   6 +
+ include/linux/skmsg.h          |   4 +
+ include/uapi/linux/bpf.h       |   5 +
+ kernel/bpf/syscall.c           |   4 +
+ net/core/sock_map.c            | 261 +++++++++++++++++++++++++++++++--
+ tools/include/uapi/linux/bpf.h |   5 +
+ 6 files changed, 269 insertions(+), 16 deletions(-)
 
-Changelogs:
-  v5 -> v6:
-    - resolve libbpf conflict due to recent upstream change.
-    - add a bpf_link_create() test.
-    - some code refactoring for better code quality.
-  v4 -> v5:
-    - increase scope of mutex protection in link_release.
-    - remove previous-leftover entry in libbpf.map.
-    - make some code changes for better understanding.
-  v3 -> v4:
-    - use a single mutex lock to protect both attach/detach/update
-      and release/fill_info/show_fdinfo.
-    - simplify code for sock_map_link_lookup().
-    - fix a few bugs.
-    - add more tests.
-  v2 -> v3:
-    - consolidate link types of sk_msg and sk_skb to
-      a single link type BPF_PROG_TYPE_SOCKMAP.
-    - fix bpf_link lifecycle issue. in v2, after bpf_link
-      is attached, a subsequent prog_attach could change
-      that bpf_link. this patch makes bpf_link having
-      correct behavior such that it won't go away facing
-      other prog/link attach for the same map and the same
-      attach type.
-
-Yonghong Song (5):
-  bpf: Add bpf_link support for sk_msg and sk_skb progs
-  libbpf: Add bpf_link support for BPF_PROG_TYPE_SOCKMAP
-  bpftool: Add link dump support for BPF_LINK_TYPE_SOCKMAP
-  selftests/bpf: Refactor out helper functions for a few tests
-  selftests/bpf: Add some tests with new bpf_program__attach_sockmap()
-    APIs
-
- include/linux/bpf.h                           |   6 +
- include/linux/skmsg.h                         |   4 +
- include/uapi/linux/bpf.h                      |   5 +
- kernel/bpf/syscall.c                          |   4 +
- net/core/sock_map.c                           | 261 ++++++++++++++++--
- tools/bpf/bpftool/link.c                      |   9 +
- tools/include/uapi/linux/bpf.h                |   5 +
- tools/lib/bpf/libbpf.c                        |   7 +
- tools/lib/bpf/libbpf.h                        |   2 +
- tools/lib/bpf/libbpf.map                      |   1 +
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 171 +++++++++++-
- .../selftests/bpf/prog_tests/sockmap_listen.c |  38 +++
- .../bpf/progs/test_skmsg_load_helpers.c       |  27 +-
- .../bpf/progs/test_sockmap_pass_prog.c        |  17 +-
- .../progs/test_sockmap_skb_verdict_attach.c   |   2 +-
- 15 files changed, 524 insertions(+), 35 deletions(-)
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 62762390c93d..5034c1b4ded7 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2996,6 +2996,7 @@ int sock_map_prog_detach(const union bpf_attr *attr=
+, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value=
+, u64 flags);
+ int sock_map_bpf_prog_query(const union bpf_attr *attr,
+ 			    union bpf_attr __user *uattr);
++int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog *pr=
+og);
+=20
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_destroy(struct sock *sk);
+@@ -3094,6 +3095,11 @@ static inline int sock_map_bpf_prog_query(const un=
+ion bpf_attr *attr,
+ {
+ 	return -EINVAL;
+ }
++
++static inline int sock_map_link_create(const union bpf_attr *attr, struc=
+t bpf_prog *prog)
++{
++	return -EOPNOTSUPP;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+=20
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index e65ec3fd2799..9c8dd4c01412 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -58,6 +58,10 @@ struct sk_psock_progs {
+ 	struct bpf_prog			*stream_parser;
+ 	struct bpf_prog			*stream_verdict;
+ 	struct bpf_prog			*skb_verdict;
++	struct bpf_link			*msg_parser_link;
++	struct bpf_link			*stream_parser_link;
++	struct bpf_link			*stream_verdict_link;
++	struct bpf_link			*skb_verdict_link;
+ };
+=20
+ enum sk_psock_state_bits {
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 6fe9f11c8abe..cee0a7915c08 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1135,6 +1135,7 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_TCX =3D 11,
+ 	BPF_LINK_TYPE_UPROBE_MULTI =3D 12,
+ 	BPF_LINK_TYPE_NETKIT =3D 13,
++	BPF_LINK_TYPE_SOCKMAP =3D 14,
+ 	__MAX_BPF_LINK_TYPE,
+ };
+=20
+@@ -6724,6 +6725,10 @@ struct bpf_link_info {
+ 			__u32 ifindex;
+ 			__u32 attach_type;
+ 		} netkit;
++		struct {
++			__u32 map_id;
++			__u32 attach_type;
++		} sockmap;
+ 	};
+ } __attribute__((aligned(8)));
+=20
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index e44c276e8617..7d392ec83655 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5213,6 +5213,10 @@ static int link_create(union bpf_attr *attr, bpfpt=
+r_t uattr)
+ 	case BPF_PROG_TYPE_SK_LOOKUP:
+ 		ret =3D netns_bpf_link_create(attr, prog);
+ 		break;
++	case BPF_PROG_TYPE_SK_MSG:
++	case BPF_PROG_TYPE_SK_SKB:
++		ret =3D sock_map_link_create(attr, prog);
++		break;
+ #ifdef CONFIG_NET
+ 	case BPF_PROG_TYPE_XDP:
+ 		ret =3D bpf_xdp_link_attach(attr, prog);
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 27d733c0f65e..2deda1637752 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -24,8 +24,16 @@ struct bpf_stab {
+ #define SOCK_CREATE_FLAG_MASK				\
+ 	(BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY)
+=20
++/* This mutex is used to
++ *  - protect race between prog/link attach/detach and link prog update,=
+ and
++ *  - protect race between releasing and accessing map in bpf_link.
++ * A single global mutex lock is used since it is expected contention is=
+ low.
++ */
++static DEFINE_MUTEX(sockmap_mutex);
++
+ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *pr=
+og,
+-				struct bpf_prog *old, u32 which);
++				struct bpf_prog *old, struct bpf_link *link,
++				u32 which);
+ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map);
+=20
+ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
+@@ -71,7 +79,9 @@ int sock_map_get_from_fd(const union bpf_attr *attr, st=
+ruct bpf_prog *prog)
+ 	map =3D __bpf_map_get(f);
+ 	if (IS_ERR(map))
+ 		return PTR_ERR(map);
+-	ret =3D sock_map_prog_update(map, prog, NULL, attr->attach_type);
++	mutex_lock(&sockmap_mutex);
++	ret =3D sock_map_prog_update(map, prog, NULL, NULL, attr->attach_type);
++	mutex_unlock(&sockmap_mutex);
+ 	fdput(f);
+ 	return ret;
+ }
+@@ -103,7 +113,9 @@ int sock_map_prog_detach(const union bpf_attr *attr, =
+enum bpf_prog_type ptype)
+ 		goto put_prog;
+ 	}
+=20
+-	ret =3D sock_map_prog_update(map, NULL, prog, attr->attach_type);
++	mutex_lock(&sockmap_mutex);
++	ret =3D sock_map_prog_update(map, NULL, prog, NULL, attr->attach_type);
++	mutex_unlock(&sockmap_mutex);
+ put_prog:
+ 	bpf_prog_put(prog);
+ put_map:
+@@ -1454,55 +1466,84 @@ static struct sk_psock_progs *sock_map_progs(stru=
+ct bpf_map *map)
+ 	return NULL;
+ }
+=20
+-static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog ***=
+pprog,
+-				u32 which)
++static int sock_map_prog_link_lookup(struct bpf_map *map, struct bpf_pro=
+g ***pprog,
++				     struct bpf_link ***plink, u32 which)
+ {
+ 	struct sk_psock_progs *progs =3D sock_map_progs(map);
++	struct bpf_prog **cur_pprog;
++	struct bpf_link **cur_plink;
+=20
+ 	if (!progs)
+ 		return -EOPNOTSUPP;
+=20
+ 	switch (which) {
+ 	case BPF_SK_MSG_VERDICT:
+-		*pprog =3D &progs->msg_parser;
++		cur_pprog =3D &progs->msg_parser;
++		cur_plink =3D &progs->msg_parser_link;
+ 		break;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+ 	case BPF_SK_SKB_STREAM_PARSER:
+-		*pprog =3D &progs->stream_parser;
++		cur_pprog =3D &progs->stream_parser;
++		cur_plink =3D &progs->stream_parser_link;
+ 		break;
+ #endif
+ 	case BPF_SK_SKB_STREAM_VERDICT:
+ 		if (progs->skb_verdict)
+ 			return -EBUSY;
+-		*pprog =3D &progs->stream_verdict;
++		cur_pprog =3D &progs->stream_verdict;
++		cur_plink =3D &progs->stream_verdict_link;
+ 		break;
+ 	case BPF_SK_SKB_VERDICT:
+ 		if (progs->stream_verdict)
+ 			return -EBUSY;
+-		*pprog =3D &progs->skb_verdict;
++		cur_pprog =3D &progs->skb_verdict;
++		cur_plink =3D &progs->skb_verdict_link;
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+=20
++	*pprog =3D cur_pprog;
++	if (plink)
++		*plink =3D cur_plink;
+ 	return 0;
+ }
+=20
++/* Handle the following four cases:
++ * prog_attach: prog !=3D NULL, old =3D=3D NULL, link =3D=3D NULL
++ * prog_detach: prog =3D=3D NULL, old !=3D NULL, link =3D=3D NULL
++ * link_attach: prog !=3D NULL, old =3D=3D NULL, link !=3D NULL
++ * link_detach: prog =3D=3D NULL, old !=3D NULL, link !=3D NULL
++ */
+ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *pr=
+og,
+-				struct bpf_prog *old, u32 which)
++				struct bpf_prog *old, struct bpf_link *link,
++				u32 which)
+ {
+ 	struct bpf_prog **pprog;
++	struct bpf_link **plink;
+ 	int ret;
+=20
+-	ret =3D sock_map_prog_lookup(map, &pprog, which);
++	ret =3D sock_map_prog_link_lookup(map, &pprog, &plink, which);
+ 	if (ret)
+ 		return ret;
+=20
+-	if (old)
+-		return psock_replace_prog(pprog, prog, old);
++	/* for prog_attach/prog_detach/link_attach, return error if a bpf_link
++	 * exists for that prog.
++	 */
++	if ((!link || prog) && *plink)
++		return -EBUSY;
+=20
+-	psock_set_prog(pprog, prog);
+-	return 0;
++	if (old) {
++		ret =3D psock_replace_prog(pprog, prog, old);
++		if (!ret)
++			*plink =3D NULL;
++	} else {
++		psock_set_prog(pprog, prog);
++		if (link)
++			*plink =3D link;
++	}
++
++	return ret;
+ }
+=20
+ int sock_map_bpf_prog_query(const union bpf_attr *attr,
+@@ -1527,7 +1568,7 @@ int sock_map_bpf_prog_query(const union bpf_attr *a=
+ttr,
+=20
+ 	rcu_read_lock();
+=20
+-	ret =3D sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
++	ret =3D sock_map_prog_link_lookup(map, &pprog, NULL, attr->query.attach=
+_type);
+ 	if (ret)
+ 		goto end;
+=20
+@@ -1657,6 +1698,194 @@ void sock_map_close(struct sock *sk, long timeout=
+)
+ }
+ EXPORT_SYMBOL_GPL(sock_map_close);
+=20
++struct sockmap_link {
++	struct bpf_link link;
++	struct bpf_map *map;
++	enum bpf_attach_type attach_type;
++};
++
++static void sock_map_link_release(struct bpf_link *link)
++{
++	struct sockmap_link *sockmap_link =3D container_of(link, struct sockmap=
+_link, link);
++
++	mutex_lock(&sockmap_mutex);
++	if (!sockmap_link->map)
++		goto out;
++
++	WARN_ON_ONCE(sock_map_prog_update(sockmap_link->map, NULL, link->prog, =
+link,
++					  sockmap_link->attach_type));
++
++	bpf_map_put_with_uref(sockmap_link->map);
++	sockmap_link->map =3D NULL;
++out:
++	mutex_unlock(&sockmap_mutex);
++}
++
++static int sock_map_link_detach(struct bpf_link *link)
++{
++	sock_map_link_release(link);
++	return 0;
++}
++
++static void sock_map_link_dealloc(struct bpf_link *link)
++{
++	kfree(link);
++}
++
++/* Handle the following two cases:
++ * case 1: link !=3D NULL, prog !=3D NULL, old !=3D NULL
++ * case 2: link !=3D NULL, prog !=3D NULL, old =3D=3D NULL
++ */
++static int sock_map_link_update_prog(struct bpf_link *link,
++				     struct bpf_prog *prog,
++				     struct bpf_prog *old)
++{
++	const struct sockmap_link *sockmap_link =3D container_of(link, struct s=
+ockmap_link, link);
++	struct bpf_prog **pprog, *old_link_prog;
++	struct bpf_link **plink;
++	int ret =3D 0;
++
++	mutex_lock(&sockmap_mutex);
++
++	/* If old prog is not NULL, ensure old prog is the same as link->prog. =
+*/
++	if (old && link->prog !=3D old) {
++		ret =3D -EPERM;
++		goto out;
++	}
++	/* Ensure link->prog has the same type/attach_type as the new prog. */
++	if (link->prog->type !=3D prog->type ||
++	    link->prog->expected_attach_type !=3D prog->expected_attach_type) {
++		ret =3D -EINVAL;
++		goto out;
++	}
++
++	ret =3D sock_map_prog_link_lookup(sockmap_link->map, &pprog, &plink,
++					sockmap_link->attach_type);
++	if (ret)
++		goto out;
++
++	/* return error if the stored bpf_link does not match the incoming bpf_=
+link. */
++	if (link !=3D *plink)
++		return -EBUSY;
++
++	if (old) {
++		ret =3D psock_replace_prog(pprog, prog, old);
++		if (ret)
++			goto out;
++	} else {
++		psock_set_prog(pprog, prog);
++	}
++
++	bpf_prog_inc(prog);
++	old_link_prog =3D xchg(&link->prog, prog);
++	bpf_prog_put(old_link_prog);
++
++out:
++	mutex_unlock(&sockmap_mutex);
++	return ret;
++}
++
++static u32 sock_map_link_get_map_id(const struct sockmap_link *sockmap_l=
+ink)
++{
++	u32 map_id =3D 0;
++
++	mutex_lock(&sockmap_mutex);
++	if (sockmap_link->map)
++		map_id =3D sockmap_link->map->id;
++	mutex_unlock(&sockmap_mutex);
++	return map_id;
++}
++
++static int sock_map_link_fill_info(const struct bpf_link *link,
++				   struct bpf_link_info *info)
++{
++	const struct sockmap_link *sockmap_link =3D container_of(link, struct s=
+ockmap_link, link);
++	u32 map_id =3D sock_map_link_get_map_id(sockmap_link);
++
++	info->sockmap.map_id =3D map_id;
++	info->sockmap.attach_type =3D sockmap_link->attach_type;
++	return 0;
++}
++
++static void sock_map_link_show_fdinfo(const struct bpf_link *link,
++				      struct seq_file *seq)
++{
++	const struct sockmap_link *sockmap_link =3D container_of(link, struct s=
+ockmap_link, link);
++	u32 map_id =3D sock_map_link_get_map_id(sockmap_link);
++
++	seq_printf(seq, "map_id:\t%u\n", map_id);
++	seq_printf(seq, "attach_type:\t%u\n", sockmap_link->attach_type);
++}
++
++static const struct bpf_link_ops sock_map_link_ops =3D {
++	.release =3D sock_map_link_release,
++	.dealloc =3D sock_map_link_dealloc,
++	.detach =3D sock_map_link_detach,
++	.update_prog =3D sock_map_link_update_prog,
++	.fill_link_info =3D sock_map_link_fill_info,
++	.show_fdinfo =3D sock_map_link_show_fdinfo,
++};
++
++int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog *pr=
+og)
++{
++	struct bpf_link_primer link_primer;
++	struct sockmap_link *sockmap_link;
++	enum bpf_attach_type attach_type;
++	struct bpf_map *map;
++	int ret;
++
++	if (attr->link_create.flags)
++		return -EINVAL;
++
++	map =3D bpf_map_get_with_uref(attr->link_create.target_fd);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++	if (map->map_type !=3D BPF_MAP_TYPE_SOCKMAP && map->map_type !=3D BPF_M=
+AP_TYPE_SOCKHASH) {
++		ret =3D -EINVAL;
++		goto out;
++	}
++
++	sockmap_link =3D kzalloc(sizeof(*sockmap_link), GFP_USER);
++	if (!sockmap_link) {
++		ret =3D -ENOMEM;
++		goto out;
++	}
++
++	attach_type =3D attr->link_create.attach_type;
++	bpf_link_init(&sockmap_link->link, BPF_LINK_TYPE_SOCKMAP, &sock_map_lin=
+k_ops, prog);
++	sockmap_link->map =3D map;
++	sockmap_link->attach_type =3D attach_type;
++
++	ret =3D bpf_link_prime(&sockmap_link->link, &link_primer);
++	if (ret) {
++		kfree(sockmap_link);
++		goto out;
++	}
++
++	mutex_lock(&sockmap_mutex);
++	ret =3D sock_map_prog_update(map, prog, NULL, &sockmap_link->link, atta=
+ch_type);
++	mutex_unlock(&sockmap_mutex);
++	if (ret) {
++		bpf_link_cleanup(&link_primer);
++		goto out;
++	}
++
++	/* Increase refcnt for the prog since when old prog is replaced with
++	 * psock_replace_prog() and psock_set_prog() its refcnt will be decreas=
+ed.
++	 *
++	 * Actually, we do not need to increase refcnt for the prog since bpf_l=
+ink
++	 * will hold a reference. But in order to have less complexity w.r.t.
++	 * replacing/setting prog, let us increase the refcnt to make things si=
+mpler.
++	 */
++	bpf_prog_inc(prog);
++
++	return bpf_link_settle(&link_primer);
++
++out:
++	bpf_map_put_with_uref(map);
++	return ret;
++}
++
+ static int sock_map_iter_attach_target(struct bpf_prog *prog,
+ 				       union bpf_iter_link_info *linfo,
+ 				       struct bpf_iter_aux_info *aux)
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 6fe9f11c8abe..cee0a7915c08 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1135,6 +1135,7 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_TCX =3D 11,
+ 	BPF_LINK_TYPE_UPROBE_MULTI =3D 12,
+ 	BPF_LINK_TYPE_NETKIT =3D 13,
++	BPF_LINK_TYPE_SOCKMAP =3D 14,
+ 	__MAX_BPF_LINK_TYPE,
+ };
+=20
+@@ -6724,6 +6725,10 @@ struct bpf_link_info {
+ 			__u32 ifindex;
+ 			__u32 attach_type;
+ 		} netkit;
++		struct {
++			__u32 map_id;
++			__u32 attach_type;
++		} sockmap;
+ 	};
+ } __attribute__((aligned(8)));
+=20
 --=20
 2.43.0
 
