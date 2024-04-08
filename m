@@ -1,132 +1,144 @@
-Return-Path: <bpf+bounces-26224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ABE789CE5B
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 00:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F0489CE7E
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 00:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DD241C223A1
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 22:16:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D791C21EA6
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 22:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366F1149C62;
-	Mon,  8 Apr 2024 22:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B91324B33;
+	Mon,  8 Apr 2024 22:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SOvCCFAa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SH145i7H"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B126B7E8
-	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 22:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FF01A5A2;
+	Mon,  8 Apr 2024 22:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712614554; cv=none; b=DY5UavUsbJl1m0yOmt7mTsnJqJMFOd/G+0DzP9JDV76VOvvxlI1j3uv0fGxGzcnqDi4i0bxi58M56LZknc+l49jJfoH4YGA7szUCegj/cBJo0NzWg72tpTTqEM+mlMK/V6/bZ/c2Z6AZdA9lN2HXe80lWFAOSm3ryEMkU9fGeuo=
+	t=1712615761; cv=none; b=DwFLerX3ZBn5/4xunAB+6kloDfOMjANgY8xMvFHP4Ihd0qAayPZe0fVFCwnCnysxBP5iwDiuJKQKgL0I/pJ6GvP/WNn7sGqrGcoHxyU14W+lYnGKvGnhZcik6F99OXm2eK/lKPmfcaaOQkCUrNSQxexZBIimX2k7zZcnaQVfMQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712614554; c=relaxed/simple;
-	bh=Sm0CI8d8ofMMEJJngWMvSW50SATfUX4RV5tlnRrJ1Xg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kHj+f26FiTqcIZ4TX5GbGjw+rmotBfaEoKzNu95boHHBBLRiL3kzpRcwAdKLIrpbSzHAjBUTx8tlEkxLe4GTVrqkU5aWu9+g/yxut+WzX6ke1rhjy+0bCCMguiWmcHvQj8J5xjQiJACiBNxNCOGN54hl1cqEi9Gou5JW05fzz9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SOvCCFAa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F941C43143
-	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 22:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712614554;
-	bh=Sm0CI8d8ofMMEJJngWMvSW50SATfUX4RV5tlnRrJ1Xg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SOvCCFAaddhJghLfcVzoB1768Zww8Cxs7rg01CWFZcc8gOS79j5wZMFlbZea7REBs
-	 +WV0QkLTRhWBJNQJWbhZKmNdWExrwzU5SpJI4+CswSHYw5nA8R63yx+pgyGF+9hdoC
-	 BOwpa+SBCjE7l5PKJ0e/KLugN9po4ikZUPmPYTIIGCm+pSaKjHfFATZQ1Ey0qntjhx
-	 oh+slN3JLyCsf2x8LtpYN5dwov+kiYjPuMYjXSsd2bjzIBjROF2L8zh19+SHOwdrqD
-	 GD7FtrOFhF9SyjJnuTv5QXyM2rOPMP/GRufsHDE1MTdQzuO/fm0mQGBQ/MgD8kP9eM
-	 vEkY4a3JnEkEw==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso6777891a12.2
-        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 15:15:54 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwpjZlBcdMdfIOvju2gqfIuhUFBAWUIPihtKQWlI19RmGG1/JCk
-	Cr+qgGfeyXFeg3ia2b0ysxhiVg25ZDeJptTYFWvhcm4X94b8jU5h1IrJeBsUubv9//3NZ6Zfcjo
-	9mVDZcP1yojqlKBnVn01uVWlox03YND9t/J3o
-X-Google-Smtp-Source: AGHT+IEOOc+J/0isFo4Jb/ZQjYpFYW6Cfwf9mKCm/bSDnhQop8ESJCUYzMvaJxwdiaswtf4qphyqgjv3fvB4K29NdGQ=
-X-Received: by 2002:a50:a44f:0:b0:56d:c4eb:6328 with SMTP id
- v15-20020a50a44f000000b0056dc4eb6328mr6755951edb.29.1712614552500; Mon, 08
- Apr 2024 15:15:52 -0700 (PDT)
+	s=arc-20240116; t=1712615761; c=relaxed/simple;
+	bh=3cPal0PcyBF+aiN/zwbK05iiWVn1zNZFAKQzLfq3x8M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=iPNo9onvc0HgXqsTZ2cQGZaPUsYBXPOr7O8Nw8lmohiwLfQC9ls9KEtAPeHV/yUmJnlxmoqVhymRX9a4C0L4Ul2WV4ywDSnP+fejnkDNpVB6qdhvj0aRP+xVCkZ61iQyOmFfhKmYwkgUztq4BYxZprp0zEdDSvIcIXzjarFYFt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SH145i7H; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d6fd3cfaa6so63890291fa.2;
+        Mon, 08 Apr 2024 15:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712615758; x=1713220558; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QzaOLKxDboX4yOy570vjmU1pifeDoG6kHY2U+WBIbU8=;
+        b=SH145i7H7u3jMlfuRViGkC3qVhnfzU6dMU67780b0vMT/VI03e4bdhG/uasohW+lfh
+         5E54Y8IxlmRrRZhx+NFmZbSOZtiKgbwHnHtda9gRfVlsJv6jEWKQNlHlS3NL1AuC14RW
+         NlXx30rm7zPjHqX6+J4hInEO7H1IVUE7EzH6A0ZT6+k8uwyJST9hMdFaeUSLykppupnv
+         C4ZsaGbtgzfgYE4OzGrLLQGZyHUoJsAvCKVHoIac8XdPydlT6Yu7XkchJlga5j9V2kV9
+         3PenCoCzkknqXqGxbE90N8b8iZkMmreKbfWcnCPYHnW2gjFcugFcUA8t0BrKWZKNV6bK
+         TQjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712615758; x=1713220558;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QzaOLKxDboX4yOy570vjmU1pifeDoG6kHY2U+WBIbU8=;
+        b=InNFDKxDzCYh1QAlX+cOmjb6wD7dbZRDLQhpNEj8Bd+qN+vSR7fFYgXrS5l9eOuXMO
+         vLaOmJeDe2iADvboKujpGFaM7EXHIG7D9mDrRIv6U8tzP0O2f0vg9v/cr5L9D+wGdyGO
+         m44CH1OUqSYijd+5tdaZOuWteb80xZ5KxuJ9aWmXADeLMRagIwoWI6RYtPKMeoyaCTUf
+         hftcOgavHr539zDcistY4P1PjZlxwKrZDgjBkgDEut2/YWVKcm7NhQPPpbuJIZnOaOlQ
+         hv08YDS17AE4BXR4zDTbLz19jqnXqV0yFuB+C1ODftnlMif5UvEmiokOoVhwRqWqtbVM
+         l//Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV6yIv7Gm3hcpCxHrfy3BG0MYv23jRiYK2ssskH5V0oq+TYBqBql4OOgvekqyhWg/m7pM1Q2B4dMTBlKRGhLyRAo9bRGtYASzXwf6wvQkwzmhodqq4A4QoEaqBxDeYSuAB4Sd9Mz9+BXv6tizdI
+X-Gm-Message-State: AOJu0YyF5pMpp5FhEK41HiU0mfHPuPIA40nq/M4Nxcth03rXb4gW7pZn
+	z8sY/dYNcI3w2/WUH4evV8wQ7ZEQkBUduoxRQyQZlCiiZMcJw+t0
+X-Google-Smtp-Source: AGHT+IGabQPjHusP4qbbSVnEnDijSEaS8p5kQFlyVxZmC1rm5CusvbY7EOQoWozQ0qabJMQARqfekQ==
+X-Received: by 2002:a05:651c:1422:b0:2d8:6467:1a13 with SMTP id u34-20020a05651c142200b002d864671a13mr5848323lje.30.1712615757343;
+        Mon, 08 Apr 2024 15:35:57 -0700 (PDT)
+Received: from [192.168.100.206] ([89.28.99.140])
+        by smtp.gmail.com with ESMTPSA id y13-20020a056402358d00b0056e031bb5efsm4544308edc.47.2024.04.08.15.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 15:35:56 -0700 (PDT)
+Message-ID: <db1f8413ef4ebc57b9ddc586e48acf3fad19ebf2.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v6 4/6] bpf/helpers: mark the callback of
+ bpf_timer_set_sleepable_cb() as sleepable
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Tue, 09 Apr 2024 01:35:55 +0300
+In-Reply-To: <20240408-hid-bpf-sleepable-v6-4-0499ddd91b94@kernel.org>
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+	 <20240408-hid-bpf-sleepable-v6-4-0499ddd91b94@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325095653.1720123-1-xukuohai@huaweicloud.com>
- <20240325095653.1720123-3-xukuohai@huaweicloud.com> <7FAC6C1E-B0C2-4743-AFF0-0DCC2B331D0A@kernel.org>
-In-Reply-To: <7FAC6C1E-B0C2-4743-AFF0-0DCC2B331D0A@kernel.org>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 9 Apr 2024 00:15:41 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5wExNrQYKckVrnbFbFXP8S6oWqG8GU8iaMJTMNbFTDSg@mail.gmail.com>
-Message-ID: <CACYkzJ5wExNrQYKckVrnbFbFXP8S6oWqG8GU8iaMJTMNbFTDSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/7] bpf, lsm: Add return value range
- description for lsm hook
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Florent Revest <revest@chromium.org>, Brendan Jackman <jackmanb@chromium.org>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Kees Cook <keescook@chromium.org>, John Johansen <john.johansen@canonical.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 8, 2024 at 7:09=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
->
->
->
-> > On 25 Mar 2024, at 10:56, Xu Kuohai <xukuohai@huaweicloud.com> wrote:
-> >
-> > From: Xu Kuohai <xukuohai@huawei.com>
-> >
-> > Add return value descriptions for lsm hook.
-> >
-> > Two integer ranges are added:
-> >
-> > 1. ERRNO: Integer between -MAX_ERRNO and 0, including -MAX_ERRNO and 0.
+On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
+> Now that we have bpf_timer_set_sleepable_cb() available and working, we
+> can tag the attached callback as sleepable, and let the verifier check
+> in the correct context the calls and kfuncs.
+>=20
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+>=20
+> ---
 
-I also don't really like these special macros that imply a range. Why
-not do something like?
+I think this patch is fine with one nit regarding in_sleepable().
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-  LSM_RET_INT(default, min, max)
+> @@ -5279,7 +5281,8 @@ static int map_kptr_match_type(struct bpf_verifier_=
+env *env,
+> =20
+>  static bool in_sleepable(struct bpf_verifier_env *env)
+>  {
+> -	return env->prog->sleepable;
+> +	return env->prog->sleepable ||
+> +	       (env->cur_state && env->cur_state->in_sleepable);
+>  }
 
-You seemed to have missed the values returned by these hooks:
+Sorry, I already raised this before.
+As far as I understand the 'env->cur_state' check is needed because
+this function is used from do_misc_fixups():
 
-security_inode_need_killpriv
-security_inode_getsecurity
-security_inode_listsecurity
-security_inode_copy_up_xattr
-security_task_prctl
+		if (is_storage_get_function(insn->imm)) {
+			if (!in_sleepable(env) ||
+			    env->insn_aux_data[i + delta].storage_get_func_atomic)
+				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
+			else
+				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
+			insn_buf[1] =3D *insn;
+			cnt =3D 2;
+			...
+		}
 
-security_getprocattr
-securitty_setprocattr
-^^these two we should just disable in BPF LSM
+For a timer callback function 'env->prog->sleepable' would be false.
+Which means that inside sleepable callback function GFP_ATOMIC would
+be used in cases where GFP_KERNEL would be sufficient.
+An alternative would be to check (and set) sleepable flag not for a
+full program but for a subprogram.
 
-security_ismaclabel
-^^probably even this
+Whether or not this is something worth addressing I don't know.
 
-There seem to be only a handful of these. Can we just manage it with a
-BTF set on the BPF side?
-
-- KP
-> > 2. ANY: Any integer
->
->
-> I think you should merge this patch and the first patch. It's not clear t=
-hat the first value in this macro is actually used as the default value unt=
-il one reads the code. I think you also need to make it clear that there is=
- no logical change on the LSM side in the this patch.
->
-> - KP
+[...]
 
