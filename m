@@ -1,141 +1,222 @@
-Return-Path: <bpf+bounces-26211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C686489CB38
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:54:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2ED589CBAA
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 20:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CE801F26E51
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:54:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 258F7B27656
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 18:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E5414533E;
-	Mon,  8 Apr 2024 17:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41D191448ED;
+	Mon,  8 Apr 2024 18:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXdOfOlg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W6R45nAk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC881E489;
-	Mon,  8 Apr 2024 17:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A5E1448C4;
+	Mon,  8 Apr 2024 18:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712598711; cv=none; b=O4JnbBZysRL4UK1kqzJQfdkgHFA0ozkbX8vPjhSH7d4vB2IbtczsOpEOSOksqAk4PD/wFWBE7bRWRIN7KdjzHFfCViQwypQovyNVzNkfr8NrdXy+3f3BrLVpQMRRnIGD9bYSjTEAUPKZ4XnmOn+5FUWL+F9GXjhJSYRfQc1qmI4=
+	t=1712600674; cv=none; b=qZyTeIkM0+Xf4hZmqzhqWLLIlNeA1NLUqC0CyWjzwPZS8iTy1F2BQ4v8aseJuIvt5O0L2WMmiI/pRG6pDZNQKR1C6fywoXn3GJPBA3Lwy7qQyLlILPGcFqkO97XUoorqrol9QIBLGCaXbhOo+wA/WB7dhhBOhazqkS7iWFa0MQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712598711; c=relaxed/simple;
-	bh=I7bgtQ8gbOL0E2c8wwj95xLx0EZYPdW47b5jlkuPcHI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UGM8tSA1HTngo6rGTDWlcPYfHT8YhcKbUPZhuSEAj6Tlr2gFN9mr9dPd/Fm4iAsrfF+B7Ie9I5p46GMfo4Z6patN5ThOWfhiWIFLFKk6ZExk3Rkiutb7qk+QbDRps0RDNvQsglJ8fkTayJDri6FaKTjx1uASyBIy0wAGvOr6tKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXdOfOlg; arc=none smtp.client-ip=209.85.128.178
+	s=arc-20240116; t=1712600674; c=relaxed/simple;
+	bh=BjTJYz/b0W194uG3Dy5J9ActPboXh7mVQIpU2KFg/7A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ha1uoXMmmUC8uPoi/hsZli/LfGMIwgRS8lK6sTEU1vE14fsLp8t7GirkEIb8RAJIVW0JfozF+wRTnClEPw6250syrDDP6xhyKFi9ixNc4n72b4gKm2T9C6Lk3MIkrTuwZNykWjaj3fzIwQ0lqUPbpy3a2a4XSuEpzbDeJ7mvnpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W6R45nAk; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-61149e50602so31593617b3.0;
-        Mon, 08 Apr 2024 10:51:49 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3442f4e098bso1220207f8f.1;
+        Mon, 08 Apr 2024 11:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712598708; x=1713203508; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=O+2f3kuFiH1Ga7KB4I0xvIU7KxaYtU7frTWrfLqHdiM=;
-        b=eXdOfOlgueSOC5kjW8JvnUy7WRysBEOfvAI3EfCLrP/pAY40OX3xaM2CRBJ6S+XPXN
-         REv//JlSdoxXDRIEQYMt/95YgbW1l1mzcm6zwAIMFke3hy/PM512dllgnImtnpMddxEb
-         0QYivdhcC+ZUoldg5MVNoH7PHYBJfCsAZxZ/RBQ/kP2Dya+cmJNhu5EgvPuD+pJB742/
-         KFy4q0qDHxojOfr8POkxl92CBAT4jabdq+fx9d+7ociZg7bd+kJsK+rHLFI6usvW0Tqd
-         rzH0Sipgp6rW3dKzXBi8bWRPLkF/KKP2ByeV6+ozrR6aKO7FdZoK0xVWs06oOTMOrDAW
-         E2Cw==
+        d=gmail.com; s=20230601; t=1712600671; x=1713205471; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cROCssBIV4xyuzdSD8dyeKutwvbC7vcc1U8PqfuQR6M=;
+        b=W6R45nAkAaxSUwfQ6YOatTsqryM79ecst165M8IL4W+bb92MFdWRJ0673Z1XLiVUqk
+         YpwpBqP2zyTBtjwVZeaVzehbL/cIDwDQQL3lE6cB091yccqj9llxQrFgizKGXOuas5+2
+         ebFP+WNZa8IjwZ5ubPHkCIM71jQENlEU9aBgO5JGVCOf3zfAf/YWtPKv/QLS/9YBuUkm
+         IDqvOUIG7L0eMA9YmvDMuw1arFyGrKD4TI1WLFdHeg205gSeljx33A1z8inm45G7cJxu
+         6+jmm4H4FeKZVdKNKEsu4mfOkq4CgsngGqB6gIb4SRwqeUvejZSz+rSaTiuSvQ/PpefP
+         1ACQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712598708; x=1713203508;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O+2f3kuFiH1Ga7KB4I0xvIU7KxaYtU7frTWrfLqHdiM=;
-        b=jjqo/rNPq3vCwbhQdp/SEOBmaPj5MpPrSX7oN33G4yy4JRZ5R0yTwxyNqsMPu/NUJm
-         3pLOIzKIbDyOPWj75eFGQPC5Cz8C4eulubrrSPIGcecHr15xj+S0XJqFxdzIL4sN2jbW
-         UoiAoT7SVH+mSCHbp2SwDkAAnf9T4y735rhoSHBmI/Wunh0KOuUbn1yUpf+NC/rSVDrI
-         YOJ82sFKBr7hdBWLm8tYYwYgEakaquxAQtjqHLrFIS2BaY9VaGg8kFScGXq3vOjoho5F
-         aejmj+skv3JdD1cNEzA2tGBAQMgHcuDAxqzVxF9aUFTe49w55FQoq73epvq789V6h/F6
-         u0ww==
-X-Forwarded-Encrypted: i=1; AJvYcCU4qZ238LW3RM0dLRiWsHUiqYmvqnWlkFR5JB2if4fkshv9dZhJpvSE/QNSqV9/iKJ5vN3xCH4oxm63kutjqr3TePog4a4TxIZfrpuHpCk7L9ia9kJs0ouaZtlNPb7lUUjzRWnkJ6nT
-X-Gm-Message-State: AOJu0YzEw78nBYMAj2SOonuQrgzn9fYQ2DolLsgTYO4SSn/OuzaSsAR1
-	01yaJzQAdmnt/kbCtpwsmBnZmLSIfEAlqwYLd+t8rnIkI+LRekzy
-X-Google-Smtp-Source: AGHT+IGjNIozNM/Gk5nmE77bGMS5iD3tyNtoEpqJ2F1rY2T8TfOULkST/DqjM/uZfMgn5emB3BlmfA==
-X-Received: by 2002:a81:8406:0:b0:618:fab:cd23 with SMTP id u6-20020a818406000000b006180fabcd23mr300308ywf.15.1712598708377;
-        Mon, 08 Apr 2024 10:51:48 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:ac67:e262:f006:430])
-        by smtp.gmail.com with ESMTPSA id by17-20020a05690c083100b006143de9a59esm1771117ywb.11.2024.04.08.10.51.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 10:51:47 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: mhiramat@kernel.org,
-	martin.lau@linux.dev,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH v2] rethook: Remove warning messages printed for finding return address of a frame.
-Date: Mon,  8 Apr 2024 10:51:40 -0700
-Message-Id: <20240408175140.60223-1-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1712600671; x=1713205471;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cROCssBIV4xyuzdSD8dyeKutwvbC7vcc1U8PqfuQR6M=;
+        b=MLaTNE0BYvVYlBsJJCsZDk4DogF7z+cER62Y3uYXcBygV4VNRFlxk61Qxm8CUnbDUA
+         VB0++9OBjMZiSWbepQZjPli9j5Xb/aWXt2Sm7y3Ud5Kcyjeua69+eQkBWb3TupMae0YB
+         cBL1L4grJs+LgOmNqUydm5/C2qldxwBKQIKkpzjePAiVLMOaU1DbTALH3kAIDqRw3F+J
+         cF6ug/zezPGY2Q3mAEBVkWccn304sIKeLgl53zdVMSOurS9vMh9gs/n4N6wHahdSTIGC
+         9Y7t2EBbpgx3embYYJahJ+hx5yL5e2GSNy5o+QuE9Xl0DpWv7HEjNPS2n8dQauhS8XGI
+         JE2g==
+X-Forwarded-Encrypted: i=1; AJvYcCXa+Gr54IROaw9ip8O2lE7FWw4lhvPfKCFSUQVRqouhcrghU3EKVDfihkK1z3GMXcz5cIpQth7qEoslQduoXZf3lcJ9OkST0RU6r+PPO9GS3n/cCqFvXPN3qy28B7RnT8bMmUUjRC8MHzZvY2ZkKj+76OaCSg5HHkboIAqfVy8NCgVgWZMjbhvifhrGleW9fy1OzxL+t4puyvsHIPv+LoSS
+X-Gm-Message-State: AOJu0Yx0UCbqC6kJIr3Fcqlc0aLvx/BJehTAwv9uUOt1/glNGFLE+qSr
+	xvVsZ3StE15eq+r8OUueEjRWFIQhS+hT26pWYzEdw6Tquk9LmAQ1Kca2tcH6QDrGmI6mU++hycK
+	TXNpo7IoiQn6xGIu89BWj31GhYcE=
+X-Google-Smtp-Source: AGHT+IFmb2xMi3DwTGlhE6Fzn2e0lZiTlA2PS5kmTAv5uiYxZ5467CLILgQgbrqh45oGjtS+CQY5Q3oTQtSnXUJzHwE=
+X-Received: by 2002:a05:6000:c8a:b0:343:c05b:e7dd with SMTP id
+ dp10-20020a0560000c8a00b00343c05be7ddmr373462wrb.3.1712600671200; Mon, 08 Apr
+ 2024 11:24:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240404190146.1898103-1-elver@google.com> <CAADnVQKc+Z39k9wbU2MHf-fPFma+9QsyOugmmmGq3ynQCTVfCw@mail.gmail.com>
+ <CANpmjNN+rR1PWKbx6RBWhOjnmAP+jUDzc3TLcwTnmfd=ft03dg@mail.gmail.com>
+ <CAEf4BzZCj=3hevf+Je=oed9Nisctotp_CX00NrLaO6_7+-0LSQ@mail.gmail.com> <CANpmjNMCJwCaGiUpMCukgruNJ9k120sJ8pVkrdpyo-Tonve2Sw@mail.gmail.com>
+In-Reply-To: <CANpmjNMCJwCaGiUpMCukgruNJ9k120sJ8pVkrdpyo-Tonve2Sw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 8 Apr 2024 11:24:19 -0700
+Message-ID: <CAADnVQJ68X6NPYtEbQPXPM4pH1ZPg5iSrYi8c3EanL51SAW7zQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_probe_write_user_registered()
+To: Marco Elver <elver@google.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Dmitry Vyukov <dvyukov@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The function rethook_find_ret_addr() prints a warning message and returns 0
-when the target task is running and is not the "current" task in order to
-prevent the incorrect return address, although it still may return an
-incorrect address.
+On Mon, Apr 8, 2024 at 2:30=E2=80=AFAM Marco Elver <elver@google.com> wrote=
+:
+>
+> On Fri, 5 Apr 2024 at 22:28, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
+wrote:
+> >
+> > On Fri, Apr 5, 2024 at 1:28=E2=80=AFAM Marco Elver <elver@google.com> w=
+rote:
+> > >
+> > > On Fri, 5 Apr 2024 at 01:23, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> [...]
+> > > > and the tasks can use mmaped array shared across all or unique to e=
+ach
+> > > > process.
+> > > > And both bpf and user space can read/write them with a single instr=
+uction.
+> > >
+> > > That's BPF_F_MMAPABLE, right?
+> > >
+> > > That does not work because the mmapped region is global. Our requirem=
+ents are:
 
-However, the warning message turns into noise when BPF profiling programs
-call bpf_get_task_stack() on running tasks in a firm with a large number of
-hosts.
+It sounds not like "requirements", but a description of the proposed
+solution.
+Pls share the actual use case.
+This "tracing prog" sounds more like a ghost scheduler that
+wants to interact with known user processes.
 
-The callers should be aware and willing to take the risk of receiving an
-incorrect return address from a task that is currently running other than
-the "current" one. A warning is not needed here as the callers are intent
-on it.
+> > >
+> > > 1. Single tracing BPF program.
+> > >
+> > > 2. Per-process (per VM) memory region (here it's per-thread, but each
+> > > thread just registers the same process-wide region).  No sharing
+> > > between processes.
+> > >
+> > > 3. From #2 it follows: exec unregisters the registered memory region;
+> > > fork gets a cloned region.
+> > >
+> > > 4. Unprivileged processes can do prctl(REGISTER). Some of them might
+> > > not be able to use the bpf syscall.
+> > >
+> > > The reason for #2 is that each user space process also writes to the
+> > > memory region (read by the BPF program to make updates depending on
+> > > what state it finds), and having shared state between processes
+> > > doesn't work here.
+> > >
+> > > Is there any reasonable BPF facility that can do this today? (If
+> > > BPF_F_MMAPABLE could do it while satisfying requirements 2-4, I'd be =
+a
+> > > happy camper.)
+> >
+> > You could simulate something like this with multi-element ARRAY +
+> > BPF_F_MMAPABLE, though you'd need to pre-allocate up to max number of
+> > processes, so it's not an exact fit.
+>
+> Right, for production use this is infeasible.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+Last I heard, ghost agent and a few important tasks can mmap bpf array
+and share it with bpf prog.
+So quite feasible.
 
----
-Changes from v1:
+>
+> > But what seems to be much closer is using BPF task-local storage, if
+> > we support mmap()'ing its memory into user-space. We've had previous
+> > discussions on how to achieve this (the simplest being that
+> > mmap(task_local_map_fd, ...) maps current thread's part of BPF task
+> > local storage). You won't get automatic cloning (you'd have to do that
+> > from the BPF program on fork/exec tracepoint, for example), and within
+> > the process you'd probably want to have just one thread (main?) to
+> > mmap() initially and just share the pointer across all relevant
+> > threads.
+>
+> In the way you imagine it, would that allow all threads sharing the
+> same memory, despite it being task-local? Presumably each task's local
+> storage would be mapped to just point to the same memory?
+>
+> > But this is a more generic building block, IMO. This relying
+> > on BPF map also means pinning is possible and all the other BPF map
+> > abstraction benefits.
+>
+> Deployment-wise it will make things harder because unprivileged
+> processes still have to somehow get the map's shared fd somehow to
+> mmap() it. Not unsolvable, and in general what you describe looks
+> interesting, but I currently can't see how it will be simpler.
 
- - Rephrased the commit log.
+bpf map can be pinned into bpffs for any unpriv process to access.
+Then any task can bpf_obj_get it and mmap it.
+If you have few such tasks than bpf array will do.
+If you have millions of tasks then use bpf arena which is a sparse array.
+Use pid as an index or some other per-task id.
+Both bpf prog and all tasks can read/write such shared memory
+with normal load/store instructions.
 
-   - Removed the confusing last part of the first paragraph.
+> In absence of all that, is a safer "bpf_probe_write_user()" like I
+> proposed in this patch ("bpf_probe_write_user_registered()") at all
+> appealing?
 
-   - Removed "frequently" from the 2nd paragraph, replaced by "a firm with
-     a large number of hosts".
+To be honest, another "probe" variant is not appealing.
+It's pretty much bpf_probe_write_user without pr_warn_ratelimited.
+The main issue with bpf_probe_read/write_user() is their non-determinism.
+They will error when memory is swapped out.
+These helpers are ok-ish for observability when consumers understand
+that some events might be lost, but for 24/7 production use
+losing reads becomes a problem that bpf prog cannot mitigate.
+What do bpf prog suppose to do when this safer bpf_probe_write_user errors?
+Use some other mechanism to communicate with user space?
+A mechanism with such builtin randomness in behavior is a footgun for
+bpf users.
+We have bpf_copy_from_user*() that don't have this non-determinism.
+We can introduce bpf_copy_to_user(), but it will be usable
+from sleepable bpf prog.
+While it sounds you need it somewhere where scheduler makes decisions,
+so I suspect bpf array or arena is a better fit.
 
-v1: https://lore.kernel.org/all/20240401191621.758056-1-thinker.li@gmail.com/
----
- kernel/trace/rethook.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Or something that extends bpf local storage map.
+See long discussion:
+https://lore.kernel.org/bpf/45878586-cc5f-435f-83fb-9a3c39824550@linux.dev/
 
-diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-index fa03094e9e69..4297a132a7ae 100644
---- a/kernel/trace/rethook.c
-+++ b/kernel/trace/rethook.c
-@@ -248,7 +248,7 @@ unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame
- 	if (WARN_ON_ONCE(!cur))
- 		return 0;
- 
--	if (WARN_ON_ONCE(tsk != current && task_is_running(tsk)))
-+	if (tsk != current && task_is_running(tsk))
- 		return 0;
- 
- 	do {
--- 
-2.34.1
-
+I still like the idea to let user tasks register memory in
+bpf local storage map, the kernel will pin such pages,
+and then bpf prog can read/write these regions directly.
+In bpf prog it will be:
+ptr =3D bpf_task_storage_get(&map, task, ...);
+if (ptr) { *ptr =3D ... }
+and direct read/write into the same memory from user space.
 
