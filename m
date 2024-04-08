@@ -1,216 +1,287 @@
-Return-Path: <bpf+bounces-26143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600E089B796
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 08:23:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 890BA89B7C0
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 08:41:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAACE1F22138
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 06:23:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB941B21D15
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 06:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0688111A8;
-	Mon,  8 Apr 2024 06:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6955E171B0;
+	Mon,  8 Apr 2024 06:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KWlIxpBG"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6B918C05;
-	Mon,  8 Apr 2024 06:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C12B8473
+	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 06:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712557408; cv=none; b=TAEwbkWOZPVWkvdUAXM6wSz8B5ujRERvaCz5q1ebHRmOHIxtjydTIPLkNX2GgnNtJVvP2ZIb3aJVHQ2pcAAyNSPqsa6ZSuzLh6Ie89LGRteFTirhU+y+Ps+OcIKOgtM2KV1qwbW/CYEKo/LkGbQLJkpdfuz6aZTVdmeaDOTAkJg=
+	t=1712558499; cv=none; b=gbXy8JJOoXcvfn3QBVE5lgs0Xde0FHrdT5coWmnSZeSvesKsWb2xBWOGZ89kndEekw82cqPfO9htlWgf8U1WICirWGX7LWtQgVREjXTFWZwXLrbbZ1l/fBRBwmdaUqFZn0QzQQDBXTPnnh4PIXKi7f5/X8uG3+Y2LTfHOoxFgEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712557408; c=relaxed/simple;
-	bh=MDilTp9RpE7g2rCJ/IYvSQbKWXU6/qfFiAgirnCRvWg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Qb/b4XiHOzl/VLrsX6M5XfeBpQfh+83/kNNPDlklZSAaYabwJGNpJ5VirpeKfs+8vZUPoFXEXgwZVZzWZJKVtK9vvmgr92KUdwOHiYI9aQpl6R7EZUSNRzid288F+yJ4jjB31ZODTIe3565Lvp+aqoYQIE376PahkEa05fz9/PQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24E181007;
-	Sun,  7 Apr 2024 23:23:50 -0700 (PDT)
-Received: from a079740.arm.com (unknown [10.163.54.109])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 72EB73F6C4;
-	Sun,  7 Apr 2024 23:23:01 -0700 (PDT)
-From: Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>
-To: linux-perf-users@vger.kernel.org
-Cc: anshuman.khandual@arm.com,
-	james.clark@arm.com,
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Will Deacon <will@kernel.org>,
-	Leo Yan <leo.yan@linaro.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Chenyuan Mi <cymi20@fudan.edu.cn>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	=?UTF-8?q?Ahelenia=20Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>,
-	Colin Ian King <colin.i.king@gmail.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	=?UTF-8?q?Georg=20M=C3=BCller?= <georgmueller@gmx.net>,
-	Liam Howlett <liam.howlett@oracle.com>,
-	bpf@vger.kernel.org,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 0/8] perf tools: Fix test "perf probe of function from different CU"
-Date: Mon,  8 Apr 2024 11:52:22 +0530
-Message-Id: <20240408062230.1949882-1-ChaitanyaS.Prakash@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712558499; c=relaxed/simple;
+	bh=vl/MXjOOz39LwJjBX3WH80CQfvJtTkh+w0pwIRngjEM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c63utRYP/qqruovvducjxKkf4ZxnhtrmP+6FzHIn1hlEnJGhSqzjbEiSNKrUO+kmF6O9lEvTrhkiC8P0B9ewgOv1tHIIQRAKE/Uh8wD9DTpAybnT0zsiJnIGefLRC8+HehaVlSXqIqZ3vlTUANberAA4gCskSBwclr4gtfJmp3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KWlIxpBG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712558496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FCmNWkfo5GUFbtVOySsJFMDhWeCbtsTcHia/s/b3Mmg=;
+	b=KWlIxpBGb1/NtRwQlZXGD0B9yFzkUUZevroyJNUaZp1VtByRPvtMfOkr7Z3/hZSK8ASbqt
+	W2ozGAzOjGH6h/RF2FwZomwqKMwUUyccMcUF6TPlSLMyYL08N2dB0iXQ+W/c3z6I0k5BQn
+	S3ap4BYr3l0PU3imBGFwvIFk5K8FjAQ=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-330-6d0lzSIkM1OUNfBbEw1fMg-1; Mon, 08 Apr 2024 02:41:34 -0400
+X-MC-Unique: 6d0lzSIkM1OUNfBbEw1fMg-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2a30dc503f3so2470344a91.0
+        for <bpf@vger.kernel.org>; Sun, 07 Apr 2024 23:41:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712558493; x=1713163293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FCmNWkfo5GUFbtVOySsJFMDhWeCbtsTcHia/s/b3Mmg=;
+        b=SBtWuMWtIfktTPvtIh+pIokRy05SKoU+fNsyJehGm2IBm7WWMnUg6uisy01BGiXePg
+         Jd1t90ItRwEqSUm0QZAcTYwEFeWUigx26x1buQO9Pxvax5o6y/yRyTPc6bNDAjFnP1W1
+         wCAUChwPda9FrDddwmbQsTv6UVGKm2ctC0yH7FMjNbK1nNbb5rpiZOe4XQr6XcInZUBS
+         KXKxTlntuDUpkUZ9Jx9Jd/cNXSrKKpsBT7bOPeE89m+G8/dE/HavXnmu/RMyTnA/lV1e
+         jjmYndAr9vjIjI1VNeamfEgR+xALIcWE9YbSkZqsQjZJ7wHqn9E95R6sus2ulDaEoELk
+         Kp+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUjXvopKhlRrG7a0RCa3sUqxbZII/gCTJJC13oxbfUl/vc4UwYNRnAwULs5Xxv7dZg5N8hXqk2NWGCQFZIMBRiJq04i
+X-Gm-Message-State: AOJu0Yz8P6MTt4BU3VuyXPu3NS22x+44fhqIhhq530PJtWZCbdnqb4n0
+	X3uPqBcihpoYcnVBhak7Pon4LKx3P0Hdr1euqxOXbbfOWMfqIjzr7f0T+2QLy5GWBG9XwDtNKlp
+	Hb0oTRufWWr3uld2vaiGQJX7f/zT6NNRdrlLuZfyw2RzLp6zF+ej9wSzELTdlZMiDXiHYwqGU+S
+	ssH96JD9x9fZ+9HvpIgg5PGZ6Td44dkr7M
+X-Received: by 2002:a17:90a:e2d3:b0:2a2:b308:f78f with SMTP id fr19-20020a17090ae2d300b002a2b308f78fmr6988290pjb.0.1712558492807;
+        Sun, 07 Apr 2024 23:41:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE1EhNPIBIXzS2xSanDvWcI/g5O0Zvd4MJxmFHTN59vf+HT/nKC7DyfJgSIZMUGdrA9TMs4ZdL/ikegnNrd3s0=
+X-Received: by 2002:a17:90a:e2d3:b0:2a2:b308:f78f with SMTP id
+ fr19-20020a17090ae2d300b002a2b308f78fmr6988280pjb.0.1712558492478; Sun, 07
+ Apr 2024 23:41:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+ <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+ <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
+ <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
+ <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
+ <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
+ <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com>
+ <1708652254.1517398-1-xuanzhuo@linux.alibaba.com> <CACGkMEuUeQTJYpZDx8ggqwBWULQS1Fjd_DgPvVMLq-_cjYfm7g@mail.gmail.com>
+ <65dcf7a775437_20e0a2087f@john.notmuch> <CAKhg4t+dzRPjyRXAifS_TCGPv3SfMMm1CF3pCs18OR+o9v+S_Q@mail.gmail.com>
+ <CAKhg4tLO7vG5jEYZ3xnzm=xKDHO0SNgDw=JT-j7gb5bjiQOqsw@mail.gmail.com>
+In-Reply-To: <CAKhg4tLO7vG5jEYZ3xnzm=xKDHO0SNgDw=JT-j7gb5bjiQOqsw@mail.gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Mon, 8 Apr 2024 14:41:21 +0800
+Message-ID: <CACGkMEsfW-j=W8fdTofUsF2a9rRujCs8TH6wkFvZkpLc68ZEEg@mail.gmail.com>
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+To: Liang Chen <liangchen.linux@gmail.com>
+Cc: John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, 
+	hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, netdev@vger.kernel.org, virtualization@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chaitanya S Prakash <chaitanyas.prakash@arm.com>
+On Mon, Apr 1, 2024 at 11:38=E2=80=AFAM Liang Chen <liangchen.linux@gmail.c=
+om> wrote:
+>
+> On Thu, Feb 29, 2024 at 4:37=E2=80=AFPM Liang Chen <liangchen.linux@gmail=
+.com> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 4:42=E2=80=AFAM John Fastabend <john.fastabend@=
+gmail.com> wrote:
+> > >
+> > > Jason Wang wrote:
+> > > > On Fri, Feb 23, 2024 at 9:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.a=
+libaba.com> wrote:
+> > > > >
+> > > > > On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.co=
+m> wrote:
+> > > > > > On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
+> > > > > > > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@r=
+edhat.com> wrote:
+> > > > > > > >
+> > > > > > > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
+> > > > > > > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <paben=
+i@redhat.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
+> > > > > > > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaa=
+rd Brouer <hawk@kernel.org> wrote:
+> > > > > > > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
+> > > > > > > > > > [...]
+> > > > > > > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(=
+struct xdp_buff *xdp)
+> > > > > > > > > > > > >       }
+> > > > > > > > > > > > >   }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virt=
+net_xdp_buff *virtnet_xdp,
+> > > > > > > > > > > > > +                                  struct net_dev=
+ice *dev,
+> > > > > > > > > > > > > +                                  struct virtio_=
+net_hdr_v1_hash *hdr_hash)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
+> > > > > > > > > > > > > +             virtnet_xdp->hash_value =3D hdr_has=
+h->hash_value;
+> > > > > > > > > > > > > +             virtnet_xdp->hash_report =3D hdr_ha=
+sh->hash_report;
+> > > > > > > > > > > > > +     }
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > >
+> > > > > > > > > > > > Would it be possible to store a pointer to hdr_hash=
+ in virtnet_xdp_buff,
+> > > > > > > > > > > > with the purpose of delaying extracting this, until=
+ and only if XDP
+> > > > > > > > > > > > bpf_prog calls the kfunc?
+> > > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > That seems to be the way v1 works,
+> > > > > > > > > > > https://lore.kernel.org/all/20240122102256.261374-1-l=
+iangchen.linux@gmail.com/
+> > > > > > > > > > > . But it was pointed out that the inline header may b=
+e overwritten by
+> > > > > > > > > > > the xdp prog, so the hash is copied out to maintain i=
+ts integrity.
+> > > > > > > > > >
+> > > > > > > > > > Why? isn't XDP supposed to get write access only to the=
+ pkt
+> > > > > > > > > > contents/buffer?
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Normally, an XDP program accesses only the packet data. H=
+owever,
+> > > > > > > > > there's also an XDP RX Metadata area, referenced by the d=
+ata_meta
+> > > > > > > > > pointer. This pointer can be adjusted with bpf_xdp_adjust=
+_meta to
+> > > > > > > > > point somewhere ahead of the data buffer, thereby grantin=
+g the XDP
+> > > > > > > > > program access to the virtio header located immediately b=
+efore the
+> > > > > > > >
+> > > > > > > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta=
+_data before
+> > > > > > > > xdp->data_hard_start:
+> > > > > > > >
+> > > > > > > > https://elixir.bootlin.com/linux/latest/source/net/core/fil=
+ter.c#L4210
+> > > > > > > >
+> > > > > > > > and virtio net set such field after the virtio_net_hdr:
+> > > > > > > >
+> > > > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/=
+virtio_net.c#L1218
+> > > > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/=
+virtio_net.c#L1420
+> > > > > > > >
+> > > > > > > > I don't see how the virtio hdr could be touched? Possibly e=
+ven more
+> > > > > > > > important: if such thing is possible, I think is should be =
+somewhat
+> > > > > > > > denied (for the same reason an H/W nic should prevent XDP f=
+rom
+> > > > > > > > modifying its own buffer descriptor).
+> > > > > > >
+> > > > > > > Thank you for highlighting this concern. The header layout di=
+ffers
+> > > > > > > slightly between small and mergeable mode. Taking 'mergeable =
+mode' as
+> > > > > > > an example, after calling xdp_prepare_buff the layout of xdp_=
+buff
+> > > > > > > would be as depicted in the diagram below,
+> > > > > > >
+> > > > > > >                       buf
+> > > > > > >                        |
+> > > > > > >                        v
+> > > > > > >         +--------------+--------------+-------------+
+> > > > > > >         | xdp headroom | virtio header| packet      |
+> > > > > > >         | (256 bytes)  | (20 bytes)   | content     |
+> > > > > > >         +--------------+--------------+-------------+
+> > > > > > >         ^                             ^
+> > > > > > >         |                             |
+> > > > > > >  data_hard_start                    data
+> > > > > > >                                   data_meta
+> > > > > > >
+> > > > > > > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer =
+a little
+> > > > > > > towards 'data_hard_start', it would point to the inline heade=
+r, thus
+> > > > > > > potentially allowing the XDP program to access the inline hea=
+der.
+> > >
+> > > Fairly late to the thread sorry. Given above layout does it make sens=
+e to
+> > > just delay extraction to the kfunc as suggested above? Sure the XDP p=
+rogram
+> > > could smash the entry in virtio header, but this is already the case =
+for
+> > > anything else there. A program writing over the virtio header is like=
+ly
+> > > buggy anyways. Worse that might happen is bad rss values and mappings=
+?
+> >
+> > Thank you for raising the concern. I am not quite sure if the XDP
+> > program is considered buggy, as it is agnostic to the layout of the
+> > inline header.
+> > Let's say an XDP program calls bpf_xdp_adjust_meta to adjust data_meta
+> > to point to the inline header and overwrites it without even knowing
+> > of its existence. Later, when the XDP program invokes the kfunc to
+> > retrieve the hash, incorrect data would be returned. In this case, the
+> > XDP program seems to be doing everything legally but ends up with the
+> > wrong hash data.
+> >
+> > Thanks,
+> > Liang
+> >
+>
+> I haven=E2=80=99t received any feedback yet, so I=E2=80=99m under the imp=
+ression that
+> the XDP program is still considered buggy in the scenario mentioned
+> above, and the overall behavior is as designed from XDP perspective.
+> Looking up the intel igc driver, it also does not bother with this
+> particular aspect.
 
-Defconfig doesn't provide all the necessary configs required for the
-test "perf probe of function from different CU" to run successfully on
-all platforms. Therefore the required configs have been added to
-config fragments to resolve this issue. On further investigation it was
-seen that the Perf treated all files beginning with "/tmp/perf-" as a
-map file despite them always ending in ".map", this caused the test to
-fail when Perf was built with NO_DWARF=1. As the file was parsed as a
-map file, the probe...--funcs command output garbage values instead of
-listing the functions in the binary. After fixing the issue an
-additional check to test the output of the probe...--funcs command has
-been added.
+So let's post a new version with all the detailed explanations as above and=
+ see?
 
-Additionally, various functions within the codebase have been refactored
-and restructured. The definition of str_has_suffix() has been adopted
-from tools/bpf/bpftool/gen.c and added to tools/lib/string.c in an
-attempt to make the function more generic. The implementation has been
-retained but the return values have been modified to resemble that of
-str_has_prefix(), i.e., return strlen(suffix) on success and 0 on
-failure. In light of the new addition, "ends_with()", a locally defined
-function used for checking if a string had a given suffix has been
-deleted and str_has_suffix() has replaced its usage. A call to
-strtailcmp() has also been replaced as str_has_suffix() seemed more
-suited for that particular use case.
+>
+> Given this context, we don't need to be concerned about the hash value
+> being overwritten. So if there aren't any objections, I plan to remove
+> the preservation of the hash value in the next iteration.
+>
+> Thanks,
+> Liang
 
-Finally str_has_prefix() is adopted from the kernel and is added to
-tools/lib/string.c, following which strstarts() is deleted and its use
-has been replaced with str_has_prefix().
+Thanks
 
-This patch series has been tested on 6.9-rc2 mainline kernel, both on
-arm64 and x86 platforms.
-
-Changes in V2:
-- Add str_has_suffix() and str_has_prefix() to tools/lib/string.c
-- Delete ends_with() and replace its usage with str_has_suffix()
-- Replace an instance of strtailcmp() with str_has_suffix()
-- Delete strstarts() from tools/include/linux/string.h and replace its
-  usage with str_has_prefix()
-
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Chenyuan Mi <cymi20@fudan.edu.cn>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-Cc: Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
-Cc: Colin Ian King <colin.i.king@gmail.com>
-Cc: Changbin Du <changbin.du@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Georg Müller <georgmueller@gmx.net>
-Cc: Liam Howlett <liam.howlett@oracle.com>
-Cc: bpf@vger.kernel.org
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-perf-users@vger.kernel.org
-
-Chaitanya S Prakash (8):
-  tools lib: adopt str_has_suffix() from bpftool/gen.c
-  perf util: Delete ends_with() and replace its use with
-    str_has_suffix()
-  perf util: Replace an instance of strtailcmp() by str_has_suffix()
-  tools lib: Adopt str_has_prefix() from kernel
-  tools: Delete strstarts() and replace its usage with str_has_prefix()
-  perf tools: Enable configs required for
-    test_uprobe_from_different_cu.sh
-  perf tools: Only treat files as map files when they have the extension
-    .map
-  perf test: Check output of the probe ... --funcs command
-
- tools/include/linux/string.h                  | 12 ++----
- tools/lib/string.c                            | 42 +++++++++++++++++++
- tools/lib/subcmd/help.c                       |  2 +-
- tools/lib/subcmd/parse-options.c              | 18 ++++----
- tools/objtool/check.c                         |  2 +-
- tools/perf/arch/arm/util/pmu.c                |  4 +-
- tools/perf/arch/x86/annotate/instructions.c   | 14 +++----
- tools/perf/arch/x86/util/env.c                |  2 +-
- tools/perf/builtin-c2c.c                      |  4 +-
- tools/perf/builtin-config.c                   |  2 +-
- tools/perf/builtin-daemon.c                   |  2 +-
- tools/perf/builtin-ftrace.c                   |  2 +-
- tools/perf/builtin-help.c                     |  6 +--
- tools/perf/builtin-kmem.c                     |  2 +-
- tools/perf/builtin-kvm.c                      | 14 +++----
- tools/perf/builtin-kwork.c                    | 10 ++---
- tools/perf/builtin-lock.c                     |  6 +--
- tools/perf/builtin-mem.c                      |  4 +-
- tools/perf/builtin-sched.c                    |  6 +--
- tools/perf/builtin-script.c                   | 30 ++++---------
- tools/perf/builtin-stat.c                     |  4 +-
- tools/perf/builtin-timechart.c                |  2 +-
- tools/perf/builtin-trace.c                    |  6 +--
- tools/perf/perf.c                             | 12 +++---
- tools/perf/tests/config-fragments/config      |  3 ++
- .../shell/test_uprobe_from_different_cu.sh    |  2 +-
- tools/perf/tests/symbols.c                    |  2 +-
- tools/perf/ui/browser.c                       |  2 +-
- tools/perf/ui/browsers/scripts.c              |  2 +-
- tools/perf/ui/stdio/hist.c                    |  2 +-
- tools/perf/util/amd-sample-raw.c              |  4 +-
- tools/perf/util/annotate.c                    |  2 +-
- tools/perf/util/callchain.c                   |  2 +-
- tools/perf/util/config.c                      | 12 +++---
- tools/perf/util/map.c                         |  8 ++--
- tools/perf/util/pmus.c                        |  2 +-
- tools/perf/util/probe-event.c                 |  2 +-
- tools/perf/util/sample-raw.c                  |  2 +-
- tools/perf/util/symbol-elf.c                  |  4 +-
- tools/perf/util/symbol.c                      |  4 +-
- 40 files changed, 146 insertions(+), 117 deletions(-)
-
--- 
-2.30.2
+>
+> > >
+> > > I like seeing more use cases for the hints though.
+> > >
+> > > Thanks!
+> > > John
+>
 
 
