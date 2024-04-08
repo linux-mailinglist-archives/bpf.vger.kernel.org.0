@@ -1,219 +1,207 @@
-Return-Path: <bpf+bounces-26151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3241C89B952
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 09:54:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA1A89B9BB
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 10:09:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 533861C20C9A
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 07:54:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816D82823EB
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 08:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17B04D9F5;
-	Mon,  8 Apr 2024 07:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E63D2C85F;
+	Mon,  8 Apr 2024 08:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YKimgngw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4E9K6Pr"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B289D5FB94
-	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 07:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936AC381AA;
+	Mon,  8 Apr 2024 08:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712562518; cv=none; b=rAe5du/IjnbAiQJt4CZwcEA6Zyu5+rQ8rvNKUX6XoFDEaNFgLQSr0gf7CPvW51fiV2gMfsxJPEugTcdElS4yxrUswflv7aOWk0RKMCGOHy6gOzTSQVEvKRlbcyC2uT/LMjcN7lsSjQMq0E2tbCOR908zRLnz3WbTp4LccT71+js=
+	t=1712563791; cv=none; b=JCTVTr2S0qhjzcDh4aBGDVkuTTwYxX0Ms1zH7dN4bUA/49xaanAu4sxZAODaO8kfisj18Wj561Ae1YMc8E+U0jkWqLM3hieoW3DTQE1U5OebqgG1FMdsdZlBYi6pW1Mr9jDeiu0TRdiAjFD3JCytRuU6IGaFwKEpAq6q1JE/IrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712562518; c=relaxed/simple;
-	bh=AO6S3J1UkADcOuG3dtHKoKni47rzKE/2aQXWNVAMaa0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eoXzvXsmF0izsIC2LXVV4jgr160q07mAnfxYhY4NJx28jDbQnqrzH97DqPJODz5rx6NvvYTc9zZx/9B4kdSZzxreJaw38IrRO+sRRyDc8ppYpRJxos34UTujpAdzaXg22kOk1PrUuMUNbFLg2L8cdHrXNmT/6P/nDFjTJYv4LTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YKimgngw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712562515;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8TYgCFyRlI1iTv2tcyJ+PG3jxVx5/GPjyqoQsuNov1k=;
-	b=YKimgngwv7zCBEkH1m7AO2y945BrC9zueHtVXMy0/BUj7L8w7opllStb199WR8U4oG1T+9
-	EXkknK73UyZPtDNHSubqr0iuSnLigiSAgGgygOt078GtNufCBNDxMcyMMqryoyNOOy3C5Z
-	fyZwyK+D4fy+Bi5Fa2lfqKqeBe1tEFs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-421-QzxgnOJhOSeTOSk3siro5w-1; Mon, 08 Apr 2024 03:48:34 -0400
-X-MC-Unique: QzxgnOJhOSeTOSk3siro5w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343c86edeb7so2268045f8f.1
-        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 00:48:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712562512; x=1713167312;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8TYgCFyRlI1iTv2tcyJ+PG3jxVx5/GPjyqoQsuNov1k=;
-        b=Y1Ai/PWX/MfZAoDvWAema3vKvEnvgrnnXGb4EBpBODms6pHYKGTWxMZwWIawGcJR+M
-         nHMDGa4HAmXAsq7FiRBIusGsCeE9NlG1fXxZHVbnXfBtdEu2t5UMZ8Z/LUFkjTJhVt2u
-         tUP+QWRsg+/9f3Rnrcgmvj9fqEs8xAApJk14dDR6A+yuEs9zO13rGn2170Av33uPMgkf
-         eBFlgsTnvu812bXShNIq5hgkn4VaqMr5DHcDOtJ45FP8I4XGDgAiBclViLk2cgwilTLQ
-         zbin7d/EQJbHu/w9LogXEUlAoXWHbOIkC00X3i9OfREQEg7Yn7TDyaZRDrl0EvohjOdK
-         pmzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFulEyrsW8lJ3D83PvYgNzzvxRERNTr0EoYuS8fadfBDRceJF64DdCWKIrF9dz/462gVyCZ7MC3xOdYMr+xeiy+Lw6
-X-Gm-Message-State: AOJu0YwtP0RIp9knmvpB4k2ataNhreLohKJdmCRwkZ0IeLqDv7Bn4puO
-	WK98Gsbl+lEWs2Vz9j0CUl0lhGaT0hb6mJa2V0DV1svW1cjxWPrDlOQjYwyQ/ObluRcFPi0doz9
-	AMqqAQitNkMsABLybjMVjj0dUuKd99CSPXFs2rRDn1iTQWUAUCw==
-X-Received: by 2002:a5d:6048:0:b0:33e:a5e1:eccc with SMTP id j8-20020a5d6048000000b0033ea5e1ecccmr6531793wrt.68.1712562511803;
-        Mon, 08 Apr 2024 00:48:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEdSMdusIIBkkxRUY3+EQubBPog0K+ZjLJesgUXee5bP5avEYpbgMpmWO+ePhpK1P9BnrPA5g==
-X-Received: by 2002:a5d:6048:0:b0:33e:a5e1:eccc with SMTP id j8-20020a5d6048000000b0033ea5e1ecccmr6531772wrt.68.1712562511220;
-        Mon, 08 Apr 2024 00:48:31 -0700 (PDT)
-Received: from redhat.com ([2.52.152.188])
-        by smtp.gmail.com with ESMTPSA id a4-20020a5d4564000000b00343826878e8sm8278091wrc.38.2024.04.08.00.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 00:48:30 -0700 (PDT)
-Date: Mon, 8 Apr 2024 03:48:26 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v6 0/5] remove page frag implementation in
- vhost_net
-Message-ID: <20240408034726-mutt-send-email-mst@kernel.org>
-References: <20240228093013.8263-1-linyunsheng@huawei.com>
+	s=arc-20240116; t=1712563791; c=relaxed/simple;
+	bh=opoiP/Rbs+qNBZARkVbOAqI4I6o0EeLA/hNQduTWd+M=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DuKCrpPWI4Y38rO9xus8BonWVmnVdiCpxnufHpEx2CMYYouBUZrNtSevhEI1mGMpuRgbg5xY2fzKSe3qBiaXHrMdY+R1zl9okWqY9WF4qnP8/cNxWGmmsFSuFlQUX0mjfH+bS19grEJf63iVkJaCWpQ0f5aN1954cBRo52A4mqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o4E9K6Pr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B087C433F1;
+	Mon,  8 Apr 2024 08:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712563791;
+	bh=opoiP/Rbs+qNBZARkVbOAqI4I6o0EeLA/hNQduTWd+M=;
+	h=From:Subject:Date:To:Cc:From;
+	b=o4E9K6Pr1sSZu7Q9snc9oekJ5JLvoH/H3Q7O+/mCHpRM7HY422mZg7Av47VJ5SyM4
+	 VpA0eAHHmujovdaFp/j2SaNxm5hU0jpMDnrEmkwayoCihH2RKTFb8fqw3XdWd/OWar
+	 x1ad5+rLtBQp6yfZcS4kvOchRjVBgF5UX3wQvifkM485Krhd5547KuxAEnruBr0Uyy
+	 KvcIrnj4fBDI4xZDomfNA4DXxK5XmgrVc+Q5V7zTJSJ6x7mLLw/roHqh8yZOX1qJgm
+	 p6p4XICtFQArZWJkkXzo/C4WYzy7mQJB9QLMk/3c8PWUszVADlHltg47ZeJJGSL0yz
+	 kKTGLKXwGllFw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH RFC bpf-next v6 0/6] sleepable bpf_timer (was: allow
+ HID-BPF to do device IOs)
+Date: Mon, 08 Apr 2024 10:09:25 +0200
+Message-Id: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228093013.8263-1-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADamE2YC/23QzWrDMAwH8FcpPs/DViwn2Wkw2AP0Onbwh9KYh
+ iQ4xbSUvPucMFhGcvwL6SehJ5soBprY2+nJIqUwhaHPQb+cmGtNfyEefM4MBCgBAnkbPLdjw6e
+ OaDS2I+6EBC0aX0unWJ4bIzXhvppf7Pz5sdSWiZ7uN/adQxum2xAf684k17Zfvj7gk+SCK+eqG
+ i0ab/37lWJP3esQLyuXYENIdURAJrBEbQWqEtSeKDYEyCOiyIRsbFFWzuhCyB2h/ohCHv0pqeU
+ KjVUDqARqtSNwQwAcEbhcUdautFiTMeYfMc/zD6BWpgLQAQAA
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712563787; l=5180;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=opoiP/Rbs+qNBZARkVbOAqI4I6o0EeLA/hNQduTWd+M=;
+ b=DmSpZ5TNjcfhuBTdcxC3bYuZ6RRZ/C8vn1jSU2NZtn4ezrBoy6p8M9BvEsarXWB7hFDQfhkJR
+ WsqBjmeliW7Ab+hL/I7o/+0rpNEPskjQ/eiNNmDSoulugHqJZUuVdGD
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On Wed, Feb 28, 2024 at 05:30:07PM +0800, Yunsheng Lin wrote:
-> Currently there are three implementations for page frag:
-> 
-> 1. mm/page_alloc.c: net stack seems to be using it in the
->    rx part with 'struct page_frag_cache' and the main API
->    being page_frag_alloc_align().
-> 2. net/core/sock.c: net stack seems to be using it in the
->    tx part with 'struct page_frag' and the main API being
->    skb_page_frag_refill().
-> 3. drivers/vhost/net.c: vhost seems to be using it to build
->    xdp frame, and it's implementation seems to be a mix of
->    the above two.
-> 
-> This patchset tries to unfiy the page frag implementation a
-> little bit by unifying gfp bit for order 3 page allocation
-> and replacing page frag implementation in vhost.c with the
-> one in page_alloc.c.
-> 
-> After this patchset, we are not only able to unify the page
-> frag implementation a little, but also able to have about
-> 0.5% performance boost testing by using the vhost_net_test
-> introduced in the last patch.
-> 
-> Before this patchset:
-> Performance counter stats for './vhost_net_test' (10 runs):
-> 
->      305325.78 msec task-clock                       #    1.738 CPUs utilized               ( +-  0.12% )
->        1048668      context-switches                 #    3.435 K/sec                       ( +-  0.00% )
->             11      cpu-migrations                   #    0.036 /sec                        ( +- 17.64% )
->             33      page-faults                      #    0.108 /sec                        ( +-  0.49% )
->   244651819491      cycles                           #    0.801 GHz                         ( +-  0.43% )  (64)
->    64714638024      stalled-cycles-frontend          #   26.45% frontend cycles idle        ( +-  2.19% )  (67)
->    30774313491      stalled-cycles-backend           #   12.58% backend cycles idle         ( +-  7.68% )  (70)
->   201749748680      instructions                     #    0.82  insn per cycle
->                                               #    0.32  stalled cycles per insn     ( +-  0.41% )  (66.76%)
->    65494787909      branches                         #  214.508 M/sec                       ( +-  0.35% )  (64)
->     4284111313      branch-misses                    #    6.54% of all branches             ( +-  0.45% )  (66)
-> 
->        175.699 +- 0.189 seconds time elapsed  ( +-  0.11% )
-> 
-> 
-> After this patchset:
-> Performance counter stats for './vhost_net_test' (10 runs):
-> 
->      303974.38 msec task-clock                       #    1.739 CPUs utilized               ( +-  0.14% )
->        1048807      context-switches                 #    3.450 K/sec                       ( +-  0.00% )
->             14      cpu-migrations                   #    0.046 /sec                        ( +- 12.86% )
->             33      page-faults                      #    0.109 /sec                        ( +-  0.46% )
->   251289376347      cycles                           #    0.827 GHz                         ( +-  0.32% )  (60)
->    67885175415      stalled-cycles-frontend          #   27.01% frontend cycles idle        ( +-  0.48% )  (63)
->    27809282600      stalled-cycles-backend           #   11.07% backend cycles idle         ( +-  0.36% )  (71)
->   195543234672      instructions                     #    0.78  insn per cycle
->                                               #    0.35  stalled cycles per insn     ( +-  0.29% )  (69.04%)
->    62423183552      branches                         #  205.357 M/sec                       ( +-  0.48% )  (67)
->     4135666632      branch-misses                    #    6.63% of all branches             ( +-  0.63% )  (67)
-> 
->        174.764 +- 0.214 seconds time elapsed  ( +-  0.12% )
+New version of the sleepable bpf_timer code.
 
-The perf diff is in the noise, but the cleanup is nice.
-Thanks!
+I'm posting this as this is the result of the previous review, so we can
+have a baseline to compare to.
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+The plan is now to introduce a new user API struct bpf_wq, as the timer
+API working on softIRQ seems to be quite far away from a wq.
 
+For reference, the use cases I have in mind:
 
+---
 
-> Changelog:
-> V6: Add timeout for poll() and simplify some logic as suggested
->     by Jason.
-> 
-> V5: Address the comment from jason in vhost_net_test.c and the
->     comment about leaving out the gfp change for page frag in
->     sock.c as suggested by Paolo.
-> 
-> V4: Resend based on latest net-next branch.
-> 
-> V3:
-> 1. Add __page_frag_alloc_align() which is passed with the align mask
->    the original function expected as suggested by Alexander.
-> 2. Drop patch 3 in v2 suggested by Alexander.
-> 3. Reorder patch 4 & 5 in v2 suggested by Alexander.
-> 
-> Note that placing this gfp flags handing for order 3 page in an inline
-> function is not considered, as we may be able to unify the page_frag
-> and page_frag_cache handling.
-> 
-> V2: Change 'xor'd' to 'masked off', add vhost tx testing for
->     vhost_net_test.
-> 
-> V1: Fix some typo, drop RFC tag and rebase on latest net-next.
-> 
-> Yunsheng Lin (5):
->   mm/page_alloc: modify page_frag_alloc_align() to accept align as an
->     argument
->   page_frag: unify gfp bits for order 3 page allocation
->   net: introduce page_frag_cache_drain()
->   vhost/net: remove vhost_net_page_frag_refill()
->   tools: virtio: introduce vhost_net_test
-> 
->  drivers/net/ethernet/google/gve/gve_main.c |  11 +-
->  drivers/net/ethernet/mediatek/mtk_wed_wo.c |  17 +-
->  drivers/nvme/host/tcp.c                    |   7 +-
->  drivers/nvme/target/tcp.c                  |   4 +-
->  drivers/vhost/net.c                        |  91 ++--
->  include/linux/gfp.h                        |  16 +-
->  mm/page_alloc.c                            |  22 +-
->  net/core/skbuff.c                          |   9 +-
->  tools/virtio/.gitignore                    |   1 +
->  tools/virtio/Makefile                      |   8 +-
->  tools/virtio/linux/virtio_config.h         |   4 +
->  tools/virtio/vhost_net_test.c              | 532 +++++++++++++++++++++
->  12 files changed, 609 insertions(+), 113 deletions(-)
->  create mode 100644 tools/virtio/vhost_net_test.c
-> 
-> -- 
-> 2.33.0
-> 
+Basically, I need to be able to defer a HID-BPF program for the
+following reasons (from the aforementioned patch):
+1. defer an event:
+   Sometimes we receive an out of proximity event, but the device can not
+   be trusted enough, and we need to ensure that we won't receive another
+   one in the following n milliseconds. So we need to wait those n
+   milliseconds, and eventually re-inject that event in the stack.
+
+2. inject new events in reaction to one given event:
+   We might want to transform one given event into several. This is the
+   case for macro keys where a single key press is supposed to send
+   a sequence of key presses. But this could also be used to patch a
+   faulty behavior, if a device forgets to send a release event.
+
+3. communicate with the device in reaction to one event:
+   We might want to communicate back to the device after a given event.
+   For example a device might send us an event saying that it came back
+   from sleeping state and needs to be re-initialized.
+
+Currently we can achieve that by keeping a userspace program around,
+raise a bpf event, and let that userspace program inject the events and
+commands.
+However, we are just keeping that program alive as a daemon for just
+scheduling commands. There is no logic in it, so it doesn't really justify
+an actual userspace wakeup. So a kernel workqueue seems simpler to handle.
+
+bpf_timers are currently running in a soft IRQ context, this patch
+series implements a sleppable context for them.
+
+Cheers,
+Benjamin
+
+To: Alexei Starovoitov <ast@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+To: Andrii Nakryiko <andrii@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+To: Eduard Zingerman <eddyz87@gmail.com>
+To: Song Liu <song@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+To: John Fastabend <john.fastabend@gmail.com>
+To: KP Singh <kpsingh@kernel.org>
+To: Stanislav Fomichev <sdf@google.com>
+To: Hao Luo <haoluo@google.com>
+To: Jiri Olsa <jolsa@kernel.org>
+To: Mykola Lysenko <mykolal@fb.com>
+To: Shuah Khan <shuah@kernel.org>
+Cc: Benjamin Tissoires <bentiss@kernel.org>
+Cc: <bpf@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: <linux-kselftest@vger.kernel.org>
+
+---
+Changes in v6:
+- Use of a workqueue to clean up sleepable timers
+- integrated Kumar's patch instead of mine
+- Link to v5: https://lore.kernel.org/r/20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org
+
+Changes in v5:
+- took various reviews into account
+- rewrote the tests to be separated to not have a uggly include
+- Link to v4: https://lore.kernel.org/r/20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org
+
+Changes in v4:
+- dropped the HID changes, they can go independently from bpf-core
+- addressed Alexei's and Eduard's remarks
+- added selftests
+- Link to v3: https://lore.kernel.org/r/20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org
+
+Changes in v3:
+- fixed the crash from v2
+- changed the API to have only BPF_F_TIMER_SLEEPABLE for
+  bpf_timer_start()
+- split the new kfuncs/verifier patch into several sub-patches, for
+  easier reviews
+- Link to v2: https://lore.kernel.org/r/20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org
+
+Changes in v2:
+- make use of bpf_timer (and dropped the custom HID handling)
+- implemented bpf_timer_set_sleepable_cb as a kfunc
+- still not implemented global subprogs
+- no sleepable bpf_timer selftests yet
+- Link to v1: https://lore.kernel.org/r/20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org
+
+---
+Benjamin Tissoires (5):
+      bpf/helpers: introduce sleepable bpf_timers
+      bpf/helpers: introduce bpf_timer_set_sleepable_cb() kfunc
+      bpf/helpers: mark the callback of bpf_timer_set_sleepable_cb() as sleepable
+      tools: sync include/uapi/linux/bpf.h
+      selftests/bpf: add sleepable timer tests
+
+Kumar Kartikeya Dwivedi (1):
+      bpf: Add support for KF_ARG_PTR_TO_TIMER
+
+ include/linux/bpf_verifier.h                       |   1 +
+ include/uapi/linux/bpf.h                           |  13 ++
+ kernel/bpf/helpers.c                               | 202 ++++++++++++++++---
+ kernel/bpf/verifier.c                              |  98 +++++++++-
+ tools/include/uapi/linux/bpf.h                     |  20 +-
+ tools/testing/selftests/bpf/bpf_experimental.h     |   5 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c        |   5 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h  |   1 +
+ tools/testing/selftests/bpf/prog_tests/timer.c     |  34 ++++
+ .../testing/selftests/bpf/progs/timer_sleepable.c  | 213 +++++++++++++++++++++
+ 10 files changed, 553 insertions(+), 39 deletions(-)
+---
+base-commit: 61df575632d6b39213f47810c441bddbd87c3606
+change-id: 20240205-hid-bpf-sleepable-c01260fd91c4
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
 
