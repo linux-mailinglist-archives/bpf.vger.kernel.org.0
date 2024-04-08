@@ -1,175 +1,111 @@
-Return-Path: <bpf+bounces-26204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702AD89CA68
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:08:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C10E89CA6E
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:09:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A27441C21B96
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:08:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7843B29F4B
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E0E14387A;
-	Mon,  8 Apr 2024 17:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2955C14387A;
+	Mon,  8 Apr 2024 17:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N1tlSgsr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BB7ijO4Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151ED142E85;
-	Mon,  8 Apr 2024 17:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFDF142E68;
+	Mon,  8 Apr 2024 17:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596082; cv=none; b=ZxMRnFfYWcZag0C5UubHtTLeA+CMG4dcqVgvgCmbEDHM1RklPPxtrNmMmlRKKq9KDXT0QyEMV6NPeaS8oQXqLu6O5fnqlQ3/fsErp9G6m15E5IGB4hFjXky/dzERk7I1E/aZ85OrwOB3iZELKyhlqGkIj5mjF9jhcuACPBSZtm8=
+	t=1712596172; cv=none; b=StguFbbGqEVLpHufMXfh4Ab6P3E7If4QGGp4sZ9o9bOn/1YN+S7kGH0e+TnW8Sax5WMulyFgGy7fTkBi8mK7RAAZb+FQcsXJ/CmUR4uazrcKgb7euIL72tTn4BvZqswRSiqdpGFWAhe5uYJpfgJo8FcCn6aN993ZT0W5qWYvxlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596082; c=relaxed/simple;
-	bh=8AXBpkc9DmcdVZTxpjLc5ajKXA0N+5NVVl+9uENqQ1o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WO7AuzpMd9QhZUqO7+Csoe7AIo/kI0JVj/ZJ/Y4u7t+mJyc1TFkZNd7R+csHynUcjZo2So/PDP8tDq0hnq4xVRTVxA2cBbwvcd615zeRV9Rz0mwn4bVgNxiZJld+rVZsanDy6oj30gc4PCtIytjF0nl2PehN83UOZ1Zg1i9PQ4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N1tlSgsr; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e47843cc7so1839872a12.0;
-        Mon, 08 Apr 2024 10:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712596079; x=1713200879; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3rblefnzDeUpBGRU9KzMwI/WwyErcHXFjWyidNir4MI=;
-        b=N1tlSgsrvISy6khV/A+21P8mYaij+xiIVejUn+VuAgT4fO5NfccHuj/p8qv++bwuZZ
-         J7DGJTbUV0dfpDowDMfbuJjVPDOV+vZr8PTAPXmr4u5eN1lodwSMh2fACQgtk+CI5fCW
-         auTDjHAhCechFJWnrg4nQMriCIVcqlqDnX+/Mu0B9hFGp31rbAwRPI9PazxMkXqSknQ3
-         HnLPvwVPAv7D12mhdC8btGUiIwi86PRSR/e/PUIr8NrWfN0uRJYcDE7r1/f3ecQahhRN
-         UeiuRv8kCaK9WWeJ71jvz8qGKr6T6/TU7dAX4Mpq08kNM45rRiV5h2gmwCfepcE1YxNq
-         NhoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596079; x=1713200879;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3rblefnzDeUpBGRU9KzMwI/WwyErcHXFjWyidNir4MI=;
-        b=qjkMQpPTP5By10/c38x3Zz2ANi2RkcTgsfMAKymWkU8L3BhgRoI+882MPew2y9pvuC
-         LWtCakw/ckcXZSYwF3ZrqGppHYlUcK0Jqjm7P06DHD7xP5Q01zdmBdJfbqI3LXNsGyQ/
-         y3z2g4KVwY8J+1KCLo5F4Z7cbFfRJ3T95pwil5VGD+qILn7NdgERHfyAyGWkb0Ztr57+
-         xkV0yiabokP9I9K8C5Foah9dIpr0wEClHvNx8+4OuRcH9Xwx9naoI1xUBYferTHcf2T6
-         jZUwxSaoSLt6HpmtqRarPNjlCi7POuFtkifM20PYibtbc2/b2Z4imecFmzii1MODzVrI
-         LtCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0DAvWsDay1mZYx1rj81IAUZPr+y0fyvs72sSmvbbiPIR2uiHaIo9bOo8j5HReyEXsfYZx4wfqUyn1ChOI0KguFkxfCCIxr0fcwd0uzN4VMShxN4t+fBCM1olfg0eQqRNY9AzS4Gfr79exvtJF
-X-Gm-Message-State: AOJu0YwEDjBw7Kp/9dbU5hyt0SmCyI9Tzv+8eObw4eYXb16P9531jSLh
-	S3vZwqMK9yBiKWHiyOsY4XtNam8BP6j3G5pACA4/zMC22Y1S2ux8
-X-Google-Smtp-Source: AGHT+IG1DEEuzoXCClJookqK62YxLMOh4p3ScRQPHvmWZ4rPoV3Kwit6nDIzL2HlBDLLsBO1e1CDFw==
-X-Received: by 2002:a50:c04c:0:b0:56d:c40d:b921 with SMTP id u12-20020a50c04c000000b0056dc40db921mr6356885edd.20.1712596079128;
-        Mon, 08 Apr 2024 10:07:59 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e8100b005682a0e915fsm4280069eda.76.2024.04.08.10.07.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 10:07:58 -0700 (PDT)
-Message-ID: <65c249a6af45bfa5fe0f6c2331dcc1771a6f0b05.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v6 1/6] bpf/helpers: introduce sleepable
- bpf_timers
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Mon, 08 Apr 2024 20:07:56 +0300
-In-Reply-To: <20240408-hid-bpf-sleepable-v6-1-0499ddd91b94@kernel.org>
-References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
-	 <20240408-hid-bpf-sleepable-v6-1-0499ddd91b94@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1712596172; c=relaxed/simple;
+	bh=FXRh4NT4mgAmM5SWmhxzWE8ppnsO/CEI3gx+kEY5Y88=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=Yf4TigOdhc6gLRkrMyyi41KoPsLn5vFcu0DQiAS0Rh2SCCHRdwrkCfdtfBPoQgmMIoVqZRE36wHjez4BWFIv2j0ViPchEXJtzT4A5KT42/2/EqNf6Tu7U7im4onebsq/WrcEK188fkZwMfAb4PjiyHfQjQaD0Eyo6GnLjzsu7Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BB7ijO4Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84DCCC433F1;
+	Mon,  8 Apr 2024 17:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712596172;
+	bh=FXRh4NT4mgAmM5SWmhxzWE8ppnsO/CEI3gx+kEY5Y88=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+	b=BB7ijO4Q3/URZEptPIUEWBlcudWmK2jw7NdXZ6/LpEgJTYcFzY1OXa4ftqrmI+AtG
+	 qNeUCiJCP8WwztAcGqauws/pRzmBxOifz3db2LcOLa+IzGkIOtdD5zhJ668pbaQPVv
+	 98MKQLmLDEPtGCg6P7QG2XLIFJKtHLvfCjdAXsai7gubXYc2LHz2Kl3jN1C80dPWwz
+	 GgiPe14JfOeSVAfxkWBA8T6xjxLoIXlo8p0iEOr8QvH+mjIRzmiZJUl/p8R76FTN6n
+	 vl0+DCm7s6gXbmdry7HK1o6btvU1aOws8RpBhv/SN2A7Pqp3vA/MDk7rj3J8n/7teS
+	 T/xB8/YGgZz2g==
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-
-On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
-
-[...]
-
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 9234174ccb21..fd05d4358b31 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1096,12 +1096,19 @@ const struct bpf_func_proto bpf_snprintf_proto =
-=3D {
->   * freeing the timers when inner map is replaced or deleted by user spac=
-e.
->   */
->  struct bpf_hrtimer {
-> -	struct hrtimer timer;
-> +	union {
-> +		struct hrtimer timer;
-> +		struct work_struct work;
-> +	};
->  	struct bpf_map *map;
->  	struct bpf_prog *prog;
->  	void __rcu *callback_fn;
->  	void *value;
-> -	struct rcu_head rcu;
-> +	union {
-> +		struct rcu_head rcu;
-> +		struct work_struct sync_work;
-
-Nit:
-I find this name very confusing, the field is used to cancel timer
-execution, is it a convention to call such things '...sync...'?
-
-> +	};
-> +	u64 flags;
->  };
-> =20
-
-[...]
-
-> +static void bpf_timer_sync_work_cb(struct work_struct *work)
-> +{
-> +	struct bpf_hrtimer *t =3D container_of(work, struct bpf_hrtimer, sync_w=
-ork);
-> +
-> +	cancel_work_sync(&t->work);
-> +
-> +	kfree_rcu(t, rcu);
-
-Sorry, I might be wrong, but this looks suspicious.
-The 'rcu' field of 'bpf_hrtimer' is defined as follows:
-
-struct bpf_hrtimer {
-	...
-	union {
-		struct rcu_head rcu;
-		struct work_struct sync_work;
-	};
-	...
-};
-
-And for sleepable timers the 'sync_work' field is set as follows:
-
-BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *, timer, struct bpf_map *=
-, map,
-	   u64, flags)
-{
-	...
-	INIT_WORK(&t->sync_work, bpf_timer_sync_work_cb);
-	...
-}
-
-So, it looks like 'kfree_rcu' would be called for a non-rcu pointer.
-
-> +}
-> +
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH bpf-next v2 2/7] bpf, lsm: Add return value range
+ description for lsm hook
+From: KP Singh <kpsingh@kernel.org>
+In-Reply-To: <20240325095653.1720123-3-xukuohai@huaweicloud.com>
+Date: Mon, 8 Apr 2024 19:09:25 +0200
+Cc: bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Florent Revest <revest@chromium.org>,
+ Brendan Jackman <jackmanb@chromium.org>,
+ Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>,
+ "Serge E . Hallyn" <serge@hallyn.com>,
+ Khadija Kamran <kamrankhadijadj@gmail.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>,
+ Kees Cook <keescook@chromium.org>,
+ John Johansen <john.johansen@canonical.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7FAC6C1E-B0C2-4743-AFF0-0DCC2B331D0A@kernel.org>
+References: <20240325095653.1720123-1-xukuohai@huaweicloud.com>
+ <20240325095653.1720123-3-xukuohai@huaweicloud.com>
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
 
+
+> On 25 Mar 2024, at 10:56, Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>=20
+> From: Xu Kuohai <xukuohai@huawei.com>
+>=20
+> Add return value descriptions for lsm hook.
+>=20
+> Two integer ranges are added:
+>=20
+> 1. ERRNO: Integer between -MAX_ERRNO and 0, including -MAX_ERRNO and =
+0.
+> 2. ANY: Any integer
+
+
+I think you should merge this patch and the first patch. It's not clear =
+that the first value in this macro is actually used as the default value =
+until one reads the code. I think you also need to make it clear that =
+there is no logical change on the LSM side in the this patch.
+
+- KP=
 
