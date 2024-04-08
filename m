@@ -1,196 +1,181 @@
-Return-Path: <bpf+bounces-26208-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26209-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B73D89CAA3
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:20:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 501B089CAE5
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313E51C22065
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:20:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 091B22868E3
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2618A143C4A;
-	Mon,  8 Apr 2024 17:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE4E143C7E;
+	Mon,  8 Apr 2024 17:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dm4OwNNh"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="DGqFJ0zy"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF96143860
-	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 17:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A87143C59;
+	Mon,  8 Apr 2024 17:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596843; cv=none; b=skQJC425MHGUOiuhp3Mrr1/dC5SA8UEL0uW8wxgSwrkQCP/c2srhq5/j8kWW6EMs0wMxkhtu4+HGFrN2RoE0ftZOr9tOd3aepIFsCMxLVXTW8E441Y/8je4aVmq6ulcSidkAASV4EqpcxUHE1uf5+LGXanZ0j5qnfrGZfFYF2ms=
+	t=1712597759; cv=none; b=d38y7qPxbcmx9HP3aZ59G7Bg17JjxdIe2n9vlfcPCrGNq8RB5c1002LQFdL576UR56bNlmCrQahJm54hD/GGl8oduW6veqUxkOLfsjcYbzqmboTd2vkDRffPN3R7iExuOsNtn2utLYFSZeQYJgN3pFiEfulKELxbS+s/yH3r2XA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596843; c=relaxed/simple;
-	bh=LDjaWAvebvLx3MhYgg+6m/Onrp7EZMzfq2XnS1PyCHM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i/YUAB492CZpa9Gdbrl/83WhwTH3CL3skvOYMwnzZKZFlArKKZz/uX7nuuU7ZDpLvAvhrJ/2M2g4lvOIQyNSPwFwwSaj+4fTuwRxMUe/LRvWSOgWD1kcJVLgF4MOtC7dLmPDh/onsEtQeiF4eD2IsC9A29rF/yXPeRgYPRjMAy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dm4OwNNh; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712596840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=50vujPDoJgDaPu8/wFGRO5CAScsruXRwyphlNNmfr0k=;
-	b=Dm4OwNNh9HatpJ3hBxmXHiEi5ilD424E4KOM4k7o0d1wlLp83Jk8JEicsBuoszgg1C7Gia
-	ziMwkt/mBt1ua72ZL2AN/IMGP/BvCrtlZwPWY4mOZca/lF0NXcJ9o1HF47Ng7Po3axsudq
-	Xq2dSaorpm2775atGzi01+pQHTGe3bk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-633-j1YtUgbROwa9U2y3aHX1Rw-1; Mon, 08 Apr 2024 13:20:39 -0400
-X-MC-Unique: j1YtUgbROwa9U2y3aHX1Rw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a51c6085bf0so70814166b.3
-        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 10:20:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596838; x=1713201638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=50vujPDoJgDaPu8/wFGRO5CAScsruXRwyphlNNmfr0k=;
-        b=YMXK+N55x+EAiQTrevoaOjvQbw+A0vlbQ6nDVewxssWg5T8ddLzRjUQJdq3KgTh1Ol
-         q9yryCGccKlk7+ZOxo97SUC/+TPl+P/FRUjkbVuvKM7WDnG01dYnI+8mXamx4HP+6F0O
-         dBzdgpuWvT2DRjYo88M05fXQ4BPvXxGg31/quyQPoIZn5Em/URlViH4yvxR5sO89GmFx
-         w6Z3mcgHcfHPSMCLI1jXzO130epEq1cRZIFKiZ7sKDgzuLWQdI5SAwQR9M+ZL4Ny4/H0
-         sxxNZ9j3AAZT4ntVAc3o+89XnUkELmfWav+re7LA128sxggDJ8IH+yhjjngf0lhlL2HX
-         /1pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWsO//Ljv3wO+kn2Z6XCBCjffYt6uAT4Lxg9OLnh1iJTHcKHs2TcY8cP/ZkspN1o66+ZvZzvH4GGb7FcN8hCWYLa91H
-X-Gm-Message-State: AOJu0YwIRyahZ13VVfPAMSGbtTVtgcou9mIUEE8JBcDTW3wGahPJdsLl
-	udEzpqbi4RI6cCz/HRVFgAIhLB9bLClY2kYwGn/WqWDuNKIV3azlrf4IdEyoCrktS4IN5SVOImy
-	uiJn1R37dPO/ApjY7B/VMdU+3Sf9Z7RMhFUQy9YBJCF8e8nnf4znkD5G7kIS1wZghn3Mjr2bSak
-	GLvzaq4Yd4PW2l/5+Bg+pzKZ6M
-X-Received: by 2002:a17:907:6e86:b0:a51:cbd5:1d1a with SMTP id sh6-20020a1709076e8600b00a51cbd51d1amr3393915ejc.32.1712596838390;
-        Mon, 08 Apr 2024 10:20:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEC3zfnBvgT8CFgQ1ahTRlqU0oFuIAh3svUw9JLpurRNOrG7VxATpA8Ds4wI2ii68ghlo2+Ygos9fvYQkCBwrY=
-X-Received: by 2002:a17:907:6e86:b0:a51:cbd5:1d1a with SMTP id
- sh6-20020a1709076e8600b00a51cbd51d1amr3393895ejc.32.1712596838037; Mon, 08
- Apr 2024 10:20:38 -0700 (PDT)
+	s=arc-20240116; t=1712597759; c=relaxed/simple;
+	bh=Gt8kmdgt3jC/2C9AavtI++umsEd4HivNfc+qOWCE0NU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=KY01pcekunPvivqGrsi4X6McV9ol8yh7pgRys4oOM0hNnbmDlcfhffxxgXikObMsFjVZuHHzWxj+ggqvDyS3tA7DI2jXdHDMFIh0shFm5mjUcGs6TXsHn1Ev69tJE6H49OEZj91lGkJPP+qEtVZTPVcUWd8vkX/dEzsJHcAKSrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=DGqFJ0zy; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=zqfMpMqh1K3K3KMFWSlU2agOFI0BMTv0sMd0UrEYpvs=; b=DGqFJ0zysgp7o499yBYyBB6WfC
+	yR2ohk87cpJpLV06Eelb6o9zTkF+mqWriNNps/zRHCOWKgd/fP6yKKAMLhQvorQrrkyZklWK8q5GL
+	zB6Ls8+2n5A4Uz9W7ukbid8nMcLa/slUT5Mls2Tp8mPbBzNR5EOXBwKftWN/P7JkkrCd33AwxmD5a
+	PGGuD4SvjXsu4LhZSnjICaHFzeZpVjeebDqRW62LvSkp7mbIdwYsWdJdAWRv0pDeJx/w8EBmSN5Y1
+	r3r7SVVHqimntxjr1D6frifuhBVP9YZZxtoPZFHzOfqhH98NzawuNyOLLo8VF3nS0ZVjquTtgW00E
+	aDdA815g==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rtsuH-000ASw-2u; Mon, 08 Apr 2024 19:35:45 +0200
+Received: from [178.197.249.16] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rtsuF-0081uc-2G;
+	Mon, 08 Apr 2024 19:35:43 +0200
+Subject: Re: [PATCH net-next v15 14/15] p4tc: add set of P4TC table kfuncs
+To: Jamal Hadi Salim <jhs@mojatatu.com>, netdev@vger.kernel.org
+Cc: deb.chatterjee@intel.com, anjali.singhai@intel.com,
+ namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com,
+ Mahesh.Shirshyad@amd.com, Vipin.Jain@amd.com, tomasz.osinski@intel.com,
+ jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com,
+ horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, martin.lau@linux.dev,
+ victor@mojatatu.com, pctammela@mojatatu.com, alexei.starovoitov@gmail.com,
+ bpf@vger.kernel.org
+References: <20240408122000.449238-1-jhs@mojatatu.com>
+ <20240408122000.449238-15-jhs@mojatatu.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f27bfc4d-8985-6d3d-01f5-782ae1ccb9ee@iogearbox.net>
+Date: Mon, 8 Apr 2024 19:35:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
- <20240408-hid-bpf-sleepable-v6-1-0499ddd91b94@kernel.org> <65c249a6af45bfa5fe0f6c2331dcc1771a6f0b05.camel@gmail.com>
-In-Reply-To: <65c249a6af45bfa5fe0f6c2331dcc1771a6f0b05.camel@gmail.com>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Mon, 8 Apr 2024 19:20:26 +0200
-Message-ID: <CAO-hwJ+0erX3iJcOh9KBG3f01UiYvGk_Gx+-zyFc4Vb5LCcHxA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v6 1/6] bpf/helpers: introduce sleepable bpf_timers
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240408122000.449238-15-jhs@mojatatu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27239/Mon Apr  8 10:26:06 2024)
 
-On Mon, Apr 8, 2024 at 7:08=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
->
-> [...]
->
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 9234174ccb21..fd05d4358b31 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -1096,12 +1096,19 @@ const struct bpf_func_proto bpf_snprintf_proto =
-=3D {
-> >   * freeing the timers when inner map is replaced or deleted by user sp=
-ace.
-> >   */
-> >  struct bpf_hrtimer {
-> > -     struct hrtimer timer;
-> > +     union {
-> > +             struct hrtimer timer;
-> > +             struct work_struct work;
-> > +     };
-> >       struct bpf_map *map;
-> >       struct bpf_prog *prog;
-> >       void __rcu *callback_fn;
-> >       void *value;
-> > -     struct rcu_head rcu;
-> > +     union {
-> > +             struct rcu_head rcu;
-> > +             struct work_struct sync_work;
->
-> Nit:
-> I find this name very confusing, the field is used to cancel timer
-> execution, is it a convention to call such things '...sync...'?
->
-> > +     };
-> > +     u64 flags;
-> >  };
-> >
->
-> [...]
->
-> > +static void bpf_timer_sync_work_cb(struct work_struct *work)
-> > +{
-> > +     struct bpf_hrtimer *t =3D container_of(work, struct bpf_hrtimer, =
-sync_work);
-> > +
-> > +     cancel_work_sync(&t->work);
-> > +
-> > +     kfree_rcu(t, rcu);
->
-> Sorry, I might be wrong, but this looks suspicious.
-> The 'rcu' field of 'bpf_hrtimer' is defined as follows:
->
-> struct bpf_hrtimer {
->         ...
->         union {
->                 struct rcu_head rcu;
->                 struct work_struct sync_work;
->         };
->         ...
-> };
->
-> And for sleepable timers the 'sync_work' field is set as follows:
->
-> BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *, timer, struct bpf_map=
- *, map,
->            u64, flags)
-> {
->         ...
->         INIT_WORK(&t->sync_work, bpf_timer_sync_work_cb);
->         ...
-> }
->
-> So, it looks like 'kfree_rcu' would be called for a non-rcu pointer.
+On 4/8/24 2:19 PM, Jamal Hadi Salim wrote:
+> We add an initial set of kfuncs to allow interactions from eBPF programs
+> to the P4TC domain.
+> 
+> - bpf_p4tc_tbl_read: Used to lookup a table entry from a BPF
+> program installed in TC. To find the table entry we take in an skb, the
+> pipeline ID, the table ID, a key and a key size.
+> We use the skb to get the network namespace structure where all the
+> pipelines are stored. After that we use the pipeline ID and the table
+> ID, to find the table. We then use the key to search for the entry.
+> We return an entry on success and NULL on failure.
+> 
+> - xdp_p4tc_tbl_read: Used to lookup a table entry from a BPF
+> program installed in XDP. To find the table entry we take in an xdp_md,
+> the pipeline ID, the table ID, a key and a key size.
+> We use struct xdp_md to get the network namespace structure where all
+> the pipelines are stored. After that we use the pipeline ID and the table
+> ID, to find the table. We then use the key to search for the entry.
+> We return an entry on success and NULL on failure.
+> 
+> - bpf_p4tc_entry_create: Used to create a table entry from a BPF
+> program installed in TC. To create the table entry we take an skb, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_create: Used to create a table entry from a BPF
+> program installed in XDP. To create the table entry we take an xdp_md, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - bpf_p4tc_entry_create_on_miss: conforms to PNA "add on miss".
+> First does a lookup using the passed key and upon a miss will add the entry
+> to the table.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_create_on_miss: conforms to PNA "add on miss".
+> First does a lookup using the passed key and upon a miss will add the entry
+> to the table.
+> We return 0 on success and a negative errno on failure
+> 
+> - bpf_p4tc_entry_update: Used to update a table entry from a BPF
+> program installed in TC. To update the table entry we take an skb, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_update: Used to update a table entry from a BPF
+> program installed in XDP. To update the table entry we take an xdp_md, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - bpf_p4tc_entry_delete: Used to delete a table entry from a BPF
+> program installed in TC. To delete the table entry we take an skb, the
+> pipeline ID, the table ID, a key and a key size.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_delete: Used to delete a table entry from a BPF
+> program installed in XDP. To delete the table entry we take an xdp_md, the
+> pipeline ID, the table ID, a key and a key size.
+> We return 0 on success and a negative errno on failure
+> 
+> Note:
+> All P4 objects are owned and reside on the P4TC side. IOW, they are
+> controlled via TC netlink interfaces and their resources are managed
+> (created, updated, freed, etc) by the TC side. As an example, the structure
+> p4tc_table_entry_act is returned to the ebpf side on table lookup. On the
+> TC side that struct is wrapped around p4tc_table_entry_act_bpf_kern.
+> A multitude of these structure p4tc_table_entry_act_bpf_kern are
+> preallocated (to match the P4 architecture, patch #9 describes some of
+> the subtleties involved) by the P4TC control plane and put in a kernel
+> pool. Their purpose is to hold the action parameters for either a table
+> entry, a global per-table "miss" and "hit" action, etc - which are
+> instantiated and updated via netlink per runtime requests. An instance of
+> the p4tc_table_entry_act_bpf_kern.p4tc_table_entry_act is returned
+> to ebpf when there is a un/successful table lookup depending on how the
+> P4 program is written. When the table entry is deleted the instance of
+> the struct p4tc_table_entry_act_bpf_kern is recycled to the pool to be
+> reused for a future table entry. The only time the pool memory is released
+> is when the pipeline is deleted.
+> 
+> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+> Nacked-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
 
-That was my initial assumption too, but Alexei told me it was fine.
-And I think he is correct because kfree_rcu doesn't need the rcu_head
-to be initialized.
+Given the many reasons stated earlier & for the record:
 
-So in the end, we initialize the memory as a work_struct, and when
-that work kicks in, we reuse that exact same memory as the rcu_head.
-This is fine because that work will never be reused.
-
-If I understand correctly, this is to save a few bytes as this is a
-critical struct used in programs with a high rate usage, and every
-byte counts.
-
-Cheers,
-Benjamin
-
->
-> > +}
-> > +
->
->
-
+Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
 
