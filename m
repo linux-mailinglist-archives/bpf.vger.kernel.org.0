@@ -1,122 +1,135 @@
-Return-Path: <bpf+bounces-26186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B9689C705
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 16:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59EA389C73B
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 16:39:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 329ED285293
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 14:25:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D91B0283A94
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 14:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55094127B54;
-	Mon,  8 Apr 2024 14:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5D113E8A5;
+	Mon,  8 Apr 2024 14:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxE2bPgR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/e9Ri/r"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D26F1CD21;
-	Mon,  8 Apr 2024 14:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7EE13CFAF;
+	Mon,  8 Apr 2024 14:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712586307; cv=none; b=SuwLYuAO7hur2+R5YJSE+JgC/Pk52ZM0CyR+roelZK7Fqj4k3gxc7oJLBo7urScNXm5h98xd0zNH6gUHf/5+QU0W69y6Ap6WrqyewPI9TT0jbLAI1GBRCp/LI3X38pB3rh/MPa0pnCRIQOxAi0V2E1ugPS2lWKsg+YbhN700RIw=
+	t=1712587177; cv=none; b=Bw11ZnRxI/5zdjQMMeNaWJqsX8j7MotfGlljg9wFWmo2AXbuLKFZ5MaBC0k6Iut9gu/5tMqZG7Ai1Mqp/SnsTwd8LjtkkivvypYX69H9qe9dkW4YayRpai7YUpug2mhgYo8th55bn4viblbJvkNv/L9/scaR4qP1s8cTYf57Z+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712586307; c=relaxed/simple;
-	bh=vs3XBmNffGkP+0cG+4YcsNFdxxYDgMGq8O2+X1Zb9Vo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pFfKgQB1CugkIMPnsN4r9Tn/O2yGENO6K8rC3famannlJMlkNhWmRwqs3eaHKonOZq0LnLoVAW7GNVmiXPHvCOXjgwMRLGIM+LoJid0xPuiSxmTO0InAbBkE7cXCIoyA4gjxVVP0xMaGjYiaUUNOZZJASPmHCdltRxgJmhdVTXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxE2bPgR; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a47385a4379so1019907566b.0;
-        Mon, 08 Apr 2024 07:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712586304; x=1713191104; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jJ+zuBcV+sKNJnkujCJL6uqR40a6L29gK2qouWWtUE0=;
-        b=QxE2bPgRFF/0FH43bYbgxuiApsO6WZLg/rgVUHCanLedOtKN4sG1LtdpQbs416ulOa
-         5brihBK4Oyz+wo5CfDhXdH1XlOGue4K55kvotAz2aK4Xm2ka/jYNbEv9WWzaRfHhDFcb
-         W497Q4yQkXjEXgX2EcIAgfIYfhpkG+Caeq/oUrXu64/hpwOoAA/1mq+VTI9enKVWiwN4
-         kQZh//CEGBZoewO/nL/rTYpWm8CzC7TperXoptCSH+F4yT5UPael5JxUxyw6tQ23TbGr
-         P55atkVwPgIRO2NFKqasvd6zl5PP0DskkQNz0Ow8xI4mBFYk5vnjOKuUAS2Flfp6mtn3
-         H+sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712586304; x=1713191104;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jJ+zuBcV+sKNJnkujCJL6uqR40a6L29gK2qouWWtUE0=;
-        b=CRhfYR0ff6ViLiLzxAhFsTWK8O2zd3R90T+UZhoHYvpmq/oA0bRX9jE0w+KT4J+ay4
-         72CC0MoCrnltF/CdzxB2Ed+eb0I97yzG38hZVKf8u/v/ytyq2UNJvhZD4Vp7LcsiZT9o
-         rPLhqCGaMJGkMw2t0M5L34ko0CiX/Xx5AxnZ5yiYkFQoFfyRye5F9wQufbOJCOJXGqpR
-         QnheGICRpAEcoiVVzEq2rlqRnxjbK7gDWBiB+J3CdC+wrlF4p0QQALP2BA+iq8TjAhc5
-         WBqhu1f1l0pO8hrcE5+EEjjm4nE/9cgsNBSSZCeWllDMeErcBxmRRTYcJTK6VP2m0Pv3
-         X53Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW68jXqYq5TTzqyqPGcJFAJwQkybz6VbgLallx9oUmNo+Z6F0yN0tai9zaiZ9hVfpE+jwGbqQNeCUvELyXXYyH8XIGqFduqFRjEtXMnSMbSzogELvhRFuNJ4jzB9hOmFCkdKxfsgH2VgjXKMvJx
-X-Gm-Message-State: AOJu0Yx0CW/iX5mwpnQD5s1r5WtQd9cILtRtjABu2V/DvLiWtdDwaBjU
-	oN6JhZzQya72bCj1oM23RMDaiNpwbsCYyvduk5kIQ6C5YoskIbVv
-X-Google-Smtp-Source: AGHT+IGaq+ZAlXpk9YTgf4/RHBm1Pbf2Q7kE8VkemDhXnN6qOn8H3/zT0wzSorfvRUiTWwzaW7mkBQ==
-X-Received: by 2002:a17:906:7949:b0:a51:d48e:52a0 with SMTP id l9-20020a170906794900b00a51d48e52a0mr3012741ejo.27.1712586304338;
-        Mon, 08 Apr 2024 07:25:04 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id lx26-20020a170906af1a00b00a4e440989f5sm4487554ejb.159.2024.04.08.07.25.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Apr 2024 07:25:03 -0700 (PDT)
-Message-ID: <ed027c1d54cb588914602a84fa12dfb2a9a403bd.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v6 3/6] bpf/helpers: introduce
- bpf_timer_set_sleepable_cb() kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Mon, 08 Apr 2024 17:25:02 +0300
-In-Reply-To: <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org>
-References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
-	 <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1712587177; c=relaxed/simple;
+	bh=YAHYNYM/Ph43Uys7D2S+BwnAz/P7Glakx2cICS3+DIg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K0VpWKgz6oYUt0TAUdnPb7YZlRtmPLqXDKq7ztk3EK34pJu8dGXntO9mlGp3q6bPRIS5+hQxDM34fv2nzzwlg8O5zuXlDk2g1A+YbgSDYPxsY4mAF8VGopfagqSD8HwmnWs4VDCYAoAryKneK66a09035bB+SfI9zpHsvyxqj1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/e9Ri/r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8902FC433F1;
+	Mon,  8 Apr 2024 14:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712587177;
+	bh=YAHYNYM/Ph43Uys7D2S+BwnAz/P7Glakx2cICS3+DIg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q/e9Ri/rDPlixpIdFmHdnQNmzjkw816mr3crJPZM35SrXtN+258VN8ldSyNmbBUTY
+	 tj0fa7QyJ0NzXtPqs9OlGWvChM6saTbH7r0XEICj7hvA6QKByFUd1G6Paqxe2kZMLO
+	 3fV7ww0AKWiUrMd59zpH4I9nbxtaID6TeyTtj/CnxCYk8cMSATvMdlBfm+XSY+gCsp
+	 ZG5kcFiLUdnV6HSuCfcjLFmyqp+70X+2RLaY8Itfh7M962lmo5zH0vka4LAN4ArX85
+	 FmVqkP2HHHaBEjMfnU+WVebD1koqJiQNsedOhCDZ4OeQhqVO6rTsvPbwwgFjUK18Lz
+	 rBIJFn2QhQnZQ==
+Date: Mon, 8 Apr 2024 11:39:32 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+	Clark Williams <williams@redhat.com>,
+	Kate Carcia <kcarcia@redhat.com>, bpf@vger.kernel.org,
+	Kui-Feng Lee <kuifeng@fb.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Subject: Re: [RFC/PATCHES 00/12] pahole: Reproducible parallel DWARF
+ loading/serial BTF encoding
+Message-ID: <ZhQBpAGIDU_koQnp@x1>
+References: <20240402193945.17327-1-acme@kernel.org>
+ <d9ebf954-bfac-4819-993b-bbf59c69285a@oracle.com>
+ <82928441-d185-4165-85ff-425350953e80@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <82928441-d185-4165-85ff-425350953e80@oracle.com>
 
-On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
-[...]
+On Mon, Apr 08, 2024 at 01:00:59PM +0100, Alan Maguire wrote:
+> On 04/04/2024 09:58, Alan Maguire wrote:
+> > Program terminated with signal SIGSEGV, Segmentation fault.
+> > #0  0x00007f8c8260a58c in ptr_table__entry (pt=0x7f8c60001e70, id=77)
+> >     at /home/almagui/src/dwarves/dwarves.c:612
+> > 612		return id >= pt->nr_entries ? NULL : pt->entries[id];
+> > [Current thread is 1 (Thread 0x7f8c65400700 (LWP 624441))]
+> > (gdb) print *(struct ptr_table *)0x7f8c60001e70
+> > $1 = {entries = 0x0, nr_entries = 2979, allocated_entries = 4096}
+> > (gdb)
 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index fd05d4358b31..d6528359b3f4 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
+> > So it looks like the ptr_table has 2979 entries but entries is NULL;
+> > could there be an issue where CU initialization is not yet complete
+> > for some threads (it also happens very early in processing)? Can you
+> > reproduce this failure at your end? Thanks!
+ 
+> the following (when applied on top of the series) resolves the
+> segmentation fault for me:
+ 
+> diff --git a/pahole.c b/pahole.c
+> index 6c7e738..5ff0eaf 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -3348,8 +3348,8 @@ static enum load_steal_kind pahole_stealer(struct
+> cu *cu,
+>                 if (conf_load->reproducible_build) {
+>                         ret = LSK__KEEPIT; // we're not processing the
+> cu passed to this function, so keep it.
+> -                        // Equivalent to LSK__DELETE since we processed
+> this
+> -                       cus__remove(cus, cu);
+> -                       cu__delete(cu);
+>                 }
+>  out_btf:
+>                 if (!thr_data) // See comment about reproducibe_build above
+> 
 
-[...]
+Yeah, Jiri also pointed out this call to cu__delete() was new, I was
+trying to avoid having unprocessed 'struct cu' using too much memory, so
+after processing it, delete them, but as you found out there are
+references to that memory...
 
-> @@ -2726,6 +2764,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->  BTF_ID_FLAGS(func, bpf_dynptr_size)
->  BTF_ID_FLAGS(func, bpf_dynptr_clone)
-> +BTF_ID_FLAGS(func, bpf_timer_set_sleepable_cb_impl)
+> In other words, the problem is we remove/delete CUs when finished with
+> them in each thread (when BTF is generated).  However because the
+> save/add_saved_funcs stashes CU references in the associated struct
+> function * (to allow prototype comparison for the same function in
+> different CUs), we end up with stale CU references and in this case the
+> freed/nulled ptr_table caused an issue. As far as I can see we need to
+> retain CUs until all BTF has been merged from threads.
+ 
+> With the fix in place, I'm seeing less then 100msec difference between
+> reproducible/non-reproducible vmlinux BTF generation; that's great!
 
-Note:
-this hunk does not apply cleanly on top of current master.
-The line 'BTF_ID_FLAGS(func, bpf_modify_return_test_tp)'
-was added to the list since last time current patch-set was merged.
+Excellent!
 
->  BTF_KFUNCS_END(common_btf_ids)
-> =20
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+I'll remove it and add a note crediting you with the removal and having
+the explanation about why its not possibe to delete it at that point
+(references to the associated 'struct function').
+
+Perhaps we can save this info in some other way that allows us to free
+the CU after having it processed, I'll think about it.
+
+But its good to see that the difference is small, great!
+
+Thanks a lot!
+
+- Arnaldo
 
