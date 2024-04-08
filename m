@@ -1,125 +1,139 @@
-Return-Path: <bpf+bounces-26128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAD4289B522
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 03:12:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A886289B524
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 03:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95EB8281484
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 01:12:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62FAB281446
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 01:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F60515C9;
-	Mon,  8 Apr 2024 01:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F88FEBB;
+	Mon,  8 Apr 2024 01:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uiR9iJNZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B15F15C3;
-	Mon,  8 Apr 2024 01:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8463915A8;
+	Mon,  8 Apr 2024 01:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712538719; cv=none; b=rRh9sQI+3fRI7lPL2oMaLBRK85QIr5GIhloYkCs5CMQO6vO7rRVTQheWJlxeeo0UxgJJsl0drSxlF8lq5NooVuEo8fGj98gDtTUeRwcZj2juV/nIFh9wFb5v9PCzrzH7HJKY+JpufdhCkL6nEcToY7slOFQWH9iHj4FWwtyJscw=
+	t=1712538811; cv=none; b=YsTg0DiIDjzlodRpBlWgMw4SxP+VEuJ4rBJ4pCN5/Ak5lARju2+fXciutDYrHT/obM2zWe8vStPW0c5xiRa9Hejs4aPdaXg0xOIyClvMlLkTrlQwgseoVrrLE6aQDUJokyRzm9haJdFMdALF/5aAv8DeRuZO5yyof2IiJkLMhgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712538719; c=relaxed/simple;
-	bh=4EVxEq7n2NTrxGnlfm5xidYmy7Zs5Hgok4o5LcFBMIU=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GHrUzWc/NR1/REjXhNju/aPNFlREtbuOju+Eo7WfvZ2GTSSj0RbRoeC7O266AbaOgzYvlkz2cR+gJjir99gjfY5EnXiil1E34kmpoi2nezUWe3w8gaVPjoI05E7WXr8QmLrJ8aNIWjMdTCcdlXwpvLu4DfkVGXkEjt6exyIFRFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VCWJd6VZHz4f3jYS;
-	Mon,  8 Apr 2024 09:11:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 9D9A91A0DBC;
-	Mon,  8 Apr 2024 09:11:52 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgAnTA9URBNmH29iJg--.3919S2;
-	Mon, 08 Apr 2024 09:11:50 +0800 (CST)
-Subject: Re: [syzbot] [bpf?] KASAN: stack-out-of-bounds Read in hash
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: syzbot <syzbot+9459b5d7fab774cf182f@syzkaller.appspotmail.com>,
- bpf <bpf@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
- Network Development <netdev@vger.kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>,
- Hao Luo <haoluo@google.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev
- <sdf@google.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, LKML <linux-kernel@vger.kernel.org>
-References: <000000000000b97fba06156dc57b@google.com>
- <b764fde2-cbf3-6446-d437-45af0964b062@huaweicloud.com>
- <CAADnVQJ4BRO_85By7T7bJkxgN8tmzJkS3TvP2JMiFU3WwRT7yA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <eed9387e-2856-3e83-8934-17211a2b018a@huaweicloud.com>
-Date: Mon, 8 Apr 2024 09:11:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1712538811; c=relaxed/simple;
+	bh=VD/qYrsfbh/pUkYe6JhlzTgZknAD7e9ybrZ34O9LYiM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=g8zldsVZkiIJmXElRQy68dprwO0coLp26lLautugA2C9j4wNjgc+wUHtDORmuL7wV3PDtfphNMezBKEkeD7l9cFJCJYxyRHvFYt43mRCDXNuzDdISe2xvSL4UM2P8GOKiXYgawnU7u1mzTcI4I9WwjPOUwZu8P/zg32BBIT3mVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uiR9iJNZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70943C433C7;
+	Mon,  8 Apr 2024 01:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712538810;
+	bh=VD/qYrsfbh/pUkYe6JhlzTgZknAD7e9ybrZ34O9LYiM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uiR9iJNZXNHlKR0UA2r3nq3UlSNcOCA3WjfWqIQrQZRN+O1+lqdFKMGBUk1xquJVG
+	 N/733YhCvOoj4+rbrfdaa9DZ/GAByrI+Uq7M2SL3PPDjnFIR7g8GtzHh7SuTQLTi16
+	 tCYA1LgOvXHwszfbPdHAgjeCVvrN4sUS5rCHcn/II9F9edxwI9WNn8vGmhhvPENiIW
+	 OTYMwYx7HHtfZRsxRKmP239hy457Z1VQ7OQaKuQrigb3z3N38Hx53c4l5K2MH6y3pG
+	 nv0aI3VOPDbIFxUVRW2RAlRVVJRDdhALEn2hidT8lJlk2PlpW7it/OHD+eiM7Gr4Xi
+	 vOlI+iUe7EEkA==
+Date: Mon, 8 Apr 2024 10:13:26 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Kui-Feng Lee
+ <thinker.li@gmail.com>, mhiramat@kernel.org, martin.lau@linux.dev,
+ kernel-team@meta.com, andrii@kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ sinquersw@gmail.com, kuifeng@meta.com
+Subject: Re: [PATCH bpf-next] rethook: Remove warning messages printed for
+ finding return address of a frame.
+Message-Id: <20240408101326.2392a79de4bfe1e677faeff0@kernel.org>
+In-Reply-To: <1bbd6200-bb06-f8d2-c22a-39245425b6b1@iogearbox.net>
+References: <20240401191621.758056-1-thinker.li@gmail.com>
+	<CAEf4BzbbneDHp=sD4+5RmuK=U9vg8Uo_M6XEXdKWrZ_MkjFocw@mail.gmail.com>
+	<1bbd6200-bb06-f8d2-c22a-39245425b6b1@iogearbox.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQJ4BRO_85By7T7bJkxgN8tmzJkS3TvP2JMiFU3WwRT7yA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgAnTA9URBNmH29iJg--.3919S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KrykKw18Jw45Cr1fKr4kWFg_yoW8Wry7pF
-	4rGFWagF1qyr1Ut3Z7tF1DW3WjvrZ8A347Ga1jqry09a1qqr98Jr4Ig3y5uFWUCr1kAa4S
-	yrn8u3WfA3y0v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+On Wed, 3 Apr 2024 16:36:25 +0200
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-On 4/7/2024 10:24 PM, Alexei Starovoitov wrote:
-> On Sun, Apr 7, 2024 at 2:09 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 4/6/2024 9:44 PM, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
->>> git tree:       bpf
->>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=148ad855180000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=9459b5d7fab774cf182f
->>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d86795180000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143eff76180000
->> According to the reproducer, it passes a big value_size (0xfffffe00)
->> when creating bloom filter map. The big value_size bypasses the check in
->> check_stack_access_within_bounds(). I think a proper fix needs to add
->> these following two checks:
->> (1) in check_stack_access_within_bounds()  add check for negative
->> access_size
->> (2) in bloom_map_alloc() limit the max value of bloom_map_alloc().
->>
->> Will post a patch to fix the syzbot report. Will also check whether or
->> not there are similar problems for other bpf maps.
-> Isn't it fixed by
-> https://lore.kernel.org/all/20240327024245.318299-2-andreimatei1@gmail.com/
+> On 4/2/24 6:58 PM, Andrii Nakryiko wrote:
+> > On Mon, Apr 1, 2024 at 12:16 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+> >>
+> >> rethook_find_ret_addr() prints a warning message and returns 0 when the
+> >> target task is running and not the "current" task to prevent returning an
+> >> incorrect return address. However, this check is incomplete as the target
+> >> task can still transition to the running state when finding the return
+> >> address, although it is safe with RCU.
 
-Yes. Totally missed the patch set. The patch set will fix the syzbot
-reported problem.
+Could you tell me more about this last part? This change just remove
+WARN_ON_ONCE() which warns that the user tries to unwind stack of a running
+task. This means the task can change the stack in parallel if the task is
+running on other CPU.
+Does the BPF stop the task? or do you have any RCU magic to copy the stack?
 
+> >>
+> >> The issue we encounter is that the kernel frequently prints warning
+> >> messages when BPF profiling programs call to bpf_get_task_stack() on
+> >> running tasks.
+
+Hmm, WARN_ON_ONCE should print it once, not frequently.
+
+> >>
+> >> The callers should be aware and willing to take the risk of receiving an
+> >> incorrect return address from a task that is currently running other than
+> >> the "current" one. A warning is not needed here as the callers are intent
+> >> on it.
+> >>
+> >> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> >> ---
+> >>   kernel/trace/rethook.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> >> index fa03094e9e69..4297a132a7ae 100644
+> >> --- a/kernel/trace/rethook.c
+> >> +++ b/kernel/trace/rethook.c
+> >> @@ -248,7 +248,7 @@ unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame
+> >>          if (WARN_ON_ONCE(!cur))
+> >>                  return 0;
+> >>
+> >> -       if (WARN_ON_ONCE(tsk != current && task_is_running(tsk)))
+> >> +       if (tsk != current && task_is_running(tsk))
+> >>                  return 0;
+> >>
+> > 
+> > This should probably go through Masami's tree, but the change makes
+> > sense to me, given this is an expected condition.
+> > 
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> Masami, I assume you'll pick this up?
+
+OK, anyway it will just return 0 if this situation happens, and caller will
+get the trampoline address instead of correct return address in this case.
+I think it does not do any unsafe things. So I agree removing it.
+But I think the explanation is a bit confusing.
+
+Thank you,
+
+> 
+> Thanks,
+> Daniel
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
