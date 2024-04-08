@@ -1,180 +1,145 @@
-Return-Path: <bpf+bounces-26206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D87C389CA93
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:16:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E516589CA9D
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 19:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24D75B2537F
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:16:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 237091C24404
+	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 17:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BC4143895;
-	Mon,  8 Apr 2024 17:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8E9143C67;
+	Mon,  8 Apr 2024 17:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DrxBYUyN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DGc9L4dp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05694142906;
-	Mon,  8 Apr 2024 17:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF6114388F
+	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 17:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712596571; cv=none; b=KK2AX6wdbdKHXVopaU/q2tjzlpcNFgVqPvy0EhQz9f0reh1MqHSt0LYXyNgpie5c0qAPl38QH2PuvDAfURw5sO6f3rvvYF+YSBMyo6tcDbTY1y5ZR1bykOxWX2Vr5N4ZoQwU67IPWGcW568WnnFQwkMREZ8P9xcqS5/bQ48hxI0=
+	t=1712596637; cv=none; b=CZPUqauVRZZK1mMlocImHMpWXpahszn+EEiBb/Y3JLHmIrzzNzfqNqtpFB6pt0tyhHf5d7D9PqW0fJezqdfy3Pf7DF8FweS7ozCQkHSk//RaE7/Joov7v9Ajj9Euull1TfThabcX872Ag+CpfPMbGRX6GJSjMzitSSMdrV272AU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712596571; c=relaxed/simple;
-	bh=ODR1yO836VkJRy18ra4Y8897Wllpbk6CPY3PXNp5Xsg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GoUSkQM1dnGveiOJDdJ4L9KorxqfVYQrfGSQ41KI1cBbatq54JnyyZ8xj+dzq7NwsraIatEr31lVBbdkb1WZVGWiDbv99HlewC00UYIwxACofhs61zTxDGi0LukrDlJvHKWh1lUVykUeHOZ+bldPG/ybcW5LtR3gf7Dszl15sJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DrxBYUyN; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6114c9b4d83so39009287b3.3;
-        Mon, 08 Apr 2024 10:16:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712596568; x=1713201368; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EsFUR+GlED9jCReR+yg5uXRlVvU8O2Qtf1SNmtOddPE=;
-        b=DrxBYUyNtcEKUOSVCtd5K1IS/0GggmUvfTS2p5W1kz0IGEwBPP625hy9oYrSnvROnq
-         316R6Cw4XxTDyQ2OfEAOeCXmSlLOb9sNA70v9KE02bICfJURSjZrtX2sTUJnLzB5tjEG
-         e2YI24aHRosZJW0grh5MUxF+eGD+IjST8vaXf0h4oqc/eewfDAK2qtjVInA1R4l0uj51
-         eZDwWFyfu2WBRsLcubXiHHHsVIrZZB5r/Pkxj3szMoWlkZWqjwnEuzJJ9babmFCAq1wo
-         j0krFiYkCOlp355pXxRRO9m1sTZz1geXDI3HezWbdbDn1EVCWuL0PVv9dKji3rGfAc6X
-         hydg==
+	s=arc-20240116; t=1712596637; c=relaxed/simple;
+	bh=xF4xeuz99ep8htCfVfsU9KUXsF8OcTckfAdeLONyRZA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b1N6MuYnNrmq2rfaOm77TLrlNINwlO2Tvai9CgtAvNtp3osrtjbJC2emCR4OtKZnIHhR2V9qpffIaY+RJY/v6DNLrl/QSRO6EA3qj7dNK/MMTN2gjnm4E6ahBVpfDUYxmh+IIJ6oqpLWuIJ8zHzCER4Aw0tNn4sNbUW2qZd0aaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DGc9L4dp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712596633;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WW0XvdmjMS/v2Hm/5i1sBEwUsjS5WooxJxuAgT2dOlY=;
+	b=DGc9L4dpC50G4fIjgG+SMha2gpdnY1RFqgZqesmx43aQaiZqtAveJQ/0/wolm4ZCEGnSjA
+	cCb8hr7uCZ11HcvJxKX1D53uBxp7mgisIJb5BjRjOgrN+RE9SXxCIegd6ncDBIzq+TpFVX
+	pdgObnp5gUoH4Rn2lHLynVx2mkZ+5Ts=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-315-vO2YeUAyN_-RkpNxmwFR2A-1; Mon, 08 Apr 2024 13:17:10 -0400
+X-MC-Unique: vO2YeUAyN_-RkpNxmwFR2A-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a51acf7c214so52908966b.1
+        for <bpf@vger.kernel.org>; Mon, 08 Apr 2024 10:17:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712596568; x=1713201368;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EsFUR+GlED9jCReR+yg5uXRlVvU8O2Qtf1SNmtOddPE=;
-        b=HLnDmd/LgodddonBByDb8JIt+8GM1UA3Ib44pydTMkFJ+mV6hAoE9I10MnApKIIPIK
-         sYKLvcpQ8s4T98NkW/ZOjBcwABKzzLiUwdsPsTEElSB0wpokSy/31upqe4SMDbOaoYkt
-         PRMlaEVGJ9WtMe4Nrk2RmnSawLc2yA2SfdEszFf41odLK9vs9gNC9ifEnnOEP9sk1Anc
-         lO20cwnq9o9sZ8JAVv8xk4kh6ws4qGTaSljlTvaNvLunKVWNRbadEkXKOD1HRF8f7BL0
-         NSsEc1ewnSbygqJTxuhR8FR4arYyO419KgmeBth59mqQN87Pa9c+4g+nD9n1qzdGCVtE
-         NRVg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2pvhdNU6FScJfsu6qnTygGCayrwKhQAvomfSLKlwcNEDat7PymmQcsI/TGJJsfbL5kR37s8WgJsB1hvkKkcdtM1kOUYX20gR6N1apBKTjC+RcrZsf3ucFw24H6xQ6wujSJByB8qza
-X-Gm-Message-State: AOJu0YwSLKha2R5twG3seZcN4YbR052Cs4JZolhy1ku8mmmKiDzq7URm
-	5Zq33Yj2Y5iSzanTB/JzWazoGzO2c/i5QfWqrGQcwH6LdLNHHeKL
-X-Google-Smtp-Source: AGHT+IHNa10fB4FJ95UazlNcBVd+Tmgy7lUAHUPnZdx4RSsLUTK21rwahXgyTpm36J2AETfN9ZtTgw==
-X-Received: by 2002:a81:de4e:0:b0:615:1860:551 with SMTP id o14-20020a81de4e000000b0061518600551mr8360493ywl.30.1712596568089;
-        Mon, 08 Apr 2024 10:16:08 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:ac67:e262:f006:430? ([2600:1700:6cf8:1240:ac67:e262:f006:430])
-        by smtp.gmail.com with ESMTPSA id id14-20020a05690c680e00b00611591acb9fsm1761410ywb.44.2024.04.08.10.16.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 10:16:07 -0700 (PDT)
-Message-ID: <0d32fddd-a128-400b-bf63-2da2b3971669@gmail.com>
-Date: Mon, 8 Apr 2024 10:16:06 -0700
+        d=1e100.net; s=20230601; t=1712596629; x=1713201429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WW0XvdmjMS/v2Hm/5i1sBEwUsjS5WooxJxuAgT2dOlY=;
+        b=u1gEwdHye7oI5jTNbYlFFusaid9tDMCQPzYitfxQUv+r2PVQFILtDd5MFc40tyNSbT
+         KymBT1g6qBMCvcaBltrK4jP6YP1TVfHo4cRR1kTlArgMoscz+C2palpqGv/Nllp5jLVc
+         IYTUp2fqIMbxDyc0NuYcDycP9kpb9Y4VVWTkpbQoVsjAZu3va4388JfGMoVQ9hgB4VSu
+         oNOhdndkAYQYDvCZU//8bCBPlM45lFpvNb5UNdv8XloPiqxfDm8qesqHOnDqt6/w3FQR
+         bBeskotsbBrgibpUmLB6UcFGwwbhQOkjgJWxR+fLK6Sp6MPygJYK7DyYcu9Ge4ICTzmj
+         2kvg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxkQpLFanCnUgs5jzzDHGCh+mbA4RpTkf7sCNre75MCy8/jpVrzIli40We9Gt2WzN4imcwZtFV7tGUQeVG1X4jgtoB
+X-Gm-Message-State: AOJu0YxkGzftnTVFtK6N0PGX91QUesCb2XVj5l08nOrqOLZMVu2G/L37
+	HBnk3MHKPE9o174WVUqwju6uHudSq511Q8DkaruLpp85Ttre8ovfJqB6KEF1BisONdepcYl0KYi
+	N+6GmzhKfnqW8myQjJvOqTCAgFECMQehbs7dMUVqYju24F9pvBIOgTgg2ZPPRbPMWHHx8xGsCw2
+	WUKpzRBQ65gm7Yes8y0J91y6MU
+X-Received: by 2002:a50:bae3:0:b0:56d:eef4:28f0 with SMTP id x90-20020a50bae3000000b0056deef428f0mr8272246ede.20.1712596629298;
+        Mon, 08 Apr 2024 10:17:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEAF1+hbaATpPBSLsawJT9hD9ZY/wEezf8GBaxPQ4bTaPU4MyEkTrtk9mJjETJCu6N8z9MdWpNoScSpWk06qzY=
+X-Received: by 2002:a50:bae3:0:b0:56d:eef4:28f0 with SMTP id
+ x90-20020a50bae3000000b0056deef428f0mr8272229ede.20.1712596629007; Mon, 08
+ Apr 2024 10:17:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] rethook: Remove warning messages printed for
- finding return address of a frame.
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Kui-Feng Lee <thinker.li@gmail.com>, martin.lau@linux.dev,
- kernel-team@meta.com, andrii@kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, kuifeng@meta.com
-References: <20240401191621.758056-1-thinker.li@gmail.com>
- <CAEf4BzbbneDHp=sD4+5RmuK=U9vg8Uo_M6XEXdKWrZ_MkjFocw@mail.gmail.com>
- <1bbd6200-bb06-f8d2-c22a-39245425b6b1@iogearbox.net>
- <20240408101326.2392a79de4bfe1e677faeff0@kernel.org>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20240408101326.2392a79de4bfe1e677faeff0@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+ <20240408-hid-bpf-sleepable-v6-3-0499ddd91b94@kernel.org> <ed027c1d54cb588914602a84fa12dfb2a9a403bd.camel@gmail.com>
+In-Reply-To: <ed027c1d54cb588914602a84fa12dfb2a9a403bd.camel@gmail.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Mon, 8 Apr 2024 19:16:57 +0200
+Message-ID: <CAO-hwJJtrNDcJVcsU_XpS_HxXgwVXYQiAoia_UKnd1-rjCGguw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v6 3/6] bpf/helpers: introduce
+ bpf_timer_set_sleepable_cb() kfunc
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 8, 2024 at 4:31=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
+> [...]
+>
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index fd05d4358b31..d6528359b3f4 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+>
+> [...]
+>
+> > @@ -2726,6 +2764,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_size)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_clone)
+> > +BTF_ID_FLAGS(func, bpf_timer_set_sleepable_cb_impl)
+>
+> Note:
+> this hunk does not apply cleanly on top of current master.
+> The line 'BTF_ID_FLAGS(func, bpf_modify_return_test_tp)'
+> was added to the list since last time current patch-set was merged.
 
 
+Oops, thanks for the update.
 
-On 4/7/24 18:13, Masami Hiramatsu (Google) wrote:
-> On Wed, 3 Apr 2024 16:36:25 +0200
-> Daniel Borkmann <daniel@iogearbox.net> wrote:
-> 
->> On 4/2/24 6:58 PM, Andrii Nakryiko wrote:
->>> On Mon, Apr 1, 2024 at 12:16 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
->>>>
->>>> rethook_find_ret_addr() prints a warning message and returns 0 when the
->>>> target task is running and not the "current" task to prevent returning an
->>>> incorrect return address. However, this check is incomplete as the target
->>>> task can still transition to the running state when finding the return
->>>> address, although it is safe with RCU.
-> 
-> Could you tell me more about this last part? This change just remove
-> WARN_ON_ONCE() which warns that the user tries to unwind stack of a running
-> task. This means the task can change the stack in parallel if the task is
-> running on other CPU.
-> Does the BPF stop the task? or do you have any RCU magic to copy the stack?
+Just to be clear, I already mentioned it in the cover letter, but this
+series is not intended to be merged just now (thus RFC again). The
+plan is to add a new bpf_wq API on the side, and compare it with this
+v6 to see which one is best, because I am trying to force the
+workqueue API into a timer, when it's getting further and further away
+from each other.
+
+Cheers,
+Benjamin
 
 
-No, the BPF doesn't stop the task or copy the stack. The last part tries
-to explain that this function can still return an incorrect address even
-with this check. And calling this function on a target task that is not
-"current" is safe.  Since you think it is confusing. I will remove this
-part.
+>
+>
+> >  BTF_KFUNCS_END(common_btf_ids)
+> >
+> >  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+>
 
-> 
->>>>
->>>> The issue we encounter is that the kernel frequently prints warning
->>>> messages when BPF profiling programs call to bpf_get_task_stack() on
->>>> running tasks.
-> 
-> Hmm, WARN_ON_ONCE should print it once, not frequently.
-
-You are right! I should rephrase it. In a firm with a large number of 
-hosts, this warning message become a noise.
-
-> 
->>>>
->>>> The callers should be aware and willing to take the risk of receiving an
->>>> incorrect return address from a task that is currently running other than
->>>> the "current" one. A warning is not needed here as the callers are intent
->>>> on it.
->>>>
->>>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->>>> ---
->>>>    kernel/trace/rethook.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
->>>> index fa03094e9e69..4297a132a7ae 100644
->>>> --- a/kernel/trace/rethook.c
->>>> +++ b/kernel/trace/rethook.c
->>>> @@ -248,7 +248,7 @@ unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame
->>>>           if (WARN_ON_ONCE(!cur))
->>>>                   return 0;
->>>>
->>>> -       if (WARN_ON_ONCE(tsk != current && task_is_running(tsk)))
->>>> +       if (tsk != current && task_is_running(tsk))
->>>>                   return 0;
->>>>
->>>
->>> This should probably go through Masami's tree, but the change makes
->>> sense to me, given this is an expected condition.
->>>
->>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->>
->> Masami, I assume you'll pick this up?
-> 
-> OK, anyway it will just return 0 if this situation happens, and caller will
-> get the trampoline address instead of correct return address in this case.
-> I think it does not do any unsafe things. So I agree removing it.
-> But I think the explanation is a bit confusing.
-> 
-> Thank you,
-> 
->>
->> Thanks,
->> Daniel
-> 
-> 
 
