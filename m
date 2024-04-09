@@ -1,132 +1,138 @@
-Return-Path: <bpf+bounces-26295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7AD289DD8A
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 17:02:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27A2989DD96
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 17:02:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7238128CE8D
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 15:02:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 497401C22AF0
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 15:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48BC8287F;
-	Tue,  9 Apr 2024 15:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339E213175F;
+	Tue,  9 Apr 2024 15:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hn0ixwuM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DoVWC4q2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90041304BE;
-	Tue,  9 Apr 2024 15:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F51130A63
+	for <bpf@vger.kernel.org>; Tue,  9 Apr 2024 15:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712674875; cv=none; b=BiGQ8EUlTZDNrYyVZ/iXLcjiupBE3gUXHlDvdgnKIE/xWFSexOK6e+w5EMrcqufWeqZ1FLLqPNm6xLXmeedk3KlLB6JSw0BSgfPy4tL1/wGb40FlB3OLbBEFC7k7VDFQgZfinPNgKaQxTGRMG++yLePp4TRpkmn/XX4OuXGHrpM=
+	t=1712674903; cv=none; b=Jj++fu2qO95SlhtPXQgWYWX7xduh8KFBTUp5w008qqi14SOYoysG2R2UbUyBXJGVcZGdj/+3Po8nJRNMiS+a7Nog6YTTiNkYrPubXXHPYL3TqNNUJcGd8vQagNXL9mVdKeI5+UMhwXFi4gV/e1gVOmzlJNqNEnp8p4gv/xeP6LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712674875; c=relaxed/simple;
-	bh=vvh2iqJh/NSgdAgq4/uQT9xxSsXZC31Rr8+l3FGnk+k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NJjBfwHchgLhiG3pbGOZK+Bw4OHtB2H5Q4SpluFrC/3jaq7Zs6RTX+XpNKnk764pXuCWFBoU/5e7wRjgO00qLqrsHlaG+XU3H1P4zXUyjtajSEei51YcIMfDnH+EOo8YhM2Nd4SgxCKx8Ba7tlmUMPksmaRiYsKXb5/jgkRHAVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hn0ixwuM; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6181237230dso21961767b3.2;
-        Tue, 09 Apr 2024 08:01:13 -0700 (PDT)
+	s=arc-20240116; t=1712674903; c=relaxed/simple;
+	bh=alFFKiP7O8OXDXrwrinQEc5sBVduOBPmxmITpEnO00Y=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=rVXd16NsietpQjdZBjUp62AsNtqromrhmn2lSbSMQZL8rZtimKmsv0BVT5qZZLxBUbM4XWZfj8Dv3btbI2fOOAarP3urbPcBkQt/+cQz2qWADXRR5xt0aKXj75EQVZLlhbERQps/5lMlsA/ZymrT7giMhbKT6RNAC/HYin1WlsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DoVWC4q2; arc=none smtp.client-ip=209.85.221.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-343e46df264so2333448f8f.1
+        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 08:01:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712674873; x=1713279673; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+        d=google.com; s=20230601; t=1712674900; x=1713279700; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=tmmdlsZje12lMa0yGPgNyI6lY9y+jIiMGHCHxRVjqxU=;
-        b=hn0ixwuMdm1dMEfva6bmLu+JXnRBqYwZYb96gcyiVAphxRu+LFblnfBebNuanV/snJ
-         5iD/Hz8//bfq5gYHmTfE4FYDOTqh7cRLpidUgfOJ0JzvVQAOm19YSNerrRH8L52kn+Hs
-         BjXcQUdlmlECQmt/jxojKeEjxuZGVJPhIGRtLK+0R/HWnNCdksxcge5bdZuGQTJDfA8T
-         +HTH1LfOGggmN3e2XR1FPo+ghGuiH+4EKTmGiX+8u6L4zpzXnLA+/HMz/iRU91jlz2+f
-         KxHG5IiS/CzBmdgxkhadjELMJYmyJd8S57LE56jpHe9mLyiTWB0HMUOfsND7hGud9eJ4
-         VHdw==
+        bh=tfocfhDuzyWI0gzZPzgtgcqFin70HaxvYji+27WTX8o=;
+        b=DoVWC4q2NOqBhhc41O2uVHSuJ/yMC5YkEeJOHGGzWx+TO7zr9ViDNe+rAlG+wdndQk
+         nJCske8OCx5PxFjoP1GZoPORoE1KZu1dBdf6b53iYN8ESZBuuokmG+7VSAwiSfZO+cUW
+         9oUbnNnzzaGh18ayAzLd0NAMcRGV8TSlriXGpE2FWtoc3Q8UEa/NrMj+HZRGp3QGEgA6
+         KBECNGU4vzu8L44TIJFLbscw0GmdkWRZ1qOr0BzoguYZ6IGD7Fqz3wZLTQVMiU5GoJ04
+         VS6GskQOf00uHpsR0vAgBzPRCuSKZ1VgQtA5CuT6GequamaGwANBwc+ZTlXl9Wxxwo57
+         ArmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712674873; x=1713279673;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20230601; t=1712674900; x=1713279700;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tmmdlsZje12lMa0yGPgNyI6lY9y+jIiMGHCHxRVjqxU=;
-        b=o6guAiVJsDrX1g6bZ8qaeGHMEoEa/tb/FTi2RpSv2SO4WYKEy3CEuWjP7BNFHBhmTc
-         9vcAdWyxUNKWX4D+D7rdpVTvU9r8hZF6tacyu3+PergczwHWOUavSvmviISNN2CGl6nw
-         uj+t+FxLozvv+x0uVToq94OLP1FSi7wINOYYRVJdCvFbQNAa5owPn8D1SgYiVcI67aQ9
-         Vna8w+ZVh+ftgz83yBgGlhBjsjJyKqXLQM/Si8rpU9Snt9H6DNNm/Pev3t9Vq6Nl4VQh
-         LW0SyFyZ2cGfMgefPkdt8uOKa1LEguY1WlN/fHlnBJz3Z4dPMhbBPOOl7QF6QE7yt+Eo
-         JhoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQ9z+MALJwGKvUi0R/TCFGBKkx+5EPMkwJWTdlfIcTGuDXe5grTgiTQvjG4FCXsJcMfAlobE37OpzKHIUmst0yS1TZRsBQfkQJZOHVyvRJmyVBRoqA9kECjfK3Mw==
-X-Gm-Message-State: AOJu0Yw8KiMDUbgQr2KFTUE4pvuw9DcbEBIYQ7/2ophz7npgl538+fIS
-	NAlh4Y6cOc6h/VOEfIBHUWx5O2aFnxAthz0CQvbMmwmakhsY1QGSYA2lQqaSXv8=
-X-Google-Smtp-Source: AGHT+IFkZkrfoiPDCosGWxWQTNjgHMBd/OjOW3H9BGCy6XtCZg5HSmeE+l+wCG+KU+YK9kwGUCmmrA==
-X-Received: by 2002:a5b:392:0:b0:dc6:be64:cfd1 with SMTP id k18-20020a5b0392000000b00dc6be64cfd1mr10865577ybp.36.1712674872628;
-        Tue, 09 Apr 2024 08:01:12 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id fo6-20020a0569022d0600b00dcdb3dffa3dsm1757503ybb.39.2024.04.09.08.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 08:01:12 -0700 (PDT)
-Message-ID: <7a08fb6a8c37e58a56121c8536b9ab68405c049d.camel@gmail.com>
-Subject: Re: [RFC/PATCHES 00/12] pahole: Reproducible parallel DWARF
- loading/serial BTF encoding
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>, 
- Clark Williams <williams@redhat.com>, Kate Carcia <kcarcia@redhat.com>, bpf
- <bpf@vger.kernel.org>, Kui-Feng Lee <kuifeng@fb.com>, Thomas
- =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Date: Tue, 09 Apr 2024 18:01:08 +0300
-In-Reply-To: <CAADnVQKnkGVL3Snaa-E+EpG536rauWZmn_kZsgQK-oaESfjjQg@mail.gmail.com>
-References: <20240402193945.17327-1-acme@kernel.org>
-	 <747816d2edd61a075d200ffa5da680d2cc2d6854.camel@gmail.com>
-	 <64bfcf02-030d-471a-871a-e7490d74ca28@oracle.com>
-	 <db6480e9378f59c367b03f7455372caf7b593348.camel@gmail.com>
-	 <CAADnVQKnkGVL3Snaa-E+EpG536rauWZmn_kZsgQK-oaESfjjQg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+        bh=tfocfhDuzyWI0gzZPzgtgcqFin70HaxvYji+27WTX8o=;
+        b=TyuBm877rtpmnQqAcHTNE/JWTUCI/pQPbFbcx0OrzmzBFHEw+Y99YZYE9XM6B/uLlw
+         vifOus7lc75/njkF0+tDg/C1ay1nZjDaAXnvCcJ/t0fTVzrVaQG1HuLF7qktLJBM1qYX
+         8Etdlhh9BpwwYnlVOiYuCrZNki57zIYRCgNRj+TXyNoGGSsGK0f5/q+cK87GqF8vemaJ
+         vHauT06EACxSRutrxD4Hz3OOc70p6X/0ssTd5RirBETDecq1LK90xaJf31IHGI49iHgU
+         IoTwD+1GT4LsX7WFfKH4M48HR82ZFCqXTgmE9xVPI5fFevf4QyC9rZFZTD5F3f7NOnkf
+         sOWg==
+X-Forwarded-Encrypted: i=1; AJvYcCXVQ4vVfzOHu8uFhxFxauuUC6POYHQZTW2UYZoHbCRcuDcQlHL91vWxoCteiS8wj4FMahdGEoxqKFhFa5+NfV0ZOb19
+X-Gm-Message-State: AOJu0YyiPISTlH1bvvt83Aowm+RdgocJ0LW5rmNXI6uSAP3qdoVtLj4n
+	lUmWyxPii4bEvJWmumBPaLgu3MTSDJSY/qpZ/Zn9U9Ax6ZUuKSGQ5hflZruVUXvRL9wS4g==
+X-Google-Smtp-Source: AGHT+IFYuevMhVCNS8J4a0W+Y4P/tX4ObfbT6n8GZHMYJQGV+TZpStj+eAbIHkNNPAqkAizanpcTzDes
+X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
+ (user=ardb job=sendgmr) by 2002:adf:fcd0:0:b0:343:3f5b:8be5 with SMTP id
+ f16-20020adffcd0000000b003433f5b8be5mr25778wrs.5.1712674900036; Tue, 09 Apr
+ 2024 08:01:40 -0700 (PDT)
+Date: Tue,  9 Apr 2024 17:01:33 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1943; i=ardb@kernel.org;
+ h=from:subject; bh=vvI7uP53jbbpjHBqTcIzGIhjjZ2G0+4ci+o39TUrohg=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIU00wkfJaMX8/7u/nL26uVyuuT46dDI7j0x7Ta/W0beLi
+ zK9y9w6SlkYxDgYZMUUWQRm/3238/REqVrnWbIwc1iZQIYwcHEKwESS9jP8L0m8H9OefeJLbG/7
+ hGtcCW9eBda5aPCvW5W/wpw9al/8R0aG+zYX6vKnHOW6oeDcYh3n9k9mXqGwfnv4p0ifvsL85FN MAA==
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240409150132.4097042-5-ardb+git@google.com>
+Subject: [PATCH v2 0/3] kbuild: Avoid weak external linkage where possible
+From: Ard Biesheuvel <ardb+git@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 2024-04-09 at 07:56 -0700, Alexei Starovoitov wrote:
-[...]
+From: Ard Biesheuvel <ardb@kernel.org>
 
-> I would actually go with sorted BTF, since it will probably
-> make diff-ing of BTFs practical. Will be easier to track changes
-> from one kernel version to another. vmlinux.h will become
-> a bit more sorted too and normal diff vmlinux_6_1.h vmlinux_6_2.h
-> will be possible.
-> Or am I misunderstanding the sorting concept?
+Weak external linkage is intended for cases where a symbol reference
+can remain unsatisfied in the final link. Taking the address of such a
+symbol should yield NULL if the reference was not satisfied.
 
-You understand the concept correctly, here is a sample:
+Given that ordinary RIP or PC relative references cannot produce NULL,
+some kind of indirection is always needed in such cases, and in position
+independent code, this results in a GOT entry. In ordinary code, it is
+arch specific but amounts to the same thing.
 
-  [1] INT '_Bool' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DBOOL
-  [2] INT '__int128' size=3D16 bits_offset=3D0 nr_bits=3D128 encoding=3DSIG=
-NED
-  [3] INT '__int128 unsigned' size=3D16 bits_offset=3D0 nr_bits=3D128 encod=
-ing=3D(none)
-  [4] INT 'char' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3D(none)
-  [5] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
-  [6] INT 'long int' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=3DSIGNE=
-D
-  [7] INT 'long long int' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=3D=
-SIGNED
-  ...
-  [15085] STRUCT 'arch_elf_state' size=3D0 vlen=3D0
-  [15086] STRUCT 'arch_vdso_data' size=3D0 vlen=3D0
-  [15087] STRUCT 'bpf_run_ctx' size=3D0 vlen=3D0
-  [15088] STRUCT 'dev_archdata' size=3D0 vlen=3D0
-  [15089] STRUCT 'dyn_arch_ftrace' size=3D0 vlen=3D0
-  [15090] STRUCT 'fscrypt_dummy_policy' size=3D0 vlen=3D0
-  ...
- =20
-(Sort by kind, than by vlen, than by name because sorting by name is a
- bit costly, then by member properties)
+While unavoidable in some cases, weak references are currently also used
+to declare symbols that are always defined in the final link, but not in
+the first linker pass. This means we end up with worse codegen for no
+good reason. So let's clean this up, by providing preliminary
+definitions that are only used as a fallback.
+
+Changes since v1:
+- update second occurrence of BTF start/end markers
+- drop NULL check of __start_BTF[] which is no longer meaningful
+- avoid the preliminary BTF symbols if CONFIG_DEBUG_INFO_BTF is not set
+- add Andrii's ack to patch #3
+- patches #1 and #2 unchanged
+
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>
+
+Ard Biesheuvel (3):
+  kallsyms: Avoid weak references for kallsyms symbols
+  vmlinux: Avoid weak reference to notes section
+  btf: Avoid weak external references
+
+ include/asm-generic/vmlinux.lds.h | 28 ++++++++++++++++++
+ kernel/bpf/btf.c                  |  4 +--
+ kernel/bpf/sysfs_btf.c            |  6 ++--
+ kernel/kallsyms.c                 |  6 ----
+ kernel/kallsyms_internal.h        | 30 ++++++++------------
+ kernel/ksysfs.c                   |  4 +--
+ lib/buildid.c                     |  4 +--
+ 7 files changed, 49 insertions(+), 33 deletions(-)
+
+-- 
+2.44.0.478.gd926399ef9-goog
 
 
