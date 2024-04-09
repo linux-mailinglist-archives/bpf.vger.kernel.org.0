@@ -1,680 +1,265 @@
-Return-Path: <bpf+bounces-26272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08B8B89D79C
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 13:07:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F2D89D7A0
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 13:08:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEE86288F4B
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 11:07:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA771F21052
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 11:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A332685934;
-	Tue,  9 Apr 2024 11:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41CC85C74;
+	Tue,  9 Apr 2024 11:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bvifhx1Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NNpCvWSq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA74811E9;
-	Tue,  9 Apr 2024 11:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2C955E55;
+	Tue,  9 Apr 2024 11:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660871; cv=none; b=uUK3sjLDfTs6k3bTOTz2/GSFhxh2m23djl4vZ0baTa8iF8zmGbn2wcSpF7lUAFJXG7TvBBQz8s1oRBtWVw8OlH3zzDmL5Nns+katEoHLRzv1WiSEeyssmfYjCjO8S/zTNYiXchC9aD3XSVzvihF6thhUZo1pDyQPCspsJQgKjv4=
+	t=1712660925; cv=none; b=kSy6wnyTscxHZbK1rAX5mkAoXmimISvZnNwbZxhSLL1qNT72JIIPGVnMlo2cXflQc7OPy/eymJ3VzWjNhFRe7nUhJ40O03rThaBwNzJ4OiGXcpx91K+e3XrsCx/Tt9Lg7s9YrEFbe+82bDnd2ZPq4AR10Exbf3lQkRPnVg8E/WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660871; c=relaxed/simple;
-	bh=CdvV12UfwGOlZRKun1BiIFHlOABd7f6hqYrxcppqaMM=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t3q1Jk+20shI7OIHygRIZGDm8cCDfYwsOemETmb/sZeOKMD2VX1FH1vByM+PbhbVi6f59q9dPqf12zfZzbG9V4WU6MrVmCwZxuTEMVcfVgWBk6zBoey+lyRJ+RQ2sTl/iAPuxRFkX7dmvVGFM7LhwpoYlJ+SE0PC5UE0DRmZvCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bvifhx1Y; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-343c2f5b50fso3630122f8f.2;
-        Tue, 09 Apr 2024 04:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712660866; x=1713265666; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nFeyumF7C8eaPCs5u8E3KHh5zcVQwReVbWctZLVh/fk=;
-        b=Bvifhx1YTP39v3JeNH5xW+RsQXdnbIe0F913D5l3OvIhzIvkVN32J//Qg/dlqKn6ZE
-         rByq1iTR2O07Vsgr/yLcT0QszA8nPH6c4o2SZduWHLiT4GHja2zx3HrPtI0SE3nkdFGI
-         4SU4XxeVIZ2iPWDRG29ZzCWq3STj2vmdToa4qY8AcGBno5kjdQzru47dKjB3+i2qjtbc
-         VBEhgW6Rn0/CCdRoEBIIZpOCMP2n0ZwtrMWJWrihaFqKpZJ8f9o9jAbaVWJV/OOgy2YI
-         RNunSjrW+mlisQvX2eXC3Udt+T/gdW5nm3CARRkgHGwAP03jIYGARs7Iv9EtNLLskJYB
-         w0Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712660866; x=1713265666;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nFeyumF7C8eaPCs5u8E3KHh5zcVQwReVbWctZLVh/fk=;
-        b=bGxVbXO1jPdO+sxCwmnDhf7mHGR88B6RSve3K1VtZmH0d1ePf87jmmCLBjZ6ZvSoHw
-         bk5rosDPA6GAkuq4I9Jnmwj5uMf50am2pn2z8a67v+VgzwqhpGgUGxzXBQEm0RxZ+N31
-         N79kShFWiaRZLLJYsiwQr7Gnvkc+GcVVLJ/5dMgHnlJIp269vYz7Zmwz0KRLmE18oaaI
-         A41yKUaUtBbbpox0rHHmWS61ISgflkIXOFaO2tGcb8Gp0ZoRi/KKyGo+3owpSaguxkdn
-         tdib7cPUEqGSfWP2TSpCYfwFlkL0O9rWruih9VjPIqk8gFkqCxT74bUtrDaIzHKR+6nY
-         ij1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVtKOIm4m3rEpAA+wl7k0MHMUo34fyLsx4n8RR7xfjgwnI9WVSme+lWjTwMMSnjbmTrqstI/6zyLg8VNXsge16qKbbQXFET1aZD2nTxyQ8g4m9OtOgN02XMoPgU9tY9y/Af
-X-Gm-Message-State: AOJu0Ywt1G+nKYs4LU4Uo/WI1z2FW5WLhSb36H8mD0glHeLoeIl9q+YL
-	BBmFV3rDsSE4EkD+P0+H7VpkJRV1dBzsxBIOUPNH9XWFW8hxtkkn
-X-Google-Smtp-Source: AGHT+IGUK7SHbpCa3COCwAtt6mlinvpj9ocrFV1l27hNuMs1cRcHouiCSEUJ6mwle9861nXDSawHwg==
-X-Received: by 2002:a5d:6d84:0:b0:345:c41a:23a2 with SMTP id l4-20020a5d6d84000000b00345c41a23a2mr4225368wrs.14.1712660866084;
-        Tue, 09 Apr 2024 04:07:46 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id l13-20020adfe9cd000000b00343f2cca88dsm10185236wrn.76.2024.04.09.04.07.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Apr 2024 04:07:31 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, alexei.starovoitov@gmail.com,
- andrii.nakryiko@gmail.com, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux@armlinux.org.uk, mark.rutland@arm.com,
- syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
- copy_from_kernel_nofault (2)
-In-Reply-To: <00000000000065955e0615a759ab@google.com>
-References: <00000000000065955e0615a759ab@google.com>
-Date: Tue, 09 Apr 2024 11:07:22 +0000
-Message-ID: <mb61p7ch6yetx.fsf@gmail.com>
+	s=arc-20240116; t=1712660925; c=relaxed/simple;
+	bh=/sm4kX1swFuH3/fk4VBbgStTVFZvjDNK4GzFuMcXv3E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n93cGPWMDskf1bqu4VCsNYQ7fHhhwh9wUCDGKNx1iHI0M0RLKNJ22TGYLFy8I0e2tms2NRW/UrrEuqmrGxujr5VMKy5bq8MBisIRS+UOxYcx3qODp5yvOG8OtEspy86CMziZIe5s639DjZrgNXtjo4YtzF2xm+Tiaj8nESQxoBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NNpCvWSq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC50C43390;
+	Tue,  9 Apr 2024 11:08:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712660925;
+	bh=/sm4kX1swFuH3/fk4VBbgStTVFZvjDNK4GzFuMcXv3E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NNpCvWSqkWul/egx7NVJwm4jafVgkx3tZNQaStdbFp+7boVk89vj/6Qsk5rsyGLJs
+	 BUVVvm1cKemPxUKTkNHkVLsI7xmV66rIZR+F+UYafCHFnxvt8xA756tPkDwkHzyOxh
+	 vUJeeTRE1QGtp/ok386aXtJ3HVxnHzXtluRnXCCtZVr8X9BT6AQp929myMb8l1nHTJ
+	 xgPS0T/0L/Bz+70Q9rPs5wRWSqu0AnuFQLR8BCXvKqBaPGcYMlJ9mZ8n3Y4coFsh82
+	 F/PxsOvpECTCMDz3CC/FebcsKxPX+L7+TNxXXvcWIbgGt6pV0KSEscrQz/qPZaa2US
+	 mI0yKEZxUhlzg==
+Message-ID: <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
+Date: Tue, 9 Apr 2024 13:08:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: Advice on cgroup rstat lock
+To: Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: Tejun Heo <tj@kernel.org>, Jesper Dangaard Brouer
+ <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Waiman Long <longman@redhat.com>, Shakeel Butt <shakeelb@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org,
+ Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Ivan Babrou <ivan@cloudflare.com>
+References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
+ <20240319154437.GA144716@cmpxchg.org>
+ <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
+ <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
+ <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org>
+ <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com> writes:
+Let move this discussion upstream.
 
-> Hello,
->
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> INFO: task hung in _vm_unmap_aliases
->
-> INFO: task kworker/0:1:8 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:1     state:D stack:0     pid:8     tgid:8     ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:df839d94 r5:82e2d400
->  r4:82e2d400
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:82e2d400 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16005 r9:df839e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eb4f80
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eb4f80
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:82e2d400 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f02d000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dfb13000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84eebf54 r4:84eebc00
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:dddd00c0 r6:82c16000 r5:84eebf54 r4:82c0bf00
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:82e2d400 r9:82c0bf2c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
->  r4:82c0bf00
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:df835e90 r8:82cad880 r7:82c0bf00 r6:802672c4 r5:82e2d400
->  r4:82cad140
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdf839fb0 to 0xdf839ff8)
-> 9fa0:                                     00000000 00000000 00000000 00000000
-> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:82cad140
-> INFO: task kworker/1:6:3904 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/1:6     state:D stack:0     pid:3904  tgid:3904  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:e0741d94 r5:83efd400
->  r4:83efd400
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:83efd400 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16205 r9:e0741e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eb4300
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eb4300
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:83efd400 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f00b000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:df98f000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84ee9754 r4:84ee9400
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:ddde40c0 r6:82c16200 r5:84ee9754 r4:84603500
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:83efd400 r9:8460352c r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
->  r4:84603500
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:df879e90 r8:84e34440 r7:84603500 r6:802672c4 r5:83efd400
->  r4:84cc58c0
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xe0741fb0 to 0xe0741ff8)
-> 1fa0:                                     00000000 00000000 00000000 00000000
-> 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84cc58c0
-> INFO: task kworker/0:55:4238 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:55    state:D stack:0     pid:4238  tgid:4238  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dfb09d94 r5:84e8c800
->  r4:84e8c800
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e8c800 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16005 r9:dfb09e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eb8640
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eb8640
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e8c800 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f057000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dffb3000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84e08b54 r4:84e08800
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:dddd00c0 r6:82c16000 r5:84e08b54 r4:84e60000
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e8c800 r9:84e6002c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
->  r4:84e60000
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:df9bde90 r8:84616fc0 r7:84e60000 r6:802672c4 r5:84e8c800
->  r4:84e5b940
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdfb09fb0 to 0xdfb09ff8)
-> 9fa0:                                     00000000 00000000 00000000 00000000
-> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84e5b940
-> INFO: task kworker/0:57:4264 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:57    state:D stack:0     pid:4264  tgid:4264  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dfd11d94 r5:844e5400
->  r4:844e5400
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:844e5400 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16005 r9:dfd11e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eb4d80
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eb4d80
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:844e5400 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f02f000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dfb49000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84eeaf54 r4:84eeac00
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:dddd00c0 r6:82c16000 r5:84eeaf54 r4:84e60100
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:844e5400 r9:84e6012c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
->  r4:84e60100
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dfb09e90 r8:84ea8b80 r7:84e60100 r6:802672c4 r5:844e5400
->  r4:84ea8b00
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdfd11fb0 to 0xdfd11ff8)
-> 1fa0:                                     00000000 00000000 00000000 00000000
-> 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84ea8b00
-> INFO: task kworker/1:59:4286 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/1:59    state:D stack:0     pid:4286  tgid:4286  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:dfe89d94 r5:84e96000
->  r4:84e96000
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e96000 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16205 r9:dfe89e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eb8040
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eb8040
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e96000 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f055000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dff77000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:82ceb354 r4:82ceb000
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:ddde40c0 r6:82c16200 r5:82ceb354 r4:84e69480
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e96000 r9:84e694ac r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
->  r4:84e69480
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dfdcde90 r8:84ea8840 r7:84e69480 r6:802672c4 r5:84e96000
->  r4:84ea8e40
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdfe89fb0 to 0xdfe89ff8)
-> 9fa0:                                     00000000 00000000 00000000 00000000
-> 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84ea8e40
-> INFO: task kworker/1:63:4298 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/1:63    state:D stack:0     pid:4298  tgid:4298  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:dfee5d94 r5:84e91800
->  r4:84e91800
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e91800 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16205 r9:dfee5e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eba380
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eba380
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e91800 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f00d000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:df9d3000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84e18b54 r4:84e18800
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:ddde40c0 r6:82c16200 r5:84e18b54 r4:84e69680
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e91800 r9:84e696ac r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
->  r4:84e69680
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dfe89e90 r8:84e53340 r7:84e69680 r6:802672c4 r5:84e91800
->  r4:84e532c0
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdfee5fb0 to 0xdfee5ff8)
-> 5fa0:                                     00000000 00000000 00000000 00000000
-> 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84e532c0
-> INFO: task kworker/1:64:4299 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/1:64    state:D stack:0     pid:4299  tgid:4299  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:dff41d94 r5:84e74800
->  r4:84e74800
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e74800 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16205 r9:dff41e20 r8:00000000 r7:ffffffff r6:00000000 r5:84e53640
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84e53640
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e74800 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f033000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dfbd7000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84ee8f54 r4:84ee8c00
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:ddde40c0 r6:82c16200 r5:84ee8f54 r4:84e69780
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e74800 r9:84e697ac r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
->  r4:84e69780
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dfe89e90 r8:84eb4000 r7:84e69780 r6:802672c4 r5:84e74800
->  r4:84e53900
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdff41fb0 to 0xdff41ff8)
-> 1fa0:                                     00000000 00000000 00000000 00000000
-> 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84e53900
-> INFO: task kworker/0:58:4308 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:58    state:D stack:0     pid:4308  tgid:4308  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dff71d94 r5:84e76c00
->  r4:84e76c00
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e76c00 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16005 r9:dff71e20 r8:00000000 r7:ffffffff r6:00000000 r5:84eb8d00
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84eb8d00
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e76c00 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f031000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dfb8f000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84c30b54 r4:84c30800
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:dddd00c0 r6:82c16000 r5:84c30b54 r4:84e60180
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e76c00 r9:84e601ac r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
->  r4:84e60180
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dfd11e90 r8:84eb4a40 r7:84e60180 r6:802672c4 r5:84e76c00
->  r4:84eb4e00
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdff71fb0 to 0xdff71ff8)
-> 1fa0:                                     00000000 00000000 00000000 00000000
-> 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84eb4e00
-> INFO: task kworker/0:59:4311 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:59    state:D stack:0     pid:4311  tgid:4311  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dfb8dd94 r5:84e75400
->  r4:84e75400
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e75400 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16005 r9:dfb8de20 r8:00000000 r7:ffffffff r6:00000000 r5:84e5b5c0
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84e5b5c0
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e75400 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f03b000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dfcc9000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84e19b54 r4:84e19800
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:dddd00c0 r6:82c16000 r5:84e19b54 r4:84e60280
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e75400 r9:84e602ac r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
->  r4:84e60280
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dff71e90 r8:84eb8c00 r7:84e60280 r6:802672c4 r5:84e75400
->  r4:84eb4380
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdfb8dfb0 to 0xdfb8dff8)
-> dfa0:                                     00000000 00000000 00000000 00000000
-> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84eb4380
-> INFO: task kworker/0:60:4312 blocked for more than 430 seconds.
->       Not tainted 6.9.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:60    state:D stack:0     pid:4312  tgid:4312  ppid:2      flags:0x00000000
-> Workqueue: events bpf_prog_free_deferred
-> Call trace: 
-> [<8189be20>] (__schedule) from [<8189ca5c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
-> [<8189be20>] (__schedule) from [<8189ca5c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
->  r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dffb1d94 r5:84e90c00
->  r4:84e90c00
-> [<8189ca30>] (schedule) from [<8189d06c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
->  r5:84e90c00 r4:82714be4
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
-> [<8189d054>] (schedule_preempt_disabled) from [<8189f94c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
-> [<8189f664>] (__mutex_lock.constprop.0) from [<818a0218>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
->  r10:82c16005 r9:dffb1e20 r8:00000000 r7:ffffffff r6:00000000 r5:84e5b640
->  r4:00000000
-> [<818a0204>] (__mutex_lock_slowpath) from [<818a0258>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
-> [<818a021c>] (mutex_lock) from [<8049c734>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
-> [<8049c6d4>] (_vm_unmap_aliases) from [<804a05b8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
->  r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84e5b640
->  r4:00000000
-> [<804a0448>] (vfree) from [<802edb3c>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
->  r9:84e90c00 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f03f000
-> [<802edb0c>] (module_memfree) from [<803916e0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
->  r5:00001000 r4:dfd63000
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
-> [<803916d0>] (bpf_jit_free_exec) from [<803918a0>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
-> [<80391838>] (bpf_jit_free) from [<80392988>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
->  r5:84ef0754 r4:84ef0400
-> [<8039283c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
->  r7:dddd00c0 r6:82c16000 r5:84ef0754 r4:84e60300
-> [<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-> [<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
->  r10:84e90c00 r9:84e6032c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
->  r4:84e60300
-> [<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:dfb8de90 r8:84eb8f40 r7:84e60300 r6:802672c4 r5:84e90c00
->  r4:84eb4300
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdffb1fb0 to 0xdffb1ff8)
-> 1fa0:                                     00000000 00000000 00000000 00000000
-> 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84eb4300
-> Future hung task reports are suppressed, see sysctl kernel.hung_task_warnings
-> NMI backtrace for cpu 0
-> CPU: 0 PID: 31 Comm: khungtaskd Not tainted 6.9.0-rc2-syzkaller #0
-> Hardware name: ARM-Versatile Express
-> Call trace: 
-> [<8187a69c>] (dump_backtrace) from [<8187a798>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:256)
->  r7:00000000 r6:00000013 r5:60000093 r4:81fc48fc
-> [<8187a780>] (show_stack) from [<81897f54>] (__dump_stack lib/dump_stack.c:88 [inline])
-> [<8187a780>] (show_stack) from [<81897f54>] (dump_stack_lvl+0x70/0x7c lib/dump_stack.c:114)
-> [<81897ee4>] (dump_stack_lvl) from [<81897f78>] (dump_stack+0x18/0x1c lib/dump_stack.c:123)
->  r5:00000000 r4:00000001
-> [<81897f60>] (dump_stack) from [<81867a74>] (nmi_cpu_backtrace+0x160/0x17c lib/nmi_backtrace.c:113)
-> [<81867914>] (nmi_cpu_backtrace) from [<81867bc0>] (nmi_trigger_cpumask_backtrace+0x130/0x1d8 lib/nmi_backtrace.c:62)
->  r7:00000000 r6:8260c590 r5:8261a88c r4:ffffffff
-> [<81867a90>] (nmi_trigger_cpumask_backtrace) from [<802105b4>] (arch_trigger_cpumask_backtrace+0x18/0x1c arch/arm/kernel/smp.c:851)
->  r9:8260c6f4 r8:000076c2 r7:8289dfe0 r6:00007d59 r5:8514be04 r4:850f5d24
-> [<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec78>] (trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline])
-> [<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec78>] (check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline])
-> [<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec78>] (watchdog+0x480/0x594 kernel/hung_task.c:380)
-> [<8034e7f8>] (watchdog) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
->  r10:00000000 r9:df819e58 r8:82e98340 r7:00000000 r6:8034e7f8 r5:82ee8c00
->  r4:82f41200
-> [<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-> Exception stack(0xdf8ddfb0 to 0xdf8ddff8)
-> dfa0:                                     00000000 00000000 00000000 00000000
-> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
->  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:82f41200
-> Sending NMI from CPU 0 to CPUs 1:
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 6890 Comm: syz-executor.0 Not tainted 6.9.0-rc2-syzkaller #0
-> Hardware name: ARM-Versatile Express
-> PC is at kmap_local_sched_in kernel/sched/core.c:5189 [inline]
-> PC is at finish_task_switch+0x8c/0x298 kernel/sched/core.c:5291
-> LR is at __raw_spin_unlock include/linux/spinlock_api_smp.h:143 [inline]
-> LR is at _raw_spin_unlock+0x2c/0x50 kernel/locking/spinlock.c:186
-> pc : [<8027cd4c>]    lr : [<818a4f88>]    psr: 20000113
-> sp : eb539ab8  ip : eb539aa8  fp : eb539afc
-> r10: 00000402  r9 : 8514bc00  r8 : 82e33000
-> r7 : a3e9c050  r6 : 8189c228  r5 : ddde4440  r4 : 00000000
-> r3 : 8514bc00  r2 : 00000001  r1 : 81fc48fc  r0 : 00000001
-> Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> Control: 30c5387d  Table: 851ca6c0  DAC: 00000000
-> Call trace: 
-> [<8027ccc0>] (finish_task_switch) from [<8189c228>] (context_switch kernel/sched/core.c:5412 [inline])
-> [<8027ccc0>] (finish_task_switch) from [<8189c228>] (__schedule+0x408/0xc10 kernel/sched/core.c:6746)
->  r10:00000000 r9:84df6400 r8:a69b624b r7:a3e9c050 r6:8514bc00 r5:ddde4440
->  r4:82e33000
-> [<8189be20>] (__schedule) from [<8189d0b8>] (preempt_schedule_irq+0x40/0xa8 kernel/sched/core.c:7068)
->  r10:eb539db0 r9:8514bc00 r8:80200b9c r7:eb539bbc r6:ffffffff r5:8514bc00
->  r4:00000000
-> [<8189d078>] (preempt_schedule_irq) from [<80200bb4>] (svc_preempt+0x8/0x18)
-> Exception stack(0xeb539b88 to 0xeb539bd0)
-> 9b80:                   000f1b1e 003ff40e 0000071f 00000000 00000000 8514bc00
-> 9ba0: 00000598 0000071f 000f1b1e 00000000 eb539db0 eb539bf4 eb539bf8 eb539bd8
-> 9bc0: 80479eb8 8027f380 60000113 ffffffff
->  r5:60000113 r4:8027f380
-> [<8027f354>] (migrate_disable) from [<80479eb8>] (__kmap_local_pfn_prot+0x20/0x1ac mm/highmem.c:548)
->  r7:0000071f r6:00c00000 r5:dedf605c r4:00000000
-> [<80479e98>] (__kmap_local_pfn_prot) from [<8047a0b4>] (__kmap_local_page_prot mm/highmem.c:581 [inline])
-> [<80479e98>] (__kmap_local_pfn_prot) from [<8047a0b4>] (__kmap_local_page_prot+0x70/0x74 mm/highmem.c:564)
->  r8:00000001 r7:828584e8 r6:00000001 r5:dedf605c r4:00000000
-> [<8047a044>] (__kmap_local_page_prot) from [<804a23ec>] (kmap_local_page include/linux/highmem-internal.h:73 [inline])
-> [<8047a044>] (__kmap_local_page_prot) from [<804a23ec>] (clear_highpage_kasan_tagged include/linux/highmem.h:246 [inline])
-> [<8047a044>] (__kmap_local_page_prot) from [<804a23ec>] (kernel_init_pages+0x3c/0x60 mm/page_alloc.c:1080)
-> [<804a23b0>] (kernel_init_pages) from [<804a52d4>] (post_alloc_hook+0x88/0xc0 mm/page_alloc.c:1532)
->  r9:00000000 r8:827e21bc r7:00000001 r6:00000001 r5:dedf6038 r4:00000000
-> [<804a524c>] (post_alloc_hook) from [<804a7968>] (prep_new_page mm/page_alloc.c:1541 [inline])
-> [<804a524c>] (post_alloc_hook) from [<804a7968>] (get_page_from_freelist+0x28c/0x13d8 mm/page_alloc.c:3317)
->  r7:8514bc00 r6:827e1f00 r5:00000000 r4:00540dc2
-> [<804a76dc>] (get_page_from_freelist) from [<804a8fe4>] (__alloc_pages+0xe0/0x1168 mm/page_alloc.c:4575)
->  r10:00000000 r9:84df6400 r8:20000000 r7:8514bc00 r6:00440dc2 r5:00540dc2
->  r4:00000000
-> [<804a8f04>] (__alloc_pages) from [<8047b688>] (__alloc_pages_node include/linux/gfp.h:238 [inline])
-> [<804a8f04>] (__alloc_pages) from [<8047b688>] (alloc_pages_node include/linux/gfp.h:261 [inline])
-> [<804a8f04>] (__alloc_pages) from [<8047b688>] (alloc_pages include/linux/gfp.h:274 [inline])
-> [<804a8f04>] (__alloc_pages) from [<8047b688>] (pagetable_alloc include/linux/mm.h:2862 [inline])
-> [<804a8f04>] (__alloc_pages) from [<8047b688>] (__pte_alloc_one include/asm-generic/pgalloc.h:68 [inline])
-> [<804a8f04>] (__alloc_pages) from [<8047b688>] (pte_alloc_one+0x24/0xf8 arch/arm/include/asm/pgalloc.h:99)
->  r10:00000040 r9:84df6400 r8:20000000 r7:84db6000 r6:20000000 r5:85268800
->  r4:84df6400
-> [<8047b664>] (pte_alloc_one) from [<8047cc70>] (__pte_alloc+0x2c/0x108 mm/memory.c:440)
->  r5:85268800 r4:84df6400
-> [<8047cc44>] (__pte_alloc) from [<80481b10>] (do_anonymous_page mm/memory.c:4402 [inline])
-> [<8047cc44>] (__pte_alloc) from [<80481b10>] (do_pte_missing mm/memory.c:3878 [inline])
-> [<8047cc44>] (__pte_alloc) from [<80481b10>] (handle_pte_fault mm/memory.c:5300 [inline])
-> [<8047cc44>] (__pte_alloc) from [<80481b10>] (__handle_mm_fault mm/memory.c:5441 [inline])
-> [<8047cc44>] (__pte_alloc) from [<80481b10>] (handle_mm_fault+0xfac/0x12b8 mm/memory.c:5606)
->  r5:8514bc00 r4:00000255
-> [<80480b64>] (handle_mm_fault) from [<80215d94>] (do_page_fault+0x148/0x3a8 arch/arm/mm/fault.c:333)
->  r10:00000002 r9:84df6400 r8:20000000 r7:00000a06 r6:00000255 r5:20000000
->  r4:eb539fb0
-> [<80215c4c>] (do_page_fault) from [<80216174>] (do_translation_fault+0xfc/0x12c arch/arm/mm/fault.c:444)
->  r10:7ee33670 r9:7ee33670 r8:80216078 r7:eb539fb0 r6:20000000 r5:00000a06
->  r4:8261d0d0
-> [<80216078>] (do_translation_fault) from [<802161dc>] (do_DataAbort+0x38/0xa8 arch/arm/mm/fault.c:565)
->  r9:7ee33670 r8:80216078 r7:eb539fb0 r6:20000000 r5:00000a06 r4:8261d0d0
-> [<802161a4>] (do_DataAbort) from [<80200e3c>] (__dabt_usr+0x5c/0x60 arch/arm/kernel/entry-armv.S:427)
-> Exception stack(0xeb539fb0 to 0xeb539ff8)
-> 9fa0:                                     00000000 00000000 00000001 20000000
-> 9fc0: 00000004 00000000 00000000 00000000 fffffffe 7ee33670 7ee33670 7ee33630
-> 9fe0: 01068590 7ee333a8 0001d150 0001d4ac 40000010 ffffffff
->  r8:824a9044 r7:8514bc00 r6:ffffffff r5:40000010 r4:0001d4ac
->
->
-> Tested on:
->
-> commit:         2929be95 arm32, bpf: Fix sign-extension mov instruction
-> git tree:       https://github.com/puranjaymohan/linux.git arm32_movsx_fix
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11362cf3180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=10acd270ef193b93
-> dashboard link: https://syzkaller.appspot.com/bug?extid=186522670e6722692d86
-> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm
->
-> Note: no patches were applied.
+On 22/03/2024 19.32, Yosry Ahmed wrote:
+> [..]
+>>> There was a couple of series that made all calls to
+>>> cgroup_rstat_flush() sleepable, which allows the lock to be dropped
+>>> (and IRQs enabled) in between CPU iterations. This fixed a similar
+>>> problem that we used to face (except in our case, we saw hard lockups
+>>> in extreme scenarios):
+>>> https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@google.com/
+>>> https://lore.kernel.org/lkml/20230421174020.2994750-1-yosryahmed@google.com/
+>>
+>> I've only done the 6.6 backport, and these were in 6.5/6.6.
 
-I gave it the bpf.git tree maybe that is the reason for the above??
-Should have given the upstream tree with the exact commit where it was
-reproduced earlier.
+Given I have these in my 6.6 kernel. You are basically saying I should
+be able to avoid IRQ-disable for the lock, right?
 
-Let's try again, I pushed the correct tree now:
+My main problem with the global cgroup_rstat_lock[3] is it disables IRQs
+and (thereby also) BH/softirq (spin_lock_irq).  This cause production
+issues elsewhere, e.g. we are seeing network softirq "not-able-to-run"
+latency issues (debug via softirq_net_latency.bt [5]).
 
-#syz test: https://github.com/puranjaymohan/linux.git arm32_movsx_fix
+   [3] 
+https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
+   [5] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt 
+
+
+>> And between 6.1 to 6.6 we did observe an improvement in this area.
+>> (Maybe I don't have to do the 6.1 backport if the 6.6 release plan progress)
+>>
+>> I've had a chance to get running in prod for 6.6 backport.
+>> As you can see in attached grafana heatmap pictures, we do observe an
+>> improved/reduced softirq wait time.
+>> These softirq "not-able-to-run" outliers is *one* of the prod issues we
+>> observed.  As you can see, I still have other areas to improve/fix.
+> 
+> I am not very familiar with such heatmaps, but I am glad there is an
+> improvement with 6.6 and the backports. Let me know if there is
+> anything I could do to help with your effort.
+
+The heatmaps give me an overview, but I needed a debugging tool, so I
+developed some bpftrace scripts [1][2] I'm running on production.
+To measure how long time we hold the cgroup rstat lock (results below).
+Adding ACME and Daniel as I hope there is an easier way to measure lock
+hold time and congestion. Notice tricky release/yield in
+cgroup_rstat_flush_locked[4].
+
+My production results on 6.6 with backported patches (below signature)
+vs a our normal 6.6 kernel, with script [2]. The `@lock_time_hist_ns`
+shows how long time the lock+IRQs were disabled (taking into account it
+can be released in the loop [4]).
+
+Patched kernel:
+
+21:49:02  time elapsed: 43200 sec
+@lock_time_hist_ns:
+[2K, 4K)              61 | 
+      |
+[4K, 8K)             734 | 
+      |
+[8K, 16K)         121500 |@@@@@@@@@@@@@@@@ 
+      |
+[16K, 32K)        385714 
+|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[32K, 64K)        145600 |@@@@@@@@@@@@@@@@@@@ 
+      |
+[64K, 128K)       156873 |@@@@@@@@@@@@@@@@@@@@@ 
+      |
+[128K, 256K)      261027 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+      |
+[256K, 512K)      291986 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+      |
+[512K, 1M)        101859 |@@@@@@@@@@@@@ 
+      |
+[1M, 2M)           19866 |@@ 
+      |
+[2M, 4M)           10146 |@ 
+      |
+[4M, 8M)           30633 |@@@@ 
+      |
+[8M, 16M)          40365 |@@@@@ 
+      |
+[16M, 32M)         21650 |@@ 
+      |
+[32M, 64M)          5842 | 
+      |
+[64M, 128M)            8 | 
+      |
+
+And normal 6.6 kernel:
+
+21:48:32  time elapsed: 43200 sec
+@lock_time_hist_ns:
+[1K, 2K)              25 | 
+      |
+[2K, 4K)            1146 | 
+      |
+[4K, 8K)           59397 |@@@@ 
+      |
+[8K, 16K)         571528 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+      |
+[16K, 32K)        542648 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+      |
+[32K, 64K)        202810 |@@@@@@@@@@@@@ 
+      |
+[64K, 128K)       134564 |@@@@@@@@@ 
+      |
+[128K, 256K)       72870 |@@@@@ 
+      |
+[256K, 512K)       56914 |@@@ 
+      |
+[512K, 1M)         83140 |@@@@@ 
+      |
+[1M, 2M)          170514 |@@@@@@@@@@@ 
+      |
+[2M, 4M)          396304 |@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+      |
+[4M, 8M)          755537 
+|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[8M, 16M)         231222 |@@@@@@@@@@@@@@@ 
+      |
+[16M, 32M)         76370 |@@@@@ 
+      |
+[32M, 64M)          1043 | 
+      |
+[64M, 128M)           12 | 
+      |
+
+
+For the unpatched kernel we see more events in 4ms to 8ms bucket than
+any other bucket.
+For patched kernel, we clearly see a significant reduction of events in
+the 4 ms to 64 ms area, but we still have some events in this area.  I'm
+very happy to see these patches improves the situation.  But for network
+processing I'm not happy to see events in area 16ms to 128ms area.  If
+we can just avoid disabling IRQs/softirq for the lock, I would be happy.
+
+How far can we go... could cgroup_rstat_lock be converted to a mutex?
+
+--Jesper
+
+  [1] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_latency.bt
+  [2] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_latency_steroids.bt
+  [3] 
+https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
+  [4] 
+https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L226 
+cgroup_rstat_flush_locked
+  [5] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt 
+
+
+
+Backported to 6.6
+
+List of **main** patches address issue - to backport for 6.6:
+  - 508bed884767 mm: memcg: change flush_next_time to flush_last_time
+    - v6.8-rc1~180^2~205
+  - e0bf1dc859fd mm: memcg: move vmstats structs definition above 
+flushing code
+    - v6.8-rc1~180^2~204
+  - 8d59d2214c23 mm: memcg: make stats flushing threshold per-memcg
+    - v6.8-rc1~180^2~203
+  - b00684722262 mm: workingset: move the stats flush into 
+workingset_test_recent()
+    - v6.8-rc1~180^2~202
+  - 7d7ef0a4686a mm: memcg: restore subtree stats flushing
+    - v6.8-rc1~180^2~201
+
+And extra (thanks Longman)
+
+  - e76d28bdf9ba ("cgroup/rstat: Reduce cpu_lock hold time in 
+cgroup_rstat_flush_locked()")
+   - v6.8-rc1~182^2~8
+
+And list of patches that contain **fixes** for backports above:
+  - 9cee7e8ef3e3 mm: memcg: optimize parent iteration in 
+memcg_rstat_updated()
+    - v6.8-rc4~3^2~12
+  - 13ef7424577f mm: memcg: don't periodically flush stats when memcg is 
+disabled
+    - v6.8-rc5-69-g13ef7424577f
+
+
 
