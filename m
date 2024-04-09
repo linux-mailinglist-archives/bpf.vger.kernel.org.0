@@ -1,220 +1,206 @@
-Return-Path: <bpf+bounces-26306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C045189DF6A
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 17:40:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37AE889DFB9
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 17:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25101C22DCC
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 15:40:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7827CB37FD5
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 15:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1EA13BC28;
-	Tue,  9 Apr 2024 15:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4228D1369A4;
+	Tue,  9 Apr 2024 15:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Oqgd5tS8"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="UXu4Psta"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A84613B5B7
-	for <bpf@vger.kernel.org>; Tue,  9 Apr 2024 15:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A02C7C6D4;
+	Tue,  9 Apr 2024 15:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712677060; cv=none; b=N8wrEGLYQnYEWg84UdV1D5qeAxDP84PQhVea9M+MU54IZRJ4CIXf2mTBPD8gWo7xQkiKgkgrrXMq4aacPxeBOE14a9aIDcdXZWl7bvEwkid+mlCiIQxL4INv1M1Xu/QjJvWAs6AscQaai9zqy7E7ueAm/kp/uRIYm/GFMl+DTL8=
+	t=1712677289; cv=none; b=qPgs1skoWVrsJr66B+Qkda7hT1PGJkxJFMqTzgYuMUI/TRHS0gLpTzP3DnVRa7TpImIzhovLMbzxXhV9bOAMlvWnH43RJM7RwmmTJGMhIH9XXVGUQWLIdBhBHJnLYS1+2TBXrwvcvrW+PoxD+PplapBy/LbWqhX/+iDseq62jLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712677060; c=relaxed/simple;
-	bh=FiYua9qt5cyPKbD5gkueRzUtbADCS1A0G5W11GlLtqo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TCAtnRz57rWLz6gLhKq5Z3RcreBW5vFhC8xCnRAJcYBrAC8r2Yd0Xrvmcte7K8SfVwpiObF9N2aPLAOnfOfnscVAd8ttvwEXE7vGRCsmru4OIDW9i3iupPrkGgUB0UONC4D5wWriADFqtehc1YVKyDmGVwmMNKA3DjE4osuDTLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Oqgd5tS8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712677058;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A3Hwu2ip+GHzxQ0LRYtJWTGCmx4DOpmKRqbnqLq7zeM=;
-	b=Oqgd5tS8M/2LXupcvUbExTDld+UXUPPm/Lhkhtj3ABPTY3jvUYnG4v47Yo4fOmYJBx+7re
-	Q+oslOKmyCz2zUU8S6YkSBWecDdibUq91y9rHVUfOxt7O0w2TOFwc6w9NSujdXhh1KtT89
-	DdRFdbkoh1GmaVk5qxYHdky4KoEr6GY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-J_fxg3y_Mgi_b_A_o-ulDA-1; Tue, 09 Apr 2024 11:37:35 -0400
-X-MC-Unique: J_fxg3y_Mgi_b_A_o-ulDA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C11061807ACD;
-	Tue,  9 Apr 2024 15:37:34 +0000 (UTC)
-Received: from [10.22.10.13] (unknown [10.22.10.13])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8AE001C06666;
-	Tue,  9 Apr 2024 15:37:33 +0000 (UTC)
-Message-ID: <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
-Date: Tue, 9 Apr 2024 11:37:31 -0400
+	s=arc-20240116; t=1712677289; c=relaxed/simple;
+	bh=qhCYA/5Ka78x/AhOEj073SAa9gtAsUKx6yUxVJ3iM8E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kHczYvfysFOHbgSeGiUyNt7ORBh3GnDHi5t/rrR44bSqq0/pTOf2IqGiV7TKDziEi+j4iru5wLj3kGjxeC7Th4bLppv0PVjSePKek8C/QHMoRSgm/R+Mo9ThVKzeAatQFLy/3rK5f8tDjgAt3kCkdggaVQa7xxCIC/7rgLGs9p0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=UXu4Psta; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=18Odz/5yLBDcln/iNt3WMBtL6a1+w4gU5ncEqjhL9JA=; b=UXu4PstavMyKGBNeMIrboZ3j4v
+	pqIOaBALuH4pvMSA+AbjJcVpjVdejndi0OAob9ppo/Js8PcvGlFxAwoiJCi9+had5PB0bqJnaKK9q
+	fzY5UuBysctH63R+sae+xUEAhrZ7hqejFahNaq/kVEZwmGqidRewDT5cAL8E4RLQO7bi1BIYROS09
+	26eipawvX2yzStNDvL9+AJ7qzCCorEziCUp2OIzdBKifPgUuixDOovySr1ba/Y07ZHatPwGuqF1rV
+	UHTPCrAbY+tMtFgqKcwYKT8PKLPTWKb0VKINq0AD9V+6KKszJtzT11xkoj7BEUBcSHci+Z1vbq4eX
+	cDEHTCXA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37506)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1ruDai-0006ih-0B;
+	Tue, 09 Apr 2024 16:40:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1ruDah-0005Ad-Kb; Tue, 09 Apr 2024 16:40:55 +0100
+Date: Tue, 9 Apr 2024 16:40:55 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, puranjay12@gmail.com
+Subject: Re: [PATCH bpf] arm32, bpf: Fix sign-extension mov instruction
+Message-ID: <ZhVhh3bDTQ+sks6b@shell.armlinux.org.uk>
+References: <20240409095038.26356-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Advice on cgroup rstat lock
-Content-Language: en-US
-To: Jesper Dangaard Brouer <hawk@kernel.org>,
- Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>, Jesper Dangaard Brouer
- <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Shakeel Butt <shakeelb@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org,
- Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Ivan Babrou <ivan@cloudflare.com>
-References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
- <20240319154437.GA144716@cmpxchg.org>
- <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
- <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
- <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org>
- <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
- <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409095038.26356-1-puranjay@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 4/9/24 07:08, Jesper Dangaard Brouer wrote:
-> Let move this discussion upstream.
->
-> On 22/03/2024 19.32, Yosry Ahmed wrote:
->> [..]
->>>> There was a couple of series that made all calls to
->>>> cgroup_rstat_flush() sleepable, which allows the lock to be dropped
->>>> (and IRQs enabled) in between CPU iterations. This fixed a similar
->>>> problem that we used to face (except in our case, we saw hard lockups
->>>> in extreme scenarios):
->>>> https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@google.com/ 
->>>>
->>>> https://lore.kernel.org/lkml/20230421174020.2994750-1-yosryahmed@google.com/ 
->>>>
->>>
->>> I've only done the 6.6 backport, and these were in 6.5/6.6.
->
-> Given I have these in my 6.6 kernel. You are basically saying I should
-> be able to avoid IRQ-disable for the lock, right?
->
-> My main problem with the global cgroup_rstat_lock[3] is it disables IRQs
-> and (thereby also) BH/softirq (spin_lock_irq).  This cause production
-> issues elsewhere, e.g. we are seeing network softirq "not-able-to-run"
-> latency issues (debug via softirq_net_latency.bt [5]).
->
->   [3] 
-> https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
->   [5] 
-> https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt 
->
->
->>> And between 6.1 to 6.6 we did observe an improvement in this area.
->>> (Maybe I don't have to do the 6.1 backport if the 6.6 release plan 
->>> progress)
->>>
->>> I've had a chance to get running in prod for 6.6 backport.
->>> As you can see in attached grafana heatmap pictures, we do observe an
->>> improved/reduced softirq wait time.
->>> These softirq "not-able-to-run" outliers is *one* of the prod issues we
->>> observed.  As you can see, I still have other areas to improve/fix.
->>
->> I am not very familiar with such heatmaps, but I am glad there is an
->> improvement with 6.6 and the backports. Let me know if there is
->> anything I could do to help with your effort.
->
-> The heatmaps give me an overview, but I needed a debugging tool, so I
-> developed some bpftrace scripts [1][2] I'm running on production.
-> To measure how long time we hold the cgroup rstat lock (results below).
-> Adding ACME and Daniel as I hope there is an easier way to measure lock
-> hold time and congestion. Notice tricky release/yield in
-> cgroup_rstat_flush_locked[4].
->
-> My production results on 6.6 with backported patches (below signature)
-> vs a our normal 6.6 kernel, with script [2]. The `@lock_time_hist_ns`
-> shows how long time the lock+IRQs were disabled (taking into account it
-> can be released in the loop [4]).
->
-> Patched kernel:
->
-> 21:49:02  time elapsed: 43200 sec
-> @lock_time_hist_ns:
-> [2K, 4K)              61 |      |
-> [4K, 8K)             734 |      |
-> [8K, 16K)         121500 |@@@@@@@@@@@@@@@@      |
-> [16K, 32K)        385714 
-> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [32K, 64K)        145600 |@@@@@@@@@@@@@@@@@@@      |
-> [64K, 128K)       156873 |@@@@@@@@@@@@@@@@@@@@@      |
-> [128K, 256K)      261027 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
-> [256K, 512K)      291986 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
-> [512K, 1M)        101859 |@@@@@@@@@@@@@      |
-> [1M, 2M)           19866 |@@      |
-> [2M, 4M)           10146 |@      |
-> [4M, 8M)           30633 |@@@@      |
-> [8M, 16M)          40365 |@@@@@      |
-> [16M, 32M)         21650 |@@      |
-> [32M, 64M)          5842 |      |
-> [64M, 128M)            8 |      |
->
-> And normal 6.6 kernel:
->
-> 21:48:32  time elapsed: 43200 sec
-> @lock_time_hist_ns:
-> [1K, 2K)              25 |      |
-> [2K, 4K)            1146 |      |
-> [4K, 8K)           59397 |@@@@      |
-> [8K, 16K)         571528 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
-> [16K, 32K)        542648 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
-> [32K, 64K)        202810 |@@@@@@@@@@@@@      |
-> [64K, 128K)       134564 |@@@@@@@@@      |
-> [128K, 256K)       72870 |@@@@@      |
-> [256K, 512K)       56914 |@@@      |
-> [512K, 1M)         83140 |@@@@@      |
-> [1M, 2M)          170514 |@@@@@@@@@@@      |
-> [2M, 4M)          396304 |@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
-> [4M, 8M)          755537 
-> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [8M, 16M)         231222 |@@@@@@@@@@@@@@@      |
-> [16M, 32M)         76370 |@@@@@      |
-> [32M, 64M)          1043 |      |
-> [64M, 128M)           12 |      |
->
->
-> For the unpatched kernel we see more events in 4ms to 8ms bucket than
-> any other bucket.
-> For patched kernel, we clearly see a significant reduction of events in
-> the 4 ms to 64 ms area, but we still have some events in this area.  I'm
-> very happy to see these patches improves the situation.  But for network
-> processing I'm not happy to see events in area 16ms to 128ms area.  If
-> we can just avoid disabling IRQs/softirq for the lock, I would be happy.
->
-> How far can we go... could cgroup_rstat_lock be converted to a mutex?
+On Tue, Apr 09, 2024 at 09:50:38AM +0000, Puranjay Mohan wrote:
+> The current implementation of the mov instruction with sign extension
+> clobbers the source register because it sign extends the source and then
+> moves it to the destination.
+> 
+> Fix this by moving the src to a temporary register before doing the sign
+> extension only if src is not an emulated register (on the scratch stack).
+> 
+> Also fix the emit_a32_movsx_r64() to put the register back on scratch
+> stack if that register is emulated on stack.
 
-The cgroup_rstat_lock was originally a mutex. It was converted to a 
-spinlock in commit 0fa294fb1985 ("group: Replace cgroup_rstat_mutex with 
-a spinlock"). Irq was disabled to enable calling from atomic context. 
-Since commit 0a2dc6ac3329 ("cgroup: remove 
-cgroup_rstat_flush_atomic()"), the rstat API hadn't been called from 
-atomic context anymore. Theoretically, we could change it back to a 
-mutex or not disabling interrupt. That will require that the API cannot 
-be called from atomic context going forward.
+It would be good to include in the commit message an example or two of
+the resulting assembly code so that it's clear what the expected
+generation is. Instead, I'm going to have to work it out myself, but
+I'm quite sure this is information you already have.
 
-Cheers,
-Longman
+> Fixes: fc832653fa0d ("arm32, bpf: add support for sign-extension mov instruction")
+> Reported-by: syzbot+186522670e6722692d86@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000e9a8d80615163f2a@google.com/
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  arch/arm/net/bpf_jit_32.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> index 1d672457d02f..8fde6ab66cb4 100644
+> --- a/arch/arm/net/bpf_jit_32.c
+> +++ b/arch/arm/net/bpf_jit_32.c
+> @@ -878,6 +878,13 @@ static inline void emit_a32_mov_r(const s8 dst, const s8 src, const u8 off,
+>  
+>  	rt = arm_bpf_get_reg32(src, tmp[0], ctx);
+>  	if (off && off != 32) {
+> +		/* If rt is not a stacked register, move it to tmp, so it doesn't get clobbered by
+> +		 * the shift operations.
+> +		 */
+> +		if (rt == src) {
+> +			emit(ARM_MOV_R(tmp[0], rt), ctx);
+> +			rt = tmp[0];
+> +		}
 
+This change is adding inefficiency, don't we want to have the JIT
+creating as efficient code as possible within the bounds of
+reasonableness?
 
+>  		emit(ARM_LSL_I(rt, rt, 32 - off), ctx);
+>  		emit(ARM_ASR_I(rt, rt, 32 - off), ctx);
+
+LSL and ASR can very easily take a different source register to the
+destination register. All this needs to be is:
+
+		emit(ARM_LSL_I(tmp[0], rt, 32 - off), ctx);
+		emit(ARM_ASR_I(tmp[0], tmp[0], 32 - off), ctx);
+		rt = tmp[0];
+
+This will generate:
+
+		lsl	tmp[0], src, #32-off
+		asr	tmp[0], tmp[0], #32-off
+
+and then the store to the output register will occur.
+
+What about the high-32 bits of the register pair - should that be
+taking any value?
+
+>  	}
+
+I notice in passing that the comments are out of sync with the
+code - please update the comments along with code changes.
+
+> @@ -919,15 +926,15 @@ static inline void emit_a32_movsx_r64(const bool is64, const u8 off, const s8 ds
+>  	const s8 *tmp = bpf2a32[TMP_REG_1];
+>  	const s8 *rt;
+>  
+> -	rt = arm_bpf_get_reg64(dst, tmp, ctx);
+> -
+>  	emit_a32_mov_r(dst_lo, src_lo, off, ctx);
+>  	if (!is64) {
+>  		if (!ctx->prog->aux->verifier_zext)
+>  			/* Zero out high 4 bytes */
+>  			emit_a32_mov_i(dst_hi, 0, ctx);
+>  	} else {
+> +		rt = arm_bpf_get_reg64(dst, tmp, ctx);
+>  		emit(ARM_ASR_I(rt[0], rt[1], 31), ctx);
+> +		arm_bpf_put_reg64(dst, rt, ctx);
+>  	}
+>  }
+
+Why oh why oh why are we emitting code to read the source register
+(which may be a load), then write it to the destination (which may
+be a store) to only then immediately reload from the destination
+to then do the sign extension? This is madness.
+
+Please... apply some thought to the code generation from the JIT...
+or I will remove you from being a maintainer of this code. I spent
+time crafting some parts of the JIT to generate efficient code and
+I'm seeing that a lot of that work is now being thrown away by
+someone who seemingly doesn't care about generating "good" code.
+
+Why not read the source 32-bit register (potentially into a temporary
+register), store it to the destination low register, then do the
+sign extension into the destination high register or zero the high
+register. We _could_ be a bit more optimal here by checking whether
+dst_hi is a stacked register and use that directly for the ASR
+instruction, omitting the need to move it there afterwards - whether
+that's worth it or not depends on the performance we expect from this
+eBPF opcode.
+
+	rt = arm_bpf_get_reg32(src_lo, tmp[1], ctx);
+	/* rt may be either src[1] or tmp[1] */
+
+	/* write dst_lo */
+	arm_bpf_put_reg32(dst_lo, rt, ctx)
+
+	if (is64) {
+		emit(ARM_ASR_I(tmp[0], rt, 31), ctx);
+		arm_bpf_put_reg32(dst_hi, tmp[0], ctx);
+	} else if (!ctx->prog->aux->verifier_zext) {
+		emit_a32_mov_i(dst_hi, 0, ctx);
+	}
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
