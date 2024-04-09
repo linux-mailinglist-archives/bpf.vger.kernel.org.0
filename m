@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-26246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A47F89D1DD
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 07:19:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEBA089D1DE
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 07:19:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED251C224EC
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 05:19:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DAA01F24387
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 05:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1001A54BCB;
-	Tue,  9 Apr 2024 05:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1835B1EA;
+	Tue,  9 Apr 2024 05:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ioKQUYED"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4zxdDrb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D09433C8;
-	Tue,  9 Apr 2024 05:18:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C26A433C8;
+	Tue,  9 Apr 2024 05:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712639934; cv=none; b=jKc8+iAOiT9TP4VxGTuloFgt6QThWyXT+h8hkkFmFA2p5g0d1YgCYWb5eUyFniLn7Ka38XLm06blVNDHikWaQWRZAF2byw/ZrCJsQGq5fUagRQ1XS9cdazGrycjj+A4FSDGWW2bvXEI0bWLRibYgWuwNDe3X4S3/G/S2B2nGlQQ=
+	t=1712639941; cv=none; b=cO7Kiu6PjvEkcC5rbwvjiPpYx/XEQM1wm9MxeovX/pkX0gWh2M535uI+WZkqjIZh3Ls+I8qDjS7y/msGwpluOThEhyPWiL7ymiiHIavJrVwesyQEw0qoezgpspJ6F1M6MrOk4sp/jtN5EeiZQYWiFcY3EWNLkefis9iGKm5UGtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712639934; c=relaxed/simple;
-	bh=6/dzvN4J+Vk3rImc0gzHNDe/O0tVOGkHtlgYrEY/fhw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YVCrEfPs9xI5uEJq3/e4j2orTLl5QqvBIc6ZGbU5sFWRClbT6ecgOwLH6jg/nQqjtXDfCpKu4XsR4xSWApHzljOh+B3VejBrPJZJvqwo2GCp2Zgy5CzKzjePBc27p1v+DZjbYNS43S7gdX41pJfqz/nsEm3U1TAvM8M5rzMn7oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ioKQUYED; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F5D1C433F1;
-	Tue,  9 Apr 2024 05:18:47 +0000 (UTC)
+	s=arc-20240116; t=1712639941; c=relaxed/simple;
+	bh=kyRs5Dn9q/PNdmhzLdwShhMh1tHoLcJ0NKrgF3iBslc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=FCaQbodeSS4szT3nfP20CdXEBKr24ydXD3Z2eKGtKu/QQiLId5Pvw5ZV3PI5Nv3FnWWM12KPFaa50+tnLMYJNkL9h0uhhNZlWfIw9IRlaslVmLpTml8rHTvZ4O3D3F7P/vFih+Xv4jCRVI79Z6dSgZeZW4Kg7igOta+nYKNRnZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4zxdDrb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABDA7C433B1;
+	Tue,  9 Apr 2024 05:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712639934;
-	bh=6/dzvN4J+Vk3rImc0gzHNDe/O0tVOGkHtlgYrEY/fhw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ioKQUYEDbDDT4PdCB3H2aNKJGJKje03qLi6hhArV2ROrYNEfpBcj2+ymWJdPFpAGJ
-	 Ka7oM0AKY8LUXBVepZyHtFJNmSA216EGG80DeJc70mjVArxB/EeiwMxUyBH+GcFWxh
-	 GBqo9VEJRy+3f2zYVzQT5Bw7/Kum2qaxsxwOtyzlCyoHjxMY1bk8IC0zqfA4wvCqfs
-	 GIdU/CDmAEqs1dz4H7WK4TrFxksoRT6rzHLvHGmq2318Ok5nLCDu/22jelBOnE7NdR
-	 o0IA8gYjvgRuVP/92SpYzXVwPO8Rzn3VHgkJGiuyub6MquK5uyy75Z0HvDemzVU/H4
-	 6mYUn68ljqYhA==
+	s=k20201202; t=1712639940;
+	bh=kyRs5Dn9q/PNdmhzLdwShhMh1tHoLcJ0NKrgF3iBslc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=j4zxdDrb30t/BfTJVbH/HEn8hNk5nibvtpXUGI+P5yR6Hm0QRU/0UrD6ebiaV0tnO
+	 NZR384P0Wx1bJ3gjmNK/fKI5D7/awuA/C7my1N6rkKZYfWTM6+PesjHS3obW4GwBxW
+	 X4GS6auxGe6THmsHf9Q3QZMVCA7rZKL+reYn4FEd8/3JLqYSgnw0bRlbbWBaexxz2x
+	 tf3crndEKn7IZB8DiB6coCOUdIxH7no8nRqlVDfSqYQv3ioZUKarplMVcgF5edSMdN
+	 s53HYHVH1xcIeTLtFJszC1YzTmV5Wbv0GTSbWNNnpJDpwXJtGlRfK2JdsPjxnkg4rK
+	 jTfb5ayxORjQw==
 From: Geliang Tang <geliang@kernel.org>
 To: Andrii Nakryiko <andrii@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
@@ -59,10 +60,12 @@ To: Andrii Nakryiko <andrii@kernel.org>,
 Cc: Geliang Tang <tanggeliang@kylinos.cn>,
 	bpf@vger.kernel.org,
 	mptcp@lists.linux.dev
-Subject: [PATCH bpf v4 0/2] Two fixes for test_sockmap
-Date: Tue,  9 Apr 2024 13:18:38 +0800
-Message-Id: <cover.1712639568.git.tanggeliang@kylinos.cn>
+Subject: [PATCH bpf v4 1/2] selftests/bpf: Add F_SETFL for fcntl in test_sockmap
+Date: Tue,  9 Apr 2024 13:18:39 +0800
+Message-Id: <e4efa52c26ca5ae97c7e4e7570d8da9cd44df533.1712639568.git.tanggeliang@kylinos.cn>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <cover.1712639568.git.tanggeliang@kylinos.cn>
+References: <cover.1712639568.git.tanggeliang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,25 +76,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Geliang Tang <tanggeliang@kylinos.cn>
 
-v4:
- - address Martin's comments for v3. (thanks.)
- - add Yonghong's "Acked-by" tags. (thanks.)
- - update subject-prefix from "bpf-next" to "bpf".
+Incorrect arguments are passed to fcntl() in test_sockmap.c when invoking
+it to set file status flags. If O_NONBLOCK is used as 2nd argument and
+passed into fcntl, -EINVAL will be returned (See do_fcntl() in fs/fcntl.c).
+The correct approach is to use F_SETFL as 2nd argument, and O_NONBLOCK as
+3rd one.
 
-Patch 1, v3 of "selftests/bpf: Add F_SETFL for fcntl":
-- detect nonblock flag automaticly, then test_sockmap can run in both
-block and nonblock modes.
-- use continue instead of again in v2.
+In nonblock mode, if EWOULDBLOCK is received, continue receiving, otherwise
+some subtests of test_sockmap fail.
 
-Patch 2, fix for umount cgroup2 error.
+Fixes: 16962b2404ac ("bpf: sockmap, add selftests")
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/test_sockmap.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Geliang Tang (2):
-  selftests/bpf: Add F_SETFL for fcntl in test_sockmap
-  selftests/bpf: Fix umount cgroup2 error in test_sockmap
-
- tools/testing/selftests/bpf/test_sockmap.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index 024a0faafb3b..4feed253fca2 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -603,7 +603,9 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+ 		struct timeval timeout;
+ 		fd_set w;
+ 
+-		fcntl(fd, fd_flags);
++		if (fcntl(fd, F_SETFL, fd_flags))
++			goto out_errno;
++
+ 		/* Account for pop bytes noting each iteration of apply will
+ 		 * call msg_pop_data helper so we need to account for this
+ 		 * by calculating the number of apply iterations. Note user
+@@ -678,6 +680,7 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+ 					perror("recv failed()");
+ 					goto out_errno;
+ 				}
++				continue;
+ 			}
+ 
+ 			s->bytes_recvd += recv;
 -- 
 2.40.1
 
