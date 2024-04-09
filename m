@@ -1,265 +1,251 @@
-Return-Path: <bpf+bounces-26273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F2D89D7A0
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 13:08:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3111E89D7C7
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 13:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA771F21052
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 11:08:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8197284DD7
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 11:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41CC85C74;
-	Tue,  9 Apr 2024 11:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NNpCvWSq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CEC128362;
+	Tue,  9 Apr 2024 11:23:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2C955E55;
-	Tue,  9 Apr 2024 11:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE20F85C73
+	for <bpf@vger.kernel.org>; Tue,  9 Apr 2024 11:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660925; cv=none; b=kSy6wnyTscxHZbK1rAX5mkAoXmimISvZnNwbZxhSLL1qNT72JIIPGVnMlo2cXflQc7OPy/eymJ3VzWjNhFRe7nUhJ40O03rThaBwNzJ4OiGXcpx91K+e3XrsCx/Tt9Lg7s9YrEFbe+82bDnd2ZPq4AR10Exbf3lQkRPnVg8E/WY=
+	t=1712661786; cv=none; b=TPVXj+CEOFRBxjqZ8IK6GtUcOImqeXTqtlAW5ow9rvhSWdVbP0ujNPIaWvfcwveOU/1Xi3PdpQeI6JsNJ1OpEarPIkNGcYvi7llPqsRkGd6pI0EOJBOvMak1gkXqsE88ekQ5lvQp7KiT/zBpdzH2zsiB7f5qhhy3XcsNUQXTQmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660925; c=relaxed/simple;
-	bh=/sm4kX1swFuH3/fk4VBbgStTVFZvjDNK4GzFuMcXv3E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n93cGPWMDskf1bqu4VCsNYQ7fHhhwh9wUCDGKNx1iHI0M0RLKNJ22TGYLFy8I0e2tms2NRW/UrrEuqmrGxujr5VMKy5bq8MBisIRS+UOxYcx3qODp5yvOG8OtEspy86CMziZIe5s639DjZrgNXtjo4YtzF2xm+Tiaj8nESQxoBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NNpCvWSq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC50C43390;
-	Tue,  9 Apr 2024 11:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712660925;
-	bh=/sm4kX1swFuH3/fk4VBbgStTVFZvjDNK4GzFuMcXv3E=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NNpCvWSqkWul/egx7NVJwm4jafVgkx3tZNQaStdbFp+7boVk89vj/6Qsk5rsyGLJs
-	 BUVVvm1cKemPxUKTkNHkVLsI7xmV66rIZR+F+UYafCHFnxvt8xA756tPkDwkHzyOxh
-	 vUJeeTRE1QGtp/ok386aXtJ3HVxnHzXtluRnXCCtZVr8X9BT6AQp929myMb8l1nHTJ
-	 xgPS0T/0L/Bz+70Q9rPs5wRWSqu0AnuFQLR8BCXvKqBaPGcYMlJ9mZ8n3Y4coFsh82
-	 F/PxsOvpECTCMDz3CC/FebcsKxPX+L7+TNxXXvcWIbgGt6pV0KSEscrQz/qPZaa2US
-	 mI0yKEZxUhlzg==
-Message-ID: <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
-Date: Tue, 9 Apr 2024 13:08:40 +0200
+	s=arc-20240116; t=1712661786; c=relaxed/simple;
+	bh=5ROrTILwgwtu1eXXfrHz9C0PXdud03zposetsXGc5ak=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=WXEl/pUECtoD2+4BAhemJCjgdBp6tHtwk7zq+CqO5t0refDMgWS9C7qcDxmKkJNVsVXoMJLv72tpCRZ5GezapB07rPE9bHOEuJc2dfp7wFAoYWglVAA4S6TO887qevG2n1ltaxs7nfyY7n/lLqrwfsGWfQQfundWVafmWBF65F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d5da88bb06so286325139f.0
+        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 04:23:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712661784; x=1713266584;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XB80314w848NyGVGFY4b6hjNT5h98IQxWV7Umez7X3Q=;
+        b=pKu9ay78QVcU004knJ5whIgfGQbEy+TR0Im1I+I3WDhcwR+j1uovuCnyqyAZBkKBmL
+         /nDed1fN0g3m93NAuj/FL3nKjzMLZbxko4Wg9fKq1xfAWDYOLeKB3Do8td5Hyxb3Lbtq
+         TZTh6jUbZlGpf/dnCMQe/cVGA/ooStoqQyktHZfH5LYx7qsW4Y3xwPSWxoWddwMZKJ2+
+         gNSgKKSKxuLTIA4nSyssFYbe/aMDPFztFUER2VEgx4Jz3c7tyxLLaFeIaOlo81r9SwqX
+         mvYuP30Qgl3UHaoYmoQ8XlkD8MLoiWZq7/xxedcjRMcAuCqzSvAuiyur0TwtCO9akKIj
+         fVgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXrm3aNYOsHtdBjiRcaoNwAkkn8PJE3bvntVM1j4q+til5nJEfFFf+l2yFrSCv5fTlxqa7/QUd6xMahuKMpUTVfzDhG
+X-Gm-Message-State: AOJu0YxEKpAvEIyB5isSADvXY4CuBrqrMVhHflwMm0wvulxWoyGgXIyQ
+	TUG3Y0ScYAc2BsGTmRvrbSHcU+OMnr4XQWW/UGdM31XtNpM1siBmjQcN3N3K+Hq8FTgKWrbb/31
+	B4Xby6MTLQEqc5x6zVgPOdvIUKW3ohNbtwVXbYdbSwqJE9dSmqNPVkCo=
+X-Google-Smtp-Source: AGHT+IHr18O2m/tzwk1iXt7dCCE48nS0UEL87GUWrTVOq5kDDDpdnf+wWM1vRkG92aePc2Vtonr8qPfHLlxx/2kPpJ0pEodBMWQ0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Advice on cgroup rstat lock
-To: Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>, Jesper Dangaard Brouer
- <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Waiman Long <longman@redhat.com>, Shakeel Butt <shakeelb@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org,
- Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Ivan Babrou <ivan@cloudflare.com>
-References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
- <20240319154437.GA144716@cmpxchg.org>
- <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
- <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
- <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org>
- <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:3792:b0:47e:e557:ba45 with SMTP id
+ w18-20020a056638379200b0047ee557ba45mr411925jal.0.1712661784225; Tue, 09 Apr
+ 2024 04:23:04 -0700 (PDT)
+Date: Tue, 09 Apr 2024 04:23:04 -0700
+In-Reply-To: <mb61p7ch6yetx.fsf@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000044fca50615a82595@google.com>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault (2)
+From: syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, alexei.starovoitov@gmail.com, 
+	andrii.nakryiko@gmail.com, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux@armlinux.org.uk, mark.rutland@arm.com, 
+	puranjay12@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Let move this discussion upstream.
+Hello,
 
-On 22/03/2024 19.32, Yosry Ahmed wrote:
-> [..]
->>> There was a couple of series that made all calls to
->>> cgroup_rstat_flush() sleepable, which allows the lock to be dropped
->>> (and IRQs enabled) in between CPU iterations. This fixed a similar
->>> problem that we used to face (except in our case, we saw hard lockups
->>> in extreme scenarios):
->>> https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@google.com/
->>> https://lore.kernel.org/lkml/20230421174020.2994750-1-yosryahmed@google.com/
->>
->> I've only done the 6.6 backport, and these were in 6.5/6.6.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in _vm_unmap_aliases
 
-Given I have these in my 6.6 kernel. You are basically saying I should
-be able to avoid IRQ-disable for the lock, right?
-
-My main problem with the global cgroup_rstat_lock[3] is it disables IRQs
-and (thereby also) BH/softirq (spin_lock_irq).  This cause production
-issues elsewhere, e.g. we are seeing network softirq "not-able-to-run"
-latency issues (debug via softirq_net_latency.bt [5]).
-
-   [3] 
-https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
-   [5] 
-https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt 
-
-
->> And between 6.1 to 6.6 we did observe an improvement in this area.
->> (Maybe I don't have to do the 6.1 backport if the 6.6 release plan progress)
->>
->> I've had a chance to get running in prod for 6.6 backport.
->> As you can see in attached grafana heatmap pictures, we do observe an
->> improved/reduced softirq wait time.
->> These softirq "not-able-to-run" outliers is *one* of the prod issues we
->> observed.  As you can see, I still have other areas to improve/fix.
-> 
-> I am not very familiar with such heatmaps, but I am glad there is an
-> improvement with 6.6 and the backports. Let me know if there is
-> anything I could do to help with your effort.
-
-The heatmaps give me an overview, but I needed a debugging tool, so I
-developed some bpftrace scripts [1][2] I'm running on production.
-To measure how long time we hold the cgroup rstat lock (results below).
-Adding ACME and Daniel as I hope there is an easier way to measure lock
-hold time and congestion. Notice tricky release/yield in
-cgroup_rstat_flush_locked[4].
-
-My production results on 6.6 with backported patches (below signature)
-vs a our normal 6.6 kernel, with script [2]. The `@lock_time_hist_ns`
-shows how long time the lock+IRQs were disabled (taking into account it
-can be released in the loop [4]).
-
-Patched kernel:
-
-21:49:02  time elapsed: 43200 sec
-@lock_time_hist_ns:
-[2K, 4K)              61 | 
-      |
-[4K, 8K)             734 | 
-      |
-[8K, 16K)         121500 |@@@@@@@@@@@@@@@@ 
-      |
-[16K, 32K)        385714 
-|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-[32K, 64K)        145600 |@@@@@@@@@@@@@@@@@@@ 
-      |
-[64K, 128K)       156873 |@@@@@@@@@@@@@@@@@@@@@ 
-      |
-[128K, 256K)      261027 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-      |
-[256K, 512K)      291986 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-      |
-[512K, 1M)        101859 |@@@@@@@@@@@@@ 
-      |
-[1M, 2M)           19866 |@@ 
-      |
-[2M, 4M)           10146 |@ 
-      |
-[4M, 8M)           30633 |@@@@ 
-      |
-[8M, 16M)          40365 |@@@@@ 
-      |
-[16M, 32M)         21650 |@@ 
-      |
-[32M, 64M)          5842 | 
-      |
-[64M, 128M)            8 | 
-      |
-
-And normal 6.6 kernel:
-
-21:48:32  time elapsed: 43200 sec
-@lock_time_hist_ns:
-[1K, 2K)              25 | 
-      |
-[2K, 4K)            1146 | 
-      |
-[4K, 8K)           59397 |@@@@ 
-      |
-[8K, 16K)         571528 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-      |
-[16K, 32K)        542648 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-      |
-[32K, 64K)        202810 |@@@@@@@@@@@@@ 
-      |
-[64K, 128K)       134564 |@@@@@@@@@ 
-      |
-[128K, 256K)       72870 |@@@@@ 
-      |
-[256K, 512K)       56914 |@@@ 
-      |
-[512K, 1M)         83140 |@@@@@ 
-      |
-[1M, 2M)          170514 |@@@@@@@@@@@ 
-      |
-[2M, 4M)          396304 |@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-      |
-[4M, 8M)          755537 
-|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-[8M, 16M)         231222 |@@@@@@@@@@@@@@@ 
-      |
-[16M, 32M)         76370 |@@@@@ 
-      |
-[32M, 64M)          1043 | 
-      |
-[64M, 128M)           12 | 
-      |
-
-
-For the unpatched kernel we see more events in 4ms to 8ms bucket than
-any other bucket.
-For patched kernel, we clearly see a significant reduction of events in
-the 4 ms to 64 ms area, but we still have some events in this area.  I'm
-very happy to see these patches improves the situation.  But for network
-processing I'm not happy to see events in area 16ms to 128ms area.  If
-we can just avoid disabling IRQs/softirq for the lock, I would be happy.
-
-How far can we go... could cgroup_rstat_lock be converted to a mutex?
-
---Jesper
-
-  [1] 
-https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_latency.bt
-  [2] 
-https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_latency_steroids.bt
-  [3] 
-https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
-  [4] 
-https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L226 
-cgroup_rstat_flush_locked
-  [5] 
-https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt 
-
-
-
-Backported to 6.6
-
-List of **main** patches address issue - to backport for 6.6:
-  - 508bed884767 mm: memcg: change flush_next_time to flush_last_time
-    - v6.8-rc1~180^2~205
-  - e0bf1dc859fd mm: memcg: move vmstats structs definition above 
-flushing code
-    - v6.8-rc1~180^2~204
-  - 8d59d2214c23 mm: memcg: make stats flushing threshold per-memcg
-    - v6.8-rc1~180^2~203
-  - b00684722262 mm: workingset: move the stats flush into 
-workingset_test_recent()
-    - v6.8-rc1~180^2~202
-  - 7d7ef0a4686a mm: memcg: restore subtree stats flushing
-    - v6.8-rc1~180^2~201
-
-And extra (thanks Longman)
-
-  - e76d28bdf9ba ("cgroup/rstat: Reduce cpu_lock hold time in 
-cgroup_rstat_flush_locked()")
-   - v6.8-rc1~182^2~8
-
-And list of patches that contain **fixes** for backports above:
-  - 9cee7e8ef3e3 mm: memcg: optimize parent iteration in 
-memcg_rstat_updated()
-    - v6.8-rc4~3^2~12
-  - 13ef7424577f mm: memcg: don't periodically flush stats when memcg is 
-disabled
-    - v6.8-rc5-69-g13ef7424577f
+INFO: task kworker/0:41:4201 blocked for more than 430 seconds.
+      Not tainted 6.9.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:41    state:D stack:0     pid:4201  tgid:4201  ppid:2      flags:0x00000000
+Workqueue: events bpf_prog_free_deferred
+Call trace: 
+[<8189ad40>] (__schedule) from [<8189b97c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
+[<8189ad40>] (__schedule) from [<8189b97c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
+ r10:82c16005 r9:00000000 r8:82714be8 r7:00000002 r6:dfd0dd94 r5:84dd1800
+ r4:84dd1800
+[<8189b950>] (schedule) from [<8189bf8c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
+ r5:84dd1800 r4:82714be4
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
+[<8189e584>] (__mutex_lock.constprop.0) from [<8189f138>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
+ r10:82c16005 r9:dfd0de20 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a680
+ r4:00000000
+[<8189f124>] (__mutex_lock_slowpath) from [<8189f178>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
+[<8189f13c>] (mutex_lock) from [<8049c624>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
+ r10:82c16005 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a680
+ r4:00000000
+[<804a0338>] (vfree) from [<802edb08>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
+ r9:84dd1800 r8:00000080 r7:00000000 r6:82c16000 r5:00001000 r4:7f055000
+[<802edad8>] (module_memfree) from [<803916b0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
+ r5:00001000 r4:dfe91000
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
+[<80391808>] (bpf_jit_free) from [<80392958>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
+ r5:845b0754 r4:845b0400
+[<8039280c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+ r7:dddd00c0 r6:82c16000 r5:845b0754 r4:84d7cb00
+[<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+[<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+ r10:84dd1800 r9:84d7cb2c r8:61c88647 r7:dddd00e0 r6:82604d40 r5:dddd00c0
+ r4:84d7cb00
+[<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:dfa55e90 r8:845d8e80 r7:84d7cb00 r6:802672c4 r5:84dd1800
+ r4:84c66500
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xdfd0dfb0 to 0xdfd0dff8)
+dfa0:                                     00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84c66500
+INFO: task kworker/1:55:4229 blocked for more than 430 seconds.
+      Not tainted 6.9.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:55    state:D stack:0     pid:4229  tgid:4229  ppid:2      flags:0x00000000
+Workqueue: events bpf_prog_free_deferred
+Call trace: 
+[<8189ad40>] (__schedule) from [<8189b97c>] (__schedule_loop kernel/sched/core.c:6823 [inline])
+[<8189ad40>] (__schedule) from [<8189b97c>] (schedule+0x2c/0xfc kernel/sched/core.c:6838)
+ r10:82c16205 r9:00000000 r8:82714be8 r7:00000002 r6:dfe39d94 r5:84e83c00
+ r4:84e83c00
+[<8189b950>] (schedule) from [<8189bf8c>] (schedule_preempt_disabled+0x18/0x24 kernel/sched/core.c:6895)
+ r5:84e83c00 r4:82714be4
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock_common kernel/locking/mutex.c:684 [inline])
+[<8189bf74>] (schedule_preempt_disabled) from [<8189e86c>] (__mutex_lock.constprop.0+0x2e8/0xae0 kernel/locking/mutex.c:752)
+[<8189e584>] (__mutex_lock.constprop.0) from [<8189f138>] (__mutex_lock_slowpath+0x14/0x18 kernel/locking/mutex.c:1040)
+ r10:82c16205 r9:dfe39e20 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a240
+ r4:00000000
+[<8189f124>] (__mutex_lock_slowpath) from [<8189f178>] (mutex_lock+0x3c/0x40 kernel/locking/mutex.c:286)
+[<8189f13c>] (mutex_lock) from [<8049c624>] (_vm_unmap_aliases+0x60/0x2e8 mm/vmalloc.c:2788)
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vm_reset_perms mm/vmalloc.c:3235 [inline])
+[<8049c5c4>] (_vm_unmap_aliases) from [<804a04a8>] (vfree+0x170/0x1e4 mm/vmalloc.c:3314)
+ r10:82c16205 r9:00000001 r8:00000000 r7:ffffffff r6:00000000 r5:84c7a240
+ r4:00000000
+[<804a0338>] (vfree) from [<802edb08>] (module_memfree+0x30/0x50 kernel/module/main.c:1189)
+ r9:84e83c00 r8:00000180 r7:00000000 r6:82c16200 r5:00001000 r4:7f053000
+[<802edad8>] (module_memfree) from [<803916b0>] (bpf_jit_free_exec+0x10/0x14 kernel/bpf/core.c:1058)
+ r5:00001000 r4:dfe73000
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_binary_free kernel/bpf/core.c:1104 [inline])
+[<803916a0>] (bpf_jit_free_exec) from [<80391870>] (bpf_jit_free+0x68/0xe4 kernel/bpf/core.c:1228)
+[<80391808>] (bpf_jit_free) from [<80392958>] (bpf_prog_free_deferred+0x14c/0x164 kernel/bpf/core.c:2783)
+ r5:845b2b54 r4:845b2800
+[<8039280c>] (bpf_prog_free_deferred) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+ r7:ddde40c0 r6:82c16200 r5:845b2b54 r4:845d9f80
+[<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+[<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+ r10:84e83c00 r9:845d9fac r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
+ r4:845d9f80
+[<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:dfde5e90 r8:84640600 r7:845d9f80 r6:802672c4 r5:84e83c00
+ r4:84c66300
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xdfe39fb0 to 0xdfe39ff8)
+9fa0:                                     00000000 00000000 00000000 00000000
+9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:84c66300
+NMI backtrace for cpu 0
+CPU: 0 PID: 31 Comm: khungtaskd Not tainted 6.9.0-rc1-syzkaller #0
+Hardware name: ARM-Versatile Express
+Call trace: 
+[<818795bc>] (dump_backtrace) from [<818796b8>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:256)
+ r7:00000000 r6:00000113 r5:60000193 r4:81fc4768
+[<818796a0>] (show_stack) from [<81896e70>] (__dump_stack lib/dump_stack.c:88 [inline])
+[<818796a0>] (show_stack) from [<81896e70>] (dump_stack_lvl+0x70/0x7c lib/dump_stack.c:114)
+[<81896e00>] (dump_stack_lvl) from [<81896e94>] (dump_stack+0x18/0x1c lib/dump_stack.c:123)
+ r5:00000000 r4:00000001
+[<81896e7c>] (dump_stack) from [<81866994>] (nmi_cpu_backtrace+0x160/0x17c lib/nmi_backtrace.c:113)
+[<81866834>] (nmi_cpu_backtrace) from [<81866ae0>] (nmi_trigger_cpumask_backtrace+0x130/0x1d8 lib/nmi_backtrace.c:62)
+ r7:00000000 r6:8260c590 r5:8261a88c r4:ffffffff
+[<818669b0>] (nmi_trigger_cpumask_backtrace) from [<802105b4>] (arch_trigger_cpumask_backtrace+0x18/0x1c arch/arm/kernel/smp.c:851)
+ r9:8260c6f4 r8:00007b4d r7:8289dfe0 r6:00007d59 r5:8500ee04 r4:850d4b24
+[<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline])
+[<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline])
+[<8021059c>] (arch_trigger_cpumask_backtrace) from [<8034ec48>] (watchdog+0x480/0x594 kernel/hung_task.c:380)
+[<8034e7c8>] (watchdog) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:df819e58 r8:82e98440 r7:00000000 r6:8034e7c8 r5:82ee8c00
+ r4:82f42100
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xdf8ddfb0 to 0xdf8ddff8)
+dfa0:                                     00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:82f42100
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 5655 Comm: kworker/1:259 Not tainted 6.9.0-rc1-syzkaller #0
+Hardware name: ARM-Versatile Express
+Workqueue: wg-crypt-wg0 wg_packet_encrypt_worker
+PC is at poly1305_final_arch+0x0/0x80 arch/arm/crypto/poly1305-glue.c:189
+LR is at poly1305_final include/crypto/poly1305.h:94 [inline]
+LR is at chacha20poly1305_crypt_sg_inplace+0x43c/0x4b4 lib/crypto/chacha20poly1305.c:320
+pc : [<80232f80>]    lr : [<807fa0e4>]    psr: 60000113
+sp : eafa1990  ip : eafa1990  fp : eafa1bb4
+r10: 00000000  r9 : 00000000  r8 : 00000000
+r7 : eafa19e0  r6 : 00000000  r5 : 00000000  r4 : eafa19f0
+r3 : 00000000  r2 : 00000000  r1 : eafa19f0  r0 : eafa1a68
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 30c5387d  Table: 8461dec0  DAC: 00000000
+Call trace: 
+[<807f9ca8>] (chacha20poly1305_crypt_sg_inplace) from [<807fa188>] (chacha20poly1305_encrypt_sg_inplace+0x2c/0x34 lib/crypto/chacha20poly1305.c:338)
+ r10:00000000 r9:00000000 r8:00000074 r7:00000001 r6:84dca018 r5:00000000
+ r4:00000074
+[<807fa15c>] (chacha20poly1305_encrypt_sg_inplace) from [<80bfb0f8>] (encrypt_packet+0x194/0x230 drivers/net/wireguard/send.c:216)
+ r5:00000000 r4:00000074
+[<80bfaf64>] (encrypt_packet) from [<80bfb8d0>] (wg_packet_encrypt_worker+0xbc/0x270 drivers/net/wireguard/send.c:297)
+ r10:846c86e8 r9:82f2a540 r8:00000000 r7:846c86a0 r6:8260eea8 r5:00000000
+ r4:82f2a540
+[<80bfb814>] (wg_packet_encrypt_worker) from [<8026678c>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
+ r10:84032e05 r9:85156000 r8:00000180 r7:ddde40c0 r6:84032e00 r5:ff7ffcf4
+ r4:8505ff00
+[<802665d4>] (process_one_work) from [<802674b0>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
+[<802665d4>] (process_one_work) from [<802674b0>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
+ r10:85156000 r9:8505ff2c r8:61c88647 r7:ddde40e0 r6:82604d40 r5:ddde40c0
+ r4:8505ff00
+[<802672c4>] (worker_thread) from [<802701c4>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:eaeb1e90 r8:84ed1a40 r7:8505ff00 r6:802672c4 r5:85156000
+ r4:847e7040
+[<802700c0>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xeafa1fb0 to 0xeafa1ff8)
+1fa0:                                     00000000 00000000 00000000 00000000
+1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:802700c0 r4:847e7040
 
 
+Tested on:
+
+commit:         7deb8d88 arm32, bpf: Fix sign-extension mov instruction
+git tree:       https://github.com/puranjaymohan/linux.git arm32_movsx_fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=175200cb180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=43f1e0cbdb852271
+dashboard link: https://syzkaller.appspot.com/bug?extid=186522670e6722692d86
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
+
+Note: no patches were applied.
 
