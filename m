@@ -1,206 +1,207 @@
-Return-Path: <bpf+bounces-26232-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CDF89CF78
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 02:34:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3315189D09D
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 05:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A2E1C21FDC
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 00:34:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94AB81F24B92
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 03:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101784A04;
-	Tue,  9 Apr 2024 00:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6ED054792;
+	Tue,  9 Apr 2024 03:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4xZ/DCy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YflbFw/G"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C272A934;
-	Tue,  9 Apr 2024 00:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853555464A;
+	Tue,  9 Apr 2024 03:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712622885; cv=none; b=eliMdUXuj1ZOun4KcqP2pyXlVuTvP4jLTHbiDOpwCEq5a9/QzXW208O4RXCj5avobDLMmJ4dFN7EGBKcll4MkXAHgrmzmz6xN+NyxTMSUCLRJxfej2B9ALuzP+EAT7uPV9ODRTfdLcX3DjXnk0gJuCAn4qUtxBGc7cRMW87fJ4k=
+	t=1712631875; cv=none; b=sPzOeysGwJ0rdbmkYfw9X8cFmdv87pG+OwqwIvdNf5toUMPI+ozLkiFjvoLaENCEZYbp5FH/9M4YcPnFmY4lZLYrFmJVQJvWHS7PexXAU2t4z2l5+48SRYF4QHM8lFbER2GrXKe85gWpBvoK7hVweb1Ah/4XXU4nH9Y1w+zych4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712622885; c=relaxed/simple;
-	bh=6KWBXWrsN0Smo6wkHN8i3FqroEDuIHPvzii2D1XYW/8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=ViVFTSchiKOgJgo5I/YCc1zUVdE3eKIJDVsdqACjDIlAHELQgqBBFEhOIudaKP1PAqCHee6obX/ZoUylvNXE1LoP3tqeb1RRkr904xY66zRNIZivdLnW+GGNv0JRo1eIA++duxeudugBtc8bbclfJjRimJElo/DfkEI92lEP9Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4xZ/DCy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78EBFC43390;
-	Tue,  9 Apr 2024 00:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712622885;
-	bh=6KWBXWrsN0Smo6wkHN8i3FqroEDuIHPvzii2D1XYW/8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=X4xZ/DCyG/081aBtw0KeHHzb01Qn/FrvDbzH0uG0KgXH8TGJPjfqlM9e1csL16R8a
-	 tzwcV2I8Xp9BXsh7zbN7ZkYszRKkpOlpV+MjRjtGIZJEPORDJCrNB8u/FtxxhafWE3
-	 D7U5f43UojQDsJa+kFdGmOwbQdstenO7G6T7L0xBd43ingrG1FZS2ArlVuzTFjktSn
-	 zsfM98Tb2qjqBACkUQ5jS73wdwwFlt1kRHZFp6OFpE6/rEXz0cSGlZk/6vGGcVECP5
-	 oJBKjqKJ1f+G0/rF+DYMf+VHwaVkDyHKIJKu1DavcIaAgBYomCvvhJxERjwfVP9C8G
-	 h4ALSHHDYNufw==
-Date: Tue, 9 Apr 2024 09:34:39 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra
- <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-api@vger.kernel.org
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
- probe
-Message-Id: <20240409093439.3906e3783ab1f5280146934e@kernel.org>
-In-Reply-To: <ZhQVBYQYr5ph33Uu@krava>
-References: <Zg0lvUIB4WdRUGw_@krava>
-	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
-	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
-	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
-	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
-	<20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
-	<20240404161108.GG7153@redhat.com>
-	<20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
-	<Zg-8r63tPSkuhN7p@krava>
-	<20240405110230.GA22839@redhat.com>
-	<ZhQVBYQYr5ph33Uu@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712631875; c=relaxed/simple;
+	bh=fCm2QjzqZmE57hIW5ALy8jcaYaNfeVyVqC6/smTRYlA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qmS3OX4UvOQ13Nnp179zto1wS2obzxhUfGFP4LDNzoOIAyF/gnXdEDCwISt6qSJnY5QzHEyk0Fm+ksscoz/A9QMmYOJmtQkMqZPD06uIMttTtloIiGM3Oag817l9HDuOCHVCKTrquFaBHonvrrm3GjERAJkt8zUlRwmaWoPO9fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YflbFw/G; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-343d7ff2350so2623968f8f.0;
+        Mon, 08 Apr 2024 20:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712631872; x=1713236672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1xcSXujIE/jclEFI/AnTD1MfFWS/axn8b5ifK4JkF34=;
+        b=YflbFw/Gm7Fx7erRmB4CRkFHkXOS+vTb9VVuSeb624XzjH4FFbua96DKUTdpmWbzlK
+         vqd3gK8m7xKtuWV8L9hiHJ9tRpxNkJB5nh9GnfPWOvVFgXQgzQzfmqu9v2mzcLPKefCR
+         oYdIuA5AvFRC7xCxd46mQ+rfbzDzGe2OT4wbpyGSwH6dGM7QfhlajcQR+G7WcSmt0rsZ
+         Q6L5r+o1jPhDBzajamtHbrVe8utv7k7XVQcQVYgpRhh5jY3bWSU4JAzlAhLRN0pkkRBT
+         4TGCF4FAeNFzzDBaYWeZNb3ROJuo2mDRSG4UKgGWeLyCk4PP1+3k0c1/UcGTeYutuJ/S
+         eaow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712631872; x=1713236672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1xcSXujIE/jclEFI/AnTD1MfFWS/axn8b5ifK4JkF34=;
+        b=JdDqExDE1UODAf7cqCymtG9Ztb+9B0fI91EgFr8IlcALtrCmVKphdui2Pw3uZH+oAa
+         wzXJABqlc0Sw1w5YYf4IsHtxMb4BtP61w/Sr0DMmjeUb3PV9+rQLZpKtq9wTKF3e/nwJ
+         b8iMYcFskzZKadpTUvQCTapMOItMCFuxdcB1rU1/RxC4VzobtfRc5uMhPmEqtwBvjc3t
+         E72oqgPcGVj9B5Q3WT4LoeZJkqFMvyAFO3EtGMf+Ix/4o7EikaNIMyQi/+nfyYWGgkCZ
+         jyraMoiGjSjZ/ht5xVCkTmqGPosb3PLcYhFkOl/PnH7ju1NSnjp2xll8sDdjpiW4axdG
+         8mDw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwBZm/96sFrK6yG8HTPErQLvhzWSab8J9ZCYFagBUI0i76sODCQDqOhkXJXYdAvZL7O9B3xUO61We+9FpV9fGJRDg6WrUGga9fOg4dkASJVZZDjrlCgAEIhwUvWGNT8rzfwr+MtbrRGZLsn2jn0aMiTdDjaowlySV3Jku+/flMwK+t
+X-Gm-Message-State: AOJu0Yx2tvebd8yL6jVydjOEQ6s1H+UGQ2sXaovEw9BN8jeV/HaD/LZa
+	aUWEM/yfCpxYUajU/tI+fD+TRCLJ7k4Ayod3slDAEfR26C+91kV5jaLlJPlUzgTt1BYRNe60KBl
+	Bixs4BH6hoJoCUyxo55+bmC4mBc0=
+X-Google-Smtp-Source: AGHT+IGp41Cfuwq20B11xn8kWbTSIlrKYpIGB+tSGSBsGBTpF/qFVRzLEx0Dgq2MGYlXQ3lVJuI2UiF26VWt6AOFzFc=
+X-Received: by 2002:a5d:4b02:0:b0:341:b9dc:eb03 with SMTP id
+ v2-20020a5d4b02000000b00341b9dceb03mr8491804wrq.3.1712631871629; Mon, 08 Apr
+ 2024 20:04:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+ <20240408-hid-bpf-sleepable-v6-1-0499ddd91b94@kernel.org> <65c249a6af45bfa5fe0f6c2331dcc1771a6f0b05.camel@gmail.com>
+ <CAO-hwJ+0erX3iJcOh9KBG3f01UiYvGk_Gx+-zyFc4Vb5LCcHxA@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+0erX3iJcOh9KBG3f01UiYvGk_Gx+-zyFc4Vb5LCcHxA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 8 Apr 2024 20:04:20 -0700
+Message-ID: <CAADnVQJRGgmBN+2wi9rKsLaVbBw5RuNtLN-pOBq-Pv3TC0-dww@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v6 1/6] bpf/helpers: introduce sleepable bpf_timers
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Benjamin Tissoires <bentiss@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 8 Apr 2024 18:02:13 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
-
-> On Fri, Apr 05, 2024 at 01:02:30PM +0200, Oleg Nesterov wrote:
-> > On 04/05, Jiri Olsa wrote:
+On Mon, Apr 8, 2024 at 10:20=E2=80=AFAM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> On Mon, Apr 8, 2024 at 7:08=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+> >
+> > On Mon, 2024-04-08 at 10:09 +0200, Benjamin Tissoires wrote:
+> >
+> > [...]
+> >
+> > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > index 9234174ccb21..fd05d4358b31 100644
+> > > --- a/kernel/bpf/helpers.c
+> > > +++ b/kernel/bpf/helpers.c
+> > > @@ -1096,12 +1096,19 @@ const struct bpf_func_proto bpf_snprintf_prot=
+o =3D {
+> > >   * freeing the timers when inner map is replaced or deleted by user =
+space.
+> > >   */
+> > >  struct bpf_hrtimer {
+> > > -     struct hrtimer timer;
+> > > +     union {
+> > > +             struct hrtimer timer;
+> > > +             struct work_struct work;
+> > > +     };
+> > >       struct bpf_map *map;
+> > >       struct bpf_prog *prog;
+> > >       void __rcu *callback_fn;
+> > >       void *value;
+> > > -     struct rcu_head rcu;
+> > > +     union {
+> > > +             struct rcu_head rcu;
+> > > +             struct work_struct sync_work;
+> >
+> > Nit:
+> > I find this name very confusing, the field is used to cancel timer
+> > execution, is it a convention to call such things '...sync...'?
+> >
+> > > +     };
+> > > +     u64 flags;
+> > >  };
 > > >
-> > > On Fri, Apr 05, 2024 at 10:22:03AM +0900, Masami Hiramatsu wrote:
-> > > >
-> > > > I think this expects setjmp/longjmp as below
-> > > >
-> > > > foo() { <- retprobe1
-> > > > 	setjmp()
-> > > > 	bar() { <- retprobe2
-> > > > 		longjmp()
-> > > > 	}
-> > > > } <- return to trampoline
-> > > >
-> > > > In this case, we need to skip retprobe2's instance.
-> > 
-> > Yes,
-> > 
-> > > > My concern is, if we can not find appropriate return instance, what happen?
-> > > > e.g.
-> > > >
-> > > > foo() { <-- retprobe1
-> > > >    bar() { # sp is decremented
-> > > >        sys_uretprobe() <-- ??
-> > > >     }
-> > > > }
-> > > >
-> > > > It seems sys_uretprobe() will handle retprobe1 at that point instead of
-> > > > SIGILL.
-> > >
-> > > yes, and I think it's fine, you get the consumer called in wrong place,
-> > > but it's your fault and kernel won't crash
-> > 
-> > Agreed.
-> > 
-> > With or without this patch userpace can also do
-> > 
-> > 	foo() { <-- retprobe1
-> > 		bar() {
-> > 			jump to xol_area
-> > 		}
-> > 	}
-> > 
-> > handle_trampoline() will handle retprobe1.
-> > 
-> > > this can be fixed by checking the syscall is called from the trampoline
-> > > and prevent handle_trampoline call if it's not
-> > 
-> > Yes, but I still do not think this makes a lot of sense. But I won't argue.
-> > 
-> > And what should sys_uretprobe() do if it is not called from the trampoline?
-> > I'd prefer force_sig(SIGILL) to punish the abuser ;) OK, OK, EINVAL.
-> 
-> so the similar behaviour with int3 ends up with immediate SIGTRAP
-> and not invoking pending uretprobe consumers, like:
-> 
->   - setup uretprobe for foo
->   - foo() {
->       executes int 3 -> sends SIGTRAP
->     }
-> 
-> because the int3 handler checks if it got executed from the uretprobe's
-> trampoline.. if not it treats that int3 as regular trap
+> >
+> > [...]
+> >
+> > > +static void bpf_timer_sync_work_cb(struct work_struct *work)
+> > > +{
+> > > +     struct bpf_hrtimer *t =3D container_of(work, struct bpf_hrtimer=
+, sync_work);
+> > > +
+> > > +     cancel_work_sync(&t->work);
+> > > +
+> > > +     kfree_rcu(t, rcu);
+> >
+> > Sorry, I might be wrong, but this looks suspicious.
+> > The 'rcu' field of 'bpf_hrtimer' is defined as follows:
+> >
+> > struct bpf_hrtimer {
+> >         ...
+> >         union {
+> >                 struct rcu_head rcu;
+> >                 struct work_struct sync_work;
+> >         };
+> >         ...
+> > };
+> >
+> > And for sleepable timers the 'sync_work' field is set as follows:
+> >
+> > BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *, timer, struct bpf_m=
+ap *, map,
+> >            u64, flags)
+> > {
+> >         ...
+> >         INIT_WORK(&t->sync_work, bpf_timer_sync_work_cb);
+> >         ...
+> > }
+> >
+> > So, it looks like 'kfree_rcu' would be called for a non-rcu pointer.
+>
+> That was my initial assumption too, but Alexei told me it was fine.
+> And I think he is correct because kfree_rcu doesn't need the rcu_head
+> to be initialized.
+>
+> So in the end, we initialize the memory as a work_struct, and when
+> that work kicks in, we reuse that exact same memory as the rcu_head.
+> This is fine because that work will never be reused.
+>
+> If I understand correctly, this is to save a few bytes as this is a
+> critical struct used in programs with a high rate usage, and every
+> byte counts.
 
-Yeah, that is consistent behavior. Sounds good to me.
+Yes. All correct.
+Probably makes sense to add a comment before kfree_rcu()
+line in bpf_timer_sync_work_cb() that
+kfree_rcu will wait for bpf_timer_cancel() to finish
+as was done in
+commit 0281b919e175 ("bpf: Fix racing between
+bpf_timer_cancel_and_free and bpf_timer_cancel").
 
-> 
-> while for uretprobe syscall we have at the moment following behaviour:
-> 
->   - setup uretprobe for foo
->   - foo() {
->      uretprobe_syscall -> executes foo's uretprobe consumers
->     }
->   - at some point we get to the 'ret' instruction that jump into uretprobe
->     trampoline and the uretprobe_syscall won't find pending uretprobe and
->     will send SIGILL
-> 
-> 
-> so I think we should mimic int3 behaviour and:
-> 
->   - setup uretprobe for foo
->   - foo() {
->      uretprobe_syscall -> check if we got executed from uretprobe's
->      trampoline and send SIGILL if that's not the case
+I suspect that's what confused Eduard.
 
-OK, this looks good to me.
+The patch 1 looks great overall.
 
-> 
-> I think it's better to have the offending process killed right away,
-> rather than having more undefined behaviour, waiting for final 'ret'
-> instruction that jumps to uretprobe trampoline and causes SIGILL
-> 
-> > 
-> > I agree very much with Andrii,
-> > 
-> >        sigreturn()  exists only to allow the implementation of signal handlers.  It should never be
-> >        called directly.  Details of the arguments (if any) passed to sigreturn() vary depending  on
-> >        the architecture.
-> > 
-> > this is how sys_uretprobe() should be treated/documented.
-> 
-> yes, will include man page patch in new version
-
-And please follow Documentation/process/adding-syscalls.rst in new version,
-then we can avoid repeating the same discussion :-)
-
-Thank you!
-
-> 
-> jirka
-> 
-> > 
-> > sigreturn() can be "improved" too. Say, it could validate sigcontext->ip
-> > and return -EINVAL if this addr is not valid. But why?
-> > 
-> > Oleg.
-> > 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If we're going to keep this combined bpf_timer_* api for both wq
+and timer we'd need to add flags compatibility check
+to bpf_timer_start() too.
+We can disallow this flag in 'flags' argument and use one from t->flags.
+Which kinda makes sense to make bpf_timer_start() less verbose.
+Alternatively we can allow bpf_timer_start() to have it,
+but then we'd need to check that it is actually passed.
+Either way the patch needs an extra check in bpf_timer_start().
+Just ignoring BPF_F_TIMER_SLEEPABLE in bpf_timer_start() doesn't look right=
+.
 
