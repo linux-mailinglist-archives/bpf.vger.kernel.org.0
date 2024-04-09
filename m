@@ -1,124 +1,98 @@
-Return-Path: <bpf+bounces-26227-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26228-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A71B89CEEC
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 01:25:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBAAC89CF1C
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 02:00:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B55A3287946
-	for <lists+bpf@lfdr.de>; Mon,  8 Apr 2024 23:25:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E4AA1F22E33
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 00:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B83143890;
-	Mon,  8 Apr 2024 23:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80B9762D7;
+	Tue,  9 Apr 2024 00:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iFiNjI2o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W2C7WKU+"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBF0376E4
-	for <bpf@vger.kernel.org>; Mon,  8 Apr 2024 23:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A30D6FCC;
+	Tue,  9 Apr 2024 00:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712618700; cv=none; b=Ghf+YhR0axcguPF/97uyOudH+k9l+r+MQHModvyRqYpN3wMRSkKoGG3oDNhtthFFDAicB9sUvOruKbeYxpW43lxDDndcFpoID8GeCLBGpi5pdLdpjCadwJpIxAXQwq1GE9K9x4sSOqdXziS6RlBjRiCS2frQIn9prCgD/0Wl1JE=
+	t=1712620828; cv=none; b=it1Voyur1AuYvzD+EloZszzsV9un2VkLECgbf0jrXr/VwUn7YjaBKvdv5C2VBo06FnA51XNxbnzKArZCBn2wjYdKbdM8IhLzTcbls8n7IY7oIkWoEWDglTzEBLf6dzPMsUgmlGyts7a/J9og2A2lLNi9r+RddmgatY1U6hEnUAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712618700; c=relaxed/simple;
-	bh=m02HYx5NzLzzr/70S4Rpa2JYMlZBWYYZDwmc9MM6Lxs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZ5lLlhiBV0xpXGXHt9Q/4eOPBPtUxgCquY+0RNVkDTedPtPfjEEhSijvxb++t4G/8zQdhSFxMlHoOBq3MK74Ter/XBfrlu64SC1YZgmcyNZitGVC1lGz0Y9gZWMrGGBx/QFcf7ie+qLgZuUKdcxRwYcTcSdo1g4ThiT+FCzWvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iFiNjI2o; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <192149e0-34cb-43aa-9eea-cd4caa03d284@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712618696;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KXC8i1bm/63/ZN7AuDuGJcSpUov56WF1xe5Ir/5ysX0=;
-	b=iFiNjI2oIp8TlFA92RAUHMJfeMP8SNJ5TzEDeslGeJgLo+TeIR3Cu2C0+GmqRErHrICfDP
-	YdqQ7MyabUAQuZQ7Yh0Qb8afs2gPYkhAZ01eCwI8+NUi+yTi7pVOSHMbJhg6rf5jT+cyjg
-	ZAGlPbJrch1BvMI6G6Owr/x108+PxS8=
-Date: Mon, 8 Apr 2024 16:24:48 -0700
+	s=arc-20240116; t=1712620828; c=relaxed/simple;
+	bh=mtYqmMazK3B5/swMxdH4wpMinpuhi6LpgjrcrjQY750=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Ru1zLxiH0r50C4bWEl2RIlq/f7paNwZvynr8P0ruJ4AlWoQlmZqyzwRBd2PqqsN9yfAbst1a0DpDoBG/JHop/8TcGv4XVWrqGxSMwUjF3jUyhw7Za8XVYFjoFDwzDT/5EgiDr8QkTz5SJjPK9zXj1nnfPeVKcVb3XkVh+HW63bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W2C7WKU+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5A51C433F1;
+	Tue,  9 Apr 2024 00:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712620827;
+	bh=mtYqmMazK3B5/swMxdH4wpMinpuhi6LpgjrcrjQY750=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=W2C7WKU+/Ttw4qo2lt2Q7WHqjOOSQaixBaBXAc06LdVxTd0tuKFVHb/5CeG3ejrJz
+	 F+IpKFy7Rn+4tcwYHJjUDJARVdvhev7J8nWFpRXyCQh9ctQ+ctkjFOho59VcNmaw70
+	 /mOUhhh5spxDcjQeEFcuqu301f0DEzyUp9/XNJBWcRGMHsTEOh4VOE/esX3XVQM5ur
+	 xtCXSAtdgYJqbchGuZAJNTJGCKDNdKU1t4gaK6tb97dulgEAmljeWHXnGoa2PH+wDg
+	 PvgJznckLmQrqdj5MvfEE4ZcCxdLGlGv2Iq7G4pCn94OmQeWi64YljMwJ5VqSQQStk
+	 BNdFBsbbAFlLQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A4862C54BD3;
+	Tue,  9 Apr 2024 00:00:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/2] selftests/bpf: Add F_SETFL for fcntl in
- test_sockmap
-To: Geliang Tang <geliang@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
- mptcp@lists.linux.dev, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Jakub Sitnicki <jakub@cloudflare.com>
-References: <cover.1712539403.git.tanggeliang@kylinos.cn>
- <2f9f84be1366ca68b1123dd2f3fd06034e1bd3a4.1712539403.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <2f9f84be1366ca68b1123dd2f3fd06034e1bd3a4.1712539403.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] selftests/bpf: eliminate warning of
+ get_cgroup_id_from_path()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171262082766.22195.12036150932807338138.git-patchwork-notify@kernel.org>
+Date: Tue, 09 Apr 2024 00:00:27 +0000
+References: <20240406144613.4434-1-kerneljasonxing@gmail.com>
+In-Reply-To: <20240406144613.4434-1-kerneljasonxing@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org, kernelxing@tencent.com
 
-On 4/7/24 6:36 PM, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Sat,  6 Apr 2024 22:46:13 +0800 you wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
-> Incorrect arguments are passed to fcntl() in test_sockmap.c when invoking
-> it to set file status flags. If O_NONBLOCK is used as 2nd argument and
-> passed into fcntl, -EINVAL will be returned (See do_fcntl() in fs/fcntl.c).
-> The correct approach is to use F_SETFL as 2nd argument, and O_NONBLOCK as
-> 3rd one.
+> The output goes like this if I make samples/bpf:
+> ...warning: no previous prototype for ‘get_cgroup_id_from_path’...
 > 
-> In nonblock mode, if EWOULDBLOCK is received, continue receiving, otherwise
-> some subtests of test_sockmap will fail.
+> Make this function static could solve the warning problem since
+> no one outside of the file calls it.
 > 
-> Fixes: 16962b2404ac ("bpf: sockmap, add selftests")
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->   tools/testing/selftests/bpf/test_sockmap.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-> index 024a0faafb3b..4f32a5eb3864 100644
-> --- a/tools/testing/selftests/bpf/test_sockmap.c
-> +++ b/tools/testing/selftests/bpf/test_sockmap.c
-> @@ -603,7 +603,7 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
->   		struct timeval timeout;
->   		fd_set w;
->   
-> -		fcntl(fd, fd_flags);
-> +		fcntl(fd, F_SETFL, fd_flags);
+> [...]
 
-Should it just error out here if fcntl did fail (unlikely?) ...
+Here is the summary with links:
+  - [net-next] selftests/bpf: eliminate warning of get_cgroup_id_from_path()
+    https://git.kernel.org/bpf/bpf-next/c/bb761fcb8217
 
->   		/* Account for pop bytes noting each iteration of apply will
->   		 * call msg_pop_data helper so we need to account for this
->   		 * by calculating the number of apply iterations. Note user
-> @@ -678,6 +678,9 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
->   					perror("recv failed()");
->   					goto out_errno;
->   				}
-> +				fd_flags = fcntl(fd, F_GETFL);
-> +				if (fd_flags & O_NONBLOCK)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-... then no need to test fd_flags here?
-
-pw-bot: cr
-
-> +					continue;
->   			}
->   
->   			s->bytes_recvd += recv;
 
 
