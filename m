@@ -1,285 +1,220 @@
-Return-Path: <bpf+bounces-26258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA2D89D3DB
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 10:11:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B24589D3FE
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 10:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6677D1F22C6D
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 08:11:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D580283F41
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 08:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FEB7E78B;
-	Tue,  9 Apr 2024 08:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B40D7F47A;
+	Tue,  9 Apr 2024 08:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0h0dJ29h"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Tkch436q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205507E107
-	for <bpf@vger.kernel.org>; Tue,  9 Apr 2024 08:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE52F7E116;
+	Tue,  9 Apr 2024 08:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712650293; cv=none; b=dBBgSOR92hrptai7HY2gV4gNWZiPyTNhCCSZ4MXHoUrzMaDfKO6BPS9WVZp/tIfuzhYQ/jwnkZmrC8qQGbDkaGGxK1Nq+0Gmp0N1tt/o0ycWDtKrs9qkrDqu5Me+20d1nthkd/I0uDijPNvhq1NwWzO4oPXvecGT0NaV/34NlEM=
+	t=1712650566; cv=none; b=YJP+oJvKuXmFfF7lXw5baHuzN1Z+PAh2hbQ8aCk0BD6kocjtUmVmdNMCgPoQnUhaFl3TMbId9TbjfR+YjaV1T6u6OWneBdPXwLQBgpsUFAYAnl4IiievpNzlGMefIaYyvNeZAzAt603i18ZXEUvp/Hw3huuWfHo3Xq+XLEBpW6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712650293; c=relaxed/simple;
-	bh=Sj7xWo6dggnBKWnwopkjcfoSOT+F+b/D4Pubow5TKx8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OMluD7ZelwYaddW81ogu6qwJE8O66Sm7MDjRnIFECAeQLQCY2u1w8j5YjK95LxqLpYoC1jqF/oY9JPSbqFUtegaC2w0D54IHWReqwEsVoClQ53LSYWEZzOaQRGSi0KNPG+cJSMfjGr5k9BKbQXH0hflE3j2mrpne5FuypqHHGro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0h0dJ29h; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4daab3cf090so2758088e0c.0
-        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 01:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712650291; x=1713255091; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/0nblBmM1/a+p1HrPFvTeMrGyNMRc47QQf0Yo+BcYZs=;
-        b=0h0dJ29heE2qr9EdfMpearXEVBdflTFRu1ZtFiXFt2DB9mZAuqJDfHliFJ/PX745vm
-         PqXBxjd6L9h1AUeLsIZ/lirSjEPCJ4xbFz7F26seBxIF1+hpMDwlTYOLE18Q+d/DKzIl
-         d0UT43vpHftNS5yXCJSZKbq8Hdhdb6SbVXdvTHifBJEThYmzq3jMvKiEOZPT7k+pMT5f
-         p3BGOX7jRnhVPYaMsYlz8CxFXs/ELzm+/bFR7JVwnJrGVFNLb0Wiwd0RowkhRRpk6k3v
-         NC9S5ashIcKb09sIeetgmYIPdoyOhCFvTwArmCNi4SSVlGNUIPvbxqJm5cN+Xsq82Jol
-         2kng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712650291; x=1713255091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/0nblBmM1/a+p1HrPFvTeMrGyNMRc47QQf0Yo+BcYZs=;
-        b=lYqFz/vlaXD7B+d5PIDWedrEvuHP8VrnYOmdQVKot2ECSZAC3gsPK8zAeTbe09gucN
-         3WyGItQq/00/9qDSyN4c/SXeOLQrYdaWq2HYsW8O61+u/WHTmkfUEvNY3ebapEXYRoK3
-         NgThRCM+PRxiSCCIVaVWiwiBC5UyRbH6JyerJ5Lw2BtYVjClpRHpLtGcnXS+rc7ghZD1
-         zIJJ6kRyUHadwpbD/BWz2EicI+yGTs7CcwUK11/ZptZJ/oGirwmCaTfNFTcS4pPro2jc
-         g0QxspJwoJAYhqL3OhinJrD4B++o3KEW3d6AufCD/agW7azesOtiJDtr/Qanh8M+keug
-         S8yw==
-X-Forwarded-Encrypted: i=1; AJvYcCXWGYA9J2F+zy9qzgGTlmdF1A3FmZ1H/z7ELHKztDHYZEWDbD74Bb34vbljMwNTtRRumQYRao1q2O/IHjQD4QTYxipm
-X-Gm-Message-State: AOJu0YzNyPamPAjMEFkh50JOOiX5X1U9W0S+7lbaRigRlaerN4vKOSqF
-	m4k7/jtje+BPIy0McCHC04SCO/H+XqrX8lcmr62yjA+0/sZrTlStEdbFs8yQhH+VBaThUTvsM1w
-	ZkOc8cwHjyjhab+cbKnFm0fWmx1BXhXv5uVbP
-X-Google-Smtp-Source: AGHT+IHo3sayxxc3lpEm1Fm76MGBY1zYfOZ1vpEOlwm67dbXPRGyU26Bo6MFRjwdx3BD+yQ6vx/rvX5dUBr75D/IPdA=
-X-Received: by 2002:a05:6122:264f:b0:4c7:7760:8f14 with SMTP id
- dr15-20020a056122264f00b004c777608f14mr1093930vkb.7.1712650290765; Tue, 09
- Apr 2024 01:11:30 -0700 (PDT)
+	s=arc-20240116; t=1712650566; c=relaxed/simple;
+	bh=8HvCApuiy6ONW7tfYfgKhurDV6wmKYxjw6pCqGJW4qw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G2bIjaIxp4lOcwoi1USzcCf+uCFHhK99UlgLpOucklMvxjqqRPjSaed7F4aMbYbf/6rgRSS29Zdu+GFRq8ix11uwiNv5Uig1bZLnA06y1ciiRpADR9FAK/OJ0jI4NuHPcye4MgSIgKzfRyfYYvYr0LpKECWx2j9wWVeTAISQIfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Tkch436q; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=RRSBY6/rtPwcAAaFW3HJTN9NeVlK6dzskGTvl9SWwlk=; b=Tkch436qG2RJnWFcSMxqYvcDnX
+	KG41Odci/LVUbafwNby6jvXCU7pWNzdA7kTCzKMIXwBqhUsCZdJQ/m1WO7P1wwVr3UWL3FKQ84DTj
+	3Y0Nm7/Hb8z/7M+x6gGufi1w4MnaBd/4/kw/q8rIge2shXxnq0XNhUGsMBqnP7+8WgGYrD+R5O7RW
+	NmzLSh2XxGZb86K7eqKxsrt/5DqkIIQfcns4vAJNATXV6HCg58Pn5e8GEpmAjVI2PqCA2s2GECvwP
+	LzPvDC4wbDZCF//QQEu6xOkY4cHn4GnwTHJAMtx8aYcWFfb6kVs5yKlSvvAWZkkP7UAVJfivrERak
+	0CriE9Ug==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38758)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1ru6dz-000640-0N;
+	Tue, 09 Apr 2024 09:15:52 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1ru6dx-0004vn-Gs; Tue, 09 Apr 2024 09:15:49 +0100
+Date: Tue, 9 Apr 2024 09:15:49 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>,
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault (2)
+Message-ID: <ZhT5NRYnceirmAGz@shell.armlinux.org.uk>
+References: <000000000000e9a8d80615163f2a@google.com>
+ <20240403184149.0847a9d614f11b249529fd02@linux-foundation.org>
+ <CAADnVQ+meL1kvXUehDT3iO2mxiZNeSUqeRKYx1C=3c0h=NSiqA@mail.gmail.com>
+ <Zg_aTFoC2Pwakyl1@FVFF77S0Q05N>
+ <Zg/iGQCDKa9bllyI@shell.armlinux.org.uk>
+ <CAADnVQ+LKO2Y90DVZ4qQv3dXyuWKkvFqqJ0E_p_=qwscsvnaVg@mail.gmail.com>
+ <CAEf4BzYNc-cxRu9qEe2DWdCBNwXAvpSBHKtUhXtoEhB_XNc1Gg@mail.gmail.com>
+ <ZhBAnvLRfj/JW5bZ@shell.armlinux.org.uk>
+ <mb61pcyqzx9l9.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404190146.1898103-1-elver@google.com> <CAADnVQKc+Z39k9wbU2MHf-fPFma+9QsyOugmmmGq3ynQCTVfCw@mail.gmail.com>
- <CANpmjNN+rR1PWKbx6RBWhOjnmAP+jUDzc3TLcwTnmfd=ft03dg@mail.gmail.com>
- <CAEf4BzZCj=3hevf+Je=oed9Nisctotp_CX00NrLaO6_7+-0LSQ@mail.gmail.com>
- <CANpmjNMCJwCaGiUpMCukgruNJ9k120sJ8pVkrdpyo-Tonve2Sw@mail.gmail.com> <CAADnVQJ68X6NPYtEbQPXPM4pH1ZPg5iSrYi8c3EanL51SAW7zQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJ68X6NPYtEbQPXPM4pH1ZPg5iSrYi8c3EanL51SAW7zQ@mail.gmail.com>
-From: Marco Elver <elver@google.com>
-Date: Tue, 9 Apr 2024 10:10:52 +0200
-Message-ID: <CANpmjNO3m-f-Yg5EqTL3ktL2CqTw7v0EjHGVth7ssWJRnNz5xQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_probe_write_user_registered()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <mb61pcyqzx9l9.fsf@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Mon, 8 Apr 2024 at 20:24, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 8, 2024 at 2:30=E2=80=AFAM Marco Elver <elver@google.com> wro=
-te:
+On Tue, Apr 09, 2024 at 07:45:54AM +0000, Puranjay Mohan wrote:
+> "Russell King (Oracle)" <linux@armlinux.org.uk> writes:
+> 
+> > On Fri, Apr 05, 2024 at 10:50:30AM -0700, Andrii Nakryiko wrote:
+> >> On Fri, Apr 5, 2024 at 9:30 AM Alexei Starovoitov
+> >> <alexei.starovoitov@gmail.com> wrote:
+> >> >
+> >> > On Fri, Apr 5, 2024 at 4:36 AM Russell King (Oracle)
+> >> > <linux@armlinux.org.uk> wrote:
+> >> > >
+> >> > > On Fri, Apr 05, 2024 at 12:02:36PM +0100, Mark Rutland wrote:
+> >> > > > On Thu, Apr 04, 2024 at 03:57:04PM -0700, Alexei Starovoitov wrote:
+> >> > > > > On Wed, Apr 3, 2024 at 6:56 PM Andrew Morton <akpm@linux-foundationorg> wrote:
+> >> > > > > >
+> >> > > > > > On Mon, 01 Apr 2024 22:19:25 -0700 syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com> wrote:
+> >> > > > > >
+> >> > > > > > > Hello,
+> >> > > > > >
+> >> > > > > > Thanks.  Cc: bpf@vger.kernel.org
+> >> > > > >
+> >> > > > > I suspect the issue is not on bpf side.
+> >> > > > > Looks like the bug is somewhere in arm32 bits.
+> >> > > > > copy_from_kernel_nofault() is called from lots of places.
+> >> > > > > bpf is just one user that is easy for syzbot to fuzz.
+> >> > > > > Interestingly arm defines copy_from_kernel_nofault_allowed()
+> >> > > > > that should have filtered out user addresses.
+> >> > > > > In this case ffffffe9 is probably a kernel address?
+> >> > > >
+> >> > > > It's at the end of the kernel range, and it's ERR_PTR(-EINVAL).
+> >> > > >
+> >> > > > 0xffffffe9 is -0x16, which is -22, which is -EINVAL.
+> >> > > >
+> >> > > > > But the kernel is doing a write?
+> >> > > > > Which makes no sense, since copy_from_kernel_nofault is probe reading.
+> >> > > >
+> >> > > > It makes perfect sense; the read from 'src' happened, then the kernel tries to
+> >> > > > write the result to 'dst', and that aligns with the disassembly in the report
+> >> > > > below, which I beleive is:
+> >> > > >
+> >> > > >      8: e4942000        ldr     r2, [r4], #0  <-- Read of 'src', fault fixup is elsewhere
+> >> > > >      c: e3530000        cmp     r3, #0
+> >> > > >   * 10: e5852000        str     r2, [r5]      <-- Write to 'dst'
+> >> > > >
+> >> > > > As above, it looks like 'dst' is ERR_PTR(-EINVAL).
+> >> > > >
+> >> > > > Are you certain that BPF is passing a sane value for 'dst'? Where does that
+> >> > > > come from in the first place?
+> >> > >
+> >> > > It looks to me like it gets passed in from the BPF program, and the
+> >> > > "type" for the argument is set to ARG_PTR_TO_UNINIT_MEM. What that
+> >> > > means for validation purposes, I've no idea, I'm not a BPF hacker.
+> >> > >
+> >> > > Obviously, if BPF is allowing copy_from_kernel_nofault() to be passed
+> >> > > an arbitary destination address, that would be a huge security hole.
+> >> >
+> >> > If that's the case that's indeed a giant security hole,
+> >> > but I doubt it. We would be crashing other archs as well.
+> >> > I cannot really tell whether arm32 JIT is on.
+> >> > If it is, it's likely a bug there.
+> >> > Puranjay,
+> >> > could you please take a look.
+> >> >
+> >> 
+> >> I dumped the BPF program that repro.c is loading, it works on x86-64
+> >> and there is nothing special there. We are probe-reading 5 bytes from
+> >> somewhere into the stack. Everything is unaligned here, but stays
+> >> within a well-defined memory slot.
+> >> 
+> >> Note the r3 = (s8)r1, that's a new-ish thing, maybe bug is somewhere
+> >> there (but then it would be JIT, not verifier itself)
+> >> 
+> >>    0: (7a) *(u64 *)(r10 -8) = 896542069
+> >>    1: (bf) r1 = r10
+> >>    2: (07) r1 += -7
+> >>    3: (b7) r2 = 5
+> >>    4: (bf) r3 = (s8)r1
+> >>    5: (85) call bpf_probe_read_kernel#-72390
 > >
-> > On Fri, 5 Apr 2024 at 22:28, Andrii Nakryiko <andrii.nakryiko@gmail.com=
-> wrote:
-> > >
-> > > On Fri, Apr 5, 2024 at 1:28=E2=80=AFAM Marco Elver <elver@google.com>=
- wrote:
-> > > >
-> > > > On Fri, 5 Apr 2024 at 01:23, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > [...]
-> > > > > and the tasks can use mmaped array shared across all or unique to=
- each
-> > > > > process.
-> > > > > And both bpf and user space can read/write them with a single ins=
-truction.
-> > > >
-> > > > That's BPF_F_MMAPABLE, right?
-> > > >
-> > > > That does not work because the mmapped region is global. Our requir=
-ements are:
->
-> It sounds not like "requirements", but a description of the proposed
-> solution.
+> 
+> I have started looking into this, the issue only reproduces when the JIT
+> is enabled. With the interpreter, it works fine.
+> 
+> I used GDB to dump the JITed BPF program:
+> 
+>    0xbf00012c:  push    {r4, r5, r6, r7, r8, r9, r11, lr}
+>    0xbf000130:  mov     r11, sp
+>    0xbf000134:  mov     r3, #0
+>    0xbf000138:  sub     r2, sp, #80     @ 0x50
+>    0xbf00013c:  sub     sp, sp, #88     @ 0x58
+>    0xbf000140:  strd    r2, [r11, #-64] @ 0xffffffc0
+>    0xbf000144:  mov     r2, #0
+>    0xbf000148:  strd    r2, [r11, #-72] @ 0xffffffb8
+>    0xbf00014c:  mov     r2, r0
+>    0xbf000150:  movw    r8, #9589       @ 0x2575
+>    0xbf000154:  movt    r8, #13680      @ 0x3570
+>    0xbf000158:  mov     r9, #0
+>    0xbf00015c:  ldr     r6, [r11, #-64] @ 0xffffffc0
+>    0xbf000160:  str     r8, [r6, #-8]
+>    0xbf000164:  str     r9, [r6, #-4]
+>    0xbf000168:  ldrd    r2, [r11, #-64] @ 0xffffffc0
+>    0xbf00016c:  movw    r8, #65529      @ 0xfff9
+>    0xbf000170:  movt    r8, #65535      @ 0xffff
+>    0xbf000174:  movw    r9, #65535      @ 0xffff
+>    0xbf000178:  movt    r9, #65535      @ 0xffff
+>    0xbf00017c:  adds    r2, r2, r8
+>    0xbf000180:  adc     r3, r3, r9
+>    0xbf000184:  mov     r6, #5
+>    0xbf000188:  mov     r7, #0
+>    0xbf00018c:  strd    r6, [r11, #-8]
+>    0xbf000190:  ldrd    r6, [r11, #-16]
 
-These requirements can also be implemented differently, e.g. with the
-proposed task-local storage maps if done right (the devil appears to
-be in the implementation-details - these details are currently beyond
-my knowledge of the BPF subsystem internals). They really are the bare
-minimum requirements for the use case. The proposed solution probably
-happens to be the simplest one, and mapping requirements is relatively
-straightforward for it.
+Up to this point, it looks correct. r2/r3 contain the stack pointer
+which corresponds to the instruction at "2:"
 
-> Pls share the actual use case.
-> This "tracing prog" sounds more like a ghost scheduler that
-> wants to interact with known user processes.
+>    0xbf000194:  lsl     r2, r2, #24
+>    0xbf000198:  asr     r2, r2, #24
+>    0xbf00019c:  str     r2, [r11, #-16]
 
-It's tcmalloc - we have a BPF program provide a simpler variant of the
-"thread re-scheduling" notifications discussed here:
-https://lore.kernel.org/all/CACT4Y+beLh1qnHF9bxhMUcva8KyuvZs7Mg_31SGK5xSoR=
-=3D3m1A@mail.gmail.com/
+This then narrows the 64-bit pointer down to just 8!!! bits, but this
+is what the instruction at "4:" is asking for. However, it looks like
+it's happening to BPF's "r1" rather than "r3" and this is probably
+where the problem lies.
 
-Various synchronization algorithms can be optimized if they know about
-scheduling events. This has been proposed in [1] to implement an
-adaptive mutex. However, we think that there are many more
-possibilities, but it really depends on the kind of scheduler state
-being exposed ("thread on CPU" as in [1], or more details, like
-details about which thread was switched in, which was switched out,
-where was the thread migrated to, etc.). Committing to these narrow
-use case ABIs and extending the main kernel with more and more such
-information does not scale. Instead, BPF easily allows to expose this
-information where it's required.
+I haven't got time to analyse this further this morning - I'm only
+around sporadically today. I'll try to look deeper at this later on.
 
-[1] https://lore.kernel.org/all/20230529191416.53955-1-mathieu.desnoyers@ef=
-ficios.com/
-
-> > > > 1. Single tracing BPF program.
-> > > >
-> > > > 2. Per-process (per VM) memory region (here it's per-thread, but ea=
-ch
-> > > > thread just registers the same process-wide region).  No sharing
-> > > > between processes.
-> > > >
-> > > > 3. From #2 it follows: exec unregisters the registered memory regio=
-n;
-> > > > fork gets a cloned region.
-> > > >
-> > > > 4. Unprivileged processes can do prctl(REGISTER). Some of them migh=
-t
-> > > > not be able to use the bpf syscall.
-> > > >
-> > > > The reason for #2 is that each user space process also writes to th=
-e
-> > > > memory region (read by the BPF program to make updates depending on
-> > > > what state it finds), and having shared state between processes
-> > > > doesn't work here.
-> > > >
-> > > > Is there any reasonable BPF facility that can do this today? (If
-> > > > BPF_F_MMAPABLE could do it while satisfying requirements 2-4, I'd b=
-e a
-> > > > happy camper.)
-> > >
-> > > You could simulate something like this with multi-element ARRAY +
-> > > BPF_F_MMAPABLE, though you'd need to pre-allocate up to max number of
-> > > processes, so it's not an exact fit.
-> >
-> > Right, for production use this is infeasible.
->
-> Last I heard, ghost agent and a few important tasks can mmap bpf array
-> and share it with bpf prog.
-> So quite feasible.
-
-Nothing related to ghost.
-
-It's tcmalloc, i.e. every process running everywhere.
-
-> > > But what seems to be much closer is using BPF task-local storage, if
-> > > we support mmap()'ing its memory into user-space. We've had previous
-> > > discussions on how to achieve this (the simplest being that
-> > > mmap(task_local_map_fd, ...) maps current thread's part of BPF task
-> > > local storage). You won't get automatic cloning (you'd have to do tha=
-t
-> > > from the BPF program on fork/exec tracepoint, for example), and withi=
-n
-> > > the process you'd probably want to have just one thread (main?) to
-> > > mmap() initially and just share the pointer across all relevant
-> > > threads.
-> >
-> > In the way you imagine it, would that allow all threads sharing the
-> > same memory, despite it being task-local? Presumably each task's local
-> > storage would be mapped to just point to the same memory?
-> >
-> > > But this is a more generic building block, IMO. This relying
-> > > on BPF map also means pinning is possible and all the other BPF map
-> > > abstraction benefits.
-> >
-> > Deployment-wise it will make things harder because unprivileged
-> > processes still have to somehow get the map's shared fd somehow to
-> > mmap() it. Not unsolvable, and in general what you describe looks
-> > interesting, but I currently can't see how it will be simpler.
->
-> bpf map can be pinned into bpffs for any unpriv process to access.
-> Then any task can bpf_obj_get it and mmap it.
-> If you have few such tasks than bpf array will do.
-> If you have millions of tasks then use bpf arena which is a sparse array.
-> Use pid as an index or some other per-task id.
-> Both bpf prog and all tasks can read/write such shared memory
-> with normal load/store instructions.
->
-> > In absence of all that, is a safer "bpf_probe_write_user()" like I
-> > proposed in this patch ("bpf_probe_write_user_registered()") at all
-> > appealing?
->
-> To be honest, another "probe" variant is not appealing.
-> It's pretty much bpf_probe_write_user without pr_warn_ratelimited.
-
-Fair enough.
-
-> The main issue with bpf_probe_read/write_user() is their non-determinism.
-> They will error when memory is swapped out.
-
-Right. Although, user space mlock'ing and prefaulting the memory
-solves it in the common case (some corner cases like after fork() are
-still tricky).
-
-> These helpers are ok-ish for observability when consumers understand
-> that some events might be lost, but for 24/7 production use
-> losing reads becomes a problem that bpf prog cannot mitigate.
-> What do bpf prog suppose to do when this safer bpf_probe_write_user error=
-s?
-> Use some other mechanism to communicate with user space?
-
-Right, for use cases where these errors aren't ok it does not work.
-But if the algorithm is tolerant to lossy reads/writes from the BPF
-program side, it's not an issue.
-
-> A mechanism with such builtin randomness in behavior is a footgun for
-> bpf users.
-> We have bpf_copy_from_user*() that don't have this non-determinism.
-> We can introduce bpf_copy_to_user(), but it will be usable
-> from sleepable bpf prog.
-> While it sounds you need it somewhere where scheduler makes decisions,
-> so I suspect bpf array or arena is a better fit.
-
-Correct, it can't sleep because it wants scheduler events.
-
-> Or something that extends bpf local storage map.
-> See long discussion:
-> https://lore.kernel.org/bpf/45878586-cc5f-435f-83fb-9a3c39824550@linux.de=
-v/
->
-> I still like the idea to let user tasks register memory in
-> bpf local storage map, the kernel will pin such pages,
-> and then bpf prog can read/write these regions directly.
-> In bpf prog it will be:
-> ptr =3D bpf_task_storage_get(&map, task, ...);
-> if (ptr) { *ptr =3D ... }
-> and direct read/write into the same memory from user space.
-
-I would certainly welcome something like this - I agree this looks
-better than bpf_probe_read/write.
-
-Thanks,
--- Marco
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
