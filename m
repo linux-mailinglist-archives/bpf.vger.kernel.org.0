@@ -1,142 +1,132 @@
-Return-Path: <bpf+bounces-26294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C9689DD79
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 17:00:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7AD289DD8A
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 17:02:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C90B1F21ABB
-	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 15:00:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7238128CE8D
+	for <lists+bpf@lfdr.de>; Tue,  9 Apr 2024 15:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C2A1304AB;
-	Tue,  9 Apr 2024 15:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48BC8287F;
+	Tue,  9 Apr 2024 15:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wCxTkCOw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hn0ixwuM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out203-205-221-247.mail.qq.com (out203-205-221-247.mail.qq.com [203.205.221.247])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3847412D210;
-	Tue,  9 Apr 2024 15:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.247
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90041304BE;
+	Tue,  9 Apr 2024 15:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712674829; cv=none; b=j+HDub4TSI38HKwcPtqwseT9Z4kD8XWK0MNyqUfiBjkoq4D3WoQ+acS6eQXgPtTasu0bS8OvsbVYHadh00Dw3EtMWRaLjyktWzabmVaVxCRGgwQAQwAFo74CqvIVhfAqM43BfUYVeUrhDVgDuHqi1DC4IEY0HBxrsskHA17v11Y=
+	t=1712674875; cv=none; b=BiGQ8EUlTZDNrYyVZ/iXLcjiupBE3gUXHlDvdgnKIE/xWFSexOK6e+w5EMrcqufWeqZ1FLLqPNm6xLXmeedk3KlLB6JSw0BSgfPy4tL1/wGb40FlB3OLbBEFC7k7VDFQgZfinPNgKaQxTGRMG++yLePp4TRpkmn/XX4OuXGHrpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712674829; c=relaxed/simple;
-	bh=YB//Tq6wM/z9gKF0PBPXJVyM/iHmWsiSPKvVappUl5c=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=aG3psfr0x7G3He1Rqo7TXYQ9BG2Q+EPP0L5A23a9OIp1/y7VeAamwi1JbsstIZMng2yFoEP7hjIvbeJZw2C2aHsargshOc1KvIRXeOoN4Gv5O6h2a6V5pFpE4idFUWx/320HLJg67ig5G57m45W7h6YaU++xKH+/KyY24gipEyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=wCxTkCOw; arc=none smtp.client-ip=203.205.221.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712674823; bh=vEWu+zKNuvca7K9GIraXbCpF0vuCLymzA/DWW38bFQc=;
-	h=From:To:Cc:Subject:Date;
-	b=wCxTkCOwTt7hpXDKLSjwpmoOyaIq7OfYo/mu0YyeTAxfDxb6DYmTSXDOSnzIpiItd
-	 35lhOFUpiG7jUIUuvZAOSralpNLb5y90o/Nwcz0bE73ephW8WPjKo0CgZY81dRlct+
-	 o0SIwZNjCEfzHT5IGRuXA7JSpE3N8DO8Hql11uxE=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 138A83D; Tue, 09 Apr 2024 23:00:19 +0800
-X-QQ-mid: xmsmtpt1712674819tuzuqrsdf
-Message-ID: <tencent_2325B98DEC12765D8CDDF9996BCFD78DAA07@qq.com>
-X-QQ-XMAILINFO: MvM61XSVXCtDdv1SITtT8hAktV/o6o2zYsSdURuOE1QbOLls3zYWW1azlMUrm2
-	 SqLKHU0ww4xFUuH7y9UNa2sJtXJlV/YJ6hs/eVJgCqJnUihW8D39DqxU4WCWQmJmw5g4XrJc30Qv
-	 9miTMG27sSxjF3kFGwx4lUk7r8Phua5oHSZaaam6j/M5aabDT3nJ8tFj0REloDSYgXqFWjHCjR09
-	 70FvzDMCxX8gRdd2DY64GRzm6U1VzTD9m5rfuSLl0IB6uKTsAuyTxfiV1OC4cz9kO1Yy7dJkLj/a
-	 O5IWDxVVhylIJAeZSbhAcjN9jP6yyOMhJDNAa+/bH7+GKgcqeX1QHdFzO4z4CSh45AP0T/ZQSnGt
-	 CGUIxE0LvRDKVs+ljw2NsqR/GqugI6PyufvFYV3liKzG02X8nuCaw3jSCFMwE5R9WLtmXQp7jInX
-	 63tR1W6WkDq2G55xSPsuDaqW2urIQX6Ozish561B+SD9c7H1BWK4Qs78cg9Zan3bdq4nMfdvjk5r
-	 FO8kT0SPM7Pgl/rbvL7AQU90fK+2yCzN41JIUpUtUnTiJH4V4Nh+0FFsyCZIaQdxmJqkKKc7nxVN
-	 LULCYL8pa2nil/pCDii0cnIB73hYCZgU1THK5cYXl+I6WvJu+9viw/quMsrvOE1losG9G52rplyK
-	 vjJvJru5kJOCiy8Z2kR08OvvHf2OjbH1RSsLW95TzoQdy7wXj6eZjPm656grWUO5qVi3K1BjTwUP
-	 YuSnVl1ZuxxNtPGODJvndKfr20nPbWIEnTn31M0pDVWnrqzA+J+wnMyYb+InmmzRslzHmGlz1W/Y
-	 5F7OxN8nAkcqHEzIOj+fGkxZ4v7xLFtQLW4jdoYsNT41VahDhOmDQY8unI4PBfy51oQCxNaIvQIi
-	 jczRKa8OA5Y6rtD8hdjyoqUwwl+bnYtWm3OpRd6QN6BVy0MeSom8BzOrjEcxV2MYyX026hqh8MKG
-	 aV4R5lWXuPYd3GEVJs0w==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: netdev@vger.kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@google.com,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH] netfilter: x_tables: fix incorrect parameter length before call copy_from_sockptr
-Date: Tue,  9 Apr 2024 23:00:20 +0800
-X-OQ-MSGID: <20240409150019.95430-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712674875; c=relaxed/simple;
+	bh=vvh2iqJh/NSgdAgq4/uQT9xxSsXZC31Rr8+l3FGnk+k=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NJjBfwHchgLhiG3pbGOZK+Bw4OHtB2H5Q4SpluFrC/3jaq7Zs6RTX+XpNKnk764pXuCWFBoU/5e7wRjgO00qLqrsHlaG+XU3H1P4zXUyjtajSEei51YcIMfDnH+EOo8YhM2Nd4SgxCKx8Ba7tlmUMPksmaRiYsKXb5/jgkRHAVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hn0ixwuM; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6181237230dso21961767b3.2;
+        Tue, 09 Apr 2024 08:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712674873; x=1713279673; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tmmdlsZje12lMa0yGPgNyI6lY9y+jIiMGHCHxRVjqxU=;
+        b=hn0ixwuMdm1dMEfva6bmLu+JXnRBqYwZYb96gcyiVAphxRu+LFblnfBebNuanV/snJ
+         5iD/Hz8//bfq5gYHmTfE4FYDOTqh7cRLpidUgfOJ0JzvVQAOm19YSNerrRH8L52kn+Hs
+         BjXcQUdlmlECQmt/jxojKeEjxuZGVJPhIGRtLK+0R/HWnNCdksxcge5bdZuGQTJDfA8T
+         +HTH1LfOGggmN3e2XR1FPo+ghGuiH+4EKTmGiX+8u6L4zpzXnLA+/HMz/iRU91jlz2+f
+         KxHG5IiS/CzBmdgxkhadjELMJYmyJd8S57LE56jpHe9mLyiTWB0HMUOfsND7hGud9eJ4
+         VHdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712674873; x=1713279673;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tmmdlsZje12lMa0yGPgNyI6lY9y+jIiMGHCHxRVjqxU=;
+        b=o6guAiVJsDrX1g6bZ8qaeGHMEoEa/tb/FTi2RpSv2SO4WYKEy3CEuWjP7BNFHBhmTc
+         9vcAdWyxUNKWX4D+D7rdpVTvU9r8hZF6tacyu3+PergczwHWOUavSvmviISNN2CGl6nw
+         uj+t+FxLozvv+x0uVToq94OLP1FSi7wINOYYRVJdCvFbQNAa5owPn8D1SgYiVcI67aQ9
+         Vna8w+ZVh+ftgz83yBgGlhBjsjJyKqXLQM/Si8rpU9Snt9H6DNNm/Pev3t9Vq6Nl4VQh
+         LW0SyFyZ2cGfMgefPkdt8uOKa1LEguY1WlN/fHlnBJz3Z4dPMhbBPOOl7QF6QE7yt+Eo
+         JhoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ9z+MALJwGKvUi0R/TCFGBKkx+5EPMkwJWTdlfIcTGuDXe5grTgiTQvjG4FCXsJcMfAlobE37OpzKHIUmst0yS1TZRsBQfkQJZOHVyvRJmyVBRoqA9kECjfK3Mw==
+X-Gm-Message-State: AOJu0Yw8KiMDUbgQr2KFTUE4pvuw9DcbEBIYQ7/2ophz7npgl538+fIS
+	NAlh4Y6cOc6h/VOEfIBHUWx5O2aFnxAthz0CQvbMmwmakhsY1QGSYA2lQqaSXv8=
+X-Google-Smtp-Source: AGHT+IFkZkrfoiPDCosGWxWQTNjgHMBd/OjOW3H9BGCy6XtCZg5HSmeE+l+wCG+KU+YK9kwGUCmmrA==
+X-Received: by 2002:a5b:392:0:b0:dc6:be64:cfd1 with SMTP id k18-20020a5b0392000000b00dc6be64cfd1mr10865577ybp.36.1712674872628;
+        Tue, 09 Apr 2024 08:01:12 -0700 (PDT)
+Received: from [192.168.100.206] ([89.28.99.140])
+        by smtp.gmail.com with ESMTPSA id fo6-20020a0569022d0600b00dcdb3dffa3dsm1757503ybb.39.2024.04.09.08.01.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 08:01:12 -0700 (PDT)
+Message-ID: <7a08fb6a8c37e58a56121c8536b9ab68405c049d.camel@gmail.com>
+Subject: Re: [RFC/PATCHES 00/12] pahole: Reproducible parallel DWARF
+ loading/serial BTF encoding
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>, 
+ Clark Williams <williams@redhat.com>, Kate Carcia <kcarcia@redhat.com>, bpf
+ <bpf@vger.kernel.org>, Kui-Feng Lee <kuifeng@fb.com>, Thomas
+ =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Date: Tue, 09 Apr 2024 18:01:08 +0300
+In-Reply-To: <CAADnVQKnkGVL3Snaa-E+EpG536rauWZmn_kZsgQK-oaESfjjQg@mail.gmail.com>
+References: <20240402193945.17327-1-acme@kernel.org>
+	 <747816d2edd61a075d200ffa5da680d2cc2d6854.camel@gmail.com>
+	 <64bfcf02-030d-471a-871a-e7490d74ca28@oracle.com>
+	 <db6480e9378f59c367b03f7455372caf7b593348.camel@gmail.com>
+	 <CAADnVQKnkGVL3Snaa-E+EpG536rauWZmn_kZsgQK-oaESfjjQg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-If len < sizeof(tmp) it will trigger oob, so take the min of them.
+On Tue, 2024-04-09 at 07:56 -0700, Alexei Starovoitov wrote:
+[...]
 
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/ipv4/netfilter/arp_tables.c | 4 ++--
- net/ipv4/netfilter/ip_tables.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> I would actually go with sorted BTF, since it will probably
+> make diff-ing of BTFs practical. Will be easier to track changes
+> from one kernel version to another. vmlinux.h will become
+> a bit more sorted too and normal diff vmlinux_6_1.h vmlinux_6_2.h
+> will be possible.
+> Or am I misunderstanding the sorting concept?
 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 2407066b0fec..dc9166b48069 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -956,7 +956,7 @@ static int do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct arpt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
-@@ -1254,7 +1254,7 @@ static int compat_do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct arpt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 7da1df4997d0..94a0afd8f94f 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1108,7 +1108,7 @@ do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct ipt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
-@@ -1492,7 +1492,7 @@ compat_do_replace(struct net *net, sockptr_t arg, unsigned int len)
- 	void *loc_cpu_entry;
- 	struct ipt_entry *iter;
- 
--	if (copy_from_sockptr(&tmp, arg, sizeof(tmp)) != 0)
-+	if (copy_from_sockptr(&tmp, arg, min_t(unsigned int, sizeof(tmp), len)) != 0)
- 		return -EFAULT;
- 
- 	/* overflow check */
--- 
-2.43.0
+You understand the concept correctly, here is a sample:
+
+  [1] INT '_Bool' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DBOOL
+  [2] INT '__int128' size=3D16 bits_offset=3D0 nr_bits=3D128 encoding=3DSIG=
+NED
+  [3] INT '__int128 unsigned' size=3D16 bits_offset=3D0 nr_bits=3D128 encod=
+ing=3D(none)
+  [4] INT 'char' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3D(none)
+  [5] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+  [6] INT 'long int' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=3DSIGNE=
+D
+  [7] INT 'long long int' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=3D=
+SIGNED
+  ...
+  [15085] STRUCT 'arch_elf_state' size=3D0 vlen=3D0
+  [15086] STRUCT 'arch_vdso_data' size=3D0 vlen=3D0
+  [15087] STRUCT 'bpf_run_ctx' size=3D0 vlen=3D0
+  [15088] STRUCT 'dev_archdata' size=3D0 vlen=3D0
+  [15089] STRUCT 'dyn_arch_ftrace' size=3D0 vlen=3D0
+  [15090] STRUCT 'fscrypt_dummy_policy' size=3D0 vlen=3D0
+  ...
+ =20
+(Sort by kind, than by vlen, than by name because sorting by name is a
+ bit costly, then by member properties)
 
 
