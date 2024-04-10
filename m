@@ -1,267 +1,136 @@
-Return-Path: <bpf+bounces-26459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26460-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1D6C8A03F1
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 01:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B36F8A0401
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 01:26:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9491C21A2F
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 23:22:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C65C1C21B54
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 23:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473DD36B08;
-	Wed, 10 Apr 2024 23:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418C13E47B;
+	Wed, 10 Apr 2024 23:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MbHNuHzs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Va+Qlm+5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C08138E;
-	Wed, 10 Apr 2024 23:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842851CA80
+	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 23:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791322; cv=none; b=tJQi0mhYzkEBDXgOsy4lqkzXtekv+AK/eEJP+xfIGJILZzzDKwr3rIZdRZ0nQdi/trM7g8I95DH3Xh6KtgcDFmhE3KynS6dfFGQwYoRbWoO2LVMD6GVumE+bsU/Vi+aatiRACJky36MG8y2hOS0LBZg4mhQZmEPZxt+JgtqomqE=
+	t=1712791571; cv=none; b=dzzAyIRjGEMBpilP3BG0Gc0YJhOc8K5nw0hdnw598OyFO1uKr3kl/2oPdIoCB3s7bm1rJBOl0wujNwTYplrO4CW0AH8Xac3N06iNmfOka61LEGfpN6jP01wbZUc8nQ5rfx1I7IC+ZvjssK/+kgMf3WWiWBRNHdLzuTnowtCHVd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791322; c=relaxed/simple;
-	bh=vZjbMD6Jt287ODnsZPSuTjU7DsqVXUkB99DDCx9Tfrg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=m9j8l9V2H1zGgCHQC3R5o0Pdt/CyBhvgDC5z8frKKoHBuWGfBVNCGRxZbDhb7p/4DBcXGq4xgDFSmYOZUqU8fE8mHsRQa7o2efOsJEHOOkd79F4ZhQzogbD9MrIr+4IFzg8dXAruzzXy7hCNQJZzd5WJWilZWPQ6peGiGXKAt+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MbHNuHzs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB274C433C7;
-	Wed, 10 Apr 2024 23:21:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712791322;
-	bh=vZjbMD6Jt287ODnsZPSuTjU7DsqVXUkB99DDCx9Tfrg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MbHNuHzs8+ZKHxrg1xfuZ5COlcBxcxARniCXIPFp6Q4EZRxWJuwxe9/7ndRzpfblU
-	 To42eYEt+GeoNiMWxDCUG7+7IKGRTYk+KPpxTSDTanV9dZ0N1fehrb7jHTLgxn7Fry
-	 rhZSwIwRf2EqBZ0LBdrzZaOKWIS5c9mxP7dLyQCNvo+gtwBNNrmHoM/bGtbsbONN7n
-	 UH8XMmDxO3wdqFs4YP2GnX0h1ieR4Ne6gJKOaT24773nEla4CACSNBiHHuT7WzPns2
-	 MuOK6ItgEaIURhf7Mw9Tr+uvqbQ93qeKykTkk4VaVovQsjR2AovHWtAmmsdhkIw5XZ
-	 gnUKnqD0kHeUQ==
-Date: Thu, 11 Apr 2024 08:21:56 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jonthan Haslam <jonathan.haslam@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
- rostedt@goodmis.org, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
- <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
- Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
- Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
- <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
- <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-Message-Id: <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
-In-Reply-To: <lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
-References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
-	<20240325120323.ec3248d330b2755e73a6571e@kernel.org>
-	<CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
-	<20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
-	<54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
-	<20240328091841.ce9cc613db375536de843cfb@kernel.org>
-	<CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
-	<CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
-	<20240330093631.72273967ba818cb16aeb58b6@kernel.org>
-	<lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712791571; c=relaxed/simple;
+	bh=6bECfZivveGXwjc0wz2UlMqxN5Fu6aMgKDLIjMEVkeI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NkmOBEk1BwB+/8BkTbarUHA3mlwnwvuMOcgp/P+V84s6o9HvGFPiocfHvUmfh+7VptCcAkzt2nQw1CvBNLDLW63IQ0YgiAKSebX+uCc2MvkdGTb4in5IyMXz22RljslkaByEOAA4M+XkH5MGmyuU26dnaHBR6r1OWb1FduCqMvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Va+Qlm+5; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fcdf6dc6-81ff-48b8-822b-80c097efc07d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712791564;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tRA6/DFmK/DJmNTAFNW2xE1W38sOhbq7XMudIRt8ihs=;
+	b=Va+Qlm+515KjcFBzYljKyDI9a7OtxhslpQ7SCXUQrXWPNmJ2MeRhfsO4Y1YG9QWHJwkl5T
+	YjvrFFXb5n5JQj/wScwLuRr7vpe9OqGLs2TdrTzYZkxU5LECaqHEzoNuOqXIbjBjKdLFav
+	DnKEyl/TQyRlVIkVNoRbmSsz9FOINjM=
+Date: Wed, 10 Apr 2024 16:25:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [RFC PATCH bpf-next v1 3/3] net: Add additional bit to support
+ userspace timestamp type
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+ kernel@quicinc.com
+References: <20240409210547.3815806-1-quic_abchauha@quicinc.com>
+ <20240409210547.3815806-4-quic_abchauha@quicinc.com>
+ <6616b3587520_2a98a5294db@willemb.c.googlers.com.notmuch>
+ <f28de1e7-4a9b-4a97-b4f9-723425725b58@quicinc.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <f28de1e7-4a9b-4a97-b4f9-723425725b58@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 10 Apr 2024 11:38:11 +0100
-Jonthan Haslam <jonathan.haslam@gmail.com> wrote:
+On 4/10/24 1:25 PM, Abhishek Chauhan (ABC) wrote:
+>>> @@ -830,6 +833,9 @@ enum skb_tstamp_type {
+>>>    *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>>    *		skb->tstamp has the (rcv) timestamp at ingress and
+>>>    *		delivery_time at egress.
+>>> + *		delivery_time in mono clock base (i.e., EDT) or a clock base chosen
+>>> + *		by SO_TXTIME. If zero, skb->tstamp has the (rcv) timestamp at
+>>> + *		ingress.
+>>>    *	@napi_id: id of the NAPI struct this skb came from
+>>>    *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>>>    *	@alloc_cpu: CPU which did the skb allocation.
+>>> @@ -960,7 +966,7 @@ struct sk_buff {
+>>>   	/* private: */
+>>>   	__u8			__mono_tc_offset[0];
+>>>   	/* public: */
+>>> -	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+>>> +	__u8			tstamp_type:2;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+>>>   #ifdef CONFIG_NET_XGRESS
+>>>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
 
-> Hi Masami,
+The above "tstamp_type:2" change shifted the tc_at_ingress bit.
+TC_AT_INGRESS_MASK needs to be adjusted.
+
+>>>   	__u8			tc_skip_classify:1;
+>>
+>> With pahole, does this have an effect on sk_buff layout?
+>>
+> I think it does and it also impacts BPF testing. Hence in my cover letter i have mentioned that these
+> changes will impact BPF. My level of expertise is very limited to BPF hence the reason for RFC.
+> That being said i am actually trying to understand/learn BPF instructions to know things better.
+> I think we need to also change the offset SKB_MONO_DELIVERY_TIME_MASK and TC_AT_INGRESS_MASK
 > 
-> > > > Which is why I was asking to land this patch as is, as it relieves the
-> > > > scalability pains in production and is easy to backport to old
-> > > > kernels. And then we can work on batched APIs and switch to per-CPU rw
-> > > > semaphore.
-> > 
-> > OK, then I'll push this to for-next at this moment.
-> > Please share if you have a good idea for the batch interface which can be
-> > backported. I guess it should involve updating userspace changes too.
 > 
-> Did you (or anyone else) need anything more from me on this one so that it
-> can be pushed? I provided some benchmark numbers but happy to provide
-> anything else that may be required.
+> #ifdef __BIG_ENDIAN_BITFIELD
+> #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7) //Suspecting changes here too
+> #define TC_AT_INGRESS_MASK		(1 << 6) // and here
+> #else
+> #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+> #define TC_AT_INGRESS_MASK		(1 << 1) (this might have to change to 1<<2 )
 
-Yeah, if you can update with the result, it looks better to me.
-Or, can I update the description?
+This should be (1 << 2) now. Similar adjustment for the big endian.
 
-Thank you,
-
+> #endif
+> #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
 > 
-> Thanks!
-> 
-> Jon.
-> 
-> > 
-> > Thank you!
-> > 
-> > > >
-> > > > So I hope you can reconsider and accept improvements in this patch,
-> > > > while Jonathan will keep working on even better final solution.
-> > > > Thanks!
-> > > >
-> > > > > I look forward to your formalized results :)
-> > > > >
-> > > 
-> > > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
-> > > and USDTs, reporting attach/detach timings:
-> > > $ sudo ./test_progs -v -t uprobe_multi_test/bench
-> > > bpf_testmod.ko is already unloaded.
-> > > Loading bpf_testmod.ko...
-> > > Successfully loaded bpf_testmod.ko.
-> > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
-> > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
-> > > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
-> > > test_bench_attach_uprobe: attached in   0.120s
-> > > test_bench_attach_uprobe: detached in   0.092s
-> > > #400/5   uprobe_multi_test/bench_uprobe:OK
-> > > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
-> > > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
-> > > test_bench_attach_usdt:PASS:usdt_count 0 nsec
-> > > test_bench_attach_usdt: attached in   0.124s
-> > > test_bench_attach_usdt: detached in   0.064s
-> > > #400/6   uprobe_multi_test/bench_usdt:OK
-> > > #400     uprobe_multi_test:OK
-> > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > Successfully unloaded bpf_testmod.ko.
-> > > 
-> > > So it should be easy for Jonathan to validate his changes with this.
-> > > 
-> > > > > Thank you,
-> > > > >
-> > > > > >
-> > > > > > Jon.
-> > > > > >
-> > > > > > >
-> > > > > > > Thank you,
-> > > > > > >
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > > > > > > > will depend on how much lock contention happens.
-> > > > > > > > >
-> > > > > > > > > Thank you,
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > > > > > --- a/kernel/events/uprobes.c
-> > > > > > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-> > > > > > > > > >   */
-> > > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > > > > > > > >
-> > > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
-> > > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
-> > > > > > > > > >
-> > > > > > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > > > > > >  /* serialize uprobe->pending_list */
-> > > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> > > > > > > > > >  {
-> > > > > > > > > >       struct uprobe *uprobe;
-> > > > > > > > > >
-> > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > >       uprobe = __find_uprobe(inode, offset);
-> > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > >
-> > > > > > > > > >       return uprobe;
-> > > > > > > > > >  }
-> > > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
-> > > > > > > > > >  {
-> > > > > > > > > >       struct uprobe *u;
-> > > > > > > > > >
-> > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > >       u = __insert_uprobe(uprobe);
-> > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > >
-> > > > > > > > > >       return u;
-> > > > > > > > > >  }
-> > > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
-> > > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > > > > > >               return;
-> > > > > > > > > >
-> > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
-> > > > > > > > > >       put_uprobe(uprobe);
-> > > > > > > > > >  }
-> > > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > >
-> > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > >       if (n) {
-> > > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
-> > > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > >                       get_uprobe(u);
-> > > > > > > > > >               }
-> > > > > > > > > >       }
-> > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
-> > > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
-> > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > >
-> > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > >
-> > > > > > > > > >       return !!n;
-> > > > > > > > > >  }
-> > > > > > > > > > --
-> > > > > > > > > > 2.43.0
-> > > > > > > > > >
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > --
-> > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > > >
-> > > > > > >
-> > > > > > > --
-> > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Also i suspect i change in /selftests/bpf/prog_tests/ctx_rewrite.c
 
+ctx_rewrite.c tests the bpf ctx rewrite code. In this particular case, it tests
+the bpf_convert_tstamp_read() and bpf_convert_tstamp_write() generate the
+correct bpf instructions.
+e.g. "w11 &= 3;" is testing the following in bpf_convert_tstamp_read():
+		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+	 				TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+The existing "TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK" is 0x3
+and it should become 0x5 if my hand counts correctly.
+
+The patch set cannot be applied to the bpf-next:
+https://patchwork.kernel.org/project/netdevbpf/patch/20240409210547.3815806-4-quic_abchauha@quicinc.com/
+, so bpf CI cannot run to reproduce the issue.
+
 
