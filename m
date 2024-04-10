@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-26345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B447E89E708
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5870989E707
 	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 197D4B21DF8
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:42:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7A71C210D6
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AC2387;
-	Wed, 10 Apr 2024 00:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B15253A6;
+	Wed, 10 Apr 2024 00:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lV7CZFVC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZQmNVu7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 881FC1C2D
-	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 00:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839EA4A1B
+	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 00:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712709726; cv=none; b=NHXZhiQTMzPxUR8LXBWOkyL/2uORVB0wHNY64x93a5QUCtC0wmdoaM5r1cveE/4GBNUeexioxzO92quWCHEuIHuUxPSlnzNoruhKrKYzT6/psUHiT8p11vHuuT0kST6ZYj4o0OmghxLwruj8LWvJf8hEWUcIBV6iG94psxVQxXg=
+	t=1712709727; cv=none; b=tlyXDizTOsEjoCAQdWZbBbQXhQQ1go14z0zSk+mifNMQfnZHIxcZmwzt+GyiFPgMURiZ6orR7V0SlwL5QDAFBg4IuIuRrCZyaX/FUwjKYp/UCng1HXGPPyCtlqCbUDI8VPIFnSjmbXEpMYtBzidvBCxUByvmghFGVNTFrJBadjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712709726; c=relaxed/simple;
-	bh=DypjCVY43yhA5fiSymfCfD24cW9KiO9HvaU5WeMouKs=;
+	s=arc-20240116; t=1712709727; c=relaxed/simple;
+	bh=XCOrX2UCM/jR2fC0SWffLjWE7UO0dOeu2CDXbUUZo2M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mXFVxLfnNeljUN3B+Qgysk3PAUgFtJAS9jvEgIigzssMuxKrIK5gpMJTn0P++EnY/ozL8bo8Fb3MyhKMQxXgvX6gakZ3eKml/OJFe04yVXM7ptRJ+MgrsrHDywf05ptmZuCKBSz70U5O17exfxGF2AS1M9yO90HwfogTxygyzX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lV7CZFVC; arc=none smtp.client-ip=209.85.167.169
+	 MIME-Version; b=eo/JMrMQ9ethpewu8XLvtGVBzRrk8u8C16oqWbrpB7Nk62AHxKxE6Fd/vbIc4oR65jWBibte3IkALkQl/aoQ7KHj4cQW1oIUYHSny2N/wLhgdt2lOzhmQshAZh6amE4lJZT99Ns2ST9WfG1+S+sOdupAUGM2Xc1NHxKTqS8eP4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gZQmNVu7; arc=none smtp.client-ip=209.85.210.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c3d2d0e86dso2553056b6e.2
-        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 17:42:04 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ea26393116so875946a34.0
+        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 17:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712709723; x=1713314523; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712709724; x=1713314524; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xCXoxIZdu3IbIezcXli4tuWerfrPR0dwNVTGMo9uTDs=;
-        b=lV7CZFVCiNAdYYjw4SGXVN87bRs4wqrUeAhbKdtg71H/VHIQBmNcF1SyDEq4g6R/HG
-         i5IDHZKrt5Av+qnwrG0LZnCT7rDjVNwUAC5FSCw48qy/Veojm88+Lt7L7W0uxZ5nB0nI
-         tjTHjWy4gSeKW35dFHO5ah4USmBdB+2lNIpj7TNuYNA/qDKh89fTRaFRtFyXBeyTcfDh
-         JkEEmDPddc4dfSXR556z6ukNX4BmmzuaEJAIEk2L1b1Dn0GQFv5CYNNvHtVNif5kp43Q
-         ++wGg2kJCS8CPzh69f4+Bz/bn8oBKLKL60qd15eV11FIQGLiJKUXGhd3InLurnPog/pJ
-         WnbA==
+        bh=f51USvNE8y445K4bfiKnnRxSA5H877NAgdsZGb73FMA=;
+        b=gZQmNVu7mo4PX3op5KYgaqLLfrikhqjX5VdfrlvmJs6LDNN8qXU9ENvLGz6tO2pLEN
+         ML7nM+FFFaHSOl1QHSMc3xmGaPiQL4F4ywYyOjwMXphKW7hHjLtnHoF+R4WZmdGLV+ZP
+         QqxTHvdB7wne0s+ZZzxzauJKlMZ44r/rCvkrnd9mUH/kxNDYkj00WnEss8MIprXdxdGb
+         g0huYWc40DwQ6M0s8bXkTQqTgkpvvVdiKZDyTuIGuMMsG67ExzBXIaFckrRRP+XgXhla
+         ocheicN2lc/zWP0MJ+yNyS1gjiaFCT2VdxkNiDPGdPVOQSRhumOaCHddIkYvd2qfCpFj
+         kSZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712709723; x=1713314523;
+        d=1e100.net; s=20230601; t=1712709724; x=1713314524;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xCXoxIZdu3IbIezcXli4tuWerfrPR0dwNVTGMo9uTDs=;
-        b=BNe9sElzhsC4xaRxOvQ0f69tTQ6/x4SDQwXGRiSWk2X1td0h3QzeNE9a4pzJHljGbV
-         DmXH8Y8aiKeIRCeAyyBL27AIbjdkPJComkW0MP3B9HhEhoz6FPFeisaZrASbhabnoiu/
-         S6Jg1q0jMtklkhUoutriH73CyHRWJW3KpQrOTZNeMKI/Ny0BJXz4+IohgDG95o9HlMoV
-         AfoOBggilk1QiRdP4qJjwUE6OYcsyS4f1yBzFxBooE92A81RcGMvXEurYOFlsKI0/4wQ
-         bl/Zn083CbJm5M/HMb+XGsJAibSk6ry6BcOckSRdLz2Df8yLFU4XGq4pp5k0d3zAhmAW
-         8Guw==
-X-Gm-Message-State: AOJu0YxuHuCqB7WqWfdEMxLyz7Ed0xHQM8Es4boiZLRIjTUFRrCwsLEC
-	GZcVnaVYRo183hcGmAsSs07R8ak/KlQ7RY4QUVxTna3PnWImahhcQK5HaANc
-X-Google-Smtp-Source: AGHT+IGnVOHmpS5mgkpWD3BGDO34/rvCjq5eDlNltxWbIkW79D0e5R9dbgGW7qV9H3Bgvu07KNdkbA==
-X-Received: by 2002:a05:6808:144c:b0:3c6:78d:a5f0 with SMTP id x12-20020a056808144c00b003c6078da5f0mr1331929oiv.6.1712709723405;
-        Tue, 09 Apr 2024 17:42:03 -0700 (PDT)
+        bh=f51USvNE8y445K4bfiKnnRxSA5H877NAgdsZGb73FMA=;
+        b=e4qAjy+fmECyXE5kkTDlVxcDHLLlLIZdjrH6AqVM1mScPpO3pJ85U4f0m0V6ytTpnE
+         1DgnDtAOwkz0551WjvmdOiPrSoqDf0jyEFTQ+35CNGSUjyEBr6/UEL7nEdLxvRIJUpay
+         gs0jR7Aw29nfz6r2GWXLWpbC9Lnq3FAdwu1tWveU/fxE7SexBpZ5NUF7i16uzxetMk5e
+         +RBei+8J/u+E83VkN7d/l38MFJfYNWwoQp1+BDDCByH4za+ZA9anS9dmDQj2+ny2BR73
+         R0YsugJfxFrEMNlNpumz8zlY8uDj3GaJLmSr3G7SUiNxnSEzqvHOpzfpDMtBSPjigEgK
+         uUKA==
+X-Gm-Message-State: AOJu0YzV24WL1AJSSltzS0VEOPDU777GYrPVeM48NUdYrJR4ZAeBN1Zl
+	2Rig82Kva9KyH4e/zdXyqYaPR+UNr1GoY0YlitYhZQ3vRENYb6JlOwOdTMep
+X-Google-Smtp-Source: AGHT+IHxDT9CBUimrEpuY+ifeQ7oQlRowvqzccIPLM3eGPf8KAWS/kJRFqbR1bo7rBc8iqWe6c3zxA==
+X-Received: by 2002:a05:6808:18f:b0:3c5:fcfa:c268 with SMTP id w15-20020a056808018f00b003c5fcfac268mr1241716oic.29.1712709724438;
+        Tue, 09 Apr 2024 17:42:04 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:d330:d0dc:41bd:be5b])
-        by smtp.gmail.com with ESMTPSA id bf10-20020a056808190a00b003c5fbfe3ac3sm505124oib.21.2024.04.09.17.42.02
+        by smtp.gmail.com with ESMTPSA id bf10-20020a056808190a00b003c5fbfe3ac3sm505124oib.21.2024.04.09.17.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 17:42:03 -0700 (PDT)
+        Tue, 09 Apr 2024 17:42:04 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,9 +76,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next 09/11] selftests/bpf: Test global kptr arrays.
-Date: Tue,  9 Apr 2024 17:41:48 -0700
-Message-Id: <20240410004150.2917641-10-thinker.li@gmail.com>
+Subject: [PATCH bpf-next 10/11] selftests/bpf: Test global bpf_rb_root arrays.
+Date: Tue,  9 Apr 2024 17:41:49 -0700
+Message-Id: <20240410004150.2917641-11-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240410004150.2917641-1-thinker.li@gmail.com>
 References: <20240410004150.2917641-1-thinker.li@gmail.com>
@@ -90,196 +90,135 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make sure that BPF programs can declare global kptr arrays.
-
-An array with only one element is special case, that it treats the element
-like a non-array kptr field. Nested arrays are also tested to ensure they
-are handled properly.
+Make sure global arrays of bpf_rb_root work correctly.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- .../selftests/bpf/prog_tests/cpumask.c        |   3 +
- .../selftests/bpf/progs/cpumask_success.c     | 147 ++++++++++++++++++
- 2 files changed, 150 insertions(+)
+ .../testing/selftests/bpf/prog_tests/rbtree.c | 23 +++++++
+ tools/testing/selftests/bpf/progs/rbtree.c    | 63 +++++++++++++++++++
+ 2 files changed, 86 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-index ecf89df78109..bba601e235f6 100644
---- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-@@ -18,6 +18,9 @@ static const char * const cpumask_success_testcases[] = {
- 	"test_insert_leave",
- 	"test_insert_remove_release",
- 	"test_global_mask_rcu",
-+	"test_global_mask_array_one_rcu",
-+	"test_global_mask_array_rcu",
-+	"test_global_mask_array_l2_rcu",
- 	"test_cpumask_weight",
- };
- 
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
-index 7a1e64c6c065..9d76d85680d7 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_success.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
-@@ -11,6 +11,9 @@
- char _license[] SEC("license") = "GPL";
- 
- int pid, nr_cpus;
-+private(MASK) static struct bpf_cpumask __kptr * global_mask_array[2];
-+private(MASK) static struct bpf_cpumask __kptr * global_mask_array_l2[2][1];
-+private(MASK) static struct bpf_cpumask __kptr * global_mask_array_one[1];
- 
- static bool is_test_task(void)
- {
-@@ -460,6 +463,150 @@ int BPF_PROG(test_global_mask_rcu, struct task_struct *task, u64 clone_flags)
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/rbtree.c b/tools/testing/selftests/bpf/prog_tests/rbtree.c
+index e9300c96607d..399d61b8a9a4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/rbtree.c
++++ b/tools/testing/selftests/bpf/prog_tests/rbtree.c
+@@ -53,6 +53,27 @@ static void test_rbtree_add_and_remove(void)
+ 	rbtree__destroy(skel);
  }
  
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_global_mask_array_one_rcu, struct task_struct *task, u64 clone_flags)
++static void test_rbtree_add_and_remove_array(void)
 +{
-+	struct bpf_cpumask *local, *prev;
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		    .data_in = &pkt_v4,
++		    .data_size_in = sizeof(pkt_v4),
++		    .repeat = 1,
++	);
++	struct rbtree *skel;
++	int ret;
 +
-+	if (!is_test_task())
-+		return 0;
++	skel = rbtree__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "rbtree__open_and_load"))
++		return;
 +
-+	/* Kptr arrays with one element are special cased, being treated
-+	 * just like a single pointer.
-+	 */
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.rbtree_add_and_remove_array), &opts);
++	ASSERT_OK(ret, "rbtree_add_and_remove_array");
++	ASSERT_OK(opts.retval, "rbtree_add_and_remove_array retval");
 +
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	prev = bpf_kptr_xchg(&global_mask_array_one[0], local);
-+	if (prev) {
-+		bpf_cpumask_release(prev);
-+		err = 3;
-+		return 0;
-+	}
-+
-+	bpf_rcu_read_lock();
-+	local = global_mask_array_one[0];
-+	if (!local) {
-+		err = 4;
-+		bpf_rcu_read_unlock();
-+		return 0;
-+	}
-+
-+	bpf_rcu_read_unlock();
-+
-+	return 0;
++	rbtree__destroy(skel);
 +}
 +
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_global_mask_array_rcu, struct task_struct *task, u64 clone_flags)
+ static void test_rbtree_first_and_remove(void)
+ {
+ 	LIBBPF_OPTS(bpf_test_run_opts, opts,
+@@ -106,6 +127,8 @@ void test_rbtree_success(void)
+ 		test_rbtree_add_nodes();
+ 	if (test__start_subtest("rbtree_add_and_remove"))
+ 		test_rbtree_add_and_remove();
++	if (test__start_subtest("rbtree_add_and_remove_array"))
++		test_rbtree_add_and_remove_array();
+ 	if (test__start_subtest("rbtree_first_and_remove"))
+ 		test_rbtree_first_and_remove();
+ 	if (test__start_subtest("rbtree_api_release_aliasing"))
+diff --git a/tools/testing/selftests/bpf/progs/rbtree.c b/tools/testing/selftests/bpf/progs/rbtree.c
+index b09f4fffe57c..6bf7285944d6 100644
+--- a/tools/testing/selftests/bpf/progs/rbtree.c
++++ b/tools/testing/selftests/bpf/progs/rbtree.c
+@@ -20,6 +20,8 @@ long first_data[2] = {-1, -1};
+ #define private(name) SEC(".data." #name) __hidden __attribute__((aligned(8)))
+ private(A) struct bpf_spin_lock glock;
+ private(A) struct bpf_rb_root groot __contains(node_data, node);
++private(A) struct bpf_rb_root groot_array[2] __contains(node_data, node);
++private(A) struct bpf_rb_root groot_array_one[1] __contains(node_data, node);
+ 
+ static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
+ {
+@@ -109,6 +111,67 @@ long rbtree_add_and_remove(void *ctx)
+ 	return 1;
+ }
+ 
++SEC("tc")
++long rbtree_add_and_remove_array(void *ctx)
 +{
-+	struct bpf_cpumask *local;
++	struct bpf_rb_node *res1 = NULL, *res2 = NULL, *res3 = NULL;
++	struct node_data *nodes[3][2] = {{NULL, NULL}, {NULL, NULL}, {NULL, NULL}};
++	struct node_data *n;
++	long k1 = -1, k2 = -1, k3 = -1;
++	int i, j;
 +
-+	if (!is_test_task())
-+		return 0;
-+
-+	/* Check if two kptrs in the array work and independently */
-+
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	bpf_rcu_read_lock();
-+
-+	local = bpf_kptr_xchg(&global_mask_array[0], local);
-+	if (local) {
-+		err = 1;
-+		goto err_exit;
++	for (i = 0; i < 3; i++) {
++		for (j = 0; j < 2; j++) {
++			nodes[i][j] = bpf_obj_new(typeof(*nodes[i][j]));
++			if (!nodes[i][j])
++				goto err_out;
++			nodes[i][j]->key = i * 2 + j;
++		}
 +	}
 +
-+	/* global_mask_array => [<mask>, NULL] */
-+	if (!global_mask_array[0] || global_mask_array[1]) {
-+		err = 2;
-+		goto err_exit;
-+	}
++	bpf_spin_lock(&glock);
++	for (i = 0; i < 2; i++)
++		for (j = 0; j < 2; j++)
++			bpf_rbtree_add(&groot_array[i], &nodes[i][j]->node, less);
++	for (j = 0; j < 2; j++)
++		bpf_rbtree_add(&groot_array_one[0], &nodes[2][j]->node, less);
++	res1 = bpf_rbtree_remove(&groot_array[0], &nodes[0][0]->node);
++	res2 = bpf_rbtree_remove(&groot_array[1], &nodes[1][0]->node);
++	res3 = bpf_rbtree_remove(&groot_array_one[0], &nodes[2][0]->node);
++	bpf_spin_unlock(&glock);
 +
-+	local = create_cpumask();
-+	if (!local) {
-+		err = 9;
-+		goto err_exit;
++	if (res1) {
++		n = container_of(res1, struct node_data, node);
++		k1 = n->key;
++		bpf_obj_drop(n);
 +	}
-+
-+	local = bpf_kptr_xchg(&global_mask_array[1], local);
-+	if (local) {
-+		err = 10;
-+		goto err_exit;
++	if (res2) {
++		n = container_of(res2, struct node_data, node);
++		k2 = n->key;
++		bpf_obj_drop(n);
 +	}
-+
-+	/* global_mask_array => [<mask 1>, <mask 2>] */
-+	if (!global_mask_array[0] || !global_mask_array[1] ||
-+	    global_mask_array[0] == global_mask_array[1]) {
-+		err = 11;
-+		goto err_exit;
++	if (res3) {
++		n = container_of(res3, struct node_data, node);
++		k3 = n->key;
++		bpf_obj_drop(n);
 +	}
++	if (k1 != 0 || k2 != 2)
++		return 2;
++	if (k3 != 4)
++		return 3;
 +
-+err_exit:
-+	if (local)
-+		bpf_cpumask_release(local);
-+	bpf_rcu_read_unlock();
 +	return 0;
++
++err_out:
++	for (i = 0; i < 3; i++) {
++		for (j = 0; j < 2; j++) {
++			if (nodes[i][j])
++				bpf_obj_drop(nodes[i][j]);
++		}
++	}
++	return 1;
 +}
 +
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_global_mask_array_l2_rcu, struct task_struct *task, u64 clone_flags)
-+{
-+	struct bpf_cpumask *local;
-+
-+	if (!is_test_task())
-+		return 0;
-+
-+	/* Check if two kptrs in the array work and independently */
-+
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	bpf_rcu_read_lock();
-+
-+	local = bpf_kptr_xchg(&global_mask_array_l2[0][0], local);
-+	if (local) {
-+		err = 1;
-+		goto err_exit;
-+	}
-+
-+	/* global_mask_array => [[<mask>], [NULL]] */
-+	if (!global_mask_array_l2[0][0] || global_mask_array_l2[1][0]) {
-+		err = 2;
-+		goto err_exit;
-+	}
-+
-+	local = create_cpumask();
-+	if (!local) {
-+		err = 9;
-+		goto err_exit;
-+	}
-+
-+	local = bpf_kptr_xchg(&global_mask_array_l2[1][0], local);
-+	if (local) {
-+		err = 10;
-+		goto err_exit;
-+	}
-+
-+	/* global_mask_array => [[<mask 1>], [<mask 2>]] */
-+	if (!global_mask_array_l2[0][0] || !global_mask_array_l2[1][0] ||
-+	    global_mask_array_l2[0][0] == global_mask_array_l2[1][0]) {
-+		err = 11;
-+		goto err_exit;
-+	}
-+
-+err_exit:
-+	if (local)
-+		bpf_cpumask_release(local);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
+ SEC("tc")
+ long rbtree_first_and_remove(void *ctx)
  {
 -- 
 2.34.1
