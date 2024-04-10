@@ -1,100 +1,147 @@
-Return-Path: <bpf+bounces-26456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3FED8A01DF
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 23:20:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B552A8A0230
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 23:34:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3DF51C21955
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 21:20:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D687E1C217EA
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 21:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9EB1836EA;
-	Wed, 10 Apr 2024 21:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC67184103;
+	Wed, 10 Apr 2024 21:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YgF08dYE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f28vyqjg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52EC31836D6;
-	Wed, 10 Apr 2024 21:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BED184102
+	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 21:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712784030; cv=none; b=RYuYFEPh7cEgj0WkAE6n/yhe3IHEKr63M0W45R/ON1kivoatn+4nBrC5AcTpUwHaP4SNZLjlPpYqtYVxIC6pHGNMDc+dVt4sLBsiophyAcYUNF7J7uO/SfcjVb55wJiG/3JWeybUptcr2DRK6MLs4ASSJWD80d3q6E5WDuwfRxQ=
+	t=1712784873; cv=none; b=X94bWB4AAlT1sJEv5WYxgLfAGPjsibpffTmvd+K4KilOpEo0Rjna3En6htr4F2v1eqNUoXZgXPFIcUYh76tLCIZqSxV+pOTNnvmsskjESKxPnCy9GD7HorEBVXetydxRhyIDR3SD22uOYaGe+liFIUyL7PzeAU9W7dC0yhxnoVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712784030; c=relaxed/simple;
-	bh=I8rt88j/K6xT26aoxxh7wz7o02RbdPxTDHlEEqGV5Wk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=A2i0mqQPCWjiKBoiwpdkdCNcbs4SxPoz+tcrlKfj9vY22JELzUztAZJQOffk5pEZvtVeSgV83unzl719xrj+BBhpcxlefG1v8rEglQGgCiK95zpmUX3wOsBVUgucmr3plAkHN4udX+mvL+Y4Wdnh/i7EBHja3L7kBPu+rKMztOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YgF08dYE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B95AAC43390;
-	Wed, 10 Apr 2024 21:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712784029;
-	bh=I8rt88j/K6xT26aoxxh7wz7o02RbdPxTDHlEEqGV5Wk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=YgF08dYEqet4XMOlNpOO/v6j/nNukHNjCwjelIgTxWKhAWAw4pV+qIPvLjBlzZhM9
-	 c7Vq6gIcVvZqlhb0PtkUvKjaa65hkjZJvscPAi45oOv1xm1jvPg5pZgAuyTbbU7fO6
-	 ICBnQadiz1jcTiYMYsLD/57CYpdBulpUdS4HHXo69SEwMU6tiTcmIsxzIlXwh8TnOZ
-	 gejwAAdbhRoH8U2X7afHtPk/+N5MP5iMdnWtjDOv2yk7K1sNvT/UyKtBrMuP1UnvVN
-	 4VQ7TklXwo83hX8jgLNai0DuvzfI5d1y+wvVXyusC9Gn8v77JaVEHq1lMTWrHJyDWT
-	 W2S4vXg5QSSQA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AF45DC395F8;
-	Wed, 10 Apr 2024 21:20:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712784873; c=relaxed/simple;
+	bh=nTCngW3nrSGVCIRXkroP1FsAaiPn/eIdCJe9G+XiqaY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o3o2abdfS26Ry5JjQe4OCf28iwpouzbLopf1nbcP8lSPcItr6yFHc9m9ViGyr5NaPvZZYNXgex08E0/S2d2F2ACQ/VDSwXDhKuaHOIoa1uxvFkEzbbcb9g6V8nznoW1zR7YuHG4G5b8vyrC7nqWK1iGcgnoFkzOe6IHeXhZBokU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f28vyqjg; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <12aab271-da72-49b4-ac91-2091b6889856@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712784869;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f1+MP+UF7zZldgEwkbI/nDmnr9/WctxU9HHYLrU4DTw=;
+	b=f28vyqjgk/8ZEL4XlO/vbqXWHNSqr+FgStrOhkgnVuVUxWv30h4DJ9atohz53ijmY9/y1l
+	fyOrQJVL6FUJ85qJvexdLQDj3pbZ8wOdzSC5X0qizOeTI0R4K+aBfo2DJi03DbIY4YrJN8
+	FPXJYC2RbUakju5lL//5QuT8aP6dhYQ=
+Date: Wed, 10 Apr 2024 14:34:22 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/4] selftests: move bpf-offload test from bpf to net
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171278402971.16914.2708494251817673120.git-patchwork-notify@kernel.org>
-Date: Wed, 10 Apr 2024 21:20:29 +0000
-References: <20240409031549.3531084-1-kuba@kernel.org>
-In-Reply-To: <20240409031549.3531084-1-kuba@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
- pabeni@redhat.com, bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
- eddyz87@gmail.com, shuah@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Support nonblock for
+ send_recv_data
+To: Geliang Tang <geliang@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org
+References: <cover.1712729342.git.tanggeliang@kylinos.cn>
+ <9cd358958245f8ec87c4f553779aa4243f967a2f.1712729342.git.tanggeliang@kylinos.cn>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <9cd358958245f8ec87c4f553779aa4243f967a2f.1712729342.git.tanggeliang@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon,  8 Apr 2024 20:15:45 -0700 you wrote:
-> The test_offload.py test fits in networking and bpf equally
-> well. We started adding more Python tests in networking
-> and some of the code in test_offload.py can be reused,
-> so move it to networking. Looks like it bit rotted over
-> time and some fixes are needed.
+On 4/9/24 11:13 PM, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> Admittedly more code could be extracted but I only had
-> the time for a minor cleanup :(
+> Some tests, such as the MPTCP bpf tests, require send_recv_data helper
+> to run in nonblock mode.
 > 
-> [...]
+> This patch adds nonblock support for send_recv_data(). Check if it is
+> currently in nonblock mode, and if so, ignore EWOULDBLOCK to continue
+> sending and receiving.
+> 
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> ---
+>   tools/testing/selftests/bpf/network_helpers.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> index 137cd18ef3f2..ca16ef2b648e 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -555,6 +555,7 @@ struct send_recv_arg {
+>   static void *send_recv_server(void *arg)
+>   {
+>   	struct send_recv_arg *a = (struct send_recv_arg *)arg;
+> +	int flags = fcntl(a->fd, F_GETFL);
+>   	ssize_t nr_sent = 0, bytes = 0;
+>   	char batch[1500];
+>   	int err = 0, fd;
+> @@ -578,6 +579,8 @@ static void *send_recv_server(void *arg)
+>   		if (nr_sent == -1 && errno == EINTR)
+>   			continue;
+>   		if (nr_sent == -1) {
+> +			if (flags & O_NONBLOCK && errno == EWOULDBLOCK)
 
-Here is the summary with links:
-  - [net-next,1/4] selftests: move bpf-offload test from bpf to net
-    https://git.kernel.org/netdev/net-next/c/e59f0e93e92e
-  - [net-next,2/4] selftests: net: bpf_offload: wait for maps
-    https://git.kernel.org/netdev/net-next/c/fc50c698c28b
-  - [net-next,3/4] selftests: net: declare section names for bpf_offload
-    https://git.kernel.org/netdev/net-next/c/b1c2ce11d428
-  - [net-next,4/4] selftests: net: reuse common code in bpf_offload
-    https://git.kernel.org/netdev/net-next/c/6ce2b689932b
+I still don't see why it needs to be a non blocking IO. mptcp should work
+with blocking IO also, no? Does it really need non blocking IO to make
+mptcp test work? I would rather stay with blocking IO in selftest as much as
+possible for simplicity reason.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I am afraid the root cause of the EAGAIN thread has not been figured out yet:
+https://lore.kernel.org/all/b3943f9a8bf595212b00e96ba850bf32893312cc.camel@kernel.org/
 
+Lets drop patch 3 until it is understood why mptcp needs EAGAIN or non-blocking IO.
+It feels like there is some flakiness and it should be understood and avoided.
+
+Other than the comment in patch 2, the first two patches lgtm. Please respin with
+the first two patches.
+
+> +				continue;
+>   			err = -errno;
+>   			break;
+>   		}
+> @@ -599,6 +602,7 @@ static void *send_recv_server(void *arg)
+>   
+>   int send_recv_data(int lfd, int fd, uint32_t total_bytes)
+>   {
+> +	int flags = fcntl(lfd, F_GETFL);
+>   	ssize_t nr_recv = 0, bytes = 0;
+>   	struct send_recv_arg arg = {
+>   		.fd	= lfd,
+> @@ -622,8 +626,11 @@ int send_recv_data(int lfd, int fd, uint32_t total_bytes)
+>   			       MIN(total_bytes - bytes, sizeof(batch)), 0);
+>   		if (nr_recv == -1 && errno == EINTR)
+>   			continue;
+> -		if (nr_recv == -1)
+> +		if (nr_recv == -1) {
+> +			if (flags & O_NONBLOCK && errno == EWOULDBLOCK)
+> +				continue;
+>   			break;
+> +		}
+>   		bytes += nr_recv;
+>   	}
+>   
 
 
