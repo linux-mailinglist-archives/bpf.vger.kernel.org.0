@@ -1,85 +1,80 @@
-Return-Path: <bpf+bounces-26333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5214289E6D4
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:28:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C97689E6E8
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:33:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B3B4283C85
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:28:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 008A6283E81
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED881621;
-	Wed, 10 Apr 2024 00:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FBE38D;
+	Wed, 10 Apr 2024 00:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="s43aOJgZ"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="JJ9fs9DU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DDE19F;
-	Wed, 10 Apr 2024 00:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239CA19F;
+	Wed, 10 Apr 2024 00:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712708894; cv=none; b=jP0ER3w5cUO7ONRZLMgJXkq0R1xjj8y4ifjLJb/bxKdFkz4PgIDWYy7w9zRJut3pJl4F3wHpvoAJJffy+udIf6/8i1Tv82103jniN90kXMf8l45ScLGKD64BwkoU9Vav2PorrJN0OI5z5Te6xJVRjnF9T0RFZd9GHCbpjM220Kk=
+	t=1712709196; cv=none; b=IzL5oNua90ZBnsDd/WpqyqKO5euyN9D57Tgf8wlFvVagNehpyDJINW/zBBrehnSPhTCKUJwewRHKlTg1LOX+6efxYQ6TVzgvvvt65iu9qBlpSIFEQXLh6FmGtj+joFBb81rRATwDkuTMDjfH9z7JSZQ3j2sEOqAdkHI14BEGs5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712708894; c=relaxed/simple;
-	bh=W+pYLXuRXB0jH5q5NK82XfEzLZKFNQRH5v63Njz4D2o=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=Zg1/EPrpdmxBKoeLRaSiEPll6NVL2pE9Zc95jEbLMm6jIAVdAf3msvpDaCt3yBrv+r9FyRUB/mubvmxQK7qBPTKNXTP1lZ4JvAntbqoGa9btwaiJdGjpEhPGBmemEzwVJZB1vCFzV7pLvjPPEq+5MrPfpcaeFXe8xb0cvptYxCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=s43aOJgZ; arc=none smtp.client-ip=162.62.57.252
+	s=arc-20240116; t=1712709196; c=relaxed/simple;
+	bh=7B3abChn6QeywU4/KUOFAabRB16trDidpC3z9pyRZA0=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=gqko8LFB3XxizZM06sQAGLnisKdL4jfJ5zmLHiV931lTru09njNQ/MjubJERemGDTkZg6QYm5gqZhl+RovX3jvF/VUZriF5hAG7KyjinvqdlZbGltvti6ySpwv0fH97O2/EAJ/K5D7PMSeisQtaqPfvsqDCMU1vosMQbvpiBixs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=JJ9fs9DU; arc=none smtp.client-ip=203.205.221.153
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712708885; bh=ovDthVW7r0uBySIExmKxz78q0JYqkQ5bKXWaw7WizAg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=s43aOJgZZE5lccYurgJjlLZrnGsonBdCd6x1V9v9PM+pcMuc4zj7hnomuzngN4Xaz
-	 rn3WF7lm18QD9TBDPEa265RJRyO5vRG38X2kRoh7TzLk9CeirGyAYk25flr4xifqA9
-	 riRoVm7trSsARxUOP0z4gqtDmxOiA6cxFhk9z0R0=
+	t=1712709191; bh=u0Mv4a49i+HjEHT0FFM4iQe2j30d3IX7Cki+XJXwmi4=;
+	h=From:To:Cc:Subject:Date;
+	b=JJ9fs9DUjalxgP6hoYOQJJ9Yls5P56D1c+QeQd7/oX5wL1g9HDK2tHLz4G6TOuqD+
+	 /ui0OMkr2iFrCllzInGDWXZMgFFesmaW43d0YLvJ4Xg3auahw2anUwy9rF7ui5/6ih
+	 Zrv3K2JXmFGiBHij2tfJmPrgilma/+qwksthERK0=
 Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id 701004C9; Wed, 10 Apr 2024 08:28:01 +0800
-X-QQ-mid: xmsmtpt1712708881ta4aorxgu
-Message-ID: <tencent_FB85678A3DC136BE969236344B0A74177709@qq.com>
-X-QQ-XMAILINFO: N5sfBKY/oC4kM+iGSm6/9VCLVz8SGTECWfptp5OikjMSRFNCCQNfxKXST3r33W
-	 DUPiklFjqBdyQutO5oxysWrhjgBej1LJjDMWS8LRdP7P8NF+U3+gOOCRxd3ul1RIj6fyGaDLAUWJ
-	 Cyw6qH5JBlfQcJhcychPjL7LB1dyqJbq9t39TK2mooK3ycFVzt1LFCi6m9LYbYmSuJV64tpbMBfl
-	 H2Jhwz0UisNyNfKavN8h2oz56RGgzk4GoyqKqZ8eh7Zt3yCsHE/VmIFq2FdI7YyhGDjGtFZkOT4r
-	 tGL/tBnLlx8ttq8CFkrJJadd4KypmeZe59v7wErxdJ+91h/S2su4ypgeNeflhCIh7rJ/Kuhw5B6P
-	 Ly9nW62wG61vrwHQGYpV3DJqziJpKChqLH8AkparwEm0DMlsZ9FKtAEG7MaTfAYXdYJLEvQQU183
-	 yH0jnZPw3bj/d2gau3MZUXy3EPtsKAxF0N1h/IeKc4N9r6KTP2jT4CiCY9aD097qMPlYA/BiuP1J
-	 h8dTgeF1f6VJ2TvcRHkTTFXr/3fhDPVcAHn32PB8MmpYzkjjtc6Ey5M0eLU9nwH67ZZHFG916ntY
-	 d5rlqEA5xBoJ3iCMX0bjHnO8EfNvqOnTAt5LU7BRBjBrsxz7vIXbt420Zqbu8GywWAHwCtrtEeb7
-	 Zw3e38wHADGvZyI9LE+Dz+irtAUsLMsPhzMetrI4QWUThiMXX0odv6fSj6eSzRndE4ozLvjKunyu
-	 MJl9k/whTFP9yAuG2NcyGPFiXQe9UoLndaGbK1ji/7rGeIajCPKU/11ho7+7fkCVUQs6MdcMkMih
-	 qTyuSi1w6d/4pRchxLOgtltkh9McWO8cNGSIC06k+qas4i+LJ4KJigbNx7xfdwB+GttQXYFwlq/0
-	 IY3Z6TEzAJ4MfQ2AcrOO78x6WlMDUkNX49BP5LzdJsqO3cQpKGdzPACVb60Vjemsh8eG5+W8fDSt
-	 Y4+q9EIUs=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 8473001E; Wed, 10 Apr 2024 08:33:07 +0800
+X-QQ-mid: xmsmtpt1712709187tvku4af5a
+Message-ID: <tencent_EC72CD3879FA6F102FC56E4495F0E822EC0A@qq.com>
+X-QQ-XMAILINFO: OdIVOfqOaVcrMCJcWeDKI4Sr1b2eFxV1E7SSje18Q6CWk3Gxh2SfhZ9PSxAA7S
+	 UkgZ27DzHwI/c9SWJX4xTYSlvQ9E2qIXUwE+/AlR2a02H9Gjl77/l/258nwyq5TMUpeadvHU9ywc
+	 JBmKWDKzVDrCdLj9/MKGN7m8NJvkca9mFFSCuutDjDdrMvgtLEwSWSklPg5eZRmRC5u+Btt6GiPq
+	 8T9xFnp86QRPjfmm5L+kVy7LNLLr8UpcvTjogzZXXHcGhk1GPlTb4LWp7s5NODWYZX2oysh2UiDO
+	 P92iFOP6dHBxjtKGYiregsMZssZJZK4e03LOALSgptxd38xWCXGnciRzMRHYzPF0XIROz5Dt9okZ
+	 gAS+wN33i6FydwdQErurCXjNnw8SvGnHyZhY6TUyWjQnnhyDdyPhuqoA00W61YS7O3Iy2jbWOVlE
+	 aMIoqKRJM1Mq0yczEifyso0Q8K52YXRnG8dDrPXi1suyGH6LEH3garxNrSuLrDSes8+uqpMRgb3E
+	 RC5zhGknEmV/yvLYnvDFpcl0TVx/xYbpJPq46GqyKgp5BlaEkcTePYBS3htQ/KocbSV6icVNPGUF
+	 zxaL3MHcH9WcO60VnnCDwygsesh3515McMSBH+HwzfcJT/DJMt+l5NpEyC/EEOf/9F3XP2X6Dn6k
+	 pI8PJTUE15+19o9dNxbkm+wvH0c22e4KrYWFXGrJ/sIPnLN18GuXxsMy5QkXJYms80lFVxjnuT0I
+	 //7YldQYlPhYkbEziT7orMyGgnp2wSPbVYRh7D7KQ9zia67bWCYqhpwDpCME3ZS2Jc7D4BLf6hp5
+	 eTGztIGLFukdlI2VlQqqoM+KIKbQuF1NW/5VrZk4P01jm6qbFEJ1PyvRPqtYE/qZ354G3UmLvqJV
+	 MciLrqZ0X3fAvN5O+eQhRsr54MVQrC93f1+EPlTSeuBywbv6Alwwga4KHgsS/r7RaJURcInCZG70
+	 I5JQRaET0=
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
 From: Edward Adam Davis <eadavis@qq.com>
-To: martin.lau@linux.dev
+To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
 	ast@kernel.org,
-	bpf@vger.kernel.org,
 	daniel@iogearbox.net,
-	eadavis@qq.com,
 	haoluo@google.com,
 	john.fastabend@gmail.com,
 	jolsa@kernel.org,
 	kpsingh@kernel.org,
 	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
 	sdf@google.com,
 	song@kernel.org,
-	syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com,
 	syzkaller-bugs@googlegroups.com,
 	yonghong.song@linux.dev
-Subject: Re: [PATCH] bpf: fix uninit-value in strnchr
-Date: Wed, 10 Apr 2024 08:28:01 +0800
-X-OQ-MSGID: <20240410002800.176768-2-eadavis@qq.com>
+Subject: [PATCH] bpf: strnchr not suitable for getting NUL-terminator
+Date: Wed, 10 Apr 2024 08:33:08 +0800
+X-OQ-MSGID: <20240410003307.181290-2-eadavis@qq.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <3cbc70e6-04e9-4523-9d4d-84d0794cfc74@linux.dev>
-References: <3cbc70e6-04e9-4523-9d4d-84d0794cfc74@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,57 +83,28 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Tue, 9 Apr 2024 10:59:17 -0700, Martin KaFai Lau wrote:
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 449b9a5d3fe3..07490eba24fe 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-> >   	u64 cur_arg;
-> >   	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
-> >
-> > -	fmt_end = strnchr(fmt, fmt_size, 0);
-> > +	fmt_end = strnchrnul(fmt, fmt_size, 0);
-> 
-> I don't think it is correct either.
-> 
-> >   	if (!fmt_end)
-> 
-> e.g. what will strnchrnul return if fmt is not NULL terminated?
-> 
-> The current code is correct as is. Comment snippet from strnchr:
-> 
-> /*
->   * ...
->   *
->   * Note that the %NUL-terminator is considered part of the string, and can
->   * be searched for.
->   */
-> char *strnchr(const char *s, size_t count, int c)
-lib/string.c
-  9 /**
-  8  * strnchr - Find a character in a length limited string
-  7  * @s: The string to be searched
-  6  * @count: The number of characters to be searched
-  5  * @c: The character to search for
-  4  *
-  3  * Note that the %NUL-terminator is considered part of the string, and can
-  2  * be searched for.
-  1  */
-384 char *strnchr(const char *s, size_t count, int c) 
-  1 {
-  2         while (count--) {
-  3                 if (*s == (char)c)           // Only when the length of s is 1, can NUL char be obtained
-  4                         return (char *)s;
-  5                 if (*s++ == '\0')            // When the length of s is greater than 1, the loop will terminate and return NULL, without obtaining a pointer to a NUL char
-  6                         break;
-  7         }
-  8         return NULL;
-  9 }
-> 
-> 
-> >   		return -EINVAL;
-> >   	fmt_size = fmt_end - fmt;
+The strnchr() is not suitable for obtaining the end of a string with a length
+exceeding 1 and ending with a NUL character.
 
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ kernel/bpf/helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 449b9a5d3fe3..07490eba24fe 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 	u64 cur_arg;
+ 	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
+ 
+-	fmt_end = strnchr(fmt, fmt_size, 0);
++	fmt_end = strnchrnul(fmt, fmt_size, 0);
+ 	if (!fmt_end)
+ 		return -EINVAL;
+ 	fmt_size = fmt_end - fmt;
+-- 
+2.43.0
 
 
