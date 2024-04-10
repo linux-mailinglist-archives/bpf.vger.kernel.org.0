@@ -1,342 +1,172 @@
-Return-Path: <bpf+bounces-26351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4268E89E87B
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 05:37:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B14D289E8E6
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 06:32:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5FBD1F24E8A
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 03:37:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9D38B2416B
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 04:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD47C13B;
-	Wed, 10 Apr 2024 03:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232F99468;
+	Wed, 10 Apr 2024 04:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pPmKLlXL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVLg6fXH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692AFBE66;
-	Wed, 10 Apr 2024 03:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D466910A09;
+	Wed, 10 Apr 2024 04:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712720251; cv=none; b=m5QaX1tpCQHle7ZuehWS3LRGa6EScGX2cesUiJJychybZtflFna16DLIOZVWGGY9bveoB/AvT6s5Bs2BIqsiyUv4XHGvUZZCPQr1jDnu+s1rMURt5ncx1T1Ii+hMZGi6NBruQoIWlI4AqRBG/uz+6g+3Yt8r0S1iM3fc+/QW3W8=
+	t=1712723523; cv=none; b=G3HSDW16qzi4q0POyCNYB6UXB39Y8euXlgK6w297SkBCdwHrHZ4lvfro5MlNC/r+AZ45UEwqZlU5g2D1vtrxKgcDIkS8XJSEwxc1meLkNz452iZdnmwyW1cpDP3AoPx2T3EJ2j0X/wsCKaqjo/UYR0s4FdK2KD0d4j3F+O9FTeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712720251; c=relaxed/simple;
-	bh=L9Zaq0e8GXHoYdf9292xhKRUtx+8gzPbPR21ozqU/T4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AutXaj3ggmbWhwQflzG0FQp8kKBtHscq3iJnCVR8fJ0tZcXp8A6f3y+lNHIFv79StM5+5gR+LC6NdgtSzRVpcHPk8ySXOobE+3G0/dNFre1hInA0w3eKjaXFUrLg4Axm2O+YmuwbAK8cUtezBWls8HpPmVS4Ruwp46TdI12/Ccw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pPmKLlXL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F167CC433F1;
-	Wed, 10 Apr 2024 03:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712720250;
-	bh=L9Zaq0e8GXHoYdf9292xhKRUtx+8gzPbPR21ozqU/T4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=pPmKLlXLw/ABT/ff98119KKPoyIj6HZfpY5chZVyeUKZj/crhG/K07oWuDmyi0yMJ
-	 RLBPx62rRqY/b6gTHizyzRwUWa5EPfXi6ZlVEVKUuOz6Ej3Ib1plgLtdVoswLk6zaH
-	 kpQJHux/ReVZS7YvhoY6Ol22A64mmRck5YYK/DvRbfImMk+WavFyu+zrM06dR6iCAj
-	 tnqjUHmt2TN+trMxA+IV55Qf6GV5xJGLpPe7VoT5vhSVQWgMLsnGwRsqvRX5xr+bfl
-	 wp92ObYk2d5ca6fWYN9Agj6cwUl4KhktacQg4o6T4txZhMw5ANtaYO+GQuQxaKVjB3
-	 BokWa3dL/fuWA==
-Message-ID: <7f8f8e78938c97dbb523087bd4554c242ca27ddd.camel@kernel.org>
-Subject: Re: [PATCH bpf-next v3 3/4] selftests/bpf: Export send_recv_data
- helper
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, mptcp@lists.linux.dev,
- linux-kselftest@vger.kernel.org
-Date: Wed, 10 Apr 2024 11:37:20 +0800
-In-Reply-To: <344caa7ef362105ba871f52e21e6c62f6edb954e.1712659575.git.tanggeliang@kylinos.cn>
-References: <cover.1712659575.git.tanggeliang@kylinos.cn>
-	 <344caa7ef362105ba871f52e21e6c62f6edb954e.1712659575.git.tanggeliang@kylinos.cn>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
+	s=arc-20240116; t=1712723523; c=relaxed/simple;
+	bh=rMVm9URc9I8cVqvGGbdYnQEP4nxrZ957jULQWF63OlI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eCBZI6KzPc4wiqy+soxvw8sWyETW/+J2ousyWBIws/a/S9BjS5fxIMPVfCL2PJsQ35o1eJOxm/4FksB22pWDDnyL/K34RpZiIPg2S8sksfYtirQs4iQRNqV9mU8sLecs4zk29gTUKRvfk3vjdvyOL5OQSS7jsb4q1/poqgwlxsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OVLg6fXH; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51c8274403so420889266b.1;
+        Tue, 09 Apr 2024 21:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712723520; x=1713328320; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xNrSwE+dolE2QA8qHvdLe8vM7FO2G4niuceuaP/S8AE=;
+        b=OVLg6fXHFIWZErKmVfCiM1MKvWZsrWNKL/7OqSft/IhpQzSlR/Q+I0pHGK1Xbu3RAu
+         K8lNKMYTRXVf+TfUZC9QbGYoPw2bwguJeck8OQtLygXB9JjSgGvSoIacQd9hEXEXw27u
+         WLEOPZF6NJTLL1f94UCGRnL4YOMVh3T7tU0Mgm5VhK3mPwCKARC6SWwHbkCTdeylWLmD
+         GMZE4lqm28/qsLQckxEHKSw/gAr9IU6MtTdMnrDWKfrlblX9v/m8YMkftcn2x5kKyERR
+         yhrC6yl3FYXiCubKISZTTKwjVKkO2juVJ7ZknYVpT5e63o1w/UorIZDBOenGE0EH/4dX
+         YiyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712723520; x=1713328320;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xNrSwE+dolE2QA8qHvdLe8vM7FO2G4niuceuaP/S8AE=;
+        b=TL7pTOFnhQxJUXi/rGaKGfQOBdLbwRRdHCZuxkQxTAsL6Aes764AphE/l37ToXdT6m
+         DeKA8jHfN3sBZnvwnln5gjz5WIyH2SB79rFH6Rjm5fNQKdV8+u1XI0VGZg+djWQWvxfw
+         tyGsLFJBK0Eb5DEPmsqSZw94i+rt3xZhtGUJJmJGcc3WfK85RabAefpUvpgE4bZ+5CfU
+         2LHGSylhL3XjpjpPW/43vSTFQLgeLZ4SKjuDAHPWfc70g+zh7dW9Qooqz703DUfhZMxJ
+         yyBINs9P96QBLbWaNb2pKvtr15eFtb1SBf9AlQhc2GJFvvL638fCl/GY1jJ6wjTRtjxQ
+         Ry/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUA9vIO8aNisIoxtN7m2qA46R1XwlAA/PWIqgZ5FbYxOB02IYiP0waNUh+cRZwF5ksXAJ9ZxbIDHFWr6VrvFTGX4IksXFxUS/IHW7+xkyJDDt0+vnBu8Rio43ZlNsxg99hUWE2uuNt+r0OAoep8e+D3ZBhG4KhRhqyM8HI+SnBZKQrtuQ==
+X-Gm-Message-State: AOJu0YxXp1xEAnTUmZTXFK1QBdMk+Kf26NfCsJveNA9j3nnJ/EdaFgLZ
+	0xSNaNilQnQAIOfqRqO5cYvD76FaWAwTaGWyRME/iVvGxsMnTvfs
+X-Google-Smtp-Source: AGHT+IEFsrpybLrAxP55MzTpaSrenlWTPHzaVeLem3lu9vpNOhH0S2cMYNX2Xn5nmDfbQ8RsQjL+Bw==
+X-Received: by 2002:a17:906:7192:b0:a51:c191:c0a0 with SMTP id h18-20020a170906719200b00a51c191c0a0mr693725ejk.43.1712723519698;
+        Tue, 09 Apr 2024 21:31:59 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id h19-20020a1709070b1300b00a51971dd79csm6586263ejl.143.2024.04.09.21.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 21:31:58 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Wed, 10 Apr 2024 06:31:56 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Robert O'Callahan <robert@ocallahan.org>,
+	Song Liu <song@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 1/4] perf/bpf: Call bpf handler directly, not
+ through overflow machinery
+Message-ID: <ZhYWPGX0RzamxOHx@gmail.com>
+References: <20240214173950.18570-1-khuey@kylehuey.com>
+ <20240214173950.18570-2-khuey@kylehuey.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214173950.18570-2-khuey@kylehuey.com>
 
-On Tue, 2024-04-09 at 18:57 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->=20
-> This patch extracts the code to send and receive data into a new
-> helper named send_recv_data() in network_helpers.c and export it
-> in network_helpers.h.
->=20
-> This helper will be used for MPTCP BPF selftests.
->=20
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+
+* Kyle Huey <me@kylehuey.com> wrote:
+
+> To ultimately allow bpf programs attached to perf events to completely
+> suppress all of the effects of a perf event overflow (rather than just the
+> sample output, as they do today), call bpf_overflow_handler() from
+> __perf_event_overflow() directly rather than modifying struct perf_event's
+> overflow_handler. Return the bpf program's return value from
+> bpf_overflow_handler() so that __perf_event_overflow() knows how to
+> proceed. Remove the now unnecessary orig_overflow_handler from struct
+> perf_event.
+> 
+> This patch is solely a refactoring and results in no behavior change.
+> 
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> Acked-by: Song Liu <song@kernel.org>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 > ---
-> =C2=A0tools/testing/selftests/bpf/network_helpers.c | 96
-> +++++++++++++++++++
-> =C2=A0tools/testing/selftests/bpf/network_helpers.h |=C2=A0 1 +
-> =C2=A0.../selftests/bpf/prog_tests/bpf_tcp_ca.c=C2=A0=C2=A0=C2=A0=C2=A0 |=
- 81 +---------------
-> =C2=A03 files changed, 98 insertions(+), 80 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c
-> b/tools/testing/selftests/bpf/network_helpers.c
-> index dbcbe2ac51ba..55d41508fe1f 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -555,3 +555,99 @@ int set_hw_ring_size(char *ifname, struct
-> ethtool_ringparam *ring_param)
-> =C2=A0	close(sockfd);
-> =C2=A0	return 0;
-> =C2=A0}
-> +
-> +struct send_recv_arg {
-> +	int		fd;
-> +	uint32_t	bytes;
-> +	int		stop;
-> +};
-> +
-> +static void *send_recv_server(void *arg)
-> +{
-> +	struct send_recv_arg *a =3D (struct send_recv_arg *)arg;
-> +	ssize_t nr_sent =3D 0, bytes =3D 0;
-> +	char batch[1500];
-> +	int err =3D 0, fd;
-> +
-> +	fd =3D accept(a->fd, NULL, NULL);
-> +	while (fd =3D=3D -1) {
-> +		if (errno =3D=3D EINTR)
-> +			continue;
-> +		err =3D -errno;
-> +		goto done;
-> +	}
-> +
-> +	if (settimeo(fd, 0)) {
-> +		err =3D -errno;
-> +		goto done;
-> +	}
-> +
-> +	while (bytes < a->bytes && !READ_ONCE(a->stop)) {
-> +		nr_sent =3D send(fd, &batch,
-> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MIN(a->bytes - bytes, sizeof(bat=
-ch)),
-> 0);
-> +		if (nr_sent =3D=3D -1 && errno =3D=3D EINTR)
-> +			continue;
-> +		if (nr_sent =3D=3D -1) {
-> +			err =3D -errno;
-> +			break;
-> +		}
-> +		bytes +=3D nr_sent;
-> +	}
-> +
-> +	if (bytes !=3D a->bytes)
-> +		log_err("send");
-> +
-> +done:
-> +	if (fd >=3D 0)
-> +		close(fd);
-> +	if (err) {
-> +		WRITE_ONCE(a->stop, 1);
-> +		return ERR_PTR(err);
-> +	}
-> +	return NULL;
-> +}
-> +
-> +int send_recv_data(int lfd, int fd, uint32_t total_bytes)
-> +{
-> +	ssize_t nr_recv =3D 0, bytes =3D 0;
-> +	struct send_recv_arg arg =3D {
-> +		.fd	=3D lfd,
-> +		.bytes	=3D total_bytes,
-> +		.stop	=3D 0,
-> +	};
-> +	pthread_t srv_thread;
-> +	void *thread_ret;
-> +	char batch[1500];
-> +	int err;
-> +
-> +	err =3D pthread_create(&srv_thread, NULL, send_recv_server,
-> (void *)&arg);
-> +	if (!err) {
+>  include/linux/perf_event.h |  6 +-----
+>  kernel/events/core.c       | 28 +++++++++++++++-------------
+>  2 files changed, 16 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index d2a15c0c6f8a..c7f54fd74d89 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -810,7 +810,6 @@ struct perf_event {
+>  	perf_overflow_handler_t		overflow_handler;
+>  	void				*overflow_handler_context;
+>  #ifdef CONFIG_BPF_SYSCALL
+> -	perf_overflow_handler_t		orig_overflow_handler;
+>  	struct bpf_prog			*prog;
+>  	u64				bpf_cookie;
+>  #endif
 
-Sorry, here should be 'if (err)'.
+Could we reduce the #ifdeffery please?
 
-Changes Requested.
+On distros CONFIG_BPF_SYSCALL is almost always enabled, so it's not like 
+this truly saves anything on real systems.
 
--Geliang
+I'd suggest making the perf_event::prog and perf_event::bpf_cookie fields 
+unconditional.
 
-> +		log_err("pthread_create");
-> +		return err;
-> +	}
-> +
-> +	/* recv total_bytes */
-> +	while (bytes < total_bytes && !READ_ONCE(arg.stop)) {
-> +		nr_recv =3D recv(fd, &batch,
-> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MIN(total_bytes - bytes,
-> sizeof(batch)), 0);
-> +		if (nr_recv =3D=3D -1 && errno =3D=3D EINTR)
-> +			continue;
-> +		if (nr_recv =3D=3D -1)
-> +			break;
-> +		bytes +=3D nr_recv;
-> +	}
-> +
-> +	if (bytes !=3D total_bytes) {
-> +		log_err("recv");
-> +		return -1;
-> +	}
-> +
-> +	WRITE_ONCE(arg.stop, 1);
-> +	pthread_join(srv_thread, &thread_ret);
-> +	if (IS_ERR(thread_ret)) {
-> +		log_err("thread_ret");
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/network_helpers.h
-> b/tools/testing/selftests/bpf/network_helpers.h
-> index 6457445cc6e2..70f4e4c92733 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.h
-> +++ b/tools/testing/selftests/bpf/network_helpers.h
-> @@ -76,6 +76,7 @@ struct nstoken;
-> =C2=A0 */
-> =C2=A0struct nstoken *open_netns(const char *name);
-> =C2=A0void close_netns(struct nstoken *token);
-> +int send_recv_data(int lfd, int fd, uint32_t total_bytes);
-> =C2=A0
-> =C2=A0static __u16 csum_fold(__u32 csum)
-> =C2=A0{
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> index 64f172f02a9a..907bac46c774 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> @@ -33,75 +33,15 @@ static int settcpca(int fd, const char *tcp_ca)
-> =C2=A0	return 0;
-> =C2=A0}
-> =C2=A0
-> -struct send_recv_arg {
-> -	int		fd;
-> -	uint32_t	bytes;
-> -	int		stop;
-> -};
-> -
-> -static void *server(void *arg)
-> -{
-> -	struct send_recv_arg *a =3D (struct send_recv_arg *)arg;
-> -	ssize_t nr_sent =3D 0, bytes =3D 0;
-> -	char batch[1500];
-> -	int err =3D 0, fd;
-> -
-> -	fd =3D accept(a->fd, NULL, NULL);
-> -	while (fd =3D=3D -1) {
-> -		if (errno =3D=3D EINTR)
-> -			continue;
-> -		err =3D -errno;
-> -		goto done;
-> -	}
-> -
-> -	if (settimeo(fd, 0)) {
-> -		err =3D -errno;
-> -		goto done;
-> -	}
-> -
-> -	while (bytes < a->bytes && !READ_ONCE(a->stop)) {
-> -		nr_sent =3D send(fd, &batch,
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MIN(a->bytes - bytes, sizeof(bat=
-ch)),
-> 0);
-> -		if (nr_sent =3D=3D -1 && errno =3D=3D EINTR)
-> -			continue;
-> -		if (nr_sent =3D=3D -1) {
-> -			err =3D -errno;
-> -			break;
-> -		}
-> -		bytes +=3D nr_sent;
-> -	}
-> -
-> -	ASSERT_EQ(bytes, a->bytes, "send");
-> -
-> -done:
-> -	if (fd >=3D 0)
-> -		close(fd);
-> -	if (err) {
-> -		WRITE_ONCE(a->stop, 1);
-> -		return ERR_PTR(err);
-> -	}
-> -	return NULL;
-> -}
-> -
-> =C2=A0static void do_test(const char *tcp_ca, const struct bpf_map
-> *sk_stg_map)
-> =C2=A0{
-> -	ssize_t nr_recv =3D 0, bytes =3D 0;
-> -	struct send_recv_arg arg =3D {
-> -		.bytes	=3D total_bytes,
-> -		.stop	=3D 0,
-> -	};
-> =C2=A0	int lfd =3D -1, fd =3D -1;
-> -	pthread_t srv_thread;
-> -	void *thread_ret;
-> -	char batch[1500];
-> =C2=A0	int err;
-> =C2=A0
-> =C2=A0	lfd =3D start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-> =C2=A0	if (!ASSERT_NEQ(lfd, -1, "socket"))
-> =C2=A0		return;
-> =C2=A0
-> -	arg.fd =3D lfd;
-> -
-> =C2=A0	fd =3D socket(AF_INET6, SOCK_STREAM, 0);
-> =C2=A0	if (!ASSERT_NEQ(fd, -1, "socket")) {
-> =C2=A0		close(lfd);
-> @@ -133,26 +73,7 @@ static void do_test(const char *tcp_ca, const
-> struct bpf_map *sk_stg_map)
-> =C2=A0			goto done;
-> =C2=A0	}
-> =C2=A0
-> -	err =3D pthread_create(&srv_thread, NULL, server, (void
-> *)&arg);
-> -	if (!ASSERT_OK(err, "pthread_create"))
-> -		goto done;
-> -
-> -	/* recv total_bytes */
-> -	while (bytes < total_bytes && !READ_ONCE(arg.stop)) {
-> -		nr_recv =3D recv(fd, &batch,
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MIN(total_bytes - bytes,
-> sizeof(batch)), 0);
-> -		if (nr_recv =3D=3D -1 && errno =3D=3D EINTR)
-> -			continue;
-> -		if (nr_recv =3D=3D -1)
-> -			break;
-> -		bytes +=3D nr_recv;
-> -	}
-> -
-> -	ASSERT_EQ(bytes, total_bytes, "recv");
-> -
-> -	WRITE_ONCE(arg.stop, 1);
-> -	pthread_join(srv_thread, &thread_ret);
-> -	ASSERT_OK(IS_ERR(thread_ret), "thread_ret");
-> +	ASSERT_OK(send_recv_data(lfd, fd, total_bytes),
-> "send_recv_data");
-> =C2=A0
-> =C2=A0done:
-> =C2=A0	close(lfd);
+> +#ifdef CONFIG_BPF_SYSCALL
+> +static int bpf_overflow_handler(struct perf_event *event,
+> +				struct perf_sample_data *data,
+> +				struct pt_regs *regs);
+> +#endif
 
+If the function definitions are misordered then first do a patch that moves 
+the function earlier in the file, instead of slapping a random prototype 
+into a random place.
+
+> -	READ_ONCE(event->overflow_handler)(event, data, regs);
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+> +#endif
+> +		READ_ONCE(event->overflow_handler)(event, data, regs);
+
+This #ifdef would go away too - on !CONFIG_BPF_SYSCALL event->prog should 
+always be NULL.
+
+Please keep the #ifdeffery reduction and function-moving patches separate 
+from these other changes.
+
+Thanks,
+
+	Ingo
 
