@@ -1,156 +1,176 @@
-Return-Path: <bpf+bounces-26412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62D1E89F293
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 14:46:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B237289F3DB
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 15:18:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C9B7282074
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 12:46:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B903B2371C
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 13:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0C415B55C;
-	Wed, 10 Apr 2024 12:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A1815E801;
+	Wed, 10 Apr 2024 13:17:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67CF158DB9;
-	Wed, 10 Apr 2024 12:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3706015B576;
+	Wed, 10 Apr 2024 13:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753149; cv=none; b=pwFcqdp/TPgbLmtge9pfcY7DyR25sUImWc4GSLRcK7jpIFtKZW4Twoue0w8p81TxKc6EN+5tBIrss4QgPM6TH8GFKFfd1zD79Ah4kJ5P7h4i8hmYYEEu6TbgnLWFYSAOZzY3AoqZikHdndly7Nt+4eRb0dc2eGiGhGVqDdx+Pd4=
+	t=1712755072; cv=none; b=Ktw0ExcwEcArJwTUC/cJPnNw6aE9mZyLN47PyZy2EyeUvWFEi4f79d2SEkRLOucIhhoes0pHYsiUMhbpS641k/fbkP+8gNZAjCbTmsUSOw/Iio7eGgag25ZoExkX1XkPqen4hJQCGYj5RCJUA6U2JJvC7Pmc+56fTYOsn4Wgxp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712753149; c=relaxed/simple;
-	bh=tD4QkZOAj61aCZGjCPwk6wEvCiQTwcMYYHOPnCN8QvY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=caLjvBYQF2gG3KQLDtNgX6WwWMt01kt1OgJZjkCueVgqJ+Hzi2qgyPubdIwSXUpOXUgmJZqmMxqY4GJam2GHX37zvw0hXNbk7zLRPd/F0/LOWtXLx/6kx265ISAtQtHl24xL6t6M8x5L+UPdLEekUrc5crJ+3gXJPXVcEQOP7Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1712755072; c=relaxed/simple;
+	bh=orGm0Aw7qKaF1ixL74Hd4m13SwR3N1yeHXHZYtr8+A8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bL7GRsPi2BPikI84hXwSlTT2tHAhl1htbpGdlo3R0L/6Z1R0eVoU2X6pGeAetw1HgolBnJ7O2mTgLr/FhfLPXEPlnLMH50e/RQTgo6i0OevD+6qwyDHjR1ufR997Uv9TlMsdOyZaCJb/YnxOkUww6j9lP5gMjfgM2N1j0OPHXis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a51beae2f13so478433466b.1;
-        Wed, 10 Apr 2024 05:45:47 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e6646d78bso3463472a12.1;
+        Wed, 10 Apr 2024 06:17:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712753146; x=1713357946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0v050svZEeKX6xCxDWehqmojLYZEjuvnVFUXjaedZaw=;
-        b=oM4wLB39UtR0jl7LNNK73uySSZsDUcXqjMr08JwAQt6iA5zVWcmCEQ7AuUwNbHul51
-         fQ1yoIGjLgCKmo7oFhqLj1YoRCHm87qmCyN0KBfYLBmx63QT6ckzbzTwJgkYizU1MdgZ
-         xtXdvlSsOEsPEOz9F6Vjk7fG4kkUdePf34+jeQ90vINYOLzn4qB0MG3ndybCijEaotFp
-         rRiP9dMFzp+iEHPyO2UgJyaJ5wIisRqAIjVJwpwlURkl777dUfDr7WySAMpmZ+tNRpaV
-         qmdP+afNTN1QIE5bDvOG9thW/L2uHyTFg15YbEs5s5UcbkdVtpCQP5Icf3uN+4XFFT2+
-         AQ2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWqEHAnxPxseS6ZbAWYAiPOsM5ePTbpU97taATHRGZEoK8MWtko540Y93K2Yo+D7lN1/aMGyHxjL5+bNS8pcZzVwrxe5vahnog6sz7bYnrUkHWZyHkNmCNX59gn66+8KZXEtjmwbreaMRDkMY7FSPvQpq3WeMJekiwUQf8jcfoN8TTx2OMxCdTtWQIC0D9GzwsWSQrgPWGkUfg=
-X-Gm-Message-State: AOJu0YwWsSuTyF+03FPZ9BsTbv2sKbxotTbpw1eVBw4NrVLTgSGu3bBn
-	3zTC4U73YTorMM/g1IaewTfAA2SK22WXk96VqNzcs67e0qEBlfKn
-X-Google-Smtp-Source: AGHT+IGHTIvSnYbc16oL+rmZ6uXCsyNfTppKX/R1tU+P7ojp/FGa9JEJ+FKYxGWNNfYEH5ZZNCyv/A==
-X-Received: by 2002:a17:907:7da8:b0:a51:dd50:6a with SMTP id oz40-20020a1709077da800b00a51dd50006amr2008839ejc.66.1712753145630;
-        Wed, 10 Apr 2024 05:45:45 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id jg18-20020a170907971200b00a51a60bf400sm6765658ejc.76.2024.04.10.05.45.43
+        d=1e100.net; s=20230601; t=1712755069; x=1713359869;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NK/ebucV8gkQdirPclBiNQxag+qh5mnAVP3hrQ1KOiw=;
+        b=gWo3NGavqRD5ruilC+fureWlSQVoSm3G5wjrcOTOWhnPRJiyDyBMdsJeDedRROL6/Y
+         2o4k/fvvwsdQ0Us4o9Pvxnm25GE5+aZ8plKfDxaRRmNJNzgPSWiuZ3cUwyQZGAV8wovm
+         ADtfOavQPeJkcGY117f6TMQPLUv0strrhMmIonPoGfFVNrPycozjvSKk0YUT0NZUuvp5
+         Yq4tG1cuID2DD7kMVzwJkBfd5YygP36K7f3unrQVvnfvR7EqAjOL0iqRRg74cbI8GcwC
+         JRUYPSC76QCUMosUgFsJYajZow2USn7F0O5dLeWYqMEmXzINuI2tP8i8m3hh0nI4OM3O
+         gUNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkZBXURUmEyBSgNxy5KWoNx/IH1SKLmS2C8Ly6kj6CTocLLyvAtkoWaPZoFqb6vZ73V0xSWaCNTjF/gmJ+1d8gioMtUu+wL+YVsDZXVBHUcsKVGBVvgGiVsFcpBujFdmsTKTutg2NRYecGIq9HuTxXjs1RzjsWN1R0zYZ4/pF1oeQ3+y2aGOPmgEjxcHVOgynTM0QHluaixtw=
+X-Gm-Message-State: AOJu0YzIr0BDNOYqfqZdeE9JJ5KT+/flF3tQkUf8+zWNpFeCKhh6VtaM
+	SY/HfaLwg26KEFw4/K+AECBA/REdThCABZC3MLMuVYq/Xj3tc5ar
+X-Google-Smtp-Source: AGHT+IFSd0Sg381tqtWe29jdXXqCNujDjWni8Ms+Iy/hEjPdANID9QF0uHrZU2yu/2/4I7NBrTO3cw==
+X-Received: by 2002:a17:906:4f17:b0:a52:140c:571b with SMTP id t23-20020a1709064f1700b00a52140c571bmr735783eju.3.1712755069216;
+        Wed, 10 Apr 2024 06:17:49 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
+        by smtp.gmail.com with ESMTPSA id jl7-20020a17090775c700b00a4e70ede2b7sm7016390ejc.174.2024.04.10.06.17.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 05:45:45 -0700 (PDT)
-Date: Wed, 10 Apr 2024 05:45:41 -0700
+        Wed, 10 Apr 2024 06:17:48 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
-To: Ido Schimmel <idosch@idosch.org>
-Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
-	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
+To: aleksander.lobakin@intel.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	elder@kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, nbd@nbd.name,
-	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org, taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
-	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
+	linux-mediatek@lists.infradead.org,
+	nbd@nbd.name,
+	sean.wang@mediatek.com,
+	Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org,
+	taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	geomatsi@gmail.com,
+	kvalo@kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: quic_jjohnson@quicinc.com,
+	leon@kernel.org,
 	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-	Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	amcohen@nvidia.com
-Subject: Re: [PATCH net-next v4 2/9] net: create a dummy net_device allocator
-Message-ID: <ZhaJ9WkG2OYXkvGo@gmail.com>
-References: <20240409125738.1824983-1-leitao@debian.org>
- <20240409125738.1824983-3-leitao@debian.org>
- <ZhZzjNDRaHtdYjDg@shredder>
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	idosch@idosch.org,
+	leitao@debian.org
+Subject: [PATCH net-next v5 00/10] allocate dummy device dynamically
+Date: Wed, 10 Apr 2024 06:13:41 -0700
+Message-ID: <20240410131407.3897251-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhZzjNDRaHtdYjDg@shredder>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 02:10:04PM +0300, Ido Schimmel wrote:
-> On Tue, Apr 09, 2024 at 05:57:16AM -0700, Breno Leitao wrote:
-> > It is impossible to use init_dummy_netdev together with alloc_netdev()
-> > as the 'setup' argument.
-> > 
-> > This is because alloc_netdev() initializes some fields in the net_device
-> > structure, and later init_dummy_netdev() memzero them all. This causes
-> > some problems as reported here:
-> > 
-> > 	https://lore.kernel.org/all/20240322082336.49f110cc@kernel.org/
-> > 
-> > Split the init_dummy_netdev() function in two. Create a new function called
-> > init_dummy_netdev_core() that does not memzero the net_device structure.
-> > Then have init_dummy_netdev() memzero-ing and calling
-> > init_dummy_netdev_core(), keeping the old behaviour.
-> > 
-> > init_dummy_netdev_core() is the new function that could be called as an
-> > argument for alloc_netdev().
-> > 
-> > Also, create a helper to allocate and initialize dummy net devices,
-> > leveraging init_dummy_netdev_core() as the setup argument. This function
-> > basically simplify the allocation of dummy devices, by allocating and
-> > initializing it. Freeing the device continue to be done through
-> > free_netdev()
-> > 
-> > Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> 
-> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-> 
-> We were about to submit another user of init_dummy_netdev() when I
-> noticed this patch. Converted the code to use alloc_netdev_dummy() [1]
-> and it seems to be working fine. Will submit after your patch is
-> accepted.
+struct net_device shouldn't be embedded into any structure, instead,
+the owner should use the private space to embed their state into
+net_device.
 
-Thanks. It seems that this patch is close to get accepted. Let's see...
+But, in some cases the net_device is embedded inside the private
+structure, which blocks the usage of zero-length arrays inside
+net_device.
 
-> See a few minor comments below.
-> 
-> [...]
-> 
-> > +/**
-> > + *	init_dummy_netdev	- init a dummy network device for NAPI
-> > + *	@dev: device to init
-> > + *
-> > + *	This takes a network device structure and initialize the minimum
-> 
-> s/initialize/initializes/
-> 
-> > + *	amount of fields so it can be used to schedule NAPI polls without
-> > + *	registering a full blown interface. This is to be used by drivers
-> > + *	that need to tie several hardware interfaces to a single NAPI
-> > + *	poll scheduler due to HW limitations.
-> > + */
-> > +void init_dummy_netdev(struct net_device *dev)
-> > +{
-> > +	/* Clear everything. Note we don't initialize spinlocks
-> > +	 * are they aren't supposed to be taken by any of the
-> 
-> I assume you meant s/are/as/ ?
+Create a helper to allocate a dummy device at dynamically runtime, and
+move the Ethernet devices to use it, instead of embedding the dummy
+device inside the private structure.
 
-Thanks for the feedback, I agree with all of them.
+This fixes all the network cases plus some wireless drivers.
 
-Since these lines were not introduced by this patch, and this patch is
-just moving code (and comments) around, I would add a new patch to the
-patch series fixing the grammar errors.
+PS: Due to lack of hardware, unfortunately most these patches are
+compiled tested only, except ath11k that was kindly tested by Kalle Valo.
+
+---
+Changelog:
+
+v1:
+	* https://lore.kernel.org/all/20240327200809.512867-1-leitao@debian.org/
+
+v2:
+	* Patch 1: Use a pre-defined name ("dummy#") for the dummy
+	  net_devices.
+	* Patch 2-5: Added users for the new helper.
+v3:
+	* Use free_netdev() instead of kfree() as suggested by Jakub.
+	* Change the free_netdev() place in ipa driver, as suggested by
+	  Alex Elder.
+	* Set err in the error path in the Marvell driver, as suggested
+	  by Simon Horman.
+v4:
+	* Added a new patch to add dummy device at free_netdev(), as suggested
+	  by Jakub.
+	* Added support for some wireless driver.
+	* Added some Acked-by and Reviewed-by.
+v5:
+	* Added a new patch to fix some typos in the previous code,
+	  suggested by Ido.
+	* Rebased to net-net/main
+
+
+Breno Leitao (10):
+  net: core: Fix documentation
+  net: free_netdev: exit earlier if dummy
+  net: create a dummy net_device allocator
+  net: marvell: prestera: allocate dummy net_device dynamically
+  net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+  net: ipa: allocate dummy net_device dynamically
+  net: ibm/emac: allocate dummy net_device dynamically
+  wifi: qtnfmac: Use netdev dummy allocator helper
+  wifi: ath10k: allocate dummy net_device dynamically
+  wifi: ath11k: allocate dummy net_device dynamically
+
+ drivers/net/ethernet/ibm/emac/mal.c           | 14 ++++-
+ drivers/net/ethernet/ibm/emac/mal.h           |  2 +-
+ .../ethernet/marvell/prestera/prestera_rxtx.c | 15 ++++-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 17 ++++--
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   |  2 +-
+ drivers/net/ipa/gsi.c                         | 12 ++--
+ drivers/net/ipa/gsi.h                         |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c        |  9 ++-
+ drivers/net/wireless/ath/ath10k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath10k/pci.c         |  2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c        |  2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |  4 +-
+ drivers/net/wireless/ath/ath10k/usb.c         |  2 +-
+ drivers/net/wireless/ath/ath11k/ahb.c         |  9 ++-
+ drivers/net/wireless/ath/ath11k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath11k/pcic.c        | 21 +++++--
+ .../wireless/quantenna/qtnfmac/pcie/pcie.c    |  3 +-
+ include/linux/netdevice.h                     |  3 +
+ net/core/dev.c                                | 57 ++++++++++++-------
+ 19 files changed, 127 insertions(+), 53 deletions(-)
+
+-- 
+2.43.0
+
 
