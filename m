@@ -1,187 +1,219 @@
-Return-Path: <bpf+bounces-26399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2DF589ED5C
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 10:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A953889ED73
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 10:22:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1751F21D57
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 08:14:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3677F1F220B8
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 08:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFDF13D535;
-	Wed, 10 Apr 2024 08:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3A013D60B;
+	Wed, 10 Apr 2024 08:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ujac6vTK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VjdrlWMc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3DFBA2E;
-	Wed, 10 Apr 2024 08:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E701D13D523;
+	Wed, 10 Apr 2024 08:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712736884; cv=none; b=YepDwRJXwX8euNaD8aVYf+sD7cevpPoZY2cgtfDQRkGPPPEAXcA7g4IHMTr+XGrggSCfgMf+gUlUfmd6mSmR751eInJBXbd6VERD12VzcXG/4nwttBTkyBOzi9fIkDIvjRHRVVoku0PkhjcpFWgLD5FBOq3l7V3K/aNlNalWG4k=
+	t=1712737321; cv=none; b=Ym/ax79eJKlIMttu2jccZWD18FkjfanqO2mZg3VQbtnUEAAnU84dltc1niO1D0BwsTwxJMLs2nPqWba6RLGjbnhpJwO+V3qLyZXsu6guWCUc4ibZ0Xm1WEnlnr29r72XblzMM5RNsxdVHrzQJYZp20M9tFzhwte2smbWNNx5tnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712736884; c=relaxed/simple;
-	bh=O+leYepAFRo8ICmIGEVY0G/02B8AAx2Wdt3lPfF8SJE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hZaDDvbKux3/VI4QnASEhQQHf0HGlqshDJtWlpusOgVWTFGb8v9Zr7joLbSYyiPdklDVr65siEWSJ/uD/mxi2a/rVW0foHRNEacu1vcCtt42O4EmcMzTgLs+lOgLs4nm02/kVbQJ/UiTNo7OKcjHhFG2DI9T2pp+ULO9TEl7Dd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ujac6vTK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B16C433C7;
-	Wed, 10 Apr 2024 08:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712736883;
-	bh=O+leYepAFRo8ICmIGEVY0G/02B8AAx2Wdt3lPfF8SJE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Ujac6vTKUvzJmZtrXgkUem3F4helFt39NZHJG9soE23W++90jVtkGUOTLs0scMtH6
-	 hPjd/dd93mUOJ8GfMKkJgRy6suXLm9nzOmRNZfC/hotF4E0BxmJ5wTEmUjTbLRiw3a
-	 oVjrPMW+EZoSVzDl5bk6noE7Xmtp8owYC0guD0zy5gl8oj6GR46ACWvWaP4t0utrAs
-	 PGxLs33k1+rf7sGIsFq5xDA/YRm4/SWr29m9eq+Z93NfKUIlL2G35BserSDaSvmvWn
-	 ACjkHJXNscHKMBVl7KI9sfVYzWKZCFwwzeFlBgLBzE7pJaMaC8NWxO3FFi+kqnxs3K
-	 GzrbGnlOK0CZw==
-Message-ID: <ff6874d5bd8dc5c89fcd913c3f1ba1820fe7ae4f.camel@kernel.org>
-Subject: Re: [PATCH bpf-next 06/14] selftests/bpf: Use log_err in
- network_helpers
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, mptcp@lists.linux.dev,
- linux-kselftest@vger.kernel.org
-Date: Wed, 10 Apr 2024 16:14:29 +0800
-In-Reply-To: <77e0288d4757b2fcc2c491a2ed535ef223268071.1712733999.git.tanggeliang@kylinos.cn>
-References: <cover.1712733999.git.tanggeliang@kylinos.cn>
-	 <77e0288d4757b2fcc2c491a2ed535ef223268071.1712733999.git.tanggeliang@kylinos.cn>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
+	s=arc-20240116; t=1712737321; c=relaxed/simple;
+	bh=T43KbF42fm8HsFmTxbZXO8nSYWOOBrDknmli7i2PLa4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bK2zguNYq5YKbGAOi8oQ26ogHKG3WdO7jSTf2oN+08xeVYLoGKWEcV9OVt0zodSnBiZRk7QSVeTrfmJbhV0lS4+2psj/z/fhLp9HvrdH6mUq+fkkjigSRXQj0oa9W9k6pbdQ0e3HxDuLwtdHUsl4eMmXe3X+niCf3H+iLbbnr3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VjdrlWMc; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d0162fa1so7732942e87.3;
+        Wed, 10 Apr 2024 01:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712737316; x=1713342116; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t9ncL6J099zDWm1volQeziNRO3e5GzIYLXP1BKZCft0=;
+        b=VjdrlWMcx2GmYhnOOC+t3fS5F4C0Q285sAAHxu0+9Gt8aruZzjouKTJ9D1gKP+v2GP
+         GhE+CBLfc7ssoXR7LHdHi7Zv91uIZ4U5FSdosQM6FAysyKeDs3jtPsgUAfiyDGYfzjWx
+         yBzH21rFkqjZVbgfXRSkqog6LLoxDAM8807C5OyCnfoqbEKzMJDiWJoCPqPOYH9I2KA5
+         Sd03jO7SkVrSpjMG7M7djzW0g2ssf2QWWJSOaFd+Gzk28MlCFJJVB23WhTbl1hXfA0uX
+         kQUDrB0RQhqLXSOS4pNdY/tJ4hjBfv1JxPCx7mS5LX3+KRSYaVhP5MgBqXpyFHFpcNH9
+         zKRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712737316; x=1713342116;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t9ncL6J099zDWm1volQeziNRO3e5GzIYLXP1BKZCft0=;
+        b=IG4cviILRNiJ+AwZHfKp6+U8X5XZ8hLzx44W7wkJUevUfjesTmkDiOZJgtJqcs55e2
+         nKlcv6yJl3cPifUJOxMtNDz8Ohdua2JRlyY/iuyh1+4mHMdZ+muMdXkhKH02HaPZxS8o
+         ngY++N911YguqlU+Mf1he+F8hsyOHK4vXiTj2aaDXzBXTVNTqTq/jL1kykGLBaj1XUp8
+         LB5q1ttvaradkMXOOT/FwZCZjnONpGACvYCqs88sCr6i1voJDAmoHZOjsaucHVSjyDy+
+         ebPEKP9e2fc7TbcOZ2a0AWxhWH3GjDRnS/2kIptRjpEmWOqqZVl0kISbbMD/mU7cXwOg
+         2IuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWB/NiqwZ6RfjHdbYu/3VhKerCgo/M/31QyIFvfKbhf8AcciKx0YrftwtztBy6wKk3YSEsUna0mwErufeM/HS+OJXfiJaDvoBMvv1M34PCWm/wCJsGXGw24EiA+AayCrXF9jSn89HkVGBGdKECUks6qRGXpFt+tsnx15vfYlA==
+X-Gm-Message-State: AOJu0YwS76Ist9Cc8UHr7dgBQMz6yc5PomHZICLOheOz6qOw93HEzDbs
+	/47CzLGEcfKc23syjuDpwdHCEs+xRb2rO/pHPfH2K5mCJMIiXzd2
+X-Google-Smtp-Source: AGHT+IH/iUhygMfoz7qE+pEGl264dmAwnbM0yE56uCPtfUVV0GoU8JOg2uu3MTmCQbspBueLcpmk4Q==
+X-Received: by 2002:a19:8c0c:0:b0:517:5ee6:4f5b with SMTP id o12-20020a198c0c000000b005175ee64f5bmr1477566lfd.43.1712737315665;
+        Wed, 10 Apr 2024 01:21:55 -0700 (PDT)
+Received: from krava ([2a02:168:f656:0:bbb9:17bc:93d7:223])
+        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b00341dbb4a3a7sm13306716wrs.86.2024.04.10.01.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 01:21:55 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 10 Apr 2024 10:21:53 +0200
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2 3/3] btf: Avoid weak external references
+Message-ID: <ZhZMITbXAR63hkoD@krava>
+References: <20240409150132.4097042-5-ardb+git@google.com>
+ <20240409150132.4097042-8-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409150132.4097042-8-ardb+git@google.com>
 
-On Wed, 2024-04-10 at 15:29 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->=20
-> The helpers ASSERT_OK/GE/OK_PTR should avoid using in public
-> functions.
-> This patch uses log_err() to replace them in network_helpers.c.
->=20
-> And drop '#include "test_progs.h"' in it, include <pthread.h> and
-> <sys/param.h> instead.
-
-Sorry, CI complains about this:
-
-  network_helpers.c: In function =E2=80=98open_netns=E2=80=99:
-  network_helpers.c:466:25: error: implicit declaration of function
-=E2=80=98open=E2=80=99; did you mean =E2=80=98popen=E2=80=99? [-Werror=3Dim=
-plicit-function-declaration]
-    466 |  token->orig_netns_fd =3D open("/proc/self/ns/net", O_RDONLY);
-        |                         ^~~~
-        |                         popen
-
-"test_progs.h" is still needed. I'll update this in v2.
-
-Changes Requested.
-
--Geliang
-
->=20
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+On Tue, Apr 09, 2024 at 05:01:36PM +0200, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
+> 
+> If the BTF code is enabled in the build configuration, the start/stop
+> BTF markers are guaranteed to exist in the final link but not during the
+> first linker pass.
+> 
+> Avoid GOT based relocations to these markers in the final executable by
+> providing preliminary definitions that will be used by the first linker
+> pass, and superseded by the actual definitions in the subsequent ones.
+> 
+> Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF so
+> that inadvertent references to this section will trigger a link failure
+> if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
+> 
+> Note that Clang will notice that taking the address of__start_BTF cannot
+> yield NULL any longer, so testing for that condition is no longer
+> needed.
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 > ---
-> =C2=A0tools/testing/selftests/bpf/network_helpers.c | 22 ++++++++++++++--=
--
-> --
-> =C2=A01 file changed, 16 insertions(+), 6 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c
-> b/tools/testing/selftests/bpf/network_helpers.c
-> index 7ddeb6698ec7..9fd271d5d571 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -7,11 +7,13 @@
-> =C2=A0#include <string.h>
-> =C2=A0#include <unistd.h>
-> =C2=A0#include <sched.h>
-> +#include <pthread.h>
-> =C2=A0
-> =C2=A0#include <arpa/inet.h>
-> =C2=A0#include <sys/mount.h>
-> =C2=A0#include <sys/stat.h>
-> =C2=A0#include <sys/un.h>
-> +#include <sys/param.h>
-> =C2=A0
-> =C2=A0#include <linux/err.h>
-> =C2=A0#include <linux/in.h>
-> @@ -20,7 +22,6 @@
-> =C2=A0
-> =C2=A0#include "bpf_util.h"
-> =C2=A0#include "network_helpers.h"
-> -#include "test_progs.h"
-> =C2=A0
-> =C2=A0#ifndef IPPROTO_MPTCP
-> =C2=A0#define IPPROTO_MPTCP 262
-> @@ -447,22 +448,30 @@ struct nstoken *open_netns(const char *name)
-> =C2=A0	struct nstoken *token;
-> =C2=A0
-> =C2=A0	token =3D calloc(1, sizeof(struct nstoken));
-> -	if (!ASSERT_OK_PTR(token, "malloc token"))
-> +	if (!token) {
-> +		log_err("malloc token");
-> =C2=A0		return NULL;
-> +	}
-> =C2=A0
-> =C2=A0	token->orig_netns_fd =3D open("/proc/self/ns/net", O_RDONLY);
-> -	if (!ASSERT_GE(token->orig_netns_fd, 0, "open
-> /proc/self/ns/net"))
-> +	if (token->orig_netns_fd <=3D 0) {
-> +		log_err("open /proc/self/ns/net");
-> =C2=A0		goto fail;
-> +	}
-> =C2=A0
-> =C2=A0	snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns",
-> name);
-> =C2=A0	nsfd =3D open(nspath, O_RDONLY | O_CLOEXEC);
-> -	if (!ASSERT_GE(nsfd, 0, "open netns fd"))
-> +	if (nsfd <=3D 0) {
-> +		log_err("open netns fd");
-> =C2=A0		goto fail;
-> +	}
-> =C2=A0
-> =C2=A0	err =3D setns(nsfd, CLONE_NEWNET);
-> =C2=A0	close(nsfd);
-> -	if (!ASSERT_OK(err, "setns"))
-> +	if (err) {
-> +		log_err("setns");
-> =C2=A0		goto fail;
-> +	}
-> =C2=A0
-> =C2=A0	return token;
-> =C2=A0fail:
-> @@ -475,7 +484,8 @@ void close_netns(struct nstoken *token)
-> =C2=A0	if (!token)
-> =C2=A0		return;
-> =C2=A0
-> -	ASSERT_OK(setns(token->orig_netns_fd, CLONE_NEWNET),
-> "setns");
-> +	if (setns(token->orig_netns_fd, CLONE_NEWNET))
-> +		log_err("setns");
-> =C2=A0	close(token->orig_netns_fd);
-> =C2=A0	free(token);
-> =C2=A0}
+>  include/asm-generic/vmlinux.lds.h | 9 +++++++++
+>  kernel/bpf/btf.c                  | 4 ++--
+>  kernel/bpf/sysfs_btf.c            | 6 +++---
+>  3 files changed, 14 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index e8449be62058..4cb3d88449e5 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -456,6 +456,7 @@
+>   * independent code.
+>   */
+>  #define PRELIMINARY_SYMBOL_DEFINITIONS					\
+> +	PRELIMINARY_BTF_DEFINITIONS					\
+>  	PROVIDE(kallsyms_addresses = .);				\
+>  	PROVIDE(kallsyms_offsets = .);					\
+>  	PROVIDE(kallsyms_names = .);					\
+> @@ -466,6 +467,14 @@
+>  	PROVIDE(kallsyms_markers = .);					\
+>  	PROVIDE(kallsyms_seqs_of_names = .);
+>  
+> +#ifdef CONFIG_DEBUG_INFO_BTF
+> +#define PRELIMINARY_BTF_DEFINITIONS					\
+> +	PROVIDE(__start_BTF = .);					\
+> +	PROVIDE(__stop_BTF = .);
+> +#else
+> +#define PRELIMINARY_BTF_DEFINITIONS
+> +#endif
 
+hi,
+I'm getting following compilation fail when CONFIG_DEBUG_INFO_BTF is disabled
+
+	[jolsa@krava linux-qemu]$ make 
+	  CALL    scripts/checksyscalls.sh
+	  DESCEND objtool
+	  INSTALL libsubcmd_headers
+	  UPD     include/generated/utsversion.h
+	  CC      init/version-timestamp.o
+	  LD      .tmp_vmlinux.kallsyms1
+	ld: kernel/bpf/btf.o: in function `btf_parse_vmlinux':
+	/home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5988: undefined reference to `__start_BTF'
+	ld: /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5989: undefined reference to `__stop_BTF'
+	ld: /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5989: undefined reference to `__start_BTF'
+	make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
+	make[1]: *** [/home/jolsa/kernel/linux-qemu/Makefile:1160: vmlinux] Error 2
+	make: *** [Makefile:240: __sub-make] Error 2
+
+maybe the assumption was that kernel/bpf/btf.o is compiled only
+for CONFIG_DEBUG_INFO_BTF, but it's actually:
+
+  obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
+
+I guess we just need !CONFIG_DEBUG_INFO_BTF version of btf_parse_vmlinux
+function
+
+jirka
+
+> +
+>  /*
+>   * Read only Data
+>   */
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 90c4a32d89ff..46a56bf067a8 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5642,8 +5642,8 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
+>  	return ERR_PTR(err);
+>  }
+>  
+> -extern char __weak __start_BTF[];
+> -extern char __weak __stop_BTF[];
+> +extern char __start_BTF[];
+> +extern char __stop_BTF[];
+>  extern struct btf *btf_vmlinux;
+>  
+>  #define BPF_MAP_TYPE(_id, _ops)
+> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+> index ef6911aee3bb..fedb54c94cdb 100644
+> --- a/kernel/bpf/sysfs_btf.c
+> +++ b/kernel/bpf/sysfs_btf.c
+> @@ -9,8 +9,8 @@
+>  #include <linux/sysfs.h>
+>  
+>  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
+> -extern char __weak __start_BTF[];
+> -extern char __weak __stop_BTF[];
+> +extern char __start_BTF[];
+> +extern char __stop_BTF[];
+>  
+>  static ssize_t
+>  btf_vmlinux_read(struct file *file, struct kobject *kobj,
+> @@ -32,7 +32,7 @@ static int __init btf_vmlinux_init(void)
+>  {
+>  	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
+>  
+> -	if (!__start_BTF || bin_attr_btf_vmlinux.size == 0)
+> +	if (bin_attr_btf_vmlinux.size == 0)
+>  		return 0;
+>  
+>  	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
+> -- 
+> 2.44.0.478.gd926399ef9-goog
+> 
+> 
 
