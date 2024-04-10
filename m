@@ -1,100 +1,151 @@
-Return-Path: <bpf+bounces-26335-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26336-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A04EA89E6F3
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:40:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526CF89E6FE
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:42:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58CB2283AB7
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:40:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1E4F1F22426
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD9EA55;
-	Wed, 10 Apr 2024 00:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C32638B;
+	Wed, 10 Apr 2024 00:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgDGr5W+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KqsxDPtk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA4919E;
-	Wed, 10 Apr 2024 00:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5255137C
+	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 00:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712709591; cv=none; b=PikxkSgMfBiQvDNnlAqywjRTPn5kWJy38cf2g4PfeqYErxs6YyUKwL4+LFEOS5gC5Bn1JH0s/sFM6kso1WfOFRHFdZXYD5m9RPUuKzWgmJhAfk5MP0JyeS1Hue4mT+jJIHvsemPz8Py3phZr68slwhHTQbc0Be/qalvAOmK8TGc=
+	t=1712709716; cv=none; b=LvEQEDO7v4xrwMF5bAAy3UwEy409F7gs/lD6ZuT3eIwag0TYnq0lNcTWLwVGH1J5R2TPJKI/rCI8jfvV51OCWzd1GT5ji+QR9KhIaOq68sHhFil2/7v6s33pGs7i8CF/3VuYdkh51BeVIjUeJprNKvLuD6LvCW4gK3LRN3BYcrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712709591; c=relaxed/simple;
-	bh=rPIGcmKkaKL77xy0kE1sS+HitVg+d/OiK8zkBdMTGF4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LSmq3q9iwMgpVM4VjOjwSh1waNTUPGcesNnDC95PabPRRlpD9E9UpH78CZB/rtqKYfxhLrWyr3/2lx1fYhmy7TIxGkQ33nwEVd+UDQ8vuOUflLbAB+LiQfhNgdALoyOYyRgOAAbUsT05rvWonyVLORIx86A74ZU3v5KBPGCaGgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lgDGr5W+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05537C433F1;
-	Wed, 10 Apr 2024 00:39:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712709591;
-	bh=rPIGcmKkaKL77xy0kE1sS+HitVg+d/OiK8zkBdMTGF4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lgDGr5W+S1Mo/vVh51AzT36WYsN43KOdv2HUfV5OeoOGAeleNf+qD1QCKnVmw0f0U
-	 KO/r9TUZ8143nBmmM0Qm0kfLSuNPR+q603FcX4WKnZ9O2zPhGlRLyZk9ouI3oEE2u+
-	 xS4V4CtN5844T1z0xi98+DiGzT+tVt6J9U0tn83SkLMJlJBqb8J70g1FlMh3BnZk1t
-	 PFyuwjn9p18IQ3bR9TgpM4o/aAIY9pOiY2znYey78v9rqgcBeo9vq8WCC/pnMi2gxg
-	 TMgOlogCc1vvBqYyXQZzoy3ij/wFam0X+B4vIoxFbJH+PSXVmgCcnY4V7cUgtU0Uy/
-	 ZcEuE+smnLljw==
-Date: Tue, 9 Apr 2024 17:39:48 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Julien Panis <jpanis@baylibre.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
- <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Sumit Semwal
- <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Simon Horman <horms@kernel.org>, Andrew Lunn
- <andrew@lunn.ch>, Ratheesh Kannoth <rkannoth@marvell.com>, Naveen
- Mamindlapalli <naveenm@marvell.com>, danishanwar@ti.com,
- yuehaibing@huawei.com, rogerq@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH net-next v8 2/3] net: ethernet: ti: Add desc_infos
- member to struct k3_cppi_desc_pool
-Message-ID: <20240409173948.66abe6fa@kernel.org>
-In-Reply-To: <20240223-am65-cpsw-xdp-basic-v8-2-f3421b58da09@baylibre.com>
-References: <20240223-am65-cpsw-xdp-basic-v8-0-f3421b58da09@baylibre.com>
-	<20240223-am65-cpsw-xdp-basic-v8-2-f3421b58da09@baylibre.com>
+	s=arc-20240116; t=1712709716; c=relaxed/simple;
+	bh=29qOc6LghBSz7WZZWaeUD3d3S+ibDFjpihPomV9jchw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tP+OPKNQ3Hzu6lA0ASNXFRxzrg+SKtyDZeDBW8dI3fmt3FlhPsUwOuaEA44PGD6+8Btx5dSVE/OhN9KkXpeq0csSmKvVUljFvbgRbN3Ppo1wNg1G5bOE1wtnpkST6wCFbmENRpPHFNWOR7OpBpd+KnLg+jybKlR2UPlUT0US3/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KqsxDPtk; arc=none smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c3aeef1385so3510532b6e.3
+        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 17:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712709714; x=1713314514; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4TPi7rd0uhbNXFrTKzkRiARs1SALOVUwzlZf1+z4bZg=;
+        b=KqsxDPtkUWEellQp+f/ifbKiz/oMMU2f2YpzBIzv+ii3pIQY0+zvCm2c8us+Q395c+
+         JlquFQyH2RYUuXDtdigGOqKfi4dK4gde2mNmswneJTP/3n48CpUXA8kmxCgUyUappQqp
+         tpWkkrpLYquP3Mt66Gjax0dDnf4zyW/gJSYgQUW+QRFs7sTqfM285EmNVuQkKW971BKp
+         0k7B9FdZ+f7ph25HrDBjI3WPwyguYYUMer9Z9rplzdO+ph5k9mERKds9IeTHcDBn5OMf
+         TCUVtIzINhYzOOcaNJ1IA7a4sbNR/bBihuqeXT1GLluhJ6NJpnjqhq7NPiMtGeaV2wF+
+         L1TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712709714; x=1713314514;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4TPi7rd0uhbNXFrTKzkRiARs1SALOVUwzlZf1+z4bZg=;
+        b=SBd7qsWRFoVTFwb4Bvu3772Jq8A5J2YvAuqp5tnmXFu/G8bJN8N7Cleps2Z6Nwc4YB
+         tl6Pz/EOn1DJSwRmxuzkeCREmylGKft8V8Ipdsq6SlexmJ72e8iy8ye6sQCmsGTgNIzt
+         wQnE0IBCvDAvAbkxPYcJo+gaZxIoKqGl16UKSLqSaGlazvm0WPEHyc8pmArWoAdVM55n
+         WdT9uk+CpWx9gcrr4HhgGevRBH+UHbv7Mt9hgBE7LFUBQ0tUcuiuo850EZfcpGU1m8X+
+         pN+sHcAOdCe/XkmgZARgvaNaCeDcilGpeIcUWHpYC6Eqxgwi+8gWBwWipfPaUpafjaho
+         00Xw==
+X-Gm-Message-State: AOJu0YxpIa8wlp8byBBNokQPYibZ9571KVMagb9I2TD+/snyuBdIvW/s
+	4EYaCKCFb4KEbIdpsckVkb/BrC6P9ii6LqChNO5kUIpR/RmmGyzt9Ukg5diT
+X-Google-Smtp-Source: AGHT+IFBTHQRrOBkaLSpVdXDEwNqqQ7fvLWlBaOvJu+KPWbgts+8Qjwovu8oADJEnLbi1GCuwJAqdQ==
+X-Received: by 2002:a05:6808:2a4d:b0:3c5:ed02:8c64 with SMTP id fa13-20020a0568082a4d00b003c5ed028c64mr934847oib.2.1712709713920;
+        Tue, 09 Apr 2024 17:41:53 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:d330:d0dc:41bd:be5b])
+        by smtp.gmail.com with ESMTPSA id bf10-20020a056808190a00b003c5fbfe3ac3sm505124oib.21.2024.04.09.17.41.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 17:41:53 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next 00/11] Enable BPF programs to declare arrays of kptr, bpf_rb_root, and bpf_list_head.
+Date: Tue,  9 Apr 2024 17:41:39 -0700
+Message-Id: <20240410004150.2917641-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 08 Apr 2024 11:38:03 +0200 Julien Panis wrote:
->  		goto gen_pool_create_fail;
->  	}
->  
-> +	pool->desc_infos = kcalloc(pool->num_desc,
-> +				   sizeof(*pool->desc_infos), GFP_KERNEL);
-> +	if (!pool->desc_infos) {
-> +		ret = -ENOMEM;
-> +		dev_err(pool->dev,
-> +			"pool descriptor infos alloc failed %d\n", ret);
+The arrays of kptr, bpf_rb_root, and bpf_list_head didn't work as
+global variables. This was due to these types being initialized and
+verified in a special manner in the kernel. This patchset allows BPF
+programs to declare arrays of kptr, bpf_rb_root, and bpf_list_head in
+the global namespace.
 
-Please don't add errors on mem alloc failures. They just bloat the
-kernel, there will be a rather large OOM splat in the logs if GFP_KERNEL
-allocation fails.
+The main change is to add "nelems" to btf_fields. The value of
+"nelems" represents the number of elements in the array if a btf_field
+represents an array. Otherwise, "nelem" will be 1. The verifier
+verifies these types based on the information provided by the
+btf_field.
 
-> +		kfree_const(pool_name);
-> +		goto gen_pool_desc_infos_alloc_fail;
-> +	}
-> +
->  	pool->gen_pool->name = pool_name;
+The value of "size" will be the size of the entire array if a
+btf_field represents an array. Dividing "size" by "nelems" gives the
+size of an element. The value of "offset" will be the offset of the
+beginning for an array. By putting this together, we can determine the
+offset of each element in an array. For example,
 
-If you add the new allocation after this line, I think you wouldn't
-have to free pool_name under the if () explicitly.
+    struct bpf_cpumask __kptr * global_mask_array[2];
+
+the statement above indicates that there is an array containing two
+kptr(s). The "size" specified in the corresponding 'btf_field' will be
+"16" (the size of the array), and "nelems" will be "2". If the
+"offset" of the 'btf_field' is 0xff00 from the beginning of the data
+section, the first kptr is at 0xff00, and the second kptr is at
+0xff08.
+
+All arrays are flattened to get the value of "nelems". For example,
+
+    struct bpf_cpumask __kptr * global_mask_array[2][3];
+
+the above array will be flattened to a one dimension array having six
+elements.
+
+Kui-Feng Lee (11):
+  bpf: Remove unnecessary checks on the offset of btf_field.
+  bpf: Remove unnecessary call to btf_field_type_size().
+  bpf: Add nelems to struct btf_field_info and btf_field.
+  bpf: check_map_kptr_access() compute the offset from the reg state.
+  bpf: initialize/free array of btf_field(s).
+  bpf: Find btf_field with the knowledge of arrays.
+  bpf: check_map_access() with the knowledge of arrays.
+  bpf: Enable and verify btf_field arrays.
+  selftests/bpf: Test global kptr arrays.
+  selftests/bpf: Test global bpf_rb_root arrays.
+  selftests/bpf: Test global bpf_list_head arrays.
+
+ include/linux/bpf.h                           |   8 +
+ kernel/bpf/btf.c                              |  29 +++-
+ kernel/bpf/syscall.c                          |  58 ++++---
+ kernel/bpf/verifier.c                         |  26 ++--
+ .../selftests/bpf/prog_tests/cpumask.c        |   3 +
+ .../selftests/bpf/prog_tests/linked_list.c    |   6 +
+ .../testing/selftests/bpf/prog_tests/rbtree.c |  23 +++
+ .../selftests/bpf/progs/cpumask_success.c     | 147 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/linked_list.c |  24 +++
+ tools/testing/selftests/bpf/progs/rbtree.c    |  63 ++++++++
+ 10 files changed, 353 insertions(+), 34 deletions(-)
+
 -- 
-pw-bot: cr
+2.34.1
+
 
