@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-26340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C0089E702
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:42:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 683B489E703
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 02:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22690283F96
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:42:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BFC61C2131E
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 00:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C1E1C2E;
-	Wed, 10 Apr 2024 00:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8694F10E3;
+	Wed, 10 Apr 2024 00:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RrKoFGM9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MmRpo+xH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62931EC2
-	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 00:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831BA15A4
+	for <bpf@vger.kernel.org>; Wed, 10 Apr 2024 00:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712709720; cv=none; b=o/G3sb0NPktT0ZHlSvvKyFO9hwygrc9Xrlz/FHNys08+fsH2f2pCRRPTYer1CVs7Tp2CImMDy/wtyI/19jS7XTYgUbgv/UBje/1eKtUtBBOBmrU58ucCJYrweUzuRCqeJk1YUTk+7b4WXhQtvFj2KaNt2m9eVn199RuhgPIvj9k=
+	t=1712709722; cv=none; b=F+cl7+A0qRiFe02OpTkPivJdR5bMrmbHnVQdYeRdPIQEF/pE3oYobmstvV27noXW8bZ120NkXuTOMRZhLRJ8Z35VPLX1ot70qQIU0ES+x6MIoDUL264lnVgvpZK2wHk5a9If+GZTaS57THfq76fi4FSaKhZwejscbiCyrsqeDzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712709720; c=relaxed/simple;
-	bh=phr5fzU13/yD+OD2OqdLQym/DIXjKDKCgTubLtxOQj4=;
+	s=arc-20240116; t=1712709722; c=relaxed/simple;
+	bh=PQiaphJS8sGSmmNhxpua2lWHZd+JTm/QCi4UQVFxKFg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iPkMddl/kLc9wLtJj41IFk0saDQgeQQeB04AJdj+2bVCuNKI91h4gBeoILQmJxaO/FF0moYfFOxK5v5tsfLwzoAyqCgozzDti0jjEPRBSI07+cmtII73XejZ179kW550Fk7lGtTV4gRutLThZue43kUv3eIy8BYE2u3T//wL6cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RrKoFGM9; arc=none smtp.client-ip=209.85.167.172
+	 MIME-Version; b=YN2Z8gVNRWO8jK2pjh9/o4BlARNz1BHjGvdKmA09H1Q8DLZ2VOr17xcDOEjlLXVVT2+XqXd1IavBCm2T9Dhtk5kc95Fl8jZiPyaMjkwaa6c3lY0ajIm8633lwuGYaohWNFZhKER+zbREQBYcG2zTCx7w/zR8yf+QNMU/XyqbAPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MmRpo+xH; arc=none smtp.client-ip=209.85.210.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c3aeef1385so3510565b6e.3
-        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 17:41:59 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ea29cf24c6so588760a34.3
+        for <bpf@vger.kernel.org>; Tue, 09 Apr 2024 17:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712709718; x=1713314518; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712709719; x=1713314519; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/FYAFbUvqMWEFSTQq3pdH/nIomxwhfiPGGthCbFBfE4=;
-        b=RrKoFGM9LZG7kPtsegKaYbAxF+HGAtJhgdWYNXo8kvni/jNBiBQoxVbUlqgquTfSVR
-         x3Rq/ZQbIiDJkFcbHdPRRgeN0HUy/BrW0Mi1zrKvjOMl7dCuHzRou9qWUH9qhsM3yXoe
-         5pwlVED1NSaJ8wfXNU9B8DxQYtX/SWgoOvYE4cjy0+RxMOFaNMNPA2SEYP7K2upa6YS0
-         xiLLlLITaZULU6vtuRWDjCVtcFPQbteJcbnlvcE8I8Fm7qIgoDuhIKKN5CzKz3+cpKbT
-         LiR56vD5L3lHL4DKKLCZRiHtcxgsBBCXqWgjcrb/XbTxZt6ydLE4DBN6c8WzjcbB+b0r
-         oYlg==
+        bh=pe+0CtEDtN75wD1CKRy11z0iaVOyi7eddI7dtEcIGAc=;
+        b=MmRpo+xHEMvaPadmsyuYg7KlZG4SBen8so3sx4YoJb31dUNlEAKqMhwGwoo6dH5Zq+
+         fUO/N+piC+k0p4sE7WaQEM8tq1oWZOByQB/HLt0t1osyt48oPWiS4tzDo/EZagVy/sza
+         kxTaoTHNeMwQN2zOO0eb1xpFnKiwz2tO/FCU+JhQ84ddCgazCh8OfqWA+x7C/Rbf3jPr
+         xYC7Ihu3+14y6JEyQWK3CAegT3J4NmZC9ojkuNMGFfhbBJ3lpoYfkKmjjpxdGeOZj2sg
+         7H3/MeEvi8VwY/y3zltuOt/GB2BuYXSp7Hn9QEEj+nfJIi35Nsv0BsMGHxuh9Zi/pkst
+         n08g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712709718; x=1713314518;
+        d=1e100.net; s=20230601; t=1712709719; x=1713314519;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/FYAFbUvqMWEFSTQq3pdH/nIomxwhfiPGGthCbFBfE4=;
-        b=kB2aqrYfX8RwV4LDTnRLhuzNT00jqDSyP6HR29IT4dkR9MnQukzzcK8+rRq3atjlIV
-         KYlNtp/CC3sFeMuLzQpQIjTc+Tu+4K4B9jXMGyzK+syUq2zMGkZwjpk0dwvcfQMvTenn
-         GB2aEOoDnwfce6XBkm1t9uwymZcnJZ4bFt+tRQSwmV07ODkmv8wiMtLSfAtLvmJJwzOf
-         hqU19E38OS+5Zh0X2TMKrs0tu3QHJ4vxwto4xQRCCZB9TfjFLRJqa6GLnZh+IOd3GG4P
-         WQ3kPz8zCLqfauPtcAubai46YifCzHvTftNC+cGu8JoP+gD0KKUn3TYRE/XwUdVTYMi9
-         yUxA==
-X-Gm-Message-State: AOJu0YwECo3WIXQuLGYdSR9oN66vHxe8oeVyr/cUvVL9IGQDKuRHsVqR
-	R/vCI8nPP0NfrT92/x2uXSWnyVvFCV5w/Z2RkG37Av9R1b3j9eakvnCB1GTM
-X-Google-Smtp-Source: AGHT+IH5puw4V85rCxgQpODJ0ep/jqvoMzwRF01l9v5PIqT5+yBLr1ce1mBotTeEGAi/I4ycoLKrLA==
-X-Received: by 2002:aca:1309:0:b0:3c5:e551:2770 with SMTP id e9-20020aca1309000000b003c5e5512770mr1045094oii.31.1712709718246;
-        Tue, 09 Apr 2024 17:41:58 -0700 (PDT)
+        bh=pe+0CtEDtN75wD1CKRy11z0iaVOyi7eddI7dtEcIGAc=;
+        b=Zg/CvhCXx3T+vDfrS+DeRLebBYOQliAfRy+JBH6BiDKnMDxTWThV2hZeH2qDikPYI5
+         kaQqsyrB5kGD6fcgtqRNgs+7HjU1uUIgFNY0/14ow8mUNVXrZObuamuFaF2DsK5HKPuj
+         g5uZaHdhU33PFL7ZWclkp1PzX6FXeb058UGpqmAcsZUUHJ0ZuJYSFG86TXblxFayOZlL
+         QFgRZ1qJXjGMNfx0Jz9/sx0ijTzSkSfiUL1BFPf01eu53/uhyT8a5t+6SJAPpK1/AuQJ
+         rBoKHmwpAC65gHtwhg1PCyJVzMP0IW7+Tt9narxD3mmkrCBJpAcO3TbYFIYnAENc5nxG
+         dsSg==
+X-Gm-Message-State: AOJu0YzaktW9RI1VJx7Le5ksJg6vI/u9kHyRk174FVs8QaD1z6ruO8k+
+	98TY0QO6LHsMfScnCjWw5qYYmTgnE9bvO5O4HkO21zaUjPNKwr8PcM3E3+sa
+X-Google-Smtp-Source: AGHT+IF+xTEkLU7qoDvOjQlEitZ6Gqck16Q9egHRXgwUpFfWodXr45ywiM2Vw4VmOCtqYIEPGoYRlQ==
+X-Received: by 2002:a05:6808:1da:b0:3c5:da62:f60b with SMTP id x26-20020a05680801da00b003c5da62f60bmr1135793oic.33.1712709719290;
+        Tue, 09 Apr 2024 17:41:59 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:d330:d0dc:41bd:be5b])
-        by smtp.gmail.com with ESMTPSA id bf10-20020a056808190a00b003c5fbfe3ac3sm505124oib.21.2024.04.09.17.41.57
+        by smtp.gmail.com with ESMTPSA id bf10-20020a056808190a00b003c5fbfe3ac3sm505124oib.21.2024.04.09.17.41.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 17:41:57 -0700 (PDT)
+        Tue, 09 Apr 2024 17:41:58 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,9 +76,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next 04/11] bpf: check_map_kptr_access() compute the offset from the reg state.
-Date: Tue,  9 Apr 2024 17:41:43 -0700
-Message-Id: <20240410004150.2917641-5-thinker.li@gmail.com>
+Subject: [PATCH bpf-next 05/11] bpf: initialize/free array of btf_field(s).
+Date: Tue,  9 Apr 2024 17:41:44 -0700
+Message-Id: <20240410004150.2917641-6-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240410004150.2917641-1-thinker.li@gmail.com>
 References: <20240410004150.2917641-1-thinker.li@gmail.com>
@@ -90,68 +90,112 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Previously, check_map_kptr_access() assumed that the accessed offset was
-identical to the offset in the btf_field. However, once field array is
-supported, the accessed offset no longer matches the offset in the
-bpf_field. It may refer to an element in an array while the offset in the
-bpf_field refers to the beginning of the array.
-
-To handle arrays, it computes the offset from the reg state instead.
+Initialize and free each element in a btf_field array based on the values
+of nelems and size in btf_field. The value of nelems is the length of the
+flatten array for nested arrays.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- kernel/bpf/verifier.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ include/linux/bpf.h  |  7 +++++++
+ kernel/bpf/syscall.c | 39 ++++++++++++++++++++++++---------------
+ 2 files changed, 31 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 86adacc5f76c..34e43220c6f0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5349,18 +5349,19 @@ static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr
- }
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f397ccdc6d4b..ee53dcd14bd4 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -390,6 +390,9 @@ static inline u32 btf_field_type_align(enum btf_field_type type)
  
- static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
--				 int value_regno, int insn_idx,
-+				 u32 offset, int value_regno, int insn_idx,
- 				 struct btf_field *kptr_field)
+ static inline void bpf_obj_init_field(const struct btf_field *field, void *addr)
  {
- 	struct bpf_insn *insn = &env->prog->insnsi[insn_idx];
- 	int class = BPF_CLASS(insn->code);
--	struct bpf_reg_state *val_reg;
-+	struct bpf_reg_state *val_reg, *reg;
++	u32 elem_size;
++	int i;
++
+ 	memset(addr, 0, field->size);
  
- 	/* Things we already checked for in check_map_access and caller:
- 	 *  - Reject cases where variable offset may touch kptr
- 	 *  - size of access (must be BPF_DW)
- 	 *  - tnum_is_const(reg->var_off)
--	 *  - kptr_field->offset == off + reg->var_off.value
-+	 *  - kptr_field->offset + kptr_field->size * i / kptr_field->nelems
-+	 *    == off + reg->var_off.value where n is an index into the array
- 	 */
- 	/* Only BPF_[LDX,STX,ST] | BPF_MEM | BPF_DW is supported */
- 	if (BPF_MODE(insn->code) != BPF_MEM) {
-@@ -5393,8 +5394,9 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
- 			return -EACCES;
- 	} else if (class == BPF_ST) {
- 		if (insn->imm) {
--			verbose(env, "BPF_ST imm must be 0 when storing to kptr at off=%u\n",
--				kptr_field->offset);
-+			reg = reg_state(env, regno);
-+			verbose(env, "BPF_ST imm must be 0 when storing to kptr at off=%llu\n",
-+				reg->var_off.value + offset);
- 			return -EACCES;
- 		}
- 	} else {
-@@ -6781,7 +6783,8 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 			kptr_field = btf_record_find(reg->map_ptr->record,
- 						     off + reg->var_off.value, BPF_KPTR);
- 		if (kptr_field) {
--			err = check_map_kptr_access(env, regno, value_regno, insn_idx, kptr_field);
-+			err = check_map_kptr_access(env, regno, off, value_regno,
-+						    insn_idx, kptr_field);
- 		} else if (t == BPF_READ && value_regno >= 0) {
- 			struct bpf_map *map = reg->map_ptr;
+ 	switch (field->type) {
+@@ -400,6 +403,10 @@ static inline void bpf_obj_init_field(const struct btf_field *field, void *addr)
+ 		RB_CLEAR_NODE((struct rb_node *)addr);
+ 		break;
+ 	case BPF_LIST_HEAD:
++		elem_size = field->size / field->nelems;
++		for (i = 0; i < field->nelems; i++, addr += elem_size)
++			INIT_LIST_HEAD((struct list_head *)addr);
++		break;
+ 	case BPF_LIST_NODE:
+ 		INIT_LIST_HEAD((struct list_head *)addr);
+ 		break;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index e44c276e8617..543ff0d944e8 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -672,6 +672,8 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
+ 		const struct btf_field *field = &fields[i];
+ 		void *field_ptr = obj + field->offset;
+ 		void *xchgd_field;
++		u32 elem_size = field->size / field->nelems;
++		int j;
  
+ 		switch (fields[i].type) {
+ 		case BPF_SPIN_LOCK:
+@@ -680,35 +682,42 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
+ 			bpf_timer_cancel_and_free(field_ptr);
+ 			break;
+ 		case BPF_KPTR_UNREF:
+-			WRITE_ONCE(*(u64 *)field_ptr, 0);
++			for (j = 0; j < field->nelems; j++, field_ptr += elem_size)
++				WRITE_ONCE(*(u64 *)field_ptr, 0);
+ 			break;
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
+-			xchgd_field = (void *)xchg((unsigned long *)field_ptr, 0);
+-			if (!xchgd_field)
+-				break;
+-
+-			if (!btf_is_kernel(field->kptr.btf)) {
++			if (!btf_is_kernel(field->kptr.btf))
+ 				pointee_struct_meta = btf_find_struct_meta(field->kptr.btf,
+ 									   field->kptr.btf_id);
+-				migrate_disable();
+-				__bpf_obj_drop_impl(xchgd_field, pointee_struct_meta ?
+-								 pointee_struct_meta->record : NULL,
+-								 fields[i].type == BPF_KPTR_PERCPU);
+-				migrate_enable();
+-			} else {
+-				field->kptr.dtor(xchgd_field);
++
++			for (j = 0; j < field->nelems; j++, field_ptr += elem_size) {
++				xchgd_field = (void *)xchg((unsigned long *)field_ptr, 0);
++				if (!xchgd_field)
++					continue;
++
++				if (!btf_is_kernel(field->kptr.btf)) {
++					migrate_disable();
++					__bpf_obj_drop_impl(xchgd_field, pointee_struct_meta ?
++							    pointee_struct_meta->record : NULL,
++							    fields[i].type == BPF_KPTR_PERCPU);
++					migrate_enable();
++				} else {
++					field->kptr.dtor(xchgd_field);
++				}
+ 			}
+ 			break;
+ 		case BPF_LIST_HEAD:
+ 			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
+ 				continue;
+-			bpf_list_head_free(field, field_ptr, obj + rec->spin_lock_off);
++			for (j = 0; j < field->nelems; j++, field_ptr += elem_size)
++				bpf_list_head_free(field, field_ptr, obj + rec->spin_lock_off);
+ 			break;
+ 		case BPF_RB_ROOT:
+ 			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
+ 				continue;
+-			bpf_rb_root_free(field, field_ptr, obj + rec->spin_lock_off);
++			for (j = 0; j < field->nelems; j++, field_ptr += elem_size)
++				bpf_rb_root_free(field, field_ptr, obj + rec->spin_lock_off);
+ 			break;
+ 		case BPF_LIST_NODE:
+ 		case BPF_RB_NODE:
 -- 
 2.34.1
 
