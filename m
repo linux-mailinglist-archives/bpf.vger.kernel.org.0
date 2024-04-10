@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-26444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E1C289FAFA
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 17:03:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1E0689FB7B
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 17:27:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47E1A28BA7E
-	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 15:03:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 710E7B2BEF6
+	for <lists+bpf@lfdr.de>; Wed, 10 Apr 2024 15:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8605016D9CE;
-	Wed, 10 Apr 2024 15:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EEE16DEB8;
+	Wed, 10 Apr 2024 15:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WFYVPKzf"
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SNGUDwkX"
 X-Original-To: bpf@vger.kernel.org
-Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6C915958E;
-	Wed, 10 Apr 2024 15:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953A416C877;
+	Wed, 10 Apr 2024 15:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761407; cv=none; b=oFzSzD/lvZgS9umfgeLShlioiE1f5NtK0YMHbwHBqM1TCBM+DXEzzvoJa+e8JbG/UsHCouvOmW7UnRX6GzzorojpDkHl7t9B1oatOxlmWZM/nosL3uW0vD3yZHHqc21qw++WA0cknEb96PDczYLTS9PbxqalbYAoA9iVz6JqmCo=
+	t=1712761558; cv=none; b=A1DlDub83agIsr1T1YkejQwXrshTqYEUXRXDltLuKLzvCkWH8UzexbygWKEu60lQ2aX7+Be/X8aWBkzxnmW2Atk/+bEi6H0BpoTcIAG2v9+a2WFU7jRUrIn7YN6uTt4hvz28bxKgmYiNF0vTo6QcjYRrJlC3/p9y05s8JBxnwZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761407; c=relaxed/simple;
-	bh=VQyzQjJQejCEPzKQvU827ei9/KK+y+ux8JjA9cJgxVk=;
+	s=arc-20240116; t=1712761558; c=relaxed/simple;
+	bh=cUzFDAS3EbYkXdW7wC2mTAuzm+O4VDnkMYMj/YD+Qr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPxzUOAkJVmZQ2GITtZHmBMVN+kiN1nmgM7VGtLjUtamSwaYnIdNX/x74171kR3eVcTFvrAbt0v/T/42XrGwU5bQkt9PcWiQETLMiHudm4Ml90MLNYTNSXKCxC0oSAuPmpUUVMmpO9HcGfWzlsPEGRGWnilxQONb5ldTXB8j9EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WFYVPKzf; arc=none smtp.client-ip=64.147.123.146
+	 Content-Type:Content-Disposition:In-Reply-To; b=aaHShbInXeEJ9YENnC/6jkDq7rvwUNIbe1y4X1JmHzQ/lWQIfKxJIMQ0ZK8f9zcDnhr+7omm0Z1y7h9aeuNnUT7K5V6MvXWfqZMQP0uhjdPu63eXXQ/cyuFOplPxOOoePs5TlDwHil8hbqA4up8ObWOtja3uEUWohXirpx0ynhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SNGUDwkX; arc=none smtp.client-ip=64.147.123.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.west.internal (Postfix) with ESMTP id C043C1C00081;
-	Wed, 10 Apr 2024 11:03:21 -0400 (EDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id AF66B18000F0;
+	Wed, 10 Apr 2024 11:05:52 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 10 Apr 2024 11:03:24 -0400
+  by compute5.internal (MEProxy); Wed, 10 Apr 2024 11:05:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712761401; x=1712847801; bh=fDN7LNg3MU1SeI2iaSN0kzB8FZeK
-	umLZXWxQhW85B6o=; b=WFYVPKzf+WTlvkgORk5e+JbUnduryZ++mSz035b372fQ
-	nuuwL97dI7BBVgjaBXXEKiIFzh1Xyv01xkS/cq15Jf/6yZYpZtPHaLiypshuFuF3
-	pdNQ89u0rPhqaZ0v4nEn/rH0Pm4IWN/RmYSgWwTslJtiTZfFs9TnrC1vfw7hS6cS
-	slsC7omM+v2bCRAG4tS98FRNeLa9r/PsYaf6q3SMIfjSW26kXJOAuPipp0e1V/1t
-	1gSSXfltOJA0rvVU/U6Bt1i1CuIc3N5d2S3+iWEu2lw7ds4BFcIWg5HbAgpKfY7A
-	//X3QyB6pnzMMsz5r74VsH5uH5SzoBvlIUGD+3U+Ug==
-X-ME-Sender: <xms:OKoWZqnU0_nEs71C46y4upxl7qPl4h1wr0ptDI2N1EkWGPuRowxEOQ>
-    <xme:OKoWZh1-A5K0sHS6Pz9MY-Jkcho3tPyb0Ezz3esBLHAFD3WITI1k-Dra9lZtBIzMW
-    GnK_CXTzQcXB7M>
-X-ME-Received: <xmr:OKoWZooY5673t2tsp3KDlWLQHLuu_S2mDs72czBwe9btkSIQlt6gBKV7kcyQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedgkeduucetufdoteggodetrfdotf
+	fm2; t=1712761552; x=1712847952; bh=TDGvkul+Q73nN0fHZOhTAHooDQZw
+	t3FC9x/QxxSs3zo=; b=SNGUDwkXjBq6YtQxxM3lA3GMHmXSrT2cy2J4JaBa5KHE
+	Hc+xeukLb0K8D1cZxsH4khv3vX5w4V26Ev7YwRBsBzEtfVxXcQG/DDo7Wq92YHEw
+	dcfJTEmtqnjPnc9NgFt/el+AJwp41r1btXkQrABaZ7W99StTxiXT58NBJ8p2lltD
+	iUKRp+tK1x7+tt/v5GS20dHXtRAxxLkSGlKzr4tdgJHRLM34nG7atn/SqZAqyZjE
+	Kghp5JrU2hT2wOiFqGuku2InwpV8r62JpiCDJeaLhY1qurB+4dCCtq3yEjCwQQhp
+	exn1cwQNlaGDPugyI06Ob69hDT0wm+lzpi7kihAHuA==
+X-ME-Sender: <xms:z6oWZirsV-nMSlBJ_lJHht3gSOq-1b8CG2vrEJEIev3ET7Gg5BIBhw>
+    <xme:z6oWZgpmS8OJjlntZPqhKVYsG_Ms_fMU82xVOyAvV8_0Lf8-lfkq0Hq4pN2Xy7GMZ
+    deF3Ovb49n63Gc>
+X-ME-Received: <xmr:z6oWZnPGX5nP-7JRHmiHleiBxQF-dNbP1wTCXQU8oUbIv9e_gjPq_L4IW_Kc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedgkedvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepkfguohcu
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
     ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepfeefueegheehleelgeehjefgieeltdeuteekkeefheejudffleefgfeludeh
-    hfejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    htvghrnhepvddufeevkeehueegfedtvdevfefgudeifeduieefgfelkeehgeelgeejjeeg
+    gefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
     guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:OKoWZunajKgXJvlzXySKL6AtIdjUEocGwBl1aQWCUN20yrdhYwhE6A>
-    <xmx:OKoWZo1PtmmB9RkBuY-kuLKW7T5dem6xCJWre-MPRzex3HJzmqr_EA>
-    <xmx:OKoWZlsp--rAHoLzaGyDDV9iW1zsiKd9Rl-zswd2O8QO_HZxOI8W5g>
-    <xmx:OKoWZkXvmTDOCoYgZzXSBYss2L67git07oFAdqTQjzSm7k4qlvQHtg>
-    <xmx:OaoWZt9mVLzcYFfWAX767iMyveSzZBJ9U9WoRGWckea2lIuLxllqdVCr>
+X-ME-Proxy: <xmx:z6oWZh49-kpbe5t6iou3vs4d-1A5eJnaI5xAIu1_4gCElWtyVPM-Cw>
+    <xmx:z6oWZh6-YFeqxhU1DrfRO3jic7Oo4N5ICNItdUDiCIzLDV9VlwEIDQ>
+    <xmx:z6oWZhiDjueR4bTXrVLEOVXiuABAM3tjPYq_DnwRZaBQzewPK0MBUA>
+    <xmx:z6oWZr7yMr5pEO2Zbdcw9y9CBMvABVOix3FefIk--Aup764a9f9V1w>
+    <xmx:0KoWZumSlhW9MHX9P70o-XAB3cMSnYOwHvogsN-suiaqrMuljzfLXBGb>
 Feedback-ID: i494840e7:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Apr 2024 11:03:18 -0400 (EDT)
-Date: Wed, 10 Apr 2024 18:03:16 +0300
+ 10 Apr 2024 11:05:50 -0400 (EDT)
+Date: Wed, 10 Apr 2024 18:05:47 +0300
 From: Ido Schimmel <idosch@idosch.org>
 To: Breno Leitao <leitao@debian.org>
 Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
@@ -82,14 +82,14 @@ Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
 	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
 	dennis.dalessandro@cornelisnetworks.com,
 	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
+	Simon Horman <horms@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH net-next v5 01/10] net: core: Fix documentation
-Message-ID: <ZhaqNOCeCFSObcPS@shredder>
+Subject: Re: [PATCH net-next v5 02/10] net: free_netdev: exit earlier if dummy
+Message-ID: <Zhaqyyk9CUaUvMDy@shredder>
 References: <20240410131407.3897251-1-leitao@debian.org>
- <20240410131407.3897251-2-leitao@debian.org>
+ <20240410131407.3897251-3-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,20 +98,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240410131407.3897251-2-leitao@debian.org>
+In-Reply-To: <20240410131407.3897251-3-leitao@debian.org>
 
-On Wed, Apr 10, 2024 at 06:13:42AM -0700, Breno Leitao wrote:
-> Fix bad grammer in description of init_dummy_netdev() functio.  This
-> topic showed up in the review of the "allocate dummy device dynamically"
-> patchset.
+On Wed, Apr 10, 2024 at 06:13:43AM -0700, Breno Leitao wrote:
+> For dummy devices, exit earlier at free_netdev() instead of executing
+> the whole function. This is necessary, because dummy devices are
+> special, and shouldn't have the second part of the function executed.
 > 
-> Suggested-by: Ido Schimmel <idosch@nvidia.com>
+> Otherwise reg_state, which is NETREG_DUMMY, will be overwritten and
+> there will be no way to identify that this is a dummy device. Also, this
+> device do not need the final put_device(), since dummy devices are not
+> registered (through register_netdevice()), where the device reference is
+> increased (at netdev_register_kobject()/device_add()).
+> 
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
 > Signed-off-by: Breno Leitao <leitao@debian.org>
 
 Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-
-In case you need to send another version:
-
-s/grammer/grammar/
-s/functio/function/
 
