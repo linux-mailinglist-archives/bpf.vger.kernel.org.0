@@ -1,198 +1,274 @@
-Return-Path: <bpf+bounces-26498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 802BC8A0BA8
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:53:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1398A0EC5
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 12:18:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB74D1F2557D
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 08:53:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D5B61C21450
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF11714263A;
-	Thu, 11 Apr 2024 08:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98857146A72;
+	Thu, 11 Apr 2024 10:17:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fWj0pMDT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HOgsIZVw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98D31419A6;
-	Thu, 11 Apr 2024 08:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8B0145353;
+	Thu, 11 Apr 2024 10:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712825587; cv=none; b=Ids8cFcSlwsYb4BvGXNOBTJpfPFLTU1ueEVcCf7LkPr/q4OOL0kf58j2m3Zek1kXcCt3o11Mj15rToH4ekcatJAcU5QpSGRIihi9dkGZRSihTkraDvbr5Y1m9+bEZjuvueGCwn9ZkHMIrYwCYdZjBxB6tvbeKo3PB+Czt0CVNLc=
+	t=1712830671; cv=none; b=JhfU+5sa4JxVkHVXN36rSR5fzfgHMCHyINTrZlW0O8nZ2PtRoaca+4fZo3U3qOgjoowcn2nFsiCXFltk1+/pcjg57DKkwsLdX0C3ruaui0omTXztSOXqfZruFiPXtI+8jQktP4PS3eEZ7i3ltJTKbFIWJp1WkaaiQa0meyMcupU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712825587; c=relaxed/simple;
-	bh=io9LKvvXimYbev4Iml4NKxNJy86/qa8clb83Jlhvc2M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PPScXYq9FBHQ37ZJCue6DrB8vIyKEY8Db0rTRQtfmyimRLyZXNMJOaDPkP+RvONgi6NzfgKZJ3mJsbslpZpYbRj9NzPqaowQlZvKRUqEeI448EwoQDnzp/MkfC0uLgpJaaSJFcO9hfMnYHF4YbcbN4gU+Oe4yYW74dE9q4rPsYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fWj0pMDT; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a58209b159so1725595a91.3;
-        Thu, 11 Apr 2024 01:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712825584; x=1713430384; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ya5I5hvjUcaAqlpM5swpRYtJfi5w+dWzk4Fz+t660Ec=;
-        b=fWj0pMDTjAdkUv5+DmM2PHtR6UEWwt8i8e7QDTipFO6q1Dtcp5h9ESC9VA45otWWSS
-         squiWcue9Ok8HBVCbb7vEvDUlqzlARPBj0ZTfxuYerq93t+BQnE3ExCD6JhOJ9SgSw52
-         nDWjFaDjZnd5wSeVFM3SXIqJJHYSjNFaLRdbgL/leStTsr5RdBhQULO89yVcKfYZkT1i
-         TZFBV/G1Oh7Hdw4mSKu59NDte0J42wtieItOBmjYuOGF7w6CXp6KbY5/UAxK5HVUV9BZ
-         ddRyybjEQgqDAoHG0iepsD4a0r9o9/Jx4HFaitRfJOKEJblsoZiAh5ha4aWwKac7HzPX
-         Bj/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712825584; x=1713430384;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ya5I5hvjUcaAqlpM5swpRYtJfi5w+dWzk4Fz+t660Ec=;
-        b=CXQM4lI0PaTAiM8JlryLLLZEPm4VnqnH51kMGcWGA8SuI2xmJuxClS/sqDHN+6zJoU
-         PIlCzS5QdxvTWRj+Rm1lBKF/X8b2nghsXnHZH6SHm2IfbJX1igRcDFRgzS1M/gXxcUop
-         vZQsyZ+Tr1i7lmPtOpcyqiq+ZhSb0fohGTd94eQnbNGFlmqY1Rq1yA04HG2HJHkgxtHN
-         q0ZBVynRuP/TpBeJORTbM0zPLkEZLWDXcOqbxXjOzexK/Oi6IIClXS0RbpyBBItNcUA1
-         ZC81wr0MYIMnT2d8BCmfufqZEF39Qaxx38Qo9YeBQPmWDcj0DQl9EDc5MSHdHuikl9pU
-         kKGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUre2sFRjTIWkytZsCzKg9MmIpz2XiKM/0qWNqnlGBva/mMmVIfW8Tqpfma92aVJQ1uUNv/88/Isg2dKZl/ez+PebI1TrQSgDpi6FdG5cJ3G13hggOwmWb5pBliaV4EgPs1
-X-Gm-Message-State: AOJu0YxBnHOOlGcjz4wOIvOFWOlaybJw1XCatJDx7/DwyOpTEVKWqTCa
-	1V2A/lFoLhUIWCJRUvnIqIm3/dBKPiThZOBp+PBnX52ZdIzzxzLj
-X-Google-Smtp-Source: AGHT+IG0RZWIYvC1TAdiHu4GiCufqpdvQrAKxYmpsyvNmU5fmkX4L1O0eJJwfz5elYuwUFstobv+qw==
-X-Received: by 2002:a17:90a:f40b:b0:2a5:d5b1:b99b with SMTP id ch11-20020a17090af40b00b002a5d5b1b99bmr3708871pjb.38.1712825584034;
-        Thu, 11 Apr 2024 01:53:04 -0700 (PDT)
-Received: from dell.. ([111.196.36.81])
-        by smtp.googlemail.com with ESMTPSA id y12-20020a17090a154c00b002a52c2d82f0sm4534844pja.1.2024.04.11.01.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 01:53:02 -0700 (PDT)
-From: Liang Chen <liangchen.linux@gmail.com>
-To: mst@redhat.com,
-	jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	hengqi@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	liangchen.linux@gmail.com
-Subject: [PATCH net-next v6] virtio_net: Support RX hash XDP hint
-Date: Thu, 11 Apr 2024 16:52:16 +0800
-Message-Id: <20240411085216.361662-1-liangchen.linux@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712830671; c=relaxed/simple;
+	bh=6Xk+/sgVbB1G0/nSzaUEcHOA0Q6GlBWGsq+SD4ibr8s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hy1R65Su9D8syRMWbNFmfC7rB1cuyEYEV81YcJ7bX2zZTwz1vdx8I/KYShW0RqE0W7oYZ2SgiBQmSgjlHIrBd/7Ypbt9roZBHssW3dRxqigvbYEpa04nGMNDcpcZAtU91u5spxVpjvJiOV+5ssJuaSP8qA2zZ/1mBW9paDJmsSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HOgsIZVw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C04C433C7;
+	Thu, 11 Apr 2024 10:17:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712830670;
+	bh=6Xk+/sgVbB1G0/nSzaUEcHOA0Q6GlBWGsq+SD4ibr8s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HOgsIZVwyA//UqlxId0el63TZ05rUyVqixtPdlxCXLddeByTiKMd1583s8bbgiXYm
+	 X/5sztbNTaIwaBhhwHpCBPuMWNsPyZXWxRE+ehKEaw1iHGOWaXcI8mnO68SVBU28Pq
+	 q3tICEiuxA2VF1udTwxu0c/gg0g5GVmPemahc3+8qpJd8Bklfrf1YWSTvPLNFhdhGl
+	 8GsV+8otFtXMuweX9tL6k08cNRHh74uKfYzgj5K/d3j3Okr7gQR17FOWpJ3gRYk1/c
+	 2tnZMafAapAErvDFvX9L7f9sgVIG6B1Jh61luDVS6YXQcVL/hCPUm6MgN2defsK92G
+	 8grjoOvErX3PQ==
+Message-ID: <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
+Date: Thu, 11 Apr 2024 12:17:46 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Advice on cgroup rstat lock
+To: Waiman Long <longman@redhat.com>, Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
+ Jesper Dangaard Brouer <jesper@cloudflare.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Shakeel Butt <shakeelb@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org,
+ Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Ivan Babrou <ivan@cloudflare.com>
+References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
+ <20240319154437.GA144716@cmpxchg.org>
+ <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
+ <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
+ <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org>
+ <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
+ <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+ <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
+ <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The RSS hash report is a feature that's part of the virtio specification.
-Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-(still a work in progress as per [1]) support this feature. While the
-capability to obtain the RSS hash has been enabled in the normal path,
-it's currently missing in the XDP path. Therefore, we are introducing
-XDP hints through kfuncs to allow XDP programs to access the RSS hash.
 
-1.
-https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
 
-Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
----
-  Changes from v5:
-- Preservation of the hash value has been dropped, following the conclusion
-  from discussions in V3 reviews. The virtio_net driver doesn't
-  accessing/using the virtio_net_hdr after the XDP program execution, so
-  nothing tragic should happen. As to the xdp program, if it smashes the
-  entry in virtio header, it is likely buggy anyways. Additionally, looking
-  up the Intel IGC driver,  it also does not bother with this particular
-  aspect.
----
- drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+On 09/04/2024 18.59, Waiman Long wrote:
+> 
+> On 4/9/24 12:45, Yosry Ahmed wrote:
+>> On Tue, Apr 9, 2024 at 8:37 AM Waiman Long <longman@redhat.com> wrote:
+>>> On 4/9/24 07:08, Jesper Dangaard Brouer wrote:
+>>>> Let move this discussion upstream.
+>>>>
+>>>> On 22/03/2024 19.32, Yosry Ahmed wrote:
+>>>>> [..]
+>>>>>>> There was a couple of series that made all calls to
+>>>>>>> cgroup_rstat_flush() sleepable, which allows the lock to be dropped
+>>>>>>> (and IRQs enabled) in between CPU iterations. This fixed a similar
+>>>>>>> problem that we used to face (except in our case, we saw hard 
+>>>>>>> lockups
+>>>>>>> in extreme scenarios):
+>>>>>>> https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@google.com/
+>>>>>>>
+>>>>>>> https://lore.kernel.org/lkml/20230421174020.2994750-1-yosryahmed@google.com/
+>>>>>>>
+>>>>>> I've only done the 6.6 backport, and these were in 6.5/6.6.
+>>>> Given I have these in my 6.6 kernel. You are basically saying I should
+>>>> be able to avoid IRQ-disable for the lock, right?
+>>>>
+>>>> My main problem with the global cgroup_rstat_lock[3] is it disables 
+>>>> IRQs
+>>>> and (thereby also) BH/softirq (spin_lock_irq).  This cause production
+>>>> issues elsewhere, e.g. we are seeing network softirq "not-able-to-run"
+>>>> latency issues (debug via softirq_net_latency.bt [5]).
+>>>>
+>>>>    [3]
+>>>> https://elixir.bootlin.com/linux/v6.9-rc3/source/kernel/cgroup/rstat.c#L10
+>>>>    [5]
+>>>> https://github.com/xdp-project/xdp-project/blob/master/areas/latency/softirq_net_latency.bt
+>>>>
+>>>>
+>>>>>> And between 6.1 to 6.6 we did observe an improvement in this area.
+>>>>>> (Maybe I don't have to do the 6.1 backport if the 6.6 release plan
+>>>>>> progress)
+>>>>>>
+>>>>>> I've had a chance to get running in prod for 6.6 backport.
+>>>>>> As you can see in attached grafana heatmap pictures, we do observe an
+>>>>>> improved/reduced softirq wait time.
+>>>>>> These softirq "not-able-to-run" outliers is *one* of the prod 
+>>>>>> issues we
+>>>>>> observed.  As you can see, I still have other areas to improve/fix.
+>>>>> I am not very familiar with such heatmaps, but I am glad there is an
+>>>>> improvement with 6.6 and the backports. Let me know if there is
+>>>>> anything I could do to help with your effort.
+>>>> The heatmaps give me an overview, but I needed a debugging tool, so I
+>>>> developed some bpftrace scripts [1][2] I'm running on production.
+>>>> To measure how long time we hold the cgroup rstat lock (results below).
+>>>> Adding ACME and Daniel as I hope there is an easier way to measure lock
+>>>> hold time and congestion. Notice tricky release/yield in
+>>>> cgroup_rstat_flush_locked[4].
+>>>>
+>>>> My production results on 6.6 with backported patches (below signature)
+>>>> vs a our normal 6.6 kernel, with script [2]. The `@lock_time_hist_ns`
+>>>> shows how long time the lock+IRQs were disabled (taking into account it
+>>>> can be released in the loop [4]).
+>>>>
+>>>> Patched kernel:
+>>>>
+>>>> 21:49:02  time elapsed: 43200 sec
+>>>> @lock_time_hist_ns:
+>>>> [2K, 4K)              61 |      |
+>>>> [4K, 8K)             734 |      |
+>>>> [8K, 16K)         121500 |@@@@@@@@@@@@@@@@      |
+>>>> [16K, 32K)        385714
+>>>> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+>>>> [32K, 64K)        145600 |@@@@@@@@@@@@@@@@@@@      |
+>>>> [64K, 128K)       156873 |@@@@@@@@@@@@@@@@@@@@@      |
+>>>> [128K, 256K)      261027 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+>>>> [256K, 512K)      291986 
+>>>> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+>>>> [512K, 1M)        101859 |@@@@@@@@@@@@@      |
+>>>> [1M, 2M)           19866 |@@      |
+>>>> [2M, 4M)           10146 |@      |
+>>>> [4M, 8M)           30633 |@@@@      |
+>>>> [8M, 16M)          40365 |@@@@@      |
+>>>> [16M, 32M)         21650 |@@      |
+>>>> [32M, 64M)          5842 |      |
+>>>> [64M, 128M)            8 |      |
+>>>>
+>>>> And normal 6.6 kernel:
+>>>>
+>>>> 21:48:32  time elapsed: 43200 sec
+>>>> @lock_time_hist_ns:
+>>>> [1K, 2K)              25 |      |
+>>>> [2K, 4K)            1146 |      |
+>>>> [4K, 8K)           59397 |@@@@      |
+>>>> [8K, 16K)         571528 
+>>>> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+>>>> [16K, 32K)        542648 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+>>>> [32K, 64K)        202810 |@@@@@@@@@@@@@      |
+>>>> [64K, 128K)       134564 |@@@@@@@@@      |
+>>>> [128K, 256K)       72870 |@@@@@      |
+>>>> [256K, 512K)       56914 |@@@      |
+>>>> [512K, 1M)         83140 |@@@@@      |
+>>>> [1M, 2M)          170514 |@@@@@@@@@@@      |
+>>>> [2M, 4M)          396304 |@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+>>>> [4M, 8M)          755537
+>>>> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+>>>> [8M, 16M)         231222 |@@@@@@@@@@@@@@@      |
+>>>> [16M, 32M)         76370 |@@@@@      |
+>>>> [32M, 64M)          1043 |      |
+>>>> [64M, 128M)           12 |      |
+>>>>
+>>>>
+>>>> For the unpatched kernel we see more events in 4ms to 8ms bucket than
+>>>> any other bucket.
+>>>> For patched kernel, we clearly see a significant reduction of events in
+>>>> the 4 ms to 64 ms area, but we still have some events in this area.  
+>>>> I'm
+>>>> very happy to see these patches improves the situation.  But for 
+>>>> network
+>>>> processing I'm not happy to see events in area 16ms to 128ms area.  If
+>>>> we can just avoid disabling IRQs/softirq for the lock, I would be 
+>>>> happy.
+>>>>
+>>>> How far can we go... could cgroup_rstat_lock be converted to a mutex?
+ >>>
+>>> The cgroup_rstat_lock was originally a mutex. It was converted to a
+>>> spinlock in commit 0fa294fb1985 ("group: Replace cgroup_rstat_mutex with
+>>> a spinlock"). Irq was disabled to enable calling from atomic context.
+>>> Since commit 0a2dc6ac3329 ("cgroup: remove
+>>> cgroup_rstat_flush_atomic()"), the rstat API hadn't been called from
+>>> atomic context anymore. Theoretically, we could change it back to a
+>>> mutex or not disabling interrupt. That will require that the API cannot
+>>> be called from atomic context going forward.
+ >>>
+>> I think we should avoid flushing from atomic contexts going forward
+>> anyway tbh. It's just too much work to do with IRQs disabled, and we
+>> observed hard lockups before in worst case scenarios.
+>>
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c22d1118a133..abd07d479508 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
- 	}
- }
- 
-+static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-+			   enum xdp_rss_hash_type *rss_type)
-+{
-+	const struct xdp_buff *xdp = (void *)_ctx;
-+	struct virtio_net_hdr_v1_hash *hdr_hash;
-+	struct virtnet_info *vi;
-+
-+	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-+		return -ENODATA;
-+
-+	vi = netdev_priv(xdp->rxq->dev);
-+	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
-+
-+	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-+		case VIRTIO_NET_HASH_REPORT_TCPv4:
-+			*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_UDPv4:
-+			*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_TCPv6:
-+			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_UDPv6:
-+			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
-+			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
-+			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_IPv4:
-+			*rss_type = XDP_RSS_TYPE_L3_IPV4;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_IPv6:
-+			*rss_type = XDP_RSS_TYPE_L3_IPV6;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_IPv6_EX:
-+			*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
-+			break;
-+		case VIRTIO_NET_HASH_REPORT_NONE:
-+		default:
-+			*rss_type = XDP_RSS_TYPE_NONE;
-+	}
-+
-+	*hash = __le32_to_cpu(hdr_hash->hash_value);
-+	return 0;
-+}
-+
-+static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-+	.xmo_rx_hash			= virtnet_xdp_rx_hash,
-+};
-+
- static int virtnet_probe(struct virtio_device *vdev)
- {
- 	int i, err = -ENOMEM;
-@@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
- 				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
- 
- 		dev->hw_features |= NETIF_F_RXHASH;
-+		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
- 	}
- 
- 	if (vi->has_rss_hash_report)
--- 
-2.40.1
+Appreciate the historic commits as documentation for how the code
+evolved.  Sounds like we agree that the IRQ-disable can be lifted,
+at-least between the three of us.
 
+>> I think one problem that was discussed before is that flushing is
+>> exercised from multiple contexts and could have very high concurrency
+>> (e.g. from reclaim when the system is under memory pressure). With a
+>> mutex, the flusher could sleep with the mutex held and block other
+>> threads for a while.
+>>
+
+Fair point, so in first iteration we keep the spin_lock but don't do the
+IRQ disable.  I already have a upstream devel kernel doing this in my
+testlab, but I need to test this in prod to see the effects.  Can you
+recommend a test I should run in my testlab?
+
+I'm also looking at adding some instrumentation, as my bpftrace
+script[2] need to be adjusted to every binary build.
+Still hoping ACME will give me an easier approach to measuring lock wait
+and hold time? (without having to instrument *all* lock in system).
+
+
+  [2] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_latency_steroids.bt
+
+
+>> I vaguely recall experimenting locally with changing that lock into a
+>> mutex and not liking the results, but I can't remember much more. I
+>> could be misremembering though.
+>>
+>> Currently, the lock is dropped in cgroup_rstat_flush_locked() between
+>> CPU iterations if rescheduling is needed or the lock is being
+>> contended (i.e. spin_needbreak() returns true). I had always wondered
+>> if it's possible to introduce a similar primitive for IRQs? We could
+>> also drop the lock (and re-enable IRQs) if IRQs are pending then.
+> 
+> I am not sure if there is a way to check if a hardirq is pending, but we 
+> do have a local_softirq_pending() helper.
+
+The local_softirq_pending() might work well for me, as this is our prod
+problem, that CPU local pending softirq's are getting starved.
+
+In production another problematic (but rarely occurring issue) is when
+several CPUs contend on this lock.  Yosry's recent work/patches have
+already reduced the chances of this happening (thanks), BUT it still can
+and does happen.
+A simple solution to this, would be to do a spin_trylock() in
+cgroup_rstat_flush(), and exit if we cannot get the lock, because we
+know someone else will do the work.
+I expect someone to complain here, as cgroup_rstat_flush() takes a
+cgroup argument, so I might starve updates on some other cgroup. I
+wonder if I can simply check if cgroup->rstat_flush_next is not NULL, to
+determine if this cgroup is the one currently being processed?
+
+--Jesper
 
