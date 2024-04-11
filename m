@@ -1,89 +1,77 @@
-Return-Path: <bpf+bounces-26481-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26482-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1377C8A05D9
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 04:30:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B99AA8A0611
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 04:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DF64B21C41
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 02:30:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4046B288CBC
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 02:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE8284A5B;
-	Thu, 11 Apr 2024 02:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EDC13B2A9;
+	Thu, 11 Apr 2024 02:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b="L7PJZMBL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCLMROu9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8735F83CD5
-	for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 02:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BF313AD2E;
+	Thu, 11 Apr 2024 02:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712802643; cv=none; b=f49JoeSYmKGIYbEvVXGR7IHL76EWn9lYEm7bhDJWZb6eNyTAX624gcMLnRWzv1vdZmd0Hyd/Vp0XrDr0swjnjdDdkvhBGxZZuGEdLrvjymiZv+2Ir1fKQI94SIc6+o3D86ry9S1geJVCuZwbVxt53FJvL4hypgbE56qxpNglrXw=
+	t=1712803258; cv=none; b=O2rvKMpldb3ThP7fgS9rzYC5PUdyy/HBbodb6Oa400U334C87IeORHdK80Y+/9FDb2HOSaP+ZsDk7ADi6r2xazA6+Ns1ThtX3APK1fqDQ6SPs38BZmcN0sgdOsYZjHVM+Z2pqjrvgCLILcpnn7kfXuMdSf0qt2CjWGKrwPERO7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712802643; c=relaxed/simple;
-	bh=PcPW/OIMVeZXCRyoeXq8oAFYmKKXUaihPmtYX8Q/b7U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ctNgWJZunX/n0MeaxxzFzdU86Bb4fjzvoSBWokHtC9elHm2jDmJmA9xSdZOREeFyUD7VfOyn9CKX4GbmlJcvZcaL9jkUf73KuQF+NbnA0EhXTskzSXvO4PVjNnC5Ejwb6JKYAhBv9pP1gOQtc1LKg+cPcKfi9paJ10jtApP8A50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz; spf=pass smtp.mailfrom=fe-bounces.faucet.nz; dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b=L7PJZMBL; arc=none smtp.client-ip=149.28.215.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.faucet.nz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=faucet.nz;
- h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
- Message-Id: Date: Subject: Cc: To: From; q=dns/txt; s=fe-4ed8c67516;
- t=1712802622; bh=PcPW/OIMVeZXCRyoeXq8oAFYmKKXUaihPmtYX8Q/b7U=;
- b=L7PJZMBLkMN7WDX4YZXd8m6KBjmjsQeClHiYxmTPQweEmHUrsf9CXOfB+Z0lkFGUqSd8Pxv6a
- lh0tNe244JKzHJnDaehpzwy7Su/NzQrHe+kj1mGi+4dSZzGM3NIzK1v/ePwgsf2f1k7HuxNfz4v
- PTldSIt8K3rYh2cfbViY53g=
-From: Brad Cowie <brad@faucet.nz>
-To: martin.lau@linux.dev
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, brad@faucet.nz,
- coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
- john.fastabend@gmail.com, jolsa@kernel.org, kuba@kernel.org,
- lorenzo@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
- netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org,
- sdf@google.com, song@kernel.org
-Subject: Re: [PATCH bpf-next] net: netfilter: Make ct zone id configurable for bpf ct helper functions
-Date: Thu, 11 Apr 2024 14:29:33 +1200
-Message-Id: <20240411022933.2946226-1-brad@faucet.nz>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <29325462-d001-4cb3-909d-27f7243a5c05@linux.dev>
-References: <29325462-d001-4cb3-909d-27f7243a5c05@linux.dev>
+	s=arc-20240116; t=1712803258; c=relaxed/simple;
+	bh=Nbl2is2U3WrrBfLIDYACMv1pv0cSrz85+RNvb8hYl/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c2QEkimqQ0Y0D2NTC+Cfg0tM/VewpJjBzTm8qNBKBV7CvkyBetzd31wCknPsHzGyMpR4Ius4pF7VeJVtpiYf7FQJODkIJjco9i685oJPUhsDVoMIfDZRElvzRHXnXrwLTL7cIU+m3AhWDO1DbvKdcDU6ysKXAd9oWXqjBVwvQoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCLMROu9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 016A7C433C7;
+	Thu, 11 Apr 2024 02:40:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712803257;
+	bh=Nbl2is2U3WrrBfLIDYACMv1pv0cSrz85+RNvb8hYl/o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CCLMROu97ipfxoLZXQkdGz6B7+EJ7xDeHjXUwaIqE17/hhV4kMbO3XZDWi0TgMhUU
+	 yD8A7kqe2e35yzUKy/l+ZxEcq+TW/grmPx7yYPm2t9kPNnno2NGNLG7+kQiX4cCjSL
+	 051gyG5uhSHwHp1/8nXsWoVdOBEMqY8N2G8K9JgMuIrm/2feEMoWhD6zozZYH69KsF
+	 K4ov73CRpBrDBLGVsKdk3jX3a2rrTq1eVv0OTZ4rqXpRN0PH6ba5UXmHn2PJeJT2Dh
+	 xdy3CyqBcqGZNQ3YdFUFHASc3mLkH8ZZ8NWk18f/+pnXT1mFqZzUcbDnXr6RbciwOS
+	 JPYBy5CK3yW+w==
+Date: Wed, 10 Apr 2024 19:40:55 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Camelia Groza <camelia.groza@nxp.com>
+Cc: David Gouarin <dgouarin@gmail.com>, david.gouarin@thalesgroup.com,
+ Madalin Bucur <madalin.bucur@nxp.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net v4] dpaa_eth: fix XDP queue index
+Message-ID: <20240410194055.2bc89eeb@kernel.org>
+In-Reply-To: <20240409093047.5833-1-dgouarin@gmail.com>
+References: <8edda7aa8ff27cee1b3fa60421734e508d319481.camel@redhat.com>
+	<20240409093047.5833-1-dgouarin@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; brad@faucet.nz, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 66174b3ed27b905a1d2cd455
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat, 6 Apr 2024 at 09:01, Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> How about the other fields (flags and dir) in the "struct nf_conntrack_zone" and
-> would it be useful to have values other than the default?
+On Tue,  9 Apr 2024 11:30:46 +0200 David Gouarin wrote:
+> Make it possible to bind a XDP socket to a queue id.
+> The DPAA FQ Id was passed to the XDP program in the
+> xdp_rxq_info->queue_index instead of the Ethernet device queue number,
+> which made it unusable with bpf_map_redirect.
+> Instead of the DPAA FQ Id, initialise the XDP rx queue with the queue number.
 
-Good question, it would probably be useful to make these configurable
-as well. My reason for only adding ct zone id was to avoid changing
-the size of bpf_ct_opts (NF_BPF_CT_OPTS_SZ).
-
-I would be interested in some opinions here on if it's acceptable to
-increase the size of bpf_ct_opts, if so, should I also add back some
-reserved options to the struct for future use?
-
-> Can it actually test an alloc and lookup of a non default zone id?
-
-Yes, I have a test written now and will include this in my v2 submission.
-
-> Please also separate the selftest into another patch.
-
-Will do.
+Camelia, looks good?
 
