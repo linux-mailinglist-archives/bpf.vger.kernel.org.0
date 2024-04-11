@@ -1,300 +1,80 @@
-Return-Path: <bpf+bounces-26519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8DD28A1491
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 14:26:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACEBF8A1551
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 15:09:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3826B23A5D
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 12:26:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6910928295F
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 13:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B6E14F9F8;
-	Thu, 11 Apr 2024 12:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580DD14C58E;
+	Thu, 11 Apr 2024 13:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bTAamx34"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8556D14C58E;
-	Thu, 11 Apr 2024 12:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58AD3AC16;
+	Thu, 11 Apr 2024 13:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838294; cv=none; b=Oah5AM9iBkOJkUjieSLbtuA40KTCoeiRUBxdrt+EG/y0Hb1Y9ix2bNllurLR5Sxs8uTQcdsI+aQ1+/fW5yDfQTBg7e53BFSSgxVUUCINXvs2qq1TkVigS6f91OI7xlMNTWDc5/xecmncxANXR3u6MtqfmdU2e1t+3KHC4OeqmPQ=
+	t=1712840969; cv=none; b=mzAdWTt81pUfNOubNuQTw8FKosTyjOQ5k+Y9R+Dm4JZG2n2oXlSHBl9GwG9NoYiqZkxxPa0mJEo8iTQ/dlwaATqQOmgJjMjUak2k1eDAkhascSSYqq2xJuAF/CS8d9/xisE6IByuqBU+c8sRIEIM+q4gD89PUckJr4gc9p3G/lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838294; c=relaxed/simple;
-	bh=7wRPyiijTTGAood9GVZT6zaerpy6Jchgb4iGjZRVSao=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oGiN2UT8SKh3qaTgqmGKfj4Yw5n9Hs1wS3hzo2IpJAhlTKFw4yOqXMvML7OGIZTjy68h/s2ufoRsKfvhe7TusQ/MTIKPfhEpyR2i8IX9lVt4zOvcGnBEPi4N1zUuhBdBKk9sgIdMgJO0bLUDm7eWt5NxirJf/geGch+TPv21Mbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VFf5h1h4Cz4f3kjW;
-	Thu, 11 Apr 2024 20:24:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1BE6D1A0568;
-	Thu, 11 Apr 2024 20:24:47 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP4 (Coremail) with SMTP id gCh0CgA3h2mJ1hdmZ5R_Jw--.23051S13;
-	Thu, 11 Apr 2024 20:24:46 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Brendan Jackman <jackmanb@chromium.org>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E . Hallyn" <serge@hallyn.com>,
-	Khadija Kamran <kamrankhadijadj@gmail.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	John Johansen <john.johansen@canonical.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next v3 11/11] selftests/bpf: Add verifier tests for bpf lsm
-Date: Thu, 11 Apr 2024 20:27:52 +0800
-Message-Id: <20240411122752.2873562-12-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
-References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
+	s=arc-20240116; t=1712840969; c=relaxed/simple;
+	bh=8jloMJYR3hI592a7bjdaurZGTF8DZUtzFZslxyASiCw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DB38nak/bnt0A4PwUgrv749baejkdz7KWlgE6oXIT5M6yriHSOh3m0uL+VWLAgHodZgYoufZLNxEIk244cUfRJk2KO72wogrgAtiMsl7o0J2wLKVf5VbxrLSPhygs+mjZlLBZF18c1QwzaebB7etKdhv5wmCnXFaJk7/mHxyl/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bTAamx34; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15BE1C433F1;
+	Thu, 11 Apr 2024 13:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712840969;
+	bh=8jloMJYR3hI592a7bjdaurZGTF8DZUtzFZslxyASiCw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=bTAamx34aXT0c7Dh0yldr3GLqQzV9IzdoRpbQHFtNRfItKvSV300oarDb7loQj0Db
+	 nRfkoxxjnz9tSITwwxA3S3R++Th5BRDwHiy/ceBrv1hqDHDqRJhGCW1VuDm77tbvXj
+	 sYF0lmSkNDM4sLi9I7SYA9CxCWtr8xgDLIJ8pvoFZns2rW3Hlm+PbN79aR13Zve2Jc
+	 yKCiaqvumONCNAg1kYgPV+4UsdpCK8RYPlqHwgbszTVNkDUDxSiiLeHovaY2EzHZxI
+	 tUFT3DR9oTRec7cO/yCDK54isJiPslGyjV/kl8GNT5n7CVWLJpcB+11xU7fbNibyU2
+	 NojDEfZDJvLqg==
+Date: Thu, 11 Apr 2024 06:09:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, davem@davemloft.net, pabeni@redhat.com,
+ edumazet@google.com, elder@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ nbd@nbd.name, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+ lorenzo@kernel.org, taras.chornyi@plvision.eu, ath11k@lists.infradead.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ geomatsi@gmail.com, kvalo@kernel.org, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, quic_jjohnson@quicinc.com,
+ leon@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ idosch@idosch.org
+Subject: Re: [PATCH net-next v5 00/10] allocate dummy device dynamically
+Message-ID: <20240411060926.308788bf@kernel.org>
+In-Reply-To: <20240410131407.3897251-1-leitao@debian.org>
+References: <20240410131407.3897251-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgA3h2mJ1hdmZ5R_Jw--.23051S13
-X-Coremail-Antispam: 1UD129KBjvJXoW3JFy8ZryxZF13Gry3Jry3XFb_yoW7Ar45pr
-	97K3s7uF9Yyr9Igr1xCFWUuFyfGFs2qryrXF4Fvr15AF4xJrnrGrZ7Ww1UXrn3Jan3uwn0
-	va12yay3ur1UA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAI
-	cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2js
-	IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Wed, 10 Apr 2024 06:13:41 -0700 Breno Leitao wrote:
+>   wifi: ath11k: allocate dummy net_device dynamically
 
-Add verifier tests to check bpf lsm return values and disabled hooks.
-
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- .../selftests/bpf/prog_tests/verifier.c       |   3 +-
- .../selftests/bpf/progs/verifier_lsm.c        | 155 ++++++++++++++++++
- 2 files changed, 157 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_lsm.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index c4f9f306646e..07398846085c 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -84,6 +84,7 @@
- #include "verifier_xadd.skel.h"
- #include "verifier_xdp.skel.h"
- #include "verifier_xdp_direct_packet_access.skel.h"
-+#include "verifier_lsm.skel.h"
- 
- #define MAX_ENTRIES 11
- 
-@@ -196,8 +197,8 @@ void test_verifier_value_illegal_alu(void)    { RUN(verifier_value_illegal_alu);
- void test_verifier_value_or_null(void)        { RUN(verifier_value_or_null); }
- void test_verifier_var_off(void)              { RUN(verifier_var_off); }
- void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
--void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
- void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
-+void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
- 
- static int init_test_val_map(struct bpf_object *obj, char *map_name)
- {
-diff --git a/tools/testing/selftests/bpf/progs/verifier_lsm.c b/tools/testing/selftests/bpf/progs/verifier_lsm.c
-new file mode 100644
-index 000000000000..005f28eebf71
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_lsm.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+SEC("lsm/file_alloc_security")
-+__description("lsm bpf prog exit with valid return code. test 1")
-+__success
-+__naked int return_code_vaild_test1(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/file_alloc_security")
-+__description("lsm bpf prog exit with valid return code. test 2")
-+__success
-+__naked int return_code_vaild_test2(void)
-+{
-+	asm volatile ("					\
-+	r0 = -4095;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/file_alloc_security")
-+__description("lsm bpf prog exit with valid return code. test 3")
-+__success
-+__naked int return_code_vaild_test3(void)
-+{
-+	asm volatile ("                                 \
-+	call %[bpf_get_prandom_u32];                    \
-+	r0 <<= 63;                                      \
-+	r0 s>>= 63;                                     \
-+	r0 &= -13;                                      \
-+	exit;                                           \
-+	"      :
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("lsm/vm_enough_memory")
-+__description("lsm bpf prog exit with valid return code. test 4")
-+__success
-+__naked int return_code_vaild_test4(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/vm_enough_memory")
-+__description("lsm bpf prog exit with valid return code. test 5")
-+__success
-+__naked int return_code_vaild_test5(void)
-+{
-+	asm volatile ("					\
-+	r0 = -4096;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/vm_enough_memory")
-+__description("lsm bpf prog exit with valid return code. test 6")
-+__success
-+__naked int return_code_vaild_test6(void)
-+{
-+	asm volatile ("					\
-+	r0 = 4096;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/file_free_security")
-+__description("lsm bpf prog exit with valid return code. test 7")
-+__success
-+__naked void return_code_vaild_test7(void)
-+{
-+	asm volatile ("					\
-+	r0 = -4096;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/file_free_security")
-+__description("lsm bpf prog exit with valid return code. test 8")
-+__success
-+__naked void return_code_vaild_test8(void)
-+{
-+	asm volatile ("					\
-+	r0 = 4096;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/file_alloc_security")
-+__description("lsm bpf prog exit with invalid return code. test 1")
-+__failure __msg("R0 has smin=1 smax=1 should have been in [-4095, 0]")
-+__naked int return_code_invalid_test1(void)
-+{
-+	asm volatile ("					\
-+	r0 = 1;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/file_alloc_security")
-+__description("lsm bpf prog exit with invalid return code. test 2")
-+__failure __msg("R0 has smin=-4096 smax=-4096 should have been in [-4095, 0]")
-+__naked int return_code_invalid_test2(void)
-+{
-+	asm volatile ("					\
-+	r0 = -4096;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/getprocattr")
-+__description("lsm disabled hook: getprocattr")
-+__failure __msg("points to disabled bpf lsm hook")
-+__naked int disabled_hook_test1(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/setprocattr")
-+__description("lsm disabled hook: setprocattr")
-+__failure __msg("points to disabled bpf lsm hook")
-+__naked int disabled_hook_test2(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("lsm/ismaclabel")
-+__description("lsm disabled hook: ismaclabel")
-+__failure __msg("points to disabled bpf lsm hook")
-+__naked int disabled_hook_test3(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+char _license[] SEC("license") = "GPL";
+Sorry Breno, I didn't notice earlier, patch 10 didn't make it
+to the list. The series wasn't ingested by CI and tested because 
+of this. Could you repost?
 -- 
-2.30.2
-
+pw-bot: cr
 
