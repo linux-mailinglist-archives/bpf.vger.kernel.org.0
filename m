@@ -1,145 +1,127 @@
-Return-Path: <bpf+bounces-26495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 113868A0B6C
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D1338A0B71
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:39:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3437D1C228D1
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 08:37:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E1911C21CD7
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 08:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A4E1411FE;
-	Thu, 11 Apr 2024 08:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1471411D1;
+	Thu, 11 Apr 2024 08:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qhh7A5m3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NAFuS0Pp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BCF1E50B;
-	Thu, 11 Apr 2024 08:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A39D6FB5;
+	Thu, 11 Apr 2024 08:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824618; cv=none; b=sh9SL1SwdceOZwPWAJzvXReLKtM0m2JrTePOfVBmdlY5b0557LTSj1X67lph1VL0dPwpYG3gcGpeX2ZbdbxtjdXaCetWSIOiXFfmLiuFSW4LcV+DRcXMNDENtx9DwzAZCescbrNfDZS/omPa/nRKFLzE2ZmkXBH5257zBp3WSwg=
+	t=1712824733; cv=none; b=WAU8+UrvJlBH79s0Ux0mG9uMpsluLQsDBAM4tuSpLBAiMRVkLa6d7KutT+HBT9Enyw8hJ4RTLOi9nqyqyGeii/5SpwZxzUOsjZnLWDWK2T7R4yDcg3qMMYp1UsOA5Xj9Uh8zrr41Fd4XP3hVcPfdjavfYdZEzGycrN7X1aVJEKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824618; c=relaxed/simple;
-	bh=unC3x+nKSIK9u/ndQdxIJyL6zS/jbDXkiDpSXnhD5yQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lVkmx9DZ1X4Kg+kDSpTyFVG7Me+wj6h5q0diHBKLdQQOgU03D7rGbL9bgQK066Vo/lgzhqomt6JLYo3+OxYfOkMD30R7SuoaAs4PDc3f7DZCChMc/IfYv7QVKEZgzRsZSAk20blrKj62Vd4jq1kprzEaaxkb4ueQP4tM0/pplDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qhh7A5m3; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d858501412so96282021fa.0;
-        Thu, 11 Apr 2024 01:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712824615; x=1713429415; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1u+KIu05ihNMsOZBDu+U/wU/eh0uP4ZgU6yLRCPBFzw=;
-        b=Qhh7A5m3QaviOs4Q519VzWvhnC85Px3d2g45XBjZOwbAFINvyYOwdPP+Mpim2zH0kN
-         UkLzkOVUsuLFRd0JuloScIFe2stPs8/BC6NZLdgBUgDJLoeofO25EV2jcf2Du0XRwFQb
-         6/rh+upmd9ATBNJnTu82X7lDn/lEkKA8F69VTJK3woNtqjR04cy4nc7a4m5cLHfUZH++
-         VhX9kZXA72mDD2pdhoTqXb9HdyM8i8ZiMajwSMLEwvbElWQaV8/TrPBbEFk7DCDMwijP
-         cyECFeVr2hsJHsQszOauiLW6EaNJnUAmpQSZzOY5zw0KMJgRUWodg2CWbIGUVMIYoCZU
-         YPcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712824615; x=1713429415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1u+KIu05ihNMsOZBDu+U/wU/eh0uP4ZgU6yLRCPBFzw=;
-        b=TLUl6WHMvhtT7/Np7+53WinkO/4i9AlFXibo7BN/8tBhC0VAq0Or16S/lNmRAp7A7F
-         ZrtsRpcQO+Uxw+ThVzE+d+No9f+1FLLp7OI7lWj1Mf7Xv3Tqv9GeBRjRALto5N4uI/vF
-         /75lRNau7SYJXivrUMI0v8Vko2rb6uFUXWHQ+fnaE/fw8jaM5g6XhHc4BCwpDd9Z7rAv
-         wH6F7VsZHHi9V4stF9bSUvY8WCRhSJm3zkX9Re3qY0FPoGBJ+cFPYuVtyVAZn9W3rSlF
-         ZJsJ5m77SL8wcUoAFhFJyEhXly/f6kQS5PDoc8o4lOLCK9USbgBKdBeihpFX4LjIJxMT
-         sRYA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2avCOhcQ+QS6Wap+gdVvXl8q7VbYuIjHFLnmaPIN5oKufonIYlgenYwONURlTnas7wi0XhDYpYA74swozLyvNedeGLHxTNrw0626YkBQqQ+ogvrg2m3cO/MHjduiEAx/eQEgloPJPscT+67m5Zn1t0McF8ShOaFnKWF9lAqof0SeLPsIXd9vgbZOUkXEIXB6ynAP8inCNJOTsKA==
-X-Gm-Message-State: AOJu0Yz6JDHJSimfUa3urdhFse5VlAGG81chkwDQvik5EaBpRzaYxDmo
-	WHRapblPd1JuULdY/PBsSPwk1g2P09akr2CkKwibjD0PpTg9s+HOGtHuwGHYHnRZa4qbohFLQBQ
-	lRiFCHaImdbw5f+UKh/ptrXdncjs=
-X-Google-Smtp-Source: AGHT+IF4jpfgO6KrvCVpvX1EqpYoDxh3vVK9JKFWkheC89nBbr0BesQjZ1tf+Ubo6b8fD7/nohBsJkHAlSiq+ko/taY=
-X-Received: by 2002:a05:651c:10a4:b0:2d8:1267:320e with SMTP id
- k4-20020a05651c10a400b002d81267320emr3245491ljn.5.1712824614314; Thu, 11 Apr
- 2024 01:36:54 -0700 (PDT)
+	s=arc-20240116; t=1712824733; c=relaxed/simple;
+	bh=hFPKYBGIMfpUrwovYlZJbiVjlexhjRbaRyeGHPPWlns=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=PZDVh09OIyfbRjQrmoxCvCYtOJ0Vefuba3jn/iqO672NUspGP9cDOpx9E59ZH6AEfFEaDq/O0/civXIAMRqAObJAK4BznaecBvm93OuqJcb77RnkLVi2WXEZJCkOPZf+D9ixfArc3EjvfX4CZ7Y2JUl/8itvdl0hJ9H9Yzrl+kM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NAFuS0Pp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF14C433F1;
+	Thu, 11 Apr 2024 08:38:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712824733;
+	bh=hFPKYBGIMfpUrwovYlZJbiVjlexhjRbaRyeGHPPWlns=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=NAFuS0Ppx0+PkVXSEJz4rvVpoClDsOe3OP/22UTvK7TVNvqysCmc8ya7CP2kXYKvq
+	 MEzj40HuEA/CIdTXGdMDf4FVp2dQlSbFqLoCRy35QUEqVmt8aFV8jgAtdGQoqiZq6b
+	 BcfQG6FtYZhS9tDybY8gp5mq07k1BpKuWR7Te7A3rCLgTY2AW/t69iINWHG4b/X7GT
+	 4vOoFym4qjz6G+QWNyugZh3HemWLtgqsvwx0eVo+r65d63JWxk7GFJXZAY+IE1RxEt
+	 Du5oakGX1TS7W6YWY6MWkYSCOM8v+fPCQQ03DzRgwDh08cEfH0rlwvp3CzAPwRwrjf
+	 MW64XnTh5rKaQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com,  kuba@kernel.org,  davem@davemloft.net,
+  pabeni@redhat.com,  edumazet@google.com,  elder@kernel.org,
+  linux-arm-kernel@lists.infradead.org,
+  linux-mediatek@lists.infradead.org,  nbd@nbd.name,
+  sean.wang@mediatek.com,  Mark-MC.Lee@mediatek.com,  lorenzo@kernel.org,
+  taras.chornyi@plvision.eu,  ath11k@lists.infradead.org,
+  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,
+  geomatsi@gmail.com,  Matthias Brugger <matthias.bgg@gmail.com>,
+  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+  quic_jjohnson@quicinc.com,  leon@kernel.org,
+  dennis.dalessandro@cornelisnetworks.com,  linux-kernel@vger.kernel.org,
+  netdev@vger.kernel.org,  bpf@vger.kernel.org,  idosch@idosch.org
+Subject: Re: [PATCH net-next v5 00/10] allocate dummy device dynamically
+References: <20240410131407.3897251-1-leitao@debian.org>
+Date: Thu, 11 Apr 2024 11:38:45 +0300
+In-Reply-To: <20240410131407.3897251-1-leitao@debian.org> (Breno Leitao's
+	message of "Wed, 10 Apr 2024 06:13:41 -0700")
+Message-ID: <87frvsz42y.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
- <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
- <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com> <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-In-Reply-To: <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-From: Djalal Harouni <tixxdz@gmail.com>
-Date: Thu, 11 Apr 2024 10:36:27 +0200
-Message-ID: <CAEiveUdCMCxp4n+gZKU_99y_xap83otQVmz+XqSaO+JAjrKM1Q@mail.gmail.com>
-Subject: Re: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Apr 9, 2024 at 5:32=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
+Breno Leitao <leitao@debian.org> writes:
+
+> struct net_device shouldn't be embedded into any structure, instead,
+> the owner should use the private space to embed their state into
+> net_device.
 >
-> Hi.
+> But, in some cases the net_device is embedded inside the private
+> structure, which blocks the usage of zero-length arrays inside
+> net_device.
 >
-> On Tue, Apr 02, 2024 at 07:20:45PM +0100, Djalal Harouni <tixxdz@gmail.co=
-m> wrote:
-> > Thanks yes, I would expect freeze to behave like signal, and if one
-> > wants to block immediately there is the LSM override return. The
-> > selftest attached tries to do exactly that.
+> Create a helper to allocate a dummy device at dynamically runtime, and
+> move the Ethernet devices to use it, instead of embedding the dummy
+> device inside the private structure.
 >
-> Are you refering to this part:
+> This fixes all the network cases plus some wireless drivers.
 >
->         int BPF_PROG(lsm_freeze_cgroup, int cmd, union bpf_attr *attr, un=
-signed int size)
->                 ...
->                 ret =3D bpf_task_freeze_cgroup(task, 1);
->                 if (!ret) {
->                         ret =3D -EPERM;
->                         /* reset for next call */
-> ?
-
-Yes.
-
+> PS: Due to lack of hardware, unfortunately most these patches are
+> compiled tested only, except ath11k that was kindly tested by Kalle Valo.
 >
-> > Could be security signals, reading sensitive files or related to any
-> > operation management, for X reasons this user session should be freezed
-> > or killed.
+> ---
+> Changelog:
 >
-> What can be done with a frozen cgroup after anything of that happens?
-> Anything besides killing anyway?
-
-Some users would like to inspect.
-
-
-> Killing of an offending process could be caught by its supervisor (like
-> container runtime or systemd) and propagated accordingly to the whole
-> cgroup.
-
-Most bpf technologies do not run as a supervisor.
-
-> > The kill is an effective defense against fork-bombs as an example.
+> v1:
+> 	* https://lore.kernel.org/all/20240327200809.512867-1-leitao@debian.org/
 >
-> There are several ways how to prevent fork-bombs in kernel already, it
-> looks like a contrived example.
+> v2:
+> 	* Patch 1: Use a pre-defined name ("dummy#") for the dummy
+> 	  net_devices.
+> 	* Patch 2-5: Added users for the new helper.
+> v3:
+> 	* Use free_netdev() instead of kfree() as suggested by Jakub.
+> 	* Change the free_netdev() place in ipa driver, as suggested by
+> 	  Alex Elder.
+> 	* Set err in the error path in the Marvell driver, as suggested
+> 	  by Simon Horman.
+> v4:
+> 	* Added a new patch to add dummy device at free_netdev(), as suggested
+> 	  by Jakub.
+> 	* Added support for some wireless driver.
+> 	* Added some Acked-by and Reviewed-by.
+> v5:
+> 	* Added a new patch to fix some typos in the previous code,
+> 	  suggested by Ido.
+> 	* Rebased to net-net/main
 
-I doubt if they are as effective, flexible and reflect today's workflow
-as the cgroup way.
+I'm nitpicking here but I prefer to have the changelog in reverse order,
+that is v5 first and v1 last. I'm most interested about the changes in
+v5, I don't care about v1 at this point. Though I don't know if net
+folks have a different prefence, just wanted to mention this.
 
-Thanks
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
