@@ -1,189 +1,142 @@
-Return-Path: <bpf+bounces-26568-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26569-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4655A8A1E34
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 20:30:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988498A1E7C
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 20:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F159628C632
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 18:30:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52499290007
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 18:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7978C4501B;
-	Thu, 11 Apr 2024 18:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F297651C5C;
+	Thu, 11 Apr 2024 18:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F6A8Ql6Y"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="GP088t5u"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F183F446AE
-	for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 18:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E54F251C44
+	for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 18:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858435; cv=none; b=KQxHQF11vPB7nmdQN39W1Xf/a+9+/m+R03XXhm6sf4UFoijQt2k1kwjb00gbPgiY32db4MuIxSjz+pRbltc/5Cc3HhQu9xRDJ2OFl2QVDhLIAuuu2CwgmT4oLoEhcYvtoo79bOjo4UmkOfoFzTxTHkN7DTN9yJQCXVvYU6fQDbU=
+	t=1712858980; cv=none; b=srO+N3lKVreecvdcLcxizkLsPYt2+2lT41IzNcO/50B2HWtcPkfCzCObzyiLI5yzRIWSjTi4C5GGd0t0BlSMxUrBE7mPewV4dTxXWSrDX+qSkuBCcrWpZi4+f4XivwphBU4ELh3CxJ1K3vWpNDJsN81J8hGCdgU+e34sZIuNbN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858435; c=relaxed/simple;
-	bh=yh/ixDQ5eg6OWrim9+bm1G6d/37CpJ1/QL+beESG4jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e1qv4dEQQciknKQEmsEKmtgfI/VtHoyUgj+Pc2ICdIW7uBMgNQCKHGfOCD6xgaKxJLheYRrltqwbbTHc7Q6UxBx//SOMxbrWavs9Nyonjov0uaJOgHtI+E+axiemAIsI8gY1octo21OcRtctBq4E+LVe2DoyTfXXd35olQkwZkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F6A8Ql6Y; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Apr 2024 14:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712858430;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hugd8ugKeGXlWiLmTwUcSwxtoNqEbzFWRyiumV4I0QI=;
-	b=F6A8Ql6YjuHeVhFhvCjRCHtt6+j5Zmavb6rBRVS2UPMjaUzBr8Uy9YMXKrMLS6Bdu93QAe
-	+1JDwGCXhSmYXVX/GYkUtjra2ilUH2ndkI9p7bCt0GDxnXoAiXvPRveKB1Tl7czCP5mSyl
-	LwnxqSrFPBMBfyHHV7aQPCs6G/4zVIs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nadav Amit <nadav.amit@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, 
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 00/15] mm: jit/text allocator
-Message-ID: <v52bizaflxzrxqk2wtuek2m2juwbzr6jxnpzlvtswkarcaejow@kd7tygzbmijs>
-References: <20240411160051.2093261-1-rppt@kernel.org>
+	s=arc-20240116; t=1712858980; c=relaxed/simple;
+	bh=7sQCResQHcHFaajY/affxbUQdzkJ+QOQsXOVt7r+6/o=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=MjZAMOLMYmbJDNQym1wZ3AzLkHqn9ZsXNlcdn4FfHFHc1XfDYBqb/x/E7zVYcmup6kBrS67eXJE3bKt1hHnKc/kBhKN6RwUqZNoyFRFlNub2RiLpWj3Rt4jUTnBmZu/lXSXBSSVvXFPPWOD3cnyhJLzBuRdwr/WUw5rfAtdv2h8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=GP088t5u; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61587aa956eso363237b3.1
+        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 11:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1712858978; x=1713463778; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xbtisnhUzZ5+5osOX2htiyEfxmKmwf+lNIM3kB5/lv8=;
+        b=GP088t5uqDEAw37lXuL6pzgmZg8DkXCZq+lMEya04SkKxaBIJrrwYkTBG5aZLUYUhd
+         X2C7mXN8iM14w4H9EsdAcqqGTYsBIwH6Mb3wzrM8hE7c4pZNvcqz6VLR67qRdxETy65q
+         sYJiS5rKYYoD+i3QWuRtqFUaBOyJ08u87Kedf8QbKQX2Ef9uQeot7T9rQiFI7PE2MA2o
+         VUXIOYVT0kZsK/hBoNWjfnWWmmugr54x55wv/5d+kqr+Rn6lAObvdzGjOt5skH8NdoPn
+         7hBHgCDaC6uTfKHLGOu/jOPS7dGzEB+O+Rxei3xfMbbLntUPMYNYG/PXp2bIpz3TaiXa
+         QUFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712858978; x=1713463778;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xbtisnhUzZ5+5osOX2htiyEfxmKmwf+lNIM3kB5/lv8=;
+        b=VD/n8WQTa3wqbbnAbBXX2HA77SOiRfDGnLnQaQLcoRgHotM6dEyuSrgPqqA6XiU/Cx
+         yQ6DsNqXF4N3C0tPnjly+groJS/L99JtNKi8UKh2z+OWkcRz5kDjl2l68L6lYh7KhuUb
+         66sx1mEgfA63CPSl0lxtvNs5Z84RO4n1SKzk5lVHk43EJB9FdT1Guz9roihYgN9ezhEL
+         fRufmnPaohozrCEibsU7wFAdPq19RodQt6Wde2wWXuSYsC6e7oOKdxlDhECDja04ozlA
+         2aHQgjzpjPj/fTWtL+vR/UnZ4XiWSZLUF6/QAq0J4CeIVefND4R33cKSPjDnhpn0MMuX
+         Z4Mw==
+X-Gm-Message-State: AOJu0Yx2qqZGESvVTiZ6qNawirkPDsQraNmFY60X4UN5T+Yk00MAIpIB
+	LsRt+r2mtYfybhvxxjHqlFdqxSm4eDQDRHzoSF26VhjLP/eSYfqf85pwkGNjAehqpNEkwFTlFni
+	1V+0YcCnW3MibEUxI/kon1z3wkQhugl05u6gahBJuqvqyTCybADI=
+X-Google-Smtp-Source: AGHT+IFjut8ojZSB7SsskjRLnevw7J7Ig31tm4K7lbYdaL9osUI14ma4WRSeewKQg94P/MTh+oQCy1TSxXzOI4oUCa4=
+X-Received: by 2002:a0d:d695:0:b0:611:18fc:9489 with SMTP id
+ y143-20020a0dd695000000b0061118fc9489mr218230ywd.28.1712858977725; Thu, 11
+ Apr 2024 11:09:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411160051.2093261-1-rppt@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+From: Ivan Babrou <ivan@cloudflare.com>
+Date: Thu, 11 Apr 2024 11:09:26 -0700
+Message-ID: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
+Subject: Incorrect BPF stats accounting for fentry on arm64
+To: bpf <bpf@vger.kernel.org>
+Cc: kernel-team <kernel-team@cloudflare.com>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 11, 2024 at 07:00:36PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Hi,
-> 
-> Since v3 I looked into making execmem more of an utility toolbox, as we
-> discussed at LPC with Mark Rutland, but it was getting more hairier than
-> having a struct describing architecture constraints and a type identifying
-> the consumer of execmem.
-> 
-> And I do think that having the description of architecture constraints for
-> allocations of executable memory in a single place is better that having it
-> spread all over the place.
-> 
-> The patches available via git:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v4
-> 
-> v4 changes:
-> * rebase on v6.9-rc2
-> * rename execmem_params to execmem_info and execmem_arch_params() to
->   execmem_arch_setup()
-> * use single execmem_alloc() API instead of execmem_{text,data}_alloc() (Song)
-> * avoid extra copy of execmem parameters (Rick)
-> * run execmem_init() as core_initcall() except for the architectures that
->   may allocated text really early (currently only x86) (Will)
-> * add acks for some of arm64 and riscv changes, thanks Will and Alexandre
-> * new commits:
->   - drop call to kasan_alloc_module_shadow() on arm64 because it's not
->     needed anymore
->   - rename MODULE_START to MODULES_VADDR on MIPS
->   - use CONFIG_EXECMEM instead of CONFIG_MODULES on powerpc as per Christophe:
->     https://lore.kernel.org/all/79062fa3-3402-47b3-8920-9231ad05e964@csgroup.eu/
-> 
-> v3: https://lore.kernel.org/all/20230918072955.2507221-1-rppt@kernel.org
-> * add type parameter to execmem allocation APIs
-> * remove BPF dependency on modules
-> 
-> v2: https://lore.kernel.org/all/20230616085038.4121892-1-rppt@kernel.org
-> * Separate "module" and "others" allocations with execmem_text_alloc()
-> and jit_text_alloc()
-> * Drop ROX entailment on x86
-> * Add ack for nios2 changes, thanks Dinh Nguyen
-> 
-> v1: https://lore.kernel.org/all/20230601101257.530867-1-rppt@kernel.org
-> 
-> = Cover letter from v1 (sligtly updated) =
-> 
-> module_alloc() is used everywhere as a mean to allocate memory for code.
-> 
-> Beside being semantically wrong, this unnecessarily ties all subsystmes
-> that need to allocate code, such as ftrace, kprobes and BPF to modules and
-> puts the burden of code allocation to the modules code.
-> 
-> Several architectures override module_alloc() because of various
-> constraints where the executable memory can be located and this causes
-> additional obstacles for improvements of code allocation.
-> 
-> A centralized infrastructure for code allocation allows allocations of
-> executable memory as ROX, and future optimizations such as caching large
-> pages for better iTLB performance and providing sub-page allocations for
-> users that only need small jit code snippets.
-> 
-> Rick Edgecombe proposed perm_alloc extension to vmalloc [1] and Song Liu
-> proposed execmem_alloc [2], but both these approaches were targeting BPF
-> allocations and lacked the ground work to abstract executable allocations
-> and split them from the modules core.
-> 
-> Thomas Gleixner suggested to express module allocation restrictions and
-> requirements as struct mod_alloc_type_params [3] that would define ranges,
-> protections and other parameters for different types of allocations used by
-> modules and following that suggestion Song separated allocations of
-> different types in modules (commit ac3b43283923 ("module: replace
-> module_layout with module_memory")) and posted "Type aware module
-> allocator" set [4].
-> 
-> I liked the idea of parametrising code allocation requirements as a
-> structure, but I believe the original proposal and Song's module allocator
-> was too module centric, so I came up with these patches.
-> 
-> This set splits code allocation from modules by introducing execmem_alloc()
-> and and execmem_free(), APIs, replaces call sites of module_alloc() and
-> module_memfree() with the new APIs and implements core text and related
-> allocations in a central place.
-> 
-> Instead of architecture specific overrides for module_alloc(), the
-> architectures that require non-default behaviour for text allocation must
-> fill execmem_info structure and implement execmem_arch_setup() that returns
-> a pointer to that structure. If an architecture does not implement
-> execmem_arch_setup(), the defaults compatible with the current
-> modules::module_alloc() are used.
-> 
-> Since architectures define different restrictions on placement,
-> permissions, alignment and other parameters for memory that can be used by
-> different subsystems that allocate executable memory, execmem APIs
-> take a type argument, that will be used to identify the calling subsystem
-> and to allow architectures to define parameters for ranges suitable for that
-> subsystem.
-> 
-> The new infrastructure allows decoupling of BPF, kprobes and ftrace from
-> modules, and most importantly it paves the way for ROX allocations for
-> executable memory.
+Hello,
 
-It looks like you're just doing API cleanup first, then improving the
-implementation later?
+We're seeing incorrect data for bpf runtime stats on arm64. Here's an example:
 
-Patch set looks nice and clean; previous versions did seem to leak too
-much arch/module details (or perhaps we were just bikeshedding too much
-;) - but the API first approach is nice.
+$ sudo bpftool prog show id 693110
+693110: tracing  name __tcp_retransmit_skb  tag e37be2fbe8be4726  gpl
+run_time_ns 2493581964213176 run_cnt 1133532 recursion_misses 1
+    loaded_at 2024-04-10T22:33:09+0000  uid 62727
+    xlated 312B  jited 344B  memlock 4096B  map_ids 8550445,8550441
+    btf_id 8726522
+    pids prometheus-ebpf(2224907)
 
-Looking forward to seeing this merged.
+According to bpftool, this program reported 66555800ns of runtime at
+one point and then it jumped to 2493581675247416ns just 53s later when
+we looked at it again. This is happening only on arm64 nodes in our
+fleet on both v6.1.82 and v6.6.25.
+
+We have two services that are involved:
+
+* ebpf_exporter attaches bpf programs to the kernel and exports
+prometheus metrics and opentelementry traces driven by its probes
+* bpf_stats_exporter runs bpftool every 53s to capture bpf runtime metrics
+
+The problematic fentry is attached to __tcp_retransmit_skb, but an
+identical one is also attached to tcp_send_loss_probe, which does not
+exhibit the same issue:
+
+SEC("fentry/__tcp_retransmit_skb")
+int BPF_PROG(__tcp_retransmit_skb, struct sock *sk)
+{
+  return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_retransmit_skb);
+}
+
+SEC("fentry/tcp_send_loss_probe")
+int BPF_PROG(tcp_send_loss_probe, struct sock *sk)
+{
+  return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_send_loss_probe);
+}
+
+In handle_sk we do a map lookup and an optional ringbuf push. There is
+no sleeping (I don't think it's even allowed on v6.1). It's
+interesting that it only happens for the retransmit, but not for the
+loss probe.
+
+The issue manifests some time after we restart ebpf_exporter and
+reattach the probes. It doesn't happen immediately, as we need to
+capture metrics 53s apart to produce a visible spike in metrics.
+
+There is no corresponding spike in execution count, only in execution time.
+
+It doesn't happen deterministically. Some ebpf_exporter restarts show
+it, some don't.
+
+It doesn't keep happening after ebpf_exporter restart. It happens once
+and that's it.
+
+Maybe recursion_misses plays a role here? We see none for
+tcp_send_loss_probe. We do see some for inet_sk_error_report
+tracepoint, but it doesn't spike like __tcp_retransmit_skb does.
+
+The biggest smoking gun is that it only happens on arm64.
+
+I'm happy to try out patches to figure this one out.
 
