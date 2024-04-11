@@ -1,121 +1,146 @@
-Return-Path: <bpf+bounces-26588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47F018A21AC
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 00:14:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0CD28A220E
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 01:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78C431C209DA
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 22:14:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7401AB213EA
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 23:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA56405EB;
-	Thu, 11 Apr 2024 22:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C7E47A55;
+	Thu, 11 Apr 2024 23:05:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gwPprsiw"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DOn/9P98"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A99383AA
-	for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 22:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF4517548;
+	Thu, 11 Apr 2024 23:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712873674; cv=none; b=sGmPkLlgX7m+3GDpvaq9pMHYlfpkLE3CwfdBVKj5WuRpEictV0a4IadzukyLwOzyoTDNw34x8nuoNELeRUFuvTfp934GM9QzA2hvwD0J/y0Y+g2VLGNy6AzjuwEuvyiMGWSOsXuD2IaPmnufghkf7xWqDILieSC076NlKKymbmc=
+	t=1712876731; cv=none; b=hMxpYVm0FBj9NpA3Xmm2vJfMc0oyXpqzg7UfREkXdF5jklJk8RxcxK8R9ORq1nhkmBlg/nzPMitxV/RbQN3GkqgqFYzZo7j8tni3SLo6Ev9Ks6ixx57qgScEIOaNaQTeX9C6X0jOH+GTD2u/FYRIUXCAygVHN58Eaeh7E6eizHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712873674; c=relaxed/simple;
-	bh=qZCHruiH4UEQJ9dPkFgcwPdRgGNeGc+3wuxBfM7MRoI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=g2RrfShubA0YSVJsl6CFL7zoFBkQTy7U3lLAAirQRrv6VUUizvKUu3IMii1gfVcRtRID66S57U5aeaUqVx2d7ShrM1FZO+QXICHz8/Z+Tc+sQ674+bIDnDkRBawWv3JVAGTrOH0ClNI01pWJtufYSVFMgKHCgJQZYh2mcE3BLCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gwPprsiw; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso268178a12.0
-        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 15:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712873671; x=1713478471; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3zJVJgvg58Q7Ht0TRQtgs7+sWP1xuNLLgLeEr1TjeO8=;
-        b=gwPprsiw/skUPzk2YX8Q9RTcWx3tCcUrM002dBy1WcWI3+8iPmBqV36BxuMA4HN9iQ
-         n3LombCtasf49/mrkNABTr5QYf9FEE46k5phZ1D+Sn5zdeHiA176QtiG2RFsu4LqNPT4
-         zrcTJwJXUKUfXSe0sqnMaQtbGlt6hWct0ygjH8OvJ1W6Eu4URZSl0mfaBgRQqEnzR4nr
-         6qwFP4Gk87gwca3d/4SVkchkfHhYihuSG/57Ie+hZUteFCA2BeRvpoJsc/emQgX8UW00
-         4YJK3wWnLmnenciMyZnWj49IdT52GiLl20ZBvtReD6h296nXHkNg+23k+pEnGAUbGQeE
-         8yWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712873671; x=1713478471;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3zJVJgvg58Q7Ht0TRQtgs7+sWP1xuNLLgLeEr1TjeO8=;
-        b=A9ijttkwVgxmKFWJ+68V6OuaVZWDXOt392DYDLGSi55L8j3zloH8FQEngd+langcdC
-         DiTLc/U43EpdAB62HSaqy76c5qwSD/mzH12aCuozJWQP/IrJrEq8pfjGA1HZfUFWtcNL
-         fKaZG0/6096pZjNBb5SOlu8l7N+5OJO6BbqStBbJqwvm82tqtsxkh35IyDLolk56zIIO
-         uJuBHgrtNEzAjYgCeaIeoUbGSl8Jj1qIzoP+QI/fYgRsOGn3C6K2fNMQ0QGJJhxRLveH
-         R+br93FGuJz6Z5t1HRYT3wd3+6U/RAaMaf88ktF/dhtU+ndvCTBEI78enp+sxGjIXygq
-         RXuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0chnqAj0N88wB71hzqLsXS4Sws4w+8QSI+saCTgEi6+JGNJ6vGuKlTQ55r+qZta4F7tPQekfLBV1lcnSRHILe+Sxi
-X-Gm-Message-State: AOJu0Yx2HXE3hVEPtt8O3rgnhkd9YeAt/YRubzzkCso5eWOIs3o7ORR6
-	Rl2Gae6xZ3gAaD212u+K1CGt5hwG4lz1zF02C7hrtl5CgQMNpVwU
-X-Google-Smtp-Source: AGHT+IHJ5pdrWKm03q9g7nQMUE2SvBHZCvhfO6CEobDhzeUiUj+4hcNxnEnJux+k/4Mx/0fyOzDsHA==
-X-Received: by 2002:a17:906:a87:b0:a51:9d99:78ae with SMTP id y7-20020a1709060a8700b00a519d9978aemr478628ejf.67.1712873671496;
-        Thu, 11 Apr 2024 15:14:31 -0700 (PDT)
-Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id v9-20020a170906338900b00a51d45b289dsm1135489eja.81.2024.04.11.15.14.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 15:14:31 -0700 (PDT)
-Message-ID: <c89a020a219dd2d6e781dce9986d46cbafd6499c.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 07/11] bpf: check_map_access() with the
- knowledge of arrays.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org,  martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-Cc: sinquersw@gmail.com, kuifeng@meta.com
-Date: Fri, 12 Apr 2024 01:14:29 +0300
-In-Reply-To: <20240410004150.2917641-8-thinker.li@gmail.com>
-References: <20240410004150.2917641-1-thinker.li@gmail.com>
-	 <20240410004150.2917641-8-thinker.li@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1712876731; c=relaxed/simple;
+	bh=wDiqDfSQwKgl2YXcdLMUIGZS+yBAbZt9wH6TycsKLQ8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CnwxfJWVyu8/O/i+0TRYPTdDfDjx+uya0UeNST/lt+6JaVsDpp3NITzPaUjY3iRRKnkJCQrvxuPZ/pi624G/F4GhGD3loREGsgLUcwteAlt/3XTOhY7X15Py3Aca1M/o2TWlNS3H5o/WVT/zKRMnKkxYY/ZtUieq6zJ970G5MUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DOn/9P98; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43BMj2wk015725;
+	Thu, 11 Apr 2024 23:05:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=xHF+sDd8rsIy2kUSdpvt
+	vP96ViWFd/9tKXSBhWUmSq4=; b=DOn/9P98/+D/+5KZbG2smy99B0u5betliX7b
+	gsl6zieKTOWPCqj1oT40vl3MkbUAqRl+BdVC/giKBAw4CGt7JM9sBIwfZmoIJvVy
+	VN2lWg5VJ63SN5ulsG8Oxlw/4uLrUHs4Q3Ttop9B7jeJhsp+ImOlcOTInYFR4pp/
+	QeEHQnOK53rj7jZrcVqO+IY1Bw0M5WpF4m82nrB7tpQJPX6p6KfceU1/jt/C4+Ay
+	+E5W5KMyKZHACyB/D5uZBV7HrHl9Pb3SXoGTe+6Yg1BN94DpPkESHFKuWHBRMbkd
+	uGLt68oStY82CDUqtmfZnxKUHHCfepvXG+PgMXd7qbkMrl+Qlw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xeb62ap3g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 23:05:08 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA01.qualcomm.com [127.0.0.1])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43BN58br022029;
+	Thu, 11 Apr 2024 23:05:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA01.qualcomm.com (PPS) with ESMTPS id 3xdpry4xym-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 23:05:08 +0000
+Received: from NALASPPMTA01.qualcomm.com (NALASPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BN575N022016;
+	Thu, 11 Apr 2024 23:05:07 GMT
+Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
+	by NALASPPMTA01.qualcomm.com (PPS) with ESMTPS id 43BN577E022014
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 23:05:07 +0000
+Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
+	id B4684220A5; Thu, 11 Apr 2024 16:05:06 -0700 (PDT)
+From: Abhishek Chauhan <quic_abchauha@quicinc.com>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Subject: [RFC PATCH bpf-next v2 0/2] Replace mono_delivery_time with tstamp_type
+Date: Thu, 11 Apr 2024 16:05:04 -0700
+Message-Id: <20240411230506.1115174-1-quic_abchauha@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: OU1udE0yyT2rmM7aIJvnhhEJDqJkmBGv
+X-Proofpoint-GUID: OU1udE0yyT2rmM7aIJvnhhEJDqJkmBGv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_11,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=791
+ malwarescore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404110165
 
-On Tue, 2024-04-09 at 17:41 -0700, Kui-Feng Lee wrote:
-[...]
+Patch 1 :- This patch takes care of only renaming the mono delivery
+timestamp to tstamp_type with no change in functionality of 
+existing available code in kernel also  
+Starts assigning tstamp_type with either mono or real and 
+introduces a new enum in the skbuff.h, again no change in functionality 
+of the existing available code in kernel , just making the code scalable.
 
-> Any access to elements other than the first one would be rejected.
+Patch 2 :- Additional bit was added to support userspace timestamp to 
+avoid tstamp drops in the forwarding path when testing TC-ETF. 
+With this patch i am not sure what impacts it has towards BPF code. 
+I need upstream BPF community to help me in adding the necessary BPF 
+changes to avoid any BPF test case failures. 
+I haven't changed any of the BPF functionalities and hence i need 
+upstream BPF help to assist me with those changes so i can make them as 
+part of this patch.  
 
-I'm not sure this is true, could you please point me to a specific
-check in the code that enforces access to go to the first element?
-The check added in this patch only enforces correct alignment with
-array element start.
+Abhishek Chauhan (2):
+  net: Rename mono_delivery_time to tstamp_type for scalabilty
+  net: Add additional bit to support userspace timestamp type
 
-Other than this, the patch looks good to me.
+ include/linux/skbuff.h                        | 50 ++++++++++++++-----
+ include/net/inet_frag.h                       |  4 +-
+ net/bridge/netfilter/nf_conntrack_bridge.c    |  6 +--
+ net/core/dev.c                                |  2 +-
+ net/core/filter.c                             |  8 +--
+ net/ipv4/inet_fragment.c                      |  2 +-
+ net/ipv4/ip_fragment.c                        |  2 +-
+ net/ipv4/ip_output.c                          | 10 ++--
+ net/ipv4/raw.c                                |  2 +-
+ net/ipv4/tcp_output.c                         | 14 +++---
+ net/ipv6/ip6_output.c                         |  8 +--
+ net/ipv6/netfilter.c                          |  6 +--
+ net/ipv6/netfilter/nf_conntrack_reasm.c       |  2 +-
+ net/ipv6/raw.c                                |  2 +-
+ net/ipv6/reassembly.c                         |  2 +-
+ net/ipv6/tcp_ipv6.c                           |  2 +-
+ net/packet/af_packet.c                        |  7 ++-
+ net/sched/act_bpf.c                           |  4 +-
+ net/sched/cls_bpf.c                           |  4 +-
+ .../selftests/bpf/prog_tests/ctx_rewrite.c    |  8 +--
+ 20 files changed, 84 insertions(+), 61 deletions(-)
 
-[...]
-
-> @@ -5448,7 +5448,10 @@ static int check_map_access(struct bpf_verifier_en=
-v *env, u32 regno,
->  					verbose(env, "kptr access cannot have variable offset\n");
->  					return -EACCES;
->  				}
-> -				if (p !=3D off + reg->var_off.value) {
-> +				var_p =3D off + reg->var_off.value;
-> +				elem_size =3D field->size / field->nelems;
-> +				if (var_p < p || var_p >=3D p + field->size ||
-> +				    (var_p - p) % elem_size) {
->  					verbose(env, "kptr access misaligned expected=3D%u off=3D%llu\n",
->  						p, off + reg->var_off.value);
->  					return -EACCES;
-
+-- 
+2.25.1
 
 
