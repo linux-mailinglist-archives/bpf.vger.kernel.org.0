@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-26533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 850C58A1684
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 16:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C068A1689
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 16:03:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4AB286F05
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 14:03:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3049286F51
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 14:03:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941C0153571;
-	Thu, 11 Apr 2024 14:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C9E153839;
+	Thu, 11 Apr 2024 14:00:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A6614C5BE;
-	Thu, 11 Apr 2024 14:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609DB14C5BE;
+	Thu, 11 Apr 2024 14:00:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712844036; cv=none; b=hdtSezl34EZM9UjAmvBPFZ25Zh/u9Nqd+IC+V4o18oQFGAXc0Svf5xnQmzYOqpz2k3gICRyFHUcxww6i8xqDPxodfhzU8b1erlQA08o0QDnujoAfLVikz/bizC7bY+NqY4onujSHIUf0Oq1Ll26GK7xBbEOlVhXgCaqaW03fbbY=
+	t=1712844039; cv=none; b=IS44k6ds/gCQ/K/dRG8jN2GyvL1bjIB/Gn+cpdkZNA50aKu8q0BUmWPeioAw7CHWcKTS9qr5I99O7GONhS0o3f/dAJb9qfqBO04D6anM8Yek24PPwtq18Q/Fs7P57n2Q8hFlHcgKOSY3e1kCFaYXte+XpMvCskjV8jyGlJqzJkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712844036; c=relaxed/simple;
-	bh=MB8+/MFHOEltGh7GM7e6UBLJe+yCPGpUyEgMI44tcDQ=;
+	s=arc-20240116; t=1712844039; c=relaxed/simple;
+	bh=UfsEjeHUgOR27rtbE3M4PujzAfOxibpW7ixsPpbhaI0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BZcRfH5/SDWLshTc2UaySfmYvhDUGb9K5PQQib82h+4CeNJdgDQZ5z3rAqgZn7JGJxuPtaUSgiJqoyesq2NrkQHP0Yeg/lwCIiAEYUhj/CvQ1ZA2KEfnKUqrYM97jY2ZiaS8QAUKH0S/+bpyz3rgs1xI1zyJVnFaPFiM3Yc9/0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version; b=P4zmVnMnFYiiDGNmq9bwBtjlJr+MpmjHnVswuSNVeHroibf2Z0yEQZNWZvf8g0arOL2jL8oTLeFmB6bK+dbaHfLDgGwM3m/I5nRrUGdayIfU6Fck5BRYfmi/LMsmZz6MYFko8UwIxDO2qcnW/M6dC646YyTn8Wa4Qmbw7OLs/3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so11463460a12.2;
-        Thu, 11 Apr 2024 07:00:34 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a522715519bso59361666b.3;
+        Thu, 11 Apr 2024 07:00:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712844033; x=1713448833;
+        d=1e100.net; s=20230601; t=1712844036; x=1713448836;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CsBGQlMm+F00sLCL/qlkhF4TnT6nst/CdHn7pOQlov8=;
-        b=S2CnkqaTNg8jdXyHHhqQdc10I7dCAK57PFkU7WbU4bRD1raIZ/S7bgv8At5+ROj20j
-         hme3rq5wW0NqFTBRKpNNTlN8drGqqeYF04ZJRf7y/M1kkL03K+4dvLX7IrZ9vlLULaUL
-         4xlKbxEJp6v1cE+sqdwlMh4GkgBXvQH7o1ZyQBDDd4Pyxplx9tVRE2SGoTi0AMaQ+xou
-         rIFG70pUbuvzcLuYHgMS1LqzcYUXEeDNNEeUtWZXqakfXGJ6OBmLXqF/zvtd9lCP90+P
-         GQYsDlTJXew/Ep7p41LidjBf/kXjl/8N9lv+cpJKJcnhnCZVYtzYMOttRyzr3eP/mrOi
-         qJNA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMkFvkJQOg4uOcpqQq9rAgMexjb6DgFK1iCipBuVT/C99GCY5NAUa8HWuFnoBq1Fl9Qi/q3ttKnNGZUSOfRN3kRFvdLZvJbpIds4BdvYbJkxrSdR66eGe2Jf1m0zyAHgUgBsVpgsm2f7VL+SiW1b7Uc6NBrs74NG9W8bksBMzLXmNRMAI0GQGPd47mq0JEJ+Y7rD73FOHEOTw=
-X-Gm-Message-State: AOJu0Yyu77RyV3ds5qyGT5RJk6bRkg0rKvKmHX+sKtNlIThHUe4Hp0v4
-	KIsvr3Kxw8nlrTzToA7t1tBorXxHXclnDpVZJB4X1f5Ik86Jy+Vx
-X-Google-Smtp-Source: AGHT+IFud+Eom8L4ZFwJRqHZVgEqfH7X88Ie/XPPj8tgIpWpDGGDBjHw1/LfCtyATsqdzgihSLhWLQ==
-X-Received: by 2002:a50:cdde:0:b0:56f:ebcf:bd94 with SMTP id h30-20020a50cdde000000b0056febcfbd94mr1037512edj.12.1712844032908;
-        Thu, 11 Apr 2024 07:00:32 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-111.fbsv.net. [2a03:2880:30ff:6f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id cs9-20020a0564020c4900b005682a0e915fsm733377edb.76.2024.04.11.07.00.32
+        bh=9uOh18J18K7IiJjOdRTp7+wBD9ghOrm4r66dFYnU+6Y=;
+        b=nl+mPFXRkngRaYaIqHU3VBlqHwGf9zLsOBIf4Z85cgxA+v2jjACTh3ctfBYLJUUMy5
+         45/JQAXel6WKHYMtrpJSZ6vNlNFWWV7+tSoYK5rUIYsspSWn7Dvcn7nn6PFIUzoWj24D
+         WaCynOEV1aopA5H9mAbaiI95SW3YIdTSmnxX+snLP1eziv84CJitwpcCeFjhRISnEaDd
+         lrsPwLw2jtE+k3fkflpFOnsldjCe+sfOIQDKmRC7DpXlI+qlCTtRUvRhc/LkPL1aQhEh
+         hy57JCduMvKS+Gr/QW8W/24nd8nJTghgff84MT7qJqQCa/yt0eR+NFOie/7rJNb301BJ
+         rt7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUSCB3GHoBNM8Wiw8vXacbc9rVe/KHn8TMC7IL6dtHHtcBkN3aCTciJd57Tv9aaLyEqKyG+4KDwY77FlR+Ro4jacAI8VbdNMmT0je/3VSHAASuHJkB5SJ7r+KbYqs/Um+1dScKpu1IQyS73Dly/Br8WeItpckbY0OG6uWJUXQ9tfNcnjpvLrhqJnCcm5MKJyHrnQT+jJ/lRwHQ=
+X-Gm-Message-State: AOJu0Yy8oxigFqoE2jf8rVE6UbgK91xdGATjI36015v74di17PhYtjb7
+	VsY0Ur6pfM08vmvA78dgNJo93SKJKkjp949R2HQyRXLHD4UELmeFAG4DwQ==
+X-Google-Smtp-Source: AGHT+IG9OibV43go6M08d8+CyIo5MAO/xGhgITI9zP+pb207gCt5NYcI9BhXrh1z5SWobKnlsemMOg==
+X-Received: by 2002:a17:906:4888:b0:a51:9938:f77c with SMTP id v8-20020a170906488800b00a519938f77cmr3114612ejq.52.1712844036576;
+        Thu, 11 Apr 2024 07:00:36 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
+        by smtp.gmail.com with ESMTPSA id a10-20020a170906468a00b00a522d350674sm104142ejr.184.2024.04.11.07.00.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 07:00:32 -0700 (PDT)
+        Thu, 11 Apr 2024 07:00:36 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: aleksander.lobakin@intel.com,
 	kuba@kernel.org,
@@ -71,7 +71,8 @@ To: aleksander.lobakin@intel.com,
 	ath10k@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	geomatsi@gmail.com,
-	kvalo@kernel.org
+	kvalo@kernel.org,
+	Igor Mitsyanko <imitsyanko@quantenna.com>
 Cc: quic_jjohnson@quicinc.com,
 	leon@kernel.org,
 	dennis.dalessandro@cornelisnetworks.com,
@@ -79,16 +80,10 @@ Cc: quic_jjohnson@quicinc.com,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	idosch@idosch.org,
-	leitao@debian.org,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Alex Elder <elder@linaro.org>,
-	Nick Child <nnac123@linux.ibm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH net-next v6 07/10] net: ibm/emac: allocate dummy net_device dynamically
-Date: Thu, 11 Apr 2024 06:59:31 -0700
-Message-ID: <20240411135952.1096696-8-leitao@debian.org>
+	leitao@debian.org
+Subject: [PATCH net-next v6 08/10] wifi: qtnfmac: Use netdev dummy allocator helper
+Date: Thu, 11 Apr 2024 06:59:32 -0700
+Message-ID: <20240411135952.1096696-9-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411135952.1096696-1-leitao@debian.org>
 References: <20240411135952.1096696-1-leitao@debian.org>
@@ -100,82 +95,32 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+There is a new dummy netdev allocator, use it instead of
+alloc_netdev()/init_dummy_netdev combination.
 
-Un-embed the net_device from the private struct by converting it
-into a pointer. Then use the leverage the new alloc_netdev_dummy()
-helper to allocate and initialize dummy devices.
+Using alloc_netdev() with init_dummy_netdev might cause some memory
+corruption at the driver removal side.
 
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-
+Fixes: 61cdb09ff760 ("wifi: qtnfmac: allocate dummy net_device dynamically")
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/ibm/emac/mal.c | 14 +++++++++++---
- drivers/net/ethernet/ibm/emac/mal.h |  2 +-
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/emac/mal.c b/drivers/net/ethernet/ibm/emac/mal.c
-index 2439f7e96e05..d92dd9c83031 100644
---- a/drivers/net/ethernet/ibm/emac/mal.c
-+++ b/drivers/net/ethernet/ibm/emac/mal.c
-@@ -605,9 +605,13 @@ static int mal_probe(struct platform_device *ofdev)
- 	INIT_LIST_HEAD(&mal->list);
- 	spin_lock_init(&mal->lock);
- 
--	init_dummy_netdev(&mal->dummy_dev);
-+	mal->dummy_dev = alloc_netdev_dummy(0);
-+	if (!mal->dummy_dev) {
-+		err = -ENOMEM;
-+		goto fail_unmap;
-+	}
- 
--	netif_napi_add_weight(&mal->dummy_dev, &mal->napi, mal_poll,
-+	netif_napi_add_weight(mal->dummy_dev, &mal->napi, mal_poll,
- 			      CONFIG_IBM_EMAC_POLL_WEIGHT);
- 
- 	/* Load power-on reset defaults */
-@@ -637,7 +641,7 @@ static int mal_probe(struct platform_device *ofdev)
- 					  GFP_KERNEL);
- 	if (mal->bd_virt == NULL) {
- 		err = -ENOMEM;
--		goto fail_unmap;
-+		goto fail_dummy;
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
+index f8f55db2f454..f66eb43094d4 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
+@@ -372,8 +372,7 @@ static int qtnf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error;
  	}
  
- 	for (i = 0; i < mal->num_tx_chans; ++i)
-@@ -703,6 +707,8 @@ static int mal_probe(struct platform_device *ofdev)
- 	free_irq(mal->serr_irq, mal);
-  fail2:
- 	dma_free_coherent(&ofdev->dev, bd_size, mal->bd_virt, mal->bd_dma);
-+ fail_dummy:
-+	free_netdev(mal->dummy_dev);
-  fail_unmap:
- 	dcr_unmap(mal->dcr_host, 0x100);
-  fail:
-@@ -734,6 +740,8 @@ static void mal_remove(struct platform_device *ofdev)
- 
- 	mal_reset(mal);
- 
-+	free_netdev(mal->dummy_dev);
-+
- 	dma_free_coherent(&ofdev->dev,
- 			  sizeof(struct mal_descriptor) *
- 			  (NUM_TX_BUFF * mal->num_tx_chans +
-diff --git a/drivers/net/ethernet/ibm/emac/mal.h b/drivers/net/ethernet/ibm/emac/mal.h
-index d212373a72e7..e0ddc41186a2 100644
---- a/drivers/net/ethernet/ibm/emac/mal.h
-+++ b/drivers/net/ethernet/ibm/emac/mal.h
-@@ -205,7 +205,7 @@ struct mal_instance {
- 	int			index;
- 	spinlock_t		lock;
- 
--	struct net_device	dummy_dev;
-+	struct net_device	*dummy_dev;
- 
- 	unsigned int features;
- };
+-	bus->mux_dev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
+-				    init_dummy_netdev);
++	bus->mux_dev = alloc_netdev_dummy(0);
+ 	if (!bus->mux_dev) {
+ 		ret = -ENOMEM;
+ 		goto error;
 -- 
 2.43.0
 
