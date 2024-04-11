@@ -1,117 +1,78 @@
-Return-Path: <bpf+bounces-26578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36FA08A1FAF
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 21:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 331838A1FB7
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 21:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A12171F24E3E
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 19:45:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C74661F251BA
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 19:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C316F17C8D;
-	Thu, 11 Apr 2024 19:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2611A179A8;
+	Thu, 11 Apr 2024 19:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LW4B+RA/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAbYdYQg"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E14179AB;
-	Thu, 11 Apr 2024 19:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C61414F65;
+	Thu, 11 Apr 2024 19:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712864734; cv=none; b=eMYMe8p8esrOaDfeQjvfasmmELdh2rw3euMQiVNqdNwWNvCa/I7E8K5pMAf3uDTVwxtwi7fBETM9Uju/VEfGeVAH4Keob9TkcTmcH3Y1Lf8XdMqXM5EhkDlD+/Nei12RjMF2Um7BOmH6uVZyD2P6df03AZncTXICx0VEN5Nj2ik=
+	t=1712864933; cv=none; b=NYdF3eBAA13iMv7VN7oHW1WPwx3ewYT3IrBSg0Otmcp07sTptNSll8FUSpLAWXFSV5FfpEmFmDVzPJ8DYpD6878tPRLWQ1WsEEj3i+3sAkCiIn16d5cZCGh0mYaXsJ5r5HnQLYJmiNWLxiENxR7o5v6VQDmdZMKDz6zYdV5LEeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712864734; c=relaxed/simple;
-	bh=v/kg2zBgjouqNayyfTZ1gQRpaCtsWdHXcAeRYRi8jSc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c/C0StsHFU9gn6cbnUAiuarWHeNJKZHzZh0nh5/YlN/wuYIJaD0LreWV64zvda5Cp6RcZNbWVKl7kdEATl7Y/cqTC8udR0Mh6ONJkAOQmyEnH3+1Jxv1UCPEqV1sWl+Ui4cxqwfwDmp1uUvG7UiYuWqrPIqlY6J9sYVRCwuaSko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LW4B+RA/; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=mF3LgyonzoPiLPggKtlEjI/RAYj7UYB9rpei5Ud65w4=; b=LW4B+RA/mLBikoIkjpMDpYn9oP
-	u2YAB5xmL1D4XkoUv1Ve9gQEIQ0TAvvtWmZldKRQqHURClp6PnA6zwtnlpDI5YcucnvadEV7WunWR
-	b/1Iq8vVt1oArh5tcqicc9Z63IyQeyuWCw9WE0oR/Ok86B2YT082t2bjkyb27tRD8lbretuG1UYwR
-	NEF+joRqo6rwX3adbENZeQaNQlnWdEzjPCwZa5i/q7E286YXArA3Jy82X/wR+QDg69SZaiPqn91EB
-	VhUQK10NXrl7tuNE0LjnU4cJYOYOYsXm/2EOsZ/Hcy9WT5WMB3gVzJ0tiJjB3LXt+twOTdZqPWpdj
-	bhUwFHXw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rv0MS-0000000DwB9-3meA;
-	Thu, 11 Apr 2024 19:45:28 +0000
-Date: Thu, 11 Apr 2024 12:45:28 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 00/15] mm: jit/text allocator
-Message-ID: <Zhg92CoCZmxC5ORi@bombadil.infradead.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
+	s=arc-20240116; t=1712864933; c=relaxed/simple;
+	bh=JRdPyGUbZVubMMz0NFuT40OeYtqTJKc3vzOubKZxhjU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b2riZqfjBufqB+gM6Hez/LO/hY6nmaNVSMAe1TwJuEUluLrmWmcBjSTaNRA4uaON366DLlRjRl2HROSBb6JUYJx+0XaSe6fzS7YDSTAVvawv6QuXMY6HNTtB/lkIBkneBwxCy/qFvAZ0+i0EFSs3B5D2j0q0J2iENs4/qGWHN/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iAbYdYQg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A1E9C072AA;
+	Thu, 11 Apr 2024 19:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712864933;
+	bh=JRdPyGUbZVubMMz0NFuT40OeYtqTJKc3vzOubKZxhjU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iAbYdYQguLxogEkgCpKXle95Wbo5P6N7f+/G0Ha/E/6j9pOJdgGUlfucyxp2jARUR
+	 LR9K4POrNDHGceDpiUl5xsW0ej3nviRkAYCCGwjcTUCjcmNAWM74TqNTBI/879PQfl
+	 CxDz73QbfQ743ICKF9YFzDAtUmqadf3mtlg+lMHF0vW/Tpc8S4dN9tU1gNv8Quc5ML
+	 5J4tqCkHw/XrlT1fvqHpZ8Y8fhjjM/ysqv3RLnjqeObg8/UpoNkyQRQtqHdwlnYXqo
+	 YoSfrIjBMQZTRfSWJePpGhuR19w1cJdueyEUl/GTKGyXHFuwMgRd0uUuZy8DnlbsRd
+	 kMBrtiJ8gXZ0A==
+Message-ID: <397767d1-5f1d-406d-ab9c-bb185d9dee9c@kernel.org>
+Date: Thu, 11 Apr 2024 20:48:47 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411160051.2093261-1-rppt@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [RESEND PATCH] bpftool: Fix typo in error message
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240411164258.533063-3-thorsten.blum@toblux.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20240411164258.533063-3-thorsten.blum@toblux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 07:00:36PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+On 11/04/2024 17:43, Thorsten Blum wrote:
+> s/at at/at a/
 > 
-> Hi,
-> 
-> Since v3 I looked into making execmem more of an utility toolbox, as we
-> discussed at LPC with Mark Rutland, but it was getting more hairier than
-> having a struct describing architecture constraints and a type identifying
-> the consumer of execmem.
-> 
-> And I do think that having the description of architecture constraints for
-> allocations of executable memory in a single place is better that having it
-> spread all over the place.
-> 
-> The patches available via git:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v4
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+Acked-by: Quentin Monnet <qmo@kernel.org>
 
-I've taken the first 5 patches through modules-next for now to get early
-exposure to testing. Of those I just had minor nit feedback on the 5th,
-but the rest look good.
-
-Let's wait for review for the rest of the patches 6-15.
-
-  Luis
+Thanks
 
