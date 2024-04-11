@@ -1,284 +1,198 @@
-Return-Path: <bpf+bounces-26497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B958A0B87
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:42:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 802BC8A0BA8
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:53:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4761C22AC7
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 08:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB74D1F2557D
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 08:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30C1140367;
-	Thu, 11 Apr 2024 08:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF11714263A;
+	Thu, 11 Apr 2024 08:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nSpXMg93"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fWj0pMDT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718FF140365;
-	Thu, 11 Apr 2024 08:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98D31419A6;
+	Thu, 11 Apr 2024 08:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824920; cv=none; b=qtWzUsSX+HpwKB0IC1x5A1DkO6m2u8UWADK4to95FDyeJAwmic14nYG4eyGl7SpgnhVmwSe4DVDC54NJtst0rfvVIF/wpA62z5xKtadWg3joQ31EsLBgzj69h2/cfrGvyV2u9JrA0swLkN/bssGP/rBa8oifzQ4+7SL3R8xThPg=
+	t=1712825587; cv=none; b=Ids8cFcSlwsYb4BvGXNOBTJpfPFLTU1ueEVcCf7LkPr/q4OOL0kf58j2m3Zek1kXcCt3o11Mj15rToH4ekcatJAcU5QpSGRIihi9dkGZRSihTkraDvbr5Y1m9+bEZjuvueGCwn9ZkHMIrYwCYdZjBxB6tvbeKo3PB+Czt0CVNLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824920; c=relaxed/simple;
-	bh=6DLQjsDEoSjNb9shH07V2fDjm+hPN7/FwwywkB/Dbs4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AsOzC6UD7nCrNP0Yw4XwLPdqo7owpfJssYSnsZMQ9HFe0oW4Ob59sy4HUoavfpu4StGWPska0camzyz0Ygf71fiwn4l10+Zi+TQNejkZhLwYZDK9yk2PNdP2B98ZzAqsJ+jEN48OyUK07H4EbM2NexkwtueiSN9Koa5mrf7p88Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nSpXMg93; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1712825587; c=relaxed/simple;
+	bh=io9LKvvXimYbev4Iml4NKxNJy86/qa8clb83Jlhvc2M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PPScXYq9FBHQ37ZJCue6DrB8vIyKEY8Db0rTRQtfmyimRLyZXNMJOaDPkP+RvONgi6NzfgKZJ3mJsbslpZpYbRj9NzPqaowQlZvKRUqEeI448EwoQDnzp/MkfC0uLgpJaaSJFcO9hfMnYHF4YbcbN4gU+Oe4yYW74dE9q4rPsYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fWj0pMDT; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a44ad785a44so877089466b.3;
-        Thu, 11 Apr 2024 01:41:58 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a58209b159so1725595a91.3;
+        Thu, 11 Apr 2024 01:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712824917; x=1713429717; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r//gg2KSb9Ti8gfST7aix5NRc6L6yFLnnGwq82C2L10=;
-        b=nSpXMg93imPAXb07HTeBndHBTn+xLMUmxEP9WutFbfIoDtI+nZhUxPXEMkE0b4AkCo
-         rsxszotnlAImLoye80yoeiJ8Lx3qsp+stgyrzV+hTYQKdtiL4yj399tCBOxhxe+1EQqG
-         Tw9ZYw+gkbViU4a0SUl7W/8IMuLnOtOOAOTLPKB+kLrLjINya3R2jHh9tPgMy5EnSdeL
-         7VtAuGfQg+R8bACOiEIWZB37+L4y/0OKViBNqt7LtcRMSzGplRl+9IJU/PEGgNEA62hq
-         p5GjAtSWjnSCCZddzRAvU4HLTzzVt543q4AyOWDszfgGH1KoyJ2Q2WGFH7AcJY8U3F8F
-         bCjw==
+        d=gmail.com; s=20230601; t=1712825584; x=1713430384; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ya5I5hvjUcaAqlpM5swpRYtJfi5w+dWzk4Fz+t660Ec=;
+        b=fWj0pMDTjAdkUv5+DmM2PHtR6UEWwt8i8e7QDTipFO6q1Dtcp5h9ESC9VA45otWWSS
+         squiWcue9Ok8HBVCbb7vEvDUlqzlARPBj0ZTfxuYerq93t+BQnE3ExCD6JhOJ9SgSw52
+         nDWjFaDjZnd5wSeVFM3SXIqJJHYSjNFaLRdbgL/leStTsr5RdBhQULO89yVcKfYZkT1i
+         TZFBV/G1Oh7Hdw4mSKu59NDte0J42wtieItOBmjYuOGF7w6CXp6KbY5/UAxK5HVUV9BZ
+         ddRyybjEQgqDAoHG0iepsD4a0r9o9/Jx4HFaitRfJOKEJblsoZiAh5ha4aWwKac7HzPX
+         Bj/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712824917; x=1713429717;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r//gg2KSb9Ti8gfST7aix5NRc6L6yFLnnGwq82C2L10=;
-        b=vCtrcRCdXKOXnTGQeplHbwS/jSzix43QBOf18E6QI/ieXXNY/r38gyTUjZx3PfVCgU
-         tcDt91kEe7NTlJ1I2nbfdcKLkjYOKz4cR2dcgGSdNy1fHPYpx8NLYekYLVkzHvG0yEVF
-         99v855UeRfFcMaS6J/HUYx4kbj0zLES5ByfpYlL012EJS2UMPMTgEwJ32iBTyE9s7M30
-         P6gIYSBrYAt2Em5lR4zOczxsfhp1kHBghYKwZFB5CHwWnTetlkNQfW7QZZXSevtKRqd5
-         sPkUEdb+wSEmoINfgxQi3iG7t2Dd7jdAHaCgikVs9I2bINxkALAXldJtm9mtS/k95803
-         8kSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhZeWkY3AYxk+d0DBs5E12q1qb+cB6OUWpcP0QQ8IiqO7bofV6xCmAirO/dr1QuDkrWqxHG3JpxKJcX82ydDUvnBEZoNwp7Shg9X+TyRAL7eVtNWg/oseWBYoMQ8I7dAjiIFgCmwJCOGvqPPr+dx3ONWPN1l80pCfjHl1p75U2ucCD9gMS2azANnVhHSXOYqW1BU6Sjb89FKuZMTz51GDXstWn6sUJ1w==
-X-Gm-Message-State: AOJu0YyovyEBl7kAO3pTP+va/bo7oRId66VqEGvW4gWBbq66wJmnj/vp
-	ly7kzqSmfQAg2trJ/sybj0/YYGyCnO+HOPF5K+T7Kx4FHgm0kKAK
-X-Google-Smtp-Source: AGHT+IGqGgVnhw9T3C2cjrpjiSkw1plCEeVAAkZFNqECee+J0+pkm8IWce7nSX0D0vzHz9Ua82AKyw==
-X-Received: by 2002:a17:906:af1b:b0:a51:9304:19fa with SMTP id lx27-20020a170906af1b00b00a51930419famr2655626ejb.70.1712824916519;
-        Thu, 11 Apr 2024 01:41:56 -0700 (PDT)
-Received: from jonhaslam-mbp.dhcp.thefacebook.com ([2620:10d:c092:400::5:8908])
-        by smtp.gmail.com with ESMTPSA id x26-20020a170906711a00b00a521591ffacsm538312ejj.34.2024.04.11.01.41.54
+        d=1e100.net; s=20230601; t=1712825584; x=1713430384;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ya5I5hvjUcaAqlpM5swpRYtJfi5w+dWzk4Fz+t660Ec=;
+        b=CXQM4lI0PaTAiM8JlryLLLZEPm4VnqnH51kMGcWGA8SuI2xmJuxClS/sqDHN+6zJoU
+         PIlCzS5QdxvTWRj+Rm1lBKF/X8b2nghsXnHZH6SHm2IfbJX1igRcDFRgzS1M/gXxcUop
+         vZQsyZ+Tr1i7lmPtOpcyqiq+ZhSb0fohGTd94eQnbNGFlmqY1Rq1yA04HG2HJHkgxtHN
+         q0ZBVynRuP/TpBeJORTbM0zPLkEZLWDXcOqbxXjOzexK/Oi6IIClXS0RbpyBBItNcUA1
+         ZC81wr0MYIMnT2d8BCmfufqZEF39Qaxx38Qo9YeBQPmWDcj0DQl9EDc5MSHdHuikl9pU
+         kKGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUre2sFRjTIWkytZsCzKg9MmIpz2XiKM/0qWNqnlGBva/mMmVIfW8Tqpfma92aVJQ1uUNv/88/Isg2dKZl/ez+PebI1TrQSgDpi6FdG5cJ3G13hggOwmWb5pBliaV4EgPs1
+X-Gm-Message-State: AOJu0YxBnHOOlGcjz4wOIvOFWOlaybJw1XCatJDx7/DwyOpTEVKWqTCa
+	1V2A/lFoLhUIWCJRUvnIqIm3/dBKPiThZOBp+PBnX52ZdIzzxzLj
+X-Google-Smtp-Source: AGHT+IG0RZWIYvC1TAdiHu4GiCufqpdvQrAKxYmpsyvNmU5fmkX4L1O0eJJwfz5elYuwUFstobv+qw==
+X-Received: by 2002:a17:90a:f40b:b0:2a5:d5b1:b99b with SMTP id ch11-20020a17090af40b00b002a5d5b1b99bmr3708871pjb.38.1712825584034;
+        Thu, 11 Apr 2024 01:53:04 -0700 (PDT)
+Received: from dell.. ([111.196.36.81])
+        by smtp.googlemail.com with ESMTPSA id y12-20020a17090a154c00b002a52c2d82f0sm4534844pja.1.2024.04.11.01.52.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 01:41:55 -0700 (PDT)
-Date: Thu, 11 Apr 2024 09:41:54 +0100
-From: Jonthan Haslam <jonathan.haslam@gmail.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-Message-ID: <cxm3f7buumd3vfybbd436zkroskecvyn46rm6pqtdad6rayeog@zzn2u6irogi7>
-References: <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
- <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
- <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
- <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
- <20240328091841.ce9cc613db375536de843cfb@kernel.org>
- <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
- <CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
- <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
- <lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
- <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
+        Thu, 11 Apr 2024 01:53:02 -0700 (PDT)
+From: Liang Chen <liangchen.linux@gmail.com>
+To: mst@redhat.com,
+	jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com,
+	hengqi@linux.alibaba.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	john.fastabend@gmail.com,
+	hawk@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	liangchen.linux@gmail.com
+Subject: [PATCH net-next v6] virtio_net: Support RX hash XDP hint
+Date: Thu, 11 Apr 2024 16:52:16 +0800
+Message-Id: <20240411085216.361662-1-liangchen.linux@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-> > > OK, then I'll push this to for-next at this moment.
-> > > Please share if you have a good idea for the batch interface which can be
-> > > backported. I guess it should involve updating userspace changes too.
-> > 
-> > Did you (or anyone else) need anything more from me on this one so that it
-> > can be pushed? I provided some benchmark numbers but happy to provide
-> > anything else that may be required.
-> 
-> Yeah, if you can update with the result, it looks better to me.
-> Or, can I update the description?
+The RSS hash report is a feature that's part of the virtio specification.
+Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+(still a work in progress as per [1]) support this feature. While the
+capability to obtain the RSS hash has been enabled in the normal path,
+it's currently missing in the XDP path. Therefore, we are introducing
+XDP hints through kfuncs to allow XDP programs to access the RSS hash.
 
-Sure, please feel free to update the description yourself.
+1.
+https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
 
-Jon.
+Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+---
+  Changes from v5:
+- Preservation of the hash value has been dropped, following the conclusion
+  from discussions in V3 reviews. The virtio_net driver doesn't
+  accessing/using the virtio_net_hdr after the XDP program execution, so
+  nothing tragic should happen. As to the xdp program, if it smashes the
+  entry in virtio header, it is likely buggy anyways. Additionally, looking
+  up the Intel IGC driver,  it also does not bother with this particular
+  aspect.
+---
+ drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-> 
-> Thank you,
-> 
-> > 
-> > Thanks!
-> > 
-> > Jon.
-> > 
-> > > 
-> > > Thank you!
-> > > 
-> > > > >
-> > > > > So I hope you can reconsider and accept improvements in this patch,
-> > > > > while Jonathan will keep working on even better final solution.
-> > > > > Thanks!
-> > > > >
-> > > > > > I look forward to your formalized results :)
-> > > > > >
-> > > > 
-> > > > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
-> > > > and USDTs, reporting attach/detach timings:
-> > > > $ sudo ./test_progs -v -t uprobe_multi_test/bench
-> > > > bpf_testmod.ko is already unloaded.
-> > > > Loading bpf_testmod.ko...
-> > > > Successfully loaded bpf_testmod.ko.
-> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
-> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
-> > > > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
-> > > > test_bench_attach_uprobe: attached in   0.120s
-> > > > test_bench_attach_uprobe: detached in   0.092s
-> > > > #400/5   uprobe_multi_test/bench_uprobe:OK
-> > > > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
-> > > > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
-> > > > test_bench_attach_usdt:PASS:usdt_count 0 nsec
-> > > > test_bench_attach_usdt: attached in   0.124s
-> > > > test_bench_attach_usdt: detached in   0.064s
-> > > > #400/6   uprobe_multi_test/bench_usdt:OK
-> > > > #400     uprobe_multi_test:OK
-> > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > > Successfully unloaded bpf_testmod.ko.
-> > > > 
-> > > > So it should be easy for Jonathan to validate his changes with this.
-> > > > 
-> > > > > > Thank you,
-> > > > > >
-> > > > > > >
-> > > > > > > Jon.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Thank you,
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > > > > > > > > will depend on how much lock contention happens.
-> > > > > > > > > >
-> > > > > > > > > > Thank you,
-> > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > > > > > > >
-> > > > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > > > > > >
-> > > > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > > > > > > --- a/kernel/events/uprobes.c
-> > > > > > > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-> > > > > > > > > > >   */
-> > > > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > > > > > > > > >
-> > > > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
-> > > > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
-> > > > > > > > > > >
-> > > > > > > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > > > > > > >  /* serialize uprobe->pending_list */
-> > > > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> > > > > > > > > > >  {
-> > > > > > > > > > >       struct uprobe *uprobe;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       uprobe = __find_uprobe(inode, offset);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return uprobe;
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > >  {
-> > > > > > > > > > >       struct uprobe *u;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > >       u = __insert_uprobe(uprobe);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return u;
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > > > > > > >               return;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
-> > > > > > > > > > >       put_uprobe(uprobe);
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > >       if (n) {
-> > > > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
-> > > > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > >                       get_uprobe(u);
-> > > > > > > > > > >               }
-> > > > > > > > > > >       }
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >  }
-> > > > > > > > > > >
-> > > > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
-> > > > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
-> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return !!n;
-> > > > > > > > > > >  }
-> > > > > > > > > > > --
-> > > > > > > > > > > 2.43.0
-> > > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > --
-> > > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index c22d1118a133..abd07d479508 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
+ 	}
+ }
+ 
++static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
++			   enum xdp_rss_hash_type *rss_type)
++{
++	const struct xdp_buff *xdp = (void *)_ctx;
++	struct virtio_net_hdr_v1_hash *hdr_hash;
++	struct virtnet_info *vi;
++
++	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
++		return -ENODATA;
++
++	vi = netdev_priv(xdp->rxq->dev);
++	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
++
++	switch (__le16_to_cpu(hdr_hash->hash_report)) {
++		case VIRTIO_NET_HASH_REPORT_TCPv4:
++			*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv4:
++			*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_TCPv6:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv6:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv4:
++			*rss_type = XDP_RSS_TYPE_L3_IPV4;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv6:
++			*rss_type = XDP_RSS_TYPE_L3_IPV6;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_NONE:
++		default:
++			*rss_type = XDP_RSS_TYPE_NONE;
++	}
++
++	*hash = __le32_to_cpu(hdr_hash->hash_value);
++	return 0;
++}
++
++static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
++	.xmo_rx_hash			= virtnet_xdp_rx_hash,
++};
++
+ static int virtnet_probe(struct virtio_device *vdev)
+ {
+ 	int i, err = -ENOMEM;
+@@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+ 
+ 		dev->hw_features |= NETIF_F_RXHASH;
++		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
+ 	}
+ 
+ 	if (vi->has_rss_hash_report)
+-- 
+2.40.1
+
 
