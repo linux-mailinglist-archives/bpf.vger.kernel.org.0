@@ -1,57 +1,56 @@
-Return-Path: <bpf+bounces-26500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 113A78A1113
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 12:40:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3E198A11BC
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 12:46:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38B881C20BEE
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:40:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD7D6287778
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 10:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D786147C9B;
-	Thu, 11 Apr 2024 10:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCA0146D52;
+	Thu, 11 Apr 2024 10:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BXQ09oU2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpo1liyP"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86A01465BE;
-	Thu, 11 Apr 2024 10:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FE0624;
+	Thu, 11 Apr 2024 10:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712832011; cv=none; b=uOUERWG5KnUe+CYG5FWzHJ5EAQSn8HGIyfkuemlwRQhvBmcW5WydlfNag5vkN2Vo/F0FImboTv5EZJ5TxvpJK+LsEKCCtLRQ0AtmyHPRymTDPz93eZphyzcuDigQYSuAf5PneXovHhGObkQnawKEmdGHVvGI+6ipwc9zL9IWkkw=
+	t=1712832408; cv=none; b=JnueGkYGRc6g6qm0LQFwmsArf7Y9XkiI0rSY7kcNUz3goBcPFxUelLwBQbqARXTjmRS5DbhrPdp5W6uy4obS1yzP0yJNHBD+1bYG37W9Ri4WziZ5KOdJIxbOawjk+7+7FBxvvIzVhg/yfN2aOyM07boDBDNlJ/PQ3V+jRd0TMBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712832011; c=relaxed/simple;
-	bh=hpHx+uOqhydUGZSasb67Ow7X+dFwqqZUN364silypig=;
+	s=arc-20240116; t=1712832408; c=relaxed/simple;
+	bh=rFDZVdrid6QjJXhQJFVnZjcR5UarpY2ipJjian6ZMaU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UzilwVK9l7yHYl621d8+7zYjbEWA77ODB0Vfp87faBOXHuHTfvNB6Nyy/bqeaelwkb/OQTVS8kwe6Q3X1GjXJ3Vgz+pGYOB7eJuJ9aToYyHrwWV7ffx2Yy3wkqIxovUqOTK7/FpJU04peevzeyUtabWhGJZTlKw1QrqazIL337o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BXQ09oU2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA64C433C7;
-	Thu, 11 Apr 2024 10:40:09 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=YbOFuPk6ew8GUBpKWDvXSItvshLzqrA9BpKZ9FNSo/6DM2LP6eChePJiL0tx/3hmZUwlj8pw78a8Dkla0HBY19DFNRVK4K+1vGPRcjEQ4RuBKhQRG5n/142tCzEFV+/fkrc9xSEDJDW544l1iBbndxKk9LKFNkJpxEzELHXMVc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpo1liyP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B61B8C433F1;
+	Thu, 11 Apr 2024 10:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712832011;
-	bh=hpHx+uOqhydUGZSasb67Ow7X+dFwqqZUN364silypig=;
+	s=k20201202; t=1712832408;
+	bh=rFDZVdrid6QjJXhQJFVnZjcR5UarpY2ipJjian6ZMaU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BXQ09oU2VnI4KsMJ9w1UNOYBpWvS7I8TTWkoeFqg2uZrnc5jQP5O7iYYnJy6nyWDZ
-	 Uf8FV7ZuKR2lZNLPgDrl7gyNTv/4w5qEjvgvObCdfwq5mzm9DuaKx5tr4Ca9ZSaJm4
-	 Dw6FcyEXFr/oOept7DH5ZtknWqy3m0Ia5tgzYkwNGdl1JPcUicCBvSPlBkwo99QlIg
-	 iMRRkV9McN0VaJnUlcIK83OkLVWFqS/9TAw+o5xwfOw1YMXHp7CsgsJ2uPjU8GOY5H
-	 GYol5A1SRk4C/infMphBC9T5gMGZSGE0rg7cfgkoUAcciDM9bbf1cplYX7L8zbcuZ1
-	 PtBQSPFc3yysg==
-Date: Thu, 11 Apr 2024 11:40:07 +0100
+	b=qpo1liyPOQK+QPp5k0B4qBaGGVD8a+nAv0cHpQjs/t7mCvEJ3FHkfBoj0AgB/UuKw
+	 g9nVJLiX3BuASR5FG1Fa4oeV11+ln9BEbdwms4oPuMF6EzN9nVA/f5B6Y14Hxp+Gpp
+	 UkDeX5dLVF5EXPdL5McVfmcwHIwLvrMO3frPl8JLT7w6vabHmtehfdUjS0Nxi0C8x9
+	 VFAqUV90Giin6gCVXHnI3LIS0OuePlx/YNudqjPbNR7q+i2JWS8FajTTNuawn1VEDQ
+	 6gvvPJl4xynApjSQhglX5v87ozQegH5TH2lmIoxQOl33al84ley5zOyiZPkVbtY+Yh
+	 sdP8WicMbkvgA==
+Date: Thu, 11 Apr 2024 11:46:44 +0100
 From: Lee Jones <lee@kernel.org>
 To: Daniel Hodges <hodges.daniel.scott@gmail.com>
 Cc: ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
 	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
 	pavel@ucw.cz
-Subject: Re: [PATCH v2 1/3] leds: trigger: legtrig-bpf: Add ledtrig-bpf
- trigger
-Message-ID: <20240411104007.GC1980182@google.com>
+Subject: Re: [PATCH v2 3/3] leds: trigger: Add documentation for ledtrig-bpf
+Message-ID: <20240411104644.GD1980182@google.com>
 References: <cover.1711415233.git.hodges.daniel.scott@gmail.com>
- <da92268495053af38f6ae8e8efb12ceec0947130.1711415233.git.hodges.daniel.scott@gmail.com>
+ <fd8c1022eda25ff80b27ff3bf7fa15dbd6947ebf.1711415233.git.hodges.daniel.scott@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,158 +60,56 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <da92268495053af38f6ae8e8efb12ceec0947130.1711415233.git.hodges.daniel.scott@gmail.com>
+In-Reply-To: <fd8c1022eda25ff80b27ff3bf7fa15dbd6947ebf.1711415233.git.hodges.daniel.scott@gmail.com>
 
 On Mon, 25 Mar 2024, Daniel Hodges wrote:
 
-> This patch adds a led trigger that interfaces with the bpf subsystem. It
-> allows for BPF programs to control LED activity through calling bpf
-> kfuncs. This functionality is useful in giving users a physical
-> indication that a BPF program has performed an operation such as
-> handling a packet or probe point.
+> Update the documentation for led triggers to include the BPF LED
+
+LED throughout please.
+
+Same in the previous commit please.
+
+> trigger.
 > 
 > Signed-off-by: Daniel Hodges <hodges.daniel.scott@gmail.com>
 > ---
->  drivers/leds/trigger/Kconfig       | 10 ++++
->  drivers/leds/trigger/Makefile      |  1 +
->  drivers/leds/trigger/ledtrig-bpf.c | 73 ++++++++++++++++++++++++++++++
->  3 files changed, 84 insertions(+)
->  create mode 100644 drivers/leds/trigger/ledtrig-bpf.c
+>  Documentation/leds/index.rst       |  1 +
+>  Documentation/leds/ledtrig-bpf.rst | 13 +++++++++++++
+>  2 files changed, 14 insertions(+)
+>  create mode 100644 Documentation/leds/ledtrig-bpf.rst
 > 
-> diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
-> index d11d80176fc0..30b0fd3847be 100644
-> --- a/drivers/leds/trigger/Kconfig
-> +++ b/drivers/leds/trigger/Kconfig
-> @@ -152,4 +152,14 @@ config LEDS_TRIGGER_TTY
->  
->  	  When build as a module this driver will be called ledtrig-tty.
->  
-> +config LEDS_TRIGGER_BPF
-> +	tristate "LED BPF Trigger"
-> +	depends on BPF
-> +	depends on BPF_SYSCALL
-> +	help
-> +	  This allows LEDs to be controlled by the BPF subsystem. This trigger
-> +	  must be used with a loaded BPF program in order to control LED state.
-> +	  BPF programs can control LED state with kfuncs.
-> +	  If unsure, say N.
-> +
->  endif # LEDS_TRIGGERS
-> diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
-> index 25c4db97cdd4..ac47128d406c 100644
-> --- a/drivers/leds/trigger/Makefile
-> +++ b/drivers/leds/trigger/Makefile
-> @@ -16,3 +16,4 @@ obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
->  obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
->  obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
->  obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
-> +obj-$(CONFIG_LEDS_TRIGGER_BPF)		+= ledtrig-bpf.o
-> diff --git a/drivers/leds/trigger/ledtrig-bpf.c b/drivers/leds/trigger/ledtrig-bpf.c
+> diff --git a/Documentation/leds/index.rst b/Documentation/leds/index.rst
+> index 3ade16c18328..2af52a19d6bb 100644
+> --- a/Documentation/leds/index.rst
+> +++ b/Documentation/leds/index.rst
+> @@ -10,6 +10,7 @@ LEDs
+>     leds-class
+>     leds-class-flash
+>     leds-class-multicolor
+> +   ledtrig-bpf
+>     ledtrig-oneshot
+>     ledtrig-transient
+>     ledtrig-usbport
+> diff --git a/Documentation/leds/ledtrig-bpf.rst b/Documentation/leds/ledtrig-bpf.rst
 > new file mode 100644
-> index 000000000000..99cabf816da4
+> index 000000000000..391a305f69d1
 > --- /dev/null
-> +++ b/drivers/leds/trigger/ledtrig-bpf.c
-> @@ -0,0 +1,73 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * LED BPF Trigger
-> + *
-> + * Author: Daniel Hodges <hodges.daniel.scott@gmail.com>
-
-Any copyright?
-
-> + */
+> +++ b/Documentation/leds/ledtrig-bpf.rst
+> @@ -0,0 +1,13 @@
+> +====================
+> +BPF LED Trigger
+> +====================
 > +
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/leds.h>
-> +#include <linux/module.h>
-> +#include <linux/rcupdate.h>
+> +This LED trigger is useful for triggering LEDs from the BPF subsystem.  This
+> +trigger is designed to be used in combination with a BPF program that interacts
+> +with the trigger via a kfunc.  The exported kfuncs will have BTF names that
+> +start with "bpf_ledtrig_".
 > +
+> +The trigger can be activated from user space on led class devices as shown
+> +below::
 > +
-> +DEFINE_LED_TRIGGER(ledtrig_bpf);
-> +
-> +__bpf_kfunc_start_defs();
-
-__bpf_hook_start()?
-
-> +__bpf_kfunc void bpf_ledtrig_blink(const char *led_name__str, unsigned long
-> +		delay_on, unsigned long delay_off, int invert)
-
-Nit: Try to keep the variable types and names together please.
-
-I.e. break before the 'unsigned' or after 'delay_on'.
-
-> +{
-> +	struct led_classdev *led_cdev;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(led_cdev, &ledtrig_bpf->led_cdevs, trig_list) {
-> +		if (strcmp(led_name__str, led_cdev->name) == 0) {
-> +			led_blink_set_oneshot(led_cdev, &delay_on, &delay_off,
-> +					invert);
-
-Use 100-chars to avoid the break.
-
-> +			break;
-> +		}
-> +	}
-> +	rcu_read_unlock();
-> +}
-> +__bpf_kfunc_end_defs();
-
-_bpf_hook_end()?
-
-> +BTF_KFUNCS_START(ledtrig_bpf_kfunc_ids)
-> +BTF_ID_FLAGS(func, bpf_ledtrig_blink, KF_TRUSTED_ARGS)
-> +BTF_KFUNCS_END(ledtrig_bpf_kfunc_ids)
-
-Why not a single macro to output the full struct?
-
-Or better yet, be less opaque and not use a macro at all?
-
-> +static const struct btf_kfunc_id_set ledtrig_bpf_kfunc_set = {
-> +	.owner = THIS_MODULE,
-> +	.set   = &ledtrig_bpf_kfunc_ids,
-> +};
-> +
-> +static int init_bpf(void)
-> +{
-> +	int ret;
-> +
-> +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC,
-> +			&ledtrig_bpf_kfunc_set);
-> +	return ret;
-
-return register_btf_kfunc_id_set()?
-
-Or again, better yet, put the single function call directly into
-ledtrig_bpf_init()?  Creating a whole function just for a single
-invocation seems superfluous.
-
-> +}
-> +
-> +static int __init ledtrig_bpf_init(void)
-> +{
-> +	led_trigger_register_simple("bpf", &ledtrig_bpf);
-> +
-> +	return init_bpf();
-> +}
-> +
-> +static void __exit ledtrig_bpf_exit(void)
-> +{
-> +	led_trigger_unregister_simple(ledtrig_bpf);
-> +}
-> +
-> +module_init(ledtrig_bpf_init);
-> +module_exit(ledtrig_bpf_exit);
-> +
-> +MODULE_AUTHOR("Daniel Hodges <hodges.daniel.scott@gmail.com>");
-> +MODULE_DESCRIPTION("BPF LED trigger");
-> +MODULE_LICENSE("GPL v2");
+> +  echo bpf > trigger
 > -- 
 > 2.43.2
 > 
