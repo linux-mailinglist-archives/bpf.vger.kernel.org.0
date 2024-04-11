@@ -1,176 +1,137 @@
-Return-Path: <bpf+bounces-26576-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26577-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E3C8A1F73
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 21:25:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8BA8A1F9B
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 21:42:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA6451C22E07
-	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 19:25:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EDD71F24371
+	for <lists+bpf@lfdr.de>; Thu, 11 Apr 2024 19:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDC43B182;
-	Thu, 11 Apr 2024 19:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC2117BA5;
+	Thu, 11 Apr 2024 19:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C+lXujML"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="p6WjKA9G"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96EEB36AF3
-	for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 19:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AB3205E1A;
+	Thu, 11 Apr 2024 19:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712863415; cv=none; b=d4umk77uxxYiU11r+okuTn62swCKpbAChxczEyJkhukSkQYfoRNLeLfgCmzpPaSG/L8icZ6pmF3OKoH5rRy6azdRcAMrKtGxz3iyLCr8NpYkJsRUbeetkyn4BwErCm8egEsAjBB5tVRjuTkXQS6vbojUkOSH9eH4Rlu72mCEyjs=
+	t=1712864532; cv=none; b=XlaHC7zX76LVzfJ6evy+NPMSmJVh5NQ3NIw5DUMZaexrH3d1Z6gZmYZYj55HutU4TweXlZRH7Q1eTWAyfVJZeQuL5Gx/2LoHTA/WLTQyOfuwW3khTWJoP26jh3rPLzd1EYnGfs1Yn7syVyeLFXtBohmU/nyhrT2euC2UwQJF0P4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712863415; c=relaxed/simple;
-	bh=P4wCNLmtXPLsDqGfupgn4JTY+JEmagcCUnkDyIsmNW0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LBereLmjtl0BWsT2xdjMbSi/4PrE2bIEwl/EkPmxCFr4tFXYkGQ7b/bI752vgUbOPbSTiuHJ2lBQAIPXnE+kZYK8A3lsYTKSMHgJcIX2M0egvrtWGm8fLEm+eAPjmX/5nF2H/jLOM6qr+Ow8D2BNIzxg4NWgBj+osgN5Mfiwowo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C+lXujML; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a0e2e9f2-9993-4c25-aace-f624986cf874@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712863410;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NaltdheOilOpkmrqvkPu9UV2s+iUUvoBTjYEuk47i1A=;
-	b=C+lXujMLofgkOBT1Bmw6WrKHQAP9NBN26FRgHVCRdwAjwNAYRQ9mTH8HDljxR1NKbUE+97
-	4u5f5WuMolcm+BLlGAM5BPZNzeg7cSZ9SMNFtUzVs0QyZbffX9UfgYSGOzvksd+4xjx7xB
-	+cccVM9dHq4awF0UNyJFlUQATIsr+g4=
-Date: Thu, 11 Apr 2024 12:23:21 -0700
+	s=arc-20240116; t=1712864532; c=relaxed/simple;
+	bh=X8P1ZrYs4XscfQnXoOsg7tnFxIk3wKaA03HALumhDfY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T90FIiRFuPofZNA8XmOLbapTjyyfz1rKVsgsfxmvv+qK1WJAF+pXOBV+P9EQ4OpHNU6AUnIK3QiK4oUNBYWtk9rnyd4zyPYR5gKvaoRpUiAfR0EcY6ebsH9RJx4qDfue0uUPdYmZLG2F/1aQP79yVMXD4LSyN+70AI+2iWpef34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=p6WjKA9G; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=GLmQ6OAiLByfHZ0eGe8X2lInPvVUnYvYGHLtnSFpmng=; b=p6WjKA9G6dX+WyDufUHAVMvzmt
+	TEEuKUVS+thzRELnqAjvnH6i10dz570nqrjJL9ZXGf4bZS1nXuY4F57S1i8sknzzTiosXrRMWtwja
+	Wl2QVyKMVPgdD4djWPDJyYc1qh+eRSQYF6g3SQ+FxVhW8CjBgW1dMrDQA2/rPtVx22R2m4mjZa233
+	XbfrF3KCbxbV4a2eULYCR2JvTK5mnLn6In5XBzJIKJGJJDaTbAKriC0c3xg5TIewrOd+koQ0lcmWE
+	yuu9PAFmPro1hKpehzsdur/j+e2m4dzk/qfRpBgrPaEio0j2aD0jKKMt0SHDFcdZ3PlSFQUBMlTG7
+	n33Z/seQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rv0JB-0000000Dvah-2hQJ;
+	Thu, 11 Apr 2024 19:42:05 +0000
+Date: Thu, 11 Apr 2024 12:42:05 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <Zhg9DXzagPbpNGH1@bombadil.infradead.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 2/2] selftests/bpf: Export send_recv_data
- helper
-To: Geliang Tang <geliang@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, Andrii Nakryiko
- <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org
-References: <cover.1712813933.git.tanggeliang@kylinos.cn>
- <5231103be91fadcce3674a589542c63b6a5eedd4.1712813933.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <5231103be91fadcce3674a589542c63b6a5eedd4.1712813933.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411160051.2093261-6-rppt@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On 4/10/24 10:43 PM, Geliang Tang wrote:
-> +static void *send_recv_server(void *arg)
-> +{
-> +	struct send_recv_arg *a = (struct send_recv_arg *)arg;
-> +	ssize_t nr_sent = 0, bytes = 0;
-> +	char batch[1500];
-> +	int err = 0, fd;
-> +
-> +	fd = accept(a->fd, NULL, NULL);
-> +	while (fd == -1) {
-> +		if (errno == EINTR)
-> +			continue;
-> +		err = -errno;
-> +		goto done;
-> +	}
-> +
-> +	if (settimeo(fd, 0)) {
-> +		err = -errno;
-> +		goto done;
-> +	}
-> +
-> +	while (bytes < a->bytes && !READ_ONCE(a->stop)) {
-> +		nr_sent = send(fd, &batch,
-> +			       MIN(a->bytes - bytes, sizeof(batch)), 0);
-> +		if (nr_sent == -1 && errno == EINTR)
-> +			continue;
-> +		if (nr_sent == -1) {
-> +			err = -errno;
-> +			break;
-> +		}
-> +		bytes += nr_sent;
-> +	}
-> +
-> +	if (bytes != a->bytes)
-> +		log_err("Failed to send");
+On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> module_alloc() is used everywhere as a mean to allocate memory for code.
+> 
+> Beside being semantically wrong, this unnecessarily ties all subsystems
+> that need to allocate code, such as ftrace, kprobes and BPF to modules and
+> puts the burden of code allocation to the modules code.
+> 
+> Several architectures override module_alloc() because of various
+> constraints where the executable memory can be located and this causes
+> additional obstacles for improvements of code allocation.
+> 
+> Start splitting code allocation from modules by introducing execmem_alloc()
+> and execmem_free() APIs.
+> 
+> Initially, execmem_alloc() is a wrapper for module_alloc() and
+> execmem_free() is a replacement of module_memfree() to allow updating all
+> call sites to use the new APIs.
+> 
+> Since architectures define different restrictions on placement,
+> permissions, alignment and other parameters for memory that can be used by
+> different subsystems that allocate executable memory, execmem_alloc() takes
+> a type argument, that will be used to identify the calling subsystem and to
+> allow architectures define parameters for ranges suitable for that
+> subsystem.
 
-I logged the "bytes" and "a->bytes" here.
+It would be good to describe this is a non-fuctional change.
 
-> +
-> +done:
-> +	if (fd >= 0)
-> +		close(fd);
-> +	if (err) {
-> +		WRITE_ONCE(a->stop, 1);
-> +		return ERR_PTR(err);
-> +	}
-> +	return NULL;
-> +}
-> +
-> +int send_recv_data(int lfd, int fd, uint32_t total_bytes)
-> +{
-> +	ssize_t nr_recv = 0, bytes = 0;
-> +	struct send_recv_arg arg = {
-> +		.fd	= lfd,
-> +		.bytes	= total_bytes,
-> +		.stop	= 0,
-> +	};
-> +	pthread_t srv_thread;
-> +	void *thread_ret;
-> +	char batch[1500];
-> +	int err = 0;
-> +
-> +	err = pthread_create(&srv_thread, NULL, send_recv_server, (void *)&arg);
-> +	if (err) {
-> +		log_err("Failed to pthread_create");
-> +		return err;
-> +	}
-> +
-> +	/* recv total_bytes */
-> +	while (bytes < total_bytes && !READ_ONCE(arg.stop)) {
-> +		nr_recv = recv(fd, &batch,
-> +			       MIN(total_bytes - bytes, sizeof(batch)), 0);
-> +		if (nr_recv == -1 && errno == EINTR)
-> +			continue;
-> +		if (nr_recv == -1) {
-> +			err = -errno;
-> +			break;
-> +		}
-> +		bytes += nr_recv;
-> +	}
-> +
-> +	if (bytes != total_bytes)
-> +		log_err("Failed to recv");
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
 
-Same here.
+> diff --git a/mm/execmem.c b/mm/execmem.c
+> new file mode 100644
+> index 000000000000..ed2ea41a2543
+> --- /dev/null
+> +++ b/mm/execmem.c
+> @@ -0,0 +1,26 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
-> +
-> +	WRITE_ONCE(arg.stop, 1);
-> +	pthread_join(srv_thread, &thread_ret);
-> +	if (IS_ERR(thread_ret) && !err) {
+And this just needs to copy over the copyright notices from the main.c file.
 
-Removed the "&& !err: check. The thread_ret error should always be logged.
-
-Applied. Thanks.
-
-> +		log_err("Failed to thread_ret");
-> +		err = PTR_ERR(thread_ret);
-> +	}
-> +
-> +	return err;
-> +}
-
+  Luis
 
