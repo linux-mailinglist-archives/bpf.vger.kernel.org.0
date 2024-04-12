@@ -1,89 +1,86 @@
-Return-Path: <bpf+bounces-26645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A63C48A3608
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 20:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8613B8A362E
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 21:08:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61726281F71
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 18:52:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 408192814EF
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 19:08:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB1E14F9C6;
-	Fri, 12 Apr 2024 18:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C893814F9E3;
+	Fri, 12 Apr 2024 19:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kw77vnIE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d2PXUCIr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0C114F136;
-	Fri, 12 Apr 2024 18:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6CFC14F9CE
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 19:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712947951; cv=none; b=EQ0YAwq0ePIlOb7bR/OPLQ1NpzzectJnMKm5xThHwSqQR1qLq7lASJnQoHpcZNaoBjLroUqBDrNIEUPoT5GFGnWietBkQbiSinBw1KDZORNfBDg0Xy8BP+8HYuAHstGWhb82PADONXBfw+zeCr50pmcfyTyc8Pb4YsG8yrNS5gg=
+	t=1712948915; cv=none; b=VZSztmNzxSzqzbpKaYw5ybAWSLZPCl5zMOQDWFdk3mUXtQYkGVH05Eo5sSGk9aSsDK+CRQersIso52uQCwMmsI+aekE7q+Kbomk3FzHxH2cqNw1bxEYagVWqMZliGCv+IhLeOjt3r27q8kZyKCkbFj7YouVrTykClRZI+0cCh5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712947951; c=relaxed/simple;
-	bh=mTcXGw4nugqGSRxGCjG4A4MX8meoxqzJ4oLOi0eBJCU=;
+	s=arc-20240116; t=1712948915; c=relaxed/simple;
+	bh=mexy7GN7pUB8lXW1vERuP54uztUn0bp2O5YBfq+ahkc=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZZ65762ykOET7F3fLpRLuINAFfBvGCCJZXZRTK1AoF+LcMViC5IUZg/jJNbl9WEEi5uetghMryV2oT6l69k2Ae5ERvpYabnGN4nhAC2b27c34noxkmd7VDPLhmpBUwTMBoSqiiMeW0wWrH3m/SE+BvfNuENKsviMpEOrAzJx4AI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kw77vnIE; arc=none smtp.client-ip=209.85.208.44
+	 Content-Type:MIME-Version; b=eqexjJFn/TIW2JHsJV0Q2JG/KiLLf8I5miFOMN+TxHPCg34qKsRGDpQvruG7+/yXqJRLGNu/Mctj4DGs1iKgB5gc11q5NkZnuRu4M/A8V4HbKgu1XE6NjtGr8vcgzqzyjrv+0gr22tj8ZiIyzMszHMmPliA+fl8OHwvzFUvbWa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d2PXUCIr; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso1469287a12.2;
-        Fri, 12 Apr 2024 11:52:28 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso162465e87.3
+        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 12:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712947947; x=1713552747; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712948912; x=1713553712; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=iHtXmJuMK5U+UHjTruXgW8Ixfi7zQSR0MmnJiv0r0VI=;
-        b=kw77vnIEi+zHV3UZgsZWA6Rcvd4XAXaabBAWCnGYVWKNy8qVvdQIOxCcuyjnG2lQpI
-         XlchWN2t7WvQHamDZSU4eC3a/YS13pw+trtksQfDrnvk+9oCNvX7VLv/GF4S91lZxuqe
-         JFIBqQW4zPiEw6ztMYlqYYuZlkcgaz6FAvhjt/qZQktFu/a3IhsTS6f2ZaKvYBpPfmIz
-         nClSwHVIlArTh/wKiKMHza3X2va3NQyD6119k++SaR5QpbiDKVTgE60s9+AgIXuT8qsF
-         pBg3Tlok0k74a03YBoxHCD6Wzm/s5KJkj/S8wZ0Vlx8haQ4c5Bc0Xh24xMwNPFArTaaV
-         lftg==
+        bh=0zPaY9+X7EHiCPc2N4sSTqd2LwgixlI+XbwU/maszyw=;
+        b=d2PXUCIr3OiVdr4LWphjlpH/fj5DsVHV/0hROgwLVkSMHTrJsWLFBoYZa1SlLNfGuQ
+         5ls6oCuaHXJtGtcuMLbmxyBd2Tb/3MI/9/p91mvCtm6qLPcR1h7PkmFvRkIDXD9Q5HiP
+         h0LrIYqGThbIhFIKdD54DupVni/6kmi177tiDHsxUFqFx38vGt/aZBz0PCLGlH7jf27t
+         rfADkaimF5S4Tub5TRxcCJfuAyBoF9DCbMfLo0aQpgJEZlBy9OR1Qmjw8Cm8V0b3ZyTC
+         Tu50YwF2QR/NFLVmV3lOjISBfysFx8f7erF4jRmdq7PoV5yyyGhcSkdamxu+c8sT7h0d
+         uTMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712947947; x=1713552747;
+        d=1e100.net; s=20230601; t=1712948912; x=1713553712;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iHtXmJuMK5U+UHjTruXgW8Ixfi7zQSR0MmnJiv0r0VI=;
-        b=qDrL8uRFijMKuGPHm5ZLxJeaOVQRE0seah0ew80CvsIbyt++wKf68F7IBshBw8/Y5s
-         Go6N3NKe6ktQKuelUv980QYb9EQOT6Pcf8Ea4bqnQGqB4nIImGsoSwGkPY3FKytcRhlN
-         TQwHzXDgXihxk4x2Ufn6V/T1Q47PBoasTaCOYphOqEtoTMRJk8T6tY3mupX8dS3VoQtH
-         QAibgfBIDuYoMJ+VgnmXiOFg5QRD68cYsQe+CqbeQn8FM2P4IFJHunmQs4c5nrnvLWxw
-         UtNuiPI3JsAicQdwCrDEjQRLxxTNRglfvIJDsVr91gdXPLdo0dJAwFIgMV6Evuj22Qdp
-         Gkrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVMjELUIHkz31t50MnGnttxJVPBmsswTOVxFgflrGJfuL7DnFdwVOhaXfZxRAyQO3skTBne6dolNe52PaH/iN3NauUdyCTly8gDXZ5EPstDTs7KnK+eIYg+QkDlpWC38Vx+6R2t
-X-Gm-Message-State: AOJu0Yzd6jh67pI6VCU+m+fluiWLDwxSMw4921Xp3AawrOKlGpvS5L8D
-	tT4Gv4+MOTyeWNi+EngcnH4L9MZ78zgSo382VkZSkbc4LTPlGTO9
-X-Google-Smtp-Source: AGHT+IEjJuMiPSy1BzMREQ4B6uMKfyuDaIcn1eUOa6GD7uqmlWt4T9TGBAfSFgr/vI5sXt/kYtUMgQ==
-X-Received: by 2002:a50:c05a:0:b0:56c:2785:ca34 with SMTP id u26-20020a50c05a000000b0056c2785ca34mr2212442edd.5.1712947947132;
-        Fri, 12 Apr 2024 11:52:27 -0700 (PDT)
+        bh=0zPaY9+X7EHiCPc2N4sSTqd2LwgixlI+XbwU/maszyw=;
+        b=CLStnm8JzEGshV1Zq6MpbwX8P4EIy1IfrBjjftn3KEY4r8Um0P0QZ+74fI+fxpFnTS
+         SBIOEkjugyeruGUl3M5T+MexX3tUzqS6VkRQApMMtH2TOuW2je/v26vcvmbQUQWmUBsG
+         +QQxzh1Wt5bYG4MRwNcdlddbNFdF8Hw+f995VCQndl41HnLC45uU0y3k9PZ+Z5hHbj1M
+         oyqxbrWeEdbUi5fSEi2WvOb46epXpGw41eJZqUEvmX0zVdjXFh5ux0Kejm/+VYFpCCxD
+         +mlRQxwotFV9yJfo6sB2yP/Mq2YbvAdaLzE8XRIDikfZqBhud+57h+/AtLkgCaS/PheE
+         Z37Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWeDEAcNmTJEdC0bUbxEwIKj1K90W4jqfeJ+LNKx/soTcGFnlCIILUzauHF5W4PMQEWFBxpLwMXyRtN/gEOEJKEcQSX
+X-Gm-Message-State: AOJu0Yxi00AOSacVcN8UxYlyuGFHCDDxg1hMibvDtFncfeS6uFxYEj6U
+	JRl0Qk+XvybbadPQzuKr/AVY6Zje7A4RW5B3vaNYkGX3+7t5t4XM
+X-Google-Smtp-Source: AGHT+IGYaUWqLJfzAXoGHU1nayhBHZYvtOccvS+85/4WGU+olysFMR4wW19oPQKhyy0Fdhl826hxtA==
+X-Received: by 2002:a19:9151:0:b0:513:cfaa:e618 with SMTP id y17-20020a199151000000b00513cfaae618mr2875830lfj.0.1712948911537;
+        Fri, 12 Apr 2024 12:08:31 -0700 (PDT)
 Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id r6-20020aa7cb86000000b0056e3707323bsm1917169edt.97.2024.04.12.11.52.24
+        by smtp.gmail.com with ESMTPSA id fx14-20020a170906b74e00b00a46aac377e8sm2115368ejb.54.2024.04.12.12.08.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 11:52:26 -0700 (PDT)
-Message-ID: <905e8d82b369b5de22936c202b19d783f594c33f.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/14] use start_server and connect_to
- helpers
+        Fri, 12 Apr 2024 12:08:31 -0700 (PDT)
+Message-ID: <520f62bee1e1a037c53dafabf4c4b71adee71cd2.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 07/11] bpf: check_map_access() with the
+ knowledge of arrays.
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Fri, 12 Apr 2024 21:52:24 +0300
-In-Reply-To: <cover.1712796967.git.tanggeliang@kylinos.cn>
-References: <cover.1712796967.git.tanggeliang@kylinos.cn>
+To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>,
+  bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org,  kernel-team@meta.com, andrii@kernel.org
+Cc: kuifeng@meta.com
+Date: Fri, 12 Apr 2024 22:08:29 +0300
+In-Reply-To: <edea9980-f29f-4589-9a39-d92a715822ce@gmail.com>
+References: <20240410004150.2917641-1-thinker.li@gmail.com>
+	 <20240410004150.2917641-8-thinker.li@gmail.com>
+	 <c89a020a219dd2d6e781dce9986d46cbafd6499c.camel@gmail.com>
+	 <edea9980-f29f-4589-9a39-d92a715822ce@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu2 
@@ -94,15 +91,33 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Thu, 2024-04-11 at 09:03 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+On Fri, 2024-04-12 at 09:32 -0700, Kui-Feng Lee wrote:
 >=20
-> v2:
->  - update patch 6 only, fix errors reported by CI.
+> On 4/11/24 15:14, Eduard Zingerman wrote:
+> > On Tue, 2024-04-09 at 17:41 -0700, Kui-Feng Lee wrote:
+> > [...]
+> >=20
+> > > Any access to elements other than the first one would be rejected.
+> >=20
+> > I'm not sure this is true, could you please point me to a specific
+> > check in the code that enforces access to go to the first element?
+> > The check added in this patch only enforces correct alignment with
+> > array element start.
 >=20
-> This patchset uses public helpers start_server_* and connect_to_* defined
-> in network_helpers.c to drop duplicate code.
+> I mean accessing to elements other than the first one would be rejected
+> if we don't have this patch.
 
-Modulo feedback from Martin and connect_to_addr() not setting default
-timeout this series looks good, thank you.
+Oh, I misunderstood the above statement then.
+The way I read it was: "after this patch access to elements other than
+the first one would be rejected". While this patch explicitly allows
+access to the subsequent array elements, hence confusion.
+Sorry for the noise.
+
+>=20
+> Before the change, it enforces correct alignment with the start of the
+> whole array.  Once the array feature is enabled, the "size" of struct
+> btf_field will be the size of entire array. In another word, accessing
+> to later elements, other than the first one, doesn't align with the
+> beginning of entire array, and will be rejected.
+
 
