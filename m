@@ -1,45 +1,74 @@
-Return-Path: <bpf+bounces-26607-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26608-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C8A8A23C4
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 04:30:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E737B8A2496
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 05:56:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9996284176
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 02:30:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CE9FB2129F
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 03:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E36F11190;
-	Fri, 12 Apr 2024 02:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA12817BCE;
+	Fri, 12 Apr 2024 03:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZitH2uCW"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34760DDAA;
-	Fri, 12 Apr 2024 02:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E73E179A7
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 03:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712889001; cv=none; b=hNPc637syVox16ywLMT61afxHi2XUdnIuK9tW5mfk4+m9q/LA4Jjl7nXpctRruW+ackiCA32/+8oK8CXjVnOnYa9F/G9haSJfbM03blBxQ3GGNV8HKtGYd91eyfY4R5D+AmF+6riCkojsig12XLWUCxxkJ9CP+/CJagSPVT7ArE=
+	t=1712894205; cv=none; b=DbOcP4wOcqGNDHysDtLsang57K9s6WcNVowU07kVASKlY+WE6PQtseEl7sdG6B3yMZya3KjT46d0EI7zgqI0QShaAU4igXbKQ8kTORyD2NSyBCB6h7Yk6hntB8z8g4cmh/pdvTP6lMDrUk7cqC1uxyOgDdNzJ7nH2E+r+/V3IsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712889001; c=relaxed/simple;
-	bh=lN9nUDuQTd76FAFSsaPs3BYVE2gIVqoz5FcnCPR5g28=;
+	s=arc-20240116; t=1712894205; c=relaxed/simple;
+	bh=MJLXf4rVIryWQ8zeHN9E8pSAuT+3LPr0FGCGFhATNTA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tiuUoeG+dXIWpM/2SNUKmiI1Yq8Oz1GI14dhbfZ9HFBtV0GSksurre+UOQBhomz6VQ/pAHCHE119B849Qta7/HK6m4ICTh4eb4SM7aIoig74NUsAWFg/zPe/4Dp8nGLkuubh3lp3PzEffBCyUgPW99kCgNTlPHsPXCrGZy/M/44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VG0rr5b9Nz4f3jMh;
-	Fri, 12 Apr 2024 10:29:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id AD8C51A01A7;
-	Fri, 12 Apr 2024 10:29:55 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP3 (Coremail) with SMTP id _Ch0CgA3956inBhm8L9uJg--.9624S2;
-	Fri, 12 Apr 2024 10:29:55 +0800 (CST)
-Message-ID: <25703ec0-f985-4d5f-8bfa-0c070da5b570@huaweicloud.com>
-Date: Fri, 12 Apr 2024 10:29:54 +0800
+	 In-Reply-To:Content-Type; b=p6I+dckxfxFLIkea/AJutboVIZxL69oikNlsFjKdhV9vx6dXFJft8dRShTpN91oOvjKIw5FE70xLa3IWuF4xZ1zhGb7KtiGD/BEXnd837LqCG6Z216sCK0V0HeSMmh1Okip949hesi6X5wBWMy1ekpJsRdC0G4x6WIwmlazZDaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZitH2uCW; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso449970276.3
+        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 20:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712894203; x=1713499003; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+8o1/F2CarPecW4mj+llQnwrE/VURUNcb4qebPVcqU8=;
+        b=ZitH2uCWFSwYm8pKAo7rDmpEh+HXqmXZcgjM/y91MWeEEvuQo5iX1cGVLLg6GjkzLt
+         ++tn0DDxN8tCVjsztSwrc8OCHmBwWQd9euplV23HL8ZADLxI6+ZaK9gf/HJ5XsZ1WM82
+         c/Fa5r3PI4uOjA0+4n43q4dmgVBci2F1rtv6o5GC0+UIARU+8ATsCyZYG1rxiEnQm5Zg
+         xJqVdJSjdoSXRHBJiLixnQD9hIw40gvucgZAuSu6Pd9ChHR5cLzEwpuq28zA/APInKAN
+         EXEfAAQGkyStNTvniOwmS2jICAfzbz97px4Wqdbh4Hi5aA1TjaC7nyEhzyg42hB8Vckj
+         oqcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712894203; x=1713499003;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8o1/F2CarPecW4mj+llQnwrE/VURUNcb4qebPVcqU8=;
+        b=qYCmZUljSC7Do+GXNxMXEeCm/40HiDGpvRPwGG6R08teCOuu/84Iv1dO2PfG+J7vUk
+         nnBGCfc/puRXC/WyvUDV2s0jYSzi4GLRt+VN9Wuy+kjV0ZtulHqHztAwtAcIKNsyceCx
+         /BnfsIUH3aLfAz2tzJkXd/aS3q8aL+f/r7XOsvIbw6YR4iCTSdgJ3UjceCtY3tHphpw2
+         jjs2U4FuvlP6zZ6zWshzYA719leMqK/sJRVd1hAndy3s0G388/yRVTry9mKE82HrAW72
+         a6imM4Q5xOmU0PgxzeWrdas/K0RZsPJRqNQoyZRStvbllOc0NObv4HNbOZ48BqUSdMsW
+         0hPg==
+X-Forwarded-Encrypted: i=1; AJvYcCX87ceckUg5RtPCmrlgtBjRmdusp9UYWn7W+SqagHqTYV6FqLaRk9DRNtD/TQIQY7cbn8KsmfklcLVXwpAE27p7U99g
+X-Gm-Message-State: AOJu0YwdUZWO1G92AEV2R7zYYRcxw/NtJzsCbdduzVI+MIoQgo7UPk3j
+	cUzD9aXWiAw4TqRXC5zefTzIPQrGcaep3/yM+EWJurKbqqRg7bV0
+X-Google-Smtp-Source: AGHT+IFnqZ6QeBlxPeIuYs8rcaAe5ICOsm5MjVmUOQ8WEtRS1aAtueRJ9dWwsH0E5ArJt/gr5JqhIg==
+X-Received: by 2002:a25:1903:0:b0:dcc:d694:b4a6 with SMTP id 3-20020a251903000000b00dccd694b4a6mr1373927ybz.15.1712894203035;
+        Thu, 11 Apr 2024 20:56:43 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:d7:be37:7e5d:7c78? ([2600:1700:6cf8:1240:d7:be37:7e5d:7c78])
+        by smtp.gmail.com with ESMTPSA id g17-20020a5b0711000000b00dccdf447047sm581079ybq.65.2024.04.11.20.56.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 20:56:42 -0700 (PDT)
+Message-ID: <f1957694-13c3-4b4f-96f1-451b8acedc4b@gmail.com>
+Date: Thu, 11 Apr 2024 20:56:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,126 +76,98 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Incorrect BPF stats accounting for fentry on arm64
+Subject: Re: [PATCH bpf-next 05/11] bpf: initialize/free array of
+ btf_field(s).
+To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
+ <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com
+References: <20240410004150.2917641-1-thinker.li@gmail.com>
+ <20240410004150.2917641-6-thinker.li@gmail.com>
+ <57d016ec8ccb9cbc454f318d74b6d657de59ffcd.camel@gmail.com>
 Content-Language: en-US
-To: Ivan Babrou <ivan@cloudflare.com>, bpf <bpf@vger.kernel.org>
-Cc: kernel-team <kernel-team@cloudflare.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org
-References: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <57d016ec8ccb9cbc454f318d74b6d657de59ffcd.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgA3956inBhm8L9uJg--.9624S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr13tF15CFW3AFWfAF4xWFg_yoW5uFW7pF
-	48ur90yF48Kry29a4kAwsFyw4Yyan3Jry3G3s8Jwnaya98CryxuFy5A3yYy3y5urWakw1f
-	Z3yjkFWIgFyDAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUglb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3w
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
-	xhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 4/12/2024 2:09 AM, Ivan Babrou wrote:
-> Hello,
-> 
-> We're seeing incorrect data for bpf runtime stats on arm64. Here's an example:
-> 
-> $ sudo bpftool prog show id 693110
-> 693110: tracing  name __tcp_retransmit_skb  tag e37be2fbe8be4726  gpl
-> run_time_ns 2493581964213176 run_cnt 1133532 recursion_misses 1
->      loaded_at 2024-04-10T22:33:09+0000  uid 62727
->      xlated 312B  jited 344B  memlock 4096B  map_ids 8550445,8550441
->      btf_id 8726522
->      pids prometheus-ebpf(2224907)
-> 
-> According to bpftool, this program reported 66555800ns of runtime at
-> one point and then it jumped to 2493581675247416ns just 53s later when
-> we looked at it again. This is happening only on arm64 nodes in our
-> fleet on both v6.1.82 and v6.6.25.
-> 
-> We have two services that are involved:
-> 
-> * ebpf_exporter attaches bpf programs to the kernel and exports
-> prometheus metrics and opentelementry traces driven by its probes
-> * bpf_stats_exporter runs bpftool every 53s to capture bpf runtime metrics
-> 
-> The problematic fentry is attached to __tcp_retransmit_skb, but an
-> identical one is also attached to tcp_send_loss_probe, which does not
-> exhibit the same issue:
-> 
-> SEC("fentry/__tcp_retransmit_skb")
-> int BPF_PROG(__tcp_retransmit_skb, struct sock *sk)
-> {
->    return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_retransmit_skb);
-> }
-> 
-> SEC("fentry/tcp_send_loss_probe")
-> int BPF_PROG(tcp_send_loss_probe, struct sock *sk)
-> {
->    return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_send_loss_probe);
-> }
-> 
-> In handle_sk we do a map lookup and an optional ringbuf push. There is
-> no sleeping (I don't think it's even allowed on v6.1). It's
-> interesting that it only happens for the retransmit, but not for the
-> loss probe.
-> 
-> The issue manifests some time after we restart ebpf_exporter and
-> reattach the probes. It doesn't happen immediately, as we need to
-> capture metrics 53s apart to produce a visible spike in metrics.
-> 
-> There is no corresponding spike in execution count, only in execution time.
-> 
-> It doesn't happen deterministically. Some ebpf_exporter restarts show
-> it, some don't.
-> 
-> It doesn't keep happening after ebpf_exporter restart. It happens once
-> and that's it.
-> 
-> Maybe recursion_misses plays a role here? We see none for
-> tcp_send_loss_probe. We do see some for inet_sk_error_report
-> tracepoint, but it doesn't spike like __tcp_retransmit_skb does.
-> 
-> The biggest smoking gun is that it only happens on arm64.
-> 
-> I'm happy to try out patches to figure this one out.
-> 
 
-I guess the issue is caused by the not setting of x20 register
-when __bpf_prog_enter(prog) returns zero.
 
-The following patch may help:
+On 4/11/24 15:13, Eduard Zingerman wrote:
+> On Tue, 2024-04-09 at 17:41 -0700, Kui-Feng Lee wrote:
+> [...]
+> 
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index f397ccdc6d4b..ee53dcd14bd4 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -390,6 +390,9 @@ static inline u32 btf_field_type_align(enum btf_field_type type)
+>>   
+>>   static inline void bpf_obj_init_field(const struct btf_field *field, void *addr)
+>>   {
+>> +	u32 elem_size;
+>> +	int i;
+>> +
+>>   	memset(addr, 0, field->size);
+>>   
+>>   	switch (field->type) {
+>> @@ -400,6 +403,10 @@ static inline void bpf_obj_init_field(const struct btf_field *field, void *addr)
+>>   		RB_CLEAR_NODE((struct rb_node *)addr);
+>>   		break;
+>>   	case BPF_LIST_HEAD:
+>> +		elem_size = field->size / field->nelems;
+>> +		for (i = 0; i < field->nelems; i++, addr += elem_size)
+>> +			INIT_LIST_HEAD((struct list_head *)addr);
+>> +		break;
+> 
+> In btf_find_datasec_var() nelem > 1 is allowed for the following types:
+> - BPF_LIST_{NODE,HEAD}
+> - BPF_KPTR_{REF,UNREF,PERCPU}:
+> - BPF_RB_{NODE,ROOT}
+> 
+> Of these types bpf_obj_init_field() handles in a special way
+> BPF_RB_NODE, BPF_LIST_HEAD and BPF_LIST_NODE.
+> However, only BPF_LIST_HEAD handling is adjusted in this patch.
+> Is there a reason to omit BPF_RB_NODE and BPF_LIST_NODE?
 
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1905,15 +1905,15 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+Declaring arrays of list nodes or rbtree nodes seems to be not useful
+since they don't contain any useful information. Let me explain below.
 
-         emit_call(enter_prog, ctx);
+We usually declare node fields in other struct types. I guess declaring
+arrays of struct types containing node fields is what we actually want.
+For example,
 
-+       /* save return value to callee saved register x20 */
-+       emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
-+
-         /* if (__bpf_prog_enter(prog) == 0)
-          *         goto skip_exec_of_prog;
-          */
-         branch = ctx->image + ctx->idx;
-         emit(A64_NOP, ctx);
+   struct foo {
+      struct bpf_list_node node;
+      ...
+   };
 
--       /* save return value to callee saved register x20 */
--       emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
--
-         emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
-         if (!p->jited)
-                 emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
+   struct foo all_nodes[64];
 
+However, the verifier doesn't look into fields of a outer struct type
+except array fields handling by this patchset. In this case, a data
+section, it doesn't look into foo even we declare a global variable of
+struct foo. For example,
+
+   struct foo gFoo;
+
+gFoo would not work since the verifier doesn't follow gFoo and look into
+struct foo.
+
+So, I decided not to support rbtree nodes and list nodes.
+
+However, there are a discussion about looking into fields of struct
+types in an outer struct type. So, we will have another patchset to
+implement it. Once we have it, we can support the case of gFoo and
+all_nodes described earlier.
+
+
+> 
+>>   	case BPF_LIST_NODE:
+>>   		INIT_LIST_HEAD((struct list_head *)addr);
+>>   		break;
+> 
+> [...]
+> 
 
