@@ -1,103 +1,94 @@
-Return-Path: <bpf+bounces-26629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFD5F8A3394
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 18:20:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E36088A33A4
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 18:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EAC91F22438
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 16:20:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FC321C240BA
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 16:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FC514A0BB;
-	Fri, 12 Apr 2024 16:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4238914A62E;
+	Fri, 12 Apr 2024 16:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gvijH1f7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kpbeTX7b"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1566D1487E4;
-	Fri, 12 Apr 2024 16:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9BFC14A605;
+	Fri, 12 Apr 2024 16:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938708; cv=none; b=KFI0tC9Wtr8a+oDKhhRgDv4P0ACtErw02pHdhlGno6uerv8C9WjiQ3BzpC3ToKxjzg9LUxpsjvQjHcMoWg2XFdLLZ8U/8tS4wWqXDJwtARlIoW1k01NFpScxG4Zq+RghsEBQrMPBV50YdTbFHQRIA5+G/YYcQTnKYNGt2qdksl8=
+	t=1712938829; cv=none; b=n1TreVu5GRGYZPI14P3qOfw+CheBqi6ZWFUfUbFZ+PZvrmdMN9cK30IlQomjR/v2s5nUYgnDxG3d2wbBUJ8GdmsTDepVDaLDHKXXUwn4m7WAWTPb8Fd7a8o7/5zzWqPPd8squjDksoWVFN+NN4/7PtI2PjLrfS1Dj4joN/LktQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938708; c=relaxed/simple;
-	bh=H1fM5qZarUTqTbPcEiWO1kQWJYXX9Yqz5xJmMTOWlBo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=XFEd2UeiSkqD/43zt/MwZml01FTmY9pGTuWN8yQ8f8V8ePbPf7qjoohB0B0iQ3zPaGoQRlaNV9YXyWsx1qGqVv/1uBf8rGpguXYDnUDIaNnba0GrC2CT6TbUkOXzrGWr/5qSk+hZZcpyBGMNsi5ZJ3JGXQvr9dHIfs63RFcB26M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gvijH1f7; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=bA1H0J9aZpfqPqx5MnEP2Av7FJoToVyToQ8NSU4NpeQ=; b=gvijH1f72SJdDDxXvBlhF6M4ze
-	9Z1Z/qnRzbjNaRnt7P5IkGiwYQYTVCQHtwaOtbDeIEBYC4SQauR93sMOeCQDvPRFmxU57lys1YqxQ
-	JrQWJ+hVMuJ9zptkpp21DphWLnW7EXvRO6sr1ONKkZMJNg9m1E/32fdH/TmBX0HAn/y/aU+aMCEFw
-	584GfxI9CFbfjtkN6a2F1+ZQwNxxxMLOczHzdaBbFJBUc7StYAjC8GYaw9GFut2Q5hObW7YWIwvOj
-	jWTqngA3cVXClJLEKjYk7SXUOuH80h0ujw811hHQBPCptc7oFJCG6wGlqGJ4ZzzBarAgTIij/whL1
-	PRmsY6rQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rvJbU-0001jL-93; Fri, 12 Apr 2024 18:18:16 +0200
-Received: from [178.197.249.56] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rvJbS-00HALU-2d;
-	Fri, 12 Apr 2024 18:18:14 +0200
-Subject: Re: [PATCH] selftests: adopt BPF's approach to quieter builds
-To: Jakub Kicinski <kuba@kernel.org>, shuah@kernel.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, nathan@kernel.org,
- ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-References: <20240411190534.444918-1-kuba@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <da485e3b-7b35-f701-45b4-9c3914ea6456@iogearbox.net>
-Date: Fri, 12 Apr 2024 18:16:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1712938829; c=relaxed/simple;
+	bh=alwUDIF6ctHhDHxQZLYPIRUS9AZtSdoiRdkxnjMqnIY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=qwYN7QgBhofur8OoZi6cGByR0bXqIW1hG3sQW8C0QnIc6+8Qsr8yS+jGc74B7wnW/+Vb/hQEZYJwnEyWtpVLuG6clnQ+cUjLVrVMeJJprWW+KsIiYPbXDJ5aQ8LZp/l0g8WYb7dujliSfAr/64/JyXFvfldHYReqhF3VFOehjPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kpbeTX7b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 48746C113CC;
+	Fri, 12 Apr 2024 16:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712938829;
+	bh=alwUDIF6ctHhDHxQZLYPIRUS9AZtSdoiRdkxnjMqnIY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=kpbeTX7bP4svgtkavv+0J7G79nBxpawr2r09uSfHo70GHIi5lnMOF2cd5ObxpmX7a
+	 BGlhhRhzaWi/LaL32qs0u/dLBzcd92tc8iOsoRYu8XXX/D3q0S1JJmV1Q4mrhO6jzc
+	 shJOG6n9c/f68Jy9N75OsW5cEnWFJl4YZFvqVAlexHoe8DVVmvZHEGGfZdk3CKa9lS
+	 w7YNRu4i2spOKFM4SW6WdgRkUGrrk7rsu9tIvKuxrd/BAJFF4z7sT44/IRWfccUwTT
+	 rrgNgIq02sNXR7t1vV4PliLOzAD4WMwq7CShYYLfkFE0vM2xQHH1q+XfTF/Anz82ZX
+	 Uw3b9zTnW4Jow==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2FE8CDF7858;
+	Fri, 12 Apr 2024 16:20:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240411190534.444918-1-kuba@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27243/Fri Apr 12 10:26:33 2024)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND PATCH] bpftool: Fix typo in error message
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171293882919.11586.5927187479654005381.git-patchwork-notify@kernel.org>
+Date: Fri, 12 Apr 2024 16:20:29 +0000
+References: <20240411164258.533063-3-thorsten.blum@toblux.com>
+In-Reply-To: <20240411164258.533063-3-thorsten.blum@toblux.com>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: qmo@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On 4/11/24 9:05 PM, Jakub Kicinski wrote:
-> selftest build is fairly noisy, it's easy to miss warnings.
-> It's standard practice to add alternative messages in
-> the Makefile. I was grepping for existing solutions,
-> and found that bpf already has the right knobs.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Thu, 11 Apr 2024 18:43:00 +0200 you wrote:
+> s/at at/at a/
 > 
-> Move them to lib.mk and adopt in net.
-> Convert the basic rules in lib.mk.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 > ---
-> If this is okay with everyone, can we possibly apply it to net-next?
+> Resending this because I forgot to CC the mailing lists
+> ---
+>  tools/bpf/bpftool/prog.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeap, looks good!
+Here is the summary with links:
+  - [RESEND] bpftool: Fix typo in error message
+    https://git.kernel.org/bpf/bpf-next/c/23cc4fe44f1d
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Cheers,
-Daniel
+
 
