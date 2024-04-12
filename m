@@ -1,115 +1,194 @@
-Return-Path: <bpf+bounces-26642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8338A343D
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 19:00:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 099938A34A4
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 19:23:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18B4E1F23129
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 17:00:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24F54B21A65
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 17:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F34F14D2A4;
-	Fri, 12 Apr 2024 17:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0DC14D2AC;
+	Fri, 12 Apr 2024 17:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZBsr59j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Acm9bYoT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC2914BF8B
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 17:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B348148FE0;
+	Fri, 12 Apr 2024 17:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941213; cv=none; b=L7hetmEnvnUV8+Nh/LbWZLj4x4+erL4ZlKsJUpbngyt+Gd7IAgg+/zNSDC2uyZHyGMX932jd6RmxEJyIp39fhSDJZGF006h4XZyaPF1DT3r8gLGzc4DThJr5c02Q3Nr0BlxgTPqHxuTYnU3Fxag7qq6Z3e/VXqpb5PstRRZwxew=
+	t=1712942617; cv=none; b=tx6gf3Q2nVXeSxVcV8GxYguw5LO2jRo7bW/cs1QVpK4LsRVweRaki0awd/uyCrS2Oy75iLOtbEhaGVQBoH/V9HwI5Vm0dPszVjPnP3vOpPOZ2RQqEl5C3hpcvqMpr1Ja6NX7GA/w63DC3v7oDdDZ/S8dAEDRuASF6aJVHWFkzT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941213; c=relaxed/simple;
-	bh=a2CRp9ShaR0Pyq935fA0cBxrmTGtYbJ+sLLbfJxBi9g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QCSZm6DWQRaPH/+SouR1oGM/t/SgEvTZ1SqwT0dOsQLoOUHv0lPLJPcte7GGcc8cJf9GNg94B49/NAcodDJZbfc3vqgKstSm+q4rvx+otrdhWrcVv1H0rsxZjAutvnuQOaIRBL2U7KeSmH/oAPzgp7Mvs5U1+0pJnfzf6LxjuSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZBsr59j; arc=none smtp.client-ip=209.85.210.43
+	s=arc-20240116; t=1712942617; c=relaxed/simple;
+	bh=yqyc+7ewwXDVhEaxUfKDeqMwoxH+lQ2/mIs4ApRc4Zk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KCgLbBfJH6PokCuNI7540LG/KkTcrECqYQxwAiOKCy2Ye5h+d9xiuqYy2a2EVReXOLcJRkvqhIT7YEkmCfoPU3rE8Nb2g4FmR5124q+LFcUJeHAGowH1tPk9jdLCxjPDwXq3uxC88k565mp2GzaIqRLbDwJLsEJnwf6Uo+v27dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Acm9bYoT; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ea2ef1c6b6so677078a34.1
-        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 10:00:12 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a523625409aso119723366b.0;
+        Fri, 12 Apr 2024 10:23:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712941211; x=1713546011; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8K8VL5kaOrNKoNoubr79DiNaQJxqZ+8ezqTyYw+vYXQ=;
-        b=PZBsr59jAeXHWcgoWbF4+K07Am8FLQeSnPyUWwPF++FmWTRpczMIZ+Igh8Y+YTcbWy
-         IshP5GAyWpkYw5Y51lYnJu9dioZ9pp0i5HjyFhnoKxsjYJQyGNO9yonIQ0gnrHoVeZQf
-         vGqQ4y8+edHi2rtpnQDfuO3MU6Oc2Zr6q2PxiBQ13nAZXUKTNO9mn7uUFgEBWCYiGqeR
-         XcW0iMBekYNv+xReT//EXrC2DbLdbOV8Oxn/iMI9lCmgWlXk2yIQp8sIo6g4aBkKTOWq
-         vWuvFa28eFAjpWuBzj3aGgWVP7oE/vbfdeOTcFkmFTjbGGZZY46njfCK2P8zPDZ1UPbQ
-         cPIQ==
+        d=gmail.com; s=20230601; t=1712942614; x=1713547414; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3ot0olxXSeXIO2wU3+DtYbAPYGgKtSJPOO0uR/BPdBs=;
+        b=Acm9bYoT+FEWlgTay6OgvsgJcHP0EGvPn7eVeutXlEkkIl6FxqBsXsxvG3rLySztgF
+         eDrlHSwr8b99uR23BdGI1EEcvSyPAFHqB4KkrzKM/GnkYErVJv91Utvoqbveq3v+3IF3
+         EYath3scqbYIepvAm5YCNPf5dyHBYqJw+OsJMDwIl0IX8k7Tq8wFJNb74cL2vrbxgUhN
+         +oQFex0gEvO4cJXlRltD9XuhtcNnJJ2NQm19U3Ot1F8LdU6xZj+LqdEc+rt+kJ//AMUF
+         DSEX4bq+cmwmjUR7mYh8t1geRX5LUrCn8hqbWo01zuVQPyv/2K42/NxnsZoM0PexCO/+
+         GBqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712941211; x=1713546011;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8K8VL5kaOrNKoNoubr79DiNaQJxqZ+8ezqTyYw+vYXQ=;
-        b=lc6Q3cPTmYGM6AGrjXOfYMDqerxUpI2/IQ3fU37n4SYeR5pHT4wBvi/PWpZRUiYcm7
-         wBAtrZ7suP6hOJ0aQu/r1Z9T9RLeEI3z8h+Onuv0zmZ/EbYsmuekKUk1n5tys3jQLEGK
-         m21U+yxArIuOmvWgnE9i0QG1SJ7DCpNO+rC1HL8cLRY2iOfjL/6FoglgnciP0J5RuBNA
-         ZQROC17i+Pizdq1s4hPrV+mjulMN0VwlV6OcyIUxV9VCS4yrjUvJRVYVx85WUHsYWPBh
-         HZHmmC3zM6G5JGFE4Z0Hczag6jpwmUDbl8Eag8R6gVgQxaC6plLYWXJJ0AMUmfPM6vW0
-         O6nQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0pNBNT3SFH6Yf5dtzD0sxSqnAd6hEnrjl0XrX4fCw8sr9tdYJcTx6CQIVeBUmIj+fSXToNdT5U9+b6A/Mo6ejCEmt
-X-Gm-Message-State: AOJu0Yxveugk0w+8WU8BeMdflbMJx4cqe+zB/o/jcH4rVgmiCHCRs/5s
-	x4aAkc+GIRLfcQJHpXRquJEXeRyPYBXWLvLsQKNkPEKGi06E29Cw
-X-Google-Smtp-Source: AGHT+IEvgVlnrE+3b6J+KnSq+i1vdRL5C8zhMPqwiX5uQb/B9SG7s8tKU5d6vEuADpxiEaIIJKq3bQ==
-X-Received: by 2002:a05:6830:1be1:b0:6ea:1dc5:514c with SMTP id k1-20020a0568301be100b006ea1dc5514cmr3591041otb.11.1712941211114;
-        Fri, 12 Apr 2024 10:00:11 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:a1a1:7d97:cada:fa46? ([2600:1700:6cf8:1240:a1a1:7d97:cada:fa46])
-        by smtp.gmail.com with ESMTPSA id i16-20020a9d6250000000b006ea20712e66sm747091otk.17.2024.04.12.10.00.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 10:00:10 -0700 (PDT)
-Message-ID: <004f7f72-6e2f-4040-8d2b-31353ddcfcc1@gmail.com>
-Date: Fri, 12 Apr 2024 10:00:09 -0700
+        d=1e100.net; s=20230601; t=1712942614; x=1713547414;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ot0olxXSeXIO2wU3+DtYbAPYGgKtSJPOO0uR/BPdBs=;
+        b=VliAKJGpVukqE54Vrqd+A2QO0Tuhtjk4YAU6kOLHWKppVNjm56DOthFYhFRySdUTWq
+         faO/BTajxLJpO8o2Kv9+1HXGXPt1PpjLw0gSMxHsNPDg8glhwbWKqIAxlkxbAZKXWDrG
+         OgyA0vieXReEK39dsOPDmqPZKAXq5y+OUXCk6svHtLO3s3PV/nNCXX/yDauY8Bh4fCvZ
+         +W0ukS3GSCRtRfFBg/mFbdQfuTWhgTOxfGUSFZqavv1D5nhLh7uaWxTPuqINj3Roq+rg
+         fux7lESMaqZQtxMAKDJZ8YVBh0lTxKX/WOVp5oQaTCYHDGPyhZW5zBzYauXs+2qX4APo
+         vinA==
+X-Forwarded-Encrypted: i=1; AJvYcCXL2xlFFVsakdeg8rv3aTNd2xWJBgsanDGj2U+Qffj04EIHhUXfjRRcRBQZ2BqB6zLX6OueMJZ4WiK1tdeSSU24Tbcv0giMWN23Foik8/uP827im4SBhBphcewTtVxoh3xdix6o
+X-Gm-Message-State: AOJu0YzbOpE94+5EBJm8MZcdwRQQNc/+ST+UFCopIkV4clQBPbpANHNw
+	2uMZqjgMbp5jvp6M8GzMWANTN2aqceH/I/CasHY5hOUd2yYHhbW3
+X-Google-Smtp-Source: AGHT+IFOCmtD+3DEW1CSVQ1cjkoImPqzXzg/TsfBSp8mVOC23bJIL9amD7dBnOLrpHAVPi30o6R1Yg==
+X-Received: by 2002:a17:906:da0a:b0:a46:7794:2c00 with SMTP id fi10-20020a170906da0a00b00a4677942c00mr2108362ejb.40.1712942613552;
+        Fri, 12 Apr 2024 10:23:33 -0700 (PDT)
+Received: from [192.168.100.206] ([89.28.99.140])
+        by smtp.gmail.com with ESMTPSA id ku21-20020a170907789500b00a517e505e3bsm2023940ejc.204.2024.04.12.10.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 10:23:32 -0700 (PDT)
+Message-ID: <feacc31cee7270080baf291d854f956896493fe0.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 09/14] selftests/bpf: Add function pointer
+ for __start_server
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Fri, 12 Apr 2024 20:23:31 +0300
+In-Reply-To: <eedd84f856fe2c9101ab4b7086276e4830370839.1712796967.git.tanggeliang@kylinos.cn>
+References: <cover.1712796967.git.tanggeliang@kylinos.cn>
+	 <eedd84f856fe2c9101ab4b7086276e4830370839.1712796967.git.tanggeliang@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 05/11] bpf: initialize/free array of
- btf_field(s).
-To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
- <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: kuifeng@meta.com
-References: <20240410004150.2917641-1-thinker.li@gmail.com>
- <20240410004150.2917641-6-thinker.li@gmail.com>
- <57d016ec8ccb9cbc454f318d74b6d657de59ffcd.camel@gmail.com>
- <f1957694-13c3-4b4f-96f1-451b8acedc4b@gmail.com>
- <8d12fcfe44693bf69382951c8b090b06df8fe912.camel@gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <8d12fcfe44693bf69382951c8b090b06df8fe912.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+
+On Thu, 2024-04-11 at 09:03 +0800, Geliang Tang wrote:
 
 
+[...]
 
-On 4/12/24 08:32, Eduard Zingerman wrote:
-> On Thu, 2024-04-11 at 20:56 -0700, Kui-Feng Lee wrote:
-> [...]
-> 
->> So, I decided not to support rbtree nodes and list nodes.
->>
->> However, there are a discussion about looking into fields of struct
->> types in an outer struct type. So, we will have another patchset to
->> implement it. Once we have it, we can support the case of gFoo and
->> all_nodes described earlier.
-> 
-> All this makes sense, but in such a case would it make sense to adjust
-> btf_find_datasec_var() to avoid adding BPF_RB_NODE and BPF_LIST_NODE
-> variables with nelem > 1? (Like it does for BPF_TIMER etc).
+>  static int __start_server(int type, int protocol, const struct sockaddr =
+*addr,
+> -			  socklen_t addrlen, int timeout_ms, bool reuseport)
+> +			  socklen_t addrlen, int timeout_ms,
+> +			  int *(*setsockopt)(int fd, int val), int val)
 
-That make sense. I will change it.
+There is no need for setsockopt to return pointer to int,
+the code could be simplified e.g. as in the patch below (on top of this ser=
+ies):
+
+---
+
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/=
+selftests/bpf/network_helpers.c
+index f6810bb54edc..30ac03322c61 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -80,7 +80,7 @@ int settimeo(int fd, int timeout_ms)
+=20
+ static int __start_server(int type, int protocol, const struct sockaddr *a=
+ddr,
+ 			  socklen_t addrlen, int timeout_ms,
+-			  int *(*setsockopt)(int fd, int val), int val)
++			  int (*setsockopt)(int fd, int val), int val)
+ {
+ 	int fd;
+=20
+@@ -167,7 +167,7 @@ int *start_reuseport_server(int family, int type, const=
+ char *addr_str,
+ 		return NULL;
+=20
+ 	fds[0] =3D __start_server(type, 0, (struct sockaddr *)&addr, addrlen,
+-				timeout_ms, (void *)setsockopt_reuse, 1);
++				timeout_ms, setsockopt_reuse, 1);
+ 	if (fds[0] =3D=3D -1)
+ 		goto close_fds;
+ 	nr_fds =3D 1;
+@@ -177,7 +177,7 @@ int *start_reuseport_server(int family, int type, const=
+ char *addr_str,
+=20
+ 	for (; nr_fds < nr_listens; nr_fds++) {
+ 		fds[nr_fds] =3D __start_server(type, 0, (struct sockaddr *)&addr,
+-					     addrlen, timeout_ms, (void *)setsockopt_reuse, 1);
++					     addrlen, timeout_ms, setsockopt_reuse, 1);
+ 		if (fds[nr_fds] =3D=3D -1)
+ 			goto close_fds;
+ 	}
+@@ -195,7 +195,7 @@ int start_server_addr(const struct sockaddr *addr, sock=
+len_t addrlen, int type)
+ }
+=20
+ int start_server_setsockopt(const struct sockaddr *addr, socklen_t addrlen=
+, int type,
+-			    int *(*setsockopt)(int fd, int val), int val)
++			    int (*setsockopt)(int fd, int val), int val)
+ {
+ 	return __start_server(type, 0, addr, addrlen, 0, setsockopt, val);
+ }
+diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/=
+selftests/bpf/network_helpers.h
+index 543295230062..0f0f1803e0c8 100644
+--- a/tools/testing/selftests/bpf/network_helpers.h
++++ b/tools/testing/selftests/bpf/network_helpers.h
+@@ -56,7 +56,7 @@ int *start_reuseport_server(int family, int type, const c=
+har *addr_str,
+ 			    unsigned int nr_listens);
+ int start_server_addr(const struct sockaddr *addr, socklen_t addrlen, int =
+type);
+ int start_server_setsockopt(const struct sockaddr *addr, socklen_t addrlen=
+, int type,
+-			    int *(*setsockopt)(int fd, int val), int val);
++			    int (*setsockopt)(int fd, int val), int val);
+ void free_fds(int *fds, unsigned int nr_close_fds);
+ int connect_to_addr(const struct sockaddr_storage *addr, socklen_t len, in=
+t type);
+ int connect_to_fd(int server_fd, int timeout_ms);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/too=
+ls/testing/selftests/bpf/prog_tests/sockopt_inherit.c
+index 4fee4b343255..0c39170d543a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
+@@ -97,7 +97,7 @@ static int start_server_lo(void)
+ 	if (make_sockaddr(AF_INET, "127.0.0.1", 0, &addr, &addrlen))
+ 		return -1;
+ 	return start_server_setsockopt((struct sockaddr *)&addr, addrlen,
+-				       SOCK_STREAM, (void *)setsockopt_loop, 0);
++				       SOCK_STREAM, setsockopt_loop, 0);
+ }
+=20
+ static void run_test(int cgroup_fd)
+
 
