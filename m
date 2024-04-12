@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-26599-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26600-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 422CB8A2361
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 03:51:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 808708A2363
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 03:51:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 643551C213C8
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 01:50:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA62D1C2156B
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 01:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE19524C;
-	Fri, 12 Apr 2024 01:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CAF125BA;
+	Fri, 12 Apr 2024 01:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="FQ3BuQZb"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="aU0bVvpI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120C5DF58
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 01:50:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F0C5101EE
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 01:50:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712886648; cv=none; b=mr4DSjoq2HLnCFs1CRYliaBhLcPzC0Zbay1GMUqwkNK1fdNgjhVR2O/S6GJECkq+X3b8/PGu4iMQaWnGrsVl4JTuUZ1oOFb8KB2TLxbl+3arTH3voVJVvB0+xZNmBgYzTIH5DX5wAoB3hC3BSGXex3iwZ1UVrcbRfZmVv+G0d/k=
+	t=1712886651; cv=none; b=nGhRg001WuQjxfAwhPXrggVZnfwhFAnfMv8J0ueQWZiJTBluqOQGeRMJIoDyKnHXHqgdV3FEeRWzn62iHVD6NjS00T7vv0fntiV8EIEZlNCfD5mS4/s1tb7PFaoLFsvP7YO86WkCGmCKPGdwVXnno3ZER07OtD3dSInckrzAWco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712886648; c=relaxed/simple;
-	bh=lLcJXMGYAt18ckXzjBJt3RZcIlon0AJDakZC8+N8M0M=;
+	s=arc-20240116; t=1712886651; c=relaxed/simple;
+	bh=7YouWyZuxbSYzHxqPUnW+aY1UMlIJgGnhI+PHUoOFhQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r5kY52Snju41gC8fmzL8a59Zwd3U0MGd3pawRavC3EOmRijSayx3xdhOLgLaj+SAbC0Op0KprhVq+2Nodj2vGLCzI3s/CWDbl1/WPBxDcDZxKKrJO90ifsqwfyereQBTDOB0nmUB8eg+8iXCU04Wd19MZcygSTFZqAZE/GdhaZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=FQ3BuQZb; arc=none smtp.client-ip=209.85.222.169
+	 MIME-Version; b=e1BQHX8LOF0d2tTr5KCYHTQJ16I8XtTElR2BzRAWdwPiJ08+kUKe2eS5kgWLHy4VM0hJLt2puD1Brsy+BRUd23tT21keSCQM+/hyML3mZxBFKslEPYSawUvcr+bS+6rMT04bj2UHpWX4MTOCX/EUzzRcmXdBdfYV81RVvCA5caA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=aU0bVvpI; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78ec78c4fceso56190785a.0
-        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 18:50:46 -0700 (PDT)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-789f00aba19so21723885a.0
+        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 18:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1712886646; x=1713491446; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1712886649; x=1713491449; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2I8ioTIE3St0NCO304/67c5ZZcTg34djE+ltGa2DGgk=;
-        b=FQ3BuQZb8LtOhmt890Bmeq2fPTjqyrHlVC00FaR2K+bSiNS5ffhWMIBCbKqWbCoF9a
-         yTKEojGuNSBLHgeauasteqnUs7ZXlVqVebsjOuOToLwj2QxBsBLCTIrm1YgnQ4ZdptSY
-         Kn0JB14JBHBz64zM4H39qMyt7yft6iJNslfW7EP1u006R86EdrKnRdvwl1GqckKj6Ie2
-         bmgYnPNGoRRPQnX0i07qpCzGA/iBz/eNkYm2z65qVVDMY6G7ohPS6eRhxyOMeMtXrw90
-         /p4V0rsU/WxnRWomdyk0/CjfkbhOjQ+wcY/Gtshn6HRziwKWDkEIHi6FpxzvGm7vATrB
-         pbfg==
+        bh=IR+aRAW+xEUckMtcdjKW/EEXnX6Dbx8rKcxaN3dNqzg=;
+        b=aU0bVvpItdjjGy0Uh4y25anjArKIOtlIy5bEQk0mhmXbgUtnAoxQU+EWL0JLXBUsGE
+         PaFzOpaJzH8GVLLDtvVTKCjsLTFLU3B0AAlawSh4HGgxhag7TfwZH/R+MYRm7QUwbMAG
+         w8FRBHIep8Bt+j5TOyytwhtljABL69vAvnkrXANE7rldNPtRV4s9KqL/BVLLdaS0EEhU
+         S7NYM1+pr3opDH0IQanKJieTjzymm+1VP+TTtawBfPlvipoLVVtG8Lq+0a4+iHZQoxji
+         bYan7dULV/jISLCvZvrhf5LY4IUpVNt3UDYdMtkiPY1qHjhOBcRJAb9+2KRRgreFRl9R
+         P3hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712886646; x=1713491446;
+        d=1e100.net; s=20230601; t=1712886649; x=1713491449;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2I8ioTIE3St0NCO304/67c5ZZcTg34djE+ltGa2DGgk=;
-        b=bcW8NlyH6M5MJRK8ht3GWnB30IlG3A4NWYL7qPmp/XOfWeL3APQGbui96qljxQ40kQ
-         YkhVjhlPLTmldYjyn8GaUEY+w3Qqxd4k3BU09sfFb5sviclJz9qWeLh9CEb/z+/vPcJp
-         ePJCl5N4RdsU5yxsbzjw+B4TYLKoDUykSBclKhRvH5mt0gVD8UwgUNk7omaPXRk2uPye
-         bvJYenaivTk0jIULfl++szUWqjs/YoJr4o+puRYyF/HguUeVnzrXFGSfMThnkwAtPlqL
-         zC5ggQpkbUwf9cpgZ1jp4jcMD/nWcnYeznbs6W23FL+97upwrqWu+Ej+Qhgj7x+FHVTW
-         T6Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBIGKo2kAmVV9oJHddDvXHeeZTH5RXbmiY7KU8lqX2nT7s22+ZfmKYjhxFY5HUPyGaL45UTc6i6NlClkH/d9wHhEyK
-X-Gm-Message-State: AOJu0YxTZCSPscbaRNV4M6whKhOreMj9YZphGj36KguA2nox3mRd6zSN
-	I6BxBgEUMk3ww4MeqtAcmK2CFEj4nW0IIxoBAbreow/1y+n0rBz7sdI1WKbUUQ==
-X-Google-Smtp-Source: AGHT+IEpPEvWFpAFcQSe+VQV8imp3rgz2Yo/hr1w0rVz+GPtikTxqKZX7MSio59IOMcIrmeqvbBuxg==
-X-Received: by 2002:a05:620a:4589:b0:78e:b996:db93 with SMTP id bp9-20020a05620a458900b0078eb996db93mr3057028qkb.3.1712886646096;
-        Thu, 11 Apr 2024 18:50:46 -0700 (PDT)
+        bh=IR+aRAW+xEUckMtcdjKW/EEXnX6Dbx8rKcxaN3dNqzg=;
+        b=YGlHyKwklV/PqOSOw2yKyQdGimzMETeVha13bbaNNt2alHRhtk/CYMo48Y/SedB2dE
+         5puCxH6A5TWk3FR5lq4ittzwp4Lx42P5kSFf9OXOLTr5jZCf9OC5i+xH0rVCc+6CKVVd
+         tuoelsICShGtkoQFl/bO0pcrZ6Z6L2FTSf34kpiBK0TYBsBBiHno4DJkKmeujGK9eC23
+         EKM0l0pa1QIXAZYjDZEd8B0+w8qbjPT4n7/5UEdCJLV0zZKVCOGpyNRtsmfUhjfW23M3
+         g+zp3crPnu3oyinliUnckK0sJ1RdJdi/lTXJvPLnAQGf1H74T7V6gHgWr+PufuIoWs19
+         g/zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVV2XHOH/3a8iT8wMUyU8a8mBv6WtMVYeEImvhZJNw95uvzHWN6YNP4fSi5F1Gf/CmQXlSYNrHzwwU8ZrE1iGNTLyKk
+X-Gm-Message-State: AOJu0Yw4rkoVXnzOg/4PCk0ob/ajMyDn22Dwglwv+rZUV/oADuUw3gpt
+	sMUeSYgxTeI5RVeqPyZSX2K8/sCF4HjZpMuMrTLxCcIfFjDXdclD8jzgsMCZTQ==
+X-Google-Smtp-Source: AGHT+IHD5DOmOr2nUz59Bfple5VcMmCJtdiKzwwn2KQ/kHy7BLf5evZIyHYa8ySlQOOQSWDiJjefKQ==
+X-Received: by 2002:a05:620a:1983:b0:78d:6339:b943 with SMTP id bm3-20020a05620a198300b0078d6339b943mr1698615qkb.20.1712886649123;
+        Thu, 11 Apr 2024 18:50:49 -0700 (PDT)
 Received: from ip-172-31-44-15.us-east-2.compute.internal (ec2-52-15-100-147.us-east-2.compute.amazonaws.com. [52.15.100.147])
-        by smtp.googlemail.com with ESMTPSA id f10-20020a05620a15aa00b0078d76c1178esm1756677qkk.119.2024.04.11.18.50.44
+        by smtp.googlemail.com with ESMTPSA id f10-20020a05620a15aa00b0078d76c1178esm1756677qkk.119.2024.04.11.18.50.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 18:50:45 -0700 (PDT)
+        Thu, 11 Apr 2024 18:50:48 -0700 (PDT)
 From: Kyle Huey <me@kylehuey.com>
 X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
 To: Kyle Huey <khuey@kylehuey.com>,
@@ -87,9 +87,9 @@ Cc: Robert O'Callahan <robert@ocallahan.org>,
 	Ian Rogers <irogers@google.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH v6 1/7] perf/bpf: Reorder bpf_overflow_handler() ahead of __perf_event_overflow()
-Date: Thu, 11 Apr 2024 18:50:13 -0700
-Message-Id: <20240412015019.7060-2-khuey@kylehuey.com>
+Subject: [PATCH v6 2/7] perf/bpf: Create bpf_overflow_handler() stub for !CONFIG_BPF_SYSCALL
+Date: Thu, 11 Apr 2024 18:50:14 -0700
+Message-Id: <20240412015019.7060-3-khuey@kylehuey.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240412015019.7060-1-khuey@kylehuey.com>
 References: <20240412015019.7060-1-khuey@kylehuey.com>
@@ -101,214 +101,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This will allow __perf_event_overflow() to call bpf_overflow_handler().
+This will allow __perf_event_overflow() (which is independent of
+CONFIG_BPF_SYSCALL) to call bpf_overflow_handler().
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- kernel/events/core.c | 183 ++++++++++++++++++++++---------------------
- 1 file changed, 92 insertions(+), 91 deletions(-)
+ kernel/events/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 724e6d7e128f..ee025125a681 100644
+index ee025125a681..a7c2a739a27c 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -9544,6 +9544,98 @@ static inline bool sample_is_allowed(struct perf_event *event, struct pt_regs *r
- 	return true;
+@@ -9624,6 +9624,12 @@ static void perf_event_free_bpf_handler(struct perf_event *event)
+ 	bpf_prog_put(prog);
  }
- 
-+#ifdef CONFIG_BPF_SYSCALL
+ #else
 +static void bpf_overflow_handler(struct perf_event *event,
 +				 struct perf_sample_data *data,
 +				 struct pt_regs *regs)
 +{
-+	struct bpf_perf_event_data_kern ctx = {
-+		.data = data,
-+		.event = event,
-+	};
-+	struct bpf_prog *prog;
-+	int ret = 0;
-+
-+	ctx.regs = perf_arch_bpf_user_pt_regs(regs);
-+	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
-+		goto out;
-+	rcu_read_lock();
-+	prog = READ_ONCE(event->prog);
-+	if (prog) {
-+		perf_prepare_sample(data, event, regs);
-+		ret = bpf_prog_run(prog, &ctx);
-+	}
-+	rcu_read_unlock();
-+out:
-+	__this_cpu_dec(bpf_prog_active);
-+	if (!ret)
-+		return;
-+
-+	event->orig_overflow_handler(event, data, regs);
 +}
 +
-+static int perf_event_set_bpf_handler(struct perf_event *event,
-+				      struct bpf_prog *prog,
-+				      u64 bpf_cookie)
-+{
-+	if (event->overflow_handler_context)
-+		/* hw breakpoint or kernel counter */
-+		return -EINVAL;
-+
-+	if (event->prog)
-+		return -EEXIST;
-+
-+	if (prog->type != BPF_PROG_TYPE_PERF_EVENT)
-+		return -EINVAL;
-+
-+	if (event->attr.precise_ip &&
-+	    prog->call_get_stack &&
-+	    (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) ||
-+	     event->attr.exclude_callchain_kernel ||
-+	     event->attr.exclude_callchain_user)) {
-+		/*
-+		 * On perf_event with precise_ip, calling bpf_get_stack()
-+		 * may trigger unwinder warnings and occasional crashes.
-+		 * bpf_get_[stack|stackid] works around this issue by using
-+		 * callchain attached to perf_sample_data. If the
-+		 * perf_event does not full (kernel and user) callchain
-+		 * attached to perf_sample_data, do not allow attaching BPF
-+		 * program that calls bpf_get_[stack|stackid].
-+		 */
-+		return -EPROTO;
-+	}
-+
-+	event->prog = prog;
-+	event->bpf_cookie = bpf_cookie;
-+	event->orig_overflow_handler = READ_ONCE(event->overflow_handler);
-+	WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
-+	return 0;
-+}
-+
-+static void perf_event_free_bpf_handler(struct perf_event *event)
-+{
-+	struct bpf_prog *prog = event->prog;
-+
-+	if (!prog)
-+		return;
-+
-+	WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler);
-+	event->prog = NULL;
-+	bpf_prog_put(prog);
-+}
-+#else
-+static int perf_event_set_bpf_handler(struct perf_event *event,
-+				      struct bpf_prog *prog,
-+				      u64 bpf_cookie)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static void perf_event_free_bpf_handler(struct perf_event *event)
-+{
-+}
-+#endif
-+
- /*
-  * Generic event overflow handling, sampling.
-  */
-@@ -10422,97 +10514,6 @@ static void perf_event_free_filter(struct perf_event *event)
- 	ftrace_profile_free_filter(event);
- }
- 
--#ifdef CONFIG_BPF_SYSCALL
--static void bpf_overflow_handler(struct perf_event *event,
--				 struct perf_sample_data *data,
--				 struct pt_regs *regs)
--{
--	struct bpf_perf_event_data_kern ctx = {
--		.data = data,
--		.event = event,
--	};
--	struct bpf_prog *prog;
--	int ret = 0;
--
--	ctx.regs = perf_arch_bpf_user_pt_regs(regs);
--	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
--		goto out;
--	rcu_read_lock();
--	prog = READ_ONCE(event->prog);
--	if (prog) {
--		perf_prepare_sample(data, event, regs);
--		ret = bpf_prog_run(prog, &ctx);
--	}
--	rcu_read_unlock();
--out:
--	__this_cpu_dec(bpf_prog_active);
--	if (!ret)
--		return;
--
--	event->orig_overflow_handler(event, data, regs);
--}
--
--static int perf_event_set_bpf_handler(struct perf_event *event,
--				      struct bpf_prog *prog,
--				      u64 bpf_cookie)
--{
--	if (event->overflow_handler_context)
--		/* hw breakpoint or kernel counter */
--		return -EINVAL;
--
--	if (event->prog)
--		return -EEXIST;
--
--	if (prog->type != BPF_PROG_TYPE_PERF_EVENT)
--		return -EINVAL;
--
--	if (event->attr.precise_ip &&
--	    prog->call_get_stack &&
--	    (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) ||
--	     event->attr.exclude_callchain_kernel ||
--	     event->attr.exclude_callchain_user)) {
--		/*
--		 * On perf_event with precise_ip, calling bpf_get_stack()
--		 * may trigger unwinder warnings and occasional crashes.
--		 * bpf_get_[stack|stackid] works around this issue by using
--		 * callchain attached to perf_sample_data. If the
--		 * perf_event does not full (kernel and user) callchain
--		 * attached to perf_sample_data, do not allow attaching BPF
--		 * program that calls bpf_get_[stack|stackid].
--		 */
--		return -EPROTO;
--	}
--
--	event->prog = prog;
--	event->bpf_cookie = bpf_cookie;
--	event->orig_overflow_handler = READ_ONCE(event->overflow_handler);
--	WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
--	return 0;
--}
--
--static void perf_event_free_bpf_handler(struct perf_event *event)
--{
--	struct bpf_prog *prog = event->prog;
--
--	if (!prog)
--		return;
--
--	WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler);
--	event->prog = NULL;
--	bpf_prog_put(prog);
--}
--#else
--static int perf_event_set_bpf_handler(struct perf_event *event,
--				      struct bpf_prog *prog,
--				      u64 bpf_cookie)
--{
--	return -EOPNOTSUPP;
--}
--static void perf_event_free_bpf_handler(struct perf_event *event)
--{
--}
--#endif
--
- /*
-  * returns true if the event is a tracepoint, or a kprobe/upprobe created
-  * with perf_event_open()
+ static int perf_event_set_bpf_handler(struct perf_event *event,
+ 				      struct bpf_prog *prog,
+ 				      u64 bpf_cookie)
 -- 
 2.34.1
 
