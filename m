@@ -1,94 +1,102 @@
-Return-Path: <bpf+bounces-26612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3258E8A2A3A
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 11:04:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 180158A2A58
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 11:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5592E1C2109C
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 09:04:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4991D1C211AC
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 09:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5273D59178;
-	Fri, 12 Apr 2024 08:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8228D4EB38;
+	Fri, 12 Apr 2024 09:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NhvAawsX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DxaisTxM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C7653E26
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 08:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B321B5AA;
+	Fri, 12 Apr 2024 09:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712912039; cv=none; b=PoxJ/QNYP/LD2U6uLCpKcwpk30UlDqGlvQihRE1GI3mgtmOHvDEt5L8vLiUJwv0KT6udYHSkWw2DEDc7+LZZMCpvkG47bUPOT6mzvFdJHfQeC0CjWqAimzadmg3auZatNrGZiBuhzLezRUy3UrOI3tkVX2ZCTHI9Xv3UPj/P6/Q=
+	t=1712912888; cv=none; b=AIaxB0lG8UJ+0aWlCF2Oo7pn8wEnrvybhvDue5zON3GYEoz/X+ZzPlJ0SrspiKbL4dRZ9QL+b0+N4MZt7g+O0TLVquYXBVv+8eC0qz18xoOwMWyreJhVGnebdDJEhMBAFKsBx/4thLgCV9R1P1zOjcKmlyKqPbrcHMZdw9CRFcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712912039; c=relaxed/simple;
-	bh=Rm+Jhy2CPEMYHiZu4p8My94JcsMyZsaQrqOVLaEHKfU=;
+	s=arc-20240116; t=1712912888; c=relaxed/simple;
+	bh=MVi0TpJWrP3KG1T/04QJfQzY+bs7CEwX4l3nbgbsSjI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QiaZB3llicHhnEtB89H0HVwValubbxIZHcklELgO1hTFuuUA1mwL5x1NdF6LZxCGI9f114FXy9wtwCblolmHCF86RzMJg/o+6Mf8E/nUtm6nap+VYupDCNEZKfdIPCdPq+1QfcIvSZ/p21Ebmu4f2VjChzqLVh9rnyzcmj+G610=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NhvAawsX; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d8b194341eso5446251fa.3
-        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 01:53:57 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=cEMm+9imXYMJunlsVDxU+nBVt3yZaIAl+Y8xooSaEzxrroP1LLbZ/hXwYpJ55tdNHnIBYmCA77ZkRox1OCRKGfMDHrsn4Z+OGPeK/4NRszDMbsebEC953Lp7GrvQOHdGMkqGSXmicJb1WypoZqN2fOS5zDHlxd3TW1KRiDmdm6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DxaisTxM; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a46a7208eedso89413466b.0;
+        Fri, 12 Apr 2024 02:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712912036; x=1713516836; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712912885; x=1713517685; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9HCv5WXEXkcM3e4s9GxwuVLanaiJtfT2xDBOPBy8Ztg=;
-        b=NhvAawsXAsmL6+8taXeMueUTUfIHzdon+4e/rTZ6ouZTW+kmC81lcsWljfmwwHOZZg
-         xjpPpXq+oboTBP7LL2PBd0+Q0TogBbcOdveJSXUtoh6RybXjPcOvPwGR5c69VP1dm8DB
-         C6WdVZBXfO9tDFEIB6BnME05LPMCOFiPW6N0Qi8VNukFV4tC5vvnffESY5PN+mBA8BNt
-         QdG4K0ZPIH+tHDk2PFsG2D3etLwI7PP6+E6qD8pyGHRANcKfJtJbf+tp4xPbAeiRRpqT
-         hNgvqw24AzWDQdINb+cUAJ0vVr07db/EiyTOcNfXBvLeD+uqvArd1Oylj1bdGpCl9Gks
-         /DbA==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yPUGnUPFGvIHpfCf2GVNK2vLyHGdD2DrkaoFCTmwcrI=;
+        b=DxaisTxMOqBaoHIfgWX/DJdCkgysHeh9kBGMR6IRLAU5Elel/+u6XHQR3h2JafdaRm
+         i1YzM+Z/rhOWwJ05myMM+co1IhPpsJeJmx1bL5yFjZ8ZMO8EQrAraRA14yQqYL01AWw7
+         yKryVIZL+MBrU2SxsaCAWBJjQ/VarcvGUOBwU1f9Q8WmacnAU+KN6tFnpA25lglCupaN
+         6wrPsYwbYms7ZBvcH15+0v8KIG4S0aDg3sfDkRUySEiVhmGR8d+JLDWBGYeIpprWJSPQ
+         qjIoS/0msQq+AYD0N5DSuvY7VHHtm4pnW6CXe4uiQg/5idYgYUvvz5nzl5NxuHiXsYVz
+         ed4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712912036; x=1713516836;
+        d=1e100.net; s=20230601; t=1712912885; x=1713517685;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9HCv5WXEXkcM3e4s9GxwuVLanaiJtfT2xDBOPBy8Ztg=;
-        b=Cthfk/RgJ+K75l6qLWcISB1p30sZ+DQr419rCMKoHPfH0GhzRCvyPo2ZEzb791GCeW
-         8VeA7Y3042vLvKawwilPuyVi3Ezln2on5NMOTrP22QgsmZ2BUqLK3oDu5aDLJCzV43Ph
-         nQACfGsCUGtPFIDNOBHMgTi+XidVpj3piHf6axtrBnMFREx/XQP3/GLsowadqbtR+geu
-         /AymBEWAqAQ2zCvouK8jDxWNZj/SQAc0SEgc5CRHTYQiHZUCtJ3XONKrc4va/WKHNSGw
-         TYzqpmZuvH5WphacFoIaU81arOLljfiuQWD2l9H/koy9/c4xJJ+bcSBwRxgF6Yv5521Q
-         0IZg==
-X-Gm-Message-State: AOJu0YwM6Kzh8unfWq9XILWa8j0IcsIoFOfsFkmI46B8NpUO0ViqP+Ao
-	QAVU5jIqML3IBLGR0mxjHbSRlJ0aa70Sxl5m713bgKiIJb2pZeJu0zk+YuBA90o=
-X-Google-Smtp-Source: AGHT+IFSyvhmvV600yckuR3RXXhnT/HiMaiPPbLP9Bpktx86rW2y3WG1OuM9vSWWo5pDGj5dTLztzA==
-X-Received: by 2002:a05:651c:205c:b0:2d9:eb66:6d39 with SMTP id t28-20020a05651c205c00b002d9eb666d39mr1130573ljo.19.1712912035823;
-        Fri, 12 Apr 2024 01:53:55 -0700 (PDT)
-Received: from u94a ([2401:e180:8863:5c39:2e5:46b1:443c:b5c1])
-        by smtp.gmail.com with ESMTPSA id z184-20020a6265c1000000b006ed4c430acesm2522658pfb.40.2024.04.12.01.53.47
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yPUGnUPFGvIHpfCf2GVNK2vLyHGdD2DrkaoFCTmwcrI=;
+        b=NUzedmvLnyleC7OEFfd69dCO2x7AB5ybG34MLQjMhTeL+vmaVpNBiZ44S4toCTawlC
+         v/+EQ6WQd2a7sRvpVlcpYebEFmrGEw1G6uU/IfXL8rTY+iz6Ggn+FQxk1wJ6qdMPOTv7
+         is6ekQdMkPbulKEH4UVEjzJs23kmUps5+OC0DQx2xmXVx4BZbD+XdLuN47ZD1xbUcK8Y
+         ZRYTA38SalWhFYJaaG/rEVIoMxtM63TH9mYnXkWhWlZwazU9OLb21CbyqYolyesv9ymS
+         pc4l7n/xRXLx6MGKI86bxwe/gRC9nepwMxh4zbvD6EbOx3sCc0Nwat0Z1Wn8zp9Z4dNW
+         X/MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUGK07TSTeDN/SrtTSAbwsb2s16soMnO5PfwAahBwe+GW3oYqOeM13qRTS8OkxlM62MXLRnue0udqZE7lLdUbTLL/48mvjCL4TxBu6aCUPpWEx/YXSHG0cTEP5p9FxYoSbvoEg4dH2eSSFdzMDms+IHcacz6+obbTXFHa/mHIDfg8m0DoeNJo17y+3UcJdho8NBAXO9T5xB2MN8LTTfTkkHB/TnGOIRtJKW2F3UUXGVpt3+47sf5jQqGsDraQMpspk=
+X-Gm-Message-State: AOJu0YxB9EGVB8xRyQXVP5uWxh8iksXegdIKlbFEACjwFWpmF0QphNb8
+	UbFPRHIBazVI0VkNq/hZBhb6ucdfmjA7+d6rJ++6TcRcZioqyrrz
+X-Google-Smtp-Source: AGHT+IE1JXTG/LcQoI+lnHKGTMryNiPMKyUlJP80kVd4eHhaWi8p2N8JmnjvJqW2HLQ210FFl8qPZA==
+X-Received: by 2002:a17:906:345a:b0:a51:80d9:56de with SMTP id d26-20020a170906345a00b00a5180d956demr1236428ejb.5.1712912884326;
+        Fri, 12 Apr 2024 02:08:04 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id zg22-20020a170907249600b00a51b18a77b2sm1572994ejb.180.2024.04.12.02.08.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 01:53:55 -0700 (PDT)
-Date: Fri, 12 Apr 2024 16:53:35 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Dave Thaler <dthaler1968@googlemail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Brendan Jackman <jackmanb@chromium.org>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>, 
-	Khadija Kamran <kamrankhadijadj@gmail.com>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>, 
-	John Johansen <john.johansen@canonical.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
-	bpf@ietf.org, David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v3 06/11] bpf: Fix compare error in function
- retval_range_within
-Message-ID: <m3pwq4fhoh4pecl5mahz7fhjiav4atebtbr22jfk4eqqq5hiya@g3vsc2zqlcy6>
-References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
- <20240411122752.2873562-7-xukuohai@huaweicloud.com>
+        Fri, 12 Apr 2024 02:08:03 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 12 Apr 2024 11:08:00 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>, Helge Deller <deller@gmx.de>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, x86@kernel.org
+Subject: Re: [RFC PATCH 5/7] x86/module: perpare module loading for ROX
+ allocations of text
+Message-ID: <Zhj58NVS/iQnPeIq@gmail.com>
+References: <20240411160526.2093408-1-rppt@kernel.org>
+ <20240411160526.2093408-6-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,57 +105,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240411122752.2873562-7-xukuohai@huaweicloud.com>
+In-Reply-To: <20240411160526.2093408-6-rppt@kernel.org>
 
-On Thu, Apr 11, 2024 at 08:27:47PM +0800, Xu Kuohai wrote:
-> [...]
-> 24: (b4) w0 = -1                      ; R0_w=0xffffffff
-> ; int BPF_PROG(test_int_hook, struct vm_area_struct *vma, @ lsm.c:89
-> 25: (95) exit
-> At program exit the register R0 has smin=4294967295 smax=4294967295 should have been in [-4095, 0]
-> 
-> It can be seen that instruction "w0 = -1" zero extended -1 to 64-bit
-> register r0, setting both smin and smax values of r0 to 4294967295.
-> This resulted in a false reject when r0 was checked with range [-4095, 0].
-> 
-> Given bpf_retval_range is a 32-bit range, this patch fixes it by
-> changing the compare between r0 and return range from 64-bit
-> operation to 32-bit operation.
-> 
-> Fixes: 8fa4ecd49b81 ("bpf: enforce exact retval range on subprog/callback exit")
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 05c7c5f2bec0..5393d576c76f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9879,7 +9879,7 @@ static bool in_rbtree_lock_required_cb(struct bpf_verifier_env *env)
->  
->  static bool retval_range_within(struct bpf_retval_range range, const struct bpf_reg_state *reg)
->  {
-> -	return range.minval <= reg->smin_value && reg->smax_value <= range.maxval;
-> +	return range.minval <= reg->s32_min_value && reg->s32_max_value <= range.maxval;
 
-Logic-wise LGTM
+* Mike Rapoport <rppt@kernel.org> wrote:
 
-While the status-quo is that the return value is always truncated to
-32-bit, looking back there was an attempt to use 64-bit return value for
-bpf_prog_run[1] (not merged due to issue on 32-bit architectures). Also
-from the reading of BPF standardization ABI it would be inferred that
-return value is in 64-bit range:
+>  	for (s = start; s < end; s++) {
+>  		void *addr = (void *)s + *s;
+> +		void *wr_addr = addr + module_writable_offset(mod, addr);
 
-  BPF has 10 general purpose registers and a read-only frame pointer register,
-  all of which are 64-bits wide.
-  
-  The BPF calling convention is defined as:
-  
-  * R0: return value from function calls, and exit value for BPF programs
-  ...
+So instead of repeating this pattern in a dozen of places, why not use a 
+simpler method:
 
-So add relevant people into the thread for opinions.
+		void *wr_addr = module_writable_address(mod, addr);
 
-1: https://lore.kernel.org/bpf/20221115193911.u6prvskdzr5jevni@apollo/
+or so, since we have to pass 'addr' to the module code anyway.
+
+The text patching code is pretty complex already.
+
+Thanks,
+
+	Ingo
 
