@@ -1,295 +1,173 @@
-Return-Path: <bpf+bounces-26605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BBDB8A236F
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 03:52:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075988A2389
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 04:00:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6CC528779E
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 01:52:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752181F235F6
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 02:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13646AA7;
-	Fri, 12 Apr 2024 01:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510BD522A;
+	Fri, 12 Apr 2024 02:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="BBumYXRF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IgxOBYG8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD12A24A03
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 01:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF4E5C82
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 02:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712886667; cv=none; b=SphAsiuGiaSxkdw0bkE50V3s+X7xZvy5FAv++B/NYIUZ9QyhrQ+qAklV4sxnvIQ1pnU9ESAIPnySmIsgTWQeILsQM0Bbssfd17CTwOMWJUpVO9jxUGdAobeesEyztrV2zS+G9IrcyDDBvABNcFwzrWEjPfnZ54wA1xumuCCveac=
+	t=1712887219; cv=none; b=NoMJUm3kPXiaTC0d46A9YderqzfGzJVv8CnioEOFazyEYSp/p+9/veIrh+VVx4ku7aWNpSVh4WIf2OBD+g1FlRhb0+sgPjzToX44zqtRlAngHECEggVzpY9gDQeeDJW3wz3mTgyoYEd7olR+DfD+YrFzzf4/MJRC8cQ9rCbnD9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712886667; c=relaxed/simple;
-	bh=EfTqzolUvIxbeV77szfL3e0e1IBqxiKk0wQkbdth9Jg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E/pRaQ5zCni/ujW2Om4c8vIXjukF3tbxQAxVnC95zSBXeUWkMmv4KYhbQgQK0UV8ll/ExvWJg6CkJSAbs6hFwxw9d+aUJNWJmODaqm+jmB8UuBOFg81fDK1DAbfQzEJ8A6/t62FMKQtmjjBBedsmBf9BAIqlJJnWB1rS2/eFKM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=BBumYXRF; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61816fc256dso4189027b3.0
-        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 18:51:05 -0700 (PDT)
+	s=arc-20240116; t=1712887219; c=relaxed/simple;
+	bh=Q96wnfKGlMzf0iTN7Jw+6d9092JFnZwYlRFXCrSxWbg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cVrpQJ8QsdlV9cbjgRxzXANfZzOTe51cBF/DK4FPZHalGrZ9msGbbxsU5te67H2/gWHEMAUkULfnXs8PYyzcnjlY3sYpDnkeYsSrzbRVCdwbILRcyw+Rcifv8fnZJ4AJ5ImMoz6J9BHYzDgO+Goou0ixiye52JGIOc+xiNuRWTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IgxOBYG8; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-617f8a59a24so3522647b3.1
+        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 19:00:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1712886665; x=1713491465; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PLsAtO8E8WEI0YPLnWc4zGD4gPrub60dCUyhat+mc0A=;
-        b=BBumYXRFyY4oAk5wBat/ahkj0vo4ZnGDizw9oe7uiI4of7VQSdzqMqicfgz6Iqva3+
-         TWB3iYBSoKCwGzfyBadYhTJblNxUidbYGWt29yAxB5uG5AVFqqKSDB9JIUZvJIq3h5un
-         AqcdhEOTYPdqqEB4RwLqMoOsWiVbiB2K6Ecn3dTiLeWaFd5ZlStzsB5463mCQOB7hSHP
-         EamyeE7eoRo/SMtDLC1565o/z8czbepN5SJj7jsJXvH6TKSiN6tBk8KfyjROBuQ25zXo
-         YliCS1PX3q8xNQUWIf+bDWLpFXKq81+s1iRIV0vtGBpRQ4V73mrheJV4nWzRPm6DOH2i
-         aitQ==
+        d=gmail.com; s=20230601; t=1712887217; x=1713492017; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CAphrgmlYOKLDvp+0mQ/rsxPMVdO0zSigLpJ+c5t62Q=;
+        b=IgxOBYG8Y518P+Rp36O93Yzb1Iw0ItV3YOQKdTu9kqrZNqvc3NoBiHNh4cPjC4GzAY
+         2OICVypxYYFPA+ZTueUhrMbyLvBIH0sD/Orn6dwfwlnuy6CH9iszKtv4ambs65yWg/a0
+         1SQZVgJgZqOH1phuzK91/A39ddQtQzVmDzK3sBTpcQlkZKZn6eHGjZsNkCGUr5213iXq
+         NemcxDpZ5LqAC/W7kTWvXIUfH9kN7aEIxYeByCBUsuwFkwPlCpDN331HEvBa02vJrIoN
+         ONzaEOrCLnbFYqsizxljOKSaLyZC+hUcAlGNYe/gLhIAJLakM+fLJIt5pfa80RmUB++N
+         VPHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712886665; x=1713491465;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PLsAtO8E8WEI0YPLnWc4zGD4gPrub60dCUyhat+mc0A=;
-        b=MXM5GsxVpXYSkbHfEWmvtScm1Q3rzeaBVe2zlwnYAiBhsWSF06J8/x33UZwxItDRYK
-         Mnol1Ny5fbV91Uu3DYVeanqleEF125BdSEMwjAo8BG2ZWC/7jw0bar1k1rXJOC8/ScdW
-         RGlx7siNAnZSI0wzQ11UFeynspAf8u1RV30q/IaQiT17gbvi/Io1DUT/D/1XaXdfJoGA
-         VHBVCVjgP/SOXxU4EQxrsyF9BCJFtxKopFmsVUsq79X9/hM+cQVZzDKbqe4eX8o7y/lW
-         Kx1trRMV7G5QatjVkDlv0b3qfIXhadHJi/A1jpbsvx3s0fs1V+JJWOmQL12PXJnIGn96
-         WQEg==
-X-Forwarded-Encrypted: i=1; AJvYcCWEHsUXdQIHLpjHDcV52MWK79muc+vKKNQleFEHcyWDTKbcaLWpe9Aq1yGSIhrEnrK2wuWjbaFd10yS9GYDvqPo2Dy0
-X-Gm-Message-State: AOJu0YwlR/mOOqfqjo+TjSn2TsR5o9LRjZDLmisKDldnZMr3INrNuaFD
-	hXgP3rptpemz65x6GE8zeGOMlxgblatBt2SQeC5RqtqrS4BDJh7/rJ0A/2eK8g==
-X-Google-Smtp-Source: AGHT+IF6KWE2O+uOj1W7BUPtfwmixy3UO/O70mlonobqoOzGHLL5MXKtYfA1MJKuTWaSz4KGSxyRhQ==
-X-Received: by 2002:a81:4ec7:0:b0:615:21e7:6bf6 with SMTP id c190-20020a814ec7000000b0061521e76bf6mr1172665ywb.14.1712886664785;
-        Thu, 11 Apr 2024 18:51:04 -0700 (PDT)
-Received: from ip-172-31-44-15.us-east-2.compute.internal (ec2-52-15-100-147.us-east-2.compute.amazonaws.com. [52.15.100.147])
-        by smtp.googlemail.com with ESMTPSA id f10-20020a05620a15aa00b0078d76c1178esm1756677qkk.119.2024.04.11.18.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 18:51:04 -0700 (PDT)
-From: Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To: Kyle Huey <khuey@kylehuey.com>,
-	linux-kernel@vger.kernel.org,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Marco Elver <elver@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Robert O'Callahan <robert@ocallahan.org>,
-	bpf@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v6 7/7] selftest/bpf: Test a perf bpf program that suppresses side effects.
-Date: Thu, 11 Apr 2024 18:50:19 -0700
-Message-Id: <20240412015019.7060-8-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240412015019.7060-1-khuey@kylehuey.com>
-References: <20240412015019.7060-1-khuey@kylehuey.com>
+        d=1e100.net; s=20230601; t=1712887217; x=1713492017;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CAphrgmlYOKLDvp+0mQ/rsxPMVdO0zSigLpJ+c5t62Q=;
+        b=OS4JIg9h3QfSBBlSCZbRuBf/ybk2Zy4qTbM/rGdRUmej+MyUgAhPhmuHN8Kia1EBMm
+         BWoEuF02F+BYcErjBAYQvqYi50ykHmXLHdTLbLzrPyV0MY5J3Wuuq6pR7Ni1Jl3CYuoE
+         aUOU/5qJ56Iob4lTTNKmMH5lnIdgtvOMGaNP2BNkaV6Jdh0Bgf8CDjSX+f9aD4tqfaaY
+         JbKetllrGea7+eQXXAgKPoLpFWP+UnCCrgkSFD0+xw4pAZ2AVdqguEBfxuJFsTMCTmz1
+         sTGy5e4n+qRc/zBvmwlTDs1dZgk77QHsn5qCGWGKaSH9cyUBFnNBlSp7eFBLLI7hRWxp
+         Ng/g==
+X-Forwarded-Encrypted: i=1; AJvYcCX1rtsdDCl7r5gkhDg2LfZr2rWeXxQ5o3W9xE8p9IvTxZnHp1nTv+NZ43KHJ+cXovKcQsNrBxJiJfa60UTgmrYr6BlX
+X-Gm-Message-State: AOJu0Yw/fNOeVdV4Z7vu1kA/STwLUxGlolQIu6usBbtv3LXMdB/phUSN
+	STlwFTHRKP94iQ6lysyVK9G0wScaDM8JGVyHEAQfsqnkzLNAp4Kd
+X-Google-Smtp-Source: AGHT+IH5NuCGKW5QH/Fm49NN0ZMuobDqYvtcCjE+rh+9oNME3lMr7fT3ueFYtrLVI+tjlGSwcT998g==
+X-Received: by 2002:a05:690c:fc6:b0:615:1511:7f7d with SMTP id dg6-20020a05690c0fc600b0061515117f7dmr1557850ywb.41.1712887217449;
+        Thu, 11 Apr 2024 19:00:17 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:9d24:c434:b27b:e59f? ([2600:1700:6cf8:1240:9d24:c434:b27b:e59f])
+        by smtp.gmail.com with ESMTPSA id c9-20020a81e549000000b00617ca37b612sm596839ywm.91.2024.04.11.19.00.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 19:00:17 -0700 (PDT)
+Message-ID: <4754fd2d-e351-4f77-afd7-df13bf6e2479@gmail.com>
+Date: Thu, 11 Apr 2024 19:00:15 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 06/11] bpf: Find btf_field with the knowledge of
+ arrays.
+To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
+ <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com
+References: <20240410004150.2917641-1-thinker.li@gmail.com>
+ <20240410004150.2917641-7-thinker.li@gmail.com>
+ <3ccb7e3c1b71bfe63606565d0a1b418876b45535.camel@gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <3ccb7e3c1b71bfe63606565d0a1b418876b45535.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The test sets a hardware breakpoint and uses a bpf program to suppress the
-side effects of a perf event sample, including I/O availability signals,
-SIGTRAPs, and decrementing the event counter limit, if the ip matches the
-expected value. Then the function with the breakpoint is executed multiple
-times to test that all effects behave as expected.
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/perf_skip.c      | 137 ++++++++++++++++++
- .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
- 2 files changed, 152 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-new file mode 100644
-index 000000000000..37d8618800e4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-@@ -0,0 +1,137 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <test_progs.h>
-+#include "test_perf_skip.skel.h"
-+#include <linux/compiler.h>
-+#include <linux/hw_breakpoint.h>
-+#include <sys/mman.h>
-+
-+#ifndef TRAP_PERF
-+#define TRAP_PERF 6
-+#endif
-+
-+int sigio_count, sigtrap_count;
-+
-+static void handle_sigio(int sig __always_unused)
-+{
-+	++sigio_count;
-+}
-+
-+static void handle_sigtrap(int signum __always_unused,
-+			   siginfo_t *info,
-+			   void *ucontext __always_unused)
-+{
-+	ASSERT_EQ(info->si_code, TRAP_PERF, "si_code");
-+	++sigtrap_count;
-+}
-+
-+static noinline int test_function(void)
-+{
-+	asm volatile ("");
-+	return 0;
-+}
-+
-+void serial_test_perf_skip(void)
-+{
-+	struct sigaction action = {};
-+	struct sigaction previous_sigtrap;
-+	sighandler_t previous_sigio = SIG_ERR;
-+	struct test_perf_skip *skel = NULL;
-+	struct perf_event_attr attr = {};
-+	int perf_fd = -1;
-+	int err;
-+	struct f_owner_ex owner;
-+	struct bpf_link *prog_link = NULL;
-+
-+	action.sa_flags = SA_SIGINFO | SA_NODEFER;
-+	action.sa_sigaction = handle_sigtrap;
-+	sigemptyset(&action.sa_mask);
-+	if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), "sigaction"))
-+		return;
-+
-+	previous_sigio = signal(SIGIO, handle_sigio);
-+	if (!ASSERT_NEQ(previous_sigio, SIG_ERR, "signal"))
-+		goto cleanup;
-+
-+	skel = test_perf_skip__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	attr.type = PERF_TYPE_BREAKPOINT;
-+	attr.size = sizeof(attr);
-+	attr.bp_type = HW_BREAKPOINT_X;
-+	attr.bp_addr = (uintptr_t)test_function;
-+	attr.bp_len = sizeof(long);
-+	attr.sample_period = 1;
-+	attr.sample_type = PERF_SAMPLE_IP;
-+	attr.pinned = 1;
-+	attr.exclude_kernel = 1;
-+	attr.exclude_hv = 1;
-+	attr.precise_ip = 3;
-+	attr.sigtrap = 1;
-+	attr.remove_on_exec = 1;
-+
-+	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-+	if (perf_fd < 0 && (errno == ENOENT || errno == EOPNOTSUPP)) {
-+		printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n");
-+		test__skip();
-+		goto cleanup;
-+	}
-+	if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
-+		goto cleanup;
-+
-+	/* Configure the perf event to signal on sample. */
-+	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
-+	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-+		goto cleanup;
-+
-+	owner.type = F_OWNER_TID;
-+	owner.pid = syscall(__NR_gettid);
-+	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
-+	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-+		goto cleanup;
-+
-+	/* Allow at most one sample. A sample rejected by bpf should
-+	 * not count against this.
-+	 */
-+	err = ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
-+	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
-+		goto cleanup;
-+
-+	prog_link = bpf_program__attach_perf_event(skel->progs.handler, perf_fd);
-+	if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event"))
-+		goto cleanup;
-+
-+	/* Configure the bpf program to suppress the sample. */
-+	skel->bss->ip = (uintptr_t)test_function;
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 0, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
-+
-+	/* Configure the bpf program to allow the sample. */
-+	skel->bss->ip = 0;
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 1, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-+
-+	/* Test that the sample above is the only one allowed (by perf, not
-+	 * by bpf)
-+	 */
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 1, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-+
-+cleanup:
-+	bpf_link__destroy(prog_link);
-+	if (perf_fd >= 0)
-+		close(perf_fd);
-+	test_perf_skip__destroy(skel);
-+
-+	if (previous_sigio != SIG_ERR)
-+		signal(SIGIO, previous_sigio);
-+	sigaction(SIGTRAP, &previous_sigtrap, NULL);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-new file mode 100644
-index 000000000000..7eb8b6de7a57
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+uintptr_t ip;
-+
-+SEC("perf_event")
-+int handler(struct bpf_perf_event_data *data)
-+{
-+	/* Skip events that have the correct ip. */
-+	return ip != PT_REGS_IP(&data->regs);
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
+On 4/11/24 15:14, Eduard Zingerman wrote:
+> On Tue, 2024-04-09 at 17:41 -0700, Kui-Feng Lee wrote:
+>> Make btf_record_find() find the btf_field for an offset by comparing the
+>> offset with the offset of each element, rather than the offset of the
+>> entire array, if a btf_field represents an array. It is important to have
+>> support for btf_field arrays in the future.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   kernel/bpf/syscall.c | 19 +++++++++++++++----
+>>   1 file changed, 15 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 543ff0d944e8..1a37731e632a 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -516,11 +516,18 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
+>>   static int btf_field_cmp(const void *a, const void *b)
+>>   {
+>>   	const struct btf_field *f1 = a, *f2 = b;
+>> +	int gt = 1, lt = -1;
+>>   
+>> +	if (f2->nelems == 0) {
+>> +		swap(f1, f2);
+>> +		swap(gt, lt);
+>> +	}
+>>   	if (f1->offset < f2->offset)
+>> -		return -1;
+>> -	else if (f1->offset > f2->offset)
+>> -		return 1;
+>> +		return lt;
+>> +	else if (f1->offset >= f2->offset + f2->size)
+>> +		return gt;
+>> +	if ((f1->offset - f2->offset) % (f2->size / f2->nelems))
+>> +		return gt;
+> 
+> Binary search requires elements to be sorted in non-decreasing order,
+> however usage of '%' breaks this requirement. E.g. consider an array
+> with element size equal to 3:
+> 
+>     |  elem #0  |  elem #1  |
+>     | 0 | 1 | 2 | 3 | 4 | 5 |
+>     ^         ^   ^
+>     '         '   '
+>     f2        f1  f1'
+>     
+> Here f1 > f2, but f1' == f2, while f1' > f1.
+> Depending on whether or not fields can overlap this might not be a problem,
+> but I suggest to rework the comparison function to avoid this confusion.
+> (E.g., find the leftmost field that overlaps with offset being searched for).
 
+Ok! It will match the leftmost one overlapping with the offset. And
+check if the offset aligning with one of the elements in btf_record_find().
+
+> 
+>>   	return 0;
+>>   }
+>>   
+>> @@ -528,10 +535,14 @@ struct btf_field *btf_record_find(const struct btf_record *rec, u32 offset,
+>>   				  u32 field_mask)
+>>   {
+>>   	struct btf_field *field;
+>> +	struct btf_field key = {
+>> +		.offset = offset,
+>> +		.size = 0,	/* as a label for this key */
+>> +	};
+>>   
+>>   	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & field_mask))
+>>   		return NULL;
+>> -	field = bsearch(&offset, rec->fields, rec->cnt, sizeof(rec->fields[0]), btf_field_cmp);
+>> +	field = bsearch(&key, rec->fields, rec->cnt, sizeof(rec->fields[0]), btf_field_cmp);
+>>   	if (!field || !(field->type & field_mask))
+>>   		return NULL;
+>>   	return field;
+> 
+> 
 
