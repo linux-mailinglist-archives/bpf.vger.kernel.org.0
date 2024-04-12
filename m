@@ -1,90 +1,91 @@
-Return-Path: <bpf+bounces-26643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099938A34A4
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 19:23:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC558A34ED
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 19:38:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24F54B21A65
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 17:23:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07B701C21715
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 17:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0DC14D2AC;
-	Fri, 12 Apr 2024 17:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C3314D70F;
+	Fri, 12 Apr 2024 17:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Acm9bYoT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFKxCu69"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B348148FE0;
-	Fri, 12 Apr 2024 17:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA9F14C587;
+	Fri, 12 Apr 2024 17:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712942617; cv=none; b=tx6gf3Q2nVXeSxVcV8GxYguw5LO2jRo7bW/cs1QVpK4LsRVweRaki0awd/uyCrS2Oy75iLOtbEhaGVQBoH/V9HwI5Vm0dPszVjPnP3vOpPOZ2RQqEl5C3hpcvqMpr1Ja6NX7GA/w63DC3v7oDdDZ/S8dAEDRuASF6aJVHWFkzT4=
+	t=1712943353; cv=none; b=aKy5yphHiYefV0aKs8SoRzLPRJPJx55g226dQDBj7Xd891fnLia1C2Y7YgMsNLnJXf0UFUj7enncs/5kmczCGki30lGU9VlbM/14u601s12nOuH+sBLQq2ZOTm2JfEXdu7e3pEntNZ0Geib48OOVMgc0YMw1KRR4AuAotrJAZI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712942617; c=relaxed/simple;
-	bh=yqyc+7ewwXDVhEaxUfKDeqMwoxH+lQ2/mIs4ApRc4Zk=;
+	s=arc-20240116; t=1712943353; c=relaxed/simple;
+	bh=Sv5fgKx/fGCIezkQaaMy5xPBh/Vr8DXtcK1tJ92CzN0=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KCgLbBfJH6PokCuNI7540LG/KkTcrECqYQxwAiOKCy2Ye5h+d9xiuqYy2a2EVReXOLcJRkvqhIT7YEkmCfoPU3rE8Nb2g4FmR5124q+LFcUJeHAGowH1tPk9jdLCxjPDwXq3uxC88k565mp2GzaIqRLbDwJLsEJnwf6Uo+v27dU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Acm9bYoT; arc=none smtp.client-ip=209.85.218.44
+	 Content-Type:MIME-Version; b=ErgoO2xc6DMqPXcqVYN4yGCgeZM3iEl9DktRtLFex7NWqHDlFMAquoCmRXAsKO1aNFrXx6ASu6+gCNBDv85EAc4HDwZ8V8ndjVMoJAgdoQJlj3RLE+pnUR7XWFHbN222jnPahwrWzLEo3q8HPc904QQIhecEnu5Cw/LcIdNLvSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFKxCu69; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a523625409aso119723366b.0;
-        Fri, 12 Apr 2024 10:23:35 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d6c1e238so1402131e87.2;
+        Fri, 12 Apr 2024 10:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712942614; x=1713547414; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712943350; x=1713548150; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=3ot0olxXSeXIO2wU3+DtYbAPYGgKtSJPOO0uR/BPdBs=;
-        b=Acm9bYoT+FEWlgTay6OgvsgJcHP0EGvPn7eVeutXlEkkIl6FxqBsXsxvG3rLySztgF
-         eDrlHSwr8b99uR23BdGI1EEcvSyPAFHqB4KkrzKM/GnkYErVJv91Utvoqbveq3v+3IF3
-         EYath3scqbYIepvAm5YCNPf5dyHBYqJw+OsJMDwIl0IX8k7Tq8wFJNb74cL2vrbxgUhN
-         +oQFex0gEvO4cJXlRltD9XuhtcNnJJ2NQm19U3Ot1F8LdU6xZj+LqdEc+rt+kJ//AMUF
-         DSEX4bq+cmwmjUR7mYh8t1geRX5LUrCn8hqbWo01zuVQPyv/2K42/NxnsZoM0PexCO/+
-         GBqw==
+        bh=Sv5fgKx/fGCIezkQaaMy5xPBh/Vr8DXtcK1tJ92CzN0=;
+        b=KFKxCu69mfQKvPJkGyd8uB0Gf1gT0SRnqiXrUeFw5hTJp0lBQREPr5CJADlF/R/ekt
+         bTc5+JlhRpSi6GKFTbWXeD9zuHq9CP1+rAOAqjobNE0BQlM2JNFV4wrZMpcQ3Td5I8su
+         bXnbu0zLxcst4ba0ZQA81D6/H/XivAkvx5RMGKW3Hp6sWbZtrdV0PlAP+RK/A3fndPoP
+         //6r3DymgyJnDNO2FjqL3oK87888d6qm0/lbA/jj2q6sGT2ehurcTFEqdo9g3nZSLgoq
+         QdX5BIS3mw1sz6wrRVi2jPEmOpqK17CZ/VDIJnjIYQf5sBBzCyV6fM/V7C1yRKPcsQWl
+         MZvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712942614; x=1713547414;
+        d=1e100.net; s=20230601; t=1712943350; x=1713548150;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ot0olxXSeXIO2wU3+DtYbAPYGgKtSJPOO0uR/BPdBs=;
-        b=VliAKJGpVukqE54Vrqd+A2QO0Tuhtjk4YAU6kOLHWKppVNjm56DOthFYhFRySdUTWq
-         faO/BTajxLJpO8o2Kv9+1HXGXPt1PpjLw0gSMxHsNPDg8glhwbWKqIAxlkxbAZKXWDrG
-         OgyA0vieXReEK39dsOPDmqPZKAXq5y+OUXCk6svHtLO3s3PV/nNCXX/yDauY8Bh4fCvZ
-         +W0ukS3GSCRtRfFBg/mFbdQfuTWhgTOxfGUSFZqavv1D5nhLh7uaWxTPuqINj3Roq+rg
-         fux7lESMaqZQtxMAKDJZ8YVBh0lTxKX/WOVp5oQaTCYHDGPyhZW5zBzYauXs+2qX4APo
-         vinA==
-X-Forwarded-Encrypted: i=1; AJvYcCXL2xlFFVsakdeg8rv3aTNd2xWJBgsanDGj2U+Qffj04EIHhUXfjRRcRBQZ2BqB6zLX6OueMJZ4WiK1tdeSSU24Tbcv0giMWN23Foik8/uP827im4SBhBphcewTtVxoh3xdix6o
-X-Gm-Message-State: AOJu0YzbOpE94+5EBJm8MZcdwRQQNc/+ST+UFCopIkV4clQBPbpANHNw
-	2uMZqjgMbp5jvp6M8GzMWANTN2aqceH/I/CasHY5hOUd2yYHhbW3
-X-Google-Smtp-Source: AGHT+IFOCmtD+3DEW1CSVQ1cjkoImPqzXzg/TsfBSp8mVOC23bJIL9amD7dBnOLrpHAVPi30o6R1Yg==
-X-Received: by 2002:a17:906:da0a:b0:a46:7794:2c00 with SMTP id fi10-20020a170906da0a00b00a4677942c00mr2108362ejb.40.1712942613552;
-        Fri, 12 Apr 2024 10:23:33 -0700 (PDT)
+        bh=Sv5fgKx/fGCIezkQaaMy5xPBh/Vr8DXtcK1tJ92CzN0=;
+        b=nIe2XzvbFxBjLqc2HAYtuueUsle4jhG0u3DcRJp/SpnF9crU9AFOXmd+bSptcILDqV
+         3EO+397H8Cvo4Wbtbep8Q7din//FbuklH9RHrFnWcfmn1AUOMdJmX3uH8loDKKlntHIz
+         slZm0HlFQ1VC6xHnk1iAP9boPoJ8lRgw2E5t8FcEiBaQ1U+icamuGm0KT0/2jLACF/Jp
+         +PtiRG0FQ9O817nQ/TWcyeTjxV2phIkmnhgwMJIOf4QIKhpAgGiej+Wkt7E3PVG3WO4B
+         ZN3yUG8Yfaw+JWwC0jaykDiQLQNdV0w3J03rPayF6jHnh8bCYIDCyjEKnXcSORjespyY
+         I9Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCW58+x9cuIlyVe3W/7xHgyzoL7k511L6Ng56INKH5XxOCNs0sVgb0g4qGvNwt26gvkN1POAQyNFwVrToa5TNb2CzlrUEBZtZXkOsrYlBWr5EYWOzw8tapCyaYLJGkGI3z/Xfw/1
+X-Gm-Message-State: AOJu0Yxm2hMO33Ot9rf0tWtpTpwgr+QOuAnbGfP0pUzwTiWe5JNG0LwN
+	U295fY0TZtWGnbQi2hfsgEwWaLydaihNvj2BTgLlnd3iXvIt1ODb
+X-Google-Smtp-Source: AGHT+IGZ1/Plua9SppRYWLvAz3MAfAHOdTAUvblr9DnQ03j+oF9p2TI+EhwGkAwPITaSZ/udROAAMQ==
+X-Received: by 2002:a19:4346:0:b0:516:bdf6:8db9 with SMTP id m6-20020a194346000000b00516bdf68db9mr1967855lfj.61.1712943350284;
+        Fri, 12 Apr 2024 10:35:50 -0700 (PDT)
 Received: from [192.168.100.206] ([89.28.99.140])
-        by smtp.gmail.com with ESMTPSA id ku21-20020a170907789500b00a517e505e3bsm2023940ejc.204.2024.04.12.10.23.31
+        by smtp.gmail.com with ESMTPSA id cs9-20020a0564020c4900b005682a0e915fsm1906428edb.76.2024.04.12.10.35.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 10:23:32 -0700 (PDT)
-Message-ID: <feacc31cee7270080baf291d854f956896493fe0.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 09/14] selftests/bpf: Add function pointer
- for __start_server
+        Fri, 12 Apr 2024 10:35:49 -0700 (PDT)
+Message-ID: <a00ea33c695e74da7e48760f41e476520ccdfcf1.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/14] selftests/bpf: Use
+ start_server_setsockopt in sockopt_inherit
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Fri, 12 Apr 2024 20:23:31 +0300
-In-Reply-To: <eedd84f856fe2c9101ab4b7086276e4830370839.1712796967.git.tanggeliang@kylinos.cn>
+To: Martin KaFai Lau <martin.lau@linux.dev>, Geliang Tang
+ <geliang@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, Andrii Nakryiko
+ <andrii@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,  bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Date: Fri, 12 Apr 2024 20:35:48 +0300
+In-Reply-To: <4d19829e-6e96-445f-8e2a-47f58b921281@linux.dev>
 References: <cover.1712796967.git.tanggeliang@kylinos.cn>
-	 <eedd84f856fe2c9101ab4b7086276e4830370839.1712796967.git.tanggeliang@kylinos.cn>
+	 <cf65883b5ad52bfe99e0dc02b6213aa0eaf51ead.1712796967.git.tanggeliang@kylinos.cn>
+	 <4d19829e-6e96-445f-8e2a-47f58b921281@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu2 
@@ -95,100 +96,18 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Thu, 2024-04-11 at 09:03 +0800, Geliang Tang wrote:
-
+On Thu, 2024-04-11 at 15:10 -0700, Martin KaFai Lau wrote:
 
 [...]
 
->  static int __start_server(int type, int protocol, const struct sockaddr =
-*addr,
-> -			  socklen_t addrlen, int timeout_ms, bool reuseport)
-> +			  socklen_t addrlen, int timeout_ms,
-> +			  int *(*setsockopt)(int fd, int val), int val)
+> The start_server_setsockopt is only limited to integer socket option. It =
+is not=20
+> very flexible. It seems this is the only test that will be useful. Lets d=
+rop=20
+> start_server_setsockopt addition from this set for now and discuss it sep=
+arately.
 
-There is no need for setsockopt to return pointer to int,
-the code could be simplified e.g. as in the patch below (on top of this ser=
-ies):
+I agree with this suggestion from Martin.
 
----
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/=
-selftests/bpf/network_helpers.c
-index f6810bb54edc..30ac03322c61 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -80,7 +80,7 @@ int settimeo(int fd, int timeout_ms)
-=20
- static int __start_server(int type, int protocol, const struct sockaddr *a=
-ddr,
- 			  socklen_t addrlen, int timeout_ms,
--			  int *(*setsockopt)(int fd, int val), int val)
-+			  int (*setsockopt)(int fd, int val), int val)
- {
- 	int fd;
-=20
-@@ -167,7 +167,7 @@ int *start_reuseport_server(int family, int type, const=
- char *addr_str,
- 		return NULL;
-=20
- 	fds[0] =3D __start_server(type, 0, (struct sockaddr *)&addr, addrlen,
--				timeout_ms, (void *)setsockopt_reuse, 1);
-+				timeout_ms, setsockopt_reuse, 1);
- 	if (fds[0] =3D=3D -1)
- 		goto close_fds;
- 	nr_fds =3D 1;
-@@ -177,7 +177,7 @@ int *start_reuseport_server(int family, int type, const=
- char *addr_str,
-=20
- 	for (; nr_fds < nr_listens; nr_fds++) {
- 		fds[nr_fds] =3D __start_server(type, 0, (struct sockaddr *)&addr,
--					     addrlen, timeout_ms, (void *)setsockopt_reuse, 1);
-+					     addrlen, timeout_ms, setsockopt_reuse, 1);
- 		if (fds[nr_fds] =3D=3D -1)
- 			goto close_fds;
- 	}
-@@ -195,7 +195,7 @@ int start_server_addr(const struct sockaddr *addr, sock=
-len_t addrlen, int type)
- }
-=20
- int start_server_setsockopt(const struct sockaddr *addr, socklen_t addrlen=
-, int type,
--			    int *(*setsockopt)(int fd, int val), int val)
-+			    int (*setsockopt)(int fd, int val), int val)
- {
- 	return __start_server(type, 0, addr, addrlen, 0, setsockopt, val);
- }
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/=
-selftests/bpf/network_helpers.h
-index 543295230062..0f0f1803e0c8 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -56,7 +56,7 @@ int *start_reuseport_server(int family, int type, const c=
-har *addr_str,
- 			    unsigned int nr_listens);
- int start_server_addr(const struct sockaddr *addr, socklen_t addrlen, int =
-type);
- int start_server_setsockopt(const struct sockaddr *addr, socklen_t addrlen=
-, int type,
--			    int *(*setsockopt)(int fd, int val), int val);
-+			    int (*setsockopt)(int fd, int val), int val);
- void free_fds(int *fds, unsigned int nr_close_fds);
- int connect_to_addr(const struct sockaddr_storage *addr, socklen_t len, in=
-t type);
- int connect_to_fd(int server_fd, int timeout_ms);
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/too=
-ls/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-index 4fee4b343255..0c39170d543a 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-@@ -97,7 +97,7 @@ static int start_server_lo(void)
- 	if (make_sockaddr(AF_INET, "127.0.0.1", 0, &addr, &addrlen))
- 		return -1;
- 	return start_server_setsockopt((struct sockaddr *)&addr, addrlen,
--				       SOCK_STREAM, (void *)setsockopt_loop, 0);
-+				       SOCK_STREAM, setsockopt_loop, 0);
- }
-=20
- static void run_test(int cgroup_fd)
-
+[...]
 
