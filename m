@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-26675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402EB8A37BC
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 23:16:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 412358A37BD
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 23:16:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6337A1C21096
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 21:16:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 723421C211F7
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 21:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B33C14F112;
-	Fri, 12 Apr 2024 21:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB241514FB;
+	Fri, 12 Apr 2024 21:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1eszPsr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l7q0P7MC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957BD14A89;
-	Fri, 12 Apr 2024 21:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4387714F122;
+	Fri, 12 Apr 2024 21:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712956576; cv=none; b=LOEYa7LYQHhGDmMFHFmswYsMjgsytio+14sITHo38QiKbMTB45mWnf6TUhjy6txeSjO0zk7j6+6Dcdz+eMFjc40U2Ew/o7gg0sM8qKLKBUjGBvMtRozuvtiOWnajG29SWbjSfXswTHoqeE2xUR0EUYnu9i6vQox84ToQWhhdM7I=
+	t=1712956579; cv=none; b=HmYgE1jh9myW5xbUWdaaUjnEfw1gN00jc/XWQcE1q/FMXxiDfDO9QKBXyod7zDitlZAZzfc251Wblluv9hxnHHa9JBJh0XFS233Jns4kdWrxUSk4eWn6r0CZgJwOzNKP4gJocBXBdj3gsSfLWRFqx5m9aSXy0idfC3MWTn4m7sM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712956576; c=relaxed/simple;
-	bh=yaRjQzEABL8hzuUckBbpGPbH5cBdTm25T5g2Axc+dyE=;
+	s=arc-20240116; t=1712956579; c=relaxed/simple;
+	bh=q+NUCdJP4mSxrZnr1exlGkXjhSC5UscKjBVbqiYsyl8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CbsR4FpL/BXSO9GQSbLBRhjQV0ivWk4IDte6OVKdW/7XB/rdkZpHy2ngpwQVm28fO/vsGcqFlMsqvjOFC+tlL0vaUti8wAAmq7hrxGdNFpBv/Yta6d3u5CtKVnSKXa2MK9l5Se49IkrGSxlik4M7fe6Hib1FBFeogViXighK8ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1eszPsr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18C9AC113CD;
-	Fri, 12 Apr 2024 21:16:13 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WsaLFsOL2mbzEPVti4zz2ite8QbMGRFIf7x2EAKV/r1ELmey6Eugf82K/Za2ZQ7GEpAPW9yVfxswn8ZJz0Sim4InOaxLig9rLRVrn3u5WwhyQHQayUWw5zKngScp7oH9ISJIk3opTwvk4bobCLQxDLq6sVvFeOAIPiKiBjOFbR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l7q0P7MC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8AE7C3277B;
+	Fri, 12 Apr 2024 21:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712956576;
-	bh=yaRjQzEABL8hzuUckBbpGPbH5cBdTm25T5g2Axc+dyE=;
+	s=k20201202; t=1712956578;
+	bh=q+NUCdJP4mSxrZnr1exlGkXjhSC5UscKjBVbqiYsyl8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l1eszPsrXGfUe0rQFYcdxXixDZ6/c0NrJoVXabWdBupJftCt0avS/NuJNOwN5Y9cy
-	 pvfRk9AbNUujzCftpLNKMosKUGvlhdkKBse0aeV+E/DD7N516odGWRTvtRqow5Jx3S
-	 zryXemfp0e/vlnkha9b3qimfb8ig8jGMs9fgjTx28cUDQEDSVAzNw7whxAFp4/YCv9
-	 oHG3kcn51VfmvaaCy/Blgwc0gcy3LYMOMULtsH5s72K+k4SpMTRTsQBdS2N3OaX375
-	 HKmh7/eqhF/DzXl+lXqfOr7Cp6YNwqqze4wObeYCPZxXncwpEYnCOFFUYua9qOgYBO
-	 rvzIxCRuRNrcw==
+	b=l7q0P7MCw73jhvIxiHLfQnRbmRLRpbj2hmXhVt8mSCWa6hQWfsPIb8BLrfc8VSWN/
+	 njEqoz/iM3bBuYZswtbXHzvt86/pS48V8GvJ8N6oL0JO/5eq4PsjqygjqXYmnY9cFQ
+	 ytTCDeKqds2uVklLoSPZjWRj4INb4bZEHw+4IDzC8iGf30GQkaLFQkwHv3aP69zEli
+	 Jd+FQOhUhB69lhs/Rwjj106X1dtXAl7+zX0qe7Twru0/OhBg4D6VGTYLif5X/0f9+U
+	 IG4uGdbRb9OgORNaturR1RPBHOpSWL+eXsBsXJjcrXrt6p/OQd7zjZIHv6c5ZjuMQe
+	 Uc4lM7GPIBnyQ==
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: dwarves@vger.kernel.org
 Cc: Jiri Olsa <jolsa@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	Kui-Feng Lee <kuifeng@fb.com>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH 02/12] pahole: Disable BTF multithreaded encoded when doing reproducible builds
-Date: Fri, 12 Apr 2024 18:15:54 -0300
-Message-ID: <20240412211604.789632-3-acme@kernel.org>
+Subject: [PATCH 03/12] dwarf_loader: Separate creating the cu/dcu pair from processing it
+Date: Fri, 12 Apr 2024 18:15:55 -0300
+Message-ID: <20240412211604.789632-4-acme@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240412211604.789632-1-acme@kernel.org>
 References: <20240412211604.789632-1-acme@kernel.org>
@@ -68,174 +68,67 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Reproducible builds need to produce BTF that have the same ids, which is
-not possible at the moment to do in parallel with libbpf, so serialize
-the encoding.
-
-The next patches will also make sure that DWARF while being read in
-parallel into internal representation for later BTF encoding has its CU
-(Compile Units) fed to the BTF encoder in the same order as it is in the
-DWARF file, this way we'll produce the same BTF output no matter how
-many threads are used to read BTF.
-
-Then we'll make sure we have tests in place that compare the output of
-parallel BTF encoding (well, just the DWARF loading part, maybe the BTF
-in the future), i.e. when using 'pahole -j' with the one obtained when
-doing single threaded encoding.
-
-Testing it on a:
-
-  # grep -m1 "model name" /proc/cpuinfo
-  model name	: 13th Gen Intel(R) Core(TM) i7-1365U
-  ~#
-
-I.e. 2 performance cores (4 threads) + 8 efficiency cores.
-
-From:
-
-  $ perf stat -r5 pahole -j --btf_encode_detached=vmlinux.btf.parallel vmlinux
-
-   Performance counter stats for 'pahole -j --btf_encode_detached=vmlinux.btf.parallel vmlinux' (5 runs):
-
-         17,187.27 msec task-clock:u       #    6.153 CPUs utilized   ( +-  0.34% )
-  <SNIP>
-            2.7931 +- 0.0336 seconds time elapsed  ( +-  1.20% )
-
-  $
-
-To:
-
-  $ perf stat -r5 pahole -j --reproducible_build --btf_encode_detached=vmlinux.btf.parallel.reproducible_build vmlinux
-
-   Performance counter stats for 'pahole -j --reproducible_build --btf_encode_detached=vmlinux.btf.parallel.reproducible_build vmlinux' (5 runs):
-
-         14,654.06 msec task-clock:u       #    3.507 CPUs utilized   ( +-  0.45% )
-  <SNIP>
-            4.1787 +- 0.0344 seconds time elapsed  ( +-  0.82% )
-
-  $
-
-Which is still a nice improvement over doing it completely serially:
-
-  $ perf stat -r5 pahole --btf_encode_detached=vmlinux.btf.serial vmlinux
-
-   Performance counter stats for 'pahole --btf_encode_detached=vmlinux.btf.serial vmlinux' (5 runs):
-
-          7,506.93 msec task-clock:u       #    1.000 CPUs utilized   ( +-  0.13% )
-  <SNIP>
-            7.5106 +- 0.0115 seconds time elapsed  ( +-  0.15% )
-
-  $
-
-  $ pahole vmlinux.btf.parallel > /tmp/parallel
-  $ pahole vmlinux.btf.parallel.reproducible_build > /tmp/parallel.reproducible_build
-  $ diff -u /tmp/parallel /tmp/parallel.reproducible_build | wc -l
-  269920
-  $ pahole --sort vmlinux.btf.parallel > /tmp/parallel.sorted
-  $ pahole --sort vmlinux.btf.parallel.reproducible_build > /tmp/parallel.reproducible_build.sorted
-  $ diff -u /tmp/parallel.sorted /tmp/parallel.reproducible_build.sorted | wc -l
-  0
-  $
-
-The BTF ids continue to be undeterministic, as we need to process the
-CUs (compile unites) in the same order that they are on vmlinux:
-
-  $ bpftool btf dump file vmlinux.btf.serial > btfdump.serial
-  $ bpftool btf dump file vmlinux.btf.parallel.reproducible_build > btfdump.parallel.reproducible_build
-  $ bpftool btf dump file vmlinux.btf.parallel > btfdump.parallel
-  $ diff -u btfdump.serial btfdump.parallel | wc -l
-  624144
-  $ diff -u btfdump.serial btfdump.parallel.reproducible_build | wc -l
-  594622
-  $ diff -u btfdump.parallel.reproducible_build btfdump.parallel | wc -l
-  623355
-  $
-
-The BTF ids don't match, we'll get them to match at the end of this
-patch series:
-
-  $ tail -5 btfdump.serial
-  	type_id=127124 offset=219200 size=40 (VAR 'rt6_uncached_list')
-  	type_id=11760 offset=221184 size=64 (VAR 'vmw_steal_time')
-  	type_id=13533 offset=221248 size=8 (VAR 'kvm_apic_eoi')
-  	type_id=13532 offset=221312 size=64 (VAR 'steal_time')
-  	type_id=13531 offset=221376 size=68 (VAR 'apf_reason')
-  $ tail -5 btfdump.parallel.reproducible_build
-  	type_id=113812 offset=219200 size=40 (VAR 'rt6_uncached_list')
-  	type_id=87979 offset=221184 size=64 (VAR 'vmw_steal_time')
-  	type_id=127391 offset=221248 size=8 (VAR 'kvm_apic_eoi')
-  	type_id=127390 offset=221312 size=64 (VAR 'steal_time')
-  	type_id=127389 offset=221376 size=68 (VAR 'apf_reason')
-  $
-
-Now to make it process the CUs in order, that should get everything
-straight without hopefully not degrading it further too much.
+We will need it so that we add the dcu to a list in the same order as
+the CUs are in the DWARF file (vmlinux mostly).
 
 Cc: Alan Maguire <alan.maguire@oracle.com>
 Cc: Kui-Feng Lee <kuifeng@fb.com>
 Cc: Thomas Weißschuh <linux@weissschuh.net>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- pahole.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+ dwarf_loader.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/pahole.c b/pahole.c
-index 96e153432fa212a5..fcb4360f11debeb9 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -3173,6 +3173,14 @@ struct thread_data {
- 	struct btf_encoder *encoder;
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 1dffb3f433cb7c8e..125e361ef2bf3f7b 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -3207,8 +3207,7 @@ struct dwarf_thread {
+ 	void			*data;
  };
  
-+static int pahole_threads_prepare_reproducible_build(struct conf_load *conf, int nr_threads, void **thr_data)
-+{
-+	for (int i = 0; i < nr_threads; i++)
-+		thr_data[i] = NULL;
-+
-+	return 0;
-+}
-+
- static int pahole_threads_prepare(struct conf_load *conf, int nr_threads, void **thr_data)
+-static int dwarf_cus__create_and_process_cu(struct dwarf_cus *dcus, Dwarf_Die *cu_die,
+-					    uint8_t pointer_size, void *thr_data)
++static struct dwarf_cu *dwarf_cus__create_cu(struct dwarf_cus *dcus, Dwarf_Die *cu_die, uint8_t pointer_size)
  {
- 	int i;
-@@ -3283,7 +3291,10 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
- 				thread->btf = btf_encoder__btf(btf_encoder);
- 			}
- 		}
--		pthread_mutex_unlock(&btf_lock);
-+
-+		// Reproducible builds don't have multiple btf_encoders, so we need to keep the lock until we encode BTF for this CU.
-+		if (thr_data)
-+			pthread_mutex_unlock(&btf_lock);
+ 	/*
+ 	 * DW_AT_name in DW_TAG_compile_unit can be NULL, first seen in:
+@@ -3218,17 +3217,32 @@ static int dwarf_cus__create_and_process_cu(struct dwarf_cus *dcus, Dwarf_Die *c
+ 	const char *name = attr_string(cu_die, DW_AT_name, dcus->conf);
+ 	struct cu *cu = cu__new(name ?: "", pointer_size, dcus->build_id, dcus->build_id_len, dcus->filename, dcus->conf->use_obstack);
+ 	if (cu == NULL || cu__set_common(cu, dcus->conf, dcus->mod, dcus->elf) != 0)
+-		return DWARF_CB_ABORT;
++		return NULL;
  
- 		if (!btf_encoder) {
- 			ret = LSK__STOP_LOADING;
-@@ -3319,6 +3330,8 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
- 			exit(1);
- 		}
- out_btf:
-+		if (!thr_data) // See comment about reproducibe_build above
-+			pthread_mutex_unlock(&btf_lock);
- 		return ret;
- 	}
- #if 0
-@@ -3689,8 +3702,14 @@ int main(int argc, char *argv[])
+ 	struct dwarf_cu *dcu = dwarf_cu__new(cu);
  
- 	conf_load.steal = pahole_stealer;
- 	conf_load.thread_exit = pahole_thread_exit;
--	conf_load.threads_prepare = pahole_threads_prepare;
--	conf_load.threads_collect = pahole_threads_collect;
-+
-+	if (conf_load.reproducible_build) {
-+		conf_load.threads_prepare = pahole_threads_prepare_reproducible_build;
-+		conf_load.threads_collect = NULL;
-+	} else {
-+		conf_load.threads_prepare = pahole_threads_prepare;
-+		conf_load.threads_collect = pahole_threads_collect;
+-	if (dcu == NULL)
+-		return DWARF_CB_ABORT;
++	if (dcu == NULL) {
++		cu__delete(cu);
++		return NULL;
 +	}
  
- 	// Make 'pahole --header type < file' a shorter form of 'pahole -C type --count 1 < file'
- 	if (conf.header_type && !class_name && prettify_input) {
+ 	dcu->type_unit = dcus->type_dcu;
+ 	cu->priv = dcu;
+ 	cu->dfops = &dwarf__ops;
+ 
++	return dcu;
++}
++
++static int dwarf_cus__create_and_process_cu(struct dwarf_cus *dcus, Dwarf_Die *cu_die,
++					    uint8_t pointer_size, void *thr_data)
++{
++	struct dwarf_cu *dcu = dwarf_cus__create_cu(dcus, cu_die, pointer_size);
++
++	if (dcu == NULL)
++		return DWARF_CB_ABORT;
++
++	struct cu *cu = dcu->cu;
++
+ 	if (die__process_and_recode(cu_die, cu, dcus->conf) != 0 ||
+ 	    cus__finalize(dcus->cus, cu, dcus->conf, thr_data) == LSK__STOP_LOADING)
+ 		return DWARF_CB_ABORT;
 -- 
 2.44.0
 
