@@ -1,206 +1,218 @@
-Return-Path: <bpf+bounces-26610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E24C38A2632
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 08:07:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D0A8A28F7
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 10:14:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDC851C23BCB
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 06:07:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D233B23855
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 08:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51643224FB;
-	Fri, 12 Apr 2024 06:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7207C4F5ED;
+	Fri, 12 Apr 2024 08:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="YrwtIkIx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsbuqPSj"
 X-Original-To: bpf@vger.kernel.org
-Received: from PR0P264CU014.outbound.protection.outlook.com (mail-francecentralazon11022019.outbound.protection.outlook.com [52.101.167.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBD83F9CC;
-	Fri, 12 Apr 2024 06:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712902044; cv=fail; b=HeXeoldBnw9rcmp8q8S+qeVadKvqBqLBifWZS8UmG4+1OTwR3luaNDUp6NgyYPWed12FU64toeKF2RwA6KDQl4VNhkyCgEBsIrxdL/8Mq7JQljmQuUa/EJq9MY6LTdfRqIyMtHaXx6VMFUvPRluZCrXUCuo+WJbllbf49IBMj7E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712902044; c=relaxed/simple;
-	bh=VCtLZZmUM4apZPEn/X9Sc5KLnL2dyWx2scMhnNFp8jg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qt/jz4lnIGDW1naJeTi6UQzvE1F8nnj6/O5qid8wvVb8LX4tU2wA1IMvwHPFD+RwdLxUnchbkVIj4MytjjgZfqQf9rD0EkJyjKmoMz+HkNwCt2C0kfhv2eU3VW7mDaqe183K6E09GfNcgKgPv8QQBGc8OnJRAInJZbcJxC6+siI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=YrwtIkIx; arc=fail smtp.client-ip=52.101.167.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G7k412+CwiWXy21ulu6VQy0QzlRA1+LEnVfC9bb8GDF+ia/icwsRnbgv0SW/ZQMAImDQql9t0/z4NNS7y0XDGonNnTi/FgRqgRRJDZOay+weyjQ2KIKMljcXaBPPUABrhcDAOQBIB1eCBGnnoA3PTBRFdXRU5/3t+yZHfaI+XyY00tfqZd01J1fQzQiDZrXEDl30oeyTjuOyfDXft/+1+auTITVGG+bnDyrIrbHYHhIzMrg27atGuWhSBrd6NbczvKCUhV3IxveepU8yXziln3Z2QddjtAX2vsaZe8TSyVrRR9Dj0WsPtygx9jOE+Sk3kYeHr1CRLQKSEdZdo7f6NQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VCtLZZmUM4apZPEn/X9Sc5KLnL2dyWx2scMhnNFp8jg=;
- b=EoPKE/LrZ9p9XqpHM4SVmJ0V+RrBIgB7Tdn0lUcMXmHCIvCmgtI+JhU0RZA6GNcsCX/QskabcpoxlLzbBZYP4E5tmZkGx6pxWRew2gDXg1r1it9X/OL8fjNdZJ9/GHY3xJ0DEYnenJkZOoj0w9LJ91WC3It/T6s9Kbdzcx0K2e9kMdZxf53sgp1QBAuHCJ9n+ae9RsVlYrM+JEgk4dfQFartWffNmJJEtEQIpaQKmT9+C6POLrPTr4XDLuor9wifgj/hfvu6+AiKrJjJCnb8H8jgecFYYnFTlI/tETcjLCQ/zP+QjkjWx+z832/Fb7IkPgwqrL+SVtWHTDuZBOmpFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VCtLZZmUM4apZPEn/X9Sc5KLnL2dyWx2scMhnNFp8jg=;
- b=YrwtIkIxnLGFjUQ5u70frnHSntwEUiGb6FTsQSd5aJWz85TL/j3Lh3H5yrVLOoWeDfSwAyk8IImbjMI5gtL+yF50cooVScLO2KkrDP7Yy1DlXJWNT73n28SfOos2ejieZXuxBNj82shj1XewMejY82H4uuDqP9/E3h5W7o5j1Np2wyfMTptMFHSKtUf9HHCn/axyySzCFjCRuYsabt5E1MIyFHTfpKElOIDIl953CNXGTS8uABfk4XoSXjB6tm54Ku4Ln4F2awVyrAvpxun8DeCzUnZgHzt7jBu7Hm6hHycKoKFQZGTVYnTptkbsxpNBDrWb+Oh3CiwGKDZ/oytrYw==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB3626.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:145::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Fri, 12 Apr
- 2024 06:07:19 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1f75:cb9f:416:4dbb]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1f75:cb9f:416:4dbb%7]) with mapi id 15.20.7409.053; Fri, 12 Apr 2024
- 06:07:19 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Mike Rapoport <rppt@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski
-	<luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Catalin Marinas
-	<catalin.marinas@arm.com>, Christoph Hellwig <hch@infradead.org>, Helge
- Deller <deller@gmx.de>, Lorenzo Stoakes <lstoakes@gmail.com>, Luis
- Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>, Michael Ellerman <mpe@ellerman.id.au>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, Steven
- Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-mm@kvack.org"
-	<linux-mm@kvack.org>, "linux-modules@vger.kernel.org"
-	<linux-modules@vger.kernel.org>, "linux-parisc@vger.kernel.org"
-	<linux-parisc@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-trace-kernel@vger.kernel.org"
-	<linux-trace-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [RFC PATCH 2/7] mm: vmalloc: don't account for number of nodes
- for HUGE_VMAP allocations
-Thread-Topic: [RFC PATCH 2/7] mm: vmalloc: don't account for number of nodes
- for HUGE_VMAP allocations
-Thread-Index: AQHajCouSrFGoyjUSEe9FLrHXKhqTrFkJwQA
-Date: Fri, 12 Apr 2024 06:07:19 +0000
-Message-ID: <9217c95a-39f6-49ce-9857-ee2eebdb7a16@csgroup.eu>
-References: <20240411160526.2093408-1-rppt@kernel.org>
- <20240411160526.2093408-3-rppt@kernel.org>
-In-Reply-To: <20240411160526.2093408-3-rppt@kernel.org>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3626:EE_
-x-ms-office365-filtering-correlation-id: 0074e096-56fa-4d8f-0d49-08dc5ab6cfbd
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- izsbZpA25isfwXRGocYvvL7cti9peX23dC+0ucoZNh2zg1Dq/PL0LhmMipH8XUZVUyneyJ5uNQqceMG6ROswFFJqfO3u+VFIpxOXE9CWU7S2tL8eKEOVbFUn34EPyPond8xkV6kcYg+e/+3hVo0rNtuhqEqblxspKvwSQ1qNccn/nAnjaCcyqnD0P4yIRk+bIZDe+LKtdowhukpSncm6G0W9zX5pPpL9/Eyd3OktYxngGK9W18g+jcYKEAmj6yf6srPfLuVssSyTGcbTt1akWFhAmJbUVNAgm7JH7BXbw2Mm0kNOff+ulmhFzk4UQYl1QZDqP8YCh7CAbEqcIurEQlnd5mwkxNzf7h94r7gsPGi7VPRWHj4gW5Nundxg0or6w9dcYBEsYitHQntDEV2Z3EbbYyi9GU9iK8vhE4cdGKtYxdW5Vms2zbTX5xOj12Bh7mQpc+R2Y693FeqrGl9v7LbRQOYoTAzLUbo/XGyP8F8YAwoxBOAjhC9ibFwwuHLt+IK4eE8LDPjg4msA4YlvTYOAObhHi08zfv0b683LHUIW4W+pdP4SBC6wpTAhS7AXe5t1POFTcRaHsiMynCsuRXPjX/K6hRcPPIVqvEYuSELLvRgS/zrOfiNnDte1CxrXVqynrpT2YplrHUEz8doDExj0c+Mm9hPSgQhv45DhT3Mv5QMWYMreaZOSz3uX/HWMqK1t08iuQz4flUcIFK/j6pf3wTxL2Zd20R/NQ5D05HI=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TTYrUE4yTC9taTVLWEtWUGd0MHpqY2pYL3FST09Yb2t4K3QwNHVDZzFzYTNS?=
- =?utf-8?B?WncxK0lnY0x3cWRtS0ZzU2p1eFBXQmFTZDA3YXFvMUpQZE9LRStJZXlxZG51?=
- =?utf-8?B?UFZjR1VFK1RWNlRwUzdZTU5ORFI4ZTcvTGVmVFhLN1hsN2ZMZGExQURhWHph?=
- =?utf-8?B?QklGRUJuVmJUUW51amN0M0RXdnNGdHVsWFlSN2psRnFKSkRnUnZPeWdyRHJp?=
- =?utf-8?B?M1VKdVpKTDEwRmp2Smx0eDlVL3ljNWh5VTdUY2dSUW1BSVE0ejQ0SmVWWndE?=
- =?utf-8?B?RTRDQWxESUFhVWV4R0xWbU8rM1gxc3FCcFlGMkFEQ0pYNjdmN1Y1ZmFJQlJy?=
- =?utf-8?B?UlovY1p5eUZqUTBxdHNuRUQ1emxzQ3Q4UlRQa0JvOTlMTHJZVUI1WlZkKzRK?=
- =?utf-8?B?cXQ4akhrY1YwbEpPQ1VCNHBSMFFpUnFYVGJwL1U3QkFsc0JUc0VsNGhnQ2kz?=
- =?utf-8?B?YTROV1hSUnRGUmQ4NllNVXlyVElpQ3BNSGdtNy8zbk8zWERoSzdEV1ZWdFZw?=
- =?utf-8?B?MWd6WUFzYlZPM1NlNmxGSUxZdWtuVjVOWUNDZzVkc0RxNUg0U1czL2dtL3Zq?=
- =?utf-8?B?TU44ZVJnWlF6d3VtTmtMcXBPSVgzMDJWMEwxMnFEbGhjdndoMmdVWktjeTZu?=
- =?utf-8?B?YmVZNWo2VElqZjRBS0tkbWowLzlqZEFnbjlxamVkckg5K1RUSWlvcURUNVdo?=
- =?utf-8?B?WG5yZVBtWmhpVkpHd20zaXhpTUo0dHJDcU9hZ3Q5S1JXMktFZ2FJMkR1OU9M?=
- =?utf-8?B?Y25LUm5tWHN0OHdsSGlFSEwrOUZNQXNRRDZmNFNvTVBxV0k2L3ZxNmhncEpz?=
- =?utf-8?B?dVRIMWtkb0I3WUczYmRmN01QeGVQOTJGSzRTN0VtM1EyWDV3MEZhNnhicHRW?=
- =?utf-8?B?UFpueHFuOVFrOUhZSENuMlV4M2lIcHBwNzYxT3VsK1FlSU05blhjVmoxc2M3?=
- =?utf-8?B?eW5yaUVZNjdNd1RpSnBpUlVYdkJzaG44Z3pxZERUcEJ3d2ZIbkYrTVlkbUtL?=
- =?utf-8?B?VlhRblMrcC9GeHNxZUluQkJCWjhLVDB0ckE4WmswbllUbFVpMkFRVkZaYTdM?=
- =?utf-8?B?QXJMbzRkTUFFVWVvMWlGS081eVIra2drRFltRDZaeE5LZUNzVGZaa21MN2R6?=
- =?utf-8?B?dGtoSWN5UXJ4S29NMk1pL1V3UmQrU2JZSEFicC9xRDhsTnMwTG9qY3RmWGUv?=
- =?utf-8?B?Tmp6WDFFR3Npbk0wNXByZ2tQMjlsL0RabFkyL3cyenlBNFVrVUIrNk4yTDZD?=
- =?utf-8?B?dU5NTjNHbWNGMkVsNWgwKzh0Ym1PNGpzcjZzeDNGdCtQcWFwb0d2RE5rRjVX?=
- =?utf-8?B?MDc1a052ZGNpQWF3WS9KVHo5Y2xGSkJpVDJZZFhxU0w5UWJVZkJ2Z2gyNHNa?=
- =?utf-8?B?SHBTd2tmS1BjSjlZcU5jN2dEQTJncGpwMllOVS9Gd1ovL05nWGswYW5EMkVp?=
- =?utf-8?B?UllTRi9wanFRMTd6bjZrRDF6Q2VIQUtCZjVGREVvMjRZUTBiaE9WcWlGMUFB?=
- =?utf-8?B?U1NqYmFVZHdCL1ZKcTgycVVwN3FCYjh2MzYwVmF5TFAyY3E5VlNOUmhGSmV4?=
- =?utf-8?B?bXpSbVBTMVZ2bWtDLzJzdkM1eld2TjNzUmUzMDJtbkkxMzZjWWgrQnZQVXJl?=
- =?utf-8?B?TmtMRmhqZTZIbjhoYlhEVncxb0w3emhuZGZneFVZQk13MUJUZkd2LzkwbnZD?=
- =?utf-8?B?aUptdFJ3Uk51bFRTQ3o1UjZadVVpTlRoeEZ3UENPU3VWSGVTNzd2bElWZlRl?=
- =?utf-8?B?WE5RR0NHb2o4N0h2Q2NYTXZBRHQ2YnkxV2IwaTU1T1VhR2RqSW1SRmU1Q01M?=
- =?utf-8?B?T1c5MHU3Ym9xMTQ1TnFwNjdnN0dmQ283SnVIUitva3UzaXBZLy9KUGY5WXdE?=
- =?utf-8?B?Um5YZG5EcGo0aUdJMnZiOVNEaCswTnE1YnZLQ2NkUVFoWHFxUWQwRGN1WTNo?=
- =?utf-8?B?TVdmVVg1c1k1YWJOSC9rOVlaQmRCOUx2RFhZSmVpWkphOGpHb0N6Mnl5c0pJ?=
- =?utf-8?B?dkRxRzhiTzBrQW9PUUFNdVVabkVxOWs5SG84ZE5mcmVwMDNTeU5WTXFqZmNI?=
- =?utf-8?B?SGJlRXFxNHB1S3NCN1d5WmZBTG9UMzcyeHBSMW8zaVlBQU1DNU1Wd3V5bmhX?=
- =?utf-8?B?WDFTSlkvaTFWSUIvSkdydlBuNzBEU3FaMDdFZ25IM1c2ZWpCaG96cDBpMkJv?=
- =?utf-8?B?L0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <89340A390489FE418D98F718ABAD4B26@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D65182DF;
+	Fri, 12 Apr 2024 08:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712909688; cv=none; b=eGs+AS4U1YsQ3+7G6ya3fECnLk3prDcaWD5eACd0cmSJd7e1lgtBmwfha7UnySF2uEEjQANFZKZDDt+ftdikox6tfaUJJcEeR/6X0H5HJ+lYY2adt84ryV7ZuCw7AG5/IqK6E01WhxKVRa1iFeW3J/QsPqen6qxMKymOmB/Phdc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712909688; c=relaxed/simple;
+	bh=a0qLjKxBtHOgn5g9o5nOx2EYCPyMSiqw+0xX4M9kGIc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+R4NT95LaO/2Kr5WNSNfdXZpy0PNpP+l+BwEZSib/ajj1TCUwWgRoYfr/D99xuHsX/0nsbKnuy3WbGzfXhb3b07AEOD+nY2SjSFvv7U0MhEauqwkMHOcFyMN8iM7kdiaNZu7NSSLrKzruog8WkdxklJu91cjLkkk5XqaI0XpSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsbuqPSj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4BC2C113CC;
+	Fri, 12 Apr 2024 08:14:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712909687;
+	bh=a0qLjKxBtHOgn5g9o5nOx2EYCPyMSiqw+0xX4M9kGIc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VsbuqPSjh+B2tJ+Uyah1zXHR6JlX4N5f8YbdxPNONWaEBIATj8ttmX1l5FLu7ueHz
+	 AYmgnLICRoHKgEpYpJiqcvLMGJNGMtoAuoUZxA3nlGCar6T2YPbCiVf9YjoXPc3Qom
+	 cvqwyvrPL2IWYCn5jncvbetK86nSvdXXBelSagCeM+dBECRqKeX/SJ/G2DTa8Z/znm
+	 XDc2J/wrtWTkXmllHmI/5SpiOj5C+e5cI3J0xZHZgb3xXdVSITD5VUDtFgSA0SG8sO
+	 Cluol/CW6q17bNjTrBqxE+uTZJfxYJHyG6XZcSEVMk8ZNxwAvaFh+I/FRCcSysVB1Z
+	 4KR3Bs2MKy2hw==
+Date: Fri, 12 Apr 2024 10:14:40 +0200
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v6 2/6] bpf: Add support for
+ KF_ARG_PTR_TO_TIMER
+Message-ID: <ujmvbzbu4yzubk5jvpy5saclqi2yhwu7c6fsgs4dinvzekazh2@khwefybboea2>
+References: <20240408-hid-bpf-sleepable-v6-0-0499ddd91b94@kernel.org>
+ <20240408-hid-bpf-sleepable-v6-2-0499ddd91b94@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0074e096-56fa-4d8f-0d49-08dc5ab6cfbd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2024 06:07:19.5069
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Yq5Ymt19cJDsoLY25zKtmPvXU0rgWBmXhHy/D5kncbqWx7FlrTMN9Z1HWfzvLyp+U8CRCTN7eOfrUGLCaBMlx5mbRNwuH7MAlURd9neCIOc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3626
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408-hid-bpf-sleepable-v6-2-0499ddd91b94@kernel.org>
 
-DQoNCkxlIDExLzA0LzIwMjQgw6AgMTg6MDUsIE1pa2UgUmFwb3BvcnQgYSDDqWNyaXTCoDoNCj4g
-RnJvbTogIk1pa2UgUmFwb3BvcnQgKElCTSkiIDxycHB0QGtlcm5lbC5vcmc+DQo+IA0KPiB2bWFs
-bG9jIGFsbG9jYXRpb25zIHdpdGggVk1fQUxMT1dfSFVHRV9WTUFQIHRoYXQgZG8gbm90IGV4cGxp
-Y3RseQ0KPiBzcGVjaWZ5IG5vZGUgSUQgd2lsbCB1c2UgaHVnZSBwYWdlcyBvbmx5IGlmIHNpemVf
-cGVyX25vZGUgaXMgbGFyZ2VyIHRoYW4NCj4gUE1EX1NJWkUuDQo+IFN0aWxsIHRoZSBhY3R1YWwg
-YWxsb2NhdGVkIG1lbW9yeSBpcyBub3QgZGlzdHJpYnV0ZWQgYmV0d2VlbiBub2RlcyBhbmQNCj4g
-dGhlcmUgaXMgbm8gYWR2YW50YWdlIGluIHN1Y2ggYXBwcm9hY2guDQo+IE9uIHRoZSBjb250cmFy
-eSwgQlBGIGFsbG9jYXRlcyBQTURfU0laRSAqIG51bV9wb3NzaWJsZV9ub2RlcygpIGZvciBlYWNo
-DQo+IG5ldyBicGZfcHJvZ19wYWNrLCB3aGlsZSBpdCBjb3VsZCBkbyB3aXRoIFBNRF9TSVpFJ2Vk
-IHBhY2tzLg0KPiANCj4gRG9uJ3QgYWNjb3VudCBmb3IgbnVtYmVyIG9mIG5vZGVzIGZvciBWTV9B
-TExPV19IVUdFX1ZNQVAgd2l0aA0KPiBOVU1BX05PX05PREUgYW5kIHVzZSBodWdlIHBhZ2VzIHdo
-ZW5ldmVyIHRoZSByZXF1ZXN0ZWQgYWxsb2NhdGlvbiBzaXplDQo+IGlzIGxhcmdlciB0aGFuIFBN
-RF9TSVpFLg0KDQpQYXRjaCBsb29rcyBvayBidXQgbWVzc2FnZSBpcyBjb25mdXNpbmcuIFdlIGFs
-c28gdXNlIGh1Z2UgcGFnZXMgYXQgUFRFIA0Kc2l6ZSwgZm9yIGluc3RhbmNlIDUxMmsgcGFnZXMg
-b3IgMTZrIHBhZ2VzIG9uIHBvd2VycGMgOHh4LCB3aGlsZSANClBNRF9TSVpFIGlzIDRNLg0KDQpD
-aHJpc3RvcGhlDQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1pa2UgUmFwb3BvcnQgKElCTSkgPHJw
-cHRAa2VybmVsLm9yZz4NCj4gLS0tDQo+ICAgbW0vdm1hbGxvYy5jIHwgOSArKy0tLS0tLS0NCj4g
-ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL21tL3ZtYWxsb2MuYyBiL21tL3ZtYWxsb2MuYw0KPiBpbmRleCAyMmFhNjNm
-NGVmNjMuLjVmYzhiNTE0ZTQ1NyAxMDA2NDQNCj4gLS0tIGEvbW0vdm1hbGxvYy5jDQo+ICsrKyBi
-L21tL3ZtYWxsb2MuYw0KPiBAQCAtMzczNyw4ICszNzM3LDYgQEAgdm9pZCAqX192bWFsbG9jX25v
-ZGVfcmFuZ2UodW5zaWduZWQgbG9uZyBzaXplLCB1bnNpZ25lZCBsb25nIGFsaWduLA0KPiAgIAl9
-DQo+ICAgDQo+ICAgCWlmICh2bWFwX2FsbG93X2h1Z2UgJiYgKHZtX2ZsYWdzICYgVk1fQUxMT1df
-SFVHRV9WTUFQKSkgew0KPiAtCQl1bnNpZ25lZCBsb25nIHNpemVfcGVyX25vZGU7DQo+IC0NCj4g
-ICAJCS8qDQo+ICAgCQkgKiBUcnkgaHVnZSBwYWdlcy4gT25seSB0cnkgZm9yIFBBR0VfS0VSTkVM
-IGFsbG9jYXRpb25zLA0KPiAgIAkJICogb3RoZXJzIGxpa2UgbW9kdWxlcyBkb24ndCB5ZXQgZXhw
-ZWN0IGh1Z2UgcGFnZXMgaW4NCj4gQEAgLTM3NDYsMTMgKzM3NDQsMTAgQEAgdm9pZCAqX192bWFs
-bG9jX25vZGVfcmFuZ2UodW5zaWduZWQgbG9uZyBzaXplLCB1bnNpZ25lZCBsb25nIGFsaWduLA0K
-PiAgIAkJICogc3VwcG9ydGluZyB0aGVtLg0KPiAgIAkJICovDQo+ICAgDQo+IC0JCXNpemVfcGVy
-X25vZGUgPSBzaXplOw0KPiAtCQlpZiAobm9kZSA9PSBOVU1BX05PX05PREUpDQo+IC0JCQlzaXpl
-X3Blcl9ub2RlIC89IG51bV9vbmxpbmVfbm9kZXMoKTsNCj4gLQkJaWYgKGFyY2hfdm1hcF9wbWRf
-c3VwcG9ydGVkKHByb3QpICYmIHNpemVfcGVyX25vZGUgPj0gUE1EX1NJWkUpDQo+ICsJCWlmIChh
-cmNoX3ZtYXBfcG1kX3N1cHBvcnRlZChwcm90KSAmJiBzaXplID49IFBNRF9TSVpFKQ0KPiAgIAkJ
-CXNoaWZ0ID0gUE1EX1NISUZUOw0KPiAgIAkJZWxzZQ0KPiAtCQkJc2hpZnQgPSBhcmNoX3ZtYXBf
-cHRlX3N1cHBvcnRlZF9zaGlmdChzaXplX3Blcl9ub2RlKTsNCj4gKwkJCXNoaWZ0ID0gYXJjaF92
-bWFwX3B0ZV9zdXBwb3J0ZWRfc2hpZnQoc2l6ZSk7DQo+ICAgDQo+ICAgCQlhbGlnbiA9IG1heChy
-ZWFsX2FsaWduLCAxVUwgPDwgc2hpZnQpOw0KPiAgIAkJc2l6ZSA9IEFMSUdOKHJlYWxfc2l6ZSwg
-MVVMIDw8IHNoaWZ0KTsNCg==
+On Apr 08 2024, bentiss@kernel.org wrote:
+> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> 
+> Introduce support for KF_ARG_PTR_TO_TIMER. The kfuncs will use bpf_timer
+> as argument and that will be recognized as timer argument by verifier.
+> bpf_timer_kern casting can happen inside kfunc, but using bpf_timer in
+> argument makes life easier for users who work with non-kern type in BPF
+> progs.
+> 
+> Fix up process_timer_func's meta argument usage (ignore if NULL) so that
+> we can share the same checks for helpers and kfuncs. meta argument is
+> only needed to ensure bpf_timer_init's timer and map arguments are
+> coming from the same map (map_uid logic is necessary for correct
+> inner-map handling).
+> 
+> No such concerns will be necessary for kfuncs as timer initialization
+> happens using helpers, hence pass NULL to process_timer_func from kfunc
+> argument handling code to ignore it.
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> 
+> ---
+> 
+> changes in v6:
+> - used Kumar's version of the patch
+> - reverted `+BTF_ID(struct, bpf_timer_kern)`
+
+My bad. While working on bpf_wq I realized I shouldn't have touched this
+part. See below:
+
+> 
+> changes in v5:
+> - also check for the reg offset
+> 
+> changes in v4:
+> - enforce KF_ARG_PTR_TO_TIMER to be of type PTR_TO_MAP_VALUE
+> 
+> new in v3 (split from v2 02/10)
+> ---
+>  kernel/bpf/verifier.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ca6cacf7b42f..ccfe9057d8dc 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7568,12 +7568,16 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
+>  			val + reg->off, map->record->timer_off);
+>  		return -EINVAL;
+>  	}
+> +	/* meta is only needed for bpf_timer_init to match timer and map */
+> +	if (!meta)
+> +		goto out;
+>  	if (meta->map_ptr) {
+>  		verbose(env, "verifier bug. Two map pointers in a timer helper\n");
+>  		return -EFAULT;
+>  	}
+>  	meta->map_uid = reg->map_uid;
+>  	meta->map_ptr = map;
+> +out:
+>  	return 0;
+>  }
+>  
+> @@ -10826,6 +10830,7 @@ enum {
+>  	KF_ARG_LIST_NODE_ID,
+>  	KF_ARG_RB_ROOT_ID,
+>  	KF_ARG_RB_NODE_ID,
+> +	KF_ARG_TIMER_ID,
+>  };
+>  
+>  BTF_ID_LIST(kf_arg_btf_ids)
+> @@ -10834,6 +10839,7 @@ BTF_ID(struct, bpf_list_head)
+>  BTF_ID(struct, bpf_list_node)
+>  BTF_ID(struct, bpf_rb_root)
+>  BTF_ID(struct, bpf_rb_node)
+> +BTF_ID(struct, bpf_timer_kern)
+
+As Kumar originally put, this should be BTF_ID(struct, bpf_timer), and
+he explained everything in the commit message. I was just too dumb to
+understand it properly.
+
+(Adding a comment here in case we want to extend bpf_timer API in the
+future, and so this patch will be useful).
+
+Cheers,
+Benjamin
+
+>  
+>  static bool __is_kfunc_ptr_arg_type(const struct btf *btf,
+>  				    const struct btf_param *arg, int type)
+> @@ -10877,6 +10883,11 @@ static bool is_kfunc_arg_rbtree_node(const struct btf *btf, const struct btf_par
+>  	return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_RB_NODE_ID);
+>  }
+>  
+> +static bool is_kfunc_arg_timer(const struct btf *btf, const struct btf_param *arg)
+> +{
+> +	return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_TIMER_ID);
+> +}
+> +
+>  static bool is_kfunc_arg_callback(struct bpf_verifier_env *env, const struct btf *btf,
+>  				  const struct btf_param *arg)
+>  {
+> @@ -10946,6 +10957,7 @@ enum kfunc_ptr_arg_type {
+>  	KF_ARG_PTR_TO_NULL,
+>  	KF_ARG_PTR_TO_CONST_STR,
+>  	KF_ARG_PTR_TO_MAP,
+> +	KF_ARG_PTR_TO_TIMER,
+>  };
+>  
+>  enum special_kfunc_type {
+> @@ -11102,6 +11114,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+>  	if (is_kfunc_arg_map(meta->btf, &args[argno]))
+>  		return KF_ARG_PTR_TO_MAP;
+>  
+> +	if (is_kfunc_arg_timer(meta->btf, &args[argno]))
+> +		return KF_ARG_PTR_TO_TIMER;
+> +
+>  	if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
+>  		if (!btf_type_is_struct(ref_t)) {
+>  			verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
+> @@ -11735,6 +11750,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>  		case KF_ARG_PTR_TO_CALLBACK:
+>  		case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
+>  		case KF_ARG_PTR_TO_CONST_STR:
+> +		case KF_ARG_PTR_TO_TIMER:
+>  			/* Trusted by default */
+>  			break;
+>  		default:
+> @@ -12021,6 +12037,15 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>  			if (ret)
+>  				return ret;
+>  			break;
+> +		case KF_ARG_PTR_TO_TIMER:
+> +			if (reg->type != PTR_TO_MAP_VALUE) {
+> +				verbose(env, "arg#%d doesn't point to a map value\n", i);
+> +				return -EINVAL;
+> +			}
+> +			ret = process_timer_func(env, regno, NULL);
+> +			if (ret < 0)
+> +				return ret;
+> +			break;
+>  		}
+>  	}
+>  
+> 
+> -- 
+> 2.44.0
+> 
 
