@@ -1,74 +1,45 @@
-Return-Path: <bpf+bounces-26606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075988A2389
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 04:00:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8C8A8A23C4
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 04:30:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752181F235F6
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 02:00:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9996284176
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 02:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510BD522A;
-	Fri, 12 Apr 2024 02:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IgxOBYG8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E36F11190;
+	Fri, 12 Apr 2024 02:30:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF4E5C82
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 02:00:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34760DDAA;
+	Fri, 12 Apr 2024 02:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712887219; cv=none; b=NoMJUm3kPXiaTC0d46A9YderqzfGzJVv8CnioEOFazyEYSp/p+9/veIrh+VVx4ku7aWNpSVh4WIf2OBD+g1FlRhb0+sgPjzToX44zqtRlAngHECEggVzpY9gDQeeDJW3wz3mTgyoYEd7olR+DfD+YrFzzf4/MJRC8cQ9rCbnD9M=
+	t=1712889001; cv=none; b=hNPc637syVox16ywLMT61afxHi2XUdnIuK9tW5mfk4+m9q/LA4Jjl7nXpctRruW+ackiCA32/+8oK8CXjVnOnYa9F/G9haSJfbM03blBxQ3GGNV8HKtGYd91eyfY4R5D+AmF+6riCkojsig12XLWUCxxkJ9CP+/CJagSPVT7ArE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712887219; c=relaxed/simple;
-	bh=Q96wnfKGlMzf0iTN7Jw+6d9092JFnZwYlRFXCrSxWbg=;
+	s=arc-20240116; t=1712889001; c=relaxed/simple;
+	bh=lN9nUDuQTd76FAFSsaPs3BYVE2gIVqoz5FcnCPR5g28=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cVrpQJ8QsdlV9cbjgRxzXANfZzOTe51cBF/DK4FPZHalGrZ9msGbbxsU5te67H2/gWHEMAUkULfnXs8PYyzcnjlY3sYpDnkeYsSrzbRVCdwbILRcyw+Rcifv8fnZJ4AJ5ImMoz6J9BHYzDgO+Goou0ixiye52JGIOc+xiNuRWTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IgxOBYG8; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-617f8a59a24so3522647b3.1
-        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 19:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712887217; x=1713492017; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CAphrgmlYOKLDvp+0mQ/rsxPMVdO0zSigLpJ+c5t62Q=;
-        b=IgxOBYG8Y518P+Rp36O93Yzb1Iw0ItV3YOQKdTu9kqrZNqvc3NoBiHNh4cPjC4GzAY
-         2OICVypxYYFPA+ZTueUhrMbyLvBIH0sD/Orn6dwfwlnuy6CH9iszKtv4ambs65yWg/a0
-         1SQZVgJgZqOH1phuzK91/A39ddQtQzVmDzK3sBTpcQlkZKZn6eHGjZsNkCGUr5213iXq
-         NemcxDpZ5LqAC/W7kTWvXIUfH9kN7aEIxYeByCBUsuwFkwPlCpDN331HEvBa02vJrIoN
-         ONzaEOrCLnbFYqsizxljOKSaLyZC+hUcAlGNYe/gLhIAJLakM+fLJIt5pfa80RmUB++N
-         VPHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712887217; x=1713492017;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAphrgmlYOKLDvp+0mQ/rsxPMVdO0zSigLpJ+c5t62Q=;
-        b=OS4JIg9h3QfSBBlSCZbRuBf/ybk2Zy4qTbM/rGdRUmej+MyUgAhPhmuHN8Kia1EBMm
-         BWoEuF02F+BYcErjBAYQvqYi50ykHmXLHdTLbLzrPyV0MY5J3Wuuq6pR7Ni1Jl3CYuoE
-         aUOU/5qJ56Iob4lTTNKmMH5lnIdgtvOMGaNP2BNkaV6Jdh0Bgf8CDjSX+f9aD4tqfaaY
-         JbKetllrGea7+eQXXAgKPoLpFWP+UnCCrgkSFD0+xw4pAZ2AVdqguEBfxuJFsTMCTmz1
-         sTGy5e4n+qRc/zBvmwlTDs1dZgk77QHsn5qCGWGKaSH9cyUBFnNBlSp7eFBLLI7hRWxp
-         Ng/g==
-X-Forwarded-Encrypted: i=1; AJvYcCX1rtsdDCl7r5gkhDg2LfZr2rWeXxQ5o3W9xE8p9IvTxZnHp1nTv+NZ43KHJ+cXovKcQsNrBxJiJfa60UTgmrYr6BlX
-X-Gm-Message-State: AOJu0Yw/fNOeVdV4Z7vu1kA/STwLUxGlolQIu6usBbtv3LXMdB/phUSN
-	STlwFTHRKP94iQ6lysyVK9G0wScaDM8JGVyHEAQfsqnkzLNAp4Kd
-X-Google-Smtp-Source: AGHT+IH5NuCGKW5QH/Fm49NN0ZMuobDqYvtcCjE+rh+9oNME3lMr7fT3ueFYtrLVI+tjlGSwcT998g==
-X-Received: by 2002:a05:690c:fc6:b0:615:1511:7f7d with SMTP id dg6-20020a05690c0fc600b0061515117f7dmr1557850ywb.41.1712887217449;
-        Thu, 11 Apr 2024 19:00:17 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:9d24:c434:b27b:e59f? ([2600:1700:6cf8:1240:9d24:c434:b27b:e59f])
-        by smtp.gmail.com with ESMTPSA id c9-20020a81e549000000b00617ca37b612sm596839ywm.91.2024.04.11.19.00.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 19:00:17 -0700 (PDT)
-Message-ID: <4754fd2d-e351-4f77-afd7-df13bf6e2479@gmail.com>
-Date: Thu, 11 Apr 2024 19:00:15 -0700
+	 In-Reply-To:Content-Type; b=tiuUoeG+dXIWpM/2SNUKmiI1Yq8Oz1GI14dhbfZ9HFBtV0GSksurre+UOQBhomz6VQ/pAHCHE119B849Qta7/HK6m4ICTh4eb4SM7aIoig74NUsAWFg/zPe/4Dp8nGLkuubh3lp3PzEffBCyUgPW99kCgNTlPHsPXCrGZy/M/44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VG0rr5b9Nz4f3jMh;
+	Fri, 12 Apr 2024 10:29:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id AD8C51A01A7;
+	Fri, 12 Apr 2024 10:29:55 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP3 (Coremail) with SMTP id _Ch0CgA3956inBhm8L9uJg--.9624S2;
+	Fri, 12 Apr 2024 10:29:55 +0800 (CST)
+Message-ID: <25703ec0-f985-4d5f-8bfa-0c070da5b570@huaweicloud.com>
+Date: Fri, 12 Apr 2024 10:29:54 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,98 +47,126 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 06/11] bpf: Find btf_field with the knowledge of
- arrays.
-To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
- <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: kuifeng@meta.com
-References: <20240410004150.2917641-1-thinker.li@gmail.com>
- <20240410004150.2917641-7-thinker.li@gmail.com>
- <3ccb7e3c1b71bfe63606565d0a1b418876b45535.camel@gmail.com>
+Subject: Re: Incorrect BPF stats accounting for fentry on arm64
 Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <3ccb7e3c1b71bfe63606565d0a1b418876b45535.camel@gmail.com>
+To: Ivan Babrou <ivan@cloudflare.com>, bpf <bpf@vger.kernel.org>
+Cc: kernel-team <kernel-team@cloudflare.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org
+References: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgA3956inBhm8L9uJg--.9624S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr13tF15CFW3AFWfAF4xWFg_yoW5uFW7pF
+	48ur90yF48Kry29a4kAwsFyw4Yyan3Jry3G3s8Jwnaya98CryxuFy5A3yYy3y5urWakw1f
+	Z3yjkFWIgFyDAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUglb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3w
+	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
+	xhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
+On 4/12/2024 2:09 AM, Ivan Babrou wrote:
+> Hello,
+> 
+> We're seeing incorrect data for bpf runtime stats on arm64. Here's an example:
+> 
+> $ sudo bpftool prog show id 693110
+> 693110: tracing  name __tcp_retransmit_skb  tag e37be2fbe8be4726  gpl
+> run_time_ns 2493581964213176 run_cnt 1133532 recursion_misses 1
+>      loaded_at 2024-04-10T22:33:09+0000  uid 62727
+>      xlated 312B  jited 344B  memlock 4096B  map_ids 8550445,8550441
+>      btf_id 8726522
+>      pids prometheus-ebpf(2224907)
+> 
+> According to bpftool, this program reported 66555800ns of runtime at
+> one point and then it jumped to 2493581675247416ns just 53s later when
+> we looked at it again. This is happening only on arm64 nodes in our
+> fleet on both v6.1.82 and v6.6.25.
+> 
+> We have two services that are involved:
+> 
+> * ebpf_exporter attaches bpf programs to the kernel and exports
+> prometheus metrics and opentelementry traces driven by its probes
+> * bpf_stats_exporter runs bpftool every 53s to capture bpf runtime metrics
+> 
+> The problematic fentry is attached to __tcp_retransmit_skb, but an
+> identical one is also attached to tcp_send_loss_probe, which does not
+> exhibit the same issue:
+> 
+> SEC("fentry/__tcp_retransmit_skb")
+> int BPF_PROG(__tcp_retransmit_skb, struct sock *sk)
+> {
+>    return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_retransmit_skb);
+> }
+> 
+> SEC("fentry/tcp_send_loss_probe")
+> int BPF_PROG(tcp_send_loss_probe, struct sock *sk)
+> {
+>    return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_send_loss_probe);
+> }
+> 
+> In handle_sk we do a map lookup and an optional ringbuf push. There is
+> no sleeping (I don't think it's even allowed on v6.1). It's
+> interesting that it only happens for the retransmit, but not for the
+> loss probe.
+> 
+> The issue manifests some time after we restart ebpf_exporter and
+> reattach the probes. It doesn't happen immediately, as we need to
+> capture metrics 53s apart to produce a visible spike in metrics.
+> 
+> There is no corresponding spike in execution count, only in execution time.
+> 
+> It doesn't happen deterministically. Some ebpf_exporter restarts show
+> it, some don't.
+> 
+> It doesn't keep happening after ebpf_exporter restart. It happens once
+> and that's it.
+> 
+> Maybe recursion_misses plays a role here? We see none for
+> tcp_send_loss_probe. We do see some for inet_sk_error_report
+> tracepoint, but it doesn't spike like __tcp_retransmit_skb does.
+> 
+> The biggest smoking gun is that it only happens on arm64.
+> 
+> I'm happy to try out patches to figure this one out.
+> 
 
+I guess the issue is caused by the not setting of x20 register
+when __bpf_prog_enter(prog) returns zero.
 
-On 4/11/24 15:14, Eduard Zingerman wrote:
-> On Tue, 2024-04-09 at 17:41 -0700, Kui-Feng Lee wrote:
->> Make btf_record_find() find the btf_field for an offset by comparing the
->> offset with the offset of each element, rather than the offset of the
->> entire array, if a btf_field represents an array. It is important to have
->> support for btf_field arrays in the future.
->>
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
->>   kernel/bpf/syscall.c | 19 +++++++++++++++----
->>   1 file changed, 15 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 543ff0d944e8..1a37731e632a 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -516,11 +516,18 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
->>   static int btf_field_cmp(const void *a, const void *b)
->>   {
->>   	const struct btf_field *f1 = a, *f2 = b;
->> +	int gt = 1, lt = -1;
->>   
->> +	if (f2->nelems == 0) {
->> +		swap(f1, f2);
->> +		swap(gt, lt);
->> +	}
->>   	if (f1->offset < f2->offset)
->> -		return -1;
->> -	else if (f1->offset > f2->offset)
->> -		return 1;
->> +		return lt;
->> +	else if (f1->offset >= f2->offset + f2->size)
->> +		return gt;
->> +	if ((f1->offset - f2->offset) % (f2->size / f2->nelems))
->> +		return gt;
-> 
-> Binary search requires elements to be sorted in non-decreasing order,
-> however usage of '%' breaks this requirement. E.g. consider an array
-> with element size equal to 3:
-> 
->     |  elem #0  |  elem #1  |
->     | 0 | 1 | 2 | 3 | 4 | 5 |
->     ^         ^   ^
->     '         '   '
->     f2        f1  f1'
->     
-> Here f1 > f2, but f1' == f2, while f1' > f1.
-> Depending on whether or not fields can overlap this might not be a problem,
-> but I suggest to rework the comparison function to avoid this confusion.
-> (E.g., find the leftmost field that overlaps with offset being searched for).
+The following patch may help:
 
-Ok! It will match the leftmost one overlapping with the offset. And
-check if the offset aligning with one of the elements in btf_record_find().
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1905,15 +1905,15 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
 
-> 
->>   	return 0;
->>   }
->>   
->> @@ -528,10 +535,14 @@ struct btf_field *btf_record_find(const struct btf_record *rec, u32 offset,
->>   				  u32 field_mask)
->>   {
->>   	struct btf_field *field;
->> +	struct btf_field key = {
->> +		.offset = offset,
->> +		.size = 0,	/* as a label for this key */
->> +	};
->>   
->>   	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & field_mask))
->>   		return NULL;
->> -	field = bsearch(&offset, rec->fields, rec->cnt, sizeof(rec->fields[0]), btf_field_cmp);
->> +	field = bsearch(&key, rec->fields, rec->cnt, sizeof(rec->fields[0]), btf_field_cmp);
->>   	if (!field || !(field->type & field_mask))
->>   		return NULL;
->>   	return field;
-> 
-> 
+         emit_call(enter_prog, ctx);
+
++       /* save return value to callee saved register x20 */
++       emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
++
+         /* if (__bpf_prog_enter(prog) == 0)
+          *         goto skip_exec_of_prog;
+          */
+         branch = ctx->image + ctx->idx;
+         emit(A64_NOP, ctx);
+
+-       /* save return value to callee saved register x20 */
+-       emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
+-
+         emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
+         if (!p->jited)
+                 emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
+
 
