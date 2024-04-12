@@ -1,163 +1,176 @@
-Return-Path: <bpf+bounces-26597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9FF48A235C
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 03:47:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFEBB8A235F
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 03:50:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6079A1F22F7C
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 01:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1258C1C2138D
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 01:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736D06AA7;
-	Fri, 12 Apr 2024 01:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4EDC6AD7;
+	Fri, 12 Apr 2024 01:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vw9f3nVY"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="h78Qsxjb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40CF4C6C;
-	Fri, 12 Apr 2024 01:47:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D153B4C70
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 01:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712886473; cv=none; b=XeDgX1aEb9NtywBiupSHYk4B/35HEXjNJK4Zq4Pb+28YvJ06XnHZ2En0xR7cJC2yWPQhmoA+j70gbgG277uesG+cGgNuu0e68TZNp1te+L4WfNDwAvDNUIOSALzaPzUnS/OUM5nnFufduXNTaRA24ClgBeMtJJNkmNhp9sUjBhw=
+	t=1712886642; cv=none; b=PorzKYoIJrM1qD4rSNKLBn6pl/DXhZAgje+x6PksFLq4DgIR2KUsjYK9iEkbfdbQuGzE6xB6rQB8zTtlKXUL+F7WouAEyh0D2juPo0uslH8BdlrFkbfXkwj/bOOOXQwL0kyBiNwJlYE6GNs7EYgDCsa4L/HqL9w500VMGMRznTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712886473; c=relaxed/simple;
-	bh=nnur/tWSme6wQzS5xqHs+Ck4oghMmY6NKkGGpke7m54=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I6WD+OEkjrw3b3nk7MmJDy8WJ1cpxP6cctPBjE9JuuPYh46oodeApJTuEC3t4/96sZlMgoopK2DU4PJrRlOb8zGN/RKVnH0kpC813tkauTJ2pBahLndZaUphUKPIME0JG5j12L2YE2v2zLhrEyYGRtrZbgG2ltE80qgJiS0vufs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vw9f3nVY; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7d031abe8f8so17783139f.0;
-        Thu, 11 Apr 2024 18:47:51 -0700 (PDT)
+	s=arc-20240116; t=1712886642; c=relaxed/simple;
+	bh=RKfWMjr5Qx55FeibUP0Tdl8Z8rvHwRWMq761t6ZocyU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QhoD2J4anXn2wQy1qOF6yz5AyReaQe2tfRYpqbPlR6oTtwGUFvtQnV5AJ/9Z1NlUttZEOzhCHVa5bapMp21QY4B45ABG0js/X6Iod82PZvVum3WMGqyXgGJFIa3glcccZ7XsywnUpIgST8O/45RDssAKkaiWUp39w6weIPIoWZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=h78Qsxjb; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-78d683c469dso30742485a.1
+        for <bpf@vger.kernel.org>; Thu, 11 Apr 2024 18:50:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712886471; x=1713491271; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=px1s0Tuc5nvk78ICl8X6jfug8TRSoIbngCVQwWuJfj8=;
-        b=Vw9f3nVYUodBC63Y3ANINB19+iDnpowjaVpsHtXH+ZeX9KVzZ3RW+l9dXMWTZqXS5H
-         +qdFH2SXuzLmoimiQqTV3LaAqQ0/pNAaflOPh6bRS1h9xhneGA7unyWB/1fX7MszToYC
-         mbwZv7MXDy9sz/sMMMNxLe74edWnqbs0IqUHYT3m/zY2Y1sZP0Ifz4LmqUPdwQzkl/4Z
-         GVt6yGo+03b8qAFuYrN8nW2g+FzQU1uGCVu8S6ucRVUlXiqC9xsGyyeB0mrXZvalt4HA
-         +0v6TYQ9d+3yaVYozd1V39Fzeu+x4mzLK8djeCmZBSrkNJxFaUJSD2Qisctdak4uJiAX
-         EGIw==
+        d=kylehuey.com; s=google; t=1712886640; x=1713491440; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RKfWMjr5Qx55FeibUP0Tdl8Z8rvHwRWMq761t6ZocyU=;
+        b=h78QsxjbzPkO/ItaWrTyIkFan3/dyp94gMjCEpJH+Zvh1erJ2w5qSgko4G9vzet6Jh
+         yOe6LZmESQn50cwnYr0S9ENNQFSzKePUIY7yTirD8CyOmZmun11yd1oiCS2Ynklmybcp
+         v/wCgavYj02iCwJ6IlUSE0OHvXDnATLZEKExoJRkb5ilhtaDrIefqnyMFgGKuMMYbU+i
+         X00WeKDOBlL50XwfXR1c+yebDg1QJtEvrVPwKmO/ShtGqOzBmeDGKp5yM2sNFh6LO77a
+         OWptLaKGcVsRBi88GP0vB7u9+yjyQNBMx0JNpPh5FkMvisSNKrBhs/zimRkYxRaZ9SxT
+         qQog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712886471; x=1713491271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=px1s0Tuc5nvk78ICl8X6jfug8TRSoIbngCVQwWuJfj8=;
-        b=Gzb+/91qjtY/bHaO/iYh9AF4Z8z3voDDXI/kqrb5jtFeU8UitF6PPkjKoNld0c0xgS
-         oGnuvwjJYLIZ+DG1t5sdpbmhQX9rdfOCzqPEEMIdtvCqZY9Jh9UtHYhQ1YKRRkDSTrp8
-         LrAuvns0OTzB2jhfqHQV8cdNNXdx5RwPsQLsA7HgROogR+chHZ7A9oQCZFropvsVEZM1
-         knxog5nO7iGWAd5cRiI6Kmr0Su+pnaD7LEiTW7fJlzD4wwJ+r/rJUSgOqk3VpyK/E7KK
-         MfbhrNlVHrgHYyGUQXubHarcPbm/cpEHibJscbpA+qikQnYbpLH1yVZfoRNCI5G+vetC
-         YpIA==
-X-Forwarded-Encrypted: i=1; AJvYcCV993cjuCUJCGnN7uBRH1b6R4HHWBUw8rTvQKnuIC3/SNJuYO0BMoyCyPE7UsiZd8RN/zNyg2gD/3F8yuABZjtZbHdem9fhawhiHCGT
-X-Gm-Message-State: AOJu0Yyi0iOMH+Q+typjulUgn1SwD4K9nFS3/XyFojPW2OyPhxsK5KMV
-	ZavuK+rOLaA81ZbZ3rFJG7/LJ+PTkQWGM3v/XvcX7rm0ivx4J8vf
-X-Google-Smtp-Source: AGHT+IFZmHSL6h/NTk+tbdagbZ50OBmDPc48GSTs0l0uQAPV7IzwvIZjJ+MNyu9arLEruM719yOt9w==
-X-Received: by 2002:a05:6e02:194f:b0:369:b883:5208 with SMTP id x15-20020a056e02194f00b00369b8835208mr1075039ilu.7.1712886470772;
-        Thu, 11 Apr 2024 18:47:50 -0700 (PDT)
-Received: from localhost ([2601:285:8700:8f20::3271])
-        by smtp.gmail.com with ESMTPSA id k2-20020a056e0205a200b00368653f2022sm702553ils.24.2024.04.11.18.47.50
+        d=1e100.net; s=20230601; t=1712886640; x=1713491440;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RKfWMjr5Qx55FeibUP0Tdl8Z8rvHwRWMq761t6ZocyU=;
+        b=b5g14UkQ/jzs8LTinsNGtO8dj92YCKE56XqC7U01T4KpdiHdPxHfKa5lI4D/c9e6Re
+         tcTnPOkwsqk+zZG2zmh8KHYkBsmYFCAUFwglFiwkEE8e6LajUOwGIJ40FnDU3m3XC7mP
+         gLN3KCaXQm2CVhAXP4DZ2Y5wt0i37oc2WU1d/Vg3ODokk3KkeXDnseFQXanvPbvqYKxb
+         5HXYhLuGInY0oVue+M1xCBu1GRHWn+1idbviyTnecmX7Ppib0aYRMdUp2w7ZdGHFx+EM
+         bLxxFPejXXTZKHt0DAWvMcPUsWQD7jkkl3Bm+4s8tjNc42Al8t5/RamzjArybLSXoVLI
+         kSOA==
+X-Forwarded-Encrypted: i=1; AJvYcCXx2bJ2tJWz2yH7hHCYPNmIz8TYDqCsRQO/qBIVdIIzDmH0TCfXHPnQRPzRiLrHQ3ag4vzvpQzIyE1+4HQiyNGsHK/3
+X-Gm-Message-State: AOJu0YyzUTfS5OZo4iqbRwn/QGvDVs0+lPz2pW+B+gA+zeOlf5lIkV9s
+	dl6iNRbExQxqWjtQ2q8pmoOaXbtVRMnJ1+hjgMVrTwdo/jYpzXtrkwUTo6OKRw==
+X-Google-Smtp-Source: AGHT+IEGFAJCUIz0qOFVbQF9We1/gUwvWByxa1EsnJiVP7yOg9G4RuZdQ2KksmDUL1kOxZcOvJDljQ==
+X-Received: by 2002:a05:620a:14a1:b0:78d:5700:2ce0 with SMTP id x1-20020a05620a14a100b0078d57002ce0mr1227193qkj.68.1712886639804;
+        Thu, 11 Apr 2024 18:50:39 -0700 (PDT)
+Received: from ip-172-31-44-15.us-east-2.compute.internal (ec2-52-15-100-147.us-east-2.compute.amazonaws.com. [52.15.100.147])
+        by smtp.googlemail.com with ESMTPSA id f10-20020a05620a15aa00b0078d76c1178esm1756677qkk.119.2024.04.11.18.50.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 18:47:50 -0700 (PDT)
-Date: Thu, 11 Apr 2024 19:47:49 -0600
-From: Jose Fernandez <josefernandez.dev@gmail.com>
-To: Ivan Babrou <ivan@cloudflare.com>
-Cc: bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>, 
-	Xu Kuohai <xukuohai@huaweicloud.com>, linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: Incorrect BPF stats accounting for fentry on arm64
-Message-ID: <tzipljfgxmmbeq33b6lspre7ajqm7v7457ukm4i4kfezek5coj@ad7ex72z46nx>
-References: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
+        Thu, 11 Apr 2024 18:50:39 -0700 (PDT)
+From: Kyle Huey <me@kylehuey.com>
+X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
+To: Kyle Huey <khuey@kylehuey.com>,
+	linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Robert O'Callahan <robert@ocallahan.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH v6 0/7] Combine perf and bpf for fast eval of hw breakpoint conditions
+Date: Thu, 11 Apr 2024 18:50:12 -0700
+Message-Id: <20240412015019.7060-1-khuey@kylehuey.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 24/04/11 11:09AM, Ivan Babrou wrote:
-> Hello,
-> 
-> We're seeing incorrect data for bpf runtime stats on arm64. Here's an example:
-> 
-> $ sudo bpftool prog show id 693110
-> 693110: tracing  name __tcp_retransmit_skb  tag e37be2fbe8be4726  gpl
-> run_time_ns 2493581964213176 run_cnt 1133532 recursion_misses 1
->     loaded_at 2024-04-10T22:33:09+0000  uid 62727
->     xlated 312B  jited 344B  memlock 4096B  map_ids 8550445,8550441
->     btf_id 8726522
->     pids prometheus-ebpf(2224907)
-> 
-> According to bpftool, this program reported 66555800ns of runtime at
-> one point and then it jumped to 2493581675247416ns just 53s later when
-> we looked at it again. This is happening only on arm64 nodes in our
-> fleet on both v6.1.82 and v6.6.25.
-> 
-> We have two services that are involved:
-> 
-> * ebpf_exporter attaches bpf programs to the kernel and exports
-> prometheus metrics and opentelementry traces driven by its probes
-> * bpf_stats_exporter runs bpftool every 53s to capture bpf runtime metrics
-> 
-> The problematic fentry is attached to __tcp_retransmit_skb, but an
-> identical one is also attached to tcp_send_loss_probe, which does not
-> exhibit the same issue:
-> 
-> SEC("fentry/__tcp_retransmit_skb")
-> int BPF_PROG(__tcp_retransmit_skb, struct sock *sk)
-> {
->   return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_retransmit_skb);
-> }
-> 
-> SEC("fentry/tcp_send_loss_probe")
-> int BPF_PROG(tcp_send_loss_probe, struct sock *sk)
-> {
->   return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_send_loss_probe);
-> }
-> 
-> In handle_sk we do a map lookup and an optional ringbuf push. There is
-> no sleeping (I don't think it's even allowed on v6.1). It's
-> interesting that it only happens for the retransmit, but not for the
-> loss probe.
-> 
-> The issue manifests some time after we restart ebpf_exporter and
-> reattach the probes. It doesn't happen immediately, as we need to
-> capture metrics 53s apart to produce a visible spike in metrics.
-> 
-> There is no corresponding spike in execution count, only in execution time.
-> 
-> It doesn't happen deterministically. Some ebpf_exporter restarts show
-> it, some don't.
-> 
-> It doesn't keep happening after ebpf_exporter restart. It happens once
-> and that's it.
-> 
-> Maybe recursion_misses plays a role here? We see none for
-> tcp_send_loss_probe. We do see some for inet_sk_error_report
-> tracepoint, but it doesn't spike like __tcp_retransmit_skb does.
-> 
-> The biggest smoking gun is that it only happens on arm64.
-> 
-> I'm happy to try out patches to figure this one out.
+rr, a userspace record and replay debugger[0], replays asynchronous events
+such as signals and context switches by essentially[1] setting a breakpoint
+at the address where the asynchronous event was delivered during recording
+with a condition that the program state matches the state when the event
+was delivered.
 
-Ivan, I recently submitted a patch that improves how the bpf runtime stats are
-calculated. I'm not sure if it will fix your issue, but it would be useful to
-see if removing the intrumentation time from the runtime calculation helps.
+Currently, rr uses software breakpoints that trap (via ptrace) to the
+supervisor, and evaluates the condition from the supervisor. If the
+asynchronous event is delivered in a tight loop (thus requiring the
+breakpoint condition to be repeatedly evaluated) the overhead can be
+immense. A patch to rr that uses hardware breakpoints via perf events with
+an attached BPF program to reject breakpoint hits where the condition is
+not satisfied reduces rr's replay overhead by 94% on a pathological (but a
+real customer-provided, not contrived) rr trace.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=ce09cbdd9888
+The only obstacle to this approach is that while the kernel allows a BPF
+program to suppress sample output when a perf event overflows it does not
+suppress signalling the perf event fd or sending the perf event's SIGTRAP.
+This patch set redesigns __perf_overflow_handler() and
+bpf_overflow_handler() so that the former invokes the latter directly when
+appropriate rather than through the generic overflow handler machinery,
+passes the return code of the BPF program back to __perf_overflow_handler()
+to allow it to decide whether to execute the regular overflow handler,
+reorders bpf_overflow_handler() and the side effects of perf event
+overflow, changes __perf_overflow_handler() to suppress those side effects
+if the BPF program returns zero, and adds a selftest.
 
-You can also use bpftop to chart bpf stats in a time series graph. Visualizing 
-the stats that way may help surface more patterns about the issue.
+The previous version of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20240214173950.18570-1-khuey@kylehuey.com/
 
-https://github.com/Netflix/bpftop
+Changes since v5:
+
+Patches 1, 2, and 3 are added to address Ingo's review comments.
+
+Patches 4 through 7 are the previous patches 1 through 4.
+
+Patches 4 through 7 add Andrii's Acked-by.
+
+Patch 5 fixes Ingo's comments about punctuation and newlines.
+
+v4 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kylehuey.com/
+
+Changes since v4:
+
+Patches 1, 2, 3, 4 added various Acked-by.
+
+Patch 4 addresses additional nits from Song.
+
+v3 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kylehuey.com/
+
+Changes since v3:
+
+Patches 1, 2, 3 added various Acked-by.
+
+Patch 4 addresses Song's review comments by dropping signals_expected and the
+corresponding ASSERT_OKs, handling errors from signal(), and fixing multiline
+comment formatting.
+
+v2 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
+
+Changes since v2:
+
+Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+this code to implement this feature in a cleaner way. Patch 2 is separated
+for the benefit of the ARM arch maintainers.
+
+Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+implementation thanks to the earlier refactoring.
+
+Patch 4 is v2's patch 3, and addresses review comments about C++ style
+comments, getting a TRAP_PERF definition into the test, and unnecessary
+NULL checks.
+
+[0] https://rr-project.org/
+[1] Various optimizations exist to skip as much as execution as possible
+before setting a breakpoint, and to determine a subset of program state
+that is practical to check and verify.
+
+
 
