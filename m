@@ -1,123 +1,107 @@
-Return-Path: <bpf+bounces-26622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6A9F8A3031
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 16:11:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 897A88A3281
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 17:32:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13FFE1C23EE0
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 14:11:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA3901C24641
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 15:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532C65F54D;
-	Fri, 12 Apr 2024 14:11:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561F31482EA;
+	Fri, 12 Apr 2024 15:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="KQohFjvE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gxh73LIZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBCA85287
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 14:11:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4C15914E
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 15:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712931078; cv=none; b=EoktZWsvXyAuNqcDTimzE2uJ5QJ25FAVdzrPyPZZXPnLFO7AvUrwGupVL68p0mmtpYpGXEgcEyooqlbqLqvHlmxkV/uz2sRC8BlnZWzpVcB96Ppwe8YUuS4+EFCFas1Y/037JH+vF7X53nckd5zM1vXl2kMzNTBO/ZipgjUkGhg=
+	t=1712935960; cv=none; b=Cf/OP/JIJcrT2tojEyJdtg4VGLFEJW5Pzbu1MEPcgemzoQ5sx33P7MVHDJdnUg3ZX4SjoTnnkkMNQWjVWN7/ak0ShbqL+6Iu9J5+UgO23PziOr2Azy7e17UCKgW2WWYA87gum2yZOPZoYLzn7vnygUMQ7UgA42Y5uy14hXbCJp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712931078; c=relaxed/simple;
-	bh=42B4zF7PEMPHjgFDuBzB0b7o8c6zmBm8mqXYGN/477I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E/Y1UR+ctJys6NRqZsoSXrlYDzOacAUkzftgI9ub5hflS1/IUllcRB6qD8p5kJ6hujr+QSTTL6FyMxZCJumqqaQ+7syNFLduhlkEdTK91cDVhAiBZ9UoO/j+h2SqX4hHl71qQkhUwnyWG8wfeUCELElhvGvFAGv1U9PqT0/cUBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=KQohFjvE; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e47843cc7so984671a12.0
-        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 07:11:16 -0700 (PDT)
+	s=arc-20240116; t=1712935960; c=relaxed/simple;
+	bh=j93jEF2GlD+i0MVOEMhm2vuLbdm2ki3Q9BlnhRi3w0M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rS4NhKeQiKwslO4UzkJzKh+CEKceHIxe1tYUF6Nl8srba9vyMJ+peEZTAvkekbOjix95Ct71WD4JTkWyfGloUtHEoWvhksAiMIZlyXT44hBMe6cA4TniE3m7J/FJBaU5LKnC1RgBZxfCMM1of6Qk1CnT/bJyWR8DHjhyw+saX0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gxh73LIZ; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516c403cc46so2275062e87.3
+        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 08:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1712931075; x=1713535875; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=baALxoEDq5fanav1NrM4LlybLXiaqMTyM9PIa8OEPyg=;
-        b=KQohFjvEsnv0jhTFPKfV2HQBJG7ZM+eL75qOEwUZl88dMgxnxFGpncxi50BjnZQAF9
-         CHvhI/YZiFPu+tYoX2UMwFHS4BjSt0h0ob2uaj+sCgY7noa6gDPBPDoPBfO2odoPEtP0
-         FxJYuIzXVF8YOiK8UPXWNnybovyvJTlke953HsXGruhzUusQu0NPfmWPpzcDt520wIaB
-         VskgiYxDAO7QW9/svcwvJvmCU9s6wy3CKlucNAsr8WP4+WnGN0qxH0zucaoeSuxANnKM
-         eWrBNi281NJGTnz0AE19CeGTAK9NC1gSvYdipoZJ734DkFY0qofemnFx0hzZHvSdWTrt
-         Lfrw==
+        d=gmail.com; s=20230601; t=1712935957; x=1713540757; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=j93jEF2GlD+i0MVOEMhm2vuLbdm2ki3Q9BlnhRi3w0M=;
+        b=Gxh73LIZJHNjvXmBfoW3KLA6gUYdfRtvXQg0L3JQALspfduNuVxunO4rNfvKeS5Xkj
+         VkYfWMNCYVKSms8mfo8VA/xqqj0RKJCRp6xGFfh1Re0L+t67abgsa50SBJ6D6Y1hmTKn
+         SKsxCwfMtiB5EcExVsIal5CLpw+MRYm64ICOb051nlZ2cvtLA7gt6o3eITw2ZabtmQjX
+         ZEgfEEujH9xp7mhNUx+ExzRVtnxPcCOxvwSOfaXFY4xg7vD4GC2sEepUYspVt4Kwkd7N
+         zly3yyxkSw5q6iA565Vr0OxlPIOGH5xvYi+WuTGgoqdR5fgkUvBXKFwpd5SzABffDeIE
+         r9rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712931075; x=1713535875;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=baALxoEDq5fanav1NrM4LlybLXiaqMTyM9PIa8OEPyg=;
-        b=k5dBsvxYWeGYWwNIq2vYiU8R0iCeKidat1X1PxwW0jkA/Zw83KeyEsGmQFPQzj4wWw
-         iQFL+eFwnvAYXOZVQz8K3r35ho1cSJr/ZZ0BiZAIwEuAopKm102e872Y6mm886F6SL8K
-         h9qRRHlCi5YnsfgfRnrNCWjW0MIjCVdF+igLHZRiTcA+wtazEkCoMDxbmUnY6GMUZGLm
-         EzlwCUXD4qmb4OUUfZnqmmo/G9CwLJeMoNrEStMBQLLX+YLER0tSHAaT7fSCPuFOjAxf
-         OkJlpIfNSctQC1g4Tclj2Dgwwe51gA4RaxMYfXSCusrlA4AYBxudbUrq64/qZF7i3ZmX
-         w1pA==
-X-Forwarded-Encrypted: i=1; AJvYcCXl2bcoA9YMGBwaflmDgvOoB6QPVxV+Vi3EWPh+h8fMlXkKrlHmCkJJ0+xA/JyrBZXR27BJ5rtJQLkeD5ZhdgSCeZmC
-X-Gm-Message-State: AOJu0Yyb/jdp2jQPYpJoGMDyRJ8zFHldyKeNeLJBBbkX0e7+g6OVQElj
-	XmPZaU5JXWFc3CD3uSctmemD8oShSQSSNb9dHi84S5WE+uXErLmcaiQ2UBWIS3I=
-X-Google-Smtp-Source: AGHT+IEo1svuGXGCHABlrZs47EVMqYhaS+u+2DomyMKvGo2ymc/UjxlezSLvGGhfrCoVKt3tM2yH/g==
-X-Received: by 2002:a17:906:c104:b0:a52:2eaa:70 with SMTP id do4-20020a170906c10400b00a522eaa0070mr1927939ejc.60.1712931075503;
-        Fri, 12 Apr 2024 07:11:15 -0700 (PDT)
-Received: from lavr.home ([2a02:168:f656:0:2929:ae55:16fe:e497])
-        by smtp.gmail.com with ESMTPSA id f19-20020a170906391300b00a4628cacad4sm1858537eje.195.2024.04.12.07.11.14
+        d=1e100.net; s=20230601; t=1712935957; x=1713540757;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j93jEF2GlD+i0MVOEMhm2vuLbdm2ki3Q9BlnhRi3w0M=;
+        b=KnQJS634CFVP8b2wRkuBSKj2R1b7cLCR2YA1ctPjqVPcMP8U9drKFzoDGFZ9gO8L5A
+         3VAWvRSuoi82NdM1+8dUKOi7EeqmXMLavGvsIljLBfmMSr7uBDnUiXHVFNoN7v/WpIUy
+         MjPvld6LPbDGpScCJKcwvQSr+nJ6Tp092YWFK/OAGkqUg+fSNIvjEaS1VmD40SEtzj3U
+         2Tc6Hh7O1O0SnBJ1jQKyE2STjOcLFilH/O7RSe0QWO0El9LXlNoJuWH72BI17ayhnQdD
+         LEj8OtxgiowNMCp3K5T1O9LpT7gGTKTxBRYgC7XNg0oMh0W2A5ngHyvqVtV9uOYNl+Zs
+         r7xw==
+X-Forwarded-Encrypted: i=1; AJvYcCVRRgmQlu0nO+0St6YCiME+sRKvu7GIWEJzx+1mMpiRwi4WiF/IP3ra9GgR3WgIpgem1SqCh4a+XpiLUzYKkncnC2kv
+X-Gm-Message-State: AOJu0YzDjH+L2G3GgUcyYG+neIsyW2HJIjbDhUanUiyX8l65eoG8hhCG
+	vZBsiUq2kfcCrK0uGTYE3Dq1tPmhPmVmdl9yz+Nk6UHHP4/njMQIBm8DafTT
+X-Google-Smtp-Source: AGHT+IG9X81+2V1l9uJ0YkHXho2ZjhN+n6k0mODMMJVvMX7U3BdQrAlZ02ARaPKxj+2CXncZtMtkbg==
+X-Received: by 2002:ac2:41d3:0:b0:516:d3de:88e with SMTP id d19-20020ac241d3000000b00516d3de088emr2068258lfi.49.1712935957268;
+        Fri, 12 Apr 2024 08:32:37 -0700 (PDT)
+Received: from [192.168.100.206] ([89.28.99.140])
+        by smtp.gmail.com with ESMTPSA id go36-20020a1709070da400b00a51fea47897sm1930091ejc.214.2024.04.12.08.32.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 07:11:15 -0700 (PDT)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Stanislav Fomichev <sdf@google.com>,
-	bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf] bpf: fix a verifier verbose message
-Date: Fri, 12 Apr 2024 16:11:00 +0200
-Message-Id: <20240412141100.3562942-1-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 12 Apr 2024 08:32:36 -0700 (PDT)
+Message-ID: <8d12fcfe44693bf69382951c8b090b06df8fe912.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 05/11] bpf: initialize/free array of
+ btf_field(s).
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>,
+  bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org,  kernel-team@meta.com, andrii@kernel.org
+Cc: kuifeng@meta.com
+Date: Fri, 12 Apr 2024 18:32:35 +0300
+In-Reply-To: <f1957694-13c3-4b4f-96f1-451b8acedc4b@gmail.com>
+References: <20240410004150.2917641-1-thinker.li@gmail.com>
+	 <20240410004150.2917641-6-thinker.li@gmail.com>
+	 <57d016ec8ccb9cbc454f318d74b6d657de59ffcd.camel@gmail.com>
+	 <f1957694-13c3-4b4f-96f1-451b8acedc4b@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Long ago a map file descriptor in a pseudo ldimm64 instruction could
-only be present as an immediate value insn[0].imm, and thus this value
-was used in a verbose verifier message printed when the file descriptor
-wasn't valid. Since addition of BPF_PSEUDO_MAP_IDX_VALUE/BPF_PSEUDO_MAP_IDX
-the insn[0].imm field can also contain an index pointing to the file
-descriptor in the attr.fd_array array.  However, if the file descriptor
-is invalid, the verifier still prints the verbose message containing
-value of insn[0].imm. Patch the verifier message to always print the
-actual file descriptor value.
+On Thu, 2024-04-11 at 20:56 -0700, Kui-Feng Lee wrote:
+[...]
 
-Fixes: 387544bfa291 ("bpf: Introduce fd_idx")
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
----
- kernel/bpf/verifier.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> So, I decided not to support rbtree nodes and list nodes.
+>=20
+> However, there are a discussion about looking into fields of struct
+> types in an outer struct type. So, we will have another patchset to
+> implement it. Once we have it, we can support the case of gFoo and
+> all_nodes described earlier.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 12fcf1901dc2..7e694888d82a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -18293,8 +18293,7 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 			f = fdget(fd);
- 			map = __bpf_map_get(f);
- 			if (IS_ERR(map)) {
--				verbose(env, "fd %d is not pointing to valid bpf_map\n",
--					insn[0].imm);
-+				verbose(env, "fd %d is not pointing to valid bpf_map\n", fd);
- 				return PTR_ERR(map);
- 			}
- 
--- 
-2.34.1
-
+All this makes sense, but in such a case would it make sense to adjust
+btf_find_datasec_var() to avoid adding BPF_RB_NODE and BPF_LIST_NODE
+variables with nelem > 1? (Like it does for BPF_TIMER etc).
 
