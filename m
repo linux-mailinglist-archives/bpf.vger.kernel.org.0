@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-26640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A2308A3422
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 18:53:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF1558A3424
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 18:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 376F1B22277
-	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 16:53:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1D2A1C22C40
+	for <lists+bpf@lfdr.de>; Fri, 12 Apr 2024 16:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7484514D716;
-	Fri, 12 Apr 2024 16:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3021114BF8B;
+	Fri, 12 Apr 2024 16:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TPK4u/in"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3GvI9g+h"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-io1-f73.google.com (mail-io1-f73.google.com [209.85.166.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6125214D44F
-	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 16:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE2E14D703
+	for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 16:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712940776; cv=none; b=iwWExFqMUNP5UTup72cgoJ+qsd/EYKbzp2MNpmrFwtGYdX3PQ2sK9s+GGg8dEe2MR4HbCDCbeeAu6yMJlYwqyQLSkxbnDOYzpo1cdwd4P06ePLCCumh1SvW15HnLZPDL9YPiIQ/RgIoSwXYyU8RCPvjVLzxgnrI7Qkch1MJLk5s=
+	t=1712940777; cv=none; b=HqSUIqsnst52pqyVzQLeu7XKPH9g+N4irIdkS5osmBVBFDhc4pN3Csp2KeBT6nrQFNJFtoSXeZxAf8rQL4shZtFbbx+/0oMFWhvqhE9j5TWuJLuHC5i3SpfEMjj0UqvCwKidIsnFhZ+4majK9W/3zTmruG/tVdLugu9PQiJcOSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712940776; c=relaxed/simple;
-	bh=/sJKFkORHCJX+gzNjnKPLaET7Hd6YCkskv5/Ly82u6E=;
+	s=arc-20240116; t=1712940777; c=relaxed/simple;
+	bh=+WVEUy1Ek4cdfvZCpbqwqbLnPDe5YHNpESVuBAyilzA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ShkFszWLKTl9b7EySUPFYqd4uuAAMq+3XcxmhmyGpNpJh0r0xIuZaO/H1e6JDr0XYeIwThrvxC4+9eh89pEAamLIdlQpPpE4wQkx0q11h4PqHS+PRLsJ3tfn5GAUB0Oue4Ko4jzmRykObWZVz+HV/NqJVOqlIfA8SSjbgo7W8hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TPK4u/in; arc=none smtp.client-ip=209.85.166.73
+	 To:Cc:Content-Type; b=HAWlXl3nBWtcA6HoSd1jULyD1jVctDgu5HgqvMBcrOSWEM+QnuSQvpfWf9UYZ0JPiq2AHAcJTviAsfhU9VZka/2yTYGcdWZyeACUH0liVyLevnUYjNJB1rY3dD3pAOeB70jgRCiWYVvOsyF3RMhWoM8ZPG4G504U1dGBlE2LehM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3GvI9g+h; arc=none smtp.client-ip=209.85.166.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
-Received: by mail-io1-f73.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so121547139f.1
-        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 09:52:54 -0700 (PDT)
+Received: by mail-io1-f73.google.com with SMTP id ca18e2360f4ac-7d6c32ef13bso43679339f.0
+        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 09:52:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712940773; x=1713545573; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712940775; x=1713545575; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKikK3rZsicHz3bGVtIEDWtlbmGZjh3TPmrcRxrh6GQ=;
-        b=TPK4u/inhluwOp7cVbOpxzsvdvAM+IbLAFfPNlu7NZGc6yPiqwgrojUr/UfQbU7DBV
-         flRcUsY0tKeKJVexHpUG/1qj2YuwQ3Rp85X8Ky0TEuKvt0biYusdOZK5mZvTLdjPqI/r
-         pnrZ2pHpzm/88bIKlbWjmxzShLvChIu+F13kDW3nOjpsmspr7zNmAr/ENQTsoQmEm5qq
-         Pr14CNn4jH5OvQklxS9XLDlmhb04AjVajE3bJOtpa5MfaqrJz4pi9xokGofYhTSjPVuZ
-         txnA19b3dUl+jEjE2c7XdkXMGxq4ChGpc3gSXEKjz+uE4v/8D+jBAxVX1b8CPiY6fAWU
-         3Cfg==
+        bh=LckglVSYUWBQoiIhTCKOGb+dY61meuimDlAWaXqXllA=;
+        b=3GvI9g+hJTq3cgroT65XiRFiG5Sk8Z2o5+hcuMRHJi42tfjlVWEfdkxJwD1zVoo7Ju
+         +yJfS0sq4JLFTRzGqINxIhsvlgex/6jCj+uEpmOyB029tuXzARK1hD8EbG6itsryLVEg
+         960Ff+6vYqAyNFMUG+iY90YgF0tXQDw8/J/auL+ePvhfBoPtsn7jm+K7lLHDRs4W/8Kv
+         A/VuwwtT+GC+5MoQuQoY+KckbBG9EDaUvfl+dHkNR3jiYET7rogJcxJctPnsfIxafF2a
+         oGROid+0lVQlWrfoWfydsGSxSq5imO5CdzR9NR5GVyDZsOYoUbxc5aybQMj1OEe2Riyk
+         r/iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712940773; x=1713545573;
+        d=1e100.net; s=20230601; t=1712940775; x=1713545575;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKikK3rZsicHz3bGVtIEDWtlbmGZjh3TPmrcRxrh6GQ=;
-        b=kkyjIMJegLLjhnR8mDLbOqab3CbQX29rNWgemL3zwhn7sbqiEzCuwsjAcZShXc4K9d
-         1yugIvzyJPdPn+5NdYc4Frs57k3axIAJ8naKC4oPIpb0FruCuCBw4PR6x9XZwBz9t8En
-         RXYshhTvUPEhXck+PqFE4VCQAN7nOecl3rIhdGDJZW1vhB9oG9w9+eC+An6pNitKyCO3
-         r4D599FDZ7g9XDNpB7CSsMq5MskfgZmQ3Fq6pl/zFRYOHModVwdEbRNgr5lQLVCGtSwX
-         x90ZpzOTlnu2/vrDU6cb3KCXD+I4hqmn7VRY03Am8UyeyozMdLpHAY/S8lyaJ4f/+cvo
-         8k1Q==
-X-Gm-Message-State: AOJu0YxU282JXJh7Z2E63m9tXaiU/qwRcZhAGF4MvDHEN2IuXl4U12uI
-	tbIbsOhPBoDy7Eo9rLwlHYbEwPk85Q4qH7P+Ab2kmyZK/JXke+GZT4QoKgA6GzqS4rSmCM3tYhv
-	LUqSDDugHrQtrJ1Aif7bSL9pzDLcSgzqkkKftMKtfclfABD2luz3X1TY7jv2L/t5gshCP6Fu2gb
-	YWyEva8jciqpYx00JDDsjWzEM=
-X-Google-Smtp-Source: AGHT+IF6+o6j5tFhCdweGYRFegjNiDtHNUj+22CveBg+llQdJzNFJrNFFrg2+BviLjnCc7ylQRzcOGVIdQ==
+        bh=LckglVSYUWBQoiIhTCKOGb+dY61meuimDlAWaXqXllA=;
+        b=NE/CkBkdNdct2wmPPtlK8QmrqElp+u3DsLl40UY4zTWZDnPpeJw/+ezRPmA2vEKVI7
+         RNgKpErVAcYrWax1+FSh/MGDZFFj1I7LqQ0+T1W9no+cIO9lOHc0cs52vjrHX5AqFkrm
+         MsIMtBmjjhxWMxhAjjyopkMnvHEgY3YWuvyoEeS7nzTg/Ik4XYhqGRUQeWMZNu4/OP6H
+         zK0Y8HLGM2CRuibtnczzxs8JVgzlc8tP2zFMljoLoKpB17sb9mZoIzAD+y+POmgfQ5Hl
+         a8iICn79OuA3NO+Td2+xl/PyHsXNwJegN7BJgOp4xRVXrgeDuh3YW8ll5mAVQc5j28Kd
+         MvcQ==
+X-Gm-Message-State: AOJu0YyKqS9AamTQ9MKJPW2rsPkG/5bsyjsOCikiREfzKhiNvk6OGmgA
+	NrHkaS0Gmiiv3LfFb7B9f6WJgfnO6LsmOoTywj/6ZkqqsAQ34KXZ1zFVMtwHnU6PFcBKrUETyzo
+	/NPzjc390NXQfdpeCVk+LKYmW7uvTPbEXoxkp6ewiemBfNqa7pKQdJk6iHKOmMzIxRfXvWtHUP4
+	Z55oaBhAxnPIAEiz8xfMtCBBk=
+X-Google-Smtp-Source: AGHT+IET2OF46HhXVM6vaqhEKeDYnBxcTDgSbKRxM6NAnUzrnxPgJfqh2xUL8HpGsSa9JSQWPwMdXISvAQ==
 X-Received: from jrife.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:9f])
- (user=jrife job=sendgmr) by 2002:a05:6602:340e:b0:7d0:ad03:af10 with SMTP id
- n14-20020a056602340e00b007d0ad03af10mr82634ioz.1.1712940773357; Fri, 12 Apr
- 2024 09:52:53 -0700 (PDT)
-Date: Fri, 12 Apr 2024 11:52:26 -0500
+ (user=jrife job=sendgmr) by 2002:a05:6602:14d5:b0:7d6:680:4c27 with SMTP id
+ b21-20020a05660214d500b007d606804c27mr107891iow.4.1712940775155; Fri, 12 Apr
+ 2024 09:52:55 -0700 (PDT)
+Date: Fri, 12 Apr 2024 11:52:27 -0500
 In-Reply-To: <20240412165230.2009746-1-jrife@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,9 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240412165230.2009746-1-jrife@google.com>
 X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240412165230.2009746-6-jrife@google.com>
-Subject: [PATCH v2 bpf-next 5/6] selftests/bpf: Make sock configurable for
- each test case
+Message-ID: <20240412165230.2009746-7-jrife@google.com>
+Subject: [PATCH v2 bpf-next 6/6] selftests/bpf: Add kernel socket operation tests
 From: Jordan Rife <jrife@google.com>
 To: bpf@vger.kernel.org
 Cc: Jordan Rife <jrife@google.com>, linux-kselftest@vger.kernel.org, 
@@ -92,422 +91,569 @@ Cc: Jordan Rife <jrife@google.com>, linux-kselftest@vger.kernel.org,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-In order to reuse the same test code for both socket system calls (e.g.
-connect(), bind(), etc.) and kernel socket functions (e.g.
-kernel_connect(), kernel_bind(), etc.), this patch introduces the "ops"
-field to sock_addr_test. This field allows each test cases to configure
-the set of functions used in the test case to create, manipulate, and
-tear down a socket.
+This patch creates two sets of sock_ops that call out to the SYSCALL
+hooks in the sock_addr_kern BPF program and uses them to construct
+test cases for the range of supported operations (kernel_connect(),
+kernel_bind(), kernel_sendms(), sock_sendmsg(), kernel_getsockname(),
+kenel_getpeername()). This ensures that these interact with BPF sockaddr
+hooks as intended.
+
+Beyond this it also ensures that these operations do not modify their
+address parameter, providing regression coverage for the issues
+addressed by this set of patches:
+
+- commit 0bdf399342c5("net: Avoid address overwrite in kernel_connect")
+- commit 86a7e0b69bd5("net: prevent rewrite of msg_name in sock_sendmsg()")
+- commit c889a99a21bf("net: prevent address rewrite in kernel_bind()")
+- commit 01b2885d9415("net: Save and restore msg_namelen in sock_sendmsg")
 
 Signed-off-by: Jordan Rife <jrife@google.com>
 ---
- .../selftests/bpf/prog_tests/sock_addr.c      | 137 ++++++++++++------
- 1 file changed, 95 insertions(+), 42 deletions(-)
+ .../selftests/bpf/prog_tests/sock_addr.c      | 474 ++++++++++++++++++
+ 1 file changed, 474 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/sock_addr.c b/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-index 92879b971a098..78bcc147f09c4 100644
+index 78bcc147f09c4..621df9b593ec8 100644
 --- a/tools/testing/selftests/bpf/prog_tests/sock_addr.c
 +++ b/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-@@ -53,12 +53,63 @@ enum sock_addr_test_type {
+@@ -3,6 +3,7 @@
+ 
+ #include "test_progs.h"
+ 
++#include "sock_addr_kern.skel.h"
+ #include "bind4_prog.skel.h"
+ #include "bind6_prog.skel.h"
+ #include "connect_unix_prog.skel.h"
+@@ -53,6 +54,218 @@ enum sock_addr_test_type {
  typedef void *(*load_fn)(int cgroup_fd);
  typedef void (*destroy_fn)(void *skel);
  
-+struct sock_ops {
-+	int (*connect_to_addr)(const struct sockaddr_storage *addr,
-+			       socklen_t addrlen, int type);
-+	int (*start_server)(int family, int type, const char *addr_str,
-+			    __u16 port, int timeout_ms);
-+	int (*socket)(int famil, int type, int protocol);
-+	int (*bind)(int fd, struct sockaddr *addr, socklen_t addrlen);
-+	int (*getsockname)(int fd, struct sockaddr *addr, socklen_t *addrlen);
-+	int (*getpeername)(int fd, struct sockaddr *addr, socklen_t *addrlen);
-+	int (*sendmsg)(int fd, struct sockaddr *addr, socklen_t addrlen,
-+		       char *msg, int msglen);
-+	int (*close)(int fd);
++static int cmp_addr(const struct sockaddr_storage *addr1, socklen_t addr1_len,
++		    const struct sockaddr_storage *addr2, socklen_t addr2_len,
++		    bool cmp_port);
++
++struct init_sock_args {
++	int af;
++	int type;
 +};
 +
-+static int user_sendmsg(int fd, struct sockaddr *addr, socklen_t addrlen,
++struct addr_args {
++	char addr[sizeof(struct sockaddr_storage)];
++	int addrlen;
++};
++
++struct sendmsg_args {
++	struct addr_args addr;
++	char msg[10];
++	int msglen;
++};
++
++static struct sock_addr_kern *skel;
++
++static int run_bpf_prog(const char *prog_name, void *ctx, int ctx_size)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	struct bpf_program *prog;
++	int prog_fd, err;
++
++	topts.ctx_in = ctx;
++	topts.ctx_size_in = ctx_size;
++
++	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		goto err;
++
++	prog_fd = bpf_program__fd(prog);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	if (!ASSERT_OK(err, prog_name))
++		goto err;
++
++	err = topts.retval;
++	goto out;
++err:
++	err = -1;
++out:
++	return err;
++}
++
++static int kernel_init_sock(int af, int type, int protocol)
++{
++	struct init_sock_args args = {
++		.af = af,
++		.type = type,
++	};
++
++	return run_bpf_prog("init_sock", &args, sizeof(args));
++}
++
++static int kernel_close_sock(int fd)
++{
++	return run_bpf_prog("close_sock", NULL, 0);
++}
++
++static int sock_addr_op(const char *name, struct sockaddr *addr,
++			socklen_t *addrlen, bool expect_change)
++{
++	struct addr_args args;
++	int err;
++
++	if (addrlen)
++		args.addrlen = *addrlen;
++
++	if (addr)
++		memcpy(&args.addr, addr, *addrlen);
++
++	err = run_bpf_prog(name, &args, sizeof(args));
++
++	if (!expect_change && addr)
++		if (!ASSERT_EQ(cmp_addr((struct sockaddr_storage *)addr,
++					*addrlen,
++					(struct sockaddr_storage *)&args.addr,
++					args.addrlen, 1),
++			       0, "address_param_modified"))
++			return -1;
++
++	if (addrlen)
++		*addrlen = args.addrlen;
++
++	if (addr)
++		memcpy(addr, &args.addr, *addrlen);
++
++	return err;
++}
++
++static int send_msg_op(const char *name, struct sockaddr *addr,
++		       socklen_t addrlen, const char *msg, int msglen,
++		       bool expect_change)
++{
++	struct sendmsg_args args;
++	int err;
++
++	memset(&args, 0, sizeof(args));
++	memcpy(&args.addr.addr, addr, addrlen);
++	args.addr.addrlen = addrlen;
++	memcpy(args.msg, msg, msglen);
++	args.msglen = msglen;
++
++	err = run_bpf_prog(name, &args, sizeof(args));
++
++	if (!expect_change && addr)
++		if (!ASSERT_EQ(cmp_addr((struct sockaddr_storage *)addr,
++					addrlen,
++					(struct sockaddr_storage *)&args.addr.addr,
++					args.addr.addrlen, 1),
++			       0, "address_param_modified"))
++			return -1;
++
++	return err;
++}
++
++static int kernel_connect(struct sockaddr *addr, socklen_t addrlen)
++{
++	return sock_addr_op("kernel_connect", addr, &addrlen, false);
++}
++
++static int kernel_bind(int fd, struct sockaddr *addr, socklen_t addrlen)
++{
++	return sock_addr_op("kernel_bind", addr, &addrlen, false);
++}
++
++static int kernel_listen(void)
++{
++	return sock_addr_op("kernel_listen", NULL, NULL, false);
++}
++
++static int kernel_sendmsg(int fd, struct sockaddr *addr, socklen_t addrlen,
++			  char *msg, int msglen)
++{
++	return send_msg_op("kernel_sendmsg", addr, addrlen, msg, msglen, false);
++}
++
++static int sock_sendmsg(int fd, struct sockaddr *addr, socklen_t addrlen,
 +			char *msg, int msglen)
 +{
-+	struct msghdr hdr;
-+	struct iovec iov;
-+
-+	memset(&iov, 0, sizeof(iov));
-+	iov.iov_base = msg;
-+	iov.iov_len = msglen;
-+
-+	memset(&hdr, 0, sizeof(hdr));
-+	hdr.msg_name = (void *)addr;
-+	hdr.msg_namelen = addrlen;
-+	hdr.msg_iov = &iov;
-+	hdr.msg_iovlen = 1;
-+
-+	return sendmsg(fd, &hdr, 0);
++	return send_msg_op("sock_sendmsg", addr, addrlen, msg, msglen, false);
 +}
 +
-+static int user_bind(int fd, struct sockaddr *addr, socklen_t addrlen)
++static int kernel_getsockname(int fd, struct sockaddr *addr, socklen_t *addrlen)
 +{
-+	return bind(fd, (const struct sockaddr *)addr, addrlen);
++	return sock_addr_op("kernel_getsockname", addr, addrlen, true);
 +}
 +
-+struct sock_ops user_ops = {
-+	.connect_to_addr = connect_to_addr,
-+	.start_server = start_server,
-+	.socket = socket,
-+	.bind = user_bind,
-+	.getsockname = getsockname,
-+	.getpeername = getpeername,
-+	.sendmsg = user_sendmsg,
-+	.close = close,
++static int kernel_getpeername(int fd, struct sockaddr *addr, socklen_t *addrlen)
++{
++	return sock_addr_op("kernel_getpeername", addr, addrlen, true);
++}
++
++int kernel_connect_to_addr(const struct sockaddr_storage *addr,
++			   socklen_t addrlen, int type)
++{
++	int err;
++
++	if (!ASSERT_OK(kernel_init_sock(addr->ss_family, type, 0),
++		       "kernel_init_sock"))
++		goto err;
++
++	if (!ASSERT_OK(kernel_connect((struct sockaddr *)addr, addrlen),
++		       "kernel_connect"))
++		goto err;
++
++	/* Test code expects a "file descriptor" on success. */
++	err = 1;
++	goto out;
++err:
++	err = -1;
++	ASSERT_OK(kernel_close_sock(0), "kernel_close_sock");
++out:
++	return err;
++}
++
++int kernel_start_server(int family, int type, const char *addr_str, __u16 port,
++			int timeout_ms)
++{
++	struct sockaddr_storage addr;
++	socklen_t addrlen;
++	int err;
++
++	if (!ASSERT_OK(kernel_init_sock(family, type, 0), "kernel_init_sock"))
++		goto err;
++
++	if (make_sockaddr(family, addr_str, port, &addr, &addrlen))
++		goto err;
++
++	if (!ASSERT_OK(kernel_bind(0, (struct sockaddr *)&addr, addrlen),
++		       "kernel_bind"))
++		goto err;
++
++	if (type == SOCK_STREAM) {
++		if (!ASSERT_OK(kernel_listen(), "kernel_listen"))
++			goto err;
++	}
++
++	/* Test code expects a "file descriptor" on success. */
++	err = 1;
++	goto out;
++err:
++	err = -1;
++	ASSERT_OK(kernel_close_sock(0), "kernel_close_sock");
++out:
++	return err;
++}
++
+ struct sock_ops {
+ 	int (*connect_to_addr)(const struct sockaddr_storage *addr,
+ 			       socklen_t addrlen, int type);
+@@ -102,6 +315,28 @@ struct sock_ops user_ops = {
+ 	.close = close,
+ };
+ 
++struct sock_ops kern_ops_sock_sendmsg = {
++	.connect_to_addr = kernel_connect_to_addr,
++	.start_server = kernel_start_server,
++	.socket = kernel_init_sock,
++	.bind = kernel_bind,
++	.getsockname = kernel_getsockname,
++	.getpeername = kernel_getpeername,
++	.sendmsg = sock_sendmsg,
++	.close = kernel_close_sock,
++};
++
++struct sock_ops kern_ops_kernel_sendmsg = {
++	.connect_to_addr = kernel_connect_to_addr,
++	.start_server = kernel_start_server,
++	.socket = kernel_init_sock,
++	.bind = kernel_bind,
++	.getsockname = kernel_getsockname,
++	.getpeername = kernel_getpeername,
++	.sendmsg = kernel_sendmsg,
++	.close = kernel_close_sock,
 +};
 +
  struct sock_addr_test {
  	enum sock_addr_test_type type;
  	const char *name;
- 	/* BPF prog properties */
- 	load_fn loadfn;
- 	destroy_fn destroyfn;
-+	/* Socket operations */
-+	struct sock_ops *ops;
- 	/* Socket properties */
- 	int socket_family;
- 	int socket_type;
-@@ -112,6 +163,7 @@ static struct sock_addr_test tests[] = {
- 		"bind4: bind (stream)",
- 		bind4_prog_load,
- 		bind4_prog_destroy,
-+		&user_ops,
- 		AF_INET,
- 		SOCK_STREAM,
- 		SERV4_IP,
-@@ -124,6 +176,7 @@ static struct sock_addr_test tests[] = {
- 		"bind4: bind (dgram)",
- 		bind4_prog_load,
- 		bind4_prog_destroy,
-+		&user_ops,
- 		AF_INET,
- 		SOCK_DGRAM,
- 		SERV4_IP,
-@@ -136,6 +189,7 @@ static struct sock_addr_test tests[] = {
- 		"bind6: bind (stream)",
- 		bind6_prog_load,
- 		bind6_prog_destroy,
-+		&user_ops,
- 		AF_INET6,
- 		SOCK_STREAM,
- 		SERV6_IP,
-@@ -148,6 +202,7 @@ static struct sock_addr_test tests[] = {
- 		"bind6: bind (dgram)",
- 		bind6_prog_load,
- 		bind6_prog_destroy,
-+		&user_ops,
- 		AF_INET6,
- 		SOCK_DGRAM,
- 		SERV6_IP,
-@@ -162,6 +217,7 @@ static struct sock_addr_test tests[] = {
- 		"connect4: connect (stream)",
- 		connect4_prog_load,
- 		connect4_prog_destroy,
-+		&user_ops,
- 		AF_INET,
- 		SOCK_STREAM,
- 		SERV4_IP,
-@@ -175,6 +231,7 @@ static struct sock_addr_test tests[] = {
- 		"connect4: connect (dgram)",
- 		connect4_prog_load,
- 		connect4_prog_destroy,
-+		&user_ops,
- 		AF_INET,
- 		SOCK_DGRAM,
- 		SERV4_IP,
-@@ -188,6 +245,7 @@ static struct sock_addr_test tests[] = {
- 		"connect6: connect (stream)",
- 		connect6_prog_load,
- 		connect6_prog_destroy,
-+		&user_ops,
- 		AF_INET6,
- 		SOCK_STREAM,
- 		SERV6_IP,
-@@ -201,6 +259,7 @@ static struct sock_addr_test tests[] = {
- 		"connect6: connect (dgram)",
- 		connect6_prog_load,
- 		connect6_prog_destroy,
-+		&user_ops,
- 		AF_INET6,
- 		SOCK_DGRAM,
- 		SERV6_IP,
-@@ -214,6 +273,7 @@ static struct sock_addr_test tests[] = {
- 		"connect_unix: connect (stream)",
- 		connect_unix_prog_load,
- 		connect_unix_prog_destroy,
-+		&user_ops,
- 		AF_UNIX,
- 		SOCK_STREAM,
- 		SERVUN_ADDRESS,
-@@ -229,6 +289,7 @@ static struct sock_addr_test tests[] = {
- 		"sendmsg4: sendmsg (dgram)",
- 		sendmsg4_prog_load,
- 		sendmsg4_prog_destroy,
-+		&user_ops,
- 		AF_INET,
- 		SOCK_DGRAM,
- 		SERV4_IP,
-@@ -242,6 +303,7 @@ static struct sock_addr_test tests[] = {
- 		"sendmsg6: sendmsg (dgram)",
- 		sendmsg6_prog_load,
- 		sendmsg6_prog_destroy,
-+		&user_ops,
- 		AF_INET6,
- 		SOCK_DGRAM,
- 		SERV6_IP,
-@@ -255,6 +317,7 @@ static struct sock_addr_test tests[] = {
- 		"sendmsg_unix: sendmsg (dgram)",
- 		sendmsg_unix_prog_load,
- 		sendmsg_unix_prog_destroy,
-+		&user_ops,
- 		AF_UNIX,
- 		SOCK_DGRAM,
- 		SERVUN_ADDRESS,
-@@ -270,6 +333,7 @@ static struct sock_addr_test tests[] = {
- 		"recvmsg4: recvfrom (dgram)",
- 		recvmsg4_prog_load,
- 		recvmsg4_prog_destroy,
-+		&user_ops,
- 		AF_INET,
- 		SOCK_DGRAM,
- 		SERV4_REWRITE_IP,
-@@ -283,6 +347,7 @@ static struct sock_addr_test tests[] = {
- 		"recvmsg6: recvfrom (dgram)",
- 		recvmsg6_prog_load,
- 		recvmsg6_prog_destroy,
-+		&user_ops,
- 		AF_INET6,
- 		SOCK_DGRAM,
- 		SERV6_REWRITE_IP,
-@@ -296,6 +361,7 @@ static struct sock_addr_test tests[] = {
- 		"recvmsg_unix: recvfrom (dgram)",
- 		recvmsg_unix_prog_load,
- 		recvmsg_unix_prog_destroy,
-+		&user_ops,
- 		AF_UNIX,
- 		SOCK_DGRAM,
- 		SERVUN_REWRITE_ADDRESS,
-@@ -309,6 +375,7 @@ static struct sock_addr_test tests[] = {
- 		"recvmsg_unix: recvfrom (stream)",
- 		recvmsg_unix_prog_load,
- 		recvmsg_unix_prog_destroy,
-+		&user_ops,
- 		AF_UNIX,
- 		SOCK_STREAM,
- 		SERVUN_REWRITE_ADDRESS,
-@@ -324,6 +391,7 @@ static struct sock_addr_test tests[] = {
- 		"getsockname_unix",
- 		getsockname_unix_prog_load,
- 		getsockname_unix_prog_destroy,
-+		&user_ops,
- 		AF_UNIX,
- 		SOCK_STREAM,
- 		SERVUN_ADDRESS,
-@@ -339,6 +407,7 @@ static struct sock_addr_test tests[] = {
- 		"getpeername_unix",
- 		getpeername_unix_prog_load,
- 		getpeername_unix_prog_destroy,
-+		&user_ops,
- 		AF_UNIX,
- 		SOCK_STREAM,
- 		SERVUN_ADDRESS,
-@@ -399,26 +468,15 @@ static int cmp_sock_addr(info_fn fn, int sock1,
+@@ -211,6 +446,60 @@ static struct sock_addr_test tests[] = {
+ 		SERV6_REWRITE_PORT,
+ 	},
+ 
++	/* bind - kernel calls */
++	{
++		SOCK_ADDR_TEST_BIND,
++		"bind4: kernel_bind (stream)",
++		bind4_prog_load,
++		bind4_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET,
++		SOCK_STREAM,
++		SERV4_IP,
++		SERV4_PORT,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++	},
++	{
++		SOCK_ADDR_TEST_BIND,
++		"bind4: kernel_bind (dgram)",
++		bind4_prog_load,
++		bind4_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET,
++		SOCK_DGRAM,
++		SERV4_IP,
++		SERV4_PORT,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++	},
++	{
++		SOCK_ADDR_TEST_BIND,
++		"bind6: kernel_bind (stream)",
++		bind6_prog_load,
++		bind6_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET6,
++		SOCK_STREAM,
++		SERV6_IP,
++		SERV6_PORT,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++	},
++	{
++		SOCK_ADDR_TEST_BIND,
++		"bind6: kernel_bind (dgram)",
++		bind6_prog_load,
++		bind6_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET6,
++		SOCK_DGRAM,
++		SERV6_IP,
++		SERV6_PORT,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++	},
++
+ 	/* connect - system calls */
+ 	{
+ 		SOCK_ADDR_TEST_CONNECT,
+@@ -283,6 +572,78 @@ static struct sock_addr_test tests[] = {
+ 		NULL,
+ 	},
+ 
++	/* connect - kernel calls */
++	{
++		SOCK_ADDR_TEST_CONNECT,
++		"connect4: kernel_connect (stream)",
++		connect4_prog_load,
++		connect4_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET,
++		SOCK_STREAM,
++		SERV4_IP,
++		SERV4_PORT,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SRC4_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_CONNECT,
++		"connect4: kernel_connect (dgram)",
++		connect4_prog_load,
++		connect4_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET,
++		SOCK_DGRAM,
++		SERV4_IP,
++		SERV4_PORT,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SRC4_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_CONNECT,
++		"connect6: kernel_connect (stream)",
++		connect6_prog_load,
++		connect6_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET6,
++		SOCK_STREAM,
++		SERV6_IP,
++		SERV6_PORT,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SRC6_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_CONNECT,
++		"connect6: kernel_connect (dgram)",
++		connect6_prog_load,
++		connect6_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET6,
++		SOCK_DGRAM,
++		SERV6_IP,
++		SERV6_PORT,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SRC6_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_CONNECT,
++		"connect_unix: kernel_connect (dgram)",
++		connect_unix_prog_load,
++		connect_unix_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_UNIX,
++		SOCK_STREAM,
++		SERVUN_ADDRESS,
++		0,
++		SERVUN_REWRITE_ADDRESS,
++		0,
++		NULL,
++	},
++
+ 	/* sendmsg - system calls */
+ 	{
+ 		SOCK_ADDR_TEST_SENDMSG,
+@@ -327,6 +688,94 @@ static struct sock_addr_test tests[] = {
+ 		NULL,
+ 	},
+ 
++	/* sendmsg - kernel calls (sock_sendmsg) */
++	{
++		SOCK_ADDR_TEST_SENDMSG,
++		"sendmsg4: sock_sendmsg (dgram)",
++		sendmsg4_prog_load,
++		sendmsg4_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET,
++		SOCK_DGRAM,
++		SERV4_IP,
++		SERV4_PORT,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SRC4_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_SENDMSG,
++		"sendmsg6: sock_sendmsg (dgram)",
++		sendmsg6_prog_load,
++		sendmsg6_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_INET6,
++		SOCK_DGRAM,
++		SERV6_IP,
++		SERV6_PORT,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SRC6_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_SENDMSG,
++		"sendmsg_unix: sock_sendmsg (dgram)",
++		sendmsg_unix_prog_load,
++		sendmsg_unix_prog_destroy,
++		&kern_ops_sock_sendmsg,
++		AF_UNIX,
++		SOCK_DGRAM,
++		SERVUN_ADDRESS,
++		0,
++		SERVUN_REWRITE_ADDRESS,
++		0,
++		NULL,
++	},
++
++	/* sendmsg - kernel calls (kernel_sendmsg) */
++	{
++		SOCK_ADDR_TEST_SENDMSG,
++		"sendmsg4: kernel_sendmsg (dgram)",
++		sendmsg4_prog_load,
++		sendmsg4_prog_destroy,
++		&kern_ops_kernel_sendmsg,
++		AF_INET,
++		SOCK_DGRAM,
++		SERV4_IP,
++		SERV4_PORT,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SRC4_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_SENDMSG,
++		"sendmsg6: kernel_sendmsg (dgram)",
++		sendmsg6_prog_load,
++		sendmsg6_prog_destroy,
++		&kern_ops_kernel_sendmsg,
++		AF_INET6,
++		SOCK_DGRAM,
++		SERV6_IP,
++		SERV6_PORT,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SRC6_REWRITE_IP,
++	},
++	{
++		SOCK_ADDR_TEST_SENDMSG,
++		"sendmsg_unix: sock_sendmsg (dgram)",
++		sendmsg_unix_prog_load,
++		sendmsg_unix_prog_destroy,
++		&kern_ops_kernel_sendmsg,
++		AF_UNIX,
++		SOCK_DGRAM,
++		SERVUN_ADDRESS,
++		0,
++		SERVUN_REWRITE_ADDRESS,
++		0,
++		NULL,
++	},
++
+ 	/* recvmsg - system calls */
+ 	{
+ 		SOCK_ADDR_TEST_RECVMSG,
+@@ -468,6 +917,27 @@ static int cmp_sock_addr(info_fn fn, int sock1,
  	return cmp_addr(&addr1, len1, addr2, addr2_len, cmp_port);
  }
  
--static int cmp_local_addr(int sock1, const struct sockaddr_storage *addr2,
--			  socklen_t addr2_len, bool cmp_port)
--{
--	return cmp_sock_addr(getsockname, sock1, addr2, addr2_len, cmp_port);
--}
--
--static int cmp_peer_addr(int sock1, const struct sockaddr_storage *addr2,
--			 socklen_t addr2_len, bool cmp_port)
--{
--	return cmp_sock_addr(getpeername, sock1, addr2, addr2_len, cmp_port);
--}
--
++static int load_sock_addr_kern(void)
++{
++	int err;
++
++	skel = sock_addr_kern__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel"))
++		goto err;
++
++	err = 0;
++	goto out;
++err:
++	err = -1;
++out:
++	return err;
++}
++
++static void unload_sock_addr_kern(void)
++{
++	sock_addr_kern__destroy(skel);
++}
++
  static void test_bind(struct sock_addr_test *test)
  {
  	struct sockaddr_storage expected_addr;
- 	socklen_t expected_addr_len = sizeof(struct sockaddr_storage);
- 	int serv = -1, client = -1, err;
- 
--	serv = start_server(test->socket_family, test->socket_type,
--			    test->requested_addr, test->requested_port, 0);
-+	serv = test->ops->start_server(test->socket_family, test->socket_type,
-+				       test->requested_addr,
-+				       test->requested_port, 0);
- 	if (!ASSERT_GE(serv, 0, "start_server"))
+@@ -766,6 +1236,9 @@ void test_sock_addr(void)
+ 	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
  		goto cleanup;
  
-@@ -428,7 +486,8 @@ static void test_bind(struct sock_addr_test *test)
- 	if (!ASSERT_EQ(err, 0, "make_sockaddr"))
- 		goto cleanup;
++	if (!ASSERT_OK(load_sock_addr_kern(), "load_sock_addr_kern"))
++		goto cleanup;
++
+ 	for (size_t i = 0; i < ARRAY_SIZE(tests); ++i) {
+ 		struct sock_addr_test *test = &tests[i];
  
--	err = cmp_local_addr(serv, &expected_addr, expected_addr_len, true);
-+	err = cmp_sock_addr(test->ops->getsockname, serv, &expected_addr,
-+			    expected_addr_len, true);
- 	if (!ASSERT_EQ(err, 0, "cmp_local_addr"))
- 		goto cleanup;
- 
-@@ -441,7 +500,7 @@ static void test_bind(struct sock_addr_test *test)
- 	if (client != -1)
- 		close(client);
- 	if (serv != -1)
--		close(serv);
-+		test->ops->close(serv);
- }
- 
- static void test_connect(struct sock_addr_test *test)
-@@ -462,7 +521,7 @@ static void test_connect(struct sock_addr_test *test)
- 	if (!ASSERT_EQ(err, 0, "make_sockaddr"))
- 		goto cleanup;
- 
--	client = connect_to_addr(&addr, addr_len, test->socket_type);
-+	client = test->ops->connect_to_addr(&addr, addr_len, test->socket_type);
- 	if (!ASSERT_GE(client, 0, "connect_to_addr"))
- 		goto cleanup;
- 
-@@ -478,18 +537,21 @@ static void test_connect(struct sock_addr_test *test)
- 			goto cleanup;
+@@ -806,6 +1279,7 @@ void test_sock_addr(void)
  	}
  
--	err = cmp_peer_addr(client, &expected_addr, expected_addr_len, true);
-+	err = cmp_sock_addr(test->ops->getpeername, client, &expected_addr,
-+			    expected_addr_len, true);
- 	if (!ASSERT_EQ(err, 0, "cmp_peer_addr"))
- 		goto cleanup;
- 
- 	if (test->expected_src_addr) {
--		err = cmp_local_addr(client, &expected_src_addr, expected_src_addr_len, false);
-+		err = cmp_sock_addr(test->ops->getsockname, client,
-+				    &expected_src_addr, expected_src_addr_len,
-+				    false);
- 		if (!ASSERT_EQ(err, 0, "cmp_local_addr"))
- 			goto cleanup;
- 	}
  cleanup:
- 	if (client != -1)
--		close(client);
-+		test->ops->close(client);
- 	if (serv != -1)
- 		close(serv);
- }
-@@ -499,8 +561,6 @@ static void test_xmsg(struct sock_addr_test *test)
- 	struct sockaddr_storage addr, src_addr;
- 	socklen_t addr_len = sizeof(struct sockaddr_storage),
- 		  src_addr_len = sizeof(struct sockaddr_storage);
--	struct msghdr hdr;
--	struct iovec iov;
- 	char data = 'a';
- 	int serv = -1, client = -1, err;
- 
-@@ -513,7 +573,7 @@ static void test_xmsg(struct sock_addr_test *test)
- 	if (!ASSERT_GE(serv, 0, "start_server"))
- 		goto cleanup;
- 
--	client = socket(test->socket_family, test->socket_type, 0);
-+	client = test->ops->socket(test->socket_family, test->socket_type, 0);
- 	if (!ASSERT_GE(client, 0, "socket"))
- 		goto cleanup;
- 
-@@ -523,7 +583,8 @@ static void test_xmsg(struct sock_addr_test *test)
- 		if (!ASSERT_EQ(err, 0, "make_sockaddr"))
- 			goto cleanup;
- 
--		err = bind(client, (const struct sockaddr *) &src_addr, src_addr_len);
-+		err = test->ops->bind(client, (struct sockaddr *) &src_addr,
-+				      src_addr_len);
- 		if (!ASSERT_OK(err, "bind"))
- 			goto cleanup;
- 	}
-@@ -534,17 +595,8 @@ static void test_xmsg(struct sock_addr_test *test)
- 		goto cleanup;
- 
- 	if (test->socket_type == SOCK_DGRAM) {
--		memset(&iov, 0, sizeof(iov));
--		iov.iov_base = &data;
--		iov.iov_len = sizeof(data);
--
--		memset(&hdr, 0, sizeof(hdr));
--		hdr.msg_name = (void *)&addr;
--		hdr.msg_namelen = addr_len;
--		hdr.msg_iov = &iov;
--		hdr.msg_iovlen = 1;
--
--		err = sendmsg(client, &hdr, 0);
-+		err = test->ops->sendmsg(client, (struct sockaddr *)&addr,
-+					 addr_len, &data, sizeof(data));
- 		if (!ASSERT_EQ(err, sizeof(data), "sendmsg"))
- 			goto cleanup;
- 	} else {
-@@ -595,7 +647,7 @@ static void test_xmsg(struct sock_addr_test *test)
- 
- cleanup:
- 	if (client != -1)
--		close(client);
-+		test->ops->close(client);
- 	if (serv != -1)
- 		close(serv);
- }
-@@ -606,7 +658,7 @@ static void test_getsockname(struct sock_addr_test *test)
- 	socklen_t expected_addr_len = sizeof(struct sockaddr_storage);
- 	int serv = -1, err;
- 
--	serv = start_server(test->socket_family, test->socket_type,
-+	serv = test->ops->start_server(test->socket_family, test->socket_type,
- 			    test->requested_addr, test->requested_port, 0);
- 	if (!ASSERT_GE(serv, 0, "start_server"))
- 		goto cleanup;
-@@ -617,13 +669,13 @@ static void test_getsockname(struct sock_addr_test *test)
- 	if (!ASSERT_EQ(err, 0, "make_sockaddr"))
- 		goto cleanup;
- 
--	err = cmp_local_addr(serv, &expected_addr, expected_addr_len, true);
-+	err = cmp_sock_addr(test->ops->getsockname, serv, &expected_addr, expected_addr_len, true);
- 	if (!ASSERT_EQ(err, 0, "cmp_local_addr"))
- 		goto cleanup;
- 
- cleanup:
- 	if (serv != -1)
--		close(serv);
-+		test->ops->close(serv);
- }
- 
- static void test_getpeername(struct sock_addr_test *test)
-@@ -643,7 +695,7 @@ static void test_getpeername(struct sock_addr_test *test)
- 	if (!ASSERT_EQ(err, 0, "make_sockaddr"))
- 		goto cleanup;
- 
--	client = connect_to_addr(&addr, addr_len, test->socket_type);
-+	client = test->ops->connect_to_addr(&addr, addr_len, test->socket_type);
- 	if (!ASSERT_GE(client, 0, "connect_to_addr"))
- 		goto cleanup;
- 
-@@ -652,13 +704,14 @@ static void test_getpeername(struct sock_addr_test *test)
- 	if (!ASSERT_EQ(err, 0, "make_sockaddr"))
- 		goto cleanup;
- 
--	err = cmp_peer_addr(client, &expected_addr, expected_addr_len, true);
-+	err = cmp_sock_addr(test->ops->getpeername, client, &expected_addr,
-+			    expected_addr_len, true);
- 	if (!ASSERT_EQ(err, 0, "cmp_peer_addr"))
- 		goto cleanup;
- 
- cleanup:
- 	if (client != -1)
--		close(client);
-+		test->ops->close(client);
- 	if (serv != -1)
- 		close(serv);
- }
++	unload_sock_addr_kern();
+ 	if (cgroup_fd >= 0)
+ 		close(cgroup_fd);
+ 	cleanup_test_env();
 -- 
-2.44.0.478.gd926399ef9-goog
+2.44.0.683.g7961c838ac-goog
 
 
