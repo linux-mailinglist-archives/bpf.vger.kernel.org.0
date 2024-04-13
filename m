@@ -1,639 +1,173 @@
-Return-Path: <bpf+bounces-26691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 529E98A3965
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:38:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F5E98A396D
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:50:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D14621F224B2
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 00:38:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 176501F228A4
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 00:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9EE28FA;
-	Sat, 13 Apr 2024 00:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KAAyVwV5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7D24A28;
+	Sat, 13 Apr 2024 00:50:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F9D7E9;
-	Sat, 13 Apr 2024 00:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F4F1847
+	for <bpf@vger.kernel.org>; Sat, 13 Apr 2024 00:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712968719; cv=none; b=giNz6Gf1Ey3Nq25fk2sF6B6pfgOYOEZsB2IwwYKkhOdyyg+SST220pbItt0orSyV8XVi2vAeZrbfdoTQ497oWyZAx2Nv6X3BZ87Z/PAmpeDUt5oT+8s4xAZs4t3gHGKyuJ1+emsuIxFaMwxCv5Ywcknr8m8SRQwe13eFT0B/jKA=
+	t=1712969421; cv=none; b=DKEDrD1GPinZXLwagdoseovzqjBs5ewP178I2LvFZbR7QCtlswjWxMs8iuF+BIffSoKXY0SWmu7TSU78uBrdOOr9gYUJfARVQk0zAOQQOjNMPE3y0dLve52Owlv41szPogfPjs29SS1+0KYcaz9j2vEci765QMOqAty1iX9rA7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712968719; c=relaxed/simple;
-	bh=E1FEogcwnfYZ/NvJyEBJq2MtTmPknB+8LmMwXWPT3Bk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=gzv5xnFqncS6o8mUJ/z3WIln63uTpbcuXSHWwFNGZ2H+E9lnpNBIMxl9gIhFPwkJyspWcmzdt7e7pwz9+d3ULDj+l+USPTr1Ip6lFTvdDdzpvlPMEs+3i0otK+Aci5XvXSQrk/nQiNg4JE+T73vVgzNTnVPm5mWzrQEJV8rIKDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KAAyVwV5; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43D0KFo3031426;
-	Sat, 13 Apr 2024 00:38:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:from:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=1IxIE7tRv6L6ZblURzwPw/sVy/nix46YhCziU13r8vc=; b=KA
-	AyVwV5CE4ZlwAQTmIRcWfcFooAjlKJVUt0yzbbCbBLcyaGL1C/yZD6TLIA+u1uSQ
-	e1VscCuds880wsPAjSEyV1n1PZskbhfN3xipJpnIErwKfidb3jlzGP45sPXNBZNF
-	uktJHcBMyjK4Gu1uW6fcdBPVPk7GG08i4rZa/PGyyWLHpyAptW7kPV02y/hpMUpF
-	ImP5Y6E2XUCINV8OAQsXodW7fhPDWqrqwElCR9ktYTGqLNUEARHKRwCTtUZtiRiG
-	JeHbCbM8Vs9XV/K+KFqflf+wD0/O5f8zNGvuod82LWhu32n7tLLLvOajDgVDAjC+
-	/iI7AqWhsUcEiR83pg+w==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xffds00x3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Apr 2024 00:38:07 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43D0c5mF024925
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Apr 2024 00:38:05 GMT
-Received: from [10.110.73.72] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
- 2024 17:38:00 -0700
-Message-ID: <da088092-e4cf-4282-b691-0bbc641e3e02@quicinc.com>
-Date: Fri, 12 Apr 2024 17:37:59 -0700
+	s=arc-20240116; t=1712969421; c=relaxed/simple;
+	bh=2PudCH3sanltZoJWKNx8RcWc6GEEHV5v127wrS9KFuw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uI43+arjFltBMz36Ue/hFrQtx3qyfMVH4IxAqHjRvKNUQGPh0rT08mvrMObq/Ezwjd7EjqpPcAh9G1YXfVFDkUB9c8JfjGcDww2Kz9Oz00dCm4nK2nbKg/g1AXouAzon0IQHMvF13w3vurD9eAxFeko/D9jnXC5CHtHif12FGgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a208afb78so16553465ab.2
+        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 17:50:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712969419; x=1713574219;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ty8vjrN8ixEIeO3nPvDfskedfuwplOtYXeMyscPrwNA=;
+        b=X2H/QAmRvz/bXbVPn2Yz8FPbsfW3Cx7KvwY79twO9VNP0Cpcl+DqFl751MEwRsF74z
+         bvmfHyWtiMDEz0U01uioOK6kZvJ46FWkywa8JsA9q3t4juTyu7NRIe7Iue9ZcWzw1t4q
+         4Sasy7Hzn6fBvJERCQhmSflb6mO11mFakUkXtt5b3JFgnemhNOOJP2kfnW9c+FFCqyzJ
+         D1k9sXOWo5fbvU78nibVT/uMJKUt3Cs/ZgPcaGJo6p+6m+ktzcifyz1SJfr+NZ4AKo9b
+         d0llbU63tBzMYho3Q6wAn1x3KolOHpZA+NdLrIF4+RhMFmJ9lksaI0mkyAzkgRPglChu
+         977Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUOXVBynNKvnGJjyX0OKRvVlZXJFKBVzswfwTOWbJSCzzJn77xpQRgwOC3rkbCqEAoGwOxtmAvzsDTKh6A4GgpRtH1l
+X-Gm-Message-State: AOJu0YyVOKcpLG748NXXU2lB3ZA3gJi/4Ng6npoijcwCRy+P7cbt8XPd
+	Q50D6hc6QWxvZTdcgDJftKjNOsOsEpDcHkkgq2dJs1NBLoN0xPK3P7hU3B22FWjoKV/BLFbosFl
+	caFwroXfVukiz6b7/ftVUcrpGA2Jfa2Cci1tDcbiC7NE9mLNxVUYVc4U=
+X-Google-Smtp-Source: AGHT+IH9qLKEt7z94jqgv0U9YhvpZZQaXbG55erGuK79lSTmq0zperO6eeigT5hGR9UCU2HqYvivcHSHOKo2dnIyacWGi5sW4xo0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v3 1/2] net: Rename mono_delivery_time to
- tstamp_type for scalabilty
-Content-Language: en-US
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-To: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Willem
- de Bruijn" <willemdebruijn.kernel@gmail.com>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "Daniel
- Borkmann" <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-CC: <kernel@quicinc.com>
-References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
- <20240412210125.1780574-2-quic_abchauha@quicinc.com>
-In-Reply-To: <20240412210125.1780574-2-quic_abchauha@quicinc.com>
+X-Received: by 2002:a05:6e02:1e01:b0:36a:190f:1c93 with SMTP id
+ g1-20020a056e021e0100b0036a190f1c93mr292596ila.5.1712969419196; Fri, 12 Apr
+ 2024 17:50:19 -0700 (PDT)
+Date: Fri, 12 Apr 2024 17:50:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000be1f530615efc5ca@google.com>
+Subject: [syzbot] [bpf?] [net?] KMSAN: uninit-value in sock_hash_delete_elem
+From: syzbot <syzbot+c33bff5d5da1391df027@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: RyKVdfs1OLILUgzxdo1PUYULJwznobOh
-X-Proofpoint-ORIG-GUID: RyKVdfs1OLILUgzxdo1PUYULJwznobOh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_18,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 mlxscore=0 impostorscore=0
- clxscore=1015 spamscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404130002
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    fec50db7033e Linux 6.9-rc3
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1425a483180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=13e7da432565d94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=c33bff5d5da1391df027
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b653d3180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159a2cf3180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/901017b36ccc/disk-fec50db7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/16bfcf5618d3/vmlinux-fec50db7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dc9c5a1e7d02/bzImage-fec50db7.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c33bff5d5da1391df027@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in spin_lock_bh include/linux/spinlock.h:356 [inline]
+BUG: KMSAN: uninit-value in sock_hash_delete_elem+0x239/0x710 net/core/sock_map.c:945
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ sock_hash_delete_elem+0x239/0x710 net/core/sock_map.c:945
+ ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
+ bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
+ __bpf_trace_block_bio_remap+0x34/0x50 include/trace/events/block.h:507
+ __traceiter_block_bio_remap+0xa5/0x160 include/trace/events/block.h:507
+ trace_block_bio_remap include/trace/events/block.h:507 [inline]
+ blk_partition_remap block/blk-core.c:571 [inline]
+ submit_bio_noacct+0x2449/0x2800 block/blk-core.c:762
+ submit_bio+0x58a/0x5b0 block/blk-core.c:879
+ ext4_io_submit fs/ext4/page-io.c:378 [inline]
+ io_submit_add_bh fs/ext4/page-io.c:419 [inline]
+ ext4_bio_write_folio+0x1e76/0x2e40 fs/ext4/page-io.c:563
+ mpage_submit_folio+0x351/0x4a0 fs/ext4/inode.c:1869
+ mpage_map_and_submit_buffers fs/ext4/inode.c:2115 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
+ ext4_do_writepages+0x3733/0x62e0 fs/ext4/inode.c:2679
+ ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2612
+ __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
+ writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
+ __writeback_inodes_wb+0x14c/0x440 fs/fs-writeback.c:2012
+ wb_writeback+0x4da/0xdf0 fs/fs-writeback.c:2119
+ wb_check_old_data_flush fs/fs-writeback.c:2223 [inline]
+ wb_do_writeback fs/fs-writeback.c:2276 [inline]
+ wb_workfn+0x110c/0x1940 fs/fs-writeback.c:2304
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+Local variable stack created at:
+ __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
+
+CPU: 1 PID: 76 Comm: kworker/u8:5 Not tainted 6.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: writeback wb_workfn (flush-8:0)
+=====================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On 4/12/2024 2:01 PM, Abhishek Chauhan wrote:
-> mono_delivery_time was added to check if skb->tstamp has delivery
-> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
-> timestamp in ingress and delivery_time at egress.
-> 
-> Renaming the bitfield from mono_delivery_time to tstamp_type is for
-> extensibilty for other timestamps such as userspace timestamp
-> (i.e. SO_TXTIME) set via sock opts.
-> 
-> As we are renaming the mono_delivery_time to tstamp_type, it makes
-> sense to start assigning tstamp_type based out if enum defined as
-> part of this commit
-> 
-> Earlier we used bool arg flag to check if the tstamp is mono in
-> function skb_set_delivery_time, Now the signature of the functions
-> accepts enum to distinguish between mono and real time
-> 
-> Bridge driver today has no support to forward the userspace timestamp
-> packets and ends up resetting the timestamp. ETF qdisc checks the
-> packet coming from userspace and encounters to be 0 thereby dropping
-> time sensitive packets. These changes will allow userspace timestamps
-> packets to be forwarded from the bridge to NIC drivers.
-> 
-> In future tstamp_type:1 can be extended to support userspace timestamp
-> by increasing the bitfield.
-> 
-> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
-> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-> ---
-> Changes since v2
-> - Minor changes to commit subject
-> 
-> Changes since v1
-> - Squashed the two commits into one as mentioned by Willem.
-> - Introduced switch in skb_set_delivery_time.
-> - Renamed and removed directionality aspects w.r.t tstamp_type 
->   as mentioned by Willem.
-> 
->  include/linux/skbuff.h                     | 33 +++++++++++++++-------
->  include/net/inet_frag.h                    |  4 +--
->  net/bridge/netfilter/nf_conntrack_bridge.c |  6 ++--
->  net/core/dev.c                             |  2 +-
->  net/core/filter.c                          |  8 +++---
->  net/ipv4/inet_fragment.c                   |  2 +-
->  net/ipv4/ip_fragment.c                     |  2 +-
->  net/ipv4/ip_output.c                       |  8 +++---
->  net/ipv4/tcp_output.c                      | 14 ++++-----
->  net/ipv6/ip6_output.c                      |  6 ++--
->  net/ipv6/netfilter.c                       |  6 ++--
->  net/ipv6/netfilter/nf_conntrack_reasm.c    |  2 +-
->  net/ipv6/reassembly.c                      |  2 +-
->  net/ipv6/tcp_ipv6.c                        |  2 +-
->  net/sched/act_bpf.c                        |  4 +--
->  net/sched/cls_bpf.c                        |  4 +--
->  16 files changed, 59 insertions(+), 46 deletions(-)
-> 
-self review :- 
- 
-One more file needs to be updated here net/ieee802154/6lowpan/reassembly.c  :( 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Unfortunately when i compile kdev with defconfig this file never gets compiled on my internal workspace. 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-I will find all other instances and update accordingly. 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 7135a3e94afd..a83a2120b57f 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -702,6 +702,11 @@ typedef unsigned int sk_buff_data_t;
->  typedef unsigned char *sk_buff_data_t;
->  #endif
->  
-> +enum skb_tstamp_type {
-> +	CLOCK_REAL = 0, /* Time base is realtime */
-> +	CLOCK_MONO = 1, /* Time base is Monotonic */
-> +};
-> +
->  /**
->   * DOC: Basic sk_buff geometry
->   *
-> @@ -819,7 +824,7 @@ typedef unsigned char *sk_buff_data_t;
->   *	@dst_pending_confirm: need to confirm neighbour
->   *	@decrypted: Decrypted SKB
->   *	@slow_gro: state present at GRO time, slower prepare step required
-> - *	@mono_delivery_time: When set, skb->tstamp has the
-> + *	@tstamp_type: When set, skb->tstamp has the
->   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->   *		skb->tstamp has the (rcv) timestamp at ingress and
->   *		delivery_time at egress.
-> @@ -950,7 +955,7 @@ struct sk_buff {
->  	/* private: */
->  	__u8			__mono_tc_offset[0];
->  	/* public: */
-> -	__u8			mono_delivery_time:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
-> +	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->  #ifdef CONFIG_NET_XGRESS
->  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
->  	__u8			tc_skip_classify:1;
-> @@ -4237,7 +4242,7 @@ static inline void skb_get_new_timestampns(const struct sk_buff *skb,
->  static inline void __net_timestamp(struct sk_buff *skb)
->  {
->  	skb->tstamp = ktime_get_real();
-> -	skb->mono_delivery_time = 0;
-> +	skb->tstamp_type = CLOCK_REAL;
->  }
->  
->  static inline ktime_t net_timedelta(ktime_t t)
-> @@ -4246,10 +4251,18 @@ static inline ktime_t net_timedelta(ktime_t t)
->  }
->  
->  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
-> -					 bool mono)
-> +					  u8 tstamp_type)
->  {
->  	skb->tstamp = kt;
-> -	skb->mono_delivery_time = kt && mono;
-> +
-> +	switch (tstamp_type) {
-> +	case CLOCK_REAL:
-> +		skb->tstamp_type = CLOCK_REAL;
-> +		break;
-> +	case CLOCK_MONO:
-> +		skb->tstamp_type = kt && tstamp_type;
-> +		break;
-> +	}
->  }
->  
->  DECLARE_STATIC_KEY_FALSE(netstamp_needed_key);
-> @@ -4259,8 +4272,8 @@ DECLARE_STATIC_KEY_FALSE(netstamp_needed_key);
->   */
->  static inline void skb_clear_delivery_time(struct sk_buff *skb)
->  {
-> -	if (skb->mono_delivery_time) {
-> -		skb->mono_delivery_time = 0;
-> +	if (skb->tstamp_type) {
-> +		skb->tstamp_type = CLOCK_REAL;
->  		if (static_branch_unlikely(&netstamp_needed_key))
->  			skb->tstamp = ktime_get_real();
->  		else
-> @@ -4270,7 +4283,7 @@ static inline void skb_clear_delivery_time(struct sk_buff *skb)
->  
->  static inline void skb_clear_tstamp(struct sk_buff *skb)
->  {
-> -	if (skb->mono_delivery_time)
-> +	if (skb->tstamp_type)
->  		return;
->  
->  	skb->tstamp = 0;
-> @@ -4278,7 +4291,7 @@ static inline void skb_clear_tstamp(struct sk_buff *skb)
->  
->  static inline ktime_t skb_tstamp(const struct sk_buff *skb)
->  {
-> -	if (skb->mono_delivery_time)
-> +	if (skb->tstamp_type == CLOCK_MONO)
->  		return 0;
->  
->  	return skb->tstamp;
-> @@ -4286,7 +4299,7 @@ static inline ktime_t skb_tstamp(const struct sk_buff *skb)
->  
->  static inline ktime_t skb_tstamp_cond(const struct sk_buff *skb, bool cond)
->  {
-> -	if (!skb->mono_delivery_time && skb->tstamp)
-> +	if (skb->tstamp_type != CLOCK_MONO && skb->tstamp)
->  		return skb->tstamp;
->  
->  	if (static_branch_unlikely(&netstamp_needed_key) || cond)
-> diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
-> index 153960663ce4..5af6eb14c5db 100644
-> --- a/include/net/inet_frag.h
-> +++ b/include/net/inet_frag.h
-> @@ -76,7 +76,7 @@ struct frag_v6_compare_key {
->   * @stamp: timestamp of the last received fragment
->   * @len: total length of the original datagram
->   * @meat: length of received fragments so far
-> - * @mono_delivery_time: stamp has a mono delivery time (EDT)
-> + * @tstamp_type: stamp has a mono delivery time (EDT)
->   * @flags: fragment queue flags
->   * @max_size: maximum received fragment size
->   * @fqdir: pointer to struct fqdir
-> @@ -97,7 +97,7 @@ struct inet_frag_queue {
->  	ktime_t			stamp;
->  	int			len;
->  	int			meat;
-> -	u8			mono_delivery_time;
-> +	u8			tstamp_type;
->  	__u8			flags;
->  	u16			max_size;
->  	struct fqdir		*fqdir;
-> diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-> index c3c51b9a6826..816bb0fde718 100644
-> --- a/net/bridge/netfilter/nf_conntrack_bridge.c
-> +++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-> @@ -32,7 +32,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
->  					   struct sk_buff *))
->  {
->  	int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
-> -	bool mono_delivery_time = skb->mono_delivery_time;
-> +	u8 tstamp_type = skb->tstamp_type;
->  	unsigned int hlen, ll_rs, mtu;
->  	ktime_t tstamp = skb->tstamp;
->  	struct ip_frag_state state;
-> @@ -82,7 +82,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
->  			if (iter.frag)
->  				ip_fraglist_prepare(skb, &iter);
->  
-> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
-> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
->  			err = output(net, sk, data, skb);
->  			if (err || !iter.frag)
->  				break;
-> @@ -113,7 +113,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
->  			goto blackhole;
->  		}
->  
-> -		skb_set_delivery_time(skb2, tstamp, mono_delivery_time);
-> +		skb_set_delivery_time(skb2, tstamp, tstamp_type);
->  		err = output(net, sk, data, skb2);
->  		if (err)
->  			goto blackhole;
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 854a3a28a8d8..77a43c05dfe3 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -2146,7 +2146,7 @@ EXPORT_SYMBOL(net_disable_timestamp);
->  static inline void net_timestamp_set(struct sk_buff *skb)
->  {
->  	skb->tstamp = 0;
-> -	skb->mono_delivery_time = 0;
-> +	skb->tstamp_type = CLOCK_REAL;
->  	if (static_branch_unlikely(&netstamp_needed_key))
->  		skb->tstamp = ktime_get_real();
->  }
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 8d185d99a643..8bb45423df52 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -7709,13 +7709,13 @@ BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
->  		if (!tstamp)
->  			return -EINVAL;
->  		skb->tstamp = tstamp;
-> -		skb->mono_delivery_time = 1;
-> +		skb->tstamp_type = CLOCK_MONO;
->  		break;
->  	case BPF_SKB_TSTAMP_UNSPEC:
->  		if (tstamp)
->  			return -EINVAL;
->  		skb->tstamp = 0;
-> -		skb->mono_delivery_time = 0;
-> +		skb->tstamp_type = CLOCK_REAL;
->  		break;
->  	default:
->  		return -EINVAL;
-> @@ -9422,7 +9422,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
->  		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
->  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
-> -		/* skb->tc_at_ingress && skb->mono_delivery_time,
-> +		/* skb->tc_at_ingress && skb->tstamp_type:1,
->  		 * read 0 as the (rcv) timestamp.
->  		 */
->  		*insn++ = BPF_MOV64_IMM(value_reg, 0);
-> @@ -9447,7 +9447,7 @@ static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
->  	 * the bpf prog is aware the tstamp could have delivery time.
->  	 * Thus, write skb->tstamp as is if tstamp_type_access is true.
->  	 * Otherwise, writing at ingress will have to clear the
-> -	 * mono_delivery_time bit also.
-> +	 * mono_delivery_time (skb->tstamp_type:1)bit also.
->  	 */
->  	if (!prog->tstamp_type_access) {
->  		__u8 tmp_reg = BPF_REG_AX;
-> diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-> index faaec92a46ac..d179a2c84222 100644
-> --- a/net/ipv4/inet_fragment.c
-> +++ b/net/ipv4/inet_fragment.c
-> @@ -619,7 +619,7 @@ void inet_frag_reasm_finish(struct inet_frag_queue *q, struct sk_buff *head,
->  	skb_mark_not_on_list(head);
->  	head->prev = NULL;
->  	head->tstamp = q->stamp;
-> -	head->mono_delivery_time = q->mono_delivery_time;
-> +	head->tstamp_type = q->tstamp_type;
->  
->  	if (sk)
->  		refcount_add(sum_truesize - head_truesize, &sk->sk_wmem_alloc);
-> diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-> index fb947d1613fe..787aa86800f5 100644
-> --- a/net/ipv4/ip_fragment.c
-> +++ b/net/ipv4/ip_fragment.c
-> @@ -355,7 +355,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
->  		qp->iif = dev->ifindex;
->  
->  	qp->q.stamp = skb->tstamp;
-> -	qp->q.mono_delivery_time = skb->mono_delivery_time;
-> +	qp->q.tstamp_type = skb->tstamp_type;
->  	qp->q.meat += skb->len;
->  	qp->ecn |= ecn;
->  	add_frag_mem_limit(qp->q.fqdir, skb->truesize);
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index 1fe794967211..62e457f7c02c 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -764,7 +764,7 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  {
->  	struct iphdr *iph;
->  	struct sk_buff *skb2;
-> -	bool mono_delivery_time = skb->mono_delivery_time;
-> +	u8 tstamp_type = skb->tstamp_type;
->  	struct rtable *rt = skb_rtable(skb);
->  	unsigned int mtu, hlen, ll_rs;
->  	struct ip_fraglist_iter iter;
-> @@ -856,7 +856,7 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  				}
->  			}
->  
-> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
-> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
->  			err = output(net, sk, skb);
->  
->  			if (!err)
-> @@ -912,7 +912,7 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  		/*
->  		 *	Put this fragment into the sending queue.
->  		 */
-> -		skb_set_delivery_time(skb2, tstamp, mono_delivery_time);
-> +		skb_set_delivery_time(skb2, tstamp, tstamp_type);
->  		err = output(net, sk, skb2);
->  		if (err)
->  			goto fail;
-> @@ -1649,7 +1649,7 @@ void ip_send_unicast_reply(struct sock *sk, struct sk_buff *skb,
->  			  arg->csumoffset) = csum_fold(csum_add(nskb->csum,
->  								arg->csum));
->  		nskb->ip_summed = CHECKSUM_NONE;
-> -		nskb->mono_delivery_time = !!transmit_time;
-> +		nskb->tstamp_type = !!transmit_time;
->  		if (txhash)
->  			skb_set_hash(nskb, txhash, PKT_HASH_TYPE_L4);
->  		ip_push_pending_frames(sk, &fl4);
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index 9282fafc0e61..42e6ed1decf4 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -1299,7 +1299,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
->  	tp = tcp_sk(sk);
->  	prior_wstamp = tp->tcp_wstamp_ns;
->  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
-> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
-> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONO);
->  	if (clone_it) {
->  		oskb = skb;
->  
-> @@ -1649,7 +1649,7 @@ int tcp_fragment(struct sock *sk, enum tcp_queue tcp_queue,
->  
->  	skb_split(skb, buff, len);
->  
-> -	skb_set_delivery_time(buff, skb->tstamp, true);
-> +	skb_set_delivery_time(buff, skb->tstamp, CLOCK_MONO);
->  	tcp_fragment_tstamp(skb, buff);
->  
->  	old_factor = tcp_skb_pcount(skb);
-> @@ -2730,7 +2730,7 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
->  		if (unlikely(tp->repair) && tp->repair_queue == TCP_SEND_QUEUE) {
->  			/* "skb_mstamp_ns" is used as a start point for the retransmit timer */
->  			tp->tcp_wstamp_ns = tp->tcp_clock_cache;
-> -			skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
-> +			skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONO);
->  			list_move_tail(&skb->tcp_tsorted_anchor, &tp->tsorted_sent_queue);
->  			tcp_init_tso_segs(skb, mss_now);
->  			goto repair; /* Skip network transmission */
-> @@ -3713,11 +3713,11 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
->  #ifdef CONFIG_SYN_COOKIES
->  	if (unlikely(synack_type == TCP_SYNACK_COOKIE && ireq->tstamp_ok))
->  		skb_set_delivery_time(skb, cookie_init_timestamp(req, now),
-> -				      true);
-> +				      CLOCK_MONO);
->  	else
->  #endif
->  	{
-> -		skb_set_delivery_time(skb, now, true);
-> +		skb_set_delivery_time(skb, now, CLOCK_MONO);
->  		if (!tcp_rsk(req)->snt_synack) /* Timestamp first SYNACK */
->  			tcp_rsk(req)->snt_synack = tcp_skb_timestamp_us(skb);
->  	}
-> @@ -3804,7 +3804,7 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
->  	bpf_skops_write_hdr_opt((struct sock *)sk, skb, req, syn_skb,
->  				synack_type, &opts);
->  
-> -	skb_set_delivery_time(skb, now, true);
-> +	skb_set_delivery_time(skb, now, CLOCK_MONO);
->  	tcp_add_tx_delay(skb, tp);
->  
->  	return skb;
-> @@ -3988,7 +3988,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
->  
->  	err = tcp_transmit_skb(sk, syn_data, 1, sk->sk_allocation);
->  
-> -	skb_set_delivery_time(syn, syn_data->skb_mstamp_ns, true);
-> +	skb_set_delivery_time(syn, syn_data->skb_mstamp_ns, CLOCK_MONO);
->  
->  	/* Now full SYN+DATA was cloned and sent (or not),
->  	 * remove the SYN from the original skb (syn_data)
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index b9dd3a66e423..a9e819115622 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -859,7 +859,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  	struct rt6_info *rt = (struct rt6_info *)skb_dst(skb);
->  	struct ipv6_pinfo *np = skb->sk && !dev_recursion_level() ?
->  				inet6_sk(skb->sk) : NULL;
-> -	bool mono_delivery_time = skb->mono_delivery_time;
-> +	u8 tstamp_type = skb->tstamp_type;
->  	struct ip6_frag_state state;
->  	unsigned int mtu, hlen, nexthdr_offset;
->  	ktime_t tstamp = skb->tstamp;
-> @@ -955,7 +955,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  			if (iter.frag)
->  				ip6_fraglist_prepare(skb, &iter);
->  
-> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
-> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
->  			err = output(net, sk, skb);
->  			if (!err)
->  				IP6_INC_STATS(net, ip6_dst_idev(&rt->dst),
-> @@ -1016,7 +1016,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  		/*
->  		 *	Put this fragment into the sending queue.
->  		 */
-> -		skb_set_delivery_time(frag, tstamp, mono_delivery_time);
-> +		skb_set_delivery_time(frag, tstamp, tstamp_type);
->  		err = output(net, sk, frag);
->  		if (err)
->  			goto fail;
-> diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
-> index 53d255838e6a..e0c2347b4dc6 100644
-> --- a/net/ipv6/netfilter.c
-> +++ b/net/ipv6/netfilter.c
-> @@ -126,7 +126,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  				  struct sk_buff *))
->  {
->  	int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
-> -	bool mono_delivery_time = skb->mono_delivery_time;
-> +	u8 tstamp_type = skb->tstamp_type;
->  	ktime_t tstamp = skb->tstamp;
->  	struct ip6_frag_state state;
->  	u8 *prevhdr, nexthdr = 0;
-> @@ -192,7 +192,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  			if (iter.frag)
->  				ip6_fraglist_prepare(skb, &iter);
->  
-> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
-> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
->  			err = output(net, sk, data, skb);
->  			if (err || !iter.frag)
->  				break;
-> @@ -225,7 +225,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  			goto blackhole;
->  		}
->  
-> -		skb_set_delivery_time(skb2, tstamp, mono_delivery_time);
-> +		skb_set_delivery_time(skb2, tstamp, tstamp_type);
->  		err = output(net, sk, data, skb2);
->  		if (err)
->  			goto blackhole;
-> diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
-> index d0dcbaca1994..5cc5d823d33f 100644
-> --- a/net/ipv6/netfilter/nf_conntrack_reasm.c
-> +++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
-> @@ -264,7 +264,7 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
->  		fq->iif = dev->ifindex;
->  
->  	fq->q.stamp = skb->tstamp;
-> -	fq->q.mono_delivery_time = skb->mono_delivery_time;
-> +	fq->q.tstamp_type = skb->tstamp_type;
->  	fq->q.meat += skb->len;
->  	fq->ecn |= ecn;
->  	if (payload_len > fq->q.max_size)
-> diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-> index acb4f119e11f..ea724ff558b4 100644
-> --- a/net/ipv6/reassembly.c
-> +++ b/net/ipv6/reassembly.c
-> @@ -198,7 +198,7 @@ static int ip6_frag_queue(struct frag_queue *fq, struct sk_buff *skb,
->  		fq->iif = dev->ifindex;
->  
->  	fq->q.stamp = skb->tstamp;
-> -	fq->q.mono_delivery_time = skb->mono_delivery_time;
-> +	fq->q.tstamp_type = skb->tstamp_type;
->  	fq->q.meat += skb->len;
->  	fq->ecn |= ecn;
->  	add_frag_mem_limit(fq->q.fqdir, skb->truesize);
-> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-> index 3aa9da5c9a66..b60196061489 100644
-> --- a/net/ipv6/tcp_ipv6.c
-> +++ b/net/ipv6/tcp_ipv6.c
-> @@ -975,7 +975,7 @@ static void tcp_v6_send_response(const struct sock *sk, struct sk_buff *skb, u32
->  			mark = inet_twsk(sk)->tw_mark;
->  		else
->  			mark = READ_ONCE(sk->sk_mark);
-> -		skb_set_delivery_time(buff, tcp_transmit_time(sk), true);
-> +		skb_set_delivery_time(buff, tcp_transmit_time(sk), CLOCK_MONO);
->  	}
->  	if (txhash) {
->  		/* autoflowlabel/skb_get_hash_flowi6 rely on buff->hash */
-> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
-> index 0e3cf11ae5fc..1f8b5a3f065e 100644
-> --- a/net/sched/act_bpf.c
-> +++ b/net/sched/act_bpf.c
-> @@ -54,8 +54,8 @@ TC_INDIRECT_SCOPE int tcf_bpf_act(struct sk_buff *skb,
->  		bpf_compute_data_pointers(skb);
->  		filter_res = bpf_prog_run(filter, skb);
->  	}
-> -	if (unlikely(!skb->tstamp && skb->mono_delivery_time))
-> -		skb->mono_delivery_time = 0;
-> +	if (unlikely(!skb->tstamp && skb->tstamp_type))
-> +		skb->tstamp_type = CLOCK_REAL;
->  	if (skb_sk_is_prefetched(skb) && filter_res != TC_ACT_OK)
->  		skb_orphan(skb);
->  
-> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
-> index 5e83e890f6a4..3f843e0eea3c 100644
-> --- a/net/sched/cls_bpf.c
-> +++ b/net/sched/cls_bpf.c
-> @@ -104,8 +104,8 @@ TC_INDIRECT_SCOPE int cls_bpf_classify(struct sk_buff *skb,
->  			bpf_compute_data_pointers(skb);
->  			filter_res = bpf_prog_run(prog->filter, skb);
->  		}
-> -		if (unlikely(!skb->tstamp && skb->mono_delivery_time))
-> -			skb->mono_delivery_time = 0;
-> +		if (unlikely(!skb->tstamp && skb->tstamp_type))
-> +			skb->tstamp_type = CLOCK_REAL;
->  
->  		if (prog->exts_integrated) {
->  			res->class   = 0;
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
