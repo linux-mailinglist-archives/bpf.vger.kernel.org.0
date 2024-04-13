@@ -1,200 +1,209 @@
-Return-Path: <bpf+bounces-26703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88E408A3AFA
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 06:11:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28D0D8A3B13
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 07:14:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E6B1F2324C
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 04:11:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221D11C21DBC
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 05:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F051C2BE;
-	Sat, 13 Apr 2024 04:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fsJy92Sd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB481CA8B;
+	Sat, 13 Apr 2024 05:14:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18781BC3E;
-	Sat, 13 Apr 2024 04:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEDF1C6A0
+	for <bpf@vger.kernel.org>; Sat, 13 Apr 2024 05:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712981491; cv=none; b=Rwi23q90lPH/zN8eG5TL708WYNlmHiWTLJRKXf9GVms5K1pQ2rSViDBZ5A1wRFV2WAwI13Nr5a7ab4Nh96IK0TOoW+cJEFkFVxoRGMYP78Xoyctgp0gGQa0RjcNhIebdQl8rQXXjSDRswF7HmNwQNRCCiHuUEjfFXFAQTIeGHNk=
+	t=1712985285; cv=none; b=OjxYcetoydfYf1jf33WX0kw78HpkU7OqJnIYW7xIPGaRoKPpA0wbujdC0P8XAfEH3ZzDW727uRHbF/aPo4qt1SlWnjcW4vP+pwF6P7UXjQsdVYoCCkxhm+mHMnXr+NWcISnL3NsAsn9ZoeTYbdjczw4EOZhWsE9gLMNmq2V3YKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712981491; c=relaxed/simple;
-	bh=AfPGdpoeXhVGR+SHbrTki7kqPG4xqSDp/j1KG2K2pxg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jfGPjEJICAs+Gzqw+6L3UwLntS7vGVVxVEt/QH6JyQeKP2y6fLDdbNVbTu0DQT1IRtI7RREYqlAv11MRzJqpelD9M2FE3jlqSs0/TKoSFZELuKuxEUdlh3k9KSj6PYHBUkA6DpHjoyAaIoVXhUM5O8J4OWvyxa7AIS/WqGwESkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fsJy92Sd; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-23319017c4cso969751fac.2;
-        Fri, 12 Apr 2024 21:11:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712981489; x=1713586289; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDhCSWEgnV+NzpnZC+839Wmob9VMoO2EjVmXGFw60QM=;
-        b=fsJy92SdASlRp4ceIXK8tDG7RmaqnR+JTDhucQXVIlwMMyKLJ2bI/RFLx83AkWLQZU
-         g0cqca1VsapH7j9WsoFqsg0W25tplq8axLI+BoD6dZ2SyCdQBJt/x2lZLzVDw9DZV/dd
-         Gu/dSjwvxcHORA1lEFkHJ/of5QVfnIsEd8Rwq20HqOqOaDou+aLEePJhmgoIQ4rer4Ep
-         75VE+bkfHV3lsUB45Pf8lfp/7LR4HyjIBJSdNrrsQBnOAco4BaJMUaqQxOafV9Eyenee
-         noOfqZV+8ziwUw4EUiiXIHB6UtfXE0NCeC9y+LETaSuryrhd9ZvkWMc7Q4BJgW+/Mh5s
-         HAhw==
+	s=arc-20240116; t=1712985285; c=relaxed/simple;
+	bh=b6PdiE/obLSOQsJqadtVkGUFa+3lB2V934XtDFSUkbE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CiwlsmD7qVQvcFO7c7Q3E17rr6Vd652r8fL3I0fbK8PDvAK5hUJI9pM76HXtwm1c+mhQivwZ/ekzJJAbeSjeYTHY/WEAi/ZovUmGDO7lT9f9fh4kX3DN++29oZ4dMxmXgTBXjJ0o05mnDQFZ2lwYRc2+5LIZ0Z9LcrXCEBxKLjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a20206746so18029285ab.3
+        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 22:14:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712981489; x=1713586289;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EDhCSWEgnV+NzpnZC+839Wmob9VMoO2EjVmXGFw60QM=;
-        b=rmEYQEqZXHTcQk4W/BbkVwCFT+WBSk3Lg+V5mW0zO9Pe5f0thEJKHkWT8dylliQBlw
-         sm+hJnI6yPxvZL1tP1+CLRBppKTMObtkzI2M0BfFxt4nB4muF0paGDyY4Xp6NRXgXt4D
-         ZYYhz4pm6YrCtvgHsizPsuhXzk+vwTjz1LE0zxxSsTOJnErfOOBE5ig9h+BZVzElERgk
-         nIdScbyBBN/040rUoIthAe2Aaxiph97CrItZzunrb+wOpf8n4WglIwikSphps+RsThjw
-         K7nGNKuPS2QNhIpPMYbcHMn9Nt4B63C2yQ/Z1+0ah8QlEQelTb7/PoyUV015Uu7tX4en
-         Uhxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPbVL08yHQ6UFbnMPIyc4oLIbl+be6CqqsmuxfXsyIxFUOq16WRSQJcKYVCko9vezDz5/faVaN1f+Ty9QXaFzVmym5xbLbOahhrCOjSmCZ84InS2YTRqQOKFt/oNoFfSwd
-X-Gm-Message-State: AOJu0YyTPgqk0+018E2eEnVqEe2fHyvHwQkzrx8yvsgRedgDZVyYZJR0
-	nzpnFInFjmf7isLv82DOaAcWxfbsNfkS7SkmUrOcuEg1xJn61Mnx
-X-Google-Smtp-Source: AGHT+IE+nEAWcd0+Z2P4/AV17wHWyQPGohLUz5foVK2JC1p4PEX3jDqCCzVk0FB1zWXVp5Fn7Jr8DQ==
-X-Received: by 2002:a05:6870:5488:b0:22e:cbfa:678d with SMTP id f8-20020a056870548800b0022ecbfa678dmr4605735oan.57.1712981488680;
-        Fri, 12 Apr 2024 21:11:28 -0700 (PDT)
-Received: from localhost.localdomain ([123.116.201.21])
-        by smtp.gmail.com with ESMTPSA id y22-20020aa78556000000b006ea81423c65sm3722131pfn.148.2024.04.12.21.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 21:11:27 -0700 (PDT)
-From: Liang Chen <liangchen.linux@gmail.com>
-To: mst@redhat.com,
-	jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	hengqi@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	liangchen.linux@gmail.com
-Subject: [PATCH net-next v7] virtio_net: Support RX hash XDP hint
-Date: Sat, 13 Apr 2024 12:10:35 +0800
-Message-Id: <20240413041035.7344-1-liangchen.linux@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        d=1e100.net; s=20230601; t=1712985283; x=1713590083;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yaCyk3QclmFG8mk/Yvl9YPI5nFuDCGZkzEfNn9lMiS0=;
+        b=aqb3ITO5HocXLbP+OJklv8HCuPeuOK1U1FgNd2NxeU83q9ii6B4ZaIUQLrhuFJqL1P
+         Q+ab7ntLWMO/Bk2ihsh934RoKttddtcsxqmDzYOtIMVXViDNLPZvfKIRy1lwxN9WzGBA
+         lehCepmqHi/30YB0SJOiXxT9EfKgTrcDXwveg0wEH5vSalKz0zagfpr7uHlKZfXsg/C2
+         +AHxC6rIoq9QBHVmacteMD+a2FLgydN0gNyLjdF6kmUiQxTiXuHyvkFP5bRv+mxtw8eH
+         5iRJex2E7S8QUf41N0fSj37w7A7xR4ygQyfEwa3mj4EQw5a5B2KMmvH9XhoOPpGXE8DV
+         TsSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXnT7XSmdsIhMOlElaF1G7EWyMq0jD+7kYMgfao3QSeKqC6JZVayh4yH34ih/DF4A0t0Zsk2Z5qMOSq5iT25lxmlcmE
+X-Gm-Message-State: AOJu0Yywl9evPyARQK2HLqcUhapeO2wk4t4CVguSH2j0ZfcTqE4CAmXU
+	LQA7UuZFqkdPU2lhSWUAZNcNgzrcdkPeXbFRH4gsBNOukedKhmo0B8ciW/tWSZZzBjKhdQEK5gU
+	BBz/3fboQHITtamRGxncdDbISH27YJ/E4g1bXEzbEv6jo2QULKjvVYA0=
+X-Google-Smtp-Source: AGHT+IHuYB6AP31KS2a9Jwk9rB2BnpCot4tMi4ATZvXrPzKrkqeF6u2YaAlSfw34biMPIrS/63KcQXjK7mkxzDG5c2TcMtuGy30z
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:174a:b0:367:472c:e7d7 with SMTP id
+ y10-20020a056e02174a00b00367472ce7d7mr374864ill.0.1712985282980; Fri, 12 Apr
+ 2024 22:14:42 -0700 (PDT)
+Date: Fri, 12 Apr 2024 22:14:42 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c3fc90615f37756@google.com>
+Subject: [syzbot] [bpf?] possible deadlock in __queue_map_get
+From: syzbot <syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-The RSS hash report is a feature that's part of the virtio specification.
-Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-(still a work in progress as per [1]) support this feature. While the
-capability to obtain the RSS hash has been enabled in the normal path,
-it's currently missing in the XDP path. Therefore, we are introducing
-XDP hints through kfuncs to allow XDP programs to access the RSS hash.
+Hello,
 
-1.
-https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
+syzbot found the following issue on:
 
-Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=140c3f8d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16975413180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11062cf3180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+6.8.0-syzkaller-05271-gf99c5f563c17 #0 Not tainted
+--------------------------------------------
+strace-static-x/5063 is trying to acquire lock:
+ffff8880233421d8 (&qs->lock){-.-.}-{2:2}, at: __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
+
+but task is already holding lock:
+ffff8880233401d8 (&qs->lock){-.-.}-{2:2}, at: __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&qs->lock);
+  lock(&qs->lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+4 locks held by strace-static-x/5063:
+ #0: ffff88807c3d6c68 (&pipe->mutex){+.+.}-{3:3}, at: pipe_write+0x1c9/0x1a40 fs/pipe.c:455
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+ #2: ffff8880233401d8 (&qs->lock){-.-.}-{2:2}, at: __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
+ #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+ #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+
+stack backtrace:
+CPU: 0 PID: 5063 Comm: strace-static-x Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_deadlock kernel/locking/lockdep.c:3062 [inline]
+ validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+ __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
+ bpf_prog_bf9a7c5adf7f532a+0x42/0x46
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+ __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
+ trace_contention_end+0xf6/0x120 include/trace/events/lock.h:122
+ __pv_queued_spin_lock_slowpath+0x939/0xc60 kernel/locking/qspinlock.c:560
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
+ queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
+ queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+ do_raw_spin_lock+0x272/0x370 kernel/locking/spinlock_debug.c:116
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+ _raw_spin_lock_irqsave+0xe1/0x120 kernel/locking/spinlock.c:162
+ __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
+ bpf_prog_bf9a7c5adf7f532a+0x42/0x46
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+ __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
+ trace_contention_end+0xd7/0x100 include/trace/events/lock.h:122
+ __mutex_lock_common kernel/locking/mutex.c:617 [inline]
+ __mutex_lock+0x2e5/0xd70 kernel/locking/mutex.c:752
+ pipe_write+0x1c9/0x1a40 fs/pipe.c:455
+ call_write_iter include/linux/fs.h:2108 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa84/0xcb0 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x4e8593
+Code: c7 c2 a8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
+RSP: 002b:00007ffc411c1eb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000000002c RCX: 00000000004e8593
+RDX: 000000000000002c RSI: 000000001b0c0140 RDI: 0000000000000002
+RBP: 000000001b0c0140 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002c
+R13: 000000000063f460 R14: 000000000000002c R15: 0000000000000001
+ </TASK>
+
+
 ---
-  Changes from v6:
-- fix a coding style issue
-  Changes from v5:
-- Preservation of the hash value has been dropped, following the conclusion
-  from discussions in V3 reviews. The virtio_net driver doesn't
-  accessing/using the virtio_net_hdr after the XDP program execution, so
-  nothing tragic should happen. As to the xdp program, if it smashes the
-  entry in virtio header, it is likely buggy anyways. Additionally, looking
-  up the Intel IGC driver,  it also does not bother with this particular
-  aspect.
----
- drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c22d1118a133..2a1892b7b8d3 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
- 	}
- }
- 
-+static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-+			       enum xdp_rss_hash_type *rss_type)
-+{
-+	const struct xdp_buff *xdp = (void *)_ctx;
-+	struct virtio_net_hdr_v1_hash *hdr_hash;
-+	struct virtnet_info *vi;
-+
-+	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-+		return -ENODATA;
-+
-+	vi = netdev_priv(xdp->rxq->dev);
-+	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
-+
-+	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-+	case VIRTIO_NET_HASH_REPORT_TCPv4:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_UDPv4:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_TCPv6:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_UDPv6:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_IPv4:
-+		*rss_type = XDP_RSS_TYPE_L3_IPV4;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_IPv6:
-+		*rss_type = XDP_RSS_TYPE_L3_IPV6;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_IPv6_EX:
-+		*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_NONE:
-+	default:
-+		*rss_type = XDP_RSS_TYPE_NONE;
-+	}
-+
-+	*hash = __le32_to_cpu(hdr_hash->hash_value);
-+	return 0;
-+}
-+
-+static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-+	.xmo_rx_hash			= virtnet_xdp_rx_hash,
-+};
-+
- static int virtnet_probe(struct virtio_device *vdev)
- {
- 	int i, err = -ENOMEM;
-@@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
- 				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
- 
- 		dev->hw_features |= NETIF_F_RXHASH;
-+		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
- 	}
- 
- 	if (vi->has_rss_hash_report)
--- 
-2.40.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
