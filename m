@@ -1,59 +1,67 @@
-Return-Path: <bpf+bounces-26700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC658A3A68
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 04:12:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592F88A3A6C
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 04:16:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A8262846C9
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:12:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBE421F2279B
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1751AAC4;
-	Sat, 13 Apr 2024 02:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5073B1758B;
+	Sat, 13 Apr 2024 02:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QJNKv5/N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C8+3BVLR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF031865C;
-	Sat, 13 Apr 2024 02:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71D6FC0E;
+	Sat, 13 Apr 2024 02:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712974288; cv=none; b=E/mSOAxpFg3T1pZDy8sdVRWMXdTjKKs4Htm9kmXmcXZW9jruBjIoLN81WtpdmLRf4igqKsrB7Kq5qyO4w6wxLV+iKTXYIbSxwoCeugzugNTQD3AIHsa1/8ZIh4Zjp5ngFsBpR3jEf4qXbGJ+JA0SsBoNxn7Q7ytnpohYjzm0oS8=
+	t=1712974588; cv=none; b=aLfAB8hUGtvzYspSl1/XQ/V7afymmjp9/sdfmjb1adwqylcow0w+ebFT5QhTwOyTMyKuOlxrh5MBLYZFUb1sDrtZuJHgHrxoLnFyFQnVmkohQnf+Q6lThuJ0drHv3DX0eBldqyJJ7Ox2Wmx0EzmGbFfNp/2YRPHFmiMXwpze1HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712974288; c=relaxed/simple;
-	bh=K//9Hcjv/NtcL18GMBZ3/qLgmdN/uoN2Qy4xDwZxj8Y=;
+	s=arc-20240116; t=1712974588; c=relaxed/simple;
+	bh=edVYBrCFyItV2d/UveybSyGwsRExQsBBAgMZRGTiSYQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z6KJy6ns36Li5Eb8jIo5sIDtUogvIe+KD3TWOqbq2tRp0Nsd1+S+J89ExiorQi/G4JOajM7yPJMKPvg4q2jJv2LJ/4BfBHVYIreaH3C3ZaYrBOLXAQAhlY3WVqx6jvFZQ8ZjUSgzLIui+qTAf1Uf9bI0pcr6vwS5Zcp6m9WBQyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QJNKv5/N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E078C113CC;
-	Sat, 13 Apr 2024 02:11:27 +0000 (UTC)
+	 MIME-Version:Content-Type; b=srHail2FaPrZ9A3Z1liWZ7ZqbNIU2ufqITtSLFwJf8/r5kaVdG5o3SWYWHVbkv56C0ddTTLs4Wq5vvf2XGKbASwWen6ODk2hZlX7mgkhPDzH7KJx6cQiqTAHbGPdt8OBsGKQg1KlptMX3wyjpul9gyhSbm+xyCu2ao+PJ6Dm4mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C8+3BVLR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1595FC113CC;
+	Sat, 13 Apr 2024 02:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712974288;
-	bh=K//9Hcjv/NtcL18GMBZ3/qLgmdN/uoN2Qy4xDwZxj8Y=;
+	s=k20201202; t=1712974588;
+	bh=edVYBrCFyItV2d/UveybSyGwsRExQsBBAgMZRGTiSYQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QJNKv5/NPFXO9KmDBnsbYQHUSdlBDyLfy3jyB6xvOT8nK+StDPFXS1YDHMlhEZJX8
-	 MYDidoTYasOB9hUVhAQZp57dRh64VEPxQysn+xfryfy/0qtNP0XBeQdhpNh+R9kQ37
-	 qZHi4Q6Yeo0pzRjq44hG3FPmx/zl0fayJHBBbShLqIALr6/US8q0mAKiU+0dtZc7kx
-	 ybjI1O9Uv0R96WZrLGJ2sU+F+zIimEKVOhX7KKIZqJzpJlMr7bjQFEgrQBO0H1AkPj
-	 SPaZYCidt8Nluu3PWadUJzQCJd3gPMLzKNFh4NnWJ1P9lE41fGLsJdevaBgO+K9f7d
-	 nSEiFAg7gt7XQ==
-Date: Fri, 12 Apr 2024 19:11:26 -0700
+	b=C8+3BVLRyA53WLwuKA0hZTTf79KRJ8rtny/HmzaGPRxqFvuz2QSCA1zalbiHLREqB
+	 RqT+VpzaswsCXZmNXJELAw45yTMpmIxKDzJQfH8fnqIqY1bf/Mgjw7b/q2TVK4YWjc
+	 cUNO7FSbDfMbCl0ClGrohxtTHL1Wjva6I05WvxNT3QqkPFdk2t7p/g5CO+sCcg4hUB
+	 sNvgDlG2d2FEYOV4zz6Z9ID4nQlo0rht493d1n0T+QZKkw4PZfLYGQYAJyg1grkQkv
+	 Gwe3M71KTriLQ3SW6lsTq05SWJpXIgtfcCQMG5HT/rqQcXv/18TLrHqXKcxck6FrUh
+	 ivwL/jEOTOuHw==
+Date: Fri, 12 Apr 2024 19:16:26 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Liang Chen <liangchen.linux@gmail.com>
-Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, netdev@vger.kernel.org, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
- ast@kernel.org
-Subject: Re: [PATCH net-next v6] virtio_net: Support RX hash XDP hint
-Message-ID: <20240412191126.1526ce85@kernel.org>
-In-Reply-To: <20240411085216.361662-1-liangchen.linux@gmail.com>
-References: <20240411085216.361662-1-liangchen.linux@gmail.com>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, davem@davemloft.net, pabeni@redhat.com,
+ edumazet@google.com, elder@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ nbd@nbd.name, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+ lorenzo@kernel.org, taras.chornyi@plvision.eu, ath11k@lists.infradead.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ geomatsi@gmail.com, kvalo@kernel.org, quic_jjohnson@quicinc.com,
+ leon@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ idosch@idosch.org, Ido Schimmel <idosch@nvidia.com>, Jiri Pirko
+ <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH net-next v6 03/10] net: create a dummy net_device
+ allocator
+Message-ID: <20240412191626.2e9bfb4a@kernel.org>
+In-Reply-To: <20240411135952.1096696-4-leitao@debian.org>
+References: <20240411135952.1096696-1-leitao@debian.org>
+	<20240411135952.1096696-4-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,13 +71,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Apr 2024 16:52:16 +0800 Liang Chen wrote:
-> +	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-> +		case VIRTIO_NET_HASH_REPORT_TCPv4:
+On Thu, 11 Apr 2024 06:59:27 -0700 Breno Leitao wrote:
+> +/**
+> + * alloc_netdev_dummy - Allocate and initialize a dummy net device.
+> + * @sizeof_priv: size of private data to allocate space for
+> + */
+> +struct net_device *alloc_netdev_dummy(int sizeof_priv)
 
-Please indent things according to the kernel coding style.
+Sorry, one more round :)
 
-Checkpatch finds 2 problems in this change.
--- 
-pw-bot: cr
+We started using -Wall for kdoc (./scripts/kernel-doc -Wall $files)
+recently and it now complains about missing return values...
 
