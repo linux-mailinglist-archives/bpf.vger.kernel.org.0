@@ -1,315 +1,282 @@
-Return-Path: <bpf+bounces-26696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EE98A3A0F
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 03:15:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 647B18A3A14
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 03:19:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7D361F228A1
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 01:15:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2EEF28400D
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 01:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FF04C66;
-	Sat, 13 Apr 2024 01:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268F263C7;
+	Sat, 13 Apr 2024 01:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uc8aHkCB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bxWze/7m"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8D15235
-	for <bpf@vger.kernel.org>; Sat, 13 Apr 2024 01:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0260C4A24
+	for <bpf@vger.kernel.org>; Sat, 13 Apr 2024 01:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712970915; cv=none; b=rtFoQ6Ib0+grwauSA+Sk695WGxJrbvaCqHiE/SFIbV5CmwuHVVhES+TfmJxxVIQA6wWTmd/PLWPKSmkjYLG2XnMrHSNgAd+6fcB3VD/9Qmz6K5bLUbEYbJF4b2whsJejWGRPaB7XVD3uu8ciymXqgu3Ma78pwNZyefm/XG2EfeY=
+	t=1712971173; cv=none; b=ZUecHHZwxwk6LzST7Nee4DQVfjErGg83fSCE5h5pf/b4MsGBcJs0wIjLB8iKJm8U97tDa4F6QT2ghUGHM5QCntKz1zlEkkPThaljle5qAfGac8velJWSVpSYlC7EaD29TwSFz9tzSFbcsjNpRJxvBHrmNKTU+fZil/muF4sLMTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712970915; c=relaxed/simple;
-	bh=Ft8/C1o11SLtPSkJIkD9IffrpNxa7a46tc1iNripE6E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ym91RXcC52kJ/xvi+G70V2AK3VxTXapIE0VDywEOzdZtjx5RhGh/c8+9ZYpfwlMzAIK96etXkf4JbdFEyA5dH22rmvIMDA9IiLzvUDrm8oIbBoVwmlG+WJ8nE8uNYX2+Z4HK+PGhUTrdZc8PbnbU+eRObstce4FJN1fyoOruEsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uc8aHkCB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBCA0C32786;
-	Sat, 13 Apr 2024 01:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712970914;
-	bh=Ft8/C1o11SLtPSkJIkD9IffrpNxa7a46tc1iNripE6E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uc8aHkCBeF/mgPjs1P9YfH/Zp8fqPD07gGvABv67BK3AsiwqC6Hhk25cWITwuN/4w
-	 Y2NuCbmgOlQGS3EjiTxgpW1mci5ndfNqoAoJxByFGrO5VeajlCQhTk1g0alktbpm/j
-	 zgjlmKgV95yF2BwGfKIzVKQU1xe3Of2BKG/+qmYCARvJgNJighX0Jh8zzf5e/LoVCq
-	 Z1S2BpvGI/i3zShzh2HvnWEUN9eWe2hfMj+rGPGcSox99wwC4o2HJHGLv8w4fmiLew
-	 +xH1DpqmfTz+9kouf7GMcW5CxyqkDgb3oLmLNzNSkVMqWt4vJCUCKQeXmd+cz8GG8K
-	 zaTuPFngCrElA==
-From: Quentin Monnet <qmo@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next 2/2] bpftool: Address minor issues in bash completion
-Date: Sat, 13 Apr 2024 02:14:27 +0100
-Message-Id: <20240413011427.14402-3-qmo@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240413011427.14402-1-qmo@kernel.org>
-References: <20240413011427.14402-1-qmo@kernel.org>
+	s=arc-20240116; t=1712971173; c=relaxed/simple;
+	bh=OEitvC2FrqL37rYWsuz+CrthG2vyZds3lU22hU23Ms4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DPNsJiFh2MoirAx2ga/8iUQPGrEv+mrQhNwL0O8f2dd2DJMBjVi9T4gYxuyTGMuxpuUobqr4C5ucsEhEwC6iZwxdKyeNi72+1ZqBcFOLywzkYiUNlmVeNtA6GzRGVQh1+MlimKu78qM6YwVn96X1575CPdIpRYvp+v6VJ1C2txc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bxWze/7m; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41824a765f1so639925e9.0
+        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 18:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712971170; x=1713575970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y/IhB4syrBzPuc+TLnwnm4IzK5ETGkVI6wWNl4QZk2s=;
+        b=bxWze/7m6siWbecVXETc1pg/2Dy6N3PO9pjPHAstRlpShiRr3GWzEkSe2racMzx4Cr
+         Gn1aYMrklca7zSChnla6h94q5WfD/5XL3txyXee8A330BycnaKVW8Qy3T2tpKwfroLmU
+         gagS3L/ORozeyMtWj5vSHVpl3rJG0UHaBxTqhfeh1cTizIzaymB+CZKs6q/1tE1eWOC6
+         lPTLFzYgLwb3ptR0uqfHIRbpWg6BFRr52LNB9eC9LJiW/lja8EjJxzD43yNstk7URawQ
+         /Ads/qk1REJuYswLsIswi8Om5wzm+xBez84x7X4IuxCzwIvVThimH6SJpSl1tVLKrH6J
+         ipnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712971170; x=1713575970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y/IhB4syrBzPuc+TLnwnm4IzK5ETGkVI6wWNl4QZk2s=;
+        b=NoTNWPL2XxXCFslkYJc/EUTEpnXFJF5kOy8c4R3QQIl8csWL8kuR+ci0JCwFMID3og
+         K1pPiUk/2Tdxfp80LtLHFrarXXzDdmU85b59jjGndTApUo8zqvnrg3dhC3vpw33Ej6JX
+         T9draRLKFYTFcUSXTmxgE4+dXu7V61Na6rLQlofsF3Wgo5qcYs/z/c03OdVw6n//zoXl
+         gAdiXGAeub1FBJMca4RuJxbC7Gg7WgvQ8hAgPaufDWQI+ZVmzkdrx+UMYl7uc1+uVyOb
+         Mxbum0RcFW1XfkNTpafOXMG6FM+cKGMaBEHSlBXrBY1I5mG8B3t2CsWCRz/rKQZEenwL
+         6ROQ==
+X-Gm-Message-State: AOJu0YxjQg+yiGtfsGTmcF6sEEg5m3CxOvaQfePCnte+IcuKNf/DzrQD
+	gqPi0lQs0Me4p+olyi77AonYNCRvQgSIuRejS/Ez9zyLiyFZlXcP8xr9C5MuDSc2iqnq+EG9KG0
+	i4jt2mCFbp2XXskh57Q7zI1GdeTnHCaCQUzr7
+X-Google-Smtp-Source: AGHT+IFnKkdFnoWRrMBZGPIoxmpCyWfWDTE+DS0TPVLkuuLCQ5+jSOiE5DiDiCDbW2avq0dbP0QTZL0VdQ8BUYD3+G8=
+X-Received: by 2002:a05:600c:3592:b0:416:2d39:bcc2 with SMTP id
+ p18-20020a05600c359200b004162d39bcc2mr4788661wmq.29.1712971170172; Fri, 12
+ Apr 2024 18:19:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240412165230.2009746-1-jrife@google.com> <20240412165230.2009746-2-jrife@google.com>
+ <5ad9aac3-6170-47cb-87be-b77d4425e31a@gmail.com>
+In-Reply-To: <5ad9aac3-6170-47cb-87be-b77d4425e31a@gmail.com>
+From: Jordan Rife <jrife@google.com>
+Date: Fri, 12 Apr 2024 18:19:16 -0700
+Message-ID: <CADKFtnRrOjV3fPRWnkVyk2svxx1uMaHVAOOo_+sAmvozz9BH9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/6] selftests/bpf: Fix bind program for big
+ endian systems
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Kui-Feng Lee <thinker.li@gmail.com>, Artem Savkov <asavkov@redhat.com>, 
+	Dave Marchevsky <davemarchevsky@fb.com>, Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>, 
+	David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit contains a series of clean-ups and fixes for bpftool's bash
-completion file:
+Kui-Feng,
 
-- Make sure all local variables are declared as such.
-- Make sure variables are initialised before being read.
-- Update ELF section ("maps" -> ".maps") for looking up map names in
-  object files.
-- Fix call to _init_completion.
-- Move definition for MAP_TYPE and PROG_TYPE higher up in the scope to
-  avoid defining them multiple times, reuse MAP_TYPE where relevant.
-- Simplify completion for "duration" keyword in "bpftool prog profile".
-- Fix completion for "bpftool struct_ops register" and "bpftool link
-  (pin|detach)" where we would repeatedly suggest file names instead of
-  suggesting just one name.
-- Fix completion for "bpftool iter pin ... map MAP" to account for the
-  "map" keyword.
-- Add missing "detach" suggestion for "bpftool link".
+You are right. Maybe simply "load_word" and "load_byte" would be a
+better name here. WDYT?
 
-Signed-off-by: Quentin Monnet <qmo@kernel.org>
----
- tools/bpf/bpftool/bash-completion/bpftool | 61 ++++++++++-------------
- 1 file changed, 25 insertions(+), 36 deletions(-)
+-Jordan
 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 6e4f7ce6bc01..04afe2ac2228 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -106,19 +106,19 @@ _bpftool_get_link_ids()
- 
- _bpftool_get_obj_map_names()
- {
--    local obj
-+    local obj maps
- 
-     obj=$1
- 
--    maps=$(objdump -j maps -t $obj 2>/dev/null | \
--        command awk '/g     . maps/ {print $NF}')
-+    maps=$(objdump -j .maps -t $obj 2>/dev/null | \
-+        command awk '/g     . .maps/ {print $NF}')
- 
-     COMPREPLY+=( $( compgen -W "$maps" -- "$cur" ) )
- }
- 
- _bpftool_get_obj_map_idxs()
- {
--    local obj
-+    local obj nmaps
- 
-     obj=$1
- 
-@@ -136,7 +136,7 @@ _sysfs_get_netdevs()
- # Retrieve type of the map that we are operating on.
- _bpftool_map_guess_map_type()
- {
--    local keyword ref
-+    local keyword idx ref=""
-     for (( idx=3; idx < ${#words[@]}-1; idx++ )); do
-         case "${words[$((idx-2))]}" in
-             lookup|update)
-@@ -255,8 +255,9 @@ _bpftool_map_update_get_name()
- 
- _bpftool()
- {
--    local cur prev words objword json=0
--    _init_completion || return
-+    local cur prev words cword comp_args
-+    local json=0
-+    _init_completion -- "$@" || return
- 
-     # Deal with options
-     if [[ ${words[cword]} == -* ]]; then
-@@ -293,7 +294,7 @@ _bpftool()
-     esac
- 
-     # Remove all options so completions don't have to deal with them.
--    local i
-+    local i pprev
-     for (( i=1; i < ${#words[@]}; )); do
-         if [[ ${words[i]::1} == - ]] &&
-             [[ ${words[i]} != "-B" ]] && [[ ${words[i]} != "--base-btf" ]]; then
-@@ -307,7 +308,7 @@ _bpftool()
-     prev=${words[cword - 1]}
-     pprev=${words[cword - 2]}
- 
--    local object=${words[1]} command=${words[2]}
-+    local object=${words[1]}
- 
-     if [[ -z $object || $cword -eq 1 ]]; then
-         case $cur in
-@@ -324,8 +325,12 @@ _bpftool()
-         esac
-     fi
- 
-+    local command=${words[2]}
-     [[ $command == help ]] && return 0
- 
-+    local MAP_TYPE='id pinned name'
-+    local PROG_TYPE='id pinned tag name'
+
+On Fri, Apr 12, 2024 at 6:01=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com> =
+wrote:
+>
+>
+>
+> On 4/12/24 09:52, Jordan Rife wrote:
+> > Without this fix, the bind4 and bind6 programs will reject bind attempt=
+s
+> > on big endian systems. This patch ensures that CI tests pass for the
+> > s390x architecture.
+> >
+> > Signed-off-by: Jordan Rife <jrife@google.com>
+> > ---
+> >   .../testing/selftests/bpf/progs/bind4_prog.c  | 18 ++++++++++--------
+> >   .../testing/selftests/bpf/progs/bind6_prog.c  | 18 ++++++++++--------
+> >   tools/testing/selftests/bpf/progs/bind_prog.h | 19 ++++++++++++++++++=
 +
-     # Completion depends on object and command in use
-     case $object in
-         prog)
-@@ -346,8 +351,6 @@ _bpftool()
-                     ;;
-             esac
- 
--            local PROG_TYPE='id pinned tag name'
--            local MAP_TYPE='id pinned name'
-             local METRIC_TYPE='cycles instructions l1d_loads llc_misses \
-                 itlb_misses dtlb_misses'
-             case $command in
-@@ -457,7 +460,7 @@ _bpftool()
-                     obj=${words[3]}
- 
-                     if [[ ${words[-4]} == "map" ]]; then
--                        COMPREPLY=( $( compgen -W "id pinned" -- "$cur" ) )
-+                        COMPREPLY=( $( compgen -W "$MAP_TYPE" -- "$cur" ) )
-                         return 0
-                     fi
-                     if [[ ${words[-3]} == "map" ]]; then
-@@ -541,20 +544,9 @@ _bpftool()
-                             COMPREPLY=( $( compgen -W "$METRIC_TYPE duration" -- "$cur" ) )
-                             return 0
-                             ;;
--                        6)
--                            case $prev in
--                                duration)
--                                    return 0
--                                    ;;
--                                *)
--                                    COMPREPLY=( $( compgen -W "$METRIC_TYPE" -- "$cur" ) )
--                                    return 0
--                                    ;;
--                            esac
--                            return 0
--                            ;;
-                         *)
--                            COMPREPLY=( $( compgen -W "$METRIC_TYPE" -- "$cur" ) )
-+                            [[ $prev == duration ]] && return 0
-+                            _bpftool_once_attr "$METRIC_TYPE"
-                             return 0
-                             ;;
-                     esac
-@@ -612,7 +604,7 @@ _bpftool()
-                     return 0
-                     ;;
-                 register)
--                    _filedir
-+                    [[ $prev == $command ]] && _filedir
-                     return 0
-                     ;;
-                 *)
-@@ -638,9 +630,12 @@ _bpftool()
-                         pinned)
-                             _filedir
-                             ;;
--                        *)
-+                        map)
-                             _bpftool_one_of_list $MAP_TYPE
-                             ;;
-+                        *)
-+                            _bpftool_once_attr 'map'
-+                            ;;
-                     esac
-                     return 0
-                     ;;
-@@ -652,7 +647,6 @@ _bpftool()
-             esac
-             ;;
-         map)
--            local MAP_TYPE='id pinned name'
-             case $command in
-                 show|list|dump|peek|pop|dequeue|freeze)
-                     case $prev in
-@@ -793,13 +787,11 @@ _bpftool()
-                             # map, depending on the type of the map to update.
-                             case "$(_bpftool_map_guess_map_type)" in
-                                 array_of_maps|hash_of_maps)
--                                    local MAP_TYPE='id pinned name'
-                                     COMPREPLY+=( $( compgen -W "$MAP_TYPE" \
-                                         -- "$cur" ) )
-                                     return 0
-                                     ;;
-                                 prog_array)
--                                    local PROG_TYPE='id pinned tag name'
-                                     COMPREPLY+=( $( compgen -W "$PROG_TYPE" \
-                                         -- "$cur" ) )
-                                     return 0
-@@ -821,7 +813,7 @@ _bpftool()
-                             esac
- 
-                             _bpftool_once_attr 'key'
--                            local UPDATE_FLAGS='any exist noexist'
-+                            local UPDATE_FLAGS='any exist noexist' idx
-                             for (( idx=3; idx < ${#words[@]}-1; idx++ )); do
-                                 if [[ ${words[idx]} == 'value' ]]; then
-                                     # 'value' is present, but is not the last
-@@ -893,7 +885,6 @@ _bpftool()
-             esac
-             ;;
-         btf)
--            local PROG_TYPE='id pinned tag name'
-             local MAP_TYPE='id pinned name'
-             case $command in
-                 dump)
-@@ -1033,7 +1024,6 @@ _bpftool()
-                     local BPFTOOL_CGROUP_ATTACH_TYPES="$(bpftool feature list_builtins attach_types 2>/dev/null | \
-                         grep '^cgroup_')"
-                     local ATTACH_FLAGS='multi override'
--                    local PROG_TYPE='id pinned tag name'
-                     # Check for $prev = $command first
-                     if [ $prev = $command ]; then
-                         _filedir
-@@ -1086,7 +1076,6 @@ _bpftool()
-             esac
-             ;;
-         net)
--            local PROG_TYPE='id pinned tag name'
-             local ATTACH_TYPES='xdp xdpgeneric xdpdrv xdpoffload'
-             case $command in
-                 show|list)
-@@ -1193,14 +1182,14 @@ _bpftool()
-                 pin|detach)
-                     if [[ $prev == "$command" ]]; then
-                         COMPREPLY=( $( compgen -W "$LINK_TYPE" -- "$cur" ) )
--                    else
-+                    elif [[ $pprev == "$command" ]]; then
-                         _filedir
-                     fi
-                     return 0
-                     ;;
-                 *)
-                     [[ $prev == $object ]] && \
--                        COMPREPLY=( $( compgen -W 'help pin show list' -- "$cur" ) )
-+                        COMPREPLY=( $( compgen -W 'help pin detach show list' -- "$cur" ) )
-                     ;;
-             esac
-             ;;
--- 
-2.34.1
-
+> >   3 files changed, 39 insertions(+), 16 deletions(-)
+> >   create mode 100644 tools/testing/selftests/bpf/progs/bind_prog.h
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/tes=
+ting/selftests/bpf/progs/bind4_prog.c
+> > index a487f60b73ac4..2bc052ecb6eef 100644
+> > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > @@ -12,6 +12,8 @@
+> >   #include <bpf/bpf_helpers.h>
+> >   #include <bpf/bpf_endian.h>
+> >
+> > +#include "bind_prog.h"
+> > +
+> >   #define SERV4_IP            0xc0a801feU /* 192.168.1.254 */
+> >   #define SERV4_PORT          4040
+> >   #define SERV4_REWRITE_IP    0x7f000001U /* 127.0.0.1 */
+> > @@ -118,23 +120,23 @@ int bind_v4_prog(struct bpf_sock_addr *ctx)
+> >
+> >       // u8 narrow loads:
+> >       user_ip4 =3D 0;
+> > -     user_ip4 |=3D ((volatile __u8 *)&ctx->user_ip4)[0] << 0;
+> > -     user_ip4 |=3D ((volatile __u8 *)&ctx->user_ip4)[1] << 8;
+> > -     user_ip4 |=3D ((volatile __u8 *)&ctx->user_ip4)[2] << 16;
+> > -     user_ip4 |=3D ((volatile __u8 *)&ctx->user_ip4)[3] << 24;
+> > +     user_ip4 |=3D load_byte_ntoh(ctx->user_ip4, 0, sizeof(user_ip4));
+> > +     user_ip4 |=3D load_byte_ntoh(ctx->user_ip4, 1, sizeof(user_ip4));
+> > +     user_ip4 |=3D load_byte_ntoh(ctx->user_ip4, 2, sizeof(user_ip4));
+> > +     user_ip4 |=3D load_byte_ntoh(ctx->user_ip4, 3, sizeof(user_ip4));
+> >       if (ctx->user_ip4 !=3D user_ip4)
+> >               return 0;
+> >
+> >       user_port =3D 0;
+> > -     user_port |=3D ((volatile __u8 *)&ctx->user_port)[0] << 0;
+> > -     user_port |=3D ((volatile __u8 *)&ctx->user_port)[1] << 8;
+> > +     user_port |=3D load_byte_ntoh(ctx->user_port, 0, sizeof(user_port=
+));
+> > +     user_port |=3D load_byte_ntoh(ctx->user_port, 1, sizeof(user_port=
+));
+> >       if (ctx->user_port !=3D user_port)
+> >               return 0;
+> >
+> >       // u16 narrow loads:
+> >       user_ip4 =3D 0;
+> > -     user_ip4 |=3D ((volatile __u16 *)&ctx->user_ip4)[0] << 0;
+> > -     user_ip4 |=3D ((volatile __u16 *)&ctx->user_ip4)[1] << 16;
+> > +     user_ip4 |=3D load_word_ntoh(ctx->user_ip4, 0, sizeof(user_ip4));
+> > +     user_ip4 |=3D load_word_ntoh(ctx->user_ip4, 1, sizeof(user_ip4));
+> >       if (ctx->user_ip4 !=3D user_ip4)
+> >               return 0;
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/tes=
+ting/selftests/bpf/progs/bind6_prog.c
+> > index d62cd9e9cf0ea..194583e3375bf 100644
+> > --- a/tools/testing/selftests/bpf/progs/bind6_prog.c
+> > +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> > @@ -12,6 +12,8 @@
+> >   #include <bpf/bpf_helpers.h>
+> >   #include <bpf/bpf_endian.h>
+> >
+> > +#include "bind_prog.h"
+> > +
+> >   #define SERV6_IP_0          0xfaceb00c /* face:b00c:1234:5678::abcd *=
+/
+> >   #define SERV6_IP_1          0x12345678
+> >   #define SERV6_IP_2          0x00000000
+> > @@ -129,25 +131,25 @@ int bind_v6_prog(struct bpf_sock_addr *ctx)
+> >       // u8 narrow loads:
+> >       for (i =3D 0; i < 4; i++) {
+> >               user_ip6 =3D 0;
+> > -             user_ip6 |=3D ((volatile __u8 *)&ctx->user_ip6[i])[0] << =
+0;
+> > -             user_ip6 |=3D ((volatile __u8 *)&ctx->user_ip6[i])[1] << =
+8;
+> > -             user_ip6 |=3D ((volatile __u8 *)&ctx->user_ip6[i])[2] << =
+16;
+> > -             user_ip6 |=3D ((volatile __u8 *)&ctx->user_ip6[i])[3] << =
+24;
+> > +             user_ip6 |=3D load_byte_ntoh(ctx->user_ip6[i], 0, sizeof(=
+user_ip6));
+> > +             user_ip6 |=3D load_byte_ntoh(ctx->user_ip6[i], 1, sizeof(=
+user_ip6));
+> > +             user_ip6 |=3D load_byte_ntoh(ctx->user_ip6[i], 2, sizeof(=
+user_ip6));
+> > +             user_ip6 |=3D load_byte_ntoh(ctx->user_ip6[i], 3, sizeof(=
+user_ip6));
+> >               if (ctx->user_ip6[i] !=3D user_ip6)
+> >                       return 0;
+> >       }
+> >
+> >       user_port =3D 0;
+> > -     user_port |=3D ((volatile __u8 *)&ctx->user_port)[0] << 0;
+> > -     user_port |=3D ((volatile __u8 *)&ctx->user_port)[1] << 8;
+> > +     user_port |=3D load_byte_ntoh(ctx->user_port, 0, sizeof(user_port=
+));
+> > +     user_port |=3D load_byte_ntoh(ctx->user_port, 1, sizeof(user_port=
+));
+> >       if (ctx->user_port !=3D user_port)
+> >               return 0;
+> >
+> >       // u16 narrow loads:
+> >       for (i =3D 0; i < 4; i++) {
+> >               user_ip6 =3D 0;
+> > -             user_ip6 |=3D ((volatile __u16 *)&ctx->user_ip6[i])[0] <<=
+ 0;
+> > -             user_ip6 |=3D ((volatile __u16 *)&ctx->user_ip6[i])[1] <<=
+ 16;
+> > +             user_ip6 |=3D load_word_ntoh(ctx->user_ip6[i], 0, sizeof(=
+user_ip6));
+> > +             user_ip6 |=3D load_word_ntoh(ctx->user_ip6[i], 1, sizeof(=
+user_ip6));
+> >               if (ctx->user_ip6[i] !=3D user_ip6)
+> >                       return 0;
+> >       }
+> > diff --git a/tools/testing/selftests/bpf/progs/bind_prog.h b/tools/test=
+ing/selftests/bpf/progs/bind_prog.h
+> > new file mode 100644
+> > index 0000000000000..0fdc466aec346
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/bind_prog.h
+> > @@ -0,0 +1,19 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __BIND_PROG_H__
+> > +#define __BIND_PROG_H__
+> > +
+> > +#if __BYTE_ORDER__ =3D=3D __ORDER_LITTLE_ENDIAN__
+> > +#define load_byte_ntoh(src, b, s) \
+> > +     (((volatile __u8 *)&(src))[b] << 8 * b)
+> > +#define load_word_ntoh(src, w, s) \
+> > +     (((volatile __u16 *)&(src))[w] << 16 * w)
+> > +#elif __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
+> > +#define load_byte_ntoh(src, b, s) \
+> > +     (((volatile __u8 *)&(src))[(b) + (sizeof(src) - (s))] << 8 * ((s)=
+ - (b) - 1))
+> > +#define load_word_ntoh(src, w, s) \
+> > +     (((volatile __u16 *)&(src))[w] << 16 * (((s) / 2) - (w) - 1))
+> These names, load_byte_ntoh() and load_word_ntoh(), are miss-leading.
+>
+> They don't actually do byte-order conversion from network order to host
+> order. Network order is big endian. 0xdeadbeef in u32 should be stored
+> as the sequence of
+>
+>    0xde, 0xad, 0xbe, 0xef
+>
+> The little endian implementation of load_word_ntoh() provided here will
+> return 0xadde and 0xefbe0000. However, a network order to host order
+> conversion should return 0xbeef and 0xdead0000 for little endian.
+>
+> The little endian implementation of load_byte_ntoh() here returns 0xde,
+> 0xad00, 0xbe0000, and 0xef000000. However, a network to host order
+> conversion should return 0xef, 0xbe00, 0xad0000, and 0xde00000.
+>
+> So, they just access raw data following the host byte order, not
+> providing any byte order conversion.
+>
+>
+> > +#else
+> > +# error "Fix your compiler's __BYTE_ORDER__?!"
+> > +#endif
+> > +
+> > +#endif
 
