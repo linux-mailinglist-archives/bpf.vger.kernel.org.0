@@ -1,173 +1,255 @@
-Return-Path: <bpf+bounces-26692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F5E98A396D
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:50:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D43E8A3A06
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 03:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 176501F228A4
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 00:50:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5F1DB226B1
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 01:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7D24A28;
-	Sat, 13 Apr 2024 00:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CC417C9E;
+	Sat, 13 Apr 2024 01:01:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kQHVVdBh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F4F1847
-	for <bpf@vger.kernel.org>; Sat, 13 Apr 2024 00:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75FA17C73;
+	Sat, 13 Apr 2024 01:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712969421; cv=none; b=DKEDrD1GPinZXLwagdoseovzqjBs5ewP178I2LvFZbR7QCtlswjWxMs8iuF+BIffSoKXY0SWmu7TSU78uBrdOOr9gYUJfARVQk0zAOQQOjNMPE3y0dLve52Owlv41szPogfPjs29SS1+0KYcaz9j2vEci765QMOqAty1iX9rA7E=
+	t=1712970086; cv=none; b=taUVwucrUiqTt4MFfai2YzFCbTlK0wCmpkRLnoe82JFzGiDIxTWYnNbO5eZJ0mWX87j5uEBB8IRKDEjdQSLETfqgIquQDgC0MkfxqBvoSM6KmQOXuf5RjkSmCgn7gCd2qweaEnfatPWT5cn+DuZ14JUsXOIGWa+JilL5G8+Dna4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712969421; c=relaxed/simple;
-	bh=2PudCH3sanltZoJWKNx8RcWc6GEEHV5v127wrS9KFuw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uI43+arjFltBMz36Ue/hFrQtx3qyfMVH4IxAqHjRvKNUQGPh0rT08mvrMObq/Ezwjd7EjqpPcAh9G1YXfVFDkUB9c8JfjGcDww2Kz9Oz00dCm4nK2nbKg/g1AXouAzon0IQHMvF13w3vurD9eAxFeko/D9jnXC5CHtHif12FGgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a208afb78so16553465ab.2
-        for <bpf@vger.kernel.org>; Fri, 12 Apr 2024 17:50:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712969419; x=1713574219;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	s=arc-20240116; t=1712970086; c=relaxed/simple;
+	bh=dhIdH/yzx6NlS07Ku2dfmWINjKd7hFkyfx7J5admUzA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MTC6P1w+pql/C0d643/7Al3kilAqYzYFcP0jNWtJuJC3HoBkZSadqVYLrVmffvpsHH2KG2XNv20vboOW4uyx1sLhspTnTUNb8CpScYnTBoX34cD6u3GhKrUsrTI97uHcB+BVNojnpwotoYJ7E7EiYfxxycdw/uEiG61Qle0IFKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kQHVVdBh; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6ea128e4079so940785a34.3;
+        Fri, 12 Apr 2024 18:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712970084; x=1713574884; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ty8vjrN8ixEIeO3nPvDfskedfuwplOtYXeMyscPrwNA=;
-        b=X2H/QAmRvz/bXbVPn2Yz8FPbsfW3Cx7KvwY79twO9VNP0Cpcl+DqFl751MEwRsF74z
-         bvmfHyWtiMDEz0U01uioOK6kZvJ46FWkywa8JsA9q3t4juTyu7NRIe7Iue9ZcWzw1t4q
-         4Sasy7Hzn6fBvJERCQhmSflb6mO11mFakUkXtt5b3JFgnemhNOOJP2kfnW9c+FFCqyzJ
-         D1k9sXOWo5fbvU78nibVT/uMJKUt3Cs/ZgPcaGJo6p+6m+ktzcifyz1SJfr+NZ4AKo9b
-         d0llbU63tBzMYho3Q6wAn1x3KolOHpZA+NdLrIF4+RhMFmJ9lksaI0mkyAzkgRPglChu
-         977Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUOXVBynNKvnGJjyX0OKRvVlZXJFKBVzswfwTOWbJSCzzJn77xpQRgwOC3rkbCqEAoGwOxtmAvzsDTKh6A4GgpRtH1l
-X-Gm-Message-State: AOJu0YyVOKcpLG748NXXU2lB3ZA3gJi/4Ng6npoijcwCRy+P7cbt8XPd
-	Q50D6hc6QWxvZTdcgDJftKjNOsOsEpDcHkkgq2dJs1NBLoN0xPK3P7hU3B22FWjoKV/BLFbosFl
-	caFwroXfVukiz6b7/ftVUcrpGA2Jfa2Cci1tDcbiC7NE9mLNxVUYVc4U=
-X-Google-Smtp-Source: AGHT+IH9qLKEt7z94jqgv0U9YhvpZZQaXbG55erGuK79lSTmq0zperO6eeigT5hGR9UCU2HqYvivcHSHOKo2dnIyacWGi5sW4xo0
+        bh=BDclmfrNlChR5+j7MnIqYqQVZXzLRNN3QFYjDNxcdSE=;
+        b=kQHVVdBhTK1zbJ/jul+qQoaReFIi3D2ZWtltHtZ4pbQ5TriM02T4FXKrzorHUWnYda
+         PqlFk4k61Zz1XWbhcJpg1uAl4WvJkS85zDKc0B+UqHa8PriVE6hFqC/Qg2G1z5L1qF/n
+         NRcC5xcE8WU+2KMBtxasJe906WI0AxjGMbOLmpQS5b5LxO3o69Af+wHYU2W4BGCxEt7Z
+         AQsVucErHf6JgSgLQQ8ICbQnzKqagwGZHJCFhe/VjuZFN98Ul25cc+Wg0yakc/iE34EJ
+         MOPepI3V/z6R0P9eTeN6Z4BAYDA5X4OWI2WYHSUapdfHTS+8NMrVOxx5r/FrjSQdzQNv
+         82/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712970084; x=1713574884;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BDclmfrNlChR5+j7MnIqYqQVZXzLRNN3QFYjDNxcdSE=;
+        b=NRRHUGPL+55l5mcWoLEf9FJs+bwqICZyXNYyML5c7PKPlA+lhGOrgfCOGP38KJ7sfD
+         KH0y8+XZBCKUfx9QOxDjQw1iBTf3duIrjWQrk+Xi0wRr81SNzheZMXUH1Qs6RSbsEUNZ
+         hAT/XuS1ZoB/XtMmVpKRFc8BeNfEJ1e4FPTUOtPW8W7iq0uljtdKTuXYL/6NDcjsl7Us
+         j/OlNTvnmy/3Qsr1M+bRwTO6UP5MJP2fBbokwX0j6FdNZs1c93BQ01Ogjy+NhFPdYK3E
+         qcYXsQybyiuhSFf/y/4WF+KzsWptLCVR3e+9kONbFJ7jn3wsj8exScgq1AH336mYK8ya
+         8y9g==
+X-Forwarded-Encrypted: i=1; AJvYcCWmdU9UpidZ5oJnIqTF8PangNIMlfg8++8ei5T+6rPSNiu2IHVuVjymP0rKaidolqbbBnh4xMuXm7Mv87LxFkcvZLgir8Quv3GceW0qzITo9TNpSXm7aIWua84R
+X-Gm-Message-State: AOJu0YyWXkfNnNweP4Q5xKJz4cMgJXbJ8mdNyw+88JG8zCUupkaTZG1b
+	uOlEU8L99enjSfc3IZCqIDkTKO3htvX7H91k87G0aHMnXtswEpJR
+X-Google-Smtp-Source: AGHT+IFV8d7tANhtv2uoKElHCf+6dS4SttJ5LFTyKTfMZWWQWu5q+PRKZH31Kc0vq2uIMBFS4QAtfA==
+X-Received: by 2002:a05:6830:20d7:b0:6ea:2dba:b4b9 with SMTP id z23-20020a05683020d700b006ea2dbab4b9mr4686449otq.7.1712970083838;
+        Fri, 12 Apr 2024 18:01:23 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:a1a1:7d97:cada:fa46? ([2600:1700:6cf8:1240:a1a1:7d97:cada:fa46])
+        by smtp.gmail.com with ESMTPSA id r19-20020a9d7513000000b006ea232492a7sm913130otk.44.2024.04.12.18.01.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Apr 2024 18:01:23 -0700 (PDT)
+Message-ID: <5ad9aac3-6170-47cb-87be-b77d4425e31a@gmail.com>
+Date: Fri, 12 Apr 2024 18:01:21 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1e01:b0:36a:190f:1c93 with SMTP id
- g1-20020a056e021e0100b0036a190f1c93mr292596ila.5.1712969419196; Fri, 12 Apr
- 2024 17:50:19 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:50:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000be1f530615efc5ca@google.com>
-Subject: [syzbot] [bpf?] [net?] KMSAN: uninit-value in sock_hash_delete_elem
-From: syzbot <syzbot+c33bff5d5da1391df027@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    fec50db7033e Linux 6.9-rc3
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1425a483180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=13e7da432565d94c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c33bff5d5da1391df027
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b653d3180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159a2cf3180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/901017b36ccc/disk-fec50db7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/16bfcf5618d3/vmlinux-fec50db7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dc9c5a1e7d02/bzImage-fec50db7.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c33bff5d5da1391df027@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in spin_lock_bh include/linux/spinlock.h:356 [inline]
-BUG: KMSAN: uninit-value in sock_hash_delete_elem+0x239/0x710 net/core/sock_map.c:945
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- sock_hash_delete_elem+0x239/0x710 net/core/sock_map.c:945
- ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
- bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
- __bpf_trace_block_bio_remap+0x34/0x50 include/trace/events/block.h:507
- __traceiter_block_bio_remap+0xa5/0x160 include/trace/events/block.h:507
- trace_block_bio_remap include/trace/events/block.h:507 [inline]
- blk_partition_remap block/blk-core.c:571 [inline]
- submit_bio_noacct+0x2449/0x2800 block/blk-core.c:762
- submit_bio+0x58a/0x5b0 block/blk-core.c:879
- ext4_io_submit fs/ext4/page-io.c:378 [inline]
- io_submit_add_bh fs/ext4/page-io.c:419 [inline]
- ext4_bio_write_folio+0x1e76/0x2e40 fs/ext4/page-io.c:563
- mpage_submit_folio+0x351/0x4a0 fs/ext4/inode.c:1869
- mpage_map_and_submit_buffers fs/ext4/inode.c:2115 [inline]
- mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
- ext4_do_writepages+0x3733/0x62e0 fs/ext4/inode.c:2679
- ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
- do_writepages+0x427/0xc30 mm/page-writeback.c:2612
- __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
- writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
- __writeback_inodes_wb+0x14c/0x440 fs/fs-writeback.c:2012
- wb_writeback+0x4da/0xdf0 fs/fs-writeback.c:2119
- wb_check_old_data_flush fs/fs-writeback.c:2223 [inline]
- wb_do_writeback fs/fs-writeback.c:2276 [inline]
- wb_workfn+0x110c/0x1940 fs/fs-writeback.c:2304
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
- kthread+0x3e2/0x540 kernel/kthread.c:388
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
-
-CPU: 1 PID: 76 Comm: kworker/u8:5 Not tainted 6.9.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: writeback wb_workfn (flush-8:0)
-=====================================================
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 bpf-next 1/6] selftests/bpf: Fix bind program for big
+ endian systems
+To: Jordan Rife <jrife@google.com>, bpf@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Kui-Feng Lee <thinker.li@gmail.com>,
+ Artem Savkov <asavkov@redhat.com>, Dave Marchevsky <davemarchevsky@fb.com>,
+ Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>,
+ David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20240412165230.2009746-1-jrife@google.com>
+ <20240412165230.2009746-2-jrife@google.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240412165230.2009746-2-jrife@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 4/12/24 09:52, Jordan Rife wrote:
+> Without this fix, the bind4 and bind6 programs will reject bind attempts
+> on big endian systems. This patch ensures that CI tests pass for the
+> s390x architecture.
+> 
+> Signed-off-by: Jordan Rife <jrife@google.com>
+> ---
+>   .../testing/selftests/bpf/progs/bind4_prog.c  | 18 ++++++++++--------
+>   .../testing/selftests/bpf/progs/bind6_prog.c  | 18 ++++++++++--------
+>   tools/testing/selftests/bpf/progs/bind_prog.h | 19 +++++++++++++++++++
+>   3 files changed, 39 insertions(+), 16 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/progs/bind_prog.h
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> index a487f60b73ac4..2bc052ecb6eef 100644
+> --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> @@ -12,6 +12,8 @@
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_endian.h>
+>   
+> +#include "bind_prog.h"
+> +
+>   #define SERV4_IP		0xc0a801feU /* 192.168.1.254 */
+>   #define SERV4_PORT		4040
+>   #define SERV4_REWRITE_IP	0x7f000001U /* 127.0.0.1 */
+> @@ -118,23 +120,23 @@ int bind_v4_prog(struct bpf_sock_addr *ctx)
+>   
+>   	// u8 narrow loads:
+>   	user_ip4 = 0;
+> -	user_ip4 |= ((volatile __u8 *)&ctx->user_ip4)[0] << 0;
+> -	user_ip4 |= ((volatile __u8 *)&ctx->user_ip4)[1] << 8;
+> -	user_ip4 |= ((volatile __u8 *)&ctx->user_ip4)[2] << 16;
+> -	user_ip4 |= ((volatile __u8 *)&ctx->user_ip4)[3] << 24;
+> +	user_ip4 |= load_byte_ntoh(ctx->user_ip4, 0, sizeof(user_ip4));
+> +	user_ip4 |= load_byte_ntoh(ctx->user_ip4, 1, sizeof(user_ip4));
+> +	user_ip4 |= load_byte_ntoh(ctx->user_ip4, 2, sizeof(user_ip4));
+> +	user_ip4 |= load_byte_ntoh(ctx->user_ip4, 3, sizeof(user_ip4));
+>   	if (ctx->user_ip4 != user_ip4)
+>   		return 0;
+>   
+>   	user_port = 0;
+> -	user_port |= ((volatile __u8 *)&ctx->user_port)[0] << 0;
+> -	user_port |= ((volatile __u8 *)&ctx->user_port)[1] << 8;
+> +	user_port |= load_byte_ntoh(ctx->user_port, 0, sizeof(user_port));
+> +	user_port |= load_byte_ntoh(ctx->user_port, 1, sizeof(user_port));
+>   	if (ctx->user_port != user_port)
+>   		return 0;
+>   
+>   	// u16 narrow loads:
+>   	user_ip4 = 0;
+> -	user_ip4 |= ((volatile __u16 *)&ctx->user_ip4)[0] << 0;
+> -	user_ip4 |= ((volatile __u16 *)&ctx->user_ip4)[1] << 16;
+> +	user_ip4 |= load_word_ntoh(ctx->user_ip4, 0, sizeof(user_ip4));
+> +	user_ip4 |= load_word_ntoh(ctx->user_ip4, 1, sizeof(user_ip4));
+>   	if (ctx->user_ip4 != user_ip4)
+>   		return 0;
+>   
+> diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> index d62cd9e9cf0ea..194583e3375bf 100644
+> --- a/tools/testing/selftests/bpf/progs/bind6_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> @@ -12,6 +12,8 @@
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_endian.h>
+>   
+> +#include "bind_prog.h"
+> +
+>   #define SERV6_IP_0		0xfaceb00c /* face:b00c:1234:5678::abcd */
+>   #define SERV6_IP_1		0x12345678
+>   #define SERV6_IP_2		0x00000000
+> @@ -129,25 +131,25 @@ int bind_v6_prog(struct bpf_sock_addr *ctx)
+>   	// u8 narrow loads:
+>   	for (i = 0; i < 4; i++) {
+>   		user_ip6 = 0;
+> -		user_ip6 |= ((volatile __u8 *)&ctx->user_ip6[i])[0] << 0;
+> -		user_ip6 |= ((volatile __u8 *)&ctx->user_ip6[i])[1] << 8;
+> -		user_ip6 |= ((volatile __u8 *)&ctx->user_ip6[i])[2] << 16;
+> -		user_ip6 |= ((volatile __u8 *)&ctx->user_ip6[i])[3] << 24;
+> +		user_ip6 |= load_byte_ntoh(ctx->user_ip6[i], 0, sizeof(user_ip6));
+> +		user_ip6 |= load_byte_ntoh(ctx->user_ip6[i], 1, sizeof(user_ip6));
+> +		user_ip6 |= load_byte_ntoh(ctx->user_ip6[i], 2, sizeof(user_ip6));
+> +		user_ip6 |= load_byte_ntoh(ctx->user_ip6[i], 3, sizeof(user_ip6));
+>   		if (ctx->user_ip6[i] != user_ip6)
+>   			return 0;
+>   	}
+>   
+>   	user_port = 0;
+> -	user_port |= ((volatile __u8 *)&ctx->user_port)[0] << 0;
+> -	user_port |= ((volatile __u8 *)&ctx->user_port)[1] << 8;
+> +	user_port |= load_byte_ntoh(ctx->user_port, 0, sizeof(user_port));
+> +	user_port |= load_byte_ntoh(ctx->user_port, 1, sizeof(user_port));
+>   	if (ctx->user_port != user_port)
+>   		return 0;
+>   
+>   	// u16 narrow loads:
+>   	for (i = 0; i < 4; i++) {
+>   		user_ip6 = 0;
+> -		user_ip6 |= ((volatile __u16 *)&ctx->user_ip6[i])[0] << 0;
+> -		user_ip6 |= ((volatile __u16 *)&ctx->user_ip6[i])[1] << 16;
+> +		user_ip6 |= load_word_ntoh(ctx->user_ip6[i], 0, sizeof(user_ip6));
+> +		user_ip6 |= load_word_ntoh(ctx->user_ip6[i], 1, sizeof(user_ip6));
+>   		if (ctx->user_ip6[i] != user_ip6)
+>   			return 0;
+>   	}
+> diff --git a/tools/testing/selftests/bpf/progs/bind_prog.h b/tools/testing/selftests/bpf/progs/bind_prog.h
+> new file mode 100644
+> index 0000000000000..0fdc466aec346
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bind_prog.h
+> @@ -0,0 +1,19 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __BIND_PROG_H__
+> +#define __BIND_PROG_H__
+> +
+> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+> +#define load_byte_ntoh(src, b, s) \
+> +	(((volatile __u8 *)&(src))[b] << 8 * b)
+> +#define load_word_ntoh(src, w, s) \
+> +	(((volatile __u16 *)&(src))[w] << 16 * w)
+> +#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+> +#define load_byte_ntoh(src, b, s) \
+> +	(((volatile __u8 *)&(src))[(b) + (sizeof(src) - (s))] << 8 * ((s) - (b) - 1))
+> +#define load_word_ntoh(src, w, s) \
+> +	(((volatile __u16 *)&(src))[w] << 16 * (((s) / 2) - (w) - 1))
+These names, load_byte_ntoh() and load_word_ntoh(), are miss-leading.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+They don't actually do byte-order conversion from network order to host
+order. Network order is big endian. 0xdeadbeef in u32 should be stored
+as the sequence of
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+   0xde, 0xad, 0xbe, 0xef
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+The little endian implementation of load_word_ntoh() provided here will
+return 0xadde and 0xefbe0000. However, a network order to host order
+conversion should return 0xbeef and 0xdead0000 for little endian.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+The little endian implementation of load_byte_ntoh() here returns 0xde,
+0xad00, 0xbe0000, and 0xef000000. However, a network to host order
+conversion should return 0xef, 0xbe00, 0xad0000, and 0xde00000.
 
-If you want to undo deduplication, reply with:
-#syz undup
+So, they just access raw data following the host byte order, not
+providing any byte order conversion.
+
+
+> +#else
+> +# error "Fix your compiler's __BYTE_ORDER__?!"
+> +#endif
+> +
+> +#endif
 
