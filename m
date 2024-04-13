@@ -1,188 +1,639 @@
-Return-Path: <bpf+bounces-26690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5BA08A3908
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:05:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 529E98A3965
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 02:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F91A284409
-	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 00:05:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D14621F224B2
+	for <lists+bpf@lfdr.de>; Sat, 13 Apr 2024 00:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C9C647;
-	Sat, 13 Apr 2024 00:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9EE28FA;
+	Sat, 13 Apr 2024 00:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.rutgers.edu header.i=@cs.rutgers.edu header.b="o0WGcqgA"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KAAyVwV5"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2117.outbound.protection.outlook.com [40.107.220.117])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F658163;
-	Sat, 13 Apr 2024 00:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.117
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712966724; cv=fail; b=QWLqr5PQD1iZTyQqAd+xzdi/mdKGTj9dngtZwbwtPZgMDYCIaX8d5ni2c6wxk0255jeEodBsYJlsAu/rBpJeG1fx9/78inUDMifXWtoWQoutyxFScyfB/LHoVR5D83bMZTUEpG5ajJrOVdHZzCed9ph5VzsOvHrdjxxBp3nw2UM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712966724; c=relaxed/simple;
-	bh=hHDiC8PA9NCy46eJkp4N3bYm5/7HFF1S/2Wy8mnQySA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Bwe9Wpdqz8HCSeX2CJesI8YvgwCH8AL1achWDNnYJWf/a0UMuz+rYcS6ym3W/29/UByTuI8VoIsgS+BjpZ4Lzo0mu2o8YAPyIqxhrzTuF4vBvmEFu6RUpqextJIG1NbgRUTK7qC0lnhn3o2B+/tE6vsndQi0qmuvk8ybkZlzNP0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cs.rutgers.edu; spf=none smtp.mailfrom=cs.rutgers.edu; dkim=pass (2048-bit key) header.d=cs.rutgers.edu header.i=@cs.rutgers.edu header.b=o0WGcqgA; arc=fail smtp.client-ip=40.107.220.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cs.rutgers.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cs.rutgers.edu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M3tVW/D7qqtmG5gQbBtElfPRPMK6zddt4rTYghB8W2dDEKuT7/T3Di5NsbyZkkswwjnkHFyiuVEzWRa2VsCM6lFVP/TrYqIE11/QGhJmKx9jpeZw9Sw0ThhDJ8ARbnL3bUH56jH3WqqiIsdRFOWSlwwdDaECY+tfMMxpJBctFdVLLk+f+tW2GxTK4OPdOpDASp3jkjsZpW+oD9qnuZzIlNadyRUnyyB2PiqoVvIdGqxtOpc+g0xFlMAhzFG8dJ5IxSVk6AS9hStWn5yqhULoy7CcEk9mOh6orXPxTLcnEO1Md6Yxqzn0yaUdrW3qJPlySKYZx3p3sTUWVrUsARL9mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hHDiC8PA9NCy46eJkp4N3bYm5/7HFF1S/2Wy8mnQySA=;
- b=HKOKRwfDuoionnPyt+Mf1YfL7LORbSHszJsKQvtykUk7NRDeJmKoi8xnyRi6RvBn7R82+w+t/wgoPdZfH4pY44sM2CBgWgOaYbsv5s2zTZ66R/22+dAYOwVkEjvQQTL9CesBuZ0+DgEe2iXhWxSfqQGZW35/7DcpGyqoKWq6k7nCWXQue+FwcblT3JVDJaomPpdMXmGUUCRf/fa7OuPTr4O7q8uyuFY2gMgjzhYb49Dp204AIazDiT4hwDStghvb9EjXuSw8pPMmAvL3qz6al9QtdJEX7xVRH4ODl9pRd04wWe0ZNfj0kOVQSCjUWw/ynMhKgroj6okbrQqcVytDgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cs.rutgers.edu; dmarc=pass action=none
- header.from=cs.rutgers.edu; dkim=pass header.d=cs.rutgers.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cs.rutgers.edu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hHDiC8PA9NCy46eJkp4N3bYm5/7HFF1S/2Wy8mnQySA=;
- b=o0WGcqgAX73Mw/E483bKly/xeVcuMYW5NipkFr4/a+KAwLaGpSYYJixoOQubpOc1jal6/WLJNAy23CxCTbFlavvNwXs1H5YRaF7EGNpBrJjAIRDxADCeXt5JcoIxwBTGRiEf8SUW4IF/ZkGfJsadYzO15WVqKAKgPZn9Op8N24tqFmwOWNpYdx57k+2og/cfEDGkPnoR9pE9pP8cAo3zXjbzPHnO5R63IpVEEoR6gPEe9Doz/P5L0A7UCnamwVMgCE8ldnktYFWVGUUki9ND65Dpo6HAw2ITU5ATT5ayLTu8jQtkwEcmM4j1nY7wws+9+W3mK6sjMvAW7ez6mpSywg==
-Received: from SJ2PR14MB6501.namprd14.prod.outlook.com (2603:10b6:a03:4c0::14)
- by CO6PR14MB4228.namprd14.prod.outlook.com (2603:10b6:5:347::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Sat, 13 Apr
- 2024 00:05:18 +0000
-Received: from SJ2PR14MB6501.namprd14.prod.outlook.com
- ([fe80::fe7d:3e2f:e3d8:4b5a]) by SJ2PR14MB6501.namprd14.prod.outlook.com
- ([fe80::fe7d:3e2f:e3d8:4b5a%5]) with mapi id 15.20.7409.053; Sat, 13 Apr 2024
- 00:05:18 +0000
-From: Harishankar Vishwanathan <hv90@cs.rutgers.edu>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-CC: Edward Cree <ecree.xilinx@gmail.com>, Harishankar Vishwanathan
-	<harishankar.vishwanathan@gmail.com>, Edward Cree <ecree@amd.com>,
-	"ast@kernel.org" <ast@kernel.org>, Harishankar Vishwanathan
-	<harishankar.vishwanathan@rutgers.edu>, "paul@isovalent.com"
-	<paul@isovalent.com>, Matan Shachnai <m.shachnai@rutgers.edu>, Srinivas
- Narayana <srinivas.narayana@rutgers.edu>, Santosh Nagarakatte
-	<santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
- value tracking
-Thread-Topic: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
- value tracking
-Thread-Index: AQHahUPiguRDmdZPfEqf6sGDEny2aLFWilQAgADeBoCACNCbgIABNTQAgAPzzAA=
-Date: Sat, 13 Apr 2024 00:05:18 +0000
-Message-ID: <C11E783B-50EB-40F4-A3CB-F9ED5B909B9B@cs.rutgers.edu>
-References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com>
- <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
- <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
- <9d149d61-239c-67ac-0647-b59a12264299@gmail.com>
- <ogoballkzys66cu5mt22krntaswkau5bpnu7efs5x6uw7jdvng@drdai5ecq7d5>
-In-Reply-To: <ogoballkzys66cu5mt22krntaswkau5bpnu7efs5x6uw7jdvng@drdai5ecq7d5>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cs.rutgers.edu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ2PR14MB6501:EE_|CO6PR14MB4228:EE_
-x-ms-office365-filtering-correlation-id: 64d443e7-e80b-445e-6945-08dc5b4d6754
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- IXcwDocGAx5xIgNpQDWiCl1SGGGlZPq9I7ylhRBZs8bqk2nfAFj5eMPWF1RyjYYHy0Semz7IyLP+wG8XQL+cJdwKdGOJM/UmZ3NfoHUZ2vVHKDSp3DzBI7bVdUBXx2bBGAQUArxnB2uqE93id41SxiYR95tBYDMZwFls/Dxp5x3HpwRh+/5+fqR5qv9x0IukGeH6rPypzPZJkvOHHuKKvgbEFBBvvvW1Qkees4zaij7TlxQGWEknW6na43xF4Qr4kccz/C9fpMqiPFE/LyZ4QMYyS4ot3Js1C8ojmdBSZb89a40hsIe6ESuosCr7x+TVpPo/HbLAs0pFom2SFlgIrCIGaMJVvItpyM7wdggfYeQ7x6SXOJaFGep4ihdF6O8uVBZQ51twcE/mB+pUGuuqv8IcnWjGoUuhACfNG5OvLXrZ/r++xbiRwmWwoXYaoau/jnKNnh1ZSKq2qVuDmfyKAxJqzvZA6c1HpNRPI9CvMLH4oyAjBNjtGovLDmXUgifcFU5Z7NOOug22+ewFSw+NGIf6gR4msUhtNBBF1py9DAvi/SVTKUm2gxj9HHMsxp3D4nUxE9a0SCvbj7rSnp1wIF5RUnbjGS3dHjsaUPGgQOd63WmgXa4yq+01sR5gLDutLyq6/KONJa4aZ8g9ienOTFUP6lYRutbtYEofFERAwQ8=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR14MB6501.namprd14.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MENPWXlxMU83M0s0N1NTL3BNS2VOMUd5MUVyd1h3SEUyZmVQLzhsWGhuR294?=
- =?utf-8?B?Ukl6NHIzT2tBRXQ5WEh1MFhFQXNwamR5TG1zSUI5U2V5UkxyaGRZY1V3SjUx?=
- =?utf-8?B?cDRpSHdGeVJENm8wcG4wVUMzM3dxb3JKRDN5YjFLWU82Z0VTL1dSc2M5YkVa?=
- =?utf-8?B?eit6WGRxWDZRME5kdDZHMTZ1NkVUZDhEOVJseDZYdWF0ZlFpZzRDWTBIU1Bz?=
- =?utf-8?B?THVMeG9GZzZMSmpad1RCbGRyeTF4MzNCRjVudGNnTnRhaUt4VkJ2ckZMVTg0?=
- =?utf-8?B?TzlTd3pPLzdPVkJ5RzN5YUM1bDlESkJkZUNGVUZzRnpoWnVJaUZ4enVQRkVX?=
- =?utf-8?B?eDdWTFpTU1FoSmdFN3hlZmdDMkhINmJUM0F5QytlUGtEMmhTWDhnRlZUR1h0?=
- =?utf-8?B?SFppQk5zR0xiVFZXZUNmYTBvZ1VyclJXdlNuRVhMb2lKZ20xdlRnNlV2d0FW?=
- =?utf-8?B?V0R4SlY2NXVWUGZsZ2Q5YkxHWGdoNVlKT1ZNRUdXek9MQ0tYbDFibEdhenFD?=
- =?utf-8?B?T0tqUm11TDJOejRRNVR6d1NzdUR0eVJGSWNkY0xtbDBTY2Q2K2JjQ2ZtUlBa?=
- =?utf-8?B?TGVBdFVhYkVOV0Fqb29yVm40WEJqNklkRkFWdFVPbzFyRVZieTJvaVdsUTBj?=
- =?utf-8?B?WFVxb0txNGU3bnpkSTJ4SW1pcVhhemtROUkzZGhkbzNEclczRSsxdnZxeTRv?=
- =?utf-8?B?NXNmZFJuMDkwU21UQXByM3ZCa1dhUC9UUCtGaVEyYzYrS2p6WlhVcjc3U3Jl?=
- =?utf-8?B?RVlGRldTYjZrUkcxT2d1VWw5QW9xTmNiaCtKOWFYRGlkSkdTT3Jja2pzMUdG?=
- =?utf-8?B?VHh5SUpSNkVySTNBZ1JIMUs5VE1qRTMyMS8ycFpqb254RVVsOGJ1K25NYXB2?=
- =?utf-8?B?amF3MXJVeFJoVW5TN3RNQU1wSkZZVkx1eVVXeVBYdHdNWlpTQ3o0a1ViMEIz?=
- =?utf-8?B?ZFJHMVdpdFpmNUpLaHJXTWMwUHJsQ0o2NHVzc0NXS2NPcXZIZFNNQ0U3Smxu?=
- =?utf-8?B?Tm1NdFQ2bXdQbFIrTVE0SXpVSU12UnFNQXRvbkdOMjlka0JrN2VHTXpyQnB2?=
- =?utf-8?B?TWxoR2NzMHFBRHYxVEFPOWpxTnByb0VNS1RaMWp2SmpoNzdqSHg5bVRGR2xJ?=
- =?utf-8?B?L1Jkc1BjWDdtbFAzd0VBZm1xcC9WT2tKVTNOd3l0dHNYejVFZHluNm1aZzZE?=
- =?utf-8?B?ZXlKSFFBSnhZQ3pMcGZGdk5odTFEemlSTGUxaFRsUE1NZDFxSU9SUVZEQkh0?=
- =?utf-8?B?VkZqaEJSYzBLTVh6aUFXQllHN1VldksvaWNYWDQyK2F6a3ZqM29lM1RnQlJn?=
- =?utf-8?B?cmw0Wnp6TWgrUTZURUk3YlFhYUdpWHUwdk0rSmdQWktWSkpXbGFPU3BHNngw?=
- =?utf-8?B?cWwyeUplbWlQdlk0ekVMdU5FQjZDYnpRUzdLUGErTnVGNXRlb2JOVU93dldi?=
- =?utf-8?B?RmhRVURTbWo5RE1qaXJTazh2NVBtc2c2amU0THh5VFF1OVdQN2xkbE9tUklK?=
- =?utf-8?B?dUR6VFMrTktKbVhiQkVRYTVLNktzekw0QVlSSm1JVTlJbXdVSzR2S2dJUkdY?=
- =?utf-8?B?Tld3dGwybU9SZFlxOWNJUi9kVDVkR3pOeHF6aHB3Z1VyNkV1N1ZTUnpXZ1dD?=
- =?utf-8?B?dzJYTHN4SUJ4NkJQSGxSak1ITnpnWGRETzliTC9zekJjOGNoci9TVnVtVHo2?=
- =?utf-8?B?VnRCL2djV1g5amJqT0U4OWEvem8vK1kvM24yOVRxaTVYVW5FN2RWeHMzdXJo?=
- =?utf-8?B?VHNGNmhYVThsaDV3U2tXejZNaWpvYnhsN3Zyb0JvcVhqRlhDU29oY3dQRXpY?=
- =?utf-8?B?YXlTYjZXekY5bmkydDA0b3ZYTGNGbXI1bjlXZ0ppZStUcmQ4bWQwVzBZS1R4?=
- =?utf-8?B?RWFHWklneXllOGo0cFdmaFpnem5YKzdIU004K1cyTEdjaThmSTJ4VEg5VjRs?=
- =?utf-8?B?WFg2K3M3OGxwNHJpcENzQ05FUDBtd1R3dm5zZnZYZXZhTk9Ec0lqYmExLzh5?=
- =?utf-8?B?NldOVk5qRHo1RWFCVGoza214Uzd0cElLMEswdkZKUzgveUpNZER1SGw3Zi9Q?=
- =?utf-8?B?L0VZdlZMMzl5Vks0czFPZE1TbkgwN0pqVzNoV2IyWStQeVdCdmw3OXoySkNK?=
- =?utf-8?Q?OwFfGDG1JSdthWrlswluu1gbF?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AB626CB7604C524599A520BA0C2C6195@namprd14.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F9D7E9;
+	Sat, 13 Apr 2024 00:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712968719; cv=none; b=giNz6Gf1Ey3Nq25fk2sF6B6pfgOYOEZsB2IwwYKkhOdyyg+SST220pbItt0orSyV8XVi2vAeZrbfdoTQ497oWyZAx2Nv6X3BZ87Z/PAmpeDUt5oT+8s4xAZs4t3gHGKyuJ1+emsuIxFaMwxCv5Ywcknr8m8SRQwe13eFT0B/jKA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712968719; c=relaxed/simple;
+	bh=E1FEogcwnfYZ/NvJyEBJq2MtTmPknB+8LmMwXWPT3Bk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=gzv5xnFqncS6o8mUJ/z3WIln63uTpbcuXSHWwFNGZ2H+E9lnpNBIMxl9gIhFPwkJyspWcmzdt7e7pwz9+d3ULDj+l+USPTr1Ip6lFTvdDdzpvlPMEs+3i0otK+Aci5XvXSQrk/nQiNg4JE+T73vVgzNTnVPm5mWzrQEJV8rIKDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KAAyVwV5; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43D0KFo3031426;
+	Sat, 13 Apr 2024 00:38:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=1IxIE7tRv6L6ZblURzwPw/sVy/nix46YhCziU13r8vc=; b=KA
+	AyVwV5CE4ZlwAQTmIRcWfcFooAjlKJVUt0yzbbCbBLcyaGL1C/yZD6TLIA+u1uSQ
+	e1VscCuds880wsPAjSEyV1n1PZskbhfN3xipJpnIErwKfidb3jlzGP45sPXNBZNF
+	uktJHcBMyjK4Gu1uW6fcdBPVPk7GG08i4rZa/PGyyWLHpyAptW7kPV02y/hpMUpF
+	ImP5Y6E2XUCINV8OAQsXodW7fhPDWqrqwElCR9ktYTGqLNUEARHKRwCTtUZtiRiG
+	JeHbCbM8Vs9XV/K+KFqflf+wD0/O5f8zNGvuod82LWhu32n7tLLLvOajDgVDAjC+
+	/iI7AqWhsUcEiR83pg+w==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xffds00x3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Apr 2024 00:38:07 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43D0c5mF024925
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Apr 2024 00:38:05 GMT
+Received: from [10.110.73.72] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
+ 2024 17:38:00 -0700
+Message-ID: <da088092-e4cf-4282-b691-0bbc641e3e02@quicinc.com>
+Date: Fri, 12 Apr 2024 17:37:59 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: cs.rutgers.edu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR14MB6501.namprd14.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64d443e7-e80b-445e-6945-08dc5b4d6754
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2024 00:05:18.3555
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b92d2b23-4d35-4470-93ff-69aca6632ffe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0xFCtVnWjd62WmrU6mCtZOQFqa/rdN6c+pcXfrt/VOYi3UQLCsqIBgY6fgZmOcUAxxfGp/xtYm6Pko5Jtf4aog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR14MB4228
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v3 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
+Content-Language: en-US
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Willem
+ de Bruijn" <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "Daniel
+ Borkmann" <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
+ <20240412210125.1780574-2-quic_abchauha@quicinc.com>
+In-Reply-To: <20240412210125.1780574-2-quic_abchauha@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RyKVdfs1OLILUgzxdo1PUYULJwznobOh
+X-Proofpoint-ORIG-GUID: RyKVdfs1OLILUgzxdo1PUYULJwznobOh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_18,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 impostorscore=0
+ clxscore=1015 spamscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404130002
 
-DQoNCj4gT24gQXByIDEwLCAyMDI0LCBhdCA3OjQz4oCvQU0sIFNodW5nLUhzaSBZdSA8c2h1bmct
-aHNpLnl1QHN1c2UuY29tPiB3cm90ZToNCj4NCj4gT24gVHVlLCBBcHIgMDksIDIwMjQgYXQgMDY6
-MTc6MDVQTSArMDEwMCwgRWR3YXJkIENyZWUgd3JvdGU6DQo+PiBJIGRvbid0IGZlZWwgdG9vIHN0
-cm9uZ2x5IGFib3V0IGl0LCBhbmQgaWYgeW91IG9yIFNodW5nLUhzaSBzdGlsbA0KPj4gdGhpbmss
-IG9uIHJlZmxlY3Rpb24sIHRoYXQgYmFja3BvcnRpbmcgaXMgZGVzaXJhYmxlLCB0aGVuIGdvIGFo
-ZWFkDQo+PiBhbmQga2VlcCB0aGUgRml4ZXM6IHRhZy4NCj4+IEJ1dCBtYXliZSB0d2VhayB0aGUg
-ZGVzY3JpcHRpb24gc28gc29tZW9uZSBkb2Vzbid0IHNlZSAibGF0ZW50DQo+PiB1bnNvdW5kbmVz
-cyIgYW5kIHRoaW5rIHRoZXkgbmVlZCB0byBDVkUgYW5kIHJ1c2ggdGhpcyBwYXRjaCBvdXQgYXMN
-Cj4+IGEgc2VjdXJpdHkgdGhpbmc7IGl0J3MgbW9yZSBsaWtlIGhhcmRlbmluZy4gICpzaHJ1ZyoN
-Cj4NCj4gVW5mb3J0dW5hdGVseSB3aXRoIExpbnV4IEtlcm5lbCdzIGN1cnJlbnQgYXBwcm9hY2gg
-YXMgYSBDVkUgTnVtYmVyaW5nDQo+IEF1dGhvcml0eSBJIGRvbid0IHRoaW5rIHRoaXMgY2FuIGJl
-IGF2b2lkZWQuIFBhdGNoZXMgd2l0aCBmaXhlcyB0YWcgd2lsbA0KPiBhbG1vc3QgY2VydGFpbmx5
-IGdldCBhIENWRSBudW1iZXIgYXNzaWduZWQgKGUuZy4gQ1ZFLTIwMjQtMjY2MjRbMV1bMl0pLA0K
-PiBhbmQgd2UgY2FuIG9ubHkgZGlzcHV0ZVszXSBhZnRlciBzdWNoIGFzc2lnbm1lbnQgaGFwcGVu
-ZCBmb3IgdGhlIENWRSB0bw0KPiBiZSByZWplY3RlZC4NCg0KSXQgc2VlbXMgdGhlIGJlc3Qgb3B0
-aW9uIGlzIHRvIENDIHRoZSBwYXRjaCB0byBzdGFibGVAdmdlci5rZXJuZWwub3JnIChzbw0KdGhh
-dCBpdCB3aWxsIGJlIGJhY2twb3J0ZWQpLCBhbmQgbm90IGFkZCB0aGUgZml4ZXMgdGFnIChzbyB0
-aGF0IG5vIENWRSB3aWxsDQpiZSBhc3NpZ25lZCkuIERvZXMgdGhpcyBzZWVtIHJlYXNvbmFibGU/
-IElmIHllcywgSeKAmWxsIHByb2NlZWQgd2l0aCB2My4NCkknbGwgYWxzbyBtZW50aW9uIHRoYXQg
-dGhpcyBpcyBhIGhhcmRlbmluZyBpbiB0aGUgY29tbWl0IG1lc3NhZ2UuDQoNCkhhcmkNCg0KPg0K
-PiBTaHVuZy1Ic2kNCj4NCj4gMTogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtY3ZlLWFu
-bm91bmNlLzIwMjQwMzA2NDgtQ1ZFLTIwMjQtMjY2MjQtMzAzMkBncmVna2gvDQo+IDI6IGh0dHBz
-Oi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWN2ZS1hbm5vdW5jZS8yMDI0MDMyNzQ3LVJFSkVDVEVE
-LWYyY2ZAZ3JlZ2toLw0KPiAzOiBodHRwczovL2RvY3Mua2VybmVsLm9yZy9wcm9jZXNzL2N2ZS5o
-dG1sI2Rpc3B1dGVzLW9mLWFzc2lnbmVkLWN2ZXMNCg0K
+
+
+On 4/12/2024 2:01 PM, Abhishek Chauhan wrote:
+> mono_delivery_time was added to check if skb->tstamp has delivery
+> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+> timestamp in ingress and delivery_time at egress.
+> 
+> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+> extensibilty for other timestamps such as userspace timestamp
+> (i.e. SO_TXTIME) set via sock opts.
+> 
+> As we are renaming the mono_delivery_time to tstamp_type, it makes
+> sense to start assigning tstamp_type based out if enum defined as
+> part of this commit
+> 
+> Earlier we used bool arg flag to check if the tstamp is mono in
+> function skb_set_delivery_time, Now the signature of the functions
+> accepts enum to distinguish between mono and real time
+> 
+> Bridge driver today has no support to forward the userspace timestamp
+> packets and ends up resetting the timestamp. ETF qdisc checks the
+> packet coming from userspace and encounters to be 0 thereby dropping
+> time sensitive packets. These changes will allow userspace timestamps
+> packets to be forwarded from the bridge to NIC drivers.
+> 
+> In future tstamp_type:1 can be extended to support userspace timestamp
+> by increasing the bitfield.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+> ---
+> Changes since v2
+> - Minor changes to commit subject
+> 
+> Changes since v1
+> - Squashed the two commits into one as mentioned by Willem.
+> - Introduced switch in skb_set_delivery_time.
+> - Renamed and removed directionality aspects w.r.t tstamp_type 
+>   as mentioned by Willem.
+> 
+>  include/linux/skbuff.h                     | 33 +++++++++++++++-------
+>  include/net/inet_frag.h                    |  4 +--
+>  net/bridge/netfilter/nf_conntrack_bridge.c |  6 ++--
+>  net/core/dev.c                             |  2 +-
+>  net/core/filter.c                          |  8 +++---
+>  net/ipv4/inet_fragment.c                   |  2 +-
+>  net/ipv4/ip_fragment.c                     |  2 +-
+>  net/ipv4/ip_output.c                       |  8 +++---
+>  net/ipv4/tcp_output.c                      | 14 ++++-----
+>  net/ipv6/ip6_output.c                      |  6 ++--
+>  net/ipv6/netfilter.c                       |  6 ++--
+>  net/ipv6/netfilter/nf_conntrack_reasm.c    |  2 +-
+>  net/ipv6/reassembly.c                      |  2 +-
+>  net/ipv6/tcp_ipv6.c                        |  2 +-
+>  net/sched/act_bpf.c                        |  4 +--
+>  net/sched/cls_bpf.c                        |  4 +--
+>  16 files changed, 59 insertions(+), 46 deletions(-)
+> 
+self review :- 
+ 
+One more file needs to be updated here net/ieee802154/6lowpan/reassembly.c  :( 
+
+Unfortunately when i compile kdev with defconfig this file never gets compiled on my internal workspace. 
+
+I will find all other instances and update accordingly. 
+
+
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 7135a3e94afd..a83a2120b57f 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -702,6 +702,11 @@ typedef unsigned int sk_buff_data_t;
+>  typedef unsigned char *sk_buff_data_t;
+>  #endif
+>  
+> +enum skb_tstamp_type {
+> +	CLOCK_REAL = 0, /* Time base is realtime */
+> +	CLOCK_MONO = 1, /* Time base is Monotonic */
+> +};
+> +
+>  /**
+>   * DOC: Basic sk_buff geometry
+>   *
+> @@ -819,7 +824,7 @@ typedef unsigned char *sk_buff_data_t;
+>   *	@dst_pending_confirm: need to confirm neighbour
+>   *	@decrypted: Decrypted SKB
+>   *	@slow_gro: state present at GRO time, slower prepare step required
+> - *	@mono_delivery_time: When set, skb->tstamp has the
+> + *	@tstamp_type: When set, skb->tstamp has the
+>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>   *		skb->tstamp has the (rcv) timestamp at ingress and
+>   *		delivery_time at egress.
+> @@ -950,7 +955,7 @@ struct sk_buff {
+>  	/* private: */
+>  	__u8			__mono_tc_offset[0];
+>  	/* public: */
+> -	__u8			mono_delivery_time:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+> +	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+>  #ifdef CONFIG_NET_XGRESS
+>  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>  	__u8			tc_skip_classify:1;
+> @@ -4237,7 +4242,7 @@ static inline void skb_get_new_timestampns(const struct sk_buff *skb,
+>  static inline void __net_timestamp(struct sk_buff *skb)
+>  {
+>  	skb->tstamp = ktime_get_real();
+> -	skb->mono_delivery_time = 0;
+> +	skb->tstamp_type = CLOCK_REAL;
+>  }
+>  
+>  static inline ktime_t net_timedelta(ktime_t t)
+> @@ -4246,10 +4251,18 @@ static inline ktime_t net_timedelta(ktime_t t)
+>  }
+>  
+>  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+> -					 bool mono)
+> +					  u8 tstamp_type)
+>  {
+>  	skb->tstamp = kt;
+> -	skb->mono_delivery_time = kt && mono;
+> +
+> +	switch (tstamp_type) {
+> +	case CLOCK_REAL:
+> +		skb->tstamp_type = CLOCK_REAL;
+> +		break;
+> +	case CLOCK_MONO:
+> +		skb->tstamp_type = kt && tstamp_type;
+> +		break;
+> +	}
+>  }
+>  
+>  DECLARE_STATIC_KEY_FALSE(netstamp_needed_key);
+> @@ -4259,8 +4272,8 @@ DECLARE_STATIC_KEY_FALSE(netstamp_needed_key);
+>   */
+>  static inline void skb_clear_delivery_time(struct sk_buff *skb)
+>  {
+> -	if (skb->mono_delivery_time) {
+> -		skb->mono_delivery_time = 0;
+> +	if (skb->tstamp_type) {
+> +		skb->tstamp_type = CLOCK_REAL;
+>  		if (static_branch_unlikely(&netstamp_needed_key))
+>  			skb->tstamp = ktime_get_real();
+>  		else
+> @@ -4270,7 +4283,7 @@ static inline void skb_clear_delivery_time(struct sk_buff *skb)
+>  
+>  static inline void skb_clear_tstamp(struct sk_buff *skb)
+>  {
+> -	if (skb->mono_delivery_time)
+> +	if (skb->tstamp_type)
+>  		return;
+>  
+>  	skb->tstamp = 0;
+> @@ -4278,7 +4291,7 @@ static inline void skb_clear_tstamp(struct sk_buff *skb)
+>  
+>  static inline ktime_t skb_tstamp(const struct sk_buff *skb)
+>  {
+> -	if (skb->mono_delivery_time)
+> +	if (skb->tstamp_type == CLOCK_MONO)
+>  		return 0;
+>  
+>  	return skb->tstamp;
+> @@ -4286,7 +4299,7 @@ static inline ktime_t skb_tstamp(const struct sk_buff *skb)
+>  
+>  static inline ktime_t skb_tstamp_cond(const struct sk_buff *skb, bool cond)
+>  {
+> -	if (!skb->mono_delivery_time && skb->tstamp)
+> +	if (skb->tstamp_type != CLOCK_MONO && skb->tstamp)
+>  		return skb->tstamp;
+>  
+>  	if (static_branch_unlikely(&netstamp_needed_key) || cond)
+> diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+> index 153960663ce4..5af6eb14c5db 100644
+> --- a/include/net/inet_frag.h
+> +++ b/include/net/inet_frag.h
+> @@ -76,7 +76,7 @@ struct frag_v6_compare_key {
+>   * @stamp: timestamp of the last received fragment
+>   * @len: total length of the original datagram
+>   * @meat: length of received fragments so far
+> - * @mono_delivery_time: stamp has a mono delivery time (EDT)
+> + * @tstamp_type: stamp has a mono delivery time (EDT)
+>   * @flags: fragment queue flags
+>   * @max_size: maximum received fragment size
+>   * @fqdir: pointer to struct fqdir
+> @@ -97,7 +97,7 @@ struct inet_frag_queue {
+>  	ktime_t			stamp;
+>  	int			len;
+>  	int			meat;
+> -	u8			mono_delivery_time;
+> +	u8			tstamp_type;
+>  	__u8			flags;
+>  	u16			max_size;
+>  	struct fqdir		*fqdir;
+> diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+> index c3c51b9a6826..816bb0fde718 100644
+> --- a/net/bridge/netfilter/nf_conntrack_bridge.c
+> +++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+> @@ -32,7 +32,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
+>  					   struct sk_buff *))
+>  {
+>  	int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
+> -	bool mono_delivery_time = skb->mono_delivery_time;
+> +	u8 tstamp_type = skb->tstamp_type;
+>  	unsigned int hlen, ll_rs, mtu;
+>  	ktime_t tstamp = skb->tstamp;
+>  	struct ip_frag_state state;
+> @@ -82,7 +82,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
+>  			if (iter.frag)
+>  				ip_fraglist_prepare(skb, &iter);
+>  
+> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
+> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
+>  			err = output(net, sk, data, skb);
+>  			if (err || !iter.frag)
+>  				break;
+> @@ -113,7 +113,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
+>  			goto blackhole;
+>  		}
+>  
+> -		skb_set_delivery_time(skb2, tstamp, mono_delivery_time);
+> +		skb_set_delivery_time(skb2, tstamp, tstamp_type);
+>  		err = output(net, sk, data, skb2);
+>  		if (err)
+>  			goto blackhole;
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 854a3a28a8d8..77a43c05dfe3 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -2146,7 +2146,7 @@ EXPORT_SYMBOL(net_disable_timestamp);
+>  static inline void net_timestamp_set(struct sk_buff *skb)
+>  {
+>  	skb->tstamp = 0;
+> -	skb->mono_delivery_time = 0;
+> +	skb->tstamp_type = CLOCK_REAL;
+>  	if (static_branch_unlikely(&netstamp_needed_key))
+>  		skb->tstamp = ktime_get_real();
+>  }
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 8d185d99a643..8bb45423df52 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7709,13 +7709,13 @@ BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
+>  		if (!tstamp)
+>  			return -EINVAL;
+>  		skb->tstamp = tstamp;
+> -		skb->mono_delivery_time = 1;
+> +		skb->tstamp_type = CLOCK_MONO;
+>  		break;
+>  	case BPF_SKB_TSTAMP_UNSPEC:
+>  		if (tstamp)
+>  			return -EINVAL;
+>  		skb->tstamp = 0;
+> -		skb->mono_delivery_time = 0;
+> +		skb->tstamp_type = CLOCK_REAL;
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -9422,7 +9422,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+>  		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+>  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+> -		/* skb->tc_at_ingress && skb->mono_delivery_time,
+> +		/* skb->tc_at_ingress && skb->tstamp_type:1,
+>  		 * read 0 as the (rcv) timestamp.
+>  		 */
+>  		*insn++ = BPF_MOV64_IMM(value_reg, 0);
+> @@ -9447,7 +9447,7 @@ static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
+>  	 * the bpf prog is aware the tstamp could have delivery time.
+>  	 * Thus, write skb->tstamp as is if tstamp_type_access is true.
+>  	 * Otherwise, writing at ingress will have to clear the
+> -	 * mono_delivery_time bit also.
+> +	 * mono_delivery_time (skb->tstamp_type:1)bit also.
+>  	 */
+>  	if (!prog->tstamp_type_access) {
+>  		__u8 tmp_reg = BPF_REG_AX;
+> diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+> index faaec92a46ac..d179a2c84222 100644
+> --- a/net/ipv4/inet_fragment.c
+> +++ b/net/ipv4/inet_fragment.c
+> @@ -619,7 +619,7 @@ void inet_frag_reasm_finish(struct inet_frag_queue *q, struct sk_buff *head,
+>  	skb_mark_not_on_list(head);
+>  	head->prev = NULL;
+>  	head->tstamp = q->stamp;
+> -	head->mono_delivery_time = q->mono_delivery_time;
+> +	head->tstamp_type = q->tstamp_type;
+>  
+>  	if (sk)
+>  		refcount_add(sum_truesize - head_truesize, &sk->sk_wmem_alloc);
+> diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+> index fb947d1613fe..787aa86800f5 100644
+> --- a/net/ipv4/ip_fragment.c
+> +++ b/net/ipv4/ip_fragment.c
+> @@ -355,7 +355,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+>  		qp->iif = dev->ifindex;
+>  
+>  	qp->q.stamp = skb->tstamp;
+> -	qp->q.mono_delivery_time = skb->mono_delivery_time;
+> +	qp->q.tstamp_type = skb->tstamp_type;
+>  	qp->q.meat += skb->len;
+>  	qp->ecn |= ecn;
+>  	add_frag_mem_limit(qp->q.fqdir, skb->truesize);
+> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+> index 1fe794967211..62e457f7c02c 100644
+> --- a/net/ipv4/ip_output.c
+> +++ b/net/ipv4/ip_output.c
+> @@ -764,7 +764,7 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  {
+>  	struct iphdr *iph;
+>  	struct sk_buff *skb2;
+> -	bool mono_delivery_time = skb->mono_delivery_time;
+> +	u8 tstamp_type = skb->tstamp_type;
+>  	struct rtable *rt = skb_rtable(skb);
+>  	unsigned int mtu, hlen, ll_rs;
+>  	struct ip_fraglist_iter iter;
+> @@ -856,7 +856,7 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  				}
+>  			}
+>  
+> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
+> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
+>  			err = output(net, sk, skb);
+>  
+>  			if (!err)
+> @@ -912,7 +912,7 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  		/*
+>  		 *	Put this fragment into the sending queue.
+>  		 */
+> -		skb_set_delivery_time(skb2, tstamp, mono_delivery_time);
+> +		skb_set_delivery_time(skb2, tstamp, tstamp_type);
+>  		err = output(net, sk, skb2);
+>  		if (err)
+>  			goto fail;
+> @@ -1649,7 +1649,7 @@ void ip_send_unicast_reply(struct sock *sk, struct sk_buff *skb,
+>  			  arg->csumoffset) = csum_fold(csum_add(nskb->csum,
+>  								arg->csum));
+>  		nskb->ip_summed = CHECKSUM_NONE;
+> -		nskb->mono_delivery_time = !!transmit_time;
+> +		nskb->tstamp_type = !!transmit_time;
+>  		if (txhash)
+>  			skb_set_hash(nskb, txhash, PKT_HASH_TYPE_L4);
+>  		ip_push_pending_frames(sk, &fl4);
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index 9282fafc0e61..42e6ed1decf4 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -1299,7 +1299,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>  	tp = tcp_sk(sk);
+>  	prior_wstamp = tp->tcp_wstamp_ns;
+>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
+> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
+> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONO);
+>  	if (clone_it) {
+>  		oskb = skb;
+>  
+> @@ -1649,7 +1649,7 @@ int tcp_fragment(struct sock *sk, enum tcp_queue tcp_queue,
+>  
+>  	skb_split(skb, buff, len);
+>  
+> -	skb_set_delivery_time(buff, skb->tstamp, true);
+> +	skb_set_delivery_time(buff, skb->tstamp, CLOCK_MONO);
+>  	tcp_fragment_tstamp(skb, buff);
+>  
+>  	old_factor = tcp_skb_pcount(skb);
+> @@ -2730,7 +2730,7 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
+>  		if (unlikely(tp->repair) && tp->repair_queue == TCP_SEND_QUEUE) {
+>  			/* "skb_mstamp_ns" is used as a start point for the retransmit timer */
+>  			tp->tcp_wstamp_ns = tp->tcp_clock_cache;
+> -			skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
+> +			skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONO);
+>  			list_move_tail(&skb->tcp_tsorted_anchor, &tp->tsorted_sent_queue);
+>  			tcp_init_tso_segs(skb, mss_now);
+>  			goto repair; /* Skip network transmission */
+> @@ -3713,11 +3713,11 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
+>  #ifdef CONFIG_SYN_COOKIES
+>  	if (unlikely(synack_type == TCP_SYNACK_COOKIE && ireq->tstamp_ok))
+>  		skb_set_delivery_time(skb, cookie_init_timestamp(req, now),
+> -				      true);
+> +				      CLOCK_MONO);
+>  	else
+>  #endif
+>  	{
+> -		skb_set_delivery_time(skb, now, true);
+> +		skb_set_delivery_time(skb, now, CLOCK_MONO);
+>  		if (!tcp_rsk(req)->snt_synack) /* Timestamp first SYNACK */
+>  			tcp_rsk(req)->snt_synack = tcp_skb_timestamp_us(skb);
+>  	}
+> @@ -3804,7 +3804,7 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
+>  	bpf_skops_write_hdr_opt((struct sock *)sk, skb, req, syn_skb,
+>  				synack_type, &opts);
+>  
+> -	skb_set_delivery_time(skb, now, true);
+> +	skb_set_delivery_time(skb, now, CLOCK_MONO);
+>  	tcp_add_tx_delay(skb, tp);
+>  
+>  	return skb;
+> @@ -3988,7 +3988,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
+>  
+>  	err = tcp_transmit_skb(sk, syn_data, 1, sk->sk_allocation);
+>  
+> -	skb_set_delivery_time(syn, syn_data->skb_mstamp_ns, true);
+> +	skb_set_delivery_time(syn, syn_data->skb_mstamp_ns, CLOCK_MONO);
+>  
+>  	/* Now full SYN+DATA was cloned and sent (or not),
+>  	 * remove the SYN from the original skb (syn_data)
+> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+> index b9dd3a66e423..a9e819115622 100644
+> --- a/net/ipv6/ip6_output.c
+> +++ b/net/ipv6/ip6_output.c
+> @@ -859,7 +859,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  	struct rt6_info *rt = (struct rt6_info *)skb_dst(skb);
+>  	struct ipv6_pinfo *np = skb->sk && !dev_recursion_level() ?
+>  				inet6_sk(skb->sk) : NULL;
+> -	bool mono_delivery_time = skb->mono_delivery_time;
+> +	u8 tstamp_type = skb->tstamp_type;
+>  	struct ip6_frag_state state;
+>  	unsigned int mtu, hlen, nexthdr_offset;
+>  	ktime_t tstamp = skb->tstamp;
+> @@ -955,7 +955,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  			if (iter.frag)
+>  				ip6_fraglist_prepare(skb, &iter);
+>  
+> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
+> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
+>  			err = output(net, sk, skb);
+>  			if (!err)
+>  				IP6_INC_STATS(net, ip6_dst_idev(&rt->dst),
+> @@ -1016,7 +1016,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  		/*
+>  		 *	Put this fragment into the sending queue.
+>  		 */
+> -		skb_set_delivery_time(frag, tstamp, mono_delivery_time);
+> +		skb_set_delivery_time(frag, tstamp, tstamp_type);
+>  		err = output(net, sk, frag);
+>  		if (err)
+>  			goto fail;
+> diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
+> index 53d255838e6a..e0c2347b4dc6 100644
+> --- a/net/ipv6/netfilter.c
+> +++ b/net/ipv6/netfilter.c
+> @@ -126,7 +126,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  				  struct sk_buff *))
+>  {
+>  	int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
+> -	bool mono_delivery_time = skb->mono_delivery_time;
+> +	u8 tstamp_type = skb->tstamp_type;
+>  	ktime_t tstamp = skb->tstamp;
+>  	struct ip6_frag_state state;
+>  	u8 *prevhdr, nexthdr = 0;
+> @@ -192,7 +192,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  			if (iter.frag)
+>  				ip6_fraglist_prepare(skb, &iter);
+>  
+> -			skb_set_delivery_time(skb, tstamp, mono_delivery_time);
+> +			skb_set_delivery_time(skb, tstamp, tstamp_type);
+>  			err = output(net, sk, data, skb);
+>  			if (err || !iter.frag)
+>  				break;
+> @@ -225,7 +225,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  			goto blackhole;
+>  		}
+>  
+> -		skb_set_delivery_time(skb2, tstamp, mono_delivery_time);
+> +		skb_set_delivery_time(skb2, tstamp, tstamp_type);
+>  		err = output(net, sk, data, skb2);
+>  		if (err)
+>  			goto blackhole;
+> diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
+> index d0dcbaca1994..5cc5d823d33f 100644
+> --- a/net/ipv6/netfilter/nf_conntrack_reasm.c
+> +++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
+> @@ -264,7 +264,7 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+>  		fq->iif = dev->ifindex;
+>  
+>  	fq->q.stamp = skb->tstamp;
+> -	fq->q.mono_delivery_time = skb->mono_delivery_time;
+> +	fq->q.tstamp_type = skb->tstamp_type;
+>  	fq->q.meat += skb->len;
+>  	fq->ecn |= ecn;
+>  	if (payload_len > fq->q.max_size)
+> diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
+> index acb4f119e11f..ea724ff558b4 100644
+> --- a/net/ipv6/reassembly.c
+> +++ b/net/ipv6/reassembly.c
+> @@ -198,7 +198,7 @@ static int ip6_frag_queue(struct frag_queue *fq, struct sk_buff *skb,
+>  		fq->iif = dev->ifindex;
+>  
+>  	fq->q.stamp = skb->tstamp;
+> -	fq->q.mono_delivery_time = skb->mono_delivery_time;
+> +	fq->q.tstamp_type = skb->tstamp_type;
+>  	fq->q.meat += skb->len;
+>  	fq->ecn |= ecn;
+>  	add_frag_mem_limit(fq->q.fqdir, skb->truesize);
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index 3aa9da5c9a66..b60196061489 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -975,7 +975,7 @@ static void tcp_v6_send_response(const struct sock *sk, struct sk_buff *skb, u32
+>  			mark = inet_twsk(sk)->tw_mark;
+>  		else
+>  			mark = READ_ONCE(sk->sk_mark);
+> -		skb_set_delivery_time(buff, tcp_transmit_time(sk), true);
+> +		skb_set_delivery_time(buff, tcp_transmit_time(sk), CLOCK_MONO);
+>  	}
+>  	if (txhash) {
+>  		/* autoflowlabel/skb_get_hash_flowi6 rely on buff->hash */
+> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+> index 0e3cf11ae5fc..1f8b5a3f065e 100644
+> --- a/net/sched/act_bpf.c
+> +++ b/net/sched/act_bpf.c
+> @@ -54,8 +54,8 @@ TC_INDIRECT_SCOPE int tcf_bpf_act(struct sk_buff *skb,
+>  		bpf_compute_data_pointers(skb);
+>  		filter_res = bpf_prog_run(filter, skb);
+>  	}
+> -	if (unlikely(!skb->tstamp && skb->mono_delivery_time))
+> -		skb->mono_delivery_time = 0;
+> +	if (unlikely(!skb->tstamp && skb->tstamp_type))
+> +		skb->tstamp_type = CLOCK_REAL;
+>  	if (skb_sk_is_prefetched(skb) && filter_res != TC_ACT_OK)
+>  		skb_orphan(skb);
+>  
+> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> index 5e83e890f6a4..3f843e0eea3c 100644
+> --- a/net/sched/cls_bpf.c
+> +++ b/net/sched/cls_bpf.c
+> @@ -104,8 +104,8 @@ TC_INDIRECT_SCOPE int cls_bpf_classify(struct sk_buff *skb,
+>  			bpf_compute_data_pointers(skb);
+>  			filter_res = bpf_prog_run(prog->filter, skb);
+>  		}
+> -		if (unlikely(!skb->tstamp && skb->mono_delivery_time))
+> -			skb->mono_delivery_time = 0;
+> +		if (unlikely(!skb->tstamp && skb->tstamp_type))
+> +			skb->tstamp_type = CLOCK_REAL;
+>  
+>  		if (prog->exts_integrated) {
+>  			res->class   = 0;
 
