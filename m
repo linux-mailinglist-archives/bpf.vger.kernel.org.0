@@ -1,229 +1,282 @@
-Return-Path: <bpf+bounces-26813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 290308A52D4
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 16:15:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 981C08A546E
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 16:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B1928302A
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 14:15:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CC062821C1
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 14:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A91974E3F;
-	Mon, 15 Apr 2024 14:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="Jy+YBv+D";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="oq9nWQN6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C82884A46;
+	Mon, 15 Apr 2024 14:34:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout148.security-mail.net (smtpout148.security-mail.net [85.31.212.148])
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F89745C9
-	for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 14:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.148
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713190506; cv=fail; b=uTmseF1kywhgmMVnujKQ3AZ30FCctcz5dD+OKnFqwpym8+5wYqfvonuxlp6zQrbKrmH/Lhw1Yz1Y0HTT0OGiW6Phbw/clcUSbbfkjVPCooslB9Mwh43Q+UVMj8cAs4KLvgDyhrgH92Npbi9KFUk6648hPxGD2pM1jmoluBi49u8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713190506; c=relaxed/simple;
-	bh=gTcXzedapfumCfG1C5hGXn5BqA3Ug5Tu69vaTDFYcA8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tjn6vjm4xXQxcQmMddGcBLT1NktloSoT+migKotGHqFibGA57s4ZxL3a+ATMM0Vocc/Bm1JnJiONq5GmuHZCCW0z/AvCp08u16HtB0blffwwK7C9rNxvcCq6SncmMLaxCGlnH4jCi1nIpOnWhjVrrAs0d2RQ6PL+elIKvL8AH3A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=Jy+YBv+D; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=oq9nWQN6 reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (fx408.security-mail.net [127.0.0.1])
-	by fx408.security-mail.net (Postfix) with ESMTP id 44919322A2A
-	for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 16:08:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1713190129;
-	bh=gTcXzedapfumCfG1C5hGXn5BqA3Ug5Tu69vaTDFYcA8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Jy+YBv+D6tvzCtLBQ2o5cSzI+ChMMN5Cbz0jSi8eN0yT1ehe3TzlibDrBDc8/3kDg
-	 l+uplB0mQYe3E3Zi+KFX4qkoStlsByPMX7xmoEOoQBoNTKcZAYwev2OiQypOL7RMj/
-	 xPBTTg52s3BEU9jUSo76L13IdAqzbhYabXW9aCR8=
-Received: from fx408 (fx408.security-mail.net [127.0.0.1]) by
- fx408.security-mail.net (Postfix) with ESMTP id C623332267E; Mon, 15 Apr
- 2024 16:08:48 +0200 (CEST)
-Received: from MRZP264CU002.outbound.protection.outlook.com
- (mail-francesouthazlp17010003.outbound.protection.outlook.com [40.93.69.3])
- by fx408.security-mail.net (Postfix) with ESMTPS id B78EE322447; Mon, 15 Apr
- 2024 16:08:47 +0200 (CEST)
-Received: from PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:14b::6)
- by PR0P264MB3722.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:163::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 14:08:46 +0000
-Received: from PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
- ([fe80::d918:21af:904a:ce0a]) by PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
- ([fe80::d918:21af:904a:ce0a%4]) with mapi id 15.20.7452.049; Mon, 15 Apr
- 2024 14:08:46 +0000
-X-Virus-Scanned: E-securemail
-Secumail-id: <cd23.661d34ef.b66b7.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PlF3bZWwhLaTdEMNXAAqz+XTjUFeYjzHOgopsM/EwFY7xMgWLmxe7GBXms3k9zzt8DAgQpQWuEe566ITrzzp+3x6TUqkvyQGeGXExVUhSCMDyPMnhgBPhQ15cQdbAwzEmE+mp9dIeILFRtmHUlZHFAkHrZXkRnWRLYCLT4cKmi+yxKkz2IILnT0rPVTY7x9004b3Avd2ciVeg7maRCnShfRziZCc4JCPLVwaa7VTDqLL6yuGfoiq7UMmGmOnHLgbJYIbvps73z3yLtlOKhSzhZlNgeOlvhXepc4U9qtCi+f531rsSv1xgTO/tHJ8MfO1RUDaM+/qoX8SYdm08I95RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gimpJ5iCSXhhTGocLKIV8TYNW/mUEWR9BeOUbc3ag34=;
- b=GhpszUtIi72qX7rqLmCmHoV4q9f1KaukcvcPzNQOzZr9g++mstr8v9o/BrHtZGeTXlCmtgFbriU/HHMrUWGOE3h93r1cmrXCLvdy+J4Kcrzf7EzsJa4fxwBnlK6c3iTf8BGykwInrYFoVNGu6d7dhtrsfl+4TJtRxFgakVk5saIUMWT0KWVfERmjn1qeEOCS5mtTf8naQHPOgIv64qqZLGtWCMsHGWNDAH5t4B9SBv4HJtZU22w9Y09kbMTvYMzihwH9LqDBLa45OXWPXckoZOVaVJE7S8UXFttNaml0x6eF+nJmPvqIHrP8KRggstlMQnY9lrcZ5bcYq5lNKv/grw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gimpJ5iCSXhhTGocLKIV8TYNW/mUEWR9BeOUbc3ag34=;
- b=oq9nWQN6idNqV7+F5L5xN1Z6HNclGemYIQ4XKEJG79pwSjwKoM0A8DpgMOEZg+EFHCCkdXqyZq59qa2ZgaaxvXOtYIyLjRXhKQqxFxCxal3pyE5ewQZZ7wHkHeBm8pE03wPrB76AzqiRWOfYfnsNrWST7GbXMlrtMa1pLmVxpHTMq7IK8Lr01WZa8eFgVWPxQmTpG2vp13t3ySZ0pz4DJ7+8s2udL68g+nUjLccR9TSS9AIKEWCg3ui5rex9pG1TRLyD9+yQg4lLuXjt1hwzky5hCeiHkwhkFLxegYcX11qSYNb5PiYMfy98T2tMEOpRLIcGkpzlxGk/CNRSQwku1g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-Message-ID: <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Date: Mon, 15 Apr 2024 16:08:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RFC PATCH v2 30/31] kvx: Add power controller driver
-Content-Language: en-us
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Yann Sionneau
- <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier
- <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, Mark
- Rutland <mark.rutland@arm.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, Ingo Molnar
- <mingo@redhat.com>, Waiman Long <longman@redhat.com>, "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>,
- Nick Piggin <npiggin@gmail.com>, Paul Moore <paul@paul-moore.com>, Eric
- Paris <eparis@redhat.com>, Christian Brauner <brauner@kernel.org>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Jules Maselbas <jmaselbas@kalray.eu>,
- Guillaume Thouvenin <gthouvenin@kalray.eu>, Clement Leger
- <clement@clement-leger.fr>, Vincent Chardon
- <vincent.chardon@elsys-design.com>, Marc =?utf-8?b?UG91bGhpw6hz?=
- <dkm@kataplop.net>, Julian Vetter <jvetter@kalray.eu>, Samuel Jones
- <sjones@kalray.eu>, Ashley Lesdalons <alesdalons@kalray.eu>, Thomas Costis
- <tcostis@kalray.eu>, Marius Gligor <mgligor@kalray.eu>, Jonathan Borne
- <jborne@kalray.eu>, Julien Villette <jvillette@kalray.eu>, Luc Michel
- <lmichel@kalray.eu>, Louis Morhet <lmorhet@kalray.eu>, Julien Hascoet
- <jhascoet@kalray.eu>, Jean-Christophe Pince <jcpince@gmail.com>, Guillaume
- Missonnier <gmissonnier@kalray.eu>, Alex Michon <amichon@kalray.eu>, Huacai
- Chen <chenhuacai@kernel.org>, WANG Xuerui <git@xen0n.name>, Shaokun Zhang
- <zhangshaokun@hisilicon.com>, John Garry <john.garry@huawei.com>, Guangbin
- Huang <huangguangbin2@huawei.com>, Bharat Bhushan <bbhushan2@marvell.com>,
- Bibo Mao <maobibo@loongson.cn>, Atish Patra <atishp@atishpatra.org>, "Jason
- A. Donenfeld" <Jason@zx2c4.com>, Qi Liu <liuqi115@huawei.com>, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, Catalin Marinas <catalin.marinas@arm.com>, Mark
- Brown <broonie@kernel.org>, Janosch Frank <frankja@linux.ibm.com>, Alexey
- Dobriyan <adobriyan@gmail.com>
-Cc: Benjamin Mugnier <mugnier.benjamin@gmail.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
- linux-audit@redhat.com, linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-31-ysionneau@kalray.eu>
- <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
-From: Yann Sionneau <ysionneau@kalrayinc.com>
-In-Reply-To: <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR06CA0082.eurprd06.prod.outlook.com
- (2603:10a6:208:fa::23) To PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:14b::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C038288A;
+	Mon, 15 Apr 2024 14:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713191641; cv=none; b=jiCL6Ngcf4eFp2d1slx7BUaT3Y8qInGkUQRtqa3gQ7siTjNBmfjcwhy0Rq2HxBqj5IsamuBqVbIpZ7tR2qdATfrjKqcVvMtZFf/JvAvduW8xv+ivOJD5x3tjSXjhmqFci9hHkeXkvYbeluh/2lWpSpLsH8atCqbcXZt8hW3AzfQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713191641; c=relaxed/simple;
+	bh=6HcZNB2GKTsycYKJe1NGj3TZRbra4cpuJ4EXp3SFi0A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aV+2FneaBgTAFdbftf7b075F0PpKGsiZHp2p9gWxZ6lKGp2KQUYnJxX7eNV9EAg+A07kB3VC0+IrlnHebPTA1tbCrl40kpUNxNj/d8ZSnvtVTiX2F0XjuTp9cRrAcWuwo3qmdHCwIbhbuhK2+e3+MpUTgcH5qWRLPGCYu0yRnFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4VJ8314Mk4z9xGYY;
+	Mon, 15 Apr 2024 22:01:01 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 606A21404A9;
+	Mon, 15 Apr 2024 22:17:25 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwDHsibqNh1mXSxGBg--.11911S2;
+	Mon, 15 Apr 2024 15:17:24 +0100 (CET)
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: corbet@lwn.net,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	akpm@linux-foundation.org,
+	shuah@kernel.org,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	mic@digikod.net
+Cc: linux-security-module@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v4 00/14] security: digest_cache LSM
+Date: Mon, 15 Apr 2024 16:16:57 +0200
+Message-Id: <20240415141711.2542197-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PR0P264MB3481:EE_|PR0P264MB3722:EE_
-X-MS-Office365-Filtering-Correlation-Id: 265d984c-25f1-4442-6436-08dc5d55906d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GeLHO8rwWU20dJzkRgVoMZ1iZxskdt7Ph1yYZeG01H6INprEMwy4/RcJLcn+WKBFHGILW0UOhx+wUgcnrsIVqe0SMw0tOHm6w6sNKDuHXEnSjm8/Y01XJvskPzaVEuwozkis5CxZBVxVKtuV96zxY4nBpW4IQeGwY4z9JMkBzP9ju3VBI5bTgF3wexeT786067vrLkpTfR2hvklFh0RFgTALxiyYpikggwhwPEQOGbsd1y4vWALiouHHVbECgJBJYV79gXGJSAHtVzfxldE3xnH5nTS2wj0+dW166rim5bKA7fue/AtOwPgB6O9O1p53PXXkAWeSjdXg0fhIwzWAg8ExTZ6b1227ZRf7KpOogX0FWmN7GaWyrTfR4Yzvn/vt4Yi9RPvAI1Y072gwXWb4rSTISFut1WVdFqHfkTGTvEamAb21F4920EZPm2DHtPEZiedf4lBAgwQJRcs/XuMayDmntJA8/y60xx84eyYCq9l66tZ0r/cYU5gw7WwB0lTUfbgk31NBJnr6p/QOmqPJQhVQh4WZqd9rDdkRbRVWf0lEe02GuiAhn8rU265a4HtWZpmvUHKqn3GRR54tXCkndKY3zbIcWylpaM571jX8PsVqlHdb3oFI1F3+Xhyf3RS9cuUeckwL72xgQ2LOv/ZAfORr9bp7Wa4Rxj56B508kU3EDOm96g52Q0OKTdnLTMg95MFwbkqO5lY8mOz/hhWnUw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: e68+7lUOduU7bnAOj67E8vkEWqoi5qMU9yeL+gTSsqMIF6EKB1JGJkE5U+N+WYCWBIC500wlMa87jFQTg3vzAEPSuNHaH599q5DlIl2Eidszo1ybZ5111V07TcWaCV1cP3jASAB9a1cW6gm3hGerZ04Xl3c+qdKjYbaBldG1qbIKJag4qzWtPQXKn8KqSvy2hUM9h6O1xvCr7omGCChuTKmigynUosZvqGNNwdrHN45VnrWeD/wN1XmAt1+EKWo+CmZSliNweFGuRmCIkxWGihq5ASIZdbvKUvCerIvfVIlJZphN7UKr5FriXDF5G9JeqPwvJzeRI+BfQQ4Ne6rH4b/ddC6gtNC1F2PDCHPY1EktbOKZpGsKqxqeYtw8UlcsZjzvel5rrh/68/wNZJV7caeOgi22nhW7bqualMPC21aNpuZOVu8YCzIeFGJc87iBLHXiJEmNm3g8W8s94WHbVNC4EWrMumYEZCWb8zmoWiqphvShLhl9+wF+RwPyPhPZ6sPmJO8zqCJIaB1EAYKDpAzNQQquMqDSQmcB4kQ64m+jlyLMTUKMuuDShn0W3vRHDL3DEdZ5pUG+MxthnwpTVWFxhgKrdJLQBtuv7kwcF4+f3jSL+2R2Hdyb4RuJk/8kkP5eZGRcqUJxW/uAr6lX2v6rYTHcssCwMJpr0dYScz6kXDraumhkP1rN5UvqNsmtTGDPq6jzqf8105f2p9uZ4YEktvOStF1PDGeKY3VV8el83t8uzxjjwYEgGJ6fHd7DnfGSHk73bgagFXYL/1cG9ZDyWidXN3AjikJR6HDlJz0KbGtogxeEBEwCTRe+Rand2Andxhmsd+rrr4HcZpcrt3KOWB5wAkWSaw+trCiZeodfVtxnHg6m6m6CiQdO82d5Bc3ke3fvjIg5rZHpIK6BMKQydQzgcOHDTJ9mH1OAuMBSlbYK+7HMF6J1TH55Adgm
- C2pq2tMt5UnAIG5p3/ZwucBc6cKpUxXCunHipOqfNBa6XDEzElZD9G8MHpIdy90ZB8uAOJjyKuljAwdVaK7HFcqmZk9GUmJ5Fop7GqRMKkZHEF6hLOykcYzSAVAMstr7WvVTM2r/B9tvqSPMFV/qyOcV2rDzItnu3vsOwUeyymKRpLhwm+ya1jKMjs1i6o7sdQSL4iwfGUVH+iLBcwBf2Mx2oD0XsmP1QnPZbl13oM+IqqzDkOw8D5oOP2YlHqKtGJu4/OVkFeaMGdOnS6zQ66erxyNeD75cYZfCQCr4ZD3S0aO7wcpPTh03Go0w/0795ZDz0EA4FCQKNPC1e57u/auQqJP1GIak/kmUm3HcVch/KoQ9pH/F93QNx3nWBwzDCvbk3gsdbinq7FNRZeoHmRAkB2QFkRH09i2DwPzgJb4VelJpg27qDwzE039tYr73pVe7qziTIhB0ejsoIiL7zA1npsDkkDkV/PTWNJdHPz1F3ff8ub5AXRzIYtBobg4NBqgco0t8U56wJHy4u4PTWbvJe6DpKGMz7HaX4ZJZRj49DSJ/H+THJHeiGAs+jZN3PwAgKNqpaasJvbkFh0iZVwO7mGHDJGV+/KunRLsy9v5W3IHuFkpXJizTmxZxoFg/38CKqSnFo6RJCDhrZ5kKAA==
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 265d984c-25f1-4442-6436-08dc5d55906d
-X-MS-Exchange-CrossTenant-AuthSource: PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 14:08:45.9608
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vNyGqiDKv5kgsAA0JDcWbgoUGlhPezenqZLJt7PnGcaQmv/cq1ir5+VR8hccXeFhR1r8V7zG9Zjt4PFE09ZANQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3722
-X-ALTERMIMEV2_out: done
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:GxC2BwDHsibqNh1mXSxGBg--.11911S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr4rXFy5tw4UZF4DWw43GFg_yoWfKr1xp3
+	ykC3W5Kws5ZFy7Aw4xAF129r1Fqa95KF47Gws7Xr13ZrWYqryFy3WIkw17Zry3XrWUXa1S
+	vw47KF15Ww1DJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvmb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
+	0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
+	F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4I
+	kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
+	xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+	IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+	6r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2
+	IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
+	87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnU
+	UI43ZEXa7IU0rhL5UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj5x1rgABs8
 
-Hello Krzysztof, Arnd, all,
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-On 1/22/23 12:54, Krzysztof Kozlowski wrote:
-> On 20/01/2023 15:10, Yann Sionneau wrote:
->> From: Jules Maselbas <jmaselbas@kalray.eu>
->>
->> The Power Controller (pwr-ctrl) control cores reset and wake-up
->> procedure.
->> +
->> +int __init kvx_pwr_ctrl_probe(void)
->> +{
->> +	struct device_node *ctrl;
->> +
->> +	ctrl = get_pwr_ctrl_node();
->> +	if (!ctrl) {
->> +		pr_err("Failed to get power controller node\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	if (!of_device_is_compatible(ctrl, "kalray,kvx-pwr-ctrl")) {
->> +		pr_err("Failed to get power controller node\n");
-> No. Drivers go to drivers, not to arch directory. This should be a
-> proper driver instead of some fake stub doing its own driver matching.
-> You need to rework this.
+Integrity detection and protection has long been a desirable feature, to
+reach a large user base and mitigate the risk of flaws in the software
+and attacks.
 
-I am working on a v3 patchset, therefore I am working on a solution for 
-this "pwr-ctrl" driver that needs to go somewhere else than arch/kvx/.
+However, while solutions exist, they struggle to reach the large user
+base, due to requiring higher than desired constraints on performance,
+flexibility and configurability, that only security conscious people are
+willing to accept.
 
-The purpose of this "driver" is just to expose a void 
-kvx_pwr_ctrl_cpu_poweron(unsigned int cpu) function, used by 
-kernel/smpboot.c function __cpu_up() in order to start secondary CPUs in 
-SMP config.
+This is where the new digest_cache LSM comes into play, it offers
+additional support for new and existing integrity solutions, to make
+them faster and easier to deploy.
 
-Doing this, on our SoC, requires writing 3 registers in a memory-mapped 
-device named "power controller".
+The full documentation with the motivation and the solution details can be
+found in patch 14.
 
-I made some researches in drivers/ but I am not sure yet what's a good 
-place that fits what our device is doing (booting secondary CPUs).
+The IMA integration patch set will be introduced separately. Also a PoC
+based on the current version of IPE can be provided.
 
-* drivers/power/reset seems to be for resetting the entire SoC
+v3:
+- Rewrite documentation, and remove the installation instructions since
+  they are now included in the README of digest-cache-tools
+- Add digest cache event notifier
+- Drop digest_cache_was_reset(), and send instead to asynchronous
+  notifications
+- Fix digest_cache LSM Kconfig style issues (suggested by Randy Dunlap)
+- Propagate digest cache reset to directory entries
+- Destroy per directory entry mutex
+- Introduce RESET_USER bit, to clear the dig_user pointer on
+  set/removexattr
+- Replace 'file content' with 'file data' (suggested by Mimi)
+- Introduce per digest cache mutex and replace verif_data_lock spinlock
+- Track changes of security.digest_list xattr
+- Stop tracking file_open and use file_release instead also for file writes
+- Add error messages in digest_cache_create()
+- Load/unload testing kernel module automatically during execution of test
+- Add tests for digest cache event notifier
+- Add test for ftruncate()
+- Remove DIGEST_CACHE_RESET_PREFETCH_BUF command in test and clear the
+  buffer on read instead
 
-* drivers/power/supply seems to be to control power supplies ICs/periph.
+v2:
+- Include the TLV parser in this patch set (from user asymmetric keys and
+  signatures)
+- Move from IMA and make an independent LSM
+- Remove IMA-specific stuff from this patch set
+- Add per algorithm hash table
+- Expect all digest lists to be in the same directory and allow changing
+  the default directory
+- Support digest lookup on directories, when there is no
+  security.digest_list xattr
+- Add seq num to digest list file name, to impose ordering on directory
+  iteration
+- Add a new data type DIGEST_LIST_ENTRY_DATA for the nested data in the
+  tlv digest list format
+- Add the concept of verification data attached to digest caches
+- Add the reset mechanism to track changes on digest lists and directory
+  containing the digest lists
+- Add kernel selftests
 
-* drivers/reset seems to be for device reset
+v1:
+- Add documentation in Documentation/security/integrity-digest-cache.rst
+- Pass the mask of IMA actions to digest_cache_alloc()
+- Add a reference count to the digest cache
+- Remove the path parameter from digest_cache_get(), and rely on the
+  reference count to avoid the digest cache disappearing while being used
+- Rename the dentry_to_check parameter of digest_cache_get() to dentry
+- Rename digest_cache_get() to digest_cache_new() and add
+  digest_cache_get() to set the digest cache in the iint of the inode for
+  which the digest cache was requested
+- Add dig_owner and dig_user to the iint, to distinguish from which inode
+  the digest cache was created from, and which is using it; consequently it
+  makes the digest cache usable to measure/appraise other digest caches
+  (support not yet enabled)
+- Add dig_owner_mutex and dig_user_mutex to serialize accesses to dig_owner
+  and dig_user until they are initialized
+- Enforce strong synchronization and make the contenders wait until
+  dig_owner and dig_user are assigned to the iint the first time
+- Move checking IMA actions on the digest list earlier, and fail if no
+  action were performed (digest cache not usable)
+- Remove digest_cache_put(), not needed anymore with the introduction of
+  the reference count
+- Fail immediately in digest_cache_lookup() if the digest algorithm is
+  not set in the digest cache
+- Use 64 bit mask for IMA actions on the digest list instead of 8 bit
+- Return NULL in the inline version of digest_cache_get()
+- Use list_add_tail() instead of list_add() in the iterator
+- Copy the digest list path to a separate buffer in digest_cache_iter_dir()
+- Use digest list parsers verified with Frama-C
+- Explicitly disable (for now) the possibility in the IMA policy to use the
+  digest cache to measure/appraise other digest lists
+- Replace exit(<value>) with return <value> in manage_digest_lists.c
 
-* drivers/pmdomain maybe ?
+Roberto Sassu (14):
+  lib: Add TLV parser
+  security: Introduce the digest_cache LSM
+  digest_cache: Add securityfs interface
+  digest_cache: Add hash tables and operations
+  digest_cache: Populate the digest cache from a digest list
+  digest_cache: Parse tlv digest lists
+  digest_cache: Parse rpm digest lists
+  digest_cache: Add management of verification data
+  digest_cache: Add support for directories
+  digest cache: Prefetch digest lists if requested
+  digest_cache: Reset digest cache on file/directory change
+  digest_cache: Notify digest cache events
+  selftests/digest_cache: Add selftests for digest_cache LSM
+  docs: Add documentation of the digest_cache LSM
 
-* drivers/soc ?
-
-* drivers/platform ?
-
-* drivers/misc ?
-
-What do you think?
-
-Thanks.
-
-Regards,
+ Documentation/security/digest_cache.rst       | 763 ++++++++++++++++
+ Documentation/security/index.rst              |   1 +
+ MAINTAINERS                                   |  16 +
+ include/linux/digest_cache.h                  | 117 +++
+ include/linux/kernel_read_file.h              |   1 +
+ include/linux/tlv_parser.h                    |  28 +
+ include/uapi/linux/lsm.h                      |   1 +
+ include/uapi/linux/tlv_digest_list.h          |  72 ++
+ include/uapi/linux/tlv_parser.h               |  59 ++
+ include/uapi/linux/xattr.h                    |   6 +
+ lib/Kconfig                                   |   3 +
+ lib/Makefile                                  |   3 +
+ lib/tlv_parser.c                              | 214 +++++
+ lib/tlv_parser.h                              |  17 +
+ security/Kconfig                              |  11 +-
+ security/Makefile                             |   1 +
+ security/digest_cache/Kconfig                 |  33 +
+ security/digest_cache/Makefile                |  11 +
+ security/digest_cache/dir.c                   | 252 ++++++
+ security/digest_cache/htable.c                | 268 ++++++
+ security/digest_cache/internal.h              | 290 +++++++
+ security/digest_cache/main.c                  | 570 ++++++++++++
+ security/digest_cache/modsig.c                |  66 ++
+ security/digest_cache/notifier.c              | 135 +++
+ security/digest_cache/parsers/parsers.h       |  15 +
+ security/digest_cache/parsers/rpm.c           | 223 +++++
+ security/digest_cache/parsers/tlv.c           | 299 +++++++
+ security/digest_cache/populate.c              | 163 ++++
+ security/digest_cache/reset.c                 | 235 +++++
+ security/digest_cache/secfs.c                 |  87 ++
+ security/digest_cache/verif.c                 | 119 +++
+ security/security.c                           |   3 +-
+ tools/testing/selftests/Makefile              |   1 +
+ .../testing/selftests/digest_cache/.gitignore |   3 +
+ tools/testing/selftests/digest_cache/Makefile |  24 +
+ .../testing/selftests/digest_cache/all_test.c | 815 ++++++++++++++++++
+ tools/testing/selftests/digest_cache/common.c |  78 ++
+ tools/testing/selftests/digest_cache/common.h | 135 +++
+ .../selftests/digest_cache/common_user.c      |  47 +
+ .../selftests/digest_cache/common_user.h      |  17 +
+ tools/testing/selftests/digest_cache/config   |   1 +
+ .../selftests/digest_cache/generators.c       | 248 ++++++
+ .../selftests/digest_cache/generators.h       |  19 +
+ .../selftests/digest_cache/testmod/Makefile   |  16 +
+ .../selftests/digest_cache/testmod/kern.c     | 564 ++++++++++++
+ .../selftests/lsm/lsm_list_modules_test.c     |   3 +
+ 46 files changed, 6047 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/security/digest_cache.rst
+ create mode 100644 include/linux/digest_cache.h
+ create mode 100644 include/linux/tlv_parser.h
+ create mode 100644 include/uapi/linux/tlv_digest_list.h
+ create mode 100644 include/uapi/linux/tlv_parser.h
+ create mode 100644 lib/tlv_parser.c
+ create mode 100644 lib/tlv_parser.h
+ create mode 100644 security/digest_cache/Kconfig
+ create mode 100644 security/digest_cache/Makefile
+ create mode 100644 security/digest_cache/dir.c
+ create mode 100644 security/digest_cache/htable.c
+ create mode 100644 security/digest_cache/internal.h
+ create mode 100644 security/digest_cache/main.c
+ create mode 100644 security/digest_cache/modsig.c
+ create mode 100644 security/digest_cache/notifier.c
+ create mode 100644 security/digest_cache/parsers/parsers.h
+ create mode 100644 security/digest_cache/parsers/rpm.c
+ create mode 100644 security/digest_cache/parsers/tlv.c
+ create mode 100644 security/digest_cache/populate.c
+ create mode 100644 security/digest_cache/reset.c
+ create mode 100644 security/digest_cache/secfs.c
+ create mode 100644 security/digest_cache/verif.c
+ create mode 100644 tools/testing/selftests/digest_cache/.gitignore
+ create mode 100644 tools/testing/selftests/digest_cache/Makefile
+ create mode 100644 tools/testing/selftests/digest_cache/all_test.c
+ create mode 100644 tools/testing/selftests/digest_cache/common.c
+ create mode 100644 tools/testing/selftests/digest_cache/common.h
+ create mode 100644 tools/testing/selftests/digest_cache/common_user.c
+ create mode 100644 tools/testing/selftests/digest_cache/common_user.h
+ create mode 100644 tools/testing/selftests/digest_cache/config
+ create mode 100644 tools/testing/selftests/digest_cache/generators.c
+ create mode 100644 tools/testing/selftests/digest_cache/generators.h
+ create mode 100644 tools/testing/selftests/digest_cache/testmod/Makefile
+ create mode 100644 tools/testing/selftests/digest_cache/testmod/kern.c
 
 -- 
-
-Yann
-
-
-
-
+2.34.1
 
 
