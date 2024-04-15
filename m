@@ -1,156 +1,190 @@
-Return-Path: <bpf+bounces-26850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19E58A5948
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 19:37:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7F38A5990
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 20:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5B071F23161
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 17:37:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC93D1C2195D
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 18:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA9113AA48;
-	Mon, 15 Apr 2024 17:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87E9137757;
+	Mon, 15 Apr 2024 18:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eGfqCelO"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A082386630;
-	Mon, 15 Apr 2024 17:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC19824B7
+	for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 18:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713202626; cv=none; b=m4eQ6SR7zHQL4WMM4wt71bfbtg7jo/Nqpnf9N+UnsMU++KZn/GzVMkT66KfZBqWD2R1kfNbFDg1ajhqrM9kViSwB8NcxE0zfNA92aoN8CeS7Do6fD5QeYXVm9s2fUtYtH7hhMXxexxko83dtLQypF29BEXr3mkqB5jwnxud3W4E=
+	t=1713204446; cv=none; b=SjYvqRKZSrr/ZLw/bN75T0OOQb4lUZ/hzyfB3+PqV8YFI1NwwjdfO7WS4184KDAtz1V2M5k6oaqP8Rhb8/HIghKnBHl1aQ9T9jBAbz1QHnrCBTOzhp80IiTzDI8ADsnIz+/6OGFEDSPpRi4ufnHpNEg7aRA4nEmlAtmTWBF7GYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713202626; c=relaxed/simple;
-	bh=ugJ7VhityyPTecy8wf9JRI9YbfU9MGW+oLb8yf0nono=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lz398WWt3ASiObpqk1Z5cKfqqu9lzTk6vRmdOAFSzKUdkrUjXW7A99sMSDWgXkhb/WbdGPpGOV4HO4VOEtytUzYkyJL2VTeuFJWzpqgJbnt7xnGyy5Bt98pl8+nOQ+SpNYhzDXIQrbaUNXWMDOuS4D7dK4DnRuoS8T6E/JGVY/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30ED11515;
-	Mon, 15 Apr 2024 10:37:23 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.38.162])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6579A3F64C;
-	Mon, 15 Apr 2024 10:36:49 -0700 (PDT)
-Date: Mon, 15 Apr 2024 18:36:39 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Bj\"orn T\"opel" <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
-Message-ID: <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-6-rppt@kernel.org>
- <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1713204446; c=relaxed/simple;
+	bh=HrC9ymxc+4+LsbbbWitz7roYQZpgFnGenJj5oY73ixQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GE2nmRG4TP9tfaGp4yxSUPNoR26SHpVmjXA6w6zvDwT2GPLoEK/GBOKC25WPS5oLsq5PXhDEhAqiP8UW3vGtQM/c9TZB2WD8Ol4v6+ehLx/QAlJb2RJq/ANDYlNsGwMElWllyZeFTh2/M85pMv492zxwV8MFQ1a6YWRJ9SWE+Eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eGfqCelO; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c8ab5c41-ee10-4b13-b23d-9aca07dd6bb3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713204442;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qdx/fQ1CYAphneLNRYb/SowYQv2VytqF82RU5RFMUQk=;
+	b=eGfqCelOPBwDfQ4ohjKBtACREXeXrZm6vceS7ycPCjFZMhJ7z2bHbvTh59DAxMv4+ZkdVT
+	6HE9qWNUZ8Qmi0UFA3XWahogoSaQ3l+EhmmS5I5Lsu6v02rHGTVm/A39w+BodBI5L34qnx
+	8mRe6HAWh4biUoZjKe8+FUUnnJKGjhA=
+Date: Mon, 15 Apr 2024 11:07:15 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+Subject: Re: [PATCH bpf-next 1/3] bpf: fix to XOR and OR range computation
+Content-Language: en-GB
+To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
+Cc: jose.marchesi@oracle.com, david.faust@oracle.com,
+ elena.zannoni@oracle.com, alexei.starovoitov@gmail.com
+References: <20240411173732.221881-1-cupertino.miranda@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240411173732.221881-1-cupertino.miranda@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
-> On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
-> > +/**
-> > + * enum execmem_type - types of executable memory ranges
-> > + *
-> > + * There are several subsystems that allocate executable memory.
-> > + * Architectures define different restrictions on placement,
-> > + * permissions, alignment and other parameters for memory that can be used
-> > + * by these subsystems.
-> > + * Types in this enum identify subsystems that allocate executable memory
-> > + * and let architectures define parameters for ranges suitable for
-> > + * allocations by each subsystem.
-> > + *
-> > + * @EXECMEM_DEFAULT: default parameters that would be used for types that
-> > + * are not explcitly defined.
-> > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
-> > + * @EXECMEM_KPROBES: parameters for kprobes
-> > + * @EXECMEM_FTRACE: parameters for ftrace
-> > + * @EXECMEM_BPF: parameters for BPF
-> > + * @EXECMEM_TYPE_MAX:
-> > + */
-> > +enum execmem_type {
-> > +	EXECMEM_DEFAULT,
-> > +	EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
-> > +	EXECMEM_KPROBES,
-> > +	EXECMEM_FTRACE,
-> > +	EXECMEM_BPF,
-> > +	EXECMEM_TYPE_MAX,
-> > +};
-> 
-> Can we please get a break-down of how all these types are actually
-> different from one another?
-> 
-> I'm thinking some platforms have a tiny immediate space (arm64 comes to
-> mind) and has less strict placement constraints for some of them?
 
-Yeah, and really I'd *much* rather deal with that in arch code, as I have said
-several times.
+On 4/11/24 10:37 AM, Cupertino Miranda wrote:
+> Range for XOR and OR operators would not be attempted unless src_reg
+> would resolve to a single value, i.e. a known constant value.
+> This condition seems excessive, relative to how easy it is to compute a
+> safe range for these operators.
 
-For arm64 we have two bsaic restrictions: 
+Please break this patch into two patches. One for verifier and another
+for selftest. This will make it easy for possible backport.
 
-1) Direct branches can go +/-128M
-   We can expand this range by having direct branches go to PLTs, at a
-   performance cost.
+As the number of patches grows, it would be great if you can add
+a cover letter for the series.
 
-2) PREL32 relocations can go +/-2G
-   We cannot expand this further.
+For the subject, the following seems better:
+    improve XOR and OR range computation
 
-* We don't need to allocate memory for ftrace. We do not use trampolines.
+I would not call the previous implementation as a bug. It is just
+conservative.
 
-* Kprobes XOL areas don't care about either of those; we don't place any
-  PC-relative instructions in those. Maybe we want to in future.
+For the following:
+   This condition seems excessive, relative to how easy it is to compute a
+   safe range for these operators.
 
-* Modules care about both; we'd *prefer* to place them within +/-128M of all
-  other kernel/module code, but if there's no space we can use PLTs and expand
-  that to +/-2G. Since modules can refreence other modules, that ends up
-  actually being halved, and modules have to fit within some 2G window that
-  also covers the kernel.
+You can just say:
+   This condition is unnecessary, and the following XOR/OR operator handling
+   could compute a possible better range.
 
-* I'm not sure about BPF's requirements; it seems happy doing the same as
-  modules.
-
-So if we *must* use a common execmem allocator, what we'd reall want is our own
-types, e.g.
-
-	EXECMEM_ANYWHERE
-	EXECMEM_NOPLT
-	EXECMEM_PREL32
-
-... and then we use those in arch code to implement module_alloc() and friends.
-
-Mark.
+>
+> BPF self-tests were added to validate the new functionality.
+>
+> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> ---
+>   kernel/bpf/verifier.c                         |  3 +-
+>   .../selftests/bpf/progs/verifier_bounds.c     | 64 +++++++++++++++++++
+>   2 files changed, 66 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2aad6d90550f..a219f601569a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -13764,7 +13764,8 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+>   	}
+>   
+>   	if (!src_known &&
+> -	    opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
+> +	    opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND &&
+> +	    opcode != BPF_XOR && opcode != BPF_OR) {
+>   		__mark_reg_unknown(env, dst_reg);
+>   		return 0;
+>   	}
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> index 960998f16306..2fcf46341b30 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> @@ -885,6 +885,70 @@ l1_%=:	r0 = 0;						\
+>   	: __clobber_all);
+>   }
+>   
+> +SEC("socket")
+> +__description("bounds check for reg32 <= 1, 0 xor (0,1)")
+> +__success __failure_unpriv
+> +__msg_unpriv("R0 min value is outside of the allowed memory range")
+> +__retval(0)
+> +__naked void t_0_xor_01(void)
+> +{
+> +	asm volatile ("					\
+> +	call %[bpf_get_prandom_u32];                    \
+> +	r6 = r0;                                        \
+> +	r1 = 0;						\
+> +	*(u64*)(r10 - 8) = r1;				\
+> +	r2 = r10;					\
+> +	r2 += -8;					\
+> +	r1 = %[map_hash_8b] ll;				\
+> +	call %[bpf_map_lookup_elem];			\
+> +	if r0 != 0 goto l0_%=;				\
+> +	exit;						\
+> +l0_%=:	w1 = 0;						\
+> +	r6 >>= 63;					\
+> +	w1 ^= w6;					\
+> +	if w1 <= 1 goto l1_%=;				\
+> +	r0 = *(u64*)(r0 + 8);				\
+> +l1_%=:	r0 = 0;						\
+> +	exit;						\
+> +"	:
+> +	: __imm(bpf_map_lookup_elem),
+> +	  __imm_addr(map_hash_8b),
+> +	  __imm(bpf_get_prandom_u32)
+> +	: __clobber_all);
+> +}
+> +
+> +SEC("socket")
+> +__description("bounds check for reg32 <= 1, 0 or (0,1)")
+> +__success __failure_unpriv
+> +__msg_unpriv("R0 min value is outside of the allowed memory range")
+> +__retval(0)
+> +__naked void t_0_or_01(void)
+> +{
+> +	asm volatile ("					\
+> +	call %[bpf_get_prandom_u32];                    \
+> +	r6 = r0;                                        \
+> +	r1 = 0;						\
+> +	*(u64*)(r10 - 8) = r1;				\
+> +	r2 = r10;					\
+> +	r2 += -8;					\
+> +	r1 = %[map_hash_8b] ll;				\
+> +	call %[bpf_map_lookup_elem];			\
+> +	if r0 != 0 goto l0_%=;				\
+> +	exit;						\
+> +l0_%=:	w1 = 0;						\
+> +	r6 >>= 63;					\
+> +	w1 |= w6;					\
+> +	if w1 <= 1 goto l1_%=;				\
+> +	r0 = *(u64*)(r0 + 8);				\
+> +l1_%=:	r0 = 0;						\
+> +	exit;						\
+> +"	:
+> +	: __imm(bpf_map_lookup_elem),
+> +	  __imm_addr(map_hash_8b),
+> +	  __imm(bpf_get_prandom_u32)
+> +	: __clobber_all);
+> +}
+> +
+>   SEC("socket")
+>   __description("bounds checks after 32-bit truncation. test 1")
+>   __success __failure_unpriv __msg_unpriv("R0 leaks addr")
 
