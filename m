@@ -1,232 +1,212 @@
-Return-Path: <bpf+bounces-26832-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B998A566C
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 17:31:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5781C8A5677
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 17:32:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261631F20C95
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 15:31:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A6E91C20B7C
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 15:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E28B78C92;
-	Mon, 15 Apr 2024 15:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D65E78C92;
+	Mon, 15 Apr 2024 15:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="TsZXhxB0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cpiQFj7B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTSWbLr1"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63ACE60EF9;
-	Mon, 15 Apr 2024 15:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C346BB4A;
+	Mon, 15 Apr 2024 15:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713195056; cv=none; b=LQcWKaQKgVWeigwLyhA+9vHcP3+ijh5lreTIvmDz5j3BqEb8xQnpP+pLv7mYTG2OAKvcah3U4T3R5YRW6o444oWAYe6Bskl/euUWq2i/VY+NH75whMo4dCdsN43JM49kri+HEktMCrqIPfPAJiBuzaHZ1MnuIY9rjno4MLFS9uk=
+	t=1713195143; cv=none; b=mY2dlrR56mvy0i6kWHXSXjEq8/9EAlR7FYSKCCLu8j/lzX7n0B031x1wLTOwz+BNsrWFmpd1WJP2M/s2oBesLPsYD1lC+IPU8oebXwbV3HWhCPRlsdCkDTmeYLc0y/SOYcvMkmdxWaI/cHREU88naiwhfCveeoA7Wzm2uV3iOGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713195056; c=relaxed/simple;
-	bh=ysPz6mY/TRewOJKQOKl7aqCeiD9oIAf/7WjUQ5bJ3KM=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=qGW/8IDj0B8v5mchzvLatRzj/6tcS19AsR5oOcrELeihN8FhWzbmlW3FseiViwGpi2tgl8McO4TUqlDcdSijordSnzuTQfzdwe5T5+jZlrBW5lS5ARDnTT90Le7jjUAPdAmQ39efuXyKNWxbfwy7zBVxj2/hO5riyNFk6iBS72s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=TsZXhxB0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cpiQFj7B; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 502EF1140133;
-	Mon, 15 Apr 2024 11:30:53 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 15 Apr 2024 11:30:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713195053; x=1713281453; bh=uejkFuVJ7S
-	+uU6TPaZslbYYiwuH4wYboz0/NG64qH38=; b=TsZXhxB0sdEZtHCFU2Yk5LG6Z8
-	uPF+TwzaqPoUtKbWauOxtH4+C7Akzgsx5QnzHO/kv0LKj/qSf8bih/c+pcQNFDjw
-	wYSMWkh72PrhmvqCilDplOB9y/696LFvk3cp+KwxEEgGWcn9qCuVJDhDcfnzP2yz
-	q14czIgEWk0oTA4zx5+9zLTYqcF0sjID3GFHuYhAkuF4h2GHgK+MPTKxir/85HEn
-	WHEG5bFm9/lH+PJjJk1fI8XDea3tgoTFjjzKVwZVKXNsMipQEzvBh5+oXs8vk6Mt
-	KpSEKav49DHZqvbTztdSQwJSWU7ycEMRmkyQSkhdlfGzvD2kU2RHFTRsBjRw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1713195053; x=1713281453; bh=uejkFuVJ7S+uU6TPaZslbYYiwuH4
-	wYboz0/NG64qH38=; b=cpiQFj7BzVcn52N5NdGS8x9v4da+p4jMDv0g89gle0uu
-	lLhcb20aCQDPV044IkxkklRJHovV3p0CUwOo0vRYTvf9b9qgxYIAGKWKYCLpBzWL
-	PHMTmxA7TJa4kEdePJeLSKYAE34f6ROAIRh/R3fMeLpTS8peztpPOhNqgdPG4RG8
-	nExko+KcbxV1Vz/B1x7L4ODsWTyeOgRxcyDOv4ynZXdRILc+nmt5GCHB1PyRzD/d
-	+/IUBY+tm+0xlewekvLJKCNgZTFSKW1Qf4gaZtCaUzGK7Cia0c66WgXg50615dw5
-	U9wm3yoNYhZIqLnCD5Ip5yLn07zrQK4UiBErvEMzRQ==
-X-ME-Sender: <xms:K0gdZoXdDfe7FtOc-J9lmS_LYkQ4r-C8SBziw6hl9KI9pam2T0M2Ow>
-    <xme:K0gdZsnrfnpW5pDGNS-bt1Ov5khh39DOCFPnhWFQjmc7m2R2Yj_k0zu7NRyXFsXT5
-    f_MStLFYVHtgVY61eg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejvddgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:K0gdZsZSjdLnThvcTEskcGolfQuQX_wm1oeDCLaHNnpFHD9Hy-TuUw>
-    <xmx:K0gdZnWO9eUGc5oDmLHQ4JErDP-uraTCveZiZPibXQ3jd5gQoGxGEQ>
-    <xmx:K0gdZimKqo26KcLeMT0lD25R6DvGRJwGTSYEQh-zwpVZ1SHiFCyruQ>
-    <xmx:K0gdZsdFcPYBvz_fOCox8EtZYvqpm11OBs7yV-lfOkaKSB64pUJ8_w>
-    <xmx:LUgdZhrptGBapc2P9s8b5mxNbcnHlMom_sSBuQFVaWQri9ajjMFzUk0u>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id B461EB6008D; Mon, 15 Apr 2024 11:30:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1713195143; c=relaxed/simple;
+	bh=p/ox70M6LKphRZZs4AqoipOwGZh27SBhtG4itjdO9FQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gp2CpOK4p+GhJGnBqNAtXF14cx38uYto3jhLRSeln017AyhFtSYk3SXymJQK50n7ThVpdXS60j5+Ol83jUbncGGPlvYkYnWpW2aIy1dpBCl85MDv10fFQifUdekDTCIZ130/99QRJ3OgGA3vmBGv4S80SKmi7DsaI3pyYwJcMTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XTSWbLr1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED6BC2BD10;
+	Mon, 15 Apr 2024 15:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713195143;
+	bh=p/ox70M6LKphRZZs4AqoipOwGZh27SBhtG4itjdO9FQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XTSWbLr1bCJhGaGO24fMjhlCdk51Ka/FBhZ+NI7yc631nFKc7WcYOTOdF5uqwqNvN
+	 vAyrPe39IVydQvXFyJUL5giTv+IQ6WxCdZDsaYdS/Y7XEfj6sPNVdWi3rIHbsTQSLw
+	 nUsW3lV8AZBrLjQRF4dDf/cyjgom+68gQTcksJ91X0k/Zng7w8mw/dTMPaiJTkJ7BS
+	 Zg7pQefL3IZmZpKZQQIDfOQQk1+5m7QkAfaAW89HNRGw3NyPnf4B/ThXppJFD6f7o1
+	 bSXa1bW5ofPzVwx8xsUW75GvaGfBnqSCXSX4AYULLj0VCnSTSpPpbfhySGgDyGNN1J
+	 330mvGEbrqlSg==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d88a869ce6so40519071fa.3;
+        Mon, 15 Apr 2024 08:32:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWoqnIk9ghdQ+zTDVKj3Qem0LPbO+F2xT9VkB2t+mF3qkrZrCTIj9weNJkRvZuSJGYQ8SDt2WupPgoMGPJAJIq2kZbLSVJsHsafNNH1nqywSW0aSOvJ8mlfRnUPPQWHzBtX+mW7Gs+5246OW1i4qrJUr6Oc/AnDSCloAFCAB9tHyLCtFErRcktmuO6EucaKl4SYFfNpHYETAbMR4w==
+X-Gm-Message-State: AOJu0Ywcou6dg62Oee4kfUncYT1lzO30YG9NgSckzfrTv89O+Zig/i7e
+	PhnK14cfnj5X1NAwxbVOgErYMoTdrRWe2kD6tTJUmuRksk78OgrAehBsDtuYaAUJJAdq2GtfD8Q
+	R6+euw7utLhr6HEIQwPhqiW2COMQ=
+X-Google-Smtp-Source: AGHT+IGCtaC3TclrPZ0bu0nX3lwb+J3dkeFac2KQqVDOra3tYoW20ehJXk/HYM2Chp/+Gp0/8pJ0aQXHLyK7QQdQsbs=
+X-Received: by 2002:a2e:8758:0:b0:2d8:3bef:129 with SMTP id
+ q24-20020a2e8758000000b002d83bef0129mr7509002ljj.10.1713195140919; Mon, 15
+ Apr 2024 08:32:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <61d0584f-dfe4-4d8c-a178-78f000d477d4@app.fastmail.com>
-In-Reply-To: <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-31-ysionneau@kalray.eu>
- <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
- <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Date: Mon, 15 Apr 2024 17:30:31 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Yann Sionneau" <ysionneau@kalrayinc.com>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- "Yann Sionneau" <ysionneau@kalray.eu>,
- "Jonathan Corbet" <corbet@lwn.net>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Marc Zyngier" <maz@kernel.org>,
- "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- "Will Deacon" <will@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
- "Boqun Feng" <boqun.feng@gmail.com>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- "Kees Cook" <keescook@chromium.org>, "Oleg Nesterov" <oleg@redhat.com>,
- "Ingo Molnar" <mingo@redhat.com>, "Waiman Long" <longman@redhat.com>,
- "Aneesh Kumar" <aneesh.kumar@linux.ibm.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Paul Moore" <paul@paul-moore.com>, "Eric Paris" <eparis@redhat.com>,
- "Christian Brauner" <brauner@kernel.org>,
- "Paul Walmsley" <paul.walmsley@sifive.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Albert Ou" <aou@eecs.berkeley.edu>,
- "Jules Maselbas" <jmaselbas@kalray.eu>,
- "Guillaume Thouvenin" <gthouvenin@kalray.eu>,
- "Clement Leger" <clement@clement-leger.fr>,
- "Vincent Chardon" <vincent.chardon@elsys-design.com>,
- =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
- "Julian Vetter" <jvetter@kalray.eu>, "Samuel Jones" <sjones@kalray.eu>,
- "Ashley Lesdalons" <alesdalons@kalray.eu>,
- "Thomas Costis" <tcostis@kalray.eu>, "Marius Gligor" <mgligor@kalray.eu>,
- "Jonathan Borne" <jborne@kalray.eu>,
- "Julien Villette" <jvillette@kalray.eu>,
- "Luc Michel" <lmichel@kalray.eu>, "Louis Morhet" <lmorhet@kalray.eu>,
- "Julien Hascoet" <jhascoet@kalray.eu>,
- "Jean-Christophe Pince" <jcpince@gmail.com>,
- "Guillaume Missonnier" <gmissonnier@kalray.eu>,
- "Alex Michon" <amichon@kalray.eu>, "Huacai Chen" <chenhuacai@kernel.org>,
- "WANG Xuerui" <git@xen0n.name>,
- "Shaokun Zhang" <zhangshaokun@hisilicon.com>,
- "John Garry" <john.garry@huawei.com>,
- "Guangbin Huang" <huangguangbin2@huawei.com>,
- "Bharat Bhushan" <bbhushan2@marvell.com>,
- "Bibo Mao" <maobibo@loongson.cn>, "Atish Patra" <atishp@atishpatra.org>,
- "Jason A . Donenfeld" <Jason@zx2c4.com>, "Qi Liu" <liuqi115@huawei.com>,
- "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Mark Brown" <broonie@kernel.org>,
- "Janosch Frank" <frankja@linux.ibm.com>,
- "Alexey Dobriyan" <adobriyan@gmail.com>
-Cc: "Benjamin Mugnier" <mugnier.benjamin@gmail.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-audit@redhat.com,
- linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH v2 30/31] kvx: Add power controller driver
-Content-Type: text/plain
+References: <20240415075837.2349766-5-ardb+git@google.com> <20240415075837.2349766-8-ardb+git@google.com>
+ <CAK7LNARthBeTotjUzC97zO5uL=YF31Bu_pJafyb8spcUm9sAcQ@mail.gmail.com> <CAMj1kXFyRwfRFSK=acypXWAoFWwdcF9F+E9tsrHDycNyNdW0Og@mail.gmail.com>
+In-Reply-To: <CAMj1kXFyRwfRFSK=acypXWAoFWwdcF9F+E9tsrHDycNyNdW0Og@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 16 Apr 2024 00:31:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARH45pmfdAYcJucsVPa_HJnQEh5=hcdO5u38yrhMX1wJw@mail.gmail.com>
+Message-ID: <CAK7LNARH45pmfdAYcJucsVPa_HJnQEh5=hcdO5u38yrhMX1wJw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] btf: Avoid weak external references
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024, at 16:08, Yann Sionneau wrote:
-> On 1/22/23 12:54, Krzysztof Kozlowski wrote:
->> On 20/01/2023 15:10, Yann Sionneau wrote:
->>> From: Jules Maselbas <jmaselbas@kalray.eu>
->>>
->>> The Power Controller (pwr-ctrl) control cores reset and wake-up
->>> procedure.
->>> +
->>> +int __init kvx_pwr_ctrl_probe(void)
->>> +{
->>> +	struct device_node *ctrl;
->>> +
->>> +	ctrl = get_pwr_ctrl_node();
->>> +	if (!ctrl) {
->>> +		pr_err("Failed to get power controller node\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	if (!of_device_is_compatible(ctrl, "kalray,kvx-pwr-ctrl")) {
->>> +		pr_err("Failed to get power controller node\n");
->> No. Drivers go to drivers, not to arch directory. This should be a
->> proper driver instead of some fake stub doing its own driver matching.
->> You need to rework this.
+On Mon, Apr 15, 2024 at 11:59=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> w=
+rote:
 >
-> I am working on a v3 patchset, therefore I am working on a solution for 
-> this "pwr-ctrl" driver that needs to go somewhere else than arch/kvx/.
+> On Mon, 15 Apr 2024 at 16:55, Masahiro Yamada <masahiroy@kernel.org> wrot=
+e:
+> >
+> > On Mon, Apr 15, 2024 at 4:58=E2=80=AFPM Ard Biesheuvel <ardb+git@google=
+.com> wrote:
+> > >
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > If the BTF code is enabled in the build configuration, the start/stop
+> > > BTF markers are guaranteed to exist in the final link but not during =
+the
+> > > first linker pass.
+> > >
+> > > Avoid GOT based relocations to these markers in the final executable =
+by
+> > > providing preliminary definitions that will be used by the first link=
+er
+> > > pass, and superseded by the actual definitions in the subsequent ones=
+.
+> > >
+> > > Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF s=
+o
+> > > that inadvertent references to this section will trigger a link failu=
+re
+> > > if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
+> > >
+> > > Note that Clang will notice that taking the address of__start_BTF can=
+not
+> > > yield NULL any longer, so testing for that condition is no longer
+> > > needed.
+> > >
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > ---
+> > >  include/asm-generic/vmlinux.lds.h | 9 +++++++++
+> > >  kernel/bpf/btf.c                  | 7 +++++--
+> > >  kernel/bpf/sysfs_btf.c            | 6 +++---
+> > >  3 files changed, 17 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/=
+vmlinux.lds.h
+> > > index e8449be62058..4cb3d88449e5 100644
+> > > --- a/include/asm-generic/vmlinux.lds.h
+> > > +++ b/include/asm-generic/vmlinux.lds.h
+> > > @@ -456,6 +456,7 @@
+> > >   * independent code.
+> > >   */
+> > >  #define PRELIMINARY_SYMBOL_DEFINITIONS                              =
+   \
+> > > +       PRELIMINARY_BTF_DEFINITIONS                                  =
+   \
+> > >         PROVIDE(kallsyms_addresses =3D .);                           =
+     \
+> > >         PROVIDE(kallsyms_offsets =3D .);                             =
+     \
+> > >         PROVIDE(kallsyms_names =3D .);                               =
+     \
+> > > @@ -466,6 +467,14 @@
+> > >         PROVIDE(kallsyms_markers =3D .);                             =
+     \
+> > >         PROVIDE(kallsyms_seqs_of_names =3D .);
+> > >
+> > > +#ifdef CONFIG_DEBUG_INFO_BTF
+> > > +#define PRELIMINARY_BTF_DEFINITIONS                                 =
+   \
+> > > +       PROVIDE(__start_BTF =3D .);                                  =
+     \
+> > > +       PROVIDE(__stop_BTF =3D .);
+> > > +#else
+> > > +#define PRELIMINARY_BTF_DEFINITIONS
+> > > +#endif
+> > > +
+> >
+> >
+> >
+> > Is this necessary?
+> >
 >
-> The purpose of this "driver" is just to expose a void 
-> kvx_pwr_ctrl_cpu_poweron(unsigned int cpu) function, used by 
-> kernel/smpboot.c function __cpu_up() in order to start secondary CPUs in 
-> SMP config.
+> I think so.
 >
-> Doing this, on our SoC, requires writing 3 registers in a memory-mapped 
-> device named "power controller".
+> This actually resulted in Jiri's build failure with v2, and the
+> realization that there was dead code in btf_parse_vmlinux() that
+> happily tried to load the contents of the BTF section if
+> CONFIG_DEBUG_INFO_BTF was not enabled to begin with.
 >
-> I made some researches in drivers/ but I am not sure yet what's a good 
-> place that fits what our device is doing (booting secondary CPUs).
+> So this is another pitfall with weak references: the symbol may
+> unexpectedly be missing altogether rather than only during the first
+> linker pass.
 >
-> * drivers/power/reset seems to be for resetting the entire SoC
+> >
+> >
+> > The following code (BOUNDED_SECTION_BY)
+> > produces __start_BTF and __stop_BTF symbols
+> > under the same condition.
+> >
 >
-> * drivers/power/supply seems to be to control power supplies ICs/periph.
->
-> * drivers/reset seems to be for device reset
->
-> * drivers/pmdomain maybe ?
+> Indeed. So if CONFIG_DEBUG_INFO_BTF=3Dn, code can still link to
+> __start_BTF and __stop_BTF even though BTF is not enabled.
 
-Right, I don't think any of the above are appropriate
 
-> * drivers/soc ?
->
-> * drivers/platform ?
->
-> * drivers/misc ?
 
-Not drivers/misc, that is mainly for things with a user-space
-interface.
+I am talking about the case for CONFIG_DEBUG_INFO_BTF=3Dy.
 
-drivers/soc is mainly for drivers used by other drivers, but
-this would work, especially if you expect to have multiple
-SoC variants that all use the same architecture code but
-incompatible register layouts
+PROVIDE() is meaningless because __start_BTF and __stop_BTF
+are produced by the existing code.
 
-drivers/platform is really for things outside of the SoC
-that are used for managing the system, especially across
-architectures, so I don't think that is a good fit.
+(The code was a bit clearer before commit
+9b351be25360c5cedfb98b88d6dfd89327849e52)
 
-Traditionally we had this code in arch/{arm,mips,powerpc,sh,x86}
-and we never created a drier subsystem for it since newer
-targets (arm64, riscv, newer arm, most x86) all use a method
-that is specified as part of the ISA or firmware interface.
 
-The question what you expect to see with future hardware
-iterations: if you think all arch/kvx/ hardware will use the
-same code for maybe at least the next five years, I would
-suggest you keep it in arch/kvx/kernel/smp.c, but if you
-know or expect other implementations to be needed, I can
-merge it as a driver through drivers/soc/.
 
-     Arnd
+So, v4 of this patch will look like 2/3, right?
+
+
+Just drop __weak attribute.
+
+You still need
+
+if (!IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
+             return ERR_PTR(-ENOENT);
+
+But, you do not need to modify vmlinux.lds.h
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
