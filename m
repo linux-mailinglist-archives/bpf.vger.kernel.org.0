@@ -1,77 +1,211 @@
-Return-Path: <bpf+bounces-26835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C4A8A56A6
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 17:40:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A96088A56D1
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 17:54:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230AB28377E
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 15:40:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02C44B21652
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 15:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FAC7A724;
-	Mon, 15 Apr 2024 15:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0DC7F46B;
+	Mon, 15 Apr 2024 15:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JZlTZZdt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MHA06EKo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8C0757FD
-	for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 15:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0DB76033;
+	Mon, 15 Apr 2024 15:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713195645; cv=none; b=Z37L5pWT/OcmEt2BQv9nlqPxKQPRRckBQeUYbqwav2TPPw21QJRxU/EJ31OvXHdsy1r6I1VUaLBu5F+MuKN+Bw8mUkZa0xttjvp/AcHE/zwcx74kRkRiPqJHKy9Q19/7J9JYSfpL51GmiK8ZKWN8U7KSDTAEx9COThsnh7riQIE=
+	t=1713196470; cv=none; b=maqOi8/w8ApRjdUBl7+N+HKnq0fY2pXEZcsiMtmezA5NVKO+bj1qpCi70z41TzePonLoe/LCIpTzvPzNAO/Lz5LYuvCCs1ETiakzrv/bANh4Ft2lUSGHWqSi7ggdP6yqgc89puXlREshQSSPHHjsNNmEVDNagD280GI87zUQw9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713195645; c=relaxed/simple;
-	bh=lfZ6ImByiKwmzsWO7quCdEHzgX/s71Ok2fPLvtsr8uU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dUQRPDYELbIPgoUFWeQu8/xxCEpwovE1MkwvJGK3DRogz7hWpZXg8+KqhwxYNYMWe5OsGRGC9IG1RRvapmm/ixYjHl9M/Tl9B495WpBCLtL6gdUkAPhijkpPw80aCvrZ3F6x3Nd9Dn1jRBWhW8UWPDmgme+QHxTN5kej58kB/08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JZlTZZdt; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <98230531-5b9b-4181-b862-21be6eb0ffbe@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713195640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lfZ6ImByiKwmzsWO7quCdEHzgX/s71Ok2fPLvtsr8uU=;
-	b=JZlTZZdtbDMTFmEYwvXjI5Tey5bLpYunVqy8R3i2XOlfiyJbY9xl9Epta2ayfmYcjTs7zy
-	ZDLkHG/JGvif463nv+dulrifPEleJmklInsYlM3RNFNJV7mdO8DSRDAqGUjXa81AGLCMwA
-	5Z7VafK5fniuiSrBEemfuLXzlCSMUt8=
-Date: Mon, 15 Apr 2024 08:40:33 -0700
+	s=arc-20240116; t=1713196470; c=relaxed/simple;
+	bh=8c+SYgrvRngaG/lFXqJ0rfeZ6kkSQCqNuwsCJEg3GmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MC2nm0WOuAL10p+AZyA3biYsJ+Mj/sTnJYrqoFn7jbxdt8mwbXG9gmyGw27/+TINiNVZmrTsO8r/1Qlple01uz9IMz+Bxr6bcle/Q0jYRJ86vVm1wNeJLDA8bbm9HMo6qQMeZJ9639G5HZH+IXyMOBjbqM7Mk2r+soXB5aKiSNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MHA06EKo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 969D7C3277B;
+	Mon, 15 Apr 2024 15:54:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713196469;
+	bh=8c+SYgrvRngaG/lFXqJ0rfeZ6kkSQCqNuwsCJEg3GmQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MHA06EKoO7MrUWj/nPmINQgS9zR3tBDS40OTFTx0FLk61K+OPsdCqMcEDRWwxpJCu
+	 OA+irVxOr8jJlbXdqv92CzguA8ij3sqTfVd2CgDaYozOwRvceVaEOwU8CIt0J/PVKr
+	 2eJYxmAJQPiEA9rcsEswDqvghXF2YTwmnmcmUI9IRAcvS8u3i5L3gc/tOxYIvlnD4i
+	 aHiFaNHI7fTsDs5BRnPycFMV/MGMf/nYfudMPLRcFVwc0JoJCGugeCPdDKltjfTErL
+	 43M2xaiNyCMlP4oGyigOnL6Paja4n4Sbky7twiPaNylKWIPIrJ7w2F50eI39/Fz73a
+	 ZkwaiuyZFpsew==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2da01cb187cso61492511fa.0;
+        Mon, 15 Apr 2024 08:54:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUvC4lH5Hc/fWoOHyF6C7JUKRhZcLWMD7PUK8I8HVevLDpqLfEK2DvcH6qFultkp9I2zBYbg7PSX/po+UmF1Ysxt50ZgjZpHN3jKn7SyMBZ0bcThCrWsPEyWipY1CKL3/A0vqsnptO6aEVVgh72Jg/5edlyEZk0abtO3aninD4dlYTlQHrius8iKiDadhXmttmmxfiOar0oqIrOCA==
+X-Gm-Message-State: AOJu0YzleusBl0mW3FmR/i0lfDGSmRKgLIpf/byqFJQX7YfjwafFpx+c
+	+X9di7kXFgVT52vJ2ALav8F9iLoxbxcYulJI2w7+PAgN7V4hEYCd4iSOFcULEDV3cUGWsphshv1
+	mwPcW0Gm74PHnpCBosHnPp1lJniI=
+X-Google-Smtp-Source: AGHT+IE2/Qe4CeOwNpuDt2+IxOmt8vZKorCXxR4H+XPcjvOJPTKKrImNHxVaRmX9CI/7i55Z0gDFncEWreJVd3F7xv0=
+X-Received: by 2002:a2e:97d4:0:b0:2d8:41c5:ad64 with SMTP id
+ m20-20020a2e97d4000000b002d841c5ad64mr7041107ljj.13.1713196467919; Mon, 15
+ Apr 2024 08:54:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf/tests: Fix typos in comments
-Content-Language: en-GB
-To: cp0613@linux.alibaba.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240415081928.17440-1-cp0613@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240415081928.17440-1-cp0613@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240415075837.2349766-5-ardb+git@google.com> <20240415075837.2349766-8-ardb+git@google.com>
+ <CAK7LNARthBeTotjUzC97zO5uL=YF31Bu_pJafyb8spcUm9sAcQ@mail.gmail.com>
+ <CAMj1kXFyRwfRFSK=acypXWAoFWwdcF9F+E9tsrHDycNyNdW0Og@mail.gmail.com> <CAK7LNARH45pmfdAYcJucsVPa_HJnQEh5=hcdO5u38yrhMX1wJw@mail.gmail.com>
+In-Reply-To: <CAK7LNARH45pmfdAYcJucsVPa_HJnQEh5=hcdO5u38yrhMX1wJw@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 15 Apr 2024 17:54:16 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGEbaqzD2nCqOxdBgVZ+sjwCSZyqthdb=FQx2xhySbDEQ@mail.gmail.com>
+Message-ID: <CAMj1kXGEbaqzD2nCqOxdBgVZ+sjwCSZyqthdb=FQx2xhySbDEQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] btf: Avoid weak external references
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 4/15/24 1:19 AM, cp0613@linux.alibaba.com wrote:
-> From: Chen Pei <cp0613@linux.alibaba.com>
+On Mon, 15 Apr 2024 at 17:32, Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> Currently, there are two comments with same name
-> "64-bit ATOMIC magnitudes", the second one should
-> be "32-bit ATOMIC magnitudes" based on the context.
+> On Mon, Apr 15, 2024 at 11:59=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org>=
+ wrote:
+> >
+> > On Mon, 15 Apr 2024 at 16:55, Masahiro Yamada <masahiroy@kernel.org> wr=
+ote:
+> > >
+> > > On Mon, Apr 15, 2024 at 4:58=E2=80=AFPM Ard Biesheuvel <ardb+git@goog=
+le.com> wrote:
+> > > >
+> > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > >
+> > > > If the BTF code is enabled in the build configuration, the start/st=
+op
+> > > > BTF markers are guaranteed to exist in the final link but not durin=
+g the
+> > > > first linker pass.
+> > > >
+> > > > Avoid GOT based relocations to these markers in the final executabl=
+e by
+> > > > providing preliminary definitions that will be used by the first li=
+nker
+> > > > pass, and superseded by the actual definitions in the subsequent on=
+es.
+> > > >
+> > > > Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF=
+ so
+> > > > that inadvertent references to this section will trigger a link fai=
+lure
+> > > > if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
+> > > >
+> > > > Note that Clang will notice that taking the address of__start_BTF c=
+annot
+> > > > yield NULL any longer, so testing for that condition is no longer
+> > > > needed.
+> > > >
+> > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > ---
+> > > >  include/asm-generic/vmlinux.lds.h | 9 +++++++++
+> > > >  kernel/bpf/btf.c                  | 7 +++++--
+> > > >  kernel/bpf/sysfs_btf.c            | 6 +++---
+> > > >  3 files changed, 17 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generi=
+c/vmlinux.lds.h
+> > > > index e8449be62058..4cb3d88449e5 100644
+> > > > --- a/include/asm-generic/vmlinux.lds.h
+> > > > +++ b/include/asm-generic/vmlinux.lds.h
+> > > > @@ -456,6 +456,7 @@
+> > > >   * independent code.
+> > > >   */
+> > > >  #define PRELIMINARY_SYMBOL_DEFINITIONS                            =
+     \
+> > > > +       PRELIMINARY_BTF_DEFINITIONS                                =
+     \
+> > > >         PROVIDE(kallsyms_addresses =3D .);                         =
+       \
+> > > >         PROVIDE(kallsyms_offsets =3D .);                           =
+       \
+> > > >         PROVIDE(kallsyms_names =3D .);                             =
+       \
+> > > > @@ -466,6 +467,14 @@
+> > > >         PROVIDE(kallsyms_markers =3D .);                           =
+       \
+> > > >         PROVIDE(kallsyms_seqs_of_names =3D .);
+> > > >
+> > > > +#ifdef CONFIG_DEBUG_INFO_BTF
+> > > > +#define PRELIMINARY_BTF_DEFINITIONS                               =
+     \
+> > > > +       PROVIDE(__start_BTF =3D .);                                =
+       \
+> > > > +       PROVIDE(__stop_BTF =3D .);
+> > > > +#else
+> > > > +#define PRELIMINARY_BTF_DEFINITIONS
+> > > > +#endif
+> > > > +
+> > >
+> > >
+> > >
+> > > Is this necessary?
+> > >
+> >
+> > I think so.
+> >
+> > This actually resulted in Jiri's build failure with v2, and the
+> > realization that there was dead code in btf_parse_vmlinux() that
+> > happily tried to load the contents of the BTF section if
+> > CONFIG_DEBUG_INFO_BTF was not enabled to begin with.
+> >
+> > So this is another pitfall with weak references: the symbol may
+> > unexpectedly be missing altogether rather than only during the first
+> > linker pass.
+> >
+> > >
+> > >
+> > > The following code (BOUNDED_SECTION_BY)
+> > > produces __start_BTF and __stop_BTF symbols
+> > > under the same condition.
+> > >
+> >
+> > Indeed. So if CONFIG_DEBUG_INFO_BTF=3Dn, code can still link to
+> > __start_BTF and __stop_BTF even though BTF is not enabled.
 >
-> Signed-off-by: Chen Pei <cp0613@linux.alibaba.com>
+>
+>
+> I am talking about the case for CONFIG_DEBUG_INFO_BTF=3Dy.
+>
+> PROVIDE() is meaningless because __start_BTF and __stop_BTF
+> are produced by the existing code.
+>
+> (The code was a bit clearer before commit
+> 9b351be25360c5cedfb98b88d6dfd89327849e52)
+>
+>
+>
+> So, v4 of this patch will look like 2/3, right?
+>
+>
+> Just drop __weak attribute.
+>
+> You still need
+>
+> if (!IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
+>              return ERR_PTR(-ENOENT);
+>
+> But, you do not need to modify vmlinux.lds.h
+>
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+OK, I see what you mean now.
 
+The PROVIDE() is indeed unnecessary - I'll drop that bit in v4.
 
