@@ -1,214 +1,179 @@
-Return-Path: <bpf+bounces-26751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26752-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6538A48C3
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 09:14:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD3848A492B
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 09:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3388B22F82
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 07:14:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDE801C20E11
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 07:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4247822EFB;
-	Mon, 15 Apr 2024 07:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88662C1A0;
+	Mon, 15 Apr 2024 07:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kfwz+WxX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YyRLmHiy"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE72E22638
-	for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 07:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E9928DA4;
+	Mon, 15 Apr 2024 07:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713165227; cv=none; b=iZLjleiND/XV2udk+7+lCmT8nbseRO4px/8jpLEAKxVyETbG0q3kpMj9SpaHNGb72bHii/jXAqKfs63XrXpMKMM8zrcU88LZ+VUzLp4FduxlJ2g2BODEcTxz73P7AHbF/wFnHZmS4TD6tYdHyNAJq4b5r4cDU+5aYCoiMPG+cJw=
+	t=1713166590; cv=none; b=eJN3Qt5iOgeDhPR0PUb49PI+BkaUw7seR+Mze4abKk7MMFponb1/qLc2kyopzU6DZnAeLkhw6WtsExSxlX+/Y36E4GrKh01YuNl11vdgpmjMCm2+lk9WrywlKpsPVXP9WEr1AVqGWswMcpMp/fuSlgxUbNSkPfkLXPgz1Z5YQC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713165227; c=relaxed/simple;
-	bh=hI1ImZuD4MtyBx70PUSFix6Ajtea0wMbCKe8L/3v+Uw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X3FFaak7BaB4FRkfbrszpLQ1ZQCxRcHQh3OgLOZk1+T9kUh+sOsheFlms6lWY1vhx9ag2MkvlJi4IeTcbZqyZ3FflJZpKwAOaAQBNaUCi15xedBIu33V/sFHJ1c0w0+k2ZgaCFJvBjfA+zqugM4Rp/VM8YMMZNg0BcLRbU9GgZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kfwz+WxX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AF96C32786;
-	Mon, 15 Apr 2024 07:13:46 +0000 (UTC)
+	s=arc-20240116; t=1713166590; c=relaxed/simple;
+	bh=QEw7la3k+1B4uCDc5JgoVTPpyYgSenrHp3AkQ1ZVoJU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bSyCdcw0LAnGgSFuwhA5FBXrLBvQTRXIJYwAVi8hgpthfYuaeTyAkQuFzfsdSok8p48/taJVyPle90Eqjapww5cmyObmimlrasBBqOatlsZ1JtXhos0DnHuVZOaoZZWhZc0a36V+NuK1ZHBnR8VITt+V4zn53ujZxB4z+08woYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YyRLmHiy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBFF7C113CC;
+	Mon, 15 Apr 2024 07:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713165227;
-	bh=hI1ImZuD4MtyBx70PUSFix6Ajtea0wMbCKe8L/3v+Uw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kfwz+WxX4OnZCXGFtjBzjL9126WIkdrbjltIC8HAHlnoFmUHRdTxctELKKeDm3/G3
-	 0KpuRm2j9xyTgugEs3AJUH0reYdRAqSLjrD2xMAdgwz2/pBTa1U26p1rg2Ivg5H4Qq
-	 td+149Vd7AD+yzKZOTyLPyE2DDKdUMQdrUQ/blgav/mJ7SW2z1CdViCOZ5Q1qImmHx
-	 iQpS/a6Sn6pES0kXsdO/iE7gout/0mGCogD26pMxeEJvlQssheoqIJBA4UUupmROd/
-	 4f5oAxom4n+SWtO1yf87LvEkyoUBBS05Muyq07R4dlHGUB1AcG5VBJ9Om7TSnzB//l
-	 g9aTHmbIc8oOw==
-Date: Mon, 15 Apr 2024 12:42:43 +0530
-From: Naveen N Rao <naveen@kernel.org>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org, 
-	Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [PATCH v3 2/2] powerpc/bpf: enable kfunc call
-Message-ID: <6ktv57iaptqnquimayjyqbpjrmedyenvdrobx3dkxei7for75n@w3uzj4rvvivt>
-References: <20240402105806.352037-1-hbathini@linux.ibm.com>
- <20240402105806.352037-2-hbathini@linux.ibm.com>
+	s=k20201202; t=1713166589;
+	bh=QEw7la3k+1B4uCDc5JgoVTPpyYgSenrHp3AkQ1ZVoJU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YyRLmHiyug+86g4mlvEV92WKvQWj+LlNyCyjYn5muAT8/zLjDAb59Hv0bmqyWxrS4
+	 rV+0tP4dKrzcp6qN9fwibJ0+Ol/j+n8lSLPYtdKvjBvAoxm4gqX/5agtxIPm95FGhx
+	 QQXBXMCKyVsJy5GF1jz6fLxB4af0/yZ2DRukpSd1JvHd2RhC0pK4ZKfvyuZ17mbfdf
+	 XooX7dDXA7p/RONR4G6I1x/dQ6aDeUGFiNC6Ep3IZ9yuVRYjGpk7xzJ530pcsW3Yha
+	 ZhNOT1v5UnD5NZOLhQBySfy4NPVr7HJ/Q/nadoj+zG03v+C69+zLxrBB3KVQ+asp2j
+	 bRIvoNGTRXjrg==
+Message-ID: <01c82cfb-e215-4929-9540-484378275ec3@kernel.org>
+Date: Mon, 15 Apr 2024 09:36:25 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402105806.352037-2-hbathini@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v7] virtio_net: Support RX hash XDP hint
+To: Liang Chen <liangchen.linux@gmail.com>, mst@redhat.com,
+ jasowang@redhat.com, xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+ daniel@iogearbox.net, ast@kernel.org
+References: <20240413041035.7344-1-liangchen.linux@gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20240413041035.7344-1-liangchen.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 04:28:06PM +0530, Hari Bathini wrote:
-> Currently, bpf jit code on powerpc assumes all the bpf functions and
-> helpers to be kernel text. This is false for kfunc case, as function
-> addresses can be module addresses as well. So, ensure module addresses
-> are supported to enable kfunc support.
+
+
+On 13/04/2024 06.10, Liang Chen wrote:
+> The RSS hash report is a feature that's part of the virtio specification.
+> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+> (still a work in progress as per [1]) support this feature. While the
+> capability to obtain the RSS hash has been enabled in the normal path,
+> it's currently missing in the XDP path. Therefore, we are introducing
+> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
 > 
-> Emit instructions based on whether the function address is kernel text
-> address or module address to retain optimized instruction sequence for
-> kernel text address case.
+> 1.
+> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
 > 
-> Also, as bpf programs are always module addresses and a bpf helper can
-> be within kernel address as well, using relative addressing often fails
-> with "out of range of pcrel address" error. Use unoptimized instruction
-> sequence for both kernel and module addresses to work around this, when
-> PCREL addressing is used.
-
-I guess we need a fixes tag for this?
-Fixes: 7e3a68be42e1 ("powerpc/64: vmlinux support building with PCREL addresing")
-
-It will be good to separate out this fix into a separate patch.
-
-Also, I know I said we could use the generic PPC_LI64() for pcrel, but 
-we may be able to use a more optimized sequence when calling bpf kernel 
-helpers.  See stub_insns[] in module_64.c for an example where we load 
-paca->kernelbase, then use a prefixed load instruction to populate the 
-lower 34-bit value. For calls out to module area, we can use the generic 
-PPC_LI64() macro only if it is outside range of a prefixed load 
-instruction.
-
-> 
-> With module addresses supported, override bpf_jit_supports_kfunc_call()
-> to enable kfunc support. Since module address offsets can be more than
-> 32-bit long on PPC64, override bpf_jit_supports_far_kfunc_call() to
-> enable 64-bit pointers.
-> 
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
 > ---
+>    Changes from v6:
+> - fix a coding style issue
+>    Changes from v5:
+> - Preservation of the hash value has been dropped, following the conclusion
+>    from discussions in V3 reviews. The virtio_net driver doesn't
+>    accessing/using the virtio_net_hdr after the XDP program execution, so
+>    nothing tragic should happen. As to the xdp program, if it smashes the
+>    entry in virtio header, it is likely buggy anyways. Additionally, looking
+>    up the Intel IGC driver,  it also does not bother with this particular
+>    aspect.
+> ---
+>   drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 55 insertions(+)
 > 
-> * Changes in v3:
->   - Retained optimized instruction sequence when function address is
->     a core kernel address as suggested by Naveen.
->   - Used unoptimized instruction sequence for PCREL addressing to
->     avoid out of range errors for core kernel function addresses.
->   - Folded patch that adds support for kfunc calls with patch that
->     enables/advertises this support as suggested by Naveen.
-> 
-> 
->  arch/powerpc/net/bpf_jit_comp.c   | 10 +++++++
->  arch/powerpc/net/bpf_jit_comp64.c | 48 ++++++++++++++++++++-----------
->  2 files changed, 42 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-> index 0f9a21783329..dc7ffafd7441 100644
-> --- a/arch/powerpc/net/bpf_jit_comp.c
-> +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -359,3 +359,13 @@ void bpf_jit_free(struct bpf_prog *fp)
->  
->  	bpf_prog_unlock_free(fp);
->  }
-> +
-> +bool bpf_jit_supports_kfunc_call(void)
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index c22d1118a133..2a1892b7b8d3 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
+>   	}
+>   }
+>   
+> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
+> +			       enum xdp_rss_hash_type *rss_type)
 > +{
-> +	return true;
+> +	const struct xdp_buff *xdp = (void *)_ctx;
+> +	struct virtio_net_hdr_v1_hash *hdr_hash;
+> +	struct virtnet_info *vi;
+> +
+> +	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
+> +		return -ENODATA;
+> +
+> +	vi = netdev_priv(xdp->rxq->dev);
+> +	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
+> +
+> +	switch (__le16_to_cpu(hdr_hash->hash_report)) {
+> +	case VIRTIO_NET_HASH_REPORT_TCPv4:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_UDPv4:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_TCPv6:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_UDPv6:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_IPv4:
+> +		*rss_type = XDP_RSS_TYPE_L3_IPV4;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_IPv6:
+> +		*rss_type = XDP_RSS_TYPE_L3_IPV6;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_IPv6_EX:
+> +		*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_NONE:
+> +	default:
+> +		*rss_type = XDP_RSS_TYPE_NONE;
+> +	}
+
+Why is this not implemented as a table lookup?
+
+Like:
+ 
+https://elixir.bootlin.com/linux/v6.9-rc4/source/drivers/net/ethernet/intel/igc/igc_main.c#L6652
+  https://elixir.bootlin.com/linux/latest/A/ident/xdp_rss_hash_type
+
+--Jesper
+
+> +
+> +	*hash = __le32_to_cpu(hdr_hash->hash_value);
+> +	return 0;
 > +}
 > +
-> +bool bpf_jit_supports_far_kfunc_call(void)
-> +{
-> +	return IS_ENABLED(CONFIG_PPC64) ? true : false;
-> +}
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c 
-> b/arch/powerpc/net/bpf_jit_comp64.c
-> index 7f62ac4b4e65..ec3adf715c55 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -207,24 +207,14 @@ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u
->  	unsigned long func_addr = func ? ppc_function_entry((void *)func) : 0;
->  	long reladdr;
->  
-> -	if (WARN_ON_ONCE(!core_kernel_text(func_addr)))
-> +	/*
-> +	 * With the introduction of kfunc feature, BPF helpers can be part of kernel as
-> +	 * well as module text address.
-> +	 */
-> +	if (WARN_ON_ONCE(!kernel_text_address(func_addr)))
->  		return -EINVAL;
->  
-> -	if (IS_ENABLED(CONFIG_PPC_KERNEL_PCREL)) {
-> -		reladdr = func_addr - CTX_NIA(ctx);
-> -
-> -		if (reladdr >= (long)SZ_8G || reladdr < -(long)SZ_8G) {
-> -			pr_err("eBPF: address of %ps out of range of pcrel address.\n",
-> -				(void *)func);
-> -			return -ERANGE;
-> -		}
-> -		/* pla r12,addr */
-> -		EMIT(PPC_PREFIX_MLS | __PPC_PRFX_R(1) | IMM_H18(reladdr));
-> -		EMIT(PPC_INST_PADDI | ___PPC_RT(_R12) | IMM_L(reladdr));
-> -		EMIT(PPC_RAW_MTCTR(_R12));
-> -		EMIT(PPC_RAW_BCTR());
-> -
-> -	} else {
-> +	if (core_kernel_text(func_addr) && !IS_ENABLED(CONFIG_PPC_KERNEL_PCREL)) {
->  		reladdr = func_addr - kernel_toc_addr();
->  		if (reladdr > 0x7FFFFFFF || reladdr < -(0x80000000L)) {
->  			pr_err("eBPF: address of %ps out of range of kernel_toc.\n", (void *)func);
-> @@ -235,6 +225,32 @@ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u
->  		EMIT(PPC_RAW_ADDI(_R12, _R12, PPC_LO(reladdr)));
->  		EMIT(PPC_RAW_MTCTR(_R12));
->  		EMIT(PPC_RAW_BCTRL());
-> +	} else {
-> +		if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V1)) {
-> +			/* func points to the function descriptor */
-> +			PPC_LI64(bpf_to_ppc(TMP_REG_2), func);
-> +			/* Load actual entry point from function descriptor */
-> +			EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_2), 0));
-> +			/* ... and move it to CTR */
-> +			EMIT(PPC_RAW_MTCTR(bpf_to_ppc(TMP_REG_1)));
-> +			/*
-> +			 * Load TOC from function descriptor at offset 8.
-> +			 * We can clobber r2 since we get called through a
-> +			 * function pointer (so caller will save/restore r2)
-> +			 * and since we don't use a TOC ourself.
-> +			 */
-> +			EMIT(PPC_RAW_LD(2, bpf_to_ppc(TMP_REG_2), 8));
-> +			EMIT(PPC_RAW_BCTRL());
-
-I thought we started using TOC for ABIv1 when we moved to using an 
-optimized function call sequence for bpf helpers?  If so, we will need 
-to load kernel toc here for subsequent calls to BPF helpers.
-
-> +		} else {
-> +			/* We can clobber r12 */
-> +			PPC_LI64(12, func);
-> +			EMIT(PPC_RAW_MTCTR(12));
-> +			EMIT(PPC_RAW_BCTRL());
-> +#ifndef CONFIG_PPC_KERNEL_PCREL
-> +			/* Restore kernel TOC */
-> +			EMIT(PPC_RAW_LD(2, 13, offsetof(struct paca_struct, kernel_toc)));
-> +#endif
-> +		}
->  	}
->  
->  	return 0;
-> -- 
-> 2.44.0
-> 
-
-- Naveen
-
+> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
+> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
+> +};
+> +
+>   static int virtnet_probe(struct virtio_device *vdev)
+>   {
+>   	int i, err = -ENOMEM;
+> @@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+>   				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+>   
+>   		dev->hw_features |= NETIF_F_RXHASH;
+> +		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
+>   	}
+>   
+>   	if (vi->has_rss_hash_report)
 
