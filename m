@@ -1,179 +1,131 @@
-Return-Path: <bpf+bounces-26752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3848A492B
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 09:36:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD2B8A4968
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 09:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDE801C20E11
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 07:36:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A2C4281488
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 07:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88662C1A0;
-	Mon, 15 Apr 2024 07:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3E12C868;
+	Mon, 15 Apr 2024 07:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YyRLmHiy"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="q4YHS8Fj"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E9928DA4;
-	Mon, 15 Apr 2024 07:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAACF28DD0;
+	Mon, 15 Apr 2024 07:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713166590; cv=none; b=eJN3Qt5iOgeDhPR0PUb49PI+BkaUw7seR+Mze4abKk7MMFponb1/qLc2kyopzU6DZnAeLkhw6WtsExSxlX+/Y36E4GrKh01YuNl11vdgpmjMCm2+lk9WrywlKpsPVXP9WEr1AVqGWswMcpMp/fuSlgxUbNSkPfkLXPgz1Z5YQC8=
+	t=1713167605; cv=none; b=Bftrst38ohshy+gJwBFi/uBU3blaI4M2S60sb44IQdGDCqVjcipcxKwY8K5ykWYqaQFHMm4wiUVUPobRVTHkUFiRDdNetOIaq1sw/6Jlhr3mEL3JlgXpXnnI4u4FjbEFET3jGFYMZJqDJl3H6TmWitBYL2Nh7bjTF/ZSRPxntmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713166590; c=relaxed/simple;
-	bh=QEw7la3k+1B4uCDc5JgoVTPpyYgSenrHp3AkQ1ZVoJU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bSyCdcw0LAnGgSFuwhA5FBXrLBvQTRXIJYwAVi8hgpthfYuaeTyAkQuFzfsdSok8p48/taJVyPle90Eqjapww5cmyObmimlrasBBqOatlsZ1JtXhos0DnHuVZOaoZZWhZc0a36V+NuK1ZHBnR8VITt+V4zn53ujZxB4z+08woYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YyRLmHiy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBFF7C113CC;
-	Mon, 15 Apr 2024 07:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713166589;
-	bh=QEw7la3k+1B4uCDc5JgoVTPpyYgSenrHp3AkQ1ZVoJU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YyRLmHiyug+86g4mlvEV92WKvQWj+LlNyCyjYn5muAT8/zLjDAb59Hv0bmqyWxrS4
-	 rV+0tP4dKrzcp6qN9fwibJ0+Ol/j+n8lSLPYtdKvjBvAoxm4gqX/5agtxIPm95FGhx
-	 QQXBXMCKyVsJy5GF1jz6fLxB4af0/yZ2DRukpSd1JvHd2RhC0pK4ZKfvyuZ17mbfdf
-	 XooX7dDXA7p/RONR4G6I1x/dQ6aDeUGFiNC6Ep3IZ9yuVRYjGpk7xzJ530pcsW3Yha
-	 ZhNOT1v5UnD5NZOLhQBySfy4NPVr7HJ/Q/nadoj+zG03v+C69+zLxrBB3KVQ+asp2j
-	 bRIvoNGTRXjrg==
-Message-ID: <01c82cfb-e215-4929-9540-484378275ec3@kernel.org>
-Date: Mon, 15 Apr 2024 09:36:25 +0200
+	s=arc-20240116; t=1713167605; c=relaxed/simple;
+	bh=6C9NIzF+m8a2CDD8beqRxV+bOBsa2BmfOGJBAutgECA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VILgSAG52SObUlkW+nJe+hDJyaNtFq5AAjYdhBAhVGFZD2hmXklM8c97JsqY5i5lWVyWkfpu7oyrh2njKjyNqjmTS/ZVuI2Zl0SU89uXuYWcW3pjsJ6fZOHzBCQ7wMSB/BGKUzqobfs2+RleM3gemxodNDEHIEZsXLrCEobTI7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=q4YHS8Fj; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=8YIeaNZhu2VwYrI498gRkCoUAUbEjZA2ART1G/gViK0=; b=q4YHS8FjBEAnMbuDl+TMKsEKGP
+	DM6iyFt6uA7Bo5adMws5/s0t1+j9HugdPjdNQD0yCOEfV7ZoW+QC17+eG/HZdmmEoyHPU8JoOx9XL
+	7Fx3fT7PsknHnmu65yuhapSgCRz6CXa3c6A/kM7Sga97giJ17RK2CcTur3HI5Bz9lkxAWJiegTEQD
+	TRBs7jlUSsh22rwhDKkQsCKrJadSsFPPtwcG8DzvOoayr4YqBfDfQ7mNeiHohXm2HpjY17hnCJFMz
+	Wnf5Q5krVNT8G7J3KzkDXMsJA5bvEb5NAjurd+XnOU9adVQGbZMEFeMoQqJ3YmHp5tNlP8wxE1yRv
+	RKdldQfQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwH8s-0000000AT0A-1En1;
+	Mon, 15 Apr 2024 07:52:44 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id E025B30040C; Mon, 15 Apr 2024 09:52:41 +0200 (CEST)
+Date: Mon, 15 Apr 2024 09:52:41 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7] virtio_net: Support RX hash XDP hint
-To: Liang Chen <liangchen.linux@gmail.com>, mst@redhat.com,
- jasowang@redhat.com, xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
- daniel@iogearbox.net, ast@kernel.org
-References: <20240413041035.7344-1-liangchen.linux@gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20240413041035.7344-1-liangchen.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411160051.2093261-6-rppt@kernel.org>
 
-
-
-On 13/04/2024 06.10, Liang Chen wrote:
-> The RSS hash report is a feature that's part of the virtio specification.
-> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-> (still a work in progress as per [1]) support this feature. While the
-> capability to obtain the RSS hash has been enabled in the normal path,
-> it's currently missing in the XDP path. Therefore, we are introducing
-> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
-> 
-> 1.
-> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
-> 
-> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
-> ---
->    Changes from v6:
-> - fix a coding style issue
->    Changes from v5:
-> - Preservation of the hash value has been dropped, following the conclusion
->    from discussions in V3 reviews. The virtio_net driver doesn't
->    accessing/using the virtio_net_hdr after the XDP program execution, so
->    nothing tragic should happen. As to the xdp program, if it smashes the
->    entry in virtio header, it is likely buggy anyways. Additionally, looking
->    up the Intel IGC driver,  it also does not bother with this particular
->    aspect.
-> ---
->   drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 55 insertions(+)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c22d1118a133..2a1892b7b8d3 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
->   	}
->   }
->   
-> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-> +			       enum xdp_rss_hash_type *rss_type)
-> +{
-> +	const struct xdp_buff *xdp = (void *)_ctx;
-> +	struct virtio_net_hdr_v1_hash *hdr_hash;
-> +	struct virtnet_info *vi;
-> +
-> +	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-> +		return -ENODATA;
-> +
-> +	vi = netdev_priv(xdp->rxq->dev);
-> +	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
-> +
-> +	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-> +	case VIRTIO_NET_HASH_REPORT_TCPv4:
-> +		*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_UDPv4:
-> +		*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_TCPv6:
-> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_UDPv6:
-> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
-> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
-> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_IPv4:
-> +		*rss_type = XDP_RSS_TYPE_L3_IPV4;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_IPv6:
-> +		*rss_type = XDP_RSS_TYPE_L3_IPV6;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_IPv6_EX:
-> +		*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
-> +		break;
-> +	case VIRTIO_NET_HASH_REPORT_NONE:
-> +	default:
-> +		*rss_type = XDP_RSS_TYPE_NONE;
-> +	}
-
-Why is this not implemented as a table lookup?
-
-Like:
- 
-https://elixir.bootlin.com/linux/v6.9-rc4/source/drivers/net/ethernet/intel/igc/igc_main.c#L6652
-  https://elixir.bootlin.com/linux/latest/A/ident/xdp_rss_hash_type
-
---Jesper
-
-> +
-> +	*hash = __le32_to_cpu(hdr_hash->hash_value);
-> +	return 0;
-> +}
-> +
-> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
+On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
+> +/**
+> + * enum execmem_type - types of executable memory ranges
+> + *
+> + * There are several subsystems that allocate executable memory.
+> + * Architectures define different restrictions on placement,
+> + * permissions, alignment and other parameters for memory that can be used
+> + * by these subsystems.
+> + * Types in this enum identify subsystems that allocate executable memory
+> + * and let architectures define parameters for ranges suitable for
+> + * allocations by each subsystem.
+> + *
+> + * @EXECMEM_DEFAULT: default parameters that would be used for types that
+> + * are not explcitly defined.
+> + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> + * @EXECMEM_KPROBES: parameters for kprobes
+> + * @EXECMEM_FTRACE: parameters for ftrace
+> + * @EXECMEM_BPF: parameters for BPF
+> + * @EXECMEM_TYPE_MAX:
+> + */
+> +enum execmem_type {
+> +	EXECMEM_DEFAULT,
+> +	EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
+> +	EXECMEM_KPROBES,
+> +	EXECMEM_FTRACE,
+> +	EXECMEM_BPF,
+> +	EXECMEM_TYPE_MAX,
 > +};
-> +
->   static int virtnet_probe(struct virtio_device *vdev)
->   {
->   	int i, err = -ENOMEM;
-> @@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
->   				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
->   
->   		dev->hw_features |= NETIF_F_RXHASH;
-> +		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
->   	}
->   
->   	if (vi->has_rss_hash_report)
+
+Can we please get a break-down of how all these types are actually
+different from one another?
+
+I'm thinking some platforms have a tiny immediate space (arm64 comes to
+mind) and has less strict placement constraints for some of them?
 
