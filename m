@@ -1,211 +1,271 @@
-Return-Path: <bpf+bounces-26809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61CCF8A512D
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 15:25:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CB98A5158
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 15:29:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 189C4285A3C
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 13:25:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BE91B24888
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 13:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D52C7FBB4;
-	Mon, 15 Apr 2024 13:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="viy8RF4h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255F1524D8;
+	Mon, 15 Apr 2024 13:21:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091AE7319C;
-	Mon, 15 Apr 2024 13:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4172B7604F;
+	Mon, 15 Apr 2024 13:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713186762; cv=none; b=r+5T5AH/kOPBYnCfb5TqVBoFEYzY/7kqHfErO3YGyt/3zfpH2ye1IdV9Bl+sa0b3Xa9ZXi9JWnlfPa3aw6tygat/CpR4Im2Ye6rVuKiYOGrxCCc0cVFr9BEZQo/2h/t9zQ8UwfRMVhbVtC85G7TKUZSwk+bQdibV/5y/PAcIZcg=
+	t=1713187315; cv=none; b=umocShNvZuPUELl00p575O+BPXcaiAYrEbz9YDOHjj+2+Jcciua198llF2bhKYcP0Z6oT5+RWYonGm9h40051hsG8QgOe6Vr+vXCR9vhiqW+lfK9LS4qc5P7hGNM/byUELvLPjWzLWPT2Oh3FYcaRU3L9BHF7AelHNH43SUkVj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713186762; c=relaxed/simple;
-	bh=Qca6XvzlrUWEgjiYFgsicelqsoUPPwVfMv97Wpge0Zs=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=nqHVS9iNdAVBSZOkf97YQGJsR+uHuJN0rrNyhFIXw6j3VspZDcf0V+E+TnYS/ojAPtCSlXpKTWsXJRKDeM1/0irni81ydOwoyuoeXXfFXQDhIQ9jA3RDvmpjpX23xz7dHSYYXtCnb+982EZ2e0h6fq8ea9+0T0BtZBMlipeDCXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=viy8RF4h; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240415131237euoutp017a2f62749534a2b9acddd5159781d6bf~Gdkd-Lxw32930829308euoutp01G;
-	Mon, 15 Apr 2024 13:12:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240415131237euoutp017a2f62749534a2b9acddd5159781d6bf~Gdkd-Lxw32930829308euoutp01G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713186757;
-	bh=Qca6XvzlrUWEgjiYFgsicelqsoUPPwVfMv97Wpge0Zs=;
-	h=Date:From:To:Subject:In-Reply-To:References:From;
-	b=viy8RF4hNXEqmJO09gbRkN1hplzL9qWjf30RFTI7FTwLhCoWneLeBXSDvbLsxpZ9j
-	 GbRuWAVNqjoG/SbTkO+rwZqOp+dKHuUnBjQibXnQGX7hNb7NR1eDov++YJ/Jm+QrcE
-	 cMJxQiOg6puH76trnIUgetFkYReZNRUwnD+KWLGw=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240415131237eucas1p1356b3196b37e50355c04831542d6c242~Gdkds-9ke2775027750eucas1p1_;
-	Mon, 15 Apr 2024 13:12:37 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id BE.28.09624.5C72D166; Mon, 15
-	Apr 2024 14:12:37 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240415131236eucas1p26e04b3c555dc61967b7e3095f73fc0bc~GdkdOBHxz1272012720eucas1p2x;
-	Mon, 15 Apr 2024 13:12:36 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240415131236eusmtrp14bad41fdcb1d30a1a34d053288f52139~GdkdLWMCT1022510225eusmtrp1f;
-	Mon, 15 Apr 2024 13:12:36 +0000 (GMT)
-X-AuditID: cbfec7f2-c11ff70000002598-69-661d27c5eab3
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id EE.D0.09010.4C72D166; Mon, 15
-	Apr 2024 14:12:36 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240415131236eusmtip23358818af7e1c8c6c8f052ff5acc6772~Gdkc2V-fH0603206032eusmtip2W;
-	Mon, 15 Apr 2024 13:12:36 +0000 (GMT)
-Received: from localhost (106.210.248.128) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Mon, 15 Apr 2024 14:12:35 +0100
-Date: Mon, 15 Apr 2024 15:12:31 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Luis Chamberlain <mcgrof@kernel.org>, <josh@joshtriplett.org>, Kees Cook
-	<keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
-	Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
-	Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thomas
-	Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, Stephen
-	Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry
-	<wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
-	Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider
-	<vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>, John Ogness
-	<john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
-	<anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
-	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
-	KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	s=arc-20240116; t=1713187315; c=relaxed/simple;
+	bh=+TNb039/cibbmyDUEHU00HHMxkmNqJpEjpTdICUSFIY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fFwrdmWo/Ky2nfZqmrJ5zlkZLryDn41WsMaeE8brycEPGu1+VF9lMS9EGp8TBIFqcafro5bHSG8ERVhbr4qVHVrI2MQOA2oBoTzcnnzDU3c6Q1TOg7h1MDV0cY1wwCX8DbukPpR77sKvzyQXA0M6DLciFEy8R3OF4feKVbaMzb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VJ76Q0FWGz1fxb9;
+	Mon, 15 Apr 2024 21:18:54 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id C106C180063;
+	Mon, 15 Apr 2024 21:21:50 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 21:21:50 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
 	<bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel
- dir
-Message-ID: <20240415131231.gqsmiafwqxefxuuy@joelS2.panther.com>
+Subject: [PATCH net-next v2 00/15] First try to replace page_frag with page_frag_cache
+Date: Mon, 15 Apr 2024 21:19:25 +0800
+Message-ID: <20240415131941.51153-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="b5ducwyxpvyw5o7f"
-Content-Disposition: inline
-In-Reply-To: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTa0xTZxjed85pT8GVHQrqN8DoYOBkiCJm+5LhZYvbjstiCCRbcNm0wuEm
-	FNPCYJrFAkXuWEEwXAVRChQZ1yJSEDuw3IQBDhnIJHIZCGPlLuM26sHNZP+e97kkz/Pj5eGC
-	OtKM5yMKZMQioZ8l15BQPVhq39u4e4fn/tocY7S4nI6jmrF+As0t9ZNotkHLRV1Dv3LRtfFQ
-	AmWMt5EoN2cBRxkdMgKNyCtxtK6SkUijvUeisDv5GFI9ug5Qw9W0DSE7AK00lXLRwOVkArXF
-	+qOa1nkM/VEXjyF1bTOBuu9mcFHDTw8JpLwt5aBbjzsxVBRdwEG98hGAkqZGAcpV2KCu+mwM
-	Ka+ukkgbX4+h9aF5DqqLGsTQWk8pgbpeTBCopvQGF2kVq1xUXpaMo6iGjYaVjYsk6o9ZJ9Gg
-	UsVBedUnju6ln06uEnRRVhGg06WdBF1R8BtGV6cNkLSsro+ks8uC6PJ8WzpXPY7RMb1dON03
-	cYguK4zm0k961Fx6qr2dpHOkyTgtv1EPnLedNHTyYPx8vmfE+w6fNvT+efoucU5nFKIoiiSk
-	IJQfAwx4kDoIJ4tSsRhgyBNQ+QC2XUrZPOYA/DsucvOYBbBJo+a8iqSrRwhWUACYNNIJ/nUp
-	bnZz2KMSwJa4LFwfIShrGF2QR+oxl7KDHZNPcL3JlCrlw5TpTKAXTChnmNzT9dLEp47CwaZh
-	DouNYXPqMKHHOBUCa+X6MG8Dm0PFGk9PG1BusCazmWTrWcGwZzc3q/4IWyr6Xm6AVP8W2JI4
-	QbDCMZgaEbYZMIHPtRWb2AK2JsURbCAJwHtrOpI9lADmhc5jrOsjKHs0vJn4GLaG1mH6RpAy
-	gr1/GrNFjWCi6hrO0nwYdUnAum2g8vdJgqUtYPuMkRxYpr22Mu21lWn/rWRpO5hdM8P9H/0+
-	zMuZwFl8CBYX/0VkA7IQbGeCJP5ejMRBxATbS4T+kiCRl717gH8Z2Hir1jXtzB2Q+XzaXgMw
-	HtCAdzfCz0qUvwAzQhQgYixN+TKTHZ4Cvofwh/OMOOCUOMiPkWiAOY+w3M639tjJCCgvYSBz
-	lmHOMeJXKsYzMJNiZxeHx4TvCAJDfNaXd+nGwi2O+D+ufK+xOtDXtmKtWZZRbrr14RsJVhe0
-	J4YWJo64e+suf1IZ7//i2+AMR5cZuC/Xol8Vu3NW5CL88P5Cz60H8+Li1sb49kLKcXD4sJvA
-	jnP8vGOmic7Lia+8330x4eScJjfMfLQqRfmVcUl01SkHp5XTFU5drqO7tqy+3bJ7fv6Ac/ix
-	+sjgWam75qkqsOLr9vDrt89IVt/8vMNVVmj8RYku4rjcwqZsec70wIDL1JXYsj3J02G2QYkH
-	Uy2rP/Bcqnor1WzwQoM0a49bzuLiZxetfTtnrVZ6tvZ/92WarCXvU6dvEnpcfdWZIdvU4v1c
-	5BpxxpKQeAsdbHGxRPgPgmt1V9EEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTfUxTVxjGd+69vbc4cbUg3LG5YCfTgVQKpZ4iGLa4eHXI+GeJuhHWwQV0
-	tCX9MJOpVIMOMGxFYW4FlPKNIALSjkpljIAV6XB0wjr5sONrMAibgiIIZYW6zGT/Ped5nveX
-	NyfnMFF2F+7FPCxR0DKJKImDr8E67aZB/7YtG+MDmgzb4NyzPBQ2jfdhcHa+j4AzbSYcWoZ7
-	cHhx4hQG8yfMBCzWPkFh/t00DI6qdShc1qcRsNX0AwFPN1YgUH/vMoBtORpHUCiFi7frcDjw
-	dS4GzefEsKnzMQL/aM5CoPFmBwZ/uZGPw7ZrP2Gw6qqKAUt/7UZgdUYlA1rVowBemB4DsLj8
-	LWhpKURgVc4SAU1ZLQhcHn7MgM3pNgTae+swaHk6icGmuiIcmsqXcHi9PheF6W2ODXXtcwTs
-	y1wmoK1Kz4Blhshwf+rB1BJGVV+qBlSeqhujGip/QyiDZoCg0prvE1RhvZK6XuFLFRsnECrT
-	akGp+5NhVP2VDJzq7zXi1HRXF0FpVbkopS5qAVEeh7ihMqlSQXsnSuWKMM5HPBjI5QkhN5Av
-	5PKCdkSHBAZztu8KjaOTDh+lZdt3fcJNXMh/I3l63ecliyNABZbXZgIXJsnik3nGUSwTrGGy
-	WaWANBVaMWfwOlk328NwajdysTcTd5YeArLv6RxwHnSATMv+Cl1pYSwfMqOyjFjROGsbeXeq
-	H10pubPqXElVaf0q1o0VSfafb1nVrqxw0nZ7hOEkVQPy7ODQ82A92fHdyKpGWUdJbe6Ag8R0
-	6NfIcjtzxXZhHSSbCjoI53pvkqeHSp6veoKcWRoDasDWvEDSvEDS/Edy2r6k1T6B/M/2I8u0
-	k6hTh5E1NX9hhYC4AtxppVycIJYHcuUisVwpSeDGSsX1wPGY9bfmGxpB5Z8Pua0AYYJWsNkx
-	OVRb9TPwwiRSCc1xd01z2xjPdo0THUuhZdIYmTKJlreCYMfVZaNeG2Kljp8hUcTwBAHBPL5A
-	GBAsFARxPF33JqeL2KwEkYL+jKaTadm/cwjTxUuF7NyTPBUQfuHj5aum40WV93S6cP21cyML
-	/ekeb+dsLhkveHXT/g8N01si1Kr58ZBLvws/OBh3s+LbiOjhL7fSkfaOWp+T+h/zqzedDEop
-	PWWVbR2N/0K+3wxDfZJjUo01439rhS+/t3vxU2uDt/iEX6x67/nOJ83e7xekSA5FzPccmNGX
-	2/fwHvn674y+0e2Z6iL1/CZ6g679JUUwnG68WHVAn+tjvWMeAmuN/MCUmjMWWaQgdt9Ue/a7
-	O0LMgwJNlMSyu4B/h/3MbYnPfmU9f51NqfU7khVVa3lnX8nlOMHcYlBqhEd8+/fHFMcfGB4Z
-	PG2ajqQxm4d5Qn7kVh65oOvsneVg8kQRzxeVyUX/AGLpL+5hBAAA
-X-CMS-MailID: 20240415131236eucas1p26e04b3c555dc61967b7e3095f73fc0bc
-X-Msg-Generator: CA
-X-RootMTR: 20240328154421eucas1p14e2a43b2894dd706aa4e2affc54f3143
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240328154421eucas1p14e2a43b2894dd706aa4e2affc54f3143
-References: <CGME20240328154421eucas1p14e2a43b2894dd706aa4e2affc54f3143@eucas1p1.samsung.com>
-	<20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
---b5ducwyxpvyw5o7f
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+After [1], there are still two implementations for page frag:
 
-Just a heads up: will add this to the sysctl-next tree
-https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log/?h=3D=
-sysctl-next
-so it has time to soak there for next merge window. If you are a
-maintainer and are thinking of including any of these patches in your
-tree, let me know and I'll remove when upstreaming
+1. mm/page_alloc.c: net stack seems to be using it in the
+   rx part with 'struct page_frag_cache' and the main API
+   being page_frag_alloc_align().
+2. net/core/sock.c: net stack seems to be using it in the
+   tx part with 'struct page_frag' and the main API being
+   skb_page_frag_refill().
 
-On Thu, Mar 28, 2024 at 04:44:01PM +0100, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
->=20
-> What?
-> These commits remove the sentinel element (last empty element) from the
-> sysctl arrays of all the files under the "kernel/" directory that use a
-> sysctl array for registration. The merging of the preparation patches
-> [1] to mainline allows us to remove sentinel elements without changing
-> behavior. This is safe because the sysctl registration code
-> (register_sysctl() and friends) use the array size in addition to
-> checking for a sentinel [2].
-=2E..
+This patchset tries to unfiy the page frag implementation
+by replacing page_frag with page_frag_cache for sk_page_frag()
+first. net_high_order_alloc_disable_key for the implementation
+in net/core/sock.c doesn't seems matter that much now have
+have pcp support for high-order pages in commit 44042b449872
+("mm/page_alloc: allow high-order pages to be stored on the
+per-cpu lists").
 
-Best
---=20
+As the related change is mostly related to networking, so
+targeting the net-next. And will try to replace the rest
+of page_frag in the follow patchset.
 
-Joel Granados
+After this patchset:
+1. Unify the page frag implementation by taking the best out of
+   two the existing implementations: we are able to save some space
+   for the 'page_frag_cache' API user, and avoid 'get_page()' for
+   the old 'page_frag' API user.
+2. Future bugfix and performance can be done in one place, hence
+   improving maintainability of page_frag's implementation.
 
---b5ducwyxpvyw5o7f
-Content-Type: application/pgp-signature; name="signature.asc"
+Performance validation:
+1. Using micro-benchmark ko added in patch 1, we have about 3.2%
+   performance boot for the 'page_frag_cache' after this patchset.
 
------BEGIN PGP SIGNATURE-----
+2. Use the below netcat test case, we have about 1.9% performance
+   boot for repalcing 'page_frag' with 'page_frag_cache' after this
+   patchset.
+   server: nc -l -k 1234 > /dev/null
+   client: perf stat -r 30 -- head -c 51200000000 /dev/zero | nc -N 127.0.0.1 1234
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYdJ74ACgkQupfNUreW
-QU8ybAv+Or5Tl4So4uWHapLPqMyxsHPDQXiHfVb00sVzzrsRYvg20WiOaWSRbLTT
-ss7ysfiWX5M59/hUyyiuO7JKEziQOHjmowkxiz4XS2N+8alLAwEmKIDQlFIzBNnx
-5ZDjbinS9zcVXG3yxKpdMPe/EHZfG80Zf5BW0Tgb+JDCQida4njEZp0J7T7MA8Ti
-6GjelQYR/deOeddD/TAyZxkaEfxe/zZ0K3BeXVpAX5IZnym1jnivrrcEiDowcpvD
-PypDC2xCq1Uyt8jc5FFpud261wJiWW16an4fdiPix45OoMB5r9LOpY+kon4x63Zq
-JZ35JtDNL0DA1tCMNKr4yoOg22ddnDOqxjMWepulYPNY2i5v2mg+Hn7tNbtnjN38
-mTBbkkzcXtS7HbGsQhzEErEGe8+GcEKCwKw8Y+5o5fvi09V7NYLu+CI+s0/mvdlb
-5b72Y4QbUsVdFr/aeiy41GrQBKtH8UzXdTfVQLA5YHNRCUTeCBasYEvHr8jK9oGI
-HlbukVaB
-=iNEu
------END PGP SIGNATURE-----
 
---b5ducwyxpvyw5o7f--
+In order to avoid performance noise as much as possible, the testing
+is done in system without any other laod and have enough iterations to
+prove the data is stable enogh, complete log for testing is below:
+
+*After* this patchset:
+ insmod ./page_frag_test.ko nr_test=99999999
+ Performance counter stats for 'insmod ./page_frag_test.ko nr_test=99999999' (30 runs):
+
+             40.09 msec task-clock                       #    0.001 CPUs utilized               ( +-  4.60% )
+                 5      context-switches                 #  124.722 /sec                        ( +-  3.45% )
+                 1      cpu-migrations                   #   24.944 /sec                        ( +- 12.62% )
+               197      page-faults                      #    4.914 K/sec                       ( +-  0.11% )
+          10221721      cycles                           #    0.255 GHz                         ( +-  9.05% )  (27.73%)
+           2459009      stalled-cycles-frontend          #   24.06% frontend cycles idle        ( +- 10.80% )  (29.05%)
+           5148423      stalled-cycles-backend           #   50.37% backend cycles idle         ( +-  7.30% )  (82.47%)
+           5889929      instructions                     #    0.58  insn per cycle
+                                                  #    0.87  stalled cycles per insn     ( +- 11.85% )  (87.75%)
+           1276667      branches                         #   31.846 M/sec                       ( +- 11.48% )  (89.80%)
+             50631      branch-misses                    #    3.97% of all branches             ( +-  8.72% )  (83.20%)
+
+            29.341 +- 0.300 seconds time elapsed  ( +-  1.02% )
+
+ perf stat -r 30 -- head -c 51200000000 /dev/zero | nc -N 127.0.0.1 1234
+ Performance counter stats for 'head -c 51200000000 /dev/zero' (30 runs):
+
+         107793.53 msec task-clock                       #    0.881 CPUs utilized               ( +-  0.36% )
+            380421      context-switches                 #    3.529 K/sec                       ( +-  0.32% )
+               374      cpu-migrations                   #    3.470 /sec                        ( +-  1.31% )
+                74      page-faults                      #    0.686 /sec                        ( +-  0.28% )
+       92758718093      cycles                           #    0.861 GHz                         ( +-  0.48% )  (69.47%)
+        7035559641      stalled-cycles-frontend          #    7.58% frontend cycles idle        ( +-  1.19% )  (69.65%)
+       33668082825      stalled-cycles-backend           #   36.30% backend cycles idle         ( +-  0.84% )  (70.18%)
+       52424770535      instructions                     #    0.57  insn per cycle
+                                                  #    0.64  stalled cycles per insn     ( +-  0.26% )  (61.93%)
+       13240874953      branches                         #  122.836 M/sec                       ( +-  0.40% )  (60.36%)
+         208178019      branch-misses                    #    1.57% of all branches             ( +-  0.65% )  (68.42%)
+
+           122.294 +- 0.402 seconds time elapsed  ( +-  0.33% )
+
+
+*Before* this patchset:
+ insmod ./page_frag_test.ko nr_test=99999999
+ Performance counter stats for 'insmod ./page_frag_test.ko nr_test=99999999' (30 runs):
+
+             39.12 msec task-clock                       #    0.001 CPUs utilized               ( +-  4.51% )
+                 5      context-switches                 #  127.805 /sec                        ( +-  3.76% )
+                 1      cpu-migrations                   #   25.561 /sec                        ( +- 15.52% )
+               197      page-faults                      #    5.035 K/sec                       ( +-  0.10% )
+          10689913      cycles                           #    0.273 GHz                         ( +-  9.46% )  (72.72%)
+           2821237      stalled-cycles-frontend          #   26.39% frontend cycles idle        ( +- 12.04% )  (76.23%)
+           5035549      stalled-cycles-backend           #   47.11% backend cycles idle         ( +-  9.69% )  (49.40%)
+           5439395      instructions                     #    0.51  insn per cycle
+                                                  #    0.93  stalled cycles per insn     ( +- 11.58% )  (51.45%)
+           1274419      branches                         #   32.575 M/sec                       ( +- 12.69% )  (77.88%)
+             49562      branch-misses                    #    3.89% of all branches             ( +-  9.91% )  (72.32%)
+
+            30.309 +- 0.305 seconds time elapsed  ( +-  1.01% )
+
+ perf stat -r 30 -- head -c 51200000000 /dev/zero | nc -N 127.0.0.1 1234
+ Performance counter stats for 'head -c 51200000000 /dev/zero' (30 runs):
+
+         110198.93 msec task-clock                       #    0.884 CPUs utilized               ( +-  0.83% )
+            387680      context-switches                 #    3.518 K/sec                       ( +-  0.85% )
+               366      cpu-migrations                   #    3.321 /sec                        ( +- 11.38% )
+                74      page-faults                      #    0.672 /sec                        ( +-  0.27% )
+       92978008685      cycles                           #    0.844 GHz                         ( +-  0.49% )  (64.93%)
+        7339938950      stalled-cycles-frontend          #    7.89% frontend cycles idle        ( +-  1.48% )  (67.15%)
+       34783792329      stalled-cycles-backend           #   37.41% backend cycles idle         ( +-  1.52% )  (68.96%)
+       51704527141      instructions                     #    0.56  insn per cycle
+                                                  #    0.67  stalled cycles per insn     ( +-  0.37% )  (68.28%)
+       12865503633      branches                         #  116.748 M/sec                       ( +-  0.88% )  (66.11%)
+         212414695      branch-misses                    #    1.65% of all branches             ( +-  0.45% )  (64.57%)
+
+           124.664 +- 0.990 seconds time elapsed  ( +-  0.79% )
+
+
+Note, ipv4-udp, ipv6-tcp and ipv6-udp is also tested with the below script:
+nc -u -l -k 1234 > /dev/null
+perf stat -r 4 -- head -c 51200000000 /dev/zero | nc -N -u 127.0.0.1 1234
+
+nc -l6 -k 1234 > /dev/null
+perf stat -r 4 -- head -c 51200000000 /dev/zero | nc -N ::1 1234
+
+nc -l6 -k -u 1234 > /dev/null
+perf stat -r 4 -- head -c 51200000000 /dev/zero | nc -u -N ::1 1234
+
+
+Change log:
+V2:
+   1. reorder test module to patch 1.
+   2. split doc and maintainer updating to two patches.
+   3. refactor the page_frag before moving.
+   4. fix a type and 'static' warning in test module.
+   5. add a patch for xtensa arch to enable using get_order() in
+      BUILD_BUG_ON().
+   6. Add test case and performance data for the socket code.
+
+Yunsheng Lin (15):
+  mm: page_frag: add a test module for page_frag
+  xtensa: remove the get_order() implementation
+  mm: page_frag: use free_unref_page() to free page fragment
+  mm: move the page fragment allocator from page_alloc into its own file
+  mm: page_frag: use initial zero offset for page_frag_alloc_align()
+  mm: page_frag: change page_frag_alloc_* API to accept align param
+  mm: page_frag: add '_va' suffix to page_frag API
+  mm: page_frag: add two inline helper for page_frag API
+  mm: page_frag: reuse MSB of 'size' field for pfmemalloc
+  mm: page_frag: reuse existing bit field of 'va' for pagecnt_bias
+  net: introduce the skb_copy_to_va_nocache() helper
+  mm: page_frag: introduce prepare/commit API for page_frag
+  net: replace page_frag with page_frag_cache
+  mm: page_frag: update documentation for page_frag
+  mm: page_frag: add a entry in MAINTAINERS for page_frag
+
+ Documentation/mm/page_frags.rst               | 148 ++++++-
+ MAINTAINERS                                   |  11 +
+ arch/xtensa/include/asm/page.h                |  18 -
+ .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
+ .../chelsio/inline_crypto/chtls/chtls_io.c    | 101 ++---
+ .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
+ drivers/net/ethernet/google/gve/gve_rx.c      |   4 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |   2 +-
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   4 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ drivers/net/ethernet/mediatek/mtk_wed_wo.c    |   4 +-
+ drivers/net/tun.c                             |  34 +-
+ drivers/nvme/host/tcp.c                       |   8 +-
+ drivers/nvme/target/tcp.c                     |  22 +-
+ drivers/vhost/net.c                           |   6 +-
+ include/linux/gfp.h                           |  22 --
+ include/linux/mm_types.h                      |  18 -
+ include/linux/page_frag_cache.h               | 344 +++++++++++++++++
+ include/linux/sched.h                         |   4 +-
+ include/linux/skbuff.h                        |  15 +-
+ include/net/sock.h                            |  29 +-
+ kernel/bpf/cpumap.c                           |   2 +-
+ kernel/exit.c                                 |   3 +-
+ kernel/fork.c                                 |   2 +-
+ mm/Kconfig.debug                              |   8 +
+ mm/Makefile                                   |   2 +
+ mm/page_alloc.c                               | 136 -------
+ mm/page_frag_cache.c                          | 154 ++++++++
+ mm/page_frag_test.c                           | 365 ++++++++++++++++++
+ net/core/skbuff.c                             |  57 +--
+ net/core/skmsg.c                              |  22 +-
+ net/core/sock.c                               |  46 ++-
+ net/core/xdp.c                                |   2 +-
+ net/ipv4/ip_output.c                          |  35 +-
+ net/ipv4/tcp.c                                |  35 +-
+ net/ipv4/tcp_output.c                         |  28 +-
+ net/ipv6/ip6_output.c                         |  35 +-
+ net/kcm/kcmsock.c                             |  30 +-
+ net/mptcp/protocol.c                          |  74 ++--
+ net/rxrpc/txbuf.c                             |  16 +-
+ net/sunrpc/svcsock.c                          |   6 +-
+ net/tls/tls_device.c                          | 139 ++++---
+ 44 files changed, 1450 insertions(+), 553 deletions(-)
+ create mode 100644 include/linux/page_frag_cache.h
+ create mode 100644 mm/page_frag_cache.c
+ create mode 100644 mm/page_frag_test.c
+
+-- 
+2.33.0
+
 
