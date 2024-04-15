@@ -1,151 +1,119 @@
-Return-Path: <bpf+bounces-26739-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03D78A481D
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 08:32:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32788A482E
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 08:36:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CCD41C217D9
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 06:32:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D636281EFB
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 06:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A12D14F62;
-	Mon, 15 Apr 2024 06:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDE81CAAF;
+	Mon, 15 Apr 2024 06:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jdfg+wD4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hcGRw8SM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F35581BF53;
-	Mon, 15 Apr 2024 06:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05A117C6D
+	for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 06:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713162748; cv=none; b=h83IwBlRNCVQ3MvlxjHtexxXZ/QcYPJJtzV/rxJBbIryGVgV/zExPTyOc2IHcm2t/fn305X+RzcHRXwvNNacKd/WolwG0ZC/pPH/meI4KBAXWdXBau1c5ORdOwsmwKllUYHuuORcDVcTddLN9N+WEYM0d6Wbczlhsf8KH7YCCEw=
+	t=1713162992; cv=none; b=K5XneK91JYT5O4n5nhRzrIXXUr3PbfAiU3x0kmfZOaJN2PUkYD2kHiKnjC8CxlCNp1ZBRQYZdDxtyQ27r9hzGI5eZCrMNVpmYAXmo0BubWszrJpekp+HpnARjpVl/3ThuwS4kvWYOTiz5+YXN6hBBYL9qxOkq6xZIuMOeoWtGSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713162748; c=relaxed/simple;
-	bh=eEf0d+YYYSKJr8JQ0MHAhSmpH3ZHVzisAU/wx98NNtE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CR2iBmE8ETbzZ9hG2HWUZs+punEk0Eyvxu8+9mx35ebzC1oGYsELyt4A38ZFrWPyi+rS5QGtnF8V8m04CQQTA5Y9xTwHNxkC4J6G9+Ld0kT07gSRWtBCWR5zrfDIKfgz42MSXh4oI9HY3RbXhEDjEmtjdWfiwJgcPIoGflsPHIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jdfg+wD4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3485C3277B;
-	Mon, 15 Apr 2024 06:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713162747;
-	bh=eEf0d+YYYSKJr8JQ0MHAhSmpH3ZHVzisAU/wx98NNtE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jdfg+wD48J7YavJupue+qQOrKAQrYYrHy/70nDD2Zdwf0hY0MQ3BLUgvGAqA+MmGg
-	 lLzxA34lBirrQC704IZHHXKj8xls5ZXvBwSEn8UFfQcflRQaHETHAvXhnjSR0sSmKX
-	 Jc/W/cyYaGGGXB46nqEZz7TrQ6EF+jQz8YfRR4hXHtflzNa88Fp8btuFB0yjz0vE2U
-	 sW9NZXpGrJjiTwQLiOXwGBH0wnoxx0zgg3ctA4WFMP4qyGwyunxdJGxn1SHCviK9Ei
-	 jd8lvUiDAQUUMVd/ppa4bnqVEUC9JAydbZpfI7oJU8FcoBAdlqaFHyyhZ/QLHg3NdP
-	 uf2m2m0ViEMWA==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 9/9] selftests/bpf: Use connect_to_addr in test_sock_addr
-Date: Mon, 15 Apr 2024 14:31:18 +0800
-Message-Id: <80583a00f977ab90b6a0753a4ca8a0eb946babc1.1713161975.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1713161974.git.tanggeliang@kylinos.cn>
-References: <cover.1713161974.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1713162992; c=relaxed/simple;
+	bh=1d/EDYFwGSGnOUpbaeGtzTmb3A7VDzDqdL9koovPZnk=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=h5cRdIU2qb5n8JJR0wk9xGfTGvhM4J8cVSFWZPk9HF07/4BZuwTviZGeGecwF0ayLXKzRt2/0E0vVqwo/AA1fk6T97jLvEF0dDlGFaqeTZ+jtRF8xmtFEnAxALy6PrL8TsRZ8bXZKqmUppYYPF35Su4Mq3Y5UXc48ENgzF5puVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hcGRw8SM; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61510f72bb3so49280697b3.0
+        for <bpf@vger.kernel.org>; Sun, 14 Apr 2024 23:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713162989; x=1713767789; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wB0mFKuGZHW/z83jZ9UZ1kMmy9iw6kq5zXLeGG3r0jQ=;
+        b=hcGRw8SMOTvoMtNVOokID05DyO7/dYhklcK3EuiJjHeIoPV5l9mEE/LT3saizYkMeB
+         Qbbm3JHrFlTt0kt1DNFNkXM9ZvxqTZ+3MURAKWxyz1X2jXvcy6OFC4gMoJ89SnLuF/fG
+         5qgtV4imNjqEhhc/8e5bIf+3Ogh4egdqCxVdgaB/R+sKU+pGluxKAXJ8TzzI+m/HyQjn
+         ynyej5z1M89YxJJyhrBuJFCk+V5cg96zG61erH3jrzC0tewtaS0g8gTJDw0+m7TpLmRU
+         Cr8PpGvlPBG3Hpl9e6m93SIsK2STdJn+Y0uvR+/yMlB3Zm6fFoJDvrh2hc6Yg3usFD53
+         hg2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713162989; x=1713767789;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wB0mFKuGZHW/z83jZ9UZ1kMmy9iw6kq5zXLeGG3r0jQ=;
+        b=b54IAnG8s1LpxlRAtdm/OHAbvgNeOJ+5ihfGviOCT0p2O9ZjtQkZY5IfhwXvIu6vdn
+         6ONfn6lzVI6Zpjvp+8u9wol0ZdGcLu1BS0m9kPLWFEdQlDM8EMXtdW1tosERDrExGGVS
+         nrhJC7pDEiDRxKV4gH0mtg+2sUyxJRd+r7HaVssmJR/JzlJcWi0cBjD8fUQK3ch7Rc9D
+         TK412mp+h2ibUU9o7pXa/jqFfqMBhVnzNIvnyCRBImsm2AaWvNkXorMoWgCPQOjmolZS
+         RqtghsCRms0pHk5WToL0KPbRQtSC65ClyQvjf8MPQJyRmW+o+vxMn+8LGfHZTVs9xl06
+         yqJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxHv4CGCqFQKlnL4nvNYiqqp/FU1bW9+THMmd9VsxyUJYlDXKZRag1u0gMbcYx8qZ1Vp1S088MbP/VWjN0qWHW2mwp
+X-Gm-Message-State: AOJu0YxM+JxubOKXL4+tbKVRVrdo4HcderuDVwqavJ6DgpDZf6I6cBWR
+	D9+xATuuc12Hb3GidlzoIiXMpad3TBK2TxV57weiGCx66tRr1JvxPq/UPnPZ/sSqr9jAZDgXB8N
+	q6J2tMA==
+X-Google-Smtp-Source: AGHT+IFla4MrX294yqIP+FWtWzJmxqGcQ32XqueDUfsH1OcnJlS4SzKTAazV/kcLnzG+SAXlo39sSpcyIttX
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f304:d776:d707:4b57])
+ (user=irogers job=sendgmr) by 2002:a05:690c:a:b0:618:9588:e9db with SMTP id
+ bc10-20020a05690c000a00b006189588e9dbmr1908547ywb.2.1713162989579; Sun, 14
+ Apr 2024 23:36:29 -0700 (PDT)
+Date: Sun, 14 Apr 2024 23:36:17 -0700
+Message-Id: <20240415063626.453987-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Subject: [PATCH v1 0/9] Consistently prefer sysfs/json events
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@arm.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org, 
+	Beeman Strong <beeman@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+As discussed in:
+https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com/
+preferring sysfs/json events consistently (with or without a given
+PMU) will enable RISC-V's hope to customize legacy events in the perf
+tool.
 
-This patch uses public helper connect_to_addr() exported in
-network_helpers.h instead of the local defined function connect_to_server()
-in test_sock_addr.c. This can avoid duplicate code.
+Some minor clean-up is performed on the way.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/test_sock_addr.c | 36 ++------------------
- 1 file changed, 2 insertions(+), 34 deletions(-)
+Ian Rogers (9):
+  perf parse-events: Factor out '<event_or_pmu>/.../' parsing
+  perf parse-events: Directly pass PMU to parse_events_add_pmu
+  perf parse-events: Avoid copying an empty list
+  perf pmu: Refactor perf_pmu__match
+  perf tests parse-events: Use branches rather than cache-references
+  perf parse-events: Legacy cache names on all PMUs and lower priority
+  perf parse-events: Handle PE_TERM_HW in name_or_raw
+  perf parse-events: Constify parse_events_add_numeric
+  perf parse-events: Prefer sysfs/json hardware events over legacy
 
-diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/selftests/bpf/test_sock_addr.c
-index 9ce5dad7468b..422255c8575e 100644
---- a/tools/testing/selftests/bpf/test_sock_addr.c
-+++ b/tools/testing/selftests/bpf/test_sock_addr.c
-@@ -940,38 +940,6 @@ static int cmp_peer_addr(int sock1, const struct sockaddr_storage *addr2)
- 	return cmp_sock_addr(getpeername, sock1, addr2, /*cmp_port*/ 1);
- }
- 
--static int connect_to_server(int type, const struct sockaddr_storage *addr,
--			     socklen_t addr_len)
--{
--	int domain;
--	int fd = -1;
--
--	domain = addr->ss_family;
--
--	if (domain != AF_INET && domain != AF_INET6) {
--		log_err("Unsupported address family");
--		goto err;
--	}
--
--	fd = socket(domain, type, 0);
--	if (fd == -1) {
--		log_err("Failed to create client socket");
--		goto err;
--	}
--
--	if (connect(fd, (const struct sockaddr *)addr, addr_len) == -1) {
--		log_err("Fail to connect to server");
--		goto err;
--	}
--
--	goto out;
--err:
--	close(fd);
--	fd = -1;
--out:
--	return fd;
--}
--
- int init_pktinfo(int domain, struct cmsghdr *cmsg)
- {
- 	struct in6_pktinfo *pktinfo6;
-@@ -1156,7 +1124,7 @@ static int run_bind_test_case(const struct sock_addr_test *test)
- 		goto err;
- 
- 	/* Try to connect to server just in case */
--	clientfd = connect_to_server(test->type, &expected_addr, addr_len);
-+	clientfd = connect_to_addr(test->type, &expected_addr, addr_len);
- 	if (clientfd == -1)
- 		goto err;
- 
-@@ -1188,7 +1156,7 @@ static int run_connect_test_case(const struct sock_addr_test *test)
- 	if (servfd == -1)
- 		goto err;
- 
--	clientfd = connect_to_server(test->type, &requested_addr, addr_len);
-+	clientfd = connect_to_addr(test->type, &requested_addr, addr_len);
- 	if (clientfd == -1)
- 		goto err;
- 
+ tools/perf/tests/parse-events.c |   6 +-
+ tools/perf/util/parse-events.c  | 201 ++++++++++++++++++++++----------
+ tools/perf/util/parse-events.h  |  16 +--
+ tools/perf/util/parse-events.l  |  76 ++++++------
+ tools/perf/util/parse-events.y  | 166 +++++++++-----------------
+ tools/perf/util/pmu.c           |  27 +++--
+ tools/perf/util/pmu.h           |   2 +-
+ 7 files changed, 262 insertions(+), 232 deletions(-)
+
 -- 
-2.40.1
+2.44.0.683.g7961c838ac-goog
 
 
