@@ -1,206 +1,124 @@
-Return-Path: <bpf+bounces-26767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2599D8A4D96
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 13:23:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7128A4F8B
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 14:49:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 499A21C2237D
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 11:23:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 326021F22710
+	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 12:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3EA627FC;
-	Mon, 15 Apr 2024 11:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4767D74413;
+	Mon, 15 Apr 2024 12:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H1NHa8/P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPo5HY63"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFC31E896;
-	Mon, 15 Apr 2024 11:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC8973186;
+	Mon, 15 Apr 2024 12:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713180164; cv=none; b=K8YoW3jJYJSAfSN82R0soG/bSEkbLYFRvEHT98E9gsxnGZL1GcnwN0lcFsCmjxKiVlDD1EoiDNOq28GAR6IOCAaIhoLTlS4aFzEUrqs/C3ZibTuEHF0uhxD5lgjiFxjrsTuoBsYObzmffwfEMpqUG5XkCzaoZPebTZVQri+K9KU=
+	t=1713185351; cv=none; b=VG3GDYRsXLeosIp6SzDt35YN/c64pbGkK90XsJTuuCG74np5rrW4YEksomFqMQmvo5FCfXXOkZuJbhtERY0XYjXjB0T3UzBHe6jwJIbwd+SdRKWF8KgXTFwabLIHgMijCQoXhmQeiYalcxd3M08kI/nwbPd8n9/Z6mJ9XqljNxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713180164; c=relaxed/simple;
-	bh=Ejm1aCCripul0+6BjYzjMjeA/lB7dWZX4qNm0cAvPz4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N4GCqojaXil6yI0w+hgLNh2wW78NDNy3ujV9T7DAWy5tfXqcJ7xhOy1v5zNNR+YpQOevgFH8GcEXbUi0f/m7S73uCz2YDJ5bAAkGQBEpWz0WdqCXipXJ6qihamzxNsQWvoPh4U8dPBWfe6NKj+PBy7gosmB2C7BMhDJ+ivE4iEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H1NHa8/P; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516d3776334so3910140e87.1;
-        Mon, 15 Apr 2024 04:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713180161; x=1713784961; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIkONmgy9ZJbqCprg1mRBojeyA5GhfKbRxcMnCu9Nn8=;
-        b=H1NHa8/PLtCVKTu8wTVaq+H5tbuAaL0iJQh6RvapTH4H/8r9e4LcjtEg2kNvDzgllv
-         pVma8yvpKoYS6WzzS9tp8k+5Nmqp5E/AGqbjFeI42FKL46aCd/YcA4JUt2BC7aE5Sb++
-         D1wJysCgPF2Te+QIaztm9DuYwd0wkvqGSHNqJ7T/+CokNL5aM55Tj+1qLxqeLvlK7j9c
-         E+qZuuRk28osSV6USg8rEsM+kAUHv+1q6+ZcRyXiqZhXRf1JcHuWRmt+UxM17s+Mgq70
-         H2Jti4JSdgaAbrBK76Xq/QJ1g2ZUvCdgvofSo1aGGUeyloSEbsnJG0WxuZZQ3r9sgTG8
-         5j6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713180161; x=1713784961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zIkONmgy9ZJbqCprg1mRBojeyA5GhfKbRxcMnCu9Nn8=;
-        b=Vc9T+hu7Z7ljj3+pExeDyr9lgbs42L9tL/jZ/HTgcP7CZzGC0sHuGvItcPYbKKql8i
-         vdQ7v/tdebhMblsKO5dw9uJuXXReTFt3Q3QPr5/L/KrayjMedRUm/Yn08m11u1gux6vA
-         u6vaO7yinBr5lr5TjJ2yhO4g0i0/GGWk5UhuAt1iI9cYTbQiThvql4E15GIZFZbndyVj
-         N+HUMPN0GMKROK47qmDc/Fu3nsyjfD6vIUj43dlQy/RJM6UqH+L+8F10Np1ROz5k8IyT
-         Ys9Ou7DX9/MmAOtftIwav77Z03n27GqldD7Le7pO+TUg6opm4mcWU/wCOA8oW9r+8RU9
-         wXXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIx5iGZvg/zFiZqhD2DF7b+WNguUz21OWAX39tdcWz6Fnxe+CvXihOIvqiWbC//L2TKDvdYGfDH/w7sDwkvqXtyM0L02zbf4eBilRi5NsvtyG1ZnWzr9Ih5teIY/yoiCVJzg2iEOx9Yytwf+NrPJsy59QR5FK89OAQr4u58Q==
-X-Gm-Message-State: AOJu0YzkBNgooD2g4fiTgn+hhiK3XqaWMWFTsk0Bj+fbRbDCLQz9nisl
-	Lz/DWk0RpLvGgrOatShTu1PZNaUYfwphT8bOLAVc2+hR4RsDGNL8
-X-Google-Smtp-Source: AGHT+IGsWH8hvkgWTnSmJZma8ocO18tq1tcLHnilXGa21I2AQO+Lmbt/Mi2Wcn2qRzx1DIlvjAyAyA==
-X-Received: by 2002:a19:915e:0:b0:516:d4c2:53eb with SMTP id y30-20020a19915e000000b00516d4c253ebmr6353557lfj.58.1713180160823;
-        Mon, 15 Apr 2024 04:22:40 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id k9-20020adff289000000b0033e45930f35sm11877262wro.6.2024.04.15.04.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 04:22:40 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 15 Apr 2024 13:22:38 +0200
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>
-Subject: Re: [PATCH v3 3/3] btf: Avoid weak external references
-Message-ID: <Zh0N_nJKgu43GvYY@krava>
-References: <20240415075837.2349766-5-ardb+git@google.com>
- <20240415075837.2349766-8-ardb+git@google.com>
+	s=arc-20240116; t=1713185351; c=relaxed/simple;
+	bh=5YcmAJEaJy+2NLkAu6FGCcCQHDR3gKDPyGyZkrrlNqM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=mgEYqnh7ooTd+mP+rJf+pMVT6QHtxW2KzAW4Yl2wnT0AVgXf1AXLWGEKHKjGafJ84cu98c9h92ZkCqFQkEopDEHAYyAd6jXVb5orLKlsZOMWucOAkCr1ialZWCqgDlYnU4uA3FTPvT++FBIMGUIGWHdxHXGWmib8Yf4OiQ/MQ8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPo5HY63; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D575C32783;
+	Mon, 15 Apr 2024 12:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713185351;
+	bh=5YcmAJEaJy+2NLkAu6FGCcCQHDR3gKDPyGyZkrrlNqM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BPo5HY63dNyLkm+LKadPncTqWlme7qI5zf0jWoL+TcvRoLF3vF62CqnzI0L13MkeZ
+	 2cOIyRHb1T6l6ynUbVm5D45UgclGiBgF1GqETHyjN1Gmv4HKjLvktf3XvT3Ms7cZ28
+	 SkIzIgdxHAPeSv2qbDaq/aaHeZWOEBFtr7t3PZINEFADnHcIFt4df0YJe1CpHiUCLR
+	 BdOZ1d96FMS1pRbInpnhmv3H2e/Cv/VL3iSRFw0FktBbYBPhnwNWY9I/nnSfl0ieKw
+	 9jiOn8/aXgWMwkm7VoFh/7q+VOJ8Sd308fXzubdCdhmBgobsukfqMU5KyTdGas2vtA
+	 mSlSfoQTJlHKg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	song@kernel.org,
+	daniel@iogearbox.net,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 03/15] bpf: put uprobe link's path and task in release callback
+Date: Mon, 15 Apr 2024 06:02:43 -0400
+Message-ID: <20240415100311.3126785-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240415100311.3126785-1-sashal@kernel.org>
+References: <20240415100311.3126785-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415075837.2349766-8-ardb+git@google.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.6
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 15, 2024 at 09:58:41AM +0200, Ard Biesheuvel wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
-> 
-> If the BTF code is enabled in the build configuration, the start/stop
-> BTF markers are guaranteed to exist in the final link but not during the
-> first linker pass.
-> 
-> Avoid GOT based relocations to these markers in the final executable by
-> providing preliminary definitions that will be used by the first linker
-> pass, and superseded by the actual definitions in the subsequent ones.
-> 
-> Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF so
-> that inadvertent references to this section will trigger a link failure
-> if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
-> 
-> Note that Clang will notice that taking the address of__start_BTF cannot
-> yield NULL any longer, so testing for that condition is no longer
-> needed.
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+[ Upstream commit e9c856cabefb71d47b2eeb197f72c9c88e9b45b0 ]
 
-jirka
+There is no need to delay putting either path or task to deallocation
+step. It can be done right after bpf_uprobe_unregister. Between release
+and dealloc, there could be still some running BPF programs, but they
+don't access either task or path, only data in link->uprobes, so it is
+safe to do.
 
+On the other hand, doing path_put() in dealloc callback makes this
+dealloc sleepable because path_put() itself might sleep. Which is
+problematic due to the need to call uprobe's dealloc through call_rcu(),
+which is what is done in the next bug fix patch. So solve the problem by
+releasing these resources early.
 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  include/asm-generic/vmlinux.lds.h | 9 +++++++++
->  kernel/bpf/btf.c                  | 7 +++++--
->  kernel/bpf/sysfs_btf.c            | 6 +++---
->  3 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index e8449be62058..4cb3d88449e5 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -456,6 +456,7 @@
->   * independent code.
->   */
->  #define PRELIMINARY_SYMBOL_DEFINITIONS					\
-> +	PRELIMINARY_BTF_DEFINITIONS					\
->  	PROVIDE(kallsyms_addresses = .);				\
->  	PROVIDE(kallsyms_offsets = .);					\
->  	PROVIDE(kallsyms_names = .);					\
-> @@ -466,6 +467,14 @@
->  	PROVIDE(kallsyms_markers = .);					\
->  	PROVIDE(kallsyms_seqs_of_names = .);
->  
-> +#ifdef CONFIG_DEBUG_INFO_BTF
-> +#define PRELIMINARY_BTF_DEFINITIONS					\
-> +	PROVIDE(__start_BTF = .);					\
-> +	PROVIDE(__stop_BTF = .);
-> +#else
-> +#define PRELIMINARY_BTF_DEFINITIONS
-> +#endif
-> +
->  /*
->   * Read only Data
->   */
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 90c4a32d89ff..6d46cee47ae3 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -5642,8 +5642,8 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
->  	return ERR_PTR(err);
->  }
->  
-> -extern char __weak __start_BTF[];
-> -extern char __weak __stop_BTF[];
-> +extern char __start_BTF[];
-> +extern char __stop_BTF[];
->  extern struct btf *btf_vmlinux;
->  
->  #define BPF_MAP_TYPE(_id, _ops)
-> @@ -5971,6 +5971,9 @@ struct btf *btf_parse_vmlinux(void)
->  	struct btf *btf = NULL;
->  	int err;
->  
-> +	if (!IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
-> +		return ERR_PTR(-ENOENT);
-> +
->  	env = kzalloc(sizeof(*env), GFP_KERNEL | __GFP_NOWARN);
->  	if (!env)
->  		return ERR_PTR(-ENOMEM);
-> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-> index ef6911aee3bb..fedb54c94cdb 100644
-> --- a/kernel/bpf/sysfs_btf.c
-> +++ b/kernel/bpf/sysfs_btf.c
-> @@ -9,8 +9,8 @@
->  #include <linux/sysfs.h>
->  
->  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
-> -extern char __weak __start_BTF[];
-> -extern char __weak __stop_BTF[];
-> +extern char __start_BTF[];
-> +extern char __stop_BTF[];
->  
->  static ssize_t
->  btf_vmlinux_read(struct file *file, struct kobject *kobj,
-> @@ -32,7 +32,7 @@ static int __init btf_vmlinux_init(void)
->  {
->  	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
->  
-> -	if (!__start_BTF || bin_attr_btf_vmlinux.size == 0)
-> +	if (bin_attr_btf_vmlinux.size == 0)
->  		return 0;
->  
->  	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
-> -- 
-> 2.44.0.683.g7961c838ac-goog
-> 
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20240328052426.3042617-1-andrii@kernel.org
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/trace/bpf_trace.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 7ac6c52b25ebc..45de8a4923e21 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3142,6 +3142,9 @@ static void bpf_uprobe_multi_link_release(struct bpf_link *link)
+ 
+ 	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
+ 	bpf_uprobe_unregister(&umulti_link->path, umulti_link->uprobes, umulti_link->cnt);
++	if (umulti_link->task)
++		put_task_struct(umulti_link->task);
++	path_put(&umulti_link->path);
+ }
+ 
+ static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
+@@ -3149,9 +3152,6 @@ static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
+ 	struct bpf_uprobe_multi_link *umulti_link;
+ 
+ 	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
+-	if (umulti_link->task)
+-		put_task_struct(umulti_link->task);
+-	path_put(&umulti_link->path);
+ 	kvfree(umulti_link->uprobes);
+ 	kfree(umulti_link);
+ }
+-- 
+2.43.0
+
 
