@@ -1,169 +1,129 @@
-Return-Path: <bpf+bounces-26889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26890-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59B28A6370
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 08:07:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C07E78A637E
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 08:15:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8155728310D
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 06:07:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23389281C13
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 06:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC9E3BBFE;
-	Tue, 16 Apr 2024 06:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC2D3C6BA;
+	Tue, 16 Apr 2024 06:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vwK1gDNU"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QU8zkirR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643A73A29C
-	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 06:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B253BBF6
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 06:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713247655; cv=none; b=dnVG1q3cfbnYtMhaBUyUkuD6YHtqadUvbvt3z52HVB0eJw+BaOAXDrO3f0dLHmJETDfMkcWKmZwKFA9qtw31KrCyTZpcd36OBgdHQ/GG3ViGZXtOuT4nMSHBL5lFpwI9CyY/KmOnTHmKJLLGjLgyCPTSLUK0t3aiyAOsprxeKYY=
+	t=1713248147; cv=none; b=BBQgY+DYDoBWcWMk5QJgjJbOcdvtTTVZWuWRJVsiravExXdpJpMzDcx0dsExdsWylurvGCiANMIzjlqmEZTteST893S3yhQXFsd94peX9POFAOekSOeg/+x/ByjOVg0/3pV80+evtoe+grTsrDEEuH0oSjdjW5WajfCJOceFUgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713247655; c=relaxed/simple;
-	bh=Itih821s4Pz6EeuBtxCyww/EuZLn3dR4lQszUSsSx8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Uj+CFj1jA3P5NdUr5jfELgPi7Bs2r8RJyQy+rJb/3jxsS9Kp2eU6B0MJxWeVvMVmmGWLYHPo0Wjiuvfs+PrO8Ym/U89v6COB41j1T+NtVoloTTIYBRlyLLyF70L/B9sRMrTAKWo/JLRaLu3TM5Tx/B4XXhkYmX2X6fGdIbRMVRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vwK1gDNU; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ce275c37-d45e-451a-985e-e60f8a45ca77@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713247651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xDQZtCQlsQAIfw4f4Zwq1DM+OHXN7Y67mnFGrJ4ftZA=;
-	b=vwK1gDNU2MWjIW7qtapuyzJ2csPghaAScWFTQfMth7dHoes5T73KjNHhU8cbySSNr35Mgo
-	UF/MuPBJIsoJLZ4AXt/RylJmqsKxdQ4dwyAW/K26E+sGRKI3TWH2D89XivKq53ahwEwR5d
-	pYeqWamvSfUWMprCOMaZcR4mjT8bsy4=
-Date: Mon, 15 Apr 2024 23:07:19 -0700
+	s=arc-20240116; t=1713248147; c=relaxed/simple;
+	bh=4jPYXab6p6VLgWMH/RuxotfZX+DXM3OFg+TT8Arejkc=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=l1XeVubV0XH6Sx066ghu1HwlSGe0vVAuwPu9E/Ak2oupnN5GcFEjLojw5SPYgKUHbUEUO8nPq8K4HPUNHwZu4RlYH/p/lPp75L6kjItqDFuJSG7a8opIW5mBocTxkMAqsGagJHhU7odouTpphwtVVzJD3pRPNZeCCKAkRJOHYD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QU8zkirR; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cd041665bso68732767b3.0
+        for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 23:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713248144; x=1713852944; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1L5nQxmaIBseTv3eUkvLYgl4v+fhf+bdZ7bLGNPrKqs=;
+        b=QU8zkirRLFa/J+XFgK13oEFZ9QTZcG8t9yzs/QfYgDX/9SxvIUPyuGMs2shh1hWZV+
+         FPNcFgp33pl6sYaLd4GiQSmLugE9vNK4+/zpZycJm4R/qL6C9XGaQL48zCTBbsYu4/tZ
+         rSCrkmpkQy4CikqLIvFXX3BpOWTyYwG/LM6ZxfRz1afbVouUgIxzv+gVCnPdxVFlDE51
+         pPOEhLratWiTWncNs7e6ItAZnnmcD7CT4KC85dx6dR2nWPp78eOt9vzVrJN59VHTHfir
+         1eCPh3xw0/+W0LtFVrFSKwRLr6L13JZ9C7Dmi5cYTamRXx/0rg1rDZOC4Jvxme1l40+U
+         uXpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713248144; x=1713852944;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1L5nQxmaIBseTv3eUkvLYgl4v+fhf+bdZ7bLGNPrKqs=;
+        b=AKZ/ZBQ345Gbaz3huQTEkNhc1Akdv7LHVCJnbGAWAQINFShTctU/FhJRrk9kkRB1dG
+         8qRIoxLTXRmj0VQvYJugzC5AgF12dFCfppFebFm+YPmLUMjW0whYmAkwaiDMHHPjJszp
+         OKUGcuPnyKOKBkqHzBiaj2XnyIspKEajfzSRw/yhAHccrCdFK8sd7oTxBW+Sz5KfwrcY
+         SSurHvEy3szxDMFg279NlctSHBgNUj0mvfGVqJKDDyKq8o9Twg71w06MNudtAAIVNTJx
+         ktvoum1Aws/GMtFz9a1XFLARGGeZsUxHFKogQ4hgp6ZxXkGCx1tGd0EEGriZIgOtNAZE
+         tlEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX191k2UGpFIYrnWq+PaDVc641ye16jWde+trmuj/Y282Rtoo8Hhi5UGmiNsqEVecWCrrXX4DCEg15yauwRE0Qs81ir
+X-Gm-Message-State: AOJu0YwYnZJ7180R+lZPe3Qucn2W545g3A9XsbKwxX03dckB5obR/Y3G
+	SCY2oTJAznMuoeDvz71PnMobcHbD4cjb3p6UqITxKUShUES2sDfOJlJdsCjI5CmmzxppLvFwlJB
+	2/uJXOg==
+X-Google-Smtp-Source: AGHT+IEA3B55PHeFnorQTRTaPmQGXFGj867ryFo0kz7N/R3DDO6sXqkF9UwTo2cE7HmZ5sd27AE/abgmLPXz
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:30c8:f541:acad:b4f7])
+ (user=irogers job=sendgmr) by 2002:a0d:d74e:0:b0:611:747a:daac with SMTP id
+ z75-20020a0dd74e000000b00611747adaacmr3417811ywd.0.1713248144106; Mon, 15 Apr
+ 2024 23:15:44 -0700 (PDT)
+Date: Mon, 15 Apr 2024 23:15:16 -0700
+Message-Id: <20240416061533.921723-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 4/6] selftests/bpf: Add IPv4 and IPv6 sockaddr
- test cases
-To: Jordan Rife <jrife@google.com>, bpf@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Kui-Feng Lee <thinker.li@gmail.com>,
- Artem Savkov <asavkov@redhat.com>, Dave Marchevsky <davemarchevsky@fb.com>,
- Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>,
- David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-References: <20240412165230.2009746-1-jrife@google.com>
- <20240412165230.2009746-5-jrife@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20240412165230.2009746-5-jrife@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Subject: [PATCH v2 00/16] Consistently prefer sysfs/json events
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@arm.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org, 
+	Beeman Strong <beeman@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/12/24 9:52 AM, Jordan Rife wrote:
-> This patch lays the groundwork for testing IPv4 and IPv6 sockaddr hooks
-> and their interaction with both socket syscalls and kernel functions
-> (e.g. kernel_connect, kernel_bind, etc.) and moves the test cases from
-> the old-style bpf/test_sock_addr.c self test into the sock_addr
-> prog_test.
+As discussed in:
+https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com/
+preferring sysfs/json events consistently (with or without a given
+PMU) will enable RISC-V's hope to customize legacy events in the perf
+tool.
 
-Thanks for moving the existing sock_addr test to the test_progs.
+Some minor clean-up is performed on the way.
 
-> +static int ping_once(int ipv, const char *addr)
-> +{
-> +	const char *ping_cmd_prefix = "ping -";
-> +
-> +	if (!SYS_NOFAIL("type ping%d >/dev/null 2>&1", ipv))
-> +		ping_cmd_prefix = "ping";
-> +
-> +	return SYS_NOFAIL("%s%d -q -c 1 -W 1 %s >/dev/null 2>&1",
-> +			  ping_cmd_prefix, ipv, addr);
-> +}
-> +
-> +static int setup_test_env(void)
-> +{
-> +	SYS(err, "ip link add dev %s1 type veth peer name %s2", TEST_IF_PREFIX,
-> +	    TEST_IF_PREFIX);
+v2. Additional cleanup particularly adding better error messages. Fix
+    some line length issues on the earlier patches.
 
-I would like to take this chance to simplify the setup.
+Ian Rogers (16):
+  perf parse-events: Factor out '<event_or_pmu>/.../' parsing
+  perf parse-events: Directly pass PMU to parse_events_add_pmu
+  perf parse-events: Avoid copying an empty list
+  perf pmu: Refactor perf_pmu__match
+  perf tests parse-events: Use branches rather than cache-references
+  perf parse-events: Legacy cache names on all PMUs and lower priority
+  perf parse-events: Handle PE_TERM_HW in name_or_raw
+  perf parse-events: Constify parse_events_add_numeric
+  perf parse-events: Prefer sysfs/json hardware events over legacy
+  perf parse-events: Inline parse_events_update_lists
+  perf parse-events: Improve error message for bad numbers
+  perf parse-events: Inline parse_events_evlist_error
+  perf parse-events: Improvements to modifier parsing
+  perf parse-event: Constify event_symbol arrays
+  perf parse-events: Minor grouping tidy up
+  perf parse-events: Tidy the setting of the default event name
 
-Does it need a veth pair? The %s2 interface is not used.
+ tools/perf/tests/parse-events.c |   6 +-
+ tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
+ tools/perf/util/parse-events.h  |  49 ++--
+ tools/perf/util/parse-events.l  | 196 +++++++++----
+ tools/perf/util/parse-events.y  | 261 +++++++----------
+ tools/perf/util/pmu.c           |  27 +-
+ tools/perf/util/pmu.h           |   2 +-
+ 7 files changed, 540 insertions(+), 483 deletions(-)
 
-Can it be done in lo alone?
-
-Also, all this setup (and test) has to be done in a new netns. Anything blocking 
-the kfunc in patch 2 using the current task netns instead of the init_net?
-
-
-> +	SYS(err, "ip link set %s1 up", TEST_IF_PREFIX);
-> +	SYS(err, "ip link set %s2 up", TEST_IF_PREFIX);
-> +	SYS(err, "ip -4 addr add %s/8 dev %s1", TEST_IPV4, TEST_IF_PREFIX);
-> +	SYS(err, "ip -6 addr add %s/128 dev %s1", TEST_IPV6, TEST_IF_PREFIX);
-
-Add nodad to the "ip -6 addr add...". just in case it may add unnecessary delay.
-
-> +
-> +	int i;
-> +
-> +	for (i = 0; i < 5; i++) {
-> +		if (!ping_once(4, TEST_IPV4) && !ping_once(6, TEST_IPV6))
-
-This interface/address ping should not be needed. Other tests under prog_tests/ 
-don't need this interface/address ping also.
-
-> +			return 0;
-> +	}
-> +
-> +	ASSERT_FAIL("Timed out waiting for test IP to become available.");
-> +err:
-> +	return -1;
-> +}
-> +
-> +static void cleanup_test_env(void)
-> +{
-> +	SYS_NOFAIL("ip link del %s1 2>/dev/null", TEST_IF_PREFIX);
-> +	SYS_NOFAIL("ip link del %s2 2>/dev/null", TEST_IF_PREFIX);
-
-Using lo will make this easier. Regardless, the link should go away with the netns.
-
-> +}
-> +
->   void test_sock_addr(void)
->   {
->   	int cgroup_fd = -1;
->   	void *skel;
->   
-> +	if (!ASSERT_OK(setup_test_env(), "setup_test_env"))
-
-This will probably have to be called after the test__join_cgroup() if it also 
-creates a new netns.
-
-pw-bot: cr
-
-> +		goto cleanup;
-> +
->   	cgroup_fd = test__join_cgroup("/sock_addr");
->   	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
->   		goto cleanup;
-> @@ -609,4 +755,5 @@ void test_sock_addr(void)
->   cleanup:
->   	if (cgroup_fd >= 0)
->   		close(cgroup_fd);
-> +	cleanup_test_env();
->   }
+-- 
+2.44.0.683.g7961c838ac-goog
 
 
