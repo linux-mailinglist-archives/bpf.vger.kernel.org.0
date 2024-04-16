@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-26904-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26905-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E5B8A639E
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 08:19:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 189F38A639F
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 08:20:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA4CDB23153
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 06:19:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9394281C5B
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 06:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D561598E0;
-	Tue, 16 Apr 2024 06:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1749515A489;
+	Tue, 16 Apr 2024 06:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2JEn8eOz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L86ujXW4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE9D158861
-	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 06:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542741598FC
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 06:16:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713248179; cv=none; b=ENYZUluUZkFWLs5Cof3UzFMkITLbbeDyrH3kXeWhKsK2nR55cP/fyj0Xy2EI7d9LKW2+bdB1MdQLVYew3A+jfIKau8mprtuF/GfKGLMWwZ6ER1Nf/O3LslrxYbrUL6Y+fBtclqNcBRdPnmPOb98bjLDML6eFOlBAk4cX8pjmHZM=
+	t=1713248181; cv=none; b=AC2bIywJFnQ9YmKQQ3umgDxt7psNVjUnCHcW2krPF1gqfK+mvPmd4Hu3IhPukHCSztk7qbisiMCO0C3vfEKZwJKav+yA97VmhG9KejdJCuiLNblhuOEe3U7zZoqB2JLd8Jg8li+Lvtc7ntR9iTU0C1M1xE6uF594D6xIy3QerDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713248179; c=relaxed/simple;
-	bh=RJLEGacEoWTcJGv5R0SFmVMGUwKOfcVwsf41gQZkJ4U=;
+	s=arc-20240116; t=1713248181; c=relaxed/simple;
+	bh=KaJz8yoO4z8kzF8PImegTLz6lTpKAp/f4nY2Hi+9ZYE=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=oFyiRAgaf6obNH4uiBjnck//mB8k1g4libV1K9CdeqNGRlDYw+4YoOot3KxPg5cDPANmheexGr3o1OVdSsl4RA7WAoK/OQQ3XjNEkLCeDL9cJ5zyr4hgdmqBcT0B/lV9SLaW01nnzpMzNcOKydRbop0RH0QGLIQX3CufqT0edd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2JEn8eOz; arc=none smtp.client-ip=209.85.219.201
+	 To:Content-Type; b=UDSvAmtwkpQ5ZV0JuWRq2Um7MRxtPPMOlPryPhNvQAd94GoOC4srXQUwUpwHFVOM1/1/QqZFGnseqpbRDHxYRYU4VKaJEkTOrPKOefrps1+BHKEiB/rA7sxb831p70TSdTG4Z6ymJG2uRUDfZWucyhKNR7rhoHbzzPvlhpQwBAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L86ujXW4; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd0ae66422fso7990816276.0
-        for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 23:16:17 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61acc68c1bdso16320857b3.1
+        for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 23:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713248177; x=1713852977; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713248179; x=1713852979; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CS464tDCakpyTmrmcLFcR8YYU9aH6y31Ipzi53/1x7k=;
-        b=2JEn8eOzqJsheImB37OB5RjMrLuxx1MmAAVe1ESawyN7MwgjXfNak80eiQDclyluRf
-         B9dQuSQBB18S5eMNDtgwwGxa8FsMscw4o21oH9jDQdezNqeWRvj+zAFqRbx/pvQSycQj
-         RDkMHIOKKF90NZlfqkNay9oVQvH/bSmIF68LV+wNjFfa21vtFiEvbBvljMJaO6MRFx69
-         bJqXXm/cf2yAdsIGut2gEjd3//GVZ2tbqhshsIyHm5cL5qBSwBzWETqFstGGvfXCDBcZ
-         VxcQSIWHvgc2HwYRXfEj/HDRhfb9xoCBmMQ/FzgreaCtZVzf1esFO1ayK2Q2cB5u/Bgq
-         2xHA==
+        bh=9VrQN7n3xmbjqa9xka2YhMJJYnp++PDb8jkPaxpbY/Q=;
+        b=L86ujXW47MrrrUBU6wy2Ce0+FPpX97SC3vv1D0VGToXbMm+AeAUXPYi7gkmHty2En3
+         p4QeiNHegkTPB7XpAKoKnsyuw0/NnLWBJ7AcrPTq5wu7UA9YfeR+R3BCz9vYTVEOII9c
+         aUW/hB/SVsV3KFczD3ZjqROsazjPOCjAhwGWGYz3cjAXmHhY5VLSlnF2YOo120/DmxxG
+         M6mQhdWGv75Sd928kCpZZ/G1gM+BWFgDiK3QOdbCYVBkWwWA9jz4qEH3TSpuGeNARNV9
+         TEQ7pMVmFl3qd0ZjgKcN9+xoH5visKlTHC8WDnkGtDEBzT6wSXnJ6AZ81kTZXXFVVJ+t
+         HOIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713248177; x=1713852977;
+        d=1e100.net; s=20230601; t=1713248179; x=1713852979;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CS464tDCakpyTmrmcLFcR8YYU9aH6y31Ipzi53/1x7k=;
-        b=ibDNntcNUR5LB6N6YuKpbxVMYcjmwMd0Z4RGEr98FFb2mEDydIm+sws/BoHqteXwq1
-         URa4k9VOWtpgssnCiWaBNTqh7W5xKOyWAPYdA/6ga7cYn69gYlChhULDCEfhwwtxY6Bd
-         EnqGn377oI53/EPBAN49/vd469vPLM4JuKn673POr05IJLXpPyP00UFD56DZW9eOrwSy
-         qmC8pSOCfpSr2f15Nx9HsG7FFGLrwSfBlMurI5d4kyTSNZuVi+hdMETT9/ATLf5rj8lP
-         ERcM86hRt1qkfzilsPPj9smaHMz5nYVfdAYhJmsgWyUix3wfoq4oJIjJLdA5ZVVmVnt5
-         zqtw==
-X-Forwarded-Encrypted: i=1; AJvYcCUY6MkgnGzT4wrxx3pgBZXc00gMDu4QjBPAynEmLqqEnZz8eCIhIa1V716Cli5JiTQnLuyDXjsoAlYjfkD88S+xaGyy
-X-Gm-Message-State: AOJu0YwemDuziYldaQngeeOhcOexUYm/bB1Kelc5eA+LD8oPwLB3AMFD
-	g3XIgct2RIQKoCllY4VVYiBUNHOvXxjHdroyGCpxHaesLyPT8Q4h1OPCrbqD/ZinPbAadJZIj42
-	s+5xnpA==
-X-Google-Smtp-Source: AGHT+IHO0Fo9+D3NBOjv38HGGbmFqRswvl8m/oJgT2uKaZFhVmwhvI9Qz+b/36nYjScIaD300oJtaekLWfEs
+        bh=9VrQN7n3xmbjqa9xka2YhMJJYnp++PDb8jkPaxpbY/Q=;
+        b=H3ury8cjaWvuz8Y7dQneQZS9dDbofmq2/93IV3XstGBSFP2ouHPOLu40SOMm97L93L
+         s7Eua6DzED9LZAFDVlUNxMXZv52S1jy9+haVXvIOO4NQTFh0P7oavZWoDknWNJqNpZRG
+         oA3QgQLmdZOriCVPQXt0y0DGcbkoesas09fbWHBo4DfV2tsfZIn65uTkTVc77FmQvmy2
+         fgycayM3no8umyMs7BOIPIGZ9sh0O8ORi3Vq1aUdeHA2DjNJJhBLJyN4YbV5470HAhy8
+         tY2VHneX0QduCj91vTwaHbVmu3kqAihvoxYIMqj+7AuSDU4HZvdmeHX/gUn+2gOyPMVk
+         Jycg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3D8QDdqHp55Ljaz5TpmxWtLYuJ9OJmEJzybEu7X1dQkWr/+20ap0nUc4r+OAmYQziUl64QmbZ84wctQp4LqT/ZVYy
+X-Gm-Message-State: AOJu0YxEvMnA1SRx7JFM2F3yEtUV0SlYFQN3J1k82UtiOU+aE3M8Z7rN
+	8lTY4pvQ1SXg6oC+avWfNlTmsq1CnpafCeA9tybjtCea2t2tv6avSoTt3Cr1Q5+BYNq5aD617q2
+	RUxQahA==
+X-Google-Smtp-Source: AGHT+IERSGPTpkVgBfw9PFFOt/D0ky1G3+P1qSBu4bKGGyUriqoLEpK5IFzVUX9JSbM2dKNl22D4bBUM9mgq
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:30c8:f541:acad:b4f7])
- (user=irogers job=sendgmr) by 2002:a05:6902:100d:b0:dbd:ee44:8908 with SMTP
- id w13-20020a056902100d00b00dbdee448908mr615874ybt.0.1713248177044; Mon, 15
- Apr 2024 23:16:17 -0700 (PDT)
-Date: Mon, 15 Apr 2024 23:15:30 -0700
+ (user=irogers job=sendgmr) by 2002:a25:2054:0:b0:dc6:b7c2:176e with SMTP id
+ g81-20020a252054000000b00dc6b7c2176emr369458ybg.4.1713248179377; Mon, 15 Apr
+ 2024 23:16:19 -0700 (PDT)
+Date: Mon, 15 Apr 2024 23:15:31 -0700
 In-Reply-To: <20240416061533.921723-1-irogers@google.com>
-Message-Id: <20240416061533.921723-15-irogers@google.com>
+Message-Id: <20240416061533.921723-16-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240416061533.921723-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Subject: [PATCH v2 14/16] perf parse-event: Constify event_symbol arrays
+Subject: [PATCH v2 15/16] perf parse-events: Minor grouping tidy up
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -88,51 +88,51 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Beeman Strong <beeman@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Moves 352 bytes from .data to .data.rel.ro.
+Add comments. Ensure leader->group_name is freed before overwriting
+it.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.c | 4 ++--
- tools/perf/util/parse-events.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/perf/util/parse-events.c | 1 +
+ tools/perf/util/parse-events.y | 6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 3ab533d0e653..8d3d692d219d 100644
+index 8d3d692d219d..1c1b1bcb78e8 100644
 --- a/tools/perf/util/parse-events.c
 +++ b/tools/perf/util/parse-events.c
-@@ -39,7 +39,7 @@ static int get_config_terms(const struct parse_events_terms *head_config,
- static int parse_events_terms__copy(const struct parse_events_terms *src,
- 				    struct parse_events_terms *dest);
+@@ -1711,6 +1711,7 @@ void parse_events__set_leader(char *name, struct list_head *list)
  
--struct event_symbol event_symbols_hw[PERF_COUNT_HW_MAX] = {
-+const struct event_symbol event_symbols_hw[PERF_COUNT_HW_MAX] = {
- 	[PERF_COUNT_HW_CPU_CYCLES] = {
- 		.symbol = "cpu-cycles",
- 		.alias  = "cycles",
-@@ -82,7 +82,7 @@ struct event_symbol event_symbols_hw[PERF_COUNT_HW_MAX] = {
- 	},
- };
+ 	leader = list_first_entry(list, struct evsel, core.node);
+ 	__perf_evlist__set_leader(list, &leader->core);
++	zfree(&leader->group_name);
+ 	leader->group_name = name;
+ }
  
--struct event_symbol event_symbols_sw[PERF_COUNT_SW_MAX] = {
-+const struct event_symbol event_symbols_sw[PERF_COUNT_SW_MAX] = {
- 	[PERF_COUNT_SW_CPU_CLOCK] = {
- 		.symbol = "cpu-clock",
- 		.alias  = "",
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index f104faef1a78..0bb5f0c80a5e 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -250,8 +250,8 @@ struct event_symbol {
- 	const char	*symbol;
- 	const char	*alias;
- };
--extern struct event_symbol event_symbols_hw[];
--extern struct event_symbol event_symbols_sw[];
-+extern const struct event_symbol event_symbols_hw[];
-+extern const struct event_symbol event_symbols_sw[];
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 79f254189be6..6f1042272dda 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -193,7 +193,10 @@ PE_NAME '{' events '}'
+ {
+ 	struct list_head *list = $3;
  
- char *parse_events_formats_error_string(char *additional_terms);
+-	/* Takes ownership of $1. */
++	/*
++	 * Set the first entry of list to be the leader. Set the group name on
++	 * the leader to $1 taking ownership.
++	 */
+ 	parse_events__set_leader($1, list);
+ 	$$ = list;
+ }
+@@ -202,6 +205,7 @@ PE_NAME '{' events '}'
+ {
+ 	struct list_head *list = $2;
  
++	/* Set the first entry of list to be the leader clearing the group name. */
+ 	parse_events__set_leader(NULL, list);
+ 	$$ = list;
+ }
 -- 
 2.44.0.683.g7961c838ac-goog
 
