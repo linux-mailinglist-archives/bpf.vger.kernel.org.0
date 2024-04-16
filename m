@@ -1,130 +1,291 @@
-Return-Path: <bpf+bounces-26878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D048A5E1E
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 01:17:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B4E8A6070
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 03:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9205D1F22A69
-	for <lists+bpf@lfdr.de>; Mon, 15 Apr 2024 23:17:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313891C213EE
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 01:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB10158D94;
-	Mon, 15 Apr 2024 23:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366DE7484;
+	Tue, 16 Apr 2024 01:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fag92VRt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9ZIUnbF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FBA1272B8;
-	Mon, 15 Apr 2024 23:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68127464;
+	Tue, 16 Apr 2024 01:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713223030; cv=none; b=Dhk90T1JiC9SU6BELvAYBpS+FckIw4RfQu6IShzS5pv7uU/W0NYVwsMwrKGLPIYH54k3zNb8ODU1dkQlT2MLOnh8NblV//URUDlz5R0fjc9h3YMnl/PFfzbjOcrSuI6mcJx0ucYIaeb0hQ+b88kbdqy6SAKgfcqnpp1BJH2cCzA=
+	t=1713231426; cv=none; b=ndRVrfbZRa/1yc92TKSLrb5HAT3bpvUMS4HpVsd9uoEJR43E3kU7UZ+S8+N/P96SHWN01fHCz93F+TU6Ls2+17d5sDcwjj5p6Emw/SNqFb1vVoVufaI1WsNchJcae69w2RfBH8DqlS8kQV84j+KS+fSPAFIDJ3aop7ZWFa1OJ8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713223030; c=relaxed/simple;
-	bh=idkIPd4643iMp6zp5cWydiUKzewJWHnlG0YbVeUo8v0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GSXpS3orheRWVhtIBWqHSHb2d+02K+NQLySy7gh6rcF8AMqhALd4sjGb6G5f+lzrEBUYYjbT17hl8cyGW2qk6D1WK0gTABffgLd/NKQQTTSt43MgE7DmsdZJfZah2/8SHaAA6o9IXs3jzIDBDhgd5PIDfpGd3HCPzMJoGqdJdgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fag92VRt; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343d2b20c4bso2873330f8f.2;
-        Mon, 15 Apr 2024 16:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713223027; x=1713827827; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ruJIf0VvZi4YUJJHl+VqnTHRzLwdSGx7P/d+L8YCyOQ=;
-        b=fag92VRtHUmyr0EqviDUb6u3X5+KG3RkSeHljMK9DMI+liz8zlJ241yo4UqHt4ja9R
-         2YhE2HQZjxflJmHIuv/D91FXnOtspBCCgL5hlnPYJpx5r+seUxAQs9GpSiTp53oO6e5d
-         r2XNQX2RdC8dLXspNDauCLBO85PJRWYl7CVGM0emdYYUz+XKJLtvB5bv3/CCGd8PYp+9
-         ONwS2KjDqTIjCRvwxRSfmt7wtxBZNZ3pJLyLosbaaZgUG0Jvj5eE1Afv14zRtS8yXOFL
-         UOGEYcdxSIDOuhxF6A7nKQouviijz4axXxWg8xL/DNbhpdS95XhkqWci7AW3mXbhO2/a
-         fJvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713223027; x=1713827827;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ruJIf0VvZi4YUJJHl+VqnTHRzLwdSGx7P/d+L8YCyOQ=;
-        b=lIoUaMEqu++X0vTKx/gv/WHsGMlyrz6gwBAdwIx9lUl7r7Ly1JWw7uGj4MmXwGmnJL
-         d0wDduqZCjRNceiESvKW5VJSetvJViLUEQShqU+BfuT1lht779Z/PuJRTSw0gWZryrTO
-         0+cIB1KFfcPjS2do8XdV+xUKwaVWCQwBoEH6658lTgGCt5GPfnuFv8NkKvR39vnhcAOc
-         8d3HNRoTkyY2B59056v+ZRvLskhgLLyHbQEoTtJDk0Zfg9GXd0+QLtxKSYpSG8+bdr+t
-         VYJ2I2KxZ40AzPDbnZPDOl6VSScd/jIsOPVd1o36Caok/ma2MOp9kG6ZEh0SzY44vyzf
-         ECXA==
-X-Forwarded-Encrypted: i=1; AJvYcCX4EAzfAKWbmVZF9HcGodhnu5esVDZUgwBTxFtJeJvOd5xO4Vo+rFdzefF2LBWJfycsRxd/VYfEJpwVDTkeLGY79Kfjqz9PMjW0
-X-Gm-Message-State: AOJu0Yw1o9nF26mUNGmQGtaaqzmP5TzZp/8QkoTbJG9Qa6slY7EdkADq
-	QdfahjCsQpOzfabFgP1k8mbh+w5x3nO1Pu+cf11JWft9gMU0+k8jEYKV1PlTjL1aT9dntKDL3Vq
-	mfGR5GEU0VwzbEjMp+PlqkZReQgY=
-X-Google-Smtp-Source: AGHT+IEecAmwVB3re9uIi+jukJ6rI2C+0KFoXSMsLiYE6FwY01cNohbu9XFzE7AdG3SFvLMvaGvCMIgTcEx0lintfg8=
-X-Received: by 2002:a05:6000:1150:b0:343:a117:7d2 with SMTP id
- d16-20020a056000115000b00343a11707d2mr6631391wrx.71.1713223026568; Mon, 15
- Apr 2024 16:17:06 -0700 (PDT)
+	s=arc-20240116; t=1713231426; c=relaxed/simple;
+	bh=MRnZAn/34/F3uJzAswtdGPYBP2MTvfc7DxyHqDFZPv0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=c/BhO+0VISJ99bTPACSluL9RoVkE7hpSJwV1nrI8JDO5DTj9kmH75AsWrOm6oV9naEKAAecuqnmKp7G8U9lW+Y54TvRvofSk6vAdZYWp4QbovcpEH2g0bq8yMO7gG8jatbCu2bDWYV5VXgolNg3651IH4Ny5J1nADg/MNAYy6iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9ZIUnbF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B616C113CC;
+	Tue, 16 Apr 2024 01:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713231426;
+	bh=MRnZAn/34/F3uJzAswtdGPYBP2MTvfc7DxyHqDFZPv0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=C9ZIUnbF8xh0maYgafKeDukAR2aeT1Rt6m7K2ugQmk3IGeVfsihYYbtq1pFn670UR
+	 5xBf0WObLpZpdGoVO1Qkmsz8Hr3MunXRaLBz80pZIIHrVYzultJFe/2WhM6xNIpHDL
+	 QbpHf6nnl3TGyHyaT1LdkkezNGjH3H7V0LydiO5e4tQkw65he8/xiY+UcL7DyvqjmP
+	 +sXDpglVwlNx+11TFrJF94NT//QARhkZKh1OiKxnpjcL4zsXxzY8Vm9q5XBQrmSOPe
+	 gzh7L7EkwWSo007LFgLgUO5aUyLR/QVIvt0PJAUZOaeQ6EcDSLDEIMdTHEZkbM61zQ
+	 k+8T4xUnvaNqw==
+Date: Mon, 15 Apr 2024 18:37:05 -0700 (PDT)
+From: Mat Martineau <martineau@kernel.org>
+To: Yunsheng Lin <linyunsheng@huawei.com>, Paolo Abeni <pabeni@redhat.com>
+cc: davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, Ayush Sawal <ayush.sawal@chelsio.com>, 
+    Eric Dumazet <edumazet@google.com>, 
+    Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+    Jason Wang <jasowang@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
+    Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+    Vincent Guittot <vincent.guittot@linaro.org>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+    Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+    Mel Gorman <mgorman@suse.de>, 
+    Daniel Bristot de Oliveira <bristot@redhat.com>, 
+    Valentin Schneider <vschneid@redhat.com>, 
+    John Fastabend <john.fastabend@gmail.com>, 
+    Jakub Sitnicki <jakub@cloudflare.com>, David Ahern <dsahern@kernel.org>, 
+    Matthieu Baerts <matttbe@kernel.org>, Geliang Tang <geliang@kernel.org>, 
+    Boris Pismenny <borisp@nvidia.com>, bpf@vger.kernel.org, 
+    mptcp@lists.linux.dev
+Subject: Re: [PATCH net-next v2 13/15] net: replace page_frag with
+ page_frag_cache
+In-Reply-To: <20240415131941.51153-14-linyunsheng@huawei.com>
+Message-ID: <c5a8eabb-1b46-1e9f-88c9-e707c3a086c4@kernel.org>
+References: <20240415131941.51153-1-linyunsheng@huawei.com> <20240415131941.51153-14-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415230612.658798-1-martin.kelly@crowdstrike.com>
-In-Reply-To: <20240415230612.658798-1-martin.kelly@crowdstrike.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 15 Apr 2024 16:16:55 -0700
-Message-ID: <CAADnVQKfo-s4vXopJJ50Q4KP-mPKCbOc_8Pwz9u=uUn2=NU1ww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: clarify libbpf skeleton header licensing
-To: Martin Kelly <martin.kelly@crowdstrike.com>
-Cc: bpf <bpf@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 
-On Mon, Apr 15, 2024 at 4:07=E2=80=AFPM Martin Kelly
-<martin.kelly@crowdstrike.com> wrote:
+On Mon, 15 Apr 2024, Yunsheng Lin wrote:
+
+> Use the newly introduced prepare/commit API to replace
+> page_frag with page_frag_cache for sk_page_frag().
 >
-> Add an explicit statement clarifying that generated BPF code bundled
-> inside a libbpf skeleton header may have a license distinct from the
-> skeleton header (in other words, the bundled code does not alter the
-> skeleton header license). This is a follow-up from a previous thread
-> discussing licensing terms:
-> https://lore.kernel.org/bpf/54d3cb9669644995b6ae787b4d532b73@crowdstrike.=
-com/#r
->
-> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 > ---
->  Documentation/bpf/bpf_licensing.rst | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/bpf/bpf_licensing.rst b/Documentation/bpf/bpf_=
-licensing.rst
-> index b19c433f41d2..05bc1b845e64 100644
-> --- a/Documentation/bpf/bpf_licensing.rst
-> +++ b/Documentation/bpf/bpf_licensing.rst
-> @@ -89,4 +89,8 @@ Packaging BPF programs with user space applications
->
->  Generally, proprietary-licensed applications and GPL licensed BPF progra=
-ms
->  written for the Linux kernel in the same package can co-exist because th=
-ey are
-> -separate executable processes. This applies to both cBPF and eBPF progra=
-ms.
-> +separate executable processes. In particular, BPF code bundled inside a =
-libbpf
-> +skeleton header may have a different license than that of its surroundin=
-g
-> +skeleton. In other words, the license of the bundled BPF code does not a=
-lter the
-> +license of the skeleton header nor of a program including the header. Th=
-is
-> +paragraph applies to both cBPF and eBPF programs.
+> .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
+> .../chelsio/inline_crypto/chtls/chtls_io.c    | 101 ++++---------
+> .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
+> drivers/net/tun.c                             |  34 ++---
+> include/linux/sched.h                         |   4 +-
+> include/net/sock.h                            |  14 +-
+> kernel/exit.c                                 |   3 +-
+> kernel/fork.c                                 |   2 +-
+> net/core/skbuff.c                             |  32 ++--
+> net/core/skmsg.c                              |  22 +--
+> net/core/sock.c                               |  46 ++++--
+> net/ipv4/ip_output.c                          |  35 +++--
+> net/ipv4/tcp.c                                |  35 ++---
+> net/ipv4/tcp_output.c                         |  28 ++--
+> net/ipv6/ip6_output.c                         |  35 +++--
+> net/kcm/kcmsock.c                             |  30 ++--
+> net/mptcp/protocol.c                          |  74 ++++++----
+> net/tls/tls_device.c                          | 139 ++++++++++--------
+> 18 files changed, 342 insertions(+), 298 deletions(-)
 
-The doc is clear enough. This is unnecessary.
-Otherwise we'll start listing every project that bundles bpf prog
-in some form.
+Hi Yunsheng,
+
+Just focusing on mptcp:
+
+> diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+> index f8bc34f0d973..368dd480c4cd 100644
+> --- a/net/mptcp/protocol.c
+> +++ b/net/mptcp/protocol.c
+> @@ -959,17 +959,16 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
+> }
+>
+> /* we can append data to the given data frag if:
+> - * - there is space available in the backing page_frag
+> - * - the data frag tail matches the current page_frag free offset
+> + * - the data frag tail matches the current page and offset
+>  * - the data frag end sequence number matches the current write seq
+>  */
+> static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
+> -				       const struct page_frag *pfrag,
+> +				       const struct page *page,
+> +				       const unsigned int offset,
+> 				       const struct mptcp_data_frag *df)
+> {
+> -	return df && pfrag->page == df->page &&
+> -		pfrag->size - pfrag->offset > 0 &&
+> -		pfrag->offset == (df->offset + df->data_len) &&
+> +	return df && page == df->page &&
+> +		offset == (df->offset + df->data_len) &&
+> 		df->data_seq + df->data_len == msk->write_seq;
+> }
+>
+> @@ -1084,30 +1083,36 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
+> /* ensure we get enough memory for the frag hdr, beyond some minimal amount of
+>  * data
+>  */
+> -static bool mptcp_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
+> +static struct page *mptcp_page_frag_alloc_prepare(struct sock *sk,
+> +						  struct page_frag_cache *pfrag,
+> +						  unsigned int *offset,
+> +						  unsigned int *size, void **va)
+> {
+> -	if (likely(skb_page_frag_refill(32U + sizeof(struct mptcp_data_frag),
+> -					pfrag, sk->sk_allocation)))
+> -		return true;
+> +	struct page *page;
+> +
+> +	page = page_frag_alloc_prepare(pfrag, offset, size, va,
+> +				       sk->sk_allocation);
+> +	if (likely(page))
+> +		return page;
+>
+> 	mptcp_enter_memory_pressure(sk);
+> -	return false;
+> +	return NULL;
+> }
+>
+> static struct mptcp_data_frag *
+> -mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page_frag *pfrag,
+> -		      int orig_offset)
+> +mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page *page,
+> +		      unsigned int orig_offset)
+> {
+> 	int offset = ALIGN(orig_offset, sizeof(long));
+> 	struct mptcp_data_frag *dfrag;
+>
+> -	dfrag = (struct mptcp_data_frag *)(page_to_virt(pfrag->page) + offset);
+> +	dfrag = (struct mptcp_data_frag *)(page_to_virt(page) + offset);
+> 	dfrag->data_len = 0;
+> 	dfrag->data_seq = msk->write_seq;
+> 	dfrag->overhead = offset - orig_offset + sizeof(struct mptcp_data_frag);
+> 	dfrag->offset = offset + sizeof(struct mptcp_data_frag);
+> 	dfrag->already_sent = 0;
+> -	dfrag->page = pfrag->page;
+> +	dfrag->page = page;
+>
+> 	return dfrag;
+> }
+> @@ -1792,7 +1797,7 @@ static u32 mptcp_send_limit(const struct sock *sk)
+> static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> {
+> 	struct mptcp_sock *msk = mptcp_sk(sk);
+> -	struct page_frag *pfrag;
+> +	struct page_frag_cache *pfrag;
+> 	size_t copied = 0;
+> 	int ret = 0;
+> 	long timeo;
+> @@ -1831,9 +1836,12 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> 	while (msg_data_left(msg)) {
+> 		int total_ts, frag_truesize = 0;
+> 		struct mptcp_data_frag *dfrag;
+> -		bool dfrag_collapsed;
+> -		size_t psize, offset;
+> +		bool dfrag_collapsed = false;
+> +		unsigned int offset, size;
+> +		struct page *page;
+> +		size_t psize;
+> 		u32 copy_limit;
+> +		void *va;
+>
+> 		/* ensure fitting the notsent_lowat() constraint */
+> 		copy_limit = mptcp_send_limit(sk);
+> @@ -1844,21 +1852,31 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> 		 * page allocator
+> 		 */
+> 		dfrag = mptcp_pending_tail(sk);
+> -		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
+> +		size = 32U;
+> +		page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset, &size,
+> +						     &va);
+> +		if (!page)
+> +			goto wait_for_memory;
+> +
+> +		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, page, offset,
+> +							     dfrag);
+> 		if (!dfrag_collapsed) {
+> -			if (!mptcp_page_frag_refill(sk, pfrag))
+> +			size = 32U + sizeof(struct mptcp_data_frag);
+> +			page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset,
+> +							     &size, &va);
+
+Since 'size' was updated to contain the maximum available space on the 
+first call to mptcp_page_frag_alloc_prepare(), is it necessary to call it 
+again instead of checking to see if 'size' is large enough for the 
+mptcp_data_frag struct?
+
+> +			if (!page)
+> 				goto wait_for_memory;
+>
+> -			dfrag = mptcp_carve_data_frag(msk, pfrag, pfrag->offset);
+> +			dfrag = mptcp_carve_data_frag(msk, page, offset);
+> 			frag_truesize = dfrag->overhead;
+> +			va += dfrag->overhead;
+> 		}
+>
+> 		/* we do not bound vs wspace, to allow a single packet.
+> 		 * memory accounting will prevent execessive memory usage
+> 		 * anyway
+> 		 */
+> -		offset = dfrag->offset + dfrag->data_len;
+> -		psize = pfrag->size - offset;
+> +		psize = size - frag_truesize;
+> 		psize = min_t(size_t, psize, msg_data_left(msg));
+> 		psize = min_t(size_t, psize, copy_limit);
+> 		total_ts = psize + frag_truesize;
+> @@ -1866,8 +1884,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> 		if (!sk_wmem_schedule(sk, total_ts))
+> 			goto wait_for_memory;
+>
+> -		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter,
+> -					   page_address(dfrag->page) + offset);
+> +		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter, va);
+> 		if (ret)
+> 			goto do_error;
+>
+> @@ -1876,7 +1893,6 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> 		copied += psize;
+> 		dfrag->data_len += psize;
+> 		frag_truesize += psize;
+> -		pfrag->offset += frag_truesize;
+> 		WRITE_ONCE(msk->write_seq, msk->write_seq + psize);
+>
+> 		/* charge data on mptcp pending queue to the msk socket
+> @@ -1884,11 +1900,15 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> 		 */
+> 		sk_wmem_queued_add(sk, frag_truesize);
+> 		if (!dfrag_collapsed) {
+> -			get_page(dfrag->page);
+> +			page_frag_alloc_commit(pfrag, offset, frag_truesize);
+
+It would be more efficient (but more complicated) to defer the commit 
+until the loop is done or the maximum frag size is reached. This would 
+perform more like the older code, which only had to call refill when 
+mptcp_frag_can_collapse_to() returned false.
+
+- Mat
+
+> 			list_add_tail(&dfrag->list, &msk->rtx_queue);
+> 			if (!msk->first_pending)
+> 				WRITE_ONCE(msk->first_pending, dfrag);
+> +		} else {
+> +			page_frag_alloc_commit_noref(pfrag, offset,
+> +						     frag_truesize);
+> 		}
+> +
+> 		pr_debug("msk=%p dfrag at seq=%llu len=%u sent=%u new=%d", msk,
+> 			 dfrag->data_seq, dfrag->data_len, dfrag->already_sent,
+> 			 !dfrag_collapsed);
 
