@@ -1,472 +1,196 @@
-Return-Path: <bpf+bounces-27008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A8F8A75DF
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 22:41:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C54A8A75E5
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 22:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D993DB219FB
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 20:41:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07A30282BAE
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 20:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE4F15A4E9;
-	Tue, 16 Apr 2024 20:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB75E4206F;
+	Tue, 16 Apr 2024 20:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="dZAMg5wq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4CeQ50E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD6F39FD7;
-	Tue, 16 Apr 2024 20:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC7017736;
+	Tue, 16 Apr 2024 20:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713300064; cv=none; b=fCUPgalFIPqqYKj0GqmmjaL9LoYx66W/0huat6Cl7YmINLBwKPX0lB5eMuFUMaa5gaco+1CqiZ+h+jMG1X/iSBSeaJxu11rHy5GLe7TKiOogLEuOsIrWrd0sR7k3FQajUWrMwSzTAPj0iWxdiJ2FYLuITilR5R5EekGAk32FCZQ=
+	t=1713300302; cv=none; b=DS7LBr1IpEGa0odqJk2Mc7QW/sS3s6IqLPZ11fHkzmxvhEP83GskiFTReA5ytWLrkYPeYyO4Beq4UO1ick7H+KJCmLvNw5iX4JxoHvXcsC+46EXwb/IAFZ/Txbga7stpDL4l+RFL6646IKUQnyF/xX1NtgvpxNqfhWLXcusylac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713300064; c=relaxed/simple;
-	bh=Xxxn0J3zc6FsiMlJ3R5hkFS/4ckQKSpVxECSkXOELlw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FqLAlPLYDUAUmI9QMS/9JME7YAVCZuahB1HD2WnIZVGpCmzdfmwvn38kZO6SrLtoFgNWNri0dQuRCpD1syBq3fXq+CRZin7+rPETp3SEvpWY2nzde06Xfwi3jG+OA1YsM1bTlXPkmngcvIJ6JbCWSHlf4Dv09YxqRQbW1lGR+qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=dZAMg5wq; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GKeb1G011767;
-	Tue, 16 Apr 2024 13:40:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=Yse9xYdBGRs5rCBIk776H/T37cvzOb2LbSZMp8HSZAQ=;
- b=dZAMg5wqYB+oMH6R55Dn+vnV/ulZHvUl9V4z7/SL/C0W6RN/fec/qiJg8NYX9zFqqGQa
- uozMcxUZSlkEJ/uVfUEMOVFDLELTdwyjVJefUPR7Qwcmo4QN7o4FKtzTwG2uGP8V4xNy
- O/YXf1CLDUbS6wJ0wpicEnM64XUwGgEYyzgowRiZDR0ZjiQwgJy1uZ6MO94Ut9PALlzx
- ecT0OWi8Dmp7hrdklb118nav8HoPGvMBRVaT9GvyWD8G9lJkrP3QQ8JDAyzX8BSBkzkI
- Opeb3h6lDZ51RcPMd0EmpPmYhCSmygR+Q0+wrTAl1qDTb/BTkVqrlpU9eWRXZV/hZXrt vQ== 
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3xhbv96v3m-6
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Tue, 16 Apr 2024 13:40:46 -0700
-Received: from devvm4158.cln0.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server id
- 15.1.2507.35; Tue, 16 Apr 2024 13:40:27 -0700
-From: Vadim Fedorenko <vadfed@meta.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Jakub Kicinski
-	<kuba@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko
-	<andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko
-	<mykolal@fb.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-CC: Vadim Fedorenko <vadfed@meta.com>, <netdev@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next v9 4/4] selftests: bpf: crypto: add benchmark for crypto functions
-Date: Tue, 16 Apr 2024 13:40:04 -0700
-Message-ID: <20240416204004.3942393-5-vadfed@meta.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240416204004.3942393-1-vadfed@meta.com>
-References: <20240416204004.3942393-1-vadfed@meta.com>
+	s=arc-20240116; t=1713300302; c=relaxed/simple;
+	bh=7Y822fAc48m5TRXMXNXMKn4FUS3xnrmEgg+6/xdkpa8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lqk/b0uXoYxa3EML7KMN5S8NeB/UP9xbwWS9PangUqr0gJI10IBD/Vu16NmTQwidJrPnFZo82jOzfdjTVm7BJDnZGA1JoaMauxnkdmeEi6ht1t7euXOSbfeMZin7oBeqWiT5u+NSnDWTeP3NaFLsY3qcM9xSTi194nCW6r/nzkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B4CeQ50E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28AA1C113CE;
+	Tue, 16 Apr 2024 20:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713300301;
+	bh=7Y822fAc48m5TRXMXNXMKn4FUS3xnrmEgg+6/xdkpa8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B4CeQ50E5jsLyYtyLqT97VRWPNECEgP+UyR8oDZQq2WekCDNu/n/pfghMCQOiGECd
+	 n9lV6p376Z+XMSV2K3Knpnad0JHJ/7A4wPCHMlEsriAQi/94o+qh1JPy3JbrKQ+4fd
+	 p7pft0xNH6rYHZLYB/+jJsOlWkWq4MChtwFQKVUl9fc4M7P1Q16P8YBelDADhzbE2G
+	 Fz3qv6TaScC4N6yVcUJyuOF8PVW2pRjBWLAwv787s4umz7BpBN4C762hPwFAewfEwv
+	 wDH7kUUMVV1G/ynTm9nf1bZ72WQGKZEuQCCkKqpXNaBs7lVkCOotGN0+yrc0CwoetG
+	 IJI5vgTLKY54w==
+Date: Tue, 16 Apr 2024 17:44:58 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, kuifeng@fb.com, linux@weissschuh.net
+Subject: Re: [PATCH dwarves 2/3] pahole: add reproducible_build to
+ --btf_features
+Message-ID: <Zh7jSqXRsQ5iOKSg@x1>
+References: <20240416143718.2857981-1-alan.maguire@oracle.com>
+ <20240416143718.2857981-3-alan.maguire@oracle.com>
+ <Zh6YNhBRbhVchv5S@x1>
+ <a820dddb-54a0-47e0-9a6e-e12c6341babb@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: f-6FzUdeEiQuiiB8TcHr3lz9ySRq-Nj4
-X-Proofpoint-ORIG-GUID: f-6FzUdeEiQuiiB8TcHr3lz9ySRq-Nj4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_18,2024-04-16_01,2023-05-22_02
+In-Reply-To: <a820dddb-54a0-47e0-9a6e-e12c6341babb@oracle.com>
 
-Some simple benchmarks are added to understand the baseline of
-performance.
+On Tue, Apr 16, 2024 at 04:41:20PM +0100, Alan Maguire wrote:
+> On 16/04/2024 16:24, Arnaldo Carvalho de Melo wrote:
+> > On Tue, Apr 16, 2024 at 03:37:17PM +0100, Alan Maguire wrote:
+> >> ...as a non-standard feature, so it will not be enabled for
+> >> "--btf_features=all"
+> > 
+> > How did you test this?
+> > 
+> > ⬢[acme@toolbox pahole]$ pahole --btf_features_strict=bgasd
+> > Feature 'bgasd' in 'bgasd' is not supported.  Supported BTF features are:
+> > encode_force,var,float,decl_tag,type_tag,enum64,optimized_func,consistent_func,reproducible_build
+> > ⬢[acme@toolbox pahole]$ pahole -j --btf_features=all,reproducible_build --btf_encode_detached=vmlinux.btf.parallel.reproducible_build-via-btf_features vmlinux
+> > ⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.parallel.reproducible_build-via-btf_features > output.vmlinux.btf.parallel.reproducible_build-via-btf_features
+> > ⬢[acme@toolbox pahole]$ diff -u output.vmlinux.btf.serial output.vmlinux.btf.parallel.reproducible
+> > ⬢[acme@toolbox pahole]$ diff -u output.vmlinux.btf.parallel.reproducible_build output.vmlinux.btf.parallel.reproducible_build-via-btf_features | head
+> > --- output.vmlinux.btf.parallel.reproducible_build	2024-04-16 12:20:28.513462223 -0300
+> > +++ output.vmlinux.btf.parallel.reproducible_build-via-btf_features	2024-04-16 12:23:37.792962930 -0300
+> > @@ -265,7 +265,7 @@
+> >  	'target' type_id=33 bits_offset=32
+> >  	'key' type_id=43 bits_offset=64
+> >  [164] PTR '(anon)' type_id=163
+> > -[165] PTR '(anon)' type_id=35751
+> > +[165] PTR '(anon)' type_id=14983
+> >  [166] STRUCT 'static_key' size=16 vlen=2
+> >  	'enabled' type_id=88 bits_offset=0
+> > ⬢[acme@toolbox pahole]$
+> > 
+> > I'm double checking things now...
+ 
+> The test worked for me on x86_64/aarch64. Did you test with patch 3
+> applied? Because the test in its original state prior to patch 3 sets
 
-Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
----
-v9:
-- initial submission
----
- tools/testing/selftests/bpf/Makefile          |   2 +
- tools/testing/selftests/bpf/bench.c           |   6 +
- .../selftests/bpf/benchs/bench_bpf_crypto.c   | 190 ++++++++++++++++++
- .../selftests/bpf/progs/crypto_bench.c        | 108 ++++++++++
- 4 files changed, 306 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_crypto.c
- create mode 100644 tools/testing/selftests/bpf/progs/crypto_bench.c
+With all patches applied:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index edc73f8f5aef..be8567337480 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -729,6 +729,7 @@ $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o: $(OUTPUT)/local_storage_rcu_tas
- $(OUTPUT)/bench_local_storage_create.o: $(OUTPUT)/bench_local_storage_create.skel.h
- $(OUTPUT)/bench_bpf_hashmap_lookup.o: $(OUTPUT)/bpf_hashmap_lookup.skel.h
- $(OUTPUT)/bench_htab_mem.o: $(OUTPUT)/htab_mem_bench.skel.h
-+$(OUTPUT)/bench_bpf_crypto.o: $(OUTPUT)/crypto_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
- $(OUTPUT)/bench: LDLIBS += -lm
- $(OUTPUT)/bench: $(OUTPUT)/bench.o \
-@@ -748,6 +749,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- 		 $(OUTPUT)/bench_bpf_hashmap_lookup.o \
- 		 $(OUTPUT)/bench_local_storage_create.o \
- 		 $(OUTPUT)/bench_htab_mem.o \
-+		 $(OUTPUT)/bench_bpf_crypto.o \
- 		 #
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index 82de56c8162e..627b74ae041b 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -281,6 +281,7 @@ extern struct argp bench_hashmap_lookup_argp;
- extern struct argp bench_local_storage_create_argp;
- extern struct argp bench_htab_mem_argp;
- extern struct argp bench_trigger_batch_argp;
-+extern struct argp bench_crypto_argp;
- 
- static const struct argp_child bench_parsers[] = {
- 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
-@@ -294,6 +295,7 @@ static const struct argp_child bench_parsers[] = {
- 	{ &bench_local_storage_create_argp, 0, "local-storage-create benchmark", 0 },
- 	{ &bench_htab_mem_argp, 0, "hash map memory benchmark", 0 },
- 	{ &bench_trigger_batch_argp, 0, "BPF triggering benchmark", 0 },
-+	{ &bench_crypto_argp, 0, "bpf crypto benchmark", 0 },
- 	{},
- };
- 
-@@ -538,6 +540,8 @@ extern const struct bench bench_local_storage_tasks_trace;
- extern const struct bench bench_bpf_hashmap_lookup;
- extern const struct bench bench_local_storage_create;
- extern const struct bench bench_htab_mem;
-+extern const struct bench bench_crypto_encrypt;
-+extern const struct bench bench_crypto_decrypt;
- 
- static const struct bench *benchs[] = {
- 	&bench_count_global,
-@@ -590,6 +594,8 @@ static const struct bench *benchs[] = {
- 	&bench_bpf_hashmap_lookup,
- 	&bench_local_storage_create,
- 	&bench_htab_mem,
-+	&bench_crypto_encrypt,
-+	&bench_crypto_decrypt,
- };
- 
- static void find_benchmark(void)
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_crypto.c b/tools/testing/selftests/bpf/benchs/bench_bpf_crypto.c
-new file mode 100644
-index 000000000000..86048f02e6ac
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/bench_bpf_crypto.c
-@@ -0,0 +1,190 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include <argp.h>
-+#include "bench.h"
-+#include "crypto_bench.skel.h"
-+#include "../progs/crypto_share.h"
-+
-+#define MAX_CIPHER_LEN 32
-+static char *input;
-+static struct crypto_ctx {
-+	struct crypto_bench *skel;
-+	int pfd;
-+} ctx;
-+
-+static struct crypto_args {
-+	u32 crypto_len;
-+	char *crypto_cipher;
-+} args = {
-+	.crypto_len = 16,
-+	.crypto_cipher = "ecb(aes)",
-+};
-+
-+enum {
-+	ARG_CRYPTO_LEN = 5000,
-+	ARG_CRYPTO_CIPHER = 5001,
-+};
-+
-+static const struct argp_option opts[] = {
-+	{ "crypto-len", ARG_CRYPTO_LEN, "CRYPTO_LEN", 0,
-+	  "Set the length of crypto buffer" },
-+	{ "crypto-cipher", ARG_CRYPTO_CIPHER, "CRYPTO_CIPHER", 0,
-+	  "Set the cipher to use (defaul:ecb(aes))" },
-+	{},
-+};
-+
-+static error_t crypto_parse_arg(int key, char *arg, struct argp_state *state)
-+{
-+	switch (key) {
-+	case ARG_CRYPTO_LEN:
-+		args.crypto_len = strtoul(arg, NULL, 10);
-+		if (!args.crypto_len ||
-+		    args.crypto_len > sizeof(ctx.skel->bss->dst)) {
-+			fprintf(stderr, "Invalid crypto buffer len (limit %zu)\n",
-+				sizeof(ctx.skel->bss->dst));
-+			argp_usage(state);
-+		}
-+		break;
-+	case ARG_CRYPTO_CIPHER:
-+		args.crypto_cipher = strdup(arg);
-+		if (!strlen(args.crypto_cipher) ||
-+		    strlen(args.crypto_cipher) > MAX_CIPHER_LEN) {
-+			fprintf(stderr, "Invalid crypto cipher len (limit %d)\n",
-+				MAX_CIPHER_LEN);
-+			argp_usage(state);
-+		}
-+		break;
-+	default:
-+		return ARGP_ERR_UNKNOWN;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct argp bench_crypto_argp = {
-+	.options = opts,
-+	.parser = crypto_parse_arg,
-+};
-+
-+static void crypto_validate(void)
-+{
-+	if (env.consumer_cnt != 0) {
-+		fprintf(stderr, "bpf crypto benchmark doesn't support consumer!\n");
-+		exit(1);
-+	}
-+}
-+
-+static void crypto_setup(void)
-+{
-+	struct crypto_syscall_args sargs = {
-+		.key_len = 16,
-+	};
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.ctx_in = &sargs,
-+		.ctx_size_in = sizeof(sargs),
-+	);
-+
-+	int err, pfd;
-+	size_t i, sz;
-+
-+	sz = args.crypto_len;
-+	if (!sz || sz > sizeof(ctx.skel->bss->dst)) {
-+		fprintf(stderr, "invalid encrypt buffer size (source %zu, target %zu)\n",
-+			sz, sizeof(ctx.skel->bss->dst));
-+		exit(1);
-+	}
-+
-+	setup_libbpf();
-+
-+	ctx.skel = crypto_bench__open();
-+	if (!ctx.skel) {
-+		fprintf(stderr, "failed to open skeleton\n");
-+		exit(1);
-+	}
-+
-+	snprintf(ctx.skel->bss->cipher, 128, "%s", args.crypto_cipher);
-+	memcpy(ctx.skel->bss->key, "12345678testtest", 16);
-+
-+	srandom(time(NULL));
-+	input = malloc(sz);
-+	for (i = 0; i < sz - 1; i++)
-+		input[i] = '1' + random() % 9;
-+	input[sz - 1] = '\0';
-+
-+	ctx.skel->rodata->len = args.crypto_len;
-+
-+	err = crypto_bench__load(ctx.skel);
-+	if (err) {
-+		fprintf(stderr, "failed to load skeleton\n");
-+		crypto_bench__destroy(ctx.skel);
-+		exit(1);
-+	}
-+
-+	pfd = bpf_program__fd(ctx.skel->progs.crypto_setup);
-+	if (pfd < 0) {
-+		fprintf(stderr, "failed to get fd for setup prog\n");
-+		crypto_bench__destroy(ctx.skel);
-+		exit(1);
-+	}
-+
-+	err = bpf_prog_test_run_opts(pfd, &opts);
-+	if (err || ctx.skel->bss->status) {
-+		fprintf(stderr, "failed to run setup prog: err %d, status %d\n",
-+			err, ctx.skel->bss->status);
-+		crypto_bench__destroy(ctx.skel);
-+		exit(1);
-+	}
-+}
-+
-+static void crypto_encrypt_setup(void)
-+{
-+	crypto_setup();
-+	ctx.pfd = bpf_program__fd(ctx.skel->progs.crypto_encrypt);
-+}
-+
-+static void crypto_decrypt_setup(void)
-+{
-+	crypto_setup();
-+	ctx.pfd = bpf_program__fd(ctx.skel->progs.crypto_decrypt);
-+}
-+
-+static void crypto_measure(struct bench_res *res)
-+{
-+	res->hits = atomic_swap(&ctx.skel->bss->hits, 0);
-+}
-+
-+static void *crypto_producer(void *)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.repeat = 64,
-+		.data_in = input,
-+		.data_size_in = args.crypto_len,
-+	);
-+
-+	while (true)
-+		(void)bpf_prog_test_run_opts(ctx.pfd, &opts);
-+	return NULL;
-+}
-+
-+const struct bench bench_crypto_encrypt = {
-+	.name = "crypto-encrypt",
-+	.argp = &bench_crypto_argp,
-+	.validate = crypto_validate,
-+	.setup = crypto_encrypt_setup,
-+	.producer_thread = crypto_producer,
-+	.measure = crypto_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-+
-+const struct bench bench_crypto_decrypt = {
-+	.name = "crypto-decrypt",
-+	.argp = &bench_crypto_argp,
-+	.validate = crypto_validate,
-+	.setup = crypto_decrypt_setup,
-+	.producer_thread = crypto_producer,
-+	.measure = crypto_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/crypto_bench.c b/tools/testing/selftests/bpf/progs/crypto_bench.c
-new file mode 100644
-index 000000000000..bd01794a0236
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/crypto_bench.c
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include "bpf_tracing_net.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_kfuncs.h"
-+#include "crypto_common.h"
-+
-+const volatile unsigned int len = 16;
-+char dst[256] = {};
-+long hits = 0;
-+int status;
-+char cipher[128] = {};
-+u8 key[256] = {};
-+
-+SEC("syscall")
-+int crypto_setup(struct crypto_syscall_args *args)
-+{
-+	struct bpf_crypto_ctx *cctx;
-+	struct bpf_crypto_params params = {
-+		.type = "skcipher",
-+		.key_len = args->key_len,
-+		.authsize = args->authsize,
-+	};
-+	int err = 0;
-+
-+	status = 0;
-+
-+	if (!cipher[0] || !args->key_len || args->key_len > 255) {
-+		status = -EINVAL;
-+		return 0;
-+	}
-+
-+	__builtin_memcpy(&params.algo, cipher, sizeof(cipher));
-+	__builtin_memcpy(&params.key, key, sizeof(key));
-+	cctx = bpf_crypto_ctx_create(&params, &err);
-+
-+	if (!cctx) {
-+		status = err;
-+		return 0;
-+	}
-+
-+	err = crypto_ctx_insert(cctx);
-+	if (err && err != -EEXIST)
-+		status = err;
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+int crypto_encrypt(struct __sk_buff *skb)
-+{
-+	struct __crypto_ctx_value *v;
-+	struct bpf_crypto_ctx *ctx;
-+	struct bpf_dynptr psrc, pdst, iv;
-+
-+	v = crypto_ctx_value_lookup();
-+	if (!v) {
-+		status = -ENOENT;
-+		return 0;
-+	}
-+
-+	ctx = v->ctx;
-+	if (!ctx) {
-+		status = -ENOENT;
-+		return 0;
-+	}
-+
-+	bpf_dynptr_from_skb(skb, 0, &psrc);
-+	bpf_dynptr_from_mem(dst, len, 0, &pdst);
-+	bpf_dynptr_from_mem(dst, 0, 0, &iv);
-+
-+	status = bpf_crypto_encrypt(ctx, &psrc, &pdst, &iv);
-+	__sync_add_and_fetch(&hits, 1);
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+int crypto_decrypt(struct __sk_buff *skb)
-+{
-+	struct bpf_dynptr psrc, pdst, iv;
-+	struct __crypto_ctx_value *v;
-+	struct bpf_crypto_ctx *ctx;
-+
-+	v = crypto_ctx_value_lookup();
-+	if (!v)
-+		return -ENOENT;
-+
-+	ctx = v->ctx;
-+	if (!ctx)
-+		return -ENOENT;
-+
-+	bpf_dynptr_from_skb(skb, 0, &psrc);
-+	bpf_dynptr_from_mem(dst, len, 0, &pdst);
-+	bpf_dynptr_from_mem(dst, 0, 0, &iv);
-+
-+	status = bpf_crypto_decrypt(ctx, &psrc, &pdst, &iv);
-+	__sync_add_and_fetch(&hits, 1);
-+
-+	return 0;
-+}
-+
-+char __license[] SEC("license") = "GPL";
--- 
-2.43.0
+⬢[acme@toolbox pahole]$ git log --oneline -5
+ecd3b0852ab1f1ff (HEAD -> master) tests/reproducible_build: use --btf_features=all,reproducible_build
+f9c8f5856b2aafea pahole: Add reproducible_build to --btf_features
+0412978e8e6f8f76 pahole: Allow --btf_features to not participate in "all"
+a9738ddc828d5ea0 tests/reproducible_build: Use --btf_features=all when encoding
+d7edf9ae0388fb97 tests/reproducible_build: Validate the vmlinux file
+⬢[acme@toolbox pahole]$ 
 
+I made some mistake:
+
+⬢[acme@toolbox pahole]$ pahole --btf_encode_detached=vmlinux.btf.serial --btf_features=all vmlinux
+⬢[acme@toolbox pahole]$ pahole --btf_encode_detached=vmlinux.btf.parallel --btf_features=all -j vmlinux
+⬢[acme@toolbox pahole]$ pahole --btf_encode_detached=vmlinux.btf.parallel--reproducible_build --btf_features=all --reproducible_build -j vmlinux
+⬢[acme@toolbox pahole]$ pahole --btf_encode_detached=vmlinux.btf.parallel--btf_features=all,reproducible_build --btf_features=all,reproducible_build -j vmlinux
+⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.serial > output.vmlinux.btf.serial
+⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.parallel > output.vmlinux.btf.parallel
+⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.parallel--reproducible_build > output.vmlinux.btf.parallel--reproducible_build
+⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.parallel--btf_features=all,reproducible_build > output.vmlinux.btf.parallel--btf_features=all,reproducible_build
+⬢[acme@toolbox pahole]$ diff -u output.vmlinux.btf.serial output.vmlinux.btf.parallel | wc -l
+629165
+⬢[acme@toolbox pahole]$ diff -u output.vmlinux.btf.serial output.vmlinux.btf.parallel--reproducible_build | wc -l
+0
+⬢[acme@toolbox pahole]$ diff -u output.vmlinux.btf.serial output.vmlinux.btf.parallel--btf_features=all,reproducible_build | wc -l
+0
+⬢[acme@toolbox pahole]$ diff -u output.vmlinux.btf.parallel--reproducible_build output.vmlinux.btf.parallel--btf_features=all,reproducible_build | wc -l
+0
+⬢[acme@toolbox pahole]$
+
+And of course:
+
+⬢[acme@toolbox pahole]$ time tests/reproducible_build.sh  vmlinux
+Parallel reproducible DWARF Loading/Serial BTF encoding: Ok
+
+real	1m25.241s
+user	3m10.144s
+sys	0m48.104s
+⬢[acme@toolbox pahole]$
+
+> --reproducible_build before setting --btf_features=all, you won't get a
+> reproducible build since the command line is saying "enable reproducible
+> builds but also enable standard features only"; the second action undoes
+
+Makes sense.
+
+> the first. switching to using --btf_features=all,reproducible_build
+> fixes things for me.
+
+Ok, all tested now, will push to the 'next' branch, waiting for Eduard's
+review.
+
+- Arnaldo
+
+> > - Arnaldo
+> >  
+> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> >> ---
+> >>  man-pages/pahole.1 | 8 ++++++++
+> >>  pahole.c           | 1 +
+> >>  2 files changed, 9 insertions(+)
+> >>
+> >> diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+> >> index 2c08e97..64de343 100644
+> >> --- a/man-pages/pahole.1
+> >> +++ b/man-pages/pahole.1
+> >> @@ -310,6 +310,14 @@ Encode BTF using the specified feature list, or specify 'all' for all standard f
+> >>  	                   in different CUs.
+> >>  .fi
+> >>  
+> >> +Supported non-standard features (not enabled for 'all')
+> >> +
+> >> +.nf
+> >> +	reproducible_build Ensure generated BTF is consistent every time;
+> >> +	                   without this parallel BTF encoding can result in
+> >> +	                   inconsistent BTF ids.
+> >> +.fi
+> >> +
+> >>  So for example, specifying \-\-btf_encode=var,enum64 will result in a BTF encoding that (as well as encoding basic BTF information) will contain variables and enum64 values.
+> >>  
+> >>  .TP
+> >> diff --git a/pahole.c b/pahole.c
+> >> index 890ef81..38cc636 100644
+> >> --- a/pahole.c
+> >> +++ b/pahole.c
+> >> @@ -1286,6 +1286,7 @@ struct btf_feature {
+> >>  	BTF_FEATURE(enum64, skip_encoding_btf_enum64, true, true),
+> >>  	BTF_FEATURE(optimized_func, btf_gen_optimized, false, true),
+> >>  	BTF_FEATURE(consistent_func, skip_encoding_btf_inconsistent_proto, false, true),
+> >> +	BTF_FEATURE(reproducible_build, reproducible_build, false, false),
+> >>  };
+> >>  
+> >>  #define BTF_MAX_FEATURE_STR	1024
+> > 
+> > 
+> > 
 
