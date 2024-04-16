@@ -1,78 +1,81 @@
-Return-Path: <bpf+bounces-26994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3168A71D1
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 19:00:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 291E68A71D2
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 19:01:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 134411C2237A
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 17:00:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B0C28606C
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 17:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344FB1332A0;
-	Tue, 16 Apr 2024 17:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BD313280C;
+	Tue, 16 Apr 2024 17:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oiKTdV94"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="owrHO8Qr"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168A537719
-	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 17:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775CA13281B
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 17:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713286835; cv=none; b=pTmhVcvDDAcy6BQDkHB2jqMFba3hnJWJ21Gd/njvZdVv2kJ9Y3c6YDUXpzDXaIqoGKS+O9FPrtNBkoytQ5gztc0XsKU6RhHaOqzGm8DFRVzHjXRHGWrwsyPAGd+jASUf6ZI82+V+vngoFMQahTF7ZESf5ZQVRdG4M1eTfD3igng=
+	t=1713286836; cv=none; b=bAgH4R7sPkfCD+DPYepK9zOMwhWNmi1e8dsvbZZXFfQh8pmVO5/8hrSXYpsEdwqcLprRt7JIYKuLpM6M4PcuSuLsE4xiyoMJaCnwUry1iyPpGggxc+Rix4R2F62RImPiGzEL1E5L2LJMsSs7tY3o9C6vQEkQMgySPXOb5UmCYlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713286835; c=relaxed/simple;
-	bh=eWS4hkOA9c5MUyVViK475t1qOR4HpPha6Nk9Zap1JUk=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=tMjBGc/AU6FlHSlzF1MQ+eyLWX4OE1KBYwoRXWmRG5u/CnqNNOrD+3h6sW3Em6gv1zqMGFWlwsEiOR+wyS6e7SoPMog9IDYY8EGJJKMaWD/fD5vv9Z712UJLAfK9diRbRB3+RlbtWGnUcqkTy7UWxYKlPxFBlmM/lfThhWBTG0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oiKTdV94; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1713286836; c=relaxed/simple;
+	bh=3azWwaKDy7OkYK9A/N5tN+0dZsIUgmKW69mfQHRw+84=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=aasnQgqi+nN7hWdrXIlt1NJmpJY6Pi/doXMV5G6wZsh0IRHZ35oOql79tPTcOoECyslZOPbS12+yGrcnK1FsR1Z3gbzF6dXtEFpgYJjSDHUUyk59+9lB7vP5Nl2MapjE7wgPUtLHHLMO7GoNKgIXrexcNO9IFlxZw7EVMxXfXz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=owrHO8Qr; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd1395fd1bfso8060222276.0
-        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 10:00:32 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd1395fd1bfso8060304276.0
+        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 10:00:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713286832; x=1713891632; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VHZ+4taa5ZmMf/oaE74yETbEavJXLOGjMfJKJZgW7D8=;
-        b=oiKTdV94ypRqlClyB5jW9fNE0/2SdIhV1hIsbvIxY4/CpRtN/CdmX2YP43Y5fjeQDh
-         PLA52JwZt5oOyAl6PIwj6vxhXp7+hKCe+yBKPgTv7hvZ68kA9dtgoeEQRJxPzVbtJgNV
-         sAtFf2ONwIHnGAWaDcxgPvDW7ngvBMO8ORhcBQReZ7SXyH5gFwM5EWGggytRPXz/J3Fy
-         7Ht3EX7uH3x2aKqmumm2yrQ4P/T5+Y+3iFfVxKDIyTNHb8+VrxtH4nv8bQSaDwVPpVWP
-         Rh6dv/w0rXaNV0R1meo+anAGBBcc8OkjRRnNVMHULGgFlVu40DoK2mvrq7bIpd4VNkWL
-         euKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713286832; x=1713891632;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1713286834; x=1713891634; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VHZ+4taa5ZmMf/oaE74yETbEavJXLOGjMfJKJZgW7D8=;
-        b=U/GnzFWncTvLHw/KG5AFFDIk5NDMSd+/KxxWnwDksYhAQhFvbdMXIiwh0YNpCsgwzf
-         qJZRq6nb7lxuSc58+BAUroDAzim0ucrarhqb/pFvvcbTkSrwg4pRn88VMckXs/mY6uKI
-         wGJueYw/PEH6LoN+20c5+nYOqpZkE3hGbX/oPv73lXbnj8BhFgZ+xQokJV+TdinlnCgC
-         vk7mQhcEQhiqV1+PKFLfWU77aPJkLgstjfuppJIg64Ais8IQQ77K64IOaYkHUNWo3P5l
-         tnToi+EywKUZYwzgIkCni16FEx37KOVmdKDimuhmPlcEj5nFl1UTat3eqpLYgo/UxwcB
-         Dj4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXm65e4ZjVo5esjX1YDrk3ExMQcwa07LFJ7dfykgK8YlYOKt5utkDf/mLEF2cADWbSq3Fax1Cg1tnbzPNQ17s+6bbvn
-X-Gm-Message-State: AOJu0YwZqQO06Ff2QZg5UHjHn+fmFAjCDWVLlmaWCnH1X5KYTWK93HL7
-	Z3IUwqnw7foRXCKhMhFYqYyNlY7r9f9NPg7Mx4jB4hx2yopsemiu+tOBcDQSPRfNxtswgij0XTW
-	4hBSN6g==
-X-Google-Smtp-Source: AGHT+IHpba/rJhzl9JMKIitpVKqKH62dhmqQWuSYivFdu9/ee66XNw1Ii34iQvnlkzNQhtlYgsX0ePwTqV64
+        bh=gbNmO/QFS90hYQDF1r8HedKXiPrYZk/5X6GpWU+pA5c=;
+        b=owrHO8Qr22XZD2IHadek7+8L74//qALlDJnrgYshOpWstWQeBNjcTnabgdayeaKKmj
+         Efc2QyUzDVr4T/lws8wvhVdRpC3NsRUi9yvfs/8pdb1j7lsGcwyY2LLRL4XvvKJPQ/s3
+         c/6E1Cj03Cx6YvLw8s26Yzyfkga/Mf0TqS8r1TOTXZdgJjAJkt539KGozZaQc3AYvsBW
+         sTj5nGcvhlQ6hMf+vAvymQHRF9Ry5puxUZHtVAEJZPB4hG/2vgdfw5fbwPqb9lMx1AHO
+         IyUtGAuqfIIjbK9756vWFpTo9C2Bm2lX8nB34FpbOfmLhHqTD8IuhWnStKZ+SWXBMssU
+         LdEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713286834; x=1713891634;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gbNmO/QFS90hYQDF1r8HedKXiPrYZk/5X6GpWU+pA5c=;
+        b=oxmyd8vPXVEeBosFm8fSFnR7qk2R0QB56IAe1RnizNZDjn+7zggK2yDH4kllqkDCMa
+         AafUseeI4sSNLNdS7gqILdxPKhVftvfgn/3Zkd50jwh+xJKmlgXNorEZ3eeLUn8Ag6Xv
+         otY9/vtWzWmvFP3qrCXm3Uyulv9WfOZLPwN9xvIcC1n6aokYs5sU7I/DoUl7oUB9lW/L
+         JsOonGxFhKi74S4FaD7W3mr1ti/Bta4OxcTedkMQcj8na6HlAN6Fw3f1eoVR+WTguh+u
+         POvI23LU/85iAnYNVb5n4c+BWN2AKSAww51BxN2DicK1+uDJdbCnpXJsDDGsQsWz04T7
+         AulA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDD3uAPr85WVCJ+cMYmB6AKmiWTq01PeNVFstxxU4xpc8O4lpjHA1RSZhOYhtvmoE7KAl6P7AjAY54qMbOibRDrIcn
+X-Gm-Message-State: AOJu0YytAv3MKWr/Nmj/6yng3Wl7rNPWv/fBEJV1HbzhQluweEEeRWYK
+	Ib9GLBTNSJmFLLZ6v8GVNHSvLvzznpOJRu7vfw/sMgsS/uRwiniXrH+ZMeyqfcp2F4K7V19/T6g
+	06nrajw==
+X-Google-Smtp-Source: AGHT+IG8Yp5pxeh8BkvzQbDZZGXurtoM83UNZeLc4jlw+B1QTQ7IUSLyyyBZgMoIMefNj3PHuVs4AgR3BorK
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:30c8:f541:acad:b4f7])
- (user=irogers job=sendgmr) by 2002:a05:6902:120e:b0:dcd:88e9:e508 with SMTP
- id s14-20020a056902120e00b00dcd88e9e508mr4322514ybu.5.1713286832038; Tue, 16
- Apr 2024 10:00:32 -0700 (PDT)
-Date: Tue, 16 Apr 2024 10:00:13 -0700
-Message-Id: <20240416170014.985191-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:addf:0:b0:dd9:1db5:8348 with SMTP id
+ d31-20020a25addf000000b00dd91db58348mr3962354ybe.8.1713286834339; Tue, 16 Apr
+ 2024 10:00:34 -0700 (PDT)
+Date: Tue, 16 Apr 2024 10:00:14 -0700
+In-Reply-To: <20240416170014.985191-1-irogers@google.com>
+Message-Id: <20240416170014.985191-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240416170014.985191-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Subject: [PATCH v1 1/2] perf docs: Document bpf event modifier
+Subject: [PATCH v1 2/2] perf test bpf-counters: Add test for BPF event modifier
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -85,27 +88,110 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Document that 'b' is used as a modifier to make an event use a BPF
-counter.
+Refactor test to better enable sharing of logic, to give an idea of
+progress and introduce test functions. Add test of measuring both
+cycles and cycles:b simultaneously.
 
-Fixes: 01bd8efcec44 ("perf stat: Introduce ':b' modifier")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/Documentation/perf-list.txt | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/tests/shell/stat_bpf_counters.sh | 75 ++++++++++++++-------
+ 1 file changed, 52 insertions(+), 23 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
-index 3b12595193c9..6bf2468f59d3 100644
---- a/tools/perf/Documentation/perf-list.txt
-+++ b/tools/perf/Documentation/perf-list.txt
-@@ -71,6 +71,7 @@ counted. The following modifiers exist:
-  D - pin the event to the PMU
-  W - group is weak and will fallback to non-group if not schedulable,
-  e - group or event are exclusive and do not share the PMU
-+ b - use BPF aggregration (see perf stat --bpf-counters)
+diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
+index 2d9209874774..61f8149d854e 100755
+--- a/tools/perf/tests/shell/stat_bpf_counters.sh
++++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+@@ -4,21 +4,59 @@
  
- The 'p' modifier can be used for specifying how precise the instruction
- address should be. The 'p' modifier can be specified multiple times:
+ set -e
+ 
++workload="perf bench sched messaging -g 1 -l 100 -t"
++
+ # check whether $2 is within +/- 20% of $1
+ compare_number()
+ {
+-       first_num=$1
+-       second_num=$2
+-
+-       # upper bound is first_num * 120%
+-       upper=$(expr $first_num + $first_num / 5 )
+-       # lower bound is first_num * 80%
+-       lower=$(expr $first_num - $first_num / 5 )
+-
+-       if [ $second_num -gt $upper ] || [ $second_num -lt $lower ]; then
+-               echo "The difference between $first_num and $second_num are greater than 20%."
+-               exit 1
+-       fi
++	first_num=$1
++	second_num=$2
++
++	# upper bound is first_num * 120%
++	upper=$(expr $first_num + $first_num / 5 )
++	# lower bound is first_num * 80%
++	lower=$(expr $first_num - $first_num / 5 )
++
++	if [ $second_num -gt $upper ] || [ $second_num -lt $lower ]; then
++		echo "The difference between $first_num and $second_num are greater than 20%."
++		exit 1
++	fi
++}
++
++check_counts()
++{
++	base_cycles=$1
++	bpf_cycles=$2
++
++	if [ "$base_cycles" = "<not" ]; then
++		echo "Skipping: cycles event not counted"
++		exit 2
++	fi
++	if [ "$bpf_cycles" = "<not" ]; then
++		echo "Failed: cycles not counted with --bpf-counters"
++		exit 1
++	fi
++}
++
++test_bpf_counters()
++{
++	printf "Testing --bpf-counters "
++	base_cycles=$(perf stat --no-big-num -e cycles -- $workload 2>&1 | awk '/cycles/ {print $1}')
++	bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- $workload  2>&1 | awk '/cycles/ {print $1}')
++	check_counts $base_cycles $bpf_cycles
++	compare_number $base_cycles $bpf_cycles
++	echo "[Success]"
++}
++
++test_bpf_modifier()
++{
++	printf "Testing bpf event modifier "
++	stat_output=$(perf stat --no-big-num -e cycles/name=base_cycles/,cycles/name=bpf_cycles/b -- $workload 2>&1)
++	base_cycles=$(echo "$stat_output"| awk '/base_cycles/ {print $1}')
++	bpf_cycles=$(echo "$stat_output"| awk '/bpf_cycles/ {print $1}')
++	check_counts $base_cycles $bpf_cycles
++	compare_number $base_cycles $bpf_cycles
++	echo "[Success]"
+ }
+ 
+ # skip if --bpf-counters is not supported
+@@ -30,16 +68,7 @@ if ! perf stat -e cycles --bpf-counters true > /dev/null 2>&1; then
+ 	exit 2
+ fi
+ 
+-base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
+-if [ "$base_cycles" = "<not" ]; then
+-	echo "Skipping: cycles event not counted"
+-	exit 2
+-fi
+-bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
+-if [ "$bpf_cycles" = "<not" ]; then
+-	echo "Failed: cycles not counted with --bpf-counters"
+-	exit 1
+-fi
++test_bpf_counters
++test_bpf_modifier
+ 
+-compare_number $base_cycles $bpf_cycles
+ exit 0
 -- 
 2.44.0.683.g7961c838ac-goog
 
