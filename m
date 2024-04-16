@@ -1,150 +1,121 @@
-Return-Path: <bpf+bounces-26884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE108A6296
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 06:49:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E4558A62DE
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 07:13:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5393D285131
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 04:49:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1688F1F2400F
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 05:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8659F38385;
-	Tue, 16 Apr 2024 04:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B29D39AEB;
+	Tue, 16 Apr 2024 05:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kGsBsyY/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JARV77tA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AB339FD0;
-	Tue, 16 Apr 2024 04:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A459F1CD06
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 05:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713242954; cv=none; b=HO18yl/qZKcDaTf4lXerc7gcuqFtRcnKVfekkWy0UuF3X6i4BLaGO5iDtOAm/JVR3/6MXSoKyZ7pjqMuQkFLTC8Mwf130dHnVXIwLw+htUja2kFW1XhnyjjYnqVr7oJZ+k92ytbqUBYlX0m9dVrorXlNmFsGcf7HoG8eIJVDU6k=
+	t=1713244383; cv=none; b=BzH9xNLcnAdNoMnBf8aCjLesqbjk0b84uZbR/HBcbNusykN7qntT2rw/2JqPecF4hD9JrL8QP45C8VHEd6EHH5Oi1s9yTEWhQl1zYNDSVDLFJ5r7HZlDKauBxHg0g0h3Yhdto+TY2DoV3zXm2UeqNz0Gu6uz2DKPr6p2CJ6Llbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713242954; c=relaxed/simple;
-	bh=X0e/b4815dUU3yNfWs7rK8Qfqjm9Hb0r1rcD66zpWFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PED2eJ2i5X5B2mDhjhs285LAi9+DOiSFsEg+uCxPIeEdFbyRO5CaQX2ZPD45MkHSUNY+uGgY6ROGJWew609rcpmgyzExRtss246hafk1vCmNC81nKbEa3ynP9Cv0Tz50cf5eIrX9TCxpfFqnpquKt0UQe6xStt4BVz6ViAZlsXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kGsBsyY/; arc=none smtp.client-ip=209.85.167.180
+	s=arc-20240116; t=1713244383; c=relaxed/simple;
+	bh=wWqbcDYzIUafz/DfQKOVHCF2VBl/W280Mg1YuSgZuTM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IBlSbhGJokMgFK6rEWhOrO29bLTRHvx9thHVG5wn/qDCocMUM6TjB2EV0EXrAtZ7AbydaT9vq6AvcohzSs9xyzgzz+SaMWvOzh8jV7sp/O17xd4unTYYRYXJe4ID7Z+UftqtkGookfcext0i6DUZC8ZYNgVnCHzrG7A5Z+rbEds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JARV77tA; arc=none smtp.client-ip=209.85.160.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so2424288b6e.2;
-        Mon, 15 Apr 2024 21:49:12 -0700 (PDT)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-23333dddd8aso2349774fac.1
+        for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 22:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713242952; x=1713847752; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X0e/b4815dUU3yNfWs7rK8Qfqjm9Hb0r1rcD66zpWFc=;
-        b=kGsBsyY/eG0fcYO2vm6JuStXj8mDolBmFcWNI+KC8PbHw4hn32dtUIAndWNHGpH4b6
-         eiszdp68Ca84nnCykEDe0kesDR0J94deRb5XuTDyNoiCK+7oLf3IRGJ1MngdBYyu+3Pe
-         bL1U3lEw0cZzfZ7AzLOY7DdXdgvvoQQWVGdVjrQqZB0Blb3q6NvG0NRwYZAWpnLL0kcu
-         2OT4gR7OjDxRRHUyJc5mYoe8C6aUVZ7u3aBtiOgT4ajmEHrWg1dZ2iicwGlQi3INTRgv
-         lpbjcZCLBxbSYdkJDHENqFIrTWoeBIKymxxcw9SCXU1qaCR8+oqYowLoRQg3Z2KMnwti
-         LkGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713242952; x=1713847752;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713244380; x=1713849180; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X0e/b4815dUU3yNfWs7rK8Qfqjm9Hb0r1rcD66zpWFc=;
-        b=duGh2vWX9dR+wCbavV3t1oZbCjlcqPxO0fFCLrfUKHnwLBvcb32rW3A553uIZy/H2e
-         WpLBdEgV7XYnXP8P4Z82k6IBafF1ACiWu97b+rRdYYu7bxEAUOBH3vM28Ko78z/gdfb+
-         NFw7O0A7NPpnp1DaU6eXgAoW6W/oZt+OjwiEiqPR4B19nUSWun3UUu1T2TTPhd15uVco
-         HyrDyOcwv102F7/RDhYgETn1PfpxQtvunMGfhDPwxznyf4Eg8RfBKQOVFvDeZUf0ztp2
-         dq3DRPzW4zCMh5eXWv2h+j0hBJVOMdxZ379OUvugl0JwQ1j+4iQLSnm+2NqA7z2wF9jb
-         N1vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbH5ABX1QI2kXX+QNlsI6pIiF7A8KOZvAyYu0O5ML3d3ROSTggc3lXXXiG6o+ZWBFkeq6r7bTwKrSG72TotxdO4BjgMRVgYrTAIUiB5O12LCnjbWgmbv3PLPotGc7GRfhu7Gnprc1aZuD6OqD0hdjcpNOhqbHUWmT168uvWZC/CyXkHcy90CF1YM/s4ramT3heqNoFLvmKxs1HaFhTHjD4AtgvocDwfg+I4EmkXcRXLrsoI+K99NuizwgIR3s4
-X-Gm-Message-State: AOJu0Ywe6n1JSue5DES8FTpQQn5Ffyn0pftSc347kk+jb/RGJEc4fIyV
-	CrfnLmEmcB6NrzqomAaDSI0K6KBn+YNg8ph9Y0OIyrtFSi7qK0Tj
-X-Google-Smtp-Source: AGHT+IGoloH1Cz2CDfxkFKegELxS+FD2Cf5LJ6XwCl9i4FMzbWDZYaoJWDAQEPh28jpTvMESJD+fqQ==
-X-Received: by 2002:a05:6808:3c6:b0:3c5:fd59:cfd2 with SMTP id o6-20020a05680803c600b003c5fd59cfd2mr13127438oie.37.1713242951652;
-        Mon, 15 Apr 2024 21:49:11 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id gh12-20020a056a00638c00b006ecc858b67fsm8312130pfb.175.2024.04.15.21.49.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 21:49:11 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id BA5A818462BA0; Tue, 16 Apr 2024 11:49:07 +0700 (WIB)
-Date: Tue, 16 Apr 2024 11:49:07 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-	akpm@linux-foundation.org, shuah@kernel.org,
-	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-	mic@digikod.net
-Cc: linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-	linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
-	pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de,
-	mjg59@srcf.ucam.org, pmatilai@redhat.com, jannh@google.com,
-	dhowells@redhat.com, jikos@kernel.org, mkoutny@suse.com,
-	ppavlu@suse.com, petr.vorel@gmail.com, mzerqung@0pointer.de,
-	kgold@linux.ibm.com, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-Message-ID: <Zh4DQ7RGxtWCam8K@archie.me>
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+        bh=wWqbcDYzIUafz/DfQKOVHCF2VBl/W280Mg1YuSgZuTM=;
+        b=JARV77tAi3sPPHEZ5j1oRMuIvOdpWgLOK+LxTEOfIQVh5SK7KZSfsQqnvKAC2Q9O2s
+         lQlAOHCNhbtRKkP6YSUq7wbGFAwsG4aUV7On20gTnd3s6nqfDD/kchvJdYNX5S0Dvdgv
+         3PWnxcMcWWezQd+Z3ubkfSwyDp//EMPu0nKR9u1g60/RJmmSAlJ2jJjqijP6vzWzDKRV
+         Q1HUGzBG+Nt3CA+XPAkz+K4ob7DeOrvrqZsl4MUxKIgx1ZUEaNuitackrrPjiPKJdqv0
+         7VKn2J8dovSv6aFGCW0bXoLzBuccsj8vtLnN4FzgHx/m0hrqJ/9VSZSS0krNhnFNZwh3
+         nMYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713244380; x=1713849180;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wWqbcDYzIUafz/DfQKOVHCF2VBl/W280Mg1YuSgZuTM=;
+        b=fO1je9EltPzC8HBz/WJbqiCBH7eyWOoJd4QP02ZYt9RrJAEf46MfTUH16W7xeKfDKc
+         ECmjlfZpGePf/OMkGYSu+zJ4/D5Zoz7UQO8oESZOtYVxEyAho6IMDoFgam7HhvZsql5D
+         E9c7FILFlvBEsGDbe1DYK+Shsz1QmkBo8T3iJu55nWWirGn8sJ7Q13b/LwN4+qdb/Hmn
+         SAQjS4X+Ps9XCXt+0dGI9F339r0rETZvwWCncCMWXThFor0j8fsoAkjMHIcn62Iphu+v
+         f6wncavto06CJDOWOc41fiLkg+O0hp7GN6vjyfCCswfBfZj3cTqTwfEySgQ6M4WZPSny
+         94/g==
+X-Gm-Message-State: AOJu0YzxHvvsGJY9zNQmeCkMXnbsAexVaoly4f9b0bSpDooLbVFbheBa
+	i8XEJji+to4SwNl4JK0kDsHjL4nLDYGJLf9qvPIP/FwQ0/wrbHDC9EC7LN/VDJqFoJVfby5TERJ
+	m7ZnrJkxUUR3TJBJVMA9I0SnS3JHucRhk
+X-Google-Smtp-Source: AGHT+IFX5huU2NWdNyDiQTDoTyiNgNRsN6kQKRcoo8YaUqg7gmGo6W/0p+ZYGEqAMxOTC3VhuFrXMZEkV81KCVjdLdg=
+X-Received: by 2002:a05:6870:1b17:b0:222:90a1:596f with SMTP id
+ hl23-20020a0568701b1700b0022290a1596fmr14411495oab.49.1713244380584; Mon, 15
+ Apr 2024 22:13:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="BkMvQL07QYXGkkI3"
-Content-Disposition: inline
-In-Reply-To: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
-
-
---BkMvQL07QYXGkkI3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <36c8d494-e1cf-4361-8187-05abe4698791@tu-braunschweig.de>
+In-Reply-To: <36c8d494-e1cf-4361-8187-05abe4698791@tu-braunschweig.de>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Tue, 16 Apr 2024 13:12:49 +0800
+Message-ID: <CAEyhmHQZD+F=dJTS8Pywp6vyKfo0Fo=O4Ww+8o=6+GwJ-WogLQ@mail.gmail.com>
+Subject: Re: No direct copy from ctx to map possible, why?
+To: Fabian Pfitzner <f.pfitzner@tu-braunschweig.de>
+Cc: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 04:24:22PM +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->=20
-> Integrity detection and protection has long been a desirable feature, to
-> reach a large user base and mitigate the risk of flaws in the software
-> and attacks.
->=20
-> However, while solutions exist, they struggle to reach the large user
-> base, due to requiring higher than desired constraints on performance,
-> flexibility and configurability, that only security conscious people are
-> willing to accept.
->=20
-> This is where the new digest_cache LSM comes into play, it offers
-> additional support for new and existing integrity solutions, to make
-> them faster and easier to deploy.
->=20
-> The full documentation with the motivation and the solution details can be
-> found in patch 14.
->=20
-> The IMA integration patch set will be introduced separately. Also a PoC
-> based on the current version of IPE can be provided.
->=20
+On Mon, Apr 15, 2024 at 5:41=E2=80=AFAM Fabian Pfitzner
+<f.pfitzner@tu-braunschweig.de> wrote:
+>
+> Hello,
+>
+> is there a specific reason why it is not allowed to copy data from ctx
+> directly into a map via the bpf_map_update_elem helper?
+> I develop a XDP program where I need to store incoming packets
+> (including the whole payload) into a map in order to buffer them.
+> I thought I could simply put them into a map via the mentioned helper
+> function, but the verifier complains about expecting another type as
+> "ctx" (R3 type=3Dctx expected=3Dfp, pkt, pkt_meta, .....).
+>
+> I was able to circumvent this error by first putting the packet onto the
+> stack (via xdp->data) and then write it into the map.
+> The only limitation with this is that I cannot store packets larger than
+> 512 bytes due to the maximum stack size.
+>
+> I was also able to circumvent this by slicing chunks, that are smaller
+> than 512 bytes, out of the packet so that I can use the stack as a
+> clipboard before putting them into the map. This is a really ugly
+> solution, but I have not found a better one yet.
+>
 
-I can't cleanly apply this series (conflict on patch [13/14]). Can you
-point out the base commit of this series?
+Have you tried bpf_xdp_output() helper ?
 
-Confused...
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---BkMvQL07QYXGkkI3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh4DPQAKCRD2uYlJVVFO
-oxOIAP4gVyV6DAnmVLqQb6OkqAAY7l0rywBHayaYMF+T7O8BUwD9EU018eGv0r1C
-TUjWVbhQh6gRlmM3rI+Alg84QyqPvwg=
-=IWc9
------END PGP SIGNATURE-----
-
---BkMvQL07QYXGkkI3--
+> So my question is: Why does this limitation exist? I am not sure if its
+> only related to XDP programs as this restriction is defined inside of
+> the bpf_map_update_elem_proto struct (arg3_type restricts this), so I
+> think it is a general limitation that affects all program types.
+>
+> Best regards,
+> Fabian Pfitzner
+>
+>
+>
+>
 
