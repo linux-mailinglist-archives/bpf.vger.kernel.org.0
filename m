@@ -1,218 +1,196 @@
-Return-Path: <bpf+bounces-26915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382158A64EA
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 09:20:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5548A6500
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 09:23:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40211F22B07
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 07:20:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41598B202EF
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 07:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF0D84E04;
-	Tue, 16 Apr 2024 07:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFA885268;
+	Tue, 16 Apr 2024 07:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NahYVY82"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekk8HCBF"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB673BBD5
-	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 07:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9336EB75;
+	Tue, 16 Apr 2024 07:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252009; cv=none; b=rbPJpvei0CgyOXkcdb/sf0CRasN2b34hbkZiHcc0GGyhNudh5dv6pWpVwkJtrZaLQYUi6HnJvAviuiHWThVTQ+TnJN2M0jvCT8VccOG4o+cFX6KZTt/tA6aXiDL2A5SO5C2D7trIksh+yzQfTjkk1lTrVZrivm5Ju5+ep2RR26s=
+	t=1713252206; cv=none; b=VHkeyzIbKbKGyGXLYc8WCAkzSIf45pmkXFPO39XulTqCp8JJt/VEmI/5zqg1Jqo6Wmy/ZVyh5thfkGWRbDRnp74yq47yDxrd7F053nt8oEP+d4VPJgUEmNNM5xh9f+yPPiB28qE+352P3m7l/fO/+G+uFsyTPbXrNkjMhaV64ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252009; c=relaxed/simple;
-	bh=yWsm5BADRNm0BAbA8BrXoabIASc6hnzuKhZ+xqYwZFE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sSPYXc64+tIXP44s++JK0XEXvbCoenDBRelJb+2ugzvwAQtCnNI3gnldLdki0qLZpqzZS+urFKFENcsYA9Kf9QdWbLPcfrrtj5qWjVv/23sEcXOegZMsi9HLnDf4N6Y39cjMq7vJBFT33y5KyiSZ+0yNpqSnBh5UkoogJQkncpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NahYVY82; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713252006;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N6JZjfWmVVy6GZCTR5QhlAS0fPiwwYqciHqJUFxR3Hw=;
-	b=NahYVY829FncVhLfole+uPGb5eOGxTh7L3F2YkP3lUlpdx6nNro3+PDzI4cmSjlXRFjRQ/
-	F5dGuwdmbRu1qTbwdf8sfR/MuCGvMHOUOlrUieItUafHHfD66Rte9VJgzwctR/99tct2u8
-	195RkJGE63SEb+km9yAzapxl64qZenU=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-67-lqvqjV3fMyOQrNScEcDFfQ-1; Tue, 16 Apr 2024 03:20:04 -0400
-X-MC-Unique: lqvqjV3fMyOQrNScEcDFfQ-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5dc1548ac56so2634174a12.3
-        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 00:20:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713252003; x=1713856803;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N6JZjfWmVVy6GZCTR5QhlAS0fPiwwYqciHqJUFxR3Hw=;
-        b=virm2zWQRB8Vl6Q68mV8yyyEtPew7O/7WZ68QCaI5d1W6SQu0oIdrRrTIXqQdJFzBk
-         Jmysyb9LdxeEonN9BuNLIqfNpxo+tA/ADF+k8gZxwfd9Z+XHQuQr8Ta1xcxmyXy83X4j
-         eqDW9EpFbJEe2JyfI8xGWZ3G0BmIijJpUPTi7t4h8BSnAL9RX9Ebfte20Y+OBDAscWzg
-         rwe11XZQ0wmrah9ygMkHyNZiTQR8+hptJsPI/uf5v5xrVUoqMQlCa0deYPzQFIH6YQ9K
-         D3Ld1ZFUBB2jmCfm4yA8a3dU+1ATLFLh/mVsCxKISZetixc4ASodVz2ICLefwSUo0yV+
-         syXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVyKRMt0kzwM00vbLuE+clz/m8zZ7XooGb0DtvYc5Ltp6wYgkveN72GM+EaWWkbnd7/bCnulNorAWRbjmANsF7FydLm
-X-Gm-Message-State: AOJu0YwMVR0a7RvC4cllu73UzVRVOyZhY1p1YlQM4iDcJHWfQhHzJGP+
-	y0UFHNZLmaXetzW2cfHs7yfodmutsXsSDreKixuVxlk+kWcYNNob2Hly23DOJYbUSq2ZxP3aQ/Z
-	vA0/ve2gUmO1bq1b4G2YulGMD4n9ScLUg/FJO/jKOM5YKjyRyQLt/9WEP1USPO6dGGy1kfSlyyG
-	s7QJYJcGxq7nEFFUcyD9Gu2tdS
-X-Received: by 2002:a17:90b:3a8e:b0:2a5:275c:ed with SMTP id om14-20020a17090b3a8e00b002a5275c00edmr10702680pjb.23.1713252003262;
-        Tue, 16 Apr 2024 00:20:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG+l20/tJxppb54gd4K/tvseZzfAqVGlIC9/84+hZbdu2wNQwshpvR1SZGpF1E0rlbB94MitQIqdwJz5TJsdis=
-X-Received: by 2002:a17:90b:3a8e:b0:2a5:275c:ed with SMTP id
- om14-20020a17090b3a8e00b002a5275c00edmr10702656pjb.23.1713252002908; Tue, 16
- Apr 2024 00:20:02 -0700 (PDT)
+	s=arc-20240116; t=1713252206; c=relaxed/simple;
+	bh=ULqJjlTCraVJ0ruf913jYz2dlG1gS6UCOgmOiRdXRlo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UjCvUPLzf0P3JLPBqJW2/Sn+xfkNer8nzPpJ1PQZr0VieC5pN2cPRDtF86WlRWoIMN163+SoQ1iEKRXtCwXwxWKOfl+DcQCsuFTcPeEUDF3NH+HFL84kVCy3ArKqnHlZf/m0tWDuZLJTDnBDJy2NWegGodnzs2laWUFeMHkhecM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekk8HCBF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BBECC113CE;
+	Tue, 16 Apr 2024 07:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713252205;
+	bh=ULqJjlTCraVJ0ruf913jYz2dlG1gS6UCOgmOiRdXRlo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ekk8HCBFjthC7O7PxrFN7j/GM7z/nWOuO8k9QOUSLiGyz09GAO2cg64dmGZlUlds7
+	 00Ewxyx3C6wcPZBoIkKGD6lbL3qbO2ksVpnRUlonLdQr9BhpV1yf7+bx9loZNn41At
+	 rywVk+bWOXuipnXUZImOPnzXQlyIpQamAXCi97V5XEUtgpABiSiT97flmkQAEFDr7A
+	 YcuRY0rwjZPTJIRXEph9PF+jUZc4mOVTGomsCx8EugJ6WC8EEbdEckfhASAJlczMAM
+	 pEgjXqHCw7T7cVdoBUzlejwen9ZBJYRh+vjYrzCI4CZ6xsCi82SwkYS2yHPnvfOsma
+	 Wo31Nl9r7Gz/Q==
+Date: Tue, 16 Apr 2024 10:22:14 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Bj\"orn T\"opel" <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <Zh4nJp8rv1qRBs8m@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+ <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061943.407082-1-liangchen.linux@gmail.com>
-In-Reply-To: <20240416061943.407082-1-liangchen.linux@gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 16 Apr 2024 15:19:51 +0800
-Message-ID: <CACGkMEuJBdsePgszsM51DZc1GvF0naorHDsMR+SGZ1SiA6jrZQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v8] virtio_net: Support RX hash XDP hint
-To: Liang Chen <liangchen.linux@gmail.com>
-Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org, 
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
 
-On Tue, Apr 16, 2024 at 2:20=E2=80=AFPM Liang Chen <liangchen.linux@gmail.c=
-om> wrote:
->
-> The RSS hash report is a feature that's part of the virtio specification.
-> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-> (still a work in progress as per [1]) support this feature. While the
-> capability to obtain the RSS hash has been enabled in the normal path,
-> it's currently missing in the XDP path. Therefore, we are introducing
-> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
->
-> 1.
-> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.=
-com/#r
->
-> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
-> ---
->   Changes from v7:
-> - use table lookup for rss hash type
->   Changes from v6:
-> - fix a coding style issue
->   Changes from v5:
-> - Preservation of the hash value has been dropped, following the conclusi=
-on
->   from discussions in V3 reviews. The virtio_net driver doesn't
->   accessing/using the virtio_net_hdr after the XDP program execution, so
->   nothing tragic should happen. As to the xdp program, if it smashes the
->   entry in virtio header, it is likely buggy anyways. Additionally, looki=
-ng
->   up the Intel IGC driver,  it also does not bother with this particular
->   aspect.
-> ---
->  drivers/net/virtio_net.c        | 42 +++++++++++++++++++++++++++++++++
->  include/uapi/linux/virtio_net.h |  1 +
->  2 files changed, 43 insertions(+)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c22d1118a133..1d750009f615 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -4621,6 +4621,47 @@ static void virtnet_set_big_packets(struct virtnet=
-_info *vi, const int mtu)
->         }
->  }
->
-> +static enum xdp_rss_hash_type
-> +virtnet_xdp_rss_type[VIRTIO_NET_HASH_REPORT_MAX_TABLE] =3D {
-> +       [VIRTIO_NET_HASH_REPORT_NONE] =3D XDP_RSS_TYPE_NONE,
-> +       [VIRTIO_NET_HASH_REPORT_IPv4] =3D XDP_RSS_TYPE_L3_IPV4,
-> +       [VIRTIO_NET_HASH_REPORT_TCPv4] =3D XDP_RSS_TYPE_L4_IPV4_TCP,
-> +       [VIRTIO_NET_HASH_REPORT_UDPv4] =3D XDP_RSS_TYPE_L4_IPV4_UDP,
-> +       [VIRTIO_NET_HASH_REPORT_IPv6] =3D XDP_RSS_TYPE_L3_IPV6,
-> +       [VIRTIO_NET_HASH_REPORT_TCPv6] =3D XDP_RSS_TYPE_L4_IPV6_TCP,
-> +       [VIRTIO_NET_HASH_REPORT_UDPv6] =3D XDP_RSS_TYPE_L4_IPV6_UDP,
-> +       [VIRTIO_NET_HASH_REPORT_IPv6_EX] =3D XDP_RSS_TYPE_L3_IPV6_EX,
-> +       [VIRTIO_NET_HASH_REPORT_TCPv6_EX] =3D XDP_RSS_TYPE_L4_IPV6_TCP_EX=
-,
-> +       [VIRTIO_NET_HASH_REPORT_UDPv6_EX] =3D XDP_RSS_TYPE_L4_IPV6_UDP_EX
-> +};
-> +
-> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-> +                              enum xdp_rss_hash_type *rss_type)
-> +{
-> +       const struct xdp_buff *xdp =3D (void *)_ctx;
-> +       struct virtio_net_hdr_v1_hash *hdr_hash;
-> +       struct virtnet_info *vi;
-> +       u16 hash_report;
-> +
-> +       if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-> +               return -ENODATA;
-> +
-> +       vi =3D netdev_priv(xdp->rxq->dev);
-> +       hdr_hash =3D (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hd=
-r_len);
-> +       hash_report =3D __le16_to_cpu(hdr_hash->hash_report);
-> +
-> +       if (hash_report >=3D VIRTIO_NET_HASH_REPORT_MAX_TABLE)
-> +               hash_report =3D VIRTIO_NET_HASH_REPORT_NONE;
-> +
-> +       *rss_type =3D virtnet_xdp_rss_type[hash_report];
-> +       *hash =3D __le32_to_cpu(hdr_hash->hash_value);
-> +       return 0;
-> +}
-> +
-> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops =3D {
-> +       .xmo_rx_hash                    =3D virtnet_xdp_rx_hash,
-> +};
-> +
->  static int virtnet_probe(struct virtio_device *vdev)
->  {
->         int i, err =3D -ENOMEM;
-> @@ -4747,6 +4788,7 @@ static int virtnet_probe(struct virtio_device *vdev=
-)
->                                   VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
->
->                 dev->hw_features |=3D NETIF_F_RXHASH;
-> +               dev->xdp_metadata_ops =3D &virtnet_xdp_metadata_ops;
->         }
->
->         if (vi->has_rss_hash_report)
-> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_=
-net.h
-> index cc65ef0f3c3e..3ee695450096 100644
-> --- a/include/uapi/linux/virtio_net.h
-> +++ b/include/uapi/linux/virtio_net.h
-> @@ -176,6 +176,7 @@ struct virtio_net_hdr_v1_hash {
->  #define VIRTIO_NET_HASH_REPORT_IPv6_EX         7
->  #define VIRTIO_NET_HASH_REPORT_TCPv6_EX        8
->  #define VIRTIO_NET_HASH_REPORT_UDPv6_EX        9
-> +#define VIRTIO_NET_HASH_REPORT_MAX_TABLE      10
+On Mon, Apr 15, 2024 at 06:36:39PM +0100, Mark Rutland wrote:
+> On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
+> > On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
+> > > +/**
+> > > + * enum execmem_type - types of executable memory ranges
+> > > + *
+> > > + * There are several subsystems that allocate executable memory.
+> > > + * Architectures define different restrictions on placement,
+> > > + * permissions, alignment and other parameters for memory that can be used
+> > > + * by these subsystems.
+> > > + * Types in this enum identify subsystems that allocate executable memory
+> > > + * and let architectures define parameters for ranges suitable for
+> > > + * allocations by each subsystem.
+> > > + *
+> > > + * @EXECMEM_DEFAULT: default parameters that would be used for types that
+> > > + * are not explcitly defined.
+> > > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> > > + * @EXECMEM_KPROBES: parameters for kprobes
+> > > + * @EXECMEM_FTRACE: parameters for ftrace
+> > > + * @EXECMEM_BPF: parameters for BPF
+> > > + * @EXECMEM_TYPE_MAX:
+> > > + */
+> > > +enum execmem_type {
+> > > +	EXECMEM_DEFAULT,
+> > > +	EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
+> > > +	EXECMEM_KPROBES,
+> > > +	EXECMEM_FTRACE,
+> > > +	EXECMEM_BPF,
+> > > +	EXECMEM_TYPE_MAX,
+> > > +};
+> > 
+> > Can we please get a break-down of how all these types are actually
+> > different from one another?
+> > 
+> > I'm thinking some platforms have a tiny immediate space (arm64 comes to
+> > mind) and has less strict placement constraints for some of them?
+> 
+> Yeah, and really I'd *much* rather deal with that in arch code, as I have said
+> several times.
+> 
+> For arm64 we have two bsaic restrictions: 
+> 
+> 1) Direct branches can go +/-128M
+>    We can expand this range by having direct branches go to PLTs, at a
+>    performance cost.
+> 
+> 2) PREL32 relocations can go +/-2G
+>    We cannot expand this further.
+> 
+> * We don't need to allocate memory for ftrace. We do not use trampolines.
+> 
+> * Kprobes XOL areas don't care about either of those; we don't place any
+>   PC-relative instructions in those. Maybe we want to in future.
+> 
+> * Modules care about both; we'd *prefer* to place them within +/-128M of all
+>   other kernel/module code, but if there's no space we can use PLTs and expand
+>   that to +/-2G. Since modules can refreence other modules, that ends up
+>   actually being halved, and modules have to fit within some 2G window that
+>   also covers the kernel.
+> 
+> * I'm not sure about BPF's requirements; it seems happy doing the same as
+>   modules.
 
-This should not be part of uAPI. It may confuse the userspace.
+BPF are happy with vmalloc().
+ 
+> So if we *must* use a common execmem allocator, what we'd reall want is our own
+> types, e.g.
+> 
+> 	EXECMEM_ANYWHERE
+> 	EXECMEM_NOPLT
+> 	EXECMEM_PREL32
+> 
+> ... and then we use those in arch code to implement module_alloc() and friends.
 
-Others look good.
+I'm looking at execmem_types more as definition of the consumers, maybe I
+should have named the enum execmem_consumer at the first place.
 
-Thanks
+And the arch constrains defined in struct execmem_range describe how memory
+should be allocated for each consumer.
 
->         __le16 hash_report;
->         __le16 padding;
->  };
-> --
-> 2.40.1
->
+These constraints are defined early at boot and remain static, so
+initializing them once and letting a common allocator use them makes
+perfect sense to me.
 
+I agree that fallback_{start,end} are not ideal, but we have 3
+architectures that have preferred and secondary range for modules. And arm
+and powerpc use the same logic for kprobes as well, and I don't see why this
+code should be duplicated.
+
+And, for instance, if you decide to place PC-relative instructions if
+kprobes XOL areas, you'd only need to update execmem_range for kprobes to
+be more like the range for modules.
+
+With central allocator it's easier to deal with the things like
+VM_FLUSH_RESET_PERMS and caching of ROX memory and I think it will be more
+maintainable that module_alloc(), alloc_insn_page() and
+bpf_jit_alloc_exec() spread all over the place.
+ 
+> Mark.
+
+-- 
+Sincerely yours,
+Mike.
 
