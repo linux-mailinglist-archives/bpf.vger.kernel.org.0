@@ -1,224 +1,333 @@
-Return-Path: <bpf+bounces-27012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 176B98A787B
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 01:14:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC5118A78C0
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 01:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 716C4B20C9D
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 23:14:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 354F61F22631
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 23:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481AA13A86B;
-	Tue, 16 Apr 2024 23:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C6613A898;
+	Tue, 16 Apr 2024 23:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nyqi2uS+"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OVOWgNkF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8E14AEE9;
-	Tue, 16 Apr 2024 23:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294F012E1CE;
+	Tue, 16 Apr 2024 23:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713309283; cv=none; b=m3IGXiZqUi3ZoN+d4v2R/EFHt3LyfaOISo+YeXyLo6aKHZl66hJuwmoqrmtJNofKtLC+TmS0OFoaKwWLRiVUgWyc+4WmwfP1stVCg89WGUsWtZQvPkUqSVJ5JGTixVNukGQAxwdz/Zo64l3q0Tu9H7jae99rKQhJEO9F+0BqGAQ=
+	t=1713310874; cv=none; b=tVHnZSehwYK/iFwsQPkmC//c5rk6otYEGAmXLxSz4nUwwoN54l28hw4BCXxsVqrWG2bEHJrobrI/kdGLO6V5rvp3kae6gl3A33q0MlpdGwc5KvuXFCYPi5My86vZWBFC1m4cHV99fHp9vwUrhTPq8HyxB3Eu3O0G0YdAU4ft5JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713309283; c=relaxed/simple;
-	bh=Sw2FFGAUztuJzFb3aL9I8gL4fK/+KtIu9O7CvmghvDg=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=uyxfaw4GsUS6T2ynvs+AlEAOiMaXYqndINziyQSN59VXvqeA1tYqczbPKlb8zWQdj6AB8skV35Acnl8CN1DtdK7+EmMlKTwtCIIS2FBHAn2b0raoT5gEVaPVrmIXTOkJp3bfSPkukbRVy3+43wLFrDyQyZ945M7+i+aJMSYizBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nyqi2uS+; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4375b8b4997so4271571cf.2;
-        Tue, 16 Apr 2024 16:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713309281; x=1713914081; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GjNK5/6z8Zr/0UT33xznjKY1QmMGq1le/CtfMG5Gbxc=;
-        b=Nyqi2uS+ZdLv2TXSmKC1amxx09asVwwuB5kS6LtYSwrXFXKr2AsmBYpwmp0BTxusk0
-         ZWGeLHY5xj11qb0vk55KEJ2KPPAP1Qk8Gd37ovvhxszqG/WiYDcxPnMopCl5y6PmHGlT
-         w2PB47iY80BTCH9Vjo6QNnL1pVWhwi7260ib3rQhVJ5gMdnMRhwjiDBnbSiWSm72l/U1
-         MjQ7leEl/DuFNvi1N2X8EK1P0DawlwGah/+FV7np6tG1uvWn5BDR7DhhwvfAGFV4dVA7
-         uhky5bN3qR2oCHPW6hcKJpAWPsKQ8jLB9Kj8PdC8qSv2UsSFbzbuKXfR6GkRkoDXnAr8
-         b8Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713309281; x=1713914081;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GjNK5/6z8Zr/0UT33xznjKY1QmMGq1le/CtfMG5Gbxc=;
-        b=G83XzBD7GQS74cr2hWyRLuDLlvlh3R0/BIguH2ZVbeGj1bQBpCk5uaw5xfA9wdCmhQ
-         8IU/XrEVbKlAXqacpfibcBHRbJufXiAmSN4AkC7ShwA7HWOMo/GV5byS6e3OG7A/VTxm
-         fvNL3j0rzjrspYm7J4tajmIO7kpOQaWLmEOTnzA08QYo1Ixg/iW+BoJob/agxz2o+44L
-         y5WUlYN7VtX+8sNsmW4+85JJRDYl0bwdEl7ReNSMXPkIpfubY9m2RkScodjPUZhYK8Xd
-         ftOaYHpdvd3rQpaXkBpBCkd1bc3GFzeylZSdwUjeqEan/ROOL+FTHnUQ9NB9TWQKjvhr
-         MVVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVNmJjD9e5cyfrV03Ejzh7yVtqBw1nFor2qmiaN9P2/yukKaHi4FdpqwIC0ykz2dDuo7gf3OzQB33RIp+PFb34o0uosUiDAdA8GWOpjqvYy0Ye8O6QqZIJCoQdOZFyhzw4UHVi71JkzpprUSvEaKN4qhyOIj1uV8AK
-X-Gm-Message-State: AOJu0YyqrWUPvk34B0cAMtog3ce2Yk/3Yed6vT/gSAY89lebuDZwpV8e
-	SXldA2G0lqyP3LzHImXe20BszNHsbu9E9O9fFfiuYnAjwDW4bldp
-X-Google-Smtp-Source: AGHT+IF58hOX1WlS/m/syvGeLvfJyg5HoIcXnbUOYIlvT8hb89D+rk8llmqyodBgUfwWnLvSzUPwkg==
-X-Received: by 2002:a05:622a:507:b0:434:3358:8990 with SMTP id l7-20020a05622a050700b0043433588990mr19527861qtx.21.1713309281086;
-        Tue, 16 Apr 2024 16:14:41 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id a19-20020a05622a065300b004367cc4ab01sm6711814qtb.15.2024.04.16.16.14.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 16:14:40 -0700 (PDT)
-Date: Tue, 16 Apr 2024 19:14:40 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: =?UTF-8?B?TWFjaWVqIMW7ZW5jenlrb3dza2k=?= <maze@google.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
- "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
- "kuba@kernel.org" <kuba@kernel.org>, 
- =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
- "pabeni@redhat.com" <pabeni@redhat.com>, 
- "edumazet@google.com" <edumazet@google.com>, 
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
- "davem@davemloft.net" <davem@davemloft.net>, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
- bpf <bpf@vger.kernel.org>
-Message-ID: <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
-References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
- <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
- <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
- <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
- <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
- <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
- <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
-Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
- fraglist
+	s=arc-20240116; t=1713310874; c=relaxed/simple;
+	bh=bICZAsXgYGT5YWWOuMl10d7+YEs7h/CLvGEmAXXw3M8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nDiIYgYMxMqZ1pVppOsJritE3BER+ea4PV8SGPXCDZVN0hqne7sYE2Mr8UhfvGMfBRq8HWG+XfsXOV3Y6GrL5LKd1JnmcLYFm9bD0FUaVhVkU2mORc4jLJ7VJucePbOAId4fcNbSq5Xj+aaMbSWlv68EAA7qi3JnxYTjLriNU8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OVOWgNkF; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GNBICL005996;
+	Tue, 16 Apr 2024 23:40:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=of/cLQJhseuXknQ6XKSZPirrsTVR+NSnRl42Oh7x+68=; b=OV
+	OWgNkF4DQ9h65JBh8VyMhobHYT1HdHJEbLyHsW44S/IsyZ59QMftya4nUgFtDd0z
+	UmzNOMsB+Z+6g7re71Cke0jMSWF7z6oUsD4TxzpI27YWuPxbQHxUaOMCQa5n9nNO
+	EA4cBWC3Hpaz04ymPBQs9tZvZ0Tl5v4s106pf02WtF2aubpLepDHfMOkg8eI46+k
+	bmE3HggGYnRLguWoOvZ4TJoLvpGVM3bYp2xEb5fG7OGt3LCU4n90zSOGKI4M8U3Z
+	G6NlJBFrdFaScYK0PJ2wCewB2rYtOBZM1gkD3WVvMvbEVitAEND9uE9CH66t2DEf
+	EKL8VFU9Y3iUF4iY1IMg==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xhswvsvs4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 23:40:45 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43GNehnE017108
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 23:40:43 GMT
+Received: from [10.110.24.237] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 16 Apr
+ 2024 16:40:39 -0700
+Message-ID: <248cfe7f-cc29-4473-960f-0b036b43a52e@quicinc.com>
+Date: Tue, 16 Apr 2024 16:40:38 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-> > > > Personally, I think bpf_skb_pull_data() should have automatically=
-
-> > > > (ie. in kernel code) reduced how much it pulls so that it would p=
-ull
-> > > > headers only,
-> > >
-> > > That would be a helper that parses headers to discover header lengt=
-h.
-> >
-> > Does it actually need to?  Presumably the bpf pull function could
-> > notice that it is
-> > a packet flagged as being of type X (UDP GSO FRAGLIST) and reduce the=
- pull
-> > accordingly so that it doesn't pull anything from the non-linear
-> > fraglist portion???
-> >
-> > I know only the generic overview of what udp gso is, not any details,=
- so I am
-> > assuming here that there's some sort of guarantee to how these packet=
-s
-> > are structured...  But I imagine there must be or we wouldn't be hitt=
-ing these
-> > issues deeper in the stack?
-> =
-
-> Perhaps for a packet of this type we're already guaranteed the headers
-> are in the linear portion,
-> and the pull should simply be ignored?
-> =
-
-> >
-> > > Parsing is better left to the BPF program.
-
-I do prefer adding sanity checks to the BPF helpers, over having to
-add then in the net hot path only to protect against dangerous BPF
-programs.
-
-In this case, it would be detecting this GSO type and failing the
-operation if exceeding skb_headlen().
-> > >
-> > > > and not packet content.
-> > > > (This is assuming the rest of the code isn't ready to deal with a=
- longer pull,
-> > > > which I think is the case atm.  Pulling too much, and then crashi=
-ng or forcing
-> > > > the stack to drop packets because of them being malformed seems w=
-rong...)
-> > > >
-> > > > In general it would be nice if there was a way to just say pull a=
-ll headers...
-> > > > (or possibly all L2/L3/L4 headers)
-> > > > You in general need to pull stuff *before* you've even looked at =
-the packet,
-> > > > so that you can look at the packet,
-> > > > so it's relatively hard/annoying to pull the correct length from =
-bpf
-> > > > code itself.
-> > > >
-> > > > > > > BPF needs to modify a proper length to do pull data. Howeve=
-r kernel
-> > > > > > > should also improve the flow to avoid crash from a bpf func=
-tion
-> > > > > > call.
-> > > > > > > As there is no split flow and app may not decode the merged=
- UDP
-> > > > > > packet,
-> > > > > > > we should drop the packet without fraglist in skb_segment_l=
-ist
-> > > > > > here.
-> > > > > > >
-> > > > > > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chainin=
-g.")
-> > > > > > > Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-> > > > > > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
-> > > > > > > ---
-> > > > > > >  net/core/skbuff.c | 3 +++
-> > > > > > >  1 file changed, 3 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > > > > > > index b99127712e67..f68f2679b086 100644
-> > > > > > > --- a/net/core/skbuff.c
-> > > > > > > +++ b/net/core/skbuff.c
-> > > > > > > @@ -4504,6 +4504,9 @@ struct sk_buff *skb_segment_list(stru=
-ct
-> > > > > > sk_buff *skb,
-> > > > > > >  if (err)
-> > > > > > >  goto err_linearize;
-> > > > > > >
-> > > > > > > +if (!list_skb)
-> > > > > > > +goto err_linearize;
-> > > > > > > +
-> > >
-> > > This would catch the case where the entire data frag_list is
-> > > linearized, but not a pskb_may_pull that only pulls in part of the
-> > > list.
-> > >
-> > > Even with BPF being privileged, the kernel should not crash if BPF
-> > > pulls a FRAGLIST GSO skb.
-> > >
-> > > But the check needs to be refined a bit. For a UDP GSO packet, I
-> > > think gso_size is still valid, so if the head_skb length does not
-> > > match gso_size, it has been messed with and should be dropped.
-> > >
-> > > For a GSO_BY_FRAGS skb, there is no single gso_size, and this pull
-> > > may be entirely undetectable as long as frag_list !=3D NULL?
-> > >
-> > >
-> > > > > > >  skb_shinfo(skb)->frag_list =3D NULL;
-> > > > > >
-> > > > > > In absense of plugging the issue in BPF, dropping here is the=
- best
-> > > > > > we can do indeed, I think.
-> =
-
-> --
-> Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v3 2/2] net: Add additional bit to support
+ userspace timestamp type
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+        Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>
+CC: <kernel@quicinc.com>, "David S. Miller" <davem@davemloft.net>,
+        "Eric
+ Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
+ <20240412210125.1780574-3-quic_abchauha@quicinc.com>
+ <661ad7d4c65da_3be9a7294e@willemb.c.googlers.com.notmuch>
+ <617e2577-8de2-4fde-bbfe-2d6280c48c29@linux.dev>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <617e2577-8de2-4fde-bbfe-2d6280c48c29@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yuMeAIjQjXmhhvEyVuLphiAIzj8JDkiz
+X-Proofpoint-ORIG-GUID: yuMeAIjQjXmhhvEyVuLphiAIzj8JDkiz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_18,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 suspectscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404160155
 
 
+
+On 4/15/2024 1:00 PM, Martin KaFai Lau wrote:
+> On 4/13/24 12:07 PM, Willem de Bruijn wrote:
+>>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+>>> index a83a2120b57f..b6346c21c3d4 100644
+>>> --- a/include/linux/skbuff.h
+>>> +++ b/include/linux/skbuff.h
+>>> @@ -827,7 +827,8 @@ enum skb_tstamp_type {
+>>>    *    @tstamp_type: When set, skb->tstamp has the
+>>>    *        delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>>    *        skb->tstamp has the (rcv) timestamp at ingress and
+>>> - *        delivery_time at egress.
+>>> + *        delivery_time at egress or skb->tstamp defined by skb->sk->sk_clockid
+>>> + *        coming from userspace
+>>>    *    @napi_id: id of the NAPI struct this skb came from
+>>>    *    @sender_cpu: (aka @napi_id) source CPU in XPS
+>>>    *    @alloc_cpu: CPU which did the skb allocation.
+>>> @@ -955,7 +956,7 @@ struct sk_buff {
+>>>       /* private: */
+>>>       __u8            __mono_tc_offset[0];
+>>>       /* public: */
+>>> -    __u8            tstamp_type:1;    /* See SKB_MONO_DELIVERY_TIME_MASK */
+>>> +    __u8            tstamp_type:2;    /* See SKB_MONO_DELIVERY_TIME_MASK */
+>>>   #ifdef CONFIG_NET_XGRESS
+>>>       __u8            tc_at_ingress:1;    /* See TC_AT_INGRESS_MASK */
+>>>       __u8            tc_skip_classify:1;
+>>
+>> A quick pahole for a fairly standard .config that I had laying around
+>> shows a hole after this list of bits, so no huge concerns there from
+>> adding a bit:
+>>
+>>             __u8               slow_gro:1;           /*     3: 4  1 */
+>>             __u8               csum_not_inet:1;      /*     3: 5  1 */
+>>
+>>             /* XXX 2 bits hole, try to pack */
+>>
+>>             __u16              tc_index;             /*     4     2 */
+>>
+>>> @@ -1090,10 +1091,10 @@ struct sk_buff {
+>>>    */
+>>>   #ifdef __BIG_ENDIAN_BITFIELD
+>>>   #define SKB_MONO_DELIVERY_TIME_MASK    (1 << 7)
+>>> -#define TC_AT_INGRESS_MASK        (1 << 6)
+>>> +#define TC_AT_INGRESS_MASK        (1 << 5)
+>>
+>> Have to be careful when adding a new 2 bit tstamp_type with both bits
+>> set, that this does not incorrectly get interpreted as MONO.
+>>
+>> I haven't looked closely at the BPF API, but hopefully it can be
+>> extensible to return the specific type. If it is hardcoded to return
+>> either MONO or not, then only 0x1 should match, not 0x3.
+> 
+> Good point. I believe it is the best to have bpf to consider both bits in tstamp_type:2 in filter.c to avoid the 0x3 surprise in the future. The BPF API can be extended to support SKB_CLOCK_TAI.
+> 
+> Regardless, in bpf_convert_tstamp_write(), it still needs to clear both bits in tstamp_type when it is at ingress. Right now it only clears the mono bit.
+> 
+> Then it may as well consider both tstamp_type:2 bits in bpf_convert_tstamp_read() and bpf_convert_tstamp_type_read(). e.g. bpf_convert_tstamp_type_read(), it should be a pretty straight forward change because the SKB_CLOCK_* enum value should be a 1:1 mapping to the BPF_SKB_TSTAMP_*.
+> 
+>>
+>>>   #else
+>>>   #define SKB_MONO_DELIVERY_TIME_MASK    (1 << 0)
+>>> -#define TC_AT_INGRESS_MASK        (1 << 1)
+>>> +#define TC_AT_INGRESS_MASK        (1 << 2)
+>>>   #endif
+>>>   #define SKB_BF_MONO_TC_OFFSET        offsetof(struct sk_buff, __mono_tc_offset)
+>>>   
+> 
+Hi Martin and Willem,
+
+I have made the changes as per your guidelines . I will be raising RFC patch bpf-next v4 soon. Giving you heads up of the changes i am bringing in the BPF code. If you feel i have done something incorrectly, please do correct me here.  
+I apologies for adding the code here and making the content of the email huge for other upstream reviewers. 
+
+//Introduce a new BPF tstamp type mask in bpf.h 
+
+#ifdef __BIG_ENDIAN_BITFIELD
+#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
++ #define SKB_TAI_DELIVERY_TIME_MASK	(1 << 6) (new)
+#define TC_AT_INGRESS_MASK		(1 << 5)
+#else
+#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
++ #define SKB_TAI_DELIVERY_TIME_MASK	(1 << 1) (new)
+#define TC_AT_INGRESS_MASK		(1 << 2)
+#endif
+
+//changes in the filter.c (bpf_convert_tstamp_{read,write}, bpf_convert_tstamp_type_read())code are accordingly taken care since now we have 3 bits instead of 2 
+
+Value 3 => unspec
+Value 2 => tai 
+Value 1 => mono
+
+static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+						     struct bpf_insn *insn)
+{
+	__u8 value_reg = si->dst_reg;
+	__u8 skb_reg = si->src_reg;
+	/* AX is needed because src_reg and dst_reg could be the same */
+	__u8 tmp_reg = BPF_REG_AX;
+
+	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+			      SKB_BF_MONO_TC_OFFSET);
+	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+				SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2); <== check for both bits are set (if so make it tstamp_unspec)
+	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, 
+				SKB_MONO_DELIVERY_TIME_MASK, 3); <== if mono is set then its mono base and jump to 3rd instruction from here.  
+	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+				SKB_TAI_DELIVERY_TIME_MASK, 4); <== if tai is set then its tai base and jump to 4th instruction from here. 
+	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+	*insn++ = BPF_JMP_A(1);
+	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
+	*insn++ = BPF_JMP_A(1);
+	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_TAI);
+
+	return insn;
+}
+
+//Values 7, 6 and 5 as input will set the value reg to 0 
+//otherwise the skb_reg has correct configuration and will store the content in value reg. 
+                 
+static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+						const struct bpf_insn *si,
+						struct bpf_insn *insn)
+{
+	__u8 value_reg = si->dst_reg;
+	__u8 skb_reg = si->src_reg;
+
+#ifdef CONFIG_NET_XGRESS
+	/* If the tstamp_type is read,
+	 * the bpf prog is aware the tstamp could have delivery time.
+	 * Thus, read skb->tstamp as is if tstamp_type_access is true.
+	 */
+	if (!prog->tstamp_type_access) {
+		/* AX is needed because src_reg and dst_reg could be the same */
+		__u8 tmp_reg = BPF_REG_AX;
+
+		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+		/*check if all three bits are set*/
+		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+					SKB_TAI_DELIVERY_TIME_MASK);  <== check if all 3 bits are set which is value 7 
+		/*if all 3 bits are set jump 3 instructions and clear the register */
+		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK | 
+					SKB_TAI_DELIVERY_TIME_MASK, 4); <== if all 3 bits are set then value reg is set to 0 
+		/*Now check Mono is set with ingress mask if so clear*/
+		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 3); <== check if value is 5 (mono + ingress) if so then value reg is set to 0 
+		/*Now Check tai is set with ingress mask if so clear*/
+		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+					TC_AT_INGRESS_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2); <== check if value is 6 (tai + ingress) if so then value reg is set to 0 
+		/*Now Check tai and mono are set if so clear */
+		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+					SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 1); <== check if value 3 (tai + mono) if so then value reg is set to 0
+		/* goto <store> */
+		*insn++ = BPF_JMP_A(2);
+		/* skb->tc_at_ingress && skb->tstamp_type:1,
+		 * read 0 as the (rcv) timestamp.
+		 */
+		*insn++ = BPF_MOV64_IMM(value_reg, 0);
+		*insn++ = BPF_JMP_A(1);
+	}
+#endif
+
+	*insn++ = BPF_LDX_MEM(BPF_DW, value_reg, skb_reg,
+			      offsetof(struct sk_buff, tstamp));
+	return insn;
+}
+
+//this was pretty straight forward 
+//if ingress mask is set just go ahead and unset both tai and mono delivery time. 
+
+static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
+						 const struct bpf_insn *si,
+						 struct bpf_insn *insn)
+{
+	__u8 value_reg = si->src_reg;
+	__u8 skb_reg = si->dst_reg;
+
+#ifdef CONFIG_NET_XGRESS
+	/* If the tstamp_type is read,
+	 * the bpf prog is aware the tstamp could have delivery time.
+	 * Thus, write skb->tstamp as is if tstamp_type_access is true.
+	 * Otherwise, writing at ingress will have to clear the
+	 * mono_delivery_time (skb->tstamp_type:1)bit also.
+	 */
+	if (!prog->tstamp_type_access) {
+		__u8 tmp_reg = BPF_REG_AX;
+
+		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+		/* Writing __sk_buff->tstamp as ingress, goto <clear> */
+		*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, TC_AT_INGRESS_MASK, 1);
+		/* goto <store> */
+		*insn++ = BPF_JMP_A(3);
+		/* <clear>: mono_delivery_time or (skb->tstamp_type:1) */
+		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, ~SKB_MONO_DELIVERY_TIME_MASK);
+		/* <clear>: tai delivery_time or (skb->tstamp_type:2) */ (new)
+		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, ~SKB_TAI_DELIVERY_TIME_MASK); (new) <== reset tai delivery mask if ingress bit is set. 
+		*insn++ = BPF_STX_MEM(BPF_B, skb_reg, tmp_reg, SKB_BF_MONO_TC_OFFSET); 
+	}
+#endif
+
+	/* <store>: skb->tstamp = tstamp */
+	*insn++ = BPF_RAW_INSN(BPF_CLASS(si->code) | BPF_DW | BPF_MEM,
+			       skb_reg, value_reg, offsetof(struct sk_buff, tstamp), si->imm);
+	return insn;
+
+
+And the ctx_rewrite will be as follows 
+
+		.read  = "r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset);"
+			 "w11 &= 7;"
+			 "if w11 == 0x7 goto pc+4;"
+			 "if w11 == 0x5 goto pc+3;"
+			 "if w11 == 0x6 goto pc+2;"
+			 "if w11 == 0x3 goto pc+1;"
+			 "goto pc+2"
+			 "$dst = 0;"
+			 "goto pc+1;"
+			 "$dst = *(u64 *)($ctx + sk_buff::tstamp);",
+		.write = "r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset);"
+			 "if w11 & 0x4 goto pc+1;"
+			 "goto pc+3;"
+			 "w11 &= -2;"
+			 "w11 &= -3;"
+			 "*(u8 *)($ctx + sk_buff::__mono_tc_offset) = r11;"
+			 "*(u64 *)($ctx + sk_buff::tstamp) = $src;",
 
