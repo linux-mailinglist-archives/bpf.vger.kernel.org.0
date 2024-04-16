@@ -1,530 +1,326 @@
-Return-Path: <bpf+bounces-27010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BD28A76DA
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 23:38:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C9B68A76E8
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 23:40:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73B11284D9D
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 21:38:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F8C284214
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 21:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9156713A410;
-	Tue, 16 Apr 2024 21:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6836E61D;
+	Tue, 16 Apr 2024 21:40:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FsxyYhKr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yec61ksl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07615A0F9;
-	Tue, 16 Apr 2024 21:35:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C16679ED;
+	Tue, 16 Apr 2024 21:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713303320; cv=none; b=GJ/pKZhEo6oEjYbqrdfJuDj9Gvp+PiBe0I+C1OWc+IPhpwHZ9zIuDXtAfzTt5QmEZDgiCEnsRA4W8Nx83A2Izunyz/J1Nq1f0WxdEJGJKRheC7KnzLsu6nDZpYxeVMQzV5YZsxzLpWlYNkqH+DdYLA+989FshrcWb+UxeF/cqNc=
+	t=1713303618; cv=none; b=rw0zMtk+Q5+omDCy2yQVdbE2CrrJ6ZaSz94ZgoNZ6PTAKVx52RXAVNenNMS/Px2NcsgxhrN6QlX+lxsg317icZn+rEE6LTyhVGAWDfxVq7/IXTpbTAln8XlZj2crYthGwv5hnvJObkBG8aS2PKDZSTeneFWus5qrU7xR1Rd8Izk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713303320; c=relaxed/simple;
-	bh=XMDdbm2KXFf7zWjnoitvevP7bZJiwaNDpjn64QZsEso=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ZSn270jxpZeTdDpR9NeaQGZkTK5crqOyabNoTWPdGNrd5drrNe7pCmQ1EAzYRm6uEXUgqRWXRdoK8eZaL539M14HI5AhOB7CZWnw3xkjbdny6DzidrLSd75YqwpSRGPID1IXSBvLvzW5yGeRn2XDlEdoXA+wpsoGIHmBU9VKW5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FsxyYhKr; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713303317; x=1744839317;
-  h=date:from:to:cc:subject:message-id;
-  bh=XMDdbm2KXFf7zWjnoitvevP7bZJiwaNDpjn64QZsEso=;
-  b=FsxyYhKrMQ+21qgJ70gjCPNt8j45IhhPa6xJ85+eOG0Gw8yyMkbeav8N
-   71MftxEVuQ+skFax5WuH//zZgvDzaS/7l6p/5B599iWNb9hT12dKj/Pwj
-   52KjG9O+4/WkuaD39d1oNK1MBGfW2SEheiE0rejYbFbE2e2fHhSVNeiFB
-   cuzo3Fan0ksxJ2G35iRdiAPai8Togtb7tWcfytL7wj2hUwKb6IYZe/qc9
-   Wk8njCpjfxq1KihdhAJjk9lQm52WgK7IjcHosWBkYtt/aHMXuSZ3VoC/e
-   tBR1u8NwbdA0OwPPbwHkC8Hz7EQeu+cJDuXDj+fN2QaWBsLr+wwdPeMY+
-   g==;
-X-CSE-ConnectionGUID: ZLA6TRvGQ8KvIU9WVZNXmg==
-X-CSE-MsgGUID: 88wAn9DhSdicXkmQw+QbHg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19920211"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="19920211"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:35:16 -0700
-X-CSE-ConnectionGUID: urwpmcO0QFKH/A3/Y0SfhA==
-X-CSE-MsgGUID: +RaioJseTR6Z6qEIPTuT0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="26827693"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa005.fm.intel.com with ESMTP; 16 Apr 2024 14:35:12 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwqSL-0005lp-36;
-	Tue, 16 Apr 2024 21:35:09 +0000
-Date: Wed, 17 Apr 2024 05:34:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-arch@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
- openipmi-developer@lists.sourceforge.net
-Subject: [linux-next:master] BUILD REGRESSION
- 66e4190e92ce0e4a50b2f6be0e5f5b2e47e072f4
-Message-ID: <202404170525.h1vxGb4X-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1713303618; c=relaxed/simple;
+	bh=r2XcEyZuLel+XIkqow4J8uOUCbIaMPE5NYNjWndX2rs=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=uN1cV8aI55YytwUIwPCM/dx9/+0aM+jI35xd8DGqoal8lj2tHrxxR7/dniBsv1s40ip7W8UJ0tU8dZwzU1h27sgAlnGPNbiVpD4oxtKarmh3MqVa2ds+SXwYvN6C7nMIa7gVmdaY4QcdXHNTxnojiYDyMKsjplPXxCTFSG9NQGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yec61ksl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5576C113CE;
+	Tue, 16 Apr 2024 21:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713303618;
+	bh=r2XcEyZuLel+XIkqow4J8uOUCbIaMPE5NYNjWndX2rs=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=Yec61kslxdtIFPHiq3TREJaV24PblHWJ1eidqM3U5RuvmqBqS5LOqVtz2kgUOcWLZ
+	 BId9PS3/bpnr/oPpucn9SP4AMrIPy9JlYlGNPpioD9qrC8/9fc0C8lK3FxtD8HnWdw
+	 Xg+qQS3GGqoYF7u8l33qDp+2B849THNU3UagoLQOr1EYtVCZgg9pEioviq7zyFBHBs
+	 rZumcnGehID8BZLxvzacrlfEQoVqjZbix2SpLA4hVvICdRYdiMBkTTNOu4qfijBW9N
+	 BYe1NFlf+HUH78COJtLnR4iZoPNwJ9VPBw+ogv4oLVkAuYgb2wGgekWcHClKCohF2k
+	 sY6mhi/p94dSg==
+Date: Tue, 16 Apr 2024 14:40:17 -0700 (PDT)
+From: Mat Martineau <martineau@kernel.org>
+To: Yunsheng Lin <linyunsheng@huawei.com>
+cc: Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net, kuba@kernel.org, 
+    netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    Ayush Sawal <ayush.sawal@chelsio.com>, Eric Dumazet <edumazet@google.com>, 
+    Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+    Jason Wang <jasowang@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
+    Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+    Vincent Guittot <vincent.guittot@linaro.org>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+    Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+    Mel Gorman <mgorman@suse.de>, 
+    Daniel Bristot de Oliveira <bristot@redhat.com>, 
+    Valentin Schneider <vschneid@redhat.com>, 
+    John Fastabend <john.fastabend@gmail.com>, 
+    Jakub Sitnicki <jakub@cloudflare.com>, David Ahern <dsahern@kernel.org>, 
+    Matthieu Baerts <matttbe@kernel.org>, Geliang Tang <geliang@kernel.org>, 
+    Boris Pismenny <borisp@nvidia.com>, bpf@vger.kernel.org, 
+    mptcp@lists.linux.dev
+Subject: Re: [PATCH net-next v2 13/15] net: replace page_frag with
+ page_frag_cache
+In-Reply-To: <cb541985-a06d-7a71-9e6d-38827ccdf875@huawei.com>
+Message-ID: <83991c67-8e4a-c287-b4a5-5dbba8835947@kernel.org>
+References: <20240415131941.51153-1-linyunsheng@huawei.com> <20240415131941.51153-14-linyunsheng@huawei.com> <c5a8eabb-1b46-1e9f-88c9-e707c3a086c4@kernel.org> <cb541985-a06d-7a71-9e6d-38827ccdf875@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 66e4190e92ce0e4a50b2f6be0e5f5b2e47e072f4  Add linux-next specific files for 20240416
+On Tue, 16 Apr 2024, Yunsheng Lin wrote:
 
-Error/Warning reports:
+> On 2024/4/16 9:37, Mat Martineau wrote:
+>> On Mon, 15 Apr 2024, Yunsheng Lin wrote:
+>>
+>>> Use the newly introduced prepare/commit API to replace
+>>> page_frag with page_frag_cache for sk_page_frag().
+>>>
+>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>> ---
+>>> .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
+>>> .../chelsio/inline_crypto/chtls/chtls_io.c    | 101 ++++---------
+>>> .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
+>>> drivers/net/tun.c                             |  34 ++---
+>>> include/linux/sched.h                         |   4 +-
+>>> include/net/sock.h                            |  14 +-
+>>> kernel/exit.c                                 |   3 +-
+>>> kernel/fork.c                                 |   2 +-
+>>> net/core/skbuff.c                             |  32 ++--
+>>> net/core/skmsg.c                              |  22 +--
+>>> net/core/sock.c                               |  46 ++++--
+>>> net/ipv4/ip_output.c                          |  35 +++--
+>>> net/ipv4/tcp.c                                |  35 ++---
+>>> net/ipv4/tcp_output.c                         |  28 ++--
+>>> net/ipv6/ip6_output.c                         |  35 +++--
+>>> net/kcm/kcmsock.c                             |  30 ++--
+>>> net/mptcp/protocol.c                          |  74 ++++++----
+>>> net/tls/tls_device.c                          | 139 ++++++++++--------
+>>> 18 files changed, 342 insertions(+), 298 deletions(-)
+>>
+>> Hi Yunsheng,
+>>
+>> Just focusing on mptcp:
+>
+> Thanks for reviewing.
+>
+>>
+>>> diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+>>> index f8bc34f0d973..368dd480c4cd 100644
+>>> --- a/net/mptcp/protocol.c
+>>> +++ b/net/mptcp/protocol.c
+>>> @@ -959,17 +959,16 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
+>>> }
+>>>
+>>> /* we can append data to the given data frag if:
+>>> - * - there is space available in the backing page_frag
+>>> - * - the data frag tail matches the current page_frag free offset
+>>> + * - the data frag tail matches the current page and offset
+>>>  * - the data frag end sequence number matches the current write seq
+>>>  */
+>>> static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
+>>> -                       const struct page_frag *pfrag,
+>>> +                       const struct page *page,
+>>> +                       const unsigned int offset,
+>>>                        const struct mptcp_data_frag *df)
+>>> {
+>>> -    return df && pfrag->page == df->page &&
+>>> -        pfrag->size - pfrag->offset > 0 &&
+>>> -        pfrag->offset == (df->offset + df->data_len) &&
+>>> +    return df && page == df->page &&
+>>> +        offset == (df->offset + df->data_len) &&
+>>>         df->data_seq + df->data_len == msk->write_seq;
+>>> }
+>>>
+>>> @@ -1084,30 +1083,36 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
+>>> /* ensure we get enough memory for the frag hdr, beyond some minimal amount of
+>>>  * data
+>>>  */
+>>> -static bool mptcp_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
+>>> +static struct page *mptcp_page_frag_alloc_prepare(struct sock *sk,
+>>> +                          struct page_frag_cache *pfrag,
+>>> +                          unsigned int *offset,
+>>> +                          unsigned int *size, void **va)
+>>> {
+>>> -    if (likely(skb_page_frag_refill(32U + sizeof(struct mptcp_data_frag),
+>>> -                    pfrag, sk->sk_allocation)))
+>>> -        return true;
+>>> +    struct page *page;
+>>> +
+>>> +    page = page_frag_alloc_prepare(pfrag, offset, size, va,
+>>> +                       sk->sk_allocation);
+>>> +    if (likely(page))
+>>> +        return page;
+>>>
+>>>     mptcp_enter_memory_pressure(sk);
+>>> -    return false;
+>>> +    return NULL;
+>>> }
+>>>
+>>> static struct mptcp_data_frag *
+>>> -mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page_frag *pfrag,
+>>> -              int orig_offset)
+>>> +mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page *page,
+>>> +              unsigned int orig_offset)
+>>> {
+>>>     int offset = ALIGN(orig_offset, sizeof(long));
+>>>     struct mptcp_data_frag *dfrag;
+>>>
+>>> -    dfrag = (struct mptcp_data_frag *)(page_to_virt(pfrag->page) + offset);
+>>> +    dfrag = (struct mptcp_data_frag *)(page_to_virt(page) + offset);
+>>>     dfrag->data_len = 0;
+>>>     dfrag->data_seq = msk->write_seq;
+>>>     dfrag->overhead = offset - orig_offset + sizeof(struct mptcp_data_frag);
+>>>     dfrag->offset = offset + sizeof(struct mptcp_data_frag);
+>>>     dfrag->already_sent = 0;
+>>> -    dfrag->page = pfrag->page;
+>>> +    dfrag->page = page;
+>>>
+>>>     return dfrag;
+>>> }
+>>> @@ -1792,7 +1797,7 @@ static u32 mptcp_send_limit(const struct sock *sk)
+>>> static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>>> {
+>>>     struct mptcp_sock *msk = mptcp_sk(sk);
+>>> -    struct page_frag *pfrag;
+>>> +    struct page_frag_cache *pfrag;
+>>>     size_t copied = 0;
+>>>     int ret = 0;
+>>>     long timeo;
+>>> @@ -1831,9 +1836,12 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>>>     while (msg_data_left(msg)) {
+>>>         int total_ts, frag_truesize = 0;
+>>>         struct mptcp_data_frag *dfrag;
+>>> -        bool dfrag_collapsed;
+>>> -        size_t psize, offset;
+>>> +        bool dfrag_collapsed = false;
+>>> +        unsigned int offset, size;
+>>> +        struct page *page;
+>>> +        size_t psize;
+>>>         u32 copy_limit;
+>>> +        void *va;
+>>>
+>>>         /* ensure fitting the notsent_lowat() constraint */
+>>>         copy_limit = mptcp_send_limit(sk);
+>>> @@ -1844,21 +1852,31 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>>>          * page allocator
+>>>          */
+>>>         dfrag = mptcp_pending_tail(sk);
+>>> -        dfrag_collapsed = mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
+>>> +        size = 32U;
+>>> +        page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset, &size,
+>>> +                             &va);
+>>> +        if (!page)
+>>> +            goto wait_for_memory;
+>>> +
+>>> +        dfrag_collapsed = mptcp_frag_can_collapse_to(msk, page, offset,
+>>> +                                 dfrag);
+>>>         if (!dfrag_collapsed) {
+>>> -            if (!mptcp_page_frag_refill(sk, pfrag))
+>>> +            size = 32U + sizeof(struct mptcp_data_frag);
+>>> +            page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset,
+>>> +                                 &size, &va);
+>>
+>> Since 'size' was updated to contain the maximum available space on the 
+>> first call to mptcp_page_frag_alloc_prepare(), is it necessary to call 
+>> it again instead of checking to see if 'size' is large enough for the 
+>> mptcp_data_frag struct?
+>
+> As the first call to the mptcp_page_frag_alloc_prepare() with the size
+> being 32U, the maximum available space might less than '32U +
+> sizeof(struct mptcp_data_frag)', in that case we need to call the
+> mptcp_page_frag_alloc_prepare() with the size being '32U +
+> sizeof(struct mptcp_data_frag)' anyway, so I am not sure if checking
+> the maximum available space on the first call to
+> mptcp_page_frag_alloc_prepare() before making the second call will
+> make the thing simpler.
 
-https://lore.kernel.org/oe-kbuild-all/202404161933.izfqZ32k-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202404170348.thxrboF1-lkp@intel.com
+Ah, ok. If the larger amount of space is available the underlying call to 
+page_frag_cache_refill() ends up being very low overhead. So I agree with 
+you: it's ok to call mptcp_page_alloc_prepare() a second time.
 
-Error/Warning: (recently discovered and may have been fixed)
+>
+>>
+>>> +            if (!page)
+>>>                 goto wait_for_memory;
+>>>
+>>> -            dfrag = mptcp_carve_data_frag(msk, pfrag, pfrag->offset);
+>>> +            dfrag = mptcp_carve_data_frag(msk, page, offset);
+>>>             frag_truesize = dfrag->overhead;
+>>> +            va += dfrag->overhead;
+>>>         }
+>>>
+>>>         /* we do not bound vs wspace, to allow a single packet.
+>>>          * memory accounting will prevent execessive memory usage
+>>>          * anyway
+>>>          */
+>>> -        offset = dfrag->offset + dfrag->data_len;
+>>> -        psize = pfrag->size - offset;
+>>> +        psize = size - frag_truesize;
+>>>         psize = min_t(size_t, psize, msg_data_left(msg));
+>>>         psize = min_t(size_t, psize, copy_limit);
+>>>         total_ts = psize + frag_truesize;
+>>> @@ -1866,8 +1884,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>>>         if (!sk_wmem_schedule(sk, total_ts))
+>>>             goto wait_for_memory;
+>>>
+>>> -        ret = do_copy_data_nocache(sk, psize, &msg->msg_iter,
+>>> -                       page_address(dfrag->page) + offset);
+>>> +        ret = do_copy_data_nocache(sk, psize, &msg->msg_iter, va);
+>>>         if (ret)
+>>>             goto do_error;
+>>>
+>>> @@ -1876,7 +1893,6 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>>>         copied += psize;
+>>>         dfrag->data_len += psize;
+>>>         frag_truesize += psize;
+>>> -        pfrag->offset += frag_truesize;
+>>>         WRITE_ONCE(msk->write_seq, msk->write_seq + psize);
+>>>
+>>>         /* charge data on mptcp pending queue to the msk socket
+>>> @@ -1884,11 +1900,15 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>>>          */
+>>>         sk_wmem_queued_add(sk, frag_truesize);
+>>>         if (!dfrag_collapsed) {
+>>> -            get_page(dfrag->page);
+>>> +            page_frag_alloc_commit(pfrag, offset, frag_truesize);
+>>
+>> It would be more efficient (but more complicated) to defer the commit 
+>> until the loop is done or the maximum frag size is reached. This would 
+>> perform more like the older code, which only had to call refill when 
+>> mptcp_frag_can_collapse_to() returned false.
+>
+> page_frag_alloc_commit() is a inlined helper, it does not seems
+> to be an issue here as it is updating the reference counting
+> and offset as the old code does with less overhead.
+>
 
-arch/arc/include/asm/cmpxchg.h:50:26: error: implicit declaration of function 'cmpxchg_emu_u8' [-Werror=implicit-function-declaration]
-arch/mips/sgi-ip27/ip27-irq.c:280:13: warning: unused variable 'i' [-Wunused-variable]
-netdev.c:(.text+0x2288): undefined reference to `page_pool_create'
-netdev.c:(.text+0x378): undefined reference to `page_pool_alloc_pages'
+I wasn't concerned as much about the direct cost of the inlined 
+page_frag_alloc_commit() helper, it was that we could make fewer prepare 
+calls if the commit was deferred as long as possible. As we discussed 
+above, I see now that the prepare is not expensive when there is more 
+space available in the current frag.
 
-Error/Warning ids grouped by kconfigs:
+> Maybe what we could do is to do the prepare in the inline
+> helper instead of a function when cache is enough, so that
+> we can avoid a function call as the old code does, as an
+> inlined function requires less overhead and is generally
+> faster than a function call.
+>
+> But that requires more refactoring, as this patchset is bigger
+> enough now, I guess we try it later if it is possible.
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- alpha-randconfig-r112-20240416
-|   `-- kernel-bpf-verifier.c:sparse:sparse:cast-truncates-bits-from-constant-value-(fffffffc00000000-becomes-)
-|-- arc-allmodconfig
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arc-allnoconfig
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arc-allyesconfig
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arc-defconfig
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arc-nsimosci_hs_smp_defconfig
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arc-randconfig-001-20240416
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arc-randconfig-002-20240416
-|   `-- arch-arc-include-asm-cmpxchg.h:error:implicit-declaration-of-function-cmpxchg_emu_u8
-|-- arm-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- arm-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- csky-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- csky-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- i386-randconfig-141-20240416
-|   |-- drivers-pwm-core.c-pwm_cdev_ioctl()-warn:possible-spectre-second-half.-pwm
-|   `-- drivers-pwm-core.c-pwm_cdev_ioctl()-warn:potential-spectre-issue-cdata-pwm-r
-|-- loongarch-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- loongarch-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- microblaze-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- microblaze-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- mips-ip27_defconfig
-|   `-- arch-mips-sgi-ip27-ip27-irq.c:warning:unused-variable-i
-|-- openrisc-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- parisc-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   |-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-nouveau-nvif-object.c:error:memcpy-accessing-or-more-bytes-at-offsets-and-overlaps-bytes-at-offset
-|-- parisc-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   |-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-nouveau-nvif-object.c:error:memcpy-accessing-or-more-bytes-at-offsets-and-overlaps-bytes-at-offset
-|-- powerpc-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- powerpc-randconfig-002-20240416
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-calcs-dcn_calc_auto.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-calcs-dcn_calc_math.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-calcs-dcn_calcs.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn20-dcn20_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn20-display_mode_vba_20.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn20-display_mode_vba_20v2.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn20-display_rq_dlg_calc_20.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn20-display_rq_dlg_calc_20v2.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn21-display_mode_vba_21.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn21-display_rq_dlg_calc_21.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn30-dcn30_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn30-display_mode_vba_30.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn30-display_rq_dlg_calc_30.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn301-dcn301_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn302-dcn302_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn303-dcn303_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn31-dcn31_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn31-display_mode_vba_31.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn31-display_rq_dlg_calc_31.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn314-dcn314_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn314-display_mode_vba_314.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn314-display_rq_dlg_calc_314.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn32-dcn32_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn32-display_mode_vba_32.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn32-display_mode_vba_util_32.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn32-display_rq_dlg_calc_32.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn321-dcn321_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn35-dcn35_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dcn351-dcn351_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-display_mode_vba.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dml1_display_rq_dlg_calc.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml-dsc-rc_calc_fpu.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-display_mode_core.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-display_mode_util.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml2_mall_phantom.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml2_policy.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml2_translation_helper.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml2_utils.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml2_wrapper.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|   `-- powerpc-linux-ld:drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml_display_rq_dlg_calc.o-uses-hard-float-drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm_helpers.o-uses-soft-float
-|-- powerpc-randconfig-r006-20211103
-|   |-- netdev.c:(.text):undefined-reference-to-page_pool_alloc_pages
-|   `-- netdev.c:(.text):undefined-reference-to-page_pool_create
-|-- s390-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- sparc-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- sparc64-allmodconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-|-- sparc64-allyesconfig
-|   |-- drivers-gpu-drm-imx-ipuv3-imx-ldb.c:error:_sel-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-|   `-- drivers-gpu-drm-nouveau-nouveau_backlight.c:error:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
-`-- x86_64-randconfig-161-20240416
-    `-- drivers-gpu-drm-bridge-cadence-cdns-mhdp8546-core.c-cdns_mhdp_atomic_enable()-warn:inconsistent-returns-mhdp-link_mutex-.
-clang_recent_errors
-|-- arm64-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
-|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-renesas-rcar-du-rcar_cmm.c:error:unused-function-rcar_cmm_read-Werror-Wunused-function
-|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
-|-- hexagon-allmodconfig
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-|   |-- include-asm-generic-io.h:error:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior-Werror-Wnull-pointer-arithmetic
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|-- hexagon-allyesconfig
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-|   |-- include-asm-generic-io.h:error:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior-Werror-Wnull-pointer-arithmetic
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|-- powerpc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
-|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
-|-- riscv-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
-|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
-|-- riscv-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
-|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
-|-- s390-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
-|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
-|   |-- include-asm-generic-io.h:error:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior-Werror-Wnull-pointer-arithmetic
-|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
-|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
-|-- x86_64-allnoconfig
-|   |-- Warning:MAINTAINERS-references-a-file-that-doesn-t-exist:Documentation-devicetree-bindings-display-exynos
-|   |-- Warning:MAINTAINERS-references-a-file-that-doesn-t-exist:Documentation-devicetree-bindings-reserved-memory-qcom
-|   |-- drivers-char-ipmi-ipmi_msghandler.c:linux-workqueue.h-is-included-more-than-once.
-|   `-- net-ipv6-udp.c:trace-events-udp.h-is-included-more-than-once.
-`-- x86_64-allyesconfig
-    |-- drivers-gpu-drm-bridge-synopsys-dw-hdmi-i2s-audio.c:error:unused-function-hdmi_read-Werror-Wunused-function
-    |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
-    |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
-    |-- drivers-gpu-drm-kmb-kmb_dsi.c:error:unused-function-set_test_mode_src_osc_freq_target_hi_bits-Werror-Wunused-function
-    |-- drivers-gpu-drm-kmb-kmb_dsi.c:error:unused-function-set_test_mode_src_osc_freq_target_low_bits-Werror-Wunused-function
-    `-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+A more generic (possible) optimization would be to inline some of 
+page_frag_cache_refill(), but I'm not sure the code size tradeoff is 
+worth it - would have to collect some data to find out for sure!
 
-elapsed time: 741m
+Thanks,
 
-configs tested: 178
-configs skipped: 3
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240416   gcc  
-arc                   randconfig-002-20240416   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                        keystone_defconfig   gcc  
-arm                   randconfig-001-20240416   clang
-arm                   randconfig-002-20240416   clang
-arm                   randconfig-003-20240416   gcc  
-arm                   randconfig-004-20240416   clang
-arm                         s5pv210_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240416   gcc  
-arm64                 randconfig-002-20240416   clang
-arm64                 randconfig-003-20240416   gcc  
-arm64                 randconfig-004-20240416   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240416   gcc  
-csky                  randconfig-002-20240416   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240416   clang
-hexagon               randconfig-002-20240416   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240416   gcc  
-i386         buildonly-randconfig-002-20240416   gcc  
-i386         buildonly-randconfig-003-20240416   clang
-i386         buildonly-randconfig-004-20240416   clang
-i386         buildonly-randconfig-005-20240416   clang
-i386         buildonly-randconfig-006-20240416   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240416   clang
-i386                  randconfig-002-20240416   clang
-i386                  randconfig-003-20240416   gcc  
-i386                  randconfig-004-20240416   clang
-i386                  randconfig-005-20240416   gcc  
-i386                  randconfig-006-20240416   gcc  
-i386                  randconfig-011-20240416   clang
-i386                  randconfig-012-20240416   gcc  
-i386                  randconfig-013-20240416   clang
-i386                  randconfig-014-20240416   gcc  
-i386                  randconfig-015-20240416   clang
-i386                  randconfig-016-20240416   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240416   gcc  
-loongarch             randconfig-002-20240416   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        bcm63xx_defconfig   clang
-mips                  cavium_octeon_defconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-mips                           gcw0_defconfig   clang
-mips                  maltasmvp_eva_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240416   gcc  
-nios2                 randconfig-002-20240416   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240416   gcc  
-parisc                randconfig-002-20240416   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                    klondike_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   clang
-powerpc                         ps3_defconfig   gcc  
-powerpc               randconfig-001-20240416   clang
-powerpc               randconfig-002-20240416   gcc  
-powerpc               randconfig-003-20240416   clang
-powerpc                      tqm8xx_defconfig   clang
-powerpc64             randconfig-001-20240416   gcc  
-powerpc64             randconfig-002-20240416   gcc  
-powerpc64             randconfig-003-20240416   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240416   gcc  
-riscv                 randconfig-002-20240416   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240416   clang
-s390                  randconfig-002-20240416   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7705_defconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                    randconfig-001-20240416   gcc  
-sh                    randconfig-002-20240416   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240416   gcc  
-sparc64               randconfig-002-20240416   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240416   gcc  
-um                    randconfig-002-20240416   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240416   gcc  
-x86_64       buildonly-randconfig-002-20240416   gcc  
-x86_64       buildonly-randconfig-003-20240416   gcc  
-x86_64       buildonly-randconfig-004-20240416   clang
-x86_64       buildonly-randconfig-005-20240416   gcc  
-x86_64       buildonly-randconfig-006-20240416   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240416   clang
-x86_64                randconfig-002-20240416   clang
-x86_64                randconfig-003-20240416   gcc  
-x86_64                randconfig-004-20240416   clang
-x86_64                randconfig-005-20240416   clang
-x86_64                randconfig-006-20240416   gcc  
-x86_64                randconfig-011-20240416   gcc  
-x86_64                randconfig-012-20240416   clang
-x86_64                randconfig-013-20240416   clang
-x86_64                randconfig-014-20240416   clang
-x86_64                randconfig-015-20240416   clang
-x86_64                randconfig-016-20240416   gcc  
-x86_64                randconfig-071-20240416   clang
-x86_64                randconfig-072-20240416   clang
-x86_64                randconfig-073-20240416   clang
-x86_64                randconfig-074-20240416   clang
-x86_64                randconfig-075-20240416   gcc  
-x86_64                randconfig-076-20240416   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-002-20240416   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Mat
 
