@@ -1,180 +1,415 @@
-Return-Path: <bpf+bounces-27002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C39F68A7459
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 21:07:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA268A7493
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 21:21:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513311F2146B
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 19:07:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7531F230A5
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 19:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFFF137933;
-	Tue, 16 Apr 2024 19:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E8B139D04;
+	Tue, 16 Apr 2024 19:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="htBhigqi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00823401.pphosted.com (mx0a-00823401.pphosted.com [148.163.148.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258AB137766
-	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 19:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E0313792D;
+	Tue, 16 Apr 2024 19:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713294442; cv=none; b=dURz54mftZNNfXSF5mWMZR89XDwtKNnwM32DVX59jRj0wnSuKe8XuIOgiRC1c/bImPRXx7NhxbCAIIniphN/AaS6ttvN6CtjiaP1H3oZuMD/hN051TzV2h/ajHr1qXPpaRrlA/jxCQsvEysaZMmi7QT77b65aJVgfL25Xqw6wqw=
+	t=1713295219; cv=none; b=HBuf+/gorcMIuK1//Ekv2u4vW6Xjao70u7ILkTcIjq6WcNpsPTwz3+URQTfmhWWX//VHeYcqc5tQdMxzfjKa6zmNKQ/lU7G01I+C1N5tCCJsJpwUdC7UWQwY04HO0jPBK0SdUo2lJ53o6z4MRXJquQceBwN3WPoW3E2hmzOgXps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713294442; c=relaxed/simple;
-	bh=LLiGBtrSxbvzMH3qbceGm1plgiO+v5WFSSgkT35pVoU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UBYEzo02/i7XNgfFtXYFpobEzVwHAppsP+HPRsHZpFzKOsvTf4eHp05PRs7XgKNCNUZoy1ZtxhjVSaMmAD/+RNYcqBerhDAKptdR7gFCFQAajlKMgMzm49IyUHKVV20z09Z5PXwWohKOJMf5GQDEYCilqVB+YDjmgyzgS9IJ4fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d676654767so532702339f.3
-        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 12:07:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713294440; x=1713899240;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v1VcHZ4INMjp0zCuMH+FIZ5CsXArd0hgI2BAMVJG3no=;
-        b=SUypc7glvBZAQCRh/jtM1mSHnwec8eEQTluc9PF0fMa9pGLpL3n5Wa5EmZ4/dYe0LC
-         AQgRHDsbGV85K/2kogOq/6J4R/RHkIX5xpkHYyT0fUcyj5Mo2Y/6T4V7QJutLGWB6xE9
-         C1nD3p1HMDaieI/umEvMoJDBnm9Kh6ZMx3LANX5EE9qi4HXH+4HLfMjKpd17AG461Sgi
-         03yaU+Qj4fk9uGLeIqzO5mK5Z6lwjmRgJfNxQsY9rZ20dPFp5Geww5Jq6LZCjU1i6JAn
-         xA5efRLztml1Qgb2SRsUQYd7f0GHrUwea00vwQ4DhsZESfCrWPaos8eSnzh2Q0ZOuMsV
-         1W0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXuLXMHj+pgIDR2uDKuyCJ1Gw5W7G/0xEak2h5yXnaB6hyrWc1wp4ilLZ5mj3JoWzXasRD1TT1shnvD9CDoq7W7vfoc
-X-Gm-Message-State: AOJu0YyeCBE1PmtdVEx1KiWvg4K3ZngeOwI7LogJIaMMXDT5hu6aLwD6
-	fkh/LRJEDKaPyiLXnZ0O0r6Gf+GlgI3+X/6VIC2wKIPkWiW7V4Yrml5gYGEB6PfdVJwshC9bypy
-	uhhiZoOeEAm3P1do3EMY8cKIbysId/i7O1gftSPeXMBtq+/plF8zEuTQ=
-X-Google-Smtp-Source: AGHT+IFUKU8/iHzfO7+tKwtsMUVve55/lQeWydzqxxxSnV47Rf3/GqF46hwD3XfW5GJpHncOu1YlKV+LxlXHjj25HwGdyWqLtcPL
+	s=arc-20240116; t=1713295219; c=relaxed/simple;
+	bh=5A/wZwvAMjpCBh3rhO1cku9B/yboVsBZLlPIaX5Kru0=;
+	h=Message-Id:In-Reply-To:References:To:Cc:From:Subject:Date; b=AlmFOPL58PcqLmYac9eWyJzAlP3V4040W/k0GWxRd2iQWXPaOO9/TUOH6pEHpMJ8JQmq3Rs04bXZOzDNff7yqVV0EKK3ge1mAo6k+Fvu/Rx1LZQEIcfnHOeXuD3qkaEZ0pzTDoFrwBAMkWBah/5hRxV49pZc9ZzcYAWV6ri3gVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=htBhigqi; arc=none smtp.client-ip=148.163.148.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355086.ppops.net [127.0.0.1])
+	by mx0a-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GHWjng029475;
+	Tue, 16 Apr 2024 19:19:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	message-id:in-reply-to:references:to:cc:from:subject:date; s=
+	DKIM202306; bh=WtpkOtfUVklTETlWsQkVzQfkRpaN5YigWXkv8+BPIYU=; b=h
+	tBhigqimgXbn4nx+fLt7nCkWDOrPXvs4QRUPvbewFMgMVgva2r2QuJTOj2k8rlhD
+	kReTfM1KUvbt5pZVaNA6kFsl98cbkReSmrIKgbsXqIr/donpj8XjEsu5I4xEWd7k
+	uO0ffS1+fsXDzqYJIkHeMvEa36WvMakS4gegpsnRQPK4c/bdRTa3z6mO9TK9rYlY
+	W93yyRsvDV9yuC/j900wNG5v4xK6wr8feuL8VJXagHP8oY2Rstt2fUYGMvs1ZuXC
+	I/AGKV0azBnXLVI57yDnw+1XoMGjwYZ5NS0WYf7U0lp7/e0pkYLtqr9HVKsT1CxX
+	6dquPA/wVlClvtDi9MlNg==
+Received: from ilclpfpp01.lenovo.com ([144.188.128.67])
+	by mx0a-00823401.pphosted.com (PPS) with ESMTPS id 3xhwtrr5qa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 19:19:23 +0000 (GMT)
+Received: from va32lmmrp02.lenovo.com (va32lmmrp02.mot.com [10.62.176.191])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ilclpfpp01.lenovo.com (Postfix) with ESMTPS id 4VJv3t1Pp2zdDsy;
+	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
+Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by va32lmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VJv3t02fZz2VZ3w;
+	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
+Message-Id: <20240416122254.868007168-3-mbland@motorola.com>
+In-Reply-To: <20240416122254.868007168-1-mbland@motorola.com>
+References: <20240416122254.868007168-1-mbland@motorola.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Maxwell Bland <mbland@motorola.com>, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Maxwell Bland <mbland@motorola.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, Baoquan He <bhe@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ryo Takakura <takakura@valinux.co.jp>,
+        James Morse <james.morse@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        David Hildenbrand <david@redhat.com>,
+        Conor Dooley <conor.dooley@microchip.com>, bpf@vger.kernel.org
+From: Maxwell Bland <mbland@motorola.com>
+Subject: [PATCH 2/5 RESEND] arm64: mm: code and data partitioning for aslr
+Date: Tue, 16 Apr 2024 14:18:16 -0500
+X-Proofpoint-ORIG-GUID: T8yHObE1vYdjOVw_SOvD_R6z0_6qLA6s
+X-Proofpoint-GUID: T8yHObE1vYdjOVw_SOvD_R6z0_6qLA6s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_17,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 suspectscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404160122
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1496:b0:47f:1ad4:2c66 with SMTP id
- j22-20020a056638149600b0047f1ad42c66mr839461jak.5.1713294440332; Tue, 16 Apr
- 2024 12:07:20 -0700 (PDT)
-Date: Tue, 16 Apr 2024 12:07:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008312ad06163b7225@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_lru_percpu_map_lookup_percpu_elem
-From: syzbot <syzbot+1971e47e5210c718db3c@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Uses hooks in the vmalloc infrastructure to prevent interleaving code
+and data pages, working to both maintain compatible management
+assumptions made by non-arch-specific code and make management of these
+regions more precise and conformant, allowing, for example, the
+maintenance of PXNTable bits on dynamically allocated memory or the
+immutability of certain page middle directory and higher level
+descriptors.
 
-syzbot found the following issue on:
-
-HEAD commit:    7efd0a74039f Merge tag 'ata-6.9-rc4' of git://git.kernel.o..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1492cb93180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b5bc506ebba90cbf
-dashboard link: https://syzkaller.appspot.com/bug?extid=1971e47e5210c718db3c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ce7393180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155451eb180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9fd81e15f087/disk-7efd0a74.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2e4915d51565/vmlinux-7efd0a74.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/110eeae33f94/bzImage-7efd0a74.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1971e47e5210c718db3c@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
-BUG: KMSAN: uninit-value in htab_lru_percpu_map_lookup_percpu_elem+0x3f8/0x630 kernel/bpf/hashtab.c:2343
- __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
- htab_lru_percpu_map_lookup_percpu_elem+0x3f8/0x630 kernel/bpf/hashtab.c:2343
- ____bpf_map_lookup_percpu_elem kernel/bpf/helpers.c:133 [inline]
- bpf_map_lookup_percpu_elem+0x67/0x90 kernel/bpf/helpers.c:130
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
- __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
- trace_kfree include/trace/events/kmem.h:94 [inline]
- kfree+0x6a5/0xa30 mm/slub.c:4377
- security_task_free+0x115/0x150 security/security.c:3032
- __put_task_struct+0x17f/0x730 kernel/fork.c:976
- put_task_struct include/linux/sched/task.h:138 [inline]
- delayed_put_task_struct+0x8a/0x280 kernel/exit.c:229
- rcu_do_batch kernel/rcu/tree.c:2196 [inline]
- rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
- rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
- __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu kernel/softirq.c:633 [inline]
- irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
- sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
- asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
- __msan_metadata_ptr_for_load_8+0x31/0x40 mm/kmsan/instrumentation.c:92
- filter_irq_stacks+0x60/0x1a0 kernel/stacktrace.c:397
- stack_depot_save_flags+0x2c/0x6e0 lib/stackdepot.c:609
- stack_depot_save+0x12/0x20 lib/stackdepot.c:685
- __msan_poison_alloca+0x106/0x1b0 mm/kmsan/instrumentation.c:285
- arch_local_save_flags arch/x86/include/asm/irqflags.h:67 [inline]
- arch_local_irq_save arch/x86/include/asm/irqflags.h:103 [inline]
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
- _raw_spin_lock_irqsave+0x35/0xc0 kernel/locking/spinlock.c:162
- remove_wait_queue+0x36/0x270 kernel/sched/wait.c:54
- do_wait+0x34a/0x530 kernel/exit.c:1640
- kernel_wait4+0x2ab/0x480 kernel/exit.c:1790
- __do_sys_wait4 kernel/exit.c:1818 [inline]
- __se_sys_wait4 kernel/exit.c:1814 [inline]
- __x64_sys_wait4+0x14e/0x310 kernel/exit.c:1814
- x64_sys_call+0x6e6/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:62
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
-
-CPU: 0 PID: 5018 Comm: strace-static-x Not tainted 6.9.0-rc3-syzkaller-00355-g7efd0a74039f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
-
-
+Signed-off-by: Maxwell Bland <mbland@motorola.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/include/asm/module.h    | 12 +++++
+ arch/arm64/include/asm/vmalloc.h   | 17 ++++++-
+ arch/arm64/kernel/Makefile         |  2 +-
+ arch/arm64/kernel/module.c         |  7 ++-
+ arch/arm64/kernel/probes/kprobes.c |  7 +--
+ arch/arm64/kernel/setup.c          |  4 ++
+ arch/arm64/kernel/vmalloc.c        | 71 ++++++++++++++++++++++++++++++
+ arch/arm64/mm/ptdump.c             |  4 +-
+ arch/arm64/net/bpf_jit_comp.c      |  8 ++--
+ 9 files changed, 117 insertions(+), 15 deletions(-)
+ create mode 100644 arch/arm64/kernel/vmalloc.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/include/asm/module.h b/arch/arm64/include/asm/module.h
+index 79550b22ba19..e50d7a240ad7 100644
+--- a/arch/arm64/include/asm/module.h
++++ b/arch/arm64/include/asm/module.h
+@@ -65,4 +65,16 @@ static inline const Elf_Shdr *find_section(const Elf_Ehdr *hdr,
+ 	return NULL;
+ }
+ 
++extern u64 module_direct_base __ro_after_init;
++extern u64 module_plt_base __ro_after_init;
++
++int __init module_init_limits(void);
++
++#define MODULES_ASLR_START ((module_plt_base) ? module_plt_base : \
++		module_direct_base)
++#define MODULES_ASLR_END ((module_plt_base) ? module_plt_base + SZ_2G : \
++		module_direct_base + SZ_128M)
++
++void *module_alloc(unsigned long size);
++
+ #endif /* __ASM_MODULE_H */
+diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
+index 38fafffe699f..93f8f1e2b1ce 100644
+--- a/arch/arm64/include/asm/vmalloc.h
++++ b/arch/arm64/include/asm/vmalloc.h
+@@ -4,6 +4,9 @@
+ #include <asm/page.h>
+ #include <asm/pgtable.h>
+ 
++struct vmap_area;
++struct kmem_cache;
++
+ #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+ 
+ #define arch_vmap_pud_supported arch_vmap_pud_supported
+@@ -23,7 +26,7 @@ static inline bool arch_vmap_pmd_supported(pgprot_t prot)
+ 	return !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+ }
+ 
+-#endif
++#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+ 
+ #define arch_vmap_pgprot_tagged arch_vmap_pgprot_tagged
+ static inline pgprot_t arch_vmap_pgprot_tagged(pgprot_t prot)
+@@ -31,4 +34,16 @@ static inline pgprot_t arch_vmap_pgprot_tagged(pgprot_t prot)
+ 	return pgprot_tagged(prot);
+ }
+ 
++#ifdef CONFIG_RANDOMIZE_BASE
++
++#define arch_skip_va arch_skip_va
++inline bool arch_skip_va(struct vmap_area *va, unsigned long vstart);
++
++#define arch_refine_vmap_space arch_refine_vmap_space
++inline void arch_refine_vmap_space(struct rb_root *root,
++					  struct list_head *head,
++					  struct kmem_cache *cachep);
++
++#endif /* CONFIG_RANDOMIZE_BASE */
++
+ #endif /* _ASM_ARM64_VMALLOC_H */
+diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+index 763824963ed1..4298a2168544 100644
+--- a/arch/arm64/kernel/Makefile
++++ b/arch/arm64/kernel/Makefile
+@@ -56,7 +56,7 @@ obj-$(CONFIG_ACPI)			+= acpi.o
+ obj-$(CONFIG_ACPI_NUMA)			+= acpi_numa.o
+ obj-$(CONFIG_ARM64_ACPI_PARKING_PROTOCOL)	+= acpi_parking_protocol.o
+ obj-$(CONFIG_PARAVIRT)			+= paravirt.o
+-obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o
++obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o vmalloc.o
+ obj-$(CONFIG_HIBERNATION)		+= hibernate.o hibernate-asm.o
+ obj-$(CONFIG_ELF_CORE)			+= elfcore.o
+ obj-$(CONFIG_KEXEC_CORE)		+= machine_kexec.o relocate_kernel.o	\
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index 47e0be610bb6..58329b27624d 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -26,8 +26,8 @@
+ #include <asm/scs.h>
+ #include <asm/sections.h>
+ 
+-static u64 module_direct_base __ro_after_init = 0;
+-static u64 module_plt_base __ro_after_init = 0;
++u64 module_direct_base __ro_after_init;
++u64 module_plt_base __ro_after_init;
+ 
+ /*
+  * Choose a random page-aligned base address for a window of 'size' bytes which
+@@ -66,7 +66,7 @@ static u64 __init random_bounding_box(u64 size, u64 start, u64 end)
+  * we may fall back to PLTs where they could have been avoided, but this keeps
+  * the logic significantly simpler.
+  */
+-static int __init module_init_limits(void)
++int __init module_init_limits(void)
+ {
+ 	u64 kernel_end = (u64)_end;
+ 	u64 kernel_start = (u64)_text;
+@@ -108,7 +108,6 @@ static int __init module_init_limits(void)
+ 
+ 	return 0;
+ }
+-subsys_initcall(module_init_limits);
+ 
+ void *module_alloc(unsigned long size)
+ {
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 327855a11df2..89968f05177f 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -131,9 +131,10 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ 
+ void *alloc_insn_page(void)
+ {
+-	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+-			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+-			NUMA_NO_NODE, __builtin_return_address(0));
++	return __vmalloc_node_range(PAGE_SIZE, 1, MODULES_ASLR_START,
++			MODULES_ASLR_END, GFP_KERNEL, PAGE_KERNEL_ROX,
++			VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
++			__builtin_return_address(0));
+ }
+ 
+ /* arm kprobe: install breakpoint in text */
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 65a052bf741f..908ee0ccc606 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -53,6 +53,7 @@
+ #include <asm/efi.h>
+ #include <asm/xen/hypervisor.h>
+ #include <asm/mmu_context.h>
++#include <asm/module.h>
+ 
+ static int num_standard_resources;
+ static struct resource *standard_resources;
+@@ -321,6 +322,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 
+ 	arm64_memblock_init();
+ 
++
+ 	paging_init();
+ 
+ 	acpi_table_upgrade();
+@@ -366,6 +368,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 			"This indicates a broken bootloader or old kernel\n",
+ 			boot_args[1], boot_args[2], boot_args[3]);
+ 	}
++
++	module_init_limits();
+ }
+ 
+ static inline bool cpu_can_disable(unsigned int cpu)
+diff --git a/arch/arm64/kernel/vmalloc.c b/arch/arm64/kernel/vmalloc.c
+new file mode 100644
+index 000000000000..00a463f3692f
+--- /dev/null
++++ b/arch/arm64/kernel/vmalloc.c
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * AArch64 vmap area management code
++ *
++ * Author: Maxwell Bland <mbland@motorola.com>
++ */
++
++#include <linux/vmalloc.h>
++#include <linux/elf.h>
++
++#include <asm/module.h>
++
++/*
++ * Prevents the allocation of new vmap_areas from dynamic code
++ * region if the virtual address requested is not explicitly the
++ * module region.
++ */
++inline bool arch_skip_va(struct vmap_area *va, unsigned long vstart)
++{
++	return (vstart != MODULES_ASLR_START &&
++			va->va_start >= MODULES_ASLR_START &&
++			va->va_end <= MODULES_ASLR_END);
++}
++
++/*
++ * Splits a vmap area in two and allocates a new area if needed
++ */
++inline struct vmap_area *
++try_split_alloc_vmap_area(struct rb_root *root,
++		struct list_head *head,
++		struct kmem_cache *vmap_area_cachep,
++		unsigned long addr)
++{
++	struct vmap_area *va;
++	int ret;
++	struct vmap_area *lva = NULL;
++
++	va = __find_vmap_area(addr, root);
++	if (!va) {
++		pr_err("%s: could not find vmap\n", __func__);
++		return NULL;
++	}
++
++	lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
++	if (!lva) {
++		pr_err("%s: unable to allocate va for range\n", __func__);
++		return NULL;
++	}
++	lva->va_start = addr;
++	lva->va_end = va->va_end;
++	ret = va_clip(root, head, va, addr, va->va_end - addr);
++	if (WARN_ON_ONCE(ret)) {
++		pr_err("%s: unable to clip code base region\n", __func__);
++		kmem_cache_free(vmap_area_cachep, lva);
++		return NULL;
++	}
++	insert_vmap_area_augment(lva, NULL, root, head);
++	return lva;
++}
++
++/*
++ * Run during vmalloc_init, ensures that there exist explicit rb tree
++ * node delineations between code and data
++ */
++inline void arch_refine_vmap_space(struct rb_root *root,
++		struct list_head *head,
++		struct kmem_cache *cachep)
++{
++	try_split_alloc_vmap_area(root, head, cachep, MODULES_ASLR_START);
++	try_split_alloc_vmap_area(root, head, cachep, MODULES_ASLR_END);
++}
+diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
+index 6986827e0d64..796231a4fd63 100644
+--- a/arch/arm64/mm/ptdump.c
++++ b/arch/arm64/mm/ptdump.c
+@@ -261,9 +261,7 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
+ 		}
+ 		pt_dump_seq_printf(st->seq, "%9lu%c %s", delta, *unit,
+ 				   pg_level[st->level].name);
+-		if (st->current_prot && pg_level[st->level].bits)
+-			dump_prot(st, pg_level[st->level].bits,
+-				  pg_level[st->level].num);
++		dump_prot(st, pg_level[st->level].bits, pg_level[st->level].num);
+ 		pt_dump_seq_puts(st->seq, "\n");
+ 
+ 		if (addr >= st->marker[1].start_address) {
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 122021f9bdfc..6ed6e00b8b4a 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -13,6 +13,8 @@
+ #include <linux/memory.h>
+ #include <linux/printk.h>
+ #include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/moduleloader.h>
+ 
+ #include <asm/asm-extable.h>
+ #include <asm/byteorder.h>
+@@ -1790,18 +1792,18 @@ void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+ 
+ u64 bpf_jit_alloc_exec_limit(void)
+ {
+-	return VMALLOC_END - VMALLOC_START;
++	return MODULES_ASLR_END - MODULES_ASLR_START;
+ }
+ 
+ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+ 	/* Memory is intended to be executable, reset the pointer tag. */
+-	return kasan_reset_tag(vmalloc(size));
++	return kasan_reset_tag(module_alloc(size));
+ }
+ 
+ void bpf_jit_free_exec(void *addr)
+ {
+-	return vfree(addr);
++	return module_memfree(addr);
+ }
+ 
+ /* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
+-- 
+2.39.2
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
