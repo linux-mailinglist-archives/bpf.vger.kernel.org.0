@@ -1,101 +1,155 @@
-Return-Path: <bpf+bounces-27000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF2F8A735C
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 20:40:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 678C78A7361
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 20:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42D9E1F22667
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 18:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23D48284237
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 18:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59B01369B9;
-	Tue, 16 Apr 2024 18:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C534513775D;
+	Tue, 16 Apr 2024 18:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="HVr4rvQ/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tg/YRJvi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB6F2D60A;
-	Tue, 16 Apr 2024 18:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78FAF132C37
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 18:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292810; cv=none; b=LtFNpdxDGx/E7fs5hfFB56gG1Jy6RJk0qM/imeIKT3BaLqQkNEkwVdnlC54zYTU5KkWkxc58Cqx50NSns9xcRnhnIKxy8/pczxpEo0JWH4JwvlzevClQqPsNNwoeoDdtVJp0XmIHkFpoI876QtwNLmoykxvBk4WGRS6O2T7JYRc=
+	t=1713292886; cv=none; b=DBDDrnUh66pegnwqKmbjQysTXpnXi7rFlXVDF8CsmnbB788Z5xWf3vasVumEevFTICHopRJoNRb6HhBsaOTdca7t0LdGBbVbpWd8CZp3CCIGUpwV5jb91dYS5DT+CG6MVIZcktBn3FSLWsUJLkw5ycnZSFzR/Wcl33APEyVnHTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292810; c=relaxed/simple;
-	bh=s8oqw/n7tWvAIfHbgC5Y8kcQzZvxalGMqNe9yNc3GQA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=syyeLsSwmeT95TfRwhPimh778wozKhuPEm7MeHJQuVNkffevwKVM6yqib9O/KQYt5VKdHjLymC3cCnuxqqbhguAvZfTOLhmnqClG6VrdquaFZtvnEwtk6IMBHfXiAoKXnSA4uGDtV3qcQI4zvjMdE9bKWFGt93L47sT4c/QJicc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=HVr4rvQ/; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354650.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GIYKGm018603;
-	Tue, 16 Apr 2024 18:39:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=default;
-	 bh=s8oqw/n7tWvAIfHbgC5Y8kcQzZvxalGMqNe9yNc3GQA=; b=HVr4rvQ/Q3H7
-	tNxcc0E0j3S/Hsu/ybiQt1JVCxJUQmQ0J2U2chyAnw4Q6sXl9W8hAP8oAhZ/eoiP
-	1hqzMBkw8B+jDp7EAUK6uRmtofDwFK8oAC8dTE9U8A/sGAJkG5uj0CczWJ1Thul6
-	C9sJCbsHqUd+Prth7FzOJ0fakCUHkJxR5cBtQOexk0r0AOrG7xtxwbeQcjST6SRw
-	GDFR/rctPx3MegoXDLl9W7NBWLgt0OibEG8a5b94sBUIbla9OS8ra3s3qNW8pBnW
-	CEDug02/pZvDP0xPc0xtxqoKhmc3z8dJsai26bpZNldrZnz3/n79KoGg+AiRR+2e
-	GXS8hjo5+Q==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3xhxqp80fn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 18:39:53 +0000 (GMT)
-Received: from [10.82.58.126] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 16 Apr
- 2024 18:39:51 +0000
-Message-ID: <39ab4c5a-7074-42ad-9eea-773d4bb76bce@crowdstrike.com>
-Date: Tue, 16 Apr 2024 11:39:51 -0700
+	s=arc-20240116; t=1713292886; c=relaxed/simple;
+	bh=bmzjTTFBWVz12gXu4GvtCl6/if4RyTfGK18ivEjF9FA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lpumgiEVQYI3qHaJ/jZhirl0sBnGAtmqBjxtc6y4DwUmAksb/I86cdxhjzfVQ72RHJ+Mu73+YkwWfUS+S2Et2NBCLPB63bYc9uhHs9uylt8UWmg6gQ3iDVIDjkrYjFQiY0X7svZVkhBCWOoY+uP/uFjVOxZZ2HfsJD2gsz3ey80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tg/YRJvi; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 16 Apr 2024 11:41:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713292882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AARNMAAmv0ZXNznpgmWdVj/ZM3y0d0nkfa+epz38edo=;
+	b=Tg/YRJvi+gsorMTVglfkGMo25xZslc2DG+Q3niadqPeDe0UXXpz//oQEO/8rXho+keqy0O
+	fT0WCzxTkS7d3YdtM/X2cSn/g/keKmFcCaY8tWIWLgWq52vcuvbfGQXocNILOLXpK6doWM
+	I4E72O2k43z0IjPC4afmINIRpSVCOFU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Waiman Long <longman@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>, 
+	Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Ivan Babrou <ivan@cloudflare.com>
+Subject: Re: Advice on cgroup rstat lock
+Message-ID: <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
+References: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
+ <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+ <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
+ <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com>
+ <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
+ <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
+ <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org>
+ <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
+ <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH bpf-next] bpf: clarify libbpf skeleton header
- licensing
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC: bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION"
-	<linux-doc@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel
- Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-References: <20240415230612.658798-1-martin.kelly@crowdstrike.com>
- <CAADnVQKfo-s4vXopJJ50Q4KP-mPKCbOc_8Pwz9u=uUn2=NU1ww@mail.gmail.com>
-Content-Language: en-US
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-In-Reply-To: <CAADnVQKfo-s4vXopJJ50Q4KP-mPKCbOc_8Pwz9u=uUn2=NU1ww@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: 04wpexch16.crowdstrike.sys (10.100.11.106) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-GUID: Ihn54yYzjdyJukZA8YG74zn1wAOOI7Mu
-X-Proofpoint-ORIG-GUID: Ihn54yYzjdyJukZA8YG74zn1wAOOI7Mu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 impostorscore=0
- adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=665 mlxscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404160117
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-T24gNC8xNS8yNCAxNjoxNiwgQWxleGVpIFN0YXJvdm9pdG92IHdyb3RlOg0KPiBUaGUgZG9j
-IGlzIGNsZWFyIGVub3VnaC4gVGhpcyBpcyB1bm5lY2Vzc2FyeS4NCj4gT3RoZXJ3aXNlIHdl
-J2xsIHN0YXJ0IGxpc3RpbmcgZXZlcnkgcHJvamVjdCB0aGF0IGJ1bmRsZXMgYnBmIHByb2cN
-Cj4gaW4gc29tZSBmb3JtLg0KDQpJIGZpZ3VyZWQgdGhhdCB3aXRoIGxpY2Vuc2luZywgYmVp
-bmcgZXhwbGljaXQgbmV2ZXIgaHVydHMsIGJ1dCBJIHRha2UgDQp5b3VyIHBvaW50IGFuZCBh
-bSBoYXBweSB0byBkcm9wIHRoZSBwYXRjaC4NCg0K
+On Tue, Apr 16, 2024 at 04:22:51PM +0200, Jesper Dangaard Brouer wrote:
+
+Sorry for the late response and I see there are patches posted as well
+which I will take a look but let me put somethings in perspective.
+
+> 
+> 
+> > 
+> > I personally don't like mem_cgroup_flush_stats_ratelimited() very
+> > much, because it is time-based (unlike memcg_vmstats_needs_flush()),
+> > and a lot of changes can happen in a very short amount of time.
+> > However, it seems like for some workloads it's a necessary evil :/
+> > 
+
+Other than obj_cgroup_may_zswap(), there is no other place which really
+need very very accurate stats. IMO we should actually make ratelimited
+version the default one for all the places. Stats will always be out of
+sync for some time window even with non-ratelimited flush and I don't
+see any place where 2 second old stat would be any issue.
+
+> 
+> I like the combination of the two mem_cgroup_flush_stats_ratelimited()
+> and memcg_vmstats_needs_flush().
+> IMHO the jiffies rate limit 2*FLUSH_TIME is too high, looks like 4 sec?
+
+4 sec is the worst case and I don't think anyone have seen or reported
+that they are seeing 4 sec delayed flush and if it is happening, it
+seems like no one cares. 
+
+> 
+> 
+> > I briefly looked into a global scheme similar to
+> > memcg_vmstats_needs_flush() in core cgroups code, but I gave up
+> > quickly. Different subsystems have different incomparable stats, so we
+> > cannot have a simple magnitude of pending updates on a cgroup-level
+> > that represents all subsystems fairly.
+> > 
+> > I tried to have per-subsystem callbacks to update the pending stats
+> > and check if flushing is required -- but it got complicated quickly
+> > and performance was bad.
+> > 
+> 
+> I like the time-based limit because it doesn't require tracking pending
+> updates.
+> 
+> I'm looking at using a time-based limit, on how often userspace can take
+> the lock, but in the area of 50ms to 100 ms.
+
+Sounds good to me and you might just need to check obj_cgroup_may_zswap
+is not getting delayed or getting stale stats.
+
+> 
+> 
+> With a mutex lock contention will be less obvious, as converting this to
+> a mutex avoids multiple CPUs spinning while waiting for the lock, but
+> it doesn't remove the lock contention.
+> 
+
+I don't like global sleepable locks as those are source of priority
+inversion issues on highly utilized multi-tenant systems but I still
+need to see how you are handling that.
+
+> Userspace can easily triggered pressure on the global cgroup_rstat_lock
+> via simply reading io.stat and cpu.stat files (under /sys/fs/cgroup/).
+> I think we need a system to mitigate lock contention from userspace
+> (waiting on code compiling with a proposal).  We see normal userspace
+> stats tools like cadvisor, nomad (and systemd) trigger this by reading
+> all the stat file on the system and even spawning parallel threads
+> without realizing that kernel side they share same global lock.
+> 
+> You have done a huge effort to mitigate lock contention from memcg,
+> thank you for that.  It would be sad if userspace reading these stat
+> files can block memcg.  On production I see shrink_node having a
+> congestion point happening on this global lock.
+
+Seems like another instance where we should use the ratelimited version
+of the flush function.
 
