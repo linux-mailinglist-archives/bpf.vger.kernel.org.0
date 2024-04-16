@@ -1,85 +1,86 @@
-Return-Path: <bpf+bounces-26916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5548A6500
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 09:23:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA518A6506
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 09:24:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41598B202EF
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 07:23:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CE4F283B2B
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 07:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFA885268;
-	Tue, 16 Apr 2024 07:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E701811E6;
+	Tue, 16 Apr 2024 07:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekk8HCBF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S4I51/Cs"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9336EB75;
-	Tue, 16 Apr 2024 07:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642326EB75;
+	Tue, 16 Apr 2024 07:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252206; cv=none; b=VHkeyzIbKbKGyGXLYc8WCAkzSIf45pmkXFPO39XulTqCp8JJt/VEmI/5zqg1Jqo6Wmy/ZVyh5thfkGWRbDRnp74yq47yDxrd7F053nt8oEP+d4VPJgUEmNNM5xh9f+yPPiB28qE+352P3m7l/fO/+G+uFsyTPbXrNkjMhaV64ZI=
+	t=1713252213; cv=none; b=JhFjWBMiPA4k4yE6ZlDRDUUJq1+hGxtS/VhcuOA1swuRmjjFZZxclnvsrEC7+uexIW+aZ5vx/7+YlPx8a/fhi78+6k6HXiOOwHZpoiNcWf+C7ttHWxKYXOICQcJ+MxyGgKu7AR4820bYWFZ8Yna2pqdyEYjERkntjXaD6WjCe1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252206; c=relaxed/simple;
-	bh=ULqJjlTCraVJ0ruf913jYz2dlG1gS6UCOgmOiRdXRlo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UjCvUPLzf0P3JLPBqJW2/Sn+xfkNer8nzPpJ1PQZr0VieC5pN2cPRDtF86WlRWoIMN163+SoQ1iEKRXtCwXwxWKOfl+DcQCsuFTcPeEUDF3NH+HFL84kVCy3ArKqnHlZf/m0tWDuZLJTDnBDJy2NWegGodnzs2laWUFeMHkhecM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekk8HCBF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BBECC113CE;
-	Tue, 16 Apr 2024 07:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713252205;
-	bh=ULqJjlTCraVJ0ruf913jYz2dlG1gS6UCOgmOiRdXRlo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ekk8HCBFjthC7O7PxrFN7j/GM7z/nWOuO8k9QOUSLiGyz09GAO2cg64dmGZlUlds7
-	 00Ewxyx3C6wcPZBoIkKGD6lbL3qbO2ksVpnRUlonLdQr9BhpV1yf7+bx9loZNn41At
-	 rywVk+bWOXuipnXUZImOPnzXQlyIpQamAXCi97V5XEUtgpABiSiT97flmkQAEFDr7A
-	 YcuRY0rwjZPTJIRXEph9PF+jUZc4mOVTGomsCx8EugJ6WC8EEbdEckfhASAJlczMAM
-	 pEgjXqHCw7T7cVdoBUzlejwen9ZBJYRh+vjYrzCI4CZ6xsCi82SwkYS2yHPnvfOsma
-	 Wo31Nl9r7Gz/Q==
-Date: Tue, 16 Apr 2024 10:22:14 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Bj\"orn T\"opel" <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
-Message-ID: <Zh4nJp8rv1qRBs8m@kernel.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-6-rppt@kernel.org>
- <20240415075241.GF40213@noisy.programming.kicks-ass.net>
- <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+	s=arc-20240116; t=1713252213; c=relaxed/simple;
+	bh=9Cw6OWP2u9Aes3pseofoNzXPv/fz2bmg6PUjArK3J9Y=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5FZaHubs+S9GvyfRTBpO+VKhJJ5elVGI8Qsq2/aCQRpJgaW3tsX2vmHj3TAN7Wei8ZpSVQa1XxWwJotxgX8UjkdcIW0lfsELLVOMkRGDANH7sF/2KwyvWu/XHw+r/VO57eAAR33eVUjSoZE7cfC2uvlou+XkEvKK0E/wvpTT7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S4I51/Cs; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da888330b2so35731731fa.2;
+        Tue, 16 Apr 2024 00:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713252209; x=1713857009; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HwPoHiyB6a6BiMxMqmc7hqhHWyqah1NK8r1aIJ0ba5s=;
+        b=S4I51/CsFzVhu+N+qiQyLSN01aHZba4oUcXjcLbG1+nnj6o0c2GV59fK9HmTwZ8YwF
+         rJGi/m7D3BJOTKHeUyh/5PzvVZvA+LJG7hz+V90PE417Fs2VwfW87zivfEV3eFA6CbUm
+         MGVlJ15H8vQhN9gPn0ryh419GXLLCn57hqBpIYexIKzkv4wDwssyTfFD6hvniGASKpB2
+         /G8tf1ff/JhL6+HavCnVvX6eBMUSjNlhQS48GrRQeguLEVXJgWnIA1TlXoVsnpD/L5wq
+         iaEBRXQ8/FaDrPXNBl4GPi+5FWpPn1DY+wnrh0NNPfaobcG3mL7OQS6sqL/J/3tjPJd5
+         oUFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713252209; x=1713857009;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HwPoHiyB6a6BiMxMqmc7hqhHWyqah1NK8r1aIJ0ba5s=;
+        b=DsjmnOOQ1Zr6Lg4zXMXJF53RiQEKyPWbAeq5QV3CY96ZtsPpB0atxJJHw2bdJx5Je0
+         n8iADHnDd6NQXcfCjfOZDsS/MvQXjvsj6v7y0s3gNt9dtgW3B/6mKsPM0nPRs5Xoeja7
+         XJIQqSlbqASxicGVchJmp9Y3OHmKGaB6yTyKkc8t98JKgBr2l8tm7U8Cxc8X9ifyaQqT
+         FaUbK9VGL5lQ3ofulmtqfNQuqilV1kdSLYKNRguieCPfidFSJWL6eV6l7JY1uz2gYv3e
+         iCaqoN+bEHhRpo21x07DS1ywDxyiVO9Ik8q6WRSggHGawkeAaxloYgVbRy0GV7/sBtmR
+         przw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzgU7zIt4IPsO6lsSKO/w3j24HiBnjT+qRyJnQJbVHmr+M1jvFvJPDH9ScXmg58BeYLhn/IjeON7mChFrN1ACEFg0oS10ej5oRdrGrklGs4pA3UYHjzCoEaZDCiJwWCy1/
+X-Gm-Message-State: AOJu0YwS3bj2NvLCSXWHHl5lnfzcwTrRjE9n0RIj/cLcfXMD7ldoslOP
+	4NqM3i2t0398Dh2QitJzmXvvbwMrAOW7kjzsjtDXyAbdg5ExaszQ
+X-Google-Smtp-Source: AGHT+IH5Ye6SPlxy35avdKYsBR2Hv9ZPOjQHKm4uKt9nII/+USCnYiYvMkvevpeOqYTruYF+4XVduw==
+X-Received: by 2002:a19:381c:0:b0:518:ed96:6b12 with SMTP id f28-20020a19381c000000b00518ed966b12mr3381349lfa.61.1713252209223;
+        Tue, 16 Apr 2024 00:23:29 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id bf14-20020a170907098e00b00a52225b44e4sm6323741ejc.115.2024.04.16.00.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 00:23:28 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 16 Apr 2024 09:23:26 +0200
+To: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Cc: olsajiri@gmail.com, andrii@kernel.org, ast@kernel.org,
+	bpf@vger.kernel.org, daniel@iogearbox.net, dxu@dxuuu.xyz,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	khazhy@chromium.org, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+	ncopa@alpinelinux.org, ndesaulniers@google.com, sdf@google.com,
+	song@kernel.org, vmalik@redhat.com, yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next v2] bpf: btf: include linux/types.h for u32
+Message-ID: <Zh4nbvndaho6kCRP@krava>
+References: <Zh0ZhEU1xhndl2k8@krava>
+ <20240416051527.3109380-1-dmitrii.bundin.a@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,109 +89,41 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <20240416051527.3109380-1-dmitrii.bundin.a@gmail.com>
 
-On Mon, Apr 15, 2024 at 06:36:39PM +0100, Mark Rutland wrote:
-> On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
-> > On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
-> > > +/**
-> > > + * enum execmem_type - types of executable memory ranges
-> > > + *
-> > > + * There are several subsystems that allocate executable memory.
-> > > + * Architectures define different restrictions on placement,
-> > > + * permissions, alignment and other parameters for memory that can be used
-> > > + * by these subsystems.
-> > > + * Types in this enum identify subsystems that allocate executable memory
-> > > + * and let architectures define parameters for ranges suitable for
-> > > + * allocations by each subsystem.
-> > > + *
-> > > + * @EXECMEM_DEFAULT: default parameters that would be used for types that
-> > > + * are not explcitly defined.
-> > > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
-> > > + * @EXECMEM_KPROBES: parameters for kprobes
-> > > + * @EXECMEM_FTRACE: parameters for ftrace
-> > > + * @EXECMEM_BPF: parameters for BPF
-> > > + * @EXECMEM_TYPE_MAX:
-> > > + */
-> > > +enum execmem_type {
-> > > +	EXECMEM_DEFAULT,
-> > > +	EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
-> > > +	EXECMEM_KPROBES,
-> > > +	EXECMEM_FTRACE,
-> > > +	EXECMEM_BPF,
-> > > +	EXECMEM_TYPE_MAX,
-> > > +};
-> > 
-> > Can we please get a break-down of how all these types are actually
-> > different from one another?
-> > 
-> > I'm thinking some platforms have a tiny immediate space (arm64 comes to
-> > mind) and has less strict placement constraints for some of them?
+On Tue, Apr 16, 2024 at 08:15:27AM +0300, Dmitrii Bundin wrote:
+> Inclusion of the header linux/btf_ids.h relies on indirect inclusion of
+> the header linux/types.h. Including it directly on the top level helps
+> to avoid potential problems if linux/types.h hasn't been included
+> before.
 > 
-> Yeah, and really I'd *much* rather deal with that in arch code, as I have said
-> several times.
-> 
-> For arm64 we have two bsaic restrictions: 
-> 
-> 1) Direct branches can go +/-128M
->    We can expand this range by having direct branches go to PLTs, at a
->    performance cost.
-> 
-> 2) PREL32 relocations can go +/-2G
->    We cannot expand this further.
-> 
-> * We don't need to allocate memory for ftrace. We do not use trampolines.
-> 
-> * Kprobes XOL areas don't care about either of those; we don't place any
->   PC-relative instructions in those. Maybe we want to in future.
-> 
-> * Modules care about both; we'd *prefer* to place them within +/-128M of all
->   other kernel/module code, but if there's no space we can use PLTs and expand
->   that to +/-2G. Since modules can refreence other modules, that ends up
->   actually being halved, and modules have to fit within some 2G window that
->   also covers the kernel.
-> 
-> * I'm not sure about BPF's requirements; it seems happy doing the same as
->   modules.
+> Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
 
-BPF are happy with vmalloc().
- 
-> So if we *must* use a common execmem allocator, what we'd reall want is our own
-> types, e.g.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
 > 
-> 	EXECMEM_ANYWHERE
-> 	EXECMEM_NOPLT
-> 	EXECMEM_PREL32
+> Changes in v2: Add bpf-next to the subject
 > 
-> ... and then we use those in arch code to implement module_alloc() and friends.
-
-I'm looking at execmem_types more as definition of the consumers, maybe I
-should have named the enum execmem_consumer at the first place.
-
-And the arch constrains defined in struct execmem_range describe how memory
-should be allocated for each consumer.
-
-These constraints are defined early at boot and remain static, so
-initializing them once and letting a common allocator use them makes
-perfect sense to me.
-
-I agree that fallback_{start,end} are not ideal, but we have 3
-architectures that have preferred and secondary range for modules. And arm
-and powerpc use the same logic for kprobes as well, and I don't see why this
-code should be duplicated.
-
-And, for instance, if you decide to place PC-relative instructions if
-kprobes XOL areas, you'd only need to update execmem_range for kprobes to
-be more like the range for modules.
-
-With central allocator it's easier to deal with the things like
-VM_FLUSH_RESET_PERMS and caching of ROX memory and I think it will be more
-maintainable that module_alloc(), alloc_insn_page() and
-bpf_jit_alloc_exec() spread all over the place.
- 
-> Mark.
-
--- 
-Sincerely yours,
-Mike.
+>  include/linux/btf_ids.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index e24aabfe8ecc..c0e3e1426a82 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -3,6 +3,8 @@
+>  #ifndef _LINUX_BTF_IDS_H
+>  #define _LINUX_BTF_IDS_H
+>  
+> +#include <linux/types.h> /* for u32 */
+> +
+>  struct btf_id_set {
+>  	u32 cnt;
+>  	u32 ids[];
+> -- 
+> 2.34.1
+> 
 
