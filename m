@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-26921-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 328F08A665D
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 10:46:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B56738A667E
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 10:53:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AC29B238E5
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 08:46:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7FEA1C212E7
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 08:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9962584A23;
-	Tue, 16 Apr 2024 08:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DE584A5C;
+	Tue, 16 Apr 2024 08:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C4jlf6u4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rQTCc1DG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30D983CBE
-	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 08:46:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732EEEEB7
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 08:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713257192; cv=none; b=JJM6jyIvjhNpNf945gppcFAp7tvy/ZAb8H3n76/5zsdC4DI2UQV0zm2SxuICgx/Ec7OH3aB7bRbid0Bb6RnEgQaoWf39Z+pXfvug98n32b6QKFIm1bksrTsVyIWibr2ALp2XUZobQLBg1zEVfS7kr7udL6CLx3ws2d35sN3Eork=
+	t=1713257577; cv=none; b=d6r5iKzxmXyXt1/cZEt821D3VElUiNlcKP51IsStdspPl5OaPNcT7Ijn/OKO1sKYl5PbZckfYiqclZq4ueyhwWtL/N7XMk0d6QUJsbFKD5HZinsJA1W4bFxh5DnY8GpXw5e5ZEzoDC1TevRPNVwskLP2QV0BRtbIJqgH5o+D30c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713257192; c=relaxed/simple;
-	bh=wvlbCfxHSZpaqmi0913qTIrGU+Bv5x+PhfrqBSY9p8c=;
+	s=arc-20240116; t=1713257577; c=relaxed/simple;
+	bh=FdtQyAHvdiOXO6ti4ShXTouSZM7Z22hhscY+ZntVPlM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nGdGsuaBKbb1wveGAjcasjrokoQ6469713Yx5/Yzhaxlq79zinr+C3qNIdMFIY1UsNVT71Q2EZ5EbEM1BJH4JU+QtVajtGOqSkdOX3KKMXnJPpRO60O3pyQhvHq8Hc/mTLkj9bHKoIhvI9yWF0Oqego3suSnJ6Y0WW9J2DBK150=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C4jlf6u4; arc=none smtp.client-ip=209.85.214.178
+	 To:Cc:Content-Type; b=oMgcrrRIX+icPpdb/V2j92Z0Pn+Gty3UKwNYxKZAqnMcPMo7pKgHATRZ+E5CV124m1zFn0FnqVsfhjrGjp6tYQQe4jbWcFYShVLw6EZTgpSsqh65cGv+i2FDBTFfoHSTO5KQjMjEF7sdHBPlTgcm4DaO/p7v3zBLBdR/qRwccV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rQTCc1DG; arc=none smtp.client-ip=209.85.219.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e3c89f3d32so149885ad.0
-        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 01:46:30 -0700 (PDT)
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-69cb4a046dfso3164256d6.2
+        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 01:52:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713257190; x=1713861990; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713257574; x=1713862374; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cdFARpeJLKEG6lkXysYKLQ1MgRKXAzEEOOq2GHR99oo=;
-        b=C4jlf6u4BkMKAlXkp6H0vBHquDHwX3WsR4yryseN2YfQhSDvPR56UdRl7OWUpZIdbd
-         oZg2JfuFLfN0ZIZGK1gwsUvqhLQeGJG+ZLRrQP7fuxzxDRmS4lHKzemRs66CailrCL4S
-         UxUIj6dIUPf6SzBJc5HnR47Bx5veES1rc8xg86lDS/XumfsnCVuvcSh0TBRX8qJQCcAF
-         DEjQiWpRz5BC2YexRviZU7CzdQVFa/HvJR0xtV1TcdxydkPYLGGc8OJmbIuKSjpy/plM
-         XYdIZtMJAWjqwcyeXZJtJbC4XpRxFAaF64yp95Fte/iBJgLjuyWcmvXdMlI360AK9egK
-         MYvw==
+        bh=hPVk/nT4EhdKCio3Wn9r/Arl5MCpgxnJeUxrDI8MyIE=;
+        b=rQTCc1DGz3frrxpKbhy/9ejG+WfVduUruCugxkAc5sFgADXwdcpj9zCZyUgziljJFi
+         ctU904t/17GeCTCltvetKp2HQ/9uH09h342nj+MfpObZ57wpPqrIuE1D/sCSXSRFue51
+         zMpaLbTculKnw2XZaTKJWNGNpRly48LZHif+ZGMJIFmRA+DTNt1RDFCvRXMFnshEKqPf
+         o7jxFMYdhIYE2M8gF0HtpBigUurWFU/hOinYcHbyzUcSLXYTnZO5IiNudXtFDHs2Jyla
+         EQr52YF4rilEFO2AiobMhUdOiBmV8fuMgJecc3q6v0OX+UZIeaAdVlsmKOPk3+KVob6D
+         i3pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713257190; x=1713861990;
+        d=1e100.net; s=20230601; t=1713257574; x=1713862374;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cdFARpeJLKEG6lkXysYKLQ1MgRKXAzEEOOq2GHR99oo=;
-        b=alnGZ4ZOCxSl3+RsKwoumpZTmEBzlDHS+eQkS8y79r5xLVxjzYaNdI/xJp5bEgFKXp
-         leNKzx6ZDIjvGbnldQNzDCJ/gal5ZzWb/LXo/L0iTrFowwY+UJW/oJenioQQNV/PJ7il
-         5vD2EXXEFpNxPR1hH0YkobxyqURmIKTC1pOI/3+pTbJGT9e5ilTqJo3nhoV63lpDQY5a
-         nhyWPYibB2T1MDLb19R7vIvJGjGavsy9RTPMlAvl7FKStxEFE3hrdmnsy/leCC/0hY8z
-         MiOj5EMcbm6BpcoX6KjONTTI7qtz8Lr8hwc/d0CgTaRPqLRgo0grTcDTigZvDy+cyjOl
-         KZzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWoMKXhoDjZRbxO3XkoEnpatucvXeqHY/PrGHQfpVgNCCVp7u837hyRGk/WVDPQWKxl2zIozUIiH4D7NWcKXCEwlJfQ
-X-Gm-Message-State: AOJu0YyF6xlF9l6AAo4fPTbeabj7Td9um28L335ORfA53pUU2ngi7eTJ
-	snGy364IZfroPmMX5cURmYae1IoT8aRhDq9+q0TCZ+MhDWzHdNCyzHYDcUGDQlkgP2/B+fmkEen
-	rkGhZ2nQit7jlBZgoR160Wtp+v3OOTaAiUg23
-X-Google-Smtp-Source: AGHT+IFO1IZLaHuBSBibnq9pM+7smIeLVIAtC5ld61VMJb0S9XUpcC1f76mOW94iGHIxSJqyUGKfqdeMQ8u15Od0bx4=
-X-Received: by 2002:a17:902:f548:b0:1e5:1138:e29d with SMTP id
- h8-20020a170902f54800b001e51138e29dmr143673plf.29.1713257189512; Tue, 16 Apr
- 2024 01:46:29 -0700 (PDT)
+        bh=hPVk/nT4EhdKCio3Wn9r/Arl5MCpgxnJeUxrDI8MyIE=;
+        b=DYrIaWoCIb71+79L/FlED0K55cjvP5IEXTBJmpJaH6R8uNtUM1ckMLg++oDGTemV1U
+         9Ub4HNILXYa9IMxnVSABRgyKYZ91r0lj4CNekiN93SyehxFIrDLcxp3ZHCMT52wTm4zC
+         vbt0aTUZ+PN8UFEASmyXl/fjyxDK9ABL3P6pRV1hLEY5OPV9Q8WLq4CbTf3zX4Brq/cy
+         vnRH3hw1QeD9byfN1WOPJXcxIFzwCmlcKDvfnxeG+0lsjPlt6KdU7IcuUy7Qs/2gD8DM
+         e61QFuuSlRrn7sJTo6CRl4ik+3SLSoOOa1OfECZ8HF5meQ0AeuheRMM5fYhAw36W3ylS
+         DNew==
+X-Forwarded-Encrypted: i=1; AJvYcCWpv3C7hE8D3YsUbR62bXlNw0vpRzgzN3pkpaHTAmPoBWfB1Tt4YLJ9a47yXvXznhkJw3+8AYZGgD6UqcXSefdOOGld
+X-Gm-Message-State: AOJu0YzySb/zWX0yRgz3dAJA9xHJ+DD3bHS3YZ3zXMK95zoZoDHkHuSS
+	4qJhhWVoiKswIeIgjIHVwfm3dWxsOPfrIJi6q1kgdhuF88XqNKRuxiiivak/mmrqYxndcEGDcoY
+	4VoAg/HuDpqHHbGkTVxE6VmQuQsd0Lx/ydEq2
+X-Google-Smtp-Source: AGHT+IEVH1GgftNMpoMJgPffHF/J8q7xcxKz2P8Pi0PJGcyYrQzTS/Zde01ylrcWnYqhEA7c7VJkWeiB58NSk9HcEN8=
+X-Received: by 2002:ad4:4ba2:0:b0:69b:7145:b2ee with SMTP id
+ i2-20020ad44ba2000000b0069b7145b2eemr6105996qvw.4.1713257574178; Tue, 16 Apr
+ 2024 01:52:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,31 +74,17 @@ MIME-Version: 1.0
 References: <000000000000fe696d0615f120bb@google.com> <20240415131837.411c6e05eb7b0af077d6424a@linux-foundation.org>
  <CAADnVQ+E=j1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ@mail.gmail.com>
 In-Reply-To: <CAADnVQ+E=j1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ@mail.gmail.com>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Tue, 16 Apr 2024 10:46:16 +0200
-Message-ID: <CANp29Y6UqJmBjmhO_7-DeBqou1AG7=AmSu9PvuK3cPXmCDziXA@mail.gmail.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Tue, 16 Apr 2024 10:52:12 +0200
+Message-ID: <CAG_fn=Uxaq1juuq-3cA1qQu6gB7ZB=LpyxBEdKf7DpYfAo3zmg@mail.gmail.com>
 Subject: Re: [syzbot] [mm?] KMSAN: kernel-infoleak in bpf_probe_write_user
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexander Potapenko <glider@google.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
 	syzbot <syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com>, 
 	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, bpf <bpf@vger.kernel.org>, 
-	Dmitry Vyukov <dvyukov@google.com>
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-
-(+Alexander Potapenko)
-
-Hi Alexei,
-
-Thanks for bringing this up!
-I guess some annotations in the kernel code need to be adjusted.
-Syzbot stress-tests the kernel, but in the end it's the kernel itself
-that detects problems and prints error reports.
-
---=20
-Aleksandr
-
 
 On Mon, Apr 15, 2024 at 11:06=E2=80=AFPM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
@@ -110,6 +96,16 @@ On Mon, Apr 15, 2024 at 11:06=E2=80=AFPM Alexei Starovoitov
 > probe_write_user, various ring buffers, bpf_*_printk-s, bpf maps
 > all serve this purpose of "infoleak".
 >
+
+Hi Alexei,
+
+From KMSAN's perspective it is fine to pass information to the
+userspace, unless it is marked as uninitialized.
+It could be that we are missing some initialization in kernel/bpf/core.c th=
+ough.
+Do you know which part of the code is supposed to initialize the stack
+in PROG_NAME?
+
 > On Mon, Apr 15, 2024 at 1:18=E2=80=AFPM Andrew Morton <akpm@linux-foundat=
 ion.org> wrote:
 > >
@@ -236,4 +232,18 @@ ng.
 > To view this discussion on the web visit https://groups.google.com/d/msgi=
 d/syzkaller-bugs/CAADnVQ%2BE%3Dj1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ%40=
 mail.gmail.com.
+
+
+
+--
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
 
