@@ -1,291 +1,200 @@
-Return-Path: <bpf+bounces-26880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-26881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22B4E8A6070
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 03:37:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D5F8A6135
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 04:54:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313891C213EE
-	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 01:37:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B12D2828B6
+	for <lists+bpf@lfdr.de>; Tue, 16 Apr 2024 02:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366DE7484;
-	Tue, 16 Apr 2024 01:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1FD171AB;
+	Tue, 16 Apr 2024 02:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9ZIUnbF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EnOWv3mz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68127464;
-	Tue, 16 Apr 2024 01:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EA1E572
+	for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 02:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713231426; cv=none; b=ndRVrfbZRa/1yc92TKSLrb5HAT3bpvUMS4HpVsd9uoEJR43E3kU7UZ+S8+N/P96SHWN01fHCz93F+TU6Ls2+17d5sDcwjj5p6Emw/SNqFb1vVoVufaI1WsNchJcae69w2RfBH8DqlS8kQV84j+KS+fSPAFIDJ3aop7ZWFa1OJ8M=
+	t=1713236044; cv=none; b=JvRr6mM2pt7UZtnyjq7jeSzBKYY1E33l4TRqIqxA+lIPp08CUMEoCM+4Vawf+778SnFQQYQhCbPQnrUSAvF36u6za/UpLnnxPV/doQr5mX/DiUu60w2IPQ6x69RsEktobzvkl4OCdd6CLBp9yuOvRWfQWb2AvlCGCqx6km1tNAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713231426; c=relaxed/simple;
-	bh=MRnZAn/34/F3uJzAswtdGPYBP2MTvfc7DxyHqDFZPv0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=c/BhO+0VISJ99bTPACSluL9RoVkE7hpSJwV1nrI8JDO5DTj9kmH75AsWrOm6oV9naEKAAecuqnmKp7G8U9lW+Y54TvRvofSk6vAdZYWp4QbovcpEH2g0bq8yMO7gG8jatbCu2bDWYV5VXgolNg3651IH4Ny5J1nADg/MNAYy6iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9ZIUnbF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B616C113CC;
-	Tue, 16 Apr 2024 01:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713231426;
-	bh=MRnZAn/34/F3uJzAswtdGPYBP2MTvfc7DxyHqDFZPv0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=C9ZIUnbF8xh0maYgafKeDukAR2aeT1Rt6m7K2ugQmk3IGeVfsihYYbtq1pFn670UR
-	 5xBf0WObLpZpdGoVO1Qkmsz8Hr3MunXRaLBz80pZIIHrVYzultJFe/2WhM6xNIpHDL
-	 QbpHf6nnl3TGyHyaT1LdkkezNGjH3H7V0LydiO5e4tQkw65he8/xiY+UcL7DyvqjmP
-	 +sXDpglVwlNx+11TFrJF94NT//QARhkZKh1OiKxnpjcL4zsXxzY8Vm9q5XBQrmSOPe
-	 gzh7L7EkwWSo007LFgLgUO5aUyLR/QVIvt0PJAUZOaeQ6EcDSLDEIMdTHEZkbM61zQ
-	 k+8T4xUnvaNqw==
-Date: Mon, 15 Apr 2024 18:37:05 -0700 (PDT)
-From: Mat Martineau <martineau@kernel.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>, Paolo Abeni <pabeni@redhat.com>
-cc: davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, Ayush Sawal <ayush.sawal@chelsio.com>, 
-    Eric Dumazet <edumazet@google.com>, 
-    Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-    Jason Wang <jasowang@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
-    Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-    Vincent Guittot <vincent.guittot@linaro.org>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-    Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
-    Mel Gorman <mgorman@suse.de>, 
-    Daniel Bristot de Oliveira <bristot@redhat.com>, 
-    Valentin Schneider <vschneid@redhat.com>, 
-    John Fastabend <john.fastabend@gmail.com>, 
-    Jakub Sitnicki <jakub@cloudflare.com>, David Ahern <dsahern@kernel.org>, 
-    Matthieu Baerts <matttbe@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-    Boris Pismenny <borisp@nvidia.com>, bpf@vger.kernel.org, 
-    mptcp@lists.linux.dev
-Subject: Re: [PATCH net-next v2 13/15] net: replace page_frag with
- page_frag_cache
-In-Reply-To: <20240415131941.51153-14-linyunsheng@huawei.com>
-Message-ID: <c5a8eabb-1b46-1e9f-88c9-e707c3a086c4@kernel.org>
-References: <20240415131941.51153-1-linyunsheng@huawei.com> <20240415131941.51153-14-linyunsheng@huawei.com>
+	s=arc-20240116; t=1713236044; c=relaxed/simple;
+	bh=IRel4Lsu2YoxCkxFMRRoIZ+lVMAqvPZv1ftyFTWXsh0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mt/lzr66zRN1t/kcZhjJRcplTgenzD+ODgURbGyFCYcd4MsTTGnby0J/to2bFSCeZNsVIZLeI+BgVWfdWKAdbO2GlJMvrjiMFJAAAXzNJ0J+u/iLEEBT8SRBF6N6JD1aoH/e3JnsYdE1EsT+yxk5rFCsW6S+YvRWZky2rqA8ad4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EnOWv3mz; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e2e851794so4979a12.0
+        for <bpf@vger.kernel.org>; Mon, 15 Apr 2024 19:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713236040; x=1713840840; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZaSImIW1hTM0apnFwhhJ7XqvtxkKwtwLHWxv6+n7UWE=;
+        b=EnOWv3mzyfm0rDKRKtC0GRU5HCWIYQMK7OF/1epFYwmgVwL79xrCiAqKCN2jIQm+Jt
+         d3qXf3rAzN/mn+YvPJwir8nVDGd5GxQpM4ZB23x5VwpDPtQXwXqzTaXqnTMBI9vapfe0
+         AUlqQQJeJXhaXg/kF511CW8+Wpes2fdg2EaL/IDJECZ0zD1YrFqAb09YinmUQlu3AbPB
+         Yj0h+Ae/auAnSCpzclgKlTcO6Rv6aSV6X9aRTUYzIUl55xS7KLxEjP+CdjbVBv3i1Sk6
+         5Q1nSc2qfzb5y+wYSdyvuF1aYcQiCiurxzb6VyniUH+JY+hOfZRGQEg5TRzTm7PwNXc2
+         u4xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713236040; x=1713840840;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZaSImIW1hTM0apnFwhhJ7XqvtxkKwtwLHWxv6+n7UWE=;
+        b=oAkQja6kOOn2i63hhIdjfXaCo8yifQ2F56aaZdICYQPIKE/LzLnD7tdmwlKQGs/fCV
+         TJFAnX2C30hnRVes42IR5u6qapdogtPtfaGb0VVqXsapSecaPSgxL6y0ibxrGEF6GiIK
+         8j00EnVBuzT5HHr0KmsRXHo2tLOWtjqEXAKxEugJwlqAFqTbkkbpD8PHDsgrIKMbfBpq
+         DS8q5wYZ94K0/BP6tEeNVpE6bZJ4/vrVV6uXGQrQH9uY1TRXzxb5vbCNXug0G6wfcEdj
+         EkD+8QNzFhwc2ORCvVfKT3RhXxLPtzZ5OjbFTdK64Le5hn29l6ZUe/xHMXlNH+x3bnDf
+         GnwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJKgN2ZCvyzO9xwMApM3MkPifyfrl7AyNH9tI1H1UXvyByNg2N1qMjKFQPbdSY4228g6vsJe3JJCa7vrssqRPC7bWG
+X-Gm-Message-State: AOJu0YyFoUtqQzusklrNpfMDbGXFVjeXpiLFRUBH7zfFxaEu4jJcChhz
+	00R1m1t8ie9CnCv/ZMXtZR4N4d/YZb1hViowArdmGN3SUJxs2zpoKm/9gz2NhInBZxpIyNfv+lj
+	SN299wIv7UmmAbsi7VjidtRvQVusllk1UqbDl
+X-Google-Smtp-Source: AGHT+IGZQ7v6n8rnAdMX07vEbWN6xVu0E1WerrXVb2RxsdXJKzkDUgNzJP6JnEDwvByBxmg2WGvOBWYueEk74xSmxSI=
+X-Received: by 2002:a05:6402:7cf:b0:570:257:8ea3 with SMTP id
+ u15-20020a05640207cf00b0057002578ea3mr55062edy.7.1713236039593; Mon, 15 Apr
+ 2024 19:53:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch> <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+In-Reply-To: <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Mon, 15 Apr 2024 19:53:48 -0700
+Message-ID: <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without fraglist
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+Cc: "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>, 
+	=?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>, 
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 15 Apr 2024, Yunsheng Lin wrote:
+On Mon, Apr 15, 2024 at 7:14=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=9C) <Len=
+a.Wang@mediatek.com> wrote:
+>
+> On Mon, 2024-04-15 at 16:53 -0400, Willem de Bruijn wrote:
+> >
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >  shiming.cheng@ wrote:
+> > > From: Shiming Cheng <shiming.cheng@mediatek.com>
+> > >
+> > > A GRO packet without fraglist is crashed and backtrace is as below:
+> > >  [ 1100.812205][    C3] CPU: 3 PID: 0 Comm: swapper/3 Tainted:
+> > > G        W  OE      6.6.17-android15-0-g380371ea9bf1 #1
+> > >  [ 1100.812317][    C3]  __udp_gso_segment+0x298/0x4d4
+> > >  [ 1100.812335][    C3]  __skb_gso_segment+0xc4/0x120
+> > >  [ 1100.812339][    C3]  udp_rcv_segment+0x50/0x134
+> > >  [ 1100.812344][    C3]  udp_queue_rcv_skb+0x74/0x114
+> > >  [ 1100.812348][    C3]  udp_unicast_rcv_skb+0x94/0xac
+> > >  [ 1100.812358][    C3]  udp_rcv+0x20/0x30
+> > >
+> > > The reason that the packet loses its fraglist is that in ingress
+> > bpf
+> > > it makes a test pull with to make sure it can read packet headers
+> > > via direct packet access: In bpf_progs/offload.c
+> > > try_make_writable -> bpf_skb_pull_data -> pskb_may_pull ->
+> > > __pskb_pull_tail  This operation pull the data in fraglist into
+> > linear
+> > > and set the fraglist to null.
+> >
+> > What is the right behavior from BPF with regard to SKB_GSO_FRAGLIST
+> > skbs?
+> >
+> > Some, like SCTP, cannot be linearized ever, as the do not have a
+> > single gso_size.
+> >
+> > Should this BPF operation just fail?
+> >
+> In most situation for big gso size packet, it indeed fails but BPF
+> doesn't check the result. It seems the udp GRO packet can't be pulled/
+> trimed/condensed or else it can't be segmented correctly.
+>
+> As the BPF function comments it doesn't matter if the data pull failed
+> or pull less. It just does a blind best effort pull.
+>
+> A patch to modify bpf pull length is upstreamed to Google before and
+> below are part of Google BPF expert maze's reply:
+> maze@google.com<maze@google.com> #5Apr 13, 2024 02:30AM
+> I *think* if that patch fixes anything, then it's really proving that
+> there's a bug in the kernel that needs to be fixed instead.
+> It should be legal to call try_make_writable(skb, X) with *any* value
+> of X.
+>
+> I add maze in loop and we could start more discussion here.
 
-> Use the newly introduced prepare/commit API to replace
-> page_frag with page_frag_cache for sk_page_frag().
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
-> .../chelsio/inline_crypto/chtls/chtls_io.c    | 101 ++++---------
-> .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
-> drivers/net/tun.c                             |  34 ++---
-> include/linux/sched.h                         |   4 +-
-> include/net/sock.h                            |  14 +-
-> kernel/exit.c                                 |   3 +-
-> kernel/fork.c                                 |   2 +-
-> net/core/skbuff.c                             |  32 ++--
-> net/core/skmsg.c                              |  22 +--
-> net/core/sock.c                               |  46 ++++--
-> net/ipv4/ip_output.c                          |  35 +++--
-> net/ipv4/tcp.c                                |  35 ++---
-> net/ipv4/tcp_output.c                         |  28 ++--
-> net/ipv6/ip6_output.c                         |  35 +++--
-> net/kcm/kcmsock.c                             |  30 ++--
-> net/mptcp/protocol.c                          |  74 ++++++----
-> net/tls/tls_device.c                          | 139 ++++++++++--------
-> 18 files changed, 342 insertions(+), 298 deletions(-)
+Personally, I think bpf_skb_pull_data() should have automatically
+(ie. in kernel code) reduced how much it pulls so that it would pull
+headers only,
+and not packet content.
+(This is assuming the rest of the code isn't ready to deal with a longer pu=
+ll,
+which I think is the case atm.  Pulling too much, and then crashing or forc=
+ing
+the stack to drop packets because of them being malformed seems wrong...)
 
-Hi Yunsheng,
+In general it would be nice if there was a way to just say pull all headers=
+...
+(or possibly all L2/L3/L4 headers)
+You in general need to pull stuff *before* you've even looked at the packet=
+,
+so that you can look at the packet,
+so it's relatively hard/annoying to pull the correct length from bpf
+code itself.
 
-Just focusing on mptcp:
+> > > BPF needs to modify a proper length to do pull data. However kernel
+> > > should also improve the flow to avoid crash from a bpf function
+> > call.
+> > > As there is no split flow and app may not decode the merged UDP
+> > packet,
+> > > we should drop the packet without fraglist in skb_segment_list
+> > here.
+> > >
+> > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> > > Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> > > ---
+> > >  net/core/skbuff.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > index b99127712e67..f68f2679b086 100644
+> > > --- a/net/core/skbuff.c
+> > > +++ b/net/core/skbuff.c
+> > > @@ -4504,6 +4504,9 @@ struct sk_buff *skb_segment_list(struct
+> > sk_buff *skb,
+> > >  if (err)
+> > >  goto err_linearize;
+> > >
+> > > +if (!list_skb)
+> > > +goto err_linearize;
+> > > +
+> > >  skb_shinfo(skb)->frag_list =3D NULL;
+> >
+> > In absense of plugging the issue in BPF, dropping here is the best
+> > we can do indeed, I think.
+> >
 
-> diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-> index f8bc34f0d973..368dd480c4cd 100644
-> --- a/net/mptcp/protocol.c
-> +++ b/net/mptcp/protocol.c
-> @@ -959,17 +959,16 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
-> }
->
-> /* we can append data to the given data frag if:
-> - * - there is space available in the backing page_frag
-> - * - the data frag tail matches the current page_frag free offset
-> + * - the data frag tail matches the current page and offset
->  * - the data frag end sequence number matches the current write seq
->  */
-> static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
-> -				       const struct page_frag *pfrag,
-> +				       const struct page *page,
-> +				       const unsigned int offset,
-> 				       const struct mptcp_data_frag *df)
-> {
-> -	return df && pfrag->page == df->page &&
-> -		pfrag->size - pfrag->offset > 0 &&
-> -		pfrag->offset == (df->offset + df->data_len) &&
-> +	return df && page == df->page &&
-> +		offset == (df->offset + df->data_len) &&
-> 		df->data_seq + df->data_len == msk->write_seq;
-> }
->
-> @@ -1084,30 +1083,36 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
-> /* ensure we get enough memory for the frag hdr, beyond some minimal amount of
->  * data
->  */
-> -static bool mptcp_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
-> +static struct page *mptcp_page_frag_alloc_prepare(struct sock *sk,
-> +						  struct page_frag_cache *pfrag,
-> +						  unsigned int *offset,
-> +						  unsigned int *size, void **va)
-> {
-> -	if (likely(skb_page_frag_refill(32U + sizeof(struct mptcp_data_frag),
-> -					pfrag, sk->sk_allocation)))
-> -		return true;
-> +	struct page *page;
-> +
-> +	page = page_frag_alloc_prepare(pfrag, offset, size, va,
-> +				       sk->sk_allocation);
-> +	if (likely(page))
-> +		return page;
->
-> 	mptcp_enter_memory_pressure(sk);
-> -	return false;
-> +	return NULL;
-> }
->
-> static struct mptcp_data_frag *
-> -mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page_frag *pfrag,
-> -		      int orig_offset)
-> +mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page *page,
-> +		      unsigned int orig_offset)
-> {
-> 	int offset = ALIGN(orig_offset, sizeof(long));
-> 	struct mptcp_data_frag *dfrag;
->
-> -	dfrag = (struct mptcp_data_frag *)(page_to_virt(pfrag->page) + offset);
-> +	dfrag = (struct mptcp_data_frag *)(page_to_virt(page) + offset);
-> 	dfrag->data_len = 0;
-> 	dfrag->data_seq = msk->write_seq;
-> 	dfrag->overhead = offset - orig_offset + sizeof(struct mptcp_data_frag);
-> 	dfrag->offset = offset + sizeof(struct mptcp_data_frag);
-> 	dfrag->already_sent = 0;
-> -	dfrag->page = pfrag->page;
-> +	dfrag->page = page;
->
-> 	return dfrag;
-> }
-> @@ -1792,7 +1797,7 @@ static u32 mptcp_send_limit(const struct sock *sk)
-> static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> {
-> 	struct mptcp_sock *msk = mptcp_sk(sk);
-> -	struct page_frag *pfrag;
-> +	struct page_frag_cache *pfrag;
-> 	size_t copied = 0;
-> 	int ret = 0;
-> 	long timeo;
-> @@ -1831,9 +1836,12 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 	while (msg_data_left(msg)) {
-> 		int total_ts, frag_truesize = 0;
-> 		struct mptcp_data_frag *dfrag;
-> -		bool dfrag_collapsed;
-> -		size_t psize, offset;
-> +		bool dfrag_collapsed = false;
-> +		unsigned int offset, size;
-> +		struct page *page;
-> +		size_t psize;
-> 		u32 copy_limit;
-> +		void *va;
->
-> 		/* ensure fitting the notsent_lowat() constraint */
-> 		copy_limit = mptcp_send_limit(sk);
-> @@ -1844,21 +1852,31 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		 * page allocator
-> 		 */
-> 		dfrag = mptcp_pending_tail(sk);
-> -		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
-> +		size = 32U;
-> +		page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset, &size,
-> +						     &va);
-> +		if (!page)
-> +			goto wait_for_memory;
-> +
-> +		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, page, offset,
-> +							     dfrag);
-> 		if (!dfrag_collapsed) {
-> -			if (!mptcp_page_frag_refill(sk, pfrag))
-> +			size = 32U + sizeof(struct mptcp_data_frag);
-> +			page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset,
-> +							     &size, &va);
-
-Since 'size' was updated to contain the maximum available space on the 
-first call to mptcp_page_frag_alloc_prepare(), is it necessary to call it 
-again instead of checking to see if 'size' is large enough for the 
-mptcp_data_frag struct?
-
-> +			if (!page)
-> 				goto wait_for_memory;
->
-> -			dfrag = mptcp_carve_data_frag(msk, pfrag, pfrag->offset);
-> +			dfrag = mptcp_carve_data_frag(msk, page, offset);
-> 			frag_truesize = dfrag->overhead;
-> +			va += dfrag->overhead;
-> 		}
->
-> 		/* we do not bound vs wspace, to allow a single packet.
-> 		 * memory accounting will prevent execessive memory usage
-> 		 * anyway
-> 		 */
-> -		offset = dfrag->offset + dfrag->data_len;
-> -		psize = pfrag->size - offset;
-> +		psize = size - frag_truesize;
-> 		psize = min_t(size_t, psize, msg_data_left(msg));
-> 		psize = min_t(size_t, psize, copy_limit);
-> 		total_ts = psize + frag_truesize;
-> @@ -1866,8 +1884,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		if (!sk_wmem_schedule(sk, total_ts))
-> 			goto wait_for_memory;
->
-> -		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter,
-> -					   page_address(dfrag->page) + offset);
-> +		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter, va);
-> 		if (ret)
-> 			goto do_error;
->
-> @@ -1876,7 +1893,6 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		copied += psize;
-> 		dfrag->data_len += psize;
-> 		frag_truesize += psize;
-> -		pfrag->offset += frag_truesize;
-> 		WRITE_ONCE(msk->write_seq, msk->write_seq + psize);
->
-> 		/* charge data on mptcp pending queue to the msk socket
-> @@ -1884,11 +1900,15 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		 */
-> 		sk_wmem_queued_add(sk, frag_truesize);
-> 		if (!dfrag_collapsed) {
-> -			get_page(dfrag->page);
-> +			page_frag_alloc_commit(pfrag, offset, frag_truesize);
-
-It would be more efficient (but more complicated) to defer the commit 
-until the loop is done or the maximum frag size is reached. This would 
-perform more like the older code, which only had to call refill when 
-mptcp_frag_can_collapse_to() returned false.
-
-- Mat
-
-> 			list_add_tail(&dfrag->list, &msk->rtx_queue);
-> 			if (!msk->first_pending)
-> 				WRITE_ONCE(msk->first_pending, dfrag);
-> +		} else {
-> +			page_frag_alloc_commit_noref(pfrag, offset,
-> +						     frag_truesize);
-> 		}
-> +
-> 		pr_debug("msk=%p dfrag at seq=%llu len=%u sent=%u new=%d", msk,
-> 			 dfrag->data_seq, dfrag->data_len, dfrag->already_sent,
-> 			 !dfrag_collapsed);
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
