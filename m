@@ -1,192 +1,663 @@
-Return-Path: <bpf+bounces-27069-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27070-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE858A8CD6
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 22:20:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47B1C8A8D78
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 23:06:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4153284762
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 20:20:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95A71B217F6
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF25381BA;
-	Wed, 17 Apr 2024 20:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4E34C600;
+	Wed, 17 Apr 2024 21:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OOp/dYbR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lbBgfz1g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CFF171A1
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 20:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C109481A7;
+	Wed, 17 Apr 2024 21:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713385202; cv=none; b=nFA2Wz1cIEtKxWfSexh/J1sum8KMPYo7qtkBbk0StVnP1/fZd7B+m9ABzkW+ro52Mkr9RJ8xg2pOU4vIEHTrwSj9/QUaNlKUrYUOHmlLfiYELllWdEqA3qbWSlTzea8y5p+IQQ1Ra2IN177j8WtWbxxu826RMwwlfUNmD60l+9w=
+	t=1713387984; cv=none; b=ka2UsoKwoewJsHTQpUAiqdJyhXdxs2Pvqm/jdEgOVni1Dtv590wa7pt8r+GAfBHDR+x8KADJ2Ze0+HJSnYa4Ualb0wSpTi1efes+j/FtIMVk21m0sshr2/Acb00nygCNxr9kDeyvnX62LZzKWTxee0JH2oTGEFd8bLuoj5H/pEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713385202; c=relaxed/simple;
-	bh=1urfb//6cLmUAlycIejakHF/fE5u108SvEMgoakEaVI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RbL0JASbMGz3Ep5wwB5n9+G5aRilXBEvYXNIpppu6d/sS37fZvCe1wgdBS86F/3QNcBUEWBMxIxRL1Z8Q0fnJmqy2Bw3b8BhrtPqaYwqB5LKvQ8gezdvgQx0cwPi/4ZSdpblF93ADNYu4XxhAH7WaEkxQPfA4krfdR3HTWdh48Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OOp/dYbR; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so110489a12.3
-        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 13:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713385199; x=1713989999; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kiUtg6sVp9ocxF36e0yybx1YkC8DwKWUzIoDykkOtD0=;
-        b=OOp/dYbRpBZ9HW8IeYP0ryp/Dkx+i2hA4hrfwF+GCJkXOOKkLfYPUhw7AjVPqzKb+f
-         Q2w4WLycf//+KBpbDN+DKLhbKTDnBnfjibBfLllJ+v0CbviCBGMSudTc5m0SMtJ7hgb7
-         mdd2Ubzk4R+Sp4KaWwjJEyb1hb15UgGQaEv8ey4L2vY2Pn9slsdbOn2xDl315/IOtiBQ
-         Rpw+hfjRhNzWXAV8EVGWofk4YxIljYPhF8dXefrlQ3ZVagTrIYwROctXSjIm7/6XwKbM
-         0AoxNdwN4t3oetuk407HVj5bc67lqNwCPz4K8+vVUUmYt71WW99XyUztuvtmRJHXNTKc
-         gQgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713385199; x=1713989999;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kiUtg6sVp9ocxF36e0yybx1YkC8DwKWUzIoDykkOtD0=;
-        b=aQEEbLvrQF9PTFmvYN8qfaJBcqMcOfBOJ1BCrxpm/BJRSbcVC4d+6ko7jA5lofRGjV
-         w64zGmkeQ6/MxoWd+PkacczKBCJ1bL8X5HqJAD8YAsRPgrENL7Zw8lEcGwXJ9E4k21EZ
-         5nv5hZaSFqFqDzJwI2r27P4HzvzGXw/UbuvOg5xH7QVyHHJNInwUMulWVp+0Wy7g63SE
-         naKOWAumcOkeKWbBwimdKEQngWCLSX3IEycI4wVLxFmmNapzfZX59ybEDwK1l+As/ZHE
-         IfL/0XFKOgT73xeaOu6BnUYjx62A7Q3ucGi222CQB5b31OFdlwAhIxqt6S0/pBz3uFM+
-         O6RA==
-X-Gm-Message-State: AOJu0YwSs2eBESnTxIL6b9nc/Men1P7G97a7M530bzGdu+nnZxNMcpUP
-	E7c/kuvDLkNrkj05X3gC917Qkkl2STcwBXU62Ml1eBSo5j7KMMOrl7NIkhnJ7w==
-X-Google-Smtp-Source: AGHT+IHvm3J4Mbfz1cDx2LuiIsXtBh5xzsuh4Mp0eX0TUfKulSOytGOfkpmsns8QDPjMmuKK17U6+w==
-X-Received: by 2002:a17:906:1182:b0:a52:58a7:11d1 with SMTP id n2-20020a170906118200b00a5258a711d1mr324318eja.38.1713385198741;
-        Wed, 17 Apr 2024 13:19:58 -0700 (PDT)
-Received: from google.com (118.240.90.34.bc.googleusercontent.com. [34.90.240.118])
-        by smtp.gmail.com with ESMTPSA id u7-20020a17090657c700b00a4e07760215sm7542ejr.69.2024.04.17.13.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 13:19:58 -0700 (PDT)
-Date: Wed, 17 Apr 2024 20:19:53 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, song@kernel.org, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, memxor@gmail.com,
-	void@manifault.com, jolsa@kernel.org
-Subject: Re: [RFC] bpf: allowing PTR_TO_BTF_ID | PTR_TRUSTED w/ non-zero
- fixed offset to selected KF_TRUSTED_ARGS BPF kfuncs
-Message-ID: <ZiAu6YDi-F_pxLOV@google.com>
-References: <ZhkbrM55MKQ0KeIV@google.com>
- <3f8a481e-0dfe-468f-8c87-6610528f9009@linux.dev>
+	s=arc-20240116; t=1713387984; c=relaxed/simple;
+	bh=jQajXNUTSdJbOiuE3X14B9u4IThzdGztOYCaLIYkni8=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=XKOWuZzeb6nDT7OPOqbMCTw1SjtbX/KmijdfIEhIaW6BUkV9Taz36V5z/g2l3IxitD9v90SVgPHdOMMXIBlLV3btLj0tRVGPwBV9h7t/mccrE3gMNfrrKlS7DcjA7GRIZllE6RkvLkUgKnDrrMqWeSxc42DXa33QphUZAOc4JKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lbBgfz1g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D73C072AA;
+	Wed, 17 Apr 2024 21:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713387983;
+	bh=jQajXNUTSdJbOiuE3X14B9u4IThzdGztOYCaLIYkni8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lbBgfz1g+EmTpf/8B5LIXDK5AF+zBI+SdBC4ANMbfR6bQy5kajH30uqxk71pfMuvr
+	 cJZB6d+U9AflERemSpVZHriQJFfT/Z8DFuTlYVyXvQJnSapgiRnEO7t/KOgW6pwcaS
+	 z5Lm5RAA1OxjUUlwXOrBldmqUzlSWaTXyrLOGADjCWzkJdtuKGaC8DdXWXo4pSdXIV
+	 BeW8RFqLQMeqhkQGZ4unhmrg2J0L+4KdO1LN7vnTam7UWqspWie+u+aDSM0c42Q0D+
+	 m9IG0KDe7SBu0YWrOMaaNeWVon+uqrzpeW1LEIVNSnooBS9s9ht4q6rRfMNeSk6pb+
+	 e1WagiG+9QRUg==
+Date: Thu, 18 Apr 2024 06:06:13 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, "David S. Miller"
+ <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Donald Dutile
+ <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, Heiko Carstens
+ <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen
+ <chenhuacai@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, Luis
+ Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King
+ <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and
+ execmem_free()
+Message-Id: <20240418060613.cdcf85650e5d0c43da5d1c1b@kernel.org>
+In-Reply-To: <20240411160051.2093261-6-rppt@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+	<20240411160051.2093261-6-rppt@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f8a481e-0dfe-468f-8c87-6610528f9009@linux.dev>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 09:43:42AM -0700, Yonghong Song wrote:
-> 
-> On 4/12/24 4:31 AM, Matt Bobrowski wrote:
-> > Hi,
-> > 
-> > Currently, if a BPF kfunc has been annotated with KF_TRUSTED_ARGS, any
-> > supplied PTR_TO_BTF_ID | PTR_TRUSTED argument to that BPF kfunc must
-> > have it's fixed offset set to zero, or else the BPF program being
-> > loaded will be outright rejected by the BPF verifier.
-> > 
-> > This non-zero fixed offset restriction in most cases makes a lot of
-> > sense, as it's considered to be a robust means of assuring that the
-> > supplied PTR_TO_BTF_ID to the KF_TRUSTED_ARGS annotated BPF kfunc
-> > upholds it's PTR_TRUSTED property. However, I believe that there are
-> > also cases out there whereby a PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed
-> > offset can still be considered as something which posses the
-> > PTR_TRUSTED property, and could be safely passed to a BPF kfunc that
-> > is annotated w/ KF_TRUSTED_ARGS. I believe that this can particularly
-> > hold true for selected embedded data structure members present within
-> > given PTR_TO_BTF_ID | PTR_TRUSTED types i.e. struct
-> > task_struct.thread_info, struct file.nf_path.
-> > 
-> > Take for example the struct thread_info which is embedded within
-> > struct task_struct. In a BPF program, if we happened to acquire a
-> > PTR_TO_BTF_ID | PTR_TRUSTED for a struct task_struct via
-> > bpf_get_current_task_btf(), and then constructed a pointer of type
-> > struct thread_info which was assigned the address of the embedded
-> > struct task_struct.thread_info member, we'd have ourselves a
-> > PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed offset. Now, let's
-> > hypothetically also say that we had a BPF kfunc that took a struct
-> > thread_info pointer as an argument and the BPF kfunc was also
-> > annotated w/ KF_TRUSTED_ARGS. If we attempted to pass the constructed
-> > PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset to this hypothetical BPF
-> > kfunc, the BPF program would be rejected by the BPF verifier. This is
-> > irrespective of the fact that supplying pointers to such embedded data
-> > structure members of a PTR_TO_BTF_ID | PTR_TRUSTED may be considered
-> > to be safe.
-> > 
-> > One of the ideas that I had in mind to workaround the non-zero fixed
-> > offset restriction was to simply introduce a new BPF kfunc annotation
-> > i.e. __offset_allowed that could be applied on selected BPF kfunc
-> > arguments that are expected to be KF_TRUSTED_ARGS. Such an annotation
-> > would effectively control whether we enforce the non-zero offset
-> > restriction or not in check_kfunc_args(), check_func_arg_reg_off(),
-> > and __check_ptr_off_reg(). Although, now I'm second guessing myself
-> > and I am wondering whether introducing something like the
-> > __offset_allowed annotation for BPF kfunc arguments could lead to
-> > compromising any of the safety guarantees that are provided by the BPF
-> > verifier. Does anyone see an immediate problem with using such an
-> > approach? I raise concerns, because it feels like we're effectively
-> > punching a hole in the BPF verifier, but it may also be perfectly safe
-> > to do on carefully selected PTR_TO_BTF_ID | PTR_TRUSTED types
-> > i.e. struct thread_info, struct file, and it's just my paranoia
-> > getting the better of me. Or, maybe someone has another idea to
-> > support PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset safely and a
-> > little more generally without the need to actually make use of any
-> > other BPF kfunc annotations?
-> 
-> In verifier.c, we have BTF_TYPE_SAFE_TRUSTED to indidate that
-> a pointer of a particular struct is safe and trusted if the point
-> of that struct is trusted, e.g.,
-> 
-> BTF_TYPE_SAFE_TRUSTED(struct file) {
->         struct inode *f_inode;
-> };
-> 
-> We do the above since gcc does not support btf_tag yet.
+On Thu, 11 Apr 2024 19:00:41 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-Yes, I'm rather familiar with this construct.
-
-> I guess you could do
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > 
-> BTF_TYPE_SAFE_TRUSTED(struct file) {
->         struct path f_path;
-> };
+> module_alloc() is used everywhere as a mean to allocate memory for code.
 > 
-> and enhance verifier with the above information.
+> Beside being semantically wrong, this unnecessarily ties all subsystems
+> that need to allocate code, such as ftrace, kprobes and BPF to modules and
+> puts the burden of code allocation to the modules code.
 > 
-> But the above 'struct path f_path' may unnecessary
-> consume extra memory since we only care about field
-> 'f_path'. Maybe create a new construct like
+> Several architectures override module_alloc() because of various
+> constraints where the executable memory can be located and this causes
+> additional obstacles for improvements of code allocation.
 > 
-> /* pointee is a field of the struct */
-> BTF_TYPE_SAFE_FIELD_TRUSTED(struct file) {
->         struct path *f_path;
-> };
+> Start splitting code allocation from modules by introducing execmem_alloc()
+> and execmem_free() APIs.
+> 
+> Initially, execmem_alloc() is a wrapper for module_alloc() and
+> execmem_free() is a replacement of module_memfree() to allow updating all
+> call sites to use the new APIs.
+> 
+> Since architectures define different restrictions on placement,
+> permissions, alignment and other parameters for memory that can be used by
+> different subsystems that allocate executable memory, execmem_alloc() takes
+> a type argument, that will be used to identify the calling subsystem and to
+> allow architectures define parameters for ranges suitable for that
+> subsystem.
+> 
 
-I don't fully understand how something like
-BTF_TYPE_SAFE_FIELD_TRUSTED could work in practice. Do you mind
-elaborating on that a little?
+This looks good to me for the kprobe part.
 
-What I'm currently thinking is that with something like
-BTF_TYPE_SAFE_FIELD_TRUSTED, if the BPF verifier sees a PTR_TO_BTF_ID
-| PTR_TRUSTED w/ a fixed offset supplied to a BPF kfunc, then the BPF
-verifier can also check that fixed offset for the supplied
-PTR_TO_BTF_ID | PTR_TRUSTED actually accesses a member that has been
-explicitly annotated as being trusted via
-BTF_TYPE_SAFE_FIELD_TRUSTED. Maybe that would be better then making
-use of an __offset_allowed annotation, which would solely rely on the
-btf_struct_ids_match() check for its safety.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-/M
+Thank you,
+
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
+>  arch/powerpc/kernel/kprobes.c    |  6 ++--
+>  arch/s390/kernel/ftrace.c        |  4 +--
+>  arch/s390/kernel/kprobes.c       |  4 +--
+>  arch/s390/kernel/module.c        |  5 +--
+>  arch/sparc/net/bpf_jit_comp_32.c |  8 ++---
+>  arch/x86/kernel/ftrace.c         |  6 ++--
+>  arch/x86/kernel/kprobes/core.c   |  4 +--
+>  include/linux/execmem.h          | 57 ++++++++++++++++++++++++++++++++
+>  include/linux/moduleloader.h     |  3 --
+>  kernel/bpf/core.c                |  6 ++--
+>  kernel/kprobes.c                 |  8 ++---
+>  kernel/module/Kconfig            |  1 +
+>  kernel/module/main.c             | 25 +++++---------
+>  mm/Kconfig                       |  3 ++
+>  mm/Makefile                      |  1 +
+>  mm/execmem.c                     | 26 +++++++++++++++
+>  16 files changed, 122 insertions(+), 45 deletions(-)
+>  create mode 100644 include/linux/execmem.h
+>  create mode 100644 mm/execmem.c
+> 
+> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+> index bbca90a5e2ec..9fcd01bb2ce6 100644
+> --- a/arch/powerpc/kernel/kprobes.c
+> +++ b/arch/powerpc/kernel/kprobes.c
+> @@ -19,8 +19,8 @@
+>  #include <linux/extable.h>
+>  #include <linux/kdebug.h>
+>  #include <linux/slab.h>
+> -#include <linux/moduleloader.h>
+>  #include <linux/set_memory.h>
+> +#include <linux/execmem.h>
+>  #include <asm/code-patching.h>
+>  #include <asm/cacheflush.h>
+>  #include <asm/sstep.h>
+> @@ -130,7 +130,7 @@ void *alloc_insn_page(void)
+>  {
+>  	void *page;
+>  
+> -	page = module_alloc(PAGE_SIZE);
+> +	page = execmem_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+>  	if (!page)
+>  		return NULL;
+>  
+> @@ -142,7 +142,7 @@ void *alloc_insn_page(void)
+>  	}
+>  	return page;
+>  error:
+> -	module_memfree(page);
+> +	execmem_free(page);
+>  	return NULL;
+>  }
+>  
+> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> index c46381ea04ec..798249ef5646 100644
+> --- a/arch/s390/kernel/ftrace.c
+> +++ b/arch/s390/kernel/ftrace.c
+> @@ -7,13 +7,13 @@
+>   *   Author(s): Martin Schwidefsky <schwidefsky@de.ibm.com>
+>   */
+>  
+> -#include <linux/moduleloader.h>
+>  #include <linux/hardirq.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/ftrace.h>
+>  #include <linux/kernel.h>
+>  #include <linux/types.h>
+>  #include <linux/kprobes.h>
+> +#include <linux/execmem.h>
+>  #include <trace/syscall.h>
+>  #include <asm/asm-offsets.h>
+>  #include <asm/text-patching.h>
+> @@ -220,7 +220,7 @@ static int __init ftrace_plt_init(void)
+>  {
+>  	const char *start, *end;
+>  
+> -	ftrace_plt = module_alloc(PAGE_SIZE);
+> +	ftrace_plt = execmem_alloc(EXECMEM_FTRACE, PAGE_SIZE);
+>  	if (!ftrace_plt)
+>  		panic("cannot allocate ftrace plt\n");
+>  
+> diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+> index f0cf20d4b3c5..3c1b1be744de 100644
+> --- a/arch/s390/kernel/kprobes.c
+> +++ b/arch/s390/kernel/kprobes.c
+> @@ -9,7 +9,6 @@
+>  
+>  #define pr_fmt(fmt) "kprobes: " fmt
+>  
+> -#include <linux/moduleloader.h>
+>  #include <linux/kprobes.h>
+>  #include <linux/ptrace.h>
+>  #include <linux/preempt.h>
+> @@ -21,6 +20,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/hardirq.h>
+>  #include <linux/ftrace.h>
+> +#include <linux/execmem.h>
+>  #include <asm/set_memory.h>
+>  #include <asm/sections.h>
+>  #include <asm/dis.h>
+> @@ -38,7 +38,7 @@ void *alloc_insn_page(void)
+>  {
+>  	void *page;
+>  
+> -	page = module_alloc(PAGE_SIZE);
+> +	page = execmem_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+>  	if (!page)
+>  		return NULL;
+>  	set_memory_rox((unsigned long)page, 1);
+> diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+> index 42215f9404af..ac97a905e8cd 100644
+> --- a/arch/s390/kernel/module.c
+> +++ b/arch/s390/kernel/module.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/moduleloader.h>
+>  #include <linux/bug.h>
+>  #include <linux/memory.h>
+> +#include <linux/execmem.h>
+>  #include <asm/alternative.h>
+>  #include <asm/nospec-branch.h>
+>  #include <asm/facility.h>
+> @@ -76,7 +77,7 @@ void *module_alloc(unsigned long size)
+>  #ifdef CONFIG_FUNCTION_TRACER
+>  void module_arch_cleanup(struct module *mod)
+>  {
+> -	module_memfree(mod->arch.trampolines_start);
+> +	execmem_free(mod->arch.trampolines_start);
+>  }
+>  #endif
+>  
+> @@ -510,7 +511,7 @@ static int module_alloc_ftrace_hotpatch_trampolines(struct module *me,
+>  
+>  	size = FTRACE_HOTPATCH_TRAMPOLINES_SIZE(s->sh_size);
+>  	numpages = DIV_ROUND_UP(size, PAGE_SIZE);
+> -	start = module_alloc(numpages * PAGE_SIZE);
+> +	start = execmem_alloc(EXECMEM_FTRACE, numpages * PAGE_SIZE);
+>  	if (!start)
+>  		return -ENOMEM;
+>  	set_memory_rox((unsigned long)start, numpages);
+> diff --git a/arch/sparc/net/bpf_jit_comp_32.c b/arch/sparc/net/bpf_jit_comp_32.c
+> index da2df1e84ed4..bda2dbd3f4c5 100644
+> --- a/arch/sparc/net/bpf_jit_comp_32.c
+> +++ b/arch/sparc/net/bpf_jit_comp_32.c
+> @@ -1,10 +1,10 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include <linux/moduleloader.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/netdevice.h>
+>  #include <linux/filter.h>
+>  #include <linux/cache.h>
+>  #include <linux/if_vlan.h>
+> +#include <linux/execmem.h>
+>  
+>  #include <asm/cacheflush.h>
+>  #include <asm/ptrace.h>
+> @@ -713,7 +713,7 @@ cond_branch:			f_offset = addrs[i + filter[i].jf];
+>  				if (unlikely(proglen + ilen > oldproglen)) {
+>  					pr_err("bpb_jit_compile fatal error\n");
+>  					kfree(addrs);
+> -					module_memfree(image);
+> +					execmem_free(image);
+>  					return;
+>  				}
+>  				memcpy(image + proglen, temp, ilen);
+> @@ -736,7 +736,7 @@ cond_branch:			f_offset = addrs[i + filter[i].jf];
+>  			break;
+>  		}
+>  		if (proglen == oldproglen) {
+> -			image = module_alloc(proglen);
+> +			image = execmem_alloc(EXECMEM_BPF, proglen);
+>  			if (!image)
+>  				goto out;
+>  		}
+> @@ -758,7 +758,7 @@ cond_branch:			f_offset = addrs[i + filter[i].jf];
+>  void bpf_jit_free(struct bpf_prog *fp)
+>  {
+>  	if (fp->jited)
+> -		module_memfree(fp->bpf_func);
+> +		execmem_free(fp->bpf_func);
+>  
+>  	bpf_prog_unlock_free(fp);
+>  }
+> diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> index 70139d9d2e01..c8ddb7abda7c 100644
+> --- a/arch/x86/kernel/ftrace.c
+> +++ b/arch/x86/kernel/ftrace.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/memory.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/set_memory.h>
+> +#include <linux/execmem.h>
+>  
+>  #include <trace/syscall.h>
+>  
+> @@ -261,15 +262,14 @@ void arch_ftrace_update_code(int command)
+>  #ifdef CONFIG_X86_64
+>  
+>  #ifdef CONFIG_MODULES
+> -#include <linux/moduleloader.h>
+>  /* Module allocation simplifies allocating memory for code */
+>  static inline void *alloc_tramp(unsigned long size)
+>  {
+> -	return module_alloc(size);
+> +	return execmem_alloc(EXECMEM_FTRACE, size);
+>  }
+>  static inline void tramp_free(void *tramp)
+>  {
+> -	module_memfree(tramp);
+> +	execmem_free(tramp);
+>  }
+>  #else
+>  /* Trampolines can only be created if modules are supported */
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index d0e49bd7c6f3..72e6a45e7ec2 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -40,12 +40,12 @@
+>  #include <linux/kgdb.h>
+>  #include <linux/ftrace.h>
+>  #include <linux/kasan.h>
+> -#include <linux/moduleloader.h>
+>  #include <linux/objtool.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/pgtable.h>
+>  #include <linux/set_memory.h>
+>  #include <linux/cfi.h>
+> +#include <linux/execmem.h>
+>  
+>  #include <asm/text-patching.h>
+>  #include <asm/cacheflush.h>
+> @@ -495,7 +495,7 @@ void *alloc_insn_page(void)
+>  {
+>  	void *page;
+>  
+> -	page = module_alloc(PAGE_SIZE);
+> +	page = execmem_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+>  	if (!page)
+>  		return NULL;
+>  
+> diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+> new file mode 100644
+> index 000000000000..43e7995593a1
+> --- /dev/null
+> +++ b/include/linux/execmem.h
+> @@ -0,0 +1,57 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_EXECMEM_ALLOC_H
+> +#define _LINUX_EXECMEM_ALLOC_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/moduleloader.h>
+> +
+> +/**
+> + * enum execmem_type - types of executable memory ranges
+> + *
+> + * There are several subsystems that allocate executable memory.
+> + * Architectures define different restrictions on placement,
+> + * permissions, alignment and other parameters for memory that can be used
+> + * by these subsystems.
+> + * Types in this enum identify subsystems that allocate executable memory
+> + * and let architectures define parameters for ranges suitable for
+> + * allocations by each subsystem.
+> + *
+> + * @EXECMEM_DEFAULT: default parameters that would be used for types that
+> + * are not explcitly defined.
+> + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> + * @EXECMEM_KPROBES: parameters for kprobes
+> + * @EXECMEM_FTRACE: parameters for ftrace
+> + * @EXECMEM_BPF: parameters for BPF
+> + * @EXECMEM_TYPE_MAX:
+> + */
+> +enum execmem_type {
+> +	EXECMEM_DEFAULT,
+> +	EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
+> +	EXECMEM_KPROBES,
+> +	EXECMEM_FTRACE,
+> +	EXECMEM_BPF,
+> +	EXECMEM_TYPE_MAX,
+> +};
+> +
+> +/**
+> + * execmem_alloc - allocate executable memory
+> + * @type: type of the allocation
+> + * @size: how many bytes of memory are required
+> + *
+> + * Allocates memory that will contain executable code, either generated or
+> + * loaded from kernel modules.
+> + *
+> + * The memory will have protections defined by architecture for executable
+> + * region of the @type.
+> + *
+> + * Return: a pointer to the allocated memory or %NULL
+> + */
+> +void *execmem_alloc(enum execmem_type type, size_t size);
+> +
+> +/**
+> + * execmem_free - free executable memory
+> + * @ptr: pointer to the memory that should be freed
+> + */
+> +void execmem_free(void *ptr);
+> +
+> +#endif /* _LINUX_EXECMEM_ALLOC_H */
+> diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+> index 89b1e0ed9811..a3b8caee9405 100644
+> --- a/include/linux/moduleloader.h
+> +++ b/include/linux/moduleloader.h
+> @@ -29,9 +29,6 @@ unsigned int arch_mod_section_prepend(struct module *mod, unsigned int section);
+>     sections.  Returns NULL on failure. */
+>  void *module_alloc(unsigned long size);
+>  
+> -/* Free memory returned from module_alloc. */
+> -void module_memfree(void *module_region);
+> -
+>  /* Determines if the section name is an init section (that is only used during
+>   * module loading).
+>   */
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 696bc55de8e8..75a54024e2f4 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -22,7 +22,6 @@
+>  #include <linux/skbuff.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/random.h>
+> -#include <linux/moduleloader.h>
+>  #include <linux/bpf.h>
+>  #include <linux/btf.h>
+>  #include <linux/objtool.h>
+> @@ -37,6 +36,7 @@
+>  #include <linux/nospec.h>
+>  #include <linux/bpf_mem_alloc.h>
+>  #include <linux/memcontrol.h>
+> +#include <linux/execmem.h>
+>  
+>  #include <asm/barrier.h>
+>  #include <asm/unaligned.h>
+> @@ -1050,12 +1050,12 @@ void bpf_jit_uncharge_modmem(u32 size)
+>  
+>  void *__weak bpf_jit_alloc_exec(unsigned long size)
+>  {
+> -	return module_alloc(size);
+> +	return execmem_alloc(EXECMEM_BPF, size);
+>  }
+>  
+>  void __weak bpf_jit_free_exec(void *addr)
+>  {
+> -	module_memfree(addr);
+> +	execmem_free(addr);
+>  }
+>  
+>  struct bpf_binary_header *
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 9d9095e81792..047ca629ce49 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/stddef.h>
+>  #include <linux/export.h>
+> -#include <linux/moduleloader.h>
+>  #include <linux/kallsyms.h>
+>  #include <linux/freezer.h>
+>  #include <linux/seq_file.h>
+> @@ -39,6 +38,7 @@
+>  #include <linux/jump_label.h>
+>  #include <linux/static_call.h>
+>  #include <linux/perf_event.h>
+> +#include <linux/execmem.h>
+>  
+>  #include <asm/sections.h>
+>  #include <asm/cacheflush.h>
+> @@ -113,17 +113,17 @@ enum kprobe_slot_state {
+>  void __weak *alloc_insn_page(void)
+>  {
+>  	/*
+> -	 * Use module_alloc() so this page is within +/- 2GB of where the
+> +	 * Use execmem_alloc() so this page is within +/- 2GB of where the
+>  	 * kernel image and loaded module images reside. This is required
+>  	 * for most of the architectures.
+>  	 * (e.g. x86-64 needs this to handle the %rip-relative fixups.)
+>  	 */
+> -	return module_alloc(PAGE_SIZE);
+> +	return execmem_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+>  }
+>  
+>  static void free_insn_page(void *page)
+>  {
+> -	module_memfree(page);
+> +	execmem_free(page);
+>  }
+>  
+>  struct kprobe_insn_cache kprobe_insn_slots = {
+> diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+> index f3e0329337f6..744383c1eed1 100644
+> --- a/kernel/module/Kconfig
+> +++ b/kernel/module/Kconfig
+> @@ -2,6 +2,7 @@
+>  menuconfig MODULES
+>  	bool "Enable loadable module support"
+>  	modules
+> +	select EXECMEM
+>  	help
+>  	  Kernel modules are small pieces of compiled code which can
+>  	  be inserted in the running kernel, rather than being
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 5b82b069e0d3..d56b7df0cbb6 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -57,6 +57,7 @@
+>  #include <linux/audit.h>
+>  #include <linux/cfi.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/execmem.h>
+>  #include <uapi/linux/module.h>
+>  #include "internal.h"
+>  
+> @@ -1179,16 +1180,6 @@ resolve_symbol_wait(struct module *mod,
+>  	return ksym;
+>  }
+>  
+> -void __weak module_memfree(void *module_region)
+> -{
+> -	/*
+> -	 * This memory may be RO, and freeing RO memory in an interrupt is not
+> -	 * supported by vmalloc.
+> -	 */
+> -	WARN_ON(in_interrupt());
+> -	vfree(module_region);
+> -}
+> -
+>  void __weak module_arch_cleanup(struct module *mod)
+>  {
+>  }
+> @@ -1213,7 +1204,7 @@ static int module_memory_alloc(struct module *mod, enum mod_mem_type type)
+>  	if (mod_mem_use_vmalloc(type))
+>  		ptr = vmalloc(size);
+>  	else
+> -		ptr = module_alloc(size);
+> +		ptr = execmem_alloc(EXECMEM_MODULE_TEXT, size);
+>  
+>  	if (!ptr)
+>  		return -ENOMEM;
+> @@ -1244,7 +1235,7 @@ static void module_memory_free(struct module *mod, enum mod_mem_type type)
+>  	if (mod_mem_use_vmalloc(type))
+>  		vfree(ptr);
+>  	else
+> -		module_memfree(ptr);
+> +		execmem_free(ptr);
+>  }
+>  
+>  static void free_mod_mem(struct module *mod)
+> @@ -2496,9 +2487,9 @@ static void do_free_init(struct work_struct *w)
+>  
+>  	llist_for_each_safe(pos, n, list) {
+>  		initfree = container_of(pos, struct mod_initfree, node);
+> -		module_memfree(initfree->init_text);
+> -		module_memfree(initfree->init_data);
+> -		module_memfree(initfree->init_rodata);
+> +		execmem_free(initfree->init_text);
+> +		execmem_free(initfree->init_data);
+> +		execmem_free(initfree->init_rodata);
+>  		kfree(initfree);
+>  	}
+>  }
+> @@ -2608,10 +2599,10 @@ static noinline int do_init_module(struct module *mod)
+>  	 * We want to free module_init, but be aware that kallsyms may be
+>  	 * walking this with preempt disabled.  In all the failure paths, we
+>  	 * call synchronize_rcu(), but we don't want to slow down the success
+> -	 * path. module_memfree() cannot be called in an interrupt, so do the
+> +	 * path. execmem_free() cannot be called in an interrupt, so do the
+>  	 * work and call synchronize_rcu() in a work queue.
+>  	 *
+> -	 * Note that module_alloc() on most architectures creates W+X page
+> +	 * Note that execmem_alloc() on most architectures creates W+X page
+>  	 * mappings which won't be cleaned up until do_free_init() runs.  Any
+>  	 * code such as mark_rodata_ro() which depends on those mappings to
+>  	 * be cleaned up needs to sync with the queued work by invoking
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index b1448aa81e15..f08a216d4793 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -1241,6 +1241,9 @@ config LOCK_MM_AND_FIND_VMA
+>  config IOMMU_MM_DATA
+>  	bool
+>  
+> +config EXECMEM
+> +	bool
+> +
+>  source "mm/damon/Kconfig"
+>  
+>  endmenu
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 4abb40b911ec..001336c91864 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -133,3 +133,4 @@ obj-$(CONFIG_IO_MAPPING) += io-mapping.o
+>  obj-$(CONFIG_HAVE_BOOTMEM_INFO_NODE) += bootmem_info.o
+>  obj-$(CONFIG_GENERIC_IOREMAP) += ioremap.o
+>  obj-$(CONFIG_SHRINKER_DEBUG) += shrinker_debug.o
+> +obj-$(CONFIG_EXECMEM) += execmem.o
+> diff --git a/mm/execmem.c b/mm/execmem.c
+> new file mode 100644
+> index 000000000000..ed2ea41a2543
+> --- /dev/null
+> +++ b/mm/execmem.c
+> @@ -0,0 +1,26 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/mm.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/execmem.h>
+> +#include <linux/moduleloader.h>
+> +
+> +static void *__execmem_alloc(size_t size)
+> +{
+> +	return module_alloc(size);
+> +}
+> +
+> +void *execmem_alloc(enum execmem_type type, size_t size)
+> +{
+> +	return __execmem_alloc(size);
+> +}
+> +
+> +void execmem_free(void *ptr)
+> +{
+> +	/*
+> +	 * This memory may be RO, and freeing RO memory in an interrupt is not
+> +	 * supported by vmalloc.
+> +	 */
+> +	WARN_ON(in_interrupt());
+> +	vfree(ptr);
+> +}
+> -- 
+> 2.43.0
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
