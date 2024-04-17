@@ -1,92 +1,118 @@
-Return-Path: <bpf+bounces-27054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F3F8A86A5
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 16:51:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8C978A8798
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 17:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4950F1F212FD
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:51:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05BCA1C21B24
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 15:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78950142E9C;
-	Wed, 17 Apr 2024 14:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6CD1482ED;
+	Wed, 17 Apr 2024 15:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="se2Q5oyT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1B0142E70
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 14:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526E7140E29;
+	Wed, 17 Apr 2024 15:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365346; cv=none; b=ho8DNILmyD9+YF8Co65xVh5avweu6mBpWGCqLKFcapnM09wlol76upgp7cz2pjKCtdzOeV1NtgfsFdJ7zwJ/d80huf2Jn90TmhdYSkbVJQE1eH4ybc0RT5E7/q0wjP6j7arA12AWa59xNNmnaEDOefxe27UGS6hYDvowyQWlDRE=
+	t=1713367806; cv=none; b=jxfICum6kJhzf4BEfUa3H6MbxHg79OgHpAuWNJ74dF5VdZLGG00N9dXhJVlJh70U2c6NIrRpZs4GPMgjQSogGZoiWX7xJ2rIQrk6WF8j23u4u4+ev4ZoqqHssOQgPgxqxaGhK6uqpirrrHRQYg+CglveYxyGlpX07P5noADey8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365346; c=relaxed/simple;
-	bh=arYAiaCB5bQDcWyY6Fg5A6dpdQ7egLODjHN2gDiOR4c=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=H8vVjiiCJhu61JxxIcFmCyRsuV3FYxZafzpm+znXUT67ZT3dylvFPPO8IJQMBJ+mfhr5GMPY48s6Chm3q4BbcXW5Kt6FgDVxYjzDdKANMIkNlDPh+pE4TIbzGwhH011Kfcl9X9QhS9VOq14vbkJ3RU9P0djAijiY+2ZfPN1VkCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso766276539f.0
-        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 07:49:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713365344; x=1713970144;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9iLXNunqSNr8QRXcPEHq58jPUvBUNMYnjkVj+0AeDws=;
-        b=nZHEJmn0QJRlhHeeYzoekgw9y3plnJTyqaJP74A7u7oUN6D0WlXBk4cUXn+O4k0QEI
-         lFlW7vgjBjCWRb/fP4OYlpQk0+wDlslnOtO/7wkimdseHTTW3Pl9n2k+wQQU6ZPmRa4y
-         bfHgLD2Owc48UUJw/AhF3OXH5rbG7a7Ga0nFUguhYtIT7SCZ+8K5Qnq/bbrvIlgCpThX
-         0ZAC394ym78WwegGwNX2KCfWefpwyBvMrr+weM/ZtrGntirXOvy5Q+CUT/5NqKMZmMNN
-         +hgyARNjQUy0IKoxqnuYwp/s+alPK4J+/qKyOgmi/eHbpvDBPLWWNJgP3+7Sec/U7ZBx
-         WDtw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJe86z/UgJgQip95o5GMlJN3WrTkia8MorZz5LRGuWTqcntRnGIVmfmVdRrqKNKeOxkR5VSEPDSc8ZTEoDt3qOjAC8
-X-Gm-Message-State: AOJu0Yz1DHGWkz3IhG3I7xFVW5mmljKOcYfJMtVo3x4SvM016FLMUzP+
-	x6cLVUt1IGINCTj8whCe2l/XGV1stgpXZgGpIcYh0ENkakXemLRHDEf3NeESEEx0Yww2P12jhNM
-	gUxh5EQtDkvE9WXPxwytWEYViWSzO9ibX1UmyjL8KTv0Lq/ERGweSjs4=
-X-Google-Smtp-Source: AGHT+IG5KPWeJ6k7l1iEickd9TA7War8sUCpO4E/yTKozoCtWTn4mh1KzRpVsk6ZYxw9Y0eF2w0SQnmEkVvYFKet3EqQL+vJRrjo
+	s=arc-20240116; t=1713367806; c=relaxed/simple;
+	bh=XkH4g4DTe/chnyyem+t7TxDHFU5BkdWClQJ756pn9hU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DnBLG7d46aVBgn8eGWy3s2OFhhnpGw9aucC7m9caYONdrT+/YgDPN6Y81YWktGMPU57EdgrfyY49p3WWTe89UXuV4tv9FZzWtqhUWJ/s7NFti1WhpT/uUrmR5LHpbnZsPQbizOT4lCCXU4qxvJzHRTXNDc2N1BRAV2Xlkjq/3Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=se2Q5oyT; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=z71MR9/FB4ZLioSpgSrKFmW/9gLRNuEnvteXucs//5s=; b=se2Q5oyTwGO5A10GW19iibXdJX
+	2vm1ab+CjApvrXcmZbyd6fjRwHnPI1eEobHTO9OJvlpIpXILvRHyeN1fud9edIbk2nv6mhx6MoKdf
+	kyPxYhkY97Fg31Fi49zDc38CY30gObZ68HaAhenQStO14BDseyhHhlJTFDwzAPQhhBfnTyXoHMOHM
+	W628az/zUbLDjK2Si4P/cAzMULNAiLCiYZhnZJhKPBOnntgs6+JZ4oXVaFINEv9Mdi+DuJrTIkXa5
+	j0THh6+kmi2KQIfxdMj6saaPA7pFydYV1auPPZm+J2ywqo2S85CyVF7KbR6qLy5HuwJw/3KG3Lriy
+	GLIF6NUQ==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rx7ES-0000000GabK-0bD4;
+	Wed, 17 Apr 2024 15:29:56 +0000
+Message-ID: <1c1bc9c3-978c-4e41-8a4b-66da25416304@infradead.org>
+Date: Wed, 17 Apr 2024 08:29:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8529:b0:482:c2c6:65b with SMTP id
- is41-20020a056638852900b00482c2c6065bmr1093800jab.1.1713365343174; Wed, 17
- Apr 2024 07:49:03 -0700 (PDT)
-Date: Wed, 17 Apr 2024 07:49:03 -0700
-In-Reply-To: <87il0huixn.fsf@toke.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a693f106164bf4c7@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
-From: syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eadavis@qq.com, eddyz87@gmail.com, 
-	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	toke@kernel.org, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 03/10] net: create a dummy net_device
+ allocator
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Johannes Berg <johannes@sipsolutions.net>, Jakub Kicinski <kuba@kernel.org>,
+ Breno Leitao <leitao@debian.org>
+Cc: davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+ elder@kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, nbd@nbd.name, sean.wang@mediatek.com,
+ Mark-MC.Lee@mediatek.com, lorenzo@kernel.org, taras.chornyi@plvision.eu,
+ ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, geomatsi@gmail.com, kvalo@kernel.org,
+ quic_jjohnson@quicinc.com, leon@kernel.org,
+ dennis.dalessandro@cornelisnetworks.com, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, idosch@idosch.org,
+ Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+ Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20240411135952.1096696-1-leitao@debian.org>
+ <20240411135952.1096696-4-leitao@debian.org>
+ <20240412191626.2e9bfb4a@kernel.org>
+ <ebe80c29-4884-488d-ab83-c020f9c3bc81@intel.com>
+ <e0d5741ee053c11fe078fc8afe6cf4a92e274095.camel@sipsolutions.net>
+ <d4991f11-a527-429d-b71f-d4ca3a18f501@intel.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <d4991f11-a527-429d-b71f-d4ca3a18f501@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+On 4/17/24 4:19 AM, Alexander Lobakin wrote:
+> From: Johannes Berg <johannes@sipsolutions.net>
+> Date: Wed, 17 Apr 2024 13:11:38 +0200
+> 
+>> On Wed, 2024-04-17 at 12:51 +0200, Alexander Lobakin wrote:
+>>> Just FYI: kdoc accepts only this pattern:
+>>>
+>>>  * @last_param: blah
+>>>  *
+>>>  * Return: blah
+>>>
+>>> NOT
+>>>
+>>>  * Returns: blah
+>>
+>> Actually, it does accept that, the regex is "returns?". It's just
 
-Tested on:
+ack (Return: is documented)
 
-commit:         443574b0 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=125ea0e3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=af9492708df9797198d6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=156227cd180000
+> Hmm, I was sure I had warnings on "Returns:"... Not sure now.
+> 
+Yes, either way is accepted.
 
-Note: testing is done by a robot and is best-effort only.
+> documented only as "Return" . IMHO it sometimes reads nicer as "Returns"
+>> depending on how you phrase it, but ...
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
