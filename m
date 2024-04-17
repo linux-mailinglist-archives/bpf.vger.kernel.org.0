@@ -1,140 +1,101 @@
-Return-Path: <bpf+bounces-27021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFAB18A7C3E
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 08:18:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B638A7C45
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 08:26:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2DD71C21FE2
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 06:18:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EF771C22197
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 06:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300A15811E;
-	Wed, 17 Apr 2024 06:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8368C56464;
+	Wed, 17 Apr 2024 06:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sh5mrPfe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I2d1MAgi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75393C68C;
-	Wed, 17 Apr 2024 06:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE0329D06;
+	Wed, 17 Apr 2024 06:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713334670; cv=none; b=I1bP0w1/mZ5SxaxOExuI86vsdH/OTNA63+fIIrruijLgNgXu/4M9+f3zzYqd96BdfxzW3gJ07pTHoikdhl/i+DKcvzmEdkn5rMN+8vU+fJc3YbLmcBvttYdQXtFGOTIo9lY+UwLk3oKfClq0wsawJOu3Zs68LwxVCoCmTIChQfo=
+	t=1713335178; cv=none; b=i6/ftHx6bceRA9K7BbX5/ry16nrZyBD4rjKIFQ8ghQXf5ITJ1T9RhyiRA/Bgfg8YB+mUo+VeMK8SCnCOxENnTF5hS7cnDUXtzgX7+c8Lt+un1VyIMWVlUzYqc1oJL3HLzrIn1nXR3BYSbHR+tZLKvxI5D0tlo8JDXi+YqSELbdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713334670; c=relaxed/simple;
-	bh=w42aKlhS0gcP36dJaMyx5AB9fm5TuxlheUjjF+LgHsc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JEcL3ZvckghlP48UYyHaJiF8PuEAVe70dBTvF8EQ2HznXrxa1QrX6ZGDQdRj8/NeAMkIiG473SCRPE7gcmrObK0yz9xEYP+ATzdvxWB0xwLmKX6LMhbbL54Sh8OqKGo66KmT1jIbYPbUTRn57r4/qP1e1nCz9ZXUUz2qy1jC5+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sh5mrPfe; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713334669; x=1744870669;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=w42aKlhS0gcP36dJaMyx5AB9fm5TuxlheUjjF+LgHsc=;
-  b=Sh5mrPfeCWT32U7qkUmejNiFjdwdHvipftj3wZi+Rbro6WCDE9gXCiHy
-   4hbd8Yc+69zw7pmLOy+kS8Qfho5BvtFfVSYPIGTczfdR/YEPPnZIDY5cL
-   gjFQIrd65Os/Q6AsAFStbOFnvqQvkxU9pUhVrdquUzbd39L3ENrkS8I3y
-   H/cnL1xvkNFQJLmGR7Lor8A/h9DFXMlwpvGa4qIWTf4QiRlx3KQ8kmzQL
-   C/IA8kqLzAGPLzLSmfYxvfyQjta+e5SXMnCWy+1k1RKy3wyXd+KDfioh8
-   GCnPz4FwMGbpGitQ2L5BIyX61RmjdLO9nv0NhAQf4a7rOM9XN57tz4KyD
-   g==;
-X-CSE-ConnectionGUID: sdX4RHwQQCK3iuVmSoDe+w==
-X-CSE-MsgGUID: 1Obv11YjR4iDWQ/Yc0ul/Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="11750873"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="11750873"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:17:48 -0700
-X-CSE-ConnectionGUID: imgM1LG1QZyQQQFDxbqDqA==
-X-CSE-MsgGUID: VdZm10H+T8Ok8H03lXuMzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="23109144"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 16 Apr 2024 23:17:44 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwyc2-0006Cc-1J;
-	Wed, 17 Apr 2024 06:17:42 +0000
-Date: Wed, 17 Apr 2024 14:17:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vadim Fedorenko <vadfed@meta.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v9 1/4] bpf: make common crypto API for TC/XDP
- programs
-Message-ID: <202404171409.EgchVGya-lkp@intel.com>
-References: <20240416204004.3942393-2-vadfed@meta.com>
+	s=arc-20240116; t=1713335178; c=relaxed/simple;
+	bh=R8Sytcd0zdOKyMmrxcQ5ptLPbB+DTVIfGCrBabF5ANY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sbOEhTyh9UhLeMCi/qKg4uLaxR1H6BMDVGxEggw1JGS8GUCTrCzrB784mL7uZgXE/MJAyCKUDBbMDrLmHkGEOiYmRI0ZHUtbFMpU8dJ/m6T75lIVrz4iFpdPwo6Lof/8uL4TczJAT3NlrhIaSJ8sZgD2miArwxe14pqhsepe1N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I2d1MAgi; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d94fde45deso25240139f.1;
+        Tue, 16 Apr 2024 23:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713335175; x=1713939975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R8Sytcd0zdOKyMmrxcQ5ptLPbB+DTVIfGCrBabF5ANY=;
+        b=I2d1MAgisLhTuWw4urKMuFYOLKtM0QZZHlYO18SPl5xeogKsuZAMY0vGXIoNNLN/5E
+         w2UV+r8Xyka+HQG64JrI9BKSJfQlPz8pfct7VH768PojoaRvCM2JTjtA5g3aix5N5Gmr
+         nvUn93P/cTuNXZglnIFkkntlV6W4Ol85E7N0laJ4b5nXAEBrzZ9VfsnHxFFoeMKktOcr
+         vL506xrQNbQlv2RJzr3dQEEgn5wb/Rw33PxYDpAFlOLlL8lc3Du7GsSDHUy/3OWKifbX
+         SETqDKM4XU+b3tKg1roljht4pCqwekSpuUN603S6OJfeAlmxnoTjuVICHk85+C87BZu/
+         SsYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713335175; x=1713939975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R8Sytcd0zdOKyMmrxcQ5ptLPbB+DTVIfGCrBabF5ANY=;
+        b=tBvlTMo4EpfAz71kICX02Q7SBV80cXy5AwC8vYfT7JS96+XmqsZv29j4pqA9u9OvHT
+         B0ZaVAbMcQifZerB6wW6N3nmPQeipBHdpQ+hz3CZY+QZZrgAxsM/FYXfoLL4k+DxKQPA
+         mnDL0Ccr4/hCWV57y2HHhcx5aKgV6P3+BKDoEvlavXw7D4a3z3Cf/20BEnCgm/3OGCzV
+         QZwoQLi1glOndedKtQVAdREWJI80i+c1c8cpi00zeuXg5lwAELylvhTZhLQFstifXV1/
+         2idU9zfW4jUbIs+a7cxJKGU196wW7flmUreTS61pbS6bBUMpD/BXMJ2ABWU2Mn4DGfPE
+         HrFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVux6PUPTZtO7QpxlCFXzGsmuHHw9OmSDVUahGub0gGtCgN4WVqpjaiIGgUjmYxgv48R6zsjmAVWA1GFWM1tMjGhtlNFgKm+imJmuoM+LCneOy4hMmxsI15P6E6Az8OvzFl
+X-Gm-Message-State: AOJu0YzHhwmMZsX2RkrRYD7f0IZwn1go7oAxEDrreKdbCD3QT49l/9Pd
+	edONEDupXmdZnvBQ0hYs/WSnE0QLc+VrdBTV67hilr+yZTTcoNaaR09+zIJNMc2tq7lZjF/cxMB
+	OpgoqC0OTAOEfMmer7l4iysOb8pE=
+X-Google-Smtp-Source: AGHT+IGwbrnBPuuGW3fDaUnHH3zdP9PR1lsn/gkIcmftimODj6RqHyVul1zeySTkUj80e3azBaobyXEPZDzHh5LifWg=
+X-Received: by 2002:a05:6e02:1748:b0:36a:fba4:ec45 with SMTP id
+ y8-20020a056e02174800b0036afba4ec45mr18817708ill.3.1713335175168; Tue, 16 Apr
+ 2024 23:26:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416204004.3942393-2-vadfed@meta.com>
+References: <20240414045124.3098560-1-dmitrii.bundin.a@gmail.com>
+ <Zh0ZhEU1xhndl2k8@krava> <CANXV_Xwmf-VH5EfNdv=wcv8J=2W5L5RtOs8n-Uh5jm5a1yiMKw@mail.gmail.com>
+ <Zh4ojsD-aV2vHROI@krava> <ddc0ac5b-9bd4-f31a-a7ec-83f7a10e6ab1@iogearbox.net>
+In-Reply-To: <ddc0ac5b-9bd4-f31a-a7ec-83f7a10e6ab1@iogearbox.net>
+From: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Date: Wed, 17 Apr 2024 09:26:03 +0300
+Message-ID: <CANXV_XwGhdV7v05Xjjp-g9yW4E0FjA=84M8jZ6bcf7yuooDkig@mail.gmail.com>
+Subject: Re: [PATCH] bpf: btf: include linux/types.h for u32
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	haoluo@google.com, sdf@google.com, kpsingh@kernel.org, 
+	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org, martin.lau@linux.dev, 
+	khazhy@chromium.org, vmalik@redhat.com, ndesaulniers@google.com, 
+	ncopa@alpinelinux.org, dxu@dxuuu.xyz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vadim,
+On Tue, Apr 16, 2024 at 5:47=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+> Please add the error description as motivation aka "why" into the commit
+> description, otherwise it's not really obvious looking at it at a later
+> point in time why the include was needed.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/bpf-make-common-crypto-API-for-TC-XDP-programs/20240417-044349
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20240416204004.3942393-2-vadfed%40meta.com
-patch subject: [PATCH bpf-next v9 1/4] bpf: make common crypto API for TC/XDP programs
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20240417/202404171409.EgchVGya-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404171409.EgchVGya-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404171409.EgchVGya-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/crypto.c:53: warning: Function parameter or struct member 'siv_len' not described in 'bpf_crypto_ctx'
-
-
-vim +53 kernel/bpf/crypto.c
-
-    37	
-    38	/**
-    39	 * struct bpf_crypto_ctx - refcounted BPF crypto context structure
-    40	 * @type:	The pointer to bpf crypto type
-    41	 * @tfm:	The pointer to instance of crypto API struct.
-    42	 * @rcu:	The RCU head used to free the crypto context with RCU safety.
-    43	 * @usage:	Object reference counter. When the refcount goes to 0, the
-    44	 *		memory is released back to the BPF allocator, which provides
-    45	 *		RCU safety.
-    46	 */
-    47	struct bpf_crypto_ctx {
-    48		const struct bpf_crypto_type *type;
-    49		void *tfm;
-    50		u32 siv_len;
-    51		struct rcu_head rcu;
-    52		refcount_t usage;
-  > 53	};
-    54	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Doesn't the comment /* for u32 */ following the include explain the
+purpose? I thought the include was actually missing since relying on
+indirect declaration of u32 is relatively fragile.
 
