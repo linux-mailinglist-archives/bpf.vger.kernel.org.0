@@ -1,113 +1,92 @@
-Return-Path: <bpf+bounces-27053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507178A84FF
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 15:41:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F3F8A86A5
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 16:51:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 068F51F21E86
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 13:41:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4950F1F212FD
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C599013F423;
-	Wed, 17 Apr 2024 13:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t4SzhAqk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78950142E9C;
+	Wed, 17 Apr 2024 14:49:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8AC13F44C
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 13:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1B0142E70
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 14:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713361237; cv=none; b=V7hhY3tJSViTjU9uB/Le79ueh4QU9MLOdWFIQt14/j49lAms+RXh+OVIojyiztFcYSNi3B+vX2L61IFkoRaK8sVWSpHzGr8WuExy/7gpItgWvfmC8F2fZ5QI+2XScN+9IByJX32yUv9ssMLB9f+qJ7+GJMURj3FwHChp5NoEgEs=
+	t=1713365346; cv=none; b=ho8DNILmyD9+YF8Co65xVh5avweu6mBpWGCqLKFcapnM09wlol76upgp7cz2pjKCtdzOeV1NtgfsFdJ7zwJ/d80huf2Jn90TmhdYSkbVJQE1eH4ybc0RT5E7/q0wjP6j7arA12AWa59xNNmnaEDOefxe27UGS6hYDvowyQWlDRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713361237; c=relaxed/simple;
-	bh=T1YzZDSGgqoW0rJ8CpJf1zazBDvIHOf0D6/3Vdxzqgs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PndNCmxYs1C8leWYIVB3tUNtRmQ8wjJPhHFi83lyAJDuTcwM9QMQn8dXqIiwBt9uBhJMv5cr5RvCfElmYVuWy+J5EKBZsDZK1swviVfCfMfKz0Gml4d7inpiw9Gvo5nkR9nY5hgNsPjYmQcHElsITOU/f5euQtF34EWzLLbwTXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t4SzhAqk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B58FC072AA;
-	Wed, 17 Apr 2024 13:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713361236;
-	bh=T1YzZDSGgqoW0rJ8CpJf1zazBDvIHOf0D6/3Vdxzqgs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t4SzhAqkbYgxnVaR1SyQHiUdDNzItfnmkCP8jb88lgxB4jiYjA5MUEQtv9Jmm56U0
-	 z6y6OuSAwJf/pjqqwdahk/tCjK+FcUE9ZXOfrQrYTC2eWtP/2CGcWsaYAntMFmvF+M
-	 +KY7Z/rdolg6ASXtmemmWZp6hqtBt9QR5j/IrO4eOxA9hx4Uyzu2gaTNWaCBciKUST
-	 eXxTYx4QYy8jVP0xWaXoiftSRgJH1cG6iVVGgGtctYCVlXRrJCo++szBqUGwau8K4a
-	 ZyzeXvJvr913x4nTB4wjEkP8gQQHZMyoimZtRoJpjHdjmIbSmFhHe+obr1yF44ft0E
-	 TxJWgoUyJXpqg==
-Date: Wed, 17 Apr 2024 10:40:33 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, jolsa@kernel.org, quentin@isovalent.com,
-	eddyz87@gmail.com, andrii.nakryiko@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v6 1/3] gobuffer: Add gobuffer__sort() helper
-Message-ID: <Zh_RUWT4b3QC31k6@x1>
-References: <cover.1711389163.git.dxu@dxuuu.xyz>
- <ba9ff49e099583ab854d3d3c8c215c3ca1b6f930.1711389163.git.dxu@dxuuu.xyz>
- <76869286-5593-470e-b04a-e38f1613c361@oracle.com>
+	s=arc-20240116; t=1713365346; c=relaxed/simple;
+	bh=arYAiaCB5bQDcWyY6Fg5A6dpdQ7egLODjHN2gDiOR4c=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=H8vVjiiCJhu61JxxIcFmCyRsuV3FYxZafzpm+znXUT67ZT3dylvFPPO8IJQMBJ+mfhr5GMPY48s6Chm3q4BbcXW5Kt6FgDVxYjzDdKANMIkNlDPh+pE4TIbzGwhH011Kfcl9X9QhS9VOq14vbkJ3RU9P0djAijiY+2ZfPN1VkCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso766276539f.0
+        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 07:49:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713365344; x=1713970144;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9iLXNunqSNr8QRXcPEHq58jPUvBUNMYnjkVj+0AeDws=;
+        b=nZHEJmn0QJRlhHeeYzoekgw9y3plnJTyqaJP74A7u7oUN6D0WlXBk4cUXn+O4k0QEI
+         lFlW7vgjBjCWRb/fP4OYlpQk0+wDlslnOtO/7wkimdseHTTW3Pl9n2k+wQQU6ZPmRa4y
+         bfHgLD2Owc48UUJw/AhF3OXH5rbG7a7Ga0nFUguhYtIT7SCZ+8K5Qnq/bbrvIlgCpThX
+         0ZAC394ym78WwegGwNX2KCfWefpwyBvMrr+weM/ZtrGntirXOvy5Q+CUT/5NqKMZmMNN
+         +hgyARNjQUy0IKoxqnuYwp/s+alPK4J+/qKyOgmi/eHbpvDBPLWWNJgP3+7Sec/U7ZBx
+         WDtw==
+X-Forwarded-Encrypted: i=1; AJvYcCXJe86z/UgJgQip95o5GMlJN3WrTkia8MorZz5LRGuWTqcntRnGIVmfmVdRrqKNKeOxkR5VSEPDSc8ZTEoDt3qOjAC8
+X-Gm-Message-State: AOJu0Yz1DHGWkz3IhG3I7xFVW5mmljKOcYfJMtVo3x4SvM016FLMUzP+
+	x6cLVUt1IGINCTj8whCe2l/XGV1stgpXZgGpIcYh0ENkakXemLRHDEf3NeESEEx0Yww2P12jhNM
+	gUxh5EQtDkvE9WXPxwytWEYViWSzO9ibX1UmyjL8KTv0Lq/ERGweSjs4=
+X-Google-Smtp-Source: AGHT+IG5KPWeJ6k7l1iEickd9TA7War8sUCpO4E/yTKozoCtWTn4mh1KzRpVsk6ZYxw9Y0eF2w0SQnmEkVvYFKet3EqQL+vJRrjo
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76869286-5593-470e-b04a-e38f1613c361@oracle.com>
+X-Received: by 2002:a05:6638:8529:b0:482:c2c6:65b with SMTP id
+ is41-20020a056638852900b00482c2c6065bmr1093800jab.1.1713365343174; Wed, 17
+ Apr 2024 07:49:03 -0700 (PDT)
+Date: Wed, 17 Apr 2024 07:49:03 -0700
+In-Reply-To: <87il0huixn.fsf@toke.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a693f106164bf4c7@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
+From: syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eadavis@qq.com, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	toke@kernel.org, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 17, 2024 at 10:20:41AM +0100, Alan Maguire wrote:
-> On 25/03/2024 17:53, Daniel Xu wrote:
-> > Add a helper to sort the gobuffer. Trivial wrapper around qsort().
-> > 
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > ---
-> >  gobuffer.c | 5 +++++
-> >  gobuffer.h | 2 ++
-> >  2 files changed, 7 insertions(+)
-> > 
-> > diff --git a/gobuffer.c b/gobuffer.c
-> > index 02b2084..4655339 100644
-> > --- a/gobuffer.c
-> > +++ b/gobuffer.c
-> > @@ -102,6 +102,11 @@ void gobuffer__copy(const struct gobuffer *gb, void *dest)
-> >  	}
-> >  }
-> >  
-> > +void gobuffer__sort(struct gobuffer *gb, unsigned int size, int (*compar)(const void *, const void *))
-> > +{
-> > +	qsort((void *)gb->entries, gb->nr_entries, size, compar);
-> 
-> nit shouldn't need to cast char * gb->entries to void * ; not worth
-> respinning the series for though unless there are other issues
+Hello,
 
-I can remove that while applying the series, which I'm doing now.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-- Arnaldo
- 
-> > +}
-> > +
-> >  const void *gobuffer__compress(struct gobuffer *gb, unsigned int *size)
-> >  {
-> >  	z_stream z = {
-> > diff --git a/gobuffer.h b/gobuffer.h
-> > index a12c5c8..cd218b6 100644
-> > --- a/gobuffer.h
-> > +++ b/gobuffer.h
-> > @@ -21,6 +21,8 @@ void __gobuffer__delete(struct gobuffer *gb);
-> >  
-> >  void gobuffer__copy(const struct gobuffer *gb, void *dest);
-> >  
-> > +void gobuffer__sort(struct gobuffer *gb, unsigned int size, int (*compar)(const void *, const void *));
-> > +
-> >  int gobuffer__add(struct gobuffer *gb, const void *s, unsigned int len);
-> >  int gobuffer__allocate(struct gobuffer *gb, unsigned int len);
-> >  
+Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         443574b0 riscv, bpf: Fix kfunc parameters incompatibil..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=125ea0e3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=af9492708df9797198d6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=156227cd180000
+
+Note: testing is done by a robot and is best-effort only.
 
