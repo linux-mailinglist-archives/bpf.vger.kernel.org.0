@@ -1,75 +1,55 @@
-Return-Path: <bpf+bounces-27065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861128A8C05
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:21:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 776C78A8C3A
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:39:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24F6D1F22D85
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 19:21:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C267281A66
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 19:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B460428DD1;
-	Wed, 17 Apr 2024 19:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA892C6A3;
+	Wed, 17 Apr 2024 19:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ThUs+zBK"
+	dkim=pass (2048-bit key) header.d=tu-braunschweig.de header.i=@tu-braunschweig.de header.b="F3tKMa4K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pmxout2.rz.tu-bs.de (pmxout2.rz.tu-bs.de [134.169.4.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5E3241E7
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 19:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C18A2134B
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 19:38:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.169.4.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713381658; cv=none; b=dAAfF2rhj8QF/2lq/MmZxIY5IUkxypVZDlvN8F4DXmAzzIyZNb0PIyTasze9XuZukQchfwy6hYPIE7EHTmUQyNgeJAJ+Sh3wohXkmjx3WDwAt2ae8oWy6WMXVB0p+yg7uTVM0KwT6rzvy2f2VY/ff2ThkcUwardESKUVGgYbXeA=
+	t=1713382741; cv=none; b=AJvyGtTRa9YC342KmLSHmYgi+IfNz7VySWfX3l9aOrVigIqRRxsJJ0PtY1nrvwjxcMiW3yGCMQ2x8W1VqBAmWP6XhX5z8e6kQBXsSyDtg2C9UAhRGpU+BIMjp6Gjlry76SFNEABsqCel07iUHPIzXCnr8EGnRYkXL9uHGqXghWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713381658; c=relaxed/simple;
-	bh=Z3bCMaGhwbj6srUu4nYse27BveBCdxJ6ls99+RXNmvI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NcjWPqGbLi88NEe4gZHtBrMenprMBVdffIHDZdJufmEQllRbNm7snUuHaQ1tMXgTtUklw7fSGk8pC+94T4gP9+jqRecXjyDvqTegwjgDxvQU37+UMjK1O58m+sxgNMVfLbOG8W1yfBzUtTpWrBBxc7c8DpFihkpPWHqMkx0C5l8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ThUs+zBK; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5e4f79007ffso9619a12.2
-        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 12:20:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713381656; x=1713986456; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ORRZpXUfxr9ItRDDr0g7BO8pI4LaWWkmIOzOV1lUjes=;
-        b=ThUs+zBKSaponbb58Dod6Z1IGSmlxw4Jpi+7ppdNpbhVobZZfXcwvIlBUzj+QnxvBG
-         kwj+XCcOvud8clC5wr/3MmbXBZr+l+OHAbupDcSvfkEJ3ynDAl9BUikip+WbrjFVIg7V
-         b774TsOVcobqdEYTexydbT9MDoawO2vPpHum9ZcI7/upqCNARAgNCcqJDVETFl8Kl1nz
-         15ASyQBLSEN7sX9YO8AnGppQZsuK9OdYmanZz3NGTL+0ExqiSVM4GRwduLimHtY1Ev33
-         dqGoKDpvjR6fycJ61phEwiwgfKsw5w4ECcPBz8jOYtj5dpK/yo6cPx8cwSnUIAi2vQKl
-         k4lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713381656; x=1713986456;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ORRZpXUfxr9ItRDDr0g7BO8pI4LaWWkmIOzOV1lUjes=;
-        b=kzHQThdx3AeUqs3ZiZUyqmETUFGAit97MVEJGEMTNu63k+4+c8ZkB5uzuDWHOeuOiZ
-         pmbB5bV36Zi5IggEIHzJ5Ap2jE+ju287DgV/2qXbUcRAgBNweJjCWizPGA9jfrThX4+I
-         Ew6Z34l+f4cgKbyDckZYv/Jkh/hOFzx1Z7ZyxcFKGvUFd50N+ljSGIWHsL6Tpu1S9LIc
-         KVOlOQ6KGEGpZWNDaoCyKtN0DAW3mmFACd/9iXe0bJz94kFMdjAO3cEjwKcos7aw8fhB
-         t0Umjebwmg2r412Gkx6wMFDLbHbgdD4A7Pi9TxTk9QpNaEt2lYYSihnPUukeh5cQ+OJ1
-         hnCg==
-X-Forwarded-Encrypted: i=1; AJvYcCW6YuvJMVy5mwiHHwTxPaVpv3mrBO8nQA+3gUkvf2DShoKqhboaWnBi2vNHDBQBb1v9mugEcVbn2oY9jjwpNT/sCmAb
-X-Gm-Message-State: AOJu0Yzp82vQToKnSp+/AxThddzVDvE2pNxm/gfWygQZue9FqREsjyQJ
-	oNnGJroprHRDvoqJyBjTX4ZUWKEIy+ue8/v+f9iVAEhsXpll3qo/dxLA5Nkoeus=
-X-Google-Smtp-Source: AGHT+IFFegkq8waqKyMERwq6fCuZal4ckYIGZjxrkGrrejjVKhdDcv8GCWbIasobPrTueNDkPh41oA==
-X-Received: by 2002:a05:6a21:27a8:b0:1aa:5f1f:79d1 with SMTP id rn40-20020a056a2127a800b001aa5f1f79d1mr709847pzb.1.1713381656202;
-        Wed, 17 Apr 2024 12:20:56 -0700 (PDT)
-Received: from [10.36.51.174] ([24.75.208.145])
-        by smtp.gmail.com with ESMTPSA id r13-20020aa79ecd000000b006ed045af796sm11536pfq.88.2024.04.17.12.20.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 12:20:55 -0700 (PDT)
-Message-ID: <7eeef2c6-7375-4e41-aad6-ca0a39e95e2e@linaro.org>
-Date: Wed, 17 Apr 2024 21:20:53 +0200
+	s=arc-20240116; t=1713382741; c=relaxed/simple;
+	bh=kGLQLDCQCtC+DekK+q91lBmyfdhGiXvS78w78Y99IpU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=d/4uPsJuHPJFCa8XxtPeWbLuZaVqMaHTxVAHHqtQnqAkXxaWtF/tFx1Xoc+nvlRnVTSyP/2CqvYSnjPn1lEs0fFGNh1qe1CMkOKgM5vY5+l62klOX1b5JoYeqZYWTCWBeitkenUnginEHQ0I9Sy2BVIf+cE78URENEitdOm28Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tu-braunschweig.de; spf=pass smtp.mailfrom=tu-braunschweig.de; dkim=pass (2048-bit key) header.d=tu-braunschweig.de header.i=@tu-braunschweig.de header.b=F3tKMa4K; arc=none smtp.client-ip=134.169.4.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tu-braunschweig.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tu-braunschweig.de
+Received: from Hermes12.ad.tu-bs.de (hermes12.rz.tu-bs.de [134.169.4.140])
+	by pmxout2.rz.tu-bs.de (Postfix) with ESMTPS id EB6D34E034E;
+	Wed, 17 Apr 2024 21:38:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-braunschweig.de;
+	s=exchange_neu; t=1713382729;
+	bh=kGLQLDCQCtC+DekK+q91lBmyfdhGiXvS78w78Y99IpU=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=F3tKMa4KT6jrQ+B6bo59HZkQjR2cVViT53rJYUuy1SiYMYqZfBDrBcxmEhAlLSOfu
+	 j1U4EyfzSNuLobn+8xc86dhc4qWKzeD+9uCKi9D8QmJcSgmd5hf5V59F4mueQn2yQ4
+	 lsZYkLUlqAm9ZeC0CrtM6TT8BO02o/EhSzDZfYisQCffw2nZC5ufkl9iSRlVCbzlpE
+	 8Vddkz7ks+syVi/SNNMrTFntnUotxTqXS1zKOBpa476WHHWTV0Bpeksr17D8U1EZ9K
+	 dyNrTjRNLKCbCNmbaJYi53Nj4pK7LdAdNmGmjQgJnwfQbfhP4WjFN7dshtjncUhCQn
+	 FSbKzGNj8Qqqw==
+Received: from [192.168.178.142] (134.169.9.110) by Hermes12.ad.tu-bs.de
+ (134.169.4.140) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.32; Wed, 17 Apr
+ 2024 21:38:49 +0200
+Message-ID: <9c019772-8c21-4eb5-908d-103f0966dc13@tu-braunschweig.de>
+Date: Wed, 17 Apr 2024 21:38:49 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,166 +57,188 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 30/31] kvx: Add power controller driver
-To: Yann Sionneau <ysionneau@kalrayinc.com>,
- Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
- Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
- Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>,
- Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Waiman Long <longman@redhat.com>,
- "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
- Christian Brauner <brauner@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jules Maselbas <jmaselbas@kalray.eu>,
- Guillaume Thouvenin <gthouvenin@kalray.eu>,
- Clement Leger <clement@clement-leger.fr>,
- Vincent Chardon <vincent.chardon@elsys-design.com>,
- =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
- Julian Vetter <jvetter@kalray.eu>, Samuel Jones <sjones@kalray.eu>,
- Ashley Lesdalons <alesdalons@kalray.eu>, Thomas Costis <tcostis@kalray.eu>,
- Marius Gligor <mgligor@kalray.eu>, Jonathan Borne <jborne@kalray.eu>,
- Julien Villette <jvillette@kalray.eu>, Luc Michel <lmichel@kalray.eu>,
- Louis Morhet <lmorhet@kalray.eu>, Julien Hascoet <jhascoet@kalray.eu>,
- Jean-Christophe Pince <jcpince@gmail.com>,
- Guillaume Missonnier <gmissonnier@kalray.eu>, Alex Michon
- <amichon@kalray.eu>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <git@xen0n.name>, Shaokun Zhang <zhangshaokun@hisilicon.com>,
- John Garry <john.garry@huawei.com>,
- Guangbin Huang <huangguangbin2@huawei.com>,
- Bharat Bhushan <bbhushan2@marvell.com>, Bibo Mao <maobibo@loongson.cn>,
- Atish Patra <atishp@atishpatra.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Qi Liu <liuqi115@huawei.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Mark Brown <broonie@kernel.org>,
- Janosch Frank <frankja@linux.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Benjamin Mugnier <mugnier.benjamin@gmail.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-audit@redhat.com,
- linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-31-ysionneau@kalray.eu>
- <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
- <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: No direct copy from ctx to map possible, why?
+To: Yonghong Song <yonghong.song@linux.dev>, <bpf@vger.kernel.org>
+References: <36c8d494-e1cf-4361-8187-05abe4698791@tu-braunschweig.de>
+ <4f62fa70-ac50-41ff-a685-db6c8aefb017@linux.dev>
+ <6d224ee5-ca50-44a9-882e-074710bf8477@tu-braunschweig.de>
+ <39a68b12-a921-471b-83ff-6d59b21aa4a9@linux.dev>
+Content-Language: de-DE, en-US
+From: Fabian Pfitzner <f.pfitzner@tu-braunschweig.de>
+Autocrypt: addr=f.pfitzner@tu-braunschweig.de; keydata=
+ xsDNBF+279QBDADF6PCnOmCJds/nllkH/CKpf7Enz98B7tgHNy3EgM8fD6Vpny+sCU1Qgka3
+ iPqdIWRJxN4tfVni81P0GKlH6kKkxeMt4YGf3eMyiWIc1dxo2iv5C2M3kcX8j/w2TLxAE0EK
+ e7dhqJ0HjEhXjcgux9oXs2Ch9M/0V4IvSEy3hLq3ybDFqFnAwfFcAY2/7BtylCzlEXJ8M3W5
+ W3WaTsj9DCgvDF/zTft/KnChz4xzTFUEIdye7hy6YpMbk+qXdadE+IZ3JTJ8+/8RguXSM6g1
+ imd9+PL8dtGcRnEE6atZcQ8mTEI3xuUzPdVStg/oSUAolnSTJyIFaL9BwRAXHlIqz7btlsNx
+ t3erthIqMx3iBPmCIY11sz86x/hTV7omjEDxjXvQEE4lfDf3DcEsVh9sqPWIkZQKP7N+LDJi
+ nc5qfpJ2Q2ia1cxcIDDrxSV7As9FNlFlJOPsPcoYdfx/J0guGCIhowjK3H8HRBDGJw3eELvD
+ jf4vwVpDRtPzl87e+5D8K6MAEQEAAc0vRmFiaWFuIFBmaXR6bmVyIDxmLnBmaXR6bmVyQHR1
+ LWJyYXVuc2Nod2VpZy5kZT7CwRQEEwEIAD4CGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AW
+ IQR61nX+4KAiOxGpeE8cawqkHC5zegUCZQWFIAUJC39F3AAKCRAcawqkHC5zen5cC/4h7KmP
+ Jynr4AESfh8IhHi1BYU3FXA0hY3HNaKSOGQNzrTZh+4Xbg9SeDix0nLt5Kn3o51Scr44HyqA
+ sLmgIwSKqiHcy7l/TDdy/kshpq2UqxGAdG/+4D0TTSTcjtTD2JT2f2uIfd/rD3HGN66KrKN9
+ oKxlGXoYwXSYG3XBArqPLcvTNpmXpc68t32srGr0Y2+k2vCJ79ZN+Jaggvkrtf4vLje/P/J2
+ JbwLsPRccAQptmwVA8ppn1C3CqO0LWKGodMLOM+vq49cdShXYepZoj2Y5xcxOjSNjRi7D7e1
+ oeu3cb4WiPQKLhQjIX9n045V73JXUIhwTM9y2alyjUPvhidFS97/SfPaQgjbjfZJxrwQOzFR
+ JtRtXJO/qIvyHkdfEBDPkQ1epLO0SMirQA5Kty3R3XpbedUzW0TMyW3s/v8KWGPtMJ0qCiOF
+ YzvY5RSN2It0o3DyMLKO0McSwMu0wRk9wCVx2tSxCHhyP5YkRJxNglm81OyL0P9F6cAH9t7r
+ l4/OwM0EX7bv1AEMANoFXF8V522SooLVuZCLGCn3ft9YVNWjeR7gqI2lr05z9xDdCzl3KKxk
+ YDPI/oO0k9OpEcAefsxJ8NffJh05vZlVBDfjeRNq8D1L2VKMgYXTr6Pc1hIajR+rQY8W2tiQ
+ qqHNAuzYxevX4w3F6D77oyZgnJxDzSNfvtQ3JqFncwB+C+Oo/j+4DqsEojT63zqr3UTy/tTm
+ 6qo3sW4TKrLsQwgQCjbb1l9b+PFBcx/rx4FSb0kMgD0BRWeAZdsPRNXG/uyex9DTxF91aFd1
+ Ml4Umi2pZawGhOCsifFiy6x2QK+uueSHgZFZElqNsZ4oo/BcRjHbaKQEhR+wx/Qt+hPWBzN7
+ EryHMaNT3NODSaVipso5eDbEWJpyqHYB5R9BXV8YXkLs/YdJ4E7JzxTTY+B80bEDh+sIL5s2
+ VJ9TdSf/vt1SJS+Y+G82SmEEqg72kUvWgwDNp1gsgXb2d1dn0dd20TBzoo3kjNpaL2JqqPtc
+ etDyLYprv6XIrmXq/OTMJkyGeQARAQABwsD8BBgBCAAmAhsMFiEEetZ1/uCgIjsRqXhPHGsK
+ pBwuc3oFAmUFhS8FCQt/RdwACgkQHGsKpBwuc3oNpgv9FwdcUFjMgR4H7klSo6bA7LnOpQFy
+ gCEFe7MMClfj00yzajrsb4+hNE/ZNoJy4pNWMdOODQjfAgXbQ2TVZ6nLXiSJYtXKHp9gYytI
+ 2cPSHQ8jskTQ4b5K4OVZ79iSLj6SpGkoI/LfZFiMc4URABuclbaGKIvPAx3dxVtGQKcpIgYm
+ V41jsb0h+OqyBL7m9O8VzhV+XN7wGC/ibqSvtwnuZVL5BIApJYmmhV3opFoUfuWFMaUL4k/0
+ AtybcgqIj0jiP4MjEj02l+fIQkijx1v6FpaESn35Y3ciW/DxxLDFrfD53xOWzaTi7PUr1hHl
+ OHAwiFaQlQ2aoWCDeWUHQ4EsHWRv4KXW58Lk8yG/kIzDQB9yMuzRtr5/uRWfJ7cabD1tm6ds
+ RAf4foKaovbZgljOmgdLR0MUrpUhJ5+ocjcyUy7OSLuk6svuKbbJp2Cg7BNccbwJkSjFeSJC
+ yyyDrtdclWa57oTb7duwNZLurgNvsbZq/VVcQ5i2Yup3Bwfu3X4X
+In-Reply-To: <39a68b12-a921-471b-83ff-6d59b21aa4a9@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: Hermes04.ad.tu-bs.de (134.169.4.132) To
+ Hermes12.ad.tu-bs.de (134.169.4.140)
 
-On 15/04/2024 16:08, Yann Sionneau wrote:
-> Hello Krzysztof, Arnd, all,
-> 
-> On 1/22/23 12:54, Krzysztof Kozlowski wrote:
->> On 20/01/2023 15:10, Yann Sionneau wrote:
->>> From: Jules Maselbas <jmaselbas@kalray.eu>
+> In your particular example, since you intend to copy xdp_md->data, you 
+> can directly
+> access that from xdp_md->data pointer, there is no need to copy ctx 
+> which is not
+> what you want. 
+Thanks for your answer, but I think you misunderstood me. I need to 
+store the packet's payload in a map (not the xdp_md structure itself), 
+because my use case forces me to do so.
+
+I write a program that reassembles split packets into a single one. 
+Therefore I have to buffer packet fragments until all have been arrived. 
+The only way in eBPF to realize such a buffer is a map, so I have to put 
+the packet's payload in there. My problem is, that I have no clue how to 
+do it properly as there is no direct way to put the payload into a map.
+
+How would you put a packet with a size of 700 bytes into a map? What 
+would be your strategy when you can only access your packet via the 
+xdp_md structure? My strategy (and that's the best I have found so far) 
+is to split this packet into two packets of size 350 bytes, so that I 
+can process them on the stack consecutively.
+
+On 4/16/24 5:22 AM, Yonghong Song wrote:
+>
+> On 4/15/24 1:25 PM, Fabian Pfitzner wrote:
+>>> Looks like you intend to copy packet data. So from the above, 
+>>> 'expected=fp,pkt,pkt_meta...', you can just put the first argument
+>>> with xdp->data, right? 
+>> Yes, I intend to copy packet data. What do you mean by "first 
+>> argument"? I'd like to put the whole data that is depicted by 
+>> xdp->data into a map that stores them as raw bytes (by using a char 
+>> array as map element to store the data).
+>
+> Sorry, typo. 'first argument' should be 'third argument'.
+>
+>>
+>>> Verifer rejects to 'ctx' since 'ctx' contents are subject to 
+>>> verifier rewrite. So actual 'ctx' contents/layouts may not match 
+>>> uapi definition. 
+>> Sorry but I do not understand what you mean by "subject to verifier 
+>> rewrite". What kind of rewrite happens when using the ctx as 
+>> argument? Furthermore, am I correct that you assume that the uapi may 
+>> dictate the structure of the data that can be stored in a map? How is 
+>> it different to the case when first storing it on the stack and then 
+>> putting it into a map?
+>
+> The UAPI xdp_md struct:
+>
+> struct xdp_md {
+>         __u32 data;
+>         __u32 data_end;
+>         __u32 data_meta;
+>         /* Below access go through struct xdp_rxq_info */
+>         __u32 ingress_ifindex; /* rxq->dev->ifindex */
+>         __u32 rx_queue_index;  /* rxq->queue_index  */
+>
+>         __u32 egress_ifindex;  /* txq->dev->ifindex */
+> };
+>
+> The actual kernel representation of xdp_md:
+>
+> struct xdp_buff {
+>         void *data;
+>         void *data_end;
+>         void *data_meta;
+>         void *data_hard_start;
+>         struct xdp_rxq_info *rxq;
+>         struct xdp_txq_info *txq;
+>         u32 frame_sz; /* frame size to deduce data_hard_end/reserved 
+> tailroom*/
+>         u32 flags; /* supported values defined in xdp_buff_flags */
+> };
+>
+> You can see they are quite different. So to use pointee of 'ctx' as 
+> the key, we
+> need to allocate a space of sizeof(struct_md) to the stack and copy 
+> necessary
+> stuff to that structure. For example, xdp_md->ingress_ifindex = 
+> xdp_buff->rxq->dev->ifindex, etc.
+> Some fields actually does not make sense for copying, e.g., 
+> data/data_end/data_meta in 64bit
+> architecture. Since stack allocation is needed any way, so disabling 
+> ctx and requires
+> user explicit using stack make sense (if they want to use *ctx as map 
+> update value).
+>
+> In your particular example, since you intend to copy xdp_md->data, you 
+> can directly
+> access that from xdp_md->data pointer, there is no need to copy ctx 
+> which is not
+> what you want.
+>
+>>
+>> On 4/15/24 6:01 PM, Yonghong Song wrote:
 >>>
->>> The Power Controller (pwr-ctrl) control cores reset and wake-up
->>> procedure.
->>> +
->>> +int __init kvx_pwr_ctrl_probe(void)
->>> +{
->>> +	struct device_node *ctrl;
->>> +
->>> +	ctrl = get_pwr_ctrl_node();
->>> +	if (!ctrl) {
->>> +		pr_err("Failed to get power controller node\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	if (!of_device_is_compatible(ctrl, "kalray,kvx-pwr-ctrl")) {
->>> +		pr_err("Failed to get power controller node\n");
->> No. Drivers go to drivers, not to arch directory. This should be a
->> proper driver instead of some fake stub doing its own driver matching.
->> You need to rework this.
-> 
-> I am working on a v3 patchset, therefore I am working on a solution for 
-> this "pwr-ctrl" driver that needs to go somewhere else than arch/kvx/.
-> 
-> The purpose of this "driver" is just to expose a void 
-> kvx_pwr_ctrl_cpu_poweron(unsigned int cpu) function, used by 
-> kernel/smpboot.c function __cpu_up() in order to start secondary CPUs in 
-> SMP config.
-
-I might be missing here some bigger picture and maybe my original
-comment was no appropriate, but IIUC, you might now create dependencies
-between arch code and drivers. That's also fragile.
-
-> 
-> Doing this, on our SoC, requires writing 3 registers in a memory-mapped 
-> device named "power controller".
-> 
-> I made some researches in drivers/ but I am not sure yet what's a good 
-> place that fits what our device is doing (booting secondary CPUs).
-> 
-> * drivers/power/reset seems to be for resetting the entire SoC
-> 
-> * drivers/power/supply seems to be to control power supplies ICs/periph.
-> 
-> * drivers/reset seems to be for device reset
-> 
-> * drivers/pmdomain maybe ?
-> 
-> * drivers/soc ?
-> 
-
-Bringup of CPU? Then I would vote for here. You also have existing
-example: r9a06g032-smp.c
-
-But anyway the point is to make it clear - either it is a driver or core
-code. Not both. The original code was not looking like any other CPU
-bringup code.
-
-Best regards,
-Krzysztof
-
+>>> On 4/14/24 2:34 PM, Fabian Pfitzner wrote:
+>>>> Hello,
+>>>>
+>>>> is there a specific reason why it is not allowed to copy data from 
+>>>> ctx directly into a map via the bpf_map_update_elem helper?
+>>>> I develop a XDP program where I need to store incoming packets 
+>>>> (including the whole payload) into a map in order to buffer them.
+>>>> I thought I could simply put them into a map via the mentioned 
+>>>> helper function, but the verifier complains about expecting another 
+>>>> type as "ctx" (R3 type=ctx expected=fp, pkt, pkt_meta, .....).
+>>>
+>>> Looks like you intend to copy packet data. So from the above, 
+>>> 'expected=fp,pkt,pkt_meta...', you can just put the first argument
+>>> with xdp->data, right?
+>>> Verifer rejects to 'ctx' since 'ctx' contents are subject to 
+>>> verifier rewrite. So actual 'ctx' contents/layouts may not match 
+>>> uapi definition.
+>>>
+>>>>
+>>>> I was able to circumvent this error by first putting the packet 
+>>>> onto the stack (via xdp->data) and then write it into the map.
+>>>> The only limitation with this is that I cannot store packets larger 
+>>>> than 512 bytes due to the maximum stack size.
+>>>>
+>>>> I was also able to circumvent this by slicing chunks, that are 
+>>>> smaller than 512 bytes, out of the packet so that I can use the 
+>>>> stack as a clipboard before putting them into the map. This is a 
+>>>> really ugly solution, but I have not found a better one yet.
+>>>>
+>>>> So my question is: Why does this limitation exist? I am not sure if 
+>>>> its only related to XDP programs as this restriction is defined 
+>>>> inside of the bpf_map_update_elem_proto struct (arg3_type restricts 
+>>>> this), so I think it is a general limitation that affects all 
+>>>> program types.
+>>>>
+>>>> Best regards,
+>>>> Fabian Pfitzner
+>>>>
+>>>>
+>>>>
+>>>>
+>>
 
