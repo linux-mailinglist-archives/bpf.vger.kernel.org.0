@@ -1,303 +1,226 @@
-Return-Path: <bpf+bounces-27033-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27034-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CAF88A8014
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 11:47:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFD18A814E
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 12:51:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03548282B12
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 09:47:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58CE31F223A4
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 10:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3136D13AA2C;
-	Wed, 17 Apr 2024 09:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3868C13C818;
+	Wed, 17 Apr 2024 10:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vn99foIo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2908413440B
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 09:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713347242; cv=none; b=ovuC82DeJk6ltu/p8lI4wHVTNRj6oP0ViMv2L2gpXsu3AQDFzMr2IiJlWQrQ0SRf1Q6bjryms4rDCTw7CLGEz1FmaIoOCMiM7tsSqmp82/i7AMQgtht3fc1BIpDquBaQ44kV1W12n1QDW+lgGuvzE60Os3RjGMJ+NpXpItFmkzs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713347242; c=relaxed/simple;
-	bh=H1kSTITm9Nr16eIMTgiZuze+axHDcvVmad0OKfmCM90=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ah9WV2UDavJGqmYrMwRsc4xchmJwpranNe/2To+txlLMU9AGqVWaZgvFlsLk9wvheI3qMILuMlks6psE1ts5D5Fumx3zI9dqEcDKPSk3GrSx1hwIjcbFHOxq6qgGNXJEzSCSpNaYUjPbwKTD3EA8G4tFBG/nC5kPfW9/2RPyFp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d9d0936d6aso164160939f.0
-        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 02:47:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713347240; x=1713952040;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BiDd+kXH+Cj51BIsV6pHfTEfpKsHr45XJoqpvB13TaE=;
-        b=FifQqZdwRPMcX448XVKWLwSf8Q5ezvXLBUJb/WHN2lxlEc4m0Ns0Iu63cxcPMNwcGy
-         lCy355eW3SDX0IuBOwrhpGn/oNHUv3tigxuFS28SUN719vbXTQMBXtgd0HKMFe66/UhL
-         R9k5jkvCOtjtsxnyRoDC05fzmqkuOq+OjwdussNA6s9zIOe24EZSFMVxYZKwYMHf4nJ8
-         BkH3pl/+h53PCsFjAJszn/ki2NP+tGuAYaLW+y2TZzR4RH/ghYuI6UqL32Z5r5fnKpW7
-         1L90MSWKwsQDlGm39kXijMwmaK3acV6GEHRLmHJpckP5F0LpyO2v0fW7Qe+hPGI/WWn5
-         HRGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWaZmJKGlOjLrONaqGX+FFsNCU/MWCduWn3ggswp1JhkKNt1RqRPgvPAVyYMBH2b2t+fn1k0Ixa/kO+6/RiwdH8G5Bt
-X-Gm-Message-State: AOJu0YytQANkhHt7CbV4YiT+F61BTT8Fi+zRipSPlibnL2o0/jL7LsdT
-	tk5cT2fmHDDXuFDEsMCgSmNvcSFdX4i1rGHSqAgnYDNg6jGh1U/KbBlX/lZfTipaVXcGX4ekVa4
-	7vDaNjUoB4DiD9U+iMEUbwl+KU4yC5LrmVzaomAOG/8SNSWXTiVBAmdw=
-X-Google-Smtp-Source: AGHT+IFQqTZn2ihU3vI9xi2nIagZdslebwhIF5ml68kmnD4sfN6aAguFLX5w9t/Qi9pFNmR8FImkh9XC+byV+RqOCIa95mlKtzy7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95D913C681;
+	Wed, 17 Apr 2024 10:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713351088; cv=fail; b=KOT7MTKpJEXi6thLHg33RBFFaRAsbv1rdcyh4sfF8iiMPWklyz++hzOG9E4HigyXWmEsiZBLQGrKdyp/Mfkz3CwjLyzCbikgIGFVk5b23lSzOEO8VBmP2ol2zZhc0iQQ7EPJ0yzr3MZGTwRZVK+4XuKplqa4l+ue+teGwUGZEvk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713351088; c=relaxed/simple;
+	bh=Ia7MXYsd1uJPiWmFQWjfpzBjxLTOCLJNWjZznaC21b8=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QjWdNSyx9CZVk377DUuQlNr5DmXF0ep4XGx4x/Oo0RmHiwLYFc8hv3s7JJ1+UAERx57PcETRYQBcVmpiFL9aL1mroLsUKs7hz2MMUizXUVJTxTiBGpVhEc0H6A7M6FWXw0nf6D9tOKMEa0GCQKZrhkCZi2S3KUVorAWsVr1CO+c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vn99foIo; arc=fail smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713351087; x=1744887087;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Ia7MXYsd1uJPiWmFQWjfpzBjxLTOCLJNWjZznaC21b8=;
+  b=Vn99foIoSxRAgwxbnFk6fG8uBcPFuSWQMlaDflfanUr3+QbzkM7xtz7v
+   mWYX7U7TD3Feh/5/Hnnsj79WsriHMqrUdY+555nxntia7JrzN7QOibVhk
+   uEz7pWFckC8T/gsaAuTGnh2DtnTUnA3ngntx5H6ZuPR5XUMNJppDM81RO
+   3JcMZL2dneEewWSUgSpMpKMqsroO0oOP9mOc63RbkUiAf7O7hpSZ51yJ8
+   z2NYFBfw2aSuNIRsEaw8LcZGj/4uba61W6hf4q4DLqwg19JgS3PY/PBgy
+   l2K6hLbrMMJwF/13vMvD97H7v3itEBHbEmLi90896v+95IaDUGFYHz3B6
+   w==;
+X-CSE-ConnectionGUID: JrFG8Ha3R2CcTQRgalJljQ==
+X-CSE-MsgGUID: 9uwuRqJRR8yEH78r/hq+UA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8694287"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="8694287"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 03:51:25 -0700
+X-CSE-ConnectionGUID: M0LVTSGWTEWE5XXjZyjAHQ==
+X-CSE-MsgGUID: VxzZ9oDCTgSei2/jnLTddw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="27020681"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Apr 2024 03:51:23 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Apr 2024 03:51:22 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Apr 2024 03:51:22 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 17 Apr 2024 03:51:22 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 17 Apr 2024 03:51:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I++ztPF+XUUCBKTaSbSgye4S8De1WVJ4ZRyJ9bBCYooAUEJ7SX/wkvw94U197qwkLo1GbFq2OmUfQHiTNWM7dsNM5GzoYya7IkIuWLJ+zpIgvtQhf973WGrncMLqFu/JP37jQBiybzOJmawSyFv0YeS5U7nt1l9jfK3aM9YcSZGyNC2Icgcyk2bHp7lbADIlgsgGTj0qzzC3CVw5SvB7zekS2CxLAqLBe1uQvuqNvY4mWKB7v0VTZh30MN/u+5FyGOfNcxgSpAJGMUsG+eKcr2/zasonETB1D6I2wDaxWGOTp/B3Iungm/IHSw7LF3WjQ93LvXDVcDmfv79G8OJqZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o9Mvm2yerUHplXHw/kjYOLBj8wSB3MUEFmc2wqRvQe4=;
+ b=FZh7TCis0A9xLtEZjP4A8lovFiyxD0YTKDAbjur00pgOr+XxxOOKo5MCV2NxOJgDQ7DWaU4gw4P7O3TC+SIWnwlXFNx9Yy7P6JCRbY+6zrisPZ1PspmP0ut6ocxmFLYG6eCpiiSE+mj9jfmdULf9LplGJ9Vp29itW8fv1hP4yE2gVz4f7Vg1H/IHo3SyYzFJ1fYc3zjEGopqWJKJgU/qa8BsGXDfe3XtS7P+QHkhowuH9oV9Wibrau3ig0Qm5DDBy0tWJt+10EsvQg9WrZgTDnI/9U6cEjGeJ5l1Zb6qrHvofTK6VhMKoUOaYglJeZS2+BtUFmMLUspnTIRZBqdz8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by PH7PR11MB8597.namprd11.prod.outlook.com (2603:10b6:510:304::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Wed, 17 Apr
+ 2024 10:51:21 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::654c:d66a:ec8e:45e9]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::654c:d66a:ec8e:45e9%6]) with mapi id 15.20.7472.027; Wed, 17 Apr 2024
+ 10:51:20 +0000
+Message-ID: <ebe80c29-4884-488d-ab83-c020f9c3bc81@intel.com>
+Date: Wed, 17 Apr 2024 12:51:12 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 03/10] net: create a dummy net_device
+ allocator
+To: Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>
+CC: <davem@davemloft.net>, <pabeni@redhat.com>, <edumazet@google.com>,
+	<elder@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <nbd@nbd.name>,
+	<sean.wang@mediatek.com>, <Mark-MC.Lee@mediatek.com>, <lorenzo@kernel.org>,
+	<taras.chornyi@plvision.eu>, <ath11k@lists.infradead.org>,
+	<ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+	<geomatsi@gmail.com>, <kvalo@kernel.org>, <quic_jjohnson@quicinc.com>,
+	<leon@kernel.org>, <dennis.dalessandro@cornelisnetworks.com>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <idosch@idosch.org>, Ido Schimmel <idosch@nvidia.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Sebastian Andrzej Siewior
+	<bigeasy@linutronix.de>
+References: <20240411135952.1096696-1-leitao@debian.org>
+ <20240411135952.1096696-4-leitao@debian.org>
+ <20240412191626.2e9bfb4a@kernel.org>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <20240412191626.2e9bfb4a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI2P293CA0006.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:45::18) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8929:b0:482:c7c8:5019 with SMTP id
- jc41-20020a056638892900b00482c7c85019mr927316jab.0.1713347240339; Wed, 17 Apr
- 2024 02:47:20 -0700 (PDT)
-Date: Wed, 17 Apr 2024 02:47:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a33584061647bdef@google.com>
-Subject: [syzbot] [bpf?] [trace?] possible deadlock in __send_signal_locked
-From: syzbot <syzbot+6e3b6eab5bd4ed584a38@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, 
-	rostedt@goodmis.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|PH7PR11MB8597:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8801ad41-d2e4-43f9-afbc-08dc5ecc511f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IcuzjObDAXDrImcdlT+8QKXlXk01t1h3lTXugVAwl4O6bbbg368r04Rz4rAfwuHMAsIKIeu73OxNo5iTU8dO22f9rmgacqAOGPHhbJ0wC1JqyL5niMeNy9ONu+vs0K9gt+tnbBBKUi7ko8P4N+LZH0TeJaGixuHiuNSKReRk/5iLZBK8AjI+uqvO9OBJfT2aUyXUr7dSb7q5Lafd+o/mmc6JQZwls7Sy79QKvnyy+jH1/O5WWBNaorYdCwaDE5nr01eEhW5B71pXiQfh5Ct7rzqrpFCqjiZGl2wOPyOvwll1RdSpArjHSLMiQcvLhcXGtSWrc1bTw0EWE436oPaDMpUaUoJ7rQUZ7V7v7Fh0lcf6ZQ0cl37/Ylh7hNDY40yRNPEdle8So2tkxT5fviWCWaa16WL51zFlOlz+kFW/2+uBbNTLIzh9cB0C8x7N2P4eYT9sOzpR4qskbhhU83V0UBVpzdnRoyQjKpX8IRNX4Vw3Sq/K2vabLdJQ9zQsuj7oaK1bpdr2lE9fUEu4HCdh1dWFKZUY1PVDUeXzon9rmq6I0qCKpMDiw+czD8Hw9lq/XuEEupd4s7H6ZDH1haLEDwGHxRXenFNm6Ug76QcnQwV4bZ0HvmT9uH49K+qtipCWBKUHCzN9wKfLXm7Q8nctiA9Vk7x253XxEeEnTpBo48o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ditEbXNvOHNxbVJ6ellkY3E3UGVRNlN0T29JZ3BQaExBYjlMVFErTnRrSHRi?=
+ =?utf-8?B?SHM0Y3JBR2dwODNyeCtYZnBHcVVtN0J6STlYWUhuV2VVRVVPNkhoYmMzamx3?=
+ =?utf-8?B?eENDSHUzQTF1cUtTbFNFNlMwQ0VyZXhXaG1YTG1oTFpReTJUcjIrdXo4L1JQ?=
+ =?utf-8?B?L2c0bXlmdDJnd2dQQjFsNzMyUDVLTjVjd3E5d3ByTHF2aTRNSHI0NnlBMHRE?=
+ =?utf-8?B?TEF6cHZLZjlHTmJKTHY5V3o4T1Foc0FMTFBuQ3JrbzZNR2hIUmJYa0Nqc1I5?=
+ =?utf-8?B?VndTblBWUEM1T0RibElqdnJKSU1LRHRUSmxqWVVoQ0FBMHpNOFBTSzh2SVB4?=
+ =?utf-8?B?V3QzanB3SDdud2R5bll1eFRlaEhTMkZKYlNTMlp3V3VIUVhKMkN0OGFHTmpL?=
+ =?utf-8?B?ci90dGhxRjgwUUg4UHRtR0xKMzFteDV4c1IwTFJIc0s5dGFORGh2OHpUd1Vs?=
+ =?utf-8?B?WldaKzZjdGUvME5jby9KZStMN0ZMdVBTS3lJWU1WNjd5US9uUk9GZlVOeGta?=
+ =?utf-8?B?VGtTaFpWdlN5SlIrSXFKV0dKbkRyc3ducE9oYXhzYkhFa0ZSdHdwMUxOK2xp?=
+ =?utf-8?B?YzBLaG03MkZlb0xQSHRlMnl3YWNwWE9RZGt4aURiSk1URkVIQUhnd2QrK0hB?=
+ =?utf-8?B?OG9kYWlMWExYMzM1bVFZVitIeE1mK1VZeHZNdWRZNEZPSENBYXlpZVRpTE5P?=
+ =?utf-8?B?VGNHSkl6cEhrcW1aaTR2YkdwVVhFdDBDQ05Fd3Z3blhpd2d2VVNjZzUxNHNz?=
+ =?utf-8?B?dmdWSFNGWDR0dWc2cWpWQ2k4Rm1VVEM1SXpld25kM0l4c0w5bkFyOGdOWGgz?=
+ =?utf-8?B?ajN5d2tNWjAzbnVrUVVHRHA1dTRoZmUzdE1ENmlvVXQ4bkFqNDc4YUYwMGRE?=
+ =?utf-8?B?SW9EMnhJbnVvZ0JuTHlSZzNWTm1TMUZ2eDYzQUdvMDZramhtNXNOa2YrTWVp?=
+ =?utf-8?B?bTNOcGxZWjB0REI5TStoczcvNzIvNWJIVXJqMkNTOTZlM3VwSTNmWWlKckEz?=
+ =?utf-8?B?cjQzUkJRSU9XK0tnZzFwUDlhM3g1bENxMzV1ZWNGT3JXVWU3T0hDSlpUQlda?=
+ =?utf-8?B?SkJsUndRdVZmSktPdlkxM2x3cGVGbE52ZVRReFdNS0lKTFJtRy9aQjg1SHpp?=
+ =?utf-8?B?YTZOb29YUU5GUnRnODlqTUJwNHdFbkcxWGszdFYyRi9LMzBFWUo4Qnl2TUp4?=
+ =?utf-8?B?cGx2YTUrbmlqVUdaQkYvNXVpekFVaE5sMWs5ZzBrWTlJenVqeGVxSUplOWtD?=
+ =?utf-8?B?K2dMR1h5L0xCWWltWUFtanVYQXJMcEQyeFVtaFRlMGpiQ3BlOGtjU3lLcm41?=
+ =?utf-8?B?ZHdHQ2sxd21FNFgzeXpLc0JBU3NSclBZMjhBL1FWYWtoZlVWdXVKY3AvN3Js?=
+ =?utf-8?B?QUViUkpRQWwrY1JVQjZOMCtoQnFZelhMM1BFS0dlODZYcGJUcVh3Z3QrUWRi?=
+ =?utf-8?B?ZTVjc0NINmtIUWQzbk41RkFKdWNDS0dvSjlTVlZVcUIzQjkwWHNHK3lqMi9F?=
+ =?utf-8?B?RUE3NU00K05XRmNlSklNY0UyZXBCbjZ5UTkyeGxseEN3U2Qxa1NTYjBIQzZR?=
+ =?utf-8?B?djF6eUw1MkRBdW4wL3Z1RGRkMUk0V0dLMk93ZHZOWTNwNUwrcUtLMHZ1NzdP?=
+ =?utf-8?B?bG1EN1IwUWZkVlFhYjBvZ2tEaGZkNE11LzNjMEVYRVdEa2ZSc09KeTZjWmVo?=
+ =?utf-8?B?RDM0RGdlTXZYQWNzemhGOTY5OHUrOFhPemFBbWZGL09OaDl2NUlvSGVRL1pQ?=
+ =?utf-8?B?T0NIU1M0NUVTczJnWWhMdEFuemhGZUFzTmtRSERvd28zV1pIMFJPQlYwUGcv?=
+ =?utf-8?B?MjU5R1p5b3BXUUlWaWMwS0h2dmcvK01SS0lLU0c0TXR1Nkd3TmN4Rm5ld0xI?=
+ =?utf-8?B?bEN2Z3hCVkluenhjTHBjaHlmN0U2b1MyaGpmNnlKY01RWUkwVHVFejZQVVZn?=
+ =?utf-8?B?SU5vRzJScnVENnZrdm5ZR2tISFFLdlEycVZoeXl5QmlTR1FLcFhLZ3hoeGpt?=
+ =?utf-8?B?N1pVajd0QXAzb1orL3RKUXNZbkFBNmtCWkI1VUt0d2gza3FpMzl6eWdsbGtX?=
+ =?utf-8?B?REM4T2k1Z1QrOHc3N3pWM2pPdXUxektyZms3cmExVzhaeXNsYVNKeUVwajJm?=
+ =?utf-8?B?NTQvRzl6dTA4VGRBSnRMMWtOWDAwUGlrVUF3UUwwdmRxM1A0dlgxN1VFL0x6?=
+ =?utf-8?B?S0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8801ad41-d2e4-43f9-afbc-08dc5ecc511f
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 10:51:20.9259
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Espmzm32iVn2wmUVDEHZMgtFOxyusDNyneO/o7USCOAWF5qsOftquwlxz4JALuQaIXZxtLRyDLVey0IDqQQG0j00tiL4l1rnBZEVA0EVS7A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8597
+X-OriginatorOrg: intel.com
 
-Hello,
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Fri, 12 Apr 2024 19:16:26 -0700
 
-syzbot found the following issue on:
+> On Thu, 11 Apr 2024 06:59:27 -0700 Breno Leitao wrote:
+>> +/**
+>> + * alloc_netdev_dummy - Allocate and initialize a dummy net device.
+>> + * @sizeof_priv: size of private data to allocate space for
+>> + */
+>> +struct net_device *alloc_netdev_dummy(int sizeof_priv)
+> 
+> Sorry, one more round :)
+> 
+> We started using -Wall for kdoc (./scripts/kernel-doc -Wall $files)
+> recently and it now complains about missing return values...
 
-HEAD commit:    96fca68c4fbf Merge tag 'nfsd-6.9-3' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13967bb3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=85dbe39cf8e4f599
-dashboard link: https://syzkaller.appspot.com/bug?extid=6e3b6eab5bd4ed584a38
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Just FYI: kdoc accepts only this pattern:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+ * @last_param: blah
+ *
+ * Return: blah
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-96fca68c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d6d7a71ca443/vmlinux-96fca68c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/accb76ce6c9c/bzImage-96fca68c.xz
+NOT
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6e3b6eab5bd4ed584a38@syzkaller.appspotmail.com
+ * Returns: blah
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc4-syzkaller-00031-g96fca68c4fbf #0 Not tainted
-------------------------------------------------------
-syz-executor.0/7699 is trying to acquire lock:
-ffff88806b53d998 (&pool->lock){-.-.}-{2:2}, at: __queue_work+0x23a/0x1020 kernel/workqueue.c:2346
+neither
 
-but task is already holding lock:
-ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:105 [inline]
-ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up+0x1c/0x60 kernel/sched/wait.c:127
+ * Returns blah
 
-which lock already depends on the new lock.
+Only "Return: blah" with a blank newline between it and the last
+argument (or extended description).
 
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&sighand->signalfd_wqh){....}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       __wake_up_common_lock kernel/sched/wait.c:105 [inline]
-       __wake_up+0x1c/0x60 kernel/sched/wait.c:127
-       signalfd_notify include/linux/signalfd.h:22 [inline]
-       __send_signal_locked+0x951/0x11c0 kernel/signal.c:1168
-       do_notify_parent+0xeb4/0x1040 kernel/signal.c:2143
-       exit_notify kernel/exit.c:754 [inline]
-       do_exit+0x1369/0x2c10 kernel/exit.c:898
-       do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
-       __do_sys_exit_group kernel/exit.c:1038 [inline]
-       __se_sys_exit_group kernel/exit.c:1036 [inline]
-       __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #2 (&sighand->siglock){-...}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       __lock_task_sighand+0xc2/0x340 kernel/signal.c:1414
-       lock_task_sighand include/linux/sched/signal.h:746 [inline]
-       do_send_sig_info kernel/signal.c:1300 [inline]
-       group_send_sig_info+0x290/0x300 kernel/signal.c:1453
-       bpf_send_signal_common+0x2e8/0x3a0 kernel/trace/bpf_trace.c:881
-       ____bpf_send_signal_thread kernel/trace/bpf_trace.c:898 [inline]
-       bpf_send_signal_thread+0x16/0x20 kernel/trace/bpf_trace.c:896
-       ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
-       __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-       __bpf_prog_run include/linux/filter.h:657 [inline]
-       bpf_prog_run include/linux/filter.h:664 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-       bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
-       __bpf_trace_mmap_lock_acquire_returned+0x134/0x180 include/trace/events/mmap_lock.h:52
-       trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:52 [inline]
-       __mmap_lock_do_trace_acquire_returned+0x456/0x790 mm/mmap_lock.c:237
-       __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
-       mmap_write_lock include/linux/mmap_lock.h:109 [inline]
-       __do_sys_set_mempolicy_home_node+0x574/0x860 mm/mempolicy.c:1568
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #1 (lock#11){+.+.}-{2:2}:
-       local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
-       __mmap_lock_do_trace_acquire_returned+0x97/0x790 mm/mmap_lock.c:237
-       __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
-       mmap_read_trylock include/linux/mmap_lock.h:166 [inline]
-       stack_map_get_build_id_offset+0x5df/0x7d0 kernel/bpf/stackmap.c:141
-       __bpf_get_stack+0x6bf/0x700 kernel/bpf/stackmap.c:449
-       ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1985 [inline]
-       bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1975
-       ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
-       __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-       __bpf_prog_run include/linux/filter.h:657 [inline]
-       bpf_prog_run include/linux/filter.h:664 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-       bpf_trace_run3+0x167/0x440 kernel/trace/bpf_trace.c:2421
-       __bpf_trace_workqueue_queue_work+0x101/0x140 include/trace/events/workqueue.h:23
-       trace_workqueue_queue_work include/trace/events/workqueue.h:23 [inline]
-       __queue_work+0x627/0x1020 kernel/workqueue.c:2382
-       queue_work_on+0xf4/0x120 kernel/workqueue.c:2435
-       bpf_prog_load+0x19bb/0x2660 kernel/bpf/syscall.c:2944
-       __sys_bpf+0x9b4/0x4b40 kernel/bpf/syscall.c:5660
-       __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
-       __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
-       __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5765
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #0 (&pool->lock){-.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-       __queue_work+0x23a/0x1020 kernel/workqueue.c:2346
-       queue_work_on+0xf4/0x120 kernel/workqueue.c:2435
-       queue_work include/linux/workqueue.h:605 [inline]
-       schedule_work include/linux/workqueue.h:666 [inline]
-       p9_pollwake+0xc1/0x1d0 net/9p/trans_fd.c:538
-       __wake_up_common+0x131/0x1e0 kernel/sched/wait.c:89
-       __wake_up_common_lock kernel/sched/wait.c:106 [inline]
-       __wake_up+0x31/0x60 kernel/sched/wait.c:127
-       signalfd_notify include/linux/signalfd.h:22 [inline]
-       __send_signal_locked+0x951/0x11c0 kernel/signal.c:1168
-       force_sig_info_to_task+0x31d/0x660 kernel/signal.c:1352
-       force_sig_fault_to_task kernel/signal.c:1733 [inline]
-       force_sig_fault+0xc5/0x110 kernel/signal.c:1738
-       __bad_area_nosemaphore+0x30d/0x6b0 arch/x86/mm/fault.c:854
-       bad_area_access_error+0xc1/0x260 arch/x86/mm/fault.c:931
-       do_user_addr_fault+0xa2a/0x1080 arch/x86/mm/fault.c:1396
-       handle_page_fault arch/x86/mm/fault.c:1505 [inline]
-       exc_page_fault+0x5c/0xc0 arch/x86/mm/fault.c:1563
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-
-other info that might help us debug this:
-
-Chain exists of:
-  &pool->lock --> &sighand->siglock --> &sighand->signalfd_wqh
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sighand->signalfd_wqh);
-                               lock(&sighand->siglock);
-                               lock(&sighand->signalfd_wqh);
-  lock(&pool->lock);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.0/7699:
- #0: ffff8880234465d8 (&sighand->siglock){-...}-{2:2}, at: force_sig_info_to_task+0x7a/0x660 kernel/signal.c:1334
- #1: ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:105 [inline]
- #1: ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up+0x1c/0x60 kernel/sched/wait.c:127
- #2: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #2: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #2: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: __queue_work+0xf2/0x1020 kernel/workqueue.c:2324
-
-stack backtrace:
-CPU: 2 PID: 7699 Comm: syz-executor.0 Not tainted 6.9.0-rc4-syzkaller-00031-g96fca68c4fbf #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- __queue_work+0x23a/0x1020 kernel/workqueue.c:2346
- queue_work_on+0xf4/0x120 kernel/workqueue.c:2435
- queue_work include/linux/workqueue.h:605 [inline]
- schedule_work include/linux/workqueue.h:666 [inline]
- p9_pollwake+0xc1/0x1d0 net/9p/trans_fd.c:538
- __wake_up_common+0x131/0x1e0 kernel/sched/wait.c:89
- __wake_up_common_lock kernel/sched/wait.c:106 [inline]
- __wake_up+0x31/0x60 kernel/sched/wait.c:127
- signalfd_notify include/linux/signalfd.h:22 [inline]
- __send_signal_locked+0x951/0x11c0 kernel/signal.c:1168
- force_sig_info_to_task+0x31d/0x660 kernel/signal.c:1352
- force_sig_fault_to_task kernel/signal.c:1733 [inline]
- force_sig_fault+0xc5/0x110 kernel/signal.c:1738
- __bad_area_nosemaphore+0x30d/0x6b0 arch/x86/mm/fault.c:854
- bad_area_access_error+0xc1/0x260 arch/x86/mm/fault.c:931
- do_user_addr_fault+0xa2a/0x1080 arch/x86/mm/fault.c:1396
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x5c/0xc0 arch/x86/mm/fault.c:1563
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0033:0x7f809a860675
-Code: fe 28 6f 06 48 83 fa 40 0f 87 a7 00 00 00 62 e1 fe 28 6f 4c 16 ff 62 e1 fe 28 7f 07 62 e1 fe 28 7f 4c 17 ff c3 8b 0e 8b 34 16 <89> 0f 89 34 17 c3 0f 1f 44 00 00 83 fa 10 73 21 83 fa 08 73 36 48
-RSP: 002b:00007fff068363a8 EFLAGS: 00010202
-RAX: 0000000020000080 RBX: 0000000000000004 RCX: 0000000034747865
-RDX: 0000000000000001 RSI: 0000000000347478 RDI: 0000000020000080
-RBP: 00007f809a9ad980 R08: 00007f809a800000 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000009 R12: 0000000000018980
-R13: 000000000001894e R14: 00007fff06836550 R15: 00007f809a834cb0
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Olek
 
