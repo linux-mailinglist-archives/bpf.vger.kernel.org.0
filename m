@@ -1,168 +1,197 @@
-Return-Path: <bpf+bounces-27027-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27028-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A828A7D91
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 10:00:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634AC8A7DE8
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 10:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 586731F2285D
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 08:00:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8645E1C21B99
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 08:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347D56FE21;
-	Wed, 17 Apr 2024 07:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8EDB81ADA;
+	Wed, 17 Apr 2024 08:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="SOWomeNd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LrCARCl3"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC53933CC2;
-	Wed, 17 Apr 2024 07:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531A080BE0
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 08:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713340797; cv=none; b=djBEbelzy9+QsuUheIGeQ1Gm83Ym2aa7/SFTSwKptSLmgfVWg9VI+YuRzhu3DzY8Vkxjj1An+vel5T04zhvuuLRfqLdh8+e3W5QQsAOa4RvYOfse3O/XNsmySq6x/br97pMU4s48uycPuzceZy9zIfKMF7AybsljElNIOEmqBw0=
+	t=1713341680; cv=none; b=Qslr7EdEedfCKJ0In+NHD/KD/iZEOnbW+baxM9aZ2Hu6BU4As82k/798VBSZ1RFs3xfsFhIJAwLyMNe2e8gEkijb84eBa1+jnxW/jb0233bo3zvYLhVuORgaT85FT6VQXqdqfzI6qI4dtHH9vQdpLpqJWsqtfST9nrpqeDwyZ0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713340797; c=relaxed/simple;
-	bh=36MTnlcp33XwHHxLO/m8OsWJKQx4HmShuAbNDoPWRD0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R6Bz8Bb39dxonzJPH481vGIUvTl83S9Lkj5WjXiqhTBus1C7d4TlIGppjoYJ4QMOqPAmWpDPjhE9qKitR345J/RED3JESHFPfN/khSVraINJiFEEhCVSVjr84b5034UZGIJRISs+Vj31oIxtz5aaHFJ2iRYjZzSMBiebhVufukY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=SOWomeNd; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713340787; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=00eV10aYqBSEYTxuhgv4GNMQMHte1deFn+CrhZCt04s=;
-	b=SOWomeNdq6rv0zkORBWlsPAY7d+p2MNfkmyFhpn5epQiCVr+Oe7NJBvOgU82+BdpRpNl6cMqv+jvGfhsqCoBhq3GUNHnJRL1M1kPVetAROOywJMnp1x0wjtUJHOnVvt6S0/gjA4U4JEYyBP966ycP2IluPTbPsr2OlTrAEqV4Wg=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W4kiWz7_1713340784;
-Received: from 30.221.148.177(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0W4kiWz7_1713340784)
-          by smtp.aliyun-inc.com;
-          Wed, 17 Apr 2024 15:59:46 +0800
-Message-ID: <ae00d109-403f-46f5-9b70-19fd7a94d3cf@linux.alibaba.com>
-Date: Wed, 17 Apr 2024 15:59:44 +0800
+	s=arc-20240116; t=1713341680; c=relaxed/simple;
+	bh=IkUqyaRgQgMXzADsv4EzlRn6kcDKXTLdvqhGH+8RBp4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Aws18j2QfB33/q+6oCINSElc/zhTB+OF6vVb6Pl53Z9sHwxoIgEMQXKIkMQWVdClqILlAJtz+2HfWAD5nWtvCWAHg6zOPpuo91lLU9LgVPXxTixgIhJXDm0JYkgPZ4+qV6NwoJaXAF4oeotZuDDbrlk39iCvgG8WHrf2pIq5HWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LrCARCl3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0646FC2BD10;
+	Wed, 17 Apr 2024 08:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713341679;
+	bh=IkUqyaRgQgMXzADsv4EzlRn6kcDKXTLdvqhGH+8RBp4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LrCARCl3UWgxyoAK2NmfILZD/eLwCgSHFqDXB7/p9cl8FWd6Sv95rsFyRiHElyHJZ
+	 C2QPDolYtucxfwpfgcQUV54MQBf0FMSkrn4hB5t3vIami2aIckHVVAP8hPaeuDj94w
+	 ZZP/RxjhMxoa7gWCUaX77Fc46pO3Opnj/v4AXWZl8MQYEeI7kPUVbKmqyY/pszH9VF
+	 FKOoTkg9W/wHpNRXg9QW2nF3t3+7UjLBPKHDZN9sKOPgcvL2xUO25Z6KidfoTmj15Y
+	 x5ncTkSMOnKcWzZsncmwiuPFAlcBOHY8bSi4PTL2UrgqcPeIHlU/v/zSSLvaXt6y8K
+	 iyrjzDSbARwXQ==
+Date: Wed, 17 Apr 2024 16:14:28 +0800
+From: Geliang Tang <geliang@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org,
+	Geliang Tang <geliang@kernel.org>
+Subject: Re: [PATCH bpf v4 1/2] selftests/bpf: Add F_SETFL for fcntl in
+ test_sockmap
+Message-ID: <Zh+E5JlEM6fisrFS@t480>
+References: <cover.1712639568.git.tanggeliang@kylinos.cn>
+ <e4efa52c26ca5ae97c7e4e7570d8da9cd44df533.1712639568.git.tanggeliang@kylinos.cn>
+ <e2aaa0f0-7641-4d26-9256-1151976235f1@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9] virtio_net: Support RX hash XDP hint
-To: Liang Chen <liangchen.linux@gmail.com>
-Cc: netdev@vger.kernel.org, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- ast@kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>
-References: <20240417071822.27831-1-liangchen.linux@gmail.com>
-From: Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <20240417071822.27831-1-liangchen.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="1xliXYEKyRZdwTar"
+Content-Disposition: inline
+In-Reply-To: <e2aaa0f0-7641-4d26-9256-1151976235f1@linux.dev>
 
 
+--1xliXYEKyRZdwTar
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-在 2024/4/17 下午3:18, Liang Chen 写道:
-> The RSS hash report is a feature that's part of the virtio specification.
-> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-> (still a work in progress as per [1]) support this feature. While the
-> capability to obtain the RSS hash has been enabled in the normal path,
-> it's currently missing in the XDP path. Therefore, we are introducing
-> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
->
-> 1.
-> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
->
-> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+Hi Martin,
 
-Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
+On Thu, Apr 11, 2024 at 11:10:49AM -0700, Martin KaFai Lau wrote:
+> On 4/8/24 10:18 PM, Geliang Tang wrote:
+> > From: Geliang Tang <tanggeliang@kylinos.cn>
+> > 
+> > Incorrect arguments are passed to fcntl() in test_sockmap.c when invoking
+> > it to set file status flags. If O_NONBLOCK is used as 2nd argument and
+> > passed into fcntl, -EINVAL will be returned (See do_fcntl() in fs/fcntl.c).
+> > The correct approach is to use F_SETFL as 2nd argument, and O_NONBLOCK as
+> > 3rd one.
+> > 
+> > In nonblock mode, if EWOULDBLOCK is received, continue receiving, otherwise
+> > some subtests of test_sockmap fail.
+> > 
+> > Fixes: 16962b2404ac ("bpf: sockmap, add selftests")
+> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> > Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> > ---
+> >   tools/testing/selftests/bpf/test_sockmap.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+> > index 024a0faafb3b..4feed253fca2 100644
+> > --- a/tools/testing/selftests/bpf/test_sockmap.c
+> > +++ b/tools/testing/selftests/bpf/test_sockmap.c
+> > @@ -603,7 +603,9 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+> >   		struct timeval timeout;
+> >   		fd_set w;
+> > -		fcntl(fd, fd_flags);
+> > +		if (fcntl(fd, F_SETFL, fd_flags))
+> > +			goto out_errno;
+> > +
+> >   		/* Account for pop bytes noting each iteration of apply will
+> >   		 * call msg_pop_data helper so we need to account for this
+> >   		 * by calculating the number of apply iterations. Note user
+> > @@ -678,6 +680,7 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+> >   					perror("recv failed()");
+> >   					goto out_errno;
+> >   				}
+> > +				continue;
+> 
+> From looking at it again, there is a select() earlier, so it should not hit
+> EWOULDBLOCK.
 
-Thanks.
+Can the patch in the attachment be accepted? It can work, but I'm not sure
+if it has changed the behavior of this test. Anyway, I would like to hear
+your opinion.
 
-> ---
->    Changes from v8:
-> - move max table macro out of uAPI
->    Changes from v7:
-> - use table lookup for rss hash type
->    Changes from v6:
-> - fix a coding style issue
->    Changes from v5:
-> - Preservation of the hash value has been dropped, following the conclusion
->    from discussions in V3 reviews. The virtio_net driver doesn't
->    accessing/using the virtio_net_hdr after the XDP program execution, so
->    nothing tragic should happen. As to the xdp program, if it smashes the
->    entry in virtio header, it is likely buggy anyways. Additionally, looking
->    up the Intel IGC driver,  it also does not bother with this particular
->    aspect.
-> ---
->   drivers/net/virtio_net.c | 43 ++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 43 insertions(+)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c22d1118a133..eb99bf6c555e 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -4621,6 +4621,48 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
->   	}
->   }
->   
-> +#define VIRTIO_NET_HASH_REPORT_MAX_TABLE      10
-> +static enum xdp_rss_hash_type
-> +virtnet_xdp_rss_type[VIRTIO_NET_HASH_REPORT_MAX_TABLE] = {
-> +	[VIRTIO_NET_HASH_REPORT_NONE] = XDP_RSS_TYPE_NONE,
-> +	[VIRTIO_NET_HASH_REPORT_IPv4] = XDP_RSS_TYPE_L3_IPV4,
-> +	[VIRTIO_NET_HASH_REPORT_TCPv4] = XDP_RSS_TYPE_L4_IPV4_TCP,
-> +	[VIRTIO_NET_HASH_REPORT_UDPv4] = XDP_RSS_TYPE_L4_IPV4_UDP,
-> +	[VIRTIO_NET_HASH_REPORT_IPv6] = XDP_RSS_TYPE_L3_IPV6,
-> +	[VIRTIO_NET_HASH_REPORT_TCPv6] = XDP_RSS_TYPE_L4_IPV6_TCP,
-> +	[VIRTIO_NET_HASH_REPORT_UDPv6] = XDP_RSS_TYPE_L4_IPV6_UDP,
-> +	[VIRTIO_NET_HASH_REPORT_IPv6_EX] = XDP_RSS_TYPE_L3_IPV6_EX,
-> +	[VIRTIO_NET_HASH_REPORT_TCPv6_EX] = XDP_RSS_TYPE_L4_IPV6_TCP_EX,
-> +	[VIRTIO_NET_HASH_REPORT_UDPv6_EX] = XDP_RSS_TYPE_L4_IPV6_UDP_EX
-> +};
-> +
-> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-> +			       enum xdp_rss_hash_type *rss_type)
-> +{
-> +	const struct xdp_buff *xdp = (void *)_ctx;
-> +	struct virtio_net_hdr_v1_hash *hdr_hash;
-> +	struct virtnet_info *vi;
-> +	u16 hash_report;
-> +
-> +	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-> +		return -ENODATA;
-> +
-> +	vi = netdev_priv(xdp->rxq->dev);
-> +	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
-> +	hash_report = __le16_to_cpu(hdr_hash->hash_report);
-> +
-> +	if (hash_report >= VIRTIO_NET_HASH_REPORT_MAX_TABLE)
-> +		hash_report = VIRTIO_NET_HASH_REPORT_NONE;
-> +
-> +	*rss_type = virtnet_xdp_rss_type[hash_report];
-> +	*hash = __le32_to_cpu(hdr_hash->hash_value);
-> +	return 0;
-> +}
-> +
-> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
-> +};
-> +
->   static int virtnet_probe(struct virtio_device *vdev)
->   {
->   	int i, err = -ENOMEM;
-> @@ -4747,6 +4789,7 @@ static int virtnet_probe(struct virtio_device *vdev)
->   				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
->   
->   		dev->hw_features |= NETIF_F_RXHASH;
-> +		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
->   	}
->   
->   	if (vi->has_rss_hash_report)
+Thanks,
+-Geliang
 
+> 
+> Patch 2 looks good. Only patch 2 is applied. Thanks.
+> 
+> >   			}
+> >   			s->bytes_recvd += recv;
+
+--1xliXYEKyRZdwTar
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-selftests-bpf-Add-F_SETFL-for-fcntl-in-test_sockmap.patch"
+
+From d20ac7e06d9e869094f452d8c2dcdc316508dcc8 Mon Sep 17 00:00:00 2001
+Message-Id: <d20ac7e06d9e869094f452d8c2dcdc316508dcc8.1713340686.git.tanggeliang@kylinos.cn>
+From: Geliang Tang <tanggeliang@kylinos.cn>
+Date: Wed, 3 Apr 2024 16:08:21 +0800
+Subject: [PATCH] selftests/bpf: Add F_SETFL for fcntl in test_sockmap
+
+Incorrect arguments are passed to fcntl() in test_sockmap.c when invoking
+it to set file status flags. If O_NONBLOCK is used as 2nd argument and
+passed into fcntl, -EINVAL will be returned (See do_fcntl() in fs/fcntl.c).
+The correct approach is to use F_SETFL as 2nd argument, and O_NONBLOCK as
+3rd one.
+
+In nonblock mode, if EWOULDBLOCK is received, continue receiving, otherwise
+some subtests of test_sockmap fail.
+
+Fixes: 16962b2404ac ("bpf: sockmap, add selftests")
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/test_sockmap.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index 024a0faafb3b..8130f465afb9 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -603,7 +603,9 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+ 		struct timeval timeout;
+ 		fd_set w;
+ 
+-		fcntl(fd, fd_flags);
++		if (fcntl(fd, F_SETFL, fd_flags))
++			goto out_errno;
++
+ 		/* Account for pop bytes noting each iteration of apply will
+ 		 * call msg_pop_data helper so we need to account for this
+ 		 * by calculating the number of apply iterations. Note user
+@@ -1531,10 +1533,10 @@ static void test_txmsg_skb(int cgrp, struct sockmap_options *opt)
+ 	txmsg_ktls_skb_drop = 1;
+ 	test_exec(cgrp, opt);
+ 
+-	txmsg_ktls_skb_drop = 0;
+ 	txmsg_ktls_skb_redir = 1;
+ 	test_exec(cgrp, opt);
+ 	txmsg_ktls_skb_redir = 0;
++	txmsg_ktls_skb_drop = 0;
+ 
+ 	/* Tests that omit skb_parser */
+ 	txmsg_omit_skb_parser = 1;
+-- 
+2.40.1
+
+
+--1xliXYEKyRZdwTar--
 
