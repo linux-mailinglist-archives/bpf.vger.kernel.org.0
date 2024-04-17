@@ -1,127 +1,119 @@
-Return-Path: <bpf+bounces-27049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 693298A841F
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 15:19:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 558628A846C
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 15:25:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C4B01C21B19
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 13:19:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89D71F21A34
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 13:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9409B13E89D;
-	Wed, 17 Apr 2024 13:18:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F45140E34;
+	Wed, 17 Apr 2024 13:24:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B5113C3E0;
-	Wed, 17 Apr 2024 13:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474F513C910;
+	Wed, 17 Apr 2024 13:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713359926; cv=none; b=VH6GWKU+19IEllNnbNB37hYWcATvwO6jbcjdBEp2LzHIU/lD0ARJm3JcHqjFE1WyZn45DTyQkZpYsQ5PkgKJzzHHprQKE05+2J33DB7kTG2SK9v+8xPQ1vapRWC4V7OhoHDqB+KCzhm/hYPQMS1QVQnH6mVpAGyTNMOATNepgRU=
+	t=1713360283; cv=none; b=k8s7s0qNAHIwCBFxSzw73hda4F9BXY4OyKCRQ1xKg+UsRmnNBqfRtjyMkNsU2k7X3tk8YPOZ/PjP6QaYeE6bnv+nt2YvGZQOJZJT0+XECGbdj6bV0IWbjK/BN1eY15HDlDM0ea1Xv5ev5lAKBWgYY4krONEsjsk0rHgdfNY0S5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713359926; c=relaxed/simple;
-	bh=zDIOvTM9o+jTTu1NNu/JxBSI7hr2E1MIf2PNjleRc6M=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=E+vqVJ3DJFADe/ZYNvQBNRRJpDHVa85yCQS3098DJ4Zhn2MBEVtbaqS0cwQ8LNv9j998iPUI7ymWAaUbB4ZHXxmNeOZxYlbbw3m475uWaNf8KfnbZ0UJBgRuOc5WO/NVyGU9eekzGRa02luZO14qIVzwcV28H4XfQfXjqExKh1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VKLxQ3gh3zXlNZ;
-	Wed, 17 Apr 2024 21:15:22 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 812AD140485;
-	Wed, 17 Apr 2024 21:18:41 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 17 Apr
- 2024 21:18:41 +0800
-Subject: Re: [PATCH net-next v2 07/15] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
-	Shailend Chand <shailend@google.com>, Eric Dumazet <edumazet@google.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, Sunil Goutham <sgoutham@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
-	<hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Chaitanya Kulkarni
-	<kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
-	<jasowang@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, David Howells <dhowells@redhat.com>, Marc Dionne
-	<marc.dionne@auristor.com>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
-	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
-	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna
- Schumaker <anna@kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-nvme@lists.infradead.org>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux.dev>, <linux-mm@kvack.org>,
-	<bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-nfs@vger.kernel.org>
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
- <20240415131941.51153-8-linyunsheng@huawei.com>
- <18ca19fa64267b84bee10473a81cbc63f53104a0.camel@gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawei.com>
-Date: Wed, 17 Apr 2024 21:18:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1713360283; c=relaxed/simple;
+	bh=PDeBdt6CsgyabjmfzzexP71XAp/o9b6LqNuTAgkvKR4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qporKNFV/gIkei7CImUJpCmFCo/G9SVYCyhqhqVQ1i1xZ9eKHG+YwBunhtGA1SlzQQ1iZDXl14mTexjgDnlsJVsO3pjTC7sONmYoJnZl7ZamqFx9Ih12VfDXuOhmBZBMjgAvbCDQT2YhwNYckCFzQkfTtaNPsqiAR/HXxEoYjgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F0E2339;
+	Wed, 17 Apr 2024 06:25:08 -0700 (PDT)
+Received: from [192.168.1.100] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E84B73F738;
+	Wed, 17 Apr 2024 06:24:35 -0700 (PDT)
+Message-ID: <1b52699d-8f92-4a79-89aa-c4df1594e8b1@arm.com>
+Date: Wed, 17 Apr 2024 14:24:33 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <18ca19fa64267b84bee10473a81cbc63f53104a0.camel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 0/8] perf tools: Fix test "perf probe of function from
+ different CU"
+To: Alexey Dobriyan <adobriyan@gmail.com>,
+ Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>,
+ Ian Rogers <irogers@google.com>
+Cc: linux-perf-users@vger.kernel.org, anshuman.khandual@arm.com,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, John Garry <john.g.garry@oracle.com>,
+ Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, Chenyuan Mi <cymi20@fudan.edu.cn>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Ravi Bangoria
+ <ravi.bangoria@amd.com>,
+ =?UTF-8?Q?Ahelenia_Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>,
+ Colin Ian King <colin.i.king@gmail.com>, Changbin Du
+ <changbin.du@huawei.com>, Kan Liang <kan.liang@linux.intel.com>,
+ Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>, =?UTF-8?Q?Georg_M=C3=BCller?=
+ <georgmueller@gmx.net>, Liam Howlett <liam.howlett@oracle.com>,
+ bpf@vger.kernel.org, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240408062230.1949882-1-ChaitanyaS.Prakash@arm.com>
+ <d0dc91b6-98ee-4ddd-b0a9-ba74e1b6c85f@p183>
+ <f57685aa-fdbf-4625-900b-d612ffb747f3@arm.com>
+ <2d7a896b-bbee-4285-9b2b-3edfab6797d3@p183>
 Content-Language: en-US
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <2d7a896b-bbee-4285-9b2b-3edfab6797d3@p183>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
 
-On 2024/4/17 0:12, Alexander H Duyck wrote:
-> On Mon, 2024-04-15 at 21:19 +0800, Yunsheng Lin wrote:
->> Currently most of the API for page_frag API is returning
->> 'virtual address' as output or expecting 'virtual address'
->> as input, in order to differentiate the API handling between
->> 'virtual address' and 'struct page', add '_va' suffix to the
->> corresponding API mirroring the page_pool_alloc_va() API of
->> the page_pool.
+
+
+On 14/04/2024 12:41, Alexey Dobriyan wrote:
+> On Thu, Apr 11, 2024 at 05:40:04PM +0530, Chaitanya S Prakash wrote:
 >>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> On 4/9/24 11:02, Alexey Dobriyan wrote:
+>>> On Mon, Apr 08, 2024 at 11:52:22AM +0530, Chaitanya S Prakash wrote:
+>>>> - Add str_has_suffix() and str_has_prefix() to tools/lib/string.c
+>>>> - Delete ends_with() and replace its usage with str_has_suffix()
+>>>> - Delete strstarts() from tools/include/linux/string.h and replace its
+>>>>    usage with str_has_prefix()
+>>> It should be the other way: starts_with is normal in userspace.
+>>> C++, Python, Java, C# all have it. JavaScript too!
+>>
+>> This is done in accordance with Ian's comments on V1 of this patch
+>> series. Please find the link to the same below.
 > 
-> This patch is a total waste of time. By that logic we should be
-> renaming __get_free_pages since it essentially does the same thing.
+> Yes, but str_has_suffix() doesn't make sense in the wider context.
 > 
-> This just seems like more code changes for the sake of adding code
-> changes rather than fixing anything. In my opinion it should be dropped
-> from the set.
+>> https://lore.kernel.org/all/CAP-5=fUFmeoTjLuZTgcaV23iGQU1AdddG+7Rw=d6buMU007+1Q@mail.gmail.com/
+> 
+> 	The naming ends_with makes sense but there is also strstarts and
+> 	str_has_prefix, perhaps str_has_suffix would be the most consistent
+> 	and intention revealing name?
+> 
 
-The rename is to support different use case as mentioned below in patch
-14:
-"Depending on different use cases, callers expecting to deal with va, page or
-both va and page for them may call page_frag_alloc_va*, page_frag_alloc_pg*,
-or page_frag_alloc* API accordingly."
+Hi Alexey,
 
-Naming is hard anyway, I am open to better API naming for the above use cases.
+From a brief check it looks like str_has_prefix() is already quite
+common with 94 uses. So the path of least resistance is to make
+everything self consistent and add str_has_suffix().
 
-> 
-> .
-> 
+I agree it's a bit of a mouthful and not so common in other languages.
+Once this more complicated set gets through we could always do a simple
+search and replace change it to anything we like. But it would touch
+_lots_ of different drivers and trees, so it would be hard to justify.
+
+Thanks
+James
 
