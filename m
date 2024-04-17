@@ -1,193 +1,242 @@
-Return-Path: <bpf+bounces-27064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A36348A8BFB
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:18:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861128A8C05
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 593E1286E5F
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 19:18:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24F6D1F22D85
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 19:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6ADD2561D;
-	Wed, 17 Apr 2024 19:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B460428DD1;
+	Wed, 17 Apr 2024 19:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WayJRNx9"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ThUs+zBK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BEF22338;
-	Wed, 17 Apr 2024 19:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5E3241E7
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 19:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713381508; cv=none; b=YquEMscCX2Q5z5inX8jiyQZQyhAPmgO5UF2Toon5gejNdd22HbqioLHWYRoMaV7MV7u5lfP5j1Wl7tbVI+7EHmzUJBrKFiVbABa181zXQyshV3dKTzYLfRLAzZt3u4Kxllr48iNeY3lS3oMAfWnOqQ4h8uVxkKOgqk6dbjohSUM=
+	t=1713381658; cv=none; b=dAAfF2rhj8QF/2lq/MmZxIY5IUkxypVZDlvN8F4DXmAzzIyZNb0PIyTasze9XuZukQchfwy6hYPIE7EHTmUQyNgeJAJ+Sh3wohXkmjx3WDwAt2ae8oWy6WMXVB0p+yg7uTVM0KwT6rzvy2f2VY/ff2ThkcUwardESKUVGgYbXeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713381508; c=relaxed/simple;
-	bh=g8wIfvshnqk+Sxb6Bc7bHBKuR56ID1L8n+BXfr1Zka4=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LH8J2yn5quy1YjmQUOJreMuG3ne3BEiwwc22QHMNZ9Ks8VpWQiueQbAo4QUm9WGSUBN2CT03Dzp0yz5OZj9YqkP7RDevJJLQ0XNQGZUSdmw1r+cXRqcVcctVjXxVF6Pn7dyd8jSSvHa5V3TqvV8UiNt2aiiR74MAoBAxKpshNV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WayJRNx9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AF82C072AA;
-	Wed, 17 Apr 2024 19:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713381507;
-	bh=g8wIfvshnqk+Sxb6Bc7bHBKuR56ID1L8n+BXfr1Zka4=;
-	h=From:To:Subject:In-Reply-To:References:Date:From;
-	b=WayJRNx9Cce1kET5/K3SOl7Uv39bsxR6NKo4iyAx8lycwsDHMhfiPPOuUVWccZL3m
-	 kGxguqQjb/+7NlebrR5KCxxw5nHndHCznBVDY+3aBSUjkBi0Mm1bemto9j+2c6SMDl
-	 wUXNiiY8wZcL9530gOVJGChmB9dI0q32AGl3lAA+qFsPdKpnEPU+fdJeLoHYqgvrFM
-	 DjYlVVFE191OoZMctKwoxnUV37k0h+aGOer+tqsa8ZCsGZa9yEY23dwhvRCiqoNivg
-	 BNlBFUBctBIfpNeeSvGM5fr0KbHqjpS8Jm32sqd2l7lNOnq7kVIFsH+kBQFTPWhEmH
-	 CQWP4wwJLlrnA==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 0C4F11233B0D; Wed, 17 Apr 2024 21:18:25 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, eadavis@qq.com,
- eddyz87@gmail.com, haoluo@google.com, hawk@kernel.org,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev,
- netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
-In-Reply-To: <000000000000a693f106164bf4c7@google.com>
-References: <000000000000a693f106164bf4c7@google.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 17 Apr 2024 21:18:24 +0200
-Message-ID: <871q73vlvj.fsf@toke.dk>
+	s=arc-20240116; t=1713381658; c=relaxed/simple;
+	bh=Z3bCMaGhwbj6srUu4nYse27BveBCdxJ6ls99+RXNmvI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NcjWPqGbLi88NEe4gZHtBrMenprMBVdffIHDZdJufmEQllRbNm7snUuHaQ1tMXgTtUklw7fSGk8pC+94T4gP9+jqRecXjyDvqTegwjgDxvQU37+UMjK1O58m+sxgNMVfLbOG8W1yfBzUtTpWrBBxc7c8DpFihkpPWHqMkx0C5l8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ThUs+zBK; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5e4f79007ffso9619a12.2
+        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 12:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713381656; x=1713986456; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ORRZpXUfxr9ItRDDr0g7BO8pI4LaWWkmIOzOV1lUjes=;
+        b=ThUs+zBKSaponbb58Dod6Z1IGSmlxw4Jpi+7ppdNpbhVobZZfXcwvIlBUzj+QnxvBG
+         kwj+XCcOvud8clC5wr/3MmbXBZr+l+OHAbupDcSvfkEJ3ynDAl9BUikip+WbrjFVIg7V
+         b774TsOVcobqdEYTexydbT9MDoawO2vPpHum9ZcI7/upqCNARAgNCcqJDVETFl8Kl1nz
+         15ASyQBLSEN7sX9YO8AnGppQZsuK9OdYmanZz3NGTL+0ExqiSVM4GRwduLimHtY1Ev33
+         dqGoKDpvjR6fycJ61phEwiwgfKsw5w4ECcPBz8jOYtj5dpK/yo6cPx8cwSnUIAi2vQKl
+         k4lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713381656; x=1713986456;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ORRZpXUfxr9ItRDDr0g7BO8pI4LaWWkmIOzOV1lUjes=;
+        b=kzHQThdx3AeUqs3ZiZUyqmETUFGAit97MVEJGEMTNu63k+4+c8ZkB5uzuDWHOeuOiZ
+         pmbB5bV36Zi5IggEIHzJ5Ap2jE+ju287DgV/2qXbUcRAgBNweJjCWizPGA9jfrThX4+I
+         Ew6Z34l+f4cgKbyDckZYv/Jkh/hOFzx1Z7ZyxcFKGvUFd50N+ljSGIWHsL6Tpu1S9LIc
+         KVOlOQ6KGEGpZWNDaoCyKtN0DAW3mmFACd/9iXe0bJz94kFMdjAO3cEjwKcos7aw8fhB
+         t0Umjebwmg2r412Gkx6wMFDLbHbgdD4A7Pi9TxTk9QpNaEt2lYYSihnPUukeh5cQ+OJ1
+         hnCg==
+X-Forwarded-Encrypted: i=1; AJvYcCW6YuvJMVy5mwiHHwTxPaVpv3mrBO8nQA+3gUkvf2DShoKqhboaWnBi2vNHDBQBb1v9mugEcVbn2oY9jjwpNT/sCmAb
+X-Gm-Message-State: AOJu0Yzp82vQToKnSp+/AxThddzVDvE2pNxm/gfWygQZue9FqREsjyQJ
+	oNnGJroprHRDvoqJyBjTX4ZUWKEIy+ue8/v+f9iVAEhsXpll3qo/dxLA5Nkoeus=
+X-Google-Smtp-Source: AGHT+IFFegkq8waqKyMERwq6fCuZal4ckYIGZjxrkGrrejjVKhdDcv8GCWbIasobPrTueNDkPh41oA==
+X-Received: by 2002:a05:6a21:27a8:b0:1aa:5f1f:79d1 with SMTP id rn40-20020a056a2127a800b001aa5f1f79d1mr709847pzb.1.1713381656202;
+        Wed, 17 Apr 2024 12:20:56 -0700 (PDT)
+Received: from [10.36.51.174] ([24.75.208.145])
+        by smtp.gmail.com with ESMTPSA id r13-20020aa79ecd000000b006ed045af796sm11536pfq.88.2024.04.17.12.20.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 12:20:55 -0700 (PDT)
+Message-ID: <7eeef2c6-7375-4e41-aad6-ca0a39e95e2e@linaro.org>
+Date: Wed, 17 Apr 2024 21:20:53 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 30/31] kvx: Add power controller driver
+To: Yann Sionneau <ysionneau@kalrayinc.com>,
+ Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
+ Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>,
+ Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+ Waiman Long <longman@redhat.com>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
+ Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+ Christian Brauner <brauner@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jules Maselbas <jmaselbas@kalray.eu>,
+ Guillaume Thouvenin <gthouvenin@kalray.eu>,
+ Clement Leger <clement@clement-leger.fr>,
+ Vincent Chardon <vincent.chardon@elsys-design.com>,
+ =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
+ Julian Vetter <jvetter@kalray.eu>, Samuel Jones <sjones@kalray.eu>,
+ Ashley Lesdalons <alesdalons@kalray.eu>, Thomas Costis <tcostis@kalray.eu>,
+ Marius Gligor <mgligor@kalray.eu>, Jonathan Borne <jborne@kalray.eu>,
+ Julien Villette <jvillette@kalray.eu>, Luc Michel <lmichel@kalray.eu>,
+ Louis Morhet <lmorhet@kalray.eu>, Julien Hascoet <jhascoet@kalray.eu>,
+ Jean-Christophe Pince <jcpince@gmail.com>,
+ Guillaume Missonnier <gmissonnier@kalray.eu>, Alex Michon
+ <amichon@kalray.eu>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <git@xen0n.name>, Shaokun Zhang <zhangshaokun@hisilicon.com>,
+ John Garry <john.garry@huawei.com>,
+ Guangbin Huang <huangguangbin2@huawei.com>,
+ Bharat Bhushan <bbhushan2@marvell.com>, Bibo Mao <maobibo@loongson.cn>,
+ Atish Patra <atishp@atishpatra.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ Qi Liu <liuqi115@huawei.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Mark Brown <broonie@kernel.org>,
+ Janosch Frank <frankja@linux.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Benjamin Mugnier <mugnier.benjamin@gmail.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-audit@redhat.com,
+ linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-31-ysionneau@kalray.eu>
+ <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
+ <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com> writes:
+On 15/04/2024 16:08, Yann Sionneau wrote:
+> Hello Krzysztof, Arnd, all,
+> 
+> On 1/22/23 12:54, Krzysztof Kozlowski wrote:
+>> On 20/01/2023 15:10, Yann Sionneau wrote:
+>>> From: Jules Maselbas <jmaselbas@kalray.eu>
+>>>
+>>> The Power Controller (pwr-ctrl) control cores reset and wake-up
+>>> procedure.
+>>> +
+>>> +int __init kvx_pwr_ctrl_probe(void)
+>>> +{
+>>> +	struct device_node *ctrl;
+>>> +
+>>> +	ctrl = get_pwr_ctrl_node();
+>>> +	if (!ctrl) {
+>>> +		pr_err("Failed to get power controller node\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>> +	if (!of_device_is_compatible(ctrl, "kalray,kvx-pwr-ctrl")) {
+>>> +		pr_err("Failed to get power controller node\n");
+>> No. Drivers go to drivers, not to arch directory. This should be a
+>> proper driver instead of some fake stub doing its own driver matching.
+>> You need to rework this.
+> 
+> I am working on a v3 patchset, therefore I am working on a solution for 
+> this "pwr-ctrl" driver that needs to go somewhere else than arch/kvx/.
+> 
+> The purpose of this "driver" is just to expose a void 
+> kvx_pwr_ctrl_cpu_poweron(unsigned int cpu) function, used by 
+> kernel/smpboot.c function __cpu_up() in order to start secondary CPUs in 
+> SMP config.
 
-> Hello,
->
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
->
-> Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
->
-> Tested on:
->
-> commit:         443574b0 riscv, bpf: Fix kfunc parameters incompatibil..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-> console output: https://syzkaller.appspot.com/x/log.txt?x=125ea0e3180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-> dashboard link: https://syzkaller.appspot.com/bug?extid=af9492708df9797198d6
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> patch:          https://syzkaller.appspot.com/x/patch.diff?x=156227cd180000
->
-> Note: testing is done by a robot and is best-effort only.
+I might be missing here some bigger picture and maybe my original
+comment was no appropriate, but IIUC, you might now create dependencies
+between arch code and drivers. That's also fragile.
 
-And now the real patch:
+> 
+> Doing this, on our SoC, requires writing 3 registers in a memory-mapped 
+> device named "power controller".
+> 
+> I made some researches in drivers/ but I am not sure yet what's a good 
+> place that fits what our device is doing (booting secondary CPUs).
+> 
+> * drivers/power/reset seems to be for resetting the entire SoC
+> 
+> * drivers/power/supply seems to be to control power supplies ICs/periph.
+> 
+> * drivers/reset seems to be for device reset
+> 
+> * drivers/pmdomain maybe ?
+> 
+> * drivers/soc ?
+> 
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 443574b03387
+Bringup of CPU? Then I would vote for here. You also have existing
+example: r9a06g032-smp.c
 
+But anyway the point is to make it clear - either it is a driver or core
+code. Not both. The original code was not looking like any other CPU
+bringup code.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 786d792ac816..8120c3dddf5e 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4363,10 +4363,12 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
- 	u32 map_id = ri->map_id;
-+	u32 flags = ri->flags;
- 	struct bpf_map *map;
- 	int err;
- 
- 	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
-+	ri->flags = 0;
- 	ri->map_type = BPF_MAP_TYPE_UNSPEC;
- 
- 	if (unlikely(!xdpf)) {
-@@ -4378,11 +4380,20 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
- 	case BPF_MAP_TYPE_DEVMAP:
- 		fallthrough;
- 	case BPF_MAP_TYPE_DEVMAP_HASH:
--		map = READ_ONCE(ri->map);
--		if (unlikely(map)) {
-+		if (unlikely(flags & BPF_F_BROADCAST)) {
-+			map = READ_ONCE(ri->map);
-+
-+			/* The map pointer is cleared when the map is being torn
-+			* down by bpf_clear_redirect_map()
-+			*/
-+			if (unlikely(!map)) {
-+				err = -ENOENT;
-+				break;
-+			}
-+
- 			WRITE_ONCE(ri->map, NULL);
- 			err = dev_map_enqueue_multi(xdpf, dev, map,
--						   ri->flags & BPF_F_EXCLUDE_INGRESS);
-+						   flags & BPF_F_EXCLUDE_INGRESS);
- 		} else {
- 			err = dev_map_enqueue(fwd, xdpf, dev);
- 		}
-@@ -4445,9 +4456,9 @@ EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
- static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				      struct sk_buff *skb,
- 				      struct xdp_buff *xdp,
--				      struct bpf_prog *xdp_prog,
--				      void *fwd,
--				      enum bpf_map_type map_type, u32 map_id)
-+				      struct bpf_prog *xdp_prog, void *fwd,
-+				      enum bpf_map_type map_type, u32 map_id,
-+				      u32 flags)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
- 	struct bpf_map *map;
-@@ -4457,11 +4468,20 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
- 	case BPF_MAP_TYPE_DEVMAP:
- 		fallthrough;
- 	case BPF_MAP_TYPE_DEVMAP_HASH:
--		map = READ_ONCE(ri->map);
--		if (unlikely(map)) {
-+		if (unlikely(flags & BPF_F_BROADCAST)) {
-+			map = READ_ONCE(ri->map);
-+
-+			/* The map pointer is cleared when the map is being torn
-+			* down by bpf_clear_redirect_map()
-+			*/
-+			if (unlikely(!map)) {
-+				err = -ENOENT;
-+				break;
-+			}
-+
- 			WRITE_ONCE(ri->map, NULL);
- 			err = dev_map_redirect_multi(dev, skb, xdp_prog, map,
--						    ri->flags & BPF_F_EXCLUDE_INGRESS);
-+						    flags & BPF_F_EXCLUDE_INGRESS);
- 		} else {
- 			err = dev_map_generic_redirect(fwd, skb, xdp_prog);
- 		}
-@@ -4498,9 +4518,11 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
- 	u32 map_id = ri->map_id;
-+	u32 flags = ri->flags;
- 	int err;
- 
- 	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
-+	ri->flags = 0;
- 	ri->map_type = BPF_MAP_TYPE_UNSPEC;
- 
- 	if (map_type == BPF_MAP_TYPE_UNSPEC && map_id == INT_MAX) {
-@@ -4520,7 +4542,7 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 		return 0;
- 	}
- 
--	return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog, fwd, map_type, map_id);
-+	return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog, fwd, map_type, map_id, flags);
- err:
- 	_trace_xdp_redirect_err(dev, xdp_prog, ri->tgt_index, err);
- 	return err;
+Best regards,
+Krzysztof
+
 
