@@ -1,101 +1,101 @@
-Return-Path: <bpf+bounces-27031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAAAF8A7F84
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 11:21:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3F288A7FB4
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 11:32:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A91AB22151
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 09:21:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 921AF283C74
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 09:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E792612EBDB;
-	Wed, 17 Apr 2024 09:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E5812F59A;
+	Wed, 17 Apr 2024 09:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RngPEZMd";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Ne2Ce5cd"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ihzaa4Ij";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="d8Oz+rcq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB393F516
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 09:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDADE6E613
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 09:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713345696; cv=fail; b=gUMqaoaOzxyfGtAY0uxVfJbrSoAt1bNhshlZO8+SR+ElHzyH+X3hhuX/dD2Kk41Zend8/xWlhLo9197x7PSFUr6Xvf5ZQXqXv8M2zj5t/No6xSlKTerF2bW9agg5+AfIHRgQ9I1Pk+gqPs3nxKF/EcAHl7us8ZlK6EYW2Wcfhe0=
+	t=1713346363; cv=fail; b=CM3l3n7JhdfWNKEQWkvispJUhkuK0JahTbIQ6v819gahJt0MgdxV//TGf6swLlBU6Q24kS9VKOowWWO+ONMVHZGd7wGzkaFyUlB/Fif5CBi4gTR0I3xdW7UKrffAJJQjNwusDVCd6mTtSRXLCAdtQpaGGYxVYQE+cJ4DgJmJggs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713345696; c=relaxed/simple;
-	bh=pzawfqCbqeaJMxDqLwTq0ZAM9Yyn/Rj/l4MzFEyVyx4=;
+	s=arc-20240116; t=1713346363; c=relaxed/simple;
+	bh=a2ACFj9S+L7RT97ZC+rBA7tgFZVUbh4pLZmBf4cekMs=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Nk+EKDPVrOxIhqBc8buSD4oxYviYZ2sgR/uHEe35Z50CXRwYvtVmUKWtkhQ9FKyWntK/7K1cHVDGpLsYM710L8U/kMlyBJvvc+yLCOqIBONYSQMkEn5sNvXbFfo3Qx55+lE9UQfCQ2TefjGtCWpc7WZ1CkGQY9iginpLu3LqYLU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RngPEZMd; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Ne2Ce5cd; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=bJLRZsxCDITqMq9UGtLbVMZoRhdtaUbxDUJsE1SyhifvMN+auI59Ujx6Jtvh7YZm8YdjRcK7tvRUAYbJS04ufkcTE67A5/uXxNaB5UsES7nVI3DjTQWkRoR+amOmJGEILTTl4SS4BHJpqC+hwLYwHT8NEzlOEETs6Oy6mhYGtKo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Ihzaa4Ij; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=d8Oz+rcq; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43H8xOYO021925;
-	Wed, 17 Apr 2024 09:20:48 GMT
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43H8xVCS003950;
+	Wed, 17 Apr 2024 09:32:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=p4oZTIamYPpqw0OAVcuiZpwv107jfqF3nGyTGTzY4Gw=;
- b=RngPEZMdXgcmxukR6FnHRiKcB59MViuNYwdkYdO9CdY5L+D3emaUZJqaz52CNWz5ebzr
- /coagAvK/O3ar9PcyaLlc1QRNLML5J1D1C3pF1VGU/jyw8N0o2/PaMQCoN9I7S9uMEcC
- ITaTEaeQgUcFcCjog/iyTxdkLgRyFz0ogPubajYCLi1v+56H90mFI/oJ1cActDcYUdRZ
- sRw7n/BIOtXKSqZS/JkdUA+Dl9swfjT3RGkSieO+L+ZU8ykoOAbBGicr9Lzmmgvkn8AY
- gam1uLkqaH6O/KAm+tJ2j3joPEaY4JmHYbegmeMdGFENEFDEbdwQMp5xy5Mr0zll/Qy8 eg== 
+ bh=apdchhrAZX7PakdzSJo9EHJUY8M7Re7aF54mkAq4mqo=;
+ b=Ihzaa4IjXxHXtQVxSSP3IwJHQ39q3JKHQ/cVN5UGZd32ok3caB/Cw1qZqCxfFdFiz9lG
+ XvquszmDJPaVQLJ+pqQRsJWqcC69F8DrvbJxx7Ck9eARIoEJW+0EdOMn1J37gwWCag7V
+ RKKDuGuArbcfCCFGLCdxh7upzGhYVVgDBS/VPp11OS55oBUOK9HPEQ/XNFa8g74tsjAL
+ DHRgRE2o/ZIQx9/66ZdcGR4e0eMH8S4tHXD0MR2Jn/1S06cp9yiKYPOYbeFdArRi2JtH
+ o9/ZrYJ7/hZwLNPjTxubzMOio9Yie9Futou0XRs4HEnwkfBIyYInE4Vh5IcNHECcU1jo Nw== 
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfjkv7a1j-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfhnufem5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 09:20:48 +0000
+	Wed, 17 Apr 2024 09:32:17 +0000
 Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43H965QN012555;
-	Wed, 17 Apr 2024 09:20:47 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xgkwghhs7-1
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43H80ZZm012561;
+	Wed, 17 Apr 2024 09:32:16 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xgkwghxut-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 09:20:47 +0000
+	Wed, 17 Apr 2024 09:32:15 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AotNJE4V+DI4pmGx8N1p4YzfcDU7xaZMTa1tNlRlrcU1SMIKTdZiRlt8q20ZqldrQkhg2OlzZuRRK9JBC9KC/KHi7y2RMArV4arrDlpZxfK4c0P1L/g28603ZmcH8uDMbV9OqQGMXQQznAx0+fSN+kNFmSzQzuwr7H27rVZGJy7k7QkfJI7zpqdHsGYrF9qEMHD/Jzpvx+xwE+ny1Zw1pCsDdv+znsgeLFs9cJYDoLJoOABKXMSREvFQDnKlqTA+ePVZr+6M9Fo6XWRBDT3p1BENCVTrr44GSIihsHP3Zxq5SeSZPxJo7+HAuQDf3Rage6IpPiOjN/1QKk42whYIRQ==
+ b=YdPbJAi5bgFTgkKy0KHfhOde8G5ykzCsmcB+ZoBTPwAT8k11EWVsoVPjgupiMJAVKgw18wl6kNXcZCsg+2ch5LPpGX9uxXRLBCpjuzjt6pZjRqbfpsJxhGy0tNlb/loFJJQLElLiqoqjwUaYe+YWX1NBT2NRR5uJSx57Ah8G7Gt5lH1k6dw5BIVq9jO+t5RKJse6NA6wVbcrYx4ins/E70vUh1vE0+3eykJfbPIrvSJmRtM9tq0r3MMEi1FDm2ncHmyhijOnUUinpKA7ZwtZSEVrVe7CMPl/NxhQwD4/lOyR7Y19aeSqXwX0gNZTRyKFEmivJvaXjKLbMFPoz17Kqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p4oZTIamYPpqw0OAVcuiZpwv107jfqF3nGyTGTzY4Gw=;
- b=CQnEXPuYPkZ/a6ZhGQONbg8RP8WlayVIKYFeXoleIcns14CR6PzEbA/6FdaCDYEm57TltI/nZ1r27ORf0GMIQdQjXaS4D5zTnorS4Ik2BMg/6S0T1oHu1jLKJkqp7ATI/fltaPygEKJDs3lc6RrwUwnvTKkf7vVH68sk+7hStHn6VZ9g5fWV4ruIoug0m7Fyl0rmV+FrubBdCFJ+YEif9KIuczqD1Em7sRQCZtm3KPLC7jUNjaUO8jSvxHqh6oJURJfdkfCeCwBMFOvFXKP2jo4xA+f3pnisDyUGIvDs30cyMIIxwtl3EmhrbceR0VlxDe4XzeTt7pip91LaBzs6gw==
+ bh=apdchhrAZX7PakdzSJo9EHJUY8M7Re7aF54mkAq4mqo=;
+ b=cMdAsi3RNPLZNERKtAj1WIx8K9tjWePqYWzchUVn4wtAQlWvUy7B69cUewTG50GBvL/tylyYfo7BoRzT/T9hpGpWSwPWJbH4mXJBZ4+tcf7KFXL+rMyZ+oIuQpG2snjZ3pHWpDdjUECwLQPC4CYqtfGAKDh2YFNI06n1Poe39ha+YxVYJATSjUxoaVonIJyJt4QFEf4kT4mS8G6BRvcko9XoVJVVDxiofF0HeWciQyrb/QY+xH2SG+fgJDxc4Cwt3A/Zc3XgU9bV23AUOwTi7G1CQW5D9Eqx5O9S38zw7dNx5cP+lCQ+dVK3hrR6B0ly47HOjFcVQqgUsj0xRT+e9w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p4oZTIamYPpqw0OAVcuiZpwv107jfqF3nGyTGTzY4Gw=;
- b=Ne2Ce5cdCX3vM0hFThz+MZDG+uAep9y8/aGlpGrWwvNFlCV5g2i5ibiYq0BvM+x4kqBXUpMf8ZappGhJVrsmNoVOYoMJ4RzkmmJixzuNHmOUdFJrwoJzyQ2CF+dZoQRJkKtnay+P29ZxakJRddBpP6q4mobZyYY7LLo794GhXkc=
+ bh=apdchhrAZX7PakdzSJo9EHJUY8M7Re7aF54mkAq4mqo=;
+ b=d8Oz+rcqq/ME/Mxxt5XK7e6YHcJ1MDTrWEwoC69UZaYlGR4sVc3TbLf/vp4GvbkxdeQOCLZvil1/Lw4d1GssJpzRpo+Dk1h859vGTQVmOpBH29bUOfJvdA+mABFieIHa2iM/zE1Ez0NdguTntAOnyKDH+0frMu0KCYRtZIU8OSo=
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by CY8PR10MB7265.namprd10.prod.outlook.com (2603:10b6:930:79::6) with
+ by SJ1PR10MB6001.namprd10.prod.outlook.com (2603:10b6:a03:488::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 17 Apr
- 2024 09:20:45 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
+ 2024 09:32:11 +0000
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::372c:5fce:57c3:6a03]) by BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::372c:5fce:57c3:6a03%4]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
- 09:20:45 +0000
-Message-ID: <76869286-5593-470e-b04a-e38f1613c361@oracle.com>
-Date: Wed, 17 Apr 2024 10:20:41 +0100
+ 09:32:10 +0000
+Message-ID: <0d1a444a-75bd-42f8-adb6-ced9d102b54b@oracle.com>
+Date: Wed, 17 Apr 2024 10:32:06 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH dwarves v6 1/3] gobuffer: Add gobuffer__sort() helper
+Subject: Re: [PATCH dwarves v6 3/3] pahole: Inject kfunc decl tags into BTF
 To: Daniel Xu <dxu@dxuuu.xyz>, acme@kernel.org, jolsa@kernel.org,
         quentin@isovalent.com, eddyz87@gmail.com
 Cc: andrii.nakryiko@gmail.com, ast@kernel.org, daniel@iogearbox.net,
         bpf@vger.kernel.org
 References: <cover.1711389163.git.dxu@dxuuu.xyz>
- <ba9ff49e099583ab854d3d3c8c215c3ca1b6f930.1711389163.git.dxu@dxuuu.xyz>
+ <82ae2ddd83a8d85ae071e650cf80005c36bb1343.1711389163.git.dxu@dxuuu.xyz>
 Content-Language: en-GB
 From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <ba9ff49e099583ab854d3d3c8c215c3ca1b6f930.1711389163.git.dxu@dxuuu.xyz>
+In-Reply-To: <82ae2ddd83a8d85ae071e650cf80005c36bb1343.1711389163.git.dxu@dxuuu.xyz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LNXP265CA0072.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5d::36) To BLAPR10MB5267.namprd10.prod.outlook.com
+X-ClientProxiedBy: AS4P250CA0029.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e3::19) To BLAPR10MB5267.namprd10.prod.outlook.com
  (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -104,119 +104,558 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CY8PR10MB7265:EE_
-X-MS-Office365-Filtering-Correlation-Id: a8017306-a8f0-4053-8a80-08dc5ebfa92c
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|SJ1PR10MB6001:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59cebff2-4230-4507-cea8-08dc5ec141ec
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	e3WS7J3I4wTWZEP9PeRfyIMCC+LRWrt3tWtzrcbMu1v66Vj4FaJpqX7TRApD41Jgu6h+QgPYD70vCfOYCkUh36dhO3V4vScfl+vfmjqWS42KtxQXjYx6sBjkzEv3CPWkc1444zJU93g+E4lrKz6cr7ub31VG5Z1JJMwSZOwmH4RyrJiy6jqUJmkZ3JGKePSDJjnIYVoCxFv378y5t2TV/zdGaDh/jBUxaS+Yk4JuUxYr5AYhwnZ4m2nWEfi6b1YNJdXCOcVf1kwcQ2L4RAGhYKw/7W/ZhOdXzKTLEzGhGisPxx3IHIFnTp+jji5ASi6JgOTek2GWgCeAcSFhGGccAMulxYBZPs56KVTrYdECOmYQX8Ln0K0tPRIziQ8yMjYxYde8b8eP1/FvDFmYiDH6lw6m6B4+litJR5l6ylAeceXlO0yRc50uk/jdBgA8/JQcT9YWJ8xfHDg+N0TYIKw9OIH+qTUOE/n5lwHFJNY0tQte3iK+oPVsEDTyymjeZV5VLKRGmt5d1e9O3c70UKYdG6PVZpUp3ApcMIqwL7oS1TPU9qWDn84yMApT1svkRWzSW/SmMAcrDMMXjQhTTw/CyzwCzI9cMwYUJTerFL+Y4WJm+CiycauqcDHPA8+6m4HCokuBMOZW/uoSyLh1AR63E3W++fmg+zFNqlF89aKmSIY=
+	=?utf-8?B?RUxidXF2c0xTRW5uS1JGMHM1MDAvMmFFT1JSTmJLaE1kOXVQQTlBVWFBbmpt?=
+ =?utf-8?B?TDNWU3ozSnA0T3NqbnMzekFMMFoxTkxjcllXdlFraHFJMXNXdnJQU281TERW?=
+ =?utf-8?B?a0RRVW9UcjhIODdtSDZ4b0pycDNoV0poOWFZZU5oUFNLeEtrMHZEQi9iWFVD?=
+ =?utf-8?B?bWlXUWRkRDlBcHZZdk1ncmpnNklrRWhmbDY1eHBjWjc0UVU5UlhFTjlUMnUz?=
+ =?utf-8?B?aGFhOTA3T3lVZUd0TFZBS0lSUGd5d2hPWWFFYzVQNUJoeVR0d2VRazIvalBR?=
+ =?utf-8?B?TllaOHJ4aWkxK2xKOG5TeXlHSGFHLzViS2I2cmNPNys1dExTaFFWdS9hUk9k?=
+ =?utf-8?B?Y2FqellpdmxLVDh6R05PbFdqN2h6SmNHancrZlI2RjFFZHlGNnhVckFxVXJF?=
+ =?utf-8?B?SDZpcEQ0STRXU1BHVjlrakJjN3o5Y0tEVGZXMkd2dFBXR0pRdXo4NE1RR1hH?=
+ =?utf-8?B?MWhHK2xuelFabE00UkJsZlRVbWlUNVhMMWR5aFpjMmdRN2lsTExud1dDVUR4?=
+ =?utf-8?B?YllsRGZBdzMwbkxNeVhtNGFWMHlFUkswUUJqeklHMDQwUG1aNHVPL1BWS1JY?=
+ =?utf-8?B?c2VhckhkeUZTLzQ5cTE3UGRlZlc4UnUrVkpqTi9EZlFxZzVTSnlRTTI4L1hV?=
+ =?utf-8?B?bEJ0K2pza3N2NjRCT1hvM3htdFU2ZndzM1BWa2VDVkxyYVlzQU1QaHk3N0tw?=
+ =?utf-8?B?L0NWWlJMb0ZHSFc5dWF1c3hzR28zVVBVZW9nTmlkM0t1RmlGSDFLSk9GSkV0?=
+ =?utf-8?B?Y2pIQ0hJYTBuVk5pbUtjaTBuMkJuS2pnR2JaZkg3RTAzSi9BRkx4MklVcjcr?=
+ =?utf-8?B?Q2Rra0xrY0wyOXVUc0o5R2RGaUoxanpyMzg3MkdwMHlMMGdLU25lYWJ0OGZH?=
+ =?utf-8?B?WWhXWXVXQzAyN0xqWlpybWRNSnhkRGhVb0RxdUZmdjFjZHRjdnF3L2ZXTDN1?=
+ =?utf-8?B?L1JMM040a216YkU2L1RQUEZwcVhMZS9WdUp0UEtKL21ac05sdTl6T3JxZGNE?=
+ =?utf-8?B?dDZCaVNFQWd4b2ZZeDRyb0FOenZqNXVzV01VeU52d0RtR1FhZEpwMWpXWnIy?=
+ =?utf-8?B?eEkwRjNkT3o0SURtajB0Uk9mSE1FMVlCZGhOd2h1cCt6NGJsWHZTQjI4N2Vm?=
+ =?utf-8?B?RFVtRklmM1AzTFI3YmtldWx0SFhVL2dUT0MrZlNVMDlaM3hPU21sQkJEUHdJ?=
+ =?utf-8?B?VU9DQVdyTU5WWDZGSTUzeWV0b1piaGUwSHBaOHFkL3BiVEhCZ2U3anRQa0dt?=
+ =?utf-8?B?VnhMdks5MlFjWDZwTWZXckFRcytNVk9tYmN5V1JDMDA3WjRMcVNXeC9Ub29t?=
+ =?utf-8?B?WkVLQng0d0pYb05uZCt0Vmh6VWtjdDFDSk1ma3N6RVAwZDZFeHVlK2NQT2w3?=
+ =?utf-8?B?NEx0cFl6QUtPQi95eHF3Nm5jZ0xZSkExcElDZHdPNG9VQ2t3L1RTRlgwMkl0?=
+ =?utf-8?B?VlZXM2JLZ3FFeVUxWHFBbmJwbSt0UHJBVjRCMjlxTWV6MEQvcnJ5bVJSelBr?=
+ =?utf-8?B?dEI1bWYzYnRxS3VTbk42bUV6aVlHUW5iQ2ZBRU10MzdpVVI3S3NmUHljSmY2?=
+ =?utf-8?B?blczWTJYMlpSeGxuUTZpN2dQZXorSkREaS9CRnJSNHlkaytzM3E3L2hLRXlN?=
+ =?utf-8?B?WmZMa1VPVGRBY0dQK1ZoMDFZaVBwZWNDcmJuQTN6WjNnS1N0Z3FtOC9ITjYz?=
+ =?utf-8?B?YVJCZ2ROa2Flc1BOQUxvMjRlV0hoeS9FK1lzWndWUmxtNE9DRkt5TkhnPT0=?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?YjI3Q0tBQlpYYzVCdGgwYURuN0tpYkkvMnBtN1VseVZlZUo3c0NjYmJoVVVp?=
- =?utf-8?B?dUtKRFlsSERjNWZiY2VGVU8rZ3lDK1VCQlJ6c0VXL3lqY1dYSnQ5dGFvTkFk?=
- =?utf-8?B?b1BkT2lSdFV1Mk9sSGNWZkp0S0lyKzNyZWx4YytPRk5sZ0s4YzVpcGlaUC9Y?=
- =?utf-8?B?NjlaTTIrc2hjUjBvTUkwTjhDaGUwWmZoWGgzUWp3dEE4UUpUdDhuWnpVbUdJ?=
- =?utf-8?B?RHBjNHoveUYzWVF2WTY5VCtYQ29sTzR3QjRMSlhvQXZlaFRxTTJZellFL3dS?=
- =?utf-8?B?R2ZiLzFXcFpva1ZPMjlZSlhVQ2tEWDlDNU9rYkd6SWltYkE0TXJTbGFLT29o?=
- =?utf-8?B?c09Vc2pITy9UcFlTdlhESzl6enYwa3F0NHp3RFVnVUV4dW5nelJ4M0R0ZUp5?=
- =?utf-8?B?QkozbkJramYrUWZaM0IwNEo5Uk9INWFFN2RwM096d0FVRkQ5Z0ZGSTErU2xX?=
- =?utf-8?B?NmRXeXZ6cjNzRi9YUVhJLzEvNjRWWVhnNEdTK2RxTmxpM1JKY3h2b2x0VFhC?=
- =?utf-8?B?a0VzWUV4S1hQaW1OMEhBZVhRbGpaTyswZkV4cDZER3ptK3FKTTBrTGN5STcw?=
- =?utf-8?B?NVFzK21RL2JxWnExSUZLWUNJWm1ETnFCK0NCQitSZGtvcGlGcy8vVzV6ZnN4?=
- =?utf-8?B?djdUWEVvRFQ4bmhhSnJ0TVRrdTE0eVB6M2N0YUxQN3B6U3ZqbkI4NENPamVq?=
- =?utf-8?B?bEk0bXZsN2lGNFBIOVVOY1RTRHdmRDNyZFFTMHVoWUNSd2djTThxR3RGa0Qx?=
- =?utf-8?B?NGNYbUNEOGx2RGh2Q2U3aGYrNjhOMjN6WWh1L21YQVBlKzVoQndNMDNrOC8x?=
- =?utf-8?B?Zi95Y05TT1hOdFZiS3ZIbzBjVlY3WUxUU2Q0NHA1dVN2bzZpeGVrZU1wbURx?=
- =?utf-8?B?dEFlMUF1aU50aStrbkROc1d1RWtJOFdsczJRZjRNdHVFKzBNVjQ4T2xUanFp?=
- =?utf-8?B?U2FET0tTZHBBTUswTDBRL3FwblpnT1RydmFXT2M4N1B1aDNZQUxrWjNJdXpR?=
- =?utf-8?B?SEJYZW50UjB0TGt6Sk5rZXZZTENnNDRjWlByTXdhZVJGU01IQk1SSXFKNnNV?=
- =?utf-8?B?TzVOMVV3OHQrQXFLT1pEMnFFRUtsS2NPMXZCcVRxYjh0aHRYTEdBUm1DRERQ?=
- =?utf-8?B?bXV1d2EwQkVlODJkejZXMnJWNHllbzJnbVRGR2dyMld2cDhoanVnZjZFdTNw?=
- =?utf-8?B?V0FjQXJLS0hkYUJ0TEZqblVBQWYxSjZyc3FCSk1uZ3RycjkySHlvNXFNVnlU?=
- =?utf-8?B?eTNiSkNTVm1wQk9vZEFjNlVNU1JkY1U1dkNLNGt3Yk4yaGdFVVg0VmV1ODJz?=
- =?utf-8?B?Z3RyVTZ1UmN5YUw5ZTJpcWhOaVpCTTVDU2J2WjV3Y2xkYnl0dEdHb2FYZndw?=
- =?utf-8?B?a2s4M1B0TjFIbnZqOGgwMHBZV1Rkc01EZTl5TUpldmRHUFFDZjJlR0hsSFY0?=
- =?utf-8?B?eWREUWZVcFUyeHE4OVFLUHVtVGQvYjkzQ2tCbmRRakZYejZwRXRUajJvVzNV?=
- =?utf-8?B?WTRma1hCa0tEZWxjYURJUFExbzhHbE1RWHd4b1AvQmdPYWdmU2F3NTQyMXhx?=
- =?utf-8?B?R3pRWEdWZnRpRFc4M2NFanNCbzc1dGZyK2taTjFLNWxRWEdmU085UXFHS25n?=
- =?utf-8?B?dElzaWErcGYzT3dlNGxyTUZYaGwzTlNwdnYvVFlzNi8rYmJYcWw4YStybnlz?=
- =?utf-8?B?c3dPUkd6cDgxY1d6c1FaeU5EbE9TcnF1L2U0d25ZT0c5VzhpLzBmN3FyeGNF?=
- =?utf-8?B?Z2djSXpnMnNTeUh0TmNWSi9XNlI4Rm1BZ3cvOFJtYmxvVG5FNFBFdC9xcHlw?=
- =?utf-8?B?Y3dCUVR6V1I5NE43b2RWeUF1RlVCNEZJbzZ2MWM4WmRUSzdXc3p5UWF0ZGxG?=
- =?utf-8?B?QlhtU0FqWHR4SjZzYzBDb3BvZDkrTkdpbENZdVU5NWtSd0wwQ0UxODZFekZ2?=
- =?utf-8?B?KytpVm80Z2FOODNMWGY5aE9DRTFKZ1grOHl2REsxWDc1MkpXT1JIMGxNa0ZK?=
- =?utf-8?B?OENYRkxkODBpWVY0aHF6aEJTSklMREN1UVpwUjdvaHNLeCtLSmN5akZudTRr?=
- =?utf-8?B?bHZaME04WGZSNjIxMThlTUE0TUlLQ01zR3psS1A0MThLTCtCcFhuTEtpeUpD?=
- =?utf-8?B?THNwYURRYlJwSWdMMVFyYXM4Um5LV01XeWpYNlBlc1RRWit4MUhtWnE2OGdo?=
- =?utf-8?Q?pt7pGa7J7WqrBfMWn4yrJlc=3D?=
+	=?utf-8?B?KzlYQzZwM3NleVd2dWN2KzllTFJKMnpPdlZySklOUWNlc2tKc3JtanlaUzlD?=
+ =?utf-8?B?MXkvUEJHWmVUS0VUQ1F3eW0rS3RwbFZkL0ZZU0g2SjBHUStGL0RFTGtodjJn?=
+ =?utf-8?B?UitrTDhNVmxiSmxSdEVtM3VWZUxJK00yUUVCQ1A4Q1pOZGhuVFhEWmszVUtF?=
+ =?utf-8?B?dTluSEUxdmlHR3JPV1JncCtUYjRPeFRiTjBvdnRHSFRROENlZzhtZzVrdHpY?=
+ =?utf-8?B?ektWK21mV1ppM0t3aVBmMGtOUkJRY1ZIbFBjZ2FKdzVGWGFUMnlIVDdUZGtr?=
+ =?utf-8?B?Uzg1dFJLOC81U3ZhOFdMRkNrOStHT2VodmNxeHNQTlZaMkVmRFZaajJBZHFl?=
+ =?utf-8?B?bjFVWXJDM0w2TnlabldVMWFLVGwySURzSXNxMzg4LzNDWHRFdGxjcjhNSzlB?=
+ =?utf-8?B?djBHbWo5aUdiUXFkQkVlbU8yU0FUcGd1TGNJY3A0QWkwNi9ycmxEaEdzc2tG?=
+ =?utf-8?B?RlkyWTd5bHVjZGkyb2tCRWd4NUxjZkkvRTVUWDFrTzdIdmlqM2tNSDVnTXQr?=
+ =?utf-8?B?LzBrSmlaallWTzQ5Mmc3clRNWk5xT1R5V1hwYWdqbWhNcGRoQ3NSUGF1UFNE?=
+ =?utf-8?B?allHMExvTkNVQnoxUGlsVkRvdnJNNUlxM3ZlTzVMNU9OanY0NjVuMjliTmgy?=
+ =?utf-8?B?RGlGRFljenhvbUJMQ0FuOUMyelFIM0tXbWp3bDQ1SjZXZHVoVy9KN2NTQlVi?=
+ =?utf-8?B?VTBidU11dTQ4dVFYVEV2Nm1pWTNIdGFYcnk5RktLN2FnOG5qSEYzYk8wbFZn?=
+ =?utf-8?B?eGxqeUo5UTBsUXFEWEs5WmVnOFpVK0V3OVpGZGtMNUg3V0dvK0dGUmhrdkpW?=
+ =?utf-8?B?WDExNWdtTDJFaVlLZzZ4dncxZTN3WkFTRjR2VFJPNWRqWEpWVlhrcjZNYWc1?=
+ =?utf-8?B?dnFJSTRvcVBLbGMzU09pdWJ2Z0dESFAwbWJoVG53NnlTVGxia1BjTy83SHRa?=
+ =?utf-8?B?TlFUcmZrZWJORHREbngrR0pSSVJQUFdjQllQalM1eFJiYUtlbXRYVi9hNWda?=
+ =?utf-8?B?dUFxbWszMEc3Y1lhYXNVb2tIbVNoNVBCOUIxYmVKc1RpZlE1dXliNzJ0VnQz?=
+ =?utf-8?B?QmxyNHlSaGFxam9lQWNUTzdDbWg5dTJvNmVjanBnVFBlYnY4ZjVZR0xiM0g3?=
+ =?utf-8?B?VUhrN0xQUkw5MUthR3ljTDhoa2E1SGsvVjQxR0dZV3l3bEIvQ2MxM09MWDBF?=
+ =?utf-8?B?T0M1YTF4OTNLdzU0di9ITGd3N28zS0h4cXVubS9IQmE4WGIrK2N4SUxwWHNI?=
+ =?utf-8?B?MWdVMTZTUHRFbk52ZERNZmxlMHVSOVRqckEwKy9oSmdRUE1EQkNSSnUydkV4?=
+ =?utf-8?B?bU4zcjBwYUxxZkVPQ2trZG1IbzlMTUd1MkIrcUROSVJUOHdCSGFOZWxnQUc2?=
+ =?utf-8?B?dEdKNmMrWWFQbEZ2OGlKWE50b2RHS2UveVk2akVITDdLYnp6TEllVXAvWFVw?=
+ =?utf-8?B?bmtrL01ZRW12VysrSndEaVhqa1JrSnV0MnlIZk1sdFpaWTgyWUhlSDNuME5W?=
+ =?utf-8?B?UFhZUzlWWmYrdUpNblZYbEhhSUJ3cHpLdGVVeXlLdjNIU0N0cjZ4dndFZzRU?=
+ =?utf-8?B?OW1ZU0g5V1k0b1Y5S2xsa29UOGE1Ti9hL0xUcTBuNjlEWjZjTUdpc1hRY0cx?=
+ =?utf-8?B?VStDaGtsVGZOU2lscE5YQ1RpQlBycmszdndReFR0N3FGSlliUnNsenpzdHdI?=
+ =?utf-8?B?cEx2V0pUVjNWNThMMFBFVlVrSnNRTG9rTGhHNGlvTlYyanJRNUpMRm9nOG1j?=
+ =?utf-8?B?MlJYMloyYngwWTVvMk5FcE1KMDFUSnVFWWNPQzYycXExa29YdDhrMXN1Y1lm?=
+ =?utf-8?B?M2pVNjd1OHE2UGJxWDJsLzlFbktXSTYvelJIMjZneFIrRGhjckdBVXBmMFdu?=
+ =?utf-8?B?eXZMYXhJcmFFZXk1d1pqRThaeUpCR09EcUl2LzBYaGhaQWRkZ092cDZyT0xQ?=
+ =?utf-8?B?OHBPbktIMDhtMFJHbTIxSndQOXVDQWVlODNPdTNRYTh5VE1hcWh4VUlGb2tG?=
+ =?utf-8?B?OXE0TUhXRHlJWGd0VkorTnd4d2wwblFOM2x1cFJSaVJjdVdLU2x1YlJyK2Ux?=
+ =?utf-8?B?YnpsOHdacjV4L20wYXAvU0lEQUI0QWYxSjZWMUVRSGphM1hzbUM4QlphUDJF?=
+ =?utf-8?B?RFVDQ2JDOTFTNzkxTUJubzNqcGx2MlJSbVlXdHU2anZTSGsyaFEvN3cvWXp4?=
+ =?utf-8?Q?BAYWZ+GPTwrky8Yd51HiSok=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	lnY/Fb6CrEnBrh7+6+Rlu+GYyvHFdAX2CHEpqT/NSbAzNMfa2jJ7t3WBNVAtRTqiZch14bNrwXl1qOyZQH0vSF68V2YP6WCW90UOmkLWz7f0xzClawWNrSgfCOmtL5WNwMU5Jq5thU/YswNDpi13cBmeJD23Bwv+LUXwdwvc36X86CRRxID6Wrg+w2nvO9U9TSMI3o7Ori8gyj6R6xZrkglNgZeYxVKBW+uP+EkiwInZzKOcxkTciA9qE1JQ98Ja2Hjy5HpDrM2usM4y4jA9fpkBbIxtUU198SZnJzhaASpWU9YMgejymCenvwAAWHUi7Wnhb6r/zvTE3k3aCclCsssZT9k1PQiwYRzdewlTVSIBvT+QXnCG3Nf86VEVoYq/4DjonrJu9sqR5yEPMdC0/tUJcL6bpztcPZnPcfE9EHkqN15Zd8CqtYkR/VD7lRzO1WYOgpbnM2kZgOFGMteASpTb7YvZoUD0dHsjfDc+eGJd00eiW0xTOHsDwmpfw2PPzT/9hsiw9Xg3WlEAjxqGdWAc6TfnL20u+AJKPOrv1mFbdS0rg7uY+37zklFwF0fB6UcKKa2ba6vh8Y9T2kTDGWtWdx3rviZ5NmeFi6Kg3NM=
+	Til1jfbmAoy65EMYrmaVlw9kXZuzA8bVB3YD6EnUYq2k8uIeztobXt5/x3GO7RnkRFaZo6+bZ0/JJt0fQ2hBGaS0Vx8Lmi5l+zQLpSgbVtIQaxQUrb9b2+rXGYEyevUCy4Ss01UfGLTYjfV13zfwE3BffOK3p29Sdwd9hJ6HVvfYjmAz/q27fZya3vpN4GyWJneam6tgxvRKrs2Tg+0OtfKTX4wKUtrfAu2dSN//iBOb5Wj0JivfhXtWkU/p9CdsONKWGrfbAfMHuvwOSbAWO8oxFjisD2fW8s1uOjgha9VpFJwBFVhjN1YyV9wDL+kHb+8HITZfEZjnLcTBmgk5vsD4T5JVjOPSzICp6SpLnMYQde6OWKhWkUyZMG7WZrKGAWVFAXiSq79YAzxGZkzZlW5PboG1aKNsyW2nY0ohKUzPyksVnIzXh/2aBYHb1TpVKqu7HuwNOxCGdN8YYYAcScmm0wn/RX+5CjshxHhldfQ0GoyOeCODYC6MUGN2HyN3ek3+PtmfOxPS1yMtixG6Uj2MLyhuNAJM5j/n50H5hH6gkxrNWyXmMYZXTUsRpGYlKdcoZgCJsKhK/0Z4T2qjJQoyWa8loSLFjOfbl190vg8=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8017306-a8f0-4053-8a80-08dc5ebfa92c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59cebff2-4230-4507-cea8-08dc5ec141ec
 X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 09:20:45.2312
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 09:32:10.9133
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qE60xLJe+NKdDOaPPMiM26Cj9aXzWnwQebFmSfJONPPENMaNC/huW3lBI3IgIDzSDoCutgheJW2PwSyr2JEniA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7265
+X-MS-Exchange-CrossTenant-UserPrincipalName: o7Meg9daXLJsqnUP1u/197/7mELybCkI/4e/6mt1fOSKU64yA8nJqMwRbVynahhY9dqDzFalWPsiTwwZRDnfSA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR10MB6001
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-17_08,2024-04-16_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
  suspectscore=0 adultscore=0 phishscore=0 bulkscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404170064
-X-Proofpoint-ORIG-GUID: pOezB1Y5C6aicz6vtISLGGeD0pDo8p6M
-X-Proofpoint-GUID: pOezB1Y5C6aicz6vtISLGGeD0pDo8p6M
+ definitions=main-2404170065
+X-Proofpoint-GUID: pWH87NQQB5_B4GO7NqIzOO-tA-rh-CXz
+X-Proofpoint-ORIG-GUID: pWH87NQQB5_B4GO7NqIzOO-tA-rh-CXz
 
 On 25/03/2024 17:53, Daniel Xu wrote:
-> Add a helper to sort the gobuffer. Trivial wrapper around qsort().
+> This commit teaches pahole to parse symbols in .BTF_ids section in
+> vmlinux and discover exported kfuncs. Pahole then takes the list of
+> kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
 > 
+> Example of encoding:
+> 
+>         $ bpftool btf dump file .tmp_vmlinux.btf | rg "DECL_TAG 'bpf_kfunc'" | wc -l
+>         121
+> 
+>         $ bpftool btf dump file .tmp_vmlinux.btf | rg 56337
+>         [56337] FUNC 'bpf_ct_change_timeout' type_id=56336 linkage=static
+>         [127861] DECL_TAG 'bpf_kfunc' type_id=56337 component_idx=-1
+> 
+> This enables downstream users and tools to dynamically discover which
+> kfuncs are available on a system by parsing vmlinux or module BTF, both
+> available in /sys/kernel/btf.
+> 
+> This feature is enabled with --btf_features=decl_tag,decl_tag_kfuncs.
+> 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Tested-by: Jiri Olsa <jolsa@kernel.org>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+
+I re-tested for both vmlinux and a module with a kfunc (nf_nat); both
+generated decl_tags pointing at the kfunc functions so all working
+great. Nice work!
+
 > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  gobuffer.c | 5 +++++
->  gobuffer.h | 2 ++
->  2 files changed, 7 insertions(+)
+>  btf_encoder.c | 372 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 372 insertions(+)
 > 
-> diff --git a/gobuffer.c b/gobuffer.c
-> index 02b2084..4655339 100644
-> --- a/gobuffer.c
-> +++ b/gobuffer.c
-> @@ -102,6 +102,11 @@ void gobuffer__copy(const struct gobuffer *gb, void *dest)
->  	}
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 850e36f..d326404 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -34,6 +34,21 @@
+>  #include <pthread.h>
+>  
+>  #define BTF_ENCODER_MAX_PROTO	512
+> +#define BTF_IDS_SECTION		".BTF_ids"
+> +#define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
+> +#define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
+> +#define BTF_SET8_KFUNCS		(1 << 0)
+> +#define BTF_KFUNC_TYPE_TAG	"bpf_kfunc"
+> +
+> +/* Adapted from include/linux/btf_ids.h */
+> +struct btf_id_set8 {
+> +        uint32_t cnt;
+> +        uint32_t flags;
+> +        struct {
+> +                uint32_t id;
+> +                uint32_t flags;
+> +        } pairs[];
+> +};
+>  
+>  /* state used to do later encoding of saved functions */
+>  struct btf_encoder_state {
+> @@ -75,6 +90,7 @@ struct btf_encoder {
+>  			  verbose,
+>  			  force,
+>  			  gen_floats,
+> +			  skip_encoding_decl_tag,
+>  			  tag_kfuncs,
+>  			  is_rel;
+>  	uint32_t	  array_index_id;
+> @@ -94,6 +110,17 @@ struct btf_encoder {
+>  	} functions;
+>  };
+>  
+> +struct btf_func {
+> +	const char *name;
+> +	int	    type_id;
+> +};
+> +
+> +/* Half open interval representing range of addresses containing kfuncs */
+> +struct btf_kfunc_set_range {
+> +	uint64_t start;
+> +	uint64_t end;
+> +};
+> +
+>  static LIST_HEAD(encoders);
+>  static pthread_mutex_t encoders__lock = PTHREAD_MUTEX_INITIALIZER;
+>  
+> @@ -1363,8 +1390,343 @@ out:
+>  	return err;
 >  }
 >  
-> +void gobuffer__sort(struct gobuffer *gb, unsigned int size, int (*compar)(const void *, const void *))
+> +/* Returns if `sym` points to a kfunc set */
+> +static int is_sym_kfunc_set(GElf_Sym *sym, const char *name, Elf_Data *idlist, size_t idlist_addr)
 > +{
-> +	qsort((void *)gb->entries, gb->nr_entries, size, compar);
-
-nit shouldn't need to cast char * gb->entries to void * ; not worth
-respinning the series for though unless there are other issues
-
+> +	void *ptr = idlist->d_buf;
+> +	struct btf_id_set8 *set;
+> +	int off;
+> +
+> +	/* kfuncs are only found in BTF_SET8's */
+> +	if (!strstarts(name, BTF_ID_SET8_PFX))
+> +		return false;
+> +
+> +	off = sym->st_value - idlist_addr;
+> +	if (off >= idlist->d_size) {
+> +		fprintf(stderr, "%s: symbol '%s' out of bounds\n", __func__, name);
+> +		return false;
+> +	}
+> +
+> +	/* Check the set8 flags to see if it was marked as kfunc */
+> +	set = ptr + off;
+> +	return set->flags & BTF_SET8_KFUNCS;
 > +}
 > +
->  const void *gobuffer__compress(struct gobuffer *gb, unsigned int *size)
->  {
->  	z_stream z = {
-> diff --git a/gobuffer.h b/gobuffer.h
-> index a12c5c8..cd218b6 100644
-> --- a/gobuffer.h
-> +++ b/gobuffer.h
-> @@ -21,6 +21,8 @@ void __gobuffer__delete(struct gobuffer *gb);
->  
->  void gobuffer__copy(const struct gobuffer *gb, void *dest);
->  
-> +void gobuffer__sort(struct gobuffer *gb, unsigned int size, int (*compar)(const void *, const void *));
+> +/*
+> + * Parse BTF_ID symbol and return the func name.
+> + *
+> + * Returns:
+> + *	Caller-owned string containing func name if successful.
+> + *	NULL if !func or on error.
+> + */
+> +static char *get_func_name(const char *sym)
+> +{
+> +	char *func, *end;
 > +
->  int gobuffer__add(struct gobuffer *gb, const void *s, unsigned int len);
->  int gobuffer__allocate(struct gobuffer *gb, unsigned int len);
+> +	/* Example input: __BTF_ID__func__vfs_close__1
+> +	 *
+> +	 * The goal is to strip the prefix and suffix such that we only
+> +	 * return vfs_close.
+> +	 */
+> +
+> +	if (!strstarts(sym, BTF_ID_FUNC_PFX))
+> +		return NULL;
+> +
+> +	/* Strip prefix and handle malformed input such as  __BTF_ID__func___ */
+> +	func = strdup(sym + sizeof(BTF_ID_FUNC_PFX) - 1);
+> +	if (strlen(func) < 2) {
+> +                free(func);
+> +                return NULL;
+> +        }
+> +
+> +	/* Strip suffix */
+> +	end = strrchr(func, '_');
+> +	if (!end || *(end - 1) != '_') {
+> +		free(func);
+> +		return NULL;
+> +	}
+> +	*(end - 1) = '\0';
+> +
+> +	return func;
+> +}
+> +
+> +static int btf_func_cmp(const void *_a, const void *_b)
+> +{
+> +	const struct btf_func *a = _a;
+> +	const struct btf_func *b = _b;
+> +
+> +	return strcmp(a->name, b->name);
+> +}
+> +
+> +/*
+> + * Collects all functions described in BTF.
+> + * Returns non-zero on error.
+> + */
+> +static int btf_encoder__collect_btf_funcs(struct btf_encoder *encoder, struct gobuffer *funcs)
+> +{
+> +	struct btf *btf = encoder->btf;
+> +	int nr_types, type_id;
+> +	int err = -1;
+> +
+> +	/* First collect all the func entries into an array */
+> +	nr_types = btf__type_cnt(btf);
+> +	for (type_id = 1; type_id < nr_types; type_id++) {
+> +		const struct btf_type *type;
+> +		struct btf_func func = {};
+> +		const char *name;
+> +
+> +		type = btf__type_by_id(btf, type_id);
+> +		if (!type) {
+> +			fprintf(stderr, "%s: malformed BTF, can't resolve type for ID %d\n",
+> +				__func__, type_id);
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		if (!btf_is_func(type))
+> +			continue;
+> +
+> +		name = btf__name_by_offset(btf, type->name_off);
+> +		if (!name) {
+> +			fprintf(stderr, "%s: malformed BTF, can't resolve name for ID %d\n",
+> +				__func__, type_id);
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		func.name = name;
+> +		func.type_id = type_id;
+> +		err = gobuffer__add(funcs, &func, sizeof(func));
+> +		if (err < 0)
+> +			goto out;
+> +	}
+> +
+> +	/* Now that we've collected funcs, sort them by name */
+> +	gobuffer__sort(funcs, sizeof(struct btf_func), btf_func_cmp);
+> +
+> +	err = 0;
+> +out:
+> +	return err;
+> +}
+> +
+> +static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, struct gobuffer *funcs, const char *kfunc)
+> +{
+> +	struct btf_func key = { .name = kfunc };
+> +	struct btf *btf = encoder->btf;
+> +	struct btf_func *target;
+> +	const void *base;
+> +	unsigned int cnt;
+> +	int err = -1;
+> +
+> +	base = gobuffer__entries(funcs);
+> +	cnt = gobuffer__nr_entries(funcs);
+> +	target = bsearch(&key, base, cnt, sizeof(key), btf_func_cmp);
+> +	if (!target) {
+> +		fprintf(stderr, "%s: failed to find kfunc '%s' in BTF\n", __func__, kfunc);
+> +		goto out;
+> +	}
+> +
+> +	/* Note we are unconditionally adding the btf_decl_tag even
+> +	 * though vmlinux may already contain btf_decl_tags for kfuncs.
+> +	 * We are ok to do this b/c we will later btf__dedup() to remove
+> +	 * any duplicates.
+> +	 */
+> +	err = btf__add_decl_tag(btf, BTF_KFUNC_TYPE_TAG, target->type_id, -1);
+> +	if (err < 0) {
+> +		fprintf(stderr, "%s: failed to insert kfunc decl tag for '%s': %d\n",
+> +			__func__, kfunc, err);
+> +		goto out;
+> +	}
+> +
+> +	err = 0;
+> +out:
+> +	return err;
+> +}
+> +
+> +static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
+> +{
+> +	const char *filename = encoder->filename;
+> +	struct gobuffer btf_kfunc_ranges = {};
+> +	struct gobuffer btf_funcs = {};
+> +	Elf_Data *symbols = NULL;
+> +	Elf_Data *idlist = NULL;
+> +	Elf_Scn *symscn = NULL;
+> +	int symbols_shndx = -1;
+> +	size_t idlist_addr = 0;
+> +	int fd = -1, err = -1;
+> +	int idlist_shndx = -1;
+> +	size_t strtabidx = 0;
+> +	Elf_Scn *scn = NULL;
+> +	Elf *elf = NULL;
+> +	GElf_Shdr shdr;
+> +	size_t strndx;
+> +	char *secname;
+> +	int nr_syms;
+> +	int i = 0;
+> +
+> +	fd = open(filename, O_RDONLY);
+> +	if (fd < 0) {
+> +		fprintf(stderr, "Cannot open %s\n", filename);
+> +		goto out;
+> +	}
+> +
+> +	if (elf_version(EV_CURRENT) == EV_NONE) {
+> +		elf_error("Cannot set libelf version");
+> +		goto out;
+> +	}
+> +
+> +	elf = elf_begin(fd, ELF_C_READ, NULL);
+> +	if (elf == NULL) {
+> +		elf_error("Cannot update ELF file");
+> +		goto out;
+> +	}
+> +
+> +	/* Locate symbol table and .BTF_ids sections */
+> +	if (elf_getshdrstrndx(elf, &strndx) < 0)
+> +		goto out;
+> +
+> +	while ((scn = elf_nextscn(elf, scn)) != NULL) {
+> +		Elf_Data *data;
+> +
+> +		i++;
+> +		if (!gelf_getshdr(scn, &shdr)) {
+> +			elf_error("Failed to get ELF section(%d) hdr", i);
+> +			goto out;
+> +		}
+> +
+> +		secname = elf_strptr(elf, strndx, shdr.sh_name);
+> +		if (!secname) {
+> +			elf_error("Failed to get ELF section(%d) hdr name", i);
+> +			goto out;
+> +		}
+> +
+> +		data = elf_getdata(scn, 0);
+> +		if (!data) {
+> +			elf_error("Failed to get ELF section(%d) data", i);
+> +			goto out;
+> +		}
+> +
+> +		if (shdr.sh_type == SHT_SYMTAB) {
+> +			symbols_shndx = i;
+> +			symscn = scn;
+> +			symbols = data;
+> +			strtabidx = shdr.sh_link;
+> +		} else if (!strcmp(secname, BTF_IDS_SECTION)) {
+> +			idlist_shndx = i;
+> +			idlist_addr = shdr.sh_addr;
+> +			idlist = data;
+> +		}
+> +	}
+> +
+> +	/* Cannot resolve symbol or .BTF_ids sections. Nothing to do. */
+> +	if (symbols_shndx == -1 || idlist_shndx == -1) {
+> +		err = 0;
+> +		goto out;
+> +	}
+> +
+> +	if (!gelf_getshdr(symscn, &shdr)) {
+> +		elf_error("Failed to get ELF symbol table header");
+> +		goto out;
+> +	}
+> +	nr_syms = shdr.sh_size / shdr.sh_entsize;
+> +
+> +	err = btf_encoder__collect_btf_funcs(encoder, &btf_funcs);
+> +	if (err) {
+> +		fprintf(stderr, "%s: failed to collect BTF funcs\n", __func__);
+> +		goto out;
+> +	}
+> +
+> +	/* First collect all kfunc set ranges.
+> +	 *
+> +	 * Note we choose not to sort these ranges and accept a linear
+> +	 * search when doing lookups. Reasoning is that the number of
+> +	 * sets is ~O(100) and not worth the additional code to optimize.
+> +	 */
+> +	for (i = 0; i < nr_syms; i++) {
+> +		struct btf_kfunc_set_range range = {};
+> +		const char *name;
+> +		GElf_Sym sym;
+> +
+> +		if (!gelf_getsym(symbols, i, &sym)) {
+> +			elf_error("Failed to get ELF symbol(%d)", i);
+> +			goto out;
+> +		}
+> +
+> +		if (sym.st_shndx != idlist_shndx)
+> +			continue;
+> +
+> +		name = elf_strptr(elf, strtabidx, sym.st_name);
+> +		if (!is_sym_kfunc_set(&sym, name, idlist, idlist_addr))
+> +			continue;
+> +
+> +		range.start = sym.st_value;
+> +		range.end = sym.st_value + sym.st_size;
+> +		gobuffer__add(&btf_kfunc_ranges, &range, sizeof(range));
+> +	}
+> +
+> +	/* Now inject BTF with kfunc decl tag for detected kfuncs */
+> +	for (i = 0; i < nr_syms; i++) {
+> +		const struct btf_kfunc_set_range *ranges;
+> +		unsigned int ranges_cnt;
+> +		char *func, *name;
+> +		GElf_Sym sym;
+> +		bool found;
+> +		int err;
+> +		int j;
+> +
+> +		if (!gelf_getsym(symbols, i, &sym)) {
+> +			elf_error("Failed to get ELF symbol(%d)", i);
+> +			goto out;
+> +		}
+> +
+> +		if (sym.st_shndx != idlist_shndx)
+> +			continue;
+> +
+> +		name = elf_strptr(elf, strtabidx, sym.st_name);
+> +		func = get_func_name(name);
+> +		if (!func)
+> +			continue;
+> +
+> +		/* Check if function belongs to a kfunc set */
+> +		ranges = gobuffer__entries(&btf_kfunc_ranges);
+> +		ranges_cnt = gobuffer__nr_entries(&btf_kfunc_ranges);
+> +		found = false;
+> +		for (j = 0; j < ranges_cnt; j++) {
+> +			size_t addr = sym.st_value;
+> +
+> +			if (ranges[j].start <= addr && addr < ranges[j].end) {
+> +				found = true;
+> +				break;
+> +			}
+> +		}
+> +		if (!found) {
+> +			free(func);
+> +			continue;
+> +		}
+> +
+> +		err = btf_encoder__tag_kfunc(encoder, &btf_funcs, func);
+> +		if (err) {
+> +			fprintf(stderr, "%s: failed to tag kfunc '%s'\n", __func__, func);
+> +			free(func);
+> +			goto out;
+> +		}
+> +		free(func);
+> +	}
+> +
+> +	err = 0;
+> +out:
+> +	__gobuffer__delete(&btf_funcs);
+> +	__gobuffer__delete(&btf_kfunc_ranges);
+> +	if (elf)
+> +		elf_end(elf);
+> +	if (fd != -1)
+> +		close(fd);
+> +	return err;
+> +}
+> +
+>  int btf_encoder__encode(struct btf_encoder *encoder)
+>  {
+> +	bool should_tag_kfuncs;
+>  	int err;
 >  
+>  	/* for single-threaded case, saved funcs are added here */
+> @@ -1377,6 +1739,15 @@ int btf_encoder__encode(struct btf_encoder *encoder)
+>  	if (btf__type_cnt(encoder->btf) == 1)
+>  		return 0;
+>  
+> +	/* Note vmlinux may already contain btf_decl_tag's for kfuncs. So
+> +	 * take care to call this before btf_dedup().
+> +	 */
+> +	should_tag_kfuncs = encoder->tag_kfuncs && !encoder->skip_encoding_decl_tag;
+> +	if (should_tag_kfuncs && btf_encoder__tag_kfuncs(encoder)) {
+> +		fprintf(stderr, "%s: failed to tag kfuncs!\n", __func__);
+> +		return -1;
+> +	}
+> +
+>  	if (btf__dedup(encoder->btf, NULL)) {
+>  		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
+>  		return -1;
+> @@ -1660,6 +2031,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
+>  		encoder->force		 = conf_load->btf_encode_force;
+>  		encoder->gen_floats	 = conf_load->btf_gen_floats;
+>  		encoder->skip_encoding_vars = conf_load->skip_encoding_btf_vars;
+> +		encoder->skip_encoding_decl_tag	 = conf_load->skip_encoding_btf_decl_tag;
+>  		encoder->tag_kfuncs	 = conf_load->btf_decl_tag_kfuncs;
+>  		encoder->verbose	 = verbose;
+>  		encoder->has_index_type  = false;
 
