@@ -1,83 +1,72 @@
-Return-Path: <bpf+bounces-27038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 795FE8A82CD
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:08:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FE88A82F5
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:15:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A3C51F21253
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 12:08:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5425283BA4
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 12:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCCF13D2AB;
-	Wed, 17 Apr 2024 12:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20ABC13D296;
+	Wed, 17 Apr 2024 12:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="k+c6TrXT";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PskRulJQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cbv3oMtp"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B1113D279;
-	Wed, 17 Apr 2024 12:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AC013D25A;
+	Wed, 17 Apr 2024 12:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713355668; cv=none; b=DTIzVNg0rLcJPDGoadF4xmmljJS7dBy7qADyfs3RAecfFCc5WM0V6aRSsdCtVuB9asN8SJXt4aKYegqVg7qKCbDKvirFFFZCVhflwsyVKEGZ2LGHKHoJRJ6iVdXFseaHAjg2iXkqOb+mCmQ/KiwkLySC0RnL8xhGJ5av5CN7u8U=
+	t=1713356112; cv=none; b=FbCZXY1LaUXaJUHMXw979axQLsAlPGRHO9BcakyzBD+2+aA0yZRovFVMRi7DowHTxhAqmFv38OxvGZG+mIqy3XC7pRNbooNfAgkGgMNd18+nYbkDrQkMCGe6+MTlanWAKLarYTF6K/c0yVR3mGLhoBx/+3B16NReUoB7vgKVx4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713355668; c=relaxed/simple;
-	bh=ePiA4ddQh/R2An+M1WNyiwY8cnfIfyGkHQWLq8GAgQE=;
+	s=arc-20240116; t=1713356112; c=relaxed/simple;
+	bh=8RP7YV6jTWwAhDK6cRCfXJzcrc3TupkEAEbXFcDpJT4=;
 	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=EPxOx4jDLSHzdt6nLr8LzG7GgTksJ58DdQBR2PcxP9+M0O60hRqSvM+42KrhQUjsdbqfx9X5eBeluvej/cRzNmDnkDSazKVwz/CJJb4fXuO7Ckf5Dh6nk6h0Mg3Z4WqqKaI8+Aoo5Ok0pwcUqTeADS3ZrijheNenUYwfUoZRCuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=k+c6TrXT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PskRulJQ; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+	 Subject:Content-Type; b=PnZHcmOU3BU+DAbch3Zp8jji4sJ0bEuEf+Ol/Vj/mESz05uy0b2t0b33G0LsmFykTZHP/W/bn3hwnMceJFoL48Lla637oSXy/fau6nKX3LNxuxAMZNfVAcvqKghIBQWCbSslumQhAcTlnz3eB8GjU26AW3i5LaMtBEBbf93GSQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cbv3oMtp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4049EC32783;
+	Wed, 17 Apr 2024 12:15:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713356112;
+	bh=8RP7YV6jTWwAhDK6cRCfXJzcrc3TupkEAEbXFcDpJT4=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=Cbv3oMtpZseqC3ure3t5L2KaTZIVIVnpn2+inN1ISPc9sXzqqeU3BNa5xKwrFY2mf
+	 eFJWa1jVH4S2rs9c+jLJIbf9XuFfzS22pEIUO3kCd6SdiOmW5u7A82aNXpd3eY6fNL
+	 HDb/RBhwlNELOwhU6Uw/ef4xDPSmlBtIHd0Q1KhLOuUNJIwxcId1jKhRzVgzu4uley
+	 kNMSlXlH+rHp1AEn31bQguC0l6D0SX+1pbcmDyn0iSRaGljH/52wFSjOju0LUMIJFI
+	 RtlWvfMeXlLxw9PZNoOlpHyhbCX90X5bcyVLk1M5BzPTbDZ8kfWI8A10yqDdYbQkH/
+	 6Hl0yRGEXjb7A==
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id E831D13800DA;
-	Wed, 17 Apr 2024 08:07:41 -0400 (EDT)
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 3AEA11200032;
+	Wed, 17 Apr 2024 08:15:10 -0400 (EDT)
 Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 17 Apr 2024 08:07:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713355661; x=1713442061; bh=JRwjaLl0ym
-	PdY2EgpKl1AbwXbEtgcsWk+ZdHAqGgzzA=; b=k+c6TrXTt5DHwehRTMmiSrDI8X
-	l2e0ys2mZWau27bGYpDETExVxOKyRry6wX4aYJMZuXz/rDiALPj6s770Pr+m86RX
-	Tk4euw3T5Ytz/mgrWfj9+YCzDhuPANYtli39Spr7MZkNhr+pKrU/jdSku9pb3+zP
-	jM7iqZmNRLOq2j+Fs7xh8wpbgqAtxVsvXQ+RJ17kLqz3pFBExGYARGDpcy11UIzb
-	B9jesANBpTBKjPj+ehy+LVKQILkfrY+6EAde3F78QJuO92n0URjrJMC36ZvYSuw0
-	wxNZKs7wO4viH52Uof3J9i69NFGXTL8jOM2RN+p32OrBJjjapaiWQYAvdI0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1713355661; x=1713442061; bh=JRwjaLl0ymPdY2EgpKl1AbwXbEtg
-	csWk+ZdHAqGgzzA=; b=PskRulJQuqnv1ZOaZ50DEIAA3VW4QVBBupAQcPlTv1IK
-	dtEyQz9vBKl3/cnuZRphIQ1Ko88EM7KrplI+YwutgaaSIUq0w3BmQ0V6TufjEyP2
-	yTltxlsJapXhVkedfxfyGEL0meg4CCLTca8uCiOnkeNrWsAozWbI03ErYj839KTU
-	7wrUsQkd0dnBWfXGeL006fV/8YBv9DEaiOzpBKs+xjoZsDlkazxB9OT+4E9DCq3S
-	Z0QmGG0b1DQIfkl6aQQD6M9hV+PR7TQKwLgHcdvevbcs8bQ8aTCi91Wto7ULXNLC
-	aY44keeltld1H76RHlpp0RDISov29a2XxU+sxAxONg==
-X-ME-Sender: <xms:jbsfZht3D6K4z8QUB_gpc0081jG8mXbjM2wxuhL6ay0L_xLcjQsBqQ>
-    <xme:jbsfZqcUcmTDrDyv2PjpKywqMyZD8QMW4Bo2U6WIB_VblLYvDAu33DmGDRto4uPdA
-    i_V3CJA19Qq__lhYIY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejkedggeekucetufdoteggodetrfdotf
+  by compute5.internal (MEProxy); Wed, 17 Apr 2024 08:15:10 -0400
+X-ME-Sender: <xms:Tr0fZpE7dxpHQLHE0pOCAjs9k0gDWGR9vyviVxQ4Mb914Y8i6bTofw>
+    <xme:Tr0fZuW-6lMu_vQnvVTK9I1K2I3AXL-9zSoImgmAVfeLwMgi6VsFW6ARXseyn3h2L
+    MoM_SA_KtrL9A5zB9k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejkedghedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:jbsfZkwtdRa082bkNjb2lvv2HcsAlt__dmZvMbAP-SSYpwpEfMVoxQ>
-    <xmx:jbsfZoP9icWCo2EnVuIn5n1fSCHZ1vsYQ9NtAh-R-FFFUQTLwu8suA>
-    <xmx:jbsfZh9njKASvlFGKFHyLftms-gaKJ07O5IieLpg2qCUWGBc0QNg1Q>
-    <xmx:jbsfZoVe6PONKKNFIlqeQoLgVLq4doPUraiRPj4rdjhTGjji32QnaQ>
-    <xmx:jbsfZogZw4hA1EhiSt-0ZqWxnSZqbuj3bTO9NsJsmCHYbblYG_WtVpF5>
-Feedback-ID: i56a14606:Fastmail
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleevgfduieehfeeltdettdfhfffgkedugeeklefftdeivdfgveeiteet
+    keehffevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnug
+    eppehkvghrnhgvlhdrohhrghesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Tr0fZrJd8SokM4hZbcqkS6XUKGM83Kgiuh6-3KvYgqeJk1BgEm01DQ>
+    <xmx:Tr0fZvE87iMMA1rnHIAfWTlxqHdIpo1Vprx8j198KFgNfoxtjJ7fEA>
+    <xmx:Tr0fZvU8oL9wnoRIDttwogW8MAwiZj6KbjhC4Ba2BJ3PUV-HJKqEjw>
+    <xmx:Tr0fZqOuwLYfwM6V2PTjBPlfKRD3GunocahJtAWZPA-mzFSKtEsa0g>
+    <xmx:Tr0fZu1e0rcuLjKGllbhh3Athko76UPPk3FY6ShM0XmMfnB_rYC-ASKf>
+Feedback-ID: i36794607:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 5986EB6008D; Wed, 17 Apr 2024 08:07:41 -0400 (EDT)
+	id EFC1DB6008D; Wed, 17 Apr 2024 08:15:09 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
@@ -86,14 +75,15 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <d752e7c9-7793-4b50-bc2a-344b63ffa6cb@app.fastmail.com>
-In-Reply-To: <8663692f-528f-4d68-8c35-136e5f1244dc@intel.com>
+Message-Id: <5c02841b-b398-4a18-8b82-a80e53d4ecb0@app.fastmail.com>
+In-Reply-To: <d752e7c9-7793-4b50-bc2a-344b63ffa6cb@app.fastmail.com>
 References: <20240417084400.3034104-1-arnd@kernel.org>
  <8663692f-528f-4d68-8c35-136e5f1244dc@intel.com>
-Date: Wed, 17 Apr 2024 14:07:19 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
- "Arnd Bergmann" <arnd@kernel.org>
+ <d752e7c9-7793-4b50-bc2a-344b63ffa6cb@app.fastmail.com>
+Date: Wed, 17 Apr 2024 14:14:49 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Arnd Bergmann" <arnd@arndb.de>,
+ "Alexander Lobakin" <aleksander.lobakin@intel.com>
 Cc: "Jakub Kicinski" <kuba@kernel.org>,
  "David S . Miller" <davem@davemloft.net>,
  "Eric Dumazet" <edumazet@google.com>, "Paolo Abeni" <pabeni@redhat.com>,
@@ -110,21 +100,46 @@ Subject: Re: [PATCH 1/2] [v2] net: ethernet: ti-cpsw: fix linking built-in code 
  modules
 Content-Type: text/plain
 
-On Wed, Apr 17, 2024, at 13:49, Alexander Lobakin wrote:
-> From: Arnd Bergmann <arnd@kernel.org>
-> Date: Wed, 17 Apr 2024 10:43:01 +0200
+On Wed, Apr 17, 2024, at 14:07, Arnd Bergmann wrote:
+> On Wed, Apr 17, 2024, at 13:49, Alexander Lobakin wrote:
+>> From: Arnd Bergmann <arnd@kernel.org>
+>> Date: Wed, 17 Apr 2024 10:43:01 +0200
+>>
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>> 
+>>> There are six variants of the cpsw driver, sharing various parts of
+>>> the code: davinci-emac, cpsw, cpsw-switchdev, netcp, netcp_ethss and
+>>> am65-cpsw-nuss.
+>>
+>> https://lore.kernel.org/all/20221119225650.1044591-10-alobakin@pm.me
 >
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> There are six variants of the cpsw driver, sharing various parts of
->> the code: davinci-emac, cpsw, cpsw-switchdev, netcp, netcp_ethss and
->> am65-cpsw-nuss.
->
-> https://lore.kernel.org/all/20221119225650.1044591-10-alobakin@pm.me
+> I also sent a version of this patch before, but there were conflicting
+> changes in the past. The version I sent should apply to the
+> current code.
 
-I also sent a version of this patch before, but there were conflicting
-changes in the past. The version I sent should apply to the
-current code.
+FWIW, I also still carry this patch in my randconfig build
+tree, with a lot of the same changes as your other patches:
 
-    Arnd
+ drivers/edac/Makefile                              | 10 ++--
+ drivers/edac/skx_common.c                          | 19 +++++-
+ drivers/edac/skx_common.h                          |  4 +-
+ drivers/hid/Makefile                               | 12 ++--
+ drivers/hid/hid-uclogic-params.c                   |  6 ++
+ drivers/hid/hid-uclogic-rdesc.c                    | 69 ++++++++++++++++++++++
+ drivers/mfd/Makefile                               |  6 +-
+ drivers/mfd/rsmu_core.c                            |  2 +
+ drivers/mtd/tests/Makefile                         | 34 +++++------
+ drivers/mtd/tests/mtd_test.c                       |  7 +++
+ drivers/net/ethernet/hisilicon/hns3/Makefile       | 11 ++--
+ .../hisilicon/hns3/hns3_common/hclge_comm_cmd.c    |  9 +++
+ .../hisilicon/hns3/hns3_common/hclge_comm_rss.c    | 14 +++++
+ .../hns3/hns3_common/hclge_comm_tqp_stats.c        |  5 ++
+ .../net/ethernet/marvell/octeontx2/nic/Makefile    | 14 +++--
+ .../ethernet/marvell/octeontx2/nic/otx2_dcbnl.c    |  9 +++
+ .../ethernet/marvell/octeontx2/nic/otx2_devlink.c  |  4 ++
+ drivers/platform/x86/intel/int3472/Makefile        |  9 ++-
+ drivers/platform/x86/intel/int3472/common.c        |  5 ++
+ 20 files changed, 198 insertions(+), 53 deletions(-)
+
+     Arnd
 
