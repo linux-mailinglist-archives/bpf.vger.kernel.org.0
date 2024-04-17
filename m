@@ -1,176 +1,114 @@
-Return-Path: <bpf+bounces-27047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 264F58A835B
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:46:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E90018A83E0
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 15:11:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EC5AB2366B
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 12:46:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A99511F24BAF
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 13:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA0B13D892;
-	Wed, 17 Apr 2024 12:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A233B13D60D;
+	Wed, 17 Apr 2024 13:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="yh7+pWcB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u2WKLze0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469A913D615;
-	Wed, 17 Apr 2024 12:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B690313C9BF
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 13:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713357989; cv=none; b=K672CdOOq/vSJ2y4ebO8J6rqpF9aRY9EEBc1/UaXgP/sadaYwyM2BsXSNPSjAwQAjsXq1QJcUXeZAc02jby6KrBrmPn6lP5iMlEgojSUIwEA5p+ALfF0uka97wqLF3HosUJp50DGB5mEde+vslbfq3vmU1/OlQYZnx+9Ju9n+U0=
+	t=1713359501; cv=none; b=KwILW6jT4Ia/7dxUM9Ud0ZgQWipBzWi3f92Rg2eG93mpVqy/7AW0iV8vmbTK0gCTPlpt70nDgsGEy8617rEtoiLzhO49690wdA1dONsja/E9r/u93QUjFw/4iaGLwfvfkD34FKUdD1PMHZb1rSo7+lvFq7VGsRgWjKuWwITjpPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713357989; c=relaxed/simple;
-	bh=IsUADm42Ju8Paoa9spCg6rSr3NqKSSKje+5djKlmikA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Rq/HfGixeHlAA7vwvEjfBQU9PH7Ny/j0AQyxYIyfxB+joWLl/iyYsqn4dpTwi+x0BHq59VVTZYN6WURT5z+Kt1O4mC9uk/3imV/3WQ1KUOLg3nuWb6DzqfAXFR5igOc1ItBvsC4jgQQwiglLfIj2o5ueOLjwe/K1WOIQXNmSsCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=yh7+pWcB; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713357984; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=qqVHcGfcShu8OGSh4TKhsqjzx9WGQzghYaSWCuR0TkU=;
-	b=yh7+pWcBp0BD94oLtJ9hX7LmmH9HLj0OoPey3J2A5xnn7KgVrBEFwN8wiWiVGTaAWG1DiQqHvUCqY6/PiZewaATcqmkA6xlPe5NNZnLydicarvhVTFvcXZ6jZb1EQ6BeQx//d9oYsLdwhvd1GiHzVP+Lcbau5vhRcY4A4+wGnGg=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0W4lXBKV_1713357982;
-Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W4lXBKV_1713357982)
-          by smtp.aliyun-inc.com;
-          Wed, 17 Apr 2024 20:46:22 +0800
-From: Philo Lu <lulie@linux.alibaba.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	dsahern@kernel.org,
-	laoar.shao@gmail.com,
-	xuanzhuo@linux.alibaba.com,
-	fred.cc@alibaba-inc.com
-Subject: [PATCH bpf-next] bpf: add sacked flag in BPF_SOCK_OPS_RETRANS_CB
-Date: Wed, 17 Apr 2024 20:46:22 +0800
-Message-Id: <20240417124622.35333-1-lulie@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+	s=arc-20240116; t=1713359501; c=relaxed/simple;
+	bh=LYORuVqltCDSqq5LG+GR90BK8ZH+Tqmy7hq+uuME5Hc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m9AdVCODmx5bvS8opGmuD9xfwy+Tdh1WUySE7c85/bao6A8KqClWH3DPhRdtl8HGudJaOS23MM93QtE49eEaX1YC2BkTQxhitJBy9P46gsSofEXWnaChpgNTT5CRSu/McLejJbsPT1VT5nc1u/0lSpZnf/4gI/nHj8rxcg3jqdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u2WKLze0; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5700ed3017fso13289a12.1
+        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 06:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713359498; x=1713964298; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LYORuVqltCDSqq5LG+GR90BK8ZH+Tqmy7hq+uuME5Hc=;
+        b=u2WKLze0KsX0YVOx0gg9XsSbKqAy9u04N6ERpw0W8+L1Ohuxp92uU7dCjpYRRnCteu
+         /GZNQaWC49hWzX49LqeN9yCeT9xsyeRtfD2qmSpJin5NSnDogQsULhA3P3e16HqNDvDW
+         TzyVP9wAY2Q+Ugg6LzFRPoERQnziNewDowtqoVb6aNF2YqHaSZELeTfKSLVRGemSPzZ6
+         iJgEoOcI1VKNZy0hdduD4qwRsKaxyk7eYoghW5LB0/WMC5JXiOV52X86rpNm514JqsIu
+         IF5h3Q0jZT0X1ob84Kd3fXolqZiXfXcRwEY5Z5bWAHmDO55BDt9zcMbENUuNvjeAotzI
+         Bk8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713359498; x=1713964298;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LYORuVqltCDSqq5LG+GR90BK8ZH+Tqmy7hq+uuME5Hc=;
+        b=CxeH/3wj3KaO6qUx2sJNKiSv3DpiHQgQmHxshU8qBcH34IABKI/P1d2kmHVFawO0aI
+         ZoqofCqNXMcmVDxKjwTrWiwP2nNarC3ftnM6cL3LPPRKEGGcMVriIMfdOSHTOEiRo1+I
+         v+XWFkX3K5c281wtxALvywx+fDcpYE7s+K+tL4F04oFKbhgreJrLqJbqOCAJTxltr68p
+         fehoFlBFkyeCpb6/OjM582dhqry+qD9KKQPwuoRpn3JxPLNqbxTxI3Xv57j72Ffm/eMf
+         V9oOhKRce+J4EXRKE2dmyq845fNlPHGSvnQwLrDN+ZWLGbvSHC6fdUWRsMOukZX/5X4F
+         Fjsg==
+X-Gm-Message-State: AOJu0YzNnBbh+BENb5X2dRt6gCn6w3qnr6IWBrzrZZYhl1+8vnqY+fw2
+	Bm+b7TTE2vSIc6KPuYlwM/uYW439GS4NNfcwBaghmYAfKiapzNvMgyFPHSZtCLhk00Idf9rGyxW
+	ACQ8N1xs3MOSowj7GfYZm2XlfEyZnUdGEk4Da
+X-Google-Smtp-Source: AGHT+IGypSaqPmVW4Vt+ptnrzFfjZDefxB3JQBi1r8flFTPfvlkbsiJVAOcbLm1miOgRjzZRGxqzK0j1VbLpU+0lwUs=
+X-Received: by 2002:a50:ee0c:0:b0:570:49c3:7d3e with SMTP id
+ g12-20020a50ee0c000000b0057049c37d3emr152170eds.1.1713359497802; Wed, 17 Apr
+ 2024 06:11:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240417124622.35333-1-lulie@linux.alibaba.com>
+In-Reply-To: <20240417124622.35333-1-lulie@linux.alibaba.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 17 Apr 2024 15:11:26 +0200
+Message-ID: <CANn89iLWMhAOq0R7N3utrXdro_zTmp=9cs8a7_eviNcTK-_5+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: add sacked flag in BPF_SOCK_OPS_RETRANS_CB
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net, 
+	kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org, 
+	laoar.shao@gmail.com, xuanzhuo@linux.alibaba.com, fred.cc@alibaba-inc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add TCP_SKB_CB(skb)->sacked as the 4th arg of sockops passed to bpf
-program. Then we can get the retransmission efficiency by counting skbs
-w/ and w/o TCPCB_EVER_RETRANS mark. And for this purpose, sacked
-updating is moved after the BPF_SOCK_OPS_RETRANS_CB hook.
+On Wed, Apr 17, 2024 at 2:46=E2=80=AFPM Philo Lu <lulie@linux.alibaba.com> =
+wrote:
+>
+> Add TCP_SKB_CB(skb)->sacked as the 4th arg of sockops passed to bpf
+> program. Then we can get the retransmission efficiency by counting skbs
+> w/ and w/o TCPCB_EVER_RETRANS mark. And for this purpose, sacked
+> updating is moved after the BPF_SOCK_OPS_RETRANS_CB hook.
+>
+> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
 
-Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
----
- include/net/tcp.h              | 14 ++++++++++++++
- include/uapi/linux/bpf.h       |  2 ++
- net/ipv4/tcp_output.c          |  9 +++++----
- tools/include/uapi/linux/bpf.h |  2 ++
- 4 files changed, 23 insertions(+), 4 deletions(-)
+This might be a naive question, but how the bpf program know what is the me=
+aning
+of each bit ?
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 6ae35199d3b3..7defe67183c9 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2660,6 +2660,14 @@ static inline int tcp_call_bpf_3arg(struct sock *sk, int op, u32 arg1, u32 arg2,
- 	return tcp_call_bpf(sk, op, 3, args);
- }
- 
-+static inline int tcp_call_bpf_4arg(struct sock *sk, int op, u32 arg1, u32 arg2,
-+				    u32 arg3, u32 arg4)
-+{
-+	u32 args[4] = {arg1, arg2, arg3, arg4};
-+
-+	return tcp_call_bpf(sk, op, 4, args);
-+}
-+
- #else
- static inline int tcp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *args)
- {
-@@ -2677,6 +2685,12 @@ static inline int tcp_call_bpf_3arg(struct sock *sk, int op, u32 arg1, u32 arg2,
- 	return -EPERM;
- }
- 
-+static inline int tcp_call_bpf_4arg(struct sock *sk, int op, u32 arg1, u32 arg2,
-+				    u32 arg3, u32 arg4)
-+{
-+	return -EPERM;
-+}
-+
- #endif
- 
- static inline u32 tcp_timeout_init(struct sock *sk)
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index cee0a7915c08..df6bb9a62e0b 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -6938,6 +6938,8 @@ enum {
- 					 * Arg2: # segments
- 					 * Arg3: return value of
- 					 *       tcp_transmit_skb (0 => success)
-+					 * Arg4: TCP_SKB_CB(skb)->sacked before
-+					 *       TCPCB_EVER_RETRANS marking
- 					 */
- 	BPF_SOCK_OPS_STATE_CB,		/* Called when TCP changes state.
- 					 * Arg1: old_state
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index e3167ad96567..370e6cee6794 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3387,15 +3387,16 @@ int __tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb, int segs)
- 		err = tcp_transmit_skb(sk, skb, 1, GFP_ATOMIC);
- 	}
- 
-+	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_RETRANS_CB_FLAG))
-+		tcp_call_bpf_4arg(sk, BPF_SOCK_OPS_RETRANS_CB,
-+				  TCP_SKB_CB(skb)->seq, segs, err,
-+				  TCP_SKB_CB(skb)->sacked);
-+
- 	/* To avoid taking spuriously low RTT samples based on a timestamp
- 	 * for a transmit that never happened, always mark EVER_RETRANS
- 	 */
- 	TCP_SKB_CB(skb)->sacked |= TCPCB_EVER_RETRANS;
- 
--	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_RETRANS_CB_FLAG))
--		tcp_call_bpf_3arg(sk, BPF_SOCK_OPS_RETRANS_CB,
--				  TCP_SKB_CB(skb)->seq, segs, err);
--
- 	if (likely(!err)) {
- 		trace_tcp_retransmit_skb(sk, skb);
- 	} else if (err != -EBUSY) {
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index cee0a7915c08..df6bb9a62e0b 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -6938,6 +6938,8 @@ enum {
- 					 * Arg2: # segments
- 					 * Arg3: return value of
- 					 *       tcp_transmit_skb (0 => success)
-+					 * Arg4: TCP_SKB_CB(skb)->sacked before
-+					 *       TCPCB_EVER_RETRANS marking
- 					 */
- 	BPF_SOCK_OPS_STATE_CB,		/* Called when TCP changes state.
- 					 * Arg1: old_state
--- 
-2.32.0.3.g01195cf9f
+Are they exposed already, and how future changes in TCP stack could
+break old bpf programs ?
 
+#define TCPCB_SACKED_ACKED 0x01 /* SKB ACK'd by a SACK block */
+#define TCPCB_SACKED_RETRANS 0x02 /* SKB retransmitted */
+#define TCPCB_LOST 0x04 /* SKB is lost */
+#define TCPCB_TAGBITS 0x07 /* All tag bits */
+#define TCPCB_REPAIRED 0x10 /* SKB repaired (no skb_mstamp_ns) */
+#define TCPCB_EVER_RETRANS 0x80 /* Ever retransmitted frame */
+#define TCPCB_RETRANS (TCPCB_SACKED_RETRANS|TCPCB_EVER_RETRANS| \
+TCPCB_REPAIRED)
 
