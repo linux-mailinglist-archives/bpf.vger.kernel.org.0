@@ -1,103 +1,115 @@
-Return-Path: <bpf+bounces-27074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C54D8A8EF5
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 00:49:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7F398A8F47
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 01:20:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37874281A8C
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 22:49:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CE5A2832BA
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 23:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03A781ADA;
-	Wed, 17 Apr 2024 22:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A75685643;
+	Wed, 17 Apr 2024 23:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q2xfxFNB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wv1ScXz0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D147F47D
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 22:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAEFC80614
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 23:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713394152; cv=none; b=JGnIHT/+65tyu7fEXqbr9ucFLEeBxV1ffQUtoS4hOXBKtW/rvQ+duqsFVAtLANchcsrBK2kp1vpyKKGalagE9SGh/9zqdvDiKApUUklNl3e1nCYcrE1ADLqxKTFcFCWwWMeXPmlmUYWsV8BW8vQwfl7iQVFQ3IcWcuQk1cbMfso=
+	t=1713395994; cv=none; b=L3vx4i5HBUN22GyMLWdNaP7AZUiAeusXVpWkcMTSZZOUat6ELJuF4MCYDSdWiwR9E3i3dwBjGZ75J8gbOeTmj8N6ilHoJ5Frw76UFsHScZ8dZE91rXrqpxFLTCtUUkPTLC5sEjh08fsfi728keYVQKyp4bu+u8ixp6G2cNFDhw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713394152; c=relaxed/simple;
-	bh=CU4SUV/tAacMmxINxQPyDkH06nmMCSP9U+W+vrpSaZk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sYArBwT8x9/VpyAVzPPLmhOh2O/iON20D+BMoCuivWcIiMD6tD0BajfrGprtyJHUIs/Z0u1T49qVRuaISD5Nx+BkcT96lL3wfqBoNgEHSDcXOMqWU6/uHe1HDcJP6TtUEVRKyl6utgKphKOj6hvt5/c7CIuA8MUWaNAU/z0KRUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q2xfxFNB; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <152f00e2-8f60-4f39-8ab4-fdab1b0bc01a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713394147;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bucH0Erc8Q5A/z6/UWqfD8pwxfQz7cToeD3wwtpAcrs=;
-	b=q2xfxFNBtP+SY+acb0XsxDrmxuCY0OM2oDFFE/GMBRJSPLecC/31LRN7DugtTKRsHDkZS4
-	zTNAH9Bq0M4B02DbZ7GqNePYzZ6HnnRyjyqw35nOHH4uPVyYIMKaebB8L+fpaHPMj1wQ51
-	9uoh8Bbgg1qcH9jcJv7TU9oF7pctXlM=
-Date: Wed, 17 Apr 2024 15:48:55 -0700
+	s=arc-20240116; t=1713395994; c=relaxed/simple;
+	bh=taNf4Y8ioB/0kj4QfBY8A1a56xCMRkFv8KW9HjM7YXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T2xtolsaObHrwPobYJrVqOBX3u4PqjWZpJ17YQBW7khL+EBTMCZe+mmULKk1KBEC+bLWRGRGiIhbYsMsQoxTlbRJUnkt7+7lz76JEa44IkHljus++7wKt7FOuaB8F0FiEg4CG27pHOx4QY/erIumzBQl+rEzFfmt/O9Kgfav0Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wv1ScXz0; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713395993; x=1744931993;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=taNf4Y8ioB/0kj4QfBY8A1a56xCMRkFv8KW9HjM7YXk=;
+  b=Wv1ScXz0pO+mrLXzrM+GQN9kJ6MDW7nxoCzQdMiGHJ47bgqHgrzqOC0r
+   e4wCJtZB84DZns9GyVC9hQSGOLsuIsz9e83J0+OpZ0yjHJ78bt4m3UZcg
+   kkkqwSSe0lnEqgvTvAjIcpcnXv68qR6+QPeo23NxGOHtlZYL0osyitK4b
+   6Ov1XdtYxmLXcdCxVEho48DKcCXdu+x17+YcXbM6MnplJmDzreVBnckH8
+   KI4wxsoMYQmT7BVVESBpZ6No1vrVGyUgICJiegI4+y+lTGoJSrfx44mYo
+   B8oNhN8l6/m8lU15ojdCPwwq86LFp+2PzJnfvmhqouj7lIQraSvOugHBS
+   g==;
+X-CSE-ConnectionGUID: sIrQyY6TQZG15HMQP7Rdaw==
+X-CSE-MsgGUID: 82tX/06VQBiDMDvOyaxadg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8776324"
+X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
+   d="scan'208";a="8776324"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 16:19:52 -0700
+X-CSE-ConnectionGUID: BMF9BY7cTwmKS5nT4t7XHw==
+X-CSE-MsgGUID: q9UuPT4GT1W0ZDkb4Lbmfg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
+   d="scan'208";a="22663364"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 17 Apr 2024 16:19:49 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rxEZ8-00075C-13;
+	Wed, 17 Apr 2024 23:19:46 +0000
+Date: Thu, 18 Apr 2024 07:19:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
+	ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	kernel-team@meta.com, andrii@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	sinquersw@gmail.com, kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned
+ path of a struct_osp link.
+Message-ID: <202404180747.NXWUtZTG-lkp@intel.com>
+References: <20240417002513.1534535-2-thinker.li@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: add sacked flag in BPF_SOCK_OPS_RETRANS_CB
-To: Eric Dumazet <edumazet@google.com>, Philo Lu <lulie@linux.alibaba.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org,
- laoar.shao@gmail.com, xuanzhuo@linux.alibaba.com, fred.cc@alibaba-inc.com
-References: <20240417124622.35333-1-lulie@linux.alibaba.com>
- <CANn89iLWMhAOq0R7N3utrXdro_zTmp=9cs8a7_eviNcTK-_5+w@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CANn89iLWMhAOq0R7N3utrXdro_zTmp=9cs8a7_eviNcTK-_5+w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417002513.1534535-2-thinker.li@gmail.com>
 
-On 4/17/24 6:11 AM, Eric Dumazet wrote:
-> On Wed, Apr 17, 2024 at 2:46 PM Philo Lu <lulie@linux.alibaba.com> wrote:
->>
->> Add TCP_SKB_CB(skb)->sacked as the 4th arg of sockops passed to bpf
->> program. Then we can get the retransmission efficiency by counting skbs
->> w/ and w/o TCPCB_EVER_RETRANS mark. And for this purpose, sacked
->> updating is moved after the BPF_SOCK_OPS_RETRANS_CB hook.
->>
->> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
-> 
-> This might be a naive question, but how the bpf program know what is the meaning
-> of each bit ?
-> 
-> Are they exposed already, and how future changes in TCP stack could
-> break old bpf programs ?
-> 
-> #define TCPCB_SACKED_ACKED 0x01 /* SKB ACK'd by a SACK block */
-> #define TCPCB_SACKED_RETRANS 0x02 /* SKB retransmitted */
-> #define TCPCB_LOST 0x04 /* SKB is lost */
-> #define TCPCB_TAGBITS 0x07 /* All tag bits */
-> #define TCPCB_REPAIRED 0x10 /* SKB repaired (no skb_mstamp_ns) */
-> #define TCPCB_EVER_RETRANS 0x80 /* Ever retransmitted frame */
-> #define TCPCB_RETRANS (TCPCB_SACKED_RETRANS|TCPCB_EVER_RETRANS| \
-> TCPCB_REPAIRED)
+Hi Kui-Feng,
 
-I think it is the best to use the trace_tcp_retransmit_skb() tracepoint instead.
+kernel test robot noticed the following build errors:
 
-iiuc the use case, moving the "TCP_SKB_CB(skb)->sacked |= TCPCB_EVER_RETRANS;" 
-after the tracepoint should have similar effect.
+[auto build test ERROR on bpf-next/master]
 
-If the TCPCB_* is moved to a enum, it will be included in the "vmlinux.h" that 
-the bpf prog can use and no need to expose them in uapi.
+url:    https://github.com/intel-lab-lkp/linux/commits/Kui-Feng-Lee/bpf-enable-the-open-operator-on-a-pinned-path-of-a-struct_osp-link/20240417-082736
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240417002513.1534535-2-thinker.li%40gmail.com
+patch subject: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned path of a struct_osp link.
+config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240418/202404180747.NXWUtZTG-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 7089c359a3845323f6f30c44a47dd901f2edfe63)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240418/202404180747.NXWUtZTG-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404180747.NXWUtZTG-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: bpffs_struct_ops_link_open
+   >>> referenced by syscall.c
+   >>>               kernel/bpf/syscall.o:(bpf_link_open) in archive vmlinux.a
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
