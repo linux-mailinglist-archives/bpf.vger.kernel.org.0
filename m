@@ -1,202 +1,225 @@
-Return-Path: <bpf+bounces-27016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88508A79D4
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 02:25:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764CE8A7ACC
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 04:55:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB6161C22435
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 00:25:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BCB7282494
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 02:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A09863B8;
-	Wed, 17 Apr 2024 00:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD7B79C0;
+	Wed, 17 Apr 2024 02:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SuUNoCnP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGIFg4c5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5BB524F
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 00:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E92D1878;
+	Wed, 17 Apr 2024 02:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713313521; cv=none; b=mgvP0sG66nxDx2f3vHT03Ci7qievLH57LzBOyFR6ciQiH1JjA6IesmKombuHuiNo/ajZnQce06zV0cCIoXGaem56fH/mke9olrPMpkN0K9VcwlSHC4SyheHXhK/ovMo09x7ljVY9fK4JynEHiSMDB2N5L2nyKhyqTLNCoRmYUxI=
+	t=1713322542; cv=none; b=BYgWVBR7Jdho/jCoStNwZq63W0vlRWmAlTqzUeRY2ZHmS3voe21Ds+3+aQ5aBNggrrASNuK5XKXYbuJbV1qq/VGspTId9+wEplewG+cYPxZFMQl9GkD7qRnI/hwKCpBBGdM8kFhkhzpaqlqtQ6380BIDz1III0MwTaPEe+t0u6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713313521; c=relaxed/simple;
-	bh=y1t/beTI9nc6z/yEvptNoAHKaz3hYUX2fmRYnplM8Ys=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dCZTzojQ9bYWQb2UCceHvxdJjAvQV2rc88g2GGe4l6YDBJCU1SMIMxOa5Wd8Iy44tqM6yIV0pEcMjqGDWR92KXZqz/x7tbUyrWN1FO+cLGCB0SK+N2YwF0+3eE4PtEbd8nUrZb0qAZpjapb1lnL3V6Ng06XfFBpDTJUYJUc61/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SuUNoCnP; arc=none smtp.client-ip=209.85.128.180
+	s=arc-20240116; t=1713322542; c=relaxed/simple;
+	bh=IAj14PITpzUBBfd0BdPRImzQrp8Sr8llvz7H0t6Se+c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KIztE5tlnGIxoYNVPXo5alU5XKeVkpI8iOYA45KzmFfhlC203odQWwuNEVBjNsyijGK0XM8S2f6Gjuwkwtc90ws3Nch272i3IwT35Wfm3AtaK/40pKUV2TpoTZvy70+kLNlHL63njpqPS/hVVSeM9J7M4H07Lj450zf0GBpRM3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGIFg4c5; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-61af74a010aso10911637b3.0
-        for <bpf@vger.kernel.org>; Tue, 16 Apr 2024 17:25:19 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e477db7fbso8210622a12.3;
+        Tue, 16 Apr 2024 19:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713313519; x=1713918319; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713322538; x=1713927338; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5K6bypWbsyWY0taJNvZ0WSjYUDnqITNJfk3zzp7+6yM=;
-        b=SuUNoCnP3oaQuPrcx9+kKBV7PzlA3z1wnUzfgwHACFVlU/kB9YCrFfi2tlj62/G0/d
-         tEF/2TWyoqRFOSZtUwB7aZmKApsIZMptQVL71eD3oBW4ZeSlxacJJCvLZmPLMLfyP32P
-         H/VGMPm6ZUuJK+dIYwPJGz0tMhZg14Z5p/J96GjX4xH/n2mokHNgfvNYPm56emDLXTLu
-         RLkM/oIF+s+XEHevLyJaY0QpLAzVRD0p5ZbtFyB8um6PVeL+X5JuXhe2bhslGCEyb6Jj
-         05cTmQNcRFXTaQGsjEiecyR/izKfQbulW2Sja99UALEv0w3UV+plwyQ3Y4H0/JlBox1t
-         te9A==
+        bh=YU8HGKFVgDu5PmPmQa9rQm9q2w67RmlvbR2fV4Fj4C8=;
+        b=EGIFg4c5N26fOhESuplhAtqNPahD/0pwRniiZwIx+0YS82YXbPbwhSUnCMDQf09o+s
+         mImhNF4cbG0p5Xc756HedHrWokn/as7xpL3ikayzFa1ZTm1Hc/I3sNr8DATmrLyFEjMD
+         Umw8AnMFjKAy6tSvYOfbypa8m5+jN0nnj+XKjCCAi3f7JNEfXw42GX+0cdx6Z+l3Vwa9
+         98NC4AIxuWUhPFgmcmyMTQRj3a4cAG7UhLKxdvDdfhfUQGDb7h48biQh1RsdhJBnZFer
+         F6IGBVnEmGloAWi/TpKhSFDVME/M4OXNPp8X6bjeFBNCTofB2tSPREexLyBfCbOu100u
+         9jwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713313519; x=1713918319;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713322538; x=1713927338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5K6bypWbsyWY0taJNvZ0WSjYUDnqITNJfk3zzp7+6yM=;
-        b=n7GzUABTxlrSKlX0EFmDdrPCWFoQr6d6MdqZlftlx/LKmNj0kCtybr6nF8RHB+YqLj
-         K93X6KCNmUe8okJ3+FJD26bVYJk54d6e724lYXSDVl9gpkD3hyE/cXYgKA3chaUOcaUI
-         PQHe53BWPVFdNmyyqWwbz++8wjcWAB3enZyB2ce0ECGyhYYtlpj6a57JgrwJzHesZt/B
-         jWA6Fyay7f1NaoDv63fcyqx0/ke2twb/ApHDt//mHEVe8Y/+K4XxIJWeE5s3qq0cx4CJ
-         wq1eT+AckgcACiFCFB+FEWaxZTKCQrB1INjn9azVcxhfifOmaArPqWwq63xSGenw/5i7
-         LjnQ==
-X-Gm-Message-State: AOJu0Yx90VdrfEmeEiiYcx9DEGPhdgNM0L+PS+tXic3W2dua1e+oRbEY
-	Zb3Iy1s8JQGUG+eveKkum3cjnhDGwATur7BrgOXleQvJuY9SMBn0snJ/sg==
-X-Google-Smtp-Source: AGHT+IHPWrX6WVU3liocqamfkB7zAr17Ix2KEHs6V2DB2j9B584c57KI83CfKOt4zmMV3k6iJQ1cQA==
-X-Received: by 2002:a0d:cc4d:0:b0:61a:ee20:25ee with SMTP id o74-20020a0dcc4d000000b0061aee2025eemr3611687ywd.22.1713313518927;
-        Tue, 16 Apr 2024 17:25:18 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:2bf6:8300:76f:3cae])
-        by smtp.gmail.com with ESMTPSA id z79-20020a814c52000000b00617e3ac0deesm2792555ywa.86.2024.04.16.17.25.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 17:25:18 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: open a pinned path of a struct_ops link.
-Date: Tue, 16 Apr 2024 17:25:13 -0700
-Message-Id: <20240417002513.1534535-3-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417002513.1534535-1-thinker.li@gmail.com>
-References: <20240417002513.1534535-1-thinker.li@gmail.com>
+        bh=YU8HGKFVgDu5PmPmQa9rQm9q2w67RmlvbR2fV4Fj4C8=;
+        b=d2jHND11EqcFnOTlAPCRN0OfKbHpaPCUUAskf3z0tWSKNOz4W2cleUXvV9vOQ53/cm
+         nicqvznntsMjbWBjZTz29VgnI/rnaTjZX+dnZryc7qgnQtw8oSTaqscz1ED0Ogh7ehHU
+         A62yWMbndqOLm+iLbtK7ZFgSa/GJvcuD0O1V9RUeyB1Kq0V8UxGPkqJCdd9jTHxtPwys
+         NQIBwoj86+nz6lSJW0iDi36l37S02cWQH+Gue3GubqXtb5prM1oh/mgPLToRZyeo8Pyo
+         goHUmi2bryaUiLrUS8h0mkqNDiAxF11sQPuATlIyw4kcYDs3JIethWNxVlYtONhg9A3l
+         Y8ig==
+X-Forwarded-Encrypted: i=1; AJvYcCXjW9sLvsIkPSgiJ8b7NVWouKvLYvg40lt2HRWj39/Xv8jgb5YjVqCJSXWaPTyyuuW805iNIQJGECZ9l1Xj22I1jYvSHxrpx3IC3T7x76LhVh0o66FCIMF2zIGLQGkDukoMzazN90FWRw/7jtQnq8oI/sRcVTXkguiY
+X-Gm-Message-State: AOJu0YzXz+ay30TLCjW5owv2ZNIhOs3xdIQpbv8/Ly6mFai1+NvEG5Pi
+	d/yA4CZ1TQ6/kRGcBFPd7vwb9rf9flAtVJqqqe2+v4ZId4ef81fcBdm2c64DJSs6R/mvDNITnX4
+	aVMBrGlsN0UlvtUF8Im/HxHilJ8o=
+X-Google-Smtp-Source: AGHT+IHnLcuxtZ/uwP32Uiu9SghWa6lLAfLw4GcSxchoRgTp88uEW8gkPF8hzIXEyKeaaD+Mj9NOczupbaoeOSmiIDI=
+X-Received: by 2002:a50:c313:0:b0:568:c6a2:f427 with SMTP id
+ a19-20020a50c313000000b00568c6a2f427mr9999014edb.27.1713322537712; Tue, 16
+ Apr 2024 19:55:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240416061943.407082-1-liangchen.linux@gmail.com> <CACGkMEuJBdsePgszsM51DZc1GvF0naorHDsMR+SGZ1SiA6jrZQ@mail.gmail.com>
+In-Reply-To: <CACGkMEuJBdsePgszsM51DZc1GvF0naorHDsMR+SGZ1SiA6jrZQ@mail.gmail.com>
+From: Liang Chen <liangchen.linux@gmail.com>
+Date: Wed, 17 Apr 2024 10:55:19 +0800
+Message-ID: <CAKhg4tLsjeJASbdvDumBrbhkddGs4xAV0y5QPv=nhrHcZdSM0g@mail.gmail.com>
+Subject: Re: [PATCH net-next v8] virtio_net: Support RX hash XDP hint
+To: Jason Wang <jasowang@redhat.com>
+Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ensure that a pinned path of a struct_ops link can be opened to obtain a
-file descriptor, which applications can then utilize to update the link.
+On Tue, Apr 16, 2024 at 3:20=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
+ote:
+>
+> On Tue, Apr 16, 2024 at 2:20=E2=80=AFPM Liang Chen <liangchen.linux@gmail=
+.com> wrote:
+> >
+> > The RSS hash report is a feature that's part of the virtio specificatio=
+n.
+> > Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhos=
+t
+> > (still a work in progress as per [1]) support this feature. While the
+> > capability to obtain the RSS hash has been enabled in the normal path,
+> > it's currently missing in the XDP path. Therefore, we are introducing
+> > XDP hints through kfuncs to allow XDP programs to access the RSS hash.
+> >
+> > 1.
+> > https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@dayni=
+x.com/#r
+> >
+> > Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+> > ---
+> >   Changes from v7:
+> > - use table lookup for rss hash type
+> >   Changes from v6:
+> > - fix a coding style issue
+> >   Changes from v5:
+> > - Preservation of the hash value has been dropped, following the conclu=
+sion
+> >   from discussions in V3 reviews. The virtio_net driver doesn't
+> >   accessing/using the virtio_net_hdr after the XDP program execution, s=
+o
+> >   nothing tragic should happen. As to the xdp program, if it smashes th=
+e
+> >   entry in virtio header, it is likely buggy anyways. Additionally, loo=
+king
+> >   up the Intel IGC driver,  it also does not bother with this particula=
+r
+> >   aspect.
+> > ---
+> >  drivers/net/virtio_net.c        | 42 +++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/virtio_net.h |  1 +
+> >  2 files changed, 43 insertions(+)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index c22d1118a133..1d750009f615 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -4621,6 +4621,47 @@ static void virtnet_set_big_packets(struct virtn=
+et_info *vi, const int mtu)
+> >         }
+> >  }
+> >
+> > +static enum xdp_rss_hash_type
+> > +virtnet_xdp_rss_type[VIRTIO_NET_HASH_REPORT_MAX_TABLE] =3D {
+> > +       [VIRTIO_NET_HASH_REPORT_NONE] =3D XDP_RSS_TYPE_NONE,
+> > +       [VIRTIO_NET_HASH_REPORT_IPv4] =3D XDP_RSS_TYPE_L3_IPV4,
+> > +       [VIRTIO_NET_HASH_REPORT_TCPv4] =3D XDP_RSS_TYPE_L4_IPV4_TCP,
+> > +       [VIRTIO_NET_HASH_REPORT_UDPv4] =3D XDP_RSS_TYPE_L4_IPV4_UDP,
+> > +       [VIRTIO_NET_HASH_REPORT_IPv6] =3D XDP_RSS_TYPE_L3_IPV6,
+> > +       [VIRTIO_NET_HASH_REPORT_TCPv6] =3D XDP_RSS_TYPE_L4_IPV6_TCP,
+> > +       [VIRTIO_NET_HASH_REPORT_UDPv6] =3D XDP_RSS_TYPE_L4_IPV6_UDP,
+> > +       [VIRTIO_NET_HASH_REPORT_IPv6_EX] =3D XDP_RSS_TYPE_L3_IPV6_EX,
+> > +       [VIRTIO_NET_HASH_REPORT_TCPv6_EX] =3D XDP_RSS_TYPE_L4_IPV6_TCP_=
+EX,
+> > +       [VIRTIO_NET_HASH_REPORT_UDPv6_EX] =3D XDP_RSS_TYPE_L4_IPV6_UDP_=
+EX
+> > +};
+> > +
+> > +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
+> > +                              enum xdp_rss_hash_type *rss_type)
+> > +{
+> > +       const struct xdp_buff *xdp =3D (void *)_ctx;
+> > +       struct virtio_net_hdr_v1_hash *hdr_hash;
+> > +       struct virtnet_info *vi;
+> > +       u16 hash_report;
+> > +
+> > +       if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
+> > +               return -ENODATA;
+> > +
+> > +       vi =3D netdev_priv(xdp->rxq->dev);
+> > +       hdr_hash =3D (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->=
+hdr_len);
+> > +       hash_report =3D __le16_to_cpu(hdr_hash->hash_report);
+> > +
+> > +       if (hash_report >=3D VIRTIO_NET_HASH_REPORT_MAX_TABLE)
+> > +               hash_report =3D VIRTIO_NET_HASH_REPORT_NONE;
+> > +
+> > +       *rss_type =3D virtnet_xdp_rss_type[hash_report];
+> > +       *hash =3D __le32_to_cpu(hdr_hash->hash_value);
+> > +       return 0;
+> > +}
+> > +
+> > +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops =3D {
+> > +       .xmo_rx_hash                    =3D virtnet_xdp_rx_hash,
+> > +};
+> > +
+> >  static int virtnet_probe(struct virtio_device *vdev)
+> >  {
+> >         int i, err =3D -ENOMEM;
+> > @@ -4747,6 +4788,7 @@ static int virtnet_probe(struct virtio_device *vd=
+ev)
+> >                                   VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+> >
+> >                 dev->hw_features |=3D NETIF_F_RXHASH;
+> > +               dev->xdp_metadata_ops =3D &virtnet_xdp_metadata_ops;
+> >         }
+> >
+> >         if (vi->has_rss_hash_report)
+> > diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virti=
+o_net.h
+> > index cc65ef0f3c3e..3ee695450096 100644
+> > --- a/include/uapi/linux/virtio_net.h
+> > +++ b/include/uapi/linux/virtio_net.h
+> > @@ -176,6 +176,7 @@ struct virtio_net_hdr_v1_hash {
+> >  #define VIRTIO_NET_HASH_REPORT_IPv6_EX         7
+> >  #define VIRTIO_NET_HASH_REPORT_TCPv6_EX        8
+> >  #define VIRTIO_NET_HASH_REPORT_UDPv6_EX        9
+> > +#define VIRTIO_NET_HASH_REPORT_MAX_TABLE      10
+>
+> This should not be part of uAPI. It may confuse the userspace.
+>
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  6 ++
- .../bpf/prog_tests/test_struct_ops_module.c   | 56 +++++++++++++++++++
- 2 files changed, 62 insertions(+)
+Sure. I will just move it to virtio_net.c right above the table
+definition. Thanks!
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 39ad96a18123..c4acd4ec630c 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -579,6 +579,11 @@ static void bpf_dummy_unreg(void *kdata)
- {
- }
- 
-+static int bpf_dummy_update(void *kdata, void *old_kdata)
-+{
-+	return bpf_dummy_reg(kdata);
-+}
-+
- static int bpf_testmod_test_1(void)
- {
- 	return 0;
-@@ -606,6 +611,7 @@ struct bpf_struct_ops bpf_bpf_testmod_ops = {
- 	.init_member = bpf_testmod_ops_init_member,
- 	.reg = bpf_dummy_reg,
- 	.unreg = bpf_dummy_unreg,
-+	.update = bpf_dummy_update,
- 	.cfi_stubs = &__bpf_testmod_ops,
- 	.name = "bpf_testmod_ops",
- 	.owner = THIS_MODULE,
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-index 7cf2b9ddd3e1..47b965c4c3e1 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -160,6 +160,60 @@ static void test_struct_ops_incompatible(void)
- 	struct_ops_module__destroy(skel);
- }
- 
-+/* Applications should be able to open a pinned path of a struct_ops link
-+ * to get a file descriptor of the link and to update the link through the
-+ * file descriptor.
-+ */
-+static void test_struct_ops_pinning_and_open(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, opts);
-+	struct struct_ops_module *skel;
-+	int err, link_fd = -1, map_fd;
-+	struct bpf_link *link;
-+
-+	/* Create and pin a struct_ops link */
-+	skel = struct_ops_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	err = bpf_link__pin(link, "/sys/fs/bpf/test_struct_ops_pinning");
-+	if (!ASSERT_OK(err, "bpf_link__pin"))
-+		goto cleanup;
-+
-+	/* Open the pinned path */
-+	link_fd = open("/sys/fs/bpf/test_struct_ops_pinning", O_RDONLY);
-+	bpf_link__unpin(link);
-+	if (!ASSERT_GE(link_fd, 0, "open_pinned"))
-+		goto cleanup;
-+
-+	skel->bss->test_1_result = 0;
-+	skel->bss->test_2_result = 0;
-+
-+	map_fd = bpf_map__fd(skel->maps.testmod_1);
-+	if (!ASSERT_GE(map_fd, 0, "map_fd"))
-+		goto cleanup;
-+
-+	/* Update the link. test_1 and test_2 should be called again. */
-+	err = bpf_link_update(link_fd, map_fd, &opts);
-+	if (!ASSERT_OK(err, "bpf_link_update"))
-+		goto cleanup;
-+
-+	/* Check if test_1 and test_2 have been called */
-+	ASSERT_EQ(skel->bss->test_1_result, 0xdeadbeef,
-+		  "bpf_link_update_test_1_result");
-+	ASSERT_EQ(skel->bss->test_2_result, 5,
-+		  "bpf_link_update_test_2_result");
-+
-+cleanup:
-+	close(link_fd);
-+	bpf_link__destroy(link);
-+	struct_ops_module__destroy(skel);
-+}
-+
- void serial_test_struct_ops_module(void)
- {
- 	if (test__start_subtest("test_struct_ops_load"))
-@@ -168,5 +222,7 @@ void serial_test_struct_ops_module(void)
- 		test_struct_ops_not_zeroed();
- 	if (test__start_subtest("test_struct_ops_incompatible"))
- 		test_struct_ops_incompatible();
-+	if (test__start_subtest("test_struct_ops_pinning_and_open"))
-+		test_struct_ops_pinning_and_open();
- }
- 
--- 
-2.34.1
-
+> Others look good.
+>
+> Thanks
+>
+> >         __le16 hash_report;
+> >         __le16 padding;
+> >  };
+> > --
+> > 2.40.1
+> >
+>
 
