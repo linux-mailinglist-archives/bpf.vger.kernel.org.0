@@ -1,148 +1,302 @@
-Return-Path: <bpf+bounces-27067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0708A8C46
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:42:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B8978A8C4C
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 21:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 113E21F225F0
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 19:42:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6F56286071
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 19:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E7D2D03D;
-	Wed, 17 Apr 2024 19:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21150364BA;
+	Wed, 17 Apr 2024 19:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tu-braunschweig.de header.i=@tu-braunschweig.de header.b="fhrosDxa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dNVdaASX"
 X-Original-To: bpf@vger.kernel.org
-Received: from pmxout2.rz.tu-bs.de (pmxout2.rz.tu-bs.de [134.169.4.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CDF2134B
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 19:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.169.4.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8F4125DB;
+	Wed, 17 Apr 2024 19:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713382937; cv=none; b=uEO4458YK5TTfuEW9DmVlQkPRF3kic31f07JIs0q6/DeqYdgFrieUsdS5zdYs36Ao3PfHJqDWWCTpH0WEJunbCFcMkeoykGoh7UDIP7fLpGXkcHGQPG/oEtbQyeBu45yPCdEwx/Y/qscz+oTmHGMj4E/G/DS5y6yaa2xdWWdDbM=
+	t=1713383321; cv=none; b=VR7ILvMspuB64awdlgzvz5gHE/OHC5HgZG4PtXA5N8aQVD9UY9PWLlnOO5CVwa1SbKmeu3q8ifX9FoL6acR7DUF2ST8UMqBp/ujpvlALHjIkNEtQ/IFjrat8dGiI11Ob8xq3fN2T0/VOK3WvJhUUH6MqLSkrTkPPcYX0kUZ/TmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713382937; c=relaxed/simple;
-	bh=XO2Q7TzKpE5epUMS/TwrUpxwAO6W/D5ssv7Ia+IK6Bo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=pwcZa2TEKeiSRw16SO8GIq7JmUbX9n/KE4aXoZKIvJkoc81SNZVMURThRPK4Zc/5BowrImsjqH1rzK8RxRxtYiGC6JYSa21/ldPQgsk7cFRcOe/IXdoLu/wMn9zHbL7fgF8f7WAudHpe9uhejWIfy72UiKHLCN9rlDqbDv+X+9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tu-braunschweig.de; spf=pass smtp.mailfrom=tu-braunschweig.de; dkim=pass (2048-bit key) header.d=tu-braunschweig.de header.i=@tu-braunschweig.de header.b=fhrosDxa; arc=none smtp.client-ip=134.169.4.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tu-braunschweig.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tu-braunschweig.de
-Received: from Hermes12.ad.tu-bs.de (hermes12.rz.tu-bs.de [134.169.4.140])
-	by pmxout2.rz.tu-bs.de (Postfix) with ESMTPS id 386504E03A0;
-	Wed, 17 Apr 2024 21:42:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-braunschweig.de;
-	s=exchange_neu; t=1713382933;
-	bh=XO2Q7TzKpE5epUMS/TwrUpxwAO6W/D5ssv7Ia+IK6Bo=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:From;
-	b=fhrosDxaV+J7CrVmtGCieCXzxXNd1AZ3U5V9P5Bt58YlJLKz8yf4JB8fCr7ku6eiD
-	 8MQLmsWI7FWyGlmEkvl3T0WG2jlSoANNnG9wrq8nkRguEGLJ2YcQ34tN81Z/xYd8Zt
-	 PLKBwnHbGM8DH7Ejry/S8niNRHh74VFrQtXtnhgnQWRYKb0G4op78MnhtvOwXOiqWc
-	 hhBJAv2h8hwEYLbP1t8VvfslfUYcR+Q9BdWieY0JS8DbrUahjpjK5RezODCOz5VkIo
-	 +gHq4b3Oamc+S+IbqldYV3GUKyKukzBQC0nsIlBLetvwXl0q6f5/Gt6IieHB9xVKZA
-	 BB9z1k+Dp6pHQ==
-Received: from [192.168.178.142] (134.169.9.110) by Hermes12.ad.tu-bs.de
- (134.169.4.140) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.32; Wed, 17 Apr
- 2024 21:42:12 +0200
-Message-ID: <0f25d048-77fa-416c-b4ae-ddf7109deff1@tu-braunschweig.de>
-Date: Wed, 17 Apr 2024 21:42:12 +0200
+	s=arc-20240116; t=1713383321; c=relaxed/simple;
+	bh=1LZ19GrsRzL4nqKN2VxIPU9A/Aloyj4ott6F8ugH6Bg=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=M66idv1FCeCJkf9i+TG4jzhSMn8s67qYFf39sVbCFnNNdQqhcllWnvmye/MIPt/C3lk7febr9oW7XK83tcn2YiH5n+u9IiMK3wfEabDN4hH/pJLvLl9vTbKBnLGGYsU+ubqkHzkv3NE0a3IXUF8TWCPtZxMVth8Xy0JBVnnnADw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dNVdaASX; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78f0593f45dso4821385a.2;
+        Wed, 17 Apr 2024 12:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713383319; x=1713988119; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c1idUfe7Ux7dDWnZBEsflY2Rpd/cnwAKgfd2vpdjKHc=;
+        b=dNVdaASXYqhTsFyFQeV2Ruo5sKllaMI101H0fMURt8NCIHiMUIjHLb1+QBjWtHuRDk
+         TIvBXUfiUZnxBz7JkmDhP3q3vtDni+p6le4Z1Eg1awWqz2wfVvPaJQBPV3G2pQgJsHQl
+         stDOVoTsSBNxKSJd2vcxSDvXDkVQE7Hdr0aBbkO+1K9BdRxqOj6M2El6L2EHkJh9sGVG
+         CbLN1WnZvtkzs3+VwPNWvT1SOgB7psOQNWkVttU4wS91jWobBNbLaixhU7yJiM1l2Yr3
+         Bn/+QQhBxgxQEwUeMToDWOHmeanFS8yt3BoG1Es3/zSIDL/lj5piHQFiduy3bjryB/eG
+         q4bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713383319; x=1713988119;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=c1idUfe7Ux7dDWnZBEsflY2Rpd/cnwAKgfd2vpdjKHc=;
+        b=qgpEyA2NSMFgFkrwxGL8PG81ljoh0NOCs6b2uPRe7iqjZxRnCYIx/2PXatEZmvkPma
+         nhpwPkhxVatFAZZPZkYCAJ/l1XNQHUmw+Qh47/vrNLGzRFYudX0DkNz6p3wlkEBR2bIf
+         mEuvyufSnj9J+vTc4fkUwgHqe2y4dfMTN9Zk9UOzIIJ8iq82skv+WhAAt75bb/QfHoc8
+         MIeI8vL05jLOOCz9rppq93Cd7vcK/rfs7uWqKvLMwHFb8A55zal0p6nEP5eItwcr59we
+         K9GeVLOK8zr0lS/ANMkVbIW0fKb9PYhrqbd6a9BdPxiWJ4sgBlpIY+7Fyj7lQu30tciw
+         aTaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXpcbO2lqzujOJQZqYxMXZoBrMfoPwiel49LYxSi9QSDgdXzA02YCi5gLVB8hf+ip17anWilbVchLlpj1NcVFaDvo3H5+9chAuo+Qpq92vFMMwR01CxwskOns1Q
+X-Gm-Message-State: AOJu0YxovaruQ2n7qyV3kRBhQCQcFbSZxeTm+b0a8UJXPULPRufRdYxx
+	OeRybKp8dFZkukLcJBlBqnW3JW6yGGnFss05sihqTsb2YmCCS6Hx
+X-Google-Smtp-Source: AGHT+IGico5U4WBIarM0nzdXr8kutGWAKtkpKVg67bXQc00lA6d7n5Xxku6XcJmDICBwSvuaa5bJ6w==
+X-Received: by 2002:a05:620a:29c7:b0:78f:182:5a17 with SMTP id s7-20020a05620a29c700b0078f01825a17mr514475qkp.45.1713383318898;
+        Wed, 17 Apr 2024 12:48:38 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05620a0a8900b0078d5e60b52esm8631094qkg.114.2024.04.17.12.48.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 12:48:38 -0700 (PDT)
+Date: Wed, 17 Apr 2024 15:48:38 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
+ "maze@google.com" <maze@google.com>, 
+ "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
+ "kuba@kernel.org" <kuba@kernel.org>, 
+ =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+ "pabeni@redhat.com" <pabeni@redhat.com>, 
+ "edumazet@google.com" <edumazet@google.com>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+ "davem@davemloft.net" <davem@davemloft.net>
+Message-ID: <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
+In-Reply-To: <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
+ <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+ <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+ <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
+ <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+ <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+ <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
+ <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
+ fraglist
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: No direct copy from ctx to map possible, why?
-To: Hengqi Chen <hengqi.chen@gmail.com>
-CC: <bpf@vger.kernel.org>
-References: <36c8d494-e1cf-4361-8187-05abe4698791@tu-braunschweig.de>
- <CAEyhmHQZD+F=dJTS8Pywp6vyKfo0Fo=O4Ww+8o=6+GwJ-WogLQ@mail.gmail.com>
-Content-Language: de-DE, en-US
-From: Fabian Pfitzner <f.pfitzner@tu-braunschweig.de>
-Autocrypt: addr=f.pfitzner@tu-braunschweig.de; keydata=
- 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
-In-Reply-To: <CAEyhmHQZD+F=dJTS8Pywp6vyKfo0Fo=O4Ww+8o=6+GwJ-WogLQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: Hermes04.ad.tu-bs.de (134.169.4.132) To
- Hermes12.ad.tu-bs.de (134.169.4.140)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> Have you tried bpf_xdp_output() helper ?
-I haven't. Can I use that helper even though my program isn't related to 
-perf at all?
-I'll definitely give it a try. Thanks
+Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> On Tue, 2024-04-16 at 19:14 -0400, Willem de Bruijn wrote:
+> >  	 =
 
-On 4/16/24 7:12 AM, Hengqi Chen wrote:
-> On Mon, Apr 15, 2024 at 5:41 AM Fabian Pfitzner
-> <f.pfitzner@tu-braunschweig.de> wrote:
->> Hello,
->>
->> is there a specific reason why it is not allowed to copy data from ctx
->> directly into a map via the bpf_map_update_elem helper?
->> I develop a XDP program where I need to store incoming packets
->> (including the whole payload) into a map in order to buffer them.
->> I thought I could simply put them into a map via the mentioned helper
->> function, but the verifier complains about expecting another type as
->> "ctx" (R3 type=ctx expected=fp, pkt, pkt_meta, .....).
->>
->> I was able to circumvent this error by first putting the packet onto the
->> stack (via xdp->data) and then write it into the map.
->> The only limitation with this is that I cannot store packets larger than
->> 512 bytes due to the maximum stack size.
->>
->> I was also able to circumvent this by slicing chunks, that are smaller
->> than 512 bytes, out of the packet so that I can use the stack as a
->> clipboard before putting them into the map. This is a really ugly
->> solution, but I have not found a better one yet.
->>
-> Have you tried bpf_xdp_output() helper ?
->
->> So my question is: Why does this limitation exist? I am not sure if its
->> only related to XDP programs as this restriction is defined inside of
->> the bpf_map_update_elem_proto struct (arg3_type restricts this), so I
->> think it is a general limitation that affects all program types.
->>
->> Best regards,
->> Fabian Pfitzner
->>
->>
->>
->>
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >  > > > > Personally, I think bpf_skb_pull_data() should have
+> > automatically
+> > > > > > (ie. in kernel code) reduced how much it pulls so that it
+> > would pull
+> > > > > > headers only,
+> > > > >
+> > > > > That would be a helper that parses headers to discover header
+> > length.
+> > > >
+> > > > Does it actually need to?  Presumably the bpf pull function could=
+
+> > > > notice that it is
+> > > > a packet flagged as being of type X (UDP GSO FRAGLIST) and reduce=
+
+> > the pull
+> > > > accordingly so that it doesn't pull anything from the non-linear
+> > > > fraglist portion???
+> > > >
+> > > > I know only the generic overview of what udp gso is, not any
+> > details, so I am
+> > > > assuming here that there's some sort of guarantee to how these
+> > packets
+> > > > are structured...  But I imagine there must be or we wouldn't be
+> > hitting these
+> > > > issues deeper in the stack?
+> > > =
+
+> > > Perhaps for a packet of this type we're already guaranteed the
+> > headers
+> > > are in the linear portion,
+> > > and the pull should simply be ignored?
+> > > =
+
+> > > >
+> > > > > Parsing is better left to the BPF program.
+> > =
+
+> > I do prefer adding sanity checks to the BPF helpers, over having to
+> > add then in the net hot path only to protect against dangerous BPF
+> > programs.
+> > =
+
+> Is it OK to ignore or decrease pull length for udp gro fraglist packet?=
+
+> It could save the normal packet and sent to user correctly.
+> =
+
+> In common/net/core/filter.c
+> static inline int __bpf_try_make_writable(struct sk_buff *skb,
+>               unsigned int write_len)
+> { =
+
+> +	if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> +		(SKB_GSO_UDP  |SKB_GSO_UDP_L4)) {
+
+The issue is not with SKB_GSO_UDP_L4, but with SKB_GSO_FRAGLIST.
+
+> +		return 0;
+
+Failing for any pull is a bit excessive. And would kill a sane
+workaround of pulling only as many bytes as needed.
+ =
+
+> +	     or if (write_len > skb_headlen(skb))
+> +			write_len =3D skb_headlen(skb);
+
+Truncating requests would be a surprising change of behavior
+for this function.
+
+Failing for a pull > skb_headlen is arguably reasonable, as
+the alternative is that we let it go through but have to drop
+the now malformed packets on segmentation.
+
+
+> +	}
+> 	return skb_ensure_writable(skb, write_len);
+> }
+>  =
+
+> =
+
+> > In this case, it would be detecting this GSO type and failing the
+> > operation if exceeding skb_headlen().
+> > > > >
+> > > > > > and not packet content.
+> > > > > > (This is assuming the rest of the code isn't ready to deal
+> > with a longer pull,
+> > > > > > which I think is the case atm.  Pulling too much, and then
+> > crashing or forcing
+> > > > > > the stack to drop packets because of them being malformed
+> > seems wrong...)
+> > > > > >
+> > > > > > In general it would be nice if there was a way to just say
+> > pull all headers...
+> > > > > > (or possibly all L2/L3/L4 headers)
+> > > > > > You in general need to pull stuff *before* you've even looked=
+
+> > at the packet,
+> > > > > > so that you can look at the packet,
+> > > > > > so it's relatively hard/annoying to pull the correct length
+> > from bpf
+> > > > > > code itself.
+> > > > > >
+> > > > > > > > > BPF needs to modify a proper length to do pull data.
+> > However kernel
+> > > > > > > > > should also improve the flow to avoid crash from a bpf
+> > function
+> > > > > > > > call.
+> > > > > > > > > As there is no split flow and app may not decode the
+> > merged UDP
+> > > > > > > > packet,
+> > > > > > > > > we should drop the packet without fraglist in
+> > skb_segment_list
+> > > > > > > > here.
+> > > > > > > > >
+> > > > > > > > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist
+> > chaining.")
+> > > > > > > > > Signed-off-by: Shiming Cheng <
+> > shiming.cheng@mediatek.com>
+> > > > > > > > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> > > > > > > > > ---
+> > > > > > > > >  net/core/skbuff.c | 3 +++
+> > > > > > > > >  1 file changed, 3 insertions(+)
+> > > > > > > > >
+> > > > > > > > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > > > > > > > index b99127712e67..f68f2679b086 100644
+> > > > > > > > > --- a/net/core/skbuff.c
+> > > > > > > > > +++ b/net/core/skbuff.c
+> > > > > > > > > @@ -4504,6 +4504,9 @@ struct sk_buff
+> > *skb_segment_list(struct
+> > > > > > > > sk_buff *skb,
+> > > > > > > > >  if (err)
+> > > > > > > > >  goto err_linearize;
+> > > > > > > > >
+> > > > > > > > > +if (!list_skb)
+> > > > > > > > > +goto err_linearize;
+> > > > > > > > > +
+> > > > >
+> > > > > This would catch the case where the entire data frag_list is
+> > > > > linearized, but not a pskb_may_pull that only pulls in part of
+> > the
+> > > > > list.
+> > > > >
+> > > > > Even with BPF being privileged, the kernel should not crash if
+> > BPF
+> > > > > pulls a FRAGLIST GSO skb.
+> > > > >
+> > > > > But the check needs to be refined a bit. For a UDP GSO packet,
+> > I
+> > > > > think gso_size is still valid, so if the head_skb length does
+> > not
+> > > > > match gso_size, it has been messed with and should be dropped.
+> > > > >
+> Is it OK as below? Is it OK to add log to record the error for easy
+> checking issue.
+> =
+
+> In net/core/skbuff.c skb_segment_list
+> +unsigned int mss =3D skb_shinfo(head_skb)->gso_size;
+> +bool err_len =3D false;
+> =
+
+> +if ( mss !=3D GSO_BY_FRAGS && mss !=3D skb_headlen(head_skb)) {
+> +	pr_err("skb is dropped due to messed data. gso size:%d,
+> +		hdrlen:%d", mss, skb_headlen(head_skb)
+
+Such logs should always be rate limited. But no need to log cases
+where we well understood how we get there.
+
+I would stick with one approach: either in the BPF func or in
+segmentation, not both. And then I find BPF preferable, as explained
+before.
+
+> +	if (!list_skb)
+> +		goto err_linearize;
+> +	else
+> +		err_len =3D true;
+> +}
+> =
+
+> ...
+> +if (err_len) {
+> +	goto err_linearize;
+> +}
+> =
+
+> skb_get(skb);
+> ...=
 
