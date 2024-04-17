@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-27041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D4B38A8314
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:24:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2BF8A8317
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 14:25:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 900B91C20FEA
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 12:24:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BBD5B20EE1
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 12:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C4613D293;
-	Wed, 17 Apr 2024 12:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EA313D53C;
+	Wed, 17 Apr 2024 12:24:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Lz9xqoRx";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="pSVKj4tk"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KDWeDOdF";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="sCRDFZVD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB6713CF87
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 12:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53BF13D299
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 12:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713356689; cv=fail; b=jbcRPDrGUsgDdCpRyuJTQ+69u1e+aJ9Hy3YUE3qAgEgUEB3jq3lWMH+Rnj5XCvS5DX+B5wGPo1qSU8LeSn3rctG8dIcebJtXoXmC4UWhLS26MpuJMSrfhsx87oAVK6mWr4zPeBmWaWGWQSdpOBVOVWmfbKfBXnpsv1D4QfoPH7Y=
+	t=1713356693; cv=fail; b=mbmMfT1q1oWClV6vqTEagTmzmMvnAR4E2FrcNHfEveguS2L6Huwcq/gRnPEhFrXPD/9pQjAQu1244L/3KBNnRDzIi0Od1fbic+l1brcO26YRELgoKh72icQuZC3PRrzsMWLWPi5Qnw4V2lUTx2i7WTci+SW84ZysfKYErUaHxTg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713356689; c=relaxed/simple;
-	bh=sqS6NlN3urOpe1HS8o9m+Eo9bfXMDLhcHcXCK+hY8g4=;
+	s=arc-20240116; t=1713356693; c=relaxed/simple;
+	bh=x6ZnOX4qWtwbBnhNC5I6v70woU+o0qBgY5YnyK2f6aw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kXE0I96YJ63Ir31Xvw9o0ip0vGAMrpy5JT51Hsp225GQYidtAJhntAyTUWU8PsbJwKhA2pwpRNBcHGOvFUzcUZE3DD0dKGqZnQ3MpmQvnyBn80KFZ+H6nk0C77q1amDPHXkB4TiZTcEeEtC7I0QBfuk5NiHS/V3UGakRkqr9rY0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Lz9xqoRx; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=pSVKj4tk; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=T8g4OVHscb/JDo5oNeL8fHHIh3VvF4reSGeAUruxIRxUwWUPM1hsKpyh7Qx76xzrZ43P5KyuLzwnNsuVTtWiDMcDCVu2oeg9vsh1c5NYLcSQtKnDMa1PdM0OqHCBwoQ0uTag7nzGV/b7nl4RFdF3VcUtkSO4WhzFx7gw8ulsAls=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KDWeDOdF; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=sCRDFZVD; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43H8xP1A012466;
-	Wed, 17 Apr 2024 12:24:43 GMT
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43H8xURH021820;
+	Wed, 17 Apr 2024 12:24:48 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=7hvYT3YFKQ+wZz/3hnHgcWUambsRF6MDudWjPxNwMBo=;
- b=Lz9xqoRxL7FaoqDmfER6wbw6ekVrMFrVbNSIXmIEyCTx/QgND519aZ3g4ZyVEbJ5EiHB
- tit7SLqxe/ADhqNuUA+eWMa5Y++Z8zcdwZiwsxDseBbzPIoU7mTxh5La1Su0AN/ZDrmY
- yPtLripGwBFZLn76XGlNrlCE2SyARQaikhUabQXuRyA854sYN+ikLfi/9CQ0yNOUr8ja
- 0hNTQF4XBlg1pRL6ZoIyYW8M/MLw/dQXt9bWQ6gin8YNY+whea8x6wFFnmqnEfFAas/6
- 3ucMKnfyR+e0b90BTQ7UX8AYNoval/Vtb0EH1vXmsbv7xxbC5yqXg/iibG7Is0H/aYXJ 8A== 
+ s=corp-2023-11-20; bh=4PmDskNSHCtCsT5oacYQ0Me/0wAlI1YjtcoEVkh1Q58=;
+ b=KDWeDOdFtG0BgKc9RqGhgg1/GYJa8Ecnfn9ITIRYME5OGcXTf2bKhw9hlriKo3vD0GER
+ ohlJcBpgLVtFC2qk6PG/zrnpPmK3f8/sp9sCxJblRvX4A1ZZUawesPVTiXhEuQSnkRtQ
+ Z+khp/dbT0SgKAPOYWWGaQ8n6PWPRfOdnbSXa96pkmZWErWnh+e08AXDVzhUw8aMJBEH
+ K9FNm+mt6esUiMGGR1f2G/14E6kxQ1jXb4mONJP5fbZAehJWS2tjZAvk5Jd/2ytKUagw
+ 78iprXDQOWhfEAYK9aqFkiWXknJMoOboDIvXDrX7JfqXA44IW63b6GHQYVcY16LYngg2 zA== 
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfhxbqkbq-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgfffr3n-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 12:24:43 +0000
+	Wed, 17 Apr 2024 12:24:47 +0000
 Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43HCMK65028673;
-	Wed, 17 Apr 2024 12:24:42 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xfgg8qp0d-1
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43HC4enV028851;
+	Wed, 17 Apr 2024 12:24:46 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xfgg8qp2b-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 12:24:42 +0000
+	Wed, 17 Apr 2024 12:24:46 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O8L8/mipU8bGOBEugmnk43uxcxyVCg23NhYzWvtlZ25VOSjVFbuiis1QB+QP3LC+MtJz94td2p+coXVbjpo10xYNtrwFej2noFrqDOfOSHjzSgaXN1LerYVcF3wxSJZSA7ObrbFlJT8A7nmD2uvu4CqjWfULjNzSpcx9tmHKNcAlXqsqXa3Gy++cSQJcvIvKF6ys/Pe5ASFmpPHOI0m+74+g2YRILX8V1NBuOQXHkaLphCvT5joeqp0hr80c2/XfGyfnM1JTNeNwtwvkfItiwpaRtBxH3PIMYBu4OePmAH7zLLGPQRniNB1yyPpzHMGL1fymASq6OMM9aZKuMsvIrQ==
+ b=c0+JtAovjAmCtHoacU+Y+uJiR1n1IvfI7zLDddS0EGKgnniitAh4ZeDMFIfMtFBrfB0KpMtU6cISt3mZh+0PzmJCQiQgHOtcxuhsCFcFMBqL4DsOTQz3AO+kYlMfNpyeJdJAqa1WOxCyzNQH+dEKl0D+jlqYLHllAh2dzKVg60vHooRyzy2SHxwwHfs5L5N6RbhQaQExJMRXZQQrKye1Du4THt/PmAz6d4HUgU3y2kLA7Dc0jz5vnCHGSJwWf5NmYru1awFiAuLhyFK7mitiuYIRszE9r7FZ4yriqcRzykllz0TwB6FtKIpOthgAHuOsK6boABh7N+79smwClSWI0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7hvYT3YFKQ+wZz/3hnHgcWUambsRF6MDudWjPxNwMBo=;
- b=PAaVhnzvYOlXGeuF5QbETj7/ymlw3FF4PrIWbCzdsfvrFbfrqelZcRGXHpzO2dPFZi12ZcKnMD/l8/uwnLumG7ZeHR8lV/JQFy5eGxSdLhzRF4qVtPnZKNcKjaB7/UJDf/6w1K4UiVj/KFdE90BpJMYh1LCXs5Xw0VPSVNLwdCzMzKvGehMsrK6EXtaihp/KJ9C7aQjcAlEwr8NC7+0i4quzp2gvakrUKQW/pAcKvqnLaYau81IbKCDp9TZLgHOP56TV8w7A8SOfPrP+pgPSpRJ2G9ceufBJrHZ2OT9JGvtP+4KGdMWJHlOzBlq9yxoJZ0AWBAb37M15GxUfOY9ifw==
+ bh=4PmDskNSHCtCsT5oacYQ0Me/0wAlI1YjtcoEVkh1Q58=;
+ b=gyxOEGln6422LG0IGJ3Qn4YcGg9KoFI+nhe0yAUlxy2Xs+AoOsExWpuNU8GbS6iwa328NJCGUJd98nXMtitFKOFXeP4nBNeRadboCaGoGp33Npv1bZ+HkqrqF43nz5/JptInYAghh+MtYTiyrdlOzBMDYUCATvfIjsOTkReHyrvzG4rPCaQU8wFtFN4vs1fUKdRA4AvGFGegvrCmczYyhJkh/7SdRwsVjeks3YkElh8FZNsUQ6b/E6hV/Z2pyD0fgeGyZ2xnEsjtSvUn05F88BmRmjuOkv7QeuihXTpdmg6LsoCzDhAFb37IFKLxezg6XBXpFD0d+ghDXQ2AenbW/w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7hvYT3YFKQ+wZz/3hnHgcWUambsRF6MDudWjPxNwMBo=;
- b=pSVKj4tkXGDdtQ5HehCY5milPYUK4lxmPceHwFZ3beJcsYPP07dj6P6SnDhxg6SS9u03VCqftLZ16DIawoI6voCpjWBLyIcNt8EmJeR0YfYaK7stcanGFZ/GaWJA01iIux6g8DZj1ustKfoU2jBKDUl9Hs01g6+JnnrmgX2UY8k=
+ bh=4PmDskNSHCtCsT5oacYQ0Me/0wAlI1YjtcoEVkh1Q58=;
+ b=sCRDFZVDAa6JwEPyAixf81Daf8708Ck0PA/8zRBpOUxxr+q7hseEJtPMlt1dCsNMU0p+PSfyFzOWXrLK1rPD6aDT8+KDlcFpEXNaOucgcx5Ap0+Y1UtfvYnU9DYU6uBrLnwgi7toASrhbuoqx+TeSxm6H8TVZxati7CQpWUn6NE=
 Received: from MN2PR10MB4382.namprd10.prod.outlook.com (2603:10b6:208:1d7::13)
  by SA2PR10MB4745.namprd10.prod.outlook.com (2603:10b6:806:11b::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Wed, 17 Apr
- 2024 12:24:40 +0000
+ 2024 12:24:44 +0000
 Received: from MN2PR10MB4382.namprd10.prod.outlook.com
  ([fe80::1e11:7917:d2c:e44c]) by MN2PR10MB4382.namprd10.prod.outlook.com
  ([fe80::1e11:7917:d2c:e44c%4]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
- 12:24:40 +0000
+ 12:24:44 +0000
 From: Cupertino Miranda <cupertino.miranda@oracle.com>
 To: bpf@vger.kernel.org
 Cc: Cupertino Miranda <cupertino.miranda@oracle.com>,
@@ -86,16 +86,16 @@ Cc: Cupertino Miranda <cupertino.miranda@oracle.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         David Faust <david.faust@oracle.com>,
         Elena Zannoni <elena.zannoni@oracle.com>
-Subject: [PATCH bpf-next v2 1/5] bpf/verifier: refactor checks for range computation
-Date: Wed, 17 Apr 2024 13:23:37 +0100
-Message-Id: <20240417122341.331524-2-cupertino.miranda@oracle.com>
+Subject: [PATCH bpf-next v2 2/5] bpf/verifier: improve XOR and OR range computation
+Date: Wed, 17 Apr 2024 13:23:38 +0100
+Message-Id: <20240417122341.331524-3-cupertino.miranda@oracle.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240417122341.331524-1-cupertino.miranda@oracle.com>
 References: <20240417122341.331524-1-cupertino.miranda@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0558.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:33b::14) To MN2PR10MB4382.namprd10.prod.outlook.com
+X-ClientProxiedBy: LO4P123CA0335.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18c::16) To MN2PR10MB4382.namprd10.prod.outlook.com
  (2603:10b6:208:1d7::13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -105,57 +105,57 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MN2PR10MB4382:EE_|SA2PR10MB4745:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95043995-4426-4a16-0aca-08dc5ed95a9e
+X-MS-Office365-Filtering-Correlation-Id: 2dcd3f52-b1f8-4fd5-beeb-08dc5ed95d59
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	IuM6djIcX1Nu60pRUVtzdWUnW+Dr658Jqa9+RmE7bLSyV3sYbXXWqPEE6AXkvQROUf288g78MNQczF/1pPPxDeEvQhngWP9ce+9BjbXvPR8ZMgI8412Bz7+m36ntEZ91qn+uKZBuVqDG9QAJVIfXbEajMUo2oFcxbUg/m7vZWNVHOZ/3vQwgQBmfiKZxgKfqvnJXI7zABSPDIkCNDNFvi6wA3Sk8zVm+3XCYDtNPWHNDeGS8MwZn1lNMM/QnoZhGvngRQFO0vx/adYWTcUNW1HECmuItCmEj1b8QptMK1BdwMa6CJCbcGis33h0yLGdUBikyYosD2zOoMl7YFsss/h/6MQFIvLvJnBmswIL/Ml6WlszwIMtlk5WsZ9ThiE+vSqh7nh+zBdAFvzCeyTHL73w6Q6O82ji/mUMcKKNUe5zPux8IqTiNPIutoubhNoQAgPtSeJN6tIMb2+54Dp+/ARyGVNFEf1CppHxaTpWZ4kRe517BZEU4wMZUoBSfH8w33pKzDpa/xpwuBtZb/RP6xTdR92f+qf5NIAvl0sDnzSyjAWi+CUJfLoTriswIDAsMH8WSobLW3kp7NWJVrSQZQ24mJeV3pIIiUwBG/sVvAhplB4HUaewbEnDjncKB/NmY8wkbgxQSxv40oANwt7VuLJ++o92eeeT5khiExNw+DbE=
+	RI/GyoNMtz2QoGOrPex1IvKNTiA8A0bIdiorVjvBOXs2E5HKP0/61jDR/zCHk/f0YqBsZRuJ9zCT6xnFWc7m/B0BE1kppGtOo+Rj7ygPsdWZn5ryFSFaY8VRTUdax5F2Q5lBmMCd4fWs621CHGWhVZ786wgRB5Ac4ngvf2OjcBsKYAupTX35vGzHWlsyyBo3yUM+XWjHEf64ov1DtFuWBPbdJ5kgJUpocCyynApaGUavVS9+xOd7/kmCpM47AMqlWmGCjEDbNRGHWS9uQ9HOnU+3QGTfo5SWnah5eKYPauATLXL2MjdyoYIHqa+VH36w6HpLf+GJy7MTS1CUEOQhrVSUlzKhbNhbZxcTZjXjFMX+eSgiQaFlIZXBsJs1gJEjxmeqwAfHYSk1bXE4g0VRt/Hkn8NzqmJZ+KcQ0SZP+ts+ZnYAmlW6fEWY3P2s2bYqi9qLSi0gcQB+U6UopyNM4LjE+nAExhu7mw6tpkwp7vgRvBWmCyWSNo7ScCLs54eUg0o+ZfTa47O3senVWGLB71Y3BL0Fb4fRdCPtVLHHTXZVWZY8wsqTfSQUjOxXvIdJ6Li0UY0Dy5eBhFruhJ/cMNn0lR8Z2NLKQ+yezFH9ObdICHsUMXRKtoc84qiUfqM1Yz80zHSfX+9WFDVV58v5gLrGu25mUPgmMb+drmlsGqE=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4382.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?teyETVYf5oLTCRPD59WS6q2yj8zAoD+tjIFjXlbUjw5C+GA2N4CaDKe21bvy?=
- =?us-ascii?Q?uLALtare6dK0KJlWlsf66z69GDrLt6+hjzOq7HxeNdKXO8lhDbHnvI21ZVXY?=
- =?us-ascii?Q?RxSYPxQd+Mi6bM+MsI22+TVjpdCatibHgQN56FiB9YXiaEWndY3sDBRgg96i?=
- =?us-ascii?Q?xwpEoI8qMdeV70vo1rfRFuKBzS1GTCKzAIDaXS2dmc3MSvLZvsxXcJoHK/vZ?=
- =?us-ascii?Q?EPLb7hEi1AsEuTsi6IxH187AumvENM7xldRawlMrktqgeI/gQaKok/Gky8PI?=
- =?us-ascii?Q?rimj5Ztw0+8Btf8Lmz+SlaUa/KeeLZKrvWQbbeYL9ZM2RV9k8jj3JLe+pTKq?=
- =?us-ascii?Q?tZ6sLaCoUDioIZvAgENel1L0yZ807WMO4zZgI2Q/Xnk/O/C5JmzY587TwnDz?=
- =?us-ascii?Q?uv/QsKfUWsnXbHjf8O3eqZNpYvXZEuNj+uHEELmsNzbXkf6RR1rBPwOT3kvU?=
- =?us-ascii?Q?/+QbU/xAprTpj4gfIpYkU4GiF3UAHHjClZvNws861a1qMZGBlpUw/56XUDNu?=
- =?us-ascii?Q?OFCXdnL85r38eb78fbIrRgf0qxNTbaPi57eeYc2dLIkVyk52mQQNH9Fs3wUD?=
- =?us-ascii?Q?SFVKj31yhGmbNKjprO33wzqptDWWWgPdUZgHmefOE4U8U2P3XIQ611mh1C+x?=
- =?us-ascii?Q?3plrbyiAaVzPSAkXAqTYMi2lSmsOiC1CAUjnxY4KJdnV8GmGY/3Tojp5Ybzb?=
- =?us-ascii?Q?UQjBtbreHHKBuR2OvbxhUjU+zqnT4g7VjkHmLoufWFhBEF9xlF9jLsiSLWOY?=
- =?us-ascii?Q?bn276mCPmeGoxydfNNocxr8OgFDHUpNnQoWGg792G4xXbNjbo1wzOXorxJFq?=
- =?us-ascii?Q?6JP9lsQrqDXPe0E+nRItQZf2qicOFyRxVZyeX4f4z/41RXuoNCIyCzMd1M7a?=
- =?us-ascii?Q?nZ7qj73UYk39YWpvupuPrstqxGNUQpql8WF84fGvmLzlwfP9ozAl/U1nl+MG?=
- =?us-ascii?Q?unjdPO2C4uisPl9ryGJcASiI31PnRntA8J7ppx9L9fA1lgUFpasmIp/gHf+q?=
- =?us-ascii?Q?jvCyi0G5a26BihPYy0glKrkTb0j8P/HFrtXv4PfBPv+yKGC5HD+s5Z9Qxhhv?=
- =?us-ascii?Q?XXlKm+WXWSpk3KSJNFuah82vqfua2i0oAlQGS4VquBtY9YGu06oLff4SCSGL?=
- =?us-ascii?Q?G2pELaOaJlWM9UZgXjZQO80qSrf6Tmh66t+6N+VsAOZ1CVwOqikKniF/q8lG?=
- =?us-ascii?Q?5hTn1/zrfssQA9R7lmST533Dg5KeYFJxY8TXhNnzMPBRWI5bZ46nDrOW3lRF?=
- =?us-ascii?Q?1yS3mTrsgvILn/5qUux7HmgHb5zRFF3cKs+MXadF9bIL1bhaoxTKyGkbxovg?=
- =?us-ascii?Q?mwCRjNFNifcuPWcGfB0+7X+xaJnPZlvzD6IS7/nq6kY3JiOGF9royt5XVAX0?=
- =?us-ascii?Q?cct2Z815WuqTKih2TjTD1rXSc6Uscn2Vxwg/weLhXcCj6mpjh15zGgWhbKKp?=
- =?us-ascii?Q?0ByKVlJIEkLYiFRy2GgVNRcpO34estXAB3TOxq0hM1solBXzhs7aqDchV9B1?=
- =?us-ascii?Q?ioVRAHnInNxHfPUUR1OXv4QFHK1prZr1XZiN52fvOQtg5iJ8g5YlWb4uZPs9?=
- =?us-ascii?Q?NNlU/XeilKNCnctcohdl4nL3hrL55pAP4AIEGzUlkrxwjp/ndSLDkyx5flvD?=
- =?us-ascii?Q?eWn1mB/4iD5dECcsg71WLqk=3D?=
+	=?us-ascii?Q?6ZH4i0StZ9ifg4igfGlUpVmRTRbBHB4tdOpkxYbYHOAImH8xJHq3qxTMjXnV?=
+ =?us-ascii?Q?fvT+WfrZy7zqd3Lj8KTNKB7Y782yl8lBV/4E9nIWA/YJCbuEY44qxfB/gssx?=
+ =?us-ascii?Q?F7FA6AoDPDuvHX8bvgFTubq4o0lSl4shoUDAHmHmyfEmPfy9pADZj2TLriv4?=
+ =?us-ascii?Q?OplUg/GsO7+FWFBJMzlqdcZQwXoq/vpL7AUBs1R5rzZcXc85n/yKTEXn2H86?=
+ =?us-ascii?Q?xQjsUKBU59QmnzpdxmXam1Wn9yDvo5a+4uxEpju0PqXFWuS6kBI8MCDgOx0H?=
+ =?us-ascii?Q?KMxDoRDm53PSnQjCKgsj6DGX8D/wvgJevPgZ28FoJdAFtDpzsPucbeCemV5F?=
+ =?us-ascii?Q?q20TCvOIk23pEEqknK5JyBPuFplVwisA0yCKpEbEFX7V+dzc9RCMTAIUtyob?=
+ =?us-ascii?Q?i9wDHcYy1Ox86JUTbVU3/rmd1QTVe5E4h+Ay91KL6cuTLvRbM8MhLcAEpaXs?=
+ =?us-ascii?Q?GEPy9RyYAtFD5pOWTauYWkn3HlvTtNDkQmMAfeizVQ4Trcmj8wBNP7oPdrlU?=
+ =?us-ascii?Q?avW89hk1L0qh7RynKHeKlyPD05RfOj5PsyW1UCrG6Yl69eez8L11ppdc4h2j?=
+ =?us-ascii?Q?Lgn1xffH9lbUB+DEOAhZlW+KM8wxcmFqITFhHSebvML754zNEJJEOrvL2ZTw?=
+ =?us-ascii?Q?GOfgNCA3mFFYc7g44Smnfkfsjzv5Fd6vc4QuHQtXQ27d7VPfMiLwT65E78Sl?=
+ =?us-ascii?Q?ZdHWBScsX16XDU7XPFQszv4ieRVrVkRN4KAT4+zl6GFz6ZC0rOk91Y206JJe?=
+ =?us-ascii?Q?OvXoQlqwqfr65ER13AJNaYR6C4kxxwu4ttuDhc6qeU1LgEGgPg99Wr9zZ11w?=
+ =?us-ascii?Q?J/571SNI11tY28KY+1bdRRbIZqFXfL8HzKyCt1sPoEDiIO1+sUPuOrPFqsO0?=
+ =?us-ascii?Q?1NhOE4Rz4EuP6ci8OtjALeoCJALGTwaYaePkJjB7ZFMwy+OSPWf5IqNxMD/o?=
+ =?us-ascii?Q?/XzmpvxB5vnhXpHkfoYhf2kqq33eGe5xs2N2hJqoiVQ6ciNfx7T4m+AAvi6G?=
+ =?us-ascii?Q?wSnJr6j3JtvKJCP96MoiFmRkH7EqajHUOA551tPpesaYI+mnm/4/KVhvAQHH?=
+ =?us-ascii?Q?3Ief6RLRAZRMx8lwJfp0N4SM5O7MTjFTUuqoh3VlOeFfTcE4q7wOIe6a0qvW?=
+ =?us-ascii?Q?YYzqXzAp3kkqLFD9z/OTW3WrtD8MyiEGMjZbyzmwmGa7PanOvrnVq4rKZHnd?=
+ =?us-ascii?Q?R0fysibh8dPQy8O0If0LGp5mxZ+UOjdYMHsByEAxcHpoZYmsfuRGRKGv+DbD?=
+ =?us-ascii?Q?JzoWgal7eOHGfP+GJY87kxYNmhH4y9FuMsakkl6DLYRYz4cftsq8yRhzAwOx?=
+ =?us-ascii?Q?CivauaeJGOQbTWoub6bnufeptqOzuFcuQZIFpOjHsG91g97Mr2clhmVCuXLe?=
+ =?us-ascii?Q?ekOYG/WHdynjw1+NulgbkLC/IvhpFqfhpi+Tb3hy5TxiaEZhKGCKwVhPKX6o?=
+ =?us-ascii?Q?vQ4MzQCp1sSXOr87E6uIdsFWAwnnBzo0KyksEEsLN1yVzQIjfI9gbnsH8gR9?=
+ =?us-ascii?Q?4Gf6i20KdgAREqzIlEFQVrEVtuYKdb3vvTlTnLhZYILgPURqOmxX5M4Y3gbj?=
+ =?us-ascii?Q?eS2gtNsXNSYELRbBXK6ItmVcsVUPOMmILAmcy5JK/fHEhUDsscJymuPoO+y0?=
+ =?us-ascii?Q?Ttl+ib407R0ngGTMSPf1deA=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	wPh54I0JfizaYw51REBYvlNUM0+nbj44bauhoaBuiC8ipCASjGTBGPf+KrvaftIuw6X4onhtojzknNFCsKZCo3I0gZ8mloDagNp/MCvNIQsPi09t1za2ilSqoC9CpkHxY5o2cj3MMnHwNfTrRzdGPwDMq15LW93hcSNo384ChZ8Rx6LkoBudOz7sVDMANX+QSifztrct1qZ88odSCSU59WhPjRuAEQcTlcUS1Xx2YDd6C7rfh9ppc4HoG4UT2o/k0emEXkOqMe9dlMYZLDfrSJcLGYhb4ja9OOcIQ2S+QEGFGiInpKwqGpGDrobTUgcmmn6/yxgH7LqVKXDqqhmpxZNNv3ZGUmiyOuD45CpAusERTqfJpdmQFXQYeXiVnG6tVs/0HQiPR56C5UawEz7TXdkC8kLrZhECpYV+/OJRAeI+VCsR9pxM1gRyKG+7H7pv8IxXBxqgfQWYCQaEHo+/F/oIhB+GpOIqb2Wr0VPhas1QvaZiYOi59BtMwYqUnb+oFrXFGIvse9eC0VhuYOAFOu3ObPYiB5qK34PczrjalUsUvzJJvDpdymqSxd+qWo/yptyqKANLjR8DFpjwGK736iEFhbD7Ym+Z/y6LSsddUXc=
+	1hhcXbY566VnjPOYAht3hvZT3DKHhtxli8EhRydH75g85HsidKAAkLIRWURgIt4sYu936QZBUmrL3L0iKIfXgxHcMFTJ9PnXG+7aG+f+1NeJCStUYSXraE5RhHrxRGZA/UEbECkT7ce78yk9aCg7Npy8gF5I4quz3GQv1jo3wlDgzvoNtZxjfYTRgvgrQlOckEejYBj/wWJSvqdyMqjvQdY6TuK/wP2M6gxZgOdZTXtmyYLCoid22XzMnje94kFJrViXSTL8DHWTXLwnMG5k59/y8O0Jj+2Fp8ZSh1dRUsewxRtjB01J3bSXb/rsqdVVO17aXQBqTHV6208tvtKk7Na11097tmkJIrcvYBdoYoVU1JGH8ca0P9gsBKcFfTSs4iAK0mrloVFsNJoQgvv3GgfoCZ1tr43SLtPxrbUOlrbQz0p3lHQYIVI/wL8EQPgwJAiIWtH8c0CVL+tQ6LzvNWkgvYvpAAW73dXPDuuD4P21VrRcVq7wG79t9yHx7lAFiipSaMADr/kFj8ulex8+ajZNs7mVZvKrN22PaFM5VnLqXnkrZmJnkx5Y9C7vJLHuF2koM1vsewpm2PYGLvMyuv6OylmgtpmQfq975DyeM34=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95043995-4426-4a16-0aca-08dc5ed95a9e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dcd3f52-b1f8-4fd5-beeb-08dc5ed95d59
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4382.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 12:24:40.2478
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 12:24:44.8268
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tPnq8boOS6Jlm4i2livRPG3+7n4rNcAYYTMu5PwYe/47VfPpCNz07j/8Oqhwu2uXIeM0c7OVJos2krx+rU4TAWlFZbL5P96k9S2M55aUCEg=
+X-MS-Exchange-CrossTenant-UserPrincipalName: PC2ZDvzIEIFSfnma5RoWXYg0LLsOiZwd+IL0GaRva6vwCaGEdMdJBANHCndjU6Y/UyKbJtoboCDnKXXdsTvLSJRoMUscIC7NEqLW9LaDLfE=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4745
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
@@ -164,219 +164,43 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spams
  mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
  definitions=main-2404170085
-X-Proofpoint-ORIG-GUID: Nr9LZZOobUAqbWTkvoQLO7LN6bz_5yqq
-X-Proofpoint-GUID: Nr9LZZOobUAqbWTkvoQLO7LN6bz_5yqq
+X-Proofpoint-ORIG-GUID: 0SuJQQQ7b3yVeKhxx9mjMMDSAud4pB7y
+X-Proofpoint-GUID: 0SuJQQQ7b3yVeKhxx9mjMMDSAud4pB7y
 
-Split range computation checks in its own function, isolating pessimitic
-range set for dst_reg and failing return to a single point.
+Range for XOR and OR operators would not be attempted unless src_reg
+would resolve to a single value, i.e. a known constant value.
+This condition is unnecessary, and the following XOR/OR operator
+handling could compute a possible better range.
 
-Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com
 Cc: Yonghong Song <yonghong.song@linux.dev>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: David Faust <david.faust@oracle.com>
 Cc: Jose Marchesi <jose.marchesi@oracle.com
 Cc: Elena Zannoni <elena.zannoni@oracle.com>
 ---
- kernel/bpf/verifier.c | 155 +++++++++++++++++++++++++-----------------
- 1 file changed, 92 insertions(+), 63 deletions(-)
+ kernel/bpf/verifier.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8e7b6072e3f4..0aa6580af7a2 100644
+index 0aa6580af7a2..f410eb027e25 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -13395,6 +13395,90 @@ static void scalar_min_max_arsh(struct bpf_reg_state *dst_reg,
- 	__update_reg_bounds(dst_reg);
- }
- 
-+static bool is_const_reg_and_valid(struct bpf_reg_state reg, bool alu32,
-+				   bool *valid)
-+{
-+	s64 smin_val = reg.smin_value;
-+	s64 smax_val = reg.smax_value;
-+	u64 umin_val = reg.umin_value;
-+	u64 umax_val = reg.umax_value;
-+
-+	s32 s32_min_val = reg.s32_min_value;
-+	s32 s32_max_val = reg.s32_max_value;
-+	u32 u32_min_val = reg.u32_min_value;
-+	u32 u32_max_val = reg.u32_max_value;
-+
-+	bool known = alu32 ? tnum_subreg_is_const(reg.var_off) :
-+			     tnum_is_const(reg.var_off);
-+
-+	if (alu32) {
-+		if ((known &&
-+		     (s32_min_val != s32_max_val || u32_min_val != u32_max_val)) ||
-+		      s32_min_val > s32_max_val || u32_min_val > u32_max_val)
-+			*valid = false;
-+	} else {
-+		if ((known &&
-+		     (smin_val != smax_val || umin_val != umax_val)) ||
-+		    smin_val > smax_val || umin_val > umax_val)
-+			*valid = false;
-+	}
-+
-+	return known;
-+}
-+
-+enum {
-+	COMPUTABLE_RANGE    =  1,
-+	UNCOMPUTABLE_RANGE  =  0,
-+	UNDEFINED_BEHAVIOUR = -1,
-+};
-+
-+static int is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
-+					    struct bpf_reg_state src_reg)
-+{
-+	bool src_known;
-+	u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
-+	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
-+	u8 opcode = BPF_OP(insn->code);
-+
-+	bool valid_known = true;
-+	src_known = is_const_reg_and_valid(src_reg, alu32, &valid_known);
-+
-+	/* Taint dst register if offset had invalid bounds
-+	 * derived from e.g. dead branches.
-+	 */
-+	if (valid_known == false)
-+		return UNCOMPUTABLE_RANGE;
-+
-+	switch (opcode) {
-+	case BPF_ADD:
-+	case BPF_SUB:
-+	case BPF_AND:
-+		return COMPUTABLE_RANGE;
-+
-+	/* Compute range for the following only if the src_reg is known.
-+	 */
+@@ -13453,12 +13453,12 @@ static int is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
+ 	case BPF_ADD:
+ 	case BPF_SUB:
+ 	case BPF_AND:
 +	case BPF_XOR:
 +	case BPF_OR:
-+	case BPF_MUL:
-+		return src_known ? COMPUTABLE_RANGE : UNCOMPUTABLE_RANGE;
-+
-+	/* Shift operators range is only computable if shift dimension operand
-+	 * is known. Also, shifts greater than 31 or 63 are undefined. This
-+	 * includes shifts by a negative number.
-+	 */
-+	case BPF_LSH:
-+	case BPF_RSH:
-+	case BPF_ARSH:
-+		if (src_reg.umax_value >= insn_bitness)
-+			return UNDEFINED_BEHAVIOUR;
-+		return src_known ? COMPUTABLE_RANGE : UNCOMPUTABLE_RANGE;
-+	default:
-+		break;
-+	}
-+
-+	return UNCOMPUTABLE_RANGE;
-+}
-+
- /* WARNING: This function does calculations on 64-bit values, but the actual
-  * execution may occur on 32-bit values. Therefore, things like bitshifts
-  * need extra checks in the 32-bit case.
-@@ -13406,53 +13490,19 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- {
- 	struct bpf_reg_state *regs = cur_regs(env);
- 	u8 opcode = BPF_OP(insn->code);
--	bool src_known;
--	s64 smin_val, smax_val;
--	u64 umin_val, umax_val;
--	s32 s32_min_val, s32_max_val;
--	u32 u32_min_val, u32_max_val;
--	u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
- 	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
- 	int ret;
+ 		return COMPUTABLE_RANGE;
  
--	smin_val = src_reg.smin_value;
--	smax_val = src_reg.smax_value;
--	umin_val = src_reg.umin_value;
--	umax_val = src_reg.umax_value;
--
--	s32_min_val = src_reg.s32_min_value;
--	s32_max_val = src_reg.s32_max_value;
--	u32_min_val = src_reg.u32_min_value;
--	u32_max_val = src_reg.u32_max_value;
--
--	if (alu32) {
--		src_known = tnum_subreg_is_const(src_reg.var_off);
--		if ((src_known &&
--		     (s32_min_val != s32_max_val || u32_min_val != u32_max_val)) ||
--		    s32_min_val > s32_max_val || u32_min_val > u32_max_val) {
--			/* Taint dst register if offset had invalid bounds
--			 * derived from e.g. dead branches.
--			 */
--			__mark_reg_unknown(env, dst_reg);
--			return 0;
--		}
--	} else {
--		src_known = tnum_is_const(src_reg.var_off);
--		if ((src_known &&
--		     (smin_val != smax_val || umin_val != umax_val)) ||
--		    smin_val > smax_val || umin_val > umax_val) {
--			/* Taint dst register if offset had invalid bounds
--			 * derived from e.g. dead branches.
--			 */
--			__mark_reg_unknown(env, dst_reg);
--			return 0;
--		}
--	}
--
--	if (!src_known &&
--	    opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
-+	int is_safe = is_safe_to_compute_dst_reg_range(insn, src_reg);
-+	switch (is_safe) {
-+	case UNCOMPUTABLE_RANGE:
- 		__mark_reg_unknown(env, dst_reg);
- 		return 0;
-+	case UNDEFINED_BEHAVIOUR:
-+		mark_reg_unknown(env, regs, insn->dst_reg);
-+		return 0;
-+	default:
-+		break;
- 	}
+ 	/* Compute range for the following only if the src_reg is known.
+ 	 */
+-	case BPF_XOR:
+-	case BPF_OR:
+ 	case BPF_MUL:
+ 		return src_known ? COMPUTABLE_RANGE : UNCOMPUTABLE_RANGE;
  
- 	if (sanitize_needed(opcode)) {
-@@ -13507,39 +13557,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		scalar_min_max_xor(dst_reg, &src_reg);
- 		break;
- 	case BPF_LSH:
--		if (umax_val >= insn_bitness) {
--			/* Shifts greater than 31 or 63 are undefined.
--			 * This includes shifts by a negative number.
--			 */
--			mark_reg_unknown(env, regs, insn->dst_reg);
--			break;
--		}
- 		if (alu32)
- 			scalar32_min_max_lsh(dst_reg, &src_reg);
- 		else
- 			scalar_min_max_lsh(dst_reg, &src_reg);
- 		break;
- 	case BPF_RSH:
--		if (umax_val >= insn_bitness) {
--			/* Shifts greater than 31 or 63 are undefined.
--			 * This includes shifts by a negative number.
--			 */
--			mark_reg_unknown(env, regs, insn->dst_reg);
--			break;
--		}
- 		if (alu32)
- 			scalar32_min_max_rsh(dst_reg, &src_reg);
- 		else
- 			scalar_min_max_rsh(dst_reg, &src_reg);
- 		break;
- 	case BPF_ARSH:
--		if (umax_val >= insn_bitness) {
--			/* Shifts greater than 31 or 63 are undefined.
--			 * This includes shifts by a negative number.
--			 */
--			mark_reg_unknown(env, regs, insn->dst_reg);
--			break;
--		}
- 		if (alu32)
- 			scalar32_min_max_arsh(dst_reg, &src_reg);
- 		else
 -- 
 2.39.2
 
