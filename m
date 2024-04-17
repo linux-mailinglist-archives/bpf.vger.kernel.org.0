@@ -1,215 +1,116 @@
-Return-Path: <bpf+bounces-27076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A1C68A8F64
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 01:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50F338A8F6D
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 01:36:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D6F82831D6
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 23:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A58B2835EF
+	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 23:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8075126F11;
-	Wed, 17 Apr 2024 23:33:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854521487F3;
+	Wed, 17 Apr 2024 23:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g9dcUgih"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yYXc1+BO"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10AE38004A;
-	Wed, 17 Apr 2024 23:33:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B382612F59A
+	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 23:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713396784; cv=none; b=tStEU1qZ3kPrUPt4zO2FXdihlFei6FjD0B7bp6AF4aFqa8loJsyyEiDZ9bwaVQizWc+Gyn9cZudEgKIXgJFKeLBxr4gm9+zCi8JB/wmFRXpVNXDYKJ3Fa8RUol4F1DJw95aPiD4F4oGxI3DN0un9ZLK8sxda7khEFwYtjY9R0/8=
+	t=1713396959; cv=none; b=GNmfgims3PSA3laCL2//pHM5Z4LtY2o5lUbqeP7BKaWA2fqwUE3WBZS6mQTbw9vDPUY6SA0Kju73NHbNBcqt0UeeL5qpWD8c9LVYfJELxZ+YwBaRRdash0R9Swy01V43RXQCs8UlhcmRN5Uc9n2G6A9lf1IGU//gaWJq4TaNjxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713396784; c=relaxed/simple;
-	bh=UVEJ59zmDjoboUO24xHkWUbtsfOaV4nMW96i+du0QWo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hD+sh86VP2lCUppSurKD/L+rUY8cfZvRrMZUmdGsKcHdRpy92xeEQMLXVngZYg1M372dbwOIOli+rjcX/qwOmPWC2CXT2pbmYmwkMbf/QVmu408XchGLSPtmJSX1h7DzIPdWLqPzu5msbdk/LP1Tims5JIGYosyhge3mjQMIvGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g9dcUgih; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E66C2BD11;
-	Wed, 17 Apr 2024 23:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713396782;
-	bh=UVEJ59zmDjoboUO24xHkWUbtsfOaV4nMW96i+du0QWo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=g9dcUgihUruqLdH2UkphJBhOp4CI2upjvdLl3d3rVz9siUPLfDQYchyou7LXngIUI
-	 cWzssC+Ais5exj0vlxdgkfD0UISDabYE9ps2nLAsnUvPuJqZuWrDEKlEQm/130dxlJ
-	 TrDcK7sck1xghtXie5KS50aVdgaMGiZE0PmL7090xIdMdRRtto0B1IoLe8MFPUV77p
-	 MjHgPTklEJZLkSAT7P4KNSPweSGMUIkieLAdyvPoe4eF1OoYaNQIWGFhr3Y6mGm6h+
-	 jJ7M8h436v/tDSG5Z2WP2ZPQpJ7Xt9Fh8ZQRH+KDS3CTVxJrkYmgSzmsULNtE2/7ia
-	 VcpAfL6YqmCUQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-518931f8d23so181559e87.3;
-        Wed, 17 Apr 2024 16:33:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWU+Mf3njgqRifWxHNpROfCS/UruBBh8dyGnOStdbmcfQ1BA9TTxFeQZdcP/NktvCH9tRvk1GBXhEnQ2/Id0n1nOAs1N5KzdtGf38Ohka637wbiMGMiwxcUEx8ULsm3PjZvZ7PEP7eR5MfYnqTqQnCJxSJMNOZjKdGP7f21H7fJENmcgHGWiTS+nQor5G1Zoydv+JRjRyXK3Y+sniFHtakwH+szWz+/xo7xbh5c2S+4XHf/8ERz1U6Viutvs1sSGfogDyA5Ugcu0XyAcMAOZd63H5JW3JkcosODo9URBruOpi9rnIJON0yn5nwZtipqIcfT1wqJ5XRDtBfCsSi4FRjbvwoox2BI/7N5bh8SRp4o5AEvUvIewouxPYy0FxtwnBdtn9/ju33Cc+RjExNDt6BocTVAmFtotyjmzPDTICgvOabDu1BU1vVbUWk=
-X-Gm-Message-State: AOJu0Yxp3ZJcwr3NGUg945EqKE2eQ6SFNdNTi+8iMeKrnZK6kQzGpujY
-	QXpq+nG8gzn9qAhGZ/VNMh1jqtO+K9ut5wM42wMW9u9csx75aIvPH9fMyD7Oy7nwS3xLPFU3Qw6
-	8AfGAYq/KVgTrYxBdx/hr/fFXt98=
-X-Google-Smtp-Source: AGHT+IEHuhOgcI3i5xgKWDt/RXWKyZ/pV78ei3ikSzZKT8X4nbojHe59GGn0FqOU5qFFQVvC8y10X+N0SPB8sxHbE0Q=
-X-Received: by 2002:a05:6512:3184:b0:519:b95:22b5 with SMTP id
- i4-20020a056512318400b005190b9522b5mr446945lfe.51.1713396780753; Wed, 17 Apr
- 2024 16:33:00 -0700 (PDT)
+	s=arc-20240116; t=1713396959; c=relaxed/simple;
+	bh=wvWcGs6xPteYiNkneq2pnXvtLThrV3P28wEAG4lJmWk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=GmcZppnfzH7xIi///pexACbr/uvXpwGOcMEhBlKcbgpUivFflHcY6ywhPYiaQ4zeEM/FG4W2Sy38dWOGbJmoSiOLTGXsIXLxuv4BohNfR+N+6G2Y+hRD4dNh1iZwcnFj8oE4QvoKgn5PloCfVp8J1rUlyGTRqcKoIYePhF2LfMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yYXc1+BO; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b269686aso581674276.1
+        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 16:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713396957; x=1714001757; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3z9SggHDBHR47UgbLQGuJMnhn0kcj9pVDDXn/yYf9o=;
+        b=yYXc1+BO8pN3ZGbtWBN1BCdOpXp4bYd14RfcUw6FYRW13dv8/LKAWgIOcK2wYjtiKS
+         1qrZC6QA53CmAk8bElaxc4atrm/JkUXFHjKoHAM+Yhg8rlRj+vA993UpAvnr62Gt1uIw
+         xQHEMgxepEx+UkMAhO9AW3Iq2mGVRCAQFvNtoDLPTWsa6ze3C5tSJjLbcGdOwadIHY5X
+         yHTCOMYS6WzDBDffKNwgIR/k9jGbgaEFCnJEjITTG0IOEhUNaw/5ah04aU9xWmlZDcAy
+         y08ylTdIDyGc9U8YxHKx/uAyW1PMoz2prwmoj6IdpM6O0OMGb8UtO4SWu8QQyiJTgvi2
+         POJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713396957; x=1714001757;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3z9SggHDBHR47UgbLQGuJMnhn0kcj9pVDDXn/yYf9o=;
+        b=Ygm0IOgFOw5U2sM8mhXHBPtK+IwwEJm9g9CJsS+iHso0PqijUQv4fcqOm8MW7DhcOa
+         CIhKTHB92WnrAxA+2xOxM5ePL7ORHxSbsa89fijLghtb5oLL78rXHl91xpc9/CfEx1gA
+         zV3Q9K1UGE3oZOZVgWd/NVHquCzQoLl2qux0JbwhA4WyDwAGeEI0EmEmVWa1K7JxNgn8
+         W4wNpOvv9yG3cV9hIQ1KKwH82pQ3w5YlrS4cuh2qqT2yLFEWWHm2z3VmXBap/lhQ8Bup
+         K3CIRKR/YfnOzc8oFiqBOildn8cVhSBSUJI0gukkWn2a3q9XH9E8L1d81JdQvloffOvM
+         9J8A==
+X-Gm-Message-State: AOJu0YyH31rrLuvHjM/zZOIYaNp6EJyeNwkZbGJDEtwFy5jIv4gHyPnN
+	4EULlXebiPL2sPhlusCIzvEeEMai20DeClbPfD7GhT+6nW8f60pavUPU0+zA131BFDv6KfskwO8
+	guw==
+X-Google-Smtp-Source: AGHT+IHfFq+aF8xYM7GSWrh8v3NuRbJUzyiS8iRdxL1PjY2Je4Ddh58E6RfgKeq4JS0EktYEYAj6DG8R/nw=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a05:6902:1005:b0:dcb:fb69:eadc with SMTP id
+ w5-20020a056902100500b00dcbfb69eadcmr117528ybt.6.1713396956811; Wed, 17 Apr
+ 2024 16:35:56 -0700 (PDT)
+Date: Wed, 17 Apr 2024 23:35:02 +0000
+In-Reply-To: <16430256912363@kroah.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240411160051.2093261-1-rppt@kernel.org> <20240411160051.2093261-6-rppt@kernel.org>
- <20240415075241.GF40213@noisy.programming.kicks-ass.net> <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
- <Zh4nJp8rv1qRBs8m@kernel.org>
-In-Reply-To: <Zh4nJp8rv1qRBs8m@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Wed, 17 Apr 2024 16:32:49 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
-Message-ID: <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
-Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
-	linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Bjorn Topel <bjorn@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Mime-Version: 1.0
+References: <16430256912363@kroah.com>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240417233517.3044316-1-edliaw@google.com>
+Subject: [PATCH 5.15.y 0/5] Backport bounds checks for bpf
+From: Edward Liaw <edliaw@google.com>
+To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>
+Cc: bpf@vger.kernel.org, kernel-team@android.com, 
+	Edward Liaw <edliaw@google.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 12:23=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wr=
-ote:
->
-> On Mon, Apr 15, 2024 at 06:36:39PM +0100, Mark Rutland wrote:
-> > On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
-> > > On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
-> > > > +/**
-> > > > + * enum execmem_type - types of executable memory ranges
-> > > > + *
-> > > > + * There are several subsystems that allocate executable memory.
-> > > > + * Architectures define different restrictions on placement,
-> > > > + * permissions, alignment and other parameters for memory that can=
- be used
-> > > > + * by these subsystems.
-> > > > + * Types in this enum identify subsystems that allocate executable=
- memory
-> > > > + * and let architectures define parameters for ranges suitable for
-> > > > + * allocations by each subsystem.
-> > > > + *
-> > > > + * @EXECMEM_DEFAULT: default parameters that would be used for typ=
-es that
-> > > > + * are not explcitly defined.
-> > > > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
-> > > > + * @EXECMEM_KPROBES: parameters for kprobes
-> > > > + * @EXECMEM_FTRACE: parameters for ftrace
-> > > > + * @EXECMEM_BPF: parameters for BPF
-> > > > + * @EXECMEM_TYPE_MAX:
-> > > > + */
-> > > > +enum execmem_type {
-> > > > + EXECMEM_DEFAULT,
-> > > > + EXECMEM_MODULE_TEXT =3D EXECMEM_DEFAULT,
-> > > > + EXECMEM_KPROBES,
-> > > > + EXECMEM_FTRACE,
-> > > > + EXECMEM_BPF,
-> > > > + EXECMEM_TYPE_MAX,
-> > > > +};
-> > >
-> > > Can we please get a break-down of how all these types are actually
-> > > different from one another?
-> > >
-> > > I'm thinking some platforms have a tiny immediate space (arm64 comes =
-to
-> > > mind) and has less strict placement constraints for some of them?
-> >
-> > Yeah, and really I'd *much* rather deal with that in arch code, as I ha=
-ve said
-> > several times.
-> >
-> > For arm64 we have two bsaic restrictions:
-> >
-> > 1) Direct branches can go +/-128M
-> >    We can expand this range by having direct branches go to PLTs, at a
-> >    performance cost.
-> >
-> > 2) PREL32 relocations can go +/-2G
-> >    We cannot expand this further.
-> >
-> > * We don't need to allocate memory for ftrace. We do not use trampoline=
-s.
-> >
-> > * Kprobes XOL areas don't care about either of those; we don't place an=
-y
-> >   PC-relative instructions in those. Maybe we want to in future.
-> >
-> > * Modules care about both; we'd *prefer* to place them within +/-128M o=
-f all
-> >   other kernel/module code, but if there's no space we can use PLTs and=
- expand
-> >   that to +/-2G. Since modules can refreence other modules, that ends u=
-p
-> >   actually being halved, and modules have to fit within some 2G window =
-that
-> >   also covers the kernel.
+These backports fix CVE-2021-4204, CVE-2022-23222 for 5.15.y.
 
-Is +/- 2G enough for all realistic use cases? If so, I guess we don't
-really need
-EXECMEM_ANYWHERE below?
+This includes a conflict resolution with 45ce4b4f9009 ("bpf: Fix crash
+due to out of bounds access into reg2btf_ids.") which was cherry-picked
+previously.
+Link: https://lore.kernel.org/all/20220428235751.103203-11-haoluo@google.com/
 
-> >
-> > * I'm not sure about BPF's requirements; it seems happy doing the same =
-as
-> >   modules.
->
-> BPF are happy with vmalloc().
->
-> > So if we *must* use a common execmem allocator, what we'd reall want is=
- our own
-> > types, e.g.
-> >
-> >       EXECMEM_ANYWHERE
-> >       EXECMEM_NOPLT
-> >       EXECMEM_PREL32
-> >
-> > ... and then we use those in arch code to implement module_alloc() and =
-friends.
->
-> I'm looking at execmem_types more as definition of the consumers, maybe I
-> should have named the enum execmem_consumer at the first place.
+They were tested on 5.15.94 to pass LTP test bpf_prog06 with no
+regressions from the bpf selftests.
 
-I think looking at execmem_type from consumers' point of view adds
-unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
-and bpf (and maybe also module text) all have the same requirements.
-Did I miss something?
+Daniel Borkmann (4):
+  bpf: Generalize check_ctx_reg for reuse with other types
+  bpf: Generally fix helper register offset check
+  bpf: Fix out of bounds access for ringbuf helpers
+  bpf: Fix ringbuf memory type confusion when passing to helpers
 
-IOW, we have
+Kumar Kartikeya Dwivedi (1):
+  bpf: Extend kfunc with PTR_TO_CTX, PTR_TO_MEM argument support
 
-enum execmem_type {
-        EXECMEM_DEFAULT,
-        EXECMEM_TEXT,
-        EXECMEM_KPROBES =3D EXECMEM_TEXT,
-        EXECMEM_FTRACE =3D EXECMEM_TEXT,
-        EXECMEM_BPF =3D EXECMEM_TEXT,      /* we may end up without
-_KPROBE, _FTRACE, _BPF */
-        EXECMEM_DATA,  /* rw */
-        EXECMEM_RO_DATA,
-        EXECMEM_RO_AFTER_INIT,
-        EXECMEM_TYPE_MAX,
-};
+ include/linux/bpf.h          |  9 +++-
+ include/linux/bpf_verifier.h |  4 +-
+ kernel/bpf/btf.c             | 93 ++++++++++++++++++++++++++++--------
+ kernel/bpf/verifier.c        | 66 +++++++++++++++++--------
+ 4 files changed, 129 insertions(+), 43 deletions(-)
 
-Does this make sense?
+--
+2.44.0.769.g3c40516874-goog
 
-Thanks,
-Song
 
