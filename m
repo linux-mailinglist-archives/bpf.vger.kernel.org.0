@@ -1,288 +1,136 @@
-Return-Path: <bpf+bounces-27133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5BAD8A9851
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 13:11:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D99718A9868
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 13:18:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EA7EB24561
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 11:11:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93D252840A0
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 11:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1FA715F304;
-	Thu, 18 Apr 2024 11:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A70515E7E8;
+	Thu, 18 Apr 2024 11:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZn6QWcC"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="W99gcOUK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C7715E81D;
-	Thu, 18 Apr 2024 11:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088E015E5B4
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 11:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713438664; cv=none; b=Vk7hDLwaelOG3I2DxdutcZphjCaE5ohOI/td8nTmy/CufCRIjkj4I7tZtFwb0w9P373Jn6estdiRqVrtsOYvh5dYRYy7fnknKxNgggVT6m4YfU+fOPAvLNuGr0FwXIE0VnCd4by67ANG6ejDIUVi9PgHR5x/SN/DeM81zzt9S40=
+	t=1713439077; cv=none; b=dLNrg0DrPwT7JpWbswvm//oUpOMiDYWScSthWW5i9U6s5Odp7ABVWsSkXIIKa7ALqh/rWkEb2pCf4deMwF6NlONhuAGjivnWN1OG4u/nyK32/1ZGu9L2O5lWrGPfN2VAxpPKU+qSX6uPBbhN4lk/bjpaYs0NOS7ST1bjrGEbnfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713438664; c=relaxed/simple;
-	bh=jbkjH0oMfHSOLsZFAKrCDRnqKRYEKhNM61Mt/WQOWPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VbhtEsb/u+nOIwNOamTExtXH/0Nnc6xkjwRIu75kVOm4wEF3hBneweZNceaiYdr1dwk1MgySwJGYFk763LIV0Q4+e54cAc+trLXRqlzaq3DnsDDFW2RQLwRPIG8T1opOROoXSMps850Vh2ck+A8aLIa480QUrlG6sTOL/4QoWvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZn6QWcC; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a554afec54eso81772066b.1;
-        Thu, 18 Apr 2024 04:11:02 -0700 (PDT)
+	s=arc-20240116; t=1713439077; c=relaxed/simple;
+	bh=dadbVw0ZN8KGcZgqWT52RSFUotZfDdsINMbi0GWd0pk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a6rT0KWG4rGakUZ2Fh8QmCclAhjTzPNCr9pSYT8f0/GbDQw+ZYMJmB/5Xo8vLsHT/p1bH5B2/O6wJCo4SqwzUI3/y5VcV3SZ6RqH1ld8Gqsj2r/7VYp/TJ72vIbJLAodHpn4cg0scc9cO9hMK2FVOCr1DKAtziW9W2WE+BWYyOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=W99gcOUK; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5708d8beec6so929645a12.0
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 04:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713438661; x=1714043461; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ajRcHzOO+dTeV5Ygaxyp7yiGlFkKEfT94A9BqR9K7GI=;
-        b=bZn6QWcCtu8HyFyjmVBv67KQzxlyE6cBoJb3SmHM/zcH9QzEHrB56+Ya6nZRUyk2jB
-         /qQKg1oAiU3vxZAHyO9AaTWfpYS+vborsV/+Bwdg6dUm1IBlF25acF/dhrmzQd3wNCPF
-         u0hYXkQ6kQ90S1b/Sl8q1x75SpJ96THddiMFKw1y8LUgQ6sdIYCs3M9/HBVQzXiSsIkX
-         wOAhl9WSsNRVEEb6UPaVU1BInBFpoBkFLI3hotgEy7utdIk1uqA73VJvG2LD0xTFvYTu
-         fKwUWYIzhIoRLguGC5x4tD1U4D3XSMtOiifScps2caxw+0RsI1j8tz7zOAQjLOVQk6E9
-         bwww==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713439073; x=1714043873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dadbVw0ZN8KGcZgqWT52RSFUotZfDdsINMbi0GWd0pk=;
+        b=W99gcOUKyl2+fZdSBGJVqDttq0TutTfo/6hILA47OiK9Q5NGpLWd82kINRtwvJ0lvR
+         kyatA9B4IM0952YAX0i+2pg8VMETeswm4xNnuUz9EWIlyhq9xMakmTSZ5AwqcQ8cjJ+a
+         Jjdy1rSJ+S00Jp4QIy/vkmnAVLvtO4/Y+EsgYF9ZQ6lY/XoE7cnnQXZmm/IqsUdYlKrH
+         zGP72ch7jLJfnopA6zORpfzvDwgsEgWmUCk3W4iqYxYHimEHHsqxyh0+bN1S2ixRP5Hc
+         G7+S1tuV3fZPUQLfZKwtAnv4NswetcDsj+f/aA1Er605BpFnIxdV3Ee8DsemNttK6gi5
+         +pkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713438661; x=1714043461;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ajRcHzOO+dTeV5Ygaxyp7yiGlFkKEfT94A9BqR9K7GI=;
-        b=WQeAveBW5FwFwCf03YFSMivblTDhjNyAdpcdq1YokBp0gql9zvMrKem1sL8LD/K4yO
-         SIY2MqCNy1oJlWRkcAbCM9mONQl/+T0c5bjHNsdMRnJrDb0CSum60e0IdCnZGiohCBww
-         pD6C45AJOqRnB0tR0R9ZJhT0tiVTcQkqUiEejtfoBSvvU7iQhnEgivWFvDXJ5AUnHrCE
-         ykm7QGeiJvqHEgCPHoe4VhN/xuv06h03ieE/Qyb2z6/O6IDa+ZrFtaZj5046uDAEktEk
-         DP63NjHoTh29TsYE/y3HPqy+XZG0LKbm/M2q6XM1aWHDA7KleS0Jp5H/X1s/sG+JREmy
-         OYpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNFIchAa0EjfLUhubPWYNWrW33DMSbnEqZvc6PPNUURM14FO4JOYfttwgz2ri/sMhXoDKnZIJlOuT4l5YOGAqp3ugcStZcuD6f3AgTt2NDMUdqe8rFNTsa8Q+A6AKIE+EnOP4yn7poDNAjAu0poXN5Tkz2q1tOH/aLODb4eZVp2k7BJKXXmP4JbAWjGF7fXTo/M4ubMopMmKHi8yJ/RF9cz7IxGBW7yA==
-X-Gm-Message-State: AOJu0YxSY1vMGw7pyaK/15nXuLFXavTdv8DpHASQwrmtnrTawgABdZ37
-	534KR1FUUPorusJtbVsFBP8d2Pbbb72xrvRp/WU9/dhShKi+i10I
-X-Google-Smtp-Source: AGHT+IHrKOeN/AH8DZsWKCyxRbOMxHQnpvQ/kEy1CAgntia3tbrsbxSyKBmd2sApDc6dRfvjP4HPGw==
-X-Received: by 2002:a17:906:aa54:b0:a51:f463:cfa6 with SMTP id kn20-20020a170906aa5400b00a51f463cfa6mr1420963ejb.29.1713438660622;
-        Thu, 18 Apr 2024 04:11:00 -0700 (PDT)
-Received: from jonhaslam-mbp.dhcp.thefacebook.com ([2620:10d:c092:500::4:6637])
-        by smtp.gmail.com with ESMTPSA id q27-20020a17090622db00b00a520b294d9dsm742333eja.150.2024.04.18.04.10.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 04:11:00 -0700 (PDT)
-Date: Thu, 18 Apr 2024 12:10:59 +0100
-From: Jonthan Haslam <jonathan.haslam@gmail.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-Message-ID: <u6rrbsrjxpu43re5vb5o6vzvpxoto42wq47av3hagge6mfjsaj@25pujxi7z3u7>
-References: <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
- <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
- <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
- <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
- <20240328091841.ce9cc613db375536de843cfb@kernel.org>
- <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
- <CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
- <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
- <lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
- <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
+        d=1e100.net; s=20230601; t=1713439073; x=1714043873;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dadbVw0ZN8KGcZgqWT52RSFUotZfDdsINMbi0GWd0pk=;
+        b=FqZhlM1ZyJzqZaQHOYueppDt3Oap41we4DUxOlaH5ooase+aLLKkwDbBP4KG81Vugm
+         6cnW12WktEAnDv2Ulu/xlYTiijr1S96FzI14TCvvPl90BFqmWnFuKJBaiQYeWB1udXIi
+         Vq3KF7XJ28vT/CcCV95cCDbQJb/8aC9nBAP00jsH2Dl3bORXkUO2lhwbalHAGk1lLljr
+         o2/UV6UIZNEOzondGei1F3QnOTUvYvf5Elif90x7oX1c9MhPpWP9PENfmbcF+FcWUzca
+         BXnvBklTr806oMCMpOxC7HMK2H6SPyBg4iKO4KPm9QAho+uST6xCThNB0IURwghnCJVH
+         3INw==
+X-Forwarded-Encrypted: i=1; AJvYcCVKuCatERVs1Q/zLJYojSpSz1gSU3psEX7WCbtTrlt7ckVTAZmD/CiXrvGXx3MA5ib1x1WpWRU00ERjEGKJkQ5DCszV
+X-Gm-Message-State: AOJu0Yxs6q+8YvU10W5ZYWLwhWMexLK4YbZus+o5GBvYo4D1OyOGVbpe
+	KJoXwFjueb0HZTECWXj/UK8+PGQLTFwO3xoXDAoCi/QviXX+SWdZELGDVyC7+c0=
+X-Google-Smtp-Source: AGHT+IHmqSTkMUPGya8bnbl4tVCYR5pgohc+bRojwZq6H6mlk6lXfXDEJpU5L7fvxPN2Mb70UrGa9g==
+X-Received: by 2002:a17:906:1156:b0:a55:54ec:a2fe with SMTP id i22-20020a170906115600b00a5554eca2femr1963102eja.29.1713439073194;
+        Thu, 18 Apr 2024 04:17:53 -0700 (PDT)
+Received: from [192.168.1.70] ([84.102.31.74])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170906431500b00a521e5856f6sm747685ejm.51.2024.04.18.04.17.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 04:17:52 -0700 (PDT)
+Message-ID: <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
+Date: Thu, 18 Apr 2024 13:17:47 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
+ Ethernet driver
+To: Siddharth Vadapalli <s-vadapalli@ti.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ratheesh Kannoth <rkannoth@marvell.com>,
+ Naveen Mamindlapalli <naveenm@marvell.com>,
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: danishanwar@ti.com, yuehaibing@huawei.com, rogerq@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
+ <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
+Content-Language: en-US
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Masami,
+On 4/18/24 13:00, Siddharth Vadapalli wrote:
+> On 12-04-2024 21:08, Julien Panis wrote:
+>> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
+>>
+>> The following features are implemented: NETDEV_XDP_ACT_BASIC,
+>> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
+>>
+>> Zero-copy and non-linear XDP buffer supports are NOT implemented.
+>>
+>> Besides, the page pool memory model is used to get better performance.
+>>
+>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+> Hello Julien,
+>
+> This series crashes Linux on AM62ax SoC which also uses the
+> AM65-CPSW-NUSS driver:
+> https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
+>
+> Regards,
+> Siddharth.
 
-> > > OK, then I'll push this to for-next at this moment.
-> > > Please share if you have a good idea for the batch interface which can be
-> > > backported. I guess it should involve updating userspace changes too.
-> > 
-> > Did you (or anyone else) need anything more from me on this one so that it
-> > can be pushed? I provided some benchmark numbers but happy to provide
-> > anything else that may be required.
-> 
-> Yeah, if you can update with the result, it looks better to me.
-> Or, can I update the description?
+Hello Siddharth.
 
-Just checking if you need me to do anything on this so that it can be
-pushed to for-next? Would be really great if we can get this in. Thanks
-for all your help.
+Thanks for the log. I can read:
+[    1.966094] Missing net_device from driver
 
-Jon.
+Did you check that nodes exist in the device tree for the net devices ?
 
-> 
-> Thank you,
-> 
-> > 
-> > Thanks!
-> > 
-> > Jon.
-> > 
-> > > 
-> > > Thank you!
-> > > 
-> > > > >
-> > > > > So I hope you can reconsider and accept improvements in this patch,
-> > > > > while Jonathan will keep working on even better final solution.
-> > > > > Thanks!
-> > > > >
-> > > > > > I look forward to your formalized results :)
-> > > > > >
-> > > > 
-> > > > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
-> > > > and USDTs, reporting attach/detach timings:
-> > > > $ sudo ./test_progs -v -t uprobe_multi_test/bench
-> > > > bpf_testmod.ko is already unloaded.
-> > > > Loading bpf_testmod.ko...
-> > > > Successfully loaded bpf_testmod.ko.
-> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
-> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
-> > > > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
-> > > > test_bench_attach_uprobe: attached in   0.120s
-> > > > test_bench_attach_uprobe: detached in   0.092s
-> > > > #400/5   uprobe_multi_test/bench_uprobe:OK
-> > > > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
-> > > > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
-> > > > test_bench_attach_usdt:PASS:usdt_count 0 nsec
-> > > > test_bench_attach_usdt: attached in   0.124s
-> > > > test_bench_attach_usdt: detached in   0.064s
-> > > > #400/6   uprobe_multi_test/bench_usdt:OK
-> > > > #400     uprobe_multi_test:OK
-> > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > > Successfully unloaded bpf_testmod.ko.
-> > > > 
-> > > > So it should be easy for Jonathan to validate his changes with this.
-> > > > 
-> > > > > > Thank you,
-> > > > > >
-> > > > > > >
-> > > > > > > Jon.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Thank you,
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > > > > > > > > will depend on how much lock contention happens.
-> > > > > > > > > >
-> > > > > > > > > > Thank you,
-> > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > > > > > > >
-> > > > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > > > > > >
-> > > > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > > > > > > --- a/kernel/events/uprobes.c
-> > > > > > > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-> > > > > > > > > > >   */
-> > > > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > > > > > > > > >
-> > > > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
-> > > > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
-> > > > > > > > > > >
-> > > > > > > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > > > > > > >  /* serialize uprobe->pending_list */
-> > > > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> > > > > > > > > > >  {
-> > > > > > > > > > >       struct uprobe *uprobe;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       uprobe = __find_uprobe(inode, offset);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return uprobe;
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > >  {
-> > > > > > > > > > >       struct uprobe *u;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > >       u = __insert_uprobe(uprobe);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return u;
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > > > > > > >               return;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
-> > > > > > > > > > >       put_uprobe(uprobe);
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > >       if (n) {
-> > > > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
-> > > > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > >                       get_uprobe(u);
-> > > > > > > > > > >               }
-> > > > > > > > > > >       }
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >  }
-> > > > > > > > > > >
-> > > > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
-> > > > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
-> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return !!n;
-> > > > > > > > > > >  }
-> > > > > > > > > > > --
-> > > > > > > > > > > 2.43.0
-> > > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > --
-> > > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Julien
+
 
