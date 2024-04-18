@@ -1,215 +1,170 @@
-Return-Path: <bpf+bounces-27084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D05F98A8FE2
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 02:09:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C092C8A8FE4
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 02:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34DAFB21D11
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 00:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38D621F221A7
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 00:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2011DFE8;
-	Thu, 18 Apr 2024 00:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFD9384;
+	Thu, 18 Apr 2024 00:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p+N51yx7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KTP1yUDo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B89D1DFD8
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 00:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01A2181
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 00:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713398954; cv=none; b=HLZAQqbnS76YlaSY1fWdHkW7EibMBhRMRhKNowIFStjslhjMJD4ARvTLuJLaAOFqixy2kqk4SgPqEK0/eA38LqYvEdMqHZxmhfumxlmnK2cBaijVkXwfvpdyEwGX+RxDgpwAmw+16x4l4uZdpoSMPZEsmCHKWTpavaN2TQvM8mU=
+	t=1713399091; cv=none; b=kVOqSeNC36MOpOB+aXWS/zusUWOvsaJpofOUVrb7PRH4AamjXa3qp/+LPby/1ODQ95aoup/OfkjxYeKKgE47GkWw+bTLC/15w0kX00OLuwYqkNu7tQhjociWjwkX3A6Ey2nQmMAZ9TFcxWvkgh0QhsLoO3unjLb7VeH0NyGke74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713398954; c=relaxed/simple;
-	bh=aiac3d6qMRR/mb2s6Ux0n2753pj9tOdgiAq/G7dnhiI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=W7MoipVAm3K4jOvKhgYMrEskPvEzgKxrvPKIf5tGKPnrwaqT/IOu1xxoOIajVFvRTfzKW4MX9FSUzB9A6niAkn07YpyagCChxNFRBHWKFd1KhWXzrnjwnK1wTCRlpJkliOnRBmbNEZAnJxzY4Mz78u9hZaYzqXAz2pUO5kcpdHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p+N51yx7; arc=none smtp.client-ip=95.215.58.189
+	s=arc-20240116; t=1713399091; c=relaxed/simple;
+	bh=LvnzemrN1h4DVJsCgnk8FHAN3zqmD4zd4N/7lSSpxZE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ae9rwJ9bYwvauoswRI2FKA9S8vYve03kouGv67ETKIo8h3qGLTlcrLYYV5e0PJoOCgqj6LlYYin1NBf/WUeyQVwPIo3TSbLdQkNIkFEgQZNomw2/GWb2HrSygAn5KSDqHo4g1bn+YDr/aIdGm8xxMnW8cA2v+PVuoSwFRkcHyNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KTP1yUDo; arc=none smtp.client-ip=95.215.58.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f102239c-69cc-4ca7-8e21-7efb66bfaceb@linux.dev>
+Message-ID: <dbba17cf-4351-45ca-9f43-090a0923a2bb@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713398951;
+	t=1713399087;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KPM0Fbs5WGrMZcjfHEp8i8r7IWXEGrTv11hOSz5RUIo=;
-	b=p+N51yx7F2acUCqLR4GzZFUMMzrfArmOWav9OA2MdQjuZ34/x6o+dbsCmrOkdAai7IsEWP
-	0s1FBjM5j6EyrQwKFusWoDhBkpsrRvAauJzlYA6kcl6ANCW3rEGyaUgT2/GQpw3hPv2Wcn
-	ZF1QI0JI2Anssml/6JAgQb+4sCywjwM=
-Date: Wed, 17 Apr 2024 17:09:05 -0700
+	bh=DMqBtc9FOHb9l5xEy1bAUb1ypvNz3uDiAsqNwUVTLcA=;
+	b=KTP1yUDokO6Ss8xOaxQ3dU1RAe8Yd5SN/g1XG7atIyRIIuaqkLJhxKrahz046WFm8U7jms
+	NSg92qCP++YC1XaeiQ2j5Q2KG4bVPcqITjUKdr9pr3IdkD8AYZKwYLCI24JILeKgqL1gM5
+	KOhzIstAwsXw0UMSUkkiC94YcthslK0=
+Date: Wed, 17 Apr 2024 17:11:22 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: No direct copy from ctx to map possible, why?
+Subject: Re: [RFC] bpf: allowing PTR_TO_BTF_ID | PTR_TRUSTED w/ non-zero fixed
+ offset to selected KF_TRUSTED_ARGS BPF kfuncs
 Content-Language: en-GB
-To: Fabian Pfitzner <f.pfitzner@tu-braunschweig.de>, bpf@vger.kernel.org
-References: <36c8d494-e1cf-4361-8187-05abe4698791@tu-braunschweig.de>
- <4f62fa70-ac50-41ff-a685-db6c8aefb017@linux.dev>
- <6d224ee5-ca50-44a9-882e-074710bf8477@tu-braunschweig.de>
- <39a68b12-a921-471b-83ff-6d59b21aa4a9@linux.dev>
- <9c019772-8c21-4eb5-908d-103f0966dc13@tu-braunschweig.de>
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, song@kernel.org, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, memxor@gmail.com, void@manifault.com, jolsa@kernel.org
+References: <ZhkbrM55MKQ0KeIV@google.com>
+ <3f8a481e-0dfe-468f-8c87-6610528f9009@linux.dev>
+ <ZiAu6YDi-F_pxLOV@google.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <9c019772-8c21-4eb5-908d-103f0966dc13@tu-braunschweig.de>
+In-Reply-To: <ZiAu6YDi-F_pxLOV@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 4/17/24 12:38 PM, Fabian Pfitzner wrote:
->> In your particular example, since you intend to copy xdp_md->data, 
->> you can directly
->> access that from xdp_md->data pointer, there is no need to copy ctx 
->> which is not
->> what you want. 
-> Thanks for your answer, but I think you misunderstood me. I need to 
-> store the packet's payload in a map (not the xdp_md structure itself), 
-> because my use case forces me to do so.
->
-> I write a program that reassembles split packets into a single one. 
-> Therefore I have to buffer packet fragments until all have been 
-> arrived. The only way in eBPF to realize such a buffer is a map, so I 
-> have to put the packet's payload in there. My problem is, that I have 
-> no clue how to do it properly as there is no direct way to put the 
-> payload into a map.
->
-> How would you put a packet with a size of 700 bytes into a map? What 
-> would be your strategy when you can only access your packet via the 
-> xdp_md structure? My strategy (and that's the best I have found so 
-> far) is to split this packet into two packets of size 350 bytes, so 
-> that I can process them on the stack consecutively.
-
-The map value can be packet pointer as your early mentioned:
-   expecting another type as "ctx" (R3 type=ctx expected=fp, pkt, pkt_meta, .....).
-But you need to do packet range checking to ensure the packet range (from start of packet->data) must be the same or greater
-than map value size.
-
-
->
-> On 4/16/24 5:22 AM, Yonghong Song wrote:
->>
->> On 4/15/24 1:25 PM, Fabian Pfitzner wrote:
->>>> Looks like you intend to copy packet data. So from the above, 
->>>> 'expected=fp,pkt,pkt_meta...', you can just put the first argument
->>>> with xdp->data, right? 
->>> Yes, I intend to copy packet data. What do you mean by "first 
->>> argument"? I'd like to put the whole data that is depicted by 
->>> xdp->data into a map that stores them as raw bytes (by using a char 
->>> array as map element to store the data).
->>
->> Sorry, typo. 'first argument' should be 'third argument'.
->>
+On 4/17/24 1:19 PM, Matt Bobrowski wrote:
+> On Mon, Apr 15, 2024 at 09:43:42AM -0700, Yonghong Song wrote:
+>> On 4/12/24 4:31 AM, Matt Bobrowski wrote:
+>>> Hi,
 >>>
->>>> Verifer rejects to 'ctx' since 'ctx' contents are subject to 
->>>> verifier rewrite. So actual 'ctx' contents/layouts may not match 
->>>> uapi definition. 
->>> Sorry but I do not understand what you mean by "subject to verifier 
->>> rewrite". What kind of rewrite happens when using the ctx as 
->>> argument? Furthermore, am I correct that you assume that the uapi 
->>> may dictate the structure of the data that can be stored in a map? 
->>> How is it different to the case when first storing it on the stack 
->>> and then putting it into a map?
+>>> Currently, if a BPF kfunc has been annotated with KF_TRUSTED_ARGS, any
+>>> supplied PTR_TO_BTF_ID | PTR_TRUSTED argument to that BPF kfunc must
+>>> have it's fixed offset set to zero, or else the BPF program being
+>>> loaded will be outright rejected by the BPF verifier.
+>>>
+>>> This non-zero fixed offset restriction in most cases makes a lot of
+>>> sense, as it's considered to be a robust means of assuring that the
+>>> supplied PTR_TO_BTF_ID to the KF_TRUSTED_ARGS annotated BPF kfunc
+>>> upholds it's PTR_TRUSTED property. However, I believe that there are
+>>> also cases out there whereby a PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed
+>>> offset can still be considered as something which posses the
+>>> PTR_TRUSTED property, and could be safely passed to a BPF kfunc that
+>>> is annotated w/ KF_TRUSTED_ARGS. I believe that this can particularly
+>>> hold true for selected embedded data structure members present within
+>>> given PTR_TO_BTF_ID | PTR_TRUSTED types i.e. struct
+>>> task_struct.thread_info, struct file.nf_path.
+>>>
+>>> Take for example the struct thread_info which is embedded within
+>>> struct task_struct. In a BPF program, if we happened to acquire a
+>>> PTR_TO_BTF_ID | PTR_TRUSTED for a struct task_struct via
+>>> bpf_get_current_task_btf(), and then constructed a pointer of type
+>>> struct thread_info which was assigned the address of the embedded
+>>> struct task_struct.thread_info member, we'd have ourselves a
+>>> PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed offset. Now, let's
+>>> hypothetically also say that we had a BPF kfunc that took a struct
+>>> thread_info pointer as an argument and the BPF kfunc was also
+>>> annotated w/ KF_TRUSTED_ARGS. If we attempted to pass the constructed
+>>> PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset to this hypothetical BPF
+>>> kfunc, the BPF program would be rejected by the BPF verifier. This is
+>>> irrespective of the fact that supplying pointers to such embedded data
+>>> structure members of a PTR_TO_BTF_ID | PTR_TRUSTED may be considered
+>>> to be safe.
+>>>
+>>> One of the ideas that I had in mind to workaround the non-zero fixed
+>>> offset restriction was to simply introduce a new BPF kfunc annotation
+>>> i.e. __offset_allowed that could be applied on selected BPF kfunc
+>>> arguments that are expected to be KF_TRUSTED_ARGS. Such an annotation
+>>> would effectively control whether we enforce the non-zero offset
+>>> restriction or not in check_kfunc_args(), check_func_arg_reg_off(),
+>>> and __check_ptr_off_reg(). Although, now I'm second guessing myself
+>>> and I am wondering whether introducing something like the
+>>> __offset_allowed annotation for BPF kfunc arguments could lead to
+>>> compromising any of the safety guarantees that are provided by the BPF
+>>> verifier. Does anyone see an immediate problem with using such an
+>>> approach? I raise concerns, because it feels like we're effectively
+>>> punching a hole in the BPF verifier, but it may also be perfectly safe
+>>> to do on carefully selected PTR_TO_BTF_ID | PTR_TRUSTED types
+>>> i.e. struct thread_info, struct file, and it's just my paranoia
+>>> getting the better of me. Or, maybe someone has another idea to
+>>> support PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset safely and a
+>>> little more generally without the need to actually make use of any
+>>> other BPF kfunc annotations?
+>> In verifier.c, we have BTF_TYPE_SAFE_TRUSTED to indidate that
+>> a pointer of a particular struct is safe and trusted if the point
+>> of that struct is trusted, e.g.,
 >>
->> The UAPI xdp_md struct:
->>
->> struct xdp_md {
->>         __u32 data;
->>         __u32 data_end;
->>         __u32 data_meta;
->>         /* Below access go through struct xdp_rxq_info */
->>         __u32 ingress_ifindex; /* rxq->dev->ifindex */
->>         __u32 rx_queue_index;  /* rxq->queue_index  */
->>
->>         __u32 egress_ifindex;  /* txq->dev->ifindex */
+>> BTF_TYPE_SAFE_TRUSTED(struct file) {
+>>          struct inode *f_inode;
 >> };
 >>
->> The actual kernel representation of xdp_md:
+>> We do the above since gcc does not support btf_tag yet.
+> Yes, I'm rather familiar with this construct.
+>
+>> I guess you could do
 >>
->> struct xdp_buff {
->>         void *data;
->>         void *data_end;
->>         void *data_meta;
->>         void *data_hard_start;
->>         struct xdp_rxq_info *rxq;
->>         struct xdp_txq_info *txq;
->>         u32 frame_sz; /* frame size to deduce data_hard_end/reserved 
->> tailroom*/
->>         u32 flags; /* supported values defined in xdp_buff_flags */
+>> BTF_TYPE_SAFE_TRUSTED(struct file) {
+>>          struct path f_path;
 >> };
 >>
->> You can see they are quite different. So to use pointee of 'ctx' as 
->> the key, we
->> need to allocate a space of sizeof(struct_md) to the stack and copy 
->> necessary
->> stuff to that structure. For example, xdp_md->ingress_ifindex = 
->> xdp_buff->rxq->dev->ifindex, etc.
->> Some fields actually does not make sense for copying, e.g., 
->> data/data_end/data_meta in 64bit
->> architecture. Since stack allocation is needed any way, so disabling 
->> ctx and requires
->> user explicit using stack make sense (if they want to use *ctx as map 
->> update value).
+>> and enhance verifier with the above information.
 >>
->> In your particular example, since you intend to copy xdp_md->data, 
->> you can directly
->> access that from xdp_md->data pointer, there is no need to copy ctx 
->> which is not
->> what you want.
+>> But the above 'struct path f_path' may unnecessary
+>> consume extra memory since we only care about field
+>> 'f_path'. Maybe create a new construct like
 >>
->>>
->>> On 4/15/24 6:01 PM, Yonghong Song wrote:
->>>>
->>>> On 4/14/24 2:34 PM, Fabian Pfitzner wrote:
->>>>> Hello,
->>>>>
->>>>> is there a specific reason why it is not allowed to copy data from 
->>>>> ctx directly into a map via the bpf_map_update_elem helper?
->>>>> I develop a XDP program where I need to store incoming packets 
->>>>> (including the whole payload) into a map in order to buffer them.
->>>>> I thought I could simply put them into a map via the mentioned 
->>>>> helper function, but the verifier complains about expecting 
->>>>> another type as "ctx" (R3 type=ctx expected=fp, pkt, pkt_meta, 
->>>>> .....).
->>>>
->>>> Looks like you intend to copy packet data. So from the above, 
->>>> 'expected=fp,pkt,pkt_meta...', you can just put the first argument
->>>> with xdp->data, right?
->>>> Verifer rejects to 'ctx' since 'ctx' contents are subject to 
->>>> verifier rewrite. So actual 'ctx' contents/layouts may not match 
->>>> uapi definition.
->>>>
->>>>>
->>>>> I was able to circumvent this error by first putting the packet 
->>>>> onto the stack (via xdp->data) and then write it into the map.
->>>>> The only limitation with this is that I cannot store packets 
->>>>> larger than 512 bytes due to the maximum stack size.
->>>>>
->>>>> I was also able to circumvent this by slicing chunks, that are 
->>>>> smaller than 512 bytes, out of the packet so that I can use the 
->>>>> stack as a clipboard before putting them into the map. This is a 
->>>>> really ugly solution, but I have not found a better one yet.
->>>>>
->>>>> So my question is: Why does this limitation exist? I am not sure 
->>>>> if its only related to XDP programs as this restriction is defined 
->>>>> inside of the bpf_map_update_elem_proto struct (arg3_type 
->>>>> restricts this), so I think it is a general limitation that 
->>>>> affects all program types.
->>>>>
->>>>> Best regards,
->>>>> Fabian Pfitzner
->>>>>
->>>>>
->>>>>
->>>>>
->>>
+>> /* pointee is a field of the struct */
+>> BTF_TYPE_SAFE_FIELD_TRUSTED(struct file) {
+>>          struct path *f_path;
+>> };
+> I don't fully understand how something like
+> BTF_TYPE_SAFE_FIELD_TRUSTED could work in practice. Do you mind
+> elaborating on that a little?
 >
+> What I'm currently thinking is that with something like
+> BTF_TYPE_SAFE_FIELD_TRUSTED, if the BPF verifier sees a PTR_TO_BTF_ID
+> | PTR_TRUSTED w/ a fixed offset supplied to a BPF kfunc, then the BPF
+> verifier can also check that fixed offset for the supplied
+> PTR_TO_BTF_ID | PTR_TRUSTED actually accesses a member that has been
+> explicitly annotated as being trusted via
+> BTF_TYPE_SAFE_FIELD_TRUSTED. Maybe that would be better then making
+> use of an __offset_allowed annotation, which would solely rely on the
+> btf_struct_ids_match() check for its safety.
+Right. What you described in the above is what I think as well.
+>
+> /M
 
