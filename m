@@ -1,162 +1,210 @@
-Return-Path: <bpf+bounces-27141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006118A9CFD
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:26:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F618A9DA5
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:53:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BBE81C2220D
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 14:26:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2432E1F21730
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 14:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736EA16C436;
-	Thu, 18 Apr 2024 14:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585B2168B10;
+	Thu, 18 Apr 2024 14:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oVn8UC/W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLnWKqsZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A36C16ABC2;
-	Thu, 18 Apr 2024 14:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB7215F418
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 14:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450274; cv=none; b=QJcgmFhxDK+PDCvAa9XuwY0Ft96l3lkNjx2T5AjElVgBPccITINRJC1m6Nq0ZTPboctj6P7Qm+torpGnMWbeZJRE5SHBzwKHAuReUJJx06/HBe/rxeV/CRSQ5qP6mkrxVGS7qZ7L2EYuejPjBwOax3HdF0YVcvI4RUGBDjn2Skc=
+	t=1713451995; cv=none; b=YH28yBlEq1m+UNNzy4YRmlobMOO7qYJ1qE0xicH2UnjlpsmN8gxz4vQSAyZyHO5G+ffiR7/R4OTg5V/GGS/RJnoW5tnZs2Z6mN4Z29WLcX4EqaqnrenO1AfYVwep2BYbXm3LMcdQ2E//C3VXSvMZR7fGVyozTdXBf+VZvYiUZHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450274; c=relaxed/simple;
-	bh=pH0PBRBEjyEaCCaHbzJ9ynfPi+tXKlFVFiy1Z9RjDgo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rq8/LbVSkpGm8sM4Y5XCyjvRCjcCH30dZGKedua6uQUDI63yAgAvGPL15lHCXrR1pD96ue3lmFGFrjx1DvwpDlJX9mRWxFM972NlTXJXTJyrEkp9AZX8ucwz3t0Wdw+fMjjn8AXljUfVUlYcmMssjLIsFTrJQrtU0wOAvY0qtgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=oVn8UC/W; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43IENhfk047904;
-	Thu, 18 Apr 2024 09:23:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713450223;
-	bh=d7W/YpTIZxIdyewzNIraH7hxkKMvrK+9RnPBHoiRgYU=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=oVn8UC/WraJiR9DfhqgRAMmWCKRPIN5gA4g9LgtVfHyr9ZYa0wpT1D1L9eCfM7V0I
-	 1kGeA3ACt202+YA8etLSCi4dNNilaO9oBQFFqcvrsUeQegCCSt1xx61Wj3XLbh5lUN
-	 TOOZmxV7HXQassnk1lpdykUeIfQeyrSrA+F0zYJo=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43IENhFG118313
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 18 Apr 2024 09:23:43 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
- Apr 2024 09:23:42 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 18 Apr 2024 09:23:42 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43IENfLj049819;
-	Thu, 18 Apr 2024 09:23:42 -0500
-Date: Thu, 18 Apr 2024 19:53:41 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Julien Panis <jpanis@baylibre.com>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Russell King
-	<linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John
- Fastabend <john.fastabend@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Simon Horman
-	<horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Ratheesh Kannoth
-	<rkannoth@marvell.com>,
-        Naveen Mamindlapalli <naveenm@marvell.com>,
-        Jacob
- Keller <jacob.e.keller@intel.com>, <danishanwar@ti.com>,
-        <yuehaibing@huawei.com>, <rogerq@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
- Ethernet driver
-Message-ID: <b406c8bd-5d25-4516-8553-4041705b2211@ti.com>
-References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
- <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
- <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
- <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
- <7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com>
+	s=arc-20240116; t=1713451995; c=relaxed/simple;
+	bh=E+QqoUyKTtb4RkYV4sJ5H2eYDaKo8WKO+W9VmawvQuc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sae63F0E2o18KVQcP04mdoOkcmxGTrt3kbfy/paNTC4p3JLESEZzuWM8/Sy0JpN3gxyToVdigUwscaTsoUMm3RE+X8YpMp3fQpqU2CZJRxqbuDe91tLU31opiCjU6G7/3h9vIbCak1quAHWb4oJ8l42HjQrucLTWlY/5oKO9yh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nLnWKqsZ; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so840234f8f.0
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 07:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713451992; x=1714056792; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=siBhCuojFZa3xiIL8O1lDPMwABLevgtmSDCVo4fQhck=;
+        b=nLnWKqsZssa1d4+9AyWokoo/YZ34qPKSOf29y2/znNqfq5Gmtd5j7YOASaxM7Xcpbv
+         GKEqCCPaDz+Fl4IER4NuXbD/eK1JBLfaYHF32X5D5COMdhxMncJ2peETXkJxHyYy4w8A
+         pykOApegnET3Qoe9FexcSohcHULb8LpVUU69jFRpeXPYLa6gE/wYf2V7Z1znyzuXTUBV
+         uGABzKsm6uuBaFj98zhz5T5T+BXP7eLZVTJkXCgPLZqxR3rG2A4wdFgq6iFoLrhXdzHs
+         Jx845U8TamldrB4/N50cp8bCXxrdBst8X/TxnMH2tH5mitudKwGBgkEaa/lNomOIOhJU
+         DLGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713451992; x=1714056792;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=siBhCuojFZa3xiIL8O1lDPMwABLevgtmSDCVo4fQhck=;
+        b=FG9JB70hPJkUfaXF3e24j1fS6UE5Y7PFjPPj4OkrBTTAn/WdQ//7EmUdFhxH81wWcU
+         Y9M4euTrbfKHA6509cuq9bjLooqjZEtoPZSY0CbXjcxn9N3LF/rvkfxN9ofjrQS+C1h6
+         Rv9Iu0WfG6G9DySIaxKag9zOl/UKah79glIGasmNqzsUngoAdqX5bBXkrqr+qZ+yMwpU
+         sXonAnPxDrFcPGwbg5+x0M+WC+agjDOFWDT8yugXN8Bw6qNWHJo8n6UxO9eWvU4UiBuF
+         5snHj4R7MsUFOzDlQc0RZGaXHGjz0Lm0afYoOOOtFaK0ZtrzyNzMA1vPPR9Advr8uJU2
+         kyyg==
+X-Forwarded-Encrypted: i=1; AJvYcCXrzG17MYPm2FWGibMkyro3w+cIQWaqFznlxa8ahWmtvUB9miuaNWcSlQXLSWoJyhZsMWT/eARlyl0K+hwV6DQqsAkQ
+X-Gm-Message-State: AOJu0Yy2p2BqWBADwd9AMCE6RheygFuoRIYGqjzDEC6GNQiD7Y07lRKe
+	7DEb1BnOEsE/DGKHRD6jsXIL9UgMzoYJu9+mVuYdtpeHP03ywgbv87RCFKa2HIhON8MK/EvihPv
+	tVU1B6v1melrpQ+sGESehSNDPcyE=
+X-Google-Smtp-Source: AGHT+IGtrhBAizGk8RxrAgkcYdKW9EF/7tWUnMTgBQwuXQ9IHhCGMl5TCHmGEWwV9UPgeT6Woo8tFaPLZxpwFkXhLIY=
+X-Received: by 2002:adf:f910:0:b0:346:b8cf:b620 with SMTP id
+ b16-20020adff910000000b00346b8cfb620mr2373036wrr.53.1713451992316; Thu, 18
+ Apr 2024 07:53:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240412210814.603377-1-thinker.li@gmail.com> <CAADnVQKP4HESABxxjKXqkyAEC4i_yP7_CT+L=+vzOhnMr5LiXg@mail.gmail.com>
+ <1ce45df0-4471-4c0c-b37e-3e51b77fa5b5@gmail.com> <CAADnVQKjGFdiy4nYTsbfH5rm7T9gt_VhHd3R+0s4yS9eqTtSaA@mail.gmail.com>
+ <6d25660d-103a-4541-977f-525bd2d38cd0@gmail.com>
+In-Reply-To: <6d25660d-103a-4541-977f-525bd2d38cd0@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 18 Apr 2024 07:53:00 -0700
+Message-ID: <CAADnVQ+hGv0oVx4_uPs2yr=vWC80OEEXLm_FcZLBfsthu0yFbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/11] Enable BPF programs to declare arrays
+ of kptr, bpf_rb_root, and bpf_list_head.
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kui-Feng Lee <kuifeng@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 04:03:15PM +0200, Julien Panis wrote:
-> On 4/18/24 13:25, Siddharth Vadapalli wrote:
-> > On Thu, Apr 18, 2024 at 01:17:47PM +0200, Julien Panis wrote:
-> > > On 4/18/24 13:00, Siddharth Vadapalli wrote:
-> > > > On 12-04-2024 21:08, Julien Panis wrote:
-> > > > > This patch adds XDP support to TI AM65 CPSW Ethernet driver.
-> > > > > 
-> > > > > The following features are implemented: NETDEV_XDP_ACT_BASIC,
-> > > > > NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
-> > > > > 
-> > > > > Zero-copy and non-linear XDP buffer supports are NOT implemented.
-> > > > > 
-> > > > > Besides, the page pool memory model is used to get better performance.
-> > > > > 
-> > > > > Signed-off-by: Julien Panis <jpanis@baylibre.com>
-> > > > Hello Julien,
-> > > > 
-> > > > This series crashes Linux on AM62ax SoC which also uses the
-> > > > AM65-CPSW-NUSS driver:
-> > > > https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
-> > > > 
-> > > > Regards,
-> > > > Siddharth.
-> > > Hello Siddharth.
-> > > 
-> > > Thanks for the log. I can read:
-> > > [    1.966094] Missing net_device from driver
-> > > 
-> > > Did you check that nodes exist in the device tree for the net devices ?
-> > Yes it exists. The device-tree used was also built with linux-next
-> > tagged next-20240417. The node corresponding to eth0 is cpsw_port1 which
-> > is present and enabled in the device-tree:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts?h=next-20240417#n644
-> > 
-> > Regards,
-> > Siddharth.
-> 
-> I could reproduce the bug by disabling 'cpsw_port2' in my device tree,
-> which is 'k3-am625-sk.dts' for the board I use.
-> 
-> A condition is missing in am65_cpsw_create_xdp_rxqs() and
-> am65_cpsw_destroy_xdp_rxqs() functions.
-> 
-> For these 2 functions, the code which is in the for loop should be
-> run only when port ethX is enabled. That's why it crashes with
-> your device tree (cpsw_port2 is disabled, which is not the case by
-> default for the board I developed with).
-> 
-> I'll send a patch to fix the issue. Thanks for reporting it.
+On Wed, Apr 17, 2024 at 11:07=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com>=
+ wrote:
+>
+>
+>
+> On 4/17/24 22:11, Alexei Starovoitov wrote:
+> > On Wed, Apr 17, 2024 at 9:31=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.c=
+om> wrote:
+> >>
+> >>
+> >>
+> >> On 4/17/24 20:30, Alexei Starovoitov wrote:
+> >>> On Fri, Apr 12, 2024 at 2:08=E2=80=AFPM Kui-Feng Lee <thinker.li@gmai=
+l.com> wrote:
+> >>>>
+> >>>> The arrays of kptr, bpf_rb_root, and bpf_list_head didn't work as
+> >>>> global variables. This was due to these types being initialized and
+> >>>> verified in a special manner in the kernel. This patchset allows BPF
+> >>>> programs to declare arrays of kptr, bpf_rb_root, and bpf_list_head i=
+n
+> >>>> the global namespace.
+> >>>>
+> >>>> The main change is to add "nelems" to btf_fields. The value of
+> >>>> "nelems" represents the number of elements in the array if a btf_fie=
+ld
+> >>>> represents an array. Otherwise, "nelem" will be 1. The verifier
+> >>>> verifies these types based on the information provided by the
+> >>>> btf_field.
+> >>>>
+> >>>> The value of "size" will be the size of the entire array if a
+> >>>> btf_field represents an array. Dividing "size" by "nelems" gives the
+> >>>> size of an element. The value of "offset" will be the offset of the
+> >>>> beginning for an array. By putting this together, we can determine t=
+he
+> >>>> offset of each element in an array. For example,
+> >>>>
+> >>>>       struct bpf_cpumask __kptr * global_mask_array[2];
+> >>>
+> >>> Looks like this patch set enables arrays only.
+> >>> Meaning the following is supported already:
+> >>>
+> >>> +private(C) struct bpf_spin_lock glock_c;
+> >>> +private(C) struct bpf_list_head ghead_array1 __contains(foo, node2);
+> >>> +private(C) struct bpf_list_head ghead_array2 __contains(foo, node2);
+> >>>
+> >>> while this support is added:
+> >>>
+> >>> +private(C) struct bpf_spin_lock glock_c;
+> >>> +private(C) struct bpf_list_head ghead_array1[3] __contains(foo, node=
+2);
+> >>> +private(C) struct bpf_list_head ghead_array2[2] __contains(foo, node=
+2);
+> >>>
+> >>> Am I right?
+> >>>
+> >>> What about the case when bpf_list_head is wrapped in a struct?
+> >>> private(C) struct foo {
+> >>>     struct bpf_list_head ghead;
+> >>> } ghead;
+> >>>
+> >>> that's not enabled in this patch. I think.
+> >>>
+> >>> And the following:
+> >>> private(C) struct foo {
+> >>>     struct bpf_list_head ghead;
+> >>> } ghead[2];
+> >>>
+> >>>
+> >>> or
+> >>>
+> >>> private(C) struct foo {
+> >>>     struct bpf_list_head ghead[2];
+> >>> } ghead;
+> >>>
+> >>> Won't work either.
+> >>
+> >> No, they don't work.
+> >> We had a discussion about this in the other day.
+> >> I proposed to have another patch set to work on struct types.
+> >> Do you prefer to handle it in this patch set?
+> >>
+> >>>
+> >>> I think eventually we want to support all such combinations and
+> >>> the approach proposed in this patch with 'nelems'
+> >>> won't work for wrapper structs.
+> >>>
+> >>> I think it's better to unroll/flatten all structs and arrays
+> >>> and represent them as individual elements in the flattened
+> >>> structure. Then there will be no need to special case array with 'nel=
+ems'.
+> >>> All special BTF types will be individual elements with unique offset.
+> >>>
+> >>> Does this make sense?
+> >>
+> >> That means it will creates 10 btf_field(s) for an array having 10
+> >> elements. The purpose of adding "nelems" is to avoid the repetition. D=
+o
+> >> you prefer to expand them?
+> >
+> > It's not just expansion, but a common way to handle nested structs too.
+> >
+> > I suspect by delaying nested into another patchset this approach
+> > will become useless.
+> >
+> > So try adding nested structs in all combinations as a follow up and
+> > I suspect you're realize that "nelems" approach doesn't really help.
+> > You'd need to flatten them all.
+> > And once you do there is no need for "nelems".
+>
+> For me, "nelems" is more like a choice of avoiding repetition of
+> information, not a necessary. Before adding "nelems", I had considered
+> to expand them as well. But, eventually, I chose to add "nelems".
+>
+> Since you think this repetition is not a problem, I will expand array as
+> individual elements.
 
-Thank you for root-causing and working on the fix for this issue.
-
-Regards,
-Siddharth.
+You don't sound convinced :)
+Please add support for nested structs on top of your "nelems" approach
+and prototype the same without "nelems" and let's compare the two.
 
