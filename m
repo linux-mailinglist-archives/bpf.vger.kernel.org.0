@@ -1,161 +1,170 @@
-Return-Path: <bpf+bounces-27157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4B808AA231
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:42:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A580A8AA245
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:48:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6A011C214C8
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:42:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D6B1F21994
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A853178CFA;
-	Thu, 18 Apr 2024 18:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C484817AD71;
+	Thu, 18 Apr 2024 18:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGlPpFMl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQRW0RMh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA55816F919;
-	Thu, 18 Apr 2024 18:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C61168B17;
+	Thu, 18 Apr 2024 18:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713465716; cv=none; b=eo7kTr1xCeDdKyvjtu+7hDbmBo2t/tMYuWx2+HYehHGmLKiFmu+yDt3KJ32wwlHcUWGmZNYB5AGkiy0eXRrfF51VlcsUJIIhJcTwjwBcPP89LmFFhvQOCrZZVAQ8vVOKikQqKVu6yWzzisCTWDnXhzW62KBUL5Eh24Zm90MKwtc=
+	t=1713466080; cv=none; b=C7MlszoPaTEIqVy3irgzyirulViX7j9J/MbRJXMdqPzF31QlqRBfx4/OB157faHvb75yuJINsMJKGzpdW6UHQw5rcpqJgP7BP9S5zvGXbAzXw+9C0KB3IbnrvKI0JelcCuXEPsIkTxyPF7S9XeF7OrYuu1fhPqqGHGAc/7NybW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713465716; c=relaxed/simple;
-	bh=jjzIel/0iYgUq+MHzf/g/Bl4Dpu8TgcfIH+ll9wVj5E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mm7/y4Fibhyn5JygpE2ex7T8GGF4sCOvOVAjdDPcAaAOe9m8/Kah2DF6Z8dgC7nCDjeM+ajsEAQ7dQYNedO0SUTSkD6fga+fksouxzk8jUg02sdGK0yPGJyve6pbKA1HbWwNifgcx4y7oHGtE54oaEIY7hAES9/Vloz6FFgdmtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGlPpFMl; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1713466080; c=relaxed/simple;
+	bh=/+tu1QtFlJWofHUNwDEzFNE8HCAVwWzF7OgMc41tc00=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=DaE3V8u1YKZ5OyUa63aMGEnfa/9xEHZxO9zvnJPvMye1K+f9idNeE26W3aaCqZ/B5GfIvXBcnQZV5HmD958ilQQszwsQeu+k79k1A66s7bQYDIvIZf4SJptDRS/+rFQk3+ZlIXku7ftBzf3J2TSyx1DiWih6+0u1ujT9i3T4QoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bQRW0RMh; arc=none smtp.client-ip=209.85.167.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so1267779b3a.2;
-        Thu, 18 Apr 2024 11:41:54 -0700 (PDT)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c730f7f549so434651b6e.3;
+        Thu, 18 Apr 2024 11:47:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713465714; x=1714070514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713466078; x=1714070878; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S8C8IikmJy8uyY+XBYNIZBe+JCpoTPr1zzk9t3ER+z8=;
-        b=NGlPpFMl94d/84zUSavJrv0jyVbQJxlLYbcVZdHTNuGL+8zE686wNkrPu61Q+bRGp/
-         aqwgUgUQLUekNrD+2Pm2zu3tgCPd+Wu9KwBytf2YLig1mQY2RBT0DjHFeVRmvJhN91Q3
-         h7dW1lDgEG5Jp9OeVA2p7wRgox7+O2+tfJvdmk1bfV/n3bi0O1O5/zVSdhhLDilpPor5
-         Gf8hMJl8swmFhd/QkznVypaGgIROHKMZDiI3JOc7k7nyOHCLSfS1RDQe1mLQsYeE6IvO
-         LVI2ioOsNtHTkztCmhczLyIUUwlFMEgAtbxQ+2qxfQ1AAGMwT/4Jb8IUyZG/XxsUPM3U
-         KuOA==
+        bh=3Z9WReLj2xrkv8imtMaxtB+MgeF3SaMvjoAmAItYIjM=;
+        b=bQRW0RMhLkkS5cG9831ITtp1s0ENEyK+KhzWTEYHrklGQuZxz1dh2QDYr1G30X2yR0
+         v0tWUeEl9TwVYYbi11pwU7dTMqw67/nHD8g2hsKRjOkMXmD6mw5F756DmKFG8ByVfhv9
+         uCgNpWqdbEZIvTagh+ieYSAIt+/mJ3xwukP/Jt8e3DTEhEjgG/KdMEXks38yiBElbusA
+         pozoY/0dOki1IbO8tuM4a+d0f0xnTiqkcZNDtFUNigs0UIZg2eQuWVwXCTfUziSeMLBX
+         K6hMCcGOAHQn9pYJ3fk8aG/AaBZgEUv7H4R7ajbgykVrcFJXfutIj3GRgpvOcDzi8Mqa
+         cF9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713465714; x=1714070514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S8C8IikmJy8uyY+XBYNIZBe+JCpoTPr1zzk9t3ER+z8=;
-        b=gxghT/+YX6oQv+dK9KW732koNur/wK4ZdXEIhLBxl2jgnm/owck6V80D7+/Is+8HIb
-         ySc211Oi4t/bOFOmZMVKIy2dBdjTX2+3y9AB/a4WADQwYS3GtkpiTsAFDVJoHqHaXgtU
-         08j0YC3uPiqGqpGSCrkZhPMaEp5hSa3tDdavs+sWdAPUFMCD3y3QQSm1F7vv1Elx9CfC
-         qw2K25dobS7bvq3Bwtmkx2xNtjHrPUi4BmYgsE0ito988aX19H5F9bLF/dtp/A+N/Kmo
-         OdasvCXQVgqIf58G3sYCHO3shfbafhzdQDiDVkEeOpRwK2SdlfKsLytPKQw5ths2vCys
-         72vw==
-X-Forwarded-Encrypted: i=1; AJvYcCXduCT7NtvYr8+XzlbT2CwyCCf1W9HgF7Xd+ck1z8MZ47mTmeoSLl3oxx4lAgnCPkgU+V4BMnBx6B2OrWYD/1UD5V40C2MutNTBSsDxOGhukZ9JYeBSmL7B3kaY4EnLDnB2TYp7hx6Q
-X-Gm-Message-State: AOJu0YwW1VfX8AHqE6+6n/rLKyubSE8zZoayyZg+aONNsYvcxVFXFDGh
-	KZJwSm9+nfNyJovts4qKlJL/nBck73KLi1h1sumWrHvkPLiH4V6LL65sB95oyzUzp5e6/K87vYt
-	LhiEoTbw0NmD0M/QIr7MDBePw4jomUVtU
-X-Google-Smtp-Source: AGHT+IFlliZAatUTLAv/zRtbDtIqyF0Sabqyl/u2IqjJWTpJtmOaRa/M0PgvbI7xS6Z1eBVdXqSrUMQ9ZOqGZ9sLUcA=
-X-Received: by 2002:a05:6a20:da81:b0:1aa:a6cc:39c1 with SMTP id
- iy1-20020a056a20da8100b001aaa6cc39c1mr71577pzb.3.1713465714154; Thu, 18 Apr
- 2024 11:41:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713466078; x=1714070878;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3Z9WReLj2xrkv8imtMaxtB+MgeF3SaMvjoAmAItYIjM=;
+        b=NLRAsY2g5/qYN1NbelPnzuJctpZ4ltibl3RlK2/E4c1hy0lUQohkxHjIcDbRV9uK3c
+         FY4rWxJmHXABO11getG6H1Iyo0MDIPZc71uddTmX2G4duSsCzySBlGN2R4xV8l/LRpuO
+         TVXsBpjiX/8v2CH5K2wStLQk/HcDWVMgy4ISRAtpyv0isiGML1zc5cMRVS+UcS0nw6h4
+         IoeyPv85NryTHQjh+Aguh+n/XQ3/P+mJbNH40dLXUC9YpEv8O7cS2Z2i84XYWQxuJ2QQ
+         qm2mqTzBOMBZ/OmEd/ucM/3dsKENcdDjpyZzdqh5kXYjB7Rey2xs9ORsUxHf1XwBQ1PC
+         pZaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUj7G16ZqPWj7Furz8gw90elRvorpwX5+SIZxKbemxebLm1IzF7EqQ7iCzgh65aG3bNqyieo2E2b+1TlWLTRW3LTHeUB0CvzoNNo44z2O95ziXHqz21mE3Zw5XsHj5G0VQ0sc8tKH2u5iM2rWUFGgFkSihTIQpOlplo
+X-Gm-Message-State: AOJu0YzhajEGnbWzkdXUgHeb2c+u0icF6v3xj4RkUi+dVo3gpuHJ+YD0
+	yDjPCJe4En/Fbbw9vOY/kuOlvHz6YAe8dnVtu70HUdtnMDne/gDk
+X-Google-Smtp-Source: AGHT+IHpHdV89IH4nrE0P2nMcgel2y6lXNZGHvqjwlDO2vx+QjGrQB2mFOZ+g5AbW9vC7IAtpGX2/g==
+X-Received: by 2002:aca:1113:0:b0:3c7:963:837a with SMTP id 19-20020aca1113000000b003c70963837amr4155044oir.54.1713466077935;
+        Thu, 18 Apr 2024 11:47:57 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id i19-20020ae9ee13000000b0078eca9de099sm859903qkg.134.2024.04.18.11.47.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 11:47:56 -0700 (PDT)
+Date: Thu, 18 Apr 2024 14:47:56 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <66216adc8677c_f648a294aa@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240418004308.1009262-2-quic_abchauha@quicinc.com>
+References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
+ <20240418004308.1009262-2-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v4 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240403220328.455786-1-andrii@kernel.org> <20240403220328.455786-2-andrii@kernel.org>
- <20240410074819.9b3a9a6d6a53d534b9915dc8@kernel.org>
-In-Reply-To: <20240410074819.9b3a9a6d6a53d534b9915dc8@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 Apr 2024 11:41:42 -0700
-Message-ID: <CAEf4BzbPk+kzXV7KVUzeA=Okbe+kvCNYEoYEOYPEu_QFVKTRUg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] rethook: honor CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING
- in rethook_try_get()
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, bpf@vger.kernel.org, jolsa@kernel.org, 
-	"Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 9, 2024 at 3:48=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
->
-> On Wed,  3 Apr 2024 15:03:28 -0700
-> Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> > Take into account CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING when validatin=
-g
-> > that RCU is watching when trying to setup rethooko on a function entry.
-> >
-> > This further (in addition to improvements in the previous patch)
-> > improves BPF multi-kretprobe (which rely on rethook) runtime throughput
-> > by 2.3%, according to BPF benchmarks ([0]).
-> >
-> >   [0] https://lore.kernel.org/bpf/CAEf4BzauQ2WKMjZdc9s0rBWa01BYbgwHN6aN=
-DXQSHYia47pQ-w@mail.gmail.com/
-> >
->
-> Hi Andrii,
->
-> Can you make this part depends on !KPROBE_EVENTS_ON_NOTRACE (with this
-> option, kretprobes can be used without ftrace, but with original int3) ?
+Abhishek Chauhan wrote:
+> mono_delivery_time was added to check if skb->tstamp has delivery
+> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+> timestamp in ingress and delivery_time at egress.
+> 
+> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+> extensibilty for other timestamps such as userspace timestamp
+> (i.e. SO_TXTIME) set via sock opts.
+> 
+> As we are renaming the mono_delivery_time to tstamp_type, it makes
+> sense to start assigning tstamp_type based on enum defined
+> in this commit.
+> 
+> Earlier we used bool arg flag to check if the tstamp is mono in
+> function skb_set_delivery_time, Now the signature of the functions
+> accepts tstamp_type to distinguish between mono and real time.
+> 
+> In future tstamp_type:1 can be extended to support userspace timestamp
+> by increasing the bitfield.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
 
-Sorry for the late response, I was out on vacation. Makes sense about
-KPROBE_EVENTS_ON_NOTRACE, I went with this condition:
+> +/**
+> + * tstamp_type:1 can take 2 values each
+> + * represented by time base in skb
+> + * 0x0 => real timestamp_type
+> + * 0x1 => mono timestamp_type
+> + */
+> +enum skb_tstamp_type {
+> +	SKB_CLOCK_REAL,	/* Time base is skb is REALTIME */
+> +	SKB_CLOCK_MONO,	/* Time base is skb is MONOTONIC */
+> +};
+> +
 
-#if defined(CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING) ||
-defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
+Can drop the comments. These names are self documenting.
 
-Will send an updated revision shortly.
+>  /**
+>   * DOC: Basic sk_buff geometry
+>   *
+> @@ -819,7 +830,7 @@ typedef unsigned char *sk_buff_data_t;
+>   *	@dst_pending_confirm: need to confirm neighbour
+>   *	@decrypted: Decrypted SKB
+>   *	@slow_gro: state present at GRO time, slower prepare step required
+> - *	@mono_delivery_time: When set, skb->tstamp has the
+> + *	@tstamp_type: When set, skb->tstamp has the
+>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>   *		skb->tstamp has the (rcv) timestamp at ingress and
+>   *		delivery_time at egress.
 
-> This option should be set N on production system because of safety,
-> just for testing raw kretprobes.
->
-> Thank you,
->
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  kernel/trace/rethook.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-> > index fa03094e9e69..15b8aa4048d9 100644
-> > --- a/kernel/trace/rethook.c
-> > +++ b/kernel/trace/rethook.c
-> > @@ -166,6 +166,7 @@ struct rethook_node *rethook_try_get(struct rethook=
- *rh)
-> >       if (unlikely(!handler))
-> >               return NULL;
-> >
-> > +#ifdef CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING
-> >       /*
-> >        * This expects the caller will set up a rethook on a function en=
-try.
-> >        * When the function returns, the rethook will eventually be recl=
-aimed
-> > @@ -174,6 +175,7 @@ struct rethook_node *rethook_try_get(struct rethook=
- *rh)
-> >        */
-> >       if (unlikely(!rcu_is_watching()))
-> >               return NULL;
-> > +#endif
-> >
-> >       return (struct rethook_node *)objpool_pop(&rh->pool);
-> >  }
-> > --
-> > 2.43.0
-> >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Is this still correct? I think all egress does now annotate correctly
+as SKB_CLOCK_MONO. So when not set it always is SKB_CLOCK_REAL.
+
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index 61119d42b0fd..a062f88c47c3 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -1300,7 +1300,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>  	tp = tcp_sk(sk);
+>  	prior_wstamp = tp->tcp_wstamp_ns;
+>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
+> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
+> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONOTONIC);
+
+Multiple references to CLOCK_MONOTONIC left
+
+
+
 
