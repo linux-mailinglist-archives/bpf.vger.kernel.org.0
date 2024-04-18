@@ -1,200 +1,129 @@
-Return-Path: <bpf+bounces-27111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DACF8A92C5
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 08:07:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2E698A92D7
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 08:14:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 057DA1F21854
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 06:07:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000501C20F3B
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 06:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051A0651B1;
-	Thu, 18 Apr 2024 06:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B17657D4;
+	Thu, 18 Apr 2024 06:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCj/RxND"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gz5vXu78"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240D6EDF
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 06:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDDD3399B
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 06:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713420443; cv=none; b=UwLBP0fr2IYw4MaS8lMgkBSArEfYBYQJnL6EUAk1hqYGq4ZJlscqraRHYvh4HiDJ1//QS2KC2MisDutdtRSYkjKWmDuB20/2Xv9HQ0Q+w7lsk9bpO/6eCmmVJmHiC6G6dCzCQPde7zxHYMjr5PzKedf4JEsjEMScbAjvGe4RvEE=
+	t=1713420852; cv=none; b=gtO6htgyI0j2c5yRNKW+3e+IWmaDgv53f4AE7nGHl4WAdxv5Pc/IsOzBrB4J8K0My8e9o35M9Lf+aKJRhwaz/+9lqFimHuVsbk7ApC/5pniPD7Spx/su6R3tZu46WML/Xz9jmQEJU+SaDKNJPCXoPOUGHq8RpXHX4ShhgthPceM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713420443; c=relaxed/simple;
-	bh=gp0XWA+R/JSCiUI4BAYZQxLoa5ThZ/O/87KPAmB8aDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FXBVE6t5dJAFBEwA+A4+28cuc/ocuO8COd+3TLKekEnfdIQ7NJl37mEnFnONTOi+iqbFthxt81p6ZAlZjy1p3IgBwaLbEe+3S7fCs8gt+qAL0ASAS1NuRyap3cJdlzCjOu4QBwzmnZ+8wPwqE4oxLAcuR7D+dz35gvyZiIXnb4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dCj/RxND; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5aa2a74c238so328510eaf.3
-        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 23:07:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713420441; x=1714025241; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zeMR9vbPPvLuh5XpLippuCIq9ZYQOxisp9yBJHbDt5U=;
-        b=dCj/RxNDa6t4DOue3H2/X6hz0znSi4YcbphBbVqWzBBf04v0z4Bc+HWbmns/6amMF1
-         zEQ34Zk8ir/cQJEyDN/6/AyXkI2YXocUjP15yHnuDrouGRKg/NOP+FWJwlSyRNLrb6je
-         R5Ty0gcbUrKzfdvy8SC51CS7Uxb8FcuR1BpP85LObgYu8/95zNw+bQAInSXeOXQ9//+m
-         gydfsVdZQ2ebfCZ9Y5r297PVpI7CE8hH5feWkqsGnVeWzbM0N5KbfQTJvm4CN8DTtddB
-         tS/330SXYUb6wwWH9PnR4fXMwOuEd5nOUJ1S3vbuj90C9yaJh+TDkWebU3KVqJIVsymx
-         TPPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713420441; x=1714025241;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zeMR9vbPPvLuh5XpLippuCIq9ZYQOxisp9yBJHbDt5U=;
-        b=HH9z2nLwbTKosP1l0wJmRN+f1hgjKkOo4tE8rJn74DWbzng9ADMalbmrX0TGFyBuyY
-         CzZSsvFP2+M8XCjG4nQwQCulfwQ8+GmLlkoN1v5gckK7lAz1utgP4jNp2or7+GMohbwo
-         sqqzGhJWaUJde5URF6/BFXRRIpdw0ymNdnMd26cqHnorkHzINQ0tCo5huaVfzIsekNOk
-         CK1vclgrUwYrOia5ig4aJFUwQHpyra3J47KIPyZJf16fAZ4mEkQSycXzWxNDGpeIUcPX
-         9pG/dTZEUVljJmWwdLpDNf8raLUQSB9wAvF8qwLd8i5qIGFjIlUbdqw9kbFCtpJM1qad
-         AfdA==
-X-Forwarded-Encrypted: i=1; AJvYcCVSSd0BQWV5M+ZQsJAGcN1USklx0FbCIDW2P4OvxgHyMkpC1jG1vXaiEBb2lXZO58szhPhwKN4HZY/qebBhGORkH+Ce
-X-Gm-Message-State: AOJu0Ywaw7Nm4E0/RS/0OAUw3qqyHtjzGt4K1uIQiwKyZlFdSVaVxT2S
-	6nGy2N5aqQx5bnY1o7gks4D0Zp976Sa1IYZmUqq9ATWaMJtXl75+6yJkrg==
-X-Google-Smtp-Source: AGHT+IGPapSfOLjDNFk1BuPIhfGsv6eUvFXf/QQCJ1nEuUArThGRJoEhvE+yl4JiBR2ks3KszOneuA==
-X-Received: by 2002:a05:6871:28c:b0:22e:dfc7:6cdd with SMTP id i12-20020a056871028c00b0022edfc76cddmr2236084oae.50.1713420440721;
-        Wed, 17 Apr 2024 23:07:20 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:f03d:b488:be92:3bc9? ([2600:1700:6cf8:1240:f03d:b488:be92:3bc9])
-        by smtp.gmail.com with ESMTPSA id ov26-20020a056870cb9a00b0022e9ffdb5a5sm271300oab.24.2024.04.17.23.07.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 23:07:20 -0700 (PDT)
-Message-ID: <6d25660d-103a-4541-977f-525bd2d38cd0@gmail.com>
-Date: Wed, 17 Apr 2024 23:07:19 -0700
+	s=arc-20240116; t=1713420852; c=relaxed/simple;
+	bh=nBP7IipwE4KR0FuX5N6zhQhnH2sZcTiQNqwb2VIc028=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AsPtI6EIbV9HJKCo9mLt8pOnZkyzVe3ZMv+b85gvMGGNBjXPQoT5bbaVK2ghaZQBYD8E476gIQXuP3meyZzeDMU3Pm/+rkDGlHO4oAHSUn/VUjaOGsn/hptntMAqF7a7ue0b1s9msmcEwTfdduuIQfhRZB8dYFa9j8LmdCsi/Wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gz5vXu78; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713420851; x=1744956851;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nBP7IipwE4KR0FuX5N6zhQhnH2sZcTiQNqwb2VIc028=;
+  b=gz5vXu78a0+u4KVBTvJPru1W8tBA40/4bSiuhXhpV5pd6/FIwDFM1yL9
+   26Owr4YWqTe8vQTYc5D3FCnid2lTmaW2fC4y8FvlMfGhEwsk0MVQQA+5R
+   qjB+l+C6TrRIrN0O1rtbQSVBq1aTC6nHo/pxWPslmPu4W6sUTch3nnjkI
+   meEPgR8ccUbpbDogduE+xIgAHkkYgnfND0LvVe3Zx788JhvuJsai1oz4j
+   r/hd1uKR4d3yB7ECKAFj7+AelqcbAhSJ/Cb7ucdpkpE+JOMDjw0ehkcvG
+   Fjy9ESjHtASh3CS9RVTUPadysjPiKO0ZWTeWDkY0/pEQ4VOuJ8qAtL7Rc
+   Q==;
+X-CSE-ConnectionGUID: G9WPspJiSmSMIFpsphOFlw==
+X-CSE-MsgGUID: mYaMjEnHQm2/AmPEdjWceA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="11887197"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="11887197"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 23:14:10 -0700
+X-CSE-ConnectionGUID: na0IERKYQ8Gwar49+uQ+Bw==
+X-CSE-MsgGUID: rsi9ef0KRcChbywrB13bzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="22949720"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 17 Apr 2024 23:14:06 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rxL22-0007My-0w;
+	Thu, 18 Apr 2024 06:14:03 +0000
+Date: Thu, 18 Apr 2024 14:13:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
+	ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	kernel-team@meta.com, andrii@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, sinquersw@gmail.com, kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned
+ path of a struct_osp link.
+Message-ID: <202404181413.1uMDy1xi-lkp@intel.com>
+References: <20240417002513.1534535-2-thinker.li@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 00/11] Enable BPF programs to declare arrays
- of kptr, bpf_rb_root, and bpf_list_head.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
- Kui-Feng Lee <kuifeng@meta.com>
-References: <20240412210814.603377-1-thinker.li@gmail.com>
- <CAADnVQKP4HESABxxjKXqkyAEC4i_yP7_CT+L=+vzOhnMr5LiXg@mail.gmail.com>
- <1ce45df0-4471-4c0c-b37e-3e51b77fa5b5@gmail.com>
- <CAADnVQKjGFdiy4nYTsbfH5rm7T9gt_VhHd3R+0s4yS9eqTtSaA@mail.gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAADnVQKjGFdiy4nYTsbfH5rm7T9gt_VhHd3R+0s4yS9eqTtSaA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417002513.1534535-2-thinker.li@gmail.com>
+
+Hi Kui-Feng,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kui-Feng-Lee/bpf-enable-the-open-operator-on-a-pinned-path-of-a-struct_osp-link/20240417-082736
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240417002513.1534535-2-thinker.li%40gmail.com
+patch subject: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned path of a struct_osp link.
+config: arm-aspeed_g5_defconfig (https://download.01.org/0day-ci/archive/20240418/202404181413.1uMDy1xi-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240418/202404181413.1uMDy1xi-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404181413.1uMDy1xi-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arm-linux-gnueabi-ld: kernel/bpf/syscall.o: in function `bpf_link_open':
+>> kernel/bpf/syscall.c:3117:(.text+0xb70): undefined reference to `bpffs_struct_ops_link_open'
 
 
+vim +3117 kernel/bpf/syscall.c
 
-On 4/17/24 22:11, Alexei Starovoitov wrote:
-> On Wed, Apr 17, 2024 at 9:31 PM Kui-Feng Lee <sinquersw@gmail.com> wrote:
->>
->>
->>
->> On 4/17/24 20:30, Alexei Starovoitov wrote:
->>> On Fri, Apr 12, 2024 at 2:08 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
->>>>
->>>> The arrays of kptr, bpf_rb_root, and bpf_list_head didn't work as
->>>> global variables. This was due to these types being initialized and
->>>> verified in a special manner in the kernel. This patchset allows BPF
->>>> programs to declare arrays of kptr, bpf_rb_root, and bpf_list_head in
->>>> the global namespace.
->>>>
->>>> The main change is to add "nelems" to btf_fields. The value of
->>>> "nelems" represents the number of elements in the array if a btf_field
->>>> represents an array. Otherwise, "nelem" will be 1. The verifier
->>>> verifies these types based on the information provided by the
->>>> btf_field.
->>>>
->>>> The value of "size" will be the size of the entire array if a
->>>> btf_field represents an array. Dividing "size" by "nelems" gives the
->>>> size of an element. The value of "offset" will be the offset of the
->>>> beginning for an array. By putting this together, we can determine the
->>>> offset of each element in an array. For example,
->>>>
->>>>       struct bpf_cpumask __kptr * global_mask_array[2];
->>>
->>> Looks like this patch set enables arrays only.
->>> Meaning the following is supported already:
->>>
->>> +private(C) struct bpf_spin_lock glock_c;
->>> +private(C) struct bpf_list_head ghead_array1 __contains(foo, node2);
->>> +private(C) struct bpf_list_head ghead_array2 __contains(foo, node2);
->>>
->>> while this support is added:
->>>
->>> +private(C) struct bpf_spin_lock glock_c;
->>> +private(C) struct bpf_list_head ghead_array1[3] __contains(foo, node2);
->>> +private(C) struct bpf_list_head ghead_array2[2] __contains(foo, node2);
->>>
->>> Am I right?
->>>
->>> What about the case when bpf_list_head is wrapped in a struct?
->>> private(C) struct foo {
->>>     struct bpf_list_head ghead;
->>> } ghead;
->>>
->>> that's not enabled in this patch. I think.
->>>
->>> And the following:
->>> private(C) struct foo {
->>>     struct bpf_list_head ghead;
->>> } ghead[2];
->>>
->>>
->>> or
->>>
->>> private(C) struct foo {
->>>     struct bpf_list_head ghead[2];
->>> } ghead;
->>>
->>> Won't work either.
->>
->> No, they don't work.
->> We had a discussion about this in the other day.
->> I proposed to have another patch set to work on struct types.
->> Do you prefer to handle it in this patch set?
->>
->>>
->>> I think eventually we want to support all such combinations and
->>> the approach proposed in this patch with 'nelems'
->>> won't work for wrapper structs.
->>>
->>> I think it's better to unroll/flatten all structs and arrays
->>> and represent them as individual elements in the flattened
->>> structure. Then there will be no need to special case array with 'nelems'.
->>> All special BTF types will be individual elements with unique offset.
->>>
->>> Does this make sense?
->>
->> That means it will creates 10 btf_field(s) for an array having 10
->> elements. The purpose of adding "nelems" is to avoid the repetition. Do
->> you prefer to expand them?
-> 
-> It's not just expansion, but a common way to handle nested structs too.
-> 
-> I suspect by delaying nested into another patchset this approach
-> will become useless.
-> 
-> So try adding nested structs in all combinations as a follow up and
-> I suspect you're realize that "nelems" approach doesn't really help.
-> You'd need to flatten them all.
-> And once you do there is no need for "nelems".
+  3110	
+  3111	/* Support opening pinned links */
+  3112	static int bpf_link_open(struct inode *inode, struct file *filp)
+  3113	{
+  3114		struct bpf_link *link = inode->i_private;
+  3115	
+  3116		if (link->type == BPF_LINK_TYPE_STRUCT_OPS)
+> 3117			return bpffs_struct_ops_link_open(inode, filp);
+  3118	
+  3119		return -EOPNOTSUPP;
+  3120	}
+  3121	
 
-For me, "nelems" is more like a choice of avoiding repetition of
-information, not a necessary. Before adding "nelems", I had considered
-to expand them as well. But, eventually, I chose to add "nelems".
-
-Since you think this repetition is not a problem, I will expand array as
-individual elements.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
