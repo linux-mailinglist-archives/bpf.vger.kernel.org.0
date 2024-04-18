@@ -1,202 +1,140 @@
-Return-Path: <bpf+bounces-27150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F299C8AA032
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:36:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA438AA04A
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:40:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8052D1F23094
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:36:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50AE6283FBE
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4023174EC5;
-	Thu, 18 Apr 2024 16:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2385F171092;
+	Thu, 18 Apr 2024 16:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ezqSe059"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XF/vq2h1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173DA17108F
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EFD16F8F3
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713458117; cv=none; b=NADAQiQmHdvkurOBek6fHGPpwAwP7WMLidQ5rKPLUokDc9s+HVT6MlADkvZjyw5aCCfPsqVWyWcM/Zh93bQhUswNN+NO/twmIPOW69YHcLrjGlU9RGuTut27i46xFhlTVEXxXe00dRzoZGjL0hGJufDqdAWtfzyD/FKn2BH1OpQ=
+	t=1713458285; cv=none; b=pe9IfYo/xBzEF+3cMwAWllSHljOp57yUFYa3hCIn3UwexfpHsbYwMhLVwHtNN46bQavR4+zNP3+l6FB+purHBdpy7jCHGk9GJpvvRi6gqJ7BPYdiFRmy8GE/U9OrMg68Y/O4kOzFqDdpnB9g6EUKCR3dlwGzbbvN/Ocou8sjsBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713458117; c=relaxed/simple;
-	bh=y1t/beTI9nc6z/yEvptNoAHKaz3hYUX2fmRYnplM8Ys=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nW2UpzgnIFxuiC8SHHI3TeTTkMh/kWqOeAJG0AjdsDW0vehwf9cHLkAUR8MjZWS/xgBvK56e27su8BudI8crxdAdBC8zDuNVaoEYYp1jr/YN7kLtgreDF8bU6N6TgEO7FSOJFVX7Pk+sEe4/omdbEvGdzbXCqwEIJ6/kFajG0PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ezqSe059; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6eb55942409so509251a34.1
-        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 09:35:15 -0700 (PDT)
+	s=arc-20240116; t=1713458285; c=relaxed/simple;
+	bh=V626uEJkH9jBbP9aHpW/Nvz/TdS8JMzCVHPPyBjG91g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ohzHWsn2sykiKn1oI+J2JXaLDmfA6PdN2a7IeZvv1lSBI5I8Vnyf5mleZzh69XKrydJjVjCiGv7Uty8AevkWyqrwgyMFsqeBNxMs0Xzhnh79IgjLaoU90SxMpMrp5p7rinLlLEMGF1cj8/orFPaSryz5AeIRPcLLiuZ0ZDdsai8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XF/vq2h1; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516f2e0edb7so1393442e87.1
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 09:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713458115; x=1714062915; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5K6bypWbsyWY0taJNvZ0WSjYUDnqITNJfk3zzp7+6yM=;
-        b=ezqSe059GIrxB9sl74bHdHSt3uflKN7BRIBlSoLEzIUyDk8YqXdTAYuXh9Fe0SnWbW
-         2YnxnWVVZ/MxloFMJGxFPdqFxS6BIVxaMjE20x5YP9IJuTa3YVu/LRBEEeVJI+mOySnr
-         m1WrlZGO82mImshuzivpPOgVwgOOAki1r92UMIkvAs3HW+5PMIdL9g0Z4RyF5VkCVL8B
-         Ldkj5cQjkZzrNBG22kMM0p4L2hIHQ1uet8j3WCp2IH9c3UuRDTzjg7Bx+n9BoAomOYaJ
-         4BvS83RBej2qxfJ1gbCFPYeEJCKT/6ULWwAej/X7HMogPDnc4YaEe8Jtss8D9yDWoXyH
-         +tAQ==
+        d=google.com; s=20230601; t=1713458282; x=1714063082; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2fvL6J9nXYqFFsxzFO/o7239dRTb2u5K1mOJJhr20OI=;
+        b=XF/vq2h16JiedJw086qXgxCqT2jcfCjetovrVB7yhOjpuIXVSsUgAwsktvz6AsguI9
+         FjY7BzLhlG4++UipNYXkk4Nzons0R+tVK0CUElomCZqr72gp3wUHB8Iuj4QBsU7IGTtV
+         AgK41rVLCyUI9al8bNZByzGuDmNrJDFb6ZHz/TzrG4gNJES7MzofytYRU9LVubMuz0Z4
+         +smFhaKVF2iwq2JBL8EO2x/qQQ5tJu/UChtYa8cohr3Z0Ue1w+80tr77xQtKBxnZmS/1
+         ma2S13tienorDtfpO9C8awyWpH/ASwLLIf4/pHkKj4WA+EKA75irZzL4Y3nO/Tp//vW8
+         7kuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713458115; x=1714062915;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5K6bypWbsyWY0taJNvZ0WSjYUDnqITNJfk3zzp7+6yM=;
-        b=qv7mY2B1bkLEY92NUQSjQgy4NmaXlyXfaq1gIri2KY26v9yVjRIjAMcRBb0mp3gABi
-         JEjTRYCEvmLihd8Z2OkiVx3zLz/oP1u4Ic1rp8VUsvv7eZSSo4ANfKIJGh9UkjQ/e7iP
-         AKdpTzU1T+OpCOpaB2y916Xi+7gJAZqBiliYCeClrbGzRTbE8+dJTL72VcQbMXBn6eCB
-         DfmRJTrQzOf6A2Vb5/xR9i+A6k7U3wli8suWICJdTB9nwel//X1NM7SPlU2YJtVqRGsa
-         Uo7a5V47wLpXJCh1K16heqDWeHCS3aLl9UfnF4OqvbpUEAJCcgAnwL2G/MO+BvrEn332
-         XJdg==
-X-Gm-Message-State: AOJu0Yz0XJV4wgc8f4oDNeCitDvY2zWHb+oz11BoKL7lxm/wxivD3IiL
-	J1gWG17jwD0nNBFNkm1Anm0tbbvyTecj9aZCga4yep/X+B3ZNNDe8yvDCA==
-X-Google-Smtp-Source: AGHT+IG4sA+tSzXhzH6920XbdlyJFBdiEHib5aMbWXvprJfXzEBUzzbMoOU1NPsvyCH78EYuZM3r7w==
-X-Received: by 2002:a05:6830:59:b0:6ea:20b5:f3cc with SMTP id d25-20020a056830005900b006ea20b5f3ccmr3553878otp.32.1713458114668;
-        Thu, 18 Apr 2024 09:35:14 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:6fe6:94b6:ddee:aa05])
-        by smtp.gmail.com with ESMTPSA id i5-20020a9d53c5000000b006e695048ad8sm376391oth.66.2024.04.18.09.35.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 09:35:14 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: open a pinned path of a struct_ops link.
-Date: Thu, 18 Apr 2024 09:35:09 -0700
-Message-Id: <20240418163509.719335-3-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418163509.719335-1-thinker.li@gmail.com>
-References: <20240418163509.719335-1-thinker.li@gmail.com>
+        d=1e100.net; s=20230601; t=1713458282; x=1714063082;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2fvL6J9nXYqFFsxzFO/o7239dRTb2u5K1mOJJhr20OI=;
+        b=BSAL9KiOV9CS/Lr1YOK0C+6C4lk/XOsE8N5NqP2TDVtVR2Vpx7y8PYvemdrcEAKCsr
+         MjPZQn1zEQokZ1I24shyWUpHOUe6yqUtXVtnTNQu5wyEA7AACz1xM0W1lPGTcJJsdjNa
+         wFjJ+2hfw3tKu02fK3VIfOc1C807Lsy1ZgcFRu+3j23037RnCOS09lqVP1/v8RCJRIUW
+         s0IcG5TT/EH74+fB8aXcOQ1g54AL0e8lqFrBILqM9a/rfG6znSJp3m1We7ndjHh3OFkv
+         vp63QrM0BycW0VSta0ndBprAUg8WWiLR0pl4K+ccng9/97/YqqZhQZ8hSqfR6bvptnTn
+         WeCA==
+X-Gm-Message-State: AOJu0YwNMy1+lwxKnghE9+OUWrbb0iDEjAPETCqZDzaji9cQMesL6JDK
+	2Gg9jgFrYvY3JhbCw9M8jlsll3uxBjd0OAHpFbXuD4R+zgtzV9wGWMTVbvEpxpcB+z5WXJLE0zY
+	x0Y7pcmFmYLQCxmdN9JK9TwIZGEnYiSm9xwrr
+X-Google-Smtp-Source: AGHT+IE/svMEdblsX6s5vPxV2ylObzjaIZ55o97lvAaXhYSugvIA3wFEwwhMNS0cq5OY9J8vFtE9CdF9Q9hKNy9Yx24=
+X-Received: by 2002:a19:5e55:0:b0:519:5df9:d945 with SMTP id
+ z21-20020a195e55000000b005195df9d945mr1975972lfi.4.1713458282190; Thu, 18 Apr
+ 2024 09:38:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240412165230.2009746-1-jrife@google.com> <20240412165230.2009746-5-jrife@google.com>
+ <3df13496-a644-4a3a-9f9b-96ccc070f2a3@linux.dev> <CADKFtnQDJbSFRS4oyEsn3ZBDAN7T6EvxXUNdrz1kU3Bnhzfgug@mail.gmail.com>
+ <f164369a-2b6b-45e0-8e3e-aa0035038cb6@linux.dev>
+In-Reply-To: <f164369a-2b6b-45e0-8e3e-aa0035038cb6@linux.dev>
+From: Jordan Rife <jrife@google.com>
+Date: Thu, 18 Apr 2024 12:37:49 -0400
+Message-ID: <CADKFtnQHy0MFeDNg6x2gzUJpuyaF6ELLyMg3tTxze3XV28qo7w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/6] selftests/bpf: Add IPv4 and IPv6 sockaddr
+ test cases
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Kui-Feng Lee <thinker.li@gmail.com>, Artem Savkov <asavkov@redhat.com>, 
+	Dave Marchevsky <davemarchevsky@fb.com>, Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>, 
+	David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Ensure that a pinned path of a struct_ops link can be opened to obtain a
-file descriptor, which applications can then utilize to update the link.
+> The test_sock_addr.{c,sh} can be retired as long as all its tests are migrated
+> to sock_addr.c
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  6 ++
- .../bpf/prog_tests/test_struct_ops_module.c   | 56 +++++++++++++++++++
- 2 files changed, 62 insertions(+)
+test_sock_addr.c has a few more test dimensions than
+prog_tests/sock_addr.c currently does, so it covers a few more
+scenarios.
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 39ad96a18123..c4acd4ec630c 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -579,6 +579,11 @@ static void bpf_dummy_unreg(void *kdata)
- {
- }
- 
-+static int bpf_dummy_update(void *kdata, void *old_kdata)
-+{
-+	return bpf_dummy_reg(kdata);
-+}
-+
- static int bpf_testmod_test_1(void)
- {
- 	return 0;
-@@ -606,6 +611,7 @@ struct bpf_struct_ops bpf_bpf_testmod_ops = {
- 	.init_member = bpf_testmod_ops_init_member,
- 	.reg = bpf_dummy_reg,
- 	.unreg = bpf_dummy_unreg,
-+	.update = bpf_dummy_update,
- 	.cfi_stubs = &__bpf_testmod_ops,
- 	.name = "bpf_testmod_ops",
- 	.owner = THIS_MODULE,
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-index 7cf2b9ddd3e1..47b965c4c3e1 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -160,6 +160,60 @@ static void test_struct_ops_incompatible(void)
- 	struct_ops_module__destroy(skel);
- }
- 
-+/* Applications should be able to open a pinned path of a struct_ops link
-+ * to get a file descriptor of the link and to update the link through the
-+ * file descriptor.
-+ */
-+static void test_struct_ops_pinning_and_open(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, opts);
-+	struct struct_ops_module *skel;
-+	int err, link_fd = -1, map_fd;
-+	struct bpf_link *link;
-+
-+	/* Create and pin a struct_ops link */
-+	skel = struct_ops_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	err = bpf_link__pin(link, "/sys/fs/bpf/test_struct_ops_pinning");
-+	if (!ASSERT_OK(err, "bpf_link__pin"))
-+		goto cleanup;
-+
-+	/* Open the pinned path */
-+	link_fd = open("/sys/fs/bpf/test_struct_ops_pinning", O_RDONLY);
-+	bpf_link__unpin(link);
-+	if (!ASSERT_GE(link_fd, 0, "open_pinned"))
-+		goto cleanup;
-+
-+	skel->bss->test_1_result = 0;
-+	skel->bss->test_2_result = 0;
-+
-+	map_fd = bpf_map__fd(skel->maps.testmod_1);
-+	if (!ASSERT_GE(map_fd, 0, "map_fd"))
-+		goto cleanup;
-+
-+	/* Update the link. test_1 and test_2 should be called again. */
-+	err = bpf_link_update(link_fd, map_fd, &opts);
-+	if (!ASSERT_OK(err, "bpf_link_update"))
-+		goto cleanup;
-+
-+	/* Check if test_1 and test_2 have been called */
-+	ASSERT_EQ(skel->bss->test_1_result, 0xdeadbeef,
-+		  "bpf_link_update_test_1_result");
-+	ASSERT_EQ(skel->bss->test_2_result, 5,
-+		  "bpf_link_update_test_2_result");
-+
-+cleanup:
-+	close(link_fd);
-+	bpf_link__destroy(link);
-+	struct_ops_module__destroy(skel);
-+}
-+
- void serial_test_struct_ops_module(void)
- {
- 	if (test__start_subtest("test_struct_ops_load"))
-@@ -168,5 +222,7 @@ void serial_test_struct_ops_module(void)
- 		test_struct_ops_not_zeroed();
- 	if (test__start_subtest("test_struct_ops_incompatible"))
- 		test_struct_ops_incompatible();
-+	if (test__start_subtest("test_struct_ops_pinning_and_open"))
-+		test_struct_ops_pinning_and_open();
- }
- 
--- 
-2.34.1
+struct sock_addr_test {
+    const char *descr;
+    /* BPF prog properties */
+    load_fn loadfn;
+    enum bpf_attach_type expected_attach_type;
+    enum bpf_attach_type attach_type;
+    /* Socket properties */
+    int domain;
+    int type;
+    /* IP:port pairs for BPF prog to override */
+    const char *requested_ip;
+    unsigned short requested_port;
+    const char *expected_ip;
+    unsigned short expected_port;
+    const char *expected_src_ip;
+    /* Expected test result */
+    enum {
+        LOAD_REJECT,
+        ATTACH_REJECT,
+        ATTACH_OKAY,
+        SYSCALL_EPERM,
+        SYSCALL_ENOTSUPP,
+        SUCCESS,
+    } expected_result;
+};
 
+We focus on the "happy path" scenarios currently in
+prog_tests/sock_addr.c while test_sock_addr.c has test cases that
+cover a range of scenarios where loading or attaching a BPF program
+should fail. There are also a few asm tests that use program loader
+functions like sendmsg4_rw_asm_prog_load which specifies a series of
+BPF instructions directly rather than loading one of the skeletons.
+Adding in these test dimensions and migrating the test cases is a
+slightly bigger lift for this patch series. Do we want to try to
+migrate all of these to prog_tests/sock_addr.c in order to fully
+retire it?
+
+-Jordan
 
