@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-27184-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27185-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D7EC8AA5B5
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 01:21:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EDAD8AA5B9
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 01:21:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FC5D1C2135E
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 23:21:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 758E31F21488
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 23:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045DD7D414;
-	Thu, 18 Apr 2024 23:20:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85CE7E56B;
+	Thu, 18 Apr 2024 23:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pn2WQmcr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="it1g4hNp"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BEA7C0B0
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 23:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182C371742
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 23:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713482435; cv=none; b=N1bdiv5pACJwF94Y3tnVq1Upiyav3R/pRdkgib0iaHC/2zxZ/awiFdB0xW5k/WxjKMh2C8PJp4JIcgm4vq8sLptGSbLzvV8WlapkZanINg9a2LcWuCtdX1xi3u9B5npy+BoQ1AhLvNKNgI091FhzvhzSdkMFgrwEWIuS/Q7rbvg=
+	t=1713482439; cv=none; b=h0BcVvC7a+qR6Au+fBbHF0h+DcWEcp703YgA1ke1RRC2uR+SwJTZkVhCoOJnj8uL+kMJtNZL+z+XTS1l4mF1F3yCEe0XHzWG+vT+ZrXUTzYe5TGMPVZ3BIk8yqp8fEfHNsSHykyOCsu9rdAN7vk8zOSTXrpd3A+A6wGXkLVWTSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713482435; c=relaxed/simple;
-	bh=7WAgsmWa8I2nRXxoayOV0F/ehsyZq3cQzYa0hL40wdw=;
+	s=arc-20240116; t=1713482439; c=relaxed/simple;
+	bh=YScO9mwjaHbzHT2vhYW5LqoeHviUzo+lvVpjgG9XQ3k=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DcGF+v3fX8hvy1nm7tst+BQQ0lHCRrjxR81tndsugb334hcOAK/1Klp/J/0balBLtk4D5/bfzqbfKuHOldjoUX5PxCC0oXDiav6Q8+B6vLYFEJkn5AlS0ntnDJJbqKfNxlrIj5vTlGBZ18kUejJ4asaSoZ5XtU/YQ7suxNzwnrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pn2WQmcr; arc=none smtp.client-ip=209.85.215.202
+	 To:Cc:Content-Type; b=pU+Kt5vka++u2urGTIaWRBK+M/VbCf6JUrHqUfBc9oP9+TvjE0ApDnHY1Ytkxl923Ht3Ze0l8eJmAdbACpgyxCOGNQkUdkLxlLfSfLjwmNVwK9Y/M4i+3WCo3ADGGE7UoUF+FgtmOpKgmU2f5v+5kITgHiaHWZATfg7URpoJTvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=it1g4hNp; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cf555b2a53so1756635a12.1
-        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:20:32 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cf555b2a53so1756653a12.1
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713482432; x=1714087232; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713482436; x=1714087236; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJWz1uvQTzKPjGuvX+wqPQBpUoIACARU5eow85W6RVU=;
-        b=pn2WQmcr1AACnBg5t7LFSPJCbfvLviyF4Z/jvnKO/HCaMnH1ATHN6yAHg6D7ZHxJwY
-         PSlVz3VxmPq1Q0MZHJFL4+Ors94G/RF1eCOVBSgSowkwFf0AsPMrhu+3dsMlQHqZcU9n
-         QK93oCqiqWGkMRwvvuIn6AREpdkTtn755Wa0K+f7a6AVhxKkXc+QH7t5H2dyTRrXnNZg
-         9g1aozYqfFpkW2jUBsni5riM7COFPRRTiJukt7UEWjVpXlT24DmudVdVTyW8IR+Ft1IR
-         ofGN3MCSIneVRslKtO61lu7/px2RxXjgigal61k7wT/k8sTn/fkj2rJPzyn7o8IHzk3/
-         Y9Yg==
+        bh=ntuKGIhl78pmHpDhVuljrWxMFgXG8nBQtJyZ9nYPDms=;
+        b=it1g4hNp5Ye5qfYuW65zW8uvK0L6dEJ3uvlUK0L7gUqk33IndCQLQbDV+gGqxx+mYk
+         TtunhcYOjysRW3f4qQOOFzKymnrizD1uSM99FjxkuejmOQ8vVVCgoDA6roLcvF4P2wFq
+         g9Jskq54AdT11spq3Y+parmkFFC5jt8iRN3y1gyxSw3pE23Vl+ytU/K8hBcr7ZPDOxwk
+         1Hmf9lui5dUG1Sm1wPfL0OPXwMOBWHfuYOMOx/8+jPhK2oG9bO35R/i1mkE4R+3bhNcZ
+         ODSSKk1Wwt1ozOsB5qCz77QrkrShZczi+4QMlxlmmFg5w2CaRjuR4k+yxnHEZv+TiN6O
+         dxAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713482432; x=1714087232;
+        d=1e100.net; s=20230601; t=1713482436; x=1714087236;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJWz1uvQTzKPjGuvX+wqPQBpUoIACARU5eow85W6RVU=;
-        b=wVOQ3fXKE3tqNEFJCr7zByoJEXBnnPWQtn08j51NdT6Icrton0J4iJ4bPW5M7XFoHG
-         9soTV1HRHM7npUsiD5ChujuN8dKNIE0oKLe3BpBzhk2jE5MhinS725eyyiNDZRWLT1g5
-         m569THIcsDDINcgxDm/g2SjVQRWVO6ab/j+XQET7G84vgb7z3rYCUHsqw7cvk7IyuTFe
-         /TXQkhBM1qYrAzTlg/Z82Y5Go4EquPk9OIcY4lpw5P1qPVasvEMMYqFz9/9yh66JY1Xf
-         3rKMRfuA3qeS7E17V4y+nyfIIzqfcEr5l/VYG7RMpAo3D+nD7gnY7kQ6OZgaRo0smdRM
-         KgEQ==
-X-Gm-Message-State: AOJu0YxM2hdZZuz7x2eISKhdVVT+MWrcDulCFH4W6pTPon48rn9x7cTO
-	cqg/0PX9+dfe4PHqqHKspul6Qa1mwaLF/qWqKdsRqTxuRdRuPlLdSRK8wgNA6j1RHVMsIFmJnD0
-	XGQ==
-X-Google-Smtp-Source: AGHT+IGZvpipb458KhuKNr2lT6l2L7v8w6uv6b7TY6/fKUTAKy1KSarqOpYJWvLTO6PRPcEY1aRIn/XdgRg=
+        bh=ntuKGIhl78pmHpDhVuljrWxMFgXG8nBQtJyZ9nYPDms=;
+        b=vOf/zzzXC9CvTNroF/UC8LbU1JnNT+/UiD0PhFtsmXrl4e28TvUmf1L/w4Ykm9YmBb
+         2KhrjBv8t1oGw3lxYhP1EtTTnZ+jBszbC6Mhr3KwId+90jRV3BfeyW6uhMKWktGNpSsI
+         Lil7juhQj7VOQ4GSgoerZ/s9YjBj5/FJYs1sVGHzjGAjnMygBZeNYUbR+Vcb62hQE/LP
+         c/DJHDnHEfePoO7jerqaUV92bAhJ/sqgf9iRrhIBQORFADIBbJPlPTW4Hp174gWgaXxf
+         F9IHli+j/Nw2lTEO5ABBy4qRvG3ZBK3/yK1c81mQd7PIRLcfe828GmPQo15V6ovTZSoJ
+         r04g==
+X-Gm-Message-State: AOJu0Yxlw/FE5R7kt+iu+RoIO9qAwT/TiivhImNxIBmW+df5WSl+EeWE
+	aB4rqaooajq+gKDF1pRAFMNsQGFT91Q7MNu9uJNHHpQAa5iMt2TutN3Jbbu0s2fSP6loknnNBJs
+	Rlw==
+X-Google-Smtp-Source: AGHT+IGX3+sK2ZbRibyfYYT7GKwhF6+fOJueP20+WYShxN73szU+fckNs7zUrZwu4bQuzEjoGpGQlExREJI=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:90a:3d4f:b0:2a2:bcae:83c1 with SMTP id
- o15-20020a17090a3d4f00b002a2bcae83c1mr28422pjf.3.1713482432421; Thu, 18 Apr
- 2024 16:20:32 -0700 (PDT)
-Date: Thu, 18 Apr 2024 23:19:48 +0000
+ (user=edliaw job=sendgmr) by 2002:a17:90a:8a96:b0:2aa:ab39:fcb6 with SMTP id
+ x22-20020a17090a8a9600b002aaab39fcb6mr8739pjn.1.1713482436246; Thu, 18 Apr
+ 2024 16:20:36 -0700 (PDT)
+Date: Thu, 18 Apr 2024 23:19:49 +0000
 In-Reply-To: <20240418232005.34244-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -73,9 +73,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <16430256912363@kroah.com> <20240418232005.34244-1-edliaw@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240418232005.34244-3-edliaw@google.com>
-Subject: [PATCH 5.15.y v3 2/5] bpf: Generalize check_ctx_reg for reuse with
- other types
+Message-ID: <20240418232005.34244-4-edliaw@google.com>
+Subject: [PATCH 5.15.y v3 3/5] bpf: Generally fix helper register offset check
 From: Edward Liaw <edliaw@google.com>
 To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -89,113 +88,109 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Daniel Borkmann <daniel@iogearbox.net>
 
-Generalize the check_ctx_reg() helper function into a more generic named one
-so that it can be reused for other register types as well to check whether
-their offset is non-zero. No functional change.
+Right now the assertion on check_ptr_off_reg() is only enforced for register
+types PTR_TO_CTX (and open coded also for PTR_TO_BTF_ID), however, this is
+insufficient since many other PTR_TO_* register types such as PTR_TO_FUNC do
+not handle/expect register offsets when passed to helper functions.
 
+Given this can slip-through easily when adding new types, make this an explicit
+allow-list and reject all other current and future types by default if this is
+encountered.
+
+Also, extend check_ptr_off_reg() to handle PTR_TO_BTF_ID as well instead of
+duplicating it. For PTR_TO_BTF_ID, reg->off is used for BTF to match expected
+BTF ids if struct offset is used. This part still needs to be allowed, but the
+dynamic off from the tnum must be rejected.
+
+Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+Fixes: eaa6bcb71ef6 ("bpf: Introduce bpf_per_cpu_ptr()")
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 Acked-by: Alexei Starovoitov <ast@kernel.org>
-(cherry picked from commit be80a1d3f9dbe5aee79a325964f7037fe2d92f30)
+(cherry picked from commit 6788ab23508bddb0a9d88e104284922cb2c22b77)
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- include/linux/bpf_verifier.h |  4 ++--
- kernel/bpf/btf.c             |  2 +-
- kernel/bpf/verifier.c        | 21 +++++++++++----------
- 3 files changed, 14 insertions(+), 13 deletions(-)
+ kernel/bpf/verifier.c | 39 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 28 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 3d04b48e502d..c0993b079ab5 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -541,8 +541,8 @@ bpf_prog_offload_replace_insn(struct bpf_verifier_env *env, u32 off,
- void
- bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt);
- 
--int check_ctx_reg(struct bpf_verifier_env *env,
--		  const struct bpf_reg_state *reg, int regno);
-+int check_ptr_off_reg(struct bpf_verifier_env *env,
-+		      const struct bpf_reg_state *reg, int regno);
- int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
- 		   u32 regno, u32 mem_size);
- 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 77929fd7bcef..a0c7e13e0ab4 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5558,7 +5558,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 					i, btf_type_str(t));
- 				return -EINVAL;
- 			}
--			if (check_ctx_reg(env, reg, regno))
-+			if (check_ptr_off_reg(env, reg, regno))
- 				return -EINVAL;
- 		} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
- 			   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 008ddb694c8a..6fe805b559c0 100644
+index 6fe805b559c0..8cd265d1df34 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -3980,16 +3980,16 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
+@@ -3980,14 +3980,15 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
  }
  #endif
  
--int check_ctx_reg(struct bpf_verifier_env *env,
--		  const struct bpf_reg_state *reg, int regno)
-+int check_ptr_off_reg(struct bpf_verifier_env *env,
-+		      const struct bpf_reg_state *reg, int regno)
+-int check_ptr_off_reg(struct bpf_verifier_env *env,
+-		      const struct bpf_reg_state *reg, int regno)
++static int __check_ptr_off_reg(struct bpf_verifier_env *env,
++			       const struct bpf_reg_state *reg, int regno,
++			       bool fixed_off_ok)
  {
--	/* Access to ctx or passing it to a helper is only allowed in
--	 * its original, unmodified form.
-+	/* Access to this pointer-typed register or passing it to a helper
-+	 * is only allowed in its original, unmodified form.
+ 	/* Access to this pointer-typed register or passing it to a helper
+ 	 * is only allowed in its original, unmodified form.
  	 */
  
- 	if (reg->off) {
--		verbose(env, "dereference of modified ctx ptr R%d off=%d disallowed\n",
--			regno, reg->off);
-+		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
-+			reg_type_str(env, reg->type), regno, reg->off);
+-	if (reg->off) {
++	if (!fixed_off_ok && reg->off) {
+ 		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
+ 			reg_type_str(env, reg->type), regno, reg->off);
  		return -EACCES;
- 	}
+@@ -4005,6 +4006,12 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
+ 	return 0;
+ }
  
-@@ -3997,7 +3997,8 @@ int check_ctx_reg(struct bpf_verifier_env *env,
- 		char tn_buf[48];
- 
- 		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
--		verbose(env, "variable ctx access var_off=%s disallowed\n", tn_buf);
-+		verbose(env, "variable %s access var_off=%s disallowed\n",
-+			reg_type_str(env, reg->type), tn_buf);
- 		return -EACCES;
- 	}
- 
-@@ -4447,7 +4448,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
++int check_ptr_off_reg(struct bpf_verifier_env *env,
++		      const struct bpf_reg_state *reg, int regno)
++{
++	return __check_ptr_off_reg(env, reg, regno, false);
++}
++
+ static int __check_buffer_access(struct bpf_verifier_env *env,
+ 				 const char *buf_info,
+ 				 const struct bpf_reg_state *reg,
+@@ -5267,12 +5274,6 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 				kernel_type_name(btf_vmlinux, *arg_btf_id));
  			return -EACCES;
  		}
- 
--		err = check_ctx_reg(env, reg, regno);
-+		err = check_ptr_off_reg(env, reg, regno);
- 		if (err < 0)
- 			return err;
- 
-@@ -5327,7 +5328,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		return err;
- 
- 	if (type == PTR_TO_CTX) {
--		err = check_ctx_reg(env, reg, regno);
-+		err = check_ptr_off_reg(env, reg, regno);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -9561,7 +9562,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			return err;
+-
+-		if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
+-			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+-				regno);
+-			return -EACCES;
+-		}
  	}
  
--	err = check_ctx_reg(env, &regs[ctx_reg], ctx_reg);
-+	err = check_ptr_off_reg(env, &regs[ctx_reg], ctx_reg);
- 	if (err < 0)
+ 	return 0;
+@@ -5327,10 +5328,26 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 	if (err)
  		return err;
  
+-	if (type == PTR_TO_CTX) {
+-		err = check_ptr_off_reg(env, reg, regno);
++	switch ((u32)type) {
++	case SCALAR_VALUE:
++	/* Pointer types where reg offset is explicitly allowed: */
++	case PTR_TO_PACKET:
++	case PTR_TO_PACKET_META:
++	case PTR_TO_MAP_KEY:
++	case PTR_TO_MAP_VALUE:
++	case PTR_TO_MEM:
++	case PTR_TO_MEM | MEM_RDONLY:
++	case PTR_TO_BUF:
++	case PTR_TO_BUF | MEM_RDONLY:
++	case PTR_TO_STACK:
++		break;
++	/* All the rest must be rejected: */
++	default:
++		err = __check_ptr_off_reg(env, reg, regno,
++					  type == PTR_TO_BTF_ID);
+ 		if (err < 0)
+ 			return err;
++		break;
+ 	}
+ 
+ skip_type_check:
 -- 
 2.44.0.769.g3c40516874-goog
 
