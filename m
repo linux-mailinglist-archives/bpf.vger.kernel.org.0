@@ -1,108 +1,165 @@
-Return-Path: <bpf+bounces-27161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063A78AA289
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 21:09:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5BC08AA2CF
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 21:31:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2571F22121
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 19:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D734C1C2122E
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 19:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6D617B4E0;
-	Thu, 18 Apr 2024 19:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5CA1802BC;
+	Thu, 18 Apr 2024 19:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gAY9TR56"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUEv9uwr"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0C417A93E;
-	Thu, 18 Apr 2024 19:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DAC6A00E;
+	Thu, 18 Apr 2024 19:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713467357; cv=none; b=Jt3R4/TxJ6/SOG1AWiUdIaDDOZwVQSqCXopp9m5g1b631XGiP/7yMz8cyFtYYhVDf25kZSvopM/sfetcLLkBubRRV6n/8SlCCJ42Qm0ZmQUMGwlt6vPX8/KNMeIY3k0lljQsD04jqGNuMmHppXiG9P5zbzQYNhRfkxgkL+JR4yE=
+	t=1713468694; cv=none; b=RKr7x5bUBe9pOB6k/xwUvZF/XwYc7Lm8lLMrNLrc1Pe5FQ7xL1DINjI9vAyMZcknuotkgFQWC38VFnui0bvMRIDjMaCDtC4cfjjbAUqlRLL9/+mOe4GkhLbSR+kfnEGgmXQEObGuKA6/fqo41gB5awzRXKGK/RkwJlONbx2R4mM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713467357; c=relaxed/simple;
-	bh=75OGVwtk10YDnshR2n8e3XiLU+Tzx59fshzeQKNOVa8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dRtsaQe8RSInFD8JiDss1lCgxPyfr43pNUNbSqJNOjd5EDbGM8LssynkvsD2JoXBAPgNP4+t5amQ55XYYyROFOaUfWaPWHVJby9vF+MAv/3WqcaZGngFGs31yLD9jPM6JiECXUeFhFWPa+RVOLHixLaD0aHdPfvOjNcegCsXUHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gAY9TR56; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29964C113CC;
-	Thu, 18 Apr 2024 19:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713467357;
-	bh=75OGVwtk10YDnshR2n8e3XiLU+Tzx59fshzeQKNOVa8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gAY9TR56v/jjNv854LjFW2kiFRpkox+yVSKcQK7VcA4CvmV42AiBGKaWRXtNHx2qP
-	 SN63J9umkMgiAaJdCGl4SRanjqE6CXWoR4daqdtmBt7q8MdMLe55GdrOQuNcF2E7WA
-	 get2b9h99o6zODP5C9GajKdKMP9vHFssp1Y7ymEOTzSY9Wp2RlENkAtXO+YXX/d/I5
-	 b75EI0AnPl0xkGupeqVBhR6pyuAsZQIWtUPbcZXtfdiZDn7fZrtH9GQuLDZx2yxXQB
-	 nBoMCbpa8c/4d8UGgpqNA6nbsEaMJlceOUigGlSXB631uFddeSetyVtW5XCd6JYClS
-	 LtuDghZE+UGdQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: bpf@vger.kernel.org,
-	jolsa@kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 2/2] rethook: honor CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING in rethook_try_get()
-Date: Thu, 18 Apr 2024 12:09:09 -0700
-Message-ID: <20240418190909.704286-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240418190909.704286-1-andrii@kernel.org>
-References: <20240418190909.704286-1-andrii@kernel.org>
+	s=arc-20240116; t=1713468694; c=relaxed/simple;
+	bh=Ps3ERSaJ3Nubf413Mgm5+5UAMdezoWO525AtmvS7hLg=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=kRicg1RyoXGu/ZHwAfSmhZNRzdWFDwXLr12Bj3NL4Mvi/WVdAAVTbLTtnPM/HlDfuK5tsYyuNw4yDixTfXu052lDRLWqA5WPTWr12ZgCDsng/qVKlGUAaO5lSZ597wS8N4ZSdK37oaVH1btlq+mkNfIWjgWXSD3a5IPM6rkwdSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUEv9uwr; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3465921600dso1071781f8f.3;
+        Thu, 18 Apr 2024 12:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713468691; x=1714073491; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ps3ERSaJ3Nubf413Mgm5+5UAMdezoWO525AtmvS7hLg=;
+        b=lUEv9uwrH2d1EIeIr6R1nj4v0AOv2obynUkrSBtRy60ku3qo7KemDH6bn7tYVlzO3a
+         P5/pUB3KHASzb7TMGBP7JKc+uslQ3eJdvZY0TuPG9QuxXQ+nkKtpV+bIK6ZHs+KJ5HmM
+         cjrxADU9Ke+fWIZEejQVhgV6FbazGZLgT0OsMzN014yCpa+7DZy/ywfpRS4RR3HGb4+d
+         Rna2RRpJov+QfFeqYviAVwfzq7evgJsYXxwGSrwAWkPjCi4cAYvK60IO92usyBooRtqt
+         zZvUCvA+V6nh95/ojlY/CvOvWGlH6Q6RRIXF7DAneqKh9WFI/iMLkXz0VL6VRe76FSIM
+         7FfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713468691; x=1714073491;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ps3ERSaJ3Nubf413Mgm5+5UAMdezoWO525AtmvS7hLg=;
+        b=lBa95u7ACsS5NO8engccFk57GAyRzMQn/qT9Riv3mgAdPXl9ZENdogkc40erLlnWQE
+         22/ZWpMIjqdEMnbnIpiMrGS31/IHjOmoPvFz3wY+So5tTH1tPX+2NsNmTgD9syJDAQNm
+         InYr0639kH4kENE/K8SmwjxNfpqR6GMNGHiR/rVFChpyNbSjmVORZ34Ct7SqrsUpMb9p
+         /MLwj3lqwRbAD8BroWigTa95nuWQfDMIXbmXWg89Gi8uQAZok9DbKOgZg2wc3QmhpVMI
+         i0SnWwW5ZFxbyLn6S2roWdhKXQviVloSNicPPus/+Jui/GZGgf6xXz+ScOfTEllDQZhb
+         hs2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUlHWkSgsaICGh2U7PrQXuUTnhBvu/x5CGEN7ia5U1WhO4BJIkl8N7VBVnpzaHQiJaodloWMPIHuAho+PC5tRBxugetCX0imNF+xHgnNcbnMmzm3hfZPPNVWVWFN+AjpqpIQQCTWqYbsSAtqca5xQJ1cPnK751L3dVEx1ycMwkGWR71OGksQ7+XUL2LocBIOe/L6Df6Nl9kBM3a09AcUzwgor/qs8NtcVjH4DqsiicYztbzG317zsKcRJR9BdqhK88=
+X-Gm-Message-State: AOJu0YzDlr6XDccMuhEFaLfzUpD25iWbEc3we+goWzbkoNvQuZys5aAT
+	19qWTgc6AIiuPWVHTbA0hwg5+7Ru/XkMZWIqg1PN/UHicX65wAxe
+X-Google-Smtp-Source: AGHT+IH0u8bsjFHZqemZxrgoGwtoIHFPdCVNpm0ysNZP2RZZazFU1pUbMRvZ+DfZhHxeIo/1VeVn9Q==
+X-Received: by 2002:adf:e58f:0:b0:349:eb59:c188 with SMTP id l15-20020adfe58f000000b00349eb59c188mr2213684wrm.5.1713468690932;
+        Thu, 18 Apr 2024 12:31:30 -0700 (PDT)
+Received: from smtpclient.apple ([132.69.239.36])
+        by smtp.gmail.com with ESMTPSA id c26-20020a170906d19a00b00a55662919c1sm1277105ejz.172.2024.04.18.12.31.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Apr 2024 12:31:30 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [RFC PATCH 3/7] module: [
+From: Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <ZiDz4YbIHEOAnpwF@kernel.org>
+Date: Thu, 18 Apr 2024 22:31:16 +0300
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Helge Deller <deller@gmx.de>,
+ Lorenzo Stoakes <lstoakes@gmail.com>,
+ Luis Chamberlain <mcgrof@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Song Liu <song@kernel.org>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Will Deacon <will@kernel.org>,
+ bpf <bpf@vger.kernel.org>,
+ linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+ linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ the arch/x86 maintainers <x86@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A714B340-9EFB-4F27-9CD6-CFBC1BC9139F@gmail.com>
+References: <20240411160526.2093408-1-rppt@kernel.org>
+ <20240411160526.2093408-4-rppt@kernel.org>
+ <0C4B9C1A-97DE-4798-8256-158369AF42A4@gmail.com>
+ <ZiDz4YbIHEOAnpwF@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-Take into account CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING when validating
-that RCU is watching when trying to setup rethooko on a function entry.
 
-One notable exception when we force rcu_is_watching() check is
-CONFIG_KPROBE_EVENTS_ON_NOTRACE=y case, in which case kretprobes will use
-old-style int3-based workflow instead of relying on ftrace, making RCU
-watching check important to validate.
 
-This further (in addition to improvements in the previous patch)
-improves BPF multi-kretprobe (which rely on rethook) runtime throughput
-by 2.3%, according to BPF benchmarks ([0]).
+> On 18 Apr 2024, at 13:20, Mike Rapoport <rppt@kernel.org> wrote:
+>=20
+> On Tue, Apr 16, 2024 at 12:36:08PM +0300, Nadav Amit wrote:
+>>=20
+>>=20
+>>=20
+>> I might be missing something, but it seems a bit racy.
+>>=20
+>> IIUC, module_finalize() calls alternatives_smp_module_add(). At this
+>> point, since you don=E2=80=99t hold the text_mutex, some might do =
+text_poke(),
+>> e.g., by enabling/disabling static-key, and the update would be
+>> overwritten. No?
+>=20
+> Right :(
+> Even worse, for UP case alternatives_smp_unlock() will "patch" still =
+empty
+> area.
+>=20
+> So I'm thinking about calling alternatives_smp_module_add() from an
+> additional callback after the execmem_update_copy().
+>=20
+> Does it make sense to you?
 
-  [0] https://lore.kernel.org/bpf/CAEf4BzauQ2WKMjZdc9s0rBWa01BYbgwHN6aNDXQSHYia47pQ-w@mail.gmail.com/
+Going over the code again - I might have just been wrong: I confused the
+alternatives and the jump-label mechanisms (as they do share a lot of
+code and characteristics).
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/trace/rethook.c | 2 ++
- 1 file changed, 2 insertions(+)
+The jump-labels are updated when prepare_coming_module() is called, =
+which
+happens after post_relocation() [which means they would be updated using
+text_poke() =E2=80=9Cinefficiently=E2=80=9D but should be safe].
 
-diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-index fa03094e9e69..a974605ad7a5 100644
---- a/kernel/trace/rethook.c
-+++ b/kernel/trace/rethook.c
-@@ -166,6 +166,7 @@ struct rethook_node *rethook_try_get(struct rethook *rh)
- 	if (unlikely(!handler))
- 		return NULL;
- 
-+#if defined(CONFIG_FTRACE_VALIDATE_RCU_IS_WATCHING) || defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
- 	/*
- 	 * This expects the caller will set up a rethook on a function entry.
- 	 * When the function returns, the rethook will eventually be reclaimed
-@@ -174,6 +175,7 @@ struct rethook_node *rethook_try_get(struct rethook *rh)
- 	 */
- 	if (unlikely(!rcu_is_watching()))
- 		return NULL;
-+#endif
- 
- 	return (struct rethook_node *)objpool_pop(&rh->pool);
- }
--- 
-2.43.0
+The =E2=80=9Calternatives=E2=80=9D appear only to use text_poke() (in =
+contrast for
+text_poke_early()) from very specific few flows, e.g.,=20
+common_cpu_up() -> alternatives_enable_smp().
 
+Are those flows pose a problem after boot?
+
+Anyhow, sorry for the noise.=
 
