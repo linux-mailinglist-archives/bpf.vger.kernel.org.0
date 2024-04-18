@@ -1,158 +1,152 @@
-Return-Path: <bpf+bounces-27152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2C78AA193
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 19:54:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFF98AA1ED
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC1DD1C20B10
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 17:54:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93BB51C21D41
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B80178CE4;
-	Thu, 18 Apr 2024 17:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A069917920C;
+	Thu, 18 Apr 2024 18:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qitx/umw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0V5wkZh2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2311442F4;
-	Thu, 18 Apr 2024 17:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB56F15FD07
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 18:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713462839; cv=none; b=i9w5i8935nPo1sdrS6/UQmSKRCap9P+Ga8M96m0Aa2f/AaDznnb7SrkKX6zzJPlkzGj83Owk1yKukmnFLuQFHgUBDKAeCJDUXlKZERBL97VW/vtESPO+UH/iOIi0RdTKmrDjokSBxgUbb1c47Q6ersSVFvKXv18DQNEr6rzQYDs=
+	t=1713464352; cv=none; b=MKrmlEZkZzF+w3m+ZX3tQ2A3BEb9X+xdXpVdMFY1WPlSAf8wUWsVyiZSaIlgel6G5NBXSzucYYIWxCc7UX1e0PMsQHP2Rn1bFcUjVsZo4a2uIivQbNdQiHW0fpPQNdxNjuc9D/c9cUh8sEqEu9w2rgK8DRmv32syXiASlKmIPxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713462839; c=relaxed/simple;
-	bh=GVKHg9/GMb+Q7svthQO5bm+rPzNDL6zXlQZOsDeKWL0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iPDzZv5Y/UdvP5C0JHl0OsL2oiIyxexW4QoxqHuXhvBsKnOxQsbvnFrhuqK/y8RwqIwVgQLyace7C4RywoTWZIjx8w1Mvl2OrVeuA6YyeEuJdEVgz7BIGd8GYISmj1vCGm/Slf3tCd6PZdiqc/ocV0DX5HFZ9kCkgZCd25yjBMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qitx/umw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F12DC3277B;
-	Thu, 18 Apr 2024 17:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713462839;
-	bh=GVKHg9/GMb+Q7svthQO5bm+rPzNDL6zXlQZOsDeKWL0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qitx/umwjvXDKNme47QxvztrUiipBcKV2Lg0Yvd1RXezrm9EMN+zfFrxXb923+dxO
-	 AxZ6KgXvjlorR3mUIjvBXST4+3n8nelthPynguxJTOQoS9rNBrqZ+3MIlU37kTQ9FA
-	 a4e+nx+8unMMLT17+KcFFJ93DVlkbK2eXc4Av0nU3f2Yxj+rBXrkR0WI95IANr/7qX
-	 uZj4q1Xb4qjUIP87QNJk+Jgy4oid7eW9FtvEPOx7D0x1Tt1iXSqSWNLPcTP4XbQ2OW
-	 z8BEya9Rxr0dlQHlDm5T4jpRs2aqcA2Iy8EkKuiv4ehWjUKDt48ywWZ7K+xjdgeN4d
-	 Qxf4CJCyjHkiA==
-Date: Thu, 18 Apr 2024 20:52:39 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
-Message-ID: <ZiFd567L4Zzm2okO@kernel.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-6-rppt@kernel.org>
- <20240415075241.GF40213@noisy.programming.kicks-ass.net>
- <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
- <Zh4nJp8rv1qRBs8m@kernel.org>
- <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
- <ZiE91CJcNw7gBj9g@kernel.org>
- <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+	s=arc-20240116; t=1713464352; c=relaxed/simple;
+	bh=TY5RGHkR1B7VcpcfxqCvb9vWA9VGta9DEB9gTtPVOa8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=n5Y5uxo4XbTaNUKSc6fqy+78kIG3YvH5xjQbCJLeiYezZOXRBjUAwRkQHuOWS7LL+4ISlY89paI6y1muYkznjuJeWxqG6n5WV+JHLgsdoHMBnF9Pl7d1AmJJYCAvLRKaHM/LUqP/vkGFuPD5Hirgo+aPnuKyqR+YN3k4yS51txU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0V5wkZh2; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cfd6ba1c11so1226408a12.0
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 11:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713464350; x=1714069150; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AUve054mJbbxeZoYsSoxx0U8HsMmYEGyCpud/vdlqV8=;
+        b=0V5wkZh2FPchxVlnN+0I4E+UBTL5gr2eZQow8cgO9Xrf2ZN+hrpR5n1BBZOGKLQ0SB
+         YyVSiH/rw6zeQbpt0fYY3DMmm2C9pnDxBsotkj7UOLd0AxFVjZvIkY0RILMK0xBDrzbP
+         40DfmJzb2BWf3PA4s2n5GZAHyd2xwyHwkpn/bgMHXj59iXUIFmFTR1ZNVpQKT8hD9r6o
+         U52VRrVzC0sCjFOPxbfKEMnHOh0ID4KCRwgUE4P2pvO+D799qvdN4FPsARLcXiyDOpAT
+         PHV2x2KfF52i7NjdSR3JgxsMsky89KxkzsV/822XPlGlNrx2rWmIvSf79aPRiivTwh/z
+         ii/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713464350; x=1714069150;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AUve054mJbbxeZoYsSoxx0U8HsMmYEGyCpud/vdlqV8=;
+        b=UHcOzJCyYSD6vUkjk05AnwhKsLO9FAzheq6BDcrxgBEOjEUO5ebBA0vMXL7ghvNPgR
+         GfpJT+05yPNa7tmHlH5pTVTi8p9XruaByyj/wOb5CWnpFquSPOegfaA0oDNRWleDwZ4n
+         RMuUeV9nUQr+sautvEDtvyGXcqJq7+dYVAZUWnVZsRt2TIH8LzgwdhKO0vd+T5Fk5tZ5
+         a9Q6/MoIZEQ//A01Nl96dhw3PsX5L5rT8HPyqy3SW4PCcUR6QG43sk1vXohJVxGdHWnn
+         L/aEGAbKy7z/I9Vagklx8GkwcFDk7SLfM6uoVwPzq9LGoCLe5JLnPKyNWlJ7IHbb4V4E
+         oxEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzA154feibn1bhmLsQEC/24kQa5M6VMOeDpLaBy+BgLMP3tJh2jvKzWyB4OU+QveZhOsjC0vG/5uPLjw962spJLqID
+X-Gm-Message-State: AOJu0Yxackl0gOBnm/xOZ3cBPRfh0S492jf7RfHrsRfrOJk2RkJnxmJD
+	Fva/l51f40BkQwG6yFRpGqiu01/JVZfdjOWNffVjnl0+McN7++o6Y9e16LlQ9Jxc4g==
+X-Google-Smtp-Source: AGHT+IGxDU7FDxGzk6bfcmDHyNPVZ5xo+1i4YxyLBmGSxyOwhMUghLftH40BiFVm20GJ86ROa2AHxmo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a65:6a97:0:b0:5dc:2368:a9f2 with SMTP id
+ q23-20020a656a97000000b005dc2368a9f2mr8951pgu.3.1713464350052; Thu, 18 Apr
+ 2024 11:19:10 -0700 (PDT)
+Date: Thu, 18 Apr 2024 11:19:07 -0700
+In-Reply-To: <20240418071840.156411-1-toke@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <20240418071840.156411-1-toke@redhat.com>
+Message-ID: <ZiFkG45wi9AO3LEs@google.com>
+Subject: Re: [PATCH bpf] xdp: use flags field to disambiguate broadcast redirect
+From: Stanislav Fomichev <sdf@google.com>
+To: "Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>, 
+	syzbot+af9492708df9797198d6@syzkaller.appspotmail.com, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 09:13:27AM -0700, Song Liu wrote:
-> On Thu, Apr 18, 2024 at 8:37 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > >
-> > > > I'm looking at execmem_types more as definition of the consumers, maybe I
-> > > > should have named the enum execmem_consumer at the first place.
-> > >
-> > > I think looking at execmem_type from consumers' point of view adds
-> > > unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
-> > > and bpf (and maybe also module text) all have the same requirements.
-> > > Did I miss something?
-> >
-> > It's enough to have one architecture with different constrains for kprobes
-> > and bpf to warrant a type for each.
-> 
-> AFAICT, some of these constraints can be changed without too much work.
+On 04/18, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> When redirecting a packet using XDP, the bpf_redirect_map() helper will s=
+et
+> up the redirect destination information in struct bpf_redirect_info (usin=
+g
+> the __bpf_xdp_redirect_map() helper function), and the xdp_do_redirect()
+> function will read this information after the XDP program returns and pas=
+s
+> the frame on to the right redirect destination.
+>=20
+> When using the BPF_F_BROADCAST flag to do multicast redirect to a whole
+> map, __bpf_xdp_redirect_map() sets the 'map' pointer in struct
+> bpf_redirect_info to point to the destination map to be broadcast. And
+> xdp_do_redirect() reacts to the value of this map pointer to decide wheth=
+er
+> it's dealing with a broadcast or a single-value redirect. However, if the
+> destination map is being destroyed before xdp_do_redirect() is called, th=
+e
+> map pointer will be cleared out (by bpf_clear_redirect_map()) without
+> waiting for any XDP programs to stop running. This causes xdp_do_redirect=
+()
+> to think that the redirect was to a single target, but the target pointer
+> is also NULL (since broadcast redirects don't have a single target), so
+> this causes a crash when a NULL pointer is passed to dev_map_enqueue().
+>=20
+> To fix this, change xdp_do_redirect() to react directly to the presence o=
+f
+> the BPF_F_BROADCAST flag in the 'flags' value in struct bpf_redirect_info
+> to disambiguate between a single-target and a broadcast redirect. And onl=
+y
+> read the 'map' pointer if the broadcast flag is set, aborting if that has
+> been cleared out in the meantime. This prevents the crash, while keeping
+> the atomic (cmpxchg-based) clearing of the map pointer itself, and withou=
+t
+> adding any more checks in the non-broadcast fast path.
+>=20
+> Fixes: e624d4ed4aa8 ("xdp: Extend xdp_redirect_map with broadcast support=
+")
+> Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail=
+.com
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  net/core/filter.c | 42 ++++++++++++++++++++++++++++++++----------
+>  1 file changed, 32 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 786d792ac816..8120c3dddf5e 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4363,10 +4363,12 @@ static __always_inline int __xdp_do_redirect_fram=
+e(struct bpf_redirect_info *ri,
+>  	enum bpf_map_type map_type =3D ri->map_type;
+>  	void *fwd =3D ri->tgt_value;
+>  	u32 map_id =3D ri->map_id;
+> +	u32 flags =3D ri->flags;
 
-But why?
-I honestly don't understand what are you trying to optimize here. A few
-lines of initialization in execmem_info?
-What is the advantage in forcing architectures to have imposed limits on
-kprobes or bpf allocations?
-
-> > Where do you see unnecessary complexity?
-> >
-> > > IOW, we have
-> > >
-> > > enum execmem_type {
-> > >         EXECMEM_DEFAULT,
-> > >         EXECMEM_TEXT,
-> > >         EXECMEM_KPROBES = EXECMEM_TEXT,
-> > >         EXECMEM_FTRACE = EXECMEM_TEXT,
-> > >         EXECMEM_BPF = EXECMEM_TEXT,      /* we may end up without
-> > > _KPROBE, _FTRACE, _BPF */
-> > >         EXECMEM_DATA,  /* rw */
-> > >         EXECMEM_RO_DATA,
-> > >         EXECMEM_RO_AFTER_INIT,
-> > >         EXECMEM_TYPE_MAX,
-> > > };
-> > >
-> > > Does this make sense?
-> >
-> > How do you suggest to deal with e.g. riscv that has separate address spaces
-> > for modules, kprobes and bpf?
-> 
-> IIUC, modules and bpf use the same address space on riscv
-
-Not exactly, bpf is a subset of modules on riscv.
-
-> while kprobes use vmalloc address.
-
-The whole point of using the entire vmalloc for kprobes is to avoid
-pollution of limited modules space.
- 
-> Thanks,
-> Song
-
--- 
-Sincerely yours,
-Mike.
+Any reason you copy ri->flags to the stack here? __bpf_xdp_redirect_map
+seems to be correctly resetting it for !BPF_F_BROADCAST case.
 
