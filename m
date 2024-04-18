@@ -1,247 +1,168 @@
-Return-Path: <bpf+bounces-27115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7D58A93DF
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 09:19:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C2E8A9475
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 09:52:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 804DE1C20D10
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 07:19:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456DC1C216F0
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 07:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651CB3FB81;
-	Thu, 18 Apr 2024 07:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854A0762DE;
+	Thu, 18 Apr 2024 07:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GvP1rtfq"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="PoUdZCEw"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2077.outbound.protection.outlook.com [40.107.7.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6875438F9A
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 07:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713424739; cv=none; b=UF1vu/oS4iAlvCsiBhe+2NFMolXnkpGDgaGwibyU09TR58whvsnrXjKpje5r07bxtyap3m8ZJ6MYg3odkXZC6lpaEzVB5gJ/h4QniE0gTLXiylV7lmITKoN+qWCQNJHDmT0+dfhw0b1nDAbUO9ZD8nt7wOFDVH1C3W7yGkp90Mg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713424739; c=relaxed/simple;
-	bh=BMH7hZwU+wD+NGGr1T7RQBKgeAKqxW4NCDSbR1LHrLY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bIR7FziGmLguMVshczhtd3Fz0k3X45+quCzgluwhtH2jn/msCGLe6Z+AUkPk+sUzXMK3qIagdqTYNa1yEiAAVI6xtm4wls93dmlvR94auefMFdF0DP6FOSOBgfTuUeLUsYOCV5pLvsBvIQH/ktlDxN510qyVA+8fxX0mkvAeASw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GvP1rtfq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713424736;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=U8waPYZt0i0yBiI+S/dWR2ZLE7Pp8trZ7x0kmMR8de8=;
-	b=GvP1rtfqTyqnjIa80W2/mSd9j+em1hs4d2i7GiyH0APrYV5XB7zOJ2W9R0+uudX4dD8ofU
-	SFZ9iwGrEhmupDxAMfXtOM3YzhT/7VHto9y+2CE76vu3G9HjAPgNN3H22AIVjBP8ElRZSR
-	6cKmpMji7BVEDwWjAwsFxL2c9W9qjnA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-510-NfJktvyzM0SpL9VFUld5aw-1; Thu, 18 Apr 2024 03:18:54 -0400
-X-MC-Unique: NfJktvyzM0SpL9VFUld5aw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-417fb8195d7so2930845e9.0
-        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 00:18:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713424733; x=1714029533;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U8waPYZt0i0yBiI+S/dWR2ZLE7Pp8trZ7x0kmMR8de8=;
-        b=HRcOXKZjuYdSdssTc2EargUsfGr9b4PkguKJK/5c0Ymv87m3ciWrx3N1cz7oUD/YIq
-         V3+XQNrWxX7UuH2wjLUVw2bN5iqb1wYaJ7au1DpGMk3jjlM7fN/4HubiYd4njyiFGYw2
-         pvMjefNTKJ/Urn6NH0GN1zdWlV9cxvDF8g7lYyoGc5vfrB1oakj+HttLduPlXUbk7tPm
-         K3I/IWIGD1C8szLLD3aoC06HvzKzz6faxzrAmELJxyibCy1ID0QPi6WJ2eVSnEEcYHf2
-         Ne8yBCWA7n1PTrgQSDlm47e0IfjvXPGjdBv+CFDAS+HEjzO9csTGg2HVRmNmJowMjhFR
-         eoTg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJuIIIv/jN2oTBIaumjNSdL6SGoSLbNh314bIYqRcI2thErB2Wa0ZxLs6wg/hkhBlMvZIKKFXIG/dtYIC40k+7gZjq
-X-Gm-Message-State: AOJu0Yw6bIn3Rf3jAaLxXwtda9L/1pIQ+MFlafZLnCW30YmqM7aYtj1a
-	VT2xJYiY55evUEvI354lwpQzwymyQRDpQG3rPJU+HKvVID9UKFIP3IHSu67LMh11oDoY2v6xYgj
-	3Bzzk/FhfKvavq9p8HZw6vivxofdrirs3ha8ASoPz4K9t/Cf4uw==
-X-Received: by 2002:a7b:c5c5:0:b0:418:a786:3760 with SMTP id n5-20020a7bc5c5000000b00418a7863760mr1154260wmk.15.1713424733635;
-        Thu, 18 Apr 2024 00:18:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHRTPmhz1p/NrnfdOdw3BYBD9re4KpHwT1CsIf6pUAh0BhjY0v97naAmOoq8fGJwBrE1zAyUw==
-X-Received: by 2002:a7b:c5c5:0:b0:418:a786:3760 with SMTP id n5-20020a7bc5c5000000b00418a7863760mr1154242wmk.15.1713424733238;
-        Thu, 18 Apr 2024 00:18:53 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05600c468600b0041563096e15sm5440297wmo.5.2024.04.18.00.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 00:18:52 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id CB42D1233C3D; Thu, 18 Apr 2024 09:18:51 +0200 (CEST)
-From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3A156F53D;
+	Thu, 18 Apr 2024 07:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713426698; cv=fail; b=MeJeADZ99JBQht5ofoHIPHU0oSP2NzZ795fRgpi3Gzwm6kiPaYFXVzlFIk+8fBctXWEzjHq4GJBng3Zv0hiyDDDlSOV4g7DowSj/RcQiPeWBPwv4L3ibP9XTfWln9xElAiaGa3ZtlagSk7FC7pmcb6a171oIhbT8HJ0cTivD93c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713426698; c=relaxed/simple;
+	bh=Jytr5VoVlhnxNbrW44asW7FcGLHL7Lhd9yGYC8AdJFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=dcRtj+iHOIvImuYoUrPLH+L0RsKwsOBl/xmFZeC3F6j4LpRqfEkyfLNZvkGl+M8R2GurLUStSud34uNWCR01+twS+giPlwZF3E/KcPId1AF5ci32ZZPJM6tUsT5oIeTi42lr0xffjM2IUmPvBtUtsYcXRaOGkzNrxMr+cR4xS5I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=PoUdZCEw; arc=fail smtp.client-ip=40.107.7.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lKMvQKwP+8BIwXXYTaJMFM6YlRYsPHYo381KRpdjGns2+EFPtUdZ19QlypjgAgl/FgjwuNYYRrgG9f48ZSbOifKa6nFcYhGNT3A80blpRjTY55b23kEo9HAPGqIU2xHppNlG7BxiaQt0v/xteIDcz5vrBlyGqV64C1pHKK1a/5DbkVnTj+MLIWVwEGvdTDgGdMM9rUp6imrPc3JCx+dP2AKnrwwpzSBrfqvusAvXg1S6dPgEvsNrev8X31kH3zmm/aOhhHi+LWrVwZKATsmdLGCp6IBri43k4CTXkh6QT91jYpsw3yBiDuwl95/QtJTVucNFY4h1sbhZeJgbQAbFlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RBZRM6BtiZvG4F2pOY3C29vZF5sMxENSXtTs9a1AHNk=;
+ b=OmiQ5F/UiL1j8pXrAh+37ti1tdsaIuxTy8KbeXOY2zFP61kX9xbQ5zkzYOuo98h884Nu+XtlZFdHkzRAgU4zunlV7ie7znXnyEliopZNLQJ53Xyz8eLQ+/Y06ZxnBOf3S/ZEs3zkHRVHPlhTekIylyrATYwqOc0C+Ff1bLyYLGJoXhvsCA7Vt3eLRHal6qVraUvKTeNe55Yqrz5XBOkMre7fhZin1yFZ+RDr9qs1Zg3iAGEs6AqNxgJi3VufTPtgty1B3DZTOYnvk8YbIDhNSGoCUsrgh7yc9xhbYz07BgpoNwffQqDnAkx56n2tSk820AdniHEjSgZyiD1jDXAfVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RBZRM6BtiZvG4F2pOY3C29vZF5sMxENSXtTs9a1AHNk=;
+ b=PoUdZCEwPbE7GbKtQL+N65ovQ9Y6P9LrDupOGNuziEtKmloh6GU4pftFiZJUucMHJsmbaa3Le5XKg9d4/qCyIFprcel46iTgnY4JwuzVmFBsRrTrmCjDSeu6DF67MMNTkGHmNGHu1kM3wGZZByGk3ivfW8Wer4dKdZmIy2uvWDs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PR3PR04MB7371.eurprd04.prod.outlook.com (2603:10a6:102:87::17)
+ by AM0PR04MB6915.eurprd04.prod.outlook.com (2603:10a6:208:187::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
+ 2024 07:51:32 +0000
+Received: from PR3PR04MB7371.eurprd04.prod.outlook.com
+ ([fe80::ff04:1157:85ba:a13a]) by PR3PR04MB7371.eurprd04.prod.outlook.com
+ ([fe80::ff04:1157:85ba:a13a%6]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 07:51:32 +0000
+Date: Thu, 18 Apr 2024 10:51:28 +0300
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Camelia Groza <camelia.groza@nxp.com>,
+	David Gouarin <dgouarin@gmail.com>, david.gouarin@thalesgroup.com,
+	Madalin Bucur <madalin.bucur@nxp.com>,
 	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf] xdp: use flags field to disambiguate broadcast redirect
-Date: Thu, 18 Apr 2024 09:18:39 +0200
-Message-ID: <20240418071840.156411-1-toke@redhat.com>
-X-Mailer: git-send-email 2.44.0
+	John Fastabend <john.fastabend@gmail.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net v4] dpaa_eth: fix XDP queue index
+Message-ID: <20240418075128.m4v4f3nlrzn3qlfl@skbuf>
+References: <20240410194055.2bc89eeb@kernel.org>
+ <20240411113433.ulnnink3trehi44b@skbuf>
+ <20240417181734.7ebc844f@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417181734.7ebc844f@kernel.org>
+X-ClientProxiedBy: VE1PR03CA0019.eurprd03.prod.outlook.com
+ (2603:10a6:802:a0::31) To PR3PR04MB7371.eurprd04.prod.outlook.com
+ (2603:10a6:102:87::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PR3PR04MB7371:EE_|AM0PR04MB6915:EE_
+X-MS-Office365-Filtering-Correlation-Id: e089c523-8491-4a25-d56c-08dc5f7c5cca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	yhy6JDnJ6QVjYXrfjgP2ybbSuiXZ2dfOGbc4wVzs+87GRae7iVavgnn/6DmcZwMEINcljDXsAbsRfMksoAAUeZahPUV8OshV5+D8pV2Q6X/MH9nFqo0P9Y0JXeuRbZsSg2bCbMAO5nw9sqmz3kzEyoOOS/K7gbK7+eeXI4fy+f81aY1IHMVwoNEKJv3UZD8WUUe9HWksE6mcO2AkSXJxbf7By0+4jtGAfbzfVyOuTMTimT8weCkeC48Z6WnVej8GvjcINXfF6J9GaO0oNYMlicw2pz66/q25j7iq9NASCSdtruN3HdTPcgfAwKewAWPNdvvLoJIIl+CfnYRE4l8t09dPXukuIPkpbKqITxEMaZKvWcFqjVQ3zbJFhGykiEm0jAs/fo2KtG7AKeIoGyoNoFbw+SS+W7NMImKkZbJamuIlPH5k23kL+Wg1SNMoJ5cMvSrC0pfHSmp7JrXGIR97aor82qFcRfAu7JJSNabop+gd+OrE1QqxrIq/9CWJO5QSFwFPCdBBI+yyKQ4E15RkMHUWkXAvLjcXO7h2dJCzCfMTkMoISv3A8qzmVmqJIpC3rqXJMcwyHgYQpqGgLo++KDUtu6P4hBZLtq+Xjtbryy/oDO7EOHFqgy0FLBjbgt//EqnmjlumtSZunHEQiSYZ07k2oLKXTKZxIixxV7uCZOs=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR04MB7371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?PnftYX6FQYtdWWLpsLnhHIFIhrvcCF+ekGzFuQdi3zJU6D44BNUGcQERO2Fg?=
+ =?us-ascii?Q?uDm89zJ3gxBrY5guRTarNrqRJqDQAEyzK5UWksN7vr+JTqQSOdew7XqkY8Ks?=
+ =?us-ascii?Q?YrN8pRPnukdIBYbmHCucUWTUcSnJvuyqaUqOWGXm5DMw51o491sRiCMCU4e4?=
+ =?us-ascii?Q?0f/pCBd1PbV2b+MbrWKjnhUGU6lUTNdnZ66wBOgpwAgfDKTTwxwnDuP58ctG?=
+ =?us-ascii?Q?zYAJ+7L64oZ4A7F+FJVknGTK53ryTrWAp1pvQq1JRIlDrZ3V1hoFhN8d/fxh?=
+ =?us-ascii?Q?NKjiMtSB/2WR8iTtjCrDOIrWygMeJfOfXSICfsEzonlmaqWfh9OZ/jXNOi5S?=
+ =?us-ascii?Q?S7+DK6rfRUeJ20U2o9mWZK3OXpgBGjS4NKZ7WYiimrTVBJC6b9MyeOBzAsD9?=
+ =?us-ascii?Q?ebQhC5Xy5P4QdNU7Z2NAtDUitZkOwu5kQzY/9K4WeHaX8wcmPC5A6Rd/rR7A?=
+ =?us-ascii?Q?zfVVgecjwD7g5zPUNzeRJX6zG6nTz0opB0BB4w8k7+6H8/GGBVM5t7wdkZ+Q?=
+ =?us-ascii?Q?BaTusix+IXJEzzfkYG5ayrTVl+d7Fm9YqxApWEoJoRKTNLRO99k6g1TkbtQJ?=
+ =?us-ascii?Q?hZvQPUxJs0JJ6a0s7Rpamp93/JkUcrzmtdPAWn1oEbTZQlGLi/joU56qCxIH?=
+ =?us-ascii?Q?9195biybSidz1g3VFpmCYXfZIu7bEECYDiB8IxR4I1CF+ZYfPXMWyWlvZPFb?=
+ =?us-ascii?Q?KLhWI8WNXxZLuDuKPgK3x7ivS+IA2NCmOPR8nwyPH3uj5iVDFtRttBcO9uH3?=
+ =?us-ascii?Q?Tfl3e2CXngOlUhdc0D5y7vEASX7A7FJKslLHs1nvfUbtLJdIN7Acr/MTpzIW?=
+ =?us-ascii?Q?OImYUqqdWfQShA6qj5cd51OXvJ341liGS+Ctj50EJ48K6ayLkdXGcuiztrq2?=
+ =?us-ascii?Q?192bFAwrGlg9DibU11MkMK7A6i+1N7+WCHfzTCueGmRStIdas2MaRqnQA6NV?=
+ =?us-ascii?Q?aVhRqc5L6/F1Z9wVtjx/sZmLHO1gM2CSJMSbSrSISOKXzJsimyKU5DB2+zL8?=
+ =?us-ascii?Q?f8ENRYiD3IkdBeXzOMuTFlqts9LZwqLIKak6QPtPyNfr01yLFZxDLLM6DzuR?=
+ =?us-ascii?Q?pgBkzRKhsoFfDPSnXPdsZzLFq0r47QCaFvO2uXQp7FMLnpTxcXwDbFuSYjNT?=
+ =?us-ascii?Q?CfIQds7qjGqaMpzf/xK8nCjtGIJ9xJLyqwUcnj16aeVv8DMsDZuITuul9Bsi?=
+ =?us-ascii?Q?8PSgKSNTZ73iRmqbl3gQdooOeTC9gPs7tzx3OYi2CigQY3AfuRDOlMe8fOzN?=
+ =?us-ascii?Q?MV9ZVRsW+Z6PsJ9VgVAi6giid+jAjA6Ruc/nzmxO/Aty/2wZLSq+RPGR8bWK?=
+ =?us-ascii?Q?/21i64V2qGAsgN5x6OagFQ2mMep3u1LkVL735EQzNOGGZ/8NE1uq6awwHz9G?=
+ =?us-ascii?Q?loB7jg8zKuEG8uwU18YYh8oTUZ2qSbE/x5s8aBOKDsLbmIN6+rUSi8BQryXa?=
+ =?us-ascii?Q?kCjAXUp1Qkze9y0Qk3sEByDUKoMMq/O5En+YIAbbgcdVd6E+myUoT5AreVwd?=
+ =?us-ascii?Q?YvmLQgc9YMPFBkFGit6QCTKZ4LdSiYI1IsY8sD9mPBgVfWg8eGc/yjV0j1iH?=
+ =?us-ascii?Q?dzb6hrOkPm7In99i4oSDiSPW+TfImU6CyPT41yvHIMrYK6h/JlhklQua+cQu?=
+ =?us-ascii?Q?nM7noOFtjU0hb0h1KYTMEx4=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e089c523-8491-4a25-d56c-08dc5f7c5cca
+X-MS-Exchange-CrossTenant-AuthSource: PR3PR04MB7371.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 07:51:32.6888
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: anibqSbS5FFzw5+4eeZ+eUacJRImf/au65k4E0lhPIUmFL4qJ3uqPZ/ELRbYv6I8/Ro3YSu0149QOChq8GCe9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6915
 
-When redirecting a packet using XDP, the bpf_redirect_map() helper will set
-up the redirect destination information in struct bpf_redirect_info (using
-the __bpf_xdp_redirect_map() helper function), and the xdp_do_redirect()
-function will read this information after the XDP program returns and pass
-the frame on to the right redirect destination.
+On Wed, Apr 17, 2024 at 06:17:34PM -0700, Jakub Kicinski wrote:
+> On Thu, 11 Apr 2024 14:34:33 +0300 Vladimir Oltean wrote:
+> > On Wed, Apr 10, 2024 at 07:40:55PM -0700, Jakub Kicinski wrote:
+> > > On Tue,  9 Apr 2024 11:30:46 +0200 David Gouarin wrote:  
+> > > > Make it possible to bind a XDP socket to a queue id.
+> > > > The DPAA FQ Id was passed to the XDP program in the
+> > > > xdp_rxq_info->queue_index instead of the Ethernet device queue number,
+> > > > which made it unusable with bpf_map_redirect.
+> > > > Instead of the DPAA FQ Id, initialise the XDP rx queue with the queue number.  
+> > > 
+> > > Camelia, looks good?  
+> > 
+> > Please allow me some time to prepare a response, even if this means the
+> > patch misses this week's 'net' pull request.
+> 
+> We're getting close to the 'net' pull request of the following week :)
+> The bug has been around for a while so no huge rush, but would be nice
+> to get rid of this from patchwork. If you don't have time - would you
+> be willing to repost it once you found the time to investigate?
 
-When using the BPF_F_BROADCAST flag to do multicast redirect to a whole
-map, __bpf_xdp_redirect_map() sets the 'map' pointer in struct
-bpf_redirect_info to point to the destination map to be broadcast. And
-xdp_do_redirect() reacts to the value of this map pointer to decide whether
-it's dealing with a broadcast or a single-value redirect. However, if the
-destination map is being destroyed before xdp_do_redirect() is called, the
-map pointer will be cleared out (by bpf_clear_redirect_map()) without
-waiting for any XDP programs to stop running. This causes xdp_do_redirect()
-to think that the redirect was to a single target, but the target pointer
-is also NULL (since broadcast redirects don't have a single target), so
-this causes a crash when a NULL pointer is passed to dev_map_enqueue().
+I have been looking into this, but I do not have a definitive response yet.
+The dpaa_fq->channel replacement is not the zero-based RX queue number
+that David is looking for, either.
 
-To fix this, change xdp_do_redirect() to react directly to the presence of
-the BPF_F_BROADCAST flag in the 'flags' value in struct bpf_redirect_info
-to disambiguate between a single-target and a broadcast redirect. And only
-read the 'map' pointer if the broadcast flag is set, aborting if that has
-been cleared out in the meantime. This prevents the crash, while keeping
-the atomic (cmpxchg-based) clearing of the map pointer itself, and without
-adding any more checks in the non-broadcast fast path.
-
-Fixes: e624d4ed4aa8 ("xdp: Extend xdp_redirect_map with broadcast support")
-Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- net/core/filter.c | 42 ++++++++++++++++++++++++++++++++----------
- 1 file changed, 32 insertions(+), 10 deletions(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 786d792ac816..8120c3dddf5e 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4363,10 +4363,12 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
- 	u32 map_id = ri->map_id;
-+	u32 flags = ri->flags;
- 	struct bpf_map *map;
- 	int err;
- 
- 	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
-+	ri->flags = 0;
- 	ri->map_type = BPF_MAP_TYPE_UNSPEC;
- 
- 	if (unlikely(!xdpf)) {
-@@ -4378,11 +4380,20 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
- 	case BPF_MAP_TYPE_DEVMAP:
- 		fallthrough;
- 	case BPF_MAP_TYPE_DEVMAP_HASH:
--		map = READ_ONCE(ri->map);
--		if (unlikely(map)) {
-+		if (unlikely(flags & BPF_F_BROADCAST)) {
-+			map = READ_ONCE(ri->map);
-+
-+			/* The map pointer is cleared when the map is being torn
-+			 * down by bpf_clear_redirect_map()
-+			 */
-+			if (unlikely(!map)) {
-+				err = -ENOENT;
-+				break;
-+			}
-+
- 			WRITE_ONCE(ri->map, NULL);
- 			err = dev_map_enqueue_multi(xdpf, dev, map,
--						    ri->flags & BPF_F_EXCLUDE_INGRESS);
-+						    flags & BPF_F_EXCLUDE_INGRESS);
- 		} else {
- 			err = dev_map_enqueue(fwd, xdpf, dev);
- 		}
-@@ -4445,9 +4456,9 @@ EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
- static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				       struct sk_buff *skb,
- 				       struct xdp_buff *xdp,
--				       struct bpf_prog *xdp_prog,
--				       void *fwd,
--				       enum bpf_map_type map_type, u32 map_id)
-+				       struct bpf_prog *xdp_prog, void *fwd,
-+				       enum bpf_map_type map_type, u32 map_id,
-+				       u32 flags)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
- 	struct bpf_map *map;
-@@ -4457,11 +4468,20 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
- 	case BPF_MAP_TYPE_DEVMAP:
- 		fallthrough;
- 	case BPF_MAP_TYPE_DEVMAP_HASH:
--		map = READ_ONCE(ri->map);
--		if (unlikely(map)) {
-+		if (unlikely(flags & BPF_F_BROADCAST)) {
-+			map = READ_ONCE(ri->map);
-+
-+			/* The map pointer is cleared when the map is being torn
-+			 * down by bpf_clear_redirect_map()
-+			 */
-+			if (unlikely(!map)) {
-+				err = -ENOENT;
-+				break;
-+			}
-+
- 			WRITE_ONCE(ri->map, NULL);
- 			err = dev_map_redirect_multi(dev, skb, xdp_prog, map,
--						     ri->flags & BPF_F_EXCLUDE_INGRESS);
-+						     flags & BPF_F_EXCLUDE_INGRESS);
- 		} else {
- 			err = dev_map_generic_redirect(fwd, skb, xdp_prog);
- 		}
-@@ -4498,9 +4518,11 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
- 	u32 map_id = ri->map_id;
-+	u32 flags = ri->flags;
- 	int err;
- 
- 	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
-+	ri->flags = 0;
- 	ri->map_type = BPF_MAP_TYPE_UNSPEC;
- 
- 	if (map_type == BPF_MAP_TYPE_UNSPEC && map_id == INT_MAX) {
-@@ -4520,7 +4542,7 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 		return 0;
- 	}
- 
--	return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog, fwd, map_type, map_id);
-+	return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog, fwd, map_type, map_id, flags);
- err:
- 	_trace_xdp_redirect_err(dev, xdp_prog, ri->tgt_index, err);
- 	return err;
--- 
-2.44.0
-
+We will work this out. Please remove this patch from patchwork for now.
 
