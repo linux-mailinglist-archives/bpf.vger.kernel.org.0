@@ -1,136 +1,92 @@
-Return-Path: <bpf+bounces-27145-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27146-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0768A8A9EB0
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 17:40:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404D98A9FAD
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E0E6B26464
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 15:40:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED7E52815C5
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B139316F90F;
-	Thu, 18 Apr 2024 15:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E3816C6BD;
+	Thu, 18 Apr 2024 16:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dhagt/Ds"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqidILYF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0957416EBEA;
-	Thu, 18 Apr 2024 15:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15CD15E20F
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713454752; cv=none; b=fKijyL+YYIiI+2sHng86TTZ55fJqZJEsIPnOrNa4VH5pEC0ALjUcIWO6jNfKcRswB+TWwcZ3gjiGeW69Z6Un9wnv2gaRXQHO0xp20ZZ+MfVJuSgbmwX8IoZRr1VGS9aId5sbF1pr2+O8Q6IroJUNnZtLzal/6hj31YzYzxNDBFE=
+	t=1713456628; cv=none; b=iQLsJZ9dxf8MTrKA2bTqUiABrMBjgbwEQhIY0t/CWdy0vgufHcHIXHyERoszh7yxyw6hrPcFgwFrw/4hUanZ8EKJinQzMXEwABp04LAUW58DFzCFIbKtK20EI6FL8QOpvX/W7hTDql1RAcq1INHRMyR9OZSJBa/vlOkP0RnAG+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713454752; c=relaxed/simple;
-	bh=poikjUesrlZvYhdkYUVTGKAXtyh6o27VwcY88bzAEGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fgUz23QpKjmd6XW7OENeB6X87D6AebhPYH9qWBnL7uAo2vMfbECw0MbCyKL/bAz6SZfNYydUEIia4+9G0e68sWR7lR9uZdZZ7t2yDDzxkdxpydxE/fi3zCEWwMLyyO25ow7PUeEIAXZKMJOH/b+5mEmgIoyjWss3DYxy82O3aqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dhagt/Ds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB10C113CC;
-	Thu, 18 Apr 2024 15:38:58 +0000 (UTC)
+	s=arc-20240116; t=1713456628; c=relaxed/simple;
+	bh=xdVod3ocIcDqz2Mlxa5Te0MdrICigSjFcOsBEarH+bk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=AfrcxxDh2+EEnoFIPnuNdyDWh9iFKaeim2fT3mRH3e5W9DCgSdJgSOh/TIeec+yKuFtEvR2HVlM9w+eSfHtUSDojnMWG1by12mytCVtZm0XQp7NMBHw9cTHxWh6EoN3tm8mIULK728qimhWLMCtgAIy4vry1YaHuAtUWFOtLG7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gqidILYF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 449A1C116B1;
+	Thu, 18 Apr 2024 16:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713454751;
-	bh=poikjUesrlZvYhdkYUVTGKAXtyh6o27VwcY88bzAEGE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dhagt/DsCV508bBCSM8PQFh0KZ4ChVYVPTqwgApoowoaluDog1pdK/qIVJU1bAfJ1
-	 yTHdqpTqCwsTRyfpVzaQYmToVgTGF005G8P5bcBRn51+TfjO6upp0QzeXZdpRVmP9T
-	 DyDQSEZc+G77sXhvEvzJVgEwHd81+hiEegtvxJRrNRYHrUsgJx5AWmHmLJX+3OoPI9
-	 DgUEekwf3Gv6AvfsAJ1j1lmBPCAVlRdxF5BEqB76VwjdS5tGiPR4UhLWWIRbIEiDfd
-	 AIVB7M07XTdJ0VLvAnDkmSjg91AV2IlHsKb94RwxZ2UFTajWhnfg+q+QMNKv4wdsDX
-	 0LvSLkPCKaqng==
-Date: Thu, 18 Apr 2024 18:37:52 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Masami Hiramatsu <masami.hiramatsu@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 14/15] kprobes: remove dependency on CONFIG_MODULES
-Message-ID: <ZiE-UE27NalI-IeW@kernel.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-15-rppt@kernel.org>
- <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
+	s=k20201202; t=1713456628;
+	bh=xdVod3ocIcDqz2Mlxa5Te0MdrICigSjFcOsBEarH+bk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=gqidILYFOw0z/EaZ5t44jVw2j0eBk7qMayPAR+znjW/HMsPHJzJIILHGE9M1x0HvZ
+	 zsklOnmE/JBujSe1Lg1pRp3T9hxlUADoOu0wCfxhC7g+OTKBhHfu+wIo3D6WoRQlAE
+	 6Nobw0aPdO50UvgbzXp64U4TjfNWkzZkUCIG95CL2FPhJtuXG6mc4uEAeS4d1h4hNt
+	 /r1FsCvAiZuAx3RW7TAEPxUl3nKo9XYuzVP+YQqvVgXasgbJRwlRgsqT97ZacOlHMO
+	 VTOLIjL7Z5XdNog5aF6OVIqsiduo1MHqyGwnAEsc0PYvcdj2tMYpve6gs1H7nsQCc1
+	 duiZuX5ikwEGw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 30C9AC395C5;
+	Thu, 18 Apr 2024 16:10:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Fix JIT of is_mov_percpu_addr instruction.
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171345662819.481.13885920460862679199.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Apr 2024 16:10:28 +0000
+References: <20240417214406.15788-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20240417214406.15788-1-alexei.starovoitov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@kernel.org, eddyz87@gmail.com, kernel-team@fb.com
 
-Hi Masami,
+Hello:
 
-On Thu, Apr 18, 2024 at 06:16:15AM +0900, Masami Hiramatsu wrote:
-> Hi Mike,
-> 
-> On Thu, 11 Apr 2024 19:00:50 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > kprobes depended on CONFIG_MODULES because it has to allocate memory for
-> > code.
-> > 
-> > Since code allocations are now implemented with execmem, kprobes can be
-> > enabled in non-modular kernels.
-> > 
-> > Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
-> > modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
-> > dependency of CONFIG_KPROBES on CONFIG_MODULES.
-> 
-> Thanks for this work, but this conflicts with the latest fix in v6.9-rc4.
-> Also, can you use IS_ENABLED(CONFIG_MODULES) instead of #ifdefs in
-> function body? We have enough dummy functions for that, so it should
-> not make a problem.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-I'll rebase and will try to reduce ifdefery where possible.
-
-> Thank you,
+On Wed, 17 Apr 2024 14:44:06 -0700 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> > 
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> >  arch/Kconfig                |  2 +-
-> >  kernel/kprobes.c            | 43 +++++++++++++++++++++----------------
-> >  kernel/trace/trace_kprobe.c | 11 ++++++++++
-> >  3 files changed, 37 insertions(+), 19 deletions(-)
-> > 
+> The codegen for is_mov_percpu_addr instruction works for rax/r8 registers
+> only. Fix it to generate proper x86 byte code for other registers.
 > 
-> -- 
-> Masami Hiramatsu
+> Fixes: 7bdbf7446305 ("bpf: add special internal-only MOV instruction to resolve per-CPU addrs")
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> 
+> [...]
 
+Here is the summary with links:
+  - [bpf-next] bpf: Fix JIT of is_mov_percpu_addr instruction.
+    https://git.kernel.org/bpf/bpf-next/c/462e5e2a5938
+
+You are awesome, thank you!
 -- 
-Sincerely yours,
-Mike.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
