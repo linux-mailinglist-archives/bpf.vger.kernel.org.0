@@ -1,212 +1,255 @@
-Return-Path: <bpf+bounces-27165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D36D8AA3B0
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 22:04:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B03CC8AA3E2
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 22:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76D99B29EBD
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:00:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D387A1C20C03
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8269D18133F;
-	Thu, 18 Apr 2024 20:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F71190690;
+	Thu, 18 Apr 2024 20:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kLbTVmQk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6051802A1
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 20:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED47E190678;
+	Thu, 18 Apr 2024 20:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713470431; cv=none; b=C+b/m9lSCS9KUciXSCQdIq2Jx/2JgMZLUMW8bQ+oCXX3tKRMMYaxNF24f7TobleGVj6LPWdFiGouEjZLlK9D+/c37CgswUj3aWm/zMODlo4I3zB052SjYGra3Nak1JjIaRwfJi2g0Qv6db0hpkWzKi07lNiFt8iP0/IOFs2J6A4=
+	t=1713471038; cv=none; b=kv8lzNKFdIRcJD7Ja7M0hKtltlb78LFFDbGYzLTaMgiJzEFgNSnbO+K0eXDMxGysXEVQyjPVi3Q6OF/d2cdlDwbQJej+J8j7oWDECe5RGETJGh+fcR8yp/Y8cuEYZmhaKtVuPmNfmD5pfOFD1BIQkLBSYSt1Yu2twj8OjWtW728=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713470431; c=relaxed/simple;
-	bh=ySCKXj6c+3614/kDHxqx/25WYz77e4ES1LSGaIfup3A=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rRA30XbPUL98GwF7yvvp6B9q8SIH//MegdaIwQ+9Sf2A1DQOx8f32AciaNkR2X6r/Ht5IXnysn6LFXGEsUTLN2etlTAyrc9LIqNJPgvik2LZxMQzL87Q/xZ3h/jRHvck9j4TBl1tzeaJgme6sM79ozdSvTDL3UUJhsy86Qmjg5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so171474639f.1
-        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 13:00:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713470429; x=1714075229;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HvCAvI2t36jvI9ciusgvIvLSXfRKhzbxpMLYmWITJdw=;
-        b=flzOdaSIhaKfw4nyqrf9QHkeAX2psM01BWPdXW2Yrg0jR9/8h0thAF09TzF6KvM1aU
-         jtbIxdqNvsJZQoyxCwjatWQPIfQ6LWvKwCZ3M3weOZar0lW8SyPmMYHwIyHN27nBpt0K
-         EmBc1MIXEjF6P45xYLVEO4SIrVjkaxhYKDREltJtWoBjivI/fsvKILW9Itx2lKyOXU+X
-         lgjLpxQYbI/shywkD6Aq+YN9UCLNv2z92CDAhP60afg50anEqx29fDIL8LT6uab0KauU
-         foqzI2a3GhQ07m/hQhQMx3l5KC+lIjA5SnsJrIkxLsJYJ8mrZJk86tYQ5/VQ7qhdNanG
-         rsWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSkcX1mYXB+k/Zz6esN8O4cT59mMpxBysaXIdt/qw85+5aUcMzZcWQM055HIDA5O03RclJz3dD8N0yn9lWIX7XxbtS
-X-Gm-Message-State: AOJu0YxXYAjDNAhs+RBAIWcc/srlN5MP6cgS8D2oDegn6ZKrHkSX9x9x
-	8R3tpScVYbxi/5oCGZkXh09EIIRLml3vxBR9Lx4qhqT6zzji3/z+FaRrtGP1N+AGjePjl7u6KkL
-	Gdsdv16gUEqnhAI+dc0LCTBxmWzj6K/n5PSYD8O05N8C83UwwpsKV7EI=
-X-Google-Smtp-Source: AGHT+IGk+XtOKy4Po7IaRVWu88agNqIiebP1iXGQ/Btezc2IjMMqNUq1N7cDNgJ3owAris5vDFSgf7YXJEIgD75wZvzo0+FRfgdJ
+	s=arc-20240116; t=1713471038; c=relaxed/simple;
+	bh=F84q09468QAuvyxXBUXYfaghdOKp4HFLLHGuiyrs3a0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IYK1JAGPFCA5olkqlDrvRaflBHKrMGfwLtlUVdENniXIsZL1wFpyyW94Xah19hxmnmfwpXVUQq5/yIRihPXzd3OS5kC4AU/gqywNPu1E5rjdpj0LOYQxRnP/OSZMJufmZs/4vm3DbaTYyX0eK8vEcwEayfp0xA7TTcSSuEdI+uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kLbTVmQk; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IIIk8M021455;
+	Thu, 18 Apr 2024 20:10:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Z6VrvUaNnN1z7gpcFIt1Tmie9n0FAyRjnFpoT2QRMtE=; b=kL
+	bTVmQkWedT59Qh4TJvZUzLEU8+rJO9Bty8idvYX5lP0lRgVoVDBi57mZM4n2BShO
+	rGCqCPMx+bKmnMf6BzJlA9pgx2cjWVZPybQ8En9YakdvcRq/0bJnKfFkBM9QJFdG
+	BoleIzc8JbMrFHCn7+HY363jjPohmBkAtyYsxyFZfakENjDVBdhbLXdBM82OAuic
+	KU/bRG/29HCvq2IdpToNTS4iZD83/qEbzEKFmV9SW4XBeNUPGqCKej55GydINyRd
+	pvCe/HOgmNxPifEJo73+3+61xUO4CfPuOlAU1ZLMOcTVtq9SEhaaNLxQo/K6Hmhi
+	zDywzdZxOeL+GqJ93/iA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjx54hv3f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 20:10:14 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IKAEUV026821
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 20:10:14 GMT
+Received: from [10.110.72.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 13:10:09 -0700
+Message-ID: <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
+Date: Thu, 18 Apr 2024 13:10:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:164b:b0:482:e69d:b0c6 with SMTP id
- a11-20020a056638164b00b00482e69db0c6mr232411jat.6.1713470428901; Thu, 18 Apr
- 2024 13:00:28 -0700 (PDT)
-Date: Thu, 18 Apr 2024 13:00:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003f81750616646cb8@google.com>
-Subject: [syzbot] [bpf?] possible deadlock in __stack_map_get
-From: syzbot <syzbot+dddd99ae26c656485d89@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v4 2/2] net: Add additional bit to support
+ clockid_t timestamp type
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
+ <20240418004308.1009262-3-quic_abchauha@quicinc.com>
+ <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
 Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15d7c52b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=dddd99ae26c656485d89
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10869857180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f1f7cb180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dddd99ae26c656485d89@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-6.8.0-syzkaller-05271-gf99c5f563c17 #0 Not tainted
---------------------------------------------
-syz-executor224/5098 is trying to acquire lock:
-ffff888021ef61d8 (&qs->lock){-.-.}-{2:2}, at: __stack_map_get+0x14b/0x4b0 kernel/bpf/queue_stack_maps.c:140
-
-but task is already holding lock:
-ffff888021ef51d8 (&qs->lock){-.-.}-{2:2}, at: __stack_map_get+0x14b/0x4b0 kernel/bpf/queue_stack_maps.c:140
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&qs->lock);
-  lock(&qs->lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-4 locks held by syz-executor224/5098:
- #0: ffffffff8e200c68 (pcpu_alloc_mutex){+.+.}-{3:3}, at: pcpu_alloc+0x27b/0x1670 mm/percpu.c:1769
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
- #2: ffff888021ef51d8 (&qs->lock){-.-.}-{2:2}, at: __stack_map_get+0x14b/0x4b0 kernel/bpf/queue_stack_maps.c:140
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
-
-stack backtrace:
-CPU: 0 PID: 5098 Comm: syz-executor224 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
- __stack_map_get+0x14b/0x4b0 kernel/bpf/queue_stack_maps.c:140
- bpf_prog_7a16b54e5ee857f9+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
- trace_contention_end+0xf6/0x120 include/trace/events/lock.h:122
- __pv_queued_spin_lock_slowpath+0x939/0xc60 kernel/locking/qspinlock.c:560
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
- queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- do_raw_spin_lock+0x272/0x370 kernel/locking/spinlock_debug.c:116
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
- _raw_spin_lock_irqsave+0xe1/0x120 kernel/locking/spinlock.c:162
- __stack_map_get+0x14b/0x4b0 kernel/bpf/queue_stack_maps.c:140
- bpf_prog_7a16b54e5ee857f9+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
- trace_contention_end+0xd7/0x100 include/trace/events/lock.h:122
- __mutex_lock_common kernel/locking/mutex.c:617 [inline]
- __mutex_lock+0x2e5/0xd70 kernel/locking/mutex.c:752
- pcpu_alloc+0x27b/0x1670 mm/percpu.c:1769
- bpf_prog_alloc_no_stats+0x10b/0x4a0 kernel/bpf/core.c:112
- bpf_prog_alloc+0x3b/0x1b0 kernel/bpf/core.c:144
- bpf_prog_load+0x7f7/0x20f0 kernel/bpf/syscall.c:2805
- __sys_bpf+0x4ee/0x810 kernel/bpf/syscall.c:5631
- __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fb8f4667f69
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc6855faf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb8f4667f69
-RDX: 0000000000000090 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 00000000000000a0 R09: 00000000000000a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cj0pgGtvGJm6HELW5bhHtjm9-_3lwLcI
+X-Proofpoint-ORIG-GUID: cj0pgGtvGJm6HELW5bhHtjm9-_3lwLcI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_18,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180146
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 4/18/2024 12:06 PM, Willem de Bruijn wrote:
+> Abhishek Chauhan wrote:
+>> tstamp_type is now set based on actual clockid_t compressed
+>> into 2 bits.
+>>
+>> To make the design scalable for future needs this commit bring in
+>> the change to extend the tstamp_type:1 to tstamp_type:2 to support
+>> other clockid_t timestamp.
+>>
+>> We now support CLOCK_TAI as part of tstamp_type as part of this
+>> commit with exisiting support CLOCK_MONOTONIC and CLOCK_REALTIME.
+>>
+>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>  
+>>  /**
+>> - * tstamp_type:1 can take 2 values each
+>> + * tstamp_type:2 can take 4 values each
+>>   * represented by time base in skb
+>>   * 0x0 => real timestamp_type
+>>   * 0x1 => mono timestamp_type
+>> + * 0x2 => tai timestamp_type
+>> + * 0x3 => undefined timestamp_type
+> 
+> Same point as previous patch about comment that repeats name.
+> 
+Will take care, Noted!
+>> @@ -833,7 +836,8 @@ enum skb_tstamp_type {
+>>   *	@tstamp_type: When set, skb->tstamp has the
+>>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>   *		skb->tstamp has the (rcv) timestamp at ingress and
+>> - *		delivery_time at egress.
+>> + *		delivery_time at egress or skb->tstamp defined by skb->sk->sk_clockid
+>> + *		coming from userspace
+> 
+> I would simplify the comment: clock base of skb->tstamp.
+> Already in the first patch.
+> 
+Will take care, Noted!
+>>   *	@napi_id: id of the NAPI struct this skb came from
+>>   *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>>   *	@alloc_cpu: CPU which did the skb allocation.
+>> @@ -961,7 +965,7 @@ struct sk_buff {
+>>  	/* private: */
+>>  	__u8			__mono_tc_offset[0];
+>>  	/* public: */
+>> -	__u8			tstamp_type:1;	/* See SKB_CLOCK_*_MASK */
+>> +	__u8			tstamp_type:2;	/* See skb_tstamp_type enum */
+> 
+> Probably good to call out that according to pahole this fills a hole.
+> 
+I will do that . 
+>>  #ifdef CONFIG_NET_XGRESS
+>>  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>>  	__u8			tc_skip_classify:1;
+>> @@ -1096,10 +1100,12 @@ struct sk_buff {
+>>   */
+>>  #ifdef __BIG_ENDIAN_BITFIELD
+>>  #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
+>> -#define TC_AT_INGRESS_MASK		(1 << 6)
+>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 6)
+> 
+> SKB_TSTAMP_TYPE_BIT2_MASK?
+> 
+I was thinking to keep it as TAI because it will confuse developers. I hope thats okay. 
+>> +#define TC_AT_INGRESS_MASK		(1 << 5)
+>>  #else
+>>  #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+>> -#define TC_AT_INGRESS_MASK		(1 << 1)
+>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 1)
+>> +#define TC_AT_INGRESS_MASK		(1 << 2)
+>>  #endif
+>>  #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+>>  
+>> @@ -4206,6 +4212,11 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+>>  	case CLOCK_MONOTONIC:
+>>  		skb->tstamp_type = SKB_CLOCK_MONO;
+>>  		break;
+>> +	case CLOCK_TAI:
+>> +		skb->tstamp_type = SKB_CLOCK_TAI;
+>> +		break;
+>> +	default:
+>> +		WARN_ONCE(true, "clockid %d not supported", tstamp_type);
+> 
+> and set to 0 and default tstamp_type?
+> Actually thinking about it. I feel if its unsupported just fall back to default is the correct thing. I will take care of this. 
+>>  	}
+>>  }
+> 
+>>  >
+>  @@ -9372,10 +9378,16 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+>>  	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+>>  			      SKB_BF_MONO_TC_OFFSET);
+>>  	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> -				SKB_MONO_DELIVERY_TIME_MASK, 2);
+>> +				SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
+>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> +				SKB_MONO_DELIVERY_TIME_MASK, 3);
+>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> +				SKB_TAI_DELIVERY_TIME_MASK, 4);
+>>  	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+>>  	*insn++ = BPF_JMP_A(1);
+>>  	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
+>> +	*insn++ = BPF_JMP_A(1);
+>> +	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_TAI);
+>>  
+>>  	return insn;
+>>  }
+>> @@ -9418,10 +9430,26 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>>  		__u8 tmp_reg = BPF_REG_AX;
+>>  
+>>  		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+>> +		/*check if all three bits are set*/
+>>  		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+>> -		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+>> +					SKB_TAI_DELIVERY_TIME_MASK);
+>> +		/*if all 3 bits are set jump 3 instructions and clear the register */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+>> +					SKB_TAI_DELIVERY_TIME_MASK, 4);
+>> +		/*Now check Mono is set with ingress mask if so clear */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 3);
+>> +		/*Now Check tai is set with ingress mask if so clear */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					TC_AT_INGRESS_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
+>> +		/*Now Check tai and mono are set if so clear */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					SKB_MONO_DELIVERY_TIME_MASK |
+>> +					SKB_TAI_DELIVERY_TIME_MASK, 1);
+> 
+> This looks as if all JEQ result in "if so clear"?
+> 
+> Is the goal to only do something different for the two bits being 0x1,
+> can we have a single test with a two-bit mask, rather than four tests?
+> 
+I think Martin wanted to take care of TAI as well. I will wait for his comment here 
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+My Goal was to take care of invalid combos which does not hold valid
+1. If all 3 bits are set => invalid combo (Test case written is Insane)
+2. If 2 bits are set (tai+mono)(Test case written is Insane) => this cannot happen (because clock base can only be one in skb)
+3. If 2 bit are set (ingress + tai/mono) => This is existing logic + tai being added (clear tstamp in ingress)
+4. For all other cases go ahead and fill in the tstamp in the dest register. 
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
 
