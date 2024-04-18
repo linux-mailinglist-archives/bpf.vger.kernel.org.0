@@ -1,168 +1,165 @@
-Return-Path: <bpf+bounces-27138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5A58A9A52
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 14:49:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C938A9B5F
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 15:34:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07F391F212E6
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 12:49:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C121BB242CD
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 13:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7452315FA94;
-	Thu, 18 Apr 2024 12:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC3515FA9F;
+	Thu, 18 Apr 2024 13:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Jkp+txBa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="cnfONtnL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="VI20Qdw1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jOrbf5ox"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6765B15E812
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 12:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29D3160790
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 13:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713444411; cv=none; b=u7p3cKMpc9ebFBIDrMSpPj2D9/QCpFNbngVVlE/Ke6viHKLtTyZHMb0YzWLWPamMcdfqETBwe+CmAwMPejmsyEKTY4e9i1jF3HIb6DgkXB3nfRf5I45iNUsIAuXvdUo7Zo2PdIZNKGw4htccpq6QoYt3FjirIkOnCuLABnADljs=
+	t=1713447257; cv=none; b=PZ6UohNJeSA4pVPkIbkCOYC5nRMNwz0nYhJ8wvufvc5KDIpfeQXJZMNE/NEqCjfOQWqIn9bMT1ZePh2zanssi7O3NBdPcX43L3dMfreDUdikyyBpUExLwt1bealLg/8FwCH38V6hNasVVzMGphSB8caPteY5AXEltmMp6xso7xM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713444411; c=relaxed/simple;
-	bh=A28IuvF99AJUY3UfWClVHO3IQHs6YzhCkyAjGTp5dGY=;
-	h=To:Cc:References:In-Reply-To:Date:Message-ID:MIME-Version:Subject:
-	 Content-Type:From; b=V92bCE9zOb4EI350Q5vyJ1zwjRljXyi04xZ/oixwvS8zldOtHW7Kj2YR4cy09M0ZBRkqqXA7j7UQqzQ1jlyZPU4yYC9WvDmGNK9mfUjk39dSqz68b+Q/cXoMU8i4ZCSSVBiAgbT6Lj+jBbm5NHA4UMZbgZM0hJdrWSlqirkp9Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Jkp+txBa; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=cnfONtnL reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=VI20Qdw1 reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id CEC55C151990
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 05:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1713444408; bh=A28IuvF99AJUY3UfWClVHO3IQHs6YzhCkyAjGTp5dGY=;
-	h=To:Cc:References:In-Reply-To:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Jkp+txBaKyhVxcTGl2PFw7lBPOvnD09ZoyrPF3E/UqLmZXVlB46i/CJRU4+SDOmtH
-	 Rn3L8ovBEeeVKJWQ5RQArZq69ASEKlzs8HKujkxBS7Xi0ezE5/Vw1G48yyjWNI+3US
-	 6Ns1In/DNeoKLZd0keo9nXTEyxttZhdLIwZ1vC/8=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id ADF26C14F6EC;
- Thu, 18 Apr 2024 05:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1713444408; bh=A28IuvF99AJUY3UfWClVHO3IQHs6YzhCkyAjGTp5dGY=;
- h=From:To:Cc:References:In-Reply-To:Date:Subject:List-Id:
- List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
- b=cnfONtnLfz8qWQeK1pZqLPpCg73DMDzE/wVbDGZRhlKDDX/KKq9L3Y9rY7iz/Kp5x
- IpoptxnRqBtAQCnfDNI4ti70nLA209e0DwM+0GWh8Wss6C+4frPDZH67yDV6ndkcPZ
- jgokHlIyhA3l06oTYxEcXms4WYjodxksB9MlGN1Q=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 2A055C14F6A7
- for <bpf@ietfa.amsl.com>; Thu, 18 Apr 2024 05:46:47 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.845
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=googlemail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id huJSj1FSFnvj for <bpf@ietfa.amsl.com>;
- Thu, 18 Apr 2024 05:46:42 -0700 (PDT)
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com
- [IPv6:2607:f8b0:4864:20::1034])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id ACBD7C14F6F4
- for <bpf@ietf.org>; Thu, 18 Apr 2024 05:46:42 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id
- 98e67ed59e1d1-2a87bd53dc3so710113a91.2
- for <bpf@ietf.org>; Thu, 18 Apr 2024 05:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20230601; t=1713444402; x=1714049202; darn=ietf.org;
- h=thread-index:content-language:content-transfer-encoding
- :mime-version:message-id:date:subject:in-reply-to:references:cc:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=AS5SxMXGcrO91LnCOcUj7QnqlzGCqZXoeT1579YFhr4=;
- b=VI20Qdw1brYzzAdqibfTcXrj68m9TaQ1X5Jbr8WBcH5jmtlS/wHaaHZBIfmIqPDKUo
- nO8GQdrzPJavJISlgZNGrwshYFOcImlFfarGn3YYXzokHKFdlrd6x5oMfTv94mlI3sFo
- XHWu3fNWky88sgOMF0lTr1sPUMG3viIdGEJfl1HzAuPQngj3Vryo+QqtEQje77f+vreg
- FTTSYkjmg4QrFcuWgSrRBOrMuco2TFII5PdzuDFqgXV59922aaR/TmJwOM6aVt6TPVKB
- JikJIazBfZVIz7n4gshI4i+z8d6NQR6ozzDNhUh5aMLSIrHZkIJ677aW8Lj9m1Q+II3I
- ucbQ==
+	s=arc-20240116; t=1713447257; c=relaxed/simple;
+	bh=0p7Z9PhLHCGbAVcNHG7nPsb7+sUp2srneXXeChzNaCE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=L+RgVFQHtXplpBd67BtJmEHwIqjTiQ958OJQD1hCQlzg/f1OxyRtYo+phATJ4aqRbmj1jym0rADBKpJ/mOOYwViAz/lvb+OdG0P34dPss/Fu682D+5BwwfzA3NdqrWk1J4g2TU9OodQGxccGn8Ima9bcfq2d3esXM7OgbcmwegM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jOrbf5ox; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713447254;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=NrgGLfIAAX/pWHt0D9O5DBKVoy6SoLpfNZ14lOkcm7Q=;
+	b=jOrbf5oxw16N7gV8mDW22KPvLOHx+x0QIy36I+tljsn+haxF6BJZhMb1Ex12PoCZ9+f0Pq
+	PRE/KWqkv74T4oREZ4Wxv43saoV2+u4c+Bbc7yppfBY1C2yZAdcbfcNqk21XMXJyTOuYJp
+	KLLU+5paYDphL1BxPfclvL0RKgYuU28=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-21-IcQgnUKtPP6trUc5ZN_e7g-1; Thu, 18 Apr 2024 09:34:13 -0400
+X-MC-Unique: IcQgnUKtPP6trUc5ZN_e7g-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-418265e9717so1124475e9.0
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 06:34:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713444402; x=1714049202;
- h=thread-index:content-language:content-transfer-encoding
- :mime-version:message-id:date:subject:in-reply-to:references:cc:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=AS5SxMXGcrO91LnCOcUj7QnqlzGCqZXoeT1579YFhr4=;
- b=E883vPjAh08M+2/GYU4c/rPMPVbg4dhUp/O7nTvmva7YzdzUf53Vcu7MyoxIkzLitX
- BhuVDtKBC2WqckpBnWP6YInOGWS7zGhxkvT9nrmpyGzxtqLB1yhNHaSMcCmiFdNU2Spz
- L3BtzjXsvD3R+kXP9HFcnioAfcqL4rAbdS3WJWJd5404SiEWKP6LkzA2QzOOVvB7wopw
- Ezl72lh9FxLWSFRsza3N0z9Fq8SwyNzk0RAlIe3eABwfpGGrmv21+7kqo3Kb8UpAh1RE
- MMhNwFBg8Z+E3zYbs85LeoUracqG+devc1C4BzMxoG8YT0kgsFU1yOLVU73RfHg9UgxQ
- rShg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXGV7GtjVLdPzSLUUdE3jEF7Z6HqGnWiOSDW0A/aEQBtwTJDyTf+5DrAMcf/3XtiQ2/ixBWkbNeyLEQask=
-X-Gm-Message-State: AOJu0Yxq74FXwbrtlpYG7Dk4tfqwa1aB+7ZxfA2N71YlxrYQ6n+a2Zvf
- VUIyA+ZLjI4sQk+oPa8P+kagbOPNzwO/24ZsaUm+YtxggOE+IbYot8bu3L9B
-X-Google-Smtp-Source: AGHT+IHGB2xteWs17x8CKXd6eMv3zNzPXyIlPHSItkrMfu31Xblx203SmlDGLi09a3r0trtmOUQArQ==
-X-Received: by 2002:a17:90a:c688:b0:2a2:fc17:db81 with SMTP id
- n8-20020a17090ac68800b002a2fc17db81mr2326992pjt.40.1713444401673; 
- Thu, 18 Apr 2024 05:46:41 -0700 (PDT)
-Received: from ArmidaleLaptop ([12.129.159.194])
- by smtp.gmail.com with ESMTPSA id
- b24-20020a17090aa59800b002a67b6f4417sm3089544pjq.24.2024.04.18.05.46.40
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 18 Apr 2024 05:46:41 -0700 (PDT)
-X-Google-Original-From: <dthaler1968@gmail.com>
-To: "'Christoph Hellwig'" <hch@infradead.org>,
- <dthaler1968=40googlemail.com@dmarc.ietf.org>
-Cc: "'Watson Ladd'" <watsonbladd@gmail.com>,
- "'David Vernet'" <void@manifault.com>, <bpf@vger.kernel.org>,
- <bpf@ietf.org>
-References: <0a0f01da8795$5496b250$fdc416f0$@gmail.com>
- <20240405215044.GC19691@maniforge>
- <CACsn0cmWzT4-+g0w0-ETC5ZMC1hdW0v-Rh1ZNCG2O23m9YCALQ@mail.gmail.com>
- <003001da8907$efd41140$cf7c33c0$@gmail.com> <ZiDFRI3sdClyG-dj@infradead.org>
-In-Reply-To: <ZiDFRI3sdClyG-dj@infradead.org>
-Date: Thu, 18 Apr 2024 05:46:38 -0700
-Message-ID: <004d01da918e$74b407b0$5e1c1710$@gmail.com>
+        d=1e100.net; s=20230601; t=1713447249; x=1714052049;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NrgGLfIAAX/pWHt0D9O5DBKVoy6SoLpfNZ14lOkcm7Q=;
+        b=kCUSggTA7RBvBbmFJ3co4sgIyoYJSOLiihLT6XUS/W1zpjvE0PSuWh6nsJC3QiZo6/
+         gQ+OZCX3OHck7FRoR+kNZJL5Wlg4Jf1/mmFUJ9w7GQHpOw84t457jafY0+oSaHFaC2Pu
+         Szsf/xISLzlRyqbH04Ou/BpmPaLWxP8CNOrJRVQ4dAaHF6WeRPR7WuCM8QabgMiJkeSz
+         y/zj3Pc55BXRgLaAPyx/Jdbg8F/BgqWlMnqpWt3/OjWQloVZj8/3MMd3LKYlC1pjX2XX
+         Z4S+9rMNDVK0ThUElp3/A9viPcy7zKvGUhQWRjss1xmdJdG6sVIciPuB7WZIRwfa98Um
+         igTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWH60jTItJalY7oOmstr63nSNp71ryim5QZ/L2SopFt1eQfNnv2WkGvb5EojWzjUiW/PA47IHUSgbwMVT0D7XbvTFUQ
+X-Gm-Message-State: AOJu0Yw4MTPVKqs/TvLQSorGT5WJlZBpRL0+NvDo3W5FOIxtynfuXFHO
+	/op7ZrmSf4EANy/8iCTdtaYabzlwTM/TgsSDueyLuh7TpO6/co/WbRGRg57W6B7KQM4+oki1O6o
+	2df6OSq47Pep+TUypE56yCvXHVEQKTl23c6CoLCZow8zxzqmY0Q==
+X-Received: by 2002:adf:f70d:0:b0:343:39d8:bf3a with SMTP id r13-20020adff70d000000b0034339d8bf3amr1847094wrp.4.1713447249292;
+        Thu, 18 Apr 2024 06:34:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHAkUsJsRqDf+ajVDzMwmUTX1P0NXRRRaDGkQ8TCIdYz/pnVcp2EurcEBdMy8mIL3vw/5Lc/A==
+X-Received: by 2002:adf:f70d:0:b0:343:39d8:bf3a with SMTP id r13-20020adff70d000000b0034339d8bf3amr1847076wrp.4.1713447248905;
+        Thu, 18 Apr 2024 06:34:08 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-236-143.dyn.eolo.it. [146.241.236.143])
+        by smtp.gmail.com with ESMTPSA id m10-20020a5d4a0a000000b0033e45930f35sm1870497wrq.6.2024.04.18.06.34.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 06:34:08 -0700 (PDT)
+Message-ID: <0891a0eeea4d771fd8c9760bfc1fcedf4b2d56db.camel@redhat.com>
+Subject: Re: [PATCH 1/2] [v2] net: ethernet: ti-cpsw: fix linking built-in
+ code to modules
+From: Paolo Abeni <pabeni@redhat.com>
+To: Arnd Bergmann <arnd@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Siddharth Vadapalli
+ <s-vadapalli@ti.com>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger
+ Quadros <rogerq@kernel.org>, MD Danish Anwar <danishanwar@ti.com>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Diogo Ivo <diogo.ivo@siemens.com>, Tanmay
+ Patil <t-patil@ti.com>, Simon Horman <horms@kernel.org>, Ratheesh Kannoth
+ <rkannoth@marvell.com>, Grygorii Strashko <grygorii.strashko@ti.com>,
+ netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-omap@vger.kernel.org, bpf@vger.kernel.org
+Date: Thu, 18 Apr 2024 15:34:06 +0200
+In-Reply-To: <20240417084400.3034104-1-arnd@kernel.org>
+References: <20240417084400.3034104-1-arnd@kernel.org>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQGym9lSVor9R6wjkVDgbvdbCMHIbgJp4F1KApIu0eEBfB5hlwKy7T0BsXSL+2A=
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/coUiD3Xg49-CeCBlppTh6Vo13sE>
-Subject: Re: [Bpf] Follow up on "call helper function by address" terminology
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: dthaler1968@googlemail.com
-From: dthaler1968=40googlemail.com@dmarc.ietf.org
 
-Christoph Hellwig <hch@infradead.org> wrote:
-> Maybe "static ID", or "pre-assigned" id?
+On Wed, 2024-04-17 at 10:43 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> There are six variants of the cpsw driver, sharing various parts of
+> the code: davinci-emac, cpsw, cpsw-switchdev, netcp, netcp_ethss and
+> am65-cpsw-nuss.
+>=20
+> I noticed that this means some files can be linked into more than
+> one loadable module, or even part of vmlinux but also linked into
+> a loadable module, both of which mess up assumptions of the build
+> system.
+>=20
+> Change this back to having separate modules for each portion that
+> can be linked standalone, exporting symbols as needed:
+>=20
+>  - ti-cpsw-common.ko now contains both cpsw-common.o and
+>    davinci_cpdma.o as they are always used together
+>=20
+>  - ti-cpsw-priv.ko contains cpsw_priv.o, cpsw_sl.o and cpsw_ethtool.o,
+>    which are the core of the cpsw and cpsw-new drivers.
+>=20
+>  - ti-cpsw-sl.ko contains the cpsw-sl.o object and is used on
+>    ti-am65-cpsw-nuss.ko in addition to the two other cpsw variants.
+>=20
+>  - ti-cpsw-ale.o is the one standalone module that is used by all
+>    except davinci_emac.
+>=20
+> Each of these will be built-in if any of its users are built-in,
+> otherwise it's a loadable module if there is at least one module
+> using it. I did not bring back the separate Kconfig symbols for
+> this, but just handle it using Makefile logic.
+>=20
+> Note: ideally this is something that Kbuild complains about, but
+> usually we just notice when something using THIS_MODULS misbehaves
+> in a way that a user notices.
+>=20
+> Fixes: 99f6297182729 ("net: ethernet: ti: cpsw: drop TI_DAVINCI_CPDMA con=
+fig option")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: rebase on top of v6.9-rc
 
-I'd be ok with either of those. If I don't hear
-otherwise, I'll create a patch using "static ID".
+Does not apply cleanly to net (nor to net-next FWIW).
 
-Dave
+You should rebase on top of:
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/ main
+
+Also, please don't send patches targeting the net and net-next trees in
+the same series. If the net-next patch depends on the net one, you have
+to wait until the first is applied and the 'net' tree is merged back
+into the 'net-next' tree before submitting the latter (usually after
+the next thu).
+
+Thanks,
+
+Paolo
+
 
