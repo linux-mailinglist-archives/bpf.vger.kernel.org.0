@@ -1,140 +1,158 @@
-Return-Path: <bpf+bounces-27151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA438AA04A
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:40:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2C78AA193
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 19:54:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50AE6283FBE
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:40:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC1DD1C20B10
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 17:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2385F171092;
-	Thu, 18 Apr 2024 16:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B80178CE4;
+	Thu, 18 Apr 2024 17:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XF/vq2h1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qitx/umw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EFD16F8F3
-	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2311442F4;
+	Thu, 18 Apr 2024 17:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713458285; cv=none; b=pe9IfYo/xBzEF+3cMwAWllSHljOp57yUFYa3hCIn3UwexfpHsbYwMhLVwHtNN46bQavR4+zNP3+l6FB+purHBdpy7jCHGk9GJpvvRi6gqJ7BPYdiFRmy8GE/U9OrMg68Y/O4kOzFqDdpnB9g6EUKCR3dlwGzbbvN/Ocou8sjsBA=
+	t=1713462839; cv=none; b=i9w5i8935nPo1sdrS6/UQmSKRCap9P+Ga8M96m0Aa2f/AaDznnb7SrkKX6zzJPlkzGj83Owk1yKukmnFLuQFHgUBDKAeCJDUXlKZERBL97VW/vtESPO+UH/iOIi0RdTKmrDjokSBxgUbb1c47Q6ersSVFvKXv18DQNEr6rzQYDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713458285; c=relaxed/simple;
-	bh=V626uEJkH9jBbP9aHpW/Nvz/TdS8JMzCVHPPyBjG91g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ohzHWsn2sykiKn1oI+J2JXaLDmfA6PdN2a7IeZvv1lSBI5I8Vnyf5mleZzh69XKrydJjVjCiGv7Uty8AevkWyqrwgyMFsqeBNxMs0Xzhnh79IgjLaoU90SxMpMrp5p7rinLlLEMGF1cj8/orFPaSryz5AeIRPcLLiuZ0ZDdsai8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XF/vq2h1; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516f2e0edb7so1393442e87.1
-        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 09:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713458282; x=1714063082; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2fvL6J9nXYqFFsxzFO/o7239dRTb2u5K1mOJJhr20OI=;
-        b=XF/vq2h16JiedJw086qXgxCqT2jcfCjetovrVB7yhOjpuIXVSsUgAwsktvz6AsguI9
-         FjY7BzLhlG4++UipNYXkk4Nzons0R+tVK0CUElomCZqr72gp3wUHB8Iuj4QBsU7IGTtV
-         AgK41rVLCyUI9al8bNZByzGuDmNrJDFb6ZHz/TzrG4gNJES7MzofytYRU9LVubMuz0Z4
-         +smFhaKVF2iwq2JBL8EO2x/qQQ5tJu/UChtYa8cohr3Z0Ue1w+80tr77xQtKBxnZmS/1
-         ma2S13tienorDtfpO9C8awyWpH/ASwLLIf4/pHkKj4WA+EKA75irZzL4Y3nO/Tp//vW8
-         7kuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713458282; x=1714063082;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2fvL6J9nXYqFFsxzFO/o7239dRTb2u5K1mOJJhr20OI=;
-        b=BSAL9KiOV9CS/Lr1YOK0C+6C4lk/XOsE8N5NqP2TDVtVR2Vpx7y8PYvemdrcEAKCsr
-         MjPZQn1zEQokZ1I24shyWUpHOUe6yqUtXVtnTNQu5wyEA7AACz1xM0W1lPGTcJJsdjNa
-         wFjJ+2hfw3tKu02fK3VIfOc1C807Lsy1ZgcFRu+3j23037RnCOS09lqVP1/v8RCJRIUW
-         s0IcG5TT/EH74+fB8aXcOQ1g54AL0e8lqFrBILqM9a/rfG6znSJp3m1We7ndjHh3OFkv
-         vp63QrM0BycW0VSta0ndBprAUg8WWiLR0pl4K+ccng9/97/YqqZhQZ8hSqfR6bvptnTn
-         WeCA==
-X-Gm-Message-State: AOJu0YwNMy1+lwxKnghE9+OUWrbb0iDEjAPETCqZDzaji9cQMesL6JDK
-	2Gg9jgFrYvY3JhbCw9M8jlsll3uxBjd0OAHpFbXuD4R+zgtzV9wGWMTVbvEpxpcB+z5WXJLE0zY
-	x0Y7pcmFmYLQCxmdN9JK9TwIZGEnYiSm9xwrr
-X-Google-Smtp-Source: AGHT+IE/svMEdblsX6s5vPxV2ylObzjaIZ55o97lvAaXhYSugvIA3wFEwwhMNS0cq5OY9J8vFtE9CdF9Q9hKNy9Yx24=
-X-Received: by 2002:a19:5e55:0:b0:519:5df9:d945 with SMTP id
- z21-20020a195e55000000b005195df9d945mr1975972lfi.4.1713458282190; Thu, 18 Apr
- 2024 09:38:02 -0700 (PDT)
+	s=arc-20240116; t=1713462839; c=relaxed/simple;
+	bh=GVKHg9/GMb+Q7svthQO5bm+rPzNDL6zXlQZOsDeKWL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iPDzZv5Y/UdvP5C0JHl0OsL2oiIyxexW4QoxqHuXhvBsKnOxQsbvnFrhuqK/y8RwqIwVgQLyace7C4RywoTWZIjx8w1Mvl2OrVeuA6YyeEuJdEVgz7BIGd8GYISmj1vCGm/Slf3tCd6PZdiqc/ocV0DX5HFZ9kCkgZCd25yjBMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qitx/umw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F12DC3277B;
+	Thu, 18 Apr 2024 17:53:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713462839;
+	bh=GVKHg9/GMb+Q7svthQO5bm+rPzNDL6zXlQZOsDeKWL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qitx/umwjvXDKNme47QxvztrUiipBcKV2Lg0Yvd1RXezrm9EMN+zfFrxXb923+dxO
+	 AxZ6KgXvjlorR3mUIjvBXST4+3n8nelthPynguxJTOQoS9rNBrqZ+3MIlU37kTQ9FA
+	 a4e+nx+8unMMLT17+KcFFJ93DVlkbK2eXc4Av0nU3f2Yxj+rBXrkR0WI95IANr/7qX
+	 uZj4q1Xb4qjUIP87QNJk+Jgy4oid7eW9FtvEPOx7D0x1Tt1iXSqSWNLPcTP4XbQ2OW
+	 z8BEya9Rxr0dlQHlDm5T4jpRs2aqcA2Iy8EkKuiv4ehWjUKDt48ywWZ7K+xjdgeN4d
+	 Qxf4CJCyjHkiA==
+Date: Thu, 18 Apr 2024 20:52:39 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <ZiFd567L4Zzm2okO@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+ <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org>
+ <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+ <ZiE91CJcNw7gBj9g@kernel.org>
+ <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412165230.2009746-1-jrife@google.com> <20240412165230.2009746-5-jrife@google.com>
- <3df13496-a644-4a3a-9f9b-96ccc070f2a3@linux.dev> <CADKFtnQDJbSFRS4oyEsn3ZBDAN7T6EvxXUNdrz1kU3Bnhzfgug@mail.gmail.com>
- <f164369a-2b6b-45e0-8e3e-aa0035038cb6@linux.dev>
-In-Reply-To: <f164369a-2b6b-45e0-8e3e-aa0035038cb6@linux.dev>
-From: Jordan Rife <jrife@google.com>
-Date: Thu, 18 Apr 2024 12:37:49 -0400
-Message-ID: <CADKFtnQHy0MFeDNg6x2gzUJpuyaF6ELLyMg3tTxze3XV28qo7w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/6] selftests/bpf: Add IPv4 and IPv6 sockaddr
- test cases
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Kui-Feng Lee <thinker.li@gmail.com>, Artem Savkov <asavkov@redhat.com>, 
-	Dave Marchevsky <davemarchevsky@fb.com>, Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>, 
-	David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
 
-> The test_sock_addr.{c,sh} can be retired as long as all its tests are migrated
-> to sock_addr.c
+On Thu, Apr 18, 2024 at 09:13:27AM -0700, Song Liu wrote:
+> On Thu, Apr 18, 2024 at 8:37 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > >
+> > > > I'm looking at execmem_types more as definition of the consumers, maybe I
+> > > > should have named the enum execmem_consumer at the first place.
+> > >
+> > > I think looking at execmem_type from consumers' point of view adds
+> > > unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
+> > > and bpf (and maybe also module text) all have the same requirements.
+> > > Did I miss something?
+> >
+> > It's enough to have one architecture with different constrains for kprobes
+> > and bpf to warrant a type for each.
+> 
+> AFAICT, some of these constraints can be changed without too much work.
 
-test_sock_addr.c has a few more test dimensions than
-prog_tests/sock_addr.c currently does, so it covers a few more
-scenarios.
+But why?
+I honestly don't understand what are you trying to optimize here. A few
+lines of initialization in execmem_info?
+What is the advantage in forcing architectures to have imposed limits on
+kprobes or bpf allocations?
 
-struct sock_addr_test {
-    const char *descr;
-    /* BPF prog properties */
-    load_fn loadfn;
-    enum bpf_attach_type expected_attach_type;
-    enum bpf_attach_type attach_type;
-    /* Socket properties */
-    int domain;
-    int type;
-    /* IP:port pairs for BPF prog to override */
-    const char *requested_ip;
-    unsigned short requested_port;
-    const char *expected_ip;
-    unsigned short expected_port;
-    const char *expected_src_ip;
-    /* Expected test result */
-    enum {
-        LOAD_REJECT,
-        ATTACH_REJECT,
-        ATTACH_OKAY,
-        SYSCALL_EPERM,
-        SYSCALL_ENOTSUPP,
-        SUCCESS,
-    } expected_result;
-};
+> > Where do you see unnecessary complexity?
+> >
+> > > IOW, we have
+> > >
+> > > enum execmem_type {
+> > >         EXECMEM_DEFAULT,
+> > >         EXECMEM_TEXT,
+> > >         EXECMEM_KPROBES = EXECMEM_TEXT,
+> > >         EXECMEM_FTRACE = EXECMEM_TEXT,
+> > >         EXECMEM_BPF = EXECMEM_TEXT,      /* we may end up without
+> > > _KPROBE, _FTRACE, _BPF */
+> > >         EXECMEM_DATA,  /* rw */
+> > >         EXECMEM_RO_DATA,
+> > >         EXECMEM_RO_AFTER_INIT,
+> > >         EXECMEM_TYPE_MAX,
+> > > };
+> > >
+> > > Does this make sense?
+> >
+> > How do you suggest to deal with e.g. riscv that has separate address spaces
+> > for modules, kprobes and bpf?
+> 
+> IIUC, modules and bpf use the same address space on riscv
 
-We focus on the "happy path" scenarios currently in
-prog_tests/sock_addr.c while test_sock_addr.c has test cases that
-cover a range of scenarios where loading or attaching a BPF program
-should fail. There are also a few asm tests that use program loader
-functions like sendmsg4_rw_asm_prog_load which specifies a series of
-BPF instructions directly rather than loading one of the skeletons.
-Adding in these test dimensions and migrating the test cases is a
-slightly bigger lift for this patch series. Do we want to try to
-migrate all of these to prog_tests/sock_addr.c in order to fully
-retire it?
+Not exactly, bpf is a subset of modules on riscv.
 
--Jordan
+> while kprobes use vmalloc address.
+
+The whole point of using the entire vmalloc for kprobes is to avoid
+pollution of limited modules space.
+ 
+> Thanks,
+> Song
+
+-- 
+Sincerely yours,
+Mike.
 
