@@ -1,172 +1,119 @@
-Return-Path: <bpf+bounces-27147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D4DF8A9FC7
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8781B8AA02F
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 18:36:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84D5FB22F66
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:13:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15F3DB25899
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 16:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4326516F912;
-	Thu, 18 Apr 2024 16:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4151916F91E;
+	Thu, 18 Apr 2024 16:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M66D379U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gbOi+Rvl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9435023D7;
-	Thu, 18 Apr 2024 16:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC141CD21
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 16:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713456821; cv=none; b=b5gXJpVfXCTedyIO9rdVajN0bQEu/RPKLlNCRzsKU8ScYvRtNPDSy+y/U+fKd02JKK2CaR7HcFYb4BPOIyFxiSNIgXkb/SThSfCOXikPnN+0pOJobb3VYuGfp+T5F0gLQoKRldfNWQE0qTxtIGc1m1PGCIkyA4TKroO9XRDtyp8=
+	t=1713458114; cv=none; b=DXJDiZpqytzC1RkpJ2KIZuTTGSRXY7WX7zrXAp36lK22ss9j/r9axi2SFznAgKTN3AWziBx5tyq4mK+QU+4WjHPcnWDCPUe9cqhchK7sbyP+v0FgWIMOnazDHqwb13dgPWnxRfIsESPygLs01oOeXTm/ZoVxBe9rq3WucLZUnYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713456821; c=relaxed/simple;
-	bh=q/TFlw8SQh+Cko4nU/ng2SJ+spicGdHxGtHPBf/Abnk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sa5qnWUQX0RErrpdnnxH7GgWCr5lEqhJwDAuJnGGize3UarOoOIuloejC7OxMSPLUwwPPT1eEdd9me6y0BaubUNVx7nV5Dix2Fj+CvTEwHFU2X31FKk5Xed6nJQ+i3oeN2e/Doq0jWcPc62fTzQTO1p+xnswM3qk9TRO4PfG7KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M66D379U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FA7C32783;
-	Thu, 18 Apr 2024 16:13:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713456821;
-	bh=q/TFlw8SQh+Cko4nU/ng2SJ+spicGdHxGtHPBf/Abnk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=M66D379UjZi2pzII5y0MS95jTIIdgeaP5CeOU5t6T8ugoVGoFqm+PLgIbtbjL7jJB
-	 NWZmI3wmyAW6yd89gdzYoIAx8VH5oZAnUb+Nm6vIWzmLAIwB+yayQqOZ7130lPGtZc
-	 76JyrlVTFHePR2a2syZozERpds1Ug/Dsrn50BaO6JXr296Nahb9Dr77AX8YroHZzWq
-	 ciX+VZkyUUoI9u3hjnf+cfLWuwOsKCHK6cQNotuS8wjUQA9NYe2vZrosUyMIWeB+1J
-	 tItBnOKtFJxbN9219aDk9FhAD2AC9p6dPGaByqxXhKspOCjdnFu5QP7jGAJaqTXGND
-	 Hk/edIrXHleKg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5196fe87775so1055976e87.3;
-        Thu, 18 Apr 2024 09:13:41 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWzxuaphsl+RABbKWgK+hHzWpVoE5uljVBdLb52fmQ0owrzbH3CEcvvjgOCi5BH9Kyow2XR2gNjz+j65gOSvQuBKFO7vv/Rx787BrFVcKQF2toqDopOnNBcDMgwIxPCbBeBVah/xoVOxcH6QBZMzbn+Bz0mwpNeIgh23YBHjPRyDcEJXse08UfAEJSpArLWBpHd7YcJfnJBwhxF6tbG7Trce9qqIPM5nEL+OLV2VLnsaL9eQsQMlSzM6e1OGKpKfTjCwMcaYUIOd4txRINW1sBWAQxyJfKcnnIL7Cmh1ag2Sq9WE5b12vaF8fIZ3rwGK557FUEvg8Fo4mzjwSjuhjx2QNw+aOaGkWpsdsHdbSLAruZytryCfxkikgcKk0WI/sx9mQE3oYxhoJzzPyOCXEfgmpqimuGlMpAK5Ofy4XHmjECTrH0Y3XgIifc=
-X-Gm-Message-State: AOJu0YwmiN4vTEBt/JgaK4RfY8DCk8e/WtC0+HAR6P6/ODoCrPpahoYl
-	Fl1u33dU7gW4WNBpEHPDJEOuhZSfyJ8cRzLZymo5mR8lTKpNwRux4SIYTchgMsu9LcgjJwJuIZM
-	uq6vAGlg/julyKhA4aAUTNtsK/QU=
-X-Google-Smtp-Source: AGHT+IHLiDWbpJNv5cpg7tSucX1RJbILlT9QE6EE0zaOt0RsDuLJ8JfO9fqfVmmivnqe0091gRHYHRJJ+tsSYBR5kLA=
-X-Received: by 2002:ac2:5fad:0:b0:519:569b:361b with SMTP id
- s13-20020ac25fad000000b00519569b361bmr1973077lfe.63.1713456819439; Thu, 18
- Apr 2024 09:13:39 -0700 (PDT)
+	s=arc-20240116; t=1713458114; c=relaxed/simple;
+	bh=grzaPSYMMl5f21tVbpRnu0kmJKlI4clC+qm5tYLAAKc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=akD3Ie/CkVG3UwFIDXqOGukJgMuJonIp1fmr6I9K5dbK+tMiHKUwZZ90GTH8GpxnJT83tDlYg+DkMCokC5p5uarfvvCJ91VjfkADhVVFm0ZgmYOa9Ej2+a7f4F2BZsFkEmBfDC6miJJYoTVNp1yincWSDVv8By4sdAO/hYZS4bA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gbOi+Rvl; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6eb77e56b20so577029a34.3
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 09:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713458112; x=1714062912; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NNvc08/9wCxlwvv3Y7czFGPPjLWFgGU/4yeYpVs1IhI=;
+        b=gbOi+RvlEeRtmhf+uaWJwPRbZ/foPcXJF6M68gvg9HP91zorp4/U0JtUDUSFOm4838
+         B1Zq3MsNn/jSiwyeQMwp3WoCSyCyI3Cfr0pJEZsRh7Fg6icpL26Oco6ODfYLHMB7AX3k
+         zmYD72F6+ITzNaO4ZtieSnlxjjX52HxNJbPu+0+rW2YIiHWfiRVH9eIVGxnE6Xn1eP9P
+         AvJyPoFMTZvVbYf6M6J49hsIKlPGpgkzyEYHItpM4r35Uqq/kgp9JGUlsx+hfR66rb5A
+         6jyjHk7Sy7qwHNHGj5UsnhNf3b7OmsBvHK2GSMaGWvJ2KNh1K9/PRSWQOpnNBQ2q+DMR
+         DMIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713458112; x=1714062912;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NNvc08/9wCxlwvv3Y7czFGPPjLWFgGU/4yeYpVs1IhI=;
+        b=EkOGAJYAG5Ic+eG8GpDyJrOI7Vk1vOnEtIpsP7BEqAiOWsDs1CBXUnXB9xOSIBSde7
+         nmqWg/FhZT1k98H1QVPffgcoeHq1u+ntYJCqblnT4DUx8PAsZQ4ludbk+hDtappXD0bB
+         Ga7/ttV5MvfIyheBzP2S5E54U2fKKlvqAjn/k+jzcrqaZboqcEEsMPMVf/M/LG25pKO1
+         EFzh/n0dyKQDXfVx0DzY/oCAjdYpm8a8RRBImhjQQpEoMUp9QkWFK4dDdxlPjpe7nAo0
+         KrgOu+S+kRm8vL7noViRiQcPjROPAJiF6uIZ7SO/uclGnCYTIP2oMBspmr4ZknNqndfE
+         a/yw==
+X-Gm-Message-State: AOJu0YzQByKVnL2NqEP0JBiqzAYwLaiiH1pF6NGEqC8sdyXVT93icz9B
+	zQ0JlcOCKRJgShKV2TSeLhUTWLTHrMbBBKcjJv8I3g3MszFf+8ubVwVkcA==
+X-Google-Smtp-Source: AGHT+IFAeMBP8tAitjI11TL1uV/1gI4haE66d49MMX5MBxQHIJRfV4KHy29pvBSq6jNxtjn6+7lLFQ==
+X-Received: by 2002:a05:6830:b85:b0:6eb:7510:92d3 with SMTP id a5-20020a0568300b8500b006eb751092d3mr4099985otv.11.1713458112273;
+        Thu, 18 Apr 2024 09:35:12 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:6fe6:94b6:ddee:aa05])
+        by smtp.gmail.com with ESMTPSA id i5-20020a9d53c5000000b006e695048ad8sm376391oth.66.2024.04.18.09.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 09:35:11 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v2 0/2] Update a struct_ops link through a pinned path
+Date: Thu, 18 Apr 2024 09:35:07 -0700
+Message-Id: <20240418163509.719335-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411160051.2093261-1-rppt@kernel.org> <20240411160051.2093261-6-rppt@kernel.org>
- <20240415075241.GF40213@noisy.programming.kicks-ass.net> <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
- <Zh4nJp8rv1qRBs8m@kernel.org> <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
- <ZiE91CJcNw7gBj9g@kernel.org>
-In-Reply-To: <ZiE91CJcNw7gBj9g@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Thu, 18 Apr 2024 09:13:27 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
-Message-ID: <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
-Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
-	linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Bjorn Topel <bjorn@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024 at 8:37=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
-te:
->
-[...]
-> >
-> > Is +/- 2G enough for all realistic use cases? If so, I guess we don't
-> > really need
-> > EXECMEM_ANYWHERE below?
-> >
-> > > >
-> > > > * I'm not sure about BPF's requirements; it seems happy doing the s=
-ame as
-> > > >   modules.
-> > >
-> > > BPF are happy with vmalloc().
-> > >
-> > > > So if we *must* use a common execmem allocator, what we'd reall wan=
-t is our own
-> > > > types, e.g.
-> > > >
-> > > >       EXECMEM_ANYWHERE
-> > > >       EXECMEM_NOPLT
-> > > >       EXECMEM_PREL32
-> > > >
-> > > > ... and then we use those in arch code to implement module_alloc() =
-and friends.
-> > >
-> > > I'm looking at execmem_types more as definition of the consumers, may=
-be I
-> > > should have named the enum execmem_consumer at the first place.
-> >
-> > I think looking at execmem_type from consumers' point of view adds
-> > unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kpro=
-be,
-> > and bpf (and maybe also module text) all have the same requirements.
-> > Did I miss something?
->
-> It's enough to have one architecture with different constrains for kprobe=
-s
-> and bpf to warrant a type for each.
->
+Applications already have the ability to update a struct_ops link with
+another struct_ops map. However, they were unable to open pinned paths
+of the links. This implies that updating a link through its pinned
+paths was not feasible. By allowing the "open" operator on pinned
+paths, applications can pin a struct_ops link and update the link
+through the pinned path later.
 
-AFAICT, some of these constraints can be changed without too much work.
+---
+Changes from v1:
 
-> Where do you see unnecessary complexity?
->
-> > IOW, we have
-> >
-> > enum execmem_type {
-> >         EXECMEM_DEFAULT,
-> >         EXECMEM_TEXT,
-> >         EXECMEM_KPROBES =3D EXECMEM_TEXT,
-> >         EXECMEM_FTRACE =3D EXECMEM_TEXT,
-> >         EXECMEM_BPF =3D EXECMEM_TEXT,      /* we may end up without
-> > _KPROBE, _FTRACE, _BPF */
-> >         EXECMEM_DATA,  /* rw */
-> >         EXECMEM_RO_DATA,
-> >         EXECMEM_RO_AFTER_INIT,
-> >         EXECMEM_TYPE_MAX,
-> > };
-> >
-> > Does this make sense?
->
-> How do you suggest to deal with e.g. riscv that has separate address spac=
-es
-> for modules, kprobes and bpf?
+ - Fix a link time error for the case that CONFIG_BPF_JIT is not
+   enabled. (Reported by kernel test robot)
 
-IIUC, modules and bpf use the same address space on riscv, while kprobes us=
-e
-vmalloc address. I haven't tried this yet, but I think we can let
-kprobes use the
-same space as modules and bpf, which is:
+v1: https://lore.kernel.org/all/20240417002513.1534535-1-thinker.li@gmail.com/
 
-ffffffff00000000 |  -4     GB | ffffffff7fffffff |    2 GB | modules, BPF
+Kui-Feng Lee (2):
+  bpf: enable the "open" operator on a pinned path of a struct_osp link.
+  selftests/bpf: open a pinned path of a struct_ops link.
 
-Did I get this right?
+ include/linux/bpf.h                           |  6 ++
+ kernel/bpf/bpf_struct_ops.c                   | 10 ++++
+ kernel/bpf/inode.c                            | 11 +++-
+ kernel/bpf/syscall.c                          | 16 +++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  6 ++
+ .../bpf/prog_tests/test_struct_ops_module.c   | 56 +++++++++++++++++++
+ 6 files changed, 101 insertions(+), 4 deletions(-)
 
-Thanks,
-Song
+-- 
+2.34.1
+
 
