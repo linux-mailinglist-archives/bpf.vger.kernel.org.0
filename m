@@ -1,230 +1,351 @@
-Return-Path: <bpf+bounces-27173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27174-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917698AA462
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 22:52:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8153A8AA464
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 22:52:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49276285365
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:52:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A55131C236A1
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 20:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7138E194C64;
-	Thu, 18 Apr 2024 20:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60811836EE;
+	Thu, 18 Apr 2024 20:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="By6e/dit"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtR9RzGZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871445231;
-	Thu, 18 Apr 2024 20:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3D8190690
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 20:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713473540; cv=none; b=C7kX+4uKXyaTgsfxt1FxK+sh1BnBP3GsvqG4q18uJyzc0s8tPMdvsAtyVglBcvanyl8y1JCt66YQ9cs9fksukHRJcnzjtYf0ReaX5fbYtSisNL2WOeYkpErvr3brHXLkY0tquc/ZWXIkhpfn6J4Lp3n083ILiyW3mWqztlw6WzI=
+	t=1713473565; cv=none; b=Zebd+pEkF3BuX5CI4WO2H/LlpADQPK744SjCP43puQXRhKPF9ym3NtDMu38sPFYLv+so4ymSx8zZUGsq2zOPEcn2kapKy/m2YLHeVi/gjz0Vkpwj3LmiTP9h4tQhyIq6yrJYJgOZonp4lA39njHSCUGNgns88neRybhtVIILnP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713473540; c=relaxed/simple;
-	bh=Trzex6r7WZmJsjrQomymuH/d9/iiXcmPI02D/9z7YnE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XBJ3MzviT4zivUFw3uolKiz0epGzKfXtCdEd5fb44Xy4bXGarO7ryfysq322e0PoOlHYd778oZio1kvac3VyG4SZ+m3TyA1/1bq9WbUqp/RB+KWjdR3wRPLkGfTl4lmd0863MojBdnvTg1ROjbc84pBzwg9DZcP6T0/LQaMXyWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=By6e/dit; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IKJUMg020446;
-	Thu, 18 Apr 2024 20:51:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=EZinXa1rUdLhTAeVNDUVuJM4q1wRofjb33lmzAZf17I=; b=By
-	6e/diticmo+uNUtC7Gd2Dj6ryv1GbUVi7/mPb7OdzA9Xd0vVJqgT4JqbOavXnkAo
-	coFt/xHVXnJER45k3dw95oIO006RdmOqhq5TH5o4R9Kp0F4vhAuVS8EkfW3w8QPv
-	NOfbtVryD1CGGMnKraFVsye5hUN5MBw+yKPK1mY0FCiULBDusxRPycTme1+T80To
-	oGYAijt+vBzfSIanC2DokKvU4OP6JEqmPx1XSN6JE68br04PbxgyLAE37MKZR7f4
-	qtuSm5sV1THrPunjbezb3G+PUDd/uMD9OIxPjEewkAmENzhsSaFAMijYJS6kWvcS
-	MAn8Q3vHppSHVMQgiDsg==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjx54hxfw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 20:51:48 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IKplXv005148
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 20:51:48 GMT
-Received: from [10.110.72.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
- 2024 13:51:43 -0700
-Message-ID: <f25fb07e-6885-447a-b91a-08efd5e01bcd@quicinc.com>
-Date: Thu, 18 Apr 2024 13:51:43 -0700
+	s=arc-20240116; t=1713473565; c=relaxed/simple;
+	bh=QxMgcA5Jc7KOm8tpyh/PxEM0P6yl08gBmEgwBk4LShE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q1Txn9XWWPoVH+bI5KvuGwvXYpMzSGkKJxTZ2CQErzSibwMUhd4/c+daB0sVKrwJUTWGYyf6Ksixul6QYIv9rT776yh6I5pZCDpENWnIpVK8LIkd7MU1hLyYCJ+w1Dy8DyTDKfcgWjSHgGjTRSZg3DQl3/MWDOo+25wrjf+Z8AA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtR9RzGZ; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso1308434b3a.2
+        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 13:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713473563; x=1714078363; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9PAvTxuWT9yBaZyV8vJnx+BAyfbHYxSCc+lgUXZnTno=;
+        b=DtR9RzGZpOrCrhcVnAlQw9TSjWlMCjbD9FBsvXwYFAgCruvIXJduAc7jQkbqgLSlw7
+         hTAOt7PYWvL1bx/avwDAYZuFV2BAOEkB+Nk+GU8pxvk9ueKoGCoyFo05U6UC4tLtcsn0
+         sHeyRth46d3nFnXJ/iRJbanySpVB5iIdwWhrfLuWJ5/WH/2NkxPIdfwv6PfR8JXugYx1
+         R+85IIOjXgFItEP59Vv5Nt84JMHoeL6/F/y9RRGlrFNFyH3ga2yH6a2xUVDk/bIf2l+O
+         9Go9eW8Z83NqkF5b1k406R6VUf/2uwZ9HquCSbeaW83bP7iHZJCghQ13A14v2u38PG6c
+         POJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713473563; x=1714078363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9PAvTxuWT9yBaZyV8vJnx+BAyfbHYxSCc+lgUXZnTno=;
+        b=otBGri4lxD5DJpUocxCeP0NC8rk1cztPMJ6OX9bnzcgw/hNumVceX0WXZmKov41ws5
+         BnyolXO2z/vBaUPvxqQKfsRqgxOXEBrMxqGZJoT7eRsSNYC7mpukj/rwp8hNmasrf4xo
+         O88Pf8Ds1w8wzoUsMtBa3uSv5p0jbw7QNK+5SU0h5sQ7rMNvR/aN9goISdPUFy/6yGaT
+         i/z+ofzGARTMqplHV02pjgiCfA6h7CA3LMdULlLhfR1c1T/icaINQvAa0anF7YQ73GFB
+         J4POn6TCxgrzRMw3gRgUCpNw1/KFZx6AH6TqqhSX/vq//9q0olyQ6iy6hJzlyOoGhJQ3
+         lVSg==
+X-Forwarded-Encrypted: i=1; AJvYcCVgr8GC0SSdKTGMLi/7TMFo3YJqyc00DBvXlnM1XFxG6Fct4ZKHfSRQv0ZPnZW+cq/xKzxoHBMq1JTz8lSQHIAg2DnL
+X-Gm-Message-State: AOJu0YwcsQdTMqvTnjB0qYWq9xBp6aapBTgkGFJf4KQqZGUecJMclFWy
+	JKO5QqkmhyQ66Sz7rjhRrzTj8atZFmwV6RdPWlEf3A5cLujjqELjCzpSh02Wp0EJpDHoSaIbfDU
+	2Y1lqDmjaoCIA2ZunMFJo/sx+VSc=
+X-Google-Smtp-Source: AGHT+IGUGFfNHDC/l5Rhn+yVyzx2DTZ4iqxKAh71Yf/VweU31FJMf/77WvuVddhnG8xvdaRLCF8yXDAGdW2/kSQwATM=
+X-Received: by 2002:a05:6a00:989:b0:6ed:21d5:fc2c with SMTP id
+ u9-20020a056a00098900b006ed21d5fc2cmr316980pfg.26.1713473562578; Thu, 18 Apr
+ 2024 13:52:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v4 1/2] net: Rename mono_delivery_time to
- tstamp_type for scalabilty
-Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Martin
- KaFai Lau" <martin.lau@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-CC: <kernel@quicinc.com>
-References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
- <20240418004308.1009262-2-quic_abchauha@quicinc.com>
- <66216adc8677c_f648a294aa@willemb.c.googlers.com.notmuch>
- <9a1f8011-2156-4855-8724-fea89d73df11@quicinc.com>
- <66217e7ccb46b_f9d5d294b0@willemb.c.googlers.com.notmuch>
- <d25533d6-5d09-4c9f-8801-54ac35db98ed@quicinc.com>
- <6621874d772a9_fb2e029467@willemb.c.googlers.com.notmuch>
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <6621874d772a9_fb2e029467@willemb.c.googlers.com.notmuch>
+References: <20240319233852.1977493-1-andrii@kernel.org> <20240319233852.1977493-3-andrii@kernel.org>
+ <ZhT+N7CHi47zDzjo@xpf.sh.intel.com>
+In-Reply-To: <ZhT+N7CHi47zDzjo@xpf.sh.intel.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 18 Apr 2024 13:52:28 -0700
+Message-ID: <CAEf4BzYewDYdX+o0tC+f5hcJnxby=+eYsaq_5bEAjVYc96FxLA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/5] bpf: pass whole link instead of prog when
+ triggering raw tracepoint
+To: Pengfei Xu <pengfei.xu@intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
+	Stanislav Fomichev <sdf@google.com>, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: bXLwP36pBQ3aMGd4ykuLCIMq-1RlSRvA
-X-Proofpoint-ORIG-GUID: bXLwP36pBQ3aMGd4ykuLCIMq-1RlSRvA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_19,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 bulkscore=0
- impostorscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404180152
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 9, 2024 at 1:41=E2=80=AFAM Pengfei Xu <pengfei.xu@intel.com> wr=
+ote:
+>
+> Hi Andrii Nakryiko,
+>
+> Greeting!
+>
+> On 2024-03-19 at 16:38:49 -0700, Andrii Nakryiko wrote:
+> > Instead of passing prog as an argument to bpf_trace_runX() helpers, tha=
+t
+> > are called from tracepoint triggering calls, store BPF link itself
+> > (struct bpf_raw_tp_link for raw tracepoints). This will allow to pass
+> > extra information like BPF cookie into raw tracepoint registration.
+> >
+> > Instead of replacing `struct bpf_prog *prog =3D __data;` with
+> > corresponding `struct bpf_raw_tp_link *link =3D __data;` assignment in
+> > `__bpf_trace_##call` I just passed `__data` through into underlying
+> > bpf_trace_runX() call. This works well because we implicitly cast `void=
+ *`,
+> > and it also avoids naming clashes with arguments coming from
+> > tracepoint's "proto" list. We could have run into the same problem with
+> > "prog", we just happened to not have a tracepoint that has "prog" input
+> > argument. We are less lucky with "link", as there are tracepoints using
+> > "link" argument name already. So instead of trying to avoid naming
+> > conflicts, let's just remove intermediate local variable. It doesn't
+> > hurt readibility, it's either way a bit of a maze of calls and macros,
+> > that requires careful reading.
+> >
+> > Acked-by: Stanislav Fomichev <sdf@google.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  include/linux/bpf.h          |  5 +++++
+> >  include/linux/trace_events.h | 36 ++++++++++++++++++++----------------
+> >  include/trace/bpf_probe.h    |  3 +--
+> >  kernel/bpf/syscall.c         |  9 ++-------
+> >  kernel/trace/bpf_trace.c     | 18 ++++++++++--------
+> >  5 files changed, 38 insertions(+), 33 deletions(-)
+> >
+>
+> I used syzkaller and test intel internal kernel and found "KASAN:
+> slab-use-after-free Read in bpf_trace_run4" problem.
+>
+> Bisected and found related commit:
+> d4dfc5700e86 bpf: pass whole link instead of prog when triggering raw tra=
+cepoint
 
+I think [0] is fixing this problem, it landed into bpf tree
 
-On 4/18/2024 1:49 PM, Willem de Bruijn wrote:
-> Abhishek Chauhan (ABC) wrote:
->>
->>
->> On 4/18/2024 1:11 PM, Willem de Bruijn wrote:
->>> Abhishek Chauhan (ABC) wrote:
->>>>
->>>>
->>>> On 4/18/2024 11:47 AM, Willem de Bruijn wrote:
->>>>> Abhishek Chauhan wrote:
->>>>>> mono_delivery_time was added to check if skb->tstamp has delivery
->>>>>> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
->>>>>> timestamp in ingress and delivery_time at egress.
->>>>>>
->>>>>> Renaming the bitfield from mono_delivery_time to tstamp_type is for
->>>>>> extensibilty for other timestamps such as userspace timestamp
->>>>>> (i.e. SO_TXTIME) set via sock opts.
->>>>>>
->>>>>> As we are renaming the mono_delivery_time to tstamp_type, it makes
->>>>>> sense to start assigning tstamp_type based on enum defined
->>>>>> in this commit.
->>>>>>
->>>>>> Earlier we used bool arg flag to check if the tstamp is mono in
->>>>>> function skb_set_delivery_time, Now the signature of the functions
->>>>>> accepts tstamp_type to distinguish between mono and real time.
->>>>>>
->>>>>> In future tstamp_type:1 can be extended to support userspace timestamp
->>>>>> by increasing the bitfield.
->>>>>>
->>>>>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
->>>>>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
->>>>>
->>>>>> +/**
->>>>>> + * tstamp_type:1 can take 2 values each
->>>>>> + * represented by time base in skb
->>>>>> + * 0x0 => real timestamp_type
->>>>>> + * 0x1 => mono timestamp_type
->>>>>> + */
->>>>>> +enum skb_tstamp_type {
->>>>>> +	SKB_CLOCK_REAL,	/* Time base is skb is REALTIME */
->>>>>> +	SKB_CLOCK_MONO,	/* Time base is skb is MONOTONIC */
->>>>>> +};
->>>>>> +
->>>>>
->>>>> Can drop the comments. These names are self documenting.
->>>>
->>>> Noted! . I will take care of this
->>>>>
->>>>>>  /**
->>>>>>   * DOC: Basic sk_buff geometry
->>>>>>   *
->>>>>> @@ -819,7 +830,7 @@ typedef unsigned char *sk_buff_data_t;
->>>>>>   *	@dst_pending_confirm: need to confirm neighbour
->>>>>>   *	@decrypted: Decrypted SKB
->>>>>>   *	@slow_gro: state present at GRO time, slower prepare step required
->>>>>> - *	@mono_delivery_time: When set, skb->tstamp has the
->>>>>> + *	@tstamp_type: When set, skb->tstamp has the
->>>>>>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->>>>>>   *		skb->tstamp has the (rcv) timestamp at ingress and
->>>>>>   *		delivery_time at egress.
->>>>>
->>>>> Is this still correct? I think all egress does now annotate correctly
->>>>> as SKB_CLOCK_MONO. So when not set it always is SKB_CLOCK_REAL.
->>>>>
->>>> That is correct. 
->>>>
->>>>>> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
->>>>>> index 61119d42b0fd..a062f88c47c3 100644
->>>>>> --- a/net/ipv4/tcp_output.c
->>>>>> +++ b/net/ipv4/tcp_output.c
->>>>>> @@ -1300,7 +1300,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
->>>>>>  	tp = tcp_sk(sk);
->>>>>>  	prior_wstamp = tp->tcp_wstamp_ns;
->>>>>>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
->>>>>> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
->>>>>> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONOTONIC);
->>>>>
->>>>> Multiple references to CLOCK_MONOTONIC left
->>>>>
->>>> I think i took care of all the references. Apologies if i didn't understand your comment here. 
->>>
->>> On closer read, there is a type issue here.
->>>
->>> skb_set_delivery_time takes a u8 tstamp_type. But it is often passed
->>> a clockid_t, and that is also what the switch expects.
->>>
->>> But it does also get called with a tstamp_type in code like the
->>> following:
->>>
->>> +       u8 tstamp_type = skb->tstamp_type;
->>>         unsigned int hlen, ll_rs, mtu;
->>>         ktime_t tstamp = skb->tstamp;
->>>         struct ip_frag_state state;
->>> @@ -82,7 +82,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
->>>                         if (iter.frag)
->>>                                 ip_fraglist_prepare(skb, &iter);
->>>   
->>> -                       skb_set_delivery_time(skb, tstamp, mono_delivery_time);
->>> +                       skb_set_delivery_time(skb, tstamp, tstamp_type);
->>>
->>> So maybe we need two variants, one that takes a tstamp_type and one
->>> that tames a clockid_t?
->>>
->>> The first can be simple, not switch needed. Just apply the two stores.
->> I agree to what you are saying but clockid_t => points to int itself. 
->>
->> For example :- 
->> 		void qdisc_watchdog_init_clockid(struct qdisc_watchdog *wd, struct Qdisc *qdisc,
->> 				 clockid_t clockid)
->>
->> 		qdisc_watchdog_init_clockid(wd, qdisc, CLOCK_MONOTONIC); => sch_api.c
->> 	       qdisc_watchdog_init_clockid(&q->watchdog, sch, q->clockid); =>sch_etf.c (q->clockid is int)
-> 
-> My concern is more that we use CLOCK_MONOTONIC and SKB_CLOCK_MONO
-> (and other clocks) interchangeably, without invariant checks to make
-> sure that they map onto the same integer value.
-Ah i see. I got it . I will make two APIs . Makes sense. 
-1. One can check for clockid => switch => set 
-2. One can set it directly. 
+  [0] https://lore.kernel.org/all/20240328052426.3042617-2-andrii@kernel.or=
+g/
+
+>
+> Checked that the commit above is the same as this commit.
+>
+> All detailed info:https://github.com/xupengfe/syzkaller_logs/tree/main/24=
+0409_092216_bpf_trace_run4
+> Syzkaller repro code: https://github.com/xupengfe/syzkaller_logs/blob/mai=
+n/240409_092216_bpf_trace_run4/repro.c
+> Syzkaller syscall repro steps: https://github.com/xupengfe/syzkaller_logs=
+/blob/main/240409_092216_bpf_trace_run4/repro.prog
+> Kconfig(make olddefconfig): https://github.com/xupengfe/syzkaller_logs/bl=
+ob/main/240409_092216_bpf_trace_run4/kconfig_origin
+> Bisect info: https://github.com/xupengfe/syzkaller_logs/blob/main/240409_=
+092216_bpf_trace_run4/bisect_info.log
+> issue_bzImage: https://github.com/xupengfe/syzkaller_logs/raw/main/240409=
+_092216_bpf_trace_run4/bzImage_v6.9-rc2_next.tar.gz
+> issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/240409_=
+092216_bpf_trace_run4/5d8569db0cb982d3c630482c285578e98a75fc90_dmesg.log
+>
+> "
+> [   24.977435] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [   24.978307] BUG: KASAN: slab-use-after-free in bpf_trace_run4+0x547/0x=
+5e0
+> [   24.979138] Read of size 8 at addr ffff888015676218 by task rcu_preemp=
+t/16
+> [   24.979936]
+> [   24.980152] CPU: 0 PID: 16 Comm: rcu_preempt Not tainted 6.9.0-rc2-5d8=
+569db0cb9+ #1
+> [   24.981040] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> [   24.982352] Call Trace:
+> [   24.982672]  <TASK>
+> [   24.982952]  dump_stack_lvl+0xe9/0x150
+> [   24.983449]  print_report+0xd0/0x610
+> [   24.983904]  ? bpf_trace_run4+0x547/0x5e0
+> [   24.984393]  ? kasan_complete_mode_report_info+0x80/0x200
+> [   24.985039]  ? bpf_trace_run4+0x547/0x5e0
+> [   24.985528]  kasan_report+0x9f/0xe0
+> [   24.985961]  ? bpf_trace_run4+0x547/0x5e0
+> [   24.986457]  __asan_report_load8_noabort+0x18/0x20
+> [   24.987055]  bpf_trace_run4+0x547/0x5e0
+> [   24.987532]  ? __pfx_bpf_trace_run4+0x10/0x10
+> [   24.988061]  ? __this_cpu_preempt_check+0x20/0x30
+> [   24.988670]  ? lock_is_held_type+0xe5/0x140
+> [   24.989185]  ? set_next_entity+0x38c/0x630
+> [   24.989698]  ? put_prev_entity+0x50/0x1f0
+> [   24.990199]  __bpf_trace_sched_switch+0x14/0x20
+> [   24.990776]  __traceiter_sched_switch+0x7a/0xd0
+> [   24.991293]  __schedule+0xc6d/0x2840
+> [   24.991721]  ? __pfx___schedule+0x10/0x10
+> [   24.992170]  ? lock_release+0x3f6/0x790
+> [   24.992616]  ? __this_cpu_preempt_check+0x20/0x30
+> [   24.993140]  ? schedule+0x1f3/0x290
+> [   24.993536]  ? __pfx_lock_release+0x10/0x10
+> [   24.994003]  ? _raw_spin_unlock_irqrestore+0x39/0x70
+> [   24.994561]  ? schedule_timeout+0x559/0x940
+> [   24.995021]  ? __this_cpu_preempt_check+0x20/0x30
+> [   24.995548]  schedule+0xcf/0x290
+> [   24.995922]  schedule_timeout+0x55e/0x940
+> [   24.996369]  ? __pfx_schedule_timeout+0x10/0x10
+> [   24.996870]  ? prepare_to_swait_event+0xff/0x450
+> [   24.997401]  ? prepare_to_swait_event+0xc4/0x450
+> [   24.997916]  ? __this_cpu_preempt_check+0x20/0x30
+> [   24.998445]  ? __pfx_process_timeout+0x10/0x10
+> [   24.998971]  ? tcp_get_idx+0xd0/0x270
+> [   24.999408]  ? prepare_to_swait_event+0xff/0x450
+> [   24.999934]  rcu_gp_fqs_loop+0x661/0xa70
+> [   25.000399]  ? __pfx_rcu_gp_fqs_loop+0x10/0x10
+> [   25.000913]  ? __pfx_rcu_gp_init+0x10/0x10
+> [   25.001381]  rcu_gp_kthread+0x25e/0x360
+> [   25.001822]  ? __pfx_rcu_gp_kthread+0x10/0x10
+> [   25.002324]  ? __sanitizer_cov_trace_const_cmp1+0x1e/0x30
+> [   25.002966]  ? __kthread_parkme+0x146/0x220
+> [   25.003472]  ? __pfx_rcu_gp_kthread+0x10/0x10
+> [   25.003995]  kthread+0x354/0x470
+> [   25.004400]  ? __pfx_kthread+0x10/0x10
+> [   25.004862]  ret_from_fork+0x57/0x90
+> [   25.005315]  ? __pfx_kthread+0x10/0x10
+> [   25.005778]  ret_from_fork_asm+0x1a/0x30
+> [   25.006282]  </TASK>
+> [   25.006560]
+> [   25.006773] Allocated by task 732:
+> [   25.007187]  kasan_save_stack+0x2a/0x50
+> [   25.007660]  kasan_save_track+0x18/0x40
+> [   25.008124]  kasan_save_alloc_info+0x3b/0x50
+> [   25.008649]  __kasan_kmalloc+0x86/0xa0
+> [   25.009107]  kmalloc_trace+0x1c5/0x3d0
+> [   25.009599]  bpf_raw_tp_link_attach+0x28e/0x5a0
+> [   25.010163]  __sys_bpf+0x452/0x5550
+> [   25.010599]  __x64_sys_bpf+0x7e/0xc0
+> [   25.011054]  do_syscall_64+0x73/0x150
+> [   25.011523]  entry_SYSCALL_64_after_hwframe+0x71/0x79
+> [   25.012156]
+> [   25.012360] Freed by task 732:
+> [   25.012740]  kasan_save_stack+0x2a/0x50
+> [   25.013211]  kasan_save_track+0x18/0x40
+> [   25.013689]  kasan_save_free_info+0x3e/0x60
+> [   25.014198]  __kasan_slab_free+0x107/0x190
+> [   25.014694]  kfree+0xf3/0x320
+> [   25.015085]  bpf_raw_tp_link_dealloc+0x1e/0x30
+> [   25.015632]  bpf_link_free+0x145/0x1b0
+> [   25.016094]  bpf_link_put_direct+0x45/0x60
+> [   25.016593]  bpf_link_release+0x40/0x50
+> [   25.017064]  __fput+0x273/0xb70
+> [   25.017489]  ____fput+0x1e/0x30
+> [   25.017890]  task_work_run+0x1a3/0x2d0
+> [   25.018356]  do_exit+0xad3/0x31b0
+> [   25.018800]  do_group_exit+0xdf/0x2b0
+> [   25.019256]  __x64_sys_exit_group+0x47/0x50
+> [   25.019763]  do_syscall_64+0x73/0x150
+> [   25.020215]  entry_SYSCALL_64_after_hwframe+0x71/0x79
+> [   25.020830]
+> [   25.021036] The buggy address belongs to the object at ffff88801567620=
+0
+> [   25.021036]  which belongs to the cache kmalloc-128 of size 128
+> [   25.022465] The buggy address is located 24 bytes inside of
+> [   25.022465]  freed 128-byte region [ffff888015676200, ffff888015676280=
+)
+> [   25.023780]
+> [   25.023970] The buggy address belongs to the physical page:
+> [   25.024563] page: refcount:1 mapcount:0 mapping:0000000000000000 index=
+:0x0 pfn:0x15676
+> [   25.025401] flags: 0xfffffe0000800(slab|node=3D0|zone=3D1|lastcpupid=
+=3D0x3fffff)
+> [   25.026140] page_type: 0xffffffff()
+> [   25.026535] raw: 000fffffe0000800 ffff88800a0418c0 dead000000000122 00=
+00000000000000
+> [   25.027363] raw: 0000000000000000 0000000000100010 00000001ffffffff 00=
+00000000000000
+> [   25.028182] page dumped because: kasan: bad access detected
+> [   25.028773]
+> [   25.028957] Memory state around the buggy address:
+> [   25.029476]  ffff888015676100: fa fb fb fb fb fb fb fb fb fb fb fb fb =
+fb fb fb
+> [   25.030244]  ffff888015676180: fc fc fc fc fc fc fc fc fc fc fc fc fc =
+fc fc fc
+> [   25.031018] >ffff888015676200: fa fb fb fb fb fb fb fb fb fb fb fb fb =
+fb fb fb
+> [   25.031780]                             ^
+> [   25.032221]  ffff888015676280: fc fc fc fc fc fc fc fc fc fc fc fc fc =
+fc fc fc
+> [   25.032992]  ffff888015676300: fa fb fb fb fb fb fb fb fb fb fb fb fb =
+fb fb fb
+> [   25.033769] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [   25.034571] Disabling lock debugging due to kernel taint
+> "
+>
+> Could you take a look is it useful?
+>
+> Thanks!
+>
+> ---
+>
+> If you don't need the following environment to reproduce the problem or i=
+f you
+> already have one reproduced environment, please ignore the following info=
+rmation.
+>
+> How to reproduce:
+> git clone https://gitlab.com/xupengfe/repro_vm_env.git
+> cd repro_vm_env
+> tar -xvf repro_vm_env.tar.gz
+> cd repro_vm_env; ./start3.sh  // it needs qemu-system-x86_64 and I used v=
+7.1.0
+>   // start3.sh will load bzImage_2241ab53cbb5cdb08a6b2d4688feb13971058f65=
+ v6.2-rc5 kernel
+>   // You could change the bzImage_xxx as you want
+>   // Maybe you need to remove line "-drive if=3Dpflash,format=3Draw,reado=
+nly=3Don,file=3D./OVMF_CODE.fd \" for different qemu version
+> You could use below command to log in, there is no password for root.
+> ssh -p 10023 root@localhost
+>
+> After login vm(virtual machine) successfully, you could transfer reproduc=
+ed
+> binary to the vm by below way, and reproduce the problem in vm:
+> gcc -pthread -o repro repro.c
+> scp -P 10023 repro root@localhost:/root/
+>
+> Get the bzImage for target kernel:
+> Please use target kconfig and copy it to kernel_src/.config
+> make olddefconfig
+> make -jx bzImage           //x should equal or less than cpu num your pc =
+has
+>
+> Fill the bzImage file into above start3.sh to load the target kernel in v=
+m.
+>
+>
+> Tips:
+> If you already have qemu-system-x86_64, please ignore below info.
+> If you want to install qemu v7.1.0 version:
+> git clone https://github.com/qemu/qemu.git
+> cd qemu
+> git checkout -f v7.1.0
+> mkdir build
+> cd build
+> yum install -y ninja-build.x86_64
+> yum -y install libslirp-devel.x86_64
+> ../configure --target-list=3Dx86_64-softmmu --enable-kvm --enable-vnc --e=
+nable-gtk --enable-sdl --enable-usb-redir --enable-slirp
+> make
+> make install
+>
+> Best Regards,
+> Thanks!
+>
+
+[...]
 
