@@ -1,192 +1,154 @@
-Return-Path: <bpf+bounces-27082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E16B8A8F82
-	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 01:38:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29AA38A8FDE
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 02:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78AD71F21ACA
-	for <lists+bpf@lfdr.de>; Wed, 17 Apr 2024 23:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B5D81C214BB
+	for <lists+bpf@lfdr.de>; Thu, 18 Apr 2024 00:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF6A17AD74;
-	Wed, 17 Apr 2024 23:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DFD4411;
+	Thu, 18 Apr 2024 00:08:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u3kGHDmM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sCJxWuUW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D37E17967F
-	for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 23:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65146FD5
+	for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 00:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713396976; cv=none; b=VeN9IYw7jH+/JX2C4FvG4hkN7GsnEtWHr5JXN2ELGQMV2GkHw80kGXAkS6eA0ycT9Vofw80IhsSxLpb+VQPP/65Opi63TXKHbtaDgtNl8oDeHjl6iqBo4RTAiwrpubM8eEEEXmly6GyU41o5P0bDI0u+IX2P5Cj83JSMNTmotus=
+	t=1713398904; cv=none; b=s0Og5bOR6/lG4FUWcjL3YL4TmgqyrNeKVlSSUvWSk10FLa0ZaA5kYfsKKoFHoIokWi8YP5xlkVeApRwe/mVN+E6TzuUKdJX+Yy1kUxIVTVXkpu/J4BV5nLi4kKG4rhmjzBaO2R3y9pMhRb0sAAsmJpNkl/K17SoEkillJCc5C98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713396976; c=relaxed/simple;
-	bh=vjRJ1U7DKOKEv8zqHNl/1MSWTfJ+WAHC2urS1kF08ZE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Nuo0dVhOwzy42Tq689HLyUT0ROuu6DO5z501qEpEIHErguSivusdjHD1gdclRbNnqvxJ5EVChT77xeMKyNZ+4gJNSBaJS2N+6qBEU6SpPsMkJtnQOJp7ZnTUL3Ze4LyTjzbTanjlZfPFKUDNlv6O5pBMoGyVNN/u968UKfLj+sE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u3kGHDmM; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e438f8dd99so4038855ad.1
-        for <bpf@vger.kernel.org>; Wed, 17 Apr 2024 16:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713396974; x=1714001774; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cuQpI8q1wJxBD6X4kJwl22uAmYchmA+XE2ed6Sx/XW8=;
-        b=u3kGHDmM3WeWIKAcWsNDAO4lmvYJjUM0EFTBCufzySQDLfDsvq5Wf9XFKLBGojw3QR
-         p0402lfVsJdt+YgvNp4xLvH2GHuJRnKMaPbbLEDMUGVuKth+O0JY/v0NCAWA+LeAqGh3
-         Cy45vzdZYySsg+LsMzbEmjxwt/Sg1loN2LcdCo+GgZXEJ8GrAMfZdEvQkliN+NWS0XCa
-         cRk219GkqtLqQMJU24N3U5EQTR8IpAJwIlWciKolLgbNhOTQgXatslAafV2EIHHTi43y
-         UcAjCz2CDObBmyoQNj62jIaYWm0npBCWwUM6hy1r9cxBFc2kPdOsGt2ratZvlMybmYtP
-         5VOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713396974; x=1714001774;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cuQpI8q1wJxBD6X4kJwl22uAmYchmA+XE2ed6Sx/XW8=;
-        b=IBFpA1p7zZu+bdHPA0UHmVTnZpJQTFFAn8GVPAQb9Xv+Jk/9Mf8s9wblzY09bLtbnC
-         7knhIfGoZQ1nwq8clElXXIPqAZyhv/55YR2P4kN7coQzYEPSlKAMjXVg12bDQ/RGIKwZ
-         rObXn/bT9eL/XE91fFA8N/8/d2rRI6z802W/okQQ2imo2XLiD5odXca+hE9QvKdQFnqj
-         62lK5tqoWC1YMwXZblHO7fu0Ijpr4Ey4zg0X0exLg3KbZB0GwDnMq4P6nt3vbUoqJLhg
-         B5QHzIyI0KXOnhheGxtb/PITRY3rlp3GbqujU+uYEo+n/RXuhpuHY9bnjtID6rsNpbFe
-         SNEg==
-X-Gm-Message-State: AOJu0YzK6vTycpC+23o/Pjn6Yue05PSts1j2YjTQJ5yoNkanzQ5oVd54
-	Mn12HEaEhaXdaZB3e/Ks4Zwm2J5O8r65++oxVG4D/x4xCCOjI+KpmbtphJfeJMpQHBj6dNG5HeJ
-	aUg==
-X-Google-Smtp-Source: AGHT+IEobOYF40oLdCObDrE0/kpftePvc8OynfTVVcOc8erPQdeh2yti6opEqDb6c+vxVQiAGfnmmPMhneU=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:902:7c02:b0:1e0:c486:9af1 with SMTP id
- x2-20020a1709027c0200b001e0c4869af1mr2438pll.12.1713396973649; Wed, 17 Apr
- 2024 16:36:13 -0700 (PDT)
-Date: Wed, 17 Apr 2024 23:35:07 +0000
-In-Reply-To: <20240417233517.3044316-1-edliaw@google.com>
+	s=arc-20240116; t=1713398904; c=relaxed/simple;
+	bh=k9c0hts+lV5JOwyfCJVo7lsVLoSNv34VOhVc26YLU5k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gWaK5oG2Nhe+CLI1+EPY+ie2mzTJwKl/3XrrJy1SSUT0UHrTY9bGjWdx8zCf4FoyXAR/tI5MdtZ9K7fI5eWWx6BMuJKtTj/m8f9R1PKfUhR9e5YsRwEsW9aCmJ5GVP//NBBDUzhgI9XrNHpT8Xz86yDjQYHCvuaUnHpAd4fdglU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sCJxWuUW; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6c64339b-70c0-40d4-94a5-75c8bdfb08ea@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713398899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RvZxMsXfTKhjdGmOfsDIkj9MQHrTR8MCNdFlNNRoLbM=;
+	b=sCJxWuUWKX8S9p2T5Jj9DKoYa0eKdIicY2unJOLfwJOvPX/Ch+YrzXB1PxR8i79WBnPzwm
+	/RjbqHPjqkmU5JDx4nUxdyh3w83ZKYaSodzMJNNqBVCJlriDLG3bvFMlBiK9rXVW1feBUr
+	SqdI90HRejSJzDExO9X7cOfFKib0x7w=
+Date: Wed, 17 Apr 2024 17:08:06 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <16430256912363@kroah.com> <20240417233517.3044316-1-edliaw@google.com>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240417233517.3044316-6-edliaw@google.com>
-Subject: [PATCH 5.15.y 5/5] bpf: Fix ringbuf memory type confusion when
- passing to helpers
-From: Edward Liaw <edliaw@google.com>
-To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>
-Cc: bpf@vger.kernel.org, kernel-team@android.com, 
-	Edward Liaw <edliaw@google.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v4 02/14] selftests/bpf: Add start_server_addr*
+ helpers
+To: Geliang Tang <geliang@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <cover.1713262052.git.tanggeliang@kylinos.cn>
+ <48186b788bc029cbd3a47007175c83357fa28668.1713262052.git.tanggeliang@kylinos.cn>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <48186b788bc029cbd3a47007175c83357fa28668.1713262052.git.tanggeliang@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+On 4/16/24 3:13 AM, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
+> 
+> In order to pair up with connect_to_addr(), this patch adds a new helper
+> start_server_addr(), and another one start_server_addr_opts(), which is
+> a wrapper of __start_server(), only added a network_helper_opts arg at
+> the end.
+> 
+> They all accept an argument 'addr' of 'struct sockaddr_storage' type
+> instead of a string type argument like start_server().
+> 
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> ---
+>   tools/testing/selftests/bpf/network_helpers.c | 16 ++++++++++++++++
+>   tools/testing/selftests/bpf/network_helpers.h |  3 +++
+>   2 files changed, 19 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> index 563dde8617dd..836436688ca6 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -185,6 +185,22 @@ int *start_reuseport_server(int family, int type, const char *addr_str,
+>   	return NULL;
+>   }
+>   
+> +int start_server_addr_opts(int type, const struct sockaddr_storage *addr, socklen_t len,
+> +			   const struct network_helper_opts *opts)
 
-The bpf_ringbuf_submit() and bpf_ringbuf_discard() have ARG_PTR_TO_ALLOC_MEM
-in their bpf_func_proto definition as their first argument, and thus both expect
-the result from a prior bpf_ringbuf_reserve() call which has a return type of
-RET_PTR_TO_ALLOC_MEM_OR_NULL.
+I meant to only add one helper with the "opts" arg in v2 instead of adding two 
+helpers. I want to minimize the number of new helpers and each just has 
+different variants of args. timeout_ms usually makes sense, so opts is usually 
+required.
 
-While the non-NULL memory from bpf_ringbuf_reserve() can be passed to other
-helpers, the two sinks (bpf_ringbuf_submit(), bpf_ringbuf_discard()) right now
-only enforce a register type of PTR_TO_MEM.
+Thinking a bit more. A small nit from my v2 comment. Name this as 
+start_server_addr() without the "_opts" part. Keep it short. I want the default 
+helper has the opts arg from now other than a few exceptions like close_netns(), 
+get_socket_local_port()...etc. No need to change other existing helpers. Stay 
+with start_server_addr() and connect_to_addr() in this set.
 
-This can lead to potential type confusion since it would allow other PTR_TO_MEM
-memory to be passed into the two sinks which did not come from bpf_ringbuf_reserve().
+so,
 
-Add a new MEM_ALLOC composable type attribute for PTR_TO_MEM, and enforce that:
+int start_server_addr(int type, const struct sockaddr_storage *addr,
+		      socklen_t len, const struct network_helper_opts *opts);
 
- - bpf_ringbuf_reserve() returns NULL or PTR_TO_MEM | MEM_ALLOC
- - bpf_ringbuf_submit() and bpf_ringbuf_discard() only take PTR_TO_MEM | MEM_ALLOC
-   but not plain PTR_TO_MEM arguments via ARG_PTR_TO_ALLOC_MEM
- - however, other helpers might treat PTR_TO_MEM | MEM_ALLOC as plain PTR_TO_MEM
-   to populate the memory area when they use ARG_PTR_TO_{UNINIT_,}MEM in their
-   func proto description
+opts could be NULL.
 
-Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support for it")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-(cherry picked from commit a672b2e36a648afb04ad3bda93b6bda947a479a5)
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- include/linux/bpf.h   | 9 +++++++--
- kernel/bpf/verifier.c | 6 +++++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+pw-bot: cr
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 84efd8dd139d..96b2aa567d23 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -312,7 +312,12 @@ enum bpf_type_flag {
- 	 */
- 	MEM_RDONLY		= BIT(1 + BPF_BASE_TYPE_BITS),
- 
--	__BPF_TYPE_LAST_FLAG	= MEM_RDONLY,
-+	/* MEM was "allocated" from a different helper, and cannot be mixed
-+	 * with regular non-MEM_ALLOC'ed MEM types.
-+	 */
-+	MEM_ALLOC		= BIT(2 + BPF_BASE_TYPE_BITS),
-+
-+	__BPF_TYPE_LAST_FLAG	= MEM_ALLOC,
- };
- 
- /* Max number of base types. */
-@@ -396,7 +401,7 @@ enum bpf_return_type {
- 	RET_PTR_TO_SOCKET_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
- 	RET_PTR_TO_TCP_SOCK_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
- 	RET_PTR_TO_SOCK_COMMON_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
--	RET_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_ALLOC_MEM,
-+	RET_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | MEM_ALLOC | RET_PTR_TO_ALLOC_MEM,
- 	RET_PTR_TO_BTF_ID_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
- 
- 	/* This must be the last entry. Its purpose is to ensure the enum is
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3dfc45ed428a..6162ba31a89e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -567,6 +567,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
- 
- 	if (type & MEM_RDONLY)
- 		strncpy(prefix, "rdonly_", 16);
-+	if (type & MEM_ALLOC)
-+		strncpy(prefix, "alloc_", 16);
- 
- 	snprintf(env->type_str_buf, TYPE_STR_BUF_LEN, "%s%s%s",
- 		 prefix, str[base_type(type)], postfix);
-@@ -4970,6 +4972,7 @@ static const struct bpf_reg_types mem_types = {
- 		PTR_TO_MAP_KEY,
- 		PTR_TO_MAP_VALUE,
- 		PTR_TO_MEM,
-+		PTR_TO_MEM | MEM_ALLOC,
- 		PTR_TO_BUF,
- 	},
- };
-@@ -4987,7 +4990,7 @@ static const struct bpf_reg_types int_ptr_types = {
- static const struct bpf_reg_types fullsock_types = { .types = { PTR_TO_SOCKET } };
- static const struct bpf_reg_types scalar_types = { .types = { SCALAR_VALUE } };
- static const struct bpf_reg_types context_types = { .types = { PTR_TO_CTX } };
--static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM } };
-+static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM | MEM_ALLOC } };
- static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
- static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
- static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALUE } };
-@@ -5150,6 +5153,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 	case PTR_TO_MAP_VALUE:
- 	case PTR_TO_MEM:
- 	case PTR_TO_MEM | MEM_RDONLY:
-+	case PTR_TO_MEM | MEM_ALLOC:
- 	case PTR_TO_BUF:
- 	case PTR_TO_BUF | MEM_RDONLY:
- 	case PTR_TO_STACK:
--- 
-2.44.0.769.g3c40516874-goog
+> +{
+> +	return __start_server(type, 0, (struct sockaddr *)addr, len,
+> +			      opts->timeout_ms, 0);
+> +}
+> +
+> +int start_server_addr(int type, const struct sockaddr_storage *addr, socklen_t len)
+> +{
+> +	struct network_helper_opts opts = {
+> +		.timeout_ms = 0,
+> +	};
+> +
+> +	return start_server_addr_opts(type, addr, len, &opts);
+> +}
+> +
+>   void free_fds(int *fds, unsigned int nr_close_fds)
+>   {
+>   	if (fds) {
+> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+> index ac4da5fdcc95..9e6fcc89a8d0 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.h
+> +++ b/tools/testing/selftests/bpf/network_helpers.h
+> @@ -53,6 +53,9 @@ int start_mptcp_server(int family, const char *addr, __u16 port,
+>   int *start_reuseport_server(int family, int type, const char *addr_str,
+>   			    __u16 port, int timeout_ms,
+>   			    unsigned int nr_listens);
+> +int start_server_addr_opts(int type, const struct sockaddr_storage *addr, socklen_t len,
+> +			   const struct network_helper_opts *opts);
+> +int start_server_addr(int type, const struct sockaddr_storage *addr, socklen_t len);
+>   void free_fds(int *fds, unsigned int nr_close_fds);
+>   int connect_to_addr(int type, const struct sockaddr_storage *addr, socklen_t len);
+>   int connect_to_fd(int server_fd, int timeout_ms);
 
 
