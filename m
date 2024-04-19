@@ -1,248 +1,309 @@
-Return-Path: <bpf+bounces-27247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27248-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13B68AB4B0
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 20:01:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DE478AB50E
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 20:28:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9A71F21A50
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 18:01:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1ADA1C20BDD
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 18:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4224B13AD37;
-	Fri, 19 Apr 2024 18:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7115213C3E4;
+	Fri, 19 Apr 2024 18:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="fsog5Vf/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IeBUOy+4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E311E502
-	for <bpf@vger.kernel.org>; Fri, 19 Apr 2024 18:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2E81E502;
+	Fri, 19 Apr 2024 18:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713549700; cv=none; b=NDGSbtNoG5zjdU1+OX8LYIwrLbTWiEqu0lYhbT2y5d5XXn5M8e6FibE3ilJWAltb3D7jUo+v2I1b0tCS6XfN25K8rLmhXFdu78oWIKwAM/Q5eZfUn0eNGTfftxahJaWNvT09W4VMY+wDPoDgmZn8hzTeAfVisur1svzrVsYr/wM=
+	t=1713551318; cv=none; b=nQDzu4FLHnPui/KZnCnHW0GbVa8PA5yEnq5kzMN+CoCFNqxGRgP1SwUhjsfqMY4FuSjGN+oo66qgVZ25AKKbpG+gjdzogg/2C81rn5KNvDNaIIyyIdSt/c0H/3UDXFNsId3qnucjGnebCnzb45KENGd1FRIsKc2p5QlgEb73iWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713549700; c=relaxed/simple;
-	bh=8kekxm8Yx3Geb4y9E0X0FQ1vYR/DYIP6a1bEnb/VXBs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UwCr8Ciba7OVQ+4Dw5JGA6zzGCL/w/Zlt6XcPeH5EJV2ogkS1viAecDCtIfl3DnwXanQ7gk6Vygi83mR2cJbzP0swzY81YpIceLY+9hgQGwjTJMXk6DCNwTsTurjhllA/b97Pre+Hm8XPCELpAT6MjxeVPa8f8Fecx5KtmrOUzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=fsog5Vf/; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-ddda842c399so2386895276.3
-        for <bpf@vger.kernel.org>; Fri, 19 Apr 2024 11:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1713549698; x=1714154498; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KZKv0qPX0PLba9CuD+UmXo7c2QNHJRapFN8pMZZC9+0=;
-        b=fsog5Vf/qFYrJTN2++K50UXBd8Vf3NZcmwtMxrlI/ASjHcPoSajczk7yofyKeG34OY
-         jLcvUaq3BxNY08dOfmkFsVogda7CLvTWOibVqJGA6YjISpGz4A4k54dGuhbJhfCYCFj3
-         97P8mdjmlTH1p8wiRt1+kRGi9ZpU8sWbNiT9dQ0sxcm7Mv369L5BY+mf/LX6ATQ9azh9
-         J5dVQ4tim2BGMQPToUFPAtS5B7ZUWJMrkFRtVi+Fbyuw1fegMJWpjNxWrc/CaM1q716B
-         va6UgYKG5ySmLUxzVwiZrgbj0IhL7L4rHoCSerJlclQh1fHhzdqeHUllXCKj9SRhmGRG
-         zW3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713549698; x=1714154498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KZKv0qPX0PLba9CuD+UmXo7c2QNHJRapFN8pMZZC9+0=;
-        b=ZoWM4QaQvIkpsYxsDBApwvZMb2GnE124r3i2WIvCvQnPDW7QP3oSQN0Y+2+wPVyKiD
-         X6JBKINSlTE6LHxn8t8HeEfRK2NbPVdHxwIGatN09IIWGtYehY9vKfqgV5zng8aD9Ds3
-         o1UbYOBzCPf3oXwGeKPbS6vmnitasm6Hl0D3woPXDojnx3kXbXT7bl5X3HiodWQiaX0o
-         forcKGm/tIWgMm4BoNYMsgYfMl/O1kGlBC0HKkH08bfpXzzNlHTbJkljQ03RIoRbpIhH
-         KXw0fPKO4eR+vYCw1z0Rm8biB5/A29tVtd5NZPdoZolZwpEeDNpvphcWDxxqb0NHU/wn
-         dd8A==
-X-Forwarded-Encrypted: i=1; AJvYcCXPAozaCo6z3PYHGccBTkl8qRw8J6sommu/+KKfIIMSpTPO7O46kHUOOflPzSzuvtKU7XPLxnT1T9mG12/q7EAtW9AZ
-X-Gm-Message-State: AOJu0Yyvx3AtXazTa5eAVvqHzT862H4KYZLjw4MNoSFHJTgVsEJstpLD
-	VHCtvQKiRuZUyKzmN+P3VMr+hILr2jIzJ1esg2AsJg3CEKceUrjzfTBF3FAeVmE1fgdeo3SZsHQ
-	M+gmwxwchdaJJpcePGREWJTYFVCgBdE8HeNSQ
-X-Google-Smtp-Source: AGHT+IEHKE3mkY41ExHHzu9FKKI0rKZxFft1TQpFw2fdluwirxG5oWVZDePAqVE9t6iBCjRipWwUe0A4rwe32XitJ6o=
-X-Received: by 2002:a5b:64a:0:b0:dcc:ae3:d8a0 with SMTP id o10-20020a5b064a000000b00dcc0ae3d8a0mr3348467ybq.48.1713549698080;
- Fri, 19 Apr 2024 11:01:38 -0700 (PDT)
+	s=arc-20240116; t=1713551318; c=relaxed/simple;
+	bh=rjKt7/bK+OTh70LlxH9GB1NsHBNG7yoeVAoY/Hx21I4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IitI32YdgkQdOEsX1yaYz6eyAp/YXXDVILtoOA2vTyY9peoE4df3lsdDcyzS5wLQMrltoDqLwqlhI13tKAJLV7YUBMuzGmLkxmTfoAXsFD/KeS8WgVVQZ8X7oP4gCXgnKiSOVAmed9TJdB7vaopk/xiwYOuPaKRn5SptdMzJMLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IeBUOy+4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24272C072AA;
+	Fri, 19 Apr 2024 18:28:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713551317;
+	bh=rjKt7/bK+OTh70LlxH9GB1NsHBNG7yoeVAoY/Hx21I4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IeBUOy+4lRWwfIQZfMjMs5aIrgyK+N7ngNwbGDBIFSxAGMsB+wb2nWOnXAh2vH1bO
+	 8gEH9NoezUM6GJvhb0LjbF3uMsKhgRrm8Rv3ppkWlT/eP8RI2DaSVZZyx/YZXQoyXz
+	 a/KXy+iGL/8kP05UJbWOZliH+q5CbP1bjvAA6RGkYpLPh77qx/iMWFQwrnb2ZiekhM
+	 7u8rBoqEPFLQ3LRrJOGYQKwVtWzbX4qeLBlKr0VZxk+f8TffudxLpvoLlqaND96dHP
+	 rlnDgNOzW/OlCJB6hU4ObQqzE0D0GzNiEoLx1ZgkDibk/MnniHK35eDFj5oH1YY9XA
+	 TLZm1C6/2VznQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf] arm32, bpf: reimplement sign-extension mov instruction
+Date: Fri, 19 Apr 2024 18:28:32 +0000
+Message-Id: <20240419182832.27707-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410140141.495384-1-jhs@mojatatu.com> <41736ea4e81666e911fee5b880d9430ffffa9a58.camel@redhat.com>
- <CAM0EoM=982OctjvSQpx0kR7e+JnQLhvZ=sM-tNB4xNiu7nhH5Q@mail.gmail.com>
- <CAM0EoM=VhVn2sGV40SYttQyaiCn8gKaKHTUqFxB_WzKrayJJfQ@mail.gmail.com> <87cf4830e2e46c1882998162526e108fb424a0f7.camel@redhat.com>
-In-Reply-To: <87cf4830e2e46c1882998162526e108fb424a0f7.camel@redhat.com>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Fri, 19 Apr 2024 14:01:26 -0400
-Message-ID: <CAM0EoMkJwR0K-fF7qo0PfRw4Sf+=2L0L=rOcH5A2ELwagLrZMw@mail.gmail.com>
-Subject: Re: [PATCH net-next v16 00/15] Introducing P4TC (series 1)
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
-	Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, jiri@resnulli.us, 
-	xiyou.wangcong@gmail.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, 
-	toke@redhat.com, victor@mojatatu.com, pctammela@mojatatu.com, 
-	Vipin.Jain@amd.com, dan.daly@intel.com, andy.fingerhut@gmail.com, 
-	chris.sommers@keysight.com, mattyk@nvidia.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 19, 2024 at 1:20=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> On Fri, 2024-04-19 at 08:08 -0400, Jamal Hadi Salim wrote:
-> > On Thu, Apr 11, 2024 at 12:24=E2=80=AFPM Jamal Hadi Salim <jhs@mojatatu=
-.com> wrote:
-> > >
-> > > On Thu, Apr 11, 2024 at 10:07=E2=80=AFAM Paolo Abeni <pabeni@redhat.c=
-om> wrote:
-> > > >
-> > > > On Wed, 2024-04-10 at 10:01 -0400, Jamal Hadi Salim wrote:
-> > > > > The only change that v16 makes is to add a nack to patch 14 on kf=
-uncs
-> > > > > from Daniel and John. We strongly disagree with the nack; unfortu=
-nately I
-> > > > > have to rehash whats already in the cover letter and has been dis=
-cussed over
-> > > > > and over and over again:
-> > > >
-> > > > I feel bad asking, but I have to, since all options I have here are
-> > > > IMHO quite sub-optimal.
-> > > >
-> > > > How bad would be dropping patch 14 and reworking the rest with
-> > > > alternative s/w datapath? (I guess restoring it from oldest revisio=
-n of
-> > > > this series).
-> > >
-> > >
-> > > We want to keep using ebpf  for the s/w datapath if that is not clear=
- by now.
-> > > I do not understand the obstructionism tbh. Are users allowed to use
-> > > kfuncs as part of infra or not? My understanding is yes.
-> > > This community is getting too political and my worry is that we have
-> > > corporatism creeping in like it is in standards bodies.
-> > > We started by not using ebpf. The same people who are objecting now
-> > > went up in arms and insisted we use ebpf. As a member of this
-> > > community, my motivation was to meet them in the middle by
-> > > compromising. We invested another year to move to that middle ground.
-> > > Now they are insisting we do not use ebpf because they dont like our
-> > > design or how we are using ebpf or maybe it's not a use case they hav=
-e
-> > > any need for or some other politics. I lost track of the moving goal
-> > > posts. Open source is about solving your itch. This code is entirely
-> > > on TC, zero code changed in ebpf core. The new goalpost is based on
-> > > emotional outrage over use of functions. The whole thing is getting
-> > > extremely toxic.
-> > >
-> >
-> > Paolo,
-> > Following up since no movement for a week now;->
-> > I am going to give benefit of doubt that there was miscommunication or
-> > misunderstanding for all the back and forth that has happened so far
-> > with the nackers. I will provide a summary below on the main points
-> > raised and then provide responses:
-> >
-> > 1) "Use maps"
-> >
-> > It doesnt make sense for our requirement. The reason we are using TC
-> > is because a) P4 has an excellent fit with TC match action paradigm b)
-> > we are targeting both s/w and h/w and the TC model caters well for
-> > this. The objects belong to TC, shared between s/w, h/w and control
-> > plane (and netlink is the API). Maybe this diagram would help:
-> > https://github.com/p4tc-dev/docs/blob/main/images/why-p4tc/p4tc-runtime=
--pipeline.png
-> >
-> > While the s/w part stands on its own accord (as elaborated many
-> > times), for TC which has offloads, the s/w twin is introduced before
-> > the h/w equivalent. This is what this series is doing.
-> >
-> > 2) "but ... it is not performant"
-> > This has been brought up in regards to netlink and kfuncs. Performance
-> > is a lower priority to P4 correctness and expressibility.
-> > Netlink provides us the abstractions we need, it works with TC for
-> > both s/w and h/w offload and has a lot of knowledge base for
-> > expressing control plane APIs. We dont believe reinventing all that
-> > makes sense.
-> > Kfuncs are a means to an end - they provide us the gluing we need to
-> > have an ebpf s/w datapath to the TC objects. Getting an extra
-> > 10-100Kpps is not a driving factor.
-> >
-> > 3) "but you did it wrong, here's how you do it..."
-> >
-> > I gave up on responding to this - but do note this sentiment is a big
-> > theme in the exchanges and consumed most of the electrons. We are
-> > _never_ going to get any consensus with statements like "tc actions
-> > are a mistake" or "use tcx".
-> >
-> > 4) "... drop the kfunc patch"
-> >
-> > kfuncs essentially boil down to function calls. They don't require any
-> > special handling by the eBPF verifier nor introduce new semantics to
-> > eBPF. They are similar in nature to the already existing kfuncs
-> > interacting with other kernel objects such as nf_conntrack.
-> > The precedence (repeated in conferences and email threads multiple
-> > times) is: kfuncs dont have to be sent to ebpf list or reviewed by
-> > folks in the ebpf world. And We believe that rule applies to us as
-> > well. Either kfuncs (and frankly ebpf) is infrastructure glue or it's
-> > not.
-> >
-> > Now for a little rant:
-> >
-> > Open source is not a zero-sum game. Ebpf already coexists with
-> > netfilter, tc, etc and various subsystems happily.
-> > I hope our requirement is clear and i dont have to keep justifying why
-> > P4 or relitigate over and over again why we need TC. Open source is
-> > about scratching your itch and our itch is totally contained within
-> > TC. I cant help but feel that this community is getting way too
-> > pervasive with politics and obscure agendas. I understand agendas, I
-> > just dont understand the zero-sum thinking.
-> > My view is this series should still be applied with the nacks since it
-> > sits entirely on its own silo within networking/TC (and has nothing to
-> > do with ebpf).
->
-> It's really hard for me - meaning I'll not do that - applying a series
-> that has been so fiercely nacked, especially given that the other
-> maintainers are not supporting it.
->
-> I really understand this is very bad for you.
->
-> Let me try to do an extreme attempt to find some middle ground between
-> this series and the bpf folks.
->
-> My understanding is that the most disliked item is the lifecycle for
-> the objects allocated via the kfunc(s).
->
-> If I understand correctly, the hard requirement on bpf side is that any
-> kernel object allocated by kfunc must be released at program unload
-> time. p4tc postpone such allocation to recycle the structure.
->
-> While there are other arguments, my reading of the past few iterations
-> is that solving the above node should lift the nack, am I correct?
->
-> Could p4tc pre-allocate all the p4tc_table_entry_act_bpf_kern entries
-> and let p4a_runt_create_bpf() fail if the pool is empty? would that
-> satisfy the bpf requirement?
+The current implementation of the mov instruction with sign extension
+has the following problems:
 
-Let me think about it and weigh the consequences.
+  1. It clobbers the source register if it is not stacked because it
+     sign extends the source and then moves it to the destination.
+  2. If the dst_reg is stacked, the current code doesn't write the value
+     back in case of 64-bit mov.
+  3. There is room for improvement by emitting fewer instructions.
 
-> Otherwise could p4tc force free the p4tc_table_entry_act_bpf_kern at
-> unload time?
+The steps for fixing this and the instructions emitted by the JIT are
+explained below with examples in all combinations:
 
-This one wont work for us unfortunately. If we have entries added by
-the control plane with skip_sw just because the ebpf program is gone
-doesnt mean they disappear.
+Case A: offset == 32:
+=====================
+  Case A.1: src and dst are stacked registers:
+  --------------------------------------------
+    1. Load src_lo into tmp_lo
+    2. Store tmp_lo into dst_lo
+    3. Sign extend tmp_lo into tmp_hi
+    4. Store tmp_hi to dst_hi
 
-cheers,
-jamal
+    Example: r3 = (s32)r3
+	r3 is a stacked register
 
- there are use cases where no entry is loaded by the s/w datap
+	ldr     r6, [r11, #-16]	// Load r3_lo into tmp_lo
+	// str to dst_lo is not emitted because src_lo == dst_lo
+	asr     r7, r6, #31	// Sign extend tmp_lo into tmp_hi
+	str     r7, [r11, #-12] // Store tmp_hi into r3_hi
 
-> Thanks,
->
-> Paolo
->
->
+  Case A.2: src is stacked but dst is not:
+  ----------------------------------------
+    1. Load src_lo into dst_lo
+    2. Sign extend dst_lo into dst_hi
+
+    Example: r6 = (s32)r3
+	r6 maps to {ARM_R5, ARM_R4} and r3 is stacked
+
+	ldr     r4, [r11, #-16] // Load r3_lo into r6_lo
+	asr     r5, r4, #31	// Sign extend r6_lo into r6_hi
+
+  Case A.3: src is not stacked but dst is stacked:
+  ------------------------------------------------
+    1. Store src_lo into dst_lo
+    2. Sign extend src_lo into tmp_hi
+    3. Store tmp_hi to dst_hi
+
+    Example: r3 = (s32)r6
+	r3 is stacked and r6 maps to {ARM_R5, ARM_R4}
+
+	str     r4, [r11, #-16] // Store r6_lo to r3_lo
+	asr     r7, r4, #31	// Sign extend r6_lo into tmp_hi
+	str     r7, [r11, #-12]	// Store tmp_hi to dest_hi
+
+  Case A.4: Both src and dst are not stacked:
+  -------------------------------------------
+    1. Mov src_lo into dst_lo
+    2. Sign extend src_lo into dst_hi
+
+    Example: (bf) r6 = (s32)r6
+	r6 maps to {ARM_R5, ARM_R4}
+
+	// Mov not emitted because dst == src
+	asr     r5, r4, #31 // Sign extend r6_lo into r6_hi
+
+Case B: offset != 32:
+=====================
+  Case B.1: src and dst are stacked registers:
+  --------------------------------------------
+    1. Load src_lo into tmp_lo
+    2. Sign extend tmp_lo according to offset.
+    3. Store tmp_lo into dst_lo
+    4. Sign extend tmp_lo into tmp_hi
+    5. Store tmp_hi to dst_hi
+
+    Example: r9 = (s8)r3
+	r9 and r3 are both stacked registers
+
+	ldr     r6, [r11, #-16] // Load r3_lo into tmp_lo
+	lsl     r6, r6, #24	// Sign extend tmp_lo
+	asr     r6, r6, #24	// ..
+	str     r6, [r11, #-56] // Store tmp_lo to r9_lo
+	asr     r7, r6, #31	// Sign extend tmp_lo to tmp_hi
+	str     r7, [r11, #-52] // Store tmp_hi to r9_hi
+
+  Case B.2: src is stacked but dst is not:
+  ----------------------------------------
+    1. Load src_lo into dst_lo
+    2. Sign extend dst_lo according to offset.
+    3. Sign extend tmp_lo into dst_hi
+
+    Example: r6 = (s8)r3
+	r6 maps to {ARM_R5, ARM_R4} and r3 is stacked
+
+	ldr     r4, [r11, #-16] // Load r3_lo to r6_lo
+	lsl     r4, r4, #24	// Sign extend r6_lo
+	asr     r4, r4, #24	// ..
+	asr     r5, r4, #31	// Sign extend r6_lo into r6_hi
+
+  Case B.3: src is not stacked but dst is stacked:
+  ------------------------------------------------
+    1. Sign extend src_lo into tmp_lo according to offset.
+    2. Store tmp_lo into dst_lo.
+    3. Sign extend src_lo into tmp_hi.
+    4. Store tmp_hi to dst_hi.
+
+    Example: r3 = (s8)r1
+	r3 is stacked and r1 maps to {ARM_R3, ARM_R2}
+
+	lsl     r6, r2, #24 	// Sign extend r1_lo to tmp_lo
+	asr     r6, r6, #24	// ..
+	str     r6, [r11, #-16] // Store tmp_lo to r3_lo
+	asr     r7, r6, #31	// Sign extend tmp_lo to tmp_hi
+	str     r7, [r11, #-12] // Store tmp_hi to r3_hi
+
+  Case B.4: Both src and dst are not stacked:
+  -------------------------------------------
+    1. Sign extend src_lo into dst_lo according to offset.
+    2. Sign extend dst_lo into dst_hi.
+
+    Example: r6 = (s8)r1
+	r6 maps to {ARM_R5, ARM_R4} and r1 maps to {ARM_R3, ARM_R2}
+
+	lsl     r4, r2, #24	// Sign extend r1_lo to r6_lo
+	asr     r4, r4, #24	// ..
+	asr     r5, r4, #31	// Sign extend r6_lo to r6_hi
+
+Fixes: fc832653fa0d ("arm32, bpf: add support for sign-extension mov instruction")
+Reported-by: syzbot+186522670e6722692d86@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000e9a8d80615163f2a@google.com/
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ arch/arm/net/bpf_jit_32.c | 56 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 43 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index 1d672457d02f..72b5cd697f5d 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -871,16 +871,11 @@ static inline void emit_a32_alu_r64(const bool is64, const s8 dst[],
+ }
+ 
+ /* dst = src (4 bytes)*/
+-static inline void emit_a32_mov_r(const s8 dst, const s8 src, const u8 off,
+-				  struct jit_ctx *ctx) {
++static inline void emit_a32_mov_r(const s8 dst, const s8 src, struct jit_ctx *ctx) {
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+ 	s8 rt;
+ 
+ 	rt = arm_bpf_get_reg32(src, tmp[0], ctx);
+-	if (off && off != 32) {
+-		emit(ARM_LSL_I(rt, rt, 32 - off), ctx);
+-		emit(ARM_ASR_I(rt, rt, 32 - off), ctx);
+-	}
+ 	arm_bpf_put_reg32(dst, rt, ctx);
+ }
+ 
+@@ -889,15 +884,15 @@ static inline void emit_a32_mov_r64(const bool is64, const s8 dst[],
+ 				  const s8 src[],
+ 				  struct jit_ctx *ctx) {
+ 	if (!is64) {
+-		emit_a32_mov_r(dst_lo, src_lo, 0, ctx);
++		emit_a32_mov_r(dst_lo, src_lo, ctx);
+ 		if (!ctx->prog->aux->verifier_zext)
+ 			/* Zero out high 4 bytes */
+ 			emit_a32_mov_i(dst_hi, 0, ctx);
+ 	} else if (__LINUX_ARM_ARCH__ < 6 &&
+ 		   ctx->cpu_architecture < CPU_ARCH_ARMv5TE) {
+ 		/* complete 8 byte move */
+-		emit_a32_mov_r(dst_lo, src_lo, 0, ctx);
+-		emit_a32_mov_r(dst_hi, src_hi, 0, ctx);
++		emit_a32_mov_r(dst_lo, src_lo, ctx);
++		emit_a32_mov_r(dst_hi, src_hi, ctx);
+ 	} else if (is_stacked(src_lo) && is_stacked(dst_lo)) {
+ 		const u8 *tmp = bpf2a32[TMP_REG_1];
+ 
+@@ -917,17 +912,52 @@ static inline void emit_a32_mov_r64(const bool is64, const s8 dst[],
+ static inline void emit_a32_movsx_r64(const bool is64, const u8 off, const s8 dst[], const s8 src[],
+ 				      struct jit_ctx *ctx) {
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+-	const s8 *rt;
++	s8 rs;
++	s8 rd;
+ 
+-	rt = arm_bpf_get_reg64(dst, tmp, ctx);
++	if (is_stacked(dst_lo))
++		rd = tmp[1];
++	else
++		rd = dst_lo;
++	rs = arm_bpf_get_reg32(src_lo, rd, ctx);
++	/* rs may be one of src[1], dst[1], or tmp[1] */
++
++	/* Sign extend rs if needed. If off == 32, lower 32-bits of src are moved to dst and sign
++	 * extension only happens in the upper 64 bits.
++	 */
++	if (off != 32) {
++		/* Sign extend rs into rd */
++		emit(ARM_LSL_I(rd, rs, 32 - off), ctx);
++		emit(ARM_ASR_I(rd, rd, 32 - off), ctx);
++	} else {
++		rd = rs;
++	}
++
++	/* Write rd to dst_lo
++	 *
++	 * Optimization:
++	 * Assume:
++	 * 1. dst == src and stacked.
++	 * 2. off == 32
++	 *
++	 * In this case src_lo was loaded into rd(tmp[1]) but rd was not sign extended as off==32.
++	 * So, we don't need to write rd back to dst_lo as they have the same value.
++	 * This saves us one str instruction.
++	 */
++	if (dst_lo != src_lo || off != 32)
++		arm_bpf_put_reg32(dst_lo, rd, ctx);
+ 
+-	emit_a32_mov_r(dst_lo, src_lo, off, ctx);
+ 	if (!is64) {
+ 		if (!ctx->prog->aux->verifier_zext)
+ 			/* Zero out high 4 bytes */
+ 			emit_a32_mov_i(dst_hi, 0, ctx);
+ 	} else {
+-		emit(ARM_ASR_I(rt[0], rt[1], 31), ctx);
++		if (is_stacked(dst_hi)) {
++			emit(ARM_ASR_I(tmp[0], rd, 31), ctx);
++			arm_bpf_put_reg32(dst_hi, tmp[0], ctx);
++		} else {
++			emit(ARM_ASR_I(dst_hi, rd, 31), ctx);
++		}
+ 	}
+ }
+ 
+-- 
+2.40.1
+
 
