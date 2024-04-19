@@ -1,83 +1,121 @@
-Return-Path: <bpf+bounces-27215-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27216-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D450A8AAD6D
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 13:09:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C09A8AAD8A
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 13:18:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE65283275
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 11:09:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BADFF282E42
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 11:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FD58121F;
-	Fri, 19 Apr 2024 11:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617BB81ABA;
+	Fri, 19 Apr 2024 11:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="MCRo1+5w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ov+mWThE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EF47C0AA;
-	Fri, 19 Apr 2024 11:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DC881725;
+	Fri, 19 Apr 2024 11:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713524962; cv=none; b=Yw//DwZRwQorusYXHIZJ5a7xRL2k2oG+cH/MW7143m4geJZMz3UeCEbFxg8neTMu6oaGWSd+lUUD70QirRKu8iToqxfwKnZEGtWnNx7QVEwetIkQKq9hZ/SvRDWyBfj32CDTV3C/BhuAsYE/GZTRce/a8jfcsTbrqfHKCAdmC74=
+	t=1713525505; cv=none; b=XLfaIs6WvSlB72tNCUgdoYlU6ENAn2fYlkAj5llL/6ZIZJrFSkBfP3iXGbbtvJfDbFRTf+Vn9YZGCo6U1bj9VoBiZ77SIPwNmrT7Fiu7gMsZUjgDwy/UBfMjpOJ+T93IQPenEb3IzD9fa7ZMhe+GmzZ3odKeNoxzVKQsXq2vUkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713524962; c=relaxed/simple;
-	bh=YI3P7Rva9xSglnlAVV6zSk/NWyRNlLlz//CcwKpcCTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OyYY+1qZ2C6epHKZZlfw5957gsbdbgovJwfVJM3hmuhn810/1zPRNg709QxEGfLPXz/Gp1W/tVR3KM/zGVSkyQHwO0+GMTHb7aNhzcfW9diGsckv+8cOXY8oKWR3zPRi90YcXb6H6PAV7dxTwdY1JrvB+FssUMfPD5jhuKTw8ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=MCRo1+5w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C77AC072AA;
-	Fri, 19 Apr 2024 11:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713524962;
-	bh=YI3P7Rva9xSglnlAVV6zSk/NWyRNlLlz//CcwKpcCTM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MCRo1+5wIIs/WfccSt8i6DyJQUPvAeWr2EZfcnhwoVTmbhYtoa/62LWc2fzZIvfwP
-	 +vKHTazBB8EomoJZqaiKlwhSdjFizANNVizJ0haWw+QJXlmKms4SQfZlGGEjBjJQir
-	 VO3MlMRlGksncnidd/u6GFpm/keHk/Ou6zhe2gP4=
-Date: Fri, 19 Apr 2024 13:09:10 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Edward Liaw <edliaw@google.com>
-Cc: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, kernel-team@android.com,
-	Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.15.y v3 0/5] Backport bounds checks for bpf
-Message-ID: <2024041958-devourer-shanty-bdba@gregkh>
-References: <16430256912363@kroah.com>
- <20240418232005.34244-1-edliaw@google.com>
+	s=arc-20240116; t=1713525505; c=relaxed/simple;
+	bh=4S0ijTuOG1XfPNB7vzzLF7bgqgJf2hetvsXjMkXUk+0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k0F3LCuoKY61KpYoXeoEUz+X0j6AFC92kJCWLaoruORmOhaMiKqs01jRwTLMD2AoVGx92Bdhm9/d7jzlVKHleckpPVZI+IwLi5i6oBMN7Q8YotBZRZYkSaO4Ndd+TBRMYNq7gkajgZoS3TtokIX8Imj7OGZYCrHNmiwajMDE4AE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ov+mWThE; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6eddff25e4eso1576687b3a.3;
+        Fri, 19 Apr 2024 04:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713525504; x=1714130304; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OyBuv5kBEYfUc16aLXP76ZXaynrNdrlIh1WL3rQFBdw=;
+        b=Ov+mWThE8IvrN65xo3/FOfZavMaJHKs3T3gm4+NbfMEjWCOGu5bHbtzCHiqniBTvMW
+         QC9H477bCfFlhhGsrTUQUVSR86+2bDVHtUiTq977no0Ou9dgW4RO0pf8D+mtBbWzInfj
+         iPasmg4oiCd+ICUpIfst6gfRVNe4qANSq0X5OwHAOK9I3eSOM8vV7NfeGbRSCuo9W8oE
+         YBGJW0m2zz4ynzAlAlo2N//FH2f9o5qEeQojD1bSfP7rQWcecJNJvtkV2dS7ea6f0OST
+         keLK8U4s3/1F+xxe2BhVIUmhRqdCOT47nDl7NKdXWRlZiu1B/YcoSEIQaxMFfHkYHQ4e
+         7T5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713525504; x=1714130304;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OyBuv5kBEYfUc16aLXP76ZXaynrNdrlIh1WL3rQFBdw=;
+        b=P6xbUFUiPcV1a9/2mXLx1ZrPwldug+Om1IKM4fYQnsfn+9w7YTWkmhOoIR7GLZpI8K
+         iZUaq/YIsMJxu4IBMzjr5BuCq1B33u39fp5sYx8Fn1X9XKNzfJnmd9Z/Fbx4oh6uP4aU
+         SblXOysuqDhbz9GjRS+P+/VPtiaww/3p53MxOOnYvyFDvOTYHMFqMHkkBTvJdUYZ+q+z
+         eAGDdUf2IOJlliURYe/AgxCsGIR4zcUYZM0zJU9vdc77xri3VidAsgwJ9wExAKnybbXL
+         OaU4eMK2tYqSeUbYeuzh7OLyAkXpkBJEjjUL1oEhy99IeKGxz1JEknLh5kzUJmlK4IJv
+         ERXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXnVqKXKIcKadQb6OH504E7z4RpSxJw9UGcshX1Z2xQY/mukm/dJLgX6gAYnMSHdVRqY8SpPeEv4+PtSCPuuci+vEBuiuw6cRzqhW22RxUUK3NvkOz/28kxoF+XkYKGmkD/UHr2a2DAOfOmw2hzGqPg9NbGfsf7kp/QvFzPdAfbiP8E/mhsazCjGVnm9/PE7rDKGRVrAk7QDDYMaxXhL0KLIIhDm9FURQWXpFjsuE8NlbK72S3gdZn9/M1DYPQv
+X-Gm-Message-State: AOJu0Yy4JpBOyw1ByM+8VA44hHAPUVZMPtLtuCXsJlXk3x3gZfXfHkAj
+	sm+pFBPrc02nfV6+QxNUML0Ep6GI+xxRGpqQ5HDRvA2JOqEo2w5T
+X-Google-Smtp-Source: AGHT+IGrIiXTpCilLzBmkpvZQgTccBG7XaieqrHNhkdG0tln9wJXWvgEsCFL2ljmjKXvjnyamvrgcQ==
+X-Received: by 2002:a05:6a21:168b:b0:1ac:423b:7c7a with SMTP id np11-20020a056a21168b00b001ac423b7c7amr1456490pzb.21.1713525503827;
+        Fri, 19 Apr 2024 04:18:23 -0700 (PDT)
+Received: from [192.168.0.107] ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id k17-20020a170902c41100b001e00285b727sm3104974plk.294.2024.04.19.04.18.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 04:18:23 -0700 (PDT)
+Message-ID: <fe361a16-1536-4c92-894a-0b24258384bf@gmail.com>
+Date: Fri, 19 Apr 2024 18:18:12 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418232005.34244-1-edliaw@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
+To: Roberto Sassu <roberto.sassu@huawei.com>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet <corbet@lwn.net>,
+ paul <paul@paul-moore.com>, jmorris <jmorris@namei.org>,
+ serge <serge@hallyn.com>, akpm <akpm@linux-foundation.org>,
+ shuah <shuah@kernel.org>, "mcoquelin.stm32" <mcoquelin.stm32@gmail.com>,
+ "alexandre.torgue" <alexandre.torgue@foss.st.com>, mic <mic@digikod.net>
+Cc: linux-security-module <linux-security-module@vger.kernel.org>,
+ linux-doc <linux-doc@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-kselftest <linux-kselftest@vger.kernel.org>, bpf
+ <bpf@vger.kernel.org>, zohar <zohar@linux.ibm.com>,
+ "dmitry.kasatkin" <dmitry.kasatkin@gmail.com>,
+ linux-integrity <linux-integrity@vger.kernel.org>,
+ wufan <wufan@linux.microsoft.com>, pbrobinson <pbrobinson@gmail.com>,
+ zbyszek <zbyszek@in.waw.pl>, hch <hch@lst.de>, mjg59 <mjg59@srcf.ucam.org>,
+ pmatilai <pmatilai@redhat.com>, jannh <jannh@google.com>,
+ dhowells <dhowells@redhat.com>, jikos <jikos@kernel.org>,
+ mkoutny <mkoutny@suse.com>, ppavlu <ppavlu@suse.com>,
+ "petr.vorel" <petr.vorel@gmail.com>, mzerqung <mzerqung@0pointer.de>,
+ kgold <kgold@linux.ibm.com>
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <Zh4DQ7RGxtWCam8K@archie.me>
+ <66201cd2.df0a0220.a8ad5.6fbaSMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Language: en-US
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <66201cd2.df0a0220.a8ad5.6fbaSMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 11:19:46PM +0000, Edward Liaw wrote:
-> These backports fix CVE-2021-4204, CVE-2022-23222 for 5.15.y.
+On 4/18/24 02:02, Roberto Sassu wrote:
 > 
-> This includes a conflict resolution with 45ce4b4f9009 ("bpf: Fix crash
-> due to out of bounds access into reg2btf_ids.") which was cherry-picked
-> previously.
-> Link: https://lore.kernel.org/all/20220428235751.103203-11-haoluo@google.com/
+> 72374d71c315
 > 
-> They were tested on 5.15.156 to pass LTP test bpf_prog06 with no
-> regressions in test_verifier in bpf selftests.
+> Roberto
+> 
 
-All now applied, thanks.
+Still FTA (fail to apply), unfortunately.
 
-greg k-h
+-- 
+An old man doll... just what I always wanted! - Clara
+
 
