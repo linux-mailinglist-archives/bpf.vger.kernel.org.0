@@ -1,64 +1,92 @@
-Return-Path: <bpf+bounces-27239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D871B8AB2B4
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 18:01:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0881F8AB413
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 19:03:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1597B1C22104
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 16:01:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A45DB21A67
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 17:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2907A130AD8;
-	Fri, 19 Apr 2024 16:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1022113A25A;
+	Fri, 19 Apr 2024 17:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tznkkjs7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUL9Opqg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912C212F5A3;
-	Fri, 19 Apr 2024 16:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4608712FB05;
+	Fri, 19 Apr 2024 17:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713542495; cv=none; b=smvyAyOM0RIO8BQFC/zzgh8SBmMBGqbBI64zL2blEeN6rcP/PMgmQsVXmaMlZszKgcD90ErCR//QsZG5uOgpnxlta5NWYwrAamJ4Vd1+0lAnsdlncod5WGnvX2rWCGtPhTsu18rIW05m5B/xlHpM8f6CJIRy9oKjmTEdLDnTRFs=
+	t=1713546219; cv=none; b=nsMz7ChFXQUquMH/1LJKq3fciYWxhRA0ojHrmOV2zgTnLwgDSI0uP3hI7whCDzM4lKcWELNsxkiG1+OSwAe9W2bB2tcaIZ3x1bAP9WILtbK3eH43ra+5gZZcbmjef9ZEjunkP+6Yr4ESfrCzPz0zhhRmFW47WgGlxNBIr4aoa34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713542495; c=relaxed/simple;
-	bh=oG+eyuNx5evdOk6qBKTdlsXCspoEv9Lhqp4EUQfjFU4=;
+	s=arc-20240116; t=1713546219; c=relaxed/simple;
+	bh=jFxi5qZrScF2xjH3z+fMU0rA+S3WPw/R5/k/PlfLlD4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BUnh9tbmvnd9da+6Xh4PXgtVPbWDD1PqPJ6ogZ/n1oKPsQscd2uqUZnd6WnDfHGEakMdeDG9bb2nLHSb27g0P0vwtA/kl2cMItWwRwdorBPEOviuhi4iYcPAfmetylvTt8GiXpzM+hE3JF1QHdRoNPzpy/lFosSW2FQTreDZAoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tznkkjs7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80551C072AA;
-	Fri, 19 Apr 2024 16:01:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=M4ek9+vpT8JzKWf48sYDBD4TxWUGYKv1hvrhUh3Nxip5z2b4Fob52CcB8CoHsXPt/W9HDsthfVmv2LjwHOndiQcFEbyBDywszlnNn/inRk2Nv3mrWehTUbqJpLdaW7CA7ZT0ICC3p1ge+5Moq7+VQFeIAPBt3ijBXdevda2RjWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUL9Opqg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20D36C3277B;
+	Fri, 19 Apr 2024 17:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713542495;
-	bh=oG+eyuNx5evdOk6qBKTdlsXCspoEv9Lhqp4EUQfjFU4=;
+	s=k20201202; t=1713546218;
+	bh=jFxi5qZrScF2xjH3z+fMU0rA+S3WPw/R5/k/PlfLlD4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tznkkjs7r7kKe0PM3Z220g4jO4h6fYG7YU4LFLK7mSRkMy4IQYC28WbVKlD32CQqx
-	 GF4u0Hkv+nYeEHH8BlohiGSrn1jU1DI7Iez6X8wMQkTej2tCwxXB/CMNeIo/8hHfCa
-	 mz4rDuyu+4thwmQkI6q82q8djMm61y4xY7Ks788/1iyfsCm11eQkE/Mwd2klLQsbqU
-	 F3iMYb3noSLM0dUD5mBttNHaVuMNhBAbKY06fCk1mtwMI4cA/UPlm0bWbPrErlIbHq
-	 zirkVQTHw7zE4gLJ56HXapjkAV8wvGJVvhoxcX0Dea9VUhXw/GSKKTY+iTopDHycdG
-	 ycj/ZSEb3W7rg==
-Date: Fri, 19 Apr 2024 18:01:28 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 17/18] bpf: add bpf_wq_start
-Message-ID: <tvdzaaicdnxri24e56yfecdlonhbuji4cnovyshpqjlxjy57ob@gpp6cvyo32nt>
-References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
- <20240416-bpf_wq-v1-17-c9e66092f842@kernel.org>
- <khz5omyjsd2iklm66bi3na4gdxw2cpwhb3c2xwu4fjxkaefi77@puck4pfltjgm>
- <b7akvvt67m7w6hdfq5vboojnzyjbntxrjioh6nuqziz4pzia3d@6x2le6iz6cor>
- <CAADnVQ+hPNQ3-fVj-5qt+UrT8yPavE9L7AaphsLLEKwve21P-g@mail.gmail.com>
+	b=RUL9Opqg9lVQKyIEyIuq2xjKwlBEmIHBH/IVoveA6aP2JLQi0uzPvTDRn7OmSzfgD
+	 nIb4g/5o2RBtfUp3FCsBZLo4UMhQBN8itmVTPuHB1vCt7tnCtqGOlM7w17hYv3aiWy
+	 FPRpIYW/h0QBF2/1gYcg2KSSl6cBIyHw8P1BRp78GQ/1rnAZNqj1HgINRQQE2y6kx8
+	 pa/lP0BVFbrI+oqwHSJpzLJUH1OONwzfgc8jyKWmKgwbnoS/jGKAA+PE+NrL1eKBBr
+	 VPLO+D3Fy9QluAkUMgIaLcYTb9+hJ5Az7wIHrpBlSplLPGXqXzT9s0UFhk3C1grs7n
+	 akOPXTz5YdCXA==
+Date: Fri, 19 Apr 2024 20:02:17 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <ZiKjmaDgz_56ovbv@kernel.org>
+References: <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+ <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org>
+ <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+ <ZiE91CJcNw7gBj9g@kernel.org>
+ <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+ <ZiFd567L4Zzm2okO@kernel.org>
+ <CAPhsuW5SL4_=ZXdHZV8o0KS+5Vf25UMvEKhRgFQLioFtf2pgoQ@mail.gmail.com>
+ <ZiIVVBgaDN4RsroT@kernel.org>
+ <CAPhsuW7WoU+a46FhqqH8f-3=ehxeD4wSgKDWegMin1pT49OSWw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,51 +96,80 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+hPNQ3-fVj-5qt+UrT8yPavE9L7AaphsLLEKwve21P-g@mail.gmail.com>
+In-Reply-To: <CAPhsuW7WoU+a46FhqqH8f-3=ehxeD4wSgKDWegMin1pT49OSWw@mail.gmail.com>
 
-On Apr 19 2024, Alexei Starovoitov wrote:
-> On Fri, Apr 19, 2024 at 8:14 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
+On Fri, Apr 19, 2024 at 08:54:40AM -0700, Song Liu wrote:
+> On Thu, Apr 18, 2024 at 11:56 PM Mike Rapoport <rppt@kernel.org> wrote:
 > >
+> > On Thu, Apr 18, 2024 at 02:01:22PM -0700, Song Liu wrote:
+> > > On Thu, Apr 18, 2024 at 10:54 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > >
+> > > > On Thu, Apr 18, 2024 at 09:13:27AM -0700, Song Liu wrote:
+> > > > > On Thu, Apr 18, 2024 at 8:37 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > I'm looking at execmem_types more as definition of the consumers, maybe I
+> > > > > > > > should have named the enum execmem_consumer at the first place.
+> > > > > > >
+> > > > > > > I think looking at execmem_type from consumers' point of view adds
+> > > > > > > unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
+> > > > > > > and bpf (and maybe also module text) all have the same requirements.
+> > > > > > > Did I miss something?
+> > > > > >
+> > > > > > It's enough to have one architecture with different constrains for kprobes
+> > > > > > and bpf to warrant a type for each.
+> > > > >
+> > > > > AFAICT, some of these constraints can be changed without too much work.
+> > > >
+> > > > But why?
+> > > > I honestly don't understand what are you trying to optimize here. A few
+> > > > lines of initialization in execmem_info?
+> > >
+> > > IIUC, having separate EXECMEM_BPF and EXECMEM_KPROBE makes it
+> > > harder for bpf and kprobe to share the same ROX page. In many use cases,
+> > > a 2MiB page (assuming x86_64) is enough for all BPF, kprobe, ftrace, and
+> > > module text. It is not efficient if we have to allocate separate pages for each
+> > > of these use cases. If this is not a problem, the current approach works.
 > >
-> > Honestly I just felt the patch series was big enough for a PoC and
-> > comparison with sleepable bpf_timer. But if we think this needs not to
-> > be added, I guess that works too :)
+> > The caching of large ROX pages does not need to be per type.
+> >
+> > In the POC I've posted for caching of large ROX pages on x86 [1], the cache is
+> > global and to make kprobes and bpf use it it's enough to set a flag in
+> > execmem_info.
+> >
+> > [1] https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
 > 
-> It certainly did its job to compare the two and imo bpf_wq with kfunc approach
-> looks cleaner overall and will be easier to extend in the long term.
-
-Yeah. I agree. I'm also glad we pick the bpf_wq approach as I gave it a
-lot more care :)
-
-Talking about extending, I think I'll need delayed_work soon enough.
-Most of the time when I receive an input event, the device is preventing
-any communication with it, and with plain bpf_wq, it's likely that when
-the code kicks in the device won't have processed the current input,
-meaning to a useless retry. With delayed_works, I can schedule it
-slightly later, and have a higher chance of not having to retry.
-
-I've got a quick hack locally that I can submit once this series get
-merged.
-
+> For the ROX to work, we need different users (module text, kprobe, etc.) to have
+> the same execmem_range. From [1]:
 > 
-> I mean that we'll be adding 3 kfuncs initially:
-> bpf_wq_init, bpf_wq_start, bpf_wq_set_callback.
+> static void *execmem_cache_alloc(struct execmem_range *range, size_t size)
+> {
+> ...
+>        p = __execmem_cache_alloc(size);
+>        if (p)
+>                return p;
+>       err = execmem_cache_populate(range, size);
+> ...
+> }
 > 
-> imo that's good enough to land it and get some exposure.
+> We are calling __execmem_cache_alloc() without range. For this to work,
+> we can only call execmem_cache_alloc() with one execmem_range.
 
-sounds good to me.
+Actually, on x86 this will "just work" because everything shares the same
+address space :)
 
-> I'll be using it right away to refactor bpf_arena_alloc.h into
-> actual arena allocator for bpf progs that is not just a selftest.
+The 2M pages in the cache will be in the modules space, so
+__execmem_cache_alloc() will always return memory from that address space.
+
+For other architectures this indeed needs to be fixed with passing the
+range to __execmem_cache_alloc() and limiting search in the cache for that
+range.
+ 
+> Did I miss something?
 > 
-> I'm currently working on locks for bpf_arena.
-> Kumar has a patch set that adds bpf_preempt_disble kfunc and
-> coupled with bpf_wq we'll have all mechanisms to build
-> arbitrary data structures/algorithms as bpf programs.
+> Thanks,
+> Song
 
-Oh. I did not realize that it was that needed for outside of my
-playground. That's good to hear :)
-
-Cheers,
-Benjamin
+-- 
+Sincerely yours,
+Mike.
 
