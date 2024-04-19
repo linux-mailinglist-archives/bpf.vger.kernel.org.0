@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-27259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE37A8AB62E
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 22:58:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04F768AB62F
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 22:58:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B2E62838A2
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 20:58:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6D18284913
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 20:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BFE2BB04;
-	Fri, 19 Apr 2024 20:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4759C2E3F7;
+	Fri, 19 Apr 2024 20:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dy8Y6RCZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="btgunqbc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E971BF3D;
-	Fri, 19 Apr 2024 20:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B121BF3D;
+	Fri, 19 Apr 2024 20:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713560278; cv=none; b=ETH1/cy0gUTDLmdYUoUbHtgDZhZsu0ingt9lDA7joC+mLa16s29/OZRni5XVx4IZQT/TSjn3eMMus1xWXIhYCIHYxsCc+MQwajInmKNr+TkMTFfFqVP4z6zp2qMv5/XJwY8jK/aVMysV/9GPwedNcMlmagbm6FJ0bL5BbvWYnZ8=
+	t=1713560281; cv=none; b=lqvex7onMaynZenCEDlPT2+tr+5ZWIc2vhUw/xTWQRfZ7O7eyJgS6DhkfGzpv/j4OfTld1jRTKjWEEopt0Ab7YuZEGvhGo59Egst89FkT0s4cCkX4WbUe16+O0uu6PHiujqYfCQQ6SUkzMyBPQy56xLir68LCoMEk1yJ68EaMK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713560278; c=relaxed/simple;
-	bh=FHdWZDnD3iImj5qxrs4DAL/d0Ax6+0EL96pV+pyVI7o=;
+	s=arc-20240116; t=1713560281; c=relaxed/simple;
+	bh=cNMp4+vDY+TbmeH/gCBZcn3PBx1SKm4AQpGhcuyxSoU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TGvP2CJTxbd7t8GPFeiMIN8T3SG+v1W0yk3rx/0OjB3m+qKAcYyWzXKgGzvBEOiBsdEadPpGd+E+SUL/FFp6B07RprrycnYK50eGVVK/hUw7GYtVKCWaBTFk6tu6FGI7fB0OZJakyOXHuKykyrdom/P/IMV2sf50y82l7COTHPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dy8Y6RCZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF79C3277B;
-	Fri, 19 Apr 2024 20:57:54 +0000 (UTC)
+	 MIME-Version; b=hqmSMnkHXknx78Y+CRWSrZOXc14I+v8o/00ZQ89iTUvfc3YWsoN2S/a5hRPIsFjA3ABckIra+wmvy/Q2c5LOfq6AqMubH9OA5PHaEcZ5/wGJsD26pPpiU/HgNnNtBjyj2B0siOBzPVADhwxZxmGPtuNbMhxUV5Av9EhbxkX7J1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=btgunqbc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76BBFC116B1;
+	Fri, 19 Apr 2024 20:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713560278;
-	bh=FHdWZDnD3iImj5qxrs4DAL/d0Ax6+0EL96pV+pyVI7o=;
+	s=k20201202; t=1713560281;
+	bh=cNMp4+vDY+TbmeH/gCBZcn3PBx1SKm4AQpGhcuyxSoU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dy8Y6RCZkjWex5iEEHGsDYNReZvh+e3ev3DFLHBKlpOV/EMFm5NRHIIg9qgHkYb+v
-	 RWV5v3IS2o/OselygdVFWqXuV1PeY6wNwngKizZ7hiZ80IAkYIQA3F5BwCafKI1GO6
-	 9w59XJHLOLzvqPJJvTwOSM1NVKOkLbdFn/3SGdB8jtnvqm/t9J5Kl99yCeiWUq6qYW
-	 15u/xuyBmwX1uisasA3GOUIF8+uNIELZ2J9L5IEduAt52iQSL8cfdKEtW2E8Rqy40i
-	 OendDgcL9bPLLdatjKK+2ejTtFbGMlbeQkT857hC8bd78c+0KyiEmYBTmCanMwnasP
-	 D2ZW7VqaCV8AA==
+	b=btgunqbc8ivr86O71D4+K8p7zGvRZ0cisXZwKtkEmfujvgelu1ipPNGmTgVKVi6oK
+	 Y57karwpWjLd1IvG5XyAIa+oQoOgMlLDgVPdAF3hPR60Loh1XjF6KjCR1LaOEVvaHC
+	 hzvB/hmi6w2U7QCJuVR2mMqB9Leu83Z25DcfqxMxViG7t4zwFuOOnSSIa03GIWSt9E
+	 GVo9h5/bADxfhA+BP6y10YLwCPPsa/GEbDSEgBiE1umkzeQafU9ivBg8RdPgBLaX00
+	 9oKW7Chgo7Z93vLPBFA9gkCDXMbajGB4HbS5kO2B6u6xUw3pTITHBBs/pFr3vRGpXt
+	 T9rsXgEwyGr6g==
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: dwarves@vger.kernel.org
 Cc: Jiri Olsa <jolsa@kernel.org>,
@@ -52,9 +52,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
 	Daniel Xu <dxu@dxuuu.xyz>,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH 1/2] pahole: Factor out routine to process "--btf_features=all"
-Date: Fri, 19 Apr 2024 17:57:44 -0300
-Message-ID: <20240419205747.1102933-2-acme@kernel.org>
+Subject: [PATCH 2/2] pahole: Allow asking for extra features using the '+' prefix in --btf_features
+Date: Fri, 19 Apr 2024 17:57:45 -0300
+Message-ID: <20240419205747.1102933-3-acme@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240419205747.1102933-1-acme@kernel.org>
 References: <20240419205747.1102933-1-acme@kernel.org>
@@ -68,8 +68,17 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-As we'll use it to process "--btf_features=+reproducible_build" meaning
-"all + reproducible_build".
+Instead of the somewhat confusing:
+
+  --btf_features=all,reproducible_build
+
+That means "'all' the standard BTF features plus the 'reproducible_build'
+extra BTF feature", use + directly, making it more compact:
+
+  --btf_features=+reproducible_build
+
+In the future we may want the '-' counterpart as a way to _remove_ some
+of the standard set of BTF features.
 
 Cc: Alan Maguire <alan.maguire@oracle.com>
 Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
@@ -78,51 +87,58 @@ Cc: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- pahole.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ man-pages/pahole.1          | 6 ++++++
+ pahole.c                    | 6 ++++++
+ tests/reproducible_build.sh | 2 +-
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
+diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+index 64de3438b5f9a77a..2f4f42f8323efd6e 100644
+--- a/man-pages/pahole.1
++++ b/man-pages/pahole.1
+@@ -320,6 +320,12 @@ Supported non-standard features (not enabled for 'all')
+ 
+ So for example, specifying \-\-btf_encode=var,enum64 will result in a BTF encoding that (as well as encoding basic BTF information) will contain variables and enum64 values.
+ 
++.fi
++
++If one wants to add an extra feature to the set of standard ones, the '+' prefix can be used, i.e.:
++\-\-btf_features=+reproducible_build will add all standard features plus the 'reproducible_build' extra
++feature.
++
+ .TP
+ .B \-\-btf_features_strict
+ Identical to \-\-btf_features above, but pahole will exit if it encounters an unrecognized feature.
 diff --git a/pahole.c b/pahole.c
-index 38cc6362015fd95b..af94d2a45ee96cbe 100644
+index af94d2a45ee96cbe..42c5b03ee1d1a8f8 100644
 --- a/pahole.c
 +++ b/pahole.c
-@@ -1340,6 +1340,14 @@ static void show_supported_btf_features(FILE *output)
- 	fprintf(output, "\n");
- }
- 
-+static void btf_features__enable_for_all(void)
-+{
-+	for (int i = 0; i < ARRAY_SIZE(btf_features); i++) {
-+		if (btf_features[i].enable_for_all)
-+			enable_btf_feature(&btf_features[i]);
-+	}
-+}
-+
- /* Translate --btf_features=feature1[,feature2] into conf_load values.
-  * Explicitly ignores unrecognized features to allow future specification
-  * of new opt-in features.
-@@ -1352,12 +1360,7 @@ static void parse_btf_features(const char *features, bool strict)
- 	init_btf_features();
- 
- 	if (strcmp(features, "all") == 0) {
--		int i;
--
--		for (i = 0; i < ARRAY_SIZE(btf_features); i++) {
--			if (btf_features[i].enable_for_all)
--				enable_btf_feature(&btf_features[i]);
--		}
-+		btf_features__enable_for_all();
+@@ -1364,6 +1364,12 @@ static void parse_btf_features(const char *features, bool strict)
  		return;
  	}
  
-@@ -1371,7 +1374,7 @@ static void parse_btf_features(const char *features, bool strict)
- 			 * allowed.
- 			 */
- 			if (strcmp(feature_name, "all") == 0) {
--				parse_btf_features(feature_name, strict);
-+				btf_features__enable_for_all();
- 			} else if (strict) {
- 				fprintf(stderr, "Feature '%s' in '%s' is not supported.  Supported BTF features are:\n",
- 					feature_name, features);
++	// Adding extra features to the set of standard features.
++	if (strstarts(features, "+")) {
++		btf_features__enable_for_all();
++		++features;
++	}
++
+ 	strncpy(f, features, BTF_MAX_FEATURE_STR)[BTF_MAX_FEATURE_STR] = '\0';
+ 	s = f;
+ 	while ((feature_name = strtok_r(s, ",", &saveptr)) != NULL) {
+diff --git a/tests/reproducible_build.sh b/tests/reproducible_build.sh
+index e2f836081b125119..1222cb42c6639235 100755
+--- a/tests/reproducible_build.sh
++++ b/tests/reproducible_build.sh
+@@ -29,7 +29,7 @@ nr_proc=$(getconf _NPROCESSORS_ONLN)
+ 
+ for threads in $(seq $nr_proc) ; do
+ 	test -n "$VERBOSE" && echo $threads threads encoding
+-	pahole -j$threads --btf_features=all,reproducible_build --btf_encode_detached=$outdir/vmlinux.btf.parallel.reproducible $vmlinux &
++	pahole -j$threads --btf_features=+reproducible_build --btf_encode_detached=$outdir/vmlinux.btf.parallel.reproducible $vmlinux &
+ 	pahole=$!
+ 	# HACK: Wait a bit for pahole to start its threads
+ 	sleep 0.3s
 -- 
 2.44.0
 
