@@ -1,115 +1,128 @@
-Return-Path: <bpf+bounces-27258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CCC28AB62D
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 22:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE37A8AB62E
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 22:58:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58BEC284623
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 20:58:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B2E62838A2
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 20:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FD82BAE0;
-	Fri, 19 Apr 2024 20:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BFE2BB04;
+	Fri, 19 Apr 2024 20:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S2SInC4u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dy8Y6RCZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231631BF3D;
-	Fri, 19 Apr 2024 20:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E971BF3D;
+	Fri, 19 Apr 2024 20:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713560275; cv=none; b=iNMrbElPfeTT6d8zGfsm9FbUgrn/NFJg6PP/olEG+gEtd2bF/2aSLUqg5xgPwl3be54h+4NP2UjhMRw6Z8qEECZTFqX7mGE9rXDkqE7yrcVNkd/yc6Mx4A0vkkZSOw+l76YrRRSUalEdGlvi9VAM6kaLqy7TAydrPUmrir3mCUI=
+	t=1713560278; cv=none; b=ETH1/cy0gUTDLmdYUoUbHtgDZhZsu0ingt9lDA7joC+mLa16s29/OZRni5XVx4IZQT/TSjn3eMMus1xWXIhYCIHYxsCc+MQwajInmKNr+TkMTFfFqVP4z6zp2qMv5/XJwY8jK/aVMysV/9GPwedNcMlmagbm6FJ0bL5BbvWYnZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713560275; c=relaxed/simple;
-	bh=n+PHXhqMxr8LZfV3QG+hepPvmYWCnA1yhYga0lTXYgA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Qxb0gDGHnILDSo7EiRiqXwZGCkgpbFdw8xYwCLXcS/s59ZYGs2ZKiBAoaE0ublCXNpjFp35zezsi2EzVHye66lctk4gy0tn3fu2VKsxmTR2DL2OKS71UFaOpivSjSds0koVowlWPDuTtr/Mi+lTBGx4NwZEuIkaLakjH+8iebMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S2SInC4u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F169FC4AF07;
-	Fri, 19 Apr 2024 20:57:51 +0000 (UTC)
+	s=arc-20240116; t=1713560278; c=relaxed/simple;
+	bh=FHdWZDnD3iImj5qxrs4DAL/d0Ax6+0EL96pV+pyVI7o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TGvP2CJTxbd7t8GPFeiMIN8T3SG+v1W0yk3rx/0OjB3m+qKAcYyWzXKgGzvBEOiBsdEadPpGd+E+SUL/FFp6B07RprrycnYK50eGVVK/hUw7GYtVKCWaBTFk6tu6FGI7fB0OZJakyOXHuKykyrdom/P/IMV2sf50y82l7COTHPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dy8Y6RCZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF79C3277B;
+	Fri, 19 Apr 2024 20:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713560274;
-	bh=n+PHXhqMxr8LZfV3QG+hepPvmYWCnA1yhYga0lTXYgA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=S2SInC4uHuozReg0UkdTmoPJdfwDTcSFbUJpObmfuXhqYeRbcu8PJKie/B2IiyP90
-	 o8ZO3O3yG2At8NGYtNvszjkwtGllzmzi/IXaDM7r6bcUemwEkh2VR8ysJHvvczmHBk
-	 M/+VVpcBFeASdNgEC5H+Gg4qvQgQWy28kxRXHCiplgIQv64VTM0CJgWL+c5byiNhqP
-	 10BSEig5Jfu9cW81nMksWjSyzWLQdYpZv3ODyp8KEWAQlml3SAvAf5P/z21ABC6A4l
-	 QgpoVXUiAa6V37iKeA9tptC5n0Dg4FYnCK3V7RKn2Cl9s7+Niz+LktVTv4OKtQ83z6
-	 Lam4JnD6s25XQ==
+	s=k20201202; t=1713560278;
+	bh=FHdWZDnD3iImj5qxrs4DAL/d0Ax6+0EL96pV+pyVI7o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dy8Y6RCZkjWex5iEEHGsDYNReZvh+e3ev3DFLHBKlpOV/EMFm5NRHIIg9qgHkYb+v
+	 RWV5v3IS2o/OselygdVFWqXuV1PeY6wNwngKizZ7hiZ80IAkYIQA3F5BwCafKI1GO6
+	 9w59XJHLOLzvqPJJvTwOSM1NVKOkLbdFn/3SGdB8jtnvqm/t9J5Kl99yCeiWUq6qYW
+	 15u/xuyBmwX1uisasA3GOUIF8+uNIELZ2J9L5IEduAt52iQSL8cfdKEtW2E8Rqy40i
+	 OendDgcL9bPLLdatjKK+2ejTtFbGMlbeQkT857hC8bd78c+0KyiEmYBTmCanMwnasP
+	 D2ZW7VqaCV8AA==
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: dwarves@vger.kernel.org,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To: dwarves@vger.kernel.org
 Cc: Jiri Olsa <jolsa@kernel.org>,
 	Clark Williams <williams@redhat.com>,
 	Kate Carcia <kcarcia@redhat.com>,
 	bpf@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
 	Daniel Xu <dxu@dxuuu.xyz>,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCHES 0/2] Introduce --btf_features=+extra_features syntax
-Date: Fri, 19 Apr 2024 17:57:43 -0300
-Message-ID: <20240419205747.1102933-1-acme@kernel.org>
+Subject: [PATCH 1/2] pahole: Factor out routine to process "--btf_features=all"
+Date: Fri, 19 Apr 2024 17:57:44 -0300
+Message-ID: <20240419205747.1102933-2-acme@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240419205747.1102933-1-acme@kernel.org>
+References: <20240419205747.1102933-1-acme@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-	Please take a look if you agree this is a more compact, less
-confusing way of asking for the set of standard BTF features + some
-extra features such as 'reproducible_build'.
+As we'll use it to process "--btf_features=+reproducible_build" meaning
+"all + reproducible_build".
 
-	We have this in perf, for things like:
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ pahole.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-⬢[acme@toolbox pahole]$ perf report -h -F 
-
- Usage: perf report [<options>]
-
-    -F, --fields <key[,keys...]>
-                          output field(s): overhead period sample  overhead overhead_sys
-                          overhead_us overhead_guest_sys overhead_guest_us overhead_children
-                          sample period weight1 weight2 weight3 ins_lat retire_lat
-                          p_stage_cyc pid comm dso symbol parent cpu socket
-                          srcline srcfile local_weight weight transaction trace
-                          symbol_size dso_size cgroup cgroup_id ipc_null time
-                          code_page_size local_ins_lat ins_lat local_p_stage_cyc
-                          p_stage_cyc addr local_retire_lat retire_lat simd
-                          type typeoff symoff dso_from dso_to symbol_from symbol_to
-                          mispredict abort in_tx cycles srcline_from srcline_to
-                          ipc_lbr addr_from addr_to symbol_daddr dso_daddr locked
-                          tlb mem snoop dcacheline symbol_iaddr phys_daddr data_page_size
-                          blocked
-
-⬢[acme@toolbox pahole]$
-
-From the 'perf report' man page for '-F':
-
-        If the keys starts with a prefix '+', then it will append the specified
-        field(s) to the default field order. For example: perf report -F +period,sample.
-
-- Arnaldo
-
-Arnaldo Carvalho de Melo (2):
-  pahole: Factor out routine to process "--btf_features=all"
-  pahole: Allow asking for extra features using the '+' prefix in
-    --btf_features
-
- man-pages/pahole.1          |  6 ++++++
- pahole.c                    | 23 ++++++++++++++++-------
- tests/reproducible_build.sh |  2 +-
- 3 files changed, 23 insertions(+), 8 deletions(-)
-
+diff --git a/pahole.c b/pahole.c
+index 38cc6362015fd95b..af94d2a45ee96cbe 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -1340,6 +1340,14 @@ static void show_supported_btf_features(FILE *output)
+ 	fprintf(output, "\n");
+ }
+ 
++static void btf_features__enable_for_all(void)
++{
++	for (int i = 0; i < ARRAY_SIZE(btf_features); i++) {
++		if (btf_features[i].enable_for_all)
++			enable_btf_feature(&btf_features[i]);
++	}
++}
++
+ /* Translate --btf_features=feature1[,feature2] into conf_load values.
+  * Explicitly ignores unrecognized features to allow future specification
+  * of new opt-in features.
+@@ -1352,12 +1360,7 @@ static void parse_btf_features(const char *features, bool strict)
+ 	init_btf_features();
+ 
+ 	if (strcmp(features, "all") == 0) {
+-		int i;
+-
+-		for (i = 0; i < ARRAY_SIZE(btf_features); i++) {
+-			if (btf_features[i].enable_for_all)
+-				enable_btf_feature(&btf_features[i]);
+-		}
++		btf_features__enable_for_all();
+ 		return;
+ 	}
+ 
+@@ -1371,7 +1374,7 @@ static void parse_btf_features(const char *features, bool strict)
+ 			 * allowed.
+ 			 */
+ 			if (strcmp(feature_name, "all") == 0) {
+-				parse_btf_features(feature_name, strict);
++				btf_features__enable_for_all();
+ 			} else if (strict) {
+ 				fprintf(stderr, "Feature '%s' in '%s' is not supported.  Supported BTF features are:\n",
+ 					feature_name, features);
 -- 
 2.44.0
 
