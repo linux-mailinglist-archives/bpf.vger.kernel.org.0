@@ -1,388 +1,292 @@
-Return-Path: <bpf+bounces-27199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2733E8AA7EC
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 07:26:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7426C8AA7F6
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 07:36:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A59AF1F22A0D
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 05:25:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED192851D1
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 05:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23FDBA39;
-	Fri, 19 Apr 2024 05:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E8EBA41;
+	Fri, 19 Apr 2024 05:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aqpr+oMS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DW3qNCZF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC99829A2;
-	Fri, 19 Apr 2024 05:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1008F5B;
+	Fri, 19 Apr 2024 05:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713504352; cv=none; b=ohNBa6/4kG0zn2yGSlUVsjJGILEZTnwd87joQqz+/twcglWnp9jFgeLyMggka379Gxltx07g0CjRKniM6NikPk9rGGeXPdWsMocBx+RDDMNvoUixhodrgYwCeE0TuzCPMx0coM8yGhbJEe4lCOvMAqIWRddVidxivU9tI8PgpDg=
+	t=1713504985; cv=none; b=TcjFwjOWo+dZnJ5i3yfaIyZEeJIEKgN5YTGusKM3NsMKX8VW6tJEegocOKrUcrqG2ybNpQJm9CsnDIZ63eUwqcRMRRKbTxDswWBh/fMpfnGNnmF7yoOls6MtRDlZtnzg4eaV52tfwe+D/Lo3pn0DUJ44X8Ox6rMmZ70QHWb1c5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713504352; c=relaxed/simple;
-	bh=NK6nXDlUgCrw4uyVpqqQ00JqC9iyCcFWXBfyV19Z9mU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cfQQEW5rRRr2Hd6zLfDbEJ11rgXyVysiBc59Z/kWJuC49r7Sxv5bPgBViAT1Bt8MzZEhRv0F782LrKOqa6OL7cbml4Btr7X78q/ciiRsnYk5pLnmRmKG+zOWzpC9v0TSxPE9gdcTtkDrIyjhJo/ifpV9XePugdTXZi0tExwYlrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aqpr+oMS; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso12948365ad.2;
-        Thu, 18 Apr 2024 22:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713504350; x=1714109150; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kbo7yYGh5l3kEMedzYyyDWEw4aSZznfXYf/RpNYFzjQ=;
-        b=aqpr+oMSLEbWLPgPNe2kFYz2n1GpkhDAFmJCZ6dYO/phnBcNUgdPGQPTcDiEfyCUkf
-         YBmWH8Qf1Oe644YnwGFdYW7HrVsMS4XgggPNZ4vVW3AfosCDtM2oy/0Z3niWisbNUM4L
-         y9ttrt7MaeJkRO+Iy6vjiZGd1zdULrsqNlEx/poSBSzbux+Xh8jqW1hcNSH166YAv6j0
-         2AEp/Smygx09W27DEDvLCD5EOxjnPba8dkEXv3JTvp1/RtwtELgf35sZZWoOQ7zbZj4J
-         sSD35TZ5TXynkAoN/b+M6WOHe4uJugu2dzvVaYUABxSJ6NrNoxFxT/abpNtrQQVTL1aW
-         abcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713504350; x=1714109150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kbo7yYGh5l3kEMedzYyyDWEw4aSZznfXYf/RpNYFzjQ=;
-        b=WovJEgMpjsk2lQ5f2f3SzU1XSfYeOcNuqz2d3Hu3LoKzSCFTchza1eIk1bO3KEZ6qC
-         BoazdRRuicrogF3swCEzA/5s4ux2GLwG+eyN+HhHWJsKLmETDYePhdehK3uVZQ843ilW
-         MOoWEEQeQHhddrYGKjrYP/D2om4UYwless8xm/CAnRd9g+2U1Q3/MxocUCBP04I3MKKk
-         HaU1h0HvtxPHTsqjYzoTMWiNSnvK0camx4hkm+NjoM+TJYbwql3Ab5a5avXEKOMHtT41
-         o4YKtEOyrFwjoxyilZYVWmJJX0Pu/P5vXTiD2/sNee+U+OA73Iyfmb1i6lHfyl7CuDLz
-         NU7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUjgwYivvB6uRA31RCADPZiDPq7/aBKRYTvRxfexvmntHwblPYVJpGtfXJ+seik2AIpzDbq8UmZ3xfItT60KwFKgD5fpojrs05iISK64QPBWNNS34HAK/wMwrFImwR4bCQzKCb/XBFTMm36ZdNuXJF9M1QA6gEFGS6hZeXrZcfFCPln
-X-Gm-Message-State: AOJu0YzfcpAi4cWBiAxsUDhXQ943UB4QH9TVw0VhxQIlRKLsrueUjOAx
-	UTQrxmApJeJyYg4cEyCA3ygymEb/2qCSQ4KCd2dCM7BOFGVMN+1b
-X-Google-Smtp-Source: AGHT+IHnxEj+Mi8+nB+NgQNxNsL0rtNE5eoI6rcIMV/IRbBiwvywPhG5aPA95gIGqaijtJgdP+bKFw==
-X-Received: by 2002:a17:902:f790:b0:1e8:cc30:b527 with SMTP id q16-20020a170902f79000b001e8cc30b527mr1311558pln.2.1713504350037;
-        Thu, 18 Apr 2024 22:25:50 -0700 (PDT)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:fbcc])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170903110600b001e668c1060bsm2448360plh.122.2024.04.18.22.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 22:25:49 -0700 (PDT)
-Date: Thu, 18 Apr 2024 22:25:45 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 11/18] bpf: wq: add bpf_wq_init
-Message-ID: <f7awluzevpzqhqo5a65dxlfoo3dhkvbpntb4a5uueq2v7gjj7b@ddoyfpeymg3u>
-References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
- <20240416-bpf_wq-v1-11-c9e66092f842@kernel.org>
+	s=arc-20240116; t=1713504985; c=relaxed/simple;
+	bh=3TdyFA3hyHOlxjWLYHwX0SH35loWRhAXSuWeI08Kwgk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=t54SjrjvX4yBXaAtF1Nd9TlsmFaj/iXhmvNfWb1y64ngjIsKTMGOv++hMJufemT5bOLH7ZyfYzmftt+sifc4A+riSrBTXydh1EQ2oOFfJ6bU/QBwrHw1mc1rqXw1jA+jBSBemCbGzWjhhCmDwjQffNPpRy1f6pvUguMCUie7gJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DW3qNCZF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 948B5C072AA;
+	Fri, 19 Apr 2024 05:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713504984;
+	bh=3TdyFA3hyHOlxjWLYHwX0SH35loWRhAXSuWeI08Kwgk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DW3qNCZF0nlSMG6IrO40/xUGCFw7GlQgT8+VWYZw4BGpjADkXAbQH2uUs4f/lteky
+	 tDUiUigc+2l1tiMxg5K9X9YwUF89W5rUEros5wAEFukoPVWwiVJmv2m8Emcaw4R59F
+	 mJ41L6ioPng4hcccHPhe42akparPkrIxLTyHGJwTss5Cw3d2kkKTQfUNkvvefKwI3G
+	 dWympRDamkU2E9X6Uo+11nWiCE8J2dLqoXVlFPb01BBqsOcvMI3D7LsxO6lYrUMgy6
+	 rgk+k6bAdaA8V3+hDjKr6Z/AbeNwzX0EDbSQl0NWK5DJm+WaxXQ5n2favhgfpKmanJ
+	 KF4aqp7Z3/BUg==
+Date: Fri, 19 Apr 2024 14:36:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph:
+ Multi-function graph and fprobe on fgraph
+Message-Id: <20240419143618.aa5064d764094ed926b0f04e@kernel.org>
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-bpf_wq-v1-11-c9e66092f842@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 04:08:24PM +0200, Benjamin Tissoires wrote:
-> We need to teach the verifier about the second argument which is declared
-> as void * but which is of type KF_ARG_PTR_TO_MAP. We could have dropped
-> this extra case if we declared the second argument as struct bpf_map *,
-> but that means users will have to do extra casting to have their program
-> compile.
+Hi Steve,
+
+Can you review this series? Especially, [07/36] and [12/36] has been changed
+a lot from your original patch.
+
+Thank you,
+
+On Mon, 15 Apr 2024 21:48:59 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> Hi,
 > 
-> We also need to duplicate the timer code for the checking if the map
-> argument is matching the provided workqueue.
+> Here is the 9th version of the series to re-implement the fprobe on
+> function-graph tracer. The previous version is;
 > 
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> https://lore.kernel.org/all/170887410337.564249.6360118840946697039.stgit@devnote2/
+> 
+> This version is ported on the latest kernel (v6.9-rc3 + probes/for-next)
+> and fixed some bugs + performance optimization patch[36/36].
+>  - [12/36] Fix to clear fgraph_array entry in registration failure, also
+>            return -ENOSPC when fgraph_array is full.
+>  - [28/36] Add new store_fprobe_entry_data() for fprobe.
+>  - [31/36] Remove DIV_ROUND_UP() and fix entry data address calculation.
+>  - [36/36] Add new flag to skip timestamp recording.
+> 
+> Overview
+> --------
+> This series does major 2 changes, enable multiple function-graphs on
+> the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+> fprobe on this function-graph.
+> 
+> The former changes had been sent from Steven Rostedt 4 years ago (*),
+> which allows users to set different setting function-graph tracer (and
+> other tracers based on function-graph) in each trace-instances at the
+> same time.
+> 
+> (*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+> 
+> The purpose of latter change are;
+> 
+>  1) Remove dependency of the rethook from fprobe so that we can reduce
+>    the return hook code and shadow stack.
+> 
+>  2) Make 'ftrace_regs' the common trace interface for the function
+>    boundary.
+> 
+> 1) Currently we have 2(or 3) different function return hook codes,
+>  the function-graph tracer and rethook (and legacy kretprobe).
+>  But since this  is redundant and needs double maintenance cost,
+>  I would like to unify those. From the user's viewpoint, function-
+>  graph tracer is very useful to grasp the execution path. For this
+>  purpose, it is hard to use the rethook in the function-graph
+>  tracer, but the opposite is possible. (Strictly speaking, kretprobe
+>  can not use it because it requires 'pt_regs' for historical reasons.)
+> 
+> 2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+>  wrong for the function entry and exit. Moreover, depending on the
+>  architecture, there is no way to accurately reproduce 'pt_regs'
+>  outside of interrupt or exception handlers. This means fprobe should
+>  not use 'pt_regs' because it does not use such exceptions.
+>  (Conversely, kprobe should use 'pt_regs' because it is an abstract
+>   interface of the software breakpoint exception.)
+> 
+> This series changes fprobe to use function-graph tracer for tracing
+> function entry and exit, instead of mixture of ftrace and rethook.
+> Unlike the rethook which is a per-task list of system-wide allocated
+> nodes, the function graph's ret_stack is a per-task shadow stack.
+> Thus it does not need to set 'nr_maxactive' (which is the number of
+> pre-allocated nodes).
+> Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+> Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+> their register interface, this changes it to convert 'ftrace_regs' to
+> 'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+> so users must access only registers for function parameters or
+> return value. 
+> 
+> Design
+> ------
+> Instead of using ftrace's function entry hook directly, the new fprobe
+> is built on top of the function-graph's entry and return callbacks
+> with 'ftrace_regs'.
+> 
+> Since the fprobe requires access to 'ftrace_regs', the architecture
+> must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+> CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+> entry callback with 'ftrace_regs', and also
+> CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+> return_to_handler.
+> 
+> All fprobes share a single function-graph ops (means shares a common
+> ftrace filter) similar to the kprobe-on-ftrace. This needs another
+> layer to find corresponding fprobe in the common function-graph
+> callbacks, but has much better scalability, since the number of
+> registered function-graph ops is limited.
+> 
+> In the entry callback, the fprobe runs its entry_handler and saves the
+> address of 'fprobe' on the function-graph's shadow stack as data. The
+> return callback decodes the data to get the 'fprobe' address, and runs
+> the exit_handler.
+> 
+> The fprobe introduces two hash-tables, one is for entry callback which
+> searches fprobes related to the given function address passed by entry
+> callback. The other is for a return callback which checks if the given
+> 'fprobe' data structure pointer is still valid. Note that it is
+> possible to unregister fprobe before the return callback runs. Thus
+> the address validation must be done before using it in the return
+> callback.
+> 
+> This series can be applied against the probes/for-next branch, which
+> is based on v6.9-rc3.
+> 
+> This series can also be found below branch.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+> 
+> Thank you,
 > 
 > ---
 > 
-> Note that the timer code when matching for the map is checking for
-> constant map pointers. I wonder if this needs to be enforced too
-> (being constant?)
-> ---
->  include/uapi/linux/bpf.h |   9 ++++
->  kernel/bpf/helpers.c     | 114 ++++++++++++++++++++++++++++++++++++++++++++++-
->  kernel/bpf/verifier.c    |   6 +++
->  3 files changed, 127 insertions(+), 2 deletions(-)
+> Masami Hiramatsu (Google) (21):
+>       tracing: Add a comment about ftrace_regs definition
+>       tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+>       x86: tracing: Add ftrace_regs definition in the header
+>       function_graph: Use a simple LRU for fgraph_array index number
+>       ftrace: Add multiple fgraph storage selftest
+>       function_graph: Pass ftrace_regs to entryfunc
+>       function_graph: Replace fgraph_ret_regs with ftrace_regs
+>       function_graph: Pass ftrace_regs to retfunc
+>       fprobe: Use ftrace_regs in fprobe entry handler
+>       fprobe: Use ftrace_regs in fprobe exit handler
+>       tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+>       tracing: Add ftrace_fill_perf_regs() for perf event
+>       tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+>       bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+>       ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+>       fprobe: Rewrite fprobe on function-graph tracer
+>       tracing/fprobe: Remove nr_maxactive from fprobe
+>       selftests: ftrace: Remove obsolate maxactive syntax check
+>       selftests/ftrace: Add a test case for repeating register/unregister fprobe
+>       Documentation: probes: Update fprobe on function-graph tracer
+>       fgraph: Skip recording calltime/rettime if it is not nneeded
 > 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index e4ae83550fb3..519f6019d158 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7502,4 +7502,13 @@ struct bpf_iter_num {
->  	__u64 __opaque[1];
->  } __attribute__((aligned(8)));
->  
-> +/*
-> + * Flags to control bpf_wq_init() and bpf_wq_set_callback() behaviour.
-> + *     - BPF_F_WQ_SLEEPABLE: the callback needs to run in
-> + *       a sleepable context
-> + */
-> +enum {
-> +	BPF_F_WQ_SLEEPABLE = (1ULL << 0),
-> +};
+> Steven Rostedt (VMware) (15):
+>       function_graph: Convert ret_stack to a series of longs
+>       fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+>       function_graph: Add an array structure that will allow multiple callbacks
+>       function_graph: Allow multiple users to attach to function graph
+>       function_graph: Remove logic around ftrace_graph_entry and return
+>       ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+>       ftrace: Allow function_graph tracer to be enabled in instances
+>       ftrace: Allow ftrace startup flags exist without dynamic ftrace
+>       function_graph: Have the instances use their own ftrace_ops for filtering
+>       function_graph: Add "task variables" per task for fgraph_ops
+>       function_graph: Move set_graph_function tests to shadow stack global var
+>       function_graph: Move graph depth stored data to shadow stack global var
+>       function_graph: Move graph notrace bit to shadow stack global var
+>       function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+>       function_graph: Add selftest for passing local variables
+> 
+> 
+>  Documentation/trace/fprobe.rst                     |   42 +
+>  arch/arm64/Kconfig                                 |    3 
+>  arch/arm64/include/asm/ftrace.h                    |   47 +
+>  arch/arm64/kernel/asm-offsets.c                    |   12 
+>  arch/arm64/kernel/entry-ftrace.S                   |   32 -
+>  arch/arm64/kernel/ftrace.c                         |   21 
+>  arch/loongarch/Kconfig                             |    4 
+>  arch/loongarch/include/asm/ftrace.h                |   32 -
+>  arch/loongarch/kernel/asm-offsets.c                |   12 
+>  arch/loongarch/kernel/ftrace_dyn.c                 |   15 
+>  arch/loongarch/kernel/mcount.S                     |   17 
+>  arch/loongarch/kernel/mcount_dyn.S                 |   14 
+>  arch/powerpc/Kconfig                               |    1 
+>  arch/powerpc/include/asm/ftrace.h                  |   15 
+>  arch/powerpc/kernel/trace/ftrace.c                 |    3 
+>  arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+>  arch/riscv/Kconfig                                 |    3 
+>  arch/riscv/include/asm/ftrace.h                    |   21 
+>  arch/riscv/kernel/ftrace.c                         |   15 
+>  arch/riscv/kernel/mcount.S                         |   24 
+>  arch/s390/Kconfig                                  |    3 
+>  arch/s390/include/asm/ftrace.h                     |   39 -
+>  arch/s390/kernel/asm-offsets.c                     |    6 
+>  arch/s390/kernel/mcount.S                          |    9 
+>  arch/x86/Kconfig                                   |    4 
+>  arch/x86/include/asm/ftrace.h                      |   43 -
+>  arch/x86/kernel/ftrace.c                           |   51 +
+>  arch/x86/kernel/ftrace_32.S                        |   15 
+>  arch/x86/kernel/ftrace_64.S                        |   17 
+>  include/linux/fprobe.h                             |   57 +
+>  include/linux/ftrace.h                             |  170 +++
+>  include/linux/sched.h                              |    2 
+>  include/linux/trace_recursion.h                    |   39 -
+>  kernel/trace/Kconfig                               |   23 
+>  kernel/trace/bpf_trace.c                           |   14 
+>  kernel/trace/fgraph.c                              | 1005 ++++++++++++++++----
+>  kernel/trace/fprobe.c                              |  637 +++++++++----
+>  kernel/trace/ftrace.c                              |   13 
+>  kernel/trace/ftrace_internal.h                     |    2 
+>  kernel/trace/trace.h                               |   96 ++
+>  kernel/trace/trace_fprobe.c                        |  147 ++-
+>  kernel/trace/trace_functions.c                     |    8 
+>  kernel/trace/trace_functions_graph.c               |   98 +-
+>  kernel/trace/trace_irqsoff.c                       |   12 
+>  kernel/trace/trace_probe_tmpl.h                    |    2 
+>  kernel/trace/trace_sched_wakeup.c                  |   12 
+>  kernel/trace/trace_selftest.c                      |  262 +++++
+>  lib/test_fprobe.c                                  |   51 -
+>  samples/fprobe/fprobe_example.c                    |    4 
+>  .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 
+>  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+>  51 files changed, 2325 insertions(+), 882 deletions(-)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+> 
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
 
-Just started looking at the patch set. The first reaction that
-this flag is odd. Why add it? wq provides sleepable ctx.
-Why would the program ask to be non-sleepable in wq?
-If it needs to callback to run in rcu cs, it can use bpf_rcu_read_lock() kfunc
-as the first call in such callback and it will be equivalent
-to not-passing this BPF_F_WQ_SLEEPABLE flag.
-It seem it can be dropped and complexity reduced.
-The verifier complications in later patches due to this flag too...
-I just don't see the point.
 
-> +
->  #endif /* _UAPI__LINUX_BPF_H__ */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 9fd12d480b8b..9ac1b8bb3a01 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1109,11 +1109,18 @@ struct bpf_hrtimer {
->  	struct hrtimer timer;
->  };
->  
-> -/* the actual struct hidden inside uapi struct bpf_timer */
-> +struct bpf_work {
-> +	struct bpf_async_cb cb;
-> +	struct work_struct work;
-> +	struct work_struct delete_work;
-> +};
-> +
-> +/* the actual struct hidden inside uapi struct bpf_timer and bpf_wq */
->  struct bpf_async_kern {
->  	union {
->  		struct bpf_async_cb *cb;
->  		struct bpf_hrtimer *timer;
-> +		struct bpf_work *work;
->  	};
->  	/* bpf_spin_lock is used here instead of spinlock_t to make
->  	 * sure that it always fits into space reserved by struct bpf_timer
-> @@ -1124,6 +1131,7 @@ struct bpf_async_kern {
->  
->  enum bpf_async_type {
->  	BPF_ASYNC_TYPE_TIMER = 0,
-> +	BPF_ASYNC_TYPE_WQ,
->  };
->  
->  static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
-> @@ -1167,11 +1175,75 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
->  	return HRTIMER_NORESTART;
->  }
->  
-> +static void bpf_wq_work(struct work_struct *work)
-> +{
-> +	struct bpf_work *w = container_of(work, struct bpf_work, work);
-> +	struct bpf_tramp_run_ctx __maybe_unused run_ctx;
-> +	struct bpf_prog *prog = w->cb.prog;
-> +	unsigned int flags = w->cb.flags;
-> +	struct bpf_map *map = w->cb.map;
-> +	bpf_callback_t callback_fn;
-> +	void *value = w->cb.value;
-> +	void *key;
-> +	u32 idx;
-> +
-> +	BTF_TYPE_EMIT(struct bpf_wq);
-> +
-> +	callback_fn = READ_ONCE(w->cb.callback_fn);
-> +	if (!callback_fn || !prog)
-> +		return;
-> +
-> +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-> +		struct bpf_array *array = container_of(map, struct bpf_array, map);
-> +
-> +		/* compute the key */
-> +		idx = ((char *)value - array->value) / array->elem_size;
-> +		key = &idx;
-> +	} else { /* hash or lru */
-> +		key = value - round_up(map->key_size, 8);
-> +	}
-> +
-> +	run_ctx.bpf_cookie = 0;
-> +
-> +	if (flags & BPF_F_WQ_SLEEPABLE) {
-> +		if (!__bpf_prog_enter_sleepable_recur(prog, &run_ctx)) {
-> +			/* recursion detected */
-> +			__bpf_prog_exit_sleepable_recur(prog, 0, &run_ctx);
-> +			return;
-> +		}
-> +	} else {
-> +		if (!__bpf_prog_enter_recur(prog, &run_ctx)) {
-> +			/* recursion detected */
-> +			__bpf_prog_exit_recur(prog, 0, &run_ctx);
-> +			return;
-> +		}
-> +	}
-> +
-> +	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
-> +	/* The verifier checked that return value is zero. */
-> +
-> +	if (flags & BPF_F_WQ_SLEEPABLE)
-> +		__bpf_prog_exit_sleepable_recur(prog, 0 /* bpf_prog_run does runtime stats */,
-> +						&run_ctx);
-> +	else
-> +		__bpf_prog_exit_recur(prog, 0, &run_ctx);
-> +}
-> +
-> +static void bpf_wq_delete_work(struct work_struct *work)
-> +{
-> +	struct bpf_work *w = container_of(work, struct bpf_work, delete_work);
-> +
-> +	cancel_work_sync(&w->work);
-> +
-> +	kfree_rcu(w, cb.rcu);
-> +}
-> +
->  static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u64 flags,
->  			    enum bpf_async_type type)
->  {
->  	struct bpf_async_cb *cb;
->  	struct bpf_hrtimer *t;
-> +	struct bpf_work *w;
->  	clockid_t clockid;
->  	size_t size;
->  	int ret = 0;
-> @@ -1183,6 +1255,9 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
->  	case BPF_ASYNC_TYPE_TIMER:
->  		size = sizeof(struct bpf_hrtimer);
->  		break;
-> +	case BPF_ASYNC_TYPE_WQ:
-> +		size = sizeof(struct bpf_work);
-> +		break;
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -1201,13 +1276,22 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
->  		goto out;
->  	}
->  
-> -	if (type == BPF_ASYNC_TYPE_TIMER) {
-> +	switch (type) {
-> +	case BPF_ASYNC_TYPE_TIMER:
->  		clockid = flags & (MAX_CLOCKS - 1);
->  		t = (struct bpf_hrtimer *)cb;
->  
->  		hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
->  		t->timer.function = bpf_timer_cb;
->  		cb->value = (void *)async - map->record->timer_off;
-> +		break;
-> +	case BPF_ASYNC_TYPE_WQ:
-> +		w = (struct bpf_work *)cb;
-> +
-> +		INIT_WORK(&w->work, bpf_wq_work);
-> +		INIT_WORK(&w->delete_work, bpf_wq_delete_work);
-> +		cb->value = (void *)async - map->record->wq_off;
-> +		break;
->  	}
->  	cb->map = map;
->  	cb->prog = NULL;
-> @@ -1473,7 +1557,19 @@ void bpf_timer_cancel_and_free(void *val)
->   */
->  void bpf_wq_cancel_and_free(void *val)
->  {
-> +	struct bpf_work *work;
-> +
->  	BTF_TYPE_EMIT(struct bpf_wq);
-> +
-> +	work = (struct bpf_work *)__bpf_async_cancel_and_free(val);
-> +	if (!work)
-> +		return;
-> +	/* Trigger cancel of the sleepable work, but *do not* wait for
-> +	 * it to finish if it was running as we might not be in a
-> +	 * sleepable context.
-> +	 * kfree will be called once the work has finished.
-> +	 */
-> +	schedule_work(&work->delete_work);
->  }
->  
->  BPF_CALL_2(bpf_kptr_xchg, void *, map_value, void *, ptr)
-> @@ -2612,6 +2708,19 @@ __bpf_kfunc void bpf_throw(u64 cookie)
->  	WARN(1, "A call to BPF exception callback should never return\n");
->  }
->  
-> +__bpf_kfunc int bpf_wq_init(struct bpf_wq *wq, void *map, unsigned int flags)
-> +{
-> +	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
-> +
-> +	BUILD_BUG_ON(sizeof(struct bpf_async_kern) > sizeof(struct bpf_wq));
-> +	BUILD_BUG_ON(__alignof__(struct bpf_async_kern) != __alignof__(struct bpf_wq));
-> +
-> +	if (flags & ~BPF_F_WQ_SLEEPABLE)
-> +		return -EINVAL;
-> +
-> +	return __bpf_async_init(async, map, flags, BPF_ASYNC_TYPE_WQ);
-> +}
-> +
->  __bpf_kfunc_end_defs();
->  
->  BTF_KFUNCS_START(generic_btf_ids)
-> @@ -2689,6 +2798,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->  BTF_ID_FLAGS(func, bpf_dynptr_size)
->  BTF_ID_FLAGS(func, bpf_dynptr_clone)
->  BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
-> +BTF_ID_FLAGS(func, bpf_wq_init)
->  BTF_KFUNCS_END(common_btf_ids)
->  
->  static const struct btf_kfunc_id_set common_kfunc_set = {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 112faf2cd7e9..5e8c1e65fe8c 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11038,6 +11038,7 @@ enum special_kfunc_type {
->  	KF_bpf_percpu_obj_drop_impl,
->  	KF_bpf_throw,
->  	KF_bpf_iter_css_task_new,
-> +	KF_bpf_wq_init,
->  };
->  
->  BTF_SET_START(special_kfunc_set)
-> @@ -11064,6 +11065,7 @@ BTF_ID(func, bpf_throw)
->  #ifdef CONFIG_CGROUPS
->  BTF_ID(func, bpf_iter_css_task_new)
->  #endif
-> +BTF_ID(func, bpf_wq_init)
->  BTF_SET_END(special_kfunc_set)
->  
->  BTF_ID_LIST(special_kfunc_list)
-> @@ -11094,6 +11096,7 @@ BTF_ID(func, bpf_iter_css_task_new)
->  #else
->  BTF_ID_UNUSED
->  #endif
-> +BTF_ID(func, bpf_wq_init)
->  
->  static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
->  {
-> @@ -11171,6 +11174,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
->  	if (is_kfunc_arg_wq(meta->btf, &args[argno]))
->  		return KF_ARG_PTR_TO_WORKQUEUE;
->  
-> +	if (meta->func_id == special_kfunc_list[KF_bpf_wq_init] && argno == 1)
-> +		return KF_ARG_PTR_TO_MAP;
-> +
-
-Hmm. This function has this bit:
-        if (is_kfunc_arg_map(meta->btf, &args[argno]))
-                return KF_ARG_PTR_TO_MAP;
-
-Just do:
-+__bpf_kfunc int bpf_wq_init(struct bpf_wq *wq, void *map__map, ...
-
-It was specifically added for bpf_arena_alloc_pages to pass pointer to a map.
-In case of arena map type it's used as:
-struct {
-        __uint(type, BPF_MAP_TYPE_ARENA);
-        ...
-} arena SEC(".maps");
-
-page = bpf_arena_alloc_pages(&arena, ...)
-libbpf and the verifier do the right thing.
-I think it should work here as well.
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
