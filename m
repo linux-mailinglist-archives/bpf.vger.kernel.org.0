@@ -1,241 +1,388 @@
-Return-Path: <bpf+bounces-27198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D348AA712
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 05:04:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2733E8AA7EC
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 07:26:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 885761F21C21
-	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 03:04:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A59AF1F22A0D
+	for <lists+bpf@lfdr.de>; Fri, 19 Apr 2024 05:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271375664;
-	Fri, 19 Apr 2024 03:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23FDBA39;
+	Fri, 19 Apr 2024 05:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YNzWOnYR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aqpr+oMS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEFD51C2D
-	for <bpf@vger.kernel.org>; Fri, 19 Apr 2024 03:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC99829A2;
+	Fri, 19 Apr 2024 05:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713495837; cv=none; b=f0y8wfcSCclufac5Ug77Sohu44V8qVX8OoHKd3haCWAsVocpg+fDyoWFxGiEHyPzrHnpQ6fPBQTzHPb4f+27ZczGc1GhZFS6kwv/ozAM8uXxl1txChpa1Vr0sC9Qaz7hisnqrYTWzh4/s/z+L1YkUDfZM5Gxcmc1dRroeQnaSgc=
+	t=1713504352; cv=none; b=ohNBa6/4kG0zn2yGSlUVsjJGILEZTnwd87joQqz+/twcglWnp9jFgeLyMggka379Gxltx07g0CjRKniM6NikPk9rGGeXPdWsMocBx+RDDMNvoUixhodrgYwCeE0TuzCPMx0coM8yGhbJEe4lCOvMAqIWRddVidxivU9tI8PgpDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713495837; c=relaxed/simple;
-	bh=EFkxad9O5jYYRcMcf2Z0Oz7BijGK+CHAs7X62FEDLYo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bTtUa1Oi0uu+b3EvKZYuPhp1RJ3hOcLQUX6OvQWqmt411Usats6bdEMHHo0ORE68dRkIfS3YdjPYgfb1e+Zm3DqB6DP3p2JJiieMxFj6xoSeaH9P98nw8Y+N4q3jrsLRZKUI2FIviAlHhBN+BpGKZo6rGx0UIppPHu6ssXycx08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YNzWOnYR; arc=none smtp.client-ip=209.85.128.50
+	s=arc-20240116; t=1713504352; c=relaxed/simple;
+	bh=NK6nXDlUgCrw4uyVpqqQ00JqC9iyCcFWXBfyV19Z9mU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cfQQEW5rRRr2Hd6zLfDbEJ11rgXyVysiBc59Z/kWJuC49r7Sxv5bPgBViAT1Bt8MzZEhRv0F782LrKOqa6OL7cbml4Btr7X78q/ciiRsnYk5pLnmRmKG+zOWzpC9v0TSxPE9gdcTtkDrIyjhJo/ifpV9XePugdTXZi0tExwYlrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aqpr+oMS; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-418e06c0ef4so14822325e9.0
-        for <bpf@vger.kernel.org>; Thu, 18 Apr 2024 20:03:55 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso12948365ad.2;
+        Thu, 18 Apr 2024 22:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713495834; x=1714100634; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QA71R0TzDAIthzLW4s5MRvQRdoWciMPHxYDItdStD70=;
-        b=YNzWOnYRYhkGnLmrS2U77E9IJ8RBDTEoSfd5vInq8/Emc8MGMKm9BixB2VRa8L7nS3
-         VVoWvo8uQthjyROj7ATk86rBwRbjPqu5u4owLmeWmlHfbJz9aCtmJ32nx9o+OpcTv2iI
-         I4bXRuyqQOAFOESpgNu3GEFEX/nUNHWd8ObXneCeaIpeRZqzz3W2RNtJKtktx+hmx3vl
-         fMGcDkLaz1C29c2i26ZLvCZEZt7/+rogg3z7A4reBAbSuR/khBn6ZqkwNCQIEZEKgwbT
-         tiWVXORk4JKwcataHoI1VUbucddsUeKEIwJe8ytfYgVSgL5KGe9D1zgsp3cCmfh8ZOeM
-         D56g==
+        d=gmail.com; s=20230601; t=1713504350; x=1714109150; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kbo7yYGh5l3kEMedzYyyDWEw4aSZznfXYf/RpNYFzjQ=;
+        b=aqpr+oMSLEbWLPgPNe2kFYz2n1GpkhDAFmJCZ6dYO/phnBcNUgdPGQPTcDiEfyCUkf
+         YBmWH8Qf1Oe644YnwGFdYW7HrVsMS4XgggPNZ4vVW3AfosCDtM2oy/0Z3niWisbNUM4L
+         y9ttrt7MaeJkRO+Iy6vjiZGd1zdULrsqNlEx/poSBSzbux+Xh8jqW1hcNSH166YAv6j0
+         2AEp/Smygx09W27DEDvLCD5EOxjnPba8dkEXv3JTvp1/RtwtELgf35sZZWoOQ7zbZj4J
+         sSD35TZ5TXynkAoN/b+M6WOHe4uJugu2dzvVaYUABxSJ6NrNoxFxT/abpNtrQQVTL1aW
+         abcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713495834; x=1714100634;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QA71R0TzDAIthzLW4s5MRvQRdoWciMPHxYDItdStD70=;
-        b=mBXKXEFJBr7juA5bPQbvkfhNHW9JLbB6mFPE00j9EqcsTOMLdNnre3L8wfrTYbspeb
-         OAc6jW3DBx5dDtadPKTWPWKFcx/7Zh9D5l4x2ZDHbn5KyKQn5+nUODpV1GJ94pBTp+rg
-         B3SAXYxgfidus6w+VufO1UpB7oO8fRLLzGne2V4VhDlg7Sf6qGNUx8BnWw1RgvZTQHzG
-         tlvkiMJfYIT32d+UMXxnTHjDj/297qYIu7Yx277B4ZTYMZU9z3lJrx2O4ba/LiuWGdgW
-         KOck9dqFRmq95G628QzMRxWBTC5946kqKFwHAbrUEfI2/7jPoWx8wUCWAnrw0h1hAomA
-         3BlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW4dMJ8DTpVsrpxqxpRcAZBbtbqE3avFzumSyMnx8psfVjw65HrbtKd4IQnAH1OYBrWSzHV/J/GNaTw8cdkFiEmen/C
-X-Gm-Message-State: AOJu0YyabfW5/OCfqiVMR1nvarKfqxA+TLB4zcXpiDXruJnkMql9Qktl
-	EpfUgaXzWwhN8PP9/P5niIfiQ5HR5buENSlGadUBGEbLcmpIcyBPEYKB15YwedGlxvOwGA3Mzmd
-	QjVt700d9Nrz22eBIZZu6bAU2wog=
-X-Google-Smtp-Source: AGHT+IFBpc8AktbyAe5k9PamV8BjRGtWiiiYu0D2Dcq79fui5EpSovT9txzslfavXIkHrgDe3zmedEFm+teBBTWYkZA=
-X-Received: by 2002:a05:600c:1da2:b0:417:e563:4aa4 with SMTP id
- p34-20020a05600c1da200b00417e5634aa4mr494424wms.5.1713495833894; Thu, 18 Apr
- 2024 20:03:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713504350; x=1714109150;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kbo7yYGh5l3kEMedzYyyDWEw4aSZznfXYf/RpNYFzjQ=;
+        b=WovJEgMpjsk2lQ5f2f3SzU1XSfYeOcNuqz2d3Hu3LoKzSCFTchza1eIk1bO3KEZ6qC
+         BoazdRRuicrogF3swCEzA/5s4ux2GLwG+eyN+HhHWJsKLmETDYePhdehK3uVZQ843ilW
+         MOoWEEQeQHhddrYGKjrYP/D2om4UYwless8xm/CAnRd9g+2U1Q3/MxocUCBP04I3MKKk
+         HaU1h0HvtxPHTsqjYzoTMWiNSnvK0camx4hkm+NjoM+TJYbwql3Ab5a5avXEKOMHtT41
+         o4YKtEOyrFwjoxyilZYVWmJJX0Pu/P5vXTiD2/sNee+U+OA73Iyfmb1i6lHfyl7CuDLz
+         NU7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUjgwYivvB6uRA31RCADPZiDPq7/aBKRYTvRxfexvmntHwblPYVJpGtfXJ+seik2AIpzDbq8UmZ3xfItT60KwFKgD5fpojrs05iISK64QPBWNNS34HAK/wMwrFImwR4bCQzKCb/XBFTMm36ZdNuXJF9M1QA6gEFGS6hZeXrZcfFCPln
+X-Gm-Message-State: AOJu0YzfcpAi4cWBiAxsUDhXQ943UB4QH9TVw0VhxQIlRKLsrueUjOAx
+	UTQrxmApJeJyYg4cEyCA3ygymEb/2qCSQ4KCd2dCM7BOFGVMN+1b
+X-Google-Smtp-Source: AGHT+IHnxEj+Mi8+nB+NgQNxNsL0rtNE5eoI6rcIMV/IRbBiwvywPhG5aPA95gIGqaijtJgdP+bKFw==
+X-Received: by 2002:a17:902:f790:b0:1e8:cc30:b527 with SMTP id q16-20020a170902f79000b001e8cc30b527mr1311558pln.2.1713504350037;
+        Thu, 18 Apr 2024 22:25:50 -0700 (PDT)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:fbcc])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170903110600b001e668c1060bsm2448360plh.122.2024.04.18.22.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 22:25:49 -0700 (PDT)
+Date: Thu, 18 Apr 2024 22:25:45 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 11/18] bpf: wq: add bpf_wq_init
+Message-ID: <f7awluzevpzqhqo5a65dxlfoo3dhkvbpntb4a5uueq2v7gjj7b@ddoyfpeymg3u>
+References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
+ <20240416-bpf_wq-v1-11-c9e66092f842@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZhkbrM55MKQ0KeIV@google.com> <3f8a481e-0dfe-468f-8c87-6610528f9009@linux.dev>
- <ZiAu6YDi-F_pxLOV@google.com> <dbba17cf-4351-45ca-9f43-090a0923a2bb@linux.dev>
-In-Reply-To: <dbba17cf-4351-45ca-9f43-090a0923a2bb@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 18 Apr 2024 20:03:40 -0700
-Message-ID: <CAADnVQ+z5w4GaMudrLXw3LAq1B3Ong7FhQHdkJN7m8svkCpMgA@mail.gmail.com>
-Subject: Re: [RFC] bpf: allowing PTR_TO_BTF_ID | PTR_TRUSTED w/ non-zero fixed
- offset to selected KF_TRUSTED_ARGS BPF kfuncs
-To: Yonghong Song <yonghong.song@linux.dev>, David Vernet <void@manifault.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416-bpf_wq-v1-11-c9e66092f842@kernel.org>
 
-On Wed, Apr 17, 2024 at 5:11=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> On 4/17/24 1:19 PM, Matt Bobrowski wrote:
-> > On Mon, Apr 15, 2024 at 09:43:42AM -0700, Yonghong Song wrote:
-> >> On 4/12/24 4:31 AM, Matt Bobrowski wrote:
-> >>> Hi,
-> >>>
-> >>> Currently, if a BPF kfunc has been annotated with KF_TRUSTED_ARGS, an=
-y
-> >>> supplied PTR_TO_BTF_ID | PTR_TRUSTED argument to that BPF kfunc must
-> >>> have it's fixed offset set to zero, or else the BPF program being
-> >>> loaded will be outright rejected by the BPF verifier.
-> >>>
-> >>> This non-zero fixed offset restriction in most cases makes a lot of
-> >>> sense, as it's considered to be a robust means of assuring that the
-> >>> supplied PTR_TO_BTF_ID to the KF_TRUSTED_ARGS annotated BPF kfunc
-> >>> upholds it's PTR_TRUSTED property. However, I believe that there are
-> >>> also cases out there whereby a PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed
-> >>> offset can still be considered as something which posses the
-> >>> PTR_TRUSTED property, and could be safely passed to a BPF kfunc that
-> >>> is annotated w/ KF_TRUSTED_ARGS. I believe that this can particularly
-> >>> hold true for selected embedded data structure members present within
-> >>> given PTR_TO_BTF_ID | PTR_TRUSTED types i.e. struct
-> >>> task_struct.thread_info, struct file.nf_path.
-> >>>
-> >>> Take for example the struct thread_info which is embedded within
-> >>> struct task_struct. In a BPF program, if we happened to acquire a
-> >>> PTR_TO_BTF_ID | PTR_TRUSTED for a struct task_struct via
-> >>> bpf_get_current_task_btf(), and then constructed a pointer of type
-> >>> struct thread_info which was assigned the address of the embedded
-> >>> struct task_struct.thread_info member, we'd have ourselves a
-> >>> PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed offset. Now, let's
-> >>> hypothetically also say that we had a BPF kfunc that took a struct
-> >>> thread_info pointer as an argument and the BPF kfunc was also
-> >>> annotated w/ KF_TRUSTED_ARGS. If we attempted to pass the constructed
-> >>> PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset to this hypothetical BPF
-> >>> kfunc, the BPF program would be rejected by the BPF verifier. This is
-> >>> irrespective of the fact that supplying pointers to such embedded dat=
-a
-> >>> structure members of a PTR_TO_BTF_ID | PTR_TRUSTED may be considered
-> >>> to be safe.
-> >>>
-> >>> One of the ideas that I had in mind to workaround the non-zero fixed
-> >>> offset restriction was to simply introduce a new BPF kfunc annotation
-> >>> i.e. __offset_allowed that could be applied on selected BPF kfunc
-> >>> arguments that are expected to be KF_TRUSTED_ARGS. Such an annotation
-> >>> would effectively control whether we enforce the non-zero offset
-> >>> restriction or not in check_kfunc_args(), check_func_arg_reg_off(),
-> >>> and __check_ptr_off_reg(). Although, now I'm second guessing myself
-> >>> and I am wondering whether introducing something like the
-> >>> __offset_allowed annotation for BPF kfunc arguments could lead to
-> >>> compromising any of the safety guarantees that are provided by the BP=
-F
-> >>> verifier. Does anyone see an immediate problem with using such an
-> >>> approach? I raise concerns, because it feels like we're effectively
-> >>> punching a hole in the BPF verifier, but it may also be perfectly saf=
-e
-> >>> to do on carefully selected PTR_TO_BTF_ID | PTR_TRUSTED types
-> >>> i.e. struct thread_info, struct file, and it's just my paranoia
-> >>> getting the better of me. Or, maybe someone has another idea to
-> >>> support PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset safely and a
-> >>> little more generally without the need to actually make use of any
-> >>> other BPF kfunc annotations?
-> >> In verifier.c, we have BTF_TYPE_SAFE_TRUSTED to indidate that
-> >> a pointer of a particular struct is safe and trusted if the point
-> >> of that struct is trusted, e.g.,
-> >>
-> >> BTF_TYPE_SAFE_TRUSTED(struct file) {
-> >>          struct inode *f_inode;
-> >> };
-> >>
-> >> We do the above since gcc does not support btf_tag yet.
-> > Yes, I'm rather familiar with this construct.
-> >
-> >> I guess you could do
-> >>
-> >> BTF_TYPE_SAFE_TRUSTED(struct file) {
-> >>          struct path f_path;
-> >> };
-> >>
-> >> and enhance verifier with the above information.
-> >>
-> >> But the above 'struct path f_path' may unnecessary
-> >> consume extra memory since we only care about field
-> >> 'f_path'. Maybe create a new construct like
-> >>
-> >> /* pointee is a field of the struct */
-> >> BTF_TYPE_SAFE_FIELD_TRUSTED(struct file) {
-> >>          struct path *f_path;
-> >> };
-> > I don't fully understand how something like
-> > BTF_TYPE_SAFE_FIELD_TRUSTED could work in practice. Do you mind
-> > elaborating on that a little?
-> >
-> > What I'm currently thinking is that with something like
-> > BTF_TYPE_SAFE_FIELD_TRUSTED, if the BPF verifier sees a PTR_TO_BTF_ID
-> > | PTR_TRUSTED w/ a fixed offset supplied to a BPF kfunc, then the BPF
-> > verifier can also check that fixed offset for the supplied
-> > PTR_TO_BTF_ID | PTR_TRUSTED actually accesses a member that has been
-> > explicitly annotated as being trusted via
-> > BTF_TYPE_SAFE_FIELD_TRUSTED. Maybe that would be better then making
-> > use of an __offset_allowed annotation, which would solely rely on the
-> > btf_struct_ids_match() check for its safety.
-> Right. What you described in the above is what I think as well.
+On Tue, Apr 16, 2024 at 04:08:24PM +0200, Benjamin Tissoires wrote:
+> We need to teach the verifier about the second argument which is declared
+> as void * but which is of type KF_ARG_PTR_TO_MAP. We could have dropped
+> this extra case if we declared the second argument as struct bpf_map *,
+> but that means users will have to do extra casting to have their program
+> compile.
+> 
+> We also need to duplicate the timer code for the checking if the map
+> argument is matching the provided workqueue.
+> 
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> 
+> ---
+> 
+> Note that the timer code when matching for the map is checking for
+> constant map pointers. I wonder if this needs to be enforced too
+> (being constant?)
+> ---
+>  include/uapi/linux/bpf.h |   9 ++++
+>  kernel/bpf/helpers.c     | 114 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  kernel/bpf/verifier.c    |   6 +++
+>  3 files changed, 127 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e4ae83550fb3..519f6019d158 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7502,4 +7502,13 @@ struct bpf_iter_num {
+>  	__u64 __opaque[1];
+>  } __attribute__((aligned(8)));
+>  
+> +/*
+> + * Flags to control bpf_wq_init() and bpf_wq_set_callback() behaviour.
+> + *     - BPF_F_WQ_SLEEPABLE: the callback needs to run in
+> + *       a sleepable context
+> + */
+> +enum {
+> +	BPF_F_WQ_SLEEPABLE = (1ULL << 0),
+> +};
 
-I believe BTF_TYPE_SAFE_* or __offset_allowed annotations
-are not necessary.
+Just started looking at the patch set. The first reaction that
+this flag is odd. Why add it? wq provides sleepable ctx.
+Why would the program ask to be non-sleepable in wq?
+If it needs to callback to run in rcu cs, it can use bpf_rcu_read_lock() kfunc
+as the first call in such callback and it will be equivalent
+to not-passing this BPF_F_WQ_SLEEPABLE flag.
+It seem it can be dropped and complexity reduced.
+The verifier complications in later patches due to this flag too...
+I just don't see the point.
 
-In this case thread_info is the first field of struct task_struct
-and I suspect the verifier already allows:
+> +
+>  #endif /* _UAPI__LINUX_BPF_H__ */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 9fd12d480b8b..9ac1b8bb3a01 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1109,11 +1109,18 @@ struct bpf_hrtimer {
+>  	struct hrtimer timer;
+>  };
+>  
+> -/* the actual struct hidden inside uapi struct bpf_timer */
+> +struct bpf_work {
+> +	struct bpf_async_cb cb;
+> +	struct work_struct work;
+> +	struct work_struct delete_work;
+> +};
+> +
+> +/* the actual struct hidden inside uapi struct bpf_timer and bpf_wq */
+>  struct bpf_async_kern {
+>  	union {
+>  		struct bpf_async_cb *cb;
+>  		struct bpf_hrtimer *timer;
+> +		struct bpf_work *work;
+>  	};
+>  	/* bpf_spin_lock is used here instead of spinlock_t to make
+>  	 * sure that it always fits into space reserved by struct bpf_timer
+> @@ -1124,6 +1131,7 @@ struct bpf_async_kern {
+>  
+>  enum bpf_async_type {
+>  	BPF_ASYNC_TYPE_TIMER = 0,
+> +	BPF_ASYNC_TYPE_WQ,
+>  };
+>  
+>  static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+> @@ -1167,11 +1175,75 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+>  	return HRTIMER_NORESTART;
+>  }
+>  
+> +static void bpf_wq_work(struct work_struct *work)
+> +{
+> +	struct bpf_work *w = container_of(work, struct bpf_work, work);
+> +	struct bpf_tramp_run_ctx __maybe_unused run_ctx;
+> +	struct bpf_prog *prog = w->cb.prog;
+> +	unsigned int flags = w->cb.flags;
+> +	struct bpf_map *map = w->cb.map;
+> +	bpf_callback_t callback_fn;
+> +	void *value = w->cb.value;
+> +	void *key;
+> +	u32 idx;
+> +
+> +	BTF_TYPE_EMIT(struct bpf_wq);
+> +
+> +	callback_fn = READ_ONCE(w->cb.callback_fn);
+> +	if (!callback_fn || !prog)
+> +		return;
+> +
+> +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
+> +		struct bpf_array *array = container_of(map, struct bpf_array, map);
+> +
+> +		/* compute the key */
+> +		idx = ((char *)value - array->value) / array->elem_size;
+> +		key = &idx;
+> +	} else { /* hash or lru */
+> +		key = value - round_up(map->key_size, 8);
+> +	}
+> +
+> +	run_ctx.bpf_cookie = 0;
+> +
+> +	if (flags & BPF_F_WQ_SLEEPABLE) {
+> +		if (!__bpf_prog_enter_sleepable_recur(prog, &run_ctx)) {
+> +			/* recursion detected */
+> +			__bpf_prog_exit_sleepable_recur(prog, 0, &run_ctx);
+> +			return;
+> +		}
+> +	} else {
+> +		if (!__bpf_prog_enter_recur(prog, &run_ctx)) {
+> +			/* recursion detected */
+> +			__bpf_prog_exit_recur(prog, 0, &run_ctx);
+> +			return;
+> +		}
+> +	}
+> +
+> +	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
+> +	/* The verifier checked that return value is zero. */
+> +
+> +	if (flags & BPF_F_WQ_SLEEPABLE)
+> +		__bpf_prog_exit_sleepable_recur(prog, 0 /* bpf_prog_run does runtime stats */,
+> +						&run_ctx);
+> +	else
+> +		__bpf_prog_exit_recur(prog, 0, &run_ctx);
+> +}
+> +
+> +static void bpf_wq_delete_work(struct work_struct *work)
+> +{
+> +	struct bpf_work *w = container_of(work, struct bpf_work, delete_work);
+> +
+> +	cancel_work_sync(&w->work);
+> +
+> +	kfree_rcu(w, cb.rcu);
+> +}
+> +
+>  static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u64 flags,
+>  			    enum bpf_async_type type)
+>  {
+>  	struct bpf_async_cb *cb;
+>  	struct bpf_hrtimer *t;
+> +	struct bpf_work *w;
+>  	clockid_t clockid;
+>  	size_t size;
+>  	int ret = 0;
+> @@ -1183,6 +1255,9 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>  	case BPF_ASYNC_TYPE_TIMER:
+>  		size = sizeof(struct bpf_hrtimer);
+>  		break;
+> +	case BPF_ASYNC_TYPE_WQ:
+> +		size = sizeof(struct bpf_work);
+> +		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -1201,13 +1276,22 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>  		goto out;
+>  	}
+>  
+> -	if (type == BPF_ASYNC_TYPE_TIMER) {
+> +	switch (type) {
+> +	case BPF_ASYNC_TYPE_TIMER:
+>  		clockid = flags & (MAX_CLOCKS - 1);
+>  		t = (struct bpf_hrtimer *)cb;
+>  
+>  		hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
+>  		t->timer.function = bpf_timer_cb;
+>  		cb->value = (void *)async - map->record->timer_off;
+> +		break;
+> +	case BPF_ASYNC_TYPE_WQ:
+> +		w = (struct bpf_work *)cb;
+> +
+> +		INIT_WORK(&w->work, bpf_wq_work);
+> +		INIT_WORK(&w->delete_work, bpf_wq_delete_work);
+> +		cb->value = (void *)async - map->record->wq_off;
+> +		break;
+>  	}
+>  	cb->map = map;
+>  	cb->prog = NULL;
+> @@ -1473,7 +1557,19 @@ void bpf_timer_cancel_and_free(void *val)
+>   */
+>  void bpf_wq_cancel_and_free(void *val)
+>  {
+> +	struct bpf_work *work;
+> +
+>  	BTF_TYPE_EMIT(struct bpf_wq);
+> +
+> +	work = (struct bpf_work *)__bpf_async_cancel_and_free(val);
+> +	if (!work)
+> +		return;
+> +	/* Trigger cancel of the sleepable work, but *do not* wait for
+> +	 * it to finish if it was running as we might not be in a
+> +	 * sleepable context.
+> +	 * kfree will be called once the work has finished.
+> +	 */
+> +	schedule_work(&work->delete_work);
+>  }
+>  
+>  BPF_CALL_2(bpf_kptr_xchg, void *, map_value, void *, ptr)
+> @@ -2612,6 +2708,19 @@ __bpf_kfunc void bpf_throw(u64 cookie)
+>  	WARN(1, "A call to BPF exception callback should never return\n");
+>  }
+>  
+> +__bpf_kfunc int bpf_wq_init(struct bpf_wq *wq, void *map, unsigned int flags)
+> +{
+> +	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
+> +
+> +	BUILD_BUG_ON(sizeof(struct bpf_async_kern) > sizeof(struct bpf_wq));
+> +	BUILD_BUG_ON(__alignof__(struct bpf_async_kern) != __alignof__(struct bpf_wq));
+> +
+> +	if (flags & ~BPF_F_WQ_SLEEPABLE)
+> +		return -EINVAL;
+> +
+> +	return __bpf_async_init(async, map, flags, BPF_ASYNC_TYPE_WQ);
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>  
+>  BTF_KFUNCS_START(generic_btf_ids)
+> @@ -2689,6 +2798,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+>  BTF_ID_FLAGS(func, bpf_dynptr_size)
+>  BTF_ID_FLAGS(func, bpf_dynptr_clone)
+>  BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
+> +BTF_ID_FLAGS(func, bpf_wq_init)
+>  BTF_KFUNCS_END(common_btf_ids)
+>  
+>  static const struct btf_kfunc_id_set common_kfunc_set = {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 112faf2cd7e9..5e8c1e65fe8c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11038,6 +11038,7 @@ enum special_kfunc_type {
+>  	KF_bpf_percpu_obj_drop_impl,
+>  	KF_bpf_throw,
+>  	KF_bpf_iter_css_task_new,
+> +	KF_bpf_wq_init,
+>  };
+>  
+>  BTF_SET_START(special_kfunc_set)
+> @@ -11064,6 +11065,7 @@ BTF_ID(func, bpf_throw)
+>  #ifdef CONFIG_CGROUPS
+>  BTF_ID(func, bpf_iter_css_task_new)
+>  #endif
+> +BTF_ID(func, bpf_wq_init)
+>  BTF_SET_END(special_kfunc_set)
+>  
+>  BTF_ID_LIST(special_kfunc_list)
+> @@ -11094,6 +11096,7 @@ BTF_ID(func, bpf_iter_css_task_new)
+>  #else
+>  BTF_ID_UNUSED
+>  #endif
+> +BTF_ID(func, bpf_wq_init)
+>  
+>  static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+>  {
+> @@ -11171,6 +11174,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+>  	if (is_kfunc_arg_wq(meta->btf, &args[argno]))
+>  		return KF_ARG_PTR_TO_WORKQUEUE;
+>  
+> +	if (meta->func_id == special_kfunc_list[KF_bpf_wq_init] && argno == 1)
+> +		return KF_ARG_PTR_TO_MAP;
+> +
 
-bpf_kfunc void do_stuff_with_thread(struct thread_info *ti) KF_TRUSTED_ARGS
-and use it as:
-task =3D bpf_get_current_task_btf();
-do_stuff_with_thread(&task->thread_info);
+Hmm. This function has this bit:
+        if (is_kfunc_arg_map(meta->btf, &args[argno]))
+                return KF_ARG_PTR_TO_MAP;
 
-We have similar setup with:
-struct bpf_cpumask {
-        cpumask_t cpumask;
-...
-};
+Just do:
++__bpf_kfunc int bpf_wq_init(struct bpf_wq *wq, void *map__map, ...
 
-and kfunc that accepts trusted cpumask_t * will accept
-trusted struct bpf_cpumask *.
-The other way around should be rejected, of course.
-Similar approach should work with file/path.
-The only difference is that the offset will be non-zero.
+It was specifically added for bpf_arena_alloc_pages to pass pointer to a map.
+In case of arena map type it's used as:
+struct {
+        __uint(type, BPF_MAP_TYPE_ARENA);
+        ...
+} arena SEC(".maps");
 
-process_kf_arg_ptr_to_btf_id() needs to get smarter.
-
-David Vernet added that check:
-
-WARN_ON_ONCE(is_kfunc_trusted_args(meta) && reg->off);
-as part of commit b613d335a743c.
-
-iirc the reg->off=3D=3D0 check is there, as an extra caution.
-
-We can allow off!=3D0 and it won't confuse btf_type_ids_nocast_alias.
-
-    struct  nf_conn___init {
-            int another_field_at_off_zero;
-            struct nf_conn ct;
-    };
-
-will still trigger strict_type_match as expected.
-
-Maybe other places in the verifier need to get smarter too
-to allow non-zero offset into kf_trusted_args.
+page = bpf_arena_alloc_pages(&arena, ...)
+libbpf and the verifier do the right thing.
+I think it should work here as well.
 
