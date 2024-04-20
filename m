@@ -1,206 +1,191 @@
-Return-Path: <bpf+bounces-27297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE5428ABA9F
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 11:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6A38ABAAB
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 11:14:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C8E428158F
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 09:13:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A81D280A9F
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 09:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93EBE5FEE4;
-	Sat, 20 Apr 2024 09:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00796374C1;
+	Sat, 20 Apr 2024 09:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QUvkWc2c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WiOFFcIs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16CCB168DD;
-	Sat, 20 Apr 2024 09:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C55B107B2;
+	Sat, 20 Apr 2024 09:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713604224; cv=none; b=WB+F+22KGpsEmkzTfJphwPfkjIT8jJ/3SccAcpzU0ELbymLE/+3JRgFydgy0U0u1yOnqGUua4EfYoJXI83dkYfcRQyNjTfZTRWm4qc6liyb4lTMGfCDULoHTevT0vXg91OEMgsy2oGVEm9odRmmigQrHL/tiKwm0X452PtW6z5E=
+	t=1713604294; cv=none; b=Fy48uhlfA6rQXRwBe/7xJ1A+SPT7iQ6GlhXZDS+jYjYbIB+mkAH6149Bfl+v+GNbJ3a6tbmDKSQcoHKPsSq0C1ZdvMkNE1HkH+nll2AgdeRwf5vWVz6LJKUASjBxDNiNM9KZmK53cwQVNAD53RUkdcy2KHt0mSz/jkZAzjTCfN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713604224; c=relaxed/simple;
-	bh=qGZjFddvFTEJDUjSRhXsPI6GLpgSUvVfxQ3f8hxbt/A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Yr1DcGJOJGtO20luBIJdAixCJISOc58QI9TbHXq69jRMc8oyB9bAe3GOxBpj1R1gH1ayT4ZU8xcRxwkB93cPy/SSXRBBAt/t8iAkfQKwOndq7FJEKzUU5TG5VcrQNDssPpGOsl2L7DUp8PTdRWHyV9xqDOB/kuFo0GgsNC8F6Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QUvkWc2c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96AECC32781;
-	Sat, 20 Apr 2024 09:10:20 +0000 (UTC)
+	s=arc-20240116; t=1713604294; c=relaxed/simple;
+	bh=gx+4p/uDBfF9iByUyBCzGltg748yzYFaTBhBB8UsaaI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=A6Qxdt0AlZnQ2f3oFAxplmICh7d02SlpM8GM6tpCIJu0o5bSf4PZiaxfL/79BMxWNCKNtC/B5xrShbqSSABPNlnZRrSQFY+kHCeJKOwIcmo23PP1fyJ02HovmuRPj1m+tQBVbx1u8eCkaJ1m8j4q6zWhPwg6WAuT+sAUr2zN/2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WiOFFcIs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72072C072AA;
+	Sat, 20 Apr 2024 09:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713604223;
-	bh=qGZjFddvFTEJDUjSRhXsPI6GLpgSUvVfxQ3f8hxbt/A=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=QUvkWc2cQ5FEOPmue8gma/1Eh59rVt6IybUfRL5P+Z8VJj7EJUKsrPXTtHvfTTJ6O
-	 uSRWfAsHo7/Ww2p8EDQiBKL++FsojyNJGxH0cS2S/iuXW7ilH3BTyIT8FPB2ibAEXq
-	 U6Vwa/CU/YlGJchD+9SzzLjGKx6m2vrwc3Z2//K5N5Id/Oe2C0ZpO3g8bm+xasa90W
-	 LTwzIy+Pp7c9CnotC696wh0elKugjISiOi+Vj/alCdQvxV/mojA2yLIjdxh42YYokq
-	 mR4QaFNi3OYzgAr10pL8FNAO662Fobr6vwq3LxgEvOGHVW7YPA2CJriNvx/MAkJjkL
-	 CIEnptCslDcUA==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Sat, 20 Apr 2024 11:09:16 +0200
-Subject: [PATCH bpf-next v2 16/16] selftests/bpf: wq: add bpf_wq_start()
- checks
+	s=k20201202; t=1713604294;
+	bh=gx+4p/uDBfF9iByUyBCzGltg748yzYFaTBhBB8UsaaI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WiOFFcIsUZjqS2Hu+iFB3XXcMZa5pzL1HBjixIci52d8Dz9R1WD9G9VB56jkKYeZ0
+	 yDy0eI1sbeixq6g8aSxoZ6nlN7GVrsoYNR+OtdV5qezCXWWNalxmX0AQMOmxxVvjB8
+	 mDIxwHW3sBjsjL/fldCkVAVACyfuDXihwfUSyE32m5VVdZN1QGS01/8WCa5+GHvn0e
+	 eqnq4e8Pva3SV5BNn9cHwpijQL1+svPQU6wcQztqSBwE5iNQ3v/A2Gh1fOxnMqAWe6
+	 p9b3Z1WSt5cu2C+P9w6zBxw+xdBSQlJVW4JFCyv2uFOrSDGSq+nT5wb2kq12tKe8xw
+	 OK7o8nQPMJ1wg==
+Date: Sat, 20 Apr 2024 18:11:21 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Song Liu <song@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Peter
+ Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, Alexandre
+ Ghiti <alexghiti@rivosinc.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Bjorn Topel <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, "David S. Miller"
+ <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Donald Dutile
+ <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, Heiko Carstens
+ <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen
+ <chenhuacai@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, Luis
+ Chamberlain <mcgrof@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nadav Amit <nadav.amit@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Puranjay Mohan <puranjay12@gmail.com>, Rick Edgecombe
+ <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, Steven
+ Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Will
+ Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and
+ execmem_free()
+Message-Id: <20240420181121.d6c7be11a6f98dc2462f8b41@kernel.org>
+In-Reply-To: <ZiNDGjkcqEPqruza@kernel.org>
+References: <ZiE91CJcNw7gBj9g@kernel.org>
+	<CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+	<ZiFd567L4Zzm2okO@kernel.org>
+	<CAPhsuW5SL4_=ZXdHZV8o0KS+5Vf25UMvEKhRgFQLioFtf2pgoQ@mail.gmail.com>
+	<ZiIVVBgaDN4RsroT@kernel.org>
+	<CAPhsuW7WoU+a46FhqqH8f-3=ehxeD4wSgKDWegMin1pT49OSWw@mail.gmail.com>
+	<ZiKjmaDgz_56ovbv@kernel.org>
+	<CAPhsuW7Nj1Sa_9xQtTgHz9AmX39zdh2x2COqA-qmkfpfX9hNWw@mail.gmail.com>
+	<ZiLNGgVSQ7_cg58y@kernel.org>
+	<CAPhsuW4KRM4O4RFbYQrt=Coqyh9w29WiF2YF=8soDfauLFsKBA@mail.gmail.com>
+	<ZiNDGjkcqEPqruza@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240420-bpf_wq-v2-16-6c986a5a741f@kernel.org>
-References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org>
-In-Reply-To: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713604159; l=3847;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=qGZjFddvFTEJDUjSRhXsPI6GLpgSUvVfxQ3f8hxbt/A=;
- b=2Wcej7WSXsHkSAUb8lqxEWFpYb5RUVi3uXOjQdo6sST1koy4R1cfkISOEH0g+Iwzv3kP0Yq4B
- Blah5GRUWv8AL4oLIzaHAffmTPL2VLj6v5yvDN+MkHQJu5rRHdEU0IJ
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Allows to test if allocation/free works
+On Sat, 20 Apr 2024 07:22:50 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> On Fri, Apr 19, 2024 at 02:42:16PM -0700, Song Liu wrote:
+> > On Fri, Apr 19, 2024 at 1:00 PM Mike Rapoport <rppt@kernel.org> wrote:
+> > >
+> > > On Fri, Apr 19, 2024 at 10:32:39AM -0700, Song Liu wrote:
+> > > > On Fri, Apr 19, 2024 at 10:03 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > > [...]
+> > > > > > >
+> > > > > > > [1] https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
+> > > > > >
+> > > > > > For the ROX to work, we need different users (module text, kprobe, etc.) to have
+> > > > > > the same execmem_range. From [1]:
+> > > > > >
+> > > > > > static void *execmem_cache_alloc(struct execmem_range *range, size_t size)
+> > > > > > {
+> > > > > > ...
+> > > > > >        p = __execmem_cache_alloc(size);
+> > > > > >        if (p)
+> > > > > >                return p;
+> > > > > >       err = execmem_cache_populate(range, size);
+> > > > > > ...
+> > > > > > }
+> > > > > >
+> > > > > > We are calling __execmem_cache_alloc() without range. For this to work,
+> > > > > > we can only call execmem_cache_alloc() with one execmem_range.
+> > > > >
+> > > > > Actually, on x86 this will "just work" because everything shares the same
+> > > > > address space :)
+> > > > >
+> > > > > The 2M pages in the cache will be in the modules space, so
+> > > > > __execmem_cache_alloc() will always return memory from that address space.
+> > > > >
+> > > > > For other architectures this indeed needs to be fixed with passing the
+> > > > > range to __execmem_cache_alloc() and limiting search in the cache for that
+> > > > > range.
+> > > >
+> > > > I think we at least need the "map to" concept (initially proposed by Thomas)
+> > > > to get this work. For example, EXECMEM_BPF and EXECMEM_KPROBE
+> > > > maps to EXECMEM_MODULE_TEXT, so that all these actually share
+> > > > the same range.
+> > >
+> > > Why?
+> > 
+> > IIUC, we need to update __execmem_cache_alloc() to take a range pointer as
+> > input. module text will use "range" for EXECMEM_MODULE_TEXT, while kprobe
+> > will use "range" for EXECMEM_KPROBE. Without "map to" concept or sharing
+> > the "range" object, we will have to compare different range parameters to check
+> > we can share cached pages between module text and kprobe, which is not
+> > efficient. Did I miss something?
 
----
+Song, thanks for trying to eplain. I think I need to explain why I used
+module_alloc() originally.
 
-changes in v2:
-- remove #define CLOCK_MONOTONIC 1 leftover
----
- tools/testing/selftests/bpf/bpf_experimental.h |  1 +
- tools/testing/selftests/bpf/prog_tests/wq.c    | 22 ++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/wq.c         | 20 +++++++++++++++++---
- 3 files changed, 40 insertions(+), 3 deletions(-)
+This depends on how kprobe features are implemented on the architecture, and
+how much features are supported on kprobes.
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index b80b39f76034..93c5a6c446b3 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -471,6 +471,7 @@ extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __
- extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
- 
- extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
-+extern int bpf_wq_start(struct bpf_wq *wq, unsigned int flags) __weak __ksym;
- extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
- 		int (callback_fn)(void *map, int *key, struct bpf_wq *wq),
- 		unsigned int flags__k, void *aux__ign) __ksym;
-diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
-index 26ab69796103..8a4a91d944cc 100644
---- a/tools/testing/selftests/bpf/prog_tests/wq.c
-+++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-@@ -6,9 +6,31 @@
- 
- void serial_test_wq(void)
- {
-+	struct wq *wq_skel = NULL;
-+	int err, prog_fd;
-+
- 	LIBBPF_OPTS(bpf_test_run_opts, topts);
- 
- 	RUN_TESTS(wq);
-+
-+	/* re-run the success test to check if the timer was actually executed */
-+
-+	wq_skel = wq__open_and_load();
-+	if (!ASSERT_OK_PTR(wq_skel, "wq_skel_load"))
-+		return;
-+
-+	err = wq__attach(wq_skel);
-+	if (!ASSERT_OK(err, "wq_attach"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(wq_skel->progs.test_syscall_array_sleepable);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	usleep(50); /* 10 usecs should be enough, but give it extra */
-+
-+	ASSERT_EQ(wq_skel->bss->ok_sleepable, (1 << 1), "ok_sleepable");
- }
- 
- void serial_test_failures_wq(void)
-diff --git a/tools/testing/selftests/bpf/progs/wq.c b/tools/testing/selftests/bpf/progs/wq.c
-index f746296d32b1..8011a27a2fbd 100644
---- a/tools/testing/selftests/bpf/progs/wq.c
-+++ b/tools/testing/selftests/bpf/progs/wq.c
-@@ -49,12 +49,19 @@ struct {
- 	__type(value, struct elem);
- } lru SEC(".maps");
- 
-+__u32 ok;
-+__u32 ok_sleepable;
-+
- static int test_elem_callback(void *map, int *key,
- 		int (callback_fn)(void *map, int *key, struct bpf_wq *wq))
- {
- 	struct elem init = {}, *val;
- 	struct bpf_wq *wq;
- 
-+	if ((ok & (1 << *key) ||
-+	    (ok_sleepable & (1 << *key))))
-+		return -22;
-+
- 	if (map == &lru &&
- 	    bpf_map_update_elem(map, key, &init, 0))
- 		return -1;
-@@ -70,6 +77,9 @@ static int test_elem_callback(void *map, int *key,
- 	if (bpf_wq_set_callback(wq, callback_fn, 0))
- 		return -4;
- 
-+	if (bpf_wq_start(wq, 0))
-+		return -5;
-+
- 	return 0;
- }
- 
-@@ -79,6 +89,10 @@ static int test_hmap_elem_callback(void *map, int *key,
- 	struct hmap_elem init = {}, *val;
- 	struct bpf_wq *wq;
- 
-+	if ((ok & (1 << *key) ||
-+	    (ok_sleepable & (1 << *key))))
-+		return -22;
-+
- 	if (bpf_map_update_elem(map, key, &init, 0))
- 		return -1;
- 
-@@ -93,12 +107,12 @@ static int test_hmap_elem_callback(void *map, int *key,
- 	if (bpf_wq_set_callback(wq, callback_fn, 0))
- 		return -4;
- 
-+	if (bpf_wq_start(wq, 0))
-+		return -5;
-+
- 	return 0;
- }
- 
--__u32 ok;
--__u32 ok_sleepable;
--
- /* callback for non sleepable workqueue */
- static int wq_callback(void *map, int *key, struct bpf_wq *work)
- {
+Because kprobe jump optimization and kprobe jump-back optimization need to
+use a jump instruction to jump into the trampoline and jump back from the
+trampoline directly, if the architecuture jmp instruction supports +-2GB range
+like x86, it needs to allocate the trampoline buffer inside such address space.
+This requirement is similar to the modules (because module function needs to
+call other functions in the kernel etc.), at least kprobes on x86 used
+module_alloc().
+
+However, if an architecture only supports breakpoint/trap based kprobe,
+it does not need to consider whether the execmem is allocated.
+
+> 
+> We can always share large ROX pages as long as they are within the correct
+> address space. The permissions for them are ROX and the alignment
+> differences are due to KASAN and this is handled during allocation of the
+> large page to refill the cache. __execmem_cache_alloc() only needs to limit
+> the search for the address space of the range.
+
+So I don't think EXECMEM_KPROBE always same as EXECMEM_MODULE_TEXT, it
+should be configured for each arch. Especially, if it is only used for
+searching parameter, it looks OK to me.
+
+Thank you,
+
+> 
+> And regardless, they way we deal with sharing of the cache can be sorted
+> out later.
+> 
+> > Thanks,
+> > Song
+> 
+> -- 
+> Sincerely yours,
+> Mike.
+> 
+
 
 -- 
-2.44.0
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
