@@ -1,191 +1,293 @@
-Return-Path: <bpf+bounces-27317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D624C8ABBEF
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 16:05:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C958ABC48
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 17:59:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02CB81C208BE
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 14:05:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5B3C2815BF
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 15:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636672628B;
-	Sat, 20 Apr 2024 14:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FA5376FE;
+	Sat, 20 Apr 2024 15:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="klwwiv2I"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="LIPxk7PH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB8AB669;
-	Sat, 20 Apr 2024 14:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B566625
+	for <bpf@vger.kernel.org>; Sat, 20 Apr 2024 15:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713621951; cv=none; b=LYAwKVC69Y3kxFsrD4VC+mRkoFgyhitmO2tim+U884SAeTyxVJR1CT6BI8/9jqXCQ1tby/+rLTvbcy4/cGZbsct6qXhZg3r2RMtkKKz4sopfGhmj0KPt5rhlkHtvA72lPmA816uNriIh203LlXxFPII/mpfDixOROAaYLdMiYWc=
+	t=1713628760; cv=none; b=GDhoivFOvs2iSZkbWYimoGI91Ae9pePB6GdK8HoIQwtYy+1xuBHtzd50dRB+nO5DZwWrwFwuu9A6iErx6tKbXx3sAKDARPnu63+yzZqP2Uf9lQ8Ko6xXzVwIWTnfckhI4XC/vDCNBt/qXcLsJlUBNRCf5Nl87sUePu6ERvKJXrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713621951; c=relaxed/simple;
-	bh=cqnb9OJE3P1VZzS2ArQ+qXik84KwiE/PGpx9+DVa4f8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BvZjlodAMqknlQd2E0IGTJlr++7sNWA9jyNQx8TrULmCtKPuvUJPmr5GgNNeF9Jr3uHAUAkKBZ5atP3GvejKQJp5QDp9PRtCXdEXYSfXBxHPZDtTofkOToEmyLm4n0t2ByefGc//BfcdvY6KKFDxiQjOceJ3cyvHVHMoyQhgewc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=klwwiv2I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5131BC072AA;
-	Sat, 20 Apr 2024 14:05:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713621950;
-	bh=cqnb9OJE3P1VZzS2ArQ+qXik84KwiE/PGpx9+DVa4f8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=klwwiv2IN3Bw2Zhip0k3i9mu8/tRn0Io6OkXzF4aR34U+3F6WlVAmoo1pPAFdHmz5
-	 OXYv2DP1r6lBPcG70Exz/lfDYDIdN0m+iL6HRB5hiVRqL7dQgX6WjgKGsMX1nKAiTn
-	 4I6Dt3Tt7ENhCWla7PTfE7k+lgam8etzK8xoB9P892TlgisT6c5KbaSscKHkq9k0mV
-	 FtCWBClXS0tVqGBjjfJX6ih8hEJg27Dvn3xGzKD1s4Kqfc/NW96Ov5LnwNwVqiQcPt
-	 Ht4hTephValjoYGwROjtCEPGzSSsakhVRWz/nOMjrAnvXGCivKBI36N0OFVg7dUD9d
-	 /M1oFVP8EwnLg==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51967f75729so3474555e87.0;
-        Sat, 20 Apr 2024 07:05:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX/Wyfc/V0PSW1n52DjSFYCzLwlhCnxDhY06y9F7cZf4Zb10R0gSORpgkATqPzKBVkfR7H2F34lkYamxn4PGy+TrqDnchSg06TkRDSWB2O+lQxVHI2zFTM1BtilymGXo51lpfByafxw3zJ0ScX6uCU7Bt0PHnLoCqhupNQXCvlO1W3yX7y5MFJF4TLNW+GLP3DIW1OU0BItPVwKrA==
-X-Gm-Message-State: AOJu0YxEKTXaP95ySK1kz214nqkBYIfxxSSqmeRI+NKwTmvtqiyuavH1
-	F1pY76Q2VF63CqVVlnGmP5wsxWiFzlXOSbvi58LZ6TITW6DmwqAgXhoHUqrLs90KwizdNSCLLm1
-	tq2fw29syY7VK4PcxS18VnK738jQ=
-X-Google-Smtp-Source: AGHT+IG0Ocg1AZoSs3v/LzffVF+IuMaiqTRS4giDtD5s/bJ/AESAhWEBu9R1lIxKpWn5wp61vOAlPJk5ja4Sgp0X0wY=
-X-Received: by 2002:a05:6512:3488:b0:51a:d2ea:97c3 with SMTP id
- v8-20020a056512348800b0051ad2ea97c3mr1965074lfr.69.1713621949038; Sat, 20 Apr
- 2024 07:05:49 -0700 (PDT)
+	s=arc-20240116; t=1713628760; c=relaxed/simple;
+	bh=nNRohb4TCqxwIK1Y/PiM1fnTGVi7tniX1l39w0EWGdQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X7bNGxBjiTyU5sTWtt+wSpDzibA3GCrexqf7f3jttzRiIDIvqkIZ+1POwINtIaHFR8uGQnlvSkKSIOQp4ozhJmz8GI4j0KaB4E9lvEVCJyWt52LnXluDahePNx/AwH+iXd/tEMcr04X4AfhjK0iU785FrPfVB7m1hhYOBhIfbmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=LIPxk7PH; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E8CDA3F626
+	for <bpf@vger.kernel.org>; Sat, 20 Apr 2024 15:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1713628755;
+	bh=L2v1NeYeJE3K4VQPmxfg+80DARtMgvysXIKgeUBdR7A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+	b=LIPxk7PHqN2WqphaRY9jgEXQC94B3y6EZ6CSEWzJwsOoorWp891yEB+yiH5R/Z6L2
+	 bMiruy4mjcSkO3w/5TwXjiOvT8TzlQqOLX14L9CoguBzZW1RwFD+eM0ZEzEjC/3ra7
+	 TGNaDAI5fg0t61oNDKpNSVfPhSN58trO99gHe5GnMCd5GUCE8TGYA68vwoSkSP/Q73
+	 ZlxhmUDgpJd2vrGqeWrp7dHrp5zPk9eEte3nfp7dceyKzVNKB6DWJibXvw35Aj4Q34
+	 jyh0qdmN2XcTBqxNqVcU3ol08+/1awu/zJ0j1vAMxCmhXkL8vgA1H55eIxJIOlyE56
+	 kEZuKt7riqiNw==
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-419e3f83aeeso4124945e9.1
+        for <bpf@vger.kernel.org>; Sat, 20 Apr 2024 08:59:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713628755; x=1714233555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L2v1NeYeJE3K4VQPmxfg+80DARtMgvysXIKgeUBdR7A=;
+        b=G2jVP2rSpBajbqMvCXaVAK5Pvq00HOeaBWouIs9H08itZ1OE3GeZEhBDKn46nplXAP
+         T7ajj8kX/9dOhx+Afkxrh+wiOSbYEVnkgKEZ+KBzUWzUA0L5yScGq84E7n0Po3ZmF9p9
+         i3RYltrXshFPj894+Wrd+aapAU5b4fbvg7tVe7yuG3HgSw7sFx6wY1Ly6aIad/Brvhvm
+         lDawDWZ46MKO2ASzyjTUu6UjNKh6ASnONchf+sgVh9NI3Fp2oBrkH23O0HYdMULfwXdC
+         BjtB9MEvOb8LCONQFR0cehx8VFYQ6igaQ7yhqzFGjU3t5syCMofO6litiugHXDIsZORr
+         uQfA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVWRN7l3U66BXiO7oCgnWVSflzHycWwGebFw7mRWlhSyzNeiT72M52ivSwKJh7XOvDRCBVPbFvtdIwGW/BdV2xe+vb
+X-Gm-Message-State: AOJu0Yyo/1/6bI49a4qx+FoZTN7IOe7GPnzJpeWcflZBN7piwb04GNA8
+	W2d3vhlgXB3fBGYBCFBoeRBswaXOxLAtrkE39WW084AXk85p6EG1xl3iiIW6xkW5lKtHYuVaIVT
+	psqjUyrggFd/2CpS++X5Pr2J4b058kMISODYf+1GWjneWzQ1ZdrWYgFT+Bl10NQJM8Q==
+X-Received: by 2002:a05:600c:5008:b0:419:db01:f391 with SMTP id n8-20020a05600c500800b00419db01f391mr2064587wmr.12.1713628755019;
+        Sat, 20 Apr 2024 08:59:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IES1yNyzlrb+9WaiK0MZQfB1d9PfHUIaT+JsnQy9N4roDXlEI01EQiBXdSmC1jsqyYTOTc6dQ==
+X-Received: by 2002:a05:600c:5008:b0:419:db01:f391 with SMTP id n8-20020a05600c500800b00419db01f391mr2064560wmr.12.1713628754198;
+        Sat, 20 Apr 2024 08:59:14 -0700 (PDT)
+Received: from gpd.. ([151.57.165.71])
+        by smtp.gmail.com with ESMTPSA id r16-20020a5d6950000000b003477d26736dsm7154350wrw.94.2024.04.20.08.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Apr 2024 08:59:13 -0700 (PDT)
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Andrea Righi <andrea.righi@canonical.com>
+Subject: [PATCH] selftests/bpf: Add ring_buffer__consume_n test.
+Date: Sat, 20 Apr 2024 17:59:04 +0200
+Message-ID: <20240420155904.1450768-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415162041.2491523-5-ardb+git@google.com> <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
- <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
- <CAK7LNAQ8fhKUwK_m8uGfvBUBrAdXdMYM3_AA5zo2cQzhW3jE1A@mail.gmail.com>
- <CAMj1kXGYdjQz5n0uuiLHu8uc-YNE8eqUQWtGjg5pANo+0speQA@mail.gmail.com>
- <CAK7LNAT9Y5C+Shr1Pq=xrL2tcBK6rpBn05iovdZ2=kMHW5UCkw@mail.gmail.com>
- <CAMj1kXEbXfsNarFMbDC-Dzk6H9X9C4Ax2pWPSZhmt93mV4_Q2w@mail.gmail.com> <CAMj1kXFt5kbZ8yFgO-jU5ZP3-WZi5ZZJKKTCpEYRdUYFRj9CYQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXFt5kbZ8yFgO-jU5ZP3-WZi5ZZJKKTCpEYRdUYFRj9CYQ@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 20 Apr 2024 23:05:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARxd4KK7Yj0ah+tFrwWrnr9P=HqXwYQE86q9v8pxmCQNw@mail.gmail.com>
-Message-ID: <CAK7LNARxd4KK7Yj0ah+tFrwWrnr9P=HqXwYQE86q9v8pxmCQNw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] kbuild: Avoid weak external linkage where possible
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: patchwork-bot+netdevbpf@kernel.org, Ard Biesheuvel <ardb+git@google.com>, 
-	linux-kernel@vger.kernel.org, arnd@arndb.de, martin.lau@linux.dev, 
-	linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
-	andrii@kernel.org, olsajiri@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 20, 2024 at 11:00=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
->
-> On Sat, 20 Apr 2024 at 15:56, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Sat, 20 Apr 2024 at 15:42, Masahiro Yamada <masahiroy@kernel.org> wr=
-ote:
-> > >
-> > > On Sat, Apr 20, 2024 at 9:35=E2=80=AFPM Ard Biesheuvel <ardb@kernel.o=
-rg> wrote:
-> > > >
-> > > > On Sat, 20 Apr 2024 at 14:32, Masahiro Yamada <masahiroy@kernel.org=
-> wrote:
-> > > > >
-> > > > > On Fri, Apr 19, 2024 at 4:57=E2=80=AFPM Ard Biesheuvel <ardb@kern=
-el.org> wrote:
-> > > > > >
-> > > > > > On Tue, 16 Apr 2024 at 16:40, <patchwork-bot+netdevbpf@kernel.o=
-rg> wrote:
-> > > > > > >
-> > > > > > > Hello:
-> > > > > > >
-> > > > > > > This series was applied to bpf/bpf-next.git (master)
-> > > > > > > by Daniel Borkmann <daniel@iogearbox.net>:
-> > > > > > >
-> > > > > > > On Mon, 15 Apr 2024 18:20:42 +0200 you wrote:
-> > > > > > > > From: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > > >
-> > > > > > > > Weak external linkage is intended for cases where a symbol =
-reference
-> > > > > > > > can remain unsatisfied in the final link. Taking the addres=
-s of such a
-> > > > > > > > symbol should yield NULL if the reference was not satisfied=
-.
-> > > > > > > >
-> > > > > > > > Given that ordinary RIP or PC relative references cannot pr=
-oduce NULL,
-> > > > > > > > some kind of indirection is always needed in such cases, an=
-d in position
-> > > > > > > > independent code, this results in a GOT entry. In ordinary =
-code, it is
-> > > > > > > > arch specific but amounts to the same thing.
-> > > > > > > >
-> > > > > > > > [...]
-> > > > > > >
-> > > > > > > Here is the summary with links:
-> > > > > > >   - [v4,1/3] kallsyms: Avoid weak references for kallsyms sym=
-bols
-> > > > > > >     (no matching commit)
-> > > > > > >   - [v4,2/3] vmlinux: Avoid weak reference to notes section
-> > > > > > >     (no matching commit)
-> > > > > > >   - [v4,3/3] btf: Avoid weak external references
-> > > > > > >     https://git.kernel.org/bpf/bpf-next/c/fc5eb4a84e4c
-> > > > > > >
-> > > > > >
-> > > > > >
-> > > > > > Thanks.
-> > > > > >
-> > > > > > Masahiro, could you pick up patches #1 and #2 please?
-> > > > > >
-> > > > >
-> > > > >
-> > > > > I do not like PROVIDE() because it potentially shifts
-> > > > > a build error (i.e. link error) into
-> > > > > a run-time error, which is usually more difficult to debug
-> > > > > than build error.
-> > > > >
-> > > > > If someone references the kallsyms_* symbols
-> > > > > when CONFIG_KALLSYMS=3Dn, it is likely a mistake.
-> > > > > In general, it should be reported as a link error.
-> > > > >
-> > > >
-> > > > OK, so the PROVIDE() should be conditional on CONFIG_KALLSYM=3Dy. I=
- can fix that.
-> > >
-> > >
-> > > You may need to take care of the dependency
-> > > between CONFIG_KALLSYMS and CONFIG_VMCORE_INFO
-> > > because kernel/vmcore_info.c has references
-> > > to the kallsyms_* symbols.
-> > >
-> > > (I am still not a big fan of PROVIDE() though)
-> > >
-> >
-> >
-> > OK, how about we use weak definitions (as opposed to weak references)
-> > in kernel/kallsyms.c, which will get superseded by the actual ones in
-> > the second linker pass.
-> >
-> > The only difference is that we will use some space in the binary for
-> > the weak definitions that are never used in the final build.
+Add a testcase for the ring_buffer__consume_n() API.
 
+The test produces multiple samples in a ring buffer, using a
+sys_getpid() fentry prog, and consumes them from user-space in batches,
+rather than consuming all of them greedily, like ring_buffer__consume()
+does.
 
-I am fine if that fixes the issue.
+Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ .../selftests/bpf/prog_tests/ringbuf.c        | 65 +++++++++++++++++++
+ .../selftests/bpf/progs/test_ringbuf_n.c      | 52 +++++++++++++++
+ 3 files changed, 118 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
 
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index edc73f8f5aef..6332277edeca 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -455,7 +455,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+ LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
+ 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
+ 	core_kern.c core_kern_overflow.c test_ringbuf.c			\
+-	test_ringbuf_map_key.c
++	test_ringbuf_n.c test_ringbuf_map_key.c
+ 
+ # Generate both light skeleton and libbpf skeleton for these
+ LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+index 48c5695b7abf..7e085bfce9b5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -13,6 +13,7 @@
+ #include <linux/perf_event.h>
+ #include <linux/ring_buffer.h>
+ #include "test_ringbuf.lskel.h"
++#include "test_ringbuf_n.lskel.h"
+ #include "test_ringbuf_map_key.lskel.h"
+ 
+ #define EDONE 7777
+@@ -60,6 +61,7 @@ static int process_sample(void *ctx, void *data, size_t len)
+ }
+ 
+ static struct test_ringbuf_map_key_lskel *skel_map_key;
++static struct test_ringbuf_n_lskel *skel_n;
+ static struct test_ringbuf_lskel *skel;
+ static struct ring_buffer *ringbuf;
+ 
+@@ -326,6 +328,67 @@ static void ringbuf_subtest(void)
+ 	test_ringbuf_lskel__destroy(skel);
+ }
+ 
++/*
++ * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
++ * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
++ */
++#define N_TOT_SAMPLES	32
++#define N_SAMPLES	4
++
++/* Sample value to verify the callback validity */
++#define SAMPLE_VALUE	42L
++
++static int process_n_sample(void *ctx, void *data, size_t len)
++{
++	struct sample *s = data;
++
++	CHECK(s->value != SAMPLE_VALUE,
++	      "sample_value", "exp %ld, got %ld\n", SAMPLE_VALUE, s->value);
++
++	return 0;
++}
++
++static void ringbuf_n_subtest(void)
++{
++	int err, i;
++
++	skel_n = test_ringbuf_n_lskel__open();
++	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
++		return;
++
++	skel_n->maps.ringbuf.max_entries = getpagesize();
++	skel_n->bss->pid = getpid();
++
++	err = test_ringbuf_n_lskel__load(skel_n);
++	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
++		goto cleanup;
++
++	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
++				   process_n_sample, NULL, NULL);
++	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
++		goto cleanup;
++
++	err = test_ringbuf_n_lskel__attach(skel_n);
++	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
++		goto cleanup_ringbuf;
++
++	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
++	skel->bss->value = SAMPLE_VALUE;
++	for (i = 0; i < N_TOT_SAMPLES; i++)
++		syscall(__NR_getpgid);
++
++	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
++	for (i = 0; i < N_TOT_SAMPLES; i += err) {
++		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
++		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
++	}
++
++cleanup_ringbuf:
++	ring_buffer__free(ringbuf);
++cleanup:
++	test_ringbuf_n_lskel__destroy(skel_n);
++}
++
+ static int process_map_key_sample(void *ctx, void *data, size_t len)
+ {
+ 	struct sample *s;
+@@ -384,6 +447,8 @@ void test_ringbuf(void)
+ {
+ 	if (test__start_subtest("ringbuf"))
+ 		ringbuf_subtest();
++	if (test__start_subtest("ringbuf_n"))
++		ringbuf_n_subtest();
+ 	if (test__start_subtest("ringbuf_map_key"))
+ 		ringbuf_map_key_subtest();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+new file mode 100644
+index 000000000000..b98b5bb20699
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
++
++#include <linux/bpf.h>
++#include <sched.h>
++#include <unistd.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++#define TASK_COMM_LEN 16
++
++struct sample {
++	int pid;
++	int seq;
++	long value;
++	char comm[16];
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++} ringbuf SEC(".maps");
++
++int pid = 0;
++long value = 0;
++
++/* inner state */
++long seq = 0;
++
++SEC("fentry/" SYS_PREFIX "sys_getpgid")
++int test_ringbuf_n(void *ctx)
++{
++	int cur_pid = bpf_get_current_pid_tgid() >> 32;
++	struct sample *sample;
++
++	if (cur_pid != pid)
++		return 0;
++
++	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
++	if (!sample)
++		return 0;
++
++	sample->pid = pid;
++	sample->seq = seq++;
++	sample->value = value;
++	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
++
++	bpf_ringbuf_submit(sample, 0);
++
++	return 0;
++}
+-- 
+2.43.0
 
-"git grep __weak" shows a bunch of weak definitions.
-
-
-
-
-> Btw those references in kernel/vmcore_info.c are guarded by #ifdef
-> CONFIG_KALLSYMS=3Dy too.
-
-Ah, OK.
-Then, this is not an issue.
-
-
---=20
-Best Regards
-Masahiro Yamada
 
