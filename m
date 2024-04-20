@@ -1,198 +1,165 @@
-Return-Path: <bpf+bounces-27275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 857B48AB949
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 05:53:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F6548AB984
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 06:24:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28481F2152F
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 03:53:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E34A281B17
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 04:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF8BD520;
-	Sat, 20 Apr 2024 03:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0675E55F;
+	Sat, 20 Apr 2024 04:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhvasTWv"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DF92563;
-	Sat, 20 Apr 2024 03:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7469625;
+	Sat, 20 Apr 2024 04:24:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713585185; cv=none; b=R+ekvD/I+MT5TXwte/D4k2dJ38Zthbya2j6ch3lyZP9SNsJbZX3BiyOgsiZ8B/4m+vIdkfJTGzZy672Zt5oXZ391P5OBRXNzYAg1L3/8PYoqWJ9ZiAvvPB0We7sEMLyhJAZyUOPaV5sfkwplf9LWa/7AqhEZhkm1BYqfoeEfQtM=
+	t=1713587053; cv=none; b=VhWLqgak1Me5Cq17UDoX0QXk5gkU+nrxjDO8pZPvjSfj9wdd6re/jCFHzfxqtTYo8mur88T2jhfgBCNc3y2AAbsRUDEQ9DI5HbL5TpAq33FX2m0IJzD79DUYiegmUH9tj2dAQMnq56wncp5pNuq6/pJRWi43VnntYAppSasH6gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713585185; c=relaxed/simple;
-	bh=6tHXInfbVm0cVL3xkeZnDT/qgKwE8YrS1uVdADz7660=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pbtxZ4q063HKtQqy4TOCIWkkLJscL08At4CBL6iH9kAKdf80pDzznnPGID6ORcGahMRfBeTnhT1T/EjYhWcUelt1XJEGYvfjY3cvxdWzCP4K3aDsEIBs259eUmAO4yqaODlCkZjXGS2nbr5QYpFTZCP25Rl2YTf7+n4kk35lxaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06856C072AA;
-	Sat, 20 Apr 2024 03:53:02 +0000 (UTC)
-Date: Fri, 19 Apr 2024 23:52:58 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v9 07/36] function_graph: Allow multiple users to attach
- to function graph
-Message-ID: <20240419235258.64cada90@rorschach.local.home>
-In-Reply-To: <171318542015.254850.16655743605260166696.stgit@devnote2>
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-	<171318542015.254850.16655743605260166696.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713587053; c=relaxed/simple;
+	bh=XIe/vC5nJoDDEu9/Q7ZoXeJlkdIzu3x0dG0pVHSQyaU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d/F3neD3QRJUKWQQrsGReOJCd+id8uImiaYCDBFlCN1puOdsR7K4TtL+9KwScLfGZ6B+uxNZcg6TXPXy8rzXEikkur2n5rfEuGJ+qM4ICOq7CQpbGshFuy1tQ/sse2zqGqjMfqM6U2FRv+QXhb/B0VfeN6sdV9pt8q3w1sYUOn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhvasTWv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83904C072AA;
+	Sat, 20 Apr 2024 04:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713587052;
+	bh=XIe/vC5nJoDDEu9/Q7ZoXeJlkdIzu3x0dG0pVHSQyaU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YhvasTWvPZXPkThPYjnuTXJtKsDsFI6ZK4Bt9IvngW4VcopIHwZq0rN2TN47VCWUq
+	 FBJkDpR2DtP+unWDJY8C7sJEQiAOVs8L9KzXsojOjPLi6kQ9YDHioYtZ6nUFM1e0iU
+	 J5CLWhI8Oh/UQKju6kDG7HnVFfwfwBxuIE1OR267WnG9gRFiBTNZwpWVx17pWQtTrY
+	 fdbuHV6o8S3vVJ6wqWsJuIqtAsaxpsI2nzHYz53bqy1qeEbZ3ljz7qw9wo3USiXNjB
+	 OSy86A07SSbIPPzvVI3U5+/bWUkfoO6zoETP+0NHBuzBlMRXY9HoUBu5v7wjVTOH+s
+	 DowdwAPfYuE4g==
+Date: Sat, 20 Apr 2024 07:22:50 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <ZiNDGjkcqEPqruza@kernel.org>
+References: <ZiE91CJcNw7gBj9g@kernel.org>
+ <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+ <ZiFd567L4Zzm2okO@kernel.org>
+ <CAPhsuW5SL4_=ZXdHZV8o0KS+5Vf25UMvEKhRgFQLioFtf2pgoQ@mail.gmail.com>
+ <ZiIVVBgaDN4RsroT@kernel.org>
+ <CAPhsuW7WoU+a46FhqqH8f-3=ehxeD4wSgKDWegMin1pT49OSWw@mail.gmail.com>
+ <ZiKjmaDgz_56ovbv@kernel.org>
+ <CAPhsuW7Nj1Sa_9xQtTgHz9AmX39zdh2x2COqA-qmkfpfX9hNWw@mail.gmail.com>
+ <ZiLNGgVSQ7_cg58y@kernel.org>
+ <CAPhsuW4KRM4O4RFbYQrt=Coqyh9w29WiF2YF=8soDfauLFsKBA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4KRM4O4RFbYQrt=Coqyh9w29WiF2YF=8soDfauLFsKBA@mail.gmail.com>
 
-On Mon, 15 Apr 2024 21:50:20 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+On Fri, Apr 19, 2024 at 02:42:16PM -0700, Song Liu wrote:
+> On Fri, Apr 19, 2024 at 1:00 PM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > On Fri, Apr 19, 2024 at 10:32:39AM -0700, Song Liu wrote:
+> > > On Fri, Apr 19, 2024 at 10:03 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > [...]
+> > > > > >
+> > > > > > [1] https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
+> > > > >
+> > > > > For the ROX to work, we need different users (module text, kprobe, etc.) to have
+> > > > > the same execmem_range. From [1]:
+> > > > >
+> > > > > static void *execmem_cache_alloc(struct execmem_range *range, size_t size)
+> > > > > {
+> > > > > ...
+> > > > >        p = __execmem_cache_alloc(size);
+> > > > >        if (p)
+> > > > >                return p;
+> > > > >       err = execmem_cache_populate(range, size);
+> > > > > ...
+> > > > > }
+> > > > >
+> > > > > We are calling __execmem_cache_alloc() without range. For this to work,
+> > > > > we can only call execmem_cache_alloc() with one execmem_range.
+> > > >
+> > > > Actually, on x86 this will "just work" because everything shares the same
+> > > > address space :)
+> > > >
+> > > > The 2M pages in the cache will be in the modules space, so
+> > > > __execmem_cache_alloc() will always return memory from that address space.
+> > > >
+> > > > For other architectures this indeed needs to be fixed with passing the
+> > > > range to __execmem_cache_alloc() and limiting search in the cache for that
+> > > > range.
+> > >
+> > > I think we at least need the "map to" concept (initially proposed by Thomas)
+> > > to get this work. For example, EXECMEM_BPF and EXECMEM_KPROBE
+> > > maps to EXECMEM_MODULE_TEXT, so that all these actually share
+> > > the same range.
+> >
+> > Why?
+> 
+> IIUC, we need to update __execmem_cache_alloc() to take a range pointer as
+> input. module text will use "range" for EXECMEM_MODULE_TEXT, while kprobe
+> will use "range" for EXECMEM_KPROBE. Without "map to" concept or sharing
+> the "range" object, we will have to compare different range parameters to check
+> we can share cached pages between module text and kprobe, which is not
+> efficient. Did I miss something?
 
-> @@ -27,23 +28,157 @@
->  
->  #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
->  #define FGRAPH_RET_INDEX DIV_ROUND_UP(FGRAPH_RET_SIZE, sizeof(long))
-> +
-> +/*
-> + * On entry to a function (via function_graph_enter()), a new ftrace_ret_stack
-> + * is allocated on the task's ret_stack with indexes entry, then each
-> + * fgraph_ops on the fgraph_array[]'s entryfunc is called and if that returns
-> + * non-zero, the index into the fgraph_array[] for that fgraph_ops is recorded
-> + * on the indexes entry as a bit flag.
-> + * As the associated ftrace_ret_stack saved for those fgraph_ops needs to
-> + * be found, the index to it is also added to the ret_stack along with the
-> + * index of the fgraph_array[] to each fgraph_ops that needs their retfunc
-> + * called.
-> + *
-> + * The top of the ret_stack (when not empty) will always have a reference
-> + * to the last ftrace_ret_stack saved. All references to the
-> + * ftrace_ret_stack has the format of:
-> + *
-> + * bits:  0 -  9	offset in words from the previous ftrace_ret_stack
-> + *			(bitmap type should have FGRAPH_RET_INDEX always)
-> + * bits: 10 - 11	Type of storage
-> + *			  0 - reserved
-> + *			  1 - bitmap of fgraph_array index
-> + *
-> + * For bitmap of fgraph_array index
-> + *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
+We can always share large ROX pages as long as they are within the correct
+address space. The permissions for them are ROX and the alignment
+differences are due to KASAN and this is handled during allocation of the
+large page to refill the cache. __execmem_cache_alloc() only needs to limit
+the search for the address space of the range.
 
-I really hate the terminology I came up with here, and would love to
-get better terminology for describing what is going on. I looked it
-over but I'm constantly getting confused. And I wrote this code!
+And regardless, they way we deal with sharing of the cache can be sorted
+out later.
 
-Perhaps we should use:
+> Thanks,
+> Song
 
- @frame : The data that represents a single function call. When a
-          function is traced, all the data used for all the callbacks
-          attached to it, is in a single frame. This would replace the
-          FGRAPH_RET_SIZE as FGRAPH_FRAME_SIZE.
-
- @offset : This is the word size position on the stack. It would
-           replace INDEX, as I think "index" is being used for more
-           than one thing. Perhaps it should be "offset" when dealing
-           with where it is on the shadow stack, and "pos" when dealing
-           with which callback ops is being referenced.
-
-
-> + *
-> + * That is, at the end of function_graph_enter, if the first and forth
-> + * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
-> + * on the return of the function being traced, this is what will be on the
-> + * task's shadow ret_stack: (the stack grows upward)
-> + *
-> + * |                                            | <- task->curr_ret_stack
-> + * +--------------------------------------------+
-> + * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
-> + * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
-> + * +--------------------------------------------+
-> + * | struct ftrace_ret_stack                    |
-> + * |   (stores the saved ret pointer)           | <- the offset points here
-> + * +--------------------------------------------+
-> + * |                 (X) | (N)                  | ( N words away from
-> + * |                                            |   previous ret_stack)
-> + *
-> + * If a backtrace is required, and the real return pointer needs to be
-> + * fetched, then it looks at the task's curr_ret_stack index, if it
-> + * is greater than zero (reserved, or right before poped), it would mask
-> + * the value by FGRAPH_RET_INDEX_MASK to get the offset index of the
-> + * ftrace_ret_stack structure stored on the shadow stack.
-> + */
-> +
-> +#define FGRAPH_RET_INDEX_SIZE	10
-
-Replace SIZE with BITS.
-
-> +#define FGRAPH_RET_INDEX_MASK	GENMASK(FGRAPH_RET_INDEX_SIZE - 1, 0)
-
-  #define FGRAPH_FRAME_SIZE_BITS	10
-  #define FGRAPH_FRAME_SIZE_MASK	GENMASK(FGRAPH_FRAME_SIZE_BITS - 1, 0)
-
-
-> +
-> +#define FGRAPH_TYPE_SIZE	2
-> +#define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_SIZE - 1, 0)
-
-  #define FGRAPH_TYPE_BITS	2
-  #define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_BITS - 1, 0)
-
-
-> +#define FGRAPH_TYPE_SHIFT	FGRAPH_RET_INDEX_SIZE
-> +
-> +enum {
-> +	FGRAPH_TYPE_RESERVED	= 0,
-> +	FGRAPH_TYPE_BITMAP	= 1,
-> +};
-> +
-> +#define FGRAPH_INDEX_SIZE	16
-
-replace "INDEX" with "OPS" as it will be the indexes of ops in the
-array.
-
-  #define FGRAPH_OPS_BITS	16
-  #define FGRAPH_OPS_MASK	GENMASK(FGRAPH_OPS_BITS - 1, 0)
-
-> +#define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
-> +#define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
-> +
-> +/* Currently the max stack index can't be more than register callers */
-> +#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
-
-FGRAPH_MAX_INDEX isn't even used. Let's delete it.
-
-> +
-> +#define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
-
-  #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_BITS
-
-> +
->  #define SHADOW_STACK_SIZE (PAGE_SIZE)
->  #define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
->  /* Leave on a buffer at the end */
-> -#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
-> +#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - (FGRAPH_RET_INDEX + 1))
-
-We probably should rename this is previous patches as well.
-
-Unfortunately, it's getting close to the time for me to pick up my wife
-from the airport to start our vacation. But I think we should rename a
-lot of these variables to make things more consistent.
-
-I'll try to look more at the previous patches as well to make my
-comments there, when I get some time. Maybe even later today.
-
--- Steve
-
+-- 
+Sincerely yours,
+Mike.
 
