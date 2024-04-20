@@ -1,204 +1,143 @@
-Return-Path: <bpf+bounces-27310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FDB18ABB7C
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 13:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4AF8ABB88
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 14:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DD0A2826CA
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 11:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EEDD281D4B
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 12:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232E2376FC;
-	Sat, 20 Apr 2024 11:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FFA171BA;
+	Sat, 20 Apr 2024 12:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jvdVYd7O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h2RhZd5S"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B23229CF7;
-	Sat, 20 Apr 2024 11:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75760625;
+	Sat, 20 Apr 2024 12:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713614214; cv=none; b=lg3zcTXYeqhAcb3CVIQSHG1SdkkjIeVpHRqTp//S49uDPili64H5dCLIO30CkEkcY1zDzanbrJ7TKTxsWWt65SDN6iMH5cIZYBdHtSWmyzZ+n9Vafw/u9VJBnOOHAwTkcoeDNT3hFMEVcyaVZWL5tuGZ+b5jpWsW9sz+WlL1ROg=
+	t=1713616342; cv=none; b=LDd70CL4uMsBbLCPM3mMPwR0qMw4SMpB0TrGDydWxIyG4MRUxhpGUU0xSvO4O9TdFJX7LQ8i/4ylBAeuT1E2gDeSYlMAJHMwN4Z7OiL+Mgi+PFanJrPJzEs8iNU/XeJBvKlXhYqZfhDcaUBXMeD9jjWbrxRyRkFwshD95Jt63iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713614214; c=relaxed/simple;
-	bh=4lz1I1CkapAOhckIAPUb2EY3ZdIZPh7Y64tkO+PQ7MM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=F+DjAuIu3nLbU/IinEzC8LVWV46yrKibfF+tGwvSY0gHww2/s9/L6nz1AoWFCST+zW9g4hYFshk8apaM+tcxIW70P3r+sxjOGnAaTo4vi7FgsQkLgnFLs+Ewly0Sqjaj9imu1tQHUp9DLWxhimfbgelOJ4s62OYGINQAZRjFn2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jvdVYd7O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7280BC116B1;
-	Sat, 20 Apr 2024 11:56:50 +0000 (UTC)
+	s=arc-20240116; t=1713616342; c=relaxed/simple;
+	bh=7ydtcwqOMK/ZievWeOZ4+j7tWKbe2GkJ8dG2UAyB0zU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HrnQxvwOJEq8aOEqTKg0VrpSI0iKGJXC9v+/gaxmQdLylnOmBus4W9Vh5K1hF1WKPtV4kIlOwq6dqt31+scEcLxM5xZUcty8lCkzz4BvHNf+HDpJUqzimn1OyZL5k+7BddLFpsQDGWqX5Cj8nyNpGK56ya3/hdWIEb6MvoDpsaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h2RhZd5S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA615C4AF07;
+	Sat, 20 Apr 2024 12:32:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713614214;
-	bh=4lz1I1CkapAOhckIAPUb2EY3ZdIZPh7Y64tkO+PQ7MM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jvdVYd7OYX7S9SbtkAykNn3tw3duTekl53kKBbo1F5mkm3Msb9LmkDjfZ+wrQgGRt
-	 itb4bNPn8EynVNqkQIpdPvWuel2O7Y4Ff84bOSKu0Ap27DVwcFilYUgFBlQGQ0J9d5
-	 9/4hHvVUHxJng0RgpLG5CwWCKtlr+ByHIKQrwwynH9GelrIxl3TaIfYUd8IDIsJAtK
-	 CEWPcO1t5NCQkGAnaRDn6zQkw2BkfaHtnME2pAn+yNDA8AyW/sl9+jlpKCYCHIF0le
-	 jE4OcJDcg5qUZMjCd6YZt7NqNA6B9pB81bHODKsM5ZvuItr2IkTBCe/2pKjFbwWXGN
-	 LeA2uqGL+WlWw==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Geliang Tang <geliang@kernel.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Use make_sockaddr in test_sock_addr
-Date: Sat, 20 Apr 2024 19:55:43 +0800
-Message-Id: <0c28fa5857397bfb4c4ed0b4c2ba176ce8267fe8.1713613543.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1713613543.git.tanggeliang@kylinos.cn>
-References: <cover.1713613543.git.tanggeliang@kylinos.cn>
+	s=k20201202; t=1713616342;
+	bh=7ydtcwqOMK/ZievWeOZ4+j7tWKbe2GkJ8dG2UAyB0zU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=h2RhZd5S6r1eHwiOPL1Ypvzjp0yGfFii/fNo3JHIWW3SfTcp873mazjsH+MXLEtda
+	 28E2c1Yz8gmXG2v/lv6P6hn6agXCTIKPAX+V8bvqdUMZ4XOtB5BIOkhueaflWVjYPL
+	 0sIFGx3jSVW44TUHHTfK5+Ujk/bt9qsuVc8y+9AqLa38EXg23uvHV0nQQ6qjWG0jqU
+	 hTInwU5rtBUqDW1C/+FxUiT/+convJHYdV3UEB1iB1uSTnGhShgGrqL/Oc+qeEJq/3
+	 il3ODajwPsqNVTkG+wlI5WMbLDD+XaQ0Ip8M1wOY0s7v9ARNvJKtGk1AaqjIDq+OhU
+	 vnH89d4RCi5Xg==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51ab47ce811so2203984e87.1;
+        Sat, 20 Apr 2024 05:32:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVudO6NH6NdmjpL20CLV8PNLY3/Yjw7b/MreugcH0OpMgICHLmKXU7SUFpBTgriFZxuvMs/J9tFwAIh4Sumb6p7sYIgJ+yOFgME9E/3LziKTijYWKexuvP77Ad/2mh3wB795hU/4TBcS6XxxdNGlLL6A89MJDIwWsSBcFrPXzDfUkMw9S8td0IlkiwkpATHiNtoKIZUzTnvsLnFLA==
+X-Gm-Message-State: AOJu0Yy1rBJgSQqUdA7RQGs/Bp7ubLv9fWXNqMzpwhOD9xDSNpdCBLtS
+	b5I6bBmaJD5yv4G3Xauuqh8WRPFu4PmiWhbctezFOeh6j88oFL4L/l+Lz8KgKp/gjHvbfipSKLf
+	qMv6BZtOn7PLEdgdh1iB+8Uv3Cnw=
+X-Google-Smtp-Source: AGHT+IEFSFK8NPvRUYpFGmQ5TuKuL4Jrf4zzXumb0E5S/r71HLdh8KBM+iPSt/4AyVgq1nXLA37NpzPGKPvdwDy6h8Q=
+X-Received: by 2002:a05:6512:ea4:b0:51a:e03a:aa15 with SMTP id
+ bi36-20020a0565120ea400b0051ae03aaa15mr1670235lfb.5.1713616340582; Sat, 20
+ Apr 2024 05:32:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240415162041.2491523-5-ardb+git@google.com> <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
+ <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
+In-Reply-To: <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 20 Apr 2024 21:31:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ8fhKUwK_m8uGfvBUBrAdXdMYM3_AA5zo2cQzhW3jE1A@mail.gmail.com>
+Message-ID: <CAK7LNAQ8fhKUwK_m8uGfvBUBrAdXdMYM3_AA5zo2cQzhW3jE1A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] kbuild: Avoid weak external linkage where possible
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: patchwork-bot+netdevbpf@kernel.org, Ard Biesheuvel <ardb+git@google.com>, 
+	linux-kernel@vger.kernel.org, arnd@arndb.de, martin.lau@linux.dev, 
+	linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	andrii@kernel.org, olsajiri@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Fri, Apr 19, 2024 at 4:57=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wr=
+ote:
+>
+> On Tue, 16 Apr 2024 at 16:40, <patchwork-bot+netdevbpf@kernel.org> wrote:
+> >
+> > Hello:
+> >
+> > This series was applied to bpf/bpf-next.git (master)
+> > by Daniel Borkmann <daniel@iogearbox.net>:
+> >
+> > On Mon, 15 Apr 2024 18:20:42 +0200 you wrote:
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > Weak external linkage is intended for cases where a symbol reference
+> > > can remain unsatisfied in the final link. Taking the address of such =
+a
+> > > symbol should yield NULL if the reference was not satisfied.
+> > >
+> > > Given that ordinary RIP or PC relative references cannot produce NULL=
+,
+> > > some kind of indirection is always needed in such cases, and in posit=
+ion
+> > > independent code, this results in a GOT entry. In ordinary code, it i=
+s
+> > > arch specific but amounts to the same thing.
+> > >
+> > > [...]
+> >
+> > Here is the summary with links:
+> >   - [v4,1/3] kallsyms: Avoid weak references for kallsyms symbols
+> >     (no matching commit)
+> >   - [v4,2/3] vmlinux: Avoid weak reference to notes section
+> >     (no matching commit)
+> >   - [v4,3/3] btf: Avoid weak external references
+> >     https://git.kernel.org/bpf/bpf-next/c/fc5eb4a84e4c
+> >
+>
+>
+> Thanks.
+>
+> Masahiro, could you pick up patches #1 and #2 please?
+>
 
-This patch uses public helper make_sockaddr() exported in network_helpers.h
-instead of the local defined function mk_sockaddr() in test_sock_addr.c.
-This can avoid duplicate code.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/test_sock_addr.c | 62 ++++----------------
- 1 file changed, 12 insertions(+), 50 deletions(-)
+I do not like PROVIDE() because it potentially shifts
+a build error (i.e. link error) into
+a run-time error, which is usually more difficult to debug
+than build error.
 
-diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/selftests/bpf/test_sock_addr.c
-index 2e29dd9d8fc3..4facae3a644f 100644
---- a/tools/testing/selftests/bpf/test_sock_addr.c
-+++ b/tools/testing/selftests/bpf/test_sock_addr.c
-@@ -605,44 +605,6 @@ static struct sock_addr_test tests[] = {
- 	},
- };
- 
--static int mk_sockaddr(int domain, const char *ip, unsigned short port,
--		       struct sockaddr *addr, socklen_t addr_len)
--{
--	struct sockaddr_in6 *addr6;
--	struct sockaddr_in *addr4;
--
--	if (domain != AF_INET && domain != AF_INET6) {
--		log_err("Unsupported address family");
--		return -1;
--	}
--
--	memset(addr, 0, addr_len);
--
--	if (domain == AF_INET) {
--		if (addr_len < sizeof(struct sockaddr_in))
--			return -1;
--		addr4 = (struct sockaddr_in *)addr;
--		addr4->sin_family = domain;
--		addr4->sin_port = htons(port);
--		if (inet_pton(domain, ip, (void *)&addr4->sin_addr) != 1) {
--			log_err("Invalid IPv4: %s", ip);
--			return -1;
--		}
--	} else if (domain == AF_INET6) {
--		if (addr_len < sizeof(struct sockaddr_in6))
--			return -1;
--		addr6 = (struct sockaddr_in6 *)addr;
--		addr6->sin6_family = domain;
--		addr6->sin6_port = htons(port);
--		if (inet_pton(domain, ip, (void *)&addr6->sin6_addr) != 1) {
--			log_err("Invalid IPv6: %s", ip);
--			return -1;
--		}
--	}
--
--	return 0;
--}
--
- static int load_insns(const struct sock_addr_test *test,
- 		      const struct bpf_insn *insns, size_t insns_cnt)
- {
-@@ -749,6 +711,7 @@ static int recvmsg_deny_prog_load(const struct sock_addr_test *test)
- 
- static int sendmsg4_rw_asm_prog_load(const struct sock_addr_test *test)
- {
-+	socklen_t addr_len = sizeof(struct sockaddr_storage);
- 	struct sockaddr_in dst4_rw_addr;
- 	struct in_addr src4_rw_ip;
- 
-@@ -757,9 +720,8 @@ static int sendmsg4_rw_asm_prog_load(const struct sock_addr_test *test)
- 		return -1;
- 	}
- 
--	if (mk_sockaddr(AF_INET, SERV4_REWRITE_IP, SERV4_REWRITE_PORT,
--			(struct sockaddr *)&dst4_rw_addr,
--			sizeof(dst4_rw_addr)) == -1)
-+	if (make_sockaddr(AF_INET, SERV4_REWRITE_IP, SERV4_REWRITE_PORT,
-+			  (struct sockaddr_storage *)&dst4_rw_addr, &addr_len) == -1)
- 		return -1;
- 
- 	struct bpf_insn insns[] = {
-@@ -812,6 +774,7 @@ static int sendmsg4_rw_c_prog_load(const struct sock_addr_test *test)
- static int sendmsg6_rw_dst_asm_prog_load(const struct sock_addr_test *test,
- 					 const char *rw_dst_ip)
- {
-+	socklen_t addr_len = sizeof(struct sockaddr_storage);
- 	struct sockaddr_in6 dst6_rw_addr;
- 	struct in6_addr src6_rw_ip;
- 
-@@ -820,9 +783,8 @@ static int sendmsg6_rw_dst_asm_prog_load(const struct sock_addr_test *test,
- 		return -1;
- 	}
- 
--	if (mk_sockaddr(AF_INET6, rw_dst_ip, SERV6_REWRITE_PORT,
--			(struct sockaddr *)&dst6_rw_addr,
--			sizeof(dst6_rw_addr)) == -1)
-+	if (make_sockaddr(AF_INET6, rw_dst_ip, SERV6_REWRITE_PORT,
-+			  (struct sockaddr_storage *)&dst6_rw_addr, &addr_len) == -1)
- 		return -1;
- 
- 	struct bpf_insn insns[] = {
-@@ -1086,17 +1048,17 @@ static int init_addrs(const struct sock_addr_test *test,
- {
- 	socklen_t addr_len = sizeof(struct sockaddr_storage);
- 
--	if (mk_sockaddr(test->domain, test->expected_ip, test->expected_port,
--			(struct sockaddr *)expected_addr, addr_len) == -1)
-+	if (make_sockaddr(test->domain, test->expected_ip, test->expected_port,
-+			  expected_addr, &addr_len) == -1)
- 		goto err;
- 
--	if (mk_sockaddr(test->domain, test->requested_ip, test->requested_port,
--			(struct sockaddr *)requested_addr, addr_len) == -1)
-+	if (make_sockaddr(test->domain, test->requested_ip, test->requested_port,
-+			  requested_addr, &addr_len) == -1)
- 		goto err;
- 
- 	if (test->expected_src_ip &&
--	    mk_sockaddr(test->domain, test->expected_src_ip, 0,
--			(struct sockaddr *)expected_src_addr, addr_len) == -1)
-+	    make_sockaddr(test->domain, test->expected_src_ip, 0,
-+			  expected_src_addr, &addr_len) == -1)
- 		goto err;
- 
- 	return 0;
--- 
-2.40.1
+If someone references the kallsyms_* symbols
+when CONFIG_KALLSYMS=3Dn, it is likely a mistake.
+In general, it should be reported as a link error.
 
+With PROVIDE() added, we will never detect it
+at a build time.
+
+Do you want me to pick up 1/3?
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
