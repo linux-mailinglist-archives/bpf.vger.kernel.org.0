@@ -1,161 +1,198 @@
-Return-Path: <bpf+bounces-27274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120998AB8A5
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 04:01:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 857B48AB949
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 05:53:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443FA1C20AA0
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 02:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28481F2152F
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 03:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9495CB5;
-	Sat, 20 Apr 2024 02:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JQpEzjTA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF8BD520;
+	Sat, 20 Apr 2024 03:53:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0AAA32;
-	Sat, 20 Apr 2024 02:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DF92563;
+	Sat, 20 Apr 2024 03:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713578471; cv=none; b=gmrFCWFHJq9DpeSB4yR4+Ne5tSgR534XCKPMSI2cJ8RRzAxzIT2d5pgEY1CeqMKUhTLEvg4n2p2iVyZDkXqRt5qh6+f2L5bSHjlmTWKNy2AZMqvpjUcBHOxMZI5cF8HDuRg3sos6SnvEp4WkHnBa++wqdR/v+/mCKjbZpyD5uDc=
+	t=1713585185; cv=none; b=R+ekvD/I+MT5TXwte/D4k2dJ38Zthbya2j6ch3lyZP9SNsJbZX3BiyOgsiZ8B/4m+vIdkfJTGzZy672Zt5oXZ391P5OBRXNzYAg1L3/8PYoqWJ9ZiAvvPB0We7sEMLyhJAZyUOPaV5sfkwplf9LWa/7AqhEZhkm1BYqfoeEfQtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713578471; c=relaxed/simple;
-	bh=zorbSQlE5749d0vty79LbC3XwYvWyxxgta/O5WCEh6s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rs8lIsSmjicdiKmBv11/Ph/4ciVD9i81iXoiQfFndItRCM/cVoFwEIqS+DMfxXT/bpLE8W2wv3ILh/JZJloy6mKJOMA6/anLtF3gg7zrCKPID6Dl7y8gBZvS0rNDRQbS7xm+hGCqngpuOp4ZL2n1lp2q3ATpd28EfEWMGA8X6Gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JQpEzjTA; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d7938afa-fb2f-4872-b449-6ecaf5e29360@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713578465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ccFENnNsdmZqiLVK2Dokx+yQ1pI/ODFWTmbw5AgyjK8=;
-	b=JQpEzjTAD+B5hHb8MuhOtD3bC4xmKeUZM5Fz3VNbUgXXAsT8GtOjuQunlQyYfpc3J2wIer
-	kS8uP/rUVL/dR4X7zYnPxSD0U6B4rtkwk1mE+Vg460zl0n5RtPXieTiXTw6DiZdDJLIXqA
-	TzQqPklle2+hEgmQmZS5F4FrptxuU0c=
-Date: Fri, 19 Apr 2024 19:00:56 -0700
+	s=arc-20240116; t=1713585185; c=relaxed/simple;
+	bh=6tHXInfbVm0cVL3xkeZnDT/qgKwE8YrS1uVdADz7660=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pbtxZ4q063HKtQqy4TOCIWkkLJscL08At4CBL6iH9kAKdf80pDzznnPGID6ORcGahMRfBeTnhT1T/EjYhWcUelt1XJEGYvfjY3cvxdWzCP4K3aDsEIBs259eUmAO4yqaODlCkZjXGS2nbr5QYpFTZCP25Rl2YTf7+n4kk35lxaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06856C072AA;
+	Sat, 20 Apr 2024 03:53:02 +0000 (UTC)
+Date: Fri, 19 Apr 2024 23:52:58 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 07/36] function_graph: Allow multiple users to attach
+ to function graph
+Message-ID: <20240419235258.64cada90@rorschach.local.home>
+In-Reply-To: <171318542015.254850.16655743605260166696.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+	<171318542015.254850.16655743605260166696.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] xdp: use flags field to disambiguate broadcast
- redirect
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Hangbin Liu <liuhangbin@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20240418071840.156411-1-toke@redhat.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240418071840.156411-1-toke@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 4/18/24 12:18 AM, Toke Høiland-Jørgensen wrote:
-> When redirecting a packet using XDP, the bpf_redirect_map() helper will set
-> up the redirect destination information in struct bpf_redirect_info (using
-> the __bpf_xdp_redirect_map() helper function), and the xdp_do_redirect()
-> function will read this information after the XDP program returns and pass
-> the frame on to the right redirect destination.
-> 
-> When using the BPF_F_BROADCAST flag to do multicast redirect to a whole
-> map, __bpf_xdp_redirect_map() sets the 'map' pointer in struct
-> bpf_redirect_info to point to the destination map to be broadcast. And
-> xdp_do_redirect() reacts to the value of this map pointer to decide whether
-> it's dealing with a broadcast or a single-value redirect. However, if the
-> destination map is being destroyed before xdp_do_redirect() is called, the
-> map pointer will be cleared out (by bpf_clear_redirect_map()) without
-> waiting for any XDP programs to stop running. This causes xdp_do_redirect()
-> to think that the redirect was to a single target, but the target pointer
-> is also NULL (since broadcast redirects don't have a single target), so
-> this causes a crash when a NULL pointer is passed to dev_map_enqueue().
-> 
-> To fix this, change xdp_do_redirect() to react directly to the presence of
-> the BPF_F_BROADCAST flag in the 'flags' value in struct bpf_redirect_info
-> to disambiguate between a single-target and a broadcast redirect. And only
-> read the 'map' pointer if the broadcast flag is set, aborting if that has
-> been cleared out in the meantime. This prevents the crash, while keeping
-> the atomic (cmpxchg-based) clearing of the map pointer itself, and without
-> adding any more checks in the non-broadcast fast path.
-> 
-> Fixes: e624d4ed4aa8 ("xdp: Extend xdp_redirect_map with broadcast support")
-> Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
->   net/core/filter.c | 42 ++++++++++++++++++++++++++++++++----------
->   1 file changed, 32 insertions(+), 10 deletions(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 786d792ac816..8120c3dddf5e 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4363,10 +4363,12 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
->   	enum bpf_map_type map_type = ri->map_type;
->   	void *fwd = ri->tgt_value;
->   	u32 map_id = ri->map_id;
-> +	u32 flags = ri->flags;
->   	struct bpf_map *map;
->   	int err;
->   
->   	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
-> +	ri->flags = 0;
->   	ri->map_type = BPF_MAP_TYPE_UNSPEC;
->   
->   	if (unlikely(!xdpf)) {
-> @@ -4378,11 +4380,20 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
->   	case BPF_MAP_TYPE_DEVMAP:
->   		fallthrough;
->   	case BPF_MAP_TYPE_DEVMAP_HASH:
-> -		map = READ_ONCE(ri->map);
-> -		if (unlikely(map)) {
-> +		if (unlikely(flags & BPF_F_BROADCAST)) {
-> +			map = READ_ONCE(ri->map);
+On Mon, 15 Apr 2024 21:50:20 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> @@ -27,23 +28,157 @@
+>  
+>  #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
+>  #define FGRAPH_RET_INDEX DIV_ROUND_UP(FGRAPH_RET_SIZE, sizeof(long))
 > +
-> +			/* The map pointer is cleared when the map is being torn
-> +			 * down by bpf_clear_redirect_map()
+> +/*
+> + * On entry to a function (via function_graph_enter()), a new ftrace_ret_stack
+> + * is allocated on the task's ret_stack with indexes entry, then each
+> + * fgraph_ops on the fgraph_array[]'s entryfunc is called and if that returns
+> + * non-zero, the index into the fgraph_array[] for that fgraph_ops is recorded
+> + * on the indexes entry as a bit flag.
+> + * As the associated ftrace_ret_stack saved for those fgraph_ops needs to
+> + * be found, the index to it is also added to the ret_stack along with the
+> + * index of the fgraph_array[] to each fgraph_ops that needs their retfunc
+> + * called.
+> + *
+> + * The top of the ret_stack (when not empty) will always have a reference
+> + * to the last ftrace_ret_stack saved. All references to the
+> + * ftrace_ret_stack has the format of:
+> + *
+> + * bits:  0 -  9	offset in words from the previous ftrace_ret_stack
+> + *			(bitmap type should have FGRAPH_RET_INDEX always)
+> + * bits: 10 - 11	Type of storage
+> + *			  0 - reserved
+> + *			  1 - bitmap of fgraph_array index
+> + *
+> + * For bitmap of fgraph_array index
+> + *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
 
-Thanks for the details explanation in the commit message. All make sense.
+I really hate the terminology I came up with here, and would love to
+get better terminology for describing what is going on. I looked it
+over but I'm constantly getting confused. And I wrote this code!
 
-It could be a dumb question.
+Perhaps we should use:
 
- From reading the "waits for...NAPI being the relevant context here..." comment 
-in dev_map_free(), I wonder if moving synchronize_rcu() before 
-bpf_clear_redirect_map() would also work? Actually, does it need to call 
-bpf_clear_redirect_map(). The on-going xdp_do_redirect() should be the last one 
-using the map in ri->map anyway and no xdp prog can set it again to ri->map.
+ @frame : The data that represents a single function call. When a
+          function is traced, all the data used for all the callbacks
+          attached to it, is in a single frame. This would replace the
+          FGRAPH_RET_SIZE as FGRAPH_FRAME_SIZE.
 
-> +			 */
-> +			if (unlikely(!map)) {
-> +				err = -ENOENT;
-> +				break;
-> +			}
+ @offset : This is the word size position on the stack. It would
+           replace INDEX, as I think "index" is being used for more
+           than one thing. Perhaps it should be "offset" when dealing
+           with where it is on the shadow stack, and "pos" when dealing
+           with which callback ops is being referenced.
+
+
+> + *
+> + * That is, at the end of function_graph_enter, if the first and forth
+> + * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
+> + * on the return of the function being traced, this is what will be on the
+> + * task's shadow ret_stack: (the stack grows upward)
+> + *
+> + * |                                            | <- task->curr_ret_stack
+> + * +--------------------------------------------+
+> + * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
+> + * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
+> + * +--------------------------------------------+
+> + * | struct ftrace_ret_stack                    |
+> + * |   (stores the saved ret pointer)           | <- the offset points here
+> + * +--------------------------------------------+
+> + * |                 (X) | (N)                  | ( N words away from
+> + * |                                            |   previous ret_stack)
+> + *
+> + * If a backtrace is required, and the real return pointer needs to be
+> + * fetched, then it looks at the task's curr_ret_stack index, if it
+> + * is greater than zero (reserved, or right before poped), it would mask
+> + * the value by FGRAPH_RET_INDEX_MASK to get the offset index of the
+> + * ftrace_ret_stack structure stored on the shadow stack.
+> + */
 > +
->   			WRITE_ONCE(ri->map, NULL);
->   			err = dev_map_enqueue_multi(xdpf, dev, map,
-> -						    ri->flags & BPF_F_EXCLUDE_INGRESS);
-> +						    flags & BPF_F_EXCLUDE_INGRESS);
->   		} else {
->   			err = dev_map_enqueue(fwd, xdpf, dev);
->   		}
+> +#define FGRAPH_RET_INDEX_SIZE	10
+
+Replace SIZE with BITS.
+
+> +#define FGRAPH_RET_INDEX_MASK	GENMASK(FGRAPH_RET_INDEX_SIZE - 1, 0)
+
+  #define FGRAPH_FRAME_SIZE_BITS	10
+  #define FGRAPH_FRAME_SIZE_MASK	GENMASK(FGRAPH_FRAME_SIZE_BITS - 1, 0)
+
+
+> +
+> +#define FGRAPH_TYPE_SIZE	2
+> +#define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_SIZE - 1, 0)
+
+  #define FGRAPH_TYPE_BITS	2
+  #define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_BITS - 1, 0)
+
+
+> +#define FGRAPH_TYPE_SHIFT	FGRAPH_RET_INDEX_SIZE
+> +
+> +enum {
+> +	FGRAPH_TYPE_RESERVED	= 0,
+> +	FGRAPH_TYPE_BITMAP	= 1,
+> +};
+> +
+> +#define FGRAPH_INDEX_SIZE	16
+
+replace "INDEX" with "OPS" as it will be the indexes of ops in the
+array.
+
+  #define FGRAPH_OPS_BITS	16
+  #define FGRAPH_OPS_MASK	GENMASK(FGRAPH_OPS_BITS - 1, 0)
+
+> +#define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
+> +#define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
+> +
+> +/* Currently the max stack index can't be more than register callers */
+> +#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
+
+FGRAPH_MAX_INDEX isn't even used. Let's delete it.
+
+> +
+> +#define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
+
+  #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_BITS
+
+> +
+>  #define SHADOW_STACK_SIZE (PAGE_SIZE)
+>  #define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
+>  /* Leave on a buffer at the end */
+> -#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
+> +#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - (FGRAPH_RET_INDEX + 1))
+
+We probably should rename this is previous patches as well.
+
+Unfortunately, it's getting close to the time for me to pick up my wife
+from the airport to start our vacation. But I think we should rename a
+lot of these variables to make things more consistent.
+
+I'll try to look more at the previous patches as well to make my
+comments there, when I get some time. Maybe even later today.
+
+-- Steve
 
 
