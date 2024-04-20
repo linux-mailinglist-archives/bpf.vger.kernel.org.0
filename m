@@ -1,239 +1,245 @@
-Return-Path: <bpf+bounces-27279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E74D8ABA4D
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 10:33:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E9F8ABA64
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 10:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9C472820E7
-	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 08:33:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3EE21C213D3
+	for <lists+bpf@lfdr.de>; Sat, 20 Apr 2024 08:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087D014A8C;
-	Sat, 20 Apr 2024 08:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3D614AB0;
+	Sat, 20 Apr 2024 08:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcryTfEz"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1182E38C;
-	Sat, 20 Apr 2024 08:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9AAF205E31;
+	Sat, 20 Apr 2024 08:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713602010; cv=none; b=NxCF4DbMMsCojzU3BN+qVaisw/ojAiqoYumg8foA6v9GZOS0ZTXc3kJlN6ERcxfbEdN0bL4UJKuIM7QdEwiD04DTBHtZfETYJnfxlnWi3DOotM/T4LHxwfqI/hXQFbnLzmD4pzl3COf1shgLgszPMxcT5g+TV7TiX00iSv26Zvs=
+	t=1713603376; cv=none; b=UUHW3N1afV99uDJBwR7dhxh3TNUyqH67ZiG16BMnpMZPf4tXIa6lUhTCvZRXySF2yFVuQbWQtlageJ9pbp+oW5PzCIgJvEhHHAU2jT6CBp8SFptVeoprZXS9kaZy/K9VjDKGndIsilgNXS6Aud8i+Ks5RpcwafDcOia6Y+po2lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713602010; c=relaxed/simple;
-	bh=ozJf00ALOxbfst1CfKs7QsoFD3TOa+lAa1uCModcRhM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RZCVV10cjz8ogQ2qWNpNiqO0FrBuCVl00HI9+/HwXwjbPdqrobgQYHMHLz+cH9oISCpMO7YVb1wdPxjEEFHJ+FW+TD5y2+de5KpKBvr/xIfq8+Y396rXfJZTb6TOYCRw9uu0AjZbn4qILyWvSncfjkOpeyyrFJAD6M/nImDXL2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VM4XQ1jXvz4f3khR;
-	Sat, 20 Apr 2024 16:33:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8DDFB1A0903;
-	Sat, 20 Apr 2024 16:33:17 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP1 (Coremail) with SMTP id cCh0CgCHnQbLfSNmO6PhKQ--.65426S2;
-	Sat, 20 Apr 2024 16:33:17 +0800 (CST)
-Message-ID: <f80991aa-3a49-451a-9a82-ac57982dcb28@huaweicloud.com>
-Date: Sat, 20 Apr 2024 16:33:15 +0800
+	s=arc-20240116; t=1713603376; c=relaxed/simple;
+	bh=L8fa1JCcLTLQ3t0dplzkwim0/hUmwGnWVEw+3TX+uqI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=TtBeOqsNfj6YQ3SAzMpnlqNv14Q1es36Z/5M69NfdUpIj+wLd89g4MoXtF5ZMRZlaj1GtjTuP4M+fSA7/0pY3US55vCavaL/i2fvbjpSzzXYjFDraVhsUndWCJ2rxD0Iimb8t8/ZkGsxxv1l3wFLfGJ1AdklYLMuHtwyxtzwuHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lcryTfEz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D50F0C072AA;
+	Sat, 20 Apr 2024 08:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713603375;
+	bh=L8fa1JCcLTLQ3t0dplzkwim0/hUmwGnWVEw+3TX+uqI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lcryTfEzoez2gkwpxM9jvrF3WoyC+kL4rrG8WoS9c0ZP5ONFv0atw309ytGn16jl+
+	 XMaHYB+wLiDUNU5d1EhuAbrODm+LfiPAm1/9I4jCGVRWekR2hs0LC7URt77KEQUWQl
+	 xYKHL+TCm0GjLlAUgQkYxDX2PphwrXxedDF9xjFZVXBwFo/eiwyNfOkTjffnxDYB35
+	 KXrVZoHFY9pt67T/WJFLOqV5lHRUR5er+ZpvFrPLgjX8D9yX7cEkYET98eR/WRo2pc
+	 UeESYAEtSe0nvPZLv0/ZWhaqctyKomGd8GAzP8RYXofuM6cYLWx5rJ9oDPDdRGbicX
+	 BOZvpMsUU6T8Q==
+Date: Sat, 20 Apr 2024 17:56:08 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 07/36] function_graph: Allow multiple users to attach
+ to function graph
+Message-Id: <20240420175608.0e9664cbeee59c9aa2b5453d@kernel.org>
+In-Reply-To: <20240419235258.64cada90@rorschach.local.home>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+	<171318542015.254850.16655743605260166696.stgit@devnote2>
+	<20240419235258.64cada90@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 07/11] bpf: Fix a false rejection caused by
- AND operation
-Content-Language: en-US
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Brendan Jackman <jackmanb@chromium.org>, Paul Moore <paul@paul-moore.com>,
- James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>,
- Khadija Kamran <kamrankhadijadj@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
- John Johansen <john.johansen@canonical.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Shung-Hsi Yu <shung-hsi.yu@suse.com>
-References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
- <20240411122752.2873562-8-xukuohai@huaweicloud.com>
- <e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgCHnQbLfSNmO6PhKQ--.65426S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3XF4DuFyUAry8KFyrXF13Jwb_yoWxGr4kpF
-	WfG3ZFka1kXrW8Cw1Iqan8JFyakF4fAa17JFyUJryFyas8uF4FqFs0grWjyr98Ar4ruw42
-	vFnFqay8GryUCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 4/20/2024 7:00 AM, Eduard Zingerman wrote:
-> On Thu, 2024-04-11 at 20:27 +0800, Xu Kuohai wrote:
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> With lsm return value check, the no-alu32 version test_libbpf_get_fd_by_id_opts
->> is rejected by the verifier, and the log says:
->>
->>    0: R1=ctx() R10=fp0
->>    ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
->>    0: (b7) r0 = 0                        ; R0_w=0
->>    1: (79) r2 = *(u64 *)(r1 +0)
->>    func 'bpf_lsm_bpf_map' arg0 has btf_id 916 type STRUCT 'bpf_map'
->>    2: R1=ctx() R2_w=trusted_ptr_bpf_map()
->>    ; if (map != (struct bpf_map *)&data_input) @ test_libbpf_get_fd_by_id_opts.c:29
->>    2: (18) r3 = 0xffff9742c0951a00       ; R3_w=map_ptr(map=data_input,ks=4,vs=4)
->>    4: (5d) if r2 != r3 goto pc+4         ; R2_w=trusted_ptr_bpf_map() R3_w=map_ptr(map=data_input,ks=4,vs=4)
->>    ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
->>    5: (79) r0 = *(u64 *)(r1 +8)          ; R0_w=scalar() R1=ctx()
->>    ; if (fmode & FMODE_WRITE) @ test_libbpf_get_fd_by_id_opts.c:32
->>    6: (67) r0 <<= 62                     ; R0_w=scalar(smax=0x4000000000000000,umax=0xc000000000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xc000000000000000))
->>    7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
->>    ;  @ test_libbpf_get_fd_by_id_opts.c:0
->>    8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
->>    ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
->>    9: (95) exit
->>
->> And here is the C code of the prog.
->>
->> SEC("lsm/bpf_map")
->> int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode)
->> {
->> 	if (map != (struct bpf_map *)&data_input)
->> 		return 0;
->>
->> 	if (fmode & FMODE_WRITE)
->> 		return -EACCES;
->>
->> 	return 0;
->> }
->>
->> It is clear that the prog can only return either 0 or -EACCESS, and both
->> values are legal.
->>
->> So why is it rejected by the verifier?
->>
->> The verifier log shows that the second if and return value setting
->> statements in the prog is optimized to bitwise operations "r0 s>>= 63"
->> and "r0 &= -13". The verifier correctly deduces that the the value of
->> r0 is in the range [-1, 0] after verifing instruction "r0 s>>= 63".
->> But when the verifier proceeds to verify instruction "r0 &= -13", it
->> fails to deduce the correct value range of r0.
->>
->> 7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
->> 8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
->>
->> So why the verifier fails to deduce the result of 'r0 &= -13'?
->>
->> The verifier uses tnum to track values, and the two ranges "[-1, 0]" and
->> "[0, -1ULL]" are encoded to the same tnum. When verifing instruction
->> "r0 &= -13", the verifier erroneously deduces the result from
->> "[0, -1ULL] AND -13", which is out of the expected return range
->> [-4095, 0].
->>
->> To fix it, this patch simply adds a special SCALAR32 case for the
->> verifier. That is, when the source operand of the AND instruction is
->> a constant and the destination operand changes from negative to
->> non-negative and falls in range [-256, 256], deduce the result range
->> by enumerating all possible AND results.
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
-> 
-> Hello,
-> 
-> Sorry for the delay, I had to think about this issue a bit.
-> I found the clang transformation that generates the pattern this patch
-> tries to handle.
-> It is located in DAGCombiner::SimplifySelectCC() method (see [1]).
-> The transformation happens as a part of DAG to DAG rewrites
-> (LLVM uses several internal representations:
->   - generic optimizer uses LLVM IR, most of the work is done
->     using this representation;
->   - before instruction selection IR is converted to Selection DAG,
->     some optimizations are applied at this stage,
->     all such optimizations are a set of pattern replacements;
->   - Selection DAG is converted to machine code, some optimizations
->     are applied at the machine code level).
-> 
-> Full pattern is described as follows:
-> 
->    // fold (select_cc seteq (and x, y), 0, 0, A) -> (and (sra (shl x)) A)
->    // where y is has a single bit set.
->    // A plaintext description would be, we can turn the SELECT_CC into an AND
->    // when the condition can be materialized as an all-ones register.  Any
->    // single bit-test can be materialized as an all-ones register with
->    // shift-left and shift-right-arith.
-> 
-> For this particular test case the DAG is converted as follows:
-> 
->                      .---------------- lhs         The meaning of this select_cc is:
->                      |        .------- rhs         `lhs == rhs ? true value : false value`
->                      |        | .----- true value
->                      |        | |  .-- false value
->                      v        v v  v
->    (select_cc seteq (and X 2) 0 0 -13)
->                            ^
-> ->                        '---------------.
->    (and (sra (sll X 62) 63)                |
->         -13)                               |
->                                            |
-> Before pattern is applied, it checks that second 'and' operand has
-> only one bit set, (which is true for '2').
-> 
-> The pattern itself generates logical shift left / arithmetic shift
-> right pair, that ensures that result is either all ones (-1) or all
-> zeros (0). Hence, applying 'and' to shifts result and false value
-> generates a correct result.
->
+On Fri, 19 Apr 2024 23:52:58 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Thanks for your detailed and invaluable explanation!
-
-> In my opinion the approach taken by this patch is sub-optimal:
-> - 512 iterations is too much;
-> - this does not cover all code that could be generated by the above
->    mentioned LLVM transformation
->    (e.g. second 'and' operand could be 1 << 16).
+> On Mon, 15 Apr 2024 21:50:20 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 > 
-> Instead, I suggest to make a special case for source or dst register
-> of '&=' operation being in range [-1,0].
-> Meaning that one of the '&=' operands is either:
-> - all ones, in which case the counterpart is the result of the operation;
-> - all zeros, in which case zero is the result of the operation;
-> - derive MIN and MAX values based on above two observations.
->
-
-Totally agree, I'll cook a new patch as you suggested.
-
-> [1] https://github.com/llvm/llvm-project/blob/4523a267829c807f3fc8fab8e5e9613985a51565/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp#L5391
+> > @@ -27,23 +28,157 @@
+> >  
+> >  #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
+> >  #define FGRAPH_RET_INDEX DIV_ROUND_UP(FGRAPH_RET_SIZE, sizeof(long))
+> > +
+> > +/*
+> > + * On entry to a function (via function_graph_enter()), a new ftrace_ret_stack
+> > + * is allocated on the task's ret_stack with indexes entry, then each
+> > + * fgraph_ops on the fgraph_array[]'s entryfunc is called and if that returns
+> > + * non-zero, the index into the fgraph_array[] for that fgraph_ops is recorded
+> > + * on the indexes entry as a bit flag.
+> > + * As the associated ftrace_ret_stack saved for those fgraph_ops needs to
+> > + * be found, the index to it is also added to the ret_stack along with the
+> > + * index of the fgraph_array[] to each fgraph_ops that needs their retfunc
+> > + * called.
+> > + *
+> > + * The top of the ret_stack (when not empty) will always have a reference
+> > + * to the last ftrace_ret_stack saved. All references to the
+> > + * ftrace_ret_stack has the format of:
+> > + *
+> > + * bits:  0 -  9	offset in words from the previous ftrace_ret_stack
+> > + *			(bitmap type should have FGRAPH_RET_INDEX always)
+> > + * bits: 10 - 11	Type of storage
+> > + *			  0 - reserved
+> > + *			  1 - bitmap of fgraph_array index
+> > + *
+> > + * For bitmap of fgraph_array index
+> > + *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
 > 
-> Best regards,
-> Eduard
+> I really hate the terminology I came up with here, and would love to
+> get better terminology for describing what is going on. I looked it
+> over but I'm constantly getting confused. And I wrote this code!
+> 
+> Perhaps we should use:
+> 
+>  @frame : The data that represents a single function call. When a
+>           function is traced, all the data used for all the callbacks
+>           attached to it, is in a single frame. This would replace the
+>           FGRAPH_RET_SIZE as FGRAPH_FRAME_SIZE.
 
+Agreed.
+
+> 
+>  @offset : This is the word size position on the stack. It would
+>            replace INDEX, as I think "index" is being used for more
+>            than one thing. Perhaps it should be "offset" when dealing
+>            with where it is on the shadow stack, and "pos" when dealing
+>            with which callback ops is being referenced.
+
+Indeed. @index is usually used from the index in an array. So we can use
+@index for fgraph_array[]. But inside a @frame, @offset would be better.
+
+> 
+> 
+> > + *
+> > + * That is, at the end of function_graph_enter, if the first and forth
+> > + * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
+> > + * on the return of the function being traced, this is what will be on the
+> > + * task's shadow ret_stack: (the stack grows upward)
+> > + *
+> > + * |                                            | <- task->curr_ret_stack
+> > + * +--------------------------------------------+
+> > + * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
+> > + * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
+> > + * +--------------------------------------------+
+> > + * | struct ftrace_ret_stack                    |
+> > + * |   (stores the saved ret pointer)           | <- the offset points here
+> > + * +--------------------------------------------+
+> > + * |                 (X) | (N)                  | ( N words away from
+> > + * |                                            |   previous ret_stack)
+> > + *
+> > + * If a backtrace is required, and the real return pointer needs to be
+> > + * fetched, then it looks at the task's curr_ret_stack index, if it
+> > + * is greater than zero (reserved, or right before poped), it would mask
+> > + * the value by FGRAPH_RET_INDEX_MASK to get the offset index of the
+> > + * ftrace_ret_stack structure stored on the shadow stack.
+> > + */
+> > +
+> > +#define FGRAPH_RET_INDEX_SIZE	10
+> 
+> Replace SIZE with BITS.
+
+Agreed.
+
+> 
+> > +#define FGRAPH_RET_INDEX_MASK	GENMASK(FGRAPH_RET_INDEX_SIZE - 1, 0)
+> 
+>   #define FGRAPH_FRAME_SIZE_BITS	10
+>   #define FGRAPH_FRAME_SIZE_MASK	GENMASK(FGRAPH_FRAME_SIZE_BITS - 1, 0)
+> 
+> 
+> > +
+> > +#define FGRAPH_TYPE_SIZE	2
+> > +#define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_SIZE - 1, 0)
+> 
+>   #define FGRAPH_TYPE_BITS	2
+>   #define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_BITS - 1, 0)
+> 
+> 
+> > +#define FGRAPH_TYPE_SHIFT	FGRAPH_RET_INDEX_SIZE
+> > +
+> > +enum {
+> > +	FGRAPH_TYPE_RESERVED	= 0,
+> > +	FGRAPH_TYPE_BITMAP	= 1,
+> > +};
+> > +
+> > +#define FGRAPH_INDEX_SIZE	16
+> 
+> replace "INDEX" with "OPS" as it will be the indexes of ops in the
+> array.
+> 
+>   #define FGRAPH_OPS_BITS	16
+>   #define FGRAPH_OPS_MASK	GENMASK(FGRAPH_OPS_BITS - 1, 0)
+
+OK, this looks good.
+
+> 
+> > +#define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
+> > +#define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
+> > +
+> > +/* Currently the max stack index can't be more than register callers */
+> > +#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
+> 
+> FGRAPH_MAX_INDEX isn't even used. Let's delete it.
+
+OK.
+
+> 
+> > +
+> > +#define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
+> 
+>   #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_BITS
+
+OK.
+
+> 
+> > +
+> >  #define SHADOW_STACK_SIZE (PAGE_SIZE)
+> >  #define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
+> >  /* Leave on a buffer at the end */
+> > -#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
+> > +#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - (FGRAPH_RET_INDEX + 1))
+> 
+> We probably should rename this is previous patches as well.
+> 
+> Unfortunately, it's getting close to the time for me to pick up my wife
+> from the airport to start our vacation. But I think we should rename a
+> lot of these variables to make things more consistent.
+
+OK, Thanks for your review!
+
+> 
+> I'll try to look more at the previous patches as well to make my
+> comments there, when I get some time. Maybe even later today.
+
+Only if you have a time. I think I also refresh the code.
+
+Thank you,
+
+> 
+> -- Steve
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
