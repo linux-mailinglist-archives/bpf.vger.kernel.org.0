@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-27342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 968D18AC110
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 21:43:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902EA8AC113
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 21:44:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52E6128121C
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 19:43:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9E9E1C208B2
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 19:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EC94205B;
-	Sun, 21 Apr 2024 19:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4215A43ACC;
+	Sun, 21 Apr 2024 19:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="us4WsazY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QpN+maUP"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8323F28DDF;
-	Sun, 21 Apr 2024 19:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03523FE4B;
+	Sun, 21 Apr 2024 19:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713728608; cv=none; b=jBhC0W3NHT02glj1wTeZbuZIOuYbMZMLjchX3K46zppHkYnvrtJqFY1vmbmaOjjmlG9yqmSCJqW5G2c+DQLKfCmXc5RYhwa2ygit+DjvcjIAN0v3zOsjtTr4F48lHioo5w2pikvMwWx0lQ+w5A0zh5whymmYrMscCSc+RIBiyAg=
+	t=1713728620; cv=none; b=u490vPHZW1I1WmbaHw8rqyp9+/N6Ofljn3x1kHJZicPA6KnvRo8vCSjVCevn8xWYRGe54jJUOFGZw34joy1TBudQYHelcVhgwB5Qv3MIyeQ65qBpqHSyUgJt4DEtQfCWNIkbNZj9rvMNxgpACDuBXNUKz4f1Je24OkiyxjSfVVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713728608; c=relaxed/simple;
-	bh=i+DcjfVrFPHPURtr8mJSVqRQ94gO73L1dZ+DRtr/A1Y=;
+	s=arc-20240116; t=1713728620; c=relaxed/simple;
+	bh=iIPEN5LzK/t1QT6usY68cfJg0ttPxsTTf/Tw7WiSAXk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AVG54EJEOp4iarQPYDwr8ufPPhEgwhVzADm8+ph+fk6STpg0PKK3OzRzd3VZxv+KAz+qj4SpNNcT9tDBjd81gjD5iARszIGB8eBLuvmCU6frco1HlYNNIGxDZcnwP7QSpVXplir5H9GS+Vio00TIUfmbVNi+CTnHIrKePnRu7Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=us4WsazY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF77DC113CE;
-	Sun, 21 Apr 2024 19:43:23 +0000 (UTC)
+	 MIME-Version; b=svfAwqnSzm64RBD601b3R1oE+maLgdRqw+cnwGOlV7vQaN6XnNFJMxVN0/Fjecgr+uWlsNpcl8GH+5iDy6giAMfYM3mYg1pVNUbpGBUgHx55NFoZ1dARjcjJxnkLfMvMmsIo7qofcJ12Yif2mV4KOxUhOlBJbWtz5AH7hBanE3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QpN+maUP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1710C113CE;
+	Sun, 21 Apr 2024 19:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713728608;
-	bh=i+DcjfVrFPHPURtr8mJSVqRQ94gO73L1dZ+DRtr/A1Y=;
+	s=k20201202; t=1713728620;
+	bh=iIPEN5LzK/t1QT6usY68cfJg0ttPxsTTf/Tw7WiSAXk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=us4WsazYeVxuGWocOd7OfDa3SYP1x8dqhruEHiS3dz1eWzZ64gboBxmtTvMsilbrd
-	 3aGFVczTQuPymqRt7uCx8AfXi/heFF5gmptNuMDdDZP6PHYfaDuqrvqgkZwo3oGOlV
-	 IDtIBeAMxulwFhz3IIY8iyYXxfe2nnyT6UmX8mHUDABZnXx88FkKMctyAu/SphulAv
-	 /i7LofItKZMj+Ed9Fx+GBm2ZEYFqTmtZ95oTOjAXewcQldQSOrT6LUNALHt9aRB6/k
-	 3bCjG0OFSeStk/WCac+efitYPXK+iw6VzrPcHSxzvpi/PyqQOkyA7qCGYFPa/ZRfpj
-	 LbjlSRIc3sw+g==
+	b=QpN+maUPquceVNspLlWizuG9q7VdrvDmDtuZbIYKsEnKOWuvxtDxJqolXNmn7FF0U
+	 Cx2E5dlNsZ0S+S2/NCYWFZatGuz3DQyt6yVPBN/MLrohxXEe/lA/K3CuZN9mo5MZLs
+	 KdAS3yxsbnvWfzhWJ5N7tf88Z7BG1wlTbJ6QHI/G2p8EeWCnXcprJGrZK4LilrYzDS
+	 ybOP9AUBOLIS0R/kG7x6aOtnRqR5Mx9jDLVjTw1MPKGUUUJzxsCFY7qSyEDGmV4MtX
+	 O4ExJ1o8TcmhuAi/87nfPyaDrbsotAjJuhdET/fwVGTf8XKCOjoLL+P2DlUGLUZ7qH
+	 L6whLvqu6lkog==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -61,9 +61,9 @@ Cc: linux-kernel@vger.kernel.org,
 	"Borislav Petkov (AMD)" <bp@alien8.de>,
 	Ingo Molnar <mingo@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>
-Subject: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
-Date: Sun, 21 Apr 2024 21:42:05 +0200
-Message-ID: <20240421194206.1010934-7-jolsa@kernel.org>
+Subject: [PATCH 7/7] man2: Add uretprobe syscall page
+Date: Sun, 21 Apr 2024 21:42:06 +0200
+Message-ID: <20240421194206.1010934-8-jolsa@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240421194206.1010934-1-jolsa@kernel.org>
 References: <20240421194206.1010934-1-jolsa@kernel.org>
@@ -75,143 +75,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding test that adds return uprobe inside 32 bit task
-and verify the return uprobe and attached bpf programs
-get properly executed.
+Adding man page for new uretprobe syscall.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/.gitignore        |  1 +
- tools/testing/selftests/bpf/Makefile          |  6 ++-
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++++
- .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
- 4 files changed, 59 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+ man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100644 man2/uretprobe.2
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index f1aebabfb017..69d71223c0dd 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -45,6 +45,7 @@ test_cpp
- /veristat
- /sign-file
- /uprobe_multi
-+/uprobe_compat
- *.ko
- *.tmp
- xskxceiver
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index edc73f8f5aef..d170b63eca62 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
- 	xdp_features bpf_test_no_cfi.ko
- 
--TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi
-+TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi uprobe_compat
- 
- # Emit succinct information message describing current building step
- # $1 - generic step name (e.g., CC, LINK, etc);
-@@ -761,6 +761,10 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
- 
-+$(OUTPUT)/uprobe_compat:
-+	$(call msg,BINARY,,$@)
-+	$(Q)echo "int main() { return 0; }" | $(CC) $(CFLAGS) -xc -m32 -O0 - -o $@
-+
- EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature bpftool							\
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index 9233210a4c33..3770254d893b 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -11,6 +11,7 @@
- #include <sys/wait.h>
- #include "uprobe_syscall.skel.h"
- #include "uprobe_syscall_call.skel.h"
-+#include "uprobe_syscall_compat.skel.h"
- 
- __naked unsigned long uretprobe_regs_trigger(void)
- {
-@@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
- 		 "read_trace_pipe_iter");
- 	ASSERT_EQ(found, 0, "found");
- }
-+
-+static void trace_pipe_compat_cb(const char *str, void *data)
-+{
-+	if (strstr(str, "uretprobe compat") != NULL)
-+		(*(int *)data)++;
-+}
-+
-+static void test_uretprobe_compat(void)
-+{
-+	struct uprobe_syscall_compat *skel = NULL;
-+	int err, found = 0;
-+
-+	skel = uprobe_syscall_compat__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_load"))
-+		goto cleanup;
-+
-+	err = uprobe_syscall_compat__attach(skel);
-+	if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
-+		goto cleanup;
-+
-+	system("./uprobe_compat");
-+
-+	ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, 1000),
-+		 "read_trace_pipe_iter");
-+	ASSERT_EQ(found, 1, "found");
-+
-+cleanup:
-+	uprobe_syscall_compat__destroy(skel);
-+}
- #else
- static void test_uretprobe_regs_equal(void)
- {
-@@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
- {
- 	test__skip();
- }
-+
-+static void test_uretprobe_compat(void)
-+{
-+	test__skip();
-+}
- #endif
- 
- void test_uprobe_syscall(void)
-@@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
- {
- 	test_uretprobe_syscall_call();
- }
-+
-+void serial_test_uprobe_syscall_compat(void)
-+{
-+	test_uretprobe_compat();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+diff --git a/man2/uretprobe.2 b/man2/uretprobe.2
 new file mode 100644
-index 000000000000..f8adde7f08e2
+index 000000000000..c0343a88bb57
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
++++ b/man2/uretprobe.2
+@@ -0,0 +1,40 @@
++.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
++.\"
++.\" SPDX-License-Identifier: Linux-man-pages-copyleft
++.\"
++.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
++.SH NAME
++uretprobe \- execute pending return uprobes
++.SH SYNOPSIS
++.nf
++.B int uretprobe(void)
++.fi
++.SH DESCRIPTION
++On x86_64 architecture the kernel is using uretprobe syscall to trigger
++uprobe return probe consumers instead of using standard breakpoint instruction.
++The reason is that it's much faster to do syscall than breakpoint trap
++on x86_64 architecture.
 +
-+char _license[] SEC("license") = "GPL";
++The uretprobe syscall is not supposed to be called directly by user, it's allowed
++to be invoked only through user space trampoline provided by kernel.
++When called from outside of this trampoline, the calling process will receive
++.BR SIGILL .
 +
-+SEC("uretprobe.multi/./uprobe_compat:main")
-+int uretprobe_compat(struct pt_regs *ctx)
-+{
-+	bpf_printk("uretprobe compat\n");
-+	return 0;
-+}
++.SH RETURN VALUE
++.BR uretprobe()
++return value is specific for given architecture.
++
++.SH VERSIONS
++This syscall is not specified in POSIX,
++and details of its behavior vary across systems.
++.SH STANDARDS
++None.
++.SH NOTES
++.BR uretprobe()
++exists only to allow the invocation of return uprobe consumers.
++It should
++.B never
++be called directly.
++Details of the arguments (if any) passed to
++.BR uretprobe ()
++and the return value are specific for given architecture.
 -- 
 2.44.0
 
