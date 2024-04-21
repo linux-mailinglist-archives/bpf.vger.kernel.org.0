@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-27341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 400A98AC10D
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 21:43:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 968D18AC110
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 21:43:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF2CE2812A8
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 19:43:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52E6128121C
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 19:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A293FE51;
-	Sun, 21 Apr 2024 19:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EC94205B;
+	Sun, 21 Apr 2024 19:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jn7soWvs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="us4WsazY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31F53FB14;
-	Sun, 21 Apr 2024 19:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8323F28DDF;
+	Sun, 21 Apr 2024 19:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713728596; cv=none; b=DO4s5P3T4TVYKFwYxr1kvq3Q7f+CFpb7wR+n2WR5MMw6H1+4Uv1GUOpo1jyz/xj20HsRRoYUpdHIPYWVhheH9XkM7lj/RqZB+ah9bgq9V8vBL2Pgh3FDdSMcM62YlaOttNqoxOp7mWD7D3rU307sle7NyeV90uAjdIk4AlBVNnw=
+	t=1713728608; cv=none; b=jBhC0W3NHT02glj1wTeZbuZIOuYbMZMLjchX3K46zppHkYnvrtJqFY1vmbmaOjjmlG9yqmSCJqW5G2c+DQLKfCmXc5RYhwa2ygit+DjvcjIAN0v3zOsjtTr4F48lHioo5w2pikvMwWx0lQ+w5A0zh5whymmYrMscCSc+RIBiyAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713728596; c=relaxed/simple;
-	bh=zXsQFP+lBWcQOzhNUiIZY9EDEZ2vOGD8pKD7bKL08jE=;
+	s=arc-20240116; t=1713728608; c=relaxed/simple;
+	bh=i+DcjfVrFPHPURtr8mJSVqRQ94gO73L1dZ+DRtr/A1Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XidYYX0vf+hWCAlyaEKMv2ynEQC6Rcyyt6809PuPAcGCWGSqDk5vqpfSQAqvbRfGiyPa4BUsiQIM40Fcl2DuCuGDE8+XrKGWWAXa79EaIlmJp0JsruO7oZO7icTCrvHUC8bWcu1HS2fQc0clHrINL2U5omYk8DolW4oJuizBoIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jn7soWvs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B21F9C113CE;
-	Sun, 21 Apr 2024 19:43:11 +0000 (UTC)
+	 MIME-Version; b=AVG54EJEOp4iarQPYDwr8ufPPhEgwhVzADm8+ph+fk6STpg0PKK3OzRzd3VZxv+KAz+qj4SpNNcT9tDBjd81gjD5iARszIGB8eBLuvmCU6frco1HlYNNIGxDZcnwP7QSpVXplir5H9GS+Vio00TIUfmbVNi+CTnHIrKePnRu7Ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=us4WsazY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF77DC113CE;
+	Sun, 21 Apr 2024 19:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713728596;
-	bh=zXsQFP+lBWcQOzhNUiIZY9EDEZ2vOGD8pKD7bKL08jE=;
+	s=k20201202; t=1713728608;
+	bh=i+DcjfVrFPHPURtr8mJSVqRQ94gO73L1dZ+DRtr/A1Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jn7soWvs0sLr9hsTFqTnjXPH+4DzuW3o3L0MDPilqGczRK9fX7SmEV5p9Q+3PA8Gc
-	 /tHNoVHpEtrnDhSQ+5+FDP1KT83QyT9vyVk12ySLSS2pBl+rViPWm/65YekugUoCG2
-	 vNo+Woa8nRi0iVTJxsnZMLwz3xT+oxNySIhAAhuXJ05FBQR7WcHS7G9+0R8DTf+GMx
-	 UygmSGPv5AaWIgi7DFjz+5qpl17T7j+oR6UeramK0hdiWxQBGlqpzveX5XksKttmos
-	 ABHkegTKGpBGDKmxyXqXoXz+wiXk3NUDZ96dpY7E6OmmYwbci2KutYpCq7dlunpJNn
-	 Smru/o4B/1Mlg==
+	b=us4WsazYeVxuGWocOd7OfDa3SYP1x8dqhruEHiS3dz1eWzZ64gboBxmtTvMsilbrd
+	 3aGFVczTQuPymqRt7uCx8AfXi/heFF5gmptNuMDdDZP6PHYfaDuqrvqgkZwo3oGOlV
+	 IDtIBeAMxulwFhz3IIY8iyYXxfe2nnyT6UmX8mHUDABZnXx88FkKMctyAu/SphulAv
+	 /i7LofItKZMj+Ed9Fx+GBm2ZEYFqTmtZ95oTOjAXewcQldQSOrT6LUNALHt9aRB6/k
+	 3bCjG0OFSeStk/WCac+efitYPXK+iw6VzrPcHSxzvpi/PyqQOkyA7qCGYFPa/ZRfpj
+	 LbjlSRIc3sw+g==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -61,9 +61,9 @@ Cc: linux-kernel@vger.kernel.org,
 	"Borislav Petkov (AMD)" <bp@alien8.de>,
 	Ingo Molnar <mingo@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>
-Subject: [PATCHv3 bpf-next 5/7] selftests/bpf: Add uretprobe syscall call from user space test
-Date: Sun, 21 Apr 2024 21:42:04 +0200
-Message-ID: <20240421194206.1010934-6-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
+Date: Sun, 21 Apr 2024 21:42:05 +0200
+Message-ID: <20240421194206.1010934-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240421194206.1010934-1-jolsa@kernel.org>
 References: <20240421194206.1010934-1-jolsa@kernel.org>
@@ -75,159 +75,141 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding test to verify that when called from outside of the
-trampoline provided by kernel, the uretprobe syscall will cause
-calling process to receive SIGILL signal and the attached bpf
-program is no executed.
+Adding test that adds return uprobe inside 32 bit task
+and verify the return uprobe and attached bpf programs
+get properly executed.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 92 +++++++++++++++++++
- .../selftests/bpf/progs/uprobe_syscall_call.c | 15 +++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
+ tools/testing/selftests/bpf/.gitignore        |  1 +
+ tools/testing/selftests/bpf/Makefile          |  6 ++-
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++++
+ .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
+ 4 files changed, 59 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
 
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index f1aebabfb017..69d71223c0dd 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -45,6 +45,7 @@ test_cpp
+ /veristat
+ /sign-file
+ /uprobe_multi
++/uprobe_compat
+ *.ko
+ *.tmp
+ xskxceiver
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index edc73f8f5aef..d170b63eca62 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
+ 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
+ 	xdp_features bpf_test_no_cfi.ko
+ 
+-TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi
++TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi uprobe_compat
+ 
+ # Emit succinct information message describing current building step
+ # $1 - generic step name (e.g., CC, LINK, etc);
+@@ -761,6 +761,10 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
+ 
++$(OUTPUT)/uprobe_compat:
++	$(call msg,BINARY,,$@)
++	$(Q)echo "int main() { return 0; }" | $(CC) $(CFLAGS) -xc -m32 -O0 - -o $@
++
+ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+ 	feature bpftool							\
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index 1a50cd35205d..9233210a4c33 100644
+index 9233210a4c33..3770254d893b 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -7,7 +7,10 @@
- #include <unistd.h>
- #include <asm/ptrace.h>
- #include <linux/compiler.h>
-+#include <linux/stringify.h>
-+#include <sys/wait.h>
+@@ -11,6 +11,7 @@
+ #include <sys/wait.h>
  #include "uprobe_syscall.skel.h"
-+#include "uprobe_syscall_call.skel.h"
+ #include "uprobe_syscall_call.skel.h"
++#include "uprobe_syscall_compat.skel.h"
  
  __naked unsigned long uretprobe_regs_trigger(void)
  {
-@@ -209,6 +212,85 @@ static void test_uretprobe_regs_change(void)
- 	}
+@@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
+ 		 "read_trace_pipe_iter");
+ 	ASSERT_EQ(found, 0, "found");
  }
- 
-+#ifndef __NR_uretprobe
-+#define __NR_uretprobe 462
-+#endif
 +
-+__naked unsigned long uretprobe_syscall_call_1(void)
++static void trace_pipe_compat_cb(const char *str, void *data)
 +{
-+	/*
-+	 * Pretend we are uretprobe trampoline to trigger the return
-+	 * probe invocation in order to verify we get SIGILL.
-+	 */
-+	asm volatile (
-+		"pushq %rax\n"
-+		"pushq %rcx\n"
-+		"pushq %r11\n"
-+		"movq $" __stringify(__NR_uretprobe) ", %rax\n"
-+		"syscall\n"
-+		"popq %r11\n"
-+		"popq %rcx\n"
-+		"retq\n"
-+	);
-+}
-+
-+__naked unsigned long uretprobe_syscall_call(void)
-+{
-+	asm volatile (
-+		"call uretprobe_syscall_call_1\n"
-+		"retq\n"
-+	);
-+}
-+
-+static void __test_uretprobe_syscall_call(void)
-+{
-+	struct uprobe_syscall_call *skel = NULL;
-+	int err;
-+
-+	skel = uprobe_syscall_call__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_call__open_and_load"))
-+		goto cleanup;
-+
-+	err = uprobe_syscall_call__attach(skel);
-+	if (!ASSERT_OK(err, "uprobe_syscall_call__attach"))
-+		goto cleanup;
-+
-+	uretprobe_syscall_call();
-+
-+cleanup:
-+	uprobe_syscall_call__destroy(skel);
-+}
-+
-+static void trace_pipe_cb(const char *str, void *data)
-+{
-+	if (strstr(str, "uretprobe called") != NULL)
++	if (strstr(str, "uretprobe compat") != NULL)
 +		(*(int *)data)++;
 +}
 +
-+static void test_uretprobe_syscall_call(void)
++static void test_uretprobe_compat(void)
 +{
-+	int pid, status, found = 0;
++	struct uprobe_syscall_compat *skel = NULL;
++	int err, found = 0;
 +
-+	pid = fork();
-+	if (!ASSERT_GE(pid, 0, "fork"))
-+		return;
++	skel = uprobe_syscall_compat__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_load"))
++		goto cleanup;
 +
-+	if (pid == 0) {
-+		__test_uretprobe_syscall_call();
-+		_exit(0);
-+	}
++	err = uprobe_syscall_compat__attach(skel);
++	if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
++		goto cleanup;
 +
-+	waitpid(pid, &status, 0);
++	system("./uprobe_compat");
 +
-+	/* verify the child got killed with SIGILL */
-+	ASSERT_EQ(WIFSIGNALED(status), 1, "WIFSIGNALED");
-+	ASSERT_EQ(WTERMSIG(status), SIGILL, "WTERMSIG");
-+
-+	/* verify the uretprobe program wasn't called */
-+	ASSERT_OK(read_trace_pipe_iter(trace_pipe_cb, &found, 1000),
++	ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, 1000),
 +		 "read_trace_pipe_iter");
-+	ASSERT_EQ(found, 0, "found");
++	ASSERT_EQ(found, 1, "found");
++
++cleanup:
++	uprobe_syscall_compat__destroy(skel);
 +}
  #else
  static void test_uretprobe_regs_equal(void)
  {
-@@ -219,6 +301,11 @@ static void test_uretprobe_regs_change(void)
+@@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
  {
  	test__skip();
  }
 +
-+static void test_uretprobe_syscall_call(void)
++static void test_uretprobe_compat(void)
 +{
 +	test__skip();
 +}
  #endif
  
  void test_uprobe_syscall(void)
-@@ -228,3 +315,8 @@ void test_uprobe_syscall(void)
- 	if (test__start_subtest("uretprobe_regs_change"))
- 		test_uretprobe_regs_change();
+@@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
+ {
+ 	test_uretprobe_syscall_call();
  }
 +
-+void serial_test_uprobe_syscall_call(void)
++void serial_test_uprobe_syscall_compat(void)
 +{
-+	test_uretprobe_syscall_call();
++	test_uretprobe_compat();
 +}
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
 new file mode 100644
-index 000000000000..5ea03bb47198
+index 000000000000..f8adde7f08e2
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-@@ -0,0 +1,15 @@
++++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+@@ -0,0 +1,13 @@
 +// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
++#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
-+#include <string.h>
-+
-+struct pt_regs regs;
++#include <bpf/bpf_tracing.h>
 +
 +char _license[] SEC("license") = "GPL";
 +
-+SEC("uretprobe//proc/self/exe:uretprobe_syscall_call")
-+int uretprobe(struct pt_regs *regs)
++SEC("uretprobe.multi/./uprobe_compat:main")
++int uretprobe_compat(struct pt_regs *ctx)
 +{
-+	bpf_printk("uretprobe called");
++	bpf_printk("uretprobe compat\n");
 +	return 0;
 +}
 -- 
