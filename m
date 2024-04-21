@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-27338-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27339-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C1B08AC104
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 21:42:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7755C8AC107
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 21:43:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 327BD2811E1
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 19:42:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CCFD281234
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 19:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9812441775;
-	Sun, 21 Apr 2024 19:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CD04317B;
+	Sun, 21 Apr 2024 19:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A2dk8MY5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bdONDeQY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109D63FE51;
-	Sun, 21 Apr 2024 19:42:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD883A1A2;
+	Sun, 21 Apr 2024 19:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713728560; cv=none; b=a4mS3ig4jx6UTU6RJT6K47LWfL5eWzKKTLCiNLvPnMdbzMjmL9ktbzkVm02ZE4+Spu9+D5MYb9cvycSQTp9migbauL2nQ0629RQ+3sOCxFUZPSzbVJB/zWoRwEzMZC6U8JQjRqDTKcLbJNkzE4/Y4EaOfzVo0VT8Bb9gMHyaDmY=
+	t=1713728573; cv=none; b=WvvsdzviaB4zgJDMoTcEatiExaRyeVdnX6R3UB0HL8Wu99ctx+2zFmIZzP7Tv2s9Kx6Yqj/XMRFPIecchxfwodFarXJLzkzqrWarsz/Rpsztgf4coIgAsCmOS35OXgShT6uQsc6C1/E3TPhMOcrgsQj1KWWx8bXK3IbkWSHTdHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713728560; c=relaxed/simple;
-	bh=b9WpzrDRUIl2I0mdMkc6Qa7FzaGMsYMkdoqHsqKyUZc=;
+	s=arc-20240116; t=1713728573; c=relaxed/simple;
+	bh=X3NKIEpwmKsyUxgmoaW6AEzBnvvIxsNfnxPt7ebcd1E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eHxpaCmmBrRhHlXVy1BqQC0ElPkU1SPvl/x8OObtUz/lWg5UErNxdduZhAhuLesykTHHG7brz6FLetaO/Bd050MohvX1e0Xf7tloGcWEosn/ZvR9+BXhWhzHi02YwWkUkEPYCNmi3EscCe/dKRODc2+yxpOQczVmpyVWPXU1GEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A2dk8MY5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC96C113CE;
-	Sun, 21 Apr 2024 19:42:34 +0000 (UTC)
+	 MIME-Version; b=gmInzQtqQkXePP1h8WpJrGK2wLlq0faBC3knMqJ5PwDA+UR3xc5yH8D+Zn1Q33yTdQJWsU/pigYemDNvz9k2wPRgKkiQrHpVIJuQk67wNbb+k8rYXNlP97HcpHQuGFgYe8gIHufVUs5ObsvvXz1qamsfBbCl87cS69Rasec8Mac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bdONDeQY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B520BC113CE;
+	Sun, 21 Apr 2024 19:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713728559;
-	bh=b9WpzrDRUIl2I0mdMkc6Qa7FzaGMsYMkdoqHsqKyUZc=;
+	s=k20201202; t=1713728572;
+	bh=X3NKIEpwmKsyUxgmoaW6AEzBnvvIxsNfnxPt7ebcd1E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A2dk8MY51k8a+bPkBPb8Oraeyhb04VrwVeHWxGV9zjbaWrWQCvgIdCIN+bbInOqRF
-	 Ecv82I5o9lATgqDU+sThY01k9iFIbsDFktjy7p5napK1ZfNb5C/btuKJcd9bo0Hmov
-	 TYTx0d4ZTEjAQFHGhUBoWPqSlGyr+2JFqeqifA1MUZagQZISNXmW6D8hn0JMsGAnPV
-	 E1Bb2YdRt7yQdP1t172I+y0WA30034wRoXg7QFtHJu23bsS7V/6tzwJmiMGBbelNHL
-	 Yi9easFZMz7ZwhCtJqb8ldGzAyDKtLzC7A97+P3kcS2gJ1cnoWpN2NjQmx4LlwjvmH
-	 /8LM9xP7jz4AA==
+	b=bdONDeQYqtOSB2DmNo5syK+xl4CFS3mYTIG0lhBTSZ5zC6gYck/46zruYrf0IFOZQ
+	 BQiVzWMyyQBWvu1MSSWX0GmtLZoG+JXU6yKwBWPXUQTToex3rmGJMMjWWsr3UB09Hd
+	 bxEg47u5FHB0Iwn7aamw1tHNd2Ef49pA/T4Vj5YPcaj0SfAPraHlRKrH3Sx5VFb7ei
+	 20ifdoN2jgfySM069H0B+HDrLZXn/Jmn4oOQ6yEhsuaSxyaG4pETcE10hdDL9AmEFr
+	 cx0lPp8gtmF8PNS7IU9XI6SE6XdoCN8nh4o7eb7VG4/mWDjI1PKK5giFDFxRpar47a
+	 z+OwxSqUkViiQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -61,9 +61,9 @@ Cc: linux-kernel@vger.kernel.org,
 	"Borislav Petkov (AMD)" <bp@alien8.de>,
 	Ingo Molnar <mingo@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>
-Subject: [PATCHv3 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up return probe
-Date: Sun, 21 Apr 2024 21:42:01 +0200
-Message-ID: <20240421194206.1010934-3-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 3/7] selftests/bpf: Add uretprobe syscall test for regs integrity
+Date: Sun, 21 Apr 2024 21:42:02 +0200
+Message-ID: <20240421194206.1010934-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240421194206.1010934-1-jolsa@kernel.org>
 References: <20240421194206.1010934-1-jolsa@kernel.org>
@@ -73,307 +73,227 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Adding uretprobe syscall instead of trap to speed up return probe.
+Add uretprobe syscall test that compares register values before
+and after the uretprobe is hit. It also compares the register
+values seen from attached bpf program.
 
-At the moment the uretprobe setup/path is:
-
-  - install entry uprobe
-
-  - when the uprobe is hit, it overwrites probed function's return address
-    on stack with address of the trampoline that contains breakpoint
-    instruction
-
-  - the breakpoint trap code handles the uretprobe consumers execution and
-    jumps back to original return address
-
-This patch replaces the above trampoline's breakpoint instruction with new
-ureprobe syscall call. This syscall does exactly the same job as the trap
-with some more extra work:
-
-  - syscall trampoline must save original value for rax/r11/rcx registers
-    on stack - rax is set to syscall number and r11/rcx are changed and
-    used by syscall instruction
-
-  - the syscall code reads the original values of those registers and
-    restore those values in task's pt_regs area
-
-  - only caller from trampoline exposed in '[uprobes]' is allowed,
-    the process will receive SIGILL signal otherwise
-
-Even with some extra work, using the uretprobes syscall shows speed
-improvement (compared to using standard breakpoint):
-
-  On Intel (11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz)
-
-  current:
-    uretprobe-nop  :    1.498 ± 0.000M/s
-    uretprobe-push :    1.448 ± 0.001M/s
-    uretprobe-ret  :    0.816 ± 0.001M/s
-
-  with the fix:
-    uretprobe-nop  :    1.969 ± 0.002M/s  < 31% speed up
-    uretprobe-push :    1.910 ± 0.000M/s  < 31% speed up
-    uretprobe-ret  :    0.934 ± 0.000M/s  < 14% speed up
-
-  On Amd (AMD Ryzen 7 5700U)
-
-  current:
-    uretprobe-nop  :    0.778 ± 0.001M/s
-    uretprobe-push :    0.744 ± 0.001M/s
-    uretprobe-ret  :    0.540 ± 0.001M/s
-
-  with the fix:
-    uretprobe-nop  :    0.860 ± 0.001M/s  < 10% speed up
-    uretprobe-push :    0.818 ± 0.001M/s  < 10% speed up
-    uretprobe-ret  :    0.578 ± 0.000M/s  <  7% speed up
-
-The performance test spawns a thread that runs loop which triggers
-uprobe with attached bpf program that increments the counter that
-gets printed in results above.
-
-The uprobe (and uretprobe) kind is determined by which instruction
-is being patched with breakpoint instruction. That's also important
-for uretprobes, because uprobe is installed for each uretprobe.
-
-The performance test is part of bpf selftests:
-  tools/testing/selftests/bpf/run_bench_uprobes.sh
-
-Note at the moment uretprobe syscall is supported only for native
-64-bit process, compat process still uses standard breakpoint.
-
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/kernel/uprobes.c | 115 ++++++++++++++++++++++++++++++++++++++
- include/linux/uprobes.h   |   3 +
- kernel/events/uprobes.c   |  24 +++++---
- 3 files changed, 135 insertions(+), 7 deletions(-)
+ tools/include/linux/compiler.h                |   4 +
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 163 ++++++++++++++++++
+ .../selftests/bpf/progs/uprobe_syscall.c      |  15 ++
+ 3 files changed, 182 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
 
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 6c07f6daaa22..81e6ee95784d 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -12,6 +12,7 @@
- #include <linux/ptrace.h>
- #include <linux/uprobes.h>
- #include <linux/uaccess.h>
-+#include <linux/syscalls.h>
+diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
+index 8a63a9913495..6f7f22ac9da5 100644
+--- a/tools/include/linux/compiler.h
++++ b/tools/include/linux/compiler.h
+@@ -62,6 +62,10 @@
+ #define __nocf_check __attribute__((nocf_check))
+ #endif
  
- #include <linux/kdebug.h>
- #include <asm/processor.h>
-@@ -308,6 +309,120 @@ static int uprobe_init_insn(struct arch_uprobe *auprobe, struct insn *insn, bool
- }
- 
- #ifdef CONFIG_X86_64
++#ifndef __naked
++#define __naked __attribute__((__naked__))
++#endif
 +
-+asm (
-+	".pushsection .rodata\n"
-+	".global uretprobe_syscall_entry\n"
-+	"uretprobe_syscall_entry:\n"
-+	"pushq %rax\n"
-+	"pushq %rcx\n"
-+	"pushq %r11\n"
-+	"movq $" __stringify(__NR_uretprobe) ", %rax\n"
-+	"syscall\n"
-+	".global uretprobe_syscall_check\n"
-+	"uretprobe_syscall_check:\n"
-+	"popq %r11\n"
-+	"popq %rcx\n"
+ /* Are two types/vars the same type (ignoring qualifiers)? */
+ #ifndef __same_type
+ # define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+new file mode 100644
+index 000000000000..311ac19d8992
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+@@ -0,0 +1,163 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+	/* The uretprobe syscall replaces stored %rax value with final
-+	 * return address, so we don't restore %rax in here and just
-+	 * call ret.
-+	 */
-+	"retq\n"
-+	".global uretprobe_syscall_end\n"
-+	"uretprobe_syscall_end:\n"
-+	".popsection\n"
-+);
++#include <test_progs.h>
 +
-+extern u8 uretprobe_syscall_entry[];
-+extern u8 uretprobe_syscall_check[];
-+extern u8 uretprobe_syscall_end[];
++#ifdef __x86_64__
 +
-+void *arch_uprobe_trampoline(unsigned long *psize)
++#include <unistd.h>
++#include <asm/ptrace.h>
++#include <linux/compiler.h>
++#include "uprobe_syscall.skel.h"
++
++__naked unsigned long uretprobe_regs_trigger(void)
 +{
-+	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+	struct pt_regs *regs = task_pt_regs(current);
++	asm volatile (
++		"movq $0xdeadbeef, %rax\n"
++		"ret\n"
++	);
++}
 +
-+	/*
-+	 * At the moment the uretprobe syscall trampoline is supported
-+	 * only for native 64-bit process, the compat process still uses
-+	 * standard breakpoint.
-+	 */
-+	if (user_64bit_mode(regs)) {
-+		*psize = uretprobe_syscall_end - uretprobe_syscall_entry;
-+		return uretprobe_syscall_entry;
++__naked void uretprobe_regs(struct pt_regs *before, struct pt_regs *after)
++{
++	asm volatile (
++		"movq %r15,   0(%rdi)\n"
++		"movq %r14,   8(%rdi)\n"
++		"movq %r13,  16(%rdi)\n"
++		"movq %r12,  24(%rdi)\n"
++		"movq %rbp,  32(%rdi)\n"
++		"movq %rbx,  40(%rdi)\n"
++		"movq %r11,  48(%rdi)\n"
++		"movq %r10,  56(%rdi)\n"
++		"movq  %r9,  64(%rdi)\n"
++		"movq  %r8,  72(%rdi)\n"
++		"movq %rax,  80(%rdi)\n"
++		"movq %rcx,  88(%rdi)\n"
++		"movq %rdx,  96(%rdi)\n"
++		"movq %rsi, 104(%rdi)\n"
++		"movq %rdi, 112(%rdi)\n"
++		"movq   $0, 120(%rdi)\n" /* orig_rax */
++		"movq   $0, 128(%rdi)\n" /* rip      */
++		"movq   $0, 136(%rdi)\n" /* cs       */
++		"pushf\n"
++		"pop %rax\n"
++		"movq %rax, 144(%rdi)\n" /* eflags   */
++		"movq %rsp, 152(%rdi)\n" /* rsp      */
++		"movq   $0, 160(%rdi)\n" /* ss       */
++
++		/* save 2nd argument */
++		"pushq %rsi\n"
++		"call uretprobe_regs_trigger\n"
++
++		/* save  return value and load 2nd argument pointer to rax */
++		"pushq %rax\n"
++		"movq 8(%rsp), %rax\n"
++
++		"movq %r15,   0(%rax)\n"
++		"movq %r14,   8(%rax)\n"
++		"movq %r13,  16(%rax)\n"
++		"movq %r12,  24(%rax)\n"
++		"movq %rbp,  32(%rax)\n"
++		"movq %rbx,  40(%rax)\n"
++		"movq %r11,  48(%rax)\n"
++		"movq %r10,  56(%rax)\n"
++		"movq  %r9,  64(%rax)\n"
++		"movq  %r8,  72(%rax)\n"
++		"movq %rcx,  88(%rax)\n"
++		"movq %rdx,  96(%rax)\n"
++		"movq %rsi, 104(%rax)\n"
++		"movq %rdi, 112(%rax)\n"
++		"movq   $0, 120(%rax)\n" /* orig_rax */
++		"movq   $0, 128(%rax)\n" /* rip      */
++		"movq   $0, 136(%rax)\n" /* cs       */
++
++		/* restore return value and 2nd argument */
++		"pop %rax\n"
++		"pop %rsi\n"
++
++		"movq %rax,  80(%rsi)\n"
++
++		"pushf\n"
++		"pop %rax\n"
++
++		"movq %rax, 144(%rsi)\n" /* eflags   */
++		"movq %rsp, 152(%rsi)\n" /* rsp      */
++		"movq   $0, 160(%rsi)\n" /* ss       */
++		"ret\n"
++);
++}
++
++static void test_uretprobe_regs_equal(void)
++{
++	struct uprobe_syscall *skel = NULL;
++	struct pt_regs before = {}, after = {};
++	unsigned long *pb = (unsigned long *) &before;
++	unsigned long *pa = (unsigned long *) &after;
++	unsigned long *pp;
++	unsigned int i, cnt;
++	int err;
++
++	skel = uprobe_syscall__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_syscall__open_and_load"))
++		goto cleanup;
++
++	err = uprobe_syscall__attach(skel);
++	if (!ASSERT_OK(err, "uprobe_syscall__attach"))
++		goto cleanup;
++
++	uretprobe_regs(&before, &after);
++
++	pp = (unsigned long *) &skel->bss->regs;
++	cnt = sizeof(before)/sizeof(*pb);
++
++	for (i = 0; i < cnt; i++) {
++		unsigned int offset = i * sizeof(unsigned long);
++
++		/*
++		 * Check register before and after uretprobe_regs_trigger call
++		 * that triggers the uretprobe.
++		 */
++		switch (offset) {
++		case offsetof(struct pt_regs, rax):
++			ASSERT_EQ(pa[i], 0xdeadbeef, "return value");
++			break;
++		default:
++			if (!ASSERT_EQ(pb[i], pa[i], "register before-after value check"))
++				fprintf(stdout, "failed register offset %u\n", offset);
++		}
++
++		/*
++		 * Check register seen from bpf program and register after
++		 * uretprobe_regs_trigger call
++		 */
++		switch (offset) {
++		/*
++		 * These values will be different (not set in uretprobe_regs),
++		 * we don't care.
++		 */
++		case offsetof(struct pt_regs, orig_rax):
++		case offsetof(struct pt_regs, rip):
++		case offsetof(struct pt_regs, cs):
++		case offsetof(struct pt_regs, rsp):
++		case offsetof(struct pt_regs, ss):
++			break;
++		default:
++			if (!ASSERT_EQ(pp[i], pa[i], "register prog-after value check"))
++				fprintf(stdout, "failed register offset %u\n", offset);
++		}
 +	}
 +
-+	*psize = UPROBE_SWBP_INSN_SIZE;
-+	return &insn;
++cleanup:
++	uprobe_syscall__destroy(skel);
 +}
-+
-+static unsigned long trampoline_check_ip(void)
++#else
++static void test_uretprobe_regs_equal(void)
 +{
-+	unsigned long tramp = uprobe_get_trampoline_vaddr();
-+
-+	return tramp + (uretprobe_syscall_check - uretprobe_syscall_entry);
++	test__skip();
 +}
++#endif
 +
-+SYSCALL_DEFINE0(uretprobe)
++void test_uprobe_syscall(void)
 +{
-+	struct pt_regs *regs = task_pt_regs(current);
-+	unsigned long err, ip, sp, r11_cx_ax[3];
-+
-+	if (regs->ip != trampoline_check_ip())
-+		goto sigill;
-+
-+	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
-+	if (err)
-+		goto sigill;
-+
-+	/* expose the "right" values of r11/cx/ax/sp to uprobe_consumer/s */
-+	regs->r11 = r11_cx_ax[0];
-+	regs->cx  = r11_cx_ax[1];
-+	regs->ax  = r11_cx_ax[2];
-+	regs->sp += sizeof(r11_cx_ax);
-+	regs->orig_ax = -1;
-+
-+	ip = regs->ip;
-+	sp = regs->sp;
-+
-+	uprobe_handle_trampoline(regs);
-+
-+	/*
-+	 * uprobe_consumer has changed sp, we can do nothing,
-+	 * just return via iret
-+	 */
-+	if (regs->sp != sp)
-+		return regs->ax;
-+	regs->sp -= sizeof(r11_cx_ax);
-+
-+	/* for the case uprobe_consumer has changed r11/cx */
-+	r11_cx_ax[0] = regs->r11;
-+	r11_cx_ax[1] = regs->cx;
-+
-+	/*
-+	 * ax register is passed through as return value, so we can use
-+	 * its space on stack for ip value and jump to it through the
-+	 * trampoline's ret instruction
-+	 */
-+	r11_cx_ax[2] = regs->ip;
-+	regs->ip = ip;
-+
-+	err = copy_to_user((void __user *)regs->sp, r11_cx_ax, sizeof(r11_cx_ax));
-+	if (err)
-+		goto sigill;
-+
-+	/* ensure sysret, see do_syscall_64() */
-+	regs->r11 = regs->flags;
-+	regs->cx  = regs->ip;
-+
-+	return regs->ax;
-+
-+sigill:
-+	force_sig(SIGILL);
-+	return -1;
++	if (test__start_subtest("uretprobe_regs_equal"))
++		test_uretprobe_regs_equal();
 +}
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall.c b/tools/testing/selftests/bpf/progs/uprobe_syscall.c
+new file mode 100644
+index 000000000000..8a4fa6c7ef59
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/uprobe_syscall.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <string.h>
 +
- /*
-  * If arch_uprobe->insn doesn't use rip-relative addressing, return
-  * immediately.  Otherwise, rewrite the instruction so that it accesses
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index f46e0ca0169c..b503fafb7fb3 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -138,6 +138,9 @@ extern bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
- extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
- extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- 					 void *src, unsigned long len);
-+extern void uprobe_handle_trampoline(struct pt_regs *regs);
-+extern void *arch_uprobe_trampoline(unsigned long *psize);
-+extern unsigned long uprobe_get_trampoline_vaddr(void);
- #else /* !CONFIG_UPROBES */
- struct uprobes_state {
- };
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index e4834d23e1d1..c550449d66be 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1474,11 +1474,20 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
- 	return ret;
- }
- 
-+void * __weak arch_uprobe_trampoline(unsigned long *psize)
++struct pt_regs regs;
++
++char _license[] SEC("license") = "GPL";
++
++SEC("uretprobe//proc/self/exe:uretprobe_regs_trigger")
++int uretprobe(struct pt_regs *ctx)
 +{
-+	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+
-+	*psize = UPROBE_SWBP_INSN_SIZE;
-+	return &insn;
++	__builtin_memcpy(&regs, ctx, sizeof(regs));
++	return 0;
 +}
-+
- static struct xol_area *__create_xol_area(unsigned long vaddr)
- {
- 	struct mm_struct *mm = current->mm;
--	uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+	unsigned long insns_size;
- 	struct xol_area *area;
-+	void *insns;
- 
- 	area = kmalloc(sizeof(*area), GFP_KERNEL);
- 	if (unlikely(!area))
-@@ -1502,7 +1511,8 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 	/* Reserve the 1st slot for get_trampoline_vaddr() */
- 	set_bit(0, area->bitmap);
- 	atomic_set(&area->slot_count, 1);
--	arch_uprobe_copy_ixol(area->pages[0], 0, &insn, UPROBE_SWBP_INSN_SIZE);
-+	insns = arch_uprobe_trampoline(&insns_size);
-+	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
- 
- 	if (!xol_add_vma(mm, area))
- 		return area;
-@@ -1827,7 +1837,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
-  *
-  * Returns -1 in case the xol_area is not allocated.
-  */
--static unsigned long get_trampoline_vaddr(void)
-+unsigned long uprobe_get_trampoline_vaddr(void)
- {
- 	struct xol_area *area;
- 	unsigned long trampoline_vaddr = -1;
-@@ -1878,7 +1888,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 	if (!ri)
- 		return;
- 
--	trampoline_vaddr = get_trampoline_vaddr();
-+	trampoline_vaddr = uprobe_get_trampoline_vaddr();
- 	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
- 	if (orig_ret_vaddr == -1)
- 		goto fail;
-@@ -2123,7 +2133,7 @@ static struct return_instance *find_next_ret_chain(struct return_instance *ri)
- 	return ri;
- }
- 
--static void handle_trampoline(struct pt_regs *regs)
-+void uprobe_handle_trampoline(struct pt_regs *regs)
- {
- 	struct uprobe_task *utask;
- 	struct return_instance *ri, *next;
-@@ -2187,8 +2197,8 @@ static void handle_swbp(struct pt_regs *regs)
- 	int is_swbp;
- 
- 	bp_vaddr = uprobe_get_swbp_addr(regs);
--	if (bp_vaddr == get_trampoline_vaddr())
--		return handle_trampoline(regs);
-+	if (bp_vaddr == uprobe_get_trampoline_vaddr())
-+		return uprobe_handle_trampoline(regs);
- 
- 	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
- 	if (!uprobe) {
 -- 
 2.44.0
 
