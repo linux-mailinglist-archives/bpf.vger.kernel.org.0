@@ -1,179 +1,100 @@
-Return-Path: <bpf+bounces-27349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E60608AC224
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 01:48:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4C08AC223
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 01:48:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22D6FB20ECA
-	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 23:48:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F8991F215D8
+	for <lists+bpf@lfdr.de>; Sun, 21 Apr 2024 23:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F83B46433;
-	Sun, 21 Apr 2024 23:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CF545BF9;
+	Sun, 21 Apr 2024 23:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gzgTMR5U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lFhAbRPO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671DE45BF1
-	for <bpf@vger.kernel.org>; Sun, 21 Apr 2024 23:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D2E1BC58
+	for <bpf@vger.kernel.org>; Sun, 21 Apr 2024 23:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713743291; cv=none; b=XL32eRUrBNR2wV+wPtklTJuvySJT+D2v6Ki/iT+MB5eGnn7s0amxUW6US6/hWD06n8nPNB6h3q6oek6XdGM2Zq7ymS7zp/VvOOq4yzKUXYiem0HLTq4MQDPAJu2/gDDxyv6584QZlwR/24f0POQqLMK6QGD/f3Rh/ugBk+fTtq8=
+	t=1713743277; cv=none; b=Q2BNoqIbyff/j77hGQHzPZaCdSRWkK3joXArfMX13ugpuGkrUp45yGyZJlu6fIOid34fQ7TMTLRO/uobR3LZqR+QWKbzQCsHfl4zdZTY94bYbD/S79alWGXvO4wTgQKRneoIWp0InStUyosBqDZK2gD408x1824Qnw2qS4Ji+II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713743291; c=relaxed/simple;
-	bh=LV7yOmj0vEDEf7MxxwWNX2GO/ZMfXhMdVJLTEuXSjco=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aWF2nWyA+pr/hwWz96rz/bOPyYOEpt7XFDDaYer1m7TPaTDo8da8Mr6VsZWyhJOt7LLW4U8quLpW19oFJrw9yiTiu6XmMSkzVLg7dRgNlrfYpExnEIhbV7OXquFUfHk7gRgUUL2EHZBbsZFwsGPIyzQJbKwNIprS6ch87xCWyQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gzgTMR5U; arc=none smtp.client-ip=209.85.161.42
+	s=arc-20240116; t=1713743277; c=relaxed/simple;
+	bh=GMD9a3sE1DVIkgIWGZsPG1PvM154XUDUFEu/5KUPjOo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DmfT/yBjyi4zpbKwHzcK300Hu6mzsZ30hjzRHmyIHaED6ilzhjtwOvO/ufhUCOjICiRkaKgtDIxUQkVKubDyuK8OCsYiUKNGOkQLejBte6kRWY0HknECwAsXWN/DBq1Uz7evBJoDuhFXAigE8WU0Zyz3YBkFIHnBl7tIS3KFzXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lFhAbRPO; arc=none smtp.client-ip=209.85.221.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5ad2a15374eso1148604eaf.3
-        for <bpf@vger.kernel.org>; Sun, 21 Apr 2024 16:48:10 -0700 (PDT)
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4daa91c0344so1179039e0c.3
+        for <bpf@vger.kernel.org>; Sun, 21 Apr 2024 16:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713743289; x=1714348089; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0CxJuwpvOzEOqzYfyAwHTzK85EjW29lHibFHXfSGJU0=;
-        b=gzgTMR5UuMJOYPxkrqtPXwKNX7+PZMTW64Su6dSYwUrudwKmcq/KAYjWTfF4BE2TJp
-         bi6pJo4i4VJavtic5rdH6G5lRepTYVkJlOfO8eJn9lC8Evuql8f4LVLi44QR7QEVdgv2
-         ih0Txe+mLSa8q+f8xLynZ74CpPUWkyWoDFpfy9tCwScl5oThy18M5rs2I9teLswaKrGO
-         pquB0mFppsVqYKUjLqc3mT8y8jlW1sUcpGIAGecu2vC0QYhLiNo/V/qfxoFoaRUMvzMF
-         k7wmo1DVskh/IsTqOrJSWS6cpUfGm9eFZUbkMfc2FItfbq4M9t6Z6rhPy0BdNHWKz2YH
-         oQFw==
+        d=gmail.com; s=20230601; t=1713743275; x=1714348075; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GMD9a3sE1DVIkgIWGZsPG1PvM154XUDUFEu/5KUPjOo=;
+        b=lFhAbRPOF9rXixmfZqUgN++tf59w1lkcV2Sb1rib1ntcy3HICNEHJfEyVJCxUS+yKM
+         qfdeqHkzwFp0htiKunMVYWVzceIl566mgpdgguOum6SAmRCtxvB3pu0ui9wGxqZW2nzf
+         gcY82AAZEmGn7ow1P0LHTMKaF5fLbJZRfxxETBn9uqCQiEydCFIyGqdkQHNtQK3ehxD2
+         559/sGHzuNsGjDlbWVZB9nQ547cMlOlfs57Y0Z8fTJhwlbj93fVWo+Ntn1HtoTgNjquw
+         O32dIi9xL/ju/QjO6Izf2cG9o7uuuT/9IdmE5yRZKK0Ni8HfyQ6NkvVD7KL6SEp7qYKF
+         FrtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713743289; x=1714348089;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1713743275; x=1714348075;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0CxJuwpvOzEOqzYfyAwHTzK85EjW29lHibFHXfSGJU0=;
-        b=rIRdeKZGwyx/e+obyRYzv3R60XSyjlBpg7/OyN5FGrtVWVqk/6uY7LHYbp63CAAteB
-         LY+Z3sNS7zJJmTUAgbNrVVweYm9DOjdtOuVtPhYkKnzBpBEYldWZF8mBeFenvowcSPK+
-         71SVlW4jKD4K8dwdOzX5mNWkgfdgJ7ikRZZAg5Ipg1yus+TxnSVYAgl9/u0+x1ZrRHIm
-         2AZ4kz0vwClwo3w8wK8dEB58K0gYR1SmktcZ0uGWyUFPGssB9RfYoU23DEd2ti24RnlF
-         4mbs9nB/pobh5tVkqyEOjja/2bR3iwLN+jMzqZn6I8E+XsS1zv0RlDYC4QGscgc2ddH/
-         jjTA==
-X-Gm-Message-State: AOJu0YyGSz5JaPO5PyORqiteRmJ57iozoNZYnxBvAInjKIsX2V9/3pCc
-	m+cbAhSpuRX1mAPg1eakPpf3RmJ+B88WplAedttyzb3C3gcAov2ILJ3n+WbV
-X-Google-Smtp-Source: AGHT+IG3PSeXEDIh+809FahSGYWNO2uHw3koFPcAlJPJ/dWhrYWMWOA68u7PjhMs1iWi8jwltISsmg==
-X-Received: by 2002:a05:6358:6914:b0:186:2ac7:317c with SMTP id d20-20020a056358691400b001862ac7317cmr10217590rwh.25.1713743288990;
-        Sun, 21 Apr 2024 16:48:08 -0700 (PDT)
-Received: from fedora.. ([2607:b400:30:a100:6442:5b0e:54ab:110b])
-        by smtp.gmail.com with ESMTPSA id r13-20020ad4404d000000b006a056f65896sm3500881qvp.106.2024.04.21.16.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 16:48:08 -0700 (PDT)
-From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-X-Google-Original-From: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
-To: bpf@vger.kernel.org
-Cc: alexei.starovoitov@gmail.com,
-	daniel@iogearbox.net,
-	olsajiri@gmail.com,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	miloc@vt.edu,
-	rjsu26@vt.edu,
-	sairoop@vt.edu,
-	djwillia@vt.edu,
-	Siddharth Chintamaneni <sidchintamaneni@vt.edu>
-Subject: [PATCH bpf-next v2] Add notrace to queued_spin_lock_slowpath
-Date: Sun, 21 Apr 2024 19:43:36 -0400
-Message-ID: <20240421234336.542607-1-sidchintamaneni@vt.edu>
-X-Mailer: git-send-email 2.44.0
+        bh=GMD9a3sE1DVIkgIWGZsPG1PvM154XUDUFEu/5KUPjOo=;
+        b=bKtHfJmCxP2pCQkJq8mkjuVuDySIg+xjf0aj4Ro8pbMLqfCObsgYlppYvgyqIcB6Q4
+         CZ6VeBKmkC+80MocI7PUR/J2XXEp8ZUBINFf7gajXHwR1C+hKuOyylQWMQLtyrD2y9W6
+         TzNadJMVx4xA0z3xVCbE1G2uZ7T6GTOcVMs+h7Lswm8TShZAOPD/ydFenvYCNONAnrhS
+         VVtWT6cIMELMfG7km5DD4rFbmXMua80v2TJSM6xGXwbiDbzrBuJlv9qrfHgrt2L9PdOh
+         84k6fJ/cekGpLr/bJTYmWxAj0+N6iNyC4s7woPQ1exdEHA50NzT3bFNv+iNA7bJmndNC
+         zBJw==
+X-Gm-Message-State: AOJu0YwA94IrQx6PVJFQekQqitcjEJKxWy1BYp87nUngvPKN12oguT5I
+	IiKSO9oXTa2HSlrONNJsTkUQWlTPgjaagNciIaXetTwq4iU1sX02BkzohZ7gLoY2XBKXMMR+G32
+	BSDHDb/42UbpJf3IR0hrJEKkjtrI=
+X-Google-Smtp-Source: AGHT+IH9TjY1sjSZ9/F+H6Edu8zhzn9Dcd3sm4dD0uXQVhYXdBS0ZD8bvimpvBrbdrIOsvlG8AzJ66umVhS3voRoNik=
+X-Received: by 2002:a05:6122:7d3:b0:4da:aedb:fa9a with SMTP id
+ l19-20020a05612207d300b004daaedbfa9amr8128650vkr.15.1713743275078; Sun, 21
+ Apr 2024 16:47:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAE5sdEjqMe2pMDOO4MZkuncKu5PxMvcxtXmnpjwpHSM1Ek9Hgw@mail.gmail.com>
+ <ZiV0ICqUbLNsnG05@krava>
+In-Reply-To: <ZiV0ICqUbLNsnG05@krava>
+From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Date: Sun, 21 Apr 2024 19:47:44 -0400
+Message-ID: <CAE5sdEjreyioOKy2xmA5mfd4BA1+mpaA5YoaO_raeNKiv302Yg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Add notrace to queued_spin_lock_slowpath
+ function to avoid deadlocks
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com, daniel@iogearbox.net, 
+	andrii@kernel.org, Yonghong Song <yonghong.song@linux.dev>, "Craun, Milo" <miloc@vt.edu>, 
+	"Sahu, Raj" <rjsu26@vt.edu>, Roop Anna <sairoop@vt.edu>, "Williams, Dan" <djwillia@vt.edu>
+Content-Type: text/plain; charset="UTF-8"
 
-This patch is to prevent deadlocks when multiple bpf
-programs are attached to queued_spin_locks functions. This issue is similar
-to what is already discussed[1] before with the spin_lock helpers.
+On Sun, 21 Apr 2024 at 16:16, Jiri Olsa <olsajiri@gmail.com> wrote:
 
-The addition of notrace macro to the queued_spin_locks
-has been discussed[2] when bpf_spin_locks are introduced.
+> hi,
+> the patch seems to be mangled, tabs are missing
+> you might find some help in Documentation/process/email-clients.rst
+>
+> jirka
 
-[1] https://lore.kernel.org/bpf/CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com/#r
-[2] https://lore.kernel.org/all/20190117011629.efxp7abj4bpf5yco@ast-mbp/t/#maf05c4d71f935f3123013b7ed410e4f50e9da82c
+Hi,
 
-Fixes: d83525ca62cf ("bpf: introduce bpf_spin_lock")
-Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
----
- kernel/locking/qspinlock.c                    |  2 +-
- .../bpf/prog_tests/tracing_failure.c          | 24 +++++++++++++++++++
- .../selftests/bpf/progs/tracing_failure.c     |  6 +++++
- 3 files changed, 31 insertions(+), 1 deletion(-)
+I have sent a revised version of the patch with v2 tag.
 
-diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
-index ebe6b8ec7cb3..4d46538d8399 100644
---- a/kernel/locking/qspinlock.c
-+++ b/kernel/locking/qspinlock.c
-@@ -313,7 +313,7 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
-  * contended             :    (*,x,y) +--> (*,0,0) ---> (*,0,1) -'  :
-  *   queue               :         ^--'                             :
-  */
--void __lockfunc queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
-+notrace void __lockfunc queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
- {
- 	struct mcs_spinlock *prev, *next, *node;
- 	u32 old, tail;
-diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_failure.c b/tools/testing/selftests/bpf/prog_tests/tracing_failure.c
-index a222df765bc3..822ee6c559bc 100644
---- a/tools/testing/selftests/bpf/prog_tests/tracing_failure.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tracing_failure.c
-@@ -28,10 +28,34 @@ static void test_bpf_spin_lock(bool is_spin_lock)
- 	tracing_failure__destroy(skel);
- }
- 
-+static void test_queued_spin_lock(void)
-+{
-+	struct tracing_failure *skel;
-+	int err;
-+
-+	skel = tracing_failure__open();
-+	if (!ASSERT_OK_PTR(skel, "tracing_failure__open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.test_queued_spin_lock, true);
-+
-+	err = tracing_failure__load(skel);
-+	if (!ASSERT_OK(err, "tracing_failure__load"))
-+		goto out;
-+
-+	err = tracing_failure__attach(skel);
-+	ASSERT_ERR(err, "tracing_failure__attach");
-+
-+out:
-+	tracing_failure__destroy(skel);
-+}
-+
- void test_tracing_failure(void)
- {
- 	if (test__start_subtest("bpf_spin_lock"))
- 		test_bpf_spin_lock(true);
- 	if (test__start_subtest("bpf_spin_unlock"))
- 		test_bpf_spin_lock(false);
-+	if (test__start_subtest("queued_spin_lock_slowpath"))
-+		test_queued_spin_lock();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tracing_failure.c b/tools/testing/selftests/bpf/progs/tracing_failure.c
-index d41665d2ec8c..2d2e7fc9d4f0 100644
---- a/tools/testing/selftests/bpf/progs/tracing_failure.c
-+++ b/tools/testing/selftests/bpf/progs/tracing_failure.c
-@@ -18,3 +18,9 @@ int BPF_PROG(test_spin_unlock, struct bpf_spin_lock *lock)
- {
- 	return 0;
- }
-+
-+SEC("?fentry/queued_spin_lock_slowpath")
-+int BPF_PROG(test_queued_spin_lock, struct qspinlock *lock, u32 val)
-+{
-+	return 0;
-+}
--- 
-2.43.0
-
+Thanks,
+Siddharth
 
