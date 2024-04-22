@@ -1,277 +1,155 @@
-Return-Path: <bpf+bounces-27400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45DA38ACC2C
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 13:40:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA8B8ACC8F
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 14:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AED31B247A9
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 11:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56E521F215FF
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE936147C81;
-	Mon, 22 Apr 2024 11:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AE31474A2;
+	Mon, 22 Apr 2024 12:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CgEvNY8/"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CFHTz0AC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9500C146A67;
-	Mon, 22 Apr 2024 11:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CC1146D66
+	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 12:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785979; cv=none; b=rS0nsBz0X1MHccL53It/MOsRekoCFVC+KTsHoAgQzRFZWahAFOFLTCjygagUhrmDOvcU2vCGmeBIyI8fowWzps39LxDgJNLmDtlUcCmkldyCd9JLd+vH/20grSSPcH0nY/j6+/H/G92ASpUTIed4/nepwQQTv/8LiLdlI3oH8NU=
+	t=1713787900; cv=none; b=artANhV4DR32H5IzrVL/TtPlqSpFwJ/mthkY1SJwZaFe2HDn2bWCZA/ES9wHVDKdcijlYW8MN9lzcDfti4j+k7VWJgRAHVmBWnspUJo8arynUk1Un/pr6BoDqsuCGa6wup5VJBscD9x2JZ1PHKT2K8DySXnEk5espT0KBbAZT+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785979; c=relaxed/simple;
-	bh=ulsfSAEl7LBwePnfRAal8I6cQlsR0G+iMdbsnGnkwM8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j/ajusAnHHX1NXqQyJ57Sf1MuYb0oSyrWJ1eSeOLus9fMC47iLF8W9RtuwJ2yQYLfsKLRSpYV5Rr+iP5ZOZ/pJpObCRtpYKcZCE9TmrCKDXHzsrZBGdNRpNMtAhFLyjvJTzrRZD+naySNvgVvLPR9zZKeJNXniS4YwPkQtt8AI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CgEvNY8/; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34b1e35155aso702983f8f.3;
-        Mon, 22 Apr 2024 04:39:37 -0700 (PDT)
+	s=arc-20240116; t=1713787900; c=relaxed/simple;
+	bh=P+ngD7651DKaxK2xXQRIyCnuFIb7V6Y5I4v0Y+4liW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jiYpLaoJ1gNUTyjO5YX7qfaH2obKB1zbvwWpLywHumv8e/BYZsS1PsSC62tSy9gWhy0oFbFs5Fgf+DdZoqXWT6FYrMzysyuaZqyQoKcpHS91/9uWp8gbf/X6omxWYvNkAmgOw+oZYtN8vGe7ytOhcsfTHr0wBDZ1JuMKp53Yw+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CFHTz0AC; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4187c47405aso28692765e9.3
+        for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 05:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713785976; x=1714390776; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aJ9yQshLsZ6lvoWpjUZb+c8ATqrhPEYy3PtHw/SC4co=;
-        b=CgEvNY8//ZyAveamdUFJ90Nus3p2L+j2AdeFGfHuCtDvbsgT4pKOUGFqadYmTL3TXQ
-         jEXb/mUu2NSVU48k9SUd/CEvGlZ+UJtRfedFICsqsY9ZgJsmq65A47qreebe6u16PFJa
-         dMPOtCiw48ZfubIzupe3ulr+wWazryE+Q9zw2ZxRUe4kgOpEm5wBvQEersC3SQjZ90bo
-         KidDt9uRKOujqSL+gvVJXhnUKirrljqgUgqQ5rvu3zeLCkg8jFJyDHbjS1mhTwwrntnE
-         koz7yO0CoIo7GmJM7C7JXy2r+gQfU8dY2s9sfk20tbihmse4JdN6PQcc7DZSMTRsAcB9
-         qSDA==
+        d=linaro.org; s=google; t=1713787897; x=1714392697; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bCRnuZK0O/QOXHu1Ldkstjl1doP0jCVLWLbPZKH0WnQ=;
+        b=CFHTz0ACeA5cePDuWJvlh0c8tKCX+vdZE51F+lymx2ic2Y7hs2eXx05OW4IBWO5NY7
+         enwTee91Ffu3VfDwyIkmea7VIvN1ABlqbVpYWHDO8qGLChX0hoAO+wasQMUtc896zpHB
+         QxjKoTPskxJNDiDIqOlKG4CIT6U73cuCt0Vs9fgQM0ezVMx0psIJB9CigTkRj5XWIUKW
+         xaeJd3fUGhkumQtrwTPbnfBgS5vg69UeFthGeF6sKzOfXwJNG5K2/VFS9jCmhxkfP77J
+         31QAA9xu9VEv3dBKe3932dOMZdSw5hMYLReIRTM78EV4NCYcxeN6zzWPjQTuz5Shh7PR
+         Wv3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713785976; x=1714390776;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20230601; t=1713787897; x=1714392697;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aJ9yQshLsZ6lvoWpjUZb+c8ATqrhPEYy3PtHw/SC4co=;
-        b=DjQVPYfPKiBlxDkKWQTkfyhv3V1r/+cm2r5IrQSKihd+UQ/gQDYBS38+Q/lMC0Lg/M
-         kJmvbWhpnLIqzKFDrk+sfb7tUxM1EuWOCbccU8bJcaTXpFBS4iQXLlMZgtbSNewIrcPh
-         yP74qyr/Fu1N06ajR132k0unI50Wb2t4YJPerz+6rHdUdLhEtn7xZKCOVa/a5OQ02UiL
-         UuUcnjfIWcSQjpsoYQP8hfPUPt3gBhl1+QYhpyVtXafF9rYDrxmCWkisxdqB/VG5zFqa
-         94SOI5PnPzKrhG7rHZgf0KTjhJiU3IFWdEsLBhcncJoQq35gQJPGfortE6NsV7WIJUdm
-         oKlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXK2vscBsDTI24S58gA3Tu9UsPB1RZqZwSGNx3vTkJZDElPuYg+tnD+sRtRtlXVV1D5eSStmzlq+RrJto7Iy10Ac2F0ECHJm6E3Beuepi5gqPeR5MCIYPAxJ6vS58k2Ao0Jv7Fr5F/w5iVwaVKZNZyXVOo1sOfjC58UHaSTHE0xU4fw1Q==
-X-Gm-Message-State: AOJu0Yw1cUqyHpJLzLRufe+GZQR0c0E/KkHyGVfhAwuTSXeb+uH6yii0
-	h51U0M/hv2JpIDzPT4ZOTodvk1/3QOplOLKtfqaWVINihSbEub7B
-X-Google-Smtp-Source: AGHT+IETX/3Lo779iTOd02lH4mu0GSF9AVTJKi6GM6wHxnVUA3usTw72yxk2ggywg7ebJStbnepGCg==
-X-Received: by 2002:a5d:4ec1:0:b0:34a:e798:29fc with SMTP id s1-20020a5d4ec1000000b0034ae79829fcmr3474651wrv.52.1713785975586;
-        Mon, 22 Apr 2024 04:39:35 -0700 (PDT)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id h1-20020a5d5481000000b003437a76565asm11759544wrv.25.2024.04.22.04.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 04:39:35 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 22 Apr 2024 13:39:32 +0200
-To: Jonathan Haslam <jonathan.haslam@gmail.com>
-Cc: linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-	andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] uprobes: reduce contention on uprobes_tree access
-Message-ID: <ZiZMdLIK55q3EvMP@krava>
-References: <20240422102306.6026-1-jonathan.haslam@gmail.com>
+        bh=bCRnuZK0O/QOXHu1Ldkstjl1doP0jCVLWLbPZKH0WnQ=;
+        b=i6JveurZtPiYUlbUjQ+lVDfNYLwHKwz1HasaTyMaUl9+HFnbSuj/+HSt4t2f3znyGT
+         +0au0yrz0W2f31hDpKCWYSwHxyIPqxC8JS+2wjcm9UvPLEEJX8y8lSfGnZ0Is3IHEdLg
+         aWKWMlSoss6Z+vcgUK6PqSGyhjphIdUNeqsCtuwRW3rLEfCBCEdlTs4ilmSattPnOeiF
+         YZ5sFPcaKS7fG586M4MC5PPmaxRkMHSavlnIS+sEG7ETDZ4oxEoHdTh2y5zxlAGNPXJh
+         k0C5E6SHZfxzJB1tsbjAA88GIZeAI+Acb+KaN0Dj763xA0MTKSx+e8TmkipYd2bOe5xn
+         ghdg==
+X-Forwarded-Encrypted: i=1; AJvYcCXlbMGq7IGaB6RwDGSCeJrOPxa8Hj+MN7ppUSCbBRQjRqNaBQ7V6XOK7u37pU1rPOQA5Egpr0IswCF+GL6qHKRbpAhV
+X-Gm-Message-State: AOJu0YzAx4XtJu42prpuViTVRXt8ZDby9FW5YY0JII4ZIHQetQosgGNQ
+	+klKhPuNXd21JrMPAlPf66Dp5/S5yr9zOQaWWtFydVU9O9ubmKRjxIAe1kmSPjk=
+X-Google-Smtp-Source: AGHT+IHynTNWSPs7rYJt+CqENDAY0rj5tOUJ3mwkpUrvPfTTqXCsLGZ4LMBMh1xVXt1DdTNJhAB4yQ==
+X-Received: by 2002:a05:600c:3552:b0:419:7fd:2fbe with SMTP id i18-20020a05600c355200b0041907fd2fbemr5536580wmq.11.1713787897251;
+        Mon, 22 Apr 2024 05:11:37 -0700 (PDT)
+Received: from [192.168.1.28] (lfbn-bay-1-170-196.w83-193.abo.wanadoo.fr. [83.193.250.196])
+        by smtp.gmail.com with ESMTPSA id r14-20020a05600c458e00b00417e5b71188sm16503881wmo.34.2024.04.22.05.11.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 05:11:36 -0700 (PDT)
+Message-ID: <fb942d49-1c72-40a6-8309-ef3331d8f8dc@linaro.org>
+Date: Mon, 22 Apr 2024 14:11:34 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 11/15] arch: make execmem setup available regardless of
+ CONFIG_MODULES
+To: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Russell King <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20240422094436.3625171-1-rppt@kernel.org>
+ <20240422094436.3625171-12-rppt@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+In-Reply-To: <20240422094436.3625171-12-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240422102306.6026-1-jonathan.haslam@gmail.com>
 
-On Mon, Apr 22, 2024 at 03:23:05AM -0700, Jonathan Haslam wrote:
-> Active uprobes are stored in an RB tree and accesses to this tree are
-> dominated by read operations. Currently these accesses are serialized by
-> a spinlock but this leads to enormous contention when large numbers of
-> threads are executing active probes.
+On 22/4/24 11:44, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > 
-> This patch converts the spinlock used to serialize access to the
-> uprobes_tree RB tree into a reader-writer spinlock. This lock type
-> aligns naturally with the overwhelmingly read-only nature of the tree
-> usage here. Although the addition of reader-writer spinlocks are
-> discouraged [0], this fix is proposed as an interim solution while an
-> RCU based approach is implemented (that work is in a nascent form). This
-> fix also has the benefit of being trivial, self contained and therefore
-> simple to backport.
+> execmem does not depend on modules, on the contrary modules use
+> execmem.
 > 
-> We have used a uprobe benchmark from the BPF selftests [1] to estimate
-> the improvements. Each block of results below show 1 line per execution
-> of the benchmark ("the "Summary" line) and each line is a run with one
-> more thread added - a thread is a "producer". The lines are edited to
-> remove extraneous output.
+> To make execmem available when CONFIG_MODULES=n, for instance for
+> kprobes, split execmem_params initialization out from
+> arch/*/kernel/module.c and compile it when CONFIG_EXECMEM=y
 > 
-> The tests were executed with this driver script:
-> 
-> for num_threads in {1..20}
-> do
->   sudo ./bench -a -p $num_threads trig-uprobe-nop | grep Summary
-> done
-> 
-> SPINLOCK (BEFORE)
-> ==================
-> Summary: hits    1.396 ± 0.007M/s (  1.396M/prod)
-> Summary: hits    1.656 ± 0.016M/s (  0.828M/prod)
-> Summary: hits    2.246 ± 0.008M/s (  0.749M/prod)
-> Summary: hits    2.114 ± 0.010M/s (  0.529M/prod)
-> Summary: hits    2.013 ± 0.009M/s (  0.403M/prod)
-> Summary: hits    1.753 ± 0.008M/s (  0.292M/prod)
-> Summary: hits    1.847 ± 0.001M/s (  0.264M/prod)
-> Summary: hits    1.889 ± 0.001M/s (  0.236M/prod)
-> Summary: hits    1.833 ± 0.006M/s (  0.204M/prod)
-> Summary: hits    1.900 ± 0.003M/s (  0.190M/prod)
-> Summary: hits    1.918 ± 0.006M/s (  0.174M/prod)
-> Summary: hits    1.925 ± 0.002M/s (  0.160M/prod)
-> Summary: hits    1.837 ± 0.001M/s (  0.141M/prod)
-> Summary: hits    1.898 ± 0.001M/s (  0.136M/prod)
-> Summary: hits    1.799 ± 0.016M/s (  0.120M/prod)
-> Summary: hits    1.850 ± 0.005M/s (  0.109M/prod)
-> Summary: hits    1.816 ± 0.002M/s (  0.101M/prod)
-> Summary: hits    1.787 ± 0.001M/s (  0.094M/prod)
-> Summary: hits    1.764 ± 0.002M/s (  0.088M/prod)
-> 
-> RW SPINLOCK (AFTER)
-> ===================
-> Summary: hits    1.444 ± 0.020M/s (  1.444M/prod)
-> Summary: hits    2.279 ± 0.011M/s (  1.139M/prod)
-> Summary: hits    3.422 ± 0.014M/s (  1.141M/prod)
-> Summary: hits    3.565 ± 0.017M/s (  0.891M/prod)
-> Summary: hits    2.671 ± 0.013M/s (  0.534M/prod)
-> Summary: hits    2.409 ± 0.005M/s (  0.401M/prod)
-> Summary: hits    2.485 ± 0.008M/s (  0.355M/prod)
-> Summary: hits    2.496 ± 0.003M/s (  0.312M/prod)
-> Summary: hits    2.585 ± 0.002M/s (  0.287M/prod)
-> Summary: hits    2.908 ± 0.011M/s (  0.291M/prod)
-> Summary: hits    2.346 ± 0.016M/s (  0.213M/prod)
-> Summary: hits    2.804 ± 0.004M/s (  0.234M/prod)
-> Summary: hits    2.556 ± 0.001M/s (  0.197M/prod)
-> Summary: hits    2.754 ± 0.004M/s (  0.197M/prod)
-> Summary: hits    2.482 ± 0.002M/s (  0.165M/prod)
-> Summary: hits    2.412 ± 0.005M/s (  0.151M/prod)
-> Summary: hits    2.710 ± 0.003M/s (  0.159M/prod)
-> Summary: hits    2.826 ± 0.005M/s (  0.157M/prod)
-> Summary: hits    2.718 ± 0.001M/s (  0.143M/prod)
-> Summary: hits    2.844 ± 0.006M/s (  0.142M/prod)
-
-nice, I'm assuming Masami will take this one.. in any case:
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
-
-> 
-> The numbers in parenthesis give averaged throughput per thread which is
-> of greatest interest here as a measure of scalability. Improvements are
-> in the order of 22 - 68% with this particular benchmark (mean = 43%).
-> 
-> V2:
->  - Updated commit message to include benchmark results.
-> 
-> [0] https://docs.kernel.org/locking/spinlocks.html
-> [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> 
-> Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 > ---
->  kernel/events/uprobes.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index e4834d23e1d1..8ae0eefc3a34 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
->   */
->  #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
->  
-> -static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
-> +static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
->  
->  #define UPROBES_HASH_SZ	13
->  /* serialize uprobe->pending_list */
-> @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
->  {
->  	struct uprobe *uprobe;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	read_lock(&uprobes_treelock);
->  	uprobe = __find_uprobe(inode, offset);
-> -	spin_unlock(&uprobes_treelock);
-> +	read_unlock(&uprobes_treelock);
->  
->  	return uprobe;
->  }
-> @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
->  {
->  	struct uprobe *u;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	write_lock(&uprobes_treelock);
->  	u = __insert_uprobe(uprobe);
-> -	spin_unlock(&uprobes_treelock);
-> +	write_unlock(&uprobes_treelock);
->  
->  	return u;
->  }
-> @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
->  	if (WARN_ON(!uprobe_is_active(uprobe)))
->  		return;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	write_lock(&uprobes_treelock);
->  	rb_erase(&uprobe->rb_node, &uprobes_tree);
-> -	spin_unlock(&uprobes_treelock);
-> +	write_unlock(&uprobes_treelock);
->  	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
->  	put_uprobe(uprobe);
->  }
-> @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
->  	min = vaddr_to_offset(vma, start);
->  	max = min + (end - start) - 1;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	read_lock(&uprobes_treelock);
->  	n = find_node_in_range(inode, min, max);
->  	if (n) {
->  		for (t = n; t; t = rb_prev(t)) {
-> @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
->  			get_uprobe(u);
->  		}
->  	}
-> -	spin_unlock(&uprobes_treelock);
-> +	read_unlock(&uprobes_treelock);
->  }
->  
->  /* @vma contains reference counter, not the probed instruction. */
-> @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
->  	min = vaddr_to_offset(vma, start);
->  	max = min + (end - start) - 1;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	read_lock(&uprobes_treelock);
->  	n = find_node_in_range(inode, min, max);
-> -	spin_unlock(&uprobes_treelock);
-> +	read_unlock(&uprobes_treelock);
->  
->  	return !!n;
->  }
-> -- 
-> 2.43.0
-> 
+>   arch/arm/kernel/module.c       |  43 ----------
+>   arch/arm/mm/init.c             |  45 +++++++++++
+>   arch/arm64/kernel/module.c     | 140 ---------------------------------
+>   arch/arm64/mm/init.c           | 140 +++++++++++++++++++++++++++++++++
+>   arch/loongarch/kernel/module.c |  19 -----
+>   arch/loongarch/mm/init.c       |  21 +++++
+>   arch/mips/kernel/module.c      |  22 ------
+>   arch/mips/mm/init.c            |  23 ++++++
+>   arch/nios2/kernel/module.c     |  20 -----
+>   arch/nios2/mm/init.c           |  21 +++++
+>   arch/parisc/kernel/module.c    |  20 -----
+>   arch/parisc/mm/init.c          |  23 +++++-
+>   arch/powerpc/kernel/module.c   |  63 ---------------
+>   arch/powerpc/mm/mem.c          |  64 +++++++++++++++
+>   arch/riscv/kernel/module.c     |  44 -----------
+>   arch/riscv/mm/init.c           |  45 +++++++++++
+>   arch/s390/kernel/module.c      |  27 -------
+>   arch/s390/mm/init.c            |  30 +++++++
+>   arch/sparc/kernel/module.c     |  19 -----
+>   arch/sparc/mm/Makefile         |   2 +
+>   arch/sparc/mm/execmem.c        |  21 +++++
+>   arch/x86/kernel/module.c       |  27 -------
+>   arch/x86/mm/init.c             |  29 +++++++
+>   23 files changed, 463 insertions(+), 445 deletions(-)
+>   create mode 100644 arch/sparc/mm/execmem.c
+
+Reviewed-by: Philippe Mathieu-Daud√© <philmd@linaro.org>
+
 
