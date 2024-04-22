@@ -1,66 +1,90 @@
-Return-Path: <bpf+bounces-27409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27410-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89EF08ACCA1
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 14:14:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACAFA8ACCDE
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 14:39:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 299571F21324
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:14:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 320B9B21D90
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F7F1474C0;
-	Mon, 22 Apr 2024 12:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oM8PzZGS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55FC1482F8;
+	Mon, 22 Apr 2024 12:39:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAA7145B1D
-	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 12:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E30146A93;
+	Mon, 22 Apr 2024 12:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713788042; cv=none; b=B9K/Bw0dGHXsBSKaInW/sKmfpg4McDmDvqAf9ITQnY0DGmXVdJvk5ySw+1VrAuTk3jP/xsD03l17Z+4YhrknRhqB+RWb8FDfJaQ9luUJZjTRwJ93BCBYUcJ/2Jmv6nA/KHDfvSHXSzeYw3tmi1L3y8GvRuMdice7mEU6dtBoDBM=
+	t=1713789579; cv=none; b=SOfGwSjTplOrgBBe/be17lMN39059U8J5KG3JK39VXFMGwcZeQ4U3nuvsrO2eaP2Reb5ggt/gngs3zXEb1Lm4JRyZBHRsYx8UlQjupetVIFNn07IfxPdh65WLQ2/zeEsWzmqWkPTbi6fjLdtJ9SWmJAtjIzlzwWA5Co+h0XwMvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713788042; c=relaxed/simple;
-	bh=aCF/rbIbWX9H7HbTbc+vGeKMfNToTxatFJwFewjv3aE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AoWEr2BFlc/AbMqMRpnLGG9TLJhk6xOK9C9ipKvevYF4WPGoj/viVscKvX5Bz7sb6XQPUtqsvBCyVyb7oQepYRfsQG30jA9i49yRw9NCibpA+zFMaB+t/8dkK3ncDwBGQUp5Xjfj5uVYieiByD9aG5fWbry3uidPNcEtrh6tVEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oM8PzZGS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7843C113CC;
-	Mon, 22 Apr 2024 12:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713788042;
-	bh=aCF/rbIbWX9H7HbTbc+vGeKMfNToTxatFJwFewjv3aE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oM8PzZGSlpOt2Ak3NEw45R21K+SuqLiV9d/SpDTXP/U7uM0SY7H/Nn/2WbrS4onA7
-	 H5jqXpCgOEwpqXaPYwIOA4RYwpkZ6CFN4jhowXcR23V3N+LXEJiOZoT0vkgpCWQG17
-	 EoSUAWErcz92076euDq2r6ah6OQrJS5sdwoF4Vvn7UJJjzExUWwCkDblijlDMBBiag
-	 zb2YZEHViZ1CJIibrvjkm/47NHcGMSCkrjYSZzIa5Kc9Sg/OCCI4s7ahZA8GDzsoSl
-	 N4mj4y8XSvQAkdOiYGgXbol3xaURN6PtE1aEZp+h/HT4ITQCzALl3mMFWhNYCvxW7V
-	 bSXNzZ/pvapHg==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Viktor Malik <vmalik@redhat.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: [PATCH bpf-next 7/7] selftests/bpf: Add kprobe multi wrapper cookie test
-Date: Mon, 22 Apr 2024 14:12:41 +0200
-Message-ID: <20240422121241.1307168-8-jolsa@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240422121241.1307168-1-jolsa@kernel.org>
-References: <20240422121241.1307168-1-jolsa@kernel.org>
+	s=arc-20240116; t=1713789579; c=relaxed/simple;
+	bh=yxR46rGU3Aqnq5NTBddw5GE+9vGxcjEQcLz0queXR3E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FjUewH5PzV0fserXKHpiyjni8DLNrwXH4gTo/LwxofeZNcgln02ijpnBIoFlNWwImuQqCqVGpmDcp4W3gmdtosXiEIvhM9Weg7wjOnYuy+qfgW9viWiBl4OGGR4mwD9etKS9gEVeMVja7i5PjSP5HSysfZmaSfR+5/HRNUC8eE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-518a56cdc03so5281683e87.1;
+        Mon, 22 Apr 2024 05:39:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713789576; x=1714394376;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iz0ikdoTMPeoGlY7AzEyABEuqkNB0Gjgw6bWzoieFE4=;
+        b=FHH9Cz9NESk4CUdnzGBzUPoGF/71XXkUlZcSlqnw1ThuPdAVTkcg2LtUPZcZHkQrhG
+         qCcISFYRZRsEqHZQSvgHC/iZbj7AP3ZqMIVwn7ykXFGiLXOcijL9axonheGNQwcxX5VP
+         aPwYP+eL91QZpG7KhTNy7kO7LmEA3FC7icknlr8E8Y1Iuv17dS7odp6aw2u9t7Nwequ+
+         +TDXv6yRqacCZ0N/I3sIxOX+U3KtK7/9pvJczt7TRFvuTaBOguua4w/SQVrjEYSwrwFP
+         qBFdDzIbWr0HFmHg5wRTlJG22dYiJxnz6QZcqbtx4aobRqcD14jBKB3HfX4HkUeTbyii
+         KykQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3fitlaIUpjwnoUUZ5I5RTi8ccjLVCqti3pDJZ0NorDV50X/d7BohPWGTFAzVVLva/eE9BKmVHjSu417DjWVS+Ep+pmStWBxWQdTN3j86Mrl1JQWKyTrjoNma44pNCLUQKgWEYuKWWdNpncHT0Ri4R4y5ncKaHnrm+3VTNKx5CkHbNXhhr4Ctq02qjLaSnC3UzyrmXzE/kOEc=
+X-Gm-Message-State: AOJu0YwEln7ff7cUg7LRTYedsHx8SkqV1qU2ihnHX771xd4hhfyRPo++
+	h+aFJwLP4cxfsMP9wUH+1jlBbMT98O2an5ygrVHl5H6HQcA+l+GR
+X-Google-Smtp-Source: AGHT+IF5YTCCg6KEsN0PmqluDOTi/5NrwJEUq5lvraAub+lxIQJqUtef+oDOn/RubcUZafX5KbdePw==
+X-Received: by 2002:a19:ca4f:0:b0:515:c195:d6b8 with SMTP id h15-20020a19ca4f000000b00515c195d6b8mr5518092lfj.60.1713789575968;
+        Mon, 22 Apr 2024 05:39:35 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id og14-20020a1709071dce00b00a55ac4c4550sm1906884ejc.211.2024.04.22.05.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 05:39:35 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: aleksander.lobakin@intel.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	nbd@nbd.name,
+	sean.wang@mediatek.com,
+	Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org,
+	taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org,
+	ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	geomatsi@gmail.com,
+	kvalo@kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: quic_jjohnson@quicinc.com,
+	leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	idosch@idosch.org,
+	leitao@debian.org
+Subject: [PATCH net-next v7 00/10] allocate dummy device dynamically
+Date: Mon, 22 Apr 2024 05:38:53 -0700
+Message-ID: <20240422123921.854943-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,148 +93,85 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding kprobe multi session test that verifies the cookie
-value get properly propagated from entry to return program.
+struct net_device shouldn't be embedded into any structure, instead,
+the owner should use the private space to embed their state into
+net_device.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+But, in some cases the net_device is embedded inside the private
+structure, which blocks the usage of zero-length arrays inside
+net_device.
+
+Create a helper to allocate a dummy device at dynamically runtime, and
+move the Ethernet devices to use it, instead of embedding the dummy
+device inside the private structure.
+
+This fixes all the network cases plus some wireless drivers.
+
+PS: Due to lack of hardware, unfortunately most these patches are
+compiled tested only, except ath11k that was kindly tested by Kalle Valo.
+
 ---
- tools/testing/selftests/bpf/bpf_kfuncs.h      |  1 +
- .../bpf/prog_tests/kprobe_multi_test.c        | 35 ++++++++++++
- .../bpf/progs/kprobe_multi_session_cookie.c   | 56 +++++++++++++++++++
- 3 files changed, 92 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
+Changelog:
 
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index 180030b5d828..0281921cd654 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -77,4 +77,5 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
- 				      struct bpf_key *trusted_keyring) __ksym;
- 
- extern bool bpf_session_is_return(void) __ksym;
-+extern __u64 *bpf_session_cookie(void) __ksym;
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index d1f116665551..2896467ca3cd 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -5,6 +5,7 @@
- #include "kprobe_multi_empty.skel.h"
- #include "kprobe_multi_override.skel.h"
- #include "kprobe_multi_session.skel.h"
-+#include "kprobe_multi_session_cookie.skel.h"
- #include "bpf/libbpf_internal.h"
- #include "bpf/hashmap.h"
- 
-@@ -373,6 +374,38 @@ static void test_session_skel_api(void)
- 	kprobe_multi_session__destroy(skel);
- }
- 
-+static void test_session_cookie_skel_api(void)
-+{
-+	struct kprobe_multi_session_cookie *skel = NULL;
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct bpf_link *link = NULL;
-+	int err, prog_fd;
-+
-+	skel = kprobe_multi_session_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->pid = getpid();
-+
-+	err = kprobe_multi_session_cookie__attach(skel);
-+	if (!ASSERT_OK(err, " kprobe_multi_wrapper__attach"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.trigger);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	ASSERT_EQ(skel->bss->test_kprobe_1_result, 1, "test_kprobe_1_result");
-+	ASSERT_EQ(skel->bss->test_kprobe_2_result, 2, "test_kprobe_2_result");
-+	ASSERT_EQ(skel->bss->test_kprobe_3_result, 3, "test_kprobe_3_result");
-+
-+cleanup:
-+	bpf_link__destroy(link);
-+	kprobe_multi_session_cookie__destroy(skel);
-+}
-+
- static size_t symbol_hash(long key, void *ctx __maybe_unused)
- {
- 	return str_hash((const char *) key);
-@@ -739,4 +772,6 @@ void test_kprobe_multi_test(void)
- 		test_attach_override();
- 	if (test__start_subtest("session"))
- 		test_session_skel_api();
-+	if (test__start_subtest("session_cookie"))
-+		test_session_cookie_skel_api();
- }
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
-new file mode 100644
-index 000000000000..b5c04b7b180c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <stdbool.h>
-+#include "bpf_kfuncs.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int pid = 0;
-+
-+__u64 test_kprobe_1_result = 0;
-+__u64 test_kprobe_2_result = 0;
-+__u64 test_kprobe_3_result = 0;
-+
-+/*
-+ * No tests in here, just to trigger 'bpf_fentry_test*'
-+ * through tracing test_run
-+ */
-+SEC("fentry/bpf_modify_return_test")
-+int BPF_PROG(trigger)
-+{
-+	return 0;
-+}
-+
-+static int check_cookie(__u64 val, __u64 *result)
-+{
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 1;
-+
-+	__u64 *cookie = bpf_session_cookie();
-+
-+	if (bpf_session_is_return())
-+		*result = *cookie == val ? val : 0;
-+	else
-+		*cookie = val;
-+	return 0;
-+}
-+
-+SEC("kprobe.session/bpf_fentry_test1")
-+int test_kprobe_1(struct pt_regs *ctx)
-+{
-+	return check_cookie(1, &test_kprobe_1_result);
-+}
-+
-+SEC("kprobe.session/bpf_fentry_test1")
-+int test_kprobe_2(struct pt_regs *ctx)
-+{
-+	return check_cookie(2, &test_kprobe_2_result);
-+}
-+
-+SEC("kprobe.session/bpf_fentry_test1")
-+int test_kprobe_3(struct pt_regs *ctx)
-+{
-+	return check_cookie(3, &test_kprobe_3_result);
-+}
+v7:
+	* Document the return value of alloc_netdev_dummy()
+v6:
+	* No code change. Just added Reviewed-by: and fix a commit message
+v5:
+	* Added a new patch to fix some typos in the previous code
+	* Rebased to net-net/main
+v4:
+	* Added a new patch to add dummy device at free_netdev(), as suggested
+	  by Jakub.
+	* Added support for some wireless driver.
+	* Added some Acked-by and Reviewed-by.
+v3:
+	* Use free_netdev() instead of kfree() as suggested by Jakub.
+	* Change the free_netdev() place in ipa driver, as suggested by
+	  Alex Elder.
+	* Set err in the error path in the Marvell driver, as suggested
+	  by Simon Horman.
+v2:
+	* Patch 1: Use a pre-defined name ("dummy#") for the dummy
+	  net_devices.
+	* Patch 2-5: Added users for the new helper.
+v1:
+	* https://lore.kernel.org/all/20240327200809.512867-1-leitao@debian.org/
+
+Breno Leitao (10):
+  net: core: Fix documentation
+  net: free_netdev: exit earlier if dummy
+  net: create a dummy net_device allocator
+  net: marvell: prestera: allocate dummy net_device dynamically
+  net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+  net: ipa: allocate dummy net_device dynamically
+  net: ibm/emac: allocate dummy net_device dynamically
+  wifi: qtnfmac: Use netdev dummy allocator helper
+  wifi: ath10k: allocate dummy net_device dynamically
+  wifi: ath11k: allocate dummy net_device dynamically
+
+ drivers/net/ethernet/ibm/emac/mal.c           | 14 ++++-
+ drivers/net/ethernet/ibm/emac/mal.h           |  2 +-
+ .../ethernet/marvell/prestera/prestera_rxtx.c | 15 ++++-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 17 ++++--
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   |  2 +-
+ drivers/net/ipa/gsi.c                         | 12 ++--
+ drivers/net/ipa/gsi.h                         |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c        |  9 ++-
+ drivers/net/wireless/ath/ath10k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath10k/pci.c         |  2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c        |  2 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |  4 +-
+ drivers/net/wireless/ath/ath10k/usb.c         |  2 +-
+ drivers/net/wireless/ath/ath11k/ahb.c         |  9 ++-
+ drivers/net/wireless/ath/ath11k/core.h        |  2 +-
+ drivers/net/wireless/ath/ath11k/pcic.c        | 21 +++++--
+ .../wireless/quantenna/qtnfmac/pcie/pcie.c    |  3 +-
+ include/linux/netdevice.h                     |  3 +
+ net/core/dev.c                                | 59 +++++++++++++------
+ 19 files changed, 129 insertions(+), 53 deletions(-)
+
 -- 
-2.44.0
+2.43.0
 
 
