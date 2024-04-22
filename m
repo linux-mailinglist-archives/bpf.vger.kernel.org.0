@@ -1,148 +1,136 @@
-Return-Path: <bpf+bounces-27481-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27482-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E9178AD63F
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 22:59:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC8618AD666
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 23:14:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC3B1C20B24
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 20:59:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44540B217AA
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 21:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5730F1C6B7;
-	Mon, 22 Apr 2024 20:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4098B1BC30;
+	Mon, 22 Apr 2024 21:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mbzWU88C"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="USQ/LheI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EAC18EB1
-	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 20:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472DF1BC53
+	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 21:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713819585; cv=none; b=jvNGswEIOETVncVur9PLq5aS2n3DZ3BshWDCpRuqqMD46C13uuKQaVV6Vxs9D6AwkRwWWrRVuZ28vJvRbiP1KcknUUEJSK1nLvJOBLIhGtPg0EUUyRkQgUzyS7OmeD2oq9tM6DicS8wktlLyrU+DAa53MDamduUKlTAgOct6gPg=
+	t=1713820479; cv=none; b=IZaa2iH2fpPhScD5bGImrzP0dncnMJ2WLJt1Bplk4RG8WhbBYxd6CZxBh2CfjXVwwRcGvXAHGwCG/4Gi9+YXYAUIreE6/fkDWn+A15nHGqbRgjIPo3ArW1f5o4BpR4uo3c6ncMmWr2PuxUaT+LxUZqqsy6Wzc/41qqitQd7AxGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713819585; c=relaxed/simple;
-	bh=9DtxLkBqU8o+Vd60v8MnikP8aabry94GM1z7ZjGXJAA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N5jvn0pF4Em7F743T+H1TrY6+Ft3ywSqNm4kwtgBIIZvZ+m/O40Sfyqs13EJTQtmGLj9Hh7x/JVNq8AyJObYBCosie5nyZNdeCkwmLnqwhGSOpMqgzrT+9DVzHiJG8Sk6I03BzyVbYtEnqyyAPP54rCuT0MZjhM0z7BCAOFvVGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mbzWU88C; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-439b1c72676so39381cf.1
-        for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 13:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713819582; x=1714424382; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9DtxLkBqU8o+Vd60v8MnikP8aabry94GM1z7ZjGXJAA=;
-        b=mbzWU88CFNzYso5y3z5u0Y7gx+04dJRwteJm/Hx7ACnQ/V62GydtY5pYvdxn0tJE9j
-         J4dazF7HgDQ9euLkxTPEPc+vOF27vdPqiKmzaUnD4onpIlsXIXYOecG5km7ogSX3tjmw
-         WXXfnqC6OIKl77hqQHI/Abf42JvRBemo0s9xSgpzrKxqx/kSUTPPJTZDrJ53gAiDKtCJ
-         W/2mXwzO6zGIHiOnPAEoKLKAr1STrw46B0RXBM1HDkxwbIi2TRhpXSAXeEpWJi+b90+t
-         pF9U6pGLKCCZcrGOOCtiiAU3mE0nyaV/JSh5dHzBchvBsvuUtrHQrpCSVx9Vn86A+mPe
-         PVlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713819582; x=1714424382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9DtxLkBqU8o+Vd60v8MnikP8aabry94GM1z7ZjGXJAA=;
-        b=ng7qkusKf3iE1uFCQVRqbnSDR8r7ri04vYjiEMaZsxc+D8bwnXqYbAV/pk4vg9iuHB
-         kxIFnyhC/xEo3EkSvcy8SXvJAhaafon2G3fe/8MAVRq6qUCF8LaFUe8uXuikOZWeKDkk
-         0T7RcW9++tF74moCSsRIxvnrjJBigwna6rpGcIPz/k63/GfNOVzitVDE4ihlb1t9/1J/
-         PcNpP3LpHgVgo50mXTFS0qJ41s6rO2AvAgv7gs0Ec5/AR/BS6e84D/l7VlQ9y/hbwc+b
-         0haQ7tqnqjn/JmuATRcDsul+RO6QKkweAaXcs9/pwf9QH6CxoL4kj9kk6d3aToYDL9Cw
-         jztA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNKUQ/KYq+YA4DIux5moqBllUc2qWv+rIpakfW1B5LniWTcSqyWIWJ1B3anwmBghhV+lGc2l8o8GzOTlXSd2A19yYN
-X-Gm-Message-State: AOJu0YxUdiamjQa3hzOKCc1Y3dTWSmB5EmmWH6VZNnaorA3IGwvEB9aj
-	WhJ3k171dLFNt+vWIL8ScVgI6IteJdTYaM0vgRWymaHKgOvgrmNouyL2jtMqHBEJfCzM6/efYzH
-	XuY7HwpZXlDlMtF8O5xvJ/kVag7Jr1Pn66TEP
-X-Google-Smtp-Source: AGHT+IFWv3vY24WCXnrPQ0IXbKt//pYLn/SVsr2ulzPtbd7T/FKDLeYs0qIX73iBiD1osziDXA7eh7+i5RjT8f9m8Qw=
-X-Received: by 2002:ac8:748f:0:b0:437:6b79:c9ff with SMTP id
- v15-20020ac8748f000000b004376b79c9ffmr83042qtq.10.1713819581839; Mon, 22 Apr
- 2024 13:59:41 -0700 (PDT)
+	s=arc-20240116; t=1713820479; c=relaxed/simple;
+	bh=cRWZVwE66IktVunkaU/Js89Orpl0ItQMJLYsLnFC5EI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qg/6T0dBMTREGKjxvoMDaDPyf2SQGR5U7ncwZpgft498GcMrV7CUK+p/LXIJ7ve23IIe3f9mr/M24g9VbOXBbZQoVMLKMJ+nQAM4sIzKdo+CB42HJNHsanh5BX4TOVrYQ7uyawbl5ipf3XqNHvRaQPLtQLdA0dyjKBS8HNW6n40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=USQ/LheI; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8c9e51b2-5401-4d58-a319-ed620fadcc63@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713820476;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=id/YHTuxfiovFyVUV8xQXCNmiVtMWYMuhwFovv6HFqU=;
+	b=USQ/LheIMQi2h389U2fetydS4vuPWvPxQCTPTXCiOGyzPogVxgMEdizJ9hUrrDENIDnX/p
+	6QMONIa69osC/0d0S8Fwj3lpbSL/DrquhSwWkBoviUK0Ldoj9HRwgy2i5tIdxLHHRyupWx
+	efcpyH4+CJUr69ZPnKjRGIM55vFzhfo=
+Date: Mon, 22 Apr 2024 14:14:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410064214.2755936-1-irogers@google.com> <ZhgvE7i9HGGar1eX@x1>
- <CAM9d7chWBv14hD4huuoas4ncZaziuTnHi_JvieKqrLZF9fDpPw@mail.gmail.com> <ZibOs-_ASLcZrnFa@x1>
-In-Reply-To: <ZibOs-_ASLcZrnFa@x1>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 22 Apr 2024 13:59:27 -0700
-Message-ID: <CAP-5=fXwkrPuWBTedUxjc=2GyDwPsTA75RAyN+nj4iHSFozRwg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/12] dso/dsos memory savings and clean up
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@arm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, Leo Yan <leo.yan@linux.dev>, Song Liu <song@kernel.org>, 
-	Ilkka Koskinen <ilkka@os.amperecomputing.com>, Ben Gainey <ben.gainey@arm.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Yanteng Si <siyanteng@loongson.cn>, 
-	Yicong Yang <yangyicong@hisilicon.com>, Sun Haiyong <sunhaiyong@loongson.cn>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Anne Macedo <retpolanne@posteo.net>, 
-	Changbin Du <changbin.du@huawei.com>, Andi Kleen <ak@linux.intel.com>, 
-	Thomas Richter <tmricht@linux.ibm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	zhaimingbing <zhaimingbing@cmss.chinamobile.com>, Li Dong <lidong@vivo.com>, 
-	Paran Lee <p4ranlee@gmail.com>, elfring@users.sourceforge.net, 
-	Markus Elfring <Markus.Elfring@web.de>, Yang Jihong <yangjihong1@huawei.com>, 
-	Chengen Du <chengen.du@canonical.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 bpf-next 4/6] selftests/bpf: Add IPv4 and IPv6 sockaddr
+ test cases
+To: Jordan Rife <jrife@google.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Kui-Feng Lee <thinker.li@gmail.com>,
+ Artem Savkov <asavkov@redhat.com>, Dave Marchevsky <davemarchevsky@fb.com>,
+ Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>,
+ David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20240412165230.2009746-1-jrife@google.com>
+ <20240412165230.2009746-5-jrife@google.com>
+ <3df13496-a644-4a3a-9f9b-96ccc070f2a3@linux.dev>
+ <CADKFtnQDJbSFRS4oyEsn3ZBDAN7T6EvxXUNdrz1kU3Bnhzfgug@mail.gmail.com>
+ <f164369a-2b6b-45e0-8e3e-aa0035038cb6@linux.dev>
+ <CADKFtnQHy0MFeDNg6x2gzUJpuyaF6ELLyMg3tTxze3XV28qo7w@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CADKFtnQHy0MFeDNg6x2gzUJpuyaF6ELLyMg3tTxze3XV28qo7w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 22, 2024 at 1:55=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Mon, Apr 22, 2024 at 01:06:46PM -0700, Namhyung Kim wrote:
-> > On Thu, Apr 11, 2024 at 11:42=E2=80=AFAM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > On Tue, Apr 09, 2024 at 11:42:02PM -0700, Ian Rogers wrote:
-> > > > 12 more patches from:
-> > > > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@googl=
-e.com/
-> > > > a near half year old adventure in trying to lower perf's dynamic
-> > > > memory use. Bits like the memory overhead of opendir are on the
-> > > > sidelines for now, too much fighting over how
-> > > > distributions/C-libraries present getdents. These changes are more
-> > > > good old fashioned replace an rb-tree with a sorted array and add
-> > > > reference count tracking.
-> > > >
-> > > > The changes migrate dsos code, the collection of dso structs, more
-> > > > into the dsos.c/dsos.h files. As with maps and threads, this is don=
-e
-> > > > so the internals can be changed - replacing a linked list (for fast
-> > > > iteration) and an rb-tree (for fast finds) with a lazily sorted
-> > > > array. The complexity of operations remain roughly the same, althou=
-gh
-> > > > iterating an array is likely faster than iterating a linked list, t=
-he
-> > > > memory usage is at least reduce by half.
-> > >
-> > > Got the first 5 patches, would be nice if more people could review it=
-,
-> > > I'll try and get back to is soon.
-> >
-> > For the series:
-> >
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
->
-> It is not applying right now, I've just merged with torvalds/master and
-> I'm running build tests now, will push to tmp.perf-tools-next right now.
+On 4/18/24 9:37 AM, Jordan Rife wrote:
+>> The test_sock_addr.{c,sh} can be retired as long as all its tests are migrated
+>> to sock_addr.c
+> 
+> test_sock_addr.c has a few more test dimensions than
+> prog_tests/sock_addr.c currently does, so it covers a few more
+> scenarios.
+> 
+> struct sock_addr_test {
+>      const char *descr;
+>      /* BPF prog properties */
+>      load_fn loadfn;
+>      enum bpf_attach_type expected_attach_type;
+>      enum bpf_attach_type attach_type;
+>      /* Socket properties */
+>      int domain;
+>      int type;
+>      /* IP:port pairs for BPF prog to override */
+>      const char *requested_ip;
+>      unsigned short requested_port;
+>      const char *expected_ip;
+>      unsigned short expected_port;
+>      const char *expected_src_ip;
+>      /* Expected test result */
+>      enum {
+>          LOAD_REJECT,
+>          ATTACH_REJECT,
+>          ATTACH_OKAY,
+>          SYSCALL_EPERM,
+>          SYSCALL_ENOTSUPP,
+>          SUCCESS,
+>      } expected_result;
+> };
+> 
+> We focus on the "happy path" scenarios currently in
+> prog_tests/sock_addr.c while test_sock_addr.c has test cases that
+> cover a range of scenarios where loading or attaching a BPF program
+> should fail. There are also a few asm tests that use program loader
+> functions like sendmsg4_rw_asm_prog_load which specifies a series of
+> BPF instructions directly rather than loading one of the skeletons.
+> Adding in these test dimensions and migrating the test cases is a
+> slightly bigger lift for this patch series. Do we want to try to
+> migrate all of these to prog_tests/sock_addr.c in order to fully
+> retire it?
 
-Ok, do you want me to rebase on tmp.perf-tools-next?
+I don't want to keep this set hostage too much until everything is migrated from 
+test_sock_addr.c. As long as for the tests you find useful in test_sock_addr.c 
+in this patch set and moved them to prog_tests/sock_addr.c, it is heading in the 
+right direction. For the moved test, please remove them from test_sock_addr.c so 
+that it is clear what else needs to be done.
 
-Thanks,
-Ian
+[ Side note for future migration attempt, at least for the LOAD_REJECT one, it 
+probably makes sense to write it like progs/verifier_*.c ]
 
-> - Arnaldo
 
