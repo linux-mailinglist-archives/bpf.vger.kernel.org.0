@@ -1,201 +1,253 @@
-Return-Path: <bpf+bounces-27472-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27473-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512EB8AD5BD
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 22:18:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DDB8AD5C8
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 22:25:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EA581C20C29
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 20:18:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40BFD281C5F
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 20:25:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A9F1553AE;
-	Mon, 22 Apr 2024 20:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D144D155729;
+	Mon, 22 Apr 2024 20:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="nVxzKO10";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="aivHbXJ4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="SjSxmIyR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gh0PyTvB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33B415380B
-	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 20:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FD415535D;
+	Mon, 22 Apr 2024 20:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713817098; cv=none; b=L6SN7KMKDoOqUG0BFjZzV5ivfeSFXXz9UwaZxzKunQsLRSGrfeD7YQqrwmW4d3fUY5qqWquMwEbTAMxfhD8Ilg5xYJLjQJ1vHbllbEy052VU8Eii9iSqGOOME1VB4PlT4cumxKVYwxkMu14y4ASc8inYpR2iRGzJW1TVUkahMzU=
+	t=1713817533; cv=none; b=rQzqJEhOmB2XF8Idd2UTDTSfmp5esBsAWqX0qAJMtrirdq9nkxysTBkfx+hGGzh8l8qEvSe9Dk6o75LgIHiASxZiJ/OIk66S52wt/JiRE/gEDxc+R5StAcLpvmoVfCOf6Km+XqzmYmllmB7ASgetMg3YecUkkHSCVLh3DH+6aZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713817098; c=relaxed/simple;
-	bh=IbnZ99b8RZ12LGJA+lySzc/cLOD3Dt8WwSbjqqAhdZE=;
-	h=To:Cc:References:In-Reply-To:Date:Message-ID:MIME-Version:Subject:
-	 Content-Type:From; b=YUiQ0gBno3ROSfzu+zUn3YjMvesZcfBoFIgXTwgAAztqKfR+Jt3+5thz9wRRpToUwkzQ47pXk44w/5z8ZhL9pVds18Wt6DAJHze+VlyDyitw9HdFFZNYXfx/tmvkvQm1UpOTx7x1+pyEgNyhGyT+RKZg59JglqMK7jfpWfHu8WA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=nVxzKO10; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=aivHbXJ4 reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=SjSxmIyR reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 23E6CC1D4CC6
-	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 13:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1713817096; bh=IbnZ99b8RZ12LGJA+lySzc/cLOD3Dt8WwSbjqqAhdZE=;
-	h=To:Cc:References:In-Reply-To:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nVxzKO10F+8VFJ85CwCjWEXQauX5pY5bZ2kD5a3qD8CuYliBzlHNA2hDRa3BJQR82
-	 Fh4BErzJ5M44XTeeiNGDMw1VYuFYxVzar2dKmBRPigfbcxCNVD5MkulXQYi8p19aEF
-	 CFyOfX43cROTktEoByW60+RVqnkrFMWsBXqvz+tU=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id DE135C1840FD;
- Mon, 22 Apr 2024 13:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1713817095; bh=IbnZ99b8RZ12LGJA+lySzc/cLOD3Dt8WwSbjqqAhdZE=;
- h=From:To:Cc:References:In-Reply-To:Date:Subject:List-Id:
- List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
- b=aivHbXJ4F11ljNxc/VMMGQ5/gKBj3kx2I2TcBXKuuA3KLJxTprjHwHna33XYQtDdX
- gQIvu7zCeKE2bZBNPBIASpmLRzz6l89IgUZTeH9wuATJ8Oxpri9BN1mON8gYcQwFgA
- vzxRgHma0asOSovKst60LSNUg5Sj3FPy8AQeKAx0=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 83CABC1840FD
- for <bpf@ietfa.amsl.com>; Mon, 22 Apr 2024 13:18:14 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.845
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=googlemail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id ck8_6SeG-AJZ for <bpf@ietfa.amsl.com>;
- Mon, 22 Apr 2024 13:18:10 -0700 (PDT)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com
- [IPv6:2607:f8b0:4864:20::429])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 7237BC14F5E9
- for <bpf@ietf.org>; Mon, 22 Apr 2024 13:18:10 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id
- d2e1a72fcca58-6f0b9f943cbso3110656b3a.0
- for <bpf@ietf.org>; Mon, 22 Apr 2024 13:18:10 -0700 (PDT)
+	s=arc-20240116; t=1713817533; c=relaxed/simple;
+	bh=YjFau6lGb9LTELqCEb2X2127G9ZwnIlW8kYv21dRJJA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uz01MX3q+BR9HA7r0Met38v4BJEZfYKwZtaPZILQRbyuvEmv4jyvytVUBFoUIHrpNO3GGGoq4H+XoJU17oZwRJzvFZltmJIuyz/XKdCi5cqclctYDD6kqtKFBIZUOTkb7ijgnvWr8KC2R94joC+I6gwMFpXCwdb+M+YgdxldpH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gh0PyTvB; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41aa21b06b3so4139585e9.0;
+        Mon, 22 Apr 2024 13:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20230601; t=1713817089; x=1714421889; darn=ietf.org;
- h=content-language:thread-index:content-transfer-encoding
- :mime-version:message-id:date:subject:in-reply-to:references:cc:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=PUz55Nl17oll69+3WiaJPfCOIWt9awPUEg5ZbqEmiT0=;
- b=SjSxmIyRFxZe2yPyBm6ljk7uERrPO+N5KX5lqj7UHr1X/8MwtiGqcGBOrtuM6QkrKn
- XQyyrPTcqQoMVp3gkfvbQbXb0EHdn6s+0CZD96fk8sKjVGfWzkfAh6iC7V5VbcVuSwFn
- eaNdFZudbd/d7gIjwaJ7LGy1cHGABBAaRT0iF4nu40MJ5T5MN1Ak2nh74PCLFlJ98EFw
- +2doRZCG8OGtvnmwMpDT07JPe7cF/Nhl4aty7EqvL3LboLnwwgRs8E6WE6v/df5zy9Hi
- Z2Q16Pd3lDNn+eHQn2IvM94UkzvEFWQ+Kg2S1CbszdMp+V3A3qfMn0EiFp+qwdxd8Cmj
- oLfA==
+        d=gmail.com; s=20230601; t=1713817529; x=1714422329; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLiWlfsmSMobonfpzJOKL/uqlF5pCv8voW0Gv0gZ6Xg=;
+        b=Gh0PyTvBauqIoQuzFwPzAT9cIllRID2jLxH/W8N+oJUukbTuuXgj+iNlz/R5uH2162
+         O3Fl7cdKLs540cAgmrg5BIqjpTBnYz03oPE590YpFFgU5aaeps3Emef8r+ZblBPuqEMF
+         uMg42sbGgeDfa0VQG4ZjAEEa7q2azc8hjpXyX2N17u0UPNhhPngH1Ra+ZMD8G+IJ+W9B
+         aa+POBd78H1LoI5DNgjBpWs4wxeYu1Wd8jS3Etr4zKwnnP+WSuYwIFbzxWKTKUjhrSuZ
+         1yUDVEYT0oPvbYIWEF6Wvea8BTjnRq0pX1hjE0oYnKfgY2HyimlH8SuF0MOh/V/1BwjX
+         MftA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1713817089; x=1714421889;
- h=content-language:thread-index:content-transfer-encoding
- :mime-version:message-id:date:subject:in-reply-to:references:cc:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=PUz55Nl17oll69+3WiaJPfCOIWt9awPUEg5ZbqEmiT0=;
- b=L1ShkTXvHxRB/UeFSI1Od0q6f+qrrZZ7FsdI7U6oJtU9baFZzayjs058tFdfq1aMEf
- e+VTUfj+kMp4obe+6kH8zyCJ0Z1Ut9JYcTpkZ0MX5TgEKyZGUqaRXZQlovyCW93lsdL6
- YedKwUjdl2KT7+Ix+I2+SblWOH7GOhyLKrEGJxRtAGFchx713QsE5XB2+97k3Ma1JW79
- 6sl7kiLQ0gsCPEILTlR727WCNM/nmrs1k6H/uLzdshLO5NbxjptT+LVEv8R+dySgAB/a
- VCAkisra6tLNo0sAb2vK4dMcPBgjVrw+I6uHc0R6XB3OJ0kICU4A3Ch0xbDe+ZEGcki0
- lPLQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUsDEbVX8CQ9AObJdDIWgTiTJxvudZnMh9/r83jBWX2IWPNe3xtP8L8oHvacIvROncSnTuaB78gUg/MdLk=
-X-Gm-Message-State: AOJu0YyT1GlcZxQkEqUFG6347yzJMJmAkKlgl1TsriXXghLMlNDMRw6a
- NPoGKN7rRu3/EM/sIPk+zl+xQre568B+J77V8X1ZiqvFYUWXO+I2IUdXPHrJ
-X-Google-Smtp-Source: AGHT+IFNaB/pP2VBDqo9sZ3DuOnugU0crvxKt0zQBpTCpa6JnGQyFKzekv5q1BK5IOYUr9lRKR0Kpg==
-X-Received: by 2002:a05:6a00:a1a:b0:6e8:f708:4b09 with SMTP id
- p26-20020a056a000a1a00b006e8f7084b09mr12704243pfh.15.1713817089260; 
- Mon, 22 Apr 2024 13:18:09 -0700 (PDT)
-Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net.
- [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
- s23-20020a62e717000000b006ed045e3a70sm8235196pfh.25.2024.04.22.13.18.07
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 22 Apr 2024 13:18:08 -0700 (PDT)
-X-Google-Original-From: <dthaler1968@gmail.com>
-To: "'David Vernet'" <void@manifault.com>
-Cc: <bpf@vger.kernel.org>,
-	<bpf@ietf.org>
-References: <20240422190942.24658-1-dthaler1968@gmail.com>
- <20240422193847.GB18561@maniforge>
-In-Reply-To: <20240422193847.GB18561@maniforge>
-Date: Mon, 22 Apr 2024 13:18:05 -0700
-Message-ID: <15c701da94f2$30a7c9f0$91f75dd0$@gmail.com>
+        d=1e100.net; s=20230601; t=1713817529; x=1714422329;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xLiWlfsmSMobonfpzJOKL/uqlF5pCv8voW0Gv0gZ6Xg=;
+        b=lzA32fT7e6IVhv98ah6lzfGzBq1ujzlLUNQKxCJ72UUHImZwCMmsy/sPqrVVLnJ2Mm
+         rwkgjtrE8d0jYn8gbxtk0xENqQoHvBCr49w7NX4rALMPdhvwescFiNbzY3nQ6JqBEoj1
+         mbMtHRm1FcRynnHiROR+BAI8v3YBlm39n63Nw2ZkVuiskxjf22qo/8db/pZmcbLhHQ34
+         YI79WLgSMRu5QixmfXAno0qrvLQ96jEH2HWExL2tWHWCssTh1jUIPokbAINHqz+bGH5r
+         9cK3Nuft1nDuVHrKM1EIw2XwULWH7xpIug6dLcG7tadLXxzbmUKUYmBiv7vWAgWT6rIj
+         87nA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEgou/2UoJKC2RJHvfiiYuKKJOaw/KMtTsq2DvHUctatnfGPCPQzWYIbPRBF53xG8JyHGnBeRlKWhT1dGX95kmH2yGdtEIzHFz1Wp8kfWR6heeDYmnMtwGV6zHC7qpEqA7UKTAdfWo9By+5wsbpcgx/dskr3s73eWa+hyZspxveVSVZ/WLmbqehHP1HgqDFhMq08MRRGjfS/3p91LOn/xZ
+X-Gm-Message-State: AOJu0YzYt9KRGFV3SsOmXtjiBWj8U3E6EtJTUdQ0HCzi/toCeYeJdWja
+	vpo2nlOhsKZhtWtkoXhwyQ7gdPFjC4FOEG2AlkQNC+ZCxCAuc+cS
+X-Google-Smtp-Source: AGHT+IFdhuSfTDsPTFsuDuTro4BCnnKCqf/kS6VlPXSQ+kB2rJD85vAd/+j/R7CUUdiaTnwaZ5wk8g==
+X-Received: by 2002:a05:600c:1c9b:b0:416:4641:5947 with SMTP id k27-20020a05600c1c9b00b0041646415947mr9806179wms.34.1713817528960;
+        Mon, 22 Apr 2024 13:25:28 -0700 (PDT)
+Received: from krava ([83.240.62.18])
+        by smtp.gmail.com with ESMTPSA id f17-20020a05600c4e9100b004182b87aaacsm17888971wmq.14.2024.04.22.13.25.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 13:25:28 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 22 Apr 2024 22:25:25 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCHv3 bpf-next 0/7] uprobe: uretprobe speed up
+Message-ID: <ZibHtXFcHr_sJdP9@krava>
+References: <20240421194206.1010934-1-jolsa@kernel.org>
+ <20240423000943.478ccf1e735a63c6c1b4c66b@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJca10vmlzuYWeV1F8aiImCH38lawJ77JCTsF0twfA=
-Content-Language: en-us
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/ngrJOCqbgy59odW-NKKL1rP3U40>
-Subject: Re: [Bpf] [PATCH bpf-next] bpf,
- docs: Add introduction for use in the ISA Internet Draft
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: dthaler1968@googlemail.com
-From: dthaler1968=40googlemail.com@dmarc.ietf.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423000943.478ccf1e735a63c6c1b4c66b@kernel.org>
 
-David Vernet <void@manifault.com> writes: 
-> On Mon, Apr 22, 2024 at 12:09:42PM -0700, Dave Thaler wrote:
-> > The proposed intro paragraph text is derived from the first paragraph
-> > of the IETF BPF WG charter at
-> > https://datatracker.ietf.org/wg/bpf/about/
-> >
-> > Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+On Tue, Apr 23, 2024 at 12:09:43AM +0900, Masami Hiramatsu wrote:
+> Hi Jiri,
+> 
+> On Sun, 21 Apr 2024 21:41:59 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
+> 
+> > hi,
+> > as part of the effort on speeding up the uprobes [0] coming with
+> > return uprobe optimization by using syscall instead of the trap
+> > on the uretprobe trampoline.
+> > 
+> > The speed up depends on instruction type that uprobe is installed
+> > and depends on specific HW type, please check patch 1 for details.
+> > 
+> > Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
+> > apply-able on linux-trace.git tree probes/for-next branch.
+> > Patch 7 is based on man-pages master.
+> 
+> Thanks for updated! I reviewed the series and just except for the
+> manpage, it looks good to me.
+> 
+> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> for the series.
+> If Linux API maintainers are OK, I can pick this in probes/for-next.
+
+great, thanks
+
+> (BTW, who will pick the manpage patch?)
+
+ugh, I cc-ed linux-api but not linux-man@vger.kernel.org
+I'll add that for new version
+
+jirka
+
+> 
+> Thank you,
+> 
+> > 
+> > v3 changes:
+> >   - added source ip check if the uretprobe syscall is called from
+> >     trampoline and sending SIGILL to process if it's not
+> >   - keep x86 compat process to use standard breakpoint
+> >   - split syscall wiring into separate change
+> >   - ran ltp and syzkaller locally, no issues found [Masami]
+> >   - building uprobe_compat binary in selftests which breaks
+> >     CI atm because of missing 32-bit delve packages, I will
+> >     need to fix that in separate changes once this is acked
+> >   - added man page change
+> >   - there were several changes so I removed acks [Oleg Andrii]
+> > 
+> > Also available at:
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> >   uretprobe_syscall
+> > 
+> > thanks,
+> > jirka
+> > 
+> > 
+> > Notes to check list items in Documentation/process/adding-syscalls.rst:
+> > 
+> > - System Call Alternatives
+> >   New syscall seems like the best way in here, becase we need
+> >   just to quickly enter kernel with no extra arguments processing,
+> >   which we'd need to do if we decided to use another syscall.
+> > 
+> > - Designing the API: Planning for Extension
+> >   The uretprobe syscall is very specific and most likely won't be
+> >   extended in the future.
+> > 
+> >   At the moment it does not take any arguments and even if it does
+> >   in future, it's allowed to be called only from trampoline prepared
+> >   by kernel, so there'll be no broken user.
+> > 
+> > - Designing the API: Other Considerations
+> >   N/A because uretprobe syscall does not return reference to kernel
+> >   object.
+> > 
+> > - Proposing the API
+> >   Wiring up of the uretprobe system call si in separate change,
+> >   selftests and man page changes are part of the patchset.
+> > 
+> > - Generic System Call Implementation
+> >   There's no CONFIG option for the new functionality because it
+> >   keeps the same behaviour from the user POV.
+> > 
+> > - x86 System Call Implementation
+> >   It's 64-bit syscall only.
+> > 
+> > - Compatibility System Calls (Generic)
+> >   N/A uretprobe syscall has no arguments and is not supported
+> >   for compat processes.
+> > 
+> > - Compatibility System Calls (x86)
+> >   N/A uretprobe syscall is not supported for compat processes.
+> > 
+> > - System Calls Returning Elsewhere
+> >   N/A.
+> > 
+> > - Other Details
+> >   N/A.
+> > 
+> > - Testing
+> >   Adding new bpf selftests and ran ltp on top of this change.
+> > 
+> > - Man Page
+> >   Attached.
+> > 
+> > - Do not call System Calls in the Kernel
+> >   N/A.
+> > 
+> > 
+> > [0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
 > > ---
-> >  Documentation/bpf/standardization/instruction-set.rst | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/bpf/standardization/instruction-set.rst
-> > b/Documentation/bpf/standardization/instruction-set.rst
-> > index d03d90afb..b44bdacd0 100644
-> > --- a/Documentation/bpf/standardization/instruction-set.rst
-> > +++ b/Documentation/bpf/standardization/instruction-set.rst
-> > @@ -5,7 +5,11 @@
-> >  BPF Instruction Set Architecture (ISA)
-> > ======================================
-> >
-> > -This document specifies the BPF instruction set architecture (ISA).
-> > +eBPF (which is no longer an acronym for anything), also commonly
-> > +referred to as BPF, is a technology with origins in the Linux kernel
-> > +that can run untrusted programs in a privileged context such as an
+> > Jiri Olsa (6):
+> >       uprobe: Wire up uretprobe system call
+> >       uprobe: Add uretprobe syscall to speed up return probe
+> >       selftests/bpf: Add uretprobe syscall test for regs integrity
+> >       selftests/bpf: Add uretprobe syscall test for regs changes
+> >       selftests/bpf: Add uretprobe syscall call from user space test
+> >       selftests/bpf: Add uretprobe compat test
+> > 
+> >  arch/x86/entry/syscalls/syscall_64.tbl                    |   1 +
+> >  arch/x86/kernel/uprobes.c                                 | 115 ++++++++++++++++++++++++++++++
+> >  include/linux/syscalls.h                                  |   2 +
+> >  include/linux/uprobes.h                                   |   3 +
+> >  include/uapi/asm-generic/unistd.h                         |   5 +-
+> >  kernel/events/uprobes.c                                   |  24 +++++--
+> >  kernel/sys_ni.c                                           |   2 +
+> >  tools/include/linux/compiler.h                            |   4 ++
+> >  tools/testing/selftests/bpf/.gitignore                    |   1 +
+> >  tools/testing/selftests/bpf/Makefile                      |   6 +-
+> >  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c     | 123 +++++++++++++++++++++++++++++++-
+> >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c   | 362 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/uprobe_syscall.c        |  15 ++++
+> >  tools/testing/selftests/bpf/progs/uprobe_syscall_call.c   |  15 ++++
+> >  tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c |  13 ++++
+> >  15 files changed, 681 insertions(+), 10 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+> > 
+> > 
+> > Jiri Olsa (1):
+> >       man2: Add uretprobe syscall page
+> > 
+> >  man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> >  create mode 100644 man2/uretprobe.2
 > 
-> Perhaps this should be phrased as:
 > 
-> ...that can run untrusted programs in privileged contexts such as the
-operating
-> system kernel.
-> 
-> Not sure if that's actually a grammar correction but it sounds more
-correct in my
-> head. Wdyt?
-
-That sounds less grammatically correct to my reading, since "contexts" would
-be plural but "kernel" is singular.   The intent of the original sentence
-was that
-multiple programs (plural) can run in the same privileged context (singular)
-such
-as a kernel (singular).
-
-Dave
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
