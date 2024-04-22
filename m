@@ -1,117 +1,146 @@
-Return-Path: <bpf+bounces-27432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A098C8ACFFF
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 16:57:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79D178AD046
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 17:08:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ABCE282752
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 14:57:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997E31C20FC3
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 15:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85B0152507;
-	Mon, 22 Apr 2024 14:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAE0152DF0;
+	Mon, 22 Apr 2024 15:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="erWA+QCB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rzzItP2/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBB2152190;
-	Mon, 22 Apr 2024 14:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B518152521;
+	Mon, 22 Apr 2024 15:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797845; cv=none; b=aIjhA3PpHViGc0RNfAWE+1XdLii0xbpXSu/51PWYG/Py0tXTMW+3o0vv7jkzrHQMQz8l5q/cM9ZUwgJEjORB79Yr/ntxlbtyu5kuho4J3NMF7Z+o+7PLLE3QmfiS5rlHWUY0WRaI5VwtPpx1nmWehsJSvoiKNxnl3KbLVN0sTY4=
+	t=1713798457; cv=none; b=jNrg5daMbtr018uc5thzZp3PUaWueheWBVUu+8SXpPJMAsq9uYM7wfc3R06vhLNdlb2zYJNGHiGBzg22cbRwYDDJCIY4Icif4j6XsSCyts4R02/m205ugmGlN1GogdWqgsfRHxkeib/+jpSG0TuyiQ6WLdoZUGzmnKWAd1H3bL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797845; c=relaxed/simple;
-	bh=/ys6Pzra7IEywMh4hBfA5xJtu9C9b7qcLANvkfE5cJk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=riGM8UWfDPLCZnJ2v7QQNU3mO5f/vIKZ5eJNOf4cIXNdGPkSv5BUv3yIHPs9xZ3Sx1IOw1Mgoa1f0HQnBljnNHsxj8gsl+cIlgf19ql8LEsOS7G4pSJVIba/B15mI7TWtmmBhEVCZd6geNsx8sELihVJBuaoBa1zuJRpIEtUjmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=erWA+QCB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B11C113CC;
-	Mon, 22 Apr 2024 14:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713797844;
-	bh=/ys6Pzra7IEywMh4hBfA5xJtu9C9b7qcLANvkfE5cJk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=erWA+QCBdHASSENTMbmbCLszQVLSQvPHDCWgfW4TwFE/GVWL7ruM5SR//WtQ1W6QM
-	 d12zJ3HocPCG90okjpoCMBPNiZ4C2wMBghXJf7jiZrH+0zwnbBY2X6rvcNM+wESAuT
-	 kBqxDZqGDGm1bi25Y/5iM9IhfADZv/lx70kLTU88=
-Date: Mon, 22 Apr 2024 10:57:23 -0400
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Joel Granados <j.granados@samsung.com>, Luis Chamberlain <mcgrof@kernel.org>, josh@joshtriplett.org, 
-	Kees Cook <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Iurii Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, 
-	Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Petr Mladek <pmladek@suse.com>, John Ogness <john.ogness@linutronix.de>, 
-	Sergey Senozhatsky <senozhatsky@chromium.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>, 
-	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	tools@kernel.org
-Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel dir
-Message-ID: <20240422-sensible-sambar-of-plenty-ae8afc@lemur>
-References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
- <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
- <311c8b64-be13-4740-a659-3a14cf68774a@kernel.org>
+	s=arc-20240116; t=1713798457; c=relaxed/simple;
+	bh=9gL/4UlZA/kW/pnMl559dwLrf9AiXozcEdYa08TOlpQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ezmJv5YO8C8So5BHPQmxzDFjimqd6lXs6r+lZRFkATuTyVolfjPM/UqvaF0wp4qIBraqW1nfpzNn5lmofvb1npp7SYsCSrBsdPjPiWeOyt+rWAaxfKZhxJWHG0xUvExVjKPkxJMOp+EztLK3J9jkkSMwBr4SzoJ3pODQdaN75Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rzzItP2/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDCF3C32781;
+	Mon, 22 Apr 2024 15:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713798456;
+	bh=9gL/4UlZA/kW/pnMl559dwLrf9AiXozcEdYa08TOlpQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rzzItP2/R0evw0aSPWMiigg9UGmnBkw8ZN6K7fvAQlb2QKa3Ce12lBg44agS4ncDu
+	 sraKypj4jLlWkgwF1Emb9sVIW/0dfDIAJuKwOjqZG4xRzLt2cjqrBwT3ohLq2Gbcy1
+	 AFRTgCS/yEhQoGVaSyGzEXaNbMVF2l0KN94ZRqhH1b0Fxthlr/Fg5CZpKSu4yApjGA
+	 momJjKpTW+5egCrYP8fR9ejr4e+ZzVKkavsyULLZprL8JgJDvebd7TztooGnRiB0EW
+	 MLjAYgjtDVfuoMMUKBI9bzdmjVr/FkzK3LDArEpGLsK/Pp5+PZeGC018nMgRKKIHOk
+	 ndDr6bUXYGtpA==
+Date: Tue, 23 Apr 2024 00:07:29 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo
+ Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 7/7] man2: Add uretprobe syscall page
+Message-Id: <20240423000729.f1d58443100c3994afca0a7f@kernel.org>
+In-Reply-To: <20240421194206.1010934-8-jolsa@kernel.org>
+References: <20240421194206.1010934-1-jolsa@kernel.org>
+	<20240421194206.1010934-8-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <311c8b64-be13-4740-a659-3a14cf68774a@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 22, 2024 at 04:49:27PM +0200, Krzysztof Kozlowski wrote:
-> >> These commits remove the sentinel element (last empty element) from 
-> >> the
-> >> sysctl arrays of all the files under the "kernel/" directory that use a
-> >> sysctl array for registration. The merging of the preparation patches
-> >> [1] to mainline allows us to remove sentinel elements without changing
-> >> behavior. This is safe because the sysctl registration code
-> >> (register_sysctl() and friends) use the array size in addition to
-> >> checking for a sentinel [2].
-> > 
-> > Hi,
-> > 
-> > looks like *this* "patch" made it to the sysctl tree [1], breaking b4
-> > for everyone else (as there's a "--- b4-submit-tracking ---" magic in
-> > the tree history now) on next-20240422
-> > 
-> > Please drop it (again, I'm only talking about this empty cover letter).
+On Sun, 21 Apr 2024 21:42:06 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
+
+> Adding man page for new uretprobe syscall.
 > 
-> Just to clarify, in case it is not obvious:
-> Please *do not merge your own trees* into kernel.org repos. Instead use
-> b4 shazam to pick up entire patchset, even if it is yours. b4 allows to
-> merge/apply also the cover letter, if this is your intention.
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 man2/uretprobe.2
 > 
-> With b4 shazam you would get proper Link tags and not break everyone's
-> b4 workflow on next. :/
+> diff --git a/man2/uretprobe.2 b/man2/uretprobe.2
+> new file mode 100644
+> index 000000000000..c0343a88bb57
+> --- /dev/null
+> +++ b/man2/uretprobe.2
+> @@ -0,0 +1,40 @@
+> +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
+> +.\"
+> +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> +.\"
+> +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
+> +.SH NAME
+> +uretprobe \- execute pending return uprobes
+> +.SH SYNOPSIS
+> +.nf
+> +.B int uretprobe(void)
+> +.fi
+> +.SH DESCRIPTION
+> +On x86_64 architecture the kernel is using uretprobe syscall to trigger
+> +uprobe return probe consumers instead of using standard breakpoint instruction.
+> +The reason is that it's much faster to do syscall than breakpoint trap
+> +on x86_64 architecture.
 
-I was expecting this to happen at some point. :/
+Do we specify the supported architecture as this? Currently it is supported
+only on x86-64, but it could be extended later, right?
 
-Note, that you can still use b4 and merge your own trees, but you need 
-to switch to using a different cover letter strategy:
+This should be just noted as NOTES. Something like "This syscall is initially
+introduced on x86-64 because a syscall is faster than a breakpoint trap on it.
+But this will be extended to the architectures whose syscall is faster than
+breakpoint trap."
 
-  [b4]
-  prep-cover-strategy = branch-description
+Thank you,
 
--K
+> +
+> +The uretprobe syscall is not supposed to be called directly by user, it's allowed
+> +to be invoked only through user space trampoline provided by kernel.
+> +When called from outside of this trampoline, the calling process will receive
+> +.BR SIGILL .
+> +
+> +.SH RETURN VALUE
+> +.BR uretprobe()
+> +return value is specific for given architecture.
+> +
+> +.SH VERSIONS
+> +This syscall is not specified in POSIX,
+> +and details of its behavior vary across systems.
+> +.SH STANDARDS
+> +None.
+> +.SH NOTES
+> +.BR uretprobe()
+> +exists only to allow the invocation of return uprobe consumers.
+> +It should
+> +.B never
+> +be called directly.
+> +Details of the arguments (if any) passed to
+> +.BR uretprobe ()
+> +and the return value are specific for given architecture.
+> -- 
+> 2.44.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
