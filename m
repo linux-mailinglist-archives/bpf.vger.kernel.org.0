@@ -1,237 +1,132 @@
-Return-Path: <bpf+bounces-27351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E02E48AC32C
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 05:45:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125208AC54B
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 09:22:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED6251C20956
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 03:45:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AED97282CC3
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 07:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989F4101EE;
-	Mon, 22 Apr 2024 03:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCA453384;
+	Mon, 22 Apr 2024 07:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YNFGQJ5d";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FHThv/+A";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YNFGQJ5d";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FHThv/+A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DHn3HXH2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F412E542;
-	Mon, 22 Apr 2024 03:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DEF4B5CD;
+	Mon, 22 Apr 2024 07:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713757507; cv=none; b=cCv0+QVtAkILKnWlzEQFt7MNfRZOLdiMD5qn7FCR+7JD3ckE96QDvxPvQ3Kq+oCpwHpkHTJn/431k/tnP4WowEkFOfSjkpzePM4ZMWokJdH7ZnlSDvqEKqmOXQry3lluOHYtILYEUL22IQZ85CXYKy7RgMo1O9W7ubktkiAh2sc=
+	t=1713770195; cv=none; b=MpgbN9UH022/U8Y0etB/hRIxWZKDa7lXhcHbnWLfdtxCrQ5lFQ5aTynpdJj2x5fPcpPWP67iygHrKIVusmoXG+7G0S6JPYgVpwqoWTA0GhqggIiih+C3n8BtiGHClxHXf1KDDARG14XhQNXTLMuBIOE5RS8+izFO209hM8ZB/88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713757507; c=relaxed/simple;
-	bh=08JXntusgK41+ycFBthAXi0xoPBt/thnoLFKZQXR61c=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=noSsFO0rAz6wu5t41t6udkZFmWbFbhatvsQh0mVWLWihsvgYeajAzi2iLaGKoZmZw6C2V0cCZ1e74ROKJ8EAurAz+RjMJHO7hYDGN+sRtfStOzWKRyRSYgKRihykmqiKpQju4W3AXXAUXzbcj9H7mTry9KaUj39icVzO2vioPyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YNFGQJ5d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FHThv/+A; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YNFGQJ5d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FHThv/+A; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F1F95C849;
-	Mon, 22 Apr 2024 03:45:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713757503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=YNFGQJ5dJbJkYPh2nYz8QEqGXYVy2wYftPNbZX4DNyJTPbC/VIju0v7wPuA+wod1eZ4uCL
-	EnhKGvnskGjylCkVIDcee0fjGOmwfT2Pkzabl3qbH0jpZTC1UWEisb6DSddb5860GzNCOE
-	oG/OUhKHKjNx/jBK28VP9TnxqAxYCRw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713757503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=FHThv/+AznOXKLSIRBqC1PLEBtwZWbrDd5lF8ZPMCwR4vsKeUy+qzaNWbuT3FhHWHMqTu1
-	HsnuQObNvr8PPNBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713757503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=YNFGQJ5dJbJkYPh2nYz8QEqGXYVy2wYftPNbZX4DNyJTPbC/VIju0v7wPuA+wod1eZ4uCL
-	EnhKGvnskGjylCkVIDcee0fjGOmwfT2Pkzabl3qbH0jpZTC1UWEisb6DSddb5860GzNCOE
-	oG/OUhKHKjNx/jBK28VP9TnxqAxYCRw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713757503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=FHThv/+AznOXKLSIRBqC1PLEBtwZWbrDd5lF8ZPMCwR4vsKeUy+qzaNWbuT3FhHWHMqTu1
-	HsnuQObNvr8PPNBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 274A113687;
-	Mon, 22 Apr 2024 03:44:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LOmcLjjdJWbeLgAAD6G6ig
-	(envelope-from <neilb@suse.de>); Mon, 22 Apr 2024 03:44:56 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1713770195; c=relaxed/simple;
+	bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Ld6RmEiBhx1AVGw7rtMB+tp9+wj+MGLyjYQ3dX0pDoDTFuPTLTMr3nH8fIEEpm/ZxRE1epK8DCxusBKO2kl6iyBD2X4f7ACGIWz7UgpzEp+LrtmsLRCeaot6jKOPuLeWUvy0Km1vq5r6AC8/9fPzCK+xkgj3u7cQSuXPU72i/o8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DHn3HXH2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40A6AC113CC;
+	Mon, 22 Apr 2024 07:16:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713770195;
+	bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
+	h=From:Date:Subject:To:Cc:From;
+	b=DHn3HXH2eCN2Mb4w2HpzvQHTeCkLsaR/+ccsCUzukakQ4Tq82aKmoFrqyui3aEsdi
+	 tvm+AmP4HXZpsCiZLs4Bv/xzQ1EYRcFF0grrqjysrb528ZfaUQ5dQpM0ca0InUsY9Y
+	 j4h1Xe28vB7M1l7Fz7RCmMR4bSIU+Zf+zbfS9s37g+jh/5HzDUZul17XGJamEmOw6+
+	 ib+TGfN2Bv4JpQO6QLPze5WOWj/VnJ+5vpjeRtTb0mh+Oz3WZeaTFxEJFbBOl0GGX2
+	 COfNVMUDcIF5ypOY+aIXByE6TeSdkQV/zQN/IMQ8GYkhVLTsEq4wWPt71WQROb5Jy0
+	 AhjPz237m8Bdw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Mon, 22 Apr 2024 09:16:28 +0200
+Subject: [PATCH] bpf: verifier: allow arrays of progs to be used in
+ sleepable context
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Lex Siegel" <usiegl00@gmail.com>
-Cc: "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] xprtsock: Fix a loop in xs_tcp_setup_socket()
-In-reply-to:
- <CAHCWhjScokCi7u_98-i6E_xHaSJnFGY6dnkv9-C5-yrpihVJFg@mail.gmail.com>
-References:
- <>, <CAHCWhjScokCi7u_98-i6E_xHaSJnFGY6dnkv9-C5-yrpihVJFg@mail.gmail.com>
-Date: Mon, 22 Apr 2024 13:44:45 +1000
-Message-id: <171375748540.7600.5672163982570379489@noble.neil.brown.name>
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240422-sleepable_array_progs-v1-1-7c46ccbaa6e2@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAMsOJmYC/x3MQQqDMBBG4avIrBuIISB4lVJkkv6NA6JhBsQiu
+ XtDl9/ivZsMKjCah5sUp5gce8f4GCivvBc4eXdT8CH6GIKzDaicNiysyt+l6lHMwWc/pXHKnBL
+ 1tio+cv2/z1drP7hSVYdnAAAA
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713770191; l=1344;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
+ b=BOoh+3TwqNJ3VgIIKuFS0X05BWosUogOThOQNNnoxXo2ZDKy2YK8wSwezXl2YpCCvtTMDFrbv
+ nV7g17D1owCCy/3fLmUPTxsHFWWflmCJJ5mxb/Lhwb5Vqj5dSIfPKc1
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On Mon, 22 Apr 2024, Lex Siegel wrote:
-> > Better still would be for kernel_connect() to return a more normal error
-> > code - not EPERM.  If that cannot be achieved, then I think it would be
-> > best for the sunrpc code to map EPERM to something else at the place
-> > where kernel_connect() is called - catch it early.
->=20
-> The question is whether a permission error, EPERM, should cause a retry or
-> return. Currently xs_tcp_setup_socket() is retrying. For the retry to clear,
-> the connect call will have to not return a permission error to halt the ret=
-ry
-> attempts.
->=20
-> This is a default behavior because EPERM is not an explicit case of the swi=
-tch
-> statement. Because bpf appropriately uses EPERM to show that the kernel_con=
-nect
-> was not permitted, it highlights the return handling for this case is missi=
-ng.
-> It is unlikely that retry was ever the intended result.
->=20
-> Upstream, the bpf that caused this is at:
-> https://github.com/cilium/cilium/blob/v1.15/bpf/bpf_sock.c#L336
->=20
-> This cilium bpf code has two return statuses, EPERM and ENXIO, that fall
-> through to the default case of retrying. Here, cilium expects both of these
-> statuses to indicate the connect failed. A retry is not the intended result.
->=20
-> Handling this case without a retry aligns this code with the udp behavior. =
-This
-> precedence for passing EPERM back up the stack was set in 3dedbb5ca10ef.
->=20
-> I will amend my patch to include an explicit case for ENXIO as well, as thi=
-s is
-> also in cilium's bpf and will cause the same bug to occur.
->=20
+Arrays of progs are underlying using regular arrays, but they can only
+be updated from a syscall.
+Therefore, they should be safe to use while in a sleepable context.
 
-I think it should be up to cilium to report an errno that the kernel
-understands, not up to the kernel to understand whatever errno cilium
-chooses to return.
+This is required to be able to call bpf_tail_call() from a sleepable
+tracing bpf program.
 
-I don't think EPERM or ENXIO are appropriate errors for network
-problems.
-EHOSTUNREACH or ECONNREFUSED would make much more sense.
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Hi,
 
-NeilBrown
+a small patch to allow to have:
 
+```
+SEC("fmod_ret.s/__hid_bpf_tail_call_sleepable")
+int BPF_PROG(hid_tail_call_sleepable, struct hid_bpf_ctx *hctx)
+{
+	bpf_tail_call(ctx, &hid_jmp_table, hctx->index);
 
->=20
-> On Mon, Apr 22, 2024 at 8:22=E2=80=AFAM NeilBrown <neilb@suse.de> wrote:
-> >
-> > On Sat, 20 Apr 2024, Lex Siegel wrote:
-> > > When using a bpf on kernel_connect(), the call can return -EPERM.
-> > > This causes xs_tcp_setup_socket() to loop forever, filling up the
-> > > syslog and causing the kernel to freeze up.
-> > >
-> > > Signed-off-by: Lex Siegel <usiegl00@gmail.com>
-> > > ---
-> > >  net/sunrpc/xprtsock.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-> > > index bb9b747d58a1..47b254806a08 100644
-> > > --- a/net/sunrpc/xprtsock.c
-> > > +++ b/net/sunrpc/xprtsock.c
-> > > @@ -2446,6 +2446,8 @@ static void xs_tcp_setup_socket(struct work_struc=
-t *work)
-> > >               /* Happens, for instance, if the user specified a link
-> > >                * local IPv6 address without a scope-id.
-> > >                */
-> > > +     case -EPERM:
-> > > +             /* Happens, for instance, if a bpf is preventing the conn=
-ect */
-> >
-> > This will propagate -EPERM up into other layers which might not be ready
-> > to handle it.
-> > It might be safer to map EPERM to an error we would be more likely to
-> > expect  from the network system - such as ECONNREFUSED or ENETDOWN.
-> >
-> > Better still would be for kernel_connect() to return a more normal error
-> > code - not EPERM.  If that cannot be achieved, then I think it would be
-> > best for the sunrpc code to map EPERM to something else at the place
-> > where kernel_connect() is called - catch it early.
-> >
-> > NeilBrown
-> >
-> >
-> > >       case -ECONNREFUSED:
-> > >       case -ECONNRESET:
-> > >       case -ENETDOWN:
-> > > --
-> > > 2.39.3
-> > >
-> > >
-> >
->=20
+	return 0;
+}
+```
+
+This should allow me to add bpf hooks to functions that communicate with
+the hardware.
+
+Cheers,
+Benjamin
+---
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 68cfd6fc6ad4..880b32795136 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18171,6 +18171,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 		case BPF_MAP_TYPE_QUEUE:
+ 		case BPF_MAP_TYPE_STACK:
+ 		case BPF_MAP_TYPE_ARENA:
++		case BPF_MAP_TYPE_PROG_ARRAY:
+ 			break;
+ 		default:
+ 			verbose(env,
+
+---
+base-commit: 735f5b8a7ccf383e50d76f7d1c25769eee474812
+change-id: 20240422-sleepable_array_progs-e0c07b17cabb
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
 
