@@ -1,268 +1,180 @@
-Return-Path: <bpf+bounces-27397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A90F8ACA82
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01D348ACAD3
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:37:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283351C20E44
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 10:23:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 248CB1C202EB
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 10:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B856513FD74;
-	Mon, 22 Apr 2024 10:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D5F1448E1;
+	Mon, 22 Apr 2024 10:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JtOTQ4X1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NvNn7XoQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D47C502B4;
-	Mon, 22 Apr 2024 10:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBE722625;
+	Mon, 22 Apr 2024 10:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713781393; cv=none; b=ALMW5MdE6V19A6BXC0gQ+ndVh26Gq3z8H/Exme6q5UhkiEUL5npz/AbtAUNGilJmPQb/Z4wd3M+/iJAbVU/RhyRxyVdJlsNTzIdnr6F9cRGi8Lj9qeNwPx/Hnvx4TcdnkJC4fzRSJaXgENFonCee5PQ5teOAszpysBeBXP0M5+E=
+	t=1713782222; cv=none; b=FC+CL44JNJZbYLUIFdpE2Y7/xt0DYJd4tmfBuTW8zy0P9Q4kvN/tMktZ3mdoj+iZEpN41J0CxI7RyRZzrVLn8OZBFl02Ohv3V53e7H1WWGjiY3AhmlBns3H2hliHi4PIsb1AhFR7x70HmQ/pE18svrdqTgMSRnQxDHrEIXitYcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713781393; c=relaxed/simple;
-	bh=QACik+ECjepFvlXsO5FWqcRtqhT4t/QMq9LNj2MY5lU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QvPCkv0BncL10Z5JIlFyiz9GrgFGJHohtxJOzfneGP4ePmuMKsKqpmHjDVJs6LUt9hsIRh34ZP7x8eOeaz60DDakDis3EG69OP6ED9FF0kWKz6KJprjRMgkq9S8RKtrpJ4lSTjFbteQ2f6Sg+BVUbqhMWXJGBbUdAr0s65WDb1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JtOTQ4X1; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e78970853so8406672a12.0;
-        Mon, 22 Apr 2024 03:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713781389; x=1714386189; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+TuEnSNBvG4LALxdWczKP5/WDkU6BbBaAYrjVgiYqpE=;
-        b=JtOTQ4X1xBnCU7oL4BvI80XZa0dXGgVzEeP80BDCejlmCVpg6SdOB7+oowgA9TswOU
-         2T9dOLQhu9sw0E63kUvn2i3T22v/uN2nFtvaSIVwEsipY2gzuyzCYOiVey8el8QKBhBd
-         b1NDut8bQtL/36LqogrOzfD6okZjIZOO45//gnvWOj4VHht2+pVkHEZ8o0c76kNpNSx1
-         GCEavhBdUfxlMbI0PPjGEh2PqPdGRnWuXGcpylwe0/HYgU4j7mhZf3WDROAB+5ItisRN
-         OtmBkrty93LVbXs/UmyKdafZ7p3QclzpGWgaUnJcE6LWAjVCWhhbJxxP/sQByxOzch0G
-         gjlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713781389; x=1714386189;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+TuEnSNBvG4LALxdWczKP5/WDkU6BbBaAYrjVgiYqpE=;
-        b=l8JwsmBMvGGZQVxQLFKEqg/xyc9CAIwE/onOALJGk03Se414bpoCh4R8/xovsjhZHJ
-         8+kEmNT2ehiqnQIeEcXTSl7xDYibH3rRubgrKqLs4JgR8eS/CQpLxpE8XhwzxCczGM9K
-         /Hdpfq6YU0n5Fwo8KIAOzrvbxqnwsXzCKJXz5TcdmDLFzJgyx25nPXTfCOfVrflzUgb5
-         16ZmwAIhI02LCssk9s9DjUbxOxRnYDWrgfZ1LWUgUYVW/y7BjBeAxwwEIpqWil+0+qaN
-         iGpePsR8J/PJkPDVkCPTSHIQg4WBahK6IlvwIFzBkCj5Z3m4sLwkJvJqT0MBRHyFJLgT
-         N3/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWVqhXzhxz1SjG1oecXO7JNJ39NtrkveodYNT2j82wApaziWGdHAFmptzMT262slSVB0xkXsCnYA6e7eEb4Xqp4oq4/fWIOyujnhDkYInqjKtCRRTjT9y2UEWZlzhXIPi+VSDZVogNtb0KfSTCe0nc9Q22ZNVr5TdObTpCj48/+Tm7k4w==
-X-Gm-Message-State: AOJu0YzycUoD1YZtZiHkHFfcRgiVvBXTjh6tW7/uw4JHKFghLe+BiuSP
-	Xro8WbX9bUy2rCYMLdvnZmOHXcq1elEvME0EQYYKdgfo4YWjX3mZzN9EUC/z
-X-Google-Smtp-Source: AGHT+IF7rbqhx80I4EcakWBm7ROU4Kg4/+HimK9++ICv5C+Ejf5itzhFGpIaBsywmcfeJlXae9yA8g==
-X-Received: by 2002:a17:907:7d9f:b0:a55:b2c1:7eba with SMTP id oz31-20020a1709077d9f00b00a55b2c17ebamr3054896ejc.18.1713781389250;
-        Mon, 22 Apr 2024 03:23:09 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id v16-20020a170906b01000b00a522c69f28asm5575548ejy.216.2024.04.22.03.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 03:23:08 -0700 (PDT)
-From: Jonathan Haslam <jonathan.haslam@gmail.com>
-To: linux-trace-kernel@vger.kernel.org,
-	mhiramat@kernel.org
-Cc: jonathan.haslam@gmail.com,
-	andrii@kernel.org,
-	bpf@vger.kernel.org,
-	rostedt@goodmis.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] uprobes: reduce contention on uprobes_tree access
-Date: Mon, 22 Apr 2024 03:23:05 -0700
-Message-ID: <20240422102306.6026-1-jonathan.haslam@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713782222; c=relaxed/simple;
+	bh=n8gef8RT3nsKxxTBm2NGWXOHd1tFNZoyt+MDsqul+48=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o86EEeBRyf3xd3dP0FFunNA6j7i7o8HDl/nlf0/KVRaC3PfW3C7gDb7N2j1YsPURQNlnuKBLMTa/9BhNFpsWaquOpPc9eL+lx4zyc7ZvY988KFlHKPeZn+MsxxcTomlt7lOF14PWAaJs+Bpp4OspWtia7EJ73HhnhBToweUb2Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NvNn7XoQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28746C4AF08;
+	Mon, 22 Apr 2024 10:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713782222;
+	bh=n8gef8RT3nsKxxTBm2NGWXOHd1tFNZoyt+MDsqul+48=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NvNn7XoQ4uPkrqZcjCndtaZg70gIDsH4sf+qGcMYwfW2Bc6NU/dpDAeooE7RewFK1
+	 HGHzUUYGAJueM1EgLymPtjlaEXARapga2nQ4Bk5r6rfscrpRI5lJ0tmsY74V2NuNnw
+	 mMkbTJ3ASI66xJWKVOnQPaXClwD424n2k9Hh/TDAnfg4Jm2pDw1gPLO0PrXPfhfbqx
+	 CeIFqVFKA4X/u+ymC6nNBdnQH3GdmgCSwOtFuPlYH+Zd2oFgKu2/nZCxZHNqGvWw++
+	 cwHCCAv2HUh65/dxIsflVsEpmJwQwSIRNjX2hA83jcY1Ht1LtA+8Px1bIVFFTsagte
+	 L8Ib3aHEBUVLQ==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a55b2f49206so134025966b.1;
+        Mon, 22 Apr 2024 03:37:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVHV/UbgBZS7NRJLVZpBmMR1yxwBrLxc9yO5mO1A3XJns5kZMv13oU7Youx5UGkUcjggB4wjYwIbvXGdgQZXSGWX/yzu86qNyUZktfBh6YO06mca91lD/sBMD806Vb/SiaT
+X-Gm-Message-State: AOJu0Yx1otPquVcI6OEY9ahg0d/pRt0pisxZQgNeCjxtzHXtmRN1ynXG
+	bUhus2NRShae5OYBlsWpZdLc1m4BO7gZ+3t5weaM9JlpTM9KvVOMOQDGoL8JBdqQ0NSfdg3hTiF
+	ozPMmOd8r/2Yu8c775tO+h/VkHlY=
+X-Google-Smtp-Source: AGHT+IFu7UwN1iC7BnyDvN+FKlE2N8iPA5hSsckiuKIVyNMwvEhsLlsThB45VcSYmiLDake06egnWkcfrY2JSboMgio=
+X-Received: by 2002:a17:907:7215:b0:a55:75f7:42fb with SMTP id
+ dr21-20020a170907721500b00a5575f742fbmr13673572ejc.24.1713782220612; Mon, 22
+ Apr 2024 03:37:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <0000000000004792a90615a1dde0@google.com> <CAADnVQKoPfHC_o7jSa0W-gC=fqodmNDeoRO8eaTPN_NxBuXD6w@mail.gmail.com>
+ <ZiLzUgbW6dw-FYtf@google.com>
+In-Reply-To: <ZiLzUgbW6dw-FYtf@google.com>
+From: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Date: Mon, 22 Apr 2024 12:36:48 +0200
+X-Gmail-Original-Message-ID: <CAJ+HfNhNB9uMzri1xcyKmdEnDCm8YetoUWU6r_ms+aiqo3j8EQ@mail.gmail.com>
+Message-ID: <CAJ+HfNhNB9uMzri1xcyKmdEnDCm8YetoUWU6r_ms+aiqo3j8EQ@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] BUG: unable to handle kernel paging request in
+ bpf_prog_ADDR (2)
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	syzbot <syzbot+838346b979830606c854@syzkaller.appspotmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Active uprobes are stored in an RB tree and accesses to this tree are
-dominated by read operations. Currently these accesses are serialized by
-a spinlock but this leads to enormous contention when large numbers of
-threads are executing active probes.
+On Sat, 20 Apr 2024 at 00:42, Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On 04/19, Alexei Starovoitov wrote:
+> > On Mon, Apr 8, 2024 at 8:53=E2=80=AFPM syzbot
+> > <syzbot+838346b979830606c854@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.k=
+ernel..
+> > > git tree:       upstream
+> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D125962231=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4d90a36f0=
+cab495a
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D838346b9798=
+30606c854
+> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
+ Debian) 2.40
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D134ecbb=
+5180000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D141a8b3d1=
+80000
+> > >
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/f6c04726a2ae=
+/disk-fe46a7dd.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/09c26ce901ea/vm=
+linux-fe46a7dd.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/134acf7f53=
+22/bzImage-fe46a7dd.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> > > Reported-by: syzbot+838346b979830606c854@syzkaller.appspotmail.com
+> > >
+> > > BUG: unable to handle page fault for address: 0000001000000112
+> > > #PF: supervisor read access in kernel mode
+> > > #PF: error_code(0x0000) - not-present page
+> > > PGD 800000002e7b1067 P4D 800000002e7b1067 PUD 0
+> > > Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+> > > CPU: 0 PID: 5060 Comm: syz-executor351 Not tainted 6.8.0-syzkaller-08=
+951-gfe46a7dd189e #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BI=
+OS Google 03/27/2024
+> > > RIP: 0010:bpf_prog_a8e24a805b35c61b+0x19/0x1e
+> > > Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc f3 0f 1e fa =
+0f 1f 44 00 00 66 90 55 48 89 e5 f3 0f 1e fa 31 c0 48 8b 7f 18 <8b> 7f 00 c=
+9 c3 cc cc cc cc cc cc 40 03 00 00 cc cc cc cc cc cc cc
+> > > RSP: 0018:ffffc90003b07b30 EFLAGS: 00010246
+> > > RAX: 0000000000000000 RBX: ffffc90000ace048 RCX: ffff88802aa89e00
+> > > RDX: 0000000000000000 RSI: ffffc90000ace048 RDI: 0000001000000112
+> > > RBP: ffffc90003b07b30 R08: ffffffff81bf633c R09: 1ffffffff2595ca0
+> > > R10: dffffc0000000000 R11: ffffffffa000095c R12: ffffc90000ace030
+> > > R13: ffff88802ac3ae28 R14: dffffc0000000000 R15: ffff88802ac3ae28
+> > > FS:  000055558f759380(0000) GS:ffff8880b9400000(0000) knlGS:000000000=
+0000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 0000001000000112 CR3: 0000000077cfa000 CR4: 00000000003506f0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > Call Trace:
+> > >  <TASK>
+> > >  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+> > >  __bpf_prog_run include/linux/filter.h:657 [inline]
+> > >  bpf_prog_run include/linux/filter.h:664 [inline]
+> > >  bpf_prog_run_array_cg kernel/bpf/cgroup.c:51 [inline]
+> > >  __cgroup_bpf_run_filter_setsockopt+0x6fa/0x1040 kernel/bpf/cgroup.c:=
+1830
+> > >  do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
+> > >  __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+> > >  __do_sys_setsockopt net/socket.c:2343 [inline]
+> > >  __se_sys_setsockopt net/socket.c:2340 [inline]
+> > >  __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+> > >  do_syscall_64+0xfb/0x240
+> > >  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> >
+> > This one looks interesting.
+> > But I cannot reproduce it.
+> >
+> > Bjorn or Stan,
+> >
+> > Could you take a look?
+> >
+> > Probably a race in xdp dispatcher setup or the way cgroup-lsm
+> > logic is doing it.
+>
+> Managed to repro it by hacking the C reproducer to attach bpf prog
+> to /sys/fs/cgroup instead of syzkallers custom path. Will try to
+> poke it a bit more..
 
-This patch converts the spinlock used to serialize access to the
-uprobes_tree RB tree into a reader-writer spinlock. This lock type
-aligns naturally with the overwhelmingly read-only nature of the tree
-usage here. Although the addition of reader-writer spinlocks are
-discouraged [0], this fix is proposed as an interim solution while an
-RCU based approach is implemented (that work is in a nascent form). This
-fix also has the benefit of being trivial, self contained and therefore
-simple to backport.
+Stan, did you get anywhere? Please share your hack, where you manage
+to reproduce the issue.
 
-We have used a uprobe benchmark from the BPF selftests [1] to estimate
-the improvements. Each block of results below show 1 line per execution
-of the benchmark ("the "Summary" line) and each line is a run with one
-more thread added - a thread is a "producer". The lines are edited to
-remove extraneous output.
 
-The tests were executed with this driver script:
-
-for num_threads in {1..20}
-do
-  sudo ./bench -a -p $num_threads trig-uprobe-nop | grep Summary
-done
-
-SPINLOCK (BEFORE)
-==================
-Summary: hits    1.396 ± 0.007M/s (  1.396M/prod)
-Summary: hits    1.656 ± 0.016M/s (  0.828M/prod)
-Summary: hits    2.246 ± 0.008M/s (  0.749M/prod)
-Summary: hits    2.114 ± 0.010M/s (  0.529M/prod)
-Summary: hits    2.013 ± 0.009M/s (  0.403M/prod)
-Summary: hits    1.753 ± 0.008M/s (  0.292M/prod)
-Summary: hits    1.847 ± 0.001M/s (  0.264M/prod)
-Summary: hits    1.889 ± 0.001M/s (  0.236M/prod)
-Summary: hits    1.833 ± 0.006M/s (  0.204M/prod)
-Summary: hits    1.900 ± 0.003M/s (  0.190M/prod)
-Summary: hits    1.918 ± 0.006M/s (  0.174M/prod)
-Summary: hits    1.925 ± 0.002M/s (  0.160M/prod)
-Summary: hits    1.837 ± 0.001M/s (  0.141M/prod)
-Summary: hits    1.898 ± 0.001M/s (  0.136M/prod)
-Summary: hits    1.799 ± 0.016M/s (  0.120M/prod)
-Summary: hits    1.850 ± 0.005M/s (  0.109M/prod)
-Summary: hits    1.816 ± 0.002M/s (  0.101M/prod)
-Summary: hits    1.787 ± 0.001M/s (  0.094M/prod)
-Summary: hits    1.764 ± 0.002M/s (  0.088M/prod)
-
-RW SPINLOCK (AFTER)
-===================
-Summary: hits    1.444 ± 0.020M/s (  1.444M/prod)
-Summary: hits    2.279 ± 0.011M/s (  1.139M/prod)
-Summary: hits    3.422 ± 0.014M/s (  1.141M/prod)
-Summary: hits    3.565 ± 0.017M/s (  0.891M/prod)
-Summary: hits    2.671 ± 0.013M/s (  0.534M/prod)
-Summary: hits    2.409 ± 0.005M/s (  0.401M/prod)
-Summary: hits    2.485 ± 0.008M/s (  0.355M/prod)
-Summary: hits    2.496 ± 0.003M/s (  0.312M/prod)
-Summary: hits    2.585 ± 0.002M/s (  0.287M/prod)
-Summary: hits    2.908 ± 0.011M/s (  0.291M/prod)
-Summary: hits    2.346 ± 0.016M/s (  0.213M/prod)
-Summary: hits    2.804 ± 0.004M/s (  0.234M/prod)
-Summary: hits    2.556 ± 0.001M/s (  0.197M/prod)
-Summary: hits    2.754 ± 0.004M/s (  0.197M/prod)
-Summary: hits    2.482 ± 0.002M/s (  0.165M/prod)
-Summary: hits    2.412 ± 0.005M/s (  0.151M/prod)
-Summary: hits    2.710 ± 0.003M/s (  0.159M/prod)
-Summary: hits    2.826 ± 0.005M/s (  0.157M/prod)
-Summary: hits    2.718 ± 0.001M/s (  0.143M/prod)
-Summary: hits    2.844 ± 0.006M/s (  0.142M/prod)
-
-The numbers in parenthesis give averaged throughput per thread which is
-of greatest interest here as a measure of scalability. Improvements are
-in the order of 22 - 68% with this particular benchmark (mean = 43%).
-
-V2:
- - Updated commit message to include benchmark results.
-
-[0] https://docs.kernel.org/locking/spinlocks.html
-[1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/benchs/bench_trigger.c
-
-Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
----
- kernel/events/uprobes.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index e4834d23e1d1..8ae0eefc3a34 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-  */
- #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
- 
--static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
-+static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
- 
- #define UPROBES_HASH_SZ	13
- /* serialize uprobe->pending_list */
-@@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
- {
- 	struct uprobe *uprobe;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	uprobe = __find_uprobe(inode, offset);
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- 
- 	return uprobe;
- }
-@@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
- {
- 	struct uprobe *u;
- 
--	spin_lock(&uprobes_treelock);
-+	write_lock(&uprobes_treelock);
- 	u = __insert_uprobe(uprobe);
--	spin_unlock(&uprobes_treelock);
-+	write_unlock(&uprobes_treelock);
- 
- 	return u;
- }
-@@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
- 	if (WARN_ON(!uprobe_is_active(uprobe)))
- 		return;
- 
--	spin_lock(&uprobes_treelock);
-+	write_lock(&uprobes_treelock);
- 	rb_erase(&uprobe->rb_node, &uprobes_tree);
--	spin_unlock(&uprobes_treelock);
-+	write_unlock(&uprobes_treelock);
- 	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
- 	put_uprobe(uprobe);
- }
-@@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
- 	min = vaddr_to_offset(vma, start);
- 	max = min + (end - start) - 1;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	n = find_node_in_range(inode, min, max);
- 	if (n) {
- 		for (t = n; t; t = rb_prev(t)) {
-@@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
- 			get_uprobe(u);
- 		}
- 	}
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- }
- 
- /* @vma contains reference counter, not the probed instruction. */
-@@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
- 	min = vaddr_to_offset(vma, start);
- 	max = min + (end - start) - 1;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	n = find_node_in_range(inode, min, max);
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- 
- 	return !!n;
- }
--- 
-2.43.0
-
+Cheers,
+Bj=C3=B6rn
 
