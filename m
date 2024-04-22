@@ -1,180 +1,225 @@
-Return-Path: <bpf+bounces-27398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01D348ACAD3
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:37:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3078ACBCE
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 13:14:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 248CB1C202EB
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 10:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97B4D1F24350
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 11:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D5F1448E1;
-	Mon, 22 Apr 2024 10:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DEF41465A8;
+	Mon, 22 Apr 2024 11:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NvNn7XoQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="NIne9CeN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBE722625;
-	Mon, 22 Apr 2024 10:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC97145FEE;
+	Mon, 22 Apr 2024 11:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713782222; cv=none; b=FC+CL44JNJZbYLUIFdpE2Y7/xt0DYJd4tmfBuTW8zy0P9Q4kvN/tMktZ3mdoj+iZEpN41J0CxI7RyRZzrVLn8OZBFl02Ohv3V53e7H1WWGjiY3AhmlBns3H2hliHi4PIsb1AhFR7x70HmQ/pE18svrdqTgMSRnQxDHrEIXitYcs=
+	t=1713784484; cv=none; b=qOm5ErGn1jT1d3is0G1lBg+ymGLzdEaSfstfC1uVJjJ9StpQ6BMu9t2FG4U3l+/AezDz9Z/QbBs6fyQfpii14b3fFAOWljYtAFLuglO2AQjXgpqRQAEO7sq25jFO/rgfsmRFEZ/VNFCzdtRwUaaDoS+Cj+46EuiI2Ah/FTepHMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713782222; c=relaxed/simple;
-	bh=n8gef8RT3nsKxxTBm2NGWXOHd1tFNZoyt+MDsqul+48=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o86EEeBRyf3xd3dP0FFunNA6j7i7o8HDl/nlf0/KVRaC3PfW3C7gDb7N2j1YsPURQNlnuKBLMTa/9BhNFpsWaquOpPc9eL+lx4zyc7ZvY988KFlHKPeZn+MsxxcTomlt7lOF14PWAaJs+Bpp4OspWtia7EJ73HhnhBToweUb2Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NvNn7XoQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28746C4AF08;
-	Mon, 22 Apr 2024 10:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713782222;
-	bh=n8gef8RT3nsKxxTBm2NGWXOHd1tFNZoyt+MDsqul+48=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NvNn7XoQ4uPkrqZcjCndtaZg70gIDsH4sf+qGcMYwfW2Bc6NU/dpDAeooE7RewFK1
-	 HGHzUUYGAJueM1EgLymPtjlaEXARapga2nQ4Bk5r6rfscrpRI5lJ0tmsY74V2NuNnw
-	 mMkbTJ3ASI66xJWKVOnQPaXClwD424n2k9Hh/TDAnfg4Jm2pDw1gPLO0PrXPfhfbqx
-	 CeIFqVFKA4X/u+ymC6nNBdnQH3GdmgCSwOtFuPlYH+Zd2oFgKu2/nZCxZHNqGvWw++
-	 cwHCCAv2HUh65/dxIsflVsEpmJwQwSIRNjX2hA83jcY1Ht1LtA+8Px1bIVFFTsagte
-	 L8Ib3aHEBUVLQ==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a55b2f49206so134025966b.1;
-        Mon, 22 Apr 2024 03:37:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVHV/UbgBZS7NRJLVZpBmMR1yxwBrLxc9yO5mO1A3XJns5kZMv13oU7Youx5UGkUcjggB4wjYwIbvXGdgQZXSGWX/yzu86qNyUZktfBh6YO06mca91lD/sBMD806Vb/SiaT
-X-Gm-Message-State: AOJu0Yx1otPquVcI6OEY9ahg0d/pRt0pisxZQgNeCjxtzHXtmRN1ynXG
-	bUhus2NRShae5OYBlsWpZdLc1m4BO7gZ+3t5weaM9JlpTM9KvVOMOQDGoL8JBdqQ0NSfdg3hTiF
-	ozPMmOd8r/2Yu8c775tO+h/VkHlY=
-X-Google-Smtp-Source: AGHT+IFu7UwN1iC7BnyDvN+FKlE2N8iPA5hSsckiuKIVyNMwvEhsLlsThB45VcSYmiLDake06egnWkcfrY2JSboMgio=
-X-Received: by 2002:a17:907:7215:b0:a55:75f7:42fb with SMTP id
- dr21-20020a170907721500b00a5575f742fbmr13673572ejc.24.1713782220612; Mon, 22
- Apr 2024 03:37:00 -0700 (PDT)
+	s=arc-20240116; t=1713784484; c=relaxed/simple;
+	bh=FXfIV83VVaJ0iL2g9EUYsAMxdoqWaYsdzgRWn2e/4fI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sgq/oBL7UitElEpA0p2D0dwcORXIofiR3I7czuVDVn9uB+35iMg+Bbow6r6+LSvQYcIiu2qFBNpnyqIHnojG4Yx01Z0fAXajOqOqpp+hkpoFIJnFUrOAIztZFlzVakyBvYbP9OxDAddhO6m93afzlKw72hJXHTnVw44muCDDmJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=NIne9CeN; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Ps4xwJmPltrMDsDtm0ARPbw6o3LbHGD6iblKXCQrbew=; b=NIne9CeNIBp1lr6ZQwrVefLVq9
+	xmUD/7ZveMf1rNC0ttJNfGiW5RiQOKHMKo+V5fHaIX5N9KnMBwFSBqNjSRJCkocn6s6DbWVGWGX41
+	tlGpRNOMie77NGsXOfZnAqL2vUOZHn/18xtBnVSLacqKMuVpOTvtDWyyo/51E1Y2kt+Yh742hTp5J
+	9GYEmC0qSUpz6HzymNzsIIjenub9CEt6KuRWWYzsqmovipWq7gVSarZ6Wax7o5MK0wwSZ/J8Nob8o
+	7Yy7+z0laWtpFODH3EjMCv5e10xr07q9tEXj7M4ynUmb950onbtVi4Wr8poR54X66htQeVFqBXyYY
+	Z+qaUg6A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33624)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1ryrcj-00032A-2j;
+	Mon, 22 Apr 2024 12:14:13 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1ryrcj-0002PU-O7; Mon, 22 Apr 2024 12:14:13 +0100
+Date: Mon, 22 Apr 2024 12:14:13 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, puranjay12@gmail.com
+Subject: Re: [PATCH bpf] arm32, bpf: reimplement sign-extension mov
+ instruction
+Message-ID: <ZiZGhVQx2ei/7Xlx@shell.armlinux.org.uk>
+References: <20240419182832.27707-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000004792a90615a1dde0@google.com> <CAADnVQKoPfHC_o7jSa0W-gC=fqodmNDeoRO8eaTPN_NxBuXD6w@mail.gmail.com>
- <ZiLzUgbW6dw-FYtf@google.com>
-In-Reply-To: <ZiLzUgbW6dw-FYtf@google.com>
-From: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Date: Mon, 22 Apr 2024 12:36:48 +0200
-X-Gmail-Original-Message-ID: <CAJ+HfNhNB9uMzri1xcyKmdEnDCm8YetoUWU6r_ms+aiqo3j8EQ@mail.gmail.com>
-Message-ID: <CAJ+HfNhNB9uMzri1xcyKmdEnDCm8YetoUWU6r_ms+aiqo3j8EQ@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] BUG: unable to handle kernel paging request in
- bpf_prog_ADDR (2)
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	syzbot <syzbot+838346b979830606c854@syzkaller.appspotmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419182832.27707-1-puranjay@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Sat, 20 Apr 2024 at 00:42, Stanislav Fomichev <sdf@google.com> wrote:
->
-> On 04/19, Alexei Starovoitov wrote:
-> > On Mon, Apr 8, 2024 at 8:53=E2=80=AFPM syzbot
-> > <syzbot+838346b979830606c854@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.k=
-ernel..
-> > > git tree:       upstream
-> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D125962231=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4d90a36f0=
-cab495a
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D838346b9798=
-30606c854
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
- Debian) 2.40
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D134ecbb=
-5180000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D141a8b3d1=
-80000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/f6c04726a2ae=
-/disk-fe46a7dd.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/09c26ce901ea/vm=
-linux-fe46a7dd.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/134acf7f53=
-22/bzImage-fe46a7dd.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> > > Reported-by: syzbot+838346b979830606c854@syzkaller.appspotmail.com
-> > >
-> > > BUG: unable to handle page fault for address: 0000001000000112
-> > > #PF: supervisor read access in kernel mode
-> > > #PF: error_code(0x0000) - not-present page
-> > > PGD 800000002e7b1067 P4D 800000002e7b1067 PUD 0
-> > > Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-> > > CPU: 0 PID: 5060 Comm: syz-executor351 Not tainted 6.8.0-syzkaller-08=
-951-gfe46a7dd189e #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BI=
-OS Google 03/27/2024
-> > > RIP: 0010:bpf_prog_a8e24a805b35c61b+0x19/0x1e
-> > > Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc f3 0f 1e fa =
-0f 1f 44 00 00 66 90 55 48 89 e5 f3 0f 1e fa 31 c0 48 8b 7f 18 <8b> 7f 00 c=
-9 c3 cc cc cc cc cc cc 40 03 00 00 cc cc cc cc cc cc cc
-> > > RSP: 0018:ffffc90003b07b30 EFLAGS: 00010246
-> > > RAX: 0000000000000000 RBX: ffffc90000ace048 RCX: ffff88802aa89e00
-> > > RDX: 0000000000000000 RSI: ffffc90000ace048 RDI: 0000001000000112
-> > > RBP: ffffc90003b07b30 R08: ffffffff81bf633c R09: 1ffffffff2595ca0
-> > > R10: dffffc0000000000 R11: ffffffffa000095c R12: ffffc90000ace030
-> > > R13: ffff88802ac3ae28 R14: dffffc0000000000 R15: ffff88802ac3ae28
-> > > FS:  000055558f759380(0000) GS:ffff8880b9400000(0000) knlGS:000000000=
-0000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 0000001000000112 CR3: 0000000077cfa000 CR4: 00000000003506f0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >  <TASK>
-> > >  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-> > >  __bpf_prog_run include/linux/filter.h:657 [inline]
-> > >  bpf_prog_run include/linux/filter.h:664 [inline]
-> > >  bpf_prog_run_array_cg kernel/bpf/cgroup.c:51 [inline]
-> > >  __cgroup_bpf_run_filter_setsockopt+0x6fa/0x1040 kernel/bpf/cgroup.c:=
-1830
-> > >  do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
-> > >  __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
-> > >  __do_sys_setsockopt net/socket.c:2343 [inline]
-> > >  __se_sys_setsockopt net/socket.c:2340 [inline]
-> > >  __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
-> > >  do_syscall_64+0xfb/0x240
-> > >  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> >
-> > This one looks interesting.
-> > But I cannot reproduce it.
-> >
-> > Bjorn or Stan,
-> >
-> > Could you take a look?
-> >
-> > Probably a race in xdp dispatcher setup or the way cgroup-lsm
-> > logic is doing it.
->
-> Managed to repro it by hacking the C reproducer to attach bpf prog
-> to /sys/fs/cgroup instead of syzkallers custom path. Will try to
-> poke it a bit more..
+On Fri, Apr 19, 2024 at 06:28:32PM +0000, Puranjay Mohan wrote:
+> The current implementation of the mov instruction with sign extension
+> has the following problems:
+> 
+>   1. It clobbers the source register if it is not stacked because it
+>      sign extends the source and then moves it to the destination.
+>   2. If the dst_reg is stacked, the current code doesn't write the value
+>      back in case of 64-bit mov.
+>   3. There is room for improvement by emitting fewer instructions.
+> 
+> The steps for fixing this and the instructions emitted by the JIT are
+> explained below with examples in all combinations:
+> 
+> Case A: offset == 32:
+> =====================
+>   Case A.1: src and dst are stacked registers:
+>   --------------------------------------------
+>     1. Load src_lo into tmp_lo
+>     2. Store tmp_lo into dst_lo
+>     3. Sign extend tmp_lo into tmp_hi
+>     4. Store tmp_hi to dst_hi
+> 
+>     Example: r3 = (s32)r3
+> 	r3 is a stacked register
+> 
+> 	ldr     r6, [r11, #-16]	// Load r3_lo into tmp_lo
+> 	// str to dst_lo is not emitted because src_lo == dst_lo
+> 	asr     r7, r6, #31	// Sign extend tmp_lo into tmp_hi
+> 	str     r7, [r11, #-12] // Store tmp_hi into r3_hi
+> 
+>   Case A.2: src is stacked but dst is not:
+>   ----------------------------------------
+>     1. Load src_lo into dst_lo
+>     2. Sign extend dst_lo into dst_hi
+> 
+>     Example: r6 = (s32)r3
+> 	r6 maps to {ARM_R5, ARM_R4} and r3 is stacked
+> 
+> 	ldr     r4, [r11, #-16] // Load r3_lo into r6_lo
+> 	asr     r5, r4, #31	// Sign extend r6_lo into r6_hi
+> 
+>   Case A.3: src is not stacked but dst is stacked:
+>   ------------------------------------------------
+>     1. Store src_lo into dst_lo
+>     2. Sign extend src_lo into tmp_hi
+>     3. Store tmp_hi to dst_hi
+> 
+>     Example: r3 = (s32)r6
+> 	r3 is stacked and r6 maps to {ARM_R5, ARM_R4}
+> 
+> 	str     r4, [r11, #-16] // Store r6_lo to r3_lo
+> 	asr     r7, r4, #31	// Sign extend r6_lo into tmp_hi
+> 	str     r7, [r11, #-12]	// Store tmp_hi to dest_hi
+> 
+>   Case A.4: Both src and dst are not stacked:
+>   -------------------------------------------
+>     1. Mov src_lo into dst_lo
+>     2. Sign extend src_lo into dst_hi
+> 
+>     Example: (bf) r6 = (s32)r6
+> 	r6 maps to {ARM_R5, ARM_R4}
+> 
+> 	// Mov not emitted because dst == src
+> 	asr     r5, r4, #31 // Sign extend r6_lo into r6_hi
+> 
+> Case B: offset != 32:
+> =====================
+>   Case B.1: src and dst are stacked registers:
+>   --------------------------------------------
+>     1. Load src_lo into tmp_lo
+>     2. Sign extend tmp_lo according to offset.
+>     3. Store tmp_lo into dst_lo
+>     4. Sign extend tmp_lo into tmp_hi
+>     5. Store tmp_hi to dst_hi
+> 
+>     Example: r9 = (s8)r3
+> 	r9 and r3 are both stacked registers
+> 
+> 	ldr     r6, [r11, #-16] // Load r3_lo into tmp_lo
+> 	lsl     r6, r6, #24	// Sign extend tmp_lo
+> 	asr     r6, r6, #24	// ..
+> 	str     r6, [r11, #-56] // Store tmp_lo to r9_lo
+> 	asr     r7, r6, #31	// Sign extend tmp_lo to tmp_hi
+> 	str     r7, [r11, #-52] // Store tmp_hi to r9_hi
+> 
+>   Case B.2: src is stacked but dst is not:
+>   ----------------------------------------
+>     1. Load src_lo into dst_lo
+>     2. Sign extend dst_lo according to offset.
+>     3. Sign extend tmp_lo into dst_hi
+> 
+>     Example: r6 = (s8)r3
+> 	r6 maps to {ARM_R5, ARM_R4} and r3 is stacked
+> 
+> 	ldr     r4, [r11, #-16] // Load r3_lo to r6_lo
+> 	lsl     r4, r4, #24	// Sign extend r6_lo
+> 	asr     r4, r4, #24	// ..
+> 	asr     r5, r4, #31	// Sign extend r6_lo into r6_hi
+> 
+>   Case B.3: src is not stacked but dst is stacked:
+>   ------------------------------------------------
+>     1. Sign extend src_lo into tmp_lo according to offset.
+>     2. Store tmp_lo into dst_lo.
+>     3. Sign extend src_lo into tmp_hi.
+>     4. Store tmp_hi to dst_hi.
+> 
+>     Example: r3 = (s8)r1
+> 	r3 is stacked and r1 maps to {ARM_R3, ARM_R2}
+> 
+> 	lsl     r6, r2, #24 	// Sign extend r1_lo to tmp_lo
+> 	asr     r6, r6, #24	// ..
+> 	str     r6, [r11, #-16] // Store tmp_lo to r3_lo
+> 	asr     r7, r6, #31	// Sign extend tmp_lo to tmp_hi
+> 	str     r7, [r11, #-12] // Store tmp_hi to r3_hi
+> 
+>   Case B.4: Both src and dst are not stacked:
+>   -------------------------------------------
+>     1. Sign extend src_lo into dst_lo according to offset.
+>     2. Sign extend dst_lo into dst_hi.
+> 
+>     Example: r6 = (s8)r1
+> 	r6 maps to {ARM_R5, ARM_R4} and r1 maps to {ARM_R3, ARM_R2}
+> 
+> 	lsl     r4, r2, #24	// Sign extend r1_lo to r6_lo
+> 	asr     r4, r4, #24	// ..
+> 	asr     r5, r4, #31	// Sign extend r6_lo to r6_hi
+> 
+> Fixes: fc832653fa0d ("arm32, bpf: add support for sign-extension mov instruction")
+> Reported-by: syzbot+186522670e6722692d86@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000e9a8d80615163f2a@google.com/
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-Stan, did you get anywhere? Please share your hack, where you manage
-to reproduce the issue.
+This looks really great, thanks for putting in the extra effort!
 
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Cheers,
-Bj=C3=B6rn
+Thanks!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
