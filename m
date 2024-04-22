@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-27411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64C88ACCE8
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 14:40:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C19308ACCEC
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 14:40:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60C2B2818EC
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:40:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 611461F21F9C
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 12:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025A814F10D;
-	Mon, 22 Apr 2024 12:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A2014F9DA;
+	Mon, 22 Apr 2024 12:39:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14324146D5F;
-	Mon, 22 Apr 2024 12:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF31214F9CE;
+	Mon, 22 Apr 2024 12:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713789586; cv=none; b=gg447vUfVXq64AkB2grjMxWKBPLXOkUNo9r4XCB63h35aLBXPJO2nMVKI4U4shQZm33IMwLWoVH5BqgyRmziSaFMgNXquykMYpvvv4o6a9/FNBV0Izb4o+lHeEkU7CVg/C9/XLH+aMh/uAzBscRXRjNL0ZmVESjXRPDHoD/SWVA=
+	t=1713789590; cv=none; b=PZMy2tjW/y2ZjOKpFb2W+IuQVxtaXhLpruHBWf+G8LAR6syd1yRTCnKVQAz7ZaCSjqcAuS2eGUWtciAOmbZxNQpnZRM6vUII5iOI7gPt/xKvpx9o9tn0zfzj+25ioCxe3uj+mzocO4G2XiZQgfiNt+0WFVJNFBvk2kczyUDfoe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713789586; c=relaxed/simple;
-	bh=Fmr+7UDSIjLKMs43QuC2kTOPm/JegyQmo0KrwLPs74Q=;
+	s=arc-20240116; t=1713789590; c=relaxed/simple;
+	bh=ohtJ7y8zw787zEakQ6YFydMwx+wGInwZuDF1X+mdHss=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U6SC64aXmH15iDfjr9rG3w68Zmp9swxx07aZwH5AjL1gdVqV0dy3r7T6l+EBciQIrEOwZj7ihE8lYGgK2PBYjgazFJ4zA4GocI30v4c4xFf5sxbD9TOmGrql+4jVKfwEQpFaiLTm0TK/CTg9EHGic//Gin7auPaiRcu32glCqZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.177
+	 MIME-Version; b=o19sxg4dIs/VWvzQtwkEnV8AqVf41uMQMyzhXnASgNfN7uajJXP66c4Fqia0XCevckF/z5icBVgPDTJvR/T9g2tCM0UcbmrDFtgijTe2wXEh1rAnHYn0uHbaGUpwRR7mj6/yAZTc3bTlebrht7Vo+PGBgcri4krk/1Dl8/JFIGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso55315011fa.0;
-        Mon, 22 Apr 2024 05:39:44 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a56d7d457a1so57566266b.1;
+        Mon, 22 Apr 2024 05:39:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713789583; x=1714394383;
+        d=1e100.net; s=20230601; t=1713789587; x=1714394387;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AtbQVvvytm2FvKdHddRJ6/OPEdy67XedVgC8G6QI7mE=;
-        b=qfV50iJgYAOOddpJp9ofQc7W8c9PVJfSYRJaACwXOPaJ1ECz6We45cGK5HAWikQ97V
-         zseazoCzn8ugO6W20N1avnnDuZ3lNdhQiutZ9dn/Fx7sgQBP9ch6NLSrj6XSclbvmhvQ
-         H5iGM63f59nLu4iPNT8TrkT6nMrxrP+XoowjSmIizoRlbB+78Gc9WDpscVOGRmcm8iO9
-         leUBg4/pfohYNIxMBc2/sgUH/CyWiCeauaxQYZt8BKGwpmU54bPh5iRWtEH77OP5l4nR
-         zQlAf0IpXwVFlH8JIxSouAR7W4AYxKCeOfo+ppj7B7wYSpyxaFtfhBBpXhsqpiITrClz
-         bt/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUHNZXtfXFYp6XVvOLNcpNBCBk4zoknw6EZ4Z01VPtPTcRnOgl+UlGSg7zWf7GToCUzez51Tk0svBu8GYUzrXvuoQ/y6exMHI7by6k5DXgsTmGXjgmY/94OUju4w+tj0EU9rA7dJVRITecepYmukzEuKH5TJ3GdjIWFydVdojcHPGijmdC3WAedc19A8jteW3nIGSeoeOUxkS4=
-X-Gm-Message-State: AOJu0YwJ47V7gT96aQziBMSe5EoreHuZAl/2gsvhNNP8ivwhFxp3cuzE
-	+eQPwDUUSaPmCGd3vOSxRaHZTR7rkHco5ZgI5+Zp/vDB/VcwPAEP
-X-Google-Smtp-Source: AGHT+IFjwu09Igjhit00FwgEXKxmKwFyLCPy0CniLE6C/q3K4O4DuOoAL8L+d3hMfAKTAbKTgdLqGw==
-X-Received: by 2002:ac2:4ed0:0:b0:515:cbf1:9fda with SMTP id p16-20020ac24ed0000000b00515cbf19fdamr7518637lfr.61.1713789582986;
-        Mon, 22 Apr 2024 05:39:42 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id bu13-20020a170906a14d00b00a5816a7381bsm214578ejb.141.2024.04.22.05.39.42
+        bh=bbJZnQssCi/hJC/xoZUOS5idPxjZFYtuFqS1Ajkusf4=;
+        b=dHvZcKgMjxXfdZiudT99v9iHufjpy7qZi0d/smjq1q4v6w98G6QggcM+tEpDvCzuR0
+         Gjs5+YjCADxSrum74mbv28Pjhacn0fN3QxctswedHpdwQ6g4kvo7E6Axh8ab5NKSx/KB
+         ldzDr9N1l4kLGXQpJZeDXodz9sjixmIJagKo8G8HMBHb3Mrp5431DjQJ0Siff2IGPGns
+         BmsXQoZBQJmBgZ5w6rNx64+8ih8NQGKQuvozXB8WmUo0f5YsA0AtVfjbQQMujafz5Je4
+         z60pOWvLevJkZ3zZmaHciRj5kie94sb0fV8vFLjt/ByXRrCrK2DoxUZK+vPV8GzlVTVU
+         ELmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaUn6cVsM0LMV6P7BC+Pefw1YWLTzoo3sqzWhAACYvou8JGvrgF4silNzlsUIwBAQPhidmTc7cppOwS4ZWAaEADoaTQEqDE7Q4ycrEqMVqzJpGr+Rfl8Ja+ePejgLIQAQjjYNPVMgYduqx/LYUUIk7OBmBRUtGp2+JynXidvOdf3uDHUFWQmS+XS0G+/HR+aWgnroFENLpxyo=
+X-Gm-Message-State: AOJu0YypIbWMtuh9gbvfFZxyT1sY7muEsvUvCfXIt+Nl0IsKzZcfsMnb
+	KXSObceM6+bsCRmqIFUB82p4EWScs7S/x1iwf1k4bZ+LC3yodTdV
+X-Google-Smtp-Source: AGHT+IFgz1cSAQ4ZHhLBiz7E/9ZRPzAm7gHu5+JNi39+LH9FDyOn8sfX5i//ePdYd5DWE+bbIInw4Q==
+X-Received: by 2002:a17:906:5292:b0:a55:90f0:bdf2 with SMTP id c18-20020a170906529200b00a5590f0bdf2mr5064912ejm.32.1713789586720;
+        Mon, 22 Apr 2024 05:39:46 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-002.fbsv.net. [2a03:2880:30ff:2::face:b00c])
+        by smtp.gmail.com with ESMTPSA id sa40-20020a1709076d2800b00a5255afc856sm5708684ejc.84.2024.04.22.05.39.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 05:39:42 -0700 (PDT)
+        Mon, 22 Apr 2024 05:39:46 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: aleksander.lobakin@intel.com,
 	kuba@kernel.org,
@@ -87,9 +87,9 @@ Cc: quic_jjohnson@quicinc.com,
 	Simon Horman <horms@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH net-next v7 01/10] net: core: Fix documentation
-Date: Mon, 22 Apr 2024 05:38:54 -0700
-Message-ID: <20240422123921.854943-2-leitao@debian.org>
+Subject: [PATCH net-next v7 02/10] net: free_netdev: exit earlier if dummy
+Date: Mon, 22 Apr 2024 05:38:55 -0700
+Message-ID: <20240422123921.854943-3-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422123921.854943-1-leitao@debian.org>
 References: <20240422123921.854943-1-leitao@debian.org>
@@ -101,39 +101,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix bad grammar in description of init_dummy_netdev() function.  This
-topic showed up in the review of the "allocate dummy device dynamically"
-patch set.
+For dummy devices, exit earlier at free_netdev() instead of executing
+the whole function. This is necessary, because dummy devices are
+special, and shouldn't have the second part of the function executed.
 
-Suggested-by: Ido Schimmel <idosch@nvidia.com>
+Otherwise reg_state, which is NETREG_DUMMY, will be overwritten and
+there will be no way to identify that this is a dummy device. Also, this
+device do not need the final put_device(), since dummy devices are not
+registered (through register_netdevice()), where the device reference is
+increased (at netdev_register_kobject()/device_add()).
+
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 ---
- net/core/dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/dev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 8bdc59074b29..44c2d698fd1b 100644
+index 44c2d698fd1b..62b39d6b1d8f 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -10424,7 +10424,7 @@ EXPORT_SYMBOL(register_netdevice);
-  *	init_dummy_netdev	- init a dummy network device for NAPI
-  *	@dev: device to init
-  *
-- *	This takes a network device structure and initialize the minimum
-+ *	This takes a network device structure and initializes the minimum
-  *	amount of fields so it can be used to schedule NAPI polls without
-  *	registering a full blown interface. This is to be used by drivers
-  *	that need to tie several hardware interfaces to a single NAPI
-@@ -10433,7 +10433,7 @@ EXPORT_SYMBOL(register_netdevice);
- void init_dummy_netdev(struct net_device *dev)
- {
- 	/* Clear everything. Note we don't initialize spinlocks
--	 * are they aren't supposed to be taken by any of the
-+	 * as they aren't supposed to be taken by any of the
- 	 * NAPI code and this dummy netdev is supposed to be
- 	 * only ever used for NAPI polls
- 	 */
+@@ -11066,7 +11066,8 @@ void free_netdev(struct net_device *dev)
+ 	phy_link_topo_destroy(dev->link_topo);
+ 
+ 	/*  Compatibility with error handling in drivers */
+-	if (dev->reg_state == NETREG_UNINITIALIZED) {
++	if (dev->reg_state == NETREG_UNINITIALIZED ||
++	    dev->reg_state == NETREG_DUMMY) {
+ 		netdev_freemem(dev);
+ 		return;
+ 	}
 -- 
 2.43.0
 
