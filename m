@@ -1,253 +1,275 @@
-Return-Path: <bpf+bounces-27473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89DDB8AD5C8
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 22:25:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3061B8AD5CB
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 22:26:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40BFD281C5F
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 20:25:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89991B20DD6
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 20:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D144D155729;
-	Mon, 22 Apr 2024 20:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3A1155726;
+	Mon, 22 Apr 2024 20:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gh0PyTvB"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Sa19guqs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="rPC8AMo5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="E2yUebKF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FD415535D;
-	Mon, 22 Apr 2024 20:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4330715535D
+	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 20:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713817533; cv=none; b=rQzqJEhOmB2XF8Idd2UTDTSfmp5esBsAWqX0qAJMtrirdq9nkxysTBkfx+hGGzh8l8qEvSe9Dk6o75LgIHiASxZiJ/OIk66S52wt/JiRE/gEDxc+R5StAcLpvmoVfCOf6Km+XqzmYmllmB7ASgetMg3YecUkkHSCVLh3DH+6aZ0=
+	t=1713817578; cv=none; b=OeOOXw+hHKxhQzcVhVW1r4yjgAnR1sV110n3+KDc6NjuXlUrr4SR/BKCtmAP5GDfPwDIN77shfetKbsBunlXhC8DVdewFpcoQO4IJsrTwtC8QfloXdNVY7Kkrj3XABkAotzSVoUee1dVw9ZjlomHskhd1ZsyGD7Hmp4PAbqjkNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713817533; c=relaxed/simple;
-	bh=YjFau6lGb9LTELqCEb2X2127G9ZwnIlW8kYv21dRJJA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uz01MX3q+BR9HA7r0Met38v4BJEZfYKwZtaPZILQRbyuvEmv4jyvytVUBFoUIHrpNO3GGGoq4H+XoJU17oZwRJzvFZltmJIuyz/XKdCi5cqclctYDD6kqtKFBIZUOTkb7ijgnvWr8KC2R94joC+I6gwMFpXCwdb+M+YgdxldpH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gh0PyTvB; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41aa21b06b3so4139585e9.0;
-        Mon, 22 Apr 2024 13:25:30 -0700 (PDT)
+	s=arc-20240116; t=1713817578; c=relaxed/simple;
+	bh=YnHnOcq3g0VTMUXvYGpo/AyUbjNMEyBnYnvc8kfPqqs=;
+	h=To:Cc:References:In-Reply-To:Date:Message-ID:MIME-Version:Subject:
+	 Content-Type:From; b=cYlcYt9g4lTFUqOusM3BdaPYsXhRngnOqZ6BK3fpjR+/Y97tgduuBMT09/lrxMGFIl2WjbqEIyGc+yj2WcEvZjA3B9jIW/TomoqRSFmNZIsaxCPlfa5+eXXoK/yjQ+wqXgU7OPR4t8pQRPTzJThZzHE/9N6aMCyJEryU+fMsiAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Sa19guqs; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=rPC8AMo5 reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=E2yUebKF reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id A38DDC1D4CC9
+	for <bpf@vger.kernel.org>; Mon, 22 Apr 2024 13:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1713817576; bh=YnHnOcq3g0VTMUXvYGpo/AyUbjNMEyBnYnvc8kfPqqs=;
+	h=To:Cc:References:In-Reply-To:Date:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Sa19guqsFagrAeK8yGp2zH3z2MKdz0uxAR7rF183/R6bq5Ro5+TzUjtiZKEqX3HLL
+	 +Fd57g09h1MysUO8eyEra9T/dyzUS4+1C7zB2eWJOZBD7hOLm6vmjgl+u8QbRAvoh5
+	 vHAC06ppo/QI+mGE/QKrDVZQn+Sn8NiHrVlXZIKo=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6900EC1CAF55;
+ Mon, 22 Apr 2024 13:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1713817576; bh=YnHnOcq3g0VTMUXvYGpo/AyUbjNMEyBnYnvc8kfPqqs=;
+ h=From:To:Cc:References:In-Reply-To:Date:Subject:List-Id:
+ List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+ b=rPC8AMo5GUNKGno1PsAvNVxzKRFwk58D2kJta3pOKHNQdaG+TshqoSG3F63ofNXoF
+ Ri11iRU6hCB/4Qz/rKMnUPYZUnwstWhjzdB1qdqjMBlAHR+GQB9f8hFwW2PFj6y3W2
+ jtm1+OcVUCXtBXwGMYUQHOvHp0KdyiIdkiQHxbZc=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C3E3AC180B69
+ for <bpf@ietfa.amsl.com>; Mon, 22 Apr 2024 13:26:14 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.846
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 8UJ92vK1MlBm for <bpf@ietfa.amsl.com>;
+ Mon, 22 Apr 2024 13:26:10 -0700 (PDT)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
+ [IPv6:2607:f8b0:4864:20::62a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D96A6C1CAF55
+ for <bpf@ietf.org>; Mon, 22 Apr 2024 13:26:10 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id
+ d9443c01a7336-1e2c725e234so44580845ad.1
+ for <bpf@ietf.org>; Mon, 22 Apr 2024 13:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713817529; x=1714422329; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xLiWlfsmSMobonfpzJOKL/uqlF5pCv8voW0Gv0gZ6Xg=;
-        b=Gh0PyTvBauqIoQuzFwPzAT9cIllRID2jLxH/W8N+oJUukbTuuXgj+iNlz/R5uH2162
-         O3Fl7cdKLs540cAgmrg5BIqjpTBnYz03oPE590YpFFgU5aaeps3Emef8r+ZblBPuqEMF
-         uMg42sbGgeDfa0VQG4ZjAEEa7q2azc8hjpXyX2N17u0UPNhhPngH1Ra+ZMD8G+IJ+W9B
-         aa+POBd78H1LoI5DNgjBpWs4wxeYu1Wd8jS3Etr4zKwnnP+WSuYwIFbzxWKTKUjhrSuZ
-         1yUDVEYT0oPvbYIWEF6Wvea8BTjnRq0pX1hjE0oYnKfgY2HyimlH8SuF0MOh/V/1BwjX
-         MftA==
+ d=googlemail.com; s=20230601; t=1713817570; x=1714422370; darn=ietf.org;
+ h=content-language:thread-index:content-transfer-encoding
+ :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=sAleLJ3Lnsbgg5q0zBlOroU0eQVdHDAK3QVBYwKAgSE=;
+ b=E2yUebKF2qwOiHGlxNPhxrOoQzQVpA0qYUqXygs7AEtRXdVPJ6RZtKvIXGgmF/+V15
+ qC+hgXIn657NBKEDRanlcfwCXJNbpJSlBbmkcbeDjJJ52Yr4BEOGgoXmvYVp9XDeTw/c
+ wimQn5feko7/9eLJ0rTDSXPGS8+AlDSwLRFPK3CrEsxM0aWucoG/kVBB4iPdSUhOPQLP
+ JakDpOt54SQ4JPl+qzQJHqJJMZ7Aga1kOfE/nRlmzjclKptaOvvm1C8xBE9wWgsciioy
+ /p1gnxrsAsGATYy6p4LWtXA/+ySNWdhZoEMVT3xBZdIs3T8Gc9Blkf8Q3PQ+5xho0bjn
+ nVjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713817529; x=1714422329;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xLiWlfsmSMobonfpzJOKL/uqlF5pCv8voW0Gv0gZ6Xg=;
-        b=lzA32fT7e6IVhv98ah6lzfGzBq1ujzlLUNQKxCJ72UUHImZwCMmsy/sPqrVVLnJ2Mm
-         rwkgjtrE8d0jYn8gbxtk0xENqQoHvBCr49w7NX4rALMPdhvwescFiNbzY3nQ6JqBEoj1
-         mbMtHRm1FcRynnHiROR+BAI8v3YBlm39n63Nw2ZkVuiskxjf22qo/8db/pZmcbLhHQ34
-         YI79WLgSMRu5QixmfXAno0qrvLQ96jEH2HWExL2tWHWCssTh1jUIPokbAINHqz+bGH5r
-         9cK3Nuft1nDuVHrKM1EIw2XwULWH7xpIug6dLcG7tadLXxzbmUKUYmBiv7vWAgWT6rIj
-         87nA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEgou/2UoJKC2RJHvfiiYuKKJOaw/KMtTsq2DvHUctatnfGPCPQzWYIbPRBF53xG8JyHGnBeRlKWhT1dGX95kmH2yGdtEIzHFz1Wp8kfWR6heeDYmnMtwGV6zHC7qpEqA7UKTAdfWo9By+5wsbpcgx/dskr3s73eWa+hyZspxveVSVZ/WLmbqehHP1HgqDFhMq08MRRGjfS/3p91LOn/xZ
-X-Gm-Message-State: AOJu0YzYt9KRGFV3SsOmXtjiBWj8U3E6EtJTUdQ0HCzi/toCeYeJdWja
-	vpo2nlOhsKZhtWtkoXhwyQ7gdPFjC4FOEG2AlkQNC+ZCxCAuc+cS
-X-Google-Smtp-Source: AGHT+IFdhuSfTDsPTFsuDuTro4BCnnKCqf/kS6VlPXSQ+kB2rJD85vAd/+j/R7CUUdiaTnwaZ5wk8g==
-X-Received: by 2002:a05:600c:1c9b:b0:416:4641:5947 with SMTP id k27-20020a05600c1c9b00b0041646415947mr9806179wms.34.1713817528960;
-        Mon, 22 Apr 2024 13:25:28 -0700 (PDT)
-Received: from krava ([83.240.62.18])
-        by smtp.gmail.com with ESMTPSA id f17-20020a05600c4e9100b004182b87aaacsm17888971wmq.14.2024.04.22.13.25.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 13:25:28 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 22 Apr 2024 22:25:25 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 0/7] uprobe: uretprobe speed up
-Message-ID: <ZibHtXFcHr_sJdP9@krava>
-References: <20240421194206.1010934-1-jolsa@kernel.org>
- <20240423000943.478ccf1e735a63c6c1b4c66b@kernel.org>
+ d=1e100.net; s=20230601; t=1713817570; x=1714422370;
+ h=content-language:thread-index:content-transfer-encoding
+ :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=sAleLJ3Lnsbgg5q0zBlOroU0eQVdHDAK3QVBYwKAgSE=;
+ b=vPmO6gyARTJy/K4hnD2HhYuFOR3kwlWumVZZlI8YvjKLpO6fkXoxiNkjHL1l1cFoIZ
+ +0CWf/T1/XQZjrQaUU0qC7ffpxRM5pVRE53j9TYfX0fj/17PORBpgJFONJFAGYq0kvWt
+ KsSXs6++mOV9FIbDVR4jDSPNsNnzt7xAMuU1/iASueh2PTIrq/ye+HljIDk58EOGSiWv
+ iaqkwB+0J0jTZCYPoCeEZT3Ziyk2YQug3vLvj7ILmC5p1HHGJUvcl9Jml3spODyW7nPE
+ nwLJSY2pUZetGfwRZmhGlC3PW3ZZy+BHR3TwQjpHXLh79UHoWfWe6C+njp/ylwMCLo8e
+ Tw5A==
+X-Gm-Message-State: AOJu0YwvWyq994yvdGEet7u67PeOSlPyIDxn7pmzuzesV7lT+xv5Im4t
+ B8IRgE9T3p7kae9Wa2VGC2ilasGDK0WHJtyYULn64g1d5C5R1bw4a85Z98Qj
+X-Google-Smtp-Source: AGHT+IGTCcFq8Z70m7WCdP62KIRPrwyDkCCrImhtPjT3LggVPB3SVov4liWxAKAdQc0aR1Rz0/HWZA==
+X-Received: by 2002:a17:903:2309:b0:1e5:c131:ca0e with SMTP id
+ d9-20020a170903230900b001e5c131ca0emr1007464plh.6.1713817570006; 
+ Mon, 22 Apr 2024 13:26:10 -0700 (PDT)
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ jv21-20020a170903059500b001e89827e2e8sm7968336plb.305.2024.04.22.13.26.08
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 22 Apr 2024 13:26:09 -0700 (PDT)
+X-Google-Original-From: <dthaler1968@gmail.com>
+To: "'David Vernet'" <void@manifault.com>,
+	<dthaler1968@googlemail.com>
+Cc: <bpf@ietf.org>,
+	<bpf@vger.kernel.org>
+References: <093301da933d$0d478510$27d68f30$@gmail.com>
+ <20240421165134.GA9215@maniforge> <109c01da9410$331ae880$9950b980$@gmail.com>
+ <149401da94e4$2da0acd0$88e20670$@gmail.com>
+ <20240422193451.GA18561@maniforge>
+In-Reply-To: <20240422193451.GA18561@maniforge>
+Date: Mon, 22 Apr 2024 13:26:08 -0700
+Message-ID: <160501da94f3$4f8aef40$eea0cdc0$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423000943.478ccf1e735a63c6c1b4c66b@kernel.org>
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIuELsBo+B+UsoJNRbSlFOn1N3FrQD/w4oWAbyzN8QCsHqedwKUttqRsI22rCA=
+Content-Language: en-us
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/VlJQR_OdQnkhzvplYtmaIkdnqSQ>
+Subject: Re: [Bpf] BPF ISA Security Considerations section
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: dthaler1968@googlemail.com
+From: dthaler1968=40googlemail.com@dmarc.ietf.org
 
-On Tue, Apr 23, 2024 at 12:09:43AM +0900, Masami Hiramatsu wrote:
-> Hi Jiri,
+> -----Original Message-----
+> From: David Vernet <void@manifault.com>
+> Sent: Monday, April 22, 2024 12:35 PM
+> To: dthaler1968@googlemail.com
+> Cc: bpf@ietf.org; bpf@vger.kernel.org
+> Subject: Re: BPF ISA Security Considerations section
 > 
-> On Sun, 21 Apr 2024 21:41:59 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
+> On Mon, Apr 22, 2024 at 11:37:48AM -0700, dthaler1968@googlemail.com
+wrote:
+> > David Vernet <void@manifault.com> wrote:
+> > > > Thanks for writing this up. Overall it looks great, just had one
+> > > > comment
+> > > below.
+> > > >
+> > > > > > Security Considerations
+> > > > > >
+> > > > > > BPF programs could use BPF instructions to do malicious things
+> > > > > > with memory, CPU, networking, or other system resources. This
+> > > > > > is not fundamentally different  from any other type of
+> > > > > > software that may run on a device. Execution environments
+> > > > > > should be carefully designed to only run BPF programs that are
+> > > > > > trusted or verified, and sandboxing and privilege level
+> > > > > > separation are key strategies for limiting security and abuse
+> > > > > > impact. For example, BPF verifiers are well-known and widely
+> > > > > > deployed and are responsible for ensuring that BPF programs
+> > > > > > will terminate within a reasonable time, only interact with
+> > > > > > memory in safe ways, and adhere to platform-specified API
+> > > > > > contracts. The details are out of scope of this document (but
+> > > > > > see [LINUX] and [PREVAIL]), but this level of verification can
+> > > > > > often provide a stronger level of security assurance than for
+other software
+> and operating system code.
+> > > > > >
+> > > > > > Executing programs using the BPF instruction set also requires
+> > > > > > either an interpreter or a JIT compiler to translate them to
+> > > > > > hardware processor native instructions. In general,
+> > > > > > interpreters are considered a source of insecurity (e.g.,
+> > > > > > gadgets susceptible to side-channel attacks due to speculative
+> > > > > > execution) and are not recommended.
+> > > >
+> > > > Do we need to say that it's not recommended to use JIT engines?
+> > > > Given that this is explaining how BPF programs are executed, to me
+> > > > it reads a bit as saying, "It's not recommended to use BPF." Is it
+> > > > not sufficient to just explain the risks?
+> > >
+> > > It says it's not recommended to use interpreters.  I couldn't tell
+> > > if your comment was a typo, did you mean interpreters or JIT
+> > > engines?  It should read as saying it's recommended to use a JIT
+> > > engine rather than an interpreter.
 > 
-> > hi,
-> > as part of the effort on speeding up the uprobes [0] coming with
-> > return uprobe optimization by using syscall instead of the trap
-> > on the uretprobe trampoline.
-> > 
-> > The speed up depends on instruction type that uprobe is installed
-> > and depends on specific HW type, please check patch 1 for details.
-> > 
-> > Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
-> > apply-able on linux-trace.git tree probes/for-next branch.
-> > Patch 7 is based on man-pages master.
+> Sorry, yes, I meant to say interpreters. What I really meant though is
+that discussing
+> the safety of JIT engines vs. interpreters seems a bit out of scope for
+this Security
+> Considerations section. It's not as though JIT is a foolproof method in
+and of itself.
 > 
-> Thanks for updated! I reviewed the series and just except for the
-> manpage, it looks good to me.
+> > > Do you have a suggested alternate wording?
 > 
-> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> How about this:
 > 
-> for the series.
-> If Linux API maintainers are OK, I can pick this in probes/for-next.
+> Executing programs using the BPF instruction set also requires either an
+interpreter
+> or a JIT compiler to translate them to hardware processor native
+instructions. In
+> general, interpreters and JIT engines can be a source of insecurity (e.g.,
+gadgets
+> susceptible to side-channel attacks due to speculative execution, or W^X
+mappings),
+> and should be audited carefully for vulnerabilities.
 
-great, thanks
+I've had security researchers tell me that using an interpreter in the same
+address
+space as other confidential data is inherently a vulnerability, i.e., no one
+can prove
+that it's not a side channel attack waiting to happen and all evidence is
+that it cannot
+be protected.  Only an interpreter in a separate address space from any
+secrets
+can be safe in that respect.  So I believe just saying that interpreters
+"should be
+audited carefully for vulnerabilities" would not pass security muster by
+such folks.
 
-> (BTW, who will pick the manpage patch?)
+> > How about:
+> >
+> > OLD: In general, interpreters are considered a
+> > OLD: source of insecurity (e.g., gadgets susceptible to side-channel
+> > attacks due to speculative execution)
+> > OLD: and are not recommended.
+> >
+> > NEW: In general, interpreters are considered a
+> > NEW: source of insecurity (e.g., gadgets susceptible to side-channel
+> > attacks due to speculative execution)
+> > NEW: so use of a JIT compiler is recommended instead.
+> 
+> This is fine too. My only worry is that there have also been plenty of
+vulnerabilities
+> exploited against JIT engines as well, so it might be more prudent to just
+warn the
+> reader of the risks of interpreters/JITs in general as opposed to
+prescribing one over
+> the other.
+> 
+> What do you think?
 
-ugh, I cc-ed linux-api but not linux-man@vger.kernel.org
-I'll add that for new version
+I think the "should be audited carefully for vulnerabilities" phrase would
+apply to
+JITs for sure.  However it would also apply to any non-BPF code in a
+privileged
+context such as a kernel, so it would seem odd to call it out here and not
+in all other
+RFCs that would apply to kernel code (e.g., TCP/IP).  But if others really
+want that,
+we could certainly say that.
 
-jirka
+Dave
 
-> 
-> Thank you,
-> 
-> > 
-> > v3 changes:
-> >   - added source ip check if the uretprobe syscall is called from
-> >     trampoline and sending SIGILL to process if it's not
-> >   - keep x86 compat process to use standard breakpoint
-> >   - split syscall wiring into separate change
-> >   - ran ltp and syzkaller locally, no issues found [Masami]
-> >   - building uprobe_compat binary in selftests which breaks
-> >     CI atm because of missing 32-bit delve packages, I will
-> >     need to fix that in separate changes once this is acked
-> >   - added man page change
-> >   - there were several changes so I removed acks [Oleg Andrii]
-> > 
-> > Also available at:
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >   uretprobe_syscall
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > Notes to check list items in Documentation/process/adding-syscalls.rst:
-> > 
-> > - System Call Alternatives
-> >   New syscall seems like the best way in here, becase we need
-> >   just to quickly enter kernel with no extra arguments processing,
-> >   which we'd need to do if we decided to use another syscall.
-> > 
-> > - Designing the API: Planning for Extension
-> >   The uretprobe syscall is very specific and most likely won't be
-> >   extended in the future.
-> > 
-> >   At the moment it does not take any arguments and even if it does
-> >   in future, it's allowed to be called only from trampoline prepared
-> >   by kernel, so there'll be no broken user.
-> > 
-> > - Designing the API: Other Considerations
-> >   N/A because uretprobe syscall does not return reference to kernel
-> >   object.
-> > 
-> > - Proposing the API
-> >   Wiring up of the uretprobe system call si in separate change,
-> >   selftests and man page changes are part of the patchset.
-> > 
-> > - Generic System Call Implementation
-> >   There's no CONFIG option for the new functionality because it
-> >   keeps the same behaviour from the user POV.
-> > 
-> > - x86 System Call Implementation
-> >   It's 64-bit syscall only.
-> > 
-> > - Compatibility System Calls (Generic)
-> >   N/A uretprobe syscall has no arguments and is not supported
-> >   for compat processes.
-> > 
-> > - Compatibility System Calls (x86)
-> >   N/A uretprobe syscall is not supported for compat processes.
-> > 
-> > - System Calls Returning Elsewhere
-> >   N/A.
-> > 
-> > - Other Details
-> >   N/A.
-> > 
-> > - Testing
-> >   Adding new bpf selftests and ran ltp on top of this change.
-> > 
-> > - Man Page
-> >   Attached.
-> > 
-> > - Do not call System Calls in the Kernel
-> >   N/A.
-> > 
-> > 
-> > [0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
-> > ---
-> > Jiri Olsa (6):
-> >       uprobe: Wire up uretprobe system call
-> >       uprobe: Add uretprobe syscall to speed up return probe
-> >       selftests/bpf: Add uretprobe syscall test for regs integrity
-> >       selftests/bpf: Add uretprobe syscall test for regs changes
-> >       selftests/bpf: Add uretprobe syscall call from user space test
-> >       selftests/bpf: Add uretprobe compat test
-> > 
-> >  arch/x86/entry/syscalls/syscall_64.tbl                    |   1 +
-> >  arch/x86/kernel/uprobes.c                                 | 115 ++++++++++++++++++++++++++++++
-> >  include/linux/syscalls.h                                  |   2 +
-> >  include/linux/uprobes.h                                   |   3 +
-> >  include/uapi/asm-generic/unistd.h                         |   5 +-
-> >  kernel/events/uprobes.c                                   |  24 +++++--
-> >  kernel/sys_ni.c                                           |   2 +
-> >  tools/include/linux/compiler.h                            |   4 ++
-> >  tools/testing/selftests/bpf/.gitignore                    |   1 +
-> >  tools/testing/selftests/bpf/Makefile                      |   6 +-
-> >  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c     | 123 +++++++++++++++++++++++++++++++-
-> >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c   | 362 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/uprobe_syscall.c        |  15 ++++
-> >  tools/testing/selftests/bpf/progs/uprobe_syscall_call.c   |  15 ++++
-> >  tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c |  13 ++++
-> >  15 files changed, 681 insertions(+), 10 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> > 
-> > 
-> > Jiri Olsa (1):
-> >       man2: Add uretprobe syscall page
-> > 
-> >  man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> >  create mode 100644 man2/uretprobe.2
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
