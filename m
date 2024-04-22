@@ -1,186 +1,214 @@
-Return-Path: <bpf+bounces-27434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27435-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F438AD048
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 17:08:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD76C8AD051
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 17:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAF67288389
-	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 15:08:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0538DB25B8D
+	for <lists+bpf@lfdr.de>; Mon, 22 Apr 2024 15:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC971534E9;
-	Mon, 22 Apr 2024 15:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6CB152DED;
+	Mon, 22 Apr 2024 15:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJjR3K8p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fllOCsPj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9070D152505;
-	Mon, 22 Apr 2024 15:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B2F15250F;
+	Mon, 22 Apr 2024 15:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798490; cv=none; b=CeOSi0W46wkww1NT9HyFgs6dyyQkw1A61S55zGyTmxq5O7h0bCmkaJ3Mt6HSkpTRFPmZYJhDYAmp5LIFGK5GG6sH3HpfB/kssBG/DcX+k38nVWu+MO6a+lsA1t1SBrYwrZC5kBHYER2bhMeb8A90dsLV+FJmxwT28qWTQa7jcqY=
+	t=1713798590; cv=none; b=l9vs4VMba266LMJBGGgdsYTgLZgLvNeXqRHznCMmTfmXDhweIHc3pvJAckzcVJhn4gXOdKMzk9dZ1Cj23BGz6OZn0puDpIYCTh9vfC9evcSCRlegs9p7Co3xibryGexqjojLlkUf6LSVVj8EmHUjGMV9GPwyea6nA2VZ6EyqA0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798490; c=relaxed/simple;
-	bh=HgI0pSUU4NWbIhWPY12WnAiieAv9liBTwLeis4swDAQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HeVji+306Z481o2Z5hzQHdc1rRn/qQv4nWh0m0fkzq7DtEJrLXpuxnLKVUn3z5SWMCOnM6S6vawqNotLgl3S6uhMR4GomfYm8oVUGA4U3OIGszhzt6edXjCITmFFhorjBruH2HN9x7WfaqCCpMNbwDDNzSKhC+40V7Ep3Xckko8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJjR3K8p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00268C116B1;
-	Mon, 22 Apr 2024 15:08:00 +0000 (UTC)
+	s=arc-20240116; t=1713798590; c=relaxed/simple;
+	bh=dD+RaCJlFAvcn/MSlipnM9iqz2i1DunU7FHyskt1hFw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Fyev5rE+Vf9EpFFmmXoG1F2eRmNPbDF9muKqlWjCykIy7qYJ3Os4uVUP7NscZShq/FuDTP/ceNrU95Au0BPhcldIY+Q1t8iQEMVIQV9Q4nodGiAY2mTcJuzqRUlVtg7Ntv9FftX/1lEOQA0xQe8urDsq1JoArBE++rulhdN2DKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fllOCsPj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04CB0C113CC;
+	Mon, 22 Apr 2024 15:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713798490;
-	bh=HgI0pSUU4NWbIhWPY12WnAiieAv9liBTwLeis4swDAQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DJjR3K8p2kfDDzOGD7irpjGxMZbZbWI/jCybEZ0Bl6lVuKQ7B5a/uyzTPUJNjawb7
-	 KvTOcIS/8XACZ+YBYnOeAMSj2OC/Z99sXC1Qk6WlEUIgQ3vJg1SqMRsBUJ8lPuyB5n
-	 93Nvkju0+RAnrVRjwPonDcTl/QDQ8xQDQ9vZIyUHkdEqDkDzNtAg+Ug5/e5yJ7YeBz
-	 qOnpknYhtttskooEiPXLgMs+6bu3WjFtPXUBFLcfeJk/gYPrKCFOy+t+JZREZyUwMe
-	 DehNHOX6RANMaPegW66kPXS+STajYwsJBYMjrM6NfuQr0E/WUUt8PVyGG+b+Smwxca
-	 jylPtDob5cUXg==
-Message-ID: <1804aebc-68a5-4bd8-b42e-e06ce82f7355@kernel.org>
-Date: Mon, 22 Apr 2024 17:07:59 +0200
+	s=k20201202; t=1713798590;
+	bh=dD+RaCJlFAvcn/MSlipnM9iqz2i1DunU7FHyskt1hFw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fllOCsPjlq5CBY03FDusf6h5mfLNopP+yd2Q32x3xjIWfF7OldDHBM3nTftFfgmQ5
+	 Hy1iejIsX7Cotw4BPlMqsolhcxmfkcGJaC6EZzuNDabRPisdTRcf7ykNNkefccpiZg
+	 PTLuRqDzGTBJGapvQp5t5Dnop9VEl+FkIMnul1fkBa0bN5aAzz5qd/PvdecP/9VCQA
+	 QIiir5gLkO6n4ux1St+D5N2ZQoNfWI1e4nJoB0gn10z3hhOE590dpRJ9x8nepZ8PW2
+	 4KZjMFU2C0dVy1tMXbOW2xJp6UXfubdlGXtMgBjV7r2bK3F8Y2ezp7lD06ieIgIdN4
+	 ExQvHsQBFxWMA==
+Date: Tue, 23 Apr 2024 00:09:43 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo
+ Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCHv3 bpf-next 0/7] uprobe: uretprobe speed up
+Message-Id: <20240423000943.478ccf1e735a63c6c1b4c66b@kernel.org>
+In-Reply-To: <20240421194206.1010934-1-jolsa@kernel.org>
+References: <20240421194206.1010934-1-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel dir
-To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Joel Granados <j.granados@samsung.com>, Luis Chamberlain
- <mcgrof@kernel.org>, josh@joshtriplett.org, Kees Cook
- <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>,
- Iurii Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>,
- Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>,
- John Ogness <john.ogness@linutronix.de>,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Balbir Singh
- <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
- kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, tools@kernel.org
-References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
- <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
- <311c8b64-be13-4740-a659-3a14cf68774a@kernel.org>
- <20240422-sensible-sambar-of-plenty-ae8afc@lemur>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240422-sensible-sambar-of-plenty-ae8afc@lemur>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 22/04/2024 16:57, Konstantin Ryabitsev wrote:
-> On Mon, Apr 22, 2024 at 04:49:27PM +0200, Krzysztof Kozlowski wrote:
->>>> These commits remove the sentinel element (last empty element) from 
->>>> the
->>>> sysctl arrays of all the files under the "kernel/" directory that use a
->>>> sysctl array for registration. The merging of the preparation patches
->>>> [1] to mainline allows us to remove sentinel elements without changing
->>>> behavior. This is safe because the sysctl registration code
->>>> (register_sysctl() and friends) use the array size in addition to
->>>> checking for a sentinel [2].
->>>
->>> Hi,
->>>
->>> looks like *this* "patch" made it to the sysctl tree [1], breaking b4
->>> for everyone else (as there's a "--- b4-submit-tracking ---" magic in
->>> the tree history now) on next-20240422
->>>
->>> Please drop it (again, I'm only talking about this empty cover letter).
->>
->> Just to clarify, in case it is not obvious:
->> Please *do not merge your own trees* into kernel.org repos. Instead use
->> b4 shazam to pick up entire patchset, even if it is yours. b4 allows to
->> merge/apply also the cover letter, if this is your intention.
->>
->> With b4 shazam you would get proper Link tags and not break everyone's
->> b4 workflow on next. :/
+Hi Jiri,
+
+On Sun, 21 Apr 2024 21:41:59 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
+
+> hi,
+> as part of the effort on speeding up the uprobes [0] coming with
+> return uprobe optimization by using syscall instead of the trap
+> on the uretprobe trampoline.
 > 
-> I was expecting this to happen at some point. :/
+> The speed up depends on instruction type that uprobe is installed
+> and depends on specific HW type, please check patch 1 for details.
 > 
-> Note, that you can still use b4 and merge your own trees, but you need 
-> to switch to using a different cover letter strategy:
+> Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
+> apply-able on linux-trace.git tree probes/for-next branch.
+> Patch 7 is based on man-pages master.
+
+Thanks for updated! I reviewed the series and just except for the
+manpage, it looks good to me.
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+for the series.
+If Linux API maintainers are OK, I can pick this in probes/for-next.
+(BTW, who will pick the manpage patch?)
+
+Thank you,
+
 > 
->   [b4]
->   prep-cover-strategy = branch-description
+> v3 changes:
+>   - added source ip check if the uretprobe syscall is called from
+>     trampoline and sending SIGILL to process if it's not
+>   - keep x86 compat process to use standard breakpoint
+>   - split syscall wiring into separate change
+>   - ran ltp and syzkaller locally, no issues found [Masami]
+>   - building uprobe_compat binary in selftests which breaks
+>     CI atm because of missing 32-bit delve packages, I will
+>     need to fix that in separate changes once this is acked
+>   - added man page change
+>   - there were several changes so I removed acks [Oleg Andrii]
+> 
+> Also available at:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   uretprobe_syscall
+> 
+> thanks,
+> jirka
+> 
+> 
+> Notes to check list items in Documentation/process/adding-syscalls.rst:
+> 
+> - System Call Alternatives
+>   New syscall seems like the best way in here, becase we need
+>   just to quickly enter kernel with no extra arguments processing,
+>   which we'd need to do if we decided to use another syscall.
+> 
+> - Designing the API: Planning for Extension
+>   The uretprobe syscall is very specific and most likely won't be
+>   extended in the future.
+> 
+>   At the moment it does not take any arguments and even if it does
+>   in future, it's allowed to be called only from trampoline prepared
+>   by kernel, so there'll be no broken user.
+> 
+> - Designing the API: Other Considerations
+>   N/A because uretprobe syscall does not return reference to kernel
+>   object.
+> 
+> - Proposing the API
+>   Wiring up of the uretprobe system call si in separate change,
+>   selftests and man page changes are part of the patchset.
+> 
+> - Generic System Call Implementation
+>   There's no CONFIG option for the new functionality because it
+>   keeps the same behaviour from the user POV.
+> 
+> - x86 System Call Implementation
+>   It's 64-bit syscall only.
+> 
+> - Compatibility System Calls (Generic)
+>   N/A uretprobe syscall has no arguments and is not supported
+>   for compat processes.
+> 
+> - Compatibility System Calls (x86)
+>   N/A uretprobe syscall is not supported for compat processes.
+> 
+> - System Calls Returning Elsewhere
+>   N/A.
+> 
+> - Other Details
+>   N/A.
+> 
+> - Testing
+>   Adding new bpf selftests and ran ltp on top of this change.
+> 
+> - Man Page
+>   Attached.
+> 
+> - Do not call System Calls in the Kernel
+>   N/A.
+> 
+> 
+> [0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
+> ---
+> Jiri Olsa (6):
+>       uprobe: Wire up uretprobe system call
+>       uprobe: Add uretprobe syscall to speed up return probe
+>       selftests/bpf: Add uretprobe syscall test for regs integrity
+>       selftests/bpf: Add uretprobe syscall test for regs changes
+>       selftests/bpf: Add uretprobe syscall call from user space test
+>       selftests/bpf: Add uretprobe compat test
+> 
+>  arch/x86/entry/syscalls/syscall_64.tbl                    |   1 +
+>  arch/x86/kernel/uprobes.c                                 | 115 ++++++++++++++++++++++++++++++
+>  include/linux/syscalls.h                                  |   2 +
+>  include/linux/uprobes.h                                   |   3 +
+>  include/uapi/asm-generic/unistd.h                         |   5 +-
+>  kernel/events/uprobes.c                                   |  24 +++++--
+>  kernel/sys_ni.c                                           |   2 +
+>  tools/include/linux/compiler.h                            |   4 ++
+>  tools/testing/selftests/bpf/.gitignore                    |   1 +
+>  tools/testing/selftests/bpf/Makefile                      |   6 +-
+>  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c     | 123 +++++++++++++++++++++++++++++++-
+>  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c   | 362 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/uprobe_syscall.c        |  15 ++++
+>  tools/testing/selftests/bpf/progs/uprobe_syscall_call.c   |  15 ++++
+>  tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c |  13 ++++
+>  15 files changed, 681 insertions(+), 10 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+> 
+> 
+> Jiri Olsa (1):
+>       man2: Add uretprobe syscall page
+> 
+>  man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 man2/uretprobe.2
 
-Yes, but you still won't have:
-1. Link tags
-2. Nice thank-you letters
-3. Auto-collecting review/tested/ack tags
 
-So sure, maintainer can even cherry-pick patches, use patch or manually
-edit git objects and then update git refs, but that's not the point. :)
-
-Just use b4 shazam, it's so awesome tool.
-
-Best regards,
-Krzysztof
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
