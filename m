@@ -1,104 +1,151 @@
-Return-Path: <bpf+bounces-27552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4BB8AE911
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 16:06:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 636798AE958
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 16:23:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6C61C21F10
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 14:06:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFDCE2874A9
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 14:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F97B137904;
-	Tue, 23 Apr 2024 14:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA2613B583;
+	Tue, 23 Apr 2024 14:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H0yEoq0A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i6cjBKtI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428EB135A5C
-	for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 14:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1595813B2AC;
+	Tue, 23 Apr 2024 14:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713881157; cv=none; b=cFB6ofVNRoh/G2Cf3udH7blwTukS5NKRiILeNBPpiF2s/r6PeIU688KfpRsUhYnKowgf0/dlB4su1QrtvjTLceRocTJ4CL48vkj+QLoBy5y7v7tDiEYraxTEEJssffzU59yY4/Qx8HOFeu2+d94eYFTAjHpHgF+1ydpKUcBlel0=
+	t=1713882167; cv=none; b=fWVi0c56Y9rBN/Mx1/Outr520E1gy8Z+AlAW9S+MA1HIzgSHtf22j1mrYNAD07ys01S1txjkXbq9pJL34TBxYOz+rJ3hw4TMww98drGg3ZwMJ0WAjbRXx2DNXSEiOTX3EgN2S2JCNA2O0qyxA9VtPxSjCMHX7ESnWQVZj/hgVMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713881157; c=relaxed/simple;
-	bh=d9Bm1WhOQdr4Rta0AMWh7LzeJO0HpgVpWy/bbXjQwQ8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ABwv3IHxOnOkDOVPQ3xKcJ5c4kbicWmNlyf2BLkdWbLPdUTw/lIrPTra0dAy6hLZuufoSr6Ovw7NhpWtms6jWVp80LABXjmB5H1v4vpAbdhXCi/VcgmQ2ULtdobH1x0cbMrs3yFAQJ60RbedTz14EKZguAtXhNOLkohWbX0EpiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H0yEoq0A; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6dbdcfd39so11453008276.2
-        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 07:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713881155; x=1714485955; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ywoHegdckyc2kc9q8KKYzLqn2Hlpw+/QiT0Zcc0zz+U=;
-        b=H0yEoq0APPu5Eur7TnOK5jLzVJUGbT9DO8Dg5wsSPbLsid38hWhCvoWq3MUomjQQoT
-         OVHlY/0VfFgwtXRfRG2pdWTeFoYBr5u558iiFqzqa3Zcj+VD64+6CaaOnIgmgtn1gN7J
-         JuJT4qVJSjQ0aaUXhUMFYaDJvwvBLwDS0vQZLz8XgNF0O+flLKHYGrcjjRpMshUpa9UO
-         7g8IzGMXjh+11UlNkHaNnTxzvPXJtX13xeFuyNB4QIEyQ231FZ2o42m2p4ZNk3VGMUud
-         pq0Fp0PqcLBIxDRYc/Zk5Pr0U9M6ph0vG4t8K2ozXCFarnihlrBW9j2DwdS8xveEy+++
-         G8dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713881155; x=1714485955;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ywoHegdckyc2kc9q8KKYzLqn2Hlpw+/QiT0Zcc0zz+U=;
-        b=o0ctJkYdBs94U6RKu+aV4Rzh0wSgOD4tsrDNh0yq65IBXUyintiW/Rhjf001EZDVLI
-         BJCJdOr8TwTdD8L3SRUypwBtF/2BblC0Q1sPpRS642LyVaJOb8/LKYSe9DZ6pfZQKce5
-         gQiyxDFK6C2W1WNxMdUWTjGZqipjqEPzVmsgrgrAFl/aS1o13TQA57F7Yu6t0lA2X0Vp
-         zxWeqn0nWPyHTer8YZZsGxdQdBF5GVkt5gkWl7wSqpql0bfhRLRnE63uNKxxv8bQg52c
-         /mg6yRTF+m11YLTnJtrPHzX6FdYRvuS+nwClTK5BNmmqCv+vMHEOfgUWJMc6nzLwAx4+
-         tXdw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/LQw9EVTuaFQcKML6ovxFF0GX55y6p+oRen7Z1Ehk2vMQkOyGDG6/ouLZZFI4EdWj+kzeD8ujR5l1gyGpGG9fUaGE
-X-Gm-Message-State: AOJu0YyUg7lOcOITmIa9JfdA+02nrPD3wQ0ThvwvTcto/CjejHtUg97j
-	bB+z5awyHPbaWvO5LnIyT9uCAKHqAaSZbJfd1JLCAVHWVgzVv4EuRpP0b2q4jldx/Zd+wzUSySM
-	TVQ==
-X-Google-Smtp-Source: AGHT+IHbDuY06ri7HefBWokNt0j4rfiXvA7toVdltviloE4D4hhhUr8Fo45UnsV6yWKsY6PE8yzd9/+srAk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:c03:b0:de5:2b18:3b74 with SMTP id
- fs3-20020a0569020c0300b00de52b183b74mr1794704ybb.2.1713881155316; Tue, 23 Apr
- 2024 07:05:55 -0700 (PDT)
-Date: Tue, 23 Apr 2024 07:05:53 -0700
-In-Reply-To: <20240423045548.1324969-1-song@kernel.org>
+	s=arc-20240116; t=1713882167; c=relaxed/simple;
+	bh=5vwaJkqQ3t+2b5CR8g5b8L/yNWSgsRMLyy49G/Ln+q8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KjN81S4Xb5NOjWiAzfJ0qUjoAUthmEgWrD8wbjHTfTNx8CyP2FR0g0YW34+S9VF/GroqNnKGR0jMX3dsczDmsgmjmHJOJhPibfDec7ze/a151yBFuLZR2nrwdIyuYf3mUuTpdhrnNHJbbHjrmhsrFubazcqiE0BZTeHXnvvP6iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i6cjBKtI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE93C116B1;
+	Tue, 23 Apr 2024 14:22:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713882166;
+	bh=5vwaJkqQ3t+2b5CR8g5b8L/yNWSgsRMLyy49G/Ln+q8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i6cjBKtIQjbhScHYFPRDrTBQ+eDoJVjJ08lfT/DF1I2QUwdvPTLotAm1aMmNIam4u
+	 0V0xgTMrirH81+VHoqnjMevalQEeKmeXv40dzJ0t3hsmavMvJiiLKYCdDcmB9o+eQr
+	 daiuZAhpCwzmhK9PViGfmms+aNuPv/wZcSiVXw9MmsgdfwuezcMQbZRj4AVLQ1spq7
+	 Z3kHoQYgcmibKAcYOPqduAavaDQ3PJJgDZPtnOvUE5VX/kHji+KcXC7L0XrxLPpKAk
+	 Owx3v6B1WCxA5mPOIoxBwBtv7XdF/BZe0WUFAss3wqwtvqZhBCt0mYsNN2ea2lXYxy
+	 85L/VmzxGYNBw==
+Date: Tue, 23 Apr 2024 11:22:43 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, dwarves@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>, Clark Williams <williams@redhat.com>,
+	Kate Carcia <kcarcia@redhat.com>, bpf@vger.kernel.org,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: Re: [PATCHES 0/2] Introduce --btf_features=+extra_features syntax
+Message-ID: <ZifEM28-o-1ziSAy@x1>
+References: <20240419205747.1102933-1-acme@kernel.org>
+ <uhpbft44tp3arrmvdryd23hfobndoubu3c33d6bntsuyovrtq3@r766mv2yfdqw>
+ <95822772-34fb-4fa2-82b5-0e143e56f2f8@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240423045548.1324969-1-song@kernel.org>
-Message-ID: <ZifAQY9yS4U3oEkT@google.com>
-Subject: Re: [PATCH] arch/Kconfig: Move SPECULATION_MITIGATIONS to arch/Kconfig
-From: Sean Christopherson <seanjc@google.com>
-To: Song Liu <song@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	kernel-team@meta.com, stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, 
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>, Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <95822772-34fb-4fa2-82b5-0e143e56f2f8@oracle.com>
 
-On Mon, Apr 22, 2024, Song Liu wrote:
-> SPECULATION_MITIGATIONS is currently defined only for x86. As a result,
-> IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) is always false for other
-> archs. f337a6a21e2f effectively set "mitigations=off" by default on
-> non-x86 archs, which is not desired behavior. Jakub observed this
-> change when running bpf selftests on s390 and arm64.
-> 
-> Fix this by moving SPECULATION_MITIGATIONS to arch/Kconfig so that it is
-> available in all archs and thus can be used safely in kernel/cpu.c
+On Tue, Apr 23, 2024 at 10:02:29AM +0100, Alan Maguire wrote:
+> On 23/04/2024 03:29, Daniel Xu wrote:
+> > On Fri, Apr 19, 2024 at 05:57:43PM -0300, Arnaldo Carvalho de Melo wrote:
+> >> 	Please take a look if you agree this is a more compact, less
+> >> confusing way of asking for the set of standard BTF features + some
+> >> extra features such as 'reproducible_build'.
+> >>
+> >> 	We have this in perf, for things like:
+> >>
+> >> ⬢[acme@toolbox pahole]$ perf report -h -F 
+> >>
+> >>  Usage: perf report [<options>]
+> >>
+> >>     -F, --fields <key[,keys...]>
+> >>                           output field(s): overhead period sample  overhead overhead_sys
+> >>                           overhead_us overhead_guest_sys overhead_guest_us overhead_children
+> >>                           sample period weight1 weight2 weight3 ins_lat retire_lat
+> >>                           p_stage_cyc pid comm dso symbol parent cpu socket
+> >>                           srcline srcfile local_weight weight transaction trace
+> >>                           symbol_size dso_size cgroup cgroup_id ipc_null time
+> >>                           code_page_size local_ins_lat ins_lat local_p_stage_cyc
+> >>                           p_stage_cyc addr local_retire_lat retire_lat simd
+> >>                           type typeoff symoff dso_from dso_to symbol_from symbol_to
+> >>                           mispredict abort in_tx cycles srcline_from srcline_to
+> >>                           ipc_lbr addr_from addr_to symbol_daddr dso_daddr locked
+> >>                           tlb mem snoop dcacheline symbol_iaddr phys_daddr data_page_size
+> >>                           blocked
+> >>
+> >> ⬢[acme@toolbox pahole]$
+> >>
+> >> From the 'perf report' man page for '-F':
+> >>
+> >>         If the keys starts with a prefix '+', then it will append the specified
+> >>         field(s) to the default field order. For example: perf report -F +period,sample.
 
-Yeah, it's a known issue that we've been slow to fix because we've haven't come
-to an agreement on exactly what the Kconfig should look like[1], though there's
-general consensus to add CPU_MITIGATIONS in common code[2][3].
+> > I think for perf it makes sense to have compact representation b/c
+> > folks might be doing a lot of ad-hoc work. But encoding BTF seems more
+> > like a write-once, read mostly. So having `+` notation doesn't feel like
 
-I'll poke Josh's thread and make sure a fix gets into rc6.
+In the case where documentation style is prefered, i.e. a write once
+read mostly, as you said, then use the most descriptive form.
 
-[1] https://lore.kernel.org/all/20240417001507.2264512-2-seanjc@google.com
-[2] https://lore.kernel.org/all/20240420000556.2645001-2-seanjc@google.com
-[3] https://lore.kernel.org/all/9d3c997264829d0e2b28718222724ae8f9e7d8b4.1713559768.git.jpoimboe@kernel.org
+> > it'd help that much.
+
+> > As someone who's not seen that style of syntax before, it's not
+> > immediately obvious what it does. But seeing `all`, I have a pretty
+> > good idea.
+ 
+> One thing we should probably bear in mind here is that for kernel builds
+> we will always explicitly call out the set of features we want rather
+> than use "all". So the "all" support is really more of a shortcut for
+> developers who run pahole standalone for testing BTF encoding. It is
+> still confusing though.
+
+Agreed, multiple people agreed 'all' is confusing as not _all_ BTF
+features are selected by it.
+ 
+> The +/- approach seems fine to me especially if there are precedents in
+
+Yeah, so we'll have a very compact way of adding (and removing, if we
+feel the need, by prefixing a undesired feature that is present in the
+'default' set with -) features, in addition to a more detailed way,
+i.e. these will be equivalent:
+
+	--btf_features=default,reproducible_build
+
+and:
+
+	--btf_features=+reproducible_build
+
+> other tools; maybe we should also switch name to "default" instead of
+> "all" at the same time tho? The notion of default values internal to
+
+I'm ok with this, so please send a patch renaming 'all' to 'default', on
+top of what is now in the 'next' branch.
+
+- Arnaldo
+
+> pahole (when BTF features aren't explicitly set) isn't exposed to the
+> user, so I _think_ we can get away with using that term. We could
+> probably do a bit of internal renaming - set_btf_features_default() ->
+> set_btf_features_minimal() - to call these the minimal BTF features or
+> something similar..
 
