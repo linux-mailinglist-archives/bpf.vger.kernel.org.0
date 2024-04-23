@@ -1,270 +1,135 @@
-Return-Path: <bpf+bounces-27530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88E068AE3AF
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 13:17:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC148AE3F9
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 13:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26471F24B70
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 11:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27023287C4D
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 11:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292A37E10B;
-	Tue, 23 Apr 2024 11:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FC382C60;
+	Tue, 23 Apr 2024 11:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZiZleyh7"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XtA9mcPP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9016E617
-	for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 11:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EB47FBCF;
+	Tue, 23 Apr 2024 11:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713871042; cv=none; b=hCfpei95h0XDQLjwEC2EoftDXOnqJxPneugkqDSun9N0rXWOExX5maBu4k1zsnICzwp3792U5CxnE85tOqyhj6LU5OIL7n/8Z9rje0Jqh/XNt4+4J/dv/lt01x0d9zcu0he1VetvluavwAxr/+sUQN9Yh7D1FRu3Rx8zkZ0LIJ8=
+	t=1713871913; cv=none; b=bYMhoas48sFh9n794LdMllfkfuHjmIzFdyIPeXOHLhlGAljf/GHvaMIvolQ29Qjjq586GolWEKtZPYtvr8tWyrDA5Athvzx3r5U0AeqTHVH2dXdOnD6LOqG6sr43z9kQuOzT/z2tKamMUf//X7Kt5X57uJfL4EF8JDpsf76bf3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713871042; c=relaxed/simple;
-	bh=cbTJ/Yfz74eZYiG8w9ZOADryl1Zjd336QhWT3IrmNR8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EYvnqRgC4UnEX5X4AsFELsghc+Y4wqByOBFi915kaB1qtnDwY7w7iDTKNIHd5Ngzs5IigBpetnzHxvgSiVy+1yWFo76IHlR0yPY7ObGI/1r+8mBfZYQR7U3ofiGT4cJNQP+zw48strizgqun+3XRRuDQ4DT0Uw42RUNRjo9cHFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZiZleyh7; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d87660d5c9so58370751fa.2
-        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 04:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713871039; x=1714475839; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jBZ3bEc7/BGJ+Zhw6Nf+sbXTKHbfD4qSzep/yTrkS5w=;
-        b=ZiZleyh7LH2/67i8KpjOFPAUy1aHapHlYvTXfdPwyHbMnHZn1hD/atg5s/eG01/Ywy
-         ArPfSXvVzRuioXKzkuBR7UaeU5fFxRZ9KPYDhOkk0ACpC4MpveWToUpCiutiU1AWyngN
-         mIyf5rVN/aXQrZRV2XS9kJQypvUASTypJxXpB867MaMioo/3/4fM0h1bCV8r4bE9GljQ
-         tlzgwbcLWBPOiBZ74W1oGWvvv42GCoYrBHL740CAMYK8/1q2LCNf1Z5/GAQ90NAE2KkK
-         /Q3yfTaVQ42OPM9axgBgrqHwcDTGJ/INyZn4F0MI3G55k4QEbkyshFUsk5rKPZqNH4xo
-         H+jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713871039; x=1714475839;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jBZ3bEc7/BGJ+Zhw6Nf+sbXTKHbfD4qSzep/yTrkS5w=;
-        b=Sn396puoN+TlVuuJrlExTVvgkNUTYqEq2Z0FkQwiLv9hhHCqAvEhITssEzC4ppUVyG
-         wKE+gaKPpSRJwumjbbC8RjjU1G9ph+vaIow1sHNjG1YFs2+rjANNIbkEN2o41HpweUMF
-         jH4Q9M/RurvYPOOfwzEUvDTbaW4nJ7Brvu8yEVgyx/ca/ksPKaFGWRQPzpRHq9SaFYIY
-         HoEA7fiCs3VG+SpoxhlMyQ6v9OnIoJ8qNK0aSh497s4ZzEOCQPxHeNhdGEGQ+Mn/O3tH
-         A4stmFEyzhPzHsn+uRqHuA1aDNQEhf3eg4g+JrnzLlYLXr7U+vLz5DyAd636LLSv/ku6
-         4gsQ==
-X-Gm-Message-State: AOJu0YxXWwC4foPldIE0cCrBPK8s3TEtvADSMpFlrioSKePhjAc7fxIv
-	aYa7ybHY9PhJt4Y237Tsnqh5QuCdNi144wQdhHkvwncSL9lpZ9sh
-X-Google-Smtp-Source: AGHT+IGlbVg0277kN4gvNOgMjiuD2Vk9kLygmMvWDZZVa6fPcZTEJjRRGPePBTsRmIqdu8DUxOguqg==
-X-Received: by 2002:a2e:8691:0:b0:2d8:5ca3:c360 with SMTP id l17-20020a2e8691000000b002d85ca3c360mr9955658lji.33.1713871038754;
-        Tue, 23 Apr 2024 04:17:18 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id f7-20020a05600c154700b004190d7126c0sm15230032wmg.38.2024.04.23.04.17.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 04:17:18 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 23 Apr 2024 13:17:16 +0200
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	s=arc-20240116; t=1713871913; c=relaxed/simple;
+	bh=1lPiGQ5shC4C7UOa4YIACl3pZn+ENy7c7yEhkeTIp38=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=akgm8K2MmzzmiZYZG+0g1GQ7k507GiZPyI8twEfs0pH1mW4YpzcyNSaHUv6z5gjLvnBysVwdfanlt7tY5CfsfrDU53SbwG6qSfYs5IAX/RHdQP9i9DsEtdkv+Dq5FN8Q0Hwl6h8kr9owV+Lw5r8ZQFp0EMGlt8yd1mXYHY6WHkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XtA9mcPP; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713871903; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=xoJ9YNLWXu7XQFYT7mcYJIil9lkfTlWRr3vGzICttBY=;
+	b=XtA9mcPPFen/FB3BSDqiXtnxMOeK2FuWs0jeHjOuqgkXtdG8jZ9GFmbg+zOwCHODLiOnEm9zRuwPm1u/F2VRccX9trcWByOAYwZFfbEk2xPlE1QPpgGUo6YGQSxqhJxp0062uhobGRKQBB6dvEdaWQ1CXJx2KAP0VA6TVncN93w=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W596LXQ_1713871901;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W596LXQ_1713871901)
+          by smtp.aliyun-inc.com;
+          Tue, 23 Apr 2024 19:31:42 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Barret Rhoden <brho@google.com>, David Vernet <void@manifault.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: Add tests for preempt
- kfuncs
-Message-ID: <ZieYvK0GXs4OkTy4@krava>
-References: <20240423061922.2295517-1-memxor@gmail.com>
- <20240423061922.2295517-3-memxor@gmail.com>
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@google.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Larysa Zaremba <larysa.zaremba@intel.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	virtualization@lists.linux.dev,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next v6 0/8] virtio-net: support device stats
+Date: Tue, 23 Apr 2024 19:31:33 +0800
+Message-Id: <20240423113141.1752-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423061922.2295517-3-memxor@gmail.com>
+X-Git-Hash: 75c95ace5f2d
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 06:19:22AM +0000, Kumar Kartikeya Dwivedi wrote:
-> Add tests for nested cases, nested count preservation upon different
-> subprog calls that disable/enable preemption, and test sleepable helper
-> call in non-preemptible regions.
-> 
-> 181/1   preempt_lock/preempt_lock_missing_1:OK
-> 181/2   preempt_lock/preempt_lock_missing_2:OK
-> 181/3   preempt_lock/preempt_lock_missing_3:OK
-> 181/4   preempt_lock/preempt_lock_missing_3_minus_2:OK
-> 181/5   preempt_lock/preempt_lock_missing_1_subprog:OK
-> 181/6   preempt_lock/preempt_lock_missing_2_subprog:OK
-> 181/7   preempt_lock/preempt_lock_missing_2_minus_1_subprog:OK
-> 181/8   preempt_lock/preempt_balance:OK
-> 181/9   preempt_lock/preempt_balance_subprog_test:OK
-> 181/10  preempt_lock/preempt_sleepable_helper:OK
+As the spec:
 
-should we also check that the global function call is not allowed?
+https://github.com/oasis-tcs/virtio-spec/commit/42f389989823039724f95bbbd243291ab0064f82
 
-jirka
+The virtio net supports to get device stats.
 
-> 181     preempt_lock:OK
-> Summary: 1/10 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/preempt_lock.c   |   9 ++
->  .../selftests/bpf/progs/preempt_lock.c        | 119 ++++++++++++++++++
->  2 files changed, 128 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/preempt_lock.c
->  create mode 100644 tools/testing/selftests/bpf/progs/preempt_lock.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/preempt_lock.c b/tools/testing/selftests/bpf/prog_tests/preempt_lock.c
-> new file mode 100644
-> index 000000000000..02917c672441
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/preempt_lock.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +#include <preempt_lock.skel.h>
-> +
-> +void test_preempt_lock(void)
-> +{
-> +	RUN_TESTS(preempt_lock);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/preempt_lock.c b/tools/testing/selftests/bpf/progs/preempt_lock.c
-> new file mode 100644
-> index 000000000000..53320ea80fa4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/preempt_lock.c
-> @@ -0,0 +1,119 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "bpf_misc.h"
-> +
-> +void bpf_preempt_disable(void) __ksym;
-> +void bpf_preempt_enable(void) __ksym;
-> +
-> +SEC("?tc")
-> +__failure __msg("1 bpf_preempt_enable is missing")
-> +int preempt_lock_missing_1(struct __sk_buff *ctx)
-> +{
-> +	bpf_preempt_disable();
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("2 bpf_preempt_enable(s) are missing")
-> +int preempt_lock_missing_2(struct __sk_buff *ctx)
-> +{
-> +	bpf_preempt_disable();
-> +	bpf_preempt_disable();
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("3 bpf_preempt_enable(s) are missing")
-> +int preempt_lock_missing_3(struct __sk_buff *ctx)
-> +{
-> +	bpf_preempt_disable();
-> +	bpf_preempt_disable();
-> +	bpf_preempt_disable();
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("1 bpf_preempt_enable is missing")
-> +int preempt_lock_missing_3_minus_2(struct __sk_buff *ctx)
-> +{
-> +	bpf_preempt_disable();
-> +	bpf_preempt_disable();
-> +	bpf_preempt_disable();
-> +	bpf_preempt_enable();
-> +	bpf_preempt_enable();
-> +	return 0;
-> +}
-> +
-> +static __noinline void preempt_disable(void)
-> +{
-> +	bpf_preempt_disable();
-> +}
-> +
-> +static __noinline void preempt_enable(void)
-> +{
-> +	bpf_preempt_enable();
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("1 bpf_preempt_enable is missing")
-> +int preempt_lock_missing_1_subprog(struct __sk_buff *ctx)
-> +{
-> +	preempt_disable();
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("2 bpf_preempt_enable(s) are missing")
-> +int preempt_lock_missing_2_subprog(struct __sk_buff *ctx)
-> +{
-> +	preempt_disable();
-> +	preempt_disable();
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__failure __msg("1 bpf_preempt_enable is missing")
-> +int preempt_lock_missing_2_minus_1_subprog(struct __sk_buff *ctx)
-> +{
-> +	preempt_disable();
-> +	preempt_disable();
-> +	preempt_enable();
-> +	return 0;
-> +}
-> +
-> +static __noinline void preempt_balance_subprog(void)
-> +{
-> +	preempt_disable();
-> +	preempt_enable();
-> +}
-> +
-> +SEC("?tc")
-> +__success int preempt_balance(struct __sk_buff *ctx)
-> +{
-> +	bpf_preempt_disable();
-> +	bpf_preempt_enable();
-> +	return 0;
-> +}
-> +
-> +SEC("?tc")
-> +__success int preempt_balance_subprog_test(struct __sk_buff *ctx)
-> +{
-> +	preempt_balance_subprog();
-> +	return 0;
-> +}
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +__failure __msg("sleepable helper bpf_copy_from_user#")
-> +int preempt_sleepable_helper(void *ctx)
-> +{
-> +	u32 data;
-> +
-> +	bpf_preempt_disable();
-> +	bpf_copy_from_user(&data, sizeof(data), NULL);
-> +	bpf_preempt_enable();
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> -- 
-> 2.43.0
-> 
-> 
+Please review.
+
+Thanks.
+
+v6:
+    1. remove 'maps'. check stats by if-else.
+
+v5:
+    1. Fix some small problems in last version
+    2. Not report stats that will be reported by netlink
+    3. remove "_queue" from  ethtool -S
+
+v4:
+    1. Support per-queue statistics API
+    2. Fix some small problems in last version
+
+v3:
+    1. rebase net-next
+
+v2:
+    1. fix the usage of the leXX_to_cpu()
+    2. add comment to the structure virtnet_stats_map
+
+v1:
+    1. fix some definitions of the marco and the struct
+
+
+
+
+
+
+
+Xuan Zhuo (8):
+  virtio_net: introduce device stats feature and structures
+  virtio_net: remove "_queue" from ethtool -S
+  virtio_net: support device stats
+  virtio_net: device stats helpers support driver stats
+  virtio_net: add the total stats field
+  virtio_net: rename stat tx_timeout to timeout
+  netdev: add queue stats
+  virtio-net: support queue stat
+
+ Documentation/netlink/specs/netdev.yaml | 104 +++
+ drivers/net/virtio_net.c                | 969 ++++++++++++++++++++++--
+ include/net/netdev_queues.h             |  27 +
+ include/uapi/linux/netdev.h             |  19 +
+ include/uapi/linux/virtio_net.h         | 143 ++++
+ net/core/netdev-genl.c                  |  23 +-
+ tools/include/uapi/linux/netdev.h       |  19 +
+ 7 files changed, 1247 insertions(+), 57 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
+
 
