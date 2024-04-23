@@ -1,252 +1,208 @@
-Return-Path: <bpf+bounces-27543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA1138AE86D
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 15:45:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387FE8AE8D2
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 15:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E776285C62
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 13:45:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C56CB21A55
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 13:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B9B13699E;
-	Tue, 23 Apr 2024 13:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4661F13774E;
+	Tue, 23 Apr 2024 13:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4kl05cm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dfi2uLq2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55C6290F;
-	Tue, 23 Apr 2024 13:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CD3136E16;
+	Tue, 23 Apr 2024 13:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879904; cv=none; b=NcAKCQF9l10dQnqP7Cmv2gK4c9QeE4yDHyhGsJpphwkczjtAkYrfCZvCZWQlOCN8NK2gZHV9q/fzTWfr71MxzTCc8vRhlUh94CJIuTVn0IhCiEe6dA75/MaTAh6RTOmgmc3fZLIDnS/Ddx2C0l/WHlxnizOzFYHnFd/Q7y6K1qg=
+	t=1713880731; cv=none; b=T7kcZ2rrHcoy72jT+RMrFag/0PqnM32B8o6RToVSMuM/DqQ8M3HTIN1vSXI8ECULuVSlyWQda+WdDXU1h9dGp2bcaF5pf1TURrN9uN8E/aPiIUPzeFbG8gCJre4H3in6N6MMijA6Zc3pgCjTg4fOA6cipz/wa+KbpCzUkFFPlZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879904; c=relaxed/simple;
-	bh=zWK2ReDFbkliJtaNVR7CmsOANV76XcgqSo5F0cqc4rs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oo8Zx2cPxXFrEyXYud75gY5vA7hJPZ/wiGcPTJfvCkFZcc6t4DlEK0LkR2HyOCy9WeB+iUfl4JLbgQOA2sylE2wbu4sVEZm3aWF6w46PR2a4OpUnzdWDmMMkFJ0gnZor9am3tuMfqUrAU5cPB5dCTQBtthEC3EwOhqdLwgbx2PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4kl05cm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220ECC32783;
-	Tue, 23 Apr 2024 13:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713879904;
-	bh=zWK2ReDFbkliJtaNVR7CmsOANV76XcgqSo5F0cqc4rs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=V4kl05cml6OpRcGFHeQw9n3dATJ/Ob+Tc/PDPgR76CXhiaG8ll72J+9JZ8il2UPUP
-	 y7QgwvZQOVjw2Bnm+UYZ4XJY6XvauiC83A7eYqWphs9M25ZTugbLtEO8o7sful4gWg
-	 fx82dtiy/pGO2gfDRbRF+aJAsmB3NtBxqTskQzoXcxCuNgoKMdTxYtIHy9vfkBn5iQ
-	 GxZe066I4Nk+/k5ZKq4tnY2pKhoEcJCmcLpH/bN8tSBxWyYTjr62NtRHkuEo5w/zyt
-	 Nqa3/GOhS8cKz2xj3fcy6FDdOlHsWfWiZ+i/a3J1ASsbKTsSOQ+7MXY+ukV5tpfHaA
-	 EMQC3bu6GPNVw==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d2600569so7150292e87.0;
-        Tue, 23 Apr 2024 06:45:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWb0kuXropkWuunCugs5zOPoe7oQ/cwZ/QVFju6sSepS4uAFn1N9ArHVP9B/PHy2HM69cXbcMtphi/TnSgsubfRXh4p7DJhbk+V8AhIPY370NGaBtin4UeyE2GxW92EXr1a0RYJRsUrSbuXuYvxjF0HwHDmlOnEvleb90+LKQ==
-X-Gm-Message-State: AOJu0YzVDO/Ssv1exOOz4quoR6Fpo6kZlxU0cyIya8O4M3on76BEZJ74
-	MytUh8wGuBhetvKQ93y/k2CQ+XtOuM0MkdfHvRfma65/hvkir4wvjPL5k5NwfY1dpcBbJqcV7If
-	rqT7AqGmSMxQSF0DW13Z2gYDnim8=
-X-Google-Smtp-Source: AGHT+IGYNwxeuuPgiHKtxd4oJygpTKk9VWJFI3uQjC7JbCruESydOS1HJ9g7YXGPSpKzTcYy2uUHXvX/yneINltO5BE=
-X-Received: by 2002:a2e:9a95:0:b0:2da:9f24:44a8 with SMTP id
- p21-20020a2e9a95000000b002da9f2444a8mr9158584lji.11.1713879902758; Tue, 23
- Apr 2024 06:45:02 -0700 (PDT)
+	s=arc-20240116; t=1713880731; c=relaxed/simple;
+	bh=PM4hKVCgLViTlEhxGEmFa37oVZWQvC3vlHhtyjhGMvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tNfQVUvjfHoAgWfsa0evPQ8cZp5uhp6te+75nKM8QYusyU8kNrGA8Dr1VyVmDi7j0wrCVvKZXxqOB6eFtushca3gUREnZqCqUkZVMEpx0yba89pzIDxHvTyjSOy4iT/qHBvLhoMphbGN/hrMepZ+58QpiK49Pee5L0sg95RpTe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dfi2uLq2; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713880730; x=1745416730;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PM4hKVCgLViTlEhxGEmFa37oVZWQvC3vlHhtyjhGMvA=;
+  b=dfi2uLq288Zmbcqgo/fAuud0TuOT1tc4CNcWBAR5MsldW0QYQl7fiQFH
+   hnah70cS4YJk1bfvl1vkcSi6j9a86k300A1geJKPdh+4yybJ6AvdoUg2c
+   e82dRfe/eP6IHp9iCVgnaNi9C2rgV2ARZAF1413DOldlCi6qzpqqnfp9j
+   gth8BTF+ffI65M5kN9+8Mvwsc0AnUN8dF4kP4hL7EebLtcCYcI79aa37F
+   sRg5Pm5fW8n6fUcQEUgpurREssyhiwsl2qu526zM1Cis5as0aiEYpxUVc
+   3bsLwWbrahfYRs4mHjQZQ5CS8mADQrq4ysHRWfvXubofv5dg+7sI3PTY0
+   w==;
+X-CSE-ConnectionGUID: 4iQ6PcLLSTyEciMdK/uoZw==
+X-CSE-MsgGUID: 6NVhk/ogTdK/Od/1CGbhGQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26921426"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="26921426"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:58:49 -0700
+X-CSE-ConnectionGUID: If+xOyfqRgibg6Xjd3xxdg==
+X-CSE-MsgGUID: Rz+XMKpcS8KsUB23qWigbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24431745"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa008.fm.intel.com with ESMTP; 23 Apr 2024 06:58:45 -0700
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v4 0/7] dma: skip calling no-op sync ops when possible
+Date: Tue, 23 Apr 2024 15:58:25 +0200
+Message-ID: <20240423135832.2271696-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415162041.2491523-5-ardb+git@google.com> <20240415162041.2491523-6-ardb+git@google.com>
-In-Reply-To: <20240415162041.2491523-6-ardb+git@google.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 23 Apr 2024 22:44:26 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQi33YR35QZi3gX8Gfe-J3mfuEB5GWjmfT7W07mjmgKYw@mail.gmail.com>
-Message-ID: <CAK7LNAQi33YR35QZi3gX8Gfe-J3mfuEB5GWjmfT7W07mjmgKYw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] kallsyms: Avoid weak references for kallsyms symbols
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 1:20=E2=80=AFAM Ard Biesheuvel <ardb+git@google.com=
-> wrote:
->
-> From: Ard Biesheuvel <ardb@kernel.org>
->
-> kallsyms is a directory of all the symbols in the vmlinux binary, and so
-> creating it is somewhat of a chicken-and-egg problem, as its non-zero
-> size affects the layout of the binary, and therefore the values of the
-> symbols.
->
-> For this reason, the kernel is linked more than once, and the first pass
-> does not include any kallsyms data at all. For the linker to accept
-> this, the symbol declarations describing the kallsyms metadata are
-> emitted as having weak linkage, so they can remain unsatisfied. During
-> the subsequent passes, the weak references are satisfied by the kallsyms
-> metadata that was constructed based on information gathered from the
-> preceding passes.
->
-> Weak references lead to somewhat worse codegen, because taking their
-> address may need to produce NULL (if the reference was unsatisfied), and
-> this is not usually supported by RIP or PC relative symbol references.
->
-> Given that these references are ultimately always satisfied in the final
-> link, let's drop the weak annotation, and instead, provide fallback
-> definitions in the linker script that are only emitted if an unsatisfied
-> reference exists.
->
-> While at it, drop the FRV specific annotation that these symbols reside
-> in .rodata - FRV is long gone.
->
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com> # Boot
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Link: https://lkml.kernel.org/r/20230504174320.3930345-1-ardb%40kernel.or=
-g
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
+The series grew from Eric's idea and patch at [0]. The idea of using the
+shortcut for direct DMA as well belongs to Chris.
 
+When an architecture doesn't need DMA synchronization and the buffer is
+not an SWIOTLB buffer, most of times the kernel and the drivers end up
+calling DMA sync operations for nothing.
+Even when DMA is direct, this involves a good non-inline call ladder and
+eats a bunch of CPU time. With IOMMU, this results in calling indirect
+calls on hotpath just to check what is already known and return.
+XSk is been using a custom shortcut for that for quite some time.
+I recently wanted to introduce a similar one for Page Pool. Let's combine
+all this into one generic shortcut, which would cover all DMA sync ops
+and all types of DMA (direct, IOMMU, ...).
 
-I dropped v5, and picked up this one.
+* #1 adds stub inlines to be able to compile DMA sync ops out when not
+     needed.
+* #2 adds generic shortcut and enables it for direct DMA.
+* #3 adds ability to skip DMA syncs behind an IOMMU.
+* #4-5 are just cleanups for Page Pool to avoid merge conflicts in future.
+* #6 checks for the shortcut as early as possible in the Page Pool code to
+     make sure no cycles wasted.
+* #7 replaces XSk's shortcut with the generic one.
 
-Thanks.
+On 100G NIC, the result is +3-5% for direct DMA and +10-11% for IOMMU.
+As a bonus, XSk core now allows batched buffer allocations for IOMMU
+setups.
+If the shortcut is not available on some system, there should be no
+visible performance regressions.
 
+[0] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
 
+Alexander Lobakin (7):
+  dma: compile-out DMA sync op calls when not used
+  dma: avoid redundant calls for sync operations
+  iommu/dma: avoid expensive indirect calls for sync operations
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  page_pool: check for DMA sync shortcut earlier
+  xsk: use generic DMA sync shortcut instead of a custom one
 
->  include/asm-generic/vmlinux.lds.h | 19 +++++++++++++
->  kernel/kallsyms.c                 |  6 ----
->  kernel/kallsyms_internal.h        | 30 ++++++++------------
->  3 files changed, 31 insertions(+), 24 deletions(-)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
-nux.lds.h
-> index f7749d0f2562..e8449be62058 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -448,11 +448,30 @@
->  #endif
->  #endif
->
-> +/*
-> + * Some symbol definitions will not exist yet during the first pass of t=
-he
-> + * link, but are guaranteed to exist in the final link. Provide prelimin=
-ary
-> + * definitions that will be superseded in the final link to avoid having=
- to
-> + * rely on weak external linkage, which requires a GOT when used in posi=
-tion
-> + * independent code.
-> + */
-> +#define PRELIMINARY_SYMBOL_DEFINITIONS                                 \
-> +       PROVIDE(kallsyms_addresses =3D .);                               =
- \
-> +       PROVIDE(kallsyms_offsets =3D .);                                 =
- \
-> +       PROVIDE(kallsyms_names =3D .);                                   =
- \
-> +       PROVIDE(kallsyms_num_syms =3D .);                                =
- \
-> +       PROVIDE(kallsyms_relative_base =3D .);                           =
- \
-> +       PROVIDE(kallsyms_token_table =3D .);                             =
- \
-> +       PROVIDE(kallsyms_token_index =3D .);                             =
- \
-> +       PROVIDE(kallsyms_markers =3D .);                                 =
- \
-> +       PROVIDE(kallsyms_seqs_of_names =3D .);
-> +
->  /*
->   * Read only Data
->   */
->  #define RO_DATA(align)                                                 \
->         . =3D ALIGN((align));                                            =
- \
-> +       PRELIMINARY_SYMBOL_DEFINITIONS                                  \
->         .rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {           \
->                 __start_rodata =3D .;                                    =
- \
->                 *(.rodata) *(.rodata.*)                                 \
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index 18edd57b5fe8..22ea19a36e6e 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -325,12 +325,6 @@ static unsigned long get_symbol_pos(unsigned long ad=
-dr,
->         unsigned long symbol_start =3D 0, symbol_end =3D 0;
->         unsigned long i, low, high, mid;
->
-> -       /* This kernel should never had been booted. */
-> -       if (!IS_ENABLED(CONFIG_KALLSYMS_BASE_RELATIVE))
-> -               BUG_ON(!kallsyms_addresses);
-> -       else
-> -               BUG_ON(!kallsyms_offsets);
-> -
->         /* Do a binary search on the sorted kallsyms_addresses array. */
->         low =3D 0;
->         high =3D kallsyms_num_syms;
-> diff --git a/kernel/kallsyms_internal.h b/kernel/kallsyms_internal.h
-> index 27fabdcc40f5..85480274fc8f 100644
-> --- a/kernel/kallsyms_internal.h
-> +++ b/kernel/kallsyms_internal.h
-> @@ -5,27 +5,21 @@
->  #include <linux/types.h>
->
->  /*
-> - * These will be re-linked against their real values
-> - * during the second link stage.
-> + * These will be re-linked against their real values during the second l=
-ink
-> + * stage. Preliminary values must be provided in the linker script using=
- the
-> + * PROVIDE() directive so that the first link stage can complete success=
-fully.
->   */
-> -extern const unsigned long kallsyms_addresses[] __weak;
-> -extern const int kallsyms_offsets[] __weak;
-> -extern const u8 kallsyms_names[] __weak;
-> +extern const unsigned long kallsyms_addresses[];
-> +extern const int kallsyms_offsets[];
-> +extern const u8 kallsyms_names[];
->
-> -/*
-> - * Tell the compiler that the count isn't in the small data section if t=
-he arch
-> - * has one (eg: FRV).
-> - */
-> -extern const unsigned int kallsyms_num_syms
-> -__section(".rodata") __attribute__((weak));
-> -
-> -extern const unsigned long kallsyms_relative_base
-> -__section(".rodata") __attribute__((weak));
-> +extern const unsigned int kallsyms_num_syms;
-> +extern const unsigned long kallsyms_relative_base;
->
-> -extern const char kallsyms_token_table[] __weak;
-> -extern const u16 kallsyms_token_index[] __weak;
-> +extern const char kallsyms_token_table[];
-> +extern const u16 kallsyms_token_index[];
->
-> -extern const unsigned int kallsyms_markers[] __weak;
-> -extern const u8 kallsyms_seqs_of_names[] __weak;
-> +extern const unsigned int kallsyms_markers[];
-> +extern const u8 kallsyms_seqs_of_names[];
->
->  #endif // LINUX_KALLSYMS_INTERNAL_H_
-> --
-> 2.44.0.683.g7961c838ac-goog
->
->
+ kernel/dma/Kconfig                            |   5 +
+ include/net/page_pool/types.h                 |  25 ++++-
+ include/linux/device.h                        |   4 +
+ include/linux/dma-map-ops.h                   |  12 ++
+ include/linux/dma-mapping.h                   | 105 +++++++++++++-----
+ include/net/xdp_sock_drv.h                    |   7 +-
+ include/net/xsk_buff_pool.h                   |  14 +--
+ drivers/iommu/dma-iommu.c                     |   3 +-
+ drivers/net/ethernet/engleder/tsnep_main.c    |   2 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  |   2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   2 +-
+ drivers/net/ethernet/netronome/nfp/nfd3/xsk.c |   2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ kernel/dma/mapping.c                          |  69 +++++++++---
+ kernel/dma/swiotlb.c                          |   6 +
+ net/core/page_pool.c                          |  76 ++++++++-----
+ net/xdp/xsk_buff_pool.c                       |  28 +----
+ 22 files changed, 243 insertions(+), 133 deletions(-)
 
+---
+From v3[1]:
+* #1:
+  * don't prefix DMA sync ops with '__', just define them as empty inlines
+    when !DMA_NEED_SYNC (Chris, Robin);
+  * always select DMA_NEED_SYNC when DMA_API_DEBUG (^);
+* #2:
+  * don't use BIT(), keep the style consistent (^);
+  * check for dma_map_ops::sync_sg_*() in dma_setup_need_sync() (^);
+  * don't reset the flag in swiotlb_alloc() as it's not streaming API (^);
+  * instead of 'dma_skip_sync', name the flag 'dma_need_sync' and inverse
+    the logic (^);
+  * setup the shortcut in dma_set_mask() (assuming every driver using DMA
+    must call it on probe) (^);
+  * combine dma_direct() and (ops->flags & CAN_SKIP_SYNC) checks (Robin);
+* #3:
+  - pick Acked-by (Robin).
 
---=20
-Best Regards
-Masahiro Yamada
+From v2[2]:
+* #1:
+  * use two tabs for indenting multi-line function prototypes (Chris);
+* #2:
+  * make shortcut clearing function generic and move it out of the
+    SWIOTLB code (Chris);
+  * remove dma_set_skip_sync(): use direct assignment during the initial
+    setup, not used anywhere else (Chris);
+  * commitmsg: remove "NIC" and the workaround paragraph (Chris).
+
+From v1[3]:
+* #1:
+  * use static inlines instead of macros (Chris);
+  * move CONFIG_DMA_NEED_SYNC check into dma_skip_sync() (Robin);
+* #2:
+  * use a new dma_map_ops flag instead of new callback, assume the same
+    conditions as for direct DMA are enough (Petr, Robin);
+  * add more code comments to make sure the whole idea and path are
+    clear (Petr, Robin, Chris);
+* #2, #3: correct the Git tags and the authorship a bit.
+
+Not addressed in v2:
+* #1:
+  * dma_sync_*range_*() are still wrapped, as some subsystems may want
+    to call the underscored versions directly (e.g. Page Pool);
+* #2:
+  * the new dev->dma_skip_sync bit is still preferred over checking for
+    READ_ONCE(dev->dma_uses_io_tlb) + dev_is_dma_coherent() on hotpath
+    as a faster solution.
+
+[1] https://lore.kernel.org/netdev/20240214162201.4168778-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20240205110426.764393-1-aleksander.lobakin@intel.com
+[3] https://lore.kernel.org/netdev/20240126135456.704351-1-aleksander.lobakin@intel.com
+-- 
+2.44.0
+
 
