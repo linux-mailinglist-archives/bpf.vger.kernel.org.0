@@ -1,66 +1,63 @@
-Return-Path: <bpf+bounces-27559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 481638AEA06
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 17:01:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBD58AEA05
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 17:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F360E282B7C
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 15:01:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72536282441
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 15:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13BF13BAC7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB64C13B7AB;
 	Tue, 23 Apr 2024 15:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="gV4E05o+"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="HcNhI9ti"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00823401.pphosted.com (mx0a-00823401.pphosted.com [148.163.148.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3B313B58D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B37037144;
 	Tue, 23 Apr 2024 15:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713884488; cv=none; b=qqHKF6aJb9qO+95Sb4d/2PVdhuoCBY1sR946H+XWLVyD/15XwXYcXdkI6RnSarlHRwRbxIPSxFghWa3q8Yg0PwKF2Q0ffQMvfj6E8+un0tfbNJivNdEsC8sjZr3Qxzud4ErqfNiqSBZC/qHia7+Tk4pCY0XjXaF2OKY/1qgewto=
+	t=1713884488; cv=none; b=RkRHtXkeMRFUYxBAUOA4o90VMrN64Wq/ECmRcF0rEx9yVWVsyOg4eJor9aEc+Yz1/Dyds4rcfOcgcc2I24RuZtAtVY5zBhwSQOfF5YZa6iKPcXXM1+oGA/uYYOWJ2eC5WsqdAE9ZyUgRlrG0ULRCm+Rz4k+2gVPY+JQJb9w8C0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713884488; c=relaxed/simple;
-	bh=ikur7KiKrL4SdaKe+3zGXdpy45Y19z0ybGasj411MVU=;
-	h=Message-Id:In-Reply-To:References:To:Cc:Date:From; b=ZvSBO7Ii0HZkwCNz+8qrFZFJSdUznfnb8Qvoz/T9XOkGJ3cjs9UK5DG2BEvitVnYeLfgmJvzJh6uEOnVkBgWdznK/Jk7ZOHeR9fLM9jxfFoWSQW42TK7mQr9rWRBhVZi5UzgupnMsI0u3SkvXbRBXd2OMS7ypyJqubFaZmRD540=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=fail (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=gV4E05o+ reason="signature verification failed"; arc=none smtp.client-ip=148.163.148.104
+	bh=iL6oPpd1OAOThM11i+/97Cg1bIY9o/LEyO7E8TON+Ds=;
+	h=Message-Id:To:Cc:Date:From; b=dVUKSipZcc75kqE1gCGTBzuktKQzT9ch/OPG8ljXxJZIbMbEd0FuacxRVXGci0/BtrEWn76KHT9WKWgQtx+tbk6D32uh/+dIvRAYLlC9/yM4ydsU5frJJusm2erWzlqBikv13uzfBC/obCXKDgUh1m9Xo5CXw+MMQj2eKYdlvpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=fail (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=HcNhI9ti reason="signature verification failed"; arc=none smtp.client-ip=148.163.148.104
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355088.ppops.net [127.0.0.1])
-	by m0355088.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 43NATuG4023717;
+Received: from pps.filterd (m0355087.ppops.net [127.0.0.1])
+	by mx0a-00823401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43N9JGBf017992;
 	Tue, 23 Apr 2024 15:00:19 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	message-id:in-reply-to:references:to:cc:date:from; s=DKIM202306;
-	 bh=kTCP6i13xaKwO/mqDnVfGs7podxvWhsGk/wLK1+vRGQ=; b=gV4E05o+9qSM
-	d730dEOE+N5XMIbrIQIgLLKQH8C7DRn0bcy30Hkq8pPRiqetgEhZcVmTkbsgbWAe
-	85li8hrhqot9I2mmotKZEZryAOrMNjRiR0+z+FU3iGT92sb/lfg0RDDOVPrVOkKx
-	wp1tIWzlljGTL9SocBNI4Nfvo7CoKv71KxQmexbzaciuf2Nf1PZPsxtSKMwniZJC
-	Oul2qb55g1LsuJ132u6yzd4u+puE21ybJERnzCXhABuUCg2qcyAyRv+83zBvevdE
-	t2BND+ntnKyn32ZKr09DG5I21+uq+3nLxVVK/Ja9XL1KouPOPF/MKDG9kSmpBMnu
-	KEYQ5/Bbzg==
-Received: from va32lpfpp02.lenovo.com ([104.232.228.22])
-	by m0355088.ppops.net (PPS) with ESMTPS id 3xnvc2j6ff-1
+	message-id:to:cc:date:from; s=DKIM202306; bh=9qq1nXJw/h3GRRXj78u
+	DbU6YdBzkk0R7hHun/H4SGtc=; b=HcNhI9ti7yiu2m3WlOh7CTjmdH47vT5MF73
+	lbIPllq028P9M+HjSOxMPySEG8X9UJntgxtwp1I1N1NNxe/1rg/Md8RE0TLqOKWa
+	Ha9/eKCJ/O+erbvMuJXuY5l3xsr5vcUL3f1/taENW89F2MgyzsP1bHyUJHRfwAOd
+	fh+9GSLM/PWNhyt/yqLFmiES/m9p15Bk08r6962QKDSKVdOe9DliDGSGDZxo0qNF
+	f8SbDB6r9UNGytHn0p501YiGH8r9eOrw4NA2VnBOO8r/2M/pwICeowUjhyA5xVq8
+	iBcdDgnADfABhj/a0Kh/Q1ssA7/e3i4RJbJ2bKsFq6s3VKmFKmQ==
+Received: from ilclpfpp02.lenovo.com ([144.188.128.68])
+	by mx0a-00823401.pphosted.com (PPS) with ESMTPS id 3xnu55a6m9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 23 Apr 2024 15:00:18 +0000 (GMT)
 Received: from ilclmmrp02.lenovo.com (ilclmmrp02.mot.com [100.65.83.26])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by va32lpfpp02.lenovo.com (Postfix) with ESMTPS id 4VP4zh6bssz50Tkd;
+	by ilclpfpp02.lenovo.com (Postfix) with ESMTPS id 4VP4zh5KzTzfBb2;
 	Tue, 23 Apr 2024 15:00:16 +0000 (UTC)
 Received: from ilclasset02.mot.com (ilclasset02.mot.com [100.64.49.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: mbland)
-	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VP4zh5C9Xz3p6jv;
+	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VP4zh55dTz3p6jp;
 	Tue, 23 Apr 2024 15:00:16 +0000 (UTC)
-Message-Id: <20240423095843.446565600-2-mbland@motorola.com>
-In-Reply-To: <20240423095843.446565600-1-mbland@motorola.com>
-References: <20240423095843.446565600-1-mbland@motorola.com>
+Message-Id: <20240423095843.446565600-1-mbland@motorola.com>
 To: linux-mm@kvack.org
 Cc: "Maxwell Bland <mbland@motorola.com>
 	Catalin Marinas" <catalin.marinas@arm.com>,
@@ -89,401 +86,316 @@ Cc: "Maxwell Bland <mbland@motorola.com>
         bpf@vger.kernel.org
 Date: Tue, 23 Apr 2024 15:00:16 +0000 (UTC)
 From: mbland@motorola.com
-X-Proofpoint-GUID: pKd0fZerrsk3W6w5_ODlAnoIRDtCQOXg
-X-Proofpoint-ORIG-GUID: pKd0fZerrsk3W6w5_ODlAnoIRDtCQOXg
+X-Proofpoint-ORIG-GUID: JfbiOwgw0di6fOZEf4T-CjXDvCoa9N8_
+X-Proofpoint-GUID: JfbiOwgw0di6fOZEf4T-CjXDvCoa9N8_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-23_12,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- suspectscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404230036
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 malwarescore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 clxscore=1011 lowpriorityscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404230036
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-From 9be11c81e73a90776f4169a3c29a25f986080788 Mon Sep 17 00:00:00 2001
+From aef33d1682400c55a1634de8ab44b7a77a776900 Mon Sep 17 00:00:00 2001
 From: Maxwell Bland <mbland@motorola.com>
 Date: Tue, 23 Apr 2024 09:58:43 -0500
-Subject: [PATCH v4 2/2] arm64: mm: code and data allocation partitioning
+Subject: [PATCH v4 1/2] mm: allow dynamic vmalloc range restrictions
 
-Use the vmalloc infrastructure to prevent interleaving code and data
-pages, working to both maintain compatible management assumptions made
-by non-arch-specific code and make management of these regions more
-precise.
+Add an API to the vmalloc infrastructure, create_vmalloc_range_check,
+which allows for the creation of restricted sub-ranges of vmalloc memory
+during the init process, which can only be allocated from via vmalloc
+requests with vaddr start addresses explicitly matching the range's
+start addresses. Calls to this API can split up to two nodes in the
+red-black tree.
 
-This will allow, for example, the maintenance of PXNTable bits on
-dynamically allocated memory or the immutability of certain page middle
-directory and higher level descriptors.
+create_vmalloc_range_check restricts vmalloc requests not matching the
+range's start address to all other locations in the standard vmalloc
+range, i.e. users of the interface are responsible for requesting only
+correct and appropriate reservations. The primary intention of this API
+is supporting ASLR module region allocation regions while not
+undermining existing security mechanisms by necessitating interleaved
+code and data pages.
 
-For this purpose, move module_init_limits to setup.c, a more appropriate
-place since it is an initialization routine, and as a result, move
-module_plt_base and module_direct_base to module.h and provide
-appropriate "getter" methods.
+To perform range allocation at the appropriate, earliest time, provide a
+callback arch_init_checked_vmap_ranges rather than maintaining a linked
+list outside of the vmalloc infrastructure, ensuring all vmap management
+is still owned by vmalloc.c.
 
-Make the two existing code allocation calls for BPF and kprobes use the
-modules memory region, ensuring they no longer pollute data memory.
+v3: 20240416122254.868007168-1-mbland@motorola.com
+- Added callbacks into arch-specific code to dynamically partition
+  red-black tree
 
-This will make code ensuring the self-patching interface cannot be used
-to modify data and data interfaces cannot be used to modify code more
-performant.
+(The freedom of architectures to determine vm area allocation was deemed
+dangerous since there was no possibility of enforcing that areas were
+correctly managed.)
 
-Add in a mm/vmalloc.c file to perform the appropriate vmalloc_init
-callbacks required to ensure segmentation of the virtual memory space.
+v2: 20240220203256.31153-1-mbland@motorola.com
+- No longer depends on reducing the size of the vmalloc region
+- Attempted to implement change by allowing architectures to override
+  most abstract public vmalloc interface
+
+(Overrides on vmalloc methods were deemed undesirable.)
+
+v1: CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com
+- Statically reduced the range of the vmalloc region to support
+  parititoned code ranges
+
+(The trade off between space reduction and security was deemed
+unnecessary.)
 
 Signed-off-by: Maxwell Bland <mbland@motorola.com>
 ---
 Hello,
 
-Thanks for your review this patch. The ultimate goal, enforcement of
-dynamic PXNTable, is present in v3:
-v3: 20240416122254.868007168-1-mbland@motorola.com
-But is not included here as we first need to make an infrastructural
-change in order to address the comments given on v2/v1:
-v2: 20240220203256.31153-1-mbland@motorola.com
-v1: CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com
+Thank you again to all the maintainers for prior and current reviews of
+this patch. The below approach is more pristine and fixes the additional
+issues Uladzislau raised last Tuesday.
+
+I have decided to break down the prior patchset into 3-5 parts since the
+affected maintainers list is large and the affected portions of the code
+are large and discrete.
 
 Regards,
 Maxwell Bland
 
- arch/arm64/include/asm/module.h    | 16 ++++++
- arch/arm64/include/asm/setup.h     |  2 +
- arch/arm64/include/asm/vmalloc.h   |  3 ++
- arch/arm64/kernel/module.c         | 85 +-----------------------------
- arch/arm64/kernel/probes/kprobes.c |  7 +--
- arch/arm64/kernel/setup.c          | 82 ++++++++++++++++++++++++++++
- arch/arm64/mm/Makefile             |  3 +-
- arch/arm64/mm/vmalloc.c            | 10 ++++
- arch/arm64/net/bpf_jit_comp.c      |  8 +--
- 9 files changed, 125 insertions(+), 91 deletions(-)
- create mode 100644 arch/arm64/mm/vmalloc.c
+P.S. Clarifying a few technical details from prior reviews:
 
-diff --git a/arch/arm64/include/asm/module.h b/arch/arm64/include/asm/module.h
-index 79550b22ba19..732507896d3f 100644
---- a/arch/arm64/include/asm/module.h
-+++ b/arch/arm64/include/asm/module.h
-@@ -65,4 +65,20 @@ static inline const Elf_Shdr *find_section(const Elf_Ehdr *hdr,
- 	return NULL;
- }
+- Dynamic restricted ranges are adopted in favor over strict (linear)
+partitioning, as just restricting vmalloc ranges creates unfavorable and
+unnecessary trade-offs between vmalloc region size and security, for
+example, ASLR randomization entropy. Restricted ranges are also adopted
+in favor over interleaving code and data pages, which prevents an entire
+field of work and kernel improvements based on the enforcment of
+PMD-level-and-coarser sized code protections or optimizations (e.g.
+arm64's PXNTable) dynamically.
+- Preventing code and data page interleaving simplifies code focused on
+preventing malicious page table updates since we do not need to track
+all updates of PTE level descriptors. Many present exploits which
+generate write gadgets to kernel data via use-after-free (UAF) and
+heap-spray attacks target PTE descriptors to modify the permissions on
+critical memory regions. If PTEs are non-interleaved, executable regions
+can be marked immutable when outside of specialized code allocation
+systems, e.g. BPF's JIT, and data regions can be entirely restricted
+from privileged executability at the PMD level.
+
+ include/linux/vmalloc.h |  14 ++++++
+ mm/vmalloc.c            | 102 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 113 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 98ea90e90439..ece8879ab060 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -81,6 +81,12 @@ struct vmap_area {
+ 	unsigned long flags; /* mark type of vm_map_ram area */
+ };
  
-+static u64 module_direct_base __ro_after_init;
-+static u64 module_plt_base __ro_after_init;
++struct checked_vmap_range {
++	unsigned long va_start;
++	unsigned long va_end;
++	struct list_head list;
++};
 +
-+static inline u64 get_modules_base(void)
-+{
-+	return (module_plt_base) ? module_plt_base : module_direct_base;
-+}
-+
-+static inline u64 get_modules_end(void)
-+{
-+	return (module_plt_base) ? module_plt_base + SZ_2G :
-+		module_direct_base + SZ_128M;
-+}
-+
-+void *module_alloc(unsigned long size);
-+
- #endif /* __ASM_MODULE_H */
-diff --git a/arch/arm64/include/asm/setup.h b/arch/arm64/include/asm/setup.h
-index ba269a7a3201..4d1b668effc9 100644
---- a/arch/arm64/include/asm/setup.h
-+++ b/arch/arm64/include/asm/setup.h
-@@ -41,4 +41,6 @@ static inline bool arch_parse_debug_rodata(char *arg)
+ /* archs that select HAVE_ARCH_HUGE_VMAP should override one or more of these */
+ #ifndef arch_vmap_p4d_supported
+ static inline bool arch_vmap_p4d_supported(pgprot_t prot)
+@@ -125,6 +131,12 @@ static inline pgprot_t arch_vmap_pgprot_tagged(pgprot_t prot)
  }
- #define arch_parse_debug_rodata arch_parse_debug_rodata
- 
-+int __init module_init_limits(void);
-+
  #endif
-diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
-index 38fafffe699f..7d45c7d5b758 100644
---- a/arch/arm64/include/asm/vmalloc.h
-+++ b/arch/arm64/include/asm/vmalloc.h
-@@ -31,4 +31,7 @@ static inline pgprot_t arch_vmap_pgprot_tagged(pgprot_t prot)
- 	return pgprot_tagged(prot);
- }
  
-+#define arch_init_checked_vmap_ranges arch_init_checked_vmap_ranges
-+inline void __init arch_init_checked_vmap_ranges(void);
-+
- #endif /* _ASM_ARM64_VMALLOC_H */
-diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-index 47e0be610bb6..5a6a8ab62046 100644
---- a/arch/arm64/kernel/module.c
-+++ b/arch/arm64/kernel/module.c
-@@ -25,90 +25,7 @@
- #include <asm/insn.h>
- #include <asm/scs.h>
- #include <asm/sections.h>
--
--static u64 module_direct_base __ro_after_init = 0;
--static u64 module_plt_base __ro_after_init = 0;
--
--/*
-- * Choose a random page-aligned base address for a window of 'size' bytes which
-- * entirely contains the interval [start, end - 1].
-- */
--static u64 __init random_bounding_box(u64 size, u64 start, u64 end)
--{
--	u64 max_pgoff, pgoff;
--
--	if ((end - start) >= size)
--		return 0;
--
--	max_pgoff = (size - (end - start)) / PAGE_SIZE;
--	pgoff = get_random_u32_inclusive(0, max_pgoff);
--
--	return start - pgoff * PAGE_SIZE;
--}
--
--/*
-- * Modules may directly reference data and text anywhere within the kernel
-- * image and other modules. References using PREL32 relocations have a +/-2G
-- * range, and so we need to ensure that the entire kernel image and all modules
-- * fall within a 2G window such that these are always within range.
-- *
-- * Modules may directly branch to functions and code within the kernel text,
-- * and to functions and code within other modules. These branches will use
-- * CALL26/JUMP26 relocations with a +/-128M range. Without PLTs, we must ensure
-- * that the entire kernel text and all module text falls within a 128M window
-- * such that these are always within range. With PLTs, we can expand this to a
-- * 2G window.
-- *
-- * We chose the 128M region to surround the entire kernel image (rather than
-- * just the text) as using the same bounds for the 128M and 2G regions ensures
-- * by construction that we never select a 128M region that is not a subset of
-- * the 2G region. For very large and unusual kernel configurations this means
-- * we may fall back to PLTs where they could have been avoided, but this keeps
-- * the logic significantly simpler.
-- */
--static int __init module_init_limits(void)
--{
--	u64 kernel_end = (u64)_end;
--	u64 kernel_start = (u64)_text;
--	u64 kernel_size = kernel_end - kernel_start;
--
--	/*
--	 * The default modules region is placed immediately below the kernel
--	 * image, and is large enough to use the full 2G relocation range.
--	 */
--	BUILD_BUG_ON(KIMAGE_VADDR != MODULES_END);
--	BUILD_BUG_ON(MODULES_VSIZE < SZ_2G);
--
--	if (!kaslr_enabled()) {
--		if (kernel_size < SZ_128M)
--			module_direct_base = kernel_end - SZ_128M;
--		if (kernel_size < SZ_2G)
--			module_plt_base = kernel_end - SZ_2G;
--	} else {
--		u64 min = kernel_start;
--		u64 max = kernel_end;
--
--		if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
--			pr_info("2G module region forced by RANDOMIZE_MODULE_REGION_FULL\n");
--		} else {
--			module_direct_base = random_bounding_box(SZ_128M, min, max);
--			if (module_direct_base) {
--				min = module_direct_base;
--				max = module_direct_base + SZ_128M;
--			}
--		}
--
--		module_plt_base = random_bounding_box(SZ_2G, min, max);
--	}
--
--	pr_info("%llu pages in range for non-PLT usage",
--		module_direct_base ? (SZ_128M - kernel_size) / PAGE_SIZE : 0);
--	pr_info("%llu pages in range for PLT usage",
--		module_plt_base ? (SZ_2G - kernel_size) / PAGE_SIZE : 0);
--
--	return 0;
--}
--subsys_initcall(module_init_limits);
-+#include <asm/module.h>
- 
- void *module_alloc(unsigned long size)
- {
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 327855a11df2..e1b5d509a6ab 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -131,9 +131,10 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 
- void *alloc_insn_page(void)
- {
--	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
--			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
--			NUMA_NO_NODE, __builtin_return_address(0));
-+	return __vmalloc_node_range(PAGE_SIZE, 1, get_modules_base(),
-+			get_modules_end(), GFP_KERNEL, PAGE_KERNEL_ROX,
-+			VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
-+			__builtin_return_address(0));
- }
- 
- /* arm kprobe: install breakpoint in text */
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 65a052bf741f..ad0712d4d682 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -268,6 +268,86 @@ static int __init reserve_memblock_reserved_regions(void)
- }
- arch_initcall(reserve_memblock_reserved_regions);
- 
-+/*
-+ * Choose a random page-aligned base address for a window of 'size' bytes which
-+ * entirely contains the interval [start, end - 1].
-+ */
-+static u64 __init random_bounding_box(u64 size, u64 start, u64 end)
++#ifndef arch_init_checked_vmap_ranges
++inline void __init arch_init_checked_vmap_ranges(void)
 +{
-+	u64 max_pgoff, pgoff;
++}
++#endif
 +
-+	if ((end - start) >= size)
-+		return 0;
+ /*
+  *	Highlevel APIs for driver use
+  */
+@@ -211,6 +223,8 @@ extern struct vm_struct *__get_vm_area_caller(unsigned long size,
+ 					unsigned long flags,
+ 					unsigned long start, unsigned long end,
+ 					const void *caller);
++int __init create_vmalloc_range_check(unsigned long start_vaddr,
++					unsigned long end_vaddr);
+ void free_vm_area(struct vm_struct *area);
+ extern struct vm_struct *remove_vm_area(const void *addr);
+ extern struct vm_struct *find_vm_area(const void *addr);
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 68fa001648cc..8f382b6c31de 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -817,6 +817,16 @@ static struct kmem_cache *vmap_area_cachep;
+  */
+ static LIST_HEAD(free_vmap_area_list);
+ 
++static struct kmem_cache *vmap_checked_range_cachep;
 +
-+	max_pgoff = (size - (end - start)) / PAGE_SIZE;
-+	pgoff = get_random_u32_inclusive(0, max_pgoff);
++/*
++ * This linked list is used to record ranges of the vmalloc
++ * region which are checked at allocation time to ensure they
++ * are only allocated within when an explicit allocation
++ * request to that range is made.
++ */
++static LIST_HEAD(checked_range_list);
 +
-+	return start - pgoff * PAGE_SIZE;
+ /*
+  * This augment red-black tree represents the free vmap space.
+  * All vmap_area objects in this tree are sorted by va->va_start
+@@ -1454,6 +1464,23 @@ merge_or_add_vmap_area_augment(struct vmap_area *va,
+ 	return va;
+ }
+ 
++static __always_inline bool
++va_is_range_restricted(struct vmap_area *va, unsigned long vstart)
++{
++	struct checked_vmap_range *range, *tmp;
++
++	if (list_empty(&checked_range_list))
++		return false;
++
++	list_for_each_entry_safe(range, tmp, &checked_range_list, list)
++		if (va->va_start >= range->va_start &&
++		    va->va_end <= range->va_end &&
++		    vstart != range->va_start)
++			return true;
++
++	return false;
 +}
 +
-+/*
-+ * Modules may directly reference data and text anywhere within the kernel
-+ * image and other modules. References using PREL32 relocations have a +/-2G
-+ * range, and so we need to ensure that the entire kernel image and all modules
-+ * fall within a 2G window such that these are always within range.
-+ *
-+ * Modules may directly branch to functions and code within the kernel text,
-+ * and to functions and code within other modules. These branches will use
-+ * CALL26/JUMP26 relocations with a +/-128M range. Without PLTs, we must ensure
-+ * that the entire kernel text and all module text falls within a 128M window
-+ * such that these are always within range. With PLTs, we can expand this to a
-+ * 2G window.
-+ *
-+ * We chose the 128M region to surround the entire kernel image (rather than
-+ * just the text) as using the same bounds for the 128M and 2G regions ensures
-+ * by construction that we never select a 128M region that is not a subset of
-+ * the 2G region. For very large and unusual kernel configurations this means
-+ * we may fall back to PLTs where they could have been avoided, but this keeps
-+ * the logic significantly simpler.
-+ */
-+int __init module_init_limits(void)
+ static __always_inline bool
+ is_within_this_va(struct vmap_area *va, unsigned long size,
+ 	unsigned long align, unsigned long vstart)
+@@ -1501,7 +1528,8 @@ find_vmap_lowest_match(struct rb_root *root, unsigned long size,
+ 				vstart < va->va_start) {
+ 			node = node->rb_left;
+ 		} else {
+-			if (is_within_this_va(va, size, align, vstart))
++			if (!va_is_range_restricted(va, vstart) &&
++			    is_within_this_va(va, size, align, vstart))
+ 				return va;
+ 
+ 			/*
+@@ -1522,7 +1550,8 @@ find_vmap_lowest_match(struct rb_root *root, unsigned long size,
+ 			 */
+ 			while ((node = rb_parent(node))) {
+ 				va = rb_entry(node, struct vmap_area, rb_node);
+-				if (is_within_this_va(va, size, align, vstart))
++				if (!va_is_range_restricted(va, vstart) &&
++				    is_within_this_va(va, size, align, vstart))
+ 					return va;
+ 
+ 				if (get_subtree_max_size(node->rb_right) >= length &&
+@@ -1554,7 +1583,8 @@ find_vmap_lowest_linear_match(struct list_head *head, unsigned long size,
+ 	struct vmap_area *va;
+ 
+ 	list_for_each_entry(va, head, list) {
+-		if (!is_within_this_va(va, size, align, vstart))
++		if (va_is_range_restricted(va, vstart) ||
++		    !is_within_this_va(va, size, align, vstart))
+ 			continue;
+ 
+ 		return va;
+@@ -1717,6 +1747,36 @@ va_clip(struct rb_root *root, struct list_head *head,
+ 	return 0;
+ }
+ 
++static inline int
++split_and_alloc_va(struct rb_root *root, struct list_head *head, unsigned long addr)
 +{
-+	u64 kernel_end = (u64)_end;
-+	u64 kernel_start = (u64)_text;
-+	u64 kernel_size = kernel_end - kernel_start;
++	struct vmap_area *va;
++	int ret;
++	struct vmap_area *lva = NULL;
 +
-+	/*
-+	 * The default modules region is placed immediately below the kernel
-+	 * image, and is large enough to use the full 2G relocation range.
-+	 */
-+	BUILD_BUG_ON(KIMAGE_VADDR != MODULES_END);
-+	BUILD_BUG_ON(MODULES_VSIZE < SZ_2G);
-+
-+	if (!kaslr_enabled()) {
-+		if (kernel_size < SZ_128M)
-+			module_direct_base = kernel_end - SZ_128M;
-+		if (kernel_size < SZ_2G)
-+			module_plt_base = kernel_end - SZ_2G;
-+	} else {
-+		u64 min = kernel_start;
-+		u64 max = kernel_end;
-+
-+		if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
-+			pr_info("2G module region forced by RANDOMIZE_MODULE_REGION_FULL\n");
-+		} else {
-+			module_direct_base = random_bounding_box(SZ_128M, min, max);
-+			if (module_direct_base) {
-+				min = module_direct_base;
-+				max = module_direct_base + SZ_128M;
-+			}
-+		}
-+
-+		module_plt_base = random_bounding_box(SZ_2G, min, max);
++	va = __find_vmap_area(addr, root);
++	if (!va) {
++		pr_err("%s: could not find vmap\n", __func__);
++		return -1;
 +	}
 +
-+	pr_info("%llu pages in range for non-PLT usage",
-+		module_direct_base ? (SZ_128M - kernel_size) / PAGE_SIZE : 0);
-+	pr_info("%llu pages in range for PLT usage",
-+		module_plt_base ? (SZ_2G - kernel_size) / PAGE_SIZE : 0);
-+
++	lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
++	if (!lva) {
++		pr_err("%s: unable to allocate va for range\n", __func__);
++		return -1;
++	}
++	lva->va_start = addr;
++	lva->va_end = va->va_end;
++	ret = va_clip(root, head, va, addr, va->va_end - addr);
++	if (WARN_ON_ONCE(ret)) {
++		pr_err("%s: unable to clip code base region\n", __func__);
++		kmem_cache_free(vmap_area_cachep, lva);
++		return -1;
++	}
++	insert_vmap_area_augment(lva, NULL, root, head);
 +	return 0;
 +}
 +
- u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
- 
- u64 cpu_logical_map(unsigned int cpu)
-@@ -366,6 +446,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 			"This indicates a broken bootloader or old kernel\n",
- 			boot_args[1], boot_args[2], boot_args[3]);
- 	}
-+
-+	module_init_limits();
+ static unsigned long
+ va_alloc(struct vmap_area *va,
+ 		struct rb_root *root, struct list_head *head,
+@@ -4424,6 +4484,35 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
  }
+ EXPORT_SYMBOL(remap_vmalloc_range);
  
- static inline bool cpu_can_disable(unsigned int cpu)
-diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
-index 60454256945b..6d164f5852c1 100644
---- a/arch/arm64/mm/Makefile
-+++ b/arch/arm64/mm/Makefile
-@@ -2,7 +2,8 @@
- obj-y				:= dma-mapping.o extable.o fault.o init.o  				   cache.o copypage.o flush.o  				   ioremap.o mmap.o pgd.o mmu.o -				   context.o proc.o pageattr.o fixmap.o
-+				   context.o proc.o pageattr.o fixmap.o +				   vmalloc.o
- obj-	+= contpte.o
- obj-	+= hugetlbpage.o
- obj-	+= ptdump.o
-diff --git a/arch/arm64/mm/vmalloc.c b/arch/arm64/mm/vmalloc.c
-new file mode 100644
-index 000000000000..09f59c493fe4
---- /dev/null
-+++ b/arch/arm64/mm/vmalloc.c
-@@ -0,0 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/vmalloc.h>
-+#include <linux/elf.h>
-+
-+#include <asm/module.h>
-+
-+inline void __init arch_init_checked_vmap_ranges(void)
++/**
++ * create_vmalloc_range_check - create a checked range of vmalloc memory
++ * @start_vaddr:	The starting vaddr of the code range
++ * @end_vaddr:		The ending vaddr of the code range
++ *
++ * Returns:	0 for success, -1 on failure
++ *
++ * This function marks regions within or overlapping the vmalloc region for
++ * requested range checking during allocation. When requesting virtual memory,
++ * if the requested starting vaddr does not explicitly match the starting vaddr
++ * of this range, this range will not be allocated from.
++ */
++int __init create_vmalloc_range_check(unsigned long start_vaddr,
++					unsigned long end_vaddr)
 +{
-+	create_vmalloc_range_check(get_modules_base(), get_modules_end());
++	struct checked_vmap_range *range;
++
++	range = kmem_cache_alloc(vmap_checked_range_cachep, GFP_NOWAIT);
++	if (split_and_alloc_va(&free_vmap_area_root, &free_vmap_area_list, start_vaddr) ||
++	    split_and_alloc_va(&free_vmap_area_root, &free_vmap_area_list, end_vaddr))
++		return -1;
++
++	range->va_start = start_vaddr;
++	range->va_end = end_vaddr;
++
++	list_add(&range->list, &checked_range_list);
++	return 0;
 +}
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 122021f9bdfc..30366c4e0b1e 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -13,6 +13,8 @@
- #include <linux/memory.h>
- #include <linux/printk.h>
- #include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/moduleloader.h>
- 
- #include <asm/asm-extable.h>
- #include <asm/byteorder.h>
-@@ -1790,18 +1792,18 @@ void *bpf_arch_text_copy(void *dst, void *src, size_t len)
- 
- u64 bpf_jit_alloc_exec_limit(void)
++
+ void free_vm_area(struct vm_struct *area)
  {
--	return VMALLOC_END - VMALLOC_START;
-+	return get_modules_end() - get_modules_base();
- }
+ 	struct vm_struct *ret;
+@@ -5082,6 +5171,11 @@ void __init vmalloc_init(void)
+ 	 */
+ 	vmap_area_cachep = KMEM_CACHE(vmap_area, SLAB_PANIC);
  
- void *bpf_jit_alloc_exec(unsigned long size)
- {
- 	/* Memory is intended to be executable, reset the pointer tag. */
--	return kasan_reset_tag(vmalloc(size));
-+	return kasan_reset_tag(module_alloc(size));
++	/*
++	 * Create the cache for checked vmap ranges.
++	 */
++	vmap_checked_range_cachep = KMEM_CACHE(checked_vmap_range, SLAB_PANIC);
++
+ 	for_each_possible_cpu(i) {
+ 		struct vmap_block_queue *vbq;
+ 		struct vfree_deferred *p;
+@@ -5129,4 +5223,6 @@ void __init vmalloc_init(void)
+ 	vmap_node_shrinker->count_objects = vmap_node_shrink_count;
+ 	vmap_node_shrinker->scan_objects = vmap_node_shrink_scan;
+ 	shrinker_register(vmap_node_shrinker);
++
++	arch_init_checked_vmap_ranges();
  }
- 
- void bpf_jit_free_exec(void *addr)
- {
--	return vfree(addr);
-+	return module_memfree(addr);
- }
- 
- /* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
+
+base-commit: 71b1543c83d65af8215d7558d70fc2ecbee77dcf
 -- 
 2.34.1
 
