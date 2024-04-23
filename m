@@ -1,150 +1,135 @@
-Return-Path: <bpf+bounces-27592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB4E98AF8A2
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 22:56:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFAA08AF951
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 23:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A174A285029
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 20:56:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E18C51C24560
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 21:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97A014533F;
-	Tue, 23 Apr 2024 20:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05107144D2E;
+	Tue, 23 Apr 2024 21:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TMfI4sXz"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LlOD8sg/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D6F143873
-	for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 20:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798EC14388D;
+	Tue, 23 Apr 2024 21:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713905611; cv=none; b=L6qgRG+1gXIcRBDlO7AWYd8tvyya1vYgO0Gx1pOcjZR7THc0l/j6iMATOuhkMa1Vk9kdH+Z+KVWhSPEAcYQtCEJv7Mb4QZ2FR4GsCA6LXhjOKbYnIPmqPVf69X7DccGNA+oan+8X88rubqRfbPZ+Sb8tFUeo4lsyUJD2BPi2NiM=
+	t=1713908505; cv=none; b=rXfuyV9XR05wcC54klvUsYzLLcPZKJq96+jfjudm25uQzIaglkeV6HCPxKaJZLFDx7f1mPYBkLmRyydyTq9XbRGmKbvnkEi6saEvelFTwLRdLsRm35tem5nBlmDb5rPelgL0rxHn67UULHumWtzJDNWkdTtUHXv+X39zB0Vpiwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713905611; c=relaxed/simple;
-	bh=T3Q92gFUy/P1UcmszYWlLKTrq3XEsOaOm9jx95J/PzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B/i1/+Osguk1V5Uzpxn6K81dp9MTDB1tyneS6ufo5uB/VG5laWoP49vRTLdZkbj5ukZxaiycK0kgNqDZdcDdVniSaXHr4TrMWEBc7rFjAZJ++yz4lAQkhPi/uk3MJSOuJK8YHmbaqM0rqofW2S8kEbDBjmgKx1s3xMlEJA08ksY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TMfI4sXz; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2ec6f3bf-c811-416d-aa28-bc97a994f03e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713905608;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5IPHXvmn5IlORh0Jz+RdXye8CqoldRLwCZWA0z/eSLA=;
-	b=TMfI4sXzP6NLNHH6rOkbGxMOcE9Pz/lZrMl+rnDF9z+fXHzp6VGpKe/5nQB04AllxKa+I5
-	tOfRyehX/D3zUI2g8d+Aw1EfWsyP+nnMTy/TVf9upt0uMbZyh45xVpGMBr/za0STgCtwiT
-	j4y6ZG2V/0scNrEmSVgYlKwi2DfiJdc=
-Date: Tue, 23 Apr 2024 13:53:22 -0700
+	s=arc-20240116; t=1713908505; c=relaxed/simple;
+	bh=CExlSkHgH0tyCbljyaKTd5oE2X8dmxwpHc61O1PkWUs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=O6R8B02pCpJLhOH8WQQoJN6o/I2DlbGD+VoYIHCm4gVCUC13wD3DQ3/cB7vcKeBtyA44BW2UkvgRZt7OvkYWVqkw5LL5KqzZnbuxFyyYyzvj5vfWeAtIVFqSGa5wuWM+XAIlZQOVQHnheH/j3Ft8yxYS8CM0vnBnXQdRDAbxk2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LlOD8sg/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB23C32783;
+	Tue, 23 Apr 2024 21:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713908505;
+	bh=CExlSkHgH0tyCbljyaKTd5oE2X8dmxwpHc61O1PkWUs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LlOD8sg/6ximsKtgmGyO57L6OrMAAqBu3CrTMql5sy5W8T4ExRsI4BnVReiZ1b9G1
+	 nIiHBbHUYqhL50rwSWL6YWeLmyaXafn8wM67zKi6XNlK7FHdj/A7FG5VHce8rfsKnE
+	 c4lMUwdQFtGM8Csyuhmx4j5Djykz1QaoozTt+//E=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Ian Rogers <irogers@google.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org,
+	Namhyung Kim <namhyung@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.8 059/158] perf lock contention: Add a missing NULL check
+Date: Tue, 23 Apr 2024 14:38:01 -0700
+Message-ID: <20240423213857.872307501@linuxfoundation.org>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240423213855.824778126@linuxfoundation.org>
+References: <20240423213855.824778126@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 4/5] bpf/verifier: relax MUL range computation
- check
-Content-Language: en-GB
-To: Cupertino Miranda <cupertino.miranda@oracle.com>,
- Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- David Faust <david.faust@oracle.com>,
- Elena Zannoni <elena.zannoni@oracle.com>
-References: <20240417122341.331524-1-cupertino.miranda@oracle.com>
- <20240417122341.331524-5-cupertino.miranda@oracle.com>
- <78488c062d4154f78706d371bf3ed600a0601ab6.camel@gmail.com>
- <8734rhk7jq.fsf@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <8734rhk7jq.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+
+6.8-stable review patch.  If anyone has any objections, please let me know.
+
+------------------
+
+From: Namhyung Kim <namhyung@kernel.org>
+
+[ Upstream commit f3408580bac8ce5cd76e7391e529c0a22e7c7eb2 ]
+
+I got a report for a failure in BPF verifier on a recent kernel with
+perf lock contention command.  It checks task->sighand->siglock without
+checking if sighand is NULL or not.  Let's add one.
+
+  ; if (&curr->sighand->siglock == (void *)lock)
+  265: (79) r1 = *(u64 *)(r0 +2624)     ; frame1: R0_w=trusted_ptr_task_struct(off=0,imm=0)
+                                        ;         R1_w=rcu_ptr_or_null_sighand_struct(off=0,imm=0)
+  266: (b7) r2 = 0                      ; frame1: R2_w=0
+  267: (0f) r1 += r2
+  R1 pointer arithmetic on rcu_ptr_or_null_ prohibited, null-check it first
+  processed 164 insns (limit 1000000) max_states_per_insn 1 total_states 15 peak_states 15 mark_read 5
+  -- END PROG LOAD LOG --
+  libbpf: prog 'contention_end': failed to load: -13
+  libbpf: failed to load object 'lock_contention_bpf'
+  libbpf: failed to load BPF skeleton 'lock_contention_bpf': -13
+  Failed to load lock-contention BPF skeleton
+  lock contention BPF setup failed
+  lock contention did not detect any lock contention
+
+Fixes: 1811e82767dcc ("perf lock contention: Track and show siglock with address")
+Reviewed-by: Ian Rogers <irogers@google.com>
+Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20240409225542.1870999-1-namhyung@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 95cd8414f6ef8..e5d78565f479f 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -289,6 +289,7 @@ static inline __u32 check_lock_type(__u64 lock, __u32 flags)
+ 	struct task_struct *curr;
+ 	struct mm_struct___old *mm_old;
+ 	struct mm_struct___new *mm_new;
++	struct sighand_struct *sighand;
+ 
+ 	switch (flags) {
+ 	case LCB_F_READ:  /* rwsem */
+@@ -310,7 +311,9 @@ static inline __u32 check_lock_type(__u64 lock, __u32 flags)
+ 		break;
+ 	case LCB_F_SPIN:  /* spinlock */
+ 		curr = bpf_get_current_task_btf();
+-		if (&curr->sighand->siglock == (void *)lock)
++		sighand = curr->sighand;
++
++		if (sighand && &sighand->siglock == (void *)lock)
+ 			return LCD_F_SIGHAND_LOCK;
+ 		break;
+ 	default:
+-- 
+2.43.0
 
 
-On 4/19/24 2:47 AM, Cupertino Miranda wrote:
-> Eduard Zingerman writes:
->
->> On Wed, 2024-04-17 at 13:23 +0100, Cupertino Miranda wrote:
->>
->> [...]
->>
->>>   static int is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
->>> +					    struct bpf_reg_state dst_reg,
->>>   					    struct bpf_reg_state src_reg)
->> Nit: there is no need to pass {dst,src}_reg by value,
->>       struct bpf_reg_state is 120 bytes in size
->>      (but maybe compiler handles this).
->>
->>>   {
->>> -	bool src_known;
->>> +	bool src_known, dst_known;
->>>   	u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
->>>   	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
->>>   	u8 opcode = BPF_OP(insn->code);
->>>
->>> -	bool valid_known = true;
->>> -	src_known = is_const_reg_and_valid(src_reg, alu32, &valid_known);
->>> +	bool valid_known_src = true;
->>> +	bool valid_known_dst = true;
->>> +	src_known = is_const_reg_and_valid(src_reg, alu32, &valid_known_src);
->>> +	dst_known = is_const_reg_and_valid(dst_reg, alu32, &valid_known_dst);
->>>
->>>   	/* Taint dst register if offset had invalid bounds
->>>   	 * derived from e.g. dead branches.
->>>   	 */
->>> -	if (valid_known == false)
->>> +	if (valid_known_src == false)
->>>   		return UNCOMPUTABLE_RANGE;
->>>
->>>   	switch (opcode) {
->>> @@ -13457,10 +13460,12 @@ static int is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
->>>   	case BPF_OR:
->>>   		return COMPUTABLE_RANGE;
->>>
->>> -	/* Compute range for the following only if the src_reg is known.
->>> +	/* Compute range for MUL if at least one of its registers is known.
->>>   	 */
->>>   	case BPF_MUL:
->>> -		return src_known ? COMPUTABLE_RANGE : UNCOMPUTABLE_RANGE;
->>> +		if (src_known || (dst_known && valid_known_dst))
->>> +			return COMPUTABLE_RANGE;
->>> +		break;
->> Is it even necessary to restrict src or dst to be known?
->> adjust_scalar_min_max_vals() logic for multiplication looks as follows:
->>
->> 	case BPF_MUL:
->> 		dst_reg->var_off = tnum_mul(dst_reg->var_off, src_reg.var_off);
->> 		scalar32_min_max_mul(dst_reg, &src_reg);
->> 		scalar_min_max_mul(dst_reg, &src_reg);
->> 		break;
->>
->> Where tnum_mul() refers to a paper, and that paper does not restrict
->> abstract multiplication algorithm to constant values on either side.
->> The scalar_min_max_mul() and scalar32_min_max_mul() are similar:
->> - if both src and dst are positive
->> - if overflow is not possible
->> - adjust dst->min *= src->min
->> - adjust dst->max *= src->max
->>
->> I think this should work just fine if neither of src or dst is a known constant.
->> What do you think?
->>
-> With the refactor this looked like an armless change. Indeed if we agree
-> that the algorithm covers all scenarios, then why not.
-> I did not study the paper or the scalar_min_max_mul function nearly
-> enough to know for sure.
 
-I double checked and I think Eduard is correct. src_known checking
-is not necessary for multiplication. It would be great if you can
-add this change as well in the patch set.
-
->> [...]
 
