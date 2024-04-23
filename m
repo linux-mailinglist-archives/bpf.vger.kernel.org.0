@@ -1,130 +1,149 @@
-Return-Path: <bpf+bounces-27500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85D6E8ADCFA
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 06:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A4108ADD43
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 07:56:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42376283166
-	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 04:56:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3652A282E71
+	for <lists+bpf@lfdr.de>; Tue, 23 Apr 2024 05:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53F1208A8;
-	Tue, 23 Apr 2024 04:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8C621A0B;
+	Tue, 23 Apr 2024 05:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="le/Pv/qX"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rKOHiYNA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584EB1CAB3;
-	Tue, 23 Apr 2024 04:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A12A18AED;
+	Tue, 23 Apr 2024 05:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713848154; cv=none; b=YAI7VeOIskTlQoJr0dkE4SIkHRzT/gq/nosGvkjBBR0V8etm3he1i1R2LVs9QQOUbiDsZ+mgCNWqJD50NkP42lOvPKwTv9vFeyKKTT4Bu83qhpmtzysxEGqTI8xx9jMZ6vuZiYMI4yVJ1CeEb0VlUT1UnlFrRjKIaCCb6MZVINA=
+	t=1713851808; cv=none; b=MYYkiXDIWcP+4v8WtVJLz0mYqEtOANP2xWu1eunN0q3d/dOPVjbyVfTYcChjYh2WqGIcSiC8zxrvqB1GD+l+/tbNvH7C3HoHLDbXWyLTPQ9/vZaAdZuJL8I/8hW84gMToGC2IWMnua6fm4VaF1dufy58kj73k00x9kdfiwhpUfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713848154; c=relaxed/simple;
-	bh=puryQ1J6mzWbCrUfIOEYUOuYeQHliVuNmWN99eIePwQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b109HJHGIDbifzIPlkC5K8UgwXKspwDf2Rw0SNNNALaGHu8JVcP6dtsHuw9n03HOMYxAtBkFP1oMbxdMpVq2FoU0ukZaGsdmZSBCoz8dKhh2mcRM7/2DlOgnNgwgqdkU5KHnLKrpP54tUV6UqWE5tCMElC0tieIpzifTGQMK3dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=le/Pv/qX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F34BC116B1;
-	Tue, 23 Apr 2024 04:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713848153;
-	bh=puryQ1J6mzWbCrUfIOEYUOuYeQHliVuNmWN99eIePwQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=le/Pv/qXNH6cmU/bEapqQld8Xy6qptw1W4yy3w76kNBPQoyRaCQ0eDU8aW4OhYWvQ
-	 5Mw11o+v7XwagPHZlhU0O3PzlDxaSNWLya2r6tfJ2eLh6f061eRrKx2Aax9CCNIi40
-	 9btXUZVsTznHsEP/H1yEccKQOxUkoFa5bdqrxukAQowOZhhLU7AzfKPatKfViNJz8F
-	 YlPKOkmW98paCxbsin3DxJ2//NPjoEEvFPmVbXH0uiYwYiMJb0X4DKvMA+EqLHRt7z
-	 uXd8GQaU2PNSFL2wkl7+gq+reYJfXzAQ0Hi/4hMHQK4jllydhVPYg3fUcJ0p+39rmQ
-	 BWvJQ5CtWZjFA==
-From: Song Liu <song@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: kernel-team@meta.com,
-	Song Liu <song@kernel.org>,
-	stable@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH] arch/Kconfig: Move SPECULATION_MITIGATIONS to arch/Kconfig
-Date: Mon, 22 Apr 2024 21:55:48 -0700
-Message-ID: <20240423045548.1324969-1-song@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713851808; c=relaxed/simple;
+	bh=FUtZ1xvClmdmTBUAURFroa1ipOw8c203HiCdSlH64dw=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=L7HCoZeZQihdesiXfDfVMxS7X3WKDBH8hz5IOyF4vNkaZ8vcVuiPsFUAqyaTZZ/c8eqR7Xg9RRD4c302dnSS1JKaec0mYigJu7RxHMv4DTZ3kr95cbqCujKaf7DtMiRBuhyjnggXtXsV3CI8FcYWdcJDOY4dp+ofyXVZc1XLOCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rKOHiYNA; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713851798; h=Message-ID:Subject:Date:From:To;
+	bh=GHCysremovBWIsP3Dli5jXdc1mNQf4cWC+uRc/bjoJ0=;
+	b=rKOHiYNAhdPe3I6hOURp9VOToaGqs9Gr0YsaXUfTs/Ec2PGqZfg/GcXewnYwHXXNuaoPFD3ynLpL60HGdSBNTMT0lw7cy59Yr7uKUd0yRodnLTP5+RTyNdEllRrWAS+6z7jROasQgJjJ7JICJ71ccN39iRa5Tq2uqfQrkPjaNgo=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W57uPlJ_1713851795;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W57uPlJ_1713851795)
+          by smtp.aliyun-inc.com;
+          Tue, 23 Apr 2024 13:56:36 +0800
+Message-ID: <1713851675.6547418-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v5 0/9] virtio-net: support device stats
+Date: Tue, 23 Apr 2024 13:54:35 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>,
+ Amritha Nambiar <amritha.nambiar@intel.com>,
+ Larysa Zaremba <larysa.zaremba@intel.com>,
+ Sridhar Samudrala <sridhar.samudrala@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ virtualization@lists.linux.dev,
+ bpf@vger.kernel.org
+References: <20240318110602.37166-1-xuanzhuo@linux.alibaba.com>
+ <20240422163231-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240422163231-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-SPECULATION_MITIGATIONS is currently defined only for x86. As a result,
-IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) is always false for other
-archs. f337a6a21e2f effectively set "mitigations=off" by default on
-non-x86 archs, which is not desired behavior. Jakub observed this
-change when running bpf selftests on s390 and arm64.
+On Mon, 22 Apr 2024 16:33:01 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Mon, Mar 18, 2024 at 07:05:53PM +0800, Xuan Zhuo wrote:
+> > As the spec:
+> >
+> > https://github.com/oasis-tcs/virtio-spec/commit/42f389989823039724f95bbbd243291ab0064f82
+> >
+> > The virtio net supports to get device stats.
+> >
+> > Please review.
+>
+> series:
+>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>
+> I think you can now repost for net-next.
 
-Fix this by moving SPECULATION_MITIGATIONS to arch/Kconfig so that it is
-available in all archs and thus can be used safely in kernel/cpu.c
+Thanks for your ack.
 
-Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
-Cc: stable@vger.kernel.org
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
----
- arch/Kconfig     | 10 ++++++++++
- arch/x86/Kconfig | 10 ----------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+I and Jason discussed  a way to remove the "maps".
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 9f066785bb71..8f4af75005f8 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1609,4 +1609,14 @@ config CC_HAS_SANE_FUNCTION_ALIGNMENT
- 	# strict alignment always, even with -falign-functions.
- 	def_bool CC_HAS_MIN_FUNCTION_ALIGNMENT || CC_IS_CLANG
- 
-+menuconfig SPECULATION_MITIGATIONS
-+	bool "Mitigations for speculative execution vulnerabilities"
-+	default y
-+	help
-+	  Say Y here to enable options which enable mitigations for
-+	  speculative execution hardware vulnerabilities.
-+
-+	  If you say N, all mitigations will be disabled. You really
-+	  should know what you are doing to say so.
-+
- endmenu
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 39886bab943a..50c890fce5e0 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2486,16 +2486,6 @@ config PREFIX_SYMBOLS
- 	def_bool y
- 	depends on CALL_PADDING && !CFI_CLANG
- 
--menuconfig SPECULATION_MITIGATIONS
--	bool "Mitigations for speculative execution vulnerabilities"
--	default y
--	help
--	  Say Y here to enable options which enable mitigations for
--	  speculative execution hardware vulnerabilities.
--
--	  If you say N, all mitigations will be disabled. You really
--	  should know what you are doing to say so.
--
- if SPECULATION_MITIGATIONS
- 
- config MITIGATION_PAGE_TABLE_ISOLATION
--- 
-2.43.0
+I will post a new patch set with that.
 
+Thanks.
+
+
+>
+>
+> > Thanks.
+> >
+> > v5:
+> >     1. Fix some small problems in last version
+> >     2. Not report stats that will be reported by netlink
+> >     3. remove "_queue" from  ethtool -S
+> >
+> > v4:
+> >     1. Support per-queue statistics API
+> >     2. Fix some small problems in last version
+> >
+> > v3:
+> >     1. rebase net-next
+> >
+> > v2:
+> >     1. fix the usage of the leXX_to_cpu()
+> >     2. add comment to the structure virtnet_stats_map
+> >
+> > v1:
+> >     1. fix some definitions of the marco and the struct
+> >
+> >
+> >
+> >
+> >
+> >
+> > Xuan Zhuo (9):
+> >   virtio_net: introduce device stats feature and structures
+> >   virtio_net: virtnet_send_command supports command-specific-result
+> >   virtio_net: remove "_queue" from ethtool -S
+> >   virtio_net: support device stats
+> >   virtio_net: stats map include driver stats
+> >   virtio_net: add the total stats field
+> >   virtio_net: rename stat tx_timeout to timeout
+> >   netdev: add queue stats
+> >   virtio-net: support queue stat
+> >
+> >  Documentation/netlink/specs/netdev.yaml | 104 ++++
+> >  drivers/net/virtio_net.c                | 755 +++++++++++++++++++++---
+> >  include/net/netdev_queues.h             |  27 +
+> >  include/uapi/linux/netdev.h             |  19 +
+> >  include/uapi/linux/virtio_net.h         | 143 +++++
+> >  net/core/netdev-genl.c                  |  23 +-
+> >  tools/include/uapi/linux/netdev.h       |  19 +
+> >  7 files changed, 1013 insertions(+), 77 deletions(-)
+> >
+> > --
+> > 2.32.0.3.g01195cf9f
+>
 
