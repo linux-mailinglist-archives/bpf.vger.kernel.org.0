@@ -1,241 +1,201 @@
-Return-Path: <bpf+bounces-27705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B27DE8B0F2E
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 17:56:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1618B0F7F
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 18:15:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B343297533
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 15:56:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D4831F22403
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 16:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5227816078B;
-	Wed, 24 Apr 2024 15:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D9D161321;
+	Wed, 24 Apr 2024 16:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="A0l1Y6G9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MdsA27fi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A13815E1EA
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 15:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73CB15EFAC;
+	Wed, 24 Apr 2024 16:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713974100; cv=none; b=JKMaMzvx3JPT0Gp6I/cmuPMmRQnyTTrN2nhl4JjfNcAuC9zarZ/jrYzLAizSLQ5NOPuGyk5ndO/1BD8aeH0nmohv3AJ+MLyDpx+0Ert++wTPpxGlPP0FTrwozpsk/ApMfGMh4aMsxKywsDpgvbE9euD8vWaPwxDN/lTby/J6OUA=
+	t=1713975266; cv=none; b=KMlG9ii1UifuTR8C1c4wpGs1ENLzZYV6MBtnir6YjIEDpRxEzO4Mpay+SdQMUht06GO+FgtUE0YZoaOMWnLeH/hf21eqUFmALVhTwctAFz1XNzvesY6bWFTz/+PXMkkzTjjSul1unph90cGM2MmJOCJn7xitmJ7wL63V649N0H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713974100; c=relaxed/simple;
-	bh=i8OblIO5ZyNGR1rYyuyfKZtLEHUc9e6643dqaqywVsM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GBf99Tc5NJziwbPoQUsyTvowTnBy+x2RFC9FoHeqVLWB0GemWyPPbnHiAkmNXAMadrr6SrsoHx5q3WzSnPMmmzweML+f5tglvvy80JF7EaxrCc4zK2UC6I69xHvXRcInfHjMqaCY14bOqYHa9mqgZXZblI5sju2xp0de47htgfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=A0l1Y6G9; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OF4FeF009721;
-	Wed, 24 Apr 2024 15:54:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=IKIJ379N3irjBOAw371h8lM9/5wlnwP/ffJj0fjpYtc=;
- b=A0l1Y6G9vhdGaV8qWEw7PidmLx+bO/jk75gRNwu4JEpetxc7B/sbZqhIhBPZDtMz4gbX
- NT005D5U6t/woFDm4aHiMGjmMqch0rfGuasS8gvEx/B3MVDOw/Z9t7a8KpthJYhAysI7
- NHCnuU3Vf3eFiJaHsKm5md8Plqh8chnCsVIDIGWTKptoKGNV8WDUNaS5d0qSwYHCSZei
- wH1L61yUQbaBhi6lduWiiZ7IhVIdbVlD57JOZHMOB0/ieHUPArtkdf6Ye/vOlXbDtg5M
- x2O53S0gMkjquoupaWxJkBSR5ZlTRFu/aFFv+pdmDKhfDj6FP1LjZKiSHI6dNlfAOf6I Wg== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm5kbs4pv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Apr 2024 15:54:29 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43OFlC3V035564;
-	Wed, 24 Apr 2024 15:54:17 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xm4592bdh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Apr 2024 15:54:17 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OFsGa7019840;
-	Wed, 24 Apr 2024 15:54:16 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-216-158.vpn.oracle.com [10.175.216.158])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xm4592ba3-1;
-	Wed, 24 Apr 2024 15:54:15 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: andrii@kernel.org, ast@kernel.org
-Cc: jolsa@kernel.org, acme@redhat.com, quentin@isovalent.com,
-        eddyz87@gmail.com, mykolal@fb.com, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org,
-        masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH dwarves] btf_encoder: add "distilled_base" BTF feature to split BTF generation
-Date: Wed, 24 Apr 2024 16:54:10 +0100
-Message-Id: <20240424155410.3420388-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1713975266; c=relaxed/simple;
+	bh=9MncDPfJ4lea78B0+wr4TTGFzObzGH+po/TheICAUZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Tcm2qLV7KVa7UXFI0wECo+s9vRoOenjGGk9qBSpE6WXDD28pTLVugrY+X+XPD+jxbEOahtX9F1PDTu3bozkRiCmvCL9ERnDkMIuA5CeK9iiAY3/K2t173hF8ZR86/U1nVgGnHJtv42IRJxtcJF+QVf1tg571Dmt3UkpCcy4avws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MdsA27fi; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-34a3e0b31e6so5198332f8f.1;
+        Wed, 24 Apr 2024 09:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713975263; x=1714580063; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CT4y4wU6eakh2letdluSamYpLPEff2M/cXKmxgLn8p0=;
+        b=MdsA27fi/zHwOfl6pDfBmkYmCr1qrbFLKzZZ3MhIevUlZY4hCM1MLKZTVSC8YdEIt4
+         y7D1ReYo5MbuTBgntTFVX1HH2R4WjYRU6jX1Ou5FbshTpoXo193SGFa0iZ1xlL9GOPfj
+         9qlCkutcgGEWRq/TWbQckIS1CNlT6GieOnduGQibu3LrmbDKal2fAtsKjS49tmOVIEcW
+         OVdKSOqEmwcmXi7j87+euRQnlLbGp6/4EZAp3IXRf4H4AyUeqe5unfkESx9eiFUnXcTe
+         AOxoEnp568SaxgkjKfSqQ93RctAPG9y4l8gvityB1ExAI5dBbx9he3sPF72mSPzoNYKi
+         hp2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713975263; x=1714580063;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CT4y4wU6eakh2letdluSamYpLPEff2M/cXKmxgLn8p0=;
+        b=gfMbaP1qsBlJKPXn1SWACo9Wo5g5esnMenEFAGVe7uSICyiBWJrfw33EQS+gvh3/y7
+         mKJgyYZlP7KHDltLtU8IewncHXO8qgj0y9hPNmcA8eURL3dRaDXWuPkQJijz4039K/mo
+         pr5XXkCr845RPuRzeKw0WUhoaBeo5iNVqDpBeVEy15B74UApUgpv5DFvVERjZDyii5zs
+         3BJPVI+C0kewu4hLVgjsSh+Vtwfw8lf2DmPO6EowVuvM8wNvATNzFUfzibQeI9xF8CgJ
+         su4w9L5tiGGr91Ps/a/QP2wDhPa1Iwh4lmzxK86fM4sAc14nK/q6NrsjTCijNRiSkJ77
+         mz7A==
+X-Forwarded-Encrypted: i=1; AJvYcCWg+oIrV4hdV+I16zxJMJiDwhclUq7JGe+f64WudEKYsr6CUHIR0G/+tm//wB5J0hQuxG2YrltEgW7RN0oezZ9coh2jVZQWZQfOJNqO2jMLb/9A4jw9F4Xq8GE632sRrtnRiAQaT/X5DBJ3fRZdeh7iWWxXUlaiGc3DQV6l40YQWLZR
+X-Gm-Message-State: AOJu0YyYwuIXt7P9iOc3Pk9PQcjV1mf6h7neVLjLo7kYlW5/Ml2LTJeX
+	fubAI+C5kuSBjOhl7v/cxozA8kKW/81jPWCOsonKQl+ZKZIHxYhdJ1tLL7KBOI1TRhBroxyikvB
+	vezr0Lehf2f3Xo0BKnMvcbvnU67qnaRpr
+X-Google-Smtp-Source: AGHT+IFehvEMSN3L9+fb8yyyTr1gCkMM9L5dO+352gMAp4qDg0koqOQLNMQ1nlLdzC4mWiYvJPMsU9PGLIgjnir76Ks=
+X-Received: by 2002:a5d:54c2:0:b0:34b:ce32:aa8 with SMTP id
+ x2-20020a5d54c2000000b0034bce320aa8mr1288352wrv.7.1713975262790; Wed, 24 Apr
+ 2024 09:14:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_13,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404240064
-X-Proofpoint-GUID: Nap0-cLkHmeB90hg_KeMmug4T0FsAiXM
-X-Proofpoint-ORIG-GUID: Nap0-cLkHmeB90hg_KeMmug4T0FsAiXM
+References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org> <20240420-bpf_wq-v2-11-6c986a5a741f@kernel.org>
+ <CAADnVQJ9Qw6Lr644xRTU-n16UkBCyHoTAQs7QqGiniOdsOVAJg@mail.gmail.com> <CAADnVQKfzu1F=xZxyYhiocAn1iM=8f13Ca-2Jfht2dXsXuGu9A@mail.gmail.com>
+In-Reply-To: <CAADnVQKfzu1F=xZxyYhiocAn1iM=8f13Ca-2Jfht2dXsXuGu9A@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 24 Apr 2024 09:14:11 -0700
+Message-ID: <CAADnVQJTyXS--chM61Ysk7sDNXoUqPctprXwZ8DEcJMHa9Uy3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/16] bpf: wq: add bpf_wq_init
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Adding "distilled_base" to --btf_features when generating split BTF will
-create split and .BTF.base BTF - the latter allows us to map references
-from split BTF to base BTF, even if that base BTF has changed.  It does
-this by providing just enough information about the base types in the
-.BTF.base section.
+On Wed, Apr 24, 2024 at 8:06=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Apr 23, 2024 at 7:55=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sat, Apr 20, 2024 at 2:10=E2=80=AFAM Benjamin Tissoires <bentiss@ker=
+nel.org> wrote:
+> > >
+> > > We need to teach the verifier about the second argument which is decl=
+ared
+> > > as void * but which is of type KF_ARG_PTR_TO_MAP. We could have dropp=
+ed
+> > > this extra case if we declared the second argument as struct bpf_map =
+*,
+> > > but that means users will have to do extra casting to have their prog=
+ram
+> > > compile.
+> > >
+> > > We also need to duplicate the timer code for the checking if the map
+> > > argument is matching the provided workqueue.
+> > >
+> > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > >
+> > > ---
+> > >
+> > > FWIW, I still have one concern with this implementation:
+> > > - bpf_wq_work() access ->prog without protection, but I think this mi=
+ght
+> > >   be racing with bpf_wq_set_callback(): if we have the following:
+> > >
+> > >   CPU 0                                     CPU 1
+> > >   bpf_wq_set_callback()
+> > >   bpf_start()
+> > >                                             bpf_wq_work():
+> > >                                               prog =3D cb->prog;
+> > >
+> > >   bpf_wq_set_callback()
+> > >     cb->prog =3D prog;
+> > >     bpf_prog_put(prev)
+> > >     rcu_assign_ptr(cb->callback_fn,
+> > >                    callback_fn);
+> > >                                            callback =3D READ_ONCE(w->=
+cb.callback_fn);
+> > >
+> > >   As I understand callback_fn is fine, prog might be, but we clearly
+> > >   have an inconstency between "prog" and "callback_fn" as they can co=
+me
+> > >   from 2 different bpf_wq_set_callback() calls.
+> > >
+> > >   IMO we should protect this by the async->lock, but I'm not sure if
+> > >   it's OK or not.
+> >
+> > I see the concern, but I think it's overkill.
+> > Here 'prog' is used to pass it into __bpf_prog_enter_sleepable_recur()
+> > to keep the standard pattern of calling into sleepable prog.
+> > But it won't recurse.
+> > We can open code migrate_disable,etc from there except this_cpu_inc_ret=
+urn,
+> > but it's an overkill.
+> > The passed 'prog' is irrelevant.
+> > If somebody tries really hard by having two progs sharing the same
+> > map with bpf_wq and racing to set_callback... I can see how
+> > prog won't match callback, but it won't make a difference.
+> > prog is not going trigger recursion check (unless somebody
+> > tries is obsessed) and not going to UAF.
+> > I imagine it's possible to attach somewhere in core wq callback
+> > invocation path with fentry, set_callback to the same prog,
+> > and technically it's kinda sorta recursion, but different subprogs,
+> > so not a safety issue.
+> > The code as-is is fine. imo.
+>
+> After sleeping on it, I realized that the use of
+> __bpf_prog_enter_sleepable_recur() here is very much incorrect :(
+> The tests are passing only because we don't inc prog->active
+> when we run the prog via prog_run cmd.
+> Adding the following:
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index f6aad4ed2ab2..0732dfe22204 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -1514,7 +1514,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog=
+,
+>         }
+>
+>         rcu_read_lock_trace();
+> +       this_cpu_inc_return(*(prog->active));
+>         retval =3D bpf_prog_run_pin_on_cpu(prog, ctx);
+> +       this_cpu_dec(*(prog->active));
+>         rcu_read_unlock_trace();
+>
+> makes the test fail sporadically.
+> Or 100% fail when the kernel is booted with 1 cpu.
+>
+> Could you send a quick follow up to
+> replace __bpf_prog_enter_sleepable_recur() with
+>         rcu_read_lock_trace();
+>         migrate_disable();
+> ?
+>
+> Or I'll do it in an hour or so.
 
-Patch is applicable on the "next" branch of dwarves, and requires the
-libbpf from the series in [1]
+Considering two broken-build reports already
+I've applied the following fix:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=
+=3Ddc92febf7b93da5049fe177804e6b1961fcc6bd7
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-
-[1] https://lore.kernel.org/bpf/20240424154806.3417662-1-alan.maguire@oracle.com/
----
- btf_encoder.c      | 40 ++++++++++++++++++++++++++++------------
- dwarves.h          |  1 +
- man-pages/pahole.1 |  3 +++
- pahole.c           |  1 +
- 4 files changed, 33 insertions(+), 12 deletions(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index e1e3529..cc76f62 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -75,7 +75,8 @@ struct btf_encoder {
- 			  verbose,
- 			  force,
- 			  gen_floats,
--			  is_rel;
-+			  is_rel,
-+			  gen_distilled_base;
- 	uint32_t	  array_index_id;
- 	struct {
- 		struct var_info *vars;
-@@ -1255,9 +1256,9 @@ static int btf_encoder__write_raw_file(struct btf_encoder *encoder)
- 	return err;
- }
- 
--static int btf_encoder__write_elf(struct btf_encoder *encoder)
-+static int btf_encoder__write_elf(struct btf_encoder *encoder, const struct btf *btf,
-+				  const char *btf_secname)
- {
--	struct btf *btf = encoder->btf;
- 	const char *filename = encoder->filename;
- 	GElf_Shdr shdr_mem, *shdr;
- 	Elf_Data *btf_data = NULL;
-@@ -1297,7 +1298,7 @@ static int btf_encoder__write_elf(struct btf_encoder *encoder)
- 		if (shdr == NULL)
- 			continue;
- 		char *secname = elf_strptr(elf, strndx, shdr->sh_name);
--		if (strcmp(secname, ".BTF") == 0) {
-+		if (strcmp(secname, btf_secname) == 0) {
- 			btf_data = elf_getdata(scn, btf_data);
- 			break;
- 		}
-@@ -1341,11 +1342,11 @@ static int btf_encoder__write_elf(struct btf_encoder *encoder)
- 			goto unlink;
- 		}
- 
--		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
--			 llvm_objcopy, tmp_fn, filename);
-+		snprintf(cmd, sizeof(cmd), "%s --add-section %s=%s %s",
-+			 llvm_objcopy, btf_secname, tmp_fn, filename);
- 		if (system(cmd)) {
--			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
--				__func__, filename, errno);
-+			fprintf(stderr, "%s: failed to add %s section to '%s': %d!\n",
-+				__func__, btf_secname, filename, errno);
- 			goto unlink;
- 		}
- 
-@@ -1380,12 +1381,26 @@ int btf_encoder__encode(struct btf_encoder *encoder)
- 		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
- 		return -1;
- 	}
--
--	if (encoder->raw_output)
-+	if (encoder->raw_output) {
- 		err = btf_encoder__write_raw_file(encoder);
--	else
--		err = btf_encoder__write_elf(encoder);
-+	} else {
-+		struct btf *btf = encoder->btf, *distilled_base;
- 
-+		if (encoder->gen_distilled_base) {
-+			if (btf__distill_base(encoder->btf, &distilled_base, &btf) < 0) {
-+				fprintf(stderr, "could not generate distilled base BTF: %s\n",
-+					strerror(errno));
-+				return -1;
-+			}
-+		}
-+		err = btf_encoder__write_elf(encoder, btf, BTF_ELF_SEC);
-+		if (!err && encoder->gen_distilled_base)
-+			err = btf_encoder__write_elf(encoder, distilled_base, BTF_BASE_ELF_SEC);
-+		if (btf != encoder->btf) {
-+			btf__free((struct btf *)btf__base_btf(btf));
-+			btf__free(btf);
-+		}
-+	}
- 	return err;
- }
- 
-@@ -1659,6 +1674,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		encoder->force		 = conf_load->btf_encode_force;
- 		encoder->gen_floats	 = conf_load->btf_gen_floats;
- 		encoder->skip_encoding_vars = conf_load->skip_encoding_btf_vars;
-+		encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
- 		encoder->verbose	 = verbose;
- 		encoder->has_index_type  = false;
- 		encoder->need_index_type = false;
-diff --git a/dwarves.h b/dwarves.h
-index dd35a4e..5f5e2b6 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -94,6 +94,7 @@ struct conf_load {
- 	bool			btf_gen_floats;
- 	bool			btf_encode_force;
- 	bool			reproducible_build;
-+	bool			btf_gen_distilled_base;
- 	uint8_t			hashtable_bits;
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index e3c58e0..bfeb0ff 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -316,6 +316,9 @@ Supported non-standard features (not enabled for 'default')
- 	reproducible_build Ensure generated BTF is consistent every time;
- 	                   without this parallel BTF encoding can result in
- 	                   inconsistent BTF ids.
-+	distilled_base     For split BTF, generate a distilled version of
-+	                   the associated base BTF to support later relocation
-+	                   of split BTF with a possibly changed base.
- .fi
- 
- So for example, specifying \-\-btf_encode=var,enum64 will result in a BTF encoding that (as well as encoding basic BTF information) will contain variables and enum64 values.
-diff --git a/pahole.c b/pahole.c
-index 750b847..79d01dc 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -1290,6 +1290,7 @@ struct btf_feature {
- 	BTF_DEFAULT_FEATURE(optimized_func, btf_gen_optimized, false),
- 	BTF_DEFAULT_FEATURE(consistent_func, skip_encoding_btf_inconsistent_proto, false),
- 	BTF_NON_DEFAULT_FEATURE(reproducible_build, reproducible_build, false),
-+	BTF_NON_DEFAULT_FEATURE(distilled_base, btf_gen_distilled_base, false),
- };
- 
- #define BTF_MAX_FEATURE_STR	1024
--- 
-2.31.1
-
+that addresses the build issue on !JIT and fixes this recursion problem.
 
