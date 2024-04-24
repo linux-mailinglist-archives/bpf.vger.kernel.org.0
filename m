@@ -1,65 +1,63 @@
-Return-Path: <bpf+bounces-27704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27705-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83D68B0F16
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 17:52:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27DE8B0F2E
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 17:56:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FC61295815
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 15:52:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B343297533
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 15:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B244C161B6B;
-	Wed, 24 Apr 2024 15:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5227816078B;
+	Wed, 24 Apr 2024 15:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Jl+mtTZ0"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="A0l1Y6G9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8740116193E
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 15:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A13815E1EA
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 15:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713973784; cv=none; b=AIxcr8utvlD1ee12XoLuj8iUduKZrgUN1py5VQTlpQg2GErDNMtlI18qGH69MSVTqzXz5Ybo3q+rDa4TJfTuzzHcpvxeEIYY8C557I+qtcLeFmhVyBX74y8ysUp8PKkii37bRUCZkKEphet3u6QrGLWUpYNm6C24vkWI+t54nOo=
+	t=1713974100; cv=none; b=JKMaMzvx3JPT0Gp6I/cmuPMmRQnyTTrN2nhl4JjfNcAuC9zarZ/jrYzLAizSLQ5NOPuGyk5ndO/1BD8aeH0nmohv3AJ+MLyDpx+0Ert++wTPpxGlPP0FTrwozpsk/ApMfGMh4aMsxKywsDpgvbE9euD8vWaPwxDN/lTby/J6OUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713973784; c=relaxed/simple;
-	bh=+HZXhraZgxOkG2ZhCmB2sEfbIoA6LJa7cp7h9ZQwenc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PB+GSrAZYc4u/kQpaXhq53dzm1sGcs9is5bKjHdYBeNdnM7yndgfBfmQGyEz4478VfycFOq/LDjBYersogWZKfO3mXbq3vmWs3kdnYz7bGxGgZ3BzETXVnbExzLQ7t5DV8uE3U2gCEAjcfpVJ/dyKvNdsnGapFgmPb3rpBOoYYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Jl+mtTZ0; arc=none smtp.client-ip=205.220.177.32
+	s=arc-20240116; t=1713974100; c=relaxed/simple;
+	bh=i8OblIO5ZyNGR1rYyuyfKZtLEHUc9e6643dqaqywVsM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GBf99Tc5NJziwbPoQUsyTvowTnBy+x2RFC9FoHeqVLWB0GemWyPPbnHiAkmNXAMadrr6SrsoHx5q3WzSnPMmmzweML+f5tglvvy80JF7EaxrCc4zK2UC6I69xHvXRcInfHjMqaCY14bOqYHa9mqgZXZblI5sju2xp0de47htgfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=A0l1Y6G9; arc=none smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OFQBKE023161;
-	Wed, 24 Apr 2024 15:49:17 GMT
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OF4FeF009721;
+	Wed, 24 Apr 2024 15:54:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=fWkruEM9KuqgXoWx/b4UIshz413t7thTfPdnBi4uYuY=;
- b=Jl+mtTZ0T9aKaYHmALpy2FxSDuqeoohY8qVxFYxggjgdlzslUpnvAp4XR+BeVJ1GbPK2
- YqsHAPPK7T9H3uFzhz5WzwOFihW+FO/sB1sHucfuLJG4jMXuNuzlr5BQdxelDLci/mJ0
- CFC3/tuvDv2d1GUjPbdh4s+0vrr7bhbJkVOUQ9NHepmYwhGlH8fUqJqQDPAO8ZmNkjUB
- uxQZPuSH+U4CLQ0q80JGa5/A3uWxGrXPOBvYHFErWEupfCgzb7rLaA/G5ffYFDqbUFuK
- wuRWshxILgnbcF4ZkubjTQWjB7wMamqLiiikcHA0xN8CD3djHzdnf4Na44NvBudNgu3C +Q== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm5aurgvc-1
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=IKIJ379N3irjBOAw371h8lM9/5wlnwP/ffJj0fjpYtc=;
+ b=A0l1Y6G9vhdGaV8qWEw7PidmLx+bO/jk75gRNwu4JEpetxc7B/sbZqhIhBPZDtMz4gbX
+ NT005D5U6t/woFDm4aHiMGjmMqch0rfGuasS8gvEx/B3MVDOw/Z9t7a8KpthJYhAysI7
+ NHCnuU3Vf3eFiJaHsKm5md8Plqh8chnCsVIDIGWTKptoKGNV8WDUNaS5d0qSwYHCSZei
+ wH1L61yUQbaBhi6lduWiiZ7IhVIdbVlD57JOZHMOB0/ieHUPArtkdf6Ye/vOlXbDtg5M
+ x2O53S0gMkjquoupaWxJkBSR5ZlTRFu/aFFv+pdmDKhfDj6FP1LjZKiSHI6dNlfAOf6I Wg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm5kbs4pv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Apr 2024 15:49:17 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43OFbl0H025235;
-	Wed, 24 Apr 2024 15:49:17 GMT
+	Wed, 24 Apr 2024 15:54:29 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43OFlC3V035564;
+	Wed, 24 Apr 2024 15:54:17 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xm45fb0n2-1
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xm4592bdh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Apr 2024 15:49:16 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OFmCoo008769;
-	Wed, 24 Apr 2024 15:49:16 GMT
+	Wed, 24 Apr 2024 15:54:17 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OFsGa7019840;
+	Wed, 24 Apr 2024 15:54:16 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-216-158.vpn.oracle.com [10.175.216.158])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3xm45faxuq-14;
-	Wed, 24 Apr 2024 15:49:16 +0000
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xm4592ba3-1;
+	Wed, 24 Apr 2024 15:54:15 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: andrii@kernel.org, ast@kernel.org
 Cc: jolsa@kernel.org, acme@redhat.com, quentin@isovalent.com,
@@ -69,12 +67,10 @@ Cc: jolsa@kernel.org, acme@redhat.com, quentin@isovalent.com,
         haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org,
         masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next 13/13] bpftool: support displaying relocated-with-base split BTF
-Date: Wed, 24 Apr 2024 16:48:06 +0100
-Message-Id: <20240424154806.3417662-14-alan.maguire@oracle.com>
+Subject: [PATCH dwarves] btf_encoder: add "distilled_base" BTF feature to split BTF generation
+Date: Wed, 24 Apr 2024 16:54:10 +0100
+Message-Id: <20240424155410.3420388-1-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240424154806.3417662-1-alan.maguire@oracle.com>
-References: <20240424154806.3417662-1-alan.maguire@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,192 +81,160 @@ Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-24_13,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- mlxscore=0 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404240063
-X-Proofpoint-ORIG-GUID: 0xtKpJNIRuM-eqgfaWGbEN01gmd4XL9W
-X-Proofpoint-GUID: 0xtKpJNIRuM-eqgfaWGbEN01gmd4XL9W
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404240064
+X-Proofpoint-GUID: Nap0-cLkHmeB90hg_KeMmug4T0FsAiXM
+X-Proofpoint-ORIG-GUID: Nap0-cLkHmeB90hg_KeMmug4T0FsAiXM
 
-If the -R <base_btf> option is used, we can display BTF that has been
-generated with distilled base BTF in its relocated form.  For example
-for bpf_testmod.ko (which is built as an out-of-tree module, so has
-a distilled .BTF.base section:
+Adding "distilled_base" to --btf_features when generating split BTF will
+create split and .BTF.base BTF - the latter allows us to map references
+from split BTF to base BTF, even if that base BTF has changed.  It does
+this by providing just enough information about the base types in the
+.BTF.base section.
 
-bpftool btf dump file bpf_testmod.ko
-
-Alternatively, we can display content relocated with
-(a possibly changed) base BTF via
-
-bpftool btf dump -R /sys/kernel/btf/vmlinux bpf_testmod.ko
-
-The latter mirrors how the kernel will handle such split
-BTF; it relocates its representation with the running
-kernel, and if successful, renumbers BTF ids to reference
-the current vmlinux BTF.
+Patch is applicable on the "next" branch of dwarves, and requires the
+libbpf from the series in [1]
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/bpf/bpftool/Documentation/bpftool-btf.rst | 15 ++++++++++++++-
- tools/bpf/bpftool/bash-completion/bpftool       |  7 ++++---
- tools/bpf/bpftool/btf.c                         | 11 ++++++++++-
- tools/bpf/bpftool/main.c                        | 14 +++++++++++++-
- tools/bpf/bpftool/main.h                        |  2 ++
- 5 files changed, 43 insertions(+), 6 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index eaba24320fb2..fd6bb1280e7b 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -16,7 +16,7 @@ SYNOPSIS
+[1] https://lore.kernel.org/bpf/20240424154806.3417662-1-alan.maguire@oracle.com/
+---
+ btf_encoder.c      | 40 ++++++++++++++++++++++++++++------------
+ dwarves.h          |  1 +
+ man-pages/pahole.1 |  3 +++
+ pahole.c           |  1 +
+ 4 files changed, 33 insertions(+), 12 deletions(-)
+
+diff --git a/btf_encoder.c b/btf_encoder.c
+index e1e3529..cc76f62 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -75,7 +75,8 @@ struct btf_encoder {
+ 			  verbose,
+ 			  force,
+ 			  gen_floats,
+-			  is_rel;
++			  is_rel,
++			  gen_distilled_base;
+ 	uint32_t	  array_index_id;
+ 	struct {
+ 		struct var_info *vars;
+@@ -1255,9 +1256,9 @@ static int btf_encoder__write_raw_file(struct btf_encoder *encoder)
+ 	return err;
+ }
  
- **bpftool** [*OPTIONS*] **btf** *COMMAND*
- 
--*OPTIONS* := { |COMMON_OPTIONS| | { **-B** | **--base-btf** } }
-+*OPTIONS* := { |COMMON_OPTIONS| | { **-B** | **--base-btf** } { **-R** | **relocate-base-btf** } }
- 
- *COMMANDS* := { **dump** | **help** }
- 
-@@ -85,6 +85,19 @@ OPTIONS
-     BTF object is passed through other handles, this option becomes
-     necessary.
- 
-+-R, --relocate-base-btf *FILE*
-+    When split BTF is generated with distilled base BTF for relocation,
-+    the latter is stored in a .BTF.base section and allows us to later
-+    relocate split BTF and a potentially-changed base BTF by using
-+    information in the .BTF.base section about the base types referenced
-+    from split BTF.  Relocation is carried out against the split BTF
-+    supplied via this parameter and the split BTF will then refer to
-+    the base types supplied in *FILE*.
-+
-+    If this option is not used, split BTF is shown relative to the
-+    .BTF.base, which contains just enough information to support later
-+    relocation.
-+
- EXAMPLES
- ========
- **# bpftool btf dump id 1226**
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 04afe2ac2228..878cf3d49a76 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -262,7 +262,7 @@ _bpftool()
-     # Deal with options
-     if [[ ${words[cword]} == -* ]]; then
-         local c='--version --json --pretty --bpffs --mapcompat --debug \
--            --use-loader --base-btf'
-+            --use-loader --base-btf --relocate-base-btf'
-         COMPREPLY=( $( compgen -W "$c" -- "$cur" ) )
-         return 0
-     fi
-@@ -283,7 +283,7 @@ _bpftool()
-             _sysfs_get_netdevs
-             return 0
-             ;;
--        file|pinned|-B|--base-btf)
-+        file|pinned|-B|-R|--base-btf|--relocate-base-btf)
-             _filedir
-             return 0
-             ;;
-@@ -297,7 +297,8 @@ _bpftool()
-     local i pprev
-     for (( i=1; i < ${#words[@]}; )); do
-         if [[ ${words[i]::1} == - ]] &&
--            [[ ${words[i]} != "-B" ]] && [[ ${words[i]} != "--base-btf" ]]; then
-+            [[ ${words[i]} != "-B" ]] && [[ ${words[i]} != "--base-btf" ]] &&
-+            [[ ${words[i]} != "-R" ]] && [[ ${words[i]} != "--relocate-base-btf" ]]; then
-             words=( "${words[@]:0:i}" "${words[@]:i+1}" )
-             [[ $i -le $cword ]] && cword=$(( cword - 1 ))
-         else
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 2e8bd2c9f0a3..7df8a686fef7 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -639,6 +639,14 @@ static int do_dump(int argc, char **argv)
- 			base_btf = btf__parse_opts(*argv, &optp);
- 			if (base_btf)
- 				btf = btf__parse_split(*argv, base_btf);
-+			if (btf && relocate_base_btf) {
-+				err = btf__relocate(btf, relocate_base_btf);
-+				if (err) {
-+					p_err("could not relocate BTF from '%s' with base BTF '%s': %s\n",
-+					      *argv, relocate_base_btf_path, strerror(-err));
-+					goto done;
-+				}
-+			}
- 		}
- 		if (!btf) {
- 			err = -errno;
-@@ -1076,7 +1084,8 @@ static int do_help(int argc, char **argv)
- 		"       " HELP_SPEC_MAP "\n"
- 		"       " HELP_SPEC_PROGRAM "\n"
- 		"       " HELP_SPEC_OPTIONS " |\n"
--		"                    {-B|--base-btf} }\n"
-+		"                    {-B|--base-btf} |\n"
-+		"                    {-R|--relocate-base-btf} }\n"
- 		"",
- 		bin_name, "btf");
- 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 08d0ac543c67..69d4906bec5c 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -32,6 +32,8 @@ bool verifier_logs;
- bool relaxed_maps;
- bool use_loader;
- struct btf *base_btf;
-+struct btf *relocate_base_btf;
-+const char *relocate_base_btf_path;
- struct hashmap *refs_table;
- 
- static void __noreturn clean_and_exit(int i)
-@@ -448,6 +450,7 @@ int main(int argc, char **argv)
- 		{ "debug",	no_argument,	NULL,	'd' },
- 		{ "use-loader",	no_argument,	NULL,	'L' },
- 		{ "base-btf",	required_argument, NULL, 'B' },
-+		{ "relocate-base-btf", required_argument, NULL, 'R' },
- 		{ 0 }
- 	};
- 	bool version_requested = false;
-@@ -473,7 +476,7 @@ int main(int argc, char **argv)
- 	bin_name = "bpftool";
- 
- 	opterr = 0;
--	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:l",
-+	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:lR:",
- 				  options, NULL)) >= 0) {
- 		switch (opt) {
- 		case 'V':
-@@ -519,6 +522,15 @@ int main(int argc, char **argv)
- 		case 'L':
- 			use_loader = true;
+-static int btf_encoder__write_elf(struct btf_encoder *encoder)
++static int btf_encoder__write_elf(struct btf_encoder *encoder, const struct btf *btf,
++				  const char *btf_secname)
+ {
+-	struct btf *btf = encoder->btf;
+ 	const char *filename = encoder->filename;
+ 	GElf_Shdr shdr_mem, *shdr;
+ 	Elf_Data *btf_data = NULL;
+@@ -1297,7 +1298,7 @@ static int btf_encoder__write_elf(struct btf_encoder *encoder)
+ 		if (shdr == NULL)
+ 			continue;
+ 		char *secname = elf_strptr(elf, strndx, shdr->sh_name);
+-		if (strcmp(secname, ".BTF") == 0) {
++		if (strcmp(secname, btf_secname) == 0) {
+ 			btf_data = elf_getdata(scn, btf_data);
  			break;
-+		case 'R':
-+			relocate_base_btf_path = optarg;
-+			relocate_base_btf = btf__parse(optarg, NULL);
-+			if (!relocate_base_btf) {
-+				p_err("failed to parse base BTF for relocation at '%s': %d\n",
-+				      optarg, -errno);
+ 		}
+@@ -1341,11 +1342,11 @@ static int btf_encoder__write_elf(struct btf_encoder *encoder)
+ 			goto unlink;
+ 		}
+ 
+-		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
+-			 llvm_objcopy, tmp_fn, filename);
++		snprintf(cmd, sizeof(cmd), "%s --add-section %s=%s %s",
++			 llvm_objcopy, btf_secname, tmp_fn, filename);
+ 		if (system(cmd)) {
+-			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
+-				__func__, filename, errno);
++			fprintf(stderr, "%s: failed to add %s section to '%s': %d!\n",
++				__func__, btf_secname, filename, errno);
+ 			goto unlink;
+ 		}
+ 
+@@ -1380,12 +1381,26 @@ int btf_encoder__encode(struct btf_encoder *encoder)
+ 		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
+ 		return -1;
+ 	}
+-
+-	if (encoder->raw_output)
++	if (encoder->raw_output) {
+ 		err = btf_encoder__write_raw_file(encoder);
+-	else
+-		err = btf_encoder__write_elf(encoder);
++	} else {
++		struct btf *btf = encoder->btf, *distilled_base;
+ 
++		if (encoder->gen_distilled_base) {
++			if (btf__distill_base(encoder->btf, &distilled_base, &btf) < 0) {
++				fprintf(stderr, "could not generate distilled base BTF: %s\n",
++					strerror(errno));
 +				return -1;
 +			}
-+			break;
- 		default:
- 			p_err("unrecognized option '%s'", argv[optind - 1]);
- 			if (json_output)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 9eb764fe4cc8..bbf8194a2d76 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -83,6 +83,8 @@ extern bool verifier_logs;
- extern bool relaxed_maps;
- extern bool use_loader;
- extern struct btf *base_btf;
-+extern struct btf *relocate_base_btf;
-+extern const char *relocate_base_btf_path;
- extern struct hashmap *refs_table;
++		}
++		err = btf_encoder__write_elf(encoder, btf, BTF_ELF_SEC);
++		if (!err && encoder->gen_distilled_base)
++			err = btf_encoder__write_elf(encoder, distilled_base, BTF_BASE_ELF_SEC);
++		if (btf != encoder->btf) {
++			btf__free((struct btf *)btf__base_btf(btf));
++			btf__free(btf);
++		}
++	}
+ 	return err;
+ }
  
- void __printf(1, 2) p_err(const char *fmt, ...);
+@@ -1659,6 +1674,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
+ 		encoder->force		 = conf_load->btf_encode_force;
+ 		encoder->gen_floats	 = conf_load->btf_gen_floats;
+ 		encoder->skip_encoding_vars = conf_load->skip_encoding_btf_vars;
++		encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
+ 		encoder->verbose	 = verbose;
+ 		encoder->has_index_type  = false;
+ 		encoder->need_index_type = false;
+diff --git a/dwarves.h b/dwarves.h
+index dd35a4e..5f5e2b6 100644
+--- a/dwarves.h
++++ b/dwarves.h
+@@ -94,6 +94,7 @@ struct conf_load {
+ 	bool			btf_gen_floats;
+ 	bool			btf_encode_force;
+ 	bool			reproducible_build;
++	bool			btf_gen_distilled_base;
+ 	uint8_t			hashtable_bits;
+ 	uint8_t			max_hashtable_bits;
+ 	uint16_t		kabi_prefix_len;
+diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+index e3c58e0..bfeb0ff 100644
+--- a/man-pages/pahole.1
++++ b/man-pages/pahole.1
+@@ -316,6 +316,9 @@ Supported non-standard features (not enabled for 'default')
+ 	reproducible_build Ensure generated BTF is consistent every time;
+ 	                   without this parallel BTF encoding can result in
+ 	                   inconsistent BTF ids.
++	distilled_base     For split BTF, generate a distilled version of
++	                   the associated base BTF to support later relocation
++	                   of split BTF with a possibly changed base.
+ .fi
+ 
+ So for example, specifying \-\-btf_encode=var,enum64 will result in a BTF encoding that (as well as encoding basic BTF information) will contain variables and enum64 values.
+diff --git a/pahole.c b/pahole.c
+index 750b847..79d01dc 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -1290,6 +1290,7 @@ struct btf_feature {
+ 	BTF_DEFAULT_FEATURE(optimized_func, btf_gen_optimized, false),
+ 	BTF_DEFAULT_FEATURE(consistent_func, skip_encoding_btf_inconsistent_proto, false),
+ 	BTF_NON_DEFAULT_FEATURE(reproducible_build, reproducible_build, false),
++	BTF_NON_DEFAULT_FEATURE(distilled_base, btf_gen_distilled_base, false),
+ };
+ 
+ #define BTF_MAX_FEATURE_STR	1024
 -- 
 2.31.1
 
