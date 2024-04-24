@@ -1,125 +1,133 @@
-Return-Path: <bpf+bounces-27658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20258B0625
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:36:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84E178B06CD
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 12:02:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E05A284E22
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 09:36:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B93DEB24A8C
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 10:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5AB158DC0;
-	Wed, 24 Apr 2024 09:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF041591FE;
+	Wed, 24 Apr 2024 10:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="DIpPQKgs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ccm86sDB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF9C158D9B;
-	Wed, 24 Apr 2024 09:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7907158D9A;
+	Wed, 24 Apr 2024 10:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713951404; cv=none; b=pXMzpMHBZD/a49SaS/St6L1cKhDnuhQjLok+80s/rb7jYK09D4AQ4e6Uq6ilx7J8sNHHzP3bI6fhmmHBQ6hGK2KCLZxVUljI/rY/Nj47mSXyhn8RLE40NiPilPzhTKQy9LTFjcuL66jqAwdpAAAsRmylpm/+zfEPBnsWgUPNBoE=
+	t=1713952936; cv=none; b=hdZfJ9qg7i5Mi2sVGtoTQ+XEsfwHTTS1M4k3+kATuvuzIgS3guSJQgCheJzsxmpEXByz+yp6DLenea86XQnwjAkFguC1k5Oz6jQiRAFyzEuKfh7X9DJ7vRtlBkgkamzozh4HTaM3u3ClEq/qax6mYduGvKx8lzcy9s2l83qpj2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713951404; c=relaxed/simple;
-	bh=EOuuqx5APoTiCyWYFD72wurnUoAW5aLlNM0SZgsEr6A=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=NXQbPyi4VzRZ0yoO5iwIKmzob3uQETrAvR2Ds6NbK7SeGTfjoDDCC+WeDewS8LyaR9sJA2MwVWc59S7AiYwM6aRIqT1F2GdtwlhDXlDT3xq8a6ffqaTVDtp/G/f4eVKyF9IF4i019bptVfUDxlBmE2LoXffeV/57Hn8bhVeFPus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=DIpPQKgs; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713951359; x=1714556159; i=markus.elfring@web.de;
-	bh=31rAgjHngaD889kCV5k32USNySx0AzHBj1I6Gm8civo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=DIpPQKgsyIZhVxeWiDtvEbF+q1G+89r4b3gYIO391LDU7h4fhzTMJIPzrIjlE/KF
-	 hakYC/MQYeuIICHjfJfKo19YlwAI5okz2J1OXEEi9iHmXtBzqNCpb5nqM1YL4QUV2
-	 jBI2o+fn7ZIqXGwJzGy1VVP/uRv3MSNml/2J+yVbd6GFi9LsmB+LI80qqA9vS4uI6
-	 jX7bMUTLlGI98KDKS9hIgYaFnq0B3Ho96282higKowzbkyJdZWDEnO0CNNxcl5CII
-	 cZVGKpsjxxw502/Dgh9tpb/5Qqd6KGj/MURcRtuM7HnQdj1/t+HwxDamdIdfdbzds
-	 QbZnNsf1fgnNxEZ2bg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MOUtg-1sKwAj08DO-00OKSe; Wed, 24
- Apr 2024 11:35:59 +0200
-Message-ID: <33aab745-19fa-47f1-9d0b-863e88b6548c@web.de>
-Date: Wed, 24 Apr 2024 11:35:46 +0200
+	s=arc-20240116; t=1713952936; c=relaxed/simple;
+	bh=auFY18YIDH3eAr8JIYORGxi3kkoujHcNT3OIr4U6g/E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rWjc/WSeZA3AbZoF3srfNR7XSJxEQAjfwaMNOlc1XuRs0O/Oe6nUv3/5kgcz2U/8ONEg5m7N2E2mnL8EjD5GCuxHbuoLnM9jSd2PA9WpRdPdEz0M/by/LfMyP0G1KeA1tCJttts7jISBAS0pRKm0dM0xEBgIxhPc3NH7grZDZmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ccm86sDB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42161C113CE;
+	Wed, 24 Apr 2024 10:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713952935;
+	bh=auFY18YIDH3eAr8JIYORGxi3kkoujHcNT3OIr4U6g/E=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ccm86sDBB+eanMapYnGoGvq6SxoIdHZSgfO7wXEbDZ+LNO3akLLdUwu5vKon59wTM
+	 z+pxwI+l/xRZqhdyXsK3PL5UlgKhHxDGk7SL2Gktp7Ohe9/KgIGGnrMuXqb6QogmIH
+	 pfnbrhkoQCFWtqeHjecwzSzXgTFCEDZn8MQOB4bzh+hCpq6J9bYd7qtfny2WmkogPo
+	 3uMXE7SUMo4/fwWcJngJZBW9fHSTW3A5SS/JQc5EJmcWlsmY9+YJLRcR4dtS6ogaPO
+	 b9fugPnFRSNOq1aEj5UuaHXKJfFvEnlnNXEquOR6VcDEFhYbCKuWgDAIZouj0W4QAd
+	 HfXlt2cdODxsQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf v6 0/3] bpf: prevent userspace memory access
+Date: Wed, 24 Apr 2024 10:02:07 +0000
+Message-Id: <20240424100210.11982-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
-References: <20240424020444.2375773-2-chentao@kylinos.cn>
-Subject: Re: [PATCH bpf-next 1/4] selftests/bpf: Add some null pointer checks
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240424020444.2375773-2-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Oai8gOQxsIF/hOcUCafWVOxUgUMxjYuqXLEmnSKhJbY2Lnw7Xu+
- A9q59P39sHV3YJST4bLIGeDUNYwXqRX4OahVFxyelkpmTLP4utPSlLHf3M6xzKttwUOkLhe
- dVNr560NXkEGUiYOpdoUEdCBJxe3G0UL3LZn35jzGGQcY9XGylmrKk/4flhhiWoNVkCLzm8
- PzBnnG8tXhXesslMvLIig==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Bg05E1BxaFg=;KhLN/NpZF68ZfUOe1TSvGUFsRz9
- yKhOgZM2TwHifoj2Z+3g/xP3fZlMyHlTcz4zQLf8rhvX/f2of+epc9fix2CC1mEhTzV39tKiT
- /ihKYN17FQc9UmZ1yU9DkSHZWl1oNDCR5Btxyy2w+5yyGYPuz2kuL5fHJ6PvltPzFYpsNyFZg
- iMMrji3Jxe0/nPkR8exa1xuw/fyw383L7MXfwdGG/C8VWvCGj6qJO28Srkac4af6cbOefH2BY
- pY4VaNkMIWaaPedWvN8GQt9/wcSUMd+StHfoVbsQtzrMAtH0kCGVV5f0CJVcJkPWEQXs5P9i8
- Qypu0b6T14MNoJJyiV4MdDpHRDjMwig8vallNUoWkzQh/yOm+jpXE/ljlzrw8EqDzvAanD+cW
- x4sK2WVT6F1rqwTgVEkMlTi2Pxac0f9nqsHwW2ioKib5i1HEmmWo2x0xjHIOCp8csmUCAV3mb
- L4ojJ/oZkgMb4JP/5QibdodgjKxRs5kAhWkZvKbM93sI55Fb99OfXju0APopkS+m1KNwvqFqB
- RbS2InGI3RV2Rbj/DWmdiQCZ8gnurb+58TO3BmzC1znlRt0d3OdRrjxq05p+0zLA3Nfs5RrOD
- vgFBxUqZ0oWfS34ZI6ICGFhcKWjd/QUf0b/HvEFsZd79yB5OgfYi0JeYbE/f/2a6dWvx8u2sl
- GX3jLt2K0k7M9Ye5vz27lbCyjNDoKdtg9QoA32ffSw+32oFQRioBQZSBz90cnKd1uo3T3uK/j
- blrmTur4FtfH5PP2CdUcXeVHqB4Oeo+JBEg6oQ4GyXuqDBuNCFtOZxBhE8VfnBHQ1zYKM6wdt
- +gSMlG1sFsKEydUj6dnG2aYflI4ZXmBLV3cQcfaAjTZNs=
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
-> This patch will add the malloc failure checking
-=E2=80=A6
+V5: https://lore.kernel.org/bpf/20240324185356.59111-1-puranjay12@gmail.com/
+Changes in V6:
+- Disable the verifier's instrumentation in x86-64 and update the JIT to
+  take care of vsyscall page in addition to userspace addresses.
+- Update bpf_testmod to test for vsyscall addresses.
 
-* Please use a corresponding imperative wording for the change description=
-.
+V4: https://lore.kernel.org/bpf/20240321124640.8870-1-puranjay12@gmail.com/
+Changes in V5:
+- Use TASK_SIZE_MAX + PAGE_SIZE, VSYSCALL_ADDR as userspace boundary in
+  x86-64 JIT.
+- Added Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-* Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
+V3: https://lore.kernel.org/bpf/20240321120842.78983-1-puranjay12@gmail.com/
+Changes in V4:
+- Disable this feature on architectures that don't define
+  CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+- By doing the above, we don't need anything explicitly for s390x.
 
+V2: https://lore.kernel.org/bpf/20240321101058.68530-1-puranjay12@gmail.com/
+Changes in V3:
+- Return 0 from bpf_arch_uaddress_limit() in disabled case because it
+  returns u64.
+- Modify the check in verifier to no do instrumentation when uaddress_limit
+  is 0.
 
-=E2=80=A6
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -582,6 +582,11 @@ int compare_stack_ips(int smap_fd, int amap_fd, int=
- stack_trace_len)
->
->  	val_buf1 =3D malloc(stack_trace_len);
->  	val_buf2 =3D malloc(stack_trace_len);
-> +	if (!val_buf1 || !val_buf2) {
-> +		err =3D -ENOMEM;
-> +		goto out;
-> +	}
-=E2=80=A6
+V1: https://lore.kernel.org/bpf/20240320105436.4781-1-puranjay12@gmail.com/
+Changes in V2:
+- Disable this feature on s390x.
 
-How do you think about to reuse =E2=80=9Cerrno=E2=80=9D in such error case=
-s?
+With BPF_PROBE_MEM, BPF allows de-referencing an untrusted pointer. To
+thwart invalid memory accesses, the JITs add an exception table entry for
+all such accesses. But in case the src_reg + offset is a userspace address,
+the BPF program might read that memory if the user has mapped it.
 
-Regards,
-Markus
+x86-64 JIT already instruments the BPF_PROBE_MEM based loads with checks to
+skip loads from userspace addresses, but is doesn't check for vsyscall page
+because it falls in the kernel address space but is considered a userspace
+page. The second patch in this series fixes the x86-64 JIT to also skip
+loads from the vsyscall page. The last patch updates the bpf_testmod so
+this address can be checked as part of the selftests.
+
+Other architectures don't have the complexity of the vsyscall address and
+just need to skip loads from the userspace. To make this more scalable and
+robust, the verifier is updated in the first patch to instrument
+BPF_PROBE_MEM to skip loads from the userspace addresses.
+
+Puranjay Mohan (3):
+  bpf: verifier: prevent userspace memory access
+  bpf, x86: Fix PROBE_MEM runtime load check
+  selftests/bpf: Test PROBE_MEM of VSYSCALL_ADDR on x86-64
+
+ arch/x86/net/bpf_jit_comp.c                   | 63 +++++++++----------
+ include/linux/filter.h                        |  1 +
+ kernel/bpf/core.c                             |  9 +++
+ kernel/bpf/verifier.c                         | 30 +++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  3 +
+ 5 files changed, 74 insertions(+), 32 deletions(-)
+
+-- 
+2.40.1
+
 
