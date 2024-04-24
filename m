@@ -1,160 +1,119 @@
-Return-Path: <bpf+bounces-27667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1148B0802
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 13:07:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC0A8B0814
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 13:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF3261F22C6E
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:07:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5DF41F227A0
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECC815A48C;
-	Wed, 24 Apr 2024 11:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C710C15B10D;
+	Wed, 24 Apr 2024 11:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l9Enmvdx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLRpz56F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC4B15991D
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDD515ADBC;
+	Wed, 24 Apr 2024 11:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713956814; cv=none; b=tjVfNCnrgn+Nk0mjQwuiC5Dk5txVCK40IX6i9H4tf/dG40V4m8QvjCr9lz7iPXRHhkwjr5hA6MClJtb4hYoV3Rxh9yrhHvPgR3E4VccBpZxz+NXMkCYI8mUiJMK0LsRD41aymbl+09S5W8WhY6HiXMG1ODNKaQXyXMMSjYnnAIg=
+	t=1713957032; cv=none; b=lLlyj+LRTh1Sc7cylkYC44DDysd1GAUcuO+vgqXJ0UgFP1gIs/8K6WfPKDArs+MVYiCwMnUJZMTitff4vj1/6stwVJMsWYDoj9zEHZs/h9E8Idf90gZatYsEsOylSv5rqeJcohjtXYcn93O+YLEm5v0+Zr0IxMBsOgxJXgxTK8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713956814; c=relaxed/simple;
-	bh=pO8hEyJt4gobEOjm9FK5m0Qwmoi5SN1PxtYmNMeZncU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kVLxoXrd1dIOFP6WurQ7V/UiLSbX8xNDg3J+Rda/e///kqe9XDAfbXtb/w+zcho/HGac7sApf1dSeMAk/+98fs4YD1Yli3E6Bq90ChqQP21x/qbfZvMxIT9JQCSXulxjn7Dyh0hd0tqg5zzeCTaJ4vSQ2EbsIKPc1SmxKNc2A/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l9Enmvdx; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a55b3d57277so413223466b.2
-        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 04:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713956811; x=1714561611; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qs24b8/A8Epoj6Hu8sEkoX/c6axmuMDD5OU/QsFWMHQ=;
-        b=l9Enmvdx2t7/DJ7aQ2qV9P1RVUazcKZ4MG2DjaaRVV0MSalbz42X99iEHQbJ1yJL4W
-         y9+lIwGY7qBi2WIdrp3QzgYsrtpJi0b/K/PUPAA4sQPV+BoI6yZZf11+hp/ej3IybIPs
-         4CWBykD2YO+nTJY6nHh2BOkmFCUWN18J1rDosELualwNcxnDnSeZn8iP0ECNsvNDH0dl
-         dGZqxoPKsZugNdBMXroVtv8BphAjuQGcwTbyu9GIojhAR2C49wGPDvkLCT+AUZHCVvgD
-         YNl66m0BieHAyhyWuXLieDbz8T77Kpk/VGzDCOdhw7DYSeIHsYIqCDfvLo9okvAOjAQd
-         h9Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713956811; x=1714561611;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qs24b8/A8Epoj6Hu8sEkoX/c6axmuMDD5OU/QsFWMHQ=;
-        b=D/mv+ywGx5QFZcQEXHe8tR6DCFTs42jq4NORiQz0HVbKhRoOPOU17vrtJTvA31SS4v
-         VCV4/jWidB6HZ0MXZbptTbk5NMTxPT1HpVZZ3fj/N9Ip2ybsl272MHL96gj38o3Ywj5h
-         NxI9Aei7/TrCegTMJE1kCdFU3GealesdC+gW/seDmfJaouHerFIX8sel6WxLWI9o1GNL
-         H9rOKYI5FSrq+4unFFW8ElmXBtwZzFGMTHvhfd89nuW92MdoRCbBe3LLICa58GDF22fW
-         jiFF3br4iYY7HThuwvSLZnmFteehbtjMXStb36PRqA3c/hcVwcAybZBjVBinlBfrqVhc
-         ZvWg==
-X-Gm-Message-State: AOJu0YzFr3eGuI4ep3DISYIT+5apSd8W8+6dN2j0FS3mhkIvCWqZLl2r
-	svRpFALgX0gMgzps/JOBpyhJntAwLWf5ZFYa6C0S9ucHou2g1YVF
-X-Google-Smtp-Source: AGHT+IHMoxnZ09OKp+F3G/uird4JGkAgo8fCLoHXmGHCnL0m6OfyQXOxvk5I1E7favZ3vKZURewlzA==
-X-Received: by 2002:a17:907:b9c2:b0:a58:82b3:9b88 with SMTP id xa2-20020a170907b9c200b00a5882b39b88mr1311733ejc.37.1713956810731;
-        Wed, 24 Apr 2024 04:06:50 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a10-20020a1709066d4a00b00a52567ca1b6sm8225934ejt.94.2024.04.24.04.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 04:06:50 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 24 Apr 2024 13:06:48 +0200
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Barret Rhoden <brho@google.com>, David Vernet <void@manifault.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next v2 0/2] Introduce bpf_preempt_{disable,enable}
-Message-ID: <ZijnZoYq9loIvjFl@krava>
-References: <20240424031315.2757363-1-memxor@gmail.com>
+	s=arc-20240116; t=1713957032; c=relaxed/simple;
+	bh=5gH5c9GDDi9WLsKl6Z7sGCJeqtsVrGwX2qo4yjbesBQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=dg6ghaoKeDVST+B9NflYTEASFoXyO8NnPfJFS03QhDLapRcS0BO8CdCMUngg0XC4fQEjPmDvAD/gjftxxiKmDECFNYJRSDl27UennCUjSkpvQY/2godHFtOPgObeIlbuAr6kpEncYMDiY/PinoRwHBj44eXADoUYdi+WBCZoau0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLRpz56F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C9438C4AF16;
+	Wed, 24 Apr 2024 11:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713957031;
+	bh=5gH5c9GDDi9WLsKl6Z7sGCJeqtsVrGwX2qo4yjbesBQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lLRpz56F9j55d+6+qu39aNUTMLy7csK6asaF+R997D3H77neV+fKWIP1P0g9HC7MX
+	 vGJzItw+ps3IDad3rYSXgqM1wQcZ92403W39GmvmGPSo4K3DqEchhOSBKmn3WmEzn8
+	 uWggEcPmCuqGgl3/IfYvFqD7ygaPulhp64ijkE8vgY5UDpOSfTu8/rnaAs1sxvS4lz
+	 D/qRuYL9JdEKYX8aSTSV4yd8zwI/wxWow/6s5PCtgnmOLYujO0BSP5opoGCyF/EjSZ
+	 n+KSCP7uroT83MKzNEyHF9oin4czDsVB0TennMitDo/oVxQUBgSAB6N6LjfJZ7Yq07
+	 0z+uVazcvXK+Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BADCCCF21D8;
+	Wed, 24 Apr 2024 11:10:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424031315.2757363-1-memxor@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v7 00/10] allocate dummy device dynamically
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171395703175.12181.16297886360257972212.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Apr 2024 11:10:31 +0000
+References: <20240422123921.854943-1-leitao@debian.org>
+In-Reply-To: <20240422123921.854943-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
+ pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ nbd@nbd.name, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+ lorenzo@kernel.org, taras.chornyi@plvision.eu, ath11k@lists.infradead.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ geomatsi@gmail.com, kvalo@kernel.org, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, quic_jjohnson@quicinc.com,
+ leon@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ idosch@idosch.org
 
-On Wed, Apr 24, 2024 at 03:13:13AM +0000, Kumar Kartikeya Dwivedi wrote:
-> This set introduces two kfuncs, bpf_preempt_disable and
-> bpf_preempt_enable, which are wrappers around preempt_disable and
-> preempt_enable in the kernel. These functions allow a BPF program to
-> have code sections where preemption is disabled. There are multiple use
-> cases that are served by such a feature, a few are listed below:
-> 
-> 1. Writing safe per-CPU alogrithms/data structures that work correctly
->    across different contexts.
-> 2. Writing safe per-CPU allocators similar to bpf_memalloc on top of
->    array/arena memory blobs.
-> 3. Writing locking algorithms in BPF programs natively.
-> 
-> Note that local_irq_disable/enable equivalent is also needed for proper
-> IRQ context protection, but that is a more involved change and will be
-> sent later.
-> 
-> While bpf_preempt_{disable,enable} is not sufficient for all of these
-> usage scenarios on its own, it is still necessary.
-> 
-> The same effect as these kfuncs can in some sense be already achieved
-> using the bpf_spin_lock or rcu_read_lock APIs, therefore from the
-> standpoint of kernel functionality exposure in the verifier, this is
-> well understood territory.
-> 
-> Note that these helpers do allow calling kernel helpers and kfuncs from
-> within the non-preemptible region (unless sleepable). Otherwise, any
-> locks built using the preemption helpers will be as limited as
-> existing bpf_spin_lock.
-> 
-> Nesting is allowed by keeping a counter for tracking remaining enables
-> required to be performed. Similar approach can be applied to
-> rcu_read_locks in a follow up.
-> 
-> Changelog
-> =========
-> v1: https://lore.kernel.org/bpf/20240423061922.2295517-1-memxor@gmail.com
-> 
->  * Move kfunc BTF ID declerations above css task kfunc for
->    !CONFIG_CGROUPS config (Alexei)
->  * Add test case for global function call in non-preemptible region
->    (Jiri)
+Hello:
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-jirka
+On Mon, 22 Apr 2024 05:38:53 -0700 you wrote:
+> struct net_device shouldn't be embedded into any structure, instead,
+> the owner should use the private space to embed their state into
+> net_device.
+> 
+> But, in some cases the net_device is embedded inside the private
+> structure, which blocks the usage of zero-length arrays inside
+> net_device.
+> 
+> [...]
 
-> 
-> Kumar Kartikeya Dwivedi (2):
->   bpf: Introduce bpf_preempt_[disable,enable] kfuncs
->   selftests/bpf: Add tests for preempt kfuncs
-> 
->  include/linux/bpf_verifier.h                  |   1 +
->  kernel/bpf/helpers.c                          |  12 ++
->  kernel/bpf/verifier.c                         |  71 ++++++++-
->  .../selftests/bpf/prog_tests/preempt_lock.c   |   9 ++
->  .../selftests/bpf/progs/preempt_lock.c        | 135 ++++++++++++++++++
->  5 files changed, 226 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/preempt_lock.c
->  create mode 100644 tools/testing/selftests/bpf/progs/preempt_lock.c
-> 
-> 
-> base-commit: 6e10b6350a67d398c795ac0b93a7bb7103633fe4
-> -- 
-> 2.43.0
-> 
-> 
+Here is the summary with links:
+  - [net-next,v7,01/10] net: core: Fix documentation
+    https://git.kernel.org/netdev/net-next/c/c6e7f276841d
+  - [net-next,v7,02/10] net: free_netdev: exit earlier if dummy
+    https://git.kernel.org/netdev/net-next/c/f8d05679fb3f
+  - [net-next,v7,03/10] net: create a dummy net_device allocator
+    https://git.kernel.org/netdev/net-next/c/c661050f93d3
+  - [net-next,v7,04/10] net: marvell: prestera: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/ec24c06eb312
+  - [net-next,v7,05/10] net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/b209bd6d0bff
+  - [net-next,v7,06/10] net: ipa: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/1bdab0ee635d
+  - [net-next,v7,07/10] net: ibm/emac: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/2eb5e25d8495
+  - [net-next,v7,08/10] wifi: qtnfmac: Use netdev dummy allocator helper
+    https://git.kernel.org/netdev/net-next/c/4a8b77eff7e5
+  - [net-next,v7,09/10] wifi: ath10k: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/57738dab12d9
+  - [net-next,v7,10/10] wifi: ath11k: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/bca592ead825
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
