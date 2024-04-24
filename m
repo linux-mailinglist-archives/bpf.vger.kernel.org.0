@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-27675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB148B0890
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 13:45:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D7148B0896
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 13:46:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14471C21431
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:45:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5561F24610
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D12E15AAA2;
-	Wed, 24 Apr 2024 11:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DFA15A4BA;
+	Wed, 24 Apr 2024 11:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cK22elU6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bxhTzRSh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72231158DBE
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BEA15A4BC
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959137; cv=none; b=lT95rZhhIkPLx0EsuLUzTP7OQ5gs4UQpm3fPqVwv1gR1hjZ72HmX/XZ1TC5qVlf9Csr9lZ2B7fNxTHhCxmZWi5TbposZe4wUhVMOWJiJlFmkVy8nvI+QbuMATB18GgaiwmfGMN9RqGWQtqZRfiPXp90gJJnCvjk7yysudBJfyVc=
+	t=1713959181; cv=none; b=QBZh9GK/p9uv1FiuwdCXC39dYD687BkAt055qZHh/iISKQZJHab5+vM4qhQGHOPSBV1WfbHAgN5iDS0r8hoXJ3bsXDQiNx404H1pyNE+9TgE255bBeLfVIPA45nib3OoB0Gxq2xMmrO8kM1l7sxju2WFLKrsudWDqPecNWi2MLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959137; c=relaxed/simple;
-	bh=2ELkQjA6/gqvJZxVKGUMtNrnbLQa6yqFR9YV8tcEKck=;
+	s=arc-20240116; t=1713959181; c=relaxed/simple;
+	bh=y6Srj4lFKW4Q/6g1k2X34ohhTY6m3/28eV0FUHQ36Jc=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fs1MjYb9f1o0IDOvhFzJyvxmDl22HMmelwWaSqBT2vXI5+IukcHAeyXmBgdEbkF8qm1UcKChBzYr/CX3ffFVmSLSbMFYHOPKUFsmbo4Y8ZrudjiSjkjRTOz39VLEjUQxFkp13kbFhzSwEunrlS6QYIlZNIkHliuG5F/PBqmBkow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cK22elU6; arc=none smtp.client-ip=209.85.208.54
+	 Content-Type:Content-Disposition:In-Reply-To; b=XmvBB5+rT+wA8rYSxrIfDV+fSbtVwIWc8H9qlWCeB4l36lCAwZMaWYxJElxyvOnp+WnI1aV6kMuH0p1aYJTQeo9hvLLgy2HzfaNpbYQPrMgEAy5fAVO5b94E8Gkg0sUlv84orTnesTEQCsZMLuNBjqQhyntQNPg1wv2QvKgmMTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bxhTzRSh; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5708d8beec6so7851178a12.0
-        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 04:45:35 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a5894c1d954so22717666b.1
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 04:46:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713959134; x=1714563934; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713959178; x=1714563978; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=poXQ6HJT6R/fY1lGVLzrkIoelYS753BPQigVwd0TmGQ=;
-        b=cK22elU6PwYJX5V5LJtZaSgLVqF6AenvX3vObUEEHg72Au60MMVlj1+oAZv/bD93bi
-         mYzoOv1CTJrU4g3/3x8ur+U/whKyGGR+AKHk52s0kwd3LUIKYN8DbvZvaFcTqjcQB/KY
-         HC0BFH5zPuoqDQcD72xU26/1r5wBmPnKDInKhK65qimUkSzVSCqsW2TQ1hRMYLrtw3L/
-         hCpiAup1DlvLS0fwZzPcJ+U3eBi4hUdPzrbQFrc8CbwCZAclyFa+XS8lO7KG4kpubAEm
-         fVyM/vKegAPGMYvpjOxphu1kpk7+q6T6feoTcD1KXWROI24OIoKCjFQQUhvBfrOPlVTR
-         C6pA==
+        bh=cJ9SaWsoXrrIRixhToCG5jyAb+dgmPgkHGEHBCizlF8=;
+        b=bxhTzRShm8NGmC/jwIUUdYxRl5KVZDP++DPFCcovVZ4IlmKzn6shLsz0JcRkj+uYVH
+         9T3Yg1SZkHra/tL6dFH1iGCLqxJVzox2IXVp4Dbbetw26kAtitQwF6ENVpP3q0XgalrQ
+         KFdvNarswNzVoVvGyaNINlhdmppk/0PNdJZJ4EmGbmDBEyLhK5h3u7FGXadNo/fxir2G
+         uOmppgPe7zvzW899A969pkAMBA/waxQAfhhKLnwYwH4B/XRf1oJ1Mlfc5Blb++DixVBU
+         B9tHek/G9NdMmI6hjUQfGVRrAjks0eRg0NllWw1/X4TcSWL/YRJYc7MYlKbLNcLM4Uj9
+         H/LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713959134; x=1714563934;
+        d=1e100.net; s=20230601; t=1713959178; x=1714563978;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=poXQ6HJT6R/fY1lGVLzrkIoelYS753BPQigVwd0TmGQ=;
-        b=iww1ZW7rE71KzzZXs1qXtRGsoRoagF33Bx7jDPyYt5AKFYwBXo1rtfMtumy99SDxhD
-         A0ezgwcUIhPaaBOBKmrnL+d5Jp5oyLBn9m7lwSzA7P2e1dsUfZQkkwqV45VwaC57IuWS
-         /Ex2ILwUGrAsNQWIUDI+mZWwCQkiechbXbYaohw5pg04BbhvhibZetOztk8M4jA3cpXv
-         mV6Hzy/RaWPtuC0iYC+/n2P9IW+Z/YvgDbvMGLFDjlSAfXzKqShZkxejJXQIoMqlMX42
-         rySYjcU3vSXwQn5b28QL2IgKeTNcStDrEJMioNCWMjvuF8dzGmG4RvzpOxDfLPMpO9PP
-         s0sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU8BY1f1QzqAGu3Vr3kTYPeo3iuqeHNVErOMqHyNeVHFfGOWbFLG186UnQDWURNDbOQVHmSO2uqMAIiNC6SXBAhP8FX
-X-Gm-Message-State: AOJu0Yyzvou+mpXqUWVVXV1SCmkMlum8HYVQOtbB4zhxguC3oCMXztRv
-	nrnwViIKdJPJYI2CRCoQfPv8HLhNEeL+EXMHlhROm+t5zMP52jcN
-X-Google-Smtp-Source: AGHT+IFjhWzdsSxF8L7VLWA2ioDtj3DNkioWQLKW5owmRskVFB7xNO1dy2oSkoc20ngnkMK8v74KsQ==
-X-Received: by 2002:a50:d5c7:0:b0:572:32e4:dac8 with SMTP id g7-20020a50d5c7000000b0057232e4dac8mr1034287edj.14.1713959133827;
-        Wed, 24 Apr 2024 04:45:33 -0700 (PDT)
+        bh=cJ9SaWsoXrrIRixhToCG5jyAb+dgmPgkHGEHBCizlF8=;
+        b=FAKxRATSakTbpu0s/bmvBAq9U/F8mLUA8L1EsiRoWNMQoatwQSvpZX/EctUVEnbxfQ
+         FsaJR4NCVu9Ehqg8ed8OApj1o9u7BuR1cBWSiGzt0IIGlh9r254O7sM15pMVABbYqTCt
+         9X7PpMyGncXXpF4MjoA3Vi4bfEU1sjUxEzhcPBi360AByCSCnitcixbqp/0Plgc7jbOc
+         cEKeKFtdRv0mHZiaWvxEtGFBDrlPkSw9QML1SLA3hG+3OpPGAqKhFfHaYbrmd1lKSvF2
+         /TbkROp9raKWKf30EHOOUHgc6YmnJj37w30CRZXvz1VACJIhWuXRsn/OdxIbXoSbRMNN
+         Uphg==
+X-Forwarded-Encrypted: i=1; AJvYcCUR7FcNj6us5dKO4/r73on09V/P5laxZY7Dn6vpcFaLutRbg7l+CnpnYeIF3tCd9bfJ49OstyNUAAgk7tOF9WXmzIKN
+X-Gm-Message-State: AOJu0YxS3PzqIzVUPmswOkGWVME+QOkqB/8HfMQFf0ffUb8tjj8EOIQ5
+	ZdQelOP9FBS+gtmva5iqXb892q70ld257nt8l5NfyjK2Xt/ASNjn
+X-Google-Smtp-Source: AGHT+IE/URGzKv5WzNwWQCbYBgS6eRoemBeIXHPRwJyLBmNno98hCgntL6/iarFzaDg0+VV5HThb3A==
+X-Received: by 2002:a50:d718:0:b0:56e:10d3:85e3 with SMTP id t24-20020a50d718000000b0056e10d385e3mr1767967edi.13.1713959177903;
+        Wed, 24 Apr 2024 04:46:17 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id e12-20020a056402104c00b00571c12b388dsm7315634edu.35.2024.04.24.04.45.33
+        by smtp.gmail.com with ESMTPSA id z8-20020a50cd08000000b0056ff82e54a0sm8137671edi.31.2024.04.24.04.46.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 04:45:33 -0700 (PDT)
+        Wed, 24 Apr 2024 04:46:17 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 24 Apr 2024 13:45:31 +0200
+Date: Wed, 24 Apr 2024 13:46:15 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -81,12 +81,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
 	Viktor Malik <vmalik@redhat.com>,
 	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next 2/7] bpf: Add support for kprobe multi session
- context
-Message-ID: <Zijw2-y-PrTJFHmc@krava>
+Subject: Re: [PATCH bpf-next 1/7] bpf: Add support for kprobe multi session
+ attach
+Message-ID: <ZijxB_pe6DiNuy-f@krava>
 References: <20240422121241.1307168-1-jolsa@kernel.org>
- <20240422121241.1307168-3-jolsa@kernel.org>
- <CAEf4BzZYpaZ-70WU9gCRAcAfYEH9cq5GRyyZatygULKhS7zVZw@mail.gmail.com>
+ <20240422121241.1307168-2-jolsa@kernel.org>
+ <CAEf4BzayRpyFu_UAR4aNvvpq8hzOWFgbcRSWTUgAM81OGcQGoQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,63 +96,81 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZYpaZ-70WU9gCRAcAfYEH9cq5GRyyZatygULKhS7zVZw@mail.gmail.com>
+In-Reply-To: <CAEf4BzayRpyFu_UAR4aNvvpq8hzOWFgbcRSWTUgAM81OGcQGoQ@mail.gmail.com>
 
-On Tue, Apr 23, 2024 at 05:26:45PM -0700, Andrii Nakryiko wrote:
-> On Mon, Apr 22, 2024 at 5:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Apr 23, 2024 at 05:26:39PM -0700, Andrii Nakryiko wrote:
+> On Mon, Apr 22, 2024 at 5:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding struct bpf_session_run_ctx object to hold session related
-> > data, which is atm is_return bool and data pointer coming in
-> > following changes.
+> > Adding support to attach bpf program for entry and return probe
+> > of the same function. This is common use case which at the moment
+> > requires to create two kprobe multi links.
 > >
-> > Placing bpf_session_run_ctx layer in between bpf_run_ctx and
-> > bpf_kprobe_multi_run_ctx so the session data can be retrieved
-> > regardless of if it's kprobe_multi or uprobe_multi link, which
-> > support is coming in future. This way both kprobe_multi and
-> > uprobe_multi can use same kfuncs to access the session data.
+> > Adding new BPF_TRACE_KPROBE_MULTI_SESSION attach type that instructs
+> > kernel to attach single link program to both entry and exit probe.
 > >
-> > Adding bpf_session_is_return kfunc that returns true if the
-> > bpf program is executed from the exit probe of the kprobe multi
-> > link attached in wrapper mode. It returns false otherwise.
-> >
-> > Adding new kprobe hook for kprobe program type.
+> > It's possible to control execution of the bpf program on return
+> > probe simply by returning zero or non zero from the entry bpf
+> > program execution to execute or not the bpf program on return
+> > probe respectively.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  kernel/bpf/btf.c         |  3 ++
-> >  kernel/trace/bpf_trace.c | 67 +++++++++++++++++++++++++++++++++++-----
-> >  2 files changed, 63 insertions(+), 7 deletions(-)
+> >  include/uapi/linux/bpf.h       |  1 +
+> >  kernel/bpf/syscall.c           |  7 ++++++-
+> >  kernel/trace/bpf_trace.c       | 28 ++++++++++++++++++++--------
+> >  tools/include/uapi/linux/bpf.h |  1 +
+> >  4 files changed, 28 insertions(+), 9 deletions(-)
 > >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index cee0a7915c08..fb8ecb199273 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1115,6 +1115,7 @@ enum bpf_attach_type {
+> >         BPF_CGROUP_UNIX_GETSOCKNAME,
+> >         BPF_NETKIT_PRIMARY,
+> >         BPF_NETKIT_PEER,
+> > +       BPF_TRACE_KPROBE_MULTI_SESSION,
 > 
-> LGTM, but see the question below
+> let's use a shorter BPF_TRACE_KPROBE_SESSION? we'll just know that
+> it's multi-variant (there is no point in adding non-multi kprobes
+> going forward anyways, it's a new default)
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >         __MAX_BPF_ATTACH_TYPE
+> >  };
+> >
 > 
 > [...]
 > 
-> > @@ -2848,7 +2859,7 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
-> >         int err;
-> >
-> >         link = container_of(fp, struct bpf_kprobe_multi_link, fp);
-> > -       err = kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-> > +       err = kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs, false);
-> >         return is_kprobe_multi_session(link->link.prog) ? err : 0;
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index afb232b1d7c2..3b15a40f425f 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1631,6 +1631,17 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >         }
 > >  }
 > >
-> > @@ -2860,7 +2871,7 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
-> >         struct bpf_kprobe_multi_link *link;
-> >
-> >         link = container_of(fp, struct bpf_kprobe_multi_link, fp);
-> > -       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-> > +       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs, true);
+> > +static bool is_kprobe_multi(const struct bpf_prog *prog)
+> > +{
+> > +       return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ||
+> > +              prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI_SESSION;
+> > +}
+> > +
+> > +static inline bool is_kprobe_multi_session(const struct bpf_prog *prog)
 > 
-> Is there some way to figure out whether we are an entry or return
-> probe from struct fprobe itself? I was hoping to have a single
-> callback for both entry and exit handler in fprobe to keep callback
-> call chain a bit simpler
+> ditto, this multi is just a distraction at this point, IMO
 
-AFAICS not at the moment.. also both callbacks have same arguments,
-just the entry handler returns int and exit handler void
+ok, sounds good, will drop multi for session stuff
 
 jirka
+
+> 
+> > +{
+> > +       return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI_SESSION;
+> > +}
+> > +
+> >  static const struct bpf_func_proto *
+> >  kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >  {
+> 
+> [...]
 
