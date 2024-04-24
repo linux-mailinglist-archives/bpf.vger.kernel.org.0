@@ -1,114 +1,93 @@
-Return-Path: <bpf+bounces-27665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C3C28B07A3
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 12:49:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FF8C8B07A6
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 12:49:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3461F232A0
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 10:49:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0DEB284076
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 10:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43C71598EE;
-	Wed, 24 Apr 2024 10:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664B71598ED;
+	Wed, 24 Apr 2024 10:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="HZWPnBpY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khQ5FhJT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5DB3EA66;
-	Wed, 24 Apr 2024 10:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDCF3EA66;
+	Wed, 24 Apr 2024 10:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713955764; cv=none; b=KSjt6QNduziLR2PweJEhSu/JVxU1+drhLpXj5UKWW2ic8PZ30exCORpEuNM9Wc6Mo+lJRxRkx7fxBrMN6ysmZoMyVkyko8DejixAeeVGccjXmlmRBqnxeYfUua0drdiTSl4GiTzATKOQgx0kagzF0qsDZNj5W9EJvQfldCSnKaE=
+	t=1713955787; cv=none; b=MWGLaobaA3FHtvKQJ0mc3hykyYbClrByM8V13X6pCNcem9fy/aWR0m0vPSop6jXcqHTMGe9dUcsJmtXPfNTj17apcSwE2qlFJE7yvkFUvtOm2y7A8sYNRjruAlkKwHHaG/ugy5GsH+ngVwhFRdiv5sZrJVEOS+7Xot4Pvo9zXK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713955764; c=relaxed/simple;
-	bh=Yee0/Osb8LuV3ZB2AQuxep76YOpKew5FVBEd5LX1IP0=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=g6AsjhaG48kDI5i1DRtoMKNyJ9Z5WoYYwtxpNFBZGBMF9DqFB5tUPD7wZ3b7LqUINkYPWLvzqosuNvubTSslW0E33Pmi2MjMkzf6ef8QL5XIpULm/LdqzEvx5Y6SNZBIb0OfzGZ3sdIIVz4xTATZBvRiZvVYlBQ4ourWFwnh9v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=HZWPnBpY; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713955735; x=1714560535; i=markus.elfring@web.de;
-	bh=Qk2Z9Ur/axCDf3ITMI3JPxcQXOHmAKvjUk3aT8fYJig=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=HZWPnBpYG78wi6FtGgGW3nJxdpOlFMEO+jprXyl+stSY2M6NWD90qe16+McfvgpC
-	 o6lXPzI2TjHFnCyQ5FySjnsIelOoHiir71RG6MBagMPIJJ1NLL8CfBrsMvCetMswa
-	 qNqA13j1gXp9ovCSuuXpqYz6T6ixxCnSHolZm5dTEVid+pzZ2wrd5LtHT2ioEOA7T
-	 aNt+2zWlxkUApJtNNuYPiEgSbLdqQnI8u88a96IgK6tWF5gxhfRp9Mn315ELA4njF
-	 6DBuWWTweleB4i5mLhc85HeDIoEPiFrNihua+Hbe4RSVuWUuOShiwz5r3d35qU4jB
-	 FoAKx/wrycVpbbfqfA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N62yY-1sjZ4I3ftQ-016hUt; Wed, 24
- Apr 2024 12:48:54 +0200
-Message-ID: <bf6e727e-a28c-4605-8a47-ac33550ebb10@web.de>
-Date: Wed, 24 Apr 2024 12:48:53 +0200
+	s=arc-20240116; t=1713955787; c=relaxed/simple;
+	bh=13Hi6ZoedF7xEUK5sGqH0Sjd7YNhbMjL1SAgv6avwWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rIouf/faiffyeOT4mzHGm11ljAXAxMUPqoQ6bj3IHbrr3zgGSUvLAumvsyqU5XNY0AHDmocCIUNl1XEZi5Xe3zk4RIsvDeukskHMbezApcy6XCqY/Bq+0bcOw09EZ2vmLW5qgrouCDhVEBcGljuMzliOLp4viO2WDeg6lR1rtAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=khQ5FhJT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEA7CC113CE;
+	Wed, 24 Apr 2024 10:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713955786;
+	bh=13Hi6ZoedF7xEUK5sGqH0Sjd7YNhbMjL1SAgv6avwWY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=khQ5FhJT5PNr6HWVYFrPZXydqeSHrF0F3rLggVHJqLhR0jsFTHBtnFms6eixSLKNa
+	 vCWBfATJSsIT9q4Z3jTkkomxD/o8Y38zHWifEZhLepdOPXBqA4gkcoBbWFGqBoC85w
+	 3d3qPFsX87FWPQC3ivOza86kHUEr5uwfBZ1BQfpH8cBCYJd7OY4aaWZJA8Ia4jOcnu
+	 WKh14ZSN/Mm3dLaPCzyxYpH0UyUhM5MPPjFAqEuIgt3p/m0I8kl4OGIXdzQIrIxpq3
+	 ODoftLnsP21x2NUgPg/EftL3rgJ0BsGG7ny0xHU8hd7DxAFo5mFqOQzi2ImL7rSFxn
+	 2meeXkPLUTvBA==
+Date: Wed, 24 Apr 2024 11:49:42 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] riscv: Pass patch_text() the length in bytes
+Message-ID: <20240424-math-recapture-49618e9f9b11@spud>
+References: <20240327160520.791322-1-samuel.holland@sifive.com>
+ <20240327160520.791322-6-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
-References: <20240424020444.2375773-5-chentao@kylinos.cn>
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a null pointer check for
- the serial_test_tp_attach_query
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240424020444.2375773-5-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sqfgg+TcvaEXDvan"
+Content-Disposition: inline
+In-Reply-To: <20240327160520.791322-6-samuel.holland@sifive.com>
+
+
+--sqfgg+TcvaEXDvan
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:c7wSIBl9mvxe/oo1tdl2vCRED6SYaYM8u6v4WauSkzejejYjAAt
- np5HfYpoZymH9VE+IZbNGK7UqHxxYOoeUNdeHlUWsqagJoj7pULCM6DnYHOSFT7WVDt91ul
- agYKJlHPB1bpxlkv27osy0n4hLtJv25QQFmLZR/q4HZ3wmS+4Iuj4o0oBrxiFbHlhoBgknI
- ktcCV5r86GvRaGWcBc6NA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:H46wqUsSReI=;BwoCsKVvVwzyZjotKK3Nz6BIaFO
- X/dcVBjZ2kBDBNMpqeYhSD5fE4tCWcZ5jrxWULfBXJAr2EutOXOpgl1G0qu2H3JLazNGIZVPS
- PM3RpIj+qFRp+vdy3Ekyl05Ku4BzhxAToEeppc2Sv2tTdwxTHyMf/mCeXrQMdsidwROXDXLvp
- Cu6rZ90AVRNrMFDZLaPWZlpOT2cXZmxhC2waj+amMoPIGSxaT+FaIZKmSRdkT7SUXoRSOTdTo
- TEMcOXkYh4hwLboXRK06KVbg8ZT2D7xqBiwJKuFNFYeJqwSPLwdgaKvNwMT+Pz4d6BM1bcLh0
- HbXWTr41j4LCOCkZ8lhAipr05tDtXE1tZp57zSVaJItwuy8zEGYUB5cggXlscrTIOBU6wN800
- AMloERz30e2+6F7R4AaD2gDpqUZVAK2EwW9C5wjxvQ+Yvp2tadPg6SG3b6BI/HM0wUTCUNsvz
- Ni1pVUsjoAjvqWRsJiBAMVv81/lU1vNujxtgJxIeukmuxGBspmv3pxl+FH/MPalJL680Ekb+w
- Ka+hYTjJk9qkGtisXZx9m8hNtlnZjvr/jKNG5ZS64tSKMvuRJN4sm3n5nXn3e3neO2LHewWus
- Vj84ewHD4KZiRzHWtEyU7FVismC0UQ7sQm4nWC7uGj+0854UawZM24d+FvjDho0Nijsx/DJHw
- GB2ZLGjCyZwR1q7Ok1SbWRlaZGegWyTnvNHv7OpKBLv2Og5WTpnK27cvgmEMhUTEnXpIBHz7m
- Ad+oF+tdWJDq0DGgfDmy5cXeSPD8fuIVmylzy1pfQGotMlo8T5P8/VlFztNfRdmyc5P7i3fks
- ltS7ZFjcRL36hJQsO/0M8GegraZ6hIMpp0ZHvYwIvjQug=
 
-=E2=80=A6
-> Add the malloc failure checking to avoid possible null
-> dereference.
-=E2=80=A6
+On Wed, Mar 27, 2024 at 09:04:44AM -0700, Samuel Holland wrote:
+> patch_text_nosync() already handles an arbitrary length of code, so this
+> removes a superfluous loop and reduces the number of icache flushes.
+>=20
+> Reviewed-by: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 
-How do you think about to use the following wording variant?
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-   Add a return value check so that a null pointer dereference will be avo=
-ided
-   after a memory allocation failure.
+--sqfgg+TcvaEXDvan
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZijjxgAKCRB4tDGHoIJi
+0qvcAP4r2MrLGz9H1r7SbjaqoHG7Zb6RvXCN/VmJFpdJYnXfAwD/QEb6Rj6izInw
+SNqGMSWRNoFweZB4bLuaxlv7QL37bwo=
+=z3sD
+-----END PGP SIGNATURE-----
 
-Regards,
-Markus
+--sqfgg+TcvaEXDvan--
 
