@@ -1,182 +1,219 @@
-Return-Path: <bpf+bounces-27737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6428B1558
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 23:52:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075D58B15BA
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 00:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0233B2156C
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 21:52:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 079B7B22A9E
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 22:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0E9157492;
-	Wed, 24 Apr 2024 21:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3305F158D9A;
+	Wed, 24 Apr 2024 22:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jDowTJ65"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYFAopDP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFA8157469;
-	Wed, 24 Apr 2024 21:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66424156F46;
+	Wed, 24 Apr 2024 22:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713995544; cv=none; b=N2oBySmEm5RbmTMSt8EUnAhZVrSVhhgS8VT7qkQmtMhmwaG172Op22jifi0iClTWlCnnVJIoyP0IIKla6cDGtomLfbkIkZ2py8MLG98B7M5WRowGoU4gsoSeDA5qbH/MKCqt4vov6NXy93uajyZuhxwNHKKqfw0VuZEP6pHFzrc=
+	t=1713996118; cv=none; b=kYy/Yt+NSq6HWMavwpfx6RH45FPWXJMJHnBLOZCH+P+tyHw3s1vfDtjSpVIcc8ELQKDaidpiKYzxTIdssI03T6EL1GhGkB0loFyjB94bwUOu6gnc+ey7CViYCm3xzl5qPqRTinCJ8PvjTKWW34EVlDMm9Zfol2+2CmAIhpHbfe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713995544; c=relaxed/simple;
-	bh=v8ZEyC9wZDEBzCvIlqmeLIf+Ne1bHwEK75ySUZPrO0c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F4AfyddsWTMnzgz0ZLJPQPq2iZkIliTPCyVdEZaX+7BwoRvkN6IkTU8+/ZGvyCdmg4aG9yWvEXLn9OE7+MT5VsJVw/yIFNPewdT6WnungqzkMhX+8s6JC0UvuNLIZk3wnQwOmd/Ma0f3hEVgPClCnnQQZEI4S/8oz1Jywa4qj4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jDowTJ65; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 623C8C113CD;
-	Wed, 24 Apr 2024 21:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713995543;
-	bh=v8ZEyC9wZDEBzCvIlqmeLIf+Ne1bHwEK75ySUZPrO0c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jDowTJ651yBEr7sTKS432/aQiXrtGVF7CVPNFJdQeYkKbWciQqzy3QeS+SOZZMFCL
-	 d4X7Q5eYSWb5nDahHLJu3Mp/IiZ71zx2Yxc6qpcl6V1Lk18xCpvDZ25VdY3PZb0VJO
-	 eJh8xlvQNuwpjvyusSH3nFHtqxkDHf5nQujseb7hXi6/tZHpisno7uD1xgfynzNPEK
-	 jTQgwvMPxGfYc84nIM+yWpHYwuErUrQ9H4dRLwdPRx4+/1hbaqs5ppMM7mZ2BlluSk
-	 Q9gnlJJk2WKMjgjAhQp9qzFZ7Oc+zshq8MVRjdJm64WVEXQegZ2av8KGKty8aFyIIx
-	 I/rbi8yPevPcA==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Matt Wu <wuqiang.matt@bytedance.com>
-Subject: [PATCH 2/2] objpool: cache nr_possible_cpus() and avoid caching nr_cpu_ids
-Date: Wed, 24 Apr 2024 14:52:14 -0700
-Message-ID: <20240424215214.3956041-3-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240424215214.3956041-1-andrii@kernel.org>
-References: <20240424215214.3956041-1-andrii@kernel.org>
+	s=arc-20240116; t=1713996118; c=relaxed/simple;
+	bh=ZG+ntgzi5PkM1bTjwukYHVngl+la9QsTQx+Dj2qKr3U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bTDsjluXciivHMvsZ+rO8Goc1atarYX2lhh1S1rQXjm3/X8I3hcI0X+laLDoX7db07rQWJh6Hin887/UDdIpAUHgd/QrjfsZNXrbBMFvJQHX3pk9DINNfnraJYnhGO+i76OhEHFrEWYo72UTQ/iIW3+jf9VrS1aza5qdGvRKSx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYFAopDP; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ad8919ba0cso400289a91.0;
+        Wed, 24 Apr 2024 15:01:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713996117; x=1714600917; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4mlLExVU78P1Piha27/if7uYZprH+trWT7TZL2SvYBQ=;
+        b=PYFAopDPjYrluuTHbTOngh+6lBffHPFozF+Trj+7yiNdJk3i4YXj1qP6B3T3aQ9eW2
+         u4dNrxBO627H39VvogdG/ZUbwJ2Emixv6wAdgPWpUBuHAhfpJVlmvBlcmadFEqJUXujO
+         0Lw0jqozs00xYFJ3R1d7AP5Hjqxfr8+gWJPtdHQWXeAJRNsRvel0kWYxG1pjVvy1EWmw
+         n5zJWQuNQSMP4cbnl/ZoJmgSao4bKTmVie2kDeKbNO/ae5J2SuD/yXsjDUGiEkXwIr+d
+         jmKYbN7iKXjwI+O35BpYzuzcIMtdkb0ca02/lQEbnnu1d3ArWL8uWX67l1z7BCiYFJCh
+         HFKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713996117; x=1714600917;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4mlLExVU78P1Piha27/if7uYZprH+trWT7TZL2SvYBQ=;
+        b=DSIcKzY9MtTNCP9NDrhS4onodswq/I/zTNdj3PR6rIHHBeGhlDE1NolPIsYpNRldI6
+         oUMy0ov95Zwns8qisy3vln7EMKCoYBlidldNvED1UHEgaVCew8Nxh7Ev8FavOWH+rqm0
+         G5KYJXAFk8bWirfGt1oit6IpqZwMBil8FHSwdMgFxzrl0bHoCKJZ+gAPibF+MdF1RFzz
+         rfUi1bWKQNdFpOSNqS+aT/NcwsLiem1dtoTFF1j0KMgr1pz9c28YZpKBx/P5G/OoZHt2
+         TSYP6juOq9Gs4PPO0PlQlFsVZOvXehaxFDl7C2oHG8HmbZVAD2lsbN+ig+qI6AOFxaCz
+         IiJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkFSF3iGJ0bk5ZzvRrtI8R8eZqIcVmLyiwiU8mUFCGxBNr9MShip57VtUvFYfVHtnZrWaVg5+gtA4nHKzoxzpVzH2V/nOA5Ibiot0A6nT1VctfpxF+c+ZlyJcQPoOP5+3f
+X-Gm-Message-State: AOJu0YzrQeZ3fdUoV9ynJ+wD+q7dqSgUVnpX19IJsEsOXCfUno/B03M5
+	laNdbe6V//sPLa6mpUeMYylH5LcjBN3zEfzCMkmK1AWWndhNTqgS9HBhqOOuTp4n7NJn5gvSDxw
+	Awt5oyMPyZNRCrSchS1A9r26gA9Y=
+X-Google-Smtp-Source: AGHT+IGBt6/cXnnlWIm2WuIW72gihVu448YDBwXpNTuksNUq5ldhuf6uEU4n70occoDe0KbcmZTgdV2ODP/auyiKPyc=
+X-Received: by 2002:a17:90b:4a83:b0:2af:6ce2:bbc8 with SMTP id
+ lp3-20020a17090b4a8300b002af6ce2bbc8mr2360066pjb.6.1713996116560; Wed, 24 Apr
+ 2024 15:01:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240424173550.16359-1-puranjay@kernel.org> <20240424173550.16359-3-puranjay@kernel.org>
+In-Reply-To: <20240424173550.16359-3-puranjay@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 24 Apr 2024 15:01:43 -0700
+Message-ID: <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
+ helper
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, puranjay12@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Profiling shows that calling nr_possible_cpus() in objpool_pop() takes
-a noticeable amount of CPU (when profiled on 80-core machine), as we
-need to recalculate number of set bits in a CPU bit mask. This number
-can't change, so there is no point in paying the price for recalculating
-it. As such, cache this value in struct objpool_head and use it in
-objpool_pop().
+On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+>
+> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
+> bpf_get_smp_processor_id().
+>
+> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+>
+> Here is how the BPF and ARM64 JITed assembly changes after this commit:
+>
+>                                          BPF
+>                                         =3D=3D=3D=3D=3D
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
+_processor_id();
+> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
+72008
+>                                                 (bf) r0 =3D r0
 
-On the other hand, cached pool->nr_cpus isn't necessary, as it's not
-used in hot path and is also a pretty trivial value to retrieve. So drop
-pool->nr_cpus in favor of using nr_cpu_ids everywhere. This way the size
-of struct objpool_head remains the same, which is a nice bonus.
+nit: hmm, you are probably using a bit outdated bpftool, it should be
+emitted as:
 
-Same BPF selftests benchmarks were used to evaluate the effect. Using
-changes in previous patch (inlining of objpool_pop/objpool_push) as
-baseline, here are the differences:
+(bf) r0 =3D &(void __percpu *)(r0)
 
-BASELINE
-========
-kretprobe      :    9.937 ± 0.174M/s
-kretprobe-multi:   10.440 ± 0.108M/s
+>                                                 (61) r0 =3D *(u32 *)(r0 +=
+0)
+>
+>                                       ARM64 JIT
+>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_smp_proc=
+essor_id();
+> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000fffffff=
+f
+> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl #16
+> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
+> blr     x10                                mrs     x10, tpidr_el1
+> add     x7, x0, #0x0                       add     x7, x7, x10
+>                                            ldr     w7, [x7]
+>
+> Performance improvement using benchmark[1]
+>
+>              BEFORE                                       AFTER
+>             --------                                     -------
+>
+> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
+=C2=B1 0.027M/s
+> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
+=C2=B1 0.023M/s
+> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
+=C2=B1 0.004M/s
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  kernel/bpf/verifier.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
 
-AFTER
-=====
-kretprobe      :   10.106 ± 0.120M/s (+1.7%)
-kretprobe-multi:   10.515 ± 0.180M/s (+0.7%)
+Besides the nits, lgtm.
 
-Cc: Matt (Qiang) Wu <wuqiang.matt@bytedance.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- include/linux/objpool.h |  6 +++---
- lib/objpool.c           | 12 ++++++------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-diff --git a/include/linux/objpool.h b/include/linux/objpool.h
-index d8b1f7b91128..cb1758eaa2d3 100644
---- a/include/linux/objpool.h
-+++ b/include/linux/objpool.h
-@@ -73,7 +73,7 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
-  * struct objpool_head - object pooling metadata
-  * @obj_size:   object size, aligned to sizeof(void *)
-  * @nr_objs:    total objs (to be pre-allocated with objpool)
-- * @nr_cpus:    local copy of nr_cpu_ids
-+ * @nr_possible_cpus: cached value of num_possible_cpus()
-  * @capacity:   max objs can be managed by one objpool_slot
-  * @gfp:        gfp flags for kmalloc & vmalloc
-  * @ref:        refcount of objpool
-@@ -85,7 +85,7 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
- struct objpool_head {
- 	int                     obj_size;
- 	int                     nr_objs;
--	int                     nr_cpus;
-+	int                     nr_possible_cpus;
- 	int                     capacity;
- 	gfp_t                   gfp;
- 	refcount_t              ref;
-@@ -176,7 +176,7 @@ static inline void *objpool_pop(struct objpool_head *pool)
- 	raw_local_irq_save(flags);
- 
- 	cpu = raw_smp_processor_id();
--	for (i = 0; i < num_possible_cpus(); i++) {
-+	for (i = 0; i < pool->nr_possible_cpus; i++) {
- 		obj = __objpool_try_get_slot(pool, cpu);
- 		if (obj)
- 			break;
-diff --git a/lib/objpool.c b/lib/objpool.c
-index f696308fc026..234f9d0bd081 100644
---- a/lib/objpool.c
-+++ b/lib/objpool.c
-@@ -50,7 +50,7 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
- {
- 	int i, cpu_count = 0;
- 
--	for (i = 0; i < pool->nr_cpus; i++) {
-+	for (i = 0; i < nr_cpu_ids; i++) {
- 
- 		struct objpool_slot *slot;
- 		int nodes, size, rc;
-@@ -60,8 +60,8 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
- 			continue;
- 
- 		/* compute how many objects to be allocated with this slot */
--		nodes = nr_objs / num_possible_cpus();
--		if (cpu_count < (nr_objs % num_possible_cpus()))
-+		nodes = nr_objs / pool->nr_possible_cpus;
-+		if (cpu_count < (nr_objs % pool->nr_possible_cpus))
- 			nodes++;
- 		cpu_count++;
- 
-@@ -103,7 +103,7 @@ static void objpool_fini_percpu_slots(struct objpool_head *pool)
- 	if (!pool->cpu_slots)
- 		return;
- 
--	for (i = 0; i < pool->nr_cpus; i++)
-+	for (i = 0; i < nr_cpu_ids; i++)
- 		kvfree(pool->cpu_slots[i]);
- 	kfree(pool->cpu_slots);
- }
-@@ -130,13 +130,13 @@ int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
- 
- 	/* initialize objpool pool */
- 	memset(pool, 0, sizeof(struct objpool_head));
--	pool->nr_cpus = nr_cpu_ids;
-+	pool->nr_possible_cpus = num_possible_cpus();
- 	pool->obj_size = object_size;
- 	pool->capacity = capacity;
- 	pool->gfp = gfp & ~__GFP_ZERO;
- 	pool->context = context;
- 	pool->release = release;
--	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
-+	slot_size = nr_cpu_ids * sizeof(struct objpool_slot);
- 	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
- 	if (!pool->cpu_slots)
- 		return -ENOMEM;
--- 
-2.43.0
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9715c88cc025..3373be261889 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifier_env=
+ *env)
+>                         goto next_insn;
+>                 }
+>
+> -#ifdef CONFIG_X86_64
+> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
 
+I think you can drop this, we are protected by
+bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
+checks?
+
+>                 /* Implement bpf_get_smp_processor_id() inline. */
+>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+>                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
+) {
+> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_verifier_e=
+nv *env)
+>                          * changed in some incompatible and hard to suppo=
+rt
+>                          * way, it's fine to back out this inlining logic
+>                          */
+> +#if defined(CONFIG_X86_64)
+>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
+signed long)&pcpu_hot.cpu_number);
+>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+>                         cnt =3D 3;
+> +#elif defined(CONFIG_ARM64)
+> +                       struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_I=
+MM64(BPF_REG_0, (u64)&cpu_number) };
+>
+
+this &cpu_number offset is not guaranteed to be within 4GB on arm64?
+
+> +                       insn_buf[0] =3D cpu_number_addr[0];
+> +                       insn_buf[1] =3D cpu_number_addr[1];
+> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+> +                       cnt =3D 4;
+> +#endif
+>                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
+insn_buf, cnt);
+>                         if (!new_prog)
+>                                 return -ENOMEM;
+> --
+> 2.40.1
+>
 
