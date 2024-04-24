@@ -1,155 +1,137 @@
-Return-Path: <bpf+bounces-27607-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27608-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683B08AFD59
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:28:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E13FF8AFD5B
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C258B284369
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 00:28:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F4291F239E5
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 00:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14543224;
-	Wed, 24 Apr 2024 00:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DB0639;
+	Wed, 24 Apr 2024 00:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="FvDEDUK4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AyoURgqp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70164639
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 00:28:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58F4360
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 00:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713918496; cv=none; b=HesLCuNSnoGTU36oq583kgeN8+sTsPj2wSmwkOxM0krFL0tdocSoi03IwRLJMVlCrPOBBJLnJHPA5b7A1c1+THTWWMbgt4hooHO5y14tLHWu6X+ZPely5or+Ktbfi0UcL+m1/BFmgE1F0DSTTVCfbWZ19i9C99L5X0iazeQSqeo=
+	t=1713918584; cv=none; b=llzKCcKApFJbD8fwxvo89sRb+1EYyZK/HgxusE+xT9gUWFk//NIYTmU2j54HFtLG/5hrWSo9Z1GbyVsLxNBkggr5wuVsEmnDbDlOi00PhSrrxuIwZZJV8AHmP16YXU+I0dZeG4NB5bMOf/mUJLZ3d4esckrMg3mCFsd6qXyloGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713918496; c=relaxed/simple;
-	bh=R/OgSmiO5urrOxI3K+4q4wNzXhrJbrqWVoXEWuijYx8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AFPEWHRDqRWAvkEzJQ3MduMpl/cBjEho/7jKwdJocdsdpWPMM+X9g8F1J/ErUl5rnqEZsNXGprgcaggkWF95yXUyn5UYcEObqfMVav8+4f2b6mPGriHYbFbuFA4PBSd2rFRZsEzH2Ne/6PJmGlIbrTJrcwM4s7cQHUEKTN6YBNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=FvDEDUK4; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5193363d255so8346214e87.3
-        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 17:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713918491; x=1714523291; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GXU+ikToE9vTgd0d2ogVMdIIk0usIDCY3palNyF75i4=;
-        b=FvDEDUK49YxIx6JmmZnqcjWAK8rb8EFRKf4UjII+hm7SJcl/MZqnBCRWM0ag8Q3+EO
-         yyz3VLEBGWAd2lZ2rl7iidbe69JZ/hDgOcEgytBi2RtPrWVdgPZfYZD72YXv8kKKfUlS
-         dSQLYMnW0iW6SR/lAUipjpC20TPZ/1YphTSWUyL7k/zYTRWAvZT2l8qsGwawqgCrMp9d
-         hE4u37bQYk97SxcHeSfgELYBVGSfRw3RmAGcSlora4d2oYxQ1nwEx4NAGUaQ8bhWRit/
-         z2w1Ap5K3RdbFDWeJU27yifdwjz97VnqHC5UOxsehTXEf0Zuex1cGWKgJCuNF3ywFSBT
-         WiOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713918491; x=1714523291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GXU+ikToE9vTgd0d2ogVMdIIk0usIDCY3palNyF75i4=;
-        b=T9Qb859qsW1yyGDxN8azt4VgEdZmEGdKUzBEEEWx5YoyURo10800JDRVcXXo/5jtdR
-         lAyALCqtwC4mRKUuX2/pTRpd7wJwDobPi2z5aLD4u3QLdIoyCDe4LltYn3aGVydNNf4T
-         5CYq/NQBwombGUKxDAwJCaiZVgSShMLMmHtSZUQcg7on9riClwCXFlrJ3Dxu1TcJjIIM
-         u8aF4Pqw3YFCr+X061ZDPho9egf35qaxdAAPFOQW73K2IBsA99XuYXA4nbhaLTuILCVE
-         XPRS6p2je73PgKAhaPi0AxtebWd3rOcNQl9F+EWD92pSy6qbML0Bv6QEM3teO3Ayu+UX
-         4M/w==
-X-Forwarded-Encrypted: i=1; AJvYcCVzYSuJWsHnfFhG/Gx6M9WY4ZtO6MwyeL0SR6I7ha5uZNT89TKellCKSE9yIKNVsrFSMJsYPfwSPd++G7NQ96+3EesP
-X-Gm-Message-State: AOJu0Yw65EhrhqF0WXADRzzWgkJksSxzmG1q/dLeP/CsLAlV1HBjet9O
-	fcrXSOjCEK/TcHJ50YqmDokADfgOW4Z8DO6DRdz+FCMe8cA7A5tltJkyDYLVKnejiQh3FEMRLyL
-	6LWEmxXdO/rnWuroB5AP6eqlnL32CzUWOpvZtRsBRwxEPfdWzM/o=
-X-Google-Smtp-Source: AGHT+IFmAtveWqF5KaXct/eDRNhEoPLTdbLM1bttvHvTHWx51gYkcxlUgQIhdEx7nF7tg8XpB0fvpPToj5um1tKlVE0=
-X-Received: by 2002:a19:914d:0:b0:516:c696:9078 with SMTP id
- y13-20020a19914d000000b00516c6969078mr607660lfj.50.1713918491483; Tue, 23 Apr
- 2024 17:28:11 -0700 (PDT)
+	s=arc-20240116; t=1713918584; c=relaxed/simple;
+	bh=mXhi+c9HgRB71K4IsjpyMWWTy/CDmhoWBCnWz3htV9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PIpx+b3TnOhVn6gRdLjIaft4v6nOipajfEXx6BnqPx8KcCsg4RzGrYggUL4PI7wXJQEwdcdE2U9O/mtHKvl4HF9fOCLZjl7ZCrhW1hQJUP6XivRFzM739x9P1y/KCUL9Z/FXIVllCaD7ocRIhx10HoEBeUUt3HNPkmF5MpsjJLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AyoURgqp; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <68ae7e9c-3bd7-4370-ab06-6e787ca27340@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713918579;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p58HCB4rQj6simnXtN0Ayr72ksgZ1nga1Sf64Ek4SWE=;
+	b=AyoURgqp91JI+CLsNIo+MS8cxlaUuqdBA934LmMxDBlUIcq2OnfLh2tRt91uQLK2tdoExn
+	g9TrBXne6ncaxBMuWThON04DEqRrL/tzNvPkMHBwEYBTS0VYokPCLQ/7FjWxaggTesaMWX
+	wsUfgHrTPp7/PVPHpnK7LgynINhFMPw=
+Date: Tue, 23 Apr 2024 17:29:31 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061533.921723-1-irogers@google.com>
-In-Reply-To: <20240416061533.921723-1-irogers@google.com>
-From: Atish Kumar Patra <atishp@rivosinc.com>
-Date: Tue, 23 Apr 2024 17:28:00 -0700
-Message-ID: <CAHBxVyF-u__MY9BNkqxUJg4ra76CzT0p_JBVaQqZm=u4V4u5AQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/16] Consistently prefer sysfs/json events
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Beeman Strong <beeman@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned
+ path of a struct_osp link.
+To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
+Cc: andrii@kernel.org, kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org,
+ song@kernel.org, kernel-team@meta.com
+References: <20240417002513.1534535-1-thinker.li@gmail.com>
+ <20240417002513.1534535-2-thinker.li@gmail.com>
+ <8dadfcc9-1f6a-4b93-951b-548e4560ce5a@linux.dev>
+ <0326d150-6b43-465c-ba43-7e7033b13408@gmail.com>
+ <70bf97a6-19d8-4a26-8879-17db7c44a2cc@gmail.com>
+ <54f32ade-ec17-4c35-b993-44907111e7ca@linux.dev>
+ <696735aa-59e1-4750-814e-216b85fe934b@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <696735aa-59e1-4750-814e-216b85fe934b@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 15, 2024 at 11:15=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> As discussed in:
-> https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com=
-/
-> preferring sysfs/json events consistently (with or without a given
-> PMU) will enable RISC-V's hope to customize legacy events in the perf
-> tool.
->
+On 4/23/24 10:16 AM, Kui-Feng Lee wrote:
+> 
+> 
+> On 4/22/24 16:43, Martin KaFai Lau wrote:
+>> On 4/22/24 10:30 AM, Kui-Feng Lee wrote:
+>>>
+>>>
+>>> On 4/22/24 10:12, Kui-Feng Lee wrote:
+>>>>
+>>>>
+>>>> On 4/19/24 17:05, Martin KaFai Lau wrote:
+>>>>> On 4/16/24 5:25 PM, Kui-Feng Lee wrote:
+>>>>>> +int bpffs_struct_ops_link_open(struct inode *inode, struct file *filp)
+>>>>>> +{
+>>>>>> +    struct bpf_struct_ops_link *link = inode->i_private;
+>>>>>> +
+>>>>>> +    /* Paired with bpf_link_put_direct() in bpf_link_release(). */
+>>>>>> +    bpf_link_inc(&link->link);
+>>>>>> +    filp->private_data = link;
+>>>>>> +    return 0;
+>>>>>> +}
+>>>>>> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+>>>>>> index af5d2ffadd70..b020d761ab0a 100644
+>>>>>> --- a/kernel/bpf/inode.c
+>>>>>> +++ b/kernel/bpf/inode.c
+>>>>>> @@ -360,11 +360,16 @@ static int bpf_mkmap(struct dentry *dentry, umode_t 
+>>>>>> mode, void *arg)
+>>>>>>   static int bpf_mklink(struct dentry *dentry, umode_t mode, void *arg)
+>>>>>>   {
+>>>>>> +    const struct file_operations *fops;
+>>>>>>       struct bpf_link *link = arg;
+>>>>>> -    return bpf_mkobj_ops(dentry, mode, arg, &bpf_link_iops,
+>>>>>> -                 bpf_link_is_iter(link) ?
+>>>>>> -                 &bpf_iter_fops : &bpffs_obj_fops);
+>>>>>> +    if (bpf_link_is_iter(link))
+>>>>>> +        fops = &bpf_iter_fops;
+>>>>>> +    else if (link->type == BPF_LINK_TYPE_STRUCT_OPS)
+>>>>>
+>>>>> Open a pinned link and then update should not be specific to struct_ops 
+>>>>> link. e.g. should be useful to the cgroup link also?
+>>>>
+>>>> It could be. Here, I played safe in case it creates any unwanted side
+>>>> effect for links of unknown types.
+>>>
+>>> By the way, may I put it in a follow up patch if we want cgroup links?
+>>
+>> This does not feel right. It is not struct_ops specific.
+>>
+>> Before we dive in further, there is BPF_OBJ_GET which can get a fd of a pinned 
+>> bpf obj (prog, map, and link). Take a look at bpf_link__open() in libbpf. Does 
+>> it work for the use case that needs to update the link?
+>>
+> It should work.
+> So, this patch is not necessary. However, it is still a nice and
+> intuitive feature. WDYT?
 
-Thanks for remapping legacy events in a generic way. This looks great
-and got rid of my
-ugly arch specific way of remapping.  Is there a good way for the
-driver (e.g via sysfs) to tell the perf tool
-whether to remap the legacy event or not ?
+There is already BPF_OBJ_GET which works for all major bpf obj types (prog, map, 
+and link). Having open only works for link and only works for one link type 
+(struct_ops) is not very convincing.
 
-In RISC-V the legacy systems without the new ISA extension may not
-want to remap if running
-the latest kernel.
+Beside, I am not sure how the file flags (e.g. rdonly...etc) should be handled. 
+I don't know enough in this area, so I will defer to others to comment in 
+general the usefulness and the approach.
 
-I described the problem in detail in the original thread as well.
-https://lore.kernel.org/lkml/63d73f09-84e5-49e1-99f5-60f414b22d70@rivosinc.=
-com/
 
-FWIW, for the entire series.
-Tested-by: Atish Patra <atishp@rivosinc.com>
-
-> Some minor clean-up is performed on the way.
->
-> v2. Additional cleanup particularly adding better error messages. Fix
->     some line length issues on the earlier patches.
->
-> Ian Rogers (16):
->   perf parse-events: Factor out '<event_or_pmu>/.../' parsing
->   perf parse-events: Directly pass PMU to parse_events_add_pmu
->   perf parse-events: Avoid copying an empty list
->   perf pmu: Refactor perf_pmu__match
->   perf tests parse-events: Use branches rather than cache-references
->   perf parse-events: Legacy cache names on all PMUs and lower priority
->   perf parse-events: Handle PE_TERM_HW in name_or_raw
->   perf parse-events: Constify parse_events_add_numeric
->   perf parse-events: Prefer sysfs/json hardware events over legacy
->   perf parse-events: Inline parse_events_update_lists
->   perf parse-events: Improve error message for bad numbers
->   perf parse-events: Inline parse_events_evlist_error
->   perf parse-events: Improvements to modifier parsing
->   perf parse-event: Constify event_symbol arrays
->   perf parse-events: Minor grouping tidy up
->   perf parse-events: Tidy the setting of the default event name
->
->  tools/perf/tests/parse-events.c |   6 +-
->  tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
->  tools/perf/util/parse-events.h  |  49 ++--
->  tools/perf/util/parse-events.l  | 196 +++++++++----
->  tools/perf/util/parse-events.y  | 261 +++++++----------
->  tools/perf/util/pmu.c           |  27 +-
->  tools/perf/util/pmu.h           |   2 +-
->  7 files changed, 540 insertions(+), 483 deletions(-)
->
-> --
-> 2.44.0.683.g7961c838ac-goog
->
 
