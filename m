@@ -1,174 +1,190 @@
-Return-Path: <bpf+bounces-27718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A8D8B12C7
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 20:47:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7744F8B134B
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 21:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D79D1C2505C
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 18:47:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE0A21F21C9B
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 19:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7502619BDC;
-	Wed, 24 Apr 2024 18:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EmdBBBoT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C6B22638;
+	Wed, 24 Apr 2024 19:12:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF8118E11
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 18:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E501D53F;
+	Wed, 24 Apr 2024 19:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984366; cv=none; b=clV5eAowutj3ii4uHouVbybKkZVEqWVMQIzrdO7I9B8WHblIxXlyQT8uoybCW3VKX6ju57aYjTwIeWP5VsWT4/k8H7IbItqIlPnxAjX3SqnlruHp0+IzM24M84JXGuLQAaYw8p6k+G4vH4qWM7dsu+NU8aj1vAewxsFXiEVgti8=
+	t=1713985960; cv=none; b=VNHRiJs4Kw/Y3d1a1rDV8HlIEZi4LTA0kKOeLzdk+r1kqIx/BTxvsUnBlNpxJZ90RRGa4BtDzccBGS9SLYbaYfZBF9IjJCpmUcXYrlmxSMr3bVtrZai6dMSf0v2CeSKSEBoyMBrgKLqwypC7r0J1a/JCPEMBr7Ov8JqrT7p6vYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984366; c=relaxed/simple;
-	bh=7boAwtnlT7ZM/NcGwX9Pjk9o5krI+9LeFeo2LNJgCdo=;
+	s=arc-20240116; t=1713985960; c=relaxed/simple;
+	bh=qyndtPG2sprHQimLpvd+FVVE3nnSCb6FDX2FQq61fFI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hpLsk6cIBDW2DHQ18LPMCit2SYl/dfvYFGPciHfdPcG6tASuZ0mYRqmSxwAyRAsSMVFGIjnUg6GZJA+fnKRUW5GE5fIfzLBABjga7cMoIiGGKZW/aa1y1qbuDnf34+y3hQUIP/zxEbwcGDiKapy71EAaNOTO3ZzDtKXFLTEwMGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EmdBBBoT; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=CtWyTXJI+pqjrdONmHk9RcvBhwyFs3mWq/fqYNpuch0ctfHe0GvTrzESjBm0QKeM6NOqhXHaqm/qgw0qws9ZrhocTeRHH5iF5RiM0P64LzrRtQSv5JYoXDyaR23N//wzRYMllMnqaWgCeyZuqRHUYCOlFqzbacn2taUATNUclnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41aa15ae26dso1080305e9.3
-        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713984362; x=1714589162; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7boAwtnlT7ZM/NcGwX9Pjk9o5krI+9LeFeo2LNJgCdo=;
-        b=EmdBBBoTRXY0jtjJkyAH0Fv5g5c66lu9AeEL1EwJrxPB7lJlMCyEdoNaibkQDoSvDE
-         kwUqUOrIJ9CjfdNdOkp+MPAVblA9FMgU4JuWKaDG6Pk2a0CgT88nMgejX1IaQk2x7akJ
-         v05+VpmGydYvPNHW/Y3eJgG1cLpy/J5oyf7HfDy83vM40jnTvC1n+/7W+nbWMXfEaHy4
-         XTnX/2WSyV6uySTW4mgKm2VlbEuXJRM5DN4Wdd8VUM4y81UssbS0Scr4k7EE3foJdM9m
-         qNafzhSqE9a1OCQB5eQhrLjgYDFgSUUIF2oACj84cqblhMQ4dCHkuC8egj+jGJcMevyq
-         QFWQ==
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so164828a12.1;
+        Wed, 24 Apr 2024 12:12:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713984362; x=1714589162;
+        d=1e100.net; s=20230601; t=1713985958; x=1714590758;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7boAwtnlT7ZM/NcGwX9Pjk9o5krI+9LeFeo2LNJgCdo=;
-        b=ih0UY+SPOC6BRzBg7hzIp94JCEBGe04cjEPYPKGlO+jgJBiHLJpur/aBsyl6ZHlcN6
-         fHOIwuoE3Sdyue3eJuP6g+c9ChjQirB2SFOT3UQ2ur6wq11JNrHTxuj8fdLbGBjJFcts
-         wfD+cxS1mrY3WLydXCxSsoC8co/UX/PZMaMIghxAVSdU+W9MNe+tysqIVM02Q30UPpm3
-         J50yC0zQ3vZPlU9L+Jhk/se58XZeEbhq75uftTL1RiNF2JcI195Re5tLZK3MylEEw4gt
-         2ymEEYubF8AfGuF/cZBoTi4PznaXXqq02QjepRjRfsaJuk7qukQfg04H5JI/cYVC4OlL
-         2LPA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWRzTNe4tiwDKd/8WKUA0Qn/Zk0d09HssY5Gbho7VWg2yeBoOpa3s+ZHfjLf+noSMHTyh1VV7H6/1d+XstjtovSvJn
-X-Gm-Message-State: AOJu0YyTZH+PdSlzVD2KAU5zZc7tIms+3wIALgfrdo0SxaaFeZpBn/kb
-	ph44YZncQ2ZnHPU5TX0KQ8EV+ylUrET1SibMEXhS3MhJ8rqcXfpOTbuX8+u5KSeH9u+kS5jexU+
-	YDYkO1eNmGGfG/Fw9JTZtSwD+Tes=
-X-Google-Smtp-Source: AGHT+IF6oyVAl/JiRojRD/DtMp2qFHQ3L/APKprmojqiTQwxgw7wypSactyhX7v1ueJk88imFReNNpcLhUi/taphE+s=
-X-Received: by 2002:a05:600c:45cc:b0:41a:a298:2369 with SMTP id
- s12-20020a05600c45cc00b0041aa2982369mr2332594wmo.11.1713984362541; Wed, 24
- Apr 2024 11:46:02 -0700 (PDT)
+        bh=DMJvpS4yYOzmD3lN/3lPYHGqlIec0fhl9asbJwOIgeo=;
+        b=DOLMJ38wJUmdAzePkngKXjwLPRxgzDTEy+dY6Qh9jKAeVJ5u9TNUchlP9iHw7WO3eB
+         89KHXgFdkqDkT0oBDkdTDjRMGMEd+B79zT3H7GNrLpUOOdTnUKbGQE9LU7vXzGeKJNls
+         a9DbqGVfLRS13yTL0oqLrI22+e1HblgqHtTGfPG0z2oE0+1gmiewlU1ZSgsiAHNT1Wl+
+         iXqT3HusgQd25F/IvylE9vN9W/fVFCdpK0pbTM2XPCzw73yWC4sXrNlOJFwjtS3hKWvs
+         1Dni4SahDo9GUylPhsAljBFPLHk5dGYMlEEKU04VhstjYrNMZYX9ik6SdLDhO3ytyeq+
+         bL7g==
+X-Forwarded-Encrypted: i=1; AJvYcCVtpsf/PYy+NHLLl6u52DhUo///0b2mnSXyFI2OhrYhQN6Hgv1a77kiRGcEJB1y+15xEnMzigc6S3c2TCBhNP+PPxsWnFfzni6Hc+VjJ5EwmGOrWz3YyobERwUplCSuMK2v+sNFhEZKXrzkNicG7M4HufM3Jjpdfhx3zCvkWP4HwsWygg==
+X-Gm-Message-State: AOJu0Yy+z3+hQjEe4yBDWfviWyclfwSMtTPSdEdj5AVLxlmDNAaIkYES
+	0pMVq0Wdle2tWoeU8NWlsYwFuuH+v1BfxExM+0rfMPry5G4/GiMiJrsDH5+Fp/Bp5WRfZJP3u9f
+	P1DDCdzenz2/ZBoGJUpIsZBDa/Cc=
+X-Google-Smtp-Source: AGHT+IHs0dgN9nbxvoobWFjcgTWb5F8D8uMPQkYeG/mZ2DzvrgXHW0jzB4AHpcLjBihjXo8O7DTZtk16gT985W8QeCg=
+X-Received: by 2002:a17:90a:d583:b0:2ad:da23:da0b with SMTP id
+ v3-20020a17090ad58300b002adda23da0bmr3871882pju.34.1713985958350; Wed, 24 Apr
+ 2024 12:12:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421234336.542607-1-sidchintamaneni@vt.edu>
- <ZiYWKbDKp2zHBz6S@krava> <CAADnVQLn+zCAGCcFeE3wUfGULXBs3xii2shYTmS1BQMN5ZNYbQ@mail.gmail.com>
- <CAE5sdEgMB=hGjsCfSFkdS-b_YJDErobu=r1-xKvMkqZqLuW8=A@mail.gmail.com>
- <CAADnVQK+yZVcDTKNEKNdyJ9kaCHffcp9Wd0QLvipM9RykvByVw@mail.gmail.com> <CAE5sdEgcVssirq8GYPgEqdGiP7LMyo7JkU_YZsFbAwxb9tPhvA@mail.gmail.com>
-In-Reply-To: <CAE5sdEgcVssirq8GYPgEqdGiP7LMyo7JkU_YZsFbAwxb9tPhvA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 24 Apr 2024 11:45:51 -0700
-Message-ID: <CAADnVQ+n18VzZb7rbd3vSaO-TA3KPLZRtcdpEMAGsXN3MCMhWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] Add notrace to queued_spin_lock_slowpath
-To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, miloc@vt.edu, rjsu26@vt.edu, sairoop@vt.edu, 
-	Dan Williams <djwillia@vt.edu>, Siddharth Chintamaneni <sidchintamaneni@vt.edu>
+References: <20240424024805.144759-1-howardchu95@gmail.com>
+In-Reply-To: <20240424024805.144759-1-howardchu95@gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 24 Apr 2024 12:12:26 -0700
+Message-ID: <CAM9d7chOdrPyeGk=O+7Hxzdm5ziBXLES8PLbpNJvA7_DMrrGHA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Dump off-cpu samples directly
+To: Howard Chu <howardchu95@gmail.com>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
+	irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	zegao2021@gmail.com, leo.yan@linux.dev, ravi.bangoria@amd.com, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 4:58=E2=80=AFPM Siddharth Chintamaneni
-<sidchintamaneni@gmail.com> wrote:
+Hello,
+
+On Tue, Apr 23, 2024 at 7:46=E2=80=AFPM Howard Chu <howardchu95@gmail.com> =
+wrote:
 >
-> > > I agree with the point that notracing all the functions will not
-> > > resolve the issue. I could also find a scenario where BPF programs
-> > > will end up in a deadlock easily by using bpf_map_pop_elem and
-> > > bpf_map_push_elem helper functions called from two different BPF
-> > > programs accessing the same map. Here are some issues raised by syzbo=
-t
-> > > [2, 3].
-> >
-> > ringbuf and stackqueue maps should probably be fixed now
-> > similar to hashmap's __this_cpu_inc_return(*(htab->map_locked...)
-> > approach.
-> > Both ringbug and queue_stack can handle failure to lock.
-> > That will address the issue spotted by these 2 syzbot reports.
-> > Could you work on such patches?
+> As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=3D207323
 >
-> Just seen your latest patches related to this. Yes, I will work on the
-> fixes and send the patches.
+> Currently, off-cpu samples are dumped when perf record is exiting. This
+> results in off-cpu samples being after the regular samples. Also, samples
+> are stored in large BPF maps which contain all the stack traces and
+> accumulated off-cpu time, but they are eventually going to fill up after
+> running for an extensive period. This patch fixes those problems by dumpi=
+ng
+> samples directly into perf ring buffer, and dispatching those samples to =
+the
+> correct format.
 
-Great.
+Thanks for working on this.
 
-> > > In those cases, the user assumes that these BPF programs will always
-> > > trigger. So, to address these types of issues, we are currently
-> > > working on a helper's function callgraph based approach so that the
-> > > verifier gets the ability to make a decision during load time on
-> > > whether to load it or not, ensuring that if a BPF program is attached=
-,
-> > > it will be triggered.
-> >
-> > callgraph approach? Could you share more details?
->
-> We are generating a call graph for all the helper functions (including
-> the indirect call targets) and trying to filter out the functions and
-> their callee's which take locks. So if any BPF program tries to attach
-> to these lock-taking functions and contains these lock-taking
-> functions inside the helper it is calling, we want to reject it at
-> load time. This type of approach may lead to many false positives, but
-> it will adhere to the principle that "If a BPF program is attached,
-> then it should get triggered as expected without affecting the
-> kernel." We are planning to work towards this solution and would love
-> your feedback on it.
+But the problem of dumping all sched-switch events is that it can be
+too frequent on loaded machines.  Copying many events to the buffer
+can result in losing other records.  As perf report doesn't care about
+timing much, I decided to aggregate the result in a BPF map and dump
+them at the end of the profiling session.
 
-I can see how you can build a cfg across bpf progs and helpers/kfuncs
-that they call, but not across arbitrary attach points in the kernel.
-So attaching to qspinlock_slowpath or some tracepoint won't be
-recognized in such callgraph. Or am I missing it?
+Maybe that's not a concern for you (or smaller systems).  Then I think
+we can keep the original behavior and add a new option (I'm not good
+at naming things, but maybe --off-cpu-sample?) to work differently
+instead of removing the old behavior.
 
-In the past we floated an idea to dual compile the kernel.
-Once for native and once for bpf isa, so that all of the kernel code
-is analyzable. But there was no strong enough use case to do it.
-
-> > Not following. The stack overflow issue is being fixed by not using
-> > the kernel stack. So each bpf prog will consume a tiny bit of stack
-> > to save frame pointer, return address, and callee regs.
->
-> (IIRC), in the email chain, it is mentioned that BPF programs are
-> going to use a new stack allocated from the heap. I think with a
-> deeper call chain of fentry BPF programs, isn't it still a possibility
-> to overflow the stack?
-
-stack overflow is a possibility even without bpf. That's why the stack
-is now virtually mapped with guard pages.
-
-> Also, through our call graph analysis, we found
-> that some helpers have really deeper call depths. If a BPF program is
-> attached at the deepest point in the helper's call chain, isn't there
-> still a possibility to overflow it? In LPC '23 [1], we presented a
-> similar idea of stack switching to prevent the overflow in nesting and
-> later realized that it may give you some extra space and the ability
-> to nest more, but it is not entirely resolving the issue (tail calls
-> will even worsen this issue).
-
-The problem with any kind of stack switching is reliability of stack
-traces. Kernel panics must be able to walk the stack. Even when
-there are bugs. Full stack switch makes it risky.
-Then livepatching depends on reliable stack walks.
-That's another reason to avoid stack switch.
+Thanks,
+Namhyung
 
 >
-> [1] https://lpc.events/event/17/contributions/1595/attachments/1230/2506/=
-LPC2023_slides.pdf
+> Before, off-cpu samples are after regular samples
+>
+> ```
+>          swapper       0 [000] 963432.136150:    2812933    cycles:P:  ff=
+ffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+>          swapper       0 [000] 963432.637911:    4932876    cycles:P:  ff=
+ffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+>          swapper       0 [001] 963432.798072:    6273398    cycles:P:  ff=
+ffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+>          swapper       0 [000] 963433.541152:    5279005    cycles:P:  ff=
+ffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> sh 1410180 [000] 18446744069.414584:    2528851 offcpu-time:
+>             7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+>
+>
+> sh 1410185 [000] 18446744069.414584:    2314223 offcpu-time:
+>             7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+>
+>
+> awk 1409644 [000] 18446744069.414584:     191785 offcpu-time:
+>             702609d03681 read+0x11 (/usr/lib/libc.so.6)
+>                   4a02a4 [unknown] ([unknown])
+> ```
+>
+>
+> After, regular samples(cycles:P) and off-cpu(offcpu-time) samples are
+> collected simultaneously:
+>
+> ```
+> upowerd     741 [000] 963757.428701:     297848 offcpu-time:
+>             72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+>
+>
+>       irq/9-acpi      56 [000] 963757.429116:    8760875    cycles:P:  ff=
+ffffffb779849f acpi_os_read_port+0x2f ([kernel.kallsyms])
+> upowerd     741 [000] 963757.429172:     459522 offcpu-time:
+>             72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+>
+>
+>          swapper       0 [002] 963757.434529:    5759904    cycles:P:  ff=
+ffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> perf 1419260 [000] 963757.434550: 1001012116 offcpu-time:
+>             7274e5d190bf __poll+0x4f (/usr/lib/libc.so.6)
+>             591acfc5daf0 perf_evlist__poll+0x24 (/root/hw/perf-tools-next=
+/tools/perf/perf)
+>             591acfb1ca50 perf_evlist__poll_thread+0x160 (/root/hw/perf-to=
+ols-next/tools/perf/perf)
+>             7274e5ca955a [unknown] (/usr/lib/libc.so.6)
+> ```
+>
+> Here's a simple flowchart:
+>
+> [parse_event (sample type: PERF_SAMPLE_RAW)] --> [config (bind fds,
+> sample_id, sample_type)] --> [off_cpu_strip (sample type: PERF_SAMPLE_RAW=
+)] -->
+> [record_done(hooks off_cpu_finish)] --> [prepare_parse(sample type: OFFCP=
+U_SAMPLE_TYPES)]
+>
+> Changes in v2:
+>  - Remove unnecessary comments.
+>  - Rename function off_cpu_change_type to off_cpu_prepare_parse
+>
+> Howard Chu (4):
+>   perf record off-cpu: Parse off-cpu event, change config location
+>   perf record off-cpu: BPF perf_event_output on sched_switch
+>   perf record off-cpu: extract off-cpu sample data from raw_data
+>   perf record off-cpu: delete bound-to-fail test
+>
+>  tools/perf/builtin-record.c             |  98 +++++++++-
+>  tools/perf/tests/shell/record_offcpu.sh |  29 ---
+>  tools/perf/util/bpf_off_cpu.c           | 242 +++++++++++-------------
+>  tools/perf/util/bpf_skel/off_cpu.bpf.c  | 163 +++++++++++++---
+>  tools/perf/util/evsel.c                 |   8 -
+>  tools/perf/util/off_cpu.h               |  14 +-
+>  tools/perf/util/perf-hooks-list.h       |   1 +
+>  7 files changed, 344 insertions(+), 211 deletions(-)
+>
+> --
+> 2.44.0
+>
 
