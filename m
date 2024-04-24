@@ -1,281 +1,130 @@
-Return-Path: <bpf+bounces-27635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6E3F8AFF47
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 05:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 520D78AFFB0
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 05:32:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE31281AEB
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 03:13:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F9222828AB
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 03:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57C1139573;
-	Wed, 24 Apr 2024 03:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC9A13A3F4;
+	Wed, 24 Apr 2024 03:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i4Jotl7w"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="jn1DlBWa";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cpKb9fM2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA42585C59
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 03:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6A413777A;
+	Wed, 24 Apr 2024 03:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713928403; cv=none; b=V7Gm5Iitz5D2WIWOsGPrvDQDugOiH6Pn1wkz4f7kRweodcH5G6FcaEObXEfsGqkLSX2xR3zaTE4951cgkz7Qpd7jbdty3yFsoJY1CTGyXlCVuZSXWWEoVAmKtUrgYItZU/e+RDmiB7/nItKWvqLeYm2Gbtwy2iAvnOWrDmrJxAk=
+	t=1713929570; cv=none; b=dPFVeuh5GOWHIQyDmResMpwk48eQZ23TYCJIkA/lXY4wezr/ZxqG46irDmegO/VFeriT0OFP3wJig8WP41WC+t3sdOhv3f2AgpZ41T8Au5baKQbaLvXj0KJ1x3aZQNxodCUKojF4u1ZJJiVumffYG+OvUxw8C3DddbZ333a84js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713928403; c=relaxed/simple;
-	bh=V/mVwOVq31CC3WejgrqNDRrOcshPMVlEjDE6YlJuDXE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ehSYPqdE9tUcSBiV962JBayab14fvL4lgMRXX3/Lsfde2GCEQqVEhdS0xx1k0u+N+WEVSBu0b7uHMNa7YpDHHzgQ0ksQIpZgGzBruDD/WwU1gsscQmMzEvS5C1YpLr+Sl0pR79O8r9/C03kWAGIAM0FxDZeRkbLn3a98/1IQmxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i4Jotl7w; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a58872905b5so106010166b.2
-        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 20:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713928399; x=1714533199; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=boZt1+d49RBqMdIV0R60tZV7Mz7+9bHS1QBy9JQ7iZo=;
-        b=i4Jotl7wiinBvW268yYSZNbVbwgvzUPQe/JJuu4mrDPvPHOU7Wu8ml1a2k6opIWJ/G
-         m+PSckCCdAnV8mrVn2tkbWsv4gS/VP6Ds9BEw14hS+ATZS+mQar2MF2dJsAcKj9puk4f
-         tQBEpcFxrxRPCbwLVzGwSg9H90JtYnfOntSvUOXvFtT4vc0vozyNQVtHSyEHRCKM78Sb
-         dNMbScQEQv+APE3GJV57vb2QNh0EHwXTWSbDydh8q7pcrJh7JZ4nJvDU6t3gRsWi1ufh
-         J6vGmZrl7TWLJnH32OjuFv10LvxvBK/+r9P1MMqDHTwxGjIULHM3+ZcH3ohrmYcHuvZ/
-         LYRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713928399; x=1714533199;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=boZt1+d49RBqMdIV0R60tZV7Mz7+9bHS1QBy9JQ7iZo=;
-        b=GLi5R78GTnAfDmsrrsGr+vUwnHVtsElUOw4JC7sULohXDXMzHk4InwZnOfS9sM9/v7
-         Elz2HEE5EAawi+U7A7bpEuy7R8XHkv+oN6qTZT9JUjaGhIHURrshAH6tgnVU8W2dK2fi
-         /V2ql1agndxYIOSI+b7P3j2nz6vcn6atS2zg+IhE+jGq0GXE8hpgeUmfdkpLfzUlB9xM
-         JoMshVsDA4oj8Kxo2O1lKXAnp6ArUIxn6ugi2J1oeGvlSEUT9gUUUIXrqtLnL0P0+848
-         KFZa0sIK12fgNS2Ey315orPWAlzASUM5OBT4U0J+yd/ftk6z4iaXc8Kv2A9O1A2p3ZcU
-         ye2Q==
-X-Gm-Message-State: AOJu0YytNXkGD4U9tom1LgtPNFu0b5dbFJ7Xt9ptSljfuCGiqNA1z4tK
-	7pOwXOyviU7T0y8t463j9aSu5plIJfqnKM3yT8b9qjCgb8dEgpF1m/DGg43u
-X-Google-Smtp-Source: AGHT+IEjvq9bvouGY/nVhBQwNKrzEualHMXm+BCvoUuVttvBMXDNf5rfod7jYL8tRmQyLF63a8DCQA==
-X-Received: by 2002:a17:906:3645:b0:a58:7ce0:8e13 with SMTP id r5-20020a170906364500b00a587ce08e13mr633944ejb.34.1713928399221;
-        Tue, 23 Apr 2024 20:13:19 -0700 (PDT)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id i21-20020a170906091500b00a5216df5d25sm7738097ejd.3.2024.04.23.20.13.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 20:13:18 -0700 (PDT)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Barret Rhoden <brho@google.com>,
-	David Vernet <void@manifault.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for preempt kfuncs
-Date: Wed, 24 Apr 2024 03:13:15 +0000
-Message-ID: <20240424031315.2757363-3-memxor@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240424031315.2757363-1-memxor@gmail.com>
-References: <20240424031315.2757363-1-memxor@gmail.com>
+	s=arc-20240116; t=1713929570; c=relaxed/simple;
+	bh=Khjus+HfzxaJppH7X7Pk3KpV1jmAMizV4V6024DU/Uc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j76cv26stb4bxKQF0vwQjzDMABlBTpj8Gpl3GOOUbURzSfZwea2xFQVpJcVapwCFp1uznBD3kUo/E/qmikcCIRrIPdQRN5X7kZg4tEQQfI+QUYYSSBJT0Pf3YNAmhCkMPSmgIHoHaEjvomY4VdEK/hpkNsKXLpgLK58J4LBkY3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=jn1DlBWa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cpKb9fM2; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 3F78F1800102;
+	Tue, 23 Apr 2024 23:32:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 23 Apr 2024 23:32:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1713929565; x=1714015965; bh=2u7QLK6iLE
+	fgIF/y1f/4W+S7yA8t2QuIHCWyyrdNLQQ=; b=jn1DlBWavDnu0mjYMMvnVLH87R
+	wJYK9qL1kQ2tc0/E417m0d1nPxoVP+6qDGjq/ucR+30/gdQzrOgxubeLE2w1xe2T
+	DStvW9iWvg4UtAdxUodk9tDkqkCfKrVdEOk3LCMVRNNGKB6V+K78uOQfgqcRn96n
+	HMobVGJICB1ui3djy4UROcH1CBkr+r48fdAk6sywB7fYtrLQeGm1bLeMBZkYbS+6
+	tbJURxCAlYcTOUT1AuPj1K7m8e74qORslurGsKbJ0YwkmpwoYzqL4tee3nONE1+M
+	h3asJVxVw0pV1oRxbPVhXG7tYT+/5V6umpXe/gTw5sqt1qt808IVGJ+9l8FA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1713929565; x=1714015965; bh=2u7QLK6iLEfgIF/y1f/4W+S7yA8t
+	2QuIHCWyyrdNLQQ=; b=cpKb9fM2O8JleeFZNt+uLRgx0AU9lFIn0K6xoMLifW0F
+	9KFWO7Goz/CnFa/qiM3UIgYOL4lz+ljf8WDDDlPkvmU603jdW/LOUSvg1GmPOea7
+	TAuZgA1dp9wC7/bLslqGVLKE9dV9PTJz/M997NR3J31f1v3sWva5LkqNhxHihDPu
+	Aju/oJW+7oAQU5I9mqxQn3JipbzvJjbc1/A+PxbHAHZkqLHq4d54UkvoYPy0P/Do
+	s7tZGbZQqw/k+Dl01EhhCD7YkT8Igwklg4j0zza8bJyFsutJSDe/siEfUCKZBU3U
+	Oc9oEkD7m8wzk4PFajQI1vGhiSSYWUt8+AdqoRelxQ==
+X-ME-Sender: <xms:XX0oZreXQoes74M0gR1wZZEwsaY-7OBbu-AmqXUSKJg26HozOcs69A>
+    <xme:XX0oZhMfU0Lmwx63uSn90uNLU79rmmjufhIFJhvHY9RsIKUVr1N7bld8Kwae1EaI3
+    32IDgyuqn3RE-qUTA>
+X-ME-Received: <xmr:XX0oZkilMwLGBuLpOAwRIaz4yBVBkhOagSC701p46CSExUNah5GPhmv_GwmdCvg7Wnl0BM2Rr2aVKdmMBQawicwM1sYB2RPcPzKz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelvddgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:XX0oZs97v2mZI6KLTWkqQObrXEa2v-Ap5aOjW6EMZb6gYzHlVBQnAQ>
+    <xmx:XX0oZnt12_AR-UT3D7KYYactfKZPUzUv3v14Fv2mSa9DRrjV9RJ7BA>
+    <xmx:XX0oZrEjSDExO5gMIqpxa-m76r2j3LYzymNyqadgnVMKF6Znal632Q>
+    <xmx:XX0oZuPJkaOOrYmhHBSMRxr1Hv3RvPeC7MbF08_6p3cQpiHfLP1CkQ>
+    <xmx:XX0oZg-UXqT4ZgKf4GAhJMPxcl1tqz9jQvLB4lyOrd4NgJP-koM3zS01>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 23 Apr 2024 23:32:44 -0400 (EDT)
+Date: Tue, 23 Apr 2024 21:32:43 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Alan Maguire <alan.maguire@oracle.com>, dwarves@vger.kernel.org, 
+	andrii.nakryiko@gmail.com, jolsa@kernel.org, bpf@vger.kernel.org, eddyz87@gmail.com
+Subject: Re: [PATCH dwarves 0/2] replace --btf_features="all" with "default"
+Message-ID: <hpokpgpw6aruujyis4bdgymc4jsucegwoos2kpsj5ty2i2jnjk@mquc3dvsor33>
+References: <20240423160200.3139270-1-alan.maguire@oracle.com>
+ <Zif1ysMXHRd01ovg@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4871; i=memxor@gmail.com; h=from:subject; bh=V/mVwOVq31CC3WejgrqNDRrOcshPMVlEjDE6YlJuDXE=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBmKHiQsYTybRY2KJQT/Jt1DmJLCR8aaMOsHjtdm 2IvGuVttvqJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZih4kAAKCRBM4MiGSL8R ynToEACk5koOqu9O3cN4epkJukdVi25SLlcueJbZj+8cQqNYXaB2ex49/HauVYd38eKbatBy7g0 DRMfQwmL8pPKav9E5WZxFnNW/xyU4/BMaKANQCeUkpCH/5DFigMPhJek8aGWT/tePcUgh1KqOVu K+nCCH5zwrXmz2pT4TRynmeVc43GVMJLrO5Rct/sEwqvoZmDC66aJ71bWsY96DnJOLsupCncSNh I02Hmmrq/nVY2pA1dUK6Q7NrM5PryCl5xpmIKGU1ERjIMKMHS1HEJOVnm/nhlOg5DBAi2adlHYZ B2zFuoOM76MB5T13A7qA5FzLNv9h4WTgM+OGKZ3e8Frs6/vmrXw2orj3jgtPD8xyT0cqunga1AH pxli4tYjvzouy+r5xQc8HPz/vukJ4hhO88MH0a47X/3Hw0GItAxwg4g/9tOYycwMiIvi+5EOC2y eGTCiQePfZxCb8/i7Iv5S1s4PHmSfiiPKnVJV3Ya1a3eR0YnLIGlmZta5fAokpDPCmsYAhX8TSF z9K/rk5hZ4SVHoX9/wUisyTT5W6/4urFPXg02uGjfUW9GAIwFynmbNQaw40/R4Nz7y5oJQq8Zue a4fiZuLmSxleCjsvQRaxqOOd57spFVujwnyfqTzrN9B30SK6aY9cenRFYgMhd6REXw+EBBqAjTr IXO1f2CEw7mJmSw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zif1ysMXHRd01ovg@x1>
 
-Add tests for nested cases, nested count preservation upon different
-subprog calls that disable/enable preemption, and test sleepable helper
-call in non-preemptible regions.
+On Tue, Apr 23, 2024 at 02:54:18PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Tue, Apr 23, 2024 at 05:01:58PM +0100, Alan Maguire wrote:
+> > Use of "all" in --btf_features is confusing; use the "default" keyword
+> > to request default set of BTF features for encoding instead.  Then
+> > non-standard features can be added in a more natural way; i.e.
+> > 
+> > --btf_features=default,reproducible_build
+> > 
+> > Patch 1 makes this change in pahole.c and documentation.
+> > Patch 2 adjusts the reproducible build selftest to use "default"
+> > instead of "all".
+> > 
+> > This series is applicable on the "next" branch.
+> 
+> Applied to the next branch, I also refreshed the patches adding the
+> alternative + syntax, its basically a one liner :-)
+> 
+> I'll leave it there for a day for the libbpf CI to test with it and then
+> will move all to 'master'.
+> 
+> The first patch of Daniel's series got merged as well, it would be good
+> to refresh the other two patches on top of what we have in 'next' now,
+> Daniel?
 
-182/1   preempt_lock/preempt_lock_missing_1:OK
-182/2   preempt_lock/preempt_lock_missing_2:OK
-182/3   preempt_lock/preempt_lock_missing_3:OK
-182/4   preempt_lock/preempt_lock_missing_3_minus_2:OK
-182/5   preempt_lock/preempt_lock_missing_1_subprog:OK
-182/6   preempt_lock/preempt_lock_missing_2_subprog:OK
-182/7   preempt_lock/preempt_lock_missing_2_minus_1_subprog:OK
-182/8   preempt_lock/preempt_balance:OK
-182/9   preempt_lock/preempt_balance_subprog_test:OK
-182/10  preempt_lock/preempt_global_subprog_test:OK
-182/11  preempt_lock/preempt_sleepable_helper:OK
-182     preempt_lock:OK
-Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
+Apologies for the delay - it's top of my todo list now. I will rebase
+with changes in the morning.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/preempt_lock.c   |   9 ++
- .../selftests/bpf/progs/preempt_lock.c        | 135 ++++++++++++++++++
- 2 files changed, 144 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/preempt_lock.c
- create mode 100644 tools/testing/selftests/bpf/progs/preempt_lock.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/preempt_lock.c b/tools/testing/selftests/bpf/prog_tests/preempt_lock.c
-new file mode 100644
-index 000000000000..02917c672441
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/preempt_lock.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <preempt_lock.skel.h>
-+
-+void test_preempt_lock(void)
-+{
-+	RUN_TESTS(preempt_lock);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/preempt_lock.c b/tools/testing/selftests/bpf/progs/preempt_lock.c
-new file mode 100644
-index 000000000000..6c637ee01ec4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/preempt_lock.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+void bpf_preempt_disable(void) __ksym;
-+void bpf_preempt_enable(void) __ksym;
-+
-+SEC("?tc")
-+__failure __msg("1 bpf_preempt_enable is missing")
-+int preempt_lock_missing_1(struct __sk_buff *ctx)
-+{
-+	bpf_preempt_disable();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__failure __msg("2 bpf_preempt_enable(s) are missing")
-+int preempt_lock_missing_2(struct __sk_buff *ctx)
-+{
-+	bpf_preempt_disable();
-+	bpf_preempt_disable();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__failure __msg("3 bpf_preempt_enable(s) are missing")
-+int preempt_lock_missing_3(struct __sk_buff *ctx)
-+{
-+	bpf_preempt_disable();
-+	bpf_preempt_disable();
-+	bpf_preempt_disable();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__failure __msg("1 bpf_preempt_enable is missing")
-+int preempt_lock_missing_3_minus_2(struct __sk_buff *ctx)
-+{
-+	bpf_preempt_disable();
-+	bpf_preempt_disable();
-+	bpf_preempt_disable();
-+	bpf_preempt_enable();
-+	bpf_preempt_enable();
-+	return 0;
-+}
-+
-+static __noinline void preempt_disable(void)
-+{
-+	bpf_preempt_disable();
-+}
-+
-+static __noinline void preempt_enable(void)
-+{
-+	bpf_preempt_enable();
-+}
-+
-+SEC("?tc")
-+__failure __msg("1 bpf_preempt_enable is missing")
-+int preempt_lock_missing_1_subprog(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__failure __msg("2 bpf_preempt_enable(s) are missing")
-+int preempt_lock_missing_2_subprog(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	preempt_disable();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__failure __msg("1 bpf_preempt_enable is missing")
-+int preempt_lock_missing_2_minus_1_subprog(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	preempt_disable();
-+	preempt_enable();
-+	return 0;
-+}
-+
-+static __noinline void preempt_balance_subprog(void)
-+{
-+	preempt_disable();
-+	preempt_enable();
-+}
-+
-+SEC("?tc")
-+__success int preempt_balance(struct __sk_buff *ctx)
-+{
-+	bpf_preempt_disable();
-+	bpf_preempt_enable();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__success int preempt_balance_subprog_test(struct __sk_buff *ctx)
-+{
-+	preempt_balance_subprog();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+__failure __msg("sleepable helper bpf_copy_from_user#")
-+int preempt_sleepable_helper(void *ctx)
-+{
-+	u32 data;
-+
-+	bpf_preempt_disable();
-+	bpf_copy_from_user(&data, sizeof(data), NULL);
-+	bpf_preempt_enable();
-+	return 0;
-+}
-+
-+int __noinline preempt_global_subprog(void)
-+{
-+	preempt_balance_subprog();
-+	return 0;
-+}
-+
-+SEC("?tc")
-+__failure __msg("global function calls are not allowed with preemption disabled")
-+int preempt_global_subprog_test(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	preempt_global_subprog();
-+	preempt_enable();
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.43.0
-
+Thanks,
+Daniel
 
