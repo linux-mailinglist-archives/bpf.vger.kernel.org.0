@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-27622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2DA8AFEA2
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 04:46:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F08E8AFEA4
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 04:47:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1877F1F243B5
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:46:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF2DFB23CC1
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFA2129A7E;
-	Wed, 24 Apr 2024 02:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6AA84DF9;
+	Wed, 24 Apr 2024 02:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e6WUGAG3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYpO372l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF8283A1E;
-	Wed, 24 Apr 2024 02:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E247F490;
+	Wed, 24 Apr 2024 02:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713926795; cv=none; b=dJCFaUPfNfgzcd44djDz9it38OKcHFRCGTl8B/EV++3Q1pEUVpGAWjQ0lpcQQa6I80cQbbMGEh6+mjYT+ro1nlAxEUCPQ/VG4HnsaGU9eGK1FSlb3okLkOiglQTB5PLh4ftdbTU3N353JUr1WeWIzlaKKxnfXE1UAMwj/IHDdV8=
+	t=1713926802; cv=none; b=iFYCLXCXEChWIlRBO7WOylbZ9rkb9BhqWZW/RGbbDdKZy8njMI7yNEsgcDOAaHGjtuZKvpSIMXacuq8kx4EDerjvQ9uQwRjankZ1AZSk84iSuQf8MC5X8CJYZSU15gbe1wXyRC09IFnHPlRzetARbQQZwn34p9QbDtRel6e6P+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713926795; c=relaxed/simple;
-	bh=7x3bSn+CwYUU5fPN0SrTfXhtq2kTOomoPg+m+5zhRvM=;
+	s=arc-20240116; t=1713926802; c=relaxed/simple;
+	bh=Q4F/mjGL04omI/F4DnqKwPCE80jizvJK5TTsS54Tu7c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NIFT1KgG7Y1bfsiKj0Znsqo/KFG2+nylGQ3w7PXI/lZU9L9UpjUyUy+/IIdQoxVgKPdZU6Bv2RN4SNC+3YJulx+4S4ZqqJlJwiz/LNmlmf0g2zL8SsB4RlmXpP24TE7UuC3tFjZrzDBxpebpPyeBfgv0vDL8L3H3I0gguCCYTbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e6WUGAG3; arc=none smtp.client-ip=209.85.215.182
+	 MIME-Version; b=kF0PmuCYfwVMOdmPJ51IQGunO2gp1uAC+/VVAft9IIXOmeB8Pe8qOV+BAPsw9EPKwXuTjbOJAGSu5WCKqud3R0v6c0KarHvlj5qtfF0b6IJ4faE6WXpl33icvOLO5V4RYpoEzCHBbipZyFRjx8Z5UCMlePYv/v1za/0DKzlswHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GYpO372l; arc=none smtp.client-ip=209.85.215.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-60275a82611so1514321a12.1;
-        Tue, 23 Apr 2024 19:46:33 -0700 (PDT)
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso3656611a12.2;
+        Tue, 23 Apr 2024 19:46:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713926793; x=1714531593; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713926800; x=1714531600; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9/LdYNrIh2jrT148K4L71/CYqd/g6GGqqQlcIzk9sFI=;
-        b=e6WUGAG3ApzpNeuleawbD8btA4UlButUHsyjpnoFpZ/fTSBUqh060AvJFbmZtNdunN
-         zhdylNtAmt+ZojTPBqNd+SKCh78aFEqkxb96YG4sY/ZgW0f6hSWyV4NdQyElyrmM9rNJ
-         W3wQdt37J18VNN+vRB09vYZNdPXGCHb20RoRigvqD4vuxxmWKpdHrH0QwjAyeDsa509r
-         xI8JnvH0ZrWqrwX1MAB5/ov1wN1Vj57Yj1rtKCRb4grsicMXfxRUeUVOSGhmllNuO0uD
-         pz/NCXHlzHUH8tKCnU6iykA6SmRIWi6xN/E9MNW678DjNwxNRWmCdiLeJFJC0CF1tr+m
-         lAaQ==
+        bh=jQkaeKT7wGrh6q9+DS5H6+jIFHlXe8EVn0EF1bUWHFE=;
+        b=GYpO372lpw/n+kyKlPWdnjzGQbuhlwowl68Rqs/ZlVaFYZ04e8XkTH5Xj22prpWIdN
+         HawUvFjedaRqg+rA6xehGa9rnr7WhBCcOt4BnjcQxXLO+fStfmTidIkrDqIbJkEO5KY8
+         2O6M0ExR72AZ8mOPAuJpF6qe5KtYxYOZLnjztzk2vKf3r/OEhmON/efggayREclC1Cok
+         RBdFX5L5L2ibtap4XHCjkGQAN0IQiCh8mw5OGD9ApGBWKI40qeMp2i6yELsdH8NO8+d5
+         7fUlK1OZilNhunIROM8q3bLtTkC/NsTfx2WZ3NQ9QmyPxhZSXmMtiI71E+y/q3A9WvZ3
+         wwKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713926793; x=1714531593;
+        d=1e100.net; s=20230601; t=1713926800; x=1714531600;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9/LdYNrIh2jrT148K4L71/CYqd/g6GGqqQlcIzk9sFI=;
-        b=PbeoqOjQ7aPUA6u1J/77utRmkwby0xfLv9srclG9kZ3feBYXTJXUeJgSEmcW/aM3tU
-         eZK+WB0MF7ksixbe+26EK1gJoVY+HzQGMqGLfZ5om62GGlpDxm13AgSicilGNUfF+qNc
-         1dQl7mFjeacOtnwIBDHVyL7IaJLDjAIYjsG4HZI9rgJK3BdJnj3BcFsrJODV2CXCwv1v
-         X7lF48G64MaqmWUgGoqFqlyYrfwhmVWGSLmg0Ce5d2BOFt/EwR5XFSoSq5/BYt2pJGa7
-         Xl7zVmMY1Ks5TcZftX3uyIIrjKz8Y6CWF0RqcHqgTI5pwQCWdpZfgbdWCpJRvoy4eruV
-         O8Og==
-X-Forwarded-Encrypted: i=1; AJvYcCU5MQhHcklo/pE6ddyKP9d5sCoy2oA3cqh2JdW+dox06vfkVoSVaC3BYaE3p6u7yuyGnM8SGuvjxHR1oiByaEMq0P2dW0UPTEtJtOAXqBDLedH35jk9DEseLHqbvAlWI8SK31xMxixIJ+32QE5Bg7L/4eyjX1mNJkdREO5/wqH3LzIYsw==
-X-Gm-Message-State: AOJu0YxeqoB4pa8/+Xw53od9eAg+rYke7C6EvFlZrmeOaBvnYtkjVWKC
-	i0sn1+mZNZH2WUQBCfYHwf7ggQ5j7q9EN8tLHcab6U16Z2K0JdaA
-X-Google-Smtp-Source: AGHT+IF/lBJNoZ/yBJVF6QTIK+8p5RUqVNnblvxyiOIEWq5Moxf0xPjKA9tYUiHjTnUJwpffHs0cvA==
-X-Received: by 2002:a05:6a20:948b:b0:1a3:52ef:cc84 with SMTP id hs11-20020a056a20948b00b001a352efcc84mr1041883pzb.60.1713926793345;
-        Tue, 23 Apr 2024 19:46:33 -0700 (PDT)
+        bh=jQkaeKT7wGrh6q9+DS5H6+jIFHlXe8EVn0EF1bUWHFE=;
+        b=OWYnszhbnrZiKqkRj7sXE9bWEkYVw/4XfHFZcTbQDdGvyR4BV5Ct/GACI5Gctfj69i
+         S+6lwDs99MXnGUaw3K64bfl5ybOqnbmoGrY+MYv+9CaeOk/GsvZlLxMRsqM9nMSa/Msn
+         1RzPwIPkFCyf+pocpWhFNiW6BhN29oLKoqoFmtmIpU3nzbifGNyXLus7I+KCBF1gRnC3
+         yaMIedQNtOdkj8yIEyz0ADVkXc+cka+lBtw8HATPHAxRBsHDexcUMSXflevTPiB6IF1c
+         77dSEGcjN2lcv4O8lW7fJfpYPONCyWpE7dtYpPXVxJqJ9UT95Gh/f3f3hwt/2mjU1dy3
+         qD1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUFcwzg5hgD8ICEafCvxmAj4G+ZlxejtPGbtM7gstReJ30xTnDPidQz2gyve4bRRjjmNN9cz2XsixXcd7KwVWm6HxTsL5HDG6e5AVY+jViA6w7WK525OvnlpNdwy0W8demdpG/zHhLGqQuaKvvzEQQgIOCfjuwm6tsDU6LSlF2VLsffdw==
+X-Gm-Message-State: AOJu0YxRQEdjOYentGL1E5Qx8bbd7XxalJOsNMy0BiGy4cUi/1xsQLsF
+	FqeJfWTbYo1BIQkdU+svIF8sJieIJ14iPpy7hj7sY8emNYqgZp6S
+X-Google-Smtp-Source: AGHT+IF8Z9K4EnFUSaYlfpVn2pahw/Hu8HZxyOI0cPtBT7B65saDGTUPHFHnzAmTWFABTscbirFncA==
+X-Received: by 2002:a05:6a20:974a:b0:1ad:746:b15a with SMTP id hs10-20020a056a20974a00b001ad0746b15amr1061236pzc.47.1713926800012;
+        Tue, 23 Apr 2024 19:46:40 -0700 (PDT)
 Received: from localhost.localdomain ([120.229.49.143])
-        by smtp.gmail.com with ESMTPSA id t6-20020a170902e84600b001e604438791sm10739243plg.156.2024.04.23.19.46.27
+        by smtp.gmail.com with ESMTPSA id t6-20020a170902e84600b001e604438791sm10739243plg.156.2024.04.23.19.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 19:46:33 -0700 (PDT)
+        Tue, 23 Apr 2024 19:46:39 -0700 (PDT)
 From: Howard Chu <howardchu95@gmail.com>
 To: peterz@infradead.org
 Cc: mingo@redhat.com,
@@ -84,9 +84,9 @@ Cc: mingo@redhat.com,
 	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH v2 1/4] perf record off-cpu: Parse off-cpu event, change config location
-Date: Wed, 24 Apr 2024 10:48:02 +0800
-Message-ID: <20240424024805.144759-2-howardchu95@gmail.com>
+Subject: [PATCH v2 2/4] perf record off-cpu: BPF perf_event_output on sched_switch
+Date: Wed, 24 Apr 2024 10:48:03 +0800
+Message-ID: <20240424024805.144759-3-howardchu95@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240424024805.144759-1-howardchu95@gmail.com>
 References: <20240424024805.144759-1-howardchu95@gmail.com>
@@ -98,248 +98,268 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Parse off-cpu events using parse_event(). Change the location of
-record__config_off_cpu, after record__open because we need to write
-mmapped fds into BPF's perf_event_array map, also, write
-sample_id/sample_type into BPF. In record__pushfn and record__aio_pushfn,
-handle off-cpu samples by off_cpu_strip. This is because the off-cpu
-samples that we want to write to perf.data is in off-cpu samples' raw_data
-section:
+bpf_perf_event_output the off-cpu samples on sched_switch. Because most of
+the time can_record() returns 0, we can't collect stacks, so when stack 
+trace is collectable, store it in stack_save for later output. If we
+don't do that, most of the off-cpu samples won't have a stack trace.
+And since stack traces are collected in task_storage, we don't need to
+worry about maps getting data overflow.
 
-regular samples:
-[sample: sample_data]
-
-off-cpu samples:
-[sample: [raw_data: sample_data]]
-
-We need to extract the useful sample data out before writing.
-
-Hooks record_done just before evlist__disable to stop BPF program from
-outputting, otherwise, we lose some samples.
-
-After samples are collected, change sample_type of off-cpu event to
-the OFFCPU_SAMPLE_TYPES for parsing correctly, it was PERF_SAMPLE_RAW and
-some others, because BPF can only output to a specific type of perf_event,
-which is why `evsel->core.attr.sample_type &= OFFCPU_SAMPLE_TYPES;` is
-deleted in util/evsel.c.
+There is a threshold OUTPUT_THRESHOLD (ns) to decide the minimum off-CPU
+time to trigger output, it is now set to zero. I need opinions on this
+value.
 
 Signed-off-by: Howard Chu <howardchu95@gmail.com>
 ---
- tools/perf/builtin-record.c | 98 ++++++++++++++++++++++++++++++++++---
- tools/perf/util/evsel.c     |  8 ---
- 2 files changed, 91 insertions(+), 15 deletions(-)
+ tools/perf/util/bpf_skel/off_cpu.bpf.c | 163 ++++++++++++++++++++-----
+ 1 file changed, 135 insertions(+), 28 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 2ff718d3e202..3994adaf4607 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -389,6 +389,8 @@ struct record_aio {
- static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size)
- {
- 	struct record_aio *aio = to;
-+	char *bf_stripped = NULL;
-+	size_t stripped;
+diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+index d877a0a9731f..81114de2436d 100644
+--- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
++++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+@@ -17,9 +17,13 @@
  
- 	/*
- 	 * map->core.base data pointed by buf is copied into free map->aio.data[] buffer
-@@ -404,6 +406,31 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 	 * from the beginning of the kernel buffer till the end of the data chunk.
- 	 */
+ #define MAX_STACKS   32
+ #define MAX_ENTRIES  102400
++#define MAX_CPUS  4096
++#define MAX_OFFCPU_LEN 128
++
++/* minimum offcpu time to trigger output */
++#define OUTPUT_THRESHOLD 0ULL
  
-+	if (aio->rec->off_cpu) {
-+		if (size == 0)
-+			return 0;
-+
-+		map->core.start -= size;
-+		size = map->core.end - map->core.start;
-+
-+		bf_stripped = malloc(size);
-+
-+		if (bf_stripped == NULL) {
-+			pr_err("Failed to allocate off-cpu strip buffer\n");
-+			return -ENOMEM;
-+		}
-+
-+		stripped = off_cpu_strip(aio->rec->evlist, map, bf_stripped, size);
-+
-+		if (stripped < 0) {
-+			size = (int)stripped;
-+			goto out;
-+		}
-+
-+		size = stripped;
-+		buf = bf_stripped;
-+	}
-+
- 	if (record__comp_enabled(aio->rec)) {
- 		ssize_t compressed = zstd_compress(aio->rec->session, NULL, aio->data + aio->size,
- 						   mmap__mmap_len(map) - aio->size,
-@@ -432,6 +459,9 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
+ struct tstamp_data {
+-	__u32 stack_id;
+ 	__u32 state;
+ 	__u64 timestamp;
+ };
+@@ -27,17 +31,17 @@ struct tstamp_data {
+ struct offcpu_key {
+ 	__u32 pid;
+ 	__u32 tgid;
+-	__u32 stack_id;
+ 	__u32 state;
+ 	__u64 cgroup_id;
+ };
  
- 	aio->size += size;
+-struct {
+-	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
+-	__uint(key_size, sizeof(__u32));
+-	__uint(value_size, MAX_STACKS * sizeof(__u64));
+-	__uint(max_entries, MAX_ENTRIES);
+-} stacks SEC(".maps");
++struct offcpu_array {
++	u64 array[MAX_OFFCPU_LEN];
++};
++
++struct stack_array {
++	u64 array[MAX_STACKS];
++};
  
-+out:
-+	free(bf_stripped);
-+
- 	return size;
- }
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+@@ -46,13 +50,6 @@ struct {
+ 	__type(value, struct tstamp_data);
+ } tstamp SEC(".maps");
  
-@@ -635,6 +665,38 @@ static int process_locked_synthesized_event(struct perf_tool *tool,
- static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- {
- 	struct record *rec = to;
-+	int err;
-+	char *bf_stripped = NULL;
-+	size_t stripped;
-+
-+	if (rec->off_cpu) {
-+		/*
-+		 * We'll read all the events at once without masking.
-+		 * When reading the remainder from a map, the size is 0, because
-+		 * start is shifted to the end so no more data is to be read.
-+		 */
-+		if (size == 0)
-+			return 0;
-+
-+		map->core.start -= size;
-+		/* size in total */
-+		size = map->core.end - map->core.start;
-+
-+		bf_stripped = malloc(size);
-+
-+		if (bf_stripped == NULL) {
-+			pr_err("Failed to allocate off-cpu strip buffer\n");
-+			return -ENOMEM;
-+		}
-+
-+		stripped = off_cpu_strip(rec->evlist, map, bf_stripped, size);
-+
-+		if (stripped < 0)
-+			return (int)stripped;
-+
-+		size = stripped;
-+		bf = bf_stripped;
-+	}
- 
- 	if (record__comp_enabled(rec)) {
- 		ssize_t compressed = zstd_compress(rec->session, map, map->data,
-@@ -648,7 +710,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- 	}
- 
- 	thread->samples++;
--	return record__write(rec, map, bf, size);
-+	err = record__write(rec, map, bf, size);
-+
-+	free(bf_stripped);
-+
-+	return err;
- }
- 
- static volatile sig_atomic_t signr = -1;
-@@ -1790,6 +1856,7 @@ record__finish_output(struct record *rec)
- 		if (rec->buildid_all)
- 			perf_session__dsos_hit_all(rec->session);
- 	}
-+
- 	perf_session__write_header(rec->session, rec->evlist, fd, true);
- 
- 	return;
-@@ -2501,6 +2568,14 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		}
- 	}
- 
-+	if (rec->off_cpu) {
-+		err = record__config_off_cpu(rec);
-+		if (err) {
-+			pr_err("record__config_off_cpu failed, error %d\n", err);
-+			goto out_free_threads;
-+		}
-+	}
-+
- 	/*
- 	 * Normally perf_session__new would do this, but it doesn't have the
- 	 * evlist.
-@@ -2764,6 +2839,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		 * disable events in this case.
- 		 */
- 		if (done && !disabled && !target__none(&opts->target)) {
-+			perf_hooks__invoke_record_done();
- 			trigger_off(&auxtrace_snapshot_trigger);
- 			evlist__disable(rec->evlist);
- 			disabled = true;
-@@ -2827,14 +2903,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	} else
- 		status = err;
- 
--	if (rec->off_cpu)
--		rec->bytes_written += off_cpu_write(rec->session);
+-struct {
+-	__uint(type, BPF_MAP_TYPE_HASH);
+-	__uint(key_size, sizeof(struct offcpu_key));
+-	__uint(value_size, sizeof(__u64));
+-	__uint(max_entries, MAX_ENTRIES);
+-} off_cpu SEC(".maps");
 -
- 	record__read_lost_samples(rec);
- 	record__synthesize(rec, true);
- 	/* this will be recalculated during process_buildids() */
- 	rec->samples = 0;
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_HASH);
+ 	__uint(key_size, sizeof(__u32));
+@@ -74,6 +71,34 @@ struct {
+ 	__uint(max_entries, 1);
+ } cgroup_filter SEC(".maps");
  
-+	/* change to the correct sample type for parsing */
-+	if (rec->off_cpu && off_cpu_prepare_parse(rec->evlist)) {
-+		pr_err("ERROR: Failed to change sample type for off-cpu event\n");
-+		goto out_delete_session;
-+	}
++struct {
++	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++	__uint(max_entries, MAX_CPUS);
++} offcpu_output SEC(".maps");
 +
- 	if (!err) {
- 		if (!rec->timestamp_filename) {
- 			record__finish_output(rec);
-@@ -3198,7 +3277,7 @@ static int switch_output_setup(struct record *rec)
- 	unsigned long val;
- 
- 	/*
--	 * If we're using --switch-output-events, then we imply its 
-+	 * If we're using --switch-output-events, then we imply its
- 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
- 	 *  thread to its parent.
- 	 */
-@@ -4221,9 +4300,14 @@ int cmd_record(int argc, const char **argv)
- 	}
- 
- 	if (rec->off_cpu) {
--		err = record__config_off_cpu(rec);
-+		char off_cpu_event[64];
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(struct offcpu_array));
++	__uint(max_entries, 1);
++} offcpu_data SEC(".maps");
 +
-+		snprintf(off_cpu_event, sizeof(off_cpu_event),
-+			 "bpf-output/no-inherit=1,name=%s/", OFFCPU_EVENT);
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(struct stack_array));
++	__uint(max_entries, 1);
++} stack_frame SEC(".maps");
 +
-+		err = parse_event(rec->evlist, off_cpu_event);
- 		if (err) {
--			pr_err("record__config_off_cpu failed, error %d\n", err);
-+			pr_err("Failed to open off-cpu event\n");
- 			goto out;
- 		}
- 	}
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 3536404e9447..c08ae6a3c8d6 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1092,11 +1092,6 @@ static void evsel__set_default_freq_period(struct record_opts *opts,
- 	}
- }
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct stack_array);
++} stack_save SEC(".maps");
++
+ /* new kernel task_struct definition */
+ struct task_struct___new {
+ 	long __state;
+@@ -96,6 +121,8 @@ const volatile bool uses_cgroup_v1 = false;
  
--static bool evsel__is_offcpu_event(struct evsel *evsel)
--{
--	return evsel__is_bpf_output(evsel) && evsel__name_is(evsel, OFFCPU_EVENT);
--}
--
+ int perf_subsys_id = -1;
+ 
++u64 sample_id, sample_type;
++
  /*
-  * The enable_on_exec/disabled value strategy:
-  *
-@@ -1363,9 +1358,6 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	if (evsel__is_dummy_event(evsel))
- 		evsel__reset_sample_bit(evsel, BRANCH_STACK);
- 
--	if (evsel__is_offcpu_event(evsel))
--		evsel->core.attr.sample_type &= OFFCPU_SAMPLE_TYPES;
--
- 	arch__post_evsel_config(evsel, attr);
+  * Old kernel used to call it task_struct->state and now it's '__state'.
+  * Use BPF CO-RE "ignored suffix rule" to deal with it like below:
+@@ -182,50 +209,130 @@ static inline int can_record(struct task_struct *t, int state)
+ 	return 1;
  }
  
++static inline bool check_bounds(int index)
++{
++	if (index >= 0 && index < MAX_OFFCPU_LEN)
++		return true;
++
++	return false;
++}
++
++static inline int copy_stack(struct stack_array *from,
++			     struct offcpu_array *to, int n)
++{
++	int max_stacks = MAX_STACKS, len = 0;
++
++	if (!from)
++		return len;
++
++	for (int i = 0; i < max_stacks && from->array[i]; ++i) {
++		if (check_bounds(n + 2 + i)) {
++			to->array[n + 2 + i] = from->array[i];
++			++len;
++		}
++	}
++	return len;
++}
++
+ static int off_cpu_stat(u64 *ctx, struct task_struct *prev,
+ 			struct task_struct *next, int state)
+ {
+ 	__u64 ts;
+-	__u32 stack_id;
+ 	struct tstamp_data *pelem;
+-
++	struct stack_array *frame, *stack_save_p;
+ 	ts = bpf_ktime_get_ns();
++	int zero = 0, len = 0, size;
+ 
+ 	if (!can_record(prev, state))
+ 		goto next;
+ 
+-	stack_id = bpf_get_stackid(ctx, &stacks,
+-				   BPF_F_FAST_STACK_CMP | BPF_F_USER_STACK);
++	frame = bpf_map_lookup_elem(&stack_frame, &zero);
++	if (frame)
++		len = bpf_get_stack(ctx, frame->array, MAX_STACKS * sizeof(u64),
++				    BPF_F_USER_STACK) / sizeof(u64);
++
++	/* save stacks if collectable */
++	if (len > 0) {
++		stack_save_p = bpf_task_storage_get(&stack_save, prev, NULL,
++						    BPF_LOCAL_STORAGE_GET_F_CREATE);
++		if (stack_save_p)
++			for (int i = 0; i < len && i < MAX_STACKS; ++i)
++				stack_save_p->array[i] = frame->array[i];
++	}
+ 
+ 	pelem = bpf_task_storage_get(&tstamp, prev, NULL,
+ 				     BPF_LOCAL_STORAGE_GET_F_CREATE);
++
+ 	if (!pelem)
+ 		goto next;
+ 
+ 	pelem->timestamp = ts;
+ 	pelem->state = state;
+-	pelem->stack_id = stack_id;
+ 
+ next:
+ 	pelem = bpf_task_storage_get(&tstamp, next, NULL, 0);
+ 
++	stack_save_p = bpf_task_storage_get(&stack_save, next, NULL, 0);
++
+ 	if (pelem && pelem->timestamp) {
+ 		struct offcpu_key key = {
+ 			.pid = next->pid,
+ 			.tgid = next->tgid,
+-			.stack_id = pelem->stack_id,
+ 			.state = pelem->state,
+ 			.cgroup_id = needs_cgroup ? get_cgroup_id(next) : 0,
+ 		};
+-		__u64 delta = ts - pelem->timestamp;
+-		__u64 *total;
+ 
+-		total = bpf_map_lookup_elem(&off_cpu, &key);
+-		if (total)
+-			*total += delta;
+-		else
+-			bpf_map_update_elem(&off_cpu, &key, &delta, BPF_ANY);
++		__u64 delta = ts - pelem->timestamp;
+ 
++		struct offcpu_array *data = bpf_map_lookup_elem(&offcpu_data, &zero);
++
++		if (data && delta >= OUTPUT_THRESHOLD) {
++			int n = 0;
++			int ip_pos = -1;
++
++			if (sample_type & PERF_SAMPLE_IDENTIFIER && check_bounds(n))
++				data->array[n++] = sample_id;
++			if (sample_type & PERF_SAMPLE_IP && check_bounds(n)) {
++				ip_pos = n;
++				data->array[n++] = 0;  /* will be updated */
++			}
++			if (sample_type & PERF_SAMPLE_TID && check_bounds(n))
++				data->array[n++] = (u64)key.pid << 32 | key.tgid;
++			if (sample_type & PERF_SAMPLE_TIME && check_bounds(n))
++				data->array[n++] = pelem->timestamp;
++			if (sample_type & PERF_SAMPLE_ID && check_bounds(n))
++				data->array[n++] = sample_id;
++			if (sample_type & PERF_SAMPLE_CPU && check_bounds(n))
++				data->array[n++] = 0;
++			if (sample_type & PERF_SAMPLE_PERIOD && check_bounds(n))
++				data->array[n++] = delta;
++			if (sample_type & PERF_SAMPLE_CALLCHAIN && check_bounds(n + 2)) {
++				len = 0;
++
++				/* data->array[n] is callchain->nr (updated later) */
++				data->array[n + 1] = PERF_CONTEXT_USER;
++				data->array[n + 2] = 0;
++
++				len = copy_stack(stack_save_p, data, n);
++
++				/* update length of callchain */
++				data->array[n] = len + 1;
++
++				/* update sample ip with the first callchain entry */
++				if (ip_pos >= 0)
++					data->array[ip_pos] = data->array[n + 2];
++
++				/* calculate sample callchain data->array length */
++				n += len + 2;
++			}
++			if (sample_type & PERF_SAMPLE_CGROUP && check_bounds(n))
++				data->array[n++] = key.cgroup_id;
++
++			size = n * sizeof(u64);
++			if (size >= 0 && size <= MAX_OFFCPU_LEN * sizeof(u64))
++				bpf_perf_event_output(ctx, &offcpu_output, BPF_F_CURRENT_CPU,
++						      data, size);
++		}
+ 		/* prevent to reuse the timestamp later */
+ 		pelem->timestamp = 0;
+ 	}
 -- 
 2.44.0
 
