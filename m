@@ -1,137 +1,130 @@
-Return-Path: <bpf+bounces-27608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E13FF8AFD5B
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:29:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B22198AFDD4
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 03:28:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F4291F239E5
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 00:29:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DDA32879CB
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 01:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DB0639;
-	Wed, 24 Apr 2024 00:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F0F6FB8;
+	Wed, 24 Apr 2024 01:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AyoURgqp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+etGHks"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58F4360
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 00:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7F76125
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 01:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713918584; cv=none; b=llzKCcKApFJbD8fwxvo89sRb+1EYyZK/HgxusE+xT9gUWFk//NIYTmU2j54HFtLG/5hrWSo9Z1GbyVsLxNBkggr5wuVsEmnDbDlOi00PhSrrxuIwZZJV8AHmP16YXU+I0dZeG4NB5bMOf/mUJLZ3d4esckrMg3mCFsd6qXyloGE=
+	t=1713922129; cv=none; b=opYqreWcsX9BpCFHZHIaLkcwXJfianCCyYIylCoCbNm6Tn0PvvkGPCtTXFuwYjkiT1SNKugyEd+mDNJJdk3+KFFJ+/zEtXcLV31Bz/+DJYtnlXelKKmO9jmWizkqdJmUFpEugyZ+1SRLd0eq3VdHD5N5V/YPij3l2/YlyjwU86M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713918584; c=relaxed/simple;
-	bh=mXhi+c9HgRB71K4IsjpyMWWTy/CDmhoWBCnWz3htV9c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PIpx+b3TnOhVn6gRdLjIaft4v6nOipajfEXx6BnqPx8KcCsg4RzGrYggUL4PI7wXJQEwdcdE2U9O/mtHKvl4HF9fOCLZjl7ZCrhW1hQJUP6XivRFzM739x9P1y/KCUL9Z/FXIVllCaD7ocRIhx10HoEBeUUt3HNPkmF5MpsjJLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AyoURgqp; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <68ae7e9c-3bd7-4370-ab06-6e787ca27340@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713918579;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p58HCB4rQj6simnXtN0Ayr72ksgZ1nga1Sf64Ek4SWE=;
-	b=AyoURgqp91JI+CLsNIo+MS8cxlaUuqdBA934LmMxDBlUIcq2OnfLh2tRt91uQLK2tdoExn
-	g9TrBXne6ncaxBMuWThON04DEqRrL/tzNvPkMHBwEYBTS0VYokPCLQ/7FjWxaggTesaMWX
-	wsUfgHrTPp7/PVPHpnK7LgynINhFMPw=
-Date: Tue, 23 Apr 2024 17:29:31 -0700
+	s=arc-20240116; t=1713922129; c=relaxed/simple;
+	bh=sTuKmtJwL3gPave0nrd2VpPYpZQtRBX0dCALLuh5Nwo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fYDnLa6MKAB0J85zBhgBeRFGHxYlEpHzWjeA2L+poXjDlXNL20GOwQg3YMo9ytCB9lhi/dGCYJD/mv/QhTDLLqgPeH3bq+Vd17gz4AwoApEpyMBda01SEPkhm8TsoZIbS0YJM6rMDAVenYG7y1V6VMxIsHX4LfhJHPF7tJRYW0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+etGHks; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c70999ff96so3970757b6e.2
+        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 18:28:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713922127; x=1714526927; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qgBJyyfxBAfTfO4kbxZUN4YIN1WEkduXU+TuRJBa8uY=;
+        b=E+etGHksfNuFPgBowPq7qPxJOcU3WJduaXJT7yKCH3WD7IVuscb0dXn2tbeb5HGMkw
+         xHQ0B+7uJC99y3J+lEZqzbOGhjQ0u9reEP+k+FiohfBKkvJh5H9sBmfhjLtkMSJ6Hqd+
+         9HbW5ma8B7w70QZGtO1+pA2WnD6pB0r32MiuGQZ/qPj4MtXjzqwOjVBAVC5k6YLh+HvX
+         31l0A88NN7M4e66/qREA+j/o4psA5psFsiQi+V9JTbB46KybZ5hBorCNLawcemlpebX0
+         VSFLvYGLUd95zsFk+CS2Ur8i17+sRbrJ+41s1QOpX1F4bbKQZM91XY0kWNH+nKUvaGiu
+         9Z6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713922127; x=1714526927;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qgBJyyfxBAfTfO4kbxZUN4YIN1WEkduXU+TuRJBa8uY=;
+        b=rORnHHACecdLhxlIRtLOHw3zJgT2KYh+VmRuvsPwkdlZJK0BqnOs4Z+FsoDay8Nkk8
+         NGkqnbpdBbuuwbFMiqT/1k1uXX/cgVhJayIOX4vE1rN0f4cgn08oyJwn6dGoIzsArrip
+         2/4WsAbrAWDq+4ZZft10RtP6XmiQiveI44rVQdNtEJVB0EQlF+TGKoDmPm/+IdAiA+s+
+         zGKgmZQn6P47iqZHOs6c5Pn6KHZeSgq06GElmTx7rieN4ChpVXkz4vwy7k30mfeALDvC
+         C4G0xl0iOrtojUe0tqZ4Umf2gLkCPX+BiXFtG9yZRpG3pO3tJnv2V6SIy3nzZl4YGRQ6
+         Zmng==
+X-Gm-Message-State: AOJu0YzGzpiV5okQCQP47p3kCgzuaR697NnZ6NSt0cNt43mBu01pE18M
+	yA/U897V3mXlXXfugPrL8Fz8yQVz3npA/KMACPUUlJim36yk3pAWheKg4g==
+X-Google-Smtp-Source: AGHT+IEZzGbci4+59fXLWfGVz8bWOXi/L1VyQ8PTy8rF8mxN6MoIEJB/JewyWilAn3GnfVtQAleVcA==
+X-Received: by 2002:aca:1e09:0:b0:3c7:52cb:e0ff with SMTP id m9-20020aca1e09000000b003c752cbe0ffmr962185oic.47.1713922127260;
+        Tue, 23 Apr 2024 18:28:47 -0700 (PDT)
+Received: from badger.vs.shawcable.net ([2604:3d08:9880:5900:1fa0:b3a5:f828:f414])
+        by smtp.gmail.com with ESMTPSA id fk24-20020a056a003a9800b006ed9d839c4csm10271007pfb.4.2024.04.23.18.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 18:28:46 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	jemarch@gnu.org,
+	thinker.li@gmail.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/5] check bpf_dummy_struct_ops program params for test runs
+Date: Tue, 23 Apr 2024 18:28:16 -0700
+Message-Id: <20240424012821.595216-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned
- path of a struct_osp link.
-To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
-Cc: andrii@kernel.org, kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org,
- song@kernel.org, kernel-team@meta.com
-References: <20240417002513.1534535-1-thinker.li@gmail.com>
- <20240417002513.1534535-2-thinker.li@gmail.com>
- <8dadfcc9-1f6a-4b93-951b-548e4560ce5a@linux.dev>
- <0326d150-6b43-465c-ba43-7e7033b13408@gmail.com>
- <70bf97a6-19d8-4a26-8879-17db7c44a2cc@gmail.com>
- <54f32ade-ec17-4c35-b993-44907111e7ca@linux.dev>
- <696735aa-59e1-4750-814e-216b85fe934b@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <696735aa-59e1-4750-814e-216b85fe934b@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 4/23/24 10:16 AM, Kui-Feng Lee wrote:
-> 
-> 
-> On 4/22/24 16:43, Martin KaFai Lau wrote:
->> On 4/22/24 10:30 AM, Kui-Feng Lee wrote:
->>>
->>>
->>> On 4/22/24 10:12, Kui-Feng Lee wrote:
->>>>
->>>>
->>>> On 4/19/24 17:05, Martin KaFai Lau wrote:
->>>>> On 4/16/24 5:25 PM, Kui-Feng Lee wrote:
->>>>>> +int bpffs_struct_ops_link_open(struct inode *inode, struct file *filp)
->>>>>> +{
->>>>>> +    struct bpf_struct_ops_link *link = inode->i_private;
->>>>>> +
->>>>>> +    /* Paired with bpf_link_put_direct() in bpf_link_release(). */
->>>>>> +    bpf_link_inc(&link->link);
->>>>>> +    filp->private_data = link;
->>>>>> +    return 0;
->>>>>> +}
->>>>>> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
->>>>>> index af5d2ffadd70..b020d761ab0a 100644
->>>>>> --- a/kernel/bpf/inode.c
->>>>>> +++ b/kernel/bpf/inode.c
->>>>>> @@ -360,11 +360,16 @@ static int bpf_mkmap(struct dentry *dentry, umode_t 
->>>>>> mode, void *arg)
->>>>>>   static int bpf_mklink(struct dentry *dentry, umode_t mode, void *arg)
->>>>>>   {
->>>>>> +    const struct file_operations *fops;
->>>>>>       struct bpf_link *link = arg;
->>>>>> -    return bpf_mkobj_ops(dentry, mode, arg, &bpf_link_iops,
->>>>>> -                 bpf_link_is_iter(link) ?
->>>>>> -                 &bpf_iter_fops : &bpffs_obj_fops);
->>>>>> +    if (bpf_link_is_iter(link))
->>>>>> +        fops = &bpf_iter_fops;
->>>>>> +    else if (link->type == BPF_LINK_TYPE_STRUCT_OPS)
->>>>>
->>>>> Open a pinned link and then update should not be specific to struct_ops 
->>>>> link. e.g. should be useful to the cgroup link also?
->>>>
->>>> It could be. Here, I played safe in case it creates any unwanted side
->>>> effect for links of unknown types.
->>>
->>> By the way, may I put it in a follow up patch if we want cgroup links?
->>
->> This does not feel right. It is not struct_ops specific.
->>
->> Before we dive in further, there is BPF_OBJ_GET which can get a fd of a pinned 
->> bpf obj (prog, map, and link). Take a look at bpf_link__open() in libbpf. Does 
->> it work for the use case that needs to update the link?
->>
-> It should work.
-> So, this patch is not necessary. However, it is still a nice and
-> intuitive feature. WDYT?
+When doing BPF_PROG_TEST_RUN for bpf_dummy_struct_ops programs,
+execution should be rejected when NULL is passed for non-nullable
+params, because for such params verifier assumes that such params are
+never NULL and thus might optimize out NULL checks.
 
-There is already BPF_OBJ_GET which works for all major bpf obj types (prog, map, 
-and link). Having open only works for link and only works for one link type 
-(struct_ops) is not very convincing.
+This problem was reported by Jose E. Marchesi in off-list discussion.
+The code generated by GCC for dummy_st_ops_success/test_1() function
+differs from LLVM variant in a way that allows verifier to remove the
+NULL check. The test dummy_st_ops/dummy_init_ret_value actually sets
+the 'state' parameter to NULL, thus GCC-generated version of the test
+triggers NULL pointer dereference when BPF program is executed.
 
-Beside, I am not sure how the file flags (e.g. rdonly...etc) should be handled. 
-I don't know enough in this area, so I will defer to others to comment in 
-general the usefulness and the approach.
+This patch-set addresses the issue in the following steps:
+- patch #1 marks bpf_dummy_struct_ops.test_1 parameter as nullable,
+  for verifier to have correct assumptions about test_1() programs;
+- patch #2 modifies dummy_st_ops/dummy_init_ret_value to trigger NULL
+  dereference with both GCC and LLVM (if patch #1 is not applied);
+- patch #3 adjusts a few dummy_st_ops test cases to avoid passing NULL
+  for 'state' parameter of test_2() and test_sleepable() functions,
+  as parameters of these functions are not marked as nullable;
+- patch #4 adjusts bpf_dummy_struct_ops to reject test execution of
+  programs if NULL is passed for non-nullable parameter;
+- patch #5 adds a test to verify logic from patch #4.
 
+Eduard Zingerman (5):
+  bpf: mark bpf_dummy_struct_ops.test_1 parameter as nullable
+  selftests/bpf: adjust dummy_st_ops_success to detect additional error
+  selftests/bpf: do not pass NULL for non-nullable params in
+    dummy_st_ops
+  bpf: check bpf_dummy_struct_ops program params for test runs
+  selftests/bpf: dummy_st_ops should reject 0 for non-nullable params
+
+ net/bpf/bpf_dummy_struct_ops.c                | 55 ++++++++++++++++++-
+ .../selftests/bpf/prog_tests/dummy_st_ops.c   | 34 +++++++++++-
+ .../bpf/progs/dummy_st_ops_success.c          | 15 ++++-
+ 3 files changed, 96 insertions(+), 8 deletions(-)
+
+-- 
+2.34.1
 
 
