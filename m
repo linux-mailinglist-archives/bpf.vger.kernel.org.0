@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-27672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382318B0889
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 13:45:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CBF28B088D
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 13:45:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9B51C233E3
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F59E287EA6
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 11:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B63B15A4B4;
-	Wed, 24 Apr 2024 11:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BF715AAAE;
+	Wed, 24 Apr 2024 11:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FYVKztNo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WpkS81q5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660AC15A4A4
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F10315A4A0
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959096; cv=none; b=cWILqF8WLdlKz//uwsDMdAFzURlxLKfQS//CftjWLrg+mUAPe07NAr+GQBbyP0ontcY0kMU9MX+pEmPfG3/KnFGEFhO2LDBOBZeo7I3vd6d3uorUzctCiU+XiKpP+Lc6OFeV8u/eib3r2pXNh7e9DWwUFJdrIHmmkUtqfcVOPxM=
+	t=1713959109; cv=none; b=JIn6qZvKfWqIuWrcYZSSGAO26lWo4cBd9FTHbnaAusSxbYiHGISjN3eR3pfyuhYnMRM6NjVKHeGaoUTL2bE0vAdUnSB2oeFQWZocRGIiraq38bGoLZ5F4axtKDAlWtzXb08h8G6/9+4t25K9oTIVBjli0HHe3WsUNho7styGlTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959096; c=relaxed/simple;
-	bh=4nslSm9HwjNkRGbF5xMmFDYbYcTTmY8u18BliXqIM84=;
+	s=arc-20240116; t=1713959109; c=relaxed/simple;
+	bh=M+RZ4gYJDMarG5i0YRGOE2srlHZuTqU1dK4Cx0Uyf0U=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sIP2hFbMxnfhHx3YnrgFbK7SNZUgXLnn9+jaRbI6ziP5V/UTwfc4D5TuYRRdfC/7rTPgy0aWeaIxh1GwayGV+zDREcgKKVccy+QLTzziXM8E4xBAjPGcZyRR4e+HDBwmNczEgdG2GlW959QWjnGEasmDn0TvvDDD+GagkouxKew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FYVKztNo; arc=none smtp.client-ip=209.85.218.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=ibaw2H0rd7axO6vqzcXizlL3uoGMEDjmX2zbpwL55DHRA84ZB+Q8aLtLFZaCsJaeNvrMvADo07laa45SuWoV66jZ0zvOLvkN57FjpyZ61H9alNU+7qDaVUZ4JUYuzD1k5gLbF/B+oeIVtnq3Z/RFN66OC8QDqX8c6VPIXSJ7ShA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WpkS81q5; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a5873c52f10so308157966b.0
-        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 04:44:54 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57232e47a81so601705a12.0
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 04:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713959093; x=1714563893; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713959105; x=1714563905; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4V3FnC/MfE+QLpr/chXJ9YexKEqeVm5WfNgoOGd4jhY=;
-        b=FYVKztNoz74jro6d8gxkU4nMntIyDFrbGzyM9/Tp8EISFQEV3BZdTjHa0QuNHqlkNv
-         Uxn9CJ3hfY5jKqLQbk5ySgDIquOANeMGdXnNfOkOq93MtZQ4M4AD1IyY93yx8ufUEerR
-         V38fWIf7ON2J00dHR5wEUnEpPebIW4n+2eSZAhjYzyTux1f1BWkMduRmNIz78NLrneDT
-         7oQ1ai6iN0adg15FluqsVnfMimasqUxmCLx3eG5IBJsJOJ2rcVVL/JjOSEFuEirTF66H
-         rZAR9+YPx+Zc/JxCyn+6M4058C3IymNT7yT968H5cTKCn7jperrvRQskTpnjz1VPwqny
-         3NfQ==
+        bh=U12KRX7rOsMVpN08fOTZeBRgTrW81TGjrZBOSB5HzFk=;
+        b=WpkS81q5c3IqhwBj6XNWUsel54+j5NFUpL44CWVvHw+qYlnTbMpNx+OAOGHMJPTBH4
+         fvRT6rfh6FDIWU1T/8IdoenX1SOtYhH/uG9EG8cKYpbY4Ivjtfaca3i/Qlb8fut4bm8g
+         UGYQRbIgxOgGLGcIfNlODDx83QBC5D6dimzrEmuyVfrKH69XDNolCXi0KIp69T+9bStn
+         UXsCkF4b2JlJF+q0RdpLD51OZQeQefw5x5MlNFPwK0Hb7C0QakhKGrLE/YmjUhK3BOXT
+         bl+cwmYgroBNOOkiizC+B63xVH9wmRdRR8nS8yiHanDBCKquX3yQ54073GMhJwSp2hKi
+         PxYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713959093; x=1714563893;
+        d=1e100.net; s=20230601; t=1713959105; x=1714563905;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4V3FnC/MfE+QLpr/chXJ9YexKEqeVm5WfNgoOGd4jhY=;
-        b=J9BVTfHth2teLef1DS/yAmVlyGRPG9h2iOtzqccKAKovz9GySjw8Fn01PfzyjyOoH8
-         iGsFAw6F1LdCMXISmfDR500TnUO+862wtPloYVDI4HKo4dmqZNBi0//WwH9bmCNulX0w
-         V4aHl28TCzC+9RiINkrqgXkWjWkHOJETgAsNmN8j7I+VUJCcjW5h0WlMeI1t2cGEZjp0
-         lU30ir51jySrf+W+CCzPcza2R1GDElRqLbQ8Ifq3y1gXRHngywjsGI23jsOFW72F1QYa
-         iYZdIAmiPZeOx1EMS9rrXQ9AkpgFHJfdlPHZHTEQ5+jh27Z5BGU4BGeuNOlN3xyYzWVa
-         qOmA==
-X-Forwarded-Encrypted: i=1; AJvYcCUj24WCrkiOWyTC2Egx/12wL1fMP25fWNYWGJ/UX5np0oU1Wt0pAOfZYTvQM6Xib7ftsJxHXADit2ttT6apSZjX8En4
-X-Gm-Message-State: AOJu0YwFhOcd8xWWeJRtrQ4TimLtdqvHZyuJgJHX/FvwKGZrFx0QQBcK
-	t4lgqsOaqFL9GUQU6m50ublRxXQuEpUWJhGGlwipd+B1m9uQtx6K
-X-Google-Smtp-Source: AGHT+IG7M7JbU1eMuLX22fPa8EvdzapoDDlewH6rxsUfki6KraU7TK3GbK/QUKpaHM9nQQjl/zcZvQ==
-X-Received: by 2002:a17:906:a214:b0:a58:73f0:4d1a with SMTP id r20-20020a170906a21400b00a5873f04d1amr1349807ejy.70.1713959092759;
-        Wed, 24 Apr 2024 04:44:52 -0700 (PDT)
+        bh=U12KRX7rOsMVpN08fOTZeBRgTrW81TGjrZBOSB5HzFk=;
+        b=pc+HIOJez7OmTto0Yf75A+Mw507LKud/b8BtcblpFPHpRotwZG61P4GMgVA6rXgHun
+         f/aS3AoD1X0Uu0tvD9ZYh7aaj1en2b6D6tZ5AlOpAYvKu8hPHbUdEzj/+Jtqt67DHl08
+         OAM6HLFzJgj5mxnh1obSBBT8pmN3swdMZlXsGGHQxgHdJP09nGehoTJZQfJ+VE4D7XX2
+         93VABdfvqLo/kYVHmjipB6ARexanrpcpR+cW+WRD91DFJ1RVstAXT2kI1KTttv3IhgtK
+         My+JeELNfTszNIj2obWfb4DcLd/fMND6UiB0sUSNZG7AndK2ef843Ru+Yo1D1RkLWk5g
+         0JNw==
+X-Forwarded-Encrypted: i=1; AJvYcCU4szr52+Y7SImMPo2Q+/ePip+h0mvrSKWj3U/queKOgrECk2/41Tcu35I8+PxFf79hn3y97FOFNj9PI8h1vNiY68o3
+X-Gm-Message-State: AOJu0YwE5ZrF8J5MEfFN3UrRQ1Sa9mOJNKZ1MQdxJcTi3Cc9XuX4AfJy
+	n7m8uBC6QfljvPE8xYcUa/oZdgoiUBvkOscl/mkrhUQB84TJO4Mr
+X-Google-Smtp-Source: AGHT+IHYubTNdLMQHWhBcws3bvgW7Kka7+eWzqfh0iGTC9fvZVb2/uaPP3AmcYQRIBaTaj+8zWUaLQ==
+X-Received: by 2002:a05:6402:26c3:b0:572:34b9:8842 with SMTP id x3-20020a05640226c300b0057234b98842mr296126edd.13.1713959105578;
+        Wed, 24 Apr 2024 04:45:05 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id qt3-20020a170906ece300b00a5887fed95dsm1257251ejb.2.2024.04.24.04.44.51
+        by smtp.gmail.com with ESMTPSA id u7-20020a509507000000b005722d871e4csm1079624eda.90.2024.04.24.04.45.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 04:44:52 -0700 (PDT)
+        Wed, 24 Apr 2024 04:45:04 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 24 Apr 2024 13:44:50 +0200
+Date: Wed, 24 Apr 2024 13:45:02 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -81,11 +81,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
 	Viktor Malik <vmalik@redhat.com>,
 	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next 6/7] selftests/bpf: Add kprobe multi session test
-Message-ID: <ZijwsrKWCbo57vUE@krava>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Add support for kprobe multi session
+ cookie
+Message-ID: <Zijwvg9dasUX-_Jx@krava>
 References: <20240422121241.1307168-1-jolsa@kernel.org>
- <20240422121241.1307168-7-jolsa@kernel.org>
- <CAEf4Bza2oReiAMhO3bUwP9LmdQ=+u98gEd2Vz_zGmB1PUVi4-Q@mail.gmail.com>
+ <20240422121241.1307168-4-jolsa@kernel.org>
+ <CAEf4BzY4PGHARcfB3DX1keDD5SaaMv1Rezz-2V_r5B4Hi9C9Jg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,130 +96,56 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bza2oReiAMhO3bUwP9LmdQ=+u98gEd2Vz_zGmB1PUVi4-Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzY4PGHARcfB3DX1keDD5SaaMv1Rezz-2V_r5B4Hi9C9Jg@mail.gmail.com>
 
-On Tue, Apr 23, 2024 at 05:27:14PM -0700, Andrii Nakryiko wrote:
+On Tue, Apr 23, 2024 at 05:26:51PM -0700, Andrii Nakryiko wrote:
 > On Mon, Apr 22, 2024 at 5:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
-
-SNIP
-
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > index 51628455b6f5..d1f116665551 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > @@ -4,6 +4,7 @@
-> >  #include "trace_helpers.h"
-> >  #include "kprobe_multi_empty.skel.h"
-> >  #include "kprobe_multi_override.skel.h"
-> > +#include "kprobe_multi_session.skel.h"
-> >  #include "bpf/libbpf_internal.h"
-> >  #include "bpf/hashmap.h"
 > >
-> > @@ -326,6 +327,52 @@ static void test_attach_api_fails(void)
-> >         kprobe_multi__destroy(skel);
-> >  }
+> > Adding support for cookie within the session of kprobe multi
+> > entry and return program.
 > >
-> > +static void test_session_skel_api(void)
-> > +{
-> > +       struct kprobe_multi_session *skel = NULL;
-> > +       LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-> > +       LIBBPF_OPTS(bpf_test_run_opts, topts);
-> > +       struct bpf_link *link = NULL;
-> > +       int err, prog_fd;
-> > +
-> > +       skel = kprobe_multi_session__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "kprobe_multi_session__open_and_load"))
-> > +               goto cleanup;
+> > The session cookie is u64 value and can be retrieved be new
+> > kfunc bpf_session_cookie, which returns pointer to the cookie
+> > value. The bpf program can use the pointer to store (on entry)
+> > and load (on return) the value.
+> >
+> > The cookie value is implemented via fprobe feature that allows
+> > to share values between entry and return ftrace fprobe callbacks.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/bpf/verifier.c    |  7 +++++++
+> >  kernel/trace/bpf_trace.c | 19 ++++++++++++++++---
+> >  2 files changed, 23 insertions(+), 3 deletions(-)
+> >
 > 
-> return?
+> Had the same question as Alexei, but this read-write semantics quirk
+> makes sense. But it's probably a bit more reliable and cleaner to
+> handle it by special casing this kfunc a bit earlier (see
+> KF_bpf_rbtree_add_impl) and setting r0_size = 8, r0_rdonly = false.
+> And then let generic PTR -> INT logic kick in. You'll be futzing with
+> register state much less.
 
-ok
+ok, will try it this way
 
-> 
-> > +
-> > +       skel->bss->pid = getpid();
-> > +
-> > +       err =  kprobe_multi_session__attach(skel);
-> 
-> nit: extra space
-> 
-> > +       if (!ASSERT_OK(err, " kprobe_multi_session__attach"))
-> > +               goto cleanup;
-> > +
-> > +       prog_fd = bpf_program__fd(skel->progs.trigger);
-> > +       err = bpf_prog_test_run_opts(prog_fd, &topts);
-> > +       ASSERT_OK(err, "test_run");
-> > +       ASSERT_EQ(topts.retval, 0, "test_run");
-> > +
-> > +       ASSERT_EQ(skel->bss->kprobe_test1_result, 1, "kprobe_test1_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test2_result, 1, "kprobe_test2_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test3_result, 1, "kprobe_test3_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test4_result, 1, "kprobe_test4_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test5_result, 1, "kprobe_test5_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test6_result, 1, "kprobe_test6_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test7_result, 1, "kprobe_test7_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_test8_result, 1, "kprobe_test8_result");
-> > +
-> > +       ASSERT_EQ(skel->bss->kretprobe_test1_result, 0, "kretprobe_test1_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test2_result, 1, "kretprobe_test2_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test3_result, 0, "kretprobe_test3_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test4_result, 1, "kretprobe_test4_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test5_result, 0, "kretprobe_test5_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test6_result, 1, "kretprobe_test6_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test7_result, 0, "kretprobe_test7_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_test8_result, 1, "kretprobe_test8_result");
-> 
-> see below, even if array of ksym ptrs idea doesn't work out, at least
-> results can be an array (which is cleaner to work with both on BPF and
-> user space sides)
-
-I recall in past we used to do that and we switched to specific values
-to be more explicit I guess.. but it might make sense in here, will try it 
-
-SNIP
-
-> > +static int session_check(void *ctx, bool is_return)
-> > +{
-> > +       if (bpf_get_current_pid_tgid() >> 32 != pid)
-> > +               return 1;
-> > +
-> > +       __u64 addr = bpf_get_func_ip(ctx);
-> > +
-> > +#define SET(__var, __addr) ({                  \
-> > +       if ((const void *) addr == __addr)      \
-> > +               __var = 1;                      \
-> > +})
-> > +
-> > +       if (is_return) {
-> > +               SET(kretprobe_test1_result, &bpf_fentry_test1);
-> > +               SET(kretprobe_test2_result, &bpf_fentry_test2);
-> > +               SET(kretprobe_test3_result, &bpf_fentry_test3);
-> > +               SET(kretprobe_test4_result, &bpf_fentry_test4);
-> > +               SET(kretprobe_test5_result, &bpf_fentry_test5);
-> > +               SET(kretprobe_test6_result, &bpf_fentry_test6);
-> > +               SET(kretprobe_test7_result, &bpf_fentry_test7);
-> > +               SET(kretprobe_test8_result, &bpf_fentry_test8);
-> > +       } else {
-> > +               SET(kprobe_test1_result, &bpf_fentry_test1);
-> > +               SET(kprobe_test2_result, &bpf_fentry_test2);
-> > +               SET(kprobe_test3_result, &bpf_fentry_test3);
-> > +               SET(kprobe_test4_result, &bpf_fentry_test4);
-> > +               SET(kprobe_test5_result, &bpf_fentry_test5);
-> > +               SET(kprobe_test6_result, &bpf_fentry_test6);
-> > +               SET(kprobe_test7_result, &bpf_fentry_test7);
-> > +               SET(kprobe_test8_result, &bpf_fentry_test8);
-> > +       }
-> > +
-> > +#undef SET
-> 
-> curious, have you tried implementing this through a proper for loop? I
-> wonder if something like
-> 
-> void *kfuncs[] = { &bpf_fentry_test1, ..., &bpf_fentry_test8 };
-> 
-> and then generic loop over this array would work. Can you please try?
-
-yep, will try, let's see if it gets nicer
-
+thanks,
 jirka
+
+> 
+> Other than that looks good:
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 68cfd6fc6ad4..baaca451aebc 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -10987,6 +10987,7 @@ enum special_kfunc_type {
+> >         KF_bpf_percpu_obj_drop_impl,
+> >         KF_bpf_throw,
+> >         KF_bpf_iter_css_task_new,
+> > +       KF_bpf_session_cookie,
+> >  };
+> 
+> [...]
 
