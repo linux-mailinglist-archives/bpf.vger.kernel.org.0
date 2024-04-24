@@ -1,398 +1,343 @@
-Return-Path: <bpf+bounces-27716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB9FB8B11A4
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 20:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E81128B1283
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 20:39:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C249DB249AE
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 18:04:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CFEEB24D79
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 18:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977FC16D9B7;
-	Wed, 24 Apr 2024 18:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A509317556;
+	Wed, 24 Apr 2024 18:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OLMJ1g8D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ddRwuYZJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D4E16D9C7;
-	Wed, 24 Apr 2024 18:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 491B414A85
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 18:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713981851; cv=none; b=YNKYZj7H6dxEYe7TP0GU2ZKKErQVuKNa5D1gJbfq57WOK6r8iBw5vy/5GTTP+Y9UxPda4yLPW2QXiRRr07jJokct+pPiVqueGds+lYzZ4yNJpNpVZUjqwHt5Cf7KMfY9hP26GLntC8H83hvNeBjztsQudcx8wAXCYbSepjV64KU=
+	t=1713983827; cv=none; b=mSjh+ONqEZVx4aKt1tdlE+AoubdhswJ2JyOXqtixI1J8oq7ZlzgiZuJjTA1mwX+Zew7r5UvlUfxCIbHRP54xH5Q0DjOyUx2KdjRCRn7/S4tsZTOx7kfTy4uO5WUL0QacLaHlolYzZ1ijzlTv3/nDDKiHrlJ4lZ9jbE6ox0P+4hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713981851; c=relaxed/simple;
-	bh=kFvHiaLO1onuAHOKQKtfczhE54P7TB6F8CaC6Iq3qKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mW0SU/zUcE15CepDBmahEbuusLxk43z1wa4SAyHlg5SKOHzxd65JZDqSs/EhZEA/VQH+WyLNh/xUUHU3iMIDt0XV3NSvbS/QYoZsm82UXL6bquutjSUmYii/jrbD74gr4s7W0Vr0GShmBWacZ1L4pdckL7iEzkWRc33TDJBhY1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OLMJ1g8D; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OGrEfN018590;
-	Wed, 24 Apr 2024 18:03:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=AMDcI+mowLeIQBCXi1PaJiQ+bJHnx2Ix9imbdBi+Ksk=; b=OL
-	MJ1g8DkywGsE52pfy14gcrlCkmBMSb6XoNpkarprqJrYXsaDC5kGsjQvLw8MXOxV
-	KmCgCEsoS2nCxzH1QgYZAUgR0ef8+E0JeyYvqBH18mZ3D63+C1zpPqUYNdFqCSba
-	n7f5nWewph/mSSacZ1TpmGSdggjdeg0cvS2dJHrfviJBPpr2uP06WWgZUQX601BV
-	ZeqkavoW+G5nxh1Qdaa/B95XK64zFu8SOZ4g2f5jEODSRVmiySGu8RDXbVIwsNEp
-	OXDSk1fFcufGrU8reP4v9hlMYy/I/4+Bf81WfufYZa1SlxE0O+2nmjI93ppaMFAt
-	jIb6XpbK/G/WHfmpXdcA==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9g9uhy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 18:03:39 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OI3cZJ011091
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 18:03:38 GMT
-Received: from [10.110.65.83] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
- 2024 11:03:34 -0700
-Message-ID: <508b6da5-a32e-465b-b18e-e794bf0f19ab@quicinc.com>
-Date: Wed, 24 Apr 2024 11:03:34 -0700
+	s=arc-20240116; t=1713983827; c=relaxed/simple;
+	bh=fhn8w0I7YuvU4lEZCx72rcW8DEXWbLgmw9UyGFyFMtA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R8WjnsRA0xQPHDKWfX6954PSqjVZLFB+yr49S77XADJhVCLVkatFPcsdTZ7MIjIzegKVAcE7/kGI3htvLvM2hJgOAGYOiYISoilOs8vAY4VI2EVxPL+s+zOxrrQZ1bX317hjXL4E/uDdylryDZpPrgGyfyeQZOeH3kV90GuBA0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ddRwuYZJ; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a72f3a1edso1080215e9.2
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 11:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713983823; x=1714588623; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iYI6GpTn5xXNH8tiGFOGcPeKWjwy0F+xLvMKEdZqjgk=;
+        b=ddRwuYZJbYmvwKuSz7eLvwGwq3C1UNHk396Md/I2PoXJYI09PdqEeGww3EJ5v3yMV7
+         8pDiDJgNbZaU5OtrB25rfqx+t6L9FuRW1ZQUk5dtwJ+ZOuLp9uFeRjQmuUJBEwPbyMtE
+         svTk0HSoJQ7L+lJzPsfftGEIRHbt7vq7exMlP8eIQbJbWe0fL6niW+kaEiOuj9BofHZl
+         HmcT+pNm4eM8WpdNpdJZJxuU2l7DjRPCjeAItUWMG2WbEFDXmSsz1bB+Kiq5/Zlh+l1e
+         XI5zwfKH2bStTwk47vh889Uh8gGrtynqV3WoR5/pGqTMmXGN9rp4R59zsM0XUsMLeRz5
+         q0Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713983823; x=1714588623;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iYI6GpTn5xXNH8tiGFOGcPeKWjwy0F+xLvMKEdZqjgk=;
+        b=whZQu1r0lvQ0oC8OOcWxcugOzVQsX7NpyK1OdvJ6SHgxy93BZXAMeomayyjmFe9EQh
+         biqXcKCyEzs756UIAy31PtosxxYahp3eoJS19iXEH8w++qsdLSrgOL1wxFVSM1Q8+8VX
+         kiCTUVqyMdH7fiy/3RXUnG1QYdj862wU/zpdOYtlrB+aP2fbyZHIMFraif8jKL8KgI7N
+         VjbdKZ9n/L57y4NoUcPebpV7IH4u0C3+0OUb1NX2MIotCCbthWlNB8GlTFX6d4qwDX6Y
+         yeycmOcP6J5qW6btHBuK0Wp+gwXdAOs/EUt8QaMZlZtHALCFnHCfIRcdaOBueHiyD47a
+         RK5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUu1vilKTHo8Kj8FuoCwycCjJjVZNoyAEQbJ3X2HrJ30gS4syXD/GLvw/uk2/9PCMzgoqCKp3G5rGZiKIWwccYi1hPc
+X-Gm-Message-State: AOJu0YzsI6AgSoBklE4UFXuZI030WmTb5SLdON95AQMyKLQjIr2qIG2t
+	QgZGhsmoUQl60PPjdPo0EQOwxiP2GWAMQpp49NY5547hFdBmtRyg317bWm4JkpxQJd5rI/b4wfr
+	tUf4mUTvupx8enRm1hG3ESojGy7oYk23+
+X-Google-Smtp-Source: AGHT+IGBC1h3V42T/p8l4z5QiVSD7jt1L2ypIRGWBr/k74e4bQfBHBT9rrdx0Eic5LdwMtFM+QhZrm2MGJYA1pZYRQ8=
+X-Received: by 2002:adf:cb04:0:b0:34a:3148:47f2 with SMTP id
+ u4-20020adfcb04000000b0034a314847f2mr1861717wrh.18.1713983823282; Wed, 24 Apr
+ 2024 11:37:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v4 2/2] net: Add additional bit to support
- clockid_t timestamp type
-To: Martin KaFai Lau <martin.lau@linux.dev>,
-        Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>
-CC: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Martin
- KaFai Lau" <martin.lau@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
- <20240418004308.1009262-3-quic_abchauha@quicinc.com>
- <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
- <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
- <c6f33a36-1fac-4738-8a4f-c930b544ba62@linux.dev>
- <6b6bd108-817c-4a58-8b69-6c2dde436575@quicinc.com>
- <79ca7697-339a-4f72-ab12-5a3094b294f3@quicinc.com>
- <c90fcc07-38bf-4d0c-9729-5c071134e4e1@linux.dev>
-Content-Language: en-US
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <c90fcc07-38bf-4d0c-9729-5c071134e4e1@linux.dev>
+References: <ZhkbrM55MKQ0KeIV@google.com> <3f8a481e-0dfe-468f-8c87-6610528f9009@linux.dev>
+ <ZiAu6YDi-F_pxLOV@google.com> <dbba17cf-4351-45ca-9f43-090a0923a2bb@linux.dev>
+ <CAADnVQ+z5w4GaMudrLXw3LAq1B3Ong7FhQHdkJN7m8svkCpMgA@mail.gmail.com> <20240424055005.GA170502@maniforge>
+In-Reply-To: <20240424055005.GA170502@maniforge>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 24 Apr 2024 11:36:51 -0700
+Message-ID: <CAADnVQ+xPgOCYsMk8Tot0PPTWgY5Yqat9V-qZGaWXAF+BpxCow@mail.gmail.com>
+Subject: Re: [RFC] bpf: allowing PTR_TO_BTF_ID | PTR_TRUSTED w/ non-zero fixed
+ offset to selected KF_TRUSTED_ARGS BPF kfuncs
+To: David Vernet <void@manifault.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 1cGXOHjTcig46dze2-6Oc8T7nDq-Xdib
-X-Proofpoint-GUID: 1cGXOHjTcig46dze2-6Oc8T7nDq-Xdib
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_15,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- suspectscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0
- mlxscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404240081
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 23, 2024 at 10:50=E2=80=AFPM David Vernet <void@manifault.com> =
+wrote:
+>
+> On Thu, Apr 18, 2024 at 08:03:40PM -0700, Alexei Starovoitov wrote:
+> > On Wed, Apr 17, 2024 at 5:11=E2=80=AFPM Yonghong Song <yonghong.song@li=
+nux.dev> wrote:
+> > >
+> > >
+> > > On 4/17/24 1:19 PM, Matt Bobrowski wrote:
+> > > > On Mon, Apr 15, 2024 at 09:43:42AM -0700, Yonghong Song wrote:
+> > > >> On 4/12/24 4:31 AM, Matt Bobrowski wrote:
+> > > >>> Hi,
+> > > >>>
+> > > >>> Currently, if a BPF kfunc has been annotated with KF_TRUSTED_ARGS=
+, any
+> > > >>> supplied PTR_TO_BTF_ID | PTR_TRUSTED argument to that BPF kfunc m=
+ust
+> > > >>> have it's fixed offset set to zero, or else the BPF program being
+> > > >>> loaded will be outright rejected by the BPF verifier.
+> > > >>>
+> > > >>> This non-zero fixed offset restriction in most cases makes a lot =
+of
+> > > >>> sense, as it's considered to be a robust means of assuring that t=
+he
+> > > >>> supplied PTR_TO_BTF_ID to the KF_TRUSTED_ARGS annotated BPF kfunc
+> > > >>> upholds it's PTR_TRUSTED property. However, I believe that there =
+are
+> > > >>> also cases out there whereby a PTR_TO_BTF_ID | PTR_TRUSTED w/ a f=
+ixed
+> > > >>> offset can still be considered as something which posses the
+> > > >>> PTR_TRUSTED property, and could be safely passed to a BPF kfunc t=
+hat
+> > > >>> is annotated w/ KF_TRUSTED_ARGS. I believe that this can particul=
+arly
+> > > >>> hold true for selected embedded data structure members present wi=
+thin
+> > > >>> given PTR_TO_BTF_ID | PTR_TRUSTED types i.e. struct
+> > > >>> task_struct.thread_info, struct file.nf_path.
+> > > >>>
+> > > >>> Take for example the struct thread_info which is embedded within
+> > > >>> struct task_struct. In a BPF program, if we happened to acquire a
+> > > >>> PTR_TO_BTF_ID | PTR_TRUSTED for a struct task_struct via
+> > > >>> bpf_get_current_task_btf(), and then constructed a pointer of typ=
+e
+> > > >>> struct thread_info which was assigned the address of the embedded
+> > > >>> struct task_struct.thread_info member, we'd have ourselves a
+> > > >>> PTR_TO_BTF_ID | PTR_TRUSTED w/ a fixed offset. Now, let's
+> > > >>> hypothetically also say that we had a BPF kfunc that took a struc=
+t
+> > > >>> thread_info pointer as an argument and the BPF kfunc was also
+> > > >>> annotated w/ KF_TRUSTED_ARGS. If we attempted to pass the constru=
+cted
+> > > >>> PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset to this hypothetical =
+BPF
+> > > >>> kfunc, the BPF program would be rejected by the BPF verifier. Thi=
+s is
+> > > >>> irrespective of the fact that supplying pointers to such embedded=
+ data
+> > > >>> structure members of a PTR_TO_BTF_ID | PTR_TRUSTED may be conside=
+red
+> > > >>> to be safe.
+> > > >>>
+> > > >>> One of the ideas that I had in mind to workaround the non-zero fi=
+xed
+> > > >>> offset restriction was to simply introduce a new BPF kfunc annota=
+tion
+> > > >>> i.e. __offset_allowed that could be applied on selected BPF kfunc
+> > > >>> arguments that are expected to be KF_TRUSTED_ARGS. Such an annota=
+tion
+> > > >>> would effectively control whether we enforce the non-zero offset
+> > > >>> restriction or not in check_kfunc_args(), check_func_arg_reg_off(=
+),
+> > > >>> and __check_ptr_off_reg(). Although, now I'm second guessing myse=
+lf
+> > > >>> and I am wondering whether introducing something like the
+> > > >>> __offset_allowed annotation for BPF kfunc arguments could lead to
+> > > >>> compromising any of the safety guarantees that are provided by th=
+e BPF
+> > > >>> verifier. Does anyone see an immediate problem with using such an
+> > > >>> approach? I raise concerns, because it feels like we're effective=
+ly
+> > > >>> punching a hole in the BPF verifier, but it may also be perfectly=
+ safe
+> > > >>> to do on carefully selected PTR_TO_BTF_ID | PTR_TRUSTED types
+> > > >>> i.e. struct thread_info, struct file, and it's just my paranoia
+> > > >>> getting the better of me. Or, maybe someone has another idea to
+> > > >>> support PTR_TO_BTF_ID | PTR_TRUSTED w/ fixed offset safely and a
+> > > >>> little more generally without the need to actually make use of an=
+y
+> > > >>> other BPF kfunc annotations?
+> > > >> In verifier.c, we have BTF_TYPE_SAFE_TRUSTED to indidate that
+> > > >> a pointer of a particular struct is safe and trusted if the point
+> > > >> of that struct is trusted, e.g.,
+> > > >>
+> > > >> BTF_TYPE_SAFE_TRUSTED(struct file) {
+> > > >>          struct inode *f_inode;
+> > > >> };
+> > > >>
+> > > >> We do the above since gcc does not support btf_tag yet.
+> > > > Yes, I'm rather familiar with this construct.
+> > > >
+> > > >> I guess you could do
+> > > >>
+> > > >> BTF_TYPE_SAFE_TRUSTED(struct file) {
+> > > >>          struct path f_path;
+> > > >> };
+> > > >>
+> > > >> and enhance verifier with the above information.
+> > > >>
+> > > >> But the above 'struct path f_path' may unnecessary
+> > > >> consume extra memory since we only care about field
+> > > >> 'f_path'. Maybe create a new construct like
+> > > >>
+> > > >> /* pointee is a field of the struct */
+> > > >> BTF_TYPE_SAFE_FIELD_TRUSTED(struct file) {
+> > > >>          struct path *f_path;
+> > > >> };
+> > > > I don't fully understand how something like
+> > > > BTF_TYPE_SAFE_FIELD_TRUSTED could work in practice. Do you mind
+> > > > elaborating on that a little?
+> > > >
+> > > > What I'm currently thinking is that with something like
+> > > > BTF_TYPE_SAFE_FIELD_TRUSTED, if the BPF verifier sees a PTR_TO_BTF_=
+ID
+> > > > | PTR_TRUSTED w/ a fixed offset supplied to a BPF kfunc, then the B=
+PF
+> > > > verifier can also check that fixed offset for the supplied
+> > > > PTR_TO_BTF_ID | PTR_TRUSTED actually accesses a member that has bee=
+n
+> > > > explicitly annotated as being trusted via
+> > > > BTF_TYPE_SAFE_FIELD_TRUSTED. Maybe that would be better then making
+> > > > use of an __offset_allowed annotation, which would solely rely on t=
+he
+> > > > btf_struct_ids_match() check for its safety.
+> > > Right. What you described in the above is what I think as well.
+> >
+> > I believe BTF_TYPE_SAFE_* or __offset_allowed annotations
+> > are not necessary.
+> >
+> > In this case thread_info is the first field of struct task_struct
+> > and I suspect the verifier already allows:
+> >
+> > bpf_kfunc void do_stuff_with_thread(struct thread_info *ti) KF_TRUSTED_=
+ARGS
+> > and use it as:
+> > task =3D bpf_get_current_task_btf();
+> > do_stuff_with_thread(&task->thread_info);
+>
+> Yes, I believe this should already work. It would be the same as casting
+> the task as a struct thread_info. btf_struct_ids_match() should
+> btf_struct_walk() the task, and find a struct thread_info object at that
+> offset and successfully compare the BTF IDs of that with the arg type.
+> If not for the check_func_arg_reg_off() code described below, it should
+> also work with nonzero offsets as well. When we begin the walk it can be
+> at any offset. After we do the first struct walk, we continue descending
+> at offset 0 from that first inner struct type.
+>
+> > We have similar setup with:
+> > struct bpf_cpumask {
+> >         cpumask_t cpumask;
+> > ...
+> > };
+> >
+> > and kfunc that accepts trusted cpumask_t * will accept
+> > trusted struct bpf_cpumask *.
+> > The other way around should be rejected, of course.
+> > Similar approach should work with file/path.
+> > The only difference is that the offset will be non-zero.
+>
+> Agreed
+>
+> > process_kf_arg_ptr_to_btf_id() needs to get smarter.
+> >
+> > David Vernet added that check:
+> >
+> > WARN_ON_ONCE(is_kfunc_trusted_args(meta) && reg->off);
+> > as part of commit b613d335a743c.
+> >
+> > iirc the reg->off=3D=3D0 check is there, as an extra caution.
+>
+> That check is currently an invariant because of this code:
+>
+> 11720                 case KF_ARG_PTR_TO_MAP:
+> 11721                 case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+> 11722                 case KF_ARG_PTR_TO_BTF_ID:
+> 11723                         if (!is_kfunc_trusted_args(meta) && !is_kfu=
+nc_rcu(meta))
+> 11724                                 break;
+> 11725
+> 11726                         if (!is_trusted_reg(reg)) {
+> 11727                                 if (!is_kfunc_rcu(meta)) {
+> 11728                                         verbose(env, "R%d must be r=
+eferenced or trusted\n", regno);
+> 11729                                         return -EINVAL;
+> 11730                                 }
+> 11731                                 if (!is_rcu_reg(reg)) {
+> 11732                                         verbose(env, "R%d must be a=
+ rcu pointer\n", regno);
+> 11733                                         return -EINVAL;
+> 11734                                 }
+> 11735                         }
+> 11736
+> 11737                         fallthrough;
+> 11738                 case KF_ARG_PTR_TO_CTX:
+> 11739                         /* Trusted arguments have the same offset c=
+hecks as release arguments */
+> 11740                         arg_type |=3D OBJ_RELEASE;  <<<<< because o=
+f this
+> 11741                         break;
+>
+> The OBJ_RELEASE causes check_func_arg_reg_off() to fail to verify if
+> there's a nonzero offset. In reality, I _think_ we only need to check
+> for a nonzero offset for KF_RELEASE, and possibly KF_ACQUIRE.
 
+Why special case KF_RELEASE/ACQUIRE ?
+I think they're no different from kfuncs with KF_TRUSTED_ARGS.
+Should be safe to allow non-zero offset trusted arg in all cases.
 
-On 4/22/2024 11:46 AM, Martin KaFai Lau wrote:
-> On 4/19/24 6:13 PM, Abhishek Chauhan (ABC) wrote:
->>
->>
->> On 4/18/2024 5:30 PM, Abhishek Chauhan (ABC) wrote:
->>>
->>>
->>> On 4/18/2024 2:57 PM, Martin KaFai Lau wrote:
->>>> On 4/18/24 1:10 PM, Abhishek Chauhan (ABC) wrote:
->>>>>>>    #ifdef CONFIG_NET_XGRESS
->>>>>>>        __u8            tc_at_ingress:1;    /* See TC_AT_INGRESS_MASK */
->>>>>>>        __u8            tc_skip_classify:1;
->>>>>>> @@ -1096,10 +1100,12 @@ struct sk_buff {
->>>>>>>     */
->>>>>>>    #ifdef __BIG_ENDIAN_BITFIELD
->>>>>>>    #define SKB_MONO_DELIVERY_TIME_MASK    (1 << 7)
->>>>>>> -#define TC_AT_INGRESS_MASK        (1 << 6)
->>>>>>> +#define SKB_TAI_DELIVERY_TIME_MASK    (1 << 6)
->>>>>>
->>>>>> SKB_TSTAMP_TYPE_BIT2_MASK?
->>>>
->>>> nit. Shorten it to just SKB_TSTAMP_TYPE_MASK?
->>>>
->>> Okay i will do the same. Noted!
->>>> #ifdef __BIG_ENDIAN_BITFIELD
->>>> #define SKB_TSTAMP_TYPE_MASK    (3 << 6)
->>>> #define SKB_TSTAMP_TYPE_RSH    (6)    /* more on this later */
->>>> #else
->>>> #define SKB_TSTAMP_TYPE_MASK    (3)
->>>> #endif
->>>>
->>>>>>
->>>>> I was thinking to keep it as TAI because it will confuse developers. I hope thats okay.
->>>>
->>>> I think it is not very useful to distinguish each bit since it is an enum value now. It becomes more like the "pkt_type:3" and its PKT_TYPE_MAX.
->>>> I see what you are saying.
->>>>>>> +#define TC_AT_INGRESS_MASK        (1 << 5)
->>>>>>>    #else
->>>>>>>    #define SKB_MONO_DELIVERY_TIME_MASK    (1 << 0)
->>>>>>> -#define TC_AT_INGRESS_MASK        (1 << 1)
->>>>>>> +#define SKB_TAI_DELIVERY_TIME_MASK    (1 << 1)
->>>>>>> +#define TC_AT_INGRESS_MASK        (1 << 2)
->>>>>>>    #endif
->>>>>>>    #define SKB_BF_MONO_TC_OFFSET        offsetof(struct sk_buff, __mono_tc_offset)
->>>>>>>    @@ -4206,6 +4212,11 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
->>>>>>>        case CLOCK_MONOTONIC:
->>>>>>>            skb->tstamp_type = SKB_CLOCK_MONO;
->>>>>>>            break;
->>>>>>> +    case CLOCK_TAI:
->>>>>>> +        skb->tstamp_type = SKB_CLOCK_TAI;
->>>>>>> +        break;
->>>>>>> +    default:
->>>>>>> +        WARN_ONCE(true, "clockid %d not supported", tstamp_type);
->>>>>>
->>>>>> and set to 0 and default tstamp_type?
->>>>>> Actually thinking about it. I feel if its unsupported just fall back to default is the correct thing. I will take care of this.
->>>>>>>        }
->>>>>>>    }
->>>>>>
->>>>>>>    >
->>>>>>    @@ -9372,10 +9378,16 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
->>>>>>>        *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
->>>>>>>                      SKB_BF_MONO_TC_OFFSET);
->>>>>>>        *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>>>>>> -                SKB_MONO_DELIVERY_TIME_MASK, 2);
->>>>>>> +                SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
->>>>>>> +    *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>>>>>> +                SKB_MONO_DELIVERY_TIME_MASK, 3);
->>>>>>> +    *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>>>>>> +                SKB_TAI_DELIVERY_TIME_MASK, 4);
->>>>>>>        *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
->>>>>>>        *insn++ = BPF_JMP_A(1);
->>>>>>>        *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
->>>>>>> +    *insn++ = BPF_JMP_A(1);
->>>>>>> +    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_TAI);
->>>>
->>>> With SKB_TSTAMP_TYPE_MASK defined like above, this could be simplified like this (untested):
->>>>
->>> Let me think this through and raise it as part of the next rfc patch.
->>>> static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
->>>>                                                       struct bpf_insn *insn)
->>>> {
->>>>      __u8 value_reg = si->dst_reg;
->>>>      __u8 skb_reg = si->src_reg;
->>>>
->>>>      BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
->>>>      *insn++ = BPF_LDX_MEM(BPF_B, value_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
->>>>      *insn++ = BPF_ALU32_IMM(BPF_AND, value_reg, SKB_TSTAMP_TYPE_MASK);
->>>> #ifdef __BIG_ENDIAN_BITFIELD
->>>>      *insn++ = BPF_ALU32_IMM(BPF_RSH, value_reg, SKB_TSTAMP_TYPE_RSH);
->>>> #else
->>>>      BUILD_BUG_ON(!(SKB_TSTAMP_TYPE_MASK & 0x1));
->>>> #endif
->>>>
->>>>      return insn;
->>>> }
->>>>
->>>>>>>          return insn;
->>>>>>>    }
->>>>>>> @@ -9418,10 +9430,26 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->>>>>>>            __u8 tmp_reg = BPF_REG_AX;
->>>>>>>              *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
->>>>>>> +        /*check if all three bits are set*/
->>>>>>>            *insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
->>>>>>> -                    TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
->>>>>>> -        *insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
->>>>>>> -                    TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
->>>>>>> +                    TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
->>>>>>> +                    SKB_TAI_DELIVERY_TIME_MASK);
->>>>>>> +        /*if all 3 bits are set jump 3 instructions and clear the register */
->>>>>>> +        *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>>>>>> +                    TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
->>>>>>> +                    SKB_TAI_DELIVERY_TIME_MASK, 4);
->>>>>>> +        /*Now check Mono is set with ingress mask if so clear */
->>>>>>> +        *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>>>>>> +                    TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 3);
->>>>>>> +        /*Now Check tai is set with ingress mask if so clear */
->>>>>>> +        *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>>>>>> +                    TC_AT_INGRESS_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
->>>>>>> +        /*Now Check tai and mono are set if so clear */
->>>>>>> +        *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>>>>>> +                    SKB_MONO_DELIVERY_TIME_MASK |
->>>>>>> +                    SKB_TAI_DELIVERY_TIME_MASK, 1);
->>>>
->>>> Same as the bpf_convert_tstamp_type_read, this could be simplified with SKB_TSTAMP_TYPE_MASK.
->>>>
->> Willem and Martin,
->> When do we clear the tstamp and make it 0 in bpf_convert_tstamp_read? meaning which configuration?
-> 
-> When the bpf prog does not check the skb->tstamp_type. It is
-> the "if (!prog->tstamp_type_access)" in bpf_convert_tstamp_read().
-> 
-> If bpf prog does not check the skb->tstamp_type and it is at ingress,
-> bpf prog expects recv tstamp (ie. real clock), so it needs to clear
-> out the tstamp (i.e read as 0 tstamp).
-> 
->> I see previously(current upstream code) if mono_delivery is set and tc_ingress_mask is set
->> upstream code used to set the tstamp as 0.
->>
->> Which means with addition of tai mask the new implementation should take care of following cases(correct me if i am wrong)
->> 1. ( tai mask set + ingress mask set ) = Clear tstamp
->> 2. ( mono mask set + ingress mask set ) = Clear tstamp
->> 3. ( mono mask set + tai mask set + ingress mask set ) = Clear tstamp
->> 4. ( No mask set ) = Clear tstamp
->> 5. ( Tai mask set + mono mask set ) = Clear tstamp
-> 
-> No need to check the individual mono and tai bit here. Check the
-> tstamp_type as a whole. Like in pseudo C:
-> 
-> if (skb->tc_at_ingress && skb->tstamp_type)
->     value_reg = 0;
-> 
-> untested code for tstamp_read() and tstamp_write():
-> 
-> static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->                                                 const struct bpf_insn *si,
->                                                 struct bpf_insn *insn)
-> {
->     __u8 value_reg = si->dst_reg;
->     __u8 skb_reg = si->src_reg;
-> 
-> #ifdef CONFIG_NET_XGRESS
->     /* If the tstamp_type is read,
->      * the bpf prog is aware the tstamp could have delivery time.
->      * Thus, read skb->tstamp as is if tstamp_type_access is true.
->      */
->     if (!prog->tstamp_type_access) {
->         /* AX is needed because src_reg and dst_reg could be the same */
->         __u8 tmp_reg = BPF_REG_AX;
-> 
->         *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
->         *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, TC_AT_INGRESS_MASK, 1);
->         /* goto <read> */
->         BPF_JMP_A(4);
->         *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, SKB_TSTAMP_TYPE_MASK, 1);
->         /* goto <read> */
->         BPF_JMP_A(2);
->         /* skb->tc_at_ingress && skb->tstamp_type,
->          * read 0 as the (rcv) timestamp.
->          */
->         *insn++ = BPF_MOV64_IMM(value_reg, 0);
->         *insn++ = BPF_JMP_A(1);
->     }
-> #endif
-> 
->     /* <read>: value_reg = skb->tstamp */
->     *insn++ = BPF_LDX_MEM(BPF_DW, value_reg, skb_reg,
->                   offsetof(struct sk_buff, tstamp));
->     return insn;
-> }
-> 
-> static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
->                                                  const struct bpf_insn *si,
->                                              struct bpf_insn *insn)
-> {
->     __u8 value_reg = si->src_reg;
->     __u8 skb_reg = si->dst_reg;
-> 
-> #ifdef CONFIG_NET_XGRESS
->     /* If the tstamp_type is read,
->      * the bpf prog is aware the tstamp could have delivery time.
->      * Thus, write skb->tstamp as is if tstamp_type_access is true.
->      * Otherwise, writing at ingress will have to clear the
->      * mono_delivery_time (skb->tstamp_type:1)bit also.
->      */
->         if (!prog->tstamp_type_access) {
->         __u8 tmp_reg = BPF_REG_AX;
-> 
->         *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
->         /* Writing __sk_buff->tstamp as ingress, goto <clear> */
->         *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, TC_AT_INGRESS_MASK, 1);
->         /* goto <store> */
->         *insn++ = BPF_JMP_A(2);
->         /* <clear>: skb->tstamp_type */
->         *insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, ~SKB_TSTAMP_TYPE_MASK);
->         *insn++ = BPF_STX_MEM(BPF_B, skb_reg, tmp_reg, SKB_BF_MONO_TC_OFFSET);
->     }
-> #endif
-> 
->     /* <store>: skb->tstamp = tstamp */
->     *insn++ = BPF_RAW_INSN(BPF_CLASS(si->code) | BPF_DW | BPF_MEM,
->                    skb_reg, value_reg, offsetof(struct sk_buff, tstamp), si->imm);
->         return insn;
-> }
-> 
+> >
+> > We can allow off!=3D0 and it won't confuse btf_type_ids_nocast_alias.
+> >
+> >     struct  nf_conn___init {
+> >             int another_field_at_off_zero;
+> >             struct nf_conn ct;
+> >     };
+> >
+> > will still trigger strict_type_match as expected.
+>
+> Yes, this should continue to just work, but I think we may also have to
+> be cognizant to not allow this type of pattern:
+>
+> struct some_other_type {
+>         int field_at_off_zero;
+>         struct nf_conn___init ct;
+> };
+>
+> In this case, we don't want to allow &other_type->ct to be passed to a
+> kfunc expecting a struct nf_conn. So we'd also have to compare the type
+> at the register offset to make sure it's not a nocast alias, not just
+> the type in the register itself. I'm not sure if this is a problem in
+> practice. I expect it isn't. struct nf_conn___init exists solely to
+> allow the struct nf_conn kfuncs to enforce calling semantics so that an
+> uninitialized struct nf_conn object can't be passed to specific kfuncs
+> that are expecting an initialized object. I don't see why we'd ever
+> embed a wrapper type like that inside of another type. But still
+> something to be cognizant of.
 
-Thanks Martin. I will raise the RFC patch v5 today. Also made changes in test_tc_dtime.c which 
-needs a closer review too. 
-
->>
->> This leaves us with only two values which can be support which is 0x1 and 0x2
->>
->> This means the tstamp_type should be either 0x1(mono) and tstamp_type 0x2 (tai) to set the value_reg with tstamp
->> Is my understanding correct ?
->>
->> Do you think the below simplified version looks okay ?
->>
->> static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->>                         const struct bpf_insn *si,
->>                         struct bpf_insn *insn)
->> {
->>     __u8 value_reg = si->dst_reg;
->>     __u8 skb_reg = si->src_reg;
->>
->> BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
->> #ifdef CONFIG_NET_XGRESS
->>     /* If the tstamp_type is read,
->>      * the bpf prog is aware the tstamp could have delivery time.
->>      * Thus, read skb->tstamp as is if tstamp_type_access is true.
->>      */
->>     if (!prog->tstamp_type_access) {
->>         /* AX is needed because src_reg and dst_reg could be the same */
->>         __u8 tmp_reg = BPF_REG_AX;
->>
->>         *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
->>         /* check if all three bits are set*/
->>         *insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
->>                     TC_AT_INGRESS_MASK | SKB_TSTAMP_TYPE_MASK);
->>
->>         /* If the value of tmp_reg is 7,6,5,4,3,0 which means invalid
->>          * configuration set the tstamp to 0, value 0x1 and 0x2
->>          * is correct configuration
->>          */
->> #ifdef __BIG_ENDIAN_BITFIELD
->>         *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0x1 << SKB_TSTAMP_TYPE_RSH, 3);
->>         *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0x2 << SKB_TSTAMP_TYPE_RSH, 2);
->> #endif
->>         *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0x1, 3);
->>         *insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0x2, 2);
->> #endif
->>         /* skb->tc_at_ingress && skb->tstamp_type:2,
->>          * read 0 as the (rcv) timestamp.
->>          */
->>         *insn++ = BPF_MOV64_IMM(value_reg, 0);
->>         *insn++ = BPF_JMP_A(1);
->>     }
->> #endif
->>
->>     *insn++ = BPF_LDX_MEM(BPF_DW, value_reg, skb_reg,
->>                   offsetof(struct sk_buff, tstamp));
->>     return insn;
->> }
->>
->>
-> 
+Agree that it's not a problem now and I wouldn't proactively
+complicate the verifier.
+__init types are in the kernel code and it gets code reviewed.
+So 'struct some_other_type' won't happen out of nowhere.
 
