@@ -1,163 +1,130 @@
-Return-Path: <bpf+bounces-27625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BDF8AFEB4
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 04:48:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037CC8AFED6
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 04:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F8B21C227BB
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:48:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F3828B6BC
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B783144D16;
-	Wed, 24 Apr 2024 02:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED75929429;
+	Wed, 24 Apr 2024 02:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mal+LliR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MvVAMwGQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59769144304;
-	Wed, 24 Apr 2024 02:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBB5171C4;
+	Wed, 24 Apr 2024 02:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713926815; cv=none; b=Wz6OOi3cOq4EllxC3h8+Cw1z91eLabdY8ICZmQJwBvItRqPmJeU//pzso4QUiqfMtlE0xQqST2rf3gCf+DfdXQlXvII+bRCaf7CxU1TNCyyxcENZ+RBhTf9wRGabbpiFzwKMW5Ih2zBUf5rv7/YeX2FB+0ITHlpVZMW5jDPsUSg=
+	t=1713927092; cv=none; b=rdsQcsGyWICYc7l9hT711dxSA+44R6jxAaRYJlCWb8BStSArd3TlRgvGAz/ie8Ki4B7Ju9hXE/I7GG/+EckhKDI9zb3C+EVQkhU5xYg0QO8CRjrKcajtPoSic/hkydM5qr/P7CSL8qE9fPkYcZHGElOJlum1ade0G0kfIGyYxvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713926815; c=relaxed/simple;
-	bh=WY61HVXMURNBYLhzrLzOFaXGtfOAIKgfGdHLeoKZ0ds=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rqxsl8cYuuOgT/lYwcFxWn3kLPP+IEO0BNy13FkjasvnioQ8VuOVdKXPLgOdOCkY0YJr7oYZzcxAY6J8CKFiBqGntQD4WRR4W3Sc8Cx+YgjM7ll7GroeUxgG7+vfsxmEi0Vs9H4Pskc/dKW01jW5NYjQh21ZFiUGejJrquYXqJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mal+LliR; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1713927092; c=relaxed/simple;
+	bh=Yf4JmDI7ok7xHREqNVMiKRlcw6gQNe/K4vnS/jVO+To=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Tnuq7IbaMce2cEq+VU00iNqyLnU/IR7fNny9Z4DV5E92fdGc/inIZnvQ8G6MScOgAGn9p7zxbvfhyRubZqgC+K+g8/3YNPPpw869oVDmcn2oS8xSu8y4sEqIQJkIplyPh7ufftM3z8FeSesFZePDePAG1VMT+rKu9PNk7AZmvyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MvVAMwGQ; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e8f68f8e0dso31418805ad.3;
-        Tue, 23 Apr 2024 19:46:54 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4155819f710so53328975e9.2;
+        Tue, 23 Apr 2024 19:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713926813; x=1714531613; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713927089; x=1714531889; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1ovALNIraa1yswgozSIZAuHax4rLf2fy+nreEUNXYnE=;
-        b=Mal+LliRj02EG7Pg92P2wsaU2s7RZ5yM9u3/CWyXUoHorTMAsGytIvKgvorAbNGc6z
-         oLxUf9Obb6w71aDBvI46v/09HMHfRKL08N/FwDRRXUspqZshgUMKPJ+ZInDGvDDxDDSx
-         UY2Vyfsb997ynEZYkXrH3NDiqjBeRf1fB4gC79z4IvZuivFenYXW4oRY8pez1170M2rh
-         XO5Y9VTyjK713jid5vKD0kpCuWYFIFDbvXVDQCODjkjeiNGRilwgaFIuMQ5qxeoc59Lf
-         CZGhORRXkENc165YehvZEGh6HVMOxjzbxpyjvZ02yCnjwQij7dPnWEE+RlaVQDempYmr
-         Fh5g==
+        bh=LD4srwBtJX0KyfwDrMbgM0TFHzRmgGecb0JArSru4mk=;
+        b=MvVAMwGQOXpxhVTntMsi1kTsmOjzTDndz1KKjm+v3wDIr6uEOpVm9TJC7G/6cByIXM
+         3UU3G7fFwlkVSRszpjmiwIQgJiEW9wGJHFMGlc+U7dezbr/cb6yQNS+JuDOFQyqRsFJw
+         VjceMziGfQKuroN4uQ6UTvwLlE4c7AI8UEINGWeOBsLfLqFd87BTZvZHOLkrIiwNXF+5
+         8MKviauvF5TyNM+F87KXJSLX3djk9LiA9XTdjIsV5LXyAF88cm241Xpc3BLgJrrbQe+T
+         FMZC9m8CXZRrpPGYo/ipNThSKhB/Bp8OcCbXzXTMkynncfLtJttHLGvSTq1W6p5Ude/g
+         ppVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713926813; x=1714531613;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713927089; x=1714531889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1ovALNIraa1yswgozSIZAuHax4rLf2fy+nreEUNXYnE=;
-        b=I0qpHmCIc5zfals8fCK40tzruauTCUnqjf2jRdDEGpCsP01iO+Fk5H4eWaBS50nVU8
-         IOo572VNNwdn8RwOwOZLiHa1iRaRVgqpkC+qCNse50O/QcUi0uEft+mmdyPRZNNtTLtt
-         9Gjv9xWNKFJ+GNdr2ZmF7iyWK15oFOqvmqrNyM7w6wtfDujKWDMxOEmWuGT37wTCCUQ1
-         R71mB2QjZOjIK7GNV8uzASAhX9lkwlK8PjHdFkoGj1WsQgIHvgGsvfcHIA8PjpyCc+7d
-         BvU/lfj6AI/Vb90Q8nwHWCNvlOseDCXtbWeDMmc5Tsgkeg701VqkB0xLQapxkeiJFbPN
-         dh2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXHUBvZQZ4McP6A2uAAp3HIsZ1sydHQxs7WkuNkqQI/33NYhc30cNbZA4Y/Xj6d6t/IyynSZTsU0wSUYRKfVH8zWNUp0oeRzRDgz4jFbV1PRA2pxjcOinZJtbqjKj6LoXNK3Oj+TAlmBQEKuRUzoNeyvGGMy6hGtiEiy7hbpqC3ze9C0A==
-X-Gm-Message-State: AOJu0Yz+tBmlbDbRonfShTx8pCbS+tBK6rCER3g5aY+v1NfVuW0o5Q52
-	70akK9TAAsw7EGikMpVgqDRvwJxJLkfBL3ULr9438eLntk950g2D
-X-Google-Smtp-Source: AGHT+IEo8XD7BWj1Z9qoTB1jHp9HGR8lvbdf5Znkuj22vJMEQNkAXOO85UQ328kis9neTsmjuW/ceA==
-X-Received: by 2002:a17:903:2288:b0:1e4:49:de46 with SMTP id b8-20020a170903228800b001e40049de46mr1602492plh.47.1713926813535;
-        Tue, 23 Apr 2024 19:46:53 -0700 (PDT)
-Received: from localhost.localdomain ([120.229.49.143])
-        by smtp.gmail.com with ESMTPSA id t6-20020a170902e84600b001e604438791sm10739243plg.156.2024.04.23.19.46.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 19:46:53 -0700 (PDT)
-From: Howard Chu <howardchu95@gmail.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	zegao2021@gmail.com,
-	leo.yan@linux.dev,
-	ravi.bangoria@amd.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH v2 4/4] perf record off-cpu: delete bound-to-fail test
-Date: Wed, 24 Apr 2024 10:48:05 +0800
-Message-ID: <20240424024805.144759-5-howardchu95@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240424024805.144759-1-howardchu95@gmail.com>
-References: <20240424024805.144759-1-howardchu95@gmail.com>
+        bh=LD4srwBtJX0KyfwDrMbgM0TFHzRmgGecb0JArSru4mk=;
+        b=jZ1o4ifz1vf4aUd+sPguyd2kI07sOzqlWRXI08gtMWiFVGCGcF6OnI2iu0OJbuEbzd
+         oV+z3lZ7R9ZSDteB1HRlAHI52we8sIIbYG9XDKea2i1pbrBK9XuhvEfE1CAttAmATKQW
+         Na9y+MCvvNFUWVjF/gJ0QDLa2ck4Y/NcF5DwMGXXNpzsBsEyeMhjhCB3TZFEkGZxsXgF
+         XBgE/nRNIYdGH0ruuHtj0I31AbVPEHb14C4UJm3E9d/wcTWIT7lbJLLxNg0o+tueHsC4
+         7UM5ck2D6K5ffXC6DZicABaHFjXa6kblr72XnGvU3ZwJcCM/dnMxR43QjgBR1vEh3C7g
+         enpg==
+X-Forwarded-Encrypted: i=1; AJvYcCWR+enkz50F52INtKKtFDo42w+HYiih1RCUOnuTkQoWuH6HeCNvjTK17kTH+Fc+GprDMB/06jCHB5fzIHHHAcIP4Ra4uqnmJEEHamfW7xm/N7un8n8qATEQMJP0r9vWJVHvg8GkeqSZ3kZQHdZddCRuY3VwWuZSevLxI3suvc7R/1NE
+X-Gm-Message-State: AOJu0YyZQrJTypBKFhz2GmT7IFMjsTHcFkAB5elQlYRg8ToJ8kXldOGT
+	LbfhshwM3yfneKx0ZqMEv1WeGAHAsvub91pTydBjYpRlwmMtzJgtgGtQ8O4jJJl1iMlkDB8Q7aP
+	Vg/ZYOKxsgadfrntjvAorIb1bRJM=
+X-Google-Smtp-Source: AGHT+IFtFFAxjnYdxlzp9CFTsz7mhCLHIvMwZAGqk1XtbcTEV/5Hsr54KKE5rGWRRDKYOrN6Kn63Ae8ERVYBScJVakA=
+X-Received: by 2002:adf:a18b:0:b0:34a:25f3:4daf with SMTP id
+ u11-20020adfa18b000000b0034a25f34dafmr583918wru.7.1713927089023; Tue, 23 Apr
+ 2024 19:51:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org> <20240420-bpf_wq-v2-9-6c986a5a741f@kernel.org>
+In-Reply-To: <20240420-bpf_wq-v2-9-6c986a5a741f@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 23 Apr 2024 19:51:17 -0700
+Message-ID: <CAADnVQLO=QbXnDBKrDdofpkBg2jESC8rDwi_WiLNOahJQcEWSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 09/16] bpf: allow struct bpf_wq to be embedded
+ in arraymaps and hashmaps
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since `--off-cpu` now uses the same ring buffer as hardware samples,
-but `perf record --off-cpu -e dummy sleep 1`does not enable evlist,
-off-cpu samples cannot be read.`test_offcpu_basic` fails and is no
-longer necessary.
+On Sat, Apr 20, 2024 at 2:09=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
+org> wrote:
+>
+>
+> -static void htab_map_free_timers(struct bpf_map *map)
+> +static void htab_map_free_timers_and_wq(struct bpf_map *map)
+>  {
+>         struct bpf_htab *htab =3D container_of(map, struct bpf_htab, map)=
+;
+>
+> -       /* We only free timer on uref dropping to zero */
+> -       if (!btf_record_has_field(htab->map.record, BPF_TIMER))
+> -               return;
+> -       if (!htab_is_prealloc(htab))
+> -               htab_free_malloced_timers(htab);
+> -       else
+> -               htab_free_prealloced_timers(htab);
+> +       /* We only free timer and workqueue on uref dropping to zero */
+> +       if (btf_record_has_field(htab->map.record, BPF_TIMER)) {
+> +               if (!htab_is_prealloc(htab))
+> +                       htab_free_malloced_timers_or_wq(htab, true);
+> +               else
+> +                       htab_free_prealloced_timers(htab);
+> +       }
+> +       if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE)) {
+> +               if (!htab_is_prealloc(htab))
+> +                       htab_free_malloced_timers_or_wq(htab, false);
+> +               else
+> +                       htab_free_prealloced_wq(htab);
+> +       }
 
-Signed-off-by: Howard Chu <howardchu95@gmail.com>
----
- tools/perf/tests/shell/record_offcpu.sh | 29 -------------------------
- 1 file changed, 29 deletions(-)
-
-diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
-index 67c925f3a15a..c446c0cdee4f 100755
---- a/tools/perf/tests/shell/record_offcpu.sh
-+++ b/tools/perf/tests/shell/record_offcpu.sh
-@@ -36,30 +36,6 @@ test_offcpu_priv() {
-   fi
- }
- 
--test_offcpu_basic() {
--  echo "Basic off-cpu test"
--
--  if ! perf record --off-cpu -e dummy -o ${perfdata} sleep 1 2> /dev/null
--  then
--    echo "Basic off-cpu test [Failed record]"
--    err=1
--    return
--  fi
--  if ! perf evlist -i ${perfdata} | grep -q "offcpu-time"
--  then
--    echo "Basic off-cpu test [Failed no event]"
--    err=1
--    return
--  fi
--  if ! perf report -i ${perfdata} -q --percent-limit=90 | grep -E -q sleep
--  then
--    echo "Basic off-cpu test [Failed missing output]"
--    err=1
--    return
--  fi
--  echo "Basic off-cpu test [Success]"
--}
--
- test_offcpu_child() {
-   echo "Child task off-cpu test"
- 
-@@ -88,13 +64,8 @@ test_offcpu_child() {
-   echo "Child task off-cpu test [Success]"
- }
- 
--
- test_offcpu_priv
- 
--if [ $err = 0 ]; then
--  test_offcpu_basic
--fi
--
- if [ $err = 0 ]; then
-   test_offcpu_child
- fi
--- 
-2.44.0
-
+I missed this earlier, but pls follow up to improve this part.
+Double walk of all elements once for timer and 2nd for wq
+is inefficient. Better to handle it in one go in prealloc and malloced case=
+s.
+Until we have delayed_wq it's quite possible that somebody will
+have both timers and wq in map elements.
 
