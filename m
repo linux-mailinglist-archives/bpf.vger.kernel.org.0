@@ -1,436 +1,177 @@
-Return-Path: <bpf+bounces-27620-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27621-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72B48AFE58
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 04:26:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5938AFEA0
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 04:46:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB3A81C2253C
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:26:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE5881F2434E
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 02:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13335168B8;
-	Wed, 24 Apr 2024 02:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6759184D24;
+	Wed, 24 Apr 2024 02:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YCQUkFL5"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5670D18EA5;
-	Wed, 24 Apr 2024 02:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA4983A1E;
+	Wed, 24 Apr 2024 02:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713925561; cv=none; b=qkpkVqyP5cpBVfqynHNpQAxYbtkTITd6KArAEmihPihEwy106w8WhKib666rNGhyUDPDKxMq/iJdOg9em8NbMucejWat6tZSyg3Jb3Wy1+0SstLML/T8KqWjVyjH+K3IBR7QrokOB3nWFigKR37exWIHp0R4zbf9RuBkskswsqA=
+	t=1713926788; cv=none; b=W2zLdHiXqYIOaXyzhhxsPtH6+tXyZMsgc05ATx+5WE19KtCxd2M2ShutPenPZbsbm0hKY7YYVVXbt6/f5wjMlcgbNy8jhWUx8wTbx5Uxs8o/wVtlUo+yeoxZCeh2iZahsO6ZdqXCJbfWvP9gCrg5UMFQ3BDseM02hTIV5Uk1qWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713925561; c=relaxed/simple;
-	bh=12cvGeFyW2C9I9L9KGqgi5E9+U9Fuod25024OOQY9N8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Oe8iF2CaO3qCuJPzvktnu9XP7trCdDUprguZvW+h2Ya8acMwBKC8wacdBVLFbMtfL6I9ovns5TIRVgX5GtILo7S2r0vz1AVXKUzerwv7sqihGzyyeU2iDx/DEBVWKiJQ0uUBeTiUb6fGDTBAYs46JzcNXxR693uKMH/EPsXMQgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VPNBj3qcVz4f3l88;
-	Wed, 24 Apr 2024 10:25:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 5D9CC1A11D9;
-	Wed, 24 Apr 2024 10:25:54 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP3 (Coremail) with SMTP id _Ch0CgC3to6vbShmyUSNKg--.2911S2;
-	Wed, 24 Apr 2024 10:25:52 +0800 (CST)
-Message-ID: <576c7c44-d1b4-42c8-8b6e-2e6b93d7547a@huaweicloud.com>
-Date: Wed, 24 Apr 2024 10:25:51 +0800
+	s=arc-20240116; t=1713926788; c=relaxed/simple;
+	bh=xBUEcmhUENIVfjoh2Y2J3tXoPs5E2mh53NO4x3kUDXE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VwqL4b65uSDD4DSssaGgLhOCxzP8VcdDe6y97j/n5NHcx6Edius8c+cEARIzUfHbfku5hpeKRw111M0uw6nma9LdPMz1/q9sYAci/Njb9eOdXJgh+xqQwaYIx8MzWh5PjEd1tG0PAQDnQ4b1OIRz7L48fC1A8JVt//6tinL1mOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YCQUkFL5; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4f341330fso53967385ad.0;
+        Tue, 23 Apr 2024 19:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713926787; x=1714531587; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTvKMLpj2AZnqrPhNjBbKcnRSe3quDRxIzs6jtieELk=;
+        b=YCQUkFL57jYgfRvQaq0nBIAr4mRNTHJW4YHO8NYhk+jk1RuWGZGkpVJ21eZf/9x5PP
+         K9oku2CiZNewtNlF3CcuOhBXuDEfrBX51ZLwq2srGNzCbbeFKvpDXshFQ4iwMJoF65RU
+         +FBsm46nWMmvub2stNmtRlOegqHzvaUVWaIy4smeBTaBfiiU4iFPy1db0tZadtniTj/i
+         8Kz81bVJnfe6qw1nubPIo9nzdRHBViJBN3PmyvlVr7t1N7to6qdTNunCnYUnRfcRio9d
+         PurISUQ/t2vkY0A8MzeXRg8mwRid0gL/34+cT301/rzYJb5rWMq1bmTVdWnSC6Yb61OX
+         x/Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713926787; x=1714531587;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lTvKMLpj2AZnqrPhNjBbKcnRSe3quDRxIzs6jtieELk=;
+        b=Trgv8LeEWajuG6gxQz4G/RNNeLMQms8HOEqsTB0w24gNRaUDjV01Qlj9dN+n8ENkl5
+         x7o3pLc/ghkSGC601++SRgonpQYhyM/nOA/zMITboix6mfqVCvaHPOWeSxz2vQJREiWE
+         yoopVK8vmWqJYm6xvoJWXUfquB5vD0ryCl9Gcu5o8gaxhFg83Ys2XbW4hv556tCYb8Yv
+         H9R4XKD3hgBB0V5DYFbTR3H62azqudoGbc0qtUj3lQR1s6di2DtcnTU4uUbhkwr+wq0l
+         XlCoftSaRJy+dBdlBaT4zHvnFnVPrTSowv1EB2JKqFrO35UJR2myKpZ/NpJMFmpGUalI
+         MdDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUhtZNxIoTH56uuVgQs/J7o2xh/vaMk/jIAJhOu5lUQYhQx8iw0AxrEkbFh3yTqzBwEgzamJIMrlj+3RPHfmn/O/ED6LpMUQEL9DjW2S6CVrXeMCo4IoAhYFuRqaMy4HxYSFthSTFRq4gujrngOFkeFp2EKNNRqLRv+KEQvsqNf1bcYJg==
+X-Gm-Message-State: AOJu0YxtIjd7kKrgYCRuKd/AI8N+lOUrEdfonuCAlc0EK7jSUClfyAVw
+	3u5/mj57vEVYHwu1M3lYNdzBlZ2zKm0p3DtCF96eGZVed0NfnoKQqOS0IqbTWjeM7Q==
+X-Google-Smtp-Source: AGHT+IF79yN1BuL7Po0ptWnZUO05HzHm4l9+fwgVmQSQ/bfLGqHL4piuBpi0EwGBsi/CKkzw8U3sxg==
+X-Received: by 2002:a17:902:d481:b0:1e3:e25c:fa5c with SMTP id c1-20020a170902d48100b001e3e25cfa5cmr1395689plg.67.1713926786686;
+        Tue, 23 Apr 2024 19:46:26 -0700 (PDT)
+Received: from localhost.localdomain ([120.229.49.143])
+        by smtp.gmail.com with ESMTPSA id t6-20020a170902e84600b001e604438791sm10739243plg.156.2024.04.23.19.46.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 19:46:26 -0700 (PDT)
+From: Howard Chu <howardchu95@gmail.com>
+To: peterz@infradead.org
+Cc: mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	zegao2021@gmail.com,
+	leo.yan@linux.dev,
+	ravi.bangoria@amd.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH v2 0/4] Dump off-cpu samples directly
+Date: Wed, 24 Apr 2024 10:48:01 +0800
+Message-ID: <20240424024805.144759-1-howardchu95@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 07/11] bpf: Fix a false rejection caused by
- AND operation
-Content-Language: en-US
-To: Yonghong Song <yonghong.song@linux.dev>,
- Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>,
- bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Brendan Jackman <jackmanb@chromium.org>, Paul Moore <paul@paul-moore.com>,
- James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>,
- Khadija Kamran <kamrankhadijadj@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
- John Johansen <john.johansen@canonical.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Shung-Hsi Yu <shung-hsi.yu@suse.com>
-References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
- <20240411122752.2873562-8-xukuohai@huaweicloud.com>
- <e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com>
- <f80991aa-3a49-451a-9a82-ac57982dcb28@huaweicloud.com>
- <bdc84c6c-7415-4b84-a883-1988cb5f77d1@linux.dev>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <bdc84c6c-7415-4b84-a883-1988cb5f77d1@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgC3to6vbShmyUSNKg--.2911S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3uFyfXr48WF1fAr4xuryrCrg_yoW8Wr4DCo
-	WFgr47Aw4FqF18GF1qy34qqr1Yg3W7Grn7JryUJFnxGF1jvw4UX348JrW5JayaqF18Wr1D
-	C347tr95AFyUJFn3n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20EY4v20xva
-	j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-	x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
-	Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoj
-	jgUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 4/24/2024 5:55 AM, Yonghong Song wrote:
-> 
-> On 4/20/24 1:33 AM, Xu Kuohai wrote:
->> On 4/20/2024 7:00 AM, Eduard Zingerman wrote:
->>> On Thu, 2024-04-11 at 20:27 +0800, Xu Kuohai wrote:
->>>> From: Xu Kuohai <xukuohai@huawei.com>
->>>>
->>>> With lsm return value check, the no-alu32 version test_libbpf_get_fd_by_id_opts
->>>> is rejected by the verifier, and the log says:
->>>>
->>>>    0: R1=ctx() R10=fp0
->>>>    ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
->>>>    0: (b7) r0 = 0                        ; R0_w=0
->>>>    1: (79) r2 = *(u64 *)(r1 +0)
->>>>    func 'bpf_lsm_bpf_map' arg0 has btf_id 916 type STRUCT 'bpf_map'
->>>>    2: R1=ctx() R2_w=trusted_ptr_bpf_map()
->>>>    ; if (map != (struct bpf_map *)&data_input) @ test_libbpf_get_fd_by_id_opts.c:29
->>>>    2: (18) r3 = 0xffff9742c0951a00       ; R3_w=map_ptr(map=data_input,ks=4,vs=4)
->>>>    4: (5d) if r2 != r3 goto pc+4         ; R2_w=trusted_ptr_bpf_map() R3_w=map_ptr(map=data_input,ks=4,vs=4)
->>>>    ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
->>>>    5: (79) r0 = *(u64 *)(r1 +8)          ; R0_w=scalar() R1=ctx()
->>>>    ; if (fmode & FMODE_WRITE) @ test_libbpf_get_fd_by_id_opts.c:32
->>>>    6: (67) r0 <<= 62                     ; R0_w=scalar(smax=0x4000000000000000,umax=0xc000000000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xc000000000000000))
->>>>    7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
->>>>    ;  @ test_libbpf_get_fd_by_id_opts.c:0
->>>>    8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
->>>>    ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
->>>>    9: (95) exit
->>>>
->>>> And here is the C code of the prog.
->>>>
->>>> SEC("lsm/bpf_map")
->>>> int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode)
->>>> {
->>>>     if (map != (struct bpf_map *)&data_input)
->>>>         return 0;
->>>>
->>>>     if (fmode & FMODE_WRITE)
->>>>         return -EACCES;
->>>>
->>>>     return 0;
->>>> }
->>>>
->>>> It is clear that the prog can only return either 0 or -EACCESS, and both
->>>> values are legal.
->>>>
->>>> So why is it rejected by the verifier?
->>>>
->>>> The verifier log shows that the second if and return value setting
->>>> statements in the prog is optimized to bitwise operations "r0 s>>= 63"
->>>> and "r0 &= -13". The verifier correctly deduces that the the value of
->>>> r0 is in the range [-1, 0] after verifing instruction "r0 s>>= 63".
->>>> But when the verifier proceeds to verify instruction "r0 &= -13", it
->>>> fails to deduce the correct value range of r0.
->>>>
->>>> 7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
->>>> 8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
->>>>
->>>> So why the verifier fails to deduce the result of 'r0 &= -13'?
->>>>
->>>> The verifier uses tnum to track values, and the two ranges "[-1, 0]" and
->>>> "[0, -1ULL]" are encoded to the same tnum. When verifing instruction
->>>> "r0 &= -13", the verifier erroneously deduces the result from
->>>> "[0, -1ULL] AND -13", which is out of the expected return range
->>>> [-4095, 0].
->>>>
->>>> To fix it, this patch simply adds a special SCALAR32 case for the
->>>> verifier. That is, when the source operand of the AND instruction is
->>>> a constant and the destination operand changes from negative to
->>>> non-negative and falls in range [-256, 256], deduce the result range
->>>> by enumerating all possible AND results.
->>>>
->>>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->>>> ---
->>>
->>> Hello,
->>>
->>> Sorry for the delay, I had to think about this issue a bit.
->>> I found the clang transformation that generates the pattern this patch
->>> tries to handle.
->>> It is located in DAGCombiner::SimplifySelectCC() method (see [1]).
->>> The transformation happens as a part of DAG to DAG rewrites
->>> (LLVM uses several internal representations:
->>>   - generic optimizer uses LLVM IR, most of the work is done
->>>     using this representation;
->>>   - before instruction selection IR is converted to Selection DAG,
->>>     some optimizations are applied at this stage,
->>>     all such optimizations are a set of pattern replacements;
->>>   - Selection DAG is converted to machine code, some optimizations
->>>     are applied at the machine code level).
->>>
->>> Full pattern is described as follows:
->>>
->>>    // fold (select_cc seteq (and x, y), 0, 0, A) -> (and (sra (shl x)) A)
->>>    // where y is has a single bit set.
->>>    // A plaintext description would be, we can turn the SELECT_CC into an AND
->>>    // when the condition can be materialized as an all-ones register.  Any
->>>    // single bit-test can be materialized as an all-ones register with
->>>    // shift-left and shift-right-arith.
->>>
->>> For this particular test case the DAG is converted as follows:
->>>
->>>                      .---------------- lhs         The meaning of this select_cc is:
->>>                      |        .------- rhs         `lhs == rhs ? true value : false value`
->>>                      |        | .----- true value
->>>                      |        | |  .-- false value
->>>                      v        v v  v
->>>    (select_cc seteq (and X 2) 0 0 -13)
->>>                            ^
->>> ->                        '---------------.
->>>    (and (sra (sll X 62) 63)                |
->>>         -13)                               |
->>>                                            |
->>> Before pattern is applied, it checks that second 'and' operand has
->>> only one bit set, (which is true for '2').
->>>
->>> The pattern itself generates logical shift left / arithmetic shift
->>> right pair, that ensures that result is either all ones (-1) or all
->>> zeros (0). Hence, applying 'and' to shifts result and false value
->>> generates a correct result.
->>>
->>
->> Thanks for your detailed and invaluable explanation!
-> 
-> Thanks Eduard for detailed explanation. It looks like we could
-> resolve this issue without adding too much complexity to verifier.
-> Also, this code pattern above seems generic enough to be worthwhile
-> with verifier change.
-> 
-> Kuohai, please added detailed explanation (as described by Eduard)
-> in the commit message.
->
+As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=207323
 
-Sure, already added, the commit message and the change now is like this:
+Currently, off-cpu samples are dumped when perf record is exiting. This
+results in off-cpu samples being after the regular samples. Also, samples
+are stored in large BPF maps which contain all the stack traces and
+accumulated off-cpu time, but they are eventually going to fill up after
+running for an extensive period. This patch fixes those problems by dumping
+samples directly into perf ring buffer, and dispatching those samples to the
+correct format.
 
----
+Before, off-cpu samples are after regular samples
 
-     bpf: Fix a false rejection caused by AND operation
+```
+         swapper       0 [000] 963432.136150:    2812933    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+         swapper       0 [000] 963432.637911:    4932876    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+         swapper       0 [001] 963432.798072:    6273398    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+         swapper       0 [000] 963433.541152:    5279005    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+sh 1410180 [000] 18446744069.414584:    2528851 offcpu-time: 
+	    7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
 
-     With lsm return value check, the no-alu32 version test_libbpf_get_fd_by_id_opts
-     is rejected by the verifier, and the log says:
 
-     0: R1=ctx() R10=fp0
-     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
-     0: (b7) r0 = 0                        ; R0_w=0
-     1: (79) r2 = *(u64 *)(r1 +0)
-     func 'bpf_lsm_bpf_map' arg0 has btf_id 916 type STRUCT 'bpf_map'
-     2: R1=ctx() R2_w=trusted_ptr_bpf_map()
-     ; if (map != (struct bpf_map *)&data_input) @ test_libbpf_get_fd_by_id_opts.c:29
-     2: (18) r3 = 0xffff9742c0951a00       ; R3_w=map_ptr(map=data_input,ks=4,vs=4)
-     4: (5d) if r2 != r3 goto pc+4         ; R2_w=trusted_ptr_bpf_map() R3_w=map_ptr(map=data_input,ks=4,vs=4)
-     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
-     5: (79) r0 = *(u64 *)(r1 +8)          ; R0_w=scalar() R1=ctx()
-     ; if (fmode & FMODE_WRITE) @ test_libbpf_get_fd_by_id_opts.c:32
-     6: (67) r0 <<= 62                     ; R0_w=scalar(smax=0x4000000000000000,umax=0xc000000000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xc000000000000000))
-     7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
-     ;  @ test_libbpf_get_fd_by_id_opts.c:0
-     8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
-     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
-     9: (95) exit
+sh 1410185 [000] 18446744069.414584:    2314223 offcpu-time: 
+	    7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
 
-     And here is the C code of the prog.
 
-     SEC("lsm/bpf_map")
-     int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode)
-     {
-         if (map != (struct bpf_map *)&data_input)
-                 return 0;
+awk 1409644 [000] 18446744069.414584:     191785 offcpu-time: 
+	    702609d03681 read+0x11 (/usr/lib/libc.so.6)
+	          4a02a4 [unknown] ([unknown])
+```
 
-         if (fmode & FMODE_WRITE)
-                 return -EACCES;
 
-         return 0;
-     }
+After, regular samples(cycles:P) and off-cpu(offcpu-time) samples are
+collected simultaneously:
 
-     It is clear that the prog can only return either 0 or -EACCESS, and both
-     values are legal.
+```
+upowerd     741 [000] 963757.428701:     297848 offcpu-time: 
+	    72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
 
-     So why is it rejected by the verifier?
 
-     The verifier log shows that the second if and return value setting
-     statements in the prog is optimized to bitwise operations "r0 s>>= 63"
-     and "r0 &= -13". The verifier correctly deduces that the the value of
-     r0 is in the range [-1, 0] after verifing instruction "r0 s>>= 63".
-     But when the verifier proceeds to verify instruction "r0 &= -13", it
-     fails to deduce the correct value range of r0.
+      irq/9-acpi      56 [000] 963757.429116:    8760875    cycles:P:  ffffffffb779849f acpi_os_read_port+0x2f ([kernel.kallsyms])
+upowerd     741 [000] 963757.429172:     459522 offcpu-time: 
+	    72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
 
-     7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
-     8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
 
-     So why the verifier fails to deduce the result of 'r0 &= -13'?
+         swapper       0 [002] 963757.434529:    5759904    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+perf 1419260 [000] 963757.434550: 1001012116 offcpu-time: 
+	    7274e5d190bf __poll+0x4f (/usr/lib/libc.so.6)
+	    591acfc5daf0 perf_evlist__poll+0x24 (/root/hw/perf-tools-next/tools/perf/perf)
+	    591acfb1ca50 perf_evlist__poll_thread+0x160 (/root/hw/perf-tools-next/tools/perf/perf)
+	    7274e5ca955a [unknown] (/usr/lib/libc.so.6)
+```
 
-     The verifier uses tnum to track values, and the two ranges "[-1, 0]" and
-     "[0, -1ULL]" are encoded to the same tnum. When verifing instruction
-     "r0 &= -13", the verifier erroneously deduces the result from
-     "[0, -1ULL] AND -13", which is out of the expected return range
-     [-4095, 0].
+Here's a simple flowchart:
 
-     As explained by Eduard in [0], the clang transformation that generates this
-     pattern is located in DAGCombiner::SimplifySelectCC() method (see [1]).
+[parse_event (sample type: PERF_SAMPLE_RAW)] --> [config (bind fds,
+sample_id, sample_type)] --> [off_cpu_strip (sample type: PERF_SAMPLE_RAW)] -->
+[record_done(hooks off_cpu_finish)] --> [prepare_parse(sample type: OFFCPU_SAMPLE_TYPES)]
 
-     The transformation happens as a part of DAG to DAG rewrites
-     (LLVM uses several internal representations:
-      - generic optimizer uses LLVM IR, most of the work is done
-        using this representation;
-      - before instruction selection IR is converted to Selection DAG,
-        some optimizations are applied at this stage,
-        all such optimizations are a set of pattern replacements;
-      - Selection DAG is converted to machine code, some optimizations
-        are applied at the machine code level).
+Changes in v2:
+ - Remove unnecessary comments.
+ - Rename function off_cpu_change_type to off_cpu_prepare_parse
 
-     Full pattern is described as follows:
+Howard Chu (4):
+  perf record off-cpu: Parse off-cpu event, change config location
+  perf record off-cpu: BPF perf_event_output on sched_switch
+  perf record off-cpu: extract off-cpu sample data from raw_data
+  perf record off-cpu: delete bound-to-fail test
 
-       // fold (select_cc seteq (and x, y), 0, 0, A) -> (and (sra (shl x)) A)
-       // where y is has a single bit set.
-       // A plaintext description would be, we can turn the SELECT_CC into an AND
-       // when the condition can be materialized as an all-ones register.  Any
-       // single bit-test can be materialized as an all-ones register with
-       // shift-left and shift-right-arith.
+ tools/perf/builtin-record.c             |  98 +++++++++-
+ tools/perf/tests/shell/record_offcpu.sh |  29 ---
+ tools/perf/util/bpf_off_cpu.c           | 242 +++++++++++-------------
+ tools/perf/util/bpf_skel/off_cpu.bpf.c  | 163 +++++++++++++---
+ tools/perf/util/evsel.c                 |   8 -
+ tools/perf/util/off_cpu.h               |  14 +-
+ tools/perf/util/perf-hooks-list.h       |   1 +
+ 7 files changed, 344 insertions(+), 211 deletions(-)
 
-     For this particular test case the DAG is converted as follows:
-
-                         .---------------- lhs         The meaning of this select_cc is:
-                         |        .------- rhs         `lhs == rhs ? true value : false value`
-                         |        | .----- true value
-                         |        | |  .-- false value
-                         v        v v  v
-       (select_cc seteq (and X 2) 0 0 -13)
-                               ^
-     ->                        '---------------.
-       (and (sra (sll X 62) 63)                |
-            -13)                               |
-                                               |
-     Before pattern is applied, it checks that second 'and' operand has
-     only one bit set, (which is true for '2').
-
-     The pattern itself generates logical shift left / arithmetic shift
-     right pair, that ensures that result is either all ones (-1) or all
-     zeros (0). Hence, applying 'and' to shifts result and false value
-     generates a correct result.
-
-     As suggested by Eduard, this patch makes a special case for source
-     or destination register of '&=' operation being in range [-1, 0].
-
-     Meaning that one of the '&=' operands is either:
-     - all ones, in which case the counterpart is the result of the operation;
-     - all zeros, in which case zero is the result of the operation.
-
-     And MIN and MAX values could be derived based on above two observations.
-
-     [0] https://lore.kernel.org/bpf/e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com/
-     [1] https://github.com/llvm/llvm-project/blob/4523a267829c807f3fc8fab8e5e9613985a51565/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
-
-     Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-     Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 640747b53745..30c551d39329 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13374,6 +13374,24 @@ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
-         dst_reg->u32_min_value = var32_off.value;
-         dst_reg->u32_max_value = min(dst_reg->u32_max_value, umax_val);
-
-+       /* Special case: src_reg is known and dst_reg is in range [-1, 0] */
-+       if (src_known &&
-+               dst_reg->s32_min_value == -1 && dst_reg->s32_max_value == 0 &&
-+               dst_reg->smin_value == -1 && dst_reg->smax_value == 0) {
-+               dst_reg->s32_min_value = min_t(s32, src_reg->s32_min_value, 0);
-+               dst_reg->s32_max_value = max_t(s32, src_reg->s32_min_value, 0);
-+               return;
-+       }
-+
-+       /* Special case: dst_reg is known and src_reg is in range [-1, 0] */
-+       if (dst_known &&
-+               src_reg->s32_min_value == -1 && src_reg->s32_max_value == 0 &&
-+               src_reg->smin_value == -1 && src_reg->smax_value == 0) {
-+               dst_reg->s32_min_value = min_t(s32, dst_reg->s32_min_value, 0);
-+               dst_reg->s32_max_value = max_t(s32, dst_reg->s32_min_value, 0);
-+               return;
-+       }
-+
-         /* Safe to set s32 bounds by casting u32 result into s32 when u32
-          * doesn't cross sign boundary. Otherwise set s32 bounds to unbounded.
-          */
-@@ -13404,6 +13422,24 @@ static void scalar_min_max_and(struct bpf_reg_state *dst_reg,
-         dst_reg->umin_value = dst_reg->var_off.value;
-         dst_reg->umax_value = min(dst_reg->umax_value, umax_val);
-
-+       /* Special case: src_reg is known and dst_reg is in range [-1, 0] */
-+       if (src_known &&
-+               dst_reg->smin_value == -1 && dst_reg->smax_value == 0 &&
-+               dst_reg->s32_min_value == -1 && dst_reg->s32_max_value == 0) {
-+               dst_reg->smin_value = min_t(s64, src_reg->smin_value, 0);
-+               dst_reg->smax_value = max_t(s64, src_reg->smin_value, 0);
-+               return;
-+       }
-+
-+       /* Special case: dst_reg is known and src_reg is in range [-1, 0] */
-+       if (dst_known &&
-+               src_reg->smin_value == -1 && src_reg->smax_value == 0 &&
-+               src_reg->s32_min_value == -1 && src_reg->s32_max_value == 0) {
-+               dst_reg->smin_value = min_t(s64, dst_reg->smin_value, 0);
-+               dst_reg->smax_value = max_t(s64, dst_reg->smin_value, 0);
-+               return;
-+       }
-+
-         /* Safe to set s64 bounds by casting u64 result into s64 when u64
-          * doesn't cross sign boundary. Otherwise set s64 bounds to unbounded.
-          */
-
->>
->>> In my opinion the approach taken by this patch is sub-optimal:
->>> - 512 iterations is too much;
->>> - this does not cover all code that could be generated by the above
->>>    mentioned LLVM transformation
->>>    (e.g. second 'and' operand could be 1 << 16).
->>>
->>> Instead, I suggest to make a special case for source or dst register
->>> of '&=' operation being in range [-1,0].
->>> Meaning that one of the '&=' operands is either:
->>> - all ones, in which case the counterpart is the result of the operation;
->>> - all zeros, in which case zero is the result of the operation;
->>> - derive MIN and MAX values based on above two observations.
->>>
->>
->> Totally agree, I'll cook a new patch as you suggested.
->>
->>> [1] https://github.com/llvm/llvm-project/blob/4523a267829c807f3fc8fab8e5e9613985a51565/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp#L5391
->>>
->>> Best regards,
->>> Eduard
->>
->>
-> 
+-- 
+2.44.0
 
 
