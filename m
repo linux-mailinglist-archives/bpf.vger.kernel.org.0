@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-27609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22198AFDD4
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 03:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 160BA8AFDD5
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 03:28:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DDA32879CB
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 01:28:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2F80287AC2
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 01:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F0F6FB8;
-	Wed, 24 Apr 2024 01:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578FB79E4;
+	Wed, 24 Apr 2024 01:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+etGHks"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ch+3bABi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7F76125
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 01:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7C06112
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 01:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713922129; cv=none; b=opYqreWcsX9BpCFHZHIaLkcwXJfianCCyYIylCoCbNm6Tn0PvvkGPCtTXFuwYjkiT1SNKugyEd+mDNJJdk3+KFFJ+/zEtXcLV31Bz/+DJYtnlXelKKmO9jmWizkqdJmUFpEugyZ+1SRLd0eq3VdHD5N5V/YPij3l2/YlyjwU86M=
+	t=1713922130; cv=none; b=FThUdUJwh/Bnm5tsCjzoUbzWMXa94t728LPHu+Qu0GWuAFlvUruKJYSUtM23UqXxjdIcT2DBJDOSysDDWabn1zDyotamzhIKLGGClRyoDcEXbZBS18YR5QYQbxfFeMtz1OnXCGR4m2KZaaQ7o+MTbsIzqjXEiJg880u9MpMtf3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713922129; c=relaxed/simple;
-	bh=sTuKmtJwL3gPave0nrd2VpPYpZQtRBX0dCALLuh5Nwo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fYDnLa6MKAB0J85zBhgBeRFGHxYlEpHzWjeA2L+poXjDlXNL20GOwQg3YMo9ytCB9lhi/dGCYJD/mv/QhTDLLqgPeH3bq+Vd17gz4AwoApEpyMBda01SEPkhm8TsoZIbS0YJM6rMDAVenYG7y1V6VMxIsHX4LfhJHPF7tJRYW0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+etGHks; arc=none smtp.client-ip=209.85.167.169
+	s=arc-20240116; t=1713922130; c=relaxed/simple;
+	bh=9J26TE/6MUBkHwCplZk2OjBOWWngkfcaPvczZgQTHDU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=B60wbaF4eREs+3aCzZkxwDuaH+81GDNNkv3q5HM52vvXEFnXB7kK1FB8QPHaVq3AC/fVKBHzwBcgIeLZ/N/fmir4Y3W9r+BHkVMw9I2F/LnSx/IJABv4uSC1C2IEPWEx4Vny6BCnbGUIFug3mpwKaXbI/hpvJ5u3TePLkECvnwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ch+3bABi; arc=none smtp.client-ip=209.85.167.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c70999ff96so3970757b6e.2
-        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 18:28:48 -0700 (PDT)
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so4097047b6e.2
+        for <bpf@vger.kernel.org>; Tue, 23 Apr 2024 18:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713922127; x=1714526927; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qgBJyyfxBAfTfO4kbxZUN4YIN1WEkduXU+TuRJBa8uY=;
-        b=E+etGHksfNuFPgBowPq7qPxJOcU3WJduaXJT7yKCH3WD7IVuscb0dXn2tbeb5HGMkw
-         xHQ0B+7uJC99y3J+lEZqzbOGhjQ0u9reEP+k+FiohfBKkvJh5H9sBmfhjLtkMSJ6Hqd+
-         9HbW5ma8B7w70QZGtO1+pA2WnD6pB0r32MiuGQZ/qPj4MtXjzqwOjVBAVC5k6YLh+HvX
-         31l0A88NN7M4e66/qREA+j/o4psA5psFsiQi+V9JTbB46KybZ5hBorCNLawcemlpebX0
-         VSFLvYGLUd95zsFk+CS2Ur8i17+sRbrJ+41s1QOpX1F4bbKQZM91XY0kWNH+nKUvaGiu
-         9Z6A==
+        d=gmail.com; s=20230601; t=1713922128; x=1714526928; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7H94wLOmtbonKp8Hw+9xTGITfBs3ZyZURRtQOSpiQtA=;
+        b=ch+3bABi5KJY7cWrKd1piLP2EOxAaYuxOTu45NOzAKqy6YLL6UIA3D6kOAUvRHAZdN
+         B3VPENfjbEBZp9AqYGWYKFetuJk6Izma8kSFv/0hZ+jjeCp8bGF6QZZrktg66CAwFPoX
+         lnNEJgWESYC3cVC7StvEL+phgIoM1QcJkGTe6p87Izb0zxRDp7W4FxhU+2OQ92SDVsoc
+         eCbIpsLVsSaGaSGHKpDzmd034M9b71jfVMWZkT3rRExYn/DO9q4TwO/wfVIy62b+c4XK
+         +DQCazSf0rpyBsIskal9PySKyfrg8r5zuGzvd/0Xo6C/fuKNeRJkhKSCDL52uI8/ksdl
+         Prng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713922127; x=1714526927;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qgBJyyfxBAfTfO4kbxZUN4YIN1WEkduXU+TuRJBa8uY=;
-        b=rORnHHACecdLhxlIRtLOHw3zJgT2KYh+VmRuvsPwkdlZJK0BqnOs4Z+FsoDay8Nkk8
-         NGkqnbpdBbuuwbFMiqT/1k1uXX/cgVhJayIOX4vE1rN0f4cgn08oyJwn6dGoIzsArrip
-         2/4WsAbrAWDq+4ZZft10RtP6XmiQiveI44rVQdNtEJVB0EQlF+TGKoDmPm/+IdAiA+s+
-         zGKgmZQn6P47iqZHOs6c5Pn6KHZeSgq06GElmTx7rieN4ChpVXkz4vwy7k30mfeALDvC
-         C4G0xl0iOrtojUe0tqZ4Umf2gLkCPX+BiXFtG9yZRpG3pO3tJnv2V6SIy3nzZl4YGRQ6
-         Zmng==
-X-Gm-Message-State: AOJu0YzGzpiV5okQCQP47p3kCgzuaR697NnZ6NSt0cNt43mBu01pE18M
-	yA/U897V3mXlXXfugPrL8Fz8yQVz3npA/KMACPUUlJim36yk3pAWheKg4g==
-X-Google-Smtp-Source: AGHT+IEZzGbci4+59fXLWfGVz8bWOXi/L1VyQ8PTy8rF8mxN6MoIEJB/JewyWilAn3GnfVtQAleVcA==
-X-Received: by 2002:aca:1e09:0:b0:3c7:52cb:e0ff with SMTP id m9-20020aca1e09000000b003c752cbe0ffmr962185oic.47.1713922127260;
-        Tue, 23 Apr 2024 18:28:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713922128; x=1714526928;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7H94wLOmtbonKp8Hw+9xTGITfBs3ZyZURRtQOSpiQtA=;
+        b=JNDe4j8g58BDe+q8jgr7tmkniiAcVWdNQO7zSBcBdiv9Nl0zLLzZIli9FU4DDzmaPO
+         sgXb2qvOaJPZIK2AlM17CzpOHORJB9aYsL6gCUEXDt4CpmU9QN8ovzPkEWAmtT5gdxG8
+         BBeolB7CrELhQoZWcscQToNcKEsKsNzNF3XobP3QyixQK+6ZHqgIanTjPokfBLER3OqD
+         T4D4DIVmiGPurT4WhgkZSWzcscivam+Xl4/ASgTCJIvlW8RkhdLyLdLbCt+MgCm58hJD
+         dnJpDd2xYqasxD/rFaB4yFmv7DU8piW+yAdIsizlUK3jfAqHHqUPaF2YPR5OyqIX6BSl
+         Y2Kg==
+X-Gm-Message-State: AOJu0YzH6q4b+h+W/P4R4QKNfJJdQI6n67XLv3KcSFGy/e6+cthGANYQ
+	wFWiOzxM1sWUEDZXm1FCAeXlTlikfs0CxVBC7k+gQonaZZGVvvHru6PtkA==
+X-Google-Smtp-Source: AGHT+IEfxtvSqEESc5wBQaw3eo7cTgtqqV1OwMjnGC5oCoTpPreQCGGgH5A2JBTrsrfY7Y66FljwLA==
+X-Received: by 2002:a05:6870:348e:b0:232:f9e0:e4c7 with SMTP id n14-20020a056870348e00b00232f9e0e4c7mr1135256oah.48.1713922128260;
+        Tue, 23 Apr 2024 18:28:48 -0700 (PDT)
 Received: from badger.vs.shawcable.net ([2604:3d08:9880:5900:1fa0:b3a5:f828:f414])
-        by smtp.gmail.com with ESMTPSA id fk24-20020a056a003a9800b006ed9d839c4csm10271007pfb.4.2024.04.23.18.28.46
+        by smtp.gmail.com with ESMTPSA id fk24-20020a056a003a9800b006ed9d839c4csm10271007pfb.4.2024.04.23.18.28.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 18:28:46 -0700 (PDT)
+        Tue, 23 Apr 2024 18:28:47 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -75,10 +77,12 @@ Cc: andrii@kernel.org,
 	jemarch@gnu.org,
 	thinker.li@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 0/5] check bpf_dummy_struct_ops program params for test runs
-Date: Tue, 23 Apr 2024 18:28:16 -0700
-Message-Id: <20240424012821.595216-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 1/5] bpf: mark bpf_dummy_struct_ops.test_1 parameter as nullable
+Date: Tue, 23 Apr 2024 18:28:17 -0700
+Message-Id: <20240424012821.595216-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240424012821.595216-1-eddyz87@gmail.com>
+References: <20240424012821.595216-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,43 +91,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When doing BPF_PROG_TEST_RUN for bpf_dummy_struct_ops programs,
-execution should be rejected when NULL is passed for non-nullable
-params, because for such params verifier assumes that such params are
-never NULL and thus might optimize out NULL checks.
+Test case dummy_st_ops/dummy_init_ret_value passes NULL as the first
+parameter of the test_1() function. Mark this parameter as nullable to
+make verifier aware of such possibility.
+Otherwise, NULL check in the test_1() code:
 
-This problem was reported by Jose E. Marchesi in off-list discussion.
-The code generated by GCC for dummy_st_ops_success/test_1() function
-differs from LLVM variant in a way that allows verifier to remove the
-NULL check. The test dummy_st_ops/dummy_init_ret_value actually sets
-the 'state' parameter to NULL, thus GCC-generated version of the test
-triggers NULL pointer dereference when BPF program is executed.
+      SEC("struct_ops/test_1")
+      int BPF_PROG(test_1, struct bpf_dummy_ops_state *state)
+      {
+            if (!state)
+                    return ...;
 
-This patch-set addresses the issue in the following steps:
-- patch #1 marks bpf_dummy_struct_ops.test_1 parameter as nullable,
-  for verifier to have correct assumptions about test_1() programs;
-- patch #2 modifies dummy_st_ops/dummy_init_ret_value to trigger NULL
-  dereference with both GCC and LLVM (if patch #1 is not applied);
-- patch #3 adjusts a few dummy_st_ops test cases to avoid passing NULL
-  for 'state' parameter of test_2() and test_sleepable() functions,
-  as parameters of these functions are not marked as nullable;
-- patch #4 adjusts bpf_dummy_struct_ops to reject test execution of
-  programs if NULL is passed for non-nullable parameter;
-- patch #5 adds a test to verify logic from patch #4.
+            ... access state ...
+      }
 
-Eduard Zingerman (5):
-  bpf: mark bpf_dummy_struct_ops.test_1 parameter as nullable
-  selftests/bpf: adjust dummy_st_ops_success to detect additional error
-  selftests/bpf: do not pass NULL for non-nullable params in
-    dummy_st_ops
-  bpf: check bpf_dummy_struct_ops program params for test runs
-  selftests/bpf: dummy_st_ops should reject 0 for non-nullable params
+Might be removed by verifier, thus triggering NULL pointer dereference
+under certain conditions.
 
- net/bpf/bpf_dummy_struct_ops.c                | 55 ++++++++++++++++++-
- .../selftests/bpf/prog_tests/dummy_st_ops.c   | 34 +++++++++++-
- .../bpf/progs/dummy_st_ops_success.c          | 15 ++++-
- 3 files changed, 96 insertions(+), 8 deletions(-)
+Reported-by: Jose E. Marchesi <jemarch@gnu.org>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ net/bpf/bpf_dummy_struct_ops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+index 25b75844891a..8f413cdfd91a 100644
+--- a/net/bpf/bpf_dummy_struct_ops.c
++++ b/net/bpf/bpf_dummy_struct_ops.c
+@@ -232,7 +232,7 @@ static void bpf_dummy_unreg(void *kdata)
+ {
+ }
+ 
+-static int bpf_dummy_test_1(struct bpf_dummy_ops_state *cb)
++static int bpf_dummy_ops__test_1(struct bpf_dummy_ops_state *cb__nullable)
+ {
+ 	return 0;
+ }
+@@ -249,7 +249,7 @@ static int bpf_dummy_test_sleepable(struct bpf_dummy_ops_state *cb)
+ }
+ 
+ static struct bpf_dummy_ops __bpf_bpf_dummy_ops = {
+-	.test_1 = bpf_dummy_test_1,
++	.test_1 = bpf_dummy_ops__test_1,
+ 	.test_2 = bpf_dummy_test_2,
+ 	.test_sleepable = bpf_dummy_test_sleepable,
+ };
 -- 
 2.34.1
 
