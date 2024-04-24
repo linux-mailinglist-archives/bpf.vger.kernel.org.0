@@ -1,198 +1,142 @@
-Return-Path: <bpf+bounces-27687-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27688-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0BF88B0DB8
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 17:14:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1A08B0DE7
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 17:19:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20A631C23906
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 15:14:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8BCD1F22BF1
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 15:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B5E15F3E9;
-	Wed, 24 Apr 2024 15:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF76815FA6B;
+	Wed, 24 Apr 2024 15:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Cz/AbNt1"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="feRz2wqM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD66015EFBE
-	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 15:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053C715F321
+	for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 15:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713971659; cv=none; b=ORuTLaM712Tjb837GhWLfgGQZTxcy4gVeDlJcIGR6BRCJ8QM1hqCnAFUH2n0ZmXWhTbeuGutzkwwIXYWplP4UpvKFDFJRnWMMom+wRaKs4YdwfPM990vL5WgrVVELES7hH7evAFTy8nc6tO4OBWSCz0F6JQO+V2Wy+VEiQkznt4=
+	t=1713971949; cv=none; b=b+nXeTVgnF98fVnqxFTJz2YvSBaKFpiK59Htwz6Ldvj6vKCoSsdC4tsmWYg1uqM9cf7Fhzmi/XPDF2l6BDsuKPJoS2jyNeyh9fAZsSXDvaXMvLUvxRNFh2SQcI8wyIFT6kBC7SIdIPbu9KkPTg03HmeHFt8rk7WQONGGVdgpKao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713971659; c=relaxed/simple;
-	bh=9ApGTsY8uxB5PcD5HHBxIE2iGBtDP6lO/IMIeZfW83Y=;
+	s=arc-20240116; t=1713971949; c=relaxed/simple;
+	bh=zo6CfEdwy0Z1jFqYaKi4gjp+7PfLdUHzWaLTgeGkHGY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bD46+RcI1+nZsyVyKqWJumGkr08YQpwCztYx/PPDjPvXiMOX6ZQnoMIYhWQzx5CMX7lXwK/Y+lMNPXv9FyffbFyD+LypzeQw9pBzwgRIvbeSPzO/sEweaubB1JjWkMd7QlDascrjQ8CRoBjTsYEPmQILiDhu6Xv3L84FnRkJcnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Cz/AbNt1; arc=none smtp.client-ip=209.85.166.182
+	 To:Cc:Content-Type; b=bAY/c5lYchQIoquWwrd8WPOCAeYSzjEZnyDl4iiFLOGEDCLpYD4ktA9tRVxdnDEkhBCrYifjr2f9SrcgjdKtYKQ2xpdHUeRasNlPYMyZoTVU8CRlH1zruNpkCwTnCoFue5p0+ERU0iZhMp0ECnXIkBiTloJGN5v+e9cU1qh3F8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=feRz2wqM; arc=none smtp.client-ip=209.85.160.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36a0c8c5f18so109585ab.0
-        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 08:14:17 -0700 (PDT)
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-436ed871225so329831cf.1
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 08:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713971657; x=1714576457; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713971947; x=1714576747; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=l96CL3C0CMjmESU5d/Yu/i0e8lRRnuduS9TzRkrFrs8=;
-        b=Cz/AbNt1Xdf4OUbM6wP0UmJ/lTr//CYR2z5BhFNhyUKcx89V29c8HbcaMdwjVB3WR3
-         dGwqUT0n3lcvVyM0QYhqapM1NcN0r/pe+E+El2XgREoZOLnP5IzHc9pbIflScsYJbTE5
-         uYJLBKjJMHjPKCZXIBRVvZH2iota/vPeI4VyNiYFFVEN38iEMsYreIH7ztJ/8Qj+l1J/
-         40UmBiHA7h+rHPpVCxUeqbD0rXL9/duwhYjophMvdbqqpgPgrnKeEbsoVmoywz8PQEQk
-         JtFbubS6RDJzaVJK/4kfv31RKmFauUpjDdwUHy40MJCnUfg9wtJ6obdT6j601oqR/N0z
-         kvew==
+        bh=16IfUr/aDIVyiGDdNYlmv/QESeSDyKp3ic+JdrAeLjo=;
+        b=feRz2wqMghEcvfLAvXv1fx904ZD5M7NaI7j0/XiUAQ50ahuo7PkAqIGbzW05QTXNrL
+         yeqUwFrPRT6WdDBIdokZfPwYVEUpMAZ3nQtuFxDoPhdk8HmMCAiDspUlPiXSvr1LDTu1
+         eUoOhVVvjD533VovQkhcgnQ7O1HeduVuTlnpqoZ/zpsoF9bWpU3b7bEkE3IdOlIAERFe
+         YRY0fPpfr2cpYMf+gN5IxTRnC++4FozqgFktvl62Ar7qqdkC9NExjxUo5MCLgP7hV9yk
+         5YJfdCdKxIOkGJAKYXy1ohCfy6LfSDH7fod8XYDPyrlJooq+0aN/pgliaD0pKYJdRhrO
+         vEEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713971657; x=1714576457;
+        d=1e100.net; s=20230601; t=1713971947; x=1714576747;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=l96CL3C0CMjmESU5d/Yu/i0e8lRRnuduS9TzRkrFrs8=;
-        b=h785IxfGyl87fFj32sJhh7t9pUET8acYvYM4U1f1GJM+t5BPX6hdoDmdaTSNrxvVm7
-         C0lRAlkbGPXosr0RcGMZGV4i/6Kw4vQqsz6vlD48xjvGHIrkjoP14uWvL0sFNpgfFme/
-         Lj0IULFa6cCA1fc0oA9FVFmaoWdRdPbmLO5IppppjMZudaW2juccQo9sZ75WI9ksBGOi
-         HmcxUUcgQi1MVIzrESUmyY8L3UUuZYNTY2/dW+z07XBDZHllfx6wXhJh12IRyq7xNtlw
-         F5oQt1DxZPWI3ggqI9wxvryOM6RMqKQbm8E6mbPmiqbLjtdGW0nBkcb6G3G1NYRFMYuj
-         in9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVCVpFSAU8fXN1BN9jV7VdwWLFGiii1yxsb0rADXH3Vs12DwntPPqpSBqko2s7sUjMUn1Q7eniDQGPQz3rDMMGf1+Ks
-X-Gm-Message-State: AOJu0Yxh4IGzPuWG+y+hyAggVML6JosaOi7nAPPQC0QQ2iIfw1s90VDE
-	iKx80XevccfFw9cPgRcWlhIoaxhFkpb9AEv49LW216BwgYBXbiEDSZ17057rUsrNduD/Gxm0cyO
-	/qEq94ofhZ/rZ/ITVuukKLgX9nkI/pNBEOt77
-X-Google-Smtp-Source: AGHT+IF1c/EmZd9psYA18Gea/5hrwJliRY1WEl7Zid/rcAB2YtofHNqZVPhKqZjEnOZaG/rK0JCnXz3rEn7q6LLfybA=
-X-Received: by 2002:a92:c9c9:0:b0:36b:fbb3:2e96 with SMTP id
- k9-20020a92c9c9000000b0036bfbb32e96mr227535ilq.22.1713971656469; Wed, 24 Apr
- 2024 08:14:16 -0700 (PDT)
+        bh=16IfUr/aDIVyiGDdNYlmv/QESeSDyKp3ic+JdrAeLjo=;
+        b=YDKGqy94GC2DBNXa8rpK5frZPPsrhWPO3+IT2pemHApwHSvhMJR+FhO3pvtXMNuf8b
+         a8lQetPELtLqYz3GdwqvBy6Nd+jocoYjWeD2FNlDCR3AAcXB+s+zc0MeSWWJEbZQ+DXS
+         DccOVI/uLGtwCOpvkRpHJcoYdMPx/E+DLsw1E0rYI+6VD9KmQ9Zp3JiyG5ZHq9LePAim
+         kLDnWRT/pz1XbZ3NoC9/DDkIsAyd9/r8J13ooQZz6SXFR9xXf4CAOxd3IiXzZlQjGsiw
+         yhBAZospMRQV9C6j6uvbhixzDhXlT9oWNkUEx/CKa3Js/5lCKYQjAA6mKn/raEfEvrsE
+         0q6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU3kW2olRJEHqvriSHeeYuyKKDVv2DozsqoaY3BfI38oNkIO0eKgKbgM3QsyW5WS9EGzuIOh8j7WYhXZv4HxkTLeZPn
+X-Gm-Message-State: AOJu0YzkXLYtBWL+Hss69wToQLjTe35T6Zx46bAn73pgJnS1uXezGemi
+	OEAs0k1sk1RcZHJ3wOyTFXbHWu3GS1Y56F8oZBDkqAD6VmfkTX4HS7VJLxD3VUvQBn0W0LS2LeC
+	7I5hQ38bMEwJ7Z8DTlew6Rc7aESgJnD4hFpt6
+X-Google-Smtp-Source: AGHT+IEFfX0IrtvdULyN66f10heNy91Xt+GeYOFUXi4nvaPeuN2PAOzDNm7Vw0JcnmVVNOeGCTZgBZtFwdAB2xtB2ts=
+X-Received: by 2002:ac8:1286:0:b0:43a:2e2b:eec with SMTP id
+ y6-20020ac81286000000b0043a2e2b0eecmr169202qti.2.1713971946704; Wed, 24 Apr
+ 2024 08:19:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061533.921723-1-irogers@google.com> <CAHBxVyF-u__MY9BNkqxUJg4ra76CzT0p_JBVaQqZm=u4V4u5AQ@mail.gmail.com>
-In-Reply-To: <CAHBxVyF-u__MY9BNkqxUJg4ra76CzT0p_JBVaQqZm=u4V4u5AQ@mail.gmail.com>
+References: <20240416061533.921723-1-irogers@google.com> <20240416061533.921723-14-irogers@google.com>
+ <e8147f53-1930-44d8-abb8-fee460ec355f@linux.intel.com> <CAP-5=fVXv_gsoq5L08gaEJvU1E8xoihc3-L4taA+bPHyOJfgqw@mail.gmail.com>
+ <7df3ff63-a421-42cc-bcaa-b0254ff6a0e8@linux.intel.com>
+In-Reply-To: <7df3ff63-a421-42cc-bcaa-b0254ff6a0e8@linux.intel.com>
 From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Apr 2024 08:14:02 -0700
-Message-ID: <CAP-5=fXqtvorr8JVwbEFubhAkcF2FTWNSzB+8G7En-9-rjfCdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/16] Consistently prefer sysfs/json events
-To: Atish Kumar Patra <atishp@rivosinc.com>
+Date: Wed, 24 Apr 2024 08:18:52 -0700
+Message-ID: <CAP-5=fUi8DPNrbp=978K92Mopa71ag1sukttX3KcztD2ac0ADg@mail.gmail.com>
+Subject: Re: [PATCH v2 13/16] perf parse-events: Improvements to modifier parsing
+To: "Liang, Kan" <kan.liang@linux.intel.com>
 Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
 	Mark Rutland <mark.rutland@arm.com>, 
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Beeman Strong <beeman@rivosinc.com>
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org, 
+	Beeman Strong <beeman@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 5:28=E2=80=AFPM Atish Kumar Patra <atishp@rivosinc.=
-com> wrote:
+On Fri, Apr 19, 2024 at 6:20=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
 >
-> On Mon, Apr 15, 2024 at 11:15=E2=80=AFPM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > As discussed in:
-> > https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.c=
-om/
-> > preferring sysfs/json events consistently (with or without a given
-> > PMU) will enable RISC-V's hope to customize legacy events in the perf
-> > tool.
-> >
 >
-> Thanks for remapping legacy events in a generic way. This looks great
-> and got rid of my
-> ugly arch specific way of remapping.  Is there a good way for the
-> driver (e.g via sysfs) to tell the perf tool
-> whether to remap the legacy event or not ?
 >
-> In RISC-V the legacy systems without the new ISA extension may not
-> want to remap if running
-> the latest kernel.
+> On 2024-04-19 2:22 a.m., Ian Rogers wrote:
+> >>> +             /* Simple modifiers copied to the evsel. */
+> >>> +             if (mod.precise) {
+> >>> +                     u8 precise =3D evsel->core.attr.precise_ip + mo=
+d.precise;
+> >>> +                     /*
+> >>> +                      * precise ip:
+> >>> +                      *
+> >>> +                      *  0 - SAMPLE_IP can have arbitrary skid
+> >>> +                      *  1 - SAMPLE_IP must have constant skid
+> >>> +                      *  2 - SAMPLE_IP requested to have 0 skid
+> >>> +                      *  3 - SAMPLE_IP must have 0 skid
+> >>> +                      *
+> >>> +                      *  See also PERF_RECORD_MISC_EXACT_IP
+> >>> +                      */
+> >>> +                     if (precise > 3) {
+> >> The pmu_max_precise() should return the max precise the current kernel
+> >> supports. It checks the /sys/devices/cpu/caps/max_precise.
+> >>
+> >> I think we should use that value rather than hard code it to 3.
+> > I'll add an extra patch to do that. I'm a bit concerned it may break
+> > event parsing on platforms not supporting max_precise of 3.
 >
-> I described the problem in detail in the original thread as well.
-> https://lore.kernel.org/lkml/63d73f09-84e5-49e1-99f5-60f414b22d70@rivosin=
-c.com/
+> The kernel already rejects the precise_ip > max_precise (using the same
+> x86_pmu_max_precise()). It should be fine to apply the same logic in the
+> tool.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/a=
+rch/x86/events/core.c#n566
+>
+> Will the extra patch be sent separately?
 
-So the sysfs/json events have priority over the legacy hardware events
-with this patch series. I'm not clear on your question but here are
-some scenarios:
+Let's do it separately. I'm concerned about the behavior on AMD (and
+possibly similar architectures) where certain events support precision
+like cycles, as they detour to the IBS PMU, but not all events support
+it. The max_precise should reflect that AMD's Zen core PMU does
+support precision as a consequence of detouring to IBS, but maybe
+things in sysfs aren't set up correctly.
 
-1) for a vendor/model with a CPUID json files want to be used:
-1.1) the driver shouldn't advertise the events /sys/devices/<pmu name>/even=
-ts
-1.2) the json in the perf tool needs to have a mapfile.csv entry for
-the cpuid to a model directory containing the event json. In the
-directory the legacy events should be defined.
-
-2) for a vendor/model with a CPUID the driver files should be used:
-2.1) the driver should advertise the events in /sys/devices/<pmu name>/even=
-ts
-2.2) in the json for the CPUID avoid redefining the events
-
-3) for a vendor/model with a CPUID the legacy events should be used:
-3.1) the driver shouldn't advertise the events in /sys/devices/<pmu name>/e=
-vents
-3.2) in the json for the CPUID avoid defining the events
-
-Are you asking to have both sysfs and json events for a model? In this
-case, which have priority over the other? It's possible in the pmu.c
-code to have a prioritized lookup either from json then sysfs or
-vice-versa, at the moment it is first come first served. To some
-extent this can be seen on Intel uncore events where there are both
-sysfs and json events with the same config, when we reverse map if the
-sysfs name is loaded then it is reverse mapped in verbose log or by
-perf trace, whilst typically I think the json name is reverse mapped.
-Are you asking for the search order to be configurable by the driver?
-In the past I've considered that the search order may be configured in
-the tool and the user may want to provide their own directory
-containing additional events and metrics.
-
-> FWIW, for the entire series.
-> Tested-by: Atish Patra <atishp@rivosinc.com>
-
-Thanks, I think we can go ahead to land this. Kan's comment was to ask
-for a follow up changing max_precise behavior and I'm hesitant to do
-two behavior changes in 1 patch series.
-
+Thanks,
 Ian
 
-> > Some minor clean-up is performed on the way.
-> >
-> > v2. Additional cleanup particularly adding better error messages. Fix
-> >     some line length issues on the earlier patches.
-> >
-> > Ian Rogers (16):
-> >   perf parse-events: Factor out '<event_or_pmu>/.../' parsing
-> >   perf parse-events: Directly pass PMU to parse_events_add_pmu
-> >   perf parse-events: Avoid copying an empty list
-> >   perf pmu: Refactor perf_pmu__match
-> >   perf tests parse-events: Use branches rather than cache-references
-> >   perf parse-events: Legacy cache names on all PMUs and lower priority
-> >   perf parse-events: Handle PE_TERM_HW in name_or_raw
-> >   perf parse-events: Constify parse_events_add_numeric
-> >   perf parse-events: Prefer sysfs/json hardware events over legacy
-> >   perf parse-events: Inline parse_events_update_lists
-> >   perf parse-events: Improve error message for bad numbers
-> >   perf parse-events: Inline parse_events_evlist_error
-> >   perf parse-events: Improvements to modifier parsing
-> >   perf parse-event: Constify event_symbol arrays
-> >   perf parse-events: Minor grouping tidy up
-> >   perf parse-events: Tidy the setting of the default event name
-> >
-> >  tools/perf/tests/parse-events.c |   6 +-
-> >  tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
-> >  tools/perf/util/parse-events.h  |  49 ++--
-> >  tools/perf/util/parse-events.l  | 196 +++++++++----
-> >  tools/perf/util/parse-events.y  | 261 +++++++----------
-> >  tools/perf/util/pmu.c           |  27 +-
-> >  tools/perf/util/pmu.h           |   2 +-
-> >  7 files changed, 540 insertions(+), 483 deletions(-)
-> >
-> > --
-> > 2.44.0.683.g7961c838ac-goog
-> >
+> Thanks,
+> Kan
 
