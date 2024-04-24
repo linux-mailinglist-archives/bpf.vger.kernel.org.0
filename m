@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-27660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744598B06D0
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 12:02:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4D78B06D1
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 12:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DFB8B25592
-	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 10:02:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B49D7287545
+	for <lists+bpf@lfdr.de>; Wed, 24 Apr 2024 10:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F5D159579;
-	Wed, 24 Apr 2024 10:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D7F15959A;
+	Wed, 24 Apr 2024 10:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hpgydWVv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jfn1qi+W"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A538158D9A;
-	Wed, 24 Apr 2024 10:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A0A158DA8;
+	Wed, 24 Apr 2024 10:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713952939; cv=none; b=GnKsFkdpP90RCyLUpeu+gMddG6QTzxHW9OiQ9Syp75CKoAiR2LSIGqb8AtksV3X49XqyfriBGXI3oaWSIQ/fD8aLyv+bH42kjGD8EJt9n0DH5WQ8zmreXcn3rBwM7G7JtHSnSzEXbZOJ7/rD74Equy+L0fApA2+BLyroS3D06cQ=
+	t=1713952947; cv=none; b=Uybr+r4CueJJc9V2vkYQc90dJ6Zv5zgoth15IN5OdUp3S/vKv+nBpHE2S59ueL9XEoAaz3B7exPlFuVwDvaUC/Yic380VVEUceUe8EvbSUcIPhnbn0ViX35P2gkAw7sPQadW/oKoVZ3F8nlb6YAZ1m2vslxpAg5iMkGxrQiWqjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713952939; c=relaxed/simple;
-	bh=wCj9bi4x5lvOnZ8Xre21Vebu8lXYzYQwHsXNevTbhBY=;
+	s=arc-20240116; t=1713952947; c=relaxed/simple;
+	bh=sH3NqbnqWYXNK5UIIim2XiAjj953FdgkjDhAjtCHVqI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OZjHB01VGbP+riDx/U5n8IKCSjn5eMBZg9mga2LNPo0VYIZWcd6X3CWX3q87G8CMWZ5r4bxOyqEknZtItmwVy6waFwpwiAgfWURvxS349q57qqOUN6q+an+MyrDYMNELBodooJAWzyGsH1i6shTzIldAABZjxRL7bKHlZZ53nRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hpgydWVv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F76CC32781;
-	Wed, 24 Apr 2024 10:02:18 +0000 (UTC)
+	 MIME-Version; b=TMssJsH5CRcOW28VxhmYykSB00OvHI6G9nik6mfNa9m7nIrouK9l6V9wz96iNzueXJ9VcN2Avka9ZJcRscRmScphY/GTvmu/HlGRFjwc0F6S1ZGMZWTdrkjg6syCIEfGH7NQ84vGl8v22TNOHxPwqTCz+qdUIpg/uZUPzzMbZVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jfn1qi+W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07487C113CE;
+	Wed, 24 Apr 2024 10:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713952938;
-	bh=wCj9bi4x5lvOnZ8Xre21Vebu8lXYzYQwHsXNevTbhBY=;
+	s=k20201202; t=1713952947;
+	bh=sH3NqbnqWYXNK5UIIim2XiAjj953FdgkjDhAjtCHVqI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hpgydWVv8lhe8sDop0QP6z9HOmEjuhD2UgNEArldbn7czckqLhhXo9gljNMZX9Q3V
-	 u2i3ACkDLXtGkPBy/H/+gY6dJjrztpZoaUxjZCoD8L/OtnwKfqqaa3y/85bZhefyL1
-	 m+beRKO4LmsvHjvAMUucjtuYjg5WthS35IMSWnqYHHOQcXd0bOVRq9rBrGwwojhdwB
-	 +zLEoBy9//gEUP/pkEFCUr3IcO8pizighn91OMH1kF9I8Hzki9bwrGJfKYlVoHuT4M
-	 peJxAoULMyRIo4oIlJ19Fq0ZXv1dN6sLxEJr0yji4JdeoS4cdVCNzWt60oPAsH4Vxh
-	 TNPUXFhBFH0TA==
+	b=Jfn1qi+WJXy268UGIBt1WdajuseEOWWYkhfAUFWdJO+00hTvg42A4g6rT1R/mlCYw
+	 QLaJ5xyvvEd47TdBW7vKZcFXLzZLBvinTtfjjcZs53w5rit3p07dXcnEYF7KXdnswJ
+	 48YG/jfssSciMjeAKIxFMh0v/x+9zZXOJoneDXYrLNd8lFqmQCQvKxKAoxYs5WkuZy
+	 4PD+cCjyHj/sHSWCuGHhotnjgWtIAI8gVQOCmEiGVKWn7E4737DDeQk/rVdTmVljU9
+	 wwkbnzzUqqB8KPdzJDNqm0Y6QAcPLio2C3A/89W8gQiI+Y4ny6szOwuj3Fhe4Xri83
+	 DmppLpGT882IQ==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -58,9 +58,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Ilya Leoshkevich <iii@linux.ibm.com>
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf v6 1/3] bpf: verifier: prevent userspace memory access
-Date: Wed, 24 Apr 2024 10:02:08 +0000
-Message-Id: <20240424100210.11982-2-puranjay@kernel.org>
+Subject: [PATCH bpf v6 2/3] bpf, x86: Fix PROBE_MEM runtime load check
+Date: Wed, 24 Apr 2024 10:02:09 +0000
+Message-Id: <20240424100210.11982-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240424100210.11982-1-puranjay@kernel.org>
 References: <20240424100210.11982-1-puranjay@kernel.org>
@@ -72,282 +72,157 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Puranjay Mohan <puranjay12@gmail.com>
+When a load is marked PROBE_MEM - e.g. due to PTR_UNTRUSTED access - the
+address being loaded from is not necessarily valid. The BPF jit sets up
+exception handlers for each such load which catch page faults and 0 out
+the destination register.
 
-With BPF_PROBE_MEM, BPF allows de-referencing an untrusted pointer. To
-thwart invalid memory accesses, the JITs add an exception table entry
-for all such accesses. But in case the src_reg + offset is a userspace
-address, the BPF program might read that memory if the user has
-mapped it.
+If the address for the load is outside kernel address space, the load
+will escape the exception handling and crash the kernel. To prevent this
+from happening, the emits some instruction to verify that addr is > end
+of userspace addresses.
 
-Make the verifier add guard instructions around such memory accesses and
-skip the load if the address falls into the userspace region.
+x86 has a legacy vsyscall ABI where a page at address 0xffffffffff600000
+is mapped with user accessible permissions. The addresses in this page
+are considered userspace addresses by the fault handler. Therefore, a
+BPF program accessing this page will crash the kernel.
 
-The JITs need to implement bpf_arch_uaddress_limit() to define where
-the userspace addresses end for that architecture or TASK_SIZE is taken
-as default.
+This patch fixes the runtime checks to also check that the PROBE_MEM
+address is below VSYSCALL_ADDR.
 
-The implementation is as follows:
+Example BPF program:
 
-REG_AX =  SRC_REG
-if(offset)
-	REG_AX += offset;
-REG_AX >>= 32;
-if (REG_AX <= (uaddress_limit >> 32))
-	DST_REG = 0;
-else
-	DST_REG = *(size *)(SRC_REG + offset);
+ SEC("fentry/tcp_v4_connect")
+ int BPF_PROG(fentry_tcp_v4_connect, struct sock *sk)
+ {
+	*(volatile unsigned long *)&sk->sk_tsq_flags;
+	return 0;
+ }
 
-Comparing just the upper 32 bits of the load address with the upper
-32 bits of uaddress_limit implies that the values are being aligned down
-to a 4GB boundary before comparison.
+BPF Assembly:
 
-The above means that all loads with address <= uaddress_limit + 4GB are
-skipped. This is acceptable because there is a large hole (much larger
-than 4GB) between userspace and kernel space memory, therefore a
-correctly functioning BPF program should not access this 4GB memory
-above the userspace.
+ 0: (79) r1 = *(u64 *)(r1 +0)
+ 1: (79) r1 = *(u64 *)(r1 +344)
+ 2: (b7) r0 = 0
+ 3: (95) exit
 
-Let's analyze what this patch does to the following fentry program
-dereferencing an untrusted pointer:
+			       x86-64 JIT
+			       ==========
 
-  SEC("fentry/tcp_v4_connect")
-  int BPF_PROG(fentry_tcp_v4_connect, struct sock *sk)
-  {
-                *(volatile long *)sk;
-                return 0;
-  }
+            BEFORE                                    AFTER
+	    ------                                    -----
 
-    BPF Program before              |           BPF Program after
-    ------------------              |           -----------------
+ 0:   nopl   0x0(%rax,%rax,1)             0:   nopl   0x0(%rax,%rax,1)
+ 5:   xchg   %ax,%ax                      5:   xchg   %ax,%ax
+ 7:   push   %rbp                         7:   push   %rbp
+ 8:   mov    %rsp,%rbp                    8:   mov    %rsp,%rbp
+ b:   mov    0x0(%rdi),%rdi               b:   mov    0x0(%rdi),%rdi
+-------------------------------------------------------------------------------
+ f:   movabs $0x100000000000000,%r11      f:   movabs $0xffffffffff600000,%r10
+19:   add    $0x2a0,%rdi                 19:   mov    %rdi,%r11
+20:   cmp    %r11,%rdi                   1c:   add    $0x2a0,%r11
+23:   jae    0x0000000000000029          23:   sub    %r10,%r11
+25:   xor    %edi,%edi                   26:   movabs $0x100000000a00000,%r10
+27:   jmp    0x000000000000002d          30:   cmp    %r10,%r11
+29:   mov    0x0(%rdi),%rdi              33:   ja     0x0000000000000039
+--------------------------------\        35:   xor    %edi,%edi
+2d:   xor    %eax,%eax           \       37:   jmp    0x0000000000000040
+2f:   leave                       \      39:   mov    0x2a0(%rdi),%rdi
+30:   ret                          \--------------------------------------------
+                                         40:   xor    %eax,%eax
+                                         42:   leave
+                                         43:   ret
 
-  0: (79) r1 = *(u64 *)(r1 +0)          0: (79) r1 = *(u64 *)(r1 +0)
-  -----------------------------------------------------------------------
-  1: (79) r1 = *(u64 *)(r1 +0) --\      1: (bf) r11 = r1
-  ----------------------------\   \     2: (77) r11 >>= 32
-  2: (b7) r0 = 0               \   \    3: (b5) if r11 <= 0x8000 goto pc+2
-  3: (95) exit                  \   \-> 4: (79) r1 = *(u64 *)(r1 +0)
-                                 \      5: (05) goto pc+1
-                                  \     6: (b7) r1 = 0
-                                   \--------------------------------------
-                                        7: (b7) r0 = 0
-                                        8: (95) exit
-
-As you can see from above, in the best case (off=0), 5 extra instructions
-are emitted.
-
-Now, we analyze the same program after it has gone through the JITs of
-ARM64 and RISC-V architectures. We follow the single load instruction
-that has the untrusted pointer and see what instrumentation has been
-added around it.
-
-                                x86-64 JIT
-                                ==========
-     JIT's Instrumentation
-          (upstream)
-     ---------------------
-
-   0:   nopl   0x0(%rax,%rax,1)
-   5:   xchg   %ax,%ax
-   7:   push   %rbp
-   8:   mov    %rsp,%rbp
-   b:   mov    0x0(%rdi),%rdi
-  ---------------------------------
-   f:   movabs $0x800000000000,%r11
-  19:   cmp    %r11,%rdi
-  1c:   jb     0x000000000000002a
-  1e:   mov    %rdi,%r11
-  21:   add    $0x0,%r11
-  28:   jae    0x000000000000002e
-  2a:   xor    %edi,%edi
-  2c:   jmp    0x0000000000000032
-  2e:   mov    0x0(%rdi),%rdi
-  ---------------------------------
-  32:   xor    %eax,%eax
-  34:   leave
-  35:   ret
-
-The x86-64 JIT already emits some instructions to protect against user
-memory access. This patch doesn't make any changes for the x86-64 JIT.
-
-                                  ARM64 JIT
-                                  =========
-
-        No Intrumentation                       Verifier's Instrumentation
-           (upstream)                                  (This patch)
-        -----------------                       --------------------------
-
-   0:   add     x9, x30, #0x0                0:   add     x9, x30, #0x0
-   4:   nop                                  4:   nop
-   8:   paciasp                              8:   paciasp
-   c:   stp     x29, x30, [sp, #-16]!        c:   stp     x29, x30, [sp, #-16]!
-  10:   mov     x29, sp                     10:   mov     x29, sp
-  14:   stp     x19, x20, [sp, #-16]!       14:   stp     x19, x20, [sp, #-16]!
-  18:   stp     x21, x22, [sp, #-16]!       18:   stp     x21, x22, [sp, #-16]!
-  1c:   stp     x25, x26, [sp, #-16]!       1c:   stp     x25, x26, [sp, #-16]!
-  20:   stp     x27, x28, [sp, #-16]!       20:   stp     x27, x28, [sp, #-16]!
-  24:   mov     x25, sp                     24:   mov     x25, sp
-  28:   mov     x26, #0x0                   28:   mov     x26, #0x0
-  2c:   sub     x27, x25, #0x0              2c:   sub     x27, x25, #0x0
-  30:   sub     sp, sp, #0x0                30:   sub     sp, sp, #0x0
-  34:   ldr     x0, [x0]                    34:   ldr     x0, [x0]
---------------------------------------------------------------------------------
-  38:   ldr     x0, [x0] ----------\        38:   add     x9, x0, #0x0
------------------------------------\\       3c:   lsr     x9, x9, #32
-  3c:   mov     x7, #0x0            \\      40:   cmp     x9, #0x10, lsl #12
-  40:   mov     sp, sp               \\     44:   b.ls    0x0000000000000050
-  44:   ldp     x27, x28, [sp], #16   \\--> 48:   ldr     x0, [x0]
-  48:   ldp     x25, x26, [sp], #16    \    4c:   b       0x0000000000000054
-  4c:   ldp     x21, x22, [sp], #16     \   50:   mov     x0, #0x0
-  50:   ldp     x19, x20, [sp], #16      \---------------------------------------
-  54:   ldp     x29, x30, [sp], #16         54:   mov     x7, #0x0
-  58:   add     x0, x7, #0x0                58:   mov     sp, sp
-  5c:   autiasp                             5c:   ldp     x27, x28, [sp], #16
-  60:   ret                                 60:   ldp     x25, x26, [sp], #16
-  64:   nop                                 64:   ldp     x21, x22, [sp], #16
-  68:   ldr     x10, 0x0000000000000070     68:   ldp     x19, x20, [sp], #16
-  6c:   br      x10                         6c:   ldp     x29, x30, [sp], #16
-                                            70:   add     x0, x7, #0x0
-                                            74:   autiasp
-                                            78:   ret
-                                            7c:   nop
-                                            80:   ldr     x10, 0x0000000000000088
-                                            84:   br      x10
-
-There are 6 extra instructions added in ARM64 in the best case. This will
-become 7 in the worst case (off != 0).
-
-                           RISC-V JIT (RISCV_ISA_C Disabled)
-                           ==========
-
-        No Intrumentation           Verifier's Instrumentation
-           (upstream)                      (This patch)
-        -----------------           --------------------------
-
-   0:   nop                            0:   nop
-   4:   nop                            4:   nop
-   8:   li      a6, 33                 8:   li      a6, 33
-   c:   addi    sp, sp, -16            c:   addi    sp, sp, -16
-  10:   sd      s0, 8(sp)             10:   sd      s0, 8(sp)
-  14:   addi    s0, sp, 16            14:   addi    s0, sp, 16
-  18:   ld      a0, 0(a0)             18:   ld      a0, 0(a0)
----------------------------------------------------------------
-  1c:   ld      a0, 0(a0) --\         1c:   mv      t0, a0
---------------------------\  \        20:   srli    t0, t0, 32
-  20:   li      a5, 0      \  \       24:   lui     t1, 4096
-  24:   ld      s0, 8(sp)   \  \      28:   sext.w  t1, t1
-  28:   addi    sp, sp, 16   \  \     2c:   bgeu    t1, t0, 12
-  2c:   sext.w  a0, a5        \  \--> 30:   ld      a0, 0(a0)
-  30:   ret                    \      34:   j       8
-                                \     38:   li      a0, 0
-                                 \------------------------------
-                                      3c:   li      a5, 0
-                                      40:   ld      s0, 8(sp)
-                                      44:   addi    sp, sp, 16
-                                      48:   sext.w  a0, a5
-                                      4c:   ret
-
-There are 7 extra instructions added in RISC-V.
-
-Fixes: 800834285361 ("bpf, arm64: Add BPF exception tables")
-Reported-by: Breno Leitao <leitao@debian.org>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c |  6 ++++++
- include/linux/filter.h      |  1 +
- kernel/bpf/core.c           |  9 +++++++++
- kernel/bpf/verifier.c       | 30 ++++++++++++++++++++++++++++++
- 4 files changed, 46 insertions(+)
+ arch/x86/net/bpf_jit_comp.c | 57 ++++++++++++++++---------------------
+ 1 file changed, 25 insertions(+), 32 deletions(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index df5fac428408..b520b66ad14b 100644
+index b520b66ad14b..59cbc94b6e69 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3473,3 +3473,9 @@ bool bpf_jit_supports_ptr_xchg(void)
- {
- 	return true;
- }
-+
-+/* x86-64 JIT emits its own code to filter user addresses so return 0 here */
-+u64 bpf_arch_uaddress_limit(void)
-+{
-+	return 0;
-+}
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index c99bc3df2d28..219ee7a76874 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -963,6 +963,7 @@ bool bpf_jit_supports_far_kfunc_call(void);
- bool bpf_jit_supports_exceptions(void);
- bool bpf_jit_supports_ptr_xchg(void);
- bool bpf_jit_supports_arena(void);
-+u64 bpf_arch_uaddress_limit(void);
- void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
- bool bpf_helper_changes_pkt_data(void *func);
+@@ -1807,36 +1807,41 @@ st:			if (is_imm8(insn->off))
+ 			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+ 			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
+ 				/* Conservatively check that src_reg + insn->off is a kernel address:
+-				 *   src_reg + insn->off >= TASK_SIZE_MAX + PAGE_SIZE
+-				 * src_reg is used as scratch for src_reg += insn->off and restored
+-				 * after emit_ldx if necessary
++				 *   src_reg + insn->off > TASK_SIZE_MAX + PAGE_SIZE
++				 *   and
++				 *   src_reg + insn->off < VSYSCALL_ADDR
+ 				 */
  
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 696bc55de8e8..1ea5ce5bb599 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2942,6 +2942,15 @@ bool __weak bpf_jit_supports_arena(void)
- 	return false;
- }
+-				u64 limit = TASK_SIZE_MAX + PAGE_SIZE;
++				u64 limit = TASK_SIZE_MAX + PAGE_SIZE - VSYSCALL_ADDR;
+ 				u8 *end_of_jmp;
  
-+u64 __weak bpf_arch_uaddress_limit(void)
-+{
-+#if defined(CONFIG_64BIT) && defined(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE)
-+	return TASK_SIZE;
-+#else
-+	return 0;
-+#endif
-+}
-+
- /* Return TRUE if the JIT backend satisfies the following two conditions:
-  * 1) JIT backend supports atomic_xchg() on pointer-sized words.
-  * 2) Under the specific arch, the implementation of xchg() is the same
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index aa24beb65393..cb7ad1f795e1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19675,6 +19675,36 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
- 		}
+-				/* At end of these emitted checks, insn->off will have been added
+-				 * to src_reg, so no need to do relative load with insn->off offset
+-				 */
+-				insn_off = 0;
++				/* movabsq r10, VSYSCALL_ADDR */
++				emit_mov_imm64(&prog, BPF_REG_AX, (long)VSYSCALL_ADDR >> 32,
++					       (u32)(long)VSYSCALL_ADDR);
  
-+		/* Make it impossible to de-reference a userspace address */
-+		if (BPF_CLASS(insn->code) == BPF_LDX &&
-+		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
-+		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
-+			struct bpf_insn *patch = &insn_buf[0];
-+			u64 uaddress_limit = bpf_arch_uaddress_limit();
+-				/* movabsq r11, limit */
+-				EMIT2(add_1mod(0x48, AUX_REG), add_1reg(0xB8, AUX_REG));
+-				EMIT((u32)limit, 4);
+-				EMIT(limit >> 32, 4);
++				/* mov src_reg, r11 */
++				EMIT_mov(AUX_REG, src_reg);
+ 
+ 				if (insn->off) {
+-					/* add src_reg, insn->off */
+-					maybe_emit_1mod(&prog, src_reg, true);
+-					EMIT2_off32(0x81, add_1reg(0xC0, src_reg), insn->off);
++					/* add r11, insn->off */
++					maybe_emit_1mod(&prog, AUX_REG, true);
++					EMIT2_off32(0x81, add_1reg(0xC0, AUX_REG), insn->off);
+ 				}
+ 
+-				/* cmp src_reg, r11 */
+-				maybe_emit_mod(&prog, src_reg, AUX_REG, true);
+-				EMIT2(0x39, add_2reg(0xC0, src_reg, AUX_REG));
++				/* sub r11, r10 */
++				maybe_emit_mod(&prog, AUX_REG, BPF_REG_AX, true);
++				EMIT2(0x29, add_2reg(0xC0, AUX_REG, BPF_REG_AX));
 +
-+			if (!uaddress_limit)
-+				goto next_insn;
++				/* movabsq r10, limit */
++				emit_mov_imm64(&prog, BPF_REG_AX, (long)limit >> 32,
++					       (u32)(long)limit);
 +
-+			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
-+			if (insn->off)
-+				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
-+			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
-+			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
-+			*patch++ = *insn;
-+			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
-+			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
-+
-+			cnt = patch - insn_buf;
-+			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta    += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn      = new_prog->insnsi + i + delta;
-+			goto next_insn;
-+		}
-+
- 		/* Implement LD_ABS and LD_IND with a rewrite, if supported by the program type. */
- 		if (BPF_CLASS(insn->code) == BPF_LD &&
- 		    (BPF_MODE(insn->code) == BPF_ABS ||
++				/* cmp r10, r11 */
++				maybe_emit_mod(&prog, AUX_REG, BPF_REG_AX, true);
++				EMIT2(0x39, add_2reg(0xC0, AUX_REG, BPF_REG_AX));
+ 
+-				/* if unsigned '>=', goto load */
+-				EMIT2(X86_JAE, 0);
++				/* if unsigned '>', goto load */
++				EMIT2(X86_JA, 0);
+ 				end_of_jmp = prog;
+ 
+ 				/* xor dst_reg, dst_reg */
+@@ -1862,18 +1867,6 @@ st:			if (is_imm8(insn->off))
+ 				/* populate jmp_offset for JMP above */
+ 				start_of_ldx[-1] = prog - start_of_ldx;
+ 
+-				if (insn->off && src_reg != dst_reg) {
+-					/* sub src_reg, insn->off
+-					 * Restore src_reg after "add src_reg, insn->off" in prev
+-					 * if statement. But if src_reg == dst_reg, emit_ldx
+-					 * above already clobbered src_reg, so no need to restore.
+-					 * If add src_reg, insn->off was unnecessary, no need to
+-					 * restore either.
+-					 */
+-					maybe_emit_1mod(&prog, src_reg, true);
+-					EMIT2_off32(0x81, add_1reg(0xE8, src_reg), insn->off);
+-				}
+-
+ 				if (!bpf_prog->aux->extable)
+ 					break;
+ 
 -- 
 2.40.1
 
