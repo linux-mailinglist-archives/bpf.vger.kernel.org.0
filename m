@@ -1,172 +1,248 @@
-Return-Path: <bpf+bounces-27855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389AE8B297F
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 22:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAB8E8B2985
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 22:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12BE8B2318F
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:12:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDCC9B21C54
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534BB15350B;
-	Thu, 25 Apr 2024 20:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6561153510;
+	Thu, 25 Apr 2024 20:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="gN+MnxIc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RiOZ0Y39"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BE0152E13
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 20:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F006111721;
+	Thu, 25 Apr 2024 20:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714075960; cv=none; b=kGrFmE+6HLcD0/SoRGWA6Av406eEVziB7IKDplkgW0yI7AEEb70i2IPvrgJYoBpnPzM3/wwgYs4LJxgFHBU/qL0S6+JOu0dH+27bBeic9/fCZxjyo3dSSqO3KVRXFHVbN4dm3ZVG5bUUoVjUnvPfYJziuKYR7ElaVkYJBUMtSbI=
+	t=1714076123; cv=none; b=MGkRcvJOys9Q5xO2hE2Amq8AgtChvrMXTUzU5+rKXTPBuETwPHRgFjqplrfg857DMoQnlfgW3+/mbfRTaSO/rhTkWGZNn75aQRweNw/WB93FTG4VtSSFMI0EDhlPIE9p7TA9qAwySJ7P3fnLkK+vFfERFJ3wyuCPJUiyuxpQOEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714075960; c=relaxed/simple;
-	bh=LQMNL24CL+osLBg292NUUAZjCTTOPr7F9KBHA/bQFTQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ug6DWNGQCmCUW9E9oaZPZGHE8RMBqAwWNssL5offi1Z/h4S0HjA8vVNwxWZh/Nkp78Qv1WPt55S2KSs8w0gFaXt3/bt6UfX1DO43iOVVMOzfiddZybwbsrGiP7z6wB9dXUidlMJW1KNw0m5gVFm0hiVHALeEtE9vPlZS/bo5wlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=gN+MnxIc; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CEC233F16A
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 20:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714075955;
-	bh=XQBoevb+USW2ffiD4QLRp2t0k75BnseUBr4iry6tC6k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=gN+MnxIcO9AFxc9CjgwCawhegMga+470GSd0pbcvB/R+Q6tQ52RumnJSlFZnt4STu
-	 pPKDVfygAPbs5gvwxfhytfr1G7UCFQ3C3Dz/F+GYPPWxfjM2z/O81vLEYM9EW6jg2l
-	 J8/Ga9oZQGLHWJylqTUpDgERxAs/1ueMmE0e4w8GHSMlhzQRUYQ9Ohxs3G8janQbgo
-	 oL3FiYUdEyyACW6W06s96XdxRyg9qCwVfO93hHnEo9xnG37BSx766IAULiSlN1sP3m
-	 TUQRW09sLK769EXKqrZ1SGEz8Hn+oj5TJaZ9F2LN+fkzI8hFVicRyqVgAML5vg7otA
-	 FQifcOoA6y52Q==
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a55709e5254so76601666b.3
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 13:12:35 -0700 (PDT)
+	s=arc-20240116; t=1714076123; c=relaxed/simple;
+	bh=xYGOzTpuQf6pjTCwOELSz/wvC1LVCrKnsNk0lGS7Hp0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=po5UCCmrDBl/5SdqPqokO8trcl+xt4e3rmx5RtMkFwGFThvKdtCptbQBxVMjsxv3MWYS6g1snIZLxdrphdZuqxwv5C0UN/9ITmyXUOyX9E7fhha68DKHJMWDr3B6Lp+0e2z6QCGTPQGWKn9LJyHQbKzxo989Z44tsYmfAaP8TvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RiOZ0Y39; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ed2170d89fso1794767b3a.1;
+        Thu, 25 Apr 2024 13:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714076121; x=1714680921; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BYCsbda2zu1J7DpGS9lO6SKkv8cJq4Yl/A7+mKv9cC4=;
+        b=RiOZ0Y39bnGJM9WwDaS5quBSvfCeJ4t6AtMvAWfVgV/UXjfkAMLoKP0fuT9KjFUYRH
+         0PNxPWhMQvEOJxs8rDwl6v8TD8sHw7Ia0GO8BgXMflIBb/1VNFE+ptvA2lNBZoApMMv3
+         n8L/WN8gUbwYFJ0+J6KwkPgLVBJvbLutHJ9grLN21JqcWrWHQ25lNBUG7I8n+C5QZqJB
+         qE6oTYgAC3NHNdTqf/7WwhrrH2sl30yOJ+iqC+72wIJypaWOhHwHljkU1h69VqDYnWGD
+         pmUlbVxLIVbjVgEXSK8SoPtANvSI8FSqVz43P2XViCgLseOWVJyvcoEX+HX+C6xWBW2X
+         B7XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714075955; x=1714680755;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XQBoevb+USW2ffiD4QLRp2t0k75BnseUBr4iry6tC6k=;
-        b=w/5r8t6xx00BUORFP2rfKA0U8mPAQCH9CY4q1Cm2IjAP+JewBx7iM5w/37U34xMrtJ
-         gAFBC9xCbMJ6IAQHdUNvTuUqUluDk0p1ltjN1VoXccN+xTWyPkD6S7NH2LLeVA/GBx9t
-         g0G/qUxw0MQYOtXYWIz3hDd3FDtkWjzoo75y71ZIYAjO1Rtv9j8MhdZ/khinjDFKhRxz
-         co86pciVM/jyb8Htso0mfd6579ZA27ik1m9B3vKtu1WbqxYonGiDy0fB4VkATbHrJgD0
-         iP1nmRBwQCI8qZ/a65SLRdXm8PVZ7f1EO3boYoNzO+UIu9eZ1iV3UO5XjRmx3OiN/vfC
-         CSnw==
-X-Forwarded-Encrypted: i=1; AJvYcCU8tdwygXtGevn9zCeLwmZS8gtIY7tKyHnXkXsKgB+HwLdf4wfOpoX/ldTcgTU17by8wcDIADwRJMPae22vHi+W84AC
-X-Gm-Message-State: AOJu0YxYonnmS0D70RVT65kFKJ7w+nu2yIQnj+xWVEoNu1LHylPeoa1S
-	6ZMGKqzJjW2kQQAutu7lKEBl2ro7hpHFvR8i2aXV0GnBydAucuHJ7PsL2OPdjvP3koGps7OOJH9
-	o7DakZO5HDDfbW/VfWd4jNVtpMgOCZXTJ369NpoVDWTS4p8leh6dJiB24Do4MJIbCcg==
-X-Received: by 2002:a17:906:3391:b0:a58:aa82:778d with SMTP id v17-20020a170906339100b00a58aa82778dmr465578eja.63.1714075955340;
-        Thu, 25 Apr 2024 13:12:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGdIMz095ulb0g5HF4BtTjFGYe+I2OvSiQHWWq0t8YGwnvWGcKMvzBMfvmfgP35M3ocRtkqxQ==
-X-Received: by 2002:a17:906:3391:b0:a58:aa82:778d with SMTP id v17-20020a170906339100b00a58aa82778dmr465551eja.63.1714075954779;
-        Thu, 25 Apr 2024 13:12:34 -0700 (PDT)
-Received: from localhost (host-82-49-69-7.retail.telecomitalia.it. [82.49.69.7])
-        by smtp.gmail.com with ESMTPSA id qu20-20020a170907111400b00a5242ec4573sm9813171ejb.29.2024.04.25.13.12.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 13:12:34 -0700 (PDT)
-Date: Thu, 25 Apr 2024 22:12:33 +0200
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3] selftests/bpf: Add ring_buffer__consume_n test.
-Message-ID: <Ziq5MVRnraMPzGMS@gpd>
-References: <20240425140627.112728-1-andrea.righi@canonical.com>
- <CAEf4BzYO=yo15WidtJqe_QaMrj+h7VUyufw7xN2XS0GG8Xh8fQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1714076121; x=1714680921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BYCsbda2zu1J7DpGS9lO6SKkv8cJq4Yl/A7+mKv9cC4=;
+        b=QYWVZZik2GkTAmnxkkteyrQvx/1AjVufULRPVCMRk/781IUNGvPLp5Hezu6TqgF51H
+         6iWj+cXHgiu3tka7hWB+aPDIN+KbeSgvWpdkXlNy4h10nTgEmc3ZU+XxOoQWzIuRhIv0
+         IKs0FY0Yt17Hfw7kINJ5T1vdANtMkbWuU+h5SzJ3eh49lrLF46/iBBNQtEU8HsXR1q5X
+         O69UqCrav9Vam3KQXpGXGXqxRne3xpm3Kh7dJ31Rd650d8pUtMJQJweFYlJD6K9XDmBs
+         9tVOp9W8vKG91WGnuWuCI1K+2+WMQ/3WTRsobjM7/30okWNMHwUOTbFuz6tXDjAeWY8w
+         Epzw==
+X-Forwarded-Encrypted: i=1; AJvYcCWlYe8r8X5lCdf3YjelS81Czp5OTcETK20kdSJkcGv9/0Q6EpUoUNpnb1DrNYmpm2AiFeNiZEDXaSeMqHy72jx/LPdty7ALfh6JNpVMoGyEtfrGKL2viuX3Z/ar/O+q9TudzB16xYgOoPFA2kOp4QABQiQ6M6vuLXaZpUx08C+ucCIQAg/f
+X-Gm-Message-State: AOJu0YwvtiaxaVylGV7gZs2R/xZ2Oxizd9yLsfUN65cFMizHnAoavBSh
+	iF4+i5uA9hg0GE+rXHBgdFWtwhakId0efbCUfu5T7v3eePLJrrJqMSUmcUk+4eCKJBK+tnr3/n1
+	91XCiSavF+gSUGlhyqg/cTRol40E=
+X-Google-Smtp-Source: AGHT+IG10Pr0V7SdVmulnMKJAaTui9tfB3zOWuGD/xcMwfyxG/hQ8HS2HJITy97vLhzRa21EhmsmNb4ADMI7FA3Jzk4=
+X-Received: by 2002:a17:90a:9304:b0:2af:c3ea:8122 with SMTP id
+ p4-20020a17090a930400b002afc3ea8122mr1125308pjo.7.1714076120857; Thu, 25 Apr
+ 2024 13:15:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYO=yo15WidtJqe_QaMrj+h7VUyufw7xN2XS0GG8Xh8fQ@mail.gmail.com>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2> <171318575984.254850.17464878774926779209.stgit@devnote2>
+In-Reply-To: <171318575984.254850.17464878774926779209.stgit@devnote2>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Apr 2024 13:15:08 -0700
+Message-ID: <CAEf4BzZz_4RGyam5GW6Do3Z-sCtk2Cj2D6rYyciYOcJihKdDww@mail.gmail.com>
+Subject: Re: [PATCH v9 36/36] fgraph: Skip recording calltime/rettime if it is
+ not nneeded
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 11:47:07AM -0700, Andrii Nakryiko wrote:
-> On Thu, Apr 25, 2024 at 7:06 AM Andrea Righi <andrea.righi@canonical.com> wrote:
-> >
-> > Add a testcase for the ring_buffer__consume_n() API.
-> >
-> > The test produces multiple samples in a ring buffer, using a
-> > sys_getpid() fentry prog, and consumes them from user-space in batches,
-> > rather than consuming all of them greedily, like ring_buffer__consume()
-> > does.
-> >
-> > Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > ---
-> >  tools/testing/selftests/bpf/Makefile          |  2 +-
-> >  .../selftests/bpf/prog_tests/ringbuf.c        | 64 +++++++++++++++++++
-> >  .../selftests/bpf/progs/test_ringbuf_n.c      | 47 ++++++++++++++
-> >  3 files changed, 112 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-> >
-> > ChangeLog v2 -> v3:
-> >  - move skel_n inside ringbuf_n_subtest()
-> >
-> > ChangeLog v1 -> v2:
-> >  - replace CHECK() with ASSERT_EQ()
-> >  - fix skel -> skel_n
-> >  - drop unused "seq" field from struct sample
-> >
-> 
-> [...]
-> 
-> > +       /* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
-> > +       skel_n->bss->value = SAMPLE_VALUE;
-> > +       for (i = 0; i < N_TOT_SAMPLES; i++)
-> > +               syscall(__NR_getpgid);
-> > +
-> > +       /* Consume all samples from the ring buffer in batches of N_SAMPLES */
-> > +       for (i = 0; i < N_TOT_SAMPLES; i += err) {
-> > +               err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
-> > +               ASSERT_EQ(err, N_SAMPLES, "rb_consume");
-> 
-> if something goes wrong and err is < 0, we might end up with a very
-> long loop. I changed this to:
-> 
-> if (!ASSERT_EQ(...))
->     goto cleanup_ringbuf;
-> 
-> to avoid this problem
+On Mon, Apr 15, 2024 at 6:25=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> Skip recording calltime and rettime if the fgraph_ops does not need it.
+> This is a kind of performance optimization for fprobe. Since the fprobe
+> user does not use these entries, recording timestamp in fgraph is just
+> a overhead (e.g. eBPF, ftrace). So introduce the skip_timestamp flag,
+> and all fgraph_ops sets this flag, skip recording calltime and rettime.
+>
+> Suggested-by: Jiri Olsa <olsajiri@gmail.com>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Changes in v9:
+>   - Newly added.
+> ---
+>  include/linux/ftrace.h |    2 ++
+>  kernel/trace/fgraph.c  |   46 +++++++++++++++++++++++++++++++++++++++---=
+----
+>  kernel/trace/fprobe.c  |    1 +
+>  3 files changed, 42 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index d845a80a3d56..06fc7cbef897 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -1156,6 +1156,8 @@ struct fgraph_ops {
+>         struct ftrace_ops               ops; /* for the hash lists */
+>         void                            *private;
+>         int                             idx;
+> +       /* If skip_timestamp is true, this does not record timestamps. */
+> +       bool                            skip_timestamp;
+>  };
+>
+>  void *fgraph_reserve_data(int idx, int size_bytes);
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 7556fbbae323..a5722537bb79 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -131,6 +131,7 @@ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+>  int ftrace_graph_active;
+>
+>  static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
+> +static bool fgraph_skip_timestamp;
+>
+>  /* LRU index table for fgraph_array */
+>  static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
+> @@ -475,7 +476,7 @@ void ftrace_graph_stop(void)
+>  static int
+>  ftrace_push_return_trace(unsigned long ret, unsigned long func,
+>                          unsigned long frame_pointer, unsigned long *retp=
+,
+> -                        int fgraph_idx)
+> +                        int fgraph_idx, bool skip_ts)
+>  {
+>         struct ftrace_ret_stack *ret_stack;
+>         unsigned long long calltime;
+> @@ -498,8 +499,12 @@ ftrace_push_return_trace(unsigned long ret, unsigned=
+ long func,
+>         ret_stack =3D get_ret_stack(current, current->curr_ret_stack, &in=
+dex);
+>         if (ret_stack && ret_stack->func =3D=3D func &&
+>             get_fgraph_type(current, index + FGRAPH_RET_INDEX) =3D=3D FGR=
+APH_TYPE_BITMAP &&
+> -           !is_fgraph_index_set(current, index + FGRAPH_RET_INDEX, fgrap=
+h_idx))
+> +           !is_fgraph_index_set(current, index + FGRAPH_RET_INDEX, fgrap=
+h_idx)) {
+> +               /* If previous one skips calltime, update it. */
+> +               if (!skip_ts && !ret_stack->calltime)
+> +                       ret_stack->calltime =3D trace_clock_local();
+>                 return index + FGRAPH_RET_INDEX;
+> +       }
+>
+>         val =3D (FGRAPH_TYPE_RESERVED << FGRAPH_TYPE_SHIFT) | FGRAPH_RET_=
+INDEX;
+>
+> @@ -517,7 +522,10 @@ ftrace_push_return_trace(unsigned long ret, unsigned=
+ long func,
+>                 return -EBUSY;
+>         }
+>
+> -       calltime =3D trace_clock_local();
+> +       if (skip_ts)
 
-Looks good, tested, just in case, and it works a expected.
+would it be ok to add likely() here to keep the least-overhead code path li=
+near?
 
-Thanks!
--Andrea
+> +               calltime =3D 0LL;
+> +       else
+> +               calltime =3D trace_clock_local();
+>
+>         index =3D READ_ONCE(current->curr_ret_stack);
+>         ret_stack =3D RET_STACK(current, index);
+> @@ -601,7 +609,8 @@ int function_graph_enter_regs(unsigned long ret, unsi=
+gned long func,
+>         trace.func =3D func;
+>         trace.depth =3D ++current->curr_ret_depth;
+>
+> -       index =3D ftrace_push_return_trace(ret, func, frame_pointer, retp=
+, 0);
+> +       index =3D ftrace_push_return_trace(ret, func, frame_pointer, retp=
+, 0,
+> +                                        fgraph_skip_timestamp);
+>         if (index < 0)
+>                 goto out;
+>
+> @@ -654,7 +663,8 @@ int function_graph_enter_ops(unsigned long ret, unsig=
+ned long func,
+>                 return -ENODEV;
+>
+>         /* Use start for the distance to ret_stack (skipping over reserve=
+) */
+> -       index =3D ftrace_push_return_trace(ret, func, frame_pointer, retp=
+, gops->idx);
+> +       index =3D ftrace_push_return_trace(ret, func, frame_pointer, retp=
+, gops->idx,
+> +                                        gops->skip_timestamp);
+>         if (index < 0)
+>                 return index;
+>         type =3D get_fgraph_type(current, index);
+> @@ -732,6 +742,7 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trac=
+e, unsigned long *ret,
+>         *ret =3D ret_stack->ret;
+>         trace->func =3D ret_stack->func;
+>         trace->calltime =3D ret_stack->calltime;
+> +       trace->rettime =3D 0;
+>         trace->overrun =3D atomic_read(&current->trace_overrun);
+>         trace->depth =3D current->curr_ret_depth;
+>         /*
+> @@ -792,7 +803,6 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs,=
+ unsigned long frame_pointe
+>                 return (unsigned long)panic;
+>         }
+>
+> -       trace.rettime =3D trace_clock_local();
+>         if (fregs)
+>                 ftrace_regs_set_instruction_pointer(fregs, ret);
+>
+> @@ -808,6 +818,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs,=
+ unsigned long frame_pointe
+>                         continue;
+>                 if (gops =3D=3D &fgraph_stub)
+>                         continue;
+> +               if (!trace.rettime && !gops->skip_timestamp)
 
-> 
-> > +       }
-> > +
-> > +cleanup_ringbuf:
-> > +       ring_buffer__free(ringbuf);
-> > +cleanup:
-> > +       test_ringbuf_n_lskel__destroy(skel_n);
-> > +}
-> > +
-> 
-> [...]
+In addition to the above, do you mind adding unlikely() here as well?
+
+> +                       trace.rettime =3D trace_clock_local();
+>
+>                 gops->retfunc(&trace, gops, fregs);
+>         }
+
+[...]
 
