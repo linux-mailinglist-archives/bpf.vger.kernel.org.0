@@ -1,213 +1,227 @@
-Return-Path: <bpf+bounces-27802-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2941D8B2000
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 13:13:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4FD08B2190
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:23:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF3E1C21B22
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 11:13:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E921C2209F
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 12:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8441E84E1E;
-	Thu, 25 Apr 2024 11:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0326512BF3F;
+	Thu, 25 Apr 2024 12:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W7En29Jx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AumrvGWY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6C584DE9
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 11:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C3D12BF28;
+	Thu, 25 Apr 2024 12:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714043597; cv=none; b=IFjcn5MV/lxL5NkaOZbz8V+GFx14DuJrhgubVcmrNJCMWDP4qxuP28vJly9ZaoUeTnMJjmU1EjhGus+gfUxNtcknjd3mHJSGTKaXIabk/oYHGC0/qHEbtgxyoNBa9dUFazvYVZ1hJI7C0CLtlKx9Gq7oDIIG94eIqpl9pB0/T2w=
+	t=1714047816; cv=none; b=rabdoNblXKf8t5KTG3Q9am3vAKsiZDgnhKBaUUzJQfEkiqCytDn/w/6FbMFDgKp7CBMBuY7dcE2woorbNgmGrAu2WzO6Xr1D/+0EJRVJ3Hu1yK2xIhahtIBhFmxnvSLFzV+++MkfoFhHPF1YpdE10Q8IYzvjAFrpMUhH6q543iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714043597; c=relaxed/simple;
-	bh=9KoaB6+HPDJeQljM4fsDBGLmE1iGfG/0qRUTsarWPHA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pioWWx70KPsTrUj6pp+z/CVjjeCWx3efDUeAkty5ZVZo46+zHhZTlms0JiJveSJ+/ZWFNGsjYo39bzEz1kNKW0a94HsQRUEyTBwr0cdrpDlxhVToy1sThXRj65seeYvGm0WQKGOjRGZGlP+ox0CX3ePRedyih/ypEKNWLzgH/Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W7En29Jx; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ebc92079b5so502752a34.0
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 04:13:14 -0700 (PDT)
+	s=arc-20240116; t=1714047816; c=relaxed/simple;
+	bh=f1VHBoI452sjSlBEzF3gS3BPNVPxPDbG8HPy+r6UUaU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xwg0xVepGG/kjTSPY1Iq5lMZUSNBEKwQ1TSC519nw2KNjAETzBkaXARbpkJ6GanILLy3CtEix1P47Cs/Uau53MBTlkVPo9SUmb06rvJYLAPucoPec388vRWe+JBckSOKt+WF1zOPAIXJkPSwcKdsxxmpamcUwlALP1R2kg4IAMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AumrvGWY; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41b5dc5e037so2458505e9.3;
+        Thu, 25 Apr 2024 05:23:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714043594; x=1714648394; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QsbB44EeMQGDiOFPnRm6gwdDqQTA+5PLqDVHUcWTTkw=;
-        b=W7En29Jx6Z9EtHmbC3mwB/CW+MVtkMDuAgIlrfmDF0mNGAbb+vSfK/4Xbr8SXFsHHA
-         9e8iyLlNkxni11DD0zn3bWVOJRnEMVm2EUsBJ1EK8qeAc0IWlEf+eY3ZVVsPeTiMOhmS
-         nyy5G33nPu6hJmLNpyQdAa6v1Hd+PVK4edVfJ/rNOOC4KKnp8ee82pqEl+6OizWzzX18
-         FS7alwGHkS5K7BjyZvWyv1NIUz49e7HKAdDXfTFn7XsGGXhnbIrbT2Mb5e4FafJw6AtM
-         G/ozHhOdt73pVZiZpaIC0Fles+JR2k9uEQU3LNGxV9iu1mcfCi5+RKgDuexcADg5MMdR
-         zgeA==
+        d=gmail.com; s=20230601; t=1714047813; x=1714652613; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgAuXVrMNybkJPcYd0WLC0uuf16vwsiRqZdvN8Rkecg=;
+        b=AumrvGWYseAJEGPdOyzn8EGwCltMP81+SqRpFFxs5V4LqkTK8VwBEG6a+ApsEvqZdF
+         RT4ikZQbzxhCOls5muKuYL0whazrU40ylh3WzvGL9ttZD0+Wvu01dGkxob6cEHx7cdcd
+         skrrmrmVDv9jJaQqlxYwloVdUYoZT8ov+opFvW46JWf/7KNM7RlddsAMBWPuDyKpaEb3
+         KBVen63T8ofw9TXZQjZUBIiAksp0pQcSqjoFF1uQHaZQfP0HsBhrDsmWq4Cq5D0Q52HL
+         Rfu8ETGIPQTFuvB769TaWTJrRBWgbnaLSQuNjNwa7Z61Lr3rK+OJl78Bdqj/CFOFnTJ3
+         RoGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714043594; x=1714648394;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QsbB44EeMQGDiOFPnRm6gwdDqQTA+5PLqDVHUcWTTkw=;
-        b=sin/bkMvuRXOx9TnGCW2ptTzDvrnSwa2OPkdNQ7JyAqxi2Liv9MC+pFMOOvKso08vL
-         /rIk9y9I9f4lIBzdkN8mnCBtmwnpdK3rsrPKADdxBR++vNw5NidgGwaB8AFBF0CljCgR
-         /co5QAojxyjbL6HB1f58G0KlZy0M+kASIU4s5mlTRHCH2M0dX2xkFiDbHHZarM/wht8J
-         ICKlo7Qkio5j6PmOETh9hzrt9b5vAqNpNSj+7wEDgeju6F7lU3Mcym9KMuVeZpxFNtzE
-         pxN92ImLkbrWF7wACk9yMPYnlR90jRmEYmC6SDaxsYBX/EBMP84DAA4ePPquz5X+gQqo
-         bMjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhJsogCw+jF2XtjH8TzmcXA9IsCQ4fa0Crq6x1zx0xmh/6I16lVwGpqfsMUbJz26bIyFk0J8MDO8qYhg3o4BcLkii6
-X-Gm-Message-State: AOJu0Yyfdz70tRyYa5Rxbu77QfIkKC18Vg66P/4W6X6oY17HsteDx2uI
-	ckhsg9gn5JTTUx4T9Lr6EmL6vrlCulFaFMEddR24LW8Zq0lMzPLwif7tt9Do1w==
-X-Google-Smtp-Source: AGHT+IFHNH/NdwDnqsViBBSK6fogRbB2GKz5I1kvzLPqZs/OJ7Et5KDr4OWgWersvg/dQNYVNr96aA==
-X-Received: by 2002:a05:6870:a119:b0:22e:d324:b888 with SMTP id m25-20020a056870a11900b0022ed324b888mr5826865oae.56.1714043593756;
-        Thu, 25 Apr 2024 04:13:13 -0700 (PDT)
-Received: from thinkpad ([120.60.75.221])
-        by smtp.gmail.com with ESMTPSA id fu16-20020a056a00611000b006ecca2f2a32sm12930125pfb.168.2024.04.25.04.13.06
+        d=1e100.net; s=20230601; t=1714047813; x=1714652613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AgAuXVrMNybkJPcYd0WLC0uuf16vwsiRqZdvN8Rkecg=;
+        b=eXSjCSr2VcVC1wXzyZ7+KDDDt5SlV6olzc9SxI2+anI+QyeJjNCRVBGDKeqsVAssrB
+         y8OgpFqJXE+KECuzqgZpQ8f9AIg/oX86qYVq6YgNGtl6pyvPjzYxEk46SWxdYezdLQqU
+         oIlbozPLcZXW+fJtlaFQHYkLKG3Bys4yyR5Mxug3A02yvWiXBvkfDp5NDaObWuQn9CV5
+         aTtjEE9Y3WGZBNl5XqRIBvrPR9GhrdgT2hGSAFDTBKBJ/kyqSfLA7gvW0uLFMxjza6MM
+         L8X/Ir3h+Bn7XgrhDsBxalfM7IQyBbyUReCdDzr2rBX2r/W33XkpbIDXWlrKkc4q8fls
+         nOpA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUBwA4kWYx+SaDhTQJeW3tC0ghrm62WE9colWR7dYL1VdvrLj6xX3bDILtMWZTIq6DqT6EAdc/ZW8//mBsc7zKWs+14JlVFlIIqiIokHPXbIrsb6n1CEWwp1pmx6L6E0f+5I4XMSmBKKPma+6cv+yj1sIn6BamlYq0AGOAktBH6ts3
+X-Gm-Message-State: AOJu0YyHNhLbDDAyZV3Inr40JBAXshAfoHxnk7lVyUwnmGbpZjhcTnbG
+	cB+v2XlxdreIuc4LewbXZzdfRx5vOscwWb/zISm/Tocu6HERy74x
+X-Google-Smtp-Source: AGHT+IHNUfe4CB7KmaVZi60iR9F6QyAH9AoGG86U0yXvWla4HrImUyham4a+87p9u2hCClAhsT6PuQ==
+X-Received: by 2002:a05:600c:1911:b0:41b:163:1e6a with SMTP id j17-20020a05600c191100b0041b01631e6amr3775208wmq.10.1714047812894;
+        Thu, 25 Apr 2024 05:23:32 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 2-20020a05600c26c200b0041a68d4fe61sm1492588wmv.0.2024.04.25.05.23.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 04:13:13 -0700 (PDT)
-Date: Thu, 25 Apr 2024 16:42:59 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Thu, 25 Apr 2024 05:23:32 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 25 Apr 2024 14:23:30 +0200
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org, Jason Liu <jason.hui.liu@nxp.com>
-Subject: Re: [PATCH v3 00/11] PCI: imx6: Fix\rename\clean up and add lut
- information for imx95
-Message-ID: <20240425111259.GB3449@thinkpad>
-References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
- <Zh6GHcARSmlV/QdS@lizhi-Precision-Tower-5810>
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Add ring_buffer__consume_n test.
+Message-ID: <ZipLQmwPd--EajCk@krava>
+References: <20240420155904.1450768-1-andrea.righi@canonical.com>
+ <ZiVy9bYrX-w24huD@krava>
+ <Zin12J-emVljvVrJ@gpd>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zh6GHcARSmlV/QdS@lizhi-Precision-Tower-5810>
+In-Reply-To: <Zin12J-emVljvVrJ@gpd>
 
-On Tue, Apr 16, 2024 at 10:07:25AM -0400, Frank Li wrote:
-> On Tue, Apr 02, 2024 at 10:33:36AM -0400, Frank Li wrote:
-> > Fixed 8mp EP mode problem.
+On Thu, Apr 25, 2024 at 08:19:04AM +0200, Andrea Righi wrote:
+> On Sun, Apr 21, 2024 at 10:11:33PM +0200, Jiri Olsa wrote:
+> ...
+> > >  static struct test_ringbuf_map_key_lskel *skel_map_key;
+> > > +static struct test_ringbuf_n_lskel *skel_n;
 > > 
-> > imx6 actaully for all imx chips (imx6*, imx7*, imx8*, imx9*). To avoid     
-> > confuse, rename all imx6_* to imx_*, IMX6_* to IMX_*. pci-imx6.c to        
-> > pci-imx.c to avoid confuse.                                                
+> > seems like there's no need for this to be static variable
 > 
-> 
-> Mani and lorenzo:
-> 
-> Do you have chance to look these patches?
-> 
+> Can you elaborate more? I think we want these pointers to be static to
+> limit the scope to this file, no?
 
-Sorry for the delay. Since this is a non-dwc driver, it got into my low priority
-queue. Will take a look this week.
+I meant to move it directly inside ringbuf_n_subtest function,
+I don't see reason why it's defined outside of that function
 
-- Mani
+jirka
 
-> Frank
 > 
 > > 
-> > Using callback to reduce switch case for core reset and refclk.            
+> > >  static struct test_ringbuf_lskel *skel;
+> > >  static struct ring_buffer *ringbuf;
+> > >  
+> > > @@ -326,6 +328,67 @@ static void ringbuf_subtest(void)
+> > >  	test_ringbuf_lskel__destroy(skel);
+> > >  }
+> > >  
+> > > +/*
+> > > + * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
+> > > + * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
+> > > + */
+> > > +#define N_TOT_SAMPLES	32
+> > > +#define N_SAMPLES	4
+> > > +
+> > > +/* Sample value to verify the callback validity */
+> > > +#define SAMPLE_VALUE	42L
+> > > +
+> > > +static int process_n_sample(void *ctx, void *data, size_t len)
+> > > +{
+> > > +	struct sample *s = data;
+> > > +
+> > > +	CHECK(s->value != SAMPLE_VALUE,
+> > > +	      "sample_value", "exp %ld, got %ld\n", SAMPLE_VALUE, s->value);
 > > 
-> > Add imx95 iommux and its stream id information.                            
+> > I think we should use ASSERT macros instead in the new code
+> 
+> Good catch, I'll change this to an ASSERT_EQ().
+> 
 > > 
-> > Base on linux-pci/controller/imx
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void ringbuf_n_subtest(void)
+> > > +{
+> > > +	int err, i;
+> > > +
+> > > +	skel_n = test_ringbuf_n_lskel__open();
+> > > +	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
+> > > +		return;
+> > > +
+> > > +	skel_n->maps.ringbuf.max_entries = getpagesize();
+> > > +	skel_n->bss->pid = getpid();
+> > > +
+> > > +	err = test_ringbuf_n_lskel__load(skel_n);
+> > > +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
+> > > +		goto cleanup;
+> > > +
+> > > +	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
+> > > +				   process_n_sample, NULL, NULL);
+> > > +	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
+> > > +		goto cleanup;
+> > > +
+> > > +	err = test_ringbuf_n_lskel__attach(skel_n);
+> > > +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
+> > > +		goto cleanup_ringbuf;
+> > > +
+> > > +	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
+> > > +	skel->bss->value = SAMPLE_VALUE;
 > > 
-> > To: Richard Zhu <hongxing.zhu@nxp.com>
-> > To: Lucas Stach <l.stach@pengutronix.de>
-> > To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> > To: Krzysztof Wilczyński <kw@linux.com>
-> > To: Rob Herring <robh@kernel.org>
-> > To: Bjorn Helgaas <bhelgaas@google.com>
-> > To: Shawn Guo <shawnguo@kernel.org>
-> > To: Sascha Hauer <s.hauer@pengutronix.de>
-> > To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> > To: Fabio Estevam <festevam@gmail.com>
-> > To: NXP Linux Team <linux-imx@nxp.com>
-> > To: Philipp Zabel <p.zabel@pengutronix.de>
-> > To: Liam Girdwood <lgirdwood@gmail.com>
-> > To: Mark Brown <broonie@kernel.org>
-> > To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> > To: Conor Dooley <conor+dt@kernel.org>
-> > Cc: linux-pci@vger.kernel.org
-> > Cc: imx@lists.linux.dev
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: bpf@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > skel_n ?
+> 
+> Absolutely... I'm suprised that it works actually, I guess pure luck
+> (unluck) to reuse the old pointer and have value mapped to the same
+> location. Anyway, I'll fix this.
+> 
 > > 
-> > Changes in v3:
-> > - Add an EP fixed patch
-> >   PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
-> >   PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
-> > - Add 8qxp rc support
-> > dt-bing yaml pass binding check
-> > make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,imx6q-pcie.yaml
-> >   LINT    Documentation/devicetree/bindings
-> >   DTEX    Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dts
-> >   CHKDT   Documentation/devicetree/bindings/processed-schema.json
-> >   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> >   DTC_CHK Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dtb
+> > > +	for (i = 0; i < N_TOT_SAMPLES; i++)
+> > > +		syscall(__NR_getpgid);
+> > > +
+> > > +	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
+> > > +	for (i = 0; i < N_TOT_SAMPLES; i += err) {
+> > > +		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
+> > > +		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
+> > > +	}
+> > > +
 > > 
-> > - Link to v2: https://lore.kernel.org/r/20240304-pci2_upstream-v2-0-ad07c5eb6d67@nxp.com
+> > SNIP
 > > 
-> > Changes in v2:
-> > - remove file to 'pcie-imx.c'
-> > - keep CONFIG unchange.
-> > - Link to v1: https://lore.kernel.org/r/20240227-pci2_upstream-v1-0-b952f8333606@nxp.com
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> > > new file mode 100644
+> > > index 000000000000..b98b5bb20699
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> > > @@ -0,0 +1,52 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
+> > > +
+> > > +#include <linux/bpf.h>
+> > > +#include <sched.h>
+> > > +#include <unistd.h>
+> > > +#include <bpf/bpf_helpers.h>
+> > > +#include "bpf_misc.h"
+> > > +
+> > > +char _license[] SEC("license") = "GPL";
+> > > +
+> > > +#define TASK_COMM_LEN 16
+> > > +
+> > > +struct sample {
+> > > +	int pid;
+> > > +	int seq;
 > > 
-> > ---
-> > Frank Li (7):
-> >       PCI: imx6: Rename imx6_* with imx_*
-> >       PCI: imx6: Rename pci-imx6.c to pcie-imx.c
-> >       MAINTAINERS: pci: imx: update imx6* to imx* since rename driver file
-> >       PCI: imx: Simplify switch-case logic by involve set_ref_clk callback
-> >       PCI: imx: Simplify switch-case logic by involve core_reset callback
-> >       PCI: imx: Config look up table(LUT) to support MSI ITS and IOMMU for i.MX95
-> >       PCI: imx: Consolidate redundant if-checks
-> > 
-> > Richard Zhu (4):
-> >       PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
-> >       PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
-> >       dt-bindings: imx6q-pcie: Add i.MX8Q pcie compatible string
-> >       PCI: imx6: Add i.MX8Q PCIe support
-> > 
-> >  .../bindings/pci/fsl,imx6q-pcie-common.yaml        |    5 +
-> >  .../devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   18 +
-> >  MAINTAINERS                                        |    4 +-
-> >  drivers/pci/controller/dwc/Makefile                |    2 +-
-> >  .../pci/controller/dwc/{pci-imx6.c => pcie-imx.c}  | 1173 ++++++++++++--------
-> >  5 files changed, 727 insertions(+), 475 deletions(-)
-> > ---
-> > base-commit: 2e45e73eebd43365cb585c49b3a671dcfae6b5b5
-> > change-id: 20240227-pci2_upstream-0cdd19a15163
-> > 
-> > Best regards,
-> > ---
-> > Frank Li <Frank.Li@nxp.com>
-> > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> > seq does not seem to be checked, is it needed?
+> 
+> seq is not used at all, I can definitely drop it.
+> 
+> Thanks for the review! I'll send a v2.
+> 
+> -Andrea
 
