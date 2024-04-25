@@ -1,229 +1,213 @@
-Return-Path: <bpf+bounces-27801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B328B1FD9
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 13:04:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2941D8B2000
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 13:13:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D551E1F229AE
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 11:04:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF3E1C21B22
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 11:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589622CCA0;
-	Thu, 25 Apr 2024 11:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8441E84E1E;
+	Thu, 25 Apr 2024 11:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="K7Z+HkQv"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W7En29Jx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563742263A;
-	Thu, 25 Apr 2024 11:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6C584DE9
+	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 11:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714043066; cv=none; b=F3kOXL7bN5kcrX1rNUae2/y+4BKC3o9LK1R00Y+62SwZ076XDzpjrMoY2PbdwLKR1IrQfBW37xKi4WKkpTXlD/BWfiPaa9qfyKUaMq5f9ndgDcK2DGUULCPerI/iSM2JpE7JrO84/FwdHInZKEy1oJu84HXDAeWBietgtuJpnvk=
+	t=1714043597; cv=none; b=IFjcn5MV/lxL5NkaOZbz8V+GFx14DuJrhgubVcmrNJCMWDP4qxuP28vJly9ZaoUeTnMJjmU1EjhGus+gfUxNtcknjd3mHJSGTKaXIabk/oYHGC0/qHEbtgxyoNBa9dUFazvYVZ1hJI7C0CLtlKx9Gq7oDIIG94eIqpl9pB0/T2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714043066; c=relaxed/simple;
-	bh=qUU2lUGW3Jw2ERh97QVSnIfGyRZcJGPJNkeSkF4EtUE=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=LFm5s7uR1ehwPIshHoN4X5M0dNGhLU3zKGgW2t5StKcqtAZDU8xGRMRT/HCvs9f53mkrX+KHkPJLUSMkbkr2d+XgG2jMLHdE4KdIwzpyfXfvg4R0ReY61MeTPvVMyo/2SUblLQcnwU5vaDHBzz2qthe1dIl8qEBjsxmjE8RT5GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=K7Z+HkQv; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240425110419euoutp025ea9a2841083d4c23a7df7e27a21bb82~JgRTDaocl0424104241euoutp029;
-	Thu, 25 Apr 2024 11:04:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240425110419euoutp025ea9a2841083d4c23a7df7e27a21bb82~JgRTDaocl0424104241euoutp029
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1714043059;
-	bh=rJ3fxdBvszImOr8fc5O60xKwxenFrsdLX83dTzHbe8Q=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=K7Z+HkQvdxwe9WFNQxmAMJDclz/KZS4YxtJGasrhxAeQ70lSettVglHGn0yJGPz3K
-	 p1fq/JR2M/xPa5rbmMGJBMP63C58KwhDkVG5b5ocDC1SbJNeF2gSqVgeu65dAKtHzB
-	 OZfWdxyyfwSYhVTdlAp7p+La5gY9TN8PKRN42bME=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240425110419eucas1p10f68e079a0837554528c5f55ffd1f236~JgRS0lHPt1477414774eucas1p1p;
-	Thu, 25 Apr 2024 11:04:19 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 60.70.09624.2B83A266; Thu, 25
-	Apr 2024 12:04:18 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240425110418eucas1p1ef427715fe08d9cc9eedd6e2a8798a7c~JgRSPTcDR1975319753eucas1p1n;
-	Thu, 25 Apr 2024 11:04:18 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240425110418eusmtrp2ee95972f1c88644dd0c5b54b1b42412d~JgRSM0DUY2814728147eusmtrp2m;
-	Thu, 25 Apr 2024 11:04:18 +0000 (GMT)
-X-AuditID: cbfec7f2-c11ff70000002598-66-662a38b20906
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 23.5E.08810.2B83A266; Thu, 25
-	Apr 2024 12:04:18 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240425110418eusmtip11b7f7e68f5cef9ee392ee4064342b8af~JgRR8FNcJ0822208222eusmtip1J;
-	Thu, 25 Apr 2024 11:04:18 +0000 (GMT)
-Received: from localhost (106.210.248.68) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Thu, 25 Apr 2024 12:04:17 +0100
-Date: Thu, 25 Apr 2024 13:04:12 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, Luis
-	Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, Eric
-	Dumazet <edumazet@google.com>, Dave Chinner <david@fromorbit.com>,
-	<linux-fsdevel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-s390@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<linux-mm@kvack.org>, <linux-security-module@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-	<linux-xfs@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-	<coreteam@netfilter.org>, <kexec@lists.infradead.org>,
-	<linux-hardening@vger.kernel.org>, <bridge@lists.linux.dev>,
-	<lvs-devel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<rds-devel@oss.oracle.com>, <linux-sctp@vger.kernel.org>,
-	<linux-nfs@vger.kernel.org>, <apparmor@lists.ubuntu.com>
-Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
- of sysctl handlers
-Message-ID: <20240425110412.2n5d27smecfncsfa@joelS2.panther.com>
+	s=arc-20240116; t=1714043597; c=relaxed/simple;
+	bh=9KoaB6+HPDJeQljM4fsDBGLmE1iGfG/0qRUTsarWPHA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pioWWx70KPsTrUj6pp+z/CVjjeCWx3efDUeAkty5ZVZo46+zHhZTlms0JiJveSJ+/ZWFNGsjYo39bzEz1kNKW0a94HsQRUEyTBwr0cdrpDlxhVToy1sThXRj65seeYvGm0WQKGOjRGZGlP+ox0CX3ePRedyih/ypEKNWLzgH/Mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W7En29Jx; arc=none smtp.client-ip=209.85.210.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ebc92079b5so502752a34.0
+        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 04:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714043594; x=1714648394; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QsbB44EeMQGDiOFPnRm6gwdDqQTA+5PLqDVHUcWTTkw=;
+        b=W7En29Jx6Z9EtHmbC3mwB/CW+MVtkMDuAgIlrfmDF0mNGAbb+vSfK/4Xbr8SXFsHHA
+         9e8iyLlNkxni11DD0zn3bWVOJRnEMVm2EUsBJ1EK8qeAc0IWlEf+eY3ZVVsPeTiMOhmS
+         nyy5G33nPu6hJmLNpyQdAa6v1Hd+PVK4edVfJ/rNOOC4KKnp8ee82pqEl+6OizWzzX18
+         FS7alwGHkS5K7BjyZvWyv1NIUz49e7HKAdDXfTFn7XsGGXhnbIrbT2Mb5e4FafJw6AtM
+         G/ozHhOdt73pVZiZpaIC0Fles+JR2k9uEQU3LNGxV9iu1mcfCi5+RKgDuexcADg5MMdR
+         zgeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714043594; x=1714648394;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QsbB44EeMQGDiOFPnRm6gwdDqQTA+5PLqDVHUcWTTkw=;
+        b=sin/bkMvuRXOx9TnGCW2ptTzDvrnSwa2OPkdNQ7JyAqxi2Liv9MC+pFMOOvKso08vL
+         /rIk9y9I9f4lIBzdkN8mnCBtmwnpdK3rsrPKADdxBR++vNw5NidgGwaB8AFBF0CljCgR
+         /co5QAojxyjbL6HB1f58G0KlZy0M+kASIU4s5mlTRHCH2M0dX2xkFiDbHHZarM/wht8J
+         ICKlo7Qkio5j6PmOETh9hzrt9b5vAqNpNSj+7wEDgeju6F7lU3Mcym9KMuVeZpxFNtzE
+         pxN92ImLkbrWF7wACk9yMPYnlR90jRmEYmC6SDaxsYBX/EBMP84DAA4ePPquz5X+gQqo
+         bMjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWhJsogCw+jF2XtjH8TzmcXA9IsCQ4fa0Crq6x1zx0xmh/6I16lVwGpqfsMUbJz26bIyFk0J8MDO8qYhg3o4BcLkii6
+X-Gm-Message-State: AOJu0Yyfdz70tRyYa5Rxbu77QfIkKC18Vg66P/4W6X6oY17HsteDx2uI
+	ckhsg9gn5JTTUx4T9Lr6EmL6vrlCulFaFMEddR24LW8Zq0lMzPLwif7tt9Do1w==
+X-Google-Smtp-Source: AGHT+IFHNH/NdwDnqsViBBSK6fogRbB2GKz5I1kvzLPqZs/OJ7Et5KDr4OWgWersvg/dQNYVNr96aA==
+X-Received: by 2002:a05:6870:a119:b0:22e:d324:b888 with SMTP id m25-20020a056870a11900b0022ed324b888mr5826865oae.56.1714043593756;
+        Thu, 25 Apr 2024 04:13:13 -0700 (PDT)
+Received: from thinkpad ([120.60.75.221])
+        by smtp.gmail.com with ESMTPSA id fu16-20020a056a00611000b006ecca2f2a32sm12930125pfb.168.2024.04.25.04.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 04:13:13 -0700 (PDT)
+Date: Thu, 25 Apr 2024 16:42:59 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org, Jason Liu <jason.hui.liu@nxp.com>
+Subject: Re: [PATCH v3 00/11] PCI: imx6: Fix\rename\clean up and add lut
+ information for imx95
+Message-ID: <20240425111259.GB3449@thinkpad>
+References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
+ <Zh6GHcARSmlV/QdS@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="q23ui2gu4xgkiues"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240424201234.3cc2b509@kernel.org>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSbUyTVxTHvc9bC0nNQ0G4gkiGwKabMJJ9uA4EZ1zy8GGMJWwu+gErPLxs
-	0JpWJtvChIAoLawdzEGrSBFExktrSqkIU0hHioBraUBXGWOOgZG3Dak4oYCjPLiZ7Nvv/M//
-	3HP+yeXjwgnKn58hPslKxaLMYMqTMFmWrHsNaE/qm0XKKJRv0ZLI2dNLIVOtAkOrN87iyGgZ
-	A2jSMs5DdxRZqHNgEUODpq9JZPjjHol+uNlHoEv6JYCGOi5SaKz5OYkGuwdINNymI9BDcymB
-	TM5CCqlqCnA0qZ0h0XzJOIV69D8RqGOlnYdczx5iyPX3GokKqhdw5FBNAmTR+iKVrp9A1lYn
-	eWAncyHPTjD9lyGjNWQzhsZiijEslPGY1rrTzKNWNWBslTWAuef4jWDmXLcxZrB+lmKchp2M
-	UmHhJQiOeEansJkZn7HSiJhjnukXHDPYiQ7/HFXbIyIPXPOVAw8+pN+C57sLgRx48oV0A4Bn
-	jXaCK54AOPXrA5wrnAA2WW3Ei5F85xDGNa4CePcbI/WvS72Sh7ldQtoI4LwduZmgQ2FDi5Jy
-	M0W/AW2zo7ibfegQWNiq3tiH03YefLJqJ90Nb/oYNF4pB24W0AfgnfYfCY69YJ96YoNxOgdW
-	LPWv+/nrHACvrvHdsgcdCTvaR0nu0mBYWlmFcZwL+40jmzzvCVsu7eD4EGyou8jj2BtO9xo3
-	eQd8fqN6IyWkywHsWpvncUUTgPX5i5svRcHC4YnNiXegTW/bOAjSW6Fjzou7cyssM1XgnCyA
-	54qEnDsMNo3NEiqwS/NSMs1LyTT/JePkcOg4/y31P/l1WF8zg3O8H+p0fxFawGsEfmy2LCuN
-	lUWK2VPhMlGWLFucFp4syTKA9c8/sNa70A6qph+HmwHGB2YQsj48fq1pEPgTYomYDfYR3H/8
-	WqpQkCL6/AtWKkmSZmeyMjMI4BPBfoLQlCBWSKeJTrKfsuwJVvqii/E9/POw6OXup7x8mzSw
-	sLOmWe4hTzhNLu73KFbsdoWxu4K6vOKPZoj1S9tnW7AtatWhnM645k/yj+cmz2VGx277ZVFz
-	vILeEpfceBdP3Jdb02WmYxqWyo72qLrjRyISg4bOte2+fep3v5jpTL/S93M+fDf2/ojxgbUp
-	paItSlPpFy9VDseO67dFWAtmq1vWPgh5zzsjkHrFd/vN69TTg8rwZ2m3imoRvyfBuLd+uHFK
-	Xnc9sTwy3lCkPrxSOpqUlP7n97Yzip6I6KpJ7eRHhsC4rDnJ8lfmWz9/7BKeefXt76pKYiSu
-	oGVDSJ/2ssi0Klb5VOmmavcd5B2RA2mqoqQ4NCzgS2UwIUsXRe7BpTLRPzckkEB3BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSf1DTdRjH++z7Y4Pa3beN6afFed6Cs2ROhgw/65Dzus6+7TrjzuyushtL
-	v4LGNtrAUzsNbiDEJGb6ByzSEWgTY9Y2aQzLWjaEKcwTCAOxo0Ye6AlsCLuN1cbq8q7/Xvd+
-	nvf7ee65h4PxqkghZ5+mnNFpVKUiMhX3xXrvbLCj9Xuzh4Z5qMprIVDwai+JutqMLLTcXYsh
-	p3cCoIB3ko2uG9Wox7fAQv6uTwhk/32EQJe/68PR6YthgG65W0g08dVfBPL/4CPQ0CUbjqY8
-	DTjqClaTyNRqwFDAMkOg2eOTJLp68QaO3FEXG0WWplgoshgjkOHMPIZGTQGAvJZVyGTrx9GA
-	I0hsXUN/VnkTp/u/gLTFXkHbOz4mafv8p2za0f4Rfc/RDOjBplZAj4zexekHkWss2n/uPkkH
-	7WvoRqOXXch9W5Kv01aUM2tLtPryLaJ3pChHIpUjSU6uXCLdtPndF3Nkoo0F+XuY0n0HGN3G
-	giJJyYJtgF3mEh6cDg2ASmBbVQ9SOJDKhVXBW6x6kMrhUWcBtD60sJOFdPhNaJhIMh9GR+rJ
-	BPOoOQDdM1lJgxPAwfMTK004lQmtnY0rTSQlhoP3x7EEp1EZsNrRjCcMGHWTDaM1npUJfKoI
-	Os+eBAnmUlvhdddPeDK1F8D6tpNEsvA07Gv+A08wRh2AodGeOHPi/Cz8MsZJyCmUFLpd4/9s
-	KoINTZ+zknwEBpengAnwzY8lmR9LMv+XlJTFsPvSOPk/OQuea53BkrwF2mwPcQtgd4A0pkKv
-	LlbrpRK9Sq2v0BRLdmvVdhD/vy5v2OECp6fnJB7A4gAPyIg7J7++4AdCXKPVMKI07u255/fy
-	uHtUhw4zOq1SV1HK6D1AFj/jCUwo2K2NP7OmXCnNy5ZJc/Pk2TJ53ibRau6rZXUqHlWsKmfe
-	Z5gyRvevj8VJEVayWqqf9A07ozWvHY99H/ArcAFbIrsb1owpDQv4dIbbn/ZewNlYE67acKPB
-	+mOH+QNNZMjzRHR2zPHhUlT9VlHglGRiyBXZWXfUeyd2RVbJEfTlGRU/7z/2yG9QjqtbjIfN
-	XF4qVvjnmOCaboLvlm+ff5l3sFb8ZnTttvP9hpewLOv8zsyhQFtqRzro2SxQiS4UrAs9xxIr
-	fqtd111YufqInTxlFR/dtcP8iwkpiF9PfLvIezDrLTb6d9UZOqvbD11Rhk3Zz2xz8DpvLw4+
-	ivIdxL3LO5a4bwhCTem+5WNt20PAkUllk/vVyvb8KqPiBXQmT/7UqC2n7ZXRMHxdhOtLVNL1
-	mE6v+hu4sk0VFAQAAA==
-X-CMS-MailID: 20240425110418eucas1p1ef427715fe08d9cc9eedd6e2a8798a7c
-X-Msg-Generator: CA
-X-RootMTR: 20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db
-References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
-	<CGME20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db@eucas1p1.samsung.com>
-	<20240424201234.3cc2b509@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zh6GHcARSmlV/QdS@lizhi-Precision-Tower-5810>
 
---q23ui2gu4xgkiues
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 16, 2024 at 10:07:25AM -0400, Frank Li wrote:
+> On Tue, Apr 02, 2024 at 10:33:36AM -0400, Frank Li wrote:
+> > Fixed 8mp EP mode problem.
+> > 
+> > imx6 actaully for all imx chips (imx6*, imx7*, imx8*, imx9*). To avoid     
+> > confuse, rename all imx6_* to imx_*, IMX6_* to IMX_*. pci-imx6.c to        
+> > pci-imx.c to avoid confuse.                                                
+> 
+> 
+> Mani and lorenzo:
+> 
+> Do you have chance to look these patches?
+> 
 
-On Wed, Apr 24, 2024 at 08:12:34PM -0700, Jakub Kicinski wrote:
-> On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Wei=DFschuh wrote:
-> > The series was split from my larger series sysctl-const series [0].
-> > It only focusses on the proc_handlers but is an important step to be
-> > able to move all static definitions of ctl_table into .rodata.
->=20
-> Split this per subsystem, please.
-It is tricky to do that because it changes the first argument (ctl*) to
-const in the proc_handler function type defined in sysclt.h:
-"
--typedef int proc_handler(struct ctl_table *ctl, int write, void *buffer,
-+typedef int proc_handler(const struct ctl_table *ctl, int write, void *buf=
-fer,
-                size_t *lenp, loff_t *ppos);
-"
-This means that all the proc_handlers need to change at the same time.
+Sorry for the delay. Since this is a non-dwc driver, it got into my low priority
+queue. Will take a look this week.
 
-However, there is an alternative way to do this that allows chunking. We
-first define the proc_handler as a void pointer (casting it where it is
-being used) [1]. Then we could do the constification by subsystem (like
-Jakub proposes). Finally we can "revert the void pointer change so we
-don't have one size fit all pointer as our proc_handler [2].
+- Mani
 
-Here are some comments about the alternative:
-1. We would need to make the first argument const in all the derived
-   proc_handlers [3]=20
-2. There would be no undefined behavior for two reasons:
-   2.1. There is no case where we change the first argument. We know
-        this because there are no compile errors after we make it const.
-   2.2. We would always go from non-const to const. This is the case
-        because all the stuff that is unchanged in non-const.
-3. If the idea sticks, it should go into mainline as one patchset. I
-   would not like to have a void* proc_handler in a kernel release.
-4. I think this is a "win/win" solution were the constification goes
-   through and it is divided in such a way that it is reviewable.
+> Frank
+> 
+> > 
+> > Using callback to reduce switch case for core reset and refclk.            
+> > 
+> > Add imx95 iommux and its stream id information.                            
+> > 
+> > Base on linux-pci/controller/imx
+> > 
+> > To: Richard Zhu <hongxing.zhu@nxp.com>
+> > To: Lucas Stach <l.stach@pengutronix.de>
+> > To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > To: Krzysztof Wilczyński <kw@linux.com>
+> > To: Rob Herring <robh@kernel.org>
+> > To: Bjorn Helgaas <bhelgaas@google.com>
+> > To: Shawn Guo <shawnguo@kernel.org>
+> > To: Sascha Hauer <s.hauer@pengutronix.de>
+> > To: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > To: Fabio Estevam <festevam@gmail.com>
+> > To: NXP Linux Team <linux-imx@nxp.com>
+> > To: Philipp Zabel <p.zabel@pengutronix.de>
+> > To: Liam Girdwood <lgirdwood@gmail.com>
+> > To: Mark Brown <broonie@kernel.org>
+> > To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> > To: Conor Dooley <conor+dt@kernel.org>
+> > Cc: linux-pci@vger.kernel.org
+> > Cc: imx@lists.linux.dev
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: bpf@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > 
+> > Changes in v3:
+> > - Add an EP fixed patch
+> >   PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
+> >   PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
+> > - Add 8qxp rc support
+> > dt-bing yaml pass binding check
+> > make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,imx6q-pcie.yaml
+> >   LINT    Documentation/devicetree/bindings
+> >   DTEX    Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dts
+> >   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+> >   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+> >   DTC_CHK Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dtb
+> > 
+> > - Link to v2: https://lore.kernel.org/r/20240304-pci2_upstream-v2-0-ad07c5eb6d67@nxp.com
+> > 
+> > Changes in v2:
+> > - remove file to 'pcie-imx.c'
+> > - keep CONFIG unchange.
+> > - Link to v1: https://lore.kernel.org/r/20240227-pci2_upstream-v1-0-b952f8333606@nxp.com
+> > 
+> > ---
+> > Frank Li (7):
+> >       PCI: imx6: Rename imx6_* with imx_*
+> >       PCI: imx6: Rename pci-imx6.c to pcie-imx.c
+> >       MAINTAINERS: pci: imx: update imx6* to imx* since rename driver file
+> >       PCI: imx: Simplify switch-case logic by involve set_ref_clk callback
+> >       PCI: imx: Simplify switch-case logic by involve core_reset callback
+> >       PCI: imx: Config look up table(LUT) to support MSI ITS and IOMMU for i.MX95
+> >       PCI: imx: Consolidate redundant if-checks
+> > 
+> > Richard Zhu (4):
+> >       PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
+> >       PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
+> >       dt-bindings: imx6q-pcie: Add i.MX8Q pcie compatible string
+> >       PCI: imx6: Add i.MX8Q PCIe support
+> > 
+> >  .../bindings/pci/fsl,imx6q-pcie-common.yaml        |    5 +
+> >  .../devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   18 +
+> >  MAINTAINERS                                        |    4 +-
+> >  drivers/pci/controller/dwc/Makefile                |    2 +-
+> >  .../pci/controller/dwc/{pci-imx6.c => pcie-imx.c}  | 1173 ++++++++++++--------
+> >  5 files changed, 727 insertions(+), 475 deletions(-)
+> > ---
+> > base-commit: 2e45e73eebd43365cb585c49b3a671dcfae6b5b5
+> > change-id: 20240227-pci2_upstream-0cdd19a15163
+> > 
+> > Best regards,
+> > ---
+> > Frank Li <Frank.Li@nxp.com>
+> > 
 
-I would really like to hear what ppl think about this "heretic"
-alternative. @Thomas, @Luis, @Kees @Jakub?
-
-Best
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux.git=
-/commit/?h=3Djag/constfy_treewide_alternative&id=3D4a383503b1ea650d4e12c1f5=
-838974e879f5aa6f
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux.git=
-/commit/?h=3Djag/constfy_treewide_alternative&id=3Da3be65973d27ec2933b9e81e=
-1bec60be3a9b460d
-[3] proc_dostring, proc_dobool, proc_dointvec....
-
---
-
-Joel Granados
-
---q23ui2gu4xgkiues
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYqOKsACgkQupfNUreW
-QU/lvAv/UMzbQzEuf2B53UY+EsWY1fAFwgTvC3thgwkdPKHKmQPe29eut0B+tDCl
-ap0WjtDKSGfPOt/B1vZsxRAwLbtqQSX37nUsrtDtalsL3pFou2puYoIjP4gz2EHw
-gIOwPG9y1kNEVips8pa+3xCLw7PkyFGjLWe1JDKZK68IRfE71kbNPOBY5UW52VMm
-BEpao/WdI70J5QU0HgrmPJiT60I/kd64RWlbdnsT9LM/F1jGYQoyPelwD5LExTJJ
-jvIK1/D3CxVCymEpga7rOczo7KyCpllfAEPDI79B5rQpdC2Z4Rk4QG1I9C21mEEt
-cCQQEPqYdbCMjhg3/bnobMujv5m+HWZRan9lJJdu32JDVlNqLXMfdDc7IEdU0SrI
-zMHYaLGQ2CxS8WP6jOWib26TuJSWVJp+FbjeMnBisKScXti/6UuH5NH8GBNYHlP+
-YGS6/xkrsDyU7LJRmF26m8xqNX0KaYdKZYh5oxmZMPDraKi/W7xEgmu3h0/EMF7q
-1i0OThmt
-=dvhR
------END PGP SIGNATURE-----
-
---q23ui2gu4xgkiues--
+-- 
+மணிவண்ணன் சதாசிவம்
 
