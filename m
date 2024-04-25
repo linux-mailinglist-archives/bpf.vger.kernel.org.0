@@ -1,179 +1,286 @@
-Return-Path: <bpf+bounces-27831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265238B274E
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 19:12:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDA78B276D
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 19:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 904721F22949
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 17:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B459C1C24283
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 17:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B2E14EC46;
-	Thu, 25 Apr 2024 17:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E499C14E2F3;
+	Thu, 25 Apr 2024 17:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKzcmQDy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mcbg9PHG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF9614E2FF
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 17:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FF514D718;
+	Thu, 25 Apr 2024 17:15:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065086; cv=none; b=ONyZ4mwokuJHXLO1CliCfAo+FJUzULj90QoTPhPImfFJcjcWzUfeXEJ3TVSvlOCIyX6Vz+MvQhCEj6RWz1Toa30YjE8yEyH3lfXoPrKNYGXu+5s/x5ihJEVucC/RFefG1gESzi2D2hZjzwDZAsGgeYJIi48ExDNp1+0yfyy8M2c=
+	t=1714065328; cv=none; b=U48KlzWleczYMG5SWYWgntlweldu1vtBfpSYjMGPFAhfPf58duYFjDpar9zD9vin1iKNXDUBnyfi23he2F5OaJjHCO2W7vxEqP3J9ddrvzX4sR9iUGUycevU4OZ3z9cdmHcALni/AaBTICwTcJh8+Kh2OaV3v73wwNOE/1+UiiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714065086; c=relaxed/simple;
-	bh=JMMmwrrOhhCfFJ6KLtClqx/CvhK6AvwRG+C8O70wHWo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lbexwhLIzf8ugco8iVWdM+mF2do1/zj85vm2I5efthfppK/sRCspDhdcyqNKCBke8W8p25RcnSk89nN4kdhv1bMKB2DlzaW4QQZ+KKDRazqGZ+OXr2/fGwPEb/5/NAztdkoH8ACZi58H5NqXSSMVAJagkoCFb24GlpA/IW8+FOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKzcmQDy; arc=none smtp.client-ip=209.85.128.169
+	s=arc-20240116; t=1714065328; c=relaxed/simple;
+	bh=2xQDR6NFZCtXF7RpfS+uji8N/vLY4TVqhQZO8U0feO8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NtA1NPWLlqtOJcGPQwj45yD6LbfUfz2EdADEjyHnj2QKz9aYQ0Ff2S4+YluA/idA+QzJZROnSgimJE3BdeJ637mFVsahz5cb2UWIDbUvwgwErkwehRqHsANvtQs3yEx8KUy/1LUSn+sf1XmQpyZ/bskzG6l682MVfZ/5KKcr9NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mcbg9PHG; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-61587aa9f4cso13908397b3.3
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 10:11:24 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51aa6a8e49aso1528095e87.3;
+        Thu, 25 Apr 2024 10:15:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714065084; x=1714669884; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mf0J1PvSlBP5SVH+YOWD06JHEUZJUIDI6RLy3kR2tmA=;
-        b=JKzcmQDyUH8VI1BtoXaiCqXuFGBwfMztTj/7D94IvGJA5o6vle5fFsZuIE3fMnM/UE
-         wbZHcwEQtaZ7loDZbUSaAS6tTLry2HTEYcRy5o3tXsF5rRNves4ckfqH5I913qrt52J1
-         JLVyBMfjHdtyDqlRvd5h79ic78vIl7gI0LiDuIYY1EZsiv3/iJyOfiXZv8R2wD4Pnzhm
-         eU4VJSvbk7cJk0q2qurPMYPOmekoDQYe+pA9CdqFEM33unvQ772/DSOTaPOx7eK/u89H
-         my/2v88S5dmfPUiGwdBjERcbAK9CVnrfhbcm44H+t/+YNmsNPKuFOdNO6lN85NQUJ5wR
-         R8oQ==
+        d=gmail.com; s=20230601; t=1714065325; x=1714670125; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDfFIP9QiMHYxpbImeHAGt5krbC7PZbjLfYtRfH7qbA=;
+        b=mcbg9PHGaRGI7CgKEA+WcLqm/p4uALGiPFbk4vbRJb+VI92Mr0quZsdRbE7AF/uOSs
+         rSrir14+vFwS8fkO5DOz6MCJzkT2jZp7FYCuhTiSYz9T+cz+O4PjWXDsgosJhL2TlZ7q
+         zyFX9MQxb9tiViWjS5J60JWpnfJ1lL8L4KZXR7GRz1mIdu3gywp++stIonXnFAVFpMfF
+         FuPloKVmtJpGFYIZXIYLMstI1X/y9BRPD5fc2odlsIzjMPfWjDxsLwsv8InuEwpMw9at
+         AgUH8kUnqbBEmiAT++0wjemjFudUYP1LEda8q1TMsiaZu/cVQVh1Rzdj6Mgnyh7ah4YL
+         LVLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714065084; x=1714669884;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mf0J1PvSlBP5SVH+YOWD06JHEUZJUIDI6RLy3kR2tmA=;
-        b=fF10kQiq6LbYDpHvygLnkhCjkcIWQW1qcHj+1V0kqnq0KMzhRgKQX7CQb0mqWPBNPW
-         hO1LwFiz8hsgU1W42EOUpK6/hSnK12ifeVSmelCjYce7QxRDTEbVXPcK0OwUumTR/Faa
-         Ylk0bsQEJmgaxAvZqUOEX1UwaJyNfeA5ZqYl5CChMUraoOnSYY8FC/RY8yv2wpJuzt5i
-         gXfLoiyKClIkSwwtgKSsaeUa7pZEyAgxKbMZncInbWI0L6YbSkc+BfDohoTXjrpsW7Zs
-         mKRAT07B6toqm8AnxKPj4JZAnvt6EdzS6JMP3xayh1xF6y+SYowOWuetBMDYWR4Gn2mS
-         fB1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXbGjJKBDOQc2vW8MwTrhv7qPd8UBSLselksKpatW1rhBb2xZBK/yD8Z2u+nw3pjWpzr52aXC3+Jd+2wutGUFgyROn6
-X-Gm-Message-State: AOJu0YzU3lz3z8YN6xio9HojL0tXd6U4ID7KVx+Mrca/l61Suz2i2Mzp
-	qwJC0uUQzFpRoFjV0b967ug/DdIKcDyqwv7cF7a0Wp9p/tvYLl8S
-X-Google-Smtp-Source: AGHT+IFlJ/1inUPVBHNNDDfuGzdoT+VBjQQgrVhKejO+UfhhRSnb28Cfmni1zPZmfBIGqR5c+baapg==
-X-Received: by 2002:a05:690c:6f84:b0:60a:576:7b79 with SMTP id je4-20020a05690c6f8400b0060a05767b79mr93425ywb.41.1714065084054;
-        Thu, 25 Apr 2024 10:11:24 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:ecc1:7924:c821:d1f5? ([2600:1700:6cf8:1240:ecc1:7924:c821:d1f5])
-        by smtp.gmail.com with ESMTPSA id o4-20020a81ef04000000b00617c48add4csm3586017ywm.73.2024.04.25.10.11.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 10:11:23 -0700 (PDT)
-Message-ID: <5cc41b30-86ff-4f44-aee7-05dd444574f6@gmail.com>
-Date: Thu, 25 Apr 2024 10:11:22 -0700
+        d=1e100.net; s=20230601; t=1714065325; x=1714670125;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JDfFIP9QiMHYxpbImeHAGt5krbC7PZbjLfYtRfH7qbA=;
+        b=StFOAeeNBbZS0dExrv4ZBvW5K9A+g8gEDh2IfSu+yl7UxrNU2OiD+ugldltDqfZSKM
+         6G/jh6PS4oSSarSszTPVOolts6Z0ZuaaEado83CieMtY9vFvLoz+gEu3KU4716L2naPz
+         23xRoIDh4YxKrzLKI2o9DZVHWksdQfA5SiSLLEVow13wXB6cz3y3ZB0e71J6r1cnwukI
+         +RSjMy5LUq7aXHFFsL5BMHB9Q7oFqFLh4jQaTbEuBQgsonKGSbSMWG7QvUnH/mYvEf1F
+         KETvk3ZTgQtjML6x99SwwlA97iXc7f61tKQvcdLKPs7NxG88gzaMxgavRs4vzvg72k/Z
+         70gA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWd7v+aTtOZhJrRHwV9NbjePqO6dpNvMRqy7s18VTZK/M+5Zn89nlmLBR+BkfauQ7MSu1BEPK544em5JWDpU/v/M/x7hZtaVckjWaCw6ew1jfebFeNgU4ltgNILLZ/bRItE/q483mo4pMAIyHG4+IFvJ9k2sgesBhVx+lMwqp7y0m7
+X-Gm-Message-State: AOJu0YwNmi53inPtJ8hfgdtn2fSuC5EwtEPPSKIlW6dKbAfI9mxNOymv
+	XpGPh9MUZy+DSnZVbd5ap0Cr3gVFM+BoP/MfgrGo/0dXzekNFYtW
+X-Google-Smtp-Source: AGHT+IElR1C/Z2Be7tJG3CYWLnhU8+BKLNDALkpbBtJNqpLWZEpJsf2yzO8L//p9AuofBMVszJ8+jQ==
+X-Received: by 2002:a05:6512:3606:b0:51b:400a:7d8d with SMTP id f6-20020a056512360600b0051b400a7d8dmr3838768lfs.68.1714065324325;
+        Thu, 25 Apr 2024 10:15:24 -0700 (PDT)
+Received: from krava ([2a00:102a:4022:13b8:3d99:aea7:b18a:a8d7])
+        by smtp.gmail.com with ESMTPSA id h8-20020aa7c948000000b0057204902580sm5147729edt.48.2024.04.25.10.15.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 10:15:23 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 25 Apr 2024 19:15:20 +0200
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3] selftests/bpf: Add ring_buffer__consume_n test.
+Message-ID: <ZiqPqEIBNEwPO2Am@krava>
+References: <20240425140627.112728-1-andrea.righi@canonical.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/2] bpf: enable the "open" operator on a pinned
- path of a struct_osp link.
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, andrii@kernel.org, kuifeng@meta.com,
- bpf@vger.kernel.org, ast@kernel.org, song@kernel.org, kernel-team@meta.com
-References: <20240417002513.1534535-1-thinker.li@gmail.com>
- <20240417002513.1534535-2-thinker.li@gmail.com>
- <8dadfcc9-1f6a-4b93-951b-548e4560ce5a@linux.dev>
- <0326d150-6b43-465c-ba43-7e7033b13408@gmail.com>
- <70bf97a6-19d8-4a26-8879-17db7c44a2cc@gmail.com>
- <54f32ade-ec17-4c35-b993-44907111e7ca@linux.dev>
- <696735aa-59e1-4750-814e-216b85fe934b@gmail.com>
- <68ae7e9c-3bd7-4370-ab06-6e787ca27340@linux.dev>
- <CAEf4BzbOgGVVcWhydbgSGAeDcPjuumMxVZgU_ak4JUFns_YwRQ@mail.gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzbOgGVVcWhydbgSGAeDcPjuumMxVZgU_ak4JUFns_YwRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425140627.112728-1-andrea.righi@canonical.com>
 
-
-
-On 4/24/24 17:17, Andrii Nakryiko wrote:
-> On Tue, Apr 23, 2024 at 5:29 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 4/23/24 10:16 AM, Kui-Feng Lee wrote:
->>>
->>>
->>> On 4/22/24 16:43, Martin KaFai Lau wrote:
->>>> On 4/22/24 10:30 AM, Kui-Feng Lee wrote:
->>>>>
->>>>>
->>>>> On 4/22/24 10:12, Kui-Feng Lee wrote:
->>>>>>
->>>>>>
->>>>>> On 4/19/24 17:05, Martin KaFai Lau wrote:
->>>>>>> On 4/16/24 5:25 PM, Kui-Feng Lee wrote:
->>>>>>>> +int bpffs_struct_ops_link_open(struct inode *inode, struct file *filp)
->>>>>>>> +{
->>>>>>>> +    struct bpf_struct_ops_link *link = inode->i_private;
->>>>>>>> +
->>>>>>>> +    /* Paired with bpf_link_put_direct() in bpf_link_release(). */
->>>>>>>> +    bpf_link_inc(&link->link);
->>>>>>>> +    filp->private_data = link;
->>>>>>>> +    return 0;
->>>>>>>> +}
->>>>>>>> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
->>>>>>>> index af5d2ffadd70..b020d761ab0a 100644
->>>>>>>> --- a/kernel/bpf/inode.c
->>>>>>>> +++ b/kernel/bpf/inode.c
->>>>>>>> @@ -360,11 +360,16 @@ static int bpf_mkmap(struct dentry *dentry, umode_t
->>>>>>>> mode, void *arg)
->>>>>>>>    static int bpf_mklink(struct dentry *dentry, umode_t mode, void *arg)
->>>>>>>>    {
->>>>>>>> +    const struct file_operations *fops;
->>>>>>>>        struct bpf_link *link = arg;
->>>>>>>> -    return bpf_mkobj_ops(dentry, mode, arg, &bpf_link_iops,
->>>>>>>> -                 bpf_link_is_iter(link) ?
->>>>>>>> -                 &bpf_iter_fops : &bpffs_obj_fops);
->>>>>>>> +    if (bpf_link_is_iter(link))
->>>>>>>> +        fops = &bpf_iter_fops;
->>>>>>>> +    else if (link->type == BPF_LINK_TYPE_STRUCT_OPS)
->>>>>>>
->>>>>>> Open a pinned link and then update should not be specific to struct_ops
->>>>>>> link. e.g. should be useful to the cgroup link also?
->>>>>>
->>>>>> It could be. Here, I played safe in case it creates any unwanted side
->>>>>> effect for links of unknown types.
->>>>>
->>>>> By the way, may I put it in a follow up patch if we want cgroup links?
->>>>
->>>> This does not feel right. It is not struct_ops specific.
->>>>
->>>> Before we dive in further, there is BPF_OBJ_GET which can get a fd of a pinned
->>>> bpf obj (prog, map, and link). Take a look at bpf_link__open() in libbpf. Does
->>>> it work for the use case that needs to update the link?
->>>>
->>> It should work.
->>> So, this patch is not necessary. However, it is still a nice and
->>> intuitive feature. WDYT?
->>
->> There is already BPF_OBJ_GET which works for all major bpf obj types (prog, map,
->> and link). Having open only works for link and only works for one link type
->> (struct_ops) is not very convincing.
->>
->> Beside, I am not sure how the file flags (e.g. rdonly...etc) should be handled.
->> I don't know enough in this area, so I will defer to others to comment in
->> general the usefulness and the approach.
->>
->>
+On Thu, Apr 25, 2024 at 04:06:27PM +0200, Andrea Righi wrote:
+> Add a testcase for the ring_buffer__consume_n() API.
 > 
-> Didn't see this discussion before replying on the other patch. But I
-> agree with Martin, we already use the BPF_OBJ_GET method, and we don't
-> support directly open()'ing progs/maps, so I don't think we should do
-> this for links either.
+> The test produces multiple samples in a ring buffer, using a
+> sys_getpid() fentry prog, and consumes them from user-space in batches,
+> rather than consuming all of them greedily, like ring_buffer__consume()
+> does.
 > 
-> pw-bot: cr
+> Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
+> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
 
-Understand! Let's drop this patch.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+>  tools/testing/selftests/bpf/Makefile          |  2 +-
+>  .../selftests/bpf/prog_tests/ringbuf.c        | 64 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_ringbuf_n.c      | 47 ++++++++++++++
+>  3 files changed, 112 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> 
+> ChangeLog v2 -> v3:
+>  - move skel_n inside ringbuf_n_subtest()
+> 
+> ChangeLog v1 -> v2:
+>  - replace CHECK() with ASSERT_EQ()
+>  - fix skel -> skel_n
+>  - drop unused "seq" field from struct sample
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index edc73f8f5aef..6332277edeca 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -455,7 +455,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+>  LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
+>  	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
+>  	core_kern.c core_kern_overflow.c test_ringbuf.c			\
+> -	test_ringbuf_map_key.c
+> +	test_ringbuf_n.c test_ringbuf_map_key.c
+>  
+>  # Generate both light skeleton and libbpf skeleton for these
+>  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> index 48c5695b7abf..2f064d6952f0 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/perf_event.h>
+>  #include <linux/ring_buffer.h>
+>  #include "test_ringbuf.lskel.h"
+> +#include "test_ringbuf_n.lskel.h"
+>  #include "test_ringbuf_map_key.lskel.h"
+>  
+>  #define EDONE 7777
+> @@ -326,6 +327,67 @@ static void ringbuf_subtest(void)
+>  	test_ringbuf_lskel__destroy(skel);
+>  }
+>  
+> +/*
+> + * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
+> + * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
+> + */
+> +#define N_TOT_SAMPLES	32
+> +#define N_SAMPLES	4
+> +
+> +/* Sample value to verify the callback validity */
+> +#define SAMPLE_VALUE	42L
+> +
+> +static int process_n_sample(void *ctx, void *data, size_t len)
+> +{
+> +	struct sample *s = data;
+> +
+> +	ASSERT_EQ(s->value, SAMPLE_VALUE, "sample_value");
+> +
+> +	return 0;
+> +}
+> +
+> +static void ringbuf_n_subtest(void)
+> +{
+> +	struct test_ringbuf_n_lskel *skel_n;
+> +	int err, i;
+> +
+> +	skel_n = test_ringbuf_n_lskel__open();
+> +	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
+> +		return;
+> +
+> +	skel_n->maps.ringbuf.max_entries = getpagesize();
+> +	skel_n->bss->pid = getpid();
+> +
+> +	err = test_ringbuf_n_lskel__load(skel_n);
+> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
+> +		goto cleanup;
+> +
+> +	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
+> +				   process_n_sample, NULL, NULL);
+> +	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
+> +		goto cleanup;
+> +
+> +	err = test_ringbuf_n_lskel__attach(skel_n);
+> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
+> +		goto cleanup_ringbuf;
+> +
+> +	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
+> +	skel_n->bss->value = SAMPLE_VALUE;
+> +	for (i = 0; i < N_TOT_SAMPLES; i++)
+> +		syscall(__NR_getpgid);
+> +
+> +	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
+> +	for (i = 0; i < N_TOT_SAMPLES; i += err) {
+> +		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
+> +		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
+> +	}
+> +
+> +cleanup_ringbuf:
+> +	ring_buffer__free(ringbuf);
+> +cleanup:
+> +	test_ringbuf_n_lskel__destroy(skel_n);
+> +}
+> +
+>  static int process_map_key_sample(void *ctx, void *data, size_t len)
+>  {
+>  	struct sample *s;
+> @@ -384,6 +446,8 @@ void test_ringbuf(void)
+>  {
+>  	if (test__start_subtest("ringbuf"))
+>  		ringbuf_subtest();
+> +	if (test__start_subtest("ringbuf_n"))
+> +		ringbuf_n_subtest();
+>  	if (test__start_subtest("ringbuf_map_key"))
+>  		ringbuf_map_key_subtest();
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> new file mode 100644
+> index 000000000000..8669eb42dbe0
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> @@ -0,0 +1,47 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
+> +
+> +#include <linux/bpf.h>
+> +#include <sched.h>
+> +#include <unistd.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +#define TASK_COMM_LEN 16
+> +
+> +struct sample {
+> +	int pid;
+> +	long value;
+> +	char comm[16];
+> +};
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
+> +} ringbuf SEC(".maps");
+> +
+> +int pid = 0;
+> +long value = 0;
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+> +int test_ringbuf_n(void *ctx)
+> +{
+> +	int cur_pid = bpf_get_current_pid_tgid() >> 32;
+> +	struct sample *sample;
+> +
+> +	if (cur_pid != pid)
+> +		return 0;
+> +
+> +	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
+> +	if (!sample)
+> +		return 0;
+> +
+> +	sample->pid = pid;
+> +	sample->value = value;
+> +	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
+> +
+> +	bpf_ringbuf_submit(sample, 0);
+> +
+> +	return 0;
+> +}
+> -- 
+> 2.43.0
+> 
 
