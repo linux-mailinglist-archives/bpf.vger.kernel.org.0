@@ -1,153 +1,154 @@
-Return-Path: <bpf+bounces-27769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 704398B1808
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 02:29:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD8258B1814
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 02:34:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 283AF28A6B2
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 00:29:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F13A288FC0
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 00:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057021103;
-	Thu, 25 Apr 2024 00:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FAEA21;
+	Thu, 25 Apr 2024 00:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VS2+FkXu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NE+LJNrC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F90631;
-	Thu, 25 Apr 2024 00:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681187EF
+	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 00:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714004943; cv=none; b=bLqqBpSOC60xq43Yx1P+p7C8ReUHFBeJW1S1ImO0TbCjTbAUxEldwGaikIRD67LEEj4gRt4shCjf9DTE5bXGXanFlIf0uQEUscrhtGDw/I0U/TqXWLT1wzbepWNjwPDWKQYokT/weOd+aj1o1gOzHDP5fBj7QuI5G60mLDAPBZU=
+	t=1714005293; cv=none; b=PlPHBM3hvQUUmjn1QghU1j/8MUosJnZJc5RpW1kWfEPptHZyg6N4bHAzZmOyq88mJkis3jQvwwzWw5OmDKLe9wpPrj2A4Adl1g3oj4UWagzmApIgCZ6vlzJ0jdgyl+7racCxjPZa7b006cjTI2L4ZSkAjnF0pzBKh5EWIqW5gZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714004943; c=relaxed/simple;
-	bh=dfYIhluWI9VFQ+0sliYM+gC/g3orSZlMV5F8bbaGEmA=;
+	s=arc-20240116; t=1714005293; c=relaxed/simple;
+	bh=TIok/uoQ5vC18hpxJ/RIhxTcnKYHIGJJ677lq2IF2b4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H9xODm+KQKa829y6Y5Ozw2/qKSTj8m14FW24UvUuWN4CN7CyeQMCGyRpqhH539jpPRwJXODcHLHUO8Q0aeioPhWJKqJXlxtye46iVPkvLi0LGSBDlt00IZhBgE8iCHirWdT3sYBOF3qXdTVesw5KQWdiUNUq3IEz9Zm+YVRUCeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VS2+FkXu; arc=none smtp.client-ip=209.85.210.169
+	 To:Cc:Content-Type; b=ctv59pT11ISV2zNyXm+eog9xBeIzCxnxaOcFoGt+zsotqtCfPKMqgHRdVt8QzQ3FdXxa9JSSuhQQZS/r7T2+FeJqO2hHmsTUGOFz+lPlRV7/fxRIingtAHejOgDWjsfzv9l/Cu56Zqfpqf+FsCPQJSc2jDg0rjdwWORYNpakq6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NE+LJNrC; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso244953b3a.2;
-        Wed, 24 Apr 2024 17:29:02 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f00f24f761so404082b3a.3
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 17:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714004941; x=1714609741; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714005291; x=1714610091; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BBjD5Ob95OzRJ4oN6s6QCeuOKrDd2KPsOMku1YCrrZM=;
-        b=VS2+FkXuXhRiMsnNi3qPuOJXzlqpqu2Oo9sILBaWOlIAcFqgJNSVLc+o0iV2ZE3nzn
-         Rbt6BN5nmhbcBa6PishwCokxnuEfuJjqsxaX/DECYSd1V9sDzCSBVLf8Xz/H1HH8guZ8
-         twjw5W8tmqrWbo+QTdOTE9YzLvrQ8BSvBF5ViZIA3U6yyGmKGGBWN15xgvIIBNsxKVba
-         rCWQFXyc916yvZqdhxb3Cmq2I3s3vzmJNy4dMaD6Q+iFUmqv9G0kT42AZr1U/CYWa3Jf
-         d4G//aHWXXAuIxsEyUwMVRgzCiPAEMKl3k9Lp20c7bnVev/JzC1OH2JrE4/5MdS2OjfX
-         qeLQ==
+        bh=5oyeJ/6lejp7Onkl1fbpQX/IbrjKPbYMeIGbsuWpVPw=;
+        b=NE+LJNrC5e542lvn11fSvjGvs5uTfUMkmLxC4xUQrvKziDn+79x7IJ22y34/Qcil7l
+         7W5g22ksxfUKX+CS6PMCpoQ21sybzJAx6ojkU2gE8GU6vqe0WXy08F9udmVMV2/cp6PM
+         8xYqJO3pqavqULylDnRtkdBEUJb+lXoYa/0iECKTggGWVokdWh4s0ZQtR7KybiRYvT2q
+         +lHneo31hH2rPRsDLKBGjJTJLDc1iteGgN0c5NShB1q3MMKugIbf19KclKVXXBz4Xhfp
+         sj3vwyb6vJYi1EWmUfnDZMb4Nnz2C/iocK2iDbNmQT45HVjxpilLAVrtDCy3kbSBKtDF
+         KXRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714004941; x=1714609741;
+        d=1e100.net; s=20230601; t=1714005291; x=1714610091;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BBjD5Ob95OzRJ4oN6s6QCeuOKrDd2KPsOMku1YCrrZM=;
-        b=sOUhhT6hVOF0+Q2aY5Ix/kL/St03FJjQweUDsC6K7mU0hVumVDDOqbr+7OOjXsYYXM
-         O76Nfy48JgLJBTF4d577PRe7yUV/D9Nz5rbLolVtpFtAJbY2Uce7YiUZYtnpSklKq7IF
-         6Z9KmhYQUYFNvX/pxhHbkly+7jmoklVg+2cqLN7z321FSVxIDD8kMvvVa1DZNFJ66HYa
-         INOF4qEfW9rUnX7pv6RgQZoXgZu5Z8rkX3LfMHjjSveOeR+4ZF1T20vhK+/KXUyD/knR
-         hCAdaLzNpmAsXr3KySAdCRDY3yXZTumILckHqNLxpKDnRoslME6DyJnOTw9yaan3CWNF
-         D2PQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ271I2ll9lH6IQg3IASW2Eak21jc8OZLCfd0EENRG3njK/7IghlOf0P8B7pG/U0BjXmd4ToyATTfAj3MkE+CaH6D7g4O65ihRjaZEugRbM0+9PA5wcNfJWHaPLnt76jmUmUYTbVCrLzdii6Wymswph1K6ftmumi63nFEH13aS8xSQ
-X-Gm-Message-State: AOJu0YzD9rowDyuucbuz94dt9skTtRzSY4rfVdLaKtQbQuWa7hRzk2Ko
-	BGeGXiX/cN9ISibPe5dis5nP50y79IUkk8YHqzlvqn84Wcrktu2rwwjgPx5ziqS55ulClkOUYlH
-	JYAt3r15olSJVHqi6Ch3mUXRVtY0=
-X-Google-Smtp-Source: AGHT+IERSh3vqLDqkb6Kdf7/fBtvb2Q6VMXuHjz6M3uNzuIRzyS3tPf2LjcwjWCO5I0j7e1nTNDzYKEbE/+kJ2EjcPU=
-X-Received: by 2002:a05:6a21:2d85:b0:1a9:c757:a22d with SMTP id
- ty5-20020a056a212d8500b001a9c757a22dmr4633205pzb.14.1714004941537; Wed, 24
- Apr 2024 17:29:01 -0700 (PDT)
+        bh=5oyeJ/6lejp7Onkl1fbpQX/IbrjKPbYMeIGbsuWpVPw=;
+        b=TcXVuFZqCyyF/qHDeBOEU2zcYLMNxjM6jNb8vuVWKiSaDicg4iVzvtSmVZAoYqhOj+
+         EXcKMqsTASVe3AOhwZivGEiFPF+gzek1rMPgZKiH+SzeyKVG4axDVUG54IEGdaAd9LyG
+         8xQrtj2etilvyrPOJ+LbveabenusWT3U6KrJ5obT5h0UYEZNU6lQLpRA1zAnqE7pOPqf
+         GPbu9LH9v4omOep5gND01oEuuHz27vv+i2SkhC0RMaXXYKnXcMyKs376rtQcsYw0Ax1l
+         LfI9XxRqOFLMGnjurCkzHJGlEJWvS3kYijRKtg9DZK0YH3vo+BGiYjy+rMVdLdiM2PWJ
+         ne+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWIWyv1Gnhsy/e/3rdbv1pTO87sYBZo2RD1Mj14mBfQR61dmuKmEU0gG6QgjYHHKI/kcCG+pJa8jbFDPLJelHXDXGuJ
+X-Gm-Message-State: AOJu0Yw3e4xYDULv5ASEdkWMx5F5xtsOfWgXcG9NEZrUj9iVIo3bc0Zo
+	twBTHbxwnqfilZWkqbaOWjDOTLRiPFPVp0x7pEMyYEzXAIA1zG3+m5K/Ovvyz6sK1I7kIIyXwNC
+	hs+fmAUUCnXyqyqxp9sAEYqGoPhs=
+X-Google-Smtp-Source: AGHT+IGRa+BvZ8tcO5kvi3gIxUQJxxKY8SzBn9triK/KWuDvgy+qQrfN10zzYMv8mwvPH0UKiayuBalvATytQifvzl8=
+X-Received: by 2002:a05:6a20:d409:b0:1ac:e240:8668 with SMTP id
+ il9-20020a056a20d40900b001ace2408668mr4035129pzb.57.1714005291583; Wed, 24
+ Apr 2024 17:34:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org> <20240420-bpf_wq-v2-12-6c986a5a741f@kernel.org>
-In-Reply-To: <20240420-bpf_wq-v2-12-6c986a5a741f@kernel.org>
+References: <20240411131127.73098-1-laoar.shao@gmail.com> <CALOAHbCBxGbLH0+1fSTQtt3K8yXX9oG4utkiHn=+dxpKZ+64cw@mail.gmail.com>
+In-Reply-To: <CALOAHbCBxGbLH0+1fSTQtt3K8yXX9oG4utkiHn=+dxpKZ+64cw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 24 Apr 2024 17:28:49 -0700
-Message-ID: <CAEf4BzbqmrucgeXX9+Hgnhefne-go9nHYPmh_+JwuMHeNNsv-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 12/16] selftests/bpf: wq: add bpf_wq_init() checks
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+Date: Wed, 24 Apr 2024 17:34:38 -0700
+Message-ID: <CAEf4BzbynKkK_sct2WdTrF2F+RJ1tD3F6nYAew+Gq82qokgQGA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 0/2] bpf: Add a generic bits iterator
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 20, 2024 at 2:10=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
+On Thu, Apr 11, 2024 at 6:51=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
 >
-> Allows to test if allocation/free works
+> On Thu, Apr 11, 2024 at 9:11=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> >
+> > Three new kfuncs, namely bpf_iter_bits_{new,next,destroy}, have been
+> > added for the new bpf_iter_bits functionality. These kfuncs enable the
+> > iteration of the bits from a given address and a given number of bits.
+> >
+> > - bpf_iter_bits_new
+> >   Initialize a new bits iterator for a given memory area. Due to the
+> >   limitation of bpf memalloc, the max number of bits to be iterated
+> >   over is (4096 * 8).
+> > - bpf_iter_bits_next
+> >   Get the next bit in a bpf_iter_bits
+> > - bpf_iter_bits_destroy
+> >   Destroy a bpf_iter_bits
+> >
+> > The bits iterator can be used in any context and on any address.
+> >
+> > Changes:
+> > - v5->v6:
+> >   - Add positive tests (Andrii)
+> > - v4->v5:
+> >   - Simplify test cases (Andrii)
+> > - v3->v4:
+> >   - Fix endianness error on s390x (Andrii)
+> >   - zero-initialize kit->bits_copy and zero out nr_bits (Andrii)
+> > - v2->v3:
+> >   - Optimization for u64/u32 mask (Andrii)
+> > - v1->v2:
+> >   - Simplify the CPU number verification code to avoid the failure on s=
+390x
+> >     (Eduard)
+> > - bpf: Add bpf_iter_cpumask
+> >   https://lwn.net/Articles/961104/
+> > - bpf: Add new bpf helper bpf_for_each_cpu
+> >   https://lwn.net/Articles/939939/
+> >
+> > Yafang Shao (2):
+> >   bpf: Add bits iterator
+> >   selftests/bpf: Add selftest for bits iter
+> >
+> >  kernel/bpf/helpers.c                          | 120 +++++++++++++++++
+> >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
+> >  .../selftests/bpf/progs/verifier_bits_iter.c  | 127 ++++++++++++++++++
+> >  3 files changed, 249 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/verifier_bits_ite=
+r.c
+> >
+> > --
+> > 2.39.1
+> >
 >
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> It appears that the test case failed on s390x when the data is
+> a u32 value because we need to set the higher 32 bits.
+> will analyze it.
 >
-> ---
->
-> changes in v2:
-> - dropped mark_precise checks
-> ---
->  tools/testing/selftests/bpf/bpf_experimental.h  |  1 +
->  tools/testing/selftests/bpf/prog_tests/wq.c     |  8 +++
->  tools/testing/selftests/bpf/progs/wq.c          | 10 ++++
->  tools/testing/selftests/bpf/progs/wq_failures.c | 78 +++++++++++++++++++=
-++++++
->  4 files changed, 97 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-> index 3329ea080865..785b91b629be 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -470,4 +470,5 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
->  extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css=
- *it) __weak __ksym;
->  extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
->
-> +extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int fla=
-gs) __weak __ksym;
->  #endif
-> diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/=
-selftests/bpf/prog_tests/wq.c
-> index 9a07b8bc2c52..26ab69796103 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/wq.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-> @@ -2,6 +2,7 @@
->  /* Copyright (c) 2024 Benjamin Tissoires */
->  #include <test_progs.h>
->  #include "wq.skel.h"
-> +#include "wq_failures.skel.h"
->
->  void serial_test_wq(void)
->  {
-> @@ -9,3 +10,10 @@ void serial_test_wq(void)
->
->         RUN_TESTS(wq);
->  }
-> +
-> +void serial_test_failures_wq(void)
-> +{
-> +       LIBBPF_OPTS(bpf_test_run_opts, topts);
-> +
 
-unused leftover?
+Hey Yafang, did you get a chance to debug and fix the issue?
 
-> +       RUN_TESTS(wq_failures);
-> +}
-
-[...]
+>
+> --
+> Regards
+> Yafang
 
