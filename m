@@ -1,117 +1,195 @@
-Return-Path: <bpf+bounces-27816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61748B23EF
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 16:24:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894FC8B2424
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 16:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72B7D28312F
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:24:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A99161C22BB5
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFA7153510;
-	Thu, 25 Apr 2024 14:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E118F14A4FB;
+	Thu, 25 Apr 2024 14:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4hhdS0/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z/aJSmad"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E8C1534E8;
-	Thu, 25 Apr 2024 14:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5899149DF3;
+	Thu, 25 Apr 2024 14:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054779; cv=none; b=YmTuPFMGyvUjN3OBhUn1edaR3RPCOkOr0msfNF59c6uS5Df0+CrZNdL4gmCw+G1w8+Ntxa6fvS1q2UjKABt4/V5SokZdWI0DbD/3c+v1ju/3LWiM9Z+HLvq9kxtiUZmdjYfsxlh3g83erFsLAxFDSdMVlkOyLN1fHmsTmgJPx28=
+	t=1714055498; cv=none; b=Y6uOePbehr5+DnIAtO1cBXDY5RoyBLRuCewy/ymm7arEz4TpS20FN0UD+NYScVn20NBFEwjuhi3yuOays/xCCBYBBgDWhvIP88qyXMLWyK6FAvSD7gCAqnyEhDtMjwOnjAGCrGjSEnXL/OwchWzH9yP/8noeEAl18rrSc3pAAn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054779; c=relaxed/simple;
-	bh=/p9KNiZsQmUy2Vg1gCseczfp5v4YrwJ/YoZmbXRfjlM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/op640+jShSC3PNBgUnAH2aoaiGuiGDJSgASJQZp8UVhkIWNjXe85UtLqVLO24HEXvaGt0kDQp3FI8dqeBnk5fNz3cyWbOI3N0nf5a9EncTsZZngJ6BlVfB3GVSvZaPiZoaVtjLqo3gl9VQCdIj1MOdluZw5JHkaArjmzjDvWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4hhdS0/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CABE7C113CC;
-	Thu, 25 Apr 2024 14:19:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714054778;
-	bh=/p9KNiZsQmUy2Vg1gCseczfp5v4YrwJ/YoZmbXRfjlM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D4hhdS0/b8PEImEW9wO7Wi7f3tlGDUzstMXArg1CBC74HHRft4nYhaBBqyVlHiD3l
-	 YPvemyjkH3xUKJ7wipySSG8rCtb1gdTRt3CyCuw8pFLInxcVsTgtnSDZBukJ4Ce5Jx
-	 RU3mE7uAu5BlIPhlKIccvwSx1HMdBpxwG8OVsO1uuaYEYNfUJtT1mKwKipGwDXS6wH
-	 Q1EIdEDL74SANwrMYjqMavxCzS+oh2lRaQZExt7nPhFUeKxEVSWJaO6vghFX8Kvha9
-	 ZSftxvt1ndqXVgMmj5k4FBMozfe2AUfx/3xEsjHuSNxEMewrGidljpi46ny29R+NW4
-	 HWXlEeKXjw0Yg==
-Date: Thu, 25 Apr 2024 11:19:34 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Xin Liu <liuxin350@huawei.com>
-Cc: alan.maguire@oracle.com, andrii@kernel.org, arnaldo.melo@gmail.com,
-	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	dwarves@vger.kernel.org, kernel-team@fb.com,
-	ndesaulniers@google.com, yonghong.song@linux.dev, yanan@huawei.com,
-	wuchangye@huawei.com, xiesongyang@huawei.com,
-	kongweibin2@huawei.com, zhangmingyi5@huawei.com,
-	liwei883@huawei.com
-Subject: Re: [PATCH dwarves] btf_encoder: Fix dwarf int type with
- greater-than-16 byte issue
-Message-ID: <ZipmdsxjENtoRRkG@x1>
-References: <686d2f65-0d6d-43e6-83fe-a9eb2eb6149e@oracle.com>
- <20240425134340.750289-1-liuxin350@huawei.com>
+	s=arc-20240116; t=1714055498; c=relaxed/simple;
+	bh=ecmt6fSKfVNHiV7pzewakbSpUymI5dTI7iLU+un23hU=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=MJy0lLN86zT+SPfWC2pGJLXqkkRxFz4Q346EA18HsBIf6tiyS8FAnKw9QAoL5ewoSUWHiipNn7pK58E1p4KMOAuiHL9ePwsy+E0O41Udl6Oxd/Z2veduxy8vt1ATBnXPXKr9r/hVLmrqK6J7SqdiBRrX+V4DHLX/ssDRQlOFhhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z/aJSmad; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78ef59a369bso72896785a.2;
+        Thu, 25 Apr 2024 07:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714055496; x=1714660296; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jHBuZMjN5QrOr2xxJTwOccHd/HM7ozS9zvz5VbClYLs=;
+        b=Z/aJSmadDKVKhnO9bfwoVsondBhzi5rhyGB72bAwQlbRt3P04rloXoy4VJKoqRFSyz
+         S+MCQL2PPzzjFOPz7KsEs0tWsq6WwqcoWBmRZMON/efTsyHHVEVeVzGCg5VtQx39+Phi
+         94JbhwmoPGDJL1UkFS8LkrMXE4aqzxBKz8Uylp2R7esBKwrM7e+K+dJKwjeWGO+jkRMS
+         +VbibBs0bWNR8RX7aAkXLtDaVVXrCho5Cj131rliRCqqSdSyHCvyH8UkR9Wvo4KkCeXU
+         LB/OvG+HeQYBj9ECVhKPxgrteqLYXS2MTYdwc3dXLgU6bzzVrZtAgfnxHku/EiLy4UA8
+         NDGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714055496; x=1714660296;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jHBuZMjN5QrOr2xxJTwOccHd/HM7ozS9zvz5VbClYLs=;
+        b=eAXE4baJNkNTLQmDZ2Cge8g7eNFdXXIdb2g1fK8+DLAcFKGebLuzDZrTBYKbTxmOxe
+         m/YPhX4G0dkxJqc5S9m9x/tPK3yfAmHQpQr1o579TpvfFPq7l5kfjNtRdQ2GqSR2vap1
+         EoC17DBIRbF6Tf3TdgVC9BUVTCvdXNhq1UWGJ0mr/OZBsBgXhV6e565uN/7ohDrLiA04
+         wmUwOPXHtsBSC9RxRVJnVZxCHE5hHTs+t3pIzRUBEC1Nwgcl/svDz71fXTLWuK9rhAF+
+         wgV0T2hI7AFUq3+j+ErVqVU6erzxRqyiTxnMeRc7WVOahKz3SI6LFTikAQjaxbelNpa+
+         mXzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXYsfkCiZpvrBoGIddS/kDs3UekmxRhw7I5PEi965AucM9GZ6iIPNuxQ4FP7JdD4UcCKggcfTPCrT5vswwZcDop9zY5ZlUf/DcH62D1v5djONrym/8hQq813wjl7QlCI+lySyi4EVrVkx6sYZMYpVL91S0qsRxcSpD5
+X-Gm-Message-State: AOJu0Yxc0D7cYVABtkvxocE6/j0esh6UBti0VXqw5x/kgITSVopMgnTW
+	B5Wf08kVOdfr5SZgTrkjDF2mV/bDHR0sBznNZ1l2FLb8ZDh9kOlR
+X-Google-Smtp-Source: AGHT+IFhj2fzglKIYnI7HOQcCMnfJdrG3yZskBunJyTySdFaOsqQ/0OiuCKLYNFN9h0S3oFYGXU/kQ==
+X-Received: by 2002:a05:620a:46a3:b0:790:9976:797f with SMTP id bq35-20020a05620a46a300b007909976797fmr3704511qkb.13.1714055495697;
+        Thu, 25 Apr 2024 07:31:35 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id i19-20020ae9ee13000000b0078eca9de099sm7030903qkg.134.2024.04.25.07.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 07:31:35 -0700 (PDT)
+Date: Thu, 25 Apr 2024 10:31:35 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <662a69475869_1de39b29415@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240424222028.1080134-2-quic_abchauha@quicinc.com>
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-2-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v5 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425134340.750289-1-liuxin350@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 09:43:40PM +0800, Xin Liu wrote:
-> On Wed, 24 Apr 2024 15:35:38 -0700 Yonghong Song <yonghong.song@linux.dev> wrote:
-> > Nick Desaulniers and Xin Liu separately reported that int type might
-> > have greater-than-16 byte size ([1] and [2]). More specifically, the
-> > reported int type sizes are 1024 and 64 bytes.
-> > 
-> > The libbpf and bpf program does not really support any int type greater
-> > than 16 bytes. Therefore, with current pahole, btf encoding will fail
-> > with greater-than-16 byte int types.
-> > 
-> > Since for now bpf does not support '> 16' bytes int type, the simplest
-> > way is to sanitize such types, similar to existing conditions like
-> > '!byte_sz' and 'byte_sz & (byte_sz - 1)'. This way, pahole won't
-> > call libbpf with an unsupported int type size. The patch [3] was
-> > proposed before. Now I resubmitted this patch as there are another
-> > failure due to the same issue.
-> > 
-> >   [1] https://github.com/libbpf/libbpf/pull/680
-> >   [2] https://lore.kernel.org/bpf/20240422144538.351722-1-liuxin350@huawei.com/
-> >   [3] https://lore.kernel.org/bpf/20230426055030.3743074-1-yhs@fb.com/
-> > 
-> > Cc: Xin Liu <liuxin350@huawei.com>
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Abhishek Chauhan wrote:
+> mono_delivery_time was added to check if skb->tstamp has delivery
+> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+> timestamp in ingress and delivery_time at egress.
 > 
-> Reviewed-by: Xin Liu <liuxin350@huawei.com>
+> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+> extensibilty for other timestamps such as userspace timestamp
+> (i.e. SO_TXTIME) set via sock opts.
+> 
+> As we are renaming the mono_delivery_time to tstamp_type, it makes
+> sense to start assigning tstamp_type based on enum defined
+> in this commit.
+> 
+> Earlier we used bool arg flag to check if the tstamp is mono in
+> function skb_set_delivery_time, Now the signature of the functions
+> accepts tstamp_type to distinguish between mono and real time.
+> 
+> Introduce a new function to set tstamp_type based on clockid. 
+> 
+> In future tstamp_type:1 can be extended to support userspace timestamp
+> by increasing the bitfield.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
 
-Thanks, applied to next,
+> +static inline void skb_set_tstamp_type_frm_clkid(struct sk_buff *skb,
+> +						  ktime_t kt, clockid_t clockid)
+> +{
 
-- Arnaldo
- 
-> > ---
-> >  btf_encoder.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index e1e3529..19e9d90 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -393,7 +393,7 @@ static int32_t btf_encoder__add_base_type(struct btf_encoder *encoder, const str
-> >  	 * these non-regular int types to avoid libbpf/kernel complaints.
-> >  	 */
-> >  	byte_sz = BITS_ROUNDUP_BYTES(bt->bit_size);
-> > -	if (!byte_sz || (byte_sz & (byte_sz - 1))) {
-> > +	if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16) {
-> >  		name = "__SANITIZED_FAKE_INT__";
-> >  		byte_sz = 4;
-> >  	}
+Please don't garble words to save a few characters: .._from_clockid.
+
+And this is essentially skb_set_delivery_type, just taking another
+type. So skb_set_delivery_type_(by|from)_clockid.
+
+Also, instead of reimplementing the same logic with a different
+type, could implement as a conversion function that calls the main
+function. It won't save lines. But will avoid duplicate logic that
+needs to be kept in sync whenever there are future changes (fragile).
+
+static inline void skb_set_delivery_type_by_clockid(struct sk_buff *skb,
+						    ktime_t kt, clockid_t clockid)
+{
+	u8 tstamp_type = SKB_CLOCK_REAL;
+
+	switch(clockid) {
+	case CLOCK_REALTIME:
+		break;
+	case CLOCK_MONOTONIC:
+		tstamp_type = SKB_CLOCK_MONO;
+		break;
+	default:
+		WARN_ON_ONCE(1);
+		kt = 0;
+	};
+
+	skb_set_delivery_type(skb, kt, tstamp_type);
+}
+
+
+> +	skb->tstamp = kt;
+> +
+> +	if (!kt) {
+> +		skb->tstamp_type = SKB_CLOCK_REALTIME;
+> +		return;
+> +	}
+> +
+> +	switch (clockid) {
+> +	case CLOCK_REALTIME:
+> +		skb->tstamp_type = SKB_CLOCK_REALTIME;
+> +		break;
+> +	case CLOCK_MONOTONIC:
+> +		skb->tstamp_type = SKB_CLOCK_MONOTONIC;
+> +		break;
+> +	}
+> +}
+> +
+>  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+> -					 bool mono)
+> +					  u8 tstamp_type)
+
+Indentation change: error?
+
+> @@ -9444,7 +9444,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+>  		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+>  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+> -		/* skb->tc_at_ingress && skb->mono_delivery_time,
+> +		/* skb->tc_at_ingress && skb->tstamp_type:1,
+
+Is the :1 a stale comment after we discussed how to handle the 2-bit
+field going forward? I.e., not by ignoring the second bit.
+
+
 
