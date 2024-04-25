@@ -1,260 +1,132 @@
-Return-Path: <bpf+bounces-27857-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 897278B29E0
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 22:32:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86E1C8B29F4
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 22:35:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4BD2287782
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:32:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6E2FB24CD0
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C9225A0EA;
-	Thu, 25 Apr 2024 20:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5944315382C;
+	Thu, 25 Apr 2024 20:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nkK0T2sV"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Z+gqGa8P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3475A2E642;
-	Thu, 25 Apr 2024 20:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D89C18EAB;
+	Thu, 25 Apr 2024 20:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714077128; cv=none; b=FsXdfQILLG6vUSYf7srJB0DNcXzxPMSkcMkQ4Ske9fGPm8yvuLaZyn51jz0ZNhr0RkfublvwYoG2Ngv1d7u4wUyzlkz0ALdaMXWhRLgmz67EVJVuO8+l+ejxm9xRnsXnBR2K70+FYBfyLWKM3uE2XOlnylCofxcS6lAxLBmDcNY=
+	t=1714077298; cv=none; b=YjbEIPA5ZQ3mGIn4jdMOZR4+KmHM+0oRUPUnWZlndMqz4cHzuTq4wbqEqyidD8Wo+gES6PwThNWpgy1vywzWZml8GTmNNOoDxpVeO54OF86YwWY8zYysI5rizDQGXGidhOtF2Tblp9A/ml/c+AENXNWw1WNowVwt/4NvLs+d6Is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714077128; c=relaxed/simple;
-	bh=hS/jArw8vMu09B6tBaWl8LvJP6mCxjtob00NxtV0vHQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X74vC2Ga9g/EoLtP1lKK4PNyxRO0SftYw6TXt95LWGTcs/jTxOjuR0GGXtxZ+D9eD/uQSqFRxBAembhEy7ohXaPWvaM+0emp8oVS7xl94CHQU8MKZb+M6BEl58q+cIr8DvO0luSydqkM/py6H1wGgs3y2r1uXLK3PsVhkwEgbns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nkK0T2sV; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ab791bce6fso1055592a91.1;
-        Thu, 25 Apr 2024 13:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714077126; x=1714681926; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ecCYdsRfAq9F7QiyokWt4NqIBEh3jL8fX+LDwEHR2g=;
-        b=nkK0T2sVtEffXdEurJ8MlDzjXufMGtGtTbQHDqzlQ9QMQ4wHvNh2AWNwJem0XybCrD
-         KatGeue954tdU7UcM96hsq+DMcVkQfp6ufP1qk2pCi7jMXxH552op1auQZJXp/YbKylL
-         LbmVIBDQGptl8pblp0CrU05uHUS6lJBZ5LLG9b5HdsW48/McxZiUkd9IISCI3u6ctFEb
-         OUV1v1V2HUjrL8MJeqLQ2poqd5UNfnpDyP+8qrYpAxuF3fc8dvyax5SVTB2Jwx8renMG
-         3WsELoDbeUaPT51qGDJ9NMZE3xIx0pRcP1lcM8xhmDJSKj5DvD6+lRAKQsgkp5lVtYPb
-         pwvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714077126; x=1714681926;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5ecCYdsRfAq9F7QiyokWt4NqIBEh3jL8fX+LDwEHR2g=;
-        b=SYhQARmlFhNaod1IaZc0I8Mbz3qm1WO8mHSbqJ874yhT8VeL7K7PWdk4pMXV0F5Rqz
-         7jcvqHg3fc4nyimkSXwvGueuI1kGMSj4g+LT43NhXBdtJ9Otr/yRgHs++7724wC1c8SW
-         PqiXl4pPhocBR21XcNMDeWEEQoqc5nihrMj99W8CWF+LNjjsIKyIAddivga/RbZOg6ZI
-         2ObwKJaZjyjJ3SbP6VE6l94N/w6ZwkWv4YSIh4k/8bSmtCWi1tkfUaFo0kU+Ue/ZoZcR
-         Ha25LTYHUkbskD0FZ2UvrdQsJHWHG5x8che0CVDmwbyVTQ8m1Gb4VwVhNouqo+b0rmal
-         0brg==
-X-Forwarded-Encrypted: i=1; AJvYcCWMKCgf2UU0vOFbKWmP91icc/vKr+hiPYVmotD1+AHksZeLLw9ox4Q0CB0z90FgMGXauEohj/VeSO7bLPdIVbgixrmTP9W4+WZ9TYHCTVlQLe3yKDMiKTF1iGj6SATPisycBVAKu5urwDdeL+4sRW6iw6FtDq0v64Z8VKxlV7iWeXAasqCa
-X-Gm-Message-State: AOJu0YwTFD6UFZ8v2XhsDdv1XlMxRJYSy25vJv32/otLfYSwoSUYp9PC
-	26huiCuxCRgj7ZJiiQkDgGj1c+sdvuUVPGBSX6Wzya0OrrA/0k9cuA01drdNqoKjJ6D1PGFdAeJ
-	O9925XRm+VEGNL5ux8QaZcpyxq1E=
-X-Google-Smtp-Source: AGHT+IH/LWFyAEfI/t2wcLsabsOk6rYcAK7fNyj6a+L8dH+sRryfqyZaprCZU27xKJ5ThMZfHpqQC31TIbuC8Rb11Uw=
-X-Received: by 2002:a17:90a:e2cd:b0:2ac:8198:848b with SMTP id
- fr13-20020a17090ae2cd00b002ac8198848bmr827513pjb.18.1714077126413; Thu, 25
- Apr 2024 13:32:06 -0700 (PDT)
+	s=arc-20240116; t=1714077298; c=relaxed/simple;
+	bh=bZqtcMhFx7TDPaIgrLqyfpl0/OfmMPAKopBgZDQprIg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tDTYRMm3ZJvyyo+JHX4346bHXwQk4zKH+Px/X2onJEJ5G1ZTJY86z5gwgO4Pk/C8HdqIMEKVQcbYl9VYu/L8H9xGbpqj2BAgVmHgk20Tn0rsKhomwQ+zr/X2wdCYjeJUrJTGjactRQqDGjQMSVbKVAG5nDnHLmEojx579uWTEWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Z+gqGa8P; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1714077293;
+	bh=bZqtcMhFx7TDPaIgrLqyfpl0/OfmMPAKopBgZDQprIg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z+gqGa8PD+3BrRxF+Exe+s/+n1FrcsSYPFeQUrvoT2UUvEiGsEXMDYuXjYQJDYiRJ
+	 9/0fJxtI2lDBLEHhkegO15rObvRhgIuWQMhE+D085PPIsVKHmI/z9Zz6qr7xUxUgOg
+	 gdOVIytSYg1zquf83mxdxD8VyvGj7mHBMGjmlG8k=
+Date: Thu, 25 Apr 2024 22:34:52 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>, 
+	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, 
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <d11f875e-4fb5-46dd-a412-84818208c575@t-8ch.de>
+References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+ <CGME20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db@eucas1p1.samsung.com>
+ <20240424201234.3cc2b509@kernel.org>
+ <20240425110412.2n5d27smecfncsfa@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 25 Apr 2024 13:31:53 -0700
-Message-ID: <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
-Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
- graph and fprobe on fgraph
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240425110412.2n5d27smecfncsfa@joelS2.panther.com>
 
-On Mon, Apr 15, 2024 at 5:49=E2=80=AFAM Masami Hiramatsu (Google)
-<mhiramat@kernel.org> wrote:
->
-> Hi,
->
-> Here is the 9th version of the series to re-implement the fprobe on
-> function-graph tracer. The previous version is;
->
-> https://lore.kernel.org/all/170887410337.564249.6360118840946697039.stgit=
-@devnote2/
->
-> This version is ported on the latest kernel (v6.9-rc3 + probes/for-next)
-> and fixed some bugs + performance optimization patch[36/36].
->  - [12/36] Fix to clear fgraph_array entry in registration failure, also
->            return -ENOSPC when fgraph_array is full.
->  - [28/36] Add new store_fprobe_entry_data() for fprobe.
->  - [31/36] Remove DIV_ROUND_UP() and fix entry data address calculation.
->  - [36/36] Add new flag to skip timestamp recording.
->
-> Overview
-> --------
-> This series does major 2 changes, enable multiple function-graphs on
-> the ftrace (e.g. allow function-graph on sub instances) and rewrite the
-> fprobe on this function-graph.
->
-> The former changes had been sent from Steven Rostedt 4 years ago (*),
-> which allows users to set different setting function-graph tracer (and
-> other tracers based on function-graph) in each trace-instances at the
-> same time.
->
-> (*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
->
-> The purpose of latter change are;
->
->  1) Remove dependency of the rethook from fprobe so that we can reduce
->    the return hook code and shadow stack.
->
->  2) Make 'ftrace_regs' the common trace interface for the function
->    boundary.
->
-> 1) Currently we have 2(or 3) different function return hook codes,
->  the function-graph tracer and rethook (and legacy kretprobe).
->  But since this  is redundant and needs double maintenance cost,
->  I would like to unify those. From the user's viewpoint, function-
->  graph tracer is very useful to grasp the execution path. For this
->  purpose, it is hard to use the rethook in the function-graph
->  tracer, but the opposite is possible. (Strictly speaking, kretprobe
->  can not use it because it requires 'pt_regs' for historical reasons.)
->
-> 2) Now the fprobe provides the 'pt_regs' for its handler, but that is
->  wrong for the function entry and exit. Moreover, depending on the
->  architecture, there is no way to accurately reproduce 'pt_regs'
->  outside of interrupt or exception handlers. This means fprobe should
->  not use 'pt_regs' because it does not use such exceptions.
->  (Conversely, kprobe should use 'pt_regs' because it is an abstract
->   interface of the software breakpoint exception.)
->
-> This series changes fprobe to use function-graph tracer for tracing
-> function entry and exit, instead of mixture of ftrace and rethook.
-> Unlike the rethook which is a per-task list of system-wide allocated
-> nodes, the function graph's ret_stack is a per-task shadow stack.
-> Thus it does not need to set 'nr_maxactive' (which is the number of
-> pre-allocated nodes).
-> Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
-> Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
-> their register interface, this changes it to convert 'ftrace_regs' to
-> 'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
-> so users must access only registers for function parameters or
-> return value.
->
-> Design
-> ------
-> Instead of using ftrace's function entry hook directly, the new fprobe
-> is built on top of the function-graph's entry and return callbacks
-> with 'ftrace_regs'.
->
-> Since the fprobe requires access to 'ftrace_regs', the architecture
-> must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
-> CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
-> entry callback with 'ftrace_regs', and also
-> CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
-> return_to_handler.
->
-> All fprobes share a single function-graph ops (means shares a common
-> ftrace filter) similar to the kprobe-on-ftrace. This needs another
-> layer to find corresponding fprobe in the common function-graph
-> callbacks, but has much better scalability, since the number of
-> registered function-graph ops is limited.
->
-> In the entry callback, the fprobe runs its entry_handler and saves the
-> address of 'fprobe' on the function-graph's shadow stack as data. The
-> return callback decodes the data to get the 'fprobe' address, and runs
-> the exit_handler.
->
-> The fprobe introduces two hash-tables, one is for entry callback which
-> searches fprobes related to the given function address passed by entry
-> callback. The other is for a return callback which checks if the given
-> 'fprobe' data structure pointer is still valid. Note that it is
-> possible to unregister fprobe before the return callback runs. Thus
-> the address validation must be done before using it in the return
-> callback.
->
-> This series can be applied against the probes/for-next branch, which
-> is based on v6.9-rc3.
->
-> This series can also be found below branch.
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=
-=3Dtopic/fprobe-on-fgraph
->
-> Thank you,
->
-> ---
+Hi Joel,
 
-Hey Masami,
+On 2024-04-25 13:04:12+0000, Joel Granados wrote:
+> On Wed, Apr 24, 2024 at 08:12:34PM -0700, Jakub Kicinski wrote:
+> > On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Weißschuh wrote:
+> > > The series was split from my larger series sysctl-const series [0].
+> > > It only focusses on the proc_handlers but is an important step to be
+> > > able to move all static definitions of ctl_table into .rodata.
+> > 
+> > Split this per subsystem, please.
+> It is tricky to do that because it changes the first argument (ctl*) to
+> const in the proc_handler function type defined in sysclt.h:
+> "
+> -typedef int proc_handler(struct ctl_table *ctl, int write, void *buffer,
+> +typedef int proc_handler(const struct ctl_table *ctl, int write, void *buffer,
+>                 size_t *lenp, loff_t *ppos);
+> "
+> This means that all the proc_handlers need to change at the same time.
+> 
+> However, there is an alternative way to do this that allows chunking. We
+> first define the proc_handler as a void pointer (casting it where it is
+> being used) [1]. Then we could do the constification by subsystem (like
+> Jakub proposes). Finally we can "revert the void pointer change so we
+> don't have one size fit all pointer as our proc_handler [2].
+> 
+> Here are some comments about the alternative:
+> 1. We would need to make the first argument const in all the derived
+>    proc_handlers [3] 
+> 2. There would be no undefined behavior for two reasons:
+>    2.1. There is no case where we change the first argument. We know
+>         this because there are no compile errors after we make it const.
+>    2.2. We would always go from non-const to const. This is the case
+>         because all the stuff that is unchanged in non-const.
+> 3. If the idea sticks, it should go into mainline as one patchset. I
+>    would not like to have a void* proc_handler in a kernel release.
+> 4. I think this is a "win/win" solution were the constification goes
+>    through and it is divided in such a way that it is reviewable.
+> 
+> I would really like to hear what ppl think about this "heretic"
+> alternative. @Thomas, @Luis, @Kees @Jakub?
 
-I can't really review most of that code as I'm completely unfamiliar
-with all those inner workings of fprobe/ftrace/function_graph. I left
-a few comments where there were somewhat more obvious BPF-related
-pieces.
+Thanks for that alternative, I'm not a big fan though.
 
-But I also did run our BPF benchmarks on probes/for-next as a baseline
-and then with your series applied on top. Just to see if there are any
-regressions. I think it will be a useful data point for you.
+Besides the wonky syntax, Control Flow Integrity should trap on
+this construct. Functions are called through different pointers than
+their actual types which is exactly what CFI is meant to prevent.
 
-You should be already familiar with the bench tool we have in BPF
-selftests (I used it on some other patches for your tree).
+Maybe people find it easier to review when using
+"--word-diff" and/or "-U0" with git diff/show.
+There is really nothing going an besides adding a few "const"s.
 
-BASELINE
-=3D=3D=3D=3D=3D=3D=3D=3D
-kprobe         :   24.634 =C2=B1 0.205M/s
-kprobe-multi   :   28.898 =C2=B1 0.531M/s
-kretprobe      :   10.478 =C2=B1 0.015M/s
-kretprobe-multi:   11.012 =C2=B1 0.063M/s
+But if the consensus prefers this solution, I'll be happy to adopt it.
 
-THIS PATCH SET ON TOP
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
-kprobe-multi   :   28.909 =C2=B1 0.074M/s
-kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
-kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
-
-These numbers are pretty stable and look to be more or less representative.
-
-As you can see, kprobes got a bit faster, kprobe-multi seems to be
-about the same, though.
-
-Then (I suppose they are "legacy") kretprobes got quite noticeably
-slower, almost by 10%. Not sure why, but looks real after re-running
-benchmarks a bunch of times and getting stable results.
-
-On the other hand, multi-kretprobes got significantly faster (+24%!).
-Again, I don't know if it is expected or not, but it's a nice
-improvement.
-
-If you have any idea why kretprobes would get so much slower, it would
-be nice to look into that and see if you can mitigate the regression
-somehow. Thanks!
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux.git/commit/?h=jag/constfy_treewide_alternative&id=4a383503b1ea650d4e12c1f5838974e879f5aa6f
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux.git/commit/?h=jag/constfy_treewide_alternative&id=a3be65973d27ec2933b9e81e1bec60be3a9b460d
+> [3] proc_dostring, proc_dobool, proc_dointvec....
 
 
->  51 files changed, 2325 insertions(+), 882 deletions(-)
->  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_re=
-move_fprobe_repeat.tc
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
+Thomas
 
