@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-27788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF5C8B1ADF
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 08:22:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F24C8B1AF9
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 08:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DCFD1C2117D
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 06:22:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11081C21151
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 06:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE9D40848;
-	Thu, 25 Apr 2024 06:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6505458203;
+	Thu, 25 Apr 2024 06:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="th1DddLb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gibzYghG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45CD3D549
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 06:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F46A40851
+	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 06:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714026147; cv=none; b=IUFIXs/u1tV50GRpPpMaY6ROFVk6uISlj8x+9/kdhxlqmtF+76hhyDqpEUZHB39Fv+s1Oh8a0tvKv6WbsGGE6BzjaZtxyEv+PAhKqACLVEr5Y/1hhxx5VnGmatjBZnN1KCbVbJJke12r2xLuIC8zYaEkh+qkGG9DB5tY3kJCbWQ=
+	t=1714026347; cv=none; b=FPQu8UQENQOY3sXimc2vBRiwjOKfnr5BNlH13jHXgMZJckVqS5Kxye/P6lnvu8rosdmEswo3kAXF0Yw2gGPwjMXivnwEh5FHQwoUEHOxbdZMunPJ8PyipGVpbjeqkh6xIYr8X2+CrwLHGCknQmHwFdOIyAZD6/9kkmDi9r5S8F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714026147; c=relaxed/simple;
-	bh=hqlfKxyILHk+W3hOnhD39Klnrf1fSlGlKNzSQVM9RT4=;
+	s=arc-20240116; t=1714026347; c=relaxed/simple;
+	bh=fERmv0h0RJAlvrw4KpCPifAyBafwLvv6KElMBv4MBUI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ONTCpVZyfrmMMmjrKNdnUbZy1I1s8YUkc6LbN1oS2hzGqhNu0+OKZBRfSxOSDv/Ccfz2s1ShSlFLLU7JiyHBEMWmyRr2uyo0vxaCr7Pjc2FQIKoTJvTNvUgHgu8gCYajI3+CbHpN7oGM0v48R89DmxKbJuqHiFEE3IlyCPuEafY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=th1DddLb; arc=none smtp.client-ip=209.85.208.43
+	 To:Cc:Content-Type; b=nPtcDB6TudWOs7vzR063mOMhuvTCe1CB7tG/1QBQ+uUxhBSh1yBK5MuqAMF/p6UFUshPvEGsWfH5DYgWOG8zWeFKLOTiVJtqpTxCsWPE32CRoLaSlXTfPA/LbokULgO5DZ2LPRuXBDNOMyYWSmYcsm8L1HbU4B4svRJRsglw9H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gibzYghG; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-571b5fba660so5044a12.1
-        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 23:22:25 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41a428374b9so32385e9.1
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 23:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714026144; x=1714630944; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714026343; x=1714631143; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hqlfKxyILHk+W3hOnhD39Klnrf1fSlGlKNzSQVM9RT4=;
-        b=th1DddLb/9LX51ekBPa7HpC10ImjaxCo+FNBn1oxJuCIF85jHAr6sGN0j34ck9QeTk
-         WdiC6Z0t25aTD0I/bbF/WxAse3O979dnZC51cRvek9jwjn7G8/hiiK8sORiDckaXZYz3
-         1cQywtXS6wylSuKpaI3y666AoOeOmT7iRFM7RO9TNkNypW1IK5J+Mrt3dTz/2rUSwz3Q
-         +ZZUioSwcL6svsE5540y6opNaoXCehX/MqXjUaWkEvi1smH0JWzFS+9Z2rih5/RpI0lb
-         iF0X64yr5H9MWbjTiVP2SnAZIQKd2fy1vF5lmuJi6qxJ7xhz7h+KqrpeP7uuaBZ/FH7k
-         WBbQ==
+        bh=fERmv0h0RJAlvrw4KpCPifAyBafwLvv6KElMBv4MBUI=;
+        b=gibzYghGRZT6jvsBG5q+6lpIOFw3HkYK/haGv4EJzkI8U+qd5vRCpQnXiOZTYsKjlH
+         BA1OYDKMfYJmpCznUKkK3zaa1ZLCcE/aKdmIZQW4pg411rjvtZuoIoyn/pcMECS2eVHR
+         /1HY5AMqKsEC+ORcKyyZl9cpEkwCHltjFj8VIDAhOLNiD/zglPF7LDVLBDkqeLkRxN1N
+         +JcKBCyO4rAc5BNRs8iX9h9sNihXx7KeBWoGzzP8DIbV+AGt1YNy/nLL5IGJBPw4W3XI
+         pOYMuP2YKsS5r+jX4xQnJxIn9CiOMUgOgaJfPoRTFXmjbDzHSgVs/KOHI+Mdb8SLcSGQ
+         D0sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714026144; x=1714630944;
+        d=1e100.net; s=20230601; t=1714026343; x=1714631143;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hqlfKxyILHk+W3hOnhD39Klnrf1fSlGlKNzSQVM9RT4=;
-        b=SGraXGRf/EoM4sXChHOst/7Me37UJ5MNLwK1QX7hGO8KhM+OReHWFU9EHeXoO8UNAQ
-         2HTJL3CNLXQKcohqGZRKSdBI3icnWlSb15e7AafIA4izIO4jnPkahqkdOwVk9Cs2niYa
-         IQ1LjCiq7PULHy+KY+YvPOY51vbayASMQ04ZV2A82yDhchj/d7pQbeBxuRz+NwYbfDhN
-         wbahob/UgmdwHzRYb0KNaLlZikX75Bdspuqc8HqguWTTzLlhER2rgKoi/BJhfHedLSqP
-         AZighauif14aYofnuncxhi9MP+2fa4zIWmKNgGh9Vip/6NS1d4sNQ/MUWBhBRx9tQYO1
-         VPRA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0901CBxC1f5xiWGcGBuxYZ1UF2w8JQwwkYXNPv1JDEZ+1wX7JAzX/AowYisFMEwqM2bFDRGrfeh/NYEn5+qxI6iOu
-X-Gm-Message-State: AOJu0YyKxo1ND3J4GlsB4D4S2AkUZKHrPUxWECn6r/ur6HjWcKbOSKth
-	bpxhK3H9zTz82PODecDic0mn2VBVN65BUJV4dlEMMGzUFAEtluB0zV+jrCGnO8a+VY2Vf0pEuJX
-	Gj2jZLY9LQAjTAiJte9V4oUErWXh3avIHo/QP
-X-Google-Smtp-Source: AGHT+IGJ4lWF6WXifymD7css8+iEWuOcEB+1CpQx2DAS8NJgjd1LPfRHFY/bJBldQPQyT0V+0adV8V80J6QcnIObYyQ=
-X-Received: by 2002:a50:c908:0:b0:572:ca7:989d with SMTP id
- o8-20020a50c908000000b005720ca7989dmr62554edh.3.1714026143778; Wed, 24 Apr
- 2024 23:22:23 -0700 (PDT)
+        bh=fERmv0h0RJAlvrw4KpCPifAyBafwLvv6KElMBv4MBUI=;
+        b=UiJ6hzIYzcRTne4Iuez9ibykj63xA2upmw4xcqhAYxozVWEg5UzsraTJ1YWNdQV1K/
+         4qu1AUnDvsIS8MpHER2jw9y5H6KsveSLgbWD2fu5fi3hHw8IyOwblWXGv8vgB0LJj0ej
+         wnlmTv/SKoUZ92RekyDRwf2lfiI0zpphqODfEd8RVyW2SXOPJb5JFkpk8PW6kVdIc84w
+         uuN38As2HTyYdvH1U3ClrNZQ3dQ6vV0tv073V7SAsJrEnQXzp/LDgU7FQbMQKf1WDBs+
+         FWH5Wi3MtHSD7cffBmedN+oGN18MrjKnIM+szKskNgAaoweE4xYKWEcwLjCugvz6BfiO
+         Yb5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXuBE8DBd+KwSf9uzyiM2HBIii5WEUG1fmebM4u4EInXjH8e1xrXU/lLmMb7WyXp0j85bS7L0RtsvT3MSUBLBGY8ckR
+X-Gm-Message-State: AOJu0YxeUGKgLR8+nCJsXKAKDsZLrK/JA6DCjoUVfiMVZBrUHqoJhaNM
+	WayQVPJ6xywcuUva/SKtVCun+3le/xi8PaDJ9cgHus6WUH+vSCJoJrPI3lOoAf9YEmnWH9Up7DB
+	VsFT3KUfoIaCestgE1WVEbqnYeT358rBk9uz3
+X-Google-Smtp-Source: AGHT+IF1G3uXYrQJS8plmR3swSNBwsdSuwXomI5kcLCqeYJhHkrTotLf1d0aNtMmNpM6GMfu+gp85O2SKoW2VCGr2HI=
+X-Received: by 2002:a05:600c:1ca3:b0:418:cef2:7575 with SMTP id
+ k35-20020a05600c1ca300b00418cef27575mr127025wms.0.1714026342462; Wed, 24 Apr
+ 2024 23:25:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421042009.28046-1-lulie@linux.alibaba.com> <20240421042009.28046-2-lulie@linux.alibaba.com>
-In-Reply-To: <20240421042009.28046-2-lulie@linux.alibaba.com>
+References: <20240421042009.28046-1-lulie@linux.alibaba.com> <20240421042009.28046-3-lulie@linux.alibaba.com>
+In-Reply-To: <20240421042009.28046-3-lulie@linux.alibaba.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 25 Apr 2024 08:22:10 +0200
-Message-ID: <CANn89i+DHZGG9p4iCqcQExTd6u_6pKe+_OogPxjfEc2rPHyYFA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] tcp: move tcp_skb_cb->sacked flags to enum
+Date: Thu, 25 Apr 2024 08:25:31 +0200
+Message-ID: <CANn89iJb2XkPwYfjJnhfU5pvf_jjD-xw5WuzDom8GP+t5nzyMw@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] tcp: update sacked after tracepoint in __tcp_retransmit_skb
 To: Philo Lu <lulie@linux.alibaba.com>
 Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net, 
 	martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -88,15 +88,19 @@ Content-Transfer-Encoding: quoted-printable
 On Sun, Apr 21, 2024 at 6:20=E2=80=AFAM Philo Lu <lulie@linux.alibaba.com> =
 wrote:
 >
-> Move the flag definitions for tcp_skb_cb->sacked into a new enum named
-> tcp_skb_cb_sacked_flags, then we can get access to them in bpf via
-> vmlinux.h, e.g., in tracepoints.
+> Marking TCP_SKB_CB(skb)->sacked with TCPCB_EVER_RETRANS after the
+> traceopint (trace_tcp_retransmit_skb), then we can get the
+> retransmission efficiency by counting skbs w/ and w/o TCPCB_EVER_RETRANS
+> mark in this tracepoint.
 >
-> This patch does not change any existing functionality.
+> We have discussed to achieve this with BPF_SOCK_OPS in [0], and using
+> tracepoint is thought to be a better solution.
+>
+> [0]
+> https://lore.kernel.org/all/20240417124622.35333-1-lulie@linux.alibaba.co=
+m/
 >
 > Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
-
-Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
 
 Reviewed-by: Eric Dumazet <edumazet@google.com>
 
