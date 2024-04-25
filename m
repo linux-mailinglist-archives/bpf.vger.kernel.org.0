@@ -1,289 +1,254 @@
-Return-Path: <bpf+bounces-27814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E658B2383
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 16:07:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CA458B238B
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 16:08:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 790B51C20DF0
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DAE81C208E3
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A1614A0B9;
-	Thu, 25 Apr 2024 14:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9DE14A4D2;
+	Thu, 25 Apr 2024 14:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="JQjfvC9i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ls9ZQDKY"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF66149DF2
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 14:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B0414A08B;
+	Thu, 25 Apr 2024 14:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053997; cv=none; b=p7ChM9yQwSNShFQofxi17O8vKrOhedtceKJiA0LOuVXeLb5kDN8xcLpNEAQA19UVFvfzTwU8wFU8Y1SlZhiQQglS3U5gToXZPmdzdzrz35I1UMn90Id1tD1BXTFkgyOhUwcI0CNul8vdNhHdlWNHah1mZBrdRlZxkzwzoYYQ3ls=
+	t=1714054066; cv=none; b=u4Ac+VzVz5ohrRPxT/NcEy07VmLJR523AF3wd1oNzSnNaKi+so51gc5RHZaO7Z9XYcxshiIM7k6GmQQor7M68iLtXp4ChD1RFFOQEaEBQgJTKUvZUr+TcPAv5wqGBm+y7V+RfvLyvhW4lujOcpyHuWC3T2tmKfkZh0BCmgugAxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053997; c=relaxed/simple;
-	bh=Q3g+6ofJpLBNf+HLKHawyQ42slgc2UN1G8OZfWSRq44=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BIQ2tx58GnN17cn8f7+n6Xk96kyVyw5Kf9g3tAWsplpDv/r07sbEAz/Rq8G9LZMEmTSAoiJvfOl+iG5RMkxJTohgQGDoYxnbZd9hiJGofdw1W/MYnLBFtjZM5A36/UpKZS/44BVZFaGxMko4XXrOgl8g1pNiZztZ5H3o69aolCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=JQjfvC9i; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 037F040590
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 14:06:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714053994;
-	bh=V1TI5VVR79l+ulg44q4XIVnhXI7V0A+GbqXJ3j0KGPU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=JQjfvC9iI2dOSyyIrQwm5J4Mz5PHeS/YD+dpYqBJlWjNXNno0Xo4M528wG/aje/6i
-	 RjZ6Ojn1PjwiFxr3parWxDvrXrpi3M8pHSIflBmbb/CGS/cG4wW09q9572FfRAZ7W0
-	 jVs8z7dFyaG0n8ffY1U+BVCFzmVHXH9NIAVEh0RePhl/4BNKuZbyqyZDC++YbF9lMh
-	 7kUy+MMzmhgnplOThVqP6434pWJZ/LmxK5iKjtM/A3OF6U5rFSqvUwRGxxHTizdkCj
-	 x9RfyoguTU13ag9IJ8fNS75vSeUJuaMDzZ6h+K3jQ84IbEF46EhlkruZLOjGtjb/Vd
-	 8Fi6XGrOzfKkA==
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a5741ee352bso58760166b.1
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 07:06:34 -0700 (PDT)
+	s=arc-20240116; t=1714054066; c=relaxed/simple;
+	bh=f912mfReOheDjns3RC7abWLfrtnapEajcYOVlQgNpps=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=iDLDyhxjvNBM3RBnIYZF38FEYzgnWusi8mpGOF7YUF9o+wXlnhQFU9Gp4gpkiQ9ViI59bNF/msL5OAA0UT5LUIPuIB10aTQP5CfmzIwteZbGcdMAcEES4fNyjynNqeeOsqa2SHLS7ib/xcNsS3URjxiKfaT/TNMGSKYyPrksl+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ls9ZQDKY; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-69b10c9cdf4so4136106d6.1;
+        Thu, 25 Apr 2024 07:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714054064; x=1714658864; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ajyInVtzAAqe0l9PhKTduxRwaK1ASztz36ZB//OXaoc=;
+        b=ls9ZQDKYg+XF4Jv811AwPVATF5JlgNUR1s5mhXokGMOSEr1JdkOXtg5r5JpNx1OFYe
+         Ze4Ci/gdb7khOdTo0xN7L4InflfGyiuX/zwazG8oLXXgiPF47O4CL3lIrE3f5yc7edXF
+         5Wzib+e8xkehe4QOW6irkSP0tNYp9lw6EWzv33FvHplaC8UIsBJAyHhS0xlAX6mD5HYv
+         c/84xXOclDN/0JlJGdXiXORWgFXW1bB3sn3cAKQDO8gyXS+UZIOvnWEZxSEzrU63HCE5
+         1WgYzVOr354lJjnPjCOfWq0a1eUVG1l3HK0FFXIZob7bqtsXj1q8oNvlIiPlKGv2o+/T
+         vZdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714053993; x=1714658793;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V1TI5VVR79l+ulg44q4XIVnhXI7V0A+GbqXJ3j0KGPU=;
-        b=hIx9Ea2kZaX+QKuKBk3nguDuKdPZfnha9AVsKjIQthb+g9AxQhlNqZii+joHfsMWnP
-         P4wslkOOG8vc2IVGSVtFi13nw9CL3ySLn5YplGXfLbc2IQ8xdYyOwudWFDOhHMNiOJ+F
-         sq31AwSSYSVGFyAUUd/Fde3O+Z7wszPzTanlc6+oxGGYKQyD6Qi4jsXUHc5v/oXA72fx
-         Ar5ZKRiA/Rg2EMDuvqGx3dZvXJIIzb77EmXq0Cb74K57G4TOLt3kQeQ5nu4hqloX7etO
-         sbUC2D5a5HqNjftNByvy3fqw+QXYdEpT/2Y/2dNsxfTj1AydlWSDTtuZ18MhfFzWb9/n
-         Ghfg==
-X-Forwarded-Encrypted: i=1; AJvYcCX9Zmyyk232XvqnmrHC8uB6oFYuLUwN5MVWwOvviYgBYAOKNlRQ6IkOyISehAU772+wjh65uxtPNpsThBU6LiAETKz8
-X-Gm-Message-State: AOJu0YzHGkVlvBmFZ6FtKvAlebnxSSmzAl8Qddp+dA31dM3fqgyvhcoz
-	Kv9nEPZIVE/hMDfQ68C59BDd2wadyh5jH7x0+E6T2fKJCBm4WM7OXxzXvKggQUzLNCPHGpqH8xE
-	cS3LqiKX/Byq55fJSk4dHTNycl4QgISX9YXdlu1FQ5vVsWEi9Q8WpBbUi1RsP+Dk49w==
-X-Received: by 2002:a17:906:3084:b0:a52:5baf:23d with SMTP id 4-20020a170906308400b00a525baf023dmr3962803ejv.15.1714053993258;
-        Thu, 25 Apr 2024 07:06:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFa2f8PAzJ3OQlHx9WNBtlqYR5xi/NhF34vqLSqy387TGnWHhGna/SnTXOoR5J8Da7s5EM3Bw==
-X-Received: by 2002:a17:906:3084:b0:a52:5baf:23d with SMTP id 4-20020a170906308400b00a525baf023dmr3962769ejv.15.1714053992668;
-        Thu, 25 Apr 2024 07:06:32 -0700 (PDT)
-Received: from localhost.localdomain (host-82-49-69-7.retail.telecomitalia.it. [82.49.69.7])
-        by smtp.gmail.com with ESMTPSA id bi14-20020a170907368e00b00a5588ed8fa2sm8023018ejc.113.2024.04.25.07.06.31
+        d=1e100.net; s=20230601; t=1714054064; x=1714658864;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ajyInVtzAAqe0l9PhKTduxRwaK1ASztz36ZB//OXaoc=;
+        b=rfN0d4KTA8Ex21Hk/oDCUnnPGorKvYXi6awbZfMcWD6ZURdR/P2R+jXEce2P0PPpjb
+         doXVgDsLPl4guud4j5LYpEBBPsAICjJAbL62UZDUdmrGqeGyyTUOaehC3r39khp13sCM
+         q4I/acJZGbBYPtE3+GM9NxKckTZIuV/LQOyRiPr9ZyvHUNHoVYZfwWsE+k6OCMEl6XqQ
+         xogT0ThzFg67jM6fG1o8epNqYonTwKh719eEiRnWHFH+6H7zAvd3V93RqEw+pi6qFmTn
+         7FwxdtYCUH5OYmd32MKQcD4Oc86prff2R2wJeMPDDcjXqGm5cAp7n71fsKt7Hahu/7az
+         xtWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUC/St5zjIlASJeG72KF9icgbdlQlq7a8aC+F0b1mzO1P43mmaKU9Bc5kaIxTQKizwjK9qkgDkF26hhWqrYL5sixf8gCjHXxBBdkm/1Y4lhcR5Cdt/1WlzybOz
+X-Gm-Message-State: AOJu0YwWPvIRbyIq+dEaoaGvnwfDf4zWwhAdiY8gUD7In7DVJdw/qaR/
+	hR2AA4PA3YI4f0EwUwugoJSdIs0T8G7iPgQR0P6BZm0NOSwnYuRA
+X-Google-Smtp-Source: AGHT+IEKQevdcF25H22KzEMeaVqYeb/Og5tSvrWKvAI7d6NJxvHnnoiJFq/p1ER0DWGbvizxwWlYyw==
+X-Received: by 2002:a0c:9b12:0:b0:69b:6375:43f8 with SMTP id b18-20020a0c9b12000000b0069b637543f8mr6011430qve.13.1714054063582;
+        Thu, 25 Apr 2024 07:07:43 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id g2-20020a0cdf02000000b0069b447066bbsm6963515qvl.78.2024.04.25.07.07.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 07:06:32 -0700 (PDT)
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Andrea Righi <andrea.righi@canonical.com>
-Subject: [PATCH v3] selftests/bpf: Add ring_buffer__consume_n test.
-Date: Thu, 25 Apr 2024 16:06:27 +0200
-Message-ID: <20240425140627.112728-1-andrea.righi@canonical.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 25 Apr 2024 07:07:43 -0700 (PDT)
+Date: Thu, 25 Apr 2024 10:07:42 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
+ "maze@google.com" <maze@google.com>, 
+ "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
+ "kuba@kernel.org" <kuba@kernel.org>, 
+ =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+ "pabeni@redhat.com" <pabeni@redhat.com>, 
+ "edumazet@google.com" <edumazet@google.com>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+ "davem@davemloft.net" <davem@davemloft.net>, 
+ "yan@cloudflare.com" <yan@cloudflare.com>
+Message-ID: <662a63aeee385_1de39b294fd@willemb.c.googlers.com.notmuch>
+In-Reply-To: <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
+ <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+ <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+ <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
+ <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+ <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+ <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
+ <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+ <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
+ <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
+ <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
+ <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
+ <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
+ <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
+ <6622acdd22168_122c5b2945@willemb.c.googlers.com.notmuch>
+ <9f097bcafc5bacead23c769df4c3f63a80dcbad5.camel@mediatek.com>
+ <6627ff5432c3a_1759e929467@willemb.c.googlers.com.notmuch>
+ <274c7e9837e5bbe468d19aba7718cc1cf0f9a6eb.camel@mediatek.com>
+ <66291716bcaed_1a760729446@willemb.c.googlers.com.notmuch>
+ <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
+ fraglist
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Add a testcase for the ring_buffer__consume_n() API.
+> > >  struct sk_buff *tail = NULL;
+> > >  struct sk_buff *nskb, *tmp;
+> > >  int len_diff, err;
+> > > @@ -4504,6 +4505,9 @@ struct sk_buff *skb_segment_list(struct
+> > sk_buff
+> > > *skb,
+> > >  if (err)
+> > >  goto err_linearize;
+> > >  
+> > > +if (mss != GSO_BY_FRAGS && mss != skb_headlen(skb))
+> > > +return ERR_PTR(-EFAULT);
+> > > +
+> > 
+> > Do this precondition integrity check before the skb_unclone path?
+> 
+> After return error, the skb will enter into kfree_skb, not consume_skb.
+> It may meet same crash problem which has been resolved by skb_unclone.
+> 
+> Or kfree_skb could well handle the cloned skb's release?
 
-The test produces multiple samples in a ring buffer, using a
-sys_getpid() fentry prog, and consumes them from user-space in batches,
-rather than consuming all of them greedily, like ring_buffer__consume()
-does.
+Since this is an error path it should reach kfree_skb rather than
+consume_skb.
 
-Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- tools/testing/selftests/bpf/Makefile          |  2 +-
- .../selftests/bpf/prog_tests/ringbuf.c        | 64 +++++++++++++++++++
- .../selftests/bpf/progs/test_ringbuf_n.c      | 47 ++++++++++++++
- 3 files changed, 112 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> 
+> Other changes are updated as below:
+> 
+> From 301da5c9d65652bac6091d4cd64b751b3338f8bb Mon Sep 17 00:00:00 2001
+> From: Shiming Cheng <shiming.cheng@mediatek.com>
+> Date: Wed, 24 Apr 2024 13:42:35 +0800
+> Subject: [PATCH net] net: prevent BPF pulling SKB_GSO_FRAGLIST skb
+> 
+> A SKB_GSO_FRAGLIST skb can't be pulled data
+> from its fraglist as it may result an invalid
+> segmentation or kernel exception.
+> 
+> For such structured skb we limit the BPF pulling
+> data length smaller than skb_headlen() and return
+> error if exceeding.
+> 
+> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> ---
+>  net/core/filter.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 8adf95765cdd..8ed4d5d87167 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad,
+> bpf_sp);
+>  static inline int __bpf_try_make_writable(struct sk_buff *skb,
+>  					  unsigned int write_len)
+>  {
+> +	if (skb_is_gso(skb) &&
+> +	    (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
+> +	     write_len > skb_headlen(skb)) {
+> +		return -ENOMEM;
+> +	}
+>  	return skb_ensure_writable(skb, write_len);
+>  }
+>  
+> -- 
+> 2.18.0
+> 
+> 
+> From 64d55392debbc90ef2e9c33441024d612075bdd7 Mon Sep 17 00:00:00 2001
+> From: Shiming Cheng <shiming.cheng@mediatek.com>
+> Date: Wed, 24 Apr 2024 14:43:45 +0800
+> Subject: [PATCH net] net: drop pulled SKB_GSO_FRAGLIST skb
+> 
+> A SKB_GSO_FRAGLIST skb without GSO_BY_FRAGS is
+> expected to have all segments except the last
+> to be gso_size long. If this does not hold, the
+> skb has been modified and the fraglist gso integrity
+> is lost. Drop the packet, as it cannot be segmented
+> correctly by skb_segment_list.
+> 
+> The skb could be salvaged, though, right?
+> By linearizing, dropping the SKB_GSO_FRAGLIST bit
+> and entering the normal skb_segment path rather than
+> the skb_segment_list path.
 
-ChangeLog v2 -> v3:
- - move skel_n inside ringbuf_n_subtest()
+Drop the "though, right?"
+> 
+> That choice is currently made in the protocol caller,
+> __udp_gso_segment. It's not trivial to add such a
+> backup path here. So let's add this backstop against
+> kernel crashes.
+> 
+> If the gso_size does not match skb_headlen(),
+> it means part of or the entire fraglist has been pulled.
+> It has been messed with and we should return error to
+> free this skb.
 
-ChangeLog v1 -> v2:
- - replace CHECK() with ASSERT_EQ()
- - fix skel -> skel_n
- - drop unused "seq" field from struct sample
+This paragraph is now duplicative. Drop.
+> 
+> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> ---
+>  net/core/skbuff.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index b99127712e67..4777f5fea6c3 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -4491,6 +4491,7 @@ struct sk_buff *skb_segment_list(struct sk_buff
+> *skb,
+>  {
+>  	struct sk_buff *list_skb = skb_shinfo(skb)->frag_list;
+>  	unsigned int tnl_hlen = skb_tnl_header_len(skb);
+> +	unsigned int mss = skb_shinfo(skb)->gso_size;
+>  	unsigned int delta_truesize = 0;
+>  	unsigned int delta_len = 0;
+>  	struct sk_buff *tail = NULL;
+> @@ -4504,6 +4505,9 @@ struct sk_buff *skb_segment_list(struct sk_buff
+> *skb,
+>  	if (err)
+>  		goto err_linearize;
+>  
+> +	if (mss != GSO_BY_FRAGS && mss != skb_headlen(skb))
+> +		return ERR_PTR(-EFAULT);
+> +
+>  	skb_shinfo(skb)->frag_list = NULL;
+>  
+>  	while (list_skb) {
+> -- 
+> 2.18.0
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index edc73f8f5aef..6332277edeca 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -455,7 +455,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
- 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
- 	core_kern.c core_kern_overflow.c test_ringbuf.c			\
--	test_ringbuf_map_key.c
-+	test_ringbuf_n.c test_ringbuf_map_key.c
- 
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index 48c5695b7abf..2f064d6952f0 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -13,6 +13,7 @@
- #include <linux/perf_event.h>
- #include <linux/ring_buffer.h>
- #include "test_ringbuf.lskel.h"
-+#include "test_ringbuf_n.lskel.h"
- #include "test_ringbuf_map_key.lskel.h"
- 
- #define EDONE 7777
-@@ -326,6 +327,67 @@ static void ringbuf_subtest(void)
- 	test_ringbuf_lskel__destroy(skel);
- }
- 
-+/*
-+ * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
-+ * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
-+ */
-+#define N_TOT_SAMPLES	32
-+#define N_SAMPLES	4
-+
-+/* Sample value to verify the callback validity */
-+#define SAMPLE_VALUE	42L
-+
-+static int process_n_sample(void *ctx, void *data, size_t len)
-+{
-+	struct sample *s = data;
-+
-+	ASSERT_EQ(s->value, SAMPLE_VALUE, "sample_value");
-+
-+	return 0;
-+}
-+
-+static void ringbuf_n_subtest(void)
-+{
-+	struct test_ringbuf_n_lskel *skel_n;
-+	int err, i;
-+
-+	skel_n = test_ringbuf_n_lskel__open();
-+	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
-+		return;
-+
-+	skel_n->maps.ringbuf.max_entries = getpagesize();
-+	skel_n->bss->pid = getpid();
-+
-+	err = test_ringbuf_n_lskel__load(skel_n);
-+	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
-+		goto cleanup;
-+
-+	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
-+				   process_n_sample, NULL, NULL);
-+	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
-+		goto cleanup;
-+
-+	err = test_ringbuf_n_lskel__attach(skel_n);
-+	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
-+		goto cleanup_ringbuf;
-+
-+	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
-+	skel_n->bss->value = SAMPLE_VALUE;
-+	for (i = 0; i < N_TOT_SAMPLES; i++)
-+		syscall(__NR_getpgid);
-+
-+	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
-+	for (i = 0; i < N_TOT_SAMPLES; i += err) {
-+		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
-+		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
-+	}
-+
-+cleanup_ringbuf:
-+	ring_buffer__free(ringbuf);
-+cleanup:
-+	test_ringbuf_n_lskel__destroy(skel_n);
-+}
-+
- static int process_map_key_sample(void *ctx, void *data, size_t len)
- {
- 	struct sample *s;
-@@ -384,6 +446,8 @@ void test_ringbuf(void)
- {
- 	if (test__start_subtest("ringbuf"))
- 		ringbuf_subtest();
-+	if (test__start_subtest("ringbuf_n"))
-+		ringbuf_n_subtest();
- 	if (test__start_subtest("ringbuf_map_key"))
- 		ringbuf_map_key_subtest();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-new file mode 100644
-index 000000000000..8669eb42dbe0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
-+
-+#include <linux/bpf.h>
-+#include <sched.h>
-+#include <unistd.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define TASK_COMM_LEN 16
-+
-+struct sample {
-+	int pid;
-+	long value;
-+	char comm[16];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+int pid = 0;
-+long value = 0;
-+
-+SEC("fentry/" SYS_PREFIX "sys_getpgid")
-+int test_ringbuf_n(void *ctx)
-+{
-+	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-+	struct sample *sample;
-+
-+	if (cur_pid != pid)
-+		return 0;
-+
-+	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
-+	if (!sample)
-+		return 0;
-+
-+	sample->pid = pid;
-+	sample->value = value;
-+	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
-+
-+	bpf_ringbuf_submit(sample, 0);
-+
-+	return 0;
-+}
--- 
-2.43.0
 
 
