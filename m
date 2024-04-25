@@ -1,95 +1,110 @@
-Return-Path: <bpf+bounces-27807-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27808-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAE928B21D5
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:46:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD5A8B230D
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 15:44:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6399428AA26
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 12:46:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFA811F22CDB
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 13:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EF71494C0;
-	Thu, 25 Apr 2024 12:46:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iuU1L+5k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DBC149DE0;
+	Thu, 25 Apr 2024 13:44:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E1D1494BB
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 12:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0B2149C70;
+	Thu, 25 Apr 2024 13:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714049160; cv=none; b=rv0Sx3zxzkvTVro44+skVvLb89pJumHiBSS7JOUa82D9cP7wK8l/Jj6IQ/siuKJ+g9RhUQDXXgP1DmLGYmpCyRIe98iY7xNTui01BnQMjCWAveUlespqhYrp0f0Cp+yOuUbwGCXW38Xie1o6JcydmGAdJMAZ+fn+3SIKzcoEOds=
+	t=1714052685; cv=none; b=pQruheIRWPnOVW7nQ17+oHgjM1cFpjok71kLiNQS6mXo7qlkmGM/a+e9tEYAgnQHFBz1jUQUk5WyIEZuGSYyvC3ElMX2konDJiENRcASN2eeSR2l9xjGRGM6B27NxKFjjqsK8gn91i1scMQhNxxFoJMotaozkb+KB+PUVRK7M3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714049160; c=relaxed/simple;
-	bh=Mzej7q0VUeK0rakjplkYrwn19VaLPM6W6kO4QgF20p8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZlRJ3FFB3bQX7lubtRmqwXZ6v8N7k8xrZ+/PB27+8CBmhybfzcxxwLdYCwyLlZNjyBKNhISPrwG9dqM2cVHZOgnZIu3qLp0MxKsfoJyODdZlvD+X8dmONmOPOdxcP7CBzq1JcFI06PTg7HleDUH+ssH1a0xkgxjacsPCI0y4Ye0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iuU1L+5k; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a587fac79e5so126473866b.3
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 05:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714049157; x=1714653957; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mzej7q0VUeK0rakjplkYrwn19VaLPM6W6kO4QgF20p8=;
-        b=iuU1L+5kXfsin8lk/9jmLVsnImj2OrtB+simjcx2nVOI4HgMimMc63yp2ZVACauhzc
-         o0o1LqWgLrGejGPT+2BYwpuN/k4Y2tu0HLR0Yf0CJR2EMIpS95dhZqcRMRCFhagRBpwl
-         Aa2Xz1VbR4iU86Gh5Y5/CtZwW+vTZr0AfzCb2Idn7uLgXYHdoAQ3Von0uC4HgeyH3VAV
-         y+wglkHn04XpZb7OYV8U6KMeqqM4qGL2WakpTH33iRMpIFpSjEUn8Ef0JYT0pzbW7c34
-         t4vKShSV4lrSTnwNdN5moX933XwZ8ZEuHh4L3SCZaA9YLWjSGiHPXScUiWS6wbFxbPE6
-         yCHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714049157; x=1714653957;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Mzej7q0VUeK0rakjplkYrwn19VaLPM6W6kO4QgF20p8=;
-        b=NVyoGMwPU1jF/fS5BGb0cm+cT5QwLNnUkYMWJLSozrkj7Q/i2deSoSpysyDASSCs8q
-         egXJCQXferOSfcRlPy1WTcgRl6vlELf5n/yTdwujHkzvpUYiTqsz1OGU5zpqTPEH4p5M
-         Fc1A4zmYVoeYMSMEZX6tKZsUpgWu3TqU4wjtAyAGE2lEkVpsOlmySo67gFs+dRZ1ygaz
-         P8BE6kRj/iMVfENpD960DTHU6Tlphq1xjXvnnxE02ojPC4LEHNQZafFAEZr0CFJjJkTY
-         Q/1xyFIGBnA3jj624LUM3KPqv4Cx49zl0gsHCSW83vyecWUoQZ51u2a+qM9OjECtZ0bn
-         9TgQ==
-X-Gm-Message-State: AOJu0Yz0u/kB8RHs+BjBfsSwW/6010aXGELsrtm+0H2XSgjluUoCloHl
-	jD2Ta2XxF0LLvexEc8A2uEmwVHBAvGaENv462KyokzY8h/Dqp8tBVl00LrUBnbTitq4TSkqmG9j
-	G4QahF5O9YdVLUVwTppxI+RMgQ74=
-X-Google-Smtp-Source: AGHT+IEMMVm3X4trHIHu6zKYhpmpZ5lxLnNujGVd0WL6Q2tK/cY9cCvnWP4mRKdrD2g+Sf0z/Y2R1aaq7DANdl6UIqw=
-X-Received: by 2002:a17:907:2d08:b0:a52:58a7:11d1 with SMTP id
- gs8-20020a1709072d0800b00a5258a711d1mr4982229ejc.38.1714049157386; Thu, 25
- Apr 2024 05:45:57 -0700 (PDT)
+	s=arc-20240116; t=1714052685; c=relaxed/simple;
+	bh=CyrSeJBRTRkJmYgi2pUvZxa1a3HuhHmZ2BltAAz8wfo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hfzExLJoFt3+190+xnIliNv5N8RZR6KELJuTbHoMqODkTF+Mp8/PEs0HjmvgXbwoyzE0S7Uk66njaxHqb0L6iFPNUerQbluLvkximYoaNKmid8g/AOxVcBsXQY0WeKU/5ovzpdbBBEBIaWcFE1nvEL1ySRe16h0UWdW0xHn67as=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VQH8X4NLBzNtVH;
+	Thu, 25 Apr 2024 21:42:04 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (unknown [7.185.36.155])
+	by mail.maildlp.com (Postfix) with ESMTPS id 412FC180080;
+	Thu, 25 Apr 2024 21:44:37 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Apr
+ 2024 21:44:36 +0800
+From: Xin Liu <liuxin350@huawei.com>
+To: <alan.maguire@oracle.com>
+CC: <andrii@kernel.org>, <arnaldo.melo@gmail.com>, <ast@kernel.org>,
+	<bpf@vger.kernel.org>, <daniel@iogearbox.net>, <dwarves@vger.kernel.org>,
+	<kernel-team@fb.com>, <liuxin350@huawei.com>, <ndesaulniers@google.com>,
+	<yonghong.song@linux.dev>, <yanan@huawei.com>, <wuchangye@huawei.com>,
+	<xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+	<zhangmingyi5@huawei.com>, <liwei883@huawei.com>
+Subject: Re: [PATCH dwarves] btf_encoder: Fix dwarf int type with greater-than-16 byte issue
+Date: Thu, 25 Apr 2024 21:43:40 +0800
+Message-ID: <20240425134340.750289-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <686d2f65-0d6d-43e6-83fe-a9eb2eb6149e@oracle.com>
+References: <686d2f65-0d6d-43e6-83fe-a9eb2eb6149e@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424225529.16782-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240424225529.16782-1-alexei.starovoitov@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 25 Apr 2024 14:45:20 +0200
-Message-ID: <CAP01T74c-Tk0=2jMSGNA1FbxSh1bUStTQD3b1i2PcSL3FW663g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add bpf_guard_preempt() convenience macro
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@kernel.org, eddyz87@gmail.com, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
 
-On Thu, 25 Apr 2024 at 00:55, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Add bpf_guard_preempt() macro that uses newly introduced
-> bpf_preempt_disable/enable() kfuncs to guard a critical section.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+On Wed, 24 Apr 2024 15:35:38 -0700 Yonghong Song <yonghong.song@linux.dev> wrote:
+> Nick Desaulniers and Xin Liu separately reported that int type might
+> have greater-than-16 byte size ([1] and [2]). More specifically, the
+> reported int type sizes are 1024 and 64 bytes.
+> 
+> The libbpf and bpf program does not really support any int type greater
+> than 16 bytes. Therefore, with current pahole, btf encoding will fail
+> with greater-than-16 byte int types.
+> 
+> Since for now bpf does not support '> 16' bytes int type, the simplest
+> way is to sanitize such types, similar to existing conditions like
+> '!byte_sz' and 'byte_sz & (byte_sz - 1)'. This way, pahole won't
+> call libbpf with an unsupported int type size. The patch [3] was
+> proposed before. Now I resubmitted this patch as there are another
+> failure due to the same issue.
+> 
+>   [1] https://github.com/libbpf/libbpf/pull/680
+>   [2] https://lore.kernel.org/bpf/20240422144538.351722-1-liuxin350@huawei.com/
+>   [3] https://lore.kernel.org/bpf/20230426055030.3743074-1-yhs@fb.com/
+> 
+> Cc: Xin Liu <liuxin350@huawei.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+
+Reviewed-by: Xin Liu <liuxin350@huawei.com>
+
 > ---
-
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>  btf_encoder.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index e1e3529..19e9d90 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -393,7 +393,7 @@ static int32_t btf_encoder__add_base_type(struct btf_encoder *encoder, const str
+>  	 * these non-regular int types to avoid libbpf/kernel complaints.
+>  	 */
+>  	byte_sz = BITS_ROUNDUP_BYTES(bt->bit_size);
+> -	if (!byte_sz || (byte_sz & (byte_sz - 1))) {
+> +	if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16) {
+>  		name = "__SANITIZED_FAKE_INT__";
+>  		byte_sz = 4;
+>  	}
 
