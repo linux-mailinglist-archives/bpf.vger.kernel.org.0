@@ -1,98 +1,293 @@
-Return-Path: <bpf+bounces-27804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38C9C8B2196
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:26:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E648B21A4
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 14:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC4381F22D82
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 12:26:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 963BC1C2296C
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 12:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6462B12BF22;
-	Thu, 25 Apr 2024 12:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7D01386BD;
+	Thu, 25 Apr 2024 12:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="OTEQXTRB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgOQJc7D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4857C085
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 12:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF91138484;
+	Thu, 25 Apr 2024 12:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714047998; cv=none; b=VYezAAVsQoueZTXUCcTP1tLZqjbcELMwB2+GxIFXNbMh7TkkGMGvgXVciOTCIq9iQ8W/o8BW4qiRu6qNaaY2O04Eym9KNZW06AfZ84skCu5qtWTu/MiXzT3vIDj/xNv8MrGfM60dAR5y795TIx0TE70Wz2gohXOBO8oPzBaQwMM=
+	t=1714048290; cv=none; b=E+kweQdKFqvjphINRBlQ9wE6wgryGFRPbezVo4IdCcXsX1yfK2298xwjtygZoRAlvzmHWGHSf6mP+hn8lyPxFnnWeF1fkdf5pBJ9sh0aHgyKOsiK/V2ISsYG0LVwwarraDqrldhknM+6jSwee3qzMQmhbDzdGSeQcJizF1i34K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714047998; c=relaxed/simple;
-	bh=qoCndbqMNE3BqNyuRKerd5xZFKipqxBEtMUifgugVLA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o7BAUn9ER+a4RAJwA8Vb4fqOcBvT0xxwBbRdOvOMc1oY9mPNAxxggUHaI4Q3jccwX1SkppWIwjkYnTuWbLlZLuGaZBeMNX5slraSYkvflLzzA3MngtsFnpjYmSIgExVK2/0+0J9VE36uSUIuyy30MoaCYb/hmmWbqMphk0PtRNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=OTEQXTRB; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso617869a12.0
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 05:26:37 -0700 (PDT)
+	s=arc-20240116; t=1714048290; c=relaxed/simple;
+	bh=NnqLYuiPmxamyrMtPWcohCrbnXsPjkNdRdMe3hkfNhg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S6E6ppmlh7f2Nc1ETagDkbTjtw2ekbuzaR7XKPdOvgMI3B8AiXgMwQTz6rDVnz7Om4ZoONfaDtQuZdHU/ksnySCluLV1zktuFP05aFaRPUGvoAxCHhh6RCFFfQT432pSyw+YGs8W4shXt4X5UxzPUG0UQuYeUiU+2IZfgAcFBbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgOQJc7D; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so1139633a12.1;
+        Thu, 25 Apr 2024 05:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1714047997; x=1714652797; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qoCndbqMNE3BqNyuRKerd5xZFKipqxBEtMUifgugVLA=;
-        b=OTEQXTRBWZ2K7BrdEbXZCmVvlRFJ1WiSNFf0A4lWgy+7aNUPsgQtNFIo8Kzjtm+2UE
-         2zjGVuxWoIZ8QaEuDUefBJ6LszuJkPDzCryK79i156nDfdDRNQku7yq3xJO5dVgIrI7H
-         eG7C0M4AjmV32Q6pOROpuQabX1TkAm7XqgeXwrZzVJI8lHkbIoCe3BE3CZtu7G4JCHiq
-         yc+zdCjNFw3u5p6xMlKudaIqrueKt0AVUp58sr5bpje2YVQ+R8u/8dGHjpk3/Pc3BCWd
-         7J0AcpOIfKcu/Bn+4lycHRZtGdlaGFBcUOfI29dNo6WmE1W6sb7fW4SEuyO8L/rySHTg
-         mNSw==
+        d=gmail.com; s=20230601; t=1714048287; x=1714653087; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mO0EKaMYJlTxWEv8jqnhkmWDvB4xKI7gbxq4S4uH4WQ=;
+        b=mgOQJc7DmGDmnQ+cEU6Gfqwz8bPDYtGT4SB78UCIeKwnYeV8rlAXLMISTLmgb60Ip+
+         G+lzYGVZtYXVE11w/FB52NVmaiib7bRIi2p8/Tk5KLQmIkMA+fHflctFOsfltMIdggCB
+         Fgdhje0KIB1ZDEV9le+Y8htRmJ+ZighTZlnolZ1GHTkWR7fMkBDgbj1Igehv2wCUuvPU
+         2kbxpPaGAp1ZxZFLiLHLajxnd0EmxPtpa/k4j3tUPDGLShP3+1QsrUxQmDAlOebVVusu
+         Jev0pr7yJOBT8ansbcG4xuKUXD/Yu66vsvPNOM2HLL4Sk1gljuCr76/OezLgFj5tixRu
+         fgOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714047997; x=1714652797;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qoCndbqMNE3BqNyuRKerd5xZFKipqxBEtMUifgugVLA=;
-        b=VP26EZ/KU/ZLxgHg0PKWKhiSYRz14Xz7RFPdFtfzmulYZudxls2iFOyizg4AVRE7S2
-         3seXXB4Uhf6ZqG5rb6FEZ2MLh02jHZL3bB7wUgCCF5YPv0c8wccmkLoqjOZqWwW+ZcO1
-         8C/KP8OHLZrHEBLkf251789nBB37UJ5PBblQT+uT7RBHCcAkYRtOfzCT1kIe7Xl3tJq1
-         9PIOCTieNA6UuOAQu6J04Tkst8Yp07Hc2DxOrXSNQkbHhsmFIRdKIssX6dW3Gr2gUA9V
-         lb1A8eQl8nWTOjceobsSfvZvovexv4nOV4mzGu8UizMG3oDfr5UfpRAWEOts01T8skNO
-         TKuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVxLOU6voQo8DT9nwk03yHftr/A/GaQ7W6Laz6HiHjX/nCOJrohNF6vHkbwnFLcqw5pb/UZbPu7SL4T5EnWslkaPqig
-X-Gm-Message-State: AOJu0YyvSFE5vGhiaXCrbdgWpZe80b2T/KyZkk8mWDqRrpvcy3C2R3qt
-	VFb2TWVDIxHo+1R/vpOZ8gH5h+jorpCRwTAhUI78IVPyROqlxH41wn03LXWilZOQczVl0zbpUFf
-	yx/4Wk19qFHjCZLHD/yQw72hJxa7hEMHxcT3NaA==
-X-Google-Smtp-Source: AGHT+IEE5M2ANlYyuPFnN8QiC4Pt2f/2Sdx+reeKgeULql42RQtBmelZABoqu1+suBWFmyBmGyXug7HMm4D7XG9r8T0=
-X-Received: by 2002:a17:90a:d583:b0:2ad:da23:da0b with SMTP id
- v3-20020a17090ad58300b002adda23da0bmr6450954pju.34.1714047996954; Thu, 25 Apr
- 2024 05:26:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714048287; x=1714653087;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mO0EKaMYJlTxWEv8jqnhkmWDvB4xKI7gbxq4S4uH4WQ=;
+        b=bZ+2N15CVjp/RW4zYsJhQuv48/awkI7CSYCCu2TC2DITpvxlHratXpYUWY2O88PAOe
+         AVYtHrvTS/Ya8qDRPu1yyN1RsHootpFD413i9QfGaTrzoW+biq1jJZBnzJEIEDosgLc0
+         Src7FvpCWpfCQ3The0SIxXXmdM0EuFq2JKnrnsZMgUpHTMXv3qtTcDeWE8KOgzlj3SMi
+         oE/lYyBX1ULIDFYmMstEqRZwgpW+U8dv/Ma3n1i27w4807ZOCfPyJFwLiIWkrUpjCkEn
+         aSCx/a+NXmxCdQbPaUVW5WRLWpOJNljhBzFjt2xVy1fC1koMpwVA12I4f03IQROFyQv8
+         EtQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZA98Mqt+IMmc6ia50ekDuQQ0R7GLQabWLVLn259zLC9M+SvSag+rFvdyLVOiQ1OwcU3+iH8u0uTDZML/3Wi4kGiGWhamU1p+g2EqQCW6JDur7g9YYYoOx2Lnq52tpnz1h7+AlJbIuoZTPrsJnYllbutDPI2aWgdhnNwJJVK1ETOkH
+X-Gm-Message-State: AOJu0YzgmMxp8+C8rK8tVO4Rfk6+BiI27NdhGymOtn5WgFEGVYaiMXxM
+	+tjRfVY387f1LCsfIee1Lv59Sypf0b5JlNpqztHbVppf4U2SJC3l
+X-Google-Smtp-Source: AGHT+IGSpK4iSQLWgV06frZeBl3VhSXx81bJY3LDjlo0ZC/Yn7Xd4dgOG3sP3+54Eb4svViSnlwc0A==
+X-Received: by 2002:a50:ab0c:0:b0:56e:2b31:b111 with SMTP id s12-20020a50ab0c000000b0056e2b31b111mr3689775edc.7.1714048287002;
+        Thu, 25 Apr 2024 05:31:27 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id n13-20020a50cc4d000000b005721d18a843sm3220924edi.65.2024.04.25.05.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 05:31:26 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 25 Apr 2024 14:31:24 +0200
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2] selftests/bpf: Add ring_buffer__consume_n test.
+Message-ID: <ZipNHH568oa2zDt9@krava>
+References: <20240425073319.75389-1-andrea.righi@canonical.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712639568.git.tanggeliang@kylinos.cn> <e4efa52c26ca5ae97c7e4e7570d8da9cd44df533.1712639568.git.tanggeliang@kylinos.cn>
- <e2aaa0f0-7641-4d26-9256-1151976235f1@linux.dev> <Zh+E5JlEM6fisrFS@t480>
- <f3f0388e-8884-4371-b96c-80d4ee34592d@linux.dev> <ddac8e767369df15dc421bb613f88463bec30448.camel@kernel.org>
-In-Reply-To: <ddac8e767369df15dc421bb613f88463bec30448.camel@kernel.org>
-From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Thu, 25 Apr 2024 14:26:25 +0200
-Message-ID: <CAGn+7TVviKqYSD3__uv5idsDK93ynQPETxgkRew3Zn9AMoLvuw@mail.gmail.com>
-Subject: Re: [PATCH bpf v4 1/2] selftests/bpf: Add F_SETFL for fcntl in test_sockmap
-To: Geliang Tang <geliang@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425073319.75389-1-andrea.righi@canonical.com>
 
-On Tue, Apr 23, 2024 at 12:29=E2=80=AFPM Geliang Tang <geliang@kernel.org> =
-wrote:
-> New version v5 has been sent. Please review it for me.
+On Thu, Apr 25, 2024 at 09:33:19AM +0200, Andrea Righi wrote:
+> Add a testcase for the ring_buffer__consume_n() API.
+> 
+> The test produces multiple samples in a ring buffer, using a
+> sys_getpid() fentry prog, and consumes them from user-space in batches,
+> rather than consuming all of them greedily, like ring_buffer__consume()
+> does.
+> 
+> Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
+> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |  2 +-
+>  .../selftests/bpf/prog_tests/ringbuf.c        | 64 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_ringbuf_n.c      | 47 ++++++++++++++
+>  3 files changed, 112 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> 
+> ChangeLog v1 -> v2:
+>  - replace CHECK() with ASSERT_EQ()
+>  - fix skel -> skel_n
+>  - drop unused "seq" field from struct sample
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index edc73f8f5aef..6332277edeca 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -455,7 +455,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+>  LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
+>  	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
+>  	core_kern.c core_kern_overflow.c test_ringbuf.c			\
+> -	test_ringbuf_map_key.c
+> +	test_ringbuf_n.c test_ringbuf_map_key.c
+>  
+>  # Generate both light skeleton and libbpf skeleton for these
+>  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> index 48c5695b7abf..d59500d13a41 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/perf_event.h>
+>  #include <linux/ring_buffer.h>
+>  #include "test_ringbuf.lskel.h"
+> +#include "test_ringbuf_n.lskel.h"
+>  #include "test_ringbuf_map_key.lskel.h"
+>  
+>  #define EDONE 7777
+> @@ -60,6 +61,7 @@ static int process_sample(void *ctx, void *data, size_t len)
+>  }
+>  
+>  static struct test_ringbuf_map_key_lskel *skel_map_key;
+> +static struct test_ringbuf_n_lskel *skel_n;
 
-Sorry for the long delay. I'm in between laptops. But I will take a
-look this week.
+nit, as I wrote in the other email, I think this could be put directly
+in the ringbuf_n_subtest function, other than that lgtm
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+>  static struct test_ringbuf_lskel *skel;
+>  static struct ring_buffer *ringbuf;
+>  
+> @@ -326,6 +328,66 @@ static void ringbuf_subtest(void)
+>  	test_ringbuf_lskel__destroy(skel);
+>  }
+>  
+> +/*
+> + * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
+> + * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
+> + */
+> +#define N_TOT_SAMPLES	32
+> +#define N_SAMPLES	4
+> +
+> +/* Sample value to verify the callback validity */
+> +#define SAMPLE_VALUE	42L
+> +
+> +static int process_n_sample(void *ctx, void *data, size_t len)
+> +{
+> +	struct sample *s = data;
+> +
+> +	ASSERT_EQ(s->value, SAMPLE_VALUE, "sample_value");
+> +
+> +	return 0;
+> +}
+> +
+> +static void ringbuf_n_subtest(void)
+> +{
+> +	int err, i;
+> +
+> +	skel_n = test_ringbuf_n_lskel__open();
+> +	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
+> +		return;
+> +
+> +	skel_n->maps.ringbuf.max_entries = getpagesize();
+> +	skel_n->bss->pid = getpid();
+> +
+> +	err = test_ringbuf_n_lskel__load(skel_n);
+> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
+> +		goto cleanup;
+> +
+> +	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
+> +				   process_n_sample, NULL, NULL);
+> +	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
+> +		goto cleanup;
+> +
+> +	err = test_ringbuf_n_lskel__attach(skel_n);
+> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
+> +		goto cleanup_ringbuf;
+> +
+> +	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
+> +	skel_n->bss->value = SAMPLE_VALUE;
+> +	for (i = 0; i < N_TOT_SAMPLES; i++)
+> +		syscall(__NR_getpgid);
+> +
+> +	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
+> +	for (i = 0; i < N_TOT_SAMPLES; i += err) {
+> +		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
+> +		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
+> +	}
+> +
+> +cleanup_ringbuf:
+> +	ring_buffer__free(ringbuf);
+> +cleanup:
+> +	test_ringbuf_n_lskel__destroy(skel_n);
+> +}
+> +
+>  static int process_map_key_sample(void *ctx, void *data, size_t len)
+>  {
+>  	struct sample *s;
+> @@ -384,6 +446,8 @@ void test_ringbuf(void)
+>  {
+>  	if (test__start_subtest("ringbuf"))
+>  		ringbuf_subtest();
+> +	if (test__start_subtest("ringbuf_n"))
+> +		ringbuf_n_subtest();
+>  	if (test__start_subtest("ringbuf_map_key"))
+>  		ringbuf_map_key_subtest();
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> new file mode 100644
+> index 000000000000..8669eb42dbe0
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> @@ -0,0 +1,47 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
+> +
+> +#include <linux/bpf.h>
+> +#include <sched.h>
+> +#include <unistd.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +#define TASK_COMM_LEN 16
+> +
+> +struct sample {
+> +	int pid;
+> +	long value;
+> +	char comm[16];
+> +};
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
+> +} ringbuf SEC(".maps");
+> +
+> +int pid = 0;
+> +long value = 0;
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+> +int test_ringbuf_n(void *ctx)
+> +{
+> +	int cur_pid = bpf_get_current_pid_tgid() >> 32;
+> +	struct sample *sample;
+> +
+> +	if (cur_pid != pid)
+> +		return 0;
+> +
+> +	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
+> +	if (!sample)
+> +		return 0;
+> +
+> +	sample->pid = pid;
+> +	sample->value = value;
+> +	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
+> +
+> +	bpf_ringbuf_submit(sample, 0);
+> +
+> +	return 0;
+> +}
+> -- 
+> 2.43.0
+> 
 
