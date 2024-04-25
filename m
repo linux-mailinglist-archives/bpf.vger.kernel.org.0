@@ -1,206 +1,135 @@
-Return-Path: <bpf+bounces-27766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B8B98B17A3
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 02:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF5778B17CC
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 02:10:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 124EB1F2449B
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 00:02:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C4761F24553
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 00:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE32A3D;
-	Thu, 25 Apr 2024 00:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98D6A38;
+	Thu, 25 Apr 2024 00:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjK1Wv+h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fR39c2Va"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7287B36E;
-	Thu, 25 Apr 2024 00:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE8B386
+	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 00:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714003335; cv=none; b=dF7meUuSH7Ip2KFIMhyMY+hYxAKj0RvTXTwILH+JYxGPXXcy8Mk8w2PEvoh5ovkltGgxYbyeDaZ8ATzkiTG9YesOQcIpQoho4dKxxpF16gs/rBnYymOG+7rRYxcpzezYnCUZtQxK1K+ReRKt82dNkVmdVNfKkmH2kW1+0Hzq9yE=
+	t=1714003811; cv=none; b=oofbhiJ4xWbZas0ByplXnojrQzcPOjSgsy/FootsQpOhgho4JQHPVuyfefcGF+LXgrD0B/KKoRgfX/NW3UFHar1Hy0dIdhG46sAITQjSn9+HYFoYt28U40y4JYv4gY2240OOEiUhVPnzG4eDAv1e0+ZwRH3oTi9UYccGimyVYkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714003335; c=relaxed/simple;
-	bh=uULInvgP4WaXTcpiN5zWSR1+1Q4u+PCE543FW+s4Ay8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XUhQG+jRleAUgiEG/sCHoaNuz4hBcYaGVoHegocYLfPRwqEI/FSF7CNZpYc6o8QgudhbsF2MniQ+6yiI/SwzJl9MqM70TKlh7PVBGvSIj2h/sxV8DwGwjvJ0/gNGxnc5rgdQbDZFnR98j/PL52F27+2Q/Ar1fSys5F8Z3Tpjm4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjK1Wv+h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C908DC113CD;
-	Thu, 25 Apr 2024 00:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714003335;
-	bh=uULInvgP4WaXTcpiN5zWSR1+1Q4u+PCE543FW+s4Ay8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cjK1Wv+hxver0lgHTavnio/dJ4YLpoY2QDDtcWxToW78W34ZRGE5oCDxvHZBpf4tR
-	 PL+36DOinzZOPugOqWk5Ay0SZBXl3ewXeCyCzSeneCvkAILBgUPQampH3XLhGIX5Zv
-	 PnQfym2nj02ss+3vJziAdEQg9b+rqiGGEbEMnhoXt0GKqDm3HDXEnqoz6hIAtwmYTd
-	 PLMySOgecRoisHvWvTwFha1AXe7cLoXkIvxy+asIzv14/AQkY2I2TTYsNdX74maPfq
-	 rIiLHurVsDFEFXeNRbZnJg9dVUtd/8AmJqEWTZrY62pngn3c0zj4AXZi28Ha9MCjlE
-	 dZOmfPf6Bl6LA==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH RFC] rethook: inline arch_rethook_trampoline_callback() in assembly code
-Date: Wed, 24 Apr 2024 17:02:11 -0700
-Message-ID: <20240425000211.708557-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714003811; c=relaxed/simple;
+	bh=lmOxA76wxHEfVbi3tuKQ2Hz7XO0QIn/Q9Ez2eV+cCPM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jaSR1bE52CnVqHQHV7PxrMGtzBtYjgO7uxi1L4VOjjpGcagiHAdcwSOCgd2zQlqD2hY02H3jZQbIJy6QcWG+h6Tavk2b97vKF3bBPmRNOEXUDssff3u6+LgtRjFgjeTGxFuAJE2yqTPBC39bj+kpZnLxIu1QDDQ4WOorp7xdugc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fR39c2Va; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ecec796323so492344b3a.3
+        for <bpf@vger.kernel.org>; Wed, 24 Apr 2024 17:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714003809; x=1714608609; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EWC/+Umc6aoN24kSGdEpV6rytDVsFSucj9lWuMWLt7I=;
+        b=fR39c2VajFVFBtG19UMjvzkCY3WWUK4IiuM6kwV35AlHxNWp8vVODdZU9JOv2V9Rid
+         YOuMXAfHvOP90HPlK31LnvKh9jLAAXKEfQ7w3sMbkbAppAY6dfltTmh9g5vTpLspyJAp
+         zMt25zD4fObxWukD2zvyfPamT2s+DuAX2Jbde+ge1OzdtFy1qh4xzKhMrrBrLOp7DRiQ
+         wSM1o7brvfwrhoKXtpKsMRamQwFWzwMgjMQVbuGS5irgbHTh4QmlJ4LR4E3cgnvq2m3K
+         fHARl6beAjkX7Fxa2t2eFqfnJshyejDNRXKVhEw8/CwVZymJfoE7KY5wKbtpzKKsMnS0
+         vTeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714003809; x=1714608609;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EWC/+Umc6aoN24kSGdEpV6rytDVsFSucj9lWuMWLt7I=;
+        b=h5S4uUJh/mb/cCm9V6hoRDq0j0EzT049jqUtXGe/TYAlsA7rjZtKphNhzSXu0QHq2c
+         g6zx4sJitg+vcOL2zzey8Nh+zs4c8r8nrULUbAmahfDvjN5DJYmNb2arj56hmPOTYRa1
+         zpRuy8thhfv4Z/ra9NQHakUeJRzwizInff7WcXPX0nwgGL90nkCf6o56909JD/qn8HQp
+         mk847XI5l9EwG35LmXVj1JPXaDv1EtMOmsJaQq41txbEwM+gJGEtNWBc06xLHjDXaZG6
+         WjwK7Y3gnnABYsesqNVR5hM+m6mI2OSPqRvVzai1uS+FzKFADPlr/UoKj49DSoGHl6F+
+         aGUg==
+X-Gm-Message-State: AOJu0YyansA+VUcRIemzvCf0yHoi+IZaSXZFSgaWvPQaiyAuNLw/XzoX
+	fdNCVnggvU8PlN/4DVOsvpJG6lW4gqFT44ilz809lH/hzx21v2Wt0TjnR6N7LmHK6PLxYB6qaEz
+	QVnWeKK0/9WfV0Yu4KtquSHQIQ8jkfA==
+X-Google-Smtp-Source: AGHT+IGMCa6Y5/HbyvSoqW08/wl7SoF2Rf9mDWgLSMAKtEOxLZYDrzrGvfrYsZ5Z69iDahMgRpkpnBO1hY9lqY6CeHg=
+X-Received: by 2002:a05:6a20:9484:b0:1a3:e2c4:956e with SMTP id
+ hs4-20020a056a20948400b001a3e2c4956emr3818533pzb.25.1714003808774; Wed, 24
+ Apr 2024 17:10:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240418163509.719335-1-thinker.li@gmail.com> <20240418163509.719335-2-thinker.li@gmail.com>
+In-Reply-To: <20240418163509.719335-2-thinker.li@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 24 Apr 2024 17:09:56 -0700
+Message-ID: <CAEf4BzYMZYJa3mTjgp7uY6Xw==SAgbvjar2xYHXCE-eqXj8_Kg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: enable the "open" operator on a
+ pinned path of a struct_osp link.
+To: Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, sinquersw@gmail.com, 
+	kuifeng@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-At the lowest level, rethook-based kretprobes on x86-64 architecture go
-through arch_rethoook_trampoline() function, manually written in
-assembly, which calls into a simple arch_rethook_trampoline_callback()
-function, written in C, and only doing a few straightforward field
-assignments, before calling further into rethook_trampoline_handler(),
-which handles kretprobe callbacks generically.
+On Thu, Apr 18, 2024 at 9:35=E2=80=AFAM Kui-Feng Lee <thinker.li@gmail.com>=
+ wrote:
+>
+> Add the "open" operator for the inodes of BPF links to allow applications
+> to obtain a file descriptor of a struct_ops link from a pinned path.
+>
+> Applications have the ability to update a struct_ops link with another
+> struct_ops map. However, they were unable to open pinned paths of the lin=
+ks
+> with this patch. This implies that updating a link through its pinned pat=
+hs
+> was not feasible.
+>
+> This patch adds the "open" operator to bpf_link_ops and uses bpf_link_ops
+> as the i_fop for inodes of struct_ops links. "open" will be called to ope=
+n
+> the pinned path represented by an inode. Additionally, bpf_link_ops will =
+be
+> used as the f->f_ops of the opened "file" to provide operators for the
+> "file".
+>
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>  include/linux/bpf.h         |  6 ++++++
+>  kernel/bpf/bpf_struct_ops.c | 10 ++++++++++
+>  kernel/bpf/inode.c          | 11 ++++++++---
+>  kernel/bpf/syscall.c        | 16 +++++++++++++++-
+>  4 files changed, 39 insertions(+), 4 deletions(-)
+>
 
-Looking at simplicity of arch_rethook_trampoline_callback(), it seems
-not really worthwhile to spend an extra function call just to do 4 or
-5 assignments. As such, this patch proposes to "inline"
-arch_rethook_trampoline_callback() into arch_rethook_trampoline() by
-manually implementing it in an assembly code.
+This is already supported, but you don't do it with open() syscall.
+bpf() syscall provides BPF_OBJ_GET as a counterpart to BPF_OBJ_PIN. So
+what you/your users want to do should be already supported through
+libbpf's bpf_obj_get()/bpf_obj_get_ops() APIs. Have you tried that?
 
-This has two motivations. First, we do get a bit of runtime speed up by
-avoiding function calls. Using BPF selftests's bench tool, we see
-0.6%-0.8% throughput improvement for kretprobe/multi-kretprobe
-triggering code path:
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5034c1b4ded7..a0c0234d754b 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2160,6 +2160,12 @@ extern const struct super_operations bpf_super_ops=
+;
+>  extern const struct file_operations bpf_map_fops;
+>  extern const struct file_operations bpf_prog_fops;
+>  extern const struct file_operations bpf_iter_fops;
+> +extern const struct file_operations bpf_link_fops;
+> +
 
-BEFORE (latest probes/for-next)
-===============================
-kretprobe      :   10.455 ± 0.024M/s
-kretprobe-multi:   11.150 ± 0.012M/s
-
-AFTER (probes/for-next + this patch)
-====================================
-kretprobe      :   10.540 ± 0.009M/s (+0.8%)
-kretprobe-multi:   11.219 ± 0.042M/s (+0.6%)
-
-Second, and no less importantly for some specialized use cases, this
-avoids unnecessarily "polluting" LBR records with an extra function call
-(recorded as a jump by CPU). This is the case for the retsnoop ([0])
-tool, which relies havily on capturing LBR records to provide users with
-lots of insight into kernel internals.
-
-This RFC patch is only inlining this function for x86-64, but it's
-possible to do that for 32-bit x86 arch as well and then remove
-arch_rethook_trampoline_callback() implementation altogether. Please let
-me know if this change is acceptable and whether I should complete it
-with 32-bit "inlining" as well. Thanks!
-
-  [0] https://nakryiko.com/posts/retsnoop-intro/#peering-deep-into-functions-with-lbr
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- arch/x86/kernel/asm-offsets_64.c |  4 ++++
- arch/x86/kernel/rethook.c        | 37 +++++++++++++++++++++++++++-----
- 2 files changed, 36 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offsets_64.c
-index bb65371ea9df..5c444abc540c 100644
---- a/arch/x86/kernel/asm-offsets_64.c
-+++ b/arch/x86/kernel/asm-offsets_64.c
-@@ -42,6 +42,10 @@ int main(void)
- 	ENTRY(r14);
- 	ENTRY(r15);
- 	ENTRY(flags);
-+	ENTRY(ip);
-+	ENTRY(cs);
-+	ENTRY(ss);
-+	ENTRY(orig_ax);
- 	BLANK();
- #undef ENTRY
- 
-diff --git a/arch/x86/kernel/rethook.c b/arch/x86/kernel/rethook.c
-index 8a1c0111ae79..3e1c01beebd1 100644
---- a/arch/x86/kernel/rethook.c
-+++ b/arch/x86/kernel/rethook.c
-@@ -6,6 +6,7 @@
- #include <linux/rethook.h>
- #include <linux/kprobes.h>
- #include <linux/objtool.h>
-+#include <asm/asm-offsets.h>
- 
- #include "kprobes/common.h"
- 
-@@ -34,10 +35,36 @@ asm(
- 	"	pushq %rsp\n"
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
--	"	movq %rsp, %rdi\n"
--	"	call arch_rethook_trampoline_callback\n"
-+	"	movq %rsp, %rdi\n" /* $rdi points to regs */
-+	/* fixup registers */
-+	/* regs->cs = __KERNEL_CS; */
-+	"	movq $" __stringify(__KERNEL_CS) ", " __stringify(pt_regs_cs) "(%rdi)\n"
-+	/* regs->ip = (unsigned long)&arch_rethook_trampoline; */
-+	"	movq $arch_rethook_trampoline, " __stringify(pt_regs_ip) "(%rdi)\n"
-+	/* regs->orig_ax = ~0UL; */
-+	"	movq $0xffffffffffffffff, " __stringify(pt_regs_orig_ax) "(%rdi)\n"
-+	/* regs->sp += 2*sizeof(long); */
-+	"	addq $16, " __stringify(pt_regs_sp) "(%rdi)\n"
-+	/* 2nd arg is frame_pointer = (long *)(regs + 1); */
-+	"	lea " __stringify(PTREGS_SIZE) "(%rdi), %rsi\n"
-+	/*
-+	 * The return address at 'frame_pointer' is recovered by the
-+	 * arch_rethook_fixup_return() which called from this
-+	 * rethook_trampoline_handler().
-+	 */
-+	"	call rethook_trampoline_handler\n"
-+	/*
-+	 * Copy FLAGS to 'pt_regs::ss' so we can do RET right after POPF.
-+	 *
-+	 * We don't save/restore %rax below, because we ignore
-+	 * rethook_trampoline_handler result.
-+	 *
-+	 * *(unsigned long *)&regs->ss = regs->flags;
-+	 */
-+	"	mov " __stringify(pt_regs_flags) "(%rsp), %rax\n"
-+	"	mov %rax, " __stringify(pt_regs_ss) "(%rsp)\n"
- 	RESTORE_REGS_STRING
--	/* In the callback function, 'regs->flags' is copied to 'regs->ss'. */
-+	/* We just copied 'regs->flags' into 'regs->ss'. */
- 	"	addq $16, %rsp\n"
- 	"	popfq\n"
- #else
-@@ -61,6 +88,7 @@ asm(
- );
- NOKPROBE_SYMBOL(arch_rethook_trampoline);
- 
-+#ifdef CONFIG_X86_32
- /*
-  * Called from arch_rethook_trampoline
-  */
-@@ -70,9 +98,7 @@ __used __visible void arch_rethook_trampoline_callback(struct pt_regs *regs)
- 
- 	/* fixup registers */
- 	regs->cs = __KERNEL_CS;
--#ifdef CONFIG_X86_32
- 	regs->gs = 0;
--#endif
- 	regs->ip = (unsigned long)&arch_rethook_trampoline;
- 	regs->orig_ax = ~0UL;
- 	regs->sp += 2*sizeof(long);
-@@ -92,6 +118,7 @@ __used __visible void arch_rethook_trampoline_callback(struct pt_regs *regs)
- 	*(unsigned long *)&regs->ss = regs->flags;
- }
- NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
-+#endif
- 
- /*
-  * arch_rethook_trampoline() skips updating frame pointer. The frame pointer
--- 
-2.43.0
-
+[...]
 
