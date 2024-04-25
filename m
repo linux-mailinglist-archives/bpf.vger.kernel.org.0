@@ -1,148 +1,177 @@
-Return-Path: <bpf+bounces-27863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003B38B2D73
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 01:10:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D3D38B2D7D
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 01:18:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 819AD2819D5
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 23:10:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 904121F22D37
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 23:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E680156649;
-	Thu, 25 Apr 2024 23:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9602115664A;
+	Thu, 25 Apr 2024 23:18:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mFM7H5Op"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abxRX3f8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE353152526;
-	Thu, 25 Apr 2024 23:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C597884D0D
+	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 23:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714086627; cv=none; b=rwiZ3W5L9LsKWf77d9eosxinfvNUFQrVouRNY4sjDd/uhCpNV3RwS4WYzCvv68Y9Ctp0KrmPOTWIkL6m2/xLHTgAtmlJFHNuGAxnKsjL884RxPNmb6R0xnAlXIyUjUIJJp4houe1+wIkX2QKIT70JtrzShrv1JAxRQYtRV85+N4=
+	t=1714087084; cv=none; b=OZUviJYo1ZUqNkhJyRt7GM96W0gwwvwGuj9Be3FO1NBD2I3KVEG9p+uboqlh8CdgAF40FnhBts1dLo4w2d6fj2LMylP1lcuexqH8bGiq4rD0AIDC9EHQ3H2F5LaQcwA3o1NgA4HzR6pH6UX+pQzLsL2HrE0he9qYuxD5hlenMYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714086627; c=relaxed/simple;
-	bh=iOUr7793PuOMIMhHvUa9WY+EkIduESRkPhsD/HavPVg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DR88Q83YoqWcsjcr+iiQDVmW9ZmHJNg5YmiChWNE3LLrSzqXYSYnjJcwRl8SpMoBTeU3vz9BeDbAiCmUyYKfLVJPQPQwGNY6fJk6vqSu1o7Yxs1x6GRGevOthD3QfCD6etkgPlpQuiUgTeGwyb7GWGgBNLsva33LRjRQZtQzrA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mFM7H5Op; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714086626; x=1745622626;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iOUr7793PuOMIMhHvUa9WY+EkIduESRkPhsD/HavPVg=;
-  b=mFM7H5Oprzpc1/xVxEogSgm7M98JyXl1xEj3cQ3MYPODsrkBavXf7gEV
-   PPr+fL7JB3Nmo3sbmQmlj4sQbSIWKVjFCgp8tPtRhVK8SYj8Hp8cj8+kd
-   E6Hn13trdRIieMDvEu3WoIF6hDGK9/NDY2pdwqyT7DNVzC48FJsACDjVd
-   EFwtLY3EyAGJkucWhb2amnG6iDmzp/LWT8QhjGqsfa+rGH2nosAxt4WSR
-   eLfjc09y361jB88u6IHA722KNUmpERc1JahFkG0dlJBjPpyloJQN8qIFA
-   4/JhqXTzcuq3xzoshdxlfVRm5x7wK+8PBSLXJk94+v8dLBFCxGmoPRgcp
-   Q==;
-X-CSE-ConnectionGUID: ZfJWbl6NRf6AVbR9dBFn+A==
-X-CSE-MsgGUID: o+hdQhT7R1mzgCpdquyJug==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="13598255"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="13598255"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 16:10:25 -0700
-X-CSE-ConnectionGUID: yZy6SwXrSaqLR46B6z51Dg==
-X-CSE-MsgGUID: tbxTMqn5TnCuB9K5YcnC7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="25247701"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 25 Apr 2024 16:10:20 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s08EM-000304-1t;
-	Thu, 25 Apr 2024 23:10:18 +0000
-Date: Fri, 26 Apr 2024 07:09:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Benjamin Tissoires <bentiss@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Benjamin Tissoires <bentiss@kernel.org>
-Subject: Re: [PATCH 2/3] bpf: do not walk twice the hash map on free
-Message-ID: <202404260653.ULrCGrp2-lkp@intel.com>
-References: <20240425-bpf-next-v1-2-1d8330e6c643@kernel.org>
+	s=arc-20240116; t=1714087084; c=relaxed/simple;
+	bh=H1sLpQ6V8ZVN/lL+X1VorkSEPLX/fps1TlPZb1+MHJc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G45GGvCeybGXVj98T7ImMDnL8vY0ht9wJgK9ifcav3gYxykg3VpcKcBo//TtB2ROvMvPOCUjb637UE6cUtJWnNYIxFJgthwEoqH4N7WNLY9e4hnmfcH5BqdRdGKEJsn4wnp9sNuboEq6VmWb7yP+MWbxDdj1vsVMzrQvMa9eO6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=abxRX3f8; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a4df5d83c7so1149469a91.0
+        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 16:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714087082; x=1714691882; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z+Lvw4YwBnMI0BLpV+4f0iVFu+KRWgRj70dqTPVQi1s=;
+        b=abxRX3f8r23jpVzoKnEs77gG2HweVbgzNMQ3HH+1m1+7xaf+gUFEtM+FEWPGMgg85d
+         w8HNcDuAZJAsZLWlaDjx9DZLRMWJ9wjc0tlJio83OvgXKaJZW3uImhLDDoxotOtIl4Aj
+         fJKpk5zS+p73nBDqMvMrGA5pxL8zb14/40kCngMYGvfV/7MCkfI630niy285seD4X7a1
+         EB+R/2W82WmtSZ6XddvKOEU//QFQGJdhgvDz4bbEPt0UJvakHP4TWLIvT5GgEae9BMQp
+         +1t/GnkcmEW22+hsadkG6BeSy8ov2Bm5G523WWwqF1ThJFhZ7RAe/FkBPPOzmxWmM6w/
+         NEJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714087082; x=1714691882;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z+Lvw4YwBnMI0BLpV+4f0iVFu+KRWgRj70dqTPVQi1s=;
+        b=XEHB+DEoCcbkoQsBXoJcat/xRaA0zXkIqvhoiZ27t77tpzIf+Jkl0sEypQZi8wAcUh
+         pNvuEpQ9CwXi5whPd1r9qV92mLpK7GADk9qLwXL+B0EKMB+Q1NCJRyIXwzaRBKt8nO1v
+         fvV9qJcfS90c7zWCfH+HQOHduzVonZSYBLFxaCBqVGFZXzjPsI79ulXkJT79TESeLh7n
+         f8JU5R11XrbtgKNHJgCVGaEy3c2cz66+HWXqSB3sBlP3/b4V3F/MHT3c3EMICQ3cV9Yn
+         Cb05v3QmqwfIT4yI9vQxPUiBFoYkYWK7t05oJ6wjsBABWfOX+i355hTmAKjZ1w8Uvl5P
+         Cqig==
+X-Gm-Message-State: AOJu0YyqCeh0jDFbRpRXdCugKaSdDM1aKOdOxmW6MepI0xn6PH475PEN
+	zmGcyHCIN+dEvrjNwAUj+ZlzOMaQM2cBnqkAAm0Tmhavg9bC7tKJvcjZt/RBf3JtHegL51Z3h/N
+	QXHdzHKGbFWDpmcjX2+mEIsumDZk=
+X-Google-Smtp-Source: AGHT+IE8+UaCbNSA7eZfnZ0wQDKU+tz1Go1fY8CTggVhsm8iHfLsPTwFLJETNdNs0qNGGMdt+qYYiyWnoSaGEyywAl8=
+X-Received: by 2002:a17:90a:ab97:b0:2ae:1316:a4a with SMTP id
+ n23-20020a17090aab9700b002ae13160a4amr1106916pjq.4.1714087082114; Thu, 25 Apr
+ 2024 16:18:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425-bpf-next-v1-2-1d8330e6c643@kernel.org>
+References: <20240424224053.471771-1-cupertino.miranda@oracle.com> <20240424224053.471771-5-cupertino.miranda@oracle.com>
+In-Reply-To: <20240424224053.471771-5-cupertino.miranda@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Apr 2024 16:17:49 -0700
+Message-ID: <CAEf4BzZRC=pCk=NFpFxdej3XfGnLv5zWkOtQjZLGZ2r-oO_ojQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/6] selftests/bpf: XOR and OR range
+ computation tests.
+To: Cupertino Miranda <cupertino.miranda@oracle.com>
+Cc: bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, David Faust <david.faust@oracle.com>, 
+	Jose Marchesi <jose.marchesi@oracle.com>, Elena Zannoni <elena.zannoni@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Benjamin,
+On Wed, Apr 24, 2024 at 3:41=E2=80=AFPM Cupertino Miranda
+<cupertino.miranda@oracle.com> wrote:
+>
+> Added a test for bound computation in XOR and OR when non constant
+> values are used and both registers have bounded ranges.
+>
+> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> Cc: Yonghong Song <yonghong.song@linux.dev>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: David Faust <david.faust@oracle.com>
+> Cc: Jose Marchesi <jose.marchesi@oracle.com>
+> Cc: Elena Zannoni <elena.zannoni@oracle.com>
+> ---
+>  .../selftests/bpf/progs/verifier_bounds.c     | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/=
+testing/selftests/bpf/progs/verifier_bounds.c
+> index 960998f16306..aeb88a9c7a86 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> @@ -885,6 +885,48 @@ l1_%=3D:     r0 =3D 0;                              =
+           \
+>         : __clobber_all);
+>  }
+>
+> +SEC("socket")
+> +__description("bounds check for non const xor src dst")
+> +__success __log_level(2)
+> +__msg("5: (af) r0 ^=3D r6                      ; R0_w=3Dscalar(smin=3Dsm=
+in32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,var_off=3D(0x0; 0xff))")
+> +__naked void non_const_xor_src_dst(void)
+> +{
+> +       asm volatile ("                                 \
+> +       call %[bpf_get_prandom_u32];                    \
+> +       r6 =3D r0;                                        \
+> +       call %[bpf_get_prandom_u32];                    \
+> +       r6 &=3D 0xff;                                     \
+> +       r0 &=3D 0x0f;                                     \
+> +       r0 ^=3D r6;                                       \
+> +       exit;                                           \
+> +"      :
+> +       : __imm(bpf_map_lookup_elem),
+> +       __imm_addr(map_hash_8b),
+> +       __imm(bpf_get_prandom_u32)
+> +       : __clobber_all);
+> +}
+> +
+> +SEC("socket")
+> +__description("bounds check for non const or src dst")
+> +__success __log_level(2)
+> +__msg("5: (4f) r0 |=3D r6                      ; R0_w=3Dscalar(smin=3Dsm=
+in32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,var_off=3D(0x0; 0xff))")
+> +__naked void non_const_or_src_dst(void)
+> +{
+> +       asm volatile ("                                 \
+> +       call %[bpf_get_prandom_u32];                    \
+> +       r6 =3D r0;                                        \
+> +       call %[bpf_get_prandom_u32];                    \
+> +       r6 &=3D 0xff;                                     \
+> +       r0 &=3D 0x0f;                                     \
+> +       r0 |=3D r6;                                       \
 
-kernel test robot noticed the following build warnings:
+what if we make this case a bit more challenging and interesting and
+have some known bits in r0? like add `r0 |=3D 0x1a0;` before doing `r0 |
+=3D r6;` and make sure that we have a few known bits in var_off() and
+range is extended to be 511?
 
-[auto build test WARNING on 52578f7f53ff8fe3a8f6f3bc8b5956615c07a16e]
+Maybe do something like that for xor case as well, making sure that we
+have some bits known to be either zero or one?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Tissoires/bpf-do-not-walk-twice-the-map-on-free/20240425-220322
-base:   52578f7f53ff8fe3a8f6f3bc8b5956615c07a16e
-patch link:    https://lore.kernel.org/r/20240425-bpf-next-v1-2-1d8330e6c643%40kernel.org
-patch subject: [PATCH 2/3] bpf: do not walk twice the hash map on free
-config: arc-randconfig-002-20240426 (https://download.01.org/0day-ci/archive/20240426/202404260653.ULrCGrp2-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240426/202404260653.ULrCGrp2-lkp@intel.com/reproduce)
+> +       exit;                                           \
+> +"      :
+> +       : __imm(bpf_map_lookup_elem),
+> +       __imm_addr(map_hash_8b),
+> +       __imm(bpf_get_prandom_u32)
+> +       : __clobber_all);
+> +}
+> +
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404260653.ULrCGrp2-lkp@intel.com/
+do we have an existing case for AND as well? That seems to be an
+interesting one, as verifier should be able to infer [0, 0xf] range
 
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/hashtab.c:243:13: warning: 'htab_free_prealloced_wq' defined but not used [-Wunused-function]
-     243 | static void htab_free_prealloced_wq(struct bpf_htab *htab)
-         |             ^~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/htab_free_prealloced_wq +243 kernel/bpf/hashtab.c
-
-68134668c17f31 Alexei Starovoitov 2021-07-14  242  
-246331e3f1eac9 Benjamin Tissoires 2024-04-20 @243  static void htab_free_prealloced_wq(struct bpf_htab *htab)
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  244  {
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  245  	u32 num_entries = htab->map.max_entries;
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  246  	int i;
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  247  
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  248  	if (!btf_record_has_field(htab->map.record, BPF_WORKQUEUE))
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  249  		return;
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  250  	if (htab_has_extra_elems(htab))
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  251  		num_entries += num_possible_cpus();
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  252  
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  253  	for (i = 0; i < num_entries; i++) {
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  254  		struct htab_elem *elem;
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  255  
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  256  		elem = get_htab_elem(htab, i);
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  257  		bpf_obj_free_workqueue(htab->map.record,
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  258  				       elem->key + round_up(htab->map.key_size, 8));
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  259  		cond_resched();
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  260  	}
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  261  }
-246331e3f1eac9 Benjamin Tissoires 2024-04-20  262  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>  SEC("socket")
+>  __description("bounds checks after 32-bit truncation. test 1")
+>  __success __failure_unpriv __msg_unpriv("R0 leaks addr")
+> --
+> 2.39.2
+>
+>
 
