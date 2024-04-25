@@ -1,109 +1,95 @@
-Return-Path: <bpf+bounces-27782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957428B19AD
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 05:44:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ED2E8B19BA
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 05:50:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52404284779
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 03:44:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 902D5B218A7
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 03:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E7229D05;
-	Thu, 25 Apr 2024 03:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 682942E622;
+	Thu, 25 Apr 2024 03:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SQsLg63v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sS0tlyUw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF02199BC;
-	Thu, 25 Apr 2024 03:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC1A2940B;
+	Thu, 25 Apr 2024 03:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714016664; cv=none; b=O+ZsrIKBu5hrPWdzI/3243wPZCrgNN28YQjWYdGizlLi+fzDiz5FWDzqPrIrSHxkWc6OATQoGnuiHl3Hr48PO6JwvK3m3r18885GrVKCNfe8gaod6y8W0vVM6NjSArInxXB2PAszkSOcAboiznAMku2jpaFPv+voTMqya7cpm8k=
+	t=1714017029; cv=none; b=MlzaZWXITVgQWj9hR4nrUBMzZPqzb721HLXISTcsnGLy/MDhLy/p9u7o5sWlgwPAhvNJnKo8Azi19np5igji+DDwNwi8/J5rHXOHfqYl5dd6VG/M7jdeDgzi4s7H9sV9ClaDKlCxiL7aLO61hPY26ucswDSsg8g2ABTOrTTS6Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714016664; c=relaxed/simple;
-	bh=QUkDy7HxFx/R/yI3SFwb/lZxpKbpJkJeekaDPGaTPKk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Htr595Cp3NZsLVLtSCAqYd2bAH3bDs39rojU2G20TkiwcbRDh2qP3ARo4GOpKPz9prwplJsucnosE4MVJCV0DROPq3wsuyTaoGdD0x5nBSknlU6zhG0CpR5IbsG9y1U+TNQYLUMkMzxWfpUdy0FajiT73o+GHoWzUyXc6+CYENM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SQsLg63v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F8FC113CC;
-	Thu, 25 Apr 2024 03:44:23 +0000 (UTC)
+	s=arc-20240116; t=1714017029; c=relaxed/simple;
+	bh=L+Lbm4Ez2kppLBnCSzQpnozC/0nBXUvkK/R2EZqJ+W8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=HkkoUAs+Ajx/vDoksfZ5KDRGE2+WmAbzOthIulZ4GYz43mFhcTHG3QQpQ69+24bcKPtMP2y7FP7V4zwRMrBWHI2kZ9u9KxjfIS1SyMPCztb4NkQcWKcCB9Xh2vE4hKl7GiE748tHugE7omQHr7t0ycN2lUMeDfarwM45a7UbhX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sS0tlyUw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5024EC113CE;
+	Thu, 25 Apr 2024 03:50:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714016664;
-	bh=QUkDy7HxFx/R/yI3SFwb/lZxpKbpJkJeekaDPGaTPKk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SQsLg63vr83HMJ/mecA4wR3M3bOrQxHvfg2zyl+6p2XKZbtH+rhfS7/TvamV7tSV8
-	 8KsFvLAFDGgPuuyoXIksOSeqnodDrKdIto7PwrwUaic4PKetZ+XbbSpb4Cg62RcOU6
-	 XsXmpRvSSJc5XW4O9oWTL4dl4bB3u3MjCpsZBn3VsROmLlUS7vs9/31gqmVH7vL3MO
-	 4s0VwKLiFYXkbPdcOmxA9aKjLoQ5O0ZbcUdEQud+UHCQ/BYXJZtt+NGb4fjGWBPOrg
-	 rWEcb+6BM3DT5LbZ83UG0ibpdoe+oLusrjHwIQO7ECvbsRsBtMbc0dxkkZ1RtBetKH
-	 kgPbjLonqizuA==
-Date: Wed, 24 Apr 2024 20:44:22 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "Michael S.
- Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@google.com>, Amritha
- Nambiar <amritha.nambiar@intel.com>, Larysa Zaremba
- <larysa.zaremba@intel.com>, Sridhar Samudrala
- <sridhar.samudrala@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, virtualization@lists.linux.dev,
- bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v6 8/8] virtio-net: support queue stat
-Message-ID: <20240424204422.71c20b3f@kernel.org>
-In-Reply-To: <20240423113141.1752-9-xuanzhuo@linux.alibaba.com>
-References: <20240423113141.1752-1-xuanzhuo@linux.alibaba.com>
-	<20240423113141.1752-9-xuanzhuo@linux.alibaba.com>
+	s=k20201202; t=1714017028;
+	bh=L+Lbm4Ez2kppLBnCSzQpnozC/0nBXUvkK/R2EZqJ+W8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=sS0tlyUwebNgDh8a8tPMJIhF3Pd8VQ6RkLG4YAipjO0142SBmGsBeVR1GFbNvFjnQ
+	 cfQI/bhbpMhyycBgUJTeWMYWy7LU41wPv6Y4Y5pfMHrWhJKRQIQcPYisBMRs6lN/R6
+	 g+DLce9vemtF5oEOJILunXpYdLsPPG9/y3K1r6YOdxPNN8hyf95WH0n1AtH8ta0Glm
+	 jBTNys7Vfd71qt80tBll9JTkpco1Fy5+HGf730yJZNIbUcdA7W9bZmrtWP3AAeYl4D
+	 PoX5UjJZIJ6Y6vc5vpSCYvjl3VmHxlD1EBjhy2Nbpt9en+5IDbYi+ygpPBdlCTP8OB
+	 4HluAAY9B+Bmw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 426FCCF21C2;
+	Thu, 25 Apr 2024 03:50:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/2] selftests: net: extract BPF building logic from
+ the Makefile
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171401702826.27021.16042743392175785852.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 03:50:28 +0000
+References: <20240423183542.3807234-1-kuba@kernel.org>
+In-Reply-To: <20240423183542.3807234-1-kuba@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ pabeni@redhat.com, bpf@vger.kernel.org
 
-On Tue, 23 Apr 2024 19:31:41 +0800 Xuan Zhuo wrote:
-> +static void virtnet_get_base_stats(struct net_device *dev,
-> +				   struct netdev_queue_stats_rx *rx,
-> +				   struct netdev_queue_stats_tx *tx)
-> +{
-> +	/* The queue stats of the virtio-net will not be reset. So here we
-> +	 * return 0.
-> +	 */
-> +	rx->bytes = 0;
-> +	rx->packets = 0;
-> +	rx->alloc_fail = 0;
-> +	rx->hw_drops = 0;
-> +	rx->hw_drop_overruns = 0;
-> +	rx->csum_unnecessary = 0;
-> +	rx->csum_none = 0;
-> +	rx->csum_bad = 0;
-> +	rx->hw_gro_packets = 0;
-> +	rx->hw_gro_bytes = 0;
-> +	rx->hw_gro_wire_packets = 0;
-> +	rx->hw_gro_wire_bytes = 0;
-> +	rx->hw_drop_ratelimits = 0;
-> +
-> +	tx->bytes = 0;
-> +	tx->packets = 0;
-> +	tx->hw_drops = 0;
-> +	tx->hw_drop_errors = 0;
-> +	tx->csum_none = 0;
-> +	tx->needs_csum = 0;
-> +	tx->hw_gso_packets = 0;
-> +	tx->hw_gso_bytes = 0;
-> +	tx->hw_gso_wire_packets = 0;
-> +	tx->hw_gso_wire_bytes = 0;
-> +	tx->hw_drop_ratelimits = 0;
+Hello:
 
-Doesn't this need to be conditional based on device capabilities?
-We should only assign the stats that the device is collecting
-(both in base stats and per-queue).
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 23 Apr 2024 11:35:40 -0700 you wrote:
+> This has been sitting in my tree for a while. I will soon add YNL/libynl
+> support for networking selftests. This prompted a small cleanup of
+> the selftest makefile for net/. We don't want to be piling logic
+> for each library in there. YNL will get its own .mk file which can
+> be included. Do the same for the BPF building section, already.
+> 
+> No funcional changes here, just a code move and small rename.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/2] selftests: net: name bpf objects consistently and simplify Makefile
+    https://git.kernel.org/netdev/net-next/c/6b88ce902f0b
+  - [net-next,2/2] selftests: net: extract BPF building logic from the Makefile
+    https://git.kernel.org/netdev/net-next/c/3f584c211d8c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
