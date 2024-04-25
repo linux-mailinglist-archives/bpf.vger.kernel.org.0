@@ -1,114 +1,301 @@
-Return-Path: <bpf+bounces-27843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 088BE8B2876
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:52:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7C08B288F
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:56:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DE891F2257A
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 18:52:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2CBA286275
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 18:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3152314E2CC;
-	Thu, 25 Apr 2024 18:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A7814F116;
+	Thu, 25 Apr 2024 18:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItIGB12V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xe1J7qyi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8103F14EC45
-	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 18:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6769414E2CC;
+	Thu, 25 Apr 2024 18:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071144; cv=none; b=lJzOQkp4O6biB5tXhAibDLbeCC8184IhibA5DIJsa166DuveNaqdHbb1npod94AJL2OfG3jE2hcz5j0B8aKc5uwGiX9eddIQBWHxJC1mp7fukESXNqtfr8m1Ly7nxeP6fxZiZM26AQ8qcsAQF2BQYRijboK8Ae6ynqqybSDVw9E=
+	t=1714071361; cv=none; b=OUiSpoquanK9MtcAPAZrZnzMx2DTEhrZ8Zv/8PlgXYo4NvCjkTYL28ATengC5Ht3e+6gIcYYZJK4NdS+EAQ6Qm+X/aXYAjdIZR0hUla75P0iQKk+jKpgoVdsThqBpNWPqowQ3TvX8SGd08LMZC4llp1ULzFNvy6G+BMX+ywb+rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071144; c=relaxed/simple;
-	bh=GXUNFLGB/npnShTtTZ0lttv3Oiphyr/HeCFlu+bWhKA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XzSIXVGBdEm6B+Djpj0QEYqqKzOJKMg0zTbX4JGlqLz1s0WtBsT7O5AmgzjWaKAwuYk6884wIir1m5um76a/4M7/45f932YXVERJLTvOPGgvX0/h1k2qXjEkrnqz/VSXLY+1a3JFVSk/x1wFCv3hVTO66xRKOgmcItWWYE2WL/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ItIGB12V; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6f30f69a958so1242451b3a.1
-        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 11:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714071143; x=1714675943; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GXUNFLGB/npnShTtTZ0lttv3Oiphyr/HeCFlu+bWhKA=;
-        b=ItIGB12VJmGwySVbNhnzRL/rf6Oeip2ShSlyI4ebk9jkEWKtfMkkWbMzKTqoYVA8Xx
-         UdrFN4qcjZRdJfadvJhj1xBSkl7xRdewySw1mDcSI3MkGULj3bJ01+L5f+mrUXoUxXnp
-         8bczcDJQMDB3QkZdrUfX4YfuV+UwQawXIGCnug0sJ+WauSglBclxd9quUf7Ia9D2bpe9
-         ACmNuA8o3jwjiyetY9YKEyO5ZNMZlawZAkIM0VkZJCuloXl7ezCrUW/t+c8u2CW3dji1
-         LUHpIU64ajj5wc6KZI7BU/QWDk5leSyNMfEhrQpgcEoua+VkHRgMsoMBECz1GBXVKoiQ
-         H9AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714071143; x=1714675943;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GXUNFLGB/npnShTtTZ0lttv3Oiphyr/HeCFlu+bWhKA=;
-        b=ZBeU5d7G+6RtniadFPYkZzcIyISgslTN6JeSFr4HzcSmcL/bg0jtq7spekGZPgo2PK
-         fKouXDVq3AZlMN5vQ5+skgai7RGt+9JTmzDPriICWwglG76Xm4hhPGUBjSfHrtyFnslY
-         XTK/LA4vMaS/zdwvF8wtGLkgJ7Ypq2himWA1UJHYtwI6cGTM3/qAOfZD6ChzHoPljMun
-         dGM+/9bGbkQjoGmrbmaBM0YO1Fg8XuxO98R/pKCXcO3X3wweHYAd5WMp7KPW0EWL/IV1
-         bF9lZwXj5YtLbUnt+0KAktEAsVWiy24IjYxW7ul/vRfHsgCnvvxGqCDU4HQWlzaid+pO
-         3j7w==
-X-Forwarded-Encrypted: i=1; AJvYcCXFkffIMHwnhNSKhyFi37uGlYw1qzbSJxs+Y3Y36g+qSgKenbLXqGQ+G1HqjcUnD8fZL8XUPTQzN5Z2N6qEDWjbkUAA
-X-Gm-Message-State: AOJu0YxpEGdX2YY6P7IgrVu1Wi99mNhET9ihP4VcjiewmIdb8+mDqSVl
-	TqD+FtVtlZoBhKuZuoR1tS2OU4P070U4Q50P4RFFCdQmhq8lLP0t
-X-Google-Smtp-Source: AGHT+IFHqdgN4ypSjuxtlaX+yPld1AjiLRVAFzjxD3BQia+/DvpVMvsS3q4HNTZ5GqAaqUZ1bI0mmg==
-X-Received: by 2002:a05:6a00:93a8:b0:6ea:c156:f8dd with SMTP id ka40-20020a056a0093a800b006eac156f8ddmr788242pfb.11.1714071142832;
-        Thu, 25 Apr 2024 11:52:22 -0700 (PDT)
-Received: from ?IPv6:2604:3d08:9880:5900:b5d8:5a56:aaf7:f817? ([2604:3d08:9880:5900:b5d8:5a56:aaf7:f817])
-        by smtp.gmail.com with ESMTPSA id u12-20020a056a00098c00b006f09d5807ebsm13055985pfg.82.2024.04.25.11.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 11:52:22 -0700 (PDT)
-Message-ID: <77c1b7992e05af2d0178dc68f3330732a735caee.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf/verifier: improve XOR and OR range
- computation
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, David Faust <david.faust@oracle.com>, Jose
- Marchesi <jose.marchesi@oracle.com>, Elena Zannoni
- <elena.zannoni@oracle.com>
-Date: Thu, 25 Apr 2024 11:52:21 -0700
-In-Reply-To: <20240424224053.471771-4-cupertino.miranda@oracle.com>
-References: <20240424224053.471771-1-cupertino.miranda@oracle.com>
-	 <20240424224053.471771-4-cupertino.miranda@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714071361; c=relaxed/simple;
+	bh=gvIDnW7fKA4/z8SLEzwxKjbQ9fFnFV+k80e9QAEvWGA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lABSdxKyMDZQ8VeK2cNf6oSHanc98OVAdRwcvEm/VQgikYQVb3stTf0XpDdV5PL0xtSkauAh6Gaaie5bEyzGDZ+ihN1VqikAncEdUWpA3GzpoloTM1f23EnKPMqo2B3rD0qqs5edwoPkMGh/dMGf45eI3ncpsx7M3MXEtjY7raw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xe1J7qyi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B7FC113CC;
+	Thu, 25 Apr 2024 18:55:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714071361;
+	bh=gvIDnW7fKA4/z8SLEzwxKjbQ9fFnFV+k80e9QAEvWGA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Xe1J7qyi6penA0+QjEJfPnHXZtcAtYz5H/gGP9JX3jQzpnm9EeogB2YXxHB7ad6kv
+	 sGq0ya2XMskzTwrT4gF+wcKE8ZLHr42r2a71TfTKWXyT77rV2233mgMBT9Q3L0DL05
+	 6CrKXi9k612/HZHQ2uksL2a+FrzzxYtW9W/Mkx8w+TmpIXwzgMOS/0SpgGnQeyjW+H
+	 i3bNTxjIFYrUYVvYyShDeRSw1PNqywS0u9TtXn6kLgUPBkETi9Ec8ZfDrr8G/GNWRh
+	 Vg6eSpBZNf+jYmxDXxSYDbDqwzXEY0YVspYYRMZcfJpwMN7YUiG8YmZu9LgafGws/o
+	 auDGF8endPQCA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
+ <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline
+ bpf_get_smp_processor_id() helper
+In-Reply-To: <CAEf4BzZe-rtewAvDeNwqoud+x+fTraiLM1mzdvae_5yNrWsWyg@mail.gmail.com>
+References: <20240424173550.16359-1-puranjay@kernel.org>
+ <20240424173550.16359-3-puranjay@kernel.org>
+ <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
+ <mb61pwmollpfh.fsf@kernel.org>
+ <CAEf4BzZe-rtewAvDeNwqoud+x+fTraiLM1mzdvae_5yNrWsWyg@mail.gmail.com>
+Date: Thu, 25 Apr 2024 18:55:56 +0000
+Message-ID: <mb61po79x9sqr.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-04-24 at 23:40 +0100, Cupertino Miranda wrote:
-> Range for XOR and OR operators would not be attempted unless src_reg
-> would resolve to a single value, i.e. a known constant value.
-> This condition is unnecessary, and the following XOR/OR operator
-> handling could compute a possible better range.
->=20
-> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: David Faust <david.faust@oracle.com>
-> Cc: Jose Marchesi <jose.marchesi@oracle.com>
-> Cc: Elena Zannoni <elena.zannoni@oracle.com>
-> ---
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> On Thu, Apr 25, 2024 at 3:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
+rg> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@kern=
+el.org> wrote:
+>> >>
+>> >> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
+>> >> bpf_get_smp_processor_id().
+>> >>
+>> >> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+>> >>
+>> >> Here is how the BPF and ARM64 JITed assembly changes after this commi=
+t:
+>> >>
+>> >>                                          BPF
+>> >>                                         =3D=3D=3D=3D=3D
+>> >>               BEFORE                                       AFTER
+>> >>              --------                                     -------
+>> >>
+>> >> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get=
+_smp_processor_id();
+>> >> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff800=
+082072008
+>> >>                                                 (bf) r0 =3D r0
+>> >
+>> > nit: hmm, you are probably using a bit outdated bpftool, it should be
+>> > emitted as:
+>> >
+>> > (bf) r0 =3D &(void __percpu *)(r0)
+>>
+>> Yes, I was using the bpftool shipped with the distro. I tried it again
+>> with the latest bpftool and it emitted this as expected.
+>
+> Cool, would be nice to update the commit message with the right syntax
+> for next revision, thanks!
+>
 
-(Please copy ack's from previous versions of the patch if there were
- no significant changes, it makes its easier to review subsequent versions)=
-.
+Sure, will do.
 
-[...]
+>>
+>> >
+>> >>                                                 (61) r0 =3D *(u32 *)(=
+r0 +0)
+>> >>
+>> >>                                       ARM64 JIT
+>> >>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >>
+>> >>               BEFORE                                       AFTER
+>> >>              --------                                     -------
+>> >>
+>> >> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_smp_=
+processor_id();
+>> >> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000fff=
+fffff
+>> >> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl #=
+16
+>> >> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
+>> >> blr     x10                                mrs     x10, tpidr_el1
+>> >> add     x7, x0, #0x0                       add     x7, x7, x10
+>> >>                                            ldr     w7, [x7]
+>> >>
+>> >> Performance improvement using benchmark[1]
+>> >>
+>> >>              BEFORE                                       AFTER
+>> >>             --------                                     -------
+>> >>
+>> >> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.=
+631 =C2=B1 0.027M/s
+>> >> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.=
+742 =C2=B1 0.023M/s
+>> >> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.=
+625 =C2=B1 0.004M/s
+>> >>
+>> >> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>> >>
+>> >> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+>> >> ---
+>> >>  kernel/bpf/verifier.c | 11 ++++++++++-
+>> >>  1 file changed, 10 insertions(+), 1 deletion(-)
+>> >>
+>> >
+>> > Besides the nits, lgtm.
+>> >
+>> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>> >
+>> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> >> index 9715c88cc025..3373be261889 100644
+>> >> --- a/kernel/bpf/verifier.c
+>> >> +++ b/kernel/bpf/verifier.c
+>> >> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifier=
+_env *env)
+>> >>                         goto next_insn;
+>> >>                 }
+>> >>
+>> >> -#ifdef CONFIG_X86_64
+>> >> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
+>> >
+>> > I think you can drop this, we are protected by
+>> > bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
+>> > checks?
+>>
+>> If I remove this and later add support of percpu_insn on RISCV without
+>> inlining bpf_get_smp_processor_id() then it will cause problems here
+>> right? because then the last 5-6 lines inside this if(){} will be
+>> executed for RISCV.
+>
+> Just add
+>
+> #else
+> return -EFAULT;
+
+I don't think we can return.
+
+> #endif
+>
+> ?
+>
+> I'm trying to avoid this duplication of the defined(CONFIG_xxx) checks
+> for supported architectures.
+
+Does the following look correct?
+
+I will do it like this:
+
+                /* Implement bpf_get_smp_processor_id() inline. */
+                if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+                    prog->jit_requested && bpf_jit_supports_percpu_insn()) {
+                        /* BPF_FUNC_get_smp_processor_id inlining is an
+                         * optimization, so if pcpu_hot.cpu_number is ever
+                         * changed in some incompatible and hard to support
+                         * way, it's fine to back out this inlining logic
+                         */
+#if defined(CONFIG_X86_64)
+                        insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(unsi=
+gned long)&pcpu_hot.cpu_number);
+                        insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF=
+_REG_0);
+                        insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_R=
+EG_0, 0);
+                        cnt =3D 3;
+#elif defined(CONFIG_ARM64)
+                        struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_IMM=
+64(BPF_REG_0, (u64)&cpu_number) };
+
+                        insn_buf[0] =3D cpu_number_addr[0];
+                        insn_buf[1] =3D cpu_number_addr[1];
+                        insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF=
+_REG_0);
+                        insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_R=
+EG_0, 0);
+                        cnt =3D 4;
+#else
+                        goto next_insn;
+#endif
+                        new_prog =3D bpf_patch_insn_data(env, i + delta, in=
+sn_buf, cnt);
+                        if (!new_prog)
+                                return -ENOMEM;
+
+                        delta    +=3D cnt - 1;
+                        env->prog =3D prog =3D new_prog;
+                        insn      =3D new_prog->insnsi + i + delta;
+                        goto next_insn;
+                }
+
+
+>>
+>> >
+>> >>                 /* Implement bpf_get_smp_processor_id() inline. */
+>> >>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+>> >>                     prog->jit_requested && bpf_jit_supports_percpu_in=
+sn()) {
+>> >> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_verifi=
+er_env *env)
+>> >>                          * changed in some incompatible and hard to s=
+upport
+>> >>                          * way, it's fine to back out this inlining l=
+ogic
+>> >>                          */
+>> >> +#if defined(CONFIG_X86_64)
+>> >>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32=
+)(unsigned long)&pcpu_hot.cpu_number);
+>> >>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_=
+0, BPF_REG_0);
+>> >>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0,=
+ BPF_REG_0, 0);
+>> >>                         cnt =3D 3;
+>> >> +#elif defined(CONFIG_ARM64)
+>> >> +                       struct bpf_insn cpu_number_addr[2] =3D { BPF_=
+LD_IMM64(BPF_REG_0, (u64)&cpu_number) };
+>> >>
+>> >
+>> > this &cpu_number offset is not guaranteed to be within 4GB on arm64?
+>>
+>> Unfortunately, the per-cpu section is not placed in the first 4GB and
+>> therefore the per-cpu pointers are not 32-bit on ARM64.
+>
+> I see. It might make sense to turn x86-64 code into using MOV64_IMM as
+> well to keep more of the logic common. Then it will be just the
+> difference of an offset that's loaded. Give it a try?
+
+I think MOV64_IMM would have more overhead than MOV32_IMM and if we can
+use it in x86-64 we should keep doing it that way. Wdyt?=20
+
+>>
+>> >
+>> >> +                       insn_buf[0] =3D cpu_number_addr[0];
+>> >> +                       insn_buf[1] =3D cpu_number_addr[1];
+>> >> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_=
+0, BPF_REG_0);
+>> >> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0,=
+ BPF_REG_0, 0);
+>> >> +                       cnt =3D 4;
+>> >> +#endif
+>> >>                         new_prog =3D bpf_patch_insn_data(env, i + del=
+ta, insn_buf, cnt);
+>> >>                         if (!new_prog)
+>> >>                                 return -ENOMEM;
+>> >> --
+>> >> 2.40.1
+>> >>
 
