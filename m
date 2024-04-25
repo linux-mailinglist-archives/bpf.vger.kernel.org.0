@@ -1,345 +1,198 @@
-Return-Path: <bpf+bounces-27859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C878B2A05
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 22:44:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33CD68B2ABF
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 23:29:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E479B24BBE
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 20:44:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596DB1C21776
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 21:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7BC153BFF;
-	Thu, 25 Apr 2024 20:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66827155749;
+	Thu, 25 Apr 2024 21:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J5ZeiFT4"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pz4CWDRp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE56315381B;
-	Thu, 25 Apr 2024 20:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1611514FF
+	for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 21:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714077825; cv=none; b=G89dwNuTNbmwGJvEvVV3OelI7f4CR9wi9JSiAV5mNw0KdTxlPXoyKKy2mVRYib/Jss5D7lnmkxILstwcrVKTvVfZBTkqBteMt0NZVaNSnFFaUi5m6nwScGAUaNa1KvIGQ1n6tcQqFO8CyT+G1A6EhMI+gWLwzRBWm63slNy4+cU=
+	t=1714080538; cv=none; b=ZBN1jcDZLehPZE9fyQ1mgbtc58GCP/xqhmE92f6p36Mu+buVTAqwJRL8sNs2/HwKjnZCaqgRt7wTArtZkURIBv1+2VEdwQErvodfGvMrH9cBlXCyxsJE3Yl+3kU70uIpwAkCBdWryHJy9Jg4TOE8oo3+vLKTCCdSYiZJ+r56fgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714077825; c=relaxed/simple;
-	bh=SQ00Biuzgi8ooOKmj4SDQQLUJ9vx5PPWa/yT4EKopUs=;
+	s=arc-20240116; t=1714080538; c=relaxed/simple;
+	bh=9jSpEdYa004FZK9qFbCHvGP08fb/ZcRrODOXMtJYP10=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KJT9rP+8BSlGqU/HJTJNRKUHQWT6a27kwxgt58ULIA7AqBvcf9qMc8AkdN6S4IoPehU0kukcnbwIDmOv7LO8ulDlrn2NMhGa8p3EWq0G4emLcfSdNFL9dEbSocrb+lIDhsVSd5GNeTK+HygOpYdX32mc3q77zUS3H7UojGdPSPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J5ZeiFT4; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5e152c757a5so973354a12.2;
-        Thu, 25 Apr 2024 13:43:43 -0700 (PDT)
+	 To:Cc:Content-Type; b=iCP1/VePDoU+z/8xGflK59m52IrJjWDThxT1cwHBR05rpw0VJn+WEb9hg706ksdT88XZiGO7yMKGOF0LmTxXEQ2wuhxAK+ixwWvLf6PCTaeWy2huULmSpQuUNTZpNlC5OGljD9GroupgrJDIAV+scL0vVGU7EVj5o+T7vWLEb9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=pz4CWDRp; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2dd6a7ae2dcso22739641fa.1
+        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 14:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714077823; x=1714682623; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1714080535; x=1714685335; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1gI9GtX2kU2O+gI3EzYjJFlSgaBQf6k4DIS3uLiY3BU=;
-        b=J5ZeiFT4KOLnAaQnP1QEHH/ltoWHfneGQLSMvzJfz7pTsV4W7ZKeIHZCznoMv5WFlU
-         HPeeTBPSldcZTAA5XzggZemaEmR4adsdTbMLLqzpkY/67QXiyPwKaEMwJnxTdsvv3uNC
-         JsCAvTC6h2eIv6XAN4iz2x5CXYV4yo/Qo6UjwmsAM/DBa/6bvFN6kc+dFsoC2mn/fDx2
-         RuGe1NRUhdPyfZ4p47n1LWxDc6ebobJimNAclByfQCNHUNNrT7lAu802NhQbtQ0gks0Z
-         y0blGYNZzvyGJNPmEYZ4SUXOi4HsEtyy/WE0u9nxugbj4Xp0Al8GqB6QMko62Nb00B/E
-         OJiQ==
+        bh=worxA1pvOBzETE6ru+4nE/r4sL2lZnf/28s/MZcUJIE=;
+        b=pz4CWDRp3uu2HuFk85IPAGft8u/aGzemt3y/ZCBw8HlqpNpXmdV1hJn3JkIbdtmcDu
+         4wrnjVz7IqpqMK6uvHnWrAYTYb5AwcSh/E2HUN1i37QymskWxJ553PxzRGMJFZqKLo1t
+         A7+MV4mwyVYYnHwN2x3f12VEIjN9D4juRbs78=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714077823; x=1714682623;
+        d=1e100.net; s=20230601; t=1714080535; x=1714685335;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1gI9GtX2kU2O+gI3EzYjJFlSgaBQf6k4DIS3uLiY3BU=;
-        b=jKJEB4E2FpiiPTa7J/zFVYJK90FLi4s8GG+IEjnD89k2qdzWpTlq7NfJZBfbO4H91g
-         ShHmjyFqkN2W1u+6GCf/7b+rwu/H6ZTP5jbP7A0PRVPAZDvK0Aso1ttKPJFFCVfHDcS5
-         D8hpSvjBCvfOgwBx+/cyweCoHmsWnDwBSrtSEU8CkFAWhqhWAjaSJZA76vwajKeexvah
-         qXJ7IXVrjXPLFVu5cgwgA/1nhFCxOUsnnxDjlyFJ8NTBwXDLoXiAoyXWARIklXbMGmeu
-         IAFpyryhHmqUNHpKquTpd9vPfcU/4FJveiY5Vwi4ym8Fqjvj/KakHyzgd8XyyqgLTKBO
-         VdWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUliVTy9cpglN4G4OJ6EEF//fTqfOJ/mYhrW5AFjKjQ3gDZoitOE41/f4MrdVAXD5px53SBo15Gg4HoAj+f+cNOxRfogsxpN4ZcNgn+fmOa8YXNvIpyVpeY5n75BmugLBWz
-X-Gm-Message-State: AOJu0YxKxcOHVI4lWqmLnQNJZalrm4Z/h4vcJ86xug0bLHVw39SE27Ym
-	JahX1oGxFfzajtNxNWlGduVS3N/5eyhKgYELebh/20EzYpi4Q1p6x/ZyAkiZZWOTg4uiOQ6Ptfd
-	47/n/bX0J1uzJ/pZNgu2nTUfS7ok=
-X-Google-Smtp-Source: AGHT+IFTFS8ouyJ8nLmy+93w5RtLBwRt63tqP78ViX1kn334RBkekxMginP1hbtj1x9tbPoLxWGu1XDSuDtNLzlHmj0=
-X-Received: by 2002:a17:90a:7895:b0:2aa:e719:3901 with SMTP id
- x21-20020a17090a789500b002aae7193901mr777681pjk.20.1714077823135; Thu, 25 Apr
- 2024 13:43:43 -0700 (PDT)
+        bh=worxA1pvOBzETE6ru+4nE/r4sL2lZnf/28s/MZcUJIE=;
+        b=qp016J3hjAujZCs0/kgcWNW3q76CrCObtGjleGejuItG2q2M4qrjUIKhuM6FNpCvoR
+         mCoVslRHqn+8Ahmg0+H2a2P7P6E/Mjg1CwkuS6xdowSpi1Jw3KsQm1ERgbuiP1KprhjJ
+         E0mi/Fwwy0ToZGEoAOyyuR8ku7P+ud6Xucn3RO7vKQt/yD6j0nT8FdvJ1MP7LFVSGMAc
+         Ojs+k2XmbFPlh88A3oNKb9P5FSaKkGuQvGNUSCIYr6uZJI8g9astd79NHU1Lek3qWT4e
+         Y6NtNzCKQMH8qDXZBhXovh6htBEKpLBQBy7+a7275ksKqKmk4xAsWJvLYhrUE+i6RCyg
+         EepQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVggQ2bM84xCL+hmUWTzScDwHePpFqV0U59TPrUWdYh5GXzWtB1FMpSy8clHTOcBUZ2Ykt/oJbjTSd97t4FiCC4AEYa
+X-Gm-Message-State: AOJu0YzhCtLGsTMRNCaIkli2rXTBs0OABuJgeqYYbcVcHhg0wL5OHgW3
+	vTshYNCbW5namUK92KqTibxhzBhM4GU2z0PXumr5livosB99v9TCDscy5vCXaaYPVw2Q1yFsGE1
+	N8ULdAla9shDGdZzLSGQLVZAtm4472McVG4b9MQ==
+X-Google-Smtp-Source: AGHT+IHaIK3YEoQ9riwqLhBdcM1GA+h2JOcJaGvfWSnc0sw5XqoKi6JS93ZzTHZQUDXxOjnkurTGbbwgIi+Fm4Tasds=
+X-Received: by 2002:a05:651c:230c:b0:2d8:6ca7:2165 with SMTP id
+ bi12-20020a05651c230c00b002d86ca72165mr383002ljb.46.1714080534673; Thu, 25
+ Apr 2024 14:28:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424173550.16359-1-puranjay@kernel.org> <20240424173550.16359-3-puranjay@kernel.org>
- <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
- <mb61pwmollpfh.fsf@kernel.org> <CAEf4BzZe-rtewAvDeNwqoud+x+fTraiLM1mzdvae_5yNrWsWyg@mail.gmail.com>
- <mb61po79x9sqr.fsf@kernel.org>
-In-Reply-To: <mb61po79x9sqr.fsf@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 25 Apr 2024 13:43:31 -0700
-Message-ID: <CAEf4BzbxehG2_K8=xqfOdB4_FGVfdO3qaFMhQpvsc5JZg=NkUg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
- helper
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20231111024835.2164816-1-tj@kernel.org> <20231111024835.2164816-13-tj@kernel.org>
+ <20240323023732.GA162856@joelbox2> <Zf9Tz2wHT6KYtqEG@slm.duckdns.org>
+In-Reply-To: <Zf9Tz2wHT6KYtqEG@slm.duckdns.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Thu, 25 Apr 2024 17:28:40 -0400
+Message-ID: <CAEXW_YR02g=DetfwM98ZoveWEbGbGGfb1KAikcBeC=Pkvqf4OA@mail.gmail.com>
+Subject: Re: [PATCH 12/36] sched_ext: Implement BPF extensible scheduler class
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com, pjt@google.com, 
+	derkling@google.com, haoluo@google.com, dvernet@meta.com, 
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com, 
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com, 
+	Andrea Righi <andrea.righi@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 11:56=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
-g> wrote:
+On Sat, Mar 23, 2024 at 6:12=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> Hello, Joel.
 >
-> > On Thu, Apr 25, 2024 at 3:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
-.org> wrote:
-> >>
-> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> >>
-> >> > On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@ke=
-rnel.org> wrote:
-> >> >>
-> >> >> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inlin=
+> On Fri, Mar 22, 2024 at 10:37:32PM -0400, Joel Fernandes wrote:
+> ...
+> > I was wondering about the comment above related to 'wakeup_preempt', co=
+uld
+> > you clarify why it is not useful (NOOP) in the sched-ext class?
+> >
+> > wakeup_preempt() may be called via:
+> > sched_ttwu_pending() ->
+> >       ttwu_do_activate() ->
+> >               wakeup_preempt()
+> >
+> >
+> > at which point the enqueue of the task could have already happened via:
+> >
+> > sched_ttwu_pending() ->
+> >       ttwu_do_activate() ->
+> >               activate_task() ->
+> >                       enqueue_task()
+> >
+> > But the comment above says "task isn't tied to the CPU" ?
+>
+> In sched_ext, a scheduling queue isn't tied to a particular CPU. For
+> example, it's trivial to share a single global scheduling queue across th=
 e
-> >> >> bpf_get_smp_processor_id().
-> >> >>
-> >> >> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
-> >> >>
-> >> >> Here is how the BPF and ARM64 JITed assembly changes after this com=
-mit:
-> >> >>
-> >> >>                                          BPF
-> >> >>                                         =3D=3D=3D=3D=3D
-> >> >>               BEFORE                                       AFTER
-> >> >>              --------                                     -------
-> >> >>
-> >> >> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_g=
-et_smp_processor_id();
-> >> >> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8=
-00082072008
-> >> >>                                                 (bf) r0 =3D r0
-> >> >
-> >> > nit: hmm, you are probably using a bit outdated bpftool, it should b=
+> whole system or any subset of CPUs. To support this behavior, tasks can b=
 e
-> >> > emitted as:
-> >> >
-> >> > (bf) r0 =3D &(void __percpu *)(r0)
-> >>
-> >> Yes, I was using the bpftool shipped with the distro. I tried it again
-> >> with the latest bpftool and it emitted this as expected.
-> >
-> > Cool, would be nice to update the commit message with the right syntax
-> > for next revision, thanks!
-> >
+> hot-migrated in the dispatch path just before it starts executing:
 >
-> Sure, will do.
+>  https://github.com/sched-ext/sched_ext/blob/sched_ext/kernel/sched/ext.c=
+#L1335
 >
-> >>
-> >> >
-> >> >>                                                 (61) r0 =3D *(u32 *=
-)(r0 +0)
-> >> >>
-> >> >>                                       ARM64 JIT
-> >> >>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >> >>
-> >> >>               BEFORE                                       AFTER
-> >> >>              --------                                     -------
-> >> >>
-> >> >> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_sm=
-p_processor_id();
-> >> >> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000f=
-fffffff
-> >> >> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl=
- #16
-> >> >> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
-> >> >> blr     x10                                mrs     x10, tpidr_el1
-> >> >> add     x7, x0, #0x0                       add     x7, x7, x10
-> >> >>                                            ldr     w7, [x7]
-> >> >>
-> >> >> Performance improvement using benchmark[1]
-> >> >>
-> >> >>              BEFORE                                       AFTER
-> >> >>             --------                                     -------
-> >> >>
-> >> >> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   2=
-4.631 =C2=B1 0.027M/s
-> >> >> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   2=
-3.742 =C2=B1 0.023M/s
-> >> >> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   1=
-2.625 =C2=B1 0.004M/s
-> >> >>
-> >> >> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
-> >> >>
-> >> >> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> >> >> ---
-> >> >>  kernel/bpf/verifier.c | 11 ++++++++++-
-> >> >>  1 file changed, 10 insertions(+), 1 deletion(-)
-> >> >>
-> >> >
-> >> > Besides the nits, lgtm.
-> >> >
-> >> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >> >
-> >> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> >> index 9715c88cc025..3373be261889 100644
-> >> >> --- a/kernel/bpf/verifier.c
-> >> >> +++ b/kernel/bpf/verifier.c
-> >> >> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifi=
-er_env *env)
-> >> >>                         goto next_insn;
-> >> >>                 }
-> >> >>
-> >> >> -#ifdef CONFIG_X86_64
-> >> >> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
-> >> >
-> >> > I think you can drop this, we are protected by
-> >> > bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
-> >> > checks?
-> >>
-> >> If I remove this and later add support of percpu_insn on RISCV without
-> >> inlining bpf_get_smp_processor_id() then it will cause problems here
-> >> right? because then the last 5-6 lines inside this if(){} will be
-> >> executed for RISCV.
-> >
-> > Just add
-> >
-> > #else
-> > return -EFAULT;
+> So, the CPU picked by ops.select_cpu() in the enqueue path often doesn't
+> determine the CPU the task is going to execute on. If the picked CPU matc=
+hes
+> the CPU the task is eventually going to run on, there's a small performan=
+ce
+> advantage as the later hot migration can be avoided.
 >
-> I don't think we can return.
+> As the task isn't actually tied to the CPU being picked, it's a bit awkwa=
+rd
+> to ask "does this task preempt this CPU?" Instead, preemption is implemen=
+ted
+> by calling scx_bpf_kick_cpu() w/ SCX_KICK_PREEMPT or using the
+> SCX_ENQ_PREEMPT flag from the enqueue path which allows preempting any CP=
+U.
+>
 
-ah, because it's not an error condition, right
+Got it. I took some time to look at it some more. Now I am wondering
+why check_preempt_curr() has to be separately implemented for a class
+and why the enqueue() handler of each class cannot take care of
+preempting curr via setting resched flags.
 
->
-> > #endif
-> >
-> > ?
-> >
-> > I'm trying to avoid this duplication of the defined(CONFIG_xxx) checks
-> > for supported architectures.
->
-> Does the following look correct?
->
-> I will do it like this:
->
->                 /* Implement bpf_get_smp_processor_id() inline. */
->                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
-) {
->                         /* BPF_FUNC_get_smp_processor_id inlining is an
->                          * optimization, so if pcpu_hot.cpu_number is eve=
-r
->                          * changed in some incompatible and hard to suppo=
-rt
->                          * way, it's fine to back out this inlining logic
->                          */
-> #if defined(CONFIG_X86_64)
->                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
-signed long)&pcpu_hot.cpu_number);
->                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
->                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
->                         cnt =3D 3;
-> #elif defined(CONFIG_ARM64)
->                         struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_I=
-MM64(BPF_REG_0, (u64)&cpu_number) };
->
->                         insn_buf[0] =3D cpu_number_addr[0];
->                         insn_buf[1] =3D cpu_number_addr[1];
->                         insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
->                         insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
->                         cnt =3D 4;
-> #else
->                         goto next_insn;
-> #endif
+The only reason I can see is that, activate_task() is not always
+followed by a check_preempt_curr() and sometimes there is an
+unconditional resched_curr() happening following the call to
+activate_task().
 
-yep, I just wrote a large comment about goto next_insns above and then
-saw you already proposed that :) Yep, I think this is the way.
+But such issues don't affect sched_ext in its current form I guess.
 
->                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
-insn_buf, cnt);
->                         if (!new_prog)
->                                 return -ENOMEM;
->
->                         delta    +=3D cnt - 1;
->                         env->prog =3D prog =3D new_prog;
->                         insn      =3D new_prog->insnsi + i + delta;
->                         goto next_insn;
->                 }
->
->
-> >>
-> >> >
-> >> >>                 /* Implement bpf_get_smp_processor_id() inline. */
-> >> >>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id =
-&&
-> >> >>                     prog->jit_requested && bpf_jit_supports_percpu_=
-insn()) {
-> >> >> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_veri=
-fier_env *env)
-> >> >>                          * changed in some incompatible and hard to=
- support
-> >> >>                          * way, it's fine to back out this inlining=
- logic
-> >> >>                          */
-> >> >> +#if defined(CONFIG_X86_64)
-> >> >>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u=
-32)(unsigned long)&pcpu_hot.cpu_number);
-> >> >>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
-G_0, BPF_REG_0);
-> >> >>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_=
-0, BPF_REG_0, 0);
-> >> >>                         cnt =3D 3;
-> >> >> +#elif defined(CONFIG_ARM64)
-> >> >> +                       struct bpf_insn cpu_number_addr[2] =3D { BP=
-F_LD_IMM64(BPF_REG_0, (u64)&cpu_number) };
-> >> >>
-> >> >
-> >> > this &cpu_number offset is not guaranteed to be within 4GB on arm64?
-> >>
-> >> Unfortunately, the per-cpu section is not placed in the first 4GB and
-> >> therefore the per-cpu pointers are not 32-bit on ARM64.
-> >
-> > I see. It might make sense to turn x86-64 code into using MOV64_IMM as
-> > well to keep more of the logic common. Then it will be just the
-> > difference of an offset that's loaded. Give it a try?
->
-> I think MOV64_IMM would have more overhead than MOV32_IMM and if we can
-> use it in x86-64 we should keep doing it that way. Wdyt?
+Btw, if sched_ext were to be implemented as a higher priority class
+above CFS [1], then check_preempt_curr() may preempt without even
+calling the class's check_preempt_curr() :
 
-My assumption (which I didn't check) was that BPF JITs should optimize
-such MOV64_IMM that have a constant fitting within 32-bits with a
-faster and smaller instruction. But I'm fine leaving it as is, of
-course.
+void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
+{
+        if (p->sched_class =3D=3D rq->curr->sched_class)
+                rq->curr->sched_class->check_preempt_curr(rq, p, flags);
+        else if (sched_class_above(p->sched_class, rq->curr->sched_class))
+                resched_curr(rq);
 
->
-> >>
-> >> >
-> >> >> +                       insn_buf[0] =3D cpu_number_addr[0];
-> >> >> +                       insn_buf[1] =3D cpu_number_addr[1];
-> >> >> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
-G_0, BPF_REG_0);
-> >> >> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_=
-0, BPF_REG_0, 0);
-> >> >> +                       cnt =3D 4;
-> >> >> +#endif
-> >> >>                         new_prog =3D bpf_patch_insn_data(env, i + d=
-elta, insn_buf, cnt);
-> >> >>                         if (!new_prog)
-> >> >>                                 return -ENOMEM;
-> >> >> --
-> >> >> 2.40.1
-> >> >>
+But if I understand, sched_ext is below CFS at the moment, so that
+should not be an issue.
+
+[1] By the way, now that I brought up the higher priority class thing,
+I might as well discuss it here :-D :
+
+One of my use cases is about scheduling high priority latency sensitive thr=
+eads:
+I think if sched_ext could have 2 classes, one lower than CFS and one
+above CFS, that would be beneficial to those who want a gradual
+transition to use scx, instead of switching all tasks to scx at once.
+
+One reason is EAS (in CFS).  It may be beneficial for people to use
+the existing EAS for everything but latency critical tasks (much like
+how people use RT class for those). This is quite involved and
+reimplementing EAS in BPF may be quite a project. Not that it
+shouldn't be implemented that way, but EAS is about a decade old with
+all kinds of energy modeling, math and what not. Having scx higher
+than cfs alongside the lower one is less of an invasive approach than
+switching everything on the system to scx.
+
+Do you have any opinions on that? If it makes sense, I can work on
+such an implementation.
+
+Another reason for this is, general purpose systems run very varied
+workloads, and big dramatic changes are likely to be reverted due to
+power and performance regressions.  Hence, the request for a higher
+scx, so that we (high priority task scx users) can take baby steps.
+
+thanks,
+
+ - Joel
 
