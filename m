@@ -1,105 +1,117 @@
-Return-Path: <bpf+bounces-27790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8CF8B1B92
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 09:11:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5F48B1BAF
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 09:15:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E9AD1F23E50
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 07:11:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F2811C22F7C
+	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 07:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7F56E615;
-	Thu, 25 Apr 2024 07:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452A46BFBB;
+	Thu, 25 Apr 2024 07:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="MmasBUph"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bSrZgZUZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265FC6CDA5;
-	Thu, 25 Apr 2024 07:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DF05A7AB;
+	Thu, 25 Apr 2024 07:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714029040; cv=none; b=uZlhU/LfITufdr6wUyubmn7V68w/ZlTtzgNBBFxXy8bUwO01JD1et/nSI0mp7VLDgueIne3fITim+YnlqFAhs+pEgdNN6rxk/Zj2zxO9lJq1zbr3218wWdisDtRsno2+CyirAzvAvpVOwdFPn2Nmhvjdz3kt18Hz7V5BGdSQI2o=
+	t=1714029296; cv=none; b=XlbN/k12HmHTLxRLWDR0HeGqPKo7W9nMqoKcw89qHAXUx/6IPALavwF6IQhHuveXj3cGG0qXZ0V0XBiduzBrHqOK/O/mTLL6VZ4pd3tbW3YfOSWZzpsBLsdXqpv0jALB4nXJDwvDeRYiuwwXa9Igrme2RBOfHX87x6aLWP3V3/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714029040; c=relaxed/simple;
-	bh=rmNCwj/QZXocvFu/SV+UsAbq1yc1Onrw5e/MM6tpI4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gieOt1pLr+D0qMK4OYcfBKCyFuFyZJ7Do7RWMt3ayutKnlctUSr2Giaov9NdiRm4Za70PQzA3qkWCBKWf1/H9AA4Nu5ldrBgQ/XdgGVcB+r1Ht+ee3gDsTp/K9jbn607DyqrWZKqMU3wvsVD4YOAM1Fwrm2yuESrIdV3F2KqHVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=MmasBUph; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1714029027;
-	bh=rmNCwj/QZXocvFu/SV+UsAbq1yc1Onrw5e/MM6tpI4o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MmasBUphC0hDmcDselWsqNDchcFNLbtyyIXYaTEfQv4BLOsVbY80KeyHb5BvHn9uV
-	 mXfX+53b9fklgAHnv4JHOlIL0SSIIXm5AmCALLJVlcCrmQacW/Cc+9xB5aBl8A7Dwb
-	 B9LRLV8RKBn3hp3tvoCofURazzoY7NMe3hrGTd84=
-Date: Thu, 25 Apr 2024 09:10:27 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+	s=arc-20240116; t=1714029296; c=relaxed/simple;
+	bh=FbcAIXFHTd/izhlpV83BqQBvkx5ULx32o2W4s4yEuAg=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=ZPBGpQISSZjQnhMLKtrcSuEKbeYNtujEnBdfx+r8ul3ahdpkRQaQKCadveT0+eya1pXIiAvt1GV0yWMZf7xr8qhTKBLK8aZluy7wXcEXD60Zpdw/QtvJHiCO8FTsxe+O4WZtPZwsVVX7B0UWqF/jMqwPlO7+Z7sSSsXDJa0bPq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bSrZgZUZ; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1714029290; h=Message-ID:Subject:Date:From:To;
+	bh=shE6b0fVd04Boa5BpyRyRzFXzf9tW9katGzdX6PJz7E=;
+	b=bSrZgZUZhF80ynHUG8RoR9cUJQEwvpIT8CSZ06Qe/jz4vtjyKGOrsdgnimDOR/TNZuQwp2ZB8lnS3zcZpe42ey1jfWUdKdxjQh8yd5G2i7SZAxrbKzJgGUi8hlS1mBxxSUcEAwRRk3WJJ86R4fIoIwA7pbrJg4is2+S6HReKDcQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067111;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W5Efo1Z_1714029287;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5Efo1Z_1714029287)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Apr 2024 15:14:49 +0800
+Message-ID: <1714029274.2610173-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v6 8/8] virtio-net: support queue stat
+Date: Thu, 25 Apr 2024 15:14:34 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: Jakub Kicinski <kuba@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, 
-	Joel Granados <j.granados@samsung.com>, Kees Cook <keescook@chromium.org>, 
-	Eric Dumazet <edumazet@google.com>, Dave Chinner <david@fromorbit.com>, 
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-	kexec@lists.infradead.org, linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
-	lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
-	linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
-Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
- of sysctl handlers
-Message-ID: <9e657181-866a-4626-82d0-e0030051b003@t-8ch.de>
-References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
- <20240424201234.3cc2b509@kernel.org>
+Cc: netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric  Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ "Michael S.  Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Alexei  Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>,
+ Amritha  Nambiar <amritha.nambiar@intel.com>,
+ Larysa Zaremba <larysa.zaremba@intel.com>,
+ Sridhar Samudrala <sridhar.samudrala@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ virtualization@lists.linux.dev,
+ bpf@vger.kernel.org
+References: <20240423113141.1752-1-xuanzhuo@linux.alibaba.com>
+ <20240423113141.1752-9-xuanzhuo@linux.alibaba.com>
+ <20240424204422.71c20b3f@kernel.org>
+In-Reply-To: <20240424204422.71c20b3f@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240424201234.3cc2b509@kernel.org>
 
-On 2024-04-24 20:12:34+0000, Jakub Kicinski wrote:
-> On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Weißschuh wrote:
-> > The series was split from my larger series sysctl-const series [0].
-> > It only focusses on the proc_handlers but is an important step to be
-> > able to move all static definitions of ctl_table into .rodata.
-> 
-> Split this per subsystem, please.
+On Wed, 24 Apr 2024 20:44:22 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Tue, 23 Apr 2024 19:31:41 +0800 Xuan Zhuo wrote:
+> > +static void virtnet_get_base_stats(struct net_device *dev,
+> > +				   struct netdev_queue_stats_rx *rx,
+> > +				   struct netdev_queue_stats_tx *tx)
+> > +{
+> > +	/* The queue stats of the virtio-net will not be reset. So here we
+> > +	 * return 0.
+> > +	 */
+> > +	rx->bytes = 0;
+> > +	rx->packets = 0;
+> > +	rx->alloc_fail = 0;
+> > +	rx->hw_drops = 0;
+> > +	rx->hw_drop_overruns = 0;
+> > +	rx->csum_unnecessary = 0;
+> > +	rx->csum_none = 0;
+> > +	rx->csum_bad = 0;
+> > +	rx->hw_gro_packets = 0;
+> > +	rx->hw_gro_bytes = 0;
+> > +	rx->hw_gro_wire_packets = 0;
+> > +	rx->hw_gro_wire_bytes = 0;
+> > +	rx->hw_drop_ratelimits = 0;
+> > +
+> > +	tx->bytes = 0;
+> > +	tx->packets = 0;
+> > +	tx->hw_drops = 0;
+> > +	tx->hw_drop_errors = 0;
+> > +	tx->csum_none = 0;
+> > +	tx->needs_csum = 0;
+> > +	tx->hw_gso_packets = 0;
+> > +	tx->hw_gso_bytes = 0;
+> > +	tx->hw_gso_wire_packets = 0;
+> > +	tx->hw_gso_wire_bytes = 0;
+> > +	tx->hw_drop_ratelimits = 0;
+>
+> Doesn't this need to be conditional based on device capabilities?
+> We should only assign the stats that the device is collecting
+> (both in base stats and per-queue).
 
-Unfortunately this would introduce an enormous amount of code churn.
 
-The function prototypes for each callback have to stay consistent.
-So a another callback member ("proc_handler_new") is needed and users
-would be migrated to it gradually.
+Will be fixed in next version.
 
-But then *all* definitions of "struct ctl_table" throughout the tree need to
-be touched.
-In contrast, the proposed series only needs to change the handler
-implementations, not their usage sites.
-
-There are many, many more usage sites than handler implementations.
-
-Especially, as the majority of sysctl tables use the standard handlers
-(proc_dostring, proc_dobool, ...) and are not affected by the proposed
-aproach at all.
-
-And then we would have introduced a new handler name "proc_handler_new"
-and maybe have to do the whole thing again to rename it back to
-the original and well-known "proc_handler".
-
-
-Of course if somebody has a better aproach, I'm all ears.
-
-
-Thomas
+Thanks.
 
