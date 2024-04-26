@@ -1,160 +1,141 @@
-Return-Path: <bpf+bounces-27945-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27946-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 368FF8B3D45
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:55:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FFE38B3D69
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:59:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 679091C237F7
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:55:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFBDB283483
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7F61591FB;
-	Fri, 26 Apr 2024 16:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55C515CD63;
+	Fri, 26 Apr 2024 16:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vA4G+RUS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Napl2QMk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129611FC4;
-	Fri, 26 Apr 2024 16:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9D6153BD0
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150505; cv=none; b=rIipwmanEbBpIs5dGT27L8cXre58J2BpTm9iHFkRrZb9zM8jDBnswRZh2yBroOvCdypu+DX39l1SAws+NOVd2Q3UPJds7wy4KicrcjT7uToBUl7jTHmOC1ES4zzT3G6bo/QhICsmFxLECLNUfuobewyhCYqPKpgGNlTk26gmp3U=
+	t=1714150653; cv=none; b=ivNKaSPeSLK9Cks/1jEa/PLxGfVeC1csBZRejZTDgQO/dt3sWzPLq3rn7wmCarDrUZ2Oy3NOl59mlnyRRFiAGqHwIabFKcamzZreoErW7/i7niuH++V83Rm3LZbciSejs+sOEcVfu2IiVVaOMJ/CecTZZ4bE4m1PCbYaE8K4cDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150505; c=relaxed/simple;
-	bh=FgJb8ip6P9+AklWn3gKziPHPVzIvMpCQOIrfmY6RwzA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XT2kfPz+n9jjgoM9WJmqYhXIxhCZ0EcDILcXXBYYu35abhhD8oZ7XGnK3vP59JIITVmNv5Cpixk3mYzgvhNDP7H7TR5PfOcwktu1AdrsBqv71GvcPRtrTp/dTZ2Ce9PNtOs0ZdUbf0kFnQwDhQsaP3fbNQ/pqThSlRduRW9/sgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vA4G+RUS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C9CC113CD;
-	Fri, 26 Apr 2024 16:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714150504;
-	bh=FgJb8ip6P9+AklWn3gKziPHPVzIvMpCQOIrfmY6RwzA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=vA4G+RUS2HCJjpvDO8FpBD1l0DUJmIj8idLllzwfJsLdQt5/XX8873dkUW6c5xMI5
-	 quEPkGlllVKbBheAhqwwkDJozCkwTrWYn6p2MO/WnKhnib7JQKC9ayvlAgw3EguLvy
-	 GuXmVKwv3RvIsafjIxleQBNT9As4DNDGlh4+3bb94zTQlCDTJuCAUknG05Nkqbrh9S
-	 DGkgEAQgTf5NazN86rOfIgfJBwtIaDibaEYlB7BCdxYzE0w+RL5h6X6zG7hC5oDA6c
-	 eUeW7IXR9DgBVL3m5ZhW/oaNbdbcYLObeIIrX6L6gDbTqOxPGOepvNHWII6c/hJgZO
-	 I1zf8zCgscUdQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
- <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/2] arm64, bpf: add internal-only MOV
- instruction to resolve per-CPU addrs
-In-Reply-To: <CAEf4BzbBBpsuCGgombEj1N8f97iKrMr2WXSoU8jOUfKSqLXnyw@mail.gmail.com>
-References: <20240426121349.97651-1-puranjay@kernel.org>
- <20240426121349.97651-2-puranjay@kernel.org>
- <CAEf4BzbBBpsuCGgombEj1N8f97iKrMr2WXSoU8jOUfKSqLXnyw@mail.gmail.com>
-Date: Fri, 26 Apr 2024 16:55:01 +0000
-Message-ID: <mb61psez8vzbu.fsf@kernel.org>
+	s=arc-20240116; t=1714150653; c=relaxed/simple;
+	bh=iwM6s7Kd0eHXQvuCS74HOcuoxgkEaaCMuqibWr+uRU4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MVTj5lRgw1od5hpQN5OK0wfh9UaG/ku7uOr6edWLrdDPlqot7dCU8eGID4KH2mijyJWhxIC6yzFuvP/8Vka6CBqc+R1Qcii0qoyZoYdkj2KlfH7VKCem5XfpwUyzw82c+O4G1iGLh6lWxoOczm54txHTMUsltTxEaKLLQxGJHcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Napl2QMk; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78f049ddd7dso170627285a.1
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 09:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714150651; x=1714755451; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QeNec6TOUGkbstqdXszHUxwBIyDBbdMz+hQZJpjjTis=;
+        b=Napl2QMkCBlt3RqlmZoBj+/hHsfvwMXWynEqNIen5Q+kQr8dokXi1eoJnUBufumAZq
+         +tpznG9l3foQArSev1xCiWsG57qEOtrumEazY8e2G2ibL6W4sTx1+Lig0uQJsw6EdHRV
+         2n3M7le/SoOTf2E/p15BpcZJMSoGRAILUzL3oQd1YZskfgfXVWbxW33mqT79MgpZgynB
+         Q2+SInrEVdtqrKPGQzpdfhYh0G6vkgC+AQmPrfSU5/aGTWlSwjqMWXM7qDj7lrPST3Qd
+         KAKJRz+I+pZnPGC16JYpUL1kj/14h/m8vdWJxc3wZjimCs3CSSnfjTtsKw5c3bSG0b50
+         ziNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714150651; x=1714755451;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QeNec6TOUGkbstqdXszHUxwBIyDBbdMz+hQZJpjjTis=;
+        b=kEMgPKkRQDkY4ZhboINVdluEMufHbQJFuDIIGEP2ub7uMzaWZ/8I40efAAnDcJl3Q2
+         c9zJY0pvAB/AadOcOAAZvHln2H0EZXWxe7dBW0SS9C1Fq1f5xmGsGirCJbSGj/PPvBfm
+         S+M2nSKxXk+NqW5uH1412rP/8b2JZ0im7JBUs7j98vNgR7cLxbA48J0EFmsKsHtU3nUA
+         UKh8qP83vuwbTOWzjjPyrmuSq6Y2V8ERSIjoI8YSXBUAIkj6+Srp8neL7Bip0Sb1FL3G
+         4lAIbwQZV444lZbZimB5FsSuBRhm0YjZhJ1JarsVXddGy0ZEpyytaXohhzoV0JZ23rXO
+         CJDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUvy43BH8gbYW1gzbIuQ3E1SpG7UrKqkGvN1RMzEkNl1uQxRXoA5w3s5J88j8584xdPlk2qJFBqM2vYOh3v3TxH9D4x
+X-Gm-Message-State: AOJu0YwJws6TitrarieXpCoGAYWeXeQzQtqVAoXcB0XcKIDToeuqh7k0
+	whvhtmb9+R36jlqk2qpa4rAxoVmXotTWRZniHSDf143r0F1PqpzHWsCflSQ6Dw==
+X-Google-Smtp-Source: AGHT+IGUtyNxSPXf0KA1xAi6zd1MZuzLQ+yvQizRd21qN73Jlwgy6FtVIZSWl4hLSM0HzO/nwBksIg==
+X-Received: by 2002:a05:620a:1d96:b0:790:7d72:977c with SMTP id pj22-20020a05620a1d9600b007907d72977cmr3293158qkn.62.1714150650772;
+        Fri, 26 Apr 2024 09:57:30 -0700 (PDT)
+Received: from [192.168.1.31] (d-65-175-147-142.nh.cpe.atlanticbb.net. [65.175.147.142])
+        by smtp.gmail.com with ESMTPSA id y10-20020a37e30a000000b007907319aa02sm4873093qki.67.2024.04.26.09.57.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 09:57:30 -0700 (PDT)
+Message-ID: <81c1590d-076b-4cc1-9fe0-f6ba9304c281@google.com>
+Date: Fri, 26 Apr 2024 12:57:26 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/36] sched_ext: Implement BPF extensible scheduler class
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
+ mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@kernel.org, joshdon@google.com,
+ pjt@google.com, derkling@google.com, haoluo@google.com, dvernet@meta.com,
+ dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+ changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com,
+ Andrea Righi <andrea.righi@canonical.com>
+References: <20231111024835.2164816-1-tj@kernel.org>
+ <20231111024835.2164816-13-tj@kernel.org> <20240323023732.GA162856@joelbox2>
+ <Zf9Tz2wHT6KYtqEG@slm.duckdns.org>
+ <CAEXW_YR02g=DetfwM98ZoveWEbGbGGfb1KAikcBeC=Pkvqf4OA@mail.gmail.com>
+From: Barret Rhoden <brho@google.com>
+Content-Language: en-US
+In-Reply-To: <CAEXW_YR02g=DetfwM98ZoveWEbGbGGfb1KAikcBeC=Pkvqf4OA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 4/25/24 17:28, Joel Fernandes wrote:
+> But if I understand, sched_ext is below CFS at the moment, so that
+> should not be an issue.
+> 
+> [1] By the way, now that I brought up the higher priority class thing,
+> I might as well discuss it here :-D :
+> 
+> One of my use cases is about scheduling high priority latency sensitive threads:
+> I think if sched_ext could have 2 classes, one lower than CFS and one
+> above CFS, that would be beneficial to those who want a gradual
+> transition to use scx, instead of switching all tasks to scx at once.
 
-> On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
-rg> wrote:
->>
->> From: Puranjay Mohan <puranjay12@gmail.com>
->>
->> Support an instruction for resolving absolute addresses of per-CPU
->> data from their per-CPU offsets. This instruction is internal-only and
->> users are not allowed to use them directly. They will only be used for
->> internal inlining optimizations for now between BPF verifier and BPF
->> JITs.
->>
->> Since commit 7158627686f0 ("arm64: percpu: implement optimised pcpu
->> access using tpidr_el1"), the per-cpu offset for the CPU is stored in
->> the tpidr_el1/2 register of that CPU.
->>
->> To support this BPF instruction in the ARM64 JIT, the following ARM64
->> instructions are emitted:
->>
->> mov dst, src            // Move src to dst, if src !=3D dst
->> mrs tmp, tpidr_el1/2    // Move per-cpu offset of the current cpu in tmp.
->> add dst, dst, tmp       // Add the per cpu offset to the dst.
->>
->> To measure the performance improvement provided by this change, the
->> benchmark in [1] was used:
->>
->> Before:
->> glob-arr-inc   :   23.597 =C2=B1 0.012M/s
->> arr-inc        :   23.173 =C2=B1 0.019M/s
->> hash-inc       :   12.186 =C2=B1 0.028M/s
->>
->> After:
->> glob-arr-inc   :   23.819 =C2=B1 0.034M/s
->> arr-inc        :   23.285 =C2=B1 0.017M/s
->
-> I still expected a better improvement (global-arr-inc's results
-> improved more than arr-inc, which is completely different from
-> x86-64), but it's still a good thing to support this for arm64, of
-> course.
->
-> ack for generic parts I can understand:
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
+The way we initially went with Ghost (which is the Google project 
+similar to sched_ext) was to run Ghost below CFS.  That was a "safety 
+first" approach, where we didn't have a lot of faith in the schedulers 
+we were writing and wanted to convince people (including ourselves) that 
+we wouldn't completely hose a machine.
 
-I will have to do more research to find why we don't see very high
-improvement.
+For the same reason you pointed out, we eventually wanted to run our 
+schedulers above CFS.  Currently, Ghost has the option to run above or 
+below CFS, and we're pretty close to being able to run all of our 
+schedulers above CFS.  Once we do that, I imagine we'll drop the "above 
+or below" aspect, since it's a bit more complicated.
 
-But this is what is happening here:
+It's actually even more complicated than that - ghost also has a 
+separate "ghost agent" sched class above CFS, even if ghost itself is 
+below CFS.  This lets us run a single userspace "agent task" on a cpu to 
+make a scheduling decision.
 
-This was the complete picture before inlining:
-
-int cpu =3D bpf_get_smp_processor_id();
-mov     x10, #0xffffffffffffd4a8
-movk    x10, #0x802c, lsl #16
-movk    x10, #0x8000, lsl #32
-blr     x10 ---------------------------------------> nop
-                                                     nop
-                                                     adrp    x0, 0xffff8000=
-82128000
-                                                     mrs     x1, tpidr_el1
-                                                     add     x0, x0, #0x8
-                                                     ldrsw   x0, [x0, x1]
-            <----------------------------------------ret
-add     x7, x0, #0x0
-
-
-Now we have:
-
-int cpu =3D bpf_get_smp_processor_id();
-mov     x7, #0xffff8000ffffffff
-movk    x7, #0x8212, lsl #16
-movk    x7, #0x8008
-mrs     x10, tpidr_el1
-add     x7, x7, x10
-ldr     w7, [x7]
-
-
-So, we have removed multiple instructions including a branch and a
-return. I was expecting to see more improvement. This benchmark is taken
-from a KVM based virtual machine, maybe if I do it on bare-metal I would
-see more improvement ?
+Anyway, when we port Ghost to run on sched_ext instead of our custom 
+ghost sched class(es), we'll be running sched_ext above CFS, and I doubt 
+we'll want to run below CFS at all.  Though whether that's a local patch 
+we carry, or the default upstream probably depends on what everyone else 
+wants too.
 
 Thanks,
-Puranjay
+Barret
+
+
 
