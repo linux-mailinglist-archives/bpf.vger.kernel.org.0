@@ -1,83 +1,132 @@
-Return-Path: <bpf+bounces-27978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77948B40BE
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:19:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765B18B40C1
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:20:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C3A328381D
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 20:19:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A86231C22EB5
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 20:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CA022EF8;
-	Fri, 26 Apr 2024 20:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC432260A;
+	Fri, 26 Apr 2024 20:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Wp0H7bO/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OdgdLWF0"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0160208AF;
-	Fri, 26 Apr 2024 20:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BDC1BF2F
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 20:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714162753; cv=none; b=T1LO8f9bFLiTB5bdQRBkQa18+uiUvLTnMN+mMNWQsvK1y9fVOWRzD3WfRbP6+STcMvWHGOVVDi6VKD/LAlQN0Xm8kD3KXW2qyU20hcPy8a9kOnOSFNrBwi6T1+RSEJNSW/ZjvtCo9WfinagS6vZKEdQ206FppzRWP+W41xO8X/U=
+	t=1714162849; cv=none; b=tPpJr7f2g2VoznE6WfS1FDEKFh9zdA6Are4cRr5sKXD8BeIsbUpE4CmyBDcyVBDXFAJAQXPu3CFSkHU84yUlgPIIC/UcuPVJhGCvxX0pjb/JSPUGvo57wq7nU/LkTMOXkR/UIlQe7fWP2g0RmAW/pPmuGD44VOxSvXrmu73JNZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714162753; c=relaxed/simple;
-	bh=6VdUJV20l4I0zrwsUBPpqBuj20IIVfh/k/cJj3StQ00=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RH6NV9wR2h1k6SQc/lf9iEP8+Gy/aCq5F+EOjrmmDv10oTFMhWwwwpyqqtQBE6e7chgcMwBZh/Mted3N5ySwJlBQDPJPsgyLNng6GbMO3VWtG+h25oOiwvlVz9DRiglFOx9kHlmTSr76Xg1WZ4k0Q/AdqVIy3kGQ0F/7M7jfZec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Wp0H7bO/; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=N90b3/SSxbLK/a2YSgJGW777fnEwBjaan+amMbxn+pM=; b=Wp0H7bO/DEtI8f43tFDIxMMax3
-	wXthZokbrCCYVe2Sgom7cGaHFGTpfFDIDiWNvs3QsrRbJHyVuiHUrFHymToW3eIuRpGYJkX41SULU
-	SDxRUHfroNxbfysEJqySWQvmh51CG3yEBG5qy+OZktOG4FETduammudLfKTJ4+WL2rN7+yvQlhcB0
-	XIXHk/VcBXihUdNnvc5ZSLChwK24CV0gE12Ckbwu595jh3YW6KxEsi4y5I39QtpG/D/6tsEcUJLIB
-	OVkcWkEIXxUEzy1nPSy1SFxBYoGqASVywCyIYq6F4mPvY7jrIG1o9CQ7MsbivSljLnP1HRbtscsPS
-	d7NSruqg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s0S2A-005PJi-1D;
-	Fri, 26 Apr 2024 20:19:02 +0000
-Date: Fri, 26 Apr 2024 21:19:02 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: I Hsin Cheng <richard120310@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH] tcp_bbr: replace lambda expression with bitwise
- operation for bit flip
-Message-ID: <20240426201902.GQ2118490@ZenIV>
-References: <20240426152011.37069-1-richard120310@gmail.com>
- <CANn89iKenW5SxMGm753z8eawg+7drUz7oZcTR06habjcFmdqVg@mail.gmail.com>
- <Zivd4agQ8D6rUKvt@vaxr-BM6660-BM6360>
+	s=arc-20240116; t=1714162849; c=relaxed/simple;
+	bh=LFbNYzCXuxtW6BQZHUqKUelX1ujYRzkupwJOfTMTUHw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RQ9pL2S9tlGEZqlGph4N3hqs8TKTQis4azWmzif1LEK2wRH9Dk0emiuE1OzWyyuSOI2GYhAWT6sRC2OAgERAtTNAxjhCLnDrfOYaxbtmP1jMJoCvEt3qPvBcrz/+7fd062YJbsfE4IBOu2jgK88UX7tA1iESGB6eIHT/9RYCbb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OdgdLWF0; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso2011617a12.0
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 13:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714162847; x=1714767647; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rkND1HldruIqIw3gO759O50zC++DComa+XTr4qiirBo=;
+        b=OdgdLWF0YC17a2O6Gu7f5PKCAWOkvGlWxVOg2uLkkx0+6zDrTrk8oddBV8ygy+gd2H
+         DXmYQZYZmp9sDr3InXAwmwTewRviCBZU1qKK62kVHJJMAlOTXc4xZ163j+2rZVBxvqwI
+         w4CXoX8qqb3ocIq7Z0/d5pDDEGAjFuc7L49tgZphpjoA/4KgI6h2mVl1A4wyrgAtXSzy
+         /l+7X5svIloyu1vu/CWXtnrvvNU+64qUWMPMzYzfLOxMFza17599LsndZBH/lDCPLdPb
+         /zw1QGEjT8DWXNr6tdZOnlbox/PPTqvqhAZagbHIyEK9KBa3UJrdDVIm/+9dgIqQUzwm
+         ybtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714162847; x=1714767647;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rkND1HldruIqIw3gO759O50zC++DComa+XTr4qiirBo=;
+        b=tdDxTvm/2akEGU13YSMVq+aVHykRKb+2NeYqvoh835P3GlEOYRIV1Ukp3GiY5Na4Fm
+         2B+A32B6wAFSj95Pi/spNGe+4MA8kPGMvjGC5AfdFeGzYzO2tj6R2jWIxOooXRFRgJn/
+         6IDvgE6pZgGGrwL4+NqjWCq6mtGTK5lGFKe/RA8WeR+7PIrgORWBzQhRir/VFWKs7vj3
+         jo5ByyFig6ahxiRzJZ25g1lzc9UsEcgpgbdJZ6IX82VZiPxrFQ3RwUxy3nqtWdQhduI8
+         1tDq/lmdboO5YneNNus6ORp3S/HWDWJiwVLIyhdApbKnlk6QWwsBAPDWXi9O7e2+vNrz
+         rKFg==
+X-Gm-Message-State: AOJu0YxZ+pN2LQDQV30ixii+hpzceerlQnBD5IoISug8wxLRC7jWqjJF
+	yhvUlI9fXtJyOhmMAjxRXQ2ljKG67U7+UDxR7BBpkH4Hwtw+t9LfUJwVXrsMpRaIXux/rfx+6Ba
+	QR42N2P10VOK915h3FbxLucGGDbM=
+X-Google-Smtp-Source: AGHT+IEqZZo0fbCqFhDk/8oxSSfXMexnQGgIld2+8tmgAuzNQlui98Mq4CmjlPPXame35lccXcnGD98xnUHs5mG9cDA=
+X-Received: by 2002:a17:90a:5d91:b0:2ac:2b02:e167 with SMTP id
+ t17-20020a17090a5d9100b002ac2b02e167mr3827996pji.37.1714162847409; Fri, 26
+ Apr 2024 13:20:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zivd4agQ8D6rUKvt@vaxr-BM6660-BM6360>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240426185630.17938-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20240426185630.17938-1-alexei.starovoitov@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Apr 2024 13:20:34 -0700
+Message-ID: <CAEf4BzZZWBsFh5zkaxGhMZ1TR+NdoWNxTnu8QizWoL+3zZGmcw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Fix verifier assumptions about socket->sk
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com, 
+	liamwisehart@meta.com, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 27, 2024 at 01:01:21AM +0800, I Hsin Cheng wrote:
+On Fri, Apr 26, 2024 at 11:56=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> The verifier assumes that 'sk' field in 'struct socket' is valid
+> and non-NULL when 'socket' pointer itself is trusted and non-NULL.
+> That may not be the case when socket was just created and
+> passed to LSM socket_accept hook.
+> Fix this verifier assumption and adjust tests.
+>
+> Reported-by: Liam Wisehart <liamwisehart@meta.com>
+> Fixes: 6fcd486b3a0a ("bpf: Refactor RCU enforcement in the verifier.")
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  kernel/bpf/verifier.c                         | 23 +++++++++++++++----
+>  .../selftests/bpf/progs/local_storage.c       | 20 ++++++++--------
+>  .../testing/selftests/bpf/progs/lsm_cgroup.c  |  8 +++++--
+>  3 files changed, 35 insertions(+), 16 deletions(-)
+>
 
-> I see, thanks for your explanation.
-> I thought the compilers behavior might alters due to different 
-> architecture or different compilers.
-> So would you recommend on the proposed changes or we should stick to
->  the original implementation? 
-> Personally I think my version or your proposed change are both more 
-> understandable and elegant than the lambda expression.
+Makes sense, but can you also fix up one of benchmark's programs, see
+[0], veristat-based CI run caught success->failure change (in
+bench_local_storage_create.bpf.o)
 
-Out of curiosity, where do you see any lambda expressions in the entire
-thing?
+  [0] https://github.com/kernel-patches/bpf/actions/runs/8853140420/job/243=
+13511057
+
+pw-bot: cr
+
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4e474ef44e9c..c2780a5c396a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2368,6 +2368,8 @@ static void mark_btf_ld_reg(struct bpf_verifier_env=
+ *env,
+>         regs[regno].type =3D PTR_TO_BTF_ID | flag;
+>         regs[regno].btf =3D btf;
+>         regs[regno].btf_id =3D btf_id;
+> +       if (type_may_be_null(flag))
+> +               regs[regno].id =3D ++env->id_gen;
+>  }
+>
+>  #define DEF_NOT_SUBREG (0)
+
+[...]
 
