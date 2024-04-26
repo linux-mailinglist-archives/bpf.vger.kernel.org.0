@@ -1,126 +1,452 @@
-Return-Path: <bpf+bounces-27871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79AB48B2DCB
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 01:56:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786F08B2DE7
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 02:16:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 998C2B20D29
-	for <lists+bpf@lfdr.de>; Thu, 25 Apr 2024 23:56:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7091C218BB
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 00:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4513156F26;
-	Thu, 25 Apr 2024 23:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114F67FB;
+	Fri, 26 Apr 2024 00:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Kl+M83De"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="befZIWjK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3DE112BF22;
-	Thu, 25 Apr 2024 23:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A33364
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 00:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714089353; cv=none; b=i89rNzpy6a9SBWTPy0SxX4llF94JMo7QVWW7dw99Jjsin3+cZwwPU4JgO9aVRcruD9HAlBla6meFNwQO6gC6/mVv6NSdsr4waHGn4Y2fvFEBa50VojG7fs4fEudfIwn05rexSWChjShpKF927K00Q0py78OIzhMlagZnyhMmVlo=
+	t=1714090589; cv=none; b=H+wLb8CnDZOxqtD6Nglp5fBNLSsCddybfYMI8veFtbKsBMf4Ii8yvGRrk7azqq7iDJpf2TbbTRJZ/NwzlgMN5N/fQptvOKBUfGAGpgZ+jlXtNzv2DvEMDHjTc8xq+KEfZ56FnTgT3gvX3YX/rsOxPkcsirKfbCh0kAXWcKg+zgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714089353; c=relaxed/simple;
-	bh=DXF40Aou5AWOgF5C6k2hVzTbaKJBidJ18v1nMg/VIPE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eyApVkH0riAqI7zj0XWPv3bSYCnCIyEsDMF3Tr0+PXJ6nvtWJlStAunCtuYarh84sn8CG1uPu4Q1veTB3VjnLpbyCPQ8hT5wn74lZNJv61G+e/a+dDi4P7Wdgmg85ecsfvXm4uSxAZS2Lqziv8d8a+S7P7oWgG8c8QkGD4rFBB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Kl+M83De; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PJf030002323;
-	Thu, 25 Apr 2024 23:55:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=MUUjl+/YT9sSum+ImRa9WRqc6yccVpa6DoToWYHMQY8=; b=Kl
-	+M83DelwMjUzsbO834cy+nPXTSX+6gR1z70ajOxkdp0205MMW+eL1te0pJtRwdOk
-	W4ZSBwVA328WOyKLXGMu0h5lzQ06isuiX8vkTNBmZQ+9L+K2ge/JeT2zdgFOZf+3
-	mVGDuY+nNTKsKiMjVkgnhH33YPWaI+k076pGbCB0BKvGf3xm8Vlxc+HZbj6Liz9S
-	Y5hB0OabOOFnNWBTB2T7Txv6cab1VPOFWNZcxRK6E8K5HLFKk8J4vlYkAnDSaxQj
-	o4ReDLlOAystN5lbvbIu3xH9cLWeLNDJH7pymLTnGi3ocovR5bztt3n0vx5j+yj0
-	OtAN+uzZUtjZ84EsKlAQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenpbwhu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 23:55:29 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PNtSme020585
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 23:55:28 GMT
-Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
- 2024 16:55:24 -0700
-Message-ID: <6976b7ea-a7d4-41fc-93ac-fd5972466520@quicinc.com>
-Date: Thu, 25 Apr 2024 16:55:23 -0700
+	s=arc-20240116; t=1714090589; c=relaxed/simple;
+	bh=t8FY9Kmq7Rt7p6yaY71p9hZvXEQh+ib7wRfsYLEpy6w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SeyOi09ug6UWVM8IjZWoYY1u9DebBYVNSVz3ISHDEuiGO0wZNMFBFu+vJ+EQi0OQj/yz+ofHrdkurolzSAPn4kX5erV7eFdxpnoNCboy1fTbtAcyQwlTwfKK21byzWXXFWBc0x6mJDcVcf4/TbOP2lL2mQB+WAlDgM366uuML10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=befZIWjK; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso2721a12.1
+        for <bpf@vger.kernel.org>; Thu, 25 Apr 2024 17:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714090586; x=1714695386; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wP+e8G/Rry91TMiL3AEua7gS93ylF2WQ2Cbp+DTXBOY=;
+        b=befZIWjKAIgrTL5MKO7qPXhDVjKYSz7ndwztGjDRmrT7Vmu7QuLyD5YAvL6mq+RZN3
+         AlRjHFRHC7/9gT2j6sjif6wBRU7ReuaVkABG7xzU/XcrupMqjQG2Z7CqAQq+MC6eg856
+         wpzj7Pt3FPi/IRi/7kweVkjKxs/ra32Jtrf+s55YRQreaFhuQ/f44gCiVECG3EHSlD/s
+         0nkH8DUqP/fE2/CdFC8OP9tBLnyINShpr2U6eCImjaQAwWH8V6StCXbSJ39T4EjYhET0
+         f3WaHOKaoPW/G4WJtxA7ZqotPETTwGTi2/kqKmOncedN5VOmHpn2kvpMDqy8hZ43GWcc
+         YoXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714090586; x=1714695386;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wP+e8G/Rry91TMiL3AEua7gS93ylF2WQ2Cbp+DTXBOY=;
+        b=vYSQUdPlV+cAF6EhFqF4PVGVYqgKXqnS41KEReZeOzHZPkPExoL5qQkJG6m2a+uFl5
+         lvQB135k+AG34oeO3ZyuyltH0YvlLVTT7gK0weY2ASI9OIsbJZL2P6UT333hBqXOrQc2
+         yNIjRZK5pd1eIqX1bESdOzuET9PeLwvZmffVkQTkEcoKu8Gap2oPRcaQU22Q6fDNevqN
+         EEVQ+8QqfSGXtYGjSYzDSPTwEdC651joOrv4q6PzyyiZ9JgftaAP6Yt1qk4JM+VtidEJ
+         cP5i8CaENzUimo5m/NfCxP3yzC6MQaTgF9wewZPPRYytH00FOheOHtvwSl9DqlHGWkHO
+         xCVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXxs2e6pOtMoQ8ToD1+FS5Jcm1ue6iWIpGueyUHjF/r9ibOYSMAbahFiwxv222/N6PWmkfnZWUqNVy4RW3DdExOtihb
+X-Gm-Message-State: AOJu0Yyd0Au2h068C4udDPCbMDeF2rtnBIo/9YACRu36KD29L1vGpP+5
+	zNu4KZXLXS0DpKI429N9DwwMZE98b1GVOGx6u3cwI9u3ySELy6ok8BiwIy4vA5Nsh6NizOy4skl
+	rKGSXUYKolpGtK7uWr8uoEWRRxkk6JWEApJS3
+X-Google-Smtp-Source: AGHT+IFJYrclXgYqm60zhB28uv/s+5+k5UqHGn8RIJiOJvzezWSOKJqiT68gDpiEBQAwTYhy/xvsvKLmlZugn5oFO28=
+X-Received: by 2002:a05:6402:26cc:b0:572:57d8:4516 with SMTP id
+ x12-20020a05640226cc00b0057257d84516mr764edd.2.1714090585829; Thu, 25 Apr
+ 2024 17:16:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v5 1/2] net: Rename mono_delivery_time to
- tstamp_type for scalabilty
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Martin
- KaFai Lau" <martin.lau@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
- <20240424222028.1080134-2-quic_abchauha@quicinc.com>
- <662a69475869_1de39b29415@willemb.c.googlers.com.notmuch>
- <a84d314a-fca4-4317-9d33-0c7d3213c612@quicinc.com>
- <6cebfd92-7ad0-496a-9f31-f4c696fb5cb8@linux.dev>
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <6cebfd92-7ad0-496a-9f31-f4c696fb5cb8@linux.dev>
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch> <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+ <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+ <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch> <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+ <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+ <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch> <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+ <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch> <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
+ <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
+ <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
+ <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
+ <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
+ <6622acdd22168_122c5b2945@willemb.c.googlers.com.notmuch> <9f097bcafc5bacead23c769df4c3f63a80dcbad5.camel@mediatek.com>
+ <6627ff5432c3a_1759e929467@willemb.c.googlers.com.notmuch>
+ <274c7e9837e5bbe468d19aba7718cc1cf0f9a6eb.camel@mediatek.com>
+ <66291716bcaed_1a760729446@willemb.c.googlers.com.notmuch> <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
+In-Reply-To: <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Thu, 25 Apr 2024 17:16:08 -0700
+Message-ID: <CANP3RGeOmrawPUmWeo5VLnzUt3cwDE6pDp3D9d8_xqwicghXpA@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without fraglist
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+Cc: "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>, 
+	=?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+	"davem@davemloft.net" <davem@davemloft.net>, "yan@cloudflare.com" <yan@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: lHliPMGmVVlL_Bf7--AuHBaVnaMz5Nwj
-X-Proofpoint-ORIG-GUID: lHliPMGmVVlL_Bf7--AuHBaVnaMz5Nwj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_22,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 adultscore=0 phishscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- mlxlogscore=832 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250176
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 24, 2024 at 9:33=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=9C) <Len=
+a.Wang@mediatek.com> wrote:
+>
+> On Wed, 2024-04-24 at 10:28 -0400, Willem de Bruijn wrote:
+> >
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >
+> > Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> > > On Tue, 2024-04-23 at 14:35 -0400, Willem de Bruijn wrote:
+> > > >
+> > > > External email : Please do not click links or open attachments
+> > until
+> > > > you have verified the sender or the content.
+> > > >  > Hi Willem,
+> > > > > As the discussion, is it OK for the patch below?
+> > > >
+> > > > Thanks for iterating on this.
+> > > >
+> > > > I would like the opinion also of the fraglist and UDP GRO
+> > experts.
+> > > >
+> > > > Yes, I think both
+> > > >
+> > > > - protecting skb_segment_list against clearly illegal fraglist
+> > > > packets, and
+> > > > - blocking BPF from constructing such packets
+> > > >
+> > > > are worthwhile stable fixes. I believe they should be two
+> > separate
+> > > > patches. Both probably with the same Fixes tag: 3a1296a38d0c
+> > > > ("net: Support GRO/GSO fraglist chaining").
+> > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index 3a6110ea4009..abc6029c8eef 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -1655,6 +1655,11 @@ static DEFINE_PER_CPU(struct
+> > bpf_scratchpad,
+> > > > > bpf_sp);
+> > > > >  static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > > > >                                           unsigned int
+> > write_len)
+> > > > >  {
+> > > > > +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > > > > +                       SKB_GSO_FRAGLIST) && (write_len >
+> > > > > skb_headlen(skb))) {
+> > > > > +               return -ENOMEM;
+> > > > > +       }
+> > > > > +
+> > > >
+> > > > Indentation looks off, but I agree with the logic.
+> > > >
+> > > >     if (skb_is_gso(skb) &&
+> > > >         (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
+> > > >          (write_len > skb_headlen(skb)))
+> > > >
+> > > > >         return skb_ensure_writable(skb, write_len);
+> > > > >  }
+> > > > >
+> > > > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > > > index 73b1e0e53534..2e90534c1a1e 100644
+> > > > > --- a/net/core/skbuff.c
+> > > > > +++ b/net/core/skbuff.c
+> > > > > @@ -4036,9 +4036,11 @@ struct sk_buff *skb_segment_list(struct
+> > > > sk_buff
+> > > > > *skb,
+> > > > >         unsigned int tnl_hlen =3D skb_tnl_header_len(skb);
+> > > > >         unsigned int delta_truesize =3D 0;
+> > > > >         unsigned int delta_len =3D 0;
+> > > > > +       unsigned int mss =3D skb_shinfo(skb)->gso_size;
+> > > > >         struct sk_buff *tail =3D NULL;
+> > > > >         struct sk_buff *nskb, *tmp;
+> > > > >         int len_diff, err;
+> > > > > +       bool err_len =3D false;
+> > > > >
+> > > > >         skb_push(skb, -skb_network_offset(skb) + offset);
+> > > > >
+> > > > > @@ -4047,6 +4049,14 @@ struct sk_buff *skb_segment_list(struct
+> > > > sk_buff
+> > > > > *skb,
+> > > > >         if (err)
+> > > > >                 goto err_linearize;
+> > > > >
+> > > > > +       if (mss !=3D GSO_BY_FRAGS && mss !=3D skb_headlen(skb)) {
+> > > > > +               if (!list_skb) {
+> > > > > +                       goto err_linearize;
+> > > >
+> > > > The label no longer truly covers the meaning.
+> > > >
+> > > > But that is already true since the above (second) jump was added
+> > in
+> > > > commit c329b261afe7 ("net: prevent skb corruption on frag list
+> > > > segmentation").
+> > > >
+> > > > Neither needs the kfree_skb_list, as skb->next is not assigned to
+> > > > until the loop. Can just return ERR_PTR(-EFAULT)?
+> > > >
+> > > > > +               } else {
+> > > > > +                       err_len =3D true;
+> > > > > +               }
+> > > > > +       }
+> > > > > +
+> > > >
+> > > > Why the branch? Might as well always fail immediately?
+> > > >
+> > > Hi Willem,
+> > > Thanks for your guidance.
+> > > You are right. There is no need for another branch as fraglist
+> > > could be freeed in kfree_skb.
+> > > Could I git send mail wo patches as below?
+> > >
+> > > From 933237400c0e2fa997470b70ff0e407996fa239c Mon Sep 17 00:00:00
+> > 2001
+> > > From: Shiming Cheng <shiming.cheng@mediatek.com>
+> > > Date: Wed, 24 Apr 2024 13:42:35 +0800
+> > > Subject: [PATCH net] net: prevent BPF pull GROed skb's fraglist
+> > >
+> > > A GROed skb with fraglist can't be pulled data
+> >
+> > Please use the specific label: SKB_GSO_FRAGLIST skb
+> >
+> > > from its fraglist as it may result a invalid
+> > > segmentation or kernel exception.
+> > >
+> > > For such structured skb we limit the BPF pull
+> > > data length smaller than skb_headlen() and return
+> > > error if exceeding.
+> > >
+> > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> > > Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> > > ---
+> > >  net/core/filter.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index 8adf95765cdd..8ed4d5d87167 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad,
+> > > bpf_sp);
+> > >  static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > >    unsigned int write_len)
+> > >  {
+> > > +if (skb_is_gso(skb) &&
+> > > +    (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
+> > > +     write_len > skb_headlen(skb)) {
+> > > +return -ENOMEM;
+> > > +}
+> > >  return skb_ensure_writable(skb, write_len);
+> > >  }
+> > >
+> > > --
+> > > 2.18.0
+> > >
+> > >
+> > > From 2d0729b20cf810ba1b31e046952c1cd78f295ca3 Mon Sep 17 00:00:00
+> > 2001
+> > > From: Shiming Cheng <shiming.cheng@mediatek.com>
+> > > Date: Wed, 24 Apr 2024 14:43:45 +0800
+> > > Subject: [PATCH net] net: drop GROed skb pulled from fraglist
+> > >
+> > > A GROed skb with fraglist maybe pulled by BPF
+> > > or other ways. It can't be trusted at all even
+> > > if one byte is pulled and should be dropped
+> > > on segmentation.
+> >
+> > This paraphrases my comment. It is better to spell it out:
+> >
+> > An SKB_GSO_FRAGLIST skb without GSO_BY_FRAGS is expected to have all
+> > segments except the last to be gso_size long. If this does not hold,
+> > the skb has been modified and the fraglist gso integrity is lost.
+> > Drop
+> > the packet, as it cannot be segmented correctly by skb_segment_list.
+> >
+> > The skb could be salvaged, though, right? By linearizing, dropping
+> > the SKB_GSO_FRAGLIST bit and entering the normal skb_segment path
+> > rather than the skb_segment_list path.
+> >
+> > That choice is currently made in the protocol caller,
+> > __udp_gso_segment. It's not trivial to add such a backup path here.
+> > So let's add this backstop against kernel crashes.
+> >
+> > >
+> > > If the gso_size does not match skb_headlen(),
+> > > it means to be pulled part of or the entire
+> > > fraglsit. It has been messed with and we return
+> >
+> > fraglist
+> >
+> > > error to free this skb.
+> > >
+> > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> > > Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> > > ---
+> > >  net/core/skbuff.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > index b99127712e67..750fbb51b99f 100644
+> > > --- a/net/core/skbuff.c
+> > > +++ b/net/core/skbuff.c
+> > > @@ -4493,6 +4493,7 @@ struct sk_buff *skb_segment_list(struct
+> > sk_buff
+> > > *skb,
+> > >  unsigned int tnl_hlen =3D skb_tnl_header_len(skb);
+> > >  unsigned int delta_truesize =3D 0;
+> > >  unsigned int delta_len =3D 0;
+> > > +unsigned int mss =3D skb_shinfo(skb)->gso_size;
+> >
+> > Reverse christmas tree
+> >
+> > >  struct sk_buff *tail =3D NULL;
+> > >  struct sk_buff *nskb, *tmp;
+> > >  int len_diff, err;
+> > > @@ -4504,6 +4505,9 @@ struct sk_buff *skb_segment_list(struct
+> > sk_buff
+> > > *skb,
+> > >  if (err)
+> > >  goto err_linearize;
+> > >
+> > > +if (mss !=3D GSO_BY_FRAGS && mss !=3D skb_headlen(skb))
+> > > +return ERR_PTR(-EFAULT);
+> > > +
+> >
+> > Do this precondition integrity check before the skb_unclone path?
+>
+> After return error, the skb will enter into kfree_skb, not consume_skb.
+> It may meet same crash problem which has been resolved by skb_unclone.
+>
+> Or kfree_skb could well handle the cloned skb's release?
+>
+> Other changes are updated as below:
+>
+> From 301da5c9d65652bac6091d4cd64b751b3338f8bb Mon Sep 17 00:00:00 2001
+> From: Shiming Cheng <shiming.cheng@mediatek.com>
+> Date: Wed, 24 Apr 2024 13:42:35 +0800
+> Subject: [PATCH net] net: prevent BPF pulling SKB_GSO_FRAGLIST skb
+>
+> A SKB_GSO_FRAGLIST skb can't be pulled data
+> from its fraglist as it may result an invalid
+> segmentation or kernel exception.
+>
+> For such structured skb we limit the BPF pulling
+> data length smaller than skb_headlen() and return
+> error if exceeding.
+>
+> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> ---
+>  net/core/filter.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 8adf95765cdd..8ed4d5d87167 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad,
+> bpf_sp);
+>  static inline int __bpf_try_make_writable(struct sk_buff *skb,
+>                                           unsigned int write_len)
+>  {
+> +       if (skb_is_gso(skb) &&
+> +           (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
+> +            write_len > skb_headlen(skb)) {
 
+at least call:
+  skb_ensure_writable(skb, skb_headlen(skb));
+here before you return the error to make sure the already linear
+header portion is writable.
+(the skb could be a clone with a r/o header afaict)
 
-On 4/25/2024 4:50 PM, Martin KaFai Lau wrote:
-> On 4/25/24 12:02 PM, Abhishek Chauhan (ABC) wrote:
->>>>> @@ -9444,7 +9444,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->>>>                       TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
->>>>           *insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
->>>>                       TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
->>>> -        /* skb->tc_at_ingress && skb->mono_delivery_time,
->>>> +        /* skb->tc_at_ingress && skb->tstamp_type:1,
->>> Is the :1 a stale comment after we discussed how to handle the 2-bit
->> This is first patch which does not add tstamp_type:2 at the moment.
->> This series is divided into two patches
->> 1. One patchset => Just rename (So the comment is still skb->tstamp_type:1)
->> 2. Second patchset => add another bit (comment is changed to skb->tstamp_type:2)
-> 
-> I would suggest to completely avoid the ":1" or ":2" part in patch 1. Just use "... && skb->tstamp_type". The number of bits does not matter. The tstamp_type will still be considered as a whole even if it would become 3 bits (unlikely) in the future.
+> +               return -ENOMEM;
+> +       }
+>         return skb_ensure_writable(skb, write_len);
+>  }
+>
+> --
+> 2.18.0
+>
+>
+> From 64d55392debbc90ef2e9c33441024d612075bdd7 Mon Sep 17 00:00:00 2001
+> From: Shiming Cheng <shiming.cheng@mediatek.com>
+> Date: Wed, 24 Apr 2024 14:43:45 +0800
+> Subject: [PATCH net] net: drop pulled SKB_GSO_FRAGLIST skb
+>
+> A SKB_GSO_FRAGLIST skb without GSO_BY_FRAGS is
+> expected to have all segments except the last
+> to be gso_size long. If this does not hold, the
+> skb has been modified and the fraglist gso integrity
+> is lost. Drop the packet, as it cannot be segmented
+> correctly by skb_segment_list.
+>
+> The skb could be salvaged, though, right?
+> By linearizing, dropping the SKB_GSO_FRAGLIST bit
+> and entering the normal skb_segment path rather than
+> the skb_segment_list path.
+>
+> That choice is currently made in the protocol caller,
+> __udp_gso_segment. It's not trivial to add such a
+> backup path here. So let's add this backstop against
+> kernel crashes.
+>
+> If the gso_size does not match skb_headlen(),
+> it means part of or the entire fraglist has been pulled.
+> It has been messed with and we should return error to
+> free this skb.
+>
+> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> ---
+>  net/core/skbuff.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index b99127712e67..4777f5fea6c3 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -4491,6 +4491,7 @@ struct sk_buff *skb_segment_list(struct sk_buff
+> *skb,
+>  {
+>         struct sk_buff *list_skb =3D skb_shinfo(skb)->frag_list;
+>         unsigned int tnl_hlen =3D skb_tnl_header_len(skb);
+> +       unsigned int mss =3D skb_shinfo(skb)->gso_size;
+>         unsigned int delta_truesize =3D 0;
+>         unsigned int delta_len =3D 0;
+>         struct sk_buff *tail =3D NULL;
+> @@ -4504,6 +4505,9 @@ struct sk_buff *skb_segment_list(struct sk_buff
+> *skb,
+>         if (err)
+>                 goto err_linearize;
+>
+> +       if (mss !=3D GSO_BY_FRAGS && mss !=3D skb_headlen(skb))
+> +               return ERR_PTR(-EFAULT);
+> +
+>         skb_shinfo(skb)->frag_list =3D NULL;
+>
+>         while (list_skb) {
+> --
+> 2.18.0
 
-Okay i will just keep it as skb->tstamp_type instead of adding bitfields. 
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
