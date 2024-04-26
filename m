@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-27994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 645258B4294
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 01:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F358B4296
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 01:16:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242781F22728
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 23:16:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E24051F21746
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 23:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99F93C463;
-	Fri, 26 Apr 2024 23:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7FB3BBE1;
+	Fri, 26 Apr 2024 23:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YlGRMXrl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T9c2QJpp"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35AAA3B78B
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 23:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFAA33D0D9
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 23:16:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714173387; cv=none; b=oeFPQEZzcj/H4fMsHLEJR1GpasEz2SKrEEqk/U08YJnTtowhjH9LU1UEyu5W4P9SVzKFwPmUBMyINSbKo+SLStcd1ZWLhaNXHRpIdHscdGBkmRd4jbH4Q1JNs0g6UqNe9/1X28RtvcItfsipwppEC5rWYr6zpo1St4V2ua4YRlk=
+	t=1714173389; cv=none; b=u0y7ZRN9mG6J1VePvBwT5u3Ijwzc/cDiacWZcdaOsdBI3f1C51Ovw4GfCrPzGTuIb6tUUtlosRfWE8uYIFiBCwi0U+kPrlkpN5hyWIAbXS0nTrrq71vifLHyPdZMIMJJIBgbPFcAeUVcTwhvPuv4UrHSX3jf9V3/9z/GLKjzHzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714173387; c=relaxed/simple;
-	bh=4Qqd8JwEjPySj3HwDqz7sWAvOHtJzeDDUNVyCwWcnE4=;
+	s=arc-20240116; t=1714173389; c=relaxed/simple;
+	bh=dJZx+bWVfHgMrqmTnjIgnvlLPMRXQsZOjWAcwXJKI/E=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=a79zVKycMNg13R/KFklq61NZADU+47JhRLjBkmmHqrg5Ok+lIBrhYEQvzPKIWVUiYKovEIz83CWErkJWsDvwi3fr71CEqFOxgR9nyNt2taa373aVvsuRxt5wJQNfUzrVV1VHJUT9k1qcOBzsqS++apr64QJ9rwiJjg956JAlC6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YlGRMXrl; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=oJyYoSPvkKMARqf1Go5YLaCYbzibA9exPcygYbQ9DM9k2ZeowjzY1ElO4M2GXbH1VmQQkgOd2U8W3VoRSlL06+yUPeq5Wox6w5dHpIeZy0TNf2ctXG9EdbuVAHYi8rAnCOGBE3ZJH2bmAuDyxdbSlGvZtTKw5sSaCihJtbP8e8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T9c2QJpp; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6167463c60cso31398577b3.1
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:16:25 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61b32e7f94bso51737487b3.2
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:16:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714173385; x=1714778185; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714173387; x=1714778187; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DK6THD+vyoriOh5CJBKICwH66WGUIvDpFL35bEBRuig=;
-        b=YlGRMXrlYvmyfMBXyEzrxqTSp9QXgZfemVuJPG38+gqMBXPXD/xt8lHMYgmqHbfFaG
-         pY0Ya8BvcUuMcHyeFy1A2Bwu3wuXxao6m+DqxLeOZa75O/DnJZ45htwPxEGj0Vjt+g5F
-         kv3KvdxPY22UHqXy32DSLxYVVBYOvsOfMAuTdK43iG0G6bihqs9XWSGaBi/XbOOGf11C
-         y4jgKe2Z2GTz3JbrtKc3IFBNGyKt+MyFioTlrar4jmhWFzPGSn8tbkCJHiQ7WHkxpAOW
-         p9Eoe14f7/nhv+2mbUXktxE/rSDawrQmDWb0blg59b4XdCjpkw9bj6D8Xm3Hn7VV0JUq
-         FUnw==
+        bh=1rkq5Hk71Z4xLAWnNRc3PQs5dqWDpmf+w7dEGFP8byM=;
+        b=T9c2QJppVURtZuH/qoKq8jw47dgHuYm/czG2xQZ0a1qWE5JyfCtwsRMMp6GUIyFa1n
+         7mqi1imsHAfKNKpDun9Z4z64wxSvuORHK4Pzbt8qT/esO6sw6xG5Vkk0oKMdKO4JkoOK
+         y4DxPefGY0HXlRT97rbRjjWnHjkXPGz1SMeULmngnsuGDthuoe06QoZI8rp4UM0DJbAC
+         w/meXBuZJl7uhQ5I7HgjM1tRjQLIcF5f6KSFdTACcBgThuAv4H+hYW0kfekzvJIVyo4p
+         OB8PzdEyH/1KeRZZo2dzWn+KUABvaMR+kIfFCsQf1XPcgZk7bN4kHV4SoRbExX+ueatS
+         FQww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714173385; x=1714778185;
+        d=1e100.net; s=20230601; t=1714173387; x=1714778187;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DK6THD+vyoriOh5CJBKICwH66WGUIvDpFL35bEBRuig=;
-        b=owdkGLnSCswIZ6REw8PMvmeeKzJNHNACzCsk1ruM2/BAGgymU4ypy29czI/6rLAZUI
-         lALklAzsNhdEN1t2eUue482w2GjUU+RSScHCgeJ9cib687uKxc3STcFZ35A4iAzom15q
-         FwHOQRDApfodYLM2LchMkiJDGhJZdpiL+XWaDBdgmUehnDi3ZXg4oekrwDtf/mYIfsP8
-         F6plPEbtYZnXzw4GyjdAOFoHNauv1XYagMZGCqHz46f3X3RINLrLEnbAbtQ9uwkAnrKe
-         10wOBasR7iJGqrCI/8SB43sXglMJFspaJ60jKt18iQexqLiuGWLM8u7U5qxgKG8l4FUx
-         XxTQ==
-X-Gm-Message-State: AOJu0Ywi5Yty15+oMW1IB8hySVy4xIpIqSnN7ggYsNmGYT54RUPdmqQt
-	p9Jjt4+qNrZfAkB+HZaP9Qui37ixQY6/S+LqeU4VA+SiIC2qwKtOLNwfT7gvpX/pYqLD7S4oJGR
-	ZUMA4URLSgG0Pd12qL4+2fvAHtMTvwowlDGAz1ZLfyY0AJkvLBJPknEw7deYVOsgQZiocziSLiY
-	tb7T6SQ1lT/K4q
-X-Google-Smtp-Source: AGHT+IH3BVfF3g96jN9u0G0SP1OivHgL+ixqAxgGZebYhsNCd0ainZZ2bnrIxHUju3h6EUXev9TyBaM=
+        bh=1rkq5Hk71Z4xLAWnNRc3PQs5dqWDpmf+w7dEGFP8byM=;
+        b=VXDkF1RcQbeTFPNAvtqyIVHm6YXdgKGBN9IgCUgPuHcLbHSTX8zUqCQDaV3oD5tckN
+         DM2pTbiHpD/+wU8IvYEkaHp4qUGyQDfJZjgAo5RcQ2zC9ns7Yk71FxovPdVlAHxm6Odl
+         O6VqNdImqmWBYrQf2ipbG003g1slUAsW5XVeSK/5mC3uOeb/DXIlEMId7OTKSvR8fKRP
+         gzGRDs8DkxVbFGFNcJsFG4tyGj5RSC/KvyGAu4hxlKJa2TUUlPCuQYylYZTI5B0RLbjT
+         Kq4D7+pWB6cqNrm+D4kXdfvh7PZX6hRSELw2vp3JRxQXp0KAPbbr6Q7ak73SOVsKdyDN
+         zLXQ==
+X-Gm-Message-State: AOJu0YyQuB6DWO8CVCYUr/8ivJ7T3I7bSAlAfoiyYk1hP+NZe+Zo79tI
+	h90yhHx2T9z3GPzxl4yzucGWy4Hads61NgLt76nNuFr+uvRBtFEYDJJ6SwIT/+3Cutqhe19F6Nh
+	ppUxHUjlikVvUZjvrwwawV8h0fGaWgiQB2NUKqpcu076U8tro7+nzmCQPTE0LY9oQ1fq64ozSW0
+	aAXAY+x3Gc32j7
+X-Google-Smtp-Source: AGHT+IHkPhYkAfQltsmOTcR4mbPNxZSC7fngqepkW1ciAPMXg3HLwQtpcrjcv21+CcZ2y5C0m5cAaFQ=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a0d:ca47:0:b0:611:5a9d:bb0e with SMTP id
- m68-20020a0dca47000000b006115a9dbb0emr277747ywd.4.1714173384994; Fri, 26 Apr
- 2024 16:16:24 -0700 (PDT)
-Date: Fri, 26 Apr 2024 16:16:18 -0700
+ (user=sdf job=sendgmr) by 2002:a81:48d3:0:b0:617:d650:11e2 with SMTP id
+ v202-20020a8148d3000000b00617d65011e2mr1011450ywa.3.1714173386825; Fri, 26
+ Apr 2024 16:16:26 -0700 (PDT)
+Date: Fri, 26 Apr 2024 16:16:19 -0700
 In-Reply-To: <20240426231621.2716876-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,50 +74,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240426231621.2716876-1-sdf@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240426231621.2716876-2-sdf@google.com>
-Subject: [PATCH bpf 1/3] bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type
- enforcement in BPF_LINK_CREATE
+Message-ID: <20240426231621.2716876-3-sdf@google.com>
+Subject: [PATCH bpf 2/3] selftests/bpf: Extend sockopt tests to use BPF_LINK_CREATE
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	syzbot+838346b979830606c854@syzkaller.appspotmail.com
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-bpf_prog_attach uses attach_type_to_prog_type to enforce proper
-attach type for BPF_PROG_TYPE_CGROUP_SKB. link_create uses
-bpf_prog_get and relies on bpf_prog_attach_check_attach_type
-to properly verify prog_type <> attach_type association.
+Run all existing test cases with the attachment created via
+BPF_LINK_CREATE. Next commit will add extra test cases to verify
+link_create attach_type enforcement.
 
-Add missing attach_type enforcement for the link_create case.
-Otherwise, it's currently possible to attach cgroup_skb prog
-types to other cgroup hooks.
-
-Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
-Link: https://lore.kernel.org/bpf/0000000000004792a90615a1dde0@google.com/
-Reported-by: syzbot+838346b979830606c854@syzkaller.appspotmail.com
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- kernel/bpf/syscall.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../selftests/bpf/prog_tests/sockopt.c        | 25 ++++++++++++++-----
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index c287925471f6..cb61d8880dbe 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3985,6 +3985,11 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
- 			 * check permissions at attach time.
- 			 */
- 			return -EPERM;
-+
-+		ptype = attach_type_to_prog_type(attach_type);
-+		if (prog->type != ptype)
-+			return -EINVAL;
-+
- 		return prog->enforce_expected_attach_type &&
- 			prog->expected_attach_type != attach_type ?
- 			-EINVAL : 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
+index 5a4491d4edfe..dea340996e97 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
+@@ -1036,9 +1036,10 @@ static int call_getsockopt(bool use_io_uring, int fd, int level, int optname,
+ 	return getsockopt(fd, level, optname, optval, optlen);
+ }
+ 
+-static int run_test(int cgroup_fd, struct sockopt_test *test, bool use_io_uring)
++static int run_test(int cgroup_fd, struct sockopt_test *test, bool use_io_uring,
++		    bool use_link)
+ {
+-	int sock_fd, err, prog_fd;
++	int sock_fd, err, prog_fd, link_fd = -1;
+ 	void *optval = NULL;
+ 	int ret = 0;
+ 
+@@ -1051,7 +1052,12 @@ static int run_test(int cgroup_fd, struct sockopt_test *test, bool use_io_uring)
+ 		return -1;
+ 	}
+ 
+-	err = bpf_prog_attach(prog_fd, cgroup_fd, test->attach_type, 0);
++	if (use_link) {
++		err = bpf_link_create(prog_fd, cgroup_fd, test->attach_type, NULL);
++		link_fd = err;
++	} else {
++		err = bpf_prog_attach(prog_fd, cgroup_fd, test->attach_type, 0);
++	}
+ 	if (err < 0) {
+ 		if (test->error == DENY_ATTACH)
+ 			goto close_prog_fd;
+@@ -1142,7 +1148,12 @@ static int run_test(int cgroup_fd, struct sockopt_test *test, bool use_io_uring)
+ close_sock_fd:
+ 	close(sock_fd);
+ detach_prog:
+-	bpf_prog_detach2(prog_fd, cgroup_fd, test->attach_type);
++	if (use_link) {
++		if (link_fd >= 0)
++			close(link_fd);
++	} else {
++		bpf_prog_detach2(prog_fd, cgroup_fd, test->attach_type);
++	}
+ close_prog_fd:
+ 	close(prog_fd);
+ 	return ret;
+@@ -1160,10 +1171,12 @@ void test_sockopt(void)
+ 		if (!test__start_subtest(tests[i].descr))
+ 			continue;
+ 
+-		ASSERT_OK(run_test(cgroup_fd, &tests[i], false),
++		ASSERT_OK(run_test(cgroup_fd, &tests[i], false, false),
++			  tests[i].descr);
++		ASSERT_OK(run_test(cgroup_fd, &tests[i], false, true),
+ 			  tests[i].descr);
+ 		if (tests[i].io_uring_support)
+-			ASSERT_OK(run_test(cgroup_fd, &tests[i], true),
++			ASSERT_OK(run_test(cgroup_fd, &tests[i], true, false),
+ 				  tests[i].descr);
+ 	}
+ 
 -- 
 2.44.0.769.g3c40516874-goog
 
