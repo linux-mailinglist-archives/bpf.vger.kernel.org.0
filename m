@@ -1,673 +1,442 @@
-Return-Path: <bpf+bounces-27887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27888-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29B68B2F28
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 05:40:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118AE8B2F7D
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 06:38:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC076B20D8F
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 03:40:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 799B01F23B38
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 04:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E7078C77;
-	Fri, 26 Apr 2024 03:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C588139D1E;
+	Fri, 26 Apr 2024 04:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="GEb5z5oA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gVRIuPRv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F8D7D410;
-	Fri, 26 Apr 2024 03:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3907A6A8BE;
+	Fri, 26 Apr 2024 04:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714102788; cv=none; b=lP2kCARPBmee6YqvaQUHkiLjyjqNc06tTmupMvBp7fRqwPjCGgbQv4YL4238PKIFkgmJEA1CfEFS1efV8PEHjcNsJh+FVZ2sDbbMWFshvfxIW8+s5pOiKxd3uKBuzELf/HdwfSltI+wM9jnQ0TajCKAfGuMQwFioOgOPTnw1TsM=
+	t=1714106270; cv=none; b=szWGYKscVP6hV0A8Pho2NoH8j3o8jtmISAjVytuVn5xklj5OTCllS5Qcdqp1b+WZlmu7VU1hMJ6JeeqN7oXK3aId3+0saUaSPzAn9zvtqKh1Dg/OYDJTc+7d221Hv+heIt0lZ/j3HLuBgU+9y9/PweGGvX/O3fnSfTn6EVIyFWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714102788; c=relaxed/simple;
-	bh=ziga6Ks9vwAPQR0IAxhLr4qg14lIDBDnJELVCLsGGG4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N+kz/KhutzfTN/Qb4/i0/60nFfRRpL/kq88uIldHO3E6F5oi5ey65ZdwmkAfotIVZhCXjorr5RPAgT2Sjqe5G47quB3HT/ZmI1TRKyN0B+6gX3f71hvhxfKzYpkqDOD59GCeKw6PFNEfZUSa77TkfTH4tcBGxLLUxCznkUueLWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=GEb5z5oA; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1714102783; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=VvNUw7difxlwaYE9O914MVFWrfjWc5uUTo+OA4gyiFU=;
-	b=GEb5z5oA6HgoLxdpCjDBM8m64qYrfE9oiXlQULQZJGqhU5T5F3SNkOPRIVi4swY8qlRxD2SM0ZIlxZaVcZTsoJzOX5rzJQvmiPh+n9FBl9hFJtMjktR49D1yAyMQOoHovrhjn0OVqR9lpEfgraG+mgbCVynq7ISaT46ePKD240A=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W5Hk9gG_1714102780;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5Hk9gG_1714102780)
-          by smtp.aliyun-inc.com;
-          Fri, 26 Apr 2024 11:39:41 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@google.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Larysa Zaremba <larysa.zaremba@intel.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	virtualization@lists.linux.dev,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next v7 8/8] virtio-net: support queue stat
-Date: Fri, 26 Apr 2024 11:39:28 +0800
-Message-Id: <20240426033928.77778-9-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240426033928.77778-1-xuanzhuo@linux.alibaba.com>
-References: <20240426033928.77778-1-xuanzhuo@linux.alibaba.com>
+	s=arc-20240116; t=1714106270; c=relaxed/simple;
+	bh=VBnerWe9odlE1gH4sH6mg97BNX4ACgD+Vo56ggWb0Qo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AxZKyv9gL//fIMCeRNjus8DRnE+gFpxjkp5xOTmhgDjfWRZ+lBqH+ay8snTiBpO8H7FJPYUXlK2k6GTYa7g2qMGpwn5fLM8AHTdCBc3+mn5EpF8IQAPD/g+NYTgJDuwG4cWmC0jK21jHWs+7TSQDKgQuMbmyRR01zNitoO7LavY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gVRIuPRv; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714106266;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PZAL030xc3FF4NPa5fbMaKFx6oanSsxF4hlluX+c9eA=;
+	b=gVRIuPRvzwwCYoX1aH8gbDfYhdcW072Sd8T2qbPOP4gDJutUt8xwMv11Ts+25K45GNfkE0
+	JGsgOqwi3fPELDxAuNRmDrAyG95v5N5A/vi9IvquQN3LNJlIg3TEhXKNIbItVhE5CrLaYM
+	nKuYpKPZHl2Ed6R9OADWGHXfwAcmzts=
+Date: Thu, 25 Apr 2024 21:37:36 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Git-Hash: 435b736161fa
-Content-Transfer-Encoding: 8bit
+Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
+ clockid_t timestamp type
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+ kernel@quicinc.com
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-To enhance functionality, we now support reporting statistics through
-the netdev-generic netlink (netdev-genl) queue stats interface. However,
-this does not extend to all statistics, so a new field, qstat_offset,
-has been introduced. This field determines which statistics should be
-reported via netdev-genl queue stats.
+On 4/24/24 3:20 PM, Abhishek Chauhan wrote:
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index e464d0ebc9c1..3ad0de07d261 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -711,6 +711,8 @@ typedef unsigned char *sk_buff_data_t;
+>   enum skb_tstamp_type {
+>   	SKB_CLOCK_REALTIME,
+>   	SKB_CLOCK_MONOTONIC,
+> +	SKB_CLOCK_TAI,
+> +	__SKB_CLOCK_MAX = SKB_CLOCK_TAI,
+>   };
+>   
+>   /**
+> @@ -831,8 +833,8 @@ enum skb_tstamp_type {
+>    *	@decrypted: Decrypted SKB
+>    *	@slow_gro: state present at GRO time, slower prepare step required
+>    *	@tstamp_type: When set, skb->tstamp has the
+> - *		delivery_time in mono clock base Otherwise, the
+> - *		timestamp is considered real clock base.
+> + *		delivery_time in mono clock base or clock base of skb->tstamp.
+> + *		Otherwise, the timestamp is considered real clock base
+>    *	@napi_id: id of the NAPI struct this skb came from
+>    *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>    *	@alloc_cpu: CPU which did the skb allocation.
+> @@ -960,7 +962,7 @@ struct sk_buff {
+>   	/* private: */
+>   	__u8			__mono_tc_offset[0];
+>   	/* public: */
+> -	__u8			tstamp_type:1;	/* See skb_tstamp_type */
+> +	__u8			tstamp_type:2;	/* See skb_tstamp_type */
+>   #ifdef CONFIG_NET_XGRESS
+>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>   	__u8			tc_skip_classify:1;
+> @@ -1090,15 +1092,17 @@ struct sk_buff {
+>   #endif
+>   #define PKT_TYPE_OFFSET		offsetof(struct sk_buff, __pkt_type_offset)
+>   
+> -/* if you move tc_at_ingress or mono_delivery_time
+> +/* if you move tc_at_ingress or tstamp_type:2
+>    * around, you also must adapt these constants.
+>    */
+>   #ifdef __BIG_ENDIAN_BITFIELD
+> -#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
+> -#define TC_AT_INGRESS_MASK		(1 << 6)
+> +#define SKB_TSTAMP_TYPE_MASK		(3 << 6)
+> +#define SKB_TSTAMP_TYPE_RSH		(6)
+> +#define TC_AT_INGRESS_RSH		(5)
 
-Given that queue stats are retrieved individually per queue, it's
-necessary for the virtnet_get_hw_stats() function to be capable of
-fetching statistics for a specific queue.
+TC_AT_INGRESS_RSH is not used.
+  
+> +#define TC_AT_INGRESS_MASK		(1 << 5)
+>   #else
+> -#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+> -#define TC_AT_INGRESS_MASK		(1 << 1)
+> +#define SKB_TSTAMP_TYPE_MASK		(3)
+> +#define TC_AT_INGRESS_MASK		(1 << 2)
+>   #endif
+>   #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+>   
+> @@ -4204,6 +4208,12 @@ static inline void skb_set_tstamp_type_frm_clkid(struct sk_buff *skb,
+>   	case CLOCK_MONOTONIC:
+>   		skb->tstamp_type = SKB_CLOCK_MONOTONIC;
+>   		break;
+> +	case CLOCK_TAI:
+> +		skb->tstamp_type = SKB_CLOCK_TAI;
+> +		break;
+> +	default:
+> +		WARN_ONCE(true, "clockid %d not supported", clockid);
+> +		skb->tstamp_type = SKB_CLOCK_REALTIME;
+>   	}
+>   }
+>   
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index cee0a7915c08..1376ed5ece10 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
 
-As the document https://docs.kernel.org/next/networking/statistics.html#notes-for-driver-authors
+The bpf.h needs to be sync to tools/include/uapi/linux/bpf.h.
+Otherwise, the bpf CI cannot compile the tests:
 
-We should not duplicate the stats which get reported via the netlink API in
-ethtool. If the stats are for queue stat, that will not be reported by
-ethtool -S.
+https://patchwork.kernel.org/project/netdevbpf/patch/20240424222028.1080134-2-quic_abchauha@quicinc.com/
 
-python3 ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml
-    --dump qstats-get --json '{"scope": "queue"}'
-[{'ifindex': 2,
-  'queue-id': 0,
-  'queue-type': 'rx',
-  'rx-bytes': 157844011,
-  'rx-csum-bad': 0,
-  'rx-csum-none': 0,
-  'rx-csum-unnecessary': 2195386,
-  'rx-hw-drop-overruns': 0,
-  'rx-hw-drop-ratelimits': 0,
-  'rx-hw-drops': 12964,
-  'rx-packets': 598929},
- {'ifindex': 2,
-  'queue-id': 0,
-  'queue-type': 'tx',
-  'tx-bytes': 1938511,
-  'tx-csum-none': 0,
-  'tx-hw-drop-errors': 0,
-  'tx-hw-drop-ratelimits': 0,
-  'tx-hw-drops': 0,
-  'tx-needs-csum': 61263,
-  'tx-packets': 15515}]
+Please monitor the bpf CI test result after submitting the patches.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 392 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 371 insertions(+), 21 deletions(-)
+> @@ -6209,6 +6209,7 @@ union {					\
+>   enum {
+>   	BPF_SKB_TSTAMP_UNSPEC,
+>   	BPF_SKB_TSTAMP_DELIVERY_MONO,	/* tstamp has mono delivery time */
+> +	BPF_SKB_TSTAMP_DELIVERY_TAI,	/* tstamp has tai delivery time */
+>   	/* For any BPF_SKB_TSTAMP_* that the bpf prog cannot handle,
+>   	 * the bpf prog should handle it like BPF_SKB_TSTAMP_UNSPEC
+>   	 * and try to deduce it by ingress, egress or skb->sk->sk_clockid.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ad008fe05fb3..1fa84790041b 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -24,6 +24,7 @@
- #include <net/xdp.h>
- #include <net/net_failover.h>
- #include <net/netdev_rx_queue.h>
-+#include <net/netdev_queues.h>
- 
- static int napi_weight = NAPI_POLL_WEIGHT;
- module_param(napi_weight, int, 0444);
-@@ -78,6 +79,7 @@ static const unsigned long guest_offloads[] = {
- struct virtnet_stat_desc {
- 	char desc[ETH_GSTRING_LEN];
- 	size_t offset;
-+	size_t qstat_offset;
- };
- 
- struct virtnet_sq_free_stats {
-@@ -107,12 +109,24 @@ struct virtnet_rq_stats {
- 	u64_stats_t kicks;
- };
- 
--#define VIRTNET_SQ_STAT(name, m) {name, offsetof(struct virtnet_sq_stats, m)}
--#define VIRTNET_RQ_STAT(name, m) {name, offsetof(struct virtnet_rq_stats, m)}
-+#define VIRTNET_SQ_STAT(name, m) {name, offsetof(struct virtnet_sq_stats, m), -1}
-+#define VIRTNET_RQ_STAT(name, m) {name, offsetof(struct virtnet_rq_stats, m), -1}
-+
-+#define VIRTNET_SQ_STAT_QSTAT(name, m)				\
-+	{							\
-+		name,						\
-+		offsetof(struct virtnet_sq_stats, m),		\
-+		offsetof(struct netdev_queue_stats_tx, m),	\
-+	}
-+
-+#define VIRTNET_RQ_STAT_QSTAT(name, m)				\
-+	{							\
-+		name,						\
-+		offsetof(struct virtnet_rq_stats, m),		\
-+		offsetof(struct netdev_queue_stats_rx, m),	\
-+	}
- 
- static const struct virtnet_stat_desc virtnet_sq_stats_desc[] = {
--	VIRTNET_SQ_STAT("packets",      packets),
--	VIRTNET_SQ_STAT("bytes",        bytes),
- 	VIRTNET_SQ_STAT("xdp_tx",       xdp_tx),
- 	VIRTNET_SQ_STAT("xdp_tx_drops", xdp_tx_drops),
- 	VIRTNET_SQ_STAT("kicks",        kicks),
-@@ -120,8 +134,6 @@ static const struct virtnet_stat_desc virtnet_sq_stats_desc[] = {
- };
- 
- static const struct virtnet_stat_desc virtnet_rq_stats_desc[] = {
--	VIRTNET_RQ_STAT("packets",       packets),
--	VIRTNET_RQ_STAT("bytes",         bytes),
- 	VIRTNET_RQ_STAT("drops",         drops),
- 	VIRTNET_RQ_STAT("xdp_packets",   xdp_packets),
- 	VIRTNET_RQ_STAT("xdp_tx",        xdp_tx),
-@@ -130,14 +142,25 @@ static const struct virtnet_stat_desc virtnet_rq_stats_desc[] = {
- 	VIRTNET_RQ_STAT("kicks",         kicks),
- };
- 
-+static const struct virtnet_stat_desc virtnet_sq_stats_desc_qstat[] = {
-+	VIRTNET_SQ_STAT_QSTAT("packets", packets),
-+	VIRTNET_SQ_STAT_QSTAT("bytes",   bytes),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_rq_stats_desc_qstat[] = {
-+	VIRTNET_RQ_STAT_QSTAT("packets", packets),
-+	VIRTNET_RQ_STAT_QSTAT("bytes",   bytes),
-+};
-+
- #define VIRTNET_STATS_DESC_CQ(name) \
--	{#name, offsetof(struct virtio_net_stats_cvq, name)}
-+	{#name, offsetof(struct virtio_net_stats_cvq, name), -1}
- 
- #define VIRTNET_STATS_DESC_RX(class, name) \
--	{#name, offsetof(struct virtio_net_stats_rx_ ## class, rx_ ## name)}
-+	{#name, offsetof(struct virtio_net_stats_rx_ ## class, rx_ ## name), -1}
- 
- #define VIRTNET_STATS_DESC_TX(class, name) \
--	{#name, offsetof(struct virtio_net_stats_tx_ ## class, tx_ ## name)}
-+	{#name, offsetof(struct virtio_net_stats_tx_ ## class, tx_ ## name), -1}
-+
- 
- static const struct virtnet_stat_desc virtnet_stats_cvq_desc[] = {
- 	VIRTNET_STATS_DESC_CQ(command_num),
-@@ -177,6 +200,63 @@ static const struct virtnet_stat_desc virtnet_stats_tx_speed_desc[] = {
- 	VIRTNET_STATS_DESC_TX(speed, ratelimit_bytes),
- };
- 
-+#define VIRTNET_STATS_DESC_RX_QSTAT(class, name, qstat_field)			\
-+	{									\
-+		#name,								\
-+		offsetof(struct virtio_net_stats_rx_ ## class, rx_ ## name),	\
-+		offsetof(struct netdev_queue_stats_rx, qstat_field),		\
-+	}
-+
-+#define VIRTNET_STATS_DESC_TX_QSTAT(class, name, qstat_field)			\
-+	{									\
-+		#name,								\
-+		offsetof(struct virtio_net_stats_tx_ ## class, tx_ ## name),	\
-+		offsetof(struct netdev_queue_stats_tx, qstat_field),		\
-+	}
-+
-+static const struct virtnet_stat_desc virtnet_stats_rx_basic_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_RX_QSTAT(basic, drops,         hw_drops),
-+	VIRTNET_STATS_DESC_RX_QSTAT(basic, drop_overruns, hw_drop_overruns),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_tx_basic_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_TX_QSTAT(basic, drops,          hw_drops),
-+	VIRTNET_STATS_DESC_TX_QSTAT(basic, drop_malformed, hw_drop_errors),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_rx_csum_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_RX_QSTAT(csum, csum_valid, csum_unnecessary),
-+	VIRTNET_STATS_DESC_RX_QSTAT(csum, csum_none,  csum_none),
-+	VIRTNET_STATS_DESC_RX_QSTAT(csum, csum_bad,   csum_bad),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_tx_csum_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_TX_QSTAT(csum, csum_none,  csum_none),
-+	VIRTNET_STATS_DESC_TX_QSTAT(csum, needs_csum, needs_csum),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_rx_gso_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_RX_QSTAT(gso, gso_packets,           hw_gro_packets),
-+	VIRTNET_STATS_DESC_RX_QSTAT(gso, gso_bytes,             hw_gro_bytes),
-+	VIRTNET_STATS_DESC_RX_QSTAT(gso, gso_packets_coalesced, hw_gro_wire_packets),
-+	VIRTNET_STATS_DESC_RX_QSTAT(gso, gso_bytes_coalesced,   hw_gro_wire_bytes),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_tx_gso_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_TX_QSTAT(gso, gso_packets,        hw_gso_packets),
-+	VIRTNET_STATS_DESC_TX_QSTAT(gso, gso_bytes,          hw_gso_bytes),
-+	VIRTNET_STATS_DESC_TX_QSTAT(gso, gso_segments,       hw_gso_wire_packets),
-+	VIRTNET_STATS_DESC_TX_QSTAT(gso, gso_segments_bytes, hw_gso_wire_bytes),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_rx_speed_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_RX_QSTAT(speed, ratelimit_packets, hw_drop_ratelimits),
-+};
-+
-+static const struct virtnet_stat_desc virtnet_stats_tx_speed_desc_qstat[] = {
-+	VIRTNET_STATS_DESC_TX_QSTAT(speed, ratelimit_packets, hw_drop_ratelimits),
-+};
-+
- #define VIRTNET_Q_TYPE_RX 0
- #define VIRTNET_Q_TYPE_TX 1
- #define VIRTNET_Q_TYPE_CQ 2
-@@ -2215,6 +2295,10 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
- 		src = (u64_stats_t *)((u8 *)&stats + offset);
- 		u64_stats_add(item, u64_stats_read(src));
- 	}
-+
-+	u64_stats_add(&rq->stats.packets, u64_stats_read(&stats.packets));
-+	u64_stats_add(&rq->stats.bytes, u64_stats_read(&stats.bytes));
-+
- 	u64_stats_update_end(&rq->stats.syncp);
- 
- 	return packets;
-@@ -3474,6 +3558,9 @@ static void virtnet_get_stats_string(struct virtnet_info *vi, int type, int qid,
- }
- 
- struct virtnet_stats_ctx {
-+	/* The stats are write to qstats or ethtool -S */
-+	bool to_qstat;
-+
- 	/* Used to calculate the offset inside the output buffer. */
- 	u32 desc_num[3];
- 
-@@ -3489,11 +3576,71 @@ struct virtnet_stats_ctx {
- 
- static void virtnet_stats_ctx_init(struct virtnet_info *vi,
- 				   struct virtnet_stats_ctx *ctx,
--				   u64 *data)
-+				   u64 *data, bool to_qstat)
- {
- 	u32 queue_type;
- 
- 	ctx->data = data;
-+	ctx->to_qstat = to_qstat;
-+
-+	if (to_qstat) {
-+		ctx->desc_num[VIRTNET_Q_TYPE_RX] = ARRAY_SIZE(virtnet_rq_stats_desc_qstat);
-+		ctx->desc_num[VIRTNET_Q_TYPE_TX] = ARRAY_SIZE(virtnet_sq_stats_desc_qstat);
-+
-+		queue_type = VIRTNET_Q_TYPE_RX;
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_BASIC) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_RX_BASIC;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_rx_basic_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_rx_basic);
-+		}
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_CSUM) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_RX_CSUM;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_rx_csum_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_rx_csum);
-+		}
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_GSO) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_RX_GSO;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_rx_gso_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_rx_gso);
-+		}
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_SPEED) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_RX_SPEED;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_rx_speed_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_rx_speed);
-+		}
-+
-+		queue_type = VIRTNET_Q_TYPE_TX;
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_BASIC) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_TX_BASIC;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_tx_basic_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_tx_basic);
-+		}
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_CSUM) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_TX_CSUM;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_tx_csum_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_tx_csum);
-+		}
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_GSO) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_TX_GSO;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_tx_gso_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_tx_gso);
-+		}
-+
-+		if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_SPEED) {
-+			ctx->bitmap[queue_type]   |= VIRTIO_NET_STATS_TYPE_TX_SPEED;
-+			ctx->desc_num[queue_type] += ARRAY_SIZE(virtnet_stats_tx_speed_desc_qstat);
-+			ctx->size[queue_type]     += sizeof(struct virtio_net_stats_tx_speed);
-+		}
-+
-+		return;
-+	}
- 
- 	ctx->desc_num[VIRTNET_Q_TYPE_RX] = ARRAY_SIZE(virtnet_rq_stats_desc);
- 	ctx->desc_num[VIRTNET_Q_TYPE_TX] = ARRAY_SIZE(virtnet_sq_stats_desc);
-@@ -3590,7 +3737,104 @@ static void virtnet_fill_total_fields(struct virtnet_info *vi,
- 	stats_sum_queue(data, num_tx, first_tx_q, vi->curr_queue_pairs);
- }
- 
--/* virtnet_fill_stats - copy the stats to ethtool -S
-+static void virtnet_fill_stats_qstat(struct virtnet_info *vi, u32 qid,
-+				     struct virtnet_stats_ctx *ctx,
-+				     const u8 *base, bool drv_stats, u8 reply_type)
-+{
-+	const struct virtnet_stat_desc *desc;
-+	const u64_stats_t *v_stat;
-+	u64 offset, bitmap;
-+	const __le64 *v;
-+	u32 queue_type;
-+	int i, num;
-+
-+	queue_type = vq_type(vi, qid);
-+	bitmap = ctx->bitmap[queue_type];
-+
-+	if (drv_stats) {
-+		if (queue_type == VIRTNET_Q_TYPE_RX) {
-+			desc = &virtnet_rq_stats_desc_qstat[0];
-+			num = ARRAY_SIZE(virtnet_rq_stats_desc_qstat);
-+		} else {
-+			desc = &virtnet_sq_stats_desc_qstat[0];
-+			num = ARRAY_SIZE(virtnet_sq_stats_desc_qstat);
-+		}
-+
-+		for (i = 0; i < num; ++i) {
-+			offset = desc[i].qstat_offset / sizeof(*ctx->data);
-+			v_stat = (const u64_stats_t *)(base + desc[i].offset);
-+			ctx->data[offset] = u64_stats_read(v_stat);
-+		}
-+		return;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_RX_BASIC) {
-+		desc = &virtnet_stats_rx_basic_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_rx_basic_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_RX_BASIC)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_RX_CSUM) {
-+		desc = &virtnet_stats_rx_csum_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_rx_csum_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_RX_CSUM)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_RX_GSO) {
-+		desc = &virtnet_stats_rx_gso_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_rx_gso_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_RX_GSO)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_RX_SPEED) {
-+		desc = &virtnet_stats_rx_speed_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_rx_speed_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_RX_SPEED)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_TX_BASIC) {
-+		desc = &virtnet_stats_tx_basic_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_tx_basic_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_TX_BASIC)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_TX_CSUM) {
-+		desc = &virtnet_stats_tx_csum_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_tx_csum_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_TX_CSUM)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_TX_GSO) {
-+		desc = &virtnet_stats_tx_gso_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_tx_gso_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_TX_GSO)
-+			goto found;
-+	}
-+
-+	if (bitmap & VIRTIO_NET_STATS_TYPE_TX_SPEED) {
-+		desc = &virtnet_stats_tx_speed_desc_qstat[0];
-+		num = ARRAY_SIZE(virtnet_stats_tx_speed_desc_qstat);
-+		if (reply_type == VIRTIO_NET_STATS_TYPE_REPLY_TX_SPEED)
-+			goto found;
-+	}
-+
-+	return;
-+
-+found:
-+	for (i = 0; i < num; ++i) {
-+		offset = desc[i].qstat_offset / sizeof(*ctx->data);
-+		v = (const __le64 *)(base + desc[i].offset);
-+		ctx->data[offset] = le64_to_cpu(*v);
-+	}
-+}
-+
-+/* virtnet_fill_stats - copy the stats to qstats or ethtool -S
-  * The stats source is the device or the driver.
-  *
-  * @vi: virtio net info
-@@ -3611,6 +3855,9 @@ static void virtnet_fill_stats(struct virtnet_info *vi, u32 qid,
- 	const __le64 *v;
- 	int i, num;
- 
-+	if (ctx->to_qstat)
-+		return virtnet_fill_stats_qstat(vi, qid, ctx, base, drv_stats, reply_type);
-+
- 	num_cq = ctx->desc_num[VIRTNET_Q_TYPE_CQ];
- 	num_rx = ctx->desc_num[VIRTNET_Q_TYPE_RX];
- 	num_tx = ctx->desc_num[VIRTNET_Q_TYPE_TX];
-@@ -3770,22 +4017,34 @@ static void virtnet_make_stat_req(struct virtnet_info *vi,
- 	*idx += 1;
- }
- 
-+/* qid: -1: get stats of all vq.
-+ *     > 0: get the stats for the special vq. This must not be cvq.
-+ */
- static int virtnet_get_hw_stats(struct virtnet_info *vi,
--				struct virtnet_stats_ctx *ctx)
-+				struct virtnet_stats_ctx *ctx, int qid)
- {
-+	int qnum, i, j, res_size, qtype, last_vq, first_vq;
- 	struct virtio_net_ctrl_queue_stats *req;
--	int qnum, i, j, res_size, qtype, last_vq;
-+	bool enable_cvq;
- 	void *reply;
- 	int ok;
- 
- 	if (!virtio_has_feature(vi->vdev, VIRTIO_NET_F_DEVICE_STATS))
- 		return 0;
- 
--	last_vq = vi->curr_queue_pairs * 2 - 1;
-+	if (qid == -1) {
-+		last_vq = vi->curr_queue_pairs * 2 - 1;
-+		first_vq = 0;
-+		enable_cvq = true;
-+	} else {
-+		last_vq = qid;
-+		first_vq = qid;
-+		enable_cvq = false;
-+	}
- 
- 	qnum = 0;
- 	res_size = 0;
--	for (i = 0; i <= last_vq ; ++i) {
-+	for (i = first_vq; i <= last_vq ; ++i) {
- 		qtype = vq_type(vi, i);
- 		if (ctx->bitmap[qtype]) {
- 			++qnum;
-@@ -3793,7 +4052,7 @@ static int virtnet_get_hw_stats(struct virtnet_info *vi,
- 		}
- 	}
- 
--	if (ctx->bitmap[VIRTNET_Q_TYPE_CQ]) {
-+	if (enable_cvq && ctx->bitmap[VIRTNET_Q_TYPE_CQ]) {
- 		res_size += ctx->size[VIRTNET_Q_TYPE_CQ];
- 		qnum += 1;
- 	}
-@@ -3809,10 +4068,11 @@ static int virtnet_get_hw_stats(struct virtnet_info *vi,
- 	}
- 
- 	j = 0;
--	for (i = 0; i <= last_vq ; ++i)
-+	for (i = first_vq; i <= last_vq ; ++i)
- 		virtnet_make_stat_req(vi, ctx, req, i, &j);
- 
--	virtnet_make_stat_req(vi, ctx, req, vi->max_queue_pairs * 2, &j);
-+	if (enable_cvq)
-+		virtnet_make_stat_req(vi, ctx, req, vi->max_queue_pairs * 2, &j);
- 
- 	ok = __virtnet_get_hw_stats(vi, ctx, req, sizeof(*req) * j, reply, res_size);
- 
-@@ -3853,7 +4113,7 @@ static int virtnet_get_sset_count(struct net_device *dev, int sset)
- 
- 	switch (sset) {
- 	case ETH_SS_STATS:
--		virtnet_stats_ctx_init(vi, &ctx, NULL);
-+		virtnet_stats_ctx_init(vi, &ctx, NULL, false);
- 
- 		pair_count = ctx.desc_num[VIRTNET_Q_TYPE_RX] + ctx.desc_num[VIRTNET_Q_TYPE_TX];
- 
-@@ -3872,8 +4132,8 @@ static void virtnet_get_ethtool_stats(struct net_device *dev,
- 	unsigned int start, i;
- 	const u8 *stats_base;
- 
--	virtnet_stats_ctx_init(vi, &ctx, data);
--	if (virtnet_get_hw_stats(vi, &ctx))
-+	virtnet_stats_ctx_init(vi, &ctx, data, false);
-+	if (virtnet_get_hw_stats(vi, &ctx, -1))
- 		dev_warn(&vi->dev->dev, "Failed to get hw stats.\n");
- 
- 	for (i = 0; i < vi->curr_queue_pairs; i++) {
-@@ -4428,6 +4688,95 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.set_rxnfc = virtnet_set_rxnfc,
- };
- 
-+static void virtnet_get_queue_stats_rx(struct net_device *dev, int i,
-+				       struct netdev_queue_stats_rx *stats)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct receive_queue *rq = &vi->rq[i];
-+	struct virtnet_stats_ctx ctx = {0};
-+
-+	virtnet_stats_ctx_init(vi, &ctx, (void *)stats, true);
-+
-+	virtnet_get_hw_stats(vi, &ctx, i * 2);
-+	virtnet_fill_stats(vi, i * 2, &ctx, (void *)&rq->stats, true, 0);
-+}
-+
-+static void virtnet_get_queue_stats_tx(struct net_device *dev, int i,
-+				       struct netdev_queue_stats_tx *stats)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct send_queue *sq = &vi->sq[i];
-+	struct virtnet_stats_ctx ctx = {0};
-+
-+	virtnet_stats_ctx_init(vi, &ctx, (void *)stats, true);
-+
-+	virtnet_get_hw_stats(vi, &ctx, i * 2 + 1);
-+	virtnet_fill_stats(vi, i * 2 + 1, &ctx, (void *)&sq->stats, true, 0);
-+}
-+
-+static void virtnet_get_base_stats(struct net_device *dev,
-+				   struct netdev_queue_stats_rx *rx,
-+				   struct netdev_queue_stats_tx *tx)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+
-+	/* The queue stats of the virtio-net will not be reset. So here we
-+	 * return 0.
-+	 */
-+	rx->bytes = 0;
-+	rx->packets = 0;
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_BASIC) {
-+		rx->hw_drops = 0;
-+		rx->hw_drop_overruns = 0;
-+	}
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_CSUM) {
-+		rx->csum_unnecessary = 0;
-+		rx->csum_none = 0;
-+		rx->csum_bad = 0;
-+	}
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_GSO) {
-+		rx->hw_gro_packets = 0;
-+		rx->hw_gro_bytes = 0;
-+		rx->hw_gro_wire_packets = 0;
-+		rx->hw_gro_wire_bytes = 0;
-+	}
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_RX_SPEED)
-+		rx->hw_drop_ratelimits = 0;
-+
-+	tx->bytes = 0;
-+	tx->packets = 0;
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_BASIC) {
-+		tx->hw_drops = 0;
-+		tx->hw_drop_errors = 0;
-+	}
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_CSUM) {
-+		tx->csum_none = 0;
-+		tx->needs_csum = 0;
-+	}
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_GSO) {
-+		tx->hw_gso_packets = 0;
-+		tx->hw_gso_bytes = 0;
-+		tx->hw_gso_wire_packets = 0;
-+		tx->hw_gso_wire_bytes = 0;
-+	}
-+
-+	if (vi->device_stats_cap & VIRTIO_NET_STATS_TYPE_TX_SPEED)
-+		tx->hw_drop_ratelimits = 0;
-+}
-+
-+static const struct netdev_stat_ops virtnet_stat_ops = {
-+	.get_queue_stats_rx	= virtnet_get_queue_stats_rx,
-+	.get_queue_stats_tx	= virtnet_get_queue_stats_tx,
-+	.get_base_stats		= virtnet_get_base_stats,
-+};
-+
- static void virtnet_freeze_down(struct virtio_device *vdev)
- {
- 	struct virtnet_info *vi = vdev->priv;
-@@ -5231,6 +5580,7 @@ static int virtnet_probe(struct virtio_device *vdev)
- 	dev->priv_flags |= IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
- 			   IFF_TX_SKB_NO_LINEAR;
- 	dev->netdev_ops = &virtnet_netdev;
-+	dev->stat_ops = &virtnet_stat_ops;
- 	dev->features = NETIF_F_HIGHDMA;
- 
- 	dev->ethtool_ops = &virtnet_ethtool_ops;
--- 
-2.32.0.3.g01195cf9f
+SKB_CLOCK_TAI is properly defined as an enum now and there is a
+WARN for clock other than REAL, MONO, and TAI. I think it is
+time to remove UNSPEC and give it back the proper name REALTIME.
+
+I want to take this chance to do some renaming:
+
+/* The enum used in skb->tstamp_type. It specifies the clock type
+  * of the time stored in the skb->tstamp.
+  */
+enum {
+	BPF_SKB_TSTAMP_UNSPEC = 0,              /* DEPRECATED */
+	BPF_SKB_TSTAMP_DELIVERY_MONO = 1,       /* DEPRECATED */
+	BPF_SKB_CLOCK_REALTIME = 0,             /* Realtime clock */
+	BPF_SKB_CLOCK_MONOTONIC = 1,            /* Monotonic clock */
+	BPF_SKB_CLOCK_TAI = 2,                  /* TAI clock */
+	/* For any future BPF_SKB_CLOCK_* that the bpf prog cannot handle,
+	 * the bpf prog can try to deduce it by ingress/egress/skb->sk->sk_clockid.
+	 */
+};
+
+
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 957c2fc724eb..c67622f4fe98 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7733,6 +7733,12 @@ BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
+>   		skb->tstamp = tstamp;
+>   		skb->tstamp_type = SKB_CLOCK_MONOTONIC;
+>   		break;
+> +	case BPF_SKB_TSTAMP_DELIVERY_TAI:
+> +		if (!tstamp)
+> +			return -EINVAL;
+> +		skb->tstamp = tstamp;
+> +		skb->tstamp_type = SKB_CLOCK_TAI;
+> +		break;
+>   	case BPF_SKB_TSTAMP_UNSPEC:
+>   		if (tstamp)
+
+Allow to store any realtime tstamp here since BPF_SKB_TSTAMP_UNSPEC
+becomes BPF_SKB_CLOCK_REALTIME.
+
+Like:
+
+BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
+            u64, tstamp, u32, tstamp_type)
+{
+	/* ... */
+	case BPF_SKB_CLOCK_TAI:
+		if (!tstamp)
+			return -EINVAL;
+		skb->tstamp = tstamp;
+		skb->tstamp_type = SKB_CLOCK_TAI;
+		break;
+         case BPF_SKB_CLOCK_REALTIME:
+		skb->tstamp = tstamp;
+		skb->tstamp_type = SKB_CLOCK_REALTIME;
+		break;
+
+	/* ... */
+}
+
+>   			return -EINVAL;
+
+> @@ -9388,17 +9394,17 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+>   {
+>   	__u8 value_reg = si->dst_reg;
+>   	__u8 skb_reg = si->src_reg;
+> -	/* AX is needed because src_reg and dst_reg could be the same */
+> -	__u8 tmp_reg = BPF_REG_AX;
+> -
+> -	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+> -			      SKB_BF_MONO_TC_OFFSET);
+> -	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+> -				SKB_MONO_DELIVERY_TIME_MASK, 2);
+> -	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+> -	*insn++ = BPF_JMP_A(1);
+> -	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
+> -
+> +	BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
+
+Add these also:
+
+	BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
+	BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
+	BUILD_BUG_ON(SKB_CLOCK_TAI != BPF_SKB_CLOCK_TAI);
+
+> +	*insn++ = BPF_LDX_MEM(BPF_B, value_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+> +	*insn++ = BPF_ALU32_IMM(BPF_AND, value_reg, SKB_TSTAMP_TYPE_MASK);
+> +#ifdef __BIG_ENDIAN_BITFIELD
+> +	*insn++ = BPF_ALU32_IMM(BPF_RSH, value_reg, SKB_TSTAMP_TYPE_RSH);
+> +#else
+> +	BUILD_BUG_ON(!(SKB_TSTAMP_TYPE_MASK & 0x1));
+> +#endif
+> +	*insn++ = BPF_JMP32_IMM(BPF_JNE, value_reg, SKB_TSTAMP_TYPE_MASK, 1);
+> +	/* Both the bits set then mark it BPF_SKB_TSTAMP_UNSPEC */
+> +	*insn++ = BPF_MOV64_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+
+The kernel should not have both bits set in skb->tstamp_type. No need to
+add two extra bpf insns to check this. If there is a bug in the kernel,
+it is better to be uncovered instead of hiding it under BPF_SKB_TSTAMP_UNSPEC (which
+is renamed to BPF_SKB_CLOCK_REALTIME anyway).
+Hence, the last two bpf insns should be removed.
+
+>   	return insn;
+>   }
+>   
+> @@ -9430,6 +9436,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>   	__u8 value_reg = si->dst_reg;
+>   	__u8 skb_reg = si->src_reg;
+>   
+> +BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
+
+It is a dup of the one in bpf_convert_tstamp_type_read and can be removed.
+
+>   #ifdef CONFIG_NET_XGRESS
+>   	/* If the tstamp_type is read,
+>   	 * the bpf prog is aware the tstamp could have delivery time.
+> @@ -9440,11 +9447,12 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>   		__u8 tmp_reg = BPF_REG_AX;
+>   
+>   		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+> -		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+> -		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+> -		/* skb->tc_at_ingress && skb->tstamp_type:1,
+> +		/* check if ingress mask bits is set */
+> +		*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, TC_AT_INGRESS_MASK, 1);
+> +		*insn++ = BPF_JMP_A(4);
+> +		*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, SKB_TSTAMP_TYPE_MASK, 1);
+> +		*insn++ = BPF_JMP_A(2);
+> +		/* skb->tc_at_ingress && skb->tstamp_type:2,
+>   		 * read 0 as the (rcv) timestamp.
+>   		 */
+>   		*insn++ = BPF_MOV64_IMM(value_reg, 0);
+> @@ -9469,7 +9477,7 @@ static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
+>   	 * the bpf prog is aware the tstamp could have delivery time.
+>   	 * Thus, write skb->tstamp as is if tstamp_type_access is true.
+>   	 * Otherwise, writing at ingress will have to clear the
+> -	 * mono_delivery_time (skb->tstamp_type:1)bit also.
+> +	 * mono_delivery_time (skb->tstamp_type:2)bit also.
+>   	 */
+>   	if (!prog->tstamp_type_access) {
+>   		__u8 tmp_reg = BPF_REG_AX;
+> @@ -9479,8 +9487,8 @@ static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
+>   		*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg, TC_AT_INGRESS_MASK, 1);
+>   		/* goto <store> */
+>   		*insn++ = BPF_JMP_A(2);
+> -		/* <clear>: mono_delivery_time or (skb->tstamp_type:1) */
+> -		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, ~SKB_MONO_DELIVERY_TIME_MASK);
+> +		/* <clear>: skb->tstamp_type:2 */
+> +		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, ~SKB_TSTAMP_TYPE_MASK);
+>   		*insn++ = BPF_STX_MEM(BPF_B, skb_reg, tmp_reg, SKB_BF_MONO_TC_OFFSET);
+>   	}
+>   #endif
+> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+> index 591226dcde26..f195b31d6e75 100644
+> --- a/net/ipv4/ip_output.c
+> +++ b/net/ipv4/ip_output.c
+> @@ -1457,7 +1457,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
+>   
+>   	skb->priority = (cork->tos != -1) ? cork->priority: READ_ONCE(sk->sk_priority);
+>   	skb->mark = cork->mark;
+> -	skb->tstamp = cork->transmit_time;
+> +	skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, sk->sk_clockid);
+
+hmm... I think this will break for tcp. This sequence in particular:
+
+tcp_v4_timewait_ack()
+   tcp_v4_send_ack()
+     ip_send_unicast_reply()
+       ip_push_pending_frames()
+         ip_finish_skb()
+           __ip_make_skb()
+             /* sk_clockid is REAL but cork->transmit_time should be in mono */
+             skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, sk->sk_clockid);;
+
+I think I hit it from time to time when running the test in this patch set.
+
+[ ... ]
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_tc_dtime.c b/tools/testing/selftests/bpf/progs/test_tc_dtime.c
+> index 74ec09f040b7..19dba6d88265 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tc_dtime.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tc_dtime.c
+
+Please separate the selftests/bpf changes into another patch.
+
+> @@ -227,6 +227,12 @@ int egress_host(struct __sk_buff *skb)
+>   			inc_dtimes(EGRESS_ENDHOST);
+>   		else
+>   			inc_errs(EGRESS_ENDHOST);
+> +	} else if (skb_proto(skb_type) == IPPROTO_UDP) {
+> +		if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_TAI &&
+> +		    skb->tstamp)
+> +			inc_dtimes(EGRESS_ENDHOST);
+> +		else
+> +			inc_errs(EGRESS_ENDHOST);
+>   	} else {
+>   		if (skb->tstamp_type == BPF_SKB_TSTAMP_UNSPEC &&
+>   		    skb->tstamp)
+> @@ -255,6 +261,9 @@ int ingress_host(struct __sk_buff *skb)
+>   	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO &&
+>   	    skb->tstamp == EGRESS_FWDNS_MAGIC)
+>   		inc_dtimes(INGRESS_ENDHOST);
+> +	else if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_TAI &&
+> +		       skb->tstamp == EGRESS_FWDNS_MAGIC)
+> +		inc_dtimes(INGRESS_ENDHOST);
+>   	else
+>   		inc_errs(INGRESS_ENDHOST);
+>   
+> @@ -323,12 +332,14 @@ int ingress_fwdns_prio101(struct __sk_buff *skb)
+>   		/* Should have handled in prio100 */
+>   		return TC_ACT_SHOT;
+>   
+> -	if (skb_proto(skb_type) == IPPROTO_UDP)
+> +	if (skb_proto(skb_type) == IPPROTO_UDP &&
+> +		  skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_TAI)
+>   		expected_dtime = 0;
+
+The IPPROTO_UDP check and expected_dtime can be removed. The UDP test
+can expect the same EGRESS_ENDHOST_MAGIC in the skb->tstamp since
+the TAI tstamp is also forwarded from egress to ingress now.
+
+>   
+>   	if (skb->tstamp_type) {
+>   		if (fwdns_clear_dtime() ||
+> -		    skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_MONO ||
+> +		    (skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_MONO &&
+> +		    skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_TAI) ||
+>   		    skb->tstamp != expected_dtime)
+>   			inc_errs(INGRESS_FWDNS_P101);
+>   		else
+> @@ -338,7 +349,8 @@ int ingress_fwdns_prio101(struct __sk_buff *skb)
+>   			inc_errs(INGRESS_FWDNS_P101);
+>   	}
+>   
+> -	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO) {
+> +	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO ||
+> +		  skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_TAI) {
+
+No need to check BPF_SKB_TSTAMP_DELIVERY_TAI such that the
+bpf_skb_set_tstamp() helper can still be tested.
+
+There are some other minor changes needed for the test_tc_dtime.c and
+the tc_redirect.c. I quickly made the changes and put them here (first patch):
+
+https://git.kernel.org/pub/scm/linux/kernel/git/martin.lau/bpf-next.git/log/?h=skb.tstamp_type
+
+
+
+>   		skb->tstamp = INGRESS_FWDNS_MAGIC;
+>   	} else {
+>   		if (bpf_skb_set_tstamp(skb, INGRESS_FWDNS_MAGIC,
+> @@ -370,7 +382,8 @@ int egress_fwdns_prio101(struct __sk_buff *skb)
+>   
+>   	if (skb->tstamp_type) {
+>   		if (fwdns_clear_dtime() ||
+> -		    skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_MONO ||
+> +		    (skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_MONO &&
+> +		     skb->tstamp_type != BPF_SKB_TSTAMP_DELIVERY_TAI) ||
+>   		    skb->tstamp != INGRESS_FWDNS_MAGIC)
+>   			inc_errs(EGRESS_FWDNS_P101);
+>   		else
+> @@ -380,7 +393,8 @@ int egress_fwdns_prio101(struct __sk_buff *skb)
+>   			inc_errs(EGRESS_FWDNS_P101);
+>   	}
+>   
+> -	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO) {
+> +	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO ||
+> +		  skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_TAI) {
+>   		skb->tstamp = EGRESS_FWDNS_MAGIC;
+>   	} else {
+>   		if (bpf_skb_set_tstamp(skb, EGRESS_FWDNS_MAGIC,
 
 
