@@ -1,135 +1,134 @@
-Return-Path: <bpf+bounces-27933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CCC8B3BA4
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 17:33:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 092668B3C14
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 17:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C92491F231D1
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 15:33:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B91EF2836DB
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 15:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1E514BFA2;
-	Fri, 26 Apr 2024 15:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F7214A4E9;
+	Fri, 26 Apr 2024 15:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2p1+m/33"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ZkIkNbVd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16207149C73
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 15:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91ED1DFFC;
+	Fri, 26 Apr 2024 15:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145594; cv=none; b=iqZYL1eU8EwuBbaHndvzdYGpxzTDPAP5b9mxY9cAZlBlv5/RxLP/9+gPu66D7DZJbQUXl6Ay/VWwfWJRuhJXJgD1vOHcC/QhpAAPNnfn0C4KWZAGvpKAH3bJ44aRTdt/sXXL4r4PaUpqKxb0++LFH8fvjIYGSqaKPw0+h+xowAg=
+	t=1714146882; cv=none; b=fv1GRo7p9qGnClkR+wKy+QO03AGenjEsRNBrCW+Umy43NczdYipssBLSha8hzPw8/d8V311PICjyl1IbNUTi3MawCK60F/JBjmaSXYO3ggXfAiY0lMLyte3JM+1G9MkyeKwWBd8StoP3WoELfbmXfbva0J7yQB5V+VuuW9EGrAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145594; c=relaxed/simple;
-	bh=a+x+9QJcOjAjsTEqVdunD6qiMm7jqBNR+SHC13THGg4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q9T8iEblBG6Y/r9yEVbgcsf2WFGW6zal9jzNZva+dK/VpftYm/t4oZjnBTjNu0OHqC+2IZk2bEbGCZXicUTNjwxtIZooe73MZd3QhTo7SthbRKjimPUGfeGIb2rFwmGa5pkfgF/y5oOhbJhm3kz63Cc9amwycQEWN4lEzYxYOtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2p1+m/33; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5722eb4f852so14091a12.0
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 08:33:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714145591; x=1714750391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jQAKSfeSiNMwx23jPVYzccmGjENnrcaTmn472bWM+dw=;
-        b=2p1+m/33Ca229cGyj8MM8xvQ+TcRFoJ5xMFZZC4LEEYy5EM0ZGUdWs1cOe92gh1e0y
-         JgoHocZlnSAN8Uj3vgLz0qJfUFhaScjKB3VJK53KAOhuiJDfYdNDDqqW624fng+DW54+
-         Lv3xFHGsu/kK8XBY2VG84oLE7lg9vmFVzoxghp+b9ZEiRDU/yU6BftsY1PUt+qn5tYHw
-         LG/hSeeCa/jzquXS+FURC9pnA+7fRnoi9ZIYsTpxKZNbW/vtROvlZ40vKA7Qi1+Nk6z1
-         MLUNKpBhqRWA6cpytWhwrbEPR4kP2wsC3XOkkukKVvTTyYJo2GVvkkmQSgEBHwC7Ql3f
-         dXTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145591; x=1714750391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jQAKSfeSiNMwx23jPVYzccmGjENnrcaTmn472bWM+dw=;
-        b=fLHHqDd30e737T8355B0RLmlmCDqycVfCVUF0U+nQS+/GWwnDCSF6EDRjGtybpBrop
-         SToIQ3grIOl6NSDNvnfcIdBsL8UTxmf5j1NObug8IL1G1X8uRUGI+XY27sBfTJfzl5y9
-         sd0GqdVIULnIeiKEnQ5WdVgk9vK033XKC6yC3PZ/gd/a6eW9TRPxvo5SNDfun+cHrnZD
-         g4F0SvK0mpx1yxwMZQuTlx7b+mP1ZkYNhEIvxNptLm24AGzSBc4DUGySA0+gAxGgxOoR
-         UydiLZuYZDgHiLAvpsT/pXemGhpF8JnGfXXb4dzRMFbx8AxxZOEhgZWaDclqiburuLUX
-         w2kw==
-X-Forwarded-Encrypted: i=1; AJvYcCWSBNVUr3jozRARUPjQLfcw2jWTCpJVX7iVbwQvhOmaY6DJdImpuuBYyndj/YhEJbTtlZW5DlAMvD7crk25WVi6Aglx
-X-Gm-Message-State: AOJu0YzGzcA3xQMOIWlandx8vFAJTjW6EfUtPGlmXaDIZvXGBafFAHv4
-	fmEs91oFKFK67jVgTVuf8fuWN/RdBWpsW6gFxceIj/FSVtsFPmX+MxtZKXuBuXoPCwBxhWi3o7x
-	fYe30gALhtmOs/wC9bfNuvr6prw8DHgytWz99
-X-Google-Smtp-Source: AGHT+IGFBkaX99SfmSYIhlRZCqbmREadhrxpgL9UrFo0Boe2aUlXFOiVrXsSsyd0ZAOJCYWvbdHlbxWVGOxfkpsUpkE=
-X-Received: by 2002:aa7:d497:0:b0:572:25e4:26eb with SMTP id
- b23-20020aa7d497000000b0057225e426ebmr146199edr.7.1714145591147; Fri, 26 Apr
- 2024 08:33:11 -0700 (PDT)
+	s=arc-20240116; t=1714146882; c=relaxed/simple;
+	bh=/pT6qmm86/1dcB/Ev+EycfykmNlxY3DJMFoMITVHi9c=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=I1kT0XOoKySdfI924r4tPISi+Hz/bdHbHsG4mRk+WMBVzBYPgm5IlwYyzEJAEGR8oqfqKyx+LrIQan8KWezBsUefUL0fY4K5VsgTfLRZDpypEGPlBydlKBazVYAUGPS9ir0nkL1PGTVHSmYqV1b9H9OHedf7YXUvZRYHSuyQO18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=ZkIkNbVd; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=xHnvLf7Wr6viAvKpwEcbiqJa9JjHx2np031W4DhJ6oE=; b=ZkIkNbVdnmCqLHtNBDrPqBzOnn
+	JCrup+nnr/p5SdAepZuWIZlanKeOF3Eh1RTf0K1BVnJ+E35HNo/66SIx10WDzeg6JRT/lYxF25X6f
+	ZC7uO+HUmrexwZzHzMKNyTi75486ZoHpEe6n9dzpxaoCskliu4mkj4u60jqkSo0rLpqRJ7Z+dUPXO
+	Q3TNtJ4DiuonOwR1PcFVrn908Zre7LAwtn+Z6bwFegSI699Fdna1YJmAS6dDgrms1L+Xio+z9P2FI
+	yBqnViPwRMmDPKyWdr3fJhPLa8ugyfD21wkBfBIk9TTu/himbzBQrYtCIKrD0MG+aZtQA8Tw6Q+88
+	i8fajPyw==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s0NuA-000Bek-HI; Fri, 26 Apr 2024 17:54:30 +0200
+Received: from [178.197.249.19] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s0Nu9-0009yq-1F;
+	Fri, 26 Apr 2024 17:54:29 +0200
+Subject: Re: [PATCH bpf-next v3] bpf: btf: include linux/types.h for u32
+To: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>, olsajiri@gmail.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, dxu@dxuuu.xyz,
+ eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+ khazhy@chromium.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, ncopa@alpinelinux.org, ndesaulniers@google.com,
+ sdf@google.com, song@kernel.org, vmalik@redhat.com, yonghong.song@linux.dev
+References: <Zh93hKfHgsw5wQAw@krava>
+ <20240420042457.3198883-1-dmitrii.bundin.a@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9ca4b5dd-20be-79ac-52eb-a19c0c82280f@iogearbox.net>
+Date: Fri, 26 Apr 2024 17:54:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426152011.37069-1-richard120310@gmail.com>
-In-Reply-To: <20240426152011.37069-1-richard120310@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 26 Apr 2024 17:32:57 +0200
-Message-ID: <CANn89iKenW5SxMGm753z8eawg+7drUz7oZcTR06habjcFmdqVg@mail.gmail.com>
-Subject: Re: [PATCH] tcp_bbr: replace lambda expression with bitwise operation
- for bit flip
-To: I Hsin Cheng <richard120310@gmail.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240420042457.3198883-1-dmitrii.bundin.a@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27257/Fri Apr 26 10:25:03 2024)
 
-On Fri, Apr 26, 2024 at 5:20=E2=80=AFPM I Hsin Cheng <richard120310@gmail.c=
-om> wrote:
->
-> In the origin implementation in function bbr_update_ack_aggregation(),
-> we utilize a lambda expression to flip the bit value of
-> bbr->extra_acked_win_idx. Since the data type of
-> bbr->extra_acked_win_idx is simply a single bit, we are actually trying
-> to perform a bit flip operation, under the fact we can simply perform a
-> bitwise not operation on bbr->extra_acked_win_idx.
->
-> This way we can elimate the need of possible branches which generate by
-> the lambda function, they could result in branch misses sometimes.
-> Perform a bitwise not operation is more straightforward and wouldn't
-> generate branches.
->
-> Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
+On 4/20/24 6:24 AM, Dmitrii Bundin wrote:
+> Inclusion of the header linux/btf_ids.h relies on indirect inclusion of
+> the header linux/types.h. Including it directly on the top level helps
+> to avoid potential problems if linux/types.h hasn't been included
+> before.
+> 
+> The main motiviation to introduce this it is to avoid similar problems that
+
+nit: spelling
+
+> was shown up in the bpf tool where GNU libc indirectly pulls
+> linux/types.h causing compile error of the form:
+> 
+>     error: unknown type name 'u32'
+>                               u32 cnt;
+>                               ^~~
+> 
+> The bpf tool compile error was fixed at 62248b22d01e96a4d669cde0d7005bd51ebf9e76
+> 
+> Fixes: 9707ac4fe2f5 ("tools/resolve_btfids: Refactor set sorting with types from btf_ids.h")
+> 
+> Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
 > ---
->  net/ipv4/tcp_bbr.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
-> index 146792cd2..75068ba25 100644
-> --- a/net/ipv4/tcp_bbr.c
-> +++ b/net/ipv4/tcp_bbr.c
-> @@ -829,8 +829,7 @@ static void bbr_update_ack_aggregation(struct sock *s=
-k,
->                                                 bbr->extra_acked_win_rtts=
- + 1);
->                 if (bbr->extra_acked_win_rtts >=3D bbr_extra_acked_win_rt=
-ts) {
->                         bbr->extra_acked_win_rtts =3D 0;
-> -                       bbr->extra_acked_win_idx =3D bbr->extra_acked_win=
-_idx ?
-> -                                                  0 : 1;
-> +                       bbr->extra_acked_win_idx =3D ~(bbr->extra_acked_w=
-in_idx);
->                         bbr->extra_acked[bbr->extra_acked_win_idx] =3D 0;
->                 }
->         }
+> 
+> Changes in v2: Add bpf-next to the subject
+> Changes in v3: Add Fixes tag and bpf tool commit reference
+> 
+>   include/linux/btf_ids.h | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index e24aabfe8ecc..c0e3e1426a82 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -3,6 +3,8 @@
+>   #ifndef _LINUX_BTF_IDS_H
+>   #define _LINUX_BTF_IDS_H
+>   
+> +#include <linux/types.h> /* for u32 */
+> +
+>   struct btf_id_set {
+>   	u32 cnt;
+>   	u32 ids[];
+> 
 
-Or
+Lgtm, not sure if its worth it but also doesn't hurt and aligns the header
+from tooling a bit closer to the kernel one. Just to clarify, this does not
+fix a concrete issue today, so small 'cleanup' rather than 'fix'.
 
-bbr->extra_acked_win_idx ^=3D 1;
-
-Note that C compilers generate the same code, for the 3 variants.
-
-They do not generate branches for something simple like this.
+Thanks,
+Daniel
 
