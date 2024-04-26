@@ -1,93 +1,135 @@
-Return-Path: <bpf+bounces-27932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E33D28B3B40
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 17:24:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15CCC8B3BA4
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 17:33:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E37C28A510
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 15:24:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C92491F231D1
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 15:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1A814D2B1;
-	Fri, 26 Apr 2024 15:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1E514BFA2;
+	Fri, 26 Apr 2024 15:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZQPHuT4q"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2p1+m/33"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C686614BFA2
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 15:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16207149C73
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 15:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144827; cv=none; b=TZ65YHgk2TLaUKdkrtDk1GrTyHDaLUhfROT0U3MUkqTotAnFgdccCslPa8RRN9cZXaDdhnhVcxGCiY9CWpeoKo65Oj5E5txYg8IXi+311e3V37ZgrBs/Nk2HnNb9Bpup6nnwhqcryM297PaN8WnlVa8X8E05DqMjvXFSaG5mtO8=
+	t=1714145594; cv=none; b=iqZYL1eU8EwuBbaHndvzdYGpxzTDPAP5b9mxY9cAZlBlv5/RxLP/9+gPu66D7DZJbQUXl6Ay/VWwfWJRuhJXJgD1vOHcC/QhpAAPNnfn0C4KWZAGvpKAH3bJ44aRTdt/sXXL4r4PaUpqKxb0++LFH8fvjIYGSqaKPw0+h+xowAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144827; c=relaxed/simple;
-	bh=oSm1tqs+NtHiEHlKeDIBZLDZeBfIvvywgQyBbYSUMa8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qdH8odzEXlynk6L/A9oNiGYdZTxBj5jPiFZ7s40O7xfOM9wfOsKyOVA01uAys3rrGbkQU6kSAFhuGVWcfXclMv9A8mDxRvpgT9u1VebrC/XlvXBrA16/Ddm+4JdotmxWgD84iJ+66dHnkJkjgFmFkXVZYsPxEuj2ey58tyaQIv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZQPHuT4q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4E897C116B1;
-	Fri, 26 Apr 2024 15:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714144827;
-	bh=oSm1tqs+NtHiEHlKeDIBZLDZeBfIvvywgQyBbYSUMa8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ZQPHuT4q4Iufcz6+SI4TTrEfOgyqsWBGunvJ4dA6pLvuoGY4TZxDtkYA+JQHJjl1T
-	 d2e1zXxsb7Y3XwS3xJe6gOZLFdq+rczcFOKrolKD0xiOppFAwy/WzGHySpNQj+xl5w
-	 8GUq+1DjrBz50MSXDnZNRmCVUCbb4aJwvxDcPvGUOJ5enZR1ujS7zpQeXGXY9m2dm2
-	 HA7FLb8G7vPGJ+oe8QcfAxYEL9yCXkDP98J2xGT+/VWy/dktIk/R+J4P9EdKy6iSmA
-	 EfdfoW1HWK0zoiUGdenHBruG7UJ+uhBExQB2BYwc+b58gzzqm17G2NaZSH7m1mwpTR
-	 E2StNKuBuPFFw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3B58ADF3C9B;
-	Fri, 26 Apr 2024 15:20:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714145594; c=relaxed/simple;
+	bh=a+x+9QJcOjAjsTEqVdunD6qiMm7jqBNR+SHC13THGg4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q9T8iEblBG6Y/r9yEVbgcsf2WFGW6zal9jzNZva+dK/VpftYm/t4oZjnBTjNu0OHqC+2IZk2bEbGCZXicUTNjwxtIZooe73MZd3QhTo7SthbRKjimPUGfeGIb2rFwmGa5pkfgF/y5oOhbJhm3kz63Cc9amwycQEWN4lEzYxYOtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2p1+m/33; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5722eb4f852so14091a12.0
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 08:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714145591; x=1714750391; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jQAKSfeSiNMwx23jPVYzccmGjENnrcaTmn472bWM+dw=;
+        b=2p1+m/33Ca229cGyj8MM8xvQ+TcRFoJ5xMFZZC4LEEYy5EM0ZGUdWs1cOe92gh1e0y
+         JgoHocZlnSAN8Uj3vgLz0qJfUFhaScjKB3VJK53KAOhuiJDfYdNDDqqW624fng+DW54+
+         Lv3xFHGsu/kK8XBY2VG84oLE7lg9vmFVzoxghp+b9ZEiRDU/yU6BftsY1PUt+qn5tYHw
+         LG/hSeeCa/jzquXS+FURC9pnA+7fRnoi9ZIYsTpxKZNbW/vtROvlZ40vKA7Qi1+Nk6z1
+         MLUNKpBhqRWA6cpytWhwrbEPR4kP2wsC3XOkkukKVvTTyYJo2GVvkkmQSgEBHwC7Ql3f
+         dXTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714145591; x=1714750391;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jQAKSfeSiNMwx23jPVYzccmGjENnrcaTmn472bWM+dw=;
+        b=fLHHqDd30e737T8355B0RLmlmCDqycVfCVUF0U+nQS+/GWwnDCSF6EDRjGtybpBrop
+         SToIQ3grIOl6NSDNvnfcIdBsL8UTxmf5j1NObug8IL1G1X8uRUGI+XY27sBfTJfzl5y9
+         sd0GqdVIULnIeiKEnQ5WdVgk9vK033XKC6yC3PZ/gd/a6eW9TRPxvo5SNDfun+cHrnZD
+         g4F0SvK0mpx1yxwMZQuTlx7b+mP1ZkYNhEIvxNptLm24AGzSBc4DUGySA0+gAxGgxOoR
+         UydiLZuYZDgHiLAvpsT/pXemGhpF8JnGfXXb4dzRMFbx8AxxZOEhgZWaDclqiburuLUX
+         w2kw==
+X-Forwarded-Encrypted: i=1; AJvYcCWSBNVUr3jozRARUPjQLfcw2jWTCpJVX7iVbwQvhOmaY6DJdImpuuBYyndj/YhEJbTtlZW5DlAMvD7crk25WVi6Aglx
+X-Gm-Message-State: AOJu0YzGzcA3xQMOIWlandx8vFAJTjW6EfUtPGlmXaDIZvXGBafFAHv4
+	fmEs91oFKFK67jVgTVuf8fuWN/RdBWpsW6gFxceIj/FSVtsFPmX+MxtZKXuBuXoPCwBxhWi3o7x
+	fYe30gALhtmOs/wC9bfNuvr6prw8DHgytWz99
+X-Google-Smtp-Source: AGHT+IGFBkaX99SfmSYIhlRZCqbmREadhrxpgL9UrFo0Boe2aUlXFOiVrXsSsyd0ZAOJCYWvbdHlbxWVGOxfkpsUpkE=
+X-Received: by 2002:aa7:d497:0:b0:572:25e4:26eb with SMTP id
+ b23-20020aa7d497000000b0057225e426ebmr146199edr.7.1714145591147; Fri, 26 Apr
+ 2024 08:33:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next V2] bpf_helpers.h: define bpf_tail_call_static when
- building with GCC
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171414482723.31416.4816635428805026983.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Apr 2024 15:20:27 +0000
-References: <20240426145158.14409-1-jose.marchesi@oracle.com>
-In-Reply-To: <20240426145158.14409-1-jose.marchesi@oracle.com>
-To: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org, andrii.nakryiko@gmail.com, yhs@meta.com,
- eddyz87@gmail.com, david.faust@oracle.com, cupertino.miranda@oracle.com
+References: <20240426152011.37069-1-richard120310@gmail.com>
+In-Reply-To: <20240426152011.37069-1-richard120310@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 26 Apr 2024 17:32:57 +0200
+Message-ID: <CANn89iKenW5SxMGm753z8eawg+7drUz7oZcTR06habjcFmdqVg@mail.gmail.com>
+Subject: Re: [PATCH] tcp_bbr: replace lambda expression with bitwise operation
+ for bit flip
+To: I Hsin Cheng <richard120310@gmail.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
+	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, Apr 26, 2024 at 5:20=E2=80=AFPM I Hsin Cheng <richard120310@gmail.c=
+om> wrote:
+>
+> In the origin implementation in function bbr_update_ack_aggregation(),
+> we utilize a lambda expression to flip the bit value of
+> bbr->extra_acked_win_idx. Since the data type of
+> bbr->extra_acked_win_idx is simply a single bit, we are actually trying
+> to perform a bit flip operation, under the fact we can simply perform a
+> bitwise not operation on bbr->extra_acked_win_idx.
+>
+> This way we can elimate the need of possible branches which generate by
+> the lambda function, they could result in branch misses sometimes.
+> Perform a bitwise not operation is more straightforward and wouldn't
+> generate branches.
+>
+> Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
+> ---
+>  net/ipv4/tcp_bbr.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
+> index 146792cd2..75068ba25 100644
+> --- a/net/ipv4/tcp_bbr.c
+> +++ b/net/ipv4/tcp_bbr.c
+> @@ -829,8 +829,7 @@ static void bbr_update_ack_aggregation(struct sock *s=
+k,
+>                                                 bbr->extra_acked_win_rtts=
+ + 1);
+>                 if (bbr->extra_acked_win_rtts >=3D bbr_extra_acked_win_rt=
+ts) {
+>                         bbr->extra_acked_win_rtts =3D 0;
+> -                       bbr->extra_acked_win_idx =3D bbr->extra_acked_win=
+_idx ?
+> -                                                  0 : 1;
+> +                       bbr->extra_acked_win_idx =3D ~(bbr->extra_acked_w=
+in_idx);
+>                         bbr->extra_acked[bbr->extra_acked_win_idx] =3D 0;
+>                 }
+>         }
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Or
 
-On Fri, 26 Apr 2024 16:51:58 +0200 you wrote:
-> [Changes from V1;
-> - Add minimum GCC version that supports bpf_tail_call_static.]
-> 
-> The definition of bpf_tail_call_static in tools/lib/bpf/bpf_helpers.h
-> is guarded by a preprocessor check to assure that clang is recent
-> enough to support it.  This patch updates the guard so the function is
-> compiled when using GCC 13 or later as well.
-> 
-> [...]
+bbr->extra_acked_win_idx ^=3D 1;
 
-Here is the summary with links:
-  - [bpf-next,V2] bpf_helpers.h: define bpf_tail_call_static when building with GCC
-    https://git.kernel.org/bpf/bpf-next/c/6e25bcf06af0
+Note that C compilers generate the same code, for the 3 variants.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+They do not generate branches for something simple like this.
 
