@@ -1,132 +1,129 @@
-Return-Path: <bpf+bounces-27979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765B18B40C1
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:20:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365778B40CC
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:27:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A86231C22EB5
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 20:20:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E52DB282E2C
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 20:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC432260A;
-	Fri, 26 Apr 2024 20:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03AF422F02;
+	Fri, 26 Apr 2024 20:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OdgdLWF0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WXN3cOMh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BDC1BF2F
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 20:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A4D23758;
+	Fri, 26 Apr 2024 20:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714162849; cv=none; b=tPpJr7f2g2VoznE6WfS1FDEKFh9zdA6Are4cRr5sKXD8BeIsbUpE4CmyBDcyVBDXFAJAQXPu3CFSkHU84yUlgPIIC/UcuPVJhGCvxX0pjb/JSPUGvo57wq7nU/LkTMOXkR/UIlQe7fWP2g0RmAW/pPmuGD44VOxSvXrmu73JNZQ=
+	t=1714163215; cv=none; b=a71BKdQ8sEilZq77qvs1/l/oiQg59IbrzvCtAYilRwTlD3k9EUHGW/6h6UoYsPRFLfyL/6IQPjgbB7N2PbbMe9ayZPdXCh4Yw4HjaTR43yhcEjDbwNjRb03FuDc6RndhoXpCszTvlGRgLqTct3H6vEdDNkP5ZaeKoH4Jeitytg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714162849; c=relaxed/simple;
-	bh=LFbNYzCXuxtW6BQZHUqKUelX1ujYRzkupwJOfTMTUHw=;
+	s=arc-20240116; t=1714163215; c=relaxed/simple;
+	bh=sBL0lHa/6TxOBgAj88VqXwSY9DXfZG/N6Owp9d6kwKg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RQ9pL2S9tlGEZqlGph4N3hqs8TKTQis4azWmzif1LEK2wRH9Dk0emiuE1OzWyyuSOI2GYhAWT6sRC2OAgERAtTNAxjhCLnDrfOYaxbtmP1jMJoCvEt3qPvBcrz/+7fd062YJbsfE4IBOu2jgK88UX7tA1iESGB6eIHT/9RYCbb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OdgdLWF0; arc=none smtp.client-ip=209.85.215.178
+	 To:Cc:Content-Type; b=Hdp0KmmXULMHR0BHpWKLCLxT/lvWZgvkKHx6ZyL+h/+Ve7taexxVTzATacPy0ycogJi81oy4znMU3m+1qAwch9X1VpmeJoaVlxf8KJguKYf4f0xv2Ye2RC5+oPiPW5ukPqGMC5xmmIKW7GUX/n9T3sMt0b7rPBBDWyoswMKN2Ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WXN3cOMh; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso2011617a12.0
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 13:20:48 -0700 (PDT)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso1515861a12.2;
+        Fri, 26 Apr 2024 13:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714162847; x=1714767647; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714163213; x=1714768013; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rkND1HldruIqIw3gO759O50zC++DComa+XTr4qiirBo=;
-        b=OdgdLWF0YC17a2O6Gu7f5PKCAWOkvGlWxVOg2uLkkx0+6zDrTrk8oddBV8ygy+gd2H
-         DXmYQZYZmp9sDr3InXAwmwTewRviCBZU1qKK62kVHJJMAlOTXc4xZ163j+2rZVBxvqwI
-         w4CXoX8qqb3ocIq7Z0/d5pDDEGAjFuc7L49tgZphpjoA/4KgI6h2mVl1A4wyrgAtXSzy
-         /l+7X5svIloyu1vu/CWXtnrvvNU+64qUWMPMzYzfLOxMFza17599LsndZBH/lDCPLdPb
-         /zw1QGEjT8DWXNr6tdZOnlbox/PPTqvqhAZagbHIyEK9KBa3UJrdDVIm/+9dgIqQUzwm
-         ybtg==
+        bh=cLAP3onENSZmeADJpTAKc8XaP1Ji/omSoZg9Du9ItUc=;
+        b=WXN3cOMhE74ObpZypixaQFfSeZIBNvr7LyhtyyAQj5OR9dmZK+dSEk+Biao5TbMCad
+         H5KIq/lpnTJzakynYKDg7bG28ejgLsb/jIvXiencNQ5WIwNzyyob+iUa3V2QsJuMU2p9
+         TEtJnedSpKKan43Xc2ILkNkecVG58bu+dOMeq7yEtbdZHJva7tF1G7BB0kaNNkIxBJ8I
+         xWe13eEFIg5zv6vsdAQYB7Oz3JYX9rHk41o99CQo5cioPwBE3Bjiv9vqVehYgxVKFL7a
+         Ijir+2m6NaYFQHpkQnooJtUo/ubkSw8sIT16i3mooKo3Niib/Lz8GHJKzVO1P/HT0ABB
+         3GrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714162847; x=1714767647;
+        d=1e100.net; s=20230601; t=1714163213; x=1714768013;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rkND1HldruIqIw3gO759O50zC++DComa+XTr4qiirBo=;
-        b=tdDxTvm/2akEGU13YSMVq+aVHykRKb+2NeYqvoh835P3GlEOYRIV1Ukp3GiY5Na4Fm
-         2B+A32B6wAFSj95Pi/spNGe+4MA8kPGMvjGC5AfdFeGzYzO2tj6R2jWIxOooXRFRgJn/
-         6IDvgE6pZgGGrwL4+NqjWCq6mtGTK5lGFKe/RA8WeR+7PIrgORWBzQhRir/VFWKs7vj3
-         jo5ByyFig6ahxiRzJZ25g1lzc9UsEcgpgbdJZ6IX82VZiPxrFQ3RwUxy3nqtWdQhduI8
-         1tDq/lmdboO5YneNNus6ORp3S/HWDWJiwVLIyhdApbKnlk6QWwsBAPDWXi9O7e2+vNrz
-         rKFg==
-X-Gm-Message-State: AOJu0YxZ+pN2LQDQV30ixii+hpzceerlQnBD5IoISug8wxLRC7jWqjJF
-	yhvUlI9fXtJyOhmMAjxRXQ2ljKG67U7+UDxR7BBpkH4Hwtw+t9LfUJwVXrsMpRaIXux/rfx+6Ba
-	QR42N2P10VOK915h3FbxLucGGDbM=
-X-Google-Smtp-Source: AGHT+IEqZZo0fbCqFhDk/8oxSSfXMexnQGgIld2+8tmgAuzNQlui98Mq4CmjlPPXame35lccXcnGD98xnUHs5mG9cDA=
-X-Received: by 2002:a17:90a:5d91:b0:2ac:2b02:e167 with SMTP id
- t17-20020a17090a5d9100b002ac2b02e167mr3827996pji.37.1714162847409; Fri, 26
- Apr 2024 13:20:47 -0700 (PDT)
+        bh=cLAP3onENSZmeADJpTAKc8XaP1Ji/omSoZg9Du9ItUc=;
+        b=uTtippTkzd4TPtwhoUbv8RVl1ZA27OfhWqPqe8KilbUdtSRd8znOLxa/W/rPv8k3Vw
+         3Brmg1d1VqKKiut3MO0Ul0RGtb8i0nY0uutaRctBTFVSv105MFw4pziy+RZmVg5gLnUI
+         V3V8bqJlVxDpup4sgBA03foUpC8qYKEqAX1RoYniN1S/Rc6ILs7rb95j4FXCF1Z51Ajn
+         sQqVNkh2U2bf1F+4ZFjAFE+ryQ9oHreu9zujAPKXGYmyzHwN9QzwZNH6b3KsK7tJuFaO
+         3ShHKHLr5Bjrp6JS9/6u8B+2YBk1SNocvMoFhr4EyE5DEuCvVURPH88XXe56CayX3o9h
+         QQVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDvvClOTlUdlh24E2k0FpzTxlGsh76suO7+/eOxwOqrKpd6puphkN2pqh8DsrVv8lC+jPQu3+2z3fX8NOAkbQRzdyg
+X-Gm-Message-State: AOJu0YwW4ly0JY18qDoiJGrct3Kg+ZwfkbNHM4h9ji+RzGgrVVLFrOkw
+	WKRxoOYfLkj6OALjefwtZALvXCGOMOpfDskM/9GmJ87kB8rXvhQ/7f732uQaKB38kMNqUGa+LRW
+	DtXnDNKT/SYQ3IQbDDXjD3pcz/Xc=
+X-Google-Smtp-Source: AGHT+IGkZopnjXMdXeNoDwsAAih0OjIRrltqd608cKvuvsN/ZG4zEtGsxB24AcySLoVSL6CTGwXlWRyuT9seudRabvs=
+X-Received: by 2002:a17:90a:e646:b0:2a2:4192:dfc1 with SMTP id
+ ep6-20020a17090ae64600b002a24192dfc1mr4004350pjb.14.1714163213482; Fri, 26
+ Apr 2024 13:26:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426185630.17938-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240426185630.17938-1-alexei.starovoitov@gmail.com>
+References: <20240419205747.1102933-1-acme@kernel.org> <20240419205747.1102933-3-acme@kernel.org>
+In-Reply-To: <20240419205747.1102933-3-acme@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 13:20:34 -0700
-Message-ID: <CAEf4BzZZWBsFh5zkaxGhMZ1TR+NdoWNxTnu8QizWoL+3zZGmcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix verifier assumptions about socket->sk
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com, 
-	liamwisehart@meta.com, kernel-team@fb.com
+Date: Fri, 26 Apr 2024 13:26:40 -0700
+Message-ID: <CAEf4Bzb0pyc_0AuP3O6wekpR3YcfEkk5bPGOOmS6_yJ3G5bKwQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pahole: Allow asking for extra features using the '+'
+ prefix in --btf_features
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>, 
+	Clark Williams <williams@redhat.com>, Kate Carcia <kcarcia@redhat.com>, bpf@vger.kernel.org, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, Alan Maguire <alan.maguire@oracle.com>, Daniel Xu <dxu@dxuuu.xyz>, 
+	Eduard Zingerman <eddyz87@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 11:56=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Apr 19, 2024 at 1:58=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> From: Arnaldo Carvalho de Melo <acme@redhat.com>
 >
-> The verifier assumes that 'sk' field in 'struct socket' is valid
-> and non-NULL when 'socket' pointer itself is trusted and non-NULL.
-> That may not be the case when socket was just created and
-> passed to LSM socket_accept hook.
-> Fix this verifier assumption and adjust tests.
+> Instead of the somewhat confusing:
 >
-> Reported-by: Liam Wisehart <liamwisehart@meta.com>
-> Fixes: 6fcd486b3a0a ("bpf: Refactor RCU enforcement in the verifier.")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>   --btf_features=3Dall,reproducible_build
+>
+> That means "'all' the standard BTF features plus the 'reproducible_build'
+> extra BTF feature", use + directly, making it more compact:
+>
+>   --btf_features=3D+reproducible_build
+>
+
+for older paholes that don't yet know about + syntax, but support
+--btf_features, will this effectively disable all features or how will
+it work?
+
+I'm thinking from the perspective of using +reproducible_build
+unconditionally in kernel's build scripts, will it regress something
+for current pahole versions?
+
+> In the future we may want the '-' counterpart as a way to _remove_ some
+> of the standard set of BTF features.
+>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Daniel Xu <dxu@dxuuu.xyz>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > ---
->  kernel/bpf/verifier.c                         | 23 +++++++++++++++----
->  .../selftests/bpf/progs/local_storage.c       | 20 ++++++++--------
->  .../testing/selftests/bpf/progs/lsm_cgroup.c  |  8 +++++--
->  3 files changed, 35 insertions(+), 16 deletions(-)
+>  man-pages/pahole.1          | 6 ++++++
+>  pahole.c                    | 6 ++++++
+>  tests/reproducible_build.sh | 2 +-
+>  3 files changed, 13 insertions(+), 1 deletion(-)
 >
-
-Makes sense, but can you also fix up one of benchmark's programs, see
-[0], veristat-based CI run caught success->failure change (in
-bench_local_storage_create.bpf.o)
-
-  [0] https://github.com/kernel-patches/bpf/actions/runs/8853140420/job/243=
-13511057
-
-pw-bot: cr
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 4e474ef44e9c..c2780a5c396a 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2368,6 +2368,8 @@ static void mark_btf_ld_reg(struct bpf_verifier_env=
- *env,
->         regs[regno].type =3D PTR_TO_BTF_ID | flag;
->         regs[regno].btf =3D btf;
->         regs[regno].btf_id =3D btf_id;
-> +       if (type_may_be_null(flag))
-> +               regs[regno].id =3D ++env->id_gen;
->  }
->
->  #define DEF_NOT_SUBREG (0)
 
 [...]
 
