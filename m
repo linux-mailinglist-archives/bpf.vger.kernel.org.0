@@ -1,232 +1,165 @@
-Return-Path: <bpf+bounces-27938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA208B3C94
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:15:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D088B3C9D
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63DEE1F24045
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:15:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 503501C21BDE
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B8C0152DED;
-	Fri, 26 Apr 2024 16:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909DB14884B;
+	Fri, 26 Apr 2024 16:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLJbSRWb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AyTqTlQf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C031FC4
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:15:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8499214EC4C
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714148139; cv=none; b=h3NGI36UdrT39LgBwaAx4tz+D283OiRdBtqt9nxxHvGDW15NVx3xSJ2tQux6BybWMmptZLDRKz3IytDwcEpbT2wwkKMhXfss4mb3ubfZ9R150bIv9QUWMJn5b3X0QEhaoWj+iSGgI8t+0MRRQMURlPMV5mKAsxNlDXnpzHzGXHc=
+	t=1714148256; cv=none; b=lF4qL7yS/7an66UtE3Fi7XaQ5t5OyY76aNn07Bomw8EkGxrGOJXQ1LJV4qWJ7s3EPhU6N2Xqx+YjuGVwYIrziCXhCxPq+p9Hey/Xv5rk2UZCtM2NXhK6JOKcQwJrCD220f6NgFjJZI+YAaAmClo7hoYd69hNWo1O/o5FJTaSu6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714148139; c=relaxed/simple;
-	bh=U7cy+aH+Xnpdl6uTCa30erNHs3pZf5sgjvSPJZEIrA8=;
+	s=arc-20240116; t=1714148256; c=relaxed/simple;
+	bh=DwyYmNUUUO+WeEyrt8xtVEcAOxk6ED+ITiFPSiej0ZE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PZfxCy2rxYSomaMzzVvO9SOdElAY2gmkAMS1mKV/ftBHmNHbVKe6DNibiKC8xQPs8S5uLZ7IUPIZdG5goBMQPagZ21fl2hmPO7h/69dgDW8R1t9uPqGEus7QzOKmNOsjktw9/4vd59kUQnfford5rx7O8xOlA4tZQkHV8zm4qLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLJbSRWb; arc=none smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=d4DZ0j7IqkJFlTqtIhvvKYqRqaX0hsfeabV36QLGseZ56yIazKny48nTHs0uovkhi7EynNfdmiNwYRxRi0wWUxKKKo8GqCd2yJ8TqzOd5lgYk2RXeCswLlT7Li0O43mWZYXbgN/2+1O1Eg2wZfmqNQtJxwSAOJIBQUrSvk+3XK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AyTqTlQf; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2a5ef566c7aso2063611a91.1
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 09:15:37 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-34a3e0b31e6so1694341f8f.1
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 09:17:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714148137; x=1714752937; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714148253; x=1714753053; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pMWebnNi5NyPAzc9VdFdPOGHvE+7IdjLUrW+F6tSl0w=;
-        b=TLJbSRWbAtpJuzIohaXSrNZyln3vjX5jin1Z691wi1D5/V9V/C7GoOWUMH7jJgtqc/
-         1TXChpE5RxatsR1CU2J7XKzeE4kSBtEM7YlwYm9VA8sSymBy7UG9GQi00I3BpbaQUV9m
-         xUHyOvy+1lleOZKB/Tj4+9LZ9dDakzgMvNV1b1bUG73HMShZZgmstgfm8oP6Gwu60R9g
-         T+WB7t53FYpkE5FUPln2X7Y8PjMiUsaK4dkRFpRSTwmbZDUu/h5OokmITFc+yvma9QL+
-         rFRZsO2gFPXsa2hBcbGbSH5pELkk9PWsbxRaEW9+7AP3dB0gu190dDPe+6OlrsQmryxm
-         vDdA==
+        bh=uJlHCxJfmuAPRV94WEAHJrKHbpgMeSfba4kc4aQeSyY=;
+        b=AyTqTlQftwV+1YR5mZrtkXyutxxy/9l/sSd1eW2UDOsiV5zfX9jygI8iiRG3wgaLp1
+         unHnq+AsPNRySbsC2Q+TUkkYLEYnWsYNIrpqU+PuMGuOxgNvPOj7OjHR6q6SVpywW7L3
+         iYcoc4hJdZB6lF67R04ZqsFizu6uPxRhTE4kLfXLExREPshpEK9GR+yb6FklBGx0Vlpy
+         AA9jc6e3fuAYzZE5ElaSWkf9a5j3UyqcFHYoLdCwR4HlH/m5sDqVMymxlaNr7kWsgTCG
+         awkpxqYZ5GhOPcxM2J0so+b4QRalynf9/AYvwxxQbcNdvSMxVagTn2tj/moS38vuh71g
+         qi6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714148137; x=1714752937;
+        d=1e100.net; s=20230601; t=1714148253; x=1714753053;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pMWebnNi5NyPAzc9VdFdPOGHvE+7IdjLUrW+F6tSl0w=;
-        b=Htsx/i/GQoCWNKyknPcxk0eA63DRmg3Rif7BvbP2qOqv1th0BHW9hdLN7wviVlBkrM
-         +fvgE43mK6gmc2Eb38o6GVrmz7xPEn0xwsUfrIFx4qpcRAAZnGxfzYSEn/Z9Jx2FVoIp
-         aUW/cZ3WOcYv0N7UuSZG5N7UYDZhqFkL09bOB5QoN/ArRSi52NMdHFyOI/4RuHqnpZk9
-         VXyuyE8XoIZfs6KHpGgpOUlXIlNP79CgfIp8c9GHq25RKTToSD9qOlSAm4GzJP0/GQ0d
-         dcCKHyj24UakX5UXQSTuABOhC/SztSZj5VibP8xBzl+yqlnUHT+dQn2XOLnP2hCfIzvC
-         B3/A==
-X-Gm-Message-State: AOJu0Yw8ICAlAWQAe6Qdg87IN4qT5aeodicvEmGe+/eB2lfsgP5k/BAR
-	CxHGykD58SWa+wTPYLVN82Z0nE9r3NGbg6wV4Y/SaDumtUT0N0PiPFYLLn7lTGoMdYkBNMpS3j7
-	4c5DDAlMqaBsCHVJ+Oeun1r0UlNK14Hya
-X-Google-Smtp-Source: AGHT+IFR/6hHY9XVSJnJ7bQTm0+1zTfz6x550vOHwsrLvmUcW2z60ASzr+W/byX6hQhS1XLGil4Cazx3qOPMBy5UxIw=
-X-Received: by 2002:a17:90a:ed03:b0:2ab:a825:ae5 with SMTP id
- kq3-20020a17090aed0300b002aba8250ae5mr3074350pjb.22.1714148136794; Fri, 26
- Apr 2024 09:15:36 -0700 (PDT)
+        bh=uJlHCxJfmuAPRV94WEAHJrKHbpgMeSfba4kc4aQeSyY=;
+        b=RIUtXRcu7LdrffDj1n4bocV+MeT2qmfiZumQx1sJCBdCF+2haiJsEtToLi5plUaZVI
+         UFNH/fZpk7XlyIYwP0zyB05Eq3EW6SmLqajIQmMWLcWk6R7X0F5uV7/OePz/j3x4fPwS
+         lA5rlEngxvwTbPThLI7+D4liqbMB35dQSlphVDF3Djx6nwZ2DaV5s1qFplzdnPrpaEz6
+         YPMP30gw0D0hwgDwwJZJS6YYWrepYR6Xsn5kYz0kzOrkwwa6BVe25uy7aWDpaqmA1nCn
+         MlzncEAaXxM4zhKFGEQZK2UdeolMn9UleEHFHvgjJPJ288yM1RGqIgCThx7s42Irs3Oj
+         waNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWjKT4bPxQZ5Ux85e4PB4HPia67csbjfQBQnmsvChbd+ULO/b6/F1l90Xk8U2l9tDgAxhnbOR5ge+OggvOyS4oNr2pF
+X-Gm-Message-State: AOJu0Yyd6uhk04SIW6kNQqD0E3+exUNTm/SLSkxGMHL6PsoNeh5eZQ2D
+	1WqsTVWLsP8U+HtAiLOSO6TX5BuueJMQlZ5okOVIjUVvzVgxlKDxA1N0e1mfVRdtPgjF8FS9ExV
+	tnLqdGzcwnnRchB/5XQLeQ4IAGaYSzmN9
+X-Google-Smtp-Source: AGHT+IE70ll0sc24UTj7JphqKP9xMuFTJfe5Sz+EQIgoPRmwGK4YPvCdhoE8tWe0oCpWsxtu1USodri2h0vf7Xy9Dno=
+X-Received: by 2002:a05:6000:14e:b0:34c:72a9:b656 with SMTP id
+ r14-20020a056000014e00b0034c72a9b656mr1022234wrx.55.1714148252714; Fri, 26
+ Apr 2024 09:17:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426092214.16426-1-jose.marchesi@oracle.com>
-In-Reply-To: <20240426092214.16426-1-jose.marchesi@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 09:15:24 -0700
-Message-ID: <CAEf4BzY14jZkUUgkZb3A88KguX6=7pJLhNZ3T1H-Hde7raLb6A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: avoid casts from pointers to enums in bpf_tracing.h
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com
+References: <20240424224053.471771-1-cupertino.miranda@oracle.com>
+ <20240424224053.471771-3-cupertino.miranda@oracle.com> <CAEf4BzYuHv7QnSAFVX0JH2YQd8xAR5ZKzWxEY=8yongH9kepng@mail.gmail.com>
+ <87edasmnlr.fsf@oracle.com> <CAEf4BzazPWOgXFco=PJnGEAaJgjr2MG12=3Sr3=9gMckwTSDLg@mail.gmail.com>
+In-Reply-To: <CAEf4BzazPWOgXFco=PJnGEAaJgjr2MG12=3Sr3=9gMckwTSDLg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 26 Apr 2024 09:17:20 -0700
+Message-ID: <CAADnVQ+mSfUbtgk9pD+j6b3XLZJ1w7mGzbh2+t40Q81jB==wLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/6] bpf/verifier: refactor checks for range computation
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf <bpf@vger.kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, David Faust <david.faust@oracle.com>, 
+	Jose Marchesi <jose.marchesi@oracle.com>, Elena Zannoni <elena.zannoni@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 2:22=E2=80=AFAM Jose E. Marchesi
-<jose.marchesi@oracle.com> wrote:
+On Fri, Apr 26, 2024 at 9:12=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> The BPF_PROG, BPF_KPROBE and BPF_KSYSCALL macros defined in
-> tools/lib/bpf/bpf_tracing.h use a clever hack in order to provide a
-> convenient way to define entry points for BPF programs as if they were
-> normal C functions that get typed actual arguments, instead of as
-> elements in a single "context" array argument.
+> On Fri, Apr 26, 2024 at 3:20=E2=80=AFAM Cupertino Miranda
+> <cupertino.miranda@oracle.com> wrote:
+> >
+> >
+> > Andrii Nakryiko writes:
+> >
+> > > On Wed, Apr 24, 2024 at 3:41=E2=80=AFPM Cupertino Miranda
+> > > <cupertino.miranda@oracle.com> wrote:
+> > >>
+> > >> Split range computation checks in its own function, isolating pessim=
+itic
+> > >> range set for dst_reg and failing return to a single point.
+> > >>
+> > >> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> > >> Cc: Yonghong Song <yonghong.song@linux.dev>
+> > >> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > >> Cc: David Faust <david.faust@oracle.com>
+> > >> Cc: Jose Marchesi <jose.marchesi@oracle.com>
+> > >> Cc: Elena Zannoni <elena.zannoni@oracle.com>
+> > >> ---
+> > >>  kernel/bpf/verifier.c | 141 +++++++++++++++++++++++----------------=
+---
+> > >>  1 file changed, 77 insertions(+), 64 deletions(-)
+> > >>
+> > >
+> > > I know you are moving around pre-existing code, so a bunch of nits
+> > > below are to pre-existing code, but let's use this as an opportunity
+> > > to clean it up a bit.
+> > >
+> > >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > >> index 6fe641c8ae33..829a12d263a5 100644
+> > >> --- a/kernel/bpf/verifier.c
+> > >> +++ b/kernel/bpf/verifier.c
+> > >> @@ -13695,6 +13695,82 @@ static void scalar_min_max_arsh(struct bpf_=
+reg_state *dst_reg,
+> > >>         __update_reg_bounds(dst_reg);
+> > >>  }
+> > >>
+> > >> +static bool is_const_reg_and_valid(struct bpf_reg_state reg, bool a=
+lu32,
+> > >
+> > > hm.. why passing reg_state by value? Use pointer?
+> > >
+> > Someone mentioned this in a review already and I forgot to change it.
+> > Apologies if I did not reply on this.
+> >
+> > The reason why I pass by value, is more of an approach to programming.
+> > I do it as guarantee to the caller that there is no mutation of
+> > the value.
+> > If it is better or worst from a performance point of view it is
+> > arguable, since although it might appear to copy the value it also prov=
+ides
+> > more information to the compiler of the intent of the callee function,
+> > allowing it to optimize further.
+> > I personally would leave the copy by value, but I understand if you wan=
+t
+> > to keep having the same code style.
 >
-> For example, PPF_PROGS allows writing:
+> It's a pretty big 120-byte structure, so maybe the compiler can
+> optimize it very well, but I'd still be concerned. Hopefully it can
+> optimize well even with (const) pointer, if inlining.
 >
->   SEC("struct_ops/cwnd_event")
->   void BPF_PROG(cwnd_event, struct sock *sk, enum tcp_ca_event event)
->   {
->         bbr_cwnd_event(sk, event);
->         dctcp_cwnd_event(sk, event);
->         cubictcp_cwnd_event(sk, event);
->   }
->
-> That expands into a pair of functions:
->
->   void ____cwnd_event (unsigned long long *ctx, struct sock *sk, enum tcp=
-_ca_event event)
->   {
->         bbr_cwnd_event(sk, event);
->         dctcp_cwnd_event(sk, event);
->         cubictcp_cwnd_event(sk, event);
->   }
->
->   void cwnd_event (unsigned long long *ctx)
->   {
->         _Pragma("GCC diagnostic push")
->         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")
->         return ____cwnd_event(ctx, (void*)ctx[0], (void*)ctx[1]);
->         _Pragma("GCC diagnostic pop")
->   }
->
-> Note how the 64-bit unsigned integers in the incoming CTX get casted
-> to a void pointer, and then implicitly converted to whatever type of
-> the actual argument in the wrapped function.  In this case:
->
->   Arg1: unsigned long long -> void * -> struct sock *
->   Arg2: unsigned long long -> void * -> enum tcp_ca_event
->
-> The behavior of GCC and clang when facing such conversions differ:
->
->   pointer -> pointer
->
->     Allowed by the C standard.
->     GCC: no warning nor error.
->     clang: no warning nor error.
->
->   pointer -> integer type
->
->     [C standard says the result of this conversion is implementation
->      defined, and it may lead to unaligned pointer etc.]
->
->     GCC: error: integer from pointer without a cast [-Wint-conversion]
->     clang: error: incompatible pointer to integer conversion [-Wint-conve=
-rsion]
->
->   pointer -> enumerated type
->
->     GCC: error: incompatible types in assigment (*)
->     clang: error: incompatible pointer to integer conversion [-Wint-conve=
-rsion]
->
-> These macros work because converting pointers to pointers is allowed,
-> and converting pointers to integers also works provided a suitable
-> integer type even if it is implementation defined, much like casting a
-> pointer to uintptr_t is guaranteed to work by the C standard.  The
-> conversion errors emitted by both compilers by default are silenced by
-> the pragmas.
->
-> However, the GCC error marked with (*) above when assigning a pointer
-> to an enumerated value is not associated with the -Wint-conversion
-> warning, and it is not possible to turn it off.
->
-> This is preventing building the BPF kernel selftests with GCC.
->
-> This patch fixes this by avoiding intermediate casts to void*,
-> replaced with casts to `uintptr', which is an integer type capable of
-> safely store a BPF pointer, much like the standard uintptr_t.
->
-> Tested in bpf-next master.
-> No regressions.
->
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: david.faust@oracle.com
-> Cc: cupertino.miranda@oracle.com
-> ---
->  tools/lib/bpf/bpf_tracing.h | 80 ++++++++++++++++++++-----------------
->  1 file changed, 43 insertions(+), 37 deletions(-)
->
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 1c13f8e88833..1098505a89c7 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -4,6 +4,12 @@
->
->  #include "bpf_helpers.h"
->
-> +/* The following integer unsigned type must be able to hold a pointer.
-> +   It is used in the macros below in order to avoid eventual casts
-> +   from pointers to enum values, since these are rejected by GCC.  */
-> +
-> +typedef unsigned long long uintptr;
-> +
+> But I do insist, if you look at (most? I haven't checked every single
+> function, of course) other uses in verifier.c, we pass things like
+> that by pointer. I understand the desire to specify the intent to not
+> modify it, but that's why you are passing `const struct bpf_reg_state
+> *reg`, so I think you don't lose anything with that.
 
-hold on, we didn't talk about adding new typedefs. This bpf_tracing.h
-header is included into tons of user code, so we should avoid adding
-extra global definitions and typedes. Please just use (unsigned long
-long) explicitly everywhere.
-
-Also please check CI failures ([0]).
-
-  [0] https://github.com/kernel-patches/bpf/actions/runs/8846180836/job/242=
-91582343
-
-pw-bot: cr
-
->  /* Scan the ARCH passed in from ARCH env variable (see Makefile) */
->  #if defined(__TARGET_ARCH_x86)
->         #define bpf_target_x86
-> @@ -523,9 +529,9 @@ struct pt_regs;
->  #else
->
->  #define BPF_KPROBE_READ_RET_IP(ip, ctx)                                 =
-           \
-> -       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)PT_REGS_RET(c=
-tx)); })
-> +       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (uintptr)PT_REGS_RET(=
-ctx)); })
->  #define BPF_KRETPROBE_READ_RET_IP(ip, ctx)                              =
-   \
-> -       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)(PT_REGS_FP(c=
-tx) + sizeof(ip))); })
-> +       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (uintptr)(PT_REGS_FP(=
-ctx) + sizeof(ip))); })
-
-these are passing pointers, please don't just do a blind find&replace
-
->
->  #endif
->
-
-[...]
++1
+that "struct bpf_reg_state src_reg" code was written 7 years ago
+when bpf_reg_state was small.
+We definitely need to fix it. It might even bring
+a noticeable runtime improvement.
 
